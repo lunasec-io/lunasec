@@ -2,7 +2,8 @@ html
   head
     title test
     script(src="http://localhost:5002/public/app-test.js", nonce=nonce)
+    link(href="/static/main.css", rel="stylesheet")
   body
-    h1 app
-    iframe(src="http://localhost:5002/")
+    h1 Insecure Customer App
+    iframe.secure-frame-instance(src="http://localhost:5002/")
 

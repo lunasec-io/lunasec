@@ -11,7 +11,7 @@ app.use((req, res, next) => {
   res.locals.nonce = crypto.randomBytes(16).toString('hex');
   helmet.contentSecurityPolicy({
     directives: {
-      scriptSrc: ["'self'", "'unsafe-inline'", `'nonce-${res.locals.nonce}'`],
+      scriptSrc: ["'none'", "'unsafe-inline'", `'nonce-${res.locals.nonce}'`],
       objectSrc: "'none'",
       defaultSrc: "'none'",
       frameAncestors: 'http://localhost:5001',
