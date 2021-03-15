@@ -1,0 +1,12 @@
+session_name: csp-test
+windows:
+- window_name: services
+  layout: tiled
+  panes:
+    - shell_command:
+      - cd app
+      - ./node_modules/.bin/nodemon index.js
+    - shell_command:
+      - cd service
+      - ./node_modules/.bin/nodemon index.js
+
