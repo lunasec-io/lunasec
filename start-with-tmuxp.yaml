@@ -5,8 +5,11 @@ windows:
   panes:
     - shell_command:
       - cd app
-      - ./node_modules/.bin/nodemon index.js
+      - node ./node_modules/.bin/nodemon --signal SIGHUP index.js
     - shell_command:
       - cd service
-      - ./node_modules/.bin/nodemon index.js
+      - node ./node_modules/.bin/nodemon --signal SIGHUP index.js
+    - shell_command:
+      - cd secure-frame-sdk
+      - npm run watch:build
 

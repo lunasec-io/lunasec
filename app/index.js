@@ -30,6 +30,15 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+app.get('/submit', (req, res) => {
+  console.log('form values:', req.query);
+
+  res.locals.firstName = req.query.firstName;
+  res.locals.lastName = req.query.lastName;
+
+  res.render('reflect-values');
+})
+
 app.listen(5001, () => {
   console.log('listening on http://localhost:5001/');
 });

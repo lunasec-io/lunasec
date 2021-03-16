@@ -1,15 +1,9 @@
 html
   head
-    script(src="http://localhost:5002/public/main.js", nonce=nonce)
-    title test
+    link(href="/public/main.css", rel="stylesheet", nonce=nonce)
+    title Secure Frame
   body
-    h1 Secure Frame
-    form
-      label(for='fname') First name:
-      br
-      input#fname(type='text', name='fname')
-      br
-      label(for='lname') Last name:
-      br
-      input#lname(type='text', name='lname')
+    h1.d-none Secure Frame
+    input(id="secure-input", data-nonce=request_nonce, data-origin=request_origin, value=input_value)
+    script(src="/public/main.js", nonce=nonce)
 
