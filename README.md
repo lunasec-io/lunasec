@@ -23,9 +23,23 @@ Install `tmuxp` and then run `tmuxp load ./start-with-tmuxp.yaml` in the root di
 
 Then go hit the `app` service, which runs at `http://localhost:5001`. That will show you the POC.
 
+### Developing the React Front End
+You need to link the `secure-frame-sdk` to the React Front End app:
+```
+cd secure-frame-sdk
+npm link
+cd ../react-front-end
+npm link secure-frame-sdk
+```
+
+This will setup the module to be shared with the React app for dev.
+
 ### TODO
 - Add React project
 - Add React SDK
 - Add Tokenizer calls in backend ("service")
+- Authorization
 - Finish RPC work to make the postMessage APIs well formed
+- Figure a versioning mechanism
+  - What if multiple copies of the script are mounted to the page?
 
