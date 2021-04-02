@@ -4,7 +4,11 @@ import {
   SupportedElementTagName,
   SupportedElementTagNameMap
 } from './types';
-import {SKIPPED_PROPERTIES} from './constants';
+import {
+  ELEMENT_ATTRIBUTE_WHITELIST,
+  PARENT_ELEMENT_STYLE_ATTRIBUTES,
+  SKIPPED_PROPERTIES
+} from './constants';
 
 export function isTagName<T extends SupportedElementTagName>(
   el: SupportedElement,
@@ -30,32 +34,38 @@ export function getStyleSnapshot(style: CSSStyleDeclaration): StyleSnapshot {
   return snapshot;
 }
 
-export function getStyleDiff(
-  currentStyle: StyleSnapshot,
-  defaultStyle: StyleSnapshot
+export function filterStyleWith(
+  style: StyleSnapshot,
+  filterFn: (key: string) => boolean
 ): StyleSnapshot {
-  const diff = Object.create({});
-
-  for (const key in currentStyle) {
-    // Note: I'm not 100% certain if this is required or not.
-    if (!currentStyle.hasOwnProperty(key)) {
-      continue;
-    }
-
-    // If the keys match, don't add to the diff.
-    if (currentStyle[key] === defaultStyle[key]) {
-      continue;
-    }
-
+  return Object.keys(style).reduce((outputStyle, key) => {
     const shouldSkip = SKIPPED_PROPERTIES.some(skipped => key.startsWith(skipped));
     if (shouldSkip) {
-      continue;
+      return outputStyle;
     }
 
-    diff[key] = currentStyle[key];
+    if (filterFn(key)) {
+      outputStyle[key] = style[key];
+    }
+
+    return outputStyle;
+  }, {} as StyleSnapshot);
+}
+
+export function getChildStyle(style: StyleSnapshot) {
+  function filterChildAttributes(key: string) {
+    return ELEMENT_ATTRIBUTE_WHITELIST.some(property => property === key.toLowerCase());
   }
 
-  return diff;
+  return filterStyleWith(style, filterChildAttributes);
+}
+
+export function getParentStyle(style: StyleSnapshot) {
+  function filterChildAttributes(key: string) {
+    return PARENT_ELEMENT_STYLE_ATTRIBUTES.some(property => property === key.toLowerCase());
+  }
+
+  return filterStyleWith(style, filterChildAttributes);
 }
 
 export function generateCssText(style: StyleSnapshot): string {

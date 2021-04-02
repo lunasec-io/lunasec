@@ -1,24 +1,18 @@
 import React from 'react';
-import logo from './logo.svg';
+import {SecureForm, SecureInput} from 'secure-frame-sdk';
+// import logo from './logo.svg';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="app-form">
+        <SecureForm onSubmit={(formData) => console.log('react form data', formData)}>
+          <SecureInput name="foo" />
+          <SecureInput name="bar" token="not a real token" />
+          <input type="submit" />
+        </SecureForm>
+      </div>
     </div>
   );
 }

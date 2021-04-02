@@ -1,24 +1,14 @@
 import React from 'react';
 
-function App() {
+export function SecureComponent() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src="" className="App-logo" alt="logo" />
+        <img src="https://webstockreview.net/images/lock-clipart-lock-icon-1.png" className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          This is a component from the Secure Frame SDK
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
 }
-
-export default App;

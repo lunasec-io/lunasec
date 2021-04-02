@@ -1,9 +1,11 @@
 html
   head
-    link(href="/public/main.css", rel="stylesheet", nonce=nonce)
+    link(href="/public/main.css", rel="stylesheet", nonce=csp_nonce)
     title Secure Frame
+    style(nonce=csp_nonce) .secure-input {#{input_style}}
   body
     h1.d-none Secure Frame
-    input(id="secure-input", data-nonce=request_nonce, data-origin=request_origin, value=input_value)
-    script(src="/public/main.js", nonce=nonce)
+    span.loading-text Loading...
+    input(class="secure-input d-none", data-nonce=request_nonce, data-origin=request_origin, value=input_value)
+    script(src="/public/js/main-dev.js", nonce=csp_nonce)
 

@@ -27,6 +27,7 @@
     "diff-integration-tests": "mkdir -p diff && rm -rf diff/test && cp -r test diff/test && rm -rf diff/test/test-*/.git && cd diff && git init --quiet && git add -A && git commit --quiet --no-verify --allow-empty -m 'WIP' && echo '\\n\\nCommitted most recent integration test output in the \"diff\" directory. Review the changes with \"cd diff && git diff HEAD\" or your preferred git diff viewer.'",
     "watch:build": "run-p watch:build-*",
     "watch:build-tsc": "tsc -p tsconfig.json -w",
+    "watch:build-module": "tsc -p tsconfig.module.json -w",
     "watch:build-static": "WEBPACK_WATCH=true run-p build:static*",
     "watch:test": "nyc --silent ava --watch",
     "cov": "run-s build test:unit cov:html cov:lcov && open-cli coverage/index.html",

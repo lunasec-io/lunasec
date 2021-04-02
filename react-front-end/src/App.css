@@ -1,5 +1,11 @@
 .App {
+  display: flex;
+  justify-content: center;
   text-align: center;
+}
+
+.app-form {
+  max-width: 600px;
 }
 
 .App-logo {
@@ -14,7 +20,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #999;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,4 +41,14 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+input {
+  border: solid 4px;
+}
+
+input[type=text] {
+  height: 40px;
+  width: 300px;
+  margin-bottom: 4px;
 }

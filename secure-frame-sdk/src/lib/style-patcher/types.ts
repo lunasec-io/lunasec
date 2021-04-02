@@ -14,8 +14,6 @@ export type PesudoStyleInfoMap = {
 
 export interface ElementStyleInfo {
   style: StyleSnapshot;
-  width: string;
-  height: string;
   pseudo: PesudoStyleInfoMap;
 }
 
@@ -23,4 +21,11 @@ export interface PseudoElementStyleInfo {
   style: StyleSnapshot;
 }
 
-export type StyleInfo = ElementStyleInfo | PseudoElementStyleInfo | null;
+export type StyleInfo = ElementStyleInfo | null;
+
+export interface ReadElementStyle {
+  parentStyle: StyleSnapshot,
+  width: string;
+  height: string;
+  childStyle: ElementStyleInfo
+}

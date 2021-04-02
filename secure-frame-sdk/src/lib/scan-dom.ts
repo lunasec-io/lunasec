@@ -1,4 +1,5 @@
 import {getStyleInfo} from './style-patcher/read';
+import {generateSecureNonce} from './utils/random';
 
 export function queryDomForForms(domInstance: Document) {
   const secureFrameInputNodes = domInstance.querySelectorAll('form.secure-frame-form input');
@@ -40,12 +41,6 @@ function validateElementAsSecureTarget(record: MutationRecord) {
 interface SecureFormInputConfig {
   formElement: Element,
   children: HTMLInputElement[]
-}
-
-export function generateSecureNonce() {
-  const r = crypto.getRandomValues(new Uint32Array(4));
-
-  return Array.from(r).map(i => i.toString(16)).join('');
 }
 
 export function setupElementWithSecureFrame(domInstance: Document, frameUrl: string, input: HTMLInputElement) {

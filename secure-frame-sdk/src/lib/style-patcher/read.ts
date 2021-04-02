@@ -1,24 +1,23 @@
-// Code originally spliced from: https://github.com/Justineo/clone-element
-
 import {
-  PesudoStyleInfoMap,
-  StyleInfo,
+  PesudoStyleInfoMap, ReadElementStyle,
   SupportedElement
 } from './types';
-import {
-  NO_GENERATE_CONTENT_ELEMENTS,
-  PLACEHOLDER_ELEMENTS,
-  SUPPORTED_PSEUDO_SELECTORS
-} from './constants';
-import {getStyleSnapshot, isTagName} from './dom-utils';
+// import {
+//   NO_GENERATE_CONTENT_ELEMENTS,
+//   PLACEHOLDER_ELEMENTS,
+//   // SUPPORTED_PSEUDO_SELECTORS
+// } from './constants';
+import {getChildStyle, getParentStyle, getStyleSnapshot} from './dom-utils';
 
 export function getStyleInfo(
   source: SupportedElement,
   pseudoSelector?: string
-): StyleInfo {
+): ReadElementStyle | null {
   const computed = window.getComputedStyle(source, pseudoSelector);
-  const style = getStyleSnapshot(computed);
-  const { display, content } = style;
+  const allStyleInfo = getStyleSnapshot(computed);
+  const framedInputStyle = getChildStyle(allStyleInfo);
+  const parentStyle = getParentStyle(allStyleInfo);
+  const { display, content } = framedInputStyle;
 
   if (display === "none" || (pseudoSelector && content === "none")) {
     return null;
@@ -33,35 +32,41 @@ export function getStyleInfo(
 
     const allPseudoStyleInfo: PesudoStyleInfoMap = Object.create(null);
 
-    for (const selector of SUPPORTED_PSEUDO_SELECTORS) {
-      const pseudoStyleInfo = getStyleInfo(source, selector);
-
-      if (pseudoStyleInfo) {
-        allPseudoStyleInfo[selector] = pseudoStyleInfo;
-      }
-    }
+    // TODO: Figure out implementing pseudo selectors for cloned element
+    // for (const selector of SUPPORTED_PSEUDO_SELECTORS) {
+    //   const pseudoStyleInfo = getStyleInfo(source, selector);
+    //
+    //   if (pseudoStyleInfo) {
+    //     allPseudoStyleInfo[selector] = pseudoStyleInfo;
+    //   }
+    // }
 
     return {
-      style,
+      parentStyle: parentStyle,
       width: `${width}px`,
       height: `${height}px`,
-      pseudo: allPseudoStyleInfo,
+      childStyle: {
+        style: framedInputStyle,
+        pseudo: allPseudoStyleInfo,
+      }
     };
   }
 
-  // pseudo elements
-  if (
-    content === "none" ||
-    (pseudoSelector === "::marker" && display !== "list-item") ||
-    ((pseudoSelector === "::before" || pseudoSelector === "::after") &&
-      isTagName(source as SupportedElement, NO_GENERATE_CONTENT_ELEMENTS)) ||
-    (pseudoSelector === "::placeholder" &&
-      !isTagName(source as SupportedElement, PLACEHOLDER_ELEMENTS))
-  ) {
-    return null;
-  }
+  throw new Error('Pseudo selector support is broken. Fix it if you want it');
 
-  return {
-    style,
-  };
+  // pseudo elements
+  // if (
+  //   content === "none" ||
+  //   (pseudoSelector === "::marker" && display !== "list-item") ||
+  //   ((pseudoSelector === "::before" || pseudoSelector === "::after") &&
+  //     isTagName(source as SupportedElement, NO_GENERATE_CONTENT_ELEMENTS)) ||
+  //   (pseudoSelector === "::placeholder" &&
+  //     !isTagName(source as SupportedElement, PLACEHOLDER_ELEMENTS))
+  // ) {
+  //   return null;
+  // }
+  //
+  // return {
+  //   style,
+  // };
 }

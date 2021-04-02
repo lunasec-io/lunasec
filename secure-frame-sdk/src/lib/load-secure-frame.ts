@@ -1,56 +1,9 @@
 /* eslint-disable functional/no-throw-statement, @typescript-eslint/ban-ts-comment, functional/immutable-data */
 
 import {createDomWatcher} from './scan-dom';
-import {patchStyle} from './style-patcher/write';
+import {addMessageListener} from './rpc/listener';
+import {SECURE_FRAME_URL} from './constants';
 // import {getStyleInfo} from './style-hacks';
-
-// @ts-ignore
-const SECURE_FRAME_URL = __FRAME_HOST_URL__;
-
-export function addMessageListener(window: Window, domInstance: Document) {
-  window.addEventListener("message", (event) => {
-    console.log('parent message received:', event);
-
-    if ((event.origin + '/') !== SECURE_FRAME_URL) {
-      return;
-    }
-
-    if (!event.source) {
-      console.error('invalid source of event');
-      return;
-    }
-
-    const secureContainer = domInstance.querySelector(`[data-secure-frame-nonce="${event.data}"]`);
-
-    if (!secureContainer) {
-      console.error('Unable to locate secure container with nonce:', event.data);
-      return;
-    }
-
-    // @ts-ignore
-    const inputElementStyle = window.SECURE_FORM_ORIGINAL_ELEMENTS[event.data]; // secureContainer.querySelector('input') as (HTMLElement | undefined);
-
-    if (!inputElementStyle) {
-      console.error('Unable to find child input element for container with nonce:', event.data);
-      return;
-    }
-
-    const secureIframe = secureContainer.querySelector('iframe');
-
-    if (!secureIframe) {
-      console.error('Missing iframe in secure container');
-      return;
-    }
-
-    // const styleInfo = getStyleInfo(inputElement);
-
-    patchStyle(domInstance, secureIframe, inputElementStyle);
-
-    // @ts-ignore
-    event.source.postMessage(inputElementStyle, event.origin)
-
-  }, false);
-}
 
 export function loadSecureFrame() {
   if (typeof window === 'undefined' || typeof document === 'undefined') {

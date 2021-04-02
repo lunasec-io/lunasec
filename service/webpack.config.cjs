@@ -10,25 +10,8 @@ const outputFile = isProduction ? 'main.js' : 'main-dev.js';
 
 const runWatch = process.env.WEBPACK_WATCH !== undefined;
 
-const developmentConfig = {
-  plugins: [
-    new webpack.DefinePlugin({
-      __FRAME_HOST_URL__: '"http://localhost:5002/"'
-    })
-  ]
-}
-
-const productionConfig = {
-  plugins: [
-    new webpack.DefinePlugin({
-      // TODO: Make this not dev
-      __FRAME_HOST_URL__: '"http://localhost:5002/fake-url"'
-    })
-  ]
-}
-
 module.exports = {
-  context: path.resolve(__dirname, 'src'),
+  context: path.resolve(__dirname, 'src/browser'),
   devtool: 'inline-source-map',
   entry: './main.ts',
   mode: buildMode,
@@ -36,6 +19,7 @@ module.exports = {
   watchOptions: {
     ignored: [
       path.resolve(__dirname, 'build/**'),
+      path.resolve(__dirname, 'public/**'),
       path.resolve(__dirname, 'node_modules/**')
     ]
   },
@@ -48,10 +32,9 @@ module.exports = {
   },
   output: {
     filename: outputFile,
-    path: path.resolve(__dirname, 'build/static/')
+    path: path.resolve(__dirname, 'public/js/')
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js']
-  },
-  ...(isProduction ? productionConfig : developmentConfig)
+  }
 };

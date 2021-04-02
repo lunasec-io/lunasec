@@ -10,6 +10,12 @@ windows:
       - cd service
       - node ./node_modules/.bin/nodemon --signal SIGHUP index.js
     - shell_command:
+      - cd service
+      - npm run watch:browser 
+    - shell_command:
       - cd secure-frame-sdk
       - npm run watch:build
+    - shell_command:
+      - cd react-front-end
+      - npm run start
 
