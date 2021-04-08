@@ -22,7 +22,7 @@ export interface OutboundFrameMessageMap {
 }
 
 export interface InboundFrameMessageMap {
-  ReceiveCommittedToken: ReceiveCommittedTokenMessage,
+  ReceiveCommittedToken: ReceiveCommittedTokenMessage
 }
 
 export type OutboundMessageLookupType = {
