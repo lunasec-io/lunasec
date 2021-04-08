@@ -129,7 +129,7 @@ export class SecureResolver {
       };
     }
 
-    let body = JSON.stringify({
+    const body = JSON.stringify({
       function_name: functionName,
       block_input: args
     });
