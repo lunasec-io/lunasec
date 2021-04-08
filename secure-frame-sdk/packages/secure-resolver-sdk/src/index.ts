@@ -62,7 +62,8 @@ export class SecureResolver {
     }
 
     if (this.config?.functionsPath) {
-      this.functionConfig = fs.readFileSync(this.config.functionsPath, 'utf8');
+      // TODO: Extract into a function that processes the schema of this or throws reasonable error messages.
+      this.functionConfig = JSON.parse(fs.readFileSync(this.config.functionsPath, 'utf8'));
     }
 
     if (this.config?.functionsConfig) {
@@ -85,12 +86,7 @@ export class SecureResolver {
   }
 
   async deploy(containerUri: string) {
-    const data = ;
-
-    // TODO: Extract into a function that processes the schema of this or throws reasonable error messages.
-    const functionConfig = JSON.parse(data);
-
-    const functions = functionConfig['functions'];
+    const functions = this.functionConfig['functions'];
 
     const response = await this.apiClient<'build'>({
       action: 'build',
