@@ -1,3 +1,8 @@
+/**
+ * When adding a new API request, start by adding it here.
+ * Ideally, the Typescript should fail to compile when you do.
+ * The next step is to add Request/Response types and then "map" them to each other.
+ */
 export enum SecureResolverAction {
   build = "build",
   listDeployments = "list_deployments",
@@ -6,9 +11,15 @@ export enum SecureResolverAction {
   url = "url"
 }
 
+/// Common type information for request schemas ///
 export type ValidStages = "dev" | "prod";
 
 export type ValidApiRequestTypes = (keyof typeof SecureResolverAction | keyof SecureResolverActionResponseMessageMap | keyof SecureResolverActionMessageMap);
+
+/// Generic Base Types ///
+export interface BaseSecureResolverAction<T extends keyof typeof SecureResolverAction> {
+  action: T
+}
 
 export interface SecureResolverApiResponse<T> {
   success: boolean,
@@ -16,10 +27,7 @@ export interface SecureResolverApiResponse<T> {
   result?: T
 }
 
-export interface BaseSecureResolverAction<T extends keyof typeof SecureResolverAction> {
-  action: T
-}
-
+/// API Request Schemas ///
 export interface BuildActionFunctionConfig {
   import_path: string;
   function_name: string;
@@ -61,6 +69,7 @@ export interface GetDeploymentUrlAction extends BaseSecureResolverAction<"url"> 
   };
 }
 
+/// API Response Schemas ///
 export interface GetResolverUrlResponse {
   url: string;
 }
@@ -77,6 +86,7 @@ export interface ListFunctionsResponse {
 export interface RemoveResolverResponse {
 }
 
+/// Request Type Lookup ///
 export type SecureResolverActionLookup = {
   [key in keyof typeof SecureResolverAction]: BaseSecureResolverAction<key>
 }
@@ -89,14 +99,15 @@ export interface SecureResolverActionMessageMap extends SecureResolverActionLook
   url: GetDeploymentUrlAction,
 }
 
+/// Response Type Lookup ///
+export type SecureResolverResponseLookup = {
+  [key in keyof typeof SecureResolverAction]: SecureResolverActionResponseMessageMap[key]
+}
+
 export interface SecureResolverActionResponseMessageMap extends SecureResolverResponseLookup {
   build: BuildResolverResponse,
   listDeployments: ListDeploymentsResponse,
   listFunctions: ListFunctionsResponse,
   remove: RemoveResolverResponse,
   url: GetResolverUrlResponse,
-}
-
-export type SecureResolverResponseLookup = {
-  [key in keyof typeof SecureResolverAction]: SecureResolverActionResponseMessageMap[key]
 }
