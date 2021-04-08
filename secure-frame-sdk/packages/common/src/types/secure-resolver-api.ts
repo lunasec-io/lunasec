@@ -66,7 +66,6 @@ export interface GetResolverUrlResponse {
 }
 
 export interface BuildResolverResponse {
-  asdf: boolean;
 }
 
 export interface ListDeploymentsResponse {
@@ -76,7 +75,6 @@ export interface ListFunctionsResponse {
 }
 
 export interface RemoveResolverResponse {
-  whoah: boolean;
 }
 
 export type SecureResolverActionLookup = {
