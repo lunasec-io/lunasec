@@ -17,17 +17,12 @@ export interface ReceiveCommittedTokenMessage {
   token: string;
 }
 
-export interface SomeOtherMessage {
-  baz: string;
-}
-
 export interface OutboundFrameMessageMap {
   CommitToken: CommitTokenMessage,
 }
 
 export interface InboundFrameMessageMap {
-  ReceiveCommittedToken: ReceiveCommittedTokenMessage,
-  AnotherMessage: SomeOtherMessage
+  ReceiveCommittedToken: ReceiveCommittedTokenMessage
 }
 
 export type OutboundMessageLookupType = {

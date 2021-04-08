@@ -13,7 +13,8 @@ interface SecureResolverSdkConfig {
   deploymentIDEnvVar: string,
   app_dir: string,
   language: string,
-  functions_path: string,
+  functionsPath?: string,
+  functionsConfig?: {},
   endpoints: {
     secureResolver: string,
   }
@@ -27,7 +28,7 @@ const defaultConfig: SecureResolverSdkConfig = {
   deploymentIDEnvVar: 'REFINERY_DEPLOYMENT_ID',
   app_dir: '/app',
   language: 'Node.js 10 Temporal',
-  functions_path: 'functions.json',
+  functionsPath: 'functions.json',
   endpoints: {
     secureResolver: '/api/v1/deployments/secure_resolver'
   }
@@ -42,13 +43,32 @@ export interface FunctionInvocationResult {
 
 export class SecureResolver {
   readonly config!: SecureResolverSdkConfig;
+
+  // TODO: Add a type schema for this.
+  readonly functionConfig!: any;
+
   readonly refineryHeaders!: Record<string, string>;
   readonly containerHeaders!: Record<string, string>;
 
   readonly apiClient!: GenericApiClient;
 
   constructor(config?: SecureResolverSdkConfig) {
-    this.config = Object.assign({}, defaultConfig, config);
+
+    // Deep clone the config to prevent nested mutation.
+    this.config = JSON.parse(JSON.stringify(Object.assign({}, defaultConfig, config)));
+
+    if (!this.config?.functionsConfig && !this.config?.functionsPath) {
+      throw new Error('Unable to create Secure Resolver SDK with missing function configuration');
+    }
+
+    if (this.config?.functionsPath) {
+      this.functionConfig = fs.readFileSync(this.config.functionsPath, 'utf8');
+    }
+
+    if (this.config?.functionsConfig) {
+      // This will override any values read from the file, just in case.
+      this.functionConfig = Object.assign({}, this.functionConfig, this.config.functionsConfig)
+    }
 
     this.refineryHeaders = {
       [this.config.refinerySecretHeader]: this.config.refinerySecret
@@ -65,7 +85,7 @@ export class SecureResolver {
   }
 
   async deploy(containerUri: string) {
-    const data = await fs.promises.readFile(this.config.functions_path, 'utf8');
+    const data = ;
 
     // TODO: Extract into a function that processes the schema of this or throws reasonable error messages.
     const functionConfig = JSON.parse(data);
