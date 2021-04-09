@@ -4,7 +4,7 @@ import {
   SecureResolverActionResponseMessageMap,
   SecureResolverApiResponse,
   ValidApiRequestTypes
-} from '@refinery-common/types/secure-resolver-api';
+} from '@esluna/common';
 import {
   FailedApiCallResultMetadata,
   makeRequest

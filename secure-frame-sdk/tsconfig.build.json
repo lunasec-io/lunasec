@@ -1,0 +1,13 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/browser-sdk" },
+    { "path": "packages/cli" },
+    { "path": "packages/common" },
+    { "path": "packages/node-sdk/tsconfig.module.json" },
+    { "path": "packages/browser-sdk/tsconfig.module.json" },
+    { "path": "packages/cli/tsconfig.module.json" },
+    { "path": "packages/common/tsconfig.module.json" },
+    { "path": "packages/node-sdk/tsconfig.module.json" }
+  ]
+}

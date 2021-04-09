@@ -5,5 +5,13 @@ node_modules
 test
 src/**.js
 coverage
-*.log
+lib-cov
 yarn.lock
+
+### Node ###
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
