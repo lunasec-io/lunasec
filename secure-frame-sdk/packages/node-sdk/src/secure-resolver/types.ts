@@ -14,7 +14,7 @@ export enum SecureResolverAction {
 /// Common type information for request schemas ///
 export type ValidStages = "dev" | "prod";
 
-export type ValidApiRequestTypes = (keyof typeof SecureResolverAction | keyof SecureResolverActionResponseMessageMap | keyof SecureResolverActionMessageMap);
+export type ValidSecureResolverApiRequestTypes = (keyof typeof SecureResolverAction | keyof SecureResolverActionResponseMessageMap | keyof SecureResolverActionMessageMap);
 
 /// Generic Base Types ///
 export interface BaseSecureResolverAction<T extends keyof typeof SecureResolverAction> {

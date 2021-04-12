@@ -25,8 +25,8 @@ export interface FailedJsonDeserializationResult extends FailedApiCallResultMeta
   rawData: string
 }
 
-export function makeRequest<T>(path: string, params: http.ClientRequestArgs, body?: string): Promise<T> {
-  const requestUri = new URI(path, REFINERY_API_SERVER);
+export function makeRequest<T>(host: string, path: string, params: http.ClientRequestArgs, body?: string): Promise<T> {
+  const requestUri = new URI(path, host);
 
   const requestModule = getRequestModule(requestUri.protocol);
 
@@ -70,3 +70,4 @@ export function makeRequest<T>(path: string, params: http.ClientRequestArgs, bod
     req.end();
   });
 }
+
