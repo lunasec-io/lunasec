@@ -1,5 +1,5 @@
 import {FrameMessage, InboundFrameMessageMap, patchStyle, StyleInfo, UnknownFrameMessage} from 'secure-frame-sdk';
-import {safeParseJson} from '../utils/json';
+import {safeParseJson} from '../common/utils/json';
 
 function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, nonce: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> | null {
 

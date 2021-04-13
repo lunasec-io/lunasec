@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build:browser": "webpack --config webpack.config.cjs",
+    "build:server": "tsc -p tsconfig.server.json",
     "watch:browser": "WEBPACK_WATCH=true npm run build:browser",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
