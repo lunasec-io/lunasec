@@ -14,17 +14,21 @@ export enum SecureResolverAction {
 /// Common type information for request schemas ///
 export type ValidStages = "dev" | "prod";
 
-export type ValidApiRequestTypes = (keyof typeof SecureResolverAction | keyof SecureResolverActionResponseMessageMap | keyof SecureResolverActionMessageMap);
+export type ValidSecureResolverApiRequestTypes = (keyof typeof SecureResolverAction | keyof SecureResolverActionResponseMessageMap | keyof SecureResolverActionMessageMap);
 
 /// Generic Base Types ///
 export interface BaseSecureResolverAction<T extends keyof typeof SecureResolverAction> {
   action: T
 }
 
-export interface SecureResolverApiResponse<T> {
-  success: boolean,
-  msg?: string,
-  result?: T
+export interface SecureResolverApiSuccessResponse<T> {
+  success: true,
+  result: T
+}
+
+export interface SecureResolverApiFailResponse {
+  success: false,
+  msg: string,
 }
 
 /// API Request Schemas ///

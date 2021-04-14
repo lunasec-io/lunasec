@@ -1,9 +1,7 @@
 import fs from 'fs';
-import {
-  makeRequest
-} from './http';
 import {URL as URI} from 'url';
 import {makeGenericApiClient, GenericApiClient} from './api-client';
+import {makeRequest} from '@esluna/common';
 
 interface SecureResolverSdkConfig {
   refinerySecret: string,
@@ -117,10 +115,10 @@ export class SecureResolver {
 
     const urlResponse = await this.getFunctionUrl(deploymentId);
 
-    if (!urlResponse.success || urlResponse.responseData === undefined) {
+    if (!urlResponse.success) {
       return {
         success: false,
-        error: urlResponse.errorMessage?.msg,
+        error: urlResponse.error.message,
         completeError: urlResponse
       };
     }
@@ -130,9 +128,9 @@ export class SecureResolver {
       block_input: args
     });
 
-    const resolverUrl = new URI(urlResponse.responseData.url)
+    const resolverUrl = new URI(urlResponse.data.url)
 
-    const response = await makeRequest<{error?: string, result?: object}>(resolverUrl.pathname, {
+    const response = await makeRequest<{error?: string, result?: object}>(resolverUrl.host, resolverUrl.pathname, {
       ...resolverUrl,
       method: 'POST',
       headers: this.containerHeaders
