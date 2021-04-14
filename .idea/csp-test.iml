@@ -7,6 +7,7 @@
       <excludeFolder url="file://$MODULE_DIR$/secure-frame-sdk/packages/common/build" />
       <excludeFolder url="file://$MODULE_DIR$/secure-frame-sdk/packages/node-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/secure-frame-sdk/packages/cli/build" />
+      <excludeFolder url="file://$MODULE_DIR$/secure-frame-sdk/packages/tokenizer-sdk/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

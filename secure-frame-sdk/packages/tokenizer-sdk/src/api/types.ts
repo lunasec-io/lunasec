@@ -47,31 +47,37 @@ export interface GetTokenRequest extends BaseTokenizerRequest {
 }
 
 export interface SetTokenRequest extends BaseTokenizerRequest {
-  /**
-   * Needs to be a UUID.
-   */
-  tokenId: string;
   value: string;
 }
 
 
 /// API Response Schemas ///
 export interface GetMetadataResponse {
-  value: string | undefined;
+  success: boolean;
+  data: {
+    value: string | undefined;
+  }
 }
 
 export interface SetMetadataResponse {
+  success: boolean;
 }
 
 export interface GetTokenResponse {
-  downloadUrl: string;
-  headers: Record<string, string>;
+  success: boolean;
+  data: {
+    downloadUrl: string;
+    headers: Record<string, string>;
+  }
 }
 
 export interface SetTokenResponse {
-  tokenId: string;
-  uploadUrl: string;
-  headers: Record<string, string>;
+  success: boolean;
+  data: {
+    tokenId: string;
+    uploadUrl: string;
+    headers: Record<string, string>;
+  }
 }
 
 /// Request Type Lookup ///

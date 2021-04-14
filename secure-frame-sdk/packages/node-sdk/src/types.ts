@@ -21,10 +21,14 @@ export interface BaseSecureResolverAction<T extends keyof typeof SecureResolverA
   action: T
 }
 
-export interface SecureResolverApiResponse<T> {
-  success: boolean,
-  msg?: string,
-  result?: T
+export interface SecureResolverApiSuccessResponse<T> {
+  success: true,
+  result: T
+}
+
+export interface SecureResolverApiFailResponse {
+  success: false,
+  msg: string,
 }
 
 /// API Request Schemas ///

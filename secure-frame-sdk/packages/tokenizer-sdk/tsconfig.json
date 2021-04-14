@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "outDir": "build/main",
+    "rootDir": "src",
+    "lib": ["es2017"],
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules/**"],
+  "references": [{ "path": "../common" }]
+}

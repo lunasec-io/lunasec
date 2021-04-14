@@ -3,19 +3,25 @@ import {
   TokenizerRequestMessageMap, TokenizerRequestResponseMessageMap,
   ValidTokenizerApiRequestTypes
 } from './types';
-import {FailedApiCallResultMetadata, makeRequest} from '../lib/http';
-import {getRequestBody} from '../lib/api';
+import {
+  getRequestBody,
+  makeRequest
+} from '@esluna/common';
 
-export interface WrappedTokenizerApiResponse<T> {
-  success: boolean,
-  errorMessage?: FailedApiCallResultMetadata,
-  responseData?: T
+export interface TokenizerSuccessApiResponse<T> {
+  success: true,
+  data: T
+}
+
+export interface TokenizerFailApiResponse {
+  success: false,
+  error: Error
 }
 
 export async function makeSecureApiRequest<
   T extends ValidTokenizerApiRequestTypes,
   TRequest extends TokenizerRequestMessageMap[T]
-  >(request: TRequest, host: string, path: string, params: http.ClientRequestArgs): Promise<WrappedTokenizerApiResponse<TokenizerRequestResponseMessageMap[T]>> {
+  >(request: TRequest, host: string, path: string, params: http.ClientRequestArgs): Promise<TokenizerSuccessApiResponse<TokenizerRequestResponseMessageMap[T]> | TokenizerFailApiResponse> {
 
   try {
     // TODO: Add runtime JSON validation for response
@@ -24,26 +30,23 @@ export async function makeSecureApiRequest<
     if (!response) {
       return {
         success: false,
-        errorMessage: {
-          success: false,
-          msg: response !== undefined ? response : 'Malformed response from API with missing error message'
-        }
+        error: new Error(response !== undefined ? response : 'Malformed response from API with missing error message')
       };
     }
 
     return {
       success: true,
-      responseData: response
+      data: response
     };
   } catch (e) {
     return {
       success: false,
-      errorMessage: e
+      error: e
     }
   }
 }
 
-export type GenericApiClient = <T extends ValidTokenizerApiRequestTypes>(request: TokenizerRequestMessageMap[T], requestOverrides?: http.ClientRequestArgs) => Promise<WrappedTokenizerApiResponse<TokenizerRequestResponseMessageMap[T]>>;
+export type GenericApiClient = <T extends ValidTokenizerApiRequestTypes>(request: TokenizerRequestMessageMap[T], requestOverrides?: http.ClientRequestArgs) => Promise<TokenizerSuccessApiResponse<TokenizerRequestResponseMessageMap[T]> | TokenizerFailApiResponse>;
 
 export function makeGenericApiClient(host: string, path: string, requestBaseConfig: http.ClientRequestArgs): GenericApiClient {
   return async <T extends ValidTokenizerApiRequestTypes>(request: TokenizerRequestMessageMap[T], requestOverrides?: http.ClientRequestArgs) => {
@@ -53,7 +56,7 @@ export function makeGenericApiClient(host: string, path: string, requestBaseConf
   };
 }
 
-export type SpecificApiClient<T extends ValidTokenizerApiRequestTypes> = (request: TokenizerRequestMessageMap[T], requestOverrides?: http.ClientRequestArgs) => Promise<WrappedTokenizerApiResponse<TokenizerRequestResponseMessageMap[T]>>;
+export type SpecificApiClient<T extends ValidTokenizerApiRequestTypes> = (request: TokenizerRequestMessageMap[T], requestOverrides?: http.ClientRequestArgs) => Promise<TokenizerSuccessApiResponse<TokenizerRequestResponseMessageMap[T]> | TokenizerFailApiResponse>;
 
 export function makeSpecificApiClient<T extends ValidTokenizerApiRequestTypes>(host: string, path: string, requestBaseConfig: http.ClientRequestArgs) {
   const genericApiClient = makeGenericApiClient(host, path, requestBaseConfig);
