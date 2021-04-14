@@ -5,6 +5,7 @@ import {
   FakeTokenizerServiceConfig
 } from './test-utils/fake-tokenizer-service';
 import {
+  TEST_METADATA,
   TEST_PLAINTEXT_VALUE,
   TEST_S3_HEADERS, TEST_TOKEN,
   TEST_TOKENIZER_SECRET
@@ -99,7 +100,6 @@ tests.push({
       const response = await tokenizer.detokenize(TEST_TOKEN);
 
       if (!response.success) {
-        console.log(response);
         test.fail('response indicates failure');
         test.end();
         return;
@@ -124,6 +124,67 @@ tests.push({
     };
   }
 });
+
+tests.push({
+  name: 'Test adding metadata to a value',
+  fn: async (test, tokenizer) =>{
+    try {
+      const response = await tokenizer.setMetadata(TEST_TOKEN, TEST_METADATA);
+
+      if (!response.success) {
+        test.fail('response indicates failure');
+        test.end();
+        return;
+      }
+
+      test.ok(response.success, 'response indicates success');
+      test.equal(response.tokenId, TEST_TOKEN, 'plaintext should match');
+      test.equal(response.value, TEST_METADATA, 'plaintext should match');
+    } catch (e) {
+      console.log('error', e);
+      test.fail();
+    }
+    test.end();
+  },
+  async beforeSetup(test) {
+    return {
+      tokenizerConfig: {
+        onRequestCallback: verifySecretHeader(test)
+      }
+    };
+  }
+});
+
+tests.push({
+  name: 'Test reading metadata from a token',
+  fn: async (test, tokenizer) =>{
+    try {
+      const response = await tokenizer.getMetadata(TEST_TOKEN);
+
+      if (!response.success) {
+        test.fail('response indicates failure');
+        test.end();
+        return;
+      }
+
+      test.ok(response.success, 'response indicates success');
+      test.equal(response.tokenId, TEST_TOKEN, 'plaintext should match');
+      test.equal(response.value, TEST_METADATA, 'plaintext should match');
+    } catch (e) {
+      console.log('error', e);
+      test.fail();
+    }
+    test.end();
+  },
+  async beforeSetup(test) {
+    return {
+      tokenizerConfig: {
+        onRequestCallback: verifySecretHeader(test)
+      }
+    };
+  }
+});
+
 
 tests.forEach(async t => {
   await runTokenizerTest(t);

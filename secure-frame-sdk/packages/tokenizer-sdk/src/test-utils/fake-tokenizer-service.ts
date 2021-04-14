@@ -1,11 +1,17 @@
 import express from 'express';
-import {GetTokenResponse, SetTokenResponse} from '../api/types';
 import {
+  GetMetadataResponse,
+  GetTokenResponse, SetMetadataResponse,
+  SetTokenResponse
+} from '../api/types';
+import {
+  TEST_METADATA,
   TEST_PLAINTEXT_VALUE,
   TEST_QUERY_PARAMS,
   TEST_S3_HEADERS,
   TEST_TOKEN
 } from './test-constants';
+import {CONFIG_DEFAULTS} from '../constants';
 
 export type OnResponseCallback = (req: express.Request) => Promise<Record<string, any> | void>;
 
@@ -35,7 +41,7 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
     }
   }
 
-  app.use('/tokenize', respondWithJson<SetTokenResponse>({
+  app.use(CONFIG_DEFAULTS.endpoints.setToken, respondWithJson<SetTokenResponse>({
     "success": true,
     "data": {
       "tokenId": TEST_TOKEN,
@@ -44,12 +50,22 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
     }
   }));
 
-
-  app.use('/detokenize', respondWithJson<GetTokenResponse>({
+  app.use(CONFIG_DEFAULTS.endpoints.getToken, respondWithJson<GetTokenResponse>({
     "success": true,
     "data": {
       downloadUrl: `http://localhost:${config.port}/${awsS3WritePath}${TEST_QUERY_PARAMS}`,
       headers: TEST_S3_HEADERS.GET
+    }
+  }));
+
+  app.use(CONFIG_DEFAULTS.endpoints.setMetadata, respondWithJson<SetMetadataResponse>({
+    "success": true
+  }));
+
+  app.use(CONFIG_DEFAULTS.endpoints.getMetadata, respondWithJson<GetMetadataResponse>({
+    "success": true,
+    "data": {
+      value: TEST_METADATA
     }
   }));
 

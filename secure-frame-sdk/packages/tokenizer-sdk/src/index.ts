@@ -6,6 +6,8 @@ import {downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl} from './aws';
 import {
   TokenizerClientConfig,
   TokenizerDetokenizeResponse,
+  TokenizerGetMetadataResponse,
+  TokenizerSetMetadataResponse,
   TokenizerTokenizeResponse
 } from './types';
 import {CONFIG_DEFAULTS} from './constants';
@@ -52,17 +54,41 @@ export class Tokenizer {
 
   // TODO: Evaluate adding back keygenSet and keygenGet methods
 
-  async getMetadata(tokenId: string) {
-    return await this.getMetadataClient({
+  async getMetadata(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerGetMetadataResponse> {
+    const response = await this.getMetadataClient({
       tokenId: tokenId
     });
+
+    if (!response.success) {
+      return response;
+    }
+
+    return {
+      success: true,
+      tokenId,
+      value: response.data.data.value
+    };
   }
 
-  async setMetadata(tokenId: string, metadata: string) {
-    return await this.setMetadataClient({
+  async setMetadata(tokenId: string, metadata: string): Promise<TokenizerFailApiResponse | TokenizerSetMetadataResponse> {
+    if (typeof metadata !== 'string') {
+      throw new Error('Metadata must be a string value');
+    }
+
+    const response = await this.setMetadataClient({
       tokenId,
       value: metadata
     });
+
+    if (!response.success) {
+      return response;
+    }
+
+    return {
+      success: true,
+      tokenId,
+      value: metadata
+    }
   }
 
   // TODO: Add another method that _doesn't_ take a key, so that we handle generation.

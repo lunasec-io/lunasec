@@ -55,7 +55,7 @@ export interface SetTokenRequest extends BaseTokenizerRequest {
 export interface GetMetadataResponse {
   success: boolean;
   data: {
-    value: string | undefined;
+    value: string;
   }
 }
 

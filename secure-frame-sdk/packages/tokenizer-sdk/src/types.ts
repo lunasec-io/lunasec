@@ -15,6 +15,18 @@ export interface TokenizerClientConfig {
   secret?: string
 }
 
+export interface TokenizerGetMetadataResponse {
+  success: true,
+  tokenId: string,
+  value: string
+}
+
+export interface TokenizerSetMetadataResponse {
+  success: true,
+  tokenId: string,
+  value: string
+}
+
 export interface TokenizerTokenizeResponse {
   success: true,
   tokenId: string
