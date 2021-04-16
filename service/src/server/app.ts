@@ -24,13 +24,11 @@ app.use((req, res, next) => {
     })(req, res, next);
 });
 
-app.use('/public', express.static('public'));
+app.use('/frame/public', express.static('public'));
 
 const numberRegex = /^\d+\.?\d+?(px|em|rem)$/;
 
-app.get('/', (req, res) => {
-
-
+app.get('/frame', (req, res) => {
     const referer = req.headers.referer;
     const nonce = req.query.n;
     const width = req.query.w;
@@ -38,31 +36,35 @@ app.get('/', (req, res) => {
 
     // TODO: Return errors as HTML?
     if (!referer) {
-        return res.status(400).json({
+        res.status(400).json({
             error: true,
             message: 'Missing origin for request'
         });
+        return;
     }
 
     if (!nonce) {
-        return res.status(400).json({
+        res.status(400).json({
             error: true,
             message: 'Missing unique id for request'
         });
+        return;
     }
 
-    if (width === undefined || !numberRegex.test(width)) {
-        return res.status(400).json({
+    if (width === undefined || typeof width !== 'string' || !numberRegex.test(width)) {
+        res.status(400).json({
             error: true,
             message: 'Invalid frame width for request'
         });
+        return;
     }
 
-    if (height === undefined || !numberRegex.test(height)) {
-        return res.status(400).json({
+    if (height === undefined || typeof height !== 'string' || !numberRegex.test(height)) {
+        res.status(400).json({
             error: true,
             message: 'Invalid frame height for request'
         });
+        return;
     }
 
     res.locals.request_origin = referer;
@@ -76,4 +78,4 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-module.exports = app;
+export default app;
