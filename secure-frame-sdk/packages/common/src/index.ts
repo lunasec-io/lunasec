@@ -1,2 +1,3 @@
 
-export * from './types/secure-resolver-api';
+export * from './lib/http';
+export * from './lib/api';
