@@ -1,1 +1,0 @@
-/home/free/code/temp/csp-test/secure-frame-sdk/build/static/main-dev.js
