@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../build",
+    "rootDir": "src",
+
+    "module": "commonjs",
+
+    "lib": ["es2017"],
+    "types": [],
+    "typeRoots": ["node_modules/@types", "src/types"],
+    "tsBuildInfoFile": "./buildcache/server"
+  },
+  "files": [
+    "src/main.ts"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ],
+  "references": [{ "path": "../common" }],
+  "compileOnSave": true
+}

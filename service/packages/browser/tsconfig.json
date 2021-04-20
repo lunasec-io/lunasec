@@ -1,7 +1,7 @@
 {
-  "extends": "./tsconfig.base.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "public/js",
+    "outDir": "../../public/js",
     "rootDir": "src",
     "jsx": "react",
 
@@ -12,9 +12,18 @@
     "pretty": true /* Stylize errors and messages using color and context. */,
 
     "lib": ["es2017", "dom"],
-    "typeRoots": ["node_modules/@types", "src/types"]
+    "typeRoots": ["node_modules/@types", "src/types"],
+    "tsBuildInfoFile": "./buildcache/browser"
   },
-  "files": ["src/browser/main.ts"],
-  "include": ["src/browser/**/*.ts", "src/browser/**/*.tsx","src/common/**/*.ts", "src/common/**/*.tsx"],
-  "compileOnSave": false
+  "files": [
+    "src/main.ts"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+  ],
+  "references": [
+    { "path": "../common" },
+    { "path": "../../../secure-frame-sdk/packages/browser-sdk"}],
+  "compileOnSave": true
 }

@@ -1,5 +1,11 @@
-import {FrameMessage, InboundFrameMessageMap, patchStyle, StyleInfo, UnknownFrameMessage} from '@esluna/browser-sdk';
-import {safeParseJson} from '../common/utils/json';
+import {safeParseJson} from '../../common/src';
+import {
+  FrameMessage,
+  InboundFrameMessageMap,
+  patchStyle,
+  StyleInfo,
+  UnknownFrameMessage
+} from '../../../../secure-frame-sdk/packages/browser-sdk/src';
 
 function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, nonce: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> | null {
 

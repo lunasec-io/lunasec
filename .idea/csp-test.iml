@@ -9,6 +9,7 @@
       <excludeFolder url="file://$MODULE_DIR$/secure-frame-sdk/packages/cli/build" />
       <excludeFolder url="file://$MODULE_DIR$/secure-frame-sdk/packages/tokenizer-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/service/build" />
+      <excludeFolder url="file://$MODULE_DIR$/service/public" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

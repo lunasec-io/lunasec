@@ -13,6 +13,7 @@
     "resolveJsonModule": true /* Include modules imported with .json extension. */,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
 
     /* Strict Type-Checking Options */
     "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,

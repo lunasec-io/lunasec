@@ -10,7 +10,7 @@ FROM amazon/aws-lambda-nodejs:14
 
 COPY --from=builder /service/package.json ${LAMBDA_TASK_ROOT}
 COPY --from=builder /service/node_modules ${LAMBDA_TASK_ROOT}/node_modules
-COPY --from=builder /service/views ${LAMBDA_TASK_ROOT}/views
+COPY --from=builder /service/packages/server/views ${LAMBDA_TASK_ROOT}/views
 COPY --from=builder /service/build/server ${LAMBDA_TASK_ROOT}
 
 CMD ["main.handler"]
