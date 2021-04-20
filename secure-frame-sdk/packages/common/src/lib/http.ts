@@ -101,15 +101,14 @@ export async function makeRequest<T>(host: string, path: string, params: http.Cl
     throw new BadHttpResponseError(res.statusCode, responseData);
   }
 
-  let outputData: string | undefined;
   try {
     // TODO: Validate this parsed JSON against some schema
     return JSON.parse(responseData) as T;
   } catch (e) {
-    console.error(e);
-
     // If data can't be parsed, wrap the data.
-    throw new FailedJsonDeserializationError(outputData);
+    const error = new FailedJsonDeserializationError(responseData);
+    console.error(error);
+    throw error;
   }
 }
 

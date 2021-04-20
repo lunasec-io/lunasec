@@ -1,2 +1,3 @@
-public/js/**
+packages/browser/public
+buildcache
 build

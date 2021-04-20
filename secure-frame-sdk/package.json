@@ -2,8 +2,9 @@
   "name": "esluna-mono-repo",
   "private": true,
   "scripts": {
-    "clean": "rimraf \"packages/**/lib\" \"packages/**/*.tsbuildinfo\"",
+    "clean": "rimraf \"packages/**/build\"",
     "compile": "tsc -b tsconfig.build.json",
+    "compile:secure-frame-static-js-sdk": "cd packages/secure-frame/static-js-sdk && npm run build",
     "prettier": "prettier \"*.{js,json,yml,md}\" \"packages/**/*\"",
     "format": "npm run prettier -- --write",
     "format:check": "npm run prettier -- --check",
@@ -15,9 +16,15 @@
     "lerna": "^3.22.1",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.2.0"
+    "typescript": "^4.2.3"
   },
   "workspaces": [
-    "packages/*"
-  ]
+    "packages/*",
+    "packages/secure-frame/*"
+  ],
+  "dependencies": {
+    "@esluna/common": "file:packages/common",
+    "@esluna/secure-frame-common": "file:packages/secure-frame/common",
+    "@esluna/secure-frame-js-sdk": "file:packages/secure-frame/js-sdk"
+  }
 }
