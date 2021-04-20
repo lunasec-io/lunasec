@@ -21,5 +21,10 @@
   "workspaces": [
     "packages/*",
     "packages/secure-frame/*"
-  ]
+  ],
+  "dependencies": {
+    "@esluna/common": "file:packages/common",
+    "@esluna/secure-frame-common": "file:packages/secure-frame/common",
+    "@esluna/secure-frame-js-sdk": "file:packages/secure-frame/js-sdk"
+  }
 }

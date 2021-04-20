@@ -6,7 +6,7 @@ import {
 import {
   getRequestBody,
   makeRequest
-} from '../../../common/src';
+} from '@esluna/common';
 
 export interface TokenizerSuccessApiResponse<T> {
   success: true,

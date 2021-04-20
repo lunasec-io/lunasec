@@ -1,10 +1,7 @@
-import {safeParseJson} from '../../common/src/utils/json';
-import {
-  FrameMessage,
-  InboundFrameMessageMap, UnknownFrameMessage
-} from '../../../../secure-frame-sdk/packages/secure-frame/common/src/rpc/types';
-import {StyleInfo} from '../../../../secure-frame-sdk/packages/secure-frame/common/src/style-patcher/types';
-import {patchStyle} from '../../../../secure-frame-sdk/packages/secure-frame/common/src/style-patcher/write';
+import {safeParseJson} from '@esluna/services-common/build/utils/json';
+import {InboundFrameMessageMap, FrameMessage, UnknownFrameMessage} from '@esluna/secure-frame-common/build/main/rpc/types';
+import {StyleInfo} from '@esluna/secure-frame-common/build/main/style-patcher/types';
+import {patchStyle} from '@esluna/secure-frame-common/build/main/style-patcher/write';
 
 function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, nonce: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> | null {
 

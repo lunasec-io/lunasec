@@ -1,3 +1,3 @@
-import {loadSecureFrame} from '../../js-sdk/src/load-secure-frame';
+import {loadSecureFrame} from '@esluna/secure-frame-js-sdk/build/main/load-secure-frame';
 
 loadSecureFrame();

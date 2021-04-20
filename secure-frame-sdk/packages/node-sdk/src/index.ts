@@ -1,7 +1,7 @@
 import fs from 'fs';
 import {URL as URI} from 'url';
 import {makeGenericApiClient, GenericApiClient} from './api-client';
-import {makeRequest} from '../../common/src';
+import {makeRequest} from '@esluna/common';
 
 interface SecureResolverSdkConfig {
   refinerySecret: string,

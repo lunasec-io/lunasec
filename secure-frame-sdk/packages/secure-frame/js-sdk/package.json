@@ -1,5 +1,5 @@
 {
-  "name": "@esluna/js-sdk",
+  "name": "@esluna/secure-frame-js-sdk",
   "version": "1.0.0",
   "description": "Vanilla Javascript Browser SDK for esluna Secure Frame",
   "main": "build/main/index.js",
@@ -44,6 +44,7 @@
     "node": ">=10"
   },
   "dependencies": {
+    "@esluna/secure-frame-common": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^14.14.37",

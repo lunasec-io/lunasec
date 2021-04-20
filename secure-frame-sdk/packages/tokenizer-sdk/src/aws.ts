@@ -1,5 +1,5 @@
 import {URL as URI} from 'url';
-import {BadHttpResponseError, makeRawRequest} from '../../common/src';
+import {BadHttpResponseError, makeRawRequest} from '@esluna/common';
 import * as http from 'http';
 
 function getUploadHeaders(input?: string) {

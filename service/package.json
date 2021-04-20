@@ -12,6 +12,10 @@
     "test": "lerna run test",
     "prepare": "npm run compile"
   },
+  "dependencies": {
+    "@esluna/secure-frame-common": "file:../secure-frame-sdk/packages/secure-frame/common",
+    "@esluna/services-common": "file:services/common"
+  },
   "devDependencies": {
     "lerna": "^3.22.1",
     "prettier": "^2.2.1",
