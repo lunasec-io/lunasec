@@ -1,19 +1,17 @@
 {
-  "name": "@esluna/browser-sdk",
+  "name": "@esluna/react-sdk",
   "version": "1.0.0",
-  "description": "Browser SDK for esluna",
+  "description": "React SDK for esluna Secure Frame",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "https://github.com/YOUR_GITHUB_USER_NAME/secure-frame-sdk",
+  "repository": "https://github.com/esluna/secure-frame-react-sdk",
   "license": "MIT",
   "keywords": [],
   "scripts": {
     "build": "run-p build:*",
     "build:main": "tsc -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
-    "build:static": "webpack --config webpack.config.js",
-    "build:static-prod": "NODE_ENV=production webpack --config webpack.config.js",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "fix:lint": "eslint src --ext .ts --fix",
@@ -47,16 +45,13 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@types/node": "^14.14.37",
-    "@types/react": "^17.0.3",
-    "react": "^17.0.1",
-    "ts-loader": "^8.0.18",
-    "webpack": "^5.26.0",
-    "webpack-cli": "^4.5.0"
+    "react": "^17.0.1"
   },
   "devDependencies": {
     "@ava/typescript": "^1.1.1",
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
+    "@types/node": "^14.14.37",
+    "@types/react": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
     "ava": "^3.12.1",

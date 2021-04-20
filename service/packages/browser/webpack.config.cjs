@@ -13,7 +13,7 @@ require('dotenv').config({
 
 const buildMode = isProduction ? 'production': 'development';
 
-const outputFile = isProduction ? '[name].[contenthash].main.js' : 'main-dev.js';
+const outputFile = isProduction ? '[name].[contenthash].js' : 'main-dev.js';
 
 const runWatch = process.env.WEBPACK_WATCH !== undefined;
 

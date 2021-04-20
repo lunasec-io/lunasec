@@ -12,7 +12,7 @@
 
     "lib": ["es2017", "dom"],
     "typeRoots": ["node_modules/@types", "src/types"],
-    "tsBuildInfoFile": "./buildcache/browser"
+    "tsBuildInfoFile": "./build/buildcache.tsbuildinfo"
   },
   "files": [
     "src/main.ts"
@@ -23,6 +23,6 @@
   ],
   "references": [
     { "path": "../common" },
-    { "path": "../../../secure-frame-sdk/packages/browser-sdk"}],
+    { "path": "../../../secure-frame-sdk/packages/secure-frame/common"}],
   "compileOnSave": true
 }

@@ -1,4 +1,4 @@
-import {timeout} from '../async-utils';
+import {timeout} from '../utils/async';
 import {
   FrameMessage,
   InboundFrameMessageMap,

@@ -6,7 +6,9 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const buildMode = isProduction ? 'production': 'development';
 
-const outputFile = isProduction ? 'main.js' : 'main-dev.js';
+const outputFile = isProduction ? '[name].[contenthash].js' : 'main-dev.js';
+
+const sourceMapMode = isProduction ? 'source-map' : 'eval-source-map';
 
 const runWatch = process.env.WEBPACK_WATCH !== undefined;
 
@@ -29,8 +31,8 @@ const productionConfig = {
 
 module.exports = {
   context: path.resolve(__dirname, 'src'),
-  devtool: 'inline-source-map',
-  entry: './main.ts',
+  devtool: sourceMapMode,
+  entry: './index.ts',
   mode: buildMode,
   watch: runWatch,
   watchOptions: {
@@ -42,13 +44,18 @@ module.exports = {
   module: {
     rules: [{
       test: /\.tsx?$/,
-      use: 'ts-loader',
-      exclude: /node_modules/
+      use: [{
+        loader: 'ts-loader',
+        options: {
+          configFile: 'tsconfig.json',
+          projectReferences: true
+        }
+      }]
     }]
   },
   output: {
     filename: outputFile,
-    path: path.resolve(__dirname, 'build/static/')
+    path: path.resolve(__dirname, 'build/')
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js']

@@ -1,17 +1,14 @@
 {
-  "extends": "../../tsconfig",
+  "extends": "../../../tsconfig.json",
   "compilerOptions": {
     "outDir": "build/main",
     "rootDir": "src",
     "tsBuildInfoFile": "./build/buildcache.tsbuildinfo",
-    "lib": ["es2017"],
+    "esModuleInterop": true,
+
+    "lib": ["es2017", "dom"],
     "types": ["node"]
   },
-  "files": [
-    "src/index.ts",
-    "src/lib/api.ts",
-    "src/lib/http.ts"
-  ],
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules/**"]
+  "compileOnSave": true
 }
