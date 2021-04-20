@@ -10,6 +10,13 @@
       <excludeFolder url="file://$MODULE_DIR$/secure-frame-sdk/packages/tokenizer-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/service/build" />
       <excludeFolder url="file://$MODULE_DIR$/service/public" />
+      <excludeFolder url="file://$MODULE_DIR$/service/packages/server/buildcache" />
+      <excludeFolder url="file://$MODULE_DIR$/service/packages/common/buildcache" />
+      <excludeFolder url="file://$MODULE_DIR$/service/packages/browser/buildcache" />
+      <excludeFolder url="file://$MODULE_DIR$/service/packages/server/build" />
+      <excludeFolder url="file://$MODULE_DIR$/service/packages/common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/service/packages/browser/build" />
+      <excludeFolder url="file://$MODULE_DIR$/service/packages/browser/public" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -4,11 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:server": "tsc -p packages/server/tsconfig.json",
-    "build:server:docker": "docker build . -t secure-frame-backend",
-    "run:server:docker": "docker run -v ~/.aws-lambda-rie:/aws-lambda -p 9001:8080 --entrypoint /aws-lambda/aws-lambda-rie secure-frame-backend \"main.handler\"",
-    "deploy:server:docker": "docker tag secure-frame-backend:latest public.ecr.aws/d7v1k2o3/secure-frame-backend && docker push public.ecr.aws/d7v1k2o3/secure-frame-backend",
-    "watch:browser": "WEBPACK_WATCH=true npm run build:browser",
+    "compile": "tsc",
+    "compile:docker": "docker build . -t secure-frame-backend",
+    "run:docker": "docker run -v ~/.aws-lambda-rie:/aws-lambda -p 9001:8080 --entrypoint /aws-lambda/aws-lambda-rie secure-frame-backend \"main.handler\"",
+    "deploy:docker": "docker tag secure-frame-backend:latest public.ecr.aws/d7v1k2o3/secure-frame-backend && docker push public.ecr.aws/d7v1k2o3/secure-frame-backend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {

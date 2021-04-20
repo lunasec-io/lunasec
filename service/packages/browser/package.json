@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:": "webpack --config webpack.config.cjs",
+    "compile": "webpack --config webpack.config.cjs",
+    "compile:production": "rm -rf public; NODE_ENV=production  npm run compile",
     "watch": "WEBPACK_WATCH=true npm run build:browser",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

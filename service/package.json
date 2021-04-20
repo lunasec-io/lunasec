@@ -2,8 +2,9 @@
   "name": "esluna-service-repo",
   "private": true,
   "scripts": {
-    "clean": "rimraf \"packages/**/lib\" \"packages/**/*.tsbuildinfo\"",
-    "compile": "tsc -b tsconfig.build.json",
+    "clean": "rimraf \"packages/**/build\" \"packages/**/buildcache\" \"packages/browser/public\"",
+    "compile": "tsc -b tsconfig.build.json && cd packages/browser && npm run compile",
+    "compile:production": "npm run clean && NODE_ENV=production npm run compile",
     "prettier": "prettier \"*.{js,json,yml,md}\" \"packages/**/*\"",
     "format": "npm run prettier -- --write",
     "format:check": "npm run prettier -- --check",

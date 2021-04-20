@@ -7,7 +7,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const envFile = isProduction ? '.env-prod' : '.env';
 
-const env = require('dotenv').config({
+require('dotenv').config({
   path: path.resolve(process.cwd(), envFile)
 });
 
@@ -40,7 +40,7 @@ if (isProduction) {
 }
 
 module.exports = {
-  context: path.resolve(__dirname, 'src/browser'),
+  context: path.resolve(__dirname, 'src/'),
   devtool: 'inline-source-map',
   entry: './main.ts',
   mode: buildMode,
@@ -58,7 +58,8 @@ module.exports = {
       use: [{
         loader: 'ts-loader',
         options: {
-          configFile: 'tsconfig.browser.json'
+          configFile: 'tsconfig.json',
+          projectReferences: true
         }
       }],
       exclude: /node_modules/
