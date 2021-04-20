@@ -4,13 +4,18 @@
     "outDir": "build",
     "rootDir": "src",
 
-    "module": "ESNext",
+    "module": "commonjs",
 
     "lib": ["es2017"],
     "types": [],
     "typeRoots": ["node_modules/@types", "src/types"]
   },
-  "files": ["src/server/index.ts"],
-  "include": ["src/server/**/*.ts", "src/server/**/*.tsx","src/common/**/*.ts", "src/common/**/*.tsx"],
+  "files": ["src/server/main.ts"],
+  "include": [
+    "src/server/**/*.ts",
+    "src/server/**/*.tsx",
+    "src/common/**/*.ts",
+    "src/common/**/*.tsx"
+  ],
   "compileOnSave": false
 }

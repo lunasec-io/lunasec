@@ -1,14 +1,43 @@
 const webpack = require('webpack');
 
 const path = require('path');
+const S3Plugin = require('webpack-s3-plugin')
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+const envFile = isProduction ? '.env-prod' : '.env';
+
+const env = require('dotenv').config({
+  path: path.resolve(process.cwd(), envFile)
+});
+
 const buildMode = isProduction ? 'production': 'development';
 
-const outputFile = isProduction ? 'main.js' : 'main-dev.js';
+const outputFile = isProduction ? '[name].[contenthash].main.js' : 'main-dev.js';
 
 const runWatch = process.env.WEBPACK_WATCH !== undefined;
+
+const plugins = [];
+
+if (isProduction) {
+  plugins.push(new S3Plugin({
+    // Exclude uploading of html
+    // exclude: /.*\.html$/,
+    directory: 'public/js',
+    // s3Options are required
+    s3Options: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: process.env.ESLUNA_ASSET_BUCKET_REGION || 'us-west-2'
+    },
+    s3UploadOptions: {
+      Bucket: process.env.ESLUNA_ASSET_BUCKET_NAME
+    },
+    cdnizerOptions: {
+      defaultCDNBase: process.env.ESLUNA_CDN_BASE_URL
+    }
+  }));
+}
 
 module.exports = {
   context: path.resolve(__dirname, 'src/browser'),
@@ -41,5 +70,6 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js']
-  }
+  },
+  plugins
 };
