@@ -1,11 +1,10 @@
-import {safeParseJson} from '../../common/src';
+import {safeParseJson} from '../../common/src/utils/json';
 import {
   FrameMessage,
-  InboundFrameMessageMap,
-  patchStyle,
-  StyleInfo,
-  UnknownFrameMessage
-} from '../../../../secure-frame-sdk/packages/browser-sdk/src';
+  InboundFrameMessageMap, UnknownFrameMessage
+} from '../../../../secure-frame-sdk/packages/secure-frame/common/src/rpc/types';
+import {StyleInfo} from '../../../../secure-frame-sdk/packages/secure-frame/common/src/style-patcher/types';
+import {patchStyle} from '../../../../secure-frame-sdk/packages/secure-frame/common/src/style-patcher/write';
 
 function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, nonce: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> | null {
 

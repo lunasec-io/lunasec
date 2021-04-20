@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "build/main",
     "rootDir": "src",
+    "tsBuildInfoFile": "./build/buildcache",
     "lib": ["es2017"],
     "types": ["node"]
   },

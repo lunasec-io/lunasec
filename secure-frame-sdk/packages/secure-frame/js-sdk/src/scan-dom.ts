@@ -1,5 +1,5 @@
-import {getStyleInfo} from './style-patcher/read';
-import {generateSecureNonce} from './utils/random';
+import {getStyleInfo} from '../../common/src/style-patcher/read';
+import {generateSecureNonce} from '../../common/src/utils/random';
 
 export function queryDomForForms(domInstance: Document) {
   const secureFrameInputNodes = domInstance.querySelectorAll('form.secure-frame-form input');

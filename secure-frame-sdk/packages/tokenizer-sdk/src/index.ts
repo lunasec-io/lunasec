@@ -11,6 +11,7 @@ import {
   TokenizerTokenizeResponse
 } from './types';
 import {CONFIG_DEFAULTS} from './constants';
+import {ValidTokenizerApiRequestTypes} from './api/types';
 
 export class Tokenizer {
   readonly config!: TokenizerClientConfig;
@@ -34,22 +35,17 @@ export class Tokenizer {
       [this.config.headers.key]: SECRET_VALUE
     };
 
-    this.getMetadataClient = makeSpecificApiClient<"getMetadata">(this.config.host, this.config.endpoints.getMetadata, {
-      method: 'POST',
-      headers
-    });
-    this.setMetadataClient = makeSpecificApiClient<"setMetadata">(this.config.host, this.config.endpoints.setMetadata, {
-      method: 'POST',
-      headers
-    });
-    this.getTokenClient = makeSpecificApiClient<"getToken">(this.config.host, this.config.endpoints.getToken, {
-      method: 'POST',
-      headers
-    });
-    this.setTokenClient = makeSpecificApiClient<"setToken">(this.config.host, this.config.endpoints.setToken, {
-      method: 'POST',
-      headers
-    });
+    const makeApiClient = <T extends ValidTokenizerApiRequestTypes>(endpoint: string) => {
+      return makeSpecificApiClient<T>(this.config.host, endpoint, {
+        method: 'POST',
+        headers
+      });
+    }
+
+    this.getMetadataClient = makeApiClient<"getMetadata">(this.config.endpoints.getMetadata);
+    this.setMetadataClient = makeApiClient<"setMetadata">(this.config.endpoints.setMetadata);
+    this.getTokenClient = makeApiClient<"getToken">(this.config.endpoints.getToken);
+    this.setTokenClient = makeApiClient<"setToken">(this.config.endpoints.setToken);
   }
 
   // TODO: Evaluate adding back keygenSet and keygenGet methods

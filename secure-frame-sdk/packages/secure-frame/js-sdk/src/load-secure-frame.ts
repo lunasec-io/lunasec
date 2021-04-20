@@ -1,9 +1,8 @@
 /* eslint-disable functional/no-throw-statement, @typescript-eslint/ban-ts-comment, functional/immutable-data */
 
 import {createDomWatcher} from './scan-dom';
-import {addMessageListener} from './rpc/listener';
-import {SECURE_FRAME_URL} from './constants';
-// import {getStyleInfo} from './style-hacks';
+import {addMessageListener} from '../../common/src/rpc/listener';
+import {SECURE_FRAME_URL} from '../../common/src/constants';
 
 export function loadSecureFrame() {
   if (typeof window === 'undefined' || typeof document === 'undefined') {

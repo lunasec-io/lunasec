@@ -10,7 +10,7 @@ import {REFINERY_API_SERVER} from './constants';
 import {
   getRequestBody,
   makeRequest
-} from '@esluna/common';
+} from '../../common/src';
 
 export interface SecureEnclaveSuccessApiResponse<T> {
   success: true,

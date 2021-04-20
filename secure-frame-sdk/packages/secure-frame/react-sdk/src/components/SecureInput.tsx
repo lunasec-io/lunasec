@@ -1,12 +1,12 @@
 import React, {Component, CSSProperties, RefObject} from 'react';
 import {SecureFormContext} from './SecureFormContext';
-import {generateSecureNonce} from '../lib/utils/random';
-import {getStyleInfo} from '../lib/style-patcher/read';
+import {getStyleInfo} from '../../../common/src/style-patcher/read';
 import {
   ElementStyleInfo,
   ReadElementStyle
-} from '../lib/style-patcher/types';
-import {camelCaseObject} from '../lib/utils/to-camel-case';
+} from '../../../common/src/style-patcher/types';
+import {camelCaseObject} from '../../../common/src/utils/to-camel-case';
+import {generateSecureNonce} from '../../../common/src/utils/random';
 
 export interface SecureInputProps {
   token?: string;

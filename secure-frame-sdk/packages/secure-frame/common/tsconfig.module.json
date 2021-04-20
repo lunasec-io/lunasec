@@ -3,10 +3,6 @@
   "compilerOptions": {
     "target": "esnext",
     "outDir": "build/module",
-    "module": "esnext",
-    "jsx": "react"
-  },
-  "exclude": [
-    "node_modules/**"
-  ]
+    "module": "esnext"
+  }
 }

@@ -9,7 +9,7 @@
     "lib": ["es2017"],
     "types": [],
     "typeRoots": ["node_modules/@types", "src/types"],
-    "tsBuildInfoFile": "./buildcache/server"
+    "tsBuildInfoFile": "./build/buildcache.tsbuildinfo"
   },
   "files": [
     "src/main.ts"

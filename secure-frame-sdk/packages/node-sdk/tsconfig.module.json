@@ -4,5 +4,6 @@
     "target": "esnext",
     "outDir": "build/module",
     "module": "esnext"
-  }
+  },
+  "references": [{ "path": "../common/tsconfig.module.json" }]
 }
