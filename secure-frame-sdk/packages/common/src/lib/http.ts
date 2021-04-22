@@ -57,8 +57,6 @@ export function makeRawRequest(host: string, path: string, params: http.ClientRe
 
   return new Promise((resolve, reject) => {
 
-    console.log('making request', params, body);
-
     let responseBuffer: Buffer;
     let req = requestModule.request(requestConfig, res => {
       res.on('data', (chunk: Buffer) => {

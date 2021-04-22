@@ -67,7 +67,7 @@ export class Tokenizer {
     };
   }
 
-  async setMetadata(tokenId: string, metadata: string): Promise<TokenizerFailApiResponse | TokenizerSetMetadataResponse> {
+  async setMetadata(tokenId: string, metadata: string | any): Promise<TokenizerFailApiResponse | TokenizerSetMetadataResponse> {
     if (typeof metadata !== 'string') {
       throw new Error('Metadata must be a string value');
     }
@@ -106,8 +106,6 @@ export class Tokenizer {
     }
 
     const data = response.data.data;
-
-    console.log({data, input});
 
     try {
       await uploadToS3WithSignedUrl(data.uploadUrl, data.headers, input);
