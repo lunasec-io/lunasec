@@ -61,7 +61,8 @@ export class SecureForm extends Component<SecureFormProps> {
 
       const name = this.childRefLookup[nonce][0];
 
-      out[name] = response.data.token;
+      // TODO: Add error case handling
+      out[name] = response.data.token || '';
 
       return out;
     }, {} as Record<string, string>)

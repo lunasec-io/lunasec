@@ -3,7 +3,6 @@
   "compilerOptions": {
     "outDir": "build",
     "rootDir": "src",
-    "module": "commonjs",
     "tsBuildInfoFile": "./build/buildcache.tsbuildinfo",
 
     "lib": ["es2017"],

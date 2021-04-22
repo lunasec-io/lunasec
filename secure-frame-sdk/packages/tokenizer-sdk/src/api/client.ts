@@ -8,6 +8,12 @@ import {
   makeRequest
 } from '@esluna/common';
 
+export enum TOKENIZER_ERROR_CODES {
+  BAD_REQUEST = 400,
+  NOT_FOUND = 404,
+  INTERNAL_ERROR = 500
+}
+
 export interface TokenizerSuccessApiResponse<T> {
   success: true,
   data: T
@@ -15,7 +21,8 @@ export interface TokenizerSuccessApiResponse<T> {
 
 export interface TokenizerFailApiResponse {
   success: false,
-  error: Error
+  error: Error,
+  errorCode?: TOKENIZER_ERROR_CODES
 }
 
 export async function makeSecureApiRequest<
@@ -25,7 +32,7 @@ export async function makeSecureApiRequest<
 
   try {
     // TODO: Add runtime JSON validation for response
-    const response =  await makeRequest<TokenizerRequestResponseMessageMap[T]>(host, path, params, getRequestBody(request));
+    const response = await makeRequest<TokenizerRequestResponseMessageMap[T]>(host, path, params, getRequestBody(request));
 
     if (!response) {
       return {

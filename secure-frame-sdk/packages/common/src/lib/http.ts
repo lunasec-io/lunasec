@@ -72,7 +72,8 @@ export function makeRawRequest(host: string, path: string, params: http.ClientRe
       const contentLength = resp.headers['content-length'];
 
       if (!contentLength) {
-        return reject("No content length specified in response")
+        responseBuffer = Buffer.alloc(0);
+        return;
       }
 
       const size = parseInt(contentLength);
@@ -98,6 +99,7 @@ export async function makeRequest<T>(host: string, path: string, params: http.Cl
   const responseData = responseBuffer.toString();
 
   if (res.statusCode !== 200) {
+    console.log('bad response', {host, path, params, res, responseData});
     throw new BadHttpResponseError(res.statusCode, responseData);
   }
 

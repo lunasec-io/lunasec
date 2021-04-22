@@ -37,3 +37,4 @@ export interface TokenizerDetokenizeResponse {
   tokenId: string,
   value: string
 }
+

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "incremental": true,
     "target": "es2017",
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
     "jsx": "react", /* Compiles JSX as React calls by default */
     "composite": true, /* Required for our project with many Typescript bundles */

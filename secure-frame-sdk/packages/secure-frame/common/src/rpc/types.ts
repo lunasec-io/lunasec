@@ -14,7 +14,8 @@ export interface UnknownFrameMessage {
 export interface CommitTokenMessage {}
 
 export interface ReceiveCommittedTokenMessage {
-  token: string;
+  success: boolean;
+  token?: string;
 }
 
 export interface OutboundFrameMessageMap {
