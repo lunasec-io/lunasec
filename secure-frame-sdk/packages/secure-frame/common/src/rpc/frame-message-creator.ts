@@ -51,6 +51,7 @@ export class FrameMessageCreator {
 
     return new Promise(async (resolve, reject) => {
 
+      // TODO: Make this domain be configurable
       frameContext.postMessage(JSON.stringify(message), 'http://localhost:5002');
 
       await timeout(2);
