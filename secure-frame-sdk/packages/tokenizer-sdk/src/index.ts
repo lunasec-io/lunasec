@@ -12,6 +12,7 @@ import {
 } from './types';
 import {CONFIG_DEFAULTS} from './constants';
 import {ValidTokenizerApiRequestTypes} from './api/types';
+import {BadHttpResponseError} from '@esluna/common';
 
 export class Tokenizer {
   readonly config!: TokenizerClientConfig;
@@ -106,12 +107,22 @@ export class Tokenizer {
 
     const data = response.data.data;
 
-    await uploadToS3WithSignedUrl(data.uploadUrl, data.headers, input);
+    console.log({data, input});
 
-    return {
-      success: true,
-      tokenId: data.tokenId
-    };
+    try {
+      await uploadToS3WithSignedUrl(data.uploadUrl, data.headers, input);
+
+      return {
+        success: true,
+        tokenId: data.tokenId
+      };
+    } catch (e) {
+      console.error('S3 upload error', e);
+      return {
+        success: false,
+        error: e
+      };
+    }
   }
 
   async detokenize(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeResponse> {
@@ -120,11 +131,23 @@ export class Tokenizer {
     });
 
     if (!response.success) {
+      if (response.error instanceof BadHttpResponseError) {
+        const httpError = response.error as BadHttpResponseError;
+
+        return {
+          ...response,
+          errorCode: httpError.responseCode
+        };
+      }
+
       return response;
     }
 
     if (!response.data.data) {
-      throw new Error('Invalid response from Tokenizer when detokenizing data');
+      return {
+        success: false,
+        error: new Error('Invalid response from Tokenizer when detokenizing data')
+      };
     }
 
     const {downloadUrl, headers} = response.data.data;

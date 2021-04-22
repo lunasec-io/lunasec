@@ -27,7 +27,7 @@ function makeS3HttpRequestOptions(signedUrl: string, headers: http.OutgoingHttpH
     },
     hostname: uploadUrl.hostname,
     port: uploadUrl.port,
-    path: uploadUrl.pathname,
+    path: uploadUrl.pathname + uploadUrl.search,
     protocol: uploadUrl.protocol
   };
 

@@ -4,8 +4,6 @@
     "outDir": "build",
     "rootDir": "src",
 
-    "module": "commonjs",
-
     "lib": ["es2017"],
     "types": [],
     "typeRoots": ["node_modules/@types", "src/types"],
@@ -17,6 +15,9 @@
   "include": [
     "src/**/*.ts"
   ],
-  "references": [{ "path": "../common" }],
+  "references": [
+    { "path": "../common" },
+    { "path": "../../../secure-frame-sdk/packages/tokenizer-sdk" }
+  ],
   "compileOnSave": true
 }

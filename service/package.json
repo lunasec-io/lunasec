@@ -10,11 +10,13 @@
     "format:check": "npm run prettier -- --check",
     "lint": "npm run format:check",
     "test": "lerna run test",
-    "prepare": "npm run compile"
+    "prepare": "npm run compile",
+    "watch": "tsc -b tsconfig.build.json -w"
   },
   "dependencies": {
     "@esluna/secure-frame-common": "file:../secure-frame-sdk/packages/secure-frame/common",
-    "@esluna/services-common": "file:services/common"
+    "@esluna/services-common": "file:services/common",
+    "@esluna/tokenizer-sdk": "file:../secure-frame-sdk/packages/tokenizer-sdk"
   },
   "devDependencies": {
     "lerna": "^3.22.1",

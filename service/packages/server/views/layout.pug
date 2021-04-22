@@ -1,0 +1,11 @@
+html
+  head
+    link(href="/frame/public/main.css", rel="stylesheet", nonce=csp_nonce)
+    block title
+      title Secure Frame
+    block header_content
+  body
+    block content
+      h1 Unknown page requested. Sorry about that!
+    script(src=js_script_url, nonce=csp_nonce)
+

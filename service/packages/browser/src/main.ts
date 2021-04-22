@@ -41,13 +41,39 @@ function setupPage() {
   return secureInput;
 }
 
-function processMessage(origin: string, rawMessage: UnknownFrameMessage) {
+async function processMessage(origin: string, rawMessage: UnknownFrameMessage) {
 
   // TODO: Make this type safe (require every message to be handled)
   if (rawMessage.command === 'CommitToken') {
+
+    const secureInput = document.querySelector('.secure-input');
+
+    if (!secureInput) {
+      throw new Error('Unable to read value to tokenize');
+    }
+
+    const rawResponse = await fetch('/tokenize', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        value: (secureInput as HTMLInputElement).value
+      })
+    });
+
+    const response = await rawResponse.json();
+
     const message = createMessageToFrame('ReceiveCommittedToken', rawMessage.correlationToken, () => {
+      if (!response || !response.success) {
+        return {
+          success: false
+        };
+      }
+
       return {
-        token: 'some-public-token'
+        success: true,
+        token: response.tokenId
       };
     });
 

@@ -10,7 +10,8 @@
     "format:check": "npm run prettier -- --check",
     "lint": "npm run format:check",
     "test": "lerna run test",
-    "prepare": "npm run compile"
+    "prepare": "npm run compile",
+    "watch": "tsc -b tsconfig.build.json -w"
   },
   "devDependencies": {
     "lerna": "^3.22.1",

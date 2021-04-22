@@ -76,7 +76,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
     const hash = encodeURIComponent(JSON.stringify(frameStyleInfo));
 
-    const baseUrl = `${this.state.secureFrameUrl}?n=${urlFrameId}&w=${urlWidth}&h=${urlHeight}`;
+    const baseUrl = `${this.state.secureFrameUrl}frame?n=${urlFrameId}&w=${urlWidth}&h=${urlHeight}`;
 
     if (!this.props.token) {
       return `${baseUrl}#${hash}`;
