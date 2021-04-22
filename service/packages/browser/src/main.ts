@@ -52,6 +52,7 @@ async function processMessage(origin: string, rawMessage: UnknownFrameMessage) {
       throw new Error('Unable to read value to tokenize');
     }
 
+    // TODO: Move this info a function
     const rawResponse = await fetch('/tokenize', {
       method: 'POST',
       headers: {
@@ -62,6 +63,7 @@ async function processMessage(origin: string, rawMessage: UnknownFrameMessage) {
       })
     });
 
+    // TODO: Handle error case
     const response = await rawResponse.json();
 
     const message = createMessageToFrame('ReceiveCommittedToken', rawMessage.correlationToken, () => {
