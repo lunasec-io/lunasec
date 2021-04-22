@@ -18,7 +18,6 @@ app.use((req, res, next) => {
       objectSrc: '\'none\'',
       defaultSrc: '\'none\'',
       frameAncestors: 'http://localhost:3000/',
-      childSrc: 'http://localhost:5002',
       baseUri: '\'none\'',
       requireTrustedTypesFor: '\'script\'',
       reportUri: 'http://localhost:5004',
