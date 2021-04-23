@@ -1231,8 +1231,8 @@
     "minimatch" "^3.0.4"
     "strip-json-comments" "^3.1.1"
 
-"@esluna/secure-frame-react-sdk@file:../secure-frame-sdk/packages/secure-frame/react-sdk":
-  "resolved" "file:../secure-frame-sdk/packages/secure-frame/react-sdk"
+"@esluna/secure-frame-react-sdk@file:../sdks/packages/secure-frame/react-sdk":
+  "resolved" "file:../sdks/packages/secure-frame/react-sdk"
   "version" "1.0.0"
   dependencies:
     "react" "^17.0.1"
