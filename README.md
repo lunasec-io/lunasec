@@ -19,7 +19,13 @@ This is the "meat" of the actual SDK. It's all written in Typescript and outputs
 - Browser build (concatenated into one file that's loaded into browser global namespace)
 
 ## How to use this repo
-Install `tmuxp` and then run `tmuxp load ./start-with-tmuxp.yaml` in the root directory. You can inspect that file to see what commands are all being run.
+First, make sure the following environment variables are set.  They should look something like: 
+```bash
+export DOCUMENT_VAULT_S3_BUCKET="crytovault-loq-forrest-personal"
+export AWS_DEFAULT_REGION="us-west-2"
+export SECURE_FRAME_CLIENT_SECRET="super-secret-value-yay"
+```
+Then, install `tmuxp` and then run `tmuxp load ./start-with-tmuxp.yaml` in the root directory. You can inspect that file to see what commands are all being run.
 
 Then go hit the `app` service, which runs at `http://localhost:5001`. That will show you the POC.
 
