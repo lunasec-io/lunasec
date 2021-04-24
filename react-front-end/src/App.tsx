@@ -3,18 +3,43 @@ import {SecureForm, SecureInput} from '@esluna/secure-frame-react-sdk';
 // import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <div className="app-form">
-        <SecureForm onSubmit={(formData) => console.log('react form data', formData)}>
-          <SecureInput name="foo" token="50d14625-a605-4eb9-a908-9f3733c3f19d"/>
-          <SecureInput name="bar" token="49f7bea4-2057-4dea-8f57-88025b9e6a61" />
-          <input type="submit" />
-        </SecureForm>
-      </div>
-    </div>
-  );
+
+interface IProps {
 }
+
+interface IState {
+    foo?: string
+    bar?: string
+}
+
+
+class App extends React.Component<IProps, IState> {
+
+    // Saves tokens from form to sessionStorage when form submit called
+    saveTokensLocally(formData:Record<string, string>) {
+        console.log('submit called, storing tokens', formData);
+        window.sessionStorage.setItem('savedFields', JSON.stringify(formData));
+    };
+    // Retrieves tokens from sessionStorage and sets them to component's state
+    constructor(props: IProps) {
+        super(props);
+        const dataString = window.sessionStorage.getItem('savedFields');
+        const savedData:IState = JSON.parse(dataString||"{}"); // fail through to empty object if nothing set
+        console.log("retrieved Saved Data of ", savedData);
+        this.state = savedData;
+    }
+
+    render() {
+      return <div className="App">
+          <div className="app-form">
+              <SecureForm onSubmit={this.saveTokensLocally}>
+                  <SecureInput name="foo" token={this.state.foo}/>
+                  <SecureInput name="bar" token={this.state.bar}/>
+                  <input type="submit"/>
+              </SecureForm>
+          </div>
+      </div>
+    };
+};
 
 export default App;
