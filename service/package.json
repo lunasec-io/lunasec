@@ -14,9 +14,9 @@
     "watch": "tsc -b tsconfig.build.json -w"
   },
   "dependencies": {
-    "@esluna/secure-frame-common": "file:../secure-frame-sdk/packages/secure-frame/common",
+    "@esluna/secure-frame-common": "file:../sdks/packages/secure-frame/common",
     "@esluna/services-common": "file:services/common",
-    "@esluna/tokenizer-sdk": "file:../secure-frame-sdk/packages/tokenizer-sdk"
+    "@esluna/tokenizer-sdk": "file:../sdks/packages/tokenizer-sdk"
   },
   "devDependencies": {
     "lerna": "^3.22.1",
