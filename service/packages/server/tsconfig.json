@@ -17,7 +17,7 @@
   ],
   "references": [
     { "path": "../common" },
-    { "path": "../../../secure-frame-sdk/packages/tokenizer-sdk" }
+    { "path": "../../../sdks/packages/tokenizer-sdk" }
   ],
   "compileOnSave": true
 }

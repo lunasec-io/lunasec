@@ -23,6 +23,6 @@
   ],
   "references": [
     { "path": "../common" },
-    { "path": "../../../secure-frame-sdk/packages/secure-frame/common"}],
+    { "path": "../../../sdks/packages/secure-frame/common"}],
   "compileOnSave": true
 }
