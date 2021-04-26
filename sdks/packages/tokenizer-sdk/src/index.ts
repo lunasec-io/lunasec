@@ -12,7 +12,7 @@ import {
 } from './types';
 import {CONFIG_DEFAULTS} from './constants';
 import {ValidTokenizerApiRequestTypes} from './api/types';
-import {BadHttpResponseError} from '@esluna/common';
+import {BadHttpResponseError} from '@lunasec/common';
 
 export class Tokenizer {
   readonly config!: TokenizerClientConfig;
@@ -26,10 +26,10 @@ export class Tokenizer {
     // Deep clone config for mutation safety.
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 
-    const SECRET_VALUE = this.config.secret || process.env.ESLUNA_TOKENIZER_SECRET;
+    const SECRET_VALUE = this.config.secret || process.env.lunasec_TOKENIZER_SECRET;
 
     if (!SECRET_VALUE) {
-      throw new Error('Unable to create esluna Tokenizer client without secret value');
+      throw new Error('Unable to create lunasec Tokenizer client without secret value');
     }
 
     const headers = {

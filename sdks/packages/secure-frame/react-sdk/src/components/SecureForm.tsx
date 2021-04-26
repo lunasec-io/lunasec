@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {SecureFormContext} from './SecureFormContext';
-import {FrameMessageCreator} from '@esluna/secure-frame-common/build/main/rpc/frame-message-creator';
+import {FrameMessageCreator} from '@lunasec/secure-frame-common/build/main/rpc/frame-message-creator';
 import {
   FrameMessage,
   InboundFrameMessageMap
-} from '@esluna/secure-frame-common/build/main/rpc/types';
-import {addReactEventListener} from '@esluna/secure-frame-common/build/main/rpc/listener';
+} from '@lunasec/secure-frame-common/build/main/rpc/types';
+import {addReactEventListener} from '@lunasec/secure-frame-common/build/main/rpc/listener';
 
 export interface SecureFormProps {
   onSubmit: (formData: Record<string, string>) => void;

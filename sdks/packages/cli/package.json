@@ -1,7 +1,7 @@
 {
-  "name": "@esluna/cli",
+  "name": "@lunasec/cli",
   "version": "1.0.0",
-  "description": "Esluna CLI utility",
+  "description": "lunasec CLI utility",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",

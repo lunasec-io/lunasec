@@ -1,5 +1,5 @@
 {
-  "name": "@esluna/static-js-sdk",
+  "name": "@lunasec/static-js-sdk",
   "version": "1.0.0",
   "description": "",
   "main": "build/index.js",

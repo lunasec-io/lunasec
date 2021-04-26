@@ -28,13 +28,13 @@ if (isProduction) {
     s3Options: {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      region: process.env.ESLUNA_ASSET_BUCKET_REGION || 'us-west-2'
+      region: process.env.lunasec_ASSET_BUCKET_REGION || 'us-west-2'
     },
     s3UploadOptions: {
-      Bucket: process.env.ESLUNA_ASSET_BUCKET_NAME
+      Bucket: process.env.lunasec_ASSET_BUCKET_NAME
     },
     cdnizerOptions: {
-      defaultCDNBase: process.env.ESLUNA_CDN_BASE_URL
+      defaultCDNBase: process.env.lunasec_CDN_BASE_URL
     }
   }));
 }

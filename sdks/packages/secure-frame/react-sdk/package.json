@@ -1,11 +1,11 @@
 {
-  "name": "@esluna/react-sdk",
+  "name": "@lunasec/react-sdk",
   "version": "1.0.0",
-  "description": "React SDK for esluna Secure Frame",
+  "description": "React SDK for lunasec Secure Frame",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "https://github.com/esluna/secure-frame-react-sdk",
+  "repository": "https://github.com/lunasec/secure-frame-react-sdk",
   "license": "MIT",
   "keywords": [],
   "scripts": {

@@ -6,7 +6,7 @@ import {
 import {
   getRequestBody,
   makeRequest
-} from '@esluna/common';
+} from '@lunasec/common';
 
 export enum TOKENIZER_ERROR_CODES {
   BAD_REQUEST = 400,

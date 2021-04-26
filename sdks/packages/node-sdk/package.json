@@ -1,5 +1,5 @@
 {
-  "name": "@esluna/node-sdk",
+  "name": "@lunasec/node-sdk",
   "version": "1.0.0",
   "description": "Secure resolver package for Node.js",
   "main": "build/main/index.js",
@@ -14,7 +14,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@esluna/common": "^1.0.0",
+    "@lunasec/common": "^1.0.0",
     "@types/node": "^14.11.8"
   },
   "devDependencies": {

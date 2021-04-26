@@ -1,11 +1,11 @@
 {
-  "name": "@esluna/secure-frame-js-sdk",
+  "name": "@lunasec/secure-frame-js-sdk",
   "version": "1.0.0",
-  "description": "Vanilla Javascript Browser SDK for esluna Secure Frame",
+  "description": "Vanilla Javascript Browser SDK for lunasec Secure Frame",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "https://github.com/esluna/secure-frame-sdk",
+  "repository": "https://github.com/lunasec/secure-frame-sdk",
   "license": "MIT",
   "keywords": [],
   "scripts": {
@@ -44,7 +44,7 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@esluna/secure-frame-common": "^1.0.0"
+    "@lunasec/secure-frame-common": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^14.14.37",

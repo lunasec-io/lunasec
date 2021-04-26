@@ -1,7 +1,7 @@
 {
-  "name": "@esluna/tokenizer-sdk",
+  "name": "@lunasec/tokenizer-sdk",
   "version": "1.0.0",
-  "description": "Esluna Tokenizer client for Node.js",
+  "description": "lunasec Tokenizer client for Node.js",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",

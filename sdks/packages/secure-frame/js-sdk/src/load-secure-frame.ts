@@ -1,8 +1,8 @@
 /* eslint-disable functional/no-throw-statement, @typescript-eslint/ban-ts-comment, functional/immutable-data */
 
 import {createDomWatcher} from './scan-dom';
-import {addMessageListener} from '@esluna/secure-frame-common/build/main/rpc/listener';
-import {SECURE_FRAME_URL} from '@esluna/secure-frame-common';
+import {addMessageListener} from '@lunasec/secure-frame-common/build/main/rpc/listener';
+import {SECURE_FRAME_URL} from '@lunasec/secure-frame-common';
 
 export function loadSecureFrame() {
   if (typeof window === 'undefined' || typeof document === 'undefined') {

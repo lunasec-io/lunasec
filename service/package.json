@@ -1,5 +1,5 @@
 {
-  "name": "esluna-service-repo",
+  "name": "lunasec-service-repo",
   "private": true,
   "scripts": {
     "clean": "rimraf \"packages/**/build\" \"packages/**/buildcache\" \"packages/browser/public\"",
@@ -14,9 +14,9 @@
     "watch": "tsc -b tsconfig.build.json -w"
   },
   "dependencies": {
-    "@esluna/secure-frame-common": "file:../sdks/packages/secure-frame/common",
-    "@esluna/services-common": "file:services/common",
-    "@esluna/tokenizer-sdk": "file:../sdks/packages/tokenizer-sdk"
+    "@lunasec/secure-frame-common": "file:../sdks/packages/secure-frame/common",
+    "@lunasec/services-common": "file:services/common",
+    "@lunasec/tokenizer-sdk": "file:../sdks/packages/tokenizer-sdk"
   },
   "devDependencies": {
     "lerna": "^3.22.1",

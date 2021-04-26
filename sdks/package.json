@@ -1,5 +1,5 @@
 {
-  "name": "esluna-mono-repo",
+  "name": "lunasec-mono-repo",
   "private": true,
   "scripts": {
     "clean": "rimraf \"packages/**/build\"",
@@ -24,8 +24,8 @@
     "packages/secure-frame/*"
   ],
   "dependencies": {
-    "@esluna/common": "file:packages/common",
-    "@esluna/secure-frame-common": "file:packages/secure-frame/common",
-    "@esluna/secure-frame-js-sdk": "file:packages/secure-frame/js-sdk"
+    "@lunasec/common": "file:packages/common",
+    "@lunasec/secure-frame-common": "file:packages/secure-frame/common",
+    "@lunasec/secure-frame-js-sdk": "file:packages/secure-frame/js-sdk"
   }
 }
