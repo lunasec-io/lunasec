@@ -1,4 +1,4 @@
-import { ElementStyleInfo, StyleInfo, SupportedElement } from './types';
+import { StyleInfo, SupportedElement } from './types';
 import { generateCssText } from './dom-utils';
 
 // TODO: Figure out if this is a security concern before re-enabling

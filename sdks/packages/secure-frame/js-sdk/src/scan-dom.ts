@@ -43,6 +43,7 @@ type SecureFormInputConfig = {
   readonly children: readonly HTMLInputElement[]
 };
 
+
 export function setupElementWithSecureFrame(domInstance: Document, frameUrl: string, input: HTMLInputElement) {
   const containerNonce = generateSecureNonce();
 
@@ -104,7 +105,7 @@ export function createDomWatcher(domInstance: Document, frameUrl: string, rootRe
         });
 
         return inputs;
-      }, [] as readonly SecureFormInputConfig[]);
+      }, [] as SecureFormInputConfig[]); //eslint-disable-line
 
     if (secureForms.length === 0) {
       return;
