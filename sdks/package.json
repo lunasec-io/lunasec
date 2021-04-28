@@ -8,15 +8,26 @@
     "prettier": "prettier \"*.{js,json,yml,md}\" \"packages/**/*\"",
     "format": "npm run prettier -- --write",
     "format:check": "npm run prettier -- --check",
-    "lint": "npm run format:check",
+    "lint": "eslint --ext .js,.ts ./packages",
     "test": "lerna run test",
     "prepare": "npm run compile",
     "watch": "tsc -b tsconfig.build.json -w"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-react": "^7.23.2",
     "lerna": "^3.22.1",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.2.3"
   },
   "workspaces": [
