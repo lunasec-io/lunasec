@@ -3,7 +3,7 @@ import {InboundFrameMessageMap, FrameMessage, UnknownFrameMessage} from '@esluna
 import {StyleInfo} from '@esluna/secure-frame-common/build/main/style-patcher/types';
 import {patchStyle} from '@esluna/secure-frame-common/build/main/style-patcher/write';
 
-interface tokenizerResponse {
+interface TokenizerResponse {
   success: boolean,
   tokenId: string
   // and definitely other fields we don't access, assuming that's okay
@@ -70,7 +70,7 @@ async function tokenizeField() : Promise<any> {
 }
 
 
-function respondToMessage(origin: string, rawMessage: UnknownFrameMessage, response: tokenizerResponse) : void {
+function respondToMessage(origin: string, rawMessage: UnknownFrameMessage, response: TokenizerResponse) : void {
   const message = createMessageToFrame('ReceiveCommittedToken', rawMessage.correlationToken, () => {
     if (!response || !response.success) {
       return {
@@ -94,11 +94,9 @@ async function processMessage(origin: string, rawMessage: UnknownFrameMessage) {
   if (rawMessage.command === 'CommitToken') {
     const serverResponse = await tokenizeField()
     respondToMessage(origin, rawMessage, serverResponse)
+    return;
   }
 
-  if (rawMessage.command === 'Resize') {
-
-  }
 
   throw new Error('Secure frame unable to process message of command type: ' + rawMessage.command);
 }

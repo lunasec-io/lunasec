@@ -62,13 +62,7 @@ app.get('/frame', async (req, res) => {
 
   res.locals.request_origin = referer;
   res.locals.request_nonce = nonce;
-  res.locals.input_style = `
-      width: 100%; 
-      height: 100%; 
-      position: absolute;
-      top: 0;
-      left: 0;
-      `;
+
 
   // TODO: Add UUID regex validation
   // TODO: Spend some time to simplify + flatten out this code. Too much imperative control flow right now.

@@ -95,7 +95,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
         return;
       }
       iframe.style.width = `${hiddenInput.offsetWidth}px`;
-      iframe.style.height = `${hiddenInput.offsetHeight}px`
+      iframe.style.height = `${hiddenInput.offsetHeight}px`;
     })
 
     const hiddenInput = this.inputRef.current;
