@@ -1,3 +1,3 @@
-import {loadSecureFrame} from '@lunasec/secure-frame-js-sdk/build/main/load-secure-frame';
+import { loadSecureFrame } from '@lunasec/secure-frame-js-sdk/build/main/load-secure-frame';
 
 loadSecureFrame();

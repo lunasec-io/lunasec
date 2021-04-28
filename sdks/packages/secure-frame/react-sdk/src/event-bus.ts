@@ -4,16 +4,16 @@ export enum SecureFormElementType {
   Text = 'Text'
 }
 
-export interface SecureFormEventRegistry {
+export type SecureFormEventRegistry = {
   add(type: SecureFormElementType, nonce: string, triggerTokenCommit: () => Promise<Window>): void;
   remove(frameId: string): void;
-}
+};
 
-export interface SecureFormEventBusEntry {
-  type: SecureFormElementType,
-  frameId: string,
-  getFrameWindow: () => Promise<Window>
-}
+export type SecureFormEventBusEntry = {
+  readonly type: SecureFormElementType,
+  readonly frameId: string,
+  readonly getFrameWindow: () => Promise<Window>
+};
 
 export class SecureFormEventBus implements SecureFormEventRegistry {
   private readonly nonceToEntry!: Record<string, SecureFormEventBusEntry>;

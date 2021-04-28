@@ -1,5 +1,5 @@
-import {URL as URI} from 'url';
-import {BadHttpResponseError, makeRawRequest} from '@lunasec/common';
+import { URL as URI } from 'url';
+import { BadHttpResponseError, makeRawRequest } from '@lunasec/common';
 import * as http from 'http';
 
 function getUploadHeaders(input?: string) {
@@ -7,14 +7,19 @@ function getUploadHeaders(input?: string) {
     const contentLength = Buffer.byteLength(input);
 
     return {
-      'Content-Length': contentLength
+      'Content-Length': contentLength,
     };
   }
 
   return {};
 }
 
-function makeS3HttpRequestOptions(signedUrl: string, headers: http.OutgoingHttpHeaders, method: 'PUT' | 'GET', input?: string): [string, string, http.ClientRequestArgs, string | undefined] {
+function makeS3HttpRequestOptions(
+  signedUrl: string,
+  headers: http.OutgoingHttpHeaders,
+  method: 'PUT' | 'GET',
+  input?: string
+): [string, string, http.ClientRequestArgs, string | undefined] {
   const uploadUrl = new URI(signedUrl);
 
   const host = uploadUrl.protocol + '//' + uploadUrl.hostname;
@@ -23,12 +28,12 @@ function makeS3HttpRequestOptions(signedUrl: string, headers: http.OutgoingHttpH
     method: method,
     headers: {
       ...headers,
-      ...getUploadHeaders(input)
+      ...getUploadHeaders(input),
     },
     hostname: uploadUrl.hostname,
     port: uploadUrl.port,
     path: uploadUrl.pathname + uploadUrl.search,
-    protocol: uploadUrl.protocol
+    protocol: uploadUrl.protocol,
   };
 
   return [host, uploadUrl.pathname, httpParams, input];

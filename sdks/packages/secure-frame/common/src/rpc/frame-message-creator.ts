@@ -1,18 +1,19 @@
-import {timeout} from '../utils/async';
+import { timeout } from '../utils/async';
 import {
   FrameMessage,
   InboundFrameMessageMap,
   OutboundFrameMessageMap,
-  OutboundToInboundMessageValueMap, OutboundToInboundMessageTypeMap,
-  UnknownFrameMessage
+  OutboundToInboundMessageValueMap,
+  OutboundToInboundMessageTypeMap,
+  UnknownFrameMessage,
 } from './types';
-import {generateSecureNonce} from '../utils/random';
+import { generateSecureNonce } from '../utils/random';
 
 export class FrameMessageCreator {
   private readonly frameResponses: Record<string, UnknownFrameMessage>;
   private readonly timeout: number;
 
-  constructor(timeout: number = 5000) {
+  constructor(timeout = 5000) {
     this.frameResponses = {};
     this.timeout = timeout;
   }
@@ -37,7 +38,7 @@ export class FrameMessageCreator {
     return {
       command: s,
       correlationToken: generateSecureNonce(),
-      data: innerMessage
+      data: innerMessage,
     };
   }
 
@@ -46,11 +47,13 @@ export class FrameMessageCreator {
     this.frameResponses[unknownMessage.correlationToken] = unknownMessage;
   }
 
-  async sendMessageToFrameWithReply<K extends (keyof OutboundFrameMessageMap | keyof OutboundToInboundMessageTypeMap)>(frameContext: Window, message: FrameMessage<OutboundFrameMessageMap, K>): Promise<FrameMessage<InboundFrameMessageMap, OutboundToInboundMessageTypeMap[K]> | null> {
+  async sendMessageToFrameWithReply<K extends keyof OutboundFrameMessageMap | keyof OutboundToInboundMessageTypeMap>(
+    frameContext: Window,
+    message: FrameMessage<OutboundFrameMessageMap, K>
+  ): Promise<FrameMessage<InboundFrameMessageMap, OutboundToInboundMessageTypeMap[K]> | null> {
     const startTime = new Date();
 
     return new Promise(async (resolve, reject) => {
-
       // TODO: Make this domain be configurable
       frameContext.postMessage(JSON.stringify(message), 'http://localhost:5002');
 
@@ -85,15 +88,19 @@ export class FrameMessageCreator {
     });
   }
 
-  convertRawMessageToTypedMessage<K extends keyof InboundFrameMessageMap>(rawMessage: UnknownFrameMessage): FrameMessage<InboundFrameMessageMap, K> {
+  convertRawMessageToTypedMessage<K extends keyof InboundFrameMessageMap>(
+    rawMessage: UnknownFrameMessage
+  ): FrameMessage<InboundFrameMessageMap, K> {
     return rawMessage as FrameMessage<InboundFrameMessageMap, K>;
   }
 
-  processFrameResponse(message: UnknownFrameMessage): FrameMessage<InboundFrameMessageMap, keyof InboundFrameMessageMap> | null {
+  processFrameResponse(
+    message: UnknownFrameMessage
+  ): FrameMessage<InboundFrameMessageMap, keyof InboundFrameMessageMap> | null {
     // TODO: Add validation for this RPC here.
     switch (message.command) {
-      case "ReceiveCommittedToken":
-        return this.convertRawMessageToTypedMessage<"ReceiveCommittedToken">(message);
+      case 'ReceiveCommittedToken':
+        return this.convertRawMessageToTypedMessage<'ReceiveCommittedToken'>(message);
     }
 
     return null;

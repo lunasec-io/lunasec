@@ -38,10 +38,10 @@ function validateElementAsSecureTarget(record: MutationRecord) {
   return element;
 }
 
-interface SecureFormInputConfig {
-  formElement: Element,
-  children: HTMLInputElement[]
-}
+type SecureFormInputConfig = {
+  readonly formElement: Element,
+  readonly children: readonly HTMLInputElement[]
+};
 
 export function setupElementWithSecureFrame(domInstance: Document, frameUrl: string, input: HTMLInputElement) {
   const containerNonce = generateSecureNonce();
@@ -79,7 +79,7 @@ export function createDomWatcher(domInstance: Document, frameUrl: string, rootRe
     attributes: true
   };
 
-  function domCallback(mutations: MutationRecord[], observer: MutationObserver) {
+  function domCallback(mutations: readonly MutationRecord[], observer: MutationObserver) {
     if (!observer) {
       return;
     }
@@ -104,7 +104,7 @@ export function createDomWatcher(domInstance: Document, frameUrl: string, rootRe
         });
 
         return inputs;
-      }, [] as SecureFormInputConfig[]);
+      }, [] as readonly SecureFormInputConfig[]);
 
     if (secureForms.length === 0) {
       return;

@@ -1,6 +1,6 @@
-import {URL as URI} from 'url';
 import * as http from 'http';
 import * as https from 'https';
+import {URL as URI} from 'url';
 
 function getRequestModule(protocol: string) {
   if (protocol === 'http:') {
@@ -15,7 +15,7 @@ function getRequestModule(protocol: string) {
 }
 
 export class FailedJsonDeserializationError extends Error {
-  rawData?: string;
+  readonly rawData?: string;
 
   constructor(rawData?: string) {
     super('Failed to deserialize JSON data');
@@ -24,8 +24,8 @@ export class FailedJsonDeserializationError extends Error {
 }
 
 export class BadHttpResponseError extends Error {
-  responseCode?: number;
-  rawData!: string;
+  readonly responseCode?: number;
+  readonly rawData!: string;
 
   constructor(responseCode: number | undefined, rawData: string) {
     super('Bad Http response received');
@@ -52,13 +52,13 @@ function getRequestParams(host: string, path: string, params: http.ClientRequest
   return {requestModule, requestConfig};
 }
 
-export function makeRawRequest(host: string, path: string, params: http.ClientRequestArgs, body?: string): Promise<[http.IncomingMessage, Buffer]> {
+export function makeRawRequest(host: string, path: string, params: http.ClientRequestArgs, body?: string): Promise<readonly [http.IncomingMessage, Buffer]> {
   const {requestModule, requestConfig} = getRequestParams(host, path, params);
 
   return new Promise((resolve, reject) => {
 
     let responseBuffer: Buffer;
-    let req = requestModule.request(requestConfig, res => {
+    const req = requestModule.request(requestConfig, res => {
       res.on('data', (chunk: Buffer) => {
         chunk.copy(responseBuffer);
       });

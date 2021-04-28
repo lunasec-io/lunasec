@@ -1,7 +1,7 @@
 // import {patchStyle} from '../style-patcher/write';
-import {SECURE_FRAME_URL} from '../constants';
-import {safeParseJson} from '../utils/json';
-import {UnknownFrameMessage} from './types';
+import { SECURE_FRAME_URL } from '../constants';
+import { safeParseJson } from '../utils/json';
+import { UnknownFrameMessage } from './types';
 
 /**
  * The goal of this function is to receive RPC calls from the secure frame.
@@ -9,80 +9,90 @@ import {UnknownFrameMessage} from './types';
  * @param domInstance Browser `document` instance.
  */
 export function addMessageListener(window: Window, domInstance: Document) {
-  window.addEventListener("message", (event) => {
-    console.log('parent message received:', event);
+  window.addEventListener(
+    'message',
+    (event) => {
+      console.log('parent message received:', event);
 
-    if ((event.origin + '/') !== SECURE_FRAME_URL) {
-      return;
-    }
+      if (event.origin + '/' !== SECURE_FRAME_URL) {
+        return;
+      }
 
-    if (!event.source) {
-      console.error('invalid source of event');
-      return;
-    }
+      if (!event.source) {
+        console.error('invalid source of event');
+        return;
+      }
 
-    const secureContainer = domInstance.querySelector(`[data-secure-frame-nonce="${event.data}"]`);
+      const secureContainer = domInstance.querySelector(`[data-secure-frame-nonce="${event.data}"]`);
 
-    if (!secureContainer) {
-      console.error('Unable to locate secure container with nonce:', event.data);
-      return;
-    }
+      if (!secureContainer) {
+        console.error('Unable to locate secure container with nonce:', event.data);
+        return;
+      }
 
-    // @ts-ignore
-    const inputElementStyle = window.SECURE_FORM_ORIGINAL_ELEMENTS[event.data]; // secureContainer.querySelector('input') as (HTMLElement | undefined);
+      // @ts-ignore
+      const inputElementStyle = window.SECURE_FORM_ORIGINAL_ELEMENTS[event.data]; // secureContainer.querySelector('input') as (HTMLElement | undefined);
 
-    if (!inputElementStyle) {
-      console.error('Unable to find child input element for container with nonce:', event.data);
-      return;
-    }
+      if (!inputElementStyle) {
+        console.error('Unable to find child input element for container with nonce:', event.data);
+        return;
+      }
 
-    const secureIframe = secureContainer.querySelector('iframe');
+      const secureIframe = secureContainer.querySelector('iframe');
 
-    if (!secureIframe) {
-      console.error('Missing iframe in secure container');
-      return;
-    }
+      if (!secureIframe) {
+        console.error('Missing iframe in secure container');
+        return;
+      }
 
-    // const styleInfo = getStyleInfo(inputElement);
+      // const styleInfo = getStyleInfo(inputElement);
 
-    // patchStyle(domInstance, secureIframe, inputElementStyle);
+      // patchStyle(domInstance, secureIframe, inputElementStyle);
 
-    // @ts-ignore
-    event.source.postMessage(inputElementStyle, event.origin)
-
-  }, false);
+      // @ts-ignore
+      event.source.postMessage(inputElementStyle, event.origin);
+    },
+    false
+  );
 }
 
-export function addReactEventListener(window: Window, controller: AbortController, callback: (message: UnknownFrameMessage) => void): AbortSignal {
+export function addReactEventListener(
+  window: Window,
+  controller: AbortController,
+  callback: (message: UnknownFrameMessage) => void
+): AbortSignal {
   const abortSignal = controller.signal;
 
   // Note: The AbortSignal seems to be unknown to Typescript.
   // @ts-ignore
-  const eventListenerOptions: AddEventListenerOptions = {signal: abortSignal};
+  const eventListenerOptions: AddEventListenerOptions = { signal: abortSignal };
 
-  window.addEventListener("message", (event) => {
+  window.addEventListener(
+    'message',
+    (event) => {
+      // TODO: Make SECURE_FRAME_URL not a webpack-based baked in constant.
+      if (event.origin + '/' !== SECURE_FRAME_URL) {
+        return;
+      }
 
-    // TODO: Make SECURE_FRAME_URL not a webpack-based baked in constant.
-    if ((event.origin + '/') !== SECURE_FRAME_URL) {
-      return;
-    }
+      const frameMessage = safeParseJson<UnknownFrameMessage>(event.data);
 
-    const frameMessage = safeParseJson<UnknownFrameMessage>(event.data);
+      // Invalid data passed from frame.
+      if (frameMessage === null) {
+        console.error('Frame message null:', frameMessage);
+        return;
+      }
 
-    // Invalid data passed from frame.
-    if (frameMessage === null) {
-      console.error('Frame message null:', frameMessage);
-      return;
-    }
+      // Message is not for us
+      // if (frameMessage.correlationToken !== token) {
+      //   console.log('correlation token mismatch:', frameMessage.correlationToken, token);
+      //   return;
+      // }
 
-    // Message is not for us
-    // if (frameMessage.correlationToken !== token) {
-    //   console.log('correlation token mismatch:', frameMessage.correlationToken, token);
-    //   return;
-    // }
-
-    callback(frameMessage);
-  }, eventListenerOptions);
+      callback(frameMessage);
+    },
+    eventListenerOptions
+  );
 
   return abortSignal;
 }

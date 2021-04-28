@@ -1,14 +1,5 @@
-import {
-  StyleSnapshot,
-  SupportedElement,
-  SupportedElementTagName,
-  SupportedElementTagNameMap
-} from './types';
-import {
-  ELEMENT_ATTRIBUTE_WHITELIST,
-  PARENT_ELEMENT_STYLE_ATTRIBUTES,
-  SKIPPED_PROPERTIES
-} from './constants';
+import { StyleSnapshot, SupportedElement, SupportedElementTagName, SupportedElementTagNameMap } from './types';
+import { ELEMENT_ATTRIBUTE_WHITELIST, PARENT_ELEMENT_STYLE_ATTRIBUTES, SKIPPED_PROPERTIES } from './constants';
 
 export function isTagName<T extends SupportedElementTagName>(
   el: SupportedElement,
@@ -18,7 +9,7 @@ export function isTagName<T extends SupportedElementTagName>(
 }
 
 export function createStyleElement(doc: Document, css: string): HTMLStyleElement {
-  const style = doc.createElement("style");
+  const style = doc.createElement('style');
   style.appendChild(doc.createTextNode(css));
 
   return style;
@@ -34,12 +25,9 @@ export function getStyleSnapshot(style: CSSStyleDeclaration): StyleSnapshot {
   return snapshot;
 }
 
-export function filterStyleWith(
-  style: StyleSnapshot,
-  filterFn: (key: string) => boolean
-): StyleSnapshot {
+export function filterStyleWith(style: StyleSnapshot, filterFn: (key: string) => boolean): StyleSnapshot {
   return Object.keys(style).reduce((outputStyle, key) => {
-    const shouldSkip = SKIPPED_PROPERTIES.some(skipped => key.startsWith(skipped));
+    const shouldSkip = SKIPPED_PROPERTIES.some((skipped) => key.startsWith(skipped));
     if (shouldSkip) {
       return outputStyle;
     }
@@ -54,7 +42,7 @@ export function filterStyleWith(
 
 export function getChildStyle(style: StyleSnapshot) {
   function filterChildAttributes(key: string) {
-    return ELEMENT_ATTRIBUTE_WHITELIST.some(property => property === key.toLowerCase());
+    return ELEMENT_ATTRIBUTE_WHITELIST.some((property) => property === key.toLowerCase());
   }
 
   return filterStyleWith(style, filterChildAttributes);
@@ -62,7 +50,7 @@ export function getChildStyle(style: StyleSnapshot) {
 
 export function getParentStyle(style: StyleSnapshot) {
   function filterChildAttributes(key: string) {
-    return PARENT_ELEMENT_STYLE_ATTRIBUTES.some(property => property === key.toLowerCase());
+    return PARENT_ELEMENT_STYLE_ATTRIBUTES.some((property) => property === key.toLowerCase());
   }
 
   return filterStyleWith(style, filterChildAttributes);
@@ -78,19 +66,14 @@ export function generateCssText(style: StyleSnapshot): string {
     declarations.push(`${key}:${style[key]};`);
   }
 
-  return declarations.join("");
+  return declarations.join('');
 }
 
-export function generatePseudoElementCSS(
-  target: SupportedElement,
-  selector: string,
-  cssText: string
-): string {
+export function generatePseudoElementCSS(target: SupportedElement, selector: string, cssText: string): string {
   if (!cssText) {
-    return "";
+    return '';
   }
 
   // TODO: Is this a security issue?
   return `#${target.id}${selector}{${cssText}}`;
 }
-

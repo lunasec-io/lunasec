@@ -1,8 +1,8 @@
-import {TokenizerClientConfig} from './types';
+import { TokenizerClientConfig } from './types';
 
 export const CONFIG_DEFAULTS: TokenizerClientConfig = {
   host: 'http://localhost:37765',
-  metaEncoding: "base64",
+  metaEncoding: 'base64',
   endpoints: {
     setMetadata: '/metadata/set',
     getMetadata: '/metadata/get',
@@ -10,7 +10,7 @@ export const CONFIG_DEFAULTS: TokenizerClientConfig = {
     setToken: '/tokenize',
   },
   headers: {
-    key: "X-Tokenizer-Secret-Key".toLowerCase(),
-    meta: "X-Tokenizer-Meta".toLowerCase()
-  }
+    key: 'X-Tokenizer-Secret-Key'.toLowerCase(),
+    meta: 'X-Tokenizer-Meta'.toLowerCase(),
+  },
 };

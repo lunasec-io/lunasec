@@ -1,25 +1,19 @@
-import {
-  PesudoStyleInfoMap, ReadElementStyle,
-  SupportedElement
-} from './types';
+import { PesudoStyleInfoMap, ReadElementStyle, SupportedElement } from './types';
 // import {
 //   NO_GENERATE_CONTENT_ELEMENTS,
 //   PLACEHOLDER_ELEMENTS,
 //   // SUPPORTED_PSEUDO_SELECTORS
 // } from './constants';
-import {getChildStyle, getParentStyle, getStyleSnapshot} from './dom-utils';
+import { getChildStyle, getParentStyle, getStyleSnapshot } from './dom-utils';
 
-export function getStyleInfo(
-  source: SupportedElement,
-  pseudoSelector?: string
-): ReadElementStyle | null {
+export function getStyleInfo(source: SupportedElement, pseudoSelector?: string): ReadElementStyle | null {
   const computed = window.getComputedStyle(source, pseudoSelector);
   const allStyleInfo = getStyleSnapshot(computed);
   const framedInputStyle = getChildStyle(allStyleInfo);
   const parentStyle = getParentStyle(allStyleInfo);
   const { display, content } = framedInputStyle;
 
-  if (display === "none" || (pseudoSelector && content === "none")) {
+  if (display === 'none' || (pseudoSelector && content === 'none')) {
     return null;
   }
 
@@ -48,7 +42,7 @@ export function getStyleInfo(
       childStyle: {
         style: framedInputStyle,
         pseudo: allPseudoStyleInfo,
-      }
+      },
     };
   }
 
