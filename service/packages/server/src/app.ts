@@ -36,14 +36,12 @@ app.use((_req, res, next) => {
   next();
 });
 
-const numberRegex = /^\d+\.?\d+?(px|em|rem)$/;
 
 // TODO: Move this to a POST request API call so that this token doesn't persist in Browser logs.
 app.get('/frame', async (req, res) => {
   const referer = req.headers.referer;
   const nonce = req.query.n;
-  const width = req.query.w;
-  const height = req.query.h;
+
 
   // TODO: Return errors as HTML?
   if (!referer) {
@@ -62,27 +60,9 @@ app.get('/frame', async (req, res) => {
     return;
   }
 
-  if (width === undefined || typeof width !== 'string' || !numberRegex.test(width)) {
-    res.status(400).json({
-      error: true,
-      message: 'Invalid frame width for request'
-    });
-    return;
-  }
-
-  if (height === undefined || typeof height !== 'string' || !numberRegex.test(height)) {
-    res.status(400).json({
-      error: true,
-      message: 'Invalid frame height for request'
-    });
-    return;
-  }
-
   res.locals.request_origin = referer;
   res.locals.request_nonce = nonce;
-  res.locals.input_width = width;
-  res.locals.input_height = height;
-  res.locals.input_style = `width: ${width}px; height: ${height}px`;
+
 
   // TODO: Add UUID regex validation
   // TODO: Spend some time to simplify + flatten out this code. Too much imperative control flow right now.

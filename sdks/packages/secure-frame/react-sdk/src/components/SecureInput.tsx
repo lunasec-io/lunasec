@@ -53,6 +53,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     this.context.addComponentRef(this.frameRef, this.frameId, this.props.name);
 
     this.generateElementStyle();
+    this.setResizeListener();
   }
 
   componentWillUnmount() {
@@ -71,18 +72,36 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     });
   }
 
-  generateUrl(urlWidth: string, urlHeight: string, frameStyleInfo: ElementStyleInfo) {
+  generateUrl(frameStyleInfo: ElementStyleInfo) {
     const urlFrameId = encodeURIComponent(this.frameId);
 
     const hash = encodeURIComponent(JSON.stringify(frameStyleInfo));
 
-    const baseUrl = `${this.state.secureFrameUrl}frame?n=${urlFrameId}&w=${urlWidth}&h=${urlHeight}`;
+    const baseUrl = `${this.state.secureFrameUrl}frame?n=${urlFrameId}}`;
 
     if (!this.props.token) {
       return `${baseUrl}#${hash}`;
     }
 
     return `${baseUrl}&t=${encodeURIComponent(this.props.token)}#${hash}`;
+  }
+
+  setResizeListener() {
+    const observer = new ResizeObserver(() => {
+      const hiddenInput = this.inputRef.current;
+      const iframe = this.frameRef.current;
+      if (!hiddenInput || !iframe || !hiddenInput.offsetHeight ) {
+        // DOMs not actually ready
+        return;
+      }
+      iframe.style.width = `${hiddenInput.offsetWidth}px`;
+      iframe.style.height = `${hiddenInput.offsetHeight}px`;
+    })
+
+    const hiddenInput = this.inputRef.current;
+    if (hiddenInput) {
+      observer.observe(hiddenInput as Element);
+    }
   }
 
   renderFrame() {
@@ -102,7 +121,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     return (
       <iframe
         ref={this.frameRef}
-        src={this.generateUrl(width, height, childStyle)}
+        src={this.generateUrl(childStyle)}
         frameBorder={0}
         style={iframeStyle}
       />
@@ -117,6 +136,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
     const divContainerStyle: CSSProperties = {
       position: 'relative'
+
     }
 
     const hiddenInputStyle: CSSProperties = {
