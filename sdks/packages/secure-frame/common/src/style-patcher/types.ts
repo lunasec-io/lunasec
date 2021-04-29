@@ -1,8 +1,6 @@
-
 export type SupportedElement = HTMLElement | SVGElement;
 
-export type SupportedElementTagNameMap = HTMLElementTagNameMap &
-  SVGElementTagNameMap;
+export type SupportedElementTagNameMap = HTMLElementTagNameMap & SVGElementTagNameMap;
 
 export type SupportedElementTagName = keyof SupportedElementTagNameMap;
 
@@ -24,8 +22,8 @@ export interface PseudoElementStyleInfo {
 export type StyleInfo = ElementStyleInfo | null;
 
 export interface ReadElementStyle {
-  parentStyle: StyleSnapshot,
+  parentStyle: StyleSnapshot;
   width: string;
   height: string;
-  childStyle: ElementStyleInfo
+  childStyle: ElementStyleInfo;
 }

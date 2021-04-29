@@ -1,9 +1,9 @@
 // Fork of: https://github.com/sindresorhus/camelcase/blob/main/index.js
 
 export interface CamelCaseOptions {
-  pascalCase: boolean,
-  preserveConsecutiveUppercase: boolean,
-  locale?: string
+  pascalCase: boolean;
+  preserveConsecutiveUppercase: boolean;
+  locale?: string;
 }
 
 export function preserveCamelCase(str: string, locale?: string) {
@@ -26,9 +26,11 @@ export function preserveCamelCase(str: string, locale?: string) {
       isLastCharUpper = false;
       isLastCharLower = true;
     } else {
-      isLastCharLower = character.toLocaleLowerCase(locale) === character && character.toLocaleUpperCase(locale) !== character;
+      isLastCharLower =
+        character.toLocaleLowerCase(locale) === character && character.toLocaleUpperCase(locale) !== character;
       isLastLastCharUpper = isLastCharUpper;
-      isLastCharUpper = character.toLocaleUpperCase(locale) === character && character.toLocaleLowerCase(locale) !== character;
+      isLastCharUpper =
+        character.toLocaleUpperCase(locale) === character && character.toLocaleLowerCase(locale) !== character;
     }
   }
 
@@ -36,26 +38,27 @@ export function preserveCamelCase(str: string, locale?: string) {
 }
 
 export function preserveConsecutiveUppercase(input: string) {
-  return input.replace(/^[\p{Lu}](?![\p{Lu}])/gu, m1 => m1.toLowerCase());
+  return input.replace(/^[\p{Lu}](?![\p{Lu}])/gu, (m1) => m1.toLowerCase());
 }
 
 export function postProcess(input: string, options: CamelCaseOptions) {
-  return input.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(options.locale))
-    .replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase(options.locale));
+  return input
+    .replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(options.locale))
+    .replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, (m) => m.toLocaleUpperCase(options.locale));
 }
 
 export function toCamelCase(input: string, options?: CamelCaseOptions) {
-
   if (!options) {
     options = {
       pascalCase: false,
-      preserveConsecutiveUppercase: false
-    }
+      preserveConsecutiveUppercase: false,
+    };
   }
 
   if (Array.isArray(input)) {
-    input = input.map(x => x.trim())
-      .filter(x => x.length)
+    input = input
+      .map((x) => x.trim())
+      .filter((x) => x.length)
       .join('-');
   } else {
     input = input.trim();

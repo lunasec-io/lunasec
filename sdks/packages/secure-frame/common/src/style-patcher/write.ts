@@ -1,22 +1,13 @@
-import {
-  ElementStyleInfo,
-  StyleInfo,
-  SupportedElement
-} from './types';
-import {
-  generateCssText,
-} from './dom-utils';
+import { StyleInfo, SupportedElement } from './types';
+import { generateCssText } from './dom-utils';
 
 // TODO: Figure out if this is a security concern before re-enabling
-export function patchStyle(
-  target: SupportedElement,
-  styleInfo: StyleInfo
-): void {
+export function patchStyle(target: SupportedElement, styleInfo: StyleInfo): void {
   if (!styleInfo) {
     return;
   }
 
-  const { style } = styleInfo as ElementStyleInfo;
+  const { style } = styleInfo;
 
   const cssText = generateCssText(style);
   target.style.cssText = cssText + target.style.cssText;
@@ -26,12 +17,12 @@ export function patchStyle(
    *
    * TODO: how to deal with inline elements?
    */
-  if (style.display !== "inline") {
-    target.style.boxSizing = "border-box";
-    target.style.width = "100%";
-    target.style.height = "100%";
-    target.style.maxWidth = "none";
-    target.style.minWidth = "auto";
+  if (style.display !== 'inline') {
+    target.style.boxSizing = 'border-box';
+    target.style.width = '100%';
+    target.style.height = '100%';
+    target.style.maxWidth = 'none';
+    target.style.minWidth = 'auto';
   }
 
   // TODO: Pseudo element support is diabled.

@@ -1,21 +1,21 @@
 import fs from 'fs';
-import {URL as URI} from 'url';
-import {makeGenericApiClient, GenericApiClient} from './api-client';
-import {makeRequest} from '@lunasec/common';
+import { URL as URI } from 'url';
+import { makeGenericApiClient, GenericApiClient } from './api-client';
+import { makeRequest } from '@lunasec/common';
 
 interface SecureResolverSdkConfig {
-  refinerySecret: string,
-  refinerySecretHeader: string,
-  containerSecret: string,
-  containerSecretHeader: string,
-  deploymentIDEnvVar: string,
-  app_dir: string,
-  language: string,
-  functionsPath?: string,
-  functionsConfig?: {},
+  refinerySecret: string;
+  refinerySecretHeader: string;
+  containerSecret: string;
+  containerSecretHeader: string;
+  deploymentIDEnvVar: string;
+  app_dir: string;
+  language: string;
+  functionsPath?: string;
+  functionsConfig?: {};
   endpoints: {
-    secureResolver: string,
-  }
+    secureResolver: string;
+  };
 }
 
 const defaultConfig: SecureResolverSdkConfig = {
@@ -28,15 +28,15 @@ const defaultConfig: SecureResolverSdkConfig = {
   language: 'Node.js 10 Temporal',
   functionsPath: 'functions.json',
   endpoints: {
-    secureResolver: '/api/v1/deployments/secure_resolver'
-  }
+    secureResolver: '/api/v1/deployments/secure_resolver',
+  },
 };
 
 export interface FunctionInvocationResult {
-  success: boolean,
-  error?: string,
-  completeError?: object,
-  result?: object
+  success: boolean;
+  error?: string;
+  completeError?: object;
+  result?: object;
 }
 
 export class SecureResolver {
@@ -51,7 +51,6 @@ export class SecureResolver {
   readonly apiClient!: GenericApiClient;
 
   constructor(config?: SecureResolverSdkConfig) {
-
     // Deep clone the config to prevent nested mutation.
     this.config = JSON.parse(JSON.stringify(Object.assign({}, defaultConfig, config)));
 
@@ -66,20 +65,20 @@ export class SecureResolver {
 
     if (this.config?.functionsConfig) {
       // This will override any values read from the file, just in case.
-      this.functionConfig = Object.assign({}, this.functionConfig, this.config.functionsConfig)
+      this.functionConfig = Object.assign({}, this.functionConfig, this.config.functionsConfig);
     }
 
     this.refineryHeaders = {
-      [this.config.refinerySecretHeader]: this.config.refinerySecret
+      [this.config.refinerySecretHeader]: this.config.refinerySecret,
     };
 
     this.containerHeaders = {
-      [this.config.containerSecretHeader]: this.config.containerSecret
+      [this.config.containerSecretHeader]: this.config.containerSecret,
     };
 
     this.apiClient = makeGenericApiClient(this.config.endpoints.secureResolver, {
       method: 'POST',
-      headers: this.refineryHeaders
+      headers: this.refineryHeaders,
     });
   }
 
@@ -93,14 +92,14 @@ export class SecureResolver {
         container_uri: containerUri,
         language: this.config.language,
         app_dir: this.config.app_dir,
-        functions: functions
-      }
+        functions: functions,
+      },
     });
 
     if (!response) {
       return {
         error: true,
-        message: response
+        message: response,
       };
     }
 
@@ -119,33 +118,38 @@ export class SecureResolver {
       return {
         success: false,
         error: urlResponse.error.message,
-        completeError: urlResponse
+        completeError: urlResponse,
       };
     }
 
     const body = JSON.stringify({
       function_name: functionName,
-      block_input: args
+      block_input: args,
     });
 
-    const resolverUrl = new URI(urlResponse.data.url)
+    const resolverUrl = new URI(urlResponse.data.url);
 
-    const response = await makeRequest<{error?: string, result?: object}>(resolverUrl.host, resolverUrl.pathname, {
-      ...resolverUrl,
-      method: 'POST',
-      headers: this.containerHeaders
-    }, body);
+    const response = await makeRequest<{ error?: string; result?: object }>(
+      resolverUrl.host,
+      resolverUrl.pathname,
+      {
+        ...resolverUrl,
+        method: 'POST',
+        headers: this.containerHeaders,
+      },
+      body
+    );
 
     if (!response || response.error) {
       return {
         success: false,
-        ...response
+        ...response,
       };
     }
 
     return {
       success: true,
-      ...response
+      ...response,
     };
   }
 
@@ -153,8 +157,8 @@ export class SecureResolver {
     return await this.apiClient<'url'>({
       action: 'url',
       payload: {
-        deployment_id: deploymentId
-      }
+        deployment_id: deploymentId,
+      },
     });
   }
 
@@ -163,7 +167,7 @@ export class SecureResolver {
       action: 'remove',
       payload: {
         stage: 'prod',
-      }
+      },
     });
   }
 
@@ -172,8 +176,8 @@ export class SecureResolver {
       action: 'listFunctions',
       payload: {
         stage: 'prod',
-        deployment_id: deploymentId
-      }
+        deployment_id: deploymentId,
+      },
     });
   }
 
@@ -181,8 +185,8 @@ export class SecureResolver {
     return await this.apiClient<'listDeployments'>({
       action: 'listDeployments',
       payload: {
-        stage: 'prod'
-      }
+        stage: 'prod',
+      },
     });
   }
 }

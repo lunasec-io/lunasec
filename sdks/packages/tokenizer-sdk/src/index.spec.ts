@@ -1,44 +1,42 @@
 import tape from 'tape';
-import {Tokenizer} from './index';
-import {
-  createFakeTokenizerService,
-  FakeTokenizerServiceConfig
-} from './test-utils/fake-tokenizer-service';
+import { Tokenizer } from './index';
+import { createFakeTokenizerService, FakeTokenizerServiceConfig } from './test-utils/fake-tokenizer-service';
 import {
   TEST_METADATA,
   TEST_PLAINTEXT_VALUE,
-  TEST_S3_HEADERS, TEST_TOKEN,
-  TEST_TOKENIZER_SECRET
+  TEST_S3_HEADERS,
+  TEST_TOKEN,
+  TEST_TOKENIZER_SECRET,
 } from './test-utils/test-constants';
-import {verifyHeaders, verifySecretHeader} from './test-utils/http-test-utils';
+import { verifyHeaders, verifySecretHeader } from './test-utils/http-test-utils';
 
 interface TokenizerTestServiceConfig {
-  tokenizerConfig?: Partial<FakeTokenizerServiceConfig>
+  tokenizerConfig?: Partial<FakeTokenizerServiceConfig>;
 }
 
 interface TokenizerTestConfig {
-  name: string,
+  name: string;
   fn: (test: tape.Test, tokenizer: Tokenizer) => Promise<void>;
-  beforeSetup?: (test: tape.Test) => Promise<TokenizerTestServiceConfig>
+  beforeSetup?: (test: tape.Test) => Promise<TokenizerTestServiceConfig>;
 }
 
 async function runTokenizerTest(config: TokenizerTestConfig) {
-  const {name, fn, beforeSetup} = config;
+  const { name, fn, beforeSetup } = config;
 
   // TODO: Pick a random port to allow concurrent test runs
   const tokenizerServerPort = 12347;
 
-  tape(name, async test => {
+  tape(name, async (test) => {
     const setupConfig = beforeSetup ? await beforeSetup(test) : {};
 
     const fakeTokenizerServer = createFakeTokenizerService({
       port: tokenizerServerPort,
-      ...setupConfig.tokenizerConfig
+      ...setupConfig.tokenizerConfig,
     });
 
     function onFinish() {
       return new Promise((resolve, reject) => {
-        fakeTokenizerServer.close(err => {
+        fakeTokenizerServer.close((err) => {
           if (err) {
             reject('Unable to close server');
             return;
@@ -46,12 +44,12 @@ async function runTokenizerTest(config: TokenizerTestConfig) {
 
           resolve(true);
         });
-      })
+      });
     }
 
     const tokenizer = new Tokenizer({
       host: `http://localhost:${tokenizerServerPort}`,
-      secret: TEST_TOKENIZER_SECRET
+      secret: TEST_TOKENIZER_SECRET,
     });
 
     await fn(test, tokenizer);
@@ -64,7 +62,7 @@ const tests: TokenizerTestConfig[] = [];
 
 tests.push({
   name: 'Test tokenizing a value',
-  fn: async (test, tokenizer) =>{
+  fn: async (test, tokenizer) => {
     try {
       const response = await tokenizer.tokenize(TEST_PLAINTEXT_VALUE);
 
@@ -87,15 +85,15 @@ tests.push({
     return {
       tokenizerConfig: {
         onRequestCallback: verifySecretHeader(test),
-        onS3Callback: verifyHeaders(test, TEST_S3_HEADERS.PUT)
-      }
+        onS3Callback: verifyHeaders(test, TEST_S3_HEADERS.PUT),
+      },
     };
-  }
+  },
 });
 
 tests.push({
   name: 'Test detokenizing a value',
-  fn: async (test, tokenizer) =>{
+  fn: async (test, tokenizer) => {
     try {
       const response = await tokenizer.detokenize(TEST_TOKEN);
 
@@ -119,15 +117,15 @@ tests.push({
     return {
       tokenizerConfig: {
         onRequestCallback: verifySecretHeader(test),
-        onS3Callback: verifyHeaders(test, TEST_S3_HEADERS.GET)
-      }
+        onS3Callback: verifyHeaders(test, TEST_S3_HEADERS.GET),
+      },
     };
-  }
+  },
 });
 
 tests.push({
   name: 'Test adding metadata to a value',
-  fn: async (test, tokenizer) =>{
+  fn: async (test, tokenizer) => {
     try {
       const response = await tokenizer.setMetadata(TEST_TOKEN, TEST_METADATA);
 
@@ -149,15 +147,15 @@ tests.push({
   async beforeSetup(test) {
     return {
       tokenizerConfig: {
-        onRequestCallback: verifySecretHeader(test)
-      }
+        onRequestCallback: verifySecretHeader(test),
+      },
     };
-  }
+  },
 });
 
 tests.push({
   name: 'Test reading metadata from a token',
-  fn: async (test, tokenizer) =>{
+  fn: async (test, tokenizer) => {
     try {
       const response = await tokenizer.getMetadata(TEST_TOKEN);
 
@@ -179,13 +177,12 @@ tests.push({
   async beforeSetup(test) {
     return {
       tokenizerConfig: {
-        onRequestCallback: verifySecretHeader(test)
-      }
+        onRequestCallback: verifySecretHeader(test),
+      },
     };
-  }
+  },
 });
 
-
-tests.forEach(async t => {
+tests.forEach(async (t) => {
   await runTokenizerTest(t);
-})
+});

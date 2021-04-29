@@ -1,24 +1,14 @@
 import express from 'express';
-import {
-  GetMetadataResponse,
-  GetTokenResponse, SetMetadataResponse,
-  SetTokenResponse
-} from '../api/types';
-import {
-  TEST_METADATA,
-  TEST_PLAINTEXT_VALUE,
-  TEST_QUERY_PARAMS,
-  TEST_S3_HEADERS,
-  TEST_TOKEN
-} from './test-constants';
-import {CONFIG_DEFAULTS} from '../constants';
+import { GetMetadataResponse, GetTokenResponse, SetMetadataResponse, SetTokenResponse } from '../api/types';
+import { TEST_METADATA, TEST_PLAINTEXT_VALUE, TEST_QUERY_PARAMS, TEST_S3_HEADERS, TEST_TOKEN } from './test-constants';
+import { CONFIG_DEFAULTS } from '../constants';
 
 export type OnResponseCallback = (req: express.Request) => Promise<Record<string, any> | void>;
 
 export interface FakeTokenizerServiceConfig {
-  port: number,
-  onRequestCallback?: OnResponseCallback,
-  onS3Callback?: OnResponseCallback
+  port: number;
+  onRequestCallback?: OnResponseCallback;
+  onS3Callback?: OnResponseCallback;
 }
 
 export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
@@ -38,36 +28,48 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
       }
 
       res.json(json);
-    }
+    };
   }
 
-  app.use(CONFIG_DEFAULTS.endpoints.setToken, respondWithJson<SetTokenResponse>({
-    "success": true,
-    "data": {
-      "tokenId": TEST_TOKEN,
-      "uploadUrl": `http://localhost:${config.port}/${awsS3WritePath}${TEST_QUERY_PARAMS}`,
-      "headers": TEST_S3_HEADERS.PUT
-    }
-  }));
+  app.use(
+    CONFIG_DEFAULTS.endpoints.setToken,
+    respondWithJson<SetTokenResponse>({
+      success: true,
+      data: {
+        tokenId: TEST_TOKEN,
+        uploadUrl: `http://localhost:${config.port}/${awsS3WritePath}${TEST_QUERY_PARAMS}`,
+        headers: TEST_S3_HEADERS.PUT,
+      },
+    })
+  );
 
-  app.use(CONFIG_DEFAULTS.endpoints.getToken, respondWithJson<GetTokenResponse>({
-    "success": true,
-    "data": {
-      downloadUrl: `http://localhost:${config.port}/${awsS3WritePath}${TEST_QUERY_PARAMS}`,
-      headers: TEST_S3_HEADERS.GET
-    }
-  }));
+  app.use(
+    CONFIG_DEFAULTS.endpoints.getToken,
+    respondWithJson<GetTokenResponse>({
+      success: true,
+      data: {
+        downloadUrl: `http://localhost:${config.port}/${awsS3WritePath}${TEST_QUERY_PARAMS}`,
+        headers: TEST_S3_HEADERS.GET,
+      },
+    })
+  );
 
-  app.use(CONFIG_DEFAULTS.endpoints.setMetadata, respondWithJson<SetMetadataResponse>({
-    "success": true
-  }));
+  app.use(
+    CONFIG_DEFAULTS.endpoints.setMetadata,
+    respondWithJson<SetMetadataResponse>({
+      success: true,
+    })
+  );
 
-  app.use(CONFIG_DEFAULTS.endpoints.getMetadata, respondWithJson<GetMetadataResponse>({
-    "success": true,
-    "data": {
-      value: TEST_METADATA
-    }
-  }));
+  app.use(
+    CONFIG_DEFAULTS.endpoints.getMetadata,
+    respondWithJson<GetMetadataResponse>({
+      success: true,
+      data: {
+        value: TEST_METADATA,
+      },
+    })
+  );
 
   app.put(`/${awsS3WritePath}`, async (req, res) => {
     if (config.onS3Callback) {

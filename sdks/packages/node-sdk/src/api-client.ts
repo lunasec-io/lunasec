@@ -4,55 +4,66 @@ import {
   SecureResolverActionResponseMessageMap,
   SecureResolverApiFailResponse,
   SecureResolverApiSuccessResponse,
-  ValidSecureResolverApiRequestTypes
+  ValidSecureResolverApiRequestTypes,
 } from './types';
-import {REFINERY_API_SERVER} from './constants';
-import {
-  getRequestBody,
-  makeRequest
-} from '@lunasec/common';
+import { REFINERY_API_SERVER } from './constants';
+import { getRequestBody, makeRequest } from '@lunasec/common';
 
 export interface SecureEnclaveSuccessApiResponse<T> {
-  success: true,
-  data: T
+  success: true;
+  data: T;
 }
 
 export interface SecureEnclaveFailApiResponse {
-  success: false,
-  error: Error
+  success: false;
+  error: Error;
 }
 
 export async function makeSecureApiRequest<
   T extends ValidSecureResolverApiRequestTypes,
   TRequest extends SecureResolverActionMessageMap[T]
-  >(request: TRequest, path: string, params: http.ClientRequestArgs): Promise<SecureEnclaveSuccessApiResponse<SecureResolverActionResponseMessageMap[T]> | SecureEnclaveFailApiResponse> {
+>(
+  request: TRequest,
+  path: string,
+  params: http.ClientRequestArgs
+): Promise<SecureEnclaveSuccessApiResponse<SecureResolverActionResponseMessageMap[T]> | SecureEnclaveFailApiResponse> {
   try {
     // TODO: Add runtime JSON validation for response
-    const response = await makeRequest<SecureResolverApiSuccessResponse<SecureResolverActionResponseMessageMap[T]> | SecureResolverApiFailResponse>(REFINERY_API_SERVER, path, params, getRequestBody(request));
+    const response = await makeRequest<
+      SecureResolverApiSuccessResponse<SecureResolverActionResponseMessageMap[T]> | SecureResolverApiFailResponse
+    >(REFINERY_API_SERVER, path, params, getRequestBody(request));
 
     if (!response.success) {
       return {
         success: false,
-        error: new Error(response.msg !== undefined ? response.msg : 'Malformed response from API with missing error message')
+        error: new Error(
+          response.msg !== undefined ? response.msg : 'Malformed response from API with missing error message'
+        ),
       };
     }
 
     return {
       success: true,
-      data: response.result
+      data: response.result,
     };
   } catch (e) {
     return {
       success: false,
-      error: e
-    }
+      error: e,
+    };
   }
 }
 
-export type GenericApiClient = <T extends ValidSecureResolverApiRequestTypes>(request: SecureResolverActionMessageMap[T], requestOverrides?: http.ClientRequestArgs) => Promise<SecureEnclaveSuccessApiResponse<SecureResolverActionResponseMessageMap[T]> | SecureEnclaveFailApiResponse>;
+export type GenericApiClient = <T extends ValidSecureResolverApiRequestTypes>(
+  request: SecureResolverActionMessageMap[T],
+  requestOverrides?: http.ClientRequestArgs
+) => Promise<SecureEnclaveSuccessApiResponse<SecureResolverActionResponseMessageMap[T]> | SecureEnclaveFailApiResponse>;
 
 export function makeGenericApiClient(path: string, requestBaseConfig: http.ClientRequestArgs): GenericApiClient {
-  return async <T extends ValidSecureResolverApiRequestTypes>(request: SecureResolverActionMessageMap[T], requestOverrides?: http.ClientRequestArgs) => {
+  return async <T extends ValidSecureResolverApiRequestTypes>(
+    request: SecureResolverActionMessageMap[T],
+    requestOverrides?: http.ClientRequestArgs
+  ) => {
     const requestConfig = Object.assign({}, requestBaseConfig, requestOverrides);
 
     return await makeSecureApiRequest<T, SecureResolverActionMessageMap[T]>(request, path, requestConfig);
