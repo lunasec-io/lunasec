@@ -1,5 +1,5 @@
 {
-  "name": "@esluna/services-common",
+  "name": "@lunasec/services-common",
   "version": "1.0.0",
   "description": "Base esluna package",
   "main": "build/main/index.js",

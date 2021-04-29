@@ -1,5 +1,5 @@
-import {Tokenizer} from '@esluna/tokenizer-sdk';
-import {TOKENIZER_ERROR_CODES} from '@esluna/tokenizer-sdk/build/main/api/client';
+import {Tokenizer} from '@lunasec/tokenizer-sdk';
+import {TOKENIZER_ERROR_CODES} from '@lunasec/tokenizer-sdk/build/main/api/client';
 
 export async function detokenizeToken(token: string) {
   // TODO: When we want to build the "SaaS" version of this service, will we want to read this from a header instead?

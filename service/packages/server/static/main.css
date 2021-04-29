@@ -16,6 +16,14 @@ input {
     -webkit-border-radius: 0;
 }
 
+secure-input {
+/*    width: 100%;*/
+/*    height: 100%;*/
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 input:active {
     border-radius: 0;
     -webkit-appearance: none;
@@ -27,3 +35,4 @@ input:focus {
     -webkit-appearance: none;
     -webkit-border-radius: 0;
 }
+

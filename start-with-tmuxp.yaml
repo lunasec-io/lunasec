@@ -4,18 +4,20 @@ windows:
   layout: tiled
   panes:
     - shell_command:
-      - cd app
-      - node ./node_modules/.bin/nodemon --signal SIGHUP index.js
+      - cd sdks
+      - npm run watch
     - shell_command:
       - cd service
-      - node ./node_modules/.bin/nodemon --signal SIGHUP index.js
+      - npm run watch
     - shell_command:
-      - cd service
-      - npm run watch:browser 
+      - cd service/packages/browser
+      - npm run watch
     - shell_command:
-      - cd secure-frame-sdk
-      - npm run watch:build
+      - cd service/packages/server
+      - node --experimental-modules --es-module-specifier-resolution=node build/http-dev-server.js
     - shell_command:
       - cd react-front-end
       - npm run start
-
+    - shell_command:
+      - cd ~/go/src/github.com/refinery-labs/loq
+      - ./build/http_server
