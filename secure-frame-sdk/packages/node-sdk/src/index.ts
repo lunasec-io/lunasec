@@ -128,7 +128,7 @@ export class SecureResolver {
       block_input: args
     });
 
-    const resolverUrl = new URI(urlResponse.data.url)
+    const resolverUrl = new URI(urlResponse.data.url);
 
     const response = await makeRequest<{error?: string, result?: object}>(resolverUrl.host, resolverUrl.pathname, {
       ...resolverUrl,
