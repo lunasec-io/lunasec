@@ -42,6 +42,22 @@ export class SecureForm extends Component<SecureFormProps, SecureFormState> {
     this.abortController.abort();
   }
 
+  setNativeValue(element: HTMLInputElement, value: string) {
+    // @ts-ignore
+    const valueSetter = Object.getOwnPropertyDescriptor(element, 'value').set;
+    const prototype = Object.getPrototypeOf(element);
+    // @ts-ignore
+    const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
+
+    if (valueSetter && valueSetter !== prototypeValueSetter) {
+      // @ts-ignore
+      prototypeValueSetter.call(element, value);
+    } else {
+      // @ts-ignore
+      valueSetter.call(element, value);
+    }
+  }
+
   async onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -78,12 +94,11 @@ export class SecureForm extends Component<SecureFormProps, SecureFormState> {
 
       if (inputElement !== null) {
         // TODO: Throw an error here or something instead of "defaulting"
-        inputElement.value = response.data.token !== undefined ? response.data.token : 'unknown token value';
+        // inputElement.value = response.data.token !== undefined ? response.data.token : 'unknown token value';
+        this.setNativeValue(inputElement, response.data.token || '');
+        const e = new Event('input', { bubbles: true });
+        inputElement.dispatchEvent(e);
       }
-
-      // TODO: Add a callback that will "set" the token value inside of the `<SecureInput>` element.
-      // Otherwise a re-render by React will wipe the value of the `<input>` element state.
-      // Alternatively, we just add logic to prevent re-renders by React inside of SecureInput?
 
       const name = childRef[0];
 
@@ -95,15 +110,10 @@ export class SecureForm extends Component<SecureFormProps, SecureFormState> {
     this.setState({
       tokens: formData,
     });
-
-    // Just for testing, read the value back out of the element and make sure it passed through Context properly
-    const firstFakeInputRef = this.childRefLookup[Object.keys(this.childRefLookup)[0]][2];
-    firstFakeInputRef.current
-      ? console.log('INPUT VALUE IS ', firstFakeInputRef.current.value)
-      : console.log('failed to get inputRef');
+    console.log("Calling user's onsubmit");
+    this.props.onSubmit(e);
   }
 
-  // TODO: I think we should maybe be doing this iframe communication inside the secureInput elements, letting them manage their own state
   async triggerTokenCommit(
     frameContext: Window,
     nonce: string
@@ -140,7 +150,6 @@ export class SecureForm extends Component<SecureFormProps, SecureFormState> {
               delete this.childRefLookup[frameId];
             }
           },
-          tokens: this.state.tokens,
         }}
       >
         <form onSubmit={(e) => this.onSubmit(e)}>{this.props.children}</form>

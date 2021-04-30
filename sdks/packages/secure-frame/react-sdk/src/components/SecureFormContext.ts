@@ -8,8 +8,6 @@ export type SecureFormContextProps = {
     name: string
   ) => void;
   readonly removeComponentRef: (frameId: string) => void;
-  tokens: Record<string, string>;
-  // readonly setTokens: (tokens: Record<string, string>) => void;
 };
 
 // Note: The "default functions" here are only used by components that *don't* have a Provider in the component chain.
@@ -20,6 +18,4 @@ export const SecureFormContext = React.createContext<SecureFormContextProps>({
     console.log('Forwarded ref:', ref, frameId, name);
   },
   removeComponentRef: (frameId) => console.log('Removed component:', frameId),
-  tokens: {},
-  // setTokens: (tokens) => console.log('set tokens ', tokens),
 });

@@ -40,7 +40,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     this.frameId = generateSecureNonce();
     this.frameRef = React.createRef();
     this.inputRef = React.createRef();
-
+    this.tokenChanged = this.tokenChanged.bind(this);
     this.state = {
       // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
       secureFrameUrl: props.secureFrameUrl || 'http://localhost:5002/',
@@ -60,17 +60,16 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   }
 
   componentDidUpdate() {
-    console.log('component updated and context is ', this.context);
+    console.log(`component updated  ${this.frameId}`);
     // const inputEvent = new Event('input', { bubbles: true });
-
-    const event = new Event('change');
-    if (this.inputRef.current) {
-      this.inputRef.current.dispatchEvent(event);
-    }
+    //
+    // const event = new Event('change');
+    // if (this.inputRef.current) {
+    //   this.inputRef.current.dispatchEvent(event);
+    // }
   }
 
   tokenChanged(e: React.ChangeEvent<HTMLInputElement>) {
-    // THIS DOESN'T FIRE
     console.log('Token Change Handler in SecureInput fired');
     if (this.props.onChange) {
       this.props.onChange(e);
@@ -176,11 +175,9 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
             ref={this.inputRef}
             name={this.props.name}
             type="text"
-            // If we already have a token from server but the user changes the token using props, this will ignore
-            // it and that's bad, need to push that change back to SecureForm using a context function I believe
-            value={this.context.tokens[this.frameId] || this.props.token}
+            defaultValue={this.props.token}
             style={hiddenInputStyle}
-            onChange={this.tokenChanged.bind(this)} // doesnt work, probably because react is the one changing the value
+            onChange={(e) => this.tokenChanged(e)}
           />
           {this.renderFrame()}
         </div>
