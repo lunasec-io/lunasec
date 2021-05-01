@@ -1,12 +1,10 @@
-import React, {Component, CSSProperties, RefObject} from 'react';
-import {SecureFormContext} from './SecureFormContext';
-import {getStyleInfo} from '@lunasec/secure-frame-common/build/main/style-patcher/read';
-import {
-  ElementStyleInfo,
-  ReadElementStyle
-} from '@lunasec/secure-frame-common/build/main/style-patcher/types';
-import {camelCaseObject} from '@lunasec/secure-frame-common/build/main/utils/to-camel-case';
-import {generateSecureNonce} from '@lunasec/secure-frame-common/build/main/utils/random';
+import { getStyleInfo } from '@lunasec/secure-frame-common/build/main/style-patcher/read';
+import { ElementStyleInfo, ReadElementStyle } from '@lunasec/secure-frame-common/build/main/style-patcher/types';
+import { generateSecureNonce } from '@lunasec/secure-frame-common/build/main/utils/random';
+import { camelCaseObject } from '@lunasec/secure-frame-common/build/main/utils/to-camel-case';
+import React, { Component, CSSProperties, RefObject } from 'react';
+
+import { SecureFormContext } from './SecureFormContext';
 
 export interface SecureInputProps {
   token?: string;
@@ -14,6 +12,7 @@ export interface SecureInputProps {
   // TODO: Will this force the component to have a key?
   name: string;
   // TODO: Add form validation logic..?
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
 
 export interface SecureInputState {
@@ -26,7 +25,7 @@ export interface SecureInputState {
 }
 
 export class SecureInput extends Component<SecureInputProps, SecureInputState> {
-  declare context: React.ContextType<typeof SecureFormContext>
+  declare context: React.ContextType<typeof SecureFormContext>;
 
   static contextType = SecureFormContext;
 
@@ -41,16 +40,15 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     this.frameId = generateSecureNonce();
     this.frameRef = React.createRef();
     this.inputRef = React.createRef();
-
     this.state = {
       // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
-      secureFrameUrl: props.secureFrameUrl || "http://localhost:5002/",
-      frameStyleInfo: null
+      secureFrameUrl: props.secureFrameUrl || 'http://localhost:5002/',
+      frameStyleInfo: null,
     };
   }
 
   componentDidMount() {
-    this.context.addComponentRef(this.frameRef, this.frameId, this.props.name);
+    this.context.addComponentRef(this.frameRef, this.inputRef, this.frameId, this.props.name);
 
     this.generateElementStyle();
     this.setResizeListener();
@@ -58,6 +56,12 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
   componentWillUnmount() {
     this.context.removeComponentRef(this.frameId);
+  }
+
+  tokenChanged(e: React.ChangeEvent<HTMLInputElement>) {
+    if (this.props.onChange) {
+      this.props.onChange(e);
+    }
   }
 
   generateElementStyle() {
@@ -68,7 +72,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     const frameStyleInfo = getStyleInfo(this.inputRef.current);
 
     this.setState({
-      frameStyleInfo: frameStyleInfo
+      frameStyleInfo: frameStyleInfo,
     });
   }
 
@@ -90,13 +94,13 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     const observer = new ResizeObserver(() => {
       const hiddenInput = this.inputRef.current;
       const iframe = this.frameRef.current;
-      if (!hiddenInput || !iframe || !hiddenInput.offsetHeight ) {
+      if (!hiddenInput || !iframe || !hiddenInput.offsetHeight) {
         // DOMs not actually ready
         return;
       }
       iframe.style.width = `${hiddenInput.offsetWidth}px`;
       iframe.style.height = `${hiddenInput.offsetHeight}px`;
-    })
+    });
 
     const hiddenInput = this.inputRef.current;
     if (hiddenInput) {
@@ -109,13 +113,13 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       return null;
     }
 
-    const {parentStyle, width, height, childStyle} = this.state.frameStyleInfo;
+    const { parentStyle, width, height, childStyle } = this.state.frameStyleInfo;
 
     const iframeStyle: CSSProperties = {
       ...camelCaseObject(parentStyle),
       display: 'block',
       width: width,
-      height: height
+      height: height,
     };
 
     return (
@@ -124,6 +128,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
         src={this.generateUrl(childStyle)}
         frameBorder={0}
         style={iframeStyle}
+        key={this.frameId}
       />
     );
   }
@@ -131,13 +136,12 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   render() {
     const parentContainerStyle: CSSProperties = {
       // position: 'relative'
-      display: 'block'
-    }
+      display: 'block',
+    };
 
     const divContainerStyle: CSSProperties = {
-      position: 'relative'
-
-    }
+      position: 'relative',
+    };
 
     const hiddenInputStyle: CSSProperties = {
       position: 'absolute',
@@ -145,21 +149,23 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       left: 0,
       zIndex: -999,
       visibility: this.state.frameStyleInfo ? 'hidden' : 'visible',
-      display: 'block'
+      display: 'block',
     };
 
     return (
       <div
         className={`secure-form-container-${this.frameId} secure-form-container-${this.props.name}`}
-        style={parentContainerStyle}>
+        style={parentContainerStyle}
+      >
         <div style={divContainerStyle}>
           <input
             className={`secure-form-input--hidden`}
             ref={this.inputRef}
-            name={`insecure-${this.props.name}`}
+            name={this.props.name}
             type="text"
-            value="Loading..."
+            defaultValue={this.props.token}
             style={hiddenInputStyle}
+            onChange={(e) => this.tokenChanged(e)}
           />
           {this.renderFrame()}
         </div>

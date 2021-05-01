@@ -1,21 +1,23 @@
-import React, {Component} from 'react';
-import {SecureFormContext} from './SecureFormContext';
-import {FrameMessageCreator} from '@lunasec/secure-frame-common/build/main/rpc/frame-message-creator';
-import {
-  FrameMessage,
-  InboundFrameMessageMap
-} from '@lunasec/secure-frame-common/build/main/rpc/types';
-import {addReactEventListener} from '@lunasec/secure-frame-common/build/main/rpc/listener';
+import { FrameMessageCreator } from '@lunasec/secure-frame-common/build/main/rpc/frame-message-creator';
+import { addReactEventListener } from '@lunasec/secure-frame-common/build/main/rpc/listener';
+import { FrameMessage, InboundFrameMessageMap } from '@lunasec/secure-frame-common/build/main/rpc/types';
+import React, { Component } from 'react';
 
-export interface SecureFormProps {
-  onSubmit: (formData: Record<string, string>) => void;
-}
+import setNativeValue from '../set-native-value';
+
+import { SecureFormContext } from './SecureFormContext';
+export type SecureFormProps = {
+  readonly onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+};
 
 export class SecureForm extends Component<SecureFormProps> {
-  declare context: React.ContextType<typeof SecureFormContext>
+  declare readonly context: React.ContextType<typeof SecureFormContext>;
 
   private readonly messageCreator: FrameMessageCreator;
-  private readonly childRefLookup: Record<string, [string, React.RefObject<HTMLIFrameElement>]>;
+  private childRefLookup: Record<
+    string,
+    readonly [string, React.RefObject<HTMLIFrameElement>, React.RefObject<HTMLInputElement>]
+  >;
   private readonly abortController: AbortController;
 
   constructor(props: SecureFormProps) {
@@ -27,7 +29,7 @@ export class SecureForm extends Component<SecureFormProps> {
 
   componentDidMount() {
     // Pushes events received back up.
-    addReactEventListener(window, this.abortController, message => this.messageCreator.messageReceived(message));
+    addReactEventListener(window, this.abortController, (message) => this.messageCreator.messageReceived(message));
   }
 
   componentWillUnmount() {
@@ -37,9 +39,12 @@ export class SecureForm extends Component<SecureFormProps> {
   async onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const awaitedPromises: Promise<{nonce: string, response: FrameMessage<InboundFrameMessageMap, "ReceiveCommittedToken">} | null>[] = [];
+    const awaitedPromises: Promise<{
+      readonly nonce: string;
+      readonly response: FrameMessage<InboundFrameMessageMap, 'ReceiveCommittedToken'>;
+    } | null>[] = [];
 
-    Object.keys(this.childRefLookup).forEach(key => {
+    Object.keys(this.childRefLookup).forEach((key) => {
       const [name, ref] = this.childRefLookup[key];
 
       if (!ref.current || !ref.current.contentWindow) {
@@ -48,29 +53,47 @@ export class SecureForm extends Component<SecureFormProps> {
       }
 
       awaitedPromises.push(this.triggerTokenCommit(ref.current.contentWindow, key));
-    })
+    });
 
     const responses = await Promise.all(awaitedPromises);
 
-    const formData = responses.reduce((out, data) => {
+    responses.forEach((data) => {
       if (data === null) {
-        return out;
+        return;
       }
 
-      const {nonce, response} = data;
+      const { nonce, response } = data;
 
-      const name = this.childRefLookup[nonce][0];
+      const childRef = this.childRefLookup[nonce];
 
-      // TODO: Add error case handling
-      out[name] = response.data.token || '';
+      // Set the value back to the input element so that everything behaves like a normal html form,
+      // and then force the react events to fire
+      const inputElement = childRef[2].current;
 
-      return out;
-    }, {} as Record<string, string>)
+      if (inputElement !== null) {
+        // TODO: Throw an error here or something instead of "defaulting"
+        setNativeValue(inputElement, response.data.token || '');
+        const e = new Event('input', { bubbles: true });
+        inputElement.dispatchEvent(e);
+      }
+    });
 
-    this.props.onSubmit(formData);
+    // This timeout is an attempt to give the above events time to propagate and any user code time to execute,
+    // like it would have in a normal form where the user pressed submit
+    await new Promise((resolve) => {
+      setTimeout(resolve, 5);
+    });
+    this.props.onSubmit(e);
+    return;
   }
 
-  async triggerTokenCommit(frameContext: Window, nonce: string): Promise<{nonce: string, response: FrameMessage<InboundFrameMessageMap, "ReceiveCommittedToken">} | null> {
+  async triggerTokenCommit(
+    frameContext: Window,
+    nonce: string
+  ): Promise<{
+    readonly nonce: string;
+    readonly response: FrameMessage<InboundFrameMessageMap, 'ReceiveCommittedToken'>;
+  } | null> {
     const message = this.messageCreator.createMessageToFrame('CommitToken');
 
     if (message === null) {
@@ -85,24 +108,24 @@ export class SecureForm extends Component<SecureFormProps> {
       return null;
     }
 
-    return {nonce, response};
+    return { nonce, response };
   }
 
   render() {
     return (
-      <SecureFormContext.Provider value={{
-        addComponentRef: (ref, frameId, name) => {
-          this.childRefLookup[frameId] = [name, ref];
-        },
-        removeComponentRef: frameId => {
-          if (this.childRefLookup[frameId]) {
-            delete this.childRefLookup[frameId];
-          }
-        }
-      }}>
-        <form onSubmit={(e) => this.onSubmit(e)}>
-          {this.props.children}
-        </form>
+      <SecureFormContext.Provider
+        value={{
+          addComponentRef: (ref, inputRef, frameId, name) => {
+            this.childRefLookup[frameId] = [name, ref, inputRef];
+          },
+          removeComponentRef: (frameId) => {
+            if (this.childRefLookup[frameId]) {
+              delete this.childRefLookup[frameId];
+            }
+          },
+        }}
+      >
+        <form onSubmit={(e) => this.onSubmit(e)}>{this.props.children}</form>
       </SecureFormContext.Provider>
     );
   }
