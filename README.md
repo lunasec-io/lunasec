@@ -12,7 +12,7 @@ This is a demo vanilla JS web page that represents something similar to a custom
 Similar to above, but a React Application.  This is our main supported framework at the moment.
 
 ### /service
-This hosts the SDK frontend components. What matters with this service is that it has very strict CSP and is only able to be invoked from an `<iframe>` context.
+This hosts the SDK frontend components which load into the iframe. What matters with this service is that it has very strict CSP and is only able to be invoked from an `<iframe>` context.
 
 Ultimately, this will most likely just be a CDN for the assets and this URI just sets a few variables. We could definitely do this in edge workers if we wanted -- there is no database.
 
