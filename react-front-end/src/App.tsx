@@ -21,6 +21,10 @@ class App extends React.Component<IAppProps, IAppState> {
     constructor(props: IAppProps) {
         super(props);
         this.retrieveTokens();
+        setTimeout(() => {
+            this.setState({foo:'92d82edc-41dd-443e-8bfc-eb9f0eb006a6'})
+            console.log("TIMEOUT FIRED")
+        }, 5000)
     }
 
     handleFooChange(event: React.ChangeEvent<HTMLInputElement>){
@@ -43,8 +47,8 @@ class App extends React.Component<IAppProps, IAppState> {
         const savedData = JSON.parse(dataString || "{}") as IAppState; // fail through to empty object if nothing set
         console.log("retrieved Saved Data of ", savedData);
         this.state = ({
-            savedFoo: savedData.foo,
-            savedBar: savedData.bar
+            foo: savedData.foo,
+            bar: savedData.bar
         });
     }
 
@@ -52,8 +56,8 @@ class App extends React.Component<IAppProps, IAppState> {
       return <div className="App">
           <div className="app-form">
               <SecureForm onSubmit={(e) => this.persistTokens(e)}>
-                  <SecureInput name="foo" token={this.state.savedFoo} onChange={(e) => this.handleFooChange(e)}/>
-                  <SecureInput name="bar" token={this.state.savedBar} onChange={(e) => this.handleBarChange(e)}/>
+                  <SecureInput name="foo" value={this.state.foo} onChange={(e) => this.handleFooChange(e)}/>
+                  <SecureInput name="bar" value={this.state.bar} onChange={(e) => this.handleBarChange(e)}/>
                   <input type="submit"/>
               </SecureForm>
           </div>

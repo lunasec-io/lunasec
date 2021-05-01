@@ -7,7 +7,7 @@ import React, { Component, CSSProperties, RefObject } from 'react';
 import { SecureFormContext } from './SecureFormContext';
 
 export interface SecureInputProps {
-  token?: string;
+  value?: string;
   secureFrameUrl?: string;
   // TODO: Will this force the component to have a key?
   name: string;
@@ -83,11 +83,11 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
     const baseUrl = `${this.state.secureFrameUrl}frame?n=${urlFrameId}}`;
 
-    if (!this.props.token) {
+    if (!this.props.value) {
       return `${baseUrl}#${hash}`;
     }
 
-    return `${baseUrl}&t=${encodeURIComponent(this.props.token)}#${hash}`;
+    return `${baseUrl}&t=${encodeURIComponent(this.props.value)}#${hash}`;
   }
 
   setResizeListener() {
@@ -163,7 +163,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
             ref={this.inputRef}
             name={this.props.name}
             type="text"
-            defaultValue={this.props.token}
+            defaultValue={this.props.value}
             style={hiddenInputStyle}
             onChange={(e) => this.tokenChanged(e)}
           />

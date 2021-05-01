@@ -36,6 +36,11 @@ export class SecureForm extends Component<SecureFormProps> {
     this.abortController.abort();
   }
 
+  shouldComponentUpdate(): boolean {
+    // Fixes the re-render on submit but prevents on-the-fly changing of token by sdk user
+    return false;
+  }
+
   async onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
