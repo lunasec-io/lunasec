@@ -13,6 +13,7 @@ export interface SecureInputProps {
   name: string;
   // TODO: Add form validation logic..?
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  type?: string;
 }
 
 export interface SecureInputState {
@@ -33,13 +34,14 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   readonly inputRef!: RefObject<HTMLInputElement>;
   readonly frameId!: string;
   readonly state!: SecureInputState;
-
+  readonly allowedElementTypes!: Array<string>;
   constructor(props: SecureInputProps) {
     super(props);
 
     this.frameId = generateSecureNonce();
     this.frameRef = React.createRef();
     this.inputRef = React.createRef();
+    this.allowedElementTypes = ['text', 'password', 'email'];
     this.state = {
       // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
       secureFrameUrl: props.secureFrameUrl || 'http://localhost:5002/',
@@ -78,16 +80,26 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
   generateUrl(frameStyleInfo: ElementStyleInfo) {
     const urlFrameId = encodeURIComponent(this.frameId);
+    const styleHash = encodeURIComponent(JSON.stringify(frameStyleInfo));
 
-    const hash = encodeURIComponent(JSON.stringify(frameStyleInfo));
+    const frameURL = new URL('frame', this.state.secureFrameUrl);
 
-    const baseUrl = `${this.state.secureFrameUrl}frame?n=${urlFrameId}}`;
-
-    if (!this.props.token) {
-      return `${baseUrl}#${hash}`;
+    frameURL.hash = styleHash;
+    frameURL.searchParams.set('n', urlFrameId);
+    if (this.props.token) {
+      frameURL.searchParams.set('t', encodeURIComponent(this.props.token));
+    }
+    if (this.props.type) {
+      if (this.allowedElementTypes.includes(this.props.type)) {
+        frameURL.searchParams.set('type', this.props.type);
+      } else {
+        throw new Error(
+          `SecureInput not set to allowed type.  Permitted types are: ${this.allowedElementTypes.toString()}`
+        );
+      }
     }
 
-    return `${baseUrl}&t=${encodeURIComponent(this.props.token)}#${hash}`;
+    return frameURL.toString();
   }
 
   setResizeListener() {
@@ -160,9 +172,10 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
         <div style={divContainerStyle}>
           <input
             className={`secure-form-input--hidden`}
+            // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
+            type="text"
             ref={this.inputRef}
             name={this.props.name}
-            type="text"
             defaultValue={this.props.token}
             style={hiddenInputStyle}
             onChange={(e) => this.tokenChanged(e)}
