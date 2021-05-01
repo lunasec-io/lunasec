@@ -58,16 +58,6 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     this.context.removeComponentRef(this.frameId);
   }
 
-  componentDidUpdate() {
-    console.log(`component updated  ${this.frameId}`);
-    // const inputEvent = new Event('input', { bubbles: true });
-    //
-    // const event = new Event('change');
-    // if (this.inputRef.current) {
-    //   this.inputRef.current.dispatchEvent(event);
-    // }
-  }
-
   tokenChanged(e: React.ChangeEvent<HTMLInputElement>) {
     console.log('Token Change Handler in SecureInput fired');
     if (this.props.onChange) {

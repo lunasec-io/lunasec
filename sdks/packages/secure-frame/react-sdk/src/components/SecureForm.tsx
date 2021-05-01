@@ -76,7 +76,7 @@ export class SecureForm extends Component<SecureFormProps> {
         const e = new Event('input', { bubbles: true });
         inputElement.dispatchEvent(e);
       }
-    }, {} as Record<string, string>);
+    });
 
     // This timeout is an attempt to give the above events time to propagate and any user code time to execute,
     // like it would have in a normal form where the user pressed submit
