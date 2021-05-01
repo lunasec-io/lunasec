@@ -59,7 +59,6 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   }
 
   tokenChanged(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log('Token Change Handler in SecureInput fired');
     if (this.props.onChange) {
       this.props.onChange(e);
     }
