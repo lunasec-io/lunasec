@@ -40,7 +40,6 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     this.frameId = generateSecureNonce();
     this.frameRef = React.createRef();
     this.inputRef = React.createRef();
-    this.tokenChanged = this.tokenChanged.bind(this);
     this.state = {
       // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
       secureFrameUrl: props.secureFrameUrl || 'http://localhost:5002/',

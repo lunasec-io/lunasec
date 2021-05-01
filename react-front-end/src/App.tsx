@@ -10,6 +10,8 @@ interface IAppProps {
 interface IAppState {
     foo?: string
     bar?: string
+    savedFoo?: string
+    savedBar?: string
 }
 
 
@@ -18,16 +20,10 @@ class App extends React.Component<IAppProps, IAppState> {
     // Retrieves tokens from sessionStorage and sets them to component's state
     constructor(props: IAppProps) {
         super(props);
-        const dataString = window.sessionStorage.getItem('savedFields');
-        const savedData = JSON.parse(dataString || "{}") as IAppState; // fail through to empty object if nothing set
-        console.log("retrieved Saved Data of ", savedData);
-        this.state =  savedData;
-        this.handleFooChange = this.handleFooChange.bind(this)
-        this.handleBarChange = this.handleBarChange.bind(this)
+        this.retrieveTokens();
     }
 
     handleFooChange(event: React.ChangeEvent<HTMLInputElement>){
-        console.log("FOO CHANGE HANDLER CALLED ", event)
         this.setState({foo: event.target.value})
     }
 
@@ -36,15 +32,28 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     persistTokens(formEvent: React.FormEvent<HTMLFormElement>) {
-        window.sessionStorage.setItem('savedFields', JSON.stringify(this.state));
+        window.sessionStorage.setItem('savedFields', JSON.stringify({
+            foo: this.state.foo,
+            bar: this.state.bar
+        }));
     };
+
+    retrieveTokens(){
+        const dataString = window.sessionStorage.getItem('savedFields');
+        const savedData = JSON.parse(dataString || "{}") as IAppState; // fail through to empty object if nothing set
+        console.log("retrieved Saved Data of ", savedData);
+        this.state = ({
+            savedFoo: savedData.foo,
+            savedBar: savedData.bar
+        });
+    }
 
     render() {
       return <div className="App">
           <div className="app-form">
               <SecureForm onSubmit={(e) => this.persistTokens(e)}>
-                  <SecureInput name="foo" token={this.state.foo} onChange={this.handleFooChange}/>
-                  <SecureInput name="bar" token={this.state.bar} onChange={this.handleBarChange}/>
+                  <SecureInput name="foo" token={this.state.savedFoo} onChange={(e) => this.handleFooChange(e)}/>
+                  <SecureInput name="bar" token={this.state.savedBar} onChange={(e) => this.handleBarChange(e)}/>
                   <input type="submit"/>
               </SecureForm>
           </div>

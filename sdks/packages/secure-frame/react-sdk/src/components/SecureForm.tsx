@@ -3,17 +3,14 @@ import { addReactEventListener } from '@lunasec/secure-frame-common/build/main/r
 import { FrameMessage, InboundFrameMessageMap } from '@lunasec/secure-frame-common/build/main/rpc/types';
 import React, { Component } from 'react';
 
-import { SecureFormContext } from './SecureFormContext';
+import setNativeValue from '../set-native-value';
 
+import { SecureFormContext } from './SecureFormContext';
 export type SecureFormProps = {
   readonly onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 };
 
-export type SecureFormState = {
-  tokens: Record<string, string>;
-};
-
-export class SecureForm extends Component<SecureFormProps, SecureFormState> {
+export class SecureForm extends Component<SecureFormProps> {
   declare readonly context: React.ContextType<typeof SecureFormContext>;
 
   private readonly messageCreator: FrameMessageCreator;
@@ -28,9 +25,6 @@ export class SecureForm extends Component<SecureFormProps, SecureFormState> {
     this.messageCreator = new FrameMessageCreator();
     this.childRefLookup = {};
     this.abortController = new AbortController();
-    this.state = {
-      tokens: {},
-    };
   }
 
   componentDidMount() {
@@ -40,22 +34,6 @@ export class SecureForm extends Component<SecureFormProps, SecureFormState> {
 
   componentWillUnmount() {
     this.abortController.abort();
-  }
-
-  setNativeValue(element: HTMLInputElement, value: string) {
-    // @ts-ignore
-    const valueSetter = Object.getOwnPropertyDescriptor(element, 'value').set;
-    const prototype = Object.getPrototypeOf(element);
-    // @ts-ignore
-    const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
-
-    if (valueSetter && valueSetter !== prototypeValueSetter) {
-      // @ts-ignore
-      prototypeValueSetter.call(element, value);
-    } else {
-      // @ts-ignore
-      valueSetter.call(element, value);
-    }
   }
 
   async onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -79,39 +57,34 @@ export class SecureForm extends Component<SecureFormProps, SecureFormState> {
 
     const responses = await Promise.all(awaitedPromises);
 
-    const formData = responses.reduce((out, data) => {
+    responses.forEach((data) => {
       if (data === null) {
-        return out;
+        return;
       }
 
       const { nonce, response } = data;
 
       const childRef = this.childRefLookup[nonce];
 
-      // Set the value back to the input element so that if the "form" is actually
-      // going to submit, the browser will be able to grab the token's value.
+      // Set the value back to the input element so that everything behaves like a normal html form,
+      // and then force the react events to fire
       const inputElement = childRef[2].current;
 
       if (inputElement !== null) {
         // TODO: Throw an error here or something instead of "defaulting"
-        // inputElement.value = response.data.token !== undefined ? response.data.token : 'unknown token value';
-        this.setNativeValue(inputElement, response.data.token || '');
+        setNativeValue(inputElement, response.data.token || '');
         const e = new Event('input', { bubbles: true });
         inputElement.dispatchEvent(e);
       }
-
-      const name = childRef[0];
-
-      // TODO: Add error case handling
-      out[name] = response.data.token || '';
-
-      return out;
     }, {} as Record<string, string>);
-    this.setState({
-      tokens: formData,
+
+    // This timeout is an attempt to give the above events time to propagate and any user code time to execute,
+    // like it would have in a normal form where the user pressed submit
+    await new Promise((resolve) => {
+      setTimeout(resolve, 5);
     });
-    console.log("Calling user's onsubmit");
     this.props.onSubmit(e);
+    return;
   }
 
   async triggerTokenCommit(
