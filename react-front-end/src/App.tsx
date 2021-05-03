@@ -24,10 +24,12 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     handleFooChange(event: React.ChangeEvent<HTMLInputElement>){
+        console.log(event.target.value);
         this.setState({foo: event.target.value})
     }
 
     handleBarChange(event: React.ChangeEvent<HTMLInputElement>){
+        console.log(event.target.value);
         this.setState({bar: event.target.value})
     }
 
@@ -52,8 +54,8 @@ class App extends React.Component<IAppProps, IAppState> {
       return <div className="App">
           <div className="app-form">
               <SecureForm onSubmit={(e) => this.persistTokens(e)}>
-                  <SecureInput name="foo" token={this.state.savedFoo} onChange={(e) => this.handleFooChange(e)}/>
-                  <SecureInput name="bar" token={this.state.savedBar} onChange={(e) => this.handleBarChange(e)}/>
+                  <SecureInput secureFrameUrl="https://i2vu672h8f.execute-api.us-west-2.amazonaws.com/prod/frame" name="foo" token={this.state.savedFoo} onChange={(e) => this.handleFooChange(e)}/>
+                  <SecureInput secureFrameUrl="https://i2vu672h8f.execute-api.us-west-2.amazonaws.com/prod/frame" name="bar" token={this.state.savedBar} onChange={(e) => this.handleBarChange(e)}/>
                   <input type="submit"/>
               </SecureForm>
           </div>
