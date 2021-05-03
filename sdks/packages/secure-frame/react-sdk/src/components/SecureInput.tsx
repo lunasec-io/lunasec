@@ -6,6 +6,12 @@ import React, { Component, CSSProperties, RefObject } from 'react';
 
 import { SecureFormContext } from './SecureFormContext';
 
+export enum SecureInputType {
+  Text = 'text',
+  Password = 'password',
+  Email = 'email'
+}
+
 export interface SecureInputProps {
   token?: string;
   secureFrameUrl?: string;
@@ -13,7 +19,7 @@ export interface SecureInputProps {
   name: string;
   // TODO: Add form validation logic..?
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  type?: string;
+  type?: SecureInputType;
 }
 
 export interface SecureInputState {
@@ -34,14 +40,14 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   readonly inputRef!: RefObject<HTMLInputElement>;
   readonly frameId!: string;
   readonly state!: SecureInputState;
-  readonly allowedElementTypes!: Array<string>;
+
   constructor(props: SecureInputProps) {
     super(props);
 
     this.frameId = generateSecureNonce();
     this.frameRef = React.createRef();
     this.inputRef = React.createRef();
-    this.allowedElementTypes = ['text', 'password', 'email'];
+
     this.state = {
       // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
       secureFrameUrl: props.secureFrameUrl || 'http://localhost:5002/',
@@ -86,17 +92,21 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
     frameURL.hash = styleHash;
     frameURL.searchParams.set('n', urlFrameId);
+
     if (this.props.token) {
       frameURL.searchParams.set('t', encodeURIComponent(this.props.token));
     }
+
     if (this.props.type) {
-      if (this.allowedElementTypes.includes(this.props.type)) {
-        frameURL.searchParams.set('type', this.props.type);
-      } else {
+      const validTypes = Object.values(SecureInputType);
+
+      if (!validTypes.includes(this.props.type)) {
         throw new Error(
-          `SecureInput not set to allowed type.  Permitted types are: ${this.allowedElementTypes.toString()}`
+          `SecureInput not set to allowed type.  Permitted types are: ${validTypes.toString()}`
         );
       }
+
+      frameURL.searchParams.set('type', this.props.type);
     }
 
     return frameURL.toString();
