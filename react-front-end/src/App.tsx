@@ -56,8 +56,8 @@ class App extends React.Component<IAppProps, IAppState> {
       return <div className="App">
           <div className="app-form">
               <SecureForm onSubmit={(e) => this.persistTokens(e)}>
-                  <SecureInput name="foo" value={this.state.foo} onChange={(e) => this.handleFooChange(e)}/>
-                  <SecureInput name="bar" value={this.state.bar} onChange={(e) => this.handleBarChange(e)}/>
+                  <SecureInput name="foo" value={this.state.savedFoo} onChange={(e) => this.handleFooChange(e)}/>
+                  <SecureInput name="bar" type="password" value={this.state.savedBar} onChange={(e) => this.handleBarChange(e)}/>
                   <input type="submit"/>
               </SecureForm>
           </div>
