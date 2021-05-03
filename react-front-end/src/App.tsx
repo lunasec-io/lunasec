@@ -8,7 +8,10 @@ interface IAppProps {
 }
 
 interface IAppState {
-    formState: Record<string, string>
+    foo?: string
+    bar?: string
+    savedFoo?: string
+    savedBar?: string
 }
 
 
@@ -17,24 +20,40 @@ class App extends React.Component<IAppProps, IAppState> {
     // Retrieves tokens from sessionStorage and sets them to component's state
     constructor(props: IAppProps) {
         super(props);
-        const dataString = window.sessionStorage.getItem('savedFields');
-        const savedData: Record<string, string> = JSON.parse(dataString || "{}"); // fail through to empty object if nothing set
-        console.log("retrieved Saved Data of ", savedData);
-        this.state = { formState: savedData } ;
+        this.retrieveTokens();
     }
 
-    // Saves tokens from form to sessionStorage when form submit called
-    saveTokensLocally(formData:Record<string, string>) {
-        console.log('submit called, storing tokens', formData);
-        window.sessionStorage.setItem('savedFields', JSON.stringify(formData));
+    handleFooChange(event: React.ChangeEvent<HTMLInputElement>){
+        this.setState({foo: event.target.value})
+    }
+
+    handleBarChange(event: React.ChangeEvent<HTMLInputElement>){
+        this.setState({bar: event.target.value})
+    }
+
+    persistTokens(formEvent: React.FormEvent<HTMLFormElement>) {
+        window.sessionStorage.setItem('savedFields', JSON.stringify({
+            foo: this.state.foo,
+            bar: this.state.bar
+        }));
     };
+
+    retrieveTokens(){
+        const dataString = window.sessionStorage.getItem('savedFields');
+        const savedData = JSON.parse(dataString || "{}") as IAppState; // fail through to empty object if nothing set
+        console.log("retrieved Saved Data of ", savedData);
+        this.state = ({
+            savedFoo: savedData.foo,
+            savedBar: savedData.bar
+        });
+    }
 
     render() {
       return <div className="App">
           <div className="app-form">
-              <SecureForm onSubmit={this.saveTokensLocally}>
-                  <SecureInput name="foo" token={this.state.formState.foo}/>
-                  <SecureInput name="bar" token={this.state.formState.bar}/>
+              <SecureForm onSubmit={(e) => this.persistTokens(e)}>
+                  <SecureInput name="foo" token={this.state.savedFoo} onChange={(e) => this.handleFooChange(e)}/>
+                  <SecureInput name="bar" token={this.state.savedBar} onChange={(e) => this.handleBarChange(e)}/>
                   <input type="submit"/>
               </SecureForm>
           </div>
