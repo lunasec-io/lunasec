@@ -14,14 +14,14 @@
   "license": "MIT",
   "dependencies": {
     "@peculiar/webcrypto": "^1.1.6",
-    "@types/node": "^14.11.8",
-    "@types/tape": "^4.13.0",
     "cookies": "^0.8.0",
     "node-libs-browser": "^2.2.1",
-    "tape": "^5.2.2",
     "tink-crypto": "^0.1.0"
   },
   "devDependencies": {
+    "tape": "^5.2.2",
+    "@types/node": "^14.11.8",
+    "@types/tape": "^4.13.0",
     "@types/cookies": "^0.7.6",
     "@types/express": "^4.17.11",
     "express": "^4.17.1",
