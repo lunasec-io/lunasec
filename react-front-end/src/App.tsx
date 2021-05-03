@@ -53,7 +53,7 @@ class App extends React.Component<IAppProps, IAppState> {
           <div className="app-form">
               <SecureForm onSubmit={(e) => this.persistTokens(e)}>
                   <SecureInput name="foo" token={this.state.savedFoo} onChange={(e) => this.handleFooChange(e)}/>
-                  <SecureInput name="bar" token={this.state.savedBar} onChange={(e) => this.handleBarChange(e)}/>
+                  <SecureInput name="bar" type="password" token={this.state.savedBar} onChange={(e) => this.handleBarChange(e)}/>
                   <input type="submit"/>
               </SecureForm>
           </div>

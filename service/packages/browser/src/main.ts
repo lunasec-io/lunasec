@@ -44,6 +44,11 @@ function setupPage() {
     }
   }
 
+  const URLParams = new URLSearchParams(window.location.search);
+  const typeParam = URLParams.get('type')
+  if (typeParam){
+    secureInput.setAttribute('type', typeParam);
+  }
   return secureInput;
 }
 
