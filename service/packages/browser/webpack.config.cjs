@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const S3Plugin = require('webpack-s3-plugin')
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -20,6 +21,9 @@ const runWatch = process.env.WEBPACK_WATCH !== undefined;
 const plugins = [];
 
 if (isProduction) {
+	plugins.push(new CopyWebpackPlugin({
+		patterns: [{from: 'static' }]
+	}));
   plugins.push(new S3Plugin({
     // Exclude uploading of html
     // exclude: /.*\.html$/,

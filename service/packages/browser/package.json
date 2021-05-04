@@ -23,6 +23,7 @@
     "webpack-cli": "^4.5.0"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "^8.1.1",
     "dotenv": "^8.2.0",
     "webpack-s3-plugin": "1.2.0-rc.0"
   }
