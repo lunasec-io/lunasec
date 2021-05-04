@@ -1,5 +1,9 @@
+import { BadHttpResponseError } from '@lunasec/common';
+
 import { makeSpecificApiClient, SpecificApiClient, TokenizerFailApiResponse } from './api/client';
+import { ValidTokenizerApiRequestTypes } from './api/types';
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
+import { CONFIG_DEFAULTS } from './constants';
 import {
   TokenizerClientConfig,
   TokenizerDetokenizeResponse,
@@ -7,9 +11,6 @@ import {
   TokenizerSetMetadataResponse,
   TokenizerTokenizeResponse,
 } from './types';
-import { CONFIG_DEFAULTS } from './constants';
-import { ValidTokenizerApiRequestTypes } from './api/types';
-import { BadHttpResponseError } from '@lunasec/common';
 
 export class Tokenizer {
   readonly config!: TokenizerClientConfig;
@@ -21,6 +22,7 @@ export class Tokenizer {
 
   constructor(config?: Partial<TokenizerClientConfig>) {
     // Deep clone config for mutation safety.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 
     const SECRET_VALUE = this.config.secret;
@@ -118,6 +120,7 @@ export class Tokenizer {
       console.error('S3 upload error', e);
       return {
         success: false,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         error: e,
       };
     }

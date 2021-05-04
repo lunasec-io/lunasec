@@ -8,7 +8,7 @@
     "prettier": "prettier \"*.{js,json,yml,md}\" \"packages/**/*\"",
     "format": "npm run lint -- --fix",
     "format:check": "npm run lint",
-    "lint": "eslint --ext .js,.ts ./packages",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./packages",
     "test": "lerna run test",
     "prepare": "npm run compile",
     "watch": "tsc -b tsconfig.build.json -w"
@@ -39,6 +39,12 @@
   "dependencies": {
     "@lunasec/common": "file:packages/common",
     "@lunasec/secure-frame-common": "file:packages/secure-frame/common",
-    "@lunasec/secure-frame-js-sdk": "file:packages/secure-frame/js-sdk"
+    "@lunasec/secure-frame-js-sdk": "file:packages/secure-frame/js-sdk",
+    "lint-staged": "^10.5.4"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix "
+    ]
   }
 }

@@ -12,6 +12,8 @@ export interface UnknownFrameMessage {
 
 export interface CommitTokenMessage {}
 
+export interface NotifyOnBlurMessage {}
+
 export interface ReceiveCommittedTokenMessage {
   success: boolean;
   token?: string;
@@ -23,6 +25,7 @@ export interface OutboundFrameMessageMap {
 
 export interface InboundFrameMessageMap {
   ReceiveCommittedToken: ReceiveCommittedTokenMessage;
+  NotifyOnBlur: NotifyOnBlurMessage;
 }
 
 export type OutboundMessageLookupType = {

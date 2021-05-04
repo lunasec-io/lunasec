@@ -1,29 +1,9 @@
 import {safeParseJson} from '@lunasec/services-common/build/utils/json';
-import {InboundFrameMessageMap, FrameMessage, UnknownFrameMessage} from '@lunasec/secure-frame-common/build/main/rpc/types';
+import {UnknownFrameMessage} from '@lunasec/secure-frame-common/build/main/rpc/types';
 import {StyleInfo} from '@lunasec/secure-frame-common/build/main/style-patcher/types';
 import {patchStyle} from '@lunasec/secure-frame-common/build/main/style-patcher/write';
 import {Tokenizer} from '@lunasec/tokenizer-sdk';
-
-interface TokenizerResponse {
-  success: boolean,
-  tokenId: string
-  // and definitely other fields we don't access, assuming that's okay
-}
-
-function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, nonce: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> | null {
-
-  const innerMessage = createMessage();
-
-  if (innerMessage === null) {
-    return null;
-  }
-
-  return {
-    command: s,
-    correlationToken: nonce,
-    data: innerMessage
-  };
-}
+import {processMessage} from './rpc';
 
 function setupPage() {
   const secureInput = document.querySelector('.secure-input');
@@ -46,64 +26,15 @@ function setupPage() {
   }
 
   const URLParams = new URLSearchParams(window.location.search);
-  const typeParam = URLParams.get('type')
-  if (typeParam){
+  const typeParam = URLParams.get('type');
+
+  if (typeParam) {
     secureInput.setAttribute('type', typeParam);
   }
+
+  // attachOnBlurNotifier(secureInput as HTMLInputElement);
+
   return secureInput;
-}
-
-async function tokenizeField() : Promise<any> {
-  const secureInput = document.querySelector('.secure-input');
-
-  if (!secureInput) {
-    throw new Error('Unable to read value to tokenize');
-  }
-
-  const value = (secureInput as HTMLInputElement).value;
-
-  const tokenizer = new Tokenizer({secret: "test", host: 'http://localhost:37767'});
-  const resp = await tokenizer.tokenize(value);
-
-  if (!resp.success) {
-    return {
-      success: false
-    }
-  }
-  // TODO: Handle error case
-  return resp.tokenId
-}
-
-
-function respondToMessage(origin: string, rawMessage: UnknownFrameMessage, response: TokenizerResponse) : void {
-  const message = createMessageToFrame('ReceiveCommittedToken', rawMessage.correlationToken, () => {
-    if (!response || !response.success) {
-      return {
-        success: false
-      };
-    }
-
-    return {
-      success: true,
-      token: response.tokenId
-    };
-  });
-
-  window.parent.postMessage(JSON.stringify(message), origin);
-  return;
-}
-
-async function processMessage(origin: string, rawMessage: UnknownFrameMessage) {
-
-  // TODO: Make this type safe (require every message to be handled)
-  if (rawMessage.command === 'CommitToken') {
-    const serverResponse = await tokenizeField();
-    respondToMessage(origin, rawMessage, serverResponse);
-    return;
-  }
-
-
-  throw new Error('Secure frame unable to process message of command type: ' + rawMessage.command);
 }
 
 
@@ -119,11 +50,11 @@ function onLoad() {
     throw new Error('Unable to read origin data of parent frame');
   }
 
-  window.addEventListener("message", (event) => {
+  window.addEventListener('message', (event) => {
 
     // TODO: Is this a security problem?
     if (!origin.startsWith(event.origin + '/')) {
-      console.log('rejected origin', event.origin, origin)
+      console.log('rejected origin', event.origin, origin);
       return;
     }
 
