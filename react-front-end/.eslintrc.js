@@ -33,22 +33,6 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     eqeqeq: 'error',
     quotes: ['error', 'single', { allowTemplateLiterals: true, avoidEscape: true }],
-    "react/jsx-wrap-multilines": ["error", {
-      declaration: "parens-new-line",
-      assignment: "parens-new-line",
-      return: "parens-new-line",
-      arrow: "parens-new-line",
-      condition: "parens-new-line",
-      logical: "parens-new-line",
-      prop: "parens-new-line",
-    }],
-    "react/jsx-first-prop-new-line": ["error", "multiline-multiprop"],
-    "react/jsx-max-props-per-line": ["error", { "maximum": 3, "when": "multiline" }],
-    "react/jsx-indent-props": ["error", 2],
-    "react/jsx-closing-bracket-location": [
-      "error",
-      "tag-aligned",
-    ],
     'prettier/prettier': ['error', { singleQuote: true, printWidth: 120 }],
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "eslint-comments/disable-enable-pair": [

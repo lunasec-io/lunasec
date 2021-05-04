@@ -1,7 +1,10 @@
 import fs from 'fs';
 import { URL as URI } from 'url';
-import { makeGenericApiClient, GenericApiClient } from './api-client';
+
 import { makeRequest } from '@lunasec/common';
+
+import { GenericApiClient, makeGenericApiClient } from './api-client';
+import { BuildActionFunctionConfig } from './types';
 
 interface SecureResolverSdkConfig {
   refinerySecret: string;
@@ -12,7 +15,9 @@ interface SecureResolverSdkConfig {
   app_dir: string;
   language: string;
   functionsPath?: string;
-  functionsConfig?: {};
+  functionsConfig?: {
+    functions: BuildActionFunctionConfig[];
+  };
   endpoints: {
     secureResolver: string;
   };
@@ -35,15 +40,16 @@ const defaultConfig: SecureResolverSdkConfig = {
 export interface FunctionInvocationResult {
   success: boolean;
   error?: string;
-  completeError?: object;
-  result?: object;
+  completeError?: unknown;
+  result?: unknown;
 }
 
 export class SecureResolver {
   readonly config!: SecureResolverSdkConfig;
 
-  // TODO: Add a type schema for this.
-  readonly functionConfig!: any;
+  readonly functionConfig!: {
+    functions: BuildActionFunctionConfig[];
+  };
 
   readonly refineryHeaders!: Record<string, string>;
   readonly containerHeaders!: Record<string, string>;
@@ -52,6 +58,7 @@ export class SecureResolver {
 
   constructor(config?: SecureResolverSdkConfig) {
     // Deep clone the config to prevent nested mutation.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.config = JSON.parse(JSON.stringify(Object.assign({}, defaultConfig, config)));
 
     if (!this.config?.functionsConfig && !this.config?.functionsPath) {
@@ -60,6 +67,7 @@ export class SecureResolver {
 
     if (this.config?.functionsPath) {
       // TODO: Extract into a function that processes the schema of this or throws reasonable error messages.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       this.functionConfig = JSON.parse(fs.readFileSync(this.config.functionsPath, 'utf8'));
     }
 
@@ -129,7 +137,7 @@ export class SecureResolver {
 
     const resolverUrl = new URI(urlResponse.data.url);
 
-    const response = await makeRequest<{ error?: string; result?: object }>(
+    const response = await makeRequest<{ error?: string; result?: unknown }>(
       resolverUrl.host,
       resolverUrl.pathname,
       {
