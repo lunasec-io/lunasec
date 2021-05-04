@@ -1,5 +1,5 @@
 import React from 'react';
-import {SecureForm, SecureInput} from '@esluna/secure-frame-react-sdk';
+import {SecureForm, SecureInput, SecureInputType} from '@esluna/secure-frame-react-sdk';
 // import logo from './logo.svg';
 import './App.css';
 
@@ -51,11 +51,15 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     render() {
-      return <div className="App">
+        /*
+        <SecureInput secureFrameUrl="https://i2vu672h8f.execute-api.us-west-2.amazonaws.com/prod/frame" name="foo" token={this.state.savedFoo} onChange={(e) => this.handleFooChange(e)}/>
+        <SecureInput secureFrameUrl="https://i2vu672h8f.execute-api.us-west-2.amazonaws.com/prod/frame" name="bar" type={SecureInputType.Password} token={this.state.savedBar} onChange={(e) => this.handleBarChange(e)}/>
+         */
+        return <div className="App">
           <div className="app-form">
               <SecureForm onSubmit={(e) => this.persistTokens(e)}>
-                  <SecureInput secureFrameUrl="https://i2vu672h8f.execute-api.us-west-2.amazonaws.com/prod/frame" name="foo" token={this.state.savedFoo} onChange={(e) => this.handleFooChange(e)}/>
-                  <SecureInput secureFrameUrl="https://i2vu672h8f.execute-api.us-west-2.amazonaws.com/prod/frame" name="bar" type="password" token={this.state.savedBar} onChange={(e) => this.handleBarChange(e)}/>
+                  <SecureInput secureFrameUrl="http://localhost:37766/frame" name="foo" token={this.state.savedFoo} onChange={(e) => this.handleFooChange(e)}/>
+                  <SecureInput secureFrameUrl="http://localhost:37766/frame" name="bar" type={SecureInputType.Password} token={this.state.savedBar} onChange={(e) => this.handleBarChange(e)}/>
                   <input type="submit"/>
               </SecureForm>
           </div>

@@ -23,7 +23,7 @@ export class Tokenizer {
     // Deep clone config for mutation safety.
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 
-    const SECRET_VALUE = this.config.secret || process.env.lunasec_TOKENIZER_SECRET;
+    const SECRET_VALUE = this.config.secret;
 
     if (!SECRET_VALUE) {
       throw new Error('Unable to create lunasec Tokenizer client without secret value');

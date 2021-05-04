@@ -1,6 +1,9 @@
 import * as http from 'http';
 import * as https from 'https';
-import {URL as URI} from 'url';
+import * as nodeUrl from "url";
+
+declare var window: { URL: any; };
+const URL = typeof window !== "undefined" ? window.URL : nodeUrl.URL;
 
 function getRequestModule(protocol: string) {
   if (protocol === 'http:') {
@@ -35,7 +38,7 @@ export class BadHttpResponseError extends Error {
 }
 
 function getRequestParams(host: string, path: string, params: http.ClientRequestArgs) {
-  const requestUri = new URI(path, host);
+  const requestUri = new URL(path, host);
 
   const requestModule = getRequestModule(requestUri.protocol);
 

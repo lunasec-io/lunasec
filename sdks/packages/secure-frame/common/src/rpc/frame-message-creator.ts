@@ -54,8 +54,9 @@ export class FrameMessageCreator {
     const startTime = new Date();
 
     return new Promise(async (resolve, reject) => {
+      const secureFrameURL = "http://localhost:37766";
       // TODO: Make this domain be configurable
-      frameContext.postMessage(JSON.stringify(message), 'http://localhost:5002');
+      frameContext.postMessage(JSON.stringify(message), secureFrameURL);
 
       await timeout(2);
 

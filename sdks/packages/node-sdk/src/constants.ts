@@ -1,2 +1,2 @@
 // @ts-ignore
-export const REFINERY_API_SERVER = process.REFINERY_API_SERVER || 'https://app.refinery.io/';
+export const REFINERY_API_SERVER = "http://localhost:37767" || 'https://app.refinery.io/';

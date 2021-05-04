@@ -21,9 +21,12 @@ const runWatch = process.env.WEBPACK_WATCH !== undefined;
 const plugins = [];
 
 if (isProduction) {
-	plugins.push(new CopyWebpackPlugin({
-		patterns: [{from: 'static' }]
-	}));
+  plugins.push(new CopyWebpackPlugin({
+      patterns: [{from: 'static' }]
+  }));
+  plugins.push(new webpack.ProvidePlugin({
+      process: 'process/browser',
+  }));
   plugins.push(new S3Plugin({
     // Exclude uploading of html
     // exclude: /.*\.html$/,
@@ -71,7 +74,11 @@ module.exports = {
     path: path.resolve(__dirname, 'build/js/')
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js']
+    extensions: ['.tsx', '.ts', '.jsx', '.js'],
+    fallback: {
+      "https": require.resolve("https-browserify"),
+      "http": require.resolve("stream-http")
+    }
   },
   plugins
 };

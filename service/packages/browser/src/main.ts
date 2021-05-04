@@ -2,6 +2,7 @@ import {safeParseJson} from '@lunasec/services-common/build/utils/json';
 import {InboundFrameMessageMap, FrameMessage, UnknownFrameMessage} from '@lunasec/secure-frame-common/build/main/rpc/types';
 import {StyleInfo} from '@lunasec/secure-frame-common/build/main/style-patcher/types';
 import {patchStyle} from '@lunasec/secure-frame-common/build/main/style-patcher/write';
+import {Tokenizer} from '@lunasec/tokenizer-sdk';
 
 interface TokenizerResponse {
   success: boolean,
@@ -59,19 +60,18 @@ async function tokenizeField() : Promise<any> {
     throw new Error('Unable to read value to tokenize');
   }
 
-  // TODO: Move this info a function
-  const rawResponse = await fetch('/tokenize', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      value: (secureInput as HTMLInputElement).value
-    })
-  });
+  const value = (secureInput as HTMLInputElement).value;
 
+  const tokenizer = new Tokenizer({secret: "test", host: 'http://localhost:37767'});
+  const resp = await tokenizer.tokenize(value);
+
+  if (!resp.success) {
+    return {
+      success: false
+    }
+  }
   // TODO: Handle error case
-  return rawResponse.json();
+  return resp.tokenId
 }
 
 
@@ -97,8 +97,8 @@ async function processMessage(origin: string, rawMessage: UnknownFrameMessage) {
 
   // TODO: Make this type safe (require every message to be handled)
   if (rawMessage.command === 'CommitToken') {
-    const serverResponse = await tokenizeField()
-    respondToMessage(origin, rawMessage, serverResponse)
+    const serverResponse = await tokenizeField();
+    respondToMessage(origin, rawMessage, serverResponse);
     return;
   }
 

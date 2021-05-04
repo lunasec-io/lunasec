@@ -84,18 +84,15 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     });
   }
 
-  generateUrl(frameStyleInfo: ElementStyleInfo) {
-    const urlFrameId = encodeURIComponent(this.frameId);
-    console.log(frameStyleInfo)
-    const styleHash = encodeURIComponent(JSON.stringify(frameStyleInfo));
+  generateUrl() {
+    const urlFrameId = this.frameId;
 
     const frameURL = new URL('frame', this.state.secureFrameUrl);
 
-    frameURL.hash = styleHash;
     frameURL.searchParams.set('n', urlFrameId);
 
     if (this.props.token) {
-      frameURL.searchParams.set('t', encodeURIComponent(this.props.token));
+      frameURL.searchParams.set('t', this.props.token);
     }
 
     if (this.props.type) {
@@ -136,7 +133,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       return null;
     }
 
-    const { parentStyle, width, height, childStyle } = this.state.frameStyleInfo;
+    const { parentStyle, width, height } = this.state.frameStyleInfo;
 
     const iframeStyle: CSSProperties = {
       ...camelCaseObject(parentStyle),
@@ -148,7 +145,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     return (
       <iframe
         ref={this.frameRef}
-        src={this.generateUrl(childStyle)}
+        src={this.generateUrl()}
         frameBorder={0}
         style={iframeStyle}
         key={this.frameId}
