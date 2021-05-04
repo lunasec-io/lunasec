@@ -16,9 +16,7 @@ input {
     -webkit-border-radius: 0;
 }
 
-secure-input {
-/*    width: 100%;*/
-/*    height: 100%;*/
+.secure-input {
     position: absolute;
     top: 0;
     left: 0;

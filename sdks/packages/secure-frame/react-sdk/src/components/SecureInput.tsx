@@ -139,13 +139,10 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
     const frameUrl = this.generateUrl(childStyle);
 
-    console.log({ frameUrl });
-
     return <iframe ref={this.frameRef} src={frameUrl} frameBorder={0} style={iframeStyle} key={frameUrl} />;
   }
 
   render() {
-    console.log({value: this.props.value});
     const parentContainerStyle: CSSProperties = {
       // position: 'relative'
       display: 'block',
