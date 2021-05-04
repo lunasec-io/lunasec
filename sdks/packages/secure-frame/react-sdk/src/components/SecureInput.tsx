@@ -6,11 +6,11 @@ import React, { Component, CSSProperties, RefObject } from 'react';
 
 import { SecureFormContext } from './SecureFormContext';
 
-export enum SecureInputType {
-  Text = 'text',
-  Password = 'password',
-  Email = 'email'
-}
+export const SecureInputType = {
+  text: 'text',
+  password: 'password',
+  email: 'email',
+} as const;
 
 export interface SecureInputProps {
   value?: string;
@@ -19,14 +19,10 @@ export interface SecureInputProps {
   name: string;
   // TODO: Add form validation logic..?
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  type?: SecureInputType;
+  type?: typeof SecureInputType[keyof typeof SecureInputType];
 }
 
 export interface SecureInputState {
-  /**
-   * The frameId is a unique value that is associated with a given iframe instance.
-   */
-  token?: string;
   secureFrameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
 }
@@ -38,7 +34,12 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
   readonly frameRef!: RefObject<HTMLIFrameElement>;
   readonly inputRef!: RefObject<HTMLInputElement>;
+
+  /**
+   * The frameId is a unique value that is associated with a given iframe instance.
+   */
   readonly frameId!: string;
+
   readonly state!: SecureInputState;
 
   constructor(props: SecureInputProps) {
@@ -64,12 +65,6 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
   componentWillUnmount() {
     this.context.removeComponentRef(this.frameId);
-  }
-
-  tokenChanged(e: React.ChangeEvent<HTMLInputElement>) {
-    if (this.props.onChange) {
-      this.props.onChange(e);
-    }
   }
 
   generateElementStyle() {
@@ -101,9 +96,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       const validTypes = Object.values(SecureInputType);
 
       if (!validTypes.includes(this.props.type)) {
-        throw new Error(
-          `SecureInput not set to allowed type.  Permitted types are: ${validTypes.toString()}`
-        );
+        throw new Error(`SecureInput not set to allowed type.  Permitted types are: ${validTypes.toString()}`);
       }
 
       frameURL.searchParams.set('type', this.props.type);
@@ -144,18 +137,15 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       height: height,
     };
 
-    return (
-      <iframe
-        ref={this.frameRef}
-        src={this.generateUrl(childStyle)}
-        frameBorder={0}
-        style={iframeStyle}
-        key={this.frameId}
-      />
-    );
+    const frameUrl = this.generateUrl(childStyle);
+
+    console.log({ frameUrl });
+
+    return <iframe ref={this.frameRef} src={frameUrl} frameBorder={0} style={iframeStyle} key={frameUrl} />;
   }
 
   render() {
+    console.log({value: this.props.value});
     const parentContainerStyle: CSSProperties = {
       // position: 'relative'
       display: 'block',
@@ -174,6 +164,8 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       display: 'block',
     };
 
+    const isRendered = this.state.frameStyleInfo !== undefined;
+
     return (
       <div
         className={`secure-form-container-${this.frameId} secure-form-container-${this.props.name}`}
@@ -181,14 +173,14 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       >
         <div style={divContainerStyle}>
           <input
-            className={`secure-form-input--hidden`}
+            className={isRendered ? `secure-form-input--hidden` : ''}
             // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
             type="text"
             ref={this.inputRef}
             name={this.props.name}
             defaultValue={this.props.value}
             style={hiddenInputStyle}
-            onChange={(e) => this.tokenChanged(e)}
+            onChange={isRendered ? this.props.onChange : undefined}
           />
           {this.renderFrame()}
         </div>

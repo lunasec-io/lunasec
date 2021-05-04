@@ -1,4 +1,8 @@
 import * as http from 'http';
+
+import { getRequestBody, makeRequest } from '@lunasec/common';
+
+import { REFINERY_API_SERVER } from './constants';
 import {
   SecureResolverActionMessageMap,
   SecureResolverActionResponseMessageMap,
@@ -6,8 +10,6 @@ import {
   SecureResolverApiSuccessResponse,
   ValidSecureResolverApiRequestTypes,
 } from './types';
-import { REFINERY_API_SERVER } from './constants';
-import { getRequestBody, makeRequest } from '@lunasec/common';
 
 export interface SecureEnclaveSuccessApiResponse<T> {
   success: true;
@@ -49,6 +51,7 @@ export async function makeSecureApiRequest<
   } catch (e) {
     return {
       success: false,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       error: e,
     };
   }
