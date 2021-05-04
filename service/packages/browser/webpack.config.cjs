@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const S3Plugin = require('webpack-s3-plugin')
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -20,21 +21,22 @@ const runWatch = process.env.WEBPACK_WATCH !== undefined;
 const plugins = [];
 
 if (isProduction) {
+	plugins.push(new CopyWebpackPlugin({
+		patterns: [{from: 'static' }]
+	}));
   plugins.push(new S3Plugin({
     // Exclude uploading of html
     // exclude: /.*\.html$/,
-    directory: 'public/js',
+    directory: 'build/js',
     // s3Options are required
     s3Options: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      region: process.env.lunasec_ASSET_BUCKET_REGION || 'us-west-2'
+      region: process.env.LUNASEC_ASSET_BUCKET_REGION || 'us-west-2'
     },
     s3UploadOptions: {
-      Bucket: process.env.lunasec_ASSET_BUCKET_NAME
+      Bucket: process.env.LUNASEC_ASSET_BUCKET_NAME
     },
     cdnizerOptions: {
-      defaultCDNBase: process.env.lunasec_CDN_BASE_URL
+      defaultCDNBase: process.env.LUNASEC_CDN_BASE_URL
     }
   }));
 }
@@ -48,7 +50,6 @@ module.exports = {
   watchOptions: {
     ignored: [
       path.resolve(__dirname, 'build/**'),
-      path.resolve(__dirname, 'public/**'),
       path.resolve(__dirname, 'node_modules/**')
     ]
   },
@@ -67,7 +68,7 @@ module.exports = {
   },
   output: {
     filename: outputFile,
-    path: path.resolve(__dirname, 'public/js/')
+    path: path.resolve(__dirname, 'build/js/')
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js']
