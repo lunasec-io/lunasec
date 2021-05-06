@@ -2,7 +2,6 @@ import {safeParseJson} from '@lunasec/services-common/build/utils/json';
 import {UnknownFrameMessage} from '@lunasec/secure-frame-common/build/main/rpc/types';
 import {StyleInfo} from '@lunasec/secure-frame-common/build/main/style-patcher/types';
 import {patchStyle} from '@lunasec/secure-frame-common/build/main/style-patcher/write';
-import {Tokenizer} from '@lunasec/tokenizer-sdk';
 import {processMessage} from './rpc';
 
 function setupPage() {

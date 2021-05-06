@@ -17,6 +17,7 @@ export interface NotifyOnBlurMessage {}
 export interface ReceiveCommittedTokenMessage {
   success: boolean;
   token?: string;
+  error?: string;
 }
 
 export interface OutboundFrameMessageMap {

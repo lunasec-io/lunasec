@@ -1,5 +1,5 @@
 // import {patchStyle} from '../style-patcher/write';
-import { SECURE_FRAME_URL } from '../constants';
+import {__SECURE_FRAME_URL__} from '../constants';
 import { safeParseJson } from '../utils/json';
 import { UnknownFrameMessage } from './types';
 
@@ -14,7 +14,7 @@ export function addMessageListener(window: Window, domInstance: Document) {
     (event) => {
       console.log('parent message received:', event);
 
-      if (event.origin + '/' !== SECURE_FRAME_URL) {
+      if (event.origin !== __SECURE_FRAME_URL__) {
         return;
       }
 
@@ -70,8 +70,7 @@ export function addReactEventListener(
   window.addEventListener(
     'message',
     (event) => {
-      // TODO: Make SECURE_FRAME_URL not a webpack-based baked in constant.
-      if (event.origin + '/' !== SECURE_FRAME_URL) {
+      if (event.origin !== __SECURE_FRAME_URL__) {
         return;
       }
 

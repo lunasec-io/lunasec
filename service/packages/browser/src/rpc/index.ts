@@ -3,12 +3,7 @@ import {
   InboundFrameMessageMap,
   UnknownFrameMessage
 } from '@lunasec/secure-frame-common/build/main/rpc/types';
-
-interface TokenizerResponse {
-  success: boolean,
-  tokenId: string
-  // and definitely other fields we don't access, assuming that's okay
-}
+import {Tokenizer} from "@lunasec/tokenizer-sdk";
 
 function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, nonce: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> | null {
 
@@ -25,39 +20,37 @@ function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, nonc
   };
 }
 
-async function tokenizeField(): Promise<any> {
+async function tokenizeField(): Promise<string | null> {
   const secureInput = document.querySelector('.secure-input');
 
   if (!secureInput) {
     throw new Error('Unable to read value to tokenize');
   }
 
-  // TODO: Move this info a function
-  const rawResponse = await fetch('/tokenize', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      value: (secureInput as HTMLInputElement).value
-    })
-  });
+  const value = (secureInput as HTMLInputElement).value;
 
-  // TODO: Handle error case
-  return rawResponse.json();
+  const tokenizer = new Tokenizer();
+  const resp = await tokenizer.tokenize(value);
+
+  if (!resp.success) {
+    console.error("tokenizer error:", resp);
+    return null;
+  }
+  return resp.tokenId
 }
 
-function respondToMessage(origin: string, rawMessage: UnknownFrameMessage, response: TokenizerResponse): void {
+function respondToMessage(origin: string, rawMessage: UnknownFrameMessage, token: string | null): void {
   const message = createMessageToFrame('ReceiveCommittedToken', rawMessage.correlationToken, () => {
-    if (!response || !response.success) {
+    if (token === null) {
       return {
-        success: false
+        success: false,
+        error: "tokenizer failed to tokenize data"
       };
     }
 
     return {
       success: true,
-      token: response.tokenId
+      token: token
     };
   });
 

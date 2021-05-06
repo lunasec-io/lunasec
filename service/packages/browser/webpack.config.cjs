@@ -8,9 +8,16 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const envFile = isProduction ? '.env-prod' : '.env';
 
-require('dotenv').config({
+const envVars = require('dotenv').config({
   path: path.resolve(process.cwd(), envFile)
 });
+
+const envVarDefs = Object.keys(envVars.parsed).reduce((envDefs, envVarName) => {
+  return {
+    ...envDefs,
+    [`process.env.${envVarName}`]: JSON.stringify(envVars.parsed[envVarName])
+  }
+}, {})
 
 const buildMode = isProduction ? 'production': 'development';
 
@@ -25,9 +32,13 @@ const plugins = [];
 plugins.push(new CopyWebpackPlugin({
   patterns: [{from: 'static', to: `../${outputStaticFile}` }]
 }));
+
 plugins.push(new webpack.ProvidePlugin({
   process: 'process/browser',
+  Buffer: ['buffer', 'Buffer'],
 }));
+
+plugins.push(new webpack.DefinePlugin(envVarDefs))
 
 if (isProduction) {
   plugins.push(new S3Plugin({
@@ -49,7 +60,7 @@ if (isProduction) {
 
 module.exports = {
   context: path.resolve(__dirname, 'src/'),
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   entry: './main.ts',
   mode: buildMode,
   watch: runWatch,
@@ -67,8 +78,6 @@ module.exports = {
         options: {
           configFile: 'tsconfig.json',
           projectReferences: true,
-          sourceMap: true,
-          devtool: isProduction ? 'source-map' : 'cheap-module-eval-source-map'
         }
       }],
       exclude: /node_modules/

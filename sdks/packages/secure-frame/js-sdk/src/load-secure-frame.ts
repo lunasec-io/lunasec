@@ -1,6 +1,6 @@
 /* eslint-disable functional/no-throw-statement, @typescript-eslint/ban-ts-comment, functional/immutable-data */
 
-import {SECURE_FRAME_URL} from '@lunasec/secure-frame-common';
+import {__SECURE_FRAME_URL__} from '@lunasec/secure-frame-common';
 import {addMessageListener} from '@lunasec/secure-frame-common/build/main/rpc/listener';
 
 import {createDomWatcher} from './scan-dom';
@@ -44,5 +44,5 @@ export function loadSecureFrame() {
 
   addMessageListener(window, document);
 
-  createDomWatcher(document, SECURE_FRAME_URL, body);
+  createDomWatcher(document, __SECURE_FRAME_URL__, body);
 }
