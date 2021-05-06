@@ -8,9 +8,16 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const envFile = isProduction ? '.env-prod' : '.env';
 
-require('dotenv').config({
+const envVars = require('dotenv').config({
   path: path.resolve(process.cwd(), envFile)
 });
+
+const envVarDefs = Object.keys(envVars.parsed).reduce((envDefs, envVarName) => {
+  return {
+    ...envDefs,
+    [`process.env.${envVarName}`]: JSON.stringify(envVars.parsed[envVarName])
+  }
+}, {})
 
 const buildMode = isProduction ? 'production': 'development';
 
@@ -25,6 +32,13 @@ const plugins = [];
 plugins.push(new CopyWebpackPlugin({
   patterns: [{from: 'static', to: `../${outputStaticFile}` }]
 }));
+
+plugins.push(new webpack.ProvidePlugin({
+  process: 'process/browser',
+  Buffer: ['buffer', 'Buffer'],
+}));
+
+plugins.push(new webpack.DefinePlugin(envVarDefs))
 
 if (isProduction) {
   plugins.push(new S3Plugin({
@@ -74,7 +88,11 @@ module.exports = {
     path: path.resolve(__dirname, 'public/js/')
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js']
+    extensions: ['.tsx', '.ts', '.jsx', '.js'],
+    fallback: {
+      "https": require.resolve("https-browserify"),
+      "http": require.resolve("stream-http")
+    }
   },
   plugins
 };

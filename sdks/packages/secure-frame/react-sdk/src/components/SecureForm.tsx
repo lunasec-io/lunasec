@@ -95,6 +95,11 @@ export class SecureForm extends Component<SecureFormProps> {
 
       const { nonce, response } = data;
 
+      if (!response.data.success) {
+        console.error("error while tokenizing data:", response.data.error);
+        return;
+      }
+
       const childRef = this.childRefLookup[nonce];
 
       // Set the value back to the input element so that everything behaves like a normal html form,

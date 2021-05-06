@@ -5,6 +5,10 @@ import { camelCaseObject } from '@lunasec/secure-frame-common/build/main/utils/t
 import React, { Component, CSSProperties, RefObject } from 'react';
 
 import { SecureFormContext } from './SecureFormContext';
+import {
+  __SECURE_FRAME_URL__,
+  secureFramePathname
+} from "@lunasec/secure-frame-common";
 
 export const SecureInputType = {
   text: 'text',
@@ -51,9 +55,12 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     this.frameRef = React.createRef();
     this.inputRef = React.createRef();
 
+    const secureFrameURL = new URL(__SECURE_FRAME_URL__)
+    secureFrameURL.pathname = secureFramePathname;
+
     this.state = {
       // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
-      secureFrameUrl: props.secureFrameUrl || 'http://localhost:5002/',
+      secureFrameUrl: secureFrameURL.toString(),
       frameStyleInfo: null,
     };
   }
@@ -82,7 +89,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   }
 
   generateUrl(frameStyleInfo: ElementStyleInfo) {
-    const urlFrameId = encodeURIComponent(this.frameId);
+    const urlFrameId = this.frameId;
     const styleHash = encodeURIComponent(JSON.stringify(frameStyleInfo));
 
     const frameURL = new URL('frame', this.state.secureFrameUrl);
@@ -91,7 +98,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     frameURL.searchParams.set('n', urlFrameId);
 
     if (this.props.value) {
-      frameURL.searchParams.set('t', encodeURIComponent(this.props.value));
+      frameURL.searchParams.set('t', this.props.value);
     }
 
     if (this.props.type) {

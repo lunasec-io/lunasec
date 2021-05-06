@@ -1,2 +1,1 @@
-// @ts-ignore
-export const REFINERY_API_SERVER = process.REFINERY_API_SERVER || 'https://app.refinery.io/';
+export const __SECURE_RESOLVER_URL__: string = process.env.SECURE_RESOLVER_URL;

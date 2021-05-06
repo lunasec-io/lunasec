@@ -8,6 +8,7 @@ import {
   UnknownFrameMessage, UnknownFrameNotification
 } from './types';
 import { generateSecureNonce } from '../utils/random';
+import {__SECURE_FRAME_URL__} from "../constants";
 
 export class FrameMessageCreator {
   private readonly frameResponses: Record<string, UnknownFrameMessage>;
@@ -67,7 +68,7 @@ export class FrameMessageCreator {
 
     return new Promise(async (resolve, reject) => {
       // TODO: Make this domain be configurable
-      frameContext.postMessage(JSON.stringify(message), 'http://localhost:5002');
+      frameContext.postMessage(JSON.stringify(message), __SECURE_FRAME_URL__);
 
       await timeout(2);
 
