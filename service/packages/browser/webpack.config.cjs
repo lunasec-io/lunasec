@@ -14,16 +14,19 @@ require('dotenv').config({
 
 const buildMode = isProduction ? 'production': 'development';
 
-const outputFile = isProduction ? '[name].[contenthash].js' : 'main-dev.js';
+const outputJsBundle = isProduction ? '[name].[contenthash].js' : 'main-dev.js';
+
+const outputStaticFile = isProduction ? '[path][name].[contenthash][ext]' : '[path][name][ext]';
 
 const runWatch = process.env.WEBPACK_WATCH !== undefined;
 
 const plugins = [];
 
+plugins.push(new CopyWebpackPlugin({
+  patterns: [{from: 'static', to: `../${outputStaticFile}` }]
+}));
+
 if (isProduction) {
-	plugins.push(new CopyWebpackPlugin({
-		patterns: [{from: 'static' }]
-	}));
   plugins.push(new S3Plugin({
     // Exclude uploading of html
     // exclude: /.*\.html$/,
@@ -43,7 +46,7 @@ if (isProduction) {
 
 module.exports = {
   context: path.resolve(__dirname, 'src/'),
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   entry: './main.ts',
   mode: buildMode,
   watch: runWatch,
@@ -67,8 +70,8 @@ module.exports = {
     }]
   },
   output: {
-    filename: outputFile,
-    path: path.resolve(__dirname, 'build/js/')
+    filename: outputJsBundle,
+    path: path.resolve(__dirname, 'public/js/')
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js']

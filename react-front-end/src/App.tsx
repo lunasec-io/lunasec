@@ -56,8 +56,19 @@ class App extends React.Component<Record<string, never>, IAppState> {
       <div className="App">
         <div className="app-form">
           <SecureForm onSubmit={(e) => this.persistTokens(e)}>
-            <SecureInput name="foo" value={this.state.foo} onChange={(e) => this.handleFooChange(e)} />
-            <SecureInput name="bar" type="password" value={this.state.bar} onChange={(e) => this.handleBarChange(e)} />
+            <SecureInput
+              name="foo"
+              value={this.state.foo}
+              onChange={(e) => this.handleFooChange(e)}
+              onBlur={(e) => console.log('blur1', e)}
+            />
+            <SecureInput
+              name="bar"
+              type="password"
+              value={this.state.bar}
+              onChange={(e) => this.handleBarChange(e)}
+              onBlur={(e) => console.log('blur2', e)}
+            />
             <input type="submit" />
           </SecureForm>
         </div>

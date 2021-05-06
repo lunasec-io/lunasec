@@ -26,8 +26,8 @@ app.use((req, res, next) => {
   })(req, res, next);
 });
 
-app.use('/frame/public/js', express.static(process.env.JS_STATIC_PATH || 'public/js'))
-app.use('/frame/public', express.static('static'));
+app.use('/frame/public/js', express.static(process.env.JS_STATIC_PATH || 'public/js'));
+app.use('/frame/public', express.static(process.env.STATIC_PATH || 'public'));
 
 app.use((_req, res, next) => {
   // TODO: Parse out the environment variable and whitelist it in the CSP policy.
@@ -41,7 +41,6 @@ app.use((_req, res, next) => {
 app.get('/frame', async (req, res) => {
   const referer = req.headers.referer;
   const nonce = req.query.n;
-
 
   // TODO: Return errors as HTML?
   if (!referer) {
@@ -62,7 +61,6 @@ app.get('/frame', async (req, res) => {
 
   res.locals.request_origin = referer;
   res.locals.request_nonce = nonce;
-
 
   // TODO: Add UUID regex validation
   // TODO: Spend some time to simplify + flatten out this code. Too much imperative control flow right now.

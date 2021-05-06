@@ -19,6 +19,8 @@ export interface SecureInputProps {
   name: string;
   // TODO: Add form validation logic..?
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
   type?: typeof SecureInputType[keyof typeof SecureInputType];
 }
 
@@ -139,13 +141,10 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
     const frameUrl = this.generateUrl(childStyle);
 
-    console.log({ frameUrl });
-
     return <iframe ref={this.frameRef} src={frameUrl} frameBorder={0} style={iframeStyle} key={frameUrl} />;
   }
 
   render() {
-    console.log({value: this.props.value});
     const parentContainerStyle: CSSProperties = {
       // position: 'relative'
       display: 'block',
@@ -155,16 +154,34 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       position: 'relative',
     };
 
+    const isRendered = this.state.frameStyleInfo !== undefined;
+
     const hiddenInputStyle: CSSProperties = {
       position: 'absolute',
       top: 0,
       left: 0,
-      zIndex: -999,
-      visibility: this.state.frameStyleInfo ? 'hidden' : 'visible',
+      // We can't set the "visibility" to "collapsed" or "hidden",
+      // Or else the "on focus" and "on blur" events won't fire.
+      // So we use zIndex instead to "hide" the input.
+      zIndex: isRendered ? -1 : 1,
+      opacity: isRendered ? 0 : 1,
       display: 'block',
     };
 
-    const isRendered = this.state.frameStyleInfo !== undefined;
+    const theInput = (
+      <input
+        className={isRendered ? `secure-form-input--hidden` : ''}
+        // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
+        type="text"
+        ref={this.inputRef}
+        name={this.props.name}
+        defaultValue={isRendered ? this.props.value : ''}
+        style={hiddenInputStyle}
+        onChange={isRendered ? this.props.onChange : undefined}
+        onBlur={this.props.onBlur}
+        onFocus={this.props.onFocus}
+      />
+    );
 
     return (
       <div
@@ -172,16 +189,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
         style={parentContainerStyle}
       >
         <div style={divContainerStyle}>
-          <input
-            className={isRendered ? `secure-form-input--hidden` : ''}
-            // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
-            type="text"
-            ref={this.inputRef}
-            name={this.props.name}
-            defaultValue={this.props.value}
-            style={hiddenInputStyle}
-            onChange={isRendered ? this.props.onChange : undefined}
-          />
+          {theInput}
           {this.renderFrame()}
         </div>
       </div>

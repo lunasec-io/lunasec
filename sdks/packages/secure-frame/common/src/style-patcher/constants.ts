@@ -219,7 +219,6 @@ export const ELEMENT_ATTRIBUTE_WHITELIST = [
   'offset-distance',
   'offset-path',
   'offset-rotate',
-  'opacity',
   'order',
   'outline-color',
   'outline-offset',
