@@ -57,14 +57,12 @@ class App extends React.Component<Record<string, never>, IAppState> {
         <div className="app-form">
           <SecureForm onSubmit={(e) => this.persistTokens(e)}>
             <SecureInput
-              secureFrameUrl="http://localhost:37766/frame"
               name="foo"
               value={this.state.foo}
               onChange={(e) => this.handleFooChange(e)}
               onBlur={(e) => console.log('blur1', e)}
             />
             <SecureInput
-              secureFrameUrl="http://localhost:37766/frame"
               name="bar"
               type="password"
               value={this.state.bar}
