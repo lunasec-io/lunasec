@@ -5,16 +5,18 @@ import {
   OutboundFrameMessageMap,
   OutboundToInboundMessageValueMap,
   OutboundToInboundMessageTypeMap,
-  UnknownFrameMessage,
+  UnknownFrameMessage, UnknownFrameNotification
 } from './types';
 import { generateSecureNonce } from '../utils/random';
 
 export class FrameMessageCreator {
   private readonly frameResponses: Record<string, UnknownFrameMessage>;
   private readonly timeout: number;
+  private readonly frameNotificationCallback!: (notification: UnknownFrameNotification) => void;
 
-  constructor(timeout = 5000) {
+  constructor(notificationCallback: (notification: UnknownFrameNotification) => void, timeout = 5000) {
     this.frameResponses = {};
+    this.frameNotificationCallback = notificationCallback;
     this.timeout = timeout;
   }
 
@@ -42,7 +44,17 @@ export class FrameMessageCreator {
     };
   }
 
-  messageReceived(unknownMessage: UnknownFrameMessage) {
+  messageReceived(unknownMessage: UnknownFrameMessage | UnknownFrameNotification) {
+    // Notifications don't have correlation tokens
+    if (unknownMessage.frameNonce) {
+      this.frameNotificationCallback(unknownMessage);
+      return;
+    }
+
+    if (!unknownMessage.correlationToken) {
+      throw new Error('Unknown frame message received with missing correlation token');
+    }
+
     // TODO: Validate response has valid JSON
     this.frameResponses[unknownMessage.correlationToken] = unknownMessage;
   }

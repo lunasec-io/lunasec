@@ -1,11 +1,20 @@
 import { FrameMessageCreator } from '@lunasec/secure-frame-common/build/main/rpc/frame-message-creator';
 import { addReactEventListener } from '@lunasec/secure-frame-common/build/main/rpc/listener';
-import { FrameMessage, InboundFrameMessageMap } from '@lunasec/secure-frame-common/build/main/rpc/types';
+import {
+  FrameMessage,
+  InboundFrameMessageMap,
+  UnknownFrameNotification
+} from '@lunasec/secure-frame-common/build/main/rpc/types';
 import React, { Component } from 'react';
 
 import setNativeValue from '../set-native-value';
 
 import { SecureFormContext } from './SecureFormContext';
+import {
+  triggerBlur,
+  triggerFocus
+} from '@lunasec/secure-frame-common/build/main/utils/element-event-triggers';
+
 export type SecureFormProps = {
   readonly onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 };
@@ -14,7 +23,7 @@ export class SecureForm extends Component<SecureFormProps> {
   declare readonly context: React.ContextType<typeof SecureFormContext>;
 
   private readonly messageCreator: FrameMessageCreator;
-  private childRefLookup: Record<
+  private readonly childRefLookup: Record<
     string,
     readonly [string, React.RefObject<HTMLIFrameElement>, React.RefObject<HTMLInputElement>]
   >;
@@ -22,8 +31,8 @@ export class SecureForm extends Component<SecureFormProps> {
 
   constructor(props: SecureFormProps) {
     super(props);
-    this.messageCreator = new FrameMessageCreator();
     this.childRefLookup = {};
+    this.messageCreator = new FrameMessageCreator(notification => this.frameNotificationCallback(notification));
     this.abortController = new AbortController();
   }
 
@@ -34,6 +43,28 @@ export class SecureForm extends Component<SecureFormProps> {
 
   componentWillUnmount() {
     this.abortController.abort();
+  }
+
+  frameNotificationCallback(notification: UnknownFrameNotification) {
+    const child = this.childRefLookup[notification.frameNonce];
+
+    if (notification.command !== 'NotifyOnBlur') {
+      throw new Error('Unknown notification event type received from secure frame');
+    }
+
+    const input = child[2];
+
+    const inputElement = input.current;
+
+    if (!inputElement) {
+      throw new Error('Missing element to trigger notification for in secure frame');
+    }
+
+    // In order to trigger a blur event, we must first focus the element.
+    triggerFocus(inputElement);
+
+    // Only then will the blur be triggered.
+    triggerBlur(inputElement);
   }
 
   async onSubmit(e: React.FormEvent<HTMLFormElement>) {

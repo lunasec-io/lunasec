@@ -24,6 +24,8 @@
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/secure-frame/react-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/tokenizer-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/node-sdk/build" />
+      <excludeFolder url="file://$MODULE_DIR$/sdks/packages/secure-frame/common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/service/packages/server/public" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

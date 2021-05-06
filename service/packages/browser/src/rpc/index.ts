@@ -1,7 +1,10 @@
 import {
   FrameMessage,
   InboundFrameMessageMap,
-  UnknownFrameMessage
+  UnknownFrameMessage,
+  FrameNotification,
+  InboundFrameNotificationMap,
+  UnknownFrameNotification
 } from '@lunasec/secure-frame-common/build/main/rpc/types';
 
 interface TokenizerResponse {
@@ -10,17 +13,27 @@ interface TokenizerResponse {
   // and definitely other fields we don't access, assuming that's okay
 }
 
-function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, nonce: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> | null {
+function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, correlationToken: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> {
 
   const innerMessage = createMessage();
 
-  if (innerMessage === null) {
-    return null;
-  }
+  return {
+    command: s,
+    correlationToken: correlationToken,
+    data: innerMessage
+  };
+}
+
+function createNotificationToFrame<K extends keyof InboundFrameNotificationMap>(
+  s: K,
+  frameNonce: string,
+  createNotification: () => InboundFrameNotificationMap[K] = () => ({})
+): FrameNotification<InboundFrameNotificationMap, K> {
+  const innerMessage = createNotification();
 
   return {
     command: s,
-    correlationToken: nonce,
+    frameNonce: frameNonce,
     data: innerMessage
   };
 }
@@ -47,7 +60,11 @@ async function tokenizeField(): Promise<any> {
   return rawResponse.json();
 }
 
-function respondToMessage(origin: string, rawMessage: UnknownFrameMessage, response: TokenizerResponse): void {
+export function sendMessageToParentFrame(origin: string, message: UnknownFrameMessage | UnknownFrameNotification) {
+  window.parent.postMessage(JSON.stringify(message), origin);
+}
+
+export function respondWithTokenizedValue(origin: string, rawMessage: UnknownFrameMessage, response: TokenizerResponse): void {
   const message = createMessageToFrame('ReceiveCommittedToken', rawMessage.correlationToken, () => {
     if (!response || !response.success) {
       return {
@@ -61,8 +78,14 @@ function respondToMessage(origin: string, rawMessage: UnknownFrameMessage, respo
     };
   });
 
-  window.parent.postMessage(JSON.stringify(message), origin);
+  sendMessageToParentFrame(origin, message);
   return;
+}
+
+export function notifyParentOfOnBlurEvent(origin: string, frameNonce: string) {
+  const message = createNotificationToFrame('NotifyOnBlur', frameNonce);
+
+  sendMessageToParentFrame(origin, message);
 }
 
 export async function processMessage(origin: string, rawMessage: UnknownFrameMessage) {
@@ -70,7 +93,7 @@ export async function processMessage(origin: string, rawMessage: UnknownFrameMes
   // TODO: Make this type safe (require every message to be handled)
   if (rawMessage.command === 'CommitToken') {
     const serverResponse = await tokenizeField();
-    respondToMessage(origin, rawMessage, serverResponse);
+    respondWithTokenizedValue(origin, rawMessage, serverResponse);
     return;
   }
 

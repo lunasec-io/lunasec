@@ -46,7 +46,7 @@ if (isProduction) {
 
 module.exports = {
   context: path.resolve(__dirname, 'src/'),
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   entry: './main.ts',
   mode: buildMode,
   watch: runWatch,
@@ -63,9 +63,7 @@ module.exports = {
         loader: 'ts-loader',
         options: {
           configFile: 'tsconfig.json',
-          projectReferences: true,
-          sourceMap: true,
-          devtool: isProduction ? 'source-map' : 'cheap-module-eval-source-map'
+          projectReferences: true
         }
       }],
       exclude: /node_modules/
