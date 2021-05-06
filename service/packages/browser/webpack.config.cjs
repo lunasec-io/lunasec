@@ -77,7 +77,7 @@ module.exports = {
         loader: 'ts-loader',
         options: {
           configFile: 'tsconfig.json',
-          projectReferences: true,
+          projectReferences: true
         }
       }],
       exclude: /node_modules/

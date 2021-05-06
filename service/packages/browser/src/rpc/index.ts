@@ -1,21 +1,34 @@
 import {
   FrameMessage,
   InboundFrameMessageMap,
-  UnknownFrameMessage
+  UnknownFrameMessage,
+  FrameNotification,
+  InboundFrameNotificationMap,
+  UnknownFrameNotification
 } from '@lunasec/secure-frame-common/build/main/rpc/types';
 import {Tokenizer} from "@lunasec/tokenizer-sdk";
 
-function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, nonce: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> | null {
+function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, correlationToken: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> {
 
   const innerMessage = createMessage();
 
-  if (innerMessage === null) {
-    return null;
-  }
+  return {
+    command: s,
+    correlationToken: correlationToken,
+    data: innerMessage
+  };
+}
+
+function createNotificationToFrame<K extends keyof InboundFrameNotificationMap>(
+  s: K,
+  frameNonce: string,
+  createNotification: () => InboundFrameNotificationMap[K] = () => ({})
+): FrameNotification<InboundFrameNotificationMap, K> {
+  const innerMessage = createNotification();
 
   return {
     command: s,
-    correlationToken: nonce,
+    frameNonce: frameNonce,
     data: innerMessage
   };
 }
@@ -39,7 +52,11 @@ async function tokenizeField(): Promise<string | null> {
   return resp.tokenId
 }
 
-function respondToMessage(origin: string, rawMessage: UnknownFrameMessage, token: string | null): void {
+export function sendMessageToParentFrame(origin: string, message: UnknownFrameMessage | UnknownFrameNotification) {
+  window.parent.postMessage(JSON.stringify(message), origin);
+}
+
+export function respondWithTokenizedValue(origin: string, rawMessage: UnknownFrameMessage, token: string | null): void {
   const message = createMessageToFrame('ReceiveCommittedToken', rawMessage.correlationToken, () => {
     if (token === null) {
       return {
@@ -54,8 +71,14 @@ function respondToMessage(origin: string, rawMessage: UnknownFrameMessage, token
     };
   });
 
-  window.parent.postMessage(JSON.stringify(message), origin);
+  sendMessageToParentFrame(origin, message);
   return;
+}
+
+export function notifyParentOfOnBlurEvent(origin: string, frameNonce: string) {
+  const message = createNotificationToFrame('NotifyOnBlur', frameNonce);
+
+  sendMessageToParentFrame(origin, message);
 }
 
 export async function processMessage(origin: string, rawMessage: UnknownFrameMessage) {
@@ -63,7 +86,7 @@ export async function processMessage(origin: string, rawMessage: UnknownFrameMes
   // TODO: Make this type safe (require every message to be handled)
   if (rawMessage.command === 'CommitToken') {
     const serverResponse = await tokenizeField();
-    respondToMessage(origin, rawMessage, serverResponse);
+    respondWithTokenizedValue(origin, rawMessage, serverResponse);
     return;
   }
 

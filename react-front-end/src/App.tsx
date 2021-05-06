@@ -61,6 +61,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
               name="foo"
               value={this.state.foo}
               onChange={(e) => this.handleFooChange(e)}
+              onBlur={(e) => console.log('blur1', e)}
             />
             <SecureInput
               secureFrameUrl="http://localhost:37766/frame"
@@ -68,6 +69,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
               type="password"
               value={this.state.bar}
               onChange={(e) => this.handleBarChange(e)}
+              onBlur={(e) => console.log('blur2', e)}
             />
             <input type="submit" />
           </SecureForm>
