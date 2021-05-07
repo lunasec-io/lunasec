@@ -2,7 +2,7 @@ import {safeParseJson} from '@lunasec/services-common/build/utils/json';
 import {UnknownFrameMessage} from '@lunasec/secure-frame-common/build/main/rpc/types';
 import {StyleInfo} from '@lunasec/secure-frame-common/build/main/style-patcher/types';
 import {patchStyle} from '@lunasec/secure-frame-common/build/main/style-patcher/write';
-import {notifyParentOfOnBlurEvent, processMessage} from './rpc';
+import {notifyParentOfOnBlurEvent, processMessage, detokenize} from './rpc';
 import {__SECURE_FRAME_URL__} from "../../../../sdks/packages/secure-frame/common";
 
 /**
@@ -17,7 +17,7 @@ function attachOnBlurNotifier(origin: string, frameNonce: string, inputElement: 
   });
 }
 
-function setupPage(origin: string, frameNonce: string, secureInput: Element, loadingText: Element) {
+function setupPage(origin: string, frameNonce: string, secureInput: HTMLInputElement, loadingText: Element) {
   loadingText.classList.add('d-none');
   secureInput.classList.remove('d-none');
 
@@ -39,6 +39,17 @@ function setupPage(origin: string, frameNonce: string, secureInput: Element, loa
 
   attachOnBlurNotifier(origin, frameNonce, secureInput as HTMLInputElement);
 
+  // if there is a token on this iframes URL, go get the plaintext detokinized value and insert it once we have it
+  const tokenParam = URLParams.get('t')
+  if (tokenParam) {
+    detokenize(tokenParam).then((value) => {
+      if (value){
+        secureInput.value = value;
+      }
+      return;
+    })
+  }
+
   return secureInput;
 }
 
@@ -47,7 +58,7 @@ function setupPage(origin: string, frameNonce: string, secureInput: Element, loa
  * This code runs in the context of the secure frame origin and handles passing RPC back/forth between origins.
  */
 async function onLoad() {
-  const secureInput = document.querySelector('.secure-input');
+  const secureInput = document.querySelector('.secure-input') as HTMLInputElement;
   const loadingText = document.querySelector('.loading-text');
 
   if (!secureInput || !loadingText) {
@@ -69,9 +80,12 @@ async function onLoad() {
   // TODO: Create a class that holds origin and frameNonce so that we don't have to pass them down the call tree.
   setupPage(origin, frameNonce, secureInput, loadingText);
 
+
+
   if (!origin) {
     throw new Error('Unable to read origin data of parent frame');
   }
+
 
   window.addEventListener('message', (event) => {
 

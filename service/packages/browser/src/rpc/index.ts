@@ -52,6 +52,16 @@ async function tokenizeField(): Promise<string | null> {
   return resp.tokenId
 }
 
+export async function detokenize(token: string): Promise<string | null> {
+  const tokenizer = new Tokenizer();
+  const resp = await tokenizer.detokenize(token);
+  if (!resp.success) {
+    console.error('Detokenizer error: ', resp)
+    return null;
+  }
+  return resp.value;
+}
+
 export function sendMessageToParentFrame(origin: string, message: UnknownFrameMessage | UnknownFrameNotification) {
   window.parent.postMessage(JSON.stringify(message), origin);
 }
