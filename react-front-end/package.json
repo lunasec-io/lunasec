@@ -37,7 +37,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test",webcrypto
     "eject": "react-scripts eject",
     "prettier": "prettier \"*.{js,json,yml,md}\" \"src/**/*\"",
     "format": "npm run lint -- --fix",
