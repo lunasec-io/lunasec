@@ -3,6 +3,7 @@ import {UnknownFrameMessage} from '@lunasec/secure-frame-common/build/main/rpc/t
 import {StyleInfo} from '@lunasec/secure-frame-common/build/main/style-patcher/types';
 import {patchStyle} from '@lunasec/secure-frame-common/build/main/style-patcher/write';
 import {notifyParentOfOnBlurEvent, processMessage} from './rpc';
+import {__SECURE_FRAME_URL__} from "../../../../sdks/packages/secure-frame/common";
 
 /**
  * Sends a message whenever an "on blur" event occurs (when the user clicks away from the secure frame).
@@ -45,8 +46,7 @@ function setupPage(origin: string, frameNonce: string, secureInput: Element, loa
 /**
  * This code runs in the context of the secure frame origin and handles passing RPC back/forth between origins.
  */
-function onLoad() {
-
+async function onLoad() {
   const secureInput = document.querySelector('.secure-input');
   const loadingText = document.querySelector('.loading-text');
 
