@@ -1,111 +1,90 @@
 import {safeParseJson} from '@lunasec/services-common/build/utils/json';
-import {UnknownFrameMessage} from '@lunasec/secure-frame-common/build/main/rpc/types';
 import {StyleInfo} from '@lunasec/secure-frame-common/build/main/style-patcher/types';
 import {patchStyle} from '@lunasec/secure-frame-common/build/main/style-patcher/write';
-import {notifyParentOfOnBlurEvent, processMessage, detokenize} from './rpc';
+import {detokenize, notifyParentOfEvent, listenForRPCMessages} from './rpc';
 import {__SECURE_FRAME_URL__} from "../../../../sdks/packages/secure-frame/common";
+import {AttributesMessage} from "../../../../sdks/packages/secure-frame/common/src/rpc/types";
 
-/**
- * Sends a message whenever an "on blur" event occurs (when the user clicks away from the secure frame).
- * @param origin Target origin to send the request to.
- * @param frameNonce Nonce of the current iframe.
- * @param inputElement The input element to attach the blur event listener to.
- */
-function attachOnBlurNotifier(origin: string, frameNonce: string, inputElement: HTMLInputElement) {
-  inputElement.addEventListener('blur', () => {
-    notifyParentOfOnBlurEvent(origin, frameNonce);
-  });
-}
 
-function setupPage(origin: string, frameNonce: string, secureInput: HTMLInputElement, loadingText: Element) {
-  loadingText.classList.add('d-none');
-  secureInput.classList.remove('d-none');
+class SecureInput {
+  secureInput: HTMLInputElement;
+  loadingText: Element;
+  frameNonce: string;
+  origin: string;
+  initialized: boolean;
 
-  if (window.location.hash && window.location.hash !== '') {
-    const stylingInfo = safeParseJson<StyleInfo>(decodeURIComponent(window.location.hash).substring(1));
+  constructor() {
+    this.initialized = false;
 
-    // TODO: Add schema validation to JSON
-    if (stylingInfo !== null) {
-      patchStyle(secureInput as HTMLElement, stylingInfo);
+    this.secureInput = document.querySelector('.secure-input') as HTMLInputElement;
+    this.loadingText = document.querySelector('.loading-text') as Element;
+
+    if (!this.secureInput || !this.loadingText) {
+      throw new Error('Unable to select secure input node');
     }
+
+    const searchParams = (new URL(document.location.href)).searchParams
+
+    this.origin = searchParams.get('origin') as string
+
+    if (!searchParams.get('origin')) {
+      throw new Error('Unable to read origin of the parent page');
+    }
+
+    this.frameNonce = searchParams.get('frame-id') as string;
+    if (!this.frameNonce) {
+      throw new Error('Unable to read frame nonce of the parent page');
+    }
+
+    if (!this.origin) {
+      throw new Error('Unable to read origin data of parent frame');
+    }
+
+    listenForRPCMessages(this.setAttributesFromRPC);
+    notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
   }
 
-  const URLParams = new URLSearchParams(window.location.search);
-  const typeParam = URLParams.get('type');
-
-  if (typeParam) {
-    secureInput.setAttribute('type', typeParam);
-  }
-
-  attachOnBlurNotifier(origin, frameNonce, secureInput as HTMLInputElement);
-
-  // if there is a token on this iframes URL, go get the plaintext detokinized value and insert it once we have it
-  const tokenParam = URLParams.get('t')
-  if (tokenParam) {
-    detokenize(tokenParam).then((value) => {
-      if (value){
-        secureInput.value = value;
+  // Set up the iframe attributes, used on both page load and on any subsequent changes
+  setAttributesFromRPC(attrs: AttributesMessage) {
+    // First time setup
+    if (!this.initialized) {
+      this.loadingText.classList.add('d-none');
+      this.secureInput.classList.remove('d-none');
+      if (!attrs.style) {
+        console.error('Attribute frame message missing necessary style parameter for first time frame startup', attrs);
+        return;
       }
-      return;
-    })
-  }
-
-  return secureInput;
-}
-
-
-/**
- * This code runs in the context of the secure frame origin and handles passing RPC back/forth between origins.
- */
-async function onLoad() {
-  const secureInput = document.querySelector('.secure-input') as HTMLInputElement;
-  const loadingText = document.querySelector('.loading-text');
-
-  if (!secureInput || !loadingText) {
-    throw new Error('Unable to select secure input node');
-  }
-
-  const origin = secureInput.getAttribute('data-origin');
-
-  if (!origin) {
-    throw new Error('Unable to read origin of the parent page');
-  }
-
-  const frameNonce = secureInput.getAttribute('data-nonce');
-
-  if (!frameNonce) {
-    throw new Error('Unable to read frame nonce of the parent page');
-  }
-
-  // TODO: Create a class that holds origin and frameNonce so that we don't have to pass them down the call tree.
-  setupPage(origin, frameNonce, secureInput, loadingText);
-
-
-
-  if (!origin) {
-    throw new Error('Unable to read origin data of parent frame');
-  }
-
-
-  window.addEventListener('message', (event) => {
-
-    // TODO: Is this a security problem?
-    if (!origin.startsWith(event.origin + '/')) {
-      console.log('rejected origin', event.origin, origin);
-      return;
     }
 
-    const rawMessage = safeParseJson<UnknownFrameMessage>(event.data);
-
-    if (!rawMessage) {
-      console.error('Invalid message received by secure frame.');
-      return;
+    if (attrs.style) {
+      patchStyle(this.secureInput, safeParseJson<StyleInfo>(attrs.style));
     }
 
-    processMessage(origin, rawMessage);
-  });
+    if (attrs.type) {
+      this.secureInput.setAttribute('type', attrs.type);
+    }
 
-  // window.parent.postMessage(nonce, origin);
+    if (attrs.token) {
+      detokenize(attrs.token).then((value) => {
+        // May need more error handling here around response.success or whatever
+        if (value){
+          this.secureInput.value = value;
+        }
+        return;
+      })
+    }
+
+    this.attachOnBlurNotifier();
+    this.initialized = true;
+    return;
+  }
+
+
+  attachOnBlurNotifier() {
+    this.secureInput.addEventListener('blur', () => {
+      notifyParentOfEvent('NotifyOnBlur', this.origin, this.frameNonce);
+    });
+  }
 }
 
-onLoad();
+new SecureInput()
