@@ -15,9 +15,9 @@ import {
   triggerFocus
 } from '@lunasec/secure-frame-common/build/main/utils/element-event-triggers';
 
-export type SecureFormProps = {
+export interface SecureFormProps extends React.ComponentPropsWithoutRef<"form">  {
   readonly onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-};
+}
 
 export class SecureForm extends Component<SecureFormProps> {
   declare readonly context: React.ContextType<typeof SecureFormContext>;
@@ -161,7 +161,7 @@ export class SecureForm extends Component<SecureFormProps> {
           },
         }}
       >
-        <form onSubmit={(e) => this.onSubmit(e)}>{this.props.children}</form>
+        <form {...this.props} onSubmit={(e) => this.onSubmit(e)}>{this.props.children}</form>
       </SecureFormContext.Provider>
     );
   }

@@ -7,6 +7,7 @@ import { CONFIG_DEFAULTS } from './constants';
 import {
   TokenizerClientConfig,
   TokenizerDetokenizeResponse,
+  TokenizerDetokenizeToUrlResponse,
   TokenizerGetMetadataResponse,
   TokenizerSetMetadataResponse,
   TokenizerTokenizeResponse,
@@ -124,6 +125,22 @@ export class Tokenizer {
   }
 
   async detokenize(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeResponse> {
+    const response = await this.detokenizeToUrl(tokenId);
+
+    if (!response.success) {
+      return response;
+    }
+
+    const { headers, downloadUrl } = response;
+
+    return {
+      success: true,
+      tokenId: tokenId,
+      value: await downloadFromS3WithSignedUrl(downloadUrl, headers),
+    };
+  }
+
+  async detokenizeToUrl(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeToUrlResponse> {
     const response = await this.getTokenClient({
       tokenId: tokenId,
     });
@@ -153,7 +170,8 @@ export class Tokenizer {
     return {
       success: true,
       tokenId: tokenId,
-      value: await downloadFromS3WithSignedUrl(downloadUrl, headers),
+      headers: headers,
+      downloadUrl: downloadUrl,
     };
   }
 }

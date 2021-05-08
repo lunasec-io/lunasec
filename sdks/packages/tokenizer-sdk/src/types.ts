@@ -35,3 +35,10 @@ export interface TokenizerDetokenizeResponse {
   tokenId: string;
   value: string;
 }
+
+export interface TokenizerDetokenizeToUrlResponse {
+  success: true;
+  tokenId: string;
+  headers: Record<string, string>;
+  downloadUrl: string;
+}

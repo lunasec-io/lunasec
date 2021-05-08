@@ -1,6 +1,12 @@
 import express from 'express';
 import { GetMetadataResponse, GetTokenResponse, SetMetadataResponse, SetTokenResponse } from '../api/types';
-import { TEST_METADATA, TEST_PLAINTEXT_VALUE, TEST_QUERY_PARAMS, TEST_S3_HEADERS, TEST_TOKEN } from './test-constants';
+import {
+  makeS3Url,
+  TEST_METADATA,
+  TEST_PLAINTEXT_VALUE,
+  TEST_S3_HEADERS,
+  TEST_TOKEN, TEST_S3_FILE_PATH
+} from './test-constants';
 import { CONFIG_DEFAULTS } from '../constants';
 
 export type OnResponseCallback = (req: express.Request) => Promise<Record<string, any> | void>;
@@ -12,7 +18,6 @@ export interface FakeTokenizerServiceConfig {
 }
 
 export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
-  const awsS3WritePath = '9ff28';
 
   const app = express();
 
@@ -37,7 +42,7 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
       success: true,
       data: {
         tokenId: TEST_TOKEN,
-        uploadUrl: `http://localhost:${config.port}/${awsS3WritePath}${TEST_QUERY_PARAMS}`,
+        uploadUrl: makeS3Url(config.port),
         headers: TEST_S3_HEADERS.PUT,
       },
     })
@@ -48,7 +53,7 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
     respondWithJson<GetTokenResponse>({
       success: true,
       data: {
-        downloadUrl: `http://localhost:${config.port}/${awsS3WritePath}${TEST_QUERY_PARAMS}`,
+        downloadUrl: makeS3Url(config.port),
         headers: TEST_S3_HEADERS.GET,
       },
     })
@@ -71,7 +76,7 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
     })
   );
 
-  app.put(`/${awsS3WritePath}`, async (req, res) => {
+  app.put(`/${TEST_S3_FILE_PATH}`, async (req, res) => {
     if (config.onS3Callback) {
       const customResponse = await config.onS3Callback(req);
 
@@ -84,7 +89,7 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
     res.send();
   });
 
-  app.get(`/${awsS3WritePath}`, async (req, res) => {
+  app.get(`/${TEST_S3_FILE_PATH}`, async (req, res) => {
     if (config.onS3Callback) {
       const customResponse = await config.onS3Callback(req);
 
