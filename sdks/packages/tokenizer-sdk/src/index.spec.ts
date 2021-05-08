@@ -49,7 +49,7 @@ async function runTokenizerTest(config: TokenizerTestConfig) {
 
     const tokenizer = new Tokenizer({
       host: `http://localhost:${tokenizerServerPort}`,
-      secret: TEST_TOKENIZER_SECRET,
+      token: TEST_TOKENIZER_SECRET,
     });
 
     await fn(test, tokenizer);
