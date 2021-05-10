@@ -1,9 +1,14 @@
 import * as http from 'http';
 import * as https from 'https';
-import * as nodeUrl from "url";
 
-declare var window: { URL: any; };
-const URL = typeof window !== "undefined" ? window.URL : nodeUrl.URL;
+// Apparently this is automatically imported in both Node and the Browser.
+// It's kind of janky to _not_ explicitly import this, but this is the best "isomorphic" way.
+// If we do import it, then the Browser webpack build step complains.
+// If we do this, then both Node.js and the browser seem to work. *shrug*
+export function getUrl() {
+  // @ts-ignore
+  return URL;
+}
 
 function getRequestModule(protocol: string) {
   if (protocol === 'http:') {
@@ -38,6 +43,8 @@ export class BadHttpResponseError extends Error {
 }
 
 function getRequestParams(host: string, path: string, params: http.ClientRequestArgs) {
+  const URL = getUrl();
+
   const requestUri = new URL(path, host);
 
   const requestModule = getRequestModule(requestUri.protocol);
