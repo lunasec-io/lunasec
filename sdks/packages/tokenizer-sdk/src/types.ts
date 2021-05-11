@@ -8,10 +8,9 @@ export interface TokenizerClientConfig {
     setToken: string;
   };
   headers: {
-    key: string;
-    meta: string;
+    auth: string;
   };
-  secret?: string;
+  token?: string;
 }
 
 export interface TokenizerGetMetadataResponse {
