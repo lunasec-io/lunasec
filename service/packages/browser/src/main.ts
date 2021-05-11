@@ -42,6 +42,7 @@ class SecureInput {
 
     listenForRPCMessages(this.setAttributesFromRPC);
     notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
+    console.log('IFRAME CONSTRUCTOR CALLED')
   }
 
   // Set up the iframe attributes, used on both page load and on any subsequent changes

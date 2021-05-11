@@ -13,8 +13,8 @@ windows:
       - cd service/packages/browser
       - npm run watch
     - shell_command:
-      - cd service/packages/browser/public
-      - python -m http.server 8000
+      - cd service/packages/server
+      - nodemon --experimental-modules --es-module-specifier-resolution=node build/http-dev-server.js
     - shell_command:
       - cd react-front-end
       - npm run start
