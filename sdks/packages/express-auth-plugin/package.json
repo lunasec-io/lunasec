@@ -1,11 +1,12 @@
 {
-  "name": "@esluna/express-auth-plugin",
+  "name": "@lunasec/express-auth-plugin",
   "version": "1.0.0",
-  "description": "Esluna Tokenizer client for Node.js",
+  "description": "LunaSec Tokenizer client for Node.js",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
   "scripts": {
+    "clean": "rm -rf build",
     "compile": "tsc",
     "start:dev": "SECURE_FRAME_KEYSET=`cat ~/go/src/github.com/refinery-labs/loq/fixtures/secureframe/secure_frame_keyset.pub` SECURE_FRAME_URL=$SECURE_FRAME_URL DEBUG=express:* node build/main/test_server.js",
     "test": "echo \"Error: no test specified\" && exit 1"

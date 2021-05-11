@@ -22,6 +22,7 @@
     "test:unit": "nyc --silent ava",
     "check-cli": "run-s test diff-integration-tests check-integration-tests",
     "check-integration-tests": "run-s check-integration-test:*",
+    "clean": "rm -rf build",
     "diff-integration-tests": "mkdir -p diff && rm -rf diff/test && cp -r test diff/test && rm -rf diff/test/test-*/.git && cd diff && git init --quiet && git add -A && git commit --quiet --no-verify --allow-empty -m 'WIP' && echo '\\n\\nCommitted most recent integration test output in the \"diff\" directory. Review the changes with \"cd diff && git diff HEAD\" or your preferred git diff viewer.'",
     "watch:build": "run-p watch:build-*",
     "watch:build-tsc": "tsc -p tsconfig.json -w",
@@ -45,7 +46,12 @@
     "node": ">=10"
   },
   "dependencies": {
-    "react": "^17.0.1"
+    "@lunasec/secure-frame-common": "^1.0.0",
+    "react": "^17.0.0"
+  },
+  "peerDependencies": {
+    "@lunasec/secure-frame-common": "^1.0.0",
+    "react": ">=17.0.0"
   },
   "devDependencies": {
     "@ava/typescript": "^1.1.1",
@@ -70,7 +76,7 @@
     "prettier": "^2.1.1",
     "standard-version": "^9.0.0",
     "ts-node": "^9.0.0",
-    "typedoc": "^0.19.0",
+    "typedoc": "^0.20.36",
     "typescript": "^4.2.2"
   },
   "files": [
