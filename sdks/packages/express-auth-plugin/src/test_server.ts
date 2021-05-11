@@ -1,8 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import {authPlugin} from "./index";
+const cookieParser = require('cookie-parser');
 
 const app = express();
+app.use(cookieParser());
+
 app.use(cors({
     origin: '*',
     optionsSuccessStatus: 200,
@@ -18,7 +21,7 @@ app.get('/set-id-token',async function(req, res) {
     });
     return
   }
-  res.header('Set-Cookie', `id_token: ${id_token}`)
+  res.cookie('id_token', id_token);
   res.status(200).send({
     'success': true
   })

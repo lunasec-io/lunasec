@@ -13,6 +13,6 @@ export const CONFIG_DEFAULTS: TokenizerClientConfig = {
     setToken: '/tokenize',
   },
   headers: {
-    auth: 'X-Lunasec-Session-Token'.toLowerCase(),
+    auth: 'X-Lunasec-Access-Token'.toLowerCase(),
   },
 };
