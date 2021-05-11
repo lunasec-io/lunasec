@@ -1,9 +1,5 @@
-import { BadHttpResponseError, makeRawRequest } from '@lunasec/common';
+import {BadHttpResponseError, getUrl, makeRawRequest} from '@lunasec/common';
 import * as http from 'http';
-import * as nodeUrl from "url";
-
-declare var window: { URL: any; };
-const URL = typeof window !== "undefined" ? window.URL : nodeUrl.URL;
 
 function getUploadHeaders(input?: string) {
   if (input !== undefined) {
@@ -23,6 +19,8 @@ function makeS3HttpRequestOptions(
   method: 'PUT' | 'GET',
   input?: string
 ): [string, string, http.ClientRequestArgs, string | undefined] {
+  const URL = getUrl();
+
   const uploadUrl = new URL(signedUrl);
 
   const host = uploadUrl.protocol + '//' + uploadUrl.hostname;

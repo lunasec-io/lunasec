@@ -17,7 +17,7 @@ export const SecureInputType = {
   email: 'email',
 } as const;
 
-export interface SecureInputProps {
+export interface SecureInputProps extends React.ComponentPropsWithoutRef<"input"> {
   value?: string;
   secureFrameUrl?: string;
   // TODO: Will this force the component to have a key?
@@ -164,13 +164,11 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   }
 
   render() {
-    const parentContainerStyle: CSSProperties = {
-      // position: 'relative'
-      display: 'block',
-    };
+    const {value, children, ...otherProps} = this.props;
 
-    const divContainerStyle: CSSProperties = {
+    const parentContainerStyle: CSSProperties = {
       position: 'relative',
+      display: 'block'
     };
 
     const isRendered = this.state.frameStyleInfo !== undefined;
@@ -187,30 +185,25 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       display: 'block',
     };
 
-    const theInput = (
-      <input
-        className={isRendered ? `secure-form-input--hidden` : ''}
-        // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
-        type="text"
-        ref={this.inputRef}
-        name={this.props.name}
-        defaultValue={isRendered ? this.props.value : ''}
-        style={hiddenInputStyle}
-        onChange={isRendered ? this.props.onChange : undefined}
-        onBlur={this.props.onBlur}
-        onFocus={this.props.onFocus}
-      />
-    );
-
     return (
       <div
         className={`secure-form-container-${this.frameId} secure-form-container-${this.props.name}`}
         style={parentContainerStyle}
       >
-        <div style={divContainerStyle}>
-          {theInput}
-          {this.renderFrame()}
-        </div>
+        <input
+          {...otherProps}
+          className={isRendered ? `secure-form-input--hidden ${this.props.className}` : `${this.props.className}`}
+          // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
+          type="text"
+          ref={this.inputRef}
+          name={this.props.name}
+          defaultValue={isRendered ? this.props.value : ''}
+          style={{...this.props.style, ...hiddenInputStyle}}
+          onChange={isRendered ? this.props.onChange : undefined}
+          onBlur={this.props.onBlur}
+          onFocus={this.props.onFocus}
+        />
+        {this.renderFrame()}
       </div>
     );
   }

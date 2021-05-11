@@ -7,6 +7,7 @@
   "module": "build/module/index.js",
   "scripts": {
     "compile": "tsc",
+    "start:dev": "SECURE_FRAME_KEYSET=`cat ~/go/src/github.com/refinery-labs/loq/fixtures/secureframe/secure_frame_keyset.pub` SECURE_FRAME_URL=$SECURE_FRAME_URL DEBUG=express:* node build/main/test_server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "types": "build/main/index.d.ts",
@@ -14,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@peculiar/webcrypto": "^1.1.6",
-    "cookies": "^0.8.0",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "node-libs-browser": "^2.2.1",
     "tink-crypto": "^0.1.0"

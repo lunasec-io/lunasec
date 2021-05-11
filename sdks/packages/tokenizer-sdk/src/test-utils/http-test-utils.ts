@@ -5,7 +5,7 @@ import tape from 'tape';
 
 export function verifySecretHeader(test: tape.Test, secret: string = TEST_TOKENIZER_SECRET) {
   return async (req: express.Request) => {
-    test.equal(req.headers[CONFIG_DEFAULTS.headers.key], secret, 'secret header passed correctly');
+    test.equal(req.headers[CONFIG_DEFAULTS.headers.auth], secret, 'secret header passed correctly');
   };
 }
 

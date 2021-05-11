@@ -7,6 +7,7 @@ import { CONFIG_DEFAULTS } from './constants';
 import {
   TokenizerClientConfig,
   TokenizerDetokenizeResponse,
+  TokenizerDetokenizeToUrlResponse,
   TokenizerGetMetadataResponse,
   TokenizerSetMetadataResponse,
   TokenizerTokenizeResponse,
@@ -25,15 +26,12 @@ export class Tokenizer {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 
-    const SECRET_VALUE = this.config.secret;
+    const jwtToken = this.config.token;
 
-    if (!SECRET_VALUE) {
-      throw new Error('Unable to create lunasec Tokenizer client without secret value');
+    const headers: Record<string, string> = {};
+    if (jwtToken) {
+      headers[this.config.headers.auth] = jwtToken;
     }
-
-    const headers = {
-      [this.config.headers.key]: SECRET_VALUE,
-    };
 
     const makeApiClient = <T extends ValidTokenizerApiRequestTypes>(endpoint: string) => {
       return makeSpecificApiClient<T>(this.config.host, endpoint, {
@@ -127,6 +125,22 @@ export class Tokenizer {
   }
 
   async detokenize(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeResponse> {
+    const response = await this.detokenizeToUrl(tokenId);
+
+    if (!response.success) {
+      return response;
+    }
+
+    const { headers, downloadUrl } = response;
+
+    return {
+      success: true,
+      tokenId: tokenId,
+      value: await downloadFromS3WithSignedUrl(downloadUrl, headers),
+    };
+  }
+
+  async detokenizeToUrl(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeToUrlResponse> {
     const response = await this.getTokenClient({
       tokenId: tokenId,
     });
@@ -156,7 +170,8 @@ export class Tokenizer {
     return {
       success: true,
       tokenId: tokenId,
-      value: await downloadFromS3WithSignedUrl(downloadUrl, headers),
+      headers: headers,
+      downloadUrl: downloadUrl,
     };
   }
 }

@@ -8,10 +8,9 @@ export interface TokenizerClientConfig {
     setToken: string;
   };
   headers: {
-    key: string;
-    meta: string;
+    auth: string;
   };
-  secret?: string;
+  token?: string;
 }
 
 export interface TokenizerGetMetadataResponse {
@@ -35,4 +34,11 @@ export interface TokenizerDetokenizeResponse {
   success: true;
   tokenId: string;
   value: string;
+}
+
+export interface TokenizerDetokenizeToUrlResponse {
+  success: true;
+  tokenId: string;
+  headers: Record<string, string>;
+  downloadUrl: string;
 }

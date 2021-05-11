@@ -58,7 +58,9 @@ export async function authPlugin(app: Router) {
   app.get('/secure-frame',async function(req, res) {
     const stateToken = req.query.state;
     if (typeof stateToken !== "string") {
-      res.status(400).send('state is not set in request');
+      res.status(400).send({
+        'error': 'state is not set in request'
+      });
       return;
     }
 
@@ -66,7 +68,10 @@ export async function authPlugin(app: Router) {
     const idToken = cookies.get('id_token');
 
     if (idToken === undefined) {
-      res.status(400).send('id_token is not set in request');
+      console.error('id_token is not set in request')
+      res.status(400).send({
+        'error': 'id_token is not set in request'
+      });
       return;
     }
 
@@ -78,6 +83,8 @@ export async function authPlugin(app: Router) {
     redirectUrl.searchParams.append('state', stateToken);
     redirectUrl.searchParams.append('openid_token', encodedData);
     redirectUrl.pathname = '/session/create';
+
+    console.log('redirecting...', redirectUrl.href)
 
     res.redirect(redirectUrl.href);
   });

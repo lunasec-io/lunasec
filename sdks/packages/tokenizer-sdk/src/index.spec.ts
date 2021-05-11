@@ -2,11 +2,12 @@ import tape from 'tape';
 import { Tokenizer } from './index';
 import { createFakeTokenizerService, FakeTokenizerServiceConfig } from './test-utils/fake-tokenizer-service';
 import {
+  makeS3Url,
   TEST_METADATA,
   TEST_PLAINTEXT_VALUE,
   TEST_S3_HEADERS,
   TEST_TOKEN,
-  TEST_TOKENIZER_SECRET,
+  TEST_TOKENIZER_SECRET
 } from './test-utils/test-constants';
 import { verifyHeaders, verifySecretHeader } from './test-utils/http-test-utils';
 
@@ -16,7 +17,7 @@ interface TokenizerTestServiceConfig {
 
 interface TokenizerTestConfig {
   name: string;
-  fn: (test: tape.Test, tokenizer: Tokenizer) => Promise<void>;
+  fn: (test: tape.Test, tokenizer: Tokenizer, config: FakeTokenizerServiceConfig) => Promise<void>;
   beforeSetup?: (test: tape.Test) => Promise<TokenizerTestServiceConfig>;
 }
 
@@ -29,10 +30,12 @@ async function runTokenizerTest(config: TokenizerTestConfig) {
   tape(name, async (test) => {
     const setupConfig = beforeSetup ? await beforeSetup(test) : {};
 
-    const fakeTokenizerServer = createFakeTokenizerService({
+    const fakeTokenizerConfig: FakeTokenizerServiceConfig = {
       port: tokenizerServerPort,
       ...setupConfig.tokenizerConfig,
-    });
+    };
+
+    const fakeTokenizerServer = createFakeTokenizerService(fakeTokenizerConfig);
 
     function onFinish() {
       return new Promise((resolve, reject) => {
@@ -49,10 +52,10 @@ async function runTokenizerTest(config: TokenizerTestConfig) {
 
     const tokenizer = new Tokenizer({
       host: `http://localhost:${tokenizerServerPort}`,
-      secret: TEST_TOKENIZER_SECRET,
+      token: TEST_TOKENIZER_SECRET,
     });
 
-    await fn(test, tokenizer);
+    await fn(test, tokenizer, fakeTokenizerConfig);
 
     await onFinish();
   });
@@ -107,6 +110,39 @@ tests.push({
 
       test.equal(response.tokenId, TEST_TOKEN, 'token should match');
       test.equal(response.value, TEST_PLAINTEXT_VALUE, 'plaintext should match');
+    } catch (e) {
+      console.log('error', e);
+      test.fail();
+    }
+    test.end();
+  },
+  async beforeSetup(test) {
+    return {
+      tokenizerConfig: {
+        onRequestCallback: verifySecretHeader(test),
+        onS3Callback: verifyHeaders(test, TEST_S3_HEADERS.GET),
+      },
+    };
+  },
+});
+
+tests.push({
+  name: 'Test detokenizing to URL',
+  fn: async (test, tokenizer, fakeTokenizerConfig) => {
+    try {
+      const response = await tokenizer.detokenizeToUrl(TEST_TOKEN);
+
+      if (!response.success) {
+        test.fail('response indicates failure');
+        test.end();
+        return;
+      }
+
+      test.ok(response.success, 'response indicates success');
+
+      test.equal(response.tokenId, TEST_TOKEN, 'token should match');
+      test.equal(response.downloadUrl, makeS3Url(fakeTokenizerConfig.port), 's3 url should match');
+      test.deepEqual(response.headers, TEST_S3_HEADERS.GET, 's3 headers should match');
     } catch (e) {
       console.log('error', e);
       test.fail();

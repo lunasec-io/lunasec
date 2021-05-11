@@ -80,7 +80,6 @@ class SecureInput {
     return;
   }
 
-
   attachOnBlurNotifier() {
     this.secureInput.addEventListener('blur', () => {
       notifyParentOfEvent('NotifyOnBlur', this.origin, this.frameNonce);

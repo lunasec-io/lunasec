@@ -6,18 +6,27 @@ windows:
     - shell_command:
       - cd sdks
       - npm run watch
+
+    # Customer Back End
     - shell_command:
-      - cd service
-      - npm run watch
+      - cd sdks/packages/express-auth-plugin/
+      - SECURE_FRAME_URL="http://localhost:37766" npm run start:dev
+
+    # Secure Frame CDN
     - shell_command:
       - cd service/packages/browser
       - npm run watch
     - shell_command:
-      - cd service/packages/server
-      - nodemon --experimental-modules --es-module-specifier-resolution=node build/http-dev-server.js
+      - cd service/packages/browser
+      - http-server -a localhost -p 8000
+
+    # Customer Front End
     - shell_command:
       - cd react-front-end
       - npm run start
+
+    # Secure Frame Back End
     - shell_command:
       - cd ~/go/src/github.com/refinery-labs/loq
-      - ./build/http_server
+      - make build secureframe
+      - MOCK_AWS_GATEWAY=false SECURE_FRAME_FRONT_END=http://localhost:37766 CUSTOMER_FRONT_END=http://localhost:3000 CUSTOMER_BACK_END=http://localhost:3001 CDN_HOST=localhost:8000 ./scripts/run-secureframe.sh

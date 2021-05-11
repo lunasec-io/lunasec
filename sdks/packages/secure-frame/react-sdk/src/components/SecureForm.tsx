@@ -13,11 +13,17 @@ import {
   triggerBlur,
   triggerFocus
 } from '@lunasec/secure-frame-common/build/main/utils/element-event-triggers';
+
 import {SecureInput} from "./SecureInput";
 
-export type SecureFormProps = {
+import {
+  __SECURE_FRAME_URL__
+} from "@lunasec/secure-frame-common";
+
+
+export interface SecureFormProps extends React.ComponentPropsWithoutRef<"form">  {
   readonly onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-};
+}
 
 export class SecureForm extends Component<SecureFormProps> {
   declare readonly context: React.ContextType<typeof SecureFormContext>;
@@ -37,6 +43,22 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   componentDidMount() {
+    // TODO (cthompson) this should probably move since it gets triggered multiple times on page load
+    const secureFrameURL = new URL(__SECURE_FRAME_URL__)
+    secureFrameURL.pathname = '/session/verify';
+
+    fetch(secureFrameURL.toString(), {
+      credentials: 'include',
+      mode: 'no-cors',
+      redirect: 'follow'
+    }).then(async () => {
+      const checkSession = await (
+        await fetch(secureFrameURL.toString())
+      ).json();
+
+      console.log(checkSession);
+    });
+
     // Pushes events received back up.
     addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
   }
@@ -188,7 +210,7 @@ export class SecureForm extends Component<SecureFormProps> {
           },
         }}
       >
-        <form onSubmit={(e) => this.onSubmit(e)}>{this.props.children}</form>
+        <form {...this.props} onSubmit={(e) => this.onSubmit(e)}>{this.props.children}</form>
       </SecureFormContext.Provider>
     );
   }
