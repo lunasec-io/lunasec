@@ -110,10 +110,10 @@ export async function processMessage(origin: string, rawMessage: UnknownFrameMes
 }
 
 // TODO: Passing a callback here that only gets called in certain situations kind of stinks
-export function listenForRPCMessages(updateAttrCallback: (m: AttributesMessage) => any) {
+export function listenForRPCMessages(origin: string, updateAttrCallback: (m: AttributesMessage) => any) {
   window.addEventListener('message', (event) => {
     // TODO: Is this a security problem?
-    if (!origin.startsWith(event.origin + '/')) {
+    if (origin !== event.origin) {
       console.log('rejected origin', event.origin, origin);
       return;
     }

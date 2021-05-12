@@ -14,7 +14,6 @@ class SecureInput {
   initialized: boolean;
 
   constructor() {
-    console.log('IFRAME CONSTRUCTOR CALLED')
     this.initialized = false;
 
     this.secureInput = document.querySelector('.secure-input') as HTMLInputElement;
@@ -41,16 +40,16 @@ class SecureInput {
       throw new Error('Unable to read origin data of parent frame');
     }
 
-    listenForRPCMessages(this.setAttributesFromRPC);
+    listenForRPCMessages(this.origin, (attrs) => {this.setAttributesFromRPC(attrs)});
     notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
-    console.log('IFRAME CONSTRUCTOR CALLED')
+    console.log('Iframe constructor complete')
   }
 
   // Set up the iframe attributes, used on both page load and on any subsequent changes
   setAttributesFromRPC(attrs: AttributesMessage) {
-    console.log('SETTING ATTRIBUTES FROM RPC ', attrs);
     // First time setup
     if (!this.initialized) {
+      console.log('doing first time setup')
       this.loadingText.classList.add('d-none');
       this.secureInput.classList.remove('d-none');
       if (!attrs.style) {
