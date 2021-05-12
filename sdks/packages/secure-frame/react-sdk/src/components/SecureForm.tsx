@@ -40,21 +40,34 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   componentDidMount() {
-    // TODO (cthompson) this should probably move since it gets triggered multiple times on page load
-    const secureFrameURL = new URL(__SECURE_FRAME_URL__)
-    secureFrameURL.pathname = '/session/verify';
+    const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__)
+    secureFrameVerifySessionURL.pathname = '/session/verify';
 
-    fetch(secureFrameURL.toString(), {
+    const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__)
+    secureFrameEnsureSessionURL.pathname = '/session/ensure';
+
+    fetch(secureFrameEnsureSessionURL.toString(), {
       credentials: 'include',
-      mode: 'no-cors',
-      redirect: 'follow'
-    }).then(async () => {
-      const checkSession = await (
-        await fetch(secureFrameURL.toString())
-      ).json();
+      mode: 'cors'
+    })
+      .then(async (r) => {
+        if (r.status === 200) {
+          console.log("secure frame session is verified")
+          return
+        }
+        // dispatch to the secure frame session verifier to ensure that a secure frame session exists
+        await fetch(secureFrameVerifySessionURL.toString(), {
+          credentials: 'include',
+          mode: 'cors',
+        });
 
-      console.log(checkSession);
-    });
+        const resp = await fetch(secureFrameEnsureSessionURL.toString());
+        if (resp.status !== 200) {
+          console.error("unable to create secure frame session")
+          return
+        }
+        // TODO (cthompson) here in the code we have verification that the secure form should be able to tokenize data
+      });
 
     // Pushes events received back up.
     addReactEventListener(window, this.abortController, (message) => this.messageCreator.messageReceived(message));
