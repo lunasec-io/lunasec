@@ -47,6 +47,7 @@ class SecureInput {
 
   // Set up the iframe attributes, used on both page load and on any subsequent changes
   setAttributesFromRPC(attrs: AttributesMessage) {
+    console.log('SETTING ATTRIBUTES FROM RPC ', attrs);
     // First time setup
     if (!this.initialized) {
       this.loadingText.classList.add('d-none');
