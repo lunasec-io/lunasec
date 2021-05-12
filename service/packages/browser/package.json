@@ -7,6 +7,7 @@
   "scripts": {
     "compile": "webpack --config webpack.config.cjs",
     "compile:production": "rm -rf public; NODE_ENV=production npm run compile",
+    "serve-assets": "http-server -a localhost -p 8000",
     "watch": "WEBPACK_WATCH=true npm run compile",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,6 +19,7 @@
   "dependencies": {
     "browserify": "^17.0.0",
     "https-browserify": "^1.0.0",
+    "http-server": "^0.12.3",
     "nodemon": "^2.0.7",
     "process": "^0.11.10",
     "stream-http": "^3.2.0",
