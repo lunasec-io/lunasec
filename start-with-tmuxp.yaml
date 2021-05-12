@@ -18,7 +18,7 @@ windows:
       - npm run watch
     - shell_command:
       - cd service/packages/browser
-      - http-server -a localhost -p 8000
+      - npx http-server -a localhost -p 8000
 
     # Customer Front End
     - shell_command:
