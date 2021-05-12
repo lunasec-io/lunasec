@@ -121,7 +121,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   generateUrl() {
     const urlFrameId = this.frameId;
     const frameURL = new URL('frame', this.state.secureFrameUrl);
-    frameURL.searchParams.set('frame-id', urlFrameId);
+    frameURL.searchParams.set('n', urlFrameId);
     frameURL.searchParams.set('origin', window.location.origin);
     return frameURL.toString();
   }

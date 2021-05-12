@@ -14,6 +14,7 @@ class SecureInput {
   initialized: boolean;
 
   constructor() {
+    console.log('IFRAME CONSTRUCTOR CALLED')
     this.initialized = false;
 
     this.secureInput = document.querySelector('.secure-input') as HTMLInputElement;
@@ -31,7 +32,7 @@ class SecureInput {
       throw new Error('Unable to read origin of the parent page');
     }
 
-    this.frameNonce = searchParams.get('frame-id') as string;
+    this.frameNonce = searchParams.get('n') as string;
     if (!this.frameNonce) {
       throw new Error('Unable to read frame nonce of the parent page');
     }

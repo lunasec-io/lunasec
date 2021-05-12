@@ -49,6 +49,9 @@ export class SecureForm extends Component<SecureFormProps> {
     const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__)
     secureFrameEnsureSessionURL.pathname = '/session/ensure';
 
+    // Pushes events received back up.
+    addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
+
     fetch(secureFrameEnsureSessionURL.toString(), {
       credentials: 'include',
       mode: 'cors'
@@ -72,8 +75,7 @@ export class SecureForm extends Component<SecureFormProps> {
         // TODO (cthompson) here in the code we have verification that the secure form should be able to tokenize data
       });
 
-    // Pushes events received back up.
-    addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
+
   }
 
   componentWillUnmount() {
