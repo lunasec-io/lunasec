@@ -42,14 +42,12 @@ class SecureInput {
 
     listenForRPCMessages(this.origin, (attrs) => {this.setAttributesFromRPC(attrs)});
     notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
-    console.log('Iframe constructor complete')
   }
 
   // Set up the iframe attributes, used on both page load and on any subsequent changes
   setAttributesFromRPC(attrs: AttributesMessage) {
     // First time setup
     if (!this.initialized) {
-      console.log('doing first time setup')
       this.loadingText.classList.add('d-none');
       this.secureInput.classList.remove('d-none');
       if (!attrs.style) {
