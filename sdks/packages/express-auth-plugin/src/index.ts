@@ -1,5 +1,5 @@
 import {Router} from "express";
-import Cookies from "cookies";
+import cookieParser from "cookie-parser";
 import {URL} from "url";
 import {Crypto} from "@peculiar/webcrypto";
 
@@ -55,7 +55,7 @@ export async function authPlugin(app: Router) {
     throw Error("SECURE_FRAME_URL not found in environment variables.");
   }
 
-  app.get('/secure-frame',async function(req, res) {
+  app.get('/secure-frame', cookieParser(), async function(req, res) {
     const stateToken = req.query.state;
     if (typeof stateToken !== "string") {
       res.status(400).send({
@@ -64,8 +64,7 @@ export async function authPlugin(app: Router) {
       return;
     }
 
-    const cookies = new Cookies(req, res);
-    const idToken = cookies.get('id_token');
+    const idToken = req.cookies.get('id_token');
 
     if (idToken === undefined) {
       console.error('id_token is not set in request')
