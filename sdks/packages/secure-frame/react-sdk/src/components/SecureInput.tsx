@@ -1,5 +1,5 @@
 import { getStyleInfo } from '@lunasec/secure-frame-common/build/main/style-patcher/read';
-import { ElementStyleInfo, ReadElementStyle } from '@lunasec/secure-frame-common/build/main/style-patcher/types';
+import {  ReadElementStyle } from '@lunasec/secure-frame-common/build/main/style-patcher/types';
 import { generateSecureNonce } from '@lunasec/secure-frame-common/build/main/utils/random';
 import { camelCaseObject } from '@lunasec/secure-frame-common/build/main/utils/to-camel-case';
 import React, { Component, CSSProperties, RefObject } from 'react';
@@ -9,6 +9,7 @@ import {
   __SECURE_FRAME_URL__,
   secureFramePathname
 } from "@lunasec/secure-frame-common";
+import {AttributesMessage} from "@lunasec/secure-frame-common/build/main/rpc/types";
 
 export const SecureInputType = {
   text: 'text',
@@ -66,14 +67,14 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   }
 
   componentDidMount() {
-    this.context.addComponentRef(this.frameRef, this.inputRef, this.frameId, this.props.name);
+    this.context.addComponent(this);
 
     this.generateElementStyle();
     this.setResizeListener();
   }
 
   componentWillUnmount() {
-    this.context.removeComponentRef(this.frameId);
+    this.context.removeComponent(this.frameId);
   }
 
   generateElementStyle() {
@@ -88,17 +89,21 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     });
   }
 
-  generateUrl(frameStyleInfo: ElementStyleInfo) {
-    const urlFrameId = this.frameId;
-    const styleHash = encodeURIComponent(JSON.stringify(frameStyleInfo));
+  // Generate some attributes for sending to the iframe via RPC.  This is called from SecureForm
+  generateIframeAttributes(): AttributesMessage{
+    const id = this.frameId
+    // initialize the attributes with the only required property
+    let attrs: AttributesMessage = { id }
 
-    const frameURL = new URL('frame', this.state.secureFrameUrl);
-
-    frameURL.hash = styleHash;
-    frameURL.searchParams.set('n', urlFrameId);
+    // Build the style for the iframe
+    if (!this.state.frameStyleInfo){
+      console.error('Attempted to build style for input but it wasnt populated yet');
+    } else {
+      attrs.style = JSON.stringify(this.state.frameStyleInfo.childStyle);
+    }
 
     if (this.props.value) {
-      frameURL.searchParams.set('t', this.props.value);
+      attrs.token = this.props.value;
     }
 
     if (this.props.type) {
@@ -107,10 +112,16 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       if (!validTypes.includes(this.props.type)) {
         throw new Error(`SecureInput not set to allowed type.  Permitted types are: ${validTypes.toString()}`);
       }
-
-      frameURL.searchParams.set('type', this.props.type);
+      attrs.type = this.props.type;
     }
+    return attrs;
+  }
 
+  generateUrl() {
+    const urlFrameId = this.frameId;
+    const frameURL = new URL('frame', this.state.secureFrameUrl);
+    frameURL.searchParams.set('n', urlFrameId);
+    frameURL.searchParams.set('origin', window.location.origin);
     return frameURL.toString();
   }
 
@@ -137,7 +148,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       return null;
     }
 
-    const { parentStyle, width, height, childStyle } = this.state.frameStyleInfo;
+    const { parentStyle, width, height } = this.state.frameStyleInfo;
 
     const iframeStyle: CSSProperties = {
       ...camelCaseObject(parentStyle),
@@ -146,7 +157,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       height: height,
     };
 
-    const frameUrl = this.generateUrl(childStyle);
+    const frameUrl = this.generateUrl();
 
     return <iframe ref={this.frameRef} src={frameUrl} frameBorder={0} style={iframeStyle} key={frameUrl} />;
   }

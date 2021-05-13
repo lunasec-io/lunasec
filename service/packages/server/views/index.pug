@@ -2,13 +2,10 @@ extends layout.pug
 
 block content
   h1.d-none Secure Frame Input
-  span.loading-text Loading...
+  span.loading-text "Loading..."
   input(
     class="secure-input d-none",
-    data-nonce=request_nonce,
-    data-origin=request_origin,
-    data-token=input_token,
-    value=input_value
+
   )
 
 block header_content

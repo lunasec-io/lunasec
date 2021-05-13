@@ -8,9 +8,8 @@ export function patchStyle(target: SupportedElement, styleInfo: StyleInfo): void
   }
 
   const { style } = styleInfo;
-
-  const cssText = generateCssText(style);
-  target.style.cssText = cssText + target.style.cssText;
+  // also possible to concat target.style.cssText onto this, but for now we don't have any, so forget it
+  target.style.cssText = generateCssText(style);
 
   /**
    * Patch size
@@ -25,7 +24,7 @@ export function patchStyle(target: SupportedElement, styleInfo: StyleInfo): void
     target.style.minWidth = 'auto';
   }
 
-  // TODO: Pseudo element support is diabled.
+  // TODO: Pseudo element support is disabled.
   // const pseudoCssTextList = [];
   //
   //
