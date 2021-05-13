@@ -66,7 +66,7 @@ export class SecureForm extends Component<SecureFormProps> {
 
     if (response.status === 200) {
       // TODO: Remove this log statement or move it to debug only.
-      console.log("secure frame session is verified");
+      console.debug("secure frame session is verified");
       return;
     }
 
@@ -140,6 +140,7 @@ export class SecureForm extends Component<SecureFormProps> {
 
 
   async onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     const awaitedPromises: Promise<{
       readonly nonce: string;
       readonly response: FrameMessage<InboundFrameMessageMap, 'ReceiveCommittedToken'>;

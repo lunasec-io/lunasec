@@ -87,9 +87,20 @@ export function respondWithTokenizedValue(origin: string, rawMessage: UnknownFra
   return;
 }
 
+// Just tell the outside app that we got the message, kind of boilerplate
+export function respondAttributesReceived(origin: string, rawMessage: UnknownFrameMessage): void {
+  const message = createMessageToFrame('ReceiveAttributesConfirmation', rawMessage.correlationToken, () => {
+    return {
+      success: true,
+    };
+  });
+  sendMessageToParentFrame(origin, message);
+  return;
+}
+
+
 export function notifyParentOfEvent(eventName: keyof InboundFrameNotificationMap, origin: string, frameNonce: string) {
   const message = createNotificationToFrame(eventName, frameNonce);
-
   sendMessageToParentFrame(origin, message);
 }
 
@@ -103,6 +114,7 @@ export async function processMessage(origin: string, rawMessage: UnknownFrameMes
   }
   if (rawMessage.command === 'Attributes') {
     updateAttrCallback(rawMessage.data as AttributesMessage);
+    respondAttributesReceived(origin, rawMessage);
     return;
   }
 

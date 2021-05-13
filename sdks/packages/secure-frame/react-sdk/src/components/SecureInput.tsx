@@ -57,7 +57,6 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     this.inputRef = React.createRef();
 
     const secureFrameURL = new URL(__SECURE_FRAME_URL__)
-    console.log("SECURE FRAME URL IS ", secureFrameURL)
     secureFrameURL.pathname = secureFramePathname;
 
     this.state = {

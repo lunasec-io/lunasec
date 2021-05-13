@@ -23,9 +23,9 @@ class SecureInput {
       throw new Error('Unable to select secure input node');
     }
 
-    const searchParams = (new URL(document.location.href)).searchParams
+    const searchParams = (new URL(document.location.href)).searchParams;
 
-    this.origin = searchParams.get('origin') as string
+    this.origin = searchParams.get('origin') as string;
 
     if (!searchParams.get('origin')) {
       throw new Error('Unable to read origin of the parent page');
@@ -66,7 +66,6 @@ class SecureInput {
 
     if (attrs.token) {
       detokenize(attrs.token).then((value) => {
-        // May need more error handling here around response.success or whatever
         if (value){
           this.secureInput.value = value;
         }
@@ -86,4 +85,4 @@ class SecureInput {
   }
 }
 
-new SecureInput()
+new SecureInput();
