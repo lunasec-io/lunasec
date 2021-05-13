@@ -138,6 +138,27 @@ export class SecureForm extends Component<SecureFormProps> {
     }
   }
 
+  watchStyle(component: SecureInput) {
+    const self = this;
+    function onStyleChange() {
+      console.log('style change listener fired!!!!!!!!!!!!!!!!!!!!!!!!')
+      component.generateElementStyle();
+      const {id, style} = component.generateIframeAttributes();
+      const message = self.messageCreator.createMessageToFrame('Attributes', {id, style})
+      if (!component.frameRef.current || !component.frameRef.current.contentWindow) {
+        return console.error('Style watcher updated for component that no longer has iframe ');
+      }
+      self.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message)
+    }
+
+    const observer = new MutationObserver(onStyleChange);
+    if (!component.inputRef.current) {
+      return console.error('Attempted to register style watcher on component not yet mounted')
+    }
+    observer.observe(component.inputRef.current, {
+      attributeFilter: ['style']
+    })
+  }
 
   async onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -225,6 +246,8 @@ export class SecureForm extends Component<SecureFormProps> {
         value={{
           addComponent: (component) => {
             this.childInputs[component.frameId] = component;
+            // Assume that this will be destroyed or otherwise stop sending messages when the component unmounts
+            this.watchStyle(component)
           },
           removeComponent: (frameId) => {
             if (this.childInputs[frameId]) {
