@@ -1,27 +1,22 @@
+import { __SECURE_FRAME_URL__ } from '@lunasec/secure-frame-common';
 import { FrameMessageCreator } from '@lunasec/secure-frame-common/build/main/rpc/frame-message-creator';
 import { addReactEventListener } from '@lunasec/secure-frame-common/build/main/rpc/listener';
 import {
-  FrameMessage, FrameNotification,
-  InboundFrameMessageMap, InboundFrameNotificationMap,
-  UnknownFrameNotification
+  FrameMessage,
+  FrameNotification,
+  InboundFrameMessageMap,
+  InboundFrameNotificationMap,
+  UnknownFrameNotification,
 } from '@lunasec/secure-frame-common/build/main/rpc/types';
-import React, {Component} from 'react';
+import { triggerBlur, triggerFocus } from '@lunasec/secure-frame-common/build/main/utils/element-event-triggers';
+import React, { Component } from 'react';
 
 import setNativeValue from '../set-native-value';
+
 import { SecureFormContext } from './SecureFormContext';
-import {
-  triggerBlur,
-  triggerFocus
-} from '@lunasec/secure-frame-common/build/main/utils/element-event-triggers';
+import { SecureInput } from './SecureInput';
 
-import {SecureInput} from "./SecureInput";
-
-import {
-  __SECURE_FRAME_URL__
-} from "@lunasec/secure-frame-common";
-
-
-export interface SecureFormProps extends React.ComponentPropsWithoutRef<"form">  {
+export interface SecureFormProps extends React.ComponentPropsWithoutRef<'form'> {
   readonly onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
@@ -29,10 +24,7 @@ export class SecureForm extends Component<SecureFormProps> {
   declare readonly context: React.ContextType<typeof SecureFormContext>;
 
   private readonly messageCreator: FrameMessageCreator;
-  private readonly childInputs: Record<
-    string,
-    SecureInput
-  >;
+  private readonly childInputs: Record<string, SecureInput>;
 
   // This is created on component mounted to enable server-side rendering
   private abortController!: AbortController;
@@ -40,7 +32,7 @@ export class SecureForm extends Component<SecureFormProps> {
   constructor(props: SecureFormProps) {
     super(props);
     this.childInputs = {};
-    this.messageCreator = new FrameMessageCreator(notification => this.frameNotificationCallback(notification));
+    this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
   }
 
   async componentDidMount() {
@@ -49,24 +41,23 @@ export class SecureForm extends Component<SecureFormProps> {
     // Pushes events received back up.
     addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
 
-    const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__)
+    const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameVerifySessionURL.pathname = '/session/verify';
 
-    const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__)
+    const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameEnsureSessionURL.pathname = '/session/ensure';
-
 
     // Pushes events received back up.
     addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
 
-    const response = await fetch(secureFrameEnsureSessionURL.toString(),{
+    const response = await fetch(secureFrameEnsureSessionURL.toString(), {
       credentials: 'include',
-      mode: 'cors'
+      mode: 'cors',
     });
 
     if (response.status === 200) {
       // TODO: Remove this log statement or move it to debug only.
-      console.debug("secure frame session is verified");
+      console.debug('secure frame session is verified');
       return;
     }
 
@@ -80,7 +71,7 @@ export class SecureForm extends Component<SecureFormProps> {
 
     if (resp.status !== 200) {
       // TODO: Throw or escalate this error in a better way.
-      console.error("unable to create secure frame session");
+      console.error('unable to create secure frame session');
       return;
     }
 
@@ -92,7 +83,7 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   // Blur happens after the element loses focus
-  blur(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>){
+  blur(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>) {
     const child = this.childInputs[notification.frameNonce];
 
     const input = child.inputRef;
@@ -110,10 +101,10 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   // Give the iframe all the information it needs to exist when it wakes up
-  iframeStartup(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>){
-    const input = this.childInputs[notification.frameNonce]
+  iframeStartup(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>) {
+    const input = this.childInputs[notification.frameNonce];
     if (!input) {
-      console.error('Received startup message from unknown frame:' , notification);
+      console.error('Received startup message from unknown frame:', notification);
       return;
     }
     const frameAttributes = input.generateIframeAttributes();
@@ -122,14 +113,12 @@ export class SecureForm extends Component<SecureFormProps> {
       console.error('Frame not initialized for message sending');
       return;
     }
-    this.messageCreator.sendMessageToFrameWithReply(input.frameRef.current.contentWindow, message);
+    void this.messageCreator.sendMessageToFrameWithReply(input.frameRef.current.contentWindow, message);
   }
-
-
 
   frameNotificationCallback(notification: UnknownFrameNotification) {
     switch (notification.command) {
-      case 'NotifyOnBlur' :
+      case 'NotifyOnBlur':
         this.blur(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>);
         break;
       case 'NotifyOnStart':
@@ -141,23 +130,22 @@ export class SecureForm extends Component<SecureFormProps> {
   watchStyle(component: SecureInput) {
     const self = this;
     function onStyleChange() {
-      console.log('style change listener fired!!!!!!!!!!!!!!!!!!!!!!!!')
       component.generateElementStyle();
-      const {id, style} = component.generateIframeAttributes();
-      const message = self.messageCreator.createMessageToFrame('Attributes', {id, style})
+      const { id, style } = component.generateIframeAttributes();
+      const message = self.messageCreator.createMessageToFrame('Attributes', { id, style });
       if (!component.frameRef.current || !component.frameRef.current.contentWindow) {
         return console.error('Style watcher updated for component that no longer has iframe ');
       }
-      self.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message)
+      void self.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message);
     }
 
     const observer = new MutationObserver(onStyleChange);
     if (!component.inputRef.current) {
-      return console.error('Attempted to register style watcher on component not yet mounted')
+      return console.error('Attempted to register style watcher on component not yet mounted');
     }
     observer.observe(component.inputRef.current, {
-      attributeFilter: ['style']
-    })
+      attributeFilter: ['style'],
+    });
   }
 
   async onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -189,7 +177,7 @@ export class SecureForm extends Component<SecureFormProps> {
       const { nonce, response } = data;
 
       if (!response.data.success) {
-        console.error("error while tokenizing data:", response.data.error);
+        console.error('error while tokenizing data:', response.data.error);
         return;
       }
 
@@ -247,7 +235,7 @@ export class SecureForm extends Component<SecureFormProps> {
           addComponent: (component) => {
             this.childInputs[component.frameId] = component;
             // Assume that this will be destroyed or otherwise stop sending messages when the component unmounts
-            this.watchStyle(component)
+            this.watchStyle(component);
           },
           removeComponent: (frameId) => {
             if (this.childInputs[frameId]) {
@@ -256,7 +244,9 @@ export class SecureForm extends Component<SecureFormProps> {
           },
         }}
       >
-        <form {...this.props} onSubmit={(e) => this.onSubmit(e)}>{this.props.children}</form>
+        <form {...this.props} onSubmit={(e) => this.onSubmit(e)}>
+          {this.props.children}
+        </form>
       </SecureFormContext.Provider>
     );
   }
