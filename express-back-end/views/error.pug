@@ -1,0 +1,17 @@
+extends views/layout
+
+block content
+  h1.d-none Secure Frame Input
+  span.loading-text Loading...
+  input(
+    class="secure-input d-none",
+    data-nonce=request_nonce,
+    data-origin=request_origin,
+    data-token=input_token,
+    disabled=true,
+    value=Error decrypting data
+  )
+
+block header_content
+  style(nonce=csp_nonce) .secure-input {#{input_style}}
+
