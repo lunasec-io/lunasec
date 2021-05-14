@@ -6,52 +6,34 @@ import { generateSecureNonce } from '@lunasec/secure-frame-common/build/main/uti
 import { camelCaseObject } from '@lunasec/secure-frame-common/build/main/utils/to-camel-case';
 import React, { Component, CSSProperties, RefObject } from 'react';
 
-import { SecureFormContext } from './SecureFormContext';
-
-export const SecureInputType = {
-  text: 'text',
-  password: 'password',
-  email: 'email',
-} as const;
-
-export interface SecureInputProps extends React.ComponentPropsWithoutRef<'input'> {
-  value?: string;
+export interface SecureTextProps extends React.ComponentPropsWithoutRef<'span'> {
+  token: string;
   secureFrameUrl?: string;
-  // TODO: Will this force the component to have a key?
   name: string;
-  // TODO: Add form validation logic..?
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  onBlur?: React.FocusEventHandler<HTMLInputElement>;
-  onFocus?: React.FocusEventHandler<HTMLInputElement>;
-  type?: typeof SecureInputType[keyof typeof SecureInputType];
 }
 
-export interface SecureInputState {
+export interface SecureTextState {
   secureFrameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
 }
 
-export class SecureInput extends Component<SecureInputProps, SecureInputState> {
-  declare context: React.ContextType<typeof SecureFormContext>;
-
-  static contextType = SecureFormContext;
-
+export class SecureText extends Component<SecureTextProps, SecureTextState> {
   readonly frameRef!: RefObject<HTMLIFrameElement>;
-  readonly inputRef!: RefObject<HTMLInputElement>;
+  readonly hiddenElementRef!: RefObject<HTMLSpanElement>;
 
   /**
    * The frameId is a unique value that is associated with a given iframe instance.
    */
   readonly frameId!: string;
 
-  readonly state!: SecureInputState;
+  readonly state!: SecureTextState;
 
-  constructor(props: SecureInputProps) {
+  constructor(props: SecureTextProps) {
     super(props);
 
     this.frameId = generateSecureNonce();
     this.frameRef = React.createRef();
-    this.inputRef = React.createRef();
+    this.hiddenElementRef = React.createRef();
 
     const secureFrameURL = new URL(__SECURE_FRAME_URL__);
     secureFrameURL.pathname = secureFramePathname;
@@ -64,22 +46,16 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   }
 
   componentDidMount() {
-    this.context.addComponent(this);
-
     this.generateElementStyle();
     this.setResizeListener();
   }
 
-  componentWillUnmount() {
-    this.context.removeComponent(this.frameId);
-  }
-
   generateElementStyle() {
-    if (!this.inputRef.current) {
+    if (!this.hiddenElementRef.current) {
       throw new Error('Unable to locate `inputRef` in SecureElement component');
     }
 
-    const frameStyleInfo = getStyleInfo(this.inputRef.current);
+    const frameStyleInfo = getStyleInfo(this.hiddenElementRef.current);
 
     this.setState({
       frameStyleInfo: frameStyleInfo,
@@ -94,23 +70,15 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
     // Build the style for the iframe
     if (!this.state.frameStyleInfo) {
-      console.error('Attempted to build style for input but it wasnt populated yet');
+      console.error('Attempted to build style for element but it wasnt populated yet');
     } else {
       attrs.style = JSON.stringify(this.state.frameStyleInfo.childStyle);
     }
 
-    if (this.props.value) {
-      attrs.token = this.props.value;
+    if (this.props.token) {
+      attrs.token = this.props.token;
     }
 
-    if (this.props.type) {
-      const validTypes = Object.values(SecureInputType);
-
-      if (!validTypes.includes(this.props.type)) {
-        throw new Error(`SecureInput not set to allowed type.  Permitted types are: ${validTypes.toString()}`);
-      }
-      attrs.type = this.props.type;
-    }
     return attrs;
   }
 
@@ -124,19 +92,18 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
   setResizeListener() {
     const observer = new ResizeObserver(() => {
-      const hiddenInput = this.inputRef.current;
+      const hiddenElement = this.hiddenElementRef.current;
       const iframe = this.frameRef.current;
-      if (!hiddenInput || !iframe || !hiddenInput.offsetHeight) {
+      if (!hiddenElement || !iframe || !hiddenElement.offsetHeight) {
         // DOMs not actually ready
         return;
       }
-      iframe.style.width = `${hiddenInput.offsetWidth}px`;
-      iframe.style.height = `${hiddenInput.offsetHeight}px`;
+      iframe.style.width = `${hiddenElement.offsetWidth}px`;
+      iframe.style.height = `${hiddenElement.offsetHeight}px`;
     });
 
-    const hiddenInput = this.inputRef.current;
-    if (hiddenInput) {
-      observer.observe(hiddenInput as Element);
+    if (this.hiddenElementRef.current) {
+      observer.observe(this.hiddenElementRef.current as Element);
     }
   }
 
@@ -160,7 +127,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   }
 
   render() {
-    const { value, children, ...otherProps } = this.props;
+    const { token, children, ...otherProps } = this.props;
 
     const parentContainerStyle: CSSProperties = {
       position: 'relative',
@@ -169,7 +136,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
     const isRendered = this.state.frameStyleInfo !== undefined;
 
-    const hiddenInputStyle: CSSProperties = {
+    const hiddenElementStyle: CSSProperties = {
       position: 'absolute',
       top: 0,
       left: 0,
@@ -186,18 +153,13 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
         className={`secure-form-container-${this.frameId} secure-form-container-${this.props.name}`}
         style={parentContainerStyle}
       >
-        <input
+        <span
           {...otherProps}
           className={isRendered ? `secure-form-input--hidden ${this.props.className}` : `${this.props.className}`}
           // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
-          type="text"
-          ref={this.inputRef}
-          name={this.props.name}
-          defaultValue={isRendered ? this.props.value : ''}
-          style={{ ...this.props.style, ...hiddenInputStyle }}
+          ref={this.hiddenElementRef}
+          style={{ ...this.props.style, ...hiddenElementStyle }}
           onChange={isRendered ? this.props.onChange : undefined}
-          onBlur={this.props.onBlur}
-          onFocus={this.props.onFocus}
         />
         {this.renderFrame()}
       </div>
