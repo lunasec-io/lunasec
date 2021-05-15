@@ -1,5 +1,5 @@
-import { SecureForm, SecureInput } from '@lunasec/secure-frame-react-sdk';
-import React from 'react';
+import { SecureForm, SecureInput, SecureSpan } from '@lunasec/secure-frame-react-sdk';
+import React, { CSSProperties } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 
@@ -52,6 +52,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   render() {
+    const spanStyle: CSSProperties = {
+      color: 'red',
+    };
     return (
       <div className="App">
         <div className="app-form">
@@ -71,6 +74,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
             />
             <input type="submit" />
           </SecureForm>
+          <SecureSpan name="aSpan" token={this.state.foo} className="test-secure-span" style={spanStyle}>
+            {'boooooooooooooooooooooobs'}
+          </SecureSpan>
         </div>
       </div>
     );

@@ -1,42 +1,52 @@
-import { __SECURE_FRAME_URL__, secureFramePathname } from '@lunasec/secure-frame-common';
-import { AttributesMessage } from '@lunasec/secure-frame-common/build/main/rpc/types';
-import { getStyleInfo } from '@lunasec/secure-frame-common/build/main/style-patcher/read';
-import { ReadElementStyle } from '@lunasec/secure-frame-common/build/main/style-patcher/types';
-import { generateSecureNonce } from '@lunasec/secure-frame-common/build/main/utils/random';
-import { camelCaseObject } from '@lunasec/secure-frame-common/build/main/utils/to-camel-case';
+import {
+  __SECURE_FRAME_URL__,
+  addReactEventListener,
+  AttributesMessage,
+  camelCaseObject,
+  FrameMessageCreator,
+  generateSecureNonce,
+  getStyleInfo,
+  ReadElementStyle,
+  secureFramePathname,
+  UnknownFrameNotification,
+} from '@lunasec/secure-frame-common';
 import React, { Component, CSSProperties, RefObject } from 'react';
 
-export interface SecureTextProps extends React.ComponentPropsWithoutRef<'span'> {
-  token: string;
+export interface SecureSpanProps extends React.ComponentPropsWithoutRef<'span'> {
+  token?: string;
   secureFrameUrl?: string;
   name: string;
+  className: string;
 }
 
-export interface SecureTextState {
+export interface SecureSpanState {
   secureFrameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
 }
 
-export class SecureText extends Component<SecureTextProps, SecureTextState> {
+export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
   readonly frameRef!: RefObject<HTMLIFrameElement>;
   readonly hiddenElementRef!: RefObject<HTMLSpanElement>;
-
+  readonly messageCreator: FrameMessageCreator;
+  // This is created on component mounted to enable server-side rendering
+  private abortController!: AbortController;
   /**
    * The frameId is a unique value that is associated with a given iframe instance.
    */
   readonly frameId!: string;
 
-  readonly state!: SecureTextState;
+  readonly state!: SecureSpanState;
 
-  constructor(props: SecureTextProps) {
+  constructor(props: SecureSpanProps) {
     super(props);
-
+    console.log('CONSTRUCTING SECURE SPAN');
     this.frameId = generateSecureNonce();
     this.frameRef = React.createRef();
     this.hiddenElementRef = React.createRef();
 
     const secureFrameURL = new URL(__SECURE_FRAME_URL__);
     secureFrameURL.pathname = secureFramePathname;
+    this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
 
     this.state = {
       // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
@@ -46,8 +56,15 @@ export class SecureText extends Component<SecureTextProps, SecureTextState> {
   }
 
   componentDidMount() {
-    this.generateElementStyle();
+    console.log('SECURE SPAN MOUNTED');
+    this.abortController = new AbortController();
+    addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
+    // doing this in state after mounting is kinda weird, consider just calling the function in render instead
+    this.setState({
+      frameStyleInfo: this.generateElementStyle(),
+    });
     this.setResizeListener();
+    // this.watchStyle();  WATCH STYLES IS OFF
   }
 
   generateElementStyle() {
@@ -55,11 +72,7 @@ export class SecureText extends Component<SecureTextProps, SecureTextState> {
       throw new Error('Unable to locate `inputRef` in SecureElement component');
     }
 
-    const frameStyleInfo = getStyleInfo(this.hiddenElementRef.current);
-
-    this.setState({
-      frameStyleInfo: frameStyleInfo,
-    });
+    return getStyleInfo(this.hiddenElementRef.current);
   }
 
   // Generate some attributes for sending to the iframe via RPC.  This is called from SecureForm
@@ -69,6 +82,7 @@ export class SecureText extends Component<SecureTextProps, SecureTextState> {
     const attrs: AttributesMessage = { id };
 
     // Build the style for the iframe
+    // this.generateElementStyle();
     if (!this.state.frameStyleInfo) {
       console.error('Attempted to build style for element but it wasnt populated yet');
     } else {
@@ -87,6 +101,7 @@ export class SecureText extends Component<SecureTextProps, SecureTextState> {
     const frameURL = new URL('frame', this.state.secureFrameUrl);
     frameURL.searchParams.set('n', urlFrameId);
     frameURL.searchParams.set('origin', window.location.origin);
+    frameURL.searchParams.set('element', 'span');
     return frameURL.toString();
   }
 
@@ -106,8 +121,58 @@ export class SecureText extends Component<SecureTextProps, SecureTextState> {
       observer.observe(this.hiddenElementRef.current as Element);
     }
   }
+  componentDidUpdate() {
+    this.sendIFrameAttributes();
+  }
+  // Give the iframe all the information it needs to exist when it wakes up
+  sendIFrameAttributes() {
+    const frameAttributes = this.generateIframeAttributes();
+    const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
+    if (!this.frameRef.current || !this.frameRef.current.contentWindow) {
+      console.error('Frame not initialized for message sending');
+      return;
+    }
+    void this.messageCreator.sendMessageToFrameWithReply(this.frameRef.current.contentWindow, message);
+    console.log('notified on span start ');
+    return;
+  }
+
+  frameNotificationCallback(notification: UnknownFrameNotification) {
+    if (notification.frameNonce !== this.frameId) {
+      console.debug('Received notification intended for different listener, discarding');
+      return;
+    }
+    console.log('SECURE SPAN NOTIFICATION RECEIVED ', notification);
+    switch (notification.command) {
+      case 'NotifyOnStart':
+        this.sendIFrameAttributes();
+        break;
+    }
+  }
+
+  watchStyle() {
+    const self = this;
+    function onStyleChange() {
+      console.log('STYLE CHANGE DETECTED');
+      const { id, style } = self.generateIframeAttributes();
+      const message = self.messageCreator.createMessageToFrame('Attributes', { id, style });
+      if (!self.frameRef.current || !self.frameRef.current.contentWindow) {
+        return console.error('Style watcher updated for component that no longer has iframe ');
+      }
+      void self.messageCreator.sendMessageToFrameWithReply(self.frameRef.current.contentWindow, message);
+    }
+
+    const observer = new MutationObserver(onStyleChange);
+    if (!this.hiddenElementRef.current) {
+      return console.error('Attempted to register style watcher on component not yet mounted');
+    }
+    observer.observe(this.hiddenElementRef.current, {
+      attributeFilter: ['style'],
+    });
+  }
 
   renderFrame() {
+    console.log('SECURE SPAN RENDER CALLED');
     if (!this.state.frameStyleInfo) {
       return null;
     }
@@ -127,7 +192,7 @@ export class SecureText extends Component<SecureTextProps, SecureTextState> {
   }
 
   render() {
-    const { token, children, ...otherProps } = this.props;
+    const { token, ...otherProps } = this.props;
 
     const parentContainerStyle: CSSProperties = {
       position: 'relative',
@@ -150,13 +215,12 @@ export class SecureText extends Component<SecureTextProps, SecureTextState> {
 
     return (
       <div
-        className={`secure-form-container-${this.frameId} secure-form-container-${this.props.name}`}
+        className={`secure-span-container-${this.frameId} secure-span-container-${this.props.name}`}
         style={parentContainerStyle}
       >
         <span
           {...otherProps}
-          className={isRendered ? `secure-form-input--hidden ${this.props.className}` : `${this.props.className}`}
-          // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
+          className={isRendered ? `secure-span--hidden ${this.props.className}` : `${this.props.className}`}
           ref={this.hiddenElementRef}
           style={{ ...this.props.style, ...hiddenElementStyle }}
           onChange={isRendered ? this.props.onChange : undefined}

@@ -119,6 +119,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     const frameURL = new URL('frame', this.state.secureFrameUrl);
     frameURL.searchParams.set('n', urlFrameId);
     frameURL.searchParams.set('origin', window.location.origin);
+    frameURL.searchParams.set('element', 'input');
     return frameURL.toString();
   }
 

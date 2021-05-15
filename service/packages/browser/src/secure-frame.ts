@@ -6,22 +6,22 @@ import {__SECURE_FRAME_URL__} from "../../../../sdks/packages/secure-frame/commo
 import {AttributesMessage} from "../../../../sdks/packages/secure-frame/common/src/rpc/types";
 // import { GenericIframeElement } from './generic-iframe-element'
 
-interface ElementTypes {
+export interface ElementTypes {
     input: HTMLInputElement,
     span: HTMLSpanElement
 }
 
-type SupportedElement<t extends keyof ElementTypes> = ElementTypes[t]
+export type SupportedElement = ElementTypes[keyof ElementTypes]
 
+// Would be nice if class could take <element type parameter> but couldn't quite get it working
+export class SecureFrame {
 
-export class SecureElement<e extends keyof ElementTypes> {
-    secureElement: SupportedElement<e>;
-    elementType: keyof ElementTypes;
-    loadingText: string;
-    frameNonce: string;
-    origin: string;
-    initialized: boolean;
-
+    private readonly secureElement: SupportedElement;
+    private readonly elementType: keyof ElementTypes;
+    private readonly loadingText: Element;
+    private readonly frameNonce: string;
+    private readonly origin: string;
+    private initialized: boolean;
     constructor(elementName: keyof ElementTypes) {
         this.initialized = false;
         this.elementType = elementName;
@@ -41,7 +41,8 @@ export class SecureElement<e extends keyof ElementTypes> {
         const searchParams = (new URL(document.location.href)).searchParams;
 
         this.origin = searchParams.get('origin') as string;
-
+        console.log('origin for ', this.elementType, ' is ', this.origin )
+        console.log('the frames origin is ', window.location.origin)
         if (!searchParams.get('origin')) {
             throw new Error('Unable to read origin of the parent page');
         }
@@ -75,27 +76,33 @@ export class SecureElement<e extends keyof ElementTypes> {
             patchStyle(this.secureElement, safeParseJson<StyleInfo>(attrs.style));
         }
 
-        if (attrs.type) {
+        if (attrs.type && this.elementType === 'input') {
             this.secureElement.setAttribute('type', attrs.type);
         }
 
         if (attrs.token) {
             detokenize(attrs.token).then((value) => {
                 if (value){
-                    if ()
-                    this.secureElement.value = value;
+                    if (this.elementType === 'input'){
+                        const input = this.secureElement as HTMLInputElement
+                        input.value = value;
+                    }
+                    if (this.elementType === 'span'){
+                        this.secureElement.textContent = value;
+                    }
                 }
                 return;
             })
         }
-
-        this.attachOnBlurNotifier();
+        if (this.elementType === 'input'){
+            this.attachOnBlurNotifier();
+        }
         this.initialized = true;
         return;
     }
 
     attachOnBlurNotifier() {
-        this.secureInput.addEventListener('blur', () => {
+        this.secureElement.addEventListener('blur', () => {
             notifyParentOfEvent('NotifyOnBlur', this.origin, this.frameNonce);
         });
     }

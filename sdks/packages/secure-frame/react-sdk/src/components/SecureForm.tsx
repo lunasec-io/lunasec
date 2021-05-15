@@ -47,16 +47,12 @@ export class SecureForm extends Component<SecureFormProps> {
     const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameEnsureSessionURL.pathname = '/session/ensure';
 
-    // Pushes events received back up.
-    addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
-
     const response = await fetch(secureFrameEnsureSessionURL.toString(), {
       credentials: 'include',
       mode: 'cors',
     });
 
     if (response.status === 200) {
-      // TODO: Remove this log statement or move it to debug only.
       console.debug('secure frame session is verified');
       return;
     }
@@ -103,10 +99,6 @@ export class SecureForm extends Component<SecureFormProps> {
   // Give the iframe all the information it needs to exist when it wakes up
   iframeStartup(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>) {
     const input = this.childInputs[notification.frameNonce];
-    if (!input) {
-      console.error('Received startup message from unknown frame:', notification);
-      return;
-    }
     const frameAttributes = input.generateIframeAttributes();
     const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
     if (!input.frameRef.current || !input.frameRef.current.contentWindow) {
@@ -117,6 +109,10 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   frameNotificationCallback(notification: UnknownFrameNotification) {
+    if (!this.childInputs[notification.frameNonce]) {
+      console.debug('Received notification intended for different listener, discarding');
+      return;
+    }
     switch (notification.command) {
       case 'NotifyOnBlur':
         this.blur(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>);
