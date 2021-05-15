@@ -41,8 +41,6 @@ export class SecureFrame {
         const searchParams = (new URL(document.location.href)).searchParams;
 
         this.origin = searchParams.get('origin') as string;
-        console.log('origin for ', this.elementType, ' is ', this.origin )
-        console.log('the frames origin is ', window.location.origin)
         if (!searchParams.get('origin')) {
             throw new Error('Unable to read origin of the parent page');
         }

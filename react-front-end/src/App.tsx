@@ -74,9 +74,13 @@ class App extends React.Component<Record<string, never>, IAppState> {
             />
             <input type="submit" />
           </SecureForm>
-          <SecureSpan name="aSpan" token={this.state.foo} className="test-secure-span" style={spanStyle}>
-            {'boooooooooooooooooooooobs'}
-          </SecureSpan>
+          <p>
+            The word of the day is
+            <SecureSpan name="aSpan" token={this.state.foo} className="test-secure-span" style={spanStyle}>
+              {'something'}
+              {/*it wont render with no innerhtml , das bad*/}
+            </SecureSpan>
+          </p>
         </div>
       </div>
     );

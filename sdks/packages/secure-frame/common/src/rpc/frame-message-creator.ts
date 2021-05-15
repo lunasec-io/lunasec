@@ -74,11 +74,9 @@ export class FrameMessageCreator {
     message: FrameMessage<OutboundFrameMessageMap, K>
   ): Promise<FrameMessage<InboundFrameMessageMap, OutboundToInboundMessageTypeMap[K]> | null> {
     const startTime = new Date();
-    console.log('sending message from outside to frame ', message);
     return new Promise(async (resolve, reject) => {
       // TODO: Make this domain be configurable
       frameContext.postMessage(JSON.stringify(message), __SECURE_FRAME_URL__);
-
       await timeout(2);
 
       // Spin lock that waits until we receive a response in another "thread".

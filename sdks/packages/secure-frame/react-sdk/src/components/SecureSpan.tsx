@@ -2,7 +2,7 @@ import {
   __SECURE_FRAME_URL__,
   addReactEventListener,
   AttributesMessage,
-  camelCaseObject,
+  // camelCaseObject,
   FrameMessageCreator,
   generateSecureNonce,
   getStyleInfo,
@@ -28,6 +28,7 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
   readonly frameRef!: RefObject<HTMLIFrameElement>;
   readonly hiddenElementRef!: RefObject<HTMLSpanElement>;
   readonly messageCreator: FrameMessageCreator;
+  private frameReady: boolean;
   // This is created on component mounted to enable server-side rendering
   private abortController!: AbortController;
   /**
@@ -39,11 +40,10 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
 
   constructor(props: SecureSpanProps) {
     super(props);
-    console.log('CONSTRUCTING SECURE SPAN');
     this.frameId = generateSecureNonce();
     this.frameRef = React.createRef();
     this.hiddenElementRef = React.createRef();
-
+    this.frameReady = false;
     const secureFrameURL = new URL(__SECURE_FRAME_URL__);
     secureFrameURL.pathname = secureFramePathname;
     this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
@@ -56,14 +56,13 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
   }
 
   componentDidMount() {
-    console.log('SECURE SPAN MOUNTED');
     this.abortController = new AbortController();
     addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
     // doing this in state after mounting is kinda weird, consider just calling the function in render instead
     this.setState({
       frameStyleInfo: this.generateElementStyle(),
     });
-    this.setResizeListener();
+    // this.setResizeListener();
     // this.watchStyle();  WATCH STYLES IS OFF
   }
 
@@ -75,18 +74,51 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     return getStyleInfo(this.hiddenElementRef.current);
   }
 
-  // Generate some attributes for sending to the iframe via RPC.  This is called from SecureForm
+  generateUrl() {
+    const urlFrameId = this.frameId;
+    const frameURL = new URL('frame', this.state.secureFrameUrl);
+    frameURL.searchParams.set('n', urlFrameId);
+    frameURL.searchParams.set('origin', window.location.origin);
+    frameURL.searchParams.set('element', 'span');
+    return frameURL.toString();
+  }
+  //
+  // setResizeListener() {
+  //   const observer = new ResizeObserver(() => {
+  //     const hiddenElement = this.hiddenElementRef.current;
+  //     const iframe = this.frameRef.current;
+  //     if (!hiddenElement || !iframe || !hiddenElement.offsetHeight) {
+  //       // DOMs not actually ready
+  //       return;
+  //     }
+  //     iframe.style.width = `${hiddenElement.offsetWidth}px`;
+  //     iframe.style.height = `${hiddenElement.offsetHeight}px`;
+  //   });
+  //
+  //   if (this.hiddenElementRef.current) {
+  //     observer.observe(this.hiddenElementRef.current as Element);
+  //   }
+  // }
+
+  componentDidUpdate() {
+    if (this.frameReady) {
+      this.sendIFrameAttributes();
+    }
+  }
+
+  // Generate some attributes for sending to the iframe via RPC.
   generateIframeAttributes(): AttributesMessage {
     const id = this.frameId;
     // initialize the attributes with the only required property
     const attrs: AttributesMessage = { id };
 
     // Build the style for the iframe
-    // this.generateElementStyle();
-    if (!this.state.frameStyleInfo) {
+    const style = this.generateElementStyle();
+    if (!style) {
       console.error('Attempted to build style for element but it wasnt populated yet');
     } else {
-      attrs.style = JSON.stringify(this.state.frameStyleInfo.childStyle);
+      attrs.style = JSON.stringify(style.childStyle);
+      console.log('stringified child style ', style.childStyle);
     }
 
     if (this.props.token) {
@@ -96,34 +128,6 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     return attrs;
   }
 
-  generateUrl() {
-    const urlFrameId = this.frameId;
-    const frameURL = new URL('frame', this.state.secureFrameUrl);
-    frameURL.searchParams.set('n', urlFrameId);
-    frameURL.searchParams.set('origin', window.location.origin);
-    frameURL.searchParams.set('element', 'span');
-    return frameURL.toString();
-  }
-
-  setResizeListener() {
-    const observer = new ResizeObserver(() => {
-      const hiddenElement = this.hiddenElementRef.current;
-      const iframe = this.frameRef.current;
-      if (!hiddenElement || !iframe || !hiddenElement.offsetHeight) {
-        // DOMs not actually ready
-        return;
-      }
-      iframe.style.width = `${hiddenElement.offsetWidth}px`;
-      iframe.style.height = `${hiddenElement.offsetHeight}px`;
-    });
-
-    if (this.hiddenElementRef.current) {
-      observer.observe(this.hiddenElementRef.current as Element);
-    }
-  }
-  componentDidUpdate() {
-    this.sendIFrameAttributes();
-  }
   // Give the iframe all the information it needs to exist when it wakes up
   sendIFrameAttributes() {
     const frameAttributes = this.generateIframeAttributes();
@@ -133,7 +137,6 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
       return;
     }
     void this.messageCreator.sendMessageToFrameWithReply(this.frameRef.current.contentWindow, message);
-    console.log('notified on span start ');
     return;
   }
 
@@ -142,15 +145,16 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
       console.debug('Received notification intended for different listener, discarding');
       return;
     }
-    console.log('SECURE SPAN NOTIFICATION RECEIVED ', notification);
     switch (notification.command) {
       case 'NotifyOnStart':
+        this.frameReady = true;
         this.sendIFrameAttributes();
         break;
     }
   }
 
   watchStyle() {
+    console.log('SPAN STYLE CHANGED, SENDING MESSAGE');
     const self = this;
     function onStyleChange() {
       console.log('STYLE CHANGE DETECTED');
@@ -172,23 +176,23 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
   }
 
   renderFrame() {
-    console.log('SECURE SPAN RENDER CALLED');
     if (!this.state.frameStyleInfo) {
       return null;
     }
 
-    const { parentStyle, width, height } = this.state.frameStyleInfo;
+    const { parentStyle, height } = this.state.frameStyleInfo;
 
     const iframeStyle: CSSProperties = {
-      ...camelCaseObject(parentStyle),
-      display: 'block',
-      width: width,
+      // ...camelCaseObject(parentStyle),
+      display: 'inline',
+      // width: width,
       height: height,
     };
+    console.log('iframe style to render is ', parentStyle);
 
     const frameUrl = this.generateUrl();
 
-    return <iframe ref={this.frameRef} src={frameUrl} frameBorder={0} style={iframeStyle} key={frameUrl} />;
+    return <iframe ref={this.frameRef} src={frameUrl} style={iframeStyle} frameBorder={0} key={frameUrl} />;
   }
 
   render() {
@@ -196,7 +200,7 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
 
     const parentContainerStyle: CSSProperties = {
       position: 'relative',
-      display: 'block',
+      display: 'inline',
     };
 
     const isRendered = this.state.frameStyleInfo !== undefined;
@@ -210,7 +214,7 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
       // So we use zIndex instead to "hide" the input.
       zIndex: isRendered ? -1 : 1,
       opacity: isRendered ? 0 : 1,
-      display: 'block',
+      display: 'inline',
     };
 
     return (

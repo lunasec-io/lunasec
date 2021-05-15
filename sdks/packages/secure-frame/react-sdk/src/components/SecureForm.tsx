@@ -41,6 +41,16 @@ export class SecureForm extends Component<SecureFormProps> {
     // Pushes events received back up.
     addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
 
+    await this.authenticateSession();
+
+    // TODO (cthompson) here in the code we have verification that the secure form should be able to tokenize data
+  }
+
+  componentWillUnmount() {
+    this.abortController.abort();
+  }
+
+  async authenticateSession() {
     const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameVerifySessionURL.pathname = '/session/verify';
 
@@ -70,14 +80,8 @@ export class SecureForm extends Component<SecureFormProps> {
       console.error('unable to create secure frame session');
       return;
     }
-
-    // TODO (cthompson) here in the code we have verification that the secure form should be able to tokenize data
+    return;
   }
-
-  componentWillUnmount() {
-    this.abortController.abort();
-  }
-
   // Blur happens after the element loses focus
   blur(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>) {
     const child = this.childInputs[notification.frameNonce];
