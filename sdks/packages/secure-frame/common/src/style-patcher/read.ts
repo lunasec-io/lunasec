@@ -1,10 +1,10 @@
+import { getChildStyle, getParentStyle, getStyleSnapshot } from './dom-utils';
 import { PesudoStyleInfoMap, ReadElementStyle, SupportedElement } from './types';
 // import {
 //   NO_GENERATE_CONTENT_ELEMENTS,
 //   PLACEHOLDER_ELEMENTS,
 //   // SUPPORTED_PSEUDO_SELECTORS
 // } from './constants';
-import { getChildStyle, getParentStyle, getStyleSnapshot } from './dom-utils';
 
 export function getStyleInfo(source: SupportedElement, pseudoSelector?: string): ReadElementStyle | null {
   const computed = window.getComputedStyle(source, pseudoSelector);
@@ -14,15 +14,18 @@ export function getStyleInfo(source: SupportedElement, pseudoSelector?: string):
   const { display, content } = framedInputStyle;
 
   if (display === 'none' || (pseudoSelector && content === 'none')) {
+    console.debug("Can't generate style from hidden element ", source);
     return null;
   }
 
   if (!pseudoSelector) {
     const { width, height } = source.getBoundingClientRect();
 
-    if (width * height === 0) {
-      return null;
-    }
+    // TODO: Figure out why we were doing this in the first place
+    // if (width * height === 0) {
+    //   console.debug('elements width times height is 0, bail ', source);
+    //   return null;
+    // }
 
     const allPseudoStyleInfo: PesudoStyleInfoMap = Object.create(null);
 

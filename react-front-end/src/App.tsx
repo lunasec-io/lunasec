@@ -52,9 +52,6 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   render() {
-    const spanStyle: CSSProperties = {
-      color: 'red',
-    };
     return (
       <div className="App">
         <div className="app-form">
@@ -75,11 +72,8 @@ class App extends React.Component<Record<string, never>, IAppState> {
             <input type="submit" />
           </SecureForm>
           <p>
-            The word of the day is
-            <SecureSpan name="aSpan" token={this.state.foo} className="test-secure-span" style={spanStyle}>
-              {'something'}
-              {/*it wont render with no innerhtml , das bad*/}
-            </SecureSpan>
+            {'The word of the day is '}
+            <SecureSpan name="aSpan" token={this.state.foo} className="test-secure-span" />
           </p>
         </div>
       </div>

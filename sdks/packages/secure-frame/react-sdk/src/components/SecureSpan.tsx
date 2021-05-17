@@ -22,13 +22,14 @@ export interface SecureSpanProps extends React.ComponentPropsWithoutRef<'span'> 
 export interface SecureSpanState {
   secureFrameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
+  frameReady: boolean;
 }
 
 export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
   readonly frameRef!: RefObject<HTMLIFrameElement>;
   readonly hiddenElementRef!: RefObject<HTMLSpanElement>;
   readonly messageCreator: FrameMessageCreator;
-  private frameReady: boolean;
+
   // This is created on component mounted to enable server-side rendering
   private abortController!: AbortController;
   /**
@@ -43,34 +44,31 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     this.frameId = generateSecureNonce();
     this.frameRef = React.createRef();
     this.hiddenElementRef = React.createRef();
-    this.frameReady = false;
     const secureFrameURL = new URL(__SECURE_FRAME_URL__);
     secureFrameURL.pathname = secureFramePathname;
     this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
-
     this.state = {
       // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
       secureFrameUrl: secureFrameURL.toString(),
       frameStyleInfo: null,
+      frameReady: false,
     };
   }
 
   componentDidMount() {
     this.abortController = new AbortController();
     addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
-    // doing this in state after mounting is kinda weird, consider just calling the function in render instead
+    // presumably generateElementStyle is called here in order to read the CSS after the component mounts
+    // with a side effect of causing it to re-render again once it know's its own styles
     this.setState({
       frameStyleInfo: this.generateElementStyle(),
     });
-    // this.setResizeListener();
-    // this.watchStyle();  WATCH STYLES IS OFF
   }
 
   generateElementStyle() {
     if (!this.hiddenElementRef.current) {
       throw new Error('Unable to locate `inputRef` in SecureElement component');
     }
-
     return getStyleInfo(this.hiddenElementRef.current);
   }
 
@@ -82,26 +80,10 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     frameURL.searchParams.set('element', 'span');
     return frameURL.toString();
   }
-  //
-  // setResizeListener() {
-  //   const observer = new ResizeObserver(() => {
-  //     const hiddenElement = this.hiddenElementRef.current;
-  //     const iframe = this.frameRef.current;
-  //     if (!hiddenElement || !iframe || !hiddenElement.offsetHeight) {
-  //       // DOMs not actually ready
-  //       return;
-  //     }
-  //     iframe.style.width = `${hiddenElement.offsetWidth}px`;
-  //     iframe.style.height = `${hiddenElement.offsetHeight}px`;
-  //   });
-  //
-  //   if (this.hiddenElementRef.current) {
-  //     observer.observe(this.hiddenElementRef.current as Element);
-  //   }
-  // }
 
   componentDidUpdate() {
-    if (this.frameReady) {
+    // Also causes style changes to propagate, as long as they come from within react
+    if (this.state.frameReady) {
       this.sendIFrameAttributes();
     }
   }
@@ -117,8 +99,8 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     if (!style) {
       console.error('Attempted to build style for element but it wasnt populated yet');
     } else {
+      delete style.childStyle.style.display;
       attrs.style = JSON.stringify(style.childStyle);
-      console.log('stringified child style ', style.childStyle);
     }
 
     if (this.props.token) {
@@ -147,7 +129,7 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     }
     switch (notification.command) {
       case 'NotifyOnStart':
-        this.frameReady = true;
+        this.setState({ frameReady: true });
         this.sendIFrameAttributes();
         break;
     }
@@ -180,7 +162,7 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
       return null;
     }
 
-    const { parentStyle, height } = this.state.frameStyleInfo;
+    const { height } = this.state.frameStyleInfo;
 
     const iframeStyle: CSSProperties = {
       // ...camelCaseObject(parentStyle),
@@ -188,7 +170,6 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
       // width: width,
       height: height,
     };
-    console.log('iframe style to render is ', parentStyle);
 
     const frameUrl = this.generateUrl();
 
@@ -196,41 +177,16 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
   }
 
   render() {
-    const { token, ...otherProps } = this.props;
-
-    const parentContainerStyle: CSSProperties = {
-      position: 'relative',
-      display: 'inline',
-    };
-
-    const isRendered = this.state.frameStyleInfo !== undefined;
-
-    const hiddenElementStyle: CSSProperties = {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      // We can't set the "visibility" to "collapsed" or "hidden",
-      // Or else the "on focus" and "on blur" events won't fire.
-      // So we use zIndex instead to "hide" the input.
-      zIndex: isRendered ? -1 : 1,
-      opacity: isRendered ? 0 : 1,
-      display: 'inline',
-    };
+    const { ...otherProps } = this.props;
 
     return (
-      <div
+      <span
+        {...otherProps}
         className={`secure-span-container-${this.frameId} secure-span-container-${this.props.name}`}
-        style={parentContainerStyle}
+        ref={this.hiddenElementRef}
       >
-        <span
-          {...otherProps}
-          className={isRendered ? `secure-span--hidden ${this.props.className}` : `${this.props.className}`}
-          ref={this.hiddenElementRef}
-          style={{ ...this.props.style, ...hiddenElementStyle }}
-          onChange={isRendered ? this.props.onChange : undefined}
-        />
         {this.renderFrame()}
-      </div>
+      </span>
     );
   }
 }
