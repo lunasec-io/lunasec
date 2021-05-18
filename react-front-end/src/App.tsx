@@ -61,6 +61,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
               value={this.state.foo}
               onChange={(e) => this.handleFooChange(e)}
               onBlur={(e) => console.log('blur1', e)}
+              element="textarea"
             />
             <SecureInput
               name="bar"

@@ -8,7 +8,8 @@ import {AttributesMessage} from "../../../../sdks/packages/secure-frame/common/s
 
 export interface ElementTypes {
     input: HTMLInputElement,
-    span: HTMLSpanElement
+    span: HTMLSpanElement,
+    textarea: HTMLTextAreaElement
 }
 
 export type SupportedElement = ElementTypes[keyof ElementTypes]
