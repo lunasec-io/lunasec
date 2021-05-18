@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
+    "start:dev": "npm run compile && node ./build/http-dev-server.js",
     "compile": "tsc",
     "copy-dev-files": "cp -R views build/",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@lunasec/node-sdk": "file:../sdks/packages/node-sdk",
     "@lunasec/secure-frame-common": "file:../sdks/packages/secure-frame/common",
     "@lunasec/tokenizer-sdk": "file:../sdks/packages/tokenizer-sdk",
     "@types/body-parser": "^1.19.0",

@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "outDir": "build",
-    "rootDir": "src",
+    "outDir": "./build",
+    "rootDir": "./src",
 
     "incremental": true,
-    "target": "es2017",
-    "module": "ESNext",
+    "target": "es6",
+    "module": "commonjs",
     "moduleResolution": "node",
     "jsx": "react", /* Compiles JSX as React calls by default */
     "composite": true, /* Required for our project with many Typescript bundles */
@@ -47,13 +47,12 @@
     "tsBuildInfoFile": "./build/buildcache.tsbuildinfo"
   },
   "files": [
-    "src/app.ts"
   ],
   "include": [
     "src/**/*.ts"
   ],
   "references": [
-    { "path": "../sdks/packages/express-auth-plugin"}
+    { "path": "../sdks/packages/express-auth-plugin"},
   ],
   "compileOnSave": true
 }

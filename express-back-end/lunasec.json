@@ -1,0 +1,9 @@
+{
+  "project_id": "",
+  "functions": [
+    {
+      "import_path": "process-form",
+      "function_name": "processForm"
+    }
+  ]
+}

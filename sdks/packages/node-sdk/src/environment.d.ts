@@ -1,7 +1,9 @@
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      SECURE_RESOLVER_URL: string;
+      LUNASEC_DEPLOYMENT_SERVER_URL: string;
+      LUNASEC_DEPLOYMENT_SECRET: string;
+      LUNASEC_CONTAINER_SECRET: string;
     }
   }
 }
