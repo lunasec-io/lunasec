@@ -90,11 +90,12 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   generateIframeAttributes(): AttributesMessage {
     const id = this.frameId;
     // initialize the attributes with the only required property
-    const attrs: AttributesMessage = { id };
+
+    const attrs: AttributesMessage = { id }
 
     // Build the style for the iframe
-    if (!this.state.frameStyleInfo) {
-      console.error('Attempted to build style for input but it wasnt populated yet');
+    if (!this.state.frameStyleInfo){
+      console.debug('Attempted to build style for input but it wasnt populated yet. Omitting style from attribute message');
     } else {
       attrs.style = JSON.stringify(this.state.frameStyleInfo.childStyle);
     }
@@ -105,7 +106,6 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
     if (this.props.type) {
       const validTypes = Object.values(SecureInputType);
-
       if (!validTypes.includes(this.props.type)) {
         throw new Error(`SecureInput not set to allowed type.  Permitted types are: ${validTypes.toString()}`);
       }

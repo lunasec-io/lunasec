@@ -80,7 +80,7 @@ export class FrameMessageCreator {
       await timeout(2);
 
       // Spin lock that waits until we receive a response in another "thread".
-      // This will return false when a message is in the "response buffer".
+      // This will return false when a message is in the response buffer "frameResponses".
       while (this.frameResponses[message.correlationToken] === undefined) {
         const currentTime = new Date();
 

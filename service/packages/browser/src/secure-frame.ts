@@ -22,17 +22,16 @@ export class SecureFrame {
     private readonly frameNonce: string;
     private readonly origin: string;
     private initialized: boolean;
-    constructor(elementName: keyof ElementTypes) {
+    constructor(elementName: keyof ElementTypes, loadingText: Element) {
         this.initialized = false;
         this.elementType = elementName;
-
+        this.loadingText = loadingText;
         const body = document.getElementsByTagName("BODY")[0];
         const secureElement = document.createElement(elementName);
         secureElement.className = 'secure-input d-none';
         body.appendChild(secureElement);
         this.secureElement = secureElement;
 
-        this.loadingText = document.querySelector('.loading-text') as Element;
 
         if (!this.secureElement || !this.loadingText) {
             throw new Error('Unable to select secure input node');
@@ -54,12 +53,12 @@ export class SecureFrame {
             throw new Error('Unable to read origin data of parent frame');
         }
 
-        listenForRPCMessages(this.origin, (attrs) => {this.setAttributesFromRPC(attrs)});
+        listenForRPCMessages(this.origin, (attrs) => {void this.setAttributesFromRPC(attrs)});
         notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
     }
 
     // Set up the iframe attributes, used on both page load and on any subsequent changes
-    setAttributesFromRPC(attrs: AttributesMessage) {
+    async setAttributesFromRPC(attrs: AttributesMessage) {
         // First time setup
         if (!this.initialized) {
             this.loadingText.classList.add('d-none');
@@ -79,18 +78,14 @@ export class SecureFrame {
         }
 
         if (attrs.token) {
-            detokenize(attrs.token).then((value) => {
-                if (value){
-                    if (this.elementType === 'input'){
-                        const input = this.secureElement as HTMLInputElement
-                        input.value = value;
-                    }
-                    if (this.elementType === 'span'){
-                        this.secureElement.textContent = value;
-                    }
-                }
-                return;
-            })
+            const value = await detokenize(attrs.token)
+            if (this.elementType === 'input'){
+                const input = this.secureElement as HTMLInputElement
+                input.value = value;
+            }
+            if (this.elementType === 'span'){
+                this.secureElement.textContent = value;
+            }
         }
         if (this.elementType === 'input'){
             this.attachOnBlurNotifier();

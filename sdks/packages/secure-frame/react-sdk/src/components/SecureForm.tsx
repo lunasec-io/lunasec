@@ -101,7 +101,7 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   // Give the iframe all the information it needs to exist when it wakes up
-  iframeStartup(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>) {
+  async iframeStartup(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>) {
     const input = this.childInputs[notification.frameNonce];
     const frameAttributes = input.generateIframeAttributes();
     const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
@@ -109,7 +109,8 @@ export class SecureForm extends Component<SecureFormProps> {
       console.error('Frame not initialized for message sending');
       return;
     }
-    void this.messageCreator.sendMessageToFrameWithReply(input.frameRef.current.contentWindow, message);
+    await this.messageCreator.sendMessageToFrameWithReply(input.frameRef.current.contentWindow, message);
+    return;
   }
 
   frameNotificationCallback(notification: UnknownFrameNotification) {
@@ -122,24 +123,25 @@ export class SecureForm extends Component<SecureFormProps> {
         this.blur(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>);
         break;
       case 'NotifyOnStart':
-        this.iframeStartup(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>);
+        void this.iframeStartup(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>);
         break;
     }
   }
 
-  watchStyle(component: SecureInput) {
+  async onStyleChange(component: SecureInput) {
     const self = this;
-    function onStyleChange() {
-      component.generateElementStyle();
-      const { id, style } = component.generateIframeAttributes();
-      const message = self.messageCreator.createMessageToFrame('Attributes', { id, style });
-      if (!component.frameRef.current || !component.frameRef.current.contentWindow) {
-        return console.error('Style watcher updated for component that no longer has iframe ');
-      }
-      void self.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message);
+    component.generateElementStyle();
+    const { id, style } = component.generateIframeAttributes();
+    const message = self.messageCreator.createMessageToFrame('Attributes', { id, style });
+    if (!component.frameRef.current || !component.frameRef.current.contentWindow) {
+      return console.error('Style watcher updated for component that no longer has iframe ');
     }
+    await self.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message);
+    return;
+  }
 
-    const observer = new MutationObserver(onStyleChange);
+  watchStyle(component: SecureInput) {
+    const observer = new MutationObserver(() => this.onStyleChange(component));
     if (!component.inputRef.current) {
       return console.error('Attempted to register style watcher on component not yet mounted');
     }
