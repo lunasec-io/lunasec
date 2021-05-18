@@ -76,7 +76,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
 
   generateElementStyle() {
     if (!this.inputRef.current) {
-      throw new Error('Unable to locate `inputRef` in SecureElement component');
+      throw new Error('Unable to locate `inputRef` in SecureInput component');
     }
 
     const frameStyleInfo = getStyleInfo(this.inputRef.current);
@@ -91,11 +91,13 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     const id = this.frameId;
     // initialize the attributes with the only required property
 
-    const attrs: AttributesMessage = { id }
+    const attrs: AttributesMessage = { id };
 
     // Build the style for the iframe
-    if (!this.state.frameStyleInfo){
-      console.debug('Attempted to build style for input but it wasnt populated yet. Omitting style from attribute message');
+    if (!this.state.frameStyleInfo) {
+      console.debug(
+        'Attempted to build style for input but it wasnt populated yet. Omitting style from attribute message'
+      );
     } else {
       attrs.style = JSON.stringify(this.state.frameStyleInfo.childStyle);
     }

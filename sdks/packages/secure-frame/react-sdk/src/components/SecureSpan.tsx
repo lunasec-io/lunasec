@@ -27,7 +27,7 @@ export interface SecureSpanState {
 
 export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
   readonly frameRef!: RefObject<HTMLIFrameElement>;
-  readonly hiddenElementRef!: RefObject<HTMLSpanElement>;
+  readonly dummyElementRef!: RefObject<HTMLSpanElement>;
   readonly messageCreator: FrameMessageCreator;
 
   // This is created on component mounted to enable server-side rendering
@@ -43,7 +43,7 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     super(props);
     this.frameId = generateSecureNonce();
     this.frameRef = React.createRef();
-    this.hiddenElementRef = React.createRef();
+    this.dummyElementRef = React.createRef();
     const secureFrameURL = new URL(__SECURE_FRAME_URL__);
     secureFrameURL.pathname = secureFramePathname;
     this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
@@ -65,11 +65,15 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     });
   }
 
+  componentWillUnmount() {
+    this.abortController.abort();
+  }
+
   generateElementStyle() {
-    if (!this.hiddenElementRef.current) {
+    if (!this.dummyElementRef.current) {
       throw new Error('Unable to locate `inputRef` in SecureElement component');
     }
-    return getStyleInfo(this.hiddenElementRef.current);
+    return getStyleInfo(this.dummyElementRef.current);
   }
 
   generateUrl() {
@@ -135,28 +139,6 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     }
   }
 
-  watchStyle() {
-    console.log('SPAN STYLE CHANGED, SENDING MESSAGE');
-    const self = this;
-    function onStyleChange() {
-      console.log('STYLE CHANGE DETECTED');
-      const { id, style } = self.generateIframeAttributes();
-      const message = self.messageCreator.createMessageToFrame('Attributes', { id, style });
-      if (!self.frameRef.current || !self.frameRef.current.contentWindow) {
-        return console.error('Style watcher updated for component that no longer has iframe ');
-      }
-      void self.messageCreator.sendMessageToFrameWithReply(self.frameRef.current.contentWindow, message);
-    }
-
-    const observer = new MutationObserver(onStyleChange);
-    if (!this.hiddenElementRef.current) {
-      return console.error('Attempted to register style watcher on component not yet mounted');
-    }
-    observer.observe(this.hiddenElementRef.current, {
-      attributeFilter: ['style'],
-    });
-  }
-
   renderFrame() {
     if (!this.state.frameStyleInfo) {
       return null;
@@ -183,7 +165,7 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
       <span
         {...otherProps}
         className={`secure-span-container-${this.frameId} secure-span-container-${this.props.name}`}
-        ref={this.hiddenElementRef}
+        ref={this.dummyElementRef}
       >
         {this.renderFrame()}
       </span>
