@@ -3,7 +3,7 @@ import {StyleInfo} from '@lunasec/secure-frame-common/build/main/style-patcher/t
 import {patchStyle} from '@lunasec/secure-frame-common/build/main/style-patcher/write';
 import {detokenize, notifyParentOfEvent, listenForRPCMessages} from './rpc';
 import {__SECURE_FRAME_URL__} from "../../../../sdks/packages/secure-frame/common";
-import {AttributesMessage} from "../../../../sdks/packages/secure-frame/common/src/rpc/types";
+import {AttributesMessage} from "@lunasec/secure-frame-common/src/rpc/types";
 
 
 class SecureInput {
@@ -25,34 +25,35 @@ class SecureInput {
 
     const searchParams = (new URL(document.location.href)).searchParams;
 
-    this.origin = searchParams.get('origin') as string;
 
-    if (!searchParams.get('origin')) {
+    const origin = searchParams.get('origin')
+    if (!origin) {
       throw new Error('Unable to read origin of the parent page');
     }
+    this.origin = origin
 
-    this.frameNonce = searchParams.get('n') as string;
-    if (!this.frameNonce) {
+    const frameNonce = searchParams.get('n')
+    if (!frameNonce) {
       throw new Error('Unable to read frame nonce of the parent page');
     }
+    this.frameNonce = frameNonce
 
     if (!this.origin) {
       throw new Error('Unable to read origin data of parent frame');
     }
 
-    listenForRPCMessages(this.origin, (attrs) => {this.setAttributesFromRPC(attrs)});
+    listenForRPCMessages(this.origin, (attrs) => {void this.setAttributesFromRPC(attrs)});
     notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
   }
 
   // Set up the iframe attributes, used on both page load and on any subsequent changes
-  setAttributesFromRPC(attrs: AttributesMessage) {
+  async setAttributesFromRPC(attrs: AttributesMessage) {
     // First time setup
     if (!this.initialized) {
       this.loadingText.classList.add('d-none');
       this.secureInput.classList.remove('d-none');
       if (!attrs.style) {
-        console.error('Attribute frame message missing necessary style parameter for first time frame startup', attrs);
-        return;
+        throw new Error('Attribute frame message missing necessary style parameter for first time frame startup');
       }
     }
 
@@ -65,12 +66,7 @@ class SecureInput {
     }
 
     if (attrs.token) {
-      detokenize(attrs.token).then((value) => {
-        if (value){
-          this.secureInput.value = value;
-        }
-        return;
-      })
+      this.secureInput.value = await detokenize(attrs.token)
     }
 
     this.attachOnBlurNotifier();
