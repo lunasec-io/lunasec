@@ -21,40 +21,33 @@ export class SecureFrame {
     private readonly loadingText: Element;
     private readonly frameNonce: string;
     private readonly origin: string;
-    private initialized: boolean;
+    private initialized = false;
     constructor(elementName: keyof ElementTypes, loadingText: Element) {
-        this.initialized = false;
         this.elementType = elementName;
         this.loadingText = loadingText;
+        this.secureElement = this.insertSecureElement(elementName);
+        this.origin = this.getURLSearchParam('origin');
+        this.frameNonce = this.getURLSearchParam('n');
+
+        listenForRPCMessages(this.origin, (attrs) => {void this.setAttributesFromRPC(attrs)});
+        notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
+    }
+
+    insertSecureElement(elementName:keyof ElementTypes){
         const body = document.getElementsByTagName("BODY")[0];
         const secureElement = document.createElement(elementName);
         secureElement.className = 'secure-input d-none';
         body.appendChild(secureElement);
-        this.secureElement = secureElement;
+        return secureElement;
+    }
 
-
-        if (!this.secureElement || !this.loadingText) {
-            throw new Error('Unable to select secure input node');
-        }
-
+    getURLSearchParam(paramName: string){
         const searchParams = (new URL(document.location.href)).searchParams;
-
-        this.origin = searchParams.get('origin') as string;
-        if (!searchParams.get('origin')) {
-            throw new Error('Unable to read origin of the parent page');
+        const param = searchParams.get(paramName)
+        if(!param){
+            throw new Error(`Missing parameter from iframe url ${paramName}`)
         }
-
-        this.frameNonce = searchParams.get('n') as string;
-        if (!this.frameNonce) {
-            throw new Error('Unable to read frame nonce of the parent page');
-        }
-
-        if (!this.origin) {
-            throw new Error('Unable to read origin data of parent frame');
-        }
-
-        listenForRPCMessages(this.origin, (attrs) => {void this.setAttributesFromRPC(attrs)});
-        notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
+        return param
     }
 
     // Set up the iframe attributes, used on both page load and on any subsequent changes

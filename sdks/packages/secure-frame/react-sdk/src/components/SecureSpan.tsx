@@ -115,14 +115,14 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
   }
 
   // Give the iframe all the information it needs to exist when it wakes up
-  sendIFrameAttributes() {
+  async sendIFrameAttributes() {
     const frameAttributes = this.generateIframeAttributes();
     const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
     if (!this.frameRef.current || !this.frameRef.current.contentWindow) {
       console.error('Frame not initialized for message sending');
       return;
     }
-    void this.messageCreator.sendMessageToFrameWithReply(this.frameRef.current.contentWindow, message);
+    await this.messageCreator.sendMessageToFrameWithReply(this.frameRef.current.contentWindow, message);
     return;
   }
 
@@ -134,7 +134,7 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     switch (notification.command) {
       case 'NotifyOnStart':
         this.setState({ frameReady: true });
-        this.sendIFrameAttributes();
+        void this.sendIFrameAttributes();
         break;
     }
   }
@@ -147,9 +147,7 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     const { height } = this.state.frameStyleInfo;
 
     const iframeStyle: CSSProperties = {
-      // ...camelCaseObject(parentStyle),
       display: 'inline',
-      // width: width,
       height: height,
     };
 
