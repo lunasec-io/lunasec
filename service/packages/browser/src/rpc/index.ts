@@ -7,6 +7,8 @@ import {
   UnknownFrameNotification
 } from '@lunasec/secure-frame-common/build/main/rpc/types';
 import {Tokenizer} from "@lunasec/tokenizer-sdk";
+import {safeParseJson} from '@lunasec/services-common/build/utils/json';
+import {AttributesMessage} from "@lunasec/secure-frame-common/src/rpc/types";
 
 function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, correlationToken: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> {
 
@@ -52,6 +54,15 @@ async function tokenizeField(): Promise<string | null> {
   return resp.tokenId
 }
 
+export async function detokenize(token: string){
+  const tokenizer = new Tokenizer();
+  const resp = await tokenizer.detokenize(token);
+  if (!resp.success || resp.value === null) {
+    throw new Error(`Detokenizer error ${resp}`)
+  }
+  return resp.value;
+}
+
 export function sendMessageToParentFrame(origin: string, message: UnknownFrameMessage | UnknownFrameNotification) {
   window.parent.postMessage(JSON.stringify(message), origin);
 }
@@ -75,13 +86,24 @@ export function respondWithTokenizedValue(origin: string, rawMessage: UnknownFra
   return;
 }
 
-export function notifyParentOfOnBlurEvent(origin: string, frameNonce: string) {
-  const message = createNotificationToFrame('NotifyOnBlur', frameNonce);
+// Just tell the outside app that we got the message, kind of boilerplate
+export function respondAttributesReceived(origin: string, rawMessage: UnknownFrameMessage): void {
+  const message = createMessageToFrame('ReceiveAttributesConfirmation', rawMessage.correlationToken, () => {
+    return {
+      success: true,
+    };
+  });
+  sendMessageToParentFrame(origin, message);
+  return;
+}
 
+
+export function notifyParentOfEvent(eventName: keyof InboundFrameNotificationMap, origin: string, frameNonce: string) {
+  const message = createNotificationToFrame(eventName, frameNonce);
   sendMessageToParentFrame(origin, message);
 }
 
-export async function processMessage(origin: string, rawMessage: UnknownFrameMessage) {
+export async function processMessage(origin: string, rawMessage: UnknownFrameMessage, updateAttrCallback: (m: AttributesMessage) => any) {
 
   // TODO: Make this type safe (require every message to be handled)
   if (rawMessage.command === 'CommitToken') {
@@ -89,6 +111,29 @@ export async function processMessage(origin: string, rawMessage: UnknownFrameMes
     respondWithTokenizedValue(origin, rawMessage, serverResponse);
     return;
   }
+  if (rawMessage.command === 'Attributes') {
+    updateAttrCallback(rawMessage.data as AttributesMessage);
+    respondAttributesReceived(origin, rawMessage);
+    return;
+  }
 
   throw new Error('Secure frame unable to process message of command type: ' + rawMessage.command);
+}
+
+// TODO: Passing a callback here that only gets called in certain situations kind of stinks
+export function listenForRPCMessages(origin: string, updateAttrCallback: (m: AttributesMessage) => any) {
+  window.addEventListener('message', (event) => {
+    // TODO: Is this a security problem?
+    if (origin !== event.origin) {
+      console.log('rejected origin', event.origin, origin);
+      return;
+    }
+
+    const rawMessage = safeParseJson<UnknownFrameMessage>(event.data);
+    if (!rawMessage) {
+      console.error('Invalid message received by secure frame.');
+      return;
+    }
+    processMessage(origin, rawMessage, updateAttrCallback);
+  });
 }

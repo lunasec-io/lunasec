@@ -1,96 +1,84 @@
 import {safeParseJson} from '@lunasec/services-common/build/utils/json';
-import {UnknownFrameMessage} from '@lunasec/secure-frame-common/build/main/rpc/types';
 import {StyleInfo} from '@lunasec/secure-frame-common/build/main/style-patcher/types';
 import {patchStyle} from '@lunasec/secure-frame-common/build/main/style-patcher/write';
-import {notifyParentOfOnBlurEvent, processMessage} from './rpc';
-
-/**
- * Sends a message whenever an "on blur" event occurs (when the user clicks away from the secure frame).
- * @param origin Target origin to send the request to.
- * @param frameNonce Nonce of the current iframe.
- * @param inputElement The input element to attach the blur event listener to.
- */
-function attachOnBlurNotifier(origin: string, frameNonce: string, inputElement: HTMLInputElement) {
-  inputElement.addEventListener('blur', () => {
-    notifyParentOfOnBlurEvent(origin, frameNonce);
-  });
-}
-
-function setupPage(origin: string, frameNonce: string, secureInput: Element, loadingText: Element) {
-  loadingText.classList.add('d-none');
-  secureInput.classList.remove('d-none');
-
-  if (window.location.hash && window.location.hash !== '') {
-    const stylingInfo = safeParseJson<StyleInfo>(decodeURIComponent(window.location.hash).substring(1));
-
-    // TODO: Add schema validation to JSON
-    if (stylingInfo !== null) {
-      patchStyle(secureInput as HTMLElement, stylingInfo);
-    }
-  }
-
-  const URLParams = new URLSearchParams(window.location.search);
-  const typeParam = URLParams.get('type');
-
-  if (typeParam) {
-    secureInput.setAttribute('type', typeParam);
-  }
-
-  attachOnBlurNotifier(origin, frameNonce, secureInput as HTMLInputElement);
-
-  return secureInput;
-}
+import {detokenize, notifyParentOfEvent, listenForRPCMessages} from './rpc';
+import {__SECURE_FRAME_URL__} from "../../../../sdks/packages/secure-frame/common";
+import {AttributesMessage} from "@lunasec/secure-frame-common/src/rpc/types";
 
 
-/**
- * This code runs in the context of the secure frame origin and handles passing RPC back/forth between origins.
- */
-async function onLoad() {
-  const secureInput = document.querySelector('.secure-input');
-  const loadingText = document.querySelector('.loading-text');
+class SecureInput {
+  secureInput: HTMLInputElement;
+  loadingText: Element;
+  frameNonce: string;
+  origin: string;
+  initialized: boolean;
 
-  if (!secureInput || !loadingText) {
-    throw new Error('Unable to select secure input node');
-  }
+  constructor() {
+    this.initialized = false;
 
-  const origin = secureInput.getAttribute('data-origin');
+    this.secureInput = document.querySelector('.secure-input') as HTMLInputElement;
+    this.loadingText = document.querySelector('.loading-text') as Element;
 
-  if (!origin) {
-    throw new Error('Unable to read origin of the parent page');
-  }
-
-  const frameNonce = secureInput.getAttribute('data-nonce');
-
-  if (!frameNonce) {
-    throw new Error('Unable to read frame nonce of the parent page');
-  }
-
-  // TODO: Create a class that holds origin and frameNonce so that we don't have to pass them down the call tree.
-  setupPage(origin, frameNonce, secureInput, loadingText);
-
-  if (!origin) {
-    throw new Error('Unable to read origin data of parent frame');
-  }
-
-  window.addEventListener('message', (event) => {
-
-    // TODO: Is this a security problem?
-    if (!origin.startsWith(event.origin + '/')) {
-      console.log('rejected origin', event.origin, origin);
-      return;
+    if (!this.secureInput || !this.loadingText) {
+      throw new Error('Unable to select secure input node');
     }
 
-    const rawMessage = safeParseJson<UnknownFrameMessage>(event.data);
+    const searchParams = (new URL(document.location.href)).searchParams;
 
-    if (!rawMessage) {
-      console.error('Invalid message received by secure frame.');
-      return;
+
+    const origin = searchParams.get('origin')
+    if (!origin) {
+      throw new Error('Unable to read origin of the parent page');
+    }
+    this.origin = origin
+
+    const frameNonce = searchParams.get('n')
+    if (!frameNonce) {
+      throw new Error('Unable to read frame nonce of the parent page');
+    }
+    this.frameNonce = frameNonce
+
+    if (!this.origin) {
+      throw new Error('Unable to read origin data of parent frame');
     }
 
-    processMessage(origin, rawMessage);
-  });
+    listenForRPCMessages(this.origin, (attrs) => {void this.setAttributesFromRPC(attrs)});
+    notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
+  }
 
-  // window.parent.postMessage(nonce, origin);
+  // Set up the iframe attributes, used on both page load and on any subsequent changes
+  async setAttributesFromRPC(attrs: AttributesMessage) {
+    // First time setup
+    if (!this.initialized) {
+      this.loadingText.classList.add('d-none');
+      this.secureInput.classList.remove('d-none');
+      if (!attrs.style) {
+        throw new Error('Attribute frame message missing necessary style parameter for first time frame startup');
+      }
+    }
+
+    if (attrs.style) {
+      patchStyle(this.secureInput, safeParseJson<StyleInfo>(attrs.style));
+    }
+
+    if (attrs.type) {
+      this.secureInput.setAttribute('type', attrs.type);
+    }
+
+    if (attrs.token) {
+      this.secureInput.value = await detokenize(attrs.token)
+    }
+
+    this.attachOnBlurNotifier();
+    this.initialized = true;
+    return;
+  }
+
+  attachOnBlurNotifier() {
+    this.secureInput.addEventListener('blur', () => {
+      notifyParentOfEvent('NotifyOnBlur', this.origin, this.frameNonce);
+    });
+  }
 }
 
-onLoad();
+new SecureInput();

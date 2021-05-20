@@ -1,24 +1,22 @@
+import { __SECURE_FRAME_URL__ } from '@lunasec/secure-frame-common';
 import { FrameMessageCreator } from '@lunasec/secure-frame-common/build/main/rpc/frame-message-creator';
 import { addReactEventListener } from '@lunasec/secure-frame-common/build/main/rpc/listener';
 import {
   FrameMessage,
+  FrameNotification,
   InboundFrameMessageMap,
-  UnknownFrameNotification
+  InboundFrameNotificationMap,
+  UnknownFrameNotification,
 } from '@lunasec/secure-frame-common/build/main/rpc/types';
+import { triggerBlur, triggerFocus } from '@lunasec/secure-frame-common/build/main/utils/element-event-triggers';
 import React, { Component } from 'react';
 
 import setNativeValue from '../set-native-value';
 
 import { SecureFormContext } from './SecureFormContext';
-import {
-  triggerBlur,
-  triggerFocus
-} from '@lunasec/secure-frame-common/build/main/utils/element-event-triggers';
-import {
-  __SECURE_FRAME_URL__
-} from "@lunasec/secure-frame-common";
+import { SecureInput } from './SecureInput';
 
-export interface SecureFormProps extends React.ComponentPropsWithoutRef<"form">  {
+export interface SecureFormProps extends React.ComponentPropsWithoutRef<'form'> {
   readonly onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
@@ -26,40 +24,40 @@ export class SecureForm extends Component<SecureFormProps> {
   declare readonly context: React.ContextType<typeof SecureFormContext>;
 
   private readonly messageCreator: FrameMessageCreator;
-  private readonly childRefLookup: Record<
-    string,
-    readonly [string, React.RefObject<HTMLIFrameElement>, React.RefObject<HTMLInputElement>]
-  >;
+  private readonly childInputs: Record<string, SecureInput>;
 
   // This is created on component mounted to enable server-side rendering
   private abortController!: AbortController;
 
   constructor(props: SecureFormProps) {
     super(props);
-    this.childRefLookup = {};
-    this.messageCreator = new FrameMessageCreator(notification => this.frameNotificationCallback(notification));
+    this.childInputs = {};
+    this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
   }
 
   async componentDidMount() {
     this.abortController = new AbortController();
 
     // Pushes events received back up.
-    addReactEventListener(window, this.abortController, (message) => this.messageCreator.messageReceived(message));
+    addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
 
-    const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__)
+    const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameVerifySessionURL.pathname = '/session/verify';
 
-    const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__)
+    const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameEnsureSessionURL.pathname = '/session/ensure';
+
+    // Pushes events received back up.
+    addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
 
     const response = await fetch(secureFrameEnsureSessionURL.toString(), {
       credentials: 'include',
-      mode: 'cors'
+      mode: 'cors',
     });
 
     if (response.status === 200) {
       // TODO: Remove this log statement or move it to debug only.
-      console.log("secure frame session is verified");
+      console.debug('secure frame session is verified');
       return;
     }
 
@@ -73,7 +71,7 @@ export class SecureForm extends Component<SecureFormProps> {
 
     if (resp.status !== 200) {
       // TODO: Throw or escalate this error in a better way.
-      console.error("unable to create secure frame session");
+      console.error('unable to create secure frame session');
       return;
     }
 
@@ -84,14 +82,11 @@ export class SecureForm extends Component<SecureFormProps> {
     this.abortController.abort();
   }
 
-  frameNotificationCallback(notification: UnknownFrameNotification) {
-    const child = this.childRefLookup[notification.frameNonce];
+  // Blur happens after the element loses focus
+  blur(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>) {
+    const child = this.childInputs[notification.frameNonce];
 
-    if (notification.command !== 'NotifyOnBlur') {
-      throw new Error('Unknown notification event type received from secure frame');
-    }
-
-    const input = child[2];
+    const input = child.inputRef;
 
     const inputElement = input.current;
 
@@ -101,22 +96,73 @@ export class SecureForm extends Component<SecureFormProps> {
 
     // In order to trigger a blur event, we must first focus the element.
     triggerFocus(inputElement);
-
     // Only then will the blur be triggered.
     triggerBlur(inputElement);
   }
 
+  // Give the iframe all the information it needs to exist when it wakes up
+  async iframeStartup(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>) {
+    const input = this.childInputs[notification.frameNonce];
+    if (!input) {
+      console.error('Received startup message from unknown frame:', notification);
+      return;
+    }
+    const frameAttributes = input.generateIframeAttributes();
+    const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
+    if (!input.frameRef.current || !input.frameRef.current.contentWindow) {
+      console.error('Frame not initialized for message sending');
+      return;
+    }
+    await this.messageCreator.sendMessageToFrameWithReply(input.frameRef.current.contentWindow, message);
+    return;
+  }
+
+  frameNotificationCallback(notification: UnknownFrameNotification) {
+    switch (notification.command) {
+      case 'NotifyOnBlur':
+        this.blur(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>);
+        break;
+      case 'NotifyOnStart':
+        void this.iframeStartup(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>);
+        break;
+    }
+  }
+
+  async onStyleChange(component: SecureInput) {
+    const self = this;
+    component.generateElementStyle();
+    const { id, style } = component.generateIframeAttributes();
+    const message = self.messageCreator.createMessageToFrame('Attributes', { id, style });
+    if (!component.frameRef.current || !component.frameRef.current.contentWindow) {
+      return console.error('Style watcher updated for component that no longer has iframe ');
+    }
+    await self.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message);
+    return;
+  }
+
+  watchStyle(component: SecureInput) {
+    const observer = new MutationObserver(() => this.onStyleChange(component));
+    if (!component.inputRef.current) {
+      return console.error('Attempted to register style watcher on component not yet mounted');
+    }
+    observer.observe(component.inputRef.current, {
+      attributeFilter: ['style'],
+    });
+  }
+
   async onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     const awaitedPromises: Promise<{
       readonly nonce: string;
       readonly response: FrameMessage<InboundFrameMessageMap, 'ReceiveCommittedToken'>;
     } | null>[] = [];
 
-    Object.keys(this.childRefLookup).forEach((key) => {
-      const [name, ref] = this.childRefLookup[key];
+    Object.keys(this.childInputs).forEach((key) => {
+      const child = this.childInputs[key];
+      const ref = child.frameRef;
 
       if (!ref.current || !ref.current.contentWindow) {
-        console.error('Invalid frame detected', key, name, ref);
+        console.error('Invalid frame detected', key, ref);
         return;
       }
 
@@ -133,15 +179,15 @@ export class SecureForm extends Component<SecureFormProps> {
       const { nonce, response } = data;
 
       if (!response.data.success) {
-        console.error("error while tokenizing data:", response.data.error);
+        console.error('error while tokenizing data:', response.data.error);
         return;
       }
 
-      const childRef = this.childRefLookup[nonce];
+      const childInput = this.childInputs[nonce];
 
       // Set the value back to the input element so that everything behaves like a normal html form,
       // and then force the react events to fire
-      const inputElement = childRef[2].current;
+      const inputElement = childInput.inputRef.current;
 
       if (inputElement !== null) {
         // TODO: Throw an error here or something instead of "defaulting"
@@ -167,7 +213,7 @@ export class SecureForm extends Component<SecureFormProps> {
     readonly nonce: string;
     readonly response: FrameMessage<InboundFrameMessageMap, 'ReceiveCommittedToken'>;
   } | null> {
-    const message = this.messageCreator.createMessageToFrame('CommitToken');
+    const message = this.messageCreator.createMessageToFrame('CommitToken', {});
 
     if (message === null) {
       console.error('Unable to create CommitToken message');
@@ -188,17 +234,21 @@ export class SecureForm extends Component<SecureFormProps> {
     return (
       <SecureFormContext.Provider
         value={{
-          addComponentRef: (ref, inputRef, frameId, name) => {
-            this.childRefLookup[frameId] = [name, ref, inputRef];
+          addComponent: (component) => {
+            this.childInputs[component.frameId] = component;
+            // Assume that this will be destroyed or otherwise stop sending messages when the component unmounts
+            this.watchStyle(component);
           },
-          removeComponentRef: (frameId) => {
-            if (this.childRefLookup[frameId]) {
-              delete this.childRefLookup[frameId];
+          removeComponent: (frameId) => {
+            if (this.childInputs[frameId]) {
+              delete this.childInputs[frameId];
             }
           },
         }}
       >
-        <form {...this.props} onSubmit={(e) => this.onSubmit(e)}>{this.props.children}</form>
+        <form {...this.props} onSubmit={(e) => this.onSubmit(e)}>
+          {this.props.children}
+        </form>
       </SecureFormContext.Provider>
     );
   }

@@ -22,42 +22,49 @@ export class FrameMessageCreator {
   }
 
   // TODO: Will need called to supply "inner" message eventually.
-  createMessageToFrame<K extends keyof OutboundFrameMessageMap>(s: K): FrameMessage<OutboundFrameMessageMap, K> | null {
-    function createInnerMessage() {
-      switch (s) {
-        case 'CommitToken':
-          return {};
-      }
-
-      return null;
-    }
-
-    const innerMessage = createInnerMessage();
-
-    if (innerMessage === null) {
-      return null;
-    }
-
+  createMessageToFrame<K extends keyof OutboundFrameMessageMap>(command: K, data: OutboundFrameMessageMap[K]): FrameMessage<OutboundFrameMessageMap, K> {
     return {
-      command: s,
+      command,
       correlationToken: generateSecureNonce(),
-      data: innerMessage,
+      data: data
     };
   }
 
-  messageReceived(unknownMessage: UnknownFrameMessage | UnknownFrameNotification) {
-    // Notifications don't have correlation tokens
-    if (unknownMessage.frameNonce) {
-      this.frameNotificationCallback(unknownMessage);
+  postReceived(unknownPost: UnknownFrameMessage | UnknownFrameNotification): void {
+
+    if (!unknownPost.frameNonce && !unknownPost.correlationToken) {
+      throw new Error('Unknown post message received without correlationToken or frameNonce, must have one or the other');
+    }
+
+    // Notifications have a frameNonce
+    if (unknownPost.frameNonce) {
+      this.handleNotificationReceived(unknownPost);
       return;
     }
-
-    if (!unknownMessage.correlationToken) {
-      throw new Error('Unknown frame message received with missing correlation token');
+    // Messages are receipt confirmations to things we have sent the frame, and have a correlationToken
+    if (unknownPost.correlationToken){
+      this.handleMessageReceived(unknownPost);
+      return;
     }
+  }
 
+  // Notifications start in the frame and are sent here to notify us of events
+  handleNotificationReceived(notification: UnknownFrameNotification): void{
+    const notificationTypes = [
+      'NotifyOnBlur',
+      'NotifyOnStart'
+    ]
+    if (!notificationTypes.includes(notification.command)){
+      throw new Error(`Received Frame Notification of unknown type, allowed types are ${notificationTypes.toString()}`);
+    }
+    this.frameNotificationCallback(notification);
+    return;
+  }
+
+  // Messages are responses from the frame to things we have sent it
+  handleMessageReceived(message: UnknownFrameMessage): void {
     // TODO: Validate response has valid JSON
-    this.frameResponses[unknownMessage.correlationToken] = unknownMessage;
+    this.frameResponses[message.correlationToken] = message;
   }
 
   async sendMessageToFrameWithReply<K extends keyof OutboundFrameMessageMap | keyof OutboundToInboundMessageTypeMap>(
@@ -73,7 +80,7 @@ export class FrameMessageCreator {
       await timeout(2);
 
       // Spin lock that waits until we receive a response in another "thread".
-      // This will return false when a message is in the "response buffer".
+      // This will return false when a message is in the response buffer "frameResponses".
       while (this.frameResponses[message.correlationToken] === undefined) {
         const currentTime = new Date();
 
