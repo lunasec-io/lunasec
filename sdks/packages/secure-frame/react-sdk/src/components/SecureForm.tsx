@@ -129,14 +129,13 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   async onStyleChange(component: SecureInput) {
-    const self = this;
     component.generateElementStyle();
     const { id, style } = component.generateIframeAttributes();
-    const message = self.messageCreator.createMessageToFrame('Attributes', { id, style });
+    const message = this.messageCreator.createMessageToFrame('Attributes', { id, style });
     if (!component.frameRef.current || !component.frameRef.current.contentWindow) {
       return console.error('Style watcher updated for component that no longer has iframe ');
     }
-    await self.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message);
+    await this.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message);
     return;
   }
 
