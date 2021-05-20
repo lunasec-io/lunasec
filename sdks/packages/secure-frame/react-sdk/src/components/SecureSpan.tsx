@@ -147,9 +147,7 @@ export class SecureSpan extends Component<SecureSpanProps, SecureSpanState> {
     const { height } = this.state.frameStyleInfo;
 
     const iframeStyle: CSSProperties = {
-      // ...camelCaseObject(parentStyle),
       display: 'inline',
-      // width: width,
       height: height,
     };
 

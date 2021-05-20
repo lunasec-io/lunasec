@@ -8,9 +8,8 @@ import React, { Component, CSSProperties, RefObject } from 'react';
 
 import { SecureFormContext } from './SecureFormContext';
 
-export const supportedInputTypes = ['text','password','email']
-export const supportedElements = ['input', 'textarea']
-
+export const supportedInputTypes = ['text', 'password', 'email'];
+export const supportedElements = ['input', 'textarea'];
 
 export interface SecureInputProps extends React.ComponentPropsWithoutRef<'input'> {
   value?: string;
@@ -121,11 +120,13 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     frameURL.searchParams.set('n', urlFrameId);
     frameURL.searchParams.set('origin', window.location.origin);
 
-    if (this.props.element && !supportedElements.includes(this.props.element)){
-      throw new Error(`SecureInput not set to allowed element.  Permitted elements are: ${supportedElements.toString()}`);
+    if (this.props.element && !supportedElements.includes(this.props.element)) {
+      throw new Error(
+        `SecureInput not set to allowed element.  Permitted elements are: ${supportedElements.toString()}`
+      );
     }
     // default to input if user didn't set an element type
-    frameURL.searchParams.set('element', this.props.element || 'input')
+    frameURL.searchParams.set('element', this.props.element || 'input');
     return frameURL.toString();
   }
 
@@ -166,13 +167,12 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     return <iframe ref={this.frameRef} src={frameUrl} frameBorder={0} style={iframeStyle} key={frameUrl} />;
   }
 
-  renderHiddenElement(props: Record<string, any>){
-    if (this.props.type === 'textarea'){
-      return <textarea {...props}/>
+  renderHiddenElement(props: Record<string, any>) {
+    if (this.props.element === 'textarea') {
+      return <textarea {...props} />;
     } else {
-      return <input {...props}/>
+      return <input {...props} />;
     }
-
   }
 
   render() {
@@ -195,21 +195,22 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       zIndex: isRendered ? -1 : 1,
       opacity: isRendered ? 0 : 1,
       display: 'block',
+      resize: 'none',
     };
 
     const elementProps = {
       ...otherProps,
-      className:isRendered ? `secure-form-input--hidden ${this.props.className}` : `${this.props.className}`,
+      className: isRendered ? `secure-form-input--hidden ${this.props.className}` : `${this.props.className}`,
       // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
-      type:"text",
-      ref:this.inputRef,
-      name:this.props.name,
-      defaultValue:isRendered ? this.props.value : '',
-      style:{...this.props.style, ...hiddenInputStyle},
+      type: 'text',
+      ref: this.inputRef,
+      name: this.props.name,
+      defaultValue: isRendered ? this.props.value : '',
+      style: { ...this.props.style, ...hiddenInputStyle },
       onChange: isRendered ? this.props.onChange : undefined,
-      onBlur:this.props.onBlur,
-      onFocus:this.props.onFocus,
-    }
+      onBlur: this.props.onBlur,
+      onFocus: this.props.onFocus,
+    };
 
     return (
       <div
