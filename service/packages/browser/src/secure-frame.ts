@@ -80,7 +80,7 @@ export class SecureFrame {
 
         if (attrs.token) {
             const value = await detokenize(attrs.token)
-            if (this.elementType === 'input'){
+            if (this.elementType === 'input' || this.elementType ==='textarea'){
                 const input = this.secureElement as HTMLInputElement
                 input.value = value;
             }

@@ -41,9 +41,7 @@ async function tokenizeField(): Promise<string | null> {
   if (!secureInput) {
     throw new Error('Unable to read value to tokenize');
   }
-
   const value = (secureInput as HTMLInputElement).value;
-
   const tokenizer = new Tokenizer();
   const resp = await tokenizer.tokenize(value);
 
