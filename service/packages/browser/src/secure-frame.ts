@@ -8,7 +8,8 @@ import {AttributesMessage} from "../../../../sdks/packages/secure-frame/common/s
 
 export interface ElementTypes {
     input: HTMLInputElement,
-    span: HTMLSpanElement
+    span: HTMLSpanElement,
+    textarea: HTMLTextAreaElement
 }
 
 export type SupportedElement = ElementTypes[keyof ElementTypes]
@@ -72,7 +73,7 @@ export class SecureFrame {
 
         if (attrs.token) {
             const value = await detokenize(attrs.token)
-            if (this.elementType === 'input'){
+            if (this.elementType === 'input' || this.elementType ==='textarea'){
                 const input = this.secureElement as HTMLInputElement
                 input.value = value;
             }
