@@ -41,14 +41,21 @@ export class SecureForm extends Component<SecureFormProps> {
     // Pushes events received back up.
     addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
 
+    await this.authenticateSession();
+
+    // TODO (cthompson) here in the code we have verification that the secure form should be able to tokenize data
+  }
+
+  componentWillUnmount() {
+    this.abortController.abort();
+  }
+
+  async authenticateSession() {
     const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameVerifySessionURL.pathname = '/session/verify';
 
     const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameEnsureSessionURL.pathname = '/session/ensure';
-
-    // Pushes events received back up.
-    addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
 
     const response = await fetch(secureFrameEnsureSessionURL.toString(), {
       credentials: 'include',
@@ -56,7 +63,6 @@ export class SecureForm extends Component<SecureFormProps> {
     });
 
     if (response.status === 200) {
-      // TODO: Remove this log statement or move it to debug only.
       console.debug('secure frame session is verified');
       return;
     }
@@ -74,14 +80,8 @@ export class SecureForm extends Component<SecureFormProps> {
       console.error('unable to create secure frame session');
       return;
     }
-
-    // TODO (cthompson) here in the code we have verification that the secure form should be able to tokenize data
+    return;
   }
-
-  componentWillUnmount() {
-    this.abortController.abort();
-  }
-
   // Blur happens after the element loses focus
   blur(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>) {
     const child = this.childInputs[notification.frameNonce];
@@ -103,10 +103,6 @@ export class SecureForm extends Component<SecureFormProps> {
   // Give the iframe all the information it needs to exist when it wakes up
   async iframeStartup(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>) {
     const input = this.childInputs[notification.frameNonce];
-    if (!input) {
-      console.error('Received startup message from unknown frame:', notification);
-      return;
-    }
     const frameAttributes = input.generateIframeAttributes();
     const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
     if (!input.frameRef.current || !input.frameRef.current.contentWindow) {
@@ -118,6 +114,10 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   frameNotificationCallback(notification: UnknownFrameNotification) {
+    if (!this.childInputs[notification.frameNonce]) {
+      console.debug('Received notification intended for different listener, discarding');
+      return;
+    }
     switch (notification.command) {
       case 'NotifyOnBlur':
         this.blur(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>);
@@ -129,14 +129,13 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   async onStyleChange(component: SecureInput) {
-    const self = this;
     component.generateElementStyle();
     const { id, style } = component.generateIframeAttributes();
-    const message = self.messageCreator.createMessageToFrame('Attributes', { id, style });
+    const message = this.messageCreator.createMessageToFrame('Attributes', { id, style });
     if (!component.frameRef.current || !component.frameRef.current.contentWindow) {
       return console.error('Style watcher updated for component that no longer has iframe ');
     }
-    await self.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message);
+    await this.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message);
     return;
   }
 

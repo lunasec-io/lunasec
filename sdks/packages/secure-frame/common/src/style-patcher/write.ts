@@ -1,5 +1,5 @@
-import { StyleInfo, SupportedElement } from './types';
 import { generateCssText } from './dom-utils';
+import { StyleInfo, SupportedElement } from './types';
 
 // TODO: Figure out if this is a security concern before re-enabling
 export function patchStyle(target: SupportedElement, styleInfo: StyleInfo): void {
@@ -15,8 +15,12 @@ export function patchStyle(target: SupportedElement, styleInfo: StyleInfo): void
    * Patch size
    *
    * TODO: how to deal with inline elements?
+   *
    */
-  if (style.display !== 'inline') {
+  // This is brittle but checking for display: inline was not working.
+  // Remember to add any inline elements we need here
+  // Another option is to use HTML5 content categories "phrasing content" but worried about browser support
+  if (target.nodeName !== 'SPAN') {
     target.style.boxSizing = 'border-box';
     target.style.width = '100%';
     target.style.height = '100%';

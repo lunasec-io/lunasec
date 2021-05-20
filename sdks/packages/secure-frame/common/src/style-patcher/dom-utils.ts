@@ -1,5 +1,5 @@
-import { StyleSnapshot, SupportedElement, SupportedElementTagName, SupportedElementTagNameMap } from './types';
 import { ELEMENT_ATTRIBUTE_WHITELIST, PARENT_ELEMENT_STYLE_ATTRIBUTES, SKIPPED_PROPERTIES } from './constants';
+import { StyleSnapshot, SupportedElement, SupportedElementTagName, SupportedElementTagNameMap } from './types';
 
 export function isTagName<T extends SupportedElementTagName>(
   el: SupportedElement,
@@ -16,7 +16,7 @@ export function createStyleElement(doc: Document, css: string): HTMLStyleElement
 }
 
 export function getStyleSnapshot(style: CSSStyleDeclaration): StyleSnapshot {
-  const snapshot = Object.create({});
+  const snapshot: Record<string, string> = Object.create({});
   for (let i = 0; i < style.length; i++) {
     const prop = style[i];
     snapshot[prop] = style.getPropertyValue(prop);

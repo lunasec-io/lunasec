@@ -1,15 +1,12 @@
+import { __SECURE_FRAME_URL__, secureFramePathname } from '@lunasec/secure-frame-common';
+import { AttributesMessage } from '@lunasec/secure-frame-common/build/main/rpc/types';
 import { getStyleInfo } from '@lunasec/secure-frame-common/build/main/style-patcher/read';
-import {  ReadElementStyle } from '@lunasec/secure-frame-common/build/main/style-patcher/types';
+import { ReadElementStyle } from '@lunasec/secure-frame-common/build/main/style-patcher/types';
 import { generateSecureNonce } from '@lunasec/secure-frame-common/build/main/utils/random';
 import { camelCaseObject } from '@lunasec/secure-frame-common/build/main/utils/to-camel-case';
 import React, { Component, CSSProperties, RefObject } from 'react';
 
 import { SecureFormContext } from './SecureFormContext';
-import {
-  __SECURE_FRAME_URL__,
-  secureFramePathname
-} from "@lunasec/secure-frame-common";
-import {AttributesMessage} from "@lunasec/secure-frame-common/build/main/rpc/types";
 
 export const SecureInputType = {
   text: 'text',
@@ -17,7 +14,7 @@ export const SecureInputType = {
   email: 'email',
 } as const;
 
-export interface SecureInputProps extends React.ComponentPropsWithoutRef<"input"> {
+export interface SecureInputProps extends React.ComponentPropsWithoutRef<'input'> {
   value?: string;
   secureFrameUrl?: string;
   // TODO: Will this force the component to have a key?
@@ -56,7 +53,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     this.frameRef = React.createRef();
     this.inputRef = React.createRef();
 
-    const secureFrameURL = new URL(__SECURE_FRAME_URL__)
+    const secureFrameURL = new URL(__SECURE_FRAME_URL__);
     secureFrameURL.pathname = secureFramePathname;
 
     this.state = {
@@ -90,14 +87,17 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   }
 
   // Generate some attributes for sending to the iframe via RPC.  This is called from SecureForm
-  generateIframeAttributes(): AttributesMessage{
-    const id = this.frameId
+  generateIframeAttributes(): AttributesMessage {
+    const id = this.frameId;
     // initialize the attributes with the only required property
-    const attrs: AttributesMessage = { id }
+
+    const attrs: AttributesMessage = { id };
 
     // Build the style for the iframe
-    if (!this.state.frameStyleInfo){
-      console.debug('Attempted to build style for input but it wasnt populated yet. Omitting style from attribute message');
+    if (!this.state.frameStyleInfo) {
+      console.debug(
+        'Attempted to build style for input but it wasnt populated yet. Omitting style from attribute message'
+      );
     } else {
       attrs.style = JSON.stringify(this.state.frameStyleInfo.childStyle);
     }
@@ -121,6 +121,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     const frameURL = new URL('frame', this.state.secureFrameUrl);
     frameURL.searchParams.set('n', urlFrameId);
     frameURL.searchParams.set('origin', window.location.origin);
+    frameURL.searchParams.set('element', 'input');
     return frameURL.toString();
   }
 
@@ -162,11 +163,11 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   }
 
   render() {
-    const {value, children, ...otherProps} = this.props;
+    const { value, children, ...otherProps } = this.props;
 
     const parentContainerStyle: CSSProperties = {
       position: 'relative',
-      display: 'block'
+      display: 'block',
     };
 
     const isRendered = this.state.frameStyleInfo !== undefined;
@@ -196,7 +197,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
           ref={this.inputRef}
           name={this.props.name}
           defaultValue={isRendered ? this.props.value : ''}
-          style={{...this.props.style, ...hiddenInputStyle}}
+          style={{ ...this.props.style, ...hiddenInputStyle }}
           onChange={isRendered ? this.props.onChange : undefined}
           onBlur={this.props.onBlur}
           onFocus={this.props.onFocus}
