@@ -1,5 +1,6 @@
 {
   "project_id": "",
+  "runtime": "nodejs10.x",
   "functions": [
     {
       "import_path": "process-form",
