@@ -329,6 +329,8 @@ export const ELEMENT_ATTRIBUTE_WHITELIST = [
 
 export const NO_GENERATE_CONTENT_ELEMENTS = REPLACED_ELEMENTS.concat(VOID_ELEMENTS);
 
-export const PLACEHOLDER_ELEMENTS: SupportedElementTagName[] = ['input', 'textarea'];
+export const PLACEHOLDER_ELEMENTS: SupportedElementTagName[] = ['input', 'textarea', 'span'];
 
 export const SKIPPED_PROPERTIES = ['-webkit-locale', '--tridactyl'];
+
+export const INLINE_SKIPPED_PROPERTIES = null;

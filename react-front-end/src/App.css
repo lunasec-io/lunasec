@@ -51,5 +51,13 @@ input[type=text] {
   height: 40px;
   width: 300px;
   margin-bottom: 4px;
-    border-radius: 5px;
+  border-radius: 5px;
+}
+
+textarea {
+  border: solid blue 4px;
+  height:80px;
+  width: 300px;
+  margin-bottom: 4px;
+  border-radius:5px;
 }

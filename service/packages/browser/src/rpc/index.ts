@@ -8,7 +8,7 @@ import {
 } from '@lunasec/secure-frame-common/build/main/rpc/types';
 import {Tokenizer} from "@lunasec/tokenizer-sdk";
 import {safeParseJson} from '@lunasec/services-common/build/utils/json';
-import {AttributesMessage} from "../../../../../sdks/packages/secure-frame/common/src/rpc/types";
+import {AttributesMessage} from "@lunasec/secure-frame-common/src/rpc/types";
 
 function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, correlationToken: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> {
 
@@ -41,9 +41,7 @@ async function tokenizeField(): Promise<string | null> {
   if (!secureInput) {
     throw new Error('Unable to read value to tokenize');
   }
-
   const value = (secureInput as HTMLInputElement).value;
-
   const tokenizer = new Tokenizer();
   const resp = await tokenizer.tokenize(value);
 
@@ -54,12 +52,11 @@ async function tokenizeField(): Promise<string | null> {
   return resp.tokenId
 }
 
-export async function detokenize(token: string): Promise<string | null> {
+export async function detokenize(token: string){
   const tokenizer = new Tokenizer();
   const resp = await tokenizer.detokenize(token);
-  if (!resp.success) {
-    console.error('Detokenizer error: ', resp)
-    return null;
+  if (!resp.success || resp.value === null) {
+    throw new Error(`Detokenizer error ${resp}`)
   }
   return resp.value;
 }

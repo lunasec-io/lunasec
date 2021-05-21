@@ -41,14 +41,21 @@ export class SecureForm extends Component<SecureFormProps> {
     // Pushes events received back up.
     addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
 
+    await this.authenticateSession();
+
+    // TODO (cthompson) here in the code we have verification that the secure form should be able to tokenize data
+  }
+
+  componentWillUnmount() {
+    this.abortController.abort();
+  }
+
+  async authenticateSession() {
     const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameVerifySessionURL.pathname = '/session/verify';
 
     const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameEnsureSessionURL.pathname = '/session/ensure';
-
-    // Pushes events received back up.
-    addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
 
     const response = await fetch(secureFrameEnsureSessionURL.toString(), {
       credentials: 'include',
@@ -56,7 +63,6 @@ export class SecureForm extends Component<SecureFormProps> {
     });
 
     if (response.status === 200) {
-      // TODO: Remove this log statement or move it to debug only.
       console.debug('secure frame session is verified');
       return;
     }
@@ -74,14 +80,8 @@ export class SecureForm extends Component<SecureFormProps> {
       console.error('unable to create secure frame session');
       return;
     }
-
-    // TODO (cthompson) here in the code we have verification that the secure form should be able to tokenize data
+    return;
   }
-
-  componentWillUnmount() {
-    this.abortController.abort();
-  }
-
   // Blur happens after the element loses focus
   blur(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>) {
     const child = this.childInputs[notification.frameNonce];
@@ -101,45 +101,46 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   // Give the iframe all the information it needs to exist when it wakes up
-  iframeStartup(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>) {
+  async iframeStartup(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>) {
     const input = this.childInputs[notification.frameNonce];
-    if (!input) {
-      console.error('Received startup message from unknown frame:', notification);
-      return;
-    }
     const frameAttributes = input.generateIframeAttributes();
     const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
     if (!input.frameRef.current || !input.frameRef.current.contentWindow) {
       console.error('Frame not initialized for message sending');
       return;
     }
-    void this.messageCreator.sendMessageToFrameWithReply(input.frameRef.current.contentWindow, message);
+    await this.messageCreator.sendMessageToFrameWithReply(input.frameRef.current.contentWindow, message);
+    return;
   }
 
   frameNotificationCallback(notification: UnknownFrameNotification) {
+    if (!this.childInputs[notification.frameNonce]) {
+      console.debug('Received notification intended for different listener, discarding');
+      return;
+    }
     switch (notification.command) {
       case 'NotifyOnBlur':
         this.blur(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>);
         break;
       case 'NotifyOnStart':
-        this.iframeStartup(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>);
+        void this.iframeStartup(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>);
         break;
     }
   }
 
-  watchStyle(component: SecureInput) {
-    const self = this;
-    function onStyleChange() {
-      component.generateElementStyle();
-      const { id, style } = component.generateIframeAttributes();
-      const message = self.messageCreator.createMessageToFrame('Attributes', { id, style });
-      if (!component.frameRef.current || !component.frameRef.current.contentWindow) {
-        return console.error('Style watcher updated for component that no longer has iframe ');
-      }
-      void self.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message);
+  async onStyleChange(component: SecureInput) {
+    component.generateElementStyle();
+    const { id, style } = component.generateIframeAttributes();
+    const message = this.messageCreator.createMessageToFrame('Attributes', { id, style });
+    if (!component.frameRef.current || !component.frameRef.current.contentWindow) {
+      return console.error('Style watcher updated for component that no longer has iframe ');
     }
+    await this.messageCreator.sendMessageToFrameWithReply(component.frameRef.current.contentWindow, message);
+    return;
+  }
 
-    const observer = new MutationObserver(onStyleChange);
+  watchStyle(component: SecureInput) {
+    const observer = new MutationObserver(() => this.onStyleChange(component));
     if (!component.inputRef.current) {
       return console.error('Attempted to register style watcher on component not yet mounted');
     }

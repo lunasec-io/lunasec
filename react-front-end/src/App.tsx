@@ -1,5 +1,5 @@
-import { SecureForm, SecureInput } from '@lunasec/secure-frame-react-sdk';
-import React from 'react';
+import { SecureForm, SecureInput, SecureSpan } from '@lunasec/secure-frame-react-sdk';
+import React, { CSSProperties } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 
@@ -61,6 +61,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
               value={this.state.foo}
               onChange={(e) => this.handleFooChange(e)}
               onBlur={(e) => console.log('blur1', e)}
+              element="textarea"
             />
             <SecureInput
               name="bar"
@@ -71,6 +72,10 @@ class App extends React.Component<Record<string, never>, IAppState> {
             />
             <input type="submit" />
           </SecureForm>
+          <p>
+            {'The word of the day is '}
+            <SecureSpan name="aSpan" token={this.state.foo} className="test-secure-span" />
+          </p>
         </div>
       </div>
     );

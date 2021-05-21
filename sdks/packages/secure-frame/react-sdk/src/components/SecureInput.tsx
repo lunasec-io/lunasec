@@ -1,23 +1,17 @@
+import { __SECURE_FRAME_URL__, secureFramePathname } from '@lunasec/secure-frame-common';
+import { AttributesMessage } from '@lunasec/secure-frame-common/build/main/rpc/types';
 import { getStyleInfo } from '@lunasec/secure-frame-common/build/main/style-patcher/read';
-import {  ReadElementStyle } from '@lunasec/secure-frame-common/build/main/style-patcher/types';
+import { ReadElementStyle } from '@lunasec/secure-frame-common/build/main/style-patcher/types';
 import { generateSecureNonce } from '@lunasec/secure-frame-common/build/main/utils/random';
 import { camelCaseObject } from '@lunasec/secure-frame-common/build/main/utils/to-camel-case';
 import React, { Component, CSSProperties, RefObject } from 'react';
 
 import { SecureFormContext } from './SecureFormContext';
-import {
-  __SECURE_FRAME_URL__,
-  secureFramePathname
-} from "@lunasec/secure-frame-common";
-import {AttributesMessage} from "@lunasec/secure-frame-common/build/main/rpc/types";
 
-export const SecureInputType = {
-  text: 'text',
-  password: 'password',
-  email: 'email',
-} as const;
+export const supportedInputTypes = ['text', 'password', 'email'];
+export const supportedElements = ['input', 'textarea'];
 
-export interface SecureInputProps extends React.ComponentPropsWithoutRef<"input"> {
+export interface SecureInputProps extends React.ComponentPropsWithoutRef<'input'> {
   value?: string;
   secureFrameUrl?: string;
   // TODO: Will this force the component to have a key?
@@ -26,7 +20,8 @@ export interface SecureInputProps extends React.ComponentPropsWithoutRef<"input"
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
-  type?: typeof SecureInputType[keyof typeof SecureInputType];
+  type?: typeof supportedInputTypes[number];
+  element?: typeof supportedElements[number];
 }
 
 export interface SecureInputState {
@@ -56,7 +51,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     this.frameRef = React.createRef();
     this.inputRef = React.createRef();
 
-    const secureFrameURL = new URL(__SECURE_FRAME_URL__)
+    const secureFrameURL = new URL(__SECURE_FRAME_URL__);
     secureFrameURL.pathname = secureFramePathname;
 
     this.state = {
@@ -90,14 +85,17 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
   }
 
   // Generate some attributes for sending to the iframe via RPC.  This is called from SecureForm
-  generateIframeAttributes(): AttributesMessage{
-    const id = this.frameId
+  generateIframeAttributes(): AttributesMessage {
+    const id = this.frameId;
     // initialize the attributes with the only required property
-    let attrs: AttributesMessage = { id }
+
+    const attrs: AttributesMessage = { id };
 
     // Build the style for the iframe
-    if (!this.state.frameStyleInfo){
-      console.error('Attempted to build style for input but it wasnt populated yet');
+    if (!this.state.frameStyleInfo) {
+      console.debug(
+        'Attempted to build style for input but it wasnt populated yet. Omitting style from attribute message'
+      );
     } else {
       attrs.style = JSON.stringify(this.state.frameStyleInfo.childStyle);
     }
@@ -107,13 +105,12 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     }
 
     if (this.props.type) {
-      const validTypes = Object.values(SecureInputType);
-
-      if (!validTypes.includes(this.props.type)) {
-        throw new Error(`SecureInput not set to allowed type.  Permitted types are: ${validTypes.toString()}`);
+      if (!supportedInputTypes.includes(this.props.type)) {
+        throw new Error(`SecureInput not set to allowed type.  Permitted types are: ${supportedInputTypes.toString()}`);
       }
       attrs.type = this.props.type;
     }
+
     return attrs;
   }
 
@@ -122,6 +119,14 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     const frameURL = new URL('frame', this.state.secureFrameUrl);
     frameURL.searchParams.set('n', urlFrameId);
     frameURL.searchParams.set('origin', window.location.origin);
+
+    if (this.props.element && !supportedElements.includes(this.props.element)) {
+      throw new Error(
+        `SecureInput not set to allowed element.  Permitted elements are: ${supportedElements.toString()}`
+      );
+    }
+    // default to input if user didn't set an element type
+    frameURL.searchParams.set('element', this.props.element || 'input');
     return frameURL.toString();
   }
 
@@ -162,12 +167,20 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     return <iframe ref={this.frameRef} src={frameUrl} frameBorder={0} style={iframeStyle} key={frameUrl} />;
   }
 
+  renderHiddenElement(props: Record<string, any>) {
+    if (this.props.element === 'textarea') {
+      return <textarea {...props} />;
+    } else {
+      return <input {...props} />;
+    }
+  }
+
   render() {
-    const {value, children, ...otherProps} = this.props;
+    const { value, children, ...otherProps } = this.props;
 
     const parentContainerStyle: CSSProperties = {
       position: 'relative',
-      display: 'block'
+      display: 'block',
     };
 
     const isRendered = this.state.frameStyleInfo !== undefined;
@@ -182,6 +195,21 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       zIndex: isRendered ? -1 : 1,
       opacity: isRendered ? 0 : 1,
       display: 'block',
+      resize: 'none',
+    };
+
+    const elementProps = {
+      ...otherProps,
+      className: isRendered ? `secure-form-input--hidden ${this.props.className}` : `${this.props.className}`,
+      // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
+      type: 'text',
+      ref: this.inputRef,
+      name: this.props.name,
+      defaultValue: isRendered ? this.props.value : '',
+      style: { ...this.props.style, ...hiddenInputStyle },
+      onChange: isRendered ? this.props.onChange : undefined,
+      onBlur: this.props.onBlur,
+      onFocus: this.props.onFocus,
     };
 
     return (
@@ -189,19 +217,8 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
         className={`secure-form-container-${this.frameId} secure-form-container-${this.props.name}`}
         style={parentContainerStyle}
       >
-        <input
-          {...otherProps}
-          className={isRendered ? `secure-form-input--hidden ${this.props.className}` : `${this.props.className}`}
-          // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
-          type="text"
-          ref={this.inputRef}
-          name={this.props.name}
-          defaultValue={isRendered ? this.props.value : ''}
-          style={{...this.props.style, ...hiddenInputStyle}}
-          onChange={isRendered ? this.props.onChange : undefined}
-          onBlur={this.props.onBlur}
-          onFocus={this.props.onFocus}
-        />
+        {this.renderHiddenElement(elementProps)}
+
         {this.renderFrame()}
       </div>
     );

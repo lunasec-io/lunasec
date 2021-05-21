@@ -29,8 +29,8 @@ export interface UnknownFrameNotification {
 export interface CommitTokenMessage {}
 // Initialize or update some attribute of the iframe
 export interface AttributesMessage {
-  id: string
-  style?: string
+  id: string;
+  style?: string;
   token?: string;
   type?: string;
 }
@@ -75,5 +75,5 @@ export interface OutboundToInboundMessageTypeMap extends OutboundMessageLookupTy
 
 export const OutboundToInboundMessageValueMap: OutboundMessageLookupType = {
   CommitToken: 'ReceiveCommittedToken',
-  Attributes: 'ReceiveAttributesConfirmation'
+  Attributes: 'ReceiveAttributesConfirmation',
 };

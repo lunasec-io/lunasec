@@ -64,7 +64,7 @@ export async function authPlugin(app: Router) {
       return;
     }
 
-    const idToken = req.cookies.get('id_token');
+    const idToken = req.cookies['id_token'];
 
     if (idToken === undefined) {
       console.error('id_token is not set in request')
