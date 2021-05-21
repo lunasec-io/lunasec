@@ -1,7 +1,7 @@
 
 import { SecureFrame, ElementTypes } from './secure-frame'
-
-const supportedElements = ['input','textarea','span']
+import {SecureDownload } from './secure-download'
+const supportedElements = ['input','textarea','span','a']
 function startup() {
   const elementType = (new URL(document.location.href)).searchParams.get('element') as keyof ElementTypes | null;
 
@@ -14,7 +14,11 @@ function startup() {
   if (!loadingText) {
       throw new Error('Couldnt find loading text element in iframe HTML')
   }
-  new SecureFrame(elementType, loadingText);
+  if(elementType === 'a'){
+    new SecureDownload(loadingText)
+  } else {
+    new SecureFrame(elementType, loadingText);
+  }
 }
 startup();
 

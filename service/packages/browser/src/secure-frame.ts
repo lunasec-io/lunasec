@@ -1,10 +1,6 @@
 import {safeParseJson} from '@lunasec/services-common/build/utils/json';
-import {StyleInfo} from '@lunasec/secure-frame-common/build/main/style-patcher/types';
-import {patchStyle} from '@lunasec/secure-frame-common/build/main/style-patcher/write';
+import {patchStyle, AttributesMessage, StyleInfo} from '@lunasec/secure-frame-common';
 import {detokenize, notifyParentOfEvent, listenForRPCMessages} from './rpc';
-import {__SECURE_FRAME_URL__} from "../../../../sdks/packages/secure-frame/common";
-import {AttributesMessage} from "../../../../sdks/packages/secure-frame/common/src/rpc/types";
-// import { GenericIframeElement } from './generic-iframe-element'
 
 export interface ElementTypes {
     input: HTMLInputElement,
@@ -16,7 +12,6 @@ export type SupportedElement = ElementTypes[keyof ElementTypes]
 
 // Would be nice if class could take <element type parameter> but couldn't quite get it working
 export class SecureFrame {
-
     private readonly secureElement: SupportedElement;
     private readonly elementType: keyof ElementTypes;
     private readonly loadingText: Element;
