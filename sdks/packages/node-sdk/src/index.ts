@@ -30,6 +30,7 @@ export enum DeploymentStage {
 
 interface SecureResolverSdkConfig {
   stage: DeploymentStage;
+  deploymentId?: string;
   appDir?: string;
   language?: string;
   configPath?: string;
@@ -103,6 +104,11 @@ export class SecureResolver {
       throw new Error("Unable to load Secure Resolver SDK: no configuration path specified")
     }
 
+    const deploymentId = process.env[deploymentIDEnvVar];
+    if (deploymentId !== undefined) {
+      this.config.deploymentId = deploymentId;
+    }
+
     // TODO (cthompson) cleanly handle potential errors thrown here
     this.functionConfig = JSON.parse(fs.readFileSync(this.config.configPath, 'utf8'));
 
@@ -161,6 +167,7 @@ export class SecureResolver {
   }
 
   async deployDev(containerUri: string) {
+    // TODO (cthompson) call into the docker container modifier cli to modify the container
     console.log(containerUri);
   }
 
@@ -226,12 +233,11 @@ export class SecureResolver {
   }
 
   async callProd(functionName: string, args: any): Promise<FunctionInvocationResult> {
-    const deploymentId = process.env[deploymentIDEnvVar];
-    if (deploymentId === undefined) {
-      throw new SecureResolverCallError(`the environment variable ${deploymentIDEnvVar} is not set`);
+    if (!this.config.deploymentId) {
+      throw new SecureResolverCallError("deployment ID is not configured")
     }
 
-    const urlResponse = await this.getFunctionUrl(deploymentId);
+    const urlResponse = await this.getFunctionUrl(this.config.deploymentId);
 
     if (!urlResponse.success) {
       return {
