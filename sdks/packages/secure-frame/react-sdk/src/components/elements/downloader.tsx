@@ -1,9 +1,7 @@
 import React, { Component, CSSProperties } from 'react'
 import { RenderData, WrappedProps } from '../../types'
 
-
-
-export default class Span extends Component<WrappedProps>  {
+export default class Downloader extends Component<WrappedProps>  {
 
   constructor(props: WrappedProps) {
     super(props)
@@ -17,10 +15,11 @@ export default class Span extends Component<WrappedProps>  {
     if (!renderData.frameStyleInfo){
       return null
     }
-    const {height} = renderData.frameStyleInfo;
+    const {height, width} = renderData.frameStyleInfo;
     const iframeStyle: CSSProperties = {
       display: 'inline',
       height: height,
+      width: width
     };
 
     return <iframe
@@ -41,7 +40,7 @@ export default class Span extends Component<WrappedProps>  {
         {...otherProps}
         className={`secure-span-container-${renderData.frameId} secure-span-container-${this.props.name}`}
         ref={renderData.dummyRef}
-    >
+      >
         {this.renderFrame(renderData)}
       </span>
     );

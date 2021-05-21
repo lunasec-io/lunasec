@@ -10,29 +10,32 @@ import {
   secureFramePathname,
   UnknownFrameNotification,
 } from '@lunasec/secure-frame-common';
-import React, { Component, CSSProperties, RefObject } from 'react';
-import { RenderData } from "../types";
+import React, { Component, RefObject } from 'react';
+import { RenderData, AllowedElements } from "../types";
 
 // TODO: pass in list of all supported elements for this extends
-export interface SecureSpanProps extends React.ComponentPropsWithoutRef<'span' | 'a'> {
+export interface WrapperProps extends React.ComponentPropsWithoutRef<keyof AllowedElements> {
   token?: string;
   secureFrameUrl?: string;
   name: string;
   className: string;
 }
 
-export interface SecureSpanState {
+export interface WrapperState {
   secureFrameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
   frameReady: boolean;
 }
 
-export function wrapComponent(WrappedComponent: React.Component) {
+// export interface WrappedComponentAttributes {
+//   frameRef: RefObject<HTMLIFrameElement>,
+//   dummyRef: RefObject<HTMLInputElement | HTMLSpanElement | HTMLTextAreaElement | HTMLAnchorElement>
+// }
 
-
-  return class extends Component<SecureSpanProps, SecureSpanState> {
-    readonly frameRef!: RefObject<HTMLIFrameElement>;
-    readonly dummyElementRef!: RefObject<HTMLSpanElement>;
+// TODO: Make this function take a type argument telling it what type of element we are rendering
+// TODO: and lock down the passed components props instead of the implicit <any>
+export default function wrapComponent(Wrapped: typeof Component, elementName: string) {
+  return class extends Component<WrapperProps, WrapperState> {
     readonly messageCreator: FrameMessageCreator;
 
     // This is created on component mounted to enable server-side rendering
@@ -42,12 +45,15 @@ export function wrapComponent(WrappedComponent: React.Component) {
      */
     readonly frameId!: string;
 
-    readonly state!: SecureSpanState;
+    readonly state!: WrapperState;
+    readonly frameRef!: RefObject<HTMLIFrameElement>;
+    readonly dummyRef!: RefObject<AllowedElements[keyof AllowedElements]>;
 
-    constructor(props: SecureSpanProps) {
+    constructor(props: WrapperProps) {
       super(props);
       this.frameId = generateSecureNonce();
-
+      this.frameRef = React.createRef();
+      this.dummyRef = React.createRef();
       const secureFrameURL = new URL(__SECURE_FRAME_URL__);
       secureFrameURL.pathname = secureFramePathname;
       this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
@@ -62,11 +68,16 @@ export function wrapComponent(WrappedComponent: React.Component) {
     componentDidMount() {
       this.abortController = new AbortController();
       addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
-      // presumably generateElementStyle is called here in order to read the CSS after the component mounts
-      // with a side effect of causing it to re-render again once it know's its own styles
+    }
+
+    // Pass this to our wrapped component so it can tell us when its on the DOM and ready to give us styles
+    // Our pattern causes the component to render twice, the first time without the iframe
+    // in order to capture the style from the dummy element.  Then the this callback is called
+    // and style is put onto the state, causing the component to rerender with the iframe properly styled
+    wrappedComponentDidMount() {
       this.setState({
         frameStyleInfo: this.generateElementStyle(),
-      });
+      })
     }
 
     componentWillUnmount() {
@@ -74,10 +85,10 @@ export function wrapComponent(WrappedComponent: React.Component) {
     }
 
     generateElementStyle() {
-      if (!this.dummyElementRef.current) {
-        throw new Error('Unable to locate `inputRef` in SecureElement component');
+      if (!this.dummyRef.current) {
+        throw new Error('Unable to locate `inputRef` for wrapped component when generating style');
       }
-      return getStyleInfo(this.dummyElementRef.current);
+      return getStyleInfo(this.dummyRef.current);
     }
 
     generateUrl() {
@@ -85,7 +96,7 @@ export function wrapComponent(WrappedComponent: React.Component) {
       const frameURL = new URL('frame', this.state.secureFrameUrl);
       frameURL.searchParams.set('n', urlFrameId);
       frameURL.searchParams.set('origin', window.location.origin);
-      frameURL.searchParams.set('element', 'span');
+      frameURL.searchParams.set('element', elementName);
       return frameURL.toString();
     }
 
@@ -144,16 +155,16 @@ export function wrapComponent(WrappedComponent: React.Component) {
     }
 
     render() {
-      if (!this.state.frameStyleInfo){
-        return null;
-      }
       const renderData: RenderData = {
         frameId: this.frameId,
-        frameUrl: this.state.secureFrameUrl,
-        frameStyleInfo: this.state.frameStyleInfo
+        frameUrl: this.generateUrl(),
+        frameStyleInfo: this.state.frameStyleInfo,
+        frameRef:this.frameRef,
+        dummyRef:this.dummyRef,
+        mountedCallback: this.wrappedComponentDidMount.bind(this)
       }
       return (
-        <WrappedComponent renderData={renderData} {...this.props} />
+        <Wrapped renderData={renderData} {...this.props} />
       );
     }
   }
