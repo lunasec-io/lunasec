@@ -38,7 +38,7 @@ export interface SetMetadataRequest extends BaseTokenizerRequest {
    * Needs to be a UUID.
    */
   tokenId: string;
-  value: string;
+  metadata: Record<string, string>;
 }
 
 export interface GetTokenRequest extends BaseTokenizerRequest {
@@ -56,7 +56,7 @@ export interface SetTokenRequest extends BaseTokenizerRequest {
 export interface GetMetadataResponse {
   success: boolean;
   data: {
-    value: string;
+    metadata: Record<string, string>;
   };
 }
 
