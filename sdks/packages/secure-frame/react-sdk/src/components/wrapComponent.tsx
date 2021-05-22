@@ -32,9 +32,8 @@ export interface WrapperState {
 //   dummyRef: RefObject<HTMLInputElement | HTMLSpanElement | HTMLTextAreaElement | HTMLAnchorElement>
 // }
 
-// TODO: Make this function take a type argument telling it what type of element we are rendering
-// TODO: and lock down the passed components props instead of the implicit <any>
-export default function wrapComponent(Wrapped: typeof Component, elementName: string) {
+// TODO: lock down the passed components props instead of the implicit <any>
+export default function wrapComponent<e extends keyof AllowedElements>(Wrapped: typeof Component, elementName: e) {
   return class extends Component<WrapperProps, WrapperState> {
     readonly messageCreator: FrameMessageCreator;
 
@@ -47,7 +46,7 @@ export default function wrapComponent(Wrapped: typeof Component, elementName: st
 
     readonly state!: WrapperState;
     readonly frameRef!: RefObject<HTMLIFrameElement>;
-    readonly dummyRef!: RefObject<AllowedElements[keyof AllowedElements]>;
+    readonly dummyRef!: RefObject<AllowedElements[e]>;
 
     constructor(props: WrapperProps) {
       super(props);

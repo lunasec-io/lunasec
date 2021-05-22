@@ -1,8 +1,8 @@
 
-import { SecureFrame, ElementTypes } from './secure-frame'
+import { SecureFrame, AllowedElements } from './secure-frame'
 const supportedElements = ['input','textarea','span','a']
 function startup() {
-  const elementType = (new URL(document.location.href)).searchParams.get('element') as keyof ElementTypes | null;
+  const elementType = (new URL(document.location.href)).searchParams.get('element') as keyof AllowedElements | null;
   console.log('framestart with element type ', elementType)
   if (!elementType || !supportedElements.includes(elementType)){
     throw new Error('Invalid element type passed in iframe URL, unsure what to render');

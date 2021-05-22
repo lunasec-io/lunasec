@@ -15,11 +15,10 @@ export default class Downloader extends Component<WrappedProps>  {
     if (!renderData.frameStyleInfo){
       return null
     }
-    const {height, width} = renderData.frameStyleInfo;
+    const {height} = renderData.frameStyleInfo;
     const iframeStyle: CSSProperties = {
       display: 'inline',
-      height: height,
-      width: width
+      height: height
     };
 
     return <iframe
@@ -34,15 +33,16 @@ export default class Downloader extends Component<WrappedProps>  {
   render() {
     const { ...otherProps} = this.props;
     const renderData = this.props.renderData;
-
     return (
-      <span
+      <a
         {...otherProps}
-        className={`secure-span-container-${renderData.frameId} secure-span-container-${this.props.name}`}
+        className={`secure-downloader-container-${renderData.frameId} secure-downloader-container-${this.props.name}`}
+        /* FIGURE OUT HOW TO FIX THIS
+        //@ts-ignore */
         ref={renderData.dummyRef}
       >
         {this.renderFrame(renderData)}
-      </span>
+      </a>
     );
   }
 }

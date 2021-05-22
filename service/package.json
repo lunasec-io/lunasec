@@ -14,6 +14,7 @@
     "watch": "tsc -b tsconfig.build.json -w"
   },
   "dependencies": {
+    "@lunasec/react-sdk": "file:../sdks/packages/secure-frame/react-sdk",
     "@lunasec/secure-frame-common": "file:../sdks/packages/secure-frame/common",
     "@lunasec/services-common": "file:services/common",
     "@lunasec/tokenizer-sdk": "file:../sdks/packages/tokenizer-sdk"
