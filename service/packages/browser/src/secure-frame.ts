@@ -64,18 +64,20 @@ export class SecureFrame {
         }
 
         if (attrs.token) {
-            const value = await detokenize(attrs.token)
-            if (this.elementType === 'input' || this.elementType ==='textarea'){
-                const input = this.secureElement as HTMLInputElement
-                input.value = value;
-            }
-            if (this.elementType === 'span'){
-                this.secureElement.textContent = value;
-            }
             if (this.elementType === 'a'){ // anchor elements mean we are doing an s3 secure download
                 // Figure out why this type casting is necessary
-                handleDownload(attrs.token, this.secureElement as HTMLAnchorElement, attrs.filename || 'document.pdf')
+                void handleDownload(attrs.token, this.secureElement as HTMLAnchorElement, attrs.filename || 'document.pdf')
+            } else {
+                const value = await detokenize(attrs.token)
+                if (this.elementType === 'input' || this.elementType === 'textarea') {
+                    const input = this.secureElement as HTMLInputElement
+                    input.value = value;
+                }
+                if (this.elementType === 'span') {
+                    this.secureElement.textContent = value;
+                }
             }
+
         }
         if (this.elementType === 'input'){
             this.attachOnBlurNotifier();

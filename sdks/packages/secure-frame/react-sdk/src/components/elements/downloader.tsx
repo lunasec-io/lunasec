@@ -1,38 +1,39 @@
-import React, { Component, CSSProperties } from 'react'
-import { RenderData, WrappedProps } from '../../types'
+import React, { Component, CSSProperties } from 'react';
 
-export default class Downloader extends Component<WrappedProps>  {
+import { RenderData, WrappedProps } from '../../types';
 
+export default class Downloader extends Component<WrappedProps> {
   constructor(props: WrappedProps) {
-    super(props)
+    super(props);
   }
 
   componentDidMount() {
     this.props.renderData.mountedCallback();
   }
 
-  renderFrame(renderData:RenderData) {
-    if (!renderData.frameStyleInfo){
-      return null
+  renderFrame(renderData: RenderData) {
+    if (!renderData.frameStyleInfo) {
+      return null;
     }
-    const {height} = renderData.frameStyleInfo;
+    const { height } = renderData.frameStyleInfo;
     const iframeStyle: CSSProperties = {
       display: 'inline',
-      height: height
+      height: height,
     };
 
-    return <iframe
-      ref={renderData.frameRef}
-      src={renderData.frameUrl}
-      style={iframeStyle}
-      frameBorder={0}
-      key={renderData.frameUrl}
-    />;
+    return (
+      <iframe
+        ref={renderData.frameRef}
+        src={renderData.frameUrl}
+        style={iframeStyle}
+        frameBorder={0}
+        key={renderData.frameUrl}
+      />
+    );
   }
 
   render() {
-    const { ...otherProps} = this.props;
-    const renderData = this.props.renderData;
+    const { renderData, ...otherProps } = this.props;
     return (
       <a
         {...otherProps}

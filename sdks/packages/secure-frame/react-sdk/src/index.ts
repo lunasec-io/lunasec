@@ -1,9 +1,10 @@
-import wrapComponent from "./components/wrapComponent";
-import Span from './components/elements/span'
-
+import Downloader from './components/elements/downloader';
+import Span from './components/elements/span';
+import wrapComponent from './components/wrapComponent';
 export * from './components/SecureForm';
 export * from './components/SecureFormContext';
 export * from './components/SecureInput';
 export * from './components/SecureSubmit';
-export * from './types'
-export const SecureSpan = wrapComponent<'span'>(Span, 'span')
+export * from './types';
+export const SecureSpan = wrapComponent<'span'>(Span, 'span');
+export const SecureDownload = wrapComponent<'a'>(Downloader, 'a');

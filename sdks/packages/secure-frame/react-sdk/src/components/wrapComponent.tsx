@@ -11,12 +11,14 @@ import {
   UnknownFrameNotification,
 } from '@lunasec/secure-frame-common';
 import React, { Component, RefObject } from 'react';
-import { RenderData, AllowedElements } from "../types";
+
+import { AllowedElements, RenderData } from '../types';
 
 // TODO: pass in list of all supported elements for this extends
 export interface WrapperProps extends React.ComponentPropsWithoutRef<keyof AllowedElements> {
   token?: string;
   secureFrameUrl?: string;
+  filename?: string;
   name: string;
   className: string;
 }
@@ -27,14 +29,14 @@ export interface WrapperState {
   frameReady: boolean;
 }
 
-// export interface WrappedComponentAttributes {
-//   frameRef: RefObject<HTMLIFrameElement>,
-//   dummyRef: RefObject<HTMLInputElement | HTMLSpanElement | HTMLTextAreaElement | HTMLAnchorElement>
+// TODO: figure out how to pass this to the Wrapped props below
+// interface WrappedProps extends React.ComponentPropsWithoutRef<keyof AllowedElements> {
+//   renderData: RenderData;
 // }
 
 // TODO: lock down the passed components props instead of the implicit <any>
 export default function wrapComponent<e extends keyof AllowedElements>(Wrapped: typeof Component, elementName: e) {
-  return class extends Component<WrapperProps, WrapperState> {
+  return class WrappedComponent extends Component<WrapperProps, WrapperState> {
     readonly messageCreator: FrameMessageCreator;
 
     // This is created on component mounted to enable server-side rendering
@@ -76,7 +78,7 @@ export default function wrapComponent<e extends keyof AllowedElements>(Wrapped: 
     wrappedComponentDidMount() {
       this.setState({
         frameStyleInfo: this.generateElementStyle(),
-      })
+      });
     }
 
     componentWillUnmount() {
@@ -102,7 +104,7 @@ export default function wrapComponent<e extends keyof AllowedElements>(Wrapped: 
     componentDidUpdate() {
       // Also causes style changes to propagate, as long as they come from within react
       if (this.state.frameReady) {
-        this.sendIFrameAttributes();
+        void this.sendIFrameAttributes();
       }
     }
 
@@ -110,7 +112,7 @@ export default function wrapComponent<e extends keyof AllowedElements>(Wrapped: 
     generateIframeAttributes(): AttributesMessage {
       const id = this.frameId;
       // initialize the attributes with the only required property
-      const attrs: AttributesMessage = {id};
+      const attrs: AttributesMessage = { id };
 
       // Build the style for the iframe
       const style = this.generateElementStyle();
@@ -123,6 +125,10 @@ export default function wrapComponent<e extends keyof AllowedElements>(Wrapped: 
 
       if (this.props.token) {
         attrs.token = this.props.token;
+      }
+
+      if (this.props.filename) {
+        attrs.filename = this.props.filename;
       }
 
       return attrs;
@@ -147,7 +153,7 @@ export default function wrapComponent<e extends keyof AllowedElements>(Wrapped: 
       }
       switch (notification.command) {
         case 'NotifyOnStart':
-          this.setState({frameReady: true});
+          this.setState({ frameReady: true });
           void this.sendIFrameAttributes();
           break;
       }
@@ -158,13 +164,11 @@ export default function wrapComponent<e extends keyof AllowedElements>(Wrapped: 
         frameId: this.frameId,
         frameUrl: this.generateUrl(),
         frameStyleInfo: this.state.frameStyleInfo,
-        frameRef:this.frameRef,
-        dummyRef:this.dummyRef,
-        mountedCallback: this.wrappedComponentDidMount.bind(this)
-      }
-      return (
-        <Wrapped renderData={renderData} {...this.props} />
-      );
+        frameRef: this.frameRef,
+        dummyRef: this.dummyRef,
+        mountedCallback: this.wrappedComponentDidMount.bind(this),
+      };
+      return <Wrapped renderData={renderData} {...this.props} />;
     }
-  }
+  };
 }
