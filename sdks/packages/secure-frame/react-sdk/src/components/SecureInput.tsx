@@ -198,9 +198,11 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       resize: 'none',
     };
 
+    const inputClassName = this.props.className !== undefined ? this.props.className : '';
+
     const elementProps = {
       ...otherProps,
-      className: isRendered ? `secure-form-input--hidden ${this.props.className}` : `${this.props.className}`,
+      className: isRendered ? `secure-form-input--hidden ${inputClassName}` : `${inputClassName}`,
       // TODO: support setting type to the passed prop to catch all possible style selectors, rare case
       type: 'text',
       ref: this.inputRef,
