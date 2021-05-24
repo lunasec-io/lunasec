@@ -114,7 +114,7 @@ export class SecureResolver {
     return response;
   }
 
-  async call(functionName: string, args: string): Promise<FunctionInvocationResult> {
+  async invoke(functionName: string, args: string): Promise<FunctionInvocationResult> {
     const deploymentId = process.env[this.config.deploymentIDEnvVar];
     if (deploymentId === undefined) {
       throw new Error(`the environment variable ${this.config.deploymentIDEnvVar} is not set`);

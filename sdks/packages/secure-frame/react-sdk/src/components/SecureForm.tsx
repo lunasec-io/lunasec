@@ -8,13 +8,16 @@ import {
   InboundFrameNotificationMap,
   UnknownFrameNotification,
 } from '@lunasec/secure-frame-common/build/main/rpc/types';
-import { triggerBlur, triggerFocus } from '@lunasec/secure-frame-common/build/main/utils/element-event-triggers';
 import React, { Component } from 'react';
 
 import setNativeValue from '../set-native-value';
 
 import { SecureFormContext } from './SecureFormContext';
 import { SecureInput } from './SecureInput';
+import {
+  triggerBlur,
+  triggerFocus
+} from '@lunasec/secure-frame-common/build/main/utils/element-event-triggers';
 
 export interface SecureFormProps extends React.ComponentPropsWithoutRef<'form'> {
   readonly onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -94,10 +97,16 @@ export class SecureForm extends Component<SecureFormProps> {
       throw new Error('Missing element to trigger notification for in secure frame');
     }
 
+    const currentlyFocusedElement = document.activeElement;
+
     // In order to trigger a blur event, we must first focus the element.
     triggerFocus(inputElement);
     // Only then will the blur be triggered.
     triggerBlur(inputElement);
+
+    if (currentlyFocusedElement) {
+      triggerFocus(currentlyFocusedElement);
+    }
   }
 
   // Give the iframe all the information it needs to exist when it wakes up
@@ -151,6 +160,7 @@ export class SecureForm extends Component<SecureFormProps> {
 
   async onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     const awaitedPromises: Promise<{
       readonly nonce: string;
       readonly response: FrameMessage<InboundFrameMessageMap, 'ReceiveCommittedToken'>;

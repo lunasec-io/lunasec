@@ -22,11 +22,11 @@ function createEvent(eventType: string, bubbles: boolean) {
  * Note: Element must be visible to gain focus.
  * @param element Element to snap focus to.
  */
-export function triggerFocus(element: HTMLInputElement) {
+export function triggerFocus(element: HTMLInputElement | Element) {
   const eventType = "onfocusin" in element ? "focusin" : "focus";
   const bubbles = "onfocusin" in element;
 
-  element.focus();
+  "focus" in element && element.focus();
   element.dispatchEvent(createEvent(eventType, bubbles));
 }
 
