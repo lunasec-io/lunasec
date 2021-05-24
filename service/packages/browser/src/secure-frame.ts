@@ -8,17 +8,17 @@ import { handleDownload } from "./secure-download";
 export type SupportedElement = AllowedElements[keyof AllowedElements]
 
 // Would be nice if class could take <element type parameter> but couldn't quite get it working
-export class SecureFrame {
-    private readonly secureElement: SupportedElement;
-    private readonly elementType: keyof AllowedElements;
+export class SecureFrame<e extends keyof AllowedElements> {
+    private readonly secureElement: AllowedElements[e];
+    private readonly elementType: e;
     private readonly loadingText: Element;
     private readonly frameNonce: string;
     private readonly origin: string;
     private initialized = false;
-    constructor(elementName: keyof AllowedElements, loadingText: Element) {
-        this.elementType = elementName;
+    constructor(elementType: e, loadingText: Element) {
+        this.elementType = elementType;
         this.loadingText = loadingText;
-        this.secureElement = this.insertSecureElement(elementName);
+        this.secureElement = this.insertSecureElement(elementType);
         this.origin = this.getURLSearchParam('origin');
         this.frameNonce = this.getURLSearchParam('n');
 
@@ -26,7 +26,7 @@ export class SecureFrame {
         notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
     }
 
-    insertSecureElement(elementName:keyof AllowedElements){
+    insertSecureElement(elementName: e){
         const body = document.getElementsByTagName("BODY")[0];
         const secureElement = document.createElement(elementName);
         secureElement.className = 'secure-input d-none';
@@ -66,7 +66,7 @@ export class SecureFrame {
         if (attrs.token) {
             if (this.elementType === 'a'){ // anchor elements mean we are doing an s3 secure download
                 // Figure out why this type casting is necessary
-                void handleDownload(attrs.token, this.secureElement as HTMLAnchorElement, attrs.filename || 'document.pdf')
+                void handleDownload(attrs.token, this.secureElement as HTMLAnchorElement, attrs.filename || 'document.pdf');
             } else {
                 const value = await detokenize(attrs.token)
                 if (this.elementType === 'input' || this.elementType === 'textarea') {

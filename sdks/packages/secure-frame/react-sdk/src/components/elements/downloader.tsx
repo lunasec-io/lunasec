@@ -1,9 +1,11 @@
 import React, { Component, CSSProperties } from 'react';
 
 import { RenderData, WrappedProps } from '../../types';
+type AnchorRenderData = RenderData<HTMLAnchorElement>;
+type AnchorProps = WrappedProps<HTMLAnchorElement>;
 
-export default class Downloader extends Component<WrappedProps> {
-  constructor(props: WrappedProps) {
+export default class Downloader extends Component<AnchorProps> {
+  constructor(props: AnchorProps) {
     super(props);
   }
 
@@ -11,21 +13,20 @@ export default class Downloader extends Component<WrappedProps> {
     this.props.renderData.mountedCallback();
   }
 
-  renderFrame(renderData: RenderData) {
+  renderFrame(renderData: AnchorRenderData) {
     if (!renderData.frameStyleInfo) {
       return null;
     }
-    const { height } = renderData.frameStyleInfo;
-    const iframeStyle: CSSProperties = {
-      display: 'inline',
-      height: height,
-    };
+    // const iframeStyle: CSSProperties = {
+    //   display: 'block',
+    //   height: renderData.frameStyleInfo.height,
+    // };
 
     return (
       <iframe
         ref={renderData.frameRef}
         src={renderData.frameUrl}
-        style={iframeStyle}
+        style={renderData.frameStyleInfo}
         frameBorder={0}
         key={renderData.frameUrl}
       />
@@ -35,15 +36,16 @@ export default class Downloader extends Component<WrappedProps> {
   render() {
     const { renderData, ...otherProps } = this.props;
     return (
-      <a
+      <div
         {...otherProps}
         className={`secure-downloader-container-${renderData.frameId} secure-downloader-container-${this.props.name}`}
-        /* FIGURE OUT HOW TO FIX THIS
-        //@ts-ignore */
-        ref={renderData.dummyRef}
+        style={renderData.parentContainerStyle}
       >
+        <a ref={renderData.dummyRef} style={renderData.dummyElementStyle}>
+          &ensp;
+        </a>
         {this.renderFrame(renderData)}
-      </a>
+      </div>
     );
   }
 }

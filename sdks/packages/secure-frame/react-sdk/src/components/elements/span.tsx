@@ -1,9 +1,11 @@
 import React, { Component, CSSProperties } from 'react';
 
 import { RenderData, WrappedProps } from '../../types';
+type SpanRenderData = RenderData<HTMLSpanElement>;
+type SpanProps = WrappedProps<HTMLSpanElement>;
 
-export default class Span extends Component<WrappedProps> {
-  constructor(props: WrappedProps) {
+export default class Span extends Component<SpanProps> {
+  constructor(props: SpanProps) {
     super(props);
   }
 
@@ -11,21 +13,16 @@ export default class Span extends Component<WrappedProps> {
     this.props.renderData.mountedCallback();
   }
 
-  renderFrame(renderData: RenderData) {
+  renderFrame(renderData: SpanRenderData) {
     if (!renderData.frameStyleInfo) {
       return null;
     }
-    const { height } = renderData.frameStyleInfo;
-    const iframeStyle: CSSProperties = {
-      display: 'inline',
-      height: height,
-    };
 
     return (
       <iframe
         ref={renderData.frameRef}
         src={renderData.frameUrl}
-        style={iframeStyle}
+        style={renderData.frameStyleInfo}
         frameBorder={0}
         key={renderData.frameUrl}
       />
@@ -33,15 +30,20 @@ export default class Span extends Component<WrappedProps> {
   }
 
   render() {
+    // Pull the renderData out so we don't weird stuff into our dummy element
     const { renderData, ...otherProps } = this.props;
     return (
-      <span
-        {...otherProps}
-        className={`secure-span-container-${renderData.frameId} secure-span-container-${this.props.name}`}
-        ref={renderData.dummyRef}
-      >
+      <div style={renderData.parentContainerStyle}>
+        <span
+          className={`secure-span-container-${renderData.frameId} secure-span-container-${this.props.name}`}
+          ref={renderData.dummyRef}
+          style={renderData.dummyElementStyle}
+          {...otherProps}
+        >
+          &ensp;
+        </span>
         {this.renderFrame(renderData)}
-      </span>
+      </div>
     );
   }
 }

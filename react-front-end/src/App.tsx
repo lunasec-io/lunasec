@@ -14,7 +14,6 @@ class App extends React.Component<Record<string, never>, IAppState> {
 
   constructor(props: Record<string, never>) {
     super(props);
-
     this.state = this.retrieveTokens();
   }
 
@@ -74,12 +73,11 @@ class App extends React.Component<Record<string, never>, IAppState> {
             />
             <input type="submit" />
           </SecureForm>
-          <p>
-            {'The word of the day is '}
+          <div>
             <SecureSpan name="aSpan" token={this.state.foo} className="test-secure-span" />
-          </p>
+          </div>
           <p>
-            {'Download link: '}
+            {'Secure Download:'}
             <SecureDownload
               name="securefile.pdf"
               token={this.downloadToken}

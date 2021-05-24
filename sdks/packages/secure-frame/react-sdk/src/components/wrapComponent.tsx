@@ -10,7 +10,7 @@ import {
   secureFramePathname,
   UnknownFrameNotification,
 } from '@lunasec/secure-frame-common';
-import React, { Component, RefObject } from 'react';
+import React, { Component, CSSProperties, RefObject } from 'react';
 
 import { AllowedElements, RenderData } from '../types';
 
@@ -160,13 +160,37 @@ export default function wrapComponent<e extends keyof AllowedElements>(Wrapped: 
     }
 
     render() {
-      const renderData: RenderData = {
+      // We make the parent container relative so that we can throw the dummy element to the top left
+      // corner so that it will not move the real elements around.
+      const parentContainerStyle: CSSProperties = {
+        position: 'relative',
+        display: 'block',
+      };
+
+      const isRendered = this.state.frameStyleInfo !== undefined;
+
+      const dummyElementStyle: CSSProperties = {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        // We can't set the "visibility" to "collapsed" or "hidden",
+        // Or else the "on focus" and "on blur" events won't fire.
+        // So we use zIndex instead to "hide" the input.
+        zIndex: isRendered ? -1 : 1,
+        opacity: isRendered ? 0 : 1,
+        display: 'block',
+        resize: 'none',
+      };
+
+      const renderData: RenderData<AllowedElements[e]> = {
         frameId: this.frameId,
         frameUrl: this.generateUrl(),
         frameStyleInfo: this.state.frameStyleInfo,
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,
         mountedCallback: this.wrappedComponentDidMount.bind(this),
+        parentContainerStyle,
+        dummyElementStyle,
       };
       return <Wrapped renderData={renderData} {...this.props} />;
     }

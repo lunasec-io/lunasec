@@ -16,7 +16,7 @@ export interface TokenizerClientConfig {
 export interface TokenizerGetMetadataResponse {
   success: true;
   tokenId: string;
-  value: string;
+  value: string; // Assume this is json
 }
 
 export interface TokenizerSetMetadataResponse {
