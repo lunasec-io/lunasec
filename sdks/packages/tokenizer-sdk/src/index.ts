@@ -46,7 +46,9 @@ export class Tokenizer {
     this.setTokenClient = makeApiClient<'setToken'>(this.config.endpoints.setToken);
   }
 
-  async getMetadata(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerGetMetadataResponse> {
+  // TODO: Evaluate adding back keygenSet and keygenGet methods
+
+  async getMetadata<T>(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerGetMetadataResponse> {
     const response = await this.getMetadataClient({
       tokenId: tokenId,
     });
@@ -58,17 +60,21 @@ export class Tokenizer {
     return {
       success: true,
       tokenId,
-      metadata: response.data.data.metadata,
+      metadata: <T>response.data.data.metadata,
     };
   }
 
-  async setMetadata(
+  async setMetadata<T>(
     tokenId: string,
-    metadata: Record<string, string>
+    metadata: T
   ): Promise<TokenizerFailApiResponse | TokenizerSetMetadataResponse> {
+    if (typeof metadata !== 'string') {
+      throw new Error('Metadata must be a string value');
+    }
+
     const response = await this.setMetadataClient({
       tokenId,
-      metadata: metadata,
+      metadata,
     });
 
     if (!response.success) {
@@ -78,7 +84,7 @@ export class Tokenizer {
     return {
       success: true,
       tokenId,
-      metadata: metadata,
+      metadata,
     };
   }
 

@@ -54,6 +54,10 @@ input[type=text] {
   border-radius: 5px;
 }
 
+.d-block {
+  display: block;
+}
+
 textarea {
   border: solid blue 4px;
   height:80px;

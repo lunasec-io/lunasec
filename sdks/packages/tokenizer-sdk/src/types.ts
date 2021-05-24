@@ -16,13 +16,13 @@ export interface TokenizerClientConfig {
 export interface TokenizerGetMetadataResponse {
   success: true;
   tokenId: string;
-  metadata: Record<string, string>;
+  metadata: any;
 }
 
 export interface TokenizerSetMetadataResponse {
   success: true;
   tokenId: string;
-  metadata: Record<string, string>;
+  metadata: any;
 }
 
 export interface TokenizerTokenizeResponse {
