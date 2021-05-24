@@ -2,9 +2,9 @@
   "name": "secure-frame-back-end",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/main.ts",
   "scripts": {
-    "start:dev": "npm run compile && node ./build/http-dev-server.js",
+    "start:dev": "npm run compile && node ./build/main.js",
     "compile": "tsc",
     "copy-dev-files": "cp -R views build/",
     "test": "echo \"Error: no test specified\" && exit 1"

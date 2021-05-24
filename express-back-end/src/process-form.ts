@@ -6,7 +6,9 @@ export interface SecureFormData {
 
 export async function processForm(formData: SecureFormData) {
     const tokenizer = new Tokenizer();
-    const plaintext = await tokenizer.detokenize(formData.ssnToken);
-    console.log(plaintext);
-    return plaintext;
+    const resp = await tokenizer.detokenize(formData.ssnToken);
+    if (resp.success) {
+        return resp.value;
+    }
+    return resp.error;
 }
