@@ -71,7 +71,7 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
     respondWithJson<GetMetadataResponse>({
       success: true,
       data: {
-        value: TEST_METADATA,
+        metadata: TEST_METADATA,
       },
     })
   );
