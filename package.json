@@ -1,0 +1,25 @@
+{
+  "name": "lunasec",
+  "version": "1.0.0",
+  "description": "This monorepo holds the LunaSec SDKs, servers, and demo application.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/refinery-labs/tokenizer-front-end-sdk.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/refinery-labs/tokenizer-front-end-sdk/issues"
+  },
+  "homepage": "https://github.com/refinery-labs/tokenizer-front-end-sdk#readme",
+  "dependencies": {
+    "lerna": "^4.0.0"
+  },
+  "workspaces": [
+    "./sdks/packages/*"
+  ]
+}

@@ -3,7 +3,7 @@
   "references": [
     { "path": "packages/cli" },
     { "path": "packages/common" },
-    { "path": "packages/node-sdk" },
+    { "path": "packages/node-sdk"},
     { "path": "packages/tokenizer-sdk" },
     { "path": "packages/express-auth-plugin" },
     { "path": "packages/secure-frame/common" },
@@ -11,11 +11,11 @@
     { "path": "packages/secure-frame/react-sdk" },
     { "path": "packages/cli/tsconfig.module.json" },
     { "path": "packages/common/tsconfig.module.json" },
-    { "path": "packages/node-sdk/tsconfig.module.json" },
+    { "path": "packages/node-sdk/tsconfig.module.json"},
     { "path": "packages/tokenizer-sdk/tsconfig.module.json" },
     { "path": "packages/express-auth-plugin/tsconfig.module.json" },
     { "path": "packages/secure-frame/common/tsconfig.module.json" },
     { "path": "packages/secure-frame/js-sdk/tsconfig.module.json" },
-    { "path": "packages/secure-frame/react-sdk/tsconfig.module.json" },
+    { "path": "packages/secure-frame/react-sdk/tsconfig.module.json" }
   ]
 }

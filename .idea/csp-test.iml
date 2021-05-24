@@ -23,13 +23,13 @@
       <excludeFolder url="file://$MODULE_DIR$/secure-frame-sdk/packages/secure-frame/react-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/secure-frame/react-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/tokenizer-sdk/build" />
-      <excludeFolder url="file://$MODULE_DIR$/sdks/packages/node-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/secure-frame/common/build" />
       <excludeFolder url="file://$MODULE_DIR$/service/packages/server/public" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/express-auth-plugin/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/common/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/cli/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/secure-frame/js-sdk/build" />
+      <excludeFolder url="file://$MODULE_DIR$/sdks/packages/node-sdk/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

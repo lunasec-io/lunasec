@@ -46,11 +46,11 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@lunasec/secure-frame-common": "^1.0.0",
+    "@lunasec/common": "^1.0.0",
     "react": "^17.0.0"
   },
   "peerDependencies": {
-    "@lunasec/secure-frame-common": "^1.0.0",
+    "@lunasec/common": "^1.0.0",
     "react": ">=17.0.0"
   },
   "devDependencies": {

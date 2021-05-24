@@ -1,6 +1,6 @@
 import {safeParseJson} from '@lunasec/services-common/build/utils/json';
-import {StyleInfo} from '@lunasec/secure-frame-common/build/main/style-patcher/types';
-import {patchStyle} from '@lunasec/secure-frame-common/build/main/style-patcher/write';
+import {StyleInfo} from '@lunasec/common';
+import {patchStyle} from '@lunasec/common';
 import {detokenize, notifyParentOfEvent, listenForRPCMessages} from './rpc';
 import {__SECURE_FRAME_URL__} from "../../../../sdks/packages/secure-frame/common";
 import {AttributesMessage} from "../../../../sdks/packages/secure-frame/common/src/rpc/types";

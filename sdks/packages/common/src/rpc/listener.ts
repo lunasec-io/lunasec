@@ -1,6 +1,7 @@
 // import {patchStyle} from '../style-patcher/write';
-import {__SECURE_FRAME_URL__} from '../constants';
+import { __SECURE_FRAME_URL__ } from '../constants';
 import { safeParseJson } from '../utils/json';
+
 import { UnknownFrameMessage } from './types';
 
 /**
