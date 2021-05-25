@@ -1,1 +1,1 @@
-console.log('Yep, this is a base CLI package!');
+export {run} from '@oclif/command'

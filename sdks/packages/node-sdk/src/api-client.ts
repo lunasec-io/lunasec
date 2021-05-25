@@ -2,7 +2,7 @@ import * as http from 'http';
 
 import { getRequestBody, makeRequest } from '@lunasec/common';
 
-import {__SECURE_RESOLVER_URL__} from './constants';
+import {__DEPLOYMENT_SERVER_URL__} from './constants';
 import {
   SecureResolverActionMessageMap,
   SecureResolverActionResponseMessageMap,
@@ -33,7 +33,7 @@ export async function makeSecureApiRequest<
     // TODO: Add runtime JSON validation for response
     const response = await makeRequest<
       SecureResolverApiSuccessResponse<SecureResolverActionResponseMessageMap[T]> | SecureResolverApiFailResponse
-    >(__SECURE_RESOLVER_URL__, path, params, getRequestBody(request));
+    >(__DEPLOYMENT_SERVER_URL__, path, params, getRequestBody(request));
 
     if (!response.success) {
       return {
