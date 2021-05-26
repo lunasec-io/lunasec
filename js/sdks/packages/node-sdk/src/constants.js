@@ -1,5 +1,0 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.__SECURE_RESOLVER_URL__ = void 0;
-exports.__SECURE_RESOLVER_URL__ = process.env.SECURE_RESOLVER_URL;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29uc3RhbnRzLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiY29uc3RhbnRzLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7OztBQUFhLFFBQUEsdUJBQXVCLEdBQVcsT0FBTyxDQUFDLEdBQUcsQ0FBQyxtQkFBbUIsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBjb25zdCBfX1NFQ1VSRV9SRVNPTFZFUl9VUkxfXzogc3RyaW5nID0gcHJvY2Vzcy5lbnYuU0VDVVJFX1JFU09MVkVSX1VSTDtcbiJdfQ==
