@@ -17,12 +17,13 @@ export interface TokenizerGetMetadataResponse {
   success: true;
   tokenId: string;
   value: string; // Assume this is json
+  metadata: any;
 }
 
 export interface TokenizerSetMetadataResponse {
   success: true;
   tokenId: string;
-  value: string;
+  metadata: any;
 }
 
 export interface TokenizerTokenizeResponse {

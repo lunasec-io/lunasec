@@ -6,6 +6,7 @@ import './App.css';
 interface IAppState {
   foo?: string;
   bar?: string;
+  normal?: string;
 }
 
 class App extends React.Component<Record<string, never>, IAppState> {
@@ -34,6 +35,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
       JSON.stringify({
         foo: this.state.foo,
         bar: this.state.bar,
+        normal: this.state.normal,
       })
     );
   }
@@ -49,6 +51,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
     return {
       foo: savedData.foo,
       bar: savedData.bar,
+      normal: savedData.normal,
     };
   }
 
@@ -70,6 +73,14 @@ class App extends React.Component<Record<string, never>, IAppState> {
               value={this.state.bar}
               onChange={(e) => this.handleBarChange(e)}
               onBlur={(e) => console.log('blur2', e)}
+            />
+            <input
+              className="d-block"
+              name="normal"
+              type="text"
+              value={this.state.normal}
+              onChange={(e) => this.setState({ normal: e.target.value })}
+              onBlur={(e) => console.log('blur3', e)}
             />
             <input type="submit" />
           </SecureForm>
