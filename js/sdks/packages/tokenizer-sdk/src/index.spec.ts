@@ -173,7 +173,7 @@ tests.push({
 
       test.ok(response.success, 'response indicates success');
       test.equal(response.tokenId, TEST_TOKEN, 'plaintext should match');
-      test.equal(response.value, TEST_METADATA, 'plaintext should match');
+      test.equal(response.metadata, TEST_METADATA, 'plaintext should match');
     } catch (e) {
       console.log('error', e);
       test.fail();
@@ -203,7 +203,7 @@ tests.push({
 
       test.ok(response.success, 'response indicates success');
       test.equal(response.tokenId, TEST_TOKEN, 'plaintext should match');
-      test.equal(response.value, TEST_METADATA, 'plaintext should match');
+      test.equal(response.metadata, TEST_METADATA, 'plaintext should match');
     } catch (e) {
       console.log('error', e);
       test.fail();

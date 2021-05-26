@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@lunasec/browser-common": "^0.0.0",
+    "@lunasec/browser-common": "^1.0.0",
     "browserify": "^17.0.0",
     "buffer": "^4.9.2",
     "https-browserify": "^1.0.0",
