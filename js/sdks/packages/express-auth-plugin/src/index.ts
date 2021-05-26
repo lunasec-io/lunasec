@@ -1,7 +1,8 @@
-import {Router} from "express";
-import cookieParser from "cookie-parser";
-import {URL} from "url";
-import {Crypto} from "@peculiar/webcrypto";
+import { URL } from 'url';
+
+import { Crypto } from '@peculiar/webcrypto';
+import cookieParser from 'cookie-parser';
+import { Router } from 'express';
 
 // @ts-ignore
 global.self = global;
@@ -17,7 +18,7 @@ global.window.atob = function atob(str) {
 
 // @ts-ignore
 global.window.btoa = function btoa(str) {
-  var buffer;
+  let buffer;
 
   if (str instanceof Buffer) {
     buffer = str;
@@ -28,7 +29,7 @@ global.window.btoa = function btoa(str) {
   return buffer.toString('base64');
 };
 
-import {binaryInsecure, hybrid, KeysetHandle} from "tink-crypto";
+import { binaryInsecure, hybrid, KeysetHandle } from 'tink-crypto';
 
 function encodeUint8Array(uint8array: Uint8Array): string {
   return Buffer.from(uint8array).toString('base64');
@@ -37,7 +38,7 @@ function encodeUint8Array(uint8array: Uint8Array): string {
 function loadSecureFrameKeyset(): KeysetHandle {
   const secureFrameKeysetEncoded = process.env.SECURE_FRAME_KEYSET;
   if (secureFrameKeysetEncoded === undefined) {
-    throw Error("SECURE_FRAME_KEYSET not found in environment variables.");
+    throw Error('SECURE_FRAME_KEYSET not found in environment variables.');
   }
 
   const secureFrameKeyset = Buffer.from(secureFrameKeysetEncoded, 'base64');
@@ -47,19 +48,18 @@ function loadSecureFrameKeyset(): KeysetHandle {
 export async function authPlugin(app: Router) {
   hybrid.register();
   const secureFrameKeyset = loadSecureFrameKeyset();
-  const hybridEncrypt =
-    await secureFrameKeyset.getPrimitive<hybrid.HybridEncrypt>(hybrid.HybridEncrypt);
+  const hybridEncrypt = await secureFrameKeyset.getPrimitive<hybrid.HybridEncrypt>(hybrid.HybridEncrypt);
 
   const secureFrameUrl = process.env.SECURE_FRAME_URL;
   if (secureFrameUrl === undefined) {
-    throw Error("SECURE_FRAME_URL not found in environment variables.");
+    throw Error('SECURE_FRAME_URL not found in environment variables.');
   }
 
-  app.get('/secure-frame', cookieParser(), async function(req, res) {
+  app.get('/secure-frame', cookieParser(), async function (req, res) {
     const stateToken = req.query.state;
-    if (typeof stateToken !== "string") {
+    if (typeof stateToken !== 'string') {
       res.status(400).send({
-        'error': 'state is not set in request'
+        error: 'state is not set in request',
       });
       return;
     }
@@ -67,14 +67,14 @@ export async function authPlugin(app: Router) {
     const idToken = req.cookies['id_token'];
 
     if (idToken === undefined) {
-      console.error('id_token is not set in request')
+      console.error('id_token is not set in request');
       res.status(400).send({
-        'error': 'id_token is not set in request'
+        error: 'id_token is not set in request',
       });
       return;
     }
 
-    const encryptedData = await hybridEncrypt.encrypt(Buffer.from(idToken), Buffer.from("secureFrame"));
+    const encryptedData = await hybridEncrypt.encrypt(Buffer.from(idToken), Buffer.from('secureFrame'));
 
     const encodedData = encodeUint8Array(encryptedData);
 
@@ -83,7 +83,7 @@ export async function authPlugin(app: Router) {
     redirectUrl.searchParams.append('openid_token', encodedData);
     redirectUrl.pathname = '/session/create';
 
-    console.log('redirecting...', redirectUrl.href)
+    console.log('redirecting...', redirectUrl.href);
 
     res.redirect(redirectUrl.href);
   });

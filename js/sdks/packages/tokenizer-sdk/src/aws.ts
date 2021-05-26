@@ -1,5 +1,6 @@
-import {BadHttpResponseError, getUrl, makeRawRequest} from '@lunasec/server-common';
 import * as http from 'http';
+
+import { BadHttpResponseError, getUrl, makeRawRequest } from '@lunasec/server-common';
 
 function getUploadHeaders(input?: string) {
   if (input !== undefined) {

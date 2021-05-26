@@ -17,7 +17,7 @@ export const TEST_S3_HEADERS = {
 };
 export const TEST_TOKENIZER_SECRET = 'a-super-secret-test-secret';
 export const TEST_PLAINTEXT_VALUE = 'some-secret-plaintext-value';
-export const TEST_METADATA = {"foo-key":"true"};
+export const TEST_METADATA = { 'foo-key': 'true' };
 
 export function makeS3Url(port: number) {
   return `http://localhost:${port}/${TEST_S3_FILE_PATH}${TEST_S3_QUERY_PARAMS}`;
