@@ -8,7 +8,7 @@ import {
   AttributesMessage
 } from '@lunasec/browser-common';
 import {Tokenizer} from "@lunasec/tokenizer-sdk";
-import {safeParseJson} from '@lunasec/services-common/build/utils/json';
+import {safeParseJson} from '@lunasec/browser-common';
 
 function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, correlationToken: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> {
 

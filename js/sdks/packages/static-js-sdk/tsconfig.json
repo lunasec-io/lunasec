@@ -14,7 +14,7 @@
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "references": [
-    { "path": "../common" },
+    { "path": "../browser-common" },
     { "path": "../js-sdk" }
   ],
   "compileOnSave": true

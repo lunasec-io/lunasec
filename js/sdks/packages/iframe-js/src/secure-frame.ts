@@ -1,4 +1,4 @@
-import {safeParseJson} from '@lunasec/services-common/build/utils/json';
+import {safeParseJson} from '@lunasec/browser-common';
 import {StyleInfo} from "@lunasec/browser-common";
 import {patchStyle} from"@lunasec/browser-common"
 import {detokenize, notifyParentOfEvent, listenForRPCMessages} from './rpc';
