@@ -6,6 +6,7 @@
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
   "type": "module",
+  "private": true,
   "scripts": {
     "compile": "tsc",
     "build:main": "tsc -p tsconfig.json",
