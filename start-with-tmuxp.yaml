@@ -4,26 +4,25 @@ windows:
   layout: tiled
   panes:
     - shell_command:
-      - cd js/sdks
-      - tsc -b --verbose tsconfig.build.json -w
+      - cd sdks
+      - npm run watch
 
     # Customer Back End
     - shell_command:
-      - cd js/sdks/packages/express-auth-plugin/
+      - cd sdks/packages/express-auth-plugin/
       - SECURE_FRAME_URL="http://localhost:37766" npm run start:dev
 
     # Secure Frame CDN
     - shell_command:
-      - cd js/sdks/packages/iframe-js
+      - cd service/packages/browser
       - npm run watch
-
     - shell_command:
-      - cd js/sdks/packages/browser
+      - cd service/packages/browser
       - npx http-server -a localhost -p 8000
 
     # Customer Front End
     - shell_command:
-      - cd js/demo-apps/packages/react-front-end
+      - cd react-front-end
       - npm run start
 
     # Secure Frame Back End

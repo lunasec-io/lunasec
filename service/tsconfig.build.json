@@ -1,0 +1,9 @@
+{
+  "files": [],
+  "references": [
+    // { "path": "packages/browser" }, // This is disabled here because building this doesn't actually provide value.
+    { "path": "packages/common" },
+    // Dead service. RIP
+    // { "path": "packages/server" }
+  ]
+}
