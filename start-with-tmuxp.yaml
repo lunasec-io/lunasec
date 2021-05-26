@@ -14,11 +14,11 @@ windows:
 
     # Secure Frame CDN
     - shell_command:
-      - cd js/sdks/packages/iframe-js
+      - cd js/sdks/packages/secure-frame-iframe
       - npm run watch
 
     - shell_command:
-      - cd js/sdks/packages/iframe-js
+      - cd js/sdks/packages/secure-frame-iframe
       - npx http-server -a localhost -p 8000
 
     # Customer Front End
