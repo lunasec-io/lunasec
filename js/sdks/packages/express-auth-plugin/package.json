@@ -7,7 +7,7 @@
   "module": "build/module/index.js",
   "scripts": {
     "clean": "rm -rf build",
-    "compile": "tsc",
+    "compile": "tsc -p tsconfig.json",
     "start:dev": "SECURE_FRAME_KEYSET=`cat ~/go/src/github.com/refinery-labs/loq/fixtures/secureframe/secure_frame_keyset.pub` SECURE_FRAME_URL=$SECURE_FRAME_URL DEBUG=express:* node build/main/test_server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
