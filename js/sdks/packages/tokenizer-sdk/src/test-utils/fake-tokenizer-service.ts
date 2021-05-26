@@ -1,16 +1,13 @@
 import express from 'express';
-
 import { GetMetadataResponse, GetTokenResponse, SetMetadataResponse, SetTokenResponse } from '../api/types';
-import { CONFIG_DEFAULTS } from '../constants';
-
 import {
   makeS3Url,
   TEST_METADATA,
   TEST_PLAINTEXT_VALUE,
-  TEST_S3_FILE_PATH,
   TEST_S3_HEADERS,
-  TEST_TOKEN,
+  TEST_TOKEN, TEST_S3_FILE_PATH
 } from './test-constants';
+import { CONFIG_DEFAULTS } from '../constants';
 
 export type OnResponseCallback = (req: express.Request) => Promise<Record<string, any> | void>;
 
@@ -21,6 +18,7 @@ export interface FakeTokenizerServiceConfig {
 }
 
 export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
+
   const app = express();
 
   function respondWithJson<T>(json: T) {

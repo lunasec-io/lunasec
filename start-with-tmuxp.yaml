@@ -18,7 +18,7 @@ windows:
       - npm run watch
 
     - shell_command:
-      - cd js/sdks/packages/browser
+      - cd js/sdks/packages/iframe-js
       - npx http-server -a localhost -p 8000
 
     # Customer Front End

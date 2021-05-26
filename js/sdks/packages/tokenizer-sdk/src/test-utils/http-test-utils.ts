@@ -1,9 +1,7 @@
 import express from 'express';
-import tape from 'tape';
-
 import { CONFIG_DEFAULTS } from '../constants';
-
 import { TEST_TOKENIZER_SECRET } from './test-constants';
+import tape from 'tape';
 
 export function verifySecretHeader(test: tape.Test, secret: string = TEST_TOKENIZER_SECRET) {
   return async (req: express.Request) => {
