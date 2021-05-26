@@ -1,0 +1,24 @@
+{
+  "name": "@lunasec/services-common",
+  "version": "1.0.0",
+  "description": "Base esluna package",
+  "main": "build/main/index.js",
+  "typings": "build/main/index.d.ts",
+  "module": "build/module/index.js",
+  "type": "module",
+  "scripts": {
+    "compile": "tsc",
+    "build:main": "tsc -p tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "types": "build/main/index.d.ts",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^14.11.8",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.0"
+  }
+}

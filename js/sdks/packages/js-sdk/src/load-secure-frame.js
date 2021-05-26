@@ -1,0 +1,38 @@
+"use strict";
+/* eslint-disable functional/no-throw-statement, @typescript-eslint/ban-ts-comment, functional/immutable-data */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.loadSecureFrame = void 0;
+const browser_common_1 = require("@lunasec/browser-common");
+const scan_dom_1 = require("./scan-dom");
+const secure_frame_common_1 = require("@lunasec/secure-frame-common");
+function loadSecureFrame() {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+        const errorString = 'Cannot load secure frame SDK without valid browser';
+        console.error(errorString);
+        throw new Error(errorString);
+    }
+    // TODO: Generate this string programmatically at build time.
+    const SECURE_FRAME_SDK_VERSION = '1.2.3';
+    // @ts-ignore
+    const detectedVersion = window.__SECURE_FRAME_SDK_VERSION__;
+    // TODO: Make this check semver ranges
+    if (detectedVersion !== undefined &&
+        detectedVersion !== SECURE_FRAME_SDK_VERSION) {
+        const errorString = 'Cannot mix versions of secure frame SDK';
+        console.error(errorString);
+        throw new Error(errorString);
+    }
+    // @ts-ignore
+    window.__SECURE_FRAME_SDK_VERSION__ = SECURE_FRAME_SDK_VERSION;
+    console.log('Successfully mounted secure frame SDK');
+    // TODO: Add some postMessage test logic
+    // queryDomForForms(document);
+    const body = document.querySelector('html');
+    if (!body) {
+        throw new Error('Unable to locate body for DOM page');
+    }
+    browser_common_1.addMessageListener(window, document);
+    scan_dom_1.createDomWatcher(document, secure_frame_common_1.__SECURE_FRAME_URL__, body);
+}
+exports.loadSecureFrame = loadSecureFrame;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibG9hZC1zZWN1cmUtZnJhbWUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJsb2FkLXNlY3VyZS1mcmFtZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUEsZ0hBQWdIOzs7QUFFaEgsNERBQTJEO0FBRTNELHlDQUE0QztBQUM1QyxzRUFBa0U7QUFFbEUsU0FBZ0IsZUFBZTtJQUM3QixJQUFJLE9BQU8sTUFBTSxLQUFLLFdBQVcsSUFBSSxPQUFPLFFBQVEsS0FBSyxXQUFXLEVBQUU7UUFDcEUsTUFBTSxXQUFXLEdBQUcsb0RBQW9ELENBQUM7UUFDekUsT0FBTyxDQUFDLEtBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQztRQUMzQixNQUFNLElBQUksS0FBSyxDQUFDLFdBQVcsQ0FBQyxDQUFDO0tBQzlCO0lBRUQsNkRBQTZEO0lBQzdELE1BQU0sd0JBQXdCLEdBQUcsT0FBTyxDQUFDO0lBRXpDLGFBQWE7SUFDYixNQUFNLGVBQWUsR0FBRyxNQUFNLENBQUMsNEJBQTRCLENBQUM7SUFFNUQsc0NBQXNDO0lBQ3RDLElBQ0UsZUFBZSxLQUFLLFNBQVM7UUFDN0IsZUFBZSxLQUFLLHdCQUF3QixFQUM1QztRQUNBLE1BQU0sV0FBVyxHQUFHLHlDQUF5QyxDQUFDO1FBQzlELE9BQU8sQ0FBQyxLQUFLLENBQUMsV0FBVyxDQUFDLENBQUM7UUFDM0IsTUFBTSxJQUFJLEtBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQztLQUM5QjtJQUVELGFBQWE7SUFDYixNQUFNLENBQUMsNEJBQTRCLEdBQUcsd0JBQXdCLENBQUM7SUFFL0QsT0FBTyxDQUFDLEdBQUcsQ0FBQyx1Q0FBdUMsQ0FBQyxDQUFDO0lBRXJELHdDQUF3QztJQUN4Qyw4QkFBOEI7SUFFOUIsTUFBTSxJQUFJLEdBQUcsUUFBUSxDQUFDLGFBQWEsQ0FBQyxNQUFNLENBQUMsQ0FBQztJQUU1QyxJQUFJLENBQUMsSUFBSSxFQUFFO1FBQ1QsTUFBTSxJQUFJLEtBQUssQ0FBQyxvQ0FBb0MsQ0FBQyxDQUFDO0tBQ3ZEO0lBRUQsbUNBQWtCLENBQUMsTUFBTSxFQUFFLFFBQVEsQ0FBQyxDQUFDO0lBRXJDLDJCQUFnQixDQUFDLFFBQVEsRUFBRSwwQ0FBb0IsRUFBRSxJQUFJLENBQUMsQ0FBQztBQUN6RCxDQUFDO0FBeENELDBDQXdDQyIsInNvdXJjZXNDb250ZW50IjpbIi8qIGVzbGludC1kaXNhYmxlIGZ1bmN0aW9uYWwvbm8tdGhyb3ctc3RhdGVtZW50LCBAdHlwZXNjcmlwdC1lc2xpbnQvYmFuLXRzLWNvbW1lbnQsIGZ1bmN0aW9uYWwvaW1tdXRhYmxlLWRhdGEgKi9cblxuaW1wb3J0IHthZGRNZXNzYWdlTGlzdGVuZXJ9IGZyb20gJ0BsdW5hc2VjL2Jyb3dzZXItY29tbW9uJztcblxuaW1wb3J0IHtjcmVhdGVEb21XYXRjaGVyfSBmcm9tICcuL3NjYW4tZG9tJztcbmltcG9ydCB7X19TRUNVUkVfRlJBTUVfVVJMX199IGZyb20gXCJAbHVuYXNlYy9zZWN1cmUtZnJhbWUtY29tbW9uXCI7XG5cbmV4cG9ydCBmdW5jdGlvbiBsb2FkU2VjdXJlRnJhbWUoKSB7XG4gIGlmICh0eXBlb2Ygd2luZG93ID09PSAndW5kZWZpbmVkJyB8fCB0eXBlb2YgZG9jdW1lbnQgPT09ICd1bmRlZmluZWQnKSB7XG4gICAgY29uc3QgZXJyb3JTdHJpbmcgPSAnQ2Fubm90IGxvYWQgc2VjdXJlIGZyYW1lIFNESyB3aXRob3V0IHZhbGlkIGJyb3dzZXInO1xuICAgIGNvbnNvbGUuZXJyb3IoZXJyb3JTdHJpbmcpO1xuICAgIHRocm93IG5ldyBFcnJvcihlcnJvclN0cmluZyk7XG4gIH1cblxuICAvLyBUT0RPOiBHZW5lcmF0ZSB0aGlzIHN0cmluZyBwcm9ncmFtbWF0aWNhbGx5IGF0IGJ1aWxkIHRpbWUuXG4gIGNvbnN0IFNFQ1VSRV9GUkFNRV9TREtfVkVSU0lPTiA9ICcxLjIuMyc7XG5cbiAgLy8gQHRzLWlnbm9yZVxuICBjb25zdCBkZXRlY3RlZFZlcnNpb24gPSB3aW5kb3cuX19TRUNVUkVfRlJBTUVfU0RLX1ZFUlNJT05fXztcblxuICAvLyBUT0RPOiBNYWtlIHRoaXMgY2hlY2sgc2VtdmVyIHJhbmdlc1xuICBpZiAoXG4gICAgZGV0ZWN0ZWRWZXJzaW9uICE9PSB1bmRlZmluZWQgJiZcbiAgICBkZXRlY3RlZFZlcnNpb24gIT09IFNFQ1VSRV9GUkFNRV9TREtfVkVSU0lPTlxuICApIHtcbiAgICBjb25zdCBlcnJvclN0cmluZyA9ICdDYW5ub3QgbWl4IHZlcnNpb25zIG9mIHNlY3VyZSBmcmFtZSBTREsnO1xuICAgIGNvbnNvbGUuZXJyb3IoZXJyb3JTdHJpbmcpO1xuICAgIHRocm93IG5ldyBFcnJvcihlcnJvclN0cmluZyk7XG4gIH1cblxuICAvLyBAdHMtaWdub3JlXG4gIHdpbmRvdy5fX1NFQ1VSRV9GUkFNRV9TREtfVkVSU0lPTl9fID0gU0VDVVJFX0ZSQU1FX1NES19WRVJTSU9OO1xuXG4gIGNvbnNvbGUubG9nKCdTdWNjZXNzZnVsbHkgbW91bnRlZCBzZWN1cmUgZnJhbWUgU0RLJyk7XG5cbiAgLy8gVE9ETzogQWRkIHNvbWUgcG9zdE1lc3NhZ2UgdGVzdCBsb2dpY1xuICAvLyBxdWVyeURvbUZvckZvcm1zKGRvY3VtZW50KTtcblxuICBjb25zdCBib2R5ID0gZG9jdW1lbnQucXVlcnlTZWxlY3RvcignaHRtbCcpO1xuXG4gIGlmICghYm9keSkge1xuICAgIHRocm93IG5ldyBFcnJvcignVW5hYmxlIHRvIGxvY2F0ZSBib2R5IGZvciBET00gcGFnZScpO1xuICB9XG5cbiAgYWRkTWVzc2FnZUxpc3RlbmVyKHdpbmRvdywgZG9jdW1lbnQpO1xuXG4gIGNyZWF0ZURvbVdhdGNoZXIoZG9jdW1lbnQsIF9fU0VDVVJFX0ZSQU1FX1VSTF9fLCBib2R5KTtcbn1cbiJdfQ==

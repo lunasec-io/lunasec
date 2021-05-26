@@ -1,0 +1,21 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/cli" },
+    { "path": "packages/server-common"},
+    { "path": "packages/node-sdk" },
+    { "path": "packages/tokenizer-sdk" },
+    { "path": "packages/express-auth-plugin" },
+    { "path": "packages/browser-common" },
+    { "path": "packages/js-sdk" },
+    { "path": "packages/react-sdk" },
+    { "path": "packages/cli/tsconfig.module.json" },
+    { "path": "packages/server-common/tsconfig.module.json"},
+    { "path": "packages/browser-common/tsconfig.module.json"},
+    { "path": "packages/node-sdk/tsconfig.module.json" },
+    { "path": "packages/tokenizer-sdk/tsconfig.module.json" },
+    { "path": "packages/express-auth-plugin/tsconfig.module.json" },
+    { "path": "packages/js-sdk/tsconfig.module.json" },
+    { "path": "packages/react-sdk/tsconfig.module.json" }
+  ]
+}

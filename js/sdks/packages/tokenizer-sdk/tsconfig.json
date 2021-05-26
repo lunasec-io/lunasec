@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "outDir": "build/main",
+    "rootDir": "src",
+    "tsBuildInfoFile": "./build/buildcache.tsbuildinfo",
+    "lib": ["es2017"],
+    "types": ["node"],
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "references": [{ "path": "../server-common"}]
+}

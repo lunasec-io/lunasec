@@ -1,0 +1,30 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "build/js",
+    "rootDir": "src",
+    "jsx": "react",
+
+    /* Debugging Options */
+    "traceResolution": false /* Report module resolution log messages. */,
+    "listEmittedFiles": false /* Print names of generated files part of the compilation. */,
+    "listFiles": false /* Print names of files part of the compilation. */,
+
+    "lib": ["es2017", "dom"],
+    "typeRoots": ["node_modules/@types", "src/types"],
+    "tsBuildInfoFile": "./build/buildcache.tsbuildinfo"
+  },
+  "files": [
+    "src/main.ts"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+  ],
+  "references": [
+    { "path": "../common" },
+    { "path": "../../../sdks/packages/browser-common"},
+    { "path": "../../../sdks/packages/tokenizer-sdk"}
+  ],
+  "compileOnSave": true
+}
