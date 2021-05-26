@@ -1,6 +1,8 @@
 import * as http from 'http';
-import { TokenizerRequestMessageMap, TokenizerRequestResponseMessageMap, ValidTokenizerApiRequestTypes } from './types';
+
 import { getRequestBody, makeRequest } from '@lunasec/server-common';
+
+import { TokenizerRequestMessageMap, TokenizerRequestResponseMessageMap, ValidTokenizerApiRequestTypes } from './types';
 
 export enum TOKENIZER_ERROR_CODES {
   BAD_REQUEST = 400,

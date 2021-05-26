@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
-import {SecureFormContext} from './SecureFormContext';
+import React, { Component } from 'react';
 
-export interface SecureSubmitProps {
-}
+import { SecureFormContext } from './SecureFormContext';
+
+export interface SecureSubmitProps {}
 
 export class SecureSubmit extends Component<SecureSubmitProps> {
-  declare context: React.ContextType<typeof SecureFormContext>
+  declare context: React.ContextType<typeof SecureFormContext>;
 
   static contextType = SecureFormContext;
 

@@ -1,9 +1,12 @@
-import { __SECURE_FRAME_URL__, secureFramePathname } from '@lunasec/browser-common';
-import { AttributesMessage } from '@lunasec/browser-common';
-import { getStyleInfo } from '@lunasec/browser-common';
-import { ReadElementStyle } from '@lunasec/browser-common';
-import { generateSecureNonce } from '@lunasec/browser-common';
-import { camelCaseObject } from '@lunasec/browser-common';
+import {
+  __SECURE_FRAME_URL__,
+  AttributesMessage,
+  camelCaseObject,
+  generateSecureNonce,
+  getStyleInfo,
+  ReadElementStyle,
+  secureFramePathname,
+} from '@lunasec/browser-common';
 import React, { Component, CSSProperties, RefObject } from 'react';
 
 import { SecureFormContext } from './SecureFormContext';

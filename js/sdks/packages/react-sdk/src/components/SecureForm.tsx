@@ -1,11 +1,13 @@
-import { __SECURE_FRAME_URL__ } from '@lunasec/browser-common';
-import { FrameMessageCreator } from '@lunasec/browser-common';
-import { addReactEventListener } from '@lunasec/browser-common';
 import {
+  __SECURE_FRAME_URL__,
+  addReactEventListener,
   FrameMessage,
+  FrameMessageCreator,
   FrameNotification,
   InboundFrameMessageMap,
   InboundFrameNotificationMap,
+  triggerBlur,
+  triggerFocus,
   UnknownFrameNotification,
 } from '@lunasec/browser-common';
 import React, { Component } from 'react';
@@ -14,10 +16,6 @@ import setNativeValue from '../set-native-value';
 
 import { SecureFormContext } from './SecureFormContext';
 import { SecureInput } from './SecureInput';
-import {
-  triggerBlur,
-  triggerFocus
-} from '@lunasec/browser-common';
 
 export interface SecureFormProps extends React.ComponentPropsWithoutRef<'form'> {
   readonly onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
