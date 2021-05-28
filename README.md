@@ -28,7 +28,9 @@ It's all written in Typescript and outputs to a few different formats:
 - Browser build (concatenated into one file that's loaded into browser global namespace)
 
 ## How to launch the cluster and get the app running
-First, make sure the following environment variables are set.  Their values should look something like: 
+To install all dependencies, run `lerna bootstrap`. 
+
+Make sure the following environment variables are set.  Their values should look something like: 
 ```bash
 export DOCUMENT_VAULT_S3_BUCKET="crytovault-loq-[YOURNAME]-personal"
 export AWS_DEFAULT_REGION="us-west-2"
@@ -49,7 +51,10 @@ cd ../react-front-end
 npm link secure-frame-sdk
 ```
 
-This will setup the module to be shared with the React app for dev.
+### How to manage and install packages
+We use lerna to manage the monorepo, and yarn as the package manager.  Since yarn doesn't know about local packages like lerna,
+we can't use `yarn add` to install dependencies. To add a dependency to a package, either edit it 
+manually into the package.json and run `lerna bootstrap`, or use `lerna add <dependencyname> <path/to/package/youre/working/on>`.
 
 ### TODO
 - Add React project
