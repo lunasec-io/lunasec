@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import { RenderData, WrappedProps } from '../../types';
+import { RenderData, WrappedComponentProps } from '../../types';
 type SpanRenderData = RenderData<HTMLSpanElement>;
-export type SpanProps = WrappedProps<HTMLSpanElement>;
+export type SpanProps = WrappedComponentProps<'span'>;
 
 export default class Span extends Component<SpanProps> {
   constructor(props: SpanProps) {

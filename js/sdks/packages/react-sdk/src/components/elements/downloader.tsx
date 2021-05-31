@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import { RenderData, WrappedProps } from '../../types';
+import { RenderData, WrappedComponentProps } from '../../types';
 type AnchorRenderData = RenderData<HTMLAnchorElement>;
-export type AnchorProps = WrappedProps<HTMLAnchorElement>;
+export type AnchorProps = WrappedComponentProps<'a'>;
 
 export default class Downloader extends Component<AnchorProps> {
   constructor(props: AnchorProps) {
@@ -41,8 +41,6 @@ export default class Downloader extends Component<AnchorProps> {
         className={`secure-downloader-container-${renderData.frameId} secure-downloader-container-${this.props.name}`}
         style={renderData.parentContainerStyle}
       >
-        {/*
-        // @ts-ignore */}
         <a {...otherProps} ref={renderData.dummyRef} style={renderData.dummyElementStyle}>
           &ensp;
         </a>

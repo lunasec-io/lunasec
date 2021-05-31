@@ -6,5 +6,5 @@ export * from './components/SecureFormContext';
 export * from './components/SecureInput';
 export * from './components/SecureSubmit';
 export * from './types';
-export const SecureSpan = wrapComponent(Span, 'span');
-export const SecureDownload = wrapComponent(Downloader, 'a');
+export const SecureSpan = wrapComponent<'span'>(Span, 'span');
+export const SecureDownload = wrapComponent<'a'>(Downloader, 'a');
