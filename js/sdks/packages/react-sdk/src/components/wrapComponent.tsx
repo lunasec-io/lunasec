@@ -110,7 +110,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
     }
 
     // Generate some attributes for sending to the iframe via RPC.
-    generateIframeAttributes(): AttributesMessage {
+    generateIFrameAttributes(): AttributesMessage {
       const id = this.frameId;
       // initialize the attributes with the only required property
       const attrs: AttributesMessage = { id };
@@ -144,6 +144,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
     }
 
     frameNotificationCallback(notification: UnknownFrameNotification) {
+      // TODO: move this logic into the RPC layer, we shouldnt have to filter here
       if (notification.frameNonce !== this.frameId) {
         console.debug('Received notification intended for different listener, discarding');
         return;
