@@ -23,6 +23,7 @@
     }
   },
   "scripts": {
+    "cli": "./bin/run",
     "clean": "rm -rf build",
     "compile": "tsc",
     "build:main": "tsc -p tsconfig.json",
