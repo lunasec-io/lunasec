@@ -33,7 +33,6 @@ export interface AttributesMessage {
   style?: string;
   token?: string;
   type?: string;
-  filename?: string;
   hidden?: boolean;
 }
 

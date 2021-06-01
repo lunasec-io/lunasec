@@ -72,7 +72,6 @@ function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement) {
     e.preventDefault();
     a.textContent = 'Loading...';
     const f = await downloadFile(fileInfo);
-    console.log('got file ', f);
     a.download = fileInfo.filename;
     a.href = URL.createObjectURL(f);
     a.textContent = fileInfo.filename;
@@ -83,9 +82,8 @@ function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement) {
   // In order to trigger a download in a browser, we need to fake a click on an href element
 }
 
-export async function handleDownload(token: string, a: HTMLAnchorElement, filename: string) {
-  console.log('handle download called');
-  a.textContent = `${filename}...`;
+export async function handleDownload(token: string, a: HTMLAnchorElement) {
+  a.textContent = '...Loading';
   try {
     const fileInfo = await getFileInfo(token);
     setupLink(fileInfo, a);

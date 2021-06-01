@@ -87,10 +87,10 @@ class App extends React.Component<Record<string, never>, IAppState> {
           <div>
             <SecureSpan name="aSpan" token={this.state.foo} className="test-secure-span" />
           </div>
-          <p>
+          <div>
             {'Secure Download:'}
             <SecureDownload name="securefile.pdf" token={this.downloadToken} className="test-secure-downloader" />
-          </p>
+          </div>
         </div>
       </div>
     );
