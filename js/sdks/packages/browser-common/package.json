@@ -6,7 +6,7 @@
   "typings": "build/main/index.d.ts",
   "scripts": {
     "clean": "rm -rf build",
-    "compile": "tsc",
+    "compile": "tsc -p tsconfig.json",
     "build:main": "tsc -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

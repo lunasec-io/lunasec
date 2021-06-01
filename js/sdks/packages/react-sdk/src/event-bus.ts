@@ -1,7 +1,6 @@
-
 export enum SecureFormElementType {
   Submit = 'Submit',
-  Text = 'Text'
+  Text = 'Text',
 }
 
 export type SecureFormEventRegistry = {
@@ -10,9 +9,9 @@ export type SecureFormEventRegistry = {
 };
 
 export type SecureFormEventBusEntry = {
-  readonly type: SecureFormElementType,
-  readonly frameId: string,
-  readonly getFrameWindow: () => Promise<Window>
+  readonly type: SecureFormElementType;
+  readonly frameId: string;
+  readonly getFrameWindow: () => Promise<Window>;
 };
 
 export class SecureFormEventBus implements SecureFormEventRegistry {
@@ -26,7 +25,7 @@ export class SecureFormEventBus implements SecureFormEventRegistry {
     this.nonceToEntry[frameId] = {
       type,
       frameId,
-      getFrameWindow: getFrameWindow
+      getFrameWindow: getFrameWindow,
     };
   }
 

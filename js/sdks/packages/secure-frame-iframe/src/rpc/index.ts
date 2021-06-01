@@ -1,23 +1,26 @@
 import {
+  AttributesMessage,
   FrameMessage,
-  InboundFrameMessageMap,
-  UnknownFrameMessage,
   FrameNotification,
+  InboundFrameMessageMap,
   InboundFrameNotificationMap,
+  safeParseJson,
+  UnknownFrameMessage,
   UnknownFrameNotification,
-  AttributesMessage
 } from '@lunasec/browser-common';
-import {Tokenizer} from "@lunasec/tokenizer-sdk";
-import {safeParseJson} from '@lunasec/services-common/build/utils/json';
+import { Tokenizer } from '@lunasec/tokenizer-sdk';
 
-function createMessageToFrame<K extends keyof InboundFrameMessageMap>(s: K, correlationToken: string, createMessage: () => InboundFrameMessageMap[K]): FrameMessage<InboundFrameMessageMap, K> {
-
+function createMessageToFrame<K extends keyof InboundFrameMessageMap>(
+  s: K,
+  correlationToken: string,
+  createMessage: () => InboundFrameMessageMap[K]
+): FrameMessage<InboundFrameMessageMap, K> {
   const innerMessage = createMessage();
 
   return {
     command: s,
     correlationToken: correlationToken,
-    data: innerMessage
+    data: innerMessage,
   };
 }
 
@@ -31,7 +34,7 @@ function createNotificationToFrame<K extends keyof InboundFrameNotificationMap>(
   return {
     command: s,
     frameNonce: frameNonce,
-    data: innerMessage
+    data: innerMessage,
   };
 }
 
@@ -46,17 +49,17 @@ async function tokenizeField(): Promise<string | null> {
   const resp = await tokenizer.tokenize(value);
 
   if (!resp.success) {
-    console.error("tokenizer error:", resp);
+    console.error('tokenizer error:', resp);
     return null;
   }
-  return resp.tokenId
+  return resp.tokenId;
 }
 
-export async function detokenize(token: string){
+export async function detokenize(token: string) {
   const tokenizer = new Tokenizer();
   const resp = await tokenizer.detokenize(token);
   if (!resp.success || resp.value === null) {
-    throw new Error(`Detokenizer error ${resp}`)
+    throw new Error(`Detokenizer error ${resp}`);
   }
   return resp.value;
 }
@@ -70,13 +73,13 @@ export function respondWithTokenizedValue(origin: string, rawMessage: UnknownFra
     if (token === null) {
       return {
         success: false,
-        error: "tokenizer failed to tokenize data"
+        error: 'tokenizer failed to tokenize data',
       };
     }
 
     return {
       success: true,
-      token: token
+      token: token,
     };
   });
 
@@ -95,14 +98,16 @@ export function respondAttributesReceived(origin: string, rawMessage: UnknownFra
   return;
 }
 
-
 export function notifyParentOfEvent(eventName: keyof InboundFrameNotificationMap, origin: string, frameNonce: string) {
   const message = createNotificationToFrame(eventName, frameNonce);
   sendMessageToParentFrame(origin, message);
 }
 
-export async function processMessage(origin: string, rawMessage: UnknownFrameMessage, updateAttrCallback: (m: AttributesMessage) => any) {
-
+export async function processMessage(
+  origin: string,
+  rawMessage: UnknownFrameMessage,
+  updateAttrCallback: (m: AttributesMessage) => any
+) {
   // TODO: Make this type safe (require every message to be handled)
   if (rawMessage.command === 'CommitToken') {
     const serverResponse = await tokenizeField();

@@ -64,10 +64,7 @@ export class Tokenizer {
     };
   }
 
-  async setMetadata<T>(
-    tokenId: string,
-    metadata: T
-  ): Promise<TokenizerFailApiResponse | TokenizerSetMetadataResponse> {
+  async setMetadata<T>(tokenId: string, metadata: T): Promise<TokenizerFailApiResponse | TokenizerSetMetadataResponse> {
     if (typeof metadata !== 'string') {
       throw new Error('Metadata must be a string value');
     }

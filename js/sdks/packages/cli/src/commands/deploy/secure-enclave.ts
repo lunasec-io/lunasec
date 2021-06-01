@@ -1,23 +1,23 @@
-import {Command, flags} from '@oclif/command'
-import {DeploymentStage, SecureResolver} from "@lunasec/node-sdk";
+import { DeploymentStage, SecureResolver } from '@lunasec/node-sdk';
+import { Command, flags } from '@oclif/command';
 
-export default class SecureResolver extends Command {
-  static description = 'Deploy Lunasec secure resolvers'
+export default class SecureEnclave extends Command {
+  static description = 'Deploy Lunasec secure enclave components'
 
-  static examples = []
+  static examples = [];
 
   static flags = {
-    help: flags.help({char: 'h'}),
-    containerURI: flags.string({char: 'c', description: 'container uri', required: true}),
-  }
+    help: flags.help({ char: 'h' }),
+    containerURI: flags.string({ char: 'c', description: 'container uri', required: true }),
+  };
 
-  static args = []
+  static args = [];
 
   async run() {
-    const {flags} = this.parse(SecureResolver)
+    const {flags} = this.parse(SecureEnclave)
 
     if (flags.containerURI === undefined) {
-      throw new Error("Unable to deploy secure resolver: container URI is not defined.")
+      throw new Error('Unable to deploy secure resolver: container URI is not defined.');
     }
 
     const secureResolver = new SecureResolver({
@@ -27,9 +27,9 @@ export default class SecureResolver extends Command {
     try {
       await secureResolver.deploy(flags.containerURI);
     } catch (e) {
-      console.error("unable to deploy secure resolver: " + e);
+      console.error('unable to deploy secure resolver: ' + e);
       return;
     }
-    console.log("successfully deployed secure resolver");
+    console.log('successfully deployed secure resolver');
   }
 }

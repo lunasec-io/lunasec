@@ -5,7 +5,7 @@ windows:
   panes:
     - shell_command:
       - cd js/sdks
-      - tsc -b tsconfig.build.json -w
+      - tsc -b --verbose tsconfig.build.json -w
 
     # Customer Back End
     - shell_command:
@@ -14,11 +14,11 @@ windows:
 
     # Secure Frame CDN
     - shell_command:
-      - cd js/service/packages/browser
+      - cd js/sdks/packages/secure-frame-iframe
       - npm run watch
 
     - shell_command:
-      - cd js/service/packages/browser
+      - cd js/sdks/packages/secure-frame-iframe
       - npx http-server -a localhost -p 8000
 
     # Customer Front End

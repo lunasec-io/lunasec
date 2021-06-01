@@ -49,26 +49,30 @@ function getRequestParams(host: string, path: string, params: http.ClientRequest
 
   const requestModule = getRequestModule(requestUri.protocol);
 
-  const searchParams = requestUri.search !== undefined ? `?${requestUri.search}`: '';
+  const searchParams = requestUri.search !== undefined ? `?${requestUri.search}` : '';
 
   const requestConfig: http.ClientRequestArgs = {
     protocol: requestUri.protocol,
     hostname: requestUri.hostname,
     port: requestUri.port,
     path: requestUri.pathname + searchParams,
-    ...params
+    ...params,
   };
 
-  return {requestModule, requestConfig};
+  return { requestModule, requestConfig };
 }
 
-export function makeRawRequest(host: string, path: string, params: http.ClientRequestArgs, body?: string): Promise<readonly [http.IncomingMessage, Buffer]> {
-  const {requestModule, requestConfig} = getRequestParams(host, path, params);
+export function makeRawRequest(
+  host: string,
+  path: string,
+  params: http.ClientRequestArgs,
+  body?: string
+): Promise<readonly [http.IncomingMessage, Buffer]> {
+  const { requestModule, requestConfig } = getRequestParams(host, path, params);
 
   return new Promise((resolve, reject) => {
-
     let responseBuffer: Buffer;
-    const req = requestModule.request(requestConfig, res => {
+    const req = requestModule.request(requestConfig, (res) => {
       res.on('data', (chunk: Buffer) => {
         chunk.copy(responseBuffer);
       });
@@ -78,7 +82,7 @@ export function makeRawRequest(host: string, path: string, params: http.ClientRe
     });
 
     req.on('error', (e) => reject(e));
-    req.on('response', resp => {
+    req.on('response', (resp) => {
       const contentLength = resp.headers['content-length'];
 
       if (!contentLength) {
@@ -103,13 +107,18 @@ export function makeRawRequest(host: string, path: string, params: http.ClientRe
   });
 }
 
-export async function makeRequest<T>(host: string, path: string, params: http.ClientRequestArgs, body?: string): Promise<T> {
+export async function makeRequest<T>(
+  host: string,
+  path: string,
+  params: http.ClientRequestArgs,
+  body?: string
+): Promise<T> {
   const [res, responseBuffer] = await makeRawRequest(host, path, params, body);
 
   const responseData = responseBuffer.toString();
 
   if (res.statusCode !== 200) {
-    console.log('bad response', {host, path, params, res, responseData});
+    console.log('bad response', { host, path, params, res, responseData });
     throw new BadHttpResponseError(res.statusCode, responseData);
   }
 
@@ -123,4 +132,3 @@ export async function makeRequest<T>(host: string, path: string, params: http.Cl
     throw error;
   }
 }
-

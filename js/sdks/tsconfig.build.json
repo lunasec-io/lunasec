@@ -9,6 +9,7 @@
     { "path": "packages/browser-common" },
     { "path": "packages/js-sdk" },
     { "path": "packages/react-sdk" },
+    { "path": "packages/secure-frame-iframe" },
     { "path": "packages/cli/tsconfig.module.json" },
     { "path": "packages/server-common/tsconfig.module.json"},
     { "path": "packages/browser-common/tsconfig.module.json"},

@@ -1,32 +1,30 @@
 import fs from 'fs';
+import * as http from 'http';
 import { URL as URI } from 'url';
 
 import { makeRequest } from '@lunasec/server-common';
 
 import { GenericApiClient, makeGenericApiClient } from './api-client';
+import { __CONTAINER_SECRET__, __DEPLOYMENT_SECRET__ } from './constants';
 import { BuildActionFunctionConfig } from './types';
-import {__CONTAINER_SECRET__, __DEPLOYMENT_SECRET__} from "./constants";
-import * as http from "http";
 
-
-const refinerySecretHeader: string = 'REFINERY_DEPLOYMENT_SECRET';
-const deploymentIDEnvVar: string = 'REFINERY_DEPLOYMENT_ID';
-const containerSecretHeader: string = 'X-Container-Secret';
-const deploymentEndpoint: string = '/api/v1/deployments/secure_resolver';
+const refinerySecretHeader = 'REFINERY_DEPLOYMENT_SECRET';
+const deploymentIDEnvVar = 'REFINERY_DEPLOYMENT_ID';
+const containerSecretHeader = 'X-Container-Secret';
+const deploymentEndpoint = '/api/v1/deployments/secure_resolver';
 
 class SecureResolverCallError extends Error {
-    constructor(message?: string) {
-        super(message);
-        Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
-        this.name = SecureResolverCallError.name; // stack traces display correctly now
-    }
+  constructor(message?: string) {
+    super(message);
+    Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
+    this.name = SecureResolverCallError.name; // stack traces display correctly now
+  }
 }
 
 export enum DeploymentStage {
   DEV = 'DEV',
-  PROD = 'PROD'
+  PROD = 'PROD',
 }
-
 
 interface SecureResolverSdkConfig {
   stage: DeploymentStage;
@@ -57,31 +55,31 @@ interface SecureResolverFunctions {
 
 async function fetch(requestOptions: http.RequestOptions, body?: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const request = http.request({...requestOptions, timeout: 2000}, (res) => {
+    const request = http.request({ ...requestOptions, timeout: 2000 }, (res) => {
       if (res.statusCode && (res.statusCode < 200 || res.statusCode > 299)) {
-        return reject(new Error(`HTTP status code ${res.statusCode}`))
+        return reject(new Error(`HTTP status code ${res.statusCode}`));
       }
 
       const body: Array<Uint8Array> = [];
       res.on('data', (chunk) => body.push(chunk));
       res.on('end', () => {
-        const resString = Buffer.concat(body).toString()
-        resolve(resString)
+        const resString = Buffer.concat(body).toString();
+        resolve(resString);
       });
-    })
+    });
 
     request.on('error', (err) => {
-      reject(err)
-    })
+      reject(err);
+    });
     request.on('timeout', () => {
-      request.destroy()
-      reject(new Error('timed out'))
-    })
+      request.destroy();
+      reject(new Error('timed out'));
+    });
     if (body !== undefined) {
       request.write(body);
       request.end();
     }
-  })
+  });
 }
 
 export class SecureResolver {
@@ -105,7 +103,7 @@ export class SecureResolver {
     [DeploymentStage.PROD]: {
       call: this.callProd,
       deploy: this.deployProd,
-    }
+    },
   };
 
   constructor(config: SecureResolverSdkConfig) {
@@ -119,7 +117,7 @@ export class SecureResolver {
     }
 
     if (deploymentId === undefined) {
-      throw new Error("Secure Resolver SDK cannot be initialized: deployment ID is not set in config or environment");
+      throw new Error('Secure Resolver SDK cannot be initialized: deployment ID is not set in config or environment');
     }
 
     this.refineryHeaders = {
@@ -140,15 +138,15 @@ export class SecureResolver {
     const importedModule = require(moduleName);
     const exports = Object.keys(importedModule);
     return exports.reduce((wrappedExports, _export) => {
-      const newExport = (typeof _export === 'function') ? this.wrap(_export) : _export;
+      const newExport = typeof _export === 'function' ? this.wrap(_export) : _export;
       return {
         ...wrappedExports,
         newExport,
-      }
+      };
     }, {});
   }
 
-  wrap <T extends Array<any>, U>(fn: (...args: T) => U) {
+  wrap<T extends Array<any>, U>(fn: (...args: T) => U) {
     return async (...args: T): Promise<U | undefined> => {
       // TODO (cthompson) we catch all errors here as a convenience to the caller so they don't have to change their code that much
       // is this a good idea?
@@ -159,12 +157,12 @@ export class SecureResolver {
           console.error(e);
           return undefined;
         }
-        return <U> res.result;
-      } catch(e) {
+        return <U>res.result;
+      } catch (e) {
         console.error(e);
         return undefined;
       }
-    }
+    };
   }
 
   async deploy(containerUri: string) {
@@ -179,7 +177,7 @@ export class SecureResolver {
 
   async deployProd(containerUri: string) {
     if (!this.config.configPath) {
-      throw new Error("Unable to deploy Secure Resolver: no configuration path specified")
+      throw new Error('Unable to deploy Secure Resolver: no configuration path specified');
     }
 
     // TODO (cthompson) cleanly handle potential errors thrown here
@@ -188,11 +186,11 @@ export class SecureResolver {
     const functions = functionConfig['functions'];
 
     if (!this.config.language) {
-      throw new Error("Unable to deploy Secure Resolver: no language provided")
+      throw new Error('Unable to deploy Secure Resolver: no language provided');
     }
 
     if (!this.config.appDir) {
-      throw new Error("Unable to deploy Secure Resolver: no container application directory specified")
+      throw new Error('Unable to deploy Secure Resolver: no container application directory specified');
     }
 
     const response = await this.apiClient<'build'>({
@@ -227,32 +225,35 @@ export class SecureResolver {
       block_input: args,
     });
     try {
-      const res = await fetch({
-        host: "localhost",
-        port: 9001,
-        path: "/2015-03-31/functions/function/invocations",
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': data.length
+      const res = await fetch(
+        {
+          host: 'localhost',
+          port: 9001,
+          path: '/2015-03-31/functions/function/invocations',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': data.length,
+          },
         },
-      }, data);
+        data
+      );
       return {
         success: true,
-        result: JSON.parse(res).result
-      }
-    } catch(e) {
+        result: JSON.parse(res).result,
+      };
+    } catch (e) {
       console.error(e);
       return {
         success: false,
-        error: e
-      }
+        error: e,
+      };
     }
   }
 
   async callProd(functionName: string, args: any): Promise<FunctionInvocationResult> {
     if (!this.config.deploymentId) {
-      throw new SecureResolverCallError("deployment ID is not configured")
+      throw new SecureResolverCallError('deployment ID is not configured');
     }
 
     const urlResponse = await this.getFunctionUrl(this.config.deploymentId);

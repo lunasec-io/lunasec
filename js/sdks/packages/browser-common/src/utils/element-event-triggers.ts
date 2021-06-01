@@ -4,13 +4,13 @@
  * @param bubbles True of false if the event should bubble up.
  */
 function createEvent(eventType: string, bubbles: boolean) {
-  if ("createEvent" in document) {
-    const event = document.createEvent("Event");
+  if ('createEvent' in document) {
+    const event = document.createEvent('Event');
     event.initEvent(eventType, bubbles, true);
     return event;
   }
 
-  if ("Event" in window) {
+  if ('Event' in window) {
     return new Event(eventType, { bubbles: bubbles, cancelable: true });
   }
 
@@ -23,10 +23,10 @@ function createEvent(eventType: string, bubbles: boolean) {
  * @param element Element to snap focus to.
  */
 export function triggerFocus(element: HTMLInputElement | Element) {
-  const eventType = "onfocusin" in element ? "focusin" : "focus";
-  const bubbles = "onfocusin" in element;
+  const eventType = 'onfocusin' in element ? 'focusin' : 'focus';
+  const bubbles = 'onfocusin' in element;
 
-  "focus" in element && element.focus();
+  'focus' in element && element.focus();
   element.dispatchEvent(createEvent(eventType, bubbles));
 }
 

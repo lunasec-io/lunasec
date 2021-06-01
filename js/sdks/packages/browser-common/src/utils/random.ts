@@ -1,6 +1,5 @@
-
 export function generateSecureNonce() {
-  if (typeof crypto === "undefined") {
+  if (typeof crypto === 'undefined') {
     // TODO: Figure out how to do this isomorphically
     return '12341234';
   }

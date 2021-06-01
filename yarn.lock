@@ -132,10 +132,10 @@
     "@babel/helper-annotate-as-pure" "^7.12.13"
     regexpu-core "^4.7.1"
 
-"@babel/helper-define-polyfill-provider@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@babel/helper-define-polyfill-provider/-/helper-define-polyfill-provider-0.2.1.tgz#e6f5f4a6edc3722152c21359190de67fc6cf664d"
-  integrity sha512-x3AUTVZNPunaw1opRTa5OwVA5N0YxGlIad9xQ5QflK1uIS7PnAGGU5O2Dj/G183fR//N8AzTq+Q8+oiu9m0VFg==
+"@babel/helper-define-polyfill-provider@^0.2.2":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-define-polyfill-provider/-/helper-define-polyfill-provider-0.2.3.tgz#0525edec5094653a282688d34d846e4c75e9c0b6"
+  integrity sha512-RH3QDAfRMzj7+0Nqu5oqgO5q9mFtQEVvCRsi8qCEfzLR9p2BHfn5FzhSB2oj1fF7I2+DcTORkYaQ6aTR9Cofew==
   dependencies:
     "@babel/helper-compilation-targets" "^7.13.0"
     "@babel/helper-module-imports" "^7.12.13"
@@ -1269,9 +1269,9 @@
   integrity sha512-BOMHVW/m281mqUSJkZ3oiJiUUItLd7QdzpMjm428V9yBYFwIdbds1CeatS7C6kgpI2eBE4RXmy1Hjk/lR63Jew==
 
 "@cspell/dict-companies@^1.0.35":
-  version "1.0.37"
-  resolved "https://registry.yarnpkg.com/@cspell/dict-companies/-/dict-companies-1.0.37.tgz#eaaf51c5356e6949071f78f6bc8a32c0dda7ef80"
-  integrity sha512-7DuwT64u88v0qvvuhHK23zn8zyX7S3lIYj0ntAoMvErr1+O0SuUopZrw4Y1pm1pgcVAv6+ny80RDDhSD1h565w==
+  version "1.0.38"
+  resolved "https://registry.yarnpkg.com/@cspell/dict-companies/-/dict-companies-1.0.38.tgz#f915ae1e83de7554875350c19e53e91e948679f2"
+  integrity sha512-5GzatV4gOAvRW8Hz9T90XMN/svRhmzQecE4C7EcSibZkHZC1o3frTFNuzN2eKzvWb0f9xKuhOBcw9+jm8T9BzQ==
 
 "@cspell/dict-cpp@^1.1.37":
   version "1.1.38"
@@ -1309,14 +1309,14 @@
   integrity sha512-pEX6GYlEx4Teusw/m+XmqoXzcHOqpcn1ZX4H33ONqR81XdPwbaKorBr1IG23Ic76IhwrFlOqs48tcnxrHYpFnA==
 
 "@cspell/dict-en-gb@^1.1.27":
-  version "1.1.28"
-  resolved "https://registry.yarnpkg.com/@cspell/dict-en-gb/-/dict-en-gb-1.1.28.tgz#7abe6498aea15a87c502eefbf6f1850ccc1f54a2"
-  integrity sha512-noOH+iv4xFpPxu1agiQgp5LhY/KA0Ir28y1xnC2QTtLvlIid7vIvgixBOz4Zi0P7lo/mPmMjQY+x7//2EKFDgQ==
+  version "1.1.29"
+  resolved "https://registry.yarnpkg.com/@cspell/dict-en-gb/-/dict-en-gb-1.1.29.tgz#12f0225f79598f7a1cdd08e2a2e2656189fc0747"
+  integrity sha512-rAgrN77RsKnmfkl0GyrEr5swFnqHpfPPPLscEgO+ShEL1Z9fyrcoPNW7X7EmsrITYmVy1iiemDAP2OGKvyj4Hw==
 
 "@cspell/dict-en_us@^1.2.39":
-  version "1.2.41"
-  resolved "https://registry.yarnpkg.com/@cspell/dict-en_us/-/dict-en_us-1.2.41.tgz#b3d1075238d390f376fe1fe8ff174e9bcbe341ab"
-  integrity sha512-4BKhYyucB/onGl6G8zLL0KdvxG/8Kp370zDElZN8+e6XwxyKqaPUmocAX+miJyZrmFm833HnNreCKK99Z8Ubeg==
+  version "1.2.42"
+  resolved "https://registry.yarnpkg.com/@cspell/dict-en_us/-/dict-en_us-1.2.42.tgz#ed9e28a2d4734d87681aa4421f33b23a2327bbb1"
+  integrity sha512-5iegemAMT+5WQzPViy67EBH1z3sR53ZXCVQ1RmZJ++ZHkQ0BZ78EgZdrHFBW7tm3D43yf3V8vYSeTse5f1YPCw==
 
 "@cspell/dict-filetypes@^1.1.5":
   version "1.1.5"
@@ -1379,9 +1379,9 @@
   integrity sha512-q66zAqtNmuvZGKt4stRwQPFLsbOjZGGZOZ1HEbqpOkicxvF0BWhR0Di/JBq27PDxeqQP3S5sLeogQTSNQBuTww==
 
 "@cspell/dict-npm@^1.0.10":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@cspell/dict-npm/-/dict-npm-1.0.11.tgz#e19f746c76a657be96297d0c68fb4dcc62ad162c"
-  integrity sha512-mokmv9/Yk1yliDz97drWyuDWv7eKGEcFhdM43YSPK7GuMLh6i2ULOmORPFhUcjxQjPf0uySMDA2JguiQ4m5Lmg==
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@cspell/dict-npm/-/dict-npm-1.0.12.tgz#2d30e4580855f67e407d096ba73656e3e05b5617"
+  integrity sha512-UaC3SzuAHtpKl/iwhQse52Mji/2/Zn8XpOwLpYcLElURa325/1oyhO8bsgX/SWXmo7RJ1xOYv0BQkQpvMx9TOg==
 
 "@cspell/dict-php@^1.0.23":
   version "1.0.23"
@@ -1414,9 +1414,9 @@
   integrity sha512-5V/R7PRbbminTpPS3ywgdAalI9BHzcEjEj9ug4kWYvBIGwSnS7T6QCFCiu+e9LvEGUqQC+NHgLY4zs1NaBj2vA==
 
 "@cspell/dict-software-terms@^1.0.24":
-  version "1.0.29"
-  resolved "https://registry.yarnpkg.com/@cspell/dict-software-terms/-/dict-software-terms-1.0.29.tgz#da9218f94ee0209a4867f1129725d78335e7d8f5"
-  integrity sha512-cW4HTLqV5ckUmdL5JpRuHw7MrybsEtE/941US4qqmrkWpINgodYF6mhPBVzGNH2guL/dAznlCInDho4IDoe3qA==
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@cspell/dict-software-terms/-/dict-software-terms-1.0.30.tgz#906eb3f48686fc7a40c411edaf889b577fc216e9"
+  integrity sha512-0cDWfFTRQOZ3ajNRJoXsKAPGxBGoIAxr+cyYRldmvu/ulXFDakuV/f/UYHsCoCsX88BON03yP5CVleEboTF4CA==
 
 "@cspell/dict-typescript@^1.0.16":
   version "1.0.18"
@@ -5147,9 +5147,9 @@ available-typed-arrays@^1.0.2:
   integrity sha512-SA5mXJWrId1TaQjfxUYghbqQ/hYioKmLJvPJyDuYRtXXenFNMjj4hSSt1Cf1xsuXSXrtxrVC5Ot4eU6cOtBDdA==
 
 aws-sdk@^2.784.0:
-  version "2.914.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.914.0.tgz#55b303d8d685dbe13cc3f89887aaccf920e4127f"
-  integrity sha512-N7UZBvTMPr+lqlOmd/vZ6NMMaw1K2Y94fq3b6roZWouUQgn5unEixVpCuRhcYleOPSnikSCIrrDs2AXq5bXhLg==
+  version "2.915.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.915.0.tgz#04a703683dbd5e425aebc2413a45a5a85bfcbcef"
+  integrity sha512-06Sg/PxbvMgHwYRRxnLrmkamPSutQ4JIakXtjFKIcmHzJq61ZiwB1dyJ6SZb80RtnKOGMaF/VeVZyDL/uslyng==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -5275,28 +5275,28 @@ babel-plugin-named-asset-import@^0.3.7:
   integrity sha512-squySRkf+6JGnvjoUtDEjSREJEBirnXi9NqP6rjSYsylxQxqBTz+pkmf395i9E2zsvmYUaI40BHo6SqZUdydlw==
 
 babel-plugin-polyfill-corejs2@^0.2.0:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/babel-plugin-polyfill-corejs2/-/babel-plugin-polyfill-corejs2-0.2.1.tgz#ae2cf6d6f1aa7c0edcf04a25180e8856a6d1184f"
-  integrity sha512-hXGSPbr6IbjeMyGew+3uGIAkRjBFSOJ9FLDZNOfHuyJZCcoia4nd/72J0bSgvfytcVfUcP/dxEVcUhVJuQRtSw==
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/babel-plugin-polyfill-corejs2/-/babel-plugin-polyfill-corejs2-0.2.2.tgz#e9124785e6fd94f94b618a7954e5693053bf5327"
+  integrity sha512-kISrENsJ0z5dNPq5eRvcctITNHYXWOA4DUZRFYCz3jYCcvTb/A546LIddmoGNMVYg2U38OyFeNosQwI9ENTqIQ==
   dependencies:
     "@babel/compat-data" "^7.13.11"
-    "@babel/helper-define-polyfill-provider" "^0.2.1"
+    "@babel/helper-define-polyfill-provider" "^0.2.2"
     semver "^6.1.1"
 
 babel-plugin-polyfill-corejs3@^0.2.0:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/babel-plugin-polyfill-corejs3/-/babel-plugin-polyfill-corejs3-0.2.1.tgz#786f40218040030f0edecfd48e6e59f1ee9bef53"
-  integrity sha512-WZCqF3DLUhdTD/P381MDJfuP18hdCZ+iqJ+wHtzhWENpsiof284JJ1tMQg1CE+hfCWyG48F7e5gDMk2c3Laz7w==
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/babel-plugin-polyfill-corejs3/-/babel-plugin-polyfill-corejs3-0.2.2.tgz#7424a1682ee44baec817327710b1b094e5f8f7f5"
+  integrity sha512-l1Cf8PKk12eEk5QP/NQ6TH8A1pee6wWDJ96WjxrMXFLHLOBFzYM4moG80HFgduVhTqAFez4alnZKEhP/bYHg0A==
   dependencies:
-    "@babel/helper-define-polyfill-provider" "^0.2.1"
+    "@babel/helper-define-polyfill-provider" "^0.2.2"
     core-js-compat "^3.9.1"
 
 babel-plugin-polyfill-regenerator@^0.2.0:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/babel-plugin-polyfill-regenerator/-/babel-plugin-polyfill-regenerator-0.2.1.tgz#ca9595d7d5f3afefec2d83126148b90db751a091"
-  integrity sha512-T3bYyL3Sll2EtC94v3f+fA8M28q7YPTOZdB++SRHjvYZTvtd+WorMUq3tDTD4Q7Kjk1LG0gGromslKjcO5p2TA==
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/babel-plugin-polyfill-regenerator/-/babel-plugin-polyfill-regenerator-0.2.2.tgz#b310c8d642acada348c1fa3b3e6ce0e851bee077"
+  integrity sha512-Goy5ghsc21HgPDFtzRkSirpZVW35meGoTmTOb2bxqdl60ghub4xOidgNTHaZfQ2FaxQsKmwvXtOAkcIS4SMBWg==
   dependencies:
-    "@babel/helper-define-polyfill-provider" "^0.2.1"
+    "@babel/helper-define-polyfill-provider" "^0.2.2"
 
 babel-plugin-syntax-object-rest-spread@^6.8.0:
   version "6.13.0"
@@ -8117,9 +8117,9 @@ dns-equal@^1.0.0:
   integrity sha1-s55/HabrCnW6nBcySzR1PEfgZU0=
 
 dns-packet@^1.3.1:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/dns-packet/-/dns-packet-1.3.3.tgz#7b62ee6e6aaac0c2de27cfc4a06af59cacb9cb38"
-  integrity sha512-dDwDMOJU+m6Qx+LhltSV+BWNrMaTqx3eXkAqgt/iouWTXGZMffg1rOSnG2xa3lWqmJ9xTBc7fgIe/css4S1rxA==
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/dns-packet/-/dns-packet-1.3.4.tgz#e3455065824a2507ba886c55a89963bb107dec6f"
+  integrity sha512-BQ6F4vycLXBvdrJZ6S3gZewt6rcrks9KBgM9vrhW+knGRqc8uEdT7fuCwloc7nny5xNoMJ17HGH0R/6fpo8ECA==
   dependencies:
     ip "^1.1.0"
     safe-buffer "^5.0.1"
@@ -14334,9 +14334,9 @@ obuf@^1.0.0, obuf@^1.1.2:
   integrity sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==
 
 oclif@^1.17.0:
-  version "1.17.1"
-  resolved "https://registry.yarnpkg.com/oclif/-/oclif-1.17.1.tgz#7f8170bb90ca51a5786ffaee9db5cf10b085d7de"
-  integrity sha512-l2SImZdQF0XJfZAON5jksNxbOq6/yNCV+sTcSyNNZSSLwCeRzwDFXraXxK576Bh7XZtjdkAGY2Ed1+EL1UQ3Tg==
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/oclif/-/oclif-1.18.0.tgz#2d042ea50e7b8dfbef94f7c0f0693f42ef7cc47f"
+  integrity sha512-GLnwhESkPqM2cElRSZ9KwoUJ9OPiQEFaUM8xbBQDcygapuYcTIpcCj6hCsDhnLzSJj2DDgqDjmQlNeT29LUr0g==
   dependencies:
     "@oclif/command" "^1.6"
     "@oclif/config" "^1.12.6"
@@ -19142,14 +19142,14 @@ typedoc@^0.20.36:
     typedoc-default-themes "^0.12.10"
 
 typescript@^4.2.0, typescript@^4.2.2, typescript@^4.2.3:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.4.tgz#8610b59747de028fda898a8aef0e103f156d0961"
-  integrity sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.2.tgz#399ab18aac45802d6f2498de5054fcbbe716a805"
+  integrity sha512-zZ4hShnmnoVnAHpVHWpTcxdv7dWP60S2FsydQLV8V5PbS3FifjWFFRiHSWpDJahly88PRyV5teTSLoq4eG7mKw==
 
 uglify-js@^3.1.4:
-  version "3.13.7"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.13.7.tgz#25468a3b39b1c875df03f0937b2b7036a93f3fee"
-  integrity sha512-1Psi2MmnZJbnEsgJJIlfnd7tFlJfitusmR7zDI8lXlFI0ACD4/Rm/xdrU8bh6zF0i74aiVoBtkRiFulkrmh3AA==
+  version "3.13.8"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.13.8.tgz#7c2f9f2553f611f3ff592bdc19c6fb208dc60afb"
+  integrity sha512-PvFLMFIQHfIjFFlvAch69U2IvIxK9TNzNWt1SxZGp9JZ/v70yvqIQuiJeVPPtUMOzoNt+aNRDk4wgxb34wvEqA==
 
 uid-number@0.0.6:
   version "0.0.6"

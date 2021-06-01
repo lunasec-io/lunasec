@@ -22,9 +22,8 @@
     "src/**/*.tsx",
   ],
   "references": [
-    { "path": "../common" },
-    { "path": "../../../sdks/packages/browser-common"},
-    { "path": "../../../sdks/packages/tokenizer-sdk"}
+    { "path": "../browser-common" },
+    { "path": "../tokenizer-sdk"}
   ],
   "compileOnSave": true
 }

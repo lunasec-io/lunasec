@@ -1,9 +1,8 @@
 /* eslint-disable functional/no-throw-statement, @typescript-eslint/ban-ts-comment, functional/immutable-data */
 
-import {addMessageListener} from '@lunasec/browser-common';
+import { __SECURE_FRAME_URL__, addMessageListener } from '@lunasec/browser-common';
 
-import {createDomWatcher} from './scan-dom';
-import {__SECURE_FRAME_URL__} from "@lunasec/browser-common";
+import { createDomWatcher } from './scan-dom';
 
 export function loadSecureFrame() {
   if (typeof window === 'undefined' || typeof document === 'undefined') {
@@ -19,10 +18,7 @@ export function loadSecureFrame() {
   const detectedVersion = window.__SECURE_FRAME_SDK_VERSION__;
 
   // TODO: Make this check semver ranges
-  if (
-    detectedVersion !== undefined &&
-    detectedVersion !== SECURE_FRAME_SDK_VERSION
-  ) {
+  if (detectedVersion !== undefined && detectedVersion !== SECURE_FRAME_SDK_VERSION) {
     const errorString = 'Cannot mix versions of secure frame SDK';
     console.error(errorString);
     throw new Error(errorString);
