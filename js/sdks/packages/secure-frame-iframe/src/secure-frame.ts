@@ -15,7 +15,6 @@ export class SecureFrame<e extends keyof AllowedElements> {
   private readonly origin: string;
   private initialized = false;
   constructor(elementType: e, loadingText: Element) {
-    console.log('secureFrame constructor called with ', elementType);
     this.elementType = elementType;
     this.loadingText = loadingText;
     this.secureElement = this.insertSecureElement(elementType);
@@ -69,7 +68,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
       if (this.elementType === 'a') {
         // anchor elements mean we are doing an s3 secure download
         // Figure out why this type casting is necessary
-        void handleDownload(attrs.token, this.secureElement as HTMLAnchorElement, attrs.filename || 'document.pdf');
+        void handleDownload(attrs.token, this.secureElement as HTMLAnchorElement);
       } else {
         const value = await detokenize(attrs.token);
         if (this.elementType === 'input' || this.elementType === 'textarea') {

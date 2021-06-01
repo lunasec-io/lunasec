@@ -104,7 +104,6 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
     componentDidUpdate() {
       // Also causes style changes to propagate, as long as they come from within react
       if (this.frameReady) {
-        console.log('component ', elementName, ' updated, sending attributes');
         void this.sendIFrameAttributes();
       }
     }
