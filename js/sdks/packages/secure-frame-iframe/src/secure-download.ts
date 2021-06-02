@@ -82,7 +82,7 @@ function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean) {
     a.click();
   }
   a.addEventListener('click', triggerDownload);
-  // If the element is in hidden mode, start the download ourselves.  Promise is void because we want outside logic to continue
+  // If the element is in hidden mode, start the download ourselves.
   if (hidden) {
     a.click();
   }
