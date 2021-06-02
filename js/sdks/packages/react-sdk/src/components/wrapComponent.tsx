@@ -132,7 +132,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
 
     // Give the iframe all the information it needs to exist when it wakes up
     async sendIFrameAttributes() {
-      const frameAttributes = this.generateIframeAttributes();
+      const frameAttributes = this.generateIFrameAttributes();
       const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
       if (!this.frameRef.current || !this.frameRef.current.contentWindow) {
         console.error('Frame not initialized for message sending');

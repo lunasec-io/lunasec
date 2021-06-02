@@ -20,11 +20,9 @@ export class SecureFrame<e extends keyof AllowedElements> {
     this.secureElement = this.insertSecureElement(elementType);
     this.origin = this.getURLSearchParam('origin');
     this.frameNonce = this.getURLSearchParam('n');
-    console.log('iframe came up with element type: ', elementType);
     listenForRPCMessages(this.origin, (attrs) => {
       void this.setAttributesFromRPC(attrs);
     });
-    console.log(' and origin and framenonce ', this.origin, '  ', this.frameNonce);
     notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
   }
 

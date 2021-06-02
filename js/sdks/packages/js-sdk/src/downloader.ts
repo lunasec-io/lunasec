@@ -1,5 +1,6 @@
 import {
   __SECURE_FRAME_URL__,
+  addJsEventListener,
   AttributesMessage,
   FrameMessageCreator,
   generateSecureNonce,
@@ -16,24 +17,23 @@ class FileDownloader {
   constructor(token: string) {
     this.token = token;
     this.frameNonce = generateSecureNonce();
-    console.log('download nonce is ', this.frameNonce);
 
     // start up RPC
     this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
+    addJsEventListener(window, (message) => this.messageCreator.postReceived(message));
 
     // Attach the frame
-    const frameUrl = this.generateUrl();
-    this.frameElement = this.buildFrame(frameUrl);
+    this.frameElement = this.buildFrame();
     document.body.appendChild(this.frameElement);
-    console.log('hidden frame el is ', this.frameElement);
   }
 
-  buildFrame(url: string) {
+  buildFrame() {
     const frame = document.createElement('iframe');
-    frame.src = url;
+    frame.src = this.generateUrl();
     // Idk if this is necessary
     frame.setAttribute('width', '0');
     frame.setAttribute('height', '0');
+    frame.setAttribute('style', 'border-width:0;');
     return frame;
   }
 
@@ -50,9 +50,7 @@ class FileDownloader {
       console.debug('Received notification intended for different listener, discarding');
       return;
     }
-    console.log('got frame notification in downloader: ', notification);
     if (notification.command === 'NotifyOnStart') {
-      console.log('HIDDEN FRAME BOOTED');
       void this.sendIFrameAttributes();
     }
   }
@@ -60,9 +58,7 @@ class FileDownloader {
   // Generate some attributes for sending to the iframe via RPC.
   generateIframeAttributes(): AttributesMessage {
     const style = {
-      style: {
-        //try an empty object to see what happens
-      },
+      style: {},
     };
     return {
       id: this.frameNonce,
@@ -78,7 +74,7 @@ class FileDownloader {
     const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
     const frameWindow = this.frameElement.contentWindow;
     if (!frameWindow) {
-      console.error('Attempted to send frame message to iframe that wasnt initialized');
+      console.error('Attempted to send frame message to iframe that wasnt attached to DOM');
       return;
     }
     await this.messageCreator.sendMessageToFrameWithReply(frameWindow, message);

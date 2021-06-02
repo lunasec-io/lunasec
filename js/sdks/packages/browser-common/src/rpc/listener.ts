@@ -57,6 +57,24 @@ export function addMessageListener(window: Window, domInstance: Document) {
   );
 }
 
+export function addJsEventListener(window: Window, callback: (message: UnknownFrameMessage) => void): void {
+  window.addEventListener('message', (event) => {
+    if (event.origin !== __SECURE_FRAME_URL__) {
+      return;
+    }
+
+    const frameMessage = safeParseJson<UnknownFrameMessage>(event.data);
+
+    // Invalid data passed from frame.
+    if (frameMessage === null) {
+      console.error('Frame message null:', frameMessage);
+      return;
+    }
+
+    callback(frameMessage);
+  });
+}
+
 export function addReactEventListener(
   window: Window,
   controller: AbortController,
