@@ -3,7 +3,7 @@
 
 This monorepo holds the LunaSec SDKs, servers, and demo application.  Together, they are a toolkit that keeps data secure in the front and back end of web applications.  
 
-On the front end, cross-domain iframes dubbed Secure Frames handle the creation and display of sensitive fields, and on the backend sensitive data is handled inside Lambdas dubbed Secure Resolvers.  
+On the front end, cross-domain iFrames dubbed **Secure Frames** handle the creation and display of sensitive fields, and on the backend sensitive data is handled inside Lambdas dubbed **Secure Resolvers**.  
 
 A few components:
 
