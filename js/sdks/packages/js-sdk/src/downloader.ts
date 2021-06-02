@@ -14,7 +14,10 @@ class FileDownloader {
   frameNonce!: string;
 
   constructor(token: string) {
+    this.token = token;
     this.frameNonce = generateSecureNonce();
+    console.log('download nonce is ', this.frameNonce);
+
     // start up RPC
     this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
 
@@ -22,6 +25,7 @@ class FileDownloader {
     const frameUrl = this.generateUrl();
     this.frameElement = this.buildFrame(frameUrl);
     document.body.appendChild(this.frameElement);
+    console.log('hidden frame el is ', this.frameElement);
   }
 
   buildFrame(url: string) {
@@ -46,10 +50,13 @@ class FileDownloader {
       console.debug('Received notification intended for different listener, discarding');
       return;
     }
+    console.log('got frame notification in downloader: ', notification);
     if (notification.command === 'NotifyOnStart') {
-      this.sendIFrameAttributes();
+      console.log('HIDDEN FRAME BOOTED');
+      void this.sendIFrameAttributes();
     }
   }
+
   // Generate some attributes for sending to the iframe via RPC.
   generateIframeAttributes(): AttributesMessage {
     const style = {
@@ -69,15 +76,17 @@ class FileDownloader {
   async sendIFrameAttributes() {
     const frameAttributes = this.generateIframeAttributes();
     const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
-    if (!this.frameRef.current || !this.frameRef.current.contentWindow) {
-      console.error('Frame not initialized for message sending');
+    const frameWindow = this.frameElement.contentWindow;
+    if (!frameWindow) {
+      console.error('Attempted to send frame message to iframe that wasnt initialized');
       return;
     }
-    await this.messageCreator.sendMessageToFrameWithReply(this.frameRef.current.contentWindow, message);
+    await this.messageCreator.sendMessageToFrameWithReply(frameWindow, message);
     return;
   }
 }
 
 export function downloadFile(token: string) {
   new FileDownloader(token);
+  return;
 }

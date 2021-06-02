@@ -1,3 +1,4 @@
+import { downloadFile } from '@lunasec/js-sdk';
 import { SecureDownload, SecureForm, SecureInput, SecureSpan } from '@lunasec/react-sdk';
 import React, { CSSProperties } from 'react';
 // import logo from './logo.svg';
@@ -16,6 +17,10 @@ class App extends React.Component<Record<string, never>, IAppState> {
   constructor(props: Record<string, never>) {
     super(props);
     this.state = this.retrieveTokens();
+  }
+
+  componentDidMount() {
+    downloadFile(this.downloadToken);
   }
 
   handleFooChange(event: React.ChangeEvent<HTMLInputElement>) {

@@ -15,9 +15,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@lunasec/node-sdk": "file:../sdks/packages/node-sdk",
-    "@lunasec/secure-frame-common": "file:../sdks/packages/secure-frame/common",
-    "@lunasec/tokenizer-sdk": "file:../sdks/packages/tokenizer-sdk",
+    "@lunasec/node-sdk": "^1.0.0",
+    "@lunasec/browser-common": "^1.0.0",
+    "@lunasec/tokenizer-sdk": "^1.0.0",
     "@types/body-parser": "^1.19.0",
     "@types/express": "^4.17.11",
     "@types/helmet": "^4.0.0",
