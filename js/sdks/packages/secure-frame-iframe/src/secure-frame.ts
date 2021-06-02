@@ -69,7 +69,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
       if (this.elementType === 'a') {
         // anchor elements mean we are doing an s3 secure download
         // Figure out why this type casting is necessary
-        void handleDownload(attrs.token, this.secureElement as HTMLAnchorElement);
+        void handleDownload(attrs.token, this.secureElement as HTMLAnchorElement, attrs.hidden || false);
       } else {
         const value = await detokenize(attrs.token);
         if (this.elementType === 'input' || this.elementType === 'textarea') {

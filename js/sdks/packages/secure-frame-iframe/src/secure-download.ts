@@ -57,6 +57,8 @@ async function getFileInfo(token: string): Promise<FileInfo> {
   };
 }
 
+// Download the file as a blob and then convert to a File object to add some metadata fields
+// Then stick it on the link
 async function downloadFile(fileInfo: FileInfo) {
   const res = await fetch(fileInfo.url, {
     headers: fileInfo.headers,
@@ -65,28 +67,32 @@ async function downloadFile(fileInfo: FileInfo) {
   return new File([bits], fileInfo.filename, fileInfo.options);
 }
 
-function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement) {
+function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean) {
   a.textContent = fileInfo.filename;
 
-  async function handleClick(e: Event) {
+  // In order to trigger a download in a browser, we need to fake a click on an href element
+  async function triggerDownload(e: Event) {
     e.preventDefault();
     a.textContent = 'Loading...';
     const f = await downloadFile(fileInfo);
     a.download = fileInfo.filename;
     a.href = URL.createObjectURL(f);
     a.textContent = fileInfo.filename;
-    a.removeEventListener('click', handleClick);
+    a.removeEventListener('click', triggerDownload);
     a.click();
   }
-  a.addEventListener('click', handleClick);
-  // In order to trigger a download in a browser, we need to fake a click on an href element
+  a.addEventListener('click', triggerDownload);
+  // If the element is in hidden mode, start the download ourselves.  Promise is void because we want outside logic to continue
+  if (hidden) {
+    void triggerDownload;
+  }
 }
 
-export async function handleDownload(token: string, a: HTMLAnchorElement) {
+export async function handleDownload(token: string, a: HTMLAnchorElement, hidden: boolean) {
   a.textContent = '...Loading';
   try {
     const fileInfo = await getFileInfo(token);
-    setupLink(fileInfo, a);
+    setupLink(fileInfo, a, hidden);
   } catch (e) {
     a.textContent = 'Error';
     throw e;
