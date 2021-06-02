@@ -34,3 +34,8 @@ input:focus {
     -webkit-border-radius: 0;
 }
 
+a {
+  color:blue !important;
+  text-decoration: underline !important;
+}
+

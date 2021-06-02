@@ -48,7 +48,7 @@ export class Tokenizer {
 
   // TODO: Evaluate adding back keygenSet and keygenGet methods
 
-  async getMetadata<T>(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerGetMetadataResponse> {
+  async getMetadata(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerGetMetadataResponse> {
     const response = await this.getMetadataClient({
       tokenId: tokenId,
     });
@@ -60,7 +60,8 @@ export class Tokenizer {
     return {
       success: true,
       tokenId,
-      metadata: <T>response.data.data.metadata,
+      // TODO: make sure that data matches expected type with validator
+      metadata: response.data.data.metadata as Record<string, any>,
     };
   }
 
