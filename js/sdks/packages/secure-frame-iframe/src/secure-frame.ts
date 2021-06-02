@@ -65,26 +65,32 @@ export class SecureFrame<e extends keyof AllowedElements> {
     }
 
     if (attrs.token) {
-      if (this.elementType === 'a') {
-        // anchor elements mean we are doing an s3 secure download
-        // Figure out why this type casting is necessary
-        void handleDownload(attrs.token, this.secureElement as HTMLAnchorElement);
-      } else {
-        const value = await detokenize(attrs.token);
-        if (this.elementType === 'input' || this.elementType === 'textarea') {
-          const input = this.secureElement as HTMLInputElement;
-          input.value = value;
-        }
-        if (this.elementType === 'span') {
-          this.secureElement.textContent = value;
-        }
-      }
+      await this.handleToken(attrs.token);
     }
+
     if (this.elementType === 'input') {
       this.attachOnBlurNotifier();
     }
+
     this.initialized = true;
     return;
+  }
+
+  async handleToken(token: string) {
+    if (this.elementType === 'a') {
+      // anchor elements mean we are doing an s3 secure download
+      // Figure out why this type casting is necessary
+      await handleDownload(token, this.secureElement as HTMLAnchorElement);
+    } else {
+      const value = await detokenize(token);
+      if (this.elementType === 'input' || this.elementType === 'textarea') {
+        const input = this.secureElement as HTMLInputElement;
+        input.value = value;
+      }
+      if (this.elementType === 'span') {
+        this.secureElement.textContent = value;
+      }
+    }
   }
 
   attachOnBlurNotifier() {
