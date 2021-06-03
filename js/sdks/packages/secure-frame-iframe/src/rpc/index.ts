@@ -10,6 +10,7 @@ import {
 } from '@lunasec/browser-common';
 import { Tokenizer } from '@lunasec/tokenizer-sdk';
 
+// always a response to a message from outside
 function createMessageToFrame<K extends keyof InboundFrameMessageMap>(
   s: K,
   correlationToken: string,
@@ -24,13 +25,13 @@ function createMessageToFrame<K extends keyof InboundFrameMessageMap>(
   };
 }
 
+// A message that starts in the frame and goes to the parent window.  We don't expect a response
 function createNotificationToFrame<K extends keyof InboundFrameNotificationMap>(
   s: K,
   frameNonce: string,
   createNotification: () => InboundFrameNotificationMap[K] = () => ({})
 ): FrameNotification<InboundFrameNotificationMap, K> {
   const innerMessage = createNotification();
-
   return {
     command: s,
     frameNonce: frameNonce,
