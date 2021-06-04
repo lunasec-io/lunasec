@@ -1,7 +1,7 @@
 import { AllowedElements } from '@lunasec/react-sdk';
 
 import { SecureFrame } from './secure-frame';
-const supportedElements = ['input', 'textarea', 'span', 'a'];
+const supportedElements = ['input', 'textarea', 'p', 'a'];
 function startup() {
   const elementType = new URL(document.location.href).searchParams.get('element') as keyof AllowedElements | null;
   if (!elementType || !supportedElements.includes(elementType)) {

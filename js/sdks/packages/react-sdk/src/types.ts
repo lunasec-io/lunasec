@@ -1,17 +1,18 @@
+import { ReadElementStyle } from '@lunasec/browser-common';
 import React, { RefObject } from 'react';
 
 import Downloader from './components/elements/downloader';
-import Span from './components/elements/span';
+import Paragraph from './components/elements/paragraph';
 
 export interface AllowedElements {
-  span: HTMLSpanElement;
+  p: HTMLParagraphElement;
   a: HTMLAnchorElement;
   input: HTMLInputElement;
   textarea: HTMLTextAreaElement;
 }
 
 export interface WrappedClassLookup {
-  span: typeof Span;
+  p: typeof Paragraph;
   a: typeof Downloader;
 }
 
@@ -40,7 +41,7 @@ export type WrappedComponentProps<E extends keyof AllowedElements> = LunaSecWrap
 export interface RenderData<E extends AllowedElements[keyof AllowedElements]> {
   frameId: string;
   frameUrl: string;
-  frameStyleInfo: Record<string, any> | null;
+  frameStyleInfo: ReadElementStyle | null;
   frameRef: RefObject<HTMLIFrameElement>;
   dummyRef: RefObject<E>;
   mountedCallback: () => void;

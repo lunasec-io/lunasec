@@ -87,7 +87,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
         const input = this.secureElement as HTMLInputElement;
         input.value = value;
       }
-      if (this.elementType === 'span') {
+      if (this.elementType === 'p') {
         this.secureElement.textContent = value;
       }
     }
