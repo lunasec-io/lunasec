@@ -20,7 +20,6 @@ export class SecureFrame<e extends keyof AllowedElements> {
     this.secureElement = this.insertSecureElement(elementType);
     this.origin = this.getURLSearchParam('origin');
     this.frameNonce = this.getURLSearchParam('n');
-
     listenForRPCMessages(this.origin, (attrs) => {
       void this.setAttributesFromRPC(attrs);
     });
@@ -65,7 +64,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
     }
 
     if (attrs.token) {
-      await this.handleToken(attrs.token);
+      await this.handleToken(attrs.token, attrs.hidden || false);
     }
 
     if (this.elementType === 'input') {
@@ -76,11 +75,11 @@ export class SecureFrame<e extends keyof AllowedElements> {
     return;
   }
 
-  async handleToken(token: string) {
+  async handleToken(token: string, hidden: boolean) {
     if (this.elementType === 'a') {
       // anchor elements mean we are doing an s3 secure download
       // Figure out why this type casting is necessary
-      await handleDownload(token, this.secureElement as HTMLAnchorElement);
+      await handleDownload(token, this.secureElement as HTMLAnchorElement, hidden);
     } else {
       const value = await detokenize(token);
       if (this.elementType === 'input' || this.elementType === 'textarea') {
