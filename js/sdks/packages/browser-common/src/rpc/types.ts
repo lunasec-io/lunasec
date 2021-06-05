@@ -28,12 +28,14 @@ export interface UnknownFrameNotification {
 // Tell the iframe to commit its data to the server and send back a token
 export interface CommitTokenMessage {}
 // Initialize or update some attribute of the iframe
+
 export interface AttributesMessage {
   id: string;
   style?: string;
   token?: string;
   type?: string;
   hidden?: boolean;
+  fileTokens?: [string];
 }
 
 // Notifications from the iframe

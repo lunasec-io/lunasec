@@ -125,6 +125,8 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
 
       if (this.props.token) {
         attrs.token = this.props.token;
+      } else if (this.props.filetokens) {
+        attrs.fileTokens = this.props.filetokens;
       }
 
       return attrs;

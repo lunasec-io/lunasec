@@ -6,13 +6,9 @@ import { Tokenizer } from '@lunasec/tokenizer-sdk';
 // 4 Maybe display percentage
 // 5 Once blob is loaded, make a fake <a> with the blob as an href and trigger it
 
-interface Options {
-  type?: string;
-  lastModified?: number;
-}
-interface FileInfo {
+export interface FileInfo {
   filename: string;
-  options: Options;
+  options: { type?: string; lastModified?: number };
   headers: Record<string, string>;
   url: string;
 }
@@ -26,10 +22,10 @@ interface FileInfoResponse {
   type?: string;
   lastModified?: number;
 }
-// TODO: Add fileinfo property into the metadata during secureupload with the following props:
-//  filename, type, lastModified
 
-async function getFileInfo(token: string): Promise<FileInfo> {
+// Pull file info from the metadata and detokenize the file url in parallel
+// We also use this function with the filepond component
+export async function getFileInfo(token: string): Promise<FileInfo> {
   const tokenizer = new Tokenizer();
   const metaPromise = tokenizer.getMetadata(token);
   const urlPromise = tokenizer.detokenizeToUrl(token);

@@ -1,6 +1,6 @@
 import { downloadFile } from '@lunasec/js-sdk';
-import { SecureDownload, SecureForm, SecureInput, SecureSpan } from '@lunasec/react-sdk';
-import React, { CSSProperties } from 'react';
+import { SecureDownload, SecureForm, SecureInput, SecureSpan, SecureUpload } from '@lunasec/react-sdk';
+import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
 
@@ -95,6 +95,10 @@ class App extends React.Component<Record<string, never>, IAppState> {
           <div>
             {'Secure Download:'}
             <SecureDownload name="securefile.pdf" token={this.downloadToken} className="test-secure-downloader" />
+          </div>
+          <div>
+            {'FilePond: '}
+            <SecureUpload name="filepond" filetokens={[this.downloadToken]} />
           </div>
         </div>
       </div>
