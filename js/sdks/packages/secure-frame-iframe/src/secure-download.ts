@@ -1,5 +1,6 @@
 import { Tokenizer } from '@lunasec/tokenizer-sdk';
 
+import { MetaData } from './types';
 // 1 fetch filename from metadata and s3 headers in parallel
 // 2 Put them onto the a tag
 // 3 User clicks the tag
@@ -13,18 +14,7 @@ export interface FileInfo {
   url: string;
 }
 
-interface MetaDataResponse {
-  fileinfo: FileInfoResponse;
-}
-
-interface FileInfoResponse {
-  filename: string;
-  type?: string;
-  lastModified?: number;
-}
-
 // Pull file info from the metadata and detokenize the file url in parallel
-// We also use this function with the filepond component
 export async function getFileInfo(token: string): Promise<FileInfo> {
   const tokenizer = new Tokenizer();
   const metaPromise = tokenizer.getMetadata(token);
@@ -37,9 +27,9 @@ export async function getFileInfo(token: string): Promise<FileInfo> {
     throw urlRes.error;
   }
 
-  const meta = metaRes.metadata as MetaDataResponse | null;
+  const meta = metaRes.metadata as MetaData | null;
   if (!meta || !meta.fileinfo) {
-    throw new Error('No metadata for file token');
+    throw new Error('No metadata for file token ');
   }
   const fileMeta = meta.fileinfo;
   return {
@@ -55,7 +45,7 @@ export async function getFileInfo(token: string): Promise<FileInfo> {
 
 // Download the file as a blob and then convert to a File object to add some metadata fields
 // Then stick it on the link
-async function downloadFile(fileInfo: FileInfo) {
+export async function downloadFile(fileInfo: FileInfo) {
   const res = await fetch(fileInfo.url, {
     headers: fileInfo.headers,
   });
@@ -63,10 +53,12 @@ async function downloadFile(fileInfo: FileInfo) {
   return new File([bits], fileInfo.filename, fileInfo.options);
 }
 
-function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean) {
+export function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean) {
   a.textContent = fileInfo.filename;
 
   // In order to trigger a download in a browser, we need to fake a click on an href element
+  // Note that we use the actual anchor element here instead of a fake, so that when we unregister our handler...
+  // the file will download as normal on repeated clicks
   async function triggerDownload(e: Event) {
     e.preventDefault();
     a.textContent = 'Loading...';
