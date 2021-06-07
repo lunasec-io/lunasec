@@ -25,6 +25,7 @@ interface LunaSecWrapperProps {
   name: string;
   secureFrameUrl?: string;
   filetokens?: [string]; // TODO: Narrow these down with a discriminating intersection because we should never have both fileTokens and token
+  onTokenChange?: (token: string | Array<string>) => void;
 }
 
 export type WrapperProps<E extends keyof AllowedElements> = LunaSecWrapperProps & React.ComponentPropsWithoutRef<E>;

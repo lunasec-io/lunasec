@@ -123,6 +123,15 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         attrs.style = JSON.stringify(style.childStyle);
       }
 
+      // Set the "type" of an input element if we have one
+      const dummyElement = this.dummyRef.current;
+      if (elementName === 'input' && dummyElement) {
+        const inputType = dummyElement.getAttribute('type');
+        if (inputType) {
+          attrs.type = inputType;
+        }
+      }
+
       if (this.props.token) {
         attrs.token = this.props.token;
       } else if (this.props.filetokens) {
@@ -155,6 +164,10 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
           this.frameReady = true;
           void this.sendIFrameAttributes();
           break;
+        case 'NotifyOnToken':
+          if (this.props.onTokenChange && 'token' in notification.data) {
+            this.props.onTokenChange(notification.data.token);
+          }
       }
     }
 

@@ -15,7 +15,7 @@ export interface FileInfo {
 }
 
 // Pull file info from the metadata and detokenize the file url in parallel
-export async function getFileInfo(token: string): Promise<FileInfo> {
+async function getFileInfo(token: string): Promise<FileInfo> {
   const tokenizer = new Tokenizer();
   const metaPromise = tokenizer.getMetadata(token);
   const urlPromise = tokenizer.detokenizeToUrl(token);
@@ -45,7 +45,7 @@ export async function getFileInfo(token: string): Promise<FileInfo> {
 
 // Download the file as a blob and then convert to a File object to add some metadata fields
 // Then stick it on the link
-export async function downloadFile(fileInfo: FileInfo) {
+async function downloadFile(fileInfo: FileInfo) {
   const res = await fetch(fileInfo.url, {
     headers: fileInfo.headers,
   });
@@ -53,7 +53,7 @@ export async function downloadFile(fileInfo: FileInfo) {
   return new File([bits], fileInfo.filename, fileInfo.options);
 }
 
-export function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean) {
+function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean) {
   a.textContent = fileInfo.filename;
 
   // In order to trigger a download in a browser, we need to fake a click on an href element

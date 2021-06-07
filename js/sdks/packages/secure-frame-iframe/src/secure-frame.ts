@@ -8,12 +8,13 @@ export type SupportedElement = AllowedElements[keyof AllowedElements];
 
 // Would be nice if class could take <element type parameter> but couldn't quite get it working
 export class SecureFrame<e extends keyof AllowedElements> {
-  private readonly secureElement: AllowedElements[e];
   private readonly elementType: e;
   private readonly loadingText: Element;
-  private readonly frameNonce: string;
-  private readonly origin: string;
   private initialized = false;
+  readonly frameNonce: string;
+  readonly origin: string;
+  readonly secureElement: AllowedElements[e];
+
   constructor(elementType: e, loadingText: Element) {
     this.elementType = elementType;
     this.loadingText = loadingText;
@@ -23,7 +24,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
     listenForRPCMessages(this.origin, (attrs) => {
       void this.setAttributesFromRPC(attrs);
     });
-    notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
+    notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce, {});
   }
 
   insertSecureElement(elementName: e) {
@@ -63,8 +64,8 @@ export class SecureFrame<e extends keyof AllowedElements> {
       this.secureElement.setAttribute('type', attrs.type);
     }
 
-    if (attrs.fileTokens) {
-      await initializeUploader(this.secureElement as HTMLInputElement, attrs.fileTokens);
+    if (this.elementType === 'input' && attrs.type === 'file' && attrs.fileTokens) {
+      initializeUploader(this, attrs.fileTokens);
     } else if (attrs.token) {
       await this.handleToken(attrs.token, attrs);
     }
@@ -97,7 +98,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
 
   attachOnBlurNotifier() {
     this.secureElement.addEventListener('blur', () => {
-      notifyParentOfEvent('NotifyOnBlur', this.origin, this.frameNonce);
+      notifyParentOfEvent('NotifyOnBlur', this.origin, this.frameNonce, {});
     });
   }
 }

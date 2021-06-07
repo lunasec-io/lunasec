@@ -1,22 +1,23 @@
+import { AllowedElements } from '@lunasec/react-sdk';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { SecureFrame } from './secure-frame';
 import Uploader from './uploader-component';
 
-export function initializeUploader(e: HTMLInputElement, tokens: [string]) {
-  console.log('tokens for uploader are ', tokens);
-  // bit of a hack on our earlier executed code to remove the element
+// Bootstrap a react app to handle file uploading
+export function initializeUploader(secureFrame: SecureFrame<keyof AllowedElements>, tokens: [string]) {
   // TODO: rewrite the whole secure frame as a react app instead
-  const body = document.getElementsByTagName('BODY')[0];
-  body.removeChild(e);
+  // bit of a hack on our earlier executed code to remove the element
+  document.body.removeChild(secureFrame.secureElement);
 
-  const wrapper = document.createElement('div');
-  body.appendChild(wrapper);
+  const appWrapper = document.createElement('div');
+  document.body.appendChild(appWrapper);
 
   ReactDOM.render(
     <React.StrictMode>
-      <Uploader filetokens={tokens} />
+      <Uploader filetokens={tokens} secureframe={secureFrame} />
     </React.StrictMode>,
-    wrapper
+    appWrapper
   );
 }

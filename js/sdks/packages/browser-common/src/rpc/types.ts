@@ -17,8 +17,9 @@ export interface FrameNotification<K, T extends keyof K> {
   data: K[T];
 }
 
+// TODO: narrow this down with a discriminating intersection so we can use `command` to differentiate
 export interface UnknownFrameNotification {
-  command: string;
+  command: keyof InboundFrameNotificationMap;
   // Notifications don't have correlation tokens
   correlationToken?: undefined;
   frameNonce: string;
@@ -39,8 +40,11 @@ export interface AttributesMessage {
 }
 
 // Notifications from the iframe
-export interface NotifyOnBlurMessage {}
-export interface NotifyOnStartMessage {}
+export type NotifyOnBlurMessage = Record<any, never>;
+export type NotifyOnStartMessage = Record<any, never>;
+export interface NotifyOnTokenMessage {
+  token: string | Array<string>;
+}
 
 export interface ReceiveCommittedTokenMessage {
   success: boolean;
@@ -66,6 +70,7 @@ export interface InboundFrameMessageMap {
 export interface InboundFrameNotificationMap {
   NotifyOnBlur: NotifyOnBlurMessage;
   NotifyOnStart: NotifyOnStartMessage;
+  NotifyOnToken: NotifyOnTokenMessage;
 }
 
 export type OutboundMessageLookupType = {

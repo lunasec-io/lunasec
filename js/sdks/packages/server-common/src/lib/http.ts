@@ -66,10 +66,10 @@ export function makeRawRequest(
   host: string,
   path: string,
   params: http.ClientRequestArgs,
-  body?: string
+  body?: string | Buffer
 ): Promise<readonly [http.IncomingMessage, Buffer]> {
   const { requestModule, requestConfig } = getRequestParams(host, path, params);
-
+  console.log('in make raw request params are ', params, ' and body is ', body);
   return new Promise((resolve, reject) => {
     let responseBuffer: Buffer;
     const req = requestModule.request(requestConfig, (res) => {

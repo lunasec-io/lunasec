@@ -29,13 +29,12 @@ function createMessageToFrame<K extends keyof InboundFrameMessageMap>(
 function createNotificationToFrame<K extends keyof InboundFrameNotificationMap>(
   s: K,
   frameNonce: string,
-  createNotification: () => InboundFrameNotificationMap[K] = () => ({})
+  data: InboundFrameNotificationMap[K]
 ): FrameNotification<InboundFrameNotificationMap, K> {
-  const innerMessage = createNotification();
   return {
     command: s,
     frameNonce: frameNonce,
-    data: innerMessage,
+    data: data,
   };
 }
 
@@ -59,8 +58,8 @@ async function tokenizeField(): Promise<string | null> {
 export async function detokenize(token: string) {
   const tokenizer = new Tokenizer();
   const resp = await tokenizer.detokenize(token);
-  if (!resp.success || resp.value === null) {
-    throw new Error(`Detokenizer error ${resp}`);
+  if (!resp.success) {
+    throw resp.error;
   }
   return resp.value;
 }
@@ -99,8 +98,13 @@ export function respondAttributesReceived(origin: string, rawMessage: UnknownFra
   return;
 }
 
-export function notifyParentOfEvent(eventName: keyof InboundFrameNotificationMap, origin: string, frameNonce: string) {
-  const message = createNotificationToFrame(eventName, frameNonce);
+export function notifyParentOfEvent<K extends keyof InboundFrameNotificationMap>(
+  eventName: K,
+  origin: string,
+  frameNonce: string,
+  data: InboundFrameNotificationMap[K]
+) {
+  const message = createNotificationToFrame(eventName, frameNonce, data);
   sendMessageToParentFrame(origin, message);
 }
 

@@ -33,6 +33,10 @@ class App extends React.Component<Record<string, never>, IAppState> {
     this.setState({ bar: event.target.value });
   }
 
+  handleUploaderChange(tokens: string | Array<string>) {
+    console.log('FILE UPLOADER CHANGED WITH ', tokens);
+  }
+
   persistTokens(formEvent: React.FormEvent<HTMLFormElement>) {
     formEvent.preventDefault();
     window.sessionStorage.setItem(
@@ -98,7 +102,13 @@ class App extends React.Component<Record<string, never>, IAppState> {
           </div>
           <div>
             {'FilePond: '}
-            <SecureUpload name="filepond" filetokens={[this.downloadToken]} />
+            <SecureUpload
+              name="uploader"
+              filetokens={[this.downloadToken]}
+              onTokenChange={(tokens) => {
+                this.handleUploaderChange(tokens);
+              }}
+            />
           </div>
         </div>
       </div>

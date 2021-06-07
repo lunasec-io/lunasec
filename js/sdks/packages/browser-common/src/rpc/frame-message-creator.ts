@@ -5,6 +5,7 @@ import { generateSecureNonce } from '../utils/random';
 import {
   FrameMessage,
   InboundFrameMessageMap,
+  InboundFrameNotificationMap,
   OutboundFrameMessageMap,
   OutboundToInboundMessageTypeMap,
   OutboundToInboundMessageValueMap,
@@ -41,7 +42,7 @@ export class FrameMessageCreator {
       );
     }
 
-    // Notifications have a frameNonce
+    // Notifications have a frameNonce.  Notifications are one way messages from the frame to the outside
     if (unknownPost.frameNonce) {
       this.handleNotificationReceived(unknownPost);
       return;
@@ -55,7 +56,11 @@ export class FrameMessageCreator {
 
   // Notifications start in the frame and are sent here to notify us of events
   handleNotificationReceived(notification: UnknownFrameNotification): void {
-    const notificationTypes = ['NotifyOnBlur', 'NotifyOnStart'];
+    const notificationTypes: Array<keyof InboundFrameNotificationMap> = [
+      'NotifyOnBlur',
+      'NotifyOnStart',
+      'NotifyOnToken',
+    ];
     if (!notificationTypes.includes(notification.command)) {
       throw new Error(`Received Frame Notification of unknown type, allowed types are ${notificationTypes.toString()}`);
     }

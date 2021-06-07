@@ -49,7 +49,7 @@ export interface GetTokenRequest extends BaseTokenizerRequest {
 }
 
 export interface SetTokenRequest extends BaseTokenizerRequest {
-  value: string;
+  value: string | Buffer;
 }
 
 /// API Response Schemas ///

@@ -13,6 +13,7 @@
     "lib": ["es2017", "dom"],
     "typeRoots": ["node_modules/@types", "src/types"],
     "tsBuildInfoFile": "./build/buildcache.tsbuildinfo",
+    "types": ["node"],
   },
   "files": [
     "src/main.ts"

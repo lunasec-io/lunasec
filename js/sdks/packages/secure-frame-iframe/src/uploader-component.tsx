@@ -1,12 +1,16 @@
+import { AllowedElements } from '@lunasec/react-sdk';
 import { Tokenizer } from '@lunasec/tokenizer-sdk';
 import React from 'react';
 import Dropzone, { DropzoneProps, FileWithPath } from 'react-dropzone';
 
-import { getFileInfo, setupLink } from './secure-download';
+import { notifyParentOfEvent } from './rpc';
+import { handleDownload } from './secure-download';
+import { SecureFrame } from './secure-frame';
 import { MetaData } from './types';
 
 interface UploaderProps {
   filetokens: string[];
+  secureframe: SecureFrame<keyof AllowedElements>;
 }
 
 interface FileInfo {
@@ -31,29 +35,40 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
   }
 
   componentDidMount() {
+    // Load any pre-existing tokens from props
     void this.loadExistingFiles();
   }
 
-  async loadExistingFiles() {
-    const tokenizer = new Tokenizer();
-    return Promise.all(
-      this.fileTokens.map(async (token) => {
-        const metaRes = await tokenizer.getMetadata(token);
-        if (!metaRes.success) {
-          return Promise.reject(metaRes.error);
-        }
-        const meta = metaRes.metadata as MetaData;
-        const fileInfo: FileInfo = {
-          name: meta.fileinfo.filename,
-          token: token,
-          status: 'Uploaded',
-        };
-        this.setState({ files: this.state.files.concat(fileInfo) });
-        return Promise.resolve();
-      })
-    );
+  sendTokens() {
+    const tokens: Array<string> = [];
+    this.state.files.forEach((f) => {
+      if (f.token) {
+        tokens.push(f.token);
+      }
+    });
+    const secureFrame = this.props.secureframe;
+    notifyParentOfEvent('NotifyOnToken', secureFrame.origin, secureFrame.frameNonce, { token: tokens });
   }
 
+  loadExistingFiles(): void {
+    const tokenizer = new Tokenizer();
+    this.fileTokens.map(async (token) => {
+      const metaRes = await tokenizer.getMetadata(token);
+      if (!metaRes.success) {
+        // If it failed then do nothing and don't show a file
+        return;
+      }
+      const meta = metaRes.metadata as MetaData;
+      const fileInfo: FileInfo = {
+        name: meta.fileinfo.filename,
+        token: token,
+        status: 'Uploaded',
+      };
+      this.setState({ files: this.state.files.concat(fileInfo) });
+    });
+  }
+
+  // TODO: add the ability to remove a file
   async processAddedFiles(files: FileWithPath[]) {
     // Single file mode for now to simplify things
     const file = files[0];
@@ -63,13 +78,15 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     };
     this.setState({ files: this.state.files.concat(fileInfo) });
     try {
-      const fileText = await file.text();
+      // TODO: Move this logic into the tokenizer so that tokenizer simply takes a File
+      const arrayBuf = await file.arrayBuffer();
+      // Turn the JS ArrayBuffer into a Node type Buffer for tokenizer
+      const buf = Buffer.from(new Uint8Array(arrayBuf));
       const tokenizer = new Tokenizer();
-      const uploadRes = await tokenizer.tokenize(fileText);
+      const uploadRes = await tokenizer.tokenize(buf);
       if (!uploadRes.success) {
         throw uploadRes.error;
       }
-      console.log('uploadRes is ', uploadRes);
       const token = uploadRes.tokenId;
       const meta: MetaData = {
         fileinfo: {
@@ -82,13 +99,15 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
       if (!metaRes.success) {
         throw metaRes.error;
       }
-      console.log('metaRes is ', metaRes);
       this.mutateFileState(file.name, { status: 'Uploaded', token: token });
+      this.sendTokens();
     } catch (e) {
+      console.error(e);
       this.mutateFileState(file.name, { status: 'Error' });
     }
   }
 
+  // a helper function to go through the files array and find the file we want to change some fields on
   mutateFileState(name: string, changedFields: Partial<FileInfo>) {
     const updatedFiles = this.state.files.map((f) => {
       if (f.name === name) {
@@ -99,17 +118,16 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     this.setState({ files: updatedFiles });
   }
 
-  async handleFileClick(token: string | undefined) {
+  handleFileClick(token: string | undefined) {
     if (!token) {
       return;
     }
-    console.log('downloading from token ', token);
-    const info = await getFileInfo(token);
-
+    // Hidden element for the downloader to trigger
     const hiddenAnchor = document.createElement('a');
     hiddenAnchor.style.display = 'none';
     document.body.appendChild(hiddenAnchor);
-    setupLink(info, hiddenAnchor, true);
+    // Just reusing the download code from Secure Downloader
+    return handleDownload(token, hiddenAnchor, true);
   }
 
   render() {
