@@ -3,7 +3,7 @@ import { Tokenizer } from '@lunasec/tokenizer-sdk';
 import React from 'react';
 import Dropzone, { DropzoneProps, FileWithPath } from 'react-dropzone';
 
-import { notifyParentOfEvent } from './rpc';
+import { sendMessageToParentFrame } from './rpc';
 import { handleDownload } from './secure-download';
 import { SecureFrame } from './secure-frame';
 import { MetaData } from './types';
@@ -47,7 +47,11 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
       }
     });
     const secureFrame = this.props.secureframe;
-    notifyParentOfEvent('NotifyOnToken', secureFrame.origin, secureFrame.frameNonce, { token: tokens });
+    sendMessageToParentFrame(secureFrame.origin, {
+      command: 'NotifyOnToken',
+      frameNonce: secureFrame.frameNonce,
+      data: { token: tokens },
+    });
   }
 
   loadExistingFiles(): void {
@@ -99,23 +103,31 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
       if (!metaRes.success) {
         throw metaRes.error;
       }
-      this.mutateFileState(file.name, { status: 'Uploaded', token: token });
+      await this.mutateFileState(file.name, { status: 'Uploaded', token: token });
       this.sendTokens();
     } catch (e) {
       console.error(e);
-      this.mutateFileState(file.name, { status: 'Error' });
+      await this.mutateFileState(file.name, { status: 'Error' });
     }
   }
 
   // a helper function to go through the files array and find the file we want to change some fields on
-  mutateFileState(name: string, changedFields: Partial<FileInfo>) {
-    const updatedFiles = this.state.files.map((f) => {
-      if (f.name === name) {
-        Object.assign(f, changedFields);
-      }
-      return f;
+  mutateFileState(name: string, changedFields: Partial<FileInfo>, destroy = false): Promise<null> {
+    let files = this.state.files;
+    if (destroy) {
+      files = files.filter((f) => f.name !== name);
+    } else {
+      files = this.state.files.map((f) => {
+        if (f.name === name) {
+          Object.assign(f, changedFields);
+        }
+        return f;
+      });
+    }
+    // setState is async but doesnt even give us a promise so we have to do this
+    return new Promise((resolve) => {
+      this.setState({ files }, () => resolve(null));
     });
-    this.setState({ files: updatedFiles });
   }
 
   handleFileClick(token: string | undefined) {
@@ -130,6 +142,11 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     return handleDownload(token, hiddenAnchor, true);
   }
 
+  async deleteFile(name: string) {
+    await this.mutateFileState(name, {}, true);
+    this.sendTokens();
+  }
+
   render() {
     const dropZoneOptions: DropzoneProps = {
       onDrop: (acceptedFiles) => this.processAddedFiles(acceptedFiles),
@@ -141,6 +158,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
       return (
         <div className={className} key={f.name} onClick={() => this.handleFileClick(f.token)}>
           <p>{`${f.name} ${f.status || ''}`}</p>
+          <button onClick={() => void this.deleteFile(f.name)}>X</button>
         </div>
       );
     });

@@ -77,3 +77,12 @@ a {
 .dropzone.disabled {
   opacity: 0.6;
 }
+
+.file-container {
+  border-radius:5px;
+  background-color: #F3F3F3;
+  padding: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-top: 7px;
+}

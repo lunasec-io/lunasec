@@ -2,7 +2,7 @@ import { AttributesMessage, patchStyle, safeParseJson, StyleInfo } from '@lunase
 import { AllowedElements } from '@lunasec/react-sdk';
 
 import { initializeUploader } from './initialize-uploader';
-import { detokenize, listenForRPCMessages, notifyParentOfEvent } from './rpc';
+import { detokenize, listenForRPCMessages, sendMessageToParentFrame } from './rpc';
 import { handleDownload } from './secure-download';
 export type SupportedElement = AllowedElements[keyof AllowedElements];
 
@@ -24,7 +24,11 @@ export class SecureFrame<e extends keyof AllowedElements> {
     listenForRPCMessages(this.origin, (attrs) => {
       void this.setAttributesFromRPC(attrs);
     });
-    notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce, {});
+    sendMessageToParentFrame(this.origin, {
+      command: 'NotifyOnStart',
+      data: {},
+      frameNonce: this.frameNonce,
+    });
   }
 
   insertSecureElement(elementName: e) {
@@ -98,7 +102,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
 
   attachOnBlurNotifier() {
     this.secureElement.addEventListener('blur', () => {
-      notifyParentOfEvent('NotifyOnBlur', this.origin, this.frameNonce, {});
+      sendMessageToParentFrame(this.origin, { command: 'NotifyOnBlur', frameNonce: this.frameNonce, data: {} });
     });
   }
 }

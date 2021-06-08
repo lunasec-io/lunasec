@@ -3,7 +3,7 @@ export interface FrameMessage<K, T extends keyof K> {
   correlationToken: string;
   data: K[T];
 }
-
+// TODO: Get rid of this and replace with a type alias that narrows as we did below with FrameNotifications
 export interface UnknownFrameMessage {
   command: string;
   correlationToken: string;
@@ -11,23 +11,8 @@ export interface UnknownFrameMessage {
   data: any;
 }
 
-export interface FrameNotification<K, T extends keyof K> {
-  command: T;
-  frameNonce: string;
-  data: K[T];
-}
-
-// TODO: narrow this down with a discriminating intersection so we can use `command` to differentiate
-export interface UnknownFrameNotification {
-  command: keyof InboundFrameNotificationMap;
-  // Notifications don't have correlation tokens
-  correlationToken?: undefined;
-  frameNonce: string;
-  data: any;
-}
-
 // Tell the iframe to commit its data to the server and send back a token
-export interface CommitTokenMessage {}
+export type CommitTokenMessage = Record<any, never>;
 // Initialize or update some attribute of the iframe
 
 export interface AttributesMessage {
@@ -37,13 +22,6 @@ export interface AttributesMessage {
   type?: string;
   hidden?: boolean;
   fileTokens?: [string];
-}
-
-// Notifications from the iframe
-export type NotifyOnBlurMessage = Record<any, never>;
-export type NotifyOnStartMessage = Record<any, never>;
-export interface NotifyOnTokenMessage {
-  token: string | Array<string>;
 }
 
 export interface ReceiveCommittedTokenMessage {
@@ -67,12 +45,6 @@ export interface InboundFrameMessageMap {
   ReceiveAttributesConfirmation: ReceivedAttributesMessage;
 }
 
-export interface InboundFrameNotificationMap {
-  NotifyOnBlur: NotifyOnBlurMessage;
-  NotifyOnStart: NotifyOnStartMessage;
-  NotifyOnToken: NotifyOnTokenMessage;
-}
-
 export type OutboundMessageLookupType = {
   [key in keyof OutboundFrameMessageMap]: keyof InboundFrameMessageMap;
 };
@@ -85,3 +57,34 @@ export const OutboundToInboundMessageValueMap: OutboundMessageLookupType = {
   CommitToken: 'ReceiveCommittedToken',
   Attributes: 'ReceiveAttributesConfirmation',
 };
+
+// FRAME NOTIFICATION TYPES START HERE
+// Frame notifications go from the frame to the outside app and don't receive a reply
+
+type NotifyOnBlurData = Record<any, never>;
+type NotifyOnStartData = Record<any, never>;
+interface NotifyOnTokenData {
+  token: string | Array<string>;
+}
+
+interface BaseFrameNotification {
+  frameNonce: string;
+  correlationToken?: undefined; // Necessary because when Posts come in we don't know if they are a message or a notification
+}
+
+export interface NotifyOnBlur extends BaseFrameNotification {
+  command: 'NotifyOnBlur';
+  data: NotifyOnBlurData;
+}
+
+export interface NotifyOnStart extends BaseFrameNotification {
+  command: 'NotifyOnStart';
+  data: NotifyOnStartData;
+}
+
+export interface NotifyOnToken extends BaseFrameNotification {
+  command: 'NotifyOnToken';
+  data: NotifyOnTokenData;
+}
+
+export type FrameNotification = NotifyOnBlur | NotifyOnStart | NotifyOnToken;

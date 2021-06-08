@@ -3,9 +3,9 @@ import {
   addJsEventListener,
   AttributesMessage,
   FrameMessageCreator,
+  FrameNotification,
   generateSecureNonce,
   secureFramePathname,
-  UnknownFrameNotification,
 } from '@lunasec/browser-common';
 
 class FileDownloader {
@@ -45,7 +45,7 @@ class FileDownloader {
     return frameURL.toString();
   }
 
-  frameNotificationCallback(notification: UnknownFrameNotification) {
+  frameNotificationCallback(notification: FrameNotification) {
     if (notification.frameNonce !== this.frameNonce) {
       console.debug('Received notification intended for different listener, discarding');
       return;

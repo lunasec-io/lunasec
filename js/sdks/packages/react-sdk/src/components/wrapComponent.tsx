@@ -4,11 +4,11 @@ import {
   AttributesMessage,
   // camelCaseObject,
   FrameMessageCreator,
+  FrameNotification,
   generateSecureNonce,
   getStyleInfo,
   ReadElementStyle,
   secureFramePathname,
-  UnknownFrameNotification,
 } from '@lunasec/browser-common';
 import React, { Component, CSSProperties, RefObject } from 'react';
 
@@ -153,8 +153,8 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
       return;
     }
 
-    frameNotificationCallback(notification: UnknownFrameNotification) {
-      // TODO: move this logic into the RPC layer, we shouldnt have to filter here
+    frameNotificationCallback(notification: FrameNotification) {
+      // TODO: move this filter into the RPC layer, we shouldnt have to filter here
       if (notification.frameNonce !== this.frameId) {
         console.debug('Received notification intended for different listener, discarding');
         return;
@@ -205,7 +205,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         dummyElementStyle,
       };
 
-      const { token, secureFrameUrl, ...scrubbedProps } = this.props;
+      const { token, secureFrameUrl, onTokenChange, ...scrubbedProps } = this.props;
 
       // TODO: Fix this issue
       // @ts-ignore

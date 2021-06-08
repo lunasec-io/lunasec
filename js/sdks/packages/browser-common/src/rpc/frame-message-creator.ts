@@ -4,21 +4,20 @@ import { generateSecureNonce } from '../utils/random';
 
 import {
   FrameMessage,
+  FrameNotification,
   InboundFrameMessageMap,
-  InboundFrameNotificationMap,
   OutboundFrameMessageMap,
   OutboundToInboundMessageTypeMap,
   OutboundToInboundMessageValueMap,
   UnknownFrameMessage,
-  UnknownFrameNotification,
 } from './types';
 
 export class FrameMessageCreator {
   private readonly frameResponses: Record<string, UnknownFrameMessage>;
   private readonly timeout: number;
-  private readonly frameNotificationCallback!: (notification: UnknownFrameNotification) => void;
+  private readonly frameNotificationCallback!: (notification: FrameNotification) => void;
 
-  constructor(notificationCallback: (notification: UnknownFrameNotification) => void, timeout = 5000) {
+  constructor(notificationCallback: (notification: FrameNotification) => void, timeout = 5000) {
     this.frameResponses = {};
     this.frameNotificationCallback = notificationCallback;
     this.timeout = timeout;
@@ -35,7 +34,7 @@ export class FrameMessageCreator {
     };
   }
 
-  postReceived(unknownPost: UnknownFrameMessage | UnknownFrameNotification): void {
+  postReceived(unknownPost: UnknownFrameMessage | FrameNotification): void {
     if (!unknownPost.frameNonce && !unknownPost.correlationToken) {
       throw new Error(
         'Unknown post message received without correlationToken or frameNonce, must have one or the other'
@@ -55,12 +54,8 @@ export class FrameMessageCreator {
   }
 
   // Notifications start in the frame and are sent here to notify us of events
-  handleNotificationReceived(notification: UnknownFrameNotification): void {
-    const notificationTypes: Array<keyof InboundFrameNotificationMap> = [
-      'NotifyOnBlur',
-      'NotifyOnStart',
-      'NotifyOnToken',
-    ];
+  handleNotificationReceived(notification: FrameNotification): void {
+    const notificationTypes: FrameNotification['command'][] = ['NotifyOnBlur', 'NotifyOnStart', 'NotifyOnToken'];
     if (!notificationTypes.includes(notification.command)) {
       throw new Error(`Received Frame Notification of unknown type, allowed types are ${notificationTypes.toString()}`);
     }
