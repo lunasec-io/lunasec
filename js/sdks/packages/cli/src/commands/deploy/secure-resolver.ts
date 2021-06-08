@@ -1,5 +1,4 @@
 import {Command, flags} from '@oclif/command'
-import {DeploymentStage, SecureResolver} from "@lunasec/node-sdk";
 
 export default class SecureResolver extends Command {
   static description = 'Deploy Lunasec secure resolvers'
@@ -20,6 +19,7 @@ export default class SecureResolver extends Command {
       throw new Error("Unable to deploy secure resolver: container URI is not defined.")
     }
 
+    /*
     const secureResolver = new SecureResolver({
       stage: DeploymentStage.PROD,
     });
@@ -31,5 +31,6 @@ export default class SecureResolver extends Command {
       return;
     }
     console.log("successfully deployed secure resolver");
+     */
   }
 }

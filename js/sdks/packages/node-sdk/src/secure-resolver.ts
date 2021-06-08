@@ -1,140 +1,82 @@
-import { URL as URI } from 'url';
-import {Pretend} from "pretend";
+import {SecureResolverCallError} from "./errors";
+import {
+  SecureResolverClient,
+  SecureResolverResponse
+} from "./secure-resolver-client";
+import {__CONTAINER_SECRET__} from "./constants";
+import {DeploymentStage} from "./types";
+import {LunaSecDeployment} from "./lunasec-deployment";
+import assert from "assert";
 
-import { makeRequest } from '@lunasec/server-common';
-
-import { GenericApiClient } from './api-client';
-import { BuildActionFunctionConfig } from './types';
-import {__CONTAINER_SECRET__, __DEPLOYMENT_SECRET__} from "./constants";
-import * as http from "http";
-import {SecureResolverClient} from "./secure-resolver-client";
-
-
-const refinerySecretHeader: string = 'REFINERY_DEPLOYMENT_SECRET';
-const deploymentIDEnvVar: string = 'REFINERY_DEPLOYMENT_ID';
-const containerSecretHeader: string = 'X-Container-Secret';
-
-class SecureResolverCallError extends Error {
-  constructor(message?: string) {
-    super(message);
-    Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
-    this.name = SecureResolverCallError.name; // stack traces display correctly now
-  }
-}
-
-export enum DeploymentStage {
-  DEV = 'DEV',
-  PROD = 'PROD'
-}
-
-
-interface SecureResolverSdkConfig {
-  stage: DeploymentStage;
-  deploymentId?: string;
+interface SecureResolverConfig {
+  stage: string;
+  projectName: string;
+  projectId: string;
+  deploymentTag: string;
+  url?: string;
   appDir?: string;
   language?: string;
   configPath?: string;
 }
 
-const defaultConfig: SecureResolverSdkConfig = {
+/*
+const defaultConfig: SecureResolverConfig = {
   stage: DeploymentStage.DEV,
+  projectName: 'secure-resolver',
+  projectId: '',
   appDir: '/app',
   language: 'Node.js 10 Temporal',
   configPath: 'lunasec.json',
 };
-
-export interface FunctionInvocationResult {
-  success: boolean;
-  error?: string;
-  completeError?: unknown;
-  result?: unknown;
-}
-
-interface SecureResolverFunctions {
-  deploy: (containerUri: string) => void;
-  call: (functionName: string, args: any) => Promise<FunctionInvocationResult>;
-}
-
-async function fetch(requestOptions: http.RequestOptions, body?: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const request = http.request({...requestOptions, timeout: 2000}, (res) => {
-      if (res.statusCode && (res.statusCode < 200 || res.statusCode > 299)) {
-        return reject(new Error(`HTTP status code ${res.statusCode}`))
-      }
-
-      const body: Array<Uint8Array> = [];
-      res.on('data', (chunk) => body.push(chunk));
-      res.on('end', () => {
-        const resString = Buffer.concat(body).toString()
-        resolve(resString)
-      });
-    })
-
-    request.on('error', (err) => {
-      reject(err)
-    })
-    request.on('timeout', () => {
-      request.destroy()
-      reject(new Error('timed out'))
-    })
-    if (body !== undefined) {
-      request.write(body);
-      request.end();
-    }
-  })
-}
+ */
 
 export class SecureResolver {
-  readonly config!: SecureResolverSdkConfig;
+  readonly config!: SecureResolverConfig;
 
-  readonly functionConfig!: {
-    projectID: string;
-    functions: BuildActionFunctionConfig[];
-  };
+  client: SecureResolverClient | undefined;
 
-  readonly refineryHeaders!: Record<string, string>;
-  readonly containerHeaders!: Record<string, string>;
-
-  readonly apiClient!: GenericApiClient;
-
-  readonly functionStageLookup: Record<DeploymentStage, SecureResolverFunctions> = {
-    [DeploymentStage.DEV]: {
-      call: this.callDev,
-      deploy: this.deployDev,
-    },
-    [DeploymentStage.PROD]: {
-      call: this.callProd,
-      deploy: this.deployProd,
-    }
-  };
-
-  constructor(config: SecureResolverSdkConfig) {
-    // Deep clone the config to prevent nested mutation.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.config = JSON.parse(JSON.stringify(Object.assign({}, defaultConfig, config)));
-
-    const deploymentId = process.env[deploymentIDEnvVar];
-    if (deploymentId !== undefined) {
-      this.config.deploymentId = deploymentId;
-    }
-
-    if (deploymentId === undefined) {
-      throw new Error("Secure Resolver SDK cannot be initialized: deployment ID is not set in config or environment");
-    }
-
-    this.refineryHeaders = {
-      [refinerySecretHeader]: __DEPLOYMENT_SECRET__,
-    };
-
-    this.containerHeaders = {
-      [containerSecretHeader]: __CONTAINER_SECRET__,
-    };
-
-    this.apiClient = Pretend
-      .builder()
-      .target(SecureResolverClient, secureResolverDeploymentURL);
+  constructor(config: SecureResolverConfig) {
+    this.config = config;
   }
 
+  async init() {
+    if (this.config.url === undefined) {
+      this.config.url = await this.getSecureResolverURL();
+    }
+
+    this.client = new SecureResolverClient(this.config.url, __CONTAINER_SECRET__);
+  }
+
+  async getSecureResolverURL(): Promise<string> {
+    const deploymentClient = new LunaSecDeployment({
+      projectName: this.config.projectName,
+      projectId: this.config.projectId,
+      projectTemplate: 'secure-resolver'
+    })
+
+    const deployments = await deploymentClient.getDeployedResources({
+      deploymentTag: this.config.deploymentTag
+    });
+
+    if (deployments.length === 0) {
+      throw new Error(`no deployments found matching deployment tag: ${this.config.deploymentTag}`);
+    }
+
+    const latestDeployment = deployments[0];
+    const matchingWorkflowStates = latestDeployment.deployment_json.workflow_states.filter((value) => {
+      return value.name === "/execute";
+    });
+
+    if (matchingWorkflowStates.length !== 1) {
+      throw new Error(`did not find exactly one secure resolver URL for deployment: deployment tag: ${this.config.deploymentTag} workflow states: ${matchingWorkflowStates}`);
+    }
+
+    const secureResolverExecuteURL = matchingWorkflowStates[0];
+    if (secureResolverExecuteURL.url === undefined) {
+      throw new Error(`secure resolver url is undefined: ${secureResolverExecuteURL}`);
+    }
+    return secureResolverExecuteURL.url;
+  }
 
   secureImport(moduleName: string): any {
     const importedModule = require(moduleName);
@@ -153,13 +95,15 @@ export class SecureResolver {
       // TODO (cthompson) we catch all errors here as a convenience to the caller so they don't have to change their code that much
       // is this a good idea?
       try {
-        const res = await this.call(fn.name, args);
-        if (!res.success) {
-          const e = new SecureResolverCallError(res.error);
+        const resp = await this.call(fn.name, args);
+
+        if (resp.error !== undefined) {
+          const e = new SecureResolverCallError(`${resp.error} - ${resp.completeError}`);
           console.error(e);
           return undefined;
         }
-        return <U> res.result;
+
+        return <U> resp.result;
       } catch(e) {
         console.error(e);
         return undefined;
@@ -167,83 +111,28 @@ export class SecureResolver {
     }
   }
 
-  async call(functionName: string, args: any): Promise<FunctionInvocationResult> {
-    const callFunction = this.functionStageLookup[this.config.stage].call;
-    return callFunction(functionName, args);
+  async call(functionName: string, args: any): Promise<SecureResolverResponse> {
+    if (this.config.stage === DeploymentStage.PROD) {
+      return this.callProd(functionName, args);
+    }
+    return this.callDev(functionName, args);
   }
 
-  async callDev(functionName: string, args: any): Promise<FunctionInvocationResult> {
-    const data = JSON.stringify({
+  async callDev(functionName: string, args: any): Promise<SecureResolverResponse> {
+    assert(this.client !== undefined, "call to secure resolver before call to SecureResolver.init()");
+
+    return await this.client.executeLocal({
       function_name: functionName,
       block_input: args,
     });
-    try {
-      const res = await fetch({
-        host: "localhost",
-        port: 9001,
-        path: "/2015-03-31/functions/function/invocations",
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': data.length
-        },
-      }, data);
-      return {
-        success: true,
-        result: JSON.parse(res).result
-      }
-    } catch(e) {
-      console.error(e);
-      return {
-        success: false,
-        error: e
-      }
-    }
   }
 
-  async callProd(functionName: string, args: any): Promise<FunctionInvocationResult> {
-    if (!this.config.deploymentId) {
-      throw new SecureResolverCallError("deployment ID is not configured")
-    }
+  async callProd(functionName: string, args: any): Promise<SecureResolverResponse> {
+    assert(this.client !== undefined, "call to secure resolver before call to SecureResolver.init()");
 
-    const urlResponse = await this.getFunctionUrl(this.config.deploymentId);
-
-    if (!urlResponse.success) {
-      return {
-        success: false,
-        error: urlResponse.error.message,
-        completeError: urlResponse,
-      };
-    }
-
-    const body = JSON.stringify({
+    return await this.client.execute({
       function_name: functionName,
       block_input: args,
     });
-
-    const resolverUrl = new URI(urlResponse.data.url);
-
-    const response = await makeRequest<{ error?: string; result?: unknown }>(
-      resolverUrl.host,
-      resolverUrl.pathname,
-      {
-        ...resolverUrl,
-        method: 'POST',
-        headers: this.containerHeaders,
-      },
-      body
-    );
-
-    if (!response || response.error) {
-      return {
-        success: false,
-        ...response,
-      };
-    }
-
-    return {
-      success: true,
-      ...response,
-    };
   }
 }

@@ -1,5 +1,5 @@
-import { DeploymentStage, SecureResolver } from '@lunasec/node-sdk';
 import { Command, flags } from '@oclif/command';
+import {LunaSecDeployment, LunaSecDeploymentTemplates, getLunasecDeploymentTemplate} from "@lunasec/node-sdk";
 
 export default class SecureEnclave extends Command {
   static description = 'Deploy Lunasec secure enclave components'
@@ -8,7 +8,9 @@ export default class SecureEnclave extends Command {
 
   static flags = {
     help: flags.help({ char: 'h' }),
-    containerURI: flags.string({ char: 'c', description: 'container uri', required: true }),
+    projectName: flags.string({ char: 'n', description: 'project name', required: true }),
+    projectTemplate: flags.string({ char: 't', description: 'project template', required: true }),
+    projectId: flags.string({ char: 'i', description: 'project id', required: false }),
   };
 
   static args = [];
@@ -16,20 +18,31 @@ export default class SecureEnclave extends Command {
   async run() {
     const {flags} = this.parse(SecureEnclave)
 
-    if (flags.containerURI === undefined) {
-      throw new Error('Unable to deploy secure resolver: container URI is not defined.');
-    }
+    const projectTemplate: LunaSecDeploymentTemplates = getLunasecDeploymentTemplate(flags.projectTemplate);
 
-    const secureResolver = new SecureResolver({
-      stage: DeploymentStage.PROD,
+    const lunasecDeployment = new LunaSecDeployment({
+      projectName: flags.projectName,
+      projectTemplate: projectTemplate,
+      projectId: flags.projectId
     });
 
     try {
-      await secureResolver.deploy(flags.containerURI);
+      const deploymentId = await lunasecDeployment.deployProd();
+
+      const deployment = await lunasecDeployment.getDeployment(deploymentId);
+
+      const resourcesDeployed = deployment.deployment_json.deployment_json.workflow_states.length;
+      const deploymentTag = deployment.tag;
+      const secrets = deployment.deployment_json.deployment_json.secrets;
+      console.log({
+        resourcesDeployed,
+        deploymentId,
+        deploymentTag,
+        secrets
+      });
     } catch (e) {
       console.error('unable to deploy secure resolver: ' + e);
       return;
     }
-    console.log('successfully deployed secure resolver');
   }
 }
