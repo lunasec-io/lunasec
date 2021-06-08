@@ -1,5 +1,5 @@
 {
-  "name": "@lunasec/secure-frame-js-sdk",
+  "name": "@lunasec/js-sdk",
   "version": "1.0.0",
   "description": "Vanilla Javascript Browser SDK for lunasec Secure Frame",
   "main": "build/main/index.js",

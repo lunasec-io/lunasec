@@ -33,6 +33,7 @@ export interface AttributesMessage {
   style?: string;
   token?: string;
   type?: string;
+  hidden?: boolean;
 }
 
 // Notifications from the iframe

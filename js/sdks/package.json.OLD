@@ -40,6 +40,7 @@
     "@lunasec/common": "file:packages/common",
     "@lunasec/secure-frame-common": "file:packages/secure-frame/common",
     "@lunasec/secure-frame-js-sdk": "file:packages/secure-frame/js-sdk",
+    "@lunasec/react-sdk": "file:../../packages/secure-frame/react-sdk",
     "lint-staged": "^10.5.4"
   },
   "lint-staged": {

@@ -1,31 +1,27 @@
 
 # Tokenizer Front End SDK
 
-This monorepo holds the LunaSec SDKs, servers, and demo application.  
+This monorepo holds the LunaSec SDKs, servers, and demo application.  Together, they are a toolkit that keeps data secure in the front and back end of web applications.  
+
+On the front end, cross-domain iFrames dubbed **Secure Frames** handle the creation and display of sensitive fields, and on the backend sensitive data is handled inside Lambdas dubbed **Secure Resolvers**.  
 
 A few components:
 
-### /app
-This is a demo vanilla JS web page that represents something similar to a customer's page, just a place for LunaSec modules to be inserted. This has no CSP policy and is swiss cheese by itself.
-
-### /react-front-end
-Similar to above, but a React Application.  This is our main supported framework at the moment.
-
-### /service
-This hosts the SDK frontend components which load into the iframe. What matters with this service is that it has very strict CSP and is only able to be invoked from an `<iframe>` context.
-
-Ultimately, this will most likely just be a CDN for the assets and this URI just sets a few variables. We could definitely do this in edge workers if we wanted -- there is no database.
-
-Any calls to Tokenizer would likely be proxied through this service for the MVP.
+### /js/demo-apps/packages
+Demo apps that use our toolkit for testing and demonstration.  The react-app and node-app are the one's currently being developed.  These are our only SDK supported frameworks currently.  
 
 
-### /sdks
-Contains front and backend SDKs. Node serverside SDKs are in `/packages/node-sdk` and frontend components are in `packages/secure-frame`.
+### /js/sdks
+Contains front and backend SDKs. 
 `js-sdk` and `react-sdk` packages support different frontend frameworks, and get most of their business logic from the `common` module.  
 It's all written in Typescript and outputs to a few different formats:
 - ES5 build (polyfills ES2016 modules)
 - ESNext build (uses ES2016 modules)
 - Browser build (concatenated into one file that's loaded into browser global namespace)
+
+### /js/sdks/packages/secure-frame-iframe
+This holds the SDK frontend components which load into the iframe. What makes this secure is that it has very strict CSP and is only able to be invoked from an `<iframe>` context.
+
 
 ## How to launch the cluster and get the app running
 To install all dependencies, run `lerna bootstrap`. 

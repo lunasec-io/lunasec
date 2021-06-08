@@ -21,12 +21,6 @@ export function getStyleInfo(source: SupportedElement, pseudoSelector?: string):
   if (!pseudoSelector) {
     const { width, height } = source.getBoundingClientRect();
 
-    // TODO: Figure out why we were doing this in the first place
-    // if (width * height === 0) {
-    //   console.debug('elements width times height is 0, bail ', source);
-    //   return null;
-    // }
-
     const allPseudoStyleInfo: PesudoStyleInfoMap = Object.create(null);
 
     // TODO: Figure out implementing pseudo selectors for cloned element

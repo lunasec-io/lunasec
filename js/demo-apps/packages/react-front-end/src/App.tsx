@@ -1,4 +1,5 @@
-import { SecureForm, SecureInput, SecureSpan } from '@lunasec/react-sdk';
+import { downloadFile } from '@lunasec/js-sdk';
+import { SecureDownload, SecureForm, SecureInput, SecureSpan } from '@lunasec/react-sdk';
 import React, { CSSProperties } from 'react';
 // import logo from './logo.svg';
 import './App.css';
@@ -10,11 +11,16 @@ interface IAppState {
 }
 
 class App extends React.Component<Record<string, never>, IAppState> {
-  // Retrieves tokens from sessionStorage and sets them to component's state
+  // Hardcoded token here will not work for you, use tokenizer CLI to upload your own test file
+  private readonly downloadToken = 'lunasec-27185faf-f5d2-4c07-8670-7fab4be03beb';
+
   constructor(props: Record<string, never>) {
     super(props);
-
     this.state = this.retrieveTokens();
+  }
+
+  componentDidMount() {
+    downloadFile(this.downloadToken);
   }
 
   handleFooChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -83,10 +89,13 @@ class App extends React.Component<Record<string, never>, IAppState> {
             />
             <input type="submit" />
           </SecureForm>
-          <p>
-            {'The word of the day is '}
+          <div>
             <SecureSpan name="aSpan" token={this.state.foo} className="test-secure-span" />
-          </p>
+          </div>
+          <div>
+            {'Secure Download:'}
+            <SecureDownload name="securefile.pdf" token={this.downloadToken} className="test-secure-downloader" />
+          </div>
         </div>
       </div>
     );
