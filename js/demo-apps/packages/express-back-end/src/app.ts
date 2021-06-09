@@ -47,4 +47,11 @@ app.post('/signup', async (req, res) => {
   res.end()
 });
 
+app.get('/profile', async (_req, res) => {
+  res.write({
+    "ssn": "lunasec-2ce7db69-6668-403a-9878-3a9de04ea806"
+  })
+  res.end()
+})
+
 export default app;
