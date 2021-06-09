@@ -10,8 +10,6 @@ import assert from "assert";
 
 interface SecureResolverConfig {
   stage: string;
-  projectName: string;
-  projectId: string;
   deploymentTag: string;
   url?: string;
   appDir?: string;
@@ -49,15 +47,13 @@ export class SecureResolver {
 
   async getSecureResolverURL(): Promise<string> {
     const deploymentClient = new LunaSecDeployment({
-      projectName: this.config.projectName,
-      projectId: this.config.projectId,
       projectTemplate: 'secure-resolver'
     })
 
     const deployment = await deploymentClient.getDeployment(
       {deploymentTag: this.config.deploymentTag});
 
-    const matchingWorkflowStates = deployment.deployment_json.deployment_json.workflow_states.filter((value) => {
+    const matchingWorkflowStates = deployment.deployment_json.workflow_states.filter((value) => {
       return value.name === "/execute";
     });
 

@@ -7,7 +7,8 @@ const app = express();
 app.use(express.json());
 
 const secureResolver = new SecureResolver({
-  stage: DeploymentStage.DEV
+  stage: DeploymentStage.DEV,
+  deploymentTag: ''
 });
 
 const secureProcessForm = secureResolver.wrap(processForm);

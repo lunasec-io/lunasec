@@ -11,7 +11,7 @@ import {__DEPLOYMENT_SECRET__, __DEPLOYMENT_SERVER_URL__} from "./constants";
 import {LunaSecDeploymentJSON} from "./deployment-json-types";
 
 interface LunaSecDeploymentConfig {
-  projectName: string
+  projectName?: string
   projectTemplate: LunaSecDeploymentTemplates;
   projectId?: string;
   projectVersion?: number;
@@ -37,6 +37,8 @@ export class LunaSecDeployment {
   }
 
   async createProject() {
+    assert(this.config.projectName !== undefined, "create project was called when projectName is undefined");
+
     const resp = await this.client.createProject({
       project_name: this.config.projectName
     })
