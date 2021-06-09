@@ -4,11 +4,11 @@ import {
   AttributesMessage,
   // camelCaseObject,
   FrameMessageCreator,
+  FrameNotification,
   generateSecureNonce,
   getStyleInfo,
   ReadElementStyle,
   secureFramePathname,
-  UnknownFrameNotification,
 } from '@lunasec/browser-common';
 import React, { Component, CSSProperties, RefObject } from 'react';
 
@@ -123,8 +123,23 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         attrs.style = JSON.stringify(style.childStyle);
       }
 
+      // Pull from the "type" of an input element if we have one in our wrapped element
+      const dummyElement = this.dummyRef.current;
+      if (elementName === 'input' && dummyElement) {
+        const inputType = dummyElement.getAttribute('type');
+        if (inputType) {
+          attrs.type = inputType;
+        }
+      }
+
+      if (this.props.token && this.props.filetokens) {
+        throw new Error("Can't have both tokens and filetokens specified in props");
+      }
       if (this.props.token) {
         attrs.token = this.props.token;
+      }
+      if (this.props.filetokens) {
+        attrs.fileTokens = this.props.filetokens;
       }
 
       return attrs;
@@ -142,8 +157,8 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
       return;
     }
 
-    frameNotificationCallback(notification: UnknownFrameNotification) {
-      // TODO: move this logic into the RPC layer, we shouldnt have to filter here
+    frameNotificationCallback(notification: FrameNotification) {
+      // TODO: move this filter into the RPC layer, we shouldnt have to filter here
       if (notification.frameNonce !== this.frameId) {
         console.debug('Received notification intended for different listener, discarding');
         return;
@@ -153,6 +168,10 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
           this.frameReady = true;
           void this.sendIFrameAttributes();
           break;
+        case 'NotifyOnToken':
+          if (this.props.onTokenChange && 'token' in notification.data) {
+            this.props.onTokenChange(notification.data.token);
+          }
       }
     }
 
@@ -190,9 +209,9 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         dummyElementStyle,
       };
 
-      const { token, secureFrameUrl, ...scrubbedProps } = this.props;
+      const { token, secureFrameUrl, onTokenChange, ...scrubbedProps } = this.props;
 
-      // TODO: Fix this issue
+      // TODO: Fix this issue, and in the mean time be very careful with your props
       // @ts-ignore
       const propsForWrapped: WrappedComponentProps<EName> = {
         ...scrubbedProps,

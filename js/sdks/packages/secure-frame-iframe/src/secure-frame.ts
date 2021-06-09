@@ -1,19 +1,20 @@
 import { AttributesMessage, patchStyle, safeParseJson, StyleInfo } from '@lunasec/browser-common';
 import { AllowedElements } from '@lunasec/react-sdk';
 
-import { detokenize, listenForRPCMessages, notifyParentOfEvent } from './rpc';
+import { initializeUploader } from './initialize-uploader';
+import { detokenize, listenForRPCMessages, sendMessageToParentFrame } from './rpc';
 import { handleDownload } from './secure-download';
-
 export type SupportedElement = AllowedElements[keyof AllowedElements];
 
 // Would be nice if class could take <element type parameter> but couldn't quite get it working
 export class SecureFrame<e extends keyof AllowedElements> {
-  private readonly secureElement: AllowedElements[e];
   private readonly elementType: e;
   private readonly loadingText: Element;
-  private readonly frameNonce: string;
-  private readonly origin: string;
   private initialized = false;
+  readonly frameNonce: string;
+  readonly origin: string;
+  readonly secureElement: AllowedElements[e];
+
   constructor(elementType: e, loadingText: Element) {
     this.elementType = elementType;
     this.loadingText = loadingText;
@@ -23,12 +24,16 @@ export class SecureFrame<e extends keyof AllowedElements> {
     listenForRPCMessages(this.origin, (attrs) => {
       void this.setAttributesFromRPC(attrs);
     });
-    notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
+    sendMessageToParentFrame(this.origin, {
+      command: 'NotifyOnStart',
+      data: {},
+      frameNonce: this.frameNonce,
+    });
   }
 
   insertSecureElement(elementName: e) {
     const body = document.getElementsByTagName('BODY')[0];
-    const secureElement = document.createElement(elementName);
+    const secureElement = document.createElement(elementName) as AllowedElements[e];
     secureElement.className = 'secure-input d-none';
     body.appendChild(secureElement);
     return secureElement;
@@ -63,8 +68,11 @@ export class SecureFrame<e extends keyof AllowedElements> {
       this.secureElement.setAttribute('type', attrs.type);
     }
 
+    if (this.elementType === 'input' && attrs.type === 'file') {
+      initializeUploader(this, attrs.fileTokens || []);
+    }
     if (attrs.token) {
-      await this.handleToken(attrs.token, attrs.hidden || false);
+      await this.handleToken(attrs.token, attrs);
     }
 
     if (this.elementType === 'input') {
@@ -75,11 +83,12 @@ export class SecureFrame<e extends keyof AllowedElements> {
     return;
   }
 
-  async handleToken(token: string, hidden: boolean) {
+  // TODO: This is getting pretty branchy.  Considering a different architecture where each element type is a separate webpack entrypoint with shared logic from a /common.ts module
+  async handleToken(token: string, attrs: AttributesMessage) {
     if (this.elementType === 'a') {
       // anchor elements mean we are doing an s3 secure download
       // Figure out why this type casting is necessary
-      await handleDownload(token, this.secureElement as HTMLAnchorElement, hidden);
+      await handleDownload(token, this.secureElement as HTMLAnchorElement, attrs.hidden || false);
     } else {
       const value = await detokenize(token);
       if (this.elementType === 'input' || this.elementType === 'textarea') {
@@ -94,7 +103,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
 
   attachOnBlurNotifier() {
     this.secureElement.addEventListener('blur', () => {
-      notifyParentOfEvent('NotifyOnBlur', this.origin, this.frameNonce);
+      sendMessageToParentFrame(this.origin, { command: 'NotifyOnBlur', frameNonce: this.frameNonce, data: {} });
     });
   }
 }

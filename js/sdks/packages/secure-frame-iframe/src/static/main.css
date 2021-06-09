@@ -40,6 +40,104 @@ a {
 }
 
 
+
 p {
-  height:auto !important;
+  height: auto !important;
+}
+/*Dropzone stuff*/
+.dropzone-container {
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  border-radius:5px;
+}
+
+.dropzone > p {
+  font-size: 1rem;
+  margin:0;
+
+}
+
+.dropzone-container > em {
+  font-size: .8rem;
+}
+
+.dropzone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-width: 2px;
+  border-radius: 2px;
+  border-color: #eeeeee;
+  border-style: dashed;
+  background-color: #fafafa;
+  color: #bdbdbd;
+  outline: none;
+  transition: border .24s ease-in-out;
+  border-radius: 5px;
+}
+
+.dropzone:focus {
+  border-color: #2196f3;
+}
+
+.dropzone.disabled {
+  opacity: 0.6;
+}
+
+.file-container {
+  border-radius:5px;
+  background-color: #fafafa;
+  padding: 10px;
+  margin-top: 7px;
+  border-color: #eeeeee;
+  border-style:solid;
+  border-width:1px;
+}
+
+.filename {
+  margin-top:0;
+  margin-bottom: 5px;
+}
+.filestatus {
+  margin:0;
+  font-size: .8em;
+}
+
+.filestatus.uploading {
+  color:#5bc0de;
+}
+
+.filestatus.uploaded {
+  color:green;
+}
+
+.filestatus.error {
+  color:red;
+}
+
+.deletebutton {
+  float:right;
+}
+
+
+/*SPINNER STYLE:  In the future break this out into a seperate file and support SCSS with webpack extract plugin*/
+.spinner {
+  display: inline-block;
+  width: .8em;
+  height: .8em;
+  border: 3px solid #5bc0de;
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  -webkit-animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
 }

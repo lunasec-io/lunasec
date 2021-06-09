@@ -2,7 +2,7 @@ import * as http from 'http';
 
 import { BadHttpResponseError, getUrl, makeRawRequest } from '@lunasec/server-common';
 
-function getUploadHeaders(input?: string) {
+function getUploadHeaders(input?: string | Buffer) {
   if (input !== undefined) {
     const contentLength = Buffer.byteLength(input);
 
@@ -18,8 +18,8 @@ function makeS3HttpRequestOptions(
   signedUrl: string,
   headers: http.OutgoingHttpHeaders,
   method: 'PUT' | 'GET',
-  input?: string
-): [string, string, http.ClientRequestArgs, string | undefined] {
+  input?: string | Buffer
+): [string, string, http.ClientRequestArgs, string | Buffer | undefined] {
   const URL = getUrl();
 
   const uploadUrl = new URL(signedUrl);
@@ -41,7 +41,11 @@ function makeS3HttpRequestOptions(
   return [host, uploadUrl.pathname, httpParams, input];
 }
 
-export async function uploadToS3WithSignedUrl(signedUrl: string, headers: http.OutgoingHttpHeaders, input: string) {
+export async function uploadToS3WithSignedUrl(
+  signedUrl: string,
+  headers: http.OutgoingHttpHeaders,
+  input: string | Buffer
+) {
   // TODO: Add some retry logic here, but it'll need to retry only on 500s or other "known" retry cases.
   // TODO: Make this stream to S3 so we don't have to read the entire "input" ahead of time.
   const [res, responseBuffer] = await makeRawRequest(...makeS3HttpRequestOptions(signedUrl, headers, 'PUT', input));

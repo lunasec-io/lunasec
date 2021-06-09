@@ -5,10 +5,9 @@ import {
   FrameMessageCreator,
   FrameNotification,
   InboundFrameMessageMap,
-  InboundFrameNotificationMap,
+  NotifyOnStart,
   triggerBlur,
   triggerFocus,
-  UnknownFrameNotification,
 } from '@lunasec/browser-common';
 import React, { Component } from 'react';
 
@@ -85,7 +84,7 @@ export class SecureForm extends Component<SecureFormProps> {
     return;
   }
   // Blur happens after the element loses focus
-  blur(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>) {
+  blur(notification: FrameNotification) {
     const child = this.childInputs[notification.frameNonce];
 
     const input = child.inputRef;
@@ -109,7 +108,7 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   // Give the iframe all the information it needs to exist when it wakes up
-  async iframeStartup(notification: FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>) {
+  async iframeStartup(notification: NotifyOnStart) {
     const input = this.childInputs[notification.frameNonce];
     const frameAttributes = input.generateIframeAttributes();
     const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
@@ -121,17 +120,17 @@ export class SecureForm extends Component<SecureFormProps> {
     return;
   }
 
-  frameNotificationCallback(notification: UnknownFrameNotification) {
+  frameNotificationCallback(notification: FrameNotification) {
     if (!this.childInputs[notification.frameNonce]) {
       console.debug('Received notification intended for different listener, discarding');
       return;
     }
     switch (notification.command) {
       case 'NotifyOnBlur':
-        this.blur(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnBlur'>);
+        this.blur(notification);
         break;
       case 'NotifyOnStart':
-        void this.iframeStartup(notification as FrameNotification<InboundFrameNotificationMap, 'NotifyOnStart'>);
+        void this.iframeStartup(notification);
         break;
     }
   }
@@ -148,7 +147,7 @@ export class SecureForm extends Component<SecureFormProps> {
   }
 
   watchStyle(component: SecureInput) {
-    const observer = new MutationObserver(() => this.onStyleChange(component));
+    const observer = new MutationObserver(() => void this.onStyleChange(component));
     if (!component.inputRef.current) {
       return console.error('Attempted to register style watcher on component not yet mounted');
     }
