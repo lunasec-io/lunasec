@@ -1,6 +1,6 @@
 import { downloadFile } from '@lunasec/js-sdk';
-import { SecureDownload, SecureForm, SecureInput, SecureSpan } from '@lunasec/react-sdk';
-import React, { CSSProperties } from 'react';
+import { SecureDownload, SecureForm, SecureInput, SecureSpan, SecureUpload } from '@lunasec/react-sdk';
+import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
 
@@ -31,6 +31,10 @@ class App extends React.Component<Record<string, never>, IAppState> {
   handleBarChange(event: React.ChangeEvent<HTMLInputElement>) {
     console.log('setting bar', event.target.value);
     this.setState({ bar: event.target.value });
+  }
+
+  handleUploaderChange(tokens: string | Array<string>) {
+    console.log('file uploader gave new tokens: ', tokens);
   }
 
   persistTokens(formEvent: React.FormEvent<HTMLFormElement>) {
@@ -84,6 +88,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
               name="normal"
               type="text"
               value={this.state.normal}
+              placeholder="Unsecured Field"
               onChange={(e) => this.setState({ normal: e.target.value })}
               onBlur={(e) => console.log('blur3', e)}
             />
@@ -95,6 +100,16 @@ class App extends React.Component<Record<string, never>, IAppState> {
           <div>
             {'Secure Download:'}
             <SecureDownload name="securefile.pdf" token={this.downloadToken} className="test-secure-downloader" />
+          </div>
+          <div>
+            {'Secure Uploader: '}
+            <SecureUpload
+              name="uploader"
+              filetokens={[this.downloadToken]}
+              onTokenChange={(tokens) => {
+                this.handleUploaderChange(tokens);
+              }}
+            />
           </div>
         </div>
       </div>

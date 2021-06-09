@@ -65,9 +65,14 @@ export class Tokenizer {
     };
   }
 
-  async setMetadata<T>(tokenId: string, metadata: T): Promise<TokenizerFailApiResponse | TokenizerSetMetadataResponse> {
-    if (typeof metadata !== 'string') {
-      throw new Error('Metadata must be a string value');
+  async setMetadata<T extends Record<string, any>>(
+    tokenId: string,
+    metadata: T
+  ): Promise<TokenizerFailApiResponse | TokenizerSetMetadataResponse> {
+    // TODO: set up proper typing/schema for the metadata object and share it between the whole project
+    // This check is really hard to do right in JS and we should probably just skip it altogether
+    if (!(metadata instanceof Object)) {
+      throw new Error('Metadata must be an object');
     }
 
     const response = await this.setMetadataClient({
@@ -87,9 +92,9 @@ export class Tokenizer {
   }
 
   // TODO: Add another method that _doesn't_ take a key, so that we handle generation.
-  async tokenize(input: string): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
-    const response = await this.setTokenClient({});
 
+  async tokenize(input: string | Buffer): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
+    const response = await this.setTokenClient({});
     if (!response.success) {
       return response;
     }

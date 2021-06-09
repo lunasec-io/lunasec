@@ -48,8 +48,7 @@ export interface GetTokenRequest extends BaseTokenizerRequest {
   tokenId: string;
 }
 
-export interface SetTokenRequest extends BaseTokenizerRequest {
-}
+export type SetTokenRequest = BaseTokenizerRequest;
 
 /// API Response Schemas ///
 export interface GetMetadataResponse {

@@ -3,10 +3,8 @@ import {
   FrameMessage,
   FrameNotification,
   InboundFrameMessageMap,
-  InboundFrameNotificationMap,
   safeParseJson,
   UnknownFrameMessage,
-  UnknownFrameNotification,
 } from '@lunasec/browser-common';
 import { Tokenizer } from '@lunasec/tokenizer-sdk';
 
@@ -21,20 +19,6 @@ function createMessageToFrame<K extends keyof InboundFrameMessageMap>(
   return {
     command: s,
     correlationToken: correlationToken,
-    data: innerMessage,
-  };
-}
-
-// A message that starts in the frame and goes to the parent window.  We don't expect a response
-function createNotificationToFrame<K extends keyof InboundFrameNotificationMap>(
-  s: K,
-  frameNonce: string,
-  createNotification: () => InboundFrameNotificationMap[K] = () => ({})
-): FrameNotification<InboundFrameNotificationMap, K> {
-  const innerMessage = createNotification();
-  return {
-    command: s,
-    frameNonce: frameNonce,
     data: innerMessage,
   };
 }
@@ -59,13 +43,13 @@ async function tokenizeField(): Promise<string | null> {
 export async function detokenize(token: string) {
   const tokenizer = new Tokenizer();
   const resp = await tokenizer.detokenize(token);
-  if (!resp.success || resp.value === null) {
-    throw new Error(`Detokenizer error ${resp}`);
+  if (!resp.success) {
+    throw resp.error;
   }
   return resp.value;
 }
 
-export function sendMessageToParentFrame(origin: string, message: UnknownFrameMessage | UnknownFrameNotification) {
+export function sendMessageToParentFrame(origin: string, message: UnknownFrameMessage | FrameNotification) {
   window.parent.postMessage(JSON.stringify(message), origin);
 }
 
@@ -97,11 +81,6 @@ export function respondAttributesReceived(origin: string, rawMessage: UnknownFra
   });
   sendMessageToParentFrame(origin, message);
   return;
-}
-
-export function notifyParentOfEvent(eventName: keyof InboundFrameNotificationMap, origin: string, frameNonce: string) {
-  const message = createNotificationToFrame(eventName, frameNonce);
-  sendMessageToParentFrame(origin, message);
 }
 
 export async function processMessage(
@@ -138,6 +117,6 @@ export function listenForRPCMessages(origin: string, updateAttrCallback: (m: Att
       console.error('Invalid message received by secure frame.');
       return;
     }
-    processMessage(origin, rawMessage, updateAttrCallback);
+    void processMessage(origin, rawMessage, updateAttrCallback);
   });
 }
