@@ -88,9 +88,7 @@ export class Tokenizer {
 
   // TODO: Add another method that _doesn't_ take a key, so that we handle generation.
   async tokenize(input: string): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
-    const response = await this.setTokenClient({
-      value: input,
-    });
+    const response = await this.setTokenClient({});
 
     if (!response.success) {
       return response;
