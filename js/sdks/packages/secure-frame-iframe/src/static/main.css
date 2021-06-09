@@ -116,3 +116,23 @@ a {
 .deletebutton {
   float:right;
 }
+
+
+/*SPINNER STYLE:  In the future break this out into a seperate file and support SCSS with webpack extract plugin*/
+.spinner {
+  display: inline-block;
+  width: .8em;
+  height: .8em;
+  border: 3px solid #5bc0de;
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  -webkit-animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
+}

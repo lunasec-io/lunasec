@@ -88,6 +88,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
               name="normal"
               type="text"
               value={this.state.normal}
+              placeholder="Unsecured Field"
               onChange={(e) => this.setState({ normal: e.target.value })}
               onBlur={(e) => console.log('blur3', e)}
             />
@@ -101,7 +102,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
             <SecureDownload name="securefile.pdf" token={this.downloadToken} className="test-secure-downloader" />
           </div>
           <div>
-            {'FilePond: '}
+            {'Secure Uploader: '}
             <SecureUpload
               name="uploader"
               filetokens={[this.downloadToken]}

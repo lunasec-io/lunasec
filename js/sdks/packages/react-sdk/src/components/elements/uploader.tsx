@@ -20,10 +20,6 @@ export default class Uploader extends Component<UploaderProps> {
     const { ...frameStyle } = renderData.frameStyleInfo;
     frameStyle.width = 300;
     frameStyle.height = 300;
-    // const iframeStyle: CSSProperties = {
-    //   display: 'block',
-    //   height: renderData.frameStyleInfo.height,
-    // };
 
     return (
       <iframe

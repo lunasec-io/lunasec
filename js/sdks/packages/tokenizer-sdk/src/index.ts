@@ -93,10 +93,9 @@ export class Tokenizer {
 
   // TODO: Add another method that _doesn't_ take a key, so that we handle generation.
   async tokenize(input: string | Buffer): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
-    const response = await this.setTokenClient({
-      value: input,
-    });
-
+    console.log('tokenizer called with ', input);
+    const response = await this.setTokenClient({ value: 'hello' });
+    console.log('tokenClient responded with ', response);
     if (!response.success) {
       return response;
     }

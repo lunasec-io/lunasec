@@ -123,7 +123,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         attrs.style = JSON.stringify(style.childStyle);
       }
 
-      // Set the "type" of an input element if we have one
+      // Pull from the "type" of an input element if we have one in our wrapped element
       const dummyElement = this.dummyRef.current;
       if (elementName === 'input' && dummyElement) {
         const inputType = dummyElement.getAttribute('type');
@@ -207,14 +207,14 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
 
       const { token, secureFrameUrl, onTokenChange, ...scrubbedProps } = this.props;
 
-      // TODO: Fix this issue
+      // TODO: Fix this issue, and in the mean time be very careful with your props
       // @ts-ignore
       const propsForWrapped: WrappedComponentProps<EName> = {
         ...scrubbedProps,
         renderData,
       };
 
-      /* TODO: Having to do this is a bit of a bummer.
+      /* TODO: Also fix this issue.  Having to do this is a bit of a bummer.
       //@ts-ignore */
       return <Wrapped {...propsForWrapped} />;
     }

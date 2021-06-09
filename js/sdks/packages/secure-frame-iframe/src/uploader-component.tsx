@@ -159,7 +159,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     };
 
     const files = this.state.files.map((f) => {
-      const className = f.status ? 'file-container ' + f.status.toLowerCase() : 'file-container';
+      const className = 'file-container';
       return (
         <div className={className} key={f.id} onClick={() => this.handleFileClick(f.token)}>
           <button className="deletebutton" onClick={(e) => void this.deleteFile(e, f.id)}>
@@ -167,6 +167,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
           </button>
           <p className="filename">{f.name}</p>
           <p className={`filestatus ${f.status.toLowerCase()}`}>{f.status}</p>
+          <div className={f.status === 'Uploading' ? 'spinner' : ''} />
         </div>
       );
     });
