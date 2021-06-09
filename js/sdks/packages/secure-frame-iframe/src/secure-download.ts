@@ -1,34 +1,20 @@
 import { Tokenizer } from '@lunasec/tokenizer-sdk';
 
+import { MetaData } from './types';
 // 1 fetch filename from metadata and s3 headers in parallel
 // 2 Put them onto the a tag
 // 3 User clicks the tag
 // 4 Maybe display percentage
 // 5 Once blob is loaded, make a fake <a> with the blob as an href and trigger it
 
-interface Options {
-  type?: string;
-  lastModified?: number;
-}
-interface FileInfo {
+export interface FileInfo {
   filename: string;
-  options: Options;
+  options: { type?: string; lastModified?: number };
   headers: Record<string, string>;
   url: string;
 }
 
-interface MetaDataResponse {
-  fileinfo: FileInfoResponse;
-}
-
-interface FileInfoResponse {
-  filename: string;
-  type?: string;
-  lastModified?: number;
-}
-// TODO: Add fileinfo property into the metadata during secureupload with the following props:
-//  filename, type, lastModified
-
+// Pull file info from the metadata and detokenize the file url in parallel
 async function getFileInfo(token: string): Promise<FileInfo> {
   const tokenizer = new Tokenizer();
   const metaPromise = tokenizer.getMetadata(token);
@@ -41,9 +27,9 @@ async function getFileInfo(token: string): Promise<FileInfo> {
     throw urlRes.error;
   }
 
-  const meta = metaRes.metadata as MetaDataResponse | null;
+  const meta = metaRes.metadata as MetaData | null;
   if (!meta || !meta.fileinfo) {
-    throw new Error('No metadata for file token');
+    throw new Error('No metadata for file token ');
   }
   const fileMeta = meta.fileinfo;
   return {
@@ -71,6 +57,8 @@ function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean) {
   a.textContent = fileInfo.filename;
 
   // In order to trigger a download in a browser, we need to fake a click on an href element
+  // Note that we use the actual anchor element here instead of a fake, so that when we unregister our handler...
+  // the file will download as normal on repeated clicks
   async function triggerDownload(e: Event) {
     e.preventDefault();
     a.textContent = 'Loading...';

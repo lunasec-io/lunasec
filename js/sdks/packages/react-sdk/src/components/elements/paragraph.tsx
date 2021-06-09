@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
-type SpanRenderData = RenderData<HTMLSpanElement>;
-export type SpanProps = WrappedComponentProps<'span'>;
+type ParagraphRenderData = RenderData<HTMLParagraphElement>;
+export type ParagraphProps = WrappedComponentProps<'p'>;
 
-export default class Span extends Component<SpanProps> {
-  constructor(props: SpanProps) {
+export default class Paragraph extends Component<ParagraphProps> {
+  constructor(props: ParagraphProps) {
     super(props);
   }
 
@@ -13,7 +13,7 @@ export default class Span extends Component<SpanProps> {
     this.props.renderData.mountedCallback();
   }
 
-  renderFrame(renderData: SpanRenderData) {
+  renderFrame(renderData: ParagraphRenderData) {
     if (!renderData.frameStyleInfo) {
       return null;
     }
@@ -34,14 +34,14 @@ export default class Span extends Component<SpanProps> {
     const { renderData, ...otherProps } = this.props;
     return (
       <div style={renderData.parentContainerStyle}>
-        <span
-          className={`secure-span-container-${renderData.frameId} secure-span-container-${this.props.name}`}
+        <p
+          className={`secure-paragraph-container-${renderData.frameId} secure-paragraph-container-${this.props.name}`}
           ref={renderData.dummyRef}
           style={renderData.dummyElementStyle}
           {...otherProps}
         >
           &ensp;
-        </span>
+        </p>
         {this.renderFrame(renderData)}
       </div>
     );

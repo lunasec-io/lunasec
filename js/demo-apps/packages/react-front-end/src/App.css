@@ -65,3 +65,7 @@ textarea {
   margin-bottom: 4px;
   border-radius:5px;
 }
+
+p {
+  white-space: pre-wrap;
+}
