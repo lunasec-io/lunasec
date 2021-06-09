@@ -218,7 +218,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         renderData,
       };
 
-      /* TODO: Also fix this issue.  Having to do this is a bit of a bummer.
+      /* TODO: Fix this so the properties don't break in typescript.  For now be careful and think about what props you pass
       //@ts-ignore */
       return <Wrapped {...propsForWrapped} />;
     }

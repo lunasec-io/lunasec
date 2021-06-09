@@ -1,6 +1,7 @@
 import { downloadFile } from '@lunasec/js-sdk';
-import { SecureDownload, SecureForm, SecureInput, SecureSpan, SecureUpload } from '@lunasec/react-sdk';
+import { SecureDownload, SecureForm, SecureInput, SecureParagraph, SecureUpload } from '@lunasec/react-sdk';
 import React from 'react';
+
 // import logo from './logo.svg';
 import './App.css';
 
@@ -95,7 +96,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
             <input type="submit" />
           </SecureForm>
           <div>
-            <SecureSpan name="aSpan" token={this.state.foo} className="test-secure-span" />
+            <SecureParagraph name="aSpan" token={this.state.foo} className="test-secure-span" />
           </div>
           <div>
             {'Secure Download:'}

@@ -33,7 +33,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
 
   insertSecureElement(elementName: e) {
     const body = document.getElementsByTagName('BODY')[0];
-    const secureElement = document.createElement(elementName);
+    const secureElement = document.createElement(elementName) as AllowedElements[e];
     secureElement.className = 'secure-input d-none';
     body.appendChild(secureElement);
     return secureElement;
@@ -95,7 +95,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
         const input = this.secureElement as HTMLInputElement;
         input.value = value;
       }
-      if (this.elementType === 'span') {
+      if (this.elementType === 'p') {
         this.secureElement.textContent = value;
       }
     }

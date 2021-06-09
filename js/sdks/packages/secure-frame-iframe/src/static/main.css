@@ -39,6 +39,11 @@ a {
   text-decoration: underline !important;
 }
 
+
+
+p {
+  height: auto !important;
+}
 /*Dropzone stuff*/
 .dropzone-container {
   display: flex;

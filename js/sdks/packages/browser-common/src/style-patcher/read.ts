@@ -19,8 +19,8 @@ export function getStyleInfo(source: SupportedElement, pseudoSelector?: string):
   }
 
   if (!pseudoSelector) {
-    const { width, height } = source.getBoundingClientRect();
-
+    const { width } = source.getBoundingClientRect();
+    const height = getTotalHeight(source);
     const allPseudoStyleInfo: PesudoStyleInfoMap = Object.create(null);
 
     // TODO: Figure out implementing pseudo selectors for cloned element
@@ -60,4 +60,11 @@ export function getStyleInfo(source: SupportedElement, pseudoSelector?: string):
   // return {
   //   style,
   // };
+}
+
+function getTotalHeight(el: SupportedElement) {
+  const { height } = el.getBoundingClientRect();
+  const computedStyle = window.getComputedStyle(el);
+  const marginHeight = parseInt(computedStyle.marginTop) + parseInt(computedStyle.marginBottom);
+  return height + marginHeight;
 }
