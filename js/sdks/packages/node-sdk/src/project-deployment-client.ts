@@ -58,7 +58,8 @@ interface GetProjectDeploymentsResponse extends BaseResponse {
 }
 
 interface GetProjectDeploymentRequest {
-  deployment_id: string;
+  deployment_id?: string;
+  deployment_tag?: string;
 }
 
 interface GetProjectDeploymentResponse extends BaseResponse {

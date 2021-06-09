@@ -41,6 +41,11 @@ export interface GetDeploymentsOptions {
   stage?: string;
 }
 
+export interface GetDeploymentOptions {
+  deploymentId?: string;
+  deploymentTag?: string;
+}
+
 export interface DeploymentInfo {
   project_id: string;
   organization_id: string;

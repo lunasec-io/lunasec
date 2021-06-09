@@ -3,7 +3,7 @@ import assert from "assert";
 import {
   DeploymentInfo,
   DeploymentStage,
-  DeploymentState,
+  DeploymentState, GetDeploymentOptions,
   GetDeploymentsOptions,
   LunaSecDeploymentTemplates
 } from "./types";
@@ -148,13 +148,14 @@ export class LunaSecDeployment {
     return resp.deployments;
   }
 
-  async getDeployment(deploymentId: string): Promise<DeploymentInfo> {
+  async getDeployment(options: GetDeploymentOptions): Promise<DeploymentInfo> {
     const resp = await this.client.getProjectDeployment({
-      deployment_id: deploymentId
+      deployment_id: options.deploymentId,
+      deployment_tag: options.deploymentTag,
     })
 
     if (!resp.success) {
-      throw new Error(`unable to get deployment: deploymentId: ${deploymentId}`);
+      throw new Error(`unable to get deployment: deploymentId: ${options.deploymentId} deploymentTag: ${options.deploymentTag}`);
     }
 
     return resp;

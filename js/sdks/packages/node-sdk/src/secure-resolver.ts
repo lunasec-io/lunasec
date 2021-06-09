@@ -54,16 +54,10 @@ export class SecureResolver {
       projectTemplate: 'secure-resolver'
     })
 
-    const deployments = await deploymentClient.getDeployedResources({
-      deploymentTag: this.config.deploymentTag
-    });
+    const deployment = await deploymentClient.getDeployment(
+      {deploymentTag: this.config.deploymentTag});
 
-    if (deployments.length === 0) {
-      throw new Error(`no deployments found matching deployment tag: ${this.config.deploymentTag}`);
-    }
-
-    const latestDeployment = deployments[0];
-    const matchingWorkflowStates = latestDeployment.deployment_json.workflow_states.filter((value) => {
+    const matchingWorkflowStates = deployment.deployment_json.deployment_json.workflow_states.filter((value) => {
       return value.name === "/execute";
     });
 

@@ -29,7 +29,7 @@ export default class SecureEnclave extends Command {
     try {
       const deploymentId = await lunasecDeployment.deployProd();
 
-      const deployment = await lunasecDeployment.getDeployment(deploymentId);
+      const deployment = await lunasecDeployment.getDeployment({deploymentId});
 
       const resourcesDeployed = deployment.deployment_json.deployment_json.workflow_states.length;
       const deploymentTag = deployment.tag;
