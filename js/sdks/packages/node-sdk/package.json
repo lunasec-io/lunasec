@@ -15,10 +15,12 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "cookie-parser": "^1.4.5",
     "@lunasec/server-common": "^1.0.0",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
     "@types/node": "^14.11.8",
     "typescript": "^4.2.0"
   }

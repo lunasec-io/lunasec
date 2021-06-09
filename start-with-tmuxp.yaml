@@ -9,7 +9,7 @@ windows:
 
     # Customer Back End
     - shell_command:
-      - cd js/sdks/packages/express-auth-plugin/
+      - cd js/demo-apps/packages/express-back-end/
       - SECURE_FRAME_URL="http://localhost:37766" npm run start:dev
 
     # Secure Frame CDN

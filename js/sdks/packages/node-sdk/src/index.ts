@@ -4,6 +4,8 @@ import { URL as URI } from 'url';
 
 import { makeRequest } from '@lunasec/server-common';
 
+export {LunaSecExpressAuthPlugin} from './auth-plugin'
+
 import { GenericApiClient, makeGenericApiClient } from './api-client';
 import { __CONTAINER_SECRET__, __DEPLOYMENT_SECRET__ } from './constants';
 import { BuildActionFunctionConfig } from './types';

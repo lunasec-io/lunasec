@@ -1,10 +1,14 @@
 import express from 'express';
 import {processForm, SecureFormData} from './process-form';
-import {DeploymentStage, SecureResolver} from '@lunasec/node-sdk';
+import {DeploymentStage, SecureResolver, LunaSecExpressAuthPlugin} from '@lunasec/node-sdk';
 
 const app = express();
 
 app.use(express.json());
+
+const authPlugin = LunaSecExpressAuthPlugin();
+
+authPlugin.register(app);
 
 const secureResolver = new SecureResolver({
   stage: DeploymentStage.DEV
