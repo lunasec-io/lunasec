@@ -139,6 +139,10 @@ export class Tokenizer {
   }
 
   async detokenizeToUrl(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeToUrlResponse> {
+    if (process.env.IS_LUNASEC_SECURE_RUNTIME !== 'true') {
+      throw new Error('Cannot detokenize outside of Secure Resolver');
+    }
+
     const response = await this.getTokenClient({
       tokenId: tokenId,
     });

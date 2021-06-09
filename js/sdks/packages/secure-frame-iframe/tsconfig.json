@@ -23,6 +23,7 @@
   ],
   "references": [
     { "path": "../browser-common" },
+    { "path": "../react-sdk" },
     { "path": "../tokenizer-sdk"}
   ],
   "compileOnSave": true

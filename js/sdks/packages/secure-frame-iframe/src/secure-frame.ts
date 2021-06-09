@@ -7,14 +7,15 @@ import { handleDownload } from './secure-download';
 export type SupportedElement = AllowedElements[keyof AllowedElements];
 
 // Would be nice if class could take <element type parameter> but couldn't quite get it working
-export class SecureFrame<e extends keyof AllowedElements> {
-  private readonly secureElement: AllowedElements[e];
-  private readonly elementType: e;
+export class SecureFrame<E extends keyof AllowedElements> {
+  private readonly secureElement: AllowedElements[E];
+  private readonly elementType: E;
   private readonly loadingText: Element;
   private readonly frameNonce: string;
   private readonly origin: string;
   private initialized = false;
-  constructor(elementType: e, loadingText: Element) {
+
+  constructor(elementType: E, loadingText: Element) {
     this.elementType = elementType;
     this.loadingText = loadingText;
     this.secureElement = this.insertSecureElement(elementType);
@@ -26,7 +27,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
     notifyParentOfEvent('NotifyOnStart', this.origin, this.frameNonce);
   }
 
-  insertSecureElement(elementName: e) {
+  insertSecureElement(elementName: E) {
     const body = document.getElementsByTagName('BODY')[0];
     const secureElement = document.createElement(elementName);
     secureElement.className = 'secure-input d-none';
@@ -93,7 +94,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
     if (this.elementType === 'a') {
       // anchor elements mean we are doing an s3 secure download
       // Figure out why this type casting is necessary
-      await handleDownload(token, this.secureElement as HTMLAnchorElement);
+      await handleDownload(token, this.secureElement as HTMLAnchorElement, false);
     } else {
       const value = await detokenize(token);
       if (this.elementType === 'input' || this.elementType === 'textarea') {

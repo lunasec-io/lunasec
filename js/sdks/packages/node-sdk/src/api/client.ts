@@ -2,7 +2,8 @@ import * as http from 'http';
 
 import { getRequestBody, makeRequest } from '@lunasec/server-common';
 
-import { __DEPLOYMENT_SERVER_URL__ } from './constants';
+import { __DEPLOYMENT_SERVER_URL__ } from '../constants';
+
 import {
   SecureResolverActionMessageMap,
   SecureResolverActionResponseMessageMap,
