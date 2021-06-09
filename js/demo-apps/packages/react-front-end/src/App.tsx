@@ -34,7 +34,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   handleUploaderChange(tokens: string | Array<string>) {
-    console.log('FILE UPLOADER CHANGED WITH ', tokens);
+    console.log('file uploader gave new tokens: ', tokens);
   }
 
   persistTokens(formEvent: React.FormEvent<HTMLFormElement>) {

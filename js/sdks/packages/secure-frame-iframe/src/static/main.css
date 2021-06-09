@@ -44,10 +44,13 @@ a {
   display: flex;
   flex-direction: column;
   font-family: sans-serif;
+  border-radius:5px;
 }
 
-.dropzone-container > p {
+.dropzone > p {
   font-size: 1rem;
+  margin:0;
+
 }
 
 .dropzone-container > em {
@@ -68,6 +71,7 @@ a {
   color: #bdbdbd;
   outline: none;
   transition: border .24s ease-in-out;
+  border-radius: 5px;
 }
 
 .dropzone:focus {
@@ -80,9 +84,35 @@ a {
 
 .file-container {
   border-radius:5px;
-  background-color: #F3F3F3;
-  padding: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
+  background-color: #fafafa;
+  padding: 10px;
   margin-top: 7px;
+  border-color: #eeeeee;
+  border-style:solid;
+  border-width:1px;
+}
+
+.filename {
+  margin-top:0;
+  margin-bottom: 5px;
+}
+.filestatus {
+  margin:0;
+  font-size: .8em;
+}
+
+.filestatus.uploading {
+  color:#5bc0de;
+}
+
+.filestatus.uploaded {
+  color:green;
+}
+
+.filestatus.error {
+  color:red;
+}
+
+.deletebutton {
+  float:right;
 }

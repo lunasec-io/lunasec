@@ -15,6 +15,7 @@ interface UploaderProps {
 
 interface FileInfo {
   token?: string;
+  id: number;
   status: 'Uploading' | 'Uploaded' | 'Error';
   name: string;
 }
@@ -67,6 +68,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
         name: meta.fileinfo.filename,
         token: token,
         status: 'Uploaded',
+        id: this.state.files.length,
       };
       this.setState({ files: this.state.files.concat(fileInfo) });
     });
@@ -79,46 +81,48 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     const fileInfo: FileInfo = {
       name: file.name,
       status: 'Uploading',
+      id: this.state.files.length,
     };
-    this.setState({ files: this.state.files.concat(fileInfo) });
-    try {
-      // TODO: Move this logic into the tokenizer so that tokenizer simply takes a File
-      const arrayBuf = await file.arrayBuffer();
-      // Turn the JS ArrayBuffer into a Node type Buffer for tokenizer
-      const buf = Buffer.from(new Uint8Array(arrayBuf));
-      const tokenizer = new Tokenizer();
-      const uploadRes = await tokenizer.tokenize(buf);
-      if (!uploadRes.success) {
-        throw uploadRes.error;
+    this.setState({ files: this.state.files.concat(fileInfo) }, async () => {
+      try {
+        // TODO: Move this logic into the tokenizer so that tokenizer simply takes a File
+        const arrayBuf = await file.arrayBuffer();
+        // Turn the JS ArrayBuffer into a Node type Buffer for tokenizer
+        const buf = Buffer.from(new Uint8Array(arrayBuf));
+        const tokenizer = new Tokenizer();
+        const uploadRes = await tokenizer.tokenize(buf);
+        if (!uploadRes.success) {
+          throw uploadRes.error;
+        }
+        const token = uploadRes.tokenId;
+        const meta: MetaData = {
+          fileinfo: {
+            filename: file.name,
+            type: file.type,
+            lastModified: file.lastModified,
+          },
+        };
+        const metaRes = await tokenizer.setMetadata<MetaData>(token, meta);
+        if (!metaRes.success) {
+          throw metaRes.error;
+        }
+        await this.mutateFileState(fileInfo.id, { status: 'Uploaded', token: token });
+        this.sendTokens();
+      } catch (e) {
+        console.error(e);
+        await this.mutateFileState(fileInfo.id, { status: 'Error' });
       }
-      const token = uploadRes.tokenId;
-      const meta: MetaData = {
-        fileinfo: {
-          filename: file.name,
-          type: file.type,
-          lastModified: file.lastModified,
-        },
-      };
-      const metaRes = await tokenizer.setMetadata<MetaData>(token, meta);
-      if (!metaRes.success) {
-        throw metaRes.error;
-      }
-      await this.mutateFileState(file.name, { status: 'Uploaded', token: token });
-      this.sendTokens();
-    } catch (e) {
-      console.error(e);
-      await this.mutateFileState(file.name, { status: 'Error' });
-    }
+    });
   }
 
   // a helper function to go through the files array and find the file we want to change some fields on
-  mutateFileState(name: string, changedFields: Partial<FileInfo>, destroy = false): Promise<null> {
+  mutateFileState(id: number, changedFields: Partial<FileInfo>, destroy = false): Promise<null> {
     let files = this.state.files;
     if (destroy) {
-      files = files.filter((f) => f.name !== name);
+      files = files.filter((f) => f.id !== id);
     } else {
       files = this.state.files.map((f) => {
-        if (f.name === name) {
+        if (f.id === id) {
           Object.assign(f, changedFields);
         }
         return f;
@@ -142,8 +146,9 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     return handleDownload(token, hiddenAnchor, true);
   }
 
-  async deleteFile(name: string) {
-    await this.mutateFileState(name, {}, true);
+  async deleteFile(e: React.MouseEvent<HTMLButtonElement>, id: number) {
+    e.stopPropagation();
+    await this.mutateFileState(id, {}, true);
     this.sendTokens();
   }
 
@@ -156,9 +161,12 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     const files = this.state.files.map((f) => {
       const className = f.status ? 'file-container ' + f.status.toLowerCase() : 'file-container';
       return (
-        <div className={className} key={f.name} onClick={() => this.handleFileClick(f.token)}>
-          <p>{`${f.name} ${f.status || ''}`}</p>
-          <button onClick={() => void this.deleteFile(f.name)}>X</button>
+        <div className={className} key={f.id} onClick={() => this.handleFileClick(f.token)}>
+          <button className="deletebutton" onClick={(e) => void this.deleteFile(e, f.id)}>
+            X
+          </button>
+          <p className="filename">{f.name}</p>
+          <p className={`filestatus ${f.status.toLowerCase()}`}>{f.status}</p>
         </div>
       );
     });

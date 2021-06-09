@@ -64,7 +64,7 @@ export const OutboundToInboundMessageValueMap: OutboundMessageLookupType = {
 type NotifyOnBlurData = Record<any, never>;
 type NotifyOnStartData = Record<any, never>;
 interface NotifyOnTokenData {
-  token: string | Array<string>;
+  token: Array<string>;
 }
 
 interface BaseFrameNotification {
