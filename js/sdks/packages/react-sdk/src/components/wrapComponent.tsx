@@ -132,9 +132,13 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         }
       }
 
+      if (this.props.token && this.props.filetokens) {
+        throw new Error("Can't have both tokens and filetokens specified in props");
+      }
       if (this.props.token) {
         attrs.token = this.props.token;
-      } else if (this.props.filetokens) {
+      }
+      if (this.props.filetokens) {
         attrs.fileTokens = this.props.filetokens;
       }
 

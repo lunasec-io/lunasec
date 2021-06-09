@@ -75,7 +75,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
   }
 
   // TODO: add the ability to remove a file
-  async processAddedFiles(files: FileWithPath[]) {
+  processAddedFiles(files: FileWithPath[]) {
     // Single file mode for now to simplify things
     const file = files[0];
     const fileInfo: FileInfo = {
@@ -83,6 +83,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
       status: 'Uploading',
       id: this.state.files.length,
     };
+    // wait for the state to set before continuing
     this.setState({ files: this.state.files.concat(fileInfo) }, async () => {
       try {
         // TODO: Move this logic into the tokenizer so that tokenizer simply takes a File
@@ -117,20 +118,22 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
 
   // a helper function to go through the files array and find the file we want to change some fields on
   mutateFileState(id: number, changedFields: Partial<FileInfo>, destroy = false): Promise<null> {
-    let files = this.state.files;
-    if (destroy) {
-      files = files.filter((f) => f.id !== id);
-    } else {
-      files = this.state.files.map((f) => {
-        if (f.id === id) {
-          Object.assign(f, changedFields);
-        }
-        return f;
-      });
-    }
+    const modifiedFiles = this.modifyFiles(this.state.files, id, changedFields, destroy);
     // setState is async but doesnt even give us a promise so we have to do this
     return new Promise((resolve) => {
-      this.setState({ files }, () => resolve(null));
+      this.setState({ files: modifiedFiles }, () => resolve(null));
+    });
+  }
+
+  modifyFiles(files: FileInfo[], id: number, changedFields: Partial<FileInfo>, destroy = false): FileInfo[] {
+    if (destroy) {
+      return files.filter((f) => f.id !== id);
+    }
+    return files.map((f) => {
+      if (f.id === id) {
+        Object.assign(f, changedFields);
+      }
+      return f;
     });
   }
 

@@ -68,9 +68,10 @@ export class SecureFrame<e extends keyof AllowedElements> {
       this.secureElement.setAttribute('type', attrs.type);
     }
 
-    if (this.elementType === 'input' && attrs.type === 'file' && attrs.fileTokens) {
-      initializeUploader(this, attrs.fileTokens);
-    } else if (attrs.token) {
+    if (this.elementType === 'input' && attrs.type === 'file') {
+      initializeUploader(this, attrs.fileTokens || []);
+    }
+    if (attrs.token) {
       await this.handleToken(attrs.token, attrs);
     }
 

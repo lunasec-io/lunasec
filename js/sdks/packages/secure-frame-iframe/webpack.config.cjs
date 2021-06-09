@@ -21,7 +21,7 @@ const envVarDefs = Object.keys(envVars.parsed).reduce((envDefs, envVarName) => {
 
 const buildMode = isProduction ? 'production': 'development';
 
-const outputJsBundle = isProduction ? '[name].[contenthash].js' : '[name]-dev.js';
+const outputJsBundle = isProduction ? '[name].[contenthash].js' : 'main-dev.js';
 
 const outputStaticFile = isProduction ? '[path][name].[contenthash][ext]' : '[path][name][ext]';
 
