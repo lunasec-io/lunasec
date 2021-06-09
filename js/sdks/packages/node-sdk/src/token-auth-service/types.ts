@@ -4,7 +4,6 @@ import {KeyLike} from "jose/jwt/sign";
 
 export interface EnvironmentSecretProvider {
   type: SecretProviders.environment;
-  environmentVariableName: string;
 }
 
 export interface AwsSecretsManagerSecretProvider {

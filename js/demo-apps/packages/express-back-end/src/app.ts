@@ -1,12 +1,19 @@
 import express from 'express';
 import {processForm, SecureFormData} from './process-form';
-import {DeploymentStage, SecureResolver, LunaSecExpressAuthPlugin} from '@lunasec/node-sdk';
+import {DeploymentStage, LunaSecExpressAuthPlugin, LunaSecTokenAuthService, SecureResolver} from '@lunasec/node-sdk';
+import {SecretProviders} from "@lunasec/node-sdk/build/main/token-auth-service/types";
 
 const app = express();
 
 app.use(express.json());
 
-const authPlugin = LunaSecExpressAuthPlugin();
+const tokenService = new LunaSecTokenAuthService({
+  secretProvider: {
+    type: SecretProviders.environment,
+  }
+});
+
+const authPlugin = new LunaSecExpressAuthPlugin({tokenService});
 
 authPlugin.register(app);
 
@@ -48,10 +55,15 @@ app.post('/signup', async (req, res) => {
 });
 
 app.get('/profile', async (_req, res) => {
-  res.write({
-    "ssn": "lunasec-2ce7db69-6668-403a-9878-3a9de04ea806"
-  })
-  res.end()
+  try {
+    const tokenGrant = await tokenService.authorize("lunasec-2ce7db69-6668-403a-9878-3a9de04ea806")
+    res.json({
+      "ssn": tokenGrant.toString()
+    })
+    res.end()
+  } catch (e) {
+    console.error(e);
+  }
 })
 
 export default app;

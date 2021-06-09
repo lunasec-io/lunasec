@@ -46,8 +46,6 @@
     ],
     "tsBuildInfoFile": "./build/buildcache.tsbuildinfo"
   },
-  "files": [
-  ],
   "include": [
     "src/**/*.ts"
   ],

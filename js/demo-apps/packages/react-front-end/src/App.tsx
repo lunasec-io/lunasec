@@ -60,10 +60,16 @@ class App extends React.Component<Record<string, never>, IAppState> {
     };
   }
 
+  async getProfile() {
+    const profile = await fetch("http://localhost:5002/profile")
+    console.log(profile);
+  }
+
   render() {
     return (
       <div className="App">
         <div className="app-form">
+          <button onClick={this.getProfile}>Load Profile</button>
           <SecureForm onSubmit={(e) => this.persistTokens(e)}>
             <SecureInput
               name="foo"

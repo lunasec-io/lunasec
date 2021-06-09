@@ -1,6 +1,26 @@
 import { SignJWT, KeyLike } from 'jose/jwt/sign';
+import { JWTPayload } from 'jose/types';
 
 import { getSecretFromSecretProvider, ValidSecretProvider } from './types';
+
+// TODO (cthompson) we should have a base jwt class that these two inherit from
+
+export class LunaSecAuthenticationGrant {
+  private readonly authGrant!: string;
+
+  constructor(authGrant: string) {
+    this.authGrant = authGrant;
+  }
+
+  public isValid(): boolean {
+    // TODO: Check the current date against the expiration
+    throw new Error('not implemented');
+  }
+
+  public toString() {
+    return this.authGrant;
+  }
+}
 
 export class LunaSecDetokenizeTokenGrant {
   private readonly detokenizationGrant!: string;
@@ -30,7 +50,7 @@ export class LunaSecTokenAuthService {
     this.config = config;
   }
 
-  async getSigningSecretKey() {
+  async getSigningSecretKey(): Promise<KeyLike> {
     // This is the simplest way to reduce the copy-paste code of the code below :shrug:
     // Would a @ts-ignore have been a better solution?
     function _getSecret<T, TFoo extends (provider: T) => Promise<KeyLike>>(providerFn: TFoo, provider: T) {
@@ -48,20 +68,28 @@ export class LunaSecTokenAuthService {
     throw new Error('Unknown provider specified');
   }
 
-  public async authorize(token: string): Promise<LunaSecDetokenizeTokenGrant> {
+  private async createJwt(claims: any): Promise<string> {
     const secret = await this.getSigningSecretKey();
 
-    const claims = { 'token_id': token };
-
     const jwt = await new SignJWT(claims)
-      .setProtectedHeader({ alg: 'RSA-OAEP-256' })
+      .setProtectedHeader({ alg: 'RS256' })
       .setIssuedAt()
       .setIssuer('node-sdk')
       .setAudience('secure-frame')
       .setExpirationTime('15m')
       .sign(secret)
+    return jwt.toString();
+  }
 
-    return new LunaSecDetokenizeTokenGrant(jwt.toString());
+  public async authenticate(payload: JWTPayload): Promise<LunaSecAuthenticationGrant> {
+    const encodedJwt = await this.createJwt(payload);
+    return new LunaSecAuthenticationGrant(encodedJwt);
+  }
+
+  public async authorize(token: string): Promise<LunaSecDetokenizeTokenGrant> {
+    const claims = { 'token_id': token };
+    const encodedJwt = await this.createJwt(claims);
+    return new LunaSecDetokenizeTokenGrant(encodedJwt);
   }
 
   public verifyTokenGrant(tokenGrant: string | LunaSecDetokenizeTokenGrant): boolean {
