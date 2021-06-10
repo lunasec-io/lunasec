@@ -30,9 +30,16 @@
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/secure-frame/js-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/node-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/server-common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/react-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/secure-frame-iframe/public" />
       <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/secure-frame-iframe/build" />
+      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/js-sdk/build" />
+      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/tokenizer-sdk/build" />
+      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/browser-common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/cli/build" />
+      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/express-auth-plugin/build" />
       <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/node-sdk/build" />
+      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/server-common/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
