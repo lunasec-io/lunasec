@@ -1,6 +1,5 @@
 import { Tokenizer } from '@lunasec/tokenizer-sdk';
 
-import { MetaData } from './types';
 // 1 fetch filename from metadata and s3 headers in parallel
 // 2 Put them onto the a tag
 // 3 User clicks the tag
@@ -27,10 +26,11 @@ async function getFileInfo(token: string): Promise<FileInfo> {
     throw urlRes.error;
   }
 
-  const meta = metaRes.metadata as MetaData | null;
-  if (!meta || !meta.fileinfo) {
+  const meta = metaRes.metadata;
+  if (!meta || !('fileinfo' in meta)) {
     throw new Error('No metadata for file token ');
   }
+  // eslint in intellij is an idiot, ignore it
   const fileMeta = meta.fileinfo;
   return {
     filename: fileMeta.filename,

@@ -1,15 +1,16 @@
 import tape from 'tape';
-import { Tokenizer } from './index';
+
 import { createFakeTokenizerService, FakeTokenizerServiceConfig } from './test-utils/fake-tokenizer-service';
+import { verifyHeaders, verifySecretHeader } from './test-utils/http-test-utils';
 import {
   makeS3Url,
   TEST_METADATA,
   TEST_PLAINTEXT_VALUE,
   TEST_S3_HEADERS,
   TEST_TOKEN,
-  TEST_TOKENIZER_SECRET
+  TEST_TOKENIZER_SECRET,
 } from './test-utils/test-constants';
-import { verifyHeaders, verifySecretHeader } from './test-utils/http-test-utils';
+import { Tokenizer } from './tokenizer';
 
 interface TokenizerTestServiceConfig {
   tokenizerConfig?: Partial<FakeTokenizerServiceConfig>;
