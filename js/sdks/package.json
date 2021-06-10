@@ -1,0 +1,12 @@
+{
+  "name": "lunasec-sdks",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Secure frame SDK",
+  "main": "index.js",
+  "scripts": {
+    "watch": "tsc -b --verbose tsconfig.build.json -w"
+  },
+  "author": "",
+  "license": "PROPRIETARY"
+}

@@ -5,7 +5,7 @@ windows:
   panes:
     - shell_command:
       - cd js/sdks
-      - tsc -b --verbose tsconfig.build.json -w
+      - npm run watch
 
     # Customer Back End
     - shell_command:
