@@ -38,15 +38,6 @@ Then open your browser and navigate to `http://localhost:3000`. That will show y
 
 When you want to shut down the cluster, hit `ctrl+b` and type `:kill-session`.  
 
-### Developing the React Front End
-You need to link the `secure-frame-sdk` to the React Front End app:
-```
-cd secure-frame-sdk
-npm link
-cd ../react-front-end
-npm link secure-frame-sdk
-```
-
 ### How to manage and install packages
 We use lerna to manage the monorepo, and yarn as the package manager.  Since yarn doesn't know about local packages like lerna,
 we can't use `yarn add` to install dependencies. To add a dependency to a package, either edit it 
