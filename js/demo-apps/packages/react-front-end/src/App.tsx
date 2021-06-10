@@ -20,10 +20,6 @@ class App extends React.Component<Record<string, never>, IAppState> {
     this.state = this.retrieveTokens();
   }
 
-  componentDidMount() {
-    downloadFile(this.downloadToken);
-  }
-
   handleFooChange(event: React.ChangeEvent<HTMLInputElement>) {
     console.log('setting foo', event.target.value);
     this.setState({ foo: event.target.value });
@@ -69,49 +65,65 @@ class App extends React.Component<Record<string, never>, IAppState> {
     return (
       <div className="App">
         <div className="app-form">
-          <SecureForm onSubmit={(e) => this.persistTokens(e)}>
-            <SecureInput
-              name="foo"
-              value={this.state.foo}
-              onChange={(e) => this.handleFooChange(e)}
-              onBlur={(e) => console.log('blur1', e)}
-              element="textarea"
-            />
-            <SecureInput
-              name="bar"
-              type="password"
-              value={this.state.bar}
-              onChange={(e) => this.handleBarChange(e)}
-              onBlur={(e) => console.log('blur2', e)}
-            />
-            <input
-              className="d-block"
-              name="normal"
-              type="text"
-              value={this.state.normal}
-              placeholder="Unsecured Field"
-              onChange={(e) => this.setState({ normal: e.target.value })}
-              onBlur={(e) => console.log('blur3', e)}
-            />
-            <input type="submit" />
-          </SecureForm>
-          <div>
-            <SecureParagraph name="aSpan" token={this.state.foo} className="test-secure-span" />
-          </div>
-          <div>
-            {'Secure Download:'}
-            <SecureDownload name="securefile.pdf" token={this.downloadToken} className="test-secure-downloader" />
-          </div>
-          <div>
-            {'Secure Uploader: '}
-            <SecureUpload
-              name="uploader"
-              filetokens={[this.downloadToken]}
-              onTokenChange={(tokens) => {
-                this.handleUploaderChange(tokens);
-              }}
-            />
-          </div>
+          <section>
+            <h2>Secure Form</h2>
+            <SecureForm onSubmit={(e) => this.persistTokens(e)}>
+              <SecureInput
+                name="foo"
+                value={this.state.foo}
+                onChange={(e) => this.handleFooChange(e)}
+                onBlur={(e) => console.log('blur1', e)}
+                element="textarea"
+              />
+              <SecureInput
+                name="bar"
+                type="password"
+                value={this.state.bar}
+                onChange={(e) => this.handleBarChange(e)}
+                onBlur={(e) => console.log('blur2', e)}
+              />
+              <input
+                className="d-block"
+                name="normal"
+                type="text"
+                value={this.state.normal}
+                placeholder="Insecure field coexisting"
+                onChange={(e) => this.setState({ normal: e.target.value })}
+                onBlur={(e) => console.log('blur3', e)}
+              />
+              <input type="submit" />
+            </SecureForm>
+          </section>
+          <section>
+            <h2>Secure Paragraph</h2>
+            <div>
+              <span>Type in the form above to populate</span>
+              <SecureParagraph name="demo-paragraph" token={this.state.foo} className="test-secure-span" />
+            </div>
+          </section>
+          <section>
+            <h3>Secure Download (element)</h3>
+            <div>
+              <SecureDownload name="securefile.pdf" token={this.downloadToken} className="test-secure-downloader" />
+            </div>
+          </section>
+          <section>
+            <h3>Secure Download (programmatic)</h3>
+            <button onClick={() => downloadFile(this.downloadToken)}>Click to trigger download with JS</button>
+          </section>
+          <section>
+            <h2>Secure Upload</h2>
+
+            <div>
+              <SecureUpload
+                name="uploader"
+                filetokens={[this.downloadToken]}
+                onTokenChange={(tokens) => {
+                  this.handleUploaderChange(tokens);
+                }}
+              />
+            </div>
+          </section>
         </div>
       </div>
     );
