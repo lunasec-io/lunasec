@@ -46,7 +46,6 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
      */
     readonly frameId!: string;
 
-    readonly state!: WrapperState;
     readonly frameRef!: RefObject<HTMLIFrameElement>;
     readonly dummyRef!: RefObject<AllowedElements[EName]>;
     frameReady = false;

@@ -45,8 +45,6 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
    */
   readonly frameId!: string;
 
-  readonly state!: SecureInputState;
-
   constructor(props: SecureInputProps) {
     super(props);
 
