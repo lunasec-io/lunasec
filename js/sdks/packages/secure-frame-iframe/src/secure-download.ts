@@ -66,10 +66,10 @@ function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean) {
     a.download = fileInfo.filename;
     a.href = URL.createObjectURL(f);
     a.textContent = fileInfo.filename;
-    a.removeEventListener('click', triggerDownload);
+    a.removeEventListener('click', (e) => void triggerDownload(e));
     a.click();
   }
-  a.addEventListener('click', triggerDownload);
+  a.addEventListener('click', (e) => void triggerDownload(e));
   // If the element is in hidden mode, start the download ourselves.
   if (hidden) {
     a.click();
