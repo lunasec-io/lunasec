@@ -92,6 +92,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
               <input type="submit" />
             </SecureForm>
           </section>
+
           <section>
             <h2>Secure Paragraph</h2>
             <div>
@@ -99,19 +100,21 @@ class App extends React.Component<Record<string, never>, IAppState> {
               <SecureParagraph name="demo-paragraph" token={this.state.foo} className="test-secure-span" />
             </div>
           </section>
+
           <section>
             <h3>Secure Download (element)</h3>
             <div>
               <SecureDownload name="securefile.pdf" token={this.downloadToken} className="test-secure-downloader" />
             </div>
           </section>
+
           <section>
             <h3>Secure Download (programmatic)</h3>
             <button onClick={() => downloadFile(this.downloadToken)}>Click to trigger download with JS</button>
           </section>
+
           <section>
             <h2>Secure Upload</h2>
-
             <div>
               <SecureUpload
                 name="uploader"

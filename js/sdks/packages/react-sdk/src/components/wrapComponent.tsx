@@ -36,6 +36,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
       animation: shimmer 2s infinite;
       background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
       background-size: 1000px 100%;
+      border-radius: 5px;
     }
     @keyframes shimmer {
       0% {
@@ -230,8 +231,8 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         // We can't set the "visibility" to "collapsed" or "hidden",
         // Or else the "on focus" and "on blur" events won't fire.
         // So we use zIndex instead to "hide" the input.
-        zIndex: this.state.frameFullyLoaded ? -1 : 1,
-        opacity: this.state.frameFullyLoaded ? 0 : 1,
+        zIndex: -1,
+        opacity: 0,
         display: 'block',
         resize: 'none',
       };
