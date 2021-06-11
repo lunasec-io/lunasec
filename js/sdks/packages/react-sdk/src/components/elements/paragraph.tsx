@@ -38,6 +38,7 @@ export default class Paragraph extends Component<ParagraphProps> {
           className={`secure-paragraph-container-${renderData.frameId} secure-paragraph-container-${this.props.name}`}
           ref={renderData.dummyRef}
           style={renderData.dummyElementStyle}
+          tabIndex={-1}
           {...otherProps}
         >
           &ensp;
