@@ -45,6 +45,9 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         background-position: 1000px 0;
       }
     }
+    .hidden {
+      opacity: 0;
+    }
   `;
 
   return class WrappedComponent extends Component<WrapperProps<EName>, WrapperState> {
@@ -175,10 +178,8 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
     frameNotificationCallback(notification: FrameNotification) {
       // TODO: move this filter into the RPC layer, we shouldnt have to filter here
       if (notification.frameNonce !== this.frameId) {
-        console.debug('Received notification intended for different listener, discarding');
         return;
       }
-      console.log('notification', { notification });
 
       switch (notification.command) {
         case 'NotifyOnStart':
@@ -191,10 +192,27 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
           }
           break;
         case 'NotifyOnFullyLoaded':
-          console.log('FRAME FULLY LOADED ', elementName);
           this.setState({ frameFullyLoaded: true });
           break;
       }
+    }
+
+    renderLoadingOverlay() {
+      if (this.state.frameFullyLoaded) {
+        return null;
+      }
+
+      const overlayStyles: CSSProperties = {
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        zIndex: 2,
+        display: 'block',
+      };
+
+      return <div style={overlayStyles} className="loading-animation" />;
     }
 
     render() {
@@ -218,20 +236,18 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         resize: 'none',
       };
 
-      const containerClasses = {
-        'loading-animation': !this.state.frameFullyLoaded,
-      };
-
       const renderData: RenderData<AllowedElements[EName]> = {
         frameId: this.frameId,
         frameUrl: this.generateUrl(),
         frameStyleInfo: this.state.frameStyleInfo,
+        frameContainerClasses: {
+          hidden: !this.state.frameFullyLoaded,
+        },
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,
         mountedCallback: this.wrappedComponentDidMount.bind(this),
         parentContainerStyle,
         dummyElementStyle,
-        containerClasses,
       };
 
       const { token, secureFrameUrl, onTokenChange, ...scrubbedProps } = this.props;
@@ -242,9 +258,16 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         renderData,
       };
 
-      /* TODO: Fix this so the properties don't break in typescript.  For now be careful and think about what props you pass
-      //@ts-ignore */
-      return <Wrapped {...scrubbedProps} {...propsForWrapped} />;
+      // TODO: Fix this so the properties don't break in typescript.
+      // For now be careful and think about what props you pass
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const IgnoredWrapped = Wrapped as any;
+
+      return (
+        <IgnoredWrapped {...scrubbedProps} {...propsForWrapped}>
+          {this.renderLoadingOverlay()}
+        </IgnoredWrapped>
+      );
     }
   };
 }

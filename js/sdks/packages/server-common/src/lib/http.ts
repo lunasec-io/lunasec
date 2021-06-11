@@ -117,7 +117,7 @@ export async function makeRequest<T>(
   const responseData = responseBuffer.toString();
 
   if (res.statusCode !== 200) {
-    console.log('bad response', { host, path, params, res, responseData });
+    console.error('Bad HTTP Response', { host, path, params, res, responseData });
     throw new BadHttpResponseError(res.statusCode, responseData);
   }
 

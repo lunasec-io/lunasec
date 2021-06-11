@@ -122,7 +122,6 @@ export class SecureForm extends Component<SecureFormProps> {
 
   frameNotificationCallback(notification: FrameNotification) {
     if (!this.childInputs[notification.frameNonce]) {
-      console.debug('Received notification intended for different listener, discarding');
       return;
     }
     switch (notification.command) {

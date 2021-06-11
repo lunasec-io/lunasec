@@ -1,5 +1,5 @@
 import { ReadElementStyle } from '@lunasec/browser-common';
-import React, { RefObject } from 'react';
+import React, { CSSProperties, RefObject } from 'react';
 
 import Downloader from './components/elements/downloader';
 import Paragraph from './components/elements/paragraph';
@@ -47,10 +47,10 @@ export interface RenderData<E extends AllowedElements[keyof AllowedElements]> {
   frameId: string;
   frameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
+  frameContainerClasses?: Record<string, boolean>;
   frameRef: RefObject<HTMLIFrameElement>;
   dummyRef: RefObject<E>;
   mountedCallback: () => void;
-  parentContainerStyle: Record<string, any>;
-  dummyElementStyle: Record<string, any>;
-  containerClasses: Record<string, boolean>;
+  parentContainerStyle: CSSProperties;
+  dummyElementStyle: CSSProperties;
 }

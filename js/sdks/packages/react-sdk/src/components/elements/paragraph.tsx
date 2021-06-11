@@ -19,10 +19,14 @@ export default class Paragraph extends Component<ParagraphProps> {
       return null;
     }
     const { width, ...frameStyle } = renderData.frameStyleInfo;
+
+    const frameContainerClass = classnames(renderData.frameContainerClasses);
+
     return (
       <iframe
         ref={renderData.frameRef}
         src={renderData.frameUrl}
+        className={frameContainerClass}
         style={frameStyle}
         frameBorder={0}
         key={renderData.frameUrl}
@@ -32,23 +36,21 @@ export default class Paragraph extends Component<ParagraphProps> {
 
   render() {
     // Pull the renderData out so we don't weird stuff into our dummy element
-    const { renderData, ...otherProps } = this.props;
+    const { renderData, className, children, ...otherProps } = this.props;
 
     const containerClass = classnames({
       [`secure-paragraph-container-${renderData.frameId} secure-paragraph-container-${this.props.name}`]: true,
+      // Necessary for styled-components to attach to this element
+      [className || '']: true,
     });
-
-    const dummyElementClass = classnames(renderData.containerClasses);
-
-    console.log('in paragraph the classes are: ', containerClass);
-    console.log('parentContainerStyle is ', renderData.parentContainerStyle);
 
     return (
       <div style={renderData.parentContainerStyle} className={containerClass}>
-        <p ref={renderData.dummyRef} style={renderData.dummyElementStyle} className={dummyElementClass} {...otherProps}>
+        <p ref={renderData.dummyRef} style={renderData.dummyElementStyle} {...otherProps}>
           &ensp;
         </p>
         {this.renderFrame(renderData)}
+        {children}
       </div>
     );
   }
