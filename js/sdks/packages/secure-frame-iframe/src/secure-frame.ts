@@ -11,12 +11,11 @@ export class SecureFrame<e extends keyof AllowedElements> {
   private readonly elementType: e;
   private readonly loadingText: Element;
   private initialized = false;
-
-readonly frameNonce: string;
+  readonly frameNonce: string;
   readonly origin: string;
   readonly secureElement: AllowedElements[e];
 
-  constructor(elementType: E, loadingText: Element) {
+  constructor(elementType: e, loadingText: Element) {
     this.elementType = elementType;
     this.loadingText = loadingText;
     this.secureElement = this.insertSecureElement(elementType);
@@ -32,7 +31,7 @@ readonly frameNonce: string;
     });
   }
 
-  insertSecureElement(elementName: E) {
+  insertSecureElement(elementName: e) {
     const body = document.getElementsByTagName('BODY')[0];
     const secureElement = document.createElement(elementName) as AllowedElements[e];
     secureElement.className = 'secure-input d-none';
@@ -89,7 +88,7 @@ readonly frameNonce: string;
     if (this.elementType === 'a') {
       // anchor elements mean we are doing an s3 secure download
       // Figure out why this type casting is necessary
-      await handleDownload(token, this.secureElement as HTMLAnchorElement);
+      await handleDownload(token, this.secureElement as HTMLAnchorElement, attrs.hidden || false);
     } else {
       const value = await detokenize(token);
       if (this.elementType === 'input' || this.elementType === 'textarea') {

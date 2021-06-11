@@ -1,4 +1,5 @@
-import express from 'express';
+import express, {Request} from 'express';
+import cors from 'cors';
 import {processForm, SecureFormData} from './process-form';
 import {DeploymentStage, LunaSecExpressAuthPlugin, LunaSecTokenAuthService, SecureResolver} from '@lunasec/node-sdk';
 import {SecretProviders} from "@lunasec/node-sdk/build/main/token-auth-service/types";
@@ -6,6 +7,11 @@ import {SecretProviders} from "@lunasec/node-sdk/build/main/token-auth-service/t
 const app = express();
 
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST']
+}));
 
 const tokenService = new LunaSecTokenAuthService({
   secretProvider: {
@@ -13,7 +19,21 @@ const tokenService = new LunaSecTokenAuthService({
   }
 });
 
-const authPlugin = new LunaSecExpressAuthPlugin({tokenService});
+const authPlugin = new LunaSecExpressAuthPlugin({
+  tokenService: tokenService,
+  authContextCallback: (req: Request) => {
+    const idToken = req.cookies['id_token'];
+
+    if (idToken === undefined) {
+      console.error('id_token is not set in request');
+      return null;
+    }
+
+    // TODO (cthompson) validate the jwt and pull relevant claims from payload
+
+    return {};
+  }
+});
 
 authPlugin.register(app);
 
@@ -23,8 +43,24 @@ const secureResolver = new SecureResolver({
 
 const secureProcessForm = secureResolver.wrap(processForm);
 
+app.get('/set-id-token', async function (req, res) {
+  const id_token = req.query.id_token;
+  if (typeof id_token !== 'string') {
+    res.status(400).send({
+      success: false,
+      error: 'id_token is not a string',
+      id_token: id_token,
+    });
+    return;
+  }
+  res.cookie('id_token', id_token);
+  res.status(200).send({
+    success: true,
+  });
+});
+
 app.get('/', async (_req, res) => {
-  res.render('index');
+  res.end();
 });
 
 app.post('/signup', async (req, res) => {
@@ -54,15 +90,26 @@ app.post('/signup', async (req, res) => {
   res.end()
 });
 
-app.get('/profile', async (_req, res) => {
+app.get('/grant', async (req, res) => {
+  const tokenId = req.query.token;
+  if (tokenId === undefined || typeof tokenId !== 'string') {
+    console.error("token not defined in grant request, or is not a string");
+    res.status(400);
+    res.end();
+    return;
+  }
+
   try {
-    const tokenGrant = await tokenService.authorize("lunasec-2ce7db69-6668-403a-9878-3a9de04ea806")
+    const tokenGrant = await tokenService.authorize(tokenId);
     res.json({
-      "ssn": tokenGrant.toString()
+      "grant": tokenGrant.toString()
     })
     res.end()
   } catch (e) {
-    console.error(e);
+    console.error("error while authorizing token grant: " + e);
+    res.status(500);
+    res.end();
+    return;
   }
 })
 

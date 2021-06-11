@@ -67,13 +67,16 @@ export class SecureForm extends Component<SecureFormProps> {
     const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameVerifySessionURL.pathname = '/session/verify';
 
-    // dispatch to the secure frame session verifier to ensure that a secure frame session exists
+    // dispatch to the secure frame session verifier to make sure that a secure frame session exists
     await fetch(secureFrameVerifySessionURL.toString(), {
       credentials: 'include',
-      mode: 'cors',
+      mode: 'no-cors',
     });
 
-    const resp = await fetch(secureFrameVerifySessionURL.toString());
+    const resp = await fetch(secureFrameEnsureSessionURL.toString(), {
+      credentials: 'include',
+      mode: 'cors'
+    });
 
     if (resp.status !== 200) {
       // TODO: Throw or escalate this error in a better way.

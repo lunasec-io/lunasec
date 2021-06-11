@@ -45,7 +45,7 @@ export interface GetTokenRequest extends BaseTokenizerRequest {
   /**
    * Needs to be a UUID.
    */
-  tokenId: string;
+  tokenJwt: string;
 }
 
 export type SetTokenRequest = BaseTokenizerRequest;

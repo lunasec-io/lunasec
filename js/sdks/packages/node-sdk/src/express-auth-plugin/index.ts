@@ -1,14 +1,16 @@
 import { URL } from 'url';
 
-import { UnsecuredJWT } from 'jose/jwt/unsecured';
 import { JWTPayload } from 'jose/types';
 
 import cookieParser from 'cookie-parser';
 import { Router, Request, Response } from 'express';
 import {LunaSecTokenAuthService} from "../token-auth-service";
 
+export type AuthContextCallback = (req: Request) => JWTPayload | null;
+
 export interface ExpressAuthPluginConfig {
   tokenService: LunaSecTokenAuthService;
+  authContextCallback: AuthContextCallback
   payloadClaims?: string[];
 }
 
@@ -40,6 +42,25 @@ export class LunaSecExpressAuthPlugin {
     }, {})
   }
 
+  async buildSecureFrameRedirectUrl(stateToken: string, payloadClaims: any) {
+    let authGrant = undefined;
+    try {
+      authGrant = await this.config.tokenService.authenticate(payloadClaims);
+    } catch (e) {
+      console.error(`error while attempting to create authentication token: ${e}`);
+    }
+
+    if (authGrant === undefined) {
+      return null;
+    }
+
+    const redirectUrl = new URL(this.secureFrameUrl);
+    redirectUrl.searchParams.append('state', stateToken);
+    redirectUrl.searchParams.append('openid_token', authGrant.toString());
+    redirectUrl.pathname = '/session/create';
+    return redirectUrl;
+  }
+
   async handleSecureFrameAuthRequest(req: Request, res: Response) {
     const stateToken = req.query.state;
 
@@ -49,37 +70,29 @@ export class LunaSecExpressAuthPlugin {
       });
       return;
     }
-
-    const idToken = req.cookies['id_token'];
-
-    if (idToken === undefined) {
-      console.error('id_token is not set in request');
+    const payloadClaims = this.config.authContextCallback(req);
+    if (payloadClaims === null) {
       res.status(400).send({
-        error: 'id_token is not set in request',
+        error: 'unable to authenticate the user of this request',
       });
       return;
     }
 
-    // TODO (cthompson) we probably want to validate this token to make
-    // sure that it is signed by an auth provider
-
-    const parsedJwt = UnsecuredJWT.decode(idToken, {});
-
-    const payloadClaims = this.filterClaims(parsedJwt.payload);
-
-    const authGrant = await this.config.tokenService.authenticate(payloadClaims);
-
-    const redirectUrl = new URL(this.secureFrameUrl);
-    redirectUrl.searchParams.append('state', stateToken);
-    redirectUrl.searchParams.append('openid_token', authGrant.toString());
-    redirectUrl.pathname = '/session/create';
+    const redirectUrl = await this.buildSecureFrameRedirectUrl(stateToken, payloadClaims);
+    if (redirectUrl === null) {
+      console.error('unable to complete auth flow');
+      res.status(400).send({
+        error: 'unable to complete auth flow'
+      });
+      return;
+    }
 
     console.log('redirecting...', redirectUrl.href);
 
     res.redirect(redirectUrl.href);
   }
 
-  async register(app: Router) {
+  register(app: Router) {
     app.get('/secure-frame', cookieParser(), this.handleSecureFrameAuthRequest.bind(this));
   }
 }
