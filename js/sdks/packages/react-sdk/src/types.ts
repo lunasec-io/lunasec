@@ -34,7 +34,7 @@ export type WrapperProps<E extends keyof AllowedElements> = LunaSecWrapperProps<
 
 // These props are what is passed between the wrapper and the wrapped component found in ./components/elements
 // As above, it is combined with the native react props for the given element
-interface LunaSecWrappedComponentProps<E extends AllowedElements[keyof AllowedElements]> {
+export interface LunaSecWrappedComponentProps<E extends AllowedElements[keyof AllowedElements]> {
   renderData: RenderData<E>;
   name: string;
 }
@@ -52,4 +52,5 @@ export interface RenderData<E extends AllowedElements[keyof AllowedElements]> {
   mountedCallback: () => void;
   parentContainerStyle: Record<string, any>;
   dummyElementStyle: Record<string, any>;
+  containerClasses: Record<string, boolean>;
 }

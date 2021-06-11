@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import React, { Component } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
@@ -32,14 +33,19 @@ export default class Paragraph extends Component<ParagraphProps> {
   render() {
     // Pull the renderData out so we don't weird stuff into our dummy element
     const { renderData, ...otherProps } = this.props;
+
+    const containerClass = classnames({
+      [`secure-paragraph-container-${renderData.frameId} secure-paragraph-container-${this.props.name}`]: true,
+    });
+
+    const dummyElementClass = classnames(renderData.containerClasses);
+
+    console.log('in paragraph the classes are: ', containerClass);
+    console.log('parentContainerStyle is ', renderData.parentContainerStyle);
+
     return (
-      <div style={renderData.parentContainerStyle}>
-        <p
-          className={`secure-paragraph-container-${renderData.frameId} secure-paragraph-container-${this.props.name}`}
-          ref={renderData.dummyRef}
-          style={renderData.dummyElementStyle}
-          {...otherProps}
-        >
+      <div style={renderData.parentContainerStyle} className={containerClass}>
+        <p ref={renderData.dummyRef} style={renderData.dummyElementStyle} className={dummyElementClass} {...otherProps}>
           &ensp;
         </p>
         {this.renderFrame(renderData)}

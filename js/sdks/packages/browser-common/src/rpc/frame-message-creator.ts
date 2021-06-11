@@ -55,7 +55,12 @@ export class FrameMessageCreator {
 
   // Notifications start in the frame and are sent here to notify us of events
   handleNotificationReceived(notification: FrameNotification): void {
-    const notificationTypes: FrameNotification['command'][] = ['NotifyOnBlur', 'NotifyOnStart', 'NotifyOnToken'];
+    const notificationTypes: FrameNotification['command'][] = [
+      'NotifyOnBlur',
+      'NotifyOnStart',
+      'NotifyOnToken',
+      'NotifyOnFullyLoaded',
+    ];
     if (!notificationTypes.includes(notification.command)) {
       throw new Error(`Received Frame Notification of unknown type, allowed types are ${notificationTypes.toString()}`);
     }

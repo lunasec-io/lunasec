@@ -36,7 +36,7 @@ export default class Uploader extends Component<UploaderProps> {
     const { renderData, ...otherProps } = this.props;
     return (
       <div
-        className={`secure-uploader-container-${renderData.frameId} secure-uploader-container-${this.props.name}`}
+        className={`loading-animation secure-uploader-container-${renderData.frameId} secure-uploader-container-${this.props.name}`}
         style={renderData.parentContainerStyle}
       >
         <input {...otherProps} type="file" ref={renderData.dummyRef} style={renderData.dummyElementStyle}></input>

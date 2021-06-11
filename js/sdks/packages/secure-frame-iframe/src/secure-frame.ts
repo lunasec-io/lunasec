@@ -14,6 +14,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
   readonly frameNonce: string;
   readonly origin: string;
   readonly secureElement: AllowedElements[e];
+  private token?: string;
 
   constructor(elementType: e, loadingText: Element) {
     this.elementType = elementType;
@@ -71,7 +72,8 @@ export class SecureFrame<e extends keyof AllowedElements> {
     if (this.elementType === 'input' && attrs.type === 'file') {
       initializeUploader(this, attrs.fileTokens || []);
     }
-    if (attrs.token) {
+    if (attrs.token && attrs.token !== this.token) {
+      this.token = attrs.token;
       await this.handleToken(attrs.token, attrs);
     }
 
@@ -79,7 +81,15 @@ export class SecureFrame<e extends keyof AllowedElements> {
       this.attachOnBlurNotifier();
     }
 
+    if (!this.initialized) {
+      sendMessageToParentFrame(this.origin, {
+        command: 'NotifyOnFullyLoaded',
+        data: {},
+        frameNonce: this.frameNonce,
+      });
+    }
     this.initialized = true;
+
     return;
   }
 
