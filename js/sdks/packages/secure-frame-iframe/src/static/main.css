@@ -16,6 +16,10 @@ input {
     -webkit-border-radius: 0;
 }
 
+textarea {
+  margin:0;
+}
+
 .secure-input {
     position: absolute;
     top: 0;

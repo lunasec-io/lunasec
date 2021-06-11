@@ -213,6 +213,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       onChange: isRendered ? this.props.onChange : undefined,
       onBlur: this.props.onBlur,
       onFocus: this.props.onFocus,
+      tabIndex: -1,
     };
 
     return (

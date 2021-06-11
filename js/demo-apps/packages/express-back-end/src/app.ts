@@ -92,6 +92,7 @@ app.post('/signup', async (req, res) => {
 
 app.get('/grant', async (req, res) => {
   const tokenId = req.query.token;
+
   if (tokenId === undefined || typeof tokenId !== 'string') {
     console.error("token not defined in grant request, or is not a string");
     res.status(400);
@@ -103,10 +104,10 @@ app.get('/grant', async (req, res) => {
     const tokenGrant = await tokenService.authorize(tokenId);
     res.json({
       "grant": tokenGrant.toString()
-    })
-    res.end()
+    });
+    res.end();
   } catch (e) {
-    console.error("error while authorizing token grant: " + e);
+    console.error("error while authorizing token grant: ", e);
     res.status(500);
     res.end();
     return;
