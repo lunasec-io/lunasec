@@ -9,8 +9,7 @@ windows:
 
     # Customer Back End
     - shell_command:
-      - cd js/demo-apps/packages/express-back-end/
-      - SECURE_FRAME_URL=http://localhost:37766 LUNASEC_SIGNING_KEY=$(cat ~/go/src/github.com/refinery-labs/loq/fixtures/secureframe/auth_provider_key | base64) REFINERY_DEPLOYMENT_ID=1234 yarn start:dev
+      - SECURE_FRAME_URL=http://localhost:37766 LUNASEC_SIGNING_KEY=$(cat go/fixtures/secureframe/auth_provider_key | base64) REFINERY_DEPLOYMENT_ID=1234 yarn start:dev
 
     # Secure Frame CDN
     - shell_command:
@@ -28,6 +27,6 @@ windows:
 
     # Secure Frame Back End
     - shell_command:
-      - cd ~/go/src/github.com/refinery-labs/loq
+      - cd go
       - make secureframe
       - MOCK_AWS_GATEWAY=false SECURE_FRAME_FRONT_END=http://localhost:37766 CUSTOMER_FRONT_END=http://localhost:3000 CUSTOMER_BACK_END=http://localhost:3001 CDN_HOST=localhost:8000 ./scripts/run-secureframe.sh
