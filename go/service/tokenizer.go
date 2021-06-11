@@ -18,6 +18,7 @@ type tokenizerService struct {
 type TokenizerService interface {
 	TokenizerSet(secret string) (model.Token, string, map[string]string, error)
 	TokenizerGet(secret string, token model.Token) (string, map[string]string, error)
+	TokenizerDelete(secret string, token model.Token) error
 }
 
 // NewTokenizerService ...
@@ -84,4 +85,8 @@ func (s *tokenizerService) TokenizerGet(secret string, token model.Token) (strin
 	ciphertextLookupHash := util.GetCompositeHash(token, snk.Sp)
 
 	return s.s3.GeneratePresignedGetUrl(ciphertextLookupHash, Kp)
+}
+
+func (s *tokenizerService) TokenizerDelete(secret string, token model.Token) error {
+	return nil
 }

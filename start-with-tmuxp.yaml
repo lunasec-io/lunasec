@@ -9,7 +9,8 @@ windows:
 
     # Customer Back End
     - shell_command:
-      - SECURE_FRAME_URL=http://localhost:37766 LUNASEC_SIGNING_KEY=$(cat go/fixtures/secureframe/auth_provider_key | base64) REFINERY_DEPLOYMENT_ID=1234 yarn start:dev
+      - cd js/demo-apps/packages/express-back-end
+      - SECURE_FRAME_URL=http://localhost:37766 LUNASEC_SIGNING_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider_key | base64) REFINERY_DEPLOYMENT_ID=1234 yarn start:dev
 
     # Secure Frame CDN
     - shell_command:
