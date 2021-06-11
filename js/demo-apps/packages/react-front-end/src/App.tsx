@@ -18,9 +18,6 @@ const defaultState: IAppState = {
 };
 
 class App extends React.Component<Record<string, never>, IAppState> {
-  // Hardcoded token here will not work for you, use tokenizer CLI to upload your own test file
-  private readonly downloadTokenId = 'lunasec-cdc13296-91dc-4dea-92da-50b0c4fb3d49';
-
   constructor(props: Record<string, never>) {
     super(props);
     this.state = defaultState;
@@ -42,6 +39,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
 
   handleUploaderChange(tokens: string | Array<string>) {
     console.log('file uploader gave new tokens: ', tokens);
+    if (tokens.length === 1) {
+      this.setState({ file: tokens[0] });
+    }
   }
 
   persistTokens(formEvent: React.FormEvent<HTMLFormElement>) {
@@ -67,7 +67,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
     const tokens: Record<string, string | undefined> = {
       foo: savedData.foo,
       bar: savedData.bar,
-      file: this.downloadTokenId,
+      file: savedData.file,
     };
 
     const resolveTokens = async (tokenGrants: Promise<Record<string, string>>, name: string) => {
@@ -116,13 +116,12 @@ class App extends React.Component<Record<string, never>, IAppState> {
     return undefined;
   }
 
-  renderFileComponents() {
-    const fileTokenGrant = this.state.file;
-    if (fileTokenGrant === undefined) {
+  renderFileDownloadComponents(fileTokenGrant: string | undefined) {
+    if (!fileTokenGrant) {
       return null;
     }
     return (
-      <div>
+      <>
         <section>
           <h3>Secure Download (element)</h3>
           <div>
@@ -133,12 +132,21 @@ class App extends React.Component<Record<string, never>, IAppState> {
           <h3>Secure Download (programmatic)</h3>
           <button onClick={() => downloadFile(fileTokenGrant)}>Click to trigger download with JS</button>
         </section>
+      </>
+    );
+  }
+
+  renderFileComponents() {
+    const fileTokenGrant = this.state.file;
+    return (
+      <div>
+        {this.renderFileDownloadComponents(fileTokenGrant)}
         <section>
           <h2>Secure Upload</h2>
           <div>
             <SecureUpload
               name="uploader"
-              filetokens={[fileTokenGrant]}
+              filetokens={fileTokenGrant ? [fileTokenGrant] : undefined}
               onTokenChange={(tokens) => {
                 this.handleUploaderChange(tokens);
               }}

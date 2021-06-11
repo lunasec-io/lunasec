@@ -48,7 +48,9 @@ export interface GetTokenRequest extends BaseTokenizerRequest {
   tokenJwt: string;
 }
 
-export type SetTokenRequest = BaseTokenizerRequest;
+export interface SetTokenRequest extends BaseTokenizerRequest {
+  metadata: Record<string, any>;
+};
 
 /// API Response Schemas ///
 export interface GetMetadataResponse {

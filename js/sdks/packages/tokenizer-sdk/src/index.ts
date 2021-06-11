@@ -93,8 +93,14 @@ export class Tokenizer {
 
   // TODO: Add another method that _doesn't_ take a key, so that we handle generation.
 
-  async tokenize(input: string | Buffer): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
-    const response = await this.setTokenClient({});
+  async tokenize(input: string | Buffer, metadata?: Record<string, any>): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
+    if (metadata === undefined) {
+      metadata = {};
+    }
+
+    const response = await this.setTokenClient({
+      metadata: metadata
+    });
     if (!response.success) {
       return response;
     }

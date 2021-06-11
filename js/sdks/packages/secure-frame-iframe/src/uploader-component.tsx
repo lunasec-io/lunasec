@@ -90,12 +90,6 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
         const arrayBuf = await file.arrayBuffer();
         // Turn the JS ArrayBuffer into a Node type Buffer for tokenizer
         const buf = Buffer.from(new Uint8Array(arrayBuf));
-        const tokenizer = new Tokenizer();
-        const uploadRes = await tokenizer.tokenize(buf);
-        if (!uploadRes.success) {
-          throw uploadRes.error;
-        }
-        const token = uploadRes.tokenId;
         const meta: MetaData = {
           fileinfo: {
             filename: file.name,
@@ -103,10 +97,12 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
             lastModified: file.lastModified,
           },
         };
-        const metaRes = await tokenizer.setMetadata<MetaData>(token, meta);
-        if (!metaRes.success) {
-          throw metaRes.error;
+        const tokenizer = new Tokenizer();
+        const uploadRes = await tokenizer.tokenize(buf, meta);
+        if (!uploadRes.success) {
+          throw uploadRes.error;
         }
+        const token = uploadRes.tokenId;
         await this.mutateFileState(fileInfo.id, { status: 'Uploaded', token: token });
         this.sendTokens();
       } catch (e) {
