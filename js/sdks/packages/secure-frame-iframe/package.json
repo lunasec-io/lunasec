@@ -20,6 +20,7 @@
     "@lunasec/react-sdk": "^1.0.0",
     "@lunasec/browser-common": "^1.0.0",
     "@lunasec/react-sdk": "*",
+    "jwt-decode": "^3.1.2",
     "browserify": "^17.0.0",
     "buffer": "^4.9.2",
     "http-server": "^0.12.3",

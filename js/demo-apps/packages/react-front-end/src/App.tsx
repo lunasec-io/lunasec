@@ -1,5 +1,5 @@
 import { downloadFile } from '@lunasec/js-sdk';
-import { SecureForm, SecureInput } from '@lunasec/react-sdk';
+import { SecureDownload, SecureForm, SecureInput, SecureParagraph, SecureUpload } from '@lunasec/react-sdk';
 import React from 'react';
 
 // import logo from './logo.svg';
@@ -10,6 +10,7 @@ interface IAppState {
   foo?: string;
   bar?: string;
   normal?: string;
+  file?: string;
 }
 
 const defaultState: IAppState = {
@@ -18,7 +19,7 @@ const defaultState: IAppState = {
 
 class App extends React.Component<Record<string, never>, IAppState> {
   // Hardcoded token here will not work for you, use tokenizer CLI to upload your own test file
-  private readonly downloadToken = 'lunasec-27185faf-f5d2-4c07-8670-7fab4be03beb';
+  private readonly downloadTokenId = 'lunasec-cdc13296-91dc-4dea-92da-50b0c4fb3d49';
 
   constructor(props: Record<string, never>) {
     super(props);
@@ -26,7 +27,6 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   componentDidMount() {
-    //downloadFile(this.downloadToken);
     void this.retrieveTokens();
   }
 
@@ -67,7 +67,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
     const tokens: Record<string, string | undefined> = {
       foo: savedData.foo,
       bar: savedData.bar,
-      normal: savedData.normal,
+      file: this.downloadTokenId,
     };
 
     const resolveTokens = async (tokenGrants: Promise<Record<string, string>>, name: string) => {
@@ -92,6 +92,10 @@ class App extends React.Component<Record<string, never>, IAppState> {
     const tokenGrants = await Object.keys(tokens).reduce(resolveTokens.bind(this), Promise.resolve({}));
     this.setState(tokenGrants);
     this.setState({ loading: false });
+
+    if (this.state.file !== undefined) {
+      downloadFile(this.state.file);
+    }
   }
 
   async getDetokenizationGrant(tokenId: string) {
@@ -110,6 +114,39 @@ class App extends React.Component<Record<string, never>, IAppState> {
     }
     console.error('Failed to load detokenization grant for: ' + tokenId);
     return undefined;
+  }
+
+  renderFileComponents() {
+    const fileTokenGrant = this.state.file;
+    if (fileTokenGrant === undefined) {
+      return null;
+    }
+    return (
+      <div>
+        <section>
+          <h3>Secure Download (element)</h3>
+          <div>
+            <SecureDownload name="securefile.pdf" token={fileTokenGrant} className="test-secure-downloader" />
+          </div>
+        </section>
+        <section>
+          <h3>Secure Download (programmatic)</h3>
+          <button onClick={() => downloadFile(fileTokenGrant)}>Click to trigger download with JS</button>
+        </section>
+        <section>
+          <h2>Secure Upload</h2>
+          <div>
+            <SecureUpload
+              name="uploader"
+              filetokens={[fileTokenGrant]}
+              onTokenChange={(tokens) => {
+                this.handleUploaderChange(tokens);
+              }}
+            />
+          </div>
+        </section>
+      </div>
+    );
   }
 
   renderForm() {
@@ -144,6 +181,14 @@ class App extends React.Component<Record<string, never>, IAppState> {
             onBlur={(e) => console.log('blur3', e)}
           />
           <input type="submit" />
+          <section>
+            <h2>Secure Paragraph</h2>
+            <div>
+              <span>Type in the form above to populate</span>
+              <SecureParagraph name="demo-paragraph" token={this.state.foo} className="test-secure-span" />
+            </div>
+          </section>
+          {this.renderFileComponents()}
         </SecureForm>
       </section>
     );
@@ -152,39 +197,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
   render() {
     return (
       <div className="App">
-        <div className="app-form">
-          {this.renderForm()}
-          {/*<section>*/}
-          {/*  <h2>Secure Paragraph</h2>*/}
-          {/*  <div>*/}
-          {/*    <span>Type in the form above to populate</span>*/}
-          {/*    <SecureParagraph name="demo-paragraph" token={this.state.foo} className="test-secure-span" />*/}
-          {/*  </div>*/}
-          {/*</section>*/}
-          {/*<section>*/}
-          {/*  <h3>Secure Download (element)</h3>*/}
-          {/*  <div>*/}
-          {/*    <SecureDownload name="securefile.pdf" token={this.downloadToken} className="test-secure-downloader" />*/}
-          {/*  </div>*/}
-          {/*</section>*/}
-          {/*<section>*/}
-          {/*  <h3>Secure Download (programmatic)</h3>*/}
-          {/*  <button onClick={() => downloadFile(this.downloadToken)}>Click to trigger download with JS</button>*/}
-          {/*</section>*/}
-          {/*<section>*/}
-          {/*  <h2>Secure Upload</h2>*/}
-
-          {/*  <div>*/}
-          {/*    <SecureUpload*/}
-          {/*      name="uploader"*/}
-          {/*      filetokens={[this.downloadToken]}*/}
-          {/*      onTokenChange={(tokens) => {*/}
-          {/*        this.handleUploaderChange(tokens);*/}
-          {/*      }}*/}
-          {/*    />*/}
-          {/*  </div>*/}
-          {/*</section>*/}
-        </div>
+        <div className="app-form">{this.renderForm()}</div>
       </div>
     );
   }

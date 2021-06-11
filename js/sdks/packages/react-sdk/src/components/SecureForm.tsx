@@ -80,8 +80,7 @@ export class SecureForm extends Component<SecureFormProps> {
 
     if (resp.status !== 200) {
       // TODO: Throw or escalate this error in a better way.
-      console.error('unable to create secure frame session');
-      return;
+      throw new Error('unable to create secure frame session, is there a user currently authenticated to this site?');
     }
 
     return;
