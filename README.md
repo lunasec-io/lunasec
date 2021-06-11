@@ -1,7 +1,7 @@
 
 # Tokenizer Front End SDK
 
-This monorepo holds the LunaSec SDKs, servers, and demo application.  Together, they are a toolkit that keeps data secure in the front and back end of web applications.  
+This monorepo holds the LunaSec SDKs, servers, and demo application.  Together, they are a toolkit that keeps data secure in the front and back end of web applications by replacing the sensitive fields in your database with **tokens** that represent them.
 
 On the front end, cross-domain iFrames dubbed **Secure Frames** handle the creation and display of sensitive fields, and on the backend sensitive data is handled inside Lambdas dubbed **Secure Resolvers**.  
 
@@ -37,15 +37,6 @@ Then, install `tmuxp` and then run `tmuxp load ./start-with-tmuxp.yaml` in the r
 Then open your browser and navigate to `http://localhost:3000`. That will show you the POC.
 
 When you want to shut down the cluster, hit `ctrl+b` and type `:kill-session`.  
-
-### Developing the React Front End
-You need to link the `secure-frame-sdk` to the React Front End app:
-```
-cd secure-frame-sdk
-npm link
-cd ../react-front-end
-npm link secure-frame-sdk
-```
 
 ### How to manage and install packages
 We use lerna to manage the monorepo, and yarn as the package manager.  Since yarn doesn't know about local packages like lerna,

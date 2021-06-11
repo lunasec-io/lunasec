@@ -41,7 +41,7 @@ export default class Downloader extends Component<AnchorProps> {
         className={`secure-downloader-container-${renderData.frameId} secure-downloader-container-${this.props.name}`}
         style={renderData.parentContainerStyle}
       >
-        <a {...otherProps} ref={renderData.dummyRef} style={renderData.dummyElementStyle}>
+        <a {...otherProps} ref={renderData.dummyRef} style={renderData.dummyElementStyle} tabIndex={-1}>
           &ensp;
         </a>
         {this.renderFrame(renderData)}
