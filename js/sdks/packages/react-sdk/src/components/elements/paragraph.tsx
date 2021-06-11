@@ -46,7 +46,7 @@ export default class Paragraph extends Component<ParagraphProps> {
 
     return (
       <div style={renderData.parentContainerStyle} className={containerClass}>
-        <p ref={renderData.dummyRef} style={renderData.dummyElementStyle} {...otherProps}>
+        <p ref={renderData.dummyRef} style={renderData.dummyElementStyle} tabIndex={-1} {...otherProps}>
           &ensp;
         </p>
         {this.renderFrame(renderData)}

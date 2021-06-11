@@ -42,7 +42,13 @@ export default class Uploader extends Component<UploaderProps> {
     });
     return (
       <div className={containerClass} style={renderData.parentContainerStyle}>
-        <input {...otherProps} type="file" ref={renderData.dummyRef} style={renderData.dummyElementStyle} />
+        <input
+          {...otherProps}
+          type="file"
+          ref={renderData.dummyRef}
+          style={renderData.dummyElementStyle}
+          tabIndex={-1}
+        />
         {this.renderFrame(renderData)}
         {children}
       </div>
