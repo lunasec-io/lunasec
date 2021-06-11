@@ -38,9 +38,10 @@ export default class Downloader extends Component<AnchorProps> {
   render() {
     const { renderData, className, children, ...otherProps } = this.props;
 
+    // TODO: handle this in the wrapped component by using the styled component callback
     const containerClass = classnames({
       [`secure-downloader-container-${renderData.frameId} secure-downloader-container-${this.props.name}`]: true,
-      // Necessary for styled-components to attach to this element
+      // Combine with the classname passed in props because styled-components passes some random classnames to attach our css
       [className || '']: true,
     });
 

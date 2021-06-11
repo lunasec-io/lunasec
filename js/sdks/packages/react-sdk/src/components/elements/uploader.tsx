@@ -37,7 +37,7 @@ export default class Uploader extends Component<UploaderProps> {
     const { renderData, className, children, ...otherProps } = this.props;
     const containerClass = classnames({
       [`secure-uploader-container-${renderData.frameId} secure-uploader-container-${this.props.name}`]: true,
-      // Necessary for styled-components to attach to this element
+      // Combine with the classname passed in props because styled-components passes some random classnames to attach our css
       [className || '']: true,
     });
     return (

@@ -40,7 +40,7 @@ export default class Paragraph extends Component<ParagraphProps> {
 
     const containerClass = classnames({
       [`secure-paragraph-container-${renderData.frameId} secure-paragraph-container-${this.props.name}`]: true,
-      // Necessary for styled-components to attach to this element
+      // Combine with the classname passed in props because styled-components passes some random classnames to attach our css
       [className || '']: true,
     });
 
