@@ -1,4 +1,4 @@
-import { SignJWT, KeyLike } from 'jose/jwt/sign';
+import { KeyLike, SignJWT } from 'jose/jwt/sign';
 import { JWTPayload } from 'jose/types';
 
 import { getSecretFromSecretProvider, ValidSecretProvider } from './types';
@@ -77,7 +77,8 @@ export class LunaSecTokenAuthService {
       .setIssuer('node-sdk')
       .setAudience('secure-frame')
       .setExpirationTime('15m')
-      .sign(secret)
+      .sign(secret);
+
     return jwt.toString();
   }
 
@@ -87,7 +88,7 @@ export class LunaSecTokenAuthService {
   }
 
   public async authorize(token: string): Promise<LunaSecDetokenizeTokenGrant> {
-    const claims = { 'token_id': token };
+    const claims = { token_id: token };
     const encodedJwt = await this.createJwt(claims);
     return new LunaSecDetokenizeTokenGrant(encodedJwt);
   }
