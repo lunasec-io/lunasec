@@ -13,8 +13,6 @@ export function addMessageListener(window: Window, domInstance: Document) {
   window.addEventListener(
     'message',
     (event) => {
-      console.log('parent message received:', event);
-
       if (event.origin !== __SECURE_FRAME_URL__) {
         return;
       }

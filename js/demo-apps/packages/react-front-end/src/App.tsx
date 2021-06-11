@@ -13,7 +13,7 @@ interface IAppState {
 
 class App extends React.Component<Record<string, never>, IAppState> {
   // Hardcoded token here will not work for you, use tokenizer CLI to upload your own test file
-  private readonly downloadToken = 'lunasec-27185faf-f5d2-4c07-8670-7fab4be03beb';
+  private readonly downloadToken = 'lunasec-02bf82d6-025b-4b6a-bb63-e2d90877179a';
 
   constructor(props: Record<string, never>) {
     super(props);
@@ -51,8 +51,6 @@ class App extends React.Component<Record<string, never>, IAppState> {
 
     // fail through to empty object if nothing set
     const savedData = JSON.parse(dataString || '{}') as IAppState;
-
-    console.log('retrieved Saved Data of ', savedData);
 
     return {
       foo: savedData.foo,
@@ -94,6 +92,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
               <input type="submit" />
             </SecureForm>
           </section>
+
           <section>
             <h2>Secure Paragraph</h2>
             <div>
@@ -101,19 +100,21 @@ class App extends React.Component<Record<string, never>, IAppState> {
               <SecureParagraph name="demo-paragraph" token={this.state.foo} className="test-secure-span" />
             </div>
           </section>
+
           <section>
             <h3>Secure Download (element)</h3>
             <div>
               <SecureDownload name="securefile.pdf" token={this.downloadToken} className="test-secure-downloader" />
             </div>
           </section>
+
           <section>
             <h3>Secure Download (programmatic)</h3>
             <button onClick={() => downloadFile(this.downloadToken)}>Click to trigger download with JS</button>
           </section>
+
           <section>
             <h2>Secure Upload</h2>
-
             <div>
               <SecureUpload
                 name="uploader"
