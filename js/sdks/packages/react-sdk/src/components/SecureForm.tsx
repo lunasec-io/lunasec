@@ -41,9 +41,8 @@ export class SecureForm extends Component<SecureFormProps> {
     // Pushes events received back up.
     addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
 
+    // TODO (cthompson) set timeout to have this run on an internal to reauth
     await this.authenticateSession();
-
-    // TODO (cthompson) here in the code we have verification that the secure form should be able to tokenize data
   }
 
   componentWillUnmount() {
