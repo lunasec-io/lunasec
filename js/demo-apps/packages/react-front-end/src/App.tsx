@@ -5,16 +5,28 @@ import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
 
-interface IAppState {
-  loading: boolean;
+interface Tokens {
   foo?: string;
   bar?: string;
-  normal?: string;
   file?: string;
+}
+
+interface Fields {
+  normal?: string;
+}
+
+interface IAppState {
+  loading: boolean;
+  fields: Fields;
+  tokenIDs: Tokens;
+  tokenGrants: Tokens;
 }
 
 const defaultState: IAppState = {
   loading: true,
+  fields: {},
+  tokenIDs: {},
+  tokenGrants: {},
 };
 
 class App extends React.Component<Record<string, never>, IAppState> {
@@ -25,42 +37,45 @@ class App extends React.Component<Record<string, never>, IAppState> {
 
   componentDidMount() {
     void this.retrieveTokens();
+    this.loadFields();
   }
 
   handleFooChange(event: React.ChangeEvent<HTMLInputElement>) {
     console.log('setting foo', event.target.value);
-    this.setState({ foo: event.target.value });
+    this.setState({ tokenIDs: { ...this.state.tokenIDs, foo: event.target.value } });
   }
 
   handleBarChange(event: React.ChangeEvent<HTMLInputElement>) {
     console.log('setting bar', event.target.value);
-    this.setState({ bar: event.target.value });
+    this.setState({ tokenIDs: { ...this.state.tokenIDs, bar: event.target.value } });
   }
 
   handleUploaderChange(tokens: string | Array<string>) {
     console.log('file uploader gave new tokens: ', tokens);
     if (tokens.length === 1) {
-      this.setState({ file: tokens[0] });
+      this.setState({ tokenIDs: { ...this.state.tokenIDs, file: tokens[0] } });
     }
   }
 
   persistTokens(formEvent: React.FormEvent<HTMLFormElement>) {
     formEvent.preventDefault();
-    window.sessionStorage.setItem(
-      'savedFields',
-      JSON.stringify({
-        foo: this.state.foo,
-        bar: this.state.bar,
-        normal: this.state.normal,
-      })
-    );
+    window.sessionStorage.setItem('savedTokenIDs', JSON.stringify(this.state.tokenIDs));
+    window.sessionStorage.setItem('savedFields', JSON.stringify(this.state.fields));
   }
 
-  async retrieveTokens(): Promise<void> {
+  loadFields() {
     const dataString = window.sessionStorage.getItem('savedFields');
 
     // fail through to empty object if nothing set
-    const savedData = JSON.parse(dataString || '{}') as IAppState;
+    const savedData = JSON.parse(dataString || '{}') as Fields;
+    this.setState({ fields: savedData });
+  }
+
+  async retrieveTokens(): Promise<void> {
+    const dataString = window.sessionStorage.getItem('savedTokenIDs');
+
+    // fail through to empty object if nothing set
+    const savedData = JSON.parse(dataString || '{}') as Tokens;
 
     console.log('retrieved Saved Data of ', savedData);
 
@@ -90,11 +105,11 @@ class App extends React.Component<Record<string, never>, IAppState> {
     };
 
     const tokenGrants = await Object.keys(tokens).reduce(resolveTokens.bind(this), Promise.resolve({}));
-    this.setState(tokenGrants);
+    this.setState({ tokenGrants });
     this.setState({ loading: false });
 
-    if (this.state.file !== undefined) {
-      downloadFile(this.state.file);
+    if (this.state.tokenGrants.file !== undefined) {
+      downloadFile(this.state.tokenGrants.file);
     }
   }
 
@@ -137,7 +152,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   renderFileComponents() {
-    const fileTokenGrant = this.state.file;
+    const fileTokenGrant = this.state.tokenGrants.file;
     return (
       <div>
         {this.renderFileDownloadComponents(fileTokenGrant)}
@@ -167,7 +182,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
         <SecureForm onSubmit={(e) => this.persistTokens(e)}>
           <SecureInput
             name="foo"
-            value={this.state.foo}
+            value={this.state.tokenGrants.foo}
             onChange={(e) => this.handleFooChange(e)}
             onBlur={(e) => console.log('blur1', e)}
             element="textarea"
@@ -175,7 +190,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
           <SecureInput
             name="bar"
             type="password"
-            value={this.state.bar}
+            value={this.state.tokenGrants.bar}
             onChange={(e) => this.handleBarChange(e)}
             onBlur={(e) => console.log('blur2', e)}
           />
@@ -183,9 +198,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
             className="d-block"
             name="normal"
             type="text"
-            value={this.state.normal}
+            value={this.state.fields.normal}
             placeholder="Insecure field coexisting"
-            onChange={(e) => this.setState({ normal: e.target.value })}
+            onChange={(e) => this.setState({ fields: { ...this.state.fields, normal: e.target.value } })}
             onBlur={(e) => console.log('blur3', e)}
           />
           <input type="submit" />
@@ -193,7 +208,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
             <h2>Secure Paragraph</h2>
             <div>
               <span>Type in the form above to populate</span>
-              <SecureParagraph name="demo-paragraph" token={this.state.foo} className="test-secure-span" />
+              <SecureParagraph name="demo-paragraph" token={this.state.tokenGrants.foo} className="test-secure-span" />
             </div>
           </section>
           {this.renderFileComponents()}
