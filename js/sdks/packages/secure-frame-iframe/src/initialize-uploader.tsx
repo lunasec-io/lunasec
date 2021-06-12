@@ -9,7 +9,7 @@ import Uploader from './uploader-component';
 export function initializeUploader(secureFrame: SecureFrame<keyof AllowedElements>, tokens: string[]) {
   // TODO: rewrite the whole secure frame as a react app instead
   // bit of a hack on our earlier executed code to remove the element
-  document.body.removeChild(secureFrame.secureElement);
+  secureFrame.secureElement.remove();
 
   const appWrapper = document.createElement('div');
   document.body.appendChild(appWrapper);

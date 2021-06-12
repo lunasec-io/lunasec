@@ -1,0 +1,23 @@
+FROM golang AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
+
+# Docker cache
+COPY go.mod go.sum /code/
+WORKDIR /code
+RUN go mod graph | awk '{if ($1 !~ "@") print $2}' | xargs go get
+
+ADD . /code
+RUN BUILD_TAG=lambda make secureframe
+
+FROM scratch
+
+ENV SECURE_FRAME_VIEWS_PATH /views
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /code/build/secureframe_lambda /secureframe
+COPY --from=builder /code/views/secureframe /views
+COPY --from=builder /code/config/secureframe /config/secureframe
+
+WORKDIR /
+ENTRYPOINT ["/secureframe"]

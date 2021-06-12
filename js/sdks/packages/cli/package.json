@@ -32,6 +32,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@lunasec/node-sdk": "^1.0.0",
     "dotenv": "^9.0.2",
     "oclif": "^1.17.0"
   },

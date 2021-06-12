@@ -5,7 +5,6 @@ import { ValidTokenizerApiRequestTypes } from './api/types';
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { CONFIG_DEFAULTS } from './constants';
 import {
-  MetaData,
   TokenizerClientConfig,
   TokenizerDetokenizeResponse,
   TokenizerDetokenizeToUrlResponse,
@@ -62,14 +61,20 @@ export class Tokenizer {
       success: true,
       tokenId,
       // TODO: make sure that data matches expected type with validator
-      metadata: response.data.data.metadata as MetaData,
+      metadata: response.data.data.metadata,
     };
   }
 
-  async setMetadata(
+  async setMetadata<T extends Record<string, any>>(
     tokenId: string,
-    metadata: MetaData
+    metadata: T
   ): Promise<TokenizerFailApiResponse | TokenizerSetMetadataResponse> {
+    // TODO: set up proper typing/schema for the metadata object and share it between the whole project
+    // This check is really hard to do right in JS and we should probably just skip it altogether
+    if (!(metadata instanceof Object)) {
+      throw new Error('Metadata must be an object');
+    }
+
     const response = await this.setMetadataClient({
       tokenId,
       metadata,
@@ -88,8 +93,14 @@ export class Tokenizer {
 
   // TODO: Add another method that _doesn't_ take a key, so that we handle generation.
 
-  async tokenize(input: string | Buffer): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
-    const response = await this.setTokenClient({});
+  async tokenize(input: string | Buffer, metadata?: Record<string, any>): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
+    if (metadata === undefined) {
+      metadata = {};
+    }
+
+    const response = await this.setTokenClient({
+      metadata: metadata
+    });
     if (!response.success) {
       return response;
     }
@@ -138,7 +149,7 @@ export class Tokenizer {
 
   async detokenizeToUrl(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeToUrlResponse> {
     const response = await this.getTokenClient({
-      tokenId: tokenId,
+      tokenJwt: tokenId,
     });
 
     if (!response.success) {
