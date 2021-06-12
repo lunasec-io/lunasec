@@ -46,13 +46,8 @@
     ],
     "tsBuildInfoFile": "./build/buildcache.tsbuildinfo"
   },
-  "files": [
-  ],
   "include": [
     "src/**/*.ts"
-  ],
-  "references": [
-    { "path": "../sdks/packages/express-auth-plugin"},
   ],
   "compileOnSave": true
 }

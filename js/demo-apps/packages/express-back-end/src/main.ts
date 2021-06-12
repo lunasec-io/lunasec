@@ -1,5 +1,5 @@
 import app from './app';
 
-app.listen(5002, () => {
-    console.log('listening on http://localhost:5002/');
+app.listen(3001, () => {
+    console.log('listening on http://localhost:3001/');
 });

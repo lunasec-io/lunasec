@@ -41,9 +41,8 @@ export class SecureForm extends Component<SecureFormProps> {
     // Pushes events received back up.
     addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
 
+    // TODO (cthompson) set timeout to have this run on an internal to reauth
     await this.authenticateSession();
-
-    // TODO (cthompson) here in the code we have verification that the secure form should be able to tokenize data
   }
 
   componentWillUnmount() {
@@ -67,18 +66,20 @@ export class SecureForm extends Component<SecureFormProps> {
     const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__);
     secureFrameVerifySessionURL.pathname = '/session/verify';
 
-    // dispatch to the secure frame session verifier to ensure that a secure frame session exists
+    // dispatch to the secure frame session verifier to make sure that a secure frame session exists
     await fetch(secureFrameVerifySessionURL.toString(), {
       credentials: 'include',
-      mode: 'cors',
+      mode: 'no-cors',
     });
 
-    const resp = await fetch(secureFrameVerifySessionURL.toString());
+    const resp = await fetch(secureFrameEnsureSessionURL.toString(), {
+      credentials: 'include',
+      mode: 'cors'
+    });
 
     if (resp.status !== 200) {
       // TODO: Throw or escalate this error in a better way.
-      console.error('unable to create secure frame session');
-      return;
+      throw new Error('unable to create secure frame session, is there a user currently authenticated to this site?');
     }
 
     return;
