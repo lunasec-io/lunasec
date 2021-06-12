@@ -1,12 +1,11 @@
 import { AllowedElements } from '@lunasec/react-sdk';
-import { Tokenizer } from '@lunasec/tokenizer-sdk';
+import { MetaData, Tokenizer } from '@lunasec/tokenizer-sdk';
 import React from 'react';
 import Dropzone, { DropzoneProps, FileWithPath } from 'react-dropzone';
 
 import { sendMessageToParentFrame } from './rpc';
 import { handleDownload } from './secure-download';
 import { SecureFrame } from './secure-frame';
-import { MetaData } from './types';
 
 interface UploaderProps {
   filetokens: string[];
@@ -61,11 +60,17 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
       const metaRes = await tokenizer.getMetadata(token);
       if (!metaRes.success) {
         // If it failed then do nothing and don't show a file
+        console.error('Fetching file metadata failed');
         return;
       }
-      const meta = metaRes.metadata as MetaData;
+      const meta = metaRes.metadata;
+      if (!('fileinfo' in meta) || !('filename' in meta.fileinfo)) {
+        console.error('Received bad file metadata');
+        return;
+      }
+      const { filename } = meta.fileinfo;
       const fileInfo: FileInfo = {
-        name: meta.fileinfo.filename,
+        name: filename,
         token: token,
         status: 'Uploaded',
         id: this.state.files.length,
@@ -91,6 +96,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
         // Turn the JS ArrayBuffer into a Node type Buffer for tokenizer
         const buf = Buffer.from(new Uint8Array(arrayBuf));
         const meta: MetaData = {
+          dataType: 'file',
           fileinfo: {
             filename: file.name,
             type: file.type,

@@ -224,6 +224,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
         {this.renderHiddenElement(elementProps)}
 
         {this.renderFrame()}
+        {children}
       </div>
     );
   }

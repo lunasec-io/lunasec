@@ -47,7 +47,6 @@ class FileDownloader {
 
   frameNotificationCallback(notification: FrameNotification) {
     if (notification.frameNonce !== this.frameNonce) {
-      console.debug('Received notification intended for different listener, discarding');
       return;
     }
     if (notification.command === 'NotifyOnStart') {

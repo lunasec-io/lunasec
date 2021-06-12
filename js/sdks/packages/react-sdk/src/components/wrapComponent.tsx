@@ -11,20 +11,14 @@ import {
   secureFramePathname,
 } from '@lunasec/browser-common';
 import React, { Component, CSSProperties, RefObject } from 'react';
+import styled from 'styled-components';
 
-import { AllowedElements, RenderData, WrappedClassLookup, WrappedComponentProps, WrapperProps } from '../types';
-
-// TODO: pass in list of all supported elements for this extends
-// export interface WrapperProps<T extends ElementLookup> extends React.ComponentPropsWithoutRef<ElementLookupMap[T]> {
-//   token?: string;
-//   secureFrameUrl?: string;
-//   name: string;
-//   className: string;
-// }
+import { AllowedElements, LunaSecWrappedComponentProps, RenderData, WrappedClassLookup, WrapperProps } from '../types';
 
 export interface WrapperState {
   secureFrameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
+  frameFullyLoaded: boolean;
 }
 
 // TODO: figure out how to pass this to the Wrapped props below
@@ -33,9 +27,30 @@ export interface WrapperState {
 // }
 
 export default function WrapComponent<EName extends keyof WrappedClassLookup>(
-  Wrapped: WrappedClassLookup[EName],
+  UnstyledWrapped: WrappedClassLookup[EName],
   elementName: EName
 ) {
+  // Add some style to the element, for now just to do loading animations
+  const Wrapped = styled(UnstyledWrapped)`
+    .loading-animation {
+      animation: shimmer 2s infinite;
+      background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+      background-size: 1000px 100%;
+      border-radius: 5px;
+    }
+    @keyframes shimmer {
+      0% {
+        background-position: -1000px 0;
+      }
+      100% {
+        background-position: 1000px 0;
+      }
+    }
+    .hidden {
+      opacity: 0;
+    }
+  `;
+
   return class WrappedComponent extends Component<WrapperProps<EName>, WrapperState> {
     readonly messageCreator: FrameMessageCreator;
 
@@ -48,7 +63,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
 
     readonly frameRef!: RefObject<HTMLIFrameElement>;
     readonly dummyRef!: RefObject<AllowedElements[EName]>;
-    frameReady = false;
+    frameReadyForListening = false;
 
     constructor(props: WrapperProps<EName>) {
       super(props);
@@ -62,6 +77,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
         secureFrameUrl: secureFrameURL.toString(),
         frameStyleInfo: null,
+        frameFullyLoaded: false,
       };
     }
 
@@ -102,10 +118,14 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
 
     componentDidUpdate() {
       // Also causes style changes to propagate, as long as they come from within react
-      if (this.frameReady) {
+      // TODO: Handle cases where the token didnt change, probably handle in iframe
+
+      if (this.frameReadyForListening) {
         void this.sendIFrameAttributes();
       }
     }
+
+    // componentWillReceiveProps(nextProps: Readonly<WrapperProps<EName>>, nextContext: any) {}
 
     // Generate some attributes for sending to the iframe via RPC.
     generateIFrameAttributes(): AttributesMessage {
@@ -159,19 +179,41 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
     frameNotificationCallback(notification: FrameNotification) {
       // TODO: move this filter into the RPC layer, we shouldnt have to filter here
       if (notification.frameNonce !== this.frameId) {
-        console.debug('Received notification intended for different listener, discarding');
         return;
       }
+
       switch (notification.command) {
         case 'NotifyOnStart':
-          this.frameReady = true;
+          this.frameReadyForListening = true;
           void this.sendIFrameAttributes();
           break;
         case 'NotifyOnToken':
           if (this.props.onTokenChange && 'token' in notification.data) {
             this.props.onTokenChange(notification.data.token);
           }
+          break;
+        case 'NotifyOnFullyLoaded':
+          this.setState({ frameFullyLoaded: true });
+          break;
       }
+    }
+
+    renderLoadingOverlay() {
+      if (this.state.frameFullyLoaded) {
+        return null;
+      }
+
+      const overlayStyles: CSSProperties = {
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        zIndex: 2,
+        display: 'block',
+      };
+
+      return <div style={overlayStyles} className="loading-animation" />;
     }
 
     render() {
@@ -182,8 +224,6 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         display: 'block',
       };
 
-      const isRendered = this.state.frameStyleInfo !== undefined;
-
       const dummyElementStyle: CSSProperties = {
         position: 'absolute',
         top: 0,
@@ -191,8 +231,8 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         // We can't set the "visibility" to "collapsed" or "hidden",
         // Or else the "on focus" and "on blur" events won't fire.
         // So we use zIndex instead to "hide" the input.
-        zIndex: isRendered ? -1 : 1,
-        opacity: isRendered ? 0 : 1,
+        zIndex: -1,
+        opacity: 0,
         display: 'block',
         resize: 'none',
       };
@@ -201,6 +241,9 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         frameId: this.frameId,
         frameUrl: this.generateUrl(),
         frameStyleInfo: this.state.frameStyleInfo,
+        frameContainerClasses: {
+          hidden: !this.state.frameFullyLoaded,
+        },
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,
         mountedCallback: this.wrappedComponentDidMount.bind(this),
@@ -211,15 +254,21 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
       const { token, secureFrameUrl, onTokenChange, ...scrubbedProps } = this.props;
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
-      // @ts-ignore
-      const propsForWrapped: WrappedComponentProps<EName> = {
-        ...scrubbedProps,
+      const propsForWrapped: LunaSecWrappedComponentProps<AllowedElements[EName]> = {
+        name: this.props.name,
         renderData,
       };
 
-      /* TODO: Fix this so the properties don't break in typescript.  For now be careful and think about what props you pass
-      //@ts-ignore */
-      return <Wrapped {...propsForWrapped} />;
+      // TODO: Fix this so the properties don't break in typescript.
+      // For now be careful and think about what props you pass
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const IgnoredWrapped = Wrapped as any;
+
+      return (
+        <IgnoredWrapped {...scrubbedProps} {...propsForWrapped}>
+          {this.renderLoadingOverlay()}
+        </IgnoredWrapped>
+      );
     }
   };
 }

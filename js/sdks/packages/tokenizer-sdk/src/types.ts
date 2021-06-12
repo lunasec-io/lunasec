@@ -13,10 +13,12 @@ export interface TokenizerClientConfig {
   token?: string;
 }
 
+// _________________________  Responses ___________________________________
+
 export interface TokenizerGetMetadataResponse {
   success: true;
   tokenId: string;
-  metadata: Record<string, any>;
+  metadata: MetaData;
 }
 
 export interface TokenizerSetMetadataResponse {
@@ -42,3 +44,24 @@ export interface TokenizerDetokenizeToUrlResponse {
   headers: Record<string, string>;
   downloadUrl: string;
 }
+
+// ______________________ MetaData ______________________________
+
+export interface BaseMeta {
+  customFields?: Record<any, any>;
+}
+
+export interface StringMeta extends BaseMeta {
+  dataType: 'string';
+}
+
+export interface FileMeta extends BaseMeta {
+  dataType: 'file';
+  fileinfo: {
+    filename: string;
+    type?: string;
+    lastModified?: number;
+  };
+}
+
+export type MetaData = StringMeta | FileMeta;

@@ -211,6 +211,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
               <SecureParagraph name="demo-paragraph" token={this.state.tokenGrants.foo} className="test-secure-span" />
             </div>
           </section>
+
           {this.renderFileComponents()}
         </SecureForm>
       </section>
