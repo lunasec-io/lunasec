@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import React, { Component } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
@@ -35,16 +36,22 @@ export default class Downloader extends Component<AnchorProps> {
   }
 
   render() {
-    const { renderData, ...otherProps } = this.props;
+    const { renderData, className, children, ...otherProps } = this.props;
+
+    // TODO: handle this in the wrapped component by using the styled component callback
+    const containerClass = classnames({
+      [`secure-downloader-container-${renderData.frameId} secure-downloader-container-${this.props.name}`]: true,
+      // Combine with the classname passed in props because styled-components passes some random classnames to attach our css
+      [className || '']: true,
+    });
+
     return (
-      <div
-        className={`secure-downloader-container-${renderData.frameId} secure-downloader-container-${this.props.name}`}
-        style={renderData.parentContainerStyle}
-      >
+      <div className={containerClass} style={renderData.parentContainerStyle}>
         <a {...otherProps} ref={renderData.dummyRef} style={renderData.dummyElementStyle} tabIndex={-1}>
           &ensp;
         </a>
         {this.renderFrame(renderData)}
+        {children}
       </div>
     );
   }

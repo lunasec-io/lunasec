@@ -6,6 +6,10 @@ import { detokenize, listenForRPCMessages, sendMessageToParentFrame } from './rp
 import { handleDownload } from './secure-download';
 export type SupportedElement = AllowedElements[keyof AllowedElements];
 
+export function timeout(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 // Would be nice if class could take <element type parameter> but couldn't quite get it working
 export class SecureFrame<e extends keyof AllowedElements> {
   private readonly elementType: e;
@@ -14,6 +18,7 @@ export class SecureFrame<e extends keyof AllowedElements> {
   readonly frameNonce: string;
   readonly origin: string;
   readonly secureElement: AllowedElements[e];
+  private token?: string;
 
   constructor(elementType: e, loadingText: Element) {
     this.elementType = elementType;
@@ -71,7 +76,8 @@ export class SecureFrame<e extends keyof AllowedElements> {
     if (this.elementType === 'input' && attrs.type === 'file') {
       initializeUploader(this, attrs.fileTokens || []);
     }
-    if (attrs.token) {
+    if (attrs.token && attrs.token !== this.token) {
+      this.token = attrs.token;
       await this.handleToken(attrs.token, attrs);
     }
 
@@ -79,7 +85,15 @@ export class SecureFrame<e extends keyof AllowedElements> {
       this.attachOnBlurNotifier();
     }
 
+    if (!this.initialized) {
+      sendMessageToParentFrame(this.origin, {
+        command: 'NotifyOnFullyLoaded',
+        data: {},
+        frameNonce: this.frameNonce,
+      });
+    }
     this.initialized = true;
+
     return;
   }
 
@@ -88,7 +102,12 @@ export class SecureFrame<e extends keyof AllowedElements> {
     if (this.elementType === 'a') {
       // anchor elements mean we are doing an s3 secure download
       // Figure out why this type casting is necessary
-      await handleDownload(token, this.secureElement as HTMLAnchorElement, attrs.hidden || false);
+      try {
+        await handleDownload(token, this.secureElement as HTMLAnchorElement, attrs.hidden || false);
+      } catch (e) {
+        // TODO: Make this less ugly as hell (it's blue atm and garbage lol)
+        this.secureElement.textContent = 'Error: Missing File';
+      }
     } else {
       const value = await detokenize(token);
       if (this.elementType === 'input' || this.elementType === 'textarea') {

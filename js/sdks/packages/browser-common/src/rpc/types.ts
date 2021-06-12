@@ -61,8 +61,6 @@ export const OutboundToInboundMessageValueMap: OutboundMessageLookupType = {
 // FRAME NOTIFICATION TYPES START HERE
 // Frame notifications go from the frame to the outside app and don't receive a reply
 
-type NotifyOnBlurData = Record<any, never>;
-type NotifyOnStartData = Record<any, never>;
 interface NotifyOnTokenData {
   token: Array<string>;
 }
@@ -74,12 +72,12 @@ interface BaseFrameNotification {
 
 export interface NotifyOnBlur extends BaseFrameNotification {
   command: 'NotifyOnBlur';
-  data: NotifyOnBlurData;
+  data: Record<any, never>;
 }
 
 export interface NotifyOnStart extends BaseFrameNotification {
   command: 'NotifyOnStart';
-  data: NotifyOnStartData;
+  data: Record<any, never>;
 }
 
 export interface NotifyOnToken extends BaseFrameNotification {
@@ -87,4 +85,9 @@ export interface NotifyOnToken extends BaseFrameNotification {
   data: NotifyOnTokenData;
 }
 
-export type FrameNotification = NotifyOnBlur | NotifyOnStart | NotifyOnToken;
+export interface NotifyOnFullyLoaded extends BaseFrameNotification {
+  command: 'NotifyOnFullyLoaded';
+  data: Record<any, never>;
+}
+
+export type FrameNotification = NotifyOnBlur | NotifyOnStart | NotifyOnToken | NotifyOnFullyLoaded;
