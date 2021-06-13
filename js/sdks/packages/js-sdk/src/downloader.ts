@@ -61,6 +61,7 @@ class FileDownloader {
     };
     return {
       id: this.frameNonce,
+      component: 'Downloader',
       style: JSON.stringify(style),
       token: this.token,
       hidden: true,

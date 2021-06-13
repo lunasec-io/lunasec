@@ -2,8 +2,8 @@ import classnames from 'classnames';
 import React, { Component } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
-type ParagraphRenderData = RenderData<HTMLParagraphElement>;
-export type ParagraphProps = WrappedComponentProps<'p'>;
+type ParagraphRenderData = RenderData<'Paragraph'>;
+export type ParagraphProps = WrappedComponentProps<'Paragraph'>;
 
 export default class Paragraph extends Component<ParagraphProps> {
   constructor(props: ParagraphProps) {

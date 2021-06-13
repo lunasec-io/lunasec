@@ -1,4 +1,4 @@
-import { AllowedElements } from '@lunasec/react-sdk';
+import { ComponentNames } from '@lunasec/react-sdk';
 import { MetaData, Tokenizer } from '@lunasec/tokenizer-sdk';
 import React from 'react';
 import Dropzone, { DropzoneProps, FileWithPath } from 'react-dropzone';
@@ -9,7 +9,7 @@ import { SecureFrame } from './secure-frame';
 
 interface UploaderProps {
   filetokens: string[];
-  secureframe: SecureFrame<keyof AllowedElements>;
+  secureframe: SecureFrame<ComponentNames>;
 }
 
 interface FileInfo {

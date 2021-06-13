@@ -90,7 +90,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     const id = this.frameId;
     // initialize the attributes with the only required property
 
-    const attrs: AttributesMessage = { id };
+    const attrs: AttributesMessage = { id, component: 'Input' };
 
     // Build the style for the iframe
     if (!this.state.frameStyleInfo) {
@@ -127,7 +127,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       );
     }
     // default to input if user didn't set an element type
-    frameURL.searchParams.set('element', this.props.element || 'input');
+    frameURL.searchParams.set('component', this.props.element === 'textarea' ? 'TextArea' : 'Input');
     return frameURL.toString();
   }
 

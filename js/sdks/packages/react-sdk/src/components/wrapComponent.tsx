@@ -13,7 +13,7 @@ import {
 import React, { Component, CSSProperties, RefObject } from 'react';
 import styled from 'styled-components';
 
-import { AllowedElements, LunaSecWrappedComponentProps, RenderData, WrappedClassLookup, WrapperProps } from '../types';
+import { ClassLookup, LunaSecWrappedComponentProps, RenderData, TagLookup, WrapperProps } from '../types';
 
 export interface WrapperState {
   secureFrameUrl: string;
@@ -21,15 +21,10 @@ export interface WrapperState {
   frameFullyLoaded: boolean;
 }
 
-// TODO: figure out how to pass this to the Wrapped props below
-// interface WrappedProps extends React.ComponentPropsWithoutRef<keyof AllowedElements> {
-//   renderData: RenderData;
-// }
-
-export default function WrapComponent<EName extends keyof WrappedClassLookup>(
-  UnstyledWrapped: WrappedClassLookup[EName],
-  elementName: EName
-) {
+// Since almost all the logic of being a Secure Component is shared(such as RPC),
+// this function wraps a component found in ./elements with that logic.
+// and adjusts for any small differences using the componentName to change behaviors between different types of components.
+export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapped: ClassLookup[W], componentName: W) {
   // Add some style to the element, for now just to do loading animations
   const Wrapped = styled(UnstyledWrapped)`
     .loading-animation {
@@ -51,7 +46,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
     }
   `;
 
-  return class WrappedComponent extends Component<WrapperProps<EName>, WrapperState> {
+  return class WrappedComponent extends Component<WrapperProps<W>, WrapperState> {
     readonly messageCreator: FrameMessageCreator;
 
     // This is created on component mounted to enable server-side rendering
@@ -62,10 +57,10 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
     readonly frameId!: string;
 
     readonly frameRef!: RefObject<HTMLIFrameElement>;
-    readonly dummyRef!: RefObject<AllowedElements[EName]>;
+    readonly dummyRef!: RefObject<HTMLElementTagNameMap[TagLookup[W]]>;
     frameReadyForListening = false;
 
-    constructor(props: WrapperProps<EName>) {
+    constructor(props: WrapperProps<W>) {
       super(props);
       this.frameId = generateSecureNonce();
       this.frameRef = React.createRef();
@@ -100,6 +95,15 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
       this.abortController.abort();
     }
 
+    componentDidUpdate() {
+      // Also causes style changes to propagate, as long as they come from within react
+      // TODO: Handle cases where the token didnt change, probably handle in iframe
+
+      if (this.frameReadyForListening) {
+        void this.sendIFrameAttributes();
+      }
+    }
+
     generateElementStyle() {
       if (!this.dummyRef.current) {
         throw new Error('Unable to locate `inputRef` for wrapped component when generating style');
@@ -112,26 +116,15 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
       const frameURL = new URL('frame', this.state.secureFrameUrl);
       frameURL.searchParams.set('n', urlFrameId);
       frameURL.searchParams.set('origin', window.location.origin);
-      frameURL.searchParams.set('element', elementName);
+      frameURL.searchParams.set('component', componentName);
       return frameURL.toString();
     }
-
-    componentDidUpdate() {
-      // Also causes style changes to propagate, as long as they come from within react
-      // TODO: Handle cases where the token didnt change, probably handle in iframe
-
-      if (this.frameReadyForListening) {
-        void this.sendIFrameAttributes();
-      }
-    }
-
-    // componentWillReceiveProps(nextProps: Readonly<WrapperProps<EName>>, nextContext: any) {}
 
     // Generate some attributes for sending to the iframe via RPC.
     generateIFrameAttributes(): AttributesMessage {
       const id = this.frameId;
       // initialize the attributes with the only required property
-      const attrs: AttributesMessage = { id };
+      const attrs: AttributesMessage = { id, component: componentName };
 
       // Build the style for the iframe
       const style = this.generateElementStyle();
@@ -144,7 +137,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
 
       // Pull from the "type" of an input element if we have one in our wrapped element
       const dummyElement = this.dummyRef.current;
-      if (elementName === 'input' && dummyElement) {
+      if (componentName === 'Uploader' /* || componentName === 'input' */ && dummyElement) {
         const inputType = dummyElement.getAttribute('type');
         if (inputType) {
           attrs.type = inputType;
@@ -198,6 +191,11 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
       }
     }
 
+    // Called on form submit from the SecureForm
+    public getToken() {
+      return;
+    }
+
     renderLoadingOverlay() {
       if (this.state.frameFullyLoaded) {
         return null;
@@ -237,7 +235,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         resize: 'none',
       };
 
-      const renderData: RenderData<AllowedElements[EName]> = {
+      const renderData: RenderData<W> = {
         frameId: this.frameId,
         frameUrl: this.generateUrl(),
         frameStyleInfo: this.state.frameStyleInfo,
@@ -254,7 +252,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
       const { token, secureFrameUrl, onTokenChange, ...scrubbedProps } = this.props;
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
-      const propsForWrapped: LunaSecWrappedComponentProps<AllowedElements[EName]> = {
+      const propsForWrapped: LunaSecWrappedComponentProps<W> = {
         name: this.props.name,
         renderData,
       };
