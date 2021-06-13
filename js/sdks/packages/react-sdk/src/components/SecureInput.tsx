@@ -90,7 +90,7 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
     const id = this.frameId;
     // initialize the attributes with the only required property
 
-    const attrs: AttributesMessage = { id, component: 'Input' };
+    const attrs: AttributesMessage = { id, component: this.props.element === 'textarea' ? 'TextArea' : 'Input' };
 
     // Build the style for the iframe
     if (!this.state.frameStyleInfo) {
