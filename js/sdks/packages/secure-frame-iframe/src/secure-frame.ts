@@ -55,6 +55,9 @@ export class SecureFrame<e extends keyof ClassLookup> {
 
   // Set up the iframe attributes, used on both page load and on any subsequent changes
   async setAttributesFromRPC(attrs: AttributesMessage) {
+    if (attrs.component !== this.componentName) {
+      throw new Error('Received an attribute message different than what the iframe was initialized with');
+    }
     // First time setup
     if (!this.initialized) {
       this.loadingText.classList.add('d-none');
