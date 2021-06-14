@@ -2,15 +2,17 @@ import { ReadElementStyle } from '@lunasec/browser-common';
 import React, { CSSProperties, RefObject } from 'react';
 
 import Downloader from './components/elements/downloader';
+import Input from './components/elements/input';
 import Paragraph from './components/elements/paragraph';
+import TextArea from './components/elements/textarea';
 import Uploader from './components/elements/uploader';
 
 export interface ClassLookup {
   Paragraph: typeof Paragraph;
   Downloader: typeof Downloader;
   Uploader: typeof Uploader; // fragile, fix this later by manually passing the class as a type argument into WrapComponent
-  TextArea: typeof Uploader;
-  Input: typeof Uploader;
+  TextArea: typeof TextArea;
+  Input: typeof Input;
 }
 
 export interface TagLookup {

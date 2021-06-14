@@ -56,7 +56,9 @@ export class SecureFrame<e extends keyof ClassLookup> {
   // Set up the iframe attributes, used on both page load and on any subsequent changes
   async setAttributesFromRPC(attrs: AttributesMessage) {
     if (attrs.component !== this.componentName) {
-      throw new Error('Received an attribute message different than what the iframe was initialized with');
+      throw new Error(
+        'Received an attribute message with a different componentName than the iframe was initialized with'
+      );
     }
     // First time setup
     if (!this.initialized) {
@@ -104,7 +106,6 @@ export class SecureFrame<e extends keyof ClassLookup> {
   // TODO: This is getting pretty branchy.  Considering a different architecture where each element type is a separate webpack entrypoint with shared logic from a /common.ts module
   async handleToken(token: string, attrs: AttributesMessage) {
     if (attrs.component === 'Downloader') {
-      // anchor elements mean we are doing an s3 secure download
       // Figure out why this type casting is necessary
       try {
         await handleDownload(token, this.secureElement as HTMLAnchorElement, attrs.hidden || false);

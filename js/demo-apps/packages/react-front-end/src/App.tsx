@@ -1,5 +1,12 @@
 import { downloadFile } from '@lunasec/js-sdk';
-import { SecureDownload, SecureForm, SecureInput, SecureParagraph, SecureUpload } from '@lunasec/react-sdk';
+import {
+  SecureDownload,
+  SecureForm,
+  SecureInput,
+  SecureInputTwo,
+  SecureParagraph,
+  SecureUpload,
+} from '@lunasec/react-sdk';
 import React from 'react';
 
 // import logo from './logo.svg';
@@ -78,6 +85,13 @@ class App extends React.Component<Record<string, never>, IAppState> {
                 type="password"
                 value={this.state.bar}
                 onChange={(e) => this.handleBarChange(e)}
+                onBlur={(e) => console.log('blur2', e)}
+              />
+              <SecureInputTwo
+                name="bartwo"
+                type="password"
+                value={this.state.bar}
+                onChange={(e) => console.log('HOC INPUT CHANGED TOKEN ', e)}
                 onBlur={(e) => console.log('blur2', e)}
               />
               <input

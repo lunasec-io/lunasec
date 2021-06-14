@@ -97,8 +97,6 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
     componentDidUpdate() {
       // Also causes style changes to propagate, as long as they come from within react
-      // TODO: Handle cases where the token didnt change, probably handle in iframe
-
       if (this.frameReadyForListening) {
         void this.sendIFrameAttributes();
       }
@@ -137,7 +135,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
       // Pull from the "type" of an input element if we have one in our wrapped element
       const dummyElement = this.dummyRef.current;
-      if (componentName === 'Uploader' /* || componentName === 'input' */ && dummyElement) {
+      if ((componentName === 'Uploader' || componentName === 'Input') && dummyElement) {
         const inputType = dummyElement.getAttribute('type');
         if (inputType) {
           attrs.type = inputType;

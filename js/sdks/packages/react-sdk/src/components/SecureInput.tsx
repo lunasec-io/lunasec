@@ -163,6 +163,8 @@ export class SecureInput extends Component<SecureInputProps, SecureInputState> {
       height: height,
     };
 
+    console.log('old input framestyle is ', iframeStyle);
+
     const frameUrl = this.generateUrl();
 
     return <iframe ref={this.frameRef} src={frameUrl} frameBorder={0} style={iframeStyle} key={frameUrl} />;
