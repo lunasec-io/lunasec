@@ -13,7 +13,7 @@ aws_gateway:
 session_controller:
   auth_callback_url: ${AUTH_CALLBACK_URL}
 secure_frame_controller:
-  views_path: "${SECURE_FRAME_VIEWS_PATH}"
+  views_path: ${SECURE_FRAME_VIEWS_PATH}
   cdn_config: ${SECURE_FRAME_CDN_CONFIG}
 tokenizer_controller:
   customer_token_secret: ${TOKENIZER_CLIENT_SECRET}
