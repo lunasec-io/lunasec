@@ -27,7 +27,7 @@ export class SecureForm extends Component<SecureFormProps> {
     await Promise.all(commitPromises);
 
     // This timeout is an attempt to give the above events time to propagate and any user code time to execute,
-    // like it would have in a normal form where the user pressed submit
+    // like it would have in a normal form where the user pressed submit.  That's right, we are hacking now
     await new Promise((resolve) => {
       setTimeout(resolve, 5);
     });
