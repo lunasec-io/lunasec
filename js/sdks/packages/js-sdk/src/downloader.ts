@@ -19,7 +19,9 @@ class FileDownloader {
     this.frameNonce = generateSecureNonce();
 
     // start up RPC
-    this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
+    this.messageCreator = new FrameMessageCreator(this.frameNonce, (notification) =>
+      this.frameNotificationCallback(notification)
+    );
     addJsEventListener(window, (message) => this.messageCreator.postReceived(message));
 
     // Attach the frame

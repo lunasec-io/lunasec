@@ -29,8 +29,6 @@ export default class Input extends Component<InputProps> {
       height: height,
     };
 
-    console.log('new input framestyle is ', iframeStyle);
-
     const frameContainerClass = classnames(renderData.frameContainerClasses);
 
     return (

@@ -9,11 +9,16 @@ import {
   getStyleInfo,
   ReadElementStyle,
   secureFramePathname,
+  triggerBlur,
+  triggerFocus,
 } from '@lunasec/browser-common';
 import React, { Component, CSSProperties, RefObject } from 'react';
 import styled from 'styled-components';
 
 import { ClassLookup, LunaSecWrappedComponentProps, RenderData, TagLookup, WrapperProps } from '../types';
+import setNativeValue from '../utils/set-native-value';
+
+import { SecureFormContext } from './SecureFormContext';
 
 export interface WrapperState {
   secureFrameUrl: string;
@@ -47,8 +52,10 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
   `;
 
   return class WrappedComponent extends Component<WrapperProps<W>, WrapperState> {
-    readonly messageCreator: FrameMessageCreator;
+    declare context: React.ContextType<typeof SecureFormContext>;
+    static contextType = SecureFormContext;
 
+    readonly messageCreator: FrameMessageCreator;
     // This is created on component mounted to enable server-side rendering
     abortController!: AbortController;
     /**
@@ -58,6 +65,8 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
     readonly frameRef!: RefObject<HTMLIFrameElement>;
     readonly dummyRef!: RefObject<HTMLElementTagNameMap[TagLookup[W]]>;
+
+    readonly isInputLike = componentName === 'Input' || componentName === 'TextArea';
     frameReadyForListening = false;
 
     constructor(props: WrapperProps<W>) {
@@ -67,7 +76,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       this.dummyRef = React.createRef();
       const secureFrameURL = new URL(__SECURE_FRAME_URL__);
       secureFrameURL.pathname = secureFramePathname;
-      this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
+      this.messageCreator = new FrameMessageCreator(this.frameId, (notification) =>
+        this.frameNotificationCallback(notification)
+      );
       this.state = {
         // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
         secureFrameUrl: secureFrameURL.toString(),
@@ -89,10 +100,18 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       this.setState({
         frameStyleInfo: this.generateElementStyle(),
       });
+      if (this.isInputLike) {
+        this.context.addTokenCommitCallback(this.frameId, () => {
+          return this.triggerTokenCommit();
+        });
+      }
     }
 
     componentWillUnmount() {
       this.abortController.abort();
+      if (this.isInputLike) {
+        this.context.removeTokenCommitCallback(this.frameId);
+      }
     }
 
     componentDidUpdate() {
@@ -168,11 +187,6 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
 
     frameNotificationCallback(notification: FrameNotification) {
-      // TODO: move this filter into the RPC layer, we shouldnt have to filter here
-      if (notification.frameNonce !== this.frameId) {
-        return;
-      }
-
       switch (notification.command) {
         case 'NotifyOnStart':
           this.frameReadyForListening = true;
@@ -186,12 +200,84 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         case 'NotifyOnFullyLoaded':
           this.setState({ frameFullyLoaded: true });
           break;
+        case 'NotifyOnBlur':
+          this.blur();
+          break;
       }
     }
 
+    // Blur happens after the element loses focus
+    blur() {
+      if (!this.isInputLike) {
+        return;
+      }
+      const dummyElement = this.dummyRef.current;
+      if (!dummyElement) {
+        throw new Error('Missing element to trigger notification for in secure frame');
+      }
+
+      const currentlyFocusedElement = document.activeElement;
+
+      // In order to trigger a blur event, we must first focus the element.
+      triggerFocus(dummyElement);
+      // Only then will the blur be triggered.
+      triggerBlur(dummyElement);
+
+      // put the focus back where it was before we hacked it
+      if (currentlyFocusedElement) {
+        triggerFocus(currentlyFocusedElement);
+      }
+    }
+
+    // Left here for posterity, but I (factoidforrest) think we can assume styles wont be changed except by react
+    // and that is caught by ComponentDidUpdate above
+    // watchStyle() {
+    //   const observer = new MutationObserver(() => this.sendIFrameAttributes());
+    //   if (!this.dummyRef.current) {
+    //     return console.error('Attempted to register style watcher on component not yet mounted');
+    //   }
+    //   observer.observe(this.dummyRef.current, {
+    //     attributeFilter: ['style'],
+    //   });
+    // }
+
     // Called on form submit from the SecureForm
-    public getToken() {
-      return;
+    // we pass this into the SecureFormProvider so that it can call it when we submit
+    public async triggerTokenCommit(): Promise<void> {
+      if (componentName !== 'Input' && componentName !== 'TextArea') {
+        throw new Error('Attempted to trigger a token commit for something that wasnt an Input or TextArea');
+      }
+
+      const message = this.messageCreator.createMessageToFrame('CommitToken', {});
+
+      const currentFrame = this.frameRef.current;
+      if (!currentFrame || !currentFrame.contentWindow) {
+        console.error('Attempted token commit for unmounted frame');
+        return;
+      }
+      const response = await this.messageCreator.sendMessageToFrameWithReply(currentFrame.contentWindow, message);
+
+      if (!response) {
+        return console.error('No response from frame for token commit');
+      }
+      if (!response.data.success) {
+        return console.error('Tokenization failed: ', response.data.error);
+      }
+      if (!response.data.token) {
+        return console.error('Tokenization didnt return a token: ', response);
+      }
+
+      const currentDummy = this.dummyRef.current;
+      if (!currentDummy) {
+        throw new Error('Token Commit cant find dummy element to insert token into');
+      }
+
+      setNativeValue(componentName, currentDummy, response.data.token);
+      // This timeout is an attempt to give the above events time to propagate and any user code time to execute,
+      // like it would have in a normal form where the user pressed submit.  Yes, we are hacking hard now
+      return new Promise((resolve) => {
+        setTimeout(resolve, 5);
+      });
     }
 
     renderLoadingOverlay() {

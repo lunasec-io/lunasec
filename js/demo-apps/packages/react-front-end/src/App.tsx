@@ -3,8 +3,8 @@ import {
   SecureDownload,
   SecureForm,
   SecureInput,
-  SecureInputTwo,
   SecureParagraph,
+  SecureTextArea,
   SecureUpload,
 } from '@lunasec/react-sdk';
 import React from 'react';
@@ -27,7 +27,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
     this.state = this.retrieveTokens();
   }
 
-  handleFooChange(event: React.ChangeEvent<HTMLInputElement>) {
+  handleFooChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     console.log('setting foo', event.target.value);
     this.setState({ foo: event.target.value });
   }
@@ -73,25 +73,17 @@ class App extends React.Component<Record<string, never>, IAppState> {
           <section>
             <h2>Secure Form</h2>
             <SecureForm onSubmit={(e) => this.persistTokens(e)}>
-              <SecureInput
+              <SecureTextArea
                 name="foo"
-                value={this.state.foo}
+                token={this.state.foo}
                 onChange={(e) => this.handleFooChange(e)}
                 onBlur={(e) => console.log('blur1', e)}
-                element="textarea"
               />
               <SecureInput
                 name="bar"
-                type="password"
-                value={this.state.bar}
+                type="text"
+                token={this.state.bar}
                 onChange={(e) => this.handleBarChange(e)}
-                onBlur={(e) => console.log('blur2', e)}
-              />
-              <SecureInputTwo
-                name="bartwo"
-                type="password"
-                value={this.state.bar}
-                onChange={(e) => console.log('HOC INPUT CHANGED TOKEN ', e)}
                 onBlur={(e) => console.log('blur2', e)}
               />
               <input

@@ -1,5 +1,6 @@
+import { camelCaseObject } from '@lunasec/browser-common';
 import classnames from 'classnames';
-import React, { Component } from 'react';
+import React, { Component, CSSProperties } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
 type TextAreaRenderData = RenderData<'TextArea'>;
@@ -18,7 +19,14 @@ export default class TextArea extends Component<TextAreaProps> {
     if (!renderData.frameStyleInfo) {
       return null;
     }
-    const { width, ...frameStyle } = renderData.frameStyleInfo;
+    const { parentStyle, width, height } = renderData.frameStyleInfo;
+
+    const iframeStyle: CSSProperties = {
+      ...camelCaseObject(parentStyle),
+      display: 'block',
+      width: width,
+      height: height,
+    };
 
     const frameContainerClass = classnames(renderData.frameContainerClasses);
 
@@ -27,7 +35,7 @@ export default class TextArea extends Component<TextAreaProps> {
         ref={renderData.frameRef}
         src={renderData.frameUrl}
         className={frameContainerClass}
-        style={frameStyle}
+        style={iframeStyle}
         frameBorder={0}
         key={renderData.frameUrl}
       />
@@ -39,7 +47,7 @@ export default class TextArea extends Component<TextAreaProps> {
     const { renderData, className, children, ...otherProps } = this.props;
 
     const containerClass = classnames({
-      [`secure-paragraph-container-${renderData.frameId} secure-paragraph-container-${this.props.name}`]: true,
+      [`secure-textarea-container-${renderData.frameId} secure-textarea-container-${this.props.name}`]: true,
       // Combine with the classname passed in props because styled-components passes some random classnames to attach our css
       [className || '']: true,
     });

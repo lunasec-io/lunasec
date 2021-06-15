@@ -119,7 +119,7 @@ export class SecureFrame<e extends keyof ClassLookup> {
         const input = this.secureElement as HTMLInputElement;
         input.value = value;
       }
-      if (attrs.component === 'Paragraph') {
+      if (attrs.component === 'Paragraph' || attrs.component === 'TextArea') {
         this.secureElement.textContent = value;
       }
     }
