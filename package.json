@@ -47,6 +47,6 @@
       "./js/service/packages/*",
       "./js/demo-apps/packages/*"
     ],
-    "nohoist": ["**/react-scripts"]
+    "nohoist": ["**/react-scripts", "**/jose"]
   }
 }
