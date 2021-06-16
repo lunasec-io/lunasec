@@ -32,18 +32,18 @@ async function authenticateSession() {
   if (authFlowInProgress) {
     if (lastAuthenticatedTime) {
       // If a request is in flight but we already had an older session, just resolve immediately
-      console.log('previous request in flight but old session exists, returning instantly');
+      console.debug('previous request in flight but old session exists, returning instantly');
       return Promise.resolve();
     } else {
       // or if this is the first time and we dont have an older session, block until the session gets set
-      console.log('previous request in flight and no old session, returning request promise');
+      console.debug('previous request in flight and no old session, returning request promise');
       return Promise.resolve(authFlowInProgress);
     }
   }
-  console.log('Start new auth flow');
+  console.debug('Start new auth flow');
 
   if (!lastAuthenticatedTime || lastAuthenticatedTime < Date.now() - refreshInterval) {
-    console.log('need to fetch new session');
+    console.debug('need to fetch new session');
     authFlowInProgress = doAuthFlow();
     await doAuthFlow();
     lastAuthenticatedTime = Date.now();
