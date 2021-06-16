@@ -1,8 +1,33 @@
-let authFlowInProgress: Promise<void> | null = null;
-const lastAuthenticatedTime: number | null = null;
 import { __SECURE_FRAME_URL__ } from '../constants';
 
-export async function authenticateSession() {
+// TODO: support env var refresh interval
+// const refreshTimeInMinutes = process.env.LUNASEC_VERIFY_SESSION_INTERVAL
+const refreshInterval = 5 * 60000; // 5 mins
+
+let lastAuthenticatedTime: number | null = null;
+let authFlowInProgress: Promise<void> | null = null;
+
+// If you can figure out a simpler way to do this, please write it. This function:
+// 1 ) Starts the auth flow by calling authenticate session
+// 2 ) Starts a timer that will do the auth flow again on a timer, recursively
+// 3 ) Returns a promise, which when the first auth flow is complete, resolves to a function that can be called to clear whatever the last timer was.  This is our "abort"
+export function startSessionManagement(): Promise<() => void> {
+  return authenticateSession().then(() => {
+    let timer: NodeJS.Timer;
+    function setAuthTimerLoop(): NodeJS.Timer {
+      return setTimeout(() => {
+        void authenticateSession();
+        timer = setAuthTimerLoop();
+      }, refreshInterval);
+    }
+    timer = setAuthTimerLoop();
+    return function destroyTimer() {
+      clearInterval(timer);
+    };
+  });
+}
+
+async function authenticateSession() {
   // Stop every component from making a request on first page load
   if (authFlowInProgress) {
     if (lastAuthenticatedTime) {
@@ -16,14 +41,12 @@ export async function authenticateSession() {
     }
   }
   console.log('Start new auth flow');
-  // TODO: support env var refresh interval
-  // const refreshTimeInMinutes = process.env.LUNASEC_VERIFY_SESSION_INTERVAL
 
-  const refreshInterval = 5 * 60000; // 5 mins
   if (!lastAuthenticatedTime || lastAuthenticatedTime < Date.now() - refreshInterval) {
     console.log('need to fetch new session');
     authFlowInProgress = doAuthFlow();
     await doAuthFlow();
+    lastAuthenticatedTime = Date.now();
     authFlowInProgress = null;
   }
 }
@@ -35,6 +58,7 @@ async function doAuthFlow() {
   const firstEnsureResponse = await ensureSession();
   if (firstEnsureResponse.status === 200) {
     console.debug('secure frame session is verified');
+
     return;
   }
   // If the above was not 200, we need to send more requests to verify the session
@@ -42,10 +66,9 @@ async function doAuthFlow() {
   const secondEnsureResponse = await ensureSession();
 
   if (secondEnsureResponse.status !== 200) {
-    // TODO: Throw or escalate this error in a better way.
+    // TODO: Throw or escalate this error in a better way to the client application, right now it crashes the app
     throw new Error('unable to create secure frame session, is there a user currently authenticated to this site?');
   }
-
   return;
 }
 

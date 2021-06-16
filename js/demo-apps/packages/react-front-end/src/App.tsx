@@ -43,8 +43,22 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   componentDidMount() {
-    void this.retrieveTokens();
     this.loadFields();
+    void this.retrieveTokens();
+  }
+
+  // This kind of works but it creates a grant for the previous token at the moment, because retrieveTokens pulls from sessionstorage.
+  //We really need a cleaner way to handle this and to get all of this grant stuff out of this demo app
+  // At the very least separate the pulling of tokens from session storage and the turning them into grants into separate functions
+  componentDidUpdate(prevProps: Record<string, any>, prevState: IAppState) {
+    const oldTokens = prevState.tokenIDs;
+    const newTokens = this.state.tokenIDs;
+    const tokenChanged = Object.keys(newTokens).some((tokenName) => {
+      return newTokens[tokenName as keyof Tokens] !== oldTokens[tokenName as keyof Tokens];
+    });
+    if (tokenChanged) {
+      void this.retrieveTokens();
+    }
   }
 
   handleFooChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
