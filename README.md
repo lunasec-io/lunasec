@@ -32,6 +32,20 @@ export DOCUMENT_VAULT_S3_BUCKET="crytovault-loq-[YOURNAME]-personal"
 export AWS_DEFAULT_REGION="us-west-2"
 export SECURE_FRAME_CLIENT_SECRET="super-secret-value-yay"
 ```
+
+We must also add a `secrets.yaml` file for the go services. Create a file with that name in `/go/config/secureframe`, with the following fields:
+```yaml
+
+jwt_verifier:
+  public_key: EXAMPLE
+jwt_manager:
+  signing_keys_arn: EXAMPLE
+hybrid_encryption_manager:
+  secure_frame_keyset_arn: EXAMPLE
+aws_gateway:
+  s3_bucket: EXAMPLE
+```
+ 
 Then, install `tmuxp` and then run `tmuxp load ./start-with-tmuxp.yaml` in the root directory. You can inspect that file to see what commands are all being run if you'd like to start the cluster without tmuxp.
 
 Then open your browser and navigate to `http://localhost:3000`. That will show you the POC.
