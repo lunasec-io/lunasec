@@ -2,6 +2,7 @@ import {
   __SECURE_FRAME_URL__,
   addReactEventListener,
   AttributesMessage,
+  authenticateSession,
   // camelCaseObject,
   FrameMessageCreator,
   FrameNotification,
@@ -24,6 +25,7 @@ export interface WrapperState {
   secureFrameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
   frameFullyLoaded: boolean;
+  sessionAuthenticated: boolean;
 }
 
 // Since almost all the logic of being a Secure Component is shared(such as RPC),
@@ -84,12 +86,14 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         secureFrameUrl: secureFrameURL.toString(),
         frameStyleInfo: null,
         frameFullyLoaded: false,
+        sessionAuthenticated: false,
       };
     }
 
     componentDidMount() {
       this.abortController = new AbortController();
       addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
+      authenticateSession().then(() => this.setState({ sessionAuthenticated: true }));
     }
 
     // Pass this to our wrapped component so it can tell us when its on the DOM and ready to give us styles
@@ -299,6 +303,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
 
     render() {
+      if (!this.state.sessionAuthenticated) {
+        return null;
+      }
       // We make the parent container relative so that we can throw the dummy element to the top left
       // corner so that it will not move the real elements around.
       const parentContainerStyle: CSSProperties = {

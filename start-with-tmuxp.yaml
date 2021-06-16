@@ -6,11 +6,6 @@ windows:
     - shell_command:
       - cd js/sdks
       - npm run watch
-
-    - shell_command:
-      - cd js/demo-apps/packages/express-back-end
-      - SECURE_FRAME_URL=http://localhost:37766 LUNASEC_SIGNING_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider_key | base64) REFINERY_DEPLOYMENT_ID=1234 yarn start:dev
-
     # Secure Frame CDN
     - shell_command:
       - cd js/sdks/packages/secure-frame-iframe
@@ -25,8 +20,13 @@ windows:
       - cd js/demo-apps/packages/react-front-end
       - npm run start
 
+    # Customer Backend, comes up on 3001
+    - shell_command:
+        - cd js/demo-apps/packages/express-back-end
+        - SECURE_FRAME_URL=http://localhost:37766 LUNASEC_SIGNING_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider_key | base64) REFINERY_DEPLOYMENT_ID=1234 yarn start:dev
+
     # Secure Frame Back End
     - shell_command:
       - cd go
       - make secureframe
-      - MOCK_AWS_GATEWAY=false CUSTOMER_PUBLIC_KEY=$(cat ../go/fixtures/secureframe/auth_provider.pub | base64) SECURE_FRAME_FRONT_END=http://localhost:37766 CUSTOMER_FRONT_END=http://localhost:3000 CUSTOMER_BACK_END=http://localhost:3001 CDN_HOST=localhost:8000 ./scripts/run-secureframe.sh
+      - MOCK_AWS_GATEWAY=false SECURE_FRAME_FRONT_END=http://localhost:37766 CUSTOMER_FRONT_END=http://localhost:3000 CUSTOMER_BACK_END=http://localhost:3001 CDN_HOST=localhost:8000 ./scripts/run-secureframe.sh
