@@ -1,28 +1,30 @@
-let requestInProgress: Promise<void> | null = null;
+let authFlowInProgress: Promise<void> | null = null;
 const lastAuthenticatedTime: number | null = null;
 import { __SECURE_FRAME_URL__ } from '../constants';
 
 export async function authenticateSession() {
-  // Stop every component from trying to do this flow on first page load
-  // If a request is in flight but we already had an older session, just resolve immediately
-  if (requestInProgress) {
+  // Stop every component from making a request on first page load
+  if (authFlowInProgress) {
     if (lastAuthenticatedTime) {
       // If a request is in flight but we already had an older session, just resolve immediately
+      console.log('previous request in flight but old session exists, returning instantly');
       return Promise.resolve();
     } else {
       // or if this is the first time and we dont have an older session, block until the session gets set
-      return Promise.resolve(requestInProgress);
+      console.log('previous request in flight and no old session, returning request promise');
+      return Promise.resolve(authFlowInProgress);
     }
   }
-
+  console.log('Start new auth flow');
   // TODO: support env var refresh interval
   // const refreshTimeInMinutes = process.env.LUNASEC_VERIFY_SESSION_INTERVAL
 
   const refreshInterval = 5 * 60000; // 5 mins
   if (!lastAuthenticatedTime || lastAuthenticatedTime < Date.now() - refreshInterval) {
-    requestInProgress = doAuthFlow();
+    console.log('need to fetch new session');
+    authFlowInProgress = doAuthFlow();
     await doAuthFlow();
-    requestInProgress = null;
+    authFlowInProgress = null;
   }
 }
 
