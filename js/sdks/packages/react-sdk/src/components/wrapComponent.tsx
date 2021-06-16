@@ -2,14 +2,13 @@ import {
   __SECURE_FRAME_URL__,
   addReactEventListener,
   AttributesMessage,
-  authenticateSession,
-  // camelCaseObject,
   FrameMessageCreator,
   FrameNotification,
   generateSecureNonce,
   getStyleInfo,
   ReadElementStyle,
   secureFramePathname,
+  startSessionManagement,
   triggerBlur,
   triggerFocus,
 } from '@lunasec/browser-common';
@@ -70,6 +69,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
     readonly isInputLike = componentName === 'Input' || componentName === 'TextArea';
     frameReadyForListening = false;
+    stopSessionManagement: (() => void) | null = null;
 
     constructor(props: WrapperProps<W>) {
       super(props);
@@ -93,7 +93,10 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     componentDidMount() {
       this.abortController = new AbortController();
       addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
-      authenticateSession().then(() => this.setState({ sessionAuthenticated: true }));
+      startSessionManagement().then((abort) => {
+        this.setState({ sessionAuthenticated: true });
+        this.stopSessionManagement = abort;
+      });
     }
 
     // Pass this to our wrapped component so it can tell us when its on the DOM and ready to give us styles
@@ -115,6 +118,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       this.abortController.abort();
       if (this.isInputLike) {
         this.context.removeTokenCommitCallback(this.frameId);
+      }
+      if (this.stopSessionManagement) {
+        this.stopSessionManagement();
       }
     }
 
