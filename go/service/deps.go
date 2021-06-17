@@ -7,7 +7,7 @@ import (
 )
 
 type authCallbackConfig struct {
-	AuthCallbackURL string `yaml:"auth_callback_url"`
+	AuthCallbackHost string `yaml:"auth_callback_host"`
 }
 
 type s3BucketConfig struct {
@@ -44,7 +44,7 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 	cspPolicy := map[string][]string{
 		"connect-src": {
 			"'self'",
-			authConfig.AuthCallbackURL,
+			authConfig.AuthCallbackHost,
 			s3URL.String(),
 		},
 		"script-src": {
