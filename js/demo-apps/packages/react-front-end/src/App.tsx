@@ -1,5 +1,6 @@
 import { downloadFile } from '@lunasec/js-sdk';
 import {
+  onLunaSecAuthError,
   SecureDownload,
   SecureForm,
   SecureInput,
@@ -27,6 +28,7 @@ interface IAppState {
   fields: Fields;
   tokenIDs: Tokens;
   tokenGrants: Tokens;
+  authError: string | null;
 }
 
 const defaultState: IAppState = {
@@ -34,12 +36,17 @@ const defaultState: IAppState = {
   fields: {},
   tokenIDs: {},
   tokenGrants: {},
+  authError: null,
 };
 
 class App extends React.Component<Record<string, never>, IAppState> {
   constructor(props: Record<string, never>) {
     super(props);
     this.state = defaultState;
+
+    onLunaSecAuthError((e: Error) => {
+      this.setState({ authError: 'Failed to authenticate with LunaSec. \n Is a user logged in?' });
+    });
   }
 
   componentDidMount() {
@@ -201,6 +208,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
     }
     return (
       <section>
+        {this.state.authError && <p style={{ color: 'red' }}>{this.state.authError}</p>}
         <h2>Secure Form</h2>
         <SecureForm onSubmit={(e) => this.persistTokens(e)}>
           <SecureTextArea
