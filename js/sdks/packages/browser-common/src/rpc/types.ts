@@ -38,7 +38,7 @@ export interface DownloaderAttr extends BaseAttr {
 
 export interface ParagraphAttr extends BaseAttr {
   component: 'Paragraph';
-  token?: string; // should this be required?
+  token?: string;
 }
 
 export interface UploaderAttr extends BaseAttr {
