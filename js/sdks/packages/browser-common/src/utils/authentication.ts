@@ -1,11 +1,18 @@
 import { __SECURE_FRAME_URL__ } from '../constants';
 
+// This could probably be a local variable but just worried about any potential duplication between a custom app and our libraries makes the singletons a little sketchier
+declare global {
+  interface Window {
+    LUNASEC_AUTH_ERROR_HANDLER: (e: Error) => void;
+  }
+}
+
 // TODO: support env var refresh interval
 // const refreshTimeInMinutes = process.env.LUNASEC_VERIFY_SESSION_INTERVAL
 const refreshInterval = 5 * 60000; // 5 mins
 
 let lastAuthenticatedTime: number | null = null;
-let authFlowInProgress: Promise<void> | null = null;
+let authFlowInProgress: Promise<boolean> | null = null;
 
 // If you can figure out a simpler way to do this, please write it. This function:
 // 1 ) Starts the auth flow by calling authenticate session
@@ -27,6 +34,11 @@ export function startSessionManagement(): Promise<() => void> {
   });
 }
 
+// TODO: Move this function and maybe entire library to js-sdk in the future
+export function onLunaSecAuthError(handler: (e: Error) => void) {
+  window.LUNASEC_AUTH_ERROR_HANDLER = handler;
+}
+
 async function authenticateSession() {
   // Stop every component from making a request on first page load
   if (authFlowInProgress) {
@@ -45,13 +57,15 @@ async function authenticateSession() {
   if (!lastAuthenticatedTime || lastAuthenticatedTime < Date.now() - refreshInterval) {
     console.debug('need to fetch new session');
     authFlowInProgress = doAuthFlow();
-    await doAuthFlow();
-    lastAuthenticatedTime = Date.now();
-    authFlowInProgress = null;
+    const authSuccess = await authFlowInProgress;
+    if (authSuccess) {
+      lastAuthenticatedTime = Date.now();
+      authFlowInProgress = null;
+    }
   }
 }
 
-async function doAuthFlow() {
+async function doAuthFlow(): Promise<boolean> {
   const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__);
   secureFrameEnsureSessionURL.pathname = '/session/ensure';
 
@@ -59,7 +73,7 @@ async function doAuthFlow() {
   if (firstEnsureResponse.status === 200) {
     console.debug('secure frame session is verified');
 
-    return;
+    return true;
   }
   // If the above was not 200, we need to send more requests to verify the session
   await verifySession();
@@ -67,9 +81,17 @@ async function doAuthFlow() {
 
   if (secondEnsureResponse.status !== 200) {
     // TODO: Throw or escalate this error in a better way to the client application, right now it crashes the app
-    throw new Error('unable to create secure frame session, is there a user currently authenticated to this site?');
+    const e = new Error(
+      'Unable to create secure frame session, is there a user currently authenticated to this site?  To handle this error gracefully call onLunaSecAuthError'
+    );
+    if (window.LUNASEC_AUTH_ERROR_HANDLER) {
+      window.LUNASEC_AUTH_ERROR_HANDLER(e);
+      return false;
+    } else {
+      throw e;
+    }
   }
-  return;
+  return true;
 }
 
 function ensureSession() {
