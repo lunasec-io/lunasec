@@ -8,6 +8,7 @@ export * from './components/SecureForm';
 export * from './components/SecureFormContext';
 export * from './components/SecureSubmit';
 export * from './types';
+export * from './utils/setAuthErrorHandler';
 export const SecureParagraph = wrapComponent(Paragraph, 'Paragraph');
 export const SecureDownload = wrapComponent(Downloader, 'Downloader');
 export const SecureUpload = wrapComponent(Uploader, 'Uploader');
