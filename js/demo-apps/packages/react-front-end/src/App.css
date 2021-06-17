@@ -45,13 +45,14 @@
 
 input {
   border: solid 4px;
-}
-
-input[type=text] {
   height: 40px;
   width: 300px;
   margin-bottom: 4px;
   border-radius: 5px;
+}
+
+input[type=password] {
+  border-style:dashed;
 }
 
 .d-block {

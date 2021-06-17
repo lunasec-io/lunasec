@@ -16,8 +16,14 @@ export class FrameMessageCreator {
   private readonly frameResponses: Record<string, UnknownFrameMessage>;
   private readonly timeout: number;
   private readonly frameNotificationCallback!: (notification: FrameNotification) => void;
+  private readonly frameNonceFilter: string;
 
-  constructor(notificationCallback: (notification: FrameNotification) => void, timeout = 5000) {
+  constructor(
+    frameNonceFilter: string,
+    notificationCallback: (notification: FrameNotification) => void,
+    timeout = 5000
+  ) {
+    this.frameNonceFilter = frameNonceFilter;
     this.frameResponses = {};
     this.frameNotificationCallback = notificationCallback;
     this.timeout = timeout;
@@ -55,6 +61,9 @@ export class FrameMessageCreator {
 
   // Notifications start in the frame and are sent here to notify us of events
   handleNotificationReceived(notification: FrameNotification): void {
+    if (notification.frameNonce !== this.frameNonceFilter) {
+      return;
+    }
     const notificationTypes: FrameNotification['command'][] = [
       'NotifyOnBlur',
       'NotifyOnStart',
