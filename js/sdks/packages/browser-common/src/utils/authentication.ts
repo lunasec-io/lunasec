@@ -34,11 +34,6 @@ export function startSessionManagement(): Promise<() => void> {
   });
 }
 
-// TODO: Move this function and maybe entire library to js-sdk in the future
-export function onLunaSecAuthError(handler: (e: Error) => void) {
-  window.LUNASEC_AUTH_ERROR_HANDLER = handler;
-}
-
 async function authenticateSession() {
   // Stop every component from making a request on first page load
   if (authFlowInProgress) {
@@ -84,6 +79,7 @@ async function doAuthFlow(): Promise<boolean> {
     const e = new Error(
       'Unable to create secure frame session, is there a user currently authenticated to this site?  To handle this error gracefully call onLunaSecAuthError'
     );
+    // This can optionally be set in @lunasec/react-sdk/utils/setAuthErrorHandler
     if (window.LUNASEC_AUTH_ERROR_HANDLER) {
       window.LUNASEC_AUTH_ERROR_HANDLER(e);
       return false;

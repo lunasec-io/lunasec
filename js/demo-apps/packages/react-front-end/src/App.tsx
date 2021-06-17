@@ -1,6 +1,6 @@
-import { onLunaSecAuthError } from '@lunasec/browser-common';
 import { downloadFile } from '@lunasec/js-sdk';
 import {
+  onLunaSecAuthError,
   SecureDownload,
   SecureForm,
   SecureInput,
