@@ -55,6 +55,7 @@ func NewSessionController(
 	return
 }
 
+// TODO (cthompson) we expect this to sometimes "fail" when the page is first loading, the logs should express this appropriately
 func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request) {
 	dataAccessToken, err := request.GetDataAccessToken(r)
 	if err != nil {
