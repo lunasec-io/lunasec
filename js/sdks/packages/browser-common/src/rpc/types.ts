@@ -15,14 +15,39 @@ export interface UnknownFrameMessage {
 export type CommitTokenMessage = Record<any, never>;
 // Initialize or update some attribute of the iframe
 
-export interface AttributesMessage {
+interface BaseAttr {
   id: string;
   style?: string;
   token?: string;
   type?: string;
   hidden?: boolean;
-  fileTokens?: [string];
+  fileTokens?: string[];
 }
+
+export interface InputAttr extends BaseAttr {
+  component: 'Input' | 'TextArea';
+  token?: string;
+  type?: string;
+}
+
+export interface DownloaderAttr extends BaseAttr {
+  component: 'Downloader';
+  token?: string;
+  hidden?: boolean;
+}
+
+export interface ParagraphAttr extends BaseAttr {
+  component: 'Paragraph';
+  token?: string;
+}
+
+export interface UploaderAttr extends BaseAttr {
+  component: 'Uploader';
+  fileTokens?: string[];
+  type?: string;
+}
+
+export type AttributesMessage = InputAttr | DownloaderAttr | ParagraphAttr | UploaderAttr;
 
 export interface ReceiveCommittedTokenMessage {
   success: boolean;
