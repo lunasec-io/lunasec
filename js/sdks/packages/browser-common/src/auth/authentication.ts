@@ -1,4 +1,5 @@
 import { __SECURE_FRAME_URL__ } from '../constants';
+import {SecureFrameAuthClient} from "./auth-client";
 
 // This could probably be a local variable but just worried about any potential duplication between a custom app and our libraries makes the singletons a little sketchier
 declare global {
@@ -9,8 +10,10 @@ declare global {
 
 // TODO: support env var refresh interval
 // const refreshTimeInMinutes = process.env.LUNASEC_VERIFY_SESSION_INTERVAL
-const refreshInterval = 5 * 60000; // 5 mins
+//const refreshInterval = 5 * 60000; // 5 mins
+const refreshInterval = 1 * 60000; // 5 mins
 
+const authClient = new SecureFrameAuthClient();
 let lastAuthenticatedTime: number | null = null;
 let authFlowInProgress: Promise<boolean> | null = null;
 
@@ -55,24 +58,37 @@ async function authenticateSession(): Promise<Promise<boolean> | void> {
       lastAuthenticatedTime = Date.now();
       authFlowInProgress = null;
     }
+
+    lastAuthenticatedTime = Date.now();
+    authFlowInProgress = null;
   }
 }
 
 async function validateOrCreateSecureFrameSession(): Promise<boolean> {
-  const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__);
-  secureFrameEnsureSessionURL.pathname = '/session/ensure';
-
-  const firstEnsureResponse = await ensureSession();
-  if (firstEnsureResponse.status === 200) {
+  const firstVerifyResponse = await authClient.verifySession();
+  if (firstVerifyResponse.success) {
     console.debug('secure frame session is verified');
-
-    return true;
+    return false;
   }
-  // If the above was not 200, we need to send more requests to verify the session
-  await verifySession();
-  const secondEnsureResponse = await ensureSession();
+  console.debug('secure frame session is not verified, creating a new session');
 
-  if (secondEnsureResponse.status !== 200) {
+  /*
+    If the above was not a success, we need to send more requests to verify the session.
+
+    Ensure session will first call into the secure frame to create an auth flow state session
+    it will then redirect to the auth provider to verify the user's identity
+    the auth provider will then redirect back to the secure frame's '/session/create' endpoint
+    this will finalize the authentication request and set an 'access_token' cookie on the secure frame origin
+
+    Because we are redirecting cross origin, ensure session will not have a response as it is set to execute
+    with 'no-cors' set. It is possible to experience an error in this request flow.
+   */
+  console.debug('ensuring the secure frame has a valid session');
+  await authClient.ensureSession();
+
+  console.debug('verifying the created session is valid');
+  const secondVerifyResponse = await authClient.verifySession();
+  if (!secondVerifyResponse.success) {
     // TODO: Throw or escalate this error in a better way to the client application, right now it crashes the app
     const e = new Error(
       'Unable to create secure frame session, is there a user currently authenticated to this site?  To handle this error gracefully call onLunaSecAuthError'
@@ -86,25 +102,4 @@ async function validateOrCreateSecureFrameSession(): Promise<boolean> {
   }
 
   return true;
-}
-
-function ensureSession() {
-  const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__);
-  secureFrameEnsureSessionURL.pathname = '/session/ensure';
-
-  return fetch(secureFrameEnsureSessionURL.toString(), {
-    credentials: 'include',
-    mode: 'cors',
-  });
-}
-
-function verifySession() {
-  const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__);
-  secureFrameVerifySessionURL.pathname = '/session/verify';
-
-  // dispatch to the secure frame session verifier to make sure that a secure frame session exists
-  return fetch(secureFrameVerifySessionURL.toString(), {
-    credentials: 'include',
-    mode: 'no-cors',
-  });
 }

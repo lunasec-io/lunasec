@@ -66,6 +66,7 @@ export class LunaSecExpressAuthPlugin {
 
     if (typeof stateToken !== 'string') {
       res.status(400).send({
+        success: false,
         error: 'state is not set in request',
       });
       return;
@@ -73,6 +74,7 @@ export class LunaSecExpressAuthPlugin {
     const payloadClaims = this.config.authContextCallback(req);
     if (payloadClaims === null) {
       res.status(400).send({
+        success: false,
         error: 'unable to authenticate the user of this request',
       });
       return;
@@ -82,6 +84,7 @@ export class LunaSecExpressAuthPlugin {
     if (redirectUrl === null) {
       console.error('unable to complete auth flow');
       res.status(400).send({
+        success: false,
         error: 'unable to complete auth flow'
       });
       return;
