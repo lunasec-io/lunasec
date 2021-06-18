@@ -1,5 +1,5 @@
 {
-  "app": "go mod download && go run lunasec.go",
+  "app": "go mod download && go run main.go",
   "context": {
     "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,
     "@aws-cdk/core:enableStackNameDuplicates": "true",

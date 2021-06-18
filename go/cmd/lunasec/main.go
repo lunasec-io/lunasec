@@ -4,8 +4,7 @@ import (
 	"os"
 
 	"github.com/aws/aws-cdk-go/awscdk"
-	"github.com/aws/aws-cdk-go/awscdk/awsevents"
-	"github.com/aws/aws-cdk-go/awscdk/awseventstargets"
+	"github.com/aws/aws-cdk-go/awscdk/awsecr"
 	"github.com/aws/aws-cdk-go/awscdk/awslambda"
 	"github.com/aws/constructs-go/constructs/v3"
 	"github.com/aws/jsii-runtime-go"
@@ -24,20 +23,18 @@ func NewLambdaCronStack(scope constructs.Construct, id string, props *LambdaCron
 
 	// The code that defines your stack goes here
 
-	lambdaFn := awslambda.NewFunction(stack, jsii.String("Singleton"), &awslambda.FunctionProps{
-		Code:    awslambda.NewAssetCode(jsii.String("lambda"), nil),
-		Handler: jsii.String("handler.main"),
-		Timeout: awscdk.Duration_Seconds(jsii.Number(300)),
-		Runtime: awslambda.Runtime_PYTHON_3_6(),
+	repository := awsecr.Repository_FromRepositoryName(stack, jsii.String("repo"), jsii.String("public.ecr.aws/d7v1k2o3/secure-frame-backend"))
+
+	awslambda.NewDockerImageFunction(stack, jsii.String("test"), &awslambda.DockerImageFunctionProps{
+		Code: awslambda.DockerImageCode_FromEcr(repository, &awslambda.EcrImageCodeProps{}),
 	})
 
-	// Run every day at 6PM UTC
-	// See https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html
-	rule := awsevents.NewRule(stack, jsii.String("Rule"), &awsevents.RuleProps{
-		Schedule: awsevents.Schedule_Expression(jsii.String("cron(0 18 ? * MON-FRI *)")),
-	})
-
-	rule.AddTarget(awseventstargets.NewLambdaFunction(lambdaFn, nil))
+	// lambdaFn := awslambda.NewFunction(stack, jsii.String("Singleton"), &awslambda.DockerImageFunctionProps{
+	// 	Code:    awslambda.NewAssetCode(jsii.String("lambda"), nil),
+	// 	Handler: jsii.String("handler.main"),
+	// 	Timeout: awscdk.Duration_Seconds(jsii.Number(300)),
+	// 	Runtime: awslambda.Runtime_PYTHON_3_6(),
+	// })
 
 	return stack
 }
