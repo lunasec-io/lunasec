@@ -80,7 +80,11 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	tokenID, err := s.validateTokenJwt(input.TokenJwt)
+	tokenJwt := GetJwtFromGrant(input.TokenJwt)
+
+	log.Printf("Token JWT: " + tokenJwt)
+
+	tokenID, err := s.validateTokenJwt(tokenJwt)
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return

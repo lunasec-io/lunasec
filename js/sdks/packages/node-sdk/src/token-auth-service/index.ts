@@ -1,5 +1,9 @@
+import { deflateSync } from 'zlib';
+
 import { KeyLike, SignJWT } from 'jose/jwt/sign';
 import { JWTPayload } from 'jose/types';
+
+import { encodeBase58 } from '../decodeBase58';
 
 import { getSecretFromSecretProvider, ValidSecretProvider } from './types';
 
@@ -18,7 +22,13 @@ export class LunaSecAuthenticationGrant {
   }
 
   public toString() {
-    return this.authGrant;
+    const buff = Buffer.from(this.authGrant, 'utf-8');
+
+    return `lunasec-grant-authentication-${encodeBase58(
+      deflateSync(buff, {
+        level: 9,
+      })
+    )}`;
   }
 }
 
@@ -35,7 +45,13 @@ export class LunaSecDetokenizeTokenGrant {
   }
 
   public toString() {
-    return this.detokenizationGrant;
+    const buff = Buffer.from(this.detokenizationGrant, 'utf-8');
+
+    return `lunasec-grant-detokenization-${encodeBase58(
+      deflateSync(buff, {
+        level: 9,
+      })
+    )}`;
   }
 }
 
@@ -68,7 +84,7 @@ export class LunaSecTokenAuthService {
     throw new Error('Unknown provider specified');
   }
 
-  private async createJwt(claims: any): Promise<string> {
+  private async createJwt(claims: Record<string, unknown>): Promise<string> {
     const secret = await this.getSigningSecretKey();
 
     const jwt = await new SignJWT(claims)
