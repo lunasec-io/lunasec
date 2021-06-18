@@ -80,9 +80,13 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	tokenJwt := GetJwtFromGrant(input.TokenJwt)
+	grantType, tokenJwt, err := ParseLunaSecGrantToGrantTypeAndJwt(input.TokenJwt)
+	if err != nil {
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
 
-	log.Printf("Token JWT: " + tokenJwt)
+	log.Printf("Grant Type: " + grantType + ", JWT: " + tokenJwt)
 
 	tokenID, err := s.validateTokenJwt(tokenJwt)
 	if err != nil {

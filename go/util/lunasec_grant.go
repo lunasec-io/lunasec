@@ -1,32 +1,19 @@
 package util
 
 import (
-	"bytes"
-	"compress/flate"
 	"errors"
-	"io"
 	"regexp"
-	"strings"
 )
 
-var lunasecGrantRegex = regexp.MustCompile("^lunasec-grant-(authentication|detokenization)-([1-9A-HJ-NP-Za-km-z])+$")
+var lunasecGrantRegex = regexp.MustCompile("^lunasec-grant-(authentication|detokenization)_((?:[A-Za-z\\d+/]{4})*(?:[A-Za-z\\d+/]{3}=|[A-Za-z\\d+/]{2}==))?$")
 
-func GetJwtFromGrant(s string) (string, error) {
+func ParseLunaSecGrantToGrantTypeAndJwt(s string) (string, string, error) {
 	if !lunasecGrantRegex.MatchString(s) {
-		return "", errors.New("invalid grant")
+		return "", "", errors.New("invalid grant")
 	}
 
+	grantType := lunasecGrantRegex.FindStringSubmatch(s)[0]
 	encodedJwt := lunasecGrantRegex.FindStringSubmatch(s)[1]
 
-	decodedGrant := Decode(encodedJwt)
-
-	inflatedGrant := flate.NewReader(bytes.NewReader(decodedGrant))
-
-	jwtBuf := new(strings.Builder)
-	_, err := io.Copy(jwtBuf, inflatedGrant)
-	if err != nil {
-		return "", errors.New("unable to inflate jwt")
-	}
-
-	return jwtBuf.String(), nil
+	return grantType, encodedJwt, nil
 }

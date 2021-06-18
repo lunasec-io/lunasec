@@ -1,23 +1,9 @@
-import { deflateSync } from 'zlib';
-
 import { KeyLike, SignJWT } from 'jose/jwt/sign';
 import { JWTPayload } from 'jose/types';
-
-import { encodeBase58 } from '../decodeBase58';
 
 import { getSecretFromSecretProvider, ValidSecretProvider } from './types';
 
 // TODO (cthompson) we should have a base jwt class that these two inherit from
-
-function encodeChunk(chunk: string) {
-  const buff = Buffer.from(chunk, 'utf-8');
-
-  return encodeBase58(
-    deflateSync(buff, {
-      level: 9,
-    })
-  );
-}
 
 export class LunaSecAuthenticationGrant {
   private readonly authGrant!: string;
@@ -32,7 +18,7 @@ export class LunaSecAuthenticationGrant {
   }
 
   public toString() {
-    return `lunasec-grant-authentication-${encodeChunk(this.authGrant)}`;
+    return `lunasec-grant-authentication_${this.authGrant}`;
   }
 }
 
@@ -49,7 +35,7 @@ export class LunaSecDetokenizeTokenGrant {
   }
 
   public toString() {
-    return `lunasec-grant-detokenization-${encodeChunk(this.detokenizationGrant)}`;
+    return `lunasec-grant-detokenization_${this.detokenizationGrant}`;
   }
 }
 
