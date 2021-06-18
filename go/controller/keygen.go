@@ -80,7 +80,7 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	grantType, tokenJwt, err := ParseLunaSecGrantToGrantTypeAndJwt(input.TokenJwt)
+	grantType, tokenJwt, err := util.ParseLunaSecGrantToGrantTypeAndJwt(input.TokenJwt)
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
