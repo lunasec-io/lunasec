@@ -1,12 +1,14 @@
+import { camelCaseObject } from '@lunasec/browser-common';
 import classnames from 'classnames';
-import React, { Component } from 'react';
+import React, { Component, CSSProperties } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
-type ParagraphRenderData = RenderData<'Paragraph'>;
-export type ParagraphProps = WrappedComponentProps<'Paragraph'>;
 
-export default class Paragraph extends Component<ParagraphProps> {
-  constructor(props: ParagraphProps) {
+type InputRenderData = RenderData<'Input'>;
+export type InputProps = WrappedComponentProps<'Input'>;
+
+export default class Input extends Component<InputProps> {
+  constructor(props: InputProps) {
     super(props);
   }
 
@@ -14,11 +16,18 @@ export default class Paragraph extends Component<ParagraphProps> {
     this.props.renderData.mountedCallback();
   }
 
-  renderFrame(renderData: ParagraphRenderData) {
+  renderFrame(renderData: InputRenderData) {
     if (!renderData.frameStyleInfo) {
       return null;
     }
-    const { width, ...frameStyle } = renderData.frameStyleInfo;
+
+    const { parentStyle, width, height } = renderData.frameStyleInfo;
+    const iframeStyle: CSSProperties = {
+      ...camelCaseObject(parentStyle),
+      display: 'block',
+      width: width,
+      height: height,
+    };
 
     const frameContainerClass = classnames(renderData.frameContainerClasses);
 
@@ -27,7 +36,7 @@ export default class Paragraph extends Component<ParagraphProps> {
         ref={renderData.frameRef}
         src={renderData.frameUrl}
         className={frameContainerClass}
-        style={frameStyle}
+        style={iframeStyle}
         frameBorder={0}
         key={renderData.frameUrl}
       />
@@ -39,16 +48,19 @@ export default class Paragraph extends Component<ParagraphProps> {
     const { renderData, className, children, ...otherProps } = this.props;
 
     const containerClass = classnames({
-      [`secure-paragraph-container-${renderData.frameId} secure-paragraph-container-${this.props.name}`]: true,
+      [`secure-input-container-${renderData.frameId} secure-input-container-${this.props.name}`]: true,
       // Combine with the classname passed in props because styled-components passes some random classnames to attach our css
       [className || '']: true,
     });
 
     return (
       <div style={renderData.parentContainerStyle} className={containerClass}>
-        <p ref={renderData.dummyRef} style={renderData.dummyElementStyle} tabIndex={-1} {...otherProps}>
-          &ensp;
-        </p>
+        <input
+          ref={renderData.dummyRef}
+          style={{ ...renderData.dummyElementStyle, ...this.props.style }}
+          tabIndex={-1}
+          {...otherProps}
+        />
         {this.renderFrame(renderData)}
         {children}
       </div>

@@ -1,5 +1,13 @@
 import { downloadFile } from '@lunasec/js-sdk';
-import { SecureDownload, SecureForm, SecureInput, SecureParagraph, SecureUpload } from '@lunasec/react-sdk';
+import {
+  onLunaSecAuthError,
+  SecureDownload,
+  SecureForm,
+  SecureInput,
+  SecureParagraph,
+  SecureTextArea,
+  SecureUpload,
+} from '@lunasec/react-sdk';
 import React from 'react';
 
 // import logo from './logo.svg';
@@ -20,6 +28,7 @@ interface IAppState {
   fields: Fields;
   tokenIDs: Tokens;
   tokenGrants: Tokens;
+  authError: string | null;
 }
 
 const defaultState: IAppState = {
@@ -27,20 +36,39 @@ const defaultState: IAppState = {
   fields: {},
   tokenIDs: {},
   tokenGrants: {},
+  authError: null,
 };
 
 class App extends React.Component<Record<string, never>, IAppState> {
   constructor(props: Record<string, never>) {
     super(props);
     this.state = defaultState;
+
+    onLunaSecAuthError((e: Error) => {
+      this.setState({ authError: 'Failed to authenticate with LunaSec. \n Is a user logged in?' });
+    });
   }
 
-  componentDidMount() {
-    void this.retrieveTokens();
+  async componentDidMount() {
     this.loadFields();
+    await this.retrieveTokens();
   }
 
-  handleFooChange(event: React.ChangeEvent<HTMLInputElement>) {
+  // This kind of works but it creates a grant for the previous token at the moment, because retrieveTokens pulls from sessionstorage.
+  //We really need a cleaner way to handle this and to get all of this grant stuff out of this demo app
+  // At the very least separate the pulling of tokens from session storage and the turning them into grants into separate functions
+  componentDidUpdate(prevProps: Record<string, any>, prevState: IAppState) {
+    const oldTokens = prevState.tokenIDs;
+    const newTokens = this.state.tokenIDs;
+    const tokenChanged = Object.keys(newTokens).some((tokenName) => {
+      return newTokens[tokenName as keyof Tokens] !== oldTokens[tokenName as keyof Tokens];
+    });
+    if (tokenChanged) {
+      void this.retrieveTokens();
+    }
+  }
+
+  handleFooChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     console.log('setting foo', event.target.value);
     this.setState({ tokenIDs: { ...this.state.tokenIDs, foo: event.target.value } });
   }
@@ -85,6 +113,8 @@ class App extends React.Component<Record<string, never>, IAppState> {
       file: savedData.file,
     };
 
+    // Our libraries expect tokens to come from the server wrapped in a TokenGrant
+    // Here we simply sign our own tokens into grants so that our libraries can consume them
     const resolveTokens = async (tokenGrants: Promise<Record<string, string>>, name: string) => {
       const awaitedTokenGrants = await tokenGrants;
       const token = tokens[name];
@@ -178,19 +208,19 @@ class App extends React.Component<Record<string, never>, IAppState> {
     }
     return (
       <section>
+        {this.state.authError && <p style={{ color: 'red' }}>{this.state.authError}</p>}
         <h2>Secure Form</h2>
         <SecureForm onSubmit={(e) => this.persistTokens(e)}>
-          <SecureInput
+          <SecureTextArea
             name="foo"
-            value={this.state.tokenGrants.foo}
+            token={this.state.tokenGrants.foo}
             onChange={(e) => this.handleFooChange(e)}
             onBlur={(e) => console.log('blur1', e)}
-            element="textarea"
           />
           <SecureInput
             name="bar"
             type="password"
-            value={this.state.tokenGrants.bar}
+            token={this.state.tokenGrants.bar}
             onChange={(e) => this.handleBarChange(e)}
             onBlur={(e) => console.log('blur2', e)}
           />
