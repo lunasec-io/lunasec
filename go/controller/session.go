@@ -25,7 +25,8 @@ type sessionController struct {
 }
 
 type SessionControllerConfig struct {
-	AuthCallbackUrl string `yaml:"auth_callback_url"`
+	AuthCallbackHost string `yaml:"auth_callback_host"`
+	AuthCallbackPath string `yaml:"auth_callback_path"`
 }
 
 type SessionController interface {
@@ -55,12 +56,13 @@ func NewSessionController(
 	return
 }
 
-func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request) {
+func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request) {
 	dataAccessToken, err := request.GetDataAccessToken(r)
 	if err != nil {
 		s.logger.Warn("cookie not set", zap.Error(err))
 		err = errors.New("cookie 'access_token' not set in request")
-		util.RespondError(w, http.StatusBadRequest, err)
+		// NOTE we return status ok here because we don't always expect the access_token to be set
+		util.RespondError(w, http.StatusOK, err)
 		return
 	}
 
@@ -68,13 +70,14 @@ func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		s.logger.Warn("unable to verify session", zap.Error(err))
 		err = errors.New("unable to verify session")
-		util.RespondError(w, http.StatusUnauthorized, err)
+		// NOTE we return status ok here because we don't always expect the session to be valid
+		util.RespondError(w, http.StatusOK, err)
 		return
 	}
 	util.RespondSuccess(w)
 }
 
-func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request) {
+func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request) {
 	// TODO if state token is already present in cookie, do we remove it?
 	s.logger.Info("received session ensure request")
 
@@ -88,14 +91,14 @@ func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request
 	v := url.Values{}
 	v.Set(constants.AuthStateQueryParam, stateToken)
 
-	oauthUrl, err := url.Parse(s.AuthCallbackUrl)
+	oauthUrl, err := url.Parse(s.AuthCallbackHost)
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	oauthUrl.RawQuery = v.Encode()
-	oauthUrl.Path = "/secure-frame"
+	oauthUrl.Path = s.AuthCallbackPath
 
 	// TODO (cthompson) revisit this cookie ttl
 	util.AddCookie(w, constants.AuthStateCookie, stateToken, "/", time.Hour)
@@ -165,8 +168,8 @@ func (s *sessionController) SessionCreate(w http.ResponseWriter, r *http.Request
 	}
 
 	// TODO (cthompson) revist this cookie ttl
-	util.AddCookie(w, constants.DataAccessTokenCookie, req.AuthToken, "/", -1)
+	util.AddCookie(w, constants.DataAccessTokenCookie, req.AuthToken, "/", time.Minute*15)
 	// removes state cookie
 	util.AddCookie(w, constants.AuthStateCookie, "", "/", 0)
-	w.WriteHeader(200)
+	util.RespondSuccess(w)
 }
