@@ -6,8 +6,11 @@ require (
 	github.com/Joker/hpp v1.0.0 // indirect
 	github.com/Joker/jade v1.0.0
 	github.com/apex/gateway v1.1.2
+	github.com/aws/aws-cdk-go/awscdk v1.109.0-devpreview // indirect
 	github.com/aws/aws-lambda-go v1.23.0
 	github.com/aws/aws-sdk-go v1.37.22
+	github.com/aws/constructs-go/constructs/v3 v3.3.84 // indirect
+	github.com/aws/jsii-runtime-go v1.30.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-containerregistry v0.5.0 // indirect
