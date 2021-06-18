@@ -1,3 +1,4 @@
+import { timeout } from '@lunasec/browser-common';
 import React, { Component } from 'react';
 
 import { SecureFormContext } from './SecureFormContext';
@@ -28,9 +29,7 @@ export class SecureForm extends Component<SecureFormProps> {
 
     // This timeout is an attempt to give the above events time to propagate and any user code time to execute,
     // like it would have in a normal form where the user pressed submit.  That's right, we are hacking now
-    await new Promise((resolve) => {
-      setTimeout(resolve, 5);
-    });
+    await timeout(5);
     this.props.onSubmit(e);
   }
 
