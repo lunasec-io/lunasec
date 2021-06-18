@@ -2,8 +2,8 @@ import classnames from 'classnames';
 import React, { Component } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
-type AnchorRenderData = RenderData<HTMLAnchorElement>;
-export type AnchorProps = WrappedComponentProps<'a'>;
+type AnchorRenderData = RenderData<'Downloader'>;
+export type AnchorProps = WrappedComponentProps<'Downloader'>;
 
 export default class Downloader extends Component<AnchorProps> {
   constructor(props: AnchorProps) {

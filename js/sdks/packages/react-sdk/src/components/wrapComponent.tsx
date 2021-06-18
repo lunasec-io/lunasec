@@ -2,34 +2,35 @@ import {
   __SECURE_FRAME_URL__,
   addReactEventListener,
   AttributesMessage,
-  // camelCaseObject,
   FrameMessageCreator,
   FrameNotification,
   generateSecureNonce,
   getStyleInfo,
   ReadElementStyle,
   secureFramePathname,
+  startSessionManagement,
+  triggerBlur,
+  triggerFocus,
 } from '@lunasec/browser-common';
 import React, { Component, CSSProperties, RefObject } from 'react';
 import styled from 'styled-components';
 
-import { AllowedElements, LunaSecWrappedComponentProps, RenderData, WrappedClassLookup, WrapperProps } from '../types';
+import { ClassLookup, LunaSecWrappedComponentProps, RenderData, TagLookup, WrapperProps } from '../types';
+import setNativeValue from '../utils/set-native-value';
+
+import { SecureFormContext } from './SecureFormContext';
 
 export interface WrapperState {
   secureFrameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
   frameFullyLoaded: boolean;
+  sessionAuthenticated: boolean;
 }
 
-// TODO: figure out how to pass this to the Wrapped props below
-// interface WrappedProps extends React.ComponentPropsWithoutRef<keyof AllowedElements> {
-//   renderData: RenderData;
-// }
-
-export default function WrapComponent<EName extends keyof WrappedClassLookup>(
-  UnstyledWrapped: WrappedClassLookup[EName],
-  elementName: EName
-) {
+// Since almost all the logic of being a Secure Component is shared(such as RPC),
+// this function wraps a component found in ./elements with that logic.
+// and adjusts for any small differences using the componentName to change behaviors between different types of components.
+export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapped: ClassLookup[W], componentName: W) {
   // Add some style to the element, for now just to do loading animations
   const Wrapped = styled(UnstyledWrapped)`
     .loading-animation {
@@ -51,9 +52,11 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
     }
   `;
 
-  return class WrappedComponent extends Component<WrapperProps<EName>, WrapperState> {
-    readonly messageCreator: FrameMessageCreator;
+  return class WrappedComponent extends Component<WrapperProps<W>, WrapperState> {
+    declare context: React.ContextType<typeof SecureFormContext>;
+    static contextType = SecureFormContext;
 
+    readonly messageCreator: FrameMessageCreator;
     // This is created on component mounted to enable server-side rendering
     abortController!: AbortController;
     /**
@@ -62,28 +65,38 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
     readonly frameId!: string;
 
     readonly frameRef!: RefObject<HTMLIFrameElement>;
-    readonly dummyRef!: RefObject<AllowedElements[EName]>;
-    frameReadyForListening = false;
+    readonly dummyRef!: RefObject<HTMLElementTagNameMap[TagLookup[W]]>;
 
-    constructor(props: WrapperProps<EName>) {
+    readonly isInputLike = componentName === 'Input' || componentName === 'TextArea';
+    frameReadyForListening = false;
+    stopSessionManagement: (() => void) | null = null;
+
+    constructor(props: WrapperProps<W>) {
       super(props);
       this.frameId = generateSecureNonce();
       this.frameRef = React.createRef();
       this.dummyRef = React.createRef();
       const secureFrameURL = new URL(__SECURE_FRAME_URL__);
       secureFrameURL.pathname = secureFramePathname;
-      this.messageCreator = new FrameMessageCreator((notification) => this.frameNotificationCallback(notification));
+      this.messageCreator = new FrameMessageCreator(this.frameId, (notification) =>
+        this.frameNotificationCallback(notification)
+      );
       this.state = {
         // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
         secureFrameUrl: secureFrameURL.toString(),
         frameStyleInfo: null,
         frameFullyLoaded: false,
+        sessionAuthenticated: false,
       };
     }
 
     componentDidMount() {
       this.abortController = new AbortController();
       addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
+      startSessionManagement().then((abort) => {
+        this.setState({ sessionAuthenticated: true });
+        this.stopSessionManagement = abort;
+      });
     }
 
     // Pass this to our wrapped component so it can tell us when its on the DOM and ready to give us styles
@@ -94,10 +107,28 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
       this.setState({
         frameStyleInfo: this.generateElementStyle(),
       });
+      if (this.isInputLike) {
+        this.context.addTokenCommitCallback(this.frameId, () => {
+          return this.triggerTokenCommit();
+        });
+      }
     }
 
     componentWillUnmount() {
       this.abortController.abort();
+      if (this.isInputLike) {
+        this.context.removeTokenCommitCallback(this.frameId);
+      }
+      if (this.stopSessionManagement) {
+        this.stopSessionManagement();
+      }
+    }
+
+    componentDidUpdate() {
+      // Also causes style changes to propagate, as long as they come from within react
+      if (this.frameReadyForListening) {
+        void this.sendIFrameAttributes();
+      }
     }
 
     generateElementStyle() {
@@ -112,26 +143,15 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
       const frameURL = new URL('frame', this.state.secureFrameUrl);
       frameURL.searchParams.set('n', urlFrameId);
       frameURL.searchParams.set('origin', window.location.origin);
-      frameURL.searchParams.set('element', elementName);
+      frameURL.searchParams.set('component', componentName);
       return frameURL.toString();
     }
-
-    componentDidUpdate() {
-      // Also causes style changes to propagate, as long as they come from within react
-      // TODO: Handle cases where the token didnt change, probably handle in iframe
-
-      if (this.frameReadyForListening) {
-        void this.sendIFrameAttributes();
-      }
-    }
-
-    // componentWillReceiveProps(nextProps: Readonly<WrapperProps<EName>>, nextContext: any) {}
 
     // Generate some attributes for sending to the iframe via RPC.
     generateIFrameAttributes(): AttributesMessage {
       const id = this.frameId;
       // initialize the attributes with the only required property
-      const attrs: AttributesMessage = { id };
+      const attrs: AttributesMessage = { id, component: componentName };
 
       // Build the style for the iframe
       const style = this.generateElementStyle();
@@ -144,7 +164,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
 
       // Pull from the "type" of an input element if we have one in our wrapped element
       const dummyElement = this.dummyRef.current;
-      if (elementName === 'input' && dummyElement) {
+      if ((componentName === 'Uploader' || componentName === 'Input') && dummyElement) {
         const inputType = dummyElement.getAttribute('type');
         if (inputType) {
           attrs.type = inputType;
@@ -177,11 +197,6 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
     }
 
     frameNotificationCallback(notification: FrameNotification) {
-      // TODO: move this filter into the RPC layer, we shouldnt have to filter here
-      if (notification.frameNonce !== this.frameId) {
-        return;
-      }
-
       switch (notification.command) {
         case 'NotifyOnStart':
           this.frameReadyForListening = true;
@@ -195,7 +210,84 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         case 'NotifyOnFullyLoaded':
           this.setState({ frameFullyLoaded: true });
           break;
+        case 'NotifyOnBlur':
+          this.blur();
+          break;
       }
+    }
+
+    // Blur happens after the element loses focus
+    blur() {
+      if (!this.isInputLike) {
+        return;
+      }
+      const dummyElement = this.dummyRef.current;
+      if (!dummyElement) {
+        throw new Error('Missing element to trigger notification for in secure frame');
+      }
+
+      const currentlyFocusedElement = document.activeElement;
+
+      // In order to trigger a blur event, we must first focus the element.
+      triggerFocus(dummyElement);
+      // Only then will the blur be triggered.
+      triggerBlur(dummyElement);
+
+      // put the focus back where it was before we hacked it
+      if (currentlyFocusedElement) {
+        triggerFocus(currentlyFocusedElement);
+      }
+    }
+
+    // Left here for posterity, but I (factoidforrest) think we can assume styles wont be changed except by react
+    // and that is caught by ComponentDidUpdate above
+    // watchStyle() {
+    //   const observer = new MutationObserver(() => this.sendIFrameAttributes());
+    //   if (!this.dummyRef.current) {
+    //     return console.error('Attempted to register style watcher on component not yet mounted');
+    //   }
+    //   observer.observe(this.dummyRef.current, {
+    //     attributeFilter: ['style'],
+    //   });
+    // }
+
+    // Called on form submit from the SecureForm
+    // we pass this into the SecureFormProvider so that it can call it when we submit
+    public async triggerTokenCommit(): Promise<void> {
+      if (componentName !== 'Input' && componentName !== 'TextArea') {
+        throw new Error('Attempted to trigger a token commit for something that wasnt an Input or TextArea');
+      }
+
+      const message = this.messageCreator.createMessageToFrame('CommitToken', {});
+
+      const currentFrame = this.frameRef.current;
+      if (!currentFrame || !currentFrame.contentWindow) {
+        console.error('Attempted token commit for unmounted frame');
+        return;
+      }
+      const response = await this.messageCreator.sendMessageToFrameWithReply(currentFrame.contentWindow, message);
+
+      if (!response) {
+        return console.error('No response from frame for token commit');
+      }
+      if (!response.data.success) {
+        return console.error('Tokenization failed: ', response.data.error);
+      }
+      if (!response.data.token) {
+        return console.error('Tokenization didnt return a token: ', response);
+      }
+
+      const currentDummy = this.dummyRef.current;
+      if (!currentDummy) {
+        throw new Error('Token Commit cant find dummy element to insert token into');
+      }
+
+      setNativeValue(componentName, currentDummy, response.data.token);
+      // This timeout is an attempt to give the above events time to propagate and any user code time to execute,
+      // like it would have in a normal form where the user pressed submit.  Yes, we are hacking hard now
+      return new Promise((resolve) => {
+        setTimeout(resolve, 5);
+      });
     }
 
     renderLoadingOverlay() {
@@ -217,6 +309,9 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
     }
 
     render() {
+      if (!this.state.sessionAuthenticated) {
+        return null;
+      }
       // We make the parent container relative so that we can throw the dummy element to the top left
       // corner so that it will not move the real elements around.
       const parentContainerStyle: CSSProperties = {
@@ -237,7 +332,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
         resize: 'none',
       };
 
-      const renderData: RenderData<AllowedElements[EName]> = {
+      const renderData: RenderData<W> = {
         frameId: this.frameId,
         frameUrl: this.generateUrl(),
         frameStyleInfo: this.state.frameStyleInfo,
@@ -254,7 +349,7 @@ export default function WrapComponent<EName extends keyof WrappedClassLookup>(
       const { token, secureFrameUrl, onTokenChange, ...scrubbedProps } = this.props;
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
-      const propsForWrapped: LunaSecWrappedComponentProps<AllowedElements[EName]> = {
+      const propsForWrapped: LunaSecWrappedComponentProps<W> = {
         name: this.props.name,
         renderData,
       };
