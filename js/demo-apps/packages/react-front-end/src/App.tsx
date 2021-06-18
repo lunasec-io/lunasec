@@ -49,9 +49,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
     });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.loadFields();
-    void this.retrieveTokens();
+    await this.retrieveTokens();
   }
 
   // This kind of works but it creates a grant for the previous token at the moment, because retrieveTokens pulls from sessionstorage.

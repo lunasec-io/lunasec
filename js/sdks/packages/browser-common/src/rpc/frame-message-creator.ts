@@ -21,7 +21,7 @@ export class FrameMessageCreator {
   constructor(
     frameNonceFilter: string,
     notificationCallback: (notification: FrameNotification) => void,
-    timeout = 5000
+    timeout = 30000
   ) {
     this.frameNonceFilter = frameNonceFilter;
     this.frameResponses = {};

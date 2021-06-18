@@ -11,16 +11,16 @@ export function timeout(ms: number): Promise<void> {
 }
 
 // Would be nice if class could take <element type parameter> but couldn't quite get it working
-export class SecureFrame<e extends keyof ClassLookup> {
-  private readonly componentName: e;
+export class SecureFrame<E extends keyof ClassLookup> {
+  private readonly componentName: E;
   private readonly loadingText: Element;
   private initialized = false;
   readonly frameNonce: string;
   readonly origin: string;
-  readonly secureElement: HTMLElementTagNameMap[TagLookup[e]];
+  readonly secureElement: HTMLElementTagNameMap[TagLookup[E]];
   private token?: string;
 
-  constructor(componentName: e, loadingText: Element) {
+  constructor(componentName: E, loadingText: Element) {
     this.componentName = componentName;
     this.loadingText = loadingText;
     this.secureElement = this.insertSecureElement(componentName);
@@ -36,9 +36,9 @@ export class SecureFrame<e extends keyof ClassLookup> {
     });
   }
 
-  insertSecureElement(elementName: e) {
+  insertSecureElement(elementName: E) {
     const body = document.getElementsByTagName('BODY')[0];
-    const secureElement = document.createElement(elementName) as HTMLElementTagNameMap[TagLookup[e]];
+    const secureElement = document.createElement(elementName) as HTMLElementTagNameMap[TagLookup[E]];
     secureElement.className = 'secure-input d-none';
     body.appendChild(secureElement);
     return secureElement;
@@ -65,12 +65,17 @@ export class SecureFrame<e extends keyof ClassLookup> {
       this.loadingText.classList.add('d-none');
       this.secureElement.classList.remove('d-none');
       if (!attrs.style) {
-        console.error('Attribute frame message missing necessary style parameter for first time frame startup', attrs);
-        return;
+        throw new Error(
+          `Attribute frame message missing necessary style parameter for first time frame startup.  Component: ${attrs.component}`
+        );
       }
 
       if (attrs.component === 'Uploader') {
         initializeUploader(this, attrs.fileTokens || []);
+      }
+
+      if (attrs.component === 'Input' || attrs.component === 'TextArea') {
+        this.attachOnBlurNotifier();
       }
     }
 
@@ -85,10 +90,6 @@ export class SecureFrame<e extends keyof ClassLookup> {
     if (attrs.token && attrs.token !== this.token) {
       this.token = attrs.token;
       await this.handleToken(attrs.token, attrs);
-    }
-
-    if (this.componentName === 'Input') {
-      this.attachOnBlurNotifier();
     }
 
     if (!this.initialized) {
