@@ -36,7 +36,7 @@ export function triggerFocus(element: HTMLInputElement | Element) {
  * Note: If an element doesn't have focus prior to calling this function, blur may not trigger.
  * @param element Element to remove focus from.
  */
-export function triggerBlur(element: HTMLInputElement) {
+export function triggerBlur(element: HTMLElement) {
   element.blur();
   element.dispatchEvent(createEvent('blur', true));
 }

@@ -2,8 +2,8 @@ import classnames from 'classnames';
 import React, { Component } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
-type UploaderRenderData = RenderData<HTMLInputElement>;
-export type UploaderProps = WrappedComponentProps<'input'>; // change these props to be some whitelisted filepond props
+type UploaderRenderData = RenderData<'Uploader'>;
+export type UploaderProps = WrappedComponentProps<'Uploader'>; // change these props to be some whitelisted filepond props
 
 export default class Uploader extends Component<UploaderProps> {
   constructor(props: UploaderProps) {

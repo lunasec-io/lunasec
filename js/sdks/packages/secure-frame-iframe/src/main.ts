@@ -1,10 +1,10 @@
-import { AllowedElements } from '@lunasec/react-sdk';
+import { ComponentNames, componentNames } from '@lunasec/react-sdk';
 
 import { SecureFrame } from './secure-frame';
-const supportedElements = ['input', 'textarea', 'p', 'a'];
+
 function startup() {
-  const elementType = new URL(document.location.href).searchParams.get('element') as keyof AllowedElements | null;
-  if (!elementType || !supportedElements.includes(elementType)) {
+  const componentName = new URL(document.location.href).searchParams.get('component') as ComponentNames | null;
+  if (!componentName || !componentNames.includes(componentName)) {
     throw new Error('Invalid element type passed in iframe URL, unsure what to render');
   }
 
@@ -13,6 +13,6 @@ function startup() {
     throw new Error('Couldnt find loading text element in iframe HTML');
   }
 
-  new SecureFrame<typeof elementType>(elementType, loadingText);
+  new SecureFrame(componentName, loadingText);
 }
 startup();
