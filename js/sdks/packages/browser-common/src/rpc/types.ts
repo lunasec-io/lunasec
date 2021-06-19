@@ -28,6 +28,7 @@ export interface InputAttr extends BaseAttr {
   component: 'Input' | 'TextArea';
   token?: string;
   type?: string;
+  placeholder?: string;
 }
 
 export interface DownloaderAttr extends BaseAttr {

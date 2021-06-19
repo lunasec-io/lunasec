@@ -83,8 +83,13 @@ export class SecureFrame<E extends keyof ClassLookup> {
       patchStyle(this.secureElement, safeParseJson<StyleInfo>(attrs.style));
     }
 
-    if (attrs.type && attrs.component === 'Input') {
-      this.secureElement.setAttribute('type', attrs.type);
+    if (attrs.component === 'Input') {
+      if (attrs.type) {
+        this.secureElement.setAttribute('type', attrs.type);
+      }
+      if (attrs.placeholder) {
+        this.secureElement.setAttribute('placeholder', attrs.placeholder);
+      }
     }
 
     if (attrs.token && attrs.token !== this.token) {
