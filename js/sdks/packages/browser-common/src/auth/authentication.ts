@@ -63,7 +63,7 @@ async function authenticateSession(): Promise<Promise<boolean> | void> {
 }
 
 async function validateOrCreateSession(): Promise<boolean> {
-  const firstVerifyResponse = await authClient.verifySession();
+  const firstVerifyResponse = await authClient.verifySession(); // If these calls throw, they will be uncaught and crash the app. Do we want that?
   if (firstVerifyResponse.success) {
     console.debug('secure frame session is verified');
     return true;
