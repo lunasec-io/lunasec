@@ -5905,7 +5905,7 @@ autoprefixer@^9.6.1:
     postcss "^7.0.32"
     postcss-value-parser "^4.1.0"
 
-ava@^3.12.1, ava@^3.15.0:
+ava@^3.12.1:
   version "3.15.0"
   resolved "https://registry.yarnpkg.com/ava/-/ava-3.15.0.tgz#a239658ab1de8a29a243cc902e6b42e4574de2f0"
   integrity sha512-HGAnk1SHPk4Sx6plFAUkzV/XC1j9+iQhOzt4vBly18/yo0AV8Oytx7mtJd/CR8igCJ5p160N/Oo/cNJi2uSeWA==
@@ -13153,6 +13153,11 @@ jest-jasmine2@^27.0.4:
     jest-util "^27.0.2"
     pretty-format "^27.0.2"
     throat "^6.0.1"
+
+jest-json-to-tap@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/jest-json-to-tap/-/jest-json-to-tap-2.1.0.tgz#cf762289c0f4d3ec17d69b820430fceb85192d2c"
+  integrity sha512-+qMM4K3JPxFG/skr6dnmR4m4zJdnpmzIoRYCgscNdEpyWpM9aCCqELJr0iKXpLsvqulRpJdHCYyAmOUBxb5+fQ==
 
 jest-leak-detector@^26.6.2:
   version "26.6.2"
