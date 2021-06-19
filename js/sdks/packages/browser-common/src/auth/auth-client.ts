@@ -1,6 +1,6 @@
 import { __SECURE_FRAME_URL__ } from '../constants';
 
-export interface SessionResponse {
+interface SessionResponse {
   success: boolean;
   error: string;
 }
