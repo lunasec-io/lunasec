@@ -17,6 +17,8 @@ declare global {
   }
 }
 
+console.debug = () => {};
+
 describe('authentication.ts', () => {
   beforeEach(() => {
     // This is needed because we have state hanging around in authentication.ts, and that stays in the
@@ -90,7 +92,11 @@ describe('authentication.ts', () => {
 
     it('should throw when no error handler set ', () => {
       expect.assertions(1);
-      expect(startSessionManagement()).rejects.toEqual({});
+      expect(startSessionManagement()).rejects.toEqual(
+        new Error(
+          'Unable to create secure frame session, is there a user currently authenticated to this site?  To handle this error gracefully call onLunaSecAuthError'
+        )
+      );
     });
 
     it('should call error handler when one set ', async () => {
