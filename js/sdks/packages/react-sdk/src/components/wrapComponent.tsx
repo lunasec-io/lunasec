@@ -93,7 +93,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     componentDidMount() {
       this.abortController = new AbortController();
       addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
-      startSessionManagement().then((abort) => {
+      void startSessionManagement().then((abort) => {
         this.setState({ sessionAuthenticated: true });
         this.stopSessionManagement = abort;
       });
