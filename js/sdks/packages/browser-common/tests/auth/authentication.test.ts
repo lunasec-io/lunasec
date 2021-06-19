@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { SecureFrameAuthClient } from '../../src/auth/auth-client'; // Just for type info
 
-jest.useFakeTimers();
 const realDate = Date.now;
 const refreshTime = 60000;
 const startTime = 100000000;
 
-let startSessionManagement: () => Promise<void>;
+let startSessionManagement: () => Promise<() => void>;
 
 let client: jest.MockedClass<typeof SecureFrameAuthClient>;
 let clientMethods: typeof client.prototype;
@@ -32,6 +31,7 @@ describe('authentication.ts', () => {
       clientMethods = client.prototype;
       jest.mock('../../src/auth/auth-client');
     });
+    jest.useFakeTimers();
 
     Date.now = jest.fn(() => startTime);
   });
@@ -39,6 +39,7 @@ describe('authentication.ts', () => {
   afterEach(() => {
     Date.now = realDate;
     client.mockReset();
+    jest.useRealTimers();
   });
 
   describe('when user has a session cookie', () => {
@@ -57,6 +58,13 @@ describe('authentication.ts', () => {
         Date.now = jest.fn(() => startTime + refreshTime + 1);
         jest.advanceTimersByTime(refreshTime + 1);
         expect(clientMethods.verifySession).toBeCalledTimes(2);
+      });
+
+      it('should remove call clearInterval when we call the deleteTimer callback', async () => {
+        const deleteTimer = await startSessionManagement();
+        expect(jest.getTimerCount()).toBe(1);
+        deleteTimer();
+        expect(jest.getTimerCount()).toBe(0); // this is truly peak testing right here
       });
     });
 
