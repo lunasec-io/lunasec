@@ -1,6 +1,6 @@
 declare global {
   interface Window {
-    LUNASEC_AUTH_ERROR_HANDLER: (e: Error) => void;
+    LUNASEC_AUTH_ERROR_HANDLER?: (e: Error) => void;
   }
 }
 

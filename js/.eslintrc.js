@@ -56,6 +56,9 @@ module.exports = {
       { "allowWholeFile": true }
     ],
     "eslint-comments/no-unused-disable": "error",
+    "@typescript-eslint/no-unsafe-call":"off", // Did this because of a bug with intellij (forrest)
+    "@typescript-eslint/no-unsafe-member-access":"off",
+    "@typescript-eslint/no-unsafe-assignment":"off",
     "import/order": [
       "error",
       { "newlines-between": "always", "alphabetize": { "order": "asc" } }
