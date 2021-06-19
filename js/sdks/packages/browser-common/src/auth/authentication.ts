@@ -1,10 +1,9 @@
-import { __SECURE_FRAME_URL__ } from '../constants';
-import {SecureFrameAuthClient} from "./auth-client";
+import { SecureFrameAuthClient } from './auth-client';
 
 // This could probably be a local variable but just worried about any potential duplication between a custom app and our libraries makes the singletons a little sketchier
 declare global {
   interface Window {
-    LUNASEC_AUTH_ERROR_HANDLER: (e: Error) => void;
+    LUNASEC_AUTH_ERROR_HANDLER?: (e: Error) => void;
   }
 }
 
@@ -52,23 +51,22 @@ async function authenticateSession(): Promise<Promise<boolean> | void> {
 
   if (!lastAuthenticatedTime || lastAuthenticatedTime < Date.now() - refreshInterval) {
     console.debug('need to fetch new session');
-    authFlowInProgress = validateOrCreateSecureFrameSession();
+    authFlowInProgress = validateOrCreateSession();
     const authSuccess = await authFlowInProgress;
     if (authSuccess) {
       lastAuthenticatedTime = Date.now();
-      authFlowInProgress = null;
     }
-
-    lastAuthenticatedTime = Date.now();
     authFlowInProgress = null;
+  } else {
+    console.debug('authenticated recently enough to skip the auth flow');
   }
 }
 
-async function validateOrCreateSecureFrameSession(): Promise<boolean> {
+async function validateOrCreateSession(): Promise<boolean> {
   const firstVerifyResponse = await authClient.verifySession();
   if (firstVerifyResponse.success) {
     console.debug('secure frame session is verified');
-    return false;
+    return true;
   }
   console.debug('secure frame session is not verified, creating a new session');
 
