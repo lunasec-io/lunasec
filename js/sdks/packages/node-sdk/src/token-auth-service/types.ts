@@ -1,6 +1,7 @@
+import { KeyLike } from 'jose/jwt/sign';
+
 import { awsSecretProvider } from './aws-secret-provider';
 import { environmentSecretProvider } from './environment-secret-provider';
-import {KeyLike} from "jose/jwt/sign";
 
 export interface EnvironmentSecretProvider {
   type: SecretProviders.environment;
