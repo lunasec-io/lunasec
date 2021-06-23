@@ -59,20 +59,20 @@ async function authenticateSession(): Promise<Promise<boolean> | void> {
 }
 
 async function validateOrCreateSecureFrameSession(): Promise<boolean> {
-  const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__);
-  secureFrameEnsureSessionURL.pathname = '/session/ensure';
-
   const firstEnsureResponse = await ensureSession();
   if (firstEnsureResponse.status === 200) {
-    console.debug('secure frame session is verified');
-
-    return true;
+    const ensureResponse = await firstEnsureResponse.json();
+    if (ensureResponse.error === false) {
+      console.debug('secure frame session is verified');
+      return true;
+    }
   }
   // If the above was not 200, we need to send more requests to verify the session
   await verifySession();
   const secondEnsureResponse = await ensureSession();
+  const ensureResponse = await secondEnsureResponse.json();
 
-  if (secondEnsureResponse.status !== 200) {
+  if (secondEnsureResponse.status !== 200 || ensureResponse.error === true) {
     // TODO: Throw or escalate this error in a better way to the client application, right now it crashes the app
     const e = new Error(
       'Unable to create secure frame session, is there a user currently authenticated to this site?  To handle this error gracefully call onLunaSecAuthError'
@@ -90,7 +90,7 @@ async function validateOrCreateSecureFrameSession(): Promise<boolean> {
 
 function ensureSession() {
   const secureFrameEnsureSessionURL = new URL(__SECURE_FRAME_URL__);
-  secureFrameEnsureSessionURL.pathname = '/session/ensure';
+  secureFrameEnsureSessionURL.pathname += '/session/ensure';
 
   return fetch(secureFrameEnsureSessionURL.toString(), {
     credentials: 'include',
@@ -100,7 +100,7 @@ function ensureSession() {
 
 function verifySession() {
   const secureFrameVerifySessionURL = new URL(__SECURE_FRAME_URL__);
-  secureFrameVerifySessionURL.pathname = '/session/verify';
+  secureFrameVerifySessionURL.pathname += '/session/verify';
 
   // dispatch to the secure frame session verifier to make sure that a secure frame session exists
   return fetch(secureFrameVerifySessionURL.toString(), {

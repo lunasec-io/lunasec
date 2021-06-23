@@ -2,12 +2,8 @@ FROM golang AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 
-# Docker cache
-COPY go.mod go.sum /code/
-WORKDIR /code
-RUN go mod graph | awk '{if ($1 !~ "@") print $2}' | xargs go get
-
 ADD . /code
+WORKDIR /code
 RUN BUILD_TAG=lambda make secureframe
 
 FROM scratch

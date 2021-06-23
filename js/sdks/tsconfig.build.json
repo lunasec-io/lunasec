@@ -1,7 +1,6 @@
 {
   "files": [],
   "references": [
-    { "path": "packages/cli" },
     { "path": "packages/server-common"},
     { "path": "packages/node-sdk" },
     { "path": "packages/tokenizer-sdk" },
@@ -9,7 +8,6 @@
     { "path": "packages/js-sdk" },
     { "path": "packages/react-sdk" },
     { "path": "packages/secure-frame-iframe" },
-    { "path": "packages/cli/tsconfig.module.json" },
     { "path": "packages/server-common/tsconfig.module.json"},
     { "path": "packages/browser-common/tsconfig.module.json"},
     { "path": "packages/node-sdk/tsconfig.module.json" },

@@ -1,6 +1,8 @@
 package gateway
 
 import (
+	"fmt"
+	"log"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -8,20 +10,26 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/refinery-labs/loq/model"
+	"go.uber.org/config"
 	"go.uber.org/zap"
 )
 
 var primaryKey = "Key"
 
 const (
-	MetaStore    = model.KVStore("tokenizer-metadata")
-	KeyStore     = model.KVStore("tokenizer-keys")
-	SessionStore = model.KVStore("tokenizer-sessions")
+	MetaStore    = model.KVStore("metadata")
+	KeyStore     = model.KVStore("keys")
+	SessionStore = model.KVStore("sessions")
 )
 
 type dynamoKvGateway struct {
+	dynamoKvGatewayConfig
 	logger *zap.Logger
 	db     *dynamodb.DynamoDB
+}
+
+type dynamoKvGatewayConfig struct {
+	TableNames map[model.KVStore]string `yaml:"table_names"`
 }
 
 // DynamoKvGateway ...
@@ -31,7 +39,17 @@ type DynamoKvGateway interface {
 }
 
 // NewDynamoKvGateway...
-func NewDynamoKvGateway(logger *zap.Logger) DynamoKvGateway {
+func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider) DynamoKvGateway {
+	var (
+		gatewayConfig dynamoKvGatewayConfig
+	)
+
+	err := provider.Get("aws_gateway").Populate(&gatewayConfig)
+	if err != nil {
+		log.Println(err)
+		panic(err)
+	}
+
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
@@ -40,14 +58,20 @@ func NewDynamoKvGateway(logger *zap.Logger) DynamoKvGateway {
 	db := dynamodb.New(sess)
 
 	return &dynamoKvGateway{
-		logger: logger,
-		db:     db,
+		dynamoKvGatewayConfig: gatewayConfig,
+		logger:                logger,
+		db:                    db,
 	}
 }
 
 func (s *dynamoKvGateway) Get(store model.KVStore, key string) (string, error) {
+	tableName, ok := s.TableNames[store]
+	if !ok {
+		return "", fmt.Errorf("unable to find table name for store: %s", store)
+	}
+
 	dbResult, err := s.db.GetItem(&dynamodb.GetItemInput{
-		TableName: aws.String(string(store)),
+		TableName: aws.String(tableName),
 		Key: map[string]*dynamodb.AttributeValue{
 			primaryKey: {
 				S: aws.String(key),
@@ -81,9 +105,14 @@ func (s *dynamoKvGateway) Set(store model.KVStore, key string, value string) err
 		return err
 	}
 
+	tableName, ok := s.TableNames[store]
+	if !ok {
+		return fmt.Errorf("unable to find table name for store: %s", store)
+	}
+
 	input := &dynamodb.PutItemInput{
 		Item:      av,
-		TableName: aws.String(string(store)),
+		TableName: aws.String(tableName),
 	}
 
 	if _, err := s.db.PutItem(input); err != nil {

@@ -57,7 +57,7 @@ export class LunaSecExpressAuthPlugin {
     const redirectUrl = new URL(this.secureFrameUrl);
     redirectUrl.searchParams.append('state', stateToken);
     redirectUrl.searchParams.append('openid_token', authGrant.toString());
-    redirectUrl.pathname = '/session/create';
+    redirectUrl.pathname += '/session/create';
     return redirectUrl;
   }
 
