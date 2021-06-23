@@ -16,6 +16,7 @@ type DockerContainerModifier interface {
 	LoadImageFromRemote() (base v1.Image, err error)
 	AppendLayersToBaseImage(base v1.Image, appendLayers []v1.Layer) (img v1.Image, err error)
 	SaveImageToFile(img v1.Image, newTag, filename string) (err error)
+	PullImage(imageURL string) (base v1.Image, err error)
 	PushImage(img v1.Image, newTag string) (err error)
 	GetImageDeploymentID(img v1.Image) (deploymentID string, err error)
 }
@@ -43,7 +44,7 @@ func (d *dockerContainerModifier) LoadImageFromFile() (base v1.Image, err error)
 }
 
 func (d *dockerContainerModifier) LoadImageFromRemote() (base v1.Image, err error) {
-	return d.pullBaseImage(d.baseRef)
+	return d.PullImage(d.baseRef)
 }
 
 func (d *dockerContainerModifier) AppendLayersToBaseImage(base v1.Image, appendLayers []v1.Layer) (img v1.Image, err error) {
@@ -89,21 +90,21 @@ func (d *dockerContainerModifier) PushImage(img v1.Image, newTag string) (err er
 	return crane.Push(img, newTag, d.options...)
 }
 
-func (d *dockerContainerModifier) pullBaseImage(baseRef string) (base v1.Image, err error) {
-	if baseRef == "" {
+func (d *dockerContainerModifier) PullImage(imageURL string) (base v1.Image, err error) {
+	if imageURL == "" {
 		logs.Warn.Printf("base unspecified, using empty image")
 		base = empty.Image
 		return
 	}
 
-	log.Printf("pulling %s", baseRef)
-	base, err = crane.Pull(baseRef, d.options...)
+	log.Printf("pulling %s", imageURL)
+	base, err = crane.Pull(imageURL, d.options...)
 	// If we succeeded, then return...
 	if err == nil {
 		return
 	}
 	// ...otherwise try again without auth
-	return crane.Pull(baseRef)
+	return crane.Pull(imageURL)
 }
 
 func getDeploymentIDFromConfig(configFile *v1.ConfigFile) (deploymentID string) {

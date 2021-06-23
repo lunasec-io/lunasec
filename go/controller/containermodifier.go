@@ -17,6 +17,32 @@ import (
 	"github.com/refinery-labs/loq/util"
 )
 
+func LoadPublicCraneOptions(ecrGateway gateway.AwsECRGateway) (options crane.Option, err error) {
+	cfg, err := ecrGateway.GetPublicCredentials()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	authenticator := authn.FromConfig(cfg)
+
+	options = crane.WithAuth(authenticator)
+	return
+}
+
+func LoadCraneOptions(ecrGateway gateway.AwsECRGateway) (options crane.Option, err error) {
+	cfg, err := ecrGateway.GetCredentials()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	authenticator := authn.FromConfig(cfg)
+
+	options = crane.WithAuth(authenticator)
+	return
+}
+
 type ContainerModifierController interface {
 	HandleLambdaInvoke(invokeEvent event.ContainerModifyEvent) (resp event.ContainerModifyResponse, err error)
 	HandleLocalInvoke(containerTarFile, configFile string)
@@ -45,21 +71,8 @@ func getContainerLayerFromS3(s3 gateway.AwsS3Gateway, key string) (layer v1.Laye
 	return tarball.LayerFromReader(tarReader)
 }
 
-func (c *containerModifierController) loadCraneOptions() (options crane.Option, err error) {
-	cfg, err := c.ecrGateway.GetCredentials()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	authenticator := authn.FromConfig(cfg)
-
-	options = crane.WithAuth(authenticator)
-	return
-}
-
 func (c *containerModifierController) getContainerModifierForLambdaInvoke(invokeEvent event.ContainerModifyEvent) (modifier service.DockerContainerModifier, err error) {
-	options, err := c.loadCraneOptions()
+	options, err := LoadCraneOptions(c.ecrGateway)
 	if err != nil {
 		log.Println(err)
 		return

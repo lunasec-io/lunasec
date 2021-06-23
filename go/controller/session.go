@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -46,6 +47,12 @@ func NewSessionController(
 		return
 	}
 
+	_, err = url.Parse(controllerConfig.AuthCallbackUrl)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	controller = &sessionController{
 		SessionControllerConfig: controllerConfig,
 		logger:                  logger,
@@ -60,7 +67,7 @@ func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		s.logger.Warn("cookie not set", zap.Error(err))
 		err = errors.New("cookie 'access_token' not set in request")
-		util.RespondError(w, http.StatusBadRequest, err)
+		util.RespondError(w, http.StatusOK, err)
 		return
 	}
 
@@ -68,7 +75,7 @@ func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		s.logger.Warn("unable to verify session", zap.Error(err))
 		err = errors.New("unable to verify session")
-		util.RespondError(w, http.StatusUnauthorized, err)
+		util.RespondError(w, http.StatusOK, err)
 		return
 	}
 	util.RespondSuccess(w)
@@ -81,6 +88,11 @@ func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request
 	stateToken := uuid.NewString()
 	err := s.kv.Set(gateway.SessionStore, stateToken, string(constants.SessionUnused))
 	if err != nil {
+		s.logger.Error(
+			"unable to set session store state token status",
+			zap.Error(err),
+			zap.String("stateToken", stateToken),
+		)
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
