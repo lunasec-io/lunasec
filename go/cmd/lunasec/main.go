@@ -120,6 +120,8 @@ func NewLambdaCronStack(scope constructs.Construct, id string, props *LambdaCron
 			Name: jsii.String("Key"),
 			Type: awsdynamodb.AttributeType_STRING,
 		},
+		// TODO (cthompson) enable TTL for this table since a bunch of one time use records are created
+		// TimeToLiveAttribute: ,
 	})
 
 	repository := awsecr.Repository_FromRepositoryName(stack, jsii.String("repo"), jsii.String(secureFrameBackendRepoName))
