@@ -1,7 +1,5 @@
-import { AttributesMessage, patchStyle, safeParseJson, StyleInfo } from '@lunasec/browser-common';
+import { AttributesMessage, patchStyle, safeParseJson, StyleInfo, ValidatorName } from '@lunasec/browser-common';
 import { ClassLookup, TagLookup } from '@lunasec/react-sdk';
-
-import { ValidatorName } from '../../browser-common/src';
 
 import { initializeUploader } from './initialize-uploader';
 import { detokenize, listenForRPCMessages, sendMessageToParentFrame } from './rpc';
