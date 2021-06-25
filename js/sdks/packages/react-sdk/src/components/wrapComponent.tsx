@@ -25,6 +25,7 @@ export interface WrapperState {
   frameStyleInfo: ReadElementStyle | null;
   frameFullyLoaded: boolean;
   sessionAuthenticated: boolean;
+  isValid: boolean;
 }
 
 // Since almost all the logic of being a Secure Component is shared(such as RPC),
@@ -87,6 +88,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         frameStyleInfo: null,
         frameFullyLoaded: false,
         sessionAuthenticated: false,
+        isValid: true,
       };
     }
 
@@ -147,6 +149,14 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       return frameURL.toString();
     }
 
+    validationHandler(isValid: boolean) {
+      if (!this.props.onValidate) {
+        throw new Error('Got validation message from iframe for component without an onValidation handler');
+      }
+      this.setState({ isValid: isValid });
+      this.props.onValidate(isValid);
+    }
+
     // Generate some attributes for sending to the iframe via RPC.
     generateIFrameAttributes(): AttributesMessage {
       const id = this.frameId;
@@ -181,6 +191,17 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         attrs.fileTokens = this.props.filetokens;
       }
 
+      if (this.props.validator) {
+        if (attrs.component !== 'Input') {
+          throw new Error('Validators can only be set on SecureInputs');
+        }
+        if (!this.props.onValidate) {
+          throw new Error(
+            'Must pass onValidate() callback when a validator is specified.  Use the callback to block the form from submitting and display user feedback.'
+          );
+        }
+        attrs.validator = this.props.validator;
+      }
       return attrs;
     }
 
@@ -212,6 +233,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
           break;
         case 'NotifyOnBlur':
           this.blur();
+          break;
+        case 'NotifyOnValidate':
+          this.validationHandler(notification.data.isValid);
           break;
       }
     }
@@ -338,6 +362,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         frameStyleInfo: this.state.frameStyleInfo,
         frameContainerClasses: {
           hidden: !this.state.frameFullyLoaded,
+          invalid: !this.state.isValid,
         },
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,
