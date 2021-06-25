@@ -47,6 +47,7 @@ export default class Uploader extends Component<UploaderProps> {
           ref={renderData.dummyRef}
           style={renderData.dummyElementStyle}
           tabIndex={-1}
+          className={this.props.className || ''}
         />
         {this.renderFrame(renderData)}
         {children}

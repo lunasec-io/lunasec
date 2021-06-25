@@ -52,7 +52,13 @@ export default class TextArea extends Component<TextAreaProps> {
 
     return (
       <div style={renderData.parentContainerStyle} className={containerClass}>
-        <textarea ref={renderData.dummyRef} style={renderData.dummyElementStyle} tabIndex={-1} {...otherProps} />
+        <textarea
+          {...otherProps}
+          ref={renderData.dummyRef}
+          style={renderData.dummyElementStyle}
+          tabIndex={-1}
+          className={this.props.className || ''}
+        />
         {this.renderFrame(renderData)}
         {children}
       </div>
