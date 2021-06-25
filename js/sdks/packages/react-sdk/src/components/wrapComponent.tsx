@@ -368,7 +368,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         frameStyleInfo: this.state.frameStyleInfo,
         containerClass,
         frameClass: classnames({ hidden: !this.state.frameFullyLoaded }),
-        hiddenElementClass: classnames({ invalid: !this.state.isValid }),
+        hiddenElementClass: classnames({ invalid: !this.state.isValid }), // only used by input at the moment
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,
         mountedCallback: this.wrappedComponentDidMount.bind(this),
