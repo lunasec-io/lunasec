@@ -71,6 +71,6 @@ p {
   white-space: pre-wrap;
 }
 
-.invalid input {
+.invalid {
   color:red;
 }

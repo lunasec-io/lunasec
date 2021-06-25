@@ -360,7 +360,6 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       const containerClass = classnames({
         [`secure-${componentName.toLowerCase()}-container-${this.frameId}`]: true,
         [`secure-${componentName.toLowerCase()}-container-${this.props.name || ''}`]: !!this.props.name,
-        invalid: !this.state.isValid,
       });
 
       const renderData: RenderData<W> = {
@@ -369,6 +368,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         frameStyleInfo: this.state.frameStyleInfo,
         containerClass,
         frameClass: classnames({ hidden: !this.state.frameFullyLoaded }),
+        hiddenElementClass: classnames({ invalid: !this.state.isValid }),
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,
         mountedCallback: this.wrappedComponentDidMount.bind(this),
