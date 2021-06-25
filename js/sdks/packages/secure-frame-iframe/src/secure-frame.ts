@@ -1,9 +1,12 @@
 import { AttributesMessage, patchStyle, safeParseJson, StyleInfo } from '@lunasec/browser-common';
 import { ClassLookup, TagLookup } from '@lunasec/react-sdk';
 
+import { ValidatorName } from '../../browser-common/src';
+
 import { initializeUploader } from './initialize-uploader';
 import { detokenize, listenForRPCMessages, sendMessageToParentFrame } from './rpc';
 import { handleDownload } from './secure-download';
+import { validate } from './validators';
 export type SupportedElement = TagLookup[keyof TagLookup];
 
 export function timeout(ms: number): Promise<void> {
@@ -77,6 +80,10 @@ export class SecureFrame<E extends keyof ClassLookup> {
       if (attrs.component === 'Input' || attrs.component === 'TextArea') {
         this.attachOnBlurNotifier();
       }
+
+      if (attrs.component === 'Input' && attrs.validator) {
+        this.attachValidator(attrs.validator);
+      }
     }
 
     if (attrs.style) {
@@ -129,6 +136,17 @@ export class SecureFrame<E extends keyof ClassLookup> {
   attachOnBlurNotifier() {
     this.secureElement.addEventListener('blur', () => {
       sendMessageToParentFrame(this.origin, { command: 'NotifyOnBlur', frameNonce: this.frameNonce, data: {} });
+    });
+  }
+
+  attachValidator(validatorName: ValidatorName) {
+    this.secureElement.addEventListener('blur', () => {
+      const isValid = validate(validatorName, (this.secureElement as HTMLInputElement).value);
+      sendMessageToParentFrame(this.origin, {
+        command: 'NotifyOnValidate',
+        frameNonce: this.frameNonce,
+        data: { isValid },
+      });
     });
   }
 }

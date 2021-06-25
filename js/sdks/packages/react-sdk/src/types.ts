@@ -29,12 +29,14 @@ export type ComponentNames = keyof ClassLookup;
 // to the user in "WrapperProps" type below.  Note it is a combination of our custom properties and the properties
 // for whatever react element we are trying to render
 interface LunaSecWrapperProps<C extends keyof ClassLookup> {
-  token?: C extends 'Uploader' ? undefined : string;
+  token?: C extends 'Uploader' ? never : string;
   name: string;
   secureFrameUrl?: string;
   // special file picker types:
-  filetokens?: C extends 'Uploader' ? string[] : undefined;
-  onTokenChange?: C extends 'Uploader' ? (token: Array<string>) => void : undefined;
+  filetokens?: C extends 'Uploader' ? string[] : never;
+  onTokenChange?: C extends 'Uploader' ? (token: Array<string>) => void : never;
+  validator?: C extends 'Input' ? 'Email' | 'SSN' | 'EIN' | 'SSN_EIN' : never;
+  onValidate?: C extends 'Input' ? (isValid: boolean) => void : never; // It would be cool to require this whenever `validator` is passed above, not sure how without insane typescript foo though
 }
 
 export type WrapperProps<C extends keyof ClassLookup> = LunaSecWrapperProps<C> &

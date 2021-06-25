@@ -161,6 +161,10 @@ class App extends React.Component<Record<string, never>, IAppState> {
     return undefined;
   }
 
+  emailValidated(isValid: boolean) {
+    console.log('EMAIL VALIDATED AS ', isValid);
+  }
+
   renderFileDownloadComponents(fileTokenGrant: string | undefined) {
     if (!fileTokenGrant) {
       return null;
@@ -219,7 +223,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
           />
           <SecureInput
             name="bar"
-            type="password"
+            type="email"
+            validator="Email"
+            onValidate={(isValid) => this.emailValidated(isValid)}
             token={this.state.tokenGrants.bar}
             onChange={(e) => this.handleBarChange(e)}
             onBlur={(e) => console.log('blur2', e)}
