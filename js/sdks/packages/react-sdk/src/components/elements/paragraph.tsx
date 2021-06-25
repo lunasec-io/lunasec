@@ -40,7 +40,13 @@ export default class Paragraph extends Component<ParagraphProps> {
         style={renderData.parentContainerStyle}
         className={`${renderData.containerClass} ${this.props.className || ''}`}
       >
-        <p ref={renderData.dummyRef} style={renderData.dummyElementStyle} tabIndex={-1} {...otherProps}>
+        <p
+          {...otherProps}
+          ref={renderData.dummyRef}
+          style={renderData.dummyElementStyle}
+          tabIndex={-1}
+          className={this.props.className || ''}
+        >
           &ensp;
         </p>
         {this.renderFrame(renderData)}

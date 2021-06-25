@@ -45,7 +45,13 @@ export default class Downloader extends Component<AnchorProps> {
         className={`${renderData.containerClass} ${this.props.className || ''}`}
         style={renderData.parentContainerStyle}
       >
-        <a {...otherProps} ref={renderData.dummyRef} style={renderData.dummyElementStyle} tabIndex={-1}>
+        <a
+          {...otherProps}
+          ref={renderData.dummyRef}
+          style={renderData.dummyElementStyle}
+          tabIndex={-1}
+          className={this.props.className || ''}
+        >
           &ensp;
         </a>
         {this.renderFrame(renderData)}

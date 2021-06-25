@@ -50,11 +50,11 @@ export default class Input extends Component<InputProps> {
         className={`${renderData.containerClass} ${this.props.className || ''}`}
       >
         <input
+          {...otherProps}
           ref={renderData.dummyRef}
           style={{ ...renderData.dummyElementStyle, ...this.props.style }}
-          className={renderData.hiddenElementClass}
           tabIndex={-1}
-          {...otherProps}
+          className={`${renderData.hiddenElementClass} ${this.props.className || ''}`}
         />
         {this.renderFrame(renderData)}
         {children}
