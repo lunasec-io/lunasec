@@ -25,7 +25,14 @@ interface BaseAttr {
 }
 
 export interface InputAttr extends BaseAttr {
-  component: 'Input' | 'TextArea';
+  component: 'Input';
+  token?: string;
+  type?: string;
+  placeholder?: string;
+}
+
+export interface TextAreaAttr extends BaseAttr {
+  component: 'TextArea';
   token?: string;
   type?: string;
 }
@@ -47,7 +54,7 @@ export interface UploaderAttr extends BaseAttr {
   type?: string;
 }
 
-export type AttributesMessage = InputAttr | DownloaderAttr | ParagraphAttr | UploaderAttr;
+export type AttributesMessage = InputAttr | DownloaderAttr | ParagraphAttr | UploaderAttr | TextAreaAttr;
 
 export interface ReceiveCommittedTokenMessage {
   success: boolean;

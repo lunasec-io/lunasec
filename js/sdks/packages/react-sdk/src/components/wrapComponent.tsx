@@ -180,6 +180,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       if (this.props.filetokens) {
         attrs.fileTokens = this.props.filetokens;
       }
+      if (attrs.component === 'Input' && this.props.placeholder) {
+        attrs.placeholder = this.props.placeholder;
+      }
 
       return attrs;
     }
