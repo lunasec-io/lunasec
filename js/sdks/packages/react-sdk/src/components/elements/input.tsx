@@ -1,5 +1,4 @@
 import { camelCaseObject } from '@lunasec/browser-common';
-import classnames from 'classnames';
 import React, { Component, CSSProperties } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
@@ -29,13 +28,11 @@ export default class Input extends Component<InputProps> {
       height: height,
     };
 
-    const frameContainerClass = classnames(renderData.frameContainerClasses);
-
     return (
       <iframe
         ref={renderData.frameRef}
         src={renderData.frameUrl}
-        className={frameContainerClass}
+        className={renderData.frameClass}
         style={iframeStyle}
         frameBorder={0}
         key={renderData.frameUrl}
@@ -45,16 +42,13 @@ export default class Input extends Component<InputProps> {
 
   render() {
     // Pull the renderData out so we don't weird stuff into our dummy element
-    const { renderData, className, children, ...otherProps } = this.props;
-
-    const containerClass = classnames({
-      [`secure-input-container-${renderData.frameId} secure-input-container-${this.props.name}`]: true,
-      // Combine with the classname passed in props because styled-components passes some random classnames to attach our css
-      [className || '']: true,
-    });
+    const { renderData, children, className, ...otherProps } = this.props;
 
     return (
-      <div style={renderData.parentContainerStyle} className={containerClass}>
+      <div
+        style={renderData.parentContainerStyle}
+        className={`${renderData.containerClass} ${this.props.className || ''}`}
+      >
         <input
           ref={renderData.dummyRef}
           style={{ ...renderData.dummyElementStyle, ...this.props.style }}

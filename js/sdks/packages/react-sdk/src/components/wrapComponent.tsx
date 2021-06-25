@@ -12,6 +12,7 @@ import {
   triggerBlur,
   triggerFocus,
 } from '@lunasec/browser-common';
+import classnames from 'classnames';
 import React, { Component, CSSProperties, RefObject } from 'react';
 import styled from 'styled-components';
 
@@ -356,14 +357,18 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         resize: 'none',
       };
 
+      const containerClass = classnames({
+        [`secure-${componentName.toLowerCase()}-container-${this.frameId}`]: true,
+        [`secure-${componentName.toLowerCase()}-container-${this.props.name || ''}`]: !!this.props.name,
+        invalid: !this.state.isValid,
+      });
+
       const renderData: RenderData<W> = {
         frameId: this.frameId,
         frameUrl: this.generateUrl(),
         frameStyleInfo: this.state.frameStyleInfo,
-        frameContainerClasses: {
-          hidden: !this.state.frameFullyLoaded,
-          invalid: !this.state.isValid,
-        },
+        containerClass,
+        frameClass: classnames({ hidden: !this.state.frameFullyLoaded }),
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,
         mountedCallback: this.wrappedComponentDidMount.bind(this),
@@ -371,11 +376,10 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         dummyElementStyle,
       };
 
-      const { token, secureFrameUrl, onTokenChange, ...scrubbedProps } = this.props;
+      const { token, secureFrameUrl, onTokenChange, onValidate, validator, ...scrubbedProps } = this.props;
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {
-        name: this.props.name,
         renderData,
       };
 

@@ -6,12 +6,16 @@ export function validate(validatorName: ValidatorName, value: string): boolean {
     case 'Email':
       return validator.isEmail(value);
     case 'SSN':
-      return validator.isISSN(value);
+      return isSSN(value);
     case 'EIN':
       // @ts-ignore
       return validator.isTaxID(value);
     case 'SSN_EIN':
       // @ts-ignore
-      return validator.isISSN(value) || validator.isTaxID(value);
+      return isSSN(value) || validator.isTaxID(value);
   }
+}
+
+function isSSN(value: string) {
+  return /^(?!000|666)[0-9]{3}([ -]?)(?!00)[0-9]{2}\1(?!0000)[0-9]{4}$/.test(value);
 }

@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import React, { Component } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
@@ -29,19 +28,19 @@ export default class Uploader extends Component<UploaderProps> {
         style={frameStyle}
         frameBorder={0}
         key={renderData.frameUrl}
+        className={renderData.frameClass}
       />
     );
   }
 
   render() {
     const { renderData, className, children, ...otherProps } = this.props;
-    const containerClass = classnames({
-      [`secure-uploader-container-${renderData.frameId} secure-uploader-container-${this.props.name}`]: true,
-      // Combine with the classname passed in props because styled-components passes some random classnames to attach our css
-      [className || '']: true,
-    });
+
     return (
-      <div className={containerClass} style={renderData.parentContainerStyle}>
+      <div
+        className={`${renderData.containerClass} ${this.props.className || ''}`}
+        style={renderData.parentContainerStyle}
+      >
         <input
           {...otherProps}
           type="file"

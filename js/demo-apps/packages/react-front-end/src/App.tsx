@@ -162,7 +162,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   emailValidated(isValid: boolean) {
-    console.log('EMAIL VALIDATED AS ', isValid);
+    console.log(isValid ? 'Email is valid' : 'Email is not valid');
   }
 
   renderFileDownloadComponents(fileTokenGrant: string | undefined) {
@@ -229,6 +229,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
             token={this.state.tokenGrants.bar}
             onChange={(e) => this.handleBarChange(e)}
             onBlur={(e) => console.log('blur2', e)}
+            className="test-class"
           />
           <input
             className="d-block"

@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import React, { Component } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
@@ -20,13 +19,11 @@ export default class Paragraph extends Component<ParagraphProps> {
     }
     const { width, ...frameStyle } = renderData.frameStyleInfo;
 
-    const frameContainerClass = classnames(renderData.frameContainerClasses);
-
     return (
       <iframe
         ref={renderData.frameRef}
         src={renderData.frameUrl}
-        className={frameContainerClass}
+        className={renderData.frameClass}
         style={frameStyle}
         frameBorder={0}
         key={renderData.frameUrl}
@@ -38,14 +35,11 @@ export default class Paragraph extends Component<ParagraphProps> {
     // Pull the renderData out so we don't weird stuff into our dummy element
     const { renderData, className, children, ...otherProps } = this.props;
 
-    const containerClass = classnames({
-      [`secure-paragraph-container-${renderData.frameId} secure-paragraph-container-${this.props.name}`]: true,
-      // Combine with the classname passed in props because styled-components passes some random classnames to attach our css
-      [className || '']: true,
-    });
-
     return (
-      <div style={renderData.parentContainerStyle} className={containerClass}>
+      <div
+        style={renderData.parentContainerStyle}
+        className={`${renderData.containerClass} ${this.props.className || ''}`}
+      >
         <p ref={renderData.dummyRef} style={renderData.dummyElementStyle} tabIndex={-1} {...otherProps}>
           &ensp;
         </p>
