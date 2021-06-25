@@ -58,6 +58,7 @@ export interface RenderData<C extends keyof ClassLookup> {
   frameStyleInfo: ReadElementStyle | null;
   containerClass: string;
   frameClass: string;
+  hiddenElementClass: string;
   frameRef: RefObject<HTMLIFrameElement>;
   dummyRef: RefObject<HTMLElementTagNameMap[TagLookup[C]]>;
   mountedCallback: () => void;

@@ -52,6 +52,7 @@ export default class Input extends Component<InputProps> {
         <input
           ref={renderData.dummyRef}
           style={{ ...renderData.dummyElementStyle, ...this.props.style }}
+          className={renderData.hiddenElementClass}
           tabIndex={-1}
           {...otherProps}
         />
