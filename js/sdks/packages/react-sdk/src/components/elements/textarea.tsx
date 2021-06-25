@@ -28,13 +28,11 @@ export default class TextArea extends Component<TextAreaProps> {
       height: height,
     };
 
-    const frameContainerClass = classnames(renderData.frameContainerClasses);
-
     return (
       <iframe
         ref={renderData.frameRef}
         src={renderData.frameUrl}
-        className={frameContainerClass}
+        className={renderData.frameClass}
         style={iframeStyle}
         frameBorder={0}
         key={renderData.frameUrl}

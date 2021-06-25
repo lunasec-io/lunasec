@@ -70,3 +70,7 @@ textarea {
 p {
   white-space: pre-wrap;
 }
+
+.invalid input {
+  color:red;
+}

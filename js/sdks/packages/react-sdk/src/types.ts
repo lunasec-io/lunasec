@@ -30,7 +30,7 @@ export type ComponentNames = keyof ClassLookup;
 // for whatever react element we are trying to render
 interface LunaSecWrapperProps<C extends keyof ClassLookup> {
   token?: C extends 'Uploader' ? never : string;
-  name: string;
+  name?: string;
   secureFrameUrl?: string;
   // special file picker types:
   filetokens?: C extends 'Uploader' ? string[] : never;
@@ -46,7 +46,6 @@ export type WrapperProps<C extends keyof ClassLookup> = LunaSecWrapperProps<C> &
 // As above, it is combined with the native react props for the given element
 export interface LunaSecWrappedComponentProps<C extends keyof ClassLookup> {
   renderData: RenderData<C>;
-  name: string;
 }
 
 export type WrappedComponentProps<C extends keyof ClassLookup> = LunaSecWrappedComponentProps<C> &
@@ -57,7 +56,8 @@ export interface RenderData<C extends keyof ClassLookup> {
   frameId: string;
   frameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
-  frameContainerClasses?: Record<string, boolean>;
+  containerClass: string;
+  frameClass: string;
   frameRef: RefObject<HTMLIFrameElement>;
   dummyRef: RefObject<HTMLElementTagNameMap[TagLookup[C]]>;
   mountedCallback: () => void;

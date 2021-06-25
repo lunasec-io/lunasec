@@ -45,7 +45,7 @@ export class SecureForm extends Component<SecureFormProps> {
           },
         }}
       >
-        <form {...this.props} onSubmit={(e) => this.onSubmit(e)}>
+        <form {...this.props} noValidate onSubmit={(e) => this.onSubmit(e)}>
           {this.props.children}
         </form>
       </SecureFormContext.Provider>
