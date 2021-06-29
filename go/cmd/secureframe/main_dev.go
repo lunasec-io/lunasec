@@ -3,12 +3,12 @@
 package main
 
 import (
-	"log"
+  "log"
 
-	"github.com/refinery-labs/loq/pkg/secureframe"
+  "github.com/refinery-labs/loq/pkg/secureframe"
 )
 
 func main() {
-	server := secureframe.NewDevServer()
-	log.Fatal(server.ListenAndServe())
+  server := secureframe.NewDevServer()
+  log.Fatal(server.ListenAndServe())
 }

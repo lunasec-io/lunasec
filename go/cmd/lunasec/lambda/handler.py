@@ -1,3 +1,2 @@
- 
 def main(event, context):
-    print("I'm running! hello")
+  print("I'm running! hello")

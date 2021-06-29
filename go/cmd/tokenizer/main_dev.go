@@ -3,12 +3,12 @@
 package main
 
 import (
-	"log"
+  "log"
 
-	"github.com/refinery-labs/loq/pkg/tokenizer"
+  "github.com/refinery-labs/loq/pkg/tokenizer"
 )
 
 func main() {
-	server := tokenizer.NewLocalDevServer()
-	log.Fatal(server.ListenAndServe())
+  server := tokenizer.NewLocalDevServer()
+  log.Fatal(server.ListenAndServe())
 }
