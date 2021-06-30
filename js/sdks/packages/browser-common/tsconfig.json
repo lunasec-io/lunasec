@@ -7,7 +7,7 @@
     "esModuleInterop": true,
 
     "lib": ["es2017", "dom"],
-    "types": ["node"]
+    "types": ["node", "@types/jest"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "compileOnSave": true

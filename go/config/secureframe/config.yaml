@@ -15,7 +15,8 @@ aws_gateway:
     keys: ${KEYS_KV_TABLE}
     sessions: ${SESSIONS_KV_TABLE}
 session_controller:
-  auth_callback_url: ${AUTH_CALLBACK_URL}
+  auth_callback_host: ${AUTH_CALLBACK_HOST}
+  auth_callback_path: ${AUTH_CALLBACK_PATH:/secure-frame}
 secure_frame_controller:
   views_path: ${SECURE_FRAME_VIEWS_PATH}
   cdn_config: ${SECURE_FRAME_CDN_CONFIG}
