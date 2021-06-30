@@ -216,6 +216,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         case 'NotifyOnBlur':
           this.blur();
           break;
+        case 'NotifyOnSubmit':
+          this.context.submit();
+          break;
       }
     }
 
