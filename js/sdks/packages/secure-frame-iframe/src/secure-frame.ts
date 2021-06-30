@@ -18,12 +18,13 @@ export class SecureFrame<E extends keyof ClassLookup> {
   readonly frameNonce: string;
   readonly origin: string;
   readonly secureElement: HTMLElementTagNameMap[TagLookup[E]];
+  readonly form: HTMLFormElement;
   private token?: string;
 
   constructor(componentName: E, loadingText: Element) {
     this.componentName = componentName;
     this.loadingText = loadingText;
-    this.secureElement = this.insertSecureElement(componentName);
+    [this.secureElement, this.form] = this.insertSecureElement(componentName);
     this.origin = this.getURLSearchParam('origin');
     this.frameNonce = this.getURLSearchParam('n');
     listenForRPCMessages(this.origin, (attrs) => {
@@ -36,12 +37,15 @@ export class SecureFrame<E extends keyof ClassLookup> {
     });
   }
 
-  insertSecureElement(elementName: E) {
+  insertSecureElement(elementName: E): [HTMLElementTagNameMap[TagLookup[E]], HTMLFormElement] {
     const body = document.getElementsByTagName('BODY')[0];
     const secureElement = document.createElement(elementName) as HTMLElementTagNameMap[TagLookup[E]];
     secureElement.className = 'secure-input d-none';
-    body.appendChild(secureElement);
-    return secureElement;
+
+    const form = document.createElement('form');
+    form.appendChild(secureElement);
+    body.appendChild(form);
+    return [secureElement, form];
   }
 
   getURLSearchParam(paramName: string) {
@@ -76,6 +80,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
 
       if (attrs.component === 'Input' || attrs.component === 'TextArea') {
         this.attachOnBlurNotifier();
+        this.attachOnSubmitNotifier();
       }
     }
 
@@ -134,6 +139,13 @@ export class SecureFrame<E extends keyof ClassLookup> {
   attachOnBlurNotifier() {
     this.secureElement.addEventListener('blur', () => {
       sendMessageToParentFrame(this.origin, { command: 'NotifyOnBlur', frameNonce: this.frameNonce, data: {} });
+    });
+  }
+
+  attachOnSubmitNotifier() {
+    this.form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      sendMessageToParentFrame(this.origin, { command: 'NotifyOnSubmit', frameNonce: this.frameNonce, data: {} });
     });
   }
 }

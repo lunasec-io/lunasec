@@ -122,4 +122,9 @@ export interface NotifyOnFullyLoaded extends BaseFrameNotification {
   data: Record<any, never>;
 }
 
-export type FrameNotification = NotifyOnBlur | NotifyOnStart | NotifyOnToken | NotifyOnFullyLoaded;
+export interface NotifyOnSubmit extends BaseFrameNotification {
+  command: 'NotifyOnSubmit';
+  data: Record<any, never>;
+}
+
+export type FrameNotification = NotifyOnBlur | NotifyOnStart | NotifyOnToken | NotifyOnFullyLoaded | NotifyOnSubmit;

@@ -10,10 +10,12 @@ export interface SecureFormProps extends React.ComponentPropsWithoutRef<'form'> 
 export class SecureForm extends Component<SecureFormProps> {
   declare readonly context: React.ContextType<typeof SecureFormContext>;
   private tokenCommitCallbacks: Record<string, () => Promise<void>>;
+  private form: React.RefObject<HTMLFormElement>;
 
   constructor(props: SecureFormProps) {
     super(props);
     this.tokenCommitCallbacks = {};
+    this.form = React.createRef();
   }
 
   async onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -43,9 +45,14 @@ export class SecureForm extends Component<SecureFormProps> {
           removeTokenCommitCallback: (frameId: string) => {
             delete this.tokenCommitCallbacks[frameId];
           },
+          submit: () => {
+            if (this.form.current) {
+              this.form.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            }
+          },
         }}
       >
-        <form {...this.props} onSubmit={(e) => this.onSubmit(e)}>
+        <form {...this.props} ref={this.form} onSubmit={(e) => this.onSubmit(e)}>
           {this.props.children}
         </form>
       </SecureFormContext.Provider>
