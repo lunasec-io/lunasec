@@ -147,9 +147,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
           throw new Error('Unable to locate dummyInputStyleRef when generating style for input');
         }
         return getStyleInfo(this.dummyInputStyleRef.current);
-      } else {
-        return getStyleInfo(this.dummyRef.current);
       }
+      // if its not an input just use the the main dummy element
+      return getStyleInfo(this.dummyRef.current);
     }
 
     generateUrl() {
