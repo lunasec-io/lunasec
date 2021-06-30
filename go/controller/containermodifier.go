@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/google/go-containerregistry/pkg/authn"
-	"github.com/google/go-containerregistry/pkg/crane"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/tarball"
 	"github.com/refinery-labs/loq/gateway"
@@ -16,32 +14,6 @@ import (
 	"github.com/refinery-labs/loq/service"
 	"github.com/refinery-labs/loq/util"
 )
-
-func LoadPublicCraneOptions(ecrGateway gateway.AwsECRGateway) (options crane.Option, err error) {
-	cfg, err := ecrGateway.GetPublicCredentials()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	authenticator := authn.FromConfig(cfg)
-
-	options = crane.WithAuth(authenticator)
-	return
-}
-
-func LoadCraneOptions(ecrGateway gateway.AwsECRGateway) (options crane.Option, err error) {
-	cfg, err := ecrGateway.GetCredentials()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	authenticator := authn.FromConfig(cfg)
-
-	options = crane.WithAuth(authenticator)
-	return
-}
 
 type ContainerModifierController interface {
 	HandleLambdaInvoke(invokeEvent event.ContainerModifyEvent) (resp event.ContainerModifyResponse, err error)
@@ -72,16 +44,18 @@ func getContainerLayerFromS3(s3 gateway.AwsS3Gateway, key string) (layer v1.Laye
 }
 
 func (c *containerModifierController) getContainerModifierForLambdaInvoke(invokeEvent event.ContainerModifyEvent) (modifier service.DockerContainerModifier, err error) {
-	options, err := LoadCraneOptions(c.ecrGateway)
+	options, err := gateway.LoadCraneOptions(c.ecrGateway)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
+	dockerManager := service.NewDockerManager(options)
+
 	modifier = service.NewDockerContainerModifier(
 		invokeEvent.BaseImage,
 		invokeEvent.ShouldModifyEntrypoint(),
-		options,
+		dockerManager,
 	)
 	return
 }
@@ -187,7 +161,7 @@ func (c *containerModifierController) HandleLambdaInvoke(invokeEvent event.Conta
 		return
 	}
 
-	modifier.PushImage(newImg, newTag)
+	modifier.PushImageToRemote(newImg, newTag)
 
 	resp = event.ContainerModifyResponse{
 		Tag:          containerHash.String(),

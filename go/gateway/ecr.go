@@ -5,6 +5,7 @@ package gateway
 import (
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"log"
 	"strings"
 
@@ -24,14 +25,13 @@ type AwsECRGateway interface {
 	GetCredentials() (authConfig authn.AuthConfig, err error)
 	GetPublicCredentials() (authConfig authn.AuthConfig, err error)
 	CreateRepository(repoName string) error
+	GetLatestImageTag(repoName string) (tag string, err error)
 }
 
-func NewAwsECRGatewayWithoutConfig(region string) AwsECRGateway {
-	sess, err := session.NewSession(
-		&aws.Config{
-			Region: aws.String(region),
-		},
-	)
+func NewAwsECRGatewayWithoutConfig() AwsECRGateway {
+	sess, err := session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	})
 
 	if err != nil {
 		util.Panicf("Failed to instantiate ecr session %s", err)
@@ -100,6 +100,34 @@ func (s *awsECRGateway) getAuthConfig(authToken string) (authConfig authn.AuthCo
 	authConfig = authn.AuthConfig{
 		Username: authParts[0],
 		Password: authParts[1],
+	}
+	return
+}
+
+func (s *awsECRGateway) GetLatestImageTag(repoName string) (tag string, err error) {
+	ecrClient := ecr.New(s.session)
+
+	listImagesInput := &ecr.ListImagesInput{
+		Filter: &ecr.ListImagesFilter{
+			TagStatus: aws.String(ecr.TagStatusTagged),
+		},
+		RepositoryName: aws.String(repoName),
+	}
+	listImagesOutput, err := ecrClient.ListImages(listImagesInput)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	if len(listImagesOutput.ImageIds) == 0 {
+		err = fmt.Errorf("unable to find images for the provided repository: %s", repoName)
+		return
+	}
+
+	for _, imageId := range listImagesOutput.ImageIds {
+		if *imageId.ImageTag == "latest" {
+			tag = *imageId.ImageDigest
+		}
 	}
 	return
 }
