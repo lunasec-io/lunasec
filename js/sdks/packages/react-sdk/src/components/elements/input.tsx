@@ -42,7 +42,7 @@ export default class Input extends Component<InputProps> {
 
   render() {
     // Pull the renderData out so we don't weird stuff into our dummy element
-    const { renderData, children, className, ...otherProps } = this.props;
+    const { renderData, children, className, name, ...otherProps } = this.props;
 
     return (
       <div
@@ -51,6 +51,15 @@ export default class Input extends Component<InputProps> {
       >
         <input
           {...otherProps}
+          ref={renderData.dummyInputStyleRef}
+          style={{ ...renderData.dummyElementStyle, ...this.props.style }}
+          tabIndex={-1}
+          className={`${renderData.hiddenElementClass} ${this.props.className || ''}`}
+        />
+        <input
+          {...otherProps}
+          name={name} // only the element we want to submit has a name, otherwise validations run
+          type="text"
           ref={renderData.dummyRef}
           style={{ ...renderData.dummyElementStyle, ...this.props.style }}
           tabIndex={-1}
