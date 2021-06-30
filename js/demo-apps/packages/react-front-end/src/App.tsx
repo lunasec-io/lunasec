@@ -223,6 +223,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
             token={this.state.tokenGrants.bar}
             onChange={(e) => this.handleBarChange(e)}
             onBlur={(e) => console.log('blur2', e)}
+            placeholder="Enter Your Password"
           />
           <input
             className="d-block"

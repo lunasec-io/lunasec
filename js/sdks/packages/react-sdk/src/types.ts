@@ -35,6 +35,7 @@ interface LunaSecWrapperProps<C extends keyof ClassLookup> {
   // special file picker types:
   filetokens?: C extends 'Uploader' ? string[] : undefined;
   onTokenChange?: C extends 'Uploader' ? (token: Array<string>) => void : undefined;
+  placeholder?: C extends 'Input' ? string : undefined;
 }
 
 export type WrapperProps<C extends keyof ClassLookup> = LunaSecWrapperProps<C> &

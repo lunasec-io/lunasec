@@ -93,7 +93,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     componentDidMount() {
       this.abortController = new AbortController();
       addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
-      startSessionManagement().then((abort) => {
+      void startSessionManagement().then((abort) => {
         this.setState({ sessionAuthenticated: true });
         this.stopSessionManagement = abort;
       });
@@ -180,6 +180,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       if (this.props.filetokens) {
         attrs.fileTokens = this.props.filetokens;
       }
+      if (attrs.component === 'Input' && this.props.placeholder) {
+        attrs.placeholder = this.props.placeholder;
+      }
 
       return attrs;
     }
@@ -212,6 +215,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
           break;
         case 'NotifyOnBlur':
           this.blur();
+          break;
+        case 'NotifyOnSubmit':
+          this.context.submit();
           break;
       }
     }

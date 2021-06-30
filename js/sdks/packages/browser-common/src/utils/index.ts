@@ -3,4 +3,4 @@ export * from './element-event-triggers';
 export * from './json';
 export * from './random';
 export * from './to-camel-case';
-export * from './authentication';
+export * from '../auth/authentication';
