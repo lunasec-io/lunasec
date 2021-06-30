@@ -55,6 +55,10 @@ input[type=password] {
   border-style:dashed;
 }
 
+input[type=email] {
+  border-color:purple;
+}
+
 .d-block {
   display: block;
 }
