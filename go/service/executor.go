@@ -2,7 +2,6 @@ package service
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -35,52 +34,48 @@ type ExecutorResult struct {
 	ExitCode int
 }
 
-func NewExecutor(
+func NewExecutorWithoutStreaming(
 	command string,
 	args []string,
 	env []string,
 	cwd string,
 	stdin io.Reader,
 ) Executor {
-	return &executor{
-		Command:      command,
-		Args:         args,
-		Env:          env,
-		Cwd:          cwd,
-		Stdin:        stdin,
+	return NewExecutor(
+		command, args, env, cwd, stdin, false,
+	)
+}
 
-		Shell:        false,
-		StreamStdio:  false,
+func NewExecutor(
+	command string,
+	args []string,
+	env []string,
+	cwd string,
+	stdin io.Reader,
+	stream bool,
+) Executor {
+	return &executor{
+		Command: command,
+		Args:    args,
+		Env:     env,
+		Cwd:     cwd,
+		Stdin:   stdin,
+
+		Shell:       false,
+		StreamStdio: stream,
 	}
 }
 
 func (e *executor) Execute() (ExecutorResult, error) {
 	var cmd *exec.Cmd
 
-	if e.Shell {
-		var args []string
-		if len(e.Args) == 0 {
-			startArgs := strings.Split(e.Command, " ")
-			script := strings.Join(startArgs, " ")
-			args = append([]string{"-c"}, fmt.Sprintf("%s", script))
-
-		} else {
-			script := strings.Join(e.Args, " ")
-			args = append([]string{"-c"}, fmt.Sprintf("%s %s", e.Command, script))
-
-		}
-
-		cmd = exec.Command("/bin/bash", args...)
+	if strings.Index(e.Command, " ") > 0 {
+		parts := strings.Split(e.Command, " ")
+		command := parts[0]
+		args := parts[1:]
+		cmd = exec.Command(command, args...)
 	} else {
-		if strings.Index(e.Command, " ") > 0 {
-			parts := strings.Split(e.Command, " ")
-			command := parts[0]
-			args := parts[1:]
-			cmd = exec.Command(command, args...)
-
-		} else {
-			cmd = exec.Command(e.Command, e.Args...)
-		}
+		cmd = exec.Command(e.Command, e.Args...)
 	}
 
 	cmd.Dir = e.Cwd
@@ -138,8 +133,8 @@ func (e *executor) Execute() (ExecutorResult, error) {
 	}
 
 	return ExecutorResult{
-		Stdout:   string(stdoutBuff.Bytes()),
-		Stderr:   string(stderrBuff.Bytes()),
+		Stdout:   stdoutBuff.String(),
+		Stderr:   stderrBuff.String(),
 		ExitCode: exitCode,
 	}, nil
 }

@@ -147,7 +147,7 @@ func (r *FunctionRuntimeInvoker) getFunctionExecutor(funcConfig model.RefineryFu
 		zap.ByteString("functionInput", functionInput),
 	)
 
-	return service.NewExecutor(
+	return service.NewExecutorWithoutStreaming(
 		funcConfig.Command,
 		args,
 		envVars,

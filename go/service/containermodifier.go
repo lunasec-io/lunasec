@@ -5,37 +5,34 @@ import (
 	"strings"
 
 	"github.com/google/go-containerregistry/pkg/crane"
-	"github.com/google/go-containerregistry/pkg/logs"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
-	"github.com/google/go-containerregistry/pkg/v1/empty"
 	"github.com/google/go-containerregistry/pkg/v1/mutate"
 )
 
 type DockerContainerModifier interface {
 	LoadImageFromFile() (base v1.Image, err error)
 	LoadImageFromRemote() (base v1.Image, err error)
+	PushImageToRemote(img v1.Image, tag string) (err error)
 	AppendLayersToBaseImage(base v1.Image, appendLayers []v1.Layer) (img v1.Image, err error)
 	SaveImageToFile(img v1.Image, newTag, filename string) (err error)
-	PullImage(imageURL string) (base v1.Image, err error)
-	PushImage(img v1.Image, newTag string) (err error)
 	GetImageDeploymentID(img v1.Image) (deploymentID string, err error)
 }
 
 type dockerContainerModifier struct {
 	baseRef          string
 	modifyEntrypoint bool
-	options          []crane.Option
+	dockerManager DockerManager
 }
 
 func NewDockerContainerModifier(
 	baseRef string,
 	modifyEntrypoint bool,
-	options ...crane.Option,
+	dockerManager DockerManager,
 ) DockerContainerModifier {
 	return &dockerContainerModifier{
 		baseRef:          baseRef,
 		modifyEntrypoint: modifyEntrypoint,
-		options:          options,
+		dockerManager: dockerManager,
 	}
 }
 
@@ -44,7 +41,11 @@ func (d *dockerContainerModifier) LoadImageFromFile() (base v1.Image, err error)
 }
 
 func (d *dockerContainerModifier) LoadImageFromRemote() (base v1.Image, err error) {
-	return d.PullImage(d.baseRef)
+	return d.dockerManager.PullImage(d.baseRef)
+}
+
+func (d *dockerContainerModifier) PushImageToRemote(img v1.Image, tag string) (err error) {
+	return d.dockerManager.PushImage(img, tag)
 }
 
 func (d *dockerContainerModifier) AppendLayersToBaseImage(base v1.Image, appendLayers []v1.Layer) (img v1.Image, err error) {
@@ -84,27 +85,6 @@ func (d *dockerContainerModifier) GetImageDeploymentID(img v1.Image) (deployment
 
 func (d *dockerContainerModifier) SaveImageToFile(img v1.Image, newTag, filename string) (err error) {
 	return crane.Save(img, newTag, filename)
-}
-
-func (d *dockerContainerModifier) PushImage(img v1.Image, newTag string) (err error) {
-	return crane.Push(img, newTag, d.options...)
-}
-
-func (d *dockerContainerModifier) PullImage(imageURL string) (base v1.Image, err error) {
-	if imageURL == "" {
-		logs.Warn.Printf("base unspecified, using empty image")
-		base = empty.Image
-		return
-	}
-
-	log.Printf("pulling %s", imageURL)
-	base, err = crane.Pull(imageURL, d.options...)
-	// If we succeeded, then return...
-	if err == nil {
-		return
-	}
-	// ...otherwise try again without auth
-	return crane.Pull(imageURL)
 }
 
 func getDeploymentIDFromConfig(configFile *v1.ConfigFile) (deploymentID string) {
