@@ -15,13 +15,13 @@ aws_gateway:
     keys: ${KEYS_KV_TABLE}
     sessions: ${SESSIONS_KV_TABLE}
 session_controller:
-  auth_callback_host: ${AUTH_CALLBACK_HOST}
+  auth_callback_host: ${CUSTOMER_BACK_END}
   auth_callback_path: ${AUTH_CALLBACK_PATH:/secure-frame}
 secure_frame_controller:
   views_path: ${SECURE_FRAME_VIEWS_PATH}
   cdn_config: ${SECURE_FRAME_CDN_CONFIG}
 tokenizer_controller:
-  customer_token_secret: ${TOKENIZER_CLIENT_SECRET}
+  customer_token_secret: TODO
 customer_jwt_verifier:
   # TODO (cthompson) this public key is specifically the customer's public key and the configuration should reflect this
   public_key: ${CUSTOMER_PUBLIC_KEY}

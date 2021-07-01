@@ -14,6 +14,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /code/build/secureframe_lambda /secureframe
 COPY --from=builder /code/views/secureframe /views
 COPY --from=builder /code/config/secureframe /config/secureframe
+COPY --from=builder /tmp /tmp
 
 WORKDIR /
 ENTRYPOINT ["/secureframe"]
