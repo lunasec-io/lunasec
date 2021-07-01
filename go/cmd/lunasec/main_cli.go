@@ -16,17 +16,27 @@ func main() {
 
 	app := &cli.App{
 		Name:  "lunasec",
-		Flags: []cli.Flag{},
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "config",
+				Required: false,
+				Usage: "Config file for building secure components.",
+			},
+			&cli.StringFlag{
+				Name:  "dir",
+				Required: false,
+				Usage: "Build directory for built secure components.",
+			},
+		},
 		Commands: []cli.Command{
 			{
 				Name:    "build",
 				Aliases: []string{"b"},
 				Usage:   "Build secure Lunasec components",
 				Flags: []cli.Flag{
-					&cli.StringFlag{
-						Name:  "dir",
-						Required: false,
-						Usage: "Build directory for built secure components.",
+					&cli.BoolFlag{
+						Name:  "skip-mirroring",
+						Usage: "Skip docker image mirroring.",
 					},
 				},
 				Action: lunasec.BuildCommand,
@@ -38,17 +48,7 @@ func main() {
 				Flags: []cli.Flag{
 					&cli.BoolFlag{
 						Name:  "build",
-						Required: false,
-						Usage: "Build secure components before deploying.",
-					},
-					&cli.StringFlag{
-						Name:  "dir",
-						Required: false,
-						Usage: "Build directory for built secure components.",
-					},
-					&cli.BoolFlag{
-						Name:  "skip-mirroring",
-						Usage: "Skip docker image mirroring",
+						Usage: "Build before deploying.",
 					},
 				},
 				Action: lunasec.DeployCommand,

@@ -1,8 +1,10 @@
 package lunasec
 
 import (
+	"errors"
 	"github.com/refinery-labs/loq/service"
 	"github.com/urfave/cli"
+	"go.uber.org/config"
 	"log"
 )
 
@@ -14,8 +16,26 @@ func cliOptionsStruct(c *cli.Context) CliOptions {
 }
 
 func BuildCommand(c *cli.Context) (err error) {
-	buildDir := c.String("dir")
-	lunasecDeployer := service.NewLunasecDeployer(buildDir, true)
+	buildDir := c.GlobalString("dir")
+	configFile := c.GlobalString("config")
+
+	if configFile == "" {
+		err = errors.New("required parameter 'config' not provided")
+		log.Println(err)
+		return
+	}
+
+	provider, err := config.NewYAML(config.File(configFile))
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	lunasecDeployer, err := service.NewLunasecDeployer(provider, buildDir, true)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 	return lunasecDeployer.Build()
 }
 
@@ -31,7 +51,7 @@ func DeployCommand(c *cli.Context) (err error) {
 		}
 	}
 
-	buildDir := c.String("dir")
-	lunasecDeployer := service.NewLunasecDeployer(buildDir, skipMirroring)
+	buildDir := c.GlobalString("dir")
+	lunasecDeployer, _ := service.NewLunasecDeployer(nil, buildDir, skipMirroring)
 	return lunasecDeployer.Deploy()
 }
