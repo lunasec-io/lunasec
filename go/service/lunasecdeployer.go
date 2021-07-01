@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/refinery-labs/loq/util"
 	"log"
+	"os"
 
 	"github.com/aws/aws-cdk-go/awscdk"
 	"github.com/aws/aws-cdk-go/awscdk/awsapigateway"
@@ -28,9 +30,14 @@ const (
 	secureFrameBackendRepoName SecureFrameService = "secure-frame-backend"
 )
 
+const (
+	lunasecBuildDir = "build"
+)
+
 type ServiceToImageMap map[SecureFrameService]string
 
 type LunasecDeployer interface {
+	Build() (err error)
 	Deploy() (err error)
 }
 
@@ -39,11 +46,16 @@ type LunasecStackProps struct {
 }
 
 type lunasecDeployer struct {
+	buildDir string
 	skipImageMirroring bool
 }
 
-func NewLunasecDeployer(skipImageMirroring bool) LunasecDeployer {
+func NewLunasecDeployer(buildDir string, skipImageMirroring bool) LunasecDeployer {
+	if buildDir == "" {
+		buildDir = lunasecBuildDir
+	}
 	return &lunasecDeployer{
+		buildDir: buildDir,
 		skipImageMirroring: skipImageMirroring,
 	}
 }
@@ -96,16 +108,18 @@ func (l *lunasecDeployer) mirrorRepos(env *awscdk.Environment) (lookup ServiceTo
 	return
 }
 
-func (l *lunasecDeployer) Deploy() (err error) {
+func (l *lunasecDeployer) Build() (err error) {
 	app := awscdk.NewApp(nil)
 
 	deploymentEnv, err := getDeploymentEnv()
 	if err != nil {
+		log.Println(err)
 		return
 	}
 
 	serviceLookup, err := l.mirrorRepos(deploymentEnv)
 	if err != nil {
+		log.Println(err)
 		return
 	}
 
@@ -117,10 +131,26 @@ func (l *lunasecDeployer) Deploy() (err error) {
 
 	out := app.Synth(&awscdk.StageSynthesisOptions{})
 
-	// TODO (cthompson) we probably want to require approval for this, but for now this is ok
-	args := []string{"deploy", "--require-approval", "never", "-a", *out.Directory()}
+	err = util.CopyDirectory(*out.Directory(), l.buildDir)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	log.Printf("successfully built secure Lunasec components to directory: %s", l.buildDir)
+	return
+}
 
-	cdkExecutor := NewExecutor("cdk", args, []string{}, *out.Directory(), nil, true)
+func (l *lunasecDeployer) Deploy() (err error) {
+	// TODO (cthompson) we probably want to require approval for this, but for now this is ok
+	args := []string{"deploy", "--require-approval", "never", "-a", l.buildDir}
+
+	workDir, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	cdkExecutor := NewExecutor("cdk", args, []string{}, workDir, nil, true)
 	_, err = cdkExecutor.Execute()
 	if err != nil {
 		log.Println(err)
