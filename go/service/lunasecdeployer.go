@@ -82,6 +82,7 @@ func NewLunasecDeployer(provider config.Provider, buildDir string, skipImageMirr
 	deployer = &lunasecDeployer{
 		buildDir: buildDir,
 		skipImageMirroring: skipImageMirroring,
+		buildConfig: buildConfig,
 	}
 	return
 }
@@ -143,6 +144,7 @@ func (l *lunasecDeployer) Build() (err error) {
 		return
 	}
 
+	// TODO (cthompson) check the environment, we if we are running this in a dev environment, we could build the services with a CDK component
 	serviceLookup, err := l.mirrorRepos(deploymentEnv)
 	if err != nil {
 		log.Println(err)
@@ -224,15 +226,6 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 		WebsiteErrorDocument: jsii.String("index.html"),
 	})
 
-	bucketSource := awss3deployment.Source_Asset(jsii.String(l.buildConfig.FrontEndAssetsFolder), nil)
-
-	_ = awss3deployment.NewBucketDeployment(stack, jsii.String("secure-frame-bucket-deployment"), &awss3deployment.BucketDeploymentProps{
-		Sources: &[]awss3deployment.ISource{
-			bucketSource,
-		},
-		DestinationBucket: secureFrameBucket,
-	})
-
 	secureFrameCloudfront := awscloudfront.NewCfnDistribution(stack, jsii.String("secure-frame-cloudfront"), &awscloudfront.CfnDistributionProps{
 		DistributionConfig: awscloudfront.CfnDistribution_DistributionConfigProperty{
 			Origins: []awscloudfront.CfnDistribution_OriginProperty{
@@ -275,6 +268,15 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 				CloudFrontDefaultCertificate: jsii.Bool(true),
 			},
 		},
+	})
+
+	bucketSource := awss3deployment.Source_Asset(jsii.String(l.buildConfig.FrontEndAssetsFolder), nil)
+
+	_ = awss3deployment.NewBucketDeployment(stack, jsii.String("secure-frame-bucket-deployment"), &awss3deployment.BucketDeploymentProps{
+		Sources: &[]awss3deployment.ISource{
+			bucketSource,
+		},
+		DestinationBucket: secureFrameBucket,
 	})
 
 	metadataTable := awsdynamodb.NewTable(stack, jsii.String("metadata-table"), &awsdynamodb.TableProps{
