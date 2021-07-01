@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/aws/aws-cdk-go/awscdk/awss3deployment"
+	"github.com/refinery-labs/loq/model"
 	"github.com/refinery-labs/loq/util"
+	"go.uber.org/config"
 	"log"
 	"os"
 
@@ -45,19 +48,42 @@ type LunasecStackProps struct {
 	awscdk.StackProps
 }
 
+type LunasecBuildConfig struct {
+	CustomerFrontEnd string `yaml:"customer_front_end"`
+	AuthCallbackURL string `yaml:"auth_callback_url"`
+	CDNConfig model.CDNConfig `yaml:"cdn_config"`
+	CustomerPublicKey string `yaml:"customer_public_key"`
+	FrontEndAssetsFolder string `yaml:"front_end_assets_folder"`
+}
+
 type lunasecDeployer struct {
 	buildDir string
 	skipImageMirroring bool
+	buildConfig LunasecBuildConfig
 }
 
-func NewLunasecDeployer(buildDir string, skipImageMirroring bool) LunasecDeployer {
+func NewLunasecDeployer(provider config.Provider, buildDir string, skipImageMirroring bool) (deployer LunasecDeployer, err error) {
+	var (
+		buildConfig LunasecBuildConfig
+	)
+
 	if buildDir == "" {
 		buildDir = lunasecBuildDir
 	}
-	return &lunasecDeployer{
+
+	if provider != nil {
+		err = provider.Get("lunasec").Populate(&buildConfig)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
+
+	deployer = &lunasecDeployer{
 		buildDir: buildDir,
 		skipImageMirroring: skipImageMirroring,
 	}
+	return
 }
 
 func getDeploymentEnv() (env *awscdk.Environment, err error) {
@@ -141,16 +167,32 @@ func (l *lunasecDeployer) Build() (err error) {
 }
 
 func (l *lunasecDeployer) Deploy() (err error) {
-	// TODO (cthompson) we probably want to require approval for this, but for now this is ok
-	args := []string{"deploy", "--require-approval", "never", "-a", l.buildDir}
-
 	workDir, err := os.Getwd()
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
+	deploymentEnv, err := getDeploymentEnv()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	awsURI := fmt.Sprintf("aws://%s/%s", *deploymentEnv.Account, *deploymentEnv.Region)
+
+	args := []string{"bootstrap", awsURI}
 	cdkExecutor := NewExecutor("cdk", args, []string{}, workDir, nil, true)
+	_, err = cdkExecutor.Execute()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	// TODO (cthompson) we probably want to require approval for this, but for now this is ok
+	args = []string{"deploy", "--require-approval", "never", "-a", l.buildDir}
+
+	cdkExecutor = NewExecutor("cdk", args, []string{}, workDir, nil, true)
 	_, err = cdkExecutor.Execute()
 	if err != nil {
 		log.Println(err)
@@ -180,6 +222,15 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 		AccessControl:        awss3.BucketAccessControl_PUBLIC_READ_WRITE,
 		WebsiteIndexDocument: jsii.String("index.html"),
 		WebsiteErrorDocument: jsii.String("index.html"),
+	})
+
+	bucketSource := awss3deployment.Source_Asset(jsii.String(l.buildConfig.FrontEndAssetsFolder), nil)
+
+	_ = awss3deployment.NewBucketDeployment(stack, jsii.String("secure-frame-bucket-deployment"), &awss3deployment.BucketDeploymentProps{
+		Sources: &[]awss3deployment.ISource{
+			bucketSource,
+		},
+		DestinationBucket: secureFrameBucket,
 	})
 
 	secureFrameCloudfront := awscloudfront.NewCfnDistribution(stack, jsii.String("secure-frame-cloudfront"), &awscloudfront.CfnDistributionProps{
@@ -250,10 +301,11 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 	})
 
 	// TODO (cthompson) we should read this from a configuration file
-	cdnConfig, err := json.Marshal(map[string]string{
-		"host":        *secureFrameCloudfront.AttrDomainName(),
-		"main_script": "main.dc2fde6210856cfb0d6c.js",
-		"main_style":  "main.css",
+	cdnConfig, err := json.Marshal(model.CDNConfig{
+		Protocol: "https",
+		Host:        *secureFrameCloudfront.AttrDomainName(),
+		MainScript: l.buildConfig.CDNConfig.MainScript,
+		MainStyle:  l.buildConfig.CDNConfig.MainStyle,
 	})
 	if err != nil {
 		panic(err)
@@ -267,14 +319,13 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 		}),
 		Environment: &map[string]*string{
 			"SECURE_FRAME_FRONT_END":     secureFrameCloudfront.AttrDomainName(),
-			"CUSTOMER_FRONT_END":         jsii.String("http://localhost:3000"),
+			"CUSTOMER_FRONT_END":         jsii.String(l.buildConfig.CustomerFrontEnd),
 			"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
-			"AUTH_CALLBACK_URL":          jsii.String("http://localhost:3001"),
+			"AUTH_CALLBACK_URL":          jsii.String(l.buildConfig.AuthCallbackURL),
 			"SECURE_FRAME_CDN_CONFIG":    jsii.String(string(cdnConfig)),
 			// TODO (cthompson) does this value provide us any security?
 			"TOKENIZER_CLIENT_SECRET": jsii.String("TODO"),
-			// TODO (cthompson) this value will be given to us by our customer
-			"CUSTOMER_PUBLIC_KEY": jsii.String("LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUFsbjFtVm1vSVJqREdRNHBWY2NzQgo1eUozREZJdFVlOXpMRlU0bmFxc2ZGWUp5d0t5QXNINDh3VUhrQlgwWlJ1cm5FRW9tdHhtajNGOUIrZForVUxGCmUzSm5GcldEak43WE9GeHluM0pmWGp3VmZFZkEyRnhZTEx4Z3daeGZGRnZjV0NoMmpvZEFsUE82NkxCdGVTYkEKcGNsdlNucDc0WkhDU0VyOERGQ3Y3TFU1MGQwb0greGhyTjFoNllMdkxHTGJkRkZacHZ3MWRyQmFWN0tOdk9SOAp0NHFNYmNUZERqNWZXUEJtS1o1YVk0ZTNwS1g4OVNCYzhDdFlmQmNmU003dTRreGRHSXQrbmthMjlTeUtTWUJ4CldMYzRiRk1LT3dXancwZ2UvTGJud3RGRWxRK1J5VG83QVNqK29OSzNDUk9STkFheFkrT3o4cUwwMGN1d3VvM2EKUFFJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0t"),
+			"CUSTOMER_PUBLIC_KEY": jsii.String(l.buildConfig.CustomerPublicKey),
 			"METADATA_KV_TABLE":   metadataTable.TableName(),
 			"KEYS_KV_TABLE":       keysTable.TableName(),
 			"SESSIONS_KV_TABLE":   sessionsTable.TableName(),

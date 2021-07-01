@@ -3,9 +3,6 @@ package gateway
 import (
 	"crypto/md5"
 	"encoding/base64"
-	"io/ioutil"
-	"log"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -13,6 +10,8 @@ import (
 	"github.com/refinery-labs/loq/util"
 	"go.uber.org/config"
 	"go.uber.org/zap"
+	"io/ioutil"
+	"log"
 )
 
 const s3EncryptionAlgo = "AES256"
