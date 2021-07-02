@@ -16,14 +16,7 @@ import classnames from 'classnames';
 import React, { Component, CSSProperties, RefObject } from 'react';
 import styled from 'styled-components';
 
-import {
-  ClassLookup,
-  LunaSecWrappedComponentProps,
-  RenderData,
-  TagLookup,
-  WrappedComponentProps,
-  WrapperProps,
-} from '../types';
+import { ClassLookup, LunaSecWrappedComponentProps, RenderData, TagLookup, WrapperProps } from '../types';
 import setNativeValue from '../utils/set-native-value';
 
 import { SecureFormContext } from './SecureFormContext';
@@ -169,15 +162,11 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
 
     validationHandler(isValid: boolean) {
-      const props = this.props as WrapperProps<W>;
-
-      if ('onValidate' in this.props) {
-        console.log(this.props);
-        this.setState({ isValid: isValid });
-        props.onValidate(isValid);
-      } else {
+      if (!this.props.onValidate) {
         throw new Error('Got validation message from iframe for component without an onValidation handler');
       }
+      this.setState({ isValid: isValid });
+      this.props.onValidate(isValid);
     }
 
     // Generate some attributes for sending to the iframe via RPC.
@@ -247,7 +236,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
           void this.sendIFrameAttributes();
           break;
         case 'NotifyOnToken':
-          if ('onTokenChange' in this.props && 'token' in notification.data) {
+          if (this.props.onTokenChange && 'token' in notification.data) {
             this.props.onTokenChange(notification.data.token);
           }
           break;
@@ -337,18 +326,6 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       });
     }
 
-    scrubProps() {
-      const propsToScrub = ['token', 'secureFrameUrl', 'onTokenChange', 'onValidate', 'validator'];
-      const scrubbed: Record<string, any> = {};
-      Object.keys(this.props).forEach((propName) => {
-        if (!propsToScrub.includes(propName)) {
-          // @ts-ignore
-          scrubbed[propName] = this.props[propName];
-        }
-      });
-      return scrubbed as WrappedComponentProps<W>;
-    }
-
     renderLoadingOverlay() {
       if (this.state.frameFullyLoaded) {
         return null;
@@ -411,7 +388,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         dummyElementStyle,
       };
 
-      const scrubbedProps = this.scrubProps();
+      const { token, secureFrameUrl, onTokenChange, onValidate, validator, ...scrubbedProps } = this.props;
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {
