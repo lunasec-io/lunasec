@@ -50,7 +50,7 @@ type LunasecStackProps struct {
 
 type LunasecBuildConfig struct {
 	CustomerFrontEnd string `yaml:"customer_front_end"`
-	AuthCallbackURL string `yaml:"auth_callback_url"`
+	CustomerBackEnd string `yaml:"customer_back_end"`
 	CDNConfig model.CDNConfig `yaml:"cdn_config"`
 	CustomerPublicKey string `yaml:"customer_public_key"`
 	FrontEndAssetsFolder string `yaml:"front_end_assets_folder"`
@@ -323,7 +323,7 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 			"SECURE_FRAME_FRONT_END":     secureFrameCloudfront.AttrDomainName(),
 			"CUSTOMER_FRONT_END":         jsii.String(l.buildConfig.CustomerFrontEnd),
 			"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
-			"AUTH_CALLBACK_URL":          jsii.String(l.buildConfig.AuthCallbackURL),
+			"CUSTOMER_BACK_END":          jsii.String(l.buildConfig.CustomerBackEnd),
 			"SECURE_FRAME_CDN_CONFIG":    jsii.String(string(cdnConfig)),
 			// TODO (cthompson) does this value provide us any security?
 			"TOKENIZER_CLIENT_SECRET": jsii.String("TODO"),
@@ -363,7 +363,7 @@ func pullContainerFromPublicEcr(ecrGateway gateway.AwsECRGateway, containerURL s
 	return
 }
 
-func pushContainerToPrivateEcr(ecrGateway gateway.AwsECRGateway, ecrRepository string, containerImg v1.Image) (ecrImageURL string, err error) {
+func pushContainerToPrivateEcr(ecrGateway gateway.AwsECRGateway, ecrRepository string, containerImg v1.Image) (tag string, err error) {
 	// TODO (cthompson) check if the pulled image and latest of the repository are the same
 
 	tagDigest, err := containerImg.Digest()
@@ -371,9 +371,9 @@ func pushContainerToPrivateEcr(ecrGateway gateway.AwsECRGateway, ecrRepository s
 		log.Println(err)
 		return
 	}
-	tag := tagDigest.Hex
+	tag = tagDigest.Hex
 
-	ecrImageURL = fmt.Sprintf("%s:%s", ecrRepository, tag)
+	ecrImageURL := fmt.Sprintf("%s:%s", ecrRepository, tag)
 
 	options, err := gateway.LoadCraneOptions(ecrGateway)
 	if err != nil {
@@ -429,11 +429,5 @@ func mirrorRepoToEcr(accountID, containerURL, newImageName string) (tag string, 
 	}
 
 	log.Printf("pushing image %s to private ecr", ecrRepository)
-	ecrImageURL, err := pushContainerToPrivateEcr(ecrGateway, ecrRepository, containerImg)
-	if err != nil {
-		return
-	}
-
-	log.Printf("mirrored image %s to ecr at %s", containerURL, ecrImageURL)
-	return
+	return pushContainerToPrivateEcr(ecrGateway, ecrRepository, containerImg)
 }

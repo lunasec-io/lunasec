@@ -1,6 +1,6 @@
 lunasec:
   customer_front_end: http://localhost:3000
-  auth_callback_url: http://localhost:3001
+  customer_back_end: http://localhost:3001
   cdn_config:
     main_script: main-dev.js
     main_style: main.css
