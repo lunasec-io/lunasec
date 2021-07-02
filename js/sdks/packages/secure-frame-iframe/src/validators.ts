@@ -14,6 +14,7 @@ export function validate(validatorName: ValidatorName, value: string): boolean {
       // @ts-ignore
       return isSSN(value) || validator.isTaxID(value);
   }
+  throw new Error(`Failed to find a validator of the supplied name`);
 }
 
 function isSSN(value: string) {
