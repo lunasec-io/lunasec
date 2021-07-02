@@ -1,7 +1,8 @@
+import { createPrivateKey } from 'crypto';
+
 import { GetSecretValueCommand, SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
 
 import { AwsSecretsManagerSecretProvider } from './types';
-import {createPrivateKey} from "crypto";
 
 function getSecretsManagerClientConfig(awsSecretProvider: AwsSecretsManagerSecretProvider) {
   const baseConfig = {

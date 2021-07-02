@@ -26,6 +26,8 @@ This holds the SDK frontend components which load into the iframe. What makes th
 ## How to launch the cluster and get the app running
 To install all dependencies, run `lerna bootstrap`. 
 
+Make sure your AWS credentials are set in `~/.aws/credentials`.  You may want to install `aws-cli-v2` from AUR as well.
+
 Make sure the following environment variables are set.  Their values should look something like: 
 ```bash
 export DOCUMENT_VAULT_S3_BUCKET="crytovault-loq-[YOURNAME]-personal"

@@ -230,6 +230,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
             onChange={(e) => this.handleBarChange(e)}
             onBlur={(e) => console.log('blur2', e)}
             className="test-class"
+            placeholder="Enter Your Email"
           />
           <input
             className="d-block"
