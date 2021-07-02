@@ -27,10 +27,17 @@ interface BaseAttr {
 }
 
 export interface InputAttr extends BaseAttr {
-  component: 'Input' | 'TextArea';
+  component: 'Input';
   token?: string;
   type?: string;
+  placeholder?: string;
   validator?: ValidatorName;
+}
+
+export interface TextAreaAttr extends BaseAttr {
+  component: 'TextArea';
+  token?: string;
+  type?: string;
 }
 
 export interface DownloaderAttr extends BaseAttr {
@@ -50,7 +57,7 @@ export interface UploaderAttr extends BaseAttr {
   type?: string;
 }
 
-export type AttributesMessage = InputAttr | DownloaderAttr | ParagraphAttr | UploaderAttr;
+export type AttributesMessage = InputAttr | DownloaderAttr | ParagraphAttr | UploaderAttr | TextAreaAttr;
 
 export interface ReceiveCommittedTokenMessage {
   success: boolean;
@@ -123,4 +130,15 @@ export interface NotifyOnValidate extends BaseFrameNotification {
   data: { isValid: boolean };
 }
 
-export type FrameNotification = NotifyOnBlur | NotifyOnStart | NotifyOnToken | NotifyOnFullyLoaded | NotifyOnValidate;
+export interface NotifyOnSubmit extends BaseFrameNotification {
+  command: 'NotifyOnSubmit';
+  data: Record<any, never>;
+}
+
+export type FrameNotification =
+  | NotifyOnBlur
+  | NotifyOnStart
+  | NotifyOnToken
+  | NotifyOnFullyLoaded
+  | NotifyOnSubmit
+  | NotifyOnValidate;
