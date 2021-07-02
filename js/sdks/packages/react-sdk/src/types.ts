@@ -80,6 +80,7 @@ export interface RenderData<C extends keyof ClassLookup> {
   hiddenElementClass: string;
   frameRef: RefObject<HTMLIFrameElement>;
   dummyRef: RefObject<HTMLElementTagNameMap[TagLookup[C]]>;
+  dummyInputStyleRef: RefObject<HTMLInputElement>;
   mountedCallback: () => void;
   parentContainerStyle: CSSProperties;
   dummyElementStyle: CSSProperties;

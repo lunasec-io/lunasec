@@ -75,6 +75,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
     readonly frameRef!: RefObject<HTMLIFrameElement>;
     readonly dummyRef!: RefObject<HTMLElementTagNameMap[TagLookup[W]]>;
+    readonly dummyInputStyleRef!: RefObject<HTMLInputElement>;
 
     readonly isInputLike = componentName === 'Input' || componentName === 'TextArea';
     frameReadyForListening = false;
@@ -85,6 +86,8 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       this.frameId = generateSecureNonce();
       this.frameRef = React.createRef();
       this.dummyRef = React.createRef();
+      this.dummyInputStyleRef = React.createRef();
+
       const secureFrameURL = new URL(__SECURE_FRAME_URL__);
       secureFrameURL.pathname = secureFramePathname;
       this.messageCreator = new FrameMessageCreator(this.frameId, (notification) =>
@@ -143,8 +146,16 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
     generateElementStyle() {
       if (!this.dummyRef.current) {
-        throw new Error('Unable to locate `inputRef` for wrapped component when generating style');
+        throw new Error('Unable to locate `dummyRef` for wrapped component when generating style');
       }
+      // Inputs have a separate dummy element for styling because of issues with html5 validations on inputs
+      if (componentName === 'Input') {
+        if (!this.dummyInputStyleRef.current) {
+          throw new Error('Unable to locate dummyInputStyleRef when generating style for input');
+        }
+        return getStyleInfo(this.dummyInputStyleRef.current);
+      }
+      // if its not an input just use the the main dummy element
       return getStyleInfo(this.dummyRef.current);
     }
 
@@ -394,6 +405,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         hiddenElementClass: classnames({ invalid: !this.state.isValid }), // only used by input at the moment
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,
+        dummyInputStyleRef: this.dummyInputStyleRef,
         mountedCallback: this.wrappedComponentDidMount.bind(this),
         parentContainerStyle,
         dummyElementStyle,
