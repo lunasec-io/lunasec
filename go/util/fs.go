@@ -10,6 +10,10 @@ import (
 )
 
 func CopyDirectory(scrDir, dest string) error {
+    if err := CreateIfNotExists(dest, 0755); err != nil {
+        return err
+    }
+
     entries, err := ioutil.ReadDir(scrDir)
     if err != nil {
         return err

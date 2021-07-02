@@ -18,6 +18,7 @@ func cliOptionsStruct(c *cli.Context) CliOptions {
 func BuildCommand(c *cli.Context) (err error) {
 	buildDir := c.GlobalString("dir")
 	configFile := c.GlobalString("config")
+	skipMirroring := c.Bool("skip-mirroring")
 
 	if configFile == "" {
 		err = errors.New("required parameter 'config' not provided")
@@ -31,7 +32,7 @@ func BuildCommand(c *cli.Context) (err error) {
 		return
 	}
 
-	lunasecDeployer, err := service.NewLunasecDeployer(provider, buildDir, true)
+	lunasecDeployer, err := service.NewLunasecDeployer(provider, buildDir, skipMirroring)
 	if err != nil {
 		log.Println(err)
 		return
@@ -40,7 +41,6 @@ func BuildCommand(c *cli.Context) (err error) {
 }
 
 func DeployCommand(c *cli.Context) (err error) {
-	skipMirroring := c.Bool("skip-mirroring")
 	buildBeforeDeploying := c.Bool("build")
 
 	if buildBeforeDeploying {
@@ -52,6 +52,6 @@ func DeployCommand(c *cli.Context) (err error) {
 	}
 
 	buildDir := c.GlobalString("dir")
-	lunasecDeployer, _ := service.NewLunasecDeployer(nil, buildDir, skipMirroring)
+	lunasecDeployer, _ := service.NewLunasecDeployer(nil, buildDir, true)
 	return lunasecDeployer.Deploy()
 }

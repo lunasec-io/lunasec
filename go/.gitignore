@@ -24,3 +24,4 @@ build/
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+lunasec_build/
