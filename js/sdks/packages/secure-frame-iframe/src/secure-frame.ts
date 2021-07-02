@@ -138,6 +138,9 @@ export class SecureFrame<E extends keyof ClassLookup> {
   }
 
   attachValidator(validatorName: ValidatorName) {
+    if (!this.secureElement.isConnected) {
+      throw new Error('Attempted to attach validator to an unmounted secure element');
+    }
     this.secureElement.addEventListener('blur', () => {
       const isValid = validate(validatorName, (this.secureElement as HTMLInputElement).value);
       sendMessageToParentFrame(this.origin, {

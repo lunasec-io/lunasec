@@ -25,21 +25,40 @@ export interface TagLookup {
 
 export const componentNames: Array<keyof ClassLookup> = ['Paragraph', 'Downloader', 'Uploader', 'TextArea', 'Input'];
 export type ComponentNames = keyof ClassLookup;
-// The properties our "wrapper" can take.  This, combined with the native react props is what gets passed
+
+// Below we build the properties our "wrapper" can take.  This, combined with the native react props is what gets passed
 // to the user in "WrapperProps" type below.  Note it is a combination of our custom properties and the properties
-// for whatever react element we are trying to render
-interface LunaSecWrapperProps<C extends keyof ClassLookup> {
-  token?: C extends 'Uploader' ? never : string;
+// for whatever react element we are trying to render.
+
+interface BaseWrapperProps {
   name?: string;
   secureFrameUrl?: string;
-  // special file picker types:
-  filetokens?: C extends 'Uploader' ? string[] : never;
-  onTokenChange?: C extends 'Uploader' ? (token: Array<string>) => void : never;
-  validator?: C extends 'Input' ? 'Email' | 'SSN' | 'EIN' | 'SSN_EIN' : never;
-  onValidate?: C extends 'Input' ? (isValid: boolean) => void : never; // It would be cool to require this whenever `validator` is passed above, not sure how without insane typescript foo though
 }
 
-export type WrapperProps<C extends keyof ClassLookup> = LunaSecWrapperProps<C> &
+interface TokenOnlyElementWrapperProps extends BaseWrapperProps {
+  token?: string;
+}
+
+interface ValidatedInputWrapperProps extends BaseWrapperProps {
+  token?: string;
+  validator: 'Email' | 'SSN' | 'EIN' | 'SSN_EIN';
+  onValidate: (isValid: boolean) => void;
+}
+
+interface UploaderWrapperProps extends BaseWrapperProps {
+  filetokens?: string[];
+  onTokenChange: (token: Array<string>) => void;
+}
+
+interface ElementNameToWrapperPropsLookup {
+  Input: TokenOnlyElementWrapperProps | ValidatedInputWrapperProps;
+  Uploader: UploaderWrapperProps;
+  Downloader: TokenOnlyElementWrapperProps;
+  Paragraph: TokenOnlyElementWrapperProps;
+  TextArea: TokenOnlyElementWrapperProps;
+}
+
+export type WrapperProps<C extends keyof ClassLookup> = ElementNameToWrapperPropsLookup[C] &
   React.ComponentPropsWithoutRef<TagLookup[C]>;
 
 // These props are what is passed between the wrapper and the wrapped component found in ./components/elements
