@@ -40,6 +40,8 @@ const defaultState: IAppState = {
 };
 
 class App extends React.Component<Record<string, never>, IAppState> {
+  private isValid = true;
+
   constructor(props: Record<string, never>) {
     super(props);
     this.state = defaultState;
@@ -86,6 +88,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   persistTokens(formEvent: React.FormEvent<HTMLFormElement>) {
+    if (!this.isValid) {
+      return console.log('submit blocked because email is not valid');
+    }
     formEvent.preventDefault();
     window.sessionStorage.setItem('savedTokenIDs', JSON.stringify(this.state.tokenIDs));
     window.sessionStorage.setItem('savedFields', JSON.stringify(this.state.fields));
@@ -163,6 +168,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
 
   emailValidated(isValid: boolean) {
     console.log(isValid ? 'Email is valid' : 'Email is not valid');
+    this.isValid = isValid;
   }
 
   renderFileDownloadComponents(fileTokenGrant: string | undefined) {
