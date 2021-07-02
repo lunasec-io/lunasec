@@ -36,7 +36,7 @@ func GetAwsGateways(logger *zap.Logger, provider config.Provider) (gateways Gate
 		return
 	}
 	logger.Debug("loading dynamodb AWS gateway...")
-	gateways.KV = NewDynamoKvGateway(logger)
+	gateways.KV = NewDynamoKvGateway(logger, provider)
 
 	logger.Debug("loading secrets manager AWS gateway...")
 	gateways.SM = NewAwsSecretsManagerGateway(logger, provider)

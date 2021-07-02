@@ -40,7 +40,8 @@ class FileDownloader {
   }
 
   generateUrl() {
-    const frameURL = new URL(secureFramePathname, __SECURE_FRAME_URL__);
+    const frameURL = new URL(__SECURE_FRAME_URL__);
+    frameURL.pathname += secureFramePathname;
     frameURL.searchParams.set('n', this.frameNonce);
     frameURL.searchParams.set('origin', window.location.origin);
     frameURL.searchParams.set('element', 'a');

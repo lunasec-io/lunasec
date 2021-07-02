@@ -1,10 +1,10 @@
 package model
 
 type CDNConfig struct {
-	Protocol   string `yaml:"protocol"`
-	Host       string `yaml:"host"`
-	MainScript string `yaml:"main_script"`
-	MainStyle  string `yaml:"main_style"`
+	Protocol   string `yaml:"protocol" json:"protocol"`
+	Host       string `yaml:"host" json:"host"`
+	MainScript string `yaml:"main_script" json:"main_script"`
+	MainStyle  string `yaml:"main_style" json:"main_style"`
 }
 
 type StyleInfo struct {
