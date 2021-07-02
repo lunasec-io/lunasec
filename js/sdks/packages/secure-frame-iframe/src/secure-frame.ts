@@ -1,9 +1,10 @@
-import { AttributesMessage, patchStyle, safeParseJson, StyleInfo } from '@lunasec/browser-common';
+import { AttributesMessage, patchStyle, safeParseJson, StyleInfo, ValidatorName } from '@lunasec/browser-common';
 import { ClassLookup, TagLookup } from '@lunasec/react-sdk';
 
 import { initializeUploader } from './initialize-uploader';
 import { detokenize, listenForRPCMessages, sendMessageToParentFrame } from './rpc';
 import { handleDownload } from './secure-download';
+import { validate } from './validators';
 export type SupportedElement = TagLookup[keyof TagLookup];
 
 export function timeout(ms: number): Promise<void> {
@@ -20,6 +21,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
   readonly secureElement: HTMLElementTagNameMap[TagLookup[E]];
   readonly form: HTMLFormElement;
   private token?: string;
+  private validatorName?: ValidatorName = undefined;
 
   constructor(componentName: E, loadingText: Element) {
     this.componentName = componentName;
@@ -82,6 +84,11 @@ export class SecureFrame<E extends keyof ClassLookup> {
         this.attachOnBlurNotifier();
         this.attachOnSubmitNotifier();
       }
+
+      if (attrs.component === 'Input' && attrs.validator) {
+        this.validatorName = attrs.validator;
+        this.attachValidator();
+      }
     }
 
     if (attrs.style) {
@@ -142,9 +149,36 @@ export class SecureFrame<E extends keyof ClassLookup> {
     });
   }
 
+  attachValidator() {
+    if (!this.secureElement.isConnected) {
+      throw new Error('Attempted to attach validator to an unmounted secure element');
+    }
+
+    this.secureElement.addEventListener('blur', () => {
+      this.sendValidationMessage();
+    });
+  }
+
+  sendValidationMessage() {
+    if (!this.validatorName) {
+      throw new Error('Attempted to do validation but the validator name wasnt assigned');
+    }
+    const isValid = validate(this.validatorName, (this.secureElement as HTMLInputElement).value);
+    sendMessageToParentFrame(this.origin, {
+      command: 'NotifyOnValidate',
+      frameNonce: this.frameNonce,
+      data: { isValid },
+    });
+  }
+
   attachOnSubmitNotifier() {
-    this.form.addEventListener('submit', (e) => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    this.form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (this.validatorName) {
+        this.sendValidationMessage();
+        await timeout(50);
+      }
       sendMessageToParentFrame(this.origin, { command: 'NotifyOnSubmit', frameNonce: this.frameNonce, data: {} });
     });
   }
