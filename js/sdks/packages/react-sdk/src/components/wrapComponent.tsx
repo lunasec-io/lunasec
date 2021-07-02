@@ -315,7 +315,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       if (!response.data.success) {
         return console.error('Tokenization failed: ', response.data.error);
       }
-      if (!response.data.token) {
+      if (response.data.token === undefined) {
         return console.error('Tokenization didnt return a token: ', response);
       }
 

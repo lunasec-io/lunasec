@@ -24,20 +24,25 @@ function createMessageToFrame<K extends keyof InboundFrameMessageMap>(
 }
 
 async function tokenizeField(): Promise<string | null> {
+  // TODO: this is brittle, move this into the secure-frame control logic
   const secureInput = document.querySelector('.secure-input');
 
   if (!secureInput) {
     throw new Error('Unable to read value to tokenize');
   }
   const value = (secureInput as HTMLInputElement).value;
-  const tokenizer = new Tokenizer();
-  const resp = await tokenizer.tokenize(value);
+  if (value.length > 0) {
+    const tokenizer = new Tokenizer();
+    const resp = await tokenizer.tokenize(value);
 
-  if (!resp.success) {
-    console.error('tokenizer error:', resp);
-    return null;
+    if (!resp.success) {
+      console.error('tokenizer error:', resp);
+      return null;
+    }
+    return resp.tokenId;
+  } else {
+    return '';
   }
-  return resp.tokenId;
 }
 
 export async function detokenize(token: string) {

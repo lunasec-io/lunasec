@@ -123,7 +123,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
     const resolveTokens = async (tokenGrants: Promise<Record<string, string>>, name: string) => {
       const awaitedTokenGrants = await tokenGrants;
       const token = tokens[name];
-      if (token === undefined) {
+      if (token === undefined || token === '') {
         return {
           ...awaitedTokenGrants,
           [name]: undefined,
