@@ -80,13 +80,13 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	tokenID, err := s.validateTokenJwt(input.TokenJwt)
+	err := s.validateTokenJwt(input.TokenID)
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	url, headers, err := s.tokenizer.TokenizerGet(s.CustomerTokenSecret, model.Token(tokenID))
+	url, headers, err := s.tokenizer.TokenizerGet(s.CustomerTokenSecret, model.Token(input.TokenID))
 
 	if err != nil {
 		statusCode := 500

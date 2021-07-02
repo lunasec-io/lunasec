@@ -19,6 +19,7 @@ import (
 // GetRoutes ...
 func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways) map[string]http.HandlerFunc {
 	meta := service.NewMetadataService(gateways.KV)
+	grant := service.NewMetadataService(gateways.KV)
 	tokenizer := service.NewTokenizerService(gateways.KV, gateways.S3)
 	tokenVerifier, err := service.NewJwtVerifier("customer_jwt_verifier", logger, provider)
 	if err != nil {
@@ -27,6 +28,7 @@ func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 	}
 
 	metadataController := controller.NewMetaController(meta, tokenVerifier)
+	grantController := controller.NewGrantController(grant, tokenVerifier)
 	tokenizerController, err := controller.NewTokenizerController(provider, tokenizer, tokenVerifier, meta)
 	if err != nil {
 		fmt.Println(err)
@@ -34,6 +36,7 @@ func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 	}
 
 	return map[string]http.HandlerFunc{
+		"/grant/set": grantController.SetSet,
 		"/metadata/get": metadataController.GetMetadata,
 		"/metadata/set": metadataController.SetMetadata,
 		"/tokenize":     tokenizerController.TokenizerSet,
