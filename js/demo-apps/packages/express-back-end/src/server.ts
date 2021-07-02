@@ -1,7 +1,11 @@
+import {config} from 'dotenv'
+config();
+
 import { createRoutes } from './routes';
 import express, {Request} from "express";
 import cors from "cors";
 import { SecretProviders, LunaSecExpressAuthPlugin, LunaSecTokenAuthService} from '@lunasec/node-sdk';
+import {attachApolloServer} from "./graphql/graphql-apollo-server";
 
 
 const app = express();
@@ -35,6 +39,8 @@ const authPlugin = new LunaSecExpressAuthPlugin({
 authPlugin.register(app);
 
 app.use(createRoutes(tokenService))
+
+attachApolloServer(app);
 
 app.listen(3001, () => {
     console.log('listening on http://localhost:3001/');

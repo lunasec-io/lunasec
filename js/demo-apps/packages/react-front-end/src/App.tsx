@@ -1,3 +1,4 @@
+import { gql, useQuery } from '@apollo/client';
 import { downloadFile } from '@lunasec/js-sdk';
 import {
   onLunaSecAuthError,
@@ -38,6 +39,15 @@ const defaultState: IAppState = {
   tokenGrants: {},
   authError: null,
 };
+
+const FORMDATA_QUERY = gql`
+  query GetFormData {
+    formData {
+      email
+      insecure_field
+    }
+  }
+`;
 
 class App extends React.Component<Record<string, never>, IAppState> {
   private isValid = true;
