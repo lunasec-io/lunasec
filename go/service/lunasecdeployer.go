@@ -302,6 +302,15 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 		// TimeToLiveAttribute: ,
 	})
 
+	grantsTable := awsdynamodb.NewTable(stack, jsii.String("grants-table"), &awsdynamodb.TableProps{
+		PartitionKey: &awsdynamodb.Attribute{
+			Name: jsii.String("Key"),
+			Type: awsdynamodb.AttributeType_STRING,
+		},
+		// TODO (cthompson) enable TTL for this table since a bunch of one time use records are created
+		// TimeToLiveAttribute: ,
+	})
+
 	// TODO (cthompson) we should read this from a configuration file
 	cdnConfig, err := json.Marshal(model.CDNConfig{
 		Protocol: "https",
@@ -331,6 +340,7 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 			"METADATA_KV_TABLE":   metadataTable.TableName(),
 			"KEYS_KV_TABLE":       keysTable.TableName(),
 			"SESSIONS_KV_TABLE":   sessionsTable.TableName(),
+			"GRANTS_KV_TABLE":   grantsTable.TableName(),
 		},
 	})
 
@@ -338,6 +348,7 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 	metadataTable.GrantReadWriteData(secureFrameLambda)
 	keysTable.GrantReadWriteData(secureFrameLambda)
 	sessionsTable.GrantReadWriteData(secureFrameLambda)
+	grantsTable.GrantReadWriteData(secureFrameLambda)
 
 	awsapigateway.NewLambdaRestApi(stack, jsii.String("gateway"), &awsapigateway.LambdaRestApiProps{
 		Handler: secureFrameLambda,

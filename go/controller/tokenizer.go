@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/refinery-labs/loq/controller/request"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,8 +19,9 @@ import (
 type tokenizerController struct {
 	tokenizerControllerConfig
 	tokenizer     service.TokenizerService
-	tokenVerifier service.JwtVerifier
+	jwtVerifier service.JwtVerifier
 	meta          service.MetadataService
+	grant         service.GrantService
 }
 
 type tokenizerControllerConfig struct {
@@ -31,7 +33,7 @@ type TokenizerController interface {
 	TokenizerSet(w http.ResponseWriter, req *http.Request)
 }
 
-func NewTokenizerController(provider config.Provider, tokenizer service.TokenizerService, tokenVerifier service.JwtVerifier, meta service.MetadataService) (controller TokenizerController, err error) {
+func NewTokenizerController(provider config.Provider, tokenizer service.TokenizerService, jwtVerifier service.JwtVerifier, meta service.MetadataService, grant service.GrantService) (controller TokenizerController, err error) {
 	var (
 		controllerConfig tokenizerControllerConfig
 	)
@@ -44,24 +46,26 @@ func NewTokenizerController(provider config.Provider, tokenizer service.Tokenize
 	controller = &tokenizerController{
 		tokenizerControllerConfig: controllerConfig,
 		tokenizer:                 tokenizer,
-		tokenVerifier:             tokenVerifier,
+		jwtVerifier:             jwtVerifier,
 		meta:                      meta,
+		grant:                     grant,
 	}
 	return
 }
 
-func (s *tokenizerController) validateTokenJwt(tokenJwt string) (tokenID string, err error) {
-	claims, err := s.tokenVerifier.VerifyWithLunaSecTokenClaims(tokenJwt)
+func (s *tokenizerController) requestHasValidGrantForToken(r *http.Request, tokenID model.Token) (valid bool, err error) {
+	accessToken, err := request.GetDataAccessToken(r)
+	if err != nil {
+		return
+	}
+
+	claims, err := s.jwtVerifier.VerifyWithSessionClaims(accessToken)
 	if err != nil {
 		err = errors.Wrap(err, "unable to verify token jwt with claims")
 		return
 	}
 
-	// TODO (cthompson): should we validate the claims further here? we could check if the subject
-	// matches the session that has been provided to us
-
-	tokenID = claims.TokenID
-	return
+	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID)
 }
 
 func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Request) {
@@ -80,8 +84,13 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err := s.validateTokenJwt(input.TokenID)
+	valid, err := s.requestHasValidGrantForToken(r, model.Token(input.TokenID))
 	if err != nil {
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
+	if !valid {
+		err = errors.New("no valid token grant was found for provided session and token ID")
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -129,7 +138,7 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 	}
 
 	if len(input.Metadata) > 0 {
-		if err := s.meta.SetMetadata(model.Token(tokenID), input.Metadata); err != nil {
+		if err := s.meta.SetMetadata(tokenID, input.Metadata); err != nil {
 			util.RespondError(w, http.StatusInternalServerError, err)
 			return
 		}

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/refinery-labs/loq/controller/request"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,7 +16,8 @@ import (
 
 type metaController struct {
 	meta          service.MetadataService
-	tokenVerifier service.JwtVerifier
+	jwtVerifier service.JwtVerifier
+	grant         service.GrantService
 }
 
 // MetaController ...
@@ -25,25 +27,27 @@ type MetaController interface {
 }
 
 // NewMetaController ...
-func NewMetaController(meta service.MetadataService, tokenVerifier service.JwtVerifier) MetaController {
+func NewMetaController(meta service.MetadataService, jwtVerifier service.JwtVerifier, grant service.GrantService) MetaController {
 	return &metaController{
 		meta:          meta,
-		tokenVerifier: tokenVerifier,
+		jwtVerifier: jwtVerifier,
+		grant:                     grant,
 	}
 }
 
-func (s *metaController) validateTokenJwt(tokenJwt string) (tokenID string, err error) {
-	claims, err := s.tokenVerifier.VerifyWithLunaSecTokenClaims(tokenJwt)
+func (s *metaController) requestHasValidGrantForToken(r *http.Request, tokenID model.Token) (valid bool, err error) {
+	accessToken, err := request.GetDataAccessToken(r)
+	if err != nil {
+		return
+	}
+
+	claims, err := s.jwtVerifier.VerifyWithSessionClaims(accessToken)
 	if err != nil {
 		err = errors.Wrap(err, "unable to verify token jwt with claims")
 		return
 	}
 
-	// TODO (cthompson): should we validate the claims further here? we could check if the subject
-	// matches the session that has been provided to us
-
-	tokenID = claims.TokenID
-	return
+	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID)
 }
 
 // GetMetadata ...
@@ -63,13 +67,18 @@ func (s *metaController) GetMetadata(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenID, err := s.validateTokenJwt(input.TokenID)
+	valid, err := s.requestHasValidGrantForToken(r, model.Token(input.TokenID))
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
+	if !valid {
+		err = errors.New("no valid token grant was found for provided session and token ID")
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
 
-	meta, err := s.meta.GetMetadata(model.Token(tokenID))
+	meta, err := s.meta.GetMetadata(model.Token(input.TokenID))
 
 	if err != nil {
 		statusCode := 500
@@ -104,13 +113,18 @@ func (s *metaController) SetMetadata(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenID, err := s.validateTokenJwt(input.TokenID)
+	valid, err := s.requestHasValidGrantForToken(r, model.Token(input.TokenID))
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
+	if !valid {
+		err = errors.New("no valid token grant was found for provided session and token ID")
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
 
-	if err := s.meta.SetMetadata(model.Token(tokenID), input.Metadata); err != nil {
+	if err := s.meta.SetMetadata(model.Token(input.TokenID), input.Metadata); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
