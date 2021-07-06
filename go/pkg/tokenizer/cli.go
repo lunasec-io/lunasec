@@ -190,6 +190,8 @@ func TokenizeCommand(c *cli.Context) (err error) {
 		return
 	}
 
+	fmt.Printf("%v", resp.Data)
+
 	s3Resp, err := s3Upload(resp.Data.UploadURL, resp.Data.Headers, content)
 	if err != nil {
 		log.Println(err)
