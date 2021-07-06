@@ -19,7 +19,11 @@ import (
 // GetRoutes ...
 func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways) map[string]http.HandlerFunc {
 	meta := service.NewMetadataService(gateways.KV)
-	grant := service.NewMetadataService(gateways.KV)
+	grant, err := service.NewGrantService(provider, gateways.KV)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
 	tokenizer := service.NewTokenizerService(gateways.KV, gateways.S3)
 	tokenVerifier, err := service.NewJwtVerifier("customer_jwt_verifier", logger, provider)
 	if err != nil {
@@ -27,16 +31,16 @@ func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 		panic(err)
 	}
 
-	metadataController := controller.NewMetaController(meta, tokenVerifier)
+	metadataController := controller.NewMetaController(meta, tokenVerifier, grant)
 	grantController := controller.NewGrantController(grant, tokenVerifier)
-	tokenizerController, err := controller.NewTokenizerController(provider, tokenizer, tokenVerifier, meta)
+	tokenizerController, err := controller.NewTokenizerController(provider, tokenizer, tokenVerifier, meta, grant)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
 	}
 
 	return map[string]http.HandlerFunc{
-		"/grant/set": grantController.SetSet,
+		"/grant/set": grantController.SetGrant,
 		"/metadata/get": metadataController.GetMetadata,
 		"/metadata/set": metadataController.SetMetadata,
 		"/tokenize":     tokenizerController.TokenizerSet,

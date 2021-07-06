@@ -14,8 +14,9 @@ services:
     container_name: minio
     image: minio/minio
     ports:
-    - published: 9000
-      target: 9000
-    command: server /data
+    - "443:443"
+    command: server --address ":443" /data
+    volumes:
+    - ./minio:/root/.minio
     networks:
       mynet:
