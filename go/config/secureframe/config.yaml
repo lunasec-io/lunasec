@@ -26,3 +26,5 @@ tokenizer_controller:
 customer_jwt_verifier:
   # TODO (cthompson) this public key is specifically the customer's public key and the configuration should reflect this
   public_key: ${CUSTOMER_PUBLIC_KEY}
+grant_service:
+  grant_ttl: "1h"

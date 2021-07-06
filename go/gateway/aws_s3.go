@@ -79,7 +79,7 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider) (s3Gateway Aw
 	sess, err := session.NewSession(
 		&aws.Config{
 			Region:           &gatewayConfig.S3Region,
-			Endpoint:         aws.String("http://127.0.0.1:9000"),
+			Endpoint:         aws.String("https://172.18.0.2:443"),
 			S3ForcePathStyle: aws.Bool(true),
 		},
 	)

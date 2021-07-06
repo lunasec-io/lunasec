@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	uuid "github.com/iris-contrib/go.uuid"
+	"github.com/google/uuid"
 	"github.com/refinery-labs/loq/model"
 	"io/ioutil"
 	"log"
@@ -130,10 +130,7 @@ func s3Request(method, url string, headers map[string]string, body *bytes.Buffer
 }
 
 func newSessionID() string {
-	sessionID, err := uuid.NewV4()
-	if err != nil {
-		panic(err)
-	}
+	sessionID := uuid.New()
 	return sessionID.String()
 }
 
