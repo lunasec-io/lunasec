@@ -14,6 +14,7 @@ aws_gateway:
     metadata: ${METADATA_KV_TABLE}
     keys: ${KEYS_KV_TABLE}
     sessions: ${SESSIONS_KV_TABLE}
+    grants: ${GRANTS_KV_TABLE}
 session_controller:
   auth_callback_host: ${CUSTOMER_BACK_END}
   auth_callback_path: ${AUTH_CALLBACK_PATH:/secure-frame}

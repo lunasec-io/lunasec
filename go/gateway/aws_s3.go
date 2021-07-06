@@ -3,6 +3,9 @@ package gateway
 import (
 	"crypto/md5"
 	"encoding/base64"
+	"io/ioutil"
+	"log"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -10,8 +13,6 @@ import (
 	"github.com/refinery-labs/loq/util"
 	"go.uber.org/config"
 	"go.uber.org/zap"
-	"io/ioutil"
-	"log"
 )
 
 const s3EncryptionAlgo = "AES256"
@@ -77,7 +78,9 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider) (s3Gateway Aw
 
 	sess, err := session.NewSession(
 		&aws.Config{
-			Region: &gatewayConfig.S3Region,
+			Region:           &gatewayConfig.S3Region,
+			Endpoint:         aws.String("http://127.0.0.1:9000"),
+			S3ForcePathStyle: aws.Bool(true),
 		},
 	)
 

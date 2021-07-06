@@ -1,21 +1,21 @@
 package controller
 
 import (
-"encoding/json"
-"io/ioutil"
-"log"
-"net/http"
+	"encoding/json"
+	"github.com/refinery-labs/loq/controller/request"
+	"io/ioutil"
+	"log"
+	"net/http"
 
-"github.com/pkg/errors"
-"github.com/refinery-labs/loq/model"
-"github.com/refinery-labs/loq/model/event"
-"github.com/refinery-labs/loq/service"
-"github.com/refinery-labs/loq/util"
+	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/model/event"
+	"github.com/refinery-labs/loq/service"
+	"github.com/refinery-labs/loq/util"
 )
 
 type grantController struct {
 	grant          service.GrantService
-	tokenVerifier service.JwtVerifier
+	jwtVerifier service.JwtVerifier
 }
 
 // GrantController ...
@@ -24,32 +24,18 @@ type GrantController interface {
 }
 
 // NewGrantController ...
-func NewGrantController(grant service.GrantService, tokenVerifier service.JwtVerifier) GrantController {
+func NewGrantController(grant service.GrantService, jwtVerifier service.JwtVerifier) GrantController {
 	return &grantController{
 		grant:          grant,
-		tokenVerifier: tokenVerifier,
+		jwtVerifier: jwtVerifier,
 	}
-}
-
-func (s *metaController) validateTokenJwt(tokenJwt string) (tokenID string, err error) {
-	claims, err := s.tokenVerifier.VerifyWithLunaSecTokenClaims(tokenJwt)
-	if err != nil {
-		err = errors.Wrap(err, "unable to verify token jwt with claims")
-		return
-	}
-
-	// TODO (cthompson): should we validate the claims further here? we could check if the subject
-	// matches the session that has been provided to us
-
-	tokenID = claims.TokenID
-	return
 }
 
 // SetMetadata ...
 func (s *grantController) SetGrant(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Received SetGrant request")
 
-	input := event.MetadataSetRequest{}
+	input := event.GrantSetRequest{}
 	b, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
@@ -62,18 +48,24 @@ func (s *grantController) SetGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenID, err := s.validateTokenJwt(input.TokenID)
+	accessToken, err := request.GetDataAccessToken(r)
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	if err := s.meta.SetMetadata(model.Token(tokenID), input.Metadata); err != nil {
+	claims, err := s.jwtVerifier.VerifyWithSessionClaims(accessToken)
+	if err != nil {
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := s.grant.SetTokenGrantForSession(model.Token(input.TokenID), claims.SessionID); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	resp := event.MetadataSetResponse{}
+	resp := event.GrantSetResponse{}
 
 	util.Respond(w, resp)
 }

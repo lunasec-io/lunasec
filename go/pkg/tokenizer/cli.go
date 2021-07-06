@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	uuid "github.com/iris-contrib/go.uuid"
+	"github.com/refinery-labs/loq/model"
 	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/model"
 	"github.com/refinery-labs/loq/model/event"
 	"github.com/refinery-labs/loq/service"
 	"github.com/urfave/cli"
@@ -57,16 +58,19 @@ func newJwtSigner(customerPrivateKey string) service.JwtSigner {
 	return jwtSigner
 }
 
-func newAuthJwt(customerPrivateKey string) string {
+func newAuthJwt(sessionID string, customerPrivateKey string) string {
 	jwtSigner := newJwtSigner(customerPrivateKey)
-	token, err := jwtSigner.Create()
+	claims := model.SessionJwtClaims{
+		SessionID: sessionID,
+	}
+	token, err := jwtSigner.CreateWithSessionClaims(claims)
 	if err != nil {
 		panic(err)
 	}
 	return token
 }
 
-func tokenizerRequest(url, customerPrivateKey string, input interface{}) (data []byte, err error) {
+func tokenizerRequest(sessionID string, url, customerPrivateKey string, input interface{}) (data []byte, err error) {
 	reqBody, err := json.Marshal(input)
 	if err != nil {
 		log.Println(err)
@@ -79,7 +83,7 @@ func tokenizerRequest(url, customerPrivateKey string, input interface{}) (data [
 		return
 	}
 
-	auth := newAuthJwt(customerPrivateKey)
+	auth := newAuthJwt(sessionID, customerPrivateKey)
 
 	req.Header.Add(constants.JwtAuthHeader, auth)
 	req.Header.Add("Content-Type", "application/json")
@@ -125,14 +129,25 @@ func s3Request(method, url string, headers map[string]string, body *bytes.Buffer
 	return ioutil.ReadAll(resp.Body)
 }
 
-func signTokenID(customerPrivateKey string, tokenID string) string {
-	jwtSigner := newJwtSigner(customerPrivateKey)
-
-	tokenJwt, err := jwtSigner.CreateWithClaims(model.NewTokenJwtClaims(tokenID))
+func newSessionID() string {
+	sessionID, err := uuid.NewV4()
 	if err != nil {
 		panic(err)
 	}
-	return tokenJwt
+	return sessionID.String()
+}
+
+func setGrantForToken(cliOptions CliOptions, sessionID string, tokenID string) (err error) {
+	input := event.GrantSetRequest{
+		TokenID: tokenID,
+	}
+	tokenizeURL := fmt.Sprintf("%s/grant/set", cliOptions.URL)
+	_, err = tokenizerRequest(sessionID, tokenizeURL, cliOptions.CustomerPrivateKey, input)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	return
 }
 
 func TokenizeCommand(c *cli.Context) (err error) {
@@ -157,9 +172,11 @@ func TokenizeCommand(c *cli.Context) (err error) {
 		return
 	}
 
+	sessionID := newSessionID()
+
 	input := event.TokenizerSetRequest{}
 	tokenizeURL := fmt.Sprintf("%s/tokenize", cliOptions.URL)
-	data, err := tokenizerRequest(tokenizeURL, cliOptions.CustomerPrivateKey, input)
+	data, err := tokenizerRequest(sessionID, tokenizeURL, cliOptions.CustomerPrivateKey, input)
 	if err != nil {
 		log.Println(err)
 		return
@@ -198,10 +215,18 @@ func DetokenizeCommand(c *cli.Context) (err error) {
 	input := event.TokenizerGetRequest{}
 	tokenID := cliOptions.Token
 
-	input.TokenJwt = signTokenID(cliOptions.CustomerPrivateKey, tokenID)
+	input.TokenID = tokenID
+
+	sessionID := newSessionID()
+
+	err = setGrantForToken(cliOptions, sessionID, tokenID)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	detokenizeURL := fmt.Sprintf("%s/detokenize", cliOptions.URL)
-	data, err := tokenizerRequest(detokenizeURL, cliOptions.CustomerPrivateKey, input)
+	data, err := tokenizerRequest(sessionID, detokenizeURL, cliOptions.CustomerPrivateKey, input)
 	if err != nil {
 		log.Println(err)
 		return
@@ -251,14 +276,22 @@ func SetMetadataCommand(c *cli.Context) (err error) {
 		return err
 	}
 
-	tokenID := signTokenID(cliOptions.CustomerPrivateKey, cliOptions.Token)
+	tokenID := cliOptions.Token
+
+	sessionID := newSessionID()
+
+	err = setGrantForToken(cliOptions, sessionID, tokenID)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	input := event.MetadataSetRequest{
 		TokenID:  tokenID,
 		Metadata: metadata,
 	}
 	metadataSetURL := fmt.Sprintf("%s/metadata/set", cliOptions.URL)
-	data, err := tokenizerRequest(metadataSetURL, cliOptions.CustomerPrivateKey, input)
+	data, err := tokenizerRequest(sessionID, metadataSetURL, cliOptions.CustomerPrivateKey, input)
 	if err != nil {
 		log.Println(err)
 		return
@@ -285,13 +318,21 @@ func GetMetadataCommand(c *cli.Context) (err error) {
 	)
 	cliOptions := cliOptionsStruct(c)
 
-	tokenID := signTokenID(cliOptions.CustomerPrivateKey, cliOptions.Token)
+	tokenID := cliOptions.Token
+
+	sessionID := newSessionID()
+
+	err = setGrantForToken(cliOptions, sessionID, tokenID)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	input := event.MetadataGetRequest{
 		TokenID: tokenID,
 	}
 	metadataGetURL := fmt.Sprintf("%s/metadata/get", cliOptions.URL)
-	data, err := tokenizerRequest(metadataGetURL, cliOptions.CustomerPrivateKey, input)
+	data, err := tokenizerRequest(sessionID, metadataGetURL, cliOptions.CustomerPrivateKey, input)
 	if err != nil {
 		log.Println(err)
 		return
