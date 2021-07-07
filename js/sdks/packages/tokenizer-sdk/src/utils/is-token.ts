@@ -1,4 +1,4 @@
-import { TOKEN_PREFIX } from '../constants'; // We need to get this from an environment variable or something
+import { TOKEN_PREFIX } from '../constants';
 
 export function isToken(s: string) {
   const r = new RegExp('^' + TOKEN_PREFIX);
