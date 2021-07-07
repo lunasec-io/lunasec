@@ -26,6 +26,7 @@ export class TokenDirective extends SchemaDirectiveVisitor {
   }
   visitInputFieldDefinition(field: GraphQLInputField) {
     console.log('visitInputFieldDefinition:', field);
+    field.extensions = { hi: 'there' }; // I was hoping we would be able to read these from the plugin to know that the directive was set but it doesn't show up
   }
   visitInputObject(object: GraphQLInputObjectType) {
     console.log('visited object:', object);
