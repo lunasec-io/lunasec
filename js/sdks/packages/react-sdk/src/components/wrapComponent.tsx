@@ -18,7 +18,6 @@ import styled from 'styled-components';
 
 import { LunaSecConfigContext } from '../providers/LunaSecConfigContext';
 import { SecureFormContext, SecureFormContextType } from '../providers/SecureFormContext';
-
 import {
   ClassLookup,
   LunaSecWrappedComponentProps,
@@ -403,7 +402,16 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         dummyElementStyle,
       };
 
-      const { token, secureFrameUrl, onTokenChange, onValidate, validator, formContext, ...scrubbedProps } = this.props;
+      const {
+        token,
+        secureFrameUrl,
+        onTokenChange,
+        onValidate,
+        validator,
+        formContext,
+        lunaSecConfigContext,
+        ...scrubbedProps
+      } = this.props;
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {
@@ -430,14 +438,17 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     return (
       <SecureFormContext.Consumer>
         {(formContext) => {
-          <LunaSecConfigContext.Consumer>
-            {(lunaSecConfigContext) => {
-              // @ts-ignore why the heck is ts-ignore this necessary!?  Something is broken with those react intrinstic properties...
-              return <WrappedComponent {...props} formContext={formContext} lunaSecConfigContext={lunaSecConfigContext}/>;
+          return (
+            <LunaSecConfigContext.Consumer>
+              {(lunaSecConfigContext) => {
+                return (
+                  // @ts-ignore why the heck are these ts-ignores this necessary!?  Something must be broken with those react intrinsic properties not liking the generic...
+                  <WrappedComponent {...props} formContext={formContext} lunaSecConfigContext={lunaSecConfigContext} />
+                );
               }}
-            }
-          </LunaSecConfigContext>
-
+            </LunaSecConfigContext.Consumer>
+          );
+        }}
       </SecureFormContext.Consumer>
     );
   };
