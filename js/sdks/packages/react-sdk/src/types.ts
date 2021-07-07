@@ -6,6 +6,7 @@ import Input from './components/elements/input';
 import Paragraph from './components/elements/paragraph';
 import TextArea from './components/elements/textarea';
 import Uploader from './components/elements/uploader';
+import { SecureFormContextType } from './providers/SecureFormContext';
 
 export interface ClassLookup {
   Paragraph: typeof Paragraph;
@@ -42,6 +43,11 @@ interface LunaSecWrapperProps<C extends keyof ClassLookup> {
 
 export type WrapperProps<C extends keyof ClassLookup> = LunaSecWrapperProps<C> &
   React.ComponentPropsWithoutRef<TagLookup[C]>;
+
+interface Providers {
+  formContext: SecureFormContextType;
+}
+export type WrapperPropsWithProviders<C extends keyof ClassLookup> = WrapperProps<C> & Providers;
 
 // These props are what is passed between the wrapper and the wrapped component found in ./components/elements
 // As above, it is combined with the native react props for the given element
