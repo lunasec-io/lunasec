@@ -6,6 +6,7 @@ import Input from './components/elements/input';
 import Paragraph from './components/elements/paragraph';
 import TextArea from './components/elements/textarea';
 import Uploader from './components/elements/uploader';
+import { LunaSecConfigContextType } from './providers/LunaSecConfigContext';
 import { SecureFormContextType } from './providers/SecureFormContext';
 
 export interface ClassLookup {
@@ -46,6 +47,7 @@ export type WrapperProps<C extends keyof ClassLookup> = LunaSecWrapperProps<C> &
 
 interface Providers {
   formContext: SecureFormContextType;
+  lunaSecConfigContext: LunaSecConfigContextType;
 }
 export type WrapperPropsWithProviders<C extends keyof ClassLookup> = WrapperProps<C> & Providers;
 
