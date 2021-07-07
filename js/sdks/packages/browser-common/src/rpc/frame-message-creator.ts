@@ -69,6 +69,7 @@ export class FrameMessageCreator {
       'NotifyOnStart',
       'NotifyOnToken',
       'NotifyOnFullyLoaded',
+      'NotifyOnValidate',
       'NotifyOnSubmit',
     ];
     if (!notificationTypes.includes(notification.command)) {

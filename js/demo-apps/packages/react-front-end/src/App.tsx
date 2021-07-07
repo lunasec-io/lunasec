@@ -40,6 +40,8 @@ const defaultState: IAppState = {
 };
 
 class App extends React.Component<Record<string, never>, IAppState> {
+  private isValid = true;
+
   constructor(props: Record<string, never>) {
     super(props);
     this.state = defaultState;
@@ -86,6 +88,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   persistTokens(formEvent: React.FormEvent<HTMLFormElement>) {
+    if (!this.isValid) {
+      return console.log('submit blocked because email is not valid');
+    }
     formEvent.preventDefault();
     window.sessionStorage.setItem('savedTokenIDs', JSON.stringify(this.state.tokenIDs));
     window.sessionStorage.setItem('savedFields', JSON.stringify(this.state.fields));
@@ -118,7 +123,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
     const resolveTokens = async (tokenGrants: Promise<Record<string, string>>, name: string) => {
       const awaitedTokenGrants = await tokenGrants;
       const token = tokens[name];
-      if (token === undefined) {
+      if (token === undefined || token === '') {
         return {
           ...awaitedTokenGrants,
           [name]: undefined,
@@ -159,6 +164,11 @@ class App extends React.Component<Record<string, never>, IAppState> {
     }
     console.error('Failed to load detokenization grant for: ' + tokenId);
     return undefined;
+  }
+
+  emailValidated(isValid: boolean) {
+    console.log(isValid ? 'Email is valid' : 'Email is not valid');
+    this.isValid = isValid;
   }
 
   renderFileDownloadComponents(fileTokenGrant: string | undefined) {
@@ -219,11 +229,14 @@ class App extends React.Component<Record<string, never>, IAppState> {
           />
           <SecureInput
             name="bar"
-            type="password"
+            type="email"
+            validator="Email"
+            onValidate={(isValid) => this.emailValidated(isValid)}
             token={this.state.tokenGrants.bar}
             onChange={(e) => this.handleBarChange(e)}
             onBlur={(e) => console.log('blur2', e)}
-            placeholder="Enter Your Password"
+            className="test-class"
+            placeholder="Enter Your Email"
           />
           <input
             className="d-block"

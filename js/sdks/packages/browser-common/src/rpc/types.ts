@@ -1,3 +1,5 @@
+import { ValidatorName } from '../types';
+
 export interface FrameMessage<K, T extends keyof K> {
   command: T;
   correlationToken: string;
@@ -29,6 +31,7 @@ export interface InputAttr extends BaseAttr {
   token?: string;
   type?: string;
   placeholder?: string;
+  validator?: ValidatorName;
 }
 
 export interface TextAreaAttr extends BaseAttr {
@@ -122,9 +125,20 @@ export interface NotifyOnFullyLoaded extends BaseFrameNotification {
   data: Record<any, never>;
 }
 
+export interface NotifyOnValidate extends BaseFrameNotification {
+  command: 'NotifyOnValidate';
+  data: { isValid: boolean };
+}
+
 export interface NotifyOnSubmit extends BaseFrameNotification {
   command: 'NotifyOnSubmit';
   data: Record<any, never>;
 }
 
-export type FrameNotification = NotifyOnBlur | NotifyOnStart | NotifyOnToken | NotifyOnFullyLoaded | NotifyOnSubmit;
+export type FrameNotification =
+  | NotifyOnBlur
+  | NotifyOnStart
+  | NotifyOnToken
+  | NotifyOnFullyLoaded
+  | NotifyOnSubmit
+  | NotifyOnValidate;

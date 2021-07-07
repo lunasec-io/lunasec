@@ -12,6 +12,7 @@ import {
   triggerBlur,
   triggerFocus,
 } from '@lunasec/browser-common';
+import classnames from 'classnames';
 import React, { Component, CSSProperties, RefObject } from 'react';
 import styled from 'styled-components';
 
@@ -25,6 +26,7 @@ export interface WrapperState {
   frameStyleInfo: ReadElementStyle | null;
   frameFullyLoaded: boolean;
   sessionAuthenticated: boolean;
+  isValid: boolean;
 }
 
 // Since almost all the logic of being a Secure Component is shared(such as RPC),
@@ -66,6 +68,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
     readonly frameRef!: RefObject<HTMLIFrameElement>;
     readonly dummyRef!: RefObject<HTMLElementTagNameMap[TagLookup[W]]>;
+    readonly dummyInputStyleRef!: RefObject<HTMLInputElement>;
 
     readonly isInputLike = componentName === 'Input' || componentName === 'TextArea';
     frameReadyForListening = false;
@@ -76,6 +79,8 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       this.frameId = generateSecureNonce();
       this.frameRef = React.createRef();
       this.dummyRef = React.createRef();
+      this.dummyInputStyleRef = React.createRef();
+
       const secureFrameURL = new URL(__SECURE_FRAME_URL__);
       secureFrameURL.pathname = secureFramePathname;
       this.messageCreator = new FrameMessageCreator(this.frameId, (notification) =>
@@ -87,6 +92,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         frameStyleInfo: null,
         frameFullyLoaded: false,
         sessionAuthenticated: false,
+        isValid: true,
       };
     }
 
@@ -133,8 +139,16 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
     generateElementStyle() {
       if (!this.dummyRef.current) {
-        throw new Error('Unable to locate `inputRef` for wrapped component when generating style');
+        throw new Error('Unable to locate `dummyRef` for wrapped component when generating style');
       }
+      // Inputs have a separate dummy element for styling because of issues with html5 validations on inputs
+      if (componentName === 'Input') {
+        if (!this.dummyInputStyleRef.current) {
+          throw new Error('Unable to locate dummyInputStyleRef when generating style for input');
+        }
+        return getStyleInfo(this.dummyInputStyleRef.current);
+      }
+      // if its not an input just use the the main dummy element
       return getStyleInfo(this.dummyRef.current);
     }
 
@@ -145,6 +159,14 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       frameURL.searchParams.set('origin', window.location.origin);
       frameURL.searchParams.set('component', componentName);
       return frameURL.toString();
+    }
+
+    validationHandler(isValid: boolean) {
+      if (!this.props.onValidate) {
+        throw new Error('Got validation message from iframe for component without an onValidation handler');
+      }
+      this.setState({ isValid: isValid });
+      this.props.onValidate(isValid);
     }
 
     // Generate some attributes for sending to the iframe via RPC.
@@ -184,6 +206,17 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         attrs.placeholder = this.props.placeholder;
       }
 
+      if (this.props.validator) {
+        if (attrs.component !== 'Input') {
+          throw new Error('Validators can only be set on SecureInputs');
+        }
+        if (!this.props.onValidate) {
+          throw new Error(
+            'Must pass onValidate() callback when a validator is specified.  Use the callback to block the form from submitting and display user feedback.'
+          );
+        }
+        attrs.validator = this.props.validator;
+      }
       return attrs;
     }
 
@@ -215,6 +248,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
           break;
         case 'NotifyOnBlur':
           this.blur();
+          break;
+        case 'NotifyOnValidate':
+          this.validationHandler(notification.data.isValid);
           break;
         case 'NotifyOnSubmit':
           this.context.submit();
@@ -279,7 +315,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       if (!response.data.success) {
         return console.error('Tokenization failed: ', response.data.error);
       }
-      if (!response.data.token) {
+      if (response.data.token === undefined) {
         return console.error('Tokenization didnt return a token: ', response);
       }
 
@@ -338,25 +374,30 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         resize: 'none',
       };
 
+      const containerClass = classnames({
+        [`secure-${componentName.toLowerCase()}-container-${this.frameId}`]: true,
+        [`secure-${componentName.toLowerCase()}-container-${this.props.name || ''}`]: !!this.props.name,
+      });
+
       const renderData: RenderData<W> = {
         frameId: this.frameId,
         frameUrl: this.generateUrl(),
         frameStyleInfo: this.state.frameStyleInfo,
-        frameContainerClasses: {
-          hidden: !this.state.frameFullyLoaded,
-        },
+        containerClass,
+        frameClass: classnames({ hidden: !this.state.frameFullyLoaded }),
+        hiddenElementClass: classnames({ invalid: !this.state.isValid }), // only used by input at the moment
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,
+        dummyInputStyleRef: this.dummyInputStyleRef,
         mountedCallback: this.wrappedComponentDidMount.bind(this),
         parentContainerStyle,
         dummyElementStyle,
       };
 
-      const { token, secureFrameUrl, onTokenChange, ...scrubbedProps } = this.props;
+      const { token, secureFrameUrl, onTokenChange, onValidate, validator, ...scrubbedProps } = this.props;
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {
-        name: this.props.name,
         renderData,
       };
 
