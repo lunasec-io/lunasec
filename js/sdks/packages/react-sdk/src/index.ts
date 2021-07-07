@@ -5,7 +5,7 @@ import TextArea from './components/elements/textarea';
 import Uploader from './components/elements/uploader';
 import wrapComponent from './components/wrapComponent';
 export * from './components/SecureForm';
-export * from './components/SecureFormContext';
+export * from './providers/SecureFormContext';
 export * from './components/SecureSubmit';
 export * from './types';
 export * from './utils/setAuthErrorHandler';

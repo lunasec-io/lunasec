@@ -16,10 +16,18 @@ import classnames from 'classnames';
 import React, { Component, CSSProperties, RefObject } from 'react';
 import styled from 'styled-components';
 
-import { ClassLookup, LunaSecWrappedComponentProps, RenderData, TagLookup, WrapperProps } from '../types';
-import setNativeValue from '../utils/set-native-value';
+import { LunaSecConfigContext } from '../providers/LunaSecConfigContext';
+import { SecureFormContext, SecureFormContextType } from '../providers/SecureFormContext';
 
-import { SecureFormContext } from './SecureFormContext';
+import {
+  ClassLookup,
+  LunaSecWrappedComponentProps,
+  RenderData,
+  TagLookup,
+  WrapperProps,
+  WrapperPropsWithProviders,
+} from '../types';
+import setNativeValue from '../utils/set-native-value';
 
 export interface WrapperState {
   secureFrameUrl: string;
@@ -54,8 +62,8 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
   `;
 
-  return class WrappedComponent extends Component<WrapperProps<W>, WrapperState> {
-    declare context: React.ContextType<typeof SecureFormContext>;
+  class WrappedComponent extends Component<WrapperPropsWithProviders<W>, WrapperState> {
+    declare context: SecureFormContextType;
     static contextType = SecureFormContext;
 
     readonly messageCreator: FrameMessageCreator;
@@ -69,18 +77,19 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     readonly frameRef!: RefObject<HTMLIFrameElement>;
     readonly dummyRef!: RefObject<HTMLElementTagNameMap[TagLookup[W]]>;
     readonly dummyInputStyleRef!: RefObject<HTMLInputElement>;
+    readonly formContext!: SecureFormContextType;
 
     readonly isInputLike = componentName === 'Input' || componentName === 'TextArea';
     frameReadyForListening = false;
     stopSessionManagement: (() => void) | null = null;
 
-    constructor(props: WrapperProps<W>) {
+    constructor(props: WrapperPropsWithProviders<W>) {
       super(props);
       this.frameId = generateSecureNonce();
       this.frameRef = React.createRef();
       this.dummyRef = React.createRef();
       this.dummyInputStyleRef = React.createRef();
-
+      this.formContext = props.formContext;
       const secureFrameURL = new URL(__SECURE_FRAME_URL__);
       secureFrameURL.pathname = secureFramePathname;
       this.messageCreator = new FrameMessageCreator(this.frameId, (notification) =>
@@ -114,7 +123,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         frameStyleInfo: this.generateElementStyle(),
       });
       if (this.isInputLike) {
-        this.context.addTokenCommitCallback(this.frameId, () => {
+        this.formContext.addTokenCommitCallback(this.frameId, () => {
           return this.triggerTokenCommit();
         });
       }
@@ -123,7 +132,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     componentWillUnmount() {
       this.abortController.abort();
       if (this.isInputLike) {
-        this.context.removeTokenCommitCallback(this.frameId);
+        this.formContext.removeTokenCommitCallback(this.frameId);
       }
       if (this.stopSessionManagement) {
         this.stopSessionManagement();
@@ -253,7 +262,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
           this.validationHandler(notification.data.isValid);
           break;
         case 'NotifyOnSubmit':
-          this.context.submit();
+          this.formContext.submit();
           break;
       }
     }
@@ -394,7 +403,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         dummyElementStyle,
       };
 
-      const { token, secureFrameUrl, onTokenChange, onValidate, validator, ...scrubbedProps } = this.props;
+      const { token, secureFrameUrl, onTokenChange, onValidate, validator, formContext, ...scrubbedProps } = this.props;
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {
@@ -412,5 +421,24 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         </IgnoredWrapped>
       );
     }
+  }
+
+  // This small functional component is the only way for a component to access more than one provider, thanks to a major shortcoming of react.
+  // So our "wrapped component" is actually double wrapped, first by this function component to add the providers, then by the class above
+  // You can never be too careful
+  return function ProviderWrapper(props: WrapperProps<W>) {
+    return (
+      <SecureFormContext.Consumer>
+        {(formContext) => {
+          <LunaSecConfigContext.Consumer>
+            {(lunaSecConfigContext) => {
+              // @ts-ignore why the heck is ts-ignore this necessary!?  Something is broken with those react intrinstic properties...
+              return <WrappedComponent {...props} formContext={formContext} lunaSecConfigContext={lunaSecConfigContext}/>;
+              }}
+            }
+          </LunaSecConfigContext>
+
+      </SecureFormContext.Consumer>
+    );
   };
 }
