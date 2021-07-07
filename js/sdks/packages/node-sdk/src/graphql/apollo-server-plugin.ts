@@ -9,7 +9,7 @@ export const LunaSecApolloPlugin: ApolloServerPlugin = {
     /* Within this returned object, define functions that respond
        to request-specific lifecycle events. */
     return {
-      responseForOperation(resolveContext) {
+      executionDidStart(resolveContext) {
         console.log('The resolve context is!!!!!!!!!!!!!!!!!!: ');
         console.log(util.inspect(resolveContext, { showHidden: false, depth: null }));
 
@@ -20,7 +20,15 @@ export const LunaSecApolloPlugin: ApolloServerPlugin = {
           //@ts-ignore
           resolveContext.operation.selectionSet.selections[0].selectionSet.selections
         );
-        return Promise.resolve(null);
+        return {
+          //@ts-ignore
+          willResolveField(fieldResolveParams) {
+            console.log(
+              'WILL RESOLVE FIELD WAS CALLED with ',
+              util.inspect(fieldResolveParams, { showHidden: false, depth: null })
+            );
+          },
+        };
       },
     };
   },
