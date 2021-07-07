@@ -221,7 +221,7 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 	})
 
 	secureFrameBucket := awss3.NewBucket(stack, jsii.String("secure-frame-bucket"), &awss3.BucketProps{
-		AccessControl:        awss3.BucketAccessControl_PUBLIC_READ_WRITE,
+		AccessControl:        awss3.BucketAccessControl_PUBLIC_READ,
 		WebsiteIndexDocument: jsii.String("index.html"),
 		WebsiteErrorDocument: jsii.String("index.html"),
 	})

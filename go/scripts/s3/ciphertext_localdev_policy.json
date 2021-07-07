@@ -1,0 +1,11 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowAccessToCiphertextBucket",
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::lunasecsecureenclave-ciphertextbucketd0ba9733-1azl821dhhyzl/*"
+        }
+    ]
+}
