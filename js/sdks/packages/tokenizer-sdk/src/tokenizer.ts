@@ -52,12 +52,10 @@ export class Tokenizer {
   // TODO: Evaluate adding back keygenSet and keygenGet methods
 
   async setGrant(
-    sessionId: string,
     tokenId: string,
     grantType: GrantType
   ): Promise<TokenizerFailApiResponse | TokenizerSetGrantResponse> {
     const response = await this.setGrantClient({
-      sessionId,
       tokenId,
       grantType
     });

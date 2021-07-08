@@ -74,12 +74,12 @@ export class LunaSecTokenAuthService {
   private async requestDetokenizationGrant(sessionId: string, tokenId: string) {
     // TODO (cthompson) as long as the node-sdk is the source of truth for authentication
     // this is ok. Once we are using an auth provider for this information, this will need to change.
-    const authenticationToken = await this.authenticate({});
+    const authenticationToken = await this.authenticate({session_id: sessionId});
 
     const tokenizer = new Tokenizer({
       token: authenticationToken.toString()
     });
-    const resp = await tokenizer.setGrant(sessionId, tokenId, 'read_token');
+    const resp = await tokenizer.setGrant(tokenId, 'read_token');
     if (!resp.success) {
       throw new Error(`unable to set detokenization grant for: ${tokenId}`)
     }
