@@ -48,7 +48,7 @@ func (s *grantController) SetGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, err := request.GetDataAccessToken(r)
+	accessToken, err := request.GetJwtToken(r)
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return

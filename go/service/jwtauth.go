@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/pkg/errors"
-	"github.com/refinery-labs/loq/constants"
 	"github.com/refinery-labs/loq/controller/request"
 	"go.uber.org/zap"
 )
@@ -36,20 +34,6 @@ func (j *jwtHttpAuth) defaultUnauthorizedHandler(w http.ResponseWriter, r *http.
 	http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 }
 
-func getJwtToken(r *http.Request) (token string, err error) {
-	token = r.Header.Get(constants.JwtAuthHeader)
-	if token != "" {
-		return
-	}
-
-	token, _ = request.GetDataAccessToken(r)
-	if token != "" {
-		return
-	}
-	err = errors.New("jwt token not present in request")
-	return
-}
-
 func (j *jwtHttpAuth) WithJwtAuth(next http.HandlerFunc) http.HandlerFunc {
 	unauthHandler := http.HandlerFunc(j.defaultUnauthorizedHandler)
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +43,7 @@ func (j *jwtHttpAuth) WithJwtAuth(next http.HandlerFunc) http.HandlerFunc {
 			zap.String("path", r.URL.Path),
 		)
 
-		jwtToken, err := getJwtToken(r)
+		jwtToken, err := request.GetJwtToken(r)
 		if err != nil {
 			j.logger.Error(
 				"unable to get jwt token from request",

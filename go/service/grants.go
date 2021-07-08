@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"go.uber.org/config"
 	"log"
 	"time"
@@ -28,7 +29,7 @@ type grantService struct {
 // GrantService manages grants for tokens
 type GrantService interface {
 	SetTokenGrantForSession(token model.Token, sessionID string) error
-	ValidTokenGrantExistsForSession(token model.Token, sessionID string) (valid bool, err error)
+	ValidTokenGrantExistsForSession(token model.Token, sessionID string) (err error)
 }
 
 // NewGrantService ...
@@ -71,7 +72,7 @@ func (s *grantService) SetTokenGrantForSession(token model.Token, sessionID stri
 	return s.kv.Set(gateway.GrantStore, getGrantKey(sessionID, token), string(serializedGrant))
 }
 
-func (s *grantService) ValidTokenGrantExistsForSession(token model.Token, sessionID string) (valid bool, err error) {
+func (s *grantService) ValidTokenGrantExistsForSession(token model.Token, sessionID string) (err error) {
 	var (
 		tokenGrant TokenGrant
 	)
@@ -91,6 +92,10 @@ func (s *grantService) ValidTokenGrantExistsForSession(token model.Token, sessio
 	}
 
 	expiryTime := time.Unix(tokenGrant.GrantExpiry, 0)
-	valid = expiryTime.Before(time.Now())
+	now := time.Now()
+	if now.After(expiryTime) {
+		err = fmt.Errorf("grant has expired: expiry: %s, now: %s", expiryTime.String(), now)
+		return
+	}
 	return
 }

@@ -8,6 +8,20 @@ import (
 	"github.com/refinery-labs/loq/constants"
 )
 
+func GetJwtToken(r *http.Request) (token string, err error) {
+	token = r.Header.Get(constants.JwtAuthHeader)
+	if token != "" {
+		return
+	}
+
+	token, _ = GetDataAccessToken(r)
+	if token != "" {
+		return
+	}
+	err = errors.New("jwt token not present in request")
+	return
+}
+
 func GetDataAccessToken(r *http.Request) (dataAccessToken string, err error) {
 	dataAccessTokenCookie, err := r.Cookie(constants.DataAccessTokenCookie)
 	if err != nil {
