@@ -31,7 +31,20 @@ func NewGrantController(grant service.GrantService, jwtVerifier service.JwtVerif
 	}
 }
 
-// SetMetadata ...
+func (s *grantController) getSessionID(r *http.Request) (sessionID string, err error) {
+	accessToken, err := request.GetJwtToken(r)
+	if err != nil {
+		return
+	}
+
+	claims, err := s.jwtVerifier.VerifyWithSessionClaims(accessToken)
+	if err != nil {
+		return
+	}
+	sessionID = claims.SessionID
+	return
+}
+
 func (s *grantController) SetGrant(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Received SetGrant request")
 
@@ -48,24 +61,53 @@ func (s *grantController) SetGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, err := request.GetJwtToken(r)
+	sessionID, err := s.getSessionID(r)
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	claims, err := s.jwtVerifier.VerifyWithSessionClaims(accessToken)
-	if err != nil {
-		util.RespondError(w, http.StatusBadRequest, err)
-		return
-	}
-
-	if err := s.grant.SetTokenGrantForSession(model.Token(input.TokenID), claims.SessionID); err != nil {
+	if err := s.grant.SetTokenGrantForSession(model.Token(input.TokenID), sessionID, input.GrantType); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	resp := event.GrantSetResponse{}
+
+	util.Respond(w, resp)
+}
+
+func (s *grantController) VerifyGrant(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Received VerifyGrant request")
+
+	input := event.GrantVerifyRequest{}
+	b, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := json.Unmarshal(b, &input); err != nil {
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	sessionID, err := s.getSessionID(r)
+	if err != nil {
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	valid, err := s.grant.ValidTokenGrantExistsForSession(model.Token(input.TokenID), sessionID, input.GrantType)
+	if err != nil {
+		util.RespondError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	resp := event.GrantVerifyResponse{
+		Valid: valid,
+	}
 
 	util.Respond(w, resp)
 }

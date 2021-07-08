@@ -137,7 +137,7 @@ func newSessionID() string {
 func setGrantForToken(cliOptions CliOptions, sessionID string, tokenID string) (err error) {
 	input := event.GrantSetRequest{
 		TokenID: tokenID,
-		GrantType: event.ReadToken,
+		GrantType: constants.ReadToken,
 	}
 	tokenizeURL := fmt.Sprintf("%s/grant/set", cliOptions.URL)
 	_, err = tokenizerRequest(sessionID, tokenizeURL, cliOptions.CustomerPrivateKey, input)
@@ -145,6 +145,14 @@ func setGrantForToken(cliOptions CliOptions, sessionID string, tokenID string) (
 		log.Println(err)
 		return
 	}
+	return
+}
+
+func CreateJwtAuthCommand(c *cli.Context) (err error) {
+	cliOptions := cliOptionsStruct(c)
+
+	jwtAuth := newAuthJwt(newSessionID(), cliOptions.CustomerPrivateKey)
+	log.Printf("jwt: %s", jwtAuth)
 	return
 }
 

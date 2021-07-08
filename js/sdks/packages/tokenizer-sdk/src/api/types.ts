@@ -29,7 +29,6 @@ export interface TokenizerApiResponse<T> {
 /// API Request Schemas ///
 
 export interface SetGrantRequest extends BaseTokenizerRequest {
-  sessionId: string;
   tokenId: string;
   grantType: GrantType;
 }

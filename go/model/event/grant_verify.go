@@ -2,10 +2,12 @@ package event
 
 import "github.com/refinery-labs/loq/constants"
 
-type GrantSetRequest struct {
+type GrantVerifyRequest struct {
 	TokenID  string                 `json:"tokenId"`
 	GrantType constants.GrantType 			`json:"grantType"`
 }
 
-type GrantSetResponse struct {
+type GrantVerifyResponse struct {
+	Valid bool `json:"valid"`
 }
+

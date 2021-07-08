@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/refinery-labs/loq/constants"
 	"github.com/refinery-labs/loq/controller/request"
 	"io/ioutil"
 	"log"
@@ -62,24 +63,14 @@ func (s *tokenizerController) getRequestClaims(r *http.Request) (claims *model.S
 	return s.jwtVerifier.VerifyWithSessionClaims(accessToken)
 }
 
-func (s *tokenizerController) requestHasValidGrantForToken(r *http.Request, tokenID model.Token) (err error) {
+func (s *tokenizerController) requestHasValidGrantForToken(r *http.Request, tokenID model.Token) (valid bool, err error) {
 	claims, err := s.getRequestClaims(r)
 	if err != nil {
 		err = errors.Wrap(err, "unable to verify token jwt with claims")
 		return
 	}
 
-	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID)
-}
-
-func (s *tokenizerController) setGrantForToken(r *http.Request, tokenID model.Token) (err error) {
-	claims, err := s.getRequestClaims(r)
-	if err != nil {
-		err = errors.Wrap(err, "unable to verify token jwt with claims")
-		return
-	}
-
-	return s.grant.SetTokenGrantForSession(tokenID, claims.SessionID)
+	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID, constants.ReadToken)
 }
 
 func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Request) {
@@ -98,9 +89,15 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = s.requestHasValidGrantForToken(r, model.Token(input.TokenID))
+	valid, err := s.requestHasValidGrantForToken(r, model.Token(input.TokenID))
 	if err != nil {
 		log.Println(err)
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if !valid {
+		err = errors.New("session does not have valid token grant available to detokeni")
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -153,8 +150,19 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 			return
 		}
 	}
+	claims, err := s.getRequestClaims(r)
+	if err != nil {
+		err = errors.Wrap(err, "unable to verify token jwt with claims")
+		return
+	}
 
-	if err := s.setGrantForToken(r, tokenID); err != nil {
+	// create grants for both reading the token, in case the front end wants to be able to read the token right away
+	// and also a grant for the customer's backend to verify the token was created by this session id
+	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.ReadToken); err != nil {
+		util.RespondError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.StoreToken); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
