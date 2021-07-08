@@ -2,12 +2,10 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/refinery-labs/loq/controller/request"
 	"io/ioutil"
 	"log"
 	"net/http"
 
-	"github.com/pkg/errors"
 	"github.com/refinery-labs/loq/model"
 	"github.com/refinery-labs/loq/model/event"
 	"github.com/refinery-labs/loq/service"
@@ -35,21 +33,6 @@ func NewMetaController(meta service.MetadataService, jwtVerifier service.JwtVeri
 	}
 }
 
-func (s *metaController) requestHasValidGrantForToken(r *http.Request, tokenID model.Token) (valid bool, err error) {
-	accessToken, err := request.GetDataAccessToken(r)
-	if err != nil {
-		return
-	}
-
-	claims, err := s.jwtVerifier.VerifyWithSessionClaims(accessToken)
-	if err != nil {
-		err = errors.Wrap(err, "unable to verify token jwt with claims")
-		return
-	}
-
-	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID)
-}
-
 // GetMetadata ...
 func (s *metaController) GetMetadata(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Received GetMetadata request")
@@ -63,17 +46,6 @@ func (s *metaController) GetMetadata(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.Unmarshal(b, &input); err != nil {
-		util.RespondError(w, http.StatusBadRequest, err)
-		return
-	}
-
-	valid, err := s.requestHasValidGrantForToken(r, model.Token(input.TokenID))
-	if err != nil {
-		util.RespondError(w, http.StatusBadRequest, err)
-		return
-	}
-	if !valid {
-		err = errors.New("no valid token grant was found for provided session and token ID")
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -109,17 +81,6 @@ func (s *metaController) SetMetadata(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.Unmarshal(b, &input); err != nil {
-		util.RespondError(w, http.StatusBadRequest, err)
-		return
-	}
-
-	valid, err := s.requestHasValidGrantForToken(r, model.Token(input.TokenID))
-	if err != nil {
-		util.RespondError(w, http.StatusBadRequest, err)
-		return
-	}
-	if !valid {
-		err = errors.New("no valid token grant was found for provided session and token ID")
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}

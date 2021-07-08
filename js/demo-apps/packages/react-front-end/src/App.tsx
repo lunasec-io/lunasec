@@ -27,7 +27,6 @@ interface IAppState {
   loading: boolean;
   fields: Fields;
   tokenIDs: Tokens;
-  tokenGrants: Tokens;
   authError: string | null;
 }
 
@@ -35,7 +34,6 @@ const defaultState: IAppState = {
   loading: true,
   fields: {},
   tokenIDs: {},
-  tokenGrants: {},
   authError: null,
 };
 
@@ -118,8 +116,6 @@ class App extends React.Component<Record<string, never>, IAppState> {
       file: savedData.file,
     };
 
-    // Our libraries expect tokens to come from the server wrapped in a TokenGrant
-    // Here we simply sign our own tokens into grants so that our libraries can consume them
     const resolveTokens = async (tokenGrants: Promise<Record<string, string>>, name: string) => {
       const awaitedTokenGrants = await tokenGrants;
       const token = tokens[name];
@@ -129,22 +125,18 @@ class App extends React.Component<Record<string, never>, IAppState> {
           [name]: undefined,
         };
       }
-      const tokenGrant = await this.getDetokenizationGrant(token);
-      if (tokenGrant === undefined) {
-        throw new Error(`unable to get token grant for: ${token}`);
-      }
+      await this.getDetokenizationGrant(token);
       return {
         ...awaitedTokenGrants,
-        [name]: tokenGrant,
+        [name]: token,
       };
     };
 
-    const tokenGrants = await Object.keys(tokens).reduce(resolveTokens.bind(this), Promise.resolve({}));
-    this.setState({ tokenGrants });
-    this.setState({ loading: false });
+    await Object.keys(tokens).reduce(resolveTokens.bind(this), Promise.resolve({}));
+    this.setState({ loading: false, tokenIDs: tokens });
 
-    if (this.state.tokenGrants.file !== undefined) {
-      downloadFile(this.state.tokenGrants.file);
+    if (this.state.tokenIDs.file !== undefined) {
+      downloadFile(this.state.tokenIDs.file);
     }
   }
 
@@ -154,16 +146,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
       token: tokenId,
     };
     url.search = new URLSearchParams(params).toString();
-    const res = await fetch(url.toString());
-    const respJson: unknown = await res.json();
-    const resBody = respJson as { grant?: string };
-    const grant = resBody.grant;
-    if (grant !== undefined) {
-      console.log('Loaded detokenization grant for: ' + tokenId + ' - ' + grant);
-      return grant;
-    }
-    console.error('Failed to load detokenization grant for: ' + tokenId);
-    return undefined;
+    await fetch(url.toString());
   }
 
   emailValidated(isValid: boolean) {
@@ -192,7 +175,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   renderFileComponents() {
-    const fileTokenGrant = this.state.tokenGrants.file;
+    const fileTokenGrant = this.state.tokenIDs.file;
     return (
       <div>
         {this.renderFileDownloadComponents(fileTokenGrant)}
@@ -223,7 +206,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
         <SecureForm onSubmit={(e) => this.persistTokens(e)}>
           <SecureTextArea
             name="foo"
-            token={this.state.tokenGrants.foo}
+            token={this.state.tokenIDs.foo}
             onChange={(e) => this.handleFooChange(e)}
             onBlur={(e) => console.log('blur1', e)}
           />
@@ -232,7 +215,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
             type="email"
             validator="Email"
             onValidate={(isValid) => this.emailValidated(isValid)}
-            token={this.state.tokenGrants.bar}
+            token={this.state.tokenIDs.bar}
             onChange={(e) => this.handleBarChange(e)}
             onBlur={(e) => console.log('blur2', e)}
             className="test-class"
@@ -252,7 +235,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
             <h2>Secure Paragraph</h2>
             <div>
               <span>Type in the form above to populate</span>
-              <SecureParagraph name="demo-paragraph" token={this.state.tokenGrants.foo} className="test-secure-span" />
+              <SecureParagraph name="demo-paragraph" token={this.state.tokenIDs.foo} className="test-secure-span" />
             </div>
           </section>
 

@@ -42,6 +42,7 @@ func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 	return map[string]http.HandlerFunc{
 		"/grant/set": grantController.SetGrant,
 		"/metadata/get": metadataController.GetMetadata,
+		// TODO (cthompson) do we want to keep this endpoint?
 		"/metadata/set": metadataController.SetMetadata,
 		"/tokenize":     tokenizerController.TokenizerSet,
 		"/detokenize":   tokenizerController.TokenizerGet,

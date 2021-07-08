@@ -3,6 +3,8 @@
  * Ideally, the Typescript should fail to compile when you do.
  * The next step is to add Request/Response types and then "map" them to each other.
  */
+import {GrantType} from "../types";
+
 export enum TokenizerRequest {
   getMetadata = 'getMetadata',
   setMetadata = 'setMetadata',
@@ -26,6 +28,12 @@ export interface TokenizerApiResponse<T> {
 
 /// API Request Schemas ///
 
+export interface SetGrantRequest extends BaseTokenizerRequest {
+  sessionId: string;
+  tokenId: string;
+  grantType: GrantType;
+}
+
 export interface GetMetadataRequest extends BaseTokenizerRequest {
   /**
    * Needs to be a UUID.
@@ -45,7 +53,7 @@ export interface GetTokenRequest extends BaseTokenizerRequest {
   /**
    * Needs to be a UUID.
    */
-  tokenJwt: string;
+  tokenId: string;
 }
 
 export interface SetTokenRequest extends BaseTokenizerRequest {
@@ -53,6 +61,11 @@ export interface SetTokenRequest extends BaseTokenizerRequest {
 };
 
 /// API Response Schemas ///
+export interface SetGrantResponse {
+  success: boolean;
+  data: {};
+}
+
 export interface GetMetadataResponse {
   success: boolean;
   data: {
@@ -87,6 +100,7 @@ export type TokenizerRequestLookup = {
 };
 
 export interface TokenizerRequestMessageMap extends TokenizerRequestLookup {
+  setGrant: SetGrantRequest;
   getMetadata: GetMetadataRequest;
   setMetadata: SetMetadataRequest;
   getToken: GetTokenRequest;
@@ -99,6 +113,7 @@ export type TokenizerResponseLookup = {
 };
 
 export interface TokenizerRequestResponseMessageMap extends TokenizerResponseLookup {
+  setGrant: SetGrantResponse;
   getMetadata: GetMetadataResponse;
   setMetadata: SetMetadataResponse;
   getToken: GetTokenResponse;

@@ -53,19 +53,33 @@ func NewTokenizerController(provider config.Provider, tokenizer service.Tokenize
 	return
 }
 
-func (s *tokenizerController) requestHasValidGrantForToken(r *http.Request, tokenID model.Token) (valid bool, err error) {
-	accessToken, err := request.GetDataAccessToken(r)
+func (s *tokenizerController) getRequestClaims(r *http.Request) (claims *model.SessionJwtClaims, err error) {
+	accessToken, err := request.GetJwtToken(r)
 	if err != nil {
 		return
 	}
 
-	claims, err := s.jwtVerifier.VerifyWithSessionClaims(accessToken)
+	return s.jwtVerifier.VerifyWithSessionClaims(accessToken)
+}
+
+func (s *tokenizerController) requestHasValidGrantForToken(r *http.Request, tokenID model.Token) (err error) {
+	claims, err := s.getRequestClaims(r)
 	if err != nil {
 		err = errors.Wrap(err, "unable to verify token jwt with claims")
 		return
 	}
 
 	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID)
+}
+
+func (s *tokenizerController) setGrantForToken(r *http.Request, tokenID model.Token) (err error) {
+	claims, err := s.getRequestClaims(r)
+	if err != nil {
+		err = errors.Wrap(err, "unable to verify token jwt with claims")
+		return
+	}
+
+	return s.grant.SetTokenGrantForSession(tokenID, claims.SessionID)
 }
 
 func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Request) {
@@ -84,13 +98,9 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	valid, err := s.requestHasValidGrantForToken(r, model.Token(input.TokenID))
+	err = s.requestHasValidGrantForToken(r, model.Token(input.TokenID))
 	if err != nil {
-		util.RespondError(w, http.StatusBadRequest, err)
-		return
-	}
-	if !valid {
-		err = errors.New("no valid token grant was found for provided session and token ID")
+		log.Println(err)
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -142,6 +152,11 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 			util.RespondError(w, http.StatusInternalServerError, err)
 			return
 		}
+	}
+
+	if err := s.setGrantForToken(r, tokenID); err != nil {
+		util.RespondError(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	resp := event.TokenizerSetResponse{
