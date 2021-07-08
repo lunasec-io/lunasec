@@ -26,7 +26,7 @@ export const typeDefs = gql`
       insecure_field: String
   }
   
-  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT 
+  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION 
 `;
 
 // This is a fake little database so we have some data to serve
