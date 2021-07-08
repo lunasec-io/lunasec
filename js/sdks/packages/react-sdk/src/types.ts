@@ -33,7 +33,6 @@ export type ComponentNames = keyof ClassLookup;
 interface LunaSecWrapperProps<C extends keyof ClassLookup> {
   token?: C extends 'Uploader' ? never : string;
   name?: string;
-  secureFrameUrl?: string;
   // special file picker types:
   filetokens?: C extends 'Uploader' ? string[] : never;
   onTokenChange?: C extends 'Uploader' ? (token: Array<string>) => void : never;

@@ -1,6 +1,6 @@
 import { downloadFile } from '@lunasec/js-sdk';
 import {
-  onLunaSecAuthError,
+  LunaSecConfigContext,
   SecureDownload,
   SecureForm,
   SecureInput,
@@ -41,14 +41,10 @@ const defaultState: IAppState = {
 
 class App extends React.Component<Record<string, never>, IAppState> {
   private isValid = true;
-
+  private readonly lunaSecDomain = process.env.SECURE_FRAME_URL || 'http://localhost:37766';
   constructor(props: Record<string, never>) {
     super(props);
     this.state = defaultState;
-
-    onLunaSecAuthError((e: Error) => {
-      this.setState({ authError: 'Failed to authenticate with LunaSec. \n Is a user logged in?' });
-    });
   }
 
   async componentDidMount() {
@@ -144,7 +140,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
     this.setState({ loading: false });
 
     if (this.state.tokenGrants.file !== undefined) {
-      downloadFile(this.state.tokenGrants.file);
+      downloadFile(this.lunaSecDomain, this.state.tokenGrants.file);
     }
   }
 
@@ -185,7 +181,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
         </section>
         <section>
           <h3>Secure Download (programmatic)</h3>
-          <button onClick={() => downloadFile(fileTokenGrant)}>Click to trigger download with JS</button>
+          <button onClick={() => downloadFile(this.lunaSecDomain, fileTokenGrant)}>
+            Click to trigger download with JS
+          </button>
         </section>
       </>
     );
@@ -265,7 +263,16 @@ class App extends React.Component<Record<string, never>, IAppState> {
   render() {
     return (
       <div className="App">
-        <div className="app-form">{this.renderForm()}</div>
+        <LunaSecConfigContext.Provider
+          value={{
+            lunaSecDomain: this.lunaSecDomain,
+            authenticationErrorHandler: (_e: Error) => {
+              this.setState({ authError: 'Failed to authenticate with LunaSec. \n Is a user logged in?' });
+            },
+          }}
+        >
+          <div className="app-form">{this.renderForm()}</div>
+        </LunaSecConfigContext.Provider>
       </div>
     );
   }
