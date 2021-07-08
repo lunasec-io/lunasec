@@ -29,6 +29,13 @@ export interface TokenizerApiResponse<T> {
 /// API Request Schemas ///
 
 export interface SetGrantRequest extends BaseTokenizerRequest {
+  sessionId: string;
+  tokenId: string;
+  grantType: GrantType;
+}
+
+export interface VerifyGrantRequest extends BaseTokenizerRequest {
+  sessionId: string;
   tokenId: string;
   grantType: GrantType;
 }
@@ -63,6 +70,13 @@ export interface SetTokenRequest extends BaseTokenizerRequest {
 export interface SetGrantResponse {
   success: boolean;
   data: {};
+}
+
+export interface VerifyGrantResponse {
+  success: boolean;
+  data: {
+    valid: boolean;
+  };
 }
 
 export interface GetMetadataResponse {
@@ -100,6 +114,7 @@ export type TokenizerRequestLookup = {
 
 export interface TokenizerRequestMessageMap extends TokenizerRequestLookup {
   setGrant: SetGrantRequest;
+  verifyGrant: VerifyGrantRequest;
   getMetadata: GetMetadataRequest;
   setMetadata: SetMetadataRequest;
   getToken: GetTokenRequest;
@@ -113,6 +128,7 @@ export type TokenizerResponseLookup = {
 
 export interface TokenizerRequestResponseMessageMap extends TokenizerResponseLookup {
   setGrant: SetGrantResponse;
+  verifyGrant: VerifyGrantResponse;
   getMetadata: GetMetadataResponse;
   setMetadata: SetMetadataResponse;
   getToken: GetTokenResponse;

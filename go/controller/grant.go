@@ -21,6 +21,7 @@ type grantController struct {
 // GrantController ...
 type GrantController interface {
 	SetGrant(w http.ResponseWriter, req *http.Request)
+	VerifyGrant(w http.ResponseWriter, req *http.Request)
 }
 
 // NewGrantController ...
@@ -61,13 +62,7 @@ func (s *grantController) SetGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sessionID, err := s.getSessionID(r)
-	if err != nil {
-		util.RespondError(w, http.StatusBadRequest, err)
-		return
-	}
-
-	if err := s.grant.SetTokenGrantForSession(model.Token(input.TokenID), sessionID, input.GrantType); err != nil {
+	if err := s.grant.SetTokenGrantForSession(model.Token(input.TokenID), input.SessionID, input.GrantType); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
@@ -93,13 +88,7 @@ func (s *grantController) VerifyGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sessionID, err := s.getSessionID(r)
-	if err != nil {
-		util.RespondError(w, http.StatusBadRequest, err)
-		return
-	}
-
-	valid, err := s.grant.ValidTokenGrantExistsForSession(model.Token(input.TokenID), sessionID, input.GrantType)
+	valid, err := s.grant.ValidTokenGrantExistsForSession(model.Token(input.TokenID), input.SessionID, input.GrantType)
 	if err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
