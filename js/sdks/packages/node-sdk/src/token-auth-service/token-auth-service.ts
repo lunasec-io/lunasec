@@ -85,13 +85,17 @@ export class LunaSecTokenAuthService {
     }
   }
 
-  // private async verifyTokenizationGrant(sessionId: string, tokenId: string) {
-  //   const tokenizer = new Tokenizer();
-  //   const resp = await tokenizer.getGrant(sessionId, tokenId, 'store_token');
-  //   if (!resp.success) {
-  //     throw new Error(`unable to verify tokenization grant for: ${tokenId}`)
-  //   }
-  // }
+  private async verifyTokenizationGrant(sessionId: string, tokenId: string) {
+    const authenticationToken = await this.authenticate({});
+
+    const tokenizer = new Tokenizer({
+      token: authenticationToken.toString()
+    });
+    const resp = await tokenizer.verifyGrant(sessionId, tokenId, 'store_token');
+    if (!resp.success) {
+      throw new Error(`unable to verify tokenization grant for: ${tokenId}`)
+    }
+  }
 
   public async authorize(sessionId: string, tokenId: string) {
     if (!isToken(tokenId)) {
@@ -100,6 +104,10 @@ export class LunaSecTokenAuthService {
     return this.requestDetokenizationGrant(sessionId, tokenId);
   }
 
-  // public verifyTokenGrant(sessionId: string, tokenId: string): boolean {
-  // }
+  public verifyTokenGrant(sessionId: string, tokenId: string) {
+    if (!isToken(tokenId)) {
+      throw new Error('Attempted to verify a LunaSec Token Grant from a string that didnt look like a token');
+    }
+    return this.verifyTokenizationGrant(sessionId, tokenId);
+  }
 }
