@@ -7,6 +7,7 @@ export interface TokenizerClientConfig {
     getToken: string;
     setToken: string;
     setGrant: string;
+    verifyGrant: string;
   };
   headers: {
     auth: string;
@@ -18,6 +19,11 @@ export interface TokenizerClientConfig {
 
 export interface TokenizerSetGrantResponse {
   success: true;
+}
+
+export interface TokenizerVerifyGrantResponse {
+  success: true;
+  valid: boolean;
 }
 
 export interface TokenizerGetMetadataResponse {
