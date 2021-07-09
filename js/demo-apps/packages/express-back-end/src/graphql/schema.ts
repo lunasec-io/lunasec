@@ -18,16 +18,16 @@ export const typeDefs = gql`
   }
     
   type Mutation {
-      setFormData(formData: FormDataInput): FormData
-  }
+      setFormData(formData: FormDataInput): FormData @token
+  } 
   
-  input FormDataInput  {
+  input FormDataInput @token {
       email: String @token     #  I put the token directive all over the place to see if it could get picked up in the plugin, but ultimately it will just be here ( and on email above)
       insecure_field: String
   }
   
-  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION 
-`;
+  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION | OBJECT | INPUT_OBJECT
+`
 
 // This is a fake little database so we have some data to serve
 const db = {
