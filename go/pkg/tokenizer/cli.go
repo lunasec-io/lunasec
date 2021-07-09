@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/refinery-labs/loq/model"
 	"io/ioutil"
 	"log"
@@ -130,8 +129,7 @@ func s3Request(method, url string, headers map[string]string, body *bytes.Buffer
 }
 
 func newSessionID() string {
-	sessionID := uuid.New()
-	return sessionID.String()
+	return "cli-tool"
 }
 
 func setGrantForToken(cliOptions CliOptions, sessionID string, tokenID string) (err error) {
@@ -198,8 +196,6 @@ func TokenizeCommand(c *cli.Context) (err error) {
 		err = errors.New("server was unable to tokenize token")
 		return
 	}
-
-	fmt.Printf("%v", resp.Data)
 
 	s3Resp, err := s3Upload(resp.Data.UploadURL, resp.Data.Headers, content)
 	if err != nil {

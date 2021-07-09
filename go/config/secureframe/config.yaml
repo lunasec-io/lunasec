@@ -7,7 +7,7 @@ app:
     allowed_headers:
       - Authorization
 aws_gateway:
-  mock: false
+  mock: true
   region: us-west-2
   s3_bucket: ${CIPHERTEXT_VAULT_S3_BUCKET}
   table_names:
