@@ -19,6 +19,11 @@ import (
 // GetRoutes ...
 func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways) map[string]http.HandlerFunc {
 	meta := service.NewMetadataService(gateways.KV)
+	grant, err := service.NewGrantService(provider, gateways.KV)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
 	tokenizer := service.NewTokenizerService(gateways.KV, gateways.S3)
 	tokenVerifier, err := service.NewJwtVerifier("customer_jwt_verifier", logger, provider)
 	if err != nil {
@@ -26,15 +31,19 @@ func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 		panic(err)
 	}
 
-	metadataController := controller.NewMetaController(meta, tokenVerifier)
-	tokenizerController, err := controller.NewTokenizerController(provider, tokenizer, tokenVerifier, meta)
+	metadataController := controller.NewMetaController(meta, tokenVerifier, grant)
+	grantController := controller.NewGrantController(grant, tokenVerifier)
+	tokenizerController, err := controller.NewTokenizerController(provider, tokenizer, tokenVerifier, meta, grant)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
 	}
 
 	return map[string]http.HandlerFunc{
+		"/grant/set": grantController.SetGrant,
+		"/grant/verify": grantController.VerifyGrant,
 		"/metadata/get": metadataController.GetMetadata,
+		// TODO (cthompson) do we want to keep this endpoint?
 		"/metadata/set": metadataController.SetMetadata,
 		"/tokenize":     tokenizerController.TokenizerSet,
 		"/detokenize":   tokenizerController.TokenizerGet,

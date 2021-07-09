@@ -6,6 +6,8 @@ export interface TokenizerClientConfig {
     getMetadata: string;
     getToken: string;
     setToken: string;
+    setGrant: string;
+    verifyGrant: string;
   };
   headers: {
     auth: string;
@@ -14,6 +16,15 @@ export interface TokenizerClientConfig {
 }
 
 // _________________________  Responses ___________________________________
+
+export interface TokenizerSetGrantResponse {
+  success: true;
+}
+
+export interface TokenizerVerifyGrantResponse {
+  success: true;
+  valid: boolean;
+}
 
 export interface TokenizerGetMetadataResponse {
   success: true;
@@ -65,3 +76,7 @@ export interface FileMeta extends BaseMeta {
 }
 
 export type MetaData = StringMeta | FileMeta;
+
+// ______________________ Grants ______________________________
+
+export type GrantType = 'read_token' | 'store_token';
