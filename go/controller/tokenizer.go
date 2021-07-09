@@ -2,6 +2,8 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/refinery-labs/loq/constants"
+	"github.com/refinery-labs/loq/controller/request"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,8 +20,9 @@ import (
 type tokenizerController struct {
 	tokenizerControllerConfig
 	tokenizer     service.TokenizerService
-	tokenVerifier service.JwtVerifier
+	jwtVerifier service.JwtVerifier
 	meta          service.MetadataService
+	grant         service.GrantService
 }
 
 type tokenizerControllerConfig struct {
@@ -31,7 +34,7 @@ type TokenizerController interface {
 	TokenizerSet(w http.ResponseWriter, req *http.Request)
 }
 
-func NewTokenizerController(provider config.Provider, tokenizer service.TokenizerService, tokenVerifier service.JwtVerifier, meta service.MetadataService) (controller TokenizerController, err error) {
+func NewTokenizerController(provider config.Provider, tokenizer service.TokenizerService, jwtVerifier service.JwtVerifier, meta service.MetadataService, grant service.GrantService) (controller TokenizerController, err error) {
 	var (
 		controllerConfig tokenizerControllerConfig
 	)
@@ -44,24 +47,30 @@ func NewTokenizerController(provider config.Provider, tokenizer service.Tokenize
 	controller = &tokenizerController{
 		tokenizerControllerConfig: controllerConfig,
 		tokenizer:                 tokenizer,
-		tokenVerifier:             tokenVerifier,
+		jwtVerifier:             jwtVerifier,
 		meta:                      meta,
+		grant:                     grant,
 	}
 	return
 }
 
-func (s *tokenizerController) validateTokenJwt(tokenJwt string) (tokenID string, err error) {
-	claims, err := s.tokenVerifier.VerifyWithLunaSecTokenClaims(tokenJwt)
+func (s *tokenizerController) getRequestClaims(r *http.Request) (claims *model.SessionJwtClaims, err error) {
+	accessToken, err := request.GetJwtToken(r)
+	if err != nil {
+		return
+	}
+
+	return s.jwtVerifier.VerifyWithSessionClaims(accessToken)
+}
+
+func (s *tokenizerController) requestHasValidGrantForToken(r *http.Request, tokenID model.Token) (valid bool, err error) {
+	claims, err := s.getRequestClaims(r)
 	if err != nil {
 		err = errors.Wrap(err, "unable to verify token jwt with claims")
 		return
 	}
 
-	// TODO (cthompson): should we validate the claims further here? we could check if the subject
-	// matches the session that has been provided to us
-
-	tokenID = claims.TokenID
-	return
+	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID, constants.ReadToken)
 }
 
 func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Request) {
@@ -80,13 +89,20 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	tokenID, err := s.validateTokenJwt(input.TokenJwt)
+	valid, err := s.requestHasValidGrantForToken(r, model.Token(input.TokenID))
 	if err != nil {
+		log.Println(err)
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	url, headers, err := s.tokenizer.TokenizerGet(s.CustomerTokenSecret, model.Token(tokenID))
+	if !valid {
+		err = errors.New("session does not have valid token grant available to detokeni")
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	url, headers, err := s.tokenizer.TokenizerGet(s.CustomerTokenSecret, model.Token(input.TokenID))
 
 	if err != nil {
 		statusCode := 500
@@ -129,10 +145,26 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 	}
 
 	if len(input.Metadata) > 0 {
-		if err := s.meta.SetMetadata(model.Token(tokenID), input.Metadata); err != nil {
+		if err := s.meta.SetMetadata(tokenID, input.Metadata); err != nil {
 			util.RespondError(w, http.StatusInternalServerError, err)
 			return
 		}
+	}
+	claims, err := s.getRequestClaims(r)
+	if err != nil {
+		err = errors.Wrap(err, "unable to verify token jwt with claims")
+		return
+	}
+
+	// create grants for both reading the token, in case the front end wants to be able to read the token right away
+	// and also a grant for the customer's backend to verify the token was created by this session id
+	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.ReadToken); err != nil {
+		util.RespondError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.StoreToken); err != nil {
+		util.RespondError(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	resp := event.TokenizerSetResponse{

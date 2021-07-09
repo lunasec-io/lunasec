@@ -5,12 +5,13 @@ import { ValidTokenizerApiRequestTypes } from './api/types';
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { CONFIG_DEFAULTS } from './constants';
 import {
+  GrantType,
   TokenizerClientConfig,
   TokenizerDetokenizeResponse,
   TokenizerDetokenizeToUrlResponse,
-  TokenizerGetMetadataResponse,
+  TokenizerGetMetadataResponse, TokenizerSetGrantResponse,
   TokenizerSetMetadataResponse,
-  TokenizerTokenizeResponse,
+  TokenizerTokenizeResponse, TokenizerVerifyGrantResponse,
 } from './types';
 
 export class Tokenizer {
@@ -20,6 +21,8 @@ export class Tokenizer {
   private readonly setMetadataClient!: SpecificApiClient<'setMetadata'>;
   private readonly getTokenClient!: SpecificApiClient<'getToken'>;
   private readonly setTokenClient!: SpecificApiClient<'setToken'>;
+  private readonly setGrantClient!: SpecificApiClient<'setGrant'>;
+  private readonly verifyGrantClient!: SpecificApiClient<'verifyGrant'>;
 
   constructor(config?: Partial<TokenizerClientConfig>) {
     // Deep clone config for mutation safety.
@@ -44,9 +47,50 @@ export class Tokenizer {
     this.setMetadataClient = makeApiClient<'setMetadata'>(this.config.endpoints.setMetadata);
     this.getTokenClient = makeApiClient<'getToken'>(this.config.endpoints.getToken);
     this.setTokenClient = makeApiClient<'setToken'>(this.config.endpoints.setToken);
+    this.setGrantClient = makeApiClient<'setGrant'>(this.config.endpoints.setGrant);
+    this.verifyGrantClient = makeApiClient<'verifyGrant'>(this.config.endpoints.verifyGrant);
   }
 
-  // TODO: Evaluate adding back keygenSet and keygenGet methods
+  async setGrant(
+    sessionId: string,
+    tokenId: string,
+    grantType: GrantType
+  ): Promise<TokenizerFailApiResponse | TokenizerSetGrantResponse> {
+    const response = await this.setGrantClient({
+      sessionId,
+      tokenId,
+      grantType
+    });
+
+    if (!response.success) {
+      return response;
+    }
+
+    return {
+      success: true,
+    };
+  }
+
+  async verifyGrant(
+    sessionId: string,
+    tokenId: string,
+    grantType: GrantType
+  ): Promise<TokenizerFailApiResponse | TokenizerVerifyGrantResponse> {
+    const response = await this.verifyGrantClient({
+      sessionId,
+      tokenId,
+      grantType
+    });
+
+    if (!response.success) {
+      return response;
+    }
+
+    return {
+      success: true,
+      valid: response.data.data.valid
+    };
+  }
 
   async getMetadata(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerGetMetadataResponse> {
     const response = await this.getMetadataClient({
@@ -149,7 +193,7 @@ export class Tokenizer {
 
   async detokenizeToUrl(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeToUrlResponse> {
     const response = await this.getTokenClient({
-      tokenJwt: tokenId,
+      tokenId: tokenId,
     });
 
     if (!response.success) {

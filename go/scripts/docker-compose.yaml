@@ -1,0 +1,22 @@
+version: '3.7'
+networks:
+  mynet:
+services:
+#  scylla-node1:
+#    image: scylladb/scylla:4.4.0
+#    restart: always
+#    command: --smp 1 --memory=750M --overprovisioned 1 --alternator-port=8000 --api-address 0.0.0.0
+#    volumes:
+#      - "./scylla/mutant-data.txt:/mutant-data.txt"
+#    networks:
+#      web:
+  minio:
+    container_name: minio
+    image: minio/minio
+    ports:
+    - "443:443"
+    command: server --address ":443" /data
+    volumes:
+    - ./minio:/root/.minio
+    networks:
+      mynet:

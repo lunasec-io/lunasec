@@ -29,6 +29,18 @@ func main() {
 		},
 		Commands: []cli.Command{
 			{
+				Name:    "auth",
+				Description: "Manage tokenizer authentication",
+				Subcommands: []cli.Command{
+					{
+						Name: "create",
+						Description: "Create a valid auth token for the tokenizer.",
+						Category: "auth",
+						Action: tokenizer.CreateJwtAuthCommand,
+					},
+				},
+			},
+			{
 				Name:    "tokenize",
 				Aliases: []string{"t"},
 				Usage:   "Tokenize a secret value",
@@ -64,7 +76,7 @@ func main() {
 			{
 				Name: "metadata",
 				Subcommands: []cli.Command{
-					cli.Command{
+					{
 						Name:     "set",
 						Category: "metadata",
 						Usage:    "Set metadata for a token",
@@ -82,8 +94,7 @@ func main() {
 						},
 						Action: tokenizer.SetMetadataCommand,
 					},
-
-					cli.Command{
+					{
 						Name:     "get",
 						Category: "metadata",
 						Usage:    "Get metadata for a token",
