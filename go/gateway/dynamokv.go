@@ -53,6 +53,9 @@ func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider) DynamoKvGa
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
+		Config: aws.Config{
+			Endpoint: aws.String("https://b73dc96de966.ngrok.io"),
+		},
 	}))
 
 	logger.Debug("creating new dynamodb session")

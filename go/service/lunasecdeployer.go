@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/aws/aws-cdk-go/awscdk/awsapigateway"
 	"github.com/aws/aws-cdk-go/awscdk/awss3deployment"
 	"github.com/refinery-labs/loq/model"
 	"github.com/refinery-labs/loq/util"
@@ -12,7 +13,6 @@ import (
 	"os"
 
 	"github.com/aws/aws-cdk-go/awscdk"
-	"github.com/aws/aws-cdk-go/awscdk/awsapigateway"
 	"github.com/aws/aws-cdk-go/awscdk/awscloudfront"
 	"github.com/aws/aws-cdk-go/awscdk/awsdynamodb"
 	"github.com/aws/aws-cdk-go/awscdk/awsecr"
@@ -34,6 +34,7 @@ const (
 )
 
 const (
+	stackName = "LunasecSecureEnclave"
 	lunasecBuildDir = "build"
 )
 
@@ -54,6 +55,8 @@ type LunasecBuildConfig struct {
 	CDNConfig model.CDNConfig `yaml:"cdn_config"`
 	CustomerPublicKey string `yaml:"customer_public_key"`
 	FrontEndAssetsFolder string `yaml:"front_end_assets_folder"`
+	DeployLocally bool `yaml:"deploy_locally"`
+	LocalStackUrl string `yaml:"localstack_url"`
 }
 
 type lunasecDeployer struct {
@@ -151,7 +154,7 @@ func (l *lunasecDeployer) Build() (err error) {
 		return
 	}
 
-	l.addComponentsToStack(app, "LunasecSecureEnclave", &LunasecStackProps{
+	l.addComponentsToStack(app, stackName, &LunasecStackProps{
 		awscdk.StackProps{
 			Env: deploymentEnv,
 		},
@@ -181,6 +184,25 @@ func (l *lunasecDeployer) Deploy() (err error) {
 		return
 	}
 
+	if l.buildConfig.DeployLocally {
+		args := []string{
+			fmt.Sprintf("--endpoint-url=%s", l.buildConfig.LocalStackUrl),
+			"cloudformation",
+			"create-stack",
+			"--stack-name",
+			stackName,
+			"--template-body",
+			fmt.Sprintf("file://%s/%s.template.json", l.buildDir, stackName),
+		}
+		awsCliExecutor := NewExecutor("aws", args, []string{}, workDir, nil, true)
+		_, err = awsCliExecutor.Execute()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		return
+	}
+
 	awsURI := fmt.Sprintf("aws://%s/%s", *deploymentEnv.Account, *deploymentEnv.Region)
 
 	args := []string{"bootstrap", awsURI}
@@ -203,14 +225,8 @@ func (l *lunasecDeployer) Deploy() (err error) {
 	return
 }
 
-func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id string, props *LunasecStackProps, serviceImageLookup ServiceToImageMap) awscdk.Stack {
-	var sprops awscdk.StackProps
-	if props != nil {
-		sprops = props.StackProps
-	}
-	stack := awscdk.NewStack(scope, &id, &sprops)
-
-	ciphertextBucket := awss3.NewBucket(stack, jsii.String("ciphertext-bucket"), &awss3.BucketProps{
+func (l *lunasecDeployer) getCiphertextBucket(stack awscdk.Stack) awss3.Bucket {
+	return awss3.NewBucket(stack, jsii.String("ciphertext-bucket"), &awss3.BucketProps{
 		Cors: &[]*awss3.CorsRule{
 			{
 				AllowedHeaders: &[]*string{jsii.String("*")},
@@ -219,14 +235,21 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 			},
 		},
 	})
+}
 
-	secureFrameBucket := awss3.NewBucket(stack, jsii.String("secure-frame-bucket"), &awss3.BucketProps{
+func (l *lunasecDeployer) getSecureFrameBucket(stack awscdk.Stack) awss3.Bucket {
+	return awss3.NewBucket(stack, jsii.String("secure-frame-bucket"), &awss3.BucketProps{
 		AccessControl:        awss3.BucketAccessControl_PUBLIC_READ,
 		WebsiteIndexDocument: jsii.String("index.html"),
 		WebsiteErrorDocument: jsii.String("index.html"),
 	})
+}
 
-	secureFrameCloudfront := awscloudfront.NewCfnDistribution(stack, jsii.String("secure-frame-cloudfront"), &awscloudfront.CfnDistributionProps{
+func (l *lunasecDeployer) getCloudfrontDistribution(stack awscdk.Stack, secureFrameBucket awss3.Bucket) awscloudfront.CfnDistribution {
+	if l.buildConfig.DeployLocally {
+		return nil
+	}
+	return awscloudfront.NewCfnDistribution(stack, jsii.String("secure-frame-cloudfront"), &awscloudfront.CfnDistributionProps{
 		DistributionConfig: awscloudfront.CfnDistribution_DistributionConfigProperty{
 			Origins: []awscloudfront.CfnDistribution_OriginProperty{
 				{
@@ -269,52 +292,87 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 			},
 		},
 	})
+}
+
+func (l *lunasecDeployer) getSecureFrameDomainName(secureFrameCloudfront awscloudfront.CfnDistribution) string {
+	if l.buildConfig.DeployLocally {
+		return l.buildConfig.LocalStackUrl
+	}
+	return *secureFrameCloudfront.AttrDomainName()
+}
+
+func (l *lunasecDeployer) getSecureFrameBucketDeployment(stack awscdk.Stack, secureFrameBucket awss3.Bucket) awss3deployment.BucketDeployment {
+	if l.buildConfig.DeployLocally {
+		return nil
+	}
 
 	bucketSource := awss3deployment.Source_Asset(jsii.String(l.buildConfig.FrontEndAssetsFolder), nil)
 
-	_ = awss3deployment.NewBucketDeployment(stack, jsii.String("secure-frame-bucket-deployment"), &awss3deployment.BucketDeploymentProps{
+	return awss3deployment.NewBucketDeployment(stack, jsii.String("secure-frame-bucket-deployment"), &awss3deployment.BucketDeploymentProps{
 		Sources: &[]awss3deployment.ISource{
 			bucketSource,
 		},
 		DestinationBucket: secureFrameBucket,
 	})
+}
 
-	metadataTable := awsdynamodb.NewTable(stack, jsii.String("metadata-table"), &awsdynamodb.TableProps{
+func (l *lunasecDeployer) createBasicDynamodbTable(stack awscdk.Stack, name string) awsdynamodb.Table {
+	return awsdynamodb.NewTable(stack, jsii.String(name), &awsdynamodb.TableProps{
 		PartitionKey: &awsdynamodb.Attribute{
 			Name: jsii.String("Key"),
 			Type: awsdynamodb.AttributeType_STRING,
 		},
-	})
 
-	keysTable := awsdynamodb.NewTable(stack, jsii.String("keys-table"), &awsdynamodb.TableProps{
-		PartitionKey: &awsdynamodb.Attribute{
-			Name: jsii.String("Key"),
-			Type: awsdynamodb.AttributeType_STRING,
-		},
+		// TimeToLiveAttribute: jsii.String("TODO"),
 	})
+}
 
-	sessionsTable := awsdynamodb.NewTable(stack, jsii.String("sessions-table"), &awsdynamodb.TableProps{
-		PartitionKey: &awsdynamodb.Attribute{
-			Name: jsii.String("Key"),
-			Type: awsdynamodb.AttributeType_STRING,
-		},
-		// TODO (cthompson) enable TTL for this table since a bunch of one time use records are created
-		// TimeToLiveAttribute: ,
+func (l *lunasecDeployer) getSecureFrameLambda(stack awscdk.Stack, containerTag string, lambdaEnv *map[string]*string) awslambda.Function {
+	secureFrameRepo := awsecr.Repository_FromRepositoryName(stack, jsii.String("secure-frame-repo"), jsii.String(string(secureFrameBackendRepoName)))
+
+	return awslambda.NewDockerImageFunction(stack, jsii.String("secure-frame-lambda"), &awslambda.DockerImageFunctionProps{
+		Code: awslambda.DockerImageCode_FromEcr(secureFrameRepo, &awslambda.EcrImageCodeProps{
+			Tag: jsii.String(containerTag),
+		}),
+		Environment: lambdaEnv,
 	})
+}
 
-	grantsTable := awsdynamodb.NewTable(stack, jsii.String("grants-table"), &awsdynamodb.TableProps{
-		PartitionKey: &awsdynamodb.Attribute{
-			Name: jsii.String("Key"),
-			Type: awsdynamodb.AttributeType_STRING,
-		},
-		// TODO (cthompson) enable TTL for this table since a bunch of one time use records are created
-		// TimeToLiveAttribute: ,
+func (l *lunasecDeployer) getLambdaRestApi(stack awscdk.Stack, secureFrameLambda awslambda.Function) awsapigateway.LambdaRestApi {
+	return awsapigateway.NewLambdaRestApi(stack, jsii.String("gateway"), &awsapigateway.LambdaRestApiProps{
+		Handler: secureFrameLambda,
 	})
+}
 
-	// TODO (cthompson) we should read this from a configuration file
+func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id string, props *LunasecStackProps, serviceImageLookup ServiceToImageMap) awscdk.Stack {
+	var sprops awscdk.StackProps
+	if props != nil {
+		sprops = props.StackProps
+	}
+	stack := awscdk.NewStack(scope, &id, &sprops)
+
+	ciphertextBucket := l.getCiphertextBucket(stack)
+
+	secureFrameBucket := l.getSecureFrameBucket(stack)
+
+	secureFrameCloudfront := l.getCloudfrontDistribution(stack, secureFrameBucket)
+	secureFrameDomainName := l.getSecureFrameDomainName(secureFrameCloudfront)
+
+	l.getSecureFrameBucketDeployment(stack, secureFrameBucket)
+
+	metadataTable := l.createBasicDynamodbTable(stack, "metadata-table")
+
+	keysTable := l.createBasicDynamodbTable(stack, "keys-table")
+
+	// TODO (cthompson) enable TTL for this table since a bunch of one time use records are created
+	sessionsTable := l.createBasicDynamodbTable(stack, "sessions-table")
+
+	// TODO (cthompson) enable TTL for this table since a bunch of one time use records are created
+	grantsTable := l.createBasicDynamodbTable(stack, "grants-table")
+
 	cdnConfig, err := json.Marshal(model.CDNConfig{
 		Protocol: "https",
-		Host:        *secureFrameCloudfront.AttrDomainName(),
+		Host:        secureFrameDomainName,
 		MainScript: l.buildConfig.CDNConfig.MainScript,
 		MainStyle:  l.buildConfig.CDNConfig.MainStyle,
 	})
@@ -322,27 +380,24 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 		panic(err)
 	}
 
-	secureFrameRepo := awsecr.Repository_FromRepositoryName(stack, jsii.String("secure-frame-repo"), jsii.String(string(secureFrameBackendRepoName)))
+	lambdaEnv := &map[string]*string{
+		"SECURE_FRAME_FRONT_END":     secureFrameCloudfront.AttrDomainName(),
+		"CUSTOMER_FRONT_END":         jsii.String(l.buildConfig.CustomerFrontEnd),
+		"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
+		"CUSTOMER_BACK_END":          jsii.String(l.buildConfig.CustomerBackEnd),
+		"SECURE_FRAME_CDN_CONFIG":    jsii.String(string(cdnConfig)),
+		// TODO (cthompson) does this value provide us any security?
+		"TOKENIZER_CLIENT_SECRET": jsii.String("TODO"),
+		"CUSTOMER_PUBLIC_KEY": jsii.String(l.buildConfig.CustomerPublicKey),
+		"METADATA_KV_TABLE":   metadataTable.TableName(),
+		"KEYS_KV_TABLE":       keysTable.TableName(),
+		"SESSIONS_KV_TABLE":   sessionsTable.TableName(),
+		"GRANTS_KV_TABLE":   grantsTable.TableName(),
+	}
 
-	secureFrameLambda := awslambda.NewDockerImageFunction(stack, jsii.String("secure-frame-lambda"), &awslambda.DockerImageFunctionProps{
-		Code: awslambda.DockerImageCode_FromEcr(secureFrameRepo, &awslambda.EcrImageCodeProps{
-			Tag: jsii.String(serviceImageLookup[secureFrameBackendRepoName]),
-		}),
-		Environment: &map[string]*string{
-			"SECURE_FRAME_FRONT_END":     secureFrameCloudfront.AttrDomainName(),
-			"CUSTOMER_FRONT_END":         jsii.String(l.buildConfig.CustomerFrontEnd),
-			"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
-			"CUSTOMER_BACK_END":          jsii.String(l.buildConfig.CustomerBackEnd),
-			"SECURE_FRAME_CDN_CONFIG":    jsii.String(string(cdnConfig)),
-			// TODO (cthompson) does this value provide us any security?
-			"TOKENIZER_CLIENT_SECRET": jsii.String("TODO"),
-			"CUSTOMER_PUBLIC_KEY": jsii.String(l.buildConfig.CustomerPublicKey),
-			"METADATA_KV_TABLE":   metadataTable.TableName(),
-			"KEYS_KV_TABLE":       keysTable.TableName(),
-			"SESSIONS_KV_TABLE":   sessionsTable.TableName(),
-			"GRANTS_KV_TABLE":   grantsTable.TableName(),
-		},
-	})
+	containerTag := serviceImageLookup[secureFrameBackendRepoName]
+
+	secureFrameLambda := l.getSecureFrameLambda(stack, containerTag, lambdaEnv)
 
 	ciphertextBucket.GrantReadWrite(secureFrameLambda, "*")
 	metadataTable.GrantReadWriteData(secureFrameLambda)
@@ -350,9 +405,7 @@ func (l *lunasecDeployer) addComponentsToStack(scope constructs.Construct, id st
 	sessionsTable.GrantReadWriteData(secureFrameLambda)
 	grantsTable.GrantReadWriteData(secureFrameLambda)
 
-	awsapigateway.NewLambdaRestApi(stack, jsii.String("gateway"), &awsapigateway.LambdaRestApiProps{
-		Handler: secureFrameLambda,
-	})
+	l.getLambdaRestApi(stack, secureFrameLambda)
 
 	return stack
 }

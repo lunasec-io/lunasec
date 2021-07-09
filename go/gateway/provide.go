@@ -30,16 +30,14 @@ func GetAwsGateways(logger *zap.Logger, provider config.Provider) (gateways Gate
 
 	if awsGatewayConfig.Mock {
 		logger.Debug("loading mock AWS gateways")
-		gateways.KV = NewDynamoKvGatewayMock()
 		gateways.SM = NewAwsSecretsManagerGatewayMock(provider)
-		gateways.S3 = NewAwsS3GatewayMock()
-		return
+	} else {
+		logger.Debug("loading secrets manager AWS gateway...")
+		gateways.SM = NewAwsSecretsManagerGateway(logger, provider)
 	}
+
 	logger.Debug("loading dynamodb AWS gateway...")
 	gateways.KV = NewDynamoKvGateway(logger, provider)
-
-	logger.Debug("loading secrets manager AWS gateway...")
-	gateways.SM = NewAwsSecretsManagerGateway(logger, provider)
 
 	logger.Debug("loading s3 AWS gateway...")
 	gateways.S3, err = NewAwsS3Gateway(logger, provider)

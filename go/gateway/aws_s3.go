@@ -75,6 +75,8 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider) (s3Gateway Aw
 		SharedConfigState: session.SharedConfigEnable,
 		Config: aws.Config{
 			Region: &gatewayConfig.S3Region,
+			Endpoint: aws.String("https://b73dc96de966.ngrok.io"),
+			S3ForcePathStyle: aws.Bool(true),
 		},
 	}))
 
