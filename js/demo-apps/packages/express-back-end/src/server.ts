@@ -1,47 +1,33 @@
-import {config} from 'dotenv'
+import { config } from 'dotenv';
 config();
 
-import { createRoutes } from './routes';
-import express, {Request} from "express";
-import cors from "cors";
-import { SecretProviders, LunaSecExpressAuthPlugin, LunaSecTokenAuthService} from '@lunasec/node-sdk';
-import {attachApolloServer} from "./graphql/graphql-apollo-server";
+import express from 'express';
 
+import { attachApolloServer } from './graphql/graphql-apollo-server';
+import { authPlugin } from './lunasec-plugins';
+import { createRoutes } from './routes';
+
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 app.use(express.json());
-app.use(cors({
+app.use(
+  cors({
     origin: 'http://localhost:3000',
     optionsSuccessStatus: 200,
-    methods: ['GET', 'POST']
-}));
+    methods: ['GET', 'POST'],
+  })
+);
 
-const tokenService = new LunaSecTokenAuthService({
-    secretProvider: {
-        type: SecretProviders.environment,
-    }
-});
-
-const authPlugin = new LunaSecExpressAuthPlugin({
-    tokenService: tokenService,
-    authContextCallback: (req: Request) => {
-        const idToken = req.cookies['id_token'];
-
-        if (idToken === undefined) {
-            console.error('id_token is not set in request');
-            return null;
-        }
-        // TODO (cthompson) validate the jwt and pull relevant claims from payload
-        return {};
-    }
-});
-
+app.use(cookieParser());
+// Attach the LunaSec authentication plugin
 authPlugin.register(app);
 
-app.use(createRoutes(tokenService))
+app.use(createRoutes());
 
 attachApolloServer(app);
 
 app.listen(3001, () => {
-    console.log('listening on http://localhost:3001/');
+  console.log('listening on http://localhost:3001/');
 });
