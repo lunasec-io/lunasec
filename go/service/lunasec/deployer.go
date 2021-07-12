@@ -1,4 +1,4 @@
-package service
+package lunasec
 
 import (
 	"encoding/json"
@@ -7,10 +7,15 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/awsapigateway"
 	"github.com/aws/aws-cdk-go/awscdk/awss3deployment"
 	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/service"
 	"github.com/refinery-labs/loq/util"
 	"go.uber.org/config"
+	"gopkg.in/yaml.v3"
+	"io/ioutil"
 	"log"
 	"os"
+	"path"
+	"strings"
 
 	"github.com/aws/aws-cdk-go/awscdk"
 	"github.com/aws/aws-cdk-go/awscdk/awscloudfront"
@@ -55,17 +60,24 @@ type LunasecBuildConfig struct {
 	CDNConfig model.CDNConfig `yaml:"cdn_config"`
 	CustomerPublicKey string `yaml:"customer_public_key"`
 	FrontEndAssetsFolder string `yaml:"front_end_assets_folder"`
-	DeployLocally bool `yaml:"deploy_locally"`
 	LocalStackUrl string `yaml:"localstack_url"`
 }
 
 type lunasecDeployer struct {
-	buildDir string
+	buildDir           string
 	skipImageMirroring bool
-	buildConfig LunasecBuildConfig
+	localDev           bool
+	buildConfig        LunasecBuildConfig
+	configOutput       string
 }
 
-func NewLunasecDeployer(provider config.Provider, buildDir string, skipImageMirroring bool) (deployer LunasecDeployer, err error) {
+func NewLunasecDeployer(
+	provider config.Provider,
+	buildDir string,
+	skipImageMirroring bool,
+	localDev bool,
+	configOutput string,
+) (deployer LunasecDeployer, err error) {
 	var (
 		buildConfig LunasecBuildConfig
 	)
@@ -85,7 +97,9 @@ func NewLunasecDeployer(provider config.Provider, buildDir string, skipImageMirr
 	deployer = &lunasecDeployer{
 		buildDir: buildDir,
 		skipImageMirroring: skipImageMirroring,
+		localDev: localDev,
 		buildConfig: buildConfig,
+		configOutput: configOutput,
 	}
 	return
 }
@@ -171,6 +185,11 @@ func (l *lunasecDeployer) Build() (err error) {
 	return
 }
 
+func getOutputName(name string) *string {
+	outputName := fmt.Sprintf("%sArnOutput", name)
+	return jsii.String(strings.Replace(outputName, "-", "", -1))
+}
+
 func (l *lunasecDeployer) Deploy() (err error) {
 	workDir, err := os.Getwd()
 	if err != nil {
@@ -184,7 +203,7 @@ func (l *lunasecDeployer) Deploy() (err error) {
 		return
 	}
 
-	if l.buildConfig.DeployLocally {
+	if l.localDev {
 		args := []string{
 			fmt.Sprintf("--endpoint-url=%s", l.buildConfig.LocalStackUrl),
 			"cloudformation",
@@ -194,7 +213,7 @@ func (l *lunasecDeployer) Deploy() (err error) {
 			"--template-body",
 			fmt.Sprintf("file://%s/%s.template.json", l.buildDir, stackName),
 		}
-		awsCliExecutor := NewExecutor("aws", args, []string{}, workDir, nil, true)
+		awsCliExecutor := service.NewExecutor("aws", args, []string{}, workDir, nil, true)
 		_, err = awsCliExecutor.Execute()
 		if err != nil {
 			log.Println(err)
@@ -206,27 +225,76 @@ func (l *lunasecDeployer) Deploy() (err error) {
 	awsURI := fmt.Sprintf("aws://%s/%s", *deploymentEnv.Account, *deploymentEnv.Region)
 
 	args := []string{"bootstrap", awsURI}
-	cdkExecutor := NewExecutor("cdk", args, []string{}, workDir, nil, true)
+	cdkExecutor := service.NewExecutor("cdk", args, []string{}, workDir, nil, true)
 	_, err = cdkExecutor.Execute()
 	if err != nil {
 		log.Println(err)
 		return
 	}
+
+	outputFilePath := path.Join(l.buildDir, "outputs.json")
 
 	// TODO (cthompson) we probably want to require approval for this, but for now this is ok
-	args = []string{"deploy", "--require-approval", "never", "-a", l.buildDir}
+	args = []string{"deploy", "--require-approval", "never", "-a", l.buildDir, "--outputs-file", outputFilePath}
 
-	cdkExecutor = NewExecutor("cdk", args, []string{}, workDir, nil, true)
+	cdkExecutor = service.NewExecutor("cdk", args, []string{}, workDir, nil, true)
 	_, err = cdkExecutor.Execute()
 	if err != nil {
 		log.Println(err)
 		return
 	}
+
+	type StackOutput map[string]map[string]string
+	type AwsResourceConfig struct {
+		TableNames map[model.KVStore]string `yaml:"table_names"`
+		CiphertextBucket string `yaml:"s3_bucket"`
+	}
+
+	var (
+		stackOutput StackOutput
+		awsResourceConfig AwsResourceConfig
+	)
+
+	outputFile, err := ioutil.ReadFile(outputFilePath)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	err = json.Unmarshal(outputFile, &stackOutput)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	outputs, ok := stackOutput[stackName]
+	if !ok {
+		err = fmt.Errorf("stack (%s) does not have any outputs", stackName)
+		log.Println(err)
+		return
+	}
+
+	awsResourceConfig.CiphertextBucket = outputs[*getOutputName("ciphertext-bucket")]
+
+	awsResourceConfig.TableNames = map[model.KVStore]string{}
+	awsResourceConfig.TableNames[gateway.MetaStore] = outputs[*getOutputName("metadata-table")]
+	awsResourceConfig.TableNames[gateway.KeyStore] = outputs[*getOutputName("keys-table")]
+	awsResourceConfig.TableNames[gateway.SessionStore] = outputs[*getOutputName("sessions-table")]
+	awsResourceConfig.TableNames[gateway.GrantStore] = outputs[*getOutputName("grants-table")]
+
+	out, err := yaml.Marshal(awsResourceConfig)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	err = ioutil.WriteFile(path.Join(l.configOutput, "aws_resources.yaml"), out, 0755)
 	return
 }
 
 func (l *lunasecDeployer) getCiphertextBucket(stack awscdk.Stack) awss3.Bucket {
-	return awss3.NewBucket(stack, jsii.String("ciphertext-bucket"), &awss3.BucketProps{
+	bucketName := "ciphertext-bucket"
+	bucket := awss3.NewBucket(stack, jsii.String(bucketName), &awss3.BucketProps{
 		Cors: &[]*awss3.CorsRule{
 			{
 				AllowedHeaders: &[]*string{jsii.String("*")},
@@ -235,6 +303,11 @@ func (l *lunasecDeployer) getCiphertextBucket(stack awscdk.Stack) awss3.Bucket {
 			},
 		},
 	})
+	awscdk.NewCfnOutput(stack, getOutputName(bucketName), &awscdk.CfnOutputProps{
+		Value:      bucket.BucketName(),
+		ExportName: getOutputName(bucketName),
+	})
+	return bucket
 }
 
 func (l *lunasecDeployer) getSecureFrameBucket(stack awscdk.Stack) awss3.Bucket {
@@ -246,7 +319,7 @@ func (l *lunasecDeployer) getSecureFrameBucket(stack awscdk.Stack) awss3.Bucket 
 }
 
 func (l *lunasecDeployer) getCloudfrontDistribution(stack awscdk.Stack, secureFrameBucket awss3.Bucket) awscloudfront.CfnDistribution {
-	if l.buildConfig.DeployLocally {
+	if l.localDev {
 		return nil
 	}
 	return awscloudfront.NewCfnDistribution(stack, jsii.String("secure-frame-cloudfront"), &awscloudfront.CfnDistributionProps{
@@ -295,14 +368,14 @@ func (l *lunasecDeployer) getCloudfrontDistribution(stack awscdk.Stack, secureFr
 }
 
 func (l *lunasecDeployer) getSecureFrameDomainName(secureFrameCloudfront awscloudfront.CfnDistribution) string {
-	if l.buildConfig.DeployLocally {
+	if l.localDev {
 		return l.buildConfig.LocalStackUrl
 	}
 	return *secureFrameCloudfront.AttrDomainName()
 }
 
 func (l *lunasecDeployer) getSecureFrameBucketDeployment(stack awscdk.Stack, secureFrameBucket awss3.Bucket) awss3deployment.BucketDeployment {
-	if l.buildConfig.DeployLocally {
+	if l.localDev {
 		return nil
 	}
 
@@ -317,7 +390,7 @@ func (l *lunasecDeployer) getSecureFrameBucketDeployment(stack awscdk.Stack, sec
 }
 
 func (l *lunasecDeployer) createBasicDynamodbTable(stack awscdk.Stack, name string) awsdynamodb.Table {
-	return awsdynamodb.NewTable(stack, jsii.String(name), &awsdynamodb.TableProps{
+	table := awsdynamodb.NewTable(stack, jsii.String(name), &awsdynamodb.TableProps{
 		PartitionKey: &awsdynamodb.Attribute{
 			Name: jsii.String("Key"),
 			Type: awsdynamodb.AttributeType_STRING,
@@ -325,6 +398,11 @@ func (l *lunasecDeployer) createBasicDynamodbTable(stack awscdk.Stack, name stri
 
 		// TimeToLiveAttribute: jsii.String("TODO"),
 	})
+	awscdk.NewCfnOutput(stack, getOutputName(name), &awscdk.CfnOutputProps{
+		Value:      table.TableName(),
+		ExportName: getOutputName(name),
+	})
+	return table
 }
 
 func (l *lunasecDeployer) getSecureFrameLambda(stack awscdk.Stack, containerTag string, lambdaEnv *map[string]*string) awslambda.Function {
@@ -417,7 +495,7 @@ func pullContainerFromPublicEcr(ecrGateway gateway.AwsECRGateway, containerURL s
 		return
 	}
 
-	publicEcrDockerManager := NewDockerManager(options)
+	publicEcrDockerManager := service.NewDockerManager(options)
 
 	containerImg, err = publicEcrDockerManager.PullImage(containerURL)
 	if err != nil {
@@ -445,7 +523,7 @@ func pushContainerToPrivateEcr(ecrGateway gateway.AwsECRGateway, ecrRepository s
 		return
 	}
 
-	privateEcrDockerManager := NewDockerManager(options)
+	privateEcrDockerManager := service.NewDockerManager(options)
 
 	err = privateEcrDockerManager.PushImage(containerImg, ecrImageURL)
 	if err != nil {

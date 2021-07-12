@@ -24,12 +24,12 @@ const (
 )
 
 type dynamoKvGateway struct {
-	dynamoKvGatewayConfig
+	DynamoKvGatewayConfig
 	logger *zap.Logger
 	db     *dynamodb.DynamoDB
 }
 
-type dynamoKvGatewayConfig struct {
+type DynamoKvGatewayConfig struct {
 	TableNames map[model.KVStore]string `yaml:"table_names"`
 }
 
@@ -42,7 +42,7 @@ type DynamoKvGateway interface {
 // NewDynamoKvGateway...
 func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider) DynamoKvGateway {
 	var (
-		gatewayConfig dynamoKvGatewayConfig
+		gatewayConfig DynamoKvGatewayConfig
 	)
 
 	err := provider.Get("aws_gateway").Populate(&gatewayConfig)
@@ -62,7 +62,7 @@ func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider) DynamoKvGa
 	db := dynamodb.New(sess)
 
 	return &dynamoKvGateway{
-		dynamoKvGatewayConfig: gatewayConfig,
+		DynamoKvGatewayConfig: gatewayConfig,
 		logger:                logger,
 		db:                    db,
 	}

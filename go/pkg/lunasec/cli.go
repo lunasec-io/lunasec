@@ -2,11 +2,29 @@ package lunasec
 
 import (
 	"errors"
-	"github.com/refinery-labs/loq/service"
+	"fmt"
+	"github.com/refinery-labs/loq/service/lunasec"
 	"github.com/urfave/cli"
 	"go.uber.org/config"
 	"log"
+	"os"
 )
+
+var (
+	configPaths = []string{
+		"config.yaml",
+		"config/lunasec/config.yaml",
+	}
+)
+
+func findFirstExistingFile(filePaths []string) string {
+	for _, file := range filePaths {
+		if _, err := os.Stat(file); err != nil {
+			return file
+		}
+	}
+	return ""
+}
 
 type CliOptions struct {
 }
@@ -18,7 +36,16 @@ func cliOptionsStruct(c *cli.Context) CliOptions {
 func BuildCommand(c *cli.Context) (err error) {
 	buildDir := c.GlobalString("dir")
 	configFile := c.GlobalString("config")
+	if configFile == "" {
+		configFile = findFirstExistingFile(configPaths)
+		if configFile == "" {
+			err = fmt.Errorf("unable to local build config file, searched: %v", configPaths)
+			log.Println(err)
+			return
+		}
+	}
 	skipMirroring := c.Bool("skip-mirroring")
+	localDev := c.Bool("local")
 
 	if configFile == "" {
 		err = errors.New("required parameter 'config' not provided")
@@ -32,7 +59,7 @@ func BuildCommand(c *cli.Context) (err error) {
 		return
 	}
 
-	lunasecDeployer, err := service.NewLunasecDeployer(provider, buildDir, skipMirroring)
+	lunasecDeployer, err := lunasec.NewLunasecDeployer(provider, buildDir, skipMirroring, localDev, "")
 	if err != nil {
 		log.Println(err)
 		return
@@ -42,6 +69,11 @@ func BuildCommand(c *cli.Context) (err error) {
 
 func DeployCommand(c *cli.Context) (err error) {
 	buildBeforeDeploying := c.Bool("build")
+	localDev := c.Bool("local")
+	configOutput := c.String("config-output")
+	if configOutput == "" {
+		configOutput = "config/secureframe/"
+	}
 
 	if buildBeforeDeploying {
 		log.Println("building secure lunasec components")
@@ -52,6 +84,6 @@ func DeployCommand(c *cli.Context) (err error) {
 	}
 
 	buildDir := c.GlobalString("dir")
-	lunasecDeployer, _ := service.NewLunasecDeployer(nil, buildDir, true)
+	lunasecDeployer, _ := lunasec.NewLunasecDeployer(nil, buildDir, true, localDev, configOutput)
 	return lunasecDeployer.Deploy()
 }
