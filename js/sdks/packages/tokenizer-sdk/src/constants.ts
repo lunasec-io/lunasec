@@ -11,7 +11,7 @@ export const CONFIG_DEFAULTS: TokenizerClientConfig = {
     getToken: '/detokenize',
     setToken: '/tokenize',
     setGrant: '/grant/set',
-    verifyGrant: '/grant/verify'
+    verifyGrant: '/grant/verify',
   },
   headers: {
     auth: 'Authorization'.toLowerCase(),
