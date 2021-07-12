@@ -9,9 +9,11 @@ import {
   TokenizerClientConfig,
   TokenizerDetokenizeResponse,
   TokenizerDetokenizeToUrlResponse,
-  TokenizerGetMetadataResponse, TokenizerSetGrantResponse,
+  TokenizerGetMetadataResponse,
+  TokenizerSetGrantResponse,
   TokenizerSetMetadataResponse,
-  TokenizerTokenizeResponse, TokenizerVerifyGrantResponse,
+  TokenizerTokenizeResponse,
+  TokenizerVerifyGrantResponse,
 } from './types';
 
 export class Tokenizer {
@@ -59,7 +61,7 @@ export class Tokenizer {
     const response = await this.setGrantClient({
       sessionId,
       tokenId,
-      grantType
+      grantType,
     });
 
     if (!response.success) {
@@ -79,7 +81,7 @@ export class Tokenizer {
     const response = await this.verifyGrantClient({
       sessionId,
       tokenId,
-      grantType
+      grantType,
     });
 
     if (!response.success) {
@@ -88,7 +90,7 @@ export class Tokenizer {
 
     return {
       success: true,
-      valid: response.data.data.valid
+      valid: response.data.data.valid,
     };
   }
 
@@ -137,13 +139,16 @@ export class Tokenizer {
 
   // TODO: Add another method that _doesn't_ take a key, so that we handle generation.
 
-  async tokenize(input: string | Buffer, metadata?: Record<string, any>): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
+  async tokenize(
+    input: string | Buffer,
+    metadata?: Record<string, any>
+  ): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
     if (metadata === undefined) {
       metadata = {};
     }
 
     const response = await this.setTokenClient({
-      metadata: metadata
+      metadata: metadata,
     });
     if (!response.success) {
       return response;

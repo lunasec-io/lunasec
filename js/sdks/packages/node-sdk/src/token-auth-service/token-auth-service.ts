@@ -1,10 +1,8 @@
-import {isToken, Tokenizer} from '@lunasec/tokenizer-sdk';
+import { isToken, Tokenizer } from '@lunasec/tokenizer-sdk';
 import { KeyLike, SignJWT } from 'jose/jwt/sign';
 import { JWTPayload } from 'jose/types';
 
-
 import { getSecretFromSecretProvider, ValidSecretProvider } from './types';
-
 
 export class LunaSecAuthenticationGrant {
   private readonly authGrant!: string;
@@ -77,11 +75,11 @@ export class LunaSecTokenAuthService {
     const authenticationToken = await this.authenticate({});
 
     const tokenizer = new Tokenizer({
-      token: authenticationToken.toString()
+      token: authenticationToken.toString(),
     });
     const resp = await tokenizer.setGrant(sessionId, tokenId, 'read_token');
     if (!resp.success) {
-      throw new Error(`unable to set detokenization grant for: ${tokenId}`)
+      throw new Error(`unable to set detokenization grant for: ${tokenId}`);
     }
   }
 
@@ -89,11 +87,11 @@ export class LunaSecTokenAuthService {
     const authenticationToken = await this.authenticate({});
 
     const tokenizer = new Tokenizer({
-      token: authenticationToken.toString()
+      token: authenticationToken.toString(),
     });
     const resp = await tokenizer.verifyGrant(sessionId, tokenId, 'store_token');
     if (!resp.success) {
-      throw new Error(`unable to verify tokenization grant for: ${tokenId}`)
+      throw new Error(`unable to verify tokenization grant for: ${tokenId}`);
     }
   }
 
