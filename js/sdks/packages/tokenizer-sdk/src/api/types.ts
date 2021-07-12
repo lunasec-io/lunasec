@@ -3,7 +3,7 @@
  * Ideally, the Typescript should fail to compile when you do.
  * The next step is to add Request/Response types and then "map" them to each other.
  */
-import {GrantType} from "../types";
+import { GrantType } from '../types';
 
 export enum TokenizerRequest {
   getMetadata = 'getMetadata',
@@ -64,7 +64,7 @@ export interface GetTokenRequest extends BaseTokenizerRequest {
 
 export interface SetTokenRequest extends BaseTokenizerRequest {
   metadata: Record<string, any>;
-};
+}
 
 /// API Response Schemas ///
 export interface SetGrantResponse {

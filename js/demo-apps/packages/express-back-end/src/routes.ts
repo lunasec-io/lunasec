@@ -12,7 +12,6 @@ import cors from "cors";
 const routes = Router();
 
 
-
 const secureResolver = new SecureResolver({
   stage: DeploymentStage.DEV
 });
