@@ -10,14 +10,14 @@ type authCallbackConfig struct {
 	AuthCallbackHost string `yaml:"auth_callback_host"`
 }
 
-type s3BucketConfig struct {
+type S3BucketConfig struct {
 	S3Bucket string `yaml:"s3_bucket"`
 }
 
 func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 	var (
 		authConfig   authCallbackConfig
-		bucketConfig s3BucketConfig
+		bucketConfig S3BucketConfig
 	)
 	// TODO report this to someplace
 	reportUri := "http://localhost:5004"

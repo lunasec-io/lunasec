@@ -16,13 +16,13 @@ import (
 const s3EncryptionAlgo = "AES256"
 
 type awsS3Gateway struct {
-	awsS3GatewayConfig
+	AwsS3GatewayConfig
 	logger *zap.Logger
 	s3     *session.Session
 	s3Host string
 }
 
-type awsS3GatewayConfig struct {
+type AwsS3GatewayConfig struct {
 	S3Region string `yaml:"region"`
 	S3Bucket string `yaml:"s3_bucket"`
 }
@@ -36,7 +36,7 @@ type AwsS3Gateway interface {
 
 // TODO (cthompson) this is currently a hack until we figure out a better way for creating gateways with different named configs
 func NewAwsS3GatewayWithoutConfig(bucket, region string) (s3Gateway AwsS3Gateway, err error) {
-	gatewayConfig := awsS3GatewayConfig{
+	gatewayConfig := AwsS3GatewayConfig{
 		S3Region: region,
 		S3Bucket: bucket,
 	}
@@ -51,7 +51,7 @@ func NewAwsS3GatewayWithoutConfig(bucket, region string) (s3Gateway AwsS3Gateway
 	}))
 
 	s3Gateway = &awsS3Gateway{
-		awsS3GatewayConfig: gatewayConfig,
+		AwsS3GatewayConfig: gatewayConfig,
 		s3:                 sess,
 		s3Host:             s3Host,
 	}
@@ -61,7 +61,7 @@ func NewAwsS3GatewayWithoutConfig(bucket, region string) (s3Gateway AwsS3Gateway
 // NewAwsS3Gateway...
 func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider) (s3Gateway AwsS3Gateway, err error) {
 	var (
-		gatewayConfig awsS3GatewayConfig
+		gatewayConfig AwsS3GatewayConfig
 	)
 
 	err = provider.Get("aws_gateway").Populate(&gatewayConfig)
@@ -82,7 +82,7 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider) (s3Gateway Aw
 
 	s3Gateway = &awsS3Gateway{
 		logger:             logger,
-		awsS3GatewayConfig: gatewayConfig,
+		AwsS3GatewayConfig: gatewayConfig,
 		s3:                 sess,
 		s3Host:             s3Host,
 	}
