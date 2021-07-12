@@ -1,7 +1,7 @@
 package event
 
 type TokenizerGetRequest struct {
-	TokenJwt string `json:"tokenJwt"`
+	TokenID string `json:"tokenID"`
 }
 
 type TokenizerGetResponse struct {
