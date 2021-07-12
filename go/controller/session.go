@@ -64,7 +64,7 @@ func NewSessionController(
 }
 
 func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request) {
-	dataAccessToken, err := request.GetDataAccessToken(r)
+	dataAccessToken, err := request.GetJwtToken(r)
 	if err != nil {
 		s.logger.Warn("cookie not set", zap.Error(err))
 		err = errors.New("cookie 'access_token' not set in request")
