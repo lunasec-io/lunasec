@@ -4,27 +4,25 @@ import cookieParser from 'cookie-parser';
 import { Request, Response, Router } from 'express';
 import { JWTPayload } from 'jose/types';
 
-import { LunaSecTokenAuthService } from '../token-auth-service';
-
-export type AuthContextCallback = (req: Request) => JWTPayload | null;
+import { LunaSecAuthentication } from '../authentication';
+import { SessionIdProvider } from '../authentication/types';
 
 export interface ExpressAuthPluginConfig {
-  tokenService: LunaSecTokenAuthService;
-  authContextCallback: AuthContextCallback;
+  sessionIdProvider: SessionIdProvider;
   payloadClaims?: string[];
+  secureFrameURL: string;
+  auth: LunaSecAuthentication;
 }
 
 export class LunaSecExpressAuthPlugin {
   private readonly secureFrameUrl: string;
+  private readonly auth: LunaSecAuthentication;
   private readonly config: ExpressAuthPluginConfig;
 
   constructor(config: ExpressAuthPluginConfig) {
+    this.auth = config.auth;
     this.config = config;
-    const secureFrameUrl = process.env.SECURE_FRAME_URL;
-    if (secureFrameUrl === undefined) {
-      throw Error('SECURE_FRAME_URL not found in environment variables.');
-    }
-    this.secureFrameUrl = secureFrameUrl;
+    this.secureFrameUrl = config.secureFrameURL;
   }
 
   filterClaims(payload: JWTPayload): any {
@@ -42,10 +40,10 @@ export class LunaSecExpressAuthPlugin {
       }, {});
   }
 
-  async buildSecureFrameRedirectUrl(stateToken: string, payloadClaims: any) {
+  async buildSecureFrameRedirectUrl(stateToken: string) {
     let authGrant = undefined;
     try {
-      authGrant = await this.config.tokenService.authenticate(payloadClaims);
+      authGrant = await this.auth.createAuthenticationJWT({});
     } catch (e) {
       console.error(`error while attempting to create authentication token: ${e}`);
     }
@@ -71,8 +69,9 @@ export class LunaSecExpressAuthPlugin {
       });
       return;
     }
-    const payloadClaims = this.config.authContextCallback(req);
-    if (payloadClaims === null) {
+    // TODO: DO SOMETHING WITH THIS SESSIONID
+    const sessionId = this.config.sessionIdProvider(req);
+    if (sessionId === null) {
       res.status(400).send({
         success: false,
         error: 'unable to authenticate the user of this request',
@@ -80,7 +79,7 @@ export class LunaSecExpressAuthPlugin {
       return;
     }
 
-    const redirectUrl = await this.buildSecureFrameRedirectUrl(stateToken, payloadClaims);
+    const redirectUrl = await this.buildSecureFrameRedirectUrl(stateToken);
     if (redirectUrl === null) {
       console.error('unable to complete auth flow');
       res.status(400).send({

@@ -1,8 +1,6 @@
-import { TokenDirective } from '@lunasec/node-sdk';
 import { gql } from 'apollo-server-express';
 
-import { tokenService } from '../lunasec-plugins';
-
+import { lunaSec } from '../configure-lunasec';
 // README - This demo shows how to use the lunasec @token directive in your apollo server
 // Import the directive from the node-sdk and attach it to your schemaDirectives(bottom of this file) which are passed into apollo
 // and declare the directive directly in your schema with the `directive` keyword.
@@ -49,7 +47,7 @@ export const resolvers = {
       _info: any
     ) => {
       // For now, you must manually verify all tokens are granted before writing them to the database
-      await tokenService.verifyTokenGrant(context.sessionId, args.formData.email); // Throws if there is an issue
+      await lunaSec.grants.verifyGrant(context.sessionId, args.formData.email, 'store_token'); // Throws if there is an issue
       db.formData = args.formData;
       return db.formData;
     },
@@ -57,5 +55,5 @@ export const resolvers = {
 };
 
 export const schemaDirectives = {
-  token: TokenDirective,
+  token: lunaSec.tokenDirective,
 };
