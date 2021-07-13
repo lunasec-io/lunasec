@@ -1,15 +1,11 @@
 import { TokenDirective } from '@lunasec/node-sdk';
 import { gql } from 'apollo-server-express';
-import { Request } from 'express';
-import { jwtVerify } from 'jose/jwt/verify';
 
 import { tokenService } from '../lunasec-plugins';
 
 // README - This demo shows how to use the lunasec @token directive in your apollo server
 // Import the directive from the node-sdk and attach it to your schemaDirectives(bottom of this file) which are passed into apollo
 // and declare the directive directly in your schema with the `directive` keyword.
-
-const __PUBLIC_KEY__ = process.env.SESSION_JWT_PUBLIC_KEY as string;
 
 export const typeDefs = gql`
   type FormData {
@@ -22,11 +18,11 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    setFormData(formData: FormDataInput): FormData @token
+    setFormData(formData: FormDataInput): FormData
   }
 
-  input FormDataInput @token {
-    email: String @token #  I put the token directive all over the place to see if it could get picked up in the plugin, but ultimately it will just be here ( and on email above)
+  input FormDataInput {
+    email: String
     insecure_field: String
   }
 
@@ -41,15 +37,19 @@ const db = {
   },
 };
 
-export function context(context: { req: Request }) {}
-
 export const resolvers = {
   Query: {
     getFormData: () => db.formData,
   },
   Mutation: {
-    setFormData: (_parent: never, args: { formData: typeof db['formData'] }, context: any, _info: any) => {
-      // TODO: clean this up and do it in a context function passed to apollo
+    setFormData: async (
+      _parent: never,
+      args: { formData: typeof db['formData'] },
+      context: { sessionId: string },
+      _info: any
+    ) => {
+      // For now, you must manually verify all tokens are granted before writing them to the database
+      await tokenService.verifyTokenGrant(context.sessionId, args.formData.email); // Throws if there is an issue
       db.formData = args.formData;
       return db.formData;
     },

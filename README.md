@@ -47,8 +47,13 @@ hybrid_encryption_manager:
 aws_gateway:
   s3_bucket: EXAMPLE
 ```
- 
+
 Then, install `tmuxp` and then run `tmuxp load ./start-with-tmuxp.yaml` in the root directory. You can inspect that file to see what commands are all being run if you'd like to start the cluster without tmuxp.
+
+You will need a session to be a valid, logged in user in the app.  Make sure your cookie is set to 
+```
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uIjp7ImlkIjoiU09NRV9JRCJ9fQ.J-4BVMZKhEi_igguYepCS8OhCf1zG1RXGbJi6uPF0Ast2lkT45s2IzJfokABOnm32rK4oQTTPBq_9J03F6LHicGwZ6b0ckOJOMeAd9NMtHfOGCBnD3FxcsvBw46MTnQSlTbNiJIzrCr8Usws8uCvQw8EYye6SJh6XoizQX5kym8JF0VYL6VAY-eLjhKuj_xBIbP2NSQZ2UbmuvA_wIha8oJn7xohD9qpuPDfi-st9nHIoHzIQZtKcAnQrsl525c012lSsUu76n_BqfaMoI0YqLMZ3tso2NQ-lulD5UO3Zs_pwq42u1ure1OV1PbIw0PA6wZc9L7izWzE6KA20tCdfLwe_3NiH_XyqL2p63u2FOgv3kxIMHbGW9YuZt_BBIwCbSlcunBPDJbtNmmCijwdlf89LsC6LQhjwou9wwKYb8NvOppJQslrMKkixmkOLRHavhIdgCqDF8hkTrdtaQYhs2Vv6JC6rEeyyn9xKqcq_WqCRtK8RNJActeoMenuDVk8
+```
 
 Then open your browser and navigate to `http://localhost:3000`. That will show you the POC.
 
