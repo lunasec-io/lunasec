@@ -31,7 +31,7 @@ export class Tokenizer {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 
-    const jwtToken = this.config.token;
+    const jwtToken = this.config.authenticationToken;
 
     const headers: Record<string, string> = {};
     if (jwtToken) {

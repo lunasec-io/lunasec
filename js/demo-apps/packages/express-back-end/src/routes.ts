@@ -1,7 +1,7 @@
 import { DeploymentStage, SecureResolver } from '@lunasec/node-sdk';
 import { Router } from 'express';
 
-import { tokenService } from './lunasec-plugins';
+import { lunaSec } from './configure-lunasec';
 import { processForm, SecureFormData } from './process-form';
 const routes = Router();
 
@@ -73,7 +73,7 @@ export function createRoutes() {
     const sessionId = '1234';
 
     try {
-      const tokenGrant = await tokenService.authorize(sessionId, tokenId);
+      const tokenGrant = await lunaSec.grants.grant(sessionId, tokenId);
       res.json({
         grant: tokenGrant, // grant stringifies itself on serialization
       });

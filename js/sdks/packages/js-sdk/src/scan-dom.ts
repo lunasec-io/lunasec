@@ -93,7 +93,7 @@ export function createDomWatcher(domInstance: Document, frameUrl: string, rootRe
           return inputs;
         }
 
-        const elementsToSecure = element.querySelectorAll('input[type="text"]');
+        const elementsToSecure = element.querySelectorAll('input[type="text"]') as unknown as HTMLInputElement[];
 
         inputs.push({
           formElement: element,
@@ -101,7 +101,7 @@ export function createDomWatcher(domInstance: Document, frameUrl: string, rootRe
         });
 
         return inputs;
-      }, [] as SecureFormInputConfig[]); //eslint-disable-line
+      }, [] as SecureFormInputConfig[]);
 
     if (secureForms.length === 0) {
       return;

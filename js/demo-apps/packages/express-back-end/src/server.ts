@@ -3,8 +3,8 @@ config();
 
 import express from 'express';
 
+import { lunaSec } from './configure-lunasec';
 import { attachApolloServer } from './graphql/graphql-apollo-server';
-import { authPlugin } from './lunasec-plugins';
 import { createRoutes } from './routes';
 
 import cors from 'cors';
@@ -22,7 +22,7 @@ app.use(
 
 app.use(cookieParser());
 // Attach the LunaSec authentication plugin
-authPlugin.register(app);
+lunaSec.expressPlugin.register(app);
 
 app.use(createRoutes());
 

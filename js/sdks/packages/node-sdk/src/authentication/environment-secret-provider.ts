@@ -2,9 +2,7 @@ import { createPrivateKey, KeyObject } from 'crypto';
 
 import { __SIGNING_KEY__ } from '../constants';
 
-import { EnvironmentSecretProvider } from './types';
-
-export function environmentSecretProvider(_provider: EnvironmentSecretProvider) {
+export function environmentSecretProvider() {
   if (__SIGNING_KEY__ === undefined) {
     throw new Error('Unable to read secret from environment variable: LUNASEC_SIGNING_KEY');
   }
