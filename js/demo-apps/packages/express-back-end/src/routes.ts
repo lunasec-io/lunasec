@@ -1,15 +1,16 @@
-import { DeploymentStage, SecureResolver } from '@lunasec/node-sdk';
 import { Router } from 'express';
 
 import { lunaSec } from './configure-lunasec';
-import { processForm, SecureFormData } from './process-form';
+// import { processForm, SecureFormData } from './process-form';
+// import { DeploymentStage, SecureResolver } from '@lunasec/node-sdk';
 const routes = Router();
 
-const secureResolver = new SecureResolver({
-  stage: DeploymentStage.DEV,
-});
-
-const secureProcessForm = secureResolver.wrap(processForm);
+// (forrest) Leaving the secure resolver stuff commented out until chris gets a change to take another pass at it
+// const secureResolver = new SecureResolver({
+//   stage: DeploymentStage.DEV,
+// });
+//
+// const secureProcessForm = secureResolver.wrap(processForm);
 
 export function createRoutes() {
   routes.get('/set-id-token', async function (req, res) {
@@ -32,32 +33,33 @@ export function createRoutes() {
     res.end();
   });
 
-  routes.post('/signup', async (req, res) => {
-    const ssnToken: string = req.body.ssnToken;
-
-    if (!ssnToken) {
-      console.error('ssn token is not set');
-      res.status(400);
-      res.end();
-      return;
-    }
-
-    const formData: SecureFormData = {
-      ssnToken: ssnToken,
-    };
-
-    const plaintext = await secureProcessForm(formData);
-    if (plaintext === undefined) {
-      console.error('error when calling process form');
-      res.status(500);
-      res.end();
-      return;
-    }
-
-    console.log(plaintext);
-    res.status(200);
-    res.end();
-  });
+  //
+  // routes.post('/signup', async (req, res) => {
+  //   const ssnToken: string = req.body.ssnToken;
+  //
+  //   if (!ssnToken) {
+  //     console.error('ssn token is not set');
+  //     res.status(400);
+  //     res.end();
+  //     return;
+  //   }
+  //
+  //   const formData: SecureFormData = {
+  //     ssnToken: ssnToken,
+  //   };
+  //
+  //   const plaintext = await secureProcessForm(formData);
+  //   if (plaintext === undefined) {
+  //     console.error('error when calling process form');
+  //     res.status(500);
+  //     res.end();
+  //     return;
+  //   }
+  //
+  //   console.log(plaintext);
+  //   res.status(200);
+  //   res.end();
+  // });
 
   routes.get('/grant', async (req, res) => {
     const tokenId = req.query.token;

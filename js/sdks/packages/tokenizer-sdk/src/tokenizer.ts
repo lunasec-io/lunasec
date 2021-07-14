@@ -32,7 +32,7 @@ export class Tokenizer {
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 
     const jwtToken = this.config.authenticationToken;
-
+    console.log('set jwtToken in tokenizer: ', jwtToken);
     const headers: Record<string, string> = {};
     if (jwtToken) {
       headers[this.config.headers.auth] = jwtToken;
