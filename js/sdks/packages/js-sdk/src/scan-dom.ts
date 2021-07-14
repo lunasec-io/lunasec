@@ -93,7 +93,7 @@ export function createDomWatcher(domInstance: Document, frameUrl: string, rootRe
           return inputs;
         }
 
-        const elementsToSecure = element.querySelectorAll('input[type="text"]');
+        const elementsToSecure = element.querySelectorAll('input[type="text"]') as unknown as HTMLInputElement[];
 
         inputs.push({
           formElement: element,
