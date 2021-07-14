@@ -1,6 +1,6 @@
 import { createPrivateKey, KeyObject } from 'crypto';
 
-import { __SIGNING_KEY__ } from '../constants';
+const __SIGNING_KEY__ = process.env.LUNASEC_SIGNING_KEY;
 
 export function environmentSecretProvider() {
   if (__SIGNING_KEY__ === undefined) {

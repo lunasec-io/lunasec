@@ -3,6 +3,8 @@ import { SecretConfig, SessionIdProvider } from '../authentication/types';
 import { LunaSecExpressAuthPlugin } from '../express-auth-plugin';
 import { LunaSecGrantService } from '../grant-service';
 import { setGrantServiceForDirective, TokenDirective } from '../graphql';
+import { SecureResolver } from '../secure-resolver';
+import { SecureResolverSdkConfig } from '../secure-resolver/types';
 
 // Attempt to keep this configuration organized and named in a way that is easy for the API user to understand
 export interface LunaSecConfig {
@@ -12,6 +14,7 @@ export interface LunaSecConfig {
     payloadClaims?: string[]; // Note that not setting this allows unfiltered claims to be set, do we want that?
     sessionIdProvider: SessionIdProvider; // A callback used situations where we have the req object and would like to know the sessionId
   };
+  secureResolverConfig?: SecureResolverSdkConfig;
 }
 
 // This is the main class that customers will create to use LunaSec on their node server
@@ -22,7 +25,7 @@ export class LunaSec {
   public grants: LunaSecGrantService;
   public expressPlugin: LunaSecExpressAuthPlugin;
   public tokenDirective: typeof TokenDirective; // Graphql initializes this class, not us
-
+  public secureResolvers?: SecureResolver;
   constructor(config: LunaSecConfig) {
     this.auth = new LunaSecAuthentication(config.auth.secrets);
     // This express plugin is created here if users optionally wish to access it and register it onto their app
@@ -35,5 +38,8 @@ export class LunaSec {
     this.grants = new LunaSecGrantService(this.auth);
     setGrantServiceForDirective(this.grants);
     this.tokenDirective = TokenDirective;
+    if (config.secureResolverConfig) {
+      this.secureResolvers = new SecureResolver(config.secureResolverConfig);
+    }
   }
 }

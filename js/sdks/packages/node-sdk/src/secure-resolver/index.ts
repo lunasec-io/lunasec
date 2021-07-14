@@ -10,17 +10,10 @@ import {
   SecureEnclaveSuccessApiResponse,
 } from '../api/client';
 import { BuildResolverResponse } from '../api/types';
-import { __CONTAINER_SECRET__, __DEPLOYMENT_SECRET__ } from '../constants';
 import { fetch } from '../fetch';
-import { DeploymentStage, FunctionConfig, SecureResolverSdkConfig } from '../types/config';
 
-import {
-  containerSecretHeader,
-  defaultConfig,
-  deploymentEndpoint,
-  deploymentIDEnvVar,
-  refinerySecretHeader,
-} from './constants';
+import { deploymentEndpoint } from './constants';
+import { DeploymentStage, FunctionConfig, SecureResolverSdkConfig } from './types';
 
 class SecureResolverCallError extends Error {
   constructor(message?: string) {
@@ -68,15 +61,10 @@ export class SecureResolver {
   constructor(config: SecureResolverSdkConfig) {
     // Deep clone the config to prevent nested mutation.
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.config = JSON.parse(JSON.stringify(Object.assign({}, defaultConfig, config)));
+    this.config = config;
 
-    const deploymentId = process.env[deploymentIDEnvVar];
-    if (deploymentId !== undefined) {
-      this.config.deploymentId = deploymentId;
-    }
-
-    if (deploymentId === undefined) {
-      throw new Error('Secure Resolver SDK cannot be initialized: deployment ID is not set in config or environment');
+    if (this.config.deploymentId === undefined) {
+      throw new Error('Secure Resolver SDK cannot be initialized: deployment ID is not set in config ');
     }
 
     if (!this.config?.functionsConfig && !this.config?.functionsConfigPath) {
@@ -95,14 +83,14 @@ export class SecureResolver {
     }
 
     this.refineryHeaders = {
-      [refinerySecretHeader]: __DEPLOYMENT_SECRET__,
+      refinerySecretHeader: config.deploymentSecret,
     };
 
     this.containerHeaders = {
-      [containerSecretHeader]: __CONTAINER_SECRET__,
+      containerSecretHeader: config.containerHeaders,
     };
 
-    this.apiClient = makeGenericApiClient(deploymentEndpoint, {
+    this.apiClient = makeGenericApiClient(this.config.deploymentUrl, deploymentEndpoint, {
       method: 'POST',
       headers: this.refineryHeaders,
     });
