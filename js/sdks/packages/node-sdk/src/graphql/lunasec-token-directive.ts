@@ -34,10 +34,10 @@ export class TokenDirective extends SchemaDirectiveVisitor {
     const resolve = field.resolve || defaultFieldResolver;
     field.resolve = async function (...args) {
       //@ts-ignore
-      console.log('resolver context is ', args.context);
+      const req = args[2].req;
       // Fire the user's resolver and get the resulting token
-      const result = await resolve.apply(this, args);
-      if (typeof result !== 'string' || !isToken(result)) {
+      const token = await resolve.apply(this, args);
+      if (typeof token !== 'string' || !isToken(token)) {
         throw new Error(
           `Field ${field.name} did not resolve to a token but had a LunaSec @token directive in the graphql schema`
         );
@@ -45,8 +45,8 @@ export class TokenDirective extends SchemaDirectiveVisitor {
       if (!grantService) {
         throw new Error('Grant Service was not configured for the graphql token directive.');
       }
-      // await grantService.grantWithAutomaticSessionId(result);
-      return result;
+      await grantService.grantWithAutomaticSessionId(req, token);
+      return token;
     };
   }
 

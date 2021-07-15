@@ -13,7 +13,8 @@ const routes = Router();
 // const secureProcessForm = secureResolver.wrap(processForm);
 
 export function createRoutes() {
-  routes.get('/set-id-token', async function (req, res) {
+  // This little helper route gets called manually to simulate a login flow for the purposes of the demo
+  routes.get('/set-id-token', function (req, res) {
     const id_token = req.query.id_token;
     if (typeof id_token !== 'string') {
       res.status(400).send({
@@ -31,6 +32,10 @@ export function createRoutes() {
 
   routes.get('/', async (_req, res) => {
     res.end();
+  });
+
+  routes.post('/check-cors', (_req, res) => {
+    res.status(200).send('ok');
   });
 
   //

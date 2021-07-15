@@ -6,13 +6,15 @@ import { lunaSec } from '../configure-lunasec';
 // and declare the directive directly in your schema with the `directive` keyword.
 
 export const typeDefs = gql`
-  type FormData {
-    email: String @token
-    insecure_field: String
-  }
-
   type Query {
     getFormData: FormData
+  }
+
+  type FormData {
+    text_area: String @token
+    email: String @token
+    insecure_field: String
+    files: [String] # MAKE TOKEN DIRECTIVE HANDLE ARRAYS
   }
 
   type Mutation {
@@ -22,6 +24,8 @@ export const typeDefs = gql`
   input FormDataInput {
     email: String
     insecure_field: String
+    text_area: String
+    files: [String]
   }
 
   directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION | OBJECT | INPUT_OBJECT
@@ -30,8 +34,10 @@ export const typeDefs = gql`
 // This is a fake little database so we have some data to serve
 const db = {
   formData: {
-    email: 'lunasec-FAKE-TOKEN',
-    insecure_field: 'Insecure_Text',
+    text_area: '',
+    email: 'lunasec-b74d3a3a-9375-4ead-84be-a935cc00d01e',
+    insecure_field: 'Some Insecure Data Coexisting',
+    files: [],
   },
 };
 
@@ -48,7 +54,9 @@ export const resolvers = {
     ) => {
       // For now, you must manually verify all tokens are granted before writing them to the database
       await lunaSec.grants.verifyGrant(context.sessionId, args.formData.email, 'store_token'); // Throws if there is an issue
+      await lunaSec.grants.verifyGrant(context.sessionId, args.formData.text_area, 'store_token'); // Throws if there is an issue
       db.formData = args.formData;
+      console.log('setting test data to ', args.formData);
       return db.formData;
     },
   },

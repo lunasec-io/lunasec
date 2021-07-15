@@ -6,7 +6,7 @@ import { setGrantServiceForDirective, TokenDirective } from '../graphql';
 import { SecureResolver } from '../secure-resolver';
 import { SecureResolverSdkConfig } from '../secure-resolver/types';
 
-// Attempt to keep this configuration organized and named in a way that is easy for the API user to understand
+// Please attempt to keep this configuration organized and named in a way that is easy for the API user to understand
 export interface LunaSecConfig {
   secureFrameURL: string;
   auth: {
@@ -35,7 +35,7 @@ export class LunaSec {
       payloadClaims: config.auth.payloadClaims,
       secureFrameURL: config.secureFrameURL,
     });
-    this.grants = new LunaSecGrantService(this.auth);
+    this.grants = new LunaSecGrantService(this.auth, config.auth.sessionIdProvider);
     setGrantServiceForDirective(this.grants);
     this.tokenDirective = TokenDirective;
     if (config.secureResolverConfig) {

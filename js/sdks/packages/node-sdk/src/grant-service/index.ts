@@ -31,21 +31,6 @@ export class LunaSecGrantService {
     }
   }
 
-  // Uses the sessionIdProvider optionally configured by the user in situations where we have the req object but dont know how to read the sessionId
-  public async grantWithAutomaticSessionId(req: Request, tokenId: string) {
-    if (!this.sessionIdProvider) {
-      throw new Error(
-        'Attempted to grant a token automatically without the sessionIdProvider configured, check your LunaSec Config'
-      );
-    }
-    const sessionId = await this.sessionIdProvider(req);
-    // TODO: Will also need to support the case of the user not being logged in somehow, maybe that will be a URL param and can be handled by the customer in their callback
-    if (typeof sessionId !== 'string') {
-      throw new Error('Session ID from the SessionIdProvider passed in LunaSecOptions did not resolve to a string');
-    }
-    return this.grant(sessionId, tokenId);
-  }
-
   public async verifyGrant(sessionId: string, tokenId: string, grantType: GrantType) {
     if (!isToken(tokenId)) {
       throw new Error('Attempted to verify a LunaSec Token Grant from a string that didnt look like a token');
@@ -59,5 +44,35 @@ export class LunaSecGrantService {
     if (!resp.success) {
       throw new Error(`unable to verify tokenization grant for: ${tokenId}`);
     }
+  }
+
+  // _______________ GRAPHQL HELPER METHODS ________________________-
+  // Uses the sessionIdProvider configured by the user
+
+  private async getSessionIdFromReq(req: Request): Promise<string> {
+    if (!this.sessionIdProvider) {
+      throw new Error(
+        'Attempted to grant or verifyGrant of a token automatically without the sessionIdProvider configured, check your LunaSec Config'
+      );
+    }
+    const sessionId = await this.sessionIdProvider(req);
+    // TODO: Will also need to support the case of the user not being logged in somehow, maybe that will be a URL param and can be handled by the customer in their callback
+    if (typeof sessionId !== 'string') {
+      const err = new Error(
+        'Session ID from the SessionIdProvider passed in LunaSecOptions did not resolve to a string'
+      );
+      //@ts-ignore node errors have this .code property, don't know what typescript is complaining about
+      err.code = 401;
+      throw err;
+    }
+    return sessionId;
+  }
+
+  public async grantWithAutomaticSessionId(req: Request, tokenId: string) {
+    return this.grant(await this.getSessionIdFromReq(req), tokenId);
+  }
+
+  public async verifyGrantWithAutomaticSessionId(req: Request, tokenId: string, grantType: GrantType) {
+    return this.verifyGrant(await this.getSessionIdFromReq(req), tokenId, grantType);
   }
 }

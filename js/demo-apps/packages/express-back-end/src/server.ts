@@ -16,7 +16,8 @@ app.use(
   cors({
     origin: 'http://localhost:3000',
     optionsSuccessStatus: 200,
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'PUT', 'POST'],
+    credentials: true,
   })
 );
 
@@ -26,8 +27,8 @@ lunaSec.expressPlugin.register(app);
 
 app.use(createRoutes());
 
-attachApolloServer(app);
-
-app.listen(3001, () => {
-  console.log('listening on http://localhost:3001/');
+attachApolloServer(app).then(() => {
+  app.listen(3001, () => {
+    console.log('listening on http://localhost:3001/');
+  });
 });
