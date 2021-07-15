@@ -25,6 +25,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-react": "^7.23.2",
+    "graphql-tag": "^2.12.5",
     "husky": "^6.0.0",
     "lerna": "^3.22.1",
     "lint-staged": "^10.5.4",
