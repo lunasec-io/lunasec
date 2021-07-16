@@ -21,7 +21,7 @@ FROM node
 
 RUN apt-get update || : && apt-get install python3 python3-pip -y
 
-RUN npm i -g aws-cdk@1.114.0 aws-cdk-local@1.65.6
+RUN npm i -g aws-cdk@1.114.0 aws-cdk-local@1.65.4
 RUN pip3 install awscli
 
 ENV BUILDER_PATH /out/lunasec_cli
