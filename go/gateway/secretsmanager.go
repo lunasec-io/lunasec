@@ -4,7 +4,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
-	"github.com/refinery-labs/loq/util"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 )
@@ -16,7 +15,7 @@ type awsSecretsManagerGateway struct {
 }
 
 type awsSecretsManagerGatewayConfig struct {
-	S3Region string `yaml:"region"`
+	GatewayConfig
 }
 
 // AwsSecretsManagerGateway ...
@@ -25,7 +24,7 @@ type AwsSecretsManagerGateway interface {
 }
 
 // NewAwsSecretsManagerGateway...
-func NewAwsSecretsManagerGateway(logger *zap.Logger, provider config.Provider) AwsSecretsManagerGateway {
+func NewAwsSecretsManagerGateway(logger *zap.Logger, provider config.Provider, sess *session.Session) AwsSecretsManagerGateway {
 	var (
 		gatewayConfig awsSecretsManagerGatewayConfig
 	)
@@ -35,15 +34,6 @@ func NewAwsSecretsManagerGateway(logger *zap.Logger, provider config.Provider) A
 		panic(err)
 	}
 
-	sess, err := session.NewSession(
-		&aws.Config{
-			Region: &gatewayConfig.S3Region,
-		},
-	)
-
-	if err != nil {
-		util.Panicf("Failed to instantiate Secrets Manager session %s", err)
-	}
 	return &awsSecretsManagerGateway{
 		logger:                         logger,
 		awsSecretsManagerGatewayConfig: gatewayConfig,

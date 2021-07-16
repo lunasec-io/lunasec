@@ -1,0 +1,21 @@
+FROM golang AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
+
+ADD . /code
+WORKDIR /code
+RUN BUILD_TAG=cli make lunasec
+
+FROM node
+
+ENV BUILDER_PATH /code/build/lunasec_cli
+
+RUN npm i -g cdk
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder $BUILDER_PATH /lunasec
+COPY --from=builder /code/config/lunasec /config/lunasec
+COPY --from=builder /tmp /tmp
+
+WORKDIR /
+ENTRYPOINT ["/lunasec"]

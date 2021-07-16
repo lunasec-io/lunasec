@@ -33,3 +33,8 @@ func GetConfigProvider(configDir string) config.Provider {
 	}
 	return provider
 }
+
+func GetStaticConfigProvider(val interface{}) (provider config.Provider, err error) {
+	opt := config.Static(val)
+	return config.NewYAML(opt)
+}

@@ -27,6 +27,10 @@ type AwsS3GatewayConfig struct {
 	S3Bucket string `yaml:"s3_bucket"`
 }
 
+type AwsS3GatewayConfigWrapper struct {
+	S3Bucket AwsS3GatewayConfig `yaml:"s3_bucket"`
+}
+
 // AwsS3Gateway ...
 type AwsS3Gateway interface {
 	GetObject(key string) (content []byte, err error)
@@ -34,51 +38,27 @@ type AwsS3Gateway interface {
 	GeneratePresignedPutUrl(key string, encryptionKey []byte) (string, map[string]string, error)
 }
 
-// TODO (cthompson) this is currently a hack until we figure out a better way for creating gateways with different named configs
-func NewAwsS3GatewayWithoutConfig(bucket, region string) (s3Gateway AwsS3Gateway, err error) {
-	gatewayConfig := AwsS3GatewayConfig{
-		S3Region: region,
-		S3Bucket: bucket,
-	}
-
-	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
-
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-		Config: aws.Config{
-			Region: &gatewayConfig.S3Region,
+func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
+	return AwsS3GatewayConfigWrapper{
+		S3Bucket: AwsS3GatewayConfig{
+			S3Region: region,
+			S3Bucket: bucket,
 		},
-	}))
-
-	s3Gateway = &awsS3Gateway{
-		AwsS3GatewayConfig: gatewayConfig,
-		s3:                 sess,
-		s3Host:             s3Host,
 	}
-	return
 }
 
 // NewAwsS3Gateway...
-func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider) (s3Gateway AwsS3Gateway, err error) {
+func NewAwsS3Gateway(logger *zap.Logger, values config.Value, sess *session.Session) (s3Gateway AwsS3Gateway, err error) {
 	var (
 		gatewayConfig AwsS3GatewayConfig
 	)
 
-	err = provider.Get("aws_gateway").Populate(&gatewayConfig)
+	err = values.Populate(&gatewayConfig)
 	if err != nil {
 		return
 	}
 
 	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
-
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-		Config: aws.Config{
-			Region: &gatewayConfig.S3Region,
-			Endpoint: aws.String("https://b73dc96de966.ngrok.io"),
-			S3ForcePathStyle: aws.Bool(true),
-		},
-	}))
 
 	s3Gateway = &awsS3Gateway{
 		logger:             logger,

@@ -3,6 +3,7 @@ package controller
 import (
 	"bytes"
 	"fmt"
+	"go.uber.org/zap"
 	"log"
 
 	v1 "github.com/google/go-containerregistry/pkg/v1"
@@ -80,7 +81,26 @@ func (c *containerModifierController) buildFunctionConfigLayer(base v1.Image, ru
 }
 
 func (c *containerModifierController) createFunctionLayers(base v1.Image, invokeEvent event.ContainerModifyEvent) (functionLayers []v1.Layer, err error) {
-	s3Gateway, err := gateway.NewAwsS3GatewayWithoutConfig(invokeEvent.ImageFiles.Bucket, "us-west-2")
+	s3Config := gateway.NewAwsS3GatewayConfig("us-west-2", invokeEvent.ImageFiles.Bucket)
+	provider, err := util.GetStaticConfigProvider(s3Config)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	sess, err := gateway.NewAwsSession(logger, provider)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	s3Gateway, err := gateway.NewAwsS3Gateway(logger, provider.Get("s3_bucket"), sess)
 	if err != nil {
 		log.Println(err)
 		return

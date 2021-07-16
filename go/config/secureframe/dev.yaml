@@ -1,7 +1,6 @@
 app:
   disable_auth: true
 aws_gateway:
-  mock: ${MOCK_AWS_GATEWAY:false}
   table_names:
     metadata: metadata
     keys: keys

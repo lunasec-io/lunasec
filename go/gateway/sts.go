@@ -4,6 +4,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sts"
 	"github.com/refinery-labs/loq/util"
+	"go.uber.org/config"
+	"go.uber.org/zap"
 )
 
 type awsStsGateway struct {
@@ -14,8 +16,8 @@ type AwsStsGateway interface {
 	GetCurrentAccountId() (accountId string, err error)
 }
 
-func NewAwsStsGateway() AwsStsGateway {
-	sess, err := session.NewSession()
+func NewAwsStsGateway(logger *zap.Logger, provider config.Provider) AwsStsGateway {
+	sess, err := NewAwsSession(logger, provider)
 
 	if err != nil {
 		util.Panicf("Failed to instantiate sts session %s", err)

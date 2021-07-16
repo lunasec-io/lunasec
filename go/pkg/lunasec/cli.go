@@ -1,11 +1,12 @@
 package lunasec
 
 import (
-	"errors"
 	"fmt"
+	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/service/lunasec"
 	"github.com/urfave/cli"
 	"go.uber.org/config"
+	"go.uber.org/zap"
 	"log"
 	"os"
 )
@@ -19,7 +20,7 @@ var (
 
 func findFirstExistingFile(filePaths []string) string {
 	for _, file := range filePaths {
-		if _, err := os.Stat(file); err != nil {
+		if _, err := os.Stat(file); err == nil {
 			return file
 		}
 	}
@@ -33,9 +34,7 @@ func cliOptionsStruct(c *cli.Context) CliOptions {
 	return CliOptions{}
 }
 
-func BuildCommand(c *cli.Context) (err error) {
-	buildDir := c.GlobalString("dir")
-	configFile := c.GlobalString("config")
+func loadConfigFile(configFile string) (provider config.Provider, err error) {
 	if configFile == "" {
 		configFile = findFirstExistingFile(configPaths)
 		if configFile == "" {
@@ -44,27 +43,44 @@ func BuildCommand(c *cli.Context) (err error) {
 			return
 		}
 	}
+
+	return config.NewYAML(config.File(configFile))
+}
+
+func BuildCommand(c *cli.Context) (err error) {
 	skipMirroring := c.Bool("skip-mirroring")
 	localDev := c.Bool("local")
 
-	if configFile == "" {
-		err = errors.New("required parameter 'config' not provided")
-		log.Println(err)
-		return
-	}
-
-	provider, err := config.NewYAML(config.File(configFile))
+	configFile := c.GlobalString("config")
+	provider, err := loadConfigFile(configFile)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	lunasecDeployer, err := lunasec.NewLunasecDeployer(provider, buildDir, skipMirroring, localDev, "")
+	buildDir := c.GlobalString("dir")
+	if buildDir == "" {
+		buildDir = lunasec.LunasecBuildDir
+	}
+
+	logger, err := zap.NewProduction()
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	return lunasecDeployer.Build()
+
+	sts := gateway.NewAwsStsGateway(logger, provider)
+
+	builderConfig := lunasec.NewBuilderConfig(buildDir, localDev, skipMirroring, sts)
+
+	buildConfig, err := lunasec.NewBuildConfig(provider)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	builder := lunasec.NewBuilder(builderConfig, buildConfig)
+	return builder.Build()
 }
 
 func DeployCommand(c *cli.Context) (err error) {
@@ -73,6 +89,12 @@ func DeployCommand(c *cli.Context) (err error) {
 	configOutput := c.String("config-output")
 	if configOutput == "" {
 		configOutput = "config/secureframe/"
+	}
+	configFile := c.GlobalString("config")
+	provider, err := loadConfigFile(configFile)
+	if err != nil {
+		log.Println(err)
+		return
 	}
 
 	if buildBeforeDeploying {
@@ -84,6 +106,26 @@ func DeployCommand(c *cli.Context) (err error) {
 	}
 
 	buildDir := c.GlobalString("dir")
-	lunasecDeployer, _ := lunasec.NewLunasecDeployer(nil, buildDir, true, localDev, configOutput)
-	return lunasecDeployer.Deploy()
+	if buildDir == "" {
+		buildDir = lunasec.LunasecBuildDir
+	}
+
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	sts := gateway.NewAwsStsGateway(logger, provider)
+
+	deployerConfig := lunasec.NewDeployerConfig(localDev, buildDir, configOutput, sts)
+
+	buildConfig, err := lunasec.NewBuildConfig(provider)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	deployer := lunasec.NewDeployer(deployerConfig, buildConfig)
+	return deployer.Deploy()
 }
