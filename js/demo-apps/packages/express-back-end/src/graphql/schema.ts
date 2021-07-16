@@ -14,7 +14,7 @@ export const typeDefs = gql`
     text_area: String @token
     email: String @token
     insecure_field: String
-    files: [String] # MAKE TOKEN DIRECTIVE HANDLE ARRAYS
+    files: [String] @token # @token directive also works on arrays of tokens
   }
 
   type Mutation {

@@ -97,7 +97,7 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 	}
 
 	if !valid {
-		err = errors.New("session does not have valid token grant available to detokeni")
+		err = errors.New("session does not have valid token grant available to detokenize")
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}

@@ -2,6 +2,7 @@ import util from 'util';
 
 import { isToken } from '@lunasec/tokenizer-sdk';
 import { SchemaDirectiveVisitor } from 'apollo-server-express';
+import { Request } from 'express';
 import {
   defaultFieldResolver,
   GraphQLField,
@@ -29,6 +30,18 @@ export function setGrantServiceForDirective(service: LunaSecGrantService) {
   grantService = service;
 }
 
+async function grantToken(name: string, req: Request, token: string) {
+  if (typeof token !== 'string' || !isToken(token)) {
+    throw new Error(
+      `Field ${name} did not resolve to a token or array of tokens but had a LunaSec @token directive in the graphql schema`
+    );
+  }
+  if (!grantService) {
+    throw new Error('Grant Service was not configured for the graphql token directive.');
+  }
+  await grantService.grantWithAutomaticSessionId(req, token);
+}
+
 export class TokenDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition(field: GraphQLField<any, string>) {
     const resolve = field.resolve || defaultFieldResolver;
@@ -36,17 +49,24 @@ export class TokenDirective extends SchemaDirectiveVisitor {
       //@ts-ignore
       const req = args[2].req;
       // Fire the user's resolver and get the resulting token
-      const token = await resolve.apply(this, args);
-      if (typeof token !== 'string' || !isToken(token)) {
-        throw new Error(
-          `Field ${field.name} did not resolve to a token but had a LunaSec @token directive in the graphql schema`
-        );
+      const result = await resolve.apply(this, args);
+      if (!result) {
+        // handles case where token is an empty string or a null
+        return result;
       }
-      if (!grantService) {
-        throw new Error('Grant Service was not configured for the graphql token directive.');
+      if (Array.isArray(result)) {
+        const grantPromises: Promise<void>[] = [];
+        console.log('granting an array of tokens for field name: ', field.name);
+        result.forEach((t) => {
+          grantPromises.push(grantToken(field.name, req, t));
+          console.log(t);
+        });
+        await Promise.all(grantPromises);
+      } else {
+        console.log('granting an individual token string ', result, ' for ', field.name);
+        await grantToken(field.name, req, result);
       }
-      await grantService.grantWithAutomaticSessionId(req, token);
-      return token;
+      return result;
     };
   }
 
