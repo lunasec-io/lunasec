@@ -30,6 +30,7 @@ type dynamoKvGateway struct {
 }
 
 type DynamoKvGatewayConfig struct {
+	GatewayConfig
 	TableNames map[model.KVStore]string `yaml:"table_names"`
 }
 
@@ -40,7 +41,7 @@ type DynamoKvGateway interface {
 }
 
 // NewDynamoKvGateway...
-func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider) DynamoKvGateway {
+func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider, sess *session.Session) DynamoKvGateway {
 	var (
 		gatewayConfig DynamoKvGatewayConfig
 	)
@@ -50,13 +51,6 @@ func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider) DynamoKvGa
 		log.Println(err)
 		panic(err)
 	}
-
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-		Config: aws.Config{
-			Endpoint: aws.String("https://b73dc96de966.ngrok.io"),
-		},
-	}))
 
 	logger.Debug("creating new dynamodb session")
 	db := dynamodb.New(sess)

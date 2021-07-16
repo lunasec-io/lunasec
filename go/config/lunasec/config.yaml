@@ -1,8 +1,14 @@
 lunasec:
   customer_front_end: http://localhost:3000
   customer_back_end: http://localhost:3001
+  localstack_url: http://172.17.0.2:4566
   cdn_config:
     main_script: js/main-dev.js
     main_style: main.css
   customer_public_key: "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUFsbjFtVm1vSVJqREdRNHBWY2NzQgo1eUozREZJdFVlOXpMRlU0bmFxc2ZGWUp5d0t5QXNINDh3VUhrQlgwWlJ1cm5FRW9tdHhtajNGOUIrZForVUxGCmUzSm5GcldEak43WE9GeHluM0pmWGp3VmZFZkEyRnhZTEx4Z3daeGZGRnZjV0NoMmpvZEFsUE82NkxCdGVTYkEKcGNsdlNucDc0WkhDU0VyOERGQ3Y3TFU1MGQwb0greGhyTjFoNllMdkxHTGJkRkZacHZ3MWRyQmFWN0tOdk9SOAp0NHFNYmNUZERqNWZXUEJtS1o1YVk0ZTNwS1g4OVNCYzhDdFlmQmNmU003dTRreGRHSXQrbmthMjlTeUtTWUJ4CldMYzRiRk1LT3dXancwZ2UvTGJud3RGRWxRK1J5VG83QVNqK29OSzNDUk9STkFheFkrT3o4cUwwMGN1d3VvM2EKUFFJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0t"
   front_end_assets_folder: ../js/sdks/packages/secure-frame-iframe/public/
+aws_gateway:
+  region: us-west-2
+  access_key_id: test
+  secret_access_key: test
+  localstack_url: http://172.17.0.2:4566

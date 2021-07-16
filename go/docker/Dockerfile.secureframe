@@ -2,17 +2,21 @@ FROM golang AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 
+ARG BUILD_TAG
+
 ADD . /code
 WORKDIR /code
-RUN BUILD_TAG=lambda make secureframe
+RUN BUILD_TAG=$BUILD_TAG make secureframe
 
 FROM scratch
+
+ARG BUILD_TAG
 
 ENV SECURE_FRAME_VIEWS_PATH /views
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /code/build/secureframe_lambda /secureframe
-COPY --from=builder /code/views/secureframe /views
+COPY --from=builder /code/build/secureframe_${BUILD_TAG} /secureframe
+COPY --from=builder /code/views/secureframe /views/secureframe
 COPY --from=builder /code/config/secureframe /config/secureframe
 COPY --from=builder /tmp /tmp
 
