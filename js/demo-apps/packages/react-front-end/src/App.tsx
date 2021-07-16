@@ -46,11 +46,6 @@ class App extends React.Component<Record<string, never>, IAppState> {
     void this.getFormDataFromDb();
   }
 
-  // This kind of works but it creates a grant for the previous token at the moment, because retrieveTokens pulls from sessionstorage.
-  //We really need a cleaner way to handle this and to get all of this grant stuff out of this demo app
-  // At the very least separate the pulling of tokens from session storage and the turning them into grants into separate functions
-  // componentDidUpdate(prevProps: Record<string, any>, prevState: IAppState) {}
-
   handleTextAreaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     console.log('setting foo', event.target.value);
     this.setState({ formData: { ...this.state.formData, text_area: event.target.value } });
