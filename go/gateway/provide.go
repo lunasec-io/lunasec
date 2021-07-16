@@ -21,16 +21,28 @@ type GatewayConfig struct {
 	LocalstackURL string `yaml:"localstack_url"`
 }
 
-func NewAwsSession(logger *zap.Logger, provider config.Provider) (sess *session.Session, err error) {
-	var (
-		gatewayConfig GatewayConfig
-		endpointUrl *string
-	)
-
+func NewGatewayConfig(logger *zap.Logger, provider config.Provider) (gatewayConfig GatewayConfig, err error) {
 	err = provider.Get("aws_gateway").Populate(&gatewayConfig)
 	if err != nil {
 		logger.Error("unable to load aws gateway config", zap.Error(err))
 		return
+	}
+	return
+}
+
+func NewAwsSession(logger *zap.Logger, provider config.Provider) (sess *session.Session, err error) {
+	var (
+		creds *credentials.Credentials
+		endpointUrl *string
+	)
+
+	gatewayConfig, err := NewGatewayConfig(logger, provider)
+	if err != nil {
+		return
+	}
+
+	if gatewayConfig.AccessKeyID != "" && gatewayConfig.SecretAccessKey != "" {
+		creds = credentials.NewStaticCredentials(gatewayConfig.AccessKeyID, gatewayConfig.SecretAccessKey, "")
 	}
 
 	if gatewayConfig.LocalstackURL != "" {
@@ -40,7 +52,7 @@ func NewAwsSession(logger *zap.Logger, provider config.Provider) (sess *session.
 	sess = session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 		Config: aws.Config{
-			Credentials: credentials.NewStaticCredentials(gatewayConfig.AccessKeyID, gatewayConfig.SecretAccessKey, ""),
+			Credentials: creds,
 			Region: aws.String(gatewayConfig.S3Region),
 			Endpoint: endpointUrl,
 			S3ForcePathStyle: aws.Bool(true),

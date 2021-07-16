@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/service/lunasec"
+	"github.com/refinery-labs/loq/util"
 	"github.com/urfave/cli"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
-	"os"
 )
 
 var (
@@ -17,15 +17,6 @@ var (
 		"config/lunasec/config.yaml",
 	}
 )
-
-func findFirstExistingFile(filePaths []string) string {
-	for _, file := range filePaths {
-		if _, err := os.Stat(file); err == nil {
-			return file
-		}
-	}
-	return ""
-}
 
 type CliOptions struct {
 }
@@ -36,7 +27,7 @@ func cliOptionsStruct(c *cli.Context) CliOptions {
 
 func loadConfigFile(configFile string) (provider config.Provider, err error) {
 	if configFile == "" {
-		configFile = findFirstExistingFile(configPaths)
+		configFile = util.FindFirstExistingFile(configPaths)
 		if configFile == "" {
 			err = fmt.Errorf("unable to local build config file, searched: %v", configPaths)
 			log.Println(err)
@@ -69,9 +60,19 @@ func BuildCommand(c *cli.Context) (err error) {
 		return
 	}
 
-	sts := gateway.NewAwsStsGateway(logger, provider)
+	sess, err := gateway.NewAwsSession(logger, provider)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
-	builderConfig := lunasec.NewBuilderConfig(buildDir, localDev, skipMirroring, sts)
+	env, err := lunasec.NewDeploymentEnvironment(sess)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	builderConfig := lunasec.NewBuilderConfig(buildDir, localDev, skipMirroring, env)
 
 	buildConfig, err := lunasec.NewBuildConfig(provider)
 	if err != nil {
@@ -116,9 +117,19 @@ func DeployCommand(c *cli.Context) (err error) {
 		return
 	}
 
-	sts := gateway.NewAwsStsGateway(logger, provider)
+	sess, err := gateway.NewAwsSession(logger, provider)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
-	deployerConfig := lunasec.NewDeployerConfig(localDev, buildDir, configOutput, sts)
+	env, err := lunasec.NewDeploymentEnvironment(sess)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	deployerConfig := lunasec.NewDeployerConfig(localDev, buildDir, configOutput, env)
 
 	buildConfig, err := lunasec.NewBuildConfig(provider)
 	if err != nil {
