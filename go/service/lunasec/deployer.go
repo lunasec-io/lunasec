@@ -2,7 +2,6 @@ package lunasec
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/refinery-labs/loq/model"
 	"github.com/refinery-labs/loq/service"
@@ -14,7 +13,6 @@ import (
 	"strings"
 
 	"github.com/aws/aws-cdk-go/awscdk"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/refinery-labs/loq/gateway"
 )
@@ -48,6 +46,7 @@ type DeployerConfig struct {
 	buildDir string
 	configOutputPath string
 	sts gateway.AwsStsGateway
+	env *awscdk.Environment
 }
 
 type Deployer interface {
@@ -59,12 +58,12 @@ type deployer struct {
 	buildConfig        BuildConfig
 }
 
-func NewDeployerConfig(localDev bool, buildDir string, configOutputPath string, sts gateway.AwsStsGateway) DeployerConfig {
+func NewDeployerConfig(localDev bool, buildDir string, configOutputPath string, env *awscdk.Environment) DeployerConfig {
 	return DeployerConfig{
 		localDev: localDev,
 		buildDir: buildDir,
 		configOutputPath: configOutputPath,
-		sts: sts,
+		env: env,
 	}
 }
 
@@ -76,34 +75,6 @@ func NewDeployer(
 		DeployerConfig: deployerConfig,
 		buildConfig: buildConfig,
 	}
-}
-
-func getDeploymentEnv(sts gateway.AwsStsGateway) (env *awscdk.Environment, err error) {
-	accountID, err := sts.GetCurrentAccountId()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	sess, err := session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	})
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	region := *sess.Config.Region
-
-	if region == "" {
-		err = errors.New("region is not set for provided aws account, please set this value with AWS_DEFAULT_REGION or in the profile configuration")
-		return
-	}
-
-	env = &awscdk.Environment{
-		Account: jsii.String(accountID),
-		Region:  jsii.String(region),
-	}
-	return
 }
 
 func getOutputName(name string) *string {
@@ -118,35 +89,10 @@ func (l *deployer) Deploy() (err error) {
 		return
 	}
 
-	deploymentEnv, err := getDeploymentEnv(l.sts)
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	awsURI := fmt.Sprintf("aws://%s/%s", *l.env.Account, *l.env.Region)
 
-	if l.localDev {
-		args := []string{
-			fmt.Sprintf("--endpoint-url=%s", l.buildConfig.LocalStackUrl),
-			"cloudformation",
-			"create-stack",
-			"--stack-name",
-			StackName,
-			"--template-body",
-			fmt.Sprintf("file://%s/%s.template.json", l.buildDir, StackName),
-		}
-		awsCliExecutor := service.NewExecutor("aws", args, []string{}, workDir, nil, true)
-		_, err = awsCliExecutor.Execute()
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		return
-	}
-
-	awsURI := fmt.Sprintf("aws://%s/%s", *deploymentEnv.Account, *deploymentEnv.Region)
-
-	args := []string{"bootstrap", awsURI}
-	cdkExecutor := service.NewExecutor("cdk", args, []string{}, workDir, nil, true)
+	args := []string{"bootstrap", "-a", l.buildDir, awsURI}
+	cdkExecutor := service.NewExecutor("cdk", args, map[string]string{}, workDir, nil, true)
 	_, err = cdkExecutor.Execute()
 	if err != nil {
 		log.Println(err)
@@ -158,7 +104,12 @@ func (l *deployer) Deploy() (err error) {
 	// TODO (cthompson) we probably want to require approval for this, but for now this is ok
 	args = []string{"deploy", "--require-approval", "never", "-a", l.buildDir, "--outputs-file", stackOutputFilePath}
 
-	cdkExecutor = service.NewExecutor("cdk", args, []string{}, workDir, nil, true)
+	cmd := "cdk"
+	if l.localDev {
+		cmd = "cdklocal"
+	}
+
+	cdkExecutor = service.NewExecutor(cmd, args, map[string]string{}, workDir, nil, true)
 	_, err = cdkExecutor.Execute()
 	if err != nil {
 		log.Println(err)

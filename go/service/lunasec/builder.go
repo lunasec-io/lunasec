@@ -12,7 +12,6 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/awss3deployment"
 	"github.com/aws/constructs-go/constructs/v3"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/model"
 	"github.com/refinery-labs/loq/util"
 	"go.uber.org/config"
@@ -32,7 +31,7 @@ type BuilderConfig struct {
 	buildDir           string
 	localDev bool
 	skipImageMirroring bool
-	sts gateway.AwsStsGateway
+	env *awscdk.Environment
 }
 
 type Builder interface {
@@ -48,13 +47,13 @@ func NewBuilderConfig(
 	buildDir string,
 	localDev bool,
 	skipImageMirroring bool,
-	sts gateway.AwsStsGateway,
+	env *awscdk.Environment,
 ) BuilderConfig {
 	return BuilderConfig{
 		buildDir: buildDir,
 		localDev: localDev,
 		skipImageMirroring: skipImageMirroring,
-		sts: sts,
+		env: env,
 	}
 }
 
@@ -78,14 +77,7 @@ func NewBuilder(
 func (l *builder) Build() (err error) {
 	app := awscdk.NewApp(nil)
 
-	deploymentEnv, err := getDeploymentEnv(l.sts)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	// TODO (cthompson) check the environment, we if we are running this in a dev environment, we could build the services with a CDK component
-	serviceLookup, err := l.mirrorRepos(deploymentEnv)
+	serviceLookup, err := l.mirrorRepos(l.env)
 	if err != nil {
 		log.Println(err)
 		return
@@ -93,7 +85,7 @@ func (l *builder) Build() (err error) {
 
 	l.addComponentsToStack(app, StackName, &LunasecStackProps{
 		awscdk.StackProps{
-			Env: deploymentEnv,
+			Env: l.env,
 		},
 	}, serviceLookup)
 
@@ -109,11 +101,16 @@ func (l *builder) Build() (err error) {
 }
 
 func (l *builder) mirrorRepos(env *awscdk.Environment) (lookup ServiceToImageMap, err error) {
-	lookup = ServiceToImageMap{}
+	lookup = ServiceToImageMap{
+		secureFrameBackendRepoName: "latest",
+	}
+
+	if l.localDev {
+		return
+	}
 
 	if l.skipImageMirroring {
 		// TODO (cthompson) we should lookup what the digest is of latest to pin versions
-		lookup[secureFrameBackendRepoName] = "latest"
 		return
 	}
 
@@ -283,42 +280,42 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 	// TODO (cthompson) enable TTL for this table since a bunch of one time use records are created
 	grantsTable := l.createBasicDynamodbTable(stack, "grants-table")
 
-	cdnConfig, err := json.Marshal(model.CDNConfig{
-		Protocol: "https",
-		Host:        secureFrameDomainName,
-		MainScript: l.buildConfig.CDNConfig.MainScript,
-		MainStyle:  l.buildConfig.CDNConfig.MainStyle,
-	})
-	if err != nil {
-		panic(err)
+	if !l.localDev {
+		cdnConfig, err := json.Marshal(model.CDNConfig{
+			Protocol: "https",
+			Host:        secureFrameDomainName,
+			MainScript: l.buildConfig.CDNConfig.MainScript,
+			MainStyle:  l.buildConfig.CDNConfig.MainStyle,
+		})
+		if err != nil {
+			panic(err)
+		}
+
+		lambdaEnv := &map[string]*string{
+			"SECURE_FRAME_FRONT_END":     secureFrameCloudfront.AttrDomainName(),
+			"CUSTOMER_FRONT_END":         jsii.String(l.buildConfig.CustomerFrontEnd),
+			"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
+			"CUSTOMER_BACK_END":          jsii.String(l.buildConfig.CustomerBackEnd),
+			"SECURE_FRAME_CDN_CONFIG":    jsii.String(string(cdnConfig)),
+			// TODO (cthompson) does this value provide us any security?
+			"TOKENIZER_CLIENT_SECRET": jsii.String("TODO"),
+			"CUSTOMER_PUBLIC_KEY": jsii.String(l.buildConfig.CustomerPublicKey),
+			"METADATA_KV_TABLE":   metadataTable.TableName(),
+			"KEYS_KV_TABLE":       keysTable.TableName(),
+			"SESSIONS_KV_TABLE":   sessionsTable.TableName(),
+			"GRANTS_KV_TABLE":   grantsTable.TableName(),
+		}
+
+		containerTag := serviceImageLookup[secureFrameBackendRepoName]
+
+		secureFrameLambda := l.getSecureFrameLambda(stack, containerTag, lambdaEnv)
+		ciphertextBucket.GrantReadWrite(secureFrameLambda, "*")
+		metadataTable.GrantReadWriteData(secureFrameLambda)
+		keysTable.GrantReadWriteData(secureFrameLambda)
+		sessionsTable.GrantReadWriteData(secureFrameLambda)
+		grantsTable.GrantReadWriteData(secureFrameLambda)
+
+		l.getLambdaRestApi(stack, secureFrameLambda)
 	}
-
-	lambdaEnv := &map[string]*string{
-		"SECURE_FRAME_FRONT_END":     secureFrameCloudfront.AttrDomainName(),
-		"CUSTOMER_FRONT_END":         jsii.String(l.buildConfig.CustomerFrontEnd),
-		"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
-		"CUSTOMER_BACK_END":          jsii.String(l.buildConfig.CustomerBackEnd),
-		"SECURE_FRAME_CDN_CONFIG":    jsii.String(string(cdnConfig)),
-		// TODO (cthompson) does this value provide us any security?
-		"TOKENIZER_CLIENT_SECRET": jsii.String("TODO"),
-		"CUSTOMER_PUBLIC_KEY": jsii.String(l.buildConfig.CustomerPublicKey),
-		"METADATA_KV_TABLE":   metadataTable.TableName(),
-		"KEYS_KV_TABLE":       keysTable.TableName(),
-		"SESSIONS_KV_TABLE":   sessionsTable.TableName(),
-		"GRANTS_KV_TABLE":   grantsTable.TableName(),
-	}
-
-	containerTag := serviceImageLookup[secureFrameBackendRepoName]
-
-	secureFrameLambda := l.getSecureFrameLambda(stack, containerTag, lambdaEnv)
-
-	ciphertextBucket.GrantReadWrite(secureFrameLambda, "*")
-	metadataTable.GrantReadWriteData(secureFrameLambda)
-	keysTable.GrantReadWriteData(secureFrameLambda)
-	sessionsTable.GrantReadWriteData(secureFrameLambda)
-	grantsTable.GrantReadWriteData(secureFrameLambda)
-
-	l.getLambdaRestApi(stack, secureFrameLambda)
-
 	return stack
 }

@@ -28,11 +28,13 @@ services:
       - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
   cdk-init:
+    env_file:
+      - .env.dev
     build:
       context: .
       dockerfile: docker/Dockerfile.lunasec
     network_mode: bridge
-    command: deploy --build
+    command: deploy --local --build --config-output /config/secureframe/
     volumes:
       - ./config/secureframe/:/config/secureframe/
     depends_on:

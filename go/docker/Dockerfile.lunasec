@@ -1,20 +1,34 @@
-FROM golang AS builder
+FROM golang AS base
 
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 
-ADD . /code
-WORKDIR /code
-RUN BUILD_TAG=cli make lunasec
+WORKDIR /src
+ENV CGO_ENABLED=0
+COPY go.* .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
+
+FROM base as builder
+
+RUN --mount=target=. \
+    --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    BUILD_TAG=cli OUTPUT_DIR=/out make lunasec \
+    && mkdir -p /out/config \
+    && cp -r config/lunasec /out/config/lunasec
 
 FROM node
 
-ENV BUILDER_PATH /code/build/lunasec_cli
+RUN apt-get update || : && apt-get install python3 python3-pip -y
 
-RUN npm i -g cdk
+RUN npm i -g aws-cdk@1.114.0 aws-cdk-local@1.65.6
+RUN pip3 install awscli
+
+ENV BUILDER_PATH /out/lunasec_cli
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder $BUILDER_PATH /lunasec
-COPY --from=builder /code/config/lunasec /config/lunasec
+COPY --from=builder /out/config/ /config/
 COPY --from=builder /tmp /tmp
 
 WORKDIR /

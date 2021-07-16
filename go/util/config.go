@@ -10,6 +10,15 @@ import (
 	"go.uber.org/config"
 )
 
+func FindFirstExistingFile(filePaths []string) string {
+	for _, file := range filePaths {
+		if _, err := os.Stat(file); err == nil {
+			return file
+		}
+	}
+	return ""
+}
+
 func GetConfigProvider(configDir string) config.Provider {
 	files, err := ioutil.ReadDir(configDir)
 	if err != nil {

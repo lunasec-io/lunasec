@@ -150,7 +150,7 @@ func (r *FunctionRuntimeInvoker) getFunctionExecutor(funcConfig model.RefineryFu
 	return service.NewExecutorWithoutStreaming(
 		funcConfig.Command,
 		args,
-		envVars,
+		funcConfig.Env,
 		funcConfig.WorkDir,
 		handlerStdin,
 	), nil
