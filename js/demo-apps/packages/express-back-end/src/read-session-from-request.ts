@@ -13,11 +13,11 @@ export async function readSessionFromRequest(req: Request) {
   const pubKey = Buffer.from(__PUBLIC_KEY__, 'base64').toString();
   const cookie = req.cookies['id_token'];
   if (!cookie) {
-    throw new Error('Session cookie not set');
+    return null; // returning null tells LunaSec that a session is not set
   }
 
   const jwtData = await decodeJWT(cookie, pubKey);
-  // This is a good place to catch errors and redirect to a login flow if your user does not have their cookie set
+
   return jwtData.session.id;
 }
 
