@@ -60,6 +60,8 @@ func getGrantKey(sessionID string, token model.Token, grantType constants.GrantT
 }
 
 func (s *grantService) SetTokenGrantForSession(token model.Token, sessionID string, grantType constants.GrantType) (err error) {
+	log.Printf("creating new grant for token: %s", token)
+	log.Printf("with session %s", sessionID)
 	grantExpiry := time.Now().Add(s.grantDuration).Unix()
 	tokenGrant := TokenGrant{
 		GrantExpiry: grantExpiry,
@@ -68,6 +70,7 @@ func (s *grantService) SetTokenGrantForSession(token model.Token, sessionID stri
 	if err != nil {
 		return
 	}
+	log.Printf("serialized grant is: %s", serializedGrant)
 	return s.kv.Set(gateway.GrantStore, getGrantKey(sessionID, token, grantType), string(serializedGrant))
 }
 

@@ -41,36 +41,35 @@ export class LunaSecExpressAuthPlugin {
   }
 
   async buildSecureFrameRedirectUrl(stateToken: string) {
-    let authGrant = undefined;
+    let openIdToken = undefined;
     try {
-      authGrant = await this.auth.createAuthenticationJWT({});
+      openIdToken = await this.auth.createAuthenticationJWT({});
     } catch (e) {
       console.error(`error while attempting to create authentication token: ${e}`);
     }
 
-    if (authGrant === undefined) {
+    if (openIdToken === undefined) {
       return null;
     }
 
     const redirectUrl = new URL(this.secureFrameUrl);
     redirectUrl.searchParams.append('state', stateToken);
-    redirectUrl.searchParams.append('openid_token', authGrant.toString());
+    redirectUrl.searchParams.append('openid_token', openIdToken.toString());
     redirectUrl.pathname += '/session/create';
     return redirectUrl;
   }
 
   async handleSecureFrameAuthRequest(req: Request, res: Response) {
-    const stateToken = req.query.state;
-
-    if (typeof stateToken !== 'string') {
+    const authFlowCorrelationToken = req.query.state;
+    if (typeof authFlowCorrelationToken !== 'string') {
       res.status(400).send({
         success: false,
         error: 'state is not set in request',
       });
       return;
     }
-    // TODO: DO SOMETHING WITH THIS SESSIONID
-    const sessionId = this.config.sessionIdProvider(req);
+    // DO SOMETHING WITH THIS SESSIONID?
+    const sessionId = await this.config.sessionIdProvider(req);
     if (sessionId === null) {
       res.status(400).send({
         success: false,
@@ -79,7 +78,7 @@ export class LunaSecExpressAuthPlugin {
       return;
     }
 
-    const redirectUrl = await this.buildSecureFrameRedirectUrl(stateToken);
+    const redirectUrl = await this.buildSecureFrameRedirectUrl(authFlowCorrelationToken);
     if (redirectUrl === null) {
       console.error('unable to complete auth flow');
       res.status(400).send({
