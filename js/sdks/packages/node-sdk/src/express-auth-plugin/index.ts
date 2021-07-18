@@ -60,7 +60,9 @@ export class LunaSecExpressAuthPlugin {
   }
 
   async handleSecureFrameAuthRequest(req: Request, res: Response) {
+    console.log('HANDLING SECURE FRAME AUTH REQUEST');
     const authFlowCorrelationToken = req.query.state;
+    console.log('correlation token is ', authFlowCorrelationToken);
     if (typeof authFlowCorrelationToken !== 'string') {
       res.status(400).send({
         success: false,
@@ -68,22 +70,23 @@ export class LunaSecExpressAuthPlugin {
       });
       return;
     }
-    // DO SOMETHING WITH THIS SESSIONID?
-    const sessionId = await this.config.sessionIdProvider(req);
-    if (sessionId === null) {
-      res.status(400).send({
-        success: false,
-        error: 'unable to authenticate the user of this request',
-      });
-      return;
-    }
-
+    // DO SOMETHING WITH THIS SESSIONID?  Is this even necessary to do here or is this taken care of by the go server
+    // const sessionId = await this.config.sessionIdProvider(req);
+    // console.log('sessionId is ', sessionId);
+    // if (sessionId === null) {
+    //   res.status(400).send({
+    //     success: false,
+    //     error: 'unable to authenticate the user of this request',
+    //   });
+    //   return;
+    // }
+    // console.log('accepted sessionid ', sessionId);
     const redirectUrl = await this.buildSecureFrameRedirectUrl(authFlowCorrelationToken);
     if (redirectUrl === null) {
-      console.error('unable to complete auth flow');
+      console.error('unable to complete auth flow, redirectURL not set');
       res.status(400).send({
         success: false,
-        error: 'unable to complete auth flow',
+        error: 'unable to complete auth flow, building redirect url from node-sdk to go server failed',
       });
       return;
     }
