@@ -22,8 +22,7 @@ type JwtVerifierConfig struct {
 
 type JwtVerifier interface {
 	Verify(token string) (err error)
-	VerifyWithClaims(token string) (claims *jwt.StandardClaims, err error)
-	VerifyWithLunaSecTokenClaims(token string) (claims *model.TokenJwtClaims, err error)
+	VerifyWithSessionClaims(token string) (claims *model.SessionJwtClaims, err error)
 }
 
 func NewJwtVerifier(
@@ -45,13 +44,6 @@ func NewJwtVerifier(
 		err = errors.Wrap(err, "unable to decode auth provider public key")
 		return
 	}
-	return NewJwtVerifierWithPublicKey(logger, publicKey)
-}
-
-func NewJwtVerifierWithPublicKey(
-	logger *zap.Logger,
-	publicKey []byte,
-) (verifier JwtVerifier, err error) {
 	rsaPublicKey, err := jwt.ParseRSAPublicKeyFromPEM(publicKey)
 	if err != nil {
 		err = errors.Wrap(err, "unable to parse public key from pem")
@@ -84,33 +76,8 @@ func (j *jwtVerifier) Verify(token string) (err error) {
 	return
 }
 
-func (j *jwtVerifier) VerifyWithClaims(token string) (claims *jwt.StandardClaims, err error) {
-	parsedToken, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
-		return j.publicKey, nil
-	})
-
-	if err != nil {
-		err = errors.Wrap(err, "error while parsing token with claims")
-		j.logger.Error(err.Error(), zap.String("token", token))
-		return
-	}
-
-	if !parsedToken.Valid {
-		err = errors.New("jwt token is not valid")
-		j.logger.Error(err.Error(), zap.String("token", token))
-		return
-	}
-	claims, ok := parsedToken.Claims.(*jwt.StandardClaims)
-	if !ok {
-		err = errors.New("unable to assert type of claims as TokenJwtClaims")
-		j.logger.Error(err.Error(), zap.String("token", token))
-		return
-	}
-	return
-}
-
-func (j *jwtVerifier) VerifyWithLunaSecTokenClaims(token string) (claims *model.TokenJwtClaims, err error) {
-	parsedToken, err := jwt.ParseWithClaims(token, &model.TokenJwtClaims{}, func(t *jwt.Token) (interface{}, error) {
+func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims *model.SessionJwtClaims, err error) {
+	parsedToken, err := jwt.ParseWithClaims(token, &model.SessionJwtClaims{}, func(t *jwt.Token) (interface{}, error) {
 		return j.publicKey, nil
 	})
 
@@ -125,9 +92,9 @@ func (j *jwtVerifier) VerifyWithLunaSecTokenClaims(token string) (claims *model.
 		j.logger.Error(err.Error())
 		return
 	}
-	claims, ok := parsedToken.Claims.(*model.TokenJwtClaims)
+	claims, ok := parsedToken.Claims.(*model.SessionJwtClaims)
 	if !ok {
-		err = errors.New("unable to assert type of claims as TokenJwtClaims")
+		err = errors.New("unable to assert type of claims as SessionJwtClaims")
 		j.logger.Error(err.Error())
 		return
 	}

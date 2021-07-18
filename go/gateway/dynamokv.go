@@ -20,6 +20,7 @@ const (
 	MetaStore    = model.KVStore("metadata")
 	KeyStore     = model.KVStore("keys")
 	SessionStore = model.KVStore("sessions")
+	GrantStore = model.KVStore("grants")
 )
 
 type dynamoKvGateway struct {

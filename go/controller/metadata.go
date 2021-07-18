@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/pkg/errors"
 	"github.com/refinery-labs/loq/model"
 	"github.com/refinery-labs/loq/model/event"
 	"github.com/refinery-labs/loq/service"
@@ -15,7 +14,8 @@ import (
 
 type metaController struct {
 	meta          service.MetadataService
-	tokenVerifier service.JwtVerifier
+	jwtVerifier service.JwtVerifier
+	grant         service.GrantService
 }
 
 // MetaController ...
@@ -25,25 +25,12 @@ type MetaController interface {
 }
 
 // NewMetaController ...
-func NewMetaController(meta service.MetadataService, tokenVerifier service.JwtVerifier) MetaController {
+func NewMetaController(meta service.MetadataService, jwtVerifier service.JwtVerifier, grant service.GrantService) MetaController {
 	return &metaController{
 		meta:          meta,
-		tokenVerifier: tokenVerifier,
+		jwtVerifier: jwtVerifier,
+		grant:                     grant,
 	}
-}
-
-func (s *metaController) validateTokenJwt(tokenJwt string) (tokenID string, err error) {
-	claims, err := s.tokenVerifier.VerifyWithLunaSecTokenClaims(tokenJwt)
-	if err != nil {
-		err = errors.Wrap(err, "unable to verify token jwt with claims")
-		return
-	}
-
-	// TODO (cthompson): should we validate the claims further here? we could check if the subject
-	// matches the session that has been provided to us
-
-	tokenID = claims.TokenID
-	return
 }
 
 // GetMetadata ...
@@ -63,13 +50,7 @@ func (s *metaController) GetMetadata(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenID, err := s.validateTokenJwt(input.TokenID)
-	if err != nil {
-		util.RespondError(w, http.StatusBadRequest, err)
-		return
-	}
-
-	meta, err := s.meta.GetMetadata(model.Token(tokenID))
+	meta, err := s.meta.GetMetadata(model.Token(input.TokenID))
 
 	if err != nil {
 		statusCode := 500
@@ -104,13 +85,7 @@ func (s *metaController) SetMetadata(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenID, err := s.validateTokenJwt(input.TokenID)
-	if err != nil {
-		util.RespondError(w, http.StatusBadRequest, err)
-		return
-	}
-
-	if err := s.meta.SetMetadata(model.Token(tokenID), input.Metadata); err != nil {
+	if err := s.meta.SetMetadata(model.Token(input.TokenID), input.Metadata); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
