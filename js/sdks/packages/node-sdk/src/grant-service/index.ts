@@ -14,6 +14,7 @@ export class LunaSecGrantService {
   }
 
   public async grant(sessionId: string, tokenId: string) {
+    console.log('granting token using sessionId ', sessionId);
     if (!isToken(tokenId)) {
       throw new Error('Attempted to create a LunaSec Token Grant from a string that didnt look like a token');
     }
