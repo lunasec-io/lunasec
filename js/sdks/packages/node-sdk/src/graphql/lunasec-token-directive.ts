@@ -22,7 +22,7 @@ import { LunaSecGrantService } from '../grant-service';
 
 let grantService: LunaSecGrantService | undefined;
 
-// This dirty stateful hack was necessary because creating a function (to inject this dependency) that exports a private class
+// This dirty stateful hack was necessary because creating a function (to inject this dependency) that exports a private class(the TokenDirective)
 // that has protected properties is not supported in typescript, even with @ts-ignore
 // https://github.com/microsoft/TypeScript/issues/30355
 // If you see a solution please implement it
@@ -56,7 +56,7 @@ export class TokenDirective extends SchemaDirectiveVisitor {
       }
       if (Array.isArray(result)) {
         const grantPromises: Promise<void>[] = [];
-        console.log('granting an array of tokens for field name: ', field.name);
+        console.debug('granting an array of tokens for field name: ', field.name);
         result.forEach((t) => {
           grantPromises.push(grantToken(field.name, req, t));
           console.log(t);
@@ -70,30 +70,32 @@ export class TokenDirective extends SchemaDirectiveVisitor {
     };
   }
 
-  visitInputFieldDefinition(field: GraphQLInputField) {
-    field.extensions = { hi: 'there' }; // I was hoping we would be able to read these from the plugin to know that the directive was set but it doesn't show up
-    if (field.astNode) {
-      //@ts-ignore
-      field.astNode.description = 'LUNASEC_TOKEN';
-    }
-    console.log(
-      "'VISITED INPUT FIELD!!!!!!!!!!!!!!:",
-      util.inspect(field, {
-        showHidden: false,
-        depth: null,
-      })
-    );
-  }
+  // TODO: can be used in conjunction with the plugin when we get that working
+  // visitInputFieldDefinition(field: GraphQLInputField) {
+  //   field.extensions = { hi: 'there' }; // I was hoping we would be able to read these from the plugin to know that the directive was set but it doesn't show up
+  //   if (field.astNode) {
+  //     //@ts-ignore
+  //     field.astNode.description = 'LUNASEC_TOKEN';
+  //   }
+  //   console.log(
+  //     "'VISITED INPUT FIELD!!!!!!!!!!!!!!:",
+  //     util.inspect(field, {
+  //       showHidden: false,
+  //       depth: null,
+  //     })
+  //   );
+  // }
 
-  visitObject(object: GraphQLObjectType) {
-    console.log('VISITED MUTATION OBJECT!!!!!!!!!!!!!!:', object);
-  }
-
-  visitInputObject(object: GraphQLInputObjectType) {
-    console.log(
-      'VISITED INPUT OBJECT!!!!!!!!!!!!!!!!',
-      typeof object,
-      util.inspect(object, { showHidden: true, depth: null })
-    );
-  }
+  // TODO: These were just tests to see what objects could be accessed
+  // visitObject(object: GraphQLObjectType) {
+  //   console.log('VISITED MUTATION OBJECT!!!!!!!!!!!!!!:', object);
+  // }
+  //
+  // visitInputObject(object: GraphQLInputObjectType) {
+  //   console.log(
+  //     'VISITED INPUT OBJECT!!!!!!!!!!!!!!!!',
+  //     typeof object,
+  //     util.inspect(object, { showHidden: true, depth: null })
+  //   );
+  // }
 }

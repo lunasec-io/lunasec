@@ -67,9 +67,11 @@ func (s *tokenizerController) requestHasValidGrantForToken(r *http.Request, toke
 	claims, err := s.getRequestClaims(r)
 	if err != nil {
 		err = errors.Wrap(err, "unable to verify token jwt with claims")
+		err = errors.Wrap(err, "unable to verify token jwt with claims")
 		return
 	}
-
+    log.Printf("checking grant for token %v", tokenID)
+    log.Printf("with sessionID %v", claims.SessionID)
 	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID, constants.ReadToken)
 }
 

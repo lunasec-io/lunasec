@@ -33,6 +33,9 @@ export class LunaSecGrantService {
   }
 
   public async verifyGrant(sessionId: string, tokenId: string, grantType: GrantType) {
+    if (tokenId === '') {
+      return Promise.resolve(); // no point in verifying empty tokens, allow them to be written to the db
+    }
     if (!isToken(tokenId)) {
       throw new Error('Attempted to verify a LunaSec Token Grant from a string that didnt look like a token');
     }

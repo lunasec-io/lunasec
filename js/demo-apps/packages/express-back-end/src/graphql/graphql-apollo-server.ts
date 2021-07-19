@@ -1,5 +1,6 @@
 import { ApolloServer } from 'apollo-server-express';
 import { Express, Request, Response } from 'express';
+import { IResolvers } from 'graphql-tools';
 
 import { readSessionFromRequest } from '../read-session-from-request';
 
@@ -9,8 +10,7 @@ export async function attachApolloServer(app: Express) {
   // @ts-ignore
   const server = new ApolloServer({
     typeDefs,
-    //@ts-ignore THIS IS BAD, FIX THIS.  It doesn't like the mutations (they work fine of course)
-    resolvers,
+    resolvers: resolvers as IResolvers,
     schemaDirectives,
     // plugins: [LunaSecApolloPlugin],
     context: addSessionToContext,
@@ -22,6 +22,7 @@ export async function attachApolloServer(app: Express) {
 
 // USER AUTH
 // Verifies the users session cookie and adds the session ID to the context object for easy access in resolvers
+// You could also do this as an express middleware if you chose, this is just apollo's version of the same pattern
 async function addSessionToContext(context: { req: Request; res: Response }): Promise<Record<string, any>> {
   const sessionId = await readSessionFromRequest(context.req);
 
