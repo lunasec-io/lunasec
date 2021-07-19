@@ -53,8 +53,8 @@ export const resolvers = {
       _info: any
     ) => {
       // For now, you must manually verify all tokens are granted before writing them to the database
-      await lunaSec.grants.verifyGrant(context.sessionId, args.formData.email, 'store_token'); // Throws if there is an issue
-      await lunaSec.grants.verifyGrant(context.sessionId, args.formData.text_area, 'store_token');
+      await lunaSec.grants.verify(context.sessionId, args.formData.email, 'store_token'); // Throws if there is an issue
+      await lunaSec.grants.verify(context.sessionId, args.formData.text_area, 'store_token');
       db.formData = args.formData;
       console.debug('setting test data to ', args.formData);
       return db.formData;

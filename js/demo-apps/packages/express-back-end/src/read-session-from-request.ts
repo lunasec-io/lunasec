@@ -18,7 +18,6 @@ export async function readSessionFromRequest(req: Request) {
   }
   //
   const jwtData = await decodeJWT(cookie, pubKey);
-  console.log('got jwt data of ', jwtData);
 
   return jwtData.session.id;
 }
