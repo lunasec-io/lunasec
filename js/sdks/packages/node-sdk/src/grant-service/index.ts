@@ -13,8 +13,7 @@ export class LunaSecGrantService {
     this.sessionIdProvider = sessionIdProvider;
   }
 
-  public async grant(sessionId: string, tokenId: string) {
-    console.log('granting token using sessionId ', sessionId);
+  public async create(sessionId: string, tokenId: string) {
     if (!isToken(tokenId)) {
       throw new Error('Attempted to create a LunaSec Token Grant from a string that didnt look like a token');
     }
@@ -32,7 +31,7 @@ export class LunaSecGrantService {
     }
   }
 
-  public async verifyGrant(sessionId: string, tokenId: string, grantType: GrantType) {
+  public async verify(sessionId: string, tokenId: string, grantType: GrantType) {
     if (tokenId === '') {
       return Promise.resolve(); // no point in verifying empty tokens, allow them to be written to the db
     }
@@ -72,11 +71,11 @@ export class LunaSecGrantService {
     return sessionId;
   }
 
-  public async grantWithAutomaticSessionId(req: Request, tokenId: string) {
-    return this.grant(await this.getSessionIdFromReq(req), tokenId);
+  public async createWithAutomaticSessionId(req: Request, tokenId: string) {
+    return this.create(await this.getSessionIdFromReq(req), tokenId);
   }
 
-  public async verifyGrantWithAutomaticSessionId(req: Request, tokenId: string, grantType: GrantType) {
-    return this.verifyGrant(await this.getSessionIdFromReq(req), tokenId, grantType);
+  public async verifyWithAutomaticSessionId(req: Request, tokenId: string, grantType: GrantType) {
+    return this.verify(await this.getSessionIdFromReq(req), tokenId, grantType);
   }
 }

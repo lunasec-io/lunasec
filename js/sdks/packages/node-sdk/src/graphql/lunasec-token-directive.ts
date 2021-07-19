@@ -31,7 +31,7 @@ async function grantToken(name: string, req: Request, token: string) {
   if (!grantService) {
     throw new Error('Grant Service was not configured for the graphql token directive.');
   }
-  await grantService.grantWithAutomaticSessionId(req, token);
+  await grantService.createWithAutomaticSessionId(req, token);
 }
 
 export class TokenDirective extends SchemaDirectiveVisitor {
@@ -48,14 +48,12 @@ export class TokenDirective extends SchemaDirectiveVisitor {
       }
       if (Array.isArray(result)) {
         const grantPromises: Promise<void>[] = [];
-        console.debug('granting an array of tokens for field name: ', field.name);
         result.forEach((t) => {
           grantPromises.push(grantToken(field.name, req, t));
           console.log(t);
         });
         await Promise.all(grantPromises);
       } else {
-        console.log('granting an individual token string ', result, ' for ', field.name);
         await grantToken(field.name, req, result);
       }
       return result;

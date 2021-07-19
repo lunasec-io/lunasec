@@ -5,7 +5,7 @@ import { lunaSec } from './configure-lunasec';
 // import { DeploymentStage, SecureResolver } from '@lunasec/node-sdk';
 const routes = Router();
 
-// (forrest) Leaving the secure resolver stuff commented out until chris gets a change to take another pass at it
+// (forrest) Leaving the secure resolver stuff commented out until chris gets a chance to take another pass at it
 // const secureResolver = new SecureResolver({
 //   stage: DeploymentStage.DEV,
 // });
@@ -80,7 +80,7 @@ export function createRoutes() {
     const sessionId = '1234';
 
     try {
-      const tokenGrant = await lunaSec.grants.grant(sessionId, tokenId);
+      const tokenGrant = await lunaSec.grants.create(sessionId, tokenId);
       res.json({
         grant: tokenGrant, // grant stringifies itself on serialization
       });
