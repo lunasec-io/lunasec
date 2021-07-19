@@ -28,7 +28,7 @@ export const typeDefs = gql`
     files: [String]
   }
 
-  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION | OBJECT | INPUT_OBJECT
+  directive @token on FIELD_DEFINITION # | INPUT_FIELD_DEFINITION  ### Enable input field annotation once plugin working
 `;
 
 // This is a fake little database so we have some data to serve
@@ -54,9 +54,9 @@ export const resolvers = {
     ) => {
       // For now, you must manually verify all tokens are granted before writing them to the database
       await lunaSec.grants.verifyGrant(context.sessionId, args.formData.email, 'store_token'); // Throws if there is an issue
-      await lunaSec.grants.verifyGrant(context.sessionId, args.formData.text_area, 'store_token'); // Throws if there is an issue
+      await lunaSec.grants.verifyGrant(context.sessionId, args.formData.text_area, 'store_token');
       db.formData = args.formData;
-      console.log('setting test data to ', args.formData);
+      console.debug('setting test data to ', args.formData);
       return db.formData;
     },
   },

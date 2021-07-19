@@ -40,21 +40,22 @@ export class LunaSecExpressAuthPlugin {
       }, {});
   }
 
-  async buildSecureFrameRedirectUrl(stateToken: string) {
-    let openIdToken = undefined;
+  async buildSecureFrameRedirectUrl(stateToken: string, sessionId: string) {
+    // This gets set into the "access_token" cookie by the Secure Frame Backend after the redirect
+    let access_token = undefined;
     try {
-      openIdToken = await this.auth.createAuthenticationJWT({});
+      access_token = await this.auth.createAuthenticationJWT({ session_id: sessionId });
     } catch (e) {
       console.error(`error while attempting to create authentication token: ${e}`);
     }
 
-    if (openIdToken === undefined) {
+    if (access_token === undefined) {
       return null;
     }
 
     const redirectUrl = new URL(this.secureFrameUrl);
     redirectUrl.searchParams.append('state', stateToken);
-    redirectUrl.searchParams.append('openid_token', openIdToken.toString());
+    redirectUrl.searchParams.append('openid_token', access_token.toString());
     redirectUrl.pathname += '/session/create';
     return redirectUrl;
   }
@@ -70,18 +71,18 @@ export class LunaSecExpressAuthPlugin {
       });
       return;
     }
-    // DO SOMETHING WITH THIS SESSIONID?  Is this even necessary to do here or is this taken care of by the go server
-    // const sessionId = await this.config.sessionIdProvider(req);
-    // console.log('sessionId is ', sessionId);
-    // if (sessionId === null) {
-    //   res.status(400).send({
-    //     success: false,
-    //     error: 'unable to authenticate the user of this request',
-    //   });
-    //   return;
-    // }
-    // console.log('accepted sessionid ', sessionId);
-    const redirectUrl = await this.buildSecureFrameRedirectUrl(authFlowCorrelationToken);
+
+    const sessionId = await this.config.sessionIdProvider(req);
+    console.log('sessionId is ', sessionId);
+    if (sessionId === null) {
+      res.status(400).send({
+        success: false,
+        error: 'unable to authenticate the user of this request',
+      });
+      return;
+    }
+    // This method creates the JWT that becomes the iframe's "access_token" cookie, which contains the sessionId
+    const redirectUrl = await this.buildSecureFrameRedirectUrl(authFlowCorrelationToken, sessionId);
     if (redirectUrl === null) {
       console.error('unable to complete auth flow, redirectURL not set');
       res.status(400).send({
