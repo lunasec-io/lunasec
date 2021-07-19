@@ -1,3 +1,4 @@
+import { TokenInputType } from '@lunasec/node-sdk';
 import { gql } from 'apollo-server-express';
 
 import { lunaSec } from '../configure-lunasec';
@@ -6,6 +7,8 @@ import { lunaSec } from '../configure-lunasec';
 // and declare the directive directly in your schema with the `directive` keyword.
 
 export const typeDefs = gql`
+  scalar TokenInput
+
   type Query {
     getFormData: FormData
   }
@@ -22,13 +25,13 @@ export const typeDefs = gql`
   }
 
   input FormDataInput {
-    email: String
+    email: TokenInput
     insecure_field: String
     text_area: String
     files: [String]
   }
 
-  directive @token on FIELD_DEFINITION # | INPUT_FIELD_DEFINITION  ### Enable input field annotation once plugin working
+  directive @token on FIELD_DEFINITION ### Enable input field annotation once plugin working
 `;
 
 // This is a fake little database so we have some data to serve
@@ -42,6 +45,7 @@ const db = {
 };
 
 export const resolvers = {
+  TokenInput: TokenInputType,
   Query: {
     getFormData: () => db.formData,
   },
