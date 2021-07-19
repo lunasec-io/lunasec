@@ -1,6 +1,5 @@
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, IResolvers } from 'apollo-server-express';
 import { Express, Request, Response } from 'express';
-import { IResolvers } from 'graphql-tools';
 
 import { readSessionFromRequest } from '../read-session-from-request';
 
