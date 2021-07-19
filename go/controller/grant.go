@@ -61,7 +61,7 @@ func (s *grantController) SetGrant(w http.ResponseWriter, r *http.Request) {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
-    log.Printf("received token for session")
+
 	if err := s.grant.SetTokenGrantForSession(model.Token(input.TokenID), input.SessionID, input.GrantType); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
