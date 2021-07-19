@@ -1,15 +1,7 @@
-import util from 'util';
-
 import { isToken } from '@lunasec/tokenizer-sdk';
 import { SchemaDirectiveVisitor } from 'apollo-server-express';
 import { Request } from 'express';
-import {
-  defaultFieldResolver,
-  GraphQLField,
-  GraphQLInputField,
-  GraphQLInputObjectType,
-  GraphQLObjectType,
-} from 'graphql';
+import { defaultFieldResolver, GraphQLField } from 'graphql';
 
 import { LunaSecGrantService } from '../grant-service';
 
