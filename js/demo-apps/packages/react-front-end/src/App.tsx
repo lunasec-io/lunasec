@@ -106,9 +106,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
           email
         }
       }`;
-    console.log('mutation string is ', mutationString);
     const formDataRes = (await this.makeGraphqlRequest(mutationString)) as { setFormData: FormData };
-    console.log('Upload data response is ', formDataRes);
   }
 
   persistTokens(formEvent: React.FormEvent<HTMLFormElement>) {
