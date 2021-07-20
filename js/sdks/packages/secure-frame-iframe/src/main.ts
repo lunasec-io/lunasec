@@ -5,7 +5,7 @@ import { SecureFrame } from './secure-frame';
 function startup() {
   const componentName = new URL(document.location.href).searchParams.get('component') as ComponentNames | null;
   if (!componentName || !componentNames.includes(componentName)) {
-    throw new Error('Invalid element type passed in iframe URL, unsure what to render');
+    throw new Error(`Invalid component name "${componentName || 'null'}" passed in iframe URL, unsure what to render`);
   }
 
   const loadingText = document.querySelector('.loading-text') as Element;

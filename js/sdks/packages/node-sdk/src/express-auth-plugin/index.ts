@@ -56,14 +56,12 @@ export class LunaSecExpressAuthPlugin {
     const redirectUrl = new URL(this.secureFrameUrl);
     redirectUrl.searchParams.append('state', stateToken);
     redirectUrl.searchParams.append('openid_token', access_token.toString());
-    redirectUrl.pathname += '/session/create';
+    redirectUrl.pathname = '/session/create';
     return redirectUrl;
   }
 
   async handleSecureFrameAuthRequest(req: Request, res: Response) {
-    console.log('HANDLING SECURE FRAME AUTH REQUEST');
     const authFlowCorrelationToken = req.query.state;
-    console.log('correlation token is ', authFlowCorrelationToken);
     if (typeof authFlowCorrelationToken !== 'string') {
       res.status(400).send({
         success: false,
