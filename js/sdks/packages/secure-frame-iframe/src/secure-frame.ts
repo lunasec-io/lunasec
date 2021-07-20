@@ -2,7 +2,7 @@ import { AttributesMessage, patchStyle, safeParseJson, StyleInfo, ValidatorName 
 import { ClassLookup, TagLookup } from '@lunasec/react-sdk';
 
 import { initializeUploader } from './initialize-uploader';
-import { detokenize, listenForRPCMessages, sendMessageToParentFrame } from './rpc';
+import { iFrameRPC } from './rpc';
 import { handleDownload } from './secure-download';
 import { validate } from './validators';
 export type SupportedElement = TagLookup[keyof TagLookup];
@@ -22,6 +22,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
   readonly form: HTMLFormElement;
   private token?: string;
   private validatorName?: ValidatorName = undefined;
+  public readonly rpc: iFrameRPC;
 
   constructor(componentName: E, loadingText: Element) {
     this.componentName = componentName;
@@ -29,10 +30,15 @@ export class SecureFrame<E extends keyof ClassLookup> {
     [this.secureElement, this.form] = this.insertSecureElement(componentName);
     this.origin = this.getURLSearchParam('origin');
     this.frameNonce = this.getURLSearchParam('n');
-    listenForRPCMessages(this.origin, (attrs) => {
+    this.rpc = new iFrameRPC(this.origin, { host: window.location.origin });
+    this.startRPC();
+  }
+
+  startRPC() {
+    this.rpc.listenForRPCMessages((attrs) => {
       void this.setAttributesFromRPC(attrs);
     });
-    sendMessageToParentFrame(this.origin, {
+    this.rpc.sendMessageToParentFrame({
       command: 'NotifyOnStart',
       data: {},
       frameNonce: this.frameNonce,
@@ -110,7 +116,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
     }
 
     if (!this.initialized) {
-      sendMessageToParentFrame(this.origin, {
+      this.rpc.sendMessageToParentFrame({
         command: 'NotifyOnFullyLoaded',
         data: {},
         frameNonce: this.frameNonce,
@@ -132,7 +138,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
         this.secureElement.textContent = 'Error: Missing File';
       }
     } else {
-      const value = await detokenize(token);
+      const value = await this.rpc.detokenize(token);
       if (attrs.component === 'Input') {
         const input = this.secureElement as HTMLInputElement;
         input.value = value;
@@ -145,7 +151,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
 
   attachOnBlurNotifier() {
     this.secureElement.addEventListener('blur', () => {
-      sendMessageToParentFrame(this.origin, { command: 'NotifyOnBlur', frameNonce: this.frameNonce, data: {} });
+      this.rpc.sendMessageToParentFrame({ command: 'NotifyOnBlur', frameNonce: this.frameNonce, data: {} });
     });
   }
 
@@ -164,7 +170,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
       throw new Error('Attempted to do validation but the validator name wasnt assigned');
     }
     const isValid = validate(this.validatorName, (this.secureElement as HTMLInputElement).value);
-    sendMessageToParentFrame(this.origin, {
+    this.rpc.sendMessageToParentFrame({
       command: 'NotifyOnValidate',
       frameNonce: this.frameNonce,
       data: { isValid },
@@ -179,7 +185,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
         this.sendValidationMessage();
         await timeout(50);
       }
-      sendMessageToParentFrame(this.origin, { command: 'NotifyOnSubmit', frameNonce: this.frameNonce, data: {} });
+      this.rpc.sendMessageToParentFrame({ command: 'NotifyOnSubmit', frameNonce: this.frameNonce, data: {} });
     });
   }
 }
