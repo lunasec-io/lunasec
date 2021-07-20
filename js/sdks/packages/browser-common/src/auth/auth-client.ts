@@ -1,5 +1,3 @@
-import { __SECURE_FRAME_URL__ } from '../constants';
-
 interface SessionResponse {
   success: boolean;
   error: string;
@@ -7,8 +5,8 @@ interface SessionResponse {
 
 export class SecureFrameAuthClient {
   private readonly url: string;
-  constructor() {
-    this.url = __SECURE_FRAME_URL__;
+  constructor(url: string) {
+    this.url = url;
   }
 
   private getURL(path: string): string {
@@ -34,12 +32,11 @@ export class SecureFrameAuthClient {
   }
 
   // dispatch to the secure frame to ensure that a session exists
-  public async ensureSession() {
-    await fetch(this.getURL('/session/ensure'), {
+  public ensureSession() {
+    return fetch(this.getURL('/session/ensure'), {
       credentials: 'include',
       mode: 'no-cors',
       redirect: 'follow',
     });
-    return;
   }
 }

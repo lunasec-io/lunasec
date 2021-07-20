@@ -1,6 +1,6 @@
 import { downloadFile } from '@lunasec/js-sdk';
 import {
-  onLunaSecAuthError,
+  LunaSecConfigContext,
   SecureDownload,
   SecureForm,
   SecureInput,
@@ -32,14 +32,10 @@ const defaultState: IAppState = {
 
 class App extends React.Component<Record<string, never>, IAppState> {
   private isValid = true;
-
+  private readonly lunaSecDomain = process.env.SECURE_FRAME_URL || 'http://localhost:37766';
   constructor(props: Record<string, never>) {
     super(props);
     this.state = defaultState;
-
-    onLunaSecAuthError((e: Error) => {
-      this.setState({ authError: 'Failed to authenticate with LunaSec. \n Is a user logged in?' });
-    });
   }
 
   componentDidMount() {
@@ -129,17 +125,17 @@ class App extends React.Component<Record<string, never>, IAppState> {
     return (
       <>
         <section>
-          <h3>Secure Download (element)</h3>
+          <h3>Secure Download (react)</h3>
           <div>
             <SecureDownload name="securefile.pdf" token={fileToken} className="test-secure-downloader" />
           </div>
         </section>
         <section>
-          <h3>Secure Download (programmatic)</h3>
+          <h3>Secure Download (vanilla js)</h3>
           <button
-            onClick={() => {
-              console.log('starting download');
-              downloadFile(fileToken);
+            onClick={(e) => {
+              e.preventDefault();
+              downloadFile(this.lunaSecDomain, fileToken);
             }}
           >
             Click to trigger download with JS
@@ -171,10 +167,10 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   renderAuthError() {
-    console.log('auth error is ', this.state.authError);
     if (!this.state.authError) {
       return null;
     } else {
+      console.log('auth error is ', this.state.authError);
       return (
         <section>
           <p style={{ color: 'red' }}>{this.state.authError}</p>
@@ -240,7 +236,16 @@ class App extends React.Component<Record<string, never>, IAppState> {
   render() {
     return (
       <div className="App">
-        <div className="app-form">{this.renderForm()}</div>
+        <LunaSecConfigContext.Provider
+          value={{
+            lunaSecDomain: this.lunaSecDomain,
+            authenticationErrorHandler: (_e: Error) => {
+              this.setState({ authError: 'Failed to authenticate with LunaSec. \n Is a user logged in?' });
+            },
+          }}
+        >
+          <div className="app-form">{this.renderForm()}</div>
+        </LunaSecConfigContext.Provider>
       </div>
     );
   }

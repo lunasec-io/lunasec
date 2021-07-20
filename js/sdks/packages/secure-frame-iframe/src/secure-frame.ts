@@ -2,7 +2,7 @@ import { AttributesMessage, patchStyle, safeParseJson, StyleInfo, ValidatorName 
 import { ClassLookup, TagLookup } from '@lunasec/react-sdk';
 
 import { initializeUploader } from './initialize-uploader';
-import { detokenize, listenForRPCMessages, sendMessageToParentFrame } from './rpc';
+import { iFrameRPC } from './rpc';
 import { handleDownload } from './secure-download';
 import { validate } from './validators';
 export type SupportedElement = TagLookup[keyof TagLookup];
@@ -10,6 +10,14 @@ export type SupportedElement = TagLookup[keyof TagLookup];
 export function timeout(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+const componentNameToElementMap: TagLookup = {
+  Paragraph: 'p',
+  Downloader: 'a',
+  Uploader: 'input',
+  TextArea: 'textarea',
+  Input: 'input',
+};
 
 // Would be nice if class could take <element type parameter> but couldn't quite get it working
 export class SecureFrame<E extends keyof ClassLookup> {
@@ -22,6 +30,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
   readonly form: HTMLFormElement;
   private token?: string;
   private validatorName?: ValidatorName = undefined;
+  public readonly rpc: iFrameRPC;
 
   constructor(componentName: E, loadingText: Element) {
     this.componentName = componentName;
@@ -29,21 +38,26 @@ export class SecureFrame<E extends keyof ClassLookup> {
     [this.secureElement, this.form] = this.insertSecureElement(componentName);
     this.origin = this.getURLSearchParam('origin');
     this.frameNonce = this.getURLSearchParam('n');
-    listenForRPCMessages(this.origin, (attrs) => {
+    this.rpc = new iFrameRPC(this.origin, { host: window.location.origin });
+    this.startRPC();
+  }
+
+  startRPC() {
+    this.rpc.listenForRPCMessages((attrs) => {
       void this.setAttributesFromRPC(attrs);
     });
-    sendMessageToParentFrame(this.origin, {
+    this.rpc.sendMessageToParentFrame({
       command: 'NotifyOnStart',
       data: {},
       frameNonce: this.frameNonce,
     });
   }
 
-  insertSecureElement(elementName: E): [HTMLElementTagNameMap[TagLookup[E]], HTMLFormElement] {
+  insertSecureElement(componentName: E): [HTMLElementTagNameMap[TagLookup[E]], HTMLFormElement] {
     const body = document.getElementsByTagName('BODY')[0];
-    const secureElement = document.createElement(elementName) as HTMLElementTagNameMap[TagLookup[E]];
+    const elementName = componentNameToElementMap[componentName];
+    const secureElement = document.createElement(elementName);
     secureElement.className = 'secure-input d-none';
-
     const form = document.createElement('form');
     form.appendChild(secureElement);
     body.appendChild(form);
@@ -110,7 +124,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
     }
 
     if (!this.initialized) {
-      sendMessageToParentFrame(this.origin, {
+      this.rpc.sendMessageToParentFrame({
         command: 'NotifyOnFullyLoaded',
         data: {},
         frameNonce: this.frameNonce,
@@ -126,13 +140,13 @@ export class SecureFrame<E extends keyof ClassLookup> {
     if (attrs.component === 'Downloader') {
       // Figure out why this type casting is necessary
       try {
-        await handleDownload(token, this.secureElement as HTMLAnchorElement, attrs.hidden || false);
+        await handleDownload(token, this.secureElement as HTMLAnchorElement, this.rpc.tokenizer, attrs.hidden || false);
       } catch (e) {
         // TODO: Make this less ugly (it's blue atm and garbage lol)
         this.secureElement.textContent = 'Error: Missing File';
       }
     } else {
-      const value = await detokenize(token);
+      const value = await this.rpc.detokenize(token);
       if (attrs.component === 'Input') {
         const input = this.secureElement as HTMLInputElement;
         input.value = value;
@@ -145,7 +159,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
 
   attachOnBlurNotifier() {
     this.secureElement.addEventListener('blur', () => {
-      sendMessageToParentFrame(this.origin, { command: 'NotifyOnBlur', frameNonce: this.frameNonce, data: {} });
+      this.rpc.sendMessageToParentFrame({ command: 'NotifyOnBlur', frameNonce: this.frameNonce, data: {} });
     });
   }
 
@@ -164,7 +178,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
       throw new Error('Attempted to do validation but the validator name wasnt assigned');
     }
     const isValid = validate(this.validatorName, (this.secureElement as HTMLInputElement).value);
-    sendMessageToParentFrame(this.origin, {
+    this.rpc.sendMessageToParentFrame({
       command: 'NotifyOnValidate',
       frameNonce: this.frameNonce,
       data: { isValid },
@@ -179,7 +193,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
         this.sendValidationMessage();
         await timeout(50);
       }
-      sendMessageToParentFrame(this.origin, { command: 'NotifyOnSubmit', frameNonce: this.frameNonce, data: {} });
+      this.rpc.sendMessageToParentFrame({ command: 'NotifyOnSubmit', frameNonce: this.frameNonce, data: {} });
     });
   }
 }
