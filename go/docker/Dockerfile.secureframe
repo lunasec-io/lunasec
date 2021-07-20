@@ -1,12 +1,24 @@
-FROM golang AS builder
+FROM golang AS base
 
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 
+WORKDIR /src
+ENV CGO_ENABLED=0
+COPY go.* .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
+
+FROM base as builder
+
 ARG BUILD_TAG
 
-ADD . /code
-WORKDIR /code
-RUN BUILD_TAG=$BUILD_TAG make secureframe
+RUN --mount=target=. \
+    --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    BUILD_TAG=$BUILD_TAG OUTPUT_DIR=/out make secureframe \
+    && mkdir -p /out/config /out/views \
+    && cp -r config/secureframe /out/config/secureframe \
+    && cp -r views/secureframe /out/views/secureframe
 
 FROM scratch
 
@@ -15,9 +27,9 @@ ARG BUILD_TAG
 ENV SECURE_FRAME_VIEWS_PATH /views
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /code/build/secureframe_${BUILD_TAG} /secureframe
-COPY --from=builder /code/views/secureframe /views/secureframe
-COPY --from=builder /code/config/secureframe /config/secureframe
+COPY --from=builder /out/secureframe_${BUILD_TAG} /secureframe
+COPY --from=builder /out/views/secureframe /views/secureframe
+COPY --from=builder /out/config/secureframe /config/secureframe
 COPY --from=builder /tmp /tmp
 
 WORKDIR /

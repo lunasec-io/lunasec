@@ -30,9 +30,13 @@ const (
 
 type StackOutput map[string]map[string]string
 
-type AwsResourceConfig struct {
+type AwsResources struct {
 	TableNames map[model.KVStore]string `yaml:"table_names"`
 	CiphertextBucket string `yaml:"s3_bucket"`
+}
+
+type AwsResourceConfig struct {
+	AwsGateway AwsResources `yaml:"aws_gateway"`
 }
 
 type ServiceToImageMap map[SecureFrameService]string
@@ -89,10 +93,13 @@ func (l *deployer) Deploy() (err error) {
 		return
 	}
 
-	awsURI := fmt.Sprintf("aws://%s/%s", *l.env.Account, *l.env.Region)
+	cmd := "cdk"
+	if l.localDev {
+		cmd = "cdklocal"
+	}
 
-	args := []string{"bootstrap", "-a", l.buildDir, awsURI}
-	cdkExecutor := service.NewExecutor("cdk", args, map[string]string{}, workDir, nil, true)
+	args := []string{"bootstrap", "-a", l.buildDir}
+	cdkExecutor := service.NewExecutor(cmd, args, map[string]string{}, workDir, nil, true)
 	_, err = cdkExecutor.Execute()
 	if err != nil {
 		log.Println(err)
@@ -103,11 +110,6 @@ func (l *deployer) Deploy() (err error) {
 
 	// TODO (cthompson) we probably want to require approval for this, but for now this is ok
 	args = []string{"deploy", "--require-approval", "never", "-a", l.buildDir, "--outputs-file", stackOutputFilePath}
-
-	cmd := "cdk"
-	if l.localDev {
-		cmd = "cdklocal"
-	}
 
 	cdkExecutor = service.NewExecutor(cmd, args, map[string]string{}, workDir, nil, true)
 	_, err = cdkExecutor.Execute()
@@ -145,13 +147,13 @@ func (l *deployer) writeConfig(stackOutputFilePath string) (err error) {
 	}
 
 	// TODO (cthompson) this is pretty dirty, we ideally build this resource config from the actual config objects that each service expects
-	awsResourceConfig.CiphertextBucket = outputs[*getOutputName("ciphertext-bucket")]
+	awsResourceConfig.AwsGateway.CiphertextBucket = outputs[*getOutputName("ciphertext-bucket")]
 
-	awsResourceConfig.TableNames = map[model.KVStore]string{}
-	awsResourceConfig.TableNames[gateway.MetaStore] = outputs[*getOutputName("metadata-table")]
-	awsResourceConfig.TableNames[gateway.KeyStore] = outputs[*getOutputName("keys-table")]
-	awsResourceConfig.TableNames[gateway.SessionStore] = outputs[*getOutputName("sessions-table")]
-	awsResourceConfig.TableNames[gateway.GrantStore] = outputs[*getOutputName("grants-table")]
+	awsResourceConfig.AwsGateway.TableNames = map[model.KVStore]string{}
+	awsResourceConfig.AwsGateway.TableNames[gateway.MetaStore] = outputs[*getOutputName("metadata-table")]
+	awsResourceConfig.AwsGateway.TableNames[gateway.KeyStore] = outputs[*getOutputName("keys-table")]
+	awsResourceConfig.AwsGateway.TableNames[gateway.SessionStore] = outputs[*getOutputName("sessions-table")]
+	awsResourceConfig.AwsGateway.TableNames[gateway.GrantStore] = outputs[*getOutputName("grants-table")]
 
 	out, err := yaml.Marshal(awsResourceConfig)
 	if err != nil {

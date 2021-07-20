@@ -31,5 +31,8 @@ COPY --from=builder $BUILDER_PATH /lunasec
 COPY --from=builder /out/config/ /config/
 COPY --from=builder /tmp /tmp
 
+COPY scripts/wait-for /wait-for
+RUN chmod +x /wait-for
+
 WORKDIR /
 ENTRYPOINT ["/lunasec"]

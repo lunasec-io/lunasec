@@ -30,7 +30,6 @@ type dynamoKvGateway struct {
 }
 
 type DynamoKvGatewayConfig struct {
-	GatewayConfig
 	TableNames map[model.KVStore]string `yaml:"table_names"`
 }
 
