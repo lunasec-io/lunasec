@@ -11,6 +11,12 @@ all:
 		mv $${f} ${OUTPUT_DIR} ;\
 	done
 
+docker-cdk-init:
+	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build cdk-init
+
+docker-secureframe:
+	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build secureframe
+
 %:
 	CGO_ENABLED=0 GOOS=linux go build -tags ${BUILD_TAG} -a -installsuffix cgo -o ${OUTPUT_DIR}/$@_${BUILD_TAG} $(shell pwd)/cmd/$@
 

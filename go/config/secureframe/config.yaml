@@ -8,12 +8,15 @@ app:
       - Authorization
 aws_gateway:
   region: us-west-2
-  s3_bucket: ${CIPHERTEXT_VAULT_S3_BUCKET}
-  table_names:
-    metadata: ${METADATA_KV_TABLE}
-    keys: ${KEYS_KV_TABLE}
-    sessions: ${SESSIONS_KV_TABLE}
-    grants: ${GRANTS_KV_TABLE}
+  access_key_id: ${AWS_ACCESS_KEY_ID:}
+  secret_access_key: ${AWS_SECRET_ACCESS_KEY:}
+  localstack_url: http://localhost:4566
+#  s3_bucket: ${CIPHERTEXT_VAULT_S3_BUCKET}
+#  table_names:
+#    metadata: ${METADATA_KV_TABLE}
+#    keys: ${KEYS_KV_TABLE}
+#    sessions: ${SESSIONS_KV_TABLE}
+#    grants: ${GRANTS_KV_TABLE}
 session_controller:
   auth_callback_host: ${CUSTOMER_BACK_END}
   auth_callback_path: ${AUTH_CALLBACK_PATH:/secure-frame}

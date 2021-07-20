@@ -2,24 +2,16 @@ version: "3.8"
 
 services:
   localstack:
-    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+    container_name: localstack
+    hostname: localstack
     image: localstack/localstack
-    network_mode: bridge
     ports:
-      - "127.0.0.1:53:53"
-      - "127.0.0.1:53:53/udp"
-      - "127.0.0.1:443:443"
-      - "127.0.0.1:4566:4566"
-      - "127.0.0.1:4571:4571"
-      - "127.0.0.1:${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+      - "4566:4566"
     environment:
-      - SERVICES=${SERVICES- }
+      - SERVICES=s3,dynamodb,secretsmanager,sts
       - DEBUG=${DEBUG- }
       - DATA_DIR=${DATA_DIR- }
-      - PORT_WEB_UI=${PORT_WEB_UI- }
-      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
       - LOCALSTACK_API_KEY=${LOCALSTACK_API_KEY- }
-      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
       - DOCKER_HOST=unix:///var/run/docker.sock
       - HOST_TMP_FOLDER=${TMPDIR}
       - AWS_ACCESS_KEY_ID=test
@@ -27,16 +19,23 @@ services:
     volumes:
       - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   cdk-init:
+    stdin_open: true
+    tty: true
     env_file:
       - .env.dev
     build:
       context: .
       dockerfile: docker/Dockerfile.lunasec
-    network_mode: bridge
-    command: deploy --local --build --config-output /config/secureframe/
+    command: --dir /lunasec_local_build deploy --local --build --config-output /config/secureframe/
     volumes:
       - ./config/secureframe/:/config/secureframe/
+      - ./lunasec_local_build/:/lunasec_local_build/
     depends_on:
     - localstack
   secureframe:
@@ -47,8 +46,16 @@ services:
         BUILD_TAG: dev
       context: .
       dockerfile: docker/Dockerfile.secureframe
-    network_mode: bridge
     volumes:
       - ./config/secureframe/:/config/secureframe/
+    ports:
+      - 37766:37766
     depends_on:
     - cdk-init
+    links:
+      - cdk-init
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:37766"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

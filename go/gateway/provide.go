@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"go.uber.org/config"
 	"go.uber.org/zap"
+	"log"
 )
 
 type Gateways struct {
@@ -38,26 +39,31 @@ func NewAwsSession(logger *zap.Logger, provider config.Provider) (sess *session.
 
 	gatewayConfig, err := NewGatewayConfig(logger, provider)
 	if err != nil {
+		log.Println(err)
 		return
 	}
 
+	sharedConfigEnable := session.SharedConfigEnable
 	if gatewayConfig.AccessKeyID != "" && gatewayConfig.SecretAccessKey != "" {
 		creds = credentials.NewStaticCredentials(gatewayConfig.AccessKeyID, gatewayConfig.SecretAccessKey, "")
+		sharedConfigEnable = session.SharedConfigDisable
 	}
 
 	if gatewayConfig.LocalstackURL != "" {
 		endpointUrl = aws.String(gatewayConfig.LocalstackURL)
 	}
 
-	sess = session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
+	sessionOptions := session.Options{
+		SharedConfigState: sharedConfigEnable,
 		Config: aws.Config{
 			Credentials: creds,
 			Region: aws.String(gatewayConfig.S3Region),
 			Endpoint: endpointUrl,
 			S3ForcePathStyle: aws.Bool(true),
 		},
-	}))
+	}
+
+	sess = session.Must(session.NewSessionWithOptions(sessionOptions))
 	return
 }
 

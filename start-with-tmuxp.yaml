@@ -28,5 +28,4 @@ windows:
     # Secure Frame Back End
     - shell_command:
       - cd go
-      - make secureframe
-      - SECURE_FRAME_FRONT_END=http://localhost:37766 CUSTOMER_FRONT_END=http://localhost:3000 CUSTOMER_BACK_END=http://localhost:3001 CDN_HOST=localhost:8000 ./scripts/run-secureframe.sh
+      - docker-compose up
