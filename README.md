@@ -54,6 +54,17 @@ Then open your browser and navigate to `http://localhost:3000`. That will show y
 
 When you want to shut down the cluster, hit `ctrl+b` and type `:kill-session`.  
 
+### Using the CLI to generate test data
+A CLI has been written in go to enable the creation of test data.  Build the cli by 
+```shell
+cd go
+BUILT_TAG=cli make tokenizer
+```
+and use it by running 
+```shell
+./build/tokenizer_cli COMMAND
+```
+
 ### How to manage and install packages
 We use lerna to manage the monorepo, and yarn as the package manager.  Since yarn doesn't know about local packages like lerna,
 we can't use `yarn add` to install dependencies. To add a dependency to a package, either edit it 
