@@ -3,7 +3,6 @@ import { MetaData, Tokenizer } from '@lunasec/tokenizer-sdk';
 import React from 'react';
 import Dropzone, { DropzoneProps, FileWithPath } from 'react-dropzone';
 
-import { sendMessageToParentFrame } from './rpc';
 import { handleDownload } from './secure-download';
 import { SecureFrame } from './secure-frame';
 
@@ -47,7 +46,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
       }
     });
     const secureFrame = this.props.secureframe;
-    sendMessageToParentFrame(secureFrame.origin, {
+    secureFrame.rpc.sendMessageToParentFrame({
       command: 'NotifyOnToken',
       frameNonce: secureFrame.frameNonce,
       data: { token: tokens },
