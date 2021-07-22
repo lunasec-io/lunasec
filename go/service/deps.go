@@ -12,6 +12,7 @@ type authCallbackConfig struct {
 
 type S3BucketConfig struct {
 	S3Bucket string `yaml:"s3_bucket"`
+	LocalstackURL string `yaml:"localstack_url"`
 }
 
 func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
@@ -46,6 +47,7 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 			"'self'",
 			authConfig.AuthCallbackHost,
 			s3URL.String(),
+			"https://localhost:4567",
 		},
 		"script-src": {
 			"unsafe-inline",

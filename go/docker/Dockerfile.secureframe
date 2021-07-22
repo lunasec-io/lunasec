@@ -20,13 +20,20 @@ RUN --mount=target=. \
     && cp -r config/secureframe /out/config/secureframe \
     && cp -r views/secureframe /out/views/secureframe
 
-FROM scratch
+FROM alpine
 
 ARG BUILD_TAG
 
 ENV SECURE_FRAME_VIEWS_PATH /views
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+RUN apk update && apk add curl ca-certificates && rm -rf /var/cache/apk/*
+
+COPY ./scripts/proxy/proxy.pem /usr/local/share/ca-certificates/proxy.crt
+
+RUN cat /usr/local/share/ca-certificates/proxy.crt >> /etc/ssl/certs/ca-certificates.crt
+
+RUN update-ca-certificates
+
 COPY --from=builder /out/secureframe_${BUILD_TAG} /secureframe
 COPY --from=builder /out/views/secureframe /views/secureframe
 COPY --from=builder /out/config/secureframe /config/secureframe

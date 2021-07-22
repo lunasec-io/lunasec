@@ -28,7 +28,7 @@ type AwsS3GatewayConfig struct {
 }
 
 type AwsS3GatewayConfigWrapper struct {
-	S3Bucket AwsS3GatewayConfig `yaml:"s3_bucket"`
+	AwsGateway AwsS3GatewayConfig `yaml:"aws_gateway"`
 }
 
 // AwsS3Gateway ...
@@ -40,22 +40,27 @@ type AwsS3Gateway interface {
 
 func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
 	return AwsS3GatewayConfigWrapper{
-		S3Bucket: AwsS3GatewayConfig{
+		AwsGateway: AwsS3GatewayConfig{
 			S3Region: region,
 			S3Bucket: bucket,
 		},
 	}
 }
 
+// TODO (cthompson) this should just be a presigning service since local dev presigns urls with an endpoint URL
+// that would not work if attempting to contact s3 directly from this service. Another S3 gateway for calls
+// directly to s3 from this service should be created.
+
 // NewAwsS3Gateway...
-func NewAwsS3Gateway(logger *zap.Logger, values config.Value, sess *session.Session) (s3Gateway AwsS3Gateway, err error) {
+func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session.Session) (s3Gateway AwsS3Gateway) {
 	var (
 		gatewayConfig AwsS3GatewayConfig
 	)
 
-	err = values.Populate(&gatewayConfig)
+	err := provider.Get("aws_gateway").Populate(&gatewayConfig)
 	if err != nil {
-		return
+		logger.Error("unable to populate s3 config", zap.Error(err))
+		panic(err)
 	}
 
 	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"

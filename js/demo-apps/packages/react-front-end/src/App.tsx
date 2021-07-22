@@ -46,6 +46,11 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   async componentDidMount() {
+    if (document.cookie.indexOf('id_token=') == -1) {
+      window.location.replace("http://localhost:3001/set-id-token");
+      return;
+    }
+
     this.loadFields();
     await this.retrieveTokens();
   }
