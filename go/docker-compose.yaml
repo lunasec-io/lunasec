@@ -1,35 +1,12 @@
 version: "3.8"
 
 services:
-  proxy:
-    build:
-      dockerfile: ./docker/Dockerfile.httpsproxy
-      context: .
-    command: -s 4566 -n localstack -t 4566 -c /proxy/proxy.pem -k /proxy/proxy.key
-    container_name: localstack_http_proxy
-    hostname: localstack-proxy
+  local-dependencies:
+    image: rwgrim/docker-noop
     depends_on:
       - localstack
-    links:
-      - localstack
-    volumes:
-      - "./scripts/proxy/:/proxy"
-    ports:
-      - "4567:4566"
-  #    image: outrigger/https-proxy:1.0
-#    container_name: localstack_http_proxy
-#    hostname: localstack-proxy
-#    depends_on:
-#      - localstack
-#    links:
-#      - localstack
-#    labels:
-#      com.dnsdock.name: proxy
-#      com.dnsdock.image: localstack
-#    environment:
-#      UPSTREAM_DOMAIN: localstack
-#      UPSTREAM_PORT: 4566
-#      PROXY_DOMAIN: localstack
+      - proxy
+      - cdk-init
   localstack:
     container_name: localstack
     hostname: localstack
@@ -49,10 +26,24 @@ services:
       - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4566"]
+      test: ["CMD-SHELL", "curl http://localhost:4566"]
       interval: 10s
       timeout: 5s
       retries: 5
+  proxy:
+    build:
+      dockerfile: ./docker/Dockerfile.httpsproxy
+      context: .
+    command: -s 4566 -n localstack -t 4566 -c /proxy/cert.pem -k /proxy/key.pem
+    container_name: localstack_proxy
+    hostname: localstack-proxy
+    depends_on:
+      localstack:
+        condition: service_healthy
+    volumes:
+      - "./scripts/proxy/:/proxy"
+    ports:
+      - "4567:4566"
   cdk-init:
     stdin_open: true
     tty: true
@@ -66,7 +57,8 @@ services:
       - ./config/secureframe/:/config/secureframe/
       - ./lunasec_local_build/:/lunasec_local_build/
     depends_on:
-    - localstack
+      localstack:
+        condition: service_healthy
   secureframe:
     env_file:
       - .env.dev
@@ -79,6 +71,9 @@ services:
       - ./config/secureframe/:/config/secureframe/
     ports:
       - 37766:37766
+    depends_on:
+      cdk-init:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:37766"]
       interval: 10s

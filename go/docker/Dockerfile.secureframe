@@ -28,7 +28,7 @@ ENV SECURE_FRAME_VIEWS_PATH /views
 
 RUN apk update && apk add curl ca-certificates && rm -rf /var/cache/apk/*
 
-COPY ./scripts/proxy/proxy.pem /usr/local/share/ca-certificates/proxy.crt
+COPY ./scripts/proxy/cert.pem /usr/local/share/ca-certificates/proxy.crt
 
 RUN cat /usr/local/share/ca-certificates/proxy.crt >> /etc/ssl/certs/ca-certificates.crt
 

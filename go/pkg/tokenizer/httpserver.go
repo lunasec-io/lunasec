@@ -19,7 +19,7 @@ import (
 // GetRoutes ...
 func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways) map[string]http.HandlerFunc {
 	meta := service.NewMetadataService(gateways.KV)
-	grant, err := service.NewGrantService(provider, gateways.KV)
+	grant, err := service.NewGrantService(logger, provider, gateways.KV)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
