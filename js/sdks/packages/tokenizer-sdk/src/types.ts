@@ -12,7 +12,7 @@ export interface TokenizerClientConfig {
   headers: {
     auth: string;
   };
-  token?: string;
+  authenticationToken?: string;
 }
 
 // _________________________  Responses ___________________________________

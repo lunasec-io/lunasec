@@ -11,7 +11,7 @@ export class SecureFrameAuthClient {
 
   private getURL(path: string): string {
     const url = new URL(this.url);
-    url.pathname += path;
+    url.pathname = path;
     return url.toString();
   }
 

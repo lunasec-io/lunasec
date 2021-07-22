@@ -2,8 +2,6 @@ import * as http from 'http';
 
 import { getRequestBody, makeRequest } from '@lunasec/server-common';
 
-import { __DEPLOYMENT_SERVER_URL__ } from '../constants';
-
 import {
   SecureResolverActionMessageMap,
   SecureResolverActionResponseMessageMap,
@@ -26,6 +24,7 @@ export async function makeSecureApiRequest<
   T extends ValidSecureResolverApiRequestTypes,
   TRequest extends SecureResolverActionMessageMap[T]
 >(
+  host: string,
   request: TRequest,
   path: string,
   params: http.ClientRequestArgs
@@ -34,7 +33,7 @@ export async function makeSecureApiRequest<
     // TODO: Add runtime JSON validation for response
     const response = await makeRequest<
       SecureResolverApiSuccessResponse<SecureResolverActionResponseMessageMap[T]> | SecureResolverApiFailResponse
-    >(__DEPLOYMENT_SERVER_URL__, path, params, getRequestBody(request));
+    >(host, path, params, getRequestBody(request));
 
     if (!response.success) {
       return {
@@ -63,13 +62,17 @@ export type GenericApiClient = <T extends ValidSecureResolverApiRequestTypes>(
   requestOverrides?: http.ClientRequestArgs
 ) => Promise<SecureEnclaveSuccessApiResponse<SecureResolverActionResponseMessageMap[T]> | SecureEnclaveFailApiResponse>;
 
-export function makeGenericApiClient(path: string, requestBaseConfig: http.ClientRequestArgs): GenericApiClient {
+export function makeGenericApiClient(
+  host: string,
+  path: string,
+  requestBaseConfig: http.ClientRequestArgs
+): GenericApiClient {
   return async <T extends ValidSecureResolverApiRequestTypes>(
     request: SecureResolverActionMessageMap[T],
     requestOverrides?: http.ClientRequestArgs
   ) => {
     const requestConfig = Object.assign({}, requestBaseConfig, requestOverrides);
 
-    return await makeSecureApiRequest<T, SecureResolverActionMessageMap[T]>(request, path, requestConfig);
+    return await makeSecureApiRequest<T, SecureResolverActionMessageMap[T]>(host, request, path, requestConfig);
   };
 }
