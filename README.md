@@ -47,9 +47,13 @@ hybrid_encryption_manager:
 aws_gateway:
   s3_bucket: EXAMPLE
 ```
- 
+
 Then, install `tmuxp` and then run `tmuxp load ./start-with-tmuxp.yaml` in the root directory. You can inspect that file to see what commands are all being run if you'd like to start the cluster without tmuxp.
 
+When you first start the app click "login" which will set the following cookie to "id_token":
+```
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uIjp7ImlkIjoiU09NRV9VU0VSX0lEIn19.TMO1wxc0scGYAzHonwOs1dQQ_0n8usZEp_PEnJH1MM4SqWuWGeCz6c5waWlL7B4sGpdTMGUM0CMnzfhpyFhGj70C5zwBtf8u76cdzR_GgcQb1QoQswPeF-OzoS6ZB8ALjyTsdJ2RYmyhtAGirgIxBi39rH2LBfnUdFatSDqkgfqRT_9qd0lkAtaJX4s_RWn_9Hw_dv4RkFmwDl30OR3kZgSyHyHbVMqpbigCG5SMD4lVKTYcQx3vws_t6L_frPR3M22lJrlam093DJdRvEm9Kddr6MWSck_jNbyRdTyUN8XJFOLirbiu_GnhHm-tTNW-oL6tlOiIge_Apdn5dMgaluzAxYDXSuYxzXX6hBz7VbLUTLTt8MITDb7CdmABxnnONbKHAIo9U8M06rBfMatKWZJrOUvcMHTX7TNuh_c5H-S9qocjAyLU1nuPvTHVKgEkvcBuPWCIsU3XiqxXpHiPQs0tR4MEDAYiS_myprrJUKRZo86AY9DlG5Yd5giPaX-P
+```
 Then open your browser and navigate to `http://localhost:3000`. That will show you the POC.
 
 When you want to shut down the cluster, hit `ctrl+b` and type `:kill-session`.  

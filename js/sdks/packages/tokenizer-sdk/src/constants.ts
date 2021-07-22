@@ -17,3 +17,5 @@ export const CONFIG_DEFAULTS: TokenizerClientConfig = {
     auth: 'Authorization'.toLowerCase(),
   },
 };
+
+export const TOKEN_PREFIX = 'lunasec-';

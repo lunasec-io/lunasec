@@ -31,7 +31,8 @@ export class Tokenizer {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 
-    const jwtToken = this.config.token;
+    // The iframe doesnt set this to anything at the moment, not sure if that's okay
+    const jwtToken = this.config.authenticationToken;
 
     const headers: Record<string, string> = {};
     if (jwtToken) {

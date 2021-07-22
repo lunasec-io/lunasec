@@ -3,13 +3,13 @@ import { safeParseJson } from '../utils/json';
 
 import { UnknownFrameMessage } from './types';
 
-const __SECURE_FRAME_URL__ = 'DEPRECATED'; // update the vanilla JS functions here to take the URL as a parameter if we ever want to use them again
 /**
  * The goal of this function is to receive RPC calls from the secure frame.
  * @param window Browser `window` instance.
  * @param domInstance Browser `document` instance.
- */
+//  DEPRECATED, LEFT HERE FOR JS-SDK */
 export function addMessageListener(window: Window, domInstance: Document) {
+  const __SECURE_FRAME_URL__ = 'DEPRECATED, THIS WILL BE BROKEN';
   window.addEventListener(
     'message',
     (event) => {
@@ -55,9 +55,13 @@ export function addMessageListener(window: Window, domInstance: Document) {
   );
 }
 
-export function addJsEventListener(window: Window, callback: (message: UnknownFrameMessage) => void): void {
+export function addJsEventListener(
+  window: Window,
+  lunaSecDomain: string,
+  callback: (message: UnknownFrameMessage) => void
+): void {
   window.addEventListener('message', (event) => {
-    if (event.origin !== __SECURE_FRAME_URL__) {
+    if (event.origin !== lunaSecDomain) {
       return;
     }
 

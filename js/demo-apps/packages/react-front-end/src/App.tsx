@@ -13,27 +13,20 @@ import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
 
-interface Tokens {
-  foo?: string;
-  bar?: string;
-  file?: string;
-}
-
-interface Fields {
-  normal?: string;
+interface FormData {
+  text_area?: string;
+  email?: string;
+  insecure_field?: string;
+  files: string[];
 }
 
 interface IAppState {
-  loading: boolean;
-  fields: Fields;
-  tokenIDs: Tokens;
+  formData: FormData;
   authError: string | null;
 }
 
 const defaultState: IAppState = {
-  loading: true,
-  fields: {},
-  tokenIDs: {},
+  formData: { files: [] },
   authError: null,
 };
 
@@ -45,100 +38,78 @@ class App extends React.Component<Record<string, never>, IAppState> {
     this.state = defaultState;
   }
 
-  async componentDidMount() {
-    if (document.cookie.indexOf('id_token=') == -1) {
-      window.location.replace("http://localhost:3001/set-id-token");
-      return;
-    }
-
-    this.loadFields();
-    await this.retrieveTokens();
+  componentDidMount() {
+    void this.getFormDataFromDb();
   }
 
-  // This kind of works but it creates a grant for the previous token at the moment, because retrieveTokens pulls from sessionstorage.
-  //We really need a cleaner way to handle this and to get all of this grant stuff out of this demo app
-  // At the very least separate the pulling of tokens from session storage and the turning them into grants into separate functions
-  componentDidUpdate(prevProps: Record<string, any>, prevState: IAppState) {}
-
-  handleFooChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+  handleTextAreaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     console.log('setting foo', event.target.value);
-    this.setState({ tokenIDs: { ...this.state.tokenIDs, foo: event.target.value } });
+    this.setState({ formData: { ...this.state.formData, text_area: event.target.value } });
   }
 
-  handleBarChange(event: React.ChangeEvent<HTMLInputElement>) {
+  handleEmailChange(event: React.ChangeEvent<HTMLInputElement>) {
     console.log('setting bar', event.target.value);
-    this.setState({ tokenIDs: { ...this.state.tokenIDs, bar: event.target.value } });
+    this.setState({ formData: { ...this.state.formData, email: event.target.value } });
   }
 
-  handleUploaderChange(tokens: string | Array<string>) {
+  handleUploaderChange(tokens: string[]) {
     console.log('file uploader gave new tokens: ', tokens);
-    if (tokens.length === 1) {
-      this.setState({ tokenIDs: { ...this.state.tokenIDs, file: tokens[0] } });
+    this.setState({ formData: { ...this.state.formData, files: tokens } });
+  }
+
+  async makeGraphqlRequest(requestBody: string) {
+    const res = await fetch('http://localhost:3001/graphql', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        query: requestBody,
+      }),
+    });
+    const resJson = await res.json();
+    return resJson.data;
+  }
+
+  async getFormDataFromDb() {
+    const resData = (await this.makeGraphqlRequest(`
+          query GetFormData {
+            getFormData {
+              email
+              insecure_field
+              text_area
+              files
+            }
+          }
+        `)) as { getFormData: FormData };
+    console.log('retrieved formdata ', resData);
+    if (resData && 'getFormData' in resData) {
+      this.setState({ formData: resData.getFormData });
     }
+  }
+
+  async uploadFormDataToDb(formData: FormData) {
+    const mutationString = `
+      mutation {
+        setFormData(formData: {
+          email: "${formData.email || ''}",
+          insecure_field: "${formData.insecure_field || ''}",
+          text_area: "${formData.text_area || ''}",
+          files: ${JSON.stringify(formData.files)},
+        }) {
+          email
+        }
+      }`;
+    const formDataRes = (await this.makeGraphqlRequest(mutationString)) as { setFormData: FormData };
   }
 
   persistTokens(formEvent: React.FormEvent<HTMLFormElement>) {
     if (!this.isValid) {
       return console.log('submit blocked because email is not valid');
     }
-    formEvent.preventDefault();
-    window.sessionStorage.setItem('savedTokenIDs', JSON.stringify(this.state.tokenIDs));
-    window.sessionStorage.setItem('savedFields', JSON.stringify(this.state.fields));
-  }
-
-  loadFields() {
-    const dataString = window.sessionStorage.getItem('savedFields');
-
-    // fail through to empty object if nothing set
-    const savedData = JSON.parse(dataString || '{}') as Fields;
-    this.setState({ fields: savedData });
-  }
-
-  async retrieveTokens(): Promise<void> {
-    const dataString = window.sessionStorage.getItem('savedTokenIDs');
-
-    // fail through to empty object if nothing set
-    const savedData = JSON.parse(dataString || '{}') as Tokens;
-
-    console.log('retrieved Saved Data of ', savedData);
-
-    const tokens: Record<string, string | undefined> = {
-      foo: savedData.foo,
-      bar: savedData.bar,
-      file: savedData.file,
-    };
-
-    const resolveTokens = async (tokenGrants: Promise<Record<string, string>>, name: string) => {
-      const awaitedTokenGrants = await tokenGrants;
-      const token = tokens[name];
-      if (token === undefined || token === '') {
-        return {
-          ...awaitedTokenGrants,
-          [name]: undefined,
-        };
-      }
-      await this.getDetokenizationGrant(token);
-      return {
-        ...awaitedTokenGrants,
-        [name]: token,
-      };
-    };
-
-    await Object.keys(tokens).reduce(resolveTokens.bind(this), Promise.resolve({}));
-    this.setState({ loading: false, tokenIDs: tokens });
-
-    if (this.state.tokenIDs.file !== undefined) {
-      downloadFile(this.lunaSecDomain, this.state.tokenIDs.file);
-    }
-  }
-
-  async getDetokenizationGrant(tokenId: string) {
-    const url = new URL('http://localhost:3001/grant');
-    const params = {
-      token: tokenId,
-    };
-    url.search = new URLSearchParams(params).toString();
-    await fetch(url.toString());
+    void this.uploadFormDataToDb(this.state.formData);
   }
 
   emailValidated(isValid: boolean) {
@@ -146,21 +117,27 @@ class App extends React.Component<Record<string, never>, IAppState> {
     this.isValid = isValid;
   }
 
-  renderFileDownloadComponents(fileTokenGrant: string | undefined) {
-    if (!fileTokenGrant) {
+  // Take in the first file from our uploader, if there is any.
+  renderFileDownloadComponents(fileToken: string | undefined) {
+    if (!fileToken) {
       return null;
     }
     return (
       <>
         <section>
-          <h3>Secure Download (element)</h3>
+          <h3>Secure Download (react)</h3>
           <div>
-            <SecureDownload name="securefile.pdf" token={fileTokenGrant} className="test-secure-downloader" />
+            <SecureDownload name="securefile.pdf" token={fileToken} className="test-secure-downloader" />
           </div>
         </section>
         <section>
-          <h3>Secure Download (programmatic)</h3>
-          <button onClick={() => downloadFile(this.lunaSecDomain, fileTokenGrant)}>
+          <h3>Secure Download (vanilla js)</h3>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              downloadFile(this.lunaSecDomain, fileToken);
+            }}
+          >
             Click to trigger download with JS
           </button>
         </section>
@@ -169,16 +146,16 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   renderFileComponents() {
-    const fileTokenGrant = this.state.tokenIDs.file;
+    const files = this.state.formData.files;
     return (
       <div>
-        {this.renderFileDownloadComponents(fileTokenGrant)}
+        {this.renderFileDownloadComponents(files[0])}
         <section>
           <h2>Secure Upload</h2>
           <div>
             <SecureUpload
               name="uploader"
-              filetokens={fileTokenGrant ? [fileTokenGrant] : undefined}
+              filetokens={files}
               onTokenChange={(tokens) => {
                 this.handleUploaderChange(tokens);
               }}
@@ -189,39 +166,52 @@ class App extends React.Component<Record<string, never>, IAppState> {
     );
   }
 
-  renderForm() {
-    if (this.state.loading) {
+  renderAuthError() {
+    if (!this.state.authError) {
       return null;
+    } else {
+      console.log('auth error is ', this.state.authError);
+      return (
+        <section>
+          <p style={{ color: 'red' }}>{this.state.authError}</p>
+          <a href="http://localhost:3001/set-id-token">
+            Login
+          </a>
+        </section>
+      );
     }
+  }
+  renderForm() {
     return (
       <section>
-        {this.state.authError && <p style={{ color: 'red' }}>{this.state.authError}</p>}
+        {this.renderAuthError()}
         <h2>Secure Form</h2>
         <SecureForm onSubmit={(e) => this.persistTokens(e)}>
           <SecureTextArea
-            name="foo"
-            token={this.state.tokenIDs.foo}
-            onChange={(e) => this.handleFooChange(e)}
+            name="text-area"
+            token={this.state.formData.text_area}
+            onChange={(e) => this.handleTextAreaChange(e)}
             onBlur={(e) => console.log('blur1', e)}
           />
           <SecureInput
-            name="bar"
+            name="email"
             type="email"
             validator="Email"
             onValidate={(isValid) => this.emailValidated(isValid)}
-            token={this.state.tokenIDs.bar}
-            onChange={(e) => this.handleBarChange(e)}
+            token={this.state.formData.email}
+            onChange={(e) => this.handleEmailChange(e)}
             onBlur={(e) => console.log('blur2', e)}
             className="test-class"
             placeholder="Enter Your Email"
           />
+          {/*an example of a plaintext field coexisting just fine with the secure components*/}
           <input
             className="d-block"
             name="normal"
             type="text"
-            value={this.state.fields.normal}
+            value={this.state.formData.insecure_field}
             placeholder="Insecure field coexisting"
-            onChange={(e) => this.setState({ fields: { ...this.state.fields, normal: e.target.value } })}
+            onChange={(e) => this.setState({ formData: { ...this.state.formData, insecure_field: e.target.value } })}
             onBlur={(e) => console.log('blur3', e)}
           />
           <input type="submit" />
@@ -229,7 +219,11 @@ class App extends React.Component<Record<string, never>, IAppState> {
             <h2>Secure Paragraph</h2>
             <div>
               <span>Type in the form above to populate</span>
-              <SecureParagraph name="demo-paragraph" token={this.state.tokenIDs.foo} className="test-secure-span" />
+              <SecureParagraph
+                name="demo-paragraph"
+                token={this.state.formData.text_area}
+                className="test-secure-span"
+              />
             </div>
           </section>
 

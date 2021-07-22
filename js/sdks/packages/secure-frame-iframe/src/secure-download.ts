@@ -8,14 +8,13 @@ import { Tokenizer } from '@lunasec/tokenizer-sdk';
 
 export interface FileInfo {
   filename: string;
-  options: { type?: string; lastModified?: number };
+  options: FilePropertyBag;
   headers: Record<string, string>;
   url: string;
 }
 
 // Pull file info from the metadata and detokenize the file url in parallel
-async function getFileInfo(token: string): Promise<FileInfo> {
-  const tokenizer = new Tokenizer();
+async function getFileInfo(token: string, tokenizer: Tokenizer): Promise<FileInfo> {
   const metaPromise = tokenizer.getMetadata(token);
   const urlPromise = tokenizer.detokenizeToUrl(token);
   const [metaRes, urlRes] = await Promise.all([metaPromise, urlPromise]);
@@ -30,7 +29,6 @@ async function getFileInfo(token: string): Promise<FileInfo> {
   if (!meta || !('fileinfo' in meta)) {
     throw new Error('No metadata for file token ');
   }
-  // eslint in intellij is an idiot, ignore it
   const fileMeta = meta.fileinfo;
   return {
     filename: fileMeta.filename,
@@ -57,8 +55,8 @@ function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean) {
   a.textContent = fileInfo.filename;
 
   // In order to trigger a download in a browser, we need to fake a click on an href element
-  // Note that we use the actual anchor element here instead of a fake, so that when we unregister our handler...
-  // the file will download as normal on repeated clicks
+  // Note that we use the actual anchor element here instead of a fake, so that when we unregister our handler
+  // the file will download from the locally stored blob on future clicks
   async function triggerDownload(e: Event) {
     e.preventDefault();
     a.textContent = 'Loading...';
@@ -66,20 +64,22 @@ function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean) {
     a.download = fileInfo.filename;
     a.href = URL.createObjectURL(f);
     a.textContent = fileInfo.filename;
-    a.removeEventListener('click', (e) => void triggerDownload(e));
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    a.removeEventListener('click', triggerDownload);
     a.click();
   }
-  a.addEventListener('click', (e) => void triggerDownload(e));
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  a.addEventListener('click', triggerDownload);
   // If the element is in hidden mode, start the download ourselves.
   if (hidden) {
     a.click();
   }
 }
 
-export async function handleDownload(token: string, a: HTMLAnchorElement, hidden: boolean) {
+export async function handleDownload(token: string, a: HTMLAnchorElement, tokenizer: Tokenizer, hidden: boolean) {
   a.textContent = '...Loading';
   try {
-    const fileInfo = await getFileInfo(token);
+    const fileInfo = await getFileInfo(token, tokenizer);
     setupLink(fileInfo, a, hidden);
   } catch (e) {
     a.textContent = 'Error';

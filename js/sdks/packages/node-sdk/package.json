@@ -16,9 +16,11 @@
   "license": "MIT",
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.18.0",
-    "cookie-parser": "^1.4.5",
     "@lunasec/server-common": "^1.0.0",
     "@lunasec/tokenizer-sdk": "^1.0.0",
+    "apollo-server-express": "^2.25.2",
+    "apollo-server-plugin-base": "^0.13.0",
+    "cookie-parser": "^1.4.5",
     "jose": "3.12.3"
   },
   "devDependencies": {
