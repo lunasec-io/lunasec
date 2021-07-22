@@ -61,10 +61,26 @@ func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider, sess *sess
 	}
 }
 
-func (s *dynamoKvGateway) Get(store model.KVStore, key string) (string, error) {
-	tableName, ok := s.TableNames[store]
+func (s *dynamoKvGateway) getTableName(store model.KVStore) (tableName string, err error) {
+	var (
+		ok bool
+	)
+	tableName, ok = s.TableNames[store]
 	if !ok {
-		return "", fmt.Errorf("unable to find table name for store: %s", store)
+		err = fmt.Errorf("unable to find table name for store: %s", store)
+		return
+	}
+	if tableName == "" {
+		err = fmt.Errorf("table name found, but was assigned to empty string for store: %s", store)
+		return
+	}
+	return
+}
+
+func (s *dynamoKvGateway) Get(store model.KVStore, key string) (string, error) {
+	tableName, err := s.getTableName(store)
+	if err != nil {
+		return "", err
 	}
 
 	dbResult, err := s.db.GetItem(&dynamodb.GetItemInput{
@@ -90,6 +106,11 @@ func (s *dynamoKvGateway) Get(store model.KVStore, key string) (string, error) {
 }
 
 func (s *dynamoKvGateway) Set(store model.KVStore, key string, value string) error {
+	tableName, err := s.getTableName(store)
+	if err != nil {
+		return err
+	}
+
 	metadata := model.Metadata{
 		Key:       key,
 		Value:     value,
@@ -100,11 +121,6 @@ func (s *dynamoKvGateway) Set(store model.KVStore, key string, value string) err
 
 	if err != nil {
 		return err
-	}
-
-	tableName, ok := s.TableNames[store]
-	if !ok {
-		return fmt.Errorf("unable to find table name for store: %s", store)
 	}
 
 	input := &dynamodb.PutItemInput{

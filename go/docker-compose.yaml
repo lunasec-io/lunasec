@@ -1,6 +1,35 @@
 version: "3.8"
 
 services:
+  proxy:
+    build:
+      dockerfile: ./docker/Dockerfile.httpsproxy
+      context: .
+    command: -s 4566 -n localstack -t 4566 -c /proxy/proxy.pem -k /proxy/proxy.key
+    container_name: localstack_http_proxy
+    hostname: localstack-proxy
+    depends_on:
+      - localstack
+    links:
+      - localstack
+    volumes:
+      - "./scripts/proxy/:/proxy"
+    ports:
+      - "4567:4566"
+  #    image: outrigger/https-proxy:1.0
+#    container_name: localstack_http_proxy
+#    hostname: localstack-proxy
+#    depends_on:
+#      - localstack
+#    links:
+#      - localstack
+#    labels:
+#      com.dnsdock.name: proxy
+#      com.dnsdock.image: localstack
+#    environment:
+#      UPSTREAM_DOMAIN: localstack
+#      UPSTREAM_PORT: 4566
+#      PROXY_DOMAIN: localstack
   localstack:
     container_name: localstack
     hostname: localstack
@@ -8,7 +37,7 @@ services:
     ports:
       - "4566:4566"
     environment:
-      - SERVICES=s3,dynamodb,secretsmanager,sts
+      - SERVICES=s3,dynamodb,secretsmanager,sts,cloudformation
       - DEBUG=${DEBUG- }
       - DATA_DIR=${DATA_DIR- }
       - LOCALSTACK_API_KEY=${LOCALSTACK_API_KEY- }
@@ -50,10 +79,6 @@ services:
       - ./config/secureframe/:/config/secureframe/
     ports:
       - 37766:37766
-    depends_on:
-    - cdk-init
-    links:
-      - cdk-init
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:37766"]
       interval: 10s

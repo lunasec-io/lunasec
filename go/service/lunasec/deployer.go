@@ -33,6 +33,7 @@ type StackOutput map[string]map[string]string
 type AwsResources struct {
 	TableNames map[model.KVStore]string `yaml:"table_names"`
 	CiphertextBucket string `yaml:"s3_bucket"`
+	LocalstackURL string `yaml:"localstack_url"`
 }
 
 type AwsResourceConfig struct {
@@ -154,6 +155,8 @@ func (l *deployer) writeConfig(stackOutputFilePath string) (err error) {
 	awsResourceConfig.AwsGateway.TableNames[gateway.KeyStore] = outputs[*getOutputName("keys-table")]
 	awsResourceConfig.AwsGateway.TableNames[gateway.SessionStore] = outputs[*getOutputName("sessions-table")]
 	awsResourceConfig.AwsGateway.TableNames[gateway.GrantStore] = outputs[*getOutputName("grants-table")]
+
+	awsResourceConfig.AwsGateway.LocalstackURL = l.buildConfig.LocalStackUrl
 
 	out, err := yaml.Marshal(awsResourceConfig)
 	if err != nil {

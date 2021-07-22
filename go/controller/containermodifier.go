@@ -100,11 +100,7 @@ func (c *containerModifierController) createFunctionLayers(base v1.Image, invoke
 		return
 	}
 
-	s3Gateway, err := gateway.NewAwsS3Gateway(logger, provider.Get("s3_bucket"), sess)
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	s3Gateway := gateway.NewAwsS3Gateway(logger, provider, sess)
 
 	functionFilesLayer, err := getContainerLayerFromS3(s3Gateway, invokeEvent.ImageFiles.Key)
 	if err != nil {
