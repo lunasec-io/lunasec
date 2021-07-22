@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/refinery-labs/loq/constants"
 	"go.uber.org/config"
+	"go.uber.org/zap"
 	"log"
 	"time"
 
@@ -21,6 +22,7 @@ type grantServiceConfig struct {
 }
 
 type grantService struct {
+	logger *zap.Logger
 	kv gateway.DynamoKvGateway
 	grantDuration time.Duration
 }
@@ -32,7 +34,7 @@ type GrantService interface {
 }
 
 // NewGrantService ...
-func NewGrantService(provider config.Provider, kv gateway.DynamoKvGateway) (service GrantService, err error) {
+func NewGrantService(logger *zap.Logger, provider config.Provider, kv gateway.DynamoKvGateway) (service GrantService, err error) {
 	var (
 		serviceConfig grantServiceConfig
 	)
@@ -49,6 +51,7 @@ func NewGrantService(provider config.Provider, kv gateway.DynamoKvGateway) (serv
 		return
 	}
 	service = &grantService{
+		logger: logger,
 		kv: kv,
 		grantDuration: grantDuration,
 	}
@@ -68,14 +71,36 @@ func (s *grantService) SetTokenGrantForSession(token model.Token, sessionID stri
 	if err != nil {
 		return
 	}
-	return s.kv.Set(gateway.GrantStore, getGrantKey(sessionID, token, grantType), string(serializedGrant))
+
+	grantKey := getGrantKey(sessionID, token, grantType)
+
+	s.logger.Debug(
+		"setting grant for token",
+		zap.String("token", string(token)),
+		zap.String("sessionID", sessionID),
+		zap.String("grantType", string(grantType)),
+		zap.String("grantKey", grantKey),
+	)
+
+	return s.kv.Set(gateway.GrantStore, grantKey, string(serializedGrant))
 }
 
 func (s *grantService) ValidTokenGrantExistsForSession(token model.Token, sessionID string, grantType constants.GrantType) (valid bool, err error) {
 	var (
 		tokenGrant TokenGrant
 	)
-	grantString, err := s.kv.Get(gateway.GrantStore, getGrantKey(sessionID, token, grantType))
+
+	grantKey := getGrantKey(sessionID, token, grantType)
+
+	s.logger.Debug(
+		"getting grant for token",
+		zap.String("token", string(token)),
+		zap.String("sessionID", sessionID),
+		zap.String("grantType", string(grantType)),
+		zap.String("grantKey", grantKey),
+	)
+
+	grantString, err := s.kv.Get(gateway.GrantStore, grantKey)
 	if err != nil {
 		return
 	}
