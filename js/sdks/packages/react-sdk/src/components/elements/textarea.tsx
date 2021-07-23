@@ -28,13 +28,11 @@ export default class TextArea extends Component<TextAreaProps> {
       height: height,
     };
 
-    const frameContainerClass = classnames(renderData.frameContainerClasses);
-
     return (
       <iframe
         ref={renderData.frameRef}
         src={renderData.frameUrl}
-        className={frameContainerClass}
+        className={renderData.frameClass}
         style={iframeStyle}
         frameBorder={0}
         key={renderData.frameUrl}
@@ -54,7 +52,13 @@ export default class TextArea extends Component<TextAreaProps> {
 
     return (
       <div style={renderData.parentContainerStyle} className={containerClass}>
-        <textarea ref={renderData.dummyRef} style={renderData.dummyElementStyle} tabIndex={-1} {...otherProps} />
+        <textarea
+          {...otherProps}
+          ref={renderData.dummyRef}
+          style={renderData.dummyElementStyle}
+          tabIndex={-1}
+          className={this.props.className || ''}
+        />
         {this.renderFrame(renderData)}
         {children}
       </div>

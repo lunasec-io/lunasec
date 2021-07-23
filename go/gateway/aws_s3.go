@@ -3,16 +3,14 @@ package gateway
 import (
 	"crypto/md5"
 	"encoding/base64"
-	"io/ioutil"
-	"log"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/util"
 	"go.uber.org/config"
 	"go.uber.org/zap"
+	"io/ioutil"
+	"log"
 )
 
 const s3EncryptionAlgo = "AES256"
@@ -45,15 +43,12 @@ func NewAwsS3GatewayWithoutConfig(bucket, region string) (s3Gateway AwsS3Gateway
 
 	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
 
-	sess, err := session.NewSession(
-		&aws.Config{
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+		Config: aws.Config{
 			Region: &gatewayConfig.S3Region,
 		},
-	)
-
-	if err != nil {
-		util.Panicf("Failed to instantiate S3 session %s", err)
-	}
+	}))
 
 	s3Gateway = &awsS3Gateway{
 		awsS3GatewayConfig: gatewayConfig,
@@ -76,15 +71,12 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider) (s3Gateway Aw
 
 	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
 
-	sess, err := session.NewSession(
-		&aws.Config{
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+		Config: aws.Config{
 			Region: &gatewayConfig.S3Region,
 		},
-	)
-
-	if err != nil {
-		util.Panicf("Failed to instantiate S3 session %s", err)
-	}
+	}))
 
 	s3Gateway = &awsS3Gateway{
 		logger:             logger,

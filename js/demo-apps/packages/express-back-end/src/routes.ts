@@ -1,10 +1,15 @@
 
 import {processForm, SecureFormData} from './process-form';
-import {DeploymentStage, LunaSecTokenAuthService, SecureResolver} from '@lunasec/node-sdk';
+import {
+  DeploymentStage,
+  LunaSecExpressAuthPlugin,
+  LunaSecTokenAuthService,
+  SecureResolver
+} from '@lunasec/node-sdk';
 
-import {Router} from 'express'
+import {Request, Router} from 'express'
+import cors from "cors";
 const routes = Router();
-
 
 
 const secureResolver = new SecureResolver({
@@ -14,6 +19,30 @@ const secureResolver = new SecureResolver({
 const secureProcessForm = secureResolver.wrap(processForm);
 
 export function createRoutes(tokenService: LunaSecTokenAuthService) {
+
+  routes.use(cors({
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'POST']
+  }));
+
+  const authPlugin = new LunaSecExpressAuthPlugin({
+    tokenService: tokenService,
+    authContextCallback: (req: Request) => {
+      const idToken = req.cookies['id_token'];
+
+      if (idToken === undefined) {
+        console.error('id_token is not set in request');
+        return null;
+      }
+
+      // TODO (cthompson) validate the jwt and pull relevant claims from payload
+
+      return {};
+    }
+  });
+
+  authPlugin.register(routes);
 
   routes.get('/set-id-token', async function (req, res) {
     const id_token = req.query.id_token;
@@ -72,8 +101,11 @@ export function createRoutes(tokenService: LunaSecTokenAuthService) {
       return;
     }
 
+    // TODO (cthompson) sessionId is a value that should be set in the jwt, it is a value that the session for the backend and secure frame share
+    const sessionId = "1234";
+
     try {
-      const tokenGrant = await tokenService.authorize(tokenId);
+      const tokenGrant = await tokenService.authorize(sessionId, tokenId);
       res.json({
         "grant": tokenGrant // grant stringifies itself on serialization
       });

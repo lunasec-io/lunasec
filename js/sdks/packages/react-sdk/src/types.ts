@@ -6,6 +6,8 @@ import Input from './components/elements/input';
 import Paragraph from './components/elements/paragraph';
 import TextArea from './components/elements/textarea';
 import Uploader from './components/elements/uploader';
+import { LunaSecConfigContextType } from './providers/LunaSecConfigContext';
+import { SecureFormContextType } from './providers/SecureFormContext';
 
 export interface ClassLookup {
   Paragraph: typeof Paragraph;
@@ -29,23 +31,29 @@ export type ComponentNames = keyof ClassLookup;
 // to the user in "WrapperProps" type below.  Note it is a combination of our custom properties and the properties
 // for whatever react element we are trying to render
 interface LunaSecWrapperProps<C extends keyof ClassLookup> {
-  token?: C extends 'Uploader' ? undefined : string;
-  name: string;
-  secureFrameUrl?: string;
+  token?: C extends 'Uploader' ? never : string;
+  name?: string;
   // special file picker types:
-  filetokens?: C extends 'Uploader' ? string[] : undefined;
-  onTokenChange?: C extends 'Uploader' ? (token: Array<string>) => void : undefined;
+  filetokens?: C extends 'Uploader' ? string[] : never;
+  onTokenChange?: C extends 'Uploader' ? (token: Array<string>) => void : never;
+  validator?: C extends 'Input' ? 'Email' | 'SSN' | 'EIN' | 'SSN_EIN' : never;
+  onValidate?: C extends 'Input' ? (isValid: boolean) => void : never; // It would be cool to require this whenever `validator` is passed above, not sure how without insane typescript foo though
   placeholder?: C extends 'Input' ? string : undefined;
 }
 
 export type WrapperProps<C extends keyof ClassLookup> = LunaSecWrapperProps<C> &
   React.ComponentPropsWithoutRef<TagLookup[C]>;
 
+interface Providers {
+  formContext: SecureFormContextType;
+  lunaSecConfigContext: LunaSecConfigContextType;
+}
+export type WrapperPropsWithProviders<C extends keyof ClassLookup> = WrapperProps<C> & Providers;
+
 // These props are what is passed between the wrapper and the wrapped component found in ./components/elements
 // As above, it is combined with the native react props for the given element
 export interface LunaSecWrappedComponentProps<C extends keyof ClassLookup> {
   renderData: RenderData<C>;
-  name: string;
 }
 
 export type WrappedComponentProps<C extends keyof ClassLookup> = LunaSecWrappedComponentProps<C> &
@@ -56,9 +64,12 @@ export interface RenderData<C extends keyof ClassLookup> {
   frameId: string;
   frameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
-  frameContainerClasses?: Record<string, boolean>;
+  containerClass: string;
+  frameClass: string;
+  hiddenElementClass: string;
   frameRef: RefObject<HTMLIFrameElement>;
   dummyRef: RefObject<HTMLElementTagNameMap[TagLookup[C]]>;
+  dummyInputStyleRef: RefObject<HTMLInputElement>;
   mountedCallback: () => void;
   parentContainerStyle: CSSProperties;
   dummyElementStyle: CSSProperties;

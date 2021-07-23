@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/google/go-containerregistry/pkg/authn"
-	"github.com/google/go-containerregistry/pkg/crane"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/tarball"
 	"github.com/refinery-labs/loq/gateway"
@@ -45,30 +43,19 @@ func getContainerLayerFromS3(s3 gateway.AwsS3Gateway, key string) (layer v1.Laye
 	return tarball.LayerFromReader(tarReader)
 }
 
-func (c *containerModifierController) loadCraneOptions() (options crane.Option, err error) {
-	cfg, err := c.ecrGateway.GetCredentials()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	authenticator := authn.FromConfig(cfg)
-
-	options = crane.WithAuth(authenticator)
-	return
-}
-
 func (c *containerModifierController) getContainerModifierForLambdaInvoke(invokeEvent event.ContainerModifyEvent) (modifier service.DockerContainerModifier, err error) {
-	options, err := c.loadCraneOptions()
+	options, err := gateway.LoadCraneOptions(c.ecrGateway)
 	if err != nil {
 		log.Println(err)
 		return
 	}
+
+	dockerManager := service.NewDockerManager(options)
 
 	modifier = service.NewDockerContainerModifier(
 		invokeEvent.BaseImage,
 		invokeEvent.ShouldModifyEntrypoint(),
-		options,
+		dockerManager,
 	)
 	return
 }
@@ -174,7 +161,7 @@ func (c *containerModifierController) HandleLambdaInvoke(invokeEvent event.Conta
 		return
 	}
 
-	modifier.PushImage(newImg, newTag)
+	modifier.PushImageToRemote(newImg, newTag)
 
 	resp = event.ContainerModifyResponse{
 		Tag:          containerHash.String(),

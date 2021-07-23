@@ -18,8 +18,10 @@ func AddCookie(w http.ResponseWriter, name, value, path string, ttl time.Duratio
 		Name:  name,
 		Value: value,
 		//TODO add expire, should be == the expire of the jwt
-		Expires: expire,
-		Path:    path,
+		Expires:  expire,
+		Path:     path,
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	}
 	http.SetCookie(w, &cookie)
 }

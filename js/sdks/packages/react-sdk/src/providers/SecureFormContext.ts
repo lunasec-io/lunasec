@@ -20,3 +20,5 @@ export const SecureFormContext = React.createContext<SecureFormContextProps>({
     console.debug('called the submit provider out of context, element must be outside of form');
   },
 });
+
+export type SecureFormContextType = React.ContextType<typeof SecureFormContext>;

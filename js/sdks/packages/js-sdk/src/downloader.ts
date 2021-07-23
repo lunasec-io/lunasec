@@ -1,5 +1,4 @@
 import {
-  __SECURE_FRAME_URL__,
   addJsEventListener,
   AttributesMessage,
   FrameMessageCreator,
@@ -13,13 +12,14 @@ class FileDownloader {
   messageCreator!: FrameMessageCreator;
   frameElement!: HTMLIFrameElement;
   frameNonce!: string;
+  lunaSecDomain: string;
 
-  constructor(token: string) {
+  constructor(lunaSecDomain: string, token: string) {
     this.token = token;
     this.frameNonce = generateSecureNonce();
-
+    this.lunaSecDomain = lunaSecDomain;
     // start up RPC
-    this.messageCreator = new FrameMessageCreator(this.frameNonce, (notification) =>
+    this.messageCreator = new FrameMessageCreator(lunaSecDomain, this.frameNonce, (notification) =>
       this.frameNotificationCallback(notification)
     );
     addJsEventListener(window, (message) => this.messageCreator.postReceived(message));
@@ -40,7 +40,8 @@ class FileDownloader {
   }
 
   generateUrl() {
-    const frameURL = new URL(secureFramePathname, __SECURE_FRAME_URL__);
+    const frameURL = new URL(this.lunaSecDomain);
+    frameURL.pathname += secureFramePathname;
     frameURL.searchParams.set('n', this.frameNonce);
     frameURL.searchParams.set('origin', window.location.origin);
     frameURL.searchParams.set('element', 'a');
@@ -84,7 +85,7 @@ class FileDownloader {
   }
 }
 
-export function downloadFile(token: string) {
-  new FileDownloader(token);
+export function downloadFile(lunaSecDomain: string, token: string) {
+  new FileDownloader(lunaSecDomain, token);
   return;
 }
