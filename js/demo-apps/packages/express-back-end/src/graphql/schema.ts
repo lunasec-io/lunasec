@@ -35,7 +35,7 @@ export const typeDefs = gql`
 const db = {
   formData: {
     text_area: '',
-    email: 'lunasec-b74d3a3a-9375-4ead-84be-a935cc00d01e',
+    email: '',
     insecure_field: 'Some Insecure Data Coexisting',
     files: [],
   },
