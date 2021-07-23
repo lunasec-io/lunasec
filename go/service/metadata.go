@@ -43,7 +43,7 @@ func (s *metadataService) GetMetadata(token model.Token) (metadata interface{}, 
 	}
 
 	if len(meta) == 0 {
-		err = errors.New("unable to locate data for token")
+		err = errors.New("unable to locate metadata for token")
 		return
 	}
 

@@ -27,7 +27,7 @@ export class LunaSecAuthentication {
     throw new Error('Unknown provider specified');
   }
 
-  public async createAuthenticationJWT(claims: Record<string, string>): Promise<AuthenticationJWT> {
+  public async createAuthenticationJWT(claims: Record<string, any>): Promise<AuthenticationJWT> {
     const secret = await this.getSigningSecretKey();
 
     const jwt = await new SignJWT(claims)
