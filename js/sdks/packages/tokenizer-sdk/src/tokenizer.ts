@@ -34,7 +34,9 @@ export class Tokenizer {
     // The iframe doesnt set this to anything at the moment, not sure if that's okay
     const jwtToken = this.config.authenticationToken;
 
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
     if (jwtToken) {
       headers[this.config.headers.auth] = jwtToken;
     }
