@@ -29,4 +29,4 @@ windows:
     - shell_command:
       - cd go
       - make secureframe
-      - MOCK_AWS_GATEWAY=false SECURE_FRAME_FRONT_END=http://localhost:37766 CUSTOMER_FRONT_END=http://localhost:3000 CUSTOMER_BACK_END=http://localhost:3001 CDN_HOST=localhost:8000 ./scripts/run-secureframe.sh
+      - STAGE=DEV MOCK_AWS_GATEWAY=false SECURE_FRAME_FRONT_END=http://localhost:37766 CUSTOMER_FRONT_END=http://localhost:3000 CUSTOMER_BACK_END=http://localhost:3001 CDN_HOST=localhost:8000 ./scripts/run-secureframe.sh
