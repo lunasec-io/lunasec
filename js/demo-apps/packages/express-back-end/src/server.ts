@@ -1,10 +1,17 @@
 import { createRoutes } from './routes';
 import express, {Request} from "express";
 import cors from "cors";
-import { SecretProviders, LunaSecExpressAuthPlugin, LunaSecTokenAuthService} from '@lunasec/node-sdk';
-
+import {fromIni} from '@aws-sdk/credential-provider-ini';
+import {
+    SecretProviders,
+    LunaSecExpressAuthPlugin,
+    LunaSecTokenAuthService,
+    registerS3Tokenizer,
+    S3TokenizerBackend
+} from '@lunasec/node-sdk';
 
 const app = express();
+
 app.use(express.json());
 app.use(cors({
     origin: 'http://localhost:3000',
@@ -33,6 +40,17 @@ const authPlugin = new LunaSecExpressAuthPlugin({
 });
 
 authPlugin.register(app);
+
+const tokenizerBackend = new S3TokenizerBackend({
+    awsRegion: 'us-west-2',
+    s3Bucket: 'lunasec-test-dev-bucket',
+    // @ts-ignore
+    getAwsCredentials: async () => {
+        return await fromIni();
+    }
+})
+
+registerS3Tokenizer(app, tokenizerBackend);
 
 app.use(createRoutes(tokenService))
 

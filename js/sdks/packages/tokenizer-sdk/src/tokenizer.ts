@@ -33,7 +33,9 @@ export class Tokenizer {
 
     const jwtToken = this.config.token;
 
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
     if (jwtToken) {
       headers[this.config.headers.auth] = jwtToken;
     }
