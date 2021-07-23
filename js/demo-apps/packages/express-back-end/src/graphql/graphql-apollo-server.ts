@@ -11,7 +11,6 @@ export async function attachApolloServer(app: Express) {
     typeDefs,
     resolvers: resolvers as IResolvers,
     schemaDirectives,
-    // plugins: [LunaSecApolloPlugin],
     context: addSessionToContext,
   });
   await server.start();
