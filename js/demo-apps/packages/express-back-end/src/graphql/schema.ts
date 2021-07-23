@@ -1,3 +1,4 @@
+import { TokenInputType } from '@lunasec/node-sdk';
 import { gql } from 'apollo-server-express';
 
 import { lunaSec } from '../configure-lunasec';
@@ -6,6 +7,8 @@ import { lunaSec } from '../configure-lunasec';
 // and declare the directive directly in your schema with the `directive` keyword.
 
 export const typeDefs = gql`
+  scalar TokenInput
+
   type Query {
     getFormData: FormData
   }
@@ -22,13 +25,13 @@ export const typeDefs = gql`
   }
 
   input FormDataInput {
-    email: String
+    email: String @token
     insecure_field: String
     text_area: String
-    files: [String]
+    files: [String] @token
   }
 
-  directive @token on FIELD_DEFINITION # | INPUT_FIELD_DEFINITION  ### Enable input field annotation once plugin working
+  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION ### Enable input field annotation once plugin working
 `;
 
 // This is a fake little database so we have some data to serve
@@ -42,6 +45,7 @@ const db = {
 };
 
 export const resolvers = {
+  TokenInput: TokenInputType,
   Query: {
     getFormData: () => db.formData,
   },
@@ -49,12 +53,12 @@ export const resolvers = {
     setFormData: async (
       _parent: never,
       args: { formData: typeof db['formData'] },
-      context: { sessionId: string },
+      _context: { sessionId: string },
       _info: any
     ) => {
       // For now, you must manually verify all tokens are granted before writing them to the database
-      await lunaSec.grants.verify(context.sessionId, args.formData.email, 'store_token'); // Throws if there is an issue
-      await lunaSec.grants.verify(context.sessionId, args.formData.text_area, 'store_token');
+      // await lunaSec.grants.verify(context.sessionId, args.formData.email, 'store_token'); // Throws if there is an issue
+      // await lunaSec.grants.verify(context.sessionId, args.formData.text_area, 'store_token');
       db.formData = args.formData;
       console.debug('setting test data to ', args.formData);
       return db.formData;
