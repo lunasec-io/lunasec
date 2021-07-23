@@ -1,26 +1,14 @@
 import { ExpressContext, SchemaDirectiveVisitor } from 'apollo-server-express';
 import {
   defaultFieldResolver,
+  GraphQLArgument,
   GraphQLField,
   GraphQLInputField,
-  // GraphQLNonNull,
-  // isNonNullType,
-  // isScalarType,
-  GraphQLSchema,
   GraphQLInputObjectType,
-  GraphQLArgument,
+  GraphQLSchema,
 } from 'graphql';
 
 import { LunaSecGrantService } from '../grant-service';
-
-// import { TokenType } from './token-scalar-type';
-
-// TODO: go get a real grant
-// Note we can just throw on any issues, apollo seems to return it all cleanly back to the client
-// function fakeLunaSecGranter(token: string) {
-//   console.log('Made a fake grant for token: ', token);
-//   return Promise.resolve(true);
-// }
 
 let grantService: LunaSecGrantService | undefined;
 
@@ -28,6 +16,7 @@ let grantService: LunaSecGrantService | undefined;
 // that has protected properties is not supported in typescript, even with @ts-ignore
 // https://github.com/microsoft/TypeScript/issues/30355
 // If you see a solution please implement it
+
 export function setGrantServiceForDirective(service: LunaSecGrantService) {
   grantService = service;
 }
@@ -54,8 +43,8 @@ export class TokenDirective extends SchemaDirectiveVisitor {
     };
   }
 
-  // // a lot of useful info in this thread on how to work around this issue: https://github.com/ardatan/graphql-tools/issues/858
-  // // TODO: can be used in conjunction with the plugin when we get that working
+  // The below solution was adapted from a github issue, towards the bottom of this thread: https://github.com/ardatan/graphql-tools/issues/858
+  // In order to wrap a mutation resolver from a directive we have to look through ALL the schema and find the resolvers that use the input argument that we decorated
   visitInputFieldDefinition(field: GraphQLInputField, details: any) {
     const { name, defaultValue } = field;
     // @ts-ignore
