@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	apigateway "github.com/apex/gateway"
+	"github.com/awslabs/aws-lambda-go-api-proxy/handlerfunc"
 	"github.com/refinery-labs/loq/controller"
 	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/pkg/tokenizer"
@@ -128,7 +128,7 @@ func NewDevServer() *http.Server {
 	return server
 }
 
-func NewApiGatewayServer() *apigateway.Gateway {
+func NewApiGatewayServer() *handlerfunc.HandlerFuncAdapter {
 	sm := newServer()
-	return apigateway.NewGateway(sm)
+	return handlerfunc.New(sm.ServeHTTP)
 }

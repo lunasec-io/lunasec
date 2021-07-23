@@ -1,16 +1,16 @@
 import { URL } from 'url';
 
+import cookieParser from 'cookie-parser';
+import { Request, Response, Router } from 'express';
 import { JWTPayload } from 'jose/types';
 
-import cookieParser from 'cookie-parser';
-import { Router, Request, Response } from 'express';
-import {LunaSecTokenAuthService} from "../token-auth-service";
+import { LunaSecTokenAuthService } from '../token-auth-service';
 
 export type AuthContextCallback = (req: Request) => JWTPayload | null;
 
 export interface ExpressAuthPluginConfig {
   tokenService: LunaSecTokenAuthService;
-  authContextCallback: AuthContextCallback
+  authContextCallback: AuthContextCallback;
   payloadClaims?: string[];
 }
 
@@ -33,13 +33,13 @@ export class LunaSecExpressAuthPlugin {
       return payload;
     }
     return Object.keys(payload)
-      .filter(claim => whitelistedClaims.indexOf(claim) !== -1)
+      .filter((claim) => whitelistedClaims.indexOf(claim) !== -1)
       .reduce((claims, claim) => {
-      return {
-        ...claims,
-        [claim]: payload[claim]
-      }
-    }, {})
+        return {
+          ...claims,
+          [claim]: payload[claim],
+        };
+      }, {});
   }
 
   async buildSecureFrameRedirectUrl(stateToken: string, payloadClaims: any) {
@@ -57,7 +57,7 @@ export class LunaSecExpressAuthPlugin {
     const redirectUrl = new URL(this.secureFrameUrl);
     redirectUrl.searchParams.append('state', stateToken);
     redirectUrl.searchParams.append('openid_token', authGrant.toString());
-    redirectUrl.pathname = '/session/create';
+    redirectUrl.pathname += '/session/create';
     return redirectUrl;
   }
 
@@ -85,7 +85,7 @@ export class LunaSecExpressAuthPlugin {
       console.error('unable to complete auth flow');
       res.status(400).send({
         success: false,
-        error: 'unable to complete auth flow'
+        error: 'unable to complete auth flow',
       });
       return;
     }

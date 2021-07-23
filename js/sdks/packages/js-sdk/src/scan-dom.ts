@@ -1,4 +1,4 @@
-import {getStyleInfo,generateSecureNonce} from '@lunasec/browser-common';
+import { generateSecureNonce, getStyleInfo } from '@lunasec/browser-common';
 
 export function queryDomForForms(domInstance: Document) {
   const secureFrameInputNodes = domInstance.querySelectorAll('form.secure-frame-form input');
@@ -8,7 +8,7 @@ export function queryDomForForms(domInstance: Document) {
   // Holds all input elements temporarily
   const containerDiv = domInstance.createElement('div');
 
-  secureInputElements.forEach(input => {
+  secureInputElements.forEach((input) => {
     containerDiv.appendChild(input);
   });
 
@@ -17,7 +17,6 @@ export function queryDomForForms(domInstance: Document) {
 }
 
 function validateElementAsSecureTarget(record: MutationRecord) {
-
   if (!record.target) {
     console.error('Unable to check DOM Observation element');
     return null;
@@ -38,10 +37,9 @@ function validateElementAsSecureTarget(record: MutationRecord) {
 }
 
 type SecureFormInputConfig = {
-  readonly formElement: Element,
-  readonly children: readonly HTMLInputElement[]
+  readonly formElement: Element;
+  readonly children: readonly HTMLInputElement[];
 };
-
 
 export function setupElementWithSecureFrame(domInstance: Document, frameUrl: string, input: HTMLInputElement) {
   const containerNonce = generateSecureNonce();
@@ -55,7 +53,7 @@ export function setupElementWithSecureFrame(domInstance: Document, frameUrl: str
   secureFrameForm.setAttribute('frameBorder', '0');
 
   if (!input.parentElement) {
-    console.error("Invalid element without parent attempted to have secure frame attached");
+    console.error('Invalid element without parent attempted to have secure frame attached');
     return;
   }
 
@@ -76,7 +74,7 @@ export function createDomWatcher(domInstance: Document, frameUrl: string, rootRe
   const config: MutationObserverInit = {
     subtree: true,
     childList: true,
-    attributes: true
+    attributes: true,
   };
 
   function domCallback(mutations: readonly MutationRecord[], observer: MutationObserver) {
@@ -87,20 +85,19 @@ export function createDomWatcher(domInstance: Document, frameUrl: string, rootRe
     // TODO: Hook callback to unwrap token values.
 
     const secureForms = mutations
-      .filter(record => record.type === 'childList')
+      .filter((record) => record.type === 'childList')
       .reduce((inputs, record) => {
-
-        const element = validateElementAsSecureTarget(record)
+        const element = validateElementAsSecureTarget(record);
 
         if (!element) {
           return inputs;
         }
 
-        const elementsToSecure = element.querySelectorAll('input[type="text"]') as NodeListOf<HTMLInputElement>;
+        const elementsToSecure = element.querySelectorAll('input[type="text"]') as unknown as HTMLInputElement[];
 
         inputs.push({
           formElement: element,
-          children: Array.from(elementsToSecure)
+          children: Array.from(elementsToSecure),
         });
 
         return inputs;
@@ -110,11 +107,10 @@ export function createDomWatcher(domInstance: Document, frameUrl: string, rootRe
       return;
     }
 
-    secureForms.map(config => {
-      config.children.map(child => setupElementWithSecureFrame(domInstance, frameUrl, child));
+    secureForms.map((config) => {
+      config.children.map((child) => setupElementWithSecureFrame(domInstance, frameUrl, child));
       return true;
     });
-
   }
 
   const observer = new MutationObserver(domCallback);

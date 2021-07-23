@@ -1,6 +1,8 @@
+// TODO: Is this component even necessary, at all?
+// TODO: Delete it
 import React, { Component } from 'react';
 
-import { SecureFormContext } from './SecureFormContext';
+import { SecureFormContext } from '../providers/SecureFormContext';
 
 export interface SecureSubmitProps {}
 

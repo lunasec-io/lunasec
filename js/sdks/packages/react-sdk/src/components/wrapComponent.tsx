@@ -1,30 +1,36 @@
 import {
-  __SECURE_FRAME_URL__,
   addReactEventListener,
   AttributesMessage,
   FrameMessageCreator,
   FrameNotification,
   generateSecureNonce,
   getStyleInfo,
+  LunaSecAuthentication,
   ReadElementStyle,
-  secureFramePathname,
-  startSessionManagement,
   triggerBlur,
   triggerFocus,
 } from '@lunasec/browser-common';
+import classnames from 'classnames';
 import React, { Component, CSSProperties, RefObject } from 'react';
 import styled from 'styled-components';
 
-import { ClassLookup, LunaSecWrappedComponentProps, RenderData, TagLookup, WrapperProps } from '../types';
+import { LunaSecConfigContext } from '../providers/LunaSecConfigContext';
+import { SecureFormContext, SecureFormContextType } from '../providers/SecureFormContext';
+import {
+  ClassLookup,
+  LunaSecWrappedComponentProps,
+  RenderData,
+  TagLookup,
+  WrapperProps,
+  WrapperPropsWithProviders,
+} from '../types';
 import setNativeValue from '../utils/set-native-value';
 
-import { SecureFormContext } from './SecureFormContext';
-
 export interface WrapperState {
-  secureFrameUrl: string;
   frameStyleInfo: ReadElementStyle | null;
   frameFullyLoaded: boolean;
   sessionAuthenticated: boolean;
+  isValid: boolean;
 }
 
 // Since almost all the logic of being a Secure Component is shared(such as RPC),
@@ -52,8 +58,8 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
   `;
 
-  return class WrappedComponent extends Component<WrapperProps<W>, WrapperState> {
-    declare context: React.ContextType<typeof SecureFormContext>;
+  class WrappedComponent extends Component<WrapperPropsWithProviders<W>, WrapperState> {
+    declare context: SecureFormContextType;
     static contextType = SecureFormContext;
 
     readonly messageCreator: FrameMessageCreator;
@@ -66,36 +72,58 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
     readonly frameRef!: RefObject<HTMLIFrameElement>;
     readonly dummyRef!: RefObject<HTMLElementTagNameMap[TagLookup[W]]>;
-
+    readonly dummyInputStyleRef!: RefObject<HTMLInputElement>;
+    readonly formContext!: SecureFormContextType;
+    readonly lunaSecDomain: string;
     readonly isInputLike = componentName === 'Input' || componentName === 'TextArea';
     frameReadyForListening = false;
-    stopSessionManagement: (() => void) | null = null;
+    readonly auth: LunaSecAuthentication;
+    stopSessionManagement?: () => void;
 
-    constructor(props: WrapperProps<W>) {
+    constructor(props: WrapperPropsWithProviders<W>) {
       super(props);
+      this.throwIfLunaSecConfigNotSet();
       this.frameId = generateSecureNonce();
       this.frameRef = React.createRef();
       this.dummyRef = React.createRef();
-      const secureFrameURL = new URL(__SECURE_FRAME_URL__);
-      secureFrameURL.pathname = secureFramePathname;
-      this.messageCreator = new FrameMessageCreator(this.frameId, (notification) =>
+      this.dummyInputStyleRef = React.createRef();
+      this.formContext = props.formContext;
+      this.lunaSecDomain = props.lunaSecConfigContext.lunaSecDomain;
+
+      this.messageCreator = new FrameMessageCreator(this.lunaSecDomain, this.frameId, (notification) =>
         this.frameNotificationCallback(notification)
       );
+
+      this.auth = new LunaSecAuthentication(
+        props.lunaSecConfigContext.lunaSecDomain,
+        props.lunaSecConfigContext.authenticationErrorHandler
+      );
+
       this.state = {
-        // TODO: Ensure that the security threat model around an attacker setting this URL is sane.
-        secureFrameUrl: secureFrameURL.toString(),
         frameStyleInfo: null,
         frameFullyLoaded: false,
         sessionAuthenticated: false,
+        isValid: true,
       };
+    }
+
+    throwIfLunaSecConfigNotSet() {
+      // It would be nice if there was an easier way to detect if we had loaded the default provider instead of one set by the customer
+      if (this.props.lunaSecConfigContext.lunaSecDomain.length === 0) {
+        throw new Error(
+          'LunaSecConfigContext Provider must be registered around any LunaSec components.  You probably want to include it at the top level in your app.tsx'
+        );
+      }
     }
 
     componentDidMount() {
       this.abortController = new AbortController();
-      addReactEventListener(window, this.abortController, (message) => this.messageCreator.postReceived(message));
-      void startSessionManagement().then((abort) => {
+      addReactEventListener(this.props.lunaSecConfigContext.lunaSecDomain, window, this.abortController, (message) =>
+        this.messageCreator.postReceived(message)
+      );
+      void this.auth.startSessionManagement().then((abortSessionCallback) => {
         this.setState({ sessionAuthenticated: true });
-        this.stopSessionManagement = abort;
+        this.stopSessionManagement = abortSessionCallback;
       });
     }
 
@@ -108,7 +136,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         frameStyleInfo: this.generateElementStyle(),
       });
       if (this.isInputLike) {
-        this.context.addTokenCommitCallback(this.frameId, () => {
+        this.formContext.addTokenCommitCallback(this.frameId, () => {
           return this.triggerTokenCommit();
         });
       }
@@ -117,7 +145,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     componentWillUnmount() {
       this.abortController.abort();
       if (this.isInputLike) {
-        this.context.removeTokenCommitCallback(this.frameId);
+        this.formContext.removeTokenCommitCallback(this.frameId);
       }
       if (this.stopSessionManagement) {
         this.stopSessionManagement();
@@ -133,18 +161,35 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
     generateElementStyle() {
       if (!this.dummyRef.current) {
-        throw new Error('Unable to locate `inputRef` for wrapped component when generating style');
+        throw new Error('Unable to locate `dummyRef` for wrapped component when generating style');
       }
+      // Inputs have a separate dummy element for styling because of issues with html5 validations on inputs
+      if (componentName === 'Input') {
+        if (!this.dummyInputStyleRef.current) {
+          throw new Error('Unable to locate dummyInputStyleRef when generating style for input');
+        }
+        return getStyleInfo(this.dummyInputStyleRef.current);
+      }
+      // if its not an input just use the the main dummy element
       return getStyleInfo(this.dummyRef.current);
     }
 
     generateUrl() {
-      const urlFrameId = this.frameId;
-      const frameURL = new URL('frame', this.state.secureFrameUrl);
-      frameURL.searchParams.set('n', urlFrameId);
+      const lunaConf = this.props.lunaSecConfigContext;
+
+      const frameURL = new URL('frame', lunaConf.lunaSecDomain);
+      frameURL.searchParams.set('n', this.frameId);
       frameURL.searchParams.set('origin', window.location.origin);
       frameURL.searchParams.set('component', componentName);
       return frameURL.toString();
+    }
+
+    validationHandler(isValid: boolean) {
+      if (!this.props.onValidate) {
+        throw new Error('Got validation message from iframe for component without an onValidation handler');
+      }
+      this.setState({ isValid: isValid });
+      this.props.onValidate(isValid);
     }
 
     // Generate some attributes for sending to the iframe via RPC.
@@ -184,6 +229,17 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         attrs.placeholder = this.props.placeholder;
       }
 
+      if (this.props.validator) {
+        if (attrs.component !== 'Input') {
+          throw new Error('Validators can only be set on SecureInputs');
+        }
+        if (!this.props.onValidate) {
+          throw new Error(
+            'Must pass onValidate() callback when a validator is specified.  Use the callback to block the form from submitting and display user feedback.'
+          );
+        }
+        attrs.validator = this.props.validator;
+      }
       return attrs;
     }
 
@@ -216,8 +272,11 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         case 'NotifyOnBlur':
           this.blur();
           break;
+        case 'NotifyOnValidate':
+          this.validationHandler(notification.data.isValid);
+          break;
         case 'NotifyOnSubmit':
-          this.context.submit();
+          this.formContext.submit();
           break;
       }
     }
@@ -279,7 +338,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       if (!response.data.success) {
         return console.error('Tokenization failed: ', response.data.error);
       }
-      if (!response.data.token) {
+      if (response.data.token === undefined) {
         return console.error('Tokenization didnt return a token: ', response);
       }
 
@@ -338,25 +397,32 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         resize: 'none',
       };
 
+      const containerClass = classnames({
+        [`secure-${componentName.toLowerCase()}-container-${this.frameId}`]: true,
+        [`secure-${componentName.toLowerCase()}-container-${this.props.name || ''}`]: !!this.props.name,
+      });
+
       const renderData: RenderData<W> = {
         frameId: this.frameId,
         frameUrl: this.generateUrl(),
         frameStyleInfo: this.state.frameStyleInfo,
-        frameContainerClasses: {
-          hidden: !this.state.frameFullyLoaded,
-        },
+        containerClass,
+        frameClass: classnames({ hidden: !this.state.frameFullyLoaded }),
+        hiddenElementClass: classnames({ invalid: !this.state.isValid }), // only used by input at the moment
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,
+        dummyInputStyleRef: this.dummyInputStyleRef,
         mountedCallback: this.wrappedComponentDidMount.bind(this),
         parentContainerStyle,
         dummyElementStyle,
       };
 
-      const { token, secureFrameUrl, onTokenChange, ...scrubbedProps } = this.props;
+      // clean out our lunasec props so they dont get passed into the wrapped component as html params
+      const { token, onTokenChange, onValidate, validator, formContext, lunaSecConfigContext, ...scrubbedProps } =
+        this.props;
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {
-        name: this.props.name,
         renderData,
       };
 
@@ -371,5 +437,27 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         </IgnoredWrapped>
       );
     }
+  }
+
+  // This small functional component is the only way for a component to access more than one provider, thanks to a major shortcoming of react.
+  // So our "wrapped component" is actually double wrapped, first by this function component to add the providers, then by the class above
+  // You can never be too careful
+  return function ProviderWrapper(props: WrapperProps<W>) {
+    return (
+      <SecureFormContext.Consumer>
+        {(formContext) => {
+          return (
+            <LunaSecConfigContext.Consumer>
+              {(lunaSecConfigContext) => {
+                return (
+                  // @ts-ignore why the heck are these ts-ignores this necessary!?  Something must be broken with the react intrinsic properties not liking the generic...
+                  <WrappedComponent {...props} formContext={formContext} lunaSecConfigContext={lunaSecConfigContext} />
+                );
+              }}
+            </LunaSecConfigContext.Consumer>
+          );
+        }}
+      </SecureFormContext.Consumer>
+    );
   };
 }

@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	log.SetFlags(log.Lshortfile)
 	server := secureframe.NewDevServer()
 	log.Fatal(server.ListenAndServe())
 }

@@ -1,7 +1,7 @@
 import { timeout } from '@lunasec/browser-common';
 import React, { Component } from 'react';
 
-import { SecureFormContext } from './SecureFormContext';
+import { SecureFormContext } from '../providers/SecureFormContext';
 
 export interface SecureFormProps extends React.ComponentPropsWithoutRef<'form'> {
   readonly onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;

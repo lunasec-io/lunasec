@@ -1,4 +1,3 @@
-import { __SECURE_FRAME_URL__ } from '../constants';
 import { timeout } from '../utils/async';
 import { generateSecureNonce } from '../utils/random';
 
@@ -17,12 +16,15 @@ export class FrameMessageCreator {
   private readonly timeout: number;
   private readonly frameNotificationCallback!: (notification: FrameNotification) => void;
   private readonly frameNonceFilter: string;
+  private readonly lunaSecDomain: string;
 
   constructor(
+    lunaSecDomain: string,
     frameNonceFilter: string,
     notificationCallback: (notification: FrameNotification) => void,
     timeout = 30000
   ) {
+    this.lunaSecDomain = lunaSecDomain;
     this.frameNonceFilter = frameNonceFilter;
     this.frameResponses = {};
     this.frameNotificationCallback = notificationCallback;
@@ -69,6 +71,7 @@ export class FrameMessageCreator {
       'NotifyOnStart',
       'NotifyOnToken',
       'NotifyOnFullyLoaded',
+      'NotifyOnValidate',
       'NotifyOnSubmit',
     ];
     if (!notificationTypes.includes(notification.command)) {
@@ -91,7 +94,7 @@ export class FrameMessageCreator {
     const startTime = new Date();
     return new Promise(async (resolve, reject) => {
       // TODO: Make this domain be configurable
-      frameContext.postMessage(JSON.stringify(message), __SECURE_FRAME_URL__);
+      frameContext.postMessage(JSON.stringify(message), this.lunaSecDomain);
       await timeout(2);
 
       // Spin lock that waits until we receive a response in another "thread".

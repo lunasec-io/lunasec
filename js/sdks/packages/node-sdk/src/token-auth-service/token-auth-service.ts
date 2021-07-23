@@ -1,10 +1,9 @@
-import { isToken } from '@lunasec/tokenizer-sdk';
+import { isToken, Tokenizer } from '@lunasec/tokenizer-sdk';
 import { KeyLike, SignJWT } from 'jose/jwt/sign';
 import { JWTPayload } from 'jose/types';
 
 import { getSecretFromSecretProvider, ValidSecretProvider } from './types';
 
-// TODO (cthompson) we should have a base jwt class that these two inherit from
 export class LunaSecAuthenticationGrant {
   private readonly authGrant!: string;
 
@@ -19,27 +18,6 @@ export class LunaSecAuthenticationGrant {
 
   public toString() {
     return this.authGrant;
-  }
-}
-
-export class LunaSecDetokenizationGrant {
-  private readonly detokenizationGrant!: string;
-
-  constructor(detokenizationGrant: string) {
-    this.detokenizationGrant = detokenizationGrant;
-  }
-
-  public isValid(): boolean {
-    // TODO: Check the current date against the expiration
-    throw new Error('not implemented');
-  }
-
-  public toString() {
-    return this.detokenizationGrant;
-  }
-
-  public toJSON() {
-    return this.detokenizationGrant;
   }
 }
 
@@ -86,28 +64,48 @@ export class LunaSecTokenAuthService {
     return jwt.toString();
   }
 
-  private async createDetokenizationGrant(claims: { token_id: string }) {
-    const encodedJwt = await this.createJwt(claims);
-    return new LunaSecDetokenizationGrant(encodedJwt);
-  }
-
   public async authenticate(payload: JWTPayload): Promise<LunaSecAuthenticationGrant> {
     const encodedJwt = await this.createJwt(payload);
     return new LunaSecAuthenticationGrant(encodedJwt);
   }
 
-  public async authorize(t: string): Promise<LunaSecDetokenizationGrant> {
-    if (!isToken(t)) {
-      throw new Error('Attempted to create a LunaSec Token Grant from a string that didnt look like a token');
+  private async requestDetokenizationGrant(sessionId: string, tokenId: string) {
+    // TODO (cthompson) as long as the node-sdk is the source of truth for authentication
+    // this is ok. Once we are using an auth provider for this information, this will need to change.
+    const authenticationToken = await this.authenticate({});
+
+    const tokenizer = new Tokenizer({
+      token: authenticationToken.toString(),
+    });
+    const resp = await tokenizer.setGrant(sessionId, tokenId, 'read_token');
+    if (!resp.success) {
+      throw new Error(`unable to set detokenization grant for: ${tokenId}`);
     }
-    return this.createDetokenizationGrant({ token_id: t });
   }
 
-  public verifyTokenGrant(tokenGrant: string | LunaSecDetokenizationGrant): boolean {
-    if (typeof tokenGrant === 'object') {
-      return tokenGrant.isValid();
-    }
+  private async verifyTokenizationGrant(sessionId: string, tokenId: string) {
+    const authenticationToken = await this.authenticate({});
 
-    return new LunaSecDetokenizationGrant(tokenGrant).isValid();
+    const tokenizer = new Tokenizer({
+      token: authenticationToken.toString(),
+    });
+    const resp = await tokenizer.verifyGrant(sessionId, tokenId, 'store_token');
+    if (!resp.success) {
+      throw new Error(`unable to verify tokenization grant for: ${tokenId}`);
+    }
+  }
+
+  public async authorize(sessionId: string, tokenId: string) {
+    if (!isToken(tokenId)) {
+      throw new Error('Attempted to create a LunaSec Token Grant from a string that didnt look like a token');
+    }
+    return this.requestDetokenizationGrant(sessionId, tokenId);
+  }
+
+  public verifyTokenGrant(sessionId: string, tokenId: string) {
+    if (!isToken(tokenId)) {
+      throw new Error('Attempted to verify a LunaSec Token Grant from a string that didnt look like a token');
+    }
+    return this.verifyTokenizationGrant(sessionId, tokenId);
   }
 }
