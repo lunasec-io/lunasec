@@ -103,7 +103,6 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 	}
 
 	url, headers, err := s.tokenizer.TokenizerGet(s.CustomerTokenSecret, model.Token(input.TokenID))
-
 	if err != nil {
 		statusCode := 500
 		// TODO: Make this error message a constant
