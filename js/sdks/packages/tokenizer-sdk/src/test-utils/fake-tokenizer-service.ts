@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { GetMetadataResponse, GetTokenResponse, SetMetadataResponse, SetTokenResponse } from '../api/types';
+import { DetokenizeResponse, GetMetadataResponse, SetMetadataResponse, TokenizerResponse } from '../api/types';
 import { CONFIG_DEFAULTS } from '../constants';
 
 import {
@@ -40,7 +40,7 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
 
   app.use(
     CONFIG_DEFAULTS.endpoints.setToken,
-    respondWithJson<SetTokenResponse>({
+    respondWithJson<TokenizerResponse>({
       success: true,
       data: {
         tokenId: TEST_TOKEN,
@@ -52,7 +52,7 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
 
   app.use(
     CONFIG_DEFAULTS.endpoints.getToken,
-    respondWithJson<GetTokenResponse>({
+    respondWithJson<DetokenizeResponse>({
       success: true,
       data: {
         downloadUrl: makeS3Url(config.port),

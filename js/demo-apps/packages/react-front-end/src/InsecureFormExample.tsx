@@ -1,6 +1,6 @@
 import { Tokenizer } from '@lunasec/tokenizer-sdk';
 import { CONFIG_DEFAULTS } from '@lunasec/tokenizer-sdk/build/main/constants';
-import React, { ChangeEvent, FocusEvent, FormEvent, MouseEvent } from 'react';
+import React, { ChangeEvent, FocusEvent, FormEvent } from 'react';
 
 export interface InsecureFormExampleState {
   inputValue: string;
@@ -9,11 +9,7 @@ export interface InsecureFormExampleState {
 }
 
 const tokenizer = new Tokenizer({
-  endpoints: {
-    ...CONFIG_DEFAULTS.endpoints,
-    getToken: '/.lunasec/detokenize',
-    setToken: '/.lunasec/tokenize',
-  },
+  backendMode: 'express-plugin'
   host: 'http://localhost:3001',
 });
 

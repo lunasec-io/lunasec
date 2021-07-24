@@ -1,67 +1,35 @@
+import { OutgoingHttpHeaders } from 'http';
+
 import { BadHttpResponseError } from '@lunasec/server-common';
 
-import { makeSpecificApiClient, SpecificApiClient, TokenizerFailApiResponse } from './api/client';
-import { ValidTokenizerApiRequestTypes } from './api/types';
+import { TokenizerAPI, TokenizerFailApiResponse } from './api/client';
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { CONFIG_DEFAULTS } from './constants';
-import {
-  GrantType,
-  TokenizerClientConfig,
-  TokenizerDetokenizeResponse,
-  TokenizerDetokenizeToUrlResponse,
-  TokenizerGetMetadataResponse,
-  TokenizerSetGrantResponse,
-  TokenizerSetMetadataResponse,
-  TokenizerTokenizeResponse,
-  TokenizerVerifyGrantResponse,
-} from './types';
+import { DetokenizeToUrlReturnType, GrantType, MetaData, TokenizerClientConfig } from './types';
 
 export class Tokenizer {
   readonly config!: TokenizerClientConfig;
 
-  private readonly getMetadataClient!: SpecificApiClient<'getMetadata'>;
-  private readonly setMetadataClient!: SpecificApiClient<'setMetadata'>;
-  private readonly getTokenClient!: SpecificApiClient<'getToken'>;
-  private readonly setTokenClient!: SpecificApiClient<'setToken'>;
-  private readonly setGrantClient!: SpecificApiClient<'setGrant'>;
-  private readonly verifyGrantClient!: SpecificApiClient<'verifyGrant'>;
-
+  private readonly api: TokenizerAPI;
   constructor(config?: Partial<TokenizerClientConfig>) {
     // Deep clone config for mutation safety.
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 
-    // The iframe doesnt set this to anything at the moment, not sure if that's okay
-    const jwtToken = this.config.authenticationToken;
-
-    const headers: Record<string, string> = {
+    const headers: OutgoingHttpHeaders = {
       'Content-Type': 'application/json',
     };
+    // The iframe doesnt set this to anything at the moment, not sure if that's okay
+    const jwtToken = this.config.authenticationToken;
     if (jwtToken) {
       headers[this.config.headers.auth] = jwtToken;
     }
-
-    const makeApiClient = <T extends ValidTokenizerApiRequestTypes>(endpoint: string) => {
-      return makeSpecificApiClient<T>(this.config.host, endpoint, {
-        method: 'POST',
-        headers,
-      });
-    };
-
-    this.getMetadataClient = makeApiClient<'getMetadata'>(this.config.endpoints.getMetadata);
-    this.setMetadataClient = makeApiClient<'setMetadata'>(this.config.endpoints.setMetadata);
-    this.getTokenClient = makeApiClient<'getToken'>(this.config.endpoints.getToken);
-    this.setTokenClient = makeApiClient<'setToken'>(this.config.endpoints.setToken);
-    this.setGrantClient = makeApiClient<'setGrant'>(this.config.endpoints.setGrant);
-    this.verifyGrantClient = makeApiClient<'verifyGrant'>(this.config.endpoints.verifyGrant);
+    const backendBasePath = this.config.backendMode === 'express-plugin' ? '/.lunasec' : '';
+    this.api = new TokenizerAPI(this.config.host, headers, backendBasePath);
   }
 
-  async setGrant(
-    sessionId: string,
-    tokenId: string,
-    grantType: GrantType
-  ): Promise<TokenizerFailApiResponse | TokenizerSetGrantResponse> {
-    const response = await this.setGrantClient({
+  async setGrant(sessionId: string, tokenId: string, grantType: GrantType) {
+    const response = await this.api.call('/grant/set', {
       sessionId,
       tokenId,
       grantType,
@@ -76,12 +44,8 @@ export class Tokenizer {
     };
   }
 
-  async verifyGrant(
-    sessionId: string,
-    tokenId: string,
-    grantType: GrantType
-  ): Promise<TokenizerFailApiResponse | TokenizerVerifyGrantResponse> {
-    const response = await this.verifyGrantClient({
+  async verifyGrant(sessionId: string, tokenId: string, grantType: GrantType) {
+    const response = await this.api.call('/grant/verify', {
       sessionId,
       tokenId,
       grantType,
@@ -97,8 +61,8 @@ export class Tokenizer {
     };
   }
 
-  async getMetadata(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerGetMetadataResponse> {
-    const response = await this.getMetadataClient({
+  async getMetadata(tokenId: string) {
+    const response = await this.api.call('/metadata/get', {
       tokenId: tokenId,
     });
 
@@ -114,17 +78,8 @@ export class Tokenizer {
     };
   }
 
-  async setMetadata<T extends Record<string, any>>(
-    tokenId: string,
-    metadata: T
-  ): Promise<TokenizerFailApiResponse | TokenizerSetMetadataResponse> {
-    // TODO: set up proper typing/schema for the metadata object and share it between the whole project
-    // This check is really hard to do right in JS and we should probably just skip it altogether
-    if (!(metadata instanceof Object)) {
-      throw new Error('Metadata must be an object');
-    }
-
-    const response = await this.setMetadataClient({
+  async setMetadata(tokenId: string, metadata: MetaData) {
+    const response = await this.api.call('/metadata/set', {
       tokenId,
       metadata,
     });
@@ -142,17 +97,11 @@ export class Tokenizer {
 
   // TODO: Add another method that _doesn't_ take a key, so that we handle generation.
 
-  async tokenize(
-    input: string | Buffer,
-    metadata?: Record<string, any>
-  ): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
-    if (metadata === undefined) {
-      metadata = {};
-    }
-
-    const response = await this.setTokenClient({
-      metadata: metadata,
+  async tokenize(input: string | Buffer, metadata: MetaData) {
+    const response = await this.api.call('/tokenize', {
+      metadata,
     });
+
     if (!response.success) {
       return response;
     }
@@ -183,7 +132,7 @@ export class Tokenizer {
     }
   }
 
-  async detokenize(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeResponse> {
+  async detokenize(tokenId: string) {
     const response = await this.detokenizeToUrl(tokenId);
 
     if (!response.success) {
@@ -199,8 +148,8 @@ export class Tokenizer {
     };
   }
 
-  async detokenizeToUrl(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeToUrlResponse> {
-    const response = await this.getTokenClient({
+  async detokenizeToUrl(tokenId: string): Promise<TokenizerFailApiResponse | DetokenizeToUrlReturnType> {
+    const response = await this.api.call('/detokenize', {
       tokenId: tokenId,
     });
 

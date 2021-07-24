@@ -3,20 +3,10 @@
  * Ideally, the Typescript should fail to compile when you do.
  * The next step is to add Request/Response types and then "map" them to each other.
  */
-import { GrantType } from '../types';
 
-export enum TokenizerRequest {
-  getMetadata = 'getMetadata',
-  setMetadata = 'setMetadata',
-  setToken = 'setToken',
-  getToken = 'getToken',
-}
+import * as http from 'http';
 
-export type ValidTokenizerApiRequestTypes =
-  | keyof typeof TokenizerRequest
-  | keyof TokenizerRequestResponseMessageMap
-  | keyof TokenizerRequestMessageMap;
-
+import { GrantType, MetaData } from '../types';
 /// Generic Base Types ///
 export interface BaseTokenizerRequest {}
 
@@ -51,24 +41,24 @@ export interface SetMetadataRequest extends BaseTokenizerRequest {
    * Needs to be a UUID.
    */
   tokenId: string;
-  metadata: any;
+  metadata: MetaData;
 }
 
-export interface GetTokenRequest extends BaseTokenizerRequest {
+export interface DetokenizeRequest extends BaseTokenizerRequest {
   /**
    * Needs to be a UUID.
    */
   tokenId: string;
 }
 
-export interface SetTokenRequest extends BaseTokenizerRequest {
-  metadata: Record<string, any>;
+export interface TokenizeRequest extends BaseTokenizerRequest {
+  metadata: MetaData;
 }
 
 /// API Response Schemas ///
 export interface SetGrantResponse {
   success: boolean;
-  data: {};
+  data: Record<any, never>;
 }
 
 export interface VerifyGrantResponse {
@@ -81,7 +71,7 @@ export interface VerifyGrantResponse {
 export interface GetMetadataResponse {
   success: boolean;
   data: {
-    metadata: any;
+    metadata: MetaData;
   };
 }
 
@@ -89,47 +79,41 @@ export interface SetMetadataResponse {
   success: boolean;
 }
 
-export interface GetTokenResponse {
+export interface DetokenizeResponse {
   success: boolean;
   data: {
     downloadUrl: string;
-    headers: Record<string, string>;
+    headers: http.OutgoingHttpHeaders;
   };
 }
 
-export interface SetTokenResponse {
+export interface TokenizerResponse {
   success: boolean;
   data: {
     tokenId: string;
     uploadUrl: string;
-    headers: Record<string, string>;
+    headers: http.IncomingHttpHeaders;
   };
 }
 
-/// Request Type Lookup ///
-export type TokenizerRequestLookup = {
-  [key in keyof typeof TokenizerRequest]: BaseTokenizerRequest;
-};
-
-export interface TokenizerRequestMessageMap extends TokenizerRequestLookup {
-  setGrant: SetGrantRequest;
-  verifyGrant: VerifyGrantRequest;
-  getMetadata: GetMetadataRequest;
-  setMetadata: SetMetadataRequest;
-  getToken: GetTokenRequest;
-  setToken: SetTokenRequest;
+export interface TokenizerRequests {
+  '/grant/set': SetGrantRequest;
+  '/grant/verify': VerifyGrantRequest;
+  '/metadata/get': GetMetadataRequest;
+  '/metadata/set': SetMetadataRequest;
+  '/detokenize': DetokenizeRequest;
+  '/tokenize': TokenizeRequest;
 }
 
-/// Response Type Lookup ///
-export type TokenizerResponseLookup = {
-  [key in keyof typeof TokenizerRequest]: TokenizerRequestResponseMessageMap[key];
-};
-
-export interface TokenizerRequestResponseMessageMap extends TokenizerResponseLookup {
-  setGrant: SetGrantResponse;
-  verifyGrant: VerifyGrantResponse;
-  getMetadata: GetMetadataResponse;
-  setMetadata: SetMetadataResponse;
-  getToken: GetTokenResponse;
-  setToken: SetTokenResponse;
+export interface TokenizerResponses {
+  '/grant/set': SetGrantResponse;
+  '/grant/verify': VerifyGrantResponse;
+  '/metadata/get': GetMetadataResponse;
+  '/metadata/set': SetMetadataResponse;
+  '/detokenize': DetokenizeResponse;
+  '/tokenize': TokenizerResponse;
 }
+
+// Just makes sure the above route lists dont drift apart
+type AssertKeysEqual<T1 extends Record<keyof T2, any>, T2 extends Record<keyof T1, any>> = never;
+export type Assertion = AssertKeysEqual<TokenizerRequests, TokenizerResponses>;
