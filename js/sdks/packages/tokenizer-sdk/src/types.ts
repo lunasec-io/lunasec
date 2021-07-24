@@ -1,58 +1,21 @@
+import * as http from 'http';
+
 export interface TokenizerClientConfig {
   host: string;
   metaEncoding: 'base64';
-  endpoints: {
-    setMetadata: string;
-    getMetadata: string;
-    getToken: string;
-    setToken: string;
-    setGrant: string;
-    verifyGrant: string;
-  };
+  backendMode: 'express-plugin' | 'standalone';
   headers: {
     auth: string;
   };
   authenticationToken?: string;
 }
 
-// _________________________  Responses ___________________________________
+// ______________________ tokenizer.ts Return Types _________________
 
-export interface TokenizerSetGrantResponse {
-  success: true;
-}
-
-export interface TokenizerVerifyGrantResponse {
-  success: true;
-  valid: boolean;
-}
-
-export interface TokenizerGetMetadataResponse {
+export interface DetokenizeToUrlReturnType {
   success: true;
   tokenId: string;
-  metadata: MetaData;
-}
-
-export interface TokenizerSetMetadataResponse {
-  success: true;
-  tokenId: string;
-  metadata: Record<string, any>;
-}
-
-export interface TokenizerTokenizeResponse {
-  success: true;
-  tokenId: string;
-}
-
-export interface TokenizerDetokenizeResponse {
-  success: true;
-  tokenId: string;
-  value: string;
-}
-
-export interface TokenizerDetokenizeToUrlResponse {
-  success: true;
-  tokenId: string;
-  headers: Record<string, string>;
+  headers: http.OutgoingHttpHeaders;
   downloadUrl: string;
 }
 
