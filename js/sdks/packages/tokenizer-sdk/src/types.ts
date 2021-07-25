@@ -22,7 +22,7 @@ export interface DetokenizeToUrlReturnType {
 // ______________________ MetaData ______________________________
 
 export interface BaseMeta {
-  customFields?: Record<any, any>;
+  customFields?: Record<string, any>;
 }
 
 export interface StringMeta extends BaseMeta {
