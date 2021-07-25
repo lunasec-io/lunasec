@@ -2,7 +2,7 @@ import * as http from 'http';
 
 import { makeRequest } from '@lunasec/server-common';
 
-import { TokenizerRequests, TokenizerResponses } from './types';
+import { Requests, Responses } from './types';
 
 export enum TOKENIZER_ERROR_CODES {
   BAD_REQUEST = 400,
@@ -10,9 +10,9 @@ export enum TOKENIZER_ERROR_CODES {
   INTERNAL_ERROR = 500,
 }
 
-export interface TokenizerSuccessApiResponse<R extends keyof TokenizerResponses> {
+export interface TokenizerSuccessApiResponse<R extends keyof Responses> {
   success: true;
-  data: TokenizerResponses[R];
+  data: Responses[R];
 }
 
 export interface TokenizerFailApiResponse {
@@ -21,7 +21,7 @@ export interface TokenizerFailApiResponse {
   errorCode?: TOKENIZER_ERROR_CODES;
 }
 
-export type SomeTokenizerAPIResponse<R extends keyof TokenizerResponses> =
+export type SomeTokenizerAPIResponse<R extends keyof Responses> =
   | TokenizerSuccessApiResponse<R>
   | TokenizerFailApiResponse;
 
@@ -39,19 +39,11 @@ export class TokenizerAPI {
     this.host = host;
   }
 
-  public async call<R extends keyof TokenizerRequests>(
-    route: R,
-    body: TokenizerRequests[R]
-  ): Promise<SomeTokenizerAPIResponse<R>> {
+  public async call<R extends keyof Requests>(route: R, body: Requests[R]): Promise<SomeTokenizerAPIResponse<R>> {
     try {
       // TODO: Add runtime JSON validation for response
       const fullRoute = this.baseRoute + route;
-      const response = await makeRequest<TokenizerResponses[R]>(
-        this.host,
-        fullRoute,
-        this.params,
-        JSON.stringify(body)
-      );
+      const response = await makeRequest<Responses[R]>(this.host, fullRoute, this.params, JSON.stringify(body));
 
       if (!response) {
         return {

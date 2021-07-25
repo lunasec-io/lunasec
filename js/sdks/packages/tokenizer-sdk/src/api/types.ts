@@ -58,7 +58,7 @@ export interface TokenizeRequest extends BaseTokenizerRequest {
 /// API Response Schemas ///
 export interface SetGrantResponse {
   success: boolean;
-  data: Record<any, never>;
+  data: {}; // Record<any, never>;
 }
 
 export interface VerifyGrantResponse {
@@ -96,7 +96,7 @@ export interface TokenizerResponse {
   };
 }
 
-export interface TokenizerRequests {
+export interface Requests {
   '/grant/set': SetGrantRequest;
   '/grant/verify': VerifyGrantRequest;
   '/metadata/get': GetMetadataRequest;
@@ -105,7 +105,7 @@ export interface TokenizerRequests {
   '/tokenize': TokenizeRequest;
 }
 
-export interface TokenizerResponses {
+export interface Responses {
   '/grant/set': SetGrantResponse;
   '/grant/verify': VerifyGrantResponse;
   '/metadata/get': GetMetadataResponse;
@@ -114,6 +114,6 @@ export interface TokenizerResponses {
   '/tokenize': TokenizerResponse;
 }
 
-// Just makes sure the above route lists dont drift apart
-type AssertKeysEqual<T1 extends Record<keyof T2, any>, T2 extends Record<keyof T1, any>> = never;
-export type Assertion = AssertKeysEqual<TokenizerRequests, TokenizerResponses>;
+// Just makes sure the above route lists dont drift apart, should go in another file because json-schema hates this kind of weird stuff
+// type AssertKeysEqual<T1 extends Record<keyof T2, any>, T2 extends Record<keyof T1, any>> = never;
+// export type Assertion = AssertKeysEqual<TokenizerRequests, TokenizerResponses>;
