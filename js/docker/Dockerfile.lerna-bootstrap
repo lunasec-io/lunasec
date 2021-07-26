@@ -1,0 +1,6 @@
+FROM node as lerna-bootstrap
+
+RUN npm i -g lerna lerna-isolate
+
+COPY . /
+RUN lerna bootstrap

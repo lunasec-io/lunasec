@@ -1,5 +1,5 @@
 {
-  "name": "secure-frame-back-end",
+  "name": "demo-back-end",
   "version": "1.0.0",
   "description": "",
   "main": "src/server.ts",
