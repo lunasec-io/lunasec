@@ -28,4 +28,5 @@ windows:
     # Secure Frame Back End
     - shell_command:
       - cd go
-      - docker-compose up
+      - docker-compose up -d local-dependencies
+      - docker-compose up secureframe
