@@ -1,6 +1,100 @@
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "definitions": {
+openapi: 3.0.3
+info:
+  title: Tokenizer API
+  description: The Tokenizer API used for tokenizing and detokenizing data and other endpoints
+  version: 0.0.0
+servers:
+  - url: { tokenizerBackend }
+    variables:
+      tokenizerBackend:
+        default: http://localhost:3001
+        description: The endpoint for the tokenizer backend
+paths:
+  /tokenize:
+    post:
+      summary: Submit metadata about a token that was uploaded to s3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenizeRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenizerResponse'
+  /detokenize:
+    post:
+      summary: Get an S3 signed download URL for a token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetokenizeRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetokenizeResponse'
+        '500':
+        '404':
+  /grant/set:
+    post:
+      summary: Create a grant for a token, of type store or read
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetGrantRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetGrantResponse'
+  /grant/verify:
+    post:
+      summary: Get an S3 signed download URL for a token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyGrantRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyGrantResponse'
+  /metadata/get:
+    post:
+      summary: Get an S3 signed download URL for a token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetMetadataRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMetadataResponse'
+
+components:
+  schemas:
     "SetGrantRequest": {
       "type": "object",
       "properties": {
@@ -15,17 +109,17 @@
         }
       },
       "required": [
-        "sessionId",
-        "tokenId",
-        "grantType"
+          "sessionId",
+          "tokenId",
+          "grantType"
       ],
       "additionalProperties": false
     },
     "GrantType": {
       "type": "string",
       "enum": [
-        "read_token",
-        "store_token"
+          "read_token",
+          "store_token"
       ]
     },
     "VerifyGrantRequest": {
@@ -42,9 +136,9 @@
         }
       },
       "required": [
-        "sessionId",
-        "tokenId",
-        "grantType"
+          "sessionId",
+          "tokenId",
+          "grantType"
       ],
       "additionalProperties": false
     },
@@ -57,24 +151,7 @@
         }
       },
       "required": [
-        "tokenId"
-      ],
-      "additionalProperties": false
-    },
-    "SetMetadataRequest": {
-      "type": "object",
-      "properties": {
-        "tokenId": {
-          "type": "string",
-          "description": "Needs to be a UUID."
-        },
-        "metadata": {
-          "$ref": "#/definitions/MetaData"
-        }
-      },
-      "required": [
-        "tokenId",
-        "metadata"
+          "tokenId"
       ],
       "additionalProperties": false
     },
@@ -100,7 +177,7 @@
         }
       },
       "required": [
-        "dataType"
+          "dataType"
       ],
       "additionalProperties": false
     },
@@ -137,14 +214,14 @@
             }
           },
           "required": [
-            "filename"
+              "filename"
           ],
           "additionalProperties": false
         }
       },
       "required": [
-        "dataType",
-        "fileinfo"
+          "dataType",
+          "fileinfo"
       ],
       "additionalProperties": false
     },
@@ -157,7 +234,7 @@
         }
       },
       "required": [
-        "tokenId"
+          "tokenId"
       ],
       "additionalProperties": false
     },
@@ -169,7 +246,7 @@
         }
       },
       "required": [
-        "metadata"
+          "metadata"
       ],
       "additionalProperties": false
     },
@@ -185,8 +262,8 @@
         }
       },
       "required": [
-        "success",
-        "data"
+          "success",
+          "data"
       ],
       "additionalProperties": false
     },
@@ -204,14 +281,14 @@
             }
           },
           "required": [
-            "valid"
+              "valid"
           ],
           "additionalProperties": false
         }
       },
       "required": [
-        "success",
-        "data"
+          "success",
+          "data"
       ],
       "additionalProperties": false
     },
@@ -229,26 +306,14 @@
             }
           },
           "required": [
-            "metadata"
+              "metadata"
           ],
           "additionalProperties": false
         }
       },
       "required": [
-        "success",
-        "data"
-      ],
-      "additionalProperties": false
-    },
-    "SetMetadataResponse": {
-      "type": "object",
-      "properties": {
-        "success": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "success"
+          "success",
+          "data"
       ],
       "additionalProperties": false
     },
@@ -269,15 +334,15 @@
             }
           },
           "required": [
-            "downloadUrl",
-            "headers"
+              "downloadUrl",
+              "headers"
           ],
           "additionalProperties": false
         }
       },
       "required": [
-        "success",
-        "data"
+          "success",
+          "data"
       ],
       "additionalProperties": false
     },
@@ -289,11 +354,11 @@
             "$ref": "#/definitions/OutgoingHttpHeader"
           },
           {
-            "not": {}
+            "not": { }
           }
         ]
       },
-      "properties": {}
+      "properties": { }
     },
     "NodeJS.Dict<OutgoingHttpHeader>": {
       "type": "object",
@@ -303,7 +368,7 @@
             "$ref": "#/definitions/OutgoingHttpHeader"
           },
           {
-            "not": {}
+            "not": { }
           }
         ]
       }
@@ -344,16 +409,16 @@
             }
           },
           "required": [
-            "tokenId",
-            "uploadUrl",
-            "headers"
+              "tokenId",
+              "uploadUrl",
+              "headers"
           ],
           "additionalProperties": false
         }
       },
       "required": [
-        "success",
-        "data"
+          "success",
+          "data"
       ],
       "additionalProperties": false
     },
@@ -556,7 +621,7 @@
       "additionalProperties": {
         "anyOf": [
           {
-            "not": {}
+            "not": { }
           },
           {
             "type": [
@@ -581,74 +646,8 @@
             }
           },
           {
-            "not": {}
+            "not": { }
           }
         ]
       }
     },
-    "Requests": {
-      "type": "object",
-      "properties": {
-        "/grant/set": {
-          "$ref": "#/definitions/SetGrantRequest"
-        },
-        "/grant/verify": {
-          "$ref": "#/definitions/VerifyGrantRequest"
-        },
-        "/metadata/get": {
-          "$ref": "#/definitions/GetMetadataRequest"
-        },
-        "/metadata/set": {
-          "$ref": "#/definitions/SetMetadataRequest"
-        },
-        "/detokenize": {
-          "$ref": "#/definitions/DetokenizeRequest"
-        },
-        "/tokenize": {
-          "$ref": "#/definitions/TokenizeRequest"
-        }
-      },
-      "required": [
-        "/grant/set",
-        "/grant/verify",
-        "/metadata/get",
-        "/metadata/set",
-        "/detokenize",
-        "/tokenize"
-      ],
-      "additionalProperties": false
-    },
-    "Responses": {
-      "type": "object",
-      "properties": {
-        "/grant/set": {
-          "$ref": "#/definitions/SetGrantResponse"
-        },
-        "/grant/verify": {
-          "$ref": "#/definitions/VerifyGrantResponse"
-        },
-        "/metadata/get": {
-          "$ref": "#/definitions/GetMetadataResponse"
-        },
-        "/metadata/set": {
-          "$ref": "#/definitions/SetMetadataResponse"
-        },
-        "/detokenize": {
-          "$ref": "#/definitions/DetokenizeResponse"
-        },
-        "/tokenize": {
-          "$ref": "#/definitions/TokenizerResponse"
-        }
-      },
-      "required": [
-        "/grant/set",
-        "/grant/verify",
-        "/metadata/get",
-        "/metadata/set",
-        "/detokenize",
-        "/tokenize"
-      ],
-      "additionalProperties": false
-    }
-  }
-}
