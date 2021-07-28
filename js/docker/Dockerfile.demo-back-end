@@ -1,5 +1,0 @@
-FROM lerna-bootstrap
-
-RUN lerna-isolate demo-back-end
-
-CMD
