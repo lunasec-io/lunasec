@@ -147,7 +147,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     hiddenAnchor.style.display = 'none';
     document.body.appendChild(hiddenAnchor);
     // Just reusing the download code from Secure Downloader
-    return handleDownload(token, hiddenAnchor, true);
+    return handleDownload(token, hiddenAnchor, this.props.secureframe.rpc.tokenizer, true);
   }
 
   async deleteFile(e: React.MouseEvent<HTMLButtonElement>, id: number) {

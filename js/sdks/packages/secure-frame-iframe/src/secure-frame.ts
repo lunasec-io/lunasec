@@ -11,6 +11,14 @@ export function timeout(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+const componentNameToElementMap: TagLookup = {
+  Paragraph: 'p',
+  Downloader: 'a',
+  Uploader: 'input',
+  TextArea: 'textarea',
+  Input: 'input',
+};
+
 // Would be nice if class could take <element type parameter> but couldn't quite get it working
 export class SecureFrame<E extends keyof ClassLookup> {
   private readonly componentName: E;
@@ -45,11 +53,11 @@ export class SecureFrame<E extends keyof ClassLookup> {
     });
   }
 
-  insertSecureElement(elementName: E): [HTMLElementTagNameMap[TagLookup[E]], HTMLFormElement] {
+  insertSecureElement(componentName: E): [HTMLElementTagNameMap[TagLookup[E]], HTMLFormElement] {
     const body = document.getElementsByTagName('BODY')[0];
-    const secureElement = document.createElement(elementName) as HTMLElementTagNameMap[TagLookup[E]];
+    const elementName = componentNameToElementMap[componentName];
+    const secureElement = document.createElement(elementName);
     secureElement.className = 'secure-input d-none';
-
     const form = document.createElement('form');
     form.appendChild(secureElement);
     body.appendChild(form);
@@ -132,7 +140,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
     if (attrs.component === 'Downloader') {
       // Figure out why this type casting is necessary
       try {
-        await handleDownload(token, this.secureElement as HTMLAnchorElement, attrs.hidden || false);
+        await handleDownload(token, this.secureElement as HTMLAnchorElement, this.rpc.tokenizer, attrs.hidden || false);
       } catch (e) {
         // TODO: Make this less ugly (it's blue atm and garbage lol)
         this.secureElement.textContent = 'Error: Missing File';

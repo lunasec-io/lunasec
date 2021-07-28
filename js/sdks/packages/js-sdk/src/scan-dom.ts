@@ -101,7 +101,7 @@ export function createDomWatcher(domInstance: Document, frameUrl: string, rootRe
         });
 
         return inputs;
-      }, [] as SecureFormInputConfig[]); //eslint-disable-line
+      }, [] as SecureFormInputConfig[]);
 
     if (secureForms.length === 0) {
       return;
