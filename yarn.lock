@@ -14915,6 +14915,11 @@ neo-async@^2.5.0, neo-async@^2.6.0, neo-async@^2.6.1, neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+nested-error-stacks@^2:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
+  integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
+
 next-tick@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
@@ -17749,6 +17754,11 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
+reflect-metadata@>=0.1.12:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.13.tgz#67ae3ca57c972a2aa1642b10fe363fe32d49dc08"
+  integrity sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==
+
 regenerate-unicode-properties@^8.2.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/regenerate-unicode-properties/-/regenerate-unicode-properties-8.2.0.tgz#e5de7111d655e7ba60c057dbe9ff37c87e65cdec"
@@ -20158,6 +20168,16 @@ typedoc@^0.20.36:
     shelljs "^0.8.4"
     shiki "^0.9.3"
     typedoc-default-themes "^0.12.10"
+
+typescript-is@^0.18.3:
+  version "0.18.3"
+  resolved "https://registry.yarnpkg.com/typescript-is/-/typescript-is-0.18.3.tgz#143ce2b348684083fc3963b95a6c2e24abd89389"
+  integrity sha512-kBgZIJt3AKrtye1H2GYf9bWu1YS0Z9AZZl4OZG4z2Ps2jPMZuycilP9RkxPLP+tPxCUjXfmaJti9TNGoz5schA==
+  dependencies:
+    nested-error-stacks "^2"
+    tsutils "^3.17.1"
+  optionalDependencies:
+    reflect-metadata ">=0.1.12"
 
 typescript@^4.2.0, typescript@^4.2.2, typescript@^4.2.3, typescript@~4.3.4:
   version "4.3.5"

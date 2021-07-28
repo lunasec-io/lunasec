@@ -58,7 +58,7 @@ export interface TokenizeRequest extends BaseTokenizerRequest {
 /// API Response Schemas ///
 export interface SetGrantResponse {
   success: boolean;
-  data: {}; // Record<any, never>;
+  data: Record<any, never>;
 }
 
 export interface VerifyGrantResponse {
