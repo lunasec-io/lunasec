@@ -22,7 +22,9 @@ class FileDownloader {
     this.messageCreator = new FrameMessageCreator(lunaSecDomain, this.frameNonce, (notification) =>
       this.frameNotificationCallback(notification)
     );
-    addJsEventListener(window, (message) => this.messageCreator.postReceived(message));
+    addJsEventListener(window, lunaSecDomain, (message) => {
+      this.messageCreator.postReceived(message);
+    });
 
     // Attach the frame
     this.frameElement = this.buildFrame();
@@ -41,10 +43,10 @@ class FileDownloader {
 
   generateUrl() {
     const frameURL = new URL(this.lunaSecDomain);
-    frameURL.pathname += secureFramePathname;
+    frameURL.pathname = secureFramePathname;
     frameURL.searchParams.set('n', this.frameNonce);
     frameURL.searchParams.set('origin', window.location.origin);
-    frameURL.searchParams.set('element', 'a');
+    frameURL.searchParams.set('component', 'Downloader');
     return frameURL.toString();
   }
 

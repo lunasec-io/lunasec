@@ -4,27 +4,25 @@ import cookieParser from 'cookie-parser';
 import { Request, Response, Router } from 'express';
 import { JWTPayload } from 'jose/types';
 
-import { LunaSecTokenAuthService } from '../token-auth-service';
-
-export type AuthContextCallback = (req: Request) => JWTPayload | null;
+import { LunaSecAuthentication } from '../authentication';
+import { SessionIdProvider } from '../authentication/types';
 
 export interface ExpressAuthPluginConfig {
-  tokenService: LunaSecTokenAuthService;
-  authContextCallback: AuthContextCallback;
+  sessionIdProvider: SessionIdProvider;
   payloadClaims?: string[];
+  secureFrameURL: string;
+  auth: LunaSecAuthentication;
 }
 
 export class LunaSecExpressAuthPlugin {
   private readonly secureFrameUrl: string;
+  private readonly auth: LunaSecAuthentication;
   private readonly config: ExpressAuthPluginConfig;
 
   constructor(config: ExpressAuthPluginConfig) {
+    this.auth = config.auth;
     this.config = config;
-    const secureFrameUrl = process.env.SECURE_FRAME_URL;
-    if (secureFrameUrl === undefined) {
-      throw Error('SECURE_FRAME_URL not found in environment variables.');
-    }
-    this.secureFrameUrl = secureFrameUrl;
+    this.secureFrameUrl = config.secureFrameURL;
   }
 
   filterClaims(payload: JWTPayload): any {
@@ -42,50 +40,50 @@ export class LunaSecExpressAuthPlugin {
       }, {});
   }
 
-  async buildSecureFrameRedirectUrl(stateToken: string, payloadClaims: any) {
-    let authGrant = undefined;
+  async buildSecureFrameRedirectUrl(stateToken: string, sessionId: string) {
+    // This gets set into the "access_token" cookie by the Secure Frame Backend after the redirect
+    let access_token = undefined;
     try {
-      authGrant = await this.config.tokenService.authenticate(payloadClaims);
+      access_token = await this.auth.createAuthenticationJWT({ session_id: sessionId });
     } catch (e) {
       console.error(`error while attempting to create authentication token: ${e}`);
     }
 
-    if (authGrant === undefined) {
+    if (access_token === undefined) {
       return null;
     }
 
-    const redirectUrl = new URL(this.secureFrameUrl);
+    const redirectUrl = new URL('/session/create', this.secureFrameUrl);
     redirectUrl.searchParams.append('state', stateToken);
-    redirectUrl.searchParams.append('openid_token', authGrant.toString());
-    redirectUrl.pathname += '/session/create';
+    redirectUrl.searchParams.append('openid_token', access_token.toString());
     return redirectUrl;
   }
 
   async handleSecureFrameAuthRequest(req: Request, res: Response) {
-    const stateToken = req.query.state;
-
-    if (typeof stateToken !== 'string') {
+    const authFlowCorrelationToken = req.query.state;
+    if (typeof authFlowCorrelationToken !== 'string') {
       res.status(400).send({
         success: false,
         error: 'state is not set in request',
       });
       return;
     }
-    const payloadClaims = this.config.authContextCallback(req);
-    if (payloadClaims === null) {
+
+    const sessionId = await this.config.sessionIdProvider(req);
+    if (sessionId === null) {
       res.status(400).send({
         success: false,
         error: 'unable to authenticate the user of this request',
       });
       return;
     }
-
-    const redirectUrl = await this.buildSecureFrameRedirectUrl(stateToken, payloadClaims);
+    // This method creates the JWT that becomes the iframe's "access_token" cookie, which contains the sessionId
+    const redirectUrl = await this.buildSecureFrameRedirectUrl(authFlowCorrelationToken, sessionId);
     if (redirectUrl === null) {
-      console.error('unable to complete auth flow');
+      console.error('unable to complete auth flow, redirectURL not set');
       res.status(400).send({
         success: false,
-        error: 'unable to complete auth flow',
+        error: 'unable to complete auth flow, building redirect url from node-sdk to go server failed',
       });
       return;
     }

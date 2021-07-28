@@ -1,3 +1,4 @@
+// Are we still using any of this? We should probably delete it if not
 export enum SecureFormElementType {
   Submit = 'Submit',
   Text = 'Text',
