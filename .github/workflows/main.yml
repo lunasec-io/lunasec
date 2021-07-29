@@ -8,7 +8,7 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, github-actions-test ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -17,15 +17,8 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-    
-      - name: Docker Compose Action
-        # You may pin to the exact commit or the version.
-        # uses: isbang/compose-action@fab6f72bef82b75de541a7b9da1d23412953c2bd
-        uses: isbang/compose-action@v1.0.0
+      - name: Build the stack
+        run: docker-compose up -d
