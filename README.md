@@ -5,7 +5,17 @@ This monorepo holds the LunaSec SDKs, servers, and demo application.  Together, 
 
 On the front end, cross-domain iFrames dubbed **Secure Frames** handle the creation and display of sensitive fields, and on the backend sensitive data is handled inside Lambdas dubbed **Secure Resolvers**.  
 
-A few components:
+## Demo
+
+To run the demo application, run:
+
+```shell
+COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
+```
+
+Once running, go to `http://localhost:3000`
+
+## Components
 
 ### /js/demo-apps/packages
 Demo apps that use our toolkit for testing and demonstration.  The react-app and node-app are the one's currently being developed.  These are our only SDK supported frameworks currently.  
