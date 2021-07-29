@@ -147,6 +147,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
 
   renderFileComponents() {
     const files = this.state.formData.files;
+    if (!files) {
+      return;
+    }
     return (
       <div>
         {this.renderFileDownloadComponents(files[0])}

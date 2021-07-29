@@ -22,13 +22,13 @@ export const typeDefs = gql`
   }
 
   input FormDataInput {
-    email: String
+    email: String @token
     insecure_field: String
-    text_area: String
-    files: [String]
+    text_area: String @token
+    files: [String] @token
   }
 
-  directive @token on FIELD_DEFINITION # | INPUT_FIELD_DEFINITION  ### Enable input field annotation once plugin working
+  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION ### Enable input field annotation once plugin working
 `;
 
 // This is a fake little database so we have some data to serve
@@ -43,18 +43,17 @@ const db = {
 
 export const resolvers = {
   Query: {
-    getFormData: () => db.formData,
+    getFormData: () => db.formData, // Once this resolver fires and tokens are retrieved, anything annotated with @token in FormData in the schema will be granted read permission for this session for 15 minutes
   },
   Mutation: {
     setFormData: async (
       _parent: never,
       args: { formData: typeof db['formData'] },
-      context: { sessionId: string },
+      _context: { sessionId: string },
       _info: any
     ) => {
-      // For now, you must manually verify all tokens are granted before writing them to the database
-      await lunaSec.grants.verify(context.sessionId, args.formData.email, 'store_token'); // Throws if there is an issue
-      await lunaSec.grants.verify(context.sessionId, args.formData.text_area, 'store_token');
+      // If the tokens annotated with @token in FormDataInput in the schema are not granted permission to be written to the database for this sessionID
+      // they will throw and we would not reach this resolver
       db.formData = args.formData;
       console.debug('setting test data to ', args.formData);
       return db.formData;
