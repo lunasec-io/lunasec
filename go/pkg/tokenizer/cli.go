@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/refinery-labs/loq/model"
 	"io/ioutil"
 	"log"
@@ -130,8 +129,7 @@ func s3Request(method, url string, headers map[string]string, body *bytes.Buffer
 }
 
 func newSessionID() string {
-	sessionID := uuid.New()
-	return sessionID.String()
+	return "cli-tool"
 }
 
 func setGrantForToken(cliOptions CliOptions, sessionID string, tokenID string) (err error) {

@@ -51,10 +51,9 @@ func (s *metaController) GetMetadata(w http.ResponseWriter, r *http.Request) {
 	}
 
 	meta, err := s.meta.GetMetadata(model.Token(input.TokenID))
-
 	if err != nil {
 		statusCode := 500
-		if err.Error() == "unable to locate data for token" {
+		if err.Error() == "unable to locate metadata for token" {
 			statusCode = 404
 		}
 		util.RespondError(w, statusCode, err)

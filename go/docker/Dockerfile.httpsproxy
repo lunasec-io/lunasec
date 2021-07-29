@@ -1,0 +1,6 @@
+FROM node
+
+RUN npm install -g local-ssl-proxy
+
+WORKDIR /
+ENTRYPOINT ["local-ssl-proxy"]

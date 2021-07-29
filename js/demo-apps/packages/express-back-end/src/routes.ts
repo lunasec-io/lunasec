@@ -1,8 +1,6 @@
-import { Router } from 'express';
-
+import {Router} from 'express'
+import {randomUUID} from "crypto";
 import { lunaSec } from './configure-lunasec';
-// import { processForm, SecureFormData } from './process-form';
-// import { DeploymentStage, SecureResolver } from '@lunasec/node-sdk';
 const routes = Router();
 
 // (forrest) Leaving the secure resolver stuff commented out until chris gets a chance to take another pass at it
@@ -14,20 +12,14 @@ const routes = Router();
 
 export function createRoutes() {
   // This little helper route gets called manually to simulate a login flow for the purposes of the demo
-  routes.get('/set-id-token', function (req, res) {
-    const id_token = req.query.id_token;
-    if (typeof id_token !== 'string') {
-      res.status(400).send({
-        success: false,
-        error: 'id_token is not a string',
-        id_token: id_token,
-      });
-      return;
-    }
-    res.cookie('id_token', id_token);
-    res.status(200).send({
-      success: true,
-    });
+  routes.get('/set-id-token', async function (_, res) {
+    const id_token = await lunaSec.auth.createAuthenticationJWT({
+      session: {
+        id: randomUUID()
+      }
+    })
+    res.cookie('id_token', id_token.toString())
+    res.redirect('back')
   });
 
   routes.get('/', async (_req, res) => {

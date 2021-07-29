@@ -22,11 +22,11 @@ windows:
 
     # Customer Backend, comes up on 3001
     - shell_command:
-        - cd js/demo-apps/packages/express-back-end
-        - LUNASEC_SIGNING_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider_key | base64) yarn start:dev
+      - cd js/demo-apps/packages/express-back-end
+      - SESSION_JWT_PUBLIC_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider.pub | base64 -w0) LUNASEC_SIGNING_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider_key | base64 -w0) yarn start:dev
 
     # Secure Frame Back End
     - shell_command:
       - cd go
-      - make secureframe
-      - STAGE=DEV MOCK_AWS_GATEWAY=false SECURE_FRAME_FRONT_END=http://localhost:37766 CUSTOMER_FRONT_END=http://localhost:3000 CUSTOMER_BACK_END=http://localhost:3001 CDN_HOST=localhost:8000 ./scripts/run-secureframe.sh
+      - docker-compose up -d local-dependencies
+      - docker-compose up secureframe

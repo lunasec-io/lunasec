@@ -1,0 +1,105 @@
+version: "3.8"
+
+services:
+  secure-frame-iframe:
+    build:
+      context: .
+      dockerfile: js/Dockerfile
+      target: secure-frame-iframe
+    ports:
+      - "8000:8000"
+  customer-front-end:
+    build:
+      context: .
+      dockerfile: js/Dockerfile
+      target: react-front-end
+    ports:
+      - "3000:3000"
+  customer-back-end:
+    build:
+      context: .
+      dockerfile: js/Dockerfile
+      target: demo-back-end
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env.dev
+
+  local-dependencies:
+    image: rwgrim/docker-noop
+    depends_on:
+      - localstack
+      - proxy
+      - cdk-init
+  localstack:
+    container_name: localstack
+    hostname: localstack
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,dynamodb,secretsmanager,sts,cloudformation
+      - DEBUG=${DEBUG- }
+      - DATA_DIR=${DATA_DIR- }
+      - LOCALSTACK_API_KEY=${LOCALSTACK_API_KEY- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOST_TMP_FOLDER=${TMPDIR}
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://localhost:4566"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  proxy:
+    build:
+      context: go/
+      dockerfile: docker/Dockerfile.httpsproxy
+    command: -s 4566 -n localstack -t 4566 -c /proxy/cert.pem -k /proxy/key.pem
+    container_name: localstack_proxy
+    hostname: localstack-proxy
+    depends_on:
+      localstack:
+        condition: service_healthy
+    volumes:
+      - ./go/scripts/proxy/:/proxy
+    ports:
+      - "4567:4566"
+  cdk-init:
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env.dev
+    build:
+      context: go/
+      dockerfile: docker/Dockerfile.lunasec
+    command: --dir /lunasec_local_build deploy --local --build --config-output /config/secureframe/
+    volumes:
+      - ./go/config/secureframe/:/config/secureframe/
+      - ./go/lunasec_local_build/:/lunasec_local_build/
+    depends_on:
+      localstack:
+        condition: service_healthy
+  secureframe:
+    env_file:
+      - .env.dev
+    build:
+      context: go/
+      dockerfile: docker/Dockerfile.secureframe
+      args:
+        BUILD_TAG: dev
+    volumes:
+      - ./go/config/secureframe/:/config/secureframe/
+    ports:
+      - 37766:37766
+    depends_on:
+      cdk-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:37766"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
