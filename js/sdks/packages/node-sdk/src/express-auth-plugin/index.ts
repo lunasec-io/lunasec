@@ -53,10 +53,9 @@ export class LunaSecExpressAuthPlugin {
       return null;
     }
 
-    const redirectUrl = new URL(this.secureFrameUrl);
+    const redirectUrl = new URL('/session/create', this.secureFrameUrl);
     redirectUrl.searchParams.append('state', stateToken);
     redirectUrl.searchParams.append('openid_token', access_token.toString());
-    redirectUrl.pathname = '/session/create';
     return redirectUrl;
   }
 
@@ -71,7 +70,6 @@ export class LunaSecExpressAuthPlugin {
     }
 
     const sessionId = await this.config.sessionIdProvider(req);
-    console.log('sessionId is ', sessionId);
     if (sessionId === null) {
       res.status(400).send({
         success: false,

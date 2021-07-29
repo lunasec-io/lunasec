@@ -4,6 +4,7 @@ import { AuthenticationJWT } from './authentication-jwt';
 import { awsSecretProvider } from './aws-secret-provider';
 import { environmentSecretProvider } from './environment-secret-provider';
 import { SecretConfig } from './types';
+// Todo: rename this whole service to JWT service, all it does is make JWTs, it doesnt do "auth" really
 export class LunaSecAuthentication {
   readonly secretConfig: SecretConfig;
 
