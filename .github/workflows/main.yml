@@ -13,19 +13,26 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-    
-      - name: Docker Compose Action
-        # You may pin to the exact commit or the version.
-        # uses: isbang/compose-action@fab6f72bef82b75de541a7b9da1d23412953c2bd
-        uses: isbang/compose-action@v1.0.0
+    - uses: actions/checkout@v2
+
+    # Pull the latest image to build, and avoid caching pull-only images.
+    # (docker pull is faster than caching in most cases.)
+    - run: docker-compose pull
+
+    # In this step, this action saves a list of existing images,
+    # the cache is created without them in the post run.
+    # It also restores the cache if it exists.
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      # Ignore the failure of a step and avoid terminating the job.
+      continue-on-error: true
+
+    - name: Build the stack
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
+
+    # Finally, "Post Run satackey/action-docker-layer-caching@v0.0.11",
+    # which is the process of saving the cache, will be executed.
