@@ -2,6 +2,8 @@ import * as http from 'http';
 
 import { makeRequest } from '@lunasec/server-common';
 
+import { Configuration, DefaultApi } from '../generated';
+
 import { Requests, Responses } from './types';
 
 export enum TOKENIZER_ERROR_CODES {
@@ -10,9 +12,9 @@ export enum TOKENIZER_ERROR_CODES {
   INTERNAL_ERROR = 500,
 }
 
-export interface TokenizerSuccessApiResponse<R extends keyof Responses> {
+export interface TokenizerSuccessApiResponse<R extends { data: Record<any, any> }> {
   success: true;
-  data: Responses[R];
+  data: R['data'];
 }
 
 export interface TokenizerFailApiResponse {
@@ -21,29 +23,26 @@ export interface TokenizerFailApiResponse {
   errorCode?: TOKENIZER_ERROR_CODES;
 }
 
-export type SomeTokenizerAPIResponse<R extends keyof Responses> =
+export type SomeTokenizerAPIResponse<R extends { data: Record<any, any> }> =
   | TokenizerSuccessApiResponse<R>
   | TokenizerFailApiResponse;
 
-export class TokenizerAPI {
-  params: http.ClientRequestArgs;
-  baseRoute: string;
-  host: string;
+type AsyncReturnType<T extends (...args: any) => Promise<any>> = T extends (...args: any) => Promise<infer R> ? R : any;
 
-  constructor(host: string, headers: http.OutgoingHttpHeaders, baseRoute: string) {
-    this.params = {
-      method: 'POST',
-      headers,
-    };
-    this.baseRoute = baseRoute;
-    this.host = host;
+export class TokenizerApiWrapper {
+  headers: http.ClientRequestArgs;
+
+  constructor(host: string, headers: http.OutgoingHttpHeaders) {
+    this.headers = headers;
   }
 
-  public async call<R extends keyof Requests>(route: R, body: Requests[R]): Promise<SomeTokenizerAPIResponse<R>> {
+  public async wrap<F extends (body: any, opts?: any) => Promise<{ data: Record<any, any> }>>(
+    reqMethod: F,
+    reqBody: Parameters<F>[0]
+  ): Promise<SomeTokenizerAPIResponse<AsyncReturnType<F>>> {
     try {
       // TODO: Add runtime JSON validation for response
-      const fullRoute = this.baseRoute + route;
-      const response = await makeRequest<Responses[R]>(this.host, fullRoute, this.params, JSON.stringify(body));
+      const response = await reqMethod(reqBody, { headers: this.headers });
 
       if (!response) {
         return {
@@ -56,7 +55,7 @@ export class TokenizerAPI {
 
       return {
         success: true,
-        data: response,
+        data: response.data,
       };
     } catch (e) {
       return {
@@ -66,6 +65,33 @@ export class TokenizerAPI {
     }
   }
 }
+//
+// public async call<R extends keyof Requests>(route: R, body: Requests[R]): Promise<SomeTokenizerAPIResponse<R>> {
+//   try {
+//     // TODO: Add runtime JSON validation for response
+//     const fullRoute = this.baseRoute + route;
+//     const response = await makeRequest<Responses[R]>(this.host, fullRoute, this.params, JSON.stringify(body));
+//
+//     if (!response) {
+//   return {
+//     success: false,
+//     error: new Error(
+//       response !== undefined ? response : 'Malformed response from API with missing error message'
+//     ),
+//   };
+// }
+//
+// return {
+//   success: true,
+//   data: response,
+// };
+// } catch (e) {
+//   return {
+//     success: false,
+//     error: e,
+//   };
+// }
+// }
 
 // export async function makeSecureApiRequest<
 //   T extends ValidTokenizerApiRequestTypes,

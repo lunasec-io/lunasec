@@ -39,7 +39,7 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
   }
 
   app.use(
-    CONFIG_DEFAULTS.endpoints.setToken,
+    '/tokenize',
     respondWithJson<TokenizerResponse>({
       success: true,
       data: {
@@ -51,7 +51,7 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
   );
 
   app.use(
-    CONFIG_DEFAULTS.endpoints.getToken,
+    '/detokenize',
     respondWithJson<DetokenizeResponse>({
       success: true,
       data: {
@@ -62,14 +62,14 @@ export function createFakeTokenizerService(config: FakeTokenizerServiceConfig) {
   );
 
   app.use(
-    CONFIG_DEFAULTS.endpoints.setMetadata,
+    '/metadata/set',
     respondWithJson<SetMetadataResponse>({
       success: true,
     })
   );
 
   app.use(
-    CONFIG_DEFAULTS.endpoints.getMetadata,
+    '/metadata/get',
     respondWithJson<GetMetadataResponse>({
       success: true,
       data: {

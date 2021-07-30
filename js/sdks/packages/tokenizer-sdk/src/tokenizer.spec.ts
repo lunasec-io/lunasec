@@ -68,7 +68,7 @@ tests.push({
   name: 'Test tokenizing a value',
   fn: async (test, tokenizer) => {
     try {
-      const response = await tokenizer.tokenize(TEST_PLAINTEXT_VALUE);
+      const response = await tokenizer.tokenize(TEST_PLAINTEXT_VALUE, { dataType: 'string' });
 
       if (!response.success) {
         test.fail('response indicates failure');
@@ -155,36 +155,6 @@ tests.push({
       tokenizerConfig: {
         onRequestCallback: verifySecretHeader(test),
         onS3Callback: verifyHeaders(test, TEST_S3_HEADERS.GET),
-      },
-    };
-  },
-});
-
-tests.push({
-  name: 'Test adding metadata to a value',
-  fn: async (test, tokenizer) => {
-    try {
-      const response = await tokenizer.setMetadata(TEST_TOKEN, TEST_METADATA);
-
-      if (!response.success) {
-        test.fail('response indicates failure');
-        test.end();
-        return;
-      }
-
-      test.ok(response.success, 'response indicates success');
-      test.equal(response.tokenId, TEST_TOKEN, 'plaintext should match');
-      test.equal(response.metadata, TEST_METADATA, 'plaintext should match');
-    } catch (e) {
-      console.log('error', e);
-      test.fail();
-    }
-    test.end();
-  },
-  async beforeSetup(test) {
-    return {
-      tokenizerConfig: {
-        onRequestCallback: verifySecretHeader(test),
       },
     };
   },
