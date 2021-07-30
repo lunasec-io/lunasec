@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/model/event"
+	"github.com/refinery-labs/loq/types/event"
 	"github.com/refinery-labs/loq/service"
 	"github.com/urfave/cli"
 	"go.uber.org/zap"
@@ -59,7 +59,7 @@ func newJwtSigner(customerPrivateKey string) service.JwtSigner {
 
 func newAuthJwt(sessionID string, customerPrivateKey string) string {
 	jwtSigner := newJwtSigner(customerPrivateKey)
-	claims := model.SessionJwtClaims{
+	claims := types.SessionJwtClaims{
 		SessionID: sessionID,
 	}
 	token, err := jwtSigner.CreateWithSessionClaims(claims)

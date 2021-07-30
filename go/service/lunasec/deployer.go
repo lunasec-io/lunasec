@@ -3,7 +3,7 @@ package lunasec
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/service"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -31,9 +31,9 @@ const (
 type StackOutput map[string]map[string]string
 
 type AwsResources struct {
-	TableNames map[model.KVStore]string `yaml:"table_names"`
-	CiphertextBucket string `yaml:"s3_bucket"`
-	LocalstackURL string `yaml:"localstack_url"`
+	TableNames map[types.KVStore]string `yaml:"table_names"`
+	CiphertextBucket string             `yaml:"s3_bucket"`
+	LocalstackURL string                `yaml:"localstack_url"`
 }
 
 type AwsResourceConfig struct {
@@ -150,7 +150,7 @@ func (l *deployer) writeConfig(stackOutputFilePath string) (err error) {
 	// TODO (cthompson) this is pretty dirty, we ideally build this resource config from the actual config objects that each service expects
 	awsResourceConfig.AwsGateway.CiphertextBucket = outputs[*getOutputName("ciphertext-bucket")]
 
-	awsResourceConfig.AwsGateway.TableNames = map[model.KVStore]string{}
+	awsResourceConfig.AwsGateway.TableNames = map[types.KVStore]string{}
 	awsResourceConfig.AwsGateway.TableNames[gateway.MetaStore] = outputs[*getOutputName("metadata-table")]
 	awsResourceConfig.AwsGateway.TableNames[gateway.KeyStore] = outputs[*getOutputName("keys-table")]
 	awsResourceConfig.AwsGateway.TableNames[gateway.SessionStore] = outputs[*getOutputName("sessions-table")]

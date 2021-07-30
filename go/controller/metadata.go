@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/refinery-labs/loq/model"
-	"github.com/refinery-labs/loq/model/event"
+	"github.com/refinery-labs/loq/types"
+	"github.com/refinery-labs/loq/types/event"
 	"github.com/refinery-labs/loq/service"
 	"github.com/refinery-labs/loq/util"
 )
@@ -50,7 +50,7 @@ func (s *metaController) GetMetadata(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	meta, err := s.meta.GetMetadata(model.Token(input.TokenID))
+	meta, err := s.meta.GetMetadata(types.Token(input.TokenID))
 	if err != nil {
 		statusCode := 500
 		if err.Error() == "unable to locate metadata for token" {
@@ -84,7 +84,7 @@ func (s *metaController) SetMetadata(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.meta.SetMetadata(model.Token(input.TokenID), input.Metadata); err != nil {
+	if err := s.meta.SetMetadata(types.Token(input.TokenID), input.Metadata); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}

@@ -11,7 +11,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/refinery-labs/loq/model/event"
+	"github.com/refinery-labs/loq/types/event"
 	tokenizer "github.com/refinery-labs/loq/pkg/tokenizer"
 	"github.com/refinery-labs/loq/service/invoker"
 	"github.com/refinery-labs/loq/util"

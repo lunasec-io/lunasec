@@ -1,4 +1,4 @@
-package model
+package types
 
 type FunctionConfig struct {
 	ImportPath   string            `json:"import_path"`
