@@ -55,14 +55,33 @@ export interface DetokenizeRequest {
 export interface DetokenizeResponse {
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof DetokenizeResponse
+     */
+    success: boolean;
+    /**
+     * 
+     * @type {DetokenizeResponseData}
+     * @memberof DetokenizeResponse
+     */
+    data: DetokenizeResponseData;
+}
+/**
+ * 
+ * @export
+ * @interface DetokenizeResponseData
+ */
+export interface DetokenizeResponseData {
+    /**
+     * 
+     * @type {string}
+     * @memberof DetokenizeResponseData
      */
     downloadUrl: string;
     /**
      * 
      * @type {object}
-     * @memberof DetokenizeResponse
+     * @memberof DetokenizeResponseData
      */
     headers: object;
 }
@@ -162,8 +181,27 @@ export interface GetMetadataRequest {
 export interface GetMetadataResponse {
     /**
      * 
-     * @type {MetaData}
+     * @type {boolean}
      * @memberof GetMetadataResponse
+     */
+    success: boolean;
+    /**
+     * 
+     * @type {GetMetadataResponseData}
+     * @memberof GetMetadataResponse
+     */
+    data: GetMetadataResponseData;
+}
+/**
+ * 
+ * @export
+ * @interface GetMetadataResponseData
+ */
+export interface GetMetadataResponseData {
+    /**
+     * 
+     * @type {MetaData}
+     * @memberof GetMetadataResponseData
      */
     metadata: MetaData;
 }
@@ -212,6 +250,25 @@ export interface SetGrantRequest {
 /**
  * 
  * @export
+ * @interface SetGrantResponse
+ */
+export interface SetGrantResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SetGrantResponse
+     */
+    success: boolean;
+    /**
+     * 
+     * @type {object}
+     * @memberof SetGrantResponse
+     */
+    data: object;
+}
+/**
+ * 
+ * @export
  * @interface StringMeta
  */
 export interface StringMeta {
@@ -249,20 +306,39 @@ export interface TokenizeRequest {
 export interface TokenizerResponse {
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof TokenizerResponse
+     */
+    success: boolean;
+    /**
+     * 
+     * @type {TokenizerResponseData}
+     * @memberof TokenizerResponse
+     */
+    data: TokenizerResponseData;
+}
+/**
+ * 
+ * @export
+ * @interface TokenizerResponseData
+ */
+export interface TokenizerResponseData {
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenizerResponseData
      */
     tokenId: string;
     /**
      * 
      * @type {string}
-     * @memberof TokenizerResponse
+     * @memberof TokenizerResponseData
      */
     uploadUrl: string;
     /**
      * 
      * @type {object}
-     * @memberof TokenizerResponse
+     * @memberof TokenizerResponseData
      */
     headers: object;
 }
@@ -301,6 +377,25 @@ export interface VerifyGrantResponse {
      * 
      * @type {boolean}
      * @memberof VerifyGrantResponse
+     */
+    success: boolean;
+    /**
+     * 
+     * @type {VerifyGrantResponseData}
+     * @memberof VerifyGrantResponse
+     */
+    data: VerifyGrantResponseData;
+}
+/**
+ * 
+ * @export
+ * @interface VerifyGrantResponseData
+ */
+export interface VerifyGrantResponseData {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof VerifyGrantResponseData
      */
     valid: boolean;
 }
@@ -530,7 +625,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async setGrant(setGrantRequest: SetGrantRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async setGrant(setGrantRequest: SetGrantRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SetGrantResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.setGrant(setGrantRequest, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -593,7 +688,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setGrant(setGrantRequest: SetGrantRequest, options?: any): AxiosPromise<object> {
+        setGrant(setGrantRequest: SetGrantRequest, options?: any): AxiosPromise<SetGrantResponse> {
             return localVarFp.setGrant(setGrantRequest, options).then((request) => request(axios, basePath));
         },
         /**
