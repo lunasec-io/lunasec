@@ -1,4 +1,7 @@
-import * as http from 'http';
+export { MetaData } from './generated';
+import { GrantType, MetaData } from './generated';
+
+export const GrantTypeEnum = GrantType;
 
 export interface TokenizerClientConfig {
   host: string;
@@ -12,37 +15,44 @@ export interface TokenizerClientConfig {
 
 // ______________________ tokenizer.ts Return Types _________________
 
-export interface DetokenizeToUrlReturnType {
-  success: true;
-  tokenId: string;
-  headers: http.OutgoingHttpHeaders;
-  downloadUrl: string;
-}
 export interface TokenizerSetGrantResponse {
   success: true;
 }
-
-// ______________________ MetaData ______________________________
-
-export interface BaseMeta {
-  customFields?: Record<string, any>;
+export interface TokenizerVerifyGrantResponse {
+  success: true;
+  valid: boolean;
 }
 
-export interface StringMeta extends BaseMeta {
-  dataType: 'string';
+export interface TokenizerGetMetadataResponse {
+  success: true;
+  tokenId: string;
+  metadata: MetaData;
 }
 
-export interface FileMeta extends BaseMeta {
-  dataType: 'file';
-  fileinfo: {
-    filename: string;
-    type?: string;
-    lastModified?: number;
-  };
+export interface TokenizerTokenizeResponse {
+  success: true;
+  tokenId: string;
 }
 
-export type MetaData = StringMeta | FileMeta;
+export interface TokenizerDetokenizeResponse {
+  success: true;
+  tokenId: string;
+  value: string;
+}
 
-// ______________________ Grants ______________________________
+export interface TokenizerDetokenizeToUrlResponse {
+  success: true;
+  tokenId: string;
+  headers: Record<any, any>;
+  downloadUrl: string;
+}
 
-export type GrantType = 'read_token' | 'store_token';
+export interface TokenizerFailApiResponse {
+  success: false;
+  error: Error;
+  errorCode?: 400 | 401 | 404 | 500;
+}
+
+export type SuccessOrFailOutput<S> = Promise<S | TokenizerFailApiResponse>;
+
+export type GrantTypeUnion = GrantType[keyof GrantType];

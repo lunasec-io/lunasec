@@ -9,7 +9,7 @@ export interface InsecureFormExampleState {
 }
 
 const tokenizer = new Tokenizer({
-  backendMode: 'express-plugin'
+  backendMode: 'express-plugin',
   host: 'http://localhost:3001',
 });
 
@@ -29,7 +29,7 @@ export class InsecureFormExample extends React.Component<Record<any, never>, Ins
   }
 
   async tokenizeValue(e: FocusEvent<HTMLInputElement>) {
-    const result = await tokenizer.tokenize(e.target.value, {});
+    const result = await tokenizer.tokenize(e.target.value, { dataType: 'string' });
 
     if (!result.success) {
       throw result.error;

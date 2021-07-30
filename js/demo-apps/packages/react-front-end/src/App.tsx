@@ -234,8 +234,8 @@ class App extends React.Component<Record<string, never>, IAppState> {
           {this.renderFileComponents()}
         </SecureForm>
 
-        <h2>Insecure Form</h2>
-        <InsecureFormExample />
+        {/*<h2>Insecure Form</h2>*/}
+        {/*<InsecureFormExample />*/}
       </section>
     );
   }

@@ -294,48 +294,95 @@ components:
     SetGrantResponse:
       type: object
       additionalProperties: false
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          additionalProperties: false
+
+
 
     VerifyGrantResponse:
       type: object
-      properties:
-        valid:
-          type: boolean
-      required:
-          - valid
       additionalProperties: false
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            valid:
+              type: boolean
+          required:
+              - valid
+          additionalProperties: false
 
     GetMetadataResponse:
       type: object
-      properties:
-        metadata:
-          "$ref": "#/components/schemas/MetaData"
-      required:
-        - metadata
       additionalProperties: false
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            metadata:
+              "$ref": "#/components/schemas/MetaData"
+          required:
+            - metadata
+          additionalProperties: false
 
     DetokenizeResponse:
       type: object
-      properties:
-        downloadUrl:
-          type: string
-        headers:
-          type: object
       required:
-        - downloadUrl
-        - headers
+        - success
+        - data
       additionalProperties: false
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            downloadUrl:
+              type: string
+            headers:
+              type: object
+          required:
+            - downloadUrl
+            - headers
+          additionalProperties: false
 
     TokenizerResponse:
       type: object
-      properties:
-        tokenId:
-          type: string
-        uploadUrl:
-          type: string
-        headers:
-          type: object
       required:
-        - tokenId
-        - uploadUrl
-        - headers
+        - success
+        - data
       additionalProperties: false
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            tokenId:
+              type: string
+            uploadUrl:
+              type: string
+            headers:
+              type: object
+          required:
+            - tokenId
+            - uploadUrl
+            - headers
+          additionalProperties: false
