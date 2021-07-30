@@ -22,6 +22,7 @@ app.use(
 );
 
 app.use(cookieParser());
+
 // Attach the LunaSec authentication plugin
 lunaSec.expressPlugin.register(app);
 
