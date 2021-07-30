@@ -18,6 +18,9 @@ export interface DetokenizeToUrlReturnType {
   headers: http.OutgoingHttpHeaders;
   downloadUrl: string;
 }
+export interface TokenizerSetGrantResponse {
+  success: true;
+}
 
 // ______________________ MetaData ______________________________
 

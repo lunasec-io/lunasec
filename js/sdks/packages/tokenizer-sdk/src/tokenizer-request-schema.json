@@ -11,7 +11,7 @@
           "type": "string"
         },
         "grantType": {
-          "$ref": "#/definitions/GrantType"
+          "$ref": "#/components/schemasGrantType"
         }
       },
       "required": [
@@ -38,7 +38,7 @@
           "type": "string"
         },
         "grantType": {
-          "$ref": "#/definitions/GrantType"
+          "$ref": "#/components/schemasGrantType"
         }
       },
       "required": [
@@ -69,7 +69,7 @@
           "description": "Needs to be a UUID."
         },
         "metadata": {
-          "$ref": "#/definitions/MetaData"
+          "$ref": "#/components/schemasMetaData"
         }
       },
       "required": [
@@ -81,10 +81,10 @@
     "MetaData": {
       "anyOf": [
         {
-          "$ref": "#/definitions/StringMeta"
+          "$ref": "#/components/schemasStringMeta"
         },
         {
-          "$ref": "#/definitions/FileMeta"
+          "$ref": "#/components/schemasFileMeta"
         }
       ]
     },
@@ -165,7 +165,7 @@
       "type": "object",
       "properties": {
         "metadata": {
-          "$ref": "#/definitions/MetaData"
+          "$ref": "#/components/schemasMetaData"
         }
       },
       "required": [
@@ -225,7 +225,7 @@
           "type": "object",
           "properties": {
             "metadata": {
-              "$ref": "#/definitions/MetaData"
+              "$ref": "#/components/schemasMetaData"
             }
           },
           "required": [
@@ -265,7 +265,7 @@
               "type": "string"
             },
             "headers": {
-              "$ref": "#/definitions/OutgoingHttpHeaders"
+              "$ref": "#/components/schemasOutgoingHttpHeaders"
             }
           },
           "required": [
@@ -286,7 +286,7 @@
       "additionalProperties": {
         "anyOf": [
           {
-            "$ref": "#/definitions/OutgoingHttpHeader"
+            "$ref": "#/components/schemasOutgoingHttpHeader"
           },
           {
             "not": {}
@@ -300,7 +300,7 @@
       "additionalProperties": {
         "anyOf": [
           {
-            "$ref": "#/definitions/OutgoingHttpHeader"
+            "$ref": "#/components/schemasOutgoingHttpHeader"
           },
           {
             "not": {}
@@ -340,7 +340,7 @@
               "type": "string"
             },
             "headers": {
-              "$ref": "#/definitions/IncomingHttpHeaders"
+              "$ref": "#/components/schemasIncomingHttpHeaders"
             }
           },
           "required": [
@@ -590,22 +590,22 @@
       "type": "object",
       "properties": {
         "/grant/set": {
-          "$ref": "#/definitions/SetGrantRequest"
+          "$ref": "#/components/schemasSetGrantRequest"
         },
         "/grant/verify": {
-          "$ref": "#/definitions/VerifyGrantRequest"
+          "$ref": "#/components/schemasVerifyGrantRequest"
         },
         "/metadata/get": {
-          "$ref": "#/definitions/GetMetadataRequest"
+          "$ref": "#/components/schemasGetMetadataRequest"
         },
         "/metadata/set": {
-          "$ref": "#/definitions/SetMetadataRequest"
+          "$ref": "#/components/schemasSetMetadataRequest"
         },
         "/detokenize": {
-          "$ref": "#/definitions/DetokenizeRequest"
+          "$ref": "#/components/schemasDetokenizeRequest"
         },
         "/tokenize": {
-          "$ref": "#/definitions/TokenizeRequest"
+          "$ref": "#/components/schemasTokenizeRequest"
         }
       },
       "required": [
@@ -622,22 +622,22 @@
       "type": "object",
       "properties": {
         "/grant/set": {
-          "$ref": "#/definitions/SetGrantResponse"
+          "$ref": "#/components/schemasSetGrantResponse"
         },
         "/grant/verify": {
-          "$ref": "#/definitions/VerifyGrantResponse"
+          "$ref": "#/components/schemasVerifyGrantResponse"
         },
         "/metadata/get": {
-          "$ref": "#/definitions/GetMetadataResponse"
+          "$ref": "#/components/schemasGetMetadataResponse"
         },
         "/metadata/set": {
-          "$ref": "#/definitions/SetMetadataResponse"
+          "$ref": "#/components/schemasSetMetadataResponse"
         },
         "/detokenize": {
-          "$ref": "#/definitions/DetokenizeResponse"
+          "$ref": "#/components/schemasDetokenizeResponse"
         },
         "/tokenize": {
-          "$ref": "#/definitions/TokenizerResponse"
+          "$ref": "#/components/schemasTokenizerResponse"
         }
       },
       "required": [

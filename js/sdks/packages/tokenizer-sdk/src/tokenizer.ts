@@ -2,15 +2,17 @@ import { OutgoingHttpHeaders } from 'http';
 
 import { BadHttpResponseError } from '@lunasec/server-common';
 
-import { TokenizerAPI, TokenizerFailApiResponse } from './api/client';
+import { TokenizerApiWrapper, TokenizerFailApiResponse } from './api/client';
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { CONFIG_DEFAULTS } from './constants';
-import { DetokenizeToUrlReturnType, GrantType, MetaData, TokenizerClientConfig } from './types';
+import { Configuration, DefaultApi, GrantType } from './generated';
+import { DetokenizeToUrlReturnType, MetaData, TokenizerClientConfig } from './types';
 
 export class Tokenizer {
   readonly config!: TokenizerClientConfig;
+  readonly openApi: DefaultApi;
+  private readonly apiWrapper: TokenizerApiWrapper;
 
-  private readonly api: TokenizerAPI;
   constructor(config?: Partial<TokenizerClientConfig>) {
     // Deep clone config for mutation safety.
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -25,14 +27,28 @@ export class Tokenizer {
       headers[this.config.headers.auth] = jwtToken;
     }
     const backendBasePath = this.config.backendMode === 'express-plugin' ? '/.lunasec' : '';
-    this.api = new TokenizerAPI(this.config.host, headers, backendBasePath);
+
+    // openapi stuff
+
+    const openAPIConfig = new Configuration({ basePath: backendBasePath });
+    this.openApi = new DefaultApi(openAPIConfig);
+
+    this.apiWrapper = new TokenizerApiWrapper(this.config.host, headers);
   }
 
-  async setGrant(sessionId: string, tokenId: string, grantType: GrantType) {
-    const response = await this.api.call('/grant/set', {
+  public createReadGrant(sessionId: string, tokenId: string) {
+    return this.createAnyGrant(sessionId, tokenId, GrantType.ReadToken);
+  }
+
+  public createDataBaseStoreGrant(sessionId: string, tokenId: string) {
+    return this.createAnyGrant(sessionId, tokenId, GrantType.StoreToken);
+  }
+
+  private async createAnyGrant(sessionId: string, tokenId: string, grantType: GrantType) {
+    const response = await this.apiWrapper.wrap(this.openApi.setGrant.bind(this.openApi), {
       sessionId,
       tokenId,
-      grantType,
+      grantType: grantType,
     });
 
     if (!response.success) {
@@ -45,25 +61,24 @@ export class Tokenizer {
   }
 
   async verifyGrant(sessionId: string, tokenId: string, grantType: GrantType) {
-    const response = await this.api.call('/grant/verify', {
+    const response = await this.apiWrapper.wrap(this.openApi.verifyGrant.bind(this.openApi), {
       sessionId,
       tokenId,
-      grantType,
+      grantType: grantType,
     });
-
     if (!response.success) {
       return response;
     }
-
+    console.log(response);
     return {
       success: true,
-      valid: response.data.data.valid,
+      valid: response.data.valid,
     };
   }
 
   async getMetadata(tokenId: string) {
-    const response = await this.api.call('/metadata/get', {
-      tokenId: tokenId,
+    const response = await this.apiWrapper.wrap(this.openApi.getMetaData.bind(this.openApi), {
+      tokenId,
     });
 
     if (!response.success) {
@@ -74,31 +89,14 @@ export class Tokenizer {
       success: true,
       tokenId,
       // TODO: make sure that data matches expected type with validator
-      metadata: response.data.data.metadata,
-    };
-  }
-
-  async setMetadata(tokenId: string, metadata: MetaData) {
-    const response = await this.api.call('/metadata/set', {
-      tokenId,
-      metadata,
-    });
-
-    if (!response.success) {
-      return response;
-    }
-
-    return {
-      success: true,
-      tokenId,
-      metadata,
+      metadata: response.data.metadata,
     };
   }
 
   // TODO: Add another method that _doesn't_ take a key, so that we handle generation.
 
   async tokenize(input: string | Buffer, metadata: MetaData) {
-    const response = await this.api.call('/tokenize', {
+    const response = await this.apiWrapper.wrap(this.openApi.tokenize.bind(this.openApi), {
       metadata,
     });
 
@@ -106,17 +104,17 @@ export class Tokenizer {
       return response;
     }
 
-    if (!response.data.data) {
+    if (!response.data) {
       return {
         success: false,
         error: new Error('Invalid response from Tokenizer when tokenizing data'),
       };
     }
 
-    const data = response.data.data;
+    const data = response.data;
 
     try {
-      await uploadToS3WithSignedUrl(data.uploadUrl, data.headers, input);
+      await uploadToS3WithSignedUrl(data.uploadUrl, data.headers as OutgoingHttpHeaders, input);
 
       return {
         success: true,
@@ -126,7 +124,6 @@ export class Tokenizer {
       console.error('S3 upload error', e);
       return {
         success: false,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         error: e,
       };
     }
@@ -149,8 +146,8 @@ export class Tokenizer {
   }
 
   async detokenizeToUrl(tokenId: string): Promise<TokenizerFailApiResponse | DetokenizeToUrlReturnType> {
-    const response = await this.api.call('/detokenize', {
-      tokenId: tokenId,
+    const response = await this.apiWrapper.wrap(this.openApi.detokenize.bind(this.openApi), {
+      tokenId,
     });
 
     if (!response.success) {
@@ -166,19 +163,19 @@ export class Tokenizer {
       return response;
     }
 
-    if (!response.data.data) {
+    if (!response.data) {
       return {
         success: false,
         error: new Error('Invalid response from Tokenizer when detokenizing data'),
       };
     }
 
-    const { downloadUrl, headers } = response.data.data;
+    const { downloadUrl, headers } = response.data;
 
     return {
       success: true,
       tokenId: tokenId,
-      headers: headers,
+      headers: headers as OutgoingHttpHeaders,
       downloadUrl: downloadUrl,
     };
   }
