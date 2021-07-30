@@ -12,19 +12,19 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/awss3deployment"
 	"github.com/aws/constructs-go/constructs/v3"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/util"
 	"go.uber.org/config"
 	"log"
 )
 
 type BuildConfig struct {
-	CustomerFrontEnd string `yaml:"customer_front_end"`
-	CustomerBackEnd string `yaml:"customer_back_end"`
-	CDNConfig model.CDNConfig `yaml:"cdn_config"`
-	CustomerPublicKey string `yaml:"customer_public_key"`
-	FrontEndAssetsFolder string `yaml:"front_end_assets_folder"`
-	LocalStackUrl string `yaml:"localstack_url"`
+	CustomerFrontEnd     string          `yaml:"customer_front_end"`
+	CustomerBackEnd      string          `yaml:"customer_back_end"`
+	CDNConfig            types.CDNConfig `yaml:"cdn_config"`
+	CustomerPublicKey    string          `yaml:"customer_public_key"`
+	FrontEndAssetsFolder string          `yaml:"front_end_assets_folder"`
+	LocalStackUrl        string          `yaml:"localstack_url"`
 }
 
 type BuilderConfig struct {
@@ -281,7 +281,7 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 	grantsTable := l.createBasicDynamodbTable(stack, "grants-table")
 
 	if !l.localDev {
-		cdnConfig, err := json.Marshal(model.CDNConfig{
+		cdnConfig, err := json.Marshal(types.CDNConfig{
 			Protocol: "https",
 			Host:        secureFrameDomainName,
 			MainScript: l.buildConfig.CDNConfig.MainScript,

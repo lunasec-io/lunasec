@@ -4,7 +4,7 @@ import (
 	"crypto/rsa"
 	"encoding/base64"
 	"encoding/json"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
@@ -25,7 +25,7 @@ type JwtSignerAwsConfig struct {
 type JwtSigner interface {
 	Create() (token string, err error)
 	CreateWithClaims(claims jwt.Claims) (token string, err error)
-	CreateWithSessionClaims(claims model.SessionJwtClaims) (token string, err error)
+	CreateWithSessionClaims(claims types.SessionJwtClaims) (token string, err error)
 }
 
 func NewJwtSignerFromPrivateKey(
@@ -94,7 +94,7 @@ func (j *jwtSigner) CreateWithClaims(claims jwt.Claims) (token string, err error
 	return t.SignedString(j.privateKey)
 }
 
-func (j *jwtSigner) CreateWithSessionClaims(claims model.SessionJwtClaims) (token string, err error) {
+func (j *jwtSigner) CreateWithSessionClaims(claims types.SessionJwtClaims) (token string, err error) {
 	t := jwt.New(jwt.GetSigningMethod("RS256"))
 
 	t.Claims = claims

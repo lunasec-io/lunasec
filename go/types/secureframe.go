@@ -1,4 +1,4 @@
-package model
+package types
 
 type CDNConfig struct {
 	Protocol   string `yaml:"protocol" json:"protocol"`

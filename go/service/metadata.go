@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/util"
 )
 
@@ -15,8 +15,8 @@ type metadataService struct {
 
 // MetadataService manages metadata for secrets
 type MetadataService interface {
-	SetMetadata(token model.Token, metadata interface{}) error
-	GetMetadata(token model.Token) (interface{}, error)
+	SetMetadata(token types.Token, metadata interface{}) error
+	GetMetadata(token types.Token) (interface{}, error)
 }
 
 // NewMetadataService ...
@@ -27,7 +27,7 @@ func NewMetadataService(kv gateway.DynamoKvGateway) MetadataService {
 }
 
 // SetMetadata ...
-func (s *metadataService) SetMetadata(token model.Token, metadata interface{}) (err error) {
+func (s *metadataService) SetMetadata(token types.Token, metadata interface{}) (err error) {
 	serializedMetadata, err := json.Marshal(metadata)
 	if err != nil {
 		return
@@ -36,7 +36,7 @@ func (s *metadataService) SetMetadata(token model.Token, metadata interface{}) (
 }
 
 // GetMetadata ...
-func (s *metadataService) GetMetadata(token model.Token) (metadata interface{}, err error) {
+func (s *metadataService) GetMetadata(token types.Token) (metadata interface{}, err error) {
 	meta, err := s.kv.Get(gateway.MetaStore, util.Sha512Sum(string(token)))
 	if err != nil {
 		return

@@ -6,7 +6,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 )
@@ -22,7 +22,7 @@ type JwtVerifierConfig struct {
 
 type JwtVerifier interface {
 	Verify(token string) (err error)
-	VerifyWithSessionClaims(token string) (claims *model.SessionJwtClaims, err error)
+	VerifyWithSessionClaims(token string) (claims *types.SessionJwtClaims, err error)
 }
 
 func NewJwtVerifier(
@@ -76,8 +76,8 @@ func (j *jwtVerifier) Verify(token string) (err error) {
 	return
 }
 
-func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims *model.SessionJwtClaims, err error) {
-	parsedToken, err := jwt.ParseWithClaims(token, &model.SessionJwtClaims{}, func(t *jwt.Token) (interface{}, error) {
+func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims *types.SessionJwtClaims, err error) {
+	parsedToken, err := jwt.ParseWithClaims(token, &types.SessionJwtClaims{}, func(t *jwt.Token) (interface{}, error) {
 		return j.publicKey, nil
 	})
 
@@ -92,7 +92,7 @@ func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims *model.Sessi
 		j.logger.Error(err.Error())
 		return
 	}
-	claims, ok := parsedToken.Claims.(*model.SessionJwtClaims)
+	claims, ok := parsedToken.Claims.(*types.SessionJwtClaims)
 	if !ok {
 		err = errors.New("unable to assert type of claims as SessionJwtClaims")
 		j.logger.Error(err.Error())

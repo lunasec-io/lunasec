@@ -44,7 +44,8 @@ export class LunaSecExpressAuthPlugin {
     // This gets set into the "access_token" cookie by the Secure Frame Backend after the redirect
     let access_token = undefined;
     try {
-      access_token = await this.auth.createAuthenticationJWT({ session_id: sessionId });
+      const claims = { session_id: sessionId };
+      access_token = await this.auth.createAuthenticationJWT('user', claims);
     } catch (e) {
       console.error(`error while attempting to create authentication token: ${e}`);
     }
