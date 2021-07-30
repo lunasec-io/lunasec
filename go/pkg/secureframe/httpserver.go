@@ -62,9 +62,16 @@ func applyTokenizerRoutesWithAuth(
 ) {
 	authFunc := service.NewJwtHttpAuth(logger, authProviderJwtVerifier).WithJwtAuth
 
+	setContentType := func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			next.ServeHTTP(w, r)
+		}
+	}
+
 	tokenizerRoutes := tokenizer.GetRoutes(logger, provider, gateways)
 	for url, fn := range tokenizerRoutes {
-		sm.HandleFunc(url, authFunc(fn))
+		sm.HandleFunc(url, authFunc(setContentType(fn)))
 	}
 }
 

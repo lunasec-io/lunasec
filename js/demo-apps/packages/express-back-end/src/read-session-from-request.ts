@@ -17,9 +17,13 @@ export async function readSessionFromRequest(req: Request) {
     return null; // returning null tells LunaSec that a session is not set
   }
 
-  const jwtData = await decodeJWT(cookie, pubKey);
-
-  return jwtData.session.id;
+  try {
+    const jwtData = await decodeJWT(cookie, pubKey);
+    return jwtData.session.id;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 }
 
 function decodeJWT(encodedJwt: string, pubKey: string): Promise<TokenData> {
@@ -33,5 +37,6 @@ function decodeJWT(encodedJwt: string, pubKey: string): Promise<TokenData> {
       }
       resolve(data as TokenData);
     });
+    reject(new Error('unable to parse jwt due to unknown error'))
   });
 }
