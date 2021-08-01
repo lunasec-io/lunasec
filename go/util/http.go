@@ -25,13 +25,3 @@ func AddCookie(w http.ResponseWriter, name, value, path string, ttl time.Duratio
 	}
 	http.SetCookie(w, &cookie)
 }
-
-func MergeRoutes(routeMaps ...map[string]http.HandlerFunc) map[string]http.HandlerFunc {
-	newRoutes := map[string]http.HandlerFunc{}
-	for _, routes := range routeMaps {
-		for path, handler := range routes {
-			newRoutes[path] = handler
-		}
-	}
-	return newRoutes
-}

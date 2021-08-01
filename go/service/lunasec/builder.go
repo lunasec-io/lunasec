@@ -22,7 +22,7 @@ type BuildConfig struct {
 	CustomerFrontEnd     string          `yaml:"customer_front_end"`
 	CustomerBackEnd      string          `yaml:"customer_back_end"`
 	CDNConfig            types.CDNConfig `yaml:"cdn_config"`
-	CustomerPublicKey    string          `yaml:"customer_public_key"`
+	SessionPublicKey     string          `yaml:"session_public_key"`
 	FrontEndAssetsFolder string          `yaml:"front_end_assets_folder"`
 	LocalStackUrl        string          `yaml:"localstack_url"`
 }
@@ -299,7 +299,7 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 			"SECURE_FRAME_CDN_CONFIG":    jsii.String(string(cdnConfig)),
 			// TODO (cthompson) does this value provide us any security?
 			"TOKENIZER_CLIENT_SECRET": jsii.String("TODO"),
-			"CUSTOMER_PUBLIC_KEY": jsii.String(l.buildConfig.CustomerPublicKey),
+			"SESSION_PUBLIC_KEY": jsii.String(l.buildConfig.SessionPublicKey),
 			"METADATA_KV_TABLE":   metadataTable.TableName(),
 			"KEYS_KV_TABLE":       keysTable.TableName(),
 			"SESSIONS_KV_TABLE":   sessionsTable.TableName(),

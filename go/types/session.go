@@ -1,9 +1,9 @@
 package types
 
-import "github.com/dgrijalva/jwt-go"
+import "gopkg.in/square/go-jose.v2/jwt"
 
 type SessionJwtClaims struct {
-	jwt.StandardClaims
+	jwt.Claims
 	SessionID string `json:"session_id"`
 }
 
