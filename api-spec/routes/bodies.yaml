@@ -1,0 +1,222 @@
+ErrorResponse:
+  type: object
+  properties:
+    success:
+      type: boolean
+    error:
+      type: string
+  required:
+    - success
+    - error
+SetGrantRequest:
+  type: object
+  properties:
+    sessionId:
+      type: string
+    tokenId:
+      type: string
+    grantType:
+      "$ref": "#/GrantType"
+  required:
+    - sessionId
+    - tokenId
+    - grantType
+  additionalProperties: false
+GrantType:
+  type: string
+  enum:
+    - read_token
+    - store_token
+VerifyGrantRequest:
+  type: object
+  properties:
+    sessionId:
+      type: string
+    tokenId:
+      type: string
+    grantType:
+      "$ref": "#/GrantType"
+  required:
+    - sessionId
+    - tokenId
+    - grantType
+  additionalProperties: false
+
+GetMetadataRequest:
+  type: object
+  properties:
+    tokenId:
+      type: string
+      description: Needs to be a UUID.
+  required:
+    - tokenId
+  additionalProperties: false
+
+MetaData:
+  oneOf:
+    - "$ref": "#/StringMeta"
+    - "$ref": "#/FileMeta"
+  discriminator:
+    propertyName: dataType
+    mapping:
+      file: "#/FileMeta" # holy cow is this clunky
+      string: "#/StringMeta"
+
+StringMeta:
+  type: object
+  properties:
+    customFields:
+      type: object
+    dataType:
+      type: string
+  required:
+    - dataType
+  additionalProperties: false
+
+BaseMeta:
+  type: object
+  properties:
+    customFields:
+      type: object
+  additionalProperties: false
+
+FileMeta:
+  type: object
+  properties:
+    customFields:
+      type: object
+    dataType:
+      type: string
+    createdAt:
+      type: number
+    fileinfo:
+      type: object
+      properties:
+        filename:
+          type: string
+        type:
+          type: string
+        lastModified:
+          type: number
+      required:
+        - filename
+      additionalProperties: false
+  required:
+    - dataType
+    - fileinfo
+  additionalProperties: false
+
+DetokenizeRequest:
+  type: object
+  properties:
+    tokenId:
+      type: string
+      description: Needs to be a UUID.
+  required:
+    - tokenId
+  additionalProperties: false
+
+TokenizeRequest:
+  type: object
+  properties:
+    metadata:
+      "$ref": "#/MetaData"
+  required:
+    - metadata
+  additionalProperties: false
+
+SetGrantResponse:
+  type: object
+  additionalProperties: false
+  required:
+    - success
+    - data
+  properties:
+    success:
+      type: boolean
+    data:
+      type: object
+      additionalProperties: false
+
+
+
+VerifyGrantResponse:
+  type: object
+  additionalProperties: false
+  required:
+    - success
+    - data
+  properties:
+    success:
+      type: boolean
+    data:
+      type: object
+      properties:
+        valid:
+          type: boolean
+      required:
+        - valid
+      additionalProperties: false
+
+GetMetadataResponse:
+  type: object
+  additionalProperties: false
+  required:
+    - success
+    - data
+  properties:
+    success:
+      type: boolean
+    data:
+      type: object
+      properties:
+        metadata:
+          "$ref": "#/MetaData"
+      required:
+        - metadata
+      additionalProperties: false
+
+DetokenizeResponse:
+  type: object
+  required:
+    - success
+    - data
+  additionalProperties: false
+  properties:
+    success:
+      type: boolean
+    data:
+      type: object
+      properties:
+        downloadUrl:
+          type: string
+        headers:
+          type: object
+      required:
+        - downloadUrl
+        - headers
+      additionalProperties: false
+
+TokenizerResponse:
+  type: object
+  required:
+    - success
+    - data
+  additionalProperties: false
+  properties:
+    success:
+      type: boolean
+    data:
+      type: object
+      properties:
+        tokenId:
+          type: string
+        uploadUrl:
+          type: string
+        headers:
+          type: object
+      required:
+        - tokenId
+        - uploadUrl
+        - headers
+      additionalProperties: false
