@@ -1,9 +1,13 @@
 import { KeyLike, SignJWT } from 'jose/jwt/sign';
+import { fromKeyLike, JWK } from 'jose/jwk/from_key_like';
 
 import { AuthenticationJWT } from './authentication-jwt';
 import { awsSecretProvider } from './aws-secret-provider';
 import { environmentSecretProvider } from './environment-secret-provider';
 import {JwtSubject, SecretConfig} from './types';
+
+import {KeyObject, createPublicKey} from 'crypto';
+
 // Todo: rename this whole service to JWT service, all it does is make JWTs, it doesnt do "auth" really
 export class LunaSecAuthentication {
   readonly secretConfig: SecretConfig;
@@ -12,7 +16,7 @@ export class LunaSecAuthentication {
     this.secretConfig = secretConfig;
   }
 
-  private getSigningSecretKey(): Promise<KeyLike> {
+  private getSigningPrivateKey(): Promise<KeyLike> {
     if (this.secretConfig.source === 'awsSecretsManager') {
       return awsSecretProvider(this.secretConfig);
     }
@@ -28,8 +32,24 @@ export class LunaSecAuthentication {
     throw new Error('Unknown provider specified');
   }
 
+  public async getSigningPublicKey(): Promise<KeyObject> {
+    const privateKey = await this.getSigningPrivateKey();
+    const privateKeyObject = privateKey as KeyObject;
+    return createPublicKey({
+      key: privateKeyObject.export({
+        format: 'pem',
+        type: 'pkcs1'
+      })
+    });
+  }
+
+  public async getJwksConfig(): Promise<JWK> {
+    const publicKey = await this.getSigningPublicKey();
+    return await fromKeyLike(publicKey);
+  }
+
   public async createAuthenticationJWT(subject: JwtSubject, claims: Record<string, any>): Promise<AuthenticationJWT> {
-    const secret = await this.getSigningSecretKey();
+    const privateKey = await this.getSigningPrivateKey();
 
     const jwt = await new SignJWT(claims)
       .setProtectedHeader({ alg: 'RS256' })
@@ -38,7 +58,7 @@ export class LunaSecAuthentication {
       .setSubject(subject)
       .setAudience('secure-frame')
       .setExpirationTime('15m')
-      .sign(secret);
+      .sign(privateKey);
 
     return new AuthenticationJWT(jwt);
   }

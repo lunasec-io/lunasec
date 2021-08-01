@@ -94,7 +94,21 @@ export class LunaSecExpressAuthPlugin {
     res.redirect(redirectUrl.href);
   }
 
+  async handleJwksRequest(_req: Request, res: Response) {
+    const jwkConfig = await this.auth.getJwksConfig();
+    const keys = {
+      keys: [
+        {
+          ...jwkConfig,
+          kid: 'lunasec-signing-key'
+        }
+      ]
+    }
+    res.json(keys).status(200);
+  }
+
   register(app: Router) {
     app.get('/secure-frame', cookieParser(), this.handleSecureFrameAuthRequest.bind(this));
+    app.get('/.lunasec/jwks.json', this.handleJwksRequest.bind(this));
   }
 }

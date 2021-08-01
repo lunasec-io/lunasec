@@ -53,10 +53,9 @@ func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 			metadataController.GetMetadata,
 			constants.AnySubject,
 		},
-		// TODO (cthompson) do we want to keep this endpoint?
 		"/metadata/set": {
 			metadataController.SetMetadata,
-			constants.OnlyApplicationSubject,
+			constants.OnlyDeveloperSubject,
 		},
 		"/tokenize":     {
 			tokenizerController.TokenizerSet,

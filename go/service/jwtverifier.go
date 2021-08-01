@@ -2,13 +2,13 @@ package service
 
 import (
 	"crypto/rsa"
+	"crypto/x509"
 	"encoding/base64"
-
-	"github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
 	"github.com/refinery-labs/loq/types"
 	"go.uber.org/config"
 	"go.uber.org/zap"
+	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 type jwtVerifier struct {
@@ -18,6 +18,8 @@ type jwtVerifier struct {
 
 type JwtVerifierConfig struct {
 	PublicKey string `yaml:"public_key"`
+	JwksURL string `yaml:"jwks_url"`
+	JwksKID string `yaml:"jwks_kid"`
 }
 
 type JwtVerifier interface {
@@ -31,7 +33,11 @@ func NewJwtVerifier(
 	provider config.Provider,
 ) (verifier JwtVerifier, err error) {
 	var (
+		publicKey []byte
 		serviceConfig JwtVerifierConfig
+		rsaPublicKey *rsa.PublicKey
+		jwksManager *JwksManager
+		jwkKey interface{}
 	)
 
 	err = provider.Get(configKey).Populate(&serviceConfig)
@@ -39,16 +45,34 @@ func NewJwtVerifier(
 		return
 	}
 
-	publicKey, err := base64.StdEncoding.DecodeString(serviceConfig.PublicKey)
-	if err != nil {
-		err = errors.Wrap(err, "unable to decode auth provider public key")
-		return
+	if serviceConfig.PublicKey != "" {
+		publicKey, err = base64.StdEncoding.DecodeString(serviceConfig.PublicKey)
+		if err != nil {
+			err = errors.Wrap(err, "unable to decode auth provider public key")
+			return
+		}
+
+		rsaPublicKey, err = x509.ParsePKCS1PublicKey(publicKey)
+		if err != nil {
+			err = errors.Wrap(err, "unable to parse public key from pem")
+			return
+		}
+	} else if serviceConfig.JwksURL != "" {
+		jwksManager, err = NewJwksManager(serviceConfig.JwksURL, true)
+		if err != nil {
+			return
+		}
+
+		jwkKey, err = jwksManager.GetKey("lunasec-signing-key")
+		if err != nil {
+			return
+		}
+
+		rsaPublicKey = jwkKey.(*rsa.PublicKey)
+	} else {
+		err = errors.New("neither public_key or jwks_url were provided in jwt verifier config")
 	}
-	rsaPublicKey, err := jwt.ParseRSAPublicKeyFromPEM(publicKey)
-	if err != nil {
-		err = errors.Wrap(err, "unable to parse public key from pem")
-		return
-	}
+
 	verifier = &jwtVerifier{
 		logger:    logger,
 		publicKey: rsaPublicKey,
@@ -58,43 +82,32 @@ func NewJwtVerifier(
 
 func (j *jwtVerifier) Verify(token string) (err error) {
 	var (
-		parsedToken *jwt.Token
+		claims jwt.Claims
 	)
-
-	parsedToken, err = jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
-		return j.publicKey, nil
-	})
-
+	parsedToken, err := jwt.ParseSigned(token)
 	if err != nil {
 		return
 	}
 
-	if !parsedToken.Valid {
-		err = errors.New("jwt token is not valid")
+	err = parsedToken.Claims(j.publicKey, &claims)
+	if err != nil {
+		err = errors.Wrap(err, "jwt token is not valid")
 		return
 	}
 	return
 }
 
 func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims *types.SessionJwtClaims, err error) {
-	parsedToken, err := jwt.ParseWithClaims(token, &types.SessionJwtClaims{}, func(t *jwt.Token) (interface{}, error) {
-		return j.publicKey, nil
-	})
-
+	parsedToken, err := jwt.ParseSigned(token)
 	if err != nil {
-		err = errors.Wrap(err, "error while parsing token with claims")
-		j.logger.Error(err.Error())
+		err = errors.Wrap(err, "error while parsing token")
+		j.logger.Error("unable to parse token", zap.Error(err))
 		return
 	}
 
-	if !parsedToken.Valid {
-		err = errors.New("jwt token is not valid")
-		j.logger.Error(err.Error())
-		return
-	}
-	claims, ok := parsedToken.Claims.(*types.SessionJwtClaims)
-	if !ok {
-		err = errors.New("unable to assert type of claims as SessionJwtClaims")
+	err = parsedToken.Claims(j.publicKey, &claims)
+	if err != nil {
+		err = errors.New("jwt token claims are not valid")
 		j.logger.Error(err.Error())
 		return
 	}

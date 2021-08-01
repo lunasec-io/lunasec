@@ -23,11 +23,13 @@ type JwtSubject string
 const (
 	UserSubject JwtSubject = "user"
 	ApplicationSubject JwtSubject = "application"
+	DeveloperSubject JwtSubject = "developer"
 )
 
 var (
-	AnySubject = []JwtSubject{ApplicationSubject, UserSubject}
+	AnySubject = []JwtSubject{UserSubject, ApplicationSubject, DeveloperSubject}
 	OnlyApplicationSubject = []JwtSubject{ApplicationSubject}
+	OnlyDeveloperSubject = []JwtSubject{DeveloperSubject}
 )
 
 func SubjectsToStringSlice(subjects []JwtSubject) (strings []string) {
