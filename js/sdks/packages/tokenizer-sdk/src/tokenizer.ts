@@ -41,10 +41,7 @@ export class Tokenizer {
       headers[this.config.headers.auth] = jwtToken;
     }
     this.reqOptions = { headers }; // This is passed to the openapi client on every request
-
-    const baseRoute = this.config.backendMode === 'express-plugin' ? '/.lunasec' : '';
-    console.log('backend mode is ', this.config.backendMode);
-    const basePath = this.config.host + baseRoute;
+    const basePath = new URL(this.config.baseRoute, this.config.host).toString();
     console.log('BASEPATH IS ', basePath);
     // openapi stuff
     const openAPIConfig = new Configuration({ basePath });

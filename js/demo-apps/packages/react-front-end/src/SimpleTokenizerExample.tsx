@@ -1,4 +1,4 @@
-import { Tokenizer } from '@lunasec/tokenizer-sdk';
+import { SimpleTokenizer } from '@lunasec/tokenizer-sdk';
 import { CONFIG_DEFAULTS } from '@lunasec/tokenizer-sdk/build/main/constants';
 import React, { ChangeEvent, FocusEvent, FormEvent } from 'react';
 
@@ -8,12 +8,11 @@ export interface InsecureFormExampleState {
   detokenizedValue?: string;
 }
 
-const tokenizer = new Tokenizer({
-  backendMode: 'express-plugin',
+const tokenizer = new SimpleTokenizer({
   host: 'http://localhost:3001',
 });
 
-export class InsecureFormExample extends React.Component<Record<any, never>, InsecureFormExampleState> {
+export class SimpleTokenizerExample extends React.Component<Record<any, never>, InsecureFormExampleState> {
   constructor(props: Record<any, never>) {
     super(props);
 
@@ -29,7 +28,7 @@ export class InsecureFormExample extends React.Component<Record<any, never>, Ins
   }
 
   async tokenizeValue(e: FocusEvent<HTMLInputElement>) {
-    const result = await tokenizer.tokenize(e.target.value, { dataType: 'string' });
+    const result = await tokenizer.tokenize(e.target.value);
 
     if (!result.success) {
       throw result.error;
