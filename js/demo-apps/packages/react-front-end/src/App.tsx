@@ -12,7 +12,7 @@ import React from 'react';
 
 // import logo from './logo.svg';
 import './App.css';
-import { InsecureFormExample } from './InsecureFormExample';
+import { SimpleTokenizerExample } from './SimpleTokenizerExample';
 
 interface FormData {
   text_area?: string;
@@ -234,8 +234,8 @@ class App extends React.Component<Record<string, never>, IAppState> {
           {this.renderFileComponents()}
         </SecureForm>
 
-        {/*<h2>Insecure Form</h2>*/}
-        {/*<InsecureFormExample />*/}
+        <h2>Simle Tokenizer Form</h2>
+        <SimpleTokenizerExample />
       </section>
     );
   }

@@ -4,10 +4,10 @@ info:
   description: The Tokenizer API used for tokenizing and detokenizing data and working with tokens using the GoLang backend
   version: 0.0.0
 paths:
-  /tokenize:
-    $ref: 'routes/tokenize-routes.yaml#/tokenize'
   /detokenize:
     $ref: 'routes/tokenize-routes.yaml#/detokenize'
+  /tokenize:
+    $ref: 'routes/tokenize-routes.yaml#/tokenize'
   /grant/verify:
     $ref: 'routes/grant-routes.yaml#/verifygrant'
   /grant/set:

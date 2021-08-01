@@ -197,7 +197,7 @@ DetokenizeResponse:
         - headers
       additionalProperties: false
 
-TokenizerResponse:
+TokenizeResponse:
   type: object
   required:
     - success
