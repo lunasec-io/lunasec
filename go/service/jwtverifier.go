@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/base64"
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/refinery-labs/loq/types"
 	"go.uber.org/config"
@@ -57,6 +58,7 @@ func NewJwtVerifier(
 			err = errors.Wrap(err, "unable to parse public key from pem")
 			return
 		}
+		logger.Debug("loaded public key from config file")
 	} else if serviceConfig.JwksURL != "" {
 		jwksManager, err = NewJwksManager(serviceConfig.JwksURL, true)
 		if err != nil {
@@ -69,6 +71,13 @@ func NewJwtVerifier(
 		}
 
 		rsaPublicKey = jwkKey.(*rsa.PublicKey)
+		logger.Debug(
+			"loaded public key from jwks endpoint",
+			zap.String("jwksURL", serviceConfig.JwksURL),
+			zap.String("kid", serviceConfig.JwksKID),
+		)
+
+		fmt.Println(base64.StdEncoding.EncodeToString(x509.MarshalPKCS1PublicKey(rsaPublicKey)))
 	} else {
 		err = errors.New("neither public_key or jwks_url were provided in jwt verifier config")
 	}
