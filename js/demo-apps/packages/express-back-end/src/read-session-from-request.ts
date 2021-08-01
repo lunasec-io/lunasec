@@ -19,6 +19,7 @@ export async function readSessionFromRequest(req: Request) {
 
   try {
     const jwtData = await decodeJWT(cookie, pubKey);
+
     return jwtData.session.id;
   } catch (e) {
     console.error(e);

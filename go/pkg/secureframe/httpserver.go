@@ -70,8 +70,9 @@ func applyTokenizerRoutesWithAuth(
 	}
 
 	tokenizerRoutes := tokenizer.GetRoutes(logger, provider, gateways)
-	for url, fn := range tokenizerRoutes {
-		sm.HandleFunc(url, authFunc(setContentType(fn)))
+	for url, handlerConfig := range tokenizerRoutes {
+		handler := setContentType(handlerConfig.Handler)
+		sm.HandleFunc(url, authFunc(handlerConfig.AllowedSubjects, handler))
 	}
 }
 

@@ -1,4 +1,4 @@
-package model
+package types
 
 // Metadata ...
 type Metadata struct {

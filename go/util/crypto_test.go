@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/prashantv/gostub"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -45,7 +45,7 @@ func TestGetRandomStringofLength(t *testing.T) {
 }
 
 func TestGenerateSaltsAndKey(t *testing.T) {
-	token := model.Token("f3bf249e-c526-430a-941c-7119d7caf105")
+	token := types.Token("f3bf249e-c526-430a-941c-7119d7caf105")
 	secret := "this is a secret"
 	sp := "e80b87268f1b8e06933a4a68ff3d53fb684bf41f7a3943764e0e489621a5ce9f"
 	sk := "35750752275a9d8a29cba945937bcd08a138fe892f42d7be1dfc9289f6e04fe8"

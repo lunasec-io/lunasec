@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/util"
 )
 
@@ -29,8 +29,8 @@ type grantService struct {
 
 // GrantService manages grants for tokens
 type GrantService interface {
-	SetTokenGrantForSession(token model.Token, sessionID string, grantType constants.GrantType) error
-	ValidTokenGrantExistsForSession(token model.Token, sessionID string, grantType constants.GrantType) (valid bool, err error)
+	SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType) error
+	ValidTokenGrantExistsForSession(token types.Token, sessionID string, grantType constants.GrantType) (valid bool, err error)
 }
 
 // NewGrantService ...
@@ -58,11 +58,11 @@ func NewGrantService(logger *zap.Logger, provider config.Provider, kv gateway.Dy
 	return
 }
 
-func getGrantKey(sessionID string, token model.Token, grantType constants.GrantType) string {
+func getGrantKey(sessionID string, token types.Token, grantType constants.GrantType) string {
 	return util.Sha512Sum(sessionID + string(token) + string(grantType))
 }
 
-func (s *grantService) SetTokenGrantForSession(token model.Token, sessionID string, grantType constants.GrantType) (err error) {
+func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType) (err error) {
 	grantExpiry := time.Now().Add(s.grantDuration).Unix()
 	tokenGrant := TokenGrant{
 		GrantExpiry: grantExpiry,
@@ -85,7 +85,7 @@ func (s *grantService) SetTokenGrantForSession(token model.Token, sessionID stri
 	return s.kv.Set(gateway.GrantStore, grantKey, string(serializedGrant))
 }
 
-func (s *grantService) ValidTokenGrantExistsForSession(token model.Token, sessionID string, grantType constants.GrantType) (valid bool, err error) {
+func (s *grantService) ValidTokenGrantExistsForSession(token types.Token, sessionID string, grantType constants.GrantType) (valid bool, err error) {
 	var (
 		tokenGrant TokenGrant
 	)
