@@ -17,9 +17,14 @@ export async function readSessionFromRequest(req: Request) {
     return null; // returning null tells LunaSec that a session is not set
   }
 
-  const jwtData = await decodeJWT(cookie, pubKey);
+  try {
+    const jwtData = await decodeJWT(cookie, pubKey);
 
-  return jwtData.session.id;
+    return jwtData.session.id;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 }
 
 function decodeJWT(encodedJwt: string, pubKey: string): Promise<TokenData> {

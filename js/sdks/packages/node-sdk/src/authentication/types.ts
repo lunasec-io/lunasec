@@ -20,6 +20,8 @@ export interface AwsSecretsManagerConfig {
   };
 }
 
+export type JwtSubject = 'user' | 'application';
+
 export type SecretConfig = EnvironmentSecretConfig | AwsSecretsManagerConfig | ManualSecretConfig;
 
 export type SessionIdProvider = (req: Request) => Promise<string | null>;

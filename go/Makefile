@@ -1,6 +1,6 @@
 CMD_DIR = ./cmd
 BUILD_TAG ?= dev
-OUTPUT_DIR ?= "../../build"
+OUTPUT_DIR ?= "build"
 
 all:
 	mkdir -p build
