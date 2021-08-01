@@ -28,5 +28,7 @@ windows:
     # Secure Frame Back End
     - shell_command:
       - cd go
+      - make secureframe
       - docker-compose up -d local-dependencies
-      - docker-compose up secureframe
+      - env $(cat ../.env.dev | xargs) ./build/secureframe_dev
+
