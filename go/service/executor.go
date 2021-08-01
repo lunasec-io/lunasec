@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -16,7 +17,7 @@ type executor struct {
 	Command string
 	Args    []string
 	Shell   bool
-	Env     []string
+	Env     map[string]string
 	Cwd     string
 
 	// Stdin connect a reader to stdin for the command
@@ -37,7 +38,7 @@ type ExecutorResult struct {
 func NewExecutorWithoutStreaming(
 	command string,
 	args []string,
-	env []string,
+	env map[string]string,
 	cwd string,
 	stdin io.Reader,
 ) Executor {
@@ -49,7 +50,7 @@ func NewExecutorWithoutStreaming(
 func NewExecutor(
 	command string,
 	args []string,
-	env []string,
+	env map[string]string,
 	cwd string,
 	stdin io.Reader,
 	stream bool,
@@ -80,12 +81,12 @@ func (e *executor) Execute() (ExecutorResult, error) {
 
 	cmd.Dir = e.Cwd
 
+	cmd.Env = os.Environ()
 	if len(e.Env) > 0 {
 		overrides := map[string]bool{}
-		for _, env := range e.Env {
-			key := strings.Split(env, "=")[0]
-			overrides[key] = true
-			cmd.Env = append(cmd.Env, env)
+		for k, v := range e.Env {
+			overrides[k] = true
+			cmd.Env = append(cmd.Env, fmt.Sprintf("%s=%s", k, v))
 		}
 
 		for _, env := range os.Environ() {
@@ -96,6 +97,7 @@ func (e *executor) Execute() (ExecutorResult, error) {
 			}
 		}
 	}
+
 	if e.Stdin != nil {
 		cmd.Stdin = e.Stdin
 	}

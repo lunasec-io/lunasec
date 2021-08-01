@@ -16,15 +16,19 @@ import (
 const s3EncryptionAlgo = "AES256"
 
 type awsS3Gateway struct {
-	awsS3GatewayConfig
+	AwsS3GatewayConfig
 	logger *zap.Logger
 	s3     *session.Session
 	s3Host string
 }
 
-type awsS3GatewayConfig struct {
+type AwsS3GatewayConfig struct {
 	S3Region string `yaml:"region"`
 	S3Bucket string `yaml:"s3_bucket"`
+}
+
+type AwsS3GatewayConfigWrapper struct {
+	AwsGateway AwsS3GatewayConfig `yaml:"aws_gateway"`
 }
 
 // AwsS3Gateway ...
@@ -34,53 +38,36 @@ type AwsS3Gateway interface {
 	GeneratePresignedPutUrl(key string, encryptionKey []byte) (string, map[string]string, error)
 }
 
-// TODO (cthompson) this is currently a hack until we figure out a better way for creating gateways with different named configs
-func NewAwsS3GatewayWithoutConfig(bucket, region string) (s3Gateway AwsS3Gateway, err error) {
-	gatewayConfig := awsS3GatewayConfig{
-		S3Region: region,
-		S3Bucket: bucket,
-	}
-
-	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
-
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-		Config: aws.Config{
-			Region: &gatewayConfig.S3Region,
+func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
+	return AwsS3GatewayConfigWrapper{
+		AwsGateway: AwsS3GatewayConfig{
+			S3Region: region,
+			S3Bucket: bucket,
 		},
-	}))
-
-	s3Gateway = &awsS3Gateway{
-		awsS3GatewayConfig: gatewayConfig,
-		s3:                 sess,
-		s3Host:             s3Host,
 	}
-	return
 }
 
+// TODO (cthompson) this should just be a presigning service since local dev presigns urls with an endpoint URL
+// that would not work if attempting to contact s3 directly from this service. Another S3 gateway for calls
+// directly to s3 from this service should be created.
+
 // NewAwsS3Gateway...
-func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider) (s3Gateway AwsS3Gateway, err error) {
+func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session.Session) (s3Gateway AwsS3Gateway) {
 	var (
-		gatewayConfig awsS3GatewayConfig
+		gatewayConfig AwsS3GatewayConfig
 	)
 
-	err = provider.Get("aws_gateway").Populate(&gatewayConfig)
+	err := provider.Get("aws_gateway").Populate(&gatewayConfig)
 	if err != nil {
-		return
+		logger.Error("unable to populate s3 config", zap.Error(err))
+		panic(err)
 	}
 
 	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
-
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-		Config: aws.Config{
-			Region: &gatewayConfig.S3Region,
-		},
-	}))
 
 	s3Gateway = &awsS3Gateway{
 		logger:             logger,
-		awsS3GatewayConfig: gatewayConfig,
+		AwsS3GatewayConfig: gatewayConfig,
 		s3:                 sess,
 		s3Host:             s3Host,
 	}

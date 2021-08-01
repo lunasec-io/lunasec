@@ -9,7 +9,7 @@ import (
 
 	"github.com/Joker/jade"
 	"github.com/pkg/errors"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/service"
 	"github.com/refinery-labs/loq/util"
 	"go.uber.org/config"
@@ -24,7 +24,7 @@ type secureFrameController struct {
 
 type SecureFrameControllerConfig struct {
 	ViewsPath string          `yaml:"views_path"`
-	CdnConfig model.CDNConfig `yaml:"cdn_config"`
+	CdnConfig types.CDNConfig `yaml:"cdn_config"`
 }
 
 type SecureFrameController interface {
@@ -94,7 +94,7 @@ func (s *secureFrameController) Frame(w http.ResponseWriter, r *http.Request) {
 		Path:   s.CdnConfig.MainStyle,
 	}
 
-	templateVars := model.FrameVars{
+	templateVars := types.FrameVars{
 		CSPNonce:      service.Nonce(r.Context()),
 		RequestOrigin: referer,
 		RequestNonce:  nonce,

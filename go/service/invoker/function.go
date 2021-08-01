@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/model"
-	"github.com/refinery-labs/loq/model/event"
+	"github.com/refinery-labs/loq/types"
+	"github.com/refinery-labs/loq/types/event"
 	"github.com/refinery-labs/loq/service"
 	"github.com/refinery-labs/loq/util"
 	"go.uber.org/zap"
@@ -31,7 +31,7 @@ func NewLambdaRuntime(
 	functionName string,
 	blockInput *json.RawMessage,
 	backpack *json.RawMessage,
-) model.RuntimeInvoker {
+) types.RuntimeInvoker {
 	return &FunctionRuntimeInvoker{
 		logger:       logger,
 		functionName: functionName,
@@ -50,7 +50,7 @@ func (r *FunctionRuntimeInvoker) Run() (
 	err error,
 ) {
 	var (
-		funcConfig       model.RefineryFunction
+		funcConfig       types.RefineryFunction
 		functionExecutor service.Executor
 		handlerResponse  event.InvokeHandlerResponse
 	)
@@ -109,7 +109,7 @@ func parseStdout(stdout string) (responseData event.InvokeHandlerResponse, err e
 	return
 }
 
-func (r *FunctionRuntimeInvoker) getFunctionExecutor(funcConfig model.RefineryFunction) (e service.Executor, err error) {
+func (r *FunctionRuntimeInvoker) getFunctionExecutor(funcConfig types.RefineryFunction) (e service.Executor, err error) {
 	var (
 		functionInput []byte
 	)
@@ -150,7 +150,7 @@ func (r *FunctionRuntimeInvoker) getFunctionExecutor(funcConfig model.RefineryFu
 	return service.NewExecutorWithoutStreaming(
 		funcConfig.Command,
 		args,
-		envVars,
+		funcConfig.Env,
 		funcConfig.WorkDir,
 		handlerStdin,
 	), nil

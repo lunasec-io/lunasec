@@ -5,15 +5,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
+	"gopkg.in/square/go-jose.v2/jwt"
 	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/model/event"
 	"github.com/refinery-labs/loq/service"
+	"github.com/refinery-labs/loq/types/event"
 	"github.com/urfave/cli"
 	"go.uber.org/zap"
 )
@@ -60,7 +60,10 @@ func newJwtSigner(customerPrivateKey string) service.JwtSigner {
 
 func newAuthJwt(sessionID string, customerPrivateKey string) string {
 	jwtSigner := newJwtSigner(customerPrivateKey)
-	claims := model.SessionJwtClaims{
+	claims := types.SessionJwtClaims{
+		Claims: jwt.Claims{
+			Subject: string(constants.DeveloperSubject),
+		},
 		SessionID: sessionID,
 	}
 	token, err := jwtSigner.CreateWithSessionClaims(claims)
@@ -130,8 +133,7 @@ func s3Request(method, url string, headers map[string]string, body *bytes.Buffer
 }
 
 func newSessionID() string {
-	sessionID := uuid.New()
-	return sessionID.String()
+	return "cli-tool"
 }
 
 func setGrantForToken(cliOptions CliOptions, sessionID string, tokenID string) (err error) {

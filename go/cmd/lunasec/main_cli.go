@@ -38,6 +38,10 @@ func main() {
 						Name:  "skip-mirroring",
 						Usage: "Skip docker image mirroring.",
 					},
+					&cli.BoolFlag{
+						Name:  "local",
+						Usage: "Build LunaSec locally.",
+					},
 				},
 				Action: lunasec.BuildCommand,
 			},
@@ -49,6 +53,14 @@ func main() {
 					&cli.BoolFlag{
 						Name:  "build",
 						Usage: "Build before deploying.",
+					},
+					&cli.BoolFlag{
+						Name:  "local",
+						Usage: "Deploy LunaSec locally.",
+					},
+					&cli.StringFlag{
+						Name:  "config-output",
+						Usage: "Path to where the resources config file will be written to.",
 					},
 				},
 				Action: lunasec.DeployCommand,
