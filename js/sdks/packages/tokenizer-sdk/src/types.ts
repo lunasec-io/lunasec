@@ -5,8 +5,8 @@ export const GrantTypeEnum = GrantType;
 
 export interface TokenizerClientConfig {
   host: string;
+  baseRoute: string;
   metaEncoding: 'base64';
-  backendMode: 'express-plugin' | 'standalone';
   headers: {
     auth: string;
   };
