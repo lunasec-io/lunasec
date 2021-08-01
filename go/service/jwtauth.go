@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/refinery-labs/loq/constants"
 	"net/http"
 	"net/http/httputil"
 
@@ -14,7 +15,7 @@ type jwtHttpAuth struct {
 }
 
 type JwtHttpAuth interface {
-	WithJwtAuth(next http.HandlerFunc) http.HandlerFunc
+	WithJwtAuth(allowedSubjects []constants.JwtSubject, next http.HandlerFunc) http.HandlerFunc
 }
 
 func NewJwtHttpAuth(logger *zap.Logger, jwtVerifier JwtVerifier) JwtHttpAuth {
@@ -34,7 +35,16 @@ func (j *jwtHttpAuth) defaultUnauthorizedHandler(w http.ResponseWriter, r *http.
 	http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 }
 
-func (j *jwtHttpAuth) WithJwtAuth(next http.HandlerFunc) http.HandlerFunc {
+func subjectIsAllowed(subject constants.JwtSubject, allowedSubjects []constants.JwtSubject) bool {
+	for _, s := range allowedSubjects {
+		if s == subject {
+			return true
+		}
+	}
+	return false
+}
+
+func (j *jwtHttpAuth) WithJwtAuth(allowedSubjects []constants.JwtSubject, next http.HandlerFunc) http.HandlerFunc {
 	unauthHandler := http.HandlerFunc(j.defaultUnauthorizedHandler)
 	return func(w http.ResponseWriter, r *http.Request) {
 		j.logger.Debug(
@@ -53,7 +63,7 @@ func (j *jwtHttpAuth) WithJwtAuth(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		err = j.jwtVerifier.Verify(jwtToken)
+		claims, err := j.jwtVerifier.VerifyWithSessionClaims(jwtToken)
 		if err != nil {
 			j.logger.Error(
 				"invalid jwt token",
@@ -63,6 +73,20 @@ func (j *jwtHttpAuth) WithJwtAuth(next http.HandlerFunc) http.HandlerFunc {
 			unauthHandler.ServeHTTP(w, r)
 			return
 		}
+
+		subject := constants.JwtSubject(claims.Subject)
+		if !subjectIsAllowed(subject, allowedSubjects) {
+			j.logger.Error(
+				"subject is not allowed",
+				zap.String("jwt", jwtToken),
+				zap.String("subject", claims.Subject),
+				zap.Strings("allowedSubjects", constants.SubjectsToStringSlice(allowedSubjects)),
+				zap.Error(err),
+			)
+			unauthHandler.ServeHTTP(w, r)
+			return
+		}
+
 		next.ServeHTTP(w, r)
 	}
 }

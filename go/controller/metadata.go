@@ -2,13 +2,15 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/pkg/errors"
+	"github.com/refinery-labs/loq/util/auth"
 	"io/ioutil"
 	"log"
 	"net/http"
 
-	"github.com/refinery-labs/loq/model"
-	"github.com/refinery-labs/loq/model/event"
 	"github.com/refinery-labs/loq/service"
+	"github.com/refinery-labs/loq/types"
+	"github.com/refinery-labs/loq/types/event"
 	"github.com/refinery-labs/loq/util"
 )
 
@@ -50,7 +52,7 @@ func (s *metaController) GetMetadata(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	meta, err := s.meta.GetMetadata(model.Token(input.TokenID))
+	meta, err := s.meta.GetMetadata(types.Token(input.TokenID))
 	if err != nil {
 		statusCode := 500
 		if err.Error() == "unable to locate metadata for token" {
@@ -61,7 +63,7 @@ func (s *metaController) GetMetadata(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := event.MetadataGetResponse{
-		Metadata: meta,
+		Metadata: meta.CustomMetadata,
 	}
 
 	util.Respond(w, resp)
@@ -84,7 +86,13 @@ func (s *metaController) SetMetadata(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.meta.SetMetadata(model.Token(input.TokenID), input.Metadata); err != nil {
+	claims, err := auth.GetRequestClaims(s.jwtVerifier, r)
+	if err != nil {
+		err = errors.Wrap(err, "unable to verify token jwt with claims")
+		return
+	}
+
+	if err := s.meta.SetMetadata(types.Token(input.TokenID), claims, input.Metadata); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}

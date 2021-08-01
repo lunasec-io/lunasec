@@ -3,7 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/controller/request"
+	"github.com/refinery-labs/loq/util/auth"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,9 +11,9 @@ import (
 	"go.uber.org/config"
 
 	"github.com/pkg/errors"
-	"github.com/refinery-labs/loq/model"
-	"github.com/refinery-labs/loq/model/event"
 	"github.com/refinery-labs/loq/service"
+	"github.com/refinery-labs/loq/types"
+	"github.com/refinery-labs/loq/types/event"
 	"github.com/refinery-labs/loq/util"
 )
 
@@ -54,17 +54,8 @@ func NewTokenizerController(provider config.Provider, tokenizer service.Tokenize
 	return
 }
 
-func (s *tokenizerController) getRequestClaims(r *http.Request) (claims *model.SessionJwtClaims, err error) {
-	accessToken, err := request.GetJwtToken(r)
-	if err != nil {
-		return
-	}
-
-	return s.jwtVerifier.VerifyWithSessionClaims(accessToken)
-}
-
-func (s *tokenizerController) requestHasValidGrantForToken(r *http.Request, tokenID model.Token) (valid bool, err error) {
-	claims, err := s.getRequestClaims(r)
+func (s *tokenizerController) requestHasValidGrantForToken(r *http.Request, tokenID types.Token) (valid bool, err error) {
+	claims, err := auth.GetRequestClaims(s.jwtVerifier, r)
 	if err != nil {
 		err = errors.Wrap(err, "unable to verify token jwt with claims")
 		return
@@ -89,7 +80,7 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	valid, err := s.requestHasValidGrantForToken(r, model.Token(input.TokenID))
+	valid, err := s.requestHasValidGrantForToken(r, types.Token(input.TokenID))
 	if err != nil {
 		log.Println(err)
 		util.RespondError(w, http.StatusBadRequest, err)
@@ -102,7 +93,7 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	url, headers, err := s.tokenizer.TokenizerGet(s.CustomerTokenSecret, model.Token(input.TokenID))
+	url, headers, err := s.tokenizer.TokenizerGet(s.CustomerTokenSecret, types.Token(input.TokenID))
 	if err != nil {
 		statusCode := 500
 		// TODO: Make this error message a constant
@@ -143,16 +134,17 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if len(input.Metadata) > 0 {
-		if err := s.meta.SetMetadata(tokenID, input.Metadata); err != nil {
-			util.RespondError(w, http.StatusInternalServerError, err)
-			return
-		}
-	}
-	claims, err := s.getRequestClaims(r)
+	claims, err := auth.GetRequestClaims(s.jwtVerifier, r)
 	if err != nil {
 		err = errors.Wrap(err, "unable to verify token jwt with claims")
 		return
+	}
+
+	if len(input.Metadata) > 0 {
+		if err := s.meta.SetMetadata(tokenID, claims, input.Metadata); err != nil {
+			util.RespondError(w, http.StatusInternalServerError, err)
+			return
+		}
 	}
 
 	// create grants for both reading the token, in case the front end wants to be able to read the token right away
