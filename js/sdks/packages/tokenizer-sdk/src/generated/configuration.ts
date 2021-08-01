@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Tokenizer API
- * The Tokenizer API used for tokenizing and detokenizing data and other endpoints
+ * Full Tokenizer API
+ * The Tokenizer API used for tokenizing and detokenizing data and working with tokens using the GoLang backend
  *
  * The version of the OpenAPI document: 0.0.0
  * 

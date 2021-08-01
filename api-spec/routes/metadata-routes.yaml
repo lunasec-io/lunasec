@@ -1,0 +1,35 @@
+getmetadata:
+  post:
+    summary: Get an S3 signed download URL for a token
+    operationId: getMetaData
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './bodies.yaml#/GetMetadataRequest'
+    responses:
+      '200':
+        description: Success
+        content:
+          application/json:
+            schema:
+              $ref: './bodies.yaml#/GetMetadataResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: './bodies.yaml#/ErrorResponse'
+      '500':
+        description: An Error Occured
+        content:
+          application/json:
+            schema:
+              $ref: './bodies.yaml#/ErrorResponse'
+      '404':
+        description: Unable to locate token
+        content:
+          application/json:
+            schema:
+              $ref: './bodies.yaml#/ErrorResponse'
