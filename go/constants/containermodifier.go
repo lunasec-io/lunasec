@@ -1,6 +1,6 @@
 package constants
 
-import "github.com/refinery-labs/loq/model"
+import "github.com/refinery-labs/loq/types"
 
 type Runtime string
 
@@ -54,7 +54,7 @@ var (
 
 var (
 	// TODO (cthompson) will this change between different runtimes?
-	SingleFunctionContainerConfig = model.FunctionConfig{
+	SingleFunctionContainerConfig = types.FunctionConfig{
 		ImportPath:   "refinery_main",
 		FunctionName: "main",
 		WorkDir:      "",

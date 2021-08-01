@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/util"
 )
 
@@ -16,9 +16,9 @@ type tokenizerService struct {
 
 // TokenizerService ...
 type TokenizerService interface {
-	TokenizerSet(secret string) (model.Token, string, map[string]string, error)
-	TokenizerGet(secret string, token model.Token) (string, map[string]string, error)
-	TokenizerDelete(secret string, token model.Token) error
+	TokenizerSet(secret string) (types.Token, string, map[string]string, error)
+	TokenizerGet(secret string, token types.Token) (string, map[string]string, error)
+	TokenizerDelete(secret string, token types.Token) error
 }
 
 // NewTokenizerService ...
@@ -30,7 +30,7 @@ func NewTokenizerService(kv gateway.DynamoKvGateway, s3 gateway.AwsS3Gateway) To
 }
 
 // SetTokenizer ...
-func (s *tokenizerService) TokenizerSet(secret string) (model.Token, string, map[string]string, error) {
+func (s *tokenizerService) TokenizerSet(secret string) (types.Token, string, map[string]string, error) {
 	token := util.GenToken()
 	Kp := util.Keygen()
 	snk := util.GenerateSaltsAndKey(token, secret)
@@ -57,7 +57,7 @@ func (s *tokenizerService) TokenizerSet(secret string) (model.Token, string, map
 }
 
 // GetTokenizer
-func (s *tokenizerService) TokenizerGet(secret string, token model.Token) (string, map[string]string, error) {
+func (s *tokenizerService) TokenizerGet(secret string, token types.Token) (string, map[string]string, error) {
 	snk := util.GenerateSaltsAndKey(token, secret)
 	encryptionKeyLookupHash := util.GetCompositeHash(token, snk.Sk)
 	encryptedEncryptionKey, err := s.kv.Get(gateway.KeyStore, encryptionKeyLookupHash)
@@ -87,6 +87,6 @@ func (s *tokenizerService) TokenizerGet(secret string, token model.Token) (strin
 	return s.s3.GeneratePresignedGetUrl(ciphertextLookupHash, Kp)
 }
 
-func (s *tokenizerService) TokenizerDelete(secret string, token model.Token) error {
+func (s *tokenizerService) TokenizerDelete(secret string, token types.Token) error {
 	return nil
 }

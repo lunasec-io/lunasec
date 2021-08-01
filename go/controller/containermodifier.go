@@ -9,8 +9,8 @@ import (
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/tarball"
 	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/model"
-	"github.com/refinery-labs/loq/model/event"
+	"github.com/refinery-labs/loq/types"
+	"github.com/refinery-labs/loq/types/event"
 	"github.com/refinery-labs/loq/pkg/containermodifier"
 	"github.com/refinery-labs/loq/service"
 	"github.com/refinery-labs/loq/util"
@@ -69,7 +69,7 @@ func (c *containerModifierController) getContainerModifierForLocalInvoke(contain
 	)
 }
 
-func (c *containerModifierController) buildFunctionConfigLayer(base v1.Image, runtime string, functions []model.FunctionConfig) (layer v1.Layer, err error) {
+func (c *containerModifierController) buildFunctionConfigLayer(base v1.Image, runtime string, functions []types.FunctionConfig) (layer v1.Layer, err error) {
 	imgConfigFile, err := base.ConfigFile()
 	if err != nil {
 		log.Println(err)

@@ -23,7 +23,7 @@ export function createRoutes() {
 
   // This little helper route gets called manually to simulate a login flow for the purposes of the demo
   routes.get('/set-id-token', async function (_, res) {
-    const id_token = await lunaSec.auth.createAuthenticationJWT({
+    const id_token = await lunaSec.auth.createAuthenticationJWT('user', {
       session: {
         id: randomUUID()
       }
