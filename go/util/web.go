@@ -5,12 +5,12 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 )
 
 // Respond jsonifies a model and sends it to the client.
 func Respond(w http.ResponseWriter, data interface{}) {
-	resp := model.HTTPResponse{
+	resp := types.HTTPResponse{
 		Success: true,
 		Data:    &data,
 	}
@@ -27,7 +27,7 @@ func Respond(w http.ResponseWriter, data interface{}) {
 
 // RespondSuccess jsonifies a model and sends it to the client.
 func RespondSuccess(w http.ResponseWriter) {
-	resp := model.HTTPResponse{
+	resp := types.HTTPResponse{
 		Success: true,
 	}
 
@@ -47,7 +47,7 @@ func RespondError(w http.ResponseWriter, status int, err error) {
 
 	// TODO send error code when responding
 	errorStr := err.Error()
-	resp := model.HTTPResponse{
+	resp := types.HTTPResponse{
 		Success: false,
 		Error:   &errorStr,
 	}

@@ -12,11 +12,11 @@ import (
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/tarball"
 	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/util"
 )
 
-func LoadFunctionConfig(functionsConfigFile string) (configFile model.FunctionConfigFile, err error) {
+func LoadFunctionConfig(functionsConfigFile string) (configFile types.FunctionConfigFile, err error) {
 	data, err := ioutil.ReadFile(functionsConfigFile)
 	if err != nil {
 		log.Println(err)
@@ -31,8 +31,8 @@ func LoadFunctionConfig(functionsConfigFile string) (configFile model.FunctionCo
 	return
 }
 
-func buildFunctionLookup(runtimeConfig constants.RuntimeConfig, workDir, handlerPath string, configuredFunctions []model.FunctionConfig) ([]byte, error) {
-	functionLookup := model.FunctionLookup{}
+func buildFunctionLookup(runtimeConfig constants.RuntimeConfig, workDir, handlerPath string, configuredFunctions []types.FunctionConfig) ([]byte, error) {
+	functionLookup := types.FunctionLookup{}
 	for _, f := range configuredFunctions {
 		// override workdir if explicitly set by the function config
 		if f.WorkDir != "" {
@@ -40,7 +40,7 @@ func buildFunctionLookup(runtimeConfig constants.RuntimeConfig, workDir, handler
 		}
 		// TODO (cthompson) hardcoded for testing, most of the logic for building the function config is in python
 		// we should move the logic into this code since it makes more sense to have it here for testing locally.
-		refineryFunction := model.RefineryFunction{
+		refineryFunction := types.RefineryFunction{
 			Command:      "node",
 			Handler:      handlerPath,
 			ImportPath:   f.ImportPath,
@@ -59,7 +59,7 @@ func buildFunctionLookup(runtimeConfig constants.RuntimeConfig, workDir, handler
 	return json.Marshal(functionLookup)
 }
 
-func CreateFunctionConfigLayer(workDir, runtime string, functions []model.FunctionConfig) (layer v1.Layer, err error) {
+func CreateFunctionConfigLayer(workDir, runtime string, functions []types.FunctionConfig) (layer v1.Layer, err error) {
 	runtimeConfig, ok := constants.RuntimeToRuntimeConfig[constants.Runtime(runtime)]
 	if !ok {
 		err = fmt.Errorf("unsupported runtime: %s", runtime)

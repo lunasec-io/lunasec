@@ -13,7 +13,7 @@ import (
 func main() {
 	log.SetFlags(log.Lshortfile)
 
-	ecrGateway := gateway.NewAwsECRGatewayWithoutConfig("us-west-2")
+	ecrGateway := gateway.NewAwsECRGateway()
 	containerModifierController := controller.NewContainerModifierController(ecrGateway)
 	lambda.Start(containerModifierController.HandleLambdaInvoke)
 }

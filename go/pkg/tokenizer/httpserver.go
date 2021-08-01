@@ -2,6 +2,7 @@ package tokenizer
 
 import (
 	"fmt"
+	"github.com/refinery-labs/loq/types/handler"
 	"log"
 	"net/http"
 
@@ -17,9 +18,9 @@ import (
 )
 
 // GetRoutes ...
-func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways) map[string]http.HandlerFunc {
+func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways) map[string]handler.Config {
 	meta := service.NewMetadataService(gateways.KV)
-	grant, err := service.NewGrantService(provider, gateways.KV)
+	grant, err := service.NewGrantService(logger, provider, gateways.KV)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
@@ -39,20 +40,37 @@ func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 		panic(err)
 	}
 
-	return map[string]http.HandlerFunc{
-		"/grant/set": grantController.SetGrant,
-		"/grant/verify": grantController.VerifyGrant,
-		"/metadata/get": metadataController.GetMetadata,
-		// TODO (cthompson) do we want to keep this endpoint?
-		"/metadata/set": metadataController.SetMetadata,
-		"/tokenize":     tokenizerController.TokenizerSet,
-		"/detokenize":   tokenizerController.TokenizerGet,
+	return map[string]handler.Config{
+		"/grant/set": {
+			grantController.SetGrant,
+			constants.OnlyApplicationSubject,
+		},
+		"/grant/verify": {
+			grantController.VerifyGrant,
+			constants.OnlyApplicationSubject,
+		},
+		"/metadata/get": {
+			metadataController.GetMetadata,
+			constants.AnySubject,
+		},
+		"/metadata/set": {
+			metadataController.SetMetadata,
+			constants.OnlyDeveloperSubject,
+		},
+		"/tokenize":     {
+			tokenizerController.TokenizerSet,
+			constants.AnySubject,
+		},
+		"/detokenize":   {
+			tokenizerController.TokenizerGet,
+			constants.AnySubject,
+		},
 	}
 }
 
 func newServer(configPath string, authType constants.AuthType) http.Handler {
 	var (
-		authFunc func(handlerFunc http.HandlerFunc) http.HandlerFunc
+		authFunc func(allowedSubjects []constants.JwtSubject, handlerFunc http.HandlerFunc) http.HandlerFunc
 	)
 
 	sm := http.NewServeMux()
@@ -71,7 +89,7 @@ func newServer(configPath string, authType constants.AuthType) http.Handler {
 	switch authType {
 	case constants.NoAuthType:
 		logger.Debug("!!! creating tokenizer with no authentication !!!")
-		authFunc = controller.WithNoAuth()
+		authFunc = controller.WithNoAuth
 	case constants.JwtAuthType:
 		logger.Debug("creating tokenizer with jwt authentication")
 		authProviderJwtVerifier, err := service.NewJwtVerifier("customer_jwt_verifier", logger, provider)
@@ -86,8 +104,8 @@ func newServer(configPath string, authType constants.AuthType) http.Handler {
 		panic(err)
 	}
 
-	for url, fn := range GetRoutes(logger, provider, gateways) {
-		sm.HandleFunc(url, authFunc(fn))
+	for url, handlerConfig := range GetRoutes(logger, provider, gateways) {
+		sm.HandleFunc(url, authFunc(handlerConfig.AllowedSubjects, handlerConfig.Handler))
 	}
 
 	c := cors.New(cors.Options{})

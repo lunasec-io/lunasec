@@ -10,7 +10,7 @@ import (
 	"math/rand"
 
 	"github.com/google/uuid"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -65,8 +65,8 @@ func Keygen() []byte {
 }
 
 // GenToken generates a token
-func GenToken() model.Token {
-	return constants.TokenPrefix + model.Token(uuid.NewString())
+func GenToken() types.Token {
+	return constants.TokenPrefix + types.Token(uuid.NewString())
 }
 
 // GetRandomStringOfLength ...
@@ -81,14 +81,14 @@ func GetRandomStringOfLength(length int, random *rand.Rand) string {
 }
 
 // GenerateSaltsAndKey ...
-func GenerateSaltsAndKey(token model.Token, secret string) model.SaltsAndKey {
+func GenerateSaltsAndKey(token types.Token, secret string) types.SaltsAndKey {
 	tokenStr := string(token) + secret
 	hashable := sha3.Sum512([]byte(tokenStr))
 	seed := append([]byte(tokenStr), hashable[:]...)
 	seedInt := binary.BigEndian.Uint64(seed)
 	random := rand.New(rand.NewSource(int64(seedInt)))
 
-	return model.SaltsAndKey{
+	return types.SaltsAndKey{
 		Sp: GetRandomStringOfLength(keySize, random),
 		Sk: GetRandomStringOfLength(keySize, random),
 		Kt: GetRandomStringOfLength(keySize, random),
