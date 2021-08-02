@@ -256,7 +256,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
           {this.renderFileComponents()}
         </SecureForm>
 
-        <h2>Simle Tokenizer Form</h2>
+        <h2>Simple Tokenizer Form</h2>
         <SimpleTokenizerExample />
       </section>
     );
