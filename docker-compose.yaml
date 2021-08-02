@@ -24,11 +24,11 @@ services:
       - "3001:3001"
     env_file:
       - .env.dev
-    healthcheck:
-      test: ["CMD-SHELL", "curl http://localhost:3001"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl http://localhost:3001"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
 
   local-dependencies:
     image: rwgrim/docker-noop
@@ -103,8 +103,8 @@ services:
     depends_on:
       cdk-init:
         condition: service_completed_successfully
-      customer-back-end:
-        condition: service_healthy
+#      customer-back-end:
+#        condition: service_healthy
 #    healthcheck:
 #      test: ["CMD-SHELL", "curl http://localhost:37766"]
 #      interval: 10s
