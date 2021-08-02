@@ -26,8 +26,9 @@ jobs:
 
     - uses: browser-actions/setup-chrome@latest
 
-    - run: npx cypress cache path
-    - run: npx cypress cache list
+    - run: npm install -g typescript cypress
+    - run: cypress cache path
+    - run: cypress cache list
     - name: Cache Cypress
       id: cache-cypress
       uses: actions/cache@v1
@@ -47,13 +48,12 @@ jobs:
       continue-on-error: true
 
     - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose --verbose up -d
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
 
-    - run: npm install -g typescript
-    - run: npx cypress install
-    - run: npx cypress cache list
+    - run: cypress install
+    - run: cypress cache list
     - name: Cypress Run
-      run: npx cypress run --headless --browser chrome
+      run: cypress run --headless --browser chrome
       working-directory: js/demo-apps/packages/react-front-end
 
     # Finally, "Post Run satackey/action-docker-layer-caching@v0.0.11",
