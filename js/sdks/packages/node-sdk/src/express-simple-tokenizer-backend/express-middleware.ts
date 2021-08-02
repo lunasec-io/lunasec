@@ -1,10 +1,11 @@
+import { isToken } from '@lunasec/tokenizer-sdk';
 import bodyParser from 'body-parser';
-import { Router } from 'express';
+import { Application } from 'express';
 import { v4 as uuid } from 'uuid';
 
-import { lunasecTokenRegex, S3TokenizerBackend } from './s3-tokenizer-backend';
+import { SimpleTokenizerBackend } from './simple-tokenizer-backend';
 
-export function registerS3Tokenizer(app: Router, tokenizerBackend: S3TokenizerBackend) {
+export function registerExpressMiddleware(app: Application, tokenizerBackend: SimpleTokenizerBackend) {
   const bodyParserMiddleware = bodyParser.json();
 
   app.post('/.lunasec/detokenize', bodyParserMiddleware, async (req, res) => {
@@ -19,7 +20,7 @@ export function registerS3Tokenizer(app: Router, tokenizerBackend: S3TokenizerBa
       return;
     }
 
-    if (!lunasecTokenRegex.exec(tokenId)) {
+    if (!isToken(tokenId)) {
       res.status(400).json({
         success: false,
         error: 'Invalid tokenId provided to detokenize',
