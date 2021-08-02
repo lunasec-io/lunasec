@@ -7,14 +7,14 @@ RUN lerna bootstrap
 
 FROM lerna-bootstrap as demo-back-end
 
-RUN lerna-isolate demo-back-end
+#RUN lerna-isolate demo-back-end
 
 WORKDIR /js/demo-apps/packages/express-back-end
 ENTRYPOINT yarn start:dev
 
 FROM lerna-bootstrap as react-front-end
 
-RUN lerna-isolate react-front-end
+#RUN lerna-isolate react-front-end
 
 WORKDIR /js/demo-apps/packages/react-front-end
 ENTRYPOINT npm run start

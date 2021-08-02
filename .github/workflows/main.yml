@@ -47,7 +47,7 @@ jobs:
       continue-on-error: true
 
     - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose --verbose up -d
 
     - run: npx cypress install
     - run: npx cypress cache list
