@@ -1,5 +1,5 @@
 import { fromIni } from '@aws-sdk/credential-provider-ini';
-import { LunaSec, SimpleTokenizerBackend } from '@lunasec/node-sdk';
+import { LunaSec } from '@lunasec/node-sdk';
 
 import { readSessionFromRequest } from './read-session-from-request';
 
@@ -16,13 +16,12 @@ export const lunaSec = new LunaSec({
     // or null if a user is not logged in.  LunaSec uses this to automatically create and verify token grants
     sessionIdProvider: readSessionFromRequest,
   },
-});
-
-export const simpleTokenizerBackend = new SimpleTokenizerBackend({
-  awsRegion: 'us-west-2',
-  s3Bucket: process.env.CIPHERTEXT_S3_BUCKET || 'YOU MUST SPECIFY A BUCKET',
-  // @ts-ignore
-  getAwsCredentials: () => {
-    return fromIni();
+  simpleTokenizerBackendConfig: {
+    // Only needed if you want to register the simple-express-tokenizer-backend
+    awsRegion: 'us-west-2',
+    s3Bucket: process.env.CIPHERTEXT_S3_BUCKET || 'YOU MUST SPECIFY A BUCKET',
+    getAwsCredentials: () => {
+      return Promise.resolve(fromIni());
+    },
   },
 });

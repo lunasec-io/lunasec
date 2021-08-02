@@ -42,7 +42,6 @@ export class Tokenizer {
     }
     this.reqOptions = { headers }; // This is passed to the openapi client on every request
     const basePath = this.config.host + this.config.baseRoute;
-    console.log('BASEPATH IS ', basePath);
     // openapi stuff
     const openAPIConfig = new Configuration({ basePath });
     this.openApi = new DefaultApi(openAPIConfig);
