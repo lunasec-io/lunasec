@@ -1,0 +1,60 @@
+
+setgrant:
+  post:
+    summary: Create a grant for a token, of type store or read
+    operationId: setGrant
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './bodies.yaml#/SetGrantRequest'
+    responses:
+      '200':
+        description: Success
+        content:
+          application/json:
+            schema:
+              $ref: './bodies.yaml#/SetGrantResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: './bodies.yaml#/ErrorResponse'
+      '500':
+        description: An Error Occured
+        content:
+          application/json:
+            schema:
+              $ref: './bodies.yaml#/ErrorResponse'
+
+verifygrant:
+  post:
+    summary: Get an S3 signed download URL for a token
+    operationId: verifyGrant
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './bodies.yaml#/VerifyGrantRequest'
+    responses:
+      '200':
+        description: Success
+        content:
+          application/json:
+            schema:
+              $ref: './bodies.yaml#/VerifyGrantResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: './bodies.yaml#/ErrorResponse'
+      '500':
+        description: An Error Occured
+        content:
+          application/json:
+            schema:
+              $ref: './bodies.yaml#/ErrorResponse'
