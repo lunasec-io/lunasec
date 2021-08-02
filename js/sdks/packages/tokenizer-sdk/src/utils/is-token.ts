@@ -1,6 +1,5 @@
-import { TOKEN_PREFIX } from '../constants';
+import { LUNASEC_TOKEN_REGEXP } from '../constants';
 
 export function isToken(s: string) {
-  const r = new RegExp('^' + TOKEN_PREFIX);
-  return r.test(s);
+  return LUNASEC_TOKEN_REGEXP.test(s);
 }

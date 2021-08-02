@@ -9,7 +9,7 @@ export class SimpleTokenizer {
       config = {};
     }
     if (!config.baseRoute) {
-      config.baseRoute = '.lunasec';
+      config.baseRoute = '/.lunasec';
     }
     this.tokenizer = new Tokenizer(config);
   }
