@@ -3,26 +3,27 @@ import { HttpRequest } from '@aws-sdk/protocol-http';
 import { S3RequestPresigner } from '@aws-sdk/s3-request-presigner';
 import { parseUrl } from '@aws-sdk/url-parser';
 import { formatUrl } from '@aws-sdk/util-format-url';
+import { isToken } from '@lunasec/tokenizer-sdk';
+import { Application } from 'express';
 
-export const lunasecTokenRegex =
-  /^lunasec-[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+import { registerExpressMiddleware } from './express-middleware';
 
 export interface AwsCredentials {
   accessKeyId: string;
   secretAccessKey: string;
 }
 
-export interface S3TokenizerBackendConfig {
+export interface SimpleTokenizerBackendConfig {
   s3Bucket: string;
   awsRegion: string;
   awsCredentials?: AwsCredentials;
   getAwsCredentials?: () => Promise<AwsCredentials>;
 }
 
-export class S3TokenizerBackend {
-  readonly config!: S3TokenizerBackendConfig;
+export class SimpleTokenizerBackend {
+  readonly config!: SimpleTokenizerBackendConfig;
 
-  constructor(config: S3TokenizerBackendConfig) {
+  constructor(config: SimpleTokenizerBackendConfig) {
     this.config = config;
 
     if (config.awsCredentials && config.getAwsCredentials) {
@@ -55,8 +56,8 @@ export class S3TokenizerBackend {
   }
 
   async generatePresignedS3Url(tokenId: string, method: 'PUT' | 'GET') {
-    if (!lunasecTokenRegex.exec(tokenId)) {
-      throw new Error('Invalid token passed to S3 URL Signer');
+    if (!isToken(tokenId)) {
+      throw new Error('Invalid token passed to simple express tokenizer backend');
     }
 
     const credentials = await this.getAwsCredentials();
@@ -88,5 +89,9 @@ export class S3TokenizerBackend {
 
   createTokenPresignedUrl(tokenId: string) {
     return this.generatePresignedS3Url(tokenId, 'PUT');
+  }
+
+  register(app: Application) {
+    registerExpressMiddleware(app, this);
   }
 }

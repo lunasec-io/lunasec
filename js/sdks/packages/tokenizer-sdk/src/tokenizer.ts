@@ -41,7 +41,7 @@ export class Tokenizer {
       headers[this.config.headers.auth] = jwtToken;
     }
     this.reqOptions = { headers }; // This is passed to the openapi client on every request
-    const basePath = new URL(this.config.baseRoute, this.config.host).toString();
+    const basePath = this.config.host + this.config.baseRoute;
     console.log('BASEPATH IS ', basePath);
     // openapi stuff
     const openAPIConfig = new Configuration({ basePath });
@@ -142,7 +142,7 @@ export class Tokenizer {
         this.reqOptions
       );
       const data = res.data.data;
-
+      console.log('uploading to s3 with headers as ', data.headers);
       await uploadToS3WithSignedUrl(data.uploadUrl, data.headers as OutgoingHttpHeaders, input);
 
       return {
