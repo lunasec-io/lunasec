@@ -24,10 +24,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: bahmutov/npm-install@v1
-      env:
-        CYPRESS_INSTALL_BINARY: 0
-
     - run: apt update && apt install chromium-browser
 
     - run: npx cypress cache path
