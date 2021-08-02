@@ -15,21 +15,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: cypress/included:3.2.0
     env:
-      # prevents extra Cypress installation progress messages
-      CI: 1
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
 
     steps:
     - uses: actions/checkout@v2
-
-    - uses: bahmutov/npm-install@v1
-      env:
-        CYPRESS_INSTALL_BINARY: 0
-    
-    - run: npx cypress cache path
-    - run: npx cypress cache list
     - name: Cache Cypress
       id: cache-cypress
       uses: actions/cache@v1
@@ -49,12 +41,10 @@ jobs:
       continue-on-error: true
 
     - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up --build --force-recreate -d
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
 
-    - run: npx cypress install
-    - run: npx cypress cache list
     - name: Cypress Run
-      run: npx cypress run
+      run: cypress run --headless --browser chrome
       working-directory: js/demo-apps/packages/react-front-end
 
     # Finally, "Post Run satackey/action-docker-layer-caching@v0.0.11",
