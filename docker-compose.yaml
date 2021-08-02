@@ -106,7 +106,7 @@ services:
       customer-back-end:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:37766"]
+      test: ["CMD-SHELL", "curl http://localhost:37766"]
       interval: 10s
       timeout: 5s
       retries: 5

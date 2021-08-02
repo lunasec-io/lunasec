@@ -15,11 +15,27 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # prevents extra Cypress installation progress messages
+      CI: 1
+      # avoid warnings like "tput: No value for $TERM and no -T specified"
+      TERM: xterm
 
     steps:
     - uses: actions/checkout@v2
+
+    - uses: bahmutov/npm-install@v1
+      env:
+        CYPRESS_INSTALL_BINARY: 0
     
-    - run: npm i -g cypress
+    - run: npx cypress cache path
+    - run: npx cypress cache list
+    - name: Cache Cypress
+      id: cache-cypress
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/Cypress
+        key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
     # Pull the latest image to build, and avoid caching pull-only images.
     # (docker pull is faster than caching in most cases.)
@@ -34,12 +50,12 @@ jobs:
 
     - name: Build the stack
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up --build --force-recreate -d
-    
-    - name: Cypress run
-      uses: cypress-io/github-action@v2
-      with:
-        install: false
-        working-directory: js/demo-apps/packages/react-front-end/
+
+    - run: npx cypress install
+    - run: npx cypress cache list
+    - name: Cypress Run
+      run: npx cypress run
+      working-directory: js/demo-apps/packages/react-front-end
 
     # Finally, "Post Run satackey/action-docker-layer-caching@v0.0.11",
     # which is the process of saving the cache, will be executed.
