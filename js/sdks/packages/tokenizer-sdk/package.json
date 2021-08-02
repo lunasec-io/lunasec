@@ -9,7 +9,7 @@
     "clean": "rm -rf build",
     "compile": "tsc ./tsconfig.json",
     "test": "node build/main/index.spec.js",
-    "openapi:generate": "openapi-generator-cli generate -i ../../../../api-spec/full-tokenizer.yaml -g typescript-axios -o ./src/generated "
+    "openapi:generate": "openapi-generator-cli generate -i ../../../../api-spec/schema/full-tokenizer.yaml -g typescript-axios -o ./src/generated "
   },
   "types": "build/main/index.d.ts",
   "author": "",

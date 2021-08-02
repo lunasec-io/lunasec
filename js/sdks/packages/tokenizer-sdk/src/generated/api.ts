@@ -90,6 +90,12 @@ export interface ErrorResponse {
      * @memberof ErrorResponse
      */
     error: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ErrorResponse
+     */
+    errorCode?: number;
 }
 /**
  * 

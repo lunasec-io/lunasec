@@ -5,6 +5,8 @@ ErrorResponse:
       type: boolean
     error:
       type: string
+    errorCode: #this is optional
+      type: number
   required:
     - success
     - error
@@ -51,7 +53,6 @@ GetMetadataRequest:
   required:
     - tokenId
   additionalProperties: false
-
 MetaData:
   oneOf:
     - "$ref": "#/StringMeta"
