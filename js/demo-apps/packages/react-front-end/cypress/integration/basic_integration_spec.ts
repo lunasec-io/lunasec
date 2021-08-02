@@ -37,7 +37,7 @@ describe('tokenize_and_detokenize', function () {
                 assert.notOk(true, 'response is undefined')
                 return;
             }
-            const resp = JSON.parse(interception.response.body);
+            const resp = interception.response.body;
             assert.ok(resp.success, 'request was successful')
             assert.isDefined(resp.data.tokenId, 'tokenId was present in response')
             assert.isDefined(resp.data.uploadUrl, 'uploadUrl was present in response')
@@ -49,7 +49,7 @@ describe('tokenize_and_detokenize', function () {
                 assert.notOk(true, 'response is undefined')
                 return;
             }
-            const resp = JSON.parse(interception.response.body);
+            const resp = interception.response.body;
             assert.ok(resp.success, 'request was successful')
             assert.isDefined(resp.data.downloadUrl, 'downloadUrl was present in response')
             assert.isDefined(resp.data.headers, 'headers was present in response')
