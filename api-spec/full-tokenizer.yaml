@@ -1,0 +1,16 @@
+openapi: 3.0.3
+info:
+  title: Full Tokenizer API
+  description: The Tokenizer API used for tokenizing and detokenizing data and working with tokens using the GoLang backend
+  version: 0.0.0
+paths:
+  /detokenize:
+    $ref: 'routes/tokenize-routes.yaml#/detokenize'
+  /tokenize:
+    $ref: 'routes/tokenize-routes.yaml#/tokenize'
+  /grant/verify:
+    $ref: 'routes/grant-routes.yaml#/verifygrant'
+  /grant/set:
+    $ref: 'routes/grant-routes.yaml#/setgrant'
+  /metadata/get:
+    $ref: 'routes/metadata-routes.yaml#/getmetadata'

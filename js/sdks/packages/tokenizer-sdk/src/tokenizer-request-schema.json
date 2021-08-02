@@ -1,0 +1,654 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "SetGrantRequest": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string"
+        },
+        "tokenId": {
+          "type": "string"
+        },
+        "grantType": {
+          "$ref": "#/components/schemasGrantType"
+        }
+      },
+      "required": [
+        "sessionId",
+        "tokenId",
+        "grantType"
+      ],
+      "additionalProperties": false
+    },
+    "GrantType": {
+      "type": "string",
+      "enum": [
+        "read_token",
+        "store_token"
+      ]
+    },
+    "VerifyGrantRequest": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string"
+        },
+        "tokenId": {
+          "type": "string"
+        },
+        "grantType": {
+          "$ref": "#/components/schemasGrantType"
+        }
+      },
+      "required": [
+        "sessionId",
+        "tokenId",
+        "grantType"
+      ],
+      "additionalProperties": false
+    },
+    "GetMetadataRequest": {
+      "type": "object",
+      "properties": {
+        "tokenId": {
+          "type": "string",
+          "description": "Needs to be a UUID."
+        }
+      },
+      "required": [
+        "tokenId"
+      ],
+      "additionalProperties": false
+    },
+    "SetMetadataRequest": {
+      "type": "object",
+      "properties": {
+        "tokenId": {
+          "type": "string",
+          "description": "Needs to be a UUID."
+        },
+        "metadata": {
+          "$ref": "#/components/schemasMetaData"
+        }
+      },
+      "required": [
+        "tokenId",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "MetaData": {
+      "anyOf": [
+        {
+          "$ref": "#/components/schemasStringMeta"
+        },
+        {
+          "$ref": "#/components/schemasFileMeta"
+        }
+      ]
+    },
+    "StringMeta": {
+      "type": "object",
+      "properties": {
+        "customFields": {
+          "type": "object"
+        },
+        "dataType": {
+          "type": "string",
+          "const": "string"
+        }
+      },
+      "required": [
+        "dataType"
+      ],
+      "additionalProperties": false
+    },
+    "BaseMeta": {
+      "type": "object",
+      "properties": {
+        "customFields": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FileMeta": {
+      "type": "object",
+      "properties": {
+        "customFields": {
+          "type": "object"
+        },
+        "dataType": {
+          "type": "string",
+          "const": "file"
+        },
+        "fileinfo": {
+          "type": "object",
+          "properties": {
+            "filename": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "lastModified": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "filename"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "dataType",
+        "fileinfo"
+      ],
+      "additionalProperties": false
+    },
+    "DetokenizeRequest": {
+      "type": "object",
+      "properties": {
+        "tokenId": {
+          "type": "string",
+          "description": "Needs to be a UUID."
+        }
+      },
+      "required": [
+        "tokenId"
+      ],
+      "additionalProperties": false
+    },
+    "TokenizeRequest": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/components/schemasMetaData"
+        }
+      },
+      "required": [
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "SetGrantResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "VerifyGrantResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "valid": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "valid"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "GetMetadataResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "metadata": {
+              "$ref": "#/components/schemasMetaData"
+            }
+          },
+          "required": [
+            "metadata"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "SetMetadataResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "success"
+      ],
+      "additionalProperties": false
+    },
+    "DetokenizeResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "downloadUrl": {
+              "type": "string"
+            },
+            "headers": {
+              "$ref": "#/components/schemasOutgoingHttpHeaders"
+            }
+          },
+          "required": [
+            "downloadUrl",
+            "headers"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "OutgoingHttpHeaders": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemasOutgoingHttpHeader"
+          },
+          {
+            "not": {}
+          }
+        ]
+      },
+      "properties": {}
+    },
+    "NodeJS.Dict<OutgoingHttpHeader>": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemasOutgoingHttpHeader"
+          },
+          {
+            "not": {}
+          }
+        ]
+      }
+    },
+    "OutgoingHttpHeader": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "TokenizerResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "tokenId": {
+              "type": "string"
+            },
+            "uploadUrl": {
+              "type": "string"
+            },
+            "headers": {
+              "$ref": "#/components/schemasIncomingHttpHeaders"
+            }
+          },
+          "required": [
+            "tokenId",
+            "uploadUrl",
+            "headers"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "IncomingHttpHeaders": {
+      "type": "object",
+      "properties": {
+        "accept": {
+          "type": "string"
+        },
+        "accept-language": {
+          "type": "string"
+        },
+        "accept-patch": {
+          "type": "string"
+        },
+        "accept-ranges": {
+          "type": "string"
+        },
+        "access-control-allow-credentials": {
+          "type": "string"
+        },
+        "access-control-allow-headers": {
+          "type": "string"
+        },
+        "access-control-allow-methods": {
+          "type": "string"
+        },
+        "access-control-allow-origin": {
+          "type": "string"
+        },
+        "access-control-expose-headers": {
+          "type": "string"
+        },
+        "access-control-max-age": {
+          "type": "string"
+        },
+        "access-control-request-headers": {
+          "type": "string"
+        },
+        "access-control-request-method": {
+          "type": "string"
+        },
+        "age": {
+          "type": "string"
+        },
+        "allow": {
+          "type": "string"
+        },
+        "alt-svc": {
+          "type": "string"
+        },
+        "authorization": {
+          "type": "string"
+        },
+        "cache-control": {
+          "type": "string"
+        },
+        "connection": {
+          "type": "string"
+        },
+        "content-disposition": {
+          "type": "string"
+        },
+        "content-encoding": {
+          "type": "string"
+        },
+        "content-language": {
+          "type": "string"
+        },
+        "content-length": {
+          "type": "string"
+        },
+        "content-location": {
+          "type": "string"
+        },
+        "content-range": {
+          "type": "string"
+        },
+        "content-type": {
+          "type": "string"
+        },
+        "cookie": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "etag": {
+          "type": "string"
+        },
+        "expect": {
+          "type": "string"
+        },
+        "expires": {
+          "type": "string"
+        },
+        "forwarded": {
+          "type": "string"
+        },
+        "from": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        },
+        "if-match": {
+          "type": "string"
+        },
+        "if-modified-since": {
+          "type": "string"
+        },
+        "if-none-match": {
+          "type": "string"
+        },
+        "if-unmodified-since": {
+          "type": "string"
+        },
+        "last-modified": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "string"
+        },
+        "pragma": {
+          "type": "string"
+        },
+        "proxy-authenticate": {
+          "type": "string"
+        },
+        "proxy-authorization": {
+          "type": "string"
+        },
+        "public-key-pins": {
+          "type": "string"
+        },
+        "range": {
+          "type": "string"
+        },
+        "referer": {
+          "type": "string"
+        },
+        "retry-after": {
+          "type": "string"
+        },
+        "sec-websocket-accept": {
+          "type": "string"
+        },
+        "sec-websocket-extensions": {
+          "type": "string"
+        },
+        "sec-websocket-key": {
+          "type": "string"
+        },
+        "sec-websocket-protocol": {
+          "type": "string"
+        },
+        "sec-websocket-version": {
+          "type": "string"
+        },
+        "set-cookie": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "strict-transport-security": {
+          "type": "string"
+        },
+        "tk": {
+          "type": "string"
+        },
+        "trailer": {
+          "type": "string"
+        },
+        "transfer-encoding": {
+          "type": "string"
+        },
+        "upgrade": {
+          "type": "string"
+        },
+        "user-agent": {
+          "type": "string"
+        },
+        "vary": {
+          "type": "string"
+        },
+        "via": {
+          "type": "string"
+        },
+        "warning": {
+          "type": "string"
+        },
+        "www-authenticate": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "not": {}
+          },
+          {
+            "type": [
+              "string",
+              "array"
+            ]
+          }
+        ]
+      }
+    },
+    "NodeJS.Dict<(string|string[])>": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "not": {}
+          }
+        ]
+      }
+    },
+    "Requests": {
+      "type": "object",
+      "properties": {
+        "/grant/set": {
+          "$ref": "#/components/schemasSetGrantRequest"
+        },
+        "/grant/verify": {
+          "$ref": "#/components/schemasVerifyGrantRequest"
+        },
+        "/metadata/get": {
+          "$ref": "#/components/schemasGetMetadataRequest"
+        },
+        "/metadata/set": {
+          "$ref": "#/components/schemasSetMetadataRequest"
+        },
+        "/detokenize": {
+          "$ref": "#/components/schemasDetokenizeRequest"
+        },
+        "/tokenize": {
+          "$ref": "#/components/schemasTokenizeRequest"
+        }
+      },
+      "required": [
+        "/grant/set",
+        "/grant/verify",
+        "/metadata/get",
+        "/metadata/set",
+        "/detokenize",
+        "/tokenize"
+      ],
+      "additionalProperties": false
+    },
+    "Responses": {
+      "type": "object",
+      "properties": {
+        "/grant/set": {
+          "$ref": "#/components/schemasSetGrantResponse"
+        },
+        "/grant/verify": {
+          "$ref": "#/components/schemasVerifyGrantResponse"
+        },
+        "/metadata/get": {
+          "$ref": "#/components/schemasGetMetadataResponse"
+        },
+        "/metadata/set": {
+          "$ref": "#/components/schemasSetMetadataResponse"
+        },
+        "/detokenize": {
+          "$ref": "#/components/schemasDetokenizeResponse"
+        },
+        "/tokenize": {
+          "$ref": "#/components/schemasTokenizerResponse"
+        }
+      },
+      "required": [
+        "/grant/set",
+        "/grant/verify",
+        "/metadata/get",
+        "/metadata/set",
+        "/detokenize",
+        "/tokenize"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

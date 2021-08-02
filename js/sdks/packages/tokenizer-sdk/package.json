@@ -8,7 +8,8 @@
   "scripts": {
     "clean": "rm -rf build",
     "compile": "tsc ./tsconfig.json",
-    "test": "node build/main/index.spec.js"
+    "test": "node build/main/index.spec.js",
+    "openapi:generate": "openapi-generator-cli generate -i ../../../../api-spec/full-tokenizer.yaml -g typescript-axios -o ./src/generated "
   },
   "types": "build/main/index.d.ts",
   "author": "",
@@ -19,10 +20,13 @@
     "@types/tape": "^4.13.0",
     "express": "^4.17.1",
     "tape": "^5.2.2",
-    "typescript": "^4.2.0"
+    "ts-json-schema-generator": "^0.95.0",
+    "typescript": "^4.2.0",
+    "@openapitools/openapi-generator-cli": "^2.3.9"
   },
   "dependencies": {
     "@lunasec/browser-common": "^1.0.0",
+    "axios": "^0.21.1",
     "react-dom": "^17.0.2"
   }
 }

@@ -1,187 +1,165 @@
-import { BadHttpResponseError } from '@lunasec/server-common';
+import { OutgoingHttpHeaders } from 'http';
 
-import { makeSpecificApiClient, SpecificApiClient, TokenizerFailApiResponse } from './api/client';
-import { ValidTokenizerApiRequestTypes } from './api/types';
+import { AxiosError } from 'axios';
+
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { CONFIG_DEFAULTS } from './constants';
+import { Configuration, DefaultApi, GrantType, MetaData } from './generated';
 import {
-  GrantType,
+  GrantTypeEnum,
+  GrantTypeUnion,
+  SuccessOrFailOutput,
   TokenizerClientConfig,
   TokenizerDetokenizeResponse,
   TokenizerDetokenizeToUrlResponse,
+  TokenizerFailApiResponse,
   TokenizerGetMetadataResponse,
-  TokenizerSetGrantResponse,
-  TokenizerSetMetadataResponse,
   TokenizerTokenizeResponse,
-  TokenizerVerifyGrantResponse,
 } from './types';
+
+// Uses an openAPI generated client to query the tokenizer.  The biggest gotchas here are that:
+// 1) Axios returns an res object with the tokenizer's response on the 'data' property, but the tokenizer also wraps its responses with 'data'
+// So the actual response body is res.data.data.  We handle that here
+// 2) Axios throws for any non 200 response code, and then we lose the typing of the error response, so we catch and then stick it back on.
 
 export class Tokenizer {
   readonly config!: TokenizerClientConfig;
-
-  private readonly getMetadataClient!: SpecificApiClient<'getMetadata'>;
-  private readonly setMetadataClient!: SpecificApiClient<'setMetadata'>;
-  private readonly getTokenClient!: SpecificApiClient<'getToken'>;
-  private readonly setTokenClient!: SpecificApiClient<'setToken'>;
-  private readonly setGrantClient!: SpecificApiClient<'setGrant'>;
-  private readonly verifyGrantClient!: SpecificApiClient<'verifyGrant'>;
+  readonly openApi: DefaultApi;
+  private readonly reqOptions: Record<string, any>;
 
   constructor(config?: Partial<TokenizerClientConfig>) {
     // Deep clone config for mutation safety.
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 
-    // The iframe doesnt set this to anything at the moment, not sure if that's okay
+    const headers: OutgoingHttpHeaders = {
+      'Content-Type': 'application/json',
+    };
     const jwtToken = this.config.authenticationToken;
-
-    const headers: Record<string, string> = {};
     if (jwtToken) {
       headers[this.config.headers.auth] = jwtToken;
     }
-
-    const makeApiClient = <T extends ValidTokenizerApiRequestTypes>(endpoint: string) => {
-      return makeSpecificApiClient<T>(this.config.host, endpoint, {
-        method: 'POST',
-        headers,
-      });
-    };
-
-    this.getMetadataClient = makeApiClient<'getMetadata'>(this.config.endpoints.getMetadata);
-    this.setMetadataClient = makeApiClient<'setMetadata'>(this.config.endpoints.setMetadata);
-    this.getTokenClient = makeApiClient<'getToken'>(this.config.endpoints.getToken);
-    this.setTokenClient = makeApiClient<'setToken'>(this.config.endpoints.setToken);
-    this.setGrantClient = makeApiClient<'setGrant'>(this.config.endpoints.setGrant);
-    this.verifyGrantClient = makeApiClient<'verifyGrant'>(this.config.endpoints.verifyGrant);
+    this.reqOptions = { headers }; // This is passed to the openapi client on every request
+    const basePath = this.getBasePath();
+    // openapi stuff
+    const openAPIConfig = new Configuration({ basePath });
+    this.openApi = new DefaultApi(openAPIConfig);
   }
 
-  async setGrant(
-    sessionId: string,
-    tokenId: string,
-    grantType: GrantType
-  ): Promise<TokenizerFailApiResponse | TokenizerSetGrantResponse> {
-    const response = await this.setGrantClient({
-      sessionId,
-      tokenId,
-      grantType,
-    });
-
-    if (!response.success) {
-      return response;
+  private getBasePath(): string {
+    if (this.config.baseRoute !== '') {
+      return new URL(this.config.baseRoute, this.config.host).toString();
     }
-
-    return {
-      success: true,
-    };
+    return new URL(this.config.host).origin;
   }
 
-  async verifyGrant(
-    sessionId: string,
-    tokenId: string,
-    grantType: GrantType
-  ): Promise<TokenizerFailApiResponse | TokenizerVerifyGrantResponse> {
-    const response = await this.verifyGrantClient({
-      sessionId,
-      tokenId,
-      grantType,
-    });
-
-    if (!response.success) {
-      return response;
-    }
-
+  private handleError(e: AxiosError | Error) {
+    // const error = 'response' in e && 'data' in e.response ? e.response.data : e;
     return {
-      success: true,
-      valid: response.data.data.valid,
-    };
+      success: false,
+      error: e,
+    } as TokenizerFailApiResponse;
   }
 
-  async getMetadata(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerGetMetadataResponse> {
-    const response = await this.getMetadataClient({
-      tokenId: tokenId,
-    });
-
-    if (!response.success) {
-      return response;
-    }
-
-    return {
-      success: true,
-      tokenId,
-      // TODO: make sure that data matches expected type with validator
-      metadata: response.data.data.metadata,
-    };
+  public createReadGrant(sessionId: string, tokenId: string) {
+    return this.createAnyGrant(sessionId, tokenId, GrantType.ReadToken);
   }
 
-  async setMetadata<T extends Record<string, any>>(
-    tokenId: string,
-    metadata: T
-  ): Promise<TokenizerFailApiResponse | TokenizerSetMetadataResponse> {
-    // TODO: set up proper typing/schema for the metadata object and share it between the whole project
-    // This check is really hard to do right in JS and we should probably just skip it altogether
-    if (!(metadata instanceof Object)) {
-      throw new Error('Metadata must be an object');
+  public createDataBaseStoreGrant(sessionId: string, tokenId: string) {
+    return this.createAnyGrant(sessionId, tokenId, GrantType.StoreToken);
+  }
+
+  private async createAnyGrant(sessionId: string, tokenId: string, grantType: GrantType) {
+    try {
+      const res = await this.openApi.setGrant(
+        {
+          sessionId,
+          tokenId,
+          grantType: grantType,
+        },
+        this.reqOptions
+      );
+      return {
+        success: res.data.success,
+      };
+    } catch (e) {
+      return this.handleError(e);
     }
+  }
 
-    const response = await this.setMetadataClient({
-      tokenId,
-      metadata,
-    });
-
-    if (!response.success) {
-      return response;
+  // there has got to be a better way than this
+  private convertGrantTypeToEnum(grantTypeString: GrantTypeUnion) {
+    if (grantTypeString === 'read_token') {
+      return GrantTypeEnum.ReadToken;
     }
+    if (grantTypeString === 'store_token') {
+      return GrantTypeEnum.StoreToken;
+    }
+    throw new Error(`Bad grant type passed to tokenizer: ${grantTypeString.toString()}`);
+  }
 
-    return {
-      success: true,
-      tokenId,
-      metadata,
-    };
+  async verifyGrant(sessionId: string, tokenId: string, grantType: GrantTypeUnion) {
+    const ennumifiedGrantType = this.convertGrantTypeToEnum(grantType);
+    try {
+      const res = await this.openApi.verifyGrant(
+        {
+          sessionId,
+          tokenId,
+          grantType: ennumifiedGrantType,
+        },
+        this.reqOptions
+      );
+      return {
+        success: true,
+        valid: res.data.data.valid,
+      };
+    } catch (e) {
+      return this.handleError(e);
+    }
+  }
+
+  async getMetadata(tokenId: string): SuccessOrFailOutput<TokenizerGetMetadataResponse> {
+    try {
+      const res = await this.openApi.getMetaData(
+        {
+          tokenId,
+        },
+        this.reqOptions
+      );
+      return {
+        success: true,
+        metadata: res.data.data.metadata,
+        tokenId: tokenId, // Not sure why we pass this back, seems useless
+      };
+    } catch (e) {
+      return this.handleError(e);
+    }
   }
 
   // TODO: Add another method that _doesn't_ take a key, so that we handle generation.
 
-  async tokenize(
-    input: string | Buffer,
-    metadata?: Record<string, any>
-  ): Promise<TokenizerFailApiResponse | TokenizerTokenizeResponse> {
-    if (metadata === undefined) {
-      metadata = {};
-    }
-
-    const response = await this.setTokenClient({
-      metadata: metadata,
-    });
-    if (!response.success) {
-      return response;
-    }
-
-    if (!response.data.data) {
-      return {
-        success: false,
-        error: new Error('Invalid response from Tokenizer when tokenizing data'),
-      };
-    }
-
-    const data = response.data.data;
-
+  async tokenize(input: string | Buffer, metadata: MetaData): SuccessOrFailOutput<TokenizerTokenizeResponse> {
     try {
-      await uploadToS3WithSignedUrl(data.uploadUrl, data.headers, input);
+      const res = await this.openApi.tokenize(
+        {
+          metadata,
+        },
+        this.reqOptions
+      );
+      const data = res.data.data;
+
+      await uploadToS3WithSignedUrl(data.uploadUrl, data.headers as OutgoingHttpHeaders, input);
 
       return {
         success: true,
         tokenId: data.tokenId,
       };
     } catch (e) {
-      console.error('S3 upload error', e);
-      return {
-        success: false,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        error: e,
-      };
+      return this.handleError(e);
     }
   }
 
-  async detokenize(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeResponse> {
+  async detokenize(tokenId: string): SuccessOrFailOutput<TokenizerDetokenizeResponse> {
     const response = await this.detokenizeToUrl(tokenId);
 
     if (!response.success) {
@@ -197,38 +175,33 @@ export class Tokenizer {
     };
   }
 
-  async detokenizeToUrl(tokenId: string): Promise<TokenizerFailApiResponse | TokenizerDetokenizeToUrlResponse> {
-    const response = await this.getTokenClient({
-      tokenId: tokenId,
-    });
+  async detokenizeToUrl(tokenId: string): SuccessOrFailOutput<TokenizerDetokenizeToUrlResponse> {
+    try {
+      const response = await this.openApi.detokenize(
+        {
+          tokenId,
+        },
+        this.reqOptions
+      );
+      const res = response.data;
 
-    if (!response.success) {
-      if (response.error instanceof BadHttpResponseError) {
-        const httpError = response.error;
-
+      if (!res.data) {
         return {
-          ...response,
-          errorCode: httpError.responseCode,
+          success: false,
+          error: new Error('Invalid response from Tokenizer when detokenizing data'),
         };
       }
 
-      return response;
-    }
+      const { downloadUrl, headers } = res.data;
 
-    if (!response.data.data) {
       return {
-        success: false,
-        error: new Error('Invalid response from Tokenizer when detokenizing data'),
+        success: true,
+        tokenId: tokenId,
+        headers: headers,
+        downloadUrl: downloadUrl,
       };
+    } catch (e) {
+      return this.handleError(e);
     }
-
-    const { downloadUrl, headers } = response.data.data;
-
-    return {
-      success: true,
-      tokenId: tokenId,
-      headers: headers,
-      downloadUrl: downloadUrl,
-    };
   }
 }
