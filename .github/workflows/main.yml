@@ -24,7 +24,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: apt update && apt install chromium-browser
+    - uses: browser-actions/setup-chrome@latest
 
     - run: npx cypress cache path
     - run: npx cypress cache list
@@ -52,7 +52,7 @@ jobs:
     - run: npx cypress install
     - run: npx cypress cache list
     - name: Cypress Run
-      run: npx cypress run --headless --browser chromium
+      run: npx cypress run --headless --browser chrome
       working-directory: js/demo-apps/packages/react-front-end
 
     # Finally, "Post Run satackey/action-docker-layer-caching@v0.0.11",
