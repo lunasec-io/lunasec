@@ -11,4 +11,5 @@ export const CONFIG_DEFAULTS: TokenizerClientConfig = {
   },
 };
 
-export const TOKEN_PREFIX = 'lunasec-';
+export const LUNASEC_TOKEN_REGEXP =
+  /^lunasec-[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
