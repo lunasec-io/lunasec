@@ -8,7 +8,6 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -19,6 +18,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - run: npm i -g cypress
 
     # Pull the latest image to build, and avoid caching pull-only images.
     # (docker pull is faster than caching in most cases.)
@@ -33,6 +34,12 @@ jobs:
 
     - name: Build the stack
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
+    
+    - name: Cypress run
+      uses: cypress-io/github-action@v2
+      with:
+        install: false
+        working-directory: js/demo-apps/packages/react-front-end/
 
     # Finally, "Post Run satackey/action-docker-layer-caching@v0.0.11",
     # which is the process of saving the cache, will be executed.
