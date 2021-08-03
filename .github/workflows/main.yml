@@ -26,33 +26,31 @@ jobs:
 
     - uses: browser-actions/setup-chrome@latest
 
-    - run: npm install typescript cypress
-
-    - run: cypress cache path
-    - run: cypress cache list
+    - run: npm install -g typescript cypress
+    - run: tsc -v
+    - run: cypress -v
     - name: Cache Cypress
       id: cache-cypress
       uses: actions/cache@v1
       with:
         path: ~/.cache/Cypress
         key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-
-    # Pull the latest image to build, and avoid caching pull-only images.
-    # (docker pull is faster than caching in most cases.)
-    - run: docker-compose pull
-
-    # In this step, this action saves a list of existing images,
-    # the cache is created without them in the post run.
-    # It also restores the cache if it exists.
-    - uses: satackey/action-docker-layer-caching@v0.0.11
-      # Ignore the failure of a step and avoid terminating the job.
-      continue-on-error: true
-
-    - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
-
+#
+#    # Pull the latest image to build, and avoid caching pull-only images.
+#    # (docker pull is faster than caching in most cases.)
+#    - run: docker-compose pull
+#
+#    # In this step, this action saves a list of existing images,
+#    # the cache is created without them in the post run.
+#    # It also restores the cache if it exists.
+#    - uses: satackey/action-docker-layer-caching@v0.0.11
+#      # Ignore the failure of a step and avoid terminating the job.
+#      continue-on-error: true
+#
+#    - name: Build the stack
+#      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
+#
     - run: cypress install
-    - run: cypress cache list
     - name: Cypress Run
       run: cypress run --headless --browser chrome
       working-directory: js/demo-apps/packages/react-front-end
