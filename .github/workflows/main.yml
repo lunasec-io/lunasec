@@ -27,6 +27,7 @@ jobs:
     - uses: browser-actions/setup-chrome@latest
 
     - run: npm install typescript cypress
+
     - run: cypress cache path
     - run: cypress cache list
     - name: Cache Cypress
