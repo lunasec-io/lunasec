@@ -103,6 +103,7 @@ services:
     depends_on:
       cdk-init:
         condition: service_completed_successfully
+
 #      customer-back-end:
 #        condition: service_healthy
 #    healthcheck:
