@@ -26,7 +26,7 @@ jobs:
 
     - uses: browser-actions/setup-chrome@latest
 
-    - run: npm install -g typescript cypress
+    - run: npm install -g lerna typescript cypress
     - name: Cache Cypress
       id: cache-cypress
       uses: actions/cache@v1
@@ -34,9 +34,14 @@ jobs:
         path: ~/.cache/Cypress
         key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
+    - run: lerna bootstrap
+
+    - run: npm run compile
+      working-directory: js/sdks/packages/secure-frame-iframe
+
     # Pull the latest image to build, and avoid caching pull-only images.
     # (docker pull is faster than caching in most cases.)
-    - run: docker-compose pull
+    - run: docker-compose -f docker-compose.ci.yaml pull
 
     # In this step, this action saves a list of existing images,
     # the cache is created without them in the post run.
@@ -46,7 +51,7 @@ jobs:
       continue-on-error: true
 
     - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose-ci.yaml up -d
 
     - run: cypress install
     - name: Cypress Run
