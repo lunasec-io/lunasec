@@ -25,6 +25,7 @@ jobs:
     - uses: browser-actions/setup-chrome@latest
 
     - run: npm install -g lerna typescript cypress
+
     - name: Cache Cypress
       id: cache-cypress
       uses: actions/cache@v1
@@ -33,6 +34,13 @@ jobs:
         key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
     - run: lerna bootstrap
+
+    - name: Node modules
+      id: cache-node-modules
+      uses: actions/cache@v1
+      with:
+        path: ./node_modules/
+        key: node-modules-${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
     - run: npm run compile
       working-directory: js/sdks/packages/secure-frame-iframe
