@@ -5,14 +5,12 @@
     { "path": "packages/node-sdk" },
     { "path": "packages/tokenizer-sdk" },
     { "path": "packages/browser-common" },
-    { "path": "packages/js-sdk" },
     { "path": "packages/react-sdk" },
     { "path": "packages/secure-frame-iframe" },
     { "path": "packages/server-common/tsconfig.module.json"},
     { "path": "packages/browser-common/tsconfig.module.json"},
     { "path": "packages/node-sdk/tsconfig.module.json" },
     { "path": "packages/tokenizer-sdk/tsconfig.module.json" },
-    { "path": "packages/js-sdk/tsconfig.module.json" },
     { "path": "packages/react-sdk/tsconfig.module.json" }
   ]
 }
