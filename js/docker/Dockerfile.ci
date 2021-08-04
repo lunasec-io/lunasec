@@ -1,0 +1,17 @@
+FROM node as demo-back-end
+
+WORKDIR /repo/js/demo-apps/packages/express-back-end
+ENTRYPOINT yarn start:dev
+
+FROM node as react-front-end
+
+WORKDIR /repo/js/demo-apps/packages/react-front-end
+ENTRYPOINT npm run start
+
+FROM node as secure-frame-iframe
+
+RUN npm i -g http-server
+
+WORKDIR /repo/js/sdks/packages/secure-frame-iframe
+
+ENTRYPOINT http-server -a 0.0.0.0 -p 8000
