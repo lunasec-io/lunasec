@@ -33,13 +33,6 @@ jobs:
         path: ~/.cache/Cypress
         key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
-    - name: Node modules
-      id: cache-node-modules
-      uses: actions/cache@v1
-      with:
-        path: ./node_modules/
-        key: node-modules-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-
     - run: lerna bootstrap
 
     - run: npm run compile
