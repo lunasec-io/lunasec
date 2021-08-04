@@ -47,7 +47,6 @@ jobs:
 
     # Pull the latest image to build, and avoid caching pull-only images.
     # (docker pull is faster than caching in most cases.)
-    - run: ls
     - run: docker-compose -f docker-compose.ci.yaml pull
 
     # In this step, this action saves a list of existing images,
@@ -58,7 +57,7 @@ jobs:
       continue-on-error: true
 
     - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose-ci.yaml up -d
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.ci.yaml up -d
 
     - run: cypress install
     - name: Cypress Run
