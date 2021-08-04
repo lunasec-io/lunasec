@@ -1,4 +1,3 @@
-import { downloadFile } from '@lunasec/js-sdk';
 import {
   LunaSecConfigContext,
   SecureDownload,
@@ -147,14 +146,6 @@ class App extends React.Component<Record<string, never>, IAppState> {
         </section>
         <section>
           <h3>Secure Download (vanilla js)</h3>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              downloadFile(this.lunaSecDomain, fileToken);
-            }}
-          >
-            Click to trigger download with JS
-          </button>
         </section>
       </>
     );
