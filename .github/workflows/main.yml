@@ -58,6 +58,7 @@ jobs:
       working-directory: js/demo-apps/packages/react-front-end
 
     - uses: actions/upload-artifact@v2
+      if: ${{ always() }}
       with:
         name: cypress-recording
         path: js/demo-apps/packages/react-front-end/cypress/videos/basic_integration_spec.js.mp4
