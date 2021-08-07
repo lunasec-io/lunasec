@@ -11,8 +11,6 @@
     "types": ["node", "@types/jest"],
     "esModuleInterop": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx",
-    "./src/tokenizer-request-schema.json"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "references": [{ "path": "../server-common"}]
 }
