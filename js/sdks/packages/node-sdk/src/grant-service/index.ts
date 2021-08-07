@@ -17,7 +17,7 @@ export class LunaSecGrantService {
     // TODO (cthompson) as long as the node-sdk is the source of truth for authentication
     // this is ok. Once we are using an auth provider for this information, this will need to change.
     // in the future this will happen inside a lambda instead of making a request to the go server
-    const authenticationToken = await this.auth.createAuthenticationJWT({});
+    const authenticationToken = await this.auth.createAuthenticationJWT('application', {});
     return new Tokenizer({
       authenticationToken: authenticationToken.toString(),
     });
@@ -49,8 +49,9 @@ export class LunaSecGrantService {
   }
 
   // This private function handles the verifying of just one grant, and is used by the public function below
+
   private async verifyOneGrant(sessionId: string, tokenId: string, grantType: GrantTypeUnion) {
-    const authenticationToken = await this.auth.createAuthenticationJWT({});
+    const authenticationToken = await this.auth.createAuthenticationJWT('application', {});
 
     const tokenizer = new Tokenizer({
       authenticationToken: authenticationToken.toString(),

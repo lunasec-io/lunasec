@@ -25,3 +25,4 @@ build/
 .cdk.staging
 cdk.out
 lunasec_build/
+lunasec_local_build/

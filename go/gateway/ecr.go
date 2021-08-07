@@ -28,7 +28,7 @@ type AwsECRGateway interface {
 	GetLatestImageTag(repoName string) (tag string, err error)
 }
 
-func NewAwsECRGatewayWithoutConfig() AwsECRGateway {
+func NewAwsECRGateway() AwsECRGateway {
 	sess, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	})

@@ -1,4 +1,4 @@
-package model
+package types
 
 // SaltsAndKey is the return value for GenerateSaltsAndKey
 type SaltsAndKey struct {

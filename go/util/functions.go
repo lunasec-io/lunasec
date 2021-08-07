@@ -3,12 +3,12 @@ package util
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"io/ioutil"
 	"os"
 )
 
-func loadFunctionLookup(functionsPath string) (functionLookup model.FunctionLookup, err error) {
+func loadFunctionLookup(functionsPath string) (functionLookup types.FunctionLookup, err error) {
 	var data []byte
 
 	data, err = ioutil.ReadFile(functionsPath)
@@ -27,10 +27,10 @@ func loadFunctionLookup(functionsPath string) (functionLookup model.FunctionLook
 
 // GetFunctionConfig loads the function configuration for a given function name or a function name defined
 // in an environment variable.
-func GetFunctionConfig(functionsPath string, functionName string) (funcConfig model.RefineryFunction, err error) {
+func GetFunctionConfig(functionsPath string, functionName string) (funcConfig types.RefineryFunction, err error) {
 	var (
-		ok bool
-		functionLookup model.FunctionLookup
+		ok             bool
+		functionLookup types.FunctionLookup
 	)
 
 	functionLookup, err = loadFunctionLookup(functionsPath)

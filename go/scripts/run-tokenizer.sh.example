@@ -1,1 +1,0 @@
-AUTH_PROVIDER_PUBLIC_KEY=$(cat fixtures/secureframe/auth_provider.pub) STAGE=DEV SIGNING_KEYS_ARN="arn:aws:secretsmanager:us-west-2:623905218559:secret:secure-frame-signing-keys-0267329f-f777-4098-bb83-226d358847e2-hPM2fq" TOKENIZER_HTTP_ADDR="0.0.0.0:37767" ./build/tokenizer

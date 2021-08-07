@@ -1,4 +1,4 @@
-package model
+package types
 
 // Token ...
 type Token string

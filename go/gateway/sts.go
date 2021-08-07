@@ -3,7 +3,6 @@ package gateway
 import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sts"
-	"github.com/refinery-labs/loq/util"
 )
 
 type awsStsGateway struct {
@@ -14,12 +13,7 @@ type AwsStsGateway interface {
 	GetCurrentAccountId() (accountId string, err error)
 }
 
-func NewAwsStsGateway() AwsStsGateway {
-	sess, err := session.NewSession()
-
-	if err != nil {
-		util.Panicf("Failed to instantiate sts session %s", err)
-	}
+func NewAwsStsGateway(sess *session.Session) AwsStsGateway {
 	return &awsStsGateway{
 		session: sess,
 	}
