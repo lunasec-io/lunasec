@@ -47,12 +47,12 @@ export class Tokenizer {
     this.openApi = new DefaultApi(openAPIConfig);
   }
 
-  private handleError(e: AxiosError | Error) {
+  private handleError(e: AxiosError | Error): TokenizerFailApiResponse {
     // const error = 'response' in e && 'data' in e.response ? e.response.data : e;
     return {
       success: false,
       error: e,
-    } as TokenizerFailApiResponse;
+    };
   }
 
   public createReadGrant(sessionId: string, tokenId: string) {
