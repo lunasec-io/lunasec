@@ -48,7 +48,6 @@ export class Tokenizer {
   }
 
   private handleError(e: AxiosError | Error): TokenizerFailApiResponse {
-    // const error = 'response' in e && 'data' in e.response ? e.response.data : e;
     return {
       success: false,
       error: e,
