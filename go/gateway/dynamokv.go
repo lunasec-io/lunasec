@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 )
@@ -17,32 +17,32 @@ import (
 var primaryKey = "Key"
 
 const (
-	MetaStore    = model.KVStore("metadata")
-	KeyStore     = model.KVStore("keys")
-	SessionStore = model.KVStore("sessions")
-	GrantStore = model.KVStore("grants")
+	MetaStore    = types.KVStore("metadata")
+	KeyStore     = types.KVStore("keys")
+	SessionStore = types.KVStore("sessions")
+	GrantStore = types.KVStore("grants")
 )
 
 type dynamoKvGateway struct {
-	dynamoKvGatewayConfig
+	DynamoKvGatewayConfig
 	logger *zap.Logger
 	db     *dynamodb.DynamoDB
 }
 
-type dynamoKvGatewayConfig struct {
-	TableNames map[model.KVStore]string `yaml:"table_names"`
+type DynamoKvGatewayConfig struct {
+	TableNames map[types.KVStore]string `yaml:"table_names"`
 }
 
 // DynamoKvGateway ...
 type DynamoKvGateway interface {
-	Get(store model.KVStore, key string) (string, error)
-	Set(store model.KVStore, key string, value string) error
+	Get(store types.KVStore, key string) (string, error)
+	Set(store types.KVStore, key string, value string) error
 }
 
 // NewDynamoKvGateway...
-func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider) DynamoKvGateway {
+func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider, sess *session.Session) DynamoKvGateway {
 	var (
-		gatewayConfig dynamoKvGatewayConfig
+		gatewayConfig DynamoKvGatewayConfig
 	)
 
 	err := provider.Get("aws_gateway").Populate(&gatewayConfig)
@@ -51,24 +51,36 @@ func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider) DynamoKvGa
 		panic(err)
 	}
 
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}))
-
 	logger.Debug("creating new dynamodb session")
 	db := dynamodb.New(sess)
 
 	return &dynamoKvGateway{
-		dynamoKvGatewayConfig: gatewayConfig,
+		DynamoKvGatewayConfig: gatewayConfig,
 		logger:                logger,
 		db:                    db,
 	}
 }
 
-func (s *dynamoKvGateway) Get(store model.KVStore, key string) (string, error) {
-	tableName, ok := s.TableNames[store]
+func (s *dynamoKvGateway) getTableName(store types.KVStore) (tableName string, err error) {
+	var (
+		ok bool
+	)
+	tableName, ok = s.TableNames[store]
 	if !ok {
-		return "", fmt.Errorf("unable to find table name for store: %s", store)
+		err = fmt.Errorf("unable to find table name for store: %s", store)
+		return
+	}
+	if tableName == "" {
+		err = fmt.Errorf("table name found, but was assigned to empty string for store: %s", store)
+		return
+	}
+	return
+}
+
+func (s *dynamoKvGateway) Get(store types.KVStore, key string) (string, error) {
+	tableName, err := s.getTableName(store)
+	if err != nil {
+		return "", err
 	}
 
 	dbResult, err := s.db.GetItem(&dynamodb.GetItemInput{
@@ -84,7 +96,7 @@ func (s *dynamoKvGateway) Get(store model.KVStore, key string) (string, error) {
 		return "", err
 	}
 
-	metadata := model.Metadata{}
+	metadata := types.Metadata{}
 
 	if err = dynamodbattribute.UnmarshalMap(dbResult.Item, &metadata); err != nil {
 		return "", err
@@ -93,8 +105,13 @@ func (s *dynamoKvGateway) Get(store model.KVStore, key string) (string, error) {
 	return metadata.Value, nil
 }
 
-func (s *dynamoKvGateway) Set(store model.KVStore, key string, value string) error {
-	metadata := model.Metadata{
+func (s *dynamoKvGateway) Set(store types.KVStore, key string, value string) error {
+	tableName, err := s.getTableName(store)
+	if err != nil {
+		return err
+	}
+
+	metadata := types.Metadata{
 		Key:       key,
 		Value:     value,
 		Timestamp: time.Now().Unix(),
@@ -104,11 +121,6 @@ func (s *dynamoKvGateway) Set(store model.KVStore, key string, value string) err
 
 	if err != nil {
 		return err
-	}
-
-	tableName, ok := s.TableNames[store]
-	if !ok {
-		return fmt.Errorf("unable to find table name for store: %s", store)
 	}
 
 	input := &dynamodb.PutItemInput{

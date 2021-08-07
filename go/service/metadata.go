@@ -3,9 +3,10 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"time"
 
 	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/util"
 )
 
@@ -15,8 +16,8 @@ type metadataService struct {
 
 // MetadataService manages metadata for secrets
 type MetadataService interface {
-	SetMetadata(token model.Token, metadata interface{}) error
-	GetMetadata(token model.Token) (interface{}, error)
+	SetMetadata(token types.Token, authorInfo interface{}, customMetadata interface{}) (err error)
+	GetMetadata(token types.Token) (metadata TokenMetadata, err error)
 }
 
 // NewMetadataService ...
@@ -26,8 +27,24 @@ func NewMetadataService(kv gateway.DynamoKvGateway) MetadataService {
 	}
 }
 
+const TokenMetadataSchemaVersion = 1
+
+type TokenMetadata struct {
+	SchemaVersion int64 `json:"schema_version"`
+	CreatedAt int64 `json:"created_at"`
+	AuthorInfo interface{} `json:"author_info"`
+	CustomMetadata interface{} `json:"custom_metadata"`
+}
+
 // SetMetadata ...
-func (s *metadataService) SetMetadata(token model.Token, metadata interface{}) (err error) {
+func (s *metadataService) SetMetadata(token types.Token, authorInfo interface{}, customMetadata interface{}) (err error) {
+	metadata := TokenMetadata{
+		SchemaVersion: TokenMetadataSchemaVersion,
+		CreatedAt: time.Now().Unix(),
+		AuthorInfo: authorInfo,
+		CustomMetadata: customMetadata,
+	}
+
 	serializedMetadata, err := json.Marshal(metadata)
 	if err != nil {
 		return
@@ -36,14 +53,14 @@ func (s *metadataService) SetMetadata(token model.Token, metadata interface{}) (
 }
 
 // GetMetadata ...
-func (s *metadataService) GetMetadata(token model.Token) (metadata interface{}, err error) {
+func (s *metadataService) GetMetadata(token types.Token) (metadata TokenMetadata, err error) {
 	meta, err := s.kv.Get(gateway.MetaStore, util.Sha512Sum(string(token)))
 	if err != nil {
 		return
 	}
 
 	if len(meta) == 0 {
-		err = errors.New("unable to locate data for token")
+		err = errors.New("unable to locate metadata for token")
 		return
 	}
 

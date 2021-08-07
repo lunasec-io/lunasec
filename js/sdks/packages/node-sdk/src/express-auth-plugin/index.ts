@@ -44,7 +44,8 @@ export class LunaSecExpressAuthPlugin {
     // This gets set into the "access_token" cookie by the Secure Frame Backend after the redirect
     let access_token = undefined;
     try {
-      access_token = await this.auth.createAuthenticationJWT({ session_id: sessionId });
+      const claims = { session_id: sessionId };
+      access_token = await this.auth.createAuthenticationJWT('user', claims);
     } catch (e) {
       console.error(`error while attempting to create authentication token: ${e}`);
     }
@@ -53,10 +54,9 @@ export class LunaSecExpressAuthPlugin {
       return null;
     }
 
-    const redirectUrl = new URL(this.secureFrameUrl);
+    const redirectUrl = new URL('/session/create', this.secureFrameUrl);
     redirectUrl.searchParams.append('state', stateToken);
     redirectUrl.searchParams.append('openid_token', access_token.toString());
-    redirectUrl.pathname = '/session/create';
     return redirectUrl;
   }
 
@@ -71,7 +71,6 @@ export class LunaSecExpressAuthPlugin {
     }
 
     const sessionId = await this.config.sessionIdProvider(req);
-    console.log('sessionId is ', sessionId);
     if (sessionId === null) {
       res.status(400).send({
         success: false,
@@ -95,7 +94,21 @@ export class LunaSecExpressAuthPlugin {
     res.redirect(redirectUrl.href);
   }
 
+  async handleJwksRequest(_req: Request, res: Response) {
+    const jwkConfig = await this.auth.getJwksConfig();
+    const keys = {
+      keys: [
+        {
+          ...jwkConfig,
+          kid: 'lunasec-signing-key'
+        }
+      ]
+    }
+    res.json(keys).status(200);
+  }
+
   register(app: Router) {
     app.get('/secure-frame', cookieParser(), this.handleSecureFrameAuthRequest.bind(this));
+    app.get('/.lunasec/jwks.json', this.handleJwksRequest.bind(this));
   }
 }

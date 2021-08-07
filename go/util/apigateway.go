@@ -2,7 +2,7 @@ package util
 
 import (
 	"encoding/json"
-	"github.com/refinery-labs/loq/model"
+	"github.com/refinery-labs/loq/types"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -40,7 +40,7 @@ func MarshalApiGatewayResponse(status int, headers map[string]string, data inter
 
 // ApiGatewayError generates an events.APIGatewayProxyResponse from an error value.
 func ApiGatewayError(err error) (events.APIGatewayProxyResponse, error) {
-	httpErr := model.HTTPError{
+	httpErr := types.HTTPError{
 		Error: err.Error(),
 	}
 
