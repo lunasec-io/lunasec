@@ -86,7 +86,7 @@ func BuildCommand(c *cli.Context) (err error) {
 
 func DeployCommand(c *cli.Context) (err error) {
 	buildBeforeDeploying := c.Bool("build")
-	localDev := false
+	localDev := c.Bool("local")
 	configOutput := c.String("config-output")
 	if configOutput == "" {
 		configOutput = "config/secureframe/"
