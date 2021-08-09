@@ -43,7 +43,7 @@ jobs:
       continue-on-error: true
 
     - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up -d
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
 
     - name: Cypress Run
       run: docker run -v $PWD:/e2e -w /e2e --entrypoint=cypress --network host cypress/included:8.1.0 run --browser chrome
