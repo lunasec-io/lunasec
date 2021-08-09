@@ -31,11 +31,8 @@ jobs:
       # Ignore the failure of a step and avoid terminating the job.
       continue-on-error: true
 
-    - name: Build and run the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml up -d
-
     - name: Run e2e tests
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.ci.yaml up
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --exit-code-from integration-test demo integration-test
 
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
