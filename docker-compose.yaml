@@ -1,6 +1,26 @@
 version: "3.8"
 
 services:
+  local-dependencies:
+    image: rwgrim/docker-noop
+    depends_on:
+      - localstack
+      - proxy
+      - cdk-init
+  demo:
+    image: rwgrim/docker-noop
+    depends_on:
+      - local-dependencies
+      - secure-frame-iframe
+      - customer-front-end
+      - customer-back-end
+      - secureframe
+  ci:
+    image: rwgrim/docker-noop
+    depends_on:
+      - demo
+      - integration-test
+
   secure-frame-iframe:
     build:
       context: .
@@ -9,6 +29,7 @@ services:
     ports:
       - "8000:8000"
   customer-front-end:
+    hostname: customer-front-end
     build:
       context: .
       dockerfile: js/docker/Dockerfile.demo
@@ -29,12 +50,6 @@ services:
   #        interval: 10s
   #        timeout: 5s
   #        retries: 5
-  local-dependencies:
-    image: rwgrim/docker-noop
-    depends_on:
-      - localstack
-      - proxy
-      - cdk-init
   localstack:
     container_name: localstack
     hostname: localstack
@@ -88,6 +103,7 @@ services:
       localstack:
         condition: service_healthy
   secureframe:
+    hostname: secureframe
     env_file:
       - .env.dev
     build:
@@ -110,3 +126,11 @@ services:
 #      interval: 10s
 #      timeout: 5s
 #      retries: 5
+
+  integration-test:
+    image: cypress/included:8.1.0
+    entrypoint: cypress
+    command: run --browser chrome
+    working_dir: /e2e
+    volumes:
+    - ./js/demo-apps/packages/react-front-end:/e2e
