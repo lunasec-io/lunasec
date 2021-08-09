@@ -3,7 +3,7 @@ ErrorResponse:
   properties:
     success:
       type: boolean
-    error:
+    error: #human readable string
       type: string
     errorCode: #this is optional
       type: number
