@@ -1,32 +1,40 @@
 version: "3.8"
 
 services:
-  secure-frame-iframe:
-    build:
-      context: .
-      dockerfile: js/docker/Dockerfile.ci
-      target: secure-frame-iframe
-    ports:
-      - "8000:8000"
+  integration-test:
+    image: cypress/included:8.1.0
+    entrypoint: cypress
+    command: run --browser chrome
+    working_dir: /e2e
     volumes:
-      - .:/repo
-  customer-front-end:
-    build:
-      context: .
-      dockerfile: js/docker/Dockerfile.ci
-      target: react-front-end
-    ports:
-      - "3000:3000"
-    volumes:
-      - .:/repo
-  customer-back-end:
-    build:
-      context: .
-      dockerfile: js/docker/Dockerfile.ci
-      target: demo-back-end
-    ports:
-      - "3001:3001"
-    env_file:
-      - .env.dev
-    volumes:
-      - .:/repo
+      - ./js/demo-apps/packages/react-front-end:/e2e
+    network_mode: host
+#  secure-frame-iframe:
+#    build:
+#      context: .
+#      dockerfile: js/docker/Dockerfile.ci
+#      target: secure-frame-iframe
+#    ports:
+#      - "8000:8000"
+#    volumes:
+#      - .:/repo
+#  customer-front-end:
+#    build:
+#      context: .
+#      dockerfile: js/docker/Dockerfile.ci
+#      target: react-front-end
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - .:/repo
+#  customer-back-end:
+#    build:
+#      context: .
+#      dockerfile: js/docker/Dockerfile.ci
+#      target: demo-back-end
+#    ports:
+#      - "3001:3001"
+#    env_file:
+#      - .env.dev
+#    volumes:
+#      - .:/repo

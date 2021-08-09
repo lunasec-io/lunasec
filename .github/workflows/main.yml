@@ -22,7 +22,7 @@ jobs:
 
     # Pull the latest image to build, and avoid caching pull-only images.
     # (docker pull is faster than caching in most cases.)
-    - run: docker-compose pull
+    - run: docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml pull
 
     # In this step, this action saves a list of existing images,
     # the cache is created without them in the post run.
@@ -31,8 +31,11 @@ jobs:
       # Ignore the failure of a step and avoid terminating the job.
       continue-on-error: true
 
-    - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d ci
+    - name: Build and run the stack
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml up -d
+
+    - name: Run e2e tests
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.ci.yaml run
 
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
