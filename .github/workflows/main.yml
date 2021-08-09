@@ -32,7 +32,7 @@ jobs:
       continue-on-error: true
 
     - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up ci -d
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d ci
 
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
