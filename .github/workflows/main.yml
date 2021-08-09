@@ -20,9 +20,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: npm run compile
-      working-directory: js/sdks/packages/secure-frame-iframe
-
     # Pull the latest image to build, and avoid caching pull-only images.
     # (docker pull is faster than caching in most cases.)
     - run: docker-compose pull
