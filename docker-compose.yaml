@@ -7,6 +7,14 @@ services:
       - localstack
       - proxy
       - cdk-init
+  demo:
+    image: rwgrim/docker-noop
+    depends_on:
+      - local-dependencies
+      - secure-frame-iframe
+      - customer-front-end
+      - customer-back-end
+      - secureframe
 
   secure-frame-iframe:
     build:

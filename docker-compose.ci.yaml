@@ -8,7 +8,12 @@ services:
     working_dir: /e2e
     volumes:
       - ./js/demo-apps/packages/react-front-end:/e2e
+      - /tmp/.X11-unix:/tmp/.X11-unix
     network_mode: host
+    depends_on:
+      - demo
+    environment:
+      - DISPLAY=${DISPLAY}
 #  secure-frame-iframe:
 #    build:
 #      context: .

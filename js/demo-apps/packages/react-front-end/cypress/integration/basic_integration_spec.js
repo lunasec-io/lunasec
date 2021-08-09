@@ -14,6 +14,12 @@ describe('tokenize_and_detokenize', function () {
             url: 'http://localhost:37766/detokenize',
         }).as('detokenizeRequest');
 
+        cy.intercept({
+            url: 'http://localhost:37766/frame',
+        }, (req) => {
+            cy.task('log', JSON.stringify(req))
+        });
+
         cy.iframe('.secure-textarea-container-text-area > iframe').as('textAreaIframe')
         cy.iframe('.secure-input-container-email > iframe').as('emailIframe')
 
