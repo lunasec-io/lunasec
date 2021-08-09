@@ -14,8 +14,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # prevents extra Cypress installation progress messages
-      CI: 1
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
 
@@ -24,14 +22,7 @@ jobs:
 
     - uses: browser-actions/setup-chrome@latest
 
-    - run: npm install -g lerna typescript cypress
-
-    - name: Cache Cypress
-      id: cache-cypress
-      uses: actions/cache@v1
-      with:
-        path: ~/.cache/Cypress
-        key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+    - run: npm install -g lerna typescript
 
     - run: lerna bootstrap
 
@@ -52,10 +43,10 @@ jobs:
       continue-on-error: true
 
     - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --build -d
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up -d
 
     - name: Cypress Run
-      run: docker run -it -v $PWD:/e2e -w /e2e --entrypoint=cypress --network host cypress/included:8.1.0 run --browser chrome
+      run: docker run -v $PWD:/e2e -w /e2e --entrypoint=cypress --network host cypress/included:8.1.0 run --browser chrome
       working-directory: js/demo-apps/packages/react-front-end
 
     - uses: actions/upload-artifact@v2
