@@ -38,7 +38,7 @@ describe('tokenize_and_detokenize', function () {
                 return;
             }
             const resp = interception.response.body;
-            cy.task('log', `tokenize response: ${resp}`)
+            cy.task('log', `tokenize response: ${JSON.stringify(resp)}`)
             assert.ok(resp.success, 'request was successful')
             assert.isDefined(resp.data.tokenId, 'tokenId was present in response')
             assert.isDefined(resp.data.uploadUrl, 'uploadUrl was present in response')
@@ -51,7 +51,7 @@ describe('tokenize_and_detokenize', function () {
                 return;
             }
             const resp = interception.response.body;
-            cy.task('log', `detokenize response: ${resp}`)
+            cy.task('log', `detokenize response: ${JSON.stringify(resp)}`)
             assert.ok(resp.success, 'request was successful')
             assert.isDefined(resp.data.downloadUrl, 'downloadUrl was present in response')
             assert.isDefined(resp.data.headers, 'headers was present in response')
