@@ -4,7 +4,7 @@ describe('tokenize_and_detokenize', function () {
     it('text_data', function () {
         cy.viewport(1059, 948)
 
-        cy.visit('http://localhost:3000/')
+        cy.visit('http://customer-front-end:3000/')
 
         cy.intercept({
             url: 'http://localhost:37766/tokenize',

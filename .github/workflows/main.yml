@@ -20,20 +20,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: browser-actions/setup-chrome@latest
-
-    - run: npm install -g lerna typescript
-
-    - run: lerna bootstrap
-
     - run: npm run compile
       working-directory: js/sdks/packages/secure-frame-iframe
 
     # Pull the latest image to build, and avoid caching pull-only images.
     # (docker pull is faster than caching in most cases.)
-    - run: docker-compose -f docker-compose.ci.yaml pull
-
-    - run: docker pull cypress/included:8.1.0
+    - run: docker-compose pull
 
     # In this step, this action saves a list of existing images,
     # the cache is created without them in the post run.
@@ -43,11 +35,7 @@ jobs:
       continue-on-error: true
 
     - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
-
-    - name: Cypress Run
-      run: docker run -v $PWD:/e2e -w /e2e --entrypoint=cypress --network host cypress/included:8.1.0 run --browser chrome
-      working-directory: js/demo-apps/packages/react-front-end
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up ci -d
 
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
