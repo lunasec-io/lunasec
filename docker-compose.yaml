@@ -7,19 +7,6 @@ services:
       - localstack
       - proxy
       - cdk-init
-  demo:
-    image: rwgrim/docker-noop
-    depends_on:
-      - local-dependencies
-      - secure-frame-iframe
-      - customer-front-end
-      - customer-back-end
-      - secureframe
-  ci:
-    image: rwgrim/docker-noop
-    depends_on:
-      - demo
-      - integration-test
 
   secure-frame-iframe:
     build:
@@ -126,11 +113,3 @@ services:
 #      interval: 10s
 #      timeout: 5s
 #      retries: 5
-
-  integration-test:
-    image: cypress/included:8.1.0
-    entrypoint: cypress
-    command: run --browser chrome
-    working_dir: /e2e
-    volumes:
-    - ./js/demo-apps/packages/react-front-end:/e2e
