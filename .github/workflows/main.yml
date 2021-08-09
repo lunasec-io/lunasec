@@ -35,7 +35,7 @@ jobs:
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml up -d
 
     - name: Run e2e tests
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.ci.yaml run
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.ci.yaml up
 
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
