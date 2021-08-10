@@ -1,5 +1,5 @@
+import { LunaSecError } from '@lunasec/browser-common';
 import { Tokenizer } from '@lunasec/tokenizer-sdk';
-
 // 1 fetch filename from metadata and s3 headers in parallel
 // 2 Put them onto the a tag
 // 3 User clicks the tag
@@ -26,9 +26,15 @@ async function getFileInfo(token: string, tokenizer: Tokenizer): Promise<FileInf
   }
 
   const meta = metaRes.metadata;
-  if (!meta || !('fileinfo' in meta)) {
-    throw new Error('No metadata for file token ');
+
+  if (meta.dataType !== 'file' || !('fileinfo' in meta)) {
+    throw new LunaSecError({
+      name: 'notFileMetaData',
+      code: 400,
+      message: "Couldn't find metadata information for a file, it may have been the wrong type of token.",
+    });
   }
+
   const fileMeta = meta.fileinfo;
   return {
     filename: fileMeta.filename,
