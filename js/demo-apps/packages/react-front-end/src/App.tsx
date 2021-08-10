@@ -24,11 +24,13 @@ interface FormData {
 interface IAppState {
   formData: FormData;
   authError: string | null;
+  lunaSecErrors: string[];
 }
 
 const defaultState: IAppState = {
   formData: { files: [] },
   authError: null,
+  lunaSecErrors: [],
 };
 
 class App extends React.Component<Record<string, never>, IAppState> {
@@ -113,6 +115,11 @@ class App extends React.Component<Record<string, never>, IAppState> {
     void this.uploadFormDataToDb(this.state.formData);
   }
 
+  errorHandler(lunaSecError: { code: number; error: string }) {
+    console.error('Iframe sent error: ', lunaSecError);
+    this.setState({ lunaSecErrors: this.state.lunaSecErrors.concat([lunaSecError.error]) });
+  }
+
   emailValidated(isValid: boolean) {
     console.log(isValid ? 'Email is valid' : 'Email is not valid');
     this.isValid = isValid;
@@ -128,7 +135,12 @@ class App extends React.Component<Record<string, never>, IAppState> {
         <section>
           <h3>Secure Download (react)</h3>
           <div>
-            <SecureDownload name="securefile.pdf" token={fileToken} className="test-secure-downloader" />
+            <SecureDownload
+              name="securefile.pdf"
+              token={fileToken}
+              className="test-secure-downloader"
+              errorHandler={(e) => this.errorHandler(e)}
+            />
           </div>
         </section>
         <section>
@@ -163,6 +175,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
               onTokenChange={(tokens) => {
                 this.handleUploaderChange(tokens);
               }}
+              errorHandler={(e) => this.errorHandler(e)}
             />
           </div>
         </section>
@@ -178,17 +191,26 @@ class App extends React.Component<Record<string, never>, IAppState> {
       return (
         <section>
           <p style={{ color: 'red' }}>{this.state.authError}</p>
-          <a href="http://localhost:3001/set-id-token">
-            Login
-          </a>
+          <a href="http://localhost:3001/set-id-token">Login</a>
         </section>
       );
     }
   }
+
+  renderLunaSecErrors() {
+    const errors = this.state.lunaSecErrors.map((errorMessage) => (
+      <p key={errorMessage} style={{ color: 'red' }}>
+        {errorMessage}
+      </p>
+    ));
+    return <section>{errors}</section>;
+  }
+
   renderForm() {
     return (
       <section>
         {this.renderAuthError()}
+        {this.renderLunaSecErrors()}
         <h2>Secure Form</h2>
         <SecureForm onSubmit={(e) => this.persistTokens(e)}>
           <SecureTextArea
@@ -196,6 +218,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
             token={this.state.formData.text_area}
             onChange={(e) => this.handleTextAreaChange(e)}
             onBlur={(e) => console.log('blur1', e)}
+            errorHandler={(e) => this.errorHandler(e)}
           />
           <SecureInput
             name="email"
@@ -207,6 +230,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
             onBlur={(e) => console.log('blur2', e)}
             className="test-class"
             placeholder="Enter Your Email"
+            errorHandler={(e) => this.errorHandler(e)}
           />
           {/*an example of a plaintext field coexisting just fine with the secure components*/}
           <input
@@ -227,6 +251,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
                 name="demo-paragraph"
                 token={this.state.formData.text_area}
                 className="test-secure-span"
+                errorHandler={(e) => this.errorHandler(e)}
               />
             </div>
           </section>
