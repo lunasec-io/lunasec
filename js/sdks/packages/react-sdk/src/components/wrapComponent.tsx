@@ -6,6 +6,7 @@ import {
   generateSecureNonce,
   getStyleInfo,
   LunaSecAuthentication,
+  LunaSecError,
   ReadElementStyle,
   triggerBlur,
   triggerFocus,
@@ -279,7 +280,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
           this.formContext.submit();
           break;
         case 'NotifyOnError':
-          this.props.errorHandler(notification.data);
+          this.props.errorHandler(new LunaSecError(notification.data));
           break;
       }
     }
@@ -421,8 +422,16 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       };
 
       // clean out our lunasec props so they dont get passed into the wrapped component as html params
-      const { token, onTokenChange, onValidate, validator, formContext, lunaSecConfigContext, ...scrubbedProps } =
-        this.props;
+      const {
+        token,
+        onTokenChange,
+        onValidate,
+        validator,
+        formContext,
+        lunaSecConfigContext,
+        errorHandler,
+        ...scrubbedProps
+      } = this.props;
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {
