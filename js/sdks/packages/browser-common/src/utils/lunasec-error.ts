@@ -1,19 +1,23 @@
 export interface LunaSecErrorProperties {
   name: string;
   message: string;
-  code: number;
+  code: string;
 }
 
 export class LunaSecError extends Error implements LunaSecErrorProperties {
   name: string;
   message: string;
-  code: number;
+  code: string;
 
-  constructor(e: LunaSecErrorProperties) {
+  constructor(e: LunaSecErrorProperties | Error) {
     super(e.name);
     this.name = e.name;
     this.message = e.message;
-    this.code = e.code;
+    if ('code' in e) {
+      this.code = e.code;
+      return;
+    }
+    this.code = '500';
   }
 
   toJSON(): LunaSecErrorProperties {
