@@ -11,7 +11,13 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
     network_mode: host
     depends_on:
-      - demo
+      - localstack
+      - proxy
+      - cdk-init
+      - secure-frame-iframe
+      - customer-front-end
+      - customer-back-end
+      - secureframe
     environment:
       - DISPLAY=${DISPLAY}
 #  secure-frame-iframe:
