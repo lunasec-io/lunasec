@@ -73,6 +73,7 @@ export class FrameMessageCreator {
       'NotifyOnFullyLoaded',
       'NotifyOnValidate',
       'NotifyOnSubmit',
+      'NotifyOnError',
     ];
     if (!notificationTypes.includes(notification.command)) {
       throw new Error(`Received Frame Notification of unknown type, allowed types are ${notificationTypes.toString()}`);

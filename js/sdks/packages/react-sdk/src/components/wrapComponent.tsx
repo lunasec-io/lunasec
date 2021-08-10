@@ -278,6 +278,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         case 'NotifyOnSubmit':
           this.formContext.submit();
           break;
+        case 'NotifyOnError':
+          this.props.errorHandler(notification.data);
+          break;
       }
     }
 
