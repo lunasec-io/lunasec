@@ -32,7 +32,7 @@ jobs:
       continue-on-error: true
 
     - name: Run e2e tests
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --exit-code-from integration-test --build --force-recreate demo integration-test
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up demo integration-test
 
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
