@@ -1,4 +1,11 @@
-import { AttributesMessage, patchStyle, safeParseJson, StyleInfo, ValidatorName } from '@lunasec/browser-common';
+import {
+  AttributesMessage,
+  LunaSecError,
+  patchStyle,
+  safeParseJson,
+  StyleInfo,
+  ValidatorName,
+} from '@lunasec/browser-common';
 import { ClassLookup, TagLookup } from '@lunasec/react-sdk';
 
 import { initializeUploader } from './initialize-uploader';
@@ -143,7 +150,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
         await handleDownload(token, this.secureElement as HTMLAnchorElement, this.rpc.tokenizer, attrs.hidden || false);
       } catch (e) {
         // TODO: Make this less ugly (it's blue atm and garbage lol)
-        this.secureElement.textContent = 'Error: Missing File';
+        this.sendErrorMessage({});
       }
     } else {
       const value = await this.rpc.detokenize(token);
@@ -182,6 +189,14 @@ export class SecureFrame<E extends keyof ClassLookup> {
       command: 'NotifyOnValidate',
       frameNonce: this.frameNonce,
       data: { isValid },
+    });
+  }
+
+  sendErrorMessage(e: LunaSecError) {
+    this.rpc.sendMessageToParentFrame({
+      command: 'NotifyOnError',
+      frameNonce: this.frameNonce,
+      data: e,
     });
   }
 
