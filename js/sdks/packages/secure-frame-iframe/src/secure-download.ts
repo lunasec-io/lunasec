@@ -29,8 +29,8 @@ async function getFileInfo(token: string, tokenizer: Tokenizer): Promise<FileInf
 
   if (meta.dataType !== 'file' || !('fileinfo' in meta)) {
     throw new LunaSecError({
-      name: 'notFileMetaData',
-      code: 400,
+      name: 'wrongMetaDataType',
+      code: '400',
       message: "Couldn't find metadata information for a file, it may have been the wrong type of token.",
     });
   }

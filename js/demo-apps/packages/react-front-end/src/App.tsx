@@ -1,6 +1,7 @@
 import { downloadFile } from '@lunasec/js-sdk';
 import {
   LunaSecConfigContext,
+  LunaSecError,
   SecureDownload,
   SecureForm,
   SecureInput,
@@ -114,9 +115,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
     void this.uploadFormDataToDb(this.state.formData);
   }
 
-  errorHandler(lunaSecError: { code: number; error: string }) {
-    console.error('Iframe sent error: ', lunaSecError);
-    this.setState({ lunaSecErrors: this.state.lunaSecErrors.concat([lunaSecError.error]) });
+  errorHandler(e: LunaSecError) {
+    console.error('Iframe sent error: ', e);
+    this.setState({ lunaSecErrors: this.state.lunaSecErrors.concat([e.message]) });
   }
 
   emailValidated(isValid: boolean) {

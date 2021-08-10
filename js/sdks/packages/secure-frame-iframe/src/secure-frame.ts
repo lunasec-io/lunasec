@@ -149,8 +149,13 @@ export class SecureFrame<E extends keyof ClassLookup> {
       try {
         await handleDownload(token, this.secureElement as HTMLAnchorElement, this.rpc.tokenizer, attrs.hidden || false);
       } catch (e) {
-        // TODO: Make this less ugly (it's blue atm and garbage lol)
-        this.sendErrorMessage({});
+        if (e instanceof LunaSecError) {
+          this.sendErrorMessage(e);
+        }
+        if (e instanceof Error) {
+          this.sendErrorMessage(new LunaSecError(e));
+        }
+        throw e;
       }
     } else {
       const value = await this.rpc.detokenize(token);
