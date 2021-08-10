@@ -1,12 +1,12 @@
-import { KeyLike, SignJWT } from 'jose/jwt/sign';
+import { createPublicKey, KeyObject } from 'crypto';
+
 import { fromKeyLike, JWK } from 'jose/jwk/from_key_like';
+import { KeyLike, SignJWT } from 'jose/jwt/sign';
 
 import { AuthenticationJWT } from './authentication-jwt';
 import { awsSecretProvider } from './aws-secret-provider';
 import { environmentSecretProvider } from './environment-secret-provider';
-import {JwtSubject, SecretConfig} from './types';
-
-import {KeyObject, createPublicKey} from 'crypto';
+import { JwtSubject, SecretConfig } from './types';
 
 // Todo: rename this whole service to JWT service, all it does is make JWTs, it doesnt do "auth" really
 export class LunaSecAuthentication {
@@ -38,8 +38,8 @@ export class LunaSecAuthentication {
     return createPublicKey({
       key: privateKeyObject.export({
         format: 'pem',
-        type: 'pkcs1'
-      })
+        type: 'pkcs1',
+      }),
     });
   }
 
