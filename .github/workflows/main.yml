@@ -5,10 +5,13 @@ name: CI
 # Controls when the workflow will run
 on:
   push:
-  pull_request:
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    branches:
+      - master
+#  # On any pull request
+#  pull_request:
+#
+#  # Allows you to run this workflow manually from the Actions tab
+#  workflow_dispatch:
 
 jobs:
   build:
@@ -30,12 +33,6 @@ jobs:
     - uses: satackey/action-docker-layer-caching@v0.0.11
       # Ignore the failure of a step and avoid terminating the job.
       continue-on-error: true
-
-    - name: Run e2e tests
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up customer-front-end
-
-    - name: Show docker processes
-      run: docker ps
 
     - name: Run e2e tests
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up demo integration-test
