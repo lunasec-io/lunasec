@@ -8,6 +8,10 @@ WORKDIR /repo
 
 RUN lerna bootstrap
 
+WORKDIR /repo/js/sdks
+
+RUN npx tsc -p tsconfig.build.json
+
 FROM lerna-bootstrap as demo-back-end
 
 #RUN lerna-isolate demo-back-end
