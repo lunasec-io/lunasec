@@ -45,9 +45,14 @@ export async function uploadToS3WithSignedUrl(
   headers: http.OutgoingHttpHeaders,
   input: string | Buffer
 ) {
+  const httpOnlyHost = signedUrl.replace('https:', 'http:');
+  const differentPortHost = httpOnlyHost.replace('4567', '4566');
+
   // TODO: Add some retry logic here, but it'll need to retry only on 500s or other "known" retry cases.
   // TODO: Make this stream to S3 so we don't have to read the entire "input" ahead of time.
-  const [res, responseBuffer] = await makeRawRequest(...makeS3HttpRequestOptions(signedUrl, headers, 'PUT', input));
+  const [res, responseBuffer] = await makeRawRequest(
+    ...makeS3HttpRequestOptions(differentPortHost, headers, 'PUT', input)
+  );
 
   const responseData = responseBuffer.toString();
 
@@ -57,9 +62,12 @@ export async function uploadToS3WithSignedUrl(
 }
 
 export async function downloadFromS3WithSignedUrl(signedUrl: string, headers: http.OutgoingHttpHeaders) {
+  const httpOnlyHost = signedUrl.replace('https:', 'http:');
+  const differentPortHost = httpOnlyHost.replace('4567', '4566');
+
   // TODO: Add some retry logic here, but it'll need to retry only on 500s or other "known" retry cases.
   // TODO: Stream back the output so that large files aren't just buffered straight to memory... Or at least the option for that.
-  const [res, responseBuffer] = await makeRawRequest(...makeS3HttpRequestOptions(signedUrl, headers, 'GET'));
+  const [res, responseBuffer] = await makeRawRequest(...makeS3HttpRequestOptions(differentPortHost, headers, 'GET'));
 
   const responseData = responseBuffer.toString();
 
