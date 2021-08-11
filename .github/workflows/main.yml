@@ -7,11 +7,11 @@ on:
   push:
     branches:
       - master
-#  # On any pull request
-#  pull_request:
-#
-#  # Allows you to run this workflow manually from the Actions tab
-#  workflow_dispatch:
+  # On any pull request
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   build:
@@ -35,7 +35,13 @@ jobs:
       continue-on-error: true
 
     - name: Run e2e tests
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up demo integration-test
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up -d demo
+
+    - name: logs
+      run: docker logs lunasec-node-monorepo_customer-front-end_1
+
+    - name: Run e2e tests
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test
 
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
