@@ -1,14 +1,19 @@
-FROM node as lerna-bootstrap
+FROM node:16 as lerna-bootstrap
 
 RUN npm i -g npm@^7.20.5
 
-RUN npm i -g lerna lerna-isolate
+RUN npm install
+
+RUN npm install yarn@^1.22.11
+RUN npm install -g yarn@^1.22.11
+
+# RUN npm i -g lerna lerna-isolate
 
 COPY . /repo
 
 WORKDIR /repo
 
-RUN lerna bootstrap
+RUN npx lerna bootstrap
 
 WORKDIR /repo/js/sdks
 
@@ -20,7 +25,7 @@ FROM lerna-bootstrap as demo-back-end
 
 WORKDIR /repo/js/demo-apps/packages/express-back-end
 
-RUN lerna link
+# RUN npx lerna link
 
 ENTRYPOINT yarn start:dev
 
@@ -30,13 +35,13 @@ FROM lerna-bootstrap as react-front-end
 
 WORKDIR /repo/js/demo-apps/packages/react-front-end
 
-RUN lerna link
+# RUN npx lerna link
 
 ENTRYPOINT npm run start
 
 FROM lerna-bootstrap as secure-frame-iframe
 
-RUN lerna link
+# RUN npx lerna link
 
 RUN npm i -g http-server
 
