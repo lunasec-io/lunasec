@@ -3,6 +3,9 @@ FROM node as lerna-bootstrap
 RUN npm i -g lerna lerna-isolate
 
 COPY . /repo
+
+WORKDIR /repo
+
 RUN lerna bootstrap
 
 FROM lerna-bootstrap as demo-back-end
