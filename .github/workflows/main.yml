@@ -39,6 +39,7 @@ jobs:
 
     - name: logs
       run: docker logs $(docker ps -a | grep "lunasec-node-monorepo_customer-front-end" | cut -c1-12)
+      shell: bash
 
     - name: Run e2e tests
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test
