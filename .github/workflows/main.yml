@@ -4,9 +4,6 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  push:
-    branches:
-      - master
   # On any pull request
   pull_request:
 
