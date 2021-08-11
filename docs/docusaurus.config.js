@@ -17,8 +17,8 @@ module.exports = {
       'docusaurus-plugin-typedoc',
 
       {
-        entryPoints: ['../js/sdks/packages/node-sdk/src/index.ts', '../js/sdks/packages/react-sdk/src/index.ts'],
-        tsconfig: '../js/sdks/tsconfig.json'
+        entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
+        tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json'
       },
     ],
   ],
