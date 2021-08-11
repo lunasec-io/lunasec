@@ -1,17 +1,16 @@
 FROM node:16 as lerna-bootstrap
+# RUN npm i -g lerna lerna-isolate
 
 RUN npm i -g npm@^7.20.5
-
-RUN npm install
-
-RUN npm install yarn@^1.22.11
 RUN npm install -g yarn@^1.22.11
-
-# RUN npm i -g lerna lerna-isolate
 
 COPY . /repo
 
 WORKDIR /repo
+
+RUN npm install
+
+RUN npm install yarn@^1.22.11
 
 RUN npx lerna bootstrap
 
