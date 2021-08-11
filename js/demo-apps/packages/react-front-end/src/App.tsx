@@ -177,13 +177,12 @@ class App extends React.Component<Record<string, never>, IAppState> {
       return (
         <section>
           <p style={{ color: 'red' }}>{this.state.authError}</p>
-          <a href="http://localhost:3001/set-id-token">
-            Login
-          </a>
+          <a href="http://localhost:3001/set-id-token">Login</a>
         </section>
       );
     }
   }
+
   renderForm() {
     return (
       <section>
