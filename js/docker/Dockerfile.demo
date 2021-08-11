@@ -10,8 +10,6 @@ WORKDIR /repo
 
 RUN npm install yarn@^1.22.11
 
-RUN yarn add lerna@^4.0.0
-
 RUN npx lerna bootstrap
 
 WORKDIR /repo/js/sdks
