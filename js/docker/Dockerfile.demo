@@ -1,6 +1,6 @@
 FROM node as lerna-bootstrap
 
-RUN npm i -g npm@latest
+RUN npm i -g npm@^7.20.5
 
 RUN npm i -g lerna lerna-isolate
 
