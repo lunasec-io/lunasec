@@ -17,6 +17,7 @@ export function createRoutes() {
   routes.get('/set-id-token', async function (_, res) {
     const id_token = await lunaSec.auth.createAuthenticationJWT('user', {
       session: {
+        // Note: This requires Node 15+ to work
         id: randomUUID(),
       },
     });
