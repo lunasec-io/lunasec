@@ -38,7 +38,7 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 	s3Host := bucketConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
 
 	s3URL := url.URL{
-		Scheme: "https",
+		Scheme: "http",
 		Host:   s3Host,
 	}
 
@@ -47,7 +47,7 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 			"'self'",
 			authConfig.AuthCallbackHost,
 			s3URL.String(),
-			"https://localhost:4567",
+			"http://localhost:4566",
 		},
 		"script-src": {
 			"unsafe-inline",
