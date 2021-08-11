@@ -7,7 +7,7 @@ services:
     command: run --browser chrome
     working_dir: /e2e
     volumes:
-      - ./js/demo-apps/packages/react-front-end:/e2e
+      - ./js/demo-apps/packages/react-front-end:/repo/js/demo-apps/packages/react-front-end
       - /tmp/.X11-unix:/tmp/.X11-unix
     network_mode: host
     depends_on:
