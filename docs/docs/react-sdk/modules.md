@@ -30,7 +30,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:29](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/types.ts#L29)
+[js/sdks/packages/react-sdk/src/types.ts:29](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/types.ts#L29)
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts:16](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts#L16)
+[js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts:16](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts#L16)
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/providers/SecureFormContext.ts:24](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/providers/SecureFormContext.ts#L24)
+[js/sdks/packages/react-sdk/src/providers/SecureFormContext.ts:24](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/providers/SecureFormContext.ts#L24)
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:59](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/types.ts#L59)
+[js/sdks/packages/react-sdk/src/types.ts:59](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/types.ts#L59)
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:44](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/types.ts#L44)
+[js/sdks/packages/react-sdk/src/types.ts:44](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/types.ts#L44)
 
 ___
 
@@ -98,7 +98,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:51](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/types.ts#L51)
+[js/sdks/packages/react-sdk/src/types.ts:51](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/types.ts#L51)
 
 ## Variables
 
@@ -108,7 +108,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts:9](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts#L9)
+[js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts:9](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts#L9)
 
 ___
 
@@ -118,7 +118,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/providers/SecureFormContext.ts:12](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/providers/SecureFormContext.ts#L12)
+[js/sdks/packages/react-sdk/src/providers/SecureFormContext.ts:12](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/providers/SecureFormContext.ts#L12)
 
 ___
 
@@ -128,7 +128,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:28](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/types.ts#L28)
+[js/sdks/packages/react-sdk/src/types.ts:28](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/types.ts#L28)
 
 ## Functions
 
@@ -148,7 +148,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/index.ts:13](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/index.ts#L13)
+[js/sdks/packages/react-sdk/src/index.ts:13](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/index.ts#L13)
 
 ___
 
@@ -168,7 +168,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/index.ts:16](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/index.ts#L16)
+[js/sdks/packages/react-sdk/src/index.ts:16](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/index.ts#L16)
 
 ___
 
@@ -188,7 +188,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/index.ts:12](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/index.ts#L12)
+[js/sdks/packages/react-sdk/src/index.ts:12](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/index.ts#L12)
 
 ___
 
@@ -208,7 +208,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/index.ts:15](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/index.ts#L15)
+[js/sdks/packages/react-sdk/src/index.ts:15](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/index.ts#L15)
 
 ___
 
@@ -228,4 +228,4 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/index.ts:14](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/index.ts#L14)
+[js/sdks/packages/react-sdk/src/index.ts:14](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/index.ts#L14)

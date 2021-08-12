@@ -20,7 +20,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/main/index.ts:33](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/node-sdk/src/main/index.ts#L33)
+[js/sdks/packages/node-sdk/src/main/index.ts:33](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/main/index.ts#L33)
 
 ## Properties
 
@@ -30,7 +30,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/main/index.ts:26](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/node-sdk/src/main/index.ts#L26)
+[js/sdks/packages/node-sdk/src/main/index.ts:26](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/main/index.ts#L26)
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/main/index.ts:28](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/node-sdk/src/main/index.ts#L28)
+[js/sdks/packages/node-sdk/src/main/index.ts:28](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/main/index.ts#L28)
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/main/index.ts:27](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/node-sdk/src/main/index.ts#L27)
+[js/sdks/packages/node-sdk/src/main/index.ts:27](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/main/index.ts#L27)
 
 ___
 
@@ -60,7 +60,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/main/index.ts:30](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/node-sdk/src/main/index.ts#L30)
+[js/sdks/packages/node-sdk/src/main/index.ts:30](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/main/index.ts#L30)
 
 ___
 
@@ -70,7 +70,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/main/index.ts:31](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/node-sdk/src/main/index.ts#L31)
+[js/sdks/packages/node-sdk/src/main/index.ts:31](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/main/index.ts#L31)
 
 ___
 
@@ -80,4 +80,4 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/main/index.ts:29](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/node-sdk/src/main/index.ts#L29)
+[js/sdks/packages/node-sdk/src/main/index.ts:29](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/main/index.ts#L29)
