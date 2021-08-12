@@ -20,8 +20,8 @@ console.debug = () => {};
 
 describe('authentication.ts', () => {
   beforeEach(() => {
-    // This is needed because we have state hanging around in authentication.ts, and that stays in the
-    // require-cache, so by using this jest feature, we blow that away.  It ALSO blows away our mocks though,
+    // This is needed because we have state hanging around in authentication.ts(because of the singleton), and that stays in the
+    // require-cache messing up subsequent tests, so by using this jest feature, we blow that away.  It ALSO blows away our mocks though,
     // so we have to set up our mocks again each time in this callback
     jest.isolateModules(() => {
       startSessionManagement = require('../../src/auth/authentication').startSessionManagement;
@@ -83,7 +83,7 @@ describe('authentication.ts', () => {
       clientMethods.verifySession
         .mockResolvedValueOnce(Promise.resolve({ success: false, error: 'anError' }))
         .mockResolvedValue(Promise.resolve({ success: true, error: '' }));
-      clientMethods.ensureSession.mockResolvedValue(Promise.resolve());
+      clientMethods.ensureSession.mockResolvedValue(Promise.resolve({} as Response));
     });
 
     it('should succeed', async () => {

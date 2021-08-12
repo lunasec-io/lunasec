@@ -9,8 +9,6 @@ import { createRoutes } from './routes';
 
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { fromIni } from '@aws-sdk/credential-provider-ini';
-import { registerS3Tokenizer, S3TokenizerBackend } from '@lunasec/node-sdk';
 
 const app = express();
 
@@ -23,23 +21,15 @@ app.use(
     credentials: true,
   })
 );
-
 app.use(cookieParser());
+
 // Attach the LunaSec authentication plugin
-lunaSec.expressPlugin.register(app);
+lunaSec.expressAuthPlugin.register(app);
+// Attach the Simple Tokenizer Backend to your app if you dont want to use the full containerized backend and instead
+// just want to use an express plugin in this app as a backend
+lunaSec.simpleTokenizerBackend.register(app);
 
 app.use(createRoutes());
-
-const tokenizerBackend = new S3TokenizerBackend({
-  awsRegion: 'us-west-2',
-  s3Bucket: 'lunasec-test-dev-bucket',
-  // @ts-ignore
-  getAwsCredentials: async () => {
-    return await fromIni();
-  },
-});
-
-registerS3Tokenizer(app, tokenizerBackend);
 
 attachApolloServer(app).then(() => {
   app.listen(3001, () => {

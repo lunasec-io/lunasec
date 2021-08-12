@@ -1,6 +1,7 @@
 import { LunaSecAuthentication } from '../authentication';
 import { SecretConfig, SessionIdProvider } from '../authentication/types';
 import { LunaSecExpressAuthPlugin } from '../express-auth-plugin';
+import { SimpleTokenizerBackend, SimpleTokenizerBackendConfig } from '../express-simple-tokenizer-backend';
 import { LunaSecGrantService } from '../grant-service';
 import { setGrantServiceForDirective, TokenDirective } from '../graphql';
 import { SecureResolver } from '../secure-resolver';
@@ -15,6 +16,7 @@ export interface LunaSecConfig {
     sessionIdProvider: SessionIdProvider; // A callback used situations where we have the req object and would like to know the sessionId
   };
   secureResolverConfig?: SecureResolverSdkConfig;
+  simpleTokenizerBackendConfig?: SimpleTokenizerBackendConfig;
 }
 
 // This is the main class that customers will create to use LunaSec on their node server
@@ -23,23 +25,27 @@ export interface LunaSecConfig {
 export class LunaSec {
   public auth: LunaSecAuthentication;
   public grants: LunaSecGrantService;
-  public expressPlugin: LunaSecExpressAuthPlugin;
+  public expressAuthPlugin: LunaSecExpressAuthPlugin;
   public tokenDirective: typeof TokenDirective; // Graphql initializes this class, not us
   public secureResolvers?: SecureResolver;
+  public simpleTokenizerBackend: SimpleTokenizerBackend;
+
   constructor(config: LunaSecConfig) {
     this.auth = new LunaSecAuthentication(config.auth.secrets);
     // This express plugin is created here if users optionally wish to access it and register it onto their app
-    this.expressPlugin = new LunaSecExpressAuthPlugin({
+    this.expressAuthPlugin = new LunaSecExpressAuthPlugin({
       auth: this.auth,
       sessionIdProvider: config.auth.sessionIdProvider,
       payloadClaims: config.auth.payloadClaims,
       secureFrameURL: config.secureFrameURL,
     });
+
     this.grants = new LunaSecGrantService(this.auth, config.auth.sessionIdProvider);
     setGrantServiceForDirective(this.grants);
     this.tokenDirective = TokenDirective;
     if (config.secureResolverConfig) {
       this.secureResolvers = new SecureResolver(config.secureResolverConfig);
     }
+    this.simpleTokenizerBackend = new SimpleTokenizerBackend(config.simpleTokenizerBackendConfig);
   }
 }
