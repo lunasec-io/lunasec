@@ -3,7 +3,7 @@ config();
 
 import express from 'express';
 
-import { lunaSec, simpleTokenizerBackend } from './configure-lunasec';
+import { lunaSec } from './configure-lunasec';
 import { attachApolloServer } from './graphql/graphql-apollo-server';
 import { createRoutes } from './routes';
 
@@ -24,10 +24,10 @@ app.use(
 app.use(cookieParser());
 
 // Attach the LunaSec authentication plugin
-lunaSec.expressPlugin.register(app);
+lunaSec.expressAuthPlugin.register(app);
 // Attach the Simple Tokenizer Backend to your app if you dont want to use the full containerized backend and instead
 // just want to use an express plugin in this app as a backend
-simpleTokenizerBackend.register(app);
+lunaSec.simpleTokenizerBackend.register(app);
 
 app.use(createRoutes());
 
