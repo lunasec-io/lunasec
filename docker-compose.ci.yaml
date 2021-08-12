@@ -4,7 +4,7 @@ services:
   integration-test:
     image: cypress/included:8.1.0
     entrypoint: cypress
-    command: run --browser chrome
+    command: open --browser chrome
     working_dir: /e2e
     volumes:
       - ./js/demo-apps/packages/react-front-end:/e2e
