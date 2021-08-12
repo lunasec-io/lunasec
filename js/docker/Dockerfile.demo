@@ -1,27 +1,35 @@
-FROM node as lerna-bootstrap
+FROM node:16 as lerna-bootstrap
 
 RUN npm i -g lerna lerna-isolate
 
-COPY . /
-RUN lerna bootstrap
+COPY . /repo
+
+WORKDIR /repo
+
+RUN npx lerna bootstrap
+
+WORKDIR /repo/js/sdks
+
+WORKDIR /repo/js/sdks/
+RUN npx tsc -b --verbose tsconfig.build.json
+
+WORKDIR /repo
 
 FROM lerna-bootstrap as demo-back-end
 
-#RUN lerna-isolate demo-back-end
+WORKDIR /repo/js/demo-apps/packages/express-back-end
 
-WORKDIR /js/demo-apps/packages/express-back-end
 ENTRYPOINT yarn start:dev
 
 FROM lerna-bootstrap as react-front-end
 
-#RUN lerna-isolate react-front-end
+WORKDIR /repo/js/demo-apps/packages/react-front-end
 
-WORKDIR /js/demo-apps/packages/react-front-end
 ENTRYPOINT npm run start
 
 FROM lerna-bootstrap as secure-frame-iframe
 
-WORKDIR /js/sdks/packages/secure-frame-iframe
+WORKDIR /repo/js/sdks/packages/secure-frame-iframe
 RUN npm run compile
 
 RUN npm i -g http-server
