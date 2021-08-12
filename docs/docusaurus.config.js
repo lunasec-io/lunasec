@@ -3,15 +3,15 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
-  url: 'https://your-docusaurus-test-site.com',
+  title: 'LunaSec',
+  tagline: 'Data security from the start.',
+  url: 'https://lunasec.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'lunasec', // Usually your GitHub org/user name.
+  projectName: 'lunasec', // Usually your repo name.
   plugins: [
     [
       'docusaurus-plugin-typedoc',
@@ -20,14 +20,31 @@ module.exports = {
         entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
         tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
+        out: 'react-sdk',
+        sidebar: {
+          categoryLabel: "React SDK"
+        }
+      },
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        id: 'typedoc-node-sdk',
+        entryPoints: ['../js/sdks/packages/node-sdk/src/index.ts'],
+        tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json',
+        watch: process.env.TYPEDOC_WATCH,
+        out: 'node-sdk',
+        sidebar: {
+          categoryLabel: "Node SDK"
+        }
       },
     ],
   ],
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'LunaSec Developer',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'LunaSec Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -35,11 +52,11 @@ module.exports = {
           type: 'doc',
           docId: 'intro',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Docs',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/refinery-labs/lunasec-monorepo',
           label: 'GitHub',
           position: 'right',
         },
@@ -61,16 +78,8 @@ module.exports = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              label: 'Github',
+              href: 'https://github.com/refinery-labs/lunasec-monorepo',
             },
           ],
         },
@@ -82,13 +91,13 @@ module.exports = {
               to: '/blog',
             },
             {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              label: 'Github',
+              href: 'https://github.com/refinery-labs/lunasec-monorepo',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} LunaSec. Built with Docusaurus.`,
     },
     prism: {
       theme: lightCodeTheme,
@@ -103,13 +112,13 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
+            'https://github.com/refinery-labs/lunasec-monorepo/edit/master/docs/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/blog/',
+            'https://github.com/refinery-labs/lunasec-monorepo/edit/master/docs/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
