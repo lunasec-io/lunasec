@@ -1,6 +1,6 @@
 ---
 id: "index"
-title: "@lunasec/react-sdk"
+title: "@lunasec/node-sdk"
 slug: "/api"
 sidebar_label: "Readme"
 sidebar_position: 0

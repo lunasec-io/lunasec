@@ -4,7 +4,6 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  push:
   pull_request:
 
   # Allows you to run this workflow manually from the Actions tab
