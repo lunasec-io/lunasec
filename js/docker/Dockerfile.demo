@@ -29,7 +29,9 @@ ENTRYPOINT npm run start
 
 FROM lerna-bootstrap as secure-frame-iframe
 
+WORKDIR /repo/js/sdks/packages/secure-frame-iframe
+RUN npm run compile
+
 RUN npm i -g http-server
 
-WORKDIR /repo/js/sdks/packages/secure-frame-iframe
 ENTRYPOINT http-server -a 0.0.0.0 -p 8000
