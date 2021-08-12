@@ -31,9 +31,6 @@ jobs:
       # Ignore the failure of a step and avoid terminating the job.
 #      continue-on-error: true
 
-    - name: Run e2e tests
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build
-
     - name: logs
       run: .github/print-docker-logs.sh
       shell: bash
