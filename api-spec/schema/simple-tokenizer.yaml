@@ -1,0 +1,10 @@
+openapi: 3.0.3
+info:
+  title: Simple Tokenizer API
+  description: The Tokenizer API used for tokenizing and detokenizing data using the express plugin backend
+  version: 0.0.0
+paths:
+  /.lunasec/tokenize:
+    $ref: 'routes/tokenize-routes.yaml#/tokenize'
+  /.lunasec/detokenize:
+    $ref: 'routes/tokenize-routes.yaml#/detokenize'

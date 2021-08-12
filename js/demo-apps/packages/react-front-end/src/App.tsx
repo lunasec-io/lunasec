@@ -12,6 +12,7 @@ import React from 'react';
 
 // import logo from './logo.svg';
 import './App.css';
+import { SimpleTokenizerExample } from './SimpleTokenizerExample';
 
 interface FormData {
   text_area?: string;
@@ -232,6 +233,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
 
           {this.renderFileComponents()}
         </SecureForm>
+
+        <h2>Simple Tokenizer Form</h2>
+        <SimpleTokenizerExample />
       </section>
     );
   }

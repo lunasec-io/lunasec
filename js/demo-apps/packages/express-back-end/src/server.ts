@@ -11,6 +11,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 const app = express();
+
 app.use(express.json());
 app.use(
   cors({
@@ -20,10 +21,13 @@ app.use(
     credentials: true,
   })
 );
-
 app.use(cookieParser());
+
 // Attach the LunaSec authentication plugin
-lunaSec.expressPlugin.register(app);
+lunaSec.expressAuthPlugin.register(app);
+// Attach the Simple Tokenizer Backend to your app if you dont want to use the full containerized backend and instead
+// just want to use an express plugin in this app as a backend
+lunaSec.simpleTokenizerBackend.register(app);
 
 app.use(createRoutes());
 
