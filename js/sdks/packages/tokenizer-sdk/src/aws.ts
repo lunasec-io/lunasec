@@ -21,7 +21,6 @@ function makeS3HttpRequestOptions(
   input?: string | Buffer
 ): [string, string, http.ClientRequestArgs, string | Buffer | undefined] {
   const URL = getUrl();
-
   const uploadUrl = new URL(signedUrl);
 
   const host = uploadUrl.protocol + '//' + uploadUrl.hostname;
