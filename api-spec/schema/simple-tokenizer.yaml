@@ -4,7 +4,7 @@ info:
   description: The Tokenizer API used for tokenizing and detokenizing data using the express plugin backend
   version: 0.0.0
 paths:
-  /tokenize:
+  /.lunasec/tokenize:
     $ref: 'routes/tokenize-routes.yaml#/tokenize'
-  /detokenize:
+  /.lunasec/detokenize:
     $ref: 'routes/tokenize-routes.yaml#/detokenize'
