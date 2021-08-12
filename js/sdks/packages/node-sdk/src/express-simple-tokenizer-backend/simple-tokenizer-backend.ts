@@ -1,6 +1,6 @@
 import { Hash } from '@aws-sdk/hash-node';
 import { HttpRequest } from '@aws-sdk/protocol-http';
-import { S3RequestPresigner } from '@aws-sdk/s3-request-presigner';
+import { S3RequestPresigner, S3RequestPresignerOptions } from '@aws-sdk/s3-request-presigner';
 import { parseUrl } from '@aws-sdk/url-parser';
 import { formatUrl } from '@aws-sdk/util-format-url';
 import { isToken } from '@lunasec/tokenizer-sdk';
@@ -16,26 +16,21 @@ export interface AwsCredentials {
 export interface SimpleTokenizerBackendConfig {
   s3Bucket: string;
   awsRegion: string;
-  awsCredentials?: AwsCredentials;
-  getAwsCredentials?: () => Promise<AwsCredentials>;
+  awsCredentials?: S3RequestPresignerOptions['credentials'];
+  getAwsCredentials?: () => Promise<S3RequestPresignerOptions['credentials']>;
 }
 
 export class SimpleTokenizerBackend {
-  readonly config!: SimpleTokenizerBackendConfig;
-
-  constructor(config: SimpleTokenizerBackendConfig) {
+  // config is optional and we throw and run-time if someone tries to register this part of lunasec without configuring it in the main options
+  readonly config?: SimpleTokenizerBackendConfig;
+  constructor(config?: SimpleTokenizerBackendConfig) {
     this.config = config;
-
-    if (config.awsCredentials && config.getAwsCredentials) {
-      throw new Error('Cannot set both credentials and getCredentials');
-    }
-
-    if (!config.awsCredentials && !config.getAwsCredentials) {
-      throw new Error('Must set credentials or getAwsCredentials');
-    }
   }
 
   async getAwsCredentials() {
+    if (!this.config) {
+      throw new Error('Simple tokenizer backend is not configured');
+    }
     if (this.config.awsCredentials) {
       return this.config.awsCredentials;
     }
@@ -56,6 +51,9 @@ export class SimpleTokenizerBackend {
   }
 
   async generatePresignedS3Url(tokenId: string, method: 'PUT' | 'GET') {
+    if (!this.config) {
+      throw new Error('Simple tokenizer backend is not configured');
+    }
     if (!isToken(tokenId)) {
       throw new Error('Invalid token passed to simple express tokenizer backend');
     }
@@ -92,6 +90,19 @@ export class SimpleTokenizerBackend {
   }
 
   register(app: Application) {
+    if (!this.config) {
+      throw new Error(
+        'You must set simpleTokenizerBackendConfig in your lunasec configuration if you want to register the SimpleTokenizerBackend on your express app'
+      );
+    }
+
+    if (this.config.awsCredentials && this.config.getAwsCredentials) {
+      throw new Error('Cannot set both credentials and getCredentials');
+    }
+
+    if (!this.config.awsCredentials && !this.config.getAwsCredentials) {
+      throw new Error('Must set credentials or getAwsCredentials');
+    }
     registerExpressMiddleware(app, this);
   }
 }

@@ -1,5 +1,5 @@
 import { Tokenizer } from './tokenizer';
-import { MetaData, TokenizerClientConfig } from './types';
+import { TokenizerClientConfig } from './types';
 
 // strips down the methods of the tokenizer client to just the ones supported by the "simple" npm module
 export class SimpleTokenizer {
@@ -20,8 +20,4 @@ export class SimpleTokenizer {
   detokenize(tokenId: string) {
     return this.tokenizer.detokenize(tokenId);
   }
-  //  consider supporting this if it isn't too hard to get working
-  // getMetadata(tokenId: string) {
-  //   return this.tokenizer.getMetadata(tokenId);
-  // }
 }

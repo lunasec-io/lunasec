@@ -55,12 +55,11 @@ export class Tokenizer {
     return new URL(this.config.host).origin;
   }
 
-  private handleError(e: AxiosError | Error) {
-    // const error = 'response' in e && 'data' in e.response ? e.response.data : e;
+  private handleError(e: AxiosError | Error): TokenizerFailApiResponse {
     return {
       success: false,
       error: e,
-    } as TokenizerFailApiResponse;
+    };
   }
 
   public createReadGrant(sessionId: string, tokenId: string) {
@@ -131,7 +130,7 @@ export class Tokenizer {
       return {
         success: true,
         metadata: res.data.data.metadata,
-        tokenId: tokenId, // Not sure why we pass this back, seems useless
+        tokenId: tokenId, // Not sure why we pass this back, seems useless in this context
       };
     } catch (e) {
       return this.handleError(e);
@@ -149,7 +148,6 @@ export class Tokenizer {
         this.reqOptions
       );
       const data = res.data.data;
-      console.log('uploading to s3 with headers as ', data.headers);
       await uploadToS3WithSignedUrl(data.uploadUrl, data.headers as OutgoingHttpHeaders, input);
 
       return {
@@ -157,6 +155,7 @@ export class Tokenizer {
         tokenId: data.tokenId,
       };
     } catch (e) {
+      console.error(e);
       return this.handleError(e);
     }
   }
@@ -167,9 +166,7 @@ export class Tokenizer {
     if (!response.success) {
       return response;
     }
-
     const { headers, downloadUrl } = response;
-
     return {
       success: true,
       tokenId: tokenId,
@@ -195,7 +192,6 @@ export class Tokenizer {
       }
 
       const { downloadUrl, headers } = res.data;
-
       return {
         success: true,
         tokenId: tokenId,
