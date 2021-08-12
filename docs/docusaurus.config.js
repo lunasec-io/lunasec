@@ -18,15 +18,8 @@ module.exports = {
       {
         id: 'typedoc-react-sdk',
         entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
-        tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json'
-      },
-    ],
-    [
-      'docusaurus-plugin-typedoc',
-      {
-        id: 'typedoc-node-sdk',
-        entryPoints: ['../js/sdks/packages/node-sdk/src/index.ts'],
-        tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json'
+        tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
+        watch: process.env.TYPEDOC_WATCH,
       },
     ],
   ],
