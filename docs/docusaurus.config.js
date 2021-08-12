@@ -10,8 +10,8 @@ module.exports = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'lunasec', // Usually your GitHub org/user name.
-  projectName: 'lunasec', // Usually your repo name.
+  organizationName: 'lunasec-io', // Usually your GitHub org/user name.
+  projectName: 'lunasec-io.github.io', // Usually your repo name.
   plugins: [
     [
       'docusaurus-plugin-typedoc',

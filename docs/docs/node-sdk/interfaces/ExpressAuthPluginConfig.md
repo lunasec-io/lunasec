@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts:14](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts#L14)
+[js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts:14](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts#L14)
 
 ___
 
@@ -24,7 +24,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts:12](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts#L12)
+[js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts:12](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts#L12)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts:13](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts#L13)
+[js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts:13](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts#L13)
 
 ___
 
@@ -44,4 +44,4 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts:11](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts#L11)
+[js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts:11](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/express-auth-plugin/index.ts#L11)

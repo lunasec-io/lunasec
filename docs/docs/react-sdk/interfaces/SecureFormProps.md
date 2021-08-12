@@ -3868,4 +3868,4 @@ React.ComponentPropsWithoutRef.onSubmit
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:7](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L7)
+[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:7](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L7)

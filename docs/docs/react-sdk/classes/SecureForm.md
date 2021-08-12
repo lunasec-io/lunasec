@@ -30,7 +30,7 @@ Component&lt;SecureFormProps\&gt;.constructor
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:15](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L15)
+[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:15](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L15)
 
 ## Properties
 
@@ -44,7 +44,7 @@ Component.context
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:11](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L11)
+[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:11](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L11)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:13](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L13)
+[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:13](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L13)
 
 ___
 
@@ -113,7 +113,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:12](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L12)
+[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:12](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L12)
 
 ___
 
@@ -545,7 +545,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:21](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L21)
+[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:21](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L21)
 
 ___
 
@@ -563,7 +563,7 @@ Component.render
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:38](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1194d08/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L38)
+[js/sdks/packages/react-sdk/src/components/SecureForm.tsx:38](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/react-sdk/src/components/SecureForm.tsx#L38)
 
 ___
 
