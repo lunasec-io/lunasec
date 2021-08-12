@@ -42,7 +42,7 @@ export class iFrameRPC {
     }
     const value = (secureInput as HTMLInputElement).value;
     if (value.length > 0) {
-      const resp = await this.tokenizer.tokenize(value);
+      const resp = await this.tokenizer.tokenize(value, { dataType: 'string' });
 
       if (!resp.success) {
         console.error('tokenizer error:', resp);

@@ -60,6 +60,12 @@ We use lerna to manage the monorepo, and yarn as the package manager.  Since yar
 we can't use `yarn add` to install dependencies. To add a dependency to a package, either edit it 
 manually into the package.json and run `lerna bootstrap`, or use `lerna add <dependencyname> <path/to/package/youre/working/on>`.
 
+## Our API spec and OpenAPI
+
+Our tokenizer API is defined by the openAPI standard(previously named swagger) and can be found in the folder `/api-spec` in the project root.
+If the spec changes, the generated code that relies on the spec will need to be regenerated. For example, in the tokenizer-sdk package, run `yarn openapi:generate` to regenerate the API client.
+A similar pattern can be used (check the package.json) to generate an api client in any language you wish, by simply specifying the openapi generator name when calling the openapi-generator npm package .
+
 ### TODO
 - Add React project
 - Add React SDK
