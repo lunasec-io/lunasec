@@ -231,7 +231,6 @@ export class SecureFrame<E extends keyof ClassLookup> {
   }
 
   async tokenizeField(): Promise<string | void> {
-    // TODO: this is brittle, move this into the secure-frame control logic
     const value = (this.secureElement as HTMLInputElement).value;
     if (value.length > 0) {
       const res = await this.tokenizer.tokenize(value, { dataType: 'string' });

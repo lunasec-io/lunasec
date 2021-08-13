@@ -84,6 +84,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     constructor(props: WrapperPropsWithProviders<W>) {
       super(props);
       this.throwIfLunaSecConfigNotSet();
+      this.throwIfErrorHandlerNotSet();
       this.frameId = generateSecureNonce();
       this.frameRef = React.createRef();
       this.dummyRef = React.createRef();
@@ -113,6 +114,14 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       if (this.props.lunaSecConfigContext.lunaSecDomain.length === 0) {
         throw new Error(
           'LunaSecConfigContext Provider must be registered around any LunaSec components.  You probably want to include it at the top level in your app.tsx'
+        );
+      }
+    }
+
+    throwIfErrorHandlerNotSet() {
+      if (!this.props.errorHandler || typeof this.props.errorHandler !== 'function') {
+        throw new Error(
+          'Error handler must be set for all LunaSec Components.  Pass the errorHandler prop to your secure component with a function to handle errors'
         );
       }
     }
