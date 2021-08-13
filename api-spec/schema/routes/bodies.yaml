@@ -8,10 +8,10 @@ ErrorResponse:
       properties:
         name:
           type: string
-          description: Needs to be a UUID.
+          description: machine parsable human readable short name
         message:
           type: string
-          description: machine parsable human readable short name
+          description: human readable error thats safe to show the end user
       required:
         - name
         - message
