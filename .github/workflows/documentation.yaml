@@ -46,6 +46,7 @@ jobs:
       - name: Release to GitHub Pages
         working-directory: docs/
         env:
+          DEPLOYMENT_BRANCH: documentation
           USE_SSH: true
           GIT_USER: git
         run: |
