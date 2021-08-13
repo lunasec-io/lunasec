@@ -5,6 +5,7 @@
   "description": "Secure frame SDK",
   "main": "index.js",
   "scripts": {
+    "compile:production": "tsc -b tsconfig.build.json",
     "watch": "tsc -b tsconfig.build.json -w"
   },
   "author": "",
