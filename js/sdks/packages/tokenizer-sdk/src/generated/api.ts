@@ -98,13 +98,13 @@ export interface ErrorResponse {
  */
 export interface ErrorResponseError {
     /**
-     * Needs to be a UUID.
+     * machine parsable human readable short name
      * @type {string}
      * @memberof ErrorResponseError
      */
     name: string;
     /**
-     * machine parsable human readable short name
+     * human readable error thats safe to show the end user
      * @type {string}
      * @memberof ErrorResponseError
      */
