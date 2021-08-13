@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "schema:copy": "cd ./packages/node-sdk && yarn schema:copy",
-    "watch": "yarn schema:copy && tsc -b tsconfig.build.json -w"
+    "schema:generate": "cd ./packages/tokenizer-sdk && yarn openapi:generate",
+    "watch": "yarn schema:copy && yarn schema:generate && tsc -b tsconfig.build.json -w"
   },
   "author": "",
   "license": "PROPRIETARY"

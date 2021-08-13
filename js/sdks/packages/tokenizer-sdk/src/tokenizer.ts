@@ -59,8 +59,8 @@ export class Tokenizer {
     if ('response' in e && e.response) {
       // Parse the axios error, if it has any meaningful data about the response
       return new LunaSecError({
-        name: e.response.data.name || 'unknownTokenizerError',
-        message: e.response.data.message || 'Unknown Tokenizer Error',
+        name: e.response.data.error.name || 'unknownTokenizerError',
+        message: e.response.data.error.message || 'Unknown Tokenizer Error',
         code: e.response.status.toString(),
       });
     }

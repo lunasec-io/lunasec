@@ -3,14 +3,24 @@ ErrorResponse:
   properties:
     success:
       type: boolean
-    message: #human readable string
-      type: string
-    name: #machine parsable, human readable name like 'authorizationError'
-      type: string
+    error:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Needs to be a UUID.
+        message:
+          type: string
+          description: machine parsable human readable short name
+      required:
+        - name
+        - message
+      additionalProperties: false
   required:
-    - message
+    - error
     - success
-    - name
+  additionalProperties: false
+
 SetGrantRequest:
   type: object
   properties:
