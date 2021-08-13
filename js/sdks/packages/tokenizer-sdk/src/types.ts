@@ -51,7 +51,6 @@ export interface TokenizerDetokenizeToUrlResponse {
 export interface TokenizerFailApiResponse {
   success: false;
   error: LunaSecError;
-  errorCode?: 400 | 401 | 404 | 500;
 }
 
 export type SuccessOrFailOutput<S> = Promise<S | TokenizerFailApiResponse>;
