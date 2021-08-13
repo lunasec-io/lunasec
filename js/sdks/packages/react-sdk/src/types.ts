@@ -1,4 +1,5 @@
-import { LunaSecError, ReadElementStyle } from '@lunasec/browser-common';
+import { ReadElementStyle } from '@lunasec/browser-common';
+import { LunaSecError } from '@lunasec/isomorphic-common';
 import React, { CSSProperties, RefObject } from 'react';
 
 import Downloader from './components/elements/downloader';

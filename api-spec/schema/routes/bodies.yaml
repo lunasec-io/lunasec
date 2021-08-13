@@ -3,13 +3,14 @@ ErrorResponse:
   properties:
     success:
       type: boolean
-    error: #human readable string
+    message: #human readable string
       type: string
-    errorCode: #this is optional
-      type: number
+    name: #machine parsable, human readable name like 'authorizationError'
+      type: string
   required:
+    - message
     - success
-    - error
+    - name
 SetGrantRequest:
   type: object
   properties:

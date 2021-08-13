@@ -117,7 +117,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   errorHandler(e: LunaSecError) {
-    console.error('Iframe sent error: ', e);
+    console.error('Iframe sent error: ', e.toJSON());
     this.setState({ lunaSecErrors: this.state.lunaSecErrors.concat([e.message]) });
   }
 
@@ -187,15 +187,14 @@ class App extends React.Component<Record<string, never>, IAppState> {
   renderAuthError() {
     if (!this.state.authError) {
       return null;
-    } else {
-      console.log('auth error is ', this.state.authError);
-      return (
-        <section>
-          <p style={{ color: 'red' }}>{this.state.authError}</p>
-          <a href="http://localhost:3001/set-id-token">Login</a>
-        </section>
-      );
     }
+    console.log('auth error is ', this.state.authError);
+    return (
+      <section>
+        <p style={{ color: 'red' }}>{this.state.authError}</p>
+        <a href="http://localhost:3001/set-id-token">Login</a>
+      </section>
+    );
   }
 
   renderLunaSecErrors() {
@@ -204,6 +203,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
         {errorMessage}
       </p>
     ));
+    if (errors.length === 0) {
+      return null;
+    }
     return <section>{errors}</section>;
   }
 

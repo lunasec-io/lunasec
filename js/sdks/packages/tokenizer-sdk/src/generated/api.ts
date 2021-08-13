@@ -89,13 +89,13 @@ export interface ErrorResponse {
      * @type {string}
      * @memberof ErrorResponse
      */
-    error: string;
+    message?: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof ErrorResponse
      */
-    errorCode?: number;
+    name?: string;
 }
 /**
  * 

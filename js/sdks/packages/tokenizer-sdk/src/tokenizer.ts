@@ -1,11 +1,12 @@
 import { OutgoingHttpHeaders } from 'http';
 
+import { LunaSecError } from '@lunasec/isomorphic-common';
 import { BadHttpResponseError } from '@lunasec/server-common';
 import { AxiosError } from 'axios';
 
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { CONFIG_DEFAULTS } from './constants';
-import { Configuration, DefaultApi, GrantType, MetaData } from './generated';
+import { Configuration, DefaultApi, ErrorResponse, GrantType, MetaData } from './generated';
 import {
   GrantTypeEnum,
   GrantTypeUnion,
@@ -50,8 +51,20 @@ export class Tokenizer {
   private handleError(e: AxiosError | Error): TokenizerFailApiResponse {
     return {
       success: false,
-      error: e,
+      error: this.constructError(e),
     };
+  }
+
+  private constructError(e: AxiosError<ErrorResponse> | Error) {
+    if ('response' in e && e.response) {
+      // Parse the axios error, if it has any meaningful data about the response
+      return new LunaSecError({
+        name: e.response.data.name || 'unknownTokenizerError',
+        message: e.response.data.message || 'Unknown Tokenizer Error',
+        code: e.response.status.toString(),
+      });
+    }
+    return new LunaSecError(e); // This can handle axios errors where we dont even get a response, or any other case
   }
 
   public createReadGrant(sessionId: string, tokenId: string) {
@@ -179,7 +192,11 @@ export class Tokenizer {
       if (!res.data) {
         return {
           success: false,
-          error: new Error('Invalid response from Tokenizer when detokenizing data'),
+          error: new LunaSecError({
+            name: 'badDetokenizeResponse',
+            message: 'Invalid response from Tokenizer when detokenizing data',
+            code: '500',
+          }),
         };
       }
 

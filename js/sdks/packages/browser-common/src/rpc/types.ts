@@ -1,5 +1,6 @@
+import { LunaSecErrorProperties } from '@lunasec/isomorphic-common';
+
 import { ValidatorName } from '../types';
-import { LunaSecErrorProperties } from '../utils';
 
 export interface FrameMessage<K, T extends keyof K> {
   command: T;
