@@ -24,15 +24,7 @@ jobs:
         run: yarn install
       - name: Test Build
         working-directory: docs/
-        run: |
-          if [ -e yarn.lock ]; then
-            yarn install --frozen-lockfile
-          elif [ -e package-lock.json ]; then
-            npm ci
-          else
-            npm i
-          fi
-          npm run build
+        run: npm run build
   gh-release:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -59,11 +51,4 @@ jobs:
         run: |
           git config --global user.email "production-services@lunasec.io"
           git config --global user.name "lunasec-production-services"
-          if [ -e yarn.lock ]; then
-            yarn install --frozen-lockfile
-          elif [ -e package-lock.json ]; then
-            npm ci
-          else
-            npm i
-          fi
           npm run deploy
