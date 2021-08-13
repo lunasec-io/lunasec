@@ -5,7 +5,8 @@
   "description": "Secure frame SDK",
   "main": "index.js",
   "scripts": {
-    "watch": "tsc -b tsconfig.build.json -w"
+    "schema:copy": "cd ./packages/node-sdk && yarn schema:copy",
+    "watch": "yarn schema:copy && tsc -b tsconfig.build.json -w"
   },
   "author": "",
   "license": "PROPRIETARY"
