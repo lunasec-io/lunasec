@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: '16'
       - name: Test Build
+        working-directory: docs/
         run: |
           if [ -e yarn.lock ]; then
             yarn install --frozen-lockfile
@@ -37,6 +38,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
       - name: Release to GitHub Pages
+        working-directory: docs/
         env:
           USE_SSH: true
           GIT_USER: git
