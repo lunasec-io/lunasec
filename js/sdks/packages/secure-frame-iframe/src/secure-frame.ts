@@ -147,7 +147,13 @@ export class SecureFrame<E extends keyof ClassLookup> {
       try {
         await handleDownload(token, this.secureElement as HTMLAnchorElement, this.tokenizer, attrs.hidden || false);
       } catch (e) {
-        this.handleError(e);
+        if (e instanceof LunaSecError) {
+          this.sendErrorMessage(e);
+        }
+        if (e instanceof Error) {
+          this.sendErrorMessage(new LunaSecError(e));
+        }
+        throw e;
       }
     } else {
       const value = await this.detokenize(token); // handles errors

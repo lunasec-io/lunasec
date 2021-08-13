@@ -9,7 +9,9 @@ export * from './providers/SecureFormContext';
 export * from './providers/LunaSecConfigContext';
 export * from './components/SecureSubmit';
 export * from './types';
+
 export { LunaSecError } from '@lunasec/isomorphic-common'; //expose this so users can use it as well
+
 export const SecureParagraph = wrapComponent(Paragraph, 'Paragraph');
 export const SecureDownload = wrapComponent(Downloader, 'Downloader');
 export const SecureUpload = wrapComponent(Uploader, 'Uploader');

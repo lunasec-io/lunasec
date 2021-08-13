@@ -198,8 +198,8 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   renderLunaSecErrors() {
-    const errors = this.state.lunaSecErrors.map((errorMessage) => (
-      <p key={errorMessage} style={{ color: 'red' }}>
+    const errors = this.state.lunaSecErrors.map((errorMessage, i) => (
+      <p key={i} style={{ color: 'red' }}>
         {errorMessage}
       </p>
     ));
