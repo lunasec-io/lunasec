@@ -15,6 +15,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
+      - name: Build repo
+        run: |
+          npx lerna bootstrap
+          cd js/sdks && npm run compile:production
       - name: Install Dependencies
         working-directory: docs/
         run: yarn install
@@ -40,6 +44,10 @@ jobs:
       - uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
+      - name: Build repo
+        run: |
+          npx lerna bootstrap
+          cd js/sdks && npm run compile:production
       - name: Install Dependencies
         working-directory: docs/
         run: yarn install
