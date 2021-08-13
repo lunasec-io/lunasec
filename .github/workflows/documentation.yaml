@@ -15,6 +15,9 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
+      - name: Install Dependencies
+        working-directory: docs/
+        run: yarn install
       - name: Test Build
         working-directory: docs/
         run: |
@@ -37,6 +40,9 @@ jobs:
       - uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
+      - name: Install Dependencies
+        working-directory: docs/
+        run: yarn install
       - name: Release to GitHub Pages
         working-directory: docs/
         env:
