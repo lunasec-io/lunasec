@@ -86,16 +86,29 @@ export interface ErrorResponse {
     success: boolean;
     /**
      * 
-     * @type {string}
+     * @type {ErrorResponseError}
      * @memberof ErrorResponse
      */
-    message?: string;
+    error: ErrorResponseError;
+}
+/**
+ * 
+ * @export
+ * @interface ErrorResponseError
+ */
+export interface ErrorResponseError {
     /**
-     * 
+     * Needs to be a UUID.
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ErrorResponseError
      */
-    name?: string;
+    name: string;
+    /**
+     * machine parsable human readable short name
+     * @type {string}
+     * @memberof ErrorResponseError
+     */
+    message: string;
 }
 /**
  * 
