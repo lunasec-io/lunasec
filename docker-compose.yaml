@@ -1,41 +1,50 @@
 version: "3.8"
 
 services:
-  secure-frame-iframe:
-    build:
-      context: .
-      dockerfile: js/Dockerfile
-      target: secure-frame-iframe
-    ports:
-      - "8000:8000"
-  customer-front-end:
-    build:
-      context: .
-      dockerfile: js/Dockerfile
-      target: react-front-end
-    ports:
-      - "3000:3000"
-  customer-back-end:
-    build:
-      context: .
-      dockerfile: js/Dockerfile
-      target: demo-back-end
-    ports:
-      - "3001:3001"
-    env_file:
-      - .env.dev
-    healthcheck:
-      test: ["CMD-SHELL", "curl http://localhost:3001"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   local-dependencies:
     image: rwgrim/docker-noop
     depends_on:
       - localstack
       - proxy
       - cdk-init
+  demo:
+    image: rwgrim/docker-noop
+    depends_on:
+      - local-dependencies
+      - secure-frame-iframe
+      - customer-front-end
+      - customer-back-end
+      - secureframe
+
+  secure-frame-iframe:
+    build:
+      context: .
+      dockerfile: js/docker/Dockerfile.demo
+      target: secure-frame-iframe
+    ports:
+      - "8000:8000"
+  customer-front-end:
+    hostname: customer-front-end
+    build:
+      context: .
+      dockerfile: js/docker/Dockerfile.demo
+      target: react-front-end
+    ports:
+      - "3000:3000"
+  customer-back-end:
+    build:
+      context: .
+      dockerfile: js/docker/Dockerfile.demo
+      target: demo-back-end
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env.dev
+  #      healthcheck:
+  #        test: ["CMD-SHELL", "curl http://localhost:3001"]
+  #        interval: 10s
+  #        timeout: 5s
+  #        retries: 5
   localstack:
     container_name: localstack
     hostname: localstack
@@ -89,6 +98,7 @@ services:
       localstack:
         condition: service_healthy
   secureframe:
+    hostname: secureframe
     env_file:
       - .env.dev
     build:
@@ -103,10 +113,11 @@ services:
     depends_on:
       cdk-init:
         condition: service_completed_successfully
-      customer-back-end:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:37766"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+
+#      customer-back-end:
+#        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl http://localhost:37766"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
