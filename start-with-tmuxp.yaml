@@ -30,5 +30,4 @@ windows:
       - cd go
       - make secureframe
       - docker-compose up -d local-dependencies
-      - env $(cat ../.env.dev | xargs) ./build/secureframe_dev
-
+      - env $(cat ../.env.host | xargs) ./build/secureframe_dev

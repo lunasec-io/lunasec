@@ -1,6 +1,5 @@
 import { OutgoingHttpHeaders } from 'http';
 
-import { BadHttpResponseError } from '@lunasec/server-common';
 import { AxiosError } from 'axios';
 
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
@@ -41,10 +40,19 @@ export class Tokenizer {
       headers[this.config.headers.auth] = jwtToken;
     }
     this.reqOptions = { headers }; // This is passed to the openapi client on every request
-    const basePath = this.config.host + this.config.baseRoute;
+
+    const basePath = this.getBasePath();
+
     // openapi stuff
     const openAPIConfig = new Configuration({ basePath });
     this.openApi = new DefaultApi(openAPIConfig);
+  }
+
+  private getBasePath(): string {
+    if (this.config.baseRoute !== '') {
+      return new URL(this.config.baseRoute, this.config.host).toString();
+    }
+    return new URL(this.config.host).origin;
   }
 
   private handleError(e: AxiosError | Error): TokenizerFailApiResponse {
