@@ -6,11 +6,11 @@ import {
   generateSecureNonce,
   getStyleInfo,
   LunaSecAuthentication,
-  LunaSecError,
   ReadElementStyle,
   triggerBlur,
   triggerFocus,
 } from '@lunasec/browser-common';
+import { LunaSecError } from '@lunasec/isomorphic-common';
 import classnames from 'classnames';
 import React, { Component, CSSProperties, RefObject } from 'react';
 import styled from 'styled-components';
@@ -280,7 +280,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
           this.formContext.submit();
           break;
         case 'NotifyOnError':
-          this.props.errorHandler(new LunaSecError(notification.data));
+          this.props.errorHandler(new LunaSecError(notification.data)); // Call the application's provided error handler
           break;
       }
     }

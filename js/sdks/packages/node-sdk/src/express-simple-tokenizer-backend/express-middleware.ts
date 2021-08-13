@@ -38,8 +38,8 @@ export function registerExpressMiddleware(app: Application, tokenizerBackend: Si
       if (!tokenId) {
         res.status(400).json({
           success: false,
-          error: 'Missing tokenId to detokenize token with',
-          errorCode: 400,
+          message: 'Missing tokenId to detokenize token with',
+          name: 'noTokenId',
         });
         return;
       }
@@ -47,8 +47,8 @@ export function registerExpressMiddleware(app: Application, tokenizerBackend: Si
       if (!isToken(tokenId)) {
         res.status(400).json({
           success: false,
-          error: 'Invalid tokenId provided to detokenize',
-          errorCode: 400,
+          message: 'Invalid tokenId provided to detokenize',
+          name: 'badTokenId',
         });
         return;
       }

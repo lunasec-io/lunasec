@@ -1,4 +1,4 @@
-import { LunaSecError } from '@lunasec/browser-common';
+import { LunaSecError } from '@lunasec/isomorphic-common';
 import { Tokenizer } from '@lunasec/tokenizer-sdk';
 // 1 fetch filename from metadata and s3 headers in parallel
 // 2 Put them onto the a tag

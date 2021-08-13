@@ -29,6 +29,6 @@ windows:
     - shell_command:
       - cd go
       - make secureframe
-      - sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d local-dependencies
+      - COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d local-dependencies
       - env $(cat ../.env.host | xargs) ./build/secureframe_dev
 

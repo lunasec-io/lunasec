@@ -1,12 +1,7 @@
-import {
-  AttributesMessage,
-  LunaSecError,
-  patchStyle,
-  safeParseJson,
-  StyleInfo,
-  ValidatorName,
-} from '@lunasec/browser-common';
+import { AttributesMessage, patchStyle, safeParseJson, StyleInfo, ValidatorName } from '@lunasec/browser-common';
+import { LunaSecError } from '@lunasec/isomorphic-common';
 import { ClassLookup, TagLookup } from '@lunasec/react-sdk';
+import { Tokenizer } from '@lunasec/tokenizer-sdk';
 
 import { initializeUploader } from './initialize-uploader';
 import { iFrameRPC } from './rpc';
@@ -37,6 +32,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
   readonly form: HTMLFormElement;
   private token?: string;
   private validatorName?: ValidatorName = undefined;
+  readonly tokenizer: Tokenizer;
   public readonly rpc: iFrameRPC;
 
   constructor(componentName: E, loadingText: Element) {
@@ -44,8 +40,10 @@ export class SecureFrame<E extends keyof ClassLookup> {
     this.loadingText = loadingText;
     [this.secureElement, this.form] = this.insertSecureElement(componentName);
     this.origin = this.getURLSearchParam('origin');
+
     this.frameNonce = this.getURLSearchParam('n');
-    this.rpc = new iFrameRPC(this.origin, { host: window.location.origin });
+    this.tokenizer = new Tokenizer({ host: window.location.origin });
+    this.rpc = new iFrameRPC(this.origin, () => this.tokenizeField());
     this.startRPC();
   }
 
@@ -147,18 +145,15 @@ export class SecureFrame<E extends keyof ClassLookup> {
     if (attrs.component === 'Downloader') {
       // Figure out why this type casting is necessary
       try {
-        await handleDownload(token, this.secureElement as HTMLAnchorElement, this.rpc.tokenizer, attrs.hidden || false);
+        await handleDownload(token, this.secureElement as HTMLAnchorElement, this.tokenizer, attrs.hidden || false);
       } catch (e) {
-        if (e instanceof LunaSecError) {
-          this.sendErrorMessage(e);
-        }
-        if (e instanceof Error) {
-          this.sendErrorMessage(new LunaSecError(e));
-        }
-        throw e;
+        this.handleError(e);
       }
     } else {
-      const value = await this.rpc.detokenize(token);
+      const value = await this.detokenize(token); // handles errors
+      if (!value) {
+        return;
+      }
       if (attrs.component === 'Input') {
         const input = this.secureElement as HTMLInputElement;
         input.value = value;
@@ -197,11 +192,23 @@ export class SecureFrame<E extends keyof ClassLookup> {
     });
   }
 
+  handleError(e: LunaSecError | Error | any) {
+    // I'd like to do this check inside the LunaSecError class but this works for now
+    if (e instanceof LunaSecError) {
+      this.sendErrorMessage(e);
+    }
+    if (e instanceof Error) {
+      this.sendErrorMessage(new LunaSecError(e));
+      console.error('Caught a raw error in iframe: ', e);
+    }
+    throw e;
+  }
+
   sendErrorMessage(e: LunaSecError) {
     this.rpc.sendMessageToParentFrame({
       command: 'NotifyOnError',
       frameNonce: this.frameNonce,
-      data: e,
+      data: e, // should call toJSON nicely and then we reconstruct the error on the other end
     });
   }
 
@@ -215,5 +222,28 @@ export class SecureFrame<E extends keyof ClassLookup> {
       }
       this.rpc.sendMessageToParentFrame({ command: 'NotifyOnSubmit', frameNonce: this.frameNonce, data: {} });
     });
+  }
+
+  async tokenizeField(): Promise<string | void> {
+    // TODO: this is brittle, move this into the secure-frame control logic
+    const value = (this.secureElement as HTMLInputElement).value;
+    if (value.length > 0) {
+      const res = await this.tokenizer.tokenize(value, { dataType: 'string' });
+
+      if (!res.success) {
+        return this.sendErrorMessage(res.error);
+      }
+      return res.tokenId;
+    } else {
+      return '';
+    }
+  }
+
+  async detokenize(token: string) {
+    const res = await this.tokenizer.detokenize(token);
+    if (!res.success) {
+      return this.sendErrorMessage(res.error);
+    }
+    return res.value;
   }
 }
