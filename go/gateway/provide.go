@@ -1,11 +1,13 @@
 package gateway
 
 import (
+	"crypto/tls"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"go.uber.org/config"
 	"go.uber.org/zap"
+	"net/http"
 )
 
 type Gateways struct {
@@ -31,10 +33,12 @@ func NewGatewayConfig(logger *zap.Logger, provider config.Provider) (gatewayConf
 	return
 }
 
-func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options session.Options, gatewayConfig GatewayConfig, err error) {
+func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options session.Options, err error) {
 	var (
+		gatewayConfig GatewayConfig
 		creds *credentials.Credentials
 		endpointUrl *string
+		httpClient *http.Client
 	)
 
 	gatewayConfig, err = NewGatewayConfig(logger, provider)
@@ -54,12 +58,16 @@ func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options
 		sharedConfigEnable = session.SharedConfigDisable
 	}
 
-	if gatewayConfig.LocalstackURL != "" {
+	if gatewayConfig.LocalHTTPSProxy != "" {
 		logger.Debug(
-			"using configured localstack url for aws session",
-			zap.String("localstackURL", gatewayConfig.LocalstackURL),
+			"using configured localstack url (https proxy) for aws session",
+			zap.String("localstackURL", gatewayConfig.LocalHTTPSProxy),
 		)
-		endpointUrl = aws.String(gatewayConfig.LocalstackURL)
+		endpointUrl = aws.String(gatewayConfig.LocalHTTPSProxy)
+		tr := &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+		httpClient = &http.Client{Transport: tr}
 	}
 
 	options = session.Options{
@@ -69,31 +77,16 @@ func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options
 			Region: aws.String(gatewayConfig.S3Region),
 			Endpoint: endpointUrl,
 			S3ForcePathStyle: aws.Bool(true),
+			HTTPClient: httpClient,
 		},
 	}
 	return
 }
 
 func NewAwsSession(logger *zap.Logger, provider config.Provider) (sess *session.Session, err error) {
-	options, _, err := newAwsSessionOptions(logger, provider)
+	options, err := newAwsSessionOptions(logger, provider)
 	if err != nil {
 		return
-	}
-
-	sess = session.Must(session.NewSessionWithOptions(options))
-	return
-}
-
-// NewAwsSessionForExternalService creates a new session for a service that will be accessed directly by the user.
-// For example, S3 presigned URLs are accessed by the user on the frontend.
-func NewAwsSessionForExternalService(logger *zap.Logger, provider config.Provider) (sess *session.Session, err error) {
-	options, gatewayConfig, err := newAwsSessionOptions(logger, provider)
-	if err != nil {
-		return
-	}
-
-	if gatewayConfig.LocalHTTPSProxy != "" {
-		options.Config.Endpoint = aws.String(gatewayConfig.LocalHTTPSProxy)
 	}
 
 	sess = session.Must(session.NewSessionWithOptions(options))
@@ -106,11 +99,6 @@ func GetAwsGateways(logger *zap.Logger, provider config.Provider) (gateways Gate
 		panic(err)
 	}
 
-	extSess, err := NewAwsSessionForExternalService(logger, provider)
-	if err != nil {
-		panic(err)
-	}
-
 	logger.Debug("loading secrets manager AWS gateway...")
 	gateways.SM = NewAwsSecretsManagerGateway(logger, provider, sess)
 
@@ -118,6 +106,6 @@ func GetAwsGateways(logger *zap.Logger, provider config.Provider) (gateways Gate
 	gateways.KV = NewDynamoKvGateway(logger, provider, sess)
 
 	logger.Debug("loading s3 AWS gateway...")
-	gateways.S3 = NewAwsS3Gateway(logger, provider, extSess)
+	gateways.S3 = NewAwsS3Gateway(logger, provider, sess)
 	return
 }
