@@ -4,4 +4,3 @@ export * from './json';
 export * from './random';
 export * from './to-camel-case';
 export * from '../auth/authentication';
-export * from './lunasec-error';

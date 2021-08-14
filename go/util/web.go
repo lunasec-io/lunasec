@@ -51,7 +51,7 @@ func RespondError(w http.ResponseWriter, status int, err error) {
 		Success: false,
 		Error:   types.ErrorResponse{
 			Message: errorStr,
-			Name: "TokenizerError",
+			Name: "TokenizerError", // Eventually it would be nice to wrap errors with more info like this name field so the frontend can display more meaningful errors
 		},
 	}
 
