@@ -22,7 +22,6 @@ type CorsConfig struct {
 }
 
 type AppConfig struct {
-	DisableAuth bool       `yaml:"disable_auth"`
 	Cors        CorsConfig `yaml:"cors"`
 }
 
