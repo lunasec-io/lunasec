@@ -45,7 +45,7 @@ module.exports = {
       title: 'LunaSec Developer',
       logo: {
         alt: 'LunaSec Logo',
-        src: 'img/logo.svg',
+        src: '/docs/img/logo.svg',
       },
       items: [
         {
@@ -54,7 +54,7 @@ module.exports = {
           position: 'left',
           label: 'Docs',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/docs/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/refinery-labs/lunasec-monorepo',
           label: 'GitHub',
@@ -70,7 +70,7 @@ module.exports = {
           items: [
             {
               label: 'Tutorial',
-              to: '/docs/intro',
+              to: '/docs/pages/intro',
             },
           ],
         },
@@ -88,7 +88,7 @@ module.exports = {
           items: [
             {
               label: 'Blog',
-              to: '/blog',
+              to: '/docs/blog',
             },
             {
               label: 'Github',
