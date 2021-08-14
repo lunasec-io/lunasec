@@ -1,0 +1,141 @@
+{
+  "name": "fullstack-typescript",
+  "version": "1.1.1",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "node": "12.16.1"
+  },
+  "scripts": {
+    "test": "jest",
+    "clean": "rimraf dist",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "start": "node index.js",
+    "start:prod": "cross-env NODE_ENV=production node index.js",
+    "type-check-client": "tsc -p ./src/client/tsconfig.json",
+    "build-client": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --mode production",
+    "build-server": "tsc -b src/server",
+    "dev-client": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack serve -w",
+    "dev-server": "tsc-watch --noClear -b ./src/server/tsconfig.json --onSuccess \"node --enable-source-maps index.js\"",
+    "dev": "concurrently --prefix \"[{name}]\" --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run dev-server\" \"npm run dev-client\"",
+    "build": "concurrently --prefix \"[{name}]\" --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run build-server\" \"npm run build-client\""
+  },
+  "keywords": [
+    "typescript",
+    "react",
+    "starter-kit",
+    "webpack",
+    "fullstack",
+    "express",
+    "express4",
+    "node"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gilamran/fullstack-typescript.git"
+  },
+  "license": "MIT",
+  "author": "Gil Amran",
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/client/setupEnzyme.ts"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "<rootDir>/src/client/tsconfig-for-tests.json"
+      }
+    }
+  },
+  "dependencies": {
+    "@material-ui/icons": "^4.11.2",
+    "@webpack-cli/serve": "^1.2.2",
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "find-up": "^5.0.0",
+    "styled-components": "^5.2.1",
+    "tslib": "^2.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-decorators": "^7.12.12",
+    "@babel/plugin-proposal-numeric-separator": "^7.12.7",
+    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
+    "@babel/preset-typescript": "^7.12.7",
+    "@material-ui/core": "^4.11.3",
+    "@types/cssnano": "^4.0.0",
+    "@types/enzyme": "^3.10.8",
+    "@types/express": "^4.17.11",
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.22",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/webpack": "^4.41.26",
+    "@types/webpack-bundle-analyzer": "^3.9.0",
+    "@types/webpack-dev-server": "^3.11.1",
+    "@types/webpack-manifest-plugin": "^3.0.3",
+    "@typescript-eslint/eslint-plugin": "^4.14.1",
+    "@typescript-eslint/parser": "^4.14.1",
+    "babel-loader": "^8.2.2",
+    "concurrently": "^5.3.0",
+    "core-js": "^3.8.3",
+    "cross-env": "^7.0.3",
+    "css-loader": "^5.0.1",
+    "cssnano": "^4.1.10",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "enzyme-to-json": "^3.6.1",
+    "eslint": "^7.18.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "file-loader": "^6.2.0",
+    "http-proxy-middleware": "^1.0.6",
+    "jest": "^26.6.3",
+    "postcss-loader": "^4.2.0",
+    "prettier": "^2.2.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
+    "request": "^2.88.2",
+    "rimraf": "^3.0.2",
+    "style-loader": "^2.0.0",
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.1.1",
+    "tsc-watch": "^4.2.9",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.1.3",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.18.0",
+    "webpack-bundle-analyzer": "^4.4.0",
+    "webpack-cli": "^4.4.0",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-manifest-plugin": "^3.0.0"
+  }
+}
