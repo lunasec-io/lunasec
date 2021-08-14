@@ -42,7 +42,7 @@ module.exports = {
   ],
   themeConfig: {
     navbar: {
-      title: 'LunaSec Developer',
+      title: 'LunaSec',
       logo: {
         alt: 'LunaSec Logo',
         src: 'img/logo.svg',
