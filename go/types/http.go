@@ -8,5 +8,5 @@ type HTTPResponse struct {
 
 type ErrorResponse struct {
 	Name    string `json:"errorName,omitempty"`
-	Message *string `json:"errorMessage,omitempty"`
+	Message string `json:"errorMessage,omitempty"`
 }
