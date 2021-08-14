@@ -58,16 +58,24 @@ func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options
 		sharedConfigEnable = session.SharedConfigDisable
 	}
 
-	if gatewayConfig.LocalHTTPSProxy != "" {
-		logger.Debug(
-			"using configured localstack url (https proxy) for aws session",
-			zap.String("localstackURL", gatewayConfig.LocalHTTPSProxy),
-		)
-		endpointUrl = aws.String(gatewayConfig.LocalHTTPSProxy)
-		tr := &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	if gatewayConfig.LocalstackURL != "" || gatewayConfig.LocalHTTPSProxy != "" {
+		if gatewayConfig.LocalHTTPSProxy != "" {
+			logger.Debug(
+				"using configured localstack url (https proxy) for aws session",
+				zap.String("localstackURL", gatewayConfig.LocalHTTPSProxy),
+			)
+			endpointUrl = aws.String(gatewayConfig.LocalHTTPSProxy)
+			tr := &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			}
+			httpClient = &http.Client{Transport: tr}
+		} else {
+			logger.Debug(
+				"using configured localstack url for aws session",
+				zap.String("localstackURL", gatewayConfig.LocalstackURL),
+			)
+			endpointUrl = aws.String(gatewayConfig.LocalstackURL)
 		}
-		httpClient = &http.Client{Transport: tr}
 	}
 
 	options = session.Options{
