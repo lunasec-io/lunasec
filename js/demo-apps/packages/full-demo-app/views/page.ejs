@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>
+			TypeScript and React
+    </title>
+    <link rel="icon" href="/assets/favicon.ico"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <body>
+        <div class="container">
+            <div id="app">Loading...</div>
+        </div>
+    <% if(process.env.NODE_ENV === 'production') { %>
+        <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <% } else { %>
+        <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+		<% } %>
+        <% for(var jsLocation of Object.values(manifest)) {%>
+        <script type="text/javascript" src="<%- jsLocation %>"></script>
+        <% } %>        
+    </body>
+</html>
