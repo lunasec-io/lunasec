@@ -50,7 +50,7 @@ func RespondError(w http.ResponseWriter, status int, err error) {
 	resp := types.HTTPResponse{
 		Success: false,
 		Error:   types.ErrorResponse{
-			Message: &errorStr,
+			Message: errorStr,
 			Name: "TokenizerError",
 		},
 	}
