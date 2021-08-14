@@ -82,6 +82,11 @@ services:
       - ./go/scripts/proxy/:/proxy
     ports:
       - "4567:4566"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -k https://localhost:4566"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   cdk-init:
     stdin_open: true
     tty: true
@@ -95,7 +100,7 @@ services:
       - ./go/config/secureframe/:/config/secureframe/
       - ./go/lunasec_local_build/:/lunasec_local_build/
     depends_on:
-      localstack:
+      proxy:
         condition: service_healthy
   secureframe:
     hostname: secureframe
