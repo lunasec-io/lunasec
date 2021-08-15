@@ -30,6 +30,8 @@ if [ -z "$AWS_DEFAULT_REGION" ]; then
   exit 1
 fi
 
+# TODO: Migrate this to v2 of the AWS CLI
+pip install --quiet --no-cache-dir awscli=='1.20.21'
 
 echo "Setting up AWS credentials folder"
 mkdir -p ~/.aws
