@@ -29,7 +29,7 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     env:
-      LOCAL_FILES_TO_COPY: ../docs/build/
+      LOCAL_FILES_TO_COPY: ./docs/build/
       AWS_DEFAULT_REGION: us-east-1
       AWS_S3_BUCKET: lunasec-docs/docs
       AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
@@ -42,9 +42,6 @@ jobs:
       - uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
-      - name: Copy to S3
-        run: .github/copy-docs-to-s3.sh
-        shell: bash
       - name: Build repo
         run: |
           npx lerna bootstrap
@@ -54,6 +51,7 @@ jobs:
         run: yarn install
       - name: Copy to S3
         run: .github/copy-docs-to-s3.sh
+        working-directory: docs/
         shell: bash
 #      - name: Release to GitHub Pages
 #        working-directory: docs/
