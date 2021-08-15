@@ -42,6 +42,9 @@ jobs:
       - uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
+      - name: Copy to S3
+        run: .github/copy-docs-to-s3.sh
+        shell: bash
       - name: Build repo
         run: |
           npx lerna bootstrap
