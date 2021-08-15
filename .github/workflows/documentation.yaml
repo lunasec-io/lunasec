@@ -50,7 +50,7 @@ jobs:
         working-directory: docs/
         run: yarn install
       - name: Copy to S3
-        run: .github/copy-docs-to-s3.sh
+        run: ../github/copy-docs-to-s3.sh
         working-directory: docs/
         shell: bash
 #      - name: Release to GitHub Pages
