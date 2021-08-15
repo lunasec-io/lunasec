@@ -50,6 +50,9 @@ jobs:
       - name: Install Dependencies
         working-directory: docs/
         run: yarn install
+      - name: Run Build
+        working-directory: docs/
+        run: yarn run build
       - name: Copy to S3
         run: ../.github/copy-docs-to-s3.sh
         working-directory: docs/
