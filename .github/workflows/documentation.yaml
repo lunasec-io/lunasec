@@ -29,7 +29,7 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     env:
-      LOCAL_FILES_TO_COPY: ./build/
+      LOCAL_FILES_TO_COPY: ./docs/build/
       AWS_DEFAULT_REGION: us-east-1
       AWS_S3_BUCKET: lunasec-docs/docs
     steps:
@@ -48,7 +48,6 @@ jobs:
         working-directory: docs/
         run: yarn install
       - name: Copy to S3
-        working-directory: docs/
         run: .github/copy-docs-to-s3.sh
         shell: bash
 #      - name: Release to GitHub Pages
