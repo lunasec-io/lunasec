@@ -21,7 +21,7 @@ module.exports = {
         entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
         tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
-        out: 'react-sdk',
+        out: '../pages/react-sdk',
         sidebar: {
           categoryLabel: "React SDK"
         }
@@ -34,7 +34,7 @@ module.exports = {
         entryPoints: ['../js/sdks/packages/node-sdk/src/index.ts'],
         tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
-        out: 'node-sdk',
+        out: '../pages/node-sdk',
         sidebar: {
           categoryLabel: "Node SDK"
         }
