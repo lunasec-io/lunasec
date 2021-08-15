@@ -28,6 +28,10 @@ jobs:
   gh-release:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    env:
+      LOCAL_FILES_TO_COPY: ./build/
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_S3_BUCKET: lunasec-docs/docs
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
@@ -43,13 +47,17 @@ jobs:
       - name: Install Dependencies
         working-directory: docs/
         run: yarn install
-      - name: Release to GitHub Pages
+      - name: Copy to S3
         working-directory: docs/
-        env:
-          DEPLOYMENT_BRANCH: documentation
-          USE_SSH: true
-          GIT_USER: git
-        run: |
-          git config --global user.email "production-services@lunasec.io"
-          git config --global user.name "lunasec-production-services"
-          npm run deploy
+        run: .github/copy-docs-to-s3.sh
+        shell: bash
+#      - name: Release to GitHub Pages
+#        working-directory: docs/
+#        env:
+#          DEPLOYMENT_BRANCH: documentation
+#          USE_SSH: true
+#          GIT_USER: git
+#        run: |
+#          git config --global user.email "production-services@lunasec.io"
+#          git config --global user.name "lunasec-production-services"
+#          npm run deploy
