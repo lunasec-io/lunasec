@@ -6,6 +6,7 @@
 set -e
 
 pwd
+ls -lisah
 
 if [ -z "$LOCAL_FILES_TO_COPY" ]; then
   echo "LOCAL_FILES_TO_COPY is not set. Quitting."
