@@ -43,9 +43,10 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
       - name: Build repo
+        working-directory: js/sdks
         run: |
           npx lerna bootstrap
-          cd js/sdks && npm run compile:production
+          npm run compile:production
       - name: Install Dependencies
         working-directory: docs/
         run: yarn install
