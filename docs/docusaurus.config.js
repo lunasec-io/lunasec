@@ -5,7 +5,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 module.exports = {
   title: 'LunaSec',
   tagline: 'Data security from the start.',
-  url: 'https://www.lunasec.io',
+  url: 'https://lunasec-io.github.io',
   baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
