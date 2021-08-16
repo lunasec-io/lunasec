@@ -50,11 +50,11 @@ export const SideMenu: React.FunctionComponent = () => {
           </ListItemIcon>
           <ListItemText primary='Home' />
         </ListItem>
-        <ListItem button component={NavLinkMui} to='/Login'>
+        <ListItem button component={NavLinkMui} to='/signup'>
           <ListItemIcon>
             <LockOpen />
           </ListItemIcon>
-          <ListItemText primary='Login' />
+          <ListItemText primary='Signup' />
         </ListItem>
       </List>
     </Drawer>
