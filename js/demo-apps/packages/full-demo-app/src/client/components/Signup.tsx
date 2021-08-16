@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export const Login: React.FunctionComponent = () => {
+export const Signup: React.FunctionComponent = () => {
     const classes = useStyles({});
     return (
         <Paper className={classes.padding}>
@@ -30,6 +30,11 @@ export const Login: React.FunctionComponent = () => {
                     </Grid>
                     <Grid item md={true} sm={true} xs={true}>
                         <TextField id="username" label="Password" type="password" fullWidth required />
+                    </Grid>
+                </Grid>
+                <Grid container spacing={8} alignItems="flex-end">
+                    <Grid item>
+                        <Button type="button" color="primary">Upload Identification Document</Button>
                     </Grid>
                 </Grid>
                 <Grid container alignItems="center" justify="space-between">
