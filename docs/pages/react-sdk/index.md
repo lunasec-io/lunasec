@@ -1,7 +1,7 @@
 ---
 id: "index"
 title: "@lunasec/react-sdk"
-slug: "/react-sdk"
+slug: "/../pages/react-sdk"
 sidebar_label: "Readme"
 sidebar_position: 0
 custom_edit_url: null
