@@ -2,9 +2,9 @@ name: documentation
 
 on:
   pull_request:
-    branches: [documentation]
+    branches: [master]
   push:
-    branches: [documentation]
+    branches: [master]
 
 jobs:
   checks:
