@@ -3,14 +3,14 @@ name: documentation
 on:
   pull_request:
     branches:
-    - release-v*
+    - version-*
     tags:
-    - release-v*
+    - version-*
   push:
     branches:
-    - release-v*
+    - version-*
     tags:
-    - release-v*
+    - version-*
 
 jobs:
   checks:
@@ -22,15 +22,20 @@ jobs:
         with:
           node-version: '16'
       - name: Build repo
+        working-directory: js/sdks
         run: |
           npx lerna bootstrap
-          cd js/sdks && npm run compile:production
+          npm run compile:production
       - name: Install Dependencies
         working-directory: docs/
         run: yarn install
+#      - name: Set env.BRANCH
+#        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
+#      - name: Cut new docs for version branch
+#        run: yarn run docusaurus docs:version $BRANCH
       - name: Test Build
         working-directory: docs/
-        run: npm run build
+        run: yarn run build
   gh-release:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -56,6 +61,11 @@ jobs:
       - name: Install Dependencies
         working-directory: docs/
         run: yarn install
+#      - name: Set env.BRANCH
+#        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
+#      - name: Cut new docs for version branch
+#        run: yarn run docusaurus docs:version $BRANCH
+# TODO (cthompson) push commit with the version changes to master?
       - name: Run Build
         working-directory: docs/
         run: yarn run build
