@@ -5,7 +5,7 @@ import cssnano from 'cssnano';
 
 import { SERVER_PORT, IS_DEV, WEBPACK_PORT } from './src/server/config';
 
-const plugins = [new WebpackManifestPlugin()];
+const plugins = [new WebpackManifestPlugin({})];
 
 // import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 // plugins.push(new BundleAnalyzerPlugin());
@@ -17,6 +17,13 @@ const config: Configuration = {
   mode: IS_DEV ? 'development' : 'production',
   devtool: IS_DEV ? 'inline-source-map' : false,
   entry: ['./src/client/client'],
+// @ts-ignore
+  devServer: {
+    port: WEBPACK_PORT,
+    overlay: IS_DEV,
+    open: IS_DEV,
+    openPage: `http://localhost:${SERVER_PORT}`,
+  },
   output: {
     path: path.join(__dirname, 'dist', 'statics'),
     filename: `[name]-[chunkhash]-bundle.js`,
@@ -98,12 +105,6 @@ const config: Configuration = {
         use: 'url-loader?limit=10000',
       },
     ],
-  },
-  devServer: {
-    port: WEBPACK_PORT,
-    overlay: IS_DEV,
-    open: IS_DEV,
-    openPage: `http://localhost:${SERVER_PORT}`,
   },
   plugins,
   externals: {

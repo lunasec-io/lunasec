@@ -10,6 +10,7 @@ import { SecureResolverSdkConfig } from '../secure-resolver/types';
 // Please attempt to keep this configuration organized and named in a way that is easy for the API user to understand
 export interface LunaSecConfig {
   secureFrameURL: string;
+  baseURL?: string;
   auth: {
     secrets: SecretConfig;
     payloadClaims?: string[]; // Note that not setting this allows unfiltered claims to be set, do we want that?
@@ -38,6 +39,7 @@ export class LunaSec {
       sessionIdProvider: config.auth.sessionIdProvider,
       payloadClaims: config.auth.payloadClaims,
       secureFrameURL: config.secureFrameURL,
+      baseURL: config.baseURL,
     });
 
     this.grants = new LunaSecGrantService(this.auth, config.auth.sessionIdProvider);

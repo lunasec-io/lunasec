@@ -1,4 +1,5 @@
 import { URL } from 'url';
+import path from 'path';
 
 import cookieParser from 'cookie-parser';
 import { Request, Response, Router } from 'express';
@@ -12,6 +13,7 @@ export interface ExpressAuthPluginConfig {
   payloadClaims?: string[];
   secureFrameURL: string;
   auth: LunaSecAuthentication;
+  baseURL?: string;
 }
 
 export class LunaSecExpressAuthPlugin {
@@ -107,8 +109,15 @@ export class LunaSecExpressAuthPlugin {
     res.json(keys).status(200);
   }
 
+  getUrlPath(urlPath: string): string {
+    if (this.config.baseURL !== undefined) {
+      return path.join(this.config.baseURL, urlPath);
+    }
+    return urlPath;
+  }
+
   register(app: Router) {
-    app.get('/secure-frame', cookieParser(), this.handleSecureFrameAuthRequest.bind(this));
-    app.get('/.lunasec/jwks.json', this.handleJwksRequest.bind(this));
+    app.get(this.getUrlPath('/secure-frame'), cookieParser(), this.handleSecureFrameAuthRequest.bind(this));
+    app.get(this.getUrlPath('/.lunasec/jwks.json'), this.handleJwksRequest.bind(this));
   }
 }
