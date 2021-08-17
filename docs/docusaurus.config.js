@@ -5,11 +5,12 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 module.exports = {
   title: 'LunaSec',
   tagline: 'Data security from the start.',
-  url: 'https://lunasec.io',
-  baseUrl: '/',
+  url: 'https://lunasec-io.github.io',
+  baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  trailingSlash: true,
+  favicon: 'https://uploads-ssl.webflow.com/60e63e8b40f27c7913def7a1/6112d961cd68c3de06afe04d_WebFlow%20Logo%20-%2032px.png',
   organizationName: 'lunasec-io', // Usually your GitHub org/user name.
   projectName: 'lunasec-io.github.io', // Usually your repo name.
   plugins: [
@@ -20,7 +21,7 @@ module.exports = {
         entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
         tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
-        out: 'react-sdk',
+        out: '../pages/react-sdk',
         sidebar: {
           categoryLabel: "React SDK"
         }
@@ -33,7 +34,7 @@ module.exports = {
         entryPoints: ['../js/sdks/packages/node-sdk/src/index.ts'],
         tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
-        out: 'node-sdk',
+        out: '../pages/node-sdk',
         sidebar: {
           categoryLabel: "Node SDK"
         }
@@ -45,7 +46,7 @@ module.exports = {
       title: 'LunaSec Developer',
       logo: {
         alt: 'LunaSec Logo',
-        src: 'img/logo.svg',
+        src: '/docs/img/logo.svg',
       },
       items: [
         {
@@ -54,7 +55,7 @@ module.exports = {
           position: 'left',
           label: 'Docs',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/docs/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/refinery-labs/lunasec-monorepo',
           label: 'GitHub',
@@ -70,7 +71,7 @@ module.exports = {
           items: [
             {
               label: 'Tutorial',
-              to: '/docs/intro',
+              to: '/docs/pages/intro',
             },
           ],
         },
@@ -88,7 +89,7 @@ module.exports = {
           items: [
             {
               label: 'Blog',
-              to: '/blog',
+              to: '/docs/blog',
             },
             {
               label: 'Github',
@@ -109,6 +110,8 @@ module.exports = {
       '@docusaurus/preset-classic',
       {
         docs: {
+          path: 'pages',
+          routeBasePath: 'pages',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
