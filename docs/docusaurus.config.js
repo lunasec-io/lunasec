@@ -1,5 +1,6 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const webpack = require('webpack')
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -12,6 +13,7 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'lunasec-io', // Usually your GitHub org/user name.
   projectName: 'lunasec-io.github.io', // Usually your repo name.
+  scripts: ['https://cdn.jsdelivr.net/npm/redoc@v2.0.0-rc.54/bundles/redoc.standalone.js'],
   plugins: [
     [
       'docusaurus-plugin-typedoc',
@@ -36,9 +38,11 @@ module.exports = {
         out: 'node-sdk',
         sidebar: {
           categoryLabel: "Node SDK"
+
         }
       },
     ],
+
   ],
   themeConfig: {
     navbar: {
@@ -124,6 +128,15 @@ module.exports = {
           customCss: require.resolve('./src/css/custom.css'),
         },
       },
+    ],
+    //Does not work, might be possible to fix runtime issue by making our own docusaurus plugin and using webpack provide to fix process.env error
+    ['redocusaurus',
+      {
+        specs: [{
+          routePath: '/api-spec/',
+          specUrl: 'https://redocly.github.io/redoc/openapi.yaml',
+        }],
+      }
     ],
   ],
 };

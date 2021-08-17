@@ -20,4 +20,4 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:56](https://github.com/refinery-labs/lunasec-monorepo/blob/415fd94/js/sdks/packages/react-sdk/src/types.ts#L56)
+[js/sdks/packages/react-sdk/src/types.ts:56](https://github.com/refinery-labs/lunasec-monorepo/blob/03d4513/js/sdks/packages/react-sdk/src/types.ts#L56)
