@@ -46,6 +46,8 @@ aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" > ~/.aws/credentials
 echo "Copying to AWS S3"
 aws s3 sync ${LOCAL_FILES_TO_COPY} s3://${AWS_S3_BUCKET} --exact-timestamps --delete --region ${AWS_DEFAULT_REGION} $*
 
+# TODO: Add Cloudfront invalidation step
+
 echo "Cleaning up AWS credentials"
 
 rm -rf ~/.aws
