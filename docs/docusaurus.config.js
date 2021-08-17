@@ -57,6 +57,10 @@ module.exports = {
         },
         {to: '/docs/blog', label: 'Blog', position: 'left'},
         {
+          type: 'docsVersionDropdown',
+          position: "right",
+        },
+        {
           href: 'https://github.com/refinery-labs/lunasec-monorepo',
           label: 'GitHub',
           position: 'right',

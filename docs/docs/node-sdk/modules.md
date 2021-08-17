@@ -47,4 +47,4 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts:20](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts#L20)
+[js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts:20](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts#L20)

@@ -21,7 +21,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/grant-service/index.ts:11](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/grant-service/index.ts#L11)
+[js/sdks/packages/node-sdk/src/grant-service/index.ts:11](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/grant-service/index.ts#L11)
 
 ## Properties
 
@@ -31,7 +31,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/grant-service/index.ts:8](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/grant-service/index.ts#L8)
+[js/sdks/packages/node-sdk/src/grant-service/index.ts:8](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/grant-service/index.ts#L8)
 
 ___
 
@@ -41,7 +41,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/grant-service/index.ts:9](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/grant-service/index.ts#L9)
+[js/sdks/packages/node-sdk/src/grant-service/index.ts:9](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/grant-service/index.ts#L9)
 
 ## Methods
 
@@ -62,7 +62,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/grant-service/index.ts:39](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/grant-service/index.ts#L39)
+[js/sdks/packages/node-sdk/src/grant-service/index.ts:39](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/grant-service/index.ts#L39)
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/grant-service/index.ts:27](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/grant-service/index.ts#L27)
+[js/sdks/packages/node-sdk/src/grant-service/index.ts:27](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/grant-service/index.ts#L27)
 
 ___
 
@@ -104,7 +104,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/grant-service/index.ts:107](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/grant-service/index.ts#L107)
+[js/sdks/packages/node-sdk/src/grant-service/index.ts:107](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/grant-service/index.ts#L107)
 
 ___
 
@@ -124,7 +124,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/grant-service/index.ts:88](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/grant-service/index.ts#L88)
+[js/sdks/packages/node-sdk/src/grant-service/index.ts:88](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/grant-service/index.ts#L88)
 
 ___
 
@@ -138,7 +138,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/grant-service/index.ts:16](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/grant-service/index.ts#L16)
+[js/sdks/packages/node-sdk/src/grant-service/index.ts:16](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/grant-service/index.ts#L16)
 
 ___
 
@@ -160,7 +160,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/grant-service/index.ts:72](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/grant-service/index.ts#L72)
+[js/sdks/packages/node-sdk/src/grant-service/index.ts:72](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/grant-service/index.ts#L72)
 
 ___
 
@@ -182,7 +182,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/grant-service/index.ts:52](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/grant-service/index.ts#L52)
+[js/sdks/packages/node-sdk/src/grant-service/index.ts:52](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/grant-service/index.ts#L52)
 
 ___
 
@@ -204,4 +204,4 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/grant-service/index.ts:111](https://github.com/refinery-labs/lunasec-node-monorepo/blob/2d4dd78/js/sdks/packages/node-sdk/src/grant-service/index.ts#L111)
+[js/sdks/packages/node-sdk/src/grant-service/index.ts:111](https://github.com/refinery-labs/lunasec-node-monorepo/blob/b89e445/js/sdks/packages/node-sdk/src/grant-service/index.ts#L111)
