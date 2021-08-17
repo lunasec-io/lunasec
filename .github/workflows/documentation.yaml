@@ -4,8 +4,12 @@ on:
   pull_request:
     branches:
     - release-v*
+    tags:
+    - release-v*
   push:
     branches:
+    - release-v*
+    tags:
     - release-v*
 
 jobs:
