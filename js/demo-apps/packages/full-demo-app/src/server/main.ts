@@ -3,7 +3,8 @@ import path from 'path';
 import { apiRouter } from './routes/api-router';
 import { pagesRouter } from './routes/pages-router';
 import { staticsRouter } from './routes/statics-router';
-import * as config from './config';
+import config from './config';
+import {lunaSec} from "./configure-lunasec";
 
 console.log(`*******************************************`);
 console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
@@ -15,6 +16,10 @@ app.set('view engine', 'ejs');
 
 app.use('/assets', express.static(path.join(process.cwd(), 'assets')));
 app.use(apiRouter());
+
+// Attach the LunaSec authentication plugin
+lunaSec.expressAuthPlugin.register(app);
+
 app.use(staticsRouter());
 app.use(pagesRouter());
 

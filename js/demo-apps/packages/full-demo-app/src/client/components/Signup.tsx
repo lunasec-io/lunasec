@@ -1,6 +1,9 @@
-import React from 'react';
-import {Paper, withStyles, Grid, TextField, Button, FormControlLabel, Checkbox, makeStyles} from '@material-ui/core';
+import React, {useState} from 'react';
+import {Paper, Grid, TextField, Button, FormControlLabel, Checkbox, InputLabel, makeStyles} from '@material-ui/core';
 import { Face, Fingerprint } from '@material-ui/icons'
+import {LunaSecConfigContext, SecureUpload} from "@lunasec/react-sdk";
+
+const lunaSecDomain = 'http://localhost:37766'
 
 const useStyles = makeStyles((theme) => ({
     margin: {
@@ -9,10 +12,17 @@ const useStyles = makeStyles((theme) => ({
     padding: {
         padding: theme.spacing()
     }
-}));
+}))
 
-export const Signup: React.FunctionComponent = () => {
+export const SignupForm: React.FunctionComponent = () => {
     const classes = useStyles({});
+
+    const [files, setFiles] = useState<string[]>([])
+
+    const handleUploadChange = (tokens) => {
+        setFiles(tokens)
+    }
+
     return (
         <Paper className={classes.padding}>
             <div className={classes.margin}>
@@ -34,10 +44,16 @@ export const Signup: React.FunctionComponent = () => {
                 </Grid>
                 <Grid container spacing={8} alignItems="flex-end">
                     <Grid item>
-                        <Button type="button" color="primary">Upload Identification Document</Button>
+                        <InputLabel htmlFor="drivers-license-upload">Driver's License Upload</InputLabel>
+                        <SecureUpload
+                            id="drivers-license-upload"
+                            name="uploader"
+                            filetokens={files}
+                            onTokenChange={handleUploadChange}
+                        />
                     </Grid>
                 </Grid>
-                <Grid container alignItems="center" justify="space-between">
+                <Grid container alignItems="center" >
                     <Grid item>
                         <FormControlLabel control={
                             <Checkbox
@@ -49,10 +65,29 @@ export const Signup: React.FunctionComponent = () => {
                         <Button disableFocusRipple disableRipple style={{ textTransform: "none" }} variant="text" color="primary">Forgot password ?</Button>
                     </Grid>
                 </Grid>
-                <Grid container justify="center" style={{ marginTop: '10px' }}>
-                    <Button variant="outlined" color="primary" style={{ textTransform: "none" }}>Login</Button>
+                <Grid container style={{ marginTop: '10px' }}>
+                    <Button variant="outlined" color="primary" style={{ textTransform: "none" }}>Signup</Button>
                 </Grid>
             </div>
         </Paper>
-    );
+    )
+}
+
+export const Signup: React.FunctionComponent = () => {
+    const [authError, setAuthError] = useState<string>('')
+
+    console.log(authError)
+
+    return (
+        <LunaSecConfigContext.Provider
+            value={{
+                lunaSecDomain: lunaSecDomain,
+                authenticationErrorHandler: (_e: Error) => {
+                    setAuthError('Failed to authenticate with LunaSec. \n Is a user logged in?');
+                },
+            }}
+        >
+            <SignupForm />
+        </LunaSecConfigContext.Provider>
+    )
 }

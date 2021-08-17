@@ -8,7 +8,7 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 export const RouterExample: React.FunctionComponent = () => {
   const history = useHistory();
   const location = useLocation();
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
 
   return (
     <Card>
