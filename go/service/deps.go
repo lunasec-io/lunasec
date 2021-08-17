@@ -12,13 +12,14 @@ type authCallbackConfig struct {
 
 type S3BucketConfig struct {
 	S3Bucket string `yaml:"s3_bucket"`
+	LocalHTTPSProxy string `yaml:"local_https_proxy"`
 	LocalstackURL string `yaml:"localstack_url"`
 }
 
 func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 	var (
-		authConfig   authCallbackConfig
-		bucketConfig S3BucketConfig
+		authConfig    authCallbackConfig
+		gatewayConfig S3BucketConfig
 	)
 	// TODO report this to someplace
 	reportUri := "http://localhost:5004"
@@ -30,25 +31,34 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 		panic(err)
 	}
 
-	err = provider.Get("aws_gateway").Populate(&bucketConfig)
+	err = provider.Get("aws_gateway").Populate(&gatewayConfig)
 	if err != nil {
 		panic(err)
 	}
 
-	s3Host := bucketConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
+	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
 
 	s3URL := url.URL{
 		Scheme: "https",
 		Host:   s3Host,
 	}
 
+	connectSrcUrls := []string{
+		"'self'",
+		authConfig.AuthCallbackHost,
+		s3URL.String(),
+	}
+
+	if gatewayConfig.LocalstackURL != "" {
+		connectSrcUrls = append(connectSrcUrls, gatewayConfig.LocalstackURL)
+	}
+
+	if gatewayConfig.LocalHTTPSProxy != "" {
+		connectSrcUrls = append(connectSrcUrls, gatewayConfig.LocalHTTPSProxy)
+	}
+
 	cspPolicy := map[string][]string{
-		"connect-src": {
-			"'self'",
-			authConfig.AuthCallbackHost,
-			s3URL.String(),
-			"https://localhost:4567",
-		},
+		"connect-src": connectSrcUrls,
 		"script-src": {
 			"unsafe-inline",
 			"{{nonce}}",

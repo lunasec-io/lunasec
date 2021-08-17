@@ -12,7 +12,7 @@ export function environmentSecretProvider() {
     const signingKey = Buffer.from(__SIGNING_KEY__, 'base64');
     secretKey = createPrivateKey(signingKey);
   } catch (e) {
-    throw new Error('Error loading Session Signing Key from environment, check your environment keys ');
+    throw new Error(`Error loading Session Signing Key from environment, check your environment keys: ${e}`);
   }
 
   return Promise.resolve(secretKey);

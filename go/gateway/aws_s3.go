@@ -3,6 +3,7 @@ package gateway
 import (
 	"crypto/md5"
 	"encoding/base64"
+	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -24,8 +25,10 @@ type awsS3Gateway struct {
 }
 
 type AwsS3GatewayConfig struct {
-	GatewayConfig
+	S3Region string `yaml:"region"`
 	S3Bucket string `yaml:"s3_bucket"`
+	LocalHTTPSProxy string `yaml:"local_https_proxy"`
+	LocalstackURL string `yaml:"localstack_url"`
 }
 
 type AwsS3GatewayConfigWrapper struct {
@@ -42,9 +45,7 @@ type AwsS3Gateway interface {
 func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
 	return AwsS3GatewayConfigWrapper{
 		AwsGateway: AwsS3GatewayConfig{
-			GatewayConfig: GatewayConfig{
-				S3Region: region,
-			},
+			S3Region: region,
 			S3Bucket: bucket,
 		},
 	}
@@ -65,6 +66,8 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session
 		logger.Error("unable to populate s3 config", zap.Error(err))
 		panic(err)
 	}
+
+	fmt.Printf("%+v", gatewayConfig)
 
 	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
 
@@ -139,7 +142,13 @@ func (s *awsS3Gateway) generatePresignedUrl(key string, encryptionKey []byte, cr
 	}
 
 	if s.LocalHTTPSProxy != "" {
+		oldUrl := url
 		url = s.adjustUrlFromLocalDev(url)
+		s.logger.Debug(
+			"adjusting presigned url from https to http",
+			zap.String("old url", oldUrl),
+			zap.String("new url", url),
+		)
 	}
 
 	return url, headers, err
