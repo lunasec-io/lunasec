@@ -129,14 +129,14 @@ module.exports = {
         },
       },
     ],
-    //Does not work, might be possible to fix runtime issue by making our own docusaurus plugin and using webpack provide to fix process.env error
-    ['redocusaurus',
-      {
-        specs: [{
-          routePath: '/api-spec/',
-          specUrl: 'https://redocly.github.io/redoc/openapi.yaml',
-        }],
-      }
-    ],
+    //Does not work, redoc runtime appears broken, revisit after things are out of beta
+    // ['redocusaurus',
+    //   {
+    //     specs: [{
+    //       routePath: '/api-spec/',
+    //       specUrl: 'https://redocly.github.io/redoc/openapi.yaml',
+    //     }],
+    //   }
+    // ],
   ],
 };
