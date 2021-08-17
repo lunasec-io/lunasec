@@ -21,7 +21,7 @@ module.exports = {
         entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
         tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
-        out: '../pages/react-sdk',
+        out: 'react-sdk',
         sidebar: {
           categoryLabel: "React SDK"
         }
@@ -34,7 +34,7 @@ module.exports = {
         entryPoints: ['../js/sdks/packages/node-sdk/src/index.ts'],
         tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
-        out: '../pages/node-sdk',
+        out: 'node-sdk',
         sidebar: {
           categoryLabel: "Node SDK"
         }
@@ -71,7 +71,7 @@ module.exports = {
           items: [
             {
               label: 'Tutorial',
-              to: '/docs/pages/intro',
+              to: '/docs/docs/intro',
             },
           ],
         },
@@ -110,8 +110,6 @@ module.exports = {
       '@docusaurus/preset-classic',
       {
         docs: {
-          path: 'pages',
-          routeBasePath: 'pages',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
