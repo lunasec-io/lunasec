@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:12](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L12)
+[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:12](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1458e7a/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L12)
 
 ___
 
@@ -24,4 +24,4 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:13](https://github.com/refinery-labs/lunasec-node-monorepo/blob/455e30d/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L13)
+[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:13](https://github.com/refinery-labs/lunasec-node-monorepo/blob/1458e7a/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L13)

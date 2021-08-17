@@ -1,7 +1,7 @@
 ---
 id: "index"
 title: "@lunasec/node-sdk"
-slug: "/node-sdk"
+slug: "/../pages/node-sdk"
 sidebar_label: "Readme"
 sidebar_position: 0
 custom_edit_url: null
