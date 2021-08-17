@@ -4,25 +4,29 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "TYPEDOC_WATCH=true docusaurus start",
-    "build": "TYPEDOC_WATCH=false docusaurus build",
+    "start": "yarn run openapi:generate && TYPEDOC_WATCH=true docusaurus start --port 4000",
+    "build": "yarn run openapi:generate && TYPEDOC_WATCH=false docusaurus build",
     "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
+    "deploy": "yarn run openapi:generate &&  docusaurus deploy",
     "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
+    "serve": "yarn run openapi:generate &&  docusaurus serve",
     "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids"
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "openapi:generate": "redoc-cli bundle ../api-spec/schema/full-tokenizer.yaml --output static/tokenizer-api-spec-static.html"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-beta.4",
     "@docusaurus/preset-classic": "2.0.0-beta.4",
     "@mdx-js/react": "^1.6.21",
+    "@openapitools/openapi-generator-cli": "^2.3.9",
     "@svgr/webpack": "^5.5.0",
     "clsx": "^1.1.1",
     "file-loader": "^6.2.0",
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "redoc-cli": "^0.12.3",
+    "redocusaurus": "^0.4.5",
     "url-loader": "^4.1.1"
   },
   "browserslist": {
