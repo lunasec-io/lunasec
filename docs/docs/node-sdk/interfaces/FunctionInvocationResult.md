@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/secure-resolver/index.ts:29](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/node-sdk/src/secure-resolver/index.ts#L29)
+[js/sdks/packages/node-sdk/src/secure-resolver/index.ts:29](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/node-sdk/src/secure-resolver/index.ts#L29)
 
 ___
 
@@ -24,7 +24,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/secure-resolver/index.ts:28](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/node-sdk/src/secure-resolver/index.ts#L28)
+[js/sdks/packages/node-sdk/src/secure-resolver/index.ts:28](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/node-sdk/src/secure-resolver/index.ts#L28)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/secure-resolver/index.ts:30](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/node-sdk/src/secure-resolver/index.ts#L30)
+[js/sdks/packages/node-sdk/src/secure-resolver/index.ts:30](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/node-sdk/src/secure-resolver/index.ts#L30)
 
 ___
 
@@ -44,4 +44,4 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/secure-resolver/index.ts:27](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/node-sdk/src/secure-resolver/index.ts#L27)
+[js/sdks/packages/node-sdk/src/secure-resolver/index.ts:27](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/node-sdk/src/secure-resolver/index.ts#L27)

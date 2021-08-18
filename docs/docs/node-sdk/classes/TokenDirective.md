@@ -214,7 +214,7 @@ SchemaDirectiveVisitor.visitFieldDefinition
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts:25](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts#L25)
+[js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts:25](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts#L25)
 
 ___
 
@@ -239,7 +239,7 @@ SchemaDirectiveVisitor.visitInputFieldDefinition
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts:48](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts#L48)
+[js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts:48](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/node-sdk/src/graphql/lunasec-token-directive.ts#L48)
 
 ___
 

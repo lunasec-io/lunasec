@@ -65,7 +65,7 @@ Component.context
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx:10](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx#L10)
+[js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx:10](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx#L10)
 
 ___
 
@@ -128,7 +128,7 @@ Component.contextType
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx:12](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx#L12)
+[js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx:12](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx#L12)
 
 ## Methods
 
@@ -525,7 +525,7 @@ Component.render
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx:14](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx#L14)
+[js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx:14](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/components/SecureSubmit.tsx#L14)
 
 ___
 
