@@ -3,7 +3,7 @@ sidebar_position: 1
 ---
 
 # What is LunaSec?
-LunaSec is an organization that produces _Open Source_ tooling and infrastructure for compliance and security.
+LunaSec is an open source Data Security Platform designed to securely store sensitive data separately from your main application infrastructure (through a process known as "Data Tokenization").
 
 With LunaSec integrated into your stack data leaks _much_ more difficult. 
 Simply put: a single bug can no longer compromise the entire security of your system or data. 
