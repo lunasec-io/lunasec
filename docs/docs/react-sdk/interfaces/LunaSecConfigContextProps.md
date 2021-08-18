@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts:4](https://github.com/refinery-labs/lunasec-monorepo/blob/03d4513/js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts#L4)
+[js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts:4](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts#L4)
 
 ## Methods
 
@@ -34,4 +34,4 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts:5](https://github.com/refinery-labs/lunasec-monorepo/blob/03d4513/js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts#L5)
+[js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts:5](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/providers/LunaSecConfigContext.ts#L5)
