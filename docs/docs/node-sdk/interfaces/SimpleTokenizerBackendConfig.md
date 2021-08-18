@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:19](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L19)
+[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:19](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L19)
 
 ___
 
@@ -24,7 +24,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:18](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L18)
+[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:18](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L18)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:17](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L17)
+[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:17](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L17)
 
 ## Methods
 
@@ -48,4 +48,4 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:20](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L20)
+[js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts:20](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/node-sdk/src/express-simple-tokenizer-backend/simple-tokenizer-backend.ts#L20)

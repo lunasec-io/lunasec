@@ -20,7 +20,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:67](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L67)
+[js/sdks/packages/react-sdk/src/types.ts:67](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L67)
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:75](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L75)
+[js/sdks/packages/react-sdk/src/types.ts:75](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L75)
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:72](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L72)
+[js/sdks/packages/react-sdk/src/types.ts:72](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L72)
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:71](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L71)
+[js/sdks/packages/react-sdk/src/types.ts:71](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L71)
 
 ___
 
@@ -60,7 +60,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:68](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L68)
+[js/sdks/packages/react-sdk/src/types.ts:68](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L68)
 
 ___
 
@@ -70,7 +70,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:64](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L64)
+[js/sdks/packages/react-sdk/src/types.ts:64](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L64)
 
 ___
 
@@ -80,7 +80,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:70](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L70)
+[js/sdks/packages/react-sdk/src/types.ts:70](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L70)
 
 ___
 
@@ -90,7 +90,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:66](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L66)
+[js/sdks/packages/react-sdk/src/types.ts:66](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L66)
 
 ___
 
@@ -100,7 +100,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:65](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L65)
+[js/sdks/packages/react-sdk/src/types.ts:65](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L65)
 
 ___
 
@@ -110,7 +110,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:69](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L69)
+[js/sdks/packages/react-sdk/src/types.ts:69](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L69)
 
 ___
 
@@ -120,7 +120,7 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:74](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L74)
+[js/sdks/packages/react-sdk/src/types.ts:74](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L74)
 
 ## Methods
 
@@ -134,4 +134,4 @@ ___
 
 #### Defined in
 
-[js/sdks/packages/react-sdk/src/types.ts:73](https://github.com/refinery-labs/lunasec-monorepo/blob/69269f1/js/sdks/packages/react-sdk/src/types.ts#L73)
+[js/sdks/packages/react-sdk/src/types.ts:73](https://github.com/refinery-labs/lunasec-monorepo/blob/6b064f0/js/sdks/packages/react-sdk/src/types.ts#L73)
