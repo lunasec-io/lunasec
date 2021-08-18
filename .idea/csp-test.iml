@@ -41,6 +41,8 @@
       <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/server-common/build" />
       <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/secure-frame-iframe/public/js" />
       <excludeFolder url="file://$MODULE_DIR$/js/demo-apps/packages/express-back-end/build" />
+      <excludeFolder url="file://$MODULE_DIR$/docs/build" />
+      <excludeFolder url="file://$MODULE_DIR$/docs/.docusaurus" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
