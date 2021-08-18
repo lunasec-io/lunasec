@@ -2,9 +2,12 @@
 sidebar_position: 1
 ---
 
-# What is LunaSec Stack?
-LunaSec Stack is a group of open source products from LunaSec designed to make the security and compliance overhead of
-storing sensitive data simple for developers to add to existing applications.
+# What is the LunaSec Stack?
+The goal of the LunaSec Stack is to decrease the developer burden and risk of storing sensitive data in production environments.
+The LunaSec Stack is composed of many Open Source products that are designed and maintained by the Security Engineers at LunaSec.
+
+Our suite of libraries, services, and other tools are designed to enable you to run your infrastructure with all of your data encrypted at rest, 
+as well as laying the groundwork for adding end-to-end encryption, centralized authorization, service-to-service authentication, and more.
 
 LunaSec products are designed to "drop in" to existing apps with minimal code changes. When fully integrated across the
 full stack of the application, LunaSec hardens software to prevent any single security vulnerability from compromising the entire system.
@@ -12,9 +15,13 @@ full stack of the application, LunaSec hardens software to prevent any single se
 No software is guaranteed to be perfectly secure, but with LunaSec you can easily decrease your risk by an order of
 magnitude (or three) _without_ rewriting everything from scratch.
 
-All software is supported by the LunaSec, a Venture-funded, YCombinator-backed company based in Seattle, WA.
+All software is supported by the LunaSec company. We are a Venture-funded, YCombinator-backed company founded in 2019 and based in Seattle, WA. 
+
+Our team built LunaSec using the lessons we learned working as Security Engineers at Uber, Snapchat, Capital One, 
+and from our experience helping 50+ other YCombinator startups level up their security.
 
 ## Software Components of the LunaSec Stack:
+Our software is designed to be incrementally adopted, with every layer adopted protecting you against additional categories of threats.
 
 ### LunaSec Data Tokenizer
 A suite of "Data Tokenization" libraries and services that let you migrate sensitive data out of existing applications
