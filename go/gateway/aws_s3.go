@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 	"io/ioutil"
 	"log"
+	"strings"
 )
 
 const s3EncryptionAlgo = "AES256"
@@ -23,7 +24,7 @@ type awsS3Gateway struct {
 }
 
 type AwsS3GatewayConfig struct {
-	S3Region string `yaml:"region"`
+	GatewayConfig
 	S3Bucket string `yaml:"s3_bucket"`
 }
 
@@ -41,7 +42,9 @@ type AwsS3Gateway interface {
 func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
 	return AwsS3GatewayConfigWrapper{
 		AwsGateway: AwsS3GatewayConfig{
-			S3Region: region,
+			GatewayConfig: GatewayConfig{
+				S3Region: region,
+			},
 			S3Bucket: bucket,
 		},
 	}
@@ -90,22 +93,39 @@ func (s *awsS3Gateway) GetObject(key string) (content []byte, err error) {
 	return ioutil.ReadAll(resp.Body)
 }
 
-// TODO merge both functions
+type createPresignedUrlParams struct {
+	svc *s3.S3
+	bucket, key string
+	encryptionKey []byte
+	encodedKeyChecksum string
+}
+
+type createPresignedUrlFunc func(params createPresignedUrlParams) (url string, err error)
+
+// adjustUrlFromLocalDev will re-write the URL so that they can be accessed without an https cert in a browser when testing locally.
+func (s *awsS3Gateway) adjustUrlFromLocalDev(url string) string {
+	return strings.ReplaceAll(url, s.LocalHTTPSProxy, s.LocalstackURL)
+}
+
 func (s *awsS3Gateway) GeneratePresignedPutUrl(key string, encryptionKey []byte) (string, map[string]string, error) {
+	return s.generatePresignedUrl(key, encryptionKey, createPutObjectPresignedUrl)
+}
+
+func (s *awsS3Gateway) GeneratePresignedGetUrl(key string, encryptionKey []byte) (string, map[string]string, error) {
+	return s.generatePresignedUrl(key, encryptionKey, createGetObjectPresignedUrl)
+}
+
+func (s *awsS3Gateway) generatePresignedUrl(key string, encryptionKey []byte, createPresignedUrl createPresignedUrlFunc) (string, map[string]string, error) {
 	svc := s3.New(s.s3)
 	b64EncryptionKey := base64.StdEncoding.EncodeToString(encryptionKey)
 	keyChecksum := md5.Sum(encryptionKey)
 	keyChecksumBase64 := base64.StdEncoding.EncodeToString(keyChecksum[:])
 
-	req, _ := svc.PutObjectRequest(&s3.PutObjectInput{
-		Bucket:               aws.String(s.S3Bucket),
-		Key:                  aws.String(key),
-		SSECustomerAlgorithm: aws.String(s3EncryptionAlgo),
-		SSECustomerKey:       aws.String(string(encryptionKey)),
-		SSECustomerKeyMD5:    aws.String(keyChecksumBase64),
-	})
+	params := createPresignedUrlParams{
+		svc, s.S3Bucket, key, encryptionKey, keyChecksumBase64,
+	}
 
-	url, err := req.Presign(constants.S3Timeout)
+	url, err := createPresignedUrl(params)
 
 	if err != nil {
 		return "", nil, err
@@ -116,36 +136,34 @@ func (s *awsS3Gateway) GeneratePresignedPutUrl(key string, encryptionKey []byte)
 		"x-amz-server-side-encryption-customer-key":       b64EncryptionKey,
 		"x-amz-server-side-encryption-customer-key-md5":   keyChecksumBase64,
 		"x-amz-server-side-encryption-customer-algorithm": s3EncryptionAlgo,
+	}
+
+	if s.LocalHTTPSProxy != "" {
+		url = s.adjustUrlFromLocalDev(url)
 	}
 
 	return url, headers, err
 }
 
-func (s *awsS3Gateway) GeneratePresignedGetUrl(key string, encryptionKey []byte) (string, map[string]string, error) {
-	svc := s3.New(s.s3)
-	b64EncryptionKey := base64.StdEncoding.EncodeToString(encryptionKey)
-	keyChecksum := md5.Sum(encryptionKey)
-	keyChecksumBase64 := base64.StdEncoding.EncodeToString(keyChecksum[:])
-
-	req, _ := svc.GetObjectRequest(&s3.GetObjectInput{
-		Bucket:               aws.String(s.S3Bucket),
-		Key:                  aws.String(key),
+func createGetObjectPresignedUrl(params createPresignedUrlParams) (url string, err error) {
+	req, _ := params.svc.GetObjectRequest(&s3.GetObjectInput{
+		Bucket:               aws.String(params.bucket),
+		Key:                  aws.String(params.key),
 		SSECustomerAlgorithm: aws.String(s3EncryptionAlgo),
-		SSECustomerKey:       aws.String(string(encryptionKey)),
-		SSECustomerKeyMD5:    aws.String(keyChecksumBase64),
+		SSECustomerKey:       aws.String(string(params.encryptionKey)),
+		SSECustomerKeyMD5:    aws.String(params.encodedKeyChecksum),
 	})
-	url, err := req.Presign(constants.S3Timeout)
+	return req.Presign(constants.S3Timeout)
+}
 
-	if err != nil {
-		return "", nil, err
-	}
+func createPutObjectPresignedUrl(params createPresignedUrlParams) (url string, err error) {
+	req, _ := params.svc.PutObjectRequest(&s3.PutObjectInput{
+		Bucket:               aws.String(params.bucket),
+		Key:                  aws.String(params.key),
+		SSECustomerAlgorithm: aws.String(s3EncryptionAlgo),
+		SSECustomerKey:       aws.String(string(params.encryptionKey)),
+		SSECustomerKeyMD5:    aws.String(params.encodedKeyChecksum),
+	})
 
-	headers := map[string]string{
-		"host": s.s3Host,
-		"x-amz-server-side-encryption-customer-key":       b64EncryptionKey,
-		"x-amz-server-side-encryption-customer-key-md5":   keyChecksumBase64,
-		"x-amz-server-side-encryption-customer-algorithm": s3EncryptionAlgo,
-	}
-
-	return url, headers, err
+	return req.Presign(constants.S3Timeout)
 }

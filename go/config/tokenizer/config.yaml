@@ -3,6 +3,6 @@ aws_gateway:
   region: us-west-2
   s3_bucket: ${CIPHERTEXT_VAULT_S3_BUCKET}
 tokenizer_controller:
-  customer_token_secret: ${TOKENIZER_CLIENT_SECRET}
+  application_token_secret: ${TOKENIZER_CLIENT_SECRET}
 jwt_manager:
   signing_keys_arn: ${SIGNING_KEYS_ARN}

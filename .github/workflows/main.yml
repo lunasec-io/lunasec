@@ -5,7 +5,7 @@ name: CI
 # Controls when the workflow will run
 on:
   pull_request:
-
+    branches: [master]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -36,6 +36,9 @@ jobs:
 
     - name: Run e2e tests
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test
+
+    - name: docker compose logs
+      run: docker-compose logs
 
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}

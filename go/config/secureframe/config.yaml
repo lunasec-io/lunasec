@@ -1,5 +1,4 @@
 app:
-  disable_auth: false
   cors:
     allowed_origins:
       - ${SECURE_FRAME_FRONT_END}
@@ -25,7 +24,7 @@ secure_frame_controller:
   views_path: ${SECURE_FRAME_VIEWS_PATH}
   cdn_config: ${SECURE_FRAME_CDN_CONFIG}
 tokenizer_controller:
-  customer_token_secret: TODO
+  application_token_secret: TODO
 customer_jwt_verifier:
   # TODO (cthompson) this public key is specifically the customer's public key and the configuration should reflect this
   public_key: ${SESSION_PUBLIC_KEY:""}

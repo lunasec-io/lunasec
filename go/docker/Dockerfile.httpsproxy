@@ -1,5 +1,7 @@
 FROM node
 
+RUN apt update && apt install curl
+
 RUN npm install -g local-ssl-proxy
 
 WORKDIR /
