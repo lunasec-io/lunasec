@@ -22,7 +22,8 @@ module.exports = {
         tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
-        out: '../pages/react-sdk',
+        docsRoot: 'pages',
+        out: 'react-sdk',
         sidebar: {
           categoryLabel: "React SDK"
         }
@@ -36,7 +37,8 @@ module.exports = {
         tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
-        out: '../pages/node-sdk',
+        docsRoot: 'pages',
+        out: 'node-sdk',
         sidebar: {
           categoryLabel: "Node SDK"
         }
@@ -116,6 +118,8 @@ module.exports = {
       '@docusaurus/preset-classic',
       {
         docs: {
+          path: 'pages',
+          routeBasePath: 'pages',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
