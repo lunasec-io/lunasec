@@ -57,6 +57,13 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
+
+      # Speed up builds by caching node_modules
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
       - uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
