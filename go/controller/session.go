@@ -66,7 +66,7 @@ func NewSessionController(
 func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request) {
 	dataAccessToken, err := request.GetJwtToken(r)
 	if err != nil {
-		s.logger.Warn("cookie not set", zap.Error(err))
+		s.logger.Info("cookie not set when verifying session", zap.String("reportedError", err.Error()))
 		err = errors.New("cookie 'access_token' not set in request")
 		// NOTE we return status ok here because we don't always expect the access_token to be set
 		util.RespondError(w, http.StatusOK, err)
@@ -75,7 +75,7 @@ func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request
 
 	err = s.authProviderJwtVerifier.Verify(dataAccessToken)
 	if err != nil {
-		s.logger.Warn("unable to verify session", zap.Error(err))
+		s.logger.Info("unable to verify session", zap.String("reportedError", err.Error()))
 		err = errors.New("unable to verify session")
 		// NOTE we return status ok here because we don't always expect the session to be valid
 		util.RespondError(w, http.StatusOK, err)

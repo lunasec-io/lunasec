@@ -6,11 +6,12 @@ const webpack = require('webpack')
 module.exports = {
   title: 'LunaSec',
   tagline: 'Data security from the start.',
-  url: 'https://lunasec.io',
-  baseUrl: '/',
+  url: 'https://lunasec-io.github.io',
+  baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  trailingSlash: true,
+  favicon: 'https://uploads-ssl.webflow.com/60e63e8b40f27c7913def7a1/6112d961cd68c3de06afe04d_WebFlow%20Logo%20-%2032px.png',
   organizationName: 'lunasec-io', // Usually your GitHub org/user name.
   projectName: 'lunasec-io.github.io', // Usually your repo name.
   scripts: ['https://cdn.jsdelivr.net/npm/redoc@v2.0.0-rc.54/bundles/redoc.standalone.js'],
@@ -22,6 +23,8 @@ module.exports = {
         entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
         tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
+        // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
+        docsRoot: 'pages',
         out: 'react-sdk',
         sidebar: {
           categoryLabel: "React SDK"
@@ -35,6 +38,8 @@ module.exports = {
         entryPoints: ['../js/sdks/packages/node-sdk/src/index.ts'],
         tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
+        // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
+        docsRoot: 'pages',
         out: 'node-sdk',
         sidebar: {
           categoryLabel: "Node SDK"
@@ -49,16 +54,20 @@ module.exports = {
       title: 'LunaSec',
       logo: {
         alt: 'LunaSec Logo',
-        src: 'img/logo.svg',
+        src: '/docs/img/logo.svg',
       },
       items: [
         {
           type: 'doc',
-          docId: 'intro',
+          docId: 'about',
           position: 'left',
           label: 'Docs',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/docs/blog', label: 'Blog', position: 'left'},
+        {
+          type: 'docsVersionDropdown',
+          position: "right",
+        },
         {
           href: 'https://github.com/refinery-labs/lunasec-monorepo',
           label: 'GitHub',
@@ -74,7 +83,7 @@ module.exports = {
           items: [
             {
               label: 'Tutorial',
-              to: '/docs/intro',
+              to: '/docs/pages/intro',
             },
           ],
         },
@@ -92,7 +101,7 @@ module.exports = {
           items: [
             {
               label: 'Blog',
-              to: '/blog',
+              to: '/docs/blog',
             },
             {
               label: 'Github',
@@ -113,6 +122,8 @@ module.exports = {
       '@docusaurus/preset-classic',
       {
         docs: {
+          path: 'pages',
+          routeBasePath: 'pages',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
