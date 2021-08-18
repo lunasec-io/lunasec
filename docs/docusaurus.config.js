@@ -21,7 +21,8 @@ module.exports = {
         entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
         tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
-        out: 'react-sdk',
+        // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
+        out: '../pages/react-sdk',
         sidebar: {
           categoryLabel: "React SDK"
         }
@@ -34,7 +35,8 @@ module.exports = {
         entryPoints: ['../js/sdks/packages/node-sdk/src/index.ts'],
         tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
-        out: 'node-sdk',
+        // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
+        out: '../pages/node-sdk',
         sidebar: {
           categoryLabel: "Node SDK"
         }
@@ -75,7 +77,7 @@ module.exports = {
           items: [
             {
               label: 'Tutorial',
-              to: '/docs/docs/intro',
+              to: '/docs/pages/intro',
             },
           ],
         },
