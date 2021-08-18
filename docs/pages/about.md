@@ -44,8 +44,7 @@ default, reduce compliance scope, and protect against Cross-Site Scripting (XSS)
 Onboarding is simply replacing your `<form>` and `<input>` elements with our drop-in replacement components.
 
 ### LunaSec Secure Function Enclave
-A serverside component that is embedded into your existing application code and enables you to seamlessly call functions
-inside of an ephemeral, sandboxed virtual machine.
+A serverside component that is embedded into your existing application code and enables you to seamlessly call functions inside of an ephemeral, sandboxed virtual machine.
 Code running inside of the sandbox is able to decrypt data and has
 networking disabled by default (all communication happens over local RPC).
 
