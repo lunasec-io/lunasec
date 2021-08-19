@@ -7,7 +7,7 @@ custom_edit_url: null
 ---
 
 # Simple Tokenizer
-If you have chosen to use the Simple Tokenizer, as explained in [Choose your Setup](pages/getting-started/choose-your-setup.md), let's get started
+If you have chosen to use the Simple Tokenizer, as explained in [Choose your Setup](../choose-your-setup.md), let's get started
 adding the Simple Tokenizer to your web app.  
 
 #### Limitiations
@@ -81,4 +81,4 @@ console.log('Decoded value is ', result.value)
 
 To see these in a more complete example inside a react app, check out [the relevant part of the demo app.](https://github.com/refinery-labs/lunasec-monorepo/blob/master/js/demo-apps/packages/react-front-end/src/SimpleTokenizerExample.tsx)
 
-To see the API Reference for these libraries, take a look at [the TypeDoc TODO LINK HERE](LINK TO GENERATED DOCS).
+To see the API Reference for these libraries, take a look at [the TypeDoc TODO LINK HERE](./guide.md).
