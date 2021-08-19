@@ -7,7 +7,6 @@ import wrapComponent from './components/wrapComponent';
 export * from './components/SecureForm';
 export * from './providers/SecureFormContext';
 export * from './providers/LunaSecConfigContext';
-export * from './components/SecureSubmit';
 export * from './types';
 export const SecureParagraph = wrapComponent(Paragraph, 'Paragraph');
 export const SecureDownload = wrapComponent(Downloader, 'Downloader');

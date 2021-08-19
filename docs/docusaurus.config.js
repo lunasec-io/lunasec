@@ -38,6 +38,7 @@ module.exports = {
       {
         id: 'typedoc-react-sdk',
         entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
+        defaultCategory:'Component',
         tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
@@ -64,7 +65,22 @@ module.exports = {
         }
       },
     ],
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        id: 'typedoc-tokenizer',
+        entryPoints: ['../js/sdks/packages/tokenizer-sdk/src/index.ts'],
+        tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json',
+        watch: process.env.TYPEDOC_WATCH,
+        // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
+        docsRoot: 'pages',
+        out: 'tokenizer-sdk',
+        sidebar: {
+          categoryLabel: "Tokenizer SDK"
 
+        }
+      },
+    ],
   ],
   themeConfig: {
     navbar: {
