@@ -180,50 +180,10 @@ The unique part of what we offer is in _how_ we expose those primitives to you a
 You don't have to read our white paper or a dozen Wikipedia articles to get started.
 Just check out our examples and see for yourself.
 
-## Why is LunaSec better?
-Most security tools are hard to use, are closed source, or both. Most of them aren't built by developers -- they're built by security experts that have never written production software before.
 
-We designed LunaSec to be _simple_ to use for normal developers _without_ an advanced understanding of software security or cryptography.
-That means LunaSec will always provide _clean and easy APIs_, will ship with plenty of _examples and docs_, and will always be _open source_ so that you can debug or fix problems _yourself_.
-
-Most of the security vendor software we've used takes months to get onboarded with due to a lengthy "enterprise sales process".
-And, even after you get a contract signed, you're still blocked when the black box VM image they give you ships with production shattering bugs.
-You can't patch the bugs because you don't have the source code. You're stuck.
-
-We've seen some security vendors move away from VM images towards "hosted SaaS" solutions instead.
-Unfortunately, these solutions are often worse because they don't live in your infrastructure.
-You can't run it on your laptop or in your CI for testing. And, if they have downtime or bad performance, your software inherits those problems too.
-They're still black boxes.
-
-We don't want to be another one of those companies. We believe that open source is simply _the only choice_ for production software.
-
-## LunaSec Stack Features
-
-### No Proxy Required
-No more dealing with "security proxies" that require manually updating HTTP request schemas in a Web UI every time a new field is added to an endpoint.
-LunaSec works as a "sidecar" in your front-end _and_ backend to provide security.
-That means, if your LunaSec instance is down, it won't instantly break your entire app. It will gracefully degrade. (Like real production software should!)
-
-### Everything Lives in Git
-Store all configuration files in source control so that you can perform meaningful code reviews + track history.
-This also lets you test your changes in CI _before_ they roll out to production.
-No more crappy Web UIs that have to be tweaked every time a deploy rolls out (sensing a theme here?).
-
-The code should be the only source of truth, and we make that possible.
-
-### Development === Production
-Your development environment will be one-to-one with your production environment.
-No more chasing bugs that only exist in production, or tunneling your dev instance to production because you can't host locally.
-
-We know how frustrating it is to write software only to have it break in production a few hours later. We've been there. Never again!
-
-### Works with GraphQL (or gRPC)
-Because our approach works alongside your front-end code, you can use any non-REST protocol seamlessly.
-
-We also provide enhanced support to make using GraphQL with LunaSec easy. Check out our docs on that here.
 
 ### Simple Onboarding
-Code is king. Here's an example of adding Tokenization to a simple React app:
+Here's an example of adding Tokenization to a simple React app:
 ```jsx
 import React from 'react';
 
