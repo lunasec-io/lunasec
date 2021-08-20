@@ -137,8 +137,6 @@ export class Tokenizer {
     }
   }
 
-  // TODO: Add another method that _doesn't_ take a key, so that we handle generation.
-
   async tokenize(input: string | Buffer, metadata: MetaData): SuccessOrFailOutput<TokenizerTokenizeResponse> {
     try {
       const res = await this.openApi.tokenize(

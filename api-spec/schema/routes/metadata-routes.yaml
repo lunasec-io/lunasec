@@ -1,6 +1,8 @@
 getmetadata:
   post:
-    summary: Get an S3 signed download URL for a token
+    tags:
+      - Metadata
+    summary: Get Metadata
     operationId: getMetaData
     requestBody:
       required: true

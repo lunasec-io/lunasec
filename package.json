@@ -45,7 +45,8 @@
     "packages": [
       "./js/sdks/packages/*",
       "./js/service/packages/*",
-      "./js/demo-apps/packages/*"
+      "./js/demo-apps/packages/*",
+      "./docs"
     ],
     "nohoist": ["**/react-scripts", "**/jose"]
   }

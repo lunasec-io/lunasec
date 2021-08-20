@@ -1,7 +1,9 @@
 
 setgrant:
   post:
-    summary: Create a grant for a token, of type store or read
+    tags:
+      - Grants
+    summary: Create Grant
     operationId: setGrant
     requestBody:
       required: true
@@ -28,10 +30,11 @@ setgrant:
           application/json:
             schema:
               $ref: './bodies.yaml#/ErrorResponse'
-
 verifygrant:
   post:
-    summary: Get an S3 signed download URL for a token
+    tags:
+      - Grants
+    summary: Verify Grant
     operationId: verifyGrant
     requestBody:
       required: true

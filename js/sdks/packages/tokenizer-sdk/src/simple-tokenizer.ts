@@ -17,6 +17,7 @@ export class SimpleTokenizer {
   tokenize(input: string | Buffer) {
     return this.tokenizer.tokenize(input, { dataType: 'string' });
   }
+
   detokenize(tokenId: string) {
     return this.tokenizer.detokenize(tokenId);
   }
