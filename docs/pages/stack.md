@@ -1,5 +1,8 @@
 ---
 sidebar_position: 1
+id: "about"
+sidebar_label: "The LunaSec Stack"
+tite: "LunaSec Stack"
 ---
 
 # What is the LunaSec Stack?

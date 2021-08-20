@@ -20,3 +20,5 @@ pages/react-sdk
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+/static/tokenizer-api-spec-static

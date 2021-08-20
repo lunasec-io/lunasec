@@ -1,5 +1,9 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const webpack = require('webpack')
+
+const githubUrl = 'https://github.com/refinery-labs/lunasec-monorepo' // restart the server if you change this
+const quotedGithubUrl = `"${githubUrl}"`
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -13,12 +17,28 @@ module.exports = {
   favicon: 'https://uploads-ssl.webflow.com/60e63e8b40f27c7913def7a1/6112d961cd68c3de06afe04d_WebFlow%20Logo%20-%2032px.png',
   organizationName: 'lunasec-io', // Usually your GitHub org/user name.
   projectName: 'lunasec-io.github.io', // Usually your repo name.
+  scripts: ['https://cdn.jsdelivr.net/npm/redoc@v2.0.0-rc.54/bundles/redoc.standalone.js'],
   plugins: [
+    function webpackDefine(context, options) {
+      return {
+        name: 'webpack-define',
+        configureWebpack(config, isServer, utils) {
+          return {
+           plugins: [ // yo I heard you like plugins so I put a plugin in your plugin
+             new webpack.DefinePlugin({
+               GITHUB_URL: quotedGithubUrl
+             })
+           ]
+          };
+        },
+      };
+    },
     [
       'docusaurus-plugin-typedoc',
       {
         id: 'typedoc-react-sdk',
         entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
+        defaultCategory:'Component',
         tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
@@ -41,13 +61,30 @@ module.exports = {
         out: 'node-sdk',
         sidebar: {
           categoryLabel: "Node SDK"
+
+        }
+      },
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        id: 'typedoc-tokenizer',
+        entryPoints: ['../js/sdks/packages/tokenizer-sdk/src/index.ts'],
+        tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json',
+        watch: process.env.TYPEDOC_WATCH,
+        // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
+        docsRoot: 'pages',
+        out: 'tokenizer-sdk',
+        sidebar: {
+          categoryLabel: "Tokenizer SDK"
+
         }
       },
     ],
   ],
   themeConfig: {
     navbar: {
-      title: 'LunaSec Developer',
+      title: 'LunaSec',
       logo: {
         alt: 'LunaSec Logo',
         src: '/docs/img/logo.svg',
@@ -136,5 +173,14 @@ module.exports = {
         },
       },
     ],
+    //Does not work, redoc runtime appears broken, revisit after things are out of beta
+    // ['redocusaurus',
+    //   {
+    //     specs: [{
+    //       routePath: '/api-spec/',
+    //       specUrl: 'https://redocly.github.io/redoc/openapi.yaml',
+    //     }],
+    //   }
+    // ],
   ],
 };
