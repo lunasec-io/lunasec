@@ -55,7 +55,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[types.ts:61](https://github.com/refinery-labs/lunasec-monorepo/blob/59906a9/js/sdks/packages/tokenizer-sdk/src/types.ts#L61)
+[types.ts:61](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/types.ts#L61)
 
 ___
 
@@ -67,7 +67,7 @@ ___
 
 #### Defined in
 
-[generated/api.ts:216](https://github.com/refinery-labs/lunasec-monorepo/blob/59906a9/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L216)
+[generated/api.ts:216](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L216)
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 #### Defined in
 
-[types.ts:59](https://github.com/refinery-labs/lunasec-monorepo/blob/59906a9/js/sdks/packages/tokenizer-sdk/src/types.ts#L59)
+[types.ts:59](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/types.ts#L59)
 
 ## Variables
 
@@ -93,7 +93,7 @@ ___
 
 #### Defined in
 
-[types.ts:4](https://github.com/refinery-labs/lunasec-monorepo/blob/59906a9/js/sdks/packages/tokenizer-sdk/src/types.ts#L4)
+[types.ts:4](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/types.ts#L4)
 
 ## Functions
 
@@ -125,7 +125,7 @@ DefaultApi - axios parameter creator
 
 #### Defined in
 
-[generated/api.ts:400](https://github.com/refinery-labs/lunasec-monorepo/blob/59906a9/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L400)
+[generated/api.ts:400](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L400)
 
 ___
 
@@ -159,7 +159,7 @@ DefaultApi - factory interface
 
 #### Defined in
 
-[generated/api.ts:654](https://github.com/refinery-labs/lunasec-monorepo/blob/59906a9/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L654)
+[generated/api.ts:654](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L654)
 
 ___
 
@@ -191,7 +191,7 @@ DefaultApi - functional programming interface
 
 #### Defined in
 
-[generated/api.ts:589](https://github.com/refinery-labs/lunasec-monorepo/blob/59906a9/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L589)
+[generated/api.ts:589](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L589)
 
 ___
 
@@ -211,4 +211,4 @@ ___
 
 #### Defined in
 
-[utils/is-token.ts:3](https://github.com/refinery-labs/lunasec-monorepo/blob/59906a9/js/sdks/packages/tokenizer-sdk/src/utils/is-token.ts#L3)
+[utils/is-token.ts:3](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/utils/is-token.ts#L3)
