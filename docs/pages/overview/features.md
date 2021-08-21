@@ -1,25 +1,27 @@
 ---
-id: "concepts"
-title: "Concepts"
-sidebar_label: "Core Concepts"
+id: "features"
+title: "Features"
+sidebar_label: "Features"
 ---
 
-# Core Concepts
+# Core Features
 
 ## Tokenization
-At its core, LunaSec is a toolkit that keeps data secure in the front and back end of web applications by replacing the sensitive 
+LunaSec replaces the sensitive 
 fields in your application and database with tokens.  When LunaSec is fully integrated sensitive data never enters
 your system.  On the front end, cross-domain iFrames dubbed **Secure Frames** handle the creation and display of sensitive fields, 
-and on the backend sensitive data is handled inside isolated code blocks dubbed **Secure Functions**.  Both of these communicate with a backend to store 
-sensitive data, called the **Dedicated Tokenizer**.  Everything from small strings to large files can be **tokenized**.
+and on the backend sensitive data is handled inside isolated code blocks dubbed **Secure Functions**. Those tools communicate with a backend to store 
+sensitive data, called the **Dedicated Tokenizer**, which runs on a different domain than your application.
+Everything from small strings to large files can be **tokenized**.
 
 ### Secure Frame
 A secure sandbox that is embedded in your front-end React app. It handles sensitive data inside an iFrame and returns only tokens.
-Because iFrames run in a separate, isolated process in the browser, sensitive data is protected even if your web application is compromised.
+Because iFrames loaded from a different domain run in a separate, isolated process in the browser, sensitive data is protected even if your web application is compromised.
 Your data is protected against Cross-Site Scripting(XSS), and the parts of the application that need to be audited for security are much smaller.
 
 The `react-sdk` provides a suite of "Secure Form" components that follow this pattern. 
-Onboarding is simply replacing your `<form>` and `<input>` elements with our drop-in replacement components.  Your styling and most other DOM features 
+Onboarding is simply replacing your `<form>` and `<input>` elements with our drop-in replacement components which handle creating and communicating with the iFrame.
+Your styling and most other DOM features 
 will continue to work normally, even though the element is now isolated on what is effectively a different website.
 
 ### Secure Function Enclave

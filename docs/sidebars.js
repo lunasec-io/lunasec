@@ -16,7 +16,7 @@ module.exports = {
     {
       type:'category',
       label: 'Overview',
-      items:['overview/introduction','overview/concepts','overview/token-lifecycle', 'overview/libraries-services', 'overview/authentication','overview/encryption' ]
+      items:['overview/introduction','overview/features','overview/token-lifecycle', 'overview/libraries-services', 'overview/authentication','overview/encryption' ]
     },
     {
       type: 'category',

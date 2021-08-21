@@ -15,7 +15,7 @@ Please note that the Simple Tokenizer doesn't interoperate with the rest of Luna
 and automated migration to the full Dedicated Tokenizer from Simple has not yet been implemented.  What you see on this page 
 represents everything the simple tokenizer can do: tokenize and detokenize strings. It is, however, very easy to set up:
 
-## ServerSide
+## Express Plugin
 
 The plugin will add the tokenization backend routes to your app and use S3 as a database.
 
@@ -47,7 +47,7 @@ lunaSec.simpleTokenizerBackend.register(app);
 
 That's it! This will add `/.lunasec/tokenize` and `/.lunasec/detokenize` routes to your server.
 
-## ClientSide
+## Browser
 To create and read tokens in the browser, initialize the tokenizer and tell it where the backend is:
 ```typescript
 const tokenizer = new SimpleTokenizer({
