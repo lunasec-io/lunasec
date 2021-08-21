@@ -36,7 +36,7 @@ BaseAPI.constructor
 
 #### Defined in
 
-[generated/base.ts:52](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/generated/base.ts#L52)
+[generated/base.ts:52](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/generated/base.ts#L52)
 
 ## Properties
 
@@ -70,7 +70,7 @@ BaseAPI.configuration
 
 #### Defined in
 
-[generated/base.ts:50](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/generated/base.ts#L50)
+[generated/base.ts:50](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/generated/base.ts#L50)
 
 ## Methods
 
@@ -97,7 +97,7 @@ BaseAPI.configuration
 
 #### Defined in
 
-[generated/api.ts:725](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L725)
+[generated/api.ts:725](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L725)
 
 ___
 
@@ -124,7 +124,7 @@ ___
 
 #### Defined in
 
-[generated/api.ts:737](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L737)
+[generated/api.ts:737](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L737)
 
 ___
 
@@ -151,7 +151,7 @@ ___
 
 #### Defined in
 
-[generated/api.ts:749](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L749)
+[generated/api.ts:749](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L749)
 
 ___
 
@@ -178,7 +178,7 @@ ___
 
 #### Defined in
 
-[generated/api.ts:761](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L761)
+[generated/api.ts:761](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L761)
 
 ___
 
@@ -205,4 +205,4 @@ ___
 
 #### Defined in
 
-[generated/api.ts:773](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L773)
+[generated/api.ts:773](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L773)

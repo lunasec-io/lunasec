@@ -8,7 +8,7 @@ sidebar_label: "Libraries and Services"
 You'll only need two libraries to use LunaSec, one for the client and one for the server. 
 
 # `@lunasec/react-sdk`
-The frontend component of the LunaSec Stack.  Turns your form inputs and other elements into [Secure Frames](./concepts.md). Support for other frameworks is in development.
+The frontend component of the LunaSec Stack.  Turns your form inputs and other elements into [Secure Frames](./features.md#secure-frame). Support for other frameworks is in development.
 
 ## Example usage
 These snippets give you an example of how the library works.  For a full setup tutorial, see SETUP TUTORIAL

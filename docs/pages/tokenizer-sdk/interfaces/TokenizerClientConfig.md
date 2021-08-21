@@ -16,7 +16,7 @@ Used for when the tokenizer is running on the serverside and wants to authentica
 
 #### Defined in
 
-[types.ts:16](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/types.ts#L16)
+[types.ts:16](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/types.ts#L16)
 
 ___
 
@@ -28,7 +28,7 @@ The baseroute of the tokenizer backend, like /.lunasec/, defaults to nothing
 
 #### Defined in
 
-[types.ts:10](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/types.ts#L10)
+[types.ts:10](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/types.ts#L10)
 
 ___
 
@@ -44,7 +44,7 @@ ___
 
 #### Defined in
 
-[types.ts:12](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/types.ts#L12)
+[types.ts:12](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/types.ts#L12)
 
 ___
 
@@ -56,7 +56,7 @@ The address of the tokenizer backend
 
 #### Defined in
 
-[types.ts:8](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/types.ts#L8)
+[types.ts:8](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/types.ts#L8)
 
 ___
 
@@ -66,4 +66,4 @@ ___
 
 #### Defined in
 
-[types.ts:11](https://github.com/refinery-labs/lunasec-monorepo/blob/caaad15/js/sdks/packages/tokenizer-sdk/src/types.ts#L11)
+[types.ts:11](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/types.ts#L11)
