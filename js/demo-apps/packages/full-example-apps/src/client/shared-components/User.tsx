@@ -1,4 +1,4 @@
-import {Card, CardContent, CardHeader, Grid, Typography, Button, FormLabel} from '@material-ui/core';
+import {Card, CardContent, CardHeader, Grid, Typography, Button, FormLabel, FormGroup, makeStyles} from '@material-ui/core';
 import React, {useEffect, useState} from 'react';
 import {
   loadCurrentUserAPI,
@@ -8,10 +8,14 @@ import {UserModel} from "../../shared/types";
 import {lunaSecDomain} from "../constants";
 import {LunaSecConfigContext, SecureForm, SecureInput} from "@lunasec/react-sdk";
 
-interface SecureUserPropertiesProps {
-  ssnToken: string
-  setSSNToken: React.Dispatch<string>
-}
+const useStyles = makeStyles((theme) => ({
+  margin: {
+    margin: theme.spacing() * 2,
+  },
+  padding: {
+    padding: theme.spacing()
+  }
+}))
 
 async function loadUser(setUser, setError) {
   const currentUserResp = await loadCurrentUserAPI();
@@ -23,6 +27,8 @@ async function loadUser(setUser, setError) {
 }
 
 export const User: React.FunctionComponent = () => {
+  const classes = useStyles({});
+
   const [authError, setAuthError] = useState<string>('')
   const [saveSuccessful, setSaveSuccessful] = useState<boolean>(null);
   const [error, setError] = useState<string>(null);
@@ -90,27 +96,37 @@ export const User: React.FunctionComponent = () => {
           <CardHeader title={`User: ${user.username}`}/>
           <CardContent>
             <SecureForm name="secure-form-example" onSubmit={(e) => persistTokens(e)}>
-              <Typography>Id: {user.id}</Typography>
-              <FormLabel htmlFor="ssn-token-input">
-                Social Security Number
-              </FormLabel>
-              <SecureInput
-                id="ssn-token-input"
-                name="ssn"
-                type="ssn"
-                validator="SSN"
-                onValidate={(isValid) => ssnValidated(isValid)}
-                token={ssnToken}
-                placeholder="Enter Your SSN"
-              />
-              <Button
-                variant="outlined"
-                color="primary"
-                style={{ textTransform: "none" }}
-                type="submit"
+              <FormGroup
+                className={classes.margin}
               >
-                Save
-              </Button>
+                <Typography>
+                  Id: {user.id}
+                </Typography>
+              </FormGroup>
+              <FormGroup className={classes.margin}>
+                <FormLabel htmlFor="ssn-token-input">
+                  Social Security Number
+                </FormLabel>
+                <SecureInput
+                  id="ssn-token-input"
+                  name="ssn"
+                  type="ssn"
+                  validator="SSN"
+                  onValidate={(isValid) => ssnValidated(isValid)}
+                  token={ssnToken}
+                  placeholder="XXX-XXX-XXXX"
+                />
+              </FormGroup>
+              <div className={classes.margin}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  style={{ textTransform: "none" }}
+                  type="submit"
+                >
+                  Save
+                </Button>
+              </div>
             </SecureForm>
           </CardContent>
         </Card>
