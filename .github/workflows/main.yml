@@ -32,7 +32,7 @@ jobs:
 
     - uses: whoan/docker-build-with-cache-action@v5
       with:
-        username: refinery-labs
+        username: whoan
         password: "${{ secrets.GITHUB_TOKEN }}"
         registry: ghcr.io
         compose_file: docker-compose.yaml > docker-compose.ci.yaml
