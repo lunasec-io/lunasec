@@ -9,7 +9,7 @@ const quotedGithubUrl = `"${githubUrl}"`
 module.exports = {
   title: 'LunaSec',
   tagline: 'Data security from the start.',
-  url: 'https://lunasec-io.github.io',
+  url: 'https://www.lunasec.io/docs/',
   baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
