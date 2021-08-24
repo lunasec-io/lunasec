@@ -28,7 +28,7 @@ export const typeDefs = gql`
     files: [String] @token
   }
 
-  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION ### Enable input field annotation once plugin working
+  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 `;
 
 // This is a fake little database so we have some data to serve
