@@ -14,3 +14,9 @@ paths:
     $ref: 'routes/grant-routes.yaml#/setgrant'
   /metadata/get:
     $ref: 'routes/metadata-routes.yaml#/getmetadata'
+x-tagGroups:
+  - name: Tokenizer Routes
+    tags:
+      - Tokens
+      - Grants
+      - Metadata

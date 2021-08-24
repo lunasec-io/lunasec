@@ -56,9 +56,12 @@ export const Login: React.FunctionComponent = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 fullWidth required
               />
-              <FormHelperText className={classes.margin}>
-                  {error}
-              </FormHelperText>
+              {error
+                ? (
+                  <FormHelperText className={classes.margin}>
+                      {error}
+                  </FormHelperText>
+                ) : null}
               <Button
                 className={classes.margin}
                 variant="outlined"

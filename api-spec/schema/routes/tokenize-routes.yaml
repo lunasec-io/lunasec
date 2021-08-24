@@ -1,6 +1,8 @@
 tokenize:
   post:
-    summary: Submit metadata about a token that was uploaded to s3
+    tags:
+      - Tokens
+    summary: Tokenize
     operationId: tokenize
     requestBody:
       required: true
@@ -24,7 +26,9 @@ tokenize:
 
 detokenize:
   post:
-    summary: Get an S3 signed download URL for a token
+    tags:
+      - Tokens
+    summary: Detokenize
     operationId: detokenize
     requestBody:
       required: true

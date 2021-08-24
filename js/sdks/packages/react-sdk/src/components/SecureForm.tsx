@@ -4,9 +4,23 @@ import React, { Component } from 'react';
 import { SecureFormContext } from '../providers/SecureFormContext';
 
 export interface SecureFormProps extends React.ComponentPropsWithoutRef<'form'> {
+  /**
+   * @param On Submit - We call this function when the form submits, just like a normal React form
+   */
   readonly onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
+/**
+ * Secure Form Component, a wrapper around HTML Form that can handle SecureElements
+ * Use it as you would a normal form in React.
+ * ```tsx
+ * <SecureForm name="secure-form-example" onSubmit={(e) => this.persistTokens(e)}>
+ *   Your input elements, a mix of LunaSec and normal is fine
+ *   <input type="submit" />
+ * </SecureForm>
+ * ```
+ * @category Component
+ */
 export class SecureForm extends Component<SecureFormProps> {
   declare readonly context: React.ContextType<typeof SecureFormContext>;
   private tokenCommitCallbacks: Record<string, () => Promise<void>>;
