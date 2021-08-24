@@ -34,9 +34,7 @@ jobs:
       with:
         username: refinery-labs
         password: "${{ secrets.GITHUB_TOKEN }}"
-        registry: docker.pkg.github.com
-        #or
-        #registry: ghcr.io
+        registry: ghcr.io
         compose_file: docker-compose.yaml > docker-compose.ci.yaml
 
     - name: logs
