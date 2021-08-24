@@ -49,7 +49,11 @@ export const User: React.FunctionComponent = () => {
     void loadUser(setUser, setError);
   }, []);
 
-  const saveProperties = async () => {
+  const handleSSNChange = (e) => {
+    setSSNToken(e.target.value);
+  }
+
+  const saveProperties = async (e) => {
     if (ssnToken === null) {
       setError('ssnToken is null');
       return;
@@ -95,7 +99,7 @@ export const User: React.FunctionComponent = () => {
         <Card>
           <CardHeader title={`User: ${user.username}`}/>
           <CardContent>
-            <SecureForm name="secure-form-example" onSubmit={(e) => persistTokens(e)}>
+            <SecureForm name="secure-form-example" onSubmit={saveProperties}>
               <FormGroup
                 className={classes.margin}
               >
@@ -113,7 +117,8 @@ export const User: React.FunctionComponent = () => {
                   type="ssn"
                   validator="SSN"
                   onValidate={(isValid) => ssnValidated(isValid)}
-                  token={ssnToken}
+                  onChange={handleSSNChange}
+                  token={user.ssnToken}
                   placeholder="XXX-XXX-XXXX"
                 />
               </FormGroup>
