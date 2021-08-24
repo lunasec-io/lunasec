@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server-express';
 
-import { lunaSec } from '../configure-lunasec';
+import { lunaSec } from '../../configure-lunasec';
 // README - This demo shows how to use the lunasec @token directive in your apollo server
 // Import the directive from the node-sdk and attach it to your schemaDirectives(bottom of this file) which are passed into apollo
 // and declare the directive directly in your schema with the `directive` keyword.

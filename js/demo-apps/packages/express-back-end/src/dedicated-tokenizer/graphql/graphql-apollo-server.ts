@@ -1,7 +1,7 @@
 import { ApolloServer, IResolvers } from 'apollo-server-express';
 import { Express, Request, Response } from 'express';
 
-import { readSessionFromRequest } from '../read-session-from-request';
+import { readSessionFromRequest } from '../../read-session-from-request';
 
 import { resolvers, schemaDirectives, typeDefs } from './schema';
 

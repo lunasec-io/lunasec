@@ -1,12 +1,12 @@
-import path from 'path';
-import { Configuration, DefinePlugin } from 'webpack';
-import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
-import cssnano from 'cssnano';
 
+const { Configuration, DefinePlugin} =require('webpack')
+const { WebpackManifestPlugin}  = require('webpack-manifest-plugin')
+const cssnano = require('cssnano')
 //@ts-ignore
-import {clientEntry, tokenizerType, exampleApplication} from './app-lookup';
 
-import { SERVER_PORT, IS_DEV, WEBPACK_PORT } from './src/server/config';
+const {clientEntry, exampleApplication, tokenizerType} = require('./app-lookup');
+
+const {IS_DEV, SERVER_PORT, WEBPACK_PORT} = require('./src/server/config');
 
 const plugins = [
   new WebpackManifestPlugin({}),
@@ -16,10 +16,11 @@ const plugins = [
   })
 ];
 
-const nodeModulesPath = path.resolve(__dirname, 'node_modules');
-const targets = IS_DEV ? { chrome: '79', firefox: '72' } : '> 0.25%, not dead';
 
-const config: Configuration = {
+const targets = IS_DEV ? { chrome: '79', firefox: '72' } : '> 0.25%, not dead';
+console.log('THE GENERATED PATH IS ', path.join(__dirname, 'dist', 'statics'))
+
+const config = {
   mode: IS_DEV ? 'development' : 'production',
   devtool: IS_DEV ? 'inline-source-map' : false,
   entry: [clientEntry],
@@ -31,7 +32,7 @@ const config: Configuration = {
     openPage: `http://localhost:${SERVER_PORT}`,
   },
   output: {
-    path: path.join(__dirname, 'dist', 'statics'),
+    path: 'dist/statics',
     filename: `[name]-[chunkhash]-bundle.js`,
     chunkFilename: '[name]-[chunkhash]-bundle.js',
     publicPath: '/statics/',
@@ -62,7 +63,7 @@ const config: Configuration = {
     rules: [
       {
         test: /\.tsx?$/,
-        exclude: [/node_modules/, nodeModulesPath],
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -119,4 +120,4 @@ const config: Configuration = {
   },
 };
 
-export default config;
+module.exports = config;

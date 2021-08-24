@@ -7,7 +7,7 @@
   "scripts": {
     "test:e2e": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test",
     "lint:fix": "npm run lint -- --fix",
-    "lint": "cd js && eslint --ext .js,.jsx,.ts,.tsx ."
+    "lint": "cd js/sdks && eslint --ext .js,.jsx,.ts,.tsx ."
   },
   "repository": {
     "type": "git",
@@ -47,6 +47,6 @@
       "./js/service/packages/*",
       "./js/demo-apps/packages/*"
     ],
-    "nohoist": ["**/react-scripts", "**/jose"]
+    "nohoist": ["**/react-scripts", "**/jose", "**/eslint"]
   }
 }
