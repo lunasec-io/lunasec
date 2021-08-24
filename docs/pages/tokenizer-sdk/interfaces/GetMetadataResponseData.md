@@ -20,4 +20,4 @@ custom_edit_url: null
 
 #### Defined in
 
-[generated/api.ts:199](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L199)
+[generated/api.ts:199](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L199)
