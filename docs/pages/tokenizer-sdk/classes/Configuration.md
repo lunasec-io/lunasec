@@ -20,7 +20,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[generated/configuration.ts:77](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L77)
+[generated/configuration.ts:77](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L77)
 
 ## Properties
 
@@ -38,7 +38,7 @@ parameter for oauth2 security
 
 #### Defined in
 
-[generated/configuration.ts:53](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L53)
+[generated/configuration.ts:53](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L53)
 
 ___
 
@@ -54,7 +54,7 @@ parameter for apiKey security
 
 #### Defined in
 
-[generated/configuration.ts:32](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L32)
+[generated/configuration.ts:32](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L32)
 
 ___
 
@@ -68,7 +68,7 @@ base options for axios calls
 
 #### Defined in
 
-[generated/configuration.ts:67](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L67)
+[generated/configuration.ts:67](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L67)
 
 ___
 
@@ -82,7 +82,7 @@ override base path
 
 #### Defined in
 
-[generated/configuration.ts:60](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L60)
+[generated/configuration.ts:60](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L60)
 
 ___
 
@@ -100,7 +100,7 @@ do not support the FormData class can still run the generated client.
 
 #### Defined in
 
-[generated/configuration.ts:75](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L75)
+[generated/configuration.ts:75](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L75)
 
 ___
 
@@ -114,7 +114,7 @@ parameter for basic security
 
 #### Defined in
 
-[generated/configuration.ts:46](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L46)
+[generated/configuration.ts:46](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L46)
 
 ___
 
@@ -128,7 +128,7 @@ parameter for basic security
 
 #### Defined in
 
-[generated/configuration.ts:39](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L39)
+[generated/configuration.ts:39](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L39)
 
 ## Methods
 
@@ -157,4 +157,4 @@ True if the given MIME is JSON, false otherwise.
 
 #### Defined in
 
-[generated/configuration.ts:97](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L97)
+[generated/configuration.ts:97](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/generated/configuration.ts#L97)
