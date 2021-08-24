@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[types.ts:55](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/types.ts#L55)
+[types.ts:55](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/types.ts#L55)
 
 ___
 
@@ -24,7 +24,7 @@ ___
 
 #### Defined in
 
-[types.ts:56](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/types.ts#L56)
+[types.ts:56](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/types.ts#L56)
 
 ___
 
@@ -34,4 +34,4 @@ ___
 
 #### Defined in
 
-[types.ts:54](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/types.ts#L54)
+[types.ts:54](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/types.ts#L54)

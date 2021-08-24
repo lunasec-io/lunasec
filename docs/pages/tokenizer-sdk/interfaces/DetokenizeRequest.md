@@ -22,4 +22,4 @@ Needs to be a UUID.
 
 #### Defined in
 
-[generated/api.ts:35](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L35)
+[generated/api.ts:35](https://github.com/refinery-labs/lunasec-monorepo/blob/cbb354b/js/sdks/packages/tokenizer-sdk/src/generated/api.ts#L35)
