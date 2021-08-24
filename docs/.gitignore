@@ -23,4 +23,6 @@ yarn-error.log*
 
 /static/tokenizer-api-spec-static
 
-pages/
+pages/node-sdk/
+pages/react-sdk/
+pages/tokenizer-sdk/
