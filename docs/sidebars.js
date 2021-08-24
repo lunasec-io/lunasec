@@ -24,6 +24,11 @@ module.exports = {
       items: [
       'getting-started/choose-your-setup',
       {
+        type: 'category',
+        label: 'Dedicated Tokenizer',
+        items: ['getting-started/dedicated-tokenizer/introduction','getting-started/dedicated-tokenizer/backend','getting-started/dedicated-tokenizer/graphql']
+      },
+      {
         type:'category',
         label: 'Simple Tokenizer',
         items: ['getting-started/simple-tokenizer/guide']

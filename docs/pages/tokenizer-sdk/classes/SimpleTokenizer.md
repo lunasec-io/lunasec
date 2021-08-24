@@ -20,7 +20,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[simple-tokenizer.ts:7](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/simple-tokenizer.ts#L7)
+[simple-tokenizer.ts:7](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/simple-tokenizer.ts#L7)
 
 ## Properties
 
@@ -30,7 +30,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[simple-tokenizer.ts:6](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/simple-tokenizer.ts#L6)
+[simple-tokenizer.ts:6](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/simple-tokenizer.ts#L6)
 
 ## Methods
 
@@ -50,7 +50,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[simple-tokenizer.ts:21](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/simple-tokenizer.ts#L21)
+[simple-tokenizer.ts:21](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/simple-tokenizer.ts#L21)
 
 ___
 
@@ -70,4 +70,4 @@ ___
 
 #### Defined in
 
-[simple-tokenizer.ts:17](https://github.com/refinery-labs/lunasec-monorepo/blob/84c42bc/js/sdks/packages/tokenizer-sdk/src/simple-tokenizer.ts#L17)
+[simple-tokenizer.ts:17](https://github.com/refinery-labs/lunasec-monorepo/blob/6c5edb8/js/sdks/packages/tokenizer-sdk/src/simple-tokenizer.ts#L17)

@@ -27,4 +27,4 @@ That way, LunaSec can quickly be set up to work with any authentication scheme, 
 In this scheme, an authentication proxy like [ORY Oathkeeper](https://www.ory.sh/oathkeeper/docs/) takes care of the session. 
 This is more secure and allows us to offer the strongest guarantees around protecting your data, even if your server is compromised. 
 
-Enterprises often use a scheme like this.  LunaSec can be adapted to work with different providers.
+Enterprises often use a scheme like this.  LunaSec can be adapted to work with different authentication providers.
