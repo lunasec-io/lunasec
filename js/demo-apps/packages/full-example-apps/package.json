@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": ">=15.6.0"
+    "node": ">=14.0.0"
   },
   "scripts": {
     "test": "jest",
     "clean": "rimraf dist",
-    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "lint": "yarn lint:client; yarn lint:server",
+    "lint:client": "cd src/client && eslint --resolve-plugins-relative-to . '**/*.{ts,tsx}'",
+    "lint:server": "cd src/server && eslint --resolve-plugins-relative-to . '**/*.{ts,tsx}'",
     "start": "node index.js",
     "start:prod": "cross-env NODE_ENV=production node index.js",
     "type-check-client": "tsc -p ./src/client/tsconfig.json",

@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+
 import { IS_DEV, WEBPACK_PORT } from '../../../config';
 
 function getManifestFromWebpack(): Promise<any> {

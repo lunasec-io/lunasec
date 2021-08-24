@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import { getManifest } from './manifest-manager';
 
 export function pagesRouter() {

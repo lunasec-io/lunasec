@@ -1,16 +1,19 @@
+import path from 'path';
+
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import expressSession from 'express-session';
-import path from 'path';
+import passport from 'passport';
+
+import config from '../../config';
+
+import { lunaSec } from './configure-lunasec';
+import initAuth from './init/auth';
+import { authRouter } from './routes/auth-router';
+import { documentsRouter } from './routes/documents-router';
 import { pagesRouter } from './routes/pages-router';
 import { staticsRouter } from './routes/statics-router';
-import config from '../../config';
-import {lunaSec} from "./configure-lunasec";
-import cookieParser from 'cookie-parser';
-import passport from 'passport';
-import {authRouter} from "./routes/auth-router";
-import {userRouter} from "./routes/user-router";
-import initAuth from "./init/auth";
-import {documentsRouter} from "./routes/documents-router";
+import { userRouter } from './routes/user-router';
 
 console.log(`*******************************************`);
 console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
@@ -22,7 +25,7 @@ initAuth();
 const app = express();
 app.set('view engine', 'ejs');
 
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(cookieParser());
