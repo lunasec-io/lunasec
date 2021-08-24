@@ -30,6 +30,15 @@ jobs:
       # Ignore the failure of a step and avoid terminating the job.
 #      continue-on-error: true
 
+    - uses: whoan/docker-build-with-cache-action@v5
+      with:
+        username: refinery-labs
+        password: "${{ secrets.GITHUB_TOKEN }}"
+        registry: docker.pkg.github.com
+        #or
+        #registry: ghcr.io
+        compose_file:  docker-compose.yml > docker-compose.ci.yml
+
     - name: logs
       run: .github/print-docker-logs.sh
       shell: bash
