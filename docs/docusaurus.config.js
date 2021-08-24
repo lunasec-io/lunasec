@@ -70,7 +70,7 @@ module.exports = {
       {
         id: 'typedoc-tokenizer',
         entryPoints: ['../js/sdks/packages/tokenizer-sdk/src/index.ts'],
-        tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json',
+        tsconfig: '../js/sdks/packages/tokenizer-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
         docsRoot: 'pages',
@@ -92,7 +92,7 @@ module.exports = {
       items: [
         {
           type: 'doc',
-          docId: 'about',
+          docId: 'overview/introduction',
           position: 'left',
           label: 'Docs',
         },
