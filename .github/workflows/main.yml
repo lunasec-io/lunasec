@@ -37,7 +37,7 @@ jobs:
         registry: docker.pkg.github.com
         #or
         #registry: ghcr.io
-        compose_file:  docker-compose.yml > docker-compose.ci.yml
+        compose_file: docker-compose.yaml > docker-compose.ci.yaml
 
     - name: logs
       run: .github/print-docker-logs.sh
