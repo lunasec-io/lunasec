@@ -22,3 +22,5 @@ yarn-debug.log*
 yarn-error.log*
 
 /static/tokenizer-api-spec-static
+
+pages/
