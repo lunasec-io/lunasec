@@ -28,7 +28,8 @@ export const Usage: React.FunctionComponent = () => (
           <strong>npm start</strong> - Runs <strong>node ./dist/server/server.js</strong>
         </Typography>
         <Typography>
-          <strong>npm start:prod</strong> - sets <strong>NODE_ENV</strong> to <strong>production</strong> and then runs <strong>node ./dist/server/server.js</strong>. (Bypassing webpack proxy)
+          <strong>npm start:prod</strong> - sets <strong>NODE_ENV</strong> to <strong>production</strong> and then runs{' '}
+          <strong>node ./dist/server/server.js</strong>. (Bypassing webpack proxy)
         </Typography>
       </CardContent>
     </Card>

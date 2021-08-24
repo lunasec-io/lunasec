@@ -1,7 +1,8 @@
-import { AppBar, makeStyles, Toolbar, Typography, Button } from '@material-ui/core';
+import { AppBar, Button, makeStyles, Toolbar, Typography } from '@material-ui/core';
 import { createStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-import {exampleApplicationName, tokenizerType} from "../constants";
+
+import { exampleApplicationName, tokenizerType } from '../constants';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,15 +19,13 @@ export const Header: React.FunctionComponent = () => {
   const classes = useStyles({});
 
   return (
-      <AppBar position='fixed' className={classes.appBar}>
-          <Toolbar>
-              <Typography variant='h6' noWrap className={classes.title}>
-                LunaSec Example App
-              </Typography>
-              <Typography>
-                {`${tokenizerType} / ${exampleApplicationName}`}
-              </Typography>
-          </Toolbar>
-      </AppBar>
+    <AppBar position='fixed' className={classes.appBar}>
+      <Toolbar>
+        <Typography variant='h6' noWrap className={classes.title}>
+          LunaSec Example App
+        </Typography>
+        <Typography>{`${tokenizerType} / ${exampleApplicationName}`}</Typography>
+      </Toolbar>
+    </AppBar>
   );
 };

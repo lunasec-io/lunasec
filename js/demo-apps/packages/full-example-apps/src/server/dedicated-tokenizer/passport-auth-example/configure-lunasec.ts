@@ -1,6 +1,6 @@
 import { LunaSec } from '@lunasec/node-sdk';
 
-import {lunaSecSessionIdProvider} from "./auth";
+import { lunaSecSessionIdProvider } from './auth';
 
 if (!process.env.SECURE_FRAME_URL) {
   throw new Error('Secure frame url env var is not set');

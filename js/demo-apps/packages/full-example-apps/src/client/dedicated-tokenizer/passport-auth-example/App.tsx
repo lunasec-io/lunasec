@@ -2,14 +2,15 @@ import { CssBaseline, makeStyles } from '@material-ui/core';
 import { createStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'; // Pages
+
+import { Documents } from '../../shared-components/Documents';
 import { Header } from '../../shared-components/Header';
-import { SideMenu } from '../../shared-components/SideMenu';
 import { Home } from '../../shared-components/Home';
+import { Login } from '../../shared-components/Login';
+import { SideMenu } from '../../shared-components/SideMenu';
+import { Signup } from '../../shared-components/Signup';
 import { Usage } from '../../shared-components/Usage';
-import {Signup} from "../../shared-components/Signup";
-import {Login} from "../../shared-components/Login";
-import {User} from "../../shared-components/User";
-import {Documents} from "../../shared-components/Documents";
+import { User } from '../../shared-components/User';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

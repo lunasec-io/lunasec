@@ -1,7 +1,8 @@
+import fs from 'fs';
+import path from 'path';
+
 import dotenv from 'dotenv';
 import findUp from 'find-up';
-import path from 'path';
-import fs from 'fs';
 
 export const IS_DEV = process.env.NODE_ENV !== 'production';
 

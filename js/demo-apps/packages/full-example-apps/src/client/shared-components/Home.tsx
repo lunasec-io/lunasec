@@ -1,10 +1,11 @@
-import { makeStyles, CardHeader } from '@material-ui/core';
+import { CardHeader, makeStyles } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
-import {exampleApplicationName, tokenizerDescriptionLookup, tokenizerType} from "../constants";
+
+import { exampleApplicationName, tokenizerDescriptionLookup, tokenizerType } from '../constants';
 
 const useStyles = makeStyles(() => ({
   LogoImg: {

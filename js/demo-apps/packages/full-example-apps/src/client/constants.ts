@@ -7,6 +7,6 @@ export const exampleApplicationName = EXAMPLE_APPLICATION_NAME;
 export const tokenizerDescriptionLookup: Record<string, string> = {
   'dedicated-tokenizer': 'With a dedicated tokenizer, the tokenizer runs as a standalone service.',
   'embedded-tokenizer': 'With an embedded tokenizer, the tokenizer runs inside of your existing application.',
-}
+};
 
-export const lunaSecDomain = 'http://localhost:37766'
+export const lunaSecDomain = 'http://localhost:37766';

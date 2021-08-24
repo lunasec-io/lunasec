@@ -1,12 +1,22 @@
-import {Card, CardContent, CardHeader, Grid, Button, FormControl, FormHelperText} from '@material-ui/core';
-import React, {useEffect, useState} from 'react';
+import { LunaSecConfigContext, SecureUpload } from '@lunasec/react-sdk';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  FormControl,
+  FormGroup,
+  FormHelperText,
+  FormLabel,
+  Grid,
+} from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+
+import { lunaSecDomain } from '../constants';
 import {
   loadUserDocumentsAPI,
-  performSaveDocumentsAPI
-} from "../dedicated-tokenizer/passport-auth-example/utils/api-facade";
-import {LunaSecConfigContext, SecureUpload} from "@lunasec/react-sdk";
-import {FormLabel, FormGroup} from '@material-ui/core';
-import {lunaSecDomain} from "../constants";
+  performSaveDocumentsAPI,
+} from '../dedicated-tokenizer/passport-auth-example/utils/api-facade';
 
 async function loadDocuments(setDocuments, setError) {
   const documentsResp = await loadUserDocumentsAPI();
@@ -14,7 +24,7 @@ async function loadDocuments(setDocuments, setError) {
     setDocuments(documentsResp.documents);
     return;
   }
-  setError(documentsResp.error)
+  setError(documentsResp.error);
 }
 
 export const SecureDocumentsForm: React.FunctionComponent = () => {
@@ -27,8 +37,8 @@ export const SecureDocumentsForm: React.FunctionComponent = () => {
   }, []);
 
   const handleUploadChange = (tokens) => {
-    setDocuments(tokens)
-  }
+    setDocuments(tokens);
+  };
 
   const saveDocuments = async () => {
     const res = await performSaveDocumentsAPI(documents);
@@ -37,14 +47,16 @@ export const SecureDocumentsForm: React.FunctionComponent = () => {
       return;
     }
     setSaveSuccessful(true);
-  }
+  };
 
   if (error !== null) {
     return (
       <Grid item xs={12}>
         <Card>
           <CardHeader title={'Error'} />
-          <CardContent><p>{error}</p></CardContent>
+          <CardContent>
+            <p>{error}</p>
+          </CardContent>
         </Card>
       </Grid>
     );
@@ -54,7 +66,9 @@ export const SecureDocumentsForm: React.FunctionComponent = () => {
     return (
       <Grid item xs={12}>
         <Card>
-          <CardContent><p>Loading...</p></CardContent>
+          <CardContent>
+            <p>Loading...</p>
+          </CardContent>
         </Card>
       </Grid>
     );
@@ -67,34 +81,17 @@ export const SecureDocumentsForm: React.FunctionComponent = () => {
         <CardContent>
           <FormControl error={!!error}>
             <FormGroup>
-              <FormLabel htmlFor="drivers-license-upload">
-                Driver's License Upload
-              </FormLabel>
+              <FormLabel htmlFor='drivers-license-upload'>Driver's License Upload</FormLabel>
               <SecureUpload
-                id="drivers-license-upload"
-                name="uploader"
+                id='drivers-license-upload'
+                name='uploader'
                 filetokens={documents}
                 onTokenChange={handleUploadChange}
               />
             </FormGroup>
-            {error
-              ? (
-                <FormHelperText>
-                  {error}
-                </FormHelperText>
-              ) : null}
-            {saveSuccessful
-              ? (
-                <FormHelperText>
-                  Saving documents was successful!
-                </FormHelperText>
-              ) : null}
-            <Button
-              variant="outlined"
-              color="primary"
-              style={{ textTransform: "none" }}
-              onClick={saveDocuments}
-            >
+            {error ? <FormHelperText>{error}</FormHelperText> : null}
+            {saveSuccessful ? <FormHelperText>Saving documents was successful!</FormHelperText> : null}
+            <Button variant='outlined' color='primary' style={{ textTransform: 'none' }} onClick={saveDocuments}>
               Save Documents
             </Button>
           </FormControl>
@@ -102,10 +99,10 @@ export const SecureDocumentsForm: React.FunctionComponent = () => {
       </Card>
     </Grid>
   );
-}
+};
 
 export const Documents: React.FunctionComponent = () => {
-  const [authError, setAuthError] = useState<string>('')
+  const [authError, setAuthError] = useState<string>('');
   return (
     <LunaSecConfigContext.Provider
       value={{
@@ -115,8 +112,8 @@ export const Documents: React.FunctionComponent = () => {
         },
       }}
     >
-      {authError !== null ? (<p>{authError}</p>) : null}
+      {authError !== null ? <p>{authError}</p> : null}
       <SecureDocumentsForm />
     </LunaSecConfigContext.Provider>
-  )
+  );
 };

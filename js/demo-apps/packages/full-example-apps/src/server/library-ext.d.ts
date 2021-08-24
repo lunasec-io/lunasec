@@ -1,11 +1,10 @@
-import {UserModel} from '../shared/types';
+import { UserModel } from '../shared/types';
 
 declare global {
-    namespace Express {
-        interface User extends UserModel {
-        }
-        interface Request {
-            user?: UserModel;
-        }
+  namespace Express {
+    type User = UserModel;
+    interface Request {
+      user?: UserModel;
     }
+  }
 }

@@ -1,8 +1,8 @@
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
 import { createStyles, Theme } from '@material-ui/core/styles';
+import { AccountCircle, Folder, Home, LockOpen, VpnKey } from '@material-ui/icons';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import {VpnKey, LockOpen, Home, AccountCircle, Folder} from "@material-ui/icons";
 
 const drawerWidth = 240;
 
@@ -50,10 +50,10 @@ export const SideMenu: React.FunctionComponent = () => {
           <ListItemText primary='Login' />
         </ListItem>
         <ListItem button component={NavLink} to='/user'>
-            <ListItemIcon>
-              <AccountCircle />
-            </ListItemIcon>
-            <ListItemText primary='User' />
+          <ListItemIcon>
+            <AccountCircle />
+          </ListItemIcon>
+          <ListItemText primary='User' />
         </ListItem>
         <ListItem button component={NavLink} to='/documents'>
           <ListItemIcon>
