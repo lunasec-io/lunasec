@@ -54,7 +54,7 @@ Store all configuration files in source control so that you can perform meaningf
 This also lets you test your changes in CI _before_ they roll out to production.
 You don't need to tweak any dashboard settings when deploy rolls out, the changes go with your code.
 
-#### Development === Production
+#### Development == Production
 Your development environment will be one-to-one with your production environment, because LunaSec runs in both.  Our scripts 
 will set up AWS Localstack automatically, meaning the whole system can run on your development machine with next to no setup, 
 you don't even need internet access.
