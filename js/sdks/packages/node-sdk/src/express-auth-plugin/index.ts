@@ -80,8 +80,12 @@ export class LunaSecExpressAuthPlugin {
       });
       return;
     }
+
+    // session id could be passed in as a number, enforce that this value is a string
+    const normalizedSessionId = sessionId.toString();
+
     // This method creates the JWT that becomes the iframe's "access_token" cookie, which contains the sessionId
-    const redirectUrl = await this.buildSecureFrameRedirectUrl(authFlowCorrelationToken, sessionId);
+    const redirectUrl = await this.buildSecureFrameRedirectUrl(authFlowCorrelationToken, normalizedSessionId);
     if (redirectUrl === null) {
       console.error('unable to complete auth flow, redirectURL not set');
       res.status(400).send({
