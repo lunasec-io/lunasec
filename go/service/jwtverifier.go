@@ -106,7 +106,8 @@ func (j *jwtVerifier) Verify(token string) (err error) {
 
 	err = parsedToken.Claims(j.publicKey, &claims)
 	if err != nil {
-		err = errors.Wrap(err, "JWT has invalid signature")
+		err = errors.Wrap(err, "unable to verify signature and get claims")
+		j.logger.Error("unable to verify signature and get claims", zap.Error(err))
 		return
 	}
 	return
@@ -121,13 +122,9 @@ func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims types.Sessio
 	}
 
 	err = parsedToken.Claims(j.publicKey, &claims)
-	fmt.Println("PUBLIC KEY IS ")
-	//fmt.Printf("%v",j.publicKey)
-	fmt.Println(base64.StdEncoding.EncodeToString(x509.MarshalPKCS1PublicKey(j.publicKey)))
 	if err != nil {
-		fmt.Printf("%v", token)
-		err = errors.New("JWT has invalid signature")
-		j.logger.Error(err.Error())
+		err = errors.Wrap(err, "unable to verify signature and get claims")
+		j.logger.Error("unable to verify signature and get claims", zap.Error(err))
 		return
 	}
 	return
