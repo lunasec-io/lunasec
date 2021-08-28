@@ -47,6 +47,6 @@
       "./js/service/packages/*",
       "./js/demo-apps/packages/*"
     ],
-    "nohoist": ["**/react-scripts", "**/jose", "**/eslint"]
+    "nohoist": ["**/react-scripts", "**/jose", "**/eslint", "**/ts-node"]
   }
 }

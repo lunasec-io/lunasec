@@ -1,19 +1,25 @@
 import { Button, FormControl, FormHelperText, FormLabel, makeStyles, Paper, TextField } from '@material-ui/core';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { performSignupAPI } from '../dedicated-tokenizer/passport-auth-example/utils/api-facade';
+import { ApiResponse } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing() * 2,
+  },
+  center: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   padding: {
     padding: theme.spacing(),
   },
 }));
 
-export const Signup: React.FunctionComponent = () => {
+export const Login: React.FunctionComponent = () => {
   const classes = useStyles({});
 
   const history = useHistory();
@@ -21,10 +27,10 @@ export const Signup: React.FunctionComponent = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const signup = async () => {
-    const res = await performSignupAPI(username, password);
-    if (!res.success) {
-      setError(JSON.stringify(res.error));
+  const login = async () => {
+    const { data } = await axios.post<ApiResponse>(`/auth/login`, { username, password });
+    if (!data.success) {
+      setError(data.error);
       return;
     }
     history.push('/');
@@ -33,12 +39,12 @@ export const Signup: React.FunctionComponent = () => {
   return (
     <Paper className={classes.padding}>
       <FormControl className={`${classes.margin}`} error={!!error}>
-        <FormLabel>Signup</FormLabel>
+        <FormLabel>Login</FormLabel>
         <TextField
           className={classes.margin}
-          id='username'
-          label='Username'
-          type='email'
+          id="username"
+          label="Username"
+          type="email"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           fullWidth
@@ -47,23 +53,23 @@ export const Signup: React.FunctionComponent = () => {
         />
         <TextField
           className={classes.margin}
-          id='username'
-          label='Password'
-          type='password'
+          id="username"
+          label="Password"
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           fullWidth
           required
         />
-        {error ? <FormHelperText className={classes.margin}>{error}</FormHelperText> : null}
+        <FormHelperText className={classes.margin}>{error}</FormHelperText>
         <Button
           className={classes.margin}
-          variant='outlined'
-          color='primary'
+          variant="outlined"
+          color="primary"
           style={{ textTransform: 'none' }}
-          onClick={signup}
+          onClick={login}
         >
-          Signup
+          Login
         </Button>
       </FormControl>
     </Paper>

@@ -38,6 +38,6 @@ function decodeJWT(encodedJwt: string, pubKey: string): Promise<TokenData> {
       }
       resolve(data as TokenData);
     });
-    reject(new Error('unable to parse jwt due to unknown error'))
+    reject(new Error('unable to parse jwt due to unknown error'));
   });
 }

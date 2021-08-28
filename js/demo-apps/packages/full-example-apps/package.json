@@ -16,7 +16,7 @@
     "start:prod": "cross-env NODE_ENV=production node index.js",
     "type-check-client": "tsc -p ./src/client/tsconfig.json",
     "reset-db": "rm ./db.sqlite3 && npm run init-db",
-    "init-db": "if [ ! -f './db.sqlite3' ]; then cat fixtures/db.sql | sqlite3 db.sqlite3; fi",
+    "init-db": "if [ ! -f './db.sqlite3' ]; then cat ../express-back-end/src/dedicated-tokenizer/passport-auth-express/migrations/001-initial.sql | sqlite3 db.sqlite3; fi",
     "build-client": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --mode production",
     "build-server": "tsc -b src/server",
     "dev-client": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" react-scripts start",

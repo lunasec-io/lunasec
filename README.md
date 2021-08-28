@@ -30,7 +30,7 @@ It's all written in Typescript and outputs to a few different formats:
 - Browser build (concatenated into one file that's loaded into browser global namespace)
 
 ### /js/sdks/packages/secure-frame-iframe
-This holds the SDK frontend components which load into the iframe. What makes this secure is that it has very strict CSP and is only able to be invoked from an `<iframe>` context.
+This holds the SDK frontend components which load into the iframe.  This has a very strict CSP and is only able to be invoked from an `<iframe>` context.
 
 
 ## How to launch the cluster and get the app running
