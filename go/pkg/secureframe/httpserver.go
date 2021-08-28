@@ -66,7 +66,7 @@ func applyTokenizerRoutesWithAuth(
 		}
 	}
 
-	tokenizerRoutes := tokenizer.GetRoutes(logger, provider, gateways)
+	tokenizerRoutes := tokenizer.GetRoutes(logger, provider, gateways, authProviderJwtVerifier)
 	for url, handlerConfig := range tokenizerRoutes {
 		handler := setContentType(handlerConfig.Handler)
 		sm.HandleFunc(url, authFunc(handlerConfig.AllowedSubjects, handler))
@@ -98,7 +98,7 @@ func newServer() http.Handler {
 
 	gateways := gateway.GetAwsGateways(logger, provider)
 
-	authProviderJwtVerifier, err := service.NewJwtVerifier("customer_jwt_verifier", logger, provider)
+	authProviderJwtVerifier, err := service.NewJwtVerifier("session_jwt_verifier", logger, provider)
 	if err != nil {
 		log.Println(err)
 		panic(err)

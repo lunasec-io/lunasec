@@ -1,4 +1,3 @@
-import { UserModel } from '@lunasec/demo-back-end';
 import { SecureForm, SecureInput } from '@lunasec/react-sdk';
 import {
   Button,
@@ -14,7 +13,7 @@ import {
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
-import { ApiResponse, CurrentUserResponse } from '../types';
+import {ApiResponse, CurrentUserResponse, UserModel} from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {

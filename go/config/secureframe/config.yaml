@@ -25,8 +25,7 @@ secure_frame_controller:
   cdn_config: ${SECURE_FRAME_CDN_CONFIG}
 tokenizer_controller:
   application_token_secret: TODO
-customer_jwt_verifier:
-  # TODO (cthompson) this public key is specifically the customer's public key and the configuration should reflect this
+session_jwt_verifier:
   public_key: ${SESSION_PUBLIC_KEY:""}
   jwks_url: ${SESSION_JWKS_URL:""}
   jwks_kid: ${SESSION_JWKS_KID:""}

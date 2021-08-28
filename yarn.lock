@@ -11389,27 +11389,6 @@ fstream@^1.0.0, fstream@^1.0.12:
     mkdirp ">=0.5 0"
     rimraf "2"
 
-"full-example-apps@file:js/demo-apps/packages/full-example-apps":
-  version "0.0.1"
-  dependencies:
-    "@material-ui/icons" "^4.11.2"
-    "@webpack-cli/serve" "^1.2.2"
-    axios "^0.21.1"
-    body-parser "^1.19.0"
-    connect-ensure-login "^0.1.1"
-    dotenv "^8.2.0"
-    ejs "^3.1.5"
-    express "^4.17.1"
-    express-session "^1.17.2"
-    find-up "^5.0.0"
-    full-example-apps "file:js/demo-apps/packages/full-example-apps"
-    passport "^0.4.0"
-    passport-json "^1.2.0"
-    react-scripts "^4.0.3"
-    sqlite3 "^5.0.2"
-    styled-components "^5.2.1"
-    tslib "^2.1.0"
-
 function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"

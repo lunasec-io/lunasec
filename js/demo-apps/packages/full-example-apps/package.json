@@ -79,7 +79,6 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "find-up": "^5.0.0",
-    "full-example-apps": "/home/forrest/code/lunasec-monorepo/js/demo-apps/packages/full-example-apps",
     "passport": "^0.4.0",
     "passport-json": "^1.2.0",
     "react-scripts": "^4.0.3",
