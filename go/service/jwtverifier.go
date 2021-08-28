@@ -25,7 +25,7 @@ type JwtVerifierConfig struct {
 
 type JwtVerifier interface {
 	Verify(token string) (err error)
-	VerifyWithSessionClaims(token string) (claims *types.SessionJwtClaims, err error)
+	VerifyWithSessionClaims(token string) (claims types.SessionJwtClaims, err error)
 }
 
 func NewJwtVerifier(
@@ -112,7 +112,7 @@ func (j *jwtVerifier) Verify(token string) (err error) {
 	return
 }
 
-func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims *types.SessionJwtClaims, err error) {
+func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims types.SessionJwtClaims, err error) {
 	parsedToken, err := jwt.ParseSigned(token)
 	if err != nil {
 		err = errors.Wrap(err, "error while parsing token")

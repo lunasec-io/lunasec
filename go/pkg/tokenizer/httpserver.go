@@ -18,7 +18,7 @@ import (
 )
 
 // GetRoutes ...
-func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways) map[string]handler.Config {
+func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways, jwtVerifier service.JwtVerifier) map[string]handler.Config {
 	meta := service.NewMetadataService(gateways.KV)
 	grant, err := service.NewGrantService(logger, provider, gateways.KV)
 	if err != nil {
@@ -26,15 +26,10 @@ func GetRoutes(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 		panic(err)
 	}
 	tokenizer := service.NewTokenizerService(gateways.KV, gateways.S3)
-	tokenVerifier, err := service.NewJwtVerifier("customer_jwt_verifier", logger, provider)
-	if err != nil {
-		fmt.Println(err)
-		panic(err)
-	}
 
-	metadataController := controller.NewMetaController(meta, tokenVerifier, grant)
-	grantController := controller.NewGrantController(grant, tokenVerifier)
-	tokenizerController, err := controller.NewTokenizerController(provider, tokenizer, tokenVerifier, meta, grant)
+	metadataController := controller.NewMetaController(meta, jwtVerifier, grant)
+	grantController := controller.NewGrantController(grant, jwtVerifier)
+	tokenizerController, err := controller.NewTokenizerController(provider, tokenizer, jwtVerifier, meta, grant)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
@@ -86,17 +81,18 @@ func newServer(configPath string, authType constants.AuthType) http.Handler {
 	logger.Debug("loading AWS gateways")
 	gateways := gateway.GetAwsGateways(logger, provider)
 
+	authProviderJwtVerifier, err := service.NewJwtVerifier("session_jwt_verifier", logger, provider)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+
 	switch authType {
 	case constants.NoAuthType:
 		logger.Debug("!!! creating tokenizer with no authentication !!!")
 		authFunc = controller.WithNoAuth
 	case constants.JwtAuthType:
 		logger.Debug("creating tokenizer with jwt authentication")
-		authProviderJwtVerifier, err := service.NewJwtVerifier("customer_jwt_verifier", logger, provider)
-		if err != nil {
-			fmt.Println(err)
-			panic(err)
-		}
 		authFunc = service.NewJwtHttpAuth(logger, authProviderJwtVerifier).WithJwtAuth
 	default:
 		err = fmt.Errorf("invalid auth type: %s", authType)
@@ -104,7 +100,7 @@ func newServer(configPath string, authType constants.AuthType) http.Handler {
 		panic(err)
 	}
 
-	for url, handlerConfig := range GetRoutes(logger, provider, gateways) {
+	for url, handlerConfig := range GetRoutes(logger, provider, gateways, authProviderJwtVerifier) {
 		sm.HandleFunc(url, authFunc(handlerConfig.AllowedSubjects, handlerConfig.Handler))
 	}
 
