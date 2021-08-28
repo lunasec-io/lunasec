@@ -1,16 +1,17 @@
+import { LunaSecConfigContext } from '@lunasec/react-sdk';
 import { CssBaseline, makeStyles } from '@material-ui/core';
 import { createStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'; // Pages
 
-import { Documents } from '../../shared-components/Documents';
-import { Header } from '../../shared-components/Header';
-import { Home } from '../../shared-components/Home';
-import { Login } from '../../shared-components/Login';
-import { SideMenu } from '../../shared-components/SideMenu';
-import { Signup } from '../../shared-components/Signup';
-import { Usage } from '../../shared-components/Usage';
-import { User } from '../../shared-components/User';
+import { Documents } from './components/Documents';
+import { Header } from './components/Header';
+import { Home } from './components/Home';
+import { Login } from './components/Login';
+import { SideMenu } from './components/SideMenu';
+import { Signup } from './components/Signup';
+import { Usage } from './components/Usage';
+import { User } from './components/User';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,30 +23,40 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(3),
     },
     toolbar: theme.mixins.toolbar,
-  }),
+  })
 );
 
-export const App = () => {
+export const DedicatedPassportReactApp = () => {
   const classes = useStyles({});
 
   return (
-    <BrowserRouter>
-      <div className={classes.root}>
-        <CssBaseline />
-        <Header />
-        <SideMenu />
-        <main className={classes.main}>
-          <div className={classes.toolbar} />
-          <Switch>
-            <Route exact path='/' component={Home} />
-            <Route exact path='/login' component={Login} />
-            <Route exact path='/usage' component={Usage} />
-            <Route exact path='/signup' component={Signup} />
-            <Route exact path='/user' component={User} />
-            <Route exact path='/documents' component={Documents} />
-          </Switch>
-        </main>
-      </div>
-    </BrowserRouter>
+    <LunaSecConfigContext.Provider
+      value={{
+        lunaSecDomain: 'http://localhost:37766',
+        authenticationErrorHandler: (e: Error) => {
+          // setAuthError('Failed to authenticate with LunaSec. \n Is a user logged in?');
+          console.error('AUTH ERROR FROM LUNASEC', e);
+        },
+      }}
+    >
+      <BrowserRouter>
+        <div className={classes.root}>
+          <CssBaseline />
+          <Header />
+          <SideMenu />
+          <main className={classes.main}>
+            <div className={classes.toolbar} />
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/usage" component={Usage} />
+              <Route exact path="/signup" component={Signup} />
+              <Route exact path="/user" component={User} />
+              <Route exact path="/documents" component={Documents} />
+            </Switch>
+          </main>
+        </div>
+      </BrowserRouter>
+    </LunaSecConfigContext.Provider>
   );
 };

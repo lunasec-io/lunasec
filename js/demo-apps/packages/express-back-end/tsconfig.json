@@ -39,15 +39,14 @@
     "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
     "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
 
-    "lib": ["es2017"],
-    "types": [],
-    "typeRoots": ["node_modules/@types",
-      "src/types"
-    ],
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+
     "tsBuildInfoFile": "./build/buildcache.tsbuildinfo"
   },
   "include": [
     "src/**/*.ts"
   ],
+  "exclude": ["**/*.test.ts"],
   "compileOnSave": true
 }

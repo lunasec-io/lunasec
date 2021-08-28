@@ -24,7 +24,6 @@ type CorsConfig struct {
 type AppConfig struct {
 	Cors        CorsConfig `yaml:"cors"`
 }
-
 func GetSecureFrameRoutesWithSessionManagement(
 	logger *zap.Logger,
 	provider config.Provider,
@@ -42,7 +41,6 @@ func GetSecureFrameRoutesWithSessionManagement(
 	if err != nil {
 		panic(err)
 	}
-
 	secureFrameRoutes = map[string]http.HandlerFunc{
 		"/session/ensure": sessionController.SessionEnsure,
 		"/session/verify": sessionController.SessionVerify,
@@ -105,7 +103,7 @@ func newServer() http.Handler {
 		log.Println(err)
 		panic(err)
 	}
-
+	// the secure frame is a superset of routes that also includes the tokenizer routes
 	secureFrameRoutes := GetSecureFrameRoutesWithSessionManagement(logger, provider, gateways, authProviderJwtVerifier)
 
 	for url, fn := range secureFrameRoutes {

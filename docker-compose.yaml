@@ -4,9 +4,9 @@ services:
   local-dependencies:
     image: rwgrim/docker-noop
     depends_on:
-      - localstack
+      - localstack # AWS localstack container
       - proxy
-      - cdk-init
+      - cdk-init # communicated with the localstack container to deploy the needed infrastructure
   demo:
     image: rwgrim/docker-noop
     depends_on:

@@ -1,8 +1,8 @@
 import bodyParser from 'body-parser';
 import { Router } from 'express';
 
-import { ensureLoggedIn } from '../auth';
-import { db } from '../db';
+import { ensureLoggedIn } from '../config/auth-helpers';
+import { getDb } from '../config/db';
 
 export function userRouter() {
   const router = Router();
@@ -11,28 +11,30 @@ export function userRouter() {
   router.use(bodyParser.json());
 
   /* GET users listing. */
-  router.get('/me', (req, res, next) => {
-    db.get('SELECT rowid AS id, username, name FROM users WHERE rowid = ?', [req.user.id], function (err, row) {
-      if (err) {
-        return next(err);
-      }
-
-      // TODO: Handle undefined row.
-
-      const user = {
+  router.get('/me', ensureLoggedIn, async (req, res, next) => {
+    const db = await getDb();
+    const row = await db
+      .get('SELECT rowid AS id, username, name FROM users WHERE rowid = ?', [req.user.id])
+      .catch((err) => next(err));
+    // TODO: Handle undefined row.
+    res.json({
+      success: true,
+      user: {
         id: row.id.toString(),
         username: row.username,
         displayName: row.name,
-      };
-      res.json({
-        success: true,
-        user: user,
-      });
+      },
     });
   });
 
-  router.post('/me', (req, res, next) => {
-    db.run('UPDATE users SET ssn_token = ? WHERE rowid = ?', [req.body.ssnToken, req.user.id], function (err) {
+  router.post('/me', ensureLoggedIn, async (req, res) => {
+    if (!req.user) {
+      return res.json({
+        success: false,
+      });
+    }
+    const db = await getDb();
+    return db.run('UPDATE users SET ssn_token = ? WHERE rowid = ?', [req.body.ssnToken, req.user.id]).catch((err) => {
       if (err) {
         return res.json({
           success: false,

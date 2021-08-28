@@ -62,6 +62,10 @@ func NewJwtVerifier(
 	} else if serviceConfig.JwksURL != "" {
 		jwksManager, err = NewJwksManager(serviceConfig.JwksURL, true)
 		if err != nil {
+			logger.Error(
+				"Error fetching JSON Web Key(JWKS) from application backend.  Is your application backend running? Env var is ",
+				zap.String("SESSION_JWKS_URL", serviceConfig.JwksURL),
+				)
 			return
 		}
 
@@ -95,12 +99,14 @@ func (j *jwtVerifier) Verify(token string) (err error) {
 	)
 	parsedToken, err := jwt.ParseSigned(token)
 	if err != nil {
+		err = errors.Wrap(err, "error while parsing token")
+		j.logger.Error("unable to parse token", zap.Error(err))
 		return
 	}
 
 	err = parsedToken.Claims(j.publicKey, &claims)
 	if err != nil {
-		err = errors.Wrap(err, "jwt token is not valid")
+		err = errors.Wrap(err, "JWT has invalid signature")
 		return
 	}
 	return
@@ -115,8 +121,12 @@ func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims *types.Sessi
 	}
 
 	err = parsedToken.Claims(j.publicKey, &claims)
+	fmt.Println("PUBLIC KEY IS ")
+	//fmt.Printf("%v",j.publicKey)
+	fmt.Println(base64.StdEncoding.EncodeToString(x509.MarshalPKCS1PublicKey(j.publicKey)))
 	if err != nil {
-		err = errors.New("jwt token claims are not valid")
+		fmt.Printf("%v", token)
+		err = errors.New("JWT has invalid signature")
 		j.logger.Error(err.Error())
 		return
 	}

@@ -1,23 +1,22 @@
 import { config } from 'dotenv';
-import { Express } from 'express'
+import { Express } from 'express';
 config();
 
-import { setupDedicatedPassPortExpressApp} from "./dedicated-tokenizer/passport-auth-express/server";
+import { setupDedicatedPassPortExpressApp } from './dedicated-tokenizer/passport-auth-express/server';
 
-
-function getApp(): Express {
-    if (process.env.DEMO_NAME === 'dedicated-passport-express') {
-        return setupDedicatedPassPortExpressApp();
-    }
-    throw new Error('Must set DEMO_NAME env var to a suitable demo name')
+function getApp(): Promise<Express> {
+  if (process.env.DEMO_NAME === 'dedicated-passport-express') {
+    return setupDedicatedPassPortExpressApp();
+  }
+  throw new Error('Must set DEMO_NAME env var to a suitable demo name');
 }
 
-const app = getApp();
+getApp().then((app) => {
+  app.listen(3001, () => {
+    console.log(`Demo Sever listening on port 3001 in mode ${process.env.DEMO_NAME || 'undefined mode'}`);
+  });
+});
 
-app.listen(3001, () => {
-    console.log(`Demo Sever listening on port 3001 in mode ${process.env.DEMO_NAME}`)
-})
-//
 // import express from 'express';
 //
 // import { lunaSec } from './configure-lunasec';

@@ -5,29 +5,25 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
 
-import { exampleApplicationName, tokenizerDescriptionLookup, tokenizerType } from '../constants';
+import logo from '../../../static/logo.svg';
 
 const useStyles = makeStyles(() => ({
   LogoImg: {
-    width: 150,
-    paddingBottom: 25,
+    width: 300,
+    paddingBottom: 5,
   },
 }));
 
 export const Home: React.FunctionComponent = () => {
   const classes = useStyles({});
-  const tokenizerDescription = tokenizerDescriptionLookup[tokenizerType];
   return (
     <Grid item xs={12}>
       <Card>
-        <CardHeader title={`LunaSec ${exampleApplicationName}`} />
         <CardContent>
-          <img src='/assets/images/logo.png' className={classes.LogoImg} />
+          <img src={logo} className={classes.LogoImg} />
+          <h1>LunaSec Demo: Dedicated Tokenizer with Passport Authentication</h1>
           <Typography>
             This is a fully functional application which uses LunaSec to protect its sensitive data.
-          </Typography>
-          <Typography>
-            This application is using a <b>{tokenizerType}</b>. {tokenizerDescription}.
           </Typography>
           <hr />
           <Typography>
