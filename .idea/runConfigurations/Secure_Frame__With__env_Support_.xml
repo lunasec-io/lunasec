@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Secure Frame (Make)" type="GoRemoteDebugConfigurationType" factoryName="Go Remote">
+  <configuration default="false" name="Secure Frame (With .env Support)" type="GoRemoteDebugConfigurationType" factoryName="Go Remote">
     <option name="disconnectOption" value="STOP" />
     <disconnect value="STOP" />
     <method v="2">
