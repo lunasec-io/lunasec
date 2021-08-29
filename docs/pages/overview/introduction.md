@@ -28,21 +28,19 @@ If you've ever struggled with lengthy security reviews, painful compliance requi
 hoops for "data security" or "compliance", then you'll likely be interested in what LunaSec offers.
 
 ## Why is LunaSec better?
-Most security tools are hard to use, closed source, or both.
+Most security tools are hard to use, closed source, or both. We believe that open source is the best choice for production software.
 
 We designed LunaSec to be simple to use for normal developers without an advanced understanding of software security or cryptography.
 LunaSec does its best to provide clean and easy APIs, ship with plenty of examples and docs, and will always be _open source_ so that you can debug or fix problems yourself.
 
 Most of the security vendor software we've used takes months to get onboarded with due to a lengthy sales process.
 After signup, you can be blocked when the black box VM image they give you ships with bugs.
-You can't patch the bugs because you don't have the source code. You're stuck.
+You can't patch the bugs because you can't change the source code. You're stuck.
 
 We've seen some security vendors move away from VM images towards "hosted SaaS" solutions instead.
 Unfortunately, these solutions are often worse because they don't live in your infrastructure.
 You can't run it on your laptop or in your CI for testing. And, if they have downtime or bad performance, your software inherits those problems too.
 They're still black boxes.
-
-We believe that open source is the right choice for production software.
 
 #### No Proxy Required
 No more dealing with "security proxies" that require manually updating HTTP request schemas in a Web UI every time a new field is added to an endpoint.

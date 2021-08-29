@@ -4,6 +4,7 @@ build/
 **/local.yaml
 .vscode/
 **/refinery-container-runtime.tar
+nohup.out
 
 # Binaries for programs and plugins
 *.exe
