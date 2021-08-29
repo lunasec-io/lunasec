@@ -7,13 +7,13 @@ sidebar_label: "Libraries and Services"
 # NPM Modules
 You'll only need two libraries to use LunaSec, one for the client and one for the server. 
 
-# `@lunasec/react-sdk`
+## `@lunasec/react-sdk`
 The frontend component of the LunaSec Stack.  Turns your form inputs and other elements into [Secure Frames](./features.md#secure-frame). Support for other frameworks is in development.
 
-## Example usage
+### Example usage
 These snippets give you an example of how the library works.  For a full setup tutorial, see SETUP TUTORIAL
 
-### ClientSide React Form
+#### ClientSide React Form
 Let's look at a simple form that takes in a social security number.
 ```jsx title="normal-form.tsx"
 import React from 'react';
@@ -29,7 +29,6 @@ export function renderInsecureComponent(props) {
 }
 ```
 
-###
 We can add tokenization by simply replacing the components used in the form with the LunaSec replacements.
 ```tsx title="secure-form.tsx"
 import React from 'react';
@@ -47,13 +46,13 @@ export function renderSecureComponent(props) {
 }
 ```
 
-# `@lunasec/node-sdk`
+## `@lunasec/node-sdk`
 The backend component of the LunaSec stack.  Grants permissions for the browser to read tokens, handles authentication,
 and exposes helpers for working with Express or Apollo-GraphQL.  
 
-## Example usage
+### Example usage
 
-### Configuration
+#### Configuration
 ```typescript
 import { LunaSec } from '@lunasec/node-sdk
 const lunaSec = new LunaSec({
@@ -68,14 +67,14 @@ const lunaSec = new LunaSec({
 });
 ```
 
-### Registering the auth plugin with express
+#### Registering the auth plugin with express
 ```typescript
 // Attach the LunaSec authentication plugin
 lunaSec.expressAuthPlugin.register(app);
 ```
 See the [authentication](./authentication.md) page to understand when and why you need to register this auth plugin.
 
-### Apollo GraphQL Directive
+#### Apollo GraphQL Directive
 Use this if you're using graphQL.  Automatically create and verify token grants for any field with the @token directive
 ```typescript
   const server = new ApolloServer({

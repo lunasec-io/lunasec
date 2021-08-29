@@ -6,10 +6,10 @@ sidebar_label: "Token Lifecycle"
 # Token lifecycle
 
 ### Page Loading and setup
-When the browser mounts a LunaSec react element from the `@lunasec/react-sdk`, like `<SecureInput>`, it creates an iFrame that loads from the 
+When the browser mounts a LunaSec react element from `@lunasec/react-sdk`, such as `<SecureInput>`, it creates an iFrame that loads from the 
 `Dedicated Tokenizer`. Now we have a cross-domain iFrame on the page which can only communicate with the SDK through secure Post Messages.  This is our
 trusted environment to handle sensitive data. The SDK, running as part of your code 
-in the browser, sends the Secure Frame(iFrame) information it needs like styling information copied from your app, a prexisting token
+in the browser, sends the Secure Frame (iFrame) information it needs like styling information copied from your app, a prexisting token
 to display if desired, any validations that need to run, etc.
 
 Now it's ready to tokenize or detokenize data:
@@ -17,7 +17,7 @@ Now it's ready to tokenize or detokenize data:
 ### Tokenization
 There are a few steps that happen behind the scenes when data gets tokenized.  This is what happens when a
 user clicks Submit on a form with a `<SecureInput>`.
-1. Secure Frame(typically from the React SDK) calls the Tokenizer with `/tokenize` and gets back a token and an S3 presigned-URL.  
+1. Secure Frame (typically from the React SDK) calls the Tokenizer with `/tokenize` and gets back a token and an S3 presigned-URL.  
    Permission for the server to safely store the token from this session is created behind the scenes in what's dubbed a store `Grant`, preventing certain attacks.
 2. Secure Frame uploads the sensitive data to S3, data is encrypted by S3's built in encryption. 
 3. Your web app reads the token from the `<SecureInput>` in the same way it would read a change in a normal input.  
