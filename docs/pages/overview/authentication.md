@@ -18,10 +18,27 @@ LunaSec supports both of these schemes.
 ## 1. User Provided Session
 If your application server is creating sessions, the `@lunasec/node-sdk` can read your session information and use it to
 create cookie on the domain of the Secure Frame (where the iFrame and Dedicated Tokenizer live). To do this it follows what is
-essentially an oAuth flow, where a request is redirected to Dedicated Tokenizer, which sets a session cookie.
+essentially an oAuth flow, where a request is redirected to Dedicated Tokenizer, which sets a session cookie for the Dedicated Tokenizer's domain.
 
-When you configure the `@lunasec/node-sdk`, you pass it a callback that can retrieve the users sessionId from a request. 
+When you configure `@lunasec/node-sdk`, you pass it a callback that can retrieve the users sessionId from a request. 
 That way, LunaSec can quickly be set up to work with any authentication scheme, whether it is cookie, header, api key based.  
+
+Here is an example implementation of this callback where `req.user` contains the authenticated user to the application:
+```typescript
+export const lunaSec = new LunaSec({
+  // ...
+  auth: {
+    // ...
+    sessionIdProvider: (req: Request) => {
+      if (req.user !== undefined) {
+        return req.user.id;
+      }
+      return null;
+    },
+    // ...
+  },
+});
+```
 
 ## 2. Auth Proxy
 In this scheme, an authentication proxy like [ORY Oathkeeper](https://www.ory.sh/oathkeeper/docs/) takes care of the session. 

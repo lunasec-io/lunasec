@@ -4,14 +4,14 @@ title: "Introduction"
 sidebar_label: "Introduction"
 ---
 ## What is LunaSec?
-The LunaSec Stack makes it easier and safer to work with sensitive data in web applications.
+The LunaSec Stack makes it easy and secure to work with sensitive data in web applications.
 
-Our open source suite of libraries, services, and other tools encrypt your sensitive data at rest and isolate sensitive parts of your application,
-as well as laying the groundwork for end-to-end encryption, centralized authorization, service-to-service authentication, and more.
+At its core, LunaSec tokenizes your data, allowing the data to be encrypted at rest while the token is passed throughout your application.
+The LunaSec Stack provides libraries, services, and tools which build upon the secure properties of tokenization to allow fine-grained control over when
+and where your sensitive data _is capable of ever being accessed_. 
 
-
-LunaSec products are designed to drop in to existing apps with minimal code changes. Creating a secure environment is a one liner anywhere in your code. 
-By isolating those sensitive parts of your app, LunaSec prevents a vulnerability from compromising the entire system.
+LunaSec products are designed to drop in to existing apps with minimal code changes. By reducing friction to include secure LunaSec components,
+it becomes trivial to prevent a single vulnerability from compromising your entire system.
 
 ## Who is LunaSec for? 
 
@@ -20,7 +20,7 @@ LunaSec is designed for developers building software that needs to store sensiti
 Our open source software can be used to enhance the security of new or existing applications, and is designed for production
 use cases that require high availability and scalability by default.
 
-Software security is often overlooked or deemed to difficult and expensive to do properly. By isolating sensitive parts of the application, LunaSec
+Software security is often overlooked or deemed too difficult/expensive to implement properly. By isolating sensitive parts of the application, LunaSec
 helps developers protect sensitive information without having to worry about the security of every line
 they write or library they import.
 
