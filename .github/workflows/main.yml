@@ -34,3 +34,9 @@ jobs:
       with:
         name: cypress-recording
         path: js/demo-apps/packages/react-front-end/cypress/videos/basic_integration_spec.js.mp4
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_TITLE: PR Build Complete
+        SLACK_COLOR: ${{ job.status }}
