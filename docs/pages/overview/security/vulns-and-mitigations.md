@@ -7,7 +7,7 @@ sidebar_position: 4
 
 ## LunaSec Mitigations for Common Security Vulnerabilities
 
-The LunaSec Stack not only provides a compliant data storage solution, but also an answer for every security vulnerability attackers will attempt to use against your web application.
+The LunaSec Stack not only provides a compliant data storage solution, but also an answer for common security vulnerabilities attacker will attempt to use against your web application.
 
 ### Cross Site Scripting (XSS)
 
@@ -101,7 +101,7 @@ Consider two websites: a Company site and Attacker site. A CSRF vulnerability ex
 
 The properties of the LunaSec Secure Frame make CSRFs not possible. Since the Secure Frame is the only way to view protected content, even if a CSRF exists in the application, it will not be able to affect the Secure Frame.
 
-### Using Component with Known Vulnerabilities
+### Using Components with Known Vulnerabilities
 
 #### Description
 
