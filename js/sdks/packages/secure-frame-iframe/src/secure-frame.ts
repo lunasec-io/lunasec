@@ -148,10 +148,10 @@ export class SecureFrame<E extends keyof ClassLookup> {
         await handleDownload(token, this.secureElement as HTMLAnchorElement, this.tokenizer, attrs.hidden || false);
       } catch (e) {
         if (e instanceof LunaSecError) {
-          this.sendErrorMessage(e);
+          return this.sendErrorMessage(e);
         }
         if (e instanceof Error) {
-          this.sendErrorMessage(new LunaSecError(e));
+          return this.sendErrorMessage(new LunaSecError(e));
         }
         throw e;
       }
@@ -230,18 +230,18 @@ export class SecureFrame<E extends keyof ClassLookup> {
     });
   }
 
-  async tokenizeField(): Promise<string | void> {
+  async tokenizeField(): Promise<string | null> {
     const value = (this.secureElement as HTMLInputElement).value;
     if (value.length > 0) {
       const res = await this.tokenizer.tokenize(value, { dataType: 'string' });
 
       if (!res.success) {
-        return this.sendErrorMessage(res.error);
+        this.sendErrorMessage(res.error);
+        return null;
       }
       return res.tokenId;
-    } else {
-      return '';
     }
+    return '';
   }
 
   async detokenize(token: string) {
