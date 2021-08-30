@@ -97,5 +97,5 @@ jobs:
         if: always()
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_TITLE: Documentation Build Complete
+          SLACK_TITLE: Documentation Build ${{ job.status }}
           SLACK_COLOR: ${{ job.status }}

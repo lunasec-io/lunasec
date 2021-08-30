@@ -40,5 +40,5 @@ jobs:
       if: always()
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_TITLE: PR Build Complete
+        SLACK_TITLE: PR Build ${{ github.head_ref }} ${{ job.status }}
         SLACK_COLOR: ${{ job.status }}
