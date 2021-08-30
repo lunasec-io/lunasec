@@ -108,7 +108,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
 
     throwIfLunaSecConfigNotSet() {
-      // It would be nice if there was an easier way to detect if we had loaded the default provider instead of one set by the customer
+      // It would be nice if there was an easier way to detect if we had loaded the default provider instead of one set by the user
       if (this.props.lunaSecConfigContext.lunaSecDomain.length === 0) {
         throw new Error(
           'LunaSecConfigContext Provider must be registered around any LunaSec components.  You probably want to include it at the top level in your app.tsx'

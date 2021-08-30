@@ -51,8 +51,6 @@ export class LunaSecAuthentication {
   public async createAuthenticationJWT(subject: JwtSubject, claims: Record<string, any>): Promise<AuthenticationJWT> {
     const privateKey = await this.getSigningPrivateKey();
     const publicKey = await this.getSigningPublicKey();
-    console.log('FUCK');
-    console.log('Public key when creating authentication jwt', publicKey.export({format: 'pem', type: 'pkcs1'}));
     const jwt = await new SignJWT(claims)
       .setProtectedHeader({ alg: 'RS256' })
       .setIssuedAt()

@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: drawerWidth,
     },
     toolbar: theme.mixins.toolbar,
-  }),
+  })
 );
 
 export const SideMenu: React.FunctionComponent = () => {
@@ -24,42 +24,48 @@ export const SideMenu: React.FunctionComponent = () => {
   return (
     <Drawer
       className={classes.drawer}
-      variant='permanent'
+      variant="permanent"
       classes={{
         paper: classes.drawerPaper,
       }}
     >
       <div className={classes.toolbar} />
       <List>
-        <ListItem button component={NavLink} to='/'>
+        <ListItem button component={NavLink} to="/">
           <ListItemIcon>
             <Home />
           </ListItemIcon>
-          <ListItemText primary='Home' />
+          <ListItemText primary="Home" />
         </ListItem>
-        <ListItem button component={NavLink} to='/signup'>
+        <ListItem button component={NavLink} to="/signup">
           <ListItemIcon>
             <VpnKey />
           </ListItemIcon>
-          <ListItemText primary='Signup' />
+          <ListItemText primary="Signup" />
         </ListItem>
-        <ListItem button component={NavLink} to='/login'>
+        <ListItem button component={NavLink} to="/login">
           <ListItemIcon>
             <LockOpen />
           </ListItemIcon>
-          <ListItemText primary='Login' />
+          <ListItemText primary="Login" />
         </ListItem>
-        <ListItem button component={NavLink} to='/user'>
+        <ListItem button component={NavLink} to="/secureinput">
           <ListItemIcon>
             <AccountCircle />
           </ListItemIcon>
-          <ListItemText primary='User' />
+          <ListItemText primary="SecureInput" />
         </ListItem>
-        <ListItem button component={NavLink} to='/documents'>
+        <ListItem button component={NavLink} to="/secureupload">
           <ListItemIcon>
             <Folder />
           </ListItemIcon>
-          <ListItemText primary='Documents' />
+          <ListItemText primary="SecureUpload" />
+        </ListItem>
+        <ListItem button component={NavLink} to="/secureparagraph">
+          <ListItemIcon>
+            <Folder />
+          </ListItemIcon>
+          <ListItemText primary="SecureParagraph" />
         </ListItem>
       </List>
     </Drawer>

@@ -4,14 +4,15 @@ import { createStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'; // Pages
 
-import { Documents } from './components/Documents';
 import { Header } from './components/Header';
 import { Home } from './components/Home';
 import { Login } from './components/Login';
+import { SecureInputDemo } from './components/SecureInputDemo';
+import { SecureParagraphDemo } from './components/SecureParagraphDemo';
+import { SecureUploadDemo } from './components/SecureUploadDemo';
 import { SideMenu } from './components/SideMenu';
 import { Signup } from './components/Signup';
 import { Usage } from './components/Usage';
-import { User } from './components/User';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,8 +52,9 @@ export const DedicatedPassportReactApp = () => {
               <Route exact path="/login" component={Login} />
               <Route exact path="/usage" component={Usage} />
               <Route exact path="/signup" component={Signup} />
-              <Route exact path="/user" component={User} />
-              <Route exact path="/documents" component={Documents} />
+              <Route exact path="/secureinput" component={SecureInputDemo} />
+              <Route exact path="/secureupload" component={SecureUploadDemo} />
+              <Route exact path="/secureparagraph" component={SecureParagraphDemo} />
             </Switch>
           </main>
         </div>

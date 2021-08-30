@@ -13,7 +13,7 @@ import {
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
-import {ApiResponse, CurrentUserResponse, UserModel} from '../types';
+import { ApiResponse, CurrentUserResponse, UserModel } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -33,7 +33,7 @@ async function loadUser(setUser: React.Dispatch<any>, setError: React.Dispatch<R
   setError(data.error);
 }
 
-export const User: React.FunctionComponent = () => {
+export const UserInfo: React.FunctionComponent = () => {
   const classes = useStyles({});
 
   const [authError, setAuthError] = useState<string>('');
@@ -51,24 +51,38 @@ export const User: React.FunctionComponent = () => {
   }, []);
 
   const uploadFormData = async () => {
+    console.log('uploadformdata called');
     if (ssnToken === null) {
       setError('ssnToken is null');
       return;
     }
-
+    console.log('about to send axios request');
     const { data } = await axios.post<ApiResponse>(`/user/me`, {
       ssnToken: ssnToken,
     });
+    console.log('axios responded');
     if (!data.success) {
+      console.error('saving form data error ', data.error);
       setError(JSON.stringify(data.error));
       return;
     }
+    console.log('success saving form');
     setSaveSuccessful(true);
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     void uploadFormData();
+  };
+
+  const displaySavedResult = () => {
+    if (saveSuccessful) {
+      return <p color="green">Saved</p>;
+    }
+    if (saveSuccessful === false) {
+      return <p color="red">Failed to Save</p>;
+    }
+    return null;
   };
 
   if (!user) {
@@ -95,6 +109,7 @@ export const User: React.FunctionComponent = () => {
       ) : null}
       <Card>
         <CardHeader title={`User: ${user.username}`} />
+        {displaySavedResult()}
         <CardContent>
           <SecureForm name="secure-form-example" onSubmit={(e) => handleFormSubmit(e)}>
             <FormGroup className={classes.margin}>
@@ -108,7 +123,7 @@ export const User: React.FunctionComponent = () => {
                 type="ssn"
                 validator="SSN"
                 onValidate={(isValid) => ssnValidated(isValid)}
-                token={ssnToken || undefined}
+                token={user.ssn_token || undefined}
                 placeholder="XXX-XX-XXXX"
                 onChange={(e) => setSSNToken(e.target.value)}
               />

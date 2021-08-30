@@ -27,7 +27,7 @@ async function loadDocuments(
   setError(data.error);
 }
 
-export const SecureDocumentsForm: React.FunctionComponent = () => {
+export const SecureUploadDemo: React.FunctionComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const [saveSuccessful, setSaveSuccessful] = useState<boolean | null>(null);
   const [documents, setDocuments] = useState<string[]>([]);
@@ -99,7 +99,7 @@ export const SecureDocumentsForm: React.FunctionComponent = () => {
   );
 };
 
-export const Documents: React.FunctionComponent = () => {
+export const Upload: React.FunctionComponent = () => {
   // const [authError, setAuthError] = useState<string>('');
-  return <SecureDocumentsForm />;
+  return <SecureUploadDemo />;
 };

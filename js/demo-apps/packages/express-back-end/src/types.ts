@@ -1,5 +1,6 @@
 export interface UserModel {
   id: string;
   username: string;
-  ssnToken?: string;
+  display_name: string;
+  ssn_token?: string;
 }
