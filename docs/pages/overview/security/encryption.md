@@ -2,6 +2,7 @@
 id: "encryption"
 title: "Encryption"
 sidebar_label: "Encryption"
+sidebar_position: 2
 ---
 
 # How LunaSec Tokens are encrypted
