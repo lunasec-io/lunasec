@@ -5,12 +5,15 @@ import { GrantType, MetaData } from './generated';
 export const GrantTypeEnum = GrantType;
 
 export interface TokenizerClientConfig {
+  /** The address of the tokenizer backend */
   host: string;
+  /** The baseroute of the tokenizer backend, like /.lunasec/, defaults to nothing */
   baseRoute: string;
   metaEncoding: 'base64';
   headers: {
     auth: string;
   };
+  /** Used for when the tokenizer is running on the serverside and wants to authenticate itself */
   authenticationToken?: string;
 }
 

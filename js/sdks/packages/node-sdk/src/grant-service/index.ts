@@ -49,7 +49,6 @@ export class LunaSecGrantService {
   }
 
   // This private function handles the verifying of just one grant, and is used by the public function below
-
   private async verifyOneGrant(sessionId: string, tokenId: string, grantType: GrantTypeUnion) {
     const authenticationToken = await this.auth.createAuthenticationJWT('application', {});
 

@@ -4,35 +4,33 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
-
+    branches: [master]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # avoid warnings like "tput: No value for $TERM and no -T specified"
+      TERM: xterm
 
     steps:
     - uses: actions/checkout@v2
 
-    # Pull the latest image to build, and avoid caching pull-only images.
-    # (docker pull is faster than caching in most cases.)
-    - run: docker-compose pull
+    - name: logs
+      run: .github/print-docker-logs.sh
+      shell: bash
 
-    # In this step, this action saves a list of existing images,
-    # the cache is created without them in the post run.
-    # It also restores the cache if it exists.
-    - uses: satackey/action-docker-layer-caching@v0.0.11
-      # Ignore the failure of a step and avoid terminating the job.
-      continue-on-error: true
+    - name: Run e2e tests
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test
 
-    - name: Build the stack
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
+    - name: docker compose logs
+      run: docker-compose logs
 
-    # Finally, "Post Run satackey/action-docker-layer-caching@v0.0.11",
-    # which is the process of saving the cache, will be executed.
+    - uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: cypress-recording
+        path: js/demo-apps/packages/react-front-end/cypress/videos/basic_integration_spec.js.mp4

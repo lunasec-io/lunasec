@@ -26,7 +26,7 @@ type tokenizerController struct {
 }
 
 type tokenizerControllerConfig struct {
-	CustomerTokenSecret string `yaml:"customer_token_secret"`
+	ApplicationTokenSecret string `yaml:"application_token_secret"`
 }
 
 type TokenizerController interface {
@@ -93,7 +93,7 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	url, headers, err := s.tokenizer.TokenizerGet(s.CustomerTokenSecret, types.Token(input.TokenID))
+	url, headers, err := s.tokenizer.TokenizerGet(s.ApplicationTokenSecret, types.Token(input.TokenID))
 	if err != nil {
 		statusCode := 500
 		// TODO: Make this error message a constant
@@ -128,7 +128,7 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	tokenID, url, headers, err := s.tokenizer.TokenizerSet(s.CustomerTokenSecret)
+	tokenID, url, headers, err := s.tokenizer.TokenizerSet(s.ApplicationTokenSecret)
 	if err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return

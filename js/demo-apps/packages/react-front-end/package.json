@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.3.20",
-    "@lunasec/js-sdk": "^1.0.0",
     "@lunasec/react-sdk": "^1.0.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -15,7 +14,6 @@
     "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
-    "jest": "26.6.0",
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-config-standard": "^16.0.2",
@@ -28,6 +26,7 @@
     "eslint-plugin-react": "^7.23.2",
     "graphql-tag": "^2.12.5",
     "husky": "^6.0.0",
+    "jest": "26.6.0",
     "lerna": "^3.22.1",
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
@@ -38,10 +37,14 @@
     "typescript": "^4.2.3",
     "web-vitals": "^1.0.1"
   },
+  "devDependencies": {
+    "cypress": "^8.3.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:e2e": "cypress run",
     "eject": "react-scripts eject",
     "prettier": "prettier \"*.{js,json,yml,md}\" \"src/**/*\"",
     "format": "npm run lint -- --fix",
@@ -71,4 +74,5 @@
       "last 1 safari version"
     ]
   }
+
 }
