@@ -7,7 +7,8 @@ import {
   UnknownFrameMessage,
 } from '@lunasec/browser-common';
 
-type tokenCallback = () => Promise<string | void>;
+// returns an empty string if the field is empty, so be careful with boolean coercion like `if(token)`
+type tokenCallback = () => Promise<string | null>;
 
 export class iFrameRPC {
   origin: string;
@@ -37,7 +38,7 @@ export class iFrameRPC {
     window.parent.postMessage(JSON.stringify(message), this.origin);
   }
 
-  respondWithTokenizedValue(rawMessage: UnknownFrameMessage, token: string | void): void {
+  respondWithTokenizedValue(rawMessage: UnknownFrameMessage, token: string | null) {
     const message = this.createMessageToFrame('ReceiveCommittedToken', rawMessage.correlationToken, () => {
       if (!token && token !== '') {
         return {
@@ -57,7 +58,7 @@ export class iFrameRPC {
   }
 
   // Just tell the outside app that we got the message, kind of boilerplate
-  respondAttributesReceived(rawMessage: UnknownFrameMessage): void {
+  respondAttributesReceived(rawMessage: UnknownFrameMessage) {
     const message = this.createMessageToFrame('ReceiveAttributesConfirmation', rawMessage.correlationToken, () => {
       return {
         success: true,
