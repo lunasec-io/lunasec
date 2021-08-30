@@ -28,7 +28,7 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
  */
 export interface DetokenizeRequest {
     /**
-     * Needs to be a UUID.
+     * The tokenID you want to decode.
      * @type {string}
      * @memberof DetokenizeRequest
      */
@@ -117,7 +117,7 @@ export interface ErrorResponseError {
  */
 export interface FileMeta {
     /**
-     * 
+     * An object containing any fields you wish.  It is your responsibility to maintain backwards compatibility of this data.
      * @type {object}
      * @memberof FileMeta
      */
@@ -173,7 +173,7 @@ export interface FileMetaFileinfo {
  */
 export interface GetMetadataRequest {
     /**
-     * Needs to be a UUID.
+     * 
      * @type {string}
      * @memberof GetMetadataRequest
      */
@@ -224,6 +224,7 @@ export enum GrantType {
 
 /**
  * @type MetaData
+ * The metadata set for the token.  Metadata is immutable once the token is created.  DataType must be set to tell if it is a string or a file that is tokenized.
  * @export
  */
 export type MetaData = FileMeta | StringMeta;
@@ -279,7 +280,7 @@ export interface SetGrantResponse {
  */
 export interface StringMeta {
     /**
-     * 
+     * An object containing any fields you wish.  It is your responsibility to maintain backwards compatibility of this data.
      * @type {object}
      * @memberof StringMeta
      */
@@ -414,7 +415,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     return {
         /**
          * 
-         * @summary Get an S3 signed download URL for a token
+         * @summary Detokenize
          * @param {DetokenizeRequest} detokenizeRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -450,7 +451,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @summary Get an S3 signed download URL for a token
+         * @summary Get Metadata
          * @param {GetMetadataRequest} getMetadataRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -486,7 +487,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @summary Create a grant for a token, of type store or read
+         * @summary Create Grant
          * @param {SetGrantRequest} setGrantRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -522,7 +523,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @summary Submit metadata about a token that was uploaded to s3
+         * @summary Tokenize
          * @param {TokenizeRequest} tokenizeRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -558,7 +559,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @summary Get an S3 signed download URL for a token
+         * @summary Verify Grant
          * @param {VerifyGrantRequest} verifyGrantRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -604,7 +605,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Get an S3 signed download URL for a token
+         * @summary Detokenize
          * @param {DetokenizeRequest} detokenizeRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -615,7 +616,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get an S3 signed download URL for a token
+         * @summary Get Metadata
          * @param {GetMetadataRequest} getMetadataRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -626,7 +627,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Create a grant for a token, of type store or read
+         * @summary Create Grant
          * @param {SetGrantRequest} setGrantRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -637,7 +638,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Submit metadata about a token that was uploaded to s3
+         * @summary Tokenize
          * @param {TokenizeRequest} tokenizeRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -648,7 +649,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get an S3 signed download URL for a token
+         * @summary Verify Grant
          * @param {VerifyGrantRequest} verifyGrantRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -669,7 +670,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 
-         * @summary Get an S3 signed download URL for a token
+         * @summary Detokenize
          * @param {DetokenizeRequest} detokenizeRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -679,7 +680,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @summary Get an S3 signed download URL for a token
+         * @summary Get Metadata
          * @param {GetMetadataRequest} getMetadataRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -689,7 +690,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @summary Create a grant for a token, of type store or read
+         * @summary Create Grant
          * @param {SetGrantRequest} setGrantRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -699,7 +700,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @summary Submit metadata about a token that was uploaded to s3
+         * @summary Tokenize
          * @param {TokenizeRequest} tokenizeRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -709,7 +710,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @summary Get an S3 signed download URL for a token
+         * @summary Verify Grant
          * @param {VerifyGrantRequest} verifyGrantRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -729,7 +730,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
 export class DefaultApi extends BaseAPI {
     /**
      * 
-     * @summary Get an S3 signed download URL for a token
+     * @summary Detokenize
      * @param {DetokenizeRequest} detokenizeRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -741,7 +742,7 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @summary Get an S3 signed download URL for a token
+     * @summary Get Metadata
      * @param {GetMetadataRequest} getMetadataRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -753,7 +754,7 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @summary Create a grant for a token, of type store or read
+     * @summary Create Grant
      * @param {SetGrantRequest} setGrantRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -765,7 +766,7 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @summary Submit metadata about a token that was uploaded to s3
+     * @summary Tokenize
      * @param {TokenizeRequest} tokenizeRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -777,7 +778,7 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @summary Get an S3 signed download URL for a token
+     * @summary Verify Grant
      * @param {VerifyGrantRequest} verifyGrantRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -785,6 +786,465 @@ export class DefaultApi extends BaseAPI {
      */
     public verifyGrant(verifyGrantRequest: VerifyGrantRequest, options?: any) {
         return DefaultApiFp(this.configuration).verifyGrant(verifyGrantRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * GrantsApi - axios parameter creator
+ * @export
+ */
+export const GrantsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Create Grant
+         * @param {SetGrantRequest} setGrantRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setGrant: async (setGrantRequest: SetGrantRequest, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'setGrantRequest' is not null or undefined
+            assertParamExists('setGrant', 'setGrantRequest', setGrantRequest)
+            const localVarPath = `/grant/set`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setGrantRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Verify Grant
+         * @param {VerifyGrantRequest} verifyGrantRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        verifyGrant: async (verifyGrantRequest: VerifyGrantRequest, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'verifyGrantRequest' is not null or undefined
+            assertParamExists('verifyGrant', 'verifyGrantRequest', verifyGrantRequest)
+            const localVarPath = `/grant/verify`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(verifyGrantRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * GrantsApi - functional programming interface
+ * @export
+ */
+export const GrantsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = GrantsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Create Grant
+         * @param {SetGrantRequest} setGrantRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async setGrant(setGrantRequest: SetGrantRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SetGrantResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.setGrant(setGrantRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Verify Grant
+         * @param {VerifyGrantRequest} verifyGrantRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async verifyGrant(verifyGrantRequest: VerifyGrantRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VerifyGrantResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.verifyGrant(verifyGrantRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * GrantsApi - factory interface
+ * @export
+ */
+export const GrantsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = GrantsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Create Grant
+         * @param {SetGrantRequest} setGrantRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setGrant(setGrantRequest: SetGrantRequest, options?: any): AxiosPromise<SetGrantResponse> {
+            return localVarFp.setGrant(setGrantRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Verify Grant
+         * @param {VerifyGrantRequest} verifyGrantRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        verifyGrant(verifyGrantRequest: VerifyGrantRequest, options?: any): AxiosPromise<VerifyGrantResponse> {
+            return localVarFp.verifyGrant(verifyGrantRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * GrantsApi - object-oriented interface
+ * @export
+ * @class GrantsApi
+ * @extends {BaseAPI}
+ */
+export class GrantsApi extends BaseAPI {
+    /**
+     * 
+     * @summary Create Grant
+     * @param {SetGrantRequest} setGrantRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GrantsApi
+     */
+    public setGrant(setGrantRequest: SetGrantRequest, options?: any) {
+        return GrantsApiFp(this.configuration).setGrant(setGrantRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Verify Grant
+     * @param {VerifyGrantRequest} verifyGrantRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GrantsApi
+     */
+    public verifyGrant(verifyGrantRequest: VerifyGrantRequest, options?: any) {
+        return GrantsApiFp(this.configuration).verifyGrant(verifyGrantRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * MetadataApi - axios parameter creator
+ * @export
+ */
+export const MetadataApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get Metadata
+         * @param {GetMetadataRequest} getMetadataRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMetaData: async (getMetadataRequest: GetMetadataRequest, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getMetadataRequest' is not null or undefined
+            assertParamExists('getMetaData', 'getMetadataRequest', getMetadataRequest)
+            const localVarPath = `/metadata/get`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getMetadataRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * MetadataApi - functional programming interface
+ * @export
+ */
+export const MetadataApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = MetadataApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get Metadata
+         * @param {GetMetadataRequest} getMetadataRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMetaData(getMetadataRequest: GetMetadataRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetMetadataResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMetaData(getMetadataRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * MetadataApi - factory interface
+ * @export
+ */
+export const MetadataApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = MetadataApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get Metadata
+         * @param {GetMetadataRequest} getMetadataRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMetaData(getMetadataRequest: GetMetadataRequest, options?: any): AxiosPromise<GetMetadataResponse> {
+            return localVarFp.getMetaData(getMetadataRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * MetadataApi - object-oriented interface
+ * @export
+ * @class MetadataApi
+ * @extends {BaseAPI}
+ */
+export class MetadataApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get Metadata
+     * @param {GetMetadataRequest} getMetadataRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MetadataApi
+     */
+    public getMetaData(getMetadataRequest: GetMetadataRequest, options?: any) {
+        return MetadataApiFp(this.configuration).getMetaData(getMetadataRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * TokensApi - axios parameter creator
+ * @export
+ */
+export const TokensApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Detokenize
+         * @param {DetokenizeRequest} detokenizeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        detokenize: async (detokenizeRequest: DetokenizeRequest, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'detokenizeRequest' is not null or undefined
+            assertParamExists('detokenize', 'detokenizeRequest', detokenizeRequest)
+            const localVarPath = `/detokenize`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(detokenizeRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Tokenize
+         * @param {TokenizeRequest} tokenizeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        tokenize: async (tokenizeRequest: TokenizeRequest, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'tokenizeRequest' is not null or undefined
+            assertParamExists('tokenize', 'tokenizeRequest', tokenizeRequest)
+            const localVarPath = `/tokenize`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(tokenizeRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TokensApi - functional programming interface
+ * @export
+ */
+export const TokensApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TokensApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Detokenize
+         * @param {DetokenizeRequest} detokenizeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async detokenize(detokenizeRequest: DetokenizeRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DetokenizeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.detokenize(detokenizeRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Tokenize
+         * @param {TokenizeRequest} tokenizeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async tokenize(tokenizeRequest: TokenizeRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenizeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.tokenize(tokenizeRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * TokensApi - factory interface
+ * @export
+ */
+export const TokensApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TokensApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Detokenize
+         * @param {DetokenizeRequest} detokenizeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        detokenize(detokenizeRequest: DetokenizeRequest, options?: any): AxiosPromise<DetokenizeResponse> {
+            return localVarFp.detokenize(detokenizeRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Tokenize
+         * @param {TokenizeRequest} tokenizeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        tokenize(tokenizeRequest: TokenizeRequest, options?: any): AxiosPromise<TokenizeResponse> {
+            return localVarFp.tokenize(tokenizeRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TokensApi - object-oriented interface
+ * @export
+ * @class TokensApi
+ * @extends {BaseAPI}
+ */
+export class TokensApi extends BaseAPI {
+    /**
+     * 
+     * @summary Detokenize
+     * @param {DetokenizeRequest} detokenizeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TokensApi
+     */
+    public detokenize(detokenizeRequest: DetokenizeRequest, options?: any) {
+        return TokensApiFp(this.configuration).detokenize(detokenizeRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Tokenize
+     * @param {TokenizeRequest} tokenizeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TokensApi
+     */
+    public tokenize(tokenizeRequest: TokenizeRequest, options?: any) {
+        return TokensApiFp(this.configuration).tokenize(tokenizeRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

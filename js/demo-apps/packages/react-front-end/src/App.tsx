@@ -1,4 +1,3 @@
-import { downloadFile } from '@lunasec/js-sdk';
 import {
   LunaSecConfigContext,
   LunaSecError,
@@ -23,12 +22,14 @@ interface FormData {
 }
 
 interface IAppState {
+  loading: boolean;
   formData: FormData;
   authError: string | null;
   lunaSecErrors: string[];
 }
 
 const defaultState: IAppState = {
+  loading: true,
   formData: { files: [] },
   authError: null,
   lunaSecErrors: [],
@@ -43,7 +44,7 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   componentDidMount() {
-    void this.getFormDataFromDb();
+    void this.initPage();
   }
 
   handleTextAreaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -75,6 +76,18 @@ class App extends React.Component<Record<string, never>, IAppState> {
     });
     const resJson = await res.json();
     return resJson.data;
+  }
+
+  async initPage() {
+    const res = await fetch('http://localhost:3001/auth', {
+      credentials: 'include',
+    })
+    if (res.status === 401) {
+      window.location.href = 'http://localhost:3001/set-id-token'
+      return;
+    }
+    this.setState({loading: false})
+    await this.getFormDataFromDb()
   }
 
   async getFormDataFromDb() {
@@ -146,14 +159,6 @@ class App extends React.Component<Record<string, never>, IAppState> {
         </section>
         <section>
           <h3>Secure Download (vanilla js)</h3>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              downloadFile(this.lunaSecDomain, fileToken);
-            }}
-          >
-            Click to trigger download with JS
-          </button>
         </section>
       </>
     );
@@ -210,12 +215,19 @@ class App extends React.Component<Record<string, never>, IAppState> {
   }
 
   renderForm() {
+    if (this.state.loading) {
+      return (
+          <section>
+            <p>Loading...</p>
+          </section>
+      )
+    }
     return (
       <section>
         {this.renderAuthError()}
         {this.renderLunaSecErrors()}
         <h2>Secure Form</h2>
-        <SecureForm onSubmit={(e) => this.persistTokens(e)}>
+        <SecureForm name="secure-form-example" onSubmit={(e) => this.persistTokens(e)}>
           <SecureTextArea
             name="text-area"
             token={this.state.formData.text_area}

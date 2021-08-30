@@ -1,6 +1,9 @@
 tokenize:
   post:
-    summary: Submit metadata about a token that was uploaded to s3
+    tags:
+      - Tokens # Added these tags for the documentation generator but then the Tokenizer API generator
+      - Default # started splitting up the API based on the tags so added the "Default" tag to everything to rejoin them into one
+    summary: Tokenize
     operationId: tokenize
     requestBody:
       required: true
@@ -24,7 +27,10 @@ tokenize:
 
 detokenize:
   post:
-    summary: Get an S3 signed download URL for a token
+    tags:
+      - Tokens
+      - Default
+    summary: Detokenize
     operationId: detokenize
     requestBody:
       required: true

@@ -3,3 +3,5 @@ node_modules
 *.tsbuildinfo
 **/secrets.yaml
 *.log
+/docs/pages/node-sdk
+/docs/pages/tokenizer-sdk

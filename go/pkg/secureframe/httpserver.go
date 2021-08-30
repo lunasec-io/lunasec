@@ -22,7 +22,6 @@ type CorsConfig struct {
 }
 
 type AppConfig struct {
-	DisableAuth bool       `yaml:"disable_auth"`
 	Cors        CorsConfig `yaml:"cors"`
 }
 
@@ -62,9 +61,17 @@ func applyTokenizerRoutesWithAuth(
 ) {
 	authFunc := service.NewJwtHttpAuth(logger, authProviderJwtVerifier).WithJwtAuth
 
+	setContentType := func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			next.ServeHTTP(w, r)
+		}
+	}
+
 	tokenizerRoutes := tokenizer.GetRoutes(logger, provider, gateways)
 	for url, handlerConfig := range tokenizerRoutes {
-		sm.HandleFunc(url, authFunc(handlerConfig.AllowedSubjects, handlerConfig.Handler))
+		handler := setContentType(handlerConfig.Handler)
+		sm.HandleFunc(url, authFunc(handlerConfig.AllowedSubjects, handler))
 	}
 }
 
