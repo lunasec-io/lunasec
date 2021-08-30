@@ -10,7 +10,6 @@ import { getDb } from './db';
 
 export default async function configurePassport() {
   const db = await getDb();
-  console.log('DATABASE IS ', db);
   // Configure the local strategy for use by Passport.
   //
   // The local strategy requires a `verify` function which receives the credentials
@@ -38,7 +37,8 @@ export default async function configurePassport() {
               const user = {
                 id: row.id.toString(),
                 username: row.username,
-                displayName: row.name,
+                display_name: row.display_name,
+                ssn_token: row.ssn_token,
               };
               return done(null, user);
             });
@@ -54,15 +54,18 @@ export default async function configurePassport() {
   // typical implementation of this is as simple as supplying the user ID when
   // serializing, and querying the user record by ID from the database when
   // deserializing.
-  passport.serializeUser(function (u, cb) {
-    const user = u;
+  passport.serializeUser(function (user, cb) {
     cb(null, { id: user.id, username: user.username });
   });
 
   passport.deserializeUser(function (userInfo: { id: string }, cb) {
-    db.get('SELECT rowid AS id, username, name FROM users WHERE rowid = ?', [userInfo.id])
+    db.get('SELECT rowid AS id, username, display_name, ssn_token FROM users WHERE rowid = ?', [userInfo.id])
       .catch((err) => cb(err))
-      .then((user: UserModel) => {
+      .then((row) => {
+        const user = {
+          ...row,
+          id: row.id.toString(),
+        };
         cb(null, user);
       });
   });

@@ -47,11 +47,11 @@ export function authRouter() {
       }
 
       return db
-        .run('INSERT INTO users (username, hashed_password, salt, name) VALUES (?, ?, ?, ?)', [
+        .run('INSERT INTO users (username, hashed_password, salt, display_name) VALUES (?, ?, ?, ?)', [
           req.body.username,
           hashedPassword,
           salt,
-          req.body.name,
+          req.body.display_name,
         ])
         .then((result) => {
           if (!result.lastID) {
@@ -60,9 +60,9 @@ export function authRouter() {
           const user = {
             id: result.lastID.toString(),
             username: req.body.username,
-            displayName: req.body.name,
+            display_name: req.body.name,
           };
-          return req.login(user, function (err) {
+          return req.login(user, function (err: Error) {
             if (err) {
               return res.json({
                 success: false,

@@ -8,7 +8,7 @@ function initDb() {
     driver: sqlite3.Database,
   }).then(async (db) => {
     await db.migrate({
-      force: false, // wipe the database if true
+      force: false, // force remigrate if true.  You should usually just delete the db file instead to wipe db
       migrationsPath: __dirname + '/../migrations',
     });
     return db;

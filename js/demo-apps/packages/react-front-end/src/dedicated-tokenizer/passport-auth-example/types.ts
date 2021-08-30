@@ -1,8 +1,4 @@
-export interface UserModel {
-  id: string;
-  username: string;
-  ssnToken?: string;
-}
+import { UserModel } from '@lunasec/demo-back-end';
 
 export interface ApiResponse {
   success: boolean;
@@ -16,3 +12,5 @@ export interface CurrentUserResponse extends ApiResponse {
 export interface UserDocumentsResponse extends ApiResponse {
   documents: string[];
 }
+
+export type { UserModel };

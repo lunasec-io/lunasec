@@ -134,7 +134,6 @@ export const createRequestFunction = function (axiosArgs: RequestArgs, globalAxi
     return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
         const axiosRequestArgs = {...axiosArgs.options, url: (configuration?.basePath || basePath) + axiosArgs.url};
         const res = axios.request(axiosRequestArgs);
-        console.log('raw axios response is ', res)
         return res
     };
 }
