@@ -32,12 +32,13 @@ export class FailedJsonDeserializationError extends Error {
 }
 
 export class BadHttpResponseError extends Error {
-  readonly responseCode?: number;
+  readonly code?: number;
   readonly rawData!: string;
 
   constructor(responseCode: number | undefined, rawData: string) {
     super('Bad Http response received');
-    this.responseCode = responseCode;
+    this.name = 'httpError';
+    this.code = responseCode;
     this.rawData = rawData;
   }
 }

@@ -3,6 +3,7 @@ setgrant:
   post:
     tags:
       - Grants
+      - Default
     summary: Create Grant
     operationId: setGrant
     requestBody:
@@ -34,6 +35,7 @@ verifygrant:
   post:
     tags:
       - Grants
+      - Default
     summary: Verify Grant
     operationId: verifyGrant
     requestBody:

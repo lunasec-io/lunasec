@@ -12,5 +12,5 @@
     "esModuleInterop": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "references": [{ "path": "../server-common"}]
+  "references": [{ "path": "../server-common"},{ "path": "../isomorphic-common"}]
 }

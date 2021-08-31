@@ -1,7 +1,8 @@
 tokenize:
   post:
     tags:
-      - Tokens
+      - Tokens # Added these tags for the documentation generator but then the Tokenizer API generator
+      - Default # started splitting up the API based on the tags so added the "Default" tag to everything to rejoin them into one
     summary: Tokenize
     operationId: tokenize
     requestBody:
@@ -28,6 +29,7 @@ detokenize:
   post:
     tags:
       - Tokens
+      - Default
     summary: Detokenize
     operationId: detokenize
     requestBody:
