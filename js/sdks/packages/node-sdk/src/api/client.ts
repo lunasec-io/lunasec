@@ -52,7 +52,7 @@ export async function makeSecureApiRequest<
     return {
       success: false,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      error: e,
+      error: e as Error,
     };
   }
 }

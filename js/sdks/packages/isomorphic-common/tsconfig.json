@@ -8,9 +8,9 @@
       "es2017",
       "dom"
     ],
-    "types": ["node", "@types/jest"],
+    "types": ["node"],
     "esModuleInterop": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "references": [{ "path": "../server-common"},{ "path": "../isomorphic-common"}]
+  "references": [{ "path": "../server-common"}]
 }

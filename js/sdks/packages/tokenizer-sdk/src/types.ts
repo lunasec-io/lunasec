@@ -1,6 +1,7 @@
 export { MetaData } from './generated';
-import { GrantType, MetaData } from './generated';
+import { LunaSecError } from '@lunasec/isomorphic-common';
 
+import { GrantType, MetaData } from './generated';
 export const GrantTypeEnum = GrantType;
 
 export interface TokenizerClientConfig {
@@ -52,8 +53,7 @@ export interface TokenizerDetokenizeToUrlResponse {
 
 export interface TokenizerFailApiResponse {
   success: false;
-  error: Error;
-  errorCode?: 400 | 401 | 404 | 500;
+  error: LunaSecError;
 }
 
 export type SuccessOrFailOutput<S> = Promise<S | TokenizerFailApiResponse>;

@@ -6,17 +6,18 @@ import {
   safeParseJson,
   UnknownFrameMessage,
 } from '@lunasec/browser-common';
-import { Tokenizer } from '@lunasec/tokenizer-sdk';
 
-import { TokenizerClientConfig } from '../../../tokenizer-sdk/src';
+// returns an empty string if the field is empty, so be careful with boolean coercion like `if(token)`
+type tokenCallback = () => Promise<string | null>;
 
 export class iFrameRPC {
-  tokenizer: Tokenizer;
   origin: string;
+  getTokenFromFrame: tokenCallback;
 
-  constructor(origin: string, tokenizerConfig?: Partial<TokenizerClientConfig>) {
+  constructor(origin: string, getTokenFromFrame: tokenCallback) {
     this.origin = origin;
-    this.tokenizer = new Tokenizer(tokenizerConfig);
+
+    this.getTokenFromFrame = getTokenFromFrame;
   }
 
   createMessageToFrame<K extends keyof InboundFrameMessageMap>(
@@ -33,42 +34,13 @@ export class iFrameRPC {
     };
   }
 
-  async tokenizeField(): Promise<string | null> {
-    // TODO: this is brittle, move this into the secure-frame control logic
-    const secureInput = document.querySelector('.secure-input');
-
-    if (!secureInput) {
-      throw new Error('Unable to read value to tokenize');
-    }
-    const value = (secureInput as HTMLInputElement).value;
-    if (value.length > 0) {
-      const resp = await this.tokenizer.tokenize(value, { dataType: 'string' });
-
-      if (!resp.success) {
-        console.error('tokenizer error:', resp);
-        return null;
-      }
-      return resp.tokenId;
-    } else {
-      return '';
-    }
-  }
-
-  async detokenize(token: string) {
-    const resp = await this.tokenizer.detokenize(token);
-    if (!resp.success) {
-      throw resp.error;
-    }
-    return resp.value;
-  }
-
   sendMessageToParentFrame(message: UnknownFrameMessage | FrameNotification) {
     window.parent.postMessage(JSON.stringify(message), this.origin);
   }
 
-  respondWithTokenizedValue(rawMessage: UnknownFrameMessage, token: string | null): void {
+  respondWithTokenizedValue(rawMessage: UnknownFrameMessage, token: string | null) {
     const message = this.createMessageToFrame('ReceiveCommittedToken', rawMessage.correlationToken, () => {
-      if (token === null) {
+      if (!token && token !== '') {
         return {
           success: false,
           error: 'tokenizer failed to tokenize data',
@@ -86,7 +58,7 @@ export class iFrameRPC {
   }
 
   // Just tell the outside app that we got the message, kind of boilerplate
-  respondAttributesReceived(rawMessage: UnknownFrameMessage): void {
+  respondAttributesReceived(rawMessage: UnknownFrameMessage) {
     const message = this.createMessageToFrame('ReceiveAttributesConfirmation', rawMessage.correlationToken, () => {
       return {
         success: true,
@@ -99,8 +71,8 @@ export class iFrameRPC {
   async processMessage(rawMessage: UnknownFrameMessage, updateAttrCallback: (m: AttributesMessage) => any) {
     // TODO: Make this type safe (require every message to be handled)
     if (rawMessage.command === 'CommitToken') {
-      const serverResponse = await this.tokenizeField();
-      this.respondWithTokenizedValue(rawMessage, serverResponse);
+      const token = await this.getTokenFromFrame(); // This will send an error notification if there is any issue
+      this.respondWithTokenizedValue(rawMessage, token);
       return;
     }
     if (rawMessage.command === 'Attributes') {
