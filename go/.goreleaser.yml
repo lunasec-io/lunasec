@@ -22,7 +22,7 @@ dockers:
   - id: 'secure-frame'
     image_templates:
     - 'lunasec/secure-frame:{{ .Version }}'
-    dockerfile: ./docker/Dockerfile.secureframe
+    dockerfile: ./Dockerfile.secureframe
 archives:
   - replacements:
       darwin: Darwin
