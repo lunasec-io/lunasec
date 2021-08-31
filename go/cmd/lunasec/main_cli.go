@@ -3,19 +3,33 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/refinery-labs/loq/pkg/lunasec"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
+)
+
+const (
+	version = ""
+	commit = ""
+	date = ""
 )
 
 func main() {
 	log.SetFlags(log.Lshortfile)
 
+	cli.VersionPrinter = func(c *cli.Context) {
+		fmt.Printf("version=%s revision=%s date=%s\n", c.App.Version, commit, date)
+	}
+
 	app := &cli.App{
 		Name:  "lunasec",
+		Version: version,
+		Compiled: time.Now(),
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "config",
@@ -28,7 +42,7 @@ func main() {
 				Usage: "Build directory for built secure components.",
 			},
 		},
-		Commands: []cli.Command{
+		Commands: []*cli.Command{
 			{
 				Name:    "build",
 				Aliases: []string{"b"},

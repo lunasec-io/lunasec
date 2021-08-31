@@ -5,7 +5,7 @@ import (
 	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/service/lunasec"
 	"github.com/refinery-labs/loq/util"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
@@ -42,14 +42,14 @@ func BuildCommand(c *cli.Context) (err error) {
 	skipMirroring := c.Bool("skip-mirroring")
 	localDev := c.Bool("local")
 
-	configFile := c.GlobalString("config")
+	configFile := c.String("config")
 	provider, err := loadConfigFile(configFile)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	buildDir := c.GlobalString("dir")
+	buildDir := c.String("dir")
 	if buildDir == "" {
 		buildDir = lunasec.LunasecBuildDir
 	}
@@ -91,7 +91,7 @@ func DeployCommand(c *cli.Context) (err error) {
 	if configOutput == "" {
 		configOutput = "config/secureframe/"
 	}
-	configFile := c.GlobalString("config")
+	configFile := c.String("config")
 	provider, err := loadConfigFile(configFile)
 	if err != nil {
 		log.Println(err)
@@ -106,7 +106,7 @@ func DeployCommand(c *cli.Context) (err error) {
 		}
 	}
 
-	buildDir := c.GlobalString("dir")
+	buildDir := c.String("dir")
 	if buildDir == "" {
 		buildDir = lunasec.LunasecBuildDir
 	}
