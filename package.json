@@ -48,6 +48,6 @@
       "./js/demo-apps/packages/*",
       "./docs"
     ],
-    "nohoist": ["**/react-scripts", "**/jose"]
+    "nohoist": ["**/react-scripts", "**/jose", "**/babel-loader", "**/webpack"]
   }
 }

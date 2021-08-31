@@ -1,5 +1,5 @@
 
-# Tokenizer Front End SDK
+# LunaSec
 
 This monorepo holds the LunaSec SDKs, servers, and demo application.  Together, they are a toolkit that keeps data secure in the front and back end of web applications by replacing the sensitive fields in your database with **tokens** that represent them.
 
@@ -7,13 +7,18 @@ On the front end, cross-domain iFrames dubbed **Secure Frames** handle the creat
 
 ## Demo
 
-To run the demo application, run:
+To run the demo application, you will need to install docker and make sure it works without root(rootless).  On OSX, simply install
+docker for mac. 
+
+For arch, install docker and docker-rootless-extras-bin from AUR and follow the setup instructions printed in the install log to enable rootless.
+
+Then run this command from the project root directory to launch the entire system, including the demo app:
 
 ```shell
 COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
 ```
 
-Once running, go to `http://localhost:3000`
+Once running, go to `http://localhost:3000` to use the demo application.
 
 ## Components
 
