@@ -1,0 +1,47 @@
+Source code in this repository is variously licensed under one of the following licenses:
+- Apache License Version 2.0 ("Apache"),
+- An Apache compatible license,
+- Creative Commons Attribution-ShareAlike 4.0 International,
+- LunaSec Enterprise License ("Enterprise License").
+
+All source code should have information at the beginning of its respective file 
+which specifies its licensing information. Below are sections to provide 
+guidance about which licenses apply to which folders of this repository.
+
+## JavaScript/TypeScript Packages 
+This section provides guidance about JavaScript and TypeScript code under the "js" folder.
+
+* Outside of the "js/sdks/packages-enterprise" directory, source code in a given file is licensed
+  under the Apache License Version 2.0, unless otherwise noted (e.g., an Apache-compatible license).
+
+* Within the "js/sdks/packages-enterprise" folder, source code in a given file is licensed under the
+  LunaSec Enterprise License, unless otherwise noted.
+
+## Golang Packages
+This section provides guidance about Golang code under the "go" folder.
+
+* Outside of the "go/enterprise" directory, source code in a given file is licensed
+  under the Apache License Version 2.0, unless otherwise noted (e.g., an Apache-compatible license).
+
+* Within the "go/enterprise" folder, source code in a given file is licensed under the
+  LunaSec Enterprise License, unless otherwise noted.
+
+When built, separate binaries are generated for the Apache-licensed source code and the Enterprise-licensed source code.
+
+* The binaries that contain `-enterprise` in their name are licensed under the LunaSec Community License.
+
+## API Specification
+This section provides guidance about API Specification and related code under the "api-spec" folder.
+
+* Files within the "api-spec" are licenced under the Apache 2.0 License unless otherwise noted in the file.
+
+## Documentation
+This section provides guidance about Documentation and related code under the "docs" folder.
+
+* Files within the "docs" folder are licensed under the 
+  "Creative Commons Attribution-ShareAlike 4.0 International" license unless otherwise noted in the file.
+
+## All Other Files
+For any file not mentioned in a section above, files are licensed under the Apache 2.0 license 
+unless otherwise noted in a file. (eg, .github/ configs, docker-compose files, or other build-related files)
+
