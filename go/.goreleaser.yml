@@ -18,11 +18,6 @@ builds:
     goarch:
       - 386
       - arm64
-dockers:
-  - id: 'secure-frame'
-    image_templates:
-    - 'lunasec/secure-frame:{{ .Version }}'
-    dockerfile: ./Dockerfile.secureframe
 archives:
   - replacements:
       darwin: Darwin
