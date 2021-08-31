@@ -1,3 +1,5 @@
+import { LunaSecErrorProperties } from '@lunasec/isomorphic-common';
+
 import { ValidatorName } from '../types';
 
 export interface FrameMessage<K, T extends keyof K> {
@@ -96,10 +98,6 @@ export const OutboundToInboundMessageValueMap: OutboundMessageLookupType = {
 // FRAME NOTIFICATION TYPES START HERE
 // Frame notifications go from the frame to the outside app and don't receive a reply
 
-interface NotifyOnTokenData {
-  token: Array<string>;
-}
-
 interface BaseFrameNotification {
   frameNonce: string;
   correlationToken?: undefined; // Necessary because when Posts come in we don't know if they are a message or a notification
@@ -117,7 +115,9 @@ export interface NotifyOnStart extends BaseFrameNotification {
 
 export interface NotifyOnToken extends BaseFrameNotification {
   command: 'NotifyOnToken';
-  data: NotifyOnTokenData;
+  data: {
+    token: Array<string>;
+  };
 }
 
 export interface NotifyOnFullyLoaded extends BaseFrameNotification {
@@ -135,10 +135,16 @@ export interface NotifyOnSubmit extends BaseFrameNotification {
   data: Record<any, never>;
 }
 
+export interface NotifyOnError extends BaseFrameNotification {
+  command: 'NotifyOnError';
+  data: LunaSecErrorProperties;
+}
+
 export type FrameNotification =
   | NotifyOnBlur
   | NotifyOnStart
   | NotifyOnToken
   | NotifyOnFullyLoaded
   | NotifyOnSubmit
-  | NotifyOnValidate;
+  | NotifyOnValidate
+  | NotifyOnError;

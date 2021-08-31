@@ -3,13 +3,24 @@ ErrorResponse:
   properties:
     success:
       type: boolean
-    error: #human readable string
-      type: string
-    errorCode: #this is optional
-      type: number
+    error:
+      type: object
+      properties:
+        name:
+          type: string
+          description: machine parsable human readable short name
+        message:
+          type: string
+          description: human readable error thats safe to show the end user
+      required:
+        - name
+        - message
+      additionalProperties: false
   required:
-    - success
     - error
+    - success
+  additionalProperties: false
+
 SetGrantRequest:
   type: object
   properties:
@@ -49,11 +60,11 @@ GetMetadataRequest:
   properties:
     tokenId:
       type: string
-      description: Needs to be a UUID.
   required:
     - tokenId
   additionalProperties: false
 MetaData:
+  description: The metadata set for the token.  Metadata is immutable once the token is created.  DataType must be set to tell if it is a string or a file that is tokenized.
   oneOf:
     - "$ref": "#/StringMeta"
     - "$ref": "#/FileMeta"
@@ -68,6 +79,7 @@ StringMeta:
   properties:
     customFields:
       type: object
+      description: An object containing any fields you wish.  It is your responsibility to maintain backwards compatibility of this data.
     dataType:
       type: string
   required:
@@ -86,6 +98,7 @@ FileMeta:
   properties:
     customFields:
       type: object
+      description: An object containing any fields you wish.  It is your responsibility to maintain backwards compatibility of this data.
     dataType:
       type: string
     createdAt:
@@ -112,7 +125,7 @@ DetokenizeRequest:
   properties:
     tokenId:
       type: string
-      description: Needs to be a UUID.
+      description: The tokenID you want to decode.
   required:
     - tokenId
   additionalProperties: false

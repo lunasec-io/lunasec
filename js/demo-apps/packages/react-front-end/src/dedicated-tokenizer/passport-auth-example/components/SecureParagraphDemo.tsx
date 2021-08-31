@@ -71,7 +71,7 @@ export const SecureParagraphDemo: React.FunctionComponent = () => {
         <CardContent>
           <Typography>
             <p>Social Security Number:</p>
-            <SecureParagraph token={user.ssn_token} />
+            <SecureParagraph token={user.ssn_token} errorHandler={(e) => setError(e.message)} />
           </Typography>
         </CardContent>
       </Card>

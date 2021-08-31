@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "@lunasec/browser-common": "^1.0.0",
+    "@lunasec/isomorphic-common": "^1.0.0",
     "@types/styled-components": "^5.1.10",
     "classnames": "^2.3.1",
     "react": "^17.0.0",

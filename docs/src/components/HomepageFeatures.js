@@ -4,32 +4,35 @@ import styles from './HomepageFeatures.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
-    Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Designed For Developers',
+    Svg: require('../../static/img/60e63e8c40f27c7c73def81f_Online storage_Monochromatic.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Data security for your software that doesn't require having a PHD in cryptography.
+        Our libraries focus heavily on the Developer Experience to enable you to add security to your app <i>without</i> rewriting it from scratch.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Powerful Security Features',
+    Svg: require('../../static/img/60e63e8c40f27c84c0def803_Analytics process_Monochromatic.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Remove sensitive data from your database with tokenization,
+        centralize all of your sensitive authorization checks,
+        add end-to-end encryption from your front-end to your backend,
+        add zero-trust computation to your backend, and more.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
+    title: 'Designed by Security Engineers',
+    Svg: require('../../static/img/60e63e8c40f27c3024def81b_Information flow_Monochromatic.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        We built and designed LunaSec from years of working with developers to help build production software.
+        The LunaSec Stack is designed work alongside your code to make every line "Secure By Default"
+        and enable your software to ship _without_ being blocked by security reviews (or .
       </>
     ),
   },

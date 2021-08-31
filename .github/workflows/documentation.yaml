@@ -2,9 +2,15 @@ name: documentation
 
 on:
   pull_request:
-    branches: [documentation]
+    branches:
+    - version-*
+    tags:
+    - version-*
   push:
-    branches: [documentation]
+    branches:
+    - version-*
+    tags:
+    - version-*
 
 jobs:
   checks:
@@ -14,40 +20,82 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
-      - name: Test Build
+          node-version: '16'
+
+      # Speed up builds by caching node_modules
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Build repo
+        working-directory: js/sdks
         run: |
-          if [ -e yarn.lock ]; then
-            yarn install --frozen-lockfile
-          elif [ -e package-lock.json ]; then
-            npm ci
-          else
-            npm i
-          fi
-          npm run build
+          npx lerna bootstrap
+          npm run compile:production
+      - name: Install Dependencies
+        working-directory: docs/
+        run: yarn install
+#      - name: Set env.BRANCH
+#        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
+#      - name: Cut new docs for version branch
+#        run: yarn run docusaurus docs:version $BRANCH
+      - name: Test Build
+        working-directory: docs/
+        run: yarn run build
   gh-release:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    env:
+      LOCAL_FILES_TO_COPY: ./build/
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_S3_BUCKET: lunasec-docs/docs
+      AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '16'
+
+      # Speed up builds by caching node_modules
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
       - uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
-      - name: Release to GitHub Pages
-        env:
-          USE_SSH: true
-          GIT_USER: git
+      - name: Build repo
+        working-directory: js/sdks
         run: |
-          git config --global user.email "production-services@lunasec.io"
-          git config --global user.name "lunasec-production-services"
-          if [ -e yarn.lock ]; then
-            yarn install --frozen-lockfile
-          elif [ -e package-lock.json ]; then
-            npm ci
-          else
-            npm i
-          fi
-          npm run deploy
+          npx lerna bootstrap
+          npm run compile:production
+      - name: Install Dependencies
+        working-directory: docs/
+        run: yarn install
+#      - name: Set env.BRANCH
+#        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
+#      - name: Cut new docs for version branch
+#        run: yarn run docusaurus docs:version $BRANCH
+# TODO (cthompson) push commit with the version changes to master?
+      - name: Run Build
+        working-directory: docs/
+        run: yarn run build
+      - name: Copy to S3
+        run: ../.github/copy-docs-to-s3.sh
+        working-directory: docs/
+        shell: bash
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        if: always()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: Documentation Build ${{ job.status }}
+          SLACK_COLOR: ${{ job.status }}

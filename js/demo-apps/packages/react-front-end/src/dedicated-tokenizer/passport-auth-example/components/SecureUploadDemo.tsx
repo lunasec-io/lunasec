@@ -85,6 +85,7 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
                 onTokenChange={(tokens) => {
                   setDocuments(tokens);
                 }}
+                errorHandler={(e) => setError(e.message)}
               />
             </FormGroup>
             {error ? <FormHelperText>{error}</FormHelperText> : null}

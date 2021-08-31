@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@lunasec/browser-common": "^1.0.0",
+    "@lunasec/isomorphic-common": "^1.0.0",
     "axios": "^0.21.1",
     "react-dom": "^17.0.2"
   }
