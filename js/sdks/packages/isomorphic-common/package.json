@@ -7,7 +7,7 @@
   "module": "build/module/index.js",
   "scripts": {
     "clean": "rm -rf build",
-    "compile": "tsc ./tsconfig.json"
+    "compile": "tsc -p ./tsconfig.json"
   },
   "types": "build/main/index.d.ts",
   "author": "",
