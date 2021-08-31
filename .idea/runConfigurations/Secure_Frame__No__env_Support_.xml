@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Secure Frame (No .env Support)" type="GoApplicationRunConfiguration" factoryName="Go Application">
-    <module name="csp-test" />
+    <module name="lunasec-monorepo" />
     <working_directory value="$PROJECT_DIR$/go" />
     <go_parameters value="-tags dev -gcflags=&quot;-N -l&quot; -a -installsuffix cgo" />
     <envs>
