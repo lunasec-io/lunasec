@@ -5,8 +5,14 @@
   "description": "Secure frame SDK",
   "main": "index.js",
   "scripts": {
-    "watch": "tsc -b tsconfig.build.json -w"
+    "schema:copy": "cd ./packages/node-sdk && yarn schema:copy",
+    "schema:generate": "cd ./packages/tokenizer-sdk && yarn openapi:generate",
+    "watch": "yarn schema:copy && yarn schema:generate && tsc -b tsconfig.build.json -w",
+    "compile:production": "yarn schema:copy && yarn schema:generate && tsc -b tsconfig.build.json"
   },
   "author": "",
-  "license": "PROPRIETARY"
+  "license": "PROPRIETARY",
+  "devDependencies": {
+    "typescript": "^4.4.2"
+  }
 }

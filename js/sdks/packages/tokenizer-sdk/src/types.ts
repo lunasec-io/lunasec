@@ -1,15 +1,19 @@
 export { MetaData } from './generated';
-import { GrantType, MetaData } from './generated';
+import { LunaSecError } from '@lunasec/isomorphic-common';
 
+import { GrantType, MetaData } from './generated';
 export const GrantTypeEnum = GrantType;
 
 export interface TokenizerClientConfig {
+  /** The address of the tokenizer backend */
   host: string;
+  /** The baseroute of the tokenizer backend, like /.lunasec/, defaults to nothing */
   baseRoute: string;
   metaEncoding: 'base64';
   headers: {
     auth: string;
   };
+  /** Used for when the tokenizer is running on the serverside and wants to authenticate itself */
   authenticationToken?: string;
 }
 
@@ -49,8 +53,7 @@ export interface TokenizerDetokenizeToUrlResponse {
 
 export interface TokenizerFailApiResponse {
   success: false;
-  error: Error;
-  errorCode?: 400 | 401 | 404 | 500;
+  error: LunaSecError;
 }
 
 export type SuccessOrFailOutput<S> = Promise<S | TokenizerFailApiResponse>;

@@ -40,7 +40,8 @@
     "passport-json": "^1.2.0",
     "sql-template-strings": "^2.2.2",
     "sqlite": "^4.0.23",
-    "sqlite-tag": "^1.1.0"
+    "sqlite-tag": "^1.1.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.4",

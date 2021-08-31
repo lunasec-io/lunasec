@@ -36,7 +36,6 @@ async function loadUser(setUser: React.Dispatch<any>, setError: React.Dispatch<R
 export const SecureInputDemo: React.FunctionComponent = () => {
   const classes = useStyles({});
 
-  const [authError, setAuthError] = useState<string>('');
   const [saveSuccessful, setSaveSuccessful] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<UserModel | null>(null);
@@ -126,6 +125,7 @@ export const SecureInputDemo: React.FunctionComponent = () => {
                 token={user.ssn_token || undefined}
                 placeholder="XXX-XX-XXXX"
                 onChange={(e) => setSSNToken(e.target.value)}
+                errorHandler={(e) => setError(e.message)}
               />
             </FormGroup>
             <div className={classes.margin}>

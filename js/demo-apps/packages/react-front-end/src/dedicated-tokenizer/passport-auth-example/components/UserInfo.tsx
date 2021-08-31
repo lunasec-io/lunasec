@@ -126,6 +126,7 @@ export const UserInfo: React.FunctionComponent = () => {
                 token={user.ssn_token || undefined}
                 placeholder="XXX-XX-XXXX"
                 onChange={(e) => setSSNToken(e.target.value)}
+                errorHandler={(e) => setError(e.message)}
               />
             </FormGroup>
             <div className={classes.margin}>
