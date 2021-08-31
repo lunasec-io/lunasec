@@ -11,7 +11,7 @@ RUN npx lerna bootstrap
 WORKDIR /repo/js/sdks
 
 WORKDIR /repo/js/sdks/
-RUN npx tsc -b --verbose tsconfig.build.json
+RUN npx tsc -b tsconfig.build.json
 
 WORKDIR /repo
 

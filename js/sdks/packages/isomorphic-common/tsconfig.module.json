@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "target": "ES2017",
+    "outDir": "build/module",
+    "module": "esnext"
+  },
+  "references": [{ "path": "../server-common/tsconfig.module.json"}]
+}
