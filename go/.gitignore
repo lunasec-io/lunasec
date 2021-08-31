@@ -27,3 +27,5 @@ nohup.out
 cdk.out
 lunasec_build/
 lunasec_local_build/
+
+dist/
