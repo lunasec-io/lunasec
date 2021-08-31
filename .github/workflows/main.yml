@@ -30,7 +30,7 @@ jobs:
       run: docker-compose logs
 
     - uses: actions/upload-artifact@v2
-      if: ${{ always() }}
+      if: always()
       with:
         name: cypress-recording
         path: js/demo-apps/packages/react-front-end/cypress/videos/basic_integration_spec.js.mp4
