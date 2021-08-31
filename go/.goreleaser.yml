@@ -24,9 +24,9 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: '{{ replace .Version "version-" "" }}-SNAPSHOT-{{.ShortCommit}}'
+  name_template: '{{.Version}}-SNAPSHOT-{{.ShortCommit}}'
 release:
-  name_template: '{{.ProjectName}}-v{{ replace .Version "version-" "" }}'
+  name_template: '{{.ProjectName}}-v{{.Version}}'
 changelog:
   sort: asc
   filters:
