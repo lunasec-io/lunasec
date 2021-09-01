@@ -18,7 +18,7 @@ Before we accept any code contributions, LunaSec contributors need to sign the
 [Contributor License Agreement](https://cla-assistant.io/lunasec-io/lunasec-monorepo) (CLA). By signing 
 a CLA, we can ensure that the community is free and confident in its ability to use your contributions.
 
-## Getting and building TimescaleDB
+## Getting and building LunaSec 
 
 Please follow our README for 
 [instructions on developing from source](https://github.com/lunasec-io/lunasec-monorepo#how-to-launch-the-cluster-and-get-the-app-running).
