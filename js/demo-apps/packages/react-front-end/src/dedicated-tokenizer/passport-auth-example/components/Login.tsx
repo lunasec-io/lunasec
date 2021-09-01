@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useStoreActions } from '../store';
-import { ApiResponse, CurrentUserResponse } from '../types';
+import { CurrentUserResponse } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {

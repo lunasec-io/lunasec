@@ -2,7 +2,7 @@ import { LunaSecConfigContext } from '@lunasec/react-sdk';
 import { CssBaseline, makeStyles } from '@material-ui/core';
 import { createStyles, Theme } from '@material-ui/core/styles';
 import { StoreProvider } from 'easy-peasy';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'; // Pages
 
 import { Header } from './components/Header';
@@ -14,7 +14,7 @@ import { SecureUploadDemo } from './components/SecureUploadDemo';
 import { SideMenu } from './components/SideMenu';
 import { Signup } from './components/Signup';
 import { Usage } from './components/Usage';
-import { store } from './store';
+import { store, useStoreActions } from './store';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -1,11 +1,8 @@
-import { UserModel } from '@lunasec/demo-back-end/build/types';
-import { AppBar, Button, makeStyles, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, makeStyles, Toolbar, Typography } from '@material-ui/core';
 import { createStyles, Theme } from '@material-ui/core/styles';
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
-import { useStoreState } from '../store';
-import { CurrentUserResponse } from '../types';
+import { useStoreActions, useStoreState } from '../store';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,6 +18,11 @@ const useStyles = makeStyles((theme: Theme) =>
 export const Header: React.FunctionComponent = () => {
   const classes = useStyles({});
   const user = useStoreState((state) => state.user);
+
+  const loadUser = useStoreActions((actions) => actions.loadUser);
+  useEffect(() => {
+    loadUser();
+  }, []);
 
   const showLoggedInStatus = () => {
     if (user) {
