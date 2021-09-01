@@ -133,3 +133,8 @@ Please email us directly via opensource@lunasec.io
 Or open a new thread under [GitHub Discussions](https://github.com/lunasec-io/lunasec-monorepo/discussions).
 
 We're happy to have your help as a part of our community. Thank you!
+
+## References
+This file was forked from TimescaleDB's 
+[contributors](https://github.com/timescale/timescaledb/blob/master/CONTRIBUTING.md) document. 
+A special thank you to them!
