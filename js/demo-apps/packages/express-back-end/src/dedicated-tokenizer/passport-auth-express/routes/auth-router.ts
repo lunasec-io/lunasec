@@ -25,6 +25,7 @@ export function authRouter() {
         }
         return res.json({
           success: true,
+          user: user,
         });
       });
     })(req, res, next);

@@ -1,16 +1,28 @@
 import { UserModel } from '@lunasec/demo-back-end';
 
-export interface ApiResponse {
-  success: boolean;
+export interface SuccessApiResponse {
+  success: true;
+}
+
+export interface FailApiResponse {
+  success: false;
   error: string;
 }
 
-export interface CurrentUserResponse extends ApiResponse {
+export type ApiResponse = SuccessApiResponse | FailApiResponse;
+
+interface CurrentUserSuccess {
+  success: true;
   user: UserModel;
 }
 
-export interface UserDocumentsResponse extends ApiResponse {
+export type CurrentUserResponse = CurrentUserSuccess | FailApiResponse;
+
+interface UserDocumentsSuccess {
+  success: true;
   documents: string[];
 }
+
+export type UserDocumentsResponse = UserDocumentsSuccess | FailApiResponse;
 
 export type { UserModel };

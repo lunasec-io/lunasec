@@ -5,8 +5,7 @@ CREATE TABLE users (
     hashed_password BLOB,
     salt BLOB,
     display_name TEXT,
-    ssn_token TEXT,
-
+    ssn_token TEXT
 );
 
 INSERT INTO users VALUES(
