@@ -42,7 +42,7 @@ By directly storing this information in your database, without any encryption, y
 Any single security issue that results in your database being exposed is now, by default, exposing sensitive customer data.
 
 Examples of possible security issues:
-- An SQL injection attack,
+- Any SQL injection attack,
 - Misconfigured database access,
 - Database backups are stolen,
 - A malicious library is added,
