@@ -50,14 +50,12 @@ code style as closely as possible.
     * Run the [test suite](#testing) and make sure everything passes.
 
     * When committing, be sure to write good commit messages according to [these
-      seven rules](https://chris.beams.io/posts/git-commit/#seven-rules). Doing
-      `git commit` prints a message if any of the rules is violated.
-      Stylistically,
-      we use commit message titles in the imperative tense, e.g., `Add
-      merge-append query optimization for time aggregate`.  In the case of
+      seven rules](https://chris.beams.io/posts/git-commit/#seven-rules). 
+      Stylistically, we use commit message titles in the imperative tense, e.g., 
+      `Add merge-append query optimization for time aggregate`. In the case of
       non-trivial changes, include a longer description in the commit message
-      body explaining and detailing the changes.  That is, a commit message
-      should have a short title, followed by a empty line, and then
+      body explaining and detailing the changes. That is, a commit message
+      should have a short title, followed by an empty line, and then
       followed by the longer description.
 
     * When committing, link which GitHub issue of [this
