@@ -100,10 +100,10 @@ export class LunaSecExpressAuthPlugin {
       keys: [
         {
           ...jwkConfig,
-          kid: 'lunasec-signing-key'
-        }
-      ]
-    }
+          kid: 'lunasec-signing-key',
+        },
+      ],
+    };
     res.json(keys).status(200);
   }
 

@@ -103,6 +103,6 @@ export class SimpleTokenizerBackend {
     if (!this.config.awsCredentials && !this.config.getAwsCredentials) {
       throw new Error('Must set credentials or getAwsCredentials');
     }
-    registerExpressMiddleware(app, this);
+    registerExpressMiddleware(app, this); // This pattern works but it would probably make more sense to have this class beneath the middleware instead of on top
   }
 }

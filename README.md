@@ -65,7 +65,12 @@ to make this all possible. If this is exciting for you, please throw us a GitHub
 developer-feedback at lunasec dot io -- We'd love to hear from you!
 
 ## Try our Demo App
-To run the demo application, just clone this repo and run it with Docker Compose:
+To run the demo application, you will need to install docker and make sure it works without root(rootless).  On OSX, simply install
+docker for mac. 
+
+For arch, install docker and docker-rootless-extras-bin from AUR and follow the setup instructions printed in the install log to enable rootless.
+
+Then run this command from the project root directory to launch the entire system, including the demo app:
 
 ```shell
 git clone git@github.com:lunasec-io/lunasec-monorepo.git
@@ -73,7 +78,7 @@ cd lunasec-monorepo
 COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
 ```
 
-Once running, go to `http://localhost:3000`.
+Once running, go to `http://localhost:3000` to use the demo application.
 
 ## Monorepo Components
 All of our code lives in a handful of top level folders. We've split code up by language and purpose.

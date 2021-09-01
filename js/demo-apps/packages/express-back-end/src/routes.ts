@@ -1,7 +1,8 @@
-import {Router} from 'express'
-import {randomUUID} from "crypto";
+import { Router } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+
 import { lunaSec } from './configure-lunasec';
-import {readSessionFromRequest} from "./read-session-from-request";
+import { readSessionFromRequest } from './read-session-from-request';
 const routes = Router();
 
 // (forrest) Leaving the secure resolver stuff commented out until chris gets a chance to take another pass at it
@@ -25,14 +26,14 @@ export function createRoutes() {
   routes.get('/set-id-token', async function (_, res) {
     const id_token = await lunaSec.auth.createAuthenticationJWT('user', {
       session: {
-        id: randomUUID()
-      }
+        id: uuidv4(),
+      },
     });
-    res.cookie('id_token', id_token.toString())
-    res.redirect('back')
+    res.cookie('id_token', id_token.toString());
+    res.redirect('back');
   });
 
-  routes.get('/', async (_req, res) => {
+  routes.get('/', (_req, res) => {
     res.end();
   });
 

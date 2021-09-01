@@ -10,6 +10,7 @@ import {
   triggerBlur,
   triggerFocus,
 } from '@lunasec/browser-common';
+import { LunaSecError } from '@lunasec/isomorphic-common';
 import classnames from 'classnames';
 import React, { Component, CSSProperties, RefObject } from 'react';
 import styled from 'styled-components';
@@ -83,6 +84,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     constructor(props: WrapperPropsWithProviders<W>) {
       super(props);
       this.throwIfLunaSecConfigNotSet();
+      this.throwIfErrorHandlerNotSet();
       this.frameId = generateSecureNonce();
       this.frameRef = React.createRef();
       this.dummyRef = React.createRef();
@@ -112,6 +114,14 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       if (this.props.lunaSecConfigContext.lunaSecDomain.length === 0) {
         throw new Error(
           'LunaSecConfigContext Provider must be registered around any LunaSec components.  You probably want to include it at the top level in your app.tsx'
+        );
+      }
+    }
+
+    throwIfErrorHandlerNotSet() {
+      if (!this.props.errorHandler || typeof this.props.errorHandler !== 'function') {
+        throw new Error(
+          'Error handler must be set for all LunaSec Components.  Pass the errorHandler prop to your secure component with a function to handle errors'
         );
       }
     }
@@ -278,6 +288,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         case 'NotifyOnSubmit':
           this.formContext.submit();
           break;
+        case 'NotifyOnError':
+          this.props.errorHandler(new LunaSecError(notification.data)); // Call the application's provided error handler
+          break;
       }
     }
 
@@ -418,8 +431,16 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       };
 
       // clean out our lunasec props so they dont get passed into the wrapped component as html params
-      const { token, onTokenChange, onValidate, validator, formContext, lunaSecConfigContext, ...scrubbedProps } =
-        this.props;
+      const {
+        token,
+        onTokenChange,
+        onValidate,
+        validator,
+        formContext,
+        lunaSecConfigContext,
+        errorHandler,
+        ...scrubbedProps
+      } = this.props;
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {

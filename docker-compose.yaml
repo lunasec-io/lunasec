@@ -102,7 +102,7 @@ services:
     depends_on:
       proxy:
         condition: service_healthy
-  secureframe:
+  secureframe: # This is the tokenizer GO server
     hostname: secureframe
     env_file:
       - .env.dev
