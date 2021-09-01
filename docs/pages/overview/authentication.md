@@ -2,6 +2,7 @@
 id: "authentication"
 title: "Authentication"
 sidebar_label: "Authentication"
+sidebar_position: 5
 ---
 
 # Authentication and Session Management

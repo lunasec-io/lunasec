@@ -2,6 +2,7 @@
 id: "features"
 title: "Features"
 sidebar_label: "Features"
+sidebar_position: 2
 ---
 
 # Core Features
