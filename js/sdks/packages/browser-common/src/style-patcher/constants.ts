@@ -46,10 +46,12 @@ export const VOID_ELEMENTS: SupportedElementTagName[] = [
 export const PARENT_ELEMENT_STYLE_ATTRIBUTES = [
   'align-self',
   'block-size',
+  'bottom',
   'flex',
   'flex-grow',
   'flex-shrink',
   'height',
+  'left',
   'max-block-size',
   'max-height',
   'max-inline-size',
@@ -65,6 +67,9 @@ export const PARENT_ELEMENT_STYLE_ATTRIBUTES = [
   'margin-top',
   'min-height',
   'min-width',
+  'position',
+  'right',
+  'top',
   'vertical-align',
   'width',
 ];
