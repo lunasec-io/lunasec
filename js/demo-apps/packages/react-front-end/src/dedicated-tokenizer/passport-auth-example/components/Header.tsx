@@ -4,6 +4,7 @@ import { createStyles, Theme } from '@material-ui/core/styles';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
+import { useStoreState } from '../store';
 import { CurrentUserResponse } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -19,20 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Header: React.FunctionComponent = () => {
   const classes = useStyles({});
-
-  const [user, setUser] = useState<UserModel | null>(null);
-
-  async function loadUser() {
-    const { data } = await axios.get<CurrentUserResponse>(`/user/me`);
-    if (data.success) {
-      setUser(data.user);
-      return;
-    }
-  }
-
-  useEffect(() => {
-    void loadUser(); // does this only once
-  }, []);
+  const user = useStoreState((state) => state.user);
 
   const showLoggedInStatus = () => {
     if (user) {

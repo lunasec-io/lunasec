@@ -8,6 +8,7 @@ import {
   FormLabel,
   Grid,
   makeStyles,
+  TextField,
   Typography,
 } from '@material-ui/core';
 import axios from 'axios';
@@ -39,11 +40,8 @@ export const SecureInputDemo: React.FunctionComponent = () => {
   const [saveSuccessful, setSaveSuccessful] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<UserModel | null>(null);
-  const [ssnToken, setSSNToken] = useState<string | null>(null);
-
-  const ssnValidated = (isValid: boolean) => {
-    console.log(`ssn is valid? ${isValid.toString()}`);
-  };
+  const [ssnToken, setSsnToken] = useState<string | null>(null);
+  const [ssnValid, setSsnValid] = useState<boolean>(true);
 
   useEffect(() => {
     void loadUser(setUser, setError); // does this only once
@@ -71,7 +69,9 @@ export const SecureInputDemo: React.FunctionComponent = () => {
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    void uploadFormData();
+    if (ssnValid) {
+      void uploadFormData();
+    }
   };
 
   const displaySavedResult = () => {
@@ -96,6 +96,21 @@ export const SecureInputDemo: React.FunctionComponent = () => {
     );
   }
 
+  // These props are predefined like this to preserve the strong typing.
+  // We are being fancy here and passing these into MaterialUi,
+  // but if you want to use SecureInput directly just pass these directly into it
+  const secureInputProps: React.ComponentProps<typeof SecureInput> = {
+    id: 'ssn-token-input',
+    name: 'ssn',
+    type: 'ssn',
+    validator: 'SSN',
+    onValidate: (isValid: boolean) => setSsnValid(isValid),
+    token: user.ssn_token || undefined,
+    placeholder: 'XXX-XX-XXXX',
+    onChange: (e) => setSsnToken(e.target.value),
+    errorHandler: (e) => setError(e.message),
+  };
+
   return (
     <Grid item xs={12}>
       {error !== null ? (
@@ -116,17 +131,18 @@ export const SecureInputDemo: React.FunctionComponent = () => {
             </FormGroup>
             <FormGroup className={classes.margin}>
               <FormLabel htmlFor="ssn-token-input">Social Security Number</FormLabel>
-              <SecureInput
-                id="ssn-token-input"
-                name="ssn"
-                type="ssn"
-                validator="SSN"
-                onValidate={(isValid) => ssnValidated(isValid)}
-                token={user.ssn_token || undefined}
-                placeholder="XXX-XX-XXXX"
-                onChange={(e) => setSSNToken(e.target.value)}
-                errorHandler={(e) => setError(e.message)}
-              />
+              {/* Here we are using Material with the LunaSec Secure Input instead of using SecureInput directly.  Experimental */}
+              <TextField
+                error={!ssnValid}
+                helperText={ssnValid ? '' : 'Invalid Format'}
+                variant="outlined"
+                InputProps={{
+                  /*
+                  // @ts-ignore */
+                  inputComponent: SecureInput,
+                  inputProps: secureInputProps,
+                }}
+              ></TextField>
             </FormGroup>
             <div className={classes.margin}>
               <Button variant="outlined" color="primary" style={{ textTransform: 'none' }} type="submit">
