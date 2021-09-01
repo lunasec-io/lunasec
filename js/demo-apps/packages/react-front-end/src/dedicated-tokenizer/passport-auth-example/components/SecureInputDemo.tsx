@@ -136,6 +136,7 @@ export const SecureInputDemo: React.FunctionComponent = () => {
                 error={!ssnValid}
                 helperText={ssnValid ? '' : 'Invalid Format'}
                 variant="outlined"
+                // label="Doesnt work well" Labels don't work quite right yet
                 InputProps={{
                   /*
                   // @ts-ignore */

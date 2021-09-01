@@ -8,7 +8,7 @@ interface StoreModel {
   loggedIn: Computed<StoreModel, boolean>;
   setUser: Action<StoreModel, User>;
   saveUser: Thunk<StoreModel, { ssnToken: string }>;
-  getUser: Thunk<StoreModel>;
+  loadUser: Thunk<StoreModel>;
 }
 
 export const store = createStore<StoreModel>({
@@ -21,7 +21,7 @@ export const store = createStore<StoreModel>({
     const { data } = await axios.post<ApiResponse>(`/user/me`, payload);
     return data;
   }),
-  getUser: thunk(async (state) => {
+  loadUser: thunk(async (state) => {
     const { data } = await axios.get<CurrentUserResponse>(`/user/me`);
     if (data.success) {
       state.setUser(data.user);

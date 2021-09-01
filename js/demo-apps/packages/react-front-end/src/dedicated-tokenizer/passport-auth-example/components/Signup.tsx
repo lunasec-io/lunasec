@@ -3,7 +3,8 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { ApiResponse } from '../types';
+import { useStoreActions } from '../store';
+import { CurrentUserResponse } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -16,18 +17,19 @@ const useStyles = makeStyles((theme) => ({
 
 export const Signup: React.FunctionComponent = () => {
   const classes = useStyles({});
-
+  const setUser = useStoreActions((actions) => actions.setUser);
   const history = useHistory();
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const signup = async () => {
-    const { data } = await axios.post<ApiResponse>(`/auth/signup`, { username, password });
+    const { data } = await axios.post<CurrentUserResponse>(`/auth/signup`, { username, password });
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;
     }
+    setUser(data.user);
     history.push('/');
   };
 
