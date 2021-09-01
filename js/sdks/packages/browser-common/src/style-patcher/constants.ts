@@ -23,7 +23,7 @@ export const REPLACED_ELEMENTS: SupportedElementTagName[] = [
   'option',
   'canvas',
   'object',
-  'applet',
+  // 'applet', TODO: No idea why this broke, I think they took it out of the typings for the DOM
 ];
 
 export const VOID_ELEMENTS: SupportedElementTagName[] = [

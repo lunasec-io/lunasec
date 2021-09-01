@@ -49,8 +49,12 @@ func RespondError(w http.ResponseWriter, status int, err error) {
 	errorStr := err.Error()
 	resp := types.HTTPResponse{
 		Success: false,
-		Error:   &errorStr,
+		Error:   types.ErrorResponse{
+			Message: errorStr,
+			Name: "TokenizerError", // Eventually it would be nice to wrap errors with more info like this name field so the frontend can display more meaningful errors
+		},
 	}
+
 	body, err := json.Marshal(resp)
 
 	if err != nil {

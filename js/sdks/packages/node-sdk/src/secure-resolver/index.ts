@@ -220,7 +220,7 @@ export class SecureResolver {
       return {
         success: false,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        error: e,
+        error: e as string,
       };
     }
   }
