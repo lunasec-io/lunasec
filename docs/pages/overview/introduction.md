@@ -6,26 +6,33 @@ sidebar_position: 1
 ---
 
 ## What is LunaSec?
-LunaSec makes it easy and secure for applications to process and store sensitive data.
+LunaSec makes it easy and secure for applications to process and store sensitive data through a process
+known as "Tokenization". 
 
-How is that achieved? At it's core LunaSec encrypts and replaces your sensitive data through a process
-known as "Tokenization". This process allows only the non-sensitive token to be passed through your
-application while the sensitive data is safely encrypted and stored by LunaSec.
+When data is "Tokenized" it is exchanged for a non-sensitive "Token". By itself, a token is a meaningless value.
+It is a random identifier only used to reference the encrypted data that is stored by LunaSec. You need to exchange
+a token with an API call in a process called "Detokenization".
 
-This process is reversible by passing a token to the LunaSec Tokenizer in a process called "Detokenization" and serves
-as the "primitive" through which LunaSec adds additional layers of security.
+This process isn't new. It's commonly used by companies for compliance purposes and there are many tokenization 
+products on the market. But, where most products stop at using tokenization for compliance, LunaSec goes further by 
+leveraging tokenization as a "primitive" for adding additional layers of security.
 
-By tightly controlling access to the Tokenizer, that is how LunaSec enables you to add security to your application.
-LunaSec gives you the tools to restrict access to detokenize data in only specific, controlled contexts and it does so
-without requiring you to rewrite your entire application from scratch.
+Tokenization provides a means to "bootstrap" the rest of the LunaSec Stack. This enables you to gradually harden 
+the rest of your system's security over time by onboarding additional LunaSec components when you need them. 
+Read more about what features we offer [here](https://www.lunasec.io/docs/pages/overview/features/).
 
-LunaSec is not just a single library or service. LunaSec Stack provides libraries, services, and tools which build upon
-the secure properties of tokenization to provide fine-grained control over _when, where, and how_ your sensitive data
-is accessed.
+## How does LunaSec work with my app?
+LunaSec products were designed by Security Engineers to drop in to existing apps with minimal code changes.
+That way you don't need to rewrite everything from scratch in order to meet your security goals.
 
-LunaSec products are designed by Security Engineers to drop in to existing apps with minimal code changes.
-By reducing the work required to add LunaSec to your applications, it becomes trivial to prevent a single
-vulnerability from compromising your entire system.
+We've designed onboarding with LunaSec to happen in levels. You can add basic tokenization
+today by just [adding a few lines](https://www.lunasec.io/docs/pages/overview/libraries-services/), and our 
+additional [enterprise-grade security modules](https://www.lunasec.io/docs/pages/overview/security/levels/) can be
+layered on top based on your security requirements. You pick what level of security you need today _or_ tomorrow.
+
+If you're unsure of what level of security you need, please [contact us](https://www.lunasec.io/contact) and we'll be 
+happy to help you! We offer paid, professional support to accelerate onboarding time and to ensure your deployment
+meets your security goals.
 
 ## Example: Building an eCommerce App
 Let's say you were building a website where you sold goods to users. A user would need to upload information like their
