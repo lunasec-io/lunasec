@@ -16,20 +16,21 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.3.9",
     "@types/express": "^4.17.11",
-    "@types/node": "^14.11.8",
     "@types/jest": "^26.0.23",
+    "@types/node": "^14.11.8",
+    "express": "^4.17.1",
     "jest": "^27.0.4",
     "jest-json-to-tap": "^2.1.0",
     "ts-jest": "^27.0.3",
-    "express": "^4.17.1",
     "ts-json-schema-generator": "^0.95.0",
-    "typescript": "^4.2.0",
-    "@openapitools/openapi-generator-cli": "^2.3.9"
+    "typescript": "^4.2.0"
   },
   "dependencies": {
     "@lunasec/browser-common": "^1.0.0",
     "axios": "^0.21.1",
     "react-dom": "^17.0.2"
-  }
+  },
+  "gitHead": "3abeea8c0a4f0c47a1ed21ac704754633dc3659a"
 }
