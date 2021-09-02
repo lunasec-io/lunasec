@@ -27,6 +27,7 @@ release: release-git-tag lunasec-release docker-release
 
 release-clean:
 	git tag -d ${version}
+	git push --delete origin ${version}
 
 %:
 	CGO_ENABLED=0 GOOS=linux go build -tags ${BUILD_TAG} ${DEBUG_FLAGS} -a -installsuffix cgo -o ${OUTPUT_DIR}/$@_${BUILD_TAG} $(shell pwd)/cmd/$@
