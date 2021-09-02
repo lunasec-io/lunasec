@@ -1,5 +1,6 @@
 {
   "name": "@lunasec/server-common",
+  "private": false,
   "version": "1.0.0",
   "description": "Base lunasec package",
   "main": "build/main/index.js",

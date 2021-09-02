@@ -1,5 +1,6 @@
 {
   "name": "@lunasec/node-sdk",
+  "private": false,
   "version": "1.0.0",
   "description": "Secure resolver package for Node.js",
   "main": "build/main/index.js",
