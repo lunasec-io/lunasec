@@ -1,5 +1,6 @@
 {
   "name": "@lunasec/tokenizer-sdk",
+  "private": false,
   "version": "1.0.0",
   "description": "lunasec Tokenizer client for Node.js",
   "main": "build/main/index.js",
