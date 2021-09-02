@@ -18,7 +18,7 @@ the goal of the design is to be simple. In other words, it would not be acceptab
 encrypt the ciphertext back to the caller to avoid having the ciphertext and encryption key stored in the same system.
 
 In the LunaSec Token crypto system, information for looking up a ciphertext and encryption key given a token is _deterministically generated_ using the token itself. 
-A signed S3 url configured to use [AWS's Server Side Encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerSideEncryptionCustomerKeys.html) is used
+A signed S3 URL configured to use [AWS's Server Side Encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerSideEncryptionCustomerKeys.html) is used
 for when uploading and downloading the ciphertext from S3.
 
 At a high level, the ciphertext and corresponding encryption key are stored in separate databases, both encrypted.

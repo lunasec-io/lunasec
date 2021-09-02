@@ -84,27 +84,31 @@ module.exports = {
   ],
   themeConfig: {
     navbar: {
-      title: 'LunaSec',
       logo: {
         alt: 'LunaSec Logo',
-        src: '/docs/img/logo.svg',
+        src: '/docs/img/logo-black-text.svg',
+        srcDark: '/docs/img/logo-white-text.svg'
       },
       items: [
         {
           type: 'doc',
           docId: 'overview/introduction',
           position: 'left',
-          label: 'Docs',
+          label: 'Docs'
         },
-        {to: '/docs/blog', label: 'Blog', position: 'left'},
+        {
+          to: '/docs/blog',
+          label: 'Blog',
+          position: 'left'
+        },
         {
           type: 'docsVersionDropdown',
-          position: "right",
+          position: "right"
         },
         {
           href: 'https://github.com/refinery-labs/lunasec-monorepo',
           label: 'GitHub',
-          position: 'right',
+          position: 'right'
         },
       ],
     },
