@@ -1,5 +1,5 @@
 secure_frame_controller:
-  views_path: views/secureframe
+  views_path: views/tokenizerbackend
   cdn_config:
     protocol: http
     host: ${CDN_HOST}
@@ -7,5 +7,3 @@ secure_frame_controller:
     main_style: main.css
 session_controller:
   auth_callback_host: ${CUSTOMER_BACK_END}
-tokenizer_controller:
-  application_token_secret: test
