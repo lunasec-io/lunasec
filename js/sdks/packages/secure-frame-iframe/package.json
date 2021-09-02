@@ -40,5 +40,6 @@
     "webpack": "^5.28.0",
     "webpack-cli": "^4.5.0",
     "webpack-s3-plugin": "1.2.0-rc.0"
-  }
+  },
+  "gitHead": "3abeea8c0a4f0c47a1ed21ac704754633dc3659a"
 }
