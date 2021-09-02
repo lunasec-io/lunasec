@@ -23,7 +23,7 @@ type hybridEncryptionManager struct {
 }
 
 type hybridEncryptionManagerConfig struct {
-	SecureFrameKeysetArn string `yaml:"secure_frame_keyset_arn"`
+	TokenizerBackendKeysetArn string `yaml:"secure_frame_keyset_arn"`
 }
 
 type EncryptionManager interface {
@@ -45,7 +45,7 @@ func NewHybridEncryptionManager(
 		return
 	}
 
-	keysetHandle, err := getSecureFrameKeyset(secretsManager, serviceConfig.SecureFrameKeysetArn)
+	keysetHandle, err := getTokenizerBackendKeyset(secretsManager, serviceConfig.TokenizerBackendKeysetArn)
 	if err != nil {
 		return
 	}
@@ -91,7 +91,7 @@ func (e *hybridEncryptionManager) DecryptString(ciphertext string) (plaintext st
 	return string(plaintextBytes), nil
 }
 
-func getSecureFrameKeyset(secretsManager gateway.AwsSecretsManagerGateway, keysetArn string) (secureFrameKeyset *keyset.Handle, err error) {
+func getTokenizerBackendKeyset(secretsManager gateway.AwsSecretsManagerGateway, keysetArn string) (secureFrameKeyset *keyset.Handle, err error) {
 	keysetData, err := secretsManager.GetSecret(keysetArn)
 	if err != nil {
 		err = errors.Wrap(err, "unable to get keyset secret from secrets manager")

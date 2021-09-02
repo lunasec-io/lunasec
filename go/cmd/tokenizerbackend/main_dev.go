@@ -5,11 +5,11 @@ package main
 import (
 	"log"
 
-	"github.com/refinery-labs/loq/pkg/secureframe"
+	"github.com/refinery-labs/loq/pkg/tokenizerbackend"
 )
 
 func main() {
 	log.SetFlags(log.Lshortfile)
-	server := secureframe.NewDevServer()
+	server := tokenizerbackend.NewDevServer()
 	log.Fatal(server.ListenAndServe())
 }

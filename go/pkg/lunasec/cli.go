@@ -2,6 +2,7 @@ package lunasec
 
 import (
 	"fmt"
+	"github.com/refinery-labs/loq/constants"
 	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/service/lunasec"
 	"github.com/refinery-labs/loq/util"
@@ -51,7 +52,7 @@ func BuildCommand(c *cli.Context) (err error) {
 
 	buildDir := c.String("dir")
 	if buildDir == "" {
-		buildDir = lunasec.LunasecBuildDir
+		buildDir = constants.LunasecBuildDir
 	}
 
 	logger, err := zap.NewProduction()
@@ -89,7 +90,7 @@ func DeployCommand(c *cli.Context) (err error) {
 	localDev := c.Bool("local")
 	configOutput := c.String("config-output")
 	if configOutput == "" {
-		configOutput = "config/secureframe/"
+		configOutput = "config/tokenizerbackend/"
 	}
 	configFile := c.String("config")
 	provider, err := loadConfigFile(configFile)
@@ -108,7 +109,7 @@ func DeployCommand(c *cli.Context) (err error) {
 
 	buildDir := c.String("dir")
 	if buildDir == "" {
-		buildDir = lunasec.LunasecBuildDir
+		buildDir = constants.LunasecBuildDir
 	}
 
 	logger, err := zap.NewProduction()

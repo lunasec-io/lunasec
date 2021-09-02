@@ -1,9 +1,24 @@
 package util
 
 import (
+	"github.com/refinery-labs/loq/types"
 	"net/http"
 	"time"
 )
+
+func ApplyMiddlewareToHandler(middleware []types.Middleware, handler http.HandlerFunc) http.HandlerFunc {
+	for _, middlewareHandler := range middleware {
+		handler = middlewareHandler(handler)
+	}
+	return handler
+}
+
+func AddRoutesToServer(sm *http.ServeMux, middleware []types.Middleware, routes map[string]http.HandlerFunc) {
+	for path, handler := range routes {
+		handler = ApplyMiddlewareToHandler(middleware, handler)
+		sm.Handle(path, handler)
+	}
+}
 
 // AddCookie will apply a new cookie to the response of a http request
 // with the key/value specified.

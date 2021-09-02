@@ -23,8 +23,8 @@ session_controller:
 secure_frame_controller:
   views_path: ${SECURE_FRAME_VIEWS_PATH}
   cdn_config: ${SECURE_FRAME_CDN_CONFIG}
-tokenizer_controller:
-  application_token_secret: TODO
+tokenizer:
+  secret_arn: ${TOKENIZER_SECRET_ARN:""}
 customer_jwt_verifier:
   # TODO (cthompson) this public key is specifically the customer's public key and the configuration should reflect this
   public_key: ${SESSION_PUBLIC_KEY:""}

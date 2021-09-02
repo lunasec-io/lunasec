@@ -17,6 +17,6 @@ services:
       - secure-frame-iframe
       - customer-front-end
       - customer-back-end
-      - secureframe
+      - tokenizerbackend
     environment:
       - DISPLAY=${DISPLAY}
