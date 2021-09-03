@@ -3,7 +3,9 @@
   "private": true,
   "version": "0.0.1-alpha.1",
   "description": "LunaSec Go Monorepo",
-  "scripts": {},
+  "scripts": {
+    "release": "make release version=\"$(cat package.json | jq -r .version)\""
+  },
   "author": "lunasec",
   "license": "MIT"
 }
