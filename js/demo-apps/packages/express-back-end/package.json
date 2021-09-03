@@ -1,7 +1,7 @@
 {
   "name": "demo-back-end",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.1-alpha.1",
   "description": "",
   "main": "src/server.ts",
   "scripts": {
@@ -18,9 +18,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@lunasec/browser-common": "^1.0.0",
-    "@lunasec/node-sdk": "^1.0.0",
-    "@lunasec/tokenizer-sdk": "^1.0.0",
+    "@lunasec/browser-common": "^0.0.1-alpha.1",
+    "@lunasec/node-sdk": "^0.0.1-alpha.1",
+    "@lunasec/tokenizer-sdk": "^0.0.1-alpha.1",
     "@types/body-parser": "^1.19.0",
     "@types/cors": "^2.8.10",
     "@types/express": "^4.17.11",
