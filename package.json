@@ -43,6 +43,7 @@
   },
   "workspaces": {
     "packages": [
+      "./go",
       "./js/sdks/packages/*",
       "./js/service/packages/*",
       "./js/demo-apps/packages/*",
