@@ -24,6 +24,7 @@ release-git-tag:
 	git push origin ${version}
 
 release: release-git-tag lunasec-release docker-release
+	echo "completed release for ${version}"
 
 release-clean:
 	git tag -d ${version}
