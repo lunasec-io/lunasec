@@ -9,7 +9,7 @@ const quotedGithubUrl = `"${githubUrl}"`
 module.exports = {
   title: 'LunaSec',
   tagline: 'Data security from the start.',
-  url: 'https://www.lunasec.io/docs/',
+  url: 'https://www.lunasec.io/',
   baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -97,11 +97,6 @@ module.exports = {
           label: 'Docs'
         },
         {
-          to: '/docs/blog',
-          label: 'Blog',
-          position: 'left'
-        },
-        {
           type: 'docsVersionDropdown',
           position: "right"
         },
@@ -137,10 +132,6 @@ module.exports = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: '/docs/blog',
-            },
-            {
               label: 'Github',
               href: 'https://github.com/refinery-labs/lunasec-monorepo',
             },
@@ -174,6 +165,10 @@ module.exports = {
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
+        },
+        sitemap: {
+          changefreq: 'daily',
+          priority: 1.0,
         },
       },
     ],
