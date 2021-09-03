@@ -29,7 +29,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker Images
+      - name: Release npm packages
+        run: 
+
+      - name: Create LunaSec infra release
         working-directory: go
         run: make release version=$RELEASE_VERSION
         env:
