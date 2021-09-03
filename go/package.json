@@ -1,0 +1,9 @@
+{
+  "name": "lunasec-go-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "LunaSec Go Monorepo",
+  "scripts": {},
+  "author": "lunasec",
+  "license": "MIT"
+}
