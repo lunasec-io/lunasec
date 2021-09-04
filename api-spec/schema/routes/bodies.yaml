@@ -3,13 +3,24 @@ ErrorResponse:
   properties:
     success:
       type: boolean
-    error: #human readable string
-      type: string
-    errorCode: #this is optional
-      type: number
+    error:
+      type: object
+      properties:
+        name:
+          type: string
+          description: machine parsable human readable short name
+        message:
+          type: string
+          description: human readable error thats safe to show the end user
+      required:
+        - name
+        - message
+      additionalProperties: false
   required:
-    - success
     - error
+    - success
+  additionalProperties: false
+
 SetGrantRequest:
   type: object
   properties:

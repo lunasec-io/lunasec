@@ -9,7 +9,7 @@ const quotedGithubUrl = `"${githubUrl}"`
 module.exports = {
   title: 'LunaSec',
   tagline: 'Data security from the start.',
-  url: 'https://www.lunasec.io/docs/',
+  url: 'https://www.lunasec.io/',
   baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -84,27 +84,26 @@ module.exports = {
   ],
   themeConfig: {
     navbar: {
-      title: 'LunaSec',
       logo: {
         alt: 'LunaSec Logo',
-        src: '/docs/img/logo.svg',
+        src: '/docs/img/logo-black-text.svg',
+        srcDark: '/docs/img/logo-white-text.svg'
       },
       items: [
         {
           type: 'doc',
           docId: 'overview/introduction',
           position: 'left',
-          label: 'Docs',
+          label: 'Docs'
         },
-        {to: '/docs/blog', label: 'Blog', position: 'left'},
         {
           type: 'docsVersionDropdown',
-          position: "right",
+          position: "right"
         },
         {
           href: 'https://github.com/refinery-labs/lunasec-monorepo',
           label: 'GitHub',
-          position: 'right',
+          position: 'right'
         },
       ],
     },
@@ -132,10 +131,6 @@ module.exports = {
         {
           title: 'More',
           items: [
-            {
-              label: 'Blog',
-              to: '/docs/blog',
-            },
             {
               label: 'Github',
               href: 'https://github.com/refinery-labs/lunasec-monorepo',
@@ -170,6 +165,10 @@ module.exports = {
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
+        },
+        sitemap: {
+          changefreq: 'daily',
+          priority: 1.0,
         },
       },
     ],
