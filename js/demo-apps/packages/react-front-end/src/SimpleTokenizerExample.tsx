@@ -1,5 +1,4 @@
 import { SimpleTokenizer } from '@lunasec/tokenizer-sdk';
-import { CONFIG_DEFAULTS } from '@lunasec/tokenizer-sdk/build/main/constants';
 import React, { ChangeEvent, FocusEvent, FormEvent } from 'react';
 
 export interface InsecureFormExampleState {
