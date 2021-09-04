@@ -15,10 +15,14 @@ import (
 	"github.com/aws/constructs-go/constructs/v3"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/refinery-labs/loq/constants"
+	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/util"
 	"go.uber.org/config"
+	"io/ioutil"
 	"log"
+	"os"
+	"regexp"
 )
 
 type ServiceVersions map[constants.LunaSecServices]string
@@ -27,7 +31,6 @@ type BuildConfig struct {
 	StackVersion        string          `yaml:"stack_version"`
 	CustomerFrontEnd     string          `yaml:"customer_front_end"`
 	CustomerBackEnd      string          `yaml:"customer_back_end"`
-	CDNConfig            types.CDNConfig `yaml:"cdn_config"`
 	SessionPublicKey     string          `yaml:"session_public_key"`
 	FrontEndAssetsFolder string          `yaml:"front_end_assets_folder"`
 	LocalStackUrl        string          `yaml:"localstack_url"`
@@ -48,6 +51,7 @@ type Builder interface {
 type builder struct {
 	BuilderConfig
 	buildConfig BuildConfig
+	npmGateway gateway.NpmGateway
 }
 
 func NewBuilderConfig(
@@ -74,10 +78,12 @@ func NewBuildConfig(
 func NewBuilder(
 	builderConfig BuilderConfig,
 	buildConfig BuildConfig,
+	npmGateway gateway.NpmGateway,
 ) Builder {
 	return &builder{
 		builderConfig,
 		buildConfig,
+		npmGateway,
 	}
 }
 
@@ -108,7 +114,10 @@ func (l *builder) Build() (err error) {
 }
 
 func (l *builder) getContainerURL(serviceName constants.LunaSecServices) string {
-	version := l.buildConfig.ServiceVersions[serviceName]
+	version, ok := l.buildConfig.ServiceVersions[serviceName]
+	if !ok {
+		version = l.buildConfig.StackVersion
+	}
 	return fmt.Sprintf("lunasec/%s:%s", serviceName, version)
 }
 
@@ -142,6 +151,51 @@ func (l *builder) mirrorRepos(env *awscdk.Environment) (lookup ServiceToImageMap
 		}
 		lookup[serviceName] = containerTag
 	}
+	return
+}
+
+func (l *builder) getCdnConfig(secureFrameDomainName string) (packageDir, serializedConfig string, err error) {
+	cdnConfig := types.CDNConfig{
+		Protocol: "https",
+		Host:       secureFrameDomainName,
+		MainScript: "",
+		MainStyle:  "",
+	}
+
+	mainScriptPattern := regexp.MustCompile(`js\/main(\.[a-f0-9]+|\-dev)\.js`)
+	mainStylePattern := regexp.MustCompile(`main(\.[a-f0-9]+|)\.css`)
+
+	version := l.buildConfig.StackVersion
+
+	packageTarFile, err := l.npmGateway.DownloadPackage("@lunasec/secure-frame-front-end", version)
+	if err != nil {
+		return
+	}
+
+	packageDir, err = ioutil.TempDir(os.TempDir(), "secure-frame-front-end")
+	if err != nil {
+		return
+	}
+	err = util.ExtractTgzWithCallback(packageTarFile.Name(), packageDir, func(filename string) {
+		if mainScriptPattern.MatchString(filename) {
+			cdnConfig.MainScript = filename
+		}
+		if mainStylePattern.MatchString(filename) {
+			cdnConfig.MainStyle = filename
+		}
+	})
+	if err != nil {
+		return
+	}
+
+	if cdnConfig.MainScript == "" || cdnConfig.MainStyle == "" {
+		err = fmt.Errorf("unable to locate script and/or style asset script: %s style: %s",
+			cdnConfig.MainScript, cdnConfig.MainStyle)
+		return
+	}
+
+	serializedConfigBytes, err := json.Marshal(cdnConfig)
+	serializedConfig = string(serializedConfigBytes)
 	return
 }
 
@@ -227,12 +281,12 @@ func (l *builder) getTokenizerBackendDomainName(secureFrameCloudfront awscloudfr
 	return *secureFrameCloudfront.AttrDomainName()
 }
 
-func (l *builder) getTokenizerBackendBucketDeployment(stack awscdk.Stack, secureFrameBucket awss3.Bucket) awss3deployment.BucketDeployment {
+func (l *builder) getTokenizerBackendBucketDeployment(stack awscdk.Stack, secureFrameBucket awss3.Bucket, assetFolder string) awss3deployment.BucketDeployment {
 	if l.localDev {
 		return nil
 	}
 
-	bucketSource := awss3deployment.Source_Asset(jsii.String(l.buildConfig.FrontEndAssetsFolder), nil)
+	bucketSource := awss3deployment.Source_Asset(jsii.String(assetFolder), nil)
 
 	return awss3deployment.NewBucketDeployment(stack, jsii.String("secure-frame-bucket-deployment"), &awss3deployment.BucketDeploymentProps{
 		Sources: &[]awss3deployment.ISource{
@@ -286,6 +340,19 @@ func (l *builder) getLambdaRestApi(stack awscdk.Stack, secureFrameLambda awslamb
 	})
 }
 
+func (l *builder) getTokenizerBackendBucketAssetFolder(secureFrameDomainName string) (assetsFolder, cdnConfig string) {
+	if l.localDev {
+		return l.buildConfig.FrontEndAssetsFolder, ""
+	}
+
+	var err error
+	assetsFolder, cdnConfig, err = l.getCdnConfig(secureFrameDomainName)
+	if err != nil {
+		panic(err)
+	}
+	return
+}
+
 func (l *builder) addComponentsToStack(scope constructs.Construct, id string, props *LunasecStackProps, serviceImageLookup ServiceToImageMap) awscdk.Stack {
 	var sprops awscdk.StackProps
 	if props != nil {
@@ -300,7 +367,8 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 	secureFrameCloudfront := l.getCloudfrontDistribution(stack, secureFrameBucket)
 	secureFrameDomainName := l.getTokenizerBackendDomainName(secureFrameCloudfront)
 
-	l.getTokenizerBackendBucketDeployment(stack, secureFrameBucket)
+	assetFolder, cdnConfig := l.getTokenizerBackendBucketAssetFolder(secureFrameDomainName)
+	l.getTokenizerBackendBucketDeployment(stack, secureFrameBucket, assetFolder)
 
 	metadataTable := l.createBasicDynamodbTable(stack, "metadata-table")
 
@@ -316,16 +384,6 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 	tokenizerSecret := l.createSecret(stack, "tokenizer-secret", secretDescription)
 
 	if !l.localDev {
-		cdnConfig, err := json.Marshal(types.CDNConfig{
-			Protocol: "https",
-			Host:        secureFrameDomainName,
-			MainScript: l.buildConfig.CDNConfig.MainScript,
-			MainStyle:  l.buildConfig.CDNConfig.MainStyle,
-		})
-		if err != nil {
-			panic(err)
-		}
-
 		lambdaEnv := &map[string]*string{
 			"SECURE_FRAME_FRONT_END":     secureFrameCloudfront.AttrDomainName(),
 			"CUSTOMER_FRONT_END":         jsii.String(l.buildConfig.CustomerFrontEnd),

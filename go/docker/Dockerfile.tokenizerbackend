@@ -13,7 +13,7 @@ FROM base as builder
 RUN --mount=target=. \
     --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    BUILD_TAG=lambda OUTPUT_DIR=/out make tokenizerbackend \
+    OUTPUT_DIR=/out make tokenizerbackend tag=lambda \
     && mkdir -p /out/config \
     && cp -r config/tokenizerbackend /out/config/tokenizerbackend
 

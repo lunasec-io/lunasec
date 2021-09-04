@@ -1,7 +1,7 @@
 FROM golang AS builder
 ADD . /code
 WORKDIR /code
-RUN BUILD_TAG=release make runtime
+RUN make runtime tag=release
 
 FROM scratch
 
