@@ -80,6 +80,7 @@ func NewBuilder(
 	buildConfig BuildConfig,
 	npmGateway gateway.NpmGateway,
 ) Builder {
+	buildConfig.StackVersion = util.NormalizeVersionName(buildConfig.StackVersion)
 	return &builder{
 		builderConfig,
 		buildConfig,
