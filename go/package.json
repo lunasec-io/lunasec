@@ -1,7 +1,7 @@
 {
   "name": "lunasec-go-monorepo",
   "private": true,
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "description": "LunaSec Go Monorepo",
   "scripts": {
     "release": "make release version=\"$(node -p 'require(\"./package.json\").version)`\""
