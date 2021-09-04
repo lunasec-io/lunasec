@@ -1,6 +1,6 @@
 import { Button, FormControl, FormHelperText, FormLabel, makeStyles, Paper, TextField } from '@material-ui/core';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useStoreActions } from '../store';
@@ -29,7 +29,8 @@ export const Login: React.FunctionComponent = () => {
   const [password, setPassword] = useState('');
 
   const setUser = useStoreActions((actions) => actions.setUser);
-  const login = async () => {
+  const login = async (e: FormEvent) => {
+    e.preventDefault();
     const { data } = await axios.post<CurrentUserResponse>(`/auth/login`, { username, password });
     if (!data.success) {
       setError(data.error);
@@ -41,40 +42,41 @@ export const Login: React.FunctionComponent = () => {
 
   return (
     <Paper className={classes.padding}>
-      <FormControl className={`${classes.margin}`} error={!!error}>
-        <FormLabel>Login</FormLabel>
-        <TextField
-          className={classes.margin}
-          id="username"
-          label="Username"
-          type="email"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          fullWidth
-          autoFocus
-          required
-        />
-        <TextField
-          className={classes.margin}
-          id="username"
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          fullWidth
-          required
-        />
-        <FormHelperText className={classes.margin}>{error}</FormHelperText>
-        <Button
-          className={classes.margin}
-          variant="outlined"
-          color="primary"
-          style={{ textTransform: 'none' }}
-          onClick={login}
-        >
-          Login
-        </Button>
-      </FormControl>
+      <form id="login-form" onSubmit={(e) => login(e)}>
+        <FormControl className={`${classes.margin}`} error={!!error}>
+          <FormLabel>Login</FormLabel>
+          <TextField
+            className={classes.margin}
+            id="username"
+            label="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            fullWidth
+            autoFocus
+            required
+          />
+          <TextField
+            className={classes.margin}
+            id="password"
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            fullWidth
+            required
+          />
+          <FormHelperText className={classes.margin}>{error}</FormHelperText>
+          <Button
+            className={classes.margin}
+            variant="outlined"
+            color="primary"
+            style={{ textTransform: 'none' }}
+            type="submit"
+          >
+            Login
+          </Button>
+        </FormControl>
+      </form>
     </Paper>
   );
 };
