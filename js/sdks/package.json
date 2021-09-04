@@ -9,7 +9,7 @@
     "schema:generate": "cd ./packages/tokenizer-sdk && yarn openapi:generate",
     "watch": "yarn schema:copy && yarn schema:generate && tsc -b tsconfig.build.json -w",
     "compile:production:sdks": "yarn schema:copy && yarn schema:generate && tsc -b tsconfig.build.json",
-    "compile:production:secure-frame-front-end": "cd sdks/secure-frame-iframe && npm run compile:production",
+    "compile:production:secure-frame-front-end": "cd packages/secure-frame-iframe && npm run compile:production",
     "compile:production": "npm run compile:production:sdks && npm run compile:production:secure-frame-front-end"
   },
   "author": "",
