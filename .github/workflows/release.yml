@@ -25,6 +25,12 @@ jobs:
       - name: install lerna
         run: npm i -g lerna
 
+      - name: lerna bootstrap
+        run: lerna bootstrap
+
+      - name: build production
+        run: npm run compile:production
+
       - name: Configure CI Git User
         run: |
           git config --global user.name 'release-bot'

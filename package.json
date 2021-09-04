@@ -8,17 +8,8 @@
     "test:e2e": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test",
     "lint:fix": "npm run lint -- --fix",
     "lint": "cd js && eslint --ext .js,.jsx,.ts,.tsx .",
-    "versionup": "lerna version --conventional-commits --no-git-tag-version",
-    "versionup:patch": "lerna version patch --conventional-commits --no-git-tag-version",
-    "versionup:minor": "lerna version minor --conventional-commits --no-git-tag-version",
-    "versionup:major": "lerna version major --conventional-commits --no-git-tag-version",
-    "postversionup": "npm run commit-version",
-    "postversionup:patch": "npm run commit-version",
-    "postversionup:minor": "npm run commit-version",
-    "postversionup:major": "npm run commit-version",
-    "commit-version": "git add . && git commit -m \"chore(release): publish `node -p 'require(\"./lerna.json\").version'`\"",
-    "release": "lerna publish from-package",
-    "release:canary": "lerna publish --canary --preid next --dist-tag next --force-publish='*' --no-push --no-git-tag-version --yes"
+    "compile:production:sdks": "cd js/sdks && npm run compile:production",
+    "compile:production": "npm run compile:production:sdks"
   },
   "repository": {
     "type": "git",
