@@ -1,5 +1,4 @@
 CMD_DIR = ./cmd
-BUILD_TAG ?= dev
 OUTPUT_DIR ?= "build"
 DEBUG_FLAGS ?=
 
@@ -31,7 +30,7 @@ release-clean:
 	git push --delete origin ${version}
 
 %:
-	CGO_ENABLED=0 GOOS=linux go build -tags ${BUILD_TAG} ${DEBUG_FLAGS} -a -installsuffix cgo -o ${OUTPUT_DIR}/$@_${BUILD_TAG} $(shell pwd)/cmd/$@
+	CGO_ENABLED=0 GOOS=linux go build -tags ${tag} ${DEBUG_FLAGS} -a -installsuffix cgo -o ${OUTPUT_DIR}/$@_${tag} $(shell pwd)/cmd/$@
 
 clean:
 	rm -rf build

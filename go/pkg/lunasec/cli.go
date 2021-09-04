@@ -73,6 +73,8 @@ func BuildCommand(c *cli.Context) (err error) {
 		return
 	}
 
+	npmGateway := gateway.NewNpmGateway(logger, provider)
+
 	builderConfig := lunasec.NewBuilderConfig(buildDir, localDev, skipMirroring, env)
 
 	buildConfig, err := lunasec.NewBuildConfig(provider)
@@ -81,7 +83,7 @@ func BuildCommand(c *cli.Context) (err error) {
 		return
 	}
 
-	builder := lunasec.NewBuilder(builderConfig, buildConfig)
+	builder := lunasec.NewBuilder(builderConfig, buildConfig, npmGateway)
 	return builder.Build()
 }
 

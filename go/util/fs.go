@@ -1,11 +1,14 @@
 package util
 
 import (
-    "fmt"
+	"archive/tar"
+	"compress/gzip"
+	"fmt"
     "io"
     "io/ioutil"
     "os"
-    "path/filepath"
+	"path"
+	"path/filepath"
 )
 
 func CopyDirectory(scrDir, dest string) error {
@@ -102,4 +105,69 @@ func CopySymLink(source, dest string) error {
         return err
     }
     return os.Symlink(link, dest)
+}
+
+func ExtractTgzWithCallback(srcFile, outDir string, callback func(filename string)) (err error) {
+	f, err := os.Open(srcFile)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+
+	gzf, err := gzip.NewReader(f)
+	if err != nil {
+		return
+	}
+
+	tarReader := tar.NewReader(gzf)
+
+	for true {
+		var (
+			header *tar.Header
+		)
+
+		header, err = tarReader.Next()
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			return
+		}
+
+		name := header.Name
+		outputName := path.Join(outDir, name)
+
+		switch header.Typeflag {
+		case tar.TypeDir: // = directory
+			fmt.Println("Directory:", name)
+			err = os.Mkdir(outputName, 0755)
+			if err != nil {
+				return
+			}
+		case tar.TypeReg: // = regular file
+			fmt.Println("Regular file:", name)
+			callback(name)
+
+			data := make([]byte, header.Size)
+			_, err = tarReader.Read(data)
+			if err != nil {
+				return
+			}
+
+			err = ioutil.WriteFile(outputName, data, 0755)
+			if err != nil {
+				return
+			}
+		default:
+			fmt.Printf("%s : %c %s %s\n",
+				"Unable to figure out type",
+				header.Typeflag,
+				"in file",
+				name,
+			)
+		}
+	}
+	return
 }
