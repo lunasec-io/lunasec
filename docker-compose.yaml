@@ -14,7 +14,7 @@ services:
       - secure-frame-iframe
       - customer-front-end
       - customer-back-end
-      - secureframe
+      - tokenizerbackend
 
   secure-frame-iframe:
     build:
@@ -102,7 +102,7 @@ services:
     depends_on:
       proxy:
         condition: service_healthy
-  secureframe:
+  tokenizerbackend: # This is the tokenizer GO server
     hostname: tokenizerbackend
     env_file:
       - .env.dev

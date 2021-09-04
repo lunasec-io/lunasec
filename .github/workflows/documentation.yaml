@@ -91,3 +91,11 @@ jobs:
         run: ../.github/copy-docs-to-s3.sh
         working-directory: docs/
         shell: bash
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        if: always()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: Documentation Build ${{ job.status }}
+          SLACK_COLOR: ${{ job.status }}

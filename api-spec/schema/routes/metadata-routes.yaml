@@ -2,6 +2,7 @@ getmetadata:
   post:
     tags:
       - Metadata
+      - Default
     summary: Get Metadata
     operationId: getMetaData
     requestBody:

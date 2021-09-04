@@ -3,6 +3,8 @@ import { MetaData, Tokenizer } from '@lunasec/tokenizer-sdk';
 import React from 'react';
 import Dropzone, { DropzoneProps, FileWithPath } from 'react-dropzone';
 
+import { LunaSecError } from '../../isomorphic-common';
+
 import { handleDownload } from './secure-download';
 import { SecureFrame } from './secure-frame';
 
@@ -59,12 +61,18 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
       const metaRes = await tokenizer.getMetadata(token);
       if (!metaRes.success) {
         // If it failed then do nothing and don't show a file
-        console.error('Fetching file metadata failed');
+        this.props.secureframe.sendErrorMessage(metaRes.error);
         return;
       }
       const meta = metaRes.metadata;
-      if (!('fileinfo' in meta) || !('filename' in meta.fileinfo)) {
-        console.error('Received bad file metadata');
+      if (meta.dataType !== 'file' || !('fileinfo' in meta) || !('filename' in meta.fileinfo)) {
+        this.props.secureframe.sendErrorMessage(
+          new LunaSecError({
+            name: 'wrongMetaDataType',
+            code: '400',
+            message: "Couldn't find metadata information for a file, it may have been the wrong type of token.",
+          })
+        );
         return;
       }
       const { filename } = meta.fileinfo;
@@ -105,13 +113,13 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
         const tokenizer = new Tokenizer();
         const uploadRes = await tokenizer.tokenize(buf, meta);
         if (!uploadRes.success) {
-          throw uploadRes.error;
+          throw uploadRes.error; // caught below along with any other unforseen issues
         }
         const token = uploadRes.tokenId;
         await this.mutateFileState(fileInfo.id, { status: 'Uploaded', token: token });
         this.sendTokens();
       } catch (e) {
-        console.error(e);
+        return this.props.secureframe.handleError(e);
         await this.mutateFileState(fileInfo.id, { status: 'Error' });
       }
     });
@@ -147,7 +155,11 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     hiddenAnchor.style.display = 'none';
     document.body.appendChild(hiddenAnchor);
     // Just reusing the download code from Secure Downloader
-    return handleDownload(token, hiddenAnchor, this.props.secureframe.rpc.tokenizer, true);
+    try {
+      return handleDownload(token, hiddenAnchor, this.props.secureframe.tokenizer, true);
+    } catch (e) {
+      return this.props.secureframe.handleError(e);
+    }
   }
 
   async deleteFile(e: React.MouseEvent<HTMLButtonElement>, id: number) {

@@ -1,7 +1,7 @@
 ---
 id: "graphql"
-title: "Graphql"
-sidebar_label: "Graphql Support"
+title: "GraphQL"
+sidebar_label: "GraphQL Support"
 ---
 
 # Apollo GraphQL Grants
@@ -13,38 +13,38 @@ If there is a problem with the session or the Grant, it will throw and error tha
 ### Automatically create and verify token grants for any field with the @token directive.
 
 ```typescript
-  const server = new ApolloServer({
-    schemaDirectives: {token: lunaSec.tokenDirective}, // our initialized instance of the @lunasec/node-sdk
-    // ... other apollo options
-  });
+const server = new ApolloServer({
+  schemaDirectives: {token: lunaSec.tokenDirective}, // our initialized instance of the @lunasec/node-sdk
+  // ... other apollo options
+});
 ```
 Here's an example schema that has the @token directive. Note that both input fields and normal fields should be decorated with the `@token` directive.  Don't forget to decorate every
 field that contains a token, or it could be vulnerable.  Arrays of tokens are supported.
 ```graphql
 const typeDefs = gql`
-    type Query {
-        getFormData: FormData
-    }
+  type Query {
+    getFormData: FormData
+  }
     
-    type FormData {
-        text_area: String @token
-        email: String @token
-        insecure_field: String
-        files: [String] @token # @token directive also works on arrays of tokens
-    }
+  type FormData {
+    text_area: String @token
+    email: String @token
+    insecure_field: String
+    files: [String] @token # @token directive also works on arrays of tokens
+  }
     
-    type Mutation {
-        setFormData(formData: FormDataInput): FormData
-    }
+  type Mutation {
+    setFormData(formData: FormDataInput): FormData
+  }
     
-    input FormDataInput {
-        email: String @token
-        insecure_field: String
-        text_area: String @token
-        files: [String] @token
-    }
+  input FormDataInput {
+    email: String @token
+    insecure_field: String
+    text_area: String @token
+    files: [String] @token
+  }
     
-    directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 `;
 ```
 
