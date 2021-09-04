@@ -23,6 +23,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strings"
 )
 
 type ServiceVersions map[constants.LunaSecServices]string
@@ -173,11 +174,11 @@ func (l *builder) getCdnConfig(secureFrameDomainName string) (packageDir, serial
 		return
 	}
 
-	packageDir, err = ioutil.TempDir(os.TempDir(), "secure-frame-front-end")
+	extractedPackageDir, err := ioutil.TempDir(os.TempDir(), "secure-frame-front-end")
 	if err != nil {
 		return
 	}
-	err = util.ExtractTgzWithCallback(packageTarFile.Name(), packageDir, func(filename string) {
+	err = util.ExtractTgzWithCallback(packageTarFile.Name(), extractedPackageDir, func(filename string) {
 		if mainScriptPattern.MatchString(filename) {
 			cdnConfig.MainScript = filename
 		}
@@ -195,6 +196,7 @@ func (l *builder) getCdnConfig(secureFrameDomainName string) (packageDir, serial
 		return
 	}
 
+	packageDir = strings.ReplaceAll(extractedPackageDir, "public/", "")
 	serializedConfigBytes, err := json.Marshal(cdnConfig)
 	serializedConfig = string(serializedConfigBytes)
 	return
