@@ -13,7 +13,7 @@ import {
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
-import { ApiResponse, UserDocumentsResponse } from '../types';
+import { ApiResponse, UserDocumentsResponse } from '../../types';
 
 async function loadDocuments(
   setDocuments: React.Dispatch<React.SetStateAction<string[]>>,
@@ -44,19 +44,6 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
     }
     setSaveSuccessful(true);
   };
-
-  if (error !== null) {
-    return (
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title={'Error'} />
-          <CardContent>
-            <p>{error}</p>
-          </CardContent>
-        </Card>
-      </Grid>
-    );
-  }
 
   if (documents === null) {
     return (

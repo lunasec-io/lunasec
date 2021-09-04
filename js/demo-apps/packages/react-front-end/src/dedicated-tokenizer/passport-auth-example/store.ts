@@ -7,6 +7,7 @@ interface StoreModel {
   user: User | null;
   loggedIn: Computed<StoreModel, boolean>;
   setUser: Action<StoreModel, User>;
+  setSsn: Action<StoreModel, string>;
   saveUser: Thunk<StoreModel, { ssnToken: string }>;
   loadUser: Thunk<StoreModel>;
 }
@@ -14,11 +15,17 @@ interface StoreModel {
 export const store = createStore<StoreModel>({
   user: null,
   loggedIn: computed((state) => !!state.user),
-  setUser: action((state, payload) => {
-    state.user = payload;
+  setUser: action((state, user) => {
+    state.user = user;
   }),
-  saveUser: thunk(async (state, payload) => {
-    const { data } = await axios.post<ApiResponse>(`/user/me`, payload);
+  setSsn: action((state, ssn) => {
+    if (!state.user) {
+      throw new Error('Cant set SSN for a user that isnt logged in');
+    }
+    state.user.ssn_token = ssn;
+  }),
+  saveUser: thunk(async (state, changedFields) => {
+    const { data } = await axios.post<ApiResponse>(`/user/me`, changedFields);
     return data;
   }),
   loadUser: thunk(async (state) => {

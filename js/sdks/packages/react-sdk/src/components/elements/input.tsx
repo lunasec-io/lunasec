@@ -41,7 +41,7 @@ export default class Input extends Component<InputProps> {
   }
 
   render() {
-    // Pull the renderData out so we don't weird stuff into our dummy element
+    // Pull the renderData out so we don't put weird stuff into our dummy element
     const { renderData, children, className, name, ...otherProps } = this.props;
 
     return (

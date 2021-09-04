@@ -7,64 +7,40 @@ import {
   FormGroup,
   FormLabel,
   Grid,
-  makeStyles,
   TextField,
   Typography,
 } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-import { ApiResponse, CurrentUserResponse, UserModel } from '../types';
-
-const useStyles = makeStyles((theme) => ({
-  margin: {
-    margin: theme.spacing() * 2,
-  },
-  padding: {
-    padding: theme.spacing(),
-  },
-}));
-
-async function loadUser(setUser: React.Dispatch<any>, setError: React.Dispatch<React.SetStateAction<string | null>>) {
-  const { data } = await axios.get<CurrentUserResponse>(`/user/me`);
-  if (data.success) {
-    setUser(data.user);
-    return;
-  }
-  setError(data.error);
-}
+import { useStoreActions, useStoreState } from '../../store';
+import { ApiResponse } from '../../types';
 
 export const SecureInputDemo: React.FunctionComponent = () => {
-  const classes = useStyles({});
-
-  const [saveSuccessful, setSaveSuccessful] = useState<boolean | null>(null);
+  const [showSaveSuccessful, setShowSaveSuccessful] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<UserModel | null>(null);
   const [ssnToken, setSsnToken] = useState<string | null>(null);
   const [ssnValid, setSsnValid] = useState<boolean>(true);
 
-  useEffect(() => {
-    void loadUser(setUser, setError); // does this only once
-  }, []);
+  const user = useStoreState((state) => state.user);
+  const setSsn = useStoreActions((state) => state.setSsn);
 
   const uploadFormData = async () => {
-    console.log('uploadformdata called');
     if (ssnToken === null) {
-      setError('ssnToken is null');
+      setError('Please enter a social security number');
       return;
     }
-    console.log('about to send axios request');
     const { data } = await axios.post<ApiResponse>(`/user/me`, {
       ssnToken: ssnToken,
     });
-    console.log('axios responded');
     if (!data.success) {
-      console.error('saving form data error ', data.error);
       setError(JSON.stringify(data.error));
       return;
     }
-    console.log('success saving form');
-    setSaveSuccessful(true);
+    setShowSaveSuccessful(true);
+    // Note that we can locally store and read the token in other components without re-fetching it because a Read Grant was automatically created with the token
+    setSsn(ssnToken);
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -72,16 +48,6 @@ export const SecureInputDemo: React.FunctionComponent = () => {
     if (ssnValid) {
       void uploadFormData();
     }
-  };
-
-  const displaySavedResult = () => {
-    if (saveSuccessful) {
-      return <p color="green">Saved</p>;
-    }
-    if (saveSuccessful === false) {
-      return <p color="red">Failed to Save</p>;
-    }
-    return null;
   };
 
   if (!user) {
@@ -113,30 +79,40 @@ export const SecureInputDemo: React.FunctionComponent = () => {
 
   return (
     <Grid item xs={12}>
-      {error !== null ? (
-        <Card>
-          <CardHeader title={'Error'} />
-          <CardContent>
-            <p>{error}</p>
-          </CardContent>
-        </Card>
-      ) : null}
       <Card>
         <CardHeader title={`User: ${user.username}`} />
-        {displaySavedResult()}
         <CardContent>
+          {error !== null ? (
+            <Alert
+              onClose={() => {
+                setError(null);
+              }}
+              severity="error"
+            >
+              <AlertTitle>Error</AlertTitle>
+              {error}
+            </Alert>
+          ) : null}
+          {showSaveSuccessful ? (
+            <Alert
+              onClose={() => {
+                setShowSaveSuccessful(false);
+              }}
+              severity="success"
+            >
+              <AlertTitle>Success</AlertTitle>
+              Social Security Number has been Tokenized and Saved
+            </Alert>
+          ) : null}
           <SecureForm name="secure-form-example" onSubmit={(e) => handleFormSubmit(e)}>
-            <FormGroup className={classes.margin}>
-              <Typography>Id: {user.id}</Typography>
-            </FormGroup>
-            <FormGroup className={classes.margin}>
+            <FormGroup>
               <FormLabel htmlFor="ssn-token-input">Social Security Number</FormLabel>
               {/* Here we are using Material with the LunaSec Secure Input instead of using SecureInput directly.  Experimental */}
               <TextField
                 error={!ssnValid}
                 helperText={ssnValid ? '' : 'Invalid Format'}
                 variant="outlined"
-                // label="Doesnt work well" Labels don't work quite right yet
+                // label="Labels don't work quite right yet"
                 InputProps={{
                   /*
                   // @ts-ignore */
@@ -145,7 +121,7 @@ export const SecureInputDemo: React.FunctionComponent = () => {
                 }}
               ></TextField>
             </FormGroup>
-            <div className={classes.margin}>
+            <div>
               <Button variant="outlined" color="primary" style={{ textTransform: 'none' }} type="submit">
                 Save
               </Button>

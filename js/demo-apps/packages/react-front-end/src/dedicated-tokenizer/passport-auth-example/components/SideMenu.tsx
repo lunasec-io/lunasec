@@ -1,6 +1,14 @@
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
 import { createStyles, Theme } from '@material-ui/core/styles';
-import { ChatBubbleOutline, CloudUpload, FormatTextdirectionLToR, Home, LockOpen, VpnKey } from '@material-ui/icons';
+import {
+  ChatBubbleOutline,
+  CloudUpload,
+  FormatTextdirectionLToR,
+  GetApp,
+  Home,
+  LockOpen,
+  VpnKey,
+} from '@material-ui/icons';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -66,6 +74,14 @@ export const SideMenu: React.FunctionComponent = () => {
           </ListItem>
         ) : null}
         {loggedIn ? (
+          <ListItem button component={NavLink} to="/secureparagraph">
+            <ListItemIcon>
+              <FormatTextdirectionLToR />
+            </ListItemIcon>
+            <ListItemText primary="SecureParagraph" />
+          </ListItem>
+        ) : null}
+        {loggedIn ? (
           <ListItem button component={NavLink} to="/secureupload">
             <ListItemIcon>
               <CloudUpload />
@@ -73,12 +89,21 @@ export const SideMenu: React.FunctionComponent = () => {
             <ListItemText primary="SecureUpload" />
           </ListItem>
         ) : null}
+
         {loggedIn ? (
-          <ListItem button component={NavLink} to="/secureparagraph">
+          <ListItem button component={NavLink} to="/securedownload">
             <ListItemIcon>
-              <FormatTextdirectionLToR />
+              <GetApp />
             </ListItemIcon>
-            <ListItemText primary="SecureParagraph" />
+            <ListItemText primary="SecureDownload" />
+          </ListItem>
+        ) : null}
+        {loggedIn ? (
+          <ListItem button component={NavLink} to="/securetextarea">
+            <ListItemIcon>
+              <GetApp />
+            </ListItemIcon>
+            <ListItemText primary="SecureTextArea" />
           </ListItem>
         ) : null}
       </List>

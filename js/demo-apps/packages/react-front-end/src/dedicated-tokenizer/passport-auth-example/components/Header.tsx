@@ -21,7 +21,7 @@ export const Header: React.FunctionComponent = () => {
 
   const loadUser = useStoreActions((actions) => actions.loadUser);
   useEffect(() => {
-    loadUser();
+    loadUser(); // Small hack to do this here but it makes sure the user is loaded whenever a page refreshes, ideally would happen in a dedicated component mounted in App
   }, []);
 
   const showLoggedInStatus = () => {
