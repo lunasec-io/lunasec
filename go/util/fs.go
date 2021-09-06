@@ -133,33 +133,22 @@ func ExtractTgzWithCallback(srcFile, outDir string, callback func(filename strin
 		}
 
 		if err != nil {
-			return
+			panic(err)
 		}
 
 		name := header.Name
 		outputName := path.Join(outDir, name)
 
 		switch header.Typeflag {
-		case tar.TypeDir: // = directory
-			fmt.Println("Directory:", name)
-			err = os.Mkdir(outputName, 0755)
-			if err != nil {
-				return
-			}
 		case tar.TypeReg: // = regular file
 			fmt.Println("Regular file:", name)
+
+			data, err := io.ReadAll(tarReader)
+			if err != nil {
+				panic(err)
+			}
+
 			callback(name)
-
-			data := make([]byte, header.Size)
-			_, err = tarReader.Read(data)
-			if err != nil {
-				return
-			}
-
-			err = ioutil.WriteFile(outputName, data, 0755)
-			if err != nil {
-				return
-			}
 		default:
 			fmt.Printf("%s : %c %s %s\n",
 				"Unable to figure out type",
@@ -169,5 +158,7 @@ func ExtractTgzWithCallback(srcFile, outDir string, callback func(filename strin
 			)
 		}
 	}
+
+	err = nil
 	return
 }
