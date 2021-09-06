@@ -37,10 +37,9 @@ export const SecureParagraphDemo: React.FunctionComponent = () => {
               {error}
             </Alert>
           ) : null}
-          <Typography>
-            <p>Social Security Number:</p>
-            <SecureParagraph token={user.ssn_token} errorHandler={(e) => setError(e.message)} />
-          </Typography>
+
+          <Typography>Social Security Number:</Typography>
+          <SecureParagraph token={user.ssn_token} errorHandler={(e) => setError(e.message)} />
         </CardContent>
       </Card>
     </Grid>

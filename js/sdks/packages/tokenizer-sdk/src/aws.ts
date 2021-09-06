@@ -1,6 +1,7 @@
 import * as http from 'http';
 
 import { BadHttpResponseError, getUrl, makeRawRequest } from '@lunasec/server-common';
+import axios from 'axios';
 
 function getUploadHeaders(input?: string | Buffer) {
   if (input !== undefined) {
@@ -59,13 +60,15 @@ export async function uploadToS3WithSignedUrl(
 export async function downloadFromS3WithSignedUrl(signedUrl: string, headers: http.OutgoingHttpHeaders) {
   // TODO: Add some retry logic here, but it'll need to retry only on 500s or other "known" retry cases.
   // TODO: Stream back the output so that large files aren't just buffered straight to memory... Or at least the option for that.
-  const [res, responseBuffer] = await makeRawRequest(...makeS3HttpRequestOptions(signedUrl, headers, 'GET'));
 
-  const responseData = responseBuffer.toString();
+  const { host, ...scrubbedHeaders } = headers;
+  const res = await axios.get(signedUrl, {
+    headers: scrubbedHeaders,
+  });
 
-  if (res.statusCode !== 200) {
-    throw new BadHttpResponseError(res.statusCode, responseData);
+  if (res.status !== 200) {
+    throw new BadHttpResponseError(res.status, res.data); // TODO: Replace with LunaSecError maybe, just to be consistent
   }
 
-  return responseData;
+  return res.data;
 }

@@ -47,14 +47,12 @@ export const SecureTextAreaDemo: React.FunctionComponent = () => {
         </CardContent>
         <Card>
           <CardContent>
-            <Typography>
-              <p>Detokenized Text:</p>
-              <SecureParagraph
-                style={{ whiteSpace: 'break-spaces' }}
-                token={textAreaToken || undefined}
-                errorHandler={(e) => setError(e.message)}
-              />
-            </Typography>
+            <Typography>Detokenized Text:</Typography>
+            <SecureParagraph
+              style={{ whiteSpace: 'break-spaces' }}
+              token={textAreaToken || undefined}
+              errorHandler={(e) => setError(e.message)}
+            />
           </CardContent>
         </Card>
       </Card>

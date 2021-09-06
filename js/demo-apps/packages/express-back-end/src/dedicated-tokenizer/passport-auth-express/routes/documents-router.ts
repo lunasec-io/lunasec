@@ -33,6 +33,7 @@ export function documentsRouter() {
   router.post('/', ensureLoggedIn, async (req, res, next) => {
     const db = await getDb();
     const documentTokens = req.body.documents as string[];
+    await db.run('DELETE FROM documents WHERE user_id = (?)', req.user.id); // clear out any old documents
     const insertionPromises: Promise<any>[] = [];
     documentTokens.forEach((documentToken) => {
       insertionPromises.push(

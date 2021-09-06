@@ -53,7 +53,7 @@ When you want to shut down the cluster, hit `ctrl+b` and type `:kill-session`.
 A CLI has been written in go to enable the creation of test data.  Build the cli by 
 ```shell
 cd go
-BUILT_TAG=cli make tokenizer
+BUILD_TAG=cli make tokenizer
 ```
 and use it by running 
 ```shell
@@ -71,12 +71,5 @@ Our tokenizer API is defined by the openAPI standard(previously named swagger) a
 If the spec changes, the generated code that relies on the spec will need to be regenerated. For example, in the tokenizer-sdk package, run `yarn openapi:generate` to regenerate the API client.
 A similar pattern can be used (check the package.json) to generate an api client in any language you wish, by simply specifying the openapi generator name when calling the openapi-generator npm package .
 
-### TODO
-- Add React project
-- Add React SDK
-- Add Tokenizer calls in backend ("service")
-- Authorization
-- Finish RPC work to make the postMessage APIs well formed
-- Figure a versioning mechanism
-  - What if multiple copies of the script are mounted to the page?
+
 

@@ -22,7 +22,7 @@ module.exports = {
     },
     ecmaVersion: 12,
     sourceType: 'module',
-    project: './sdks/tsconfig.json'
+    project: './tsconfig.json'
   },
   plugins: [
     'react',

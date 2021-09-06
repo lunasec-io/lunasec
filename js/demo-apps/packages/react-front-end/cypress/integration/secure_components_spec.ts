@@ -1,68 +1,86 @@
-/// <reference types="cypress" />
-describe('tokenize_and_detokenize', function () {
+import * as path from 'path';
 
-    it('logs in', function () {
-        cy.viewport(1059, 948)
+Cypress.Cookies.defaults({
+  preserve: ['connect.sid', 'access_token'],
+});
 
-        cy.visit('http://localhost:3000/login')
-        //
-        // cy.intercept({
-        //     url: 'http://localhost:37766/tokenize',
-        // }).as('tokenizeRequest');
-        //
-        // cy.intercept({
-        //     url: 'http://localhost:37766/detokenize',
-        // }).as('detokenizeRequest');
-        //
-        // cy.intercept({
-        //     url: 'http://localhost:37766/frame',
-        // }, (req) => {
-        //     cy.task('log', JSON.stringify(req))
-        // });
+const fakeSSN = '123121234';
+const randomUserName = Math.floor(Math.random() * 1000000000).toString();
+const randomFileName = Math.floor(Math.random() * 1000000000).toString() + '.png';
 
-        // cy.iframe('.secure-textarea-container-text-area > iframe').as('textAreaIframe')
-        // cy.iframe('.secure-input-container-email > iframe').as('emailIframe')
+describe('demo app', function () {
+  it('signs up', function () {
+    cy.visit('signup');
 
-        // cy.wait(1000);
+    cy.get('input[id=username]').type(randomUserName); // Use a random username to avoid DB collisions
 
-        cy.get('input[id=username]')
-            .type("test")
+    cy.get('input[id=password]').type('test');
 
-        cy.get('input[id=password]')
-            .type("test")
+    cy.get('form[id=signup-form]').submit();
 
-        // cy.get('@emailIframe')
-        //     .find('.secure-input')
-        //     .eq(0)
-        //     .type("test@test.com")
+    cy.location('pathname').should('eq', '/');
+    cy.get('p[id=user-status]').contains('Logged in');
+  });
 
-        cy.get('[name=secure-form-example]')
-            .submit()
+  it('secure input tokenizes', () => {
+    cy.visit('/secureinput');
 
-        cy.wait('@tokenizeRequest').then((interception) => {
-            if (interception.response === undefined) {
-                assert.notOk(true, 'response is undefined')
-                return;
-            }
-            const resp = interception.response.body;
-            cy.task('log', `tokenize response: ${JSON.stringify(resp)}`)
-            assert.ok(resp.success, 'request was successful')
-            assert.isDefined(resp.data.tokenId, 'tokenId was present in response')
-            assert.isDefined(resp.data.uploadUrl, 'uploadUrl was present in response')
-            assert.isDefined(resp.data.headers, 'headers was present in response')
-        })
+    cy.iframe().find('.secure-input').type(fakeSSN);
 
-        cy.wait('@detokenizeRequest').then((interception) => {
-            if (interception.response === undefined) {
-                assert.notOk(true, 'response is undefined')
-                return;
-            }
-            const resp = interception.response.body;
-            cy.task('log', `detokenize response: ${JSON.stringify(resp)}`)
-            assert.ok(resp.success, 'request was successful')
-            assert.isDefined(resp.data.downloadUrl, 'downloadUrl was present in response')
-            assert.isDefined(resp.data.headers, 'headers was present in response')
-        })
-    })
+    cy.get('button[type=submit]').click();
 
-})
+    cy.get('#success-alert').contains('Success').should('exist');
+  });
+
+  // Broken test, would be nice to have
+  // it('secure input detokenizes', () => {
+  //     cy.reload()
+  //
+  //     cy.frameLoaded()
+  //
+  //     cy.iframe()
+  //         .find('.secure-input')
+  //         .contains(fakeSSN)
+  // })
+
+  it('secure paragraph', () => {
+    cy.visit('/secureparagraph');
+
+    cy.iframe().find('.secure-input').contains(fakeSSN);
+  });
+
+  it('secure upload', () => {
+    cy.visit('secureupload');
+
+    cy.iframe().find('input[type=file]').attachFile({ filePath: 'sid.png', fileName: randomFileName }); // Dont sue me bro
+
+    cy.iframe().find('.file-container').contains(randomFileName).should('exist');
+
+    cy.wait(500);
+
+    cy.get('#save-documents').click();
+  });
+
+  it('secure download', () => {
+    cy.visit('securedownload');
+
+    const link = cy.iframe().find('a');
+
+    link.contains(randomFileName).should('exist');
+
+    link.click();
+    cy.wait(500);
+    const downloadsFolder = Cypress.config('downloadsFolder');
+    cy.readFile(path.join(downloadsFolder, randomFileName)).should('exist');
+  });
+
+  it('secure text area', () => {
+    cy.visit('securetextarea');
+
+    cy.iframe('.lunasec-iframe-textarea').find('textarea').type('some secure text');
+
+    cy.get('button').contains('Save').click();
+
+    cy.iframe('.lunasec-iframe-paragraph').find('p').contains('some secure text').should('exist');
+  });
+});
