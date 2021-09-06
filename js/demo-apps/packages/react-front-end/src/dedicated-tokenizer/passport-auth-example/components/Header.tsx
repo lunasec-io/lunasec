@@ -26,9 +26,9 @@ export const Header: React.FunctionComponent = () => {
 
   const showLoggedInStatus = () => {
     if (user) {
-      return <Typography>{`Logged in: ${user.username}`}</Typography>;
+      return <Typography id="user-status">{`Logged in: ${user.username}`}</Typography>;
     }
-    return <Typography>Not Logged In</Typography>;
+    return <Typography id="user-status">Not Logged In</Typography>;
   };
 
   return (

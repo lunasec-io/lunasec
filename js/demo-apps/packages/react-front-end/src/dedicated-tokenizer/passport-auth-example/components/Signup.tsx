@@ -23,7 +23,8 @@ export const Signup: React.FunctionComponent = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const signup = async () => {
+  const signup = async (e: React.FormEvent) => {
+    e.preventDefault();
     const { data } = await axios.post<CurrentUserResponse>(`/auth/signup`, { username, password });
     if (!data.success) {
       setError(JSON.stringify(data.error));
@@ -35,40 +36,42 @@ export const Signup: React.FunctionComponent = () => {
 
   return (
     <Paper className={classes.padding}>
-      <FormControl className={`${classes.margin}`} error={!!error}>
-        <FormLabel>Signup</FormLabel>
-        <TextField
-          className={classes.margin}
-          id="username"
-          label="Username"
-          type="email"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          fullWidth
-          autoFocus
-          required
-        />
-        <TextField
-          className={classes.margin}
-          id="username"
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          fullWidth
-          required
-        />
-        {error ? <FormHelperText className={classes.margin}>{error}</FormHelperText> : null}
-        <Button
-          className={classes.margin}
-          variant="outlined"
-          color="primary"
-          style={{ textTransform: 'none' }}
-          onClick={signup}
-        >
-          Signup
-        </Button>
-      </FormControl>
+      <form id="signup-form" onSubmit={(e) => signup(e)}>
+        <FormControl className={`${classes.margin}`} error={!!error}>
+          <FormLabel>Signup</FormLabel>
+          <TextField
+            className={classes.margin}
+            id="username"
+            label="Username"
+            type="email"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            fullWidth
+            autoFocus
+            required
+          />
+          <TextField
+            className={classes.margin}
+            id="password"
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            fullWidth
+            required
+          />
+          {error ? <FormHelperText className={classes.margin}>{error}</FormHelperText> : null}
+          <Button
+            className={classes.margin}
+            variant="outlined"
+            color="primary"
+            style={{ textTransform: 'none' }}
+            type="submit"
+          >
+            Signup
+          </Button>
+        </FormControl>
+      </form>
     </Paper>
   );
 };

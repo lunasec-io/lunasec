@@ -53,10 +53,8 @@ export const SecureDownloadDemo: React.FunctionComponent = () => {
           title={`Securely Download the last file Uploaded in SecureUpload ${documents[documents.length - 1]}`}
         />
         <CardContent>
-          <Typography>
-            <p>Download Link:</p>
-            <SecureDownload token={documents[documents.length - 1]} errorHandler={(e) => setError(e.message)} />
-          </Typography>
+          <Typography>Download Link:</Typography>
+          <SecureDownload token={documents[documents.length - 1]} errorHandler={(e) => setError(e.message)} />
         </CardContent>
       </Card>
     </Grid>

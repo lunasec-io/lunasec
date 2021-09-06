@@ -420,7 +420,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         frameUrl: this.generateUrl(),
         frameStyleInfo: this.state.frameStyleInfo,
         containerClass,
-        frameClass: classnames({ hidden: !this.state.frameFullyLoaded }),
+        frameClass: classnames(`lunasec-iframe-${componentName.toLowerCase()}`, {
+          hidden: !this.state.frameFullyLoaded,
+        }),
         hiddenElementClass: classnames({ invalid: !this.state.isValid }), // only used by input at the moment
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,

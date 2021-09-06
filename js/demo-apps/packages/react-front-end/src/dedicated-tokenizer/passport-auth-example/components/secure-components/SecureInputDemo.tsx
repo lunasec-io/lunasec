@@ -88,6 +88,7 @@ export const SecureInputDemo: React.FunctionComponent = () => {
                 setError(null);
               }}
               severity="error"
+              id="success-alert"
             >
               <AlertTitle>Error</AlertTitle>
               {error}
@@ -99,6 +100,7 @@ export const SecureInputDemo: React.FunctionComponent = () => {
                 setShowSaveSuccessful(false);
               }}
               severity="success"
+              id="success-alert"
             >
               <AlertTitle>Success</AlertTitle>
               Social Security Number has been Tokenized and Saved

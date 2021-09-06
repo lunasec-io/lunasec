@@ -77,7 +77,13 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
             </FormGroup>
             {error ? <FormHelperText>{error}</FormHelperText> : null}
             {saveSuccessful ? <FormHelperText>Saving documents was successful!</FormHelperText> : null}
-            <Button variant="outlined" color="primary" style={{ textTransform: 'none' }} onClick={saveDocuments}>
+            <Button
+              id="save-documents"
+              variant="outlined"
+              color="primary"
+              style={{ textTransform: 'none' }}
+              onClick={saveDocuments}
+            >
               Save Documents
             </Button>
           </FormControl>

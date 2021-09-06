@@ -19,6 +19,6 @@ INSERT INTO users VALUES(
 
 CREATE TABLE documents (
     user_id INTEGER,
-    token TEXT UNIQUE
+    token TEXT
 );
 
