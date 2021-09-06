@@ -4,10 +4,9 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"fmt"
-    "io"
-    "io/ioutil"
-    "os"
-	"path"
+	"io"
+	"io/ioutil"
+	"os"
 	"path/filepath"
 )
 
@@ -107,7 +106,7 @@ func CopySymLink(source, dest string) error {
     return os.Symlink(link, dest)
 }
 
-func ExtractTgzWithCallback(srcFile, outDir string, callback func(filename string)) (err error) {
+func ExtractTgzWithCallback(srcFile string, callback func(filename string, data []byte) (err error)) (err error) {
 	f, err := os.Open(srcFile)
 	if err != nil {
 		return
@@ -133,29 +132,24 @@ func ExtractTgzWithCallback(srcFile, outDir string, callback func(filename strin
 		}
 
 		if err != nil {
-			panic(err)
+			return
 		}
 
 		name := header.Name
-		outputName := path.Join(outDir, name)
 
 		switch header.Typeflag {
 		case tar.TypeReg: // = regular file
-			fmt.Println("Regular file:", name)
+			var data []byte
 
-			data, err := io.ReadAll(tarReader)
+			data, err = io.ReadAll(tarReader)
 			if err != nil {
-				panic(err)
+				return
 			}
 
-			callback(name)
-		default:
-			fmt.Printf("%s : %c %s %s\n",
-				"Unable to figure out type",
-				header.Typeflag,
-				"in file",
-				name,
-			)
+			err = callback(name, data)
+			if err != nil {
+				return
+			}
 		}
 	}
 
