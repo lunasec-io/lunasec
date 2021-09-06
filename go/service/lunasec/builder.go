@@ -22,6 +22,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"regexp"
 	"strings"
 )
@@ -30,8 +31,8 @@ type ServiceVersions map[constants.LunaSecServices]string
 
 type BuildConfig struct {
 	StackVersion        string          `yaml:"stack_version"`
-	CustomerFrontEnd     string          `yaml:"customer_front_end"`
-	CustomerBackEnd      string          `yaml:"customer_back_end"`
+	ApplicationFrontEnd     string          `yaml:"application_front_end"`
+	ApplicationBackEnd      string          `yaml:"application_back_end"`
 	SessionPublicKey     string          `yaml:"session_public_key"`
 	FrontEndAssetsFolder string          `yaml:"front_end_assets_folder"`
 	LocalStackUrl        string          `yaml:"localstack_url"`
@@ -156,6 +157,7 @@ func (l *builder) mirrorRepos(env *awscdk.Environment) (lookup ServiceToImageMap
 	return
 }
 
+// TODO (cthompson) keep previous versions in the bucket to avoid breaking frontends on different versions?
 func (l *builder) getCdnConfig(secureFrameDomainName string) (packageDir, serializedConfig string, err error) {
 	cdnConfig := types.CDNConfig{
 		Protocol: "https",
@@ -164,8 +166,8 @@ func (l *builder) getCdnConfig(secureFrameDomainName string) (packageDir, serial
 		MainStyle:  "",
 	}
 
-	mainScriptPattern := regexp.MustCompile(`js\/main(\.[a-f0-9]+|\-dev)\.js`)
-	mainStylePattern := regexp.MustCompile(`main(\.[a-f0-9]+|)\.css`)
+	mainScriptPattern := regexp.MustCompile(`^js\/main(\.[a-f0-9]+|\-dev)\.js$`)
+	mainStylePattern := regexp.MustCompile(`^main(\.[a-f0-9]+|)\.css$`)
 
 	version := l.buildConfig.StackVersion
 
@@ -178,13 +180,29 @@ func (l *builder) getCdnConfig(secureFrameDomainName string) (packageDir, serial
 	if err != nil {
 		return
 	}
-	err = util.ExtractTgzWithCallback(packageTarFile.Name(), extractedPackageDir, func(filename string) {
-		if mainScriptPattern.MatchString(filename) {
-			cdnConfig.MainScript = filename
+
+	err = util.ExtractTgzWithCallback(packageTarFile.Name(), func(filename string, data []byte) (err error) {
+		formattedName := strings.ReplaceAll(filename, "package/public/", "")
+
+		shouldSaveFile := false
+		if mainScriptPattern.MatchString(formattedName) {
+			formattedName = strings.ReplaceAll(formattedName, "js/", "")
+			cdnConfig.MainScript = formattedName
+			shouldSaveFile = true
 		}
-		if mainStylePattern.MatchString(filename) {
-			cdnConfig.MainStyle = filename
+		if mainStylePattern.MatchString(formattedName) {
+			cdnConfig.MainStyle = formattedName
+			shouldSaveFile = true
 		}
+
+		if shouldSaveFile {
+			err = ioutil.WriteFile(
+				path.Join(extractedPackageDir, formattedName),
+				data,
+				0755,
+			)
+		}
+		return
 	})
 	if err != nil {
 		return
@@ -221,7 +239,7 @@ func (l *builder) getCiphertextBucket(stack awscdk.Stack) awss3.Bucket {
 }
 
 func (l *builder) getTokenizerBackendBucket(stack awscdk.Stack) awss3.Bucket {
-	return awss3.NewBucket(stack, jsii.String("secure-frame-bucket"), &awss3.BucketProps{
+	return awss3.NewBucket(stack, jsii.String("tokenizer-backend-bucket"), &awss3.BucketProps{
 		AccessControl:        awss3.BucketAccessControl_PUBLIC_READ,
 		WebsiteIndexDocument: jsii.String("index.html"),
 		WebsiteErrorDocument: jsii.String("index.html"),
@@ -232,12 +250,12 @@ func (l *builder) getCloudfrontDistribution(stack awscdk.Stack, secureFrameBucke
 	if l.localDev {
 		return nil
 	}
-	return awscloudfront.NewCfnDistribution(stack, jsii.String("secure-frame-cloudfront"), &awscloudfront.CfnDistributionProps{
+	return awscloudfront.NewCfnDistribution(stack, jsii.String("tokenizer-backend-cloudfront"), &awscloudfront.CfnDistributionProps{
 		DistributionConfig: awscloudfront.CfnDistribution_DistributionConfigProperty{
 			Origins: []awscloudfront.CfnDistribution_OriginProperty{
 				{
 					DomainName: secureFrameBucket.BucketDomainName(),
-					Id:         jsii.String("secure-frame-domain"),
+					Id:         jsii.String("tokenizer-backend-domain"),
 					CustomOriginConfig: &awscloudfront.CfnDistribution_CustomOriginConfigProperty{
 						HttpPort:             jsii.Number(80),
 						HttpsPort:            jsii.Number(443),
@@ -267,7 +285,7 @@ func (l *builder) getCloudfrontDistribution(stack awscdk.Stack, secureFrameBucke
 						Forward: jsii.String("none"),
 					},
 				},
-				TargetOriginId:       jsii.String("secure-frame-domain"),
+				TargetOriginId:       jsii.String("tokenizer-backend-domain"),
 				ViewerProtocolPolicy: jsii.String("redirect-to-https"),
 			},
 			ViewerCertificate: awscloudfront.CfnDistribution_ViewerCertificateProperty{
@@ -291,7 +309,7 @@ func (l *builder) getTokenizerBackendBucketDeployment(stack awscdk.Stack, secure
 
 	bucketSource := awss3deployment.Source_Asset(jsii.String(assetFolder), nil)
 
-	return awss3deployment.NewBucketDeployment(stack, jsii.String("secure-frame-bucket-deployment"), &awss3deployment.BucketDeploymentProps{
+	return awss3deployment.NewBucketDeployment(stack, jsii.String("tokenizer-backend-bucket-deployment"), &awss3deployment.BucketDeploymentProps{
 		Sources: &[]awss3deployment.ISource{
 			bucketSource,
 		},
@@ -327,9 +345,9 @@ func (l *builder) createSecret(stack awscdk.Stack, name, description string) aws
 }
 
 func (l *builder) getTokenizerBackendLambda(stack awscdk.Stack, containerTag string, lambdaEnv *map[string]*string) awslambda.Function {
-	secureFrameRepo := awsecr.Repository_FromRepositoryName(stack, jsii.String("secure-frame-repo"), jsii.String(string(constants.TokenizerBackendServiceName)))
+	secureFrameRepo := awsecr.Repository_FromRepositoryName(stack, jsii.String("tokenizer-backend-repo"), jsii.String(string(constants.TokenizerBackendServiceName)))
 
-	return awslambda.NewDockerImageFunction(stack, jsii.String("secure-frame-lambda"), &awslambda.DockerImageFunctionProps{
+	return awslambda.NewDockerImageFunction(stack, jsii.String("tokenizer-backend-lambda"), &awslambda.DockerImageFunctionProps{
 		Code: awslambda.DockerImageCode_FromEcr(secureFrameRepo, &awslambda.EcrImageCodeProps{
 			Tag: jsii.String(containerTag),
 		}),
@@ -389,10 +407,10 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 	if !l.localDev {
 		lambdaEnv := &map[string]*string{
 			"SECURE_FRAME_FRONT_END":     secureFrameCloudfront.AttrDomainName(),
-			"CUSTOMER_FRONT_END":         jsii.String(l.buildConfig.CustomerFrontEnd),
+			"CUSTOMER_FRONT_END":         jsii.String(l.buildConfig.ApplicationFrontEnd),
 			"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
-			"CUSTOMER_BACK_END":          jsii.String(l.buildConfig.CustomerBackEnd),
-			"SECURE_FRAME_CDN_CONFIG":    jsii.String(string(cdnConfig)),
+			"CUSTOMER_BACK_END":          jsii.String(l.buildConfig.ApplicationBackEnd),
+			"SECURE_FRAME_CDN_CONFIG":    jsii.String(cdnConfig),
 			"TOKENIZER_SECRET_ARN": tokenizerSecret.SecretArn(),
 			"SESSION_PUBLIC_KEY": jsii.String(l.buildConfig.SessionPublicKey),
 			"METADATA_KV_TABLE":   metadataTable.TableName(),
