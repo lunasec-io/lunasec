@@ -336,6 +336,7 @@ func (l *builder) createBasicDynamodbTable(stack awscdk.Stack, name string) awsd
 func (l *builder) createSecret(stack awscdk.Stack, name, description string) awssecretsmanager.Secret {
 	secret := awssecretsmanager.NewSecret(stack, jsii.String(name), &awssecretsmanager.SecretProps{
 		Description: jsii.String(description),
+		RemovalPolicy: awscdk.RemovalPolicy_RETAIN,
 	})
 	awscdk.NewCfnOutput(stack, getOutputName(name), &awscdk.CfnOutputProps{
 		Value:      secret.SecretArn(),
@@ -407,9 +408,9 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 	if !l.localDev {
 		lambdaEnv := &map[string]*string{
 			"SECURE_FRAME_FRONT_END":     secureFrameCloudfront.AttrDomainName(),
-			"CUSTOMER_FRONT_END":         jsii.String(l.buildConfig.ApplicationFrontEnd),
+			"APPLICATION_FRONT_END":         jsii.String(l.buildConfig.ApplicationFrontEnd),
 			"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
-			"CUSTOMER_BACK_END":          jsii.String(l.buildConfig.ApplicationBackEnd),
+			"APPLICATION_BACK_END":          jsii.String(l.buildConfig.ApplicationBackEnd),
 			"SECURE_FRAME_CDN_CONFIG":    jsii.String(cdnConfig),
 			"TOKENIZER_SECRET_ARN": tokenizerSecret.SecretArn(),
 			"SESSION_PUBLIC_KEY": jsii.String(l.buildConfig.SessionPublicKey),

@@ -44,6 +44,9 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			{
+
+			},
+			{
 				Name:    "build",
 				Aliases: []string{"b"},
 				Usage:   "Build secure Lunasec components",
