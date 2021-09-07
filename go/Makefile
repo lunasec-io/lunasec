@@ -18,7 +18,7 @@ docker-release:
 	DOCKER_BUILDKIT=1 docker build -t lunasec/tokenizer-backend:${version} -f docker/Dockerfile.tokenizerbackend .
 
 cli-publish:
-	goreleaser release
+	goreleaser release --rm-dist
 
 docker-publish:
 	docker push lunasec/tokenizer-backend:${version}
