@@ -21,7 +21,7 @@ session_controller:
   auth_callback_host: ${APPLICATION_BACK_END}
   auth_callback_path: ${AUTH_CALLBACK_PATH:/secure-frame}
 secure_frame_controller:
-  views_path: ${SECURE_FRAME_VIEWS_PATH}
+  views_path: ${SECURE_FRAME_VIEWS_PATH:views/tokenizerbackend}
   cdn_config: ${SECURE_FRAME_CDN_CONFIG}
 tokenizer:
   secret_arn: ${TOKENIZER_SECRET_ARN:""}

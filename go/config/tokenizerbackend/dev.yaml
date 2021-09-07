@@ -1,5 +1,4 @@
 secure_frame_controller:
-  views_path: views/tokenizerbackend
   cdn_config:
     protocol: http
     host: ${CDN_HOST}
