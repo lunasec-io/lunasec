@@ -6,9 +6,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "prepack": "npm run compile:production",
+    "prepack": "npm run compile:release",
     "compile": "webpack --config webpack.config.cjs",
-    "compile:production": "rm -rf public; NODE_ENV=production npm run compile",
+    "compile:release": "rm -rf public; NODE_ENV=production npm run compile",
     "serve-assets": "http-server -a localhost -p 8000",
     "watch": "WEBPACK_WATCH=true npm run compile",
     "test": "echo \"Error: no test specified\" && exit 1"
