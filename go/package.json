@@ -4,7 +4,9 @@
   "version": "0.0.1-alpha.2",
   "description": "LunaSec Go Monorepo",
   "scripts": {
-    "release": "make release version=\"$(node -p 'require(\"./package.json\").version)`\""
+    "compile:release": "make release version=\"$(npm run --silent version)\"",
+    "publish:release": "make publish version=\"$(npm run --silent version)\"",
+    "version": "node -p 'require(\"./package.json\").version'"
   },
   "author": "lunasec",
   "license": "MIT"

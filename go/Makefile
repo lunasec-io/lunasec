@@ -11,19 +11,23 @@ all:
 		mv $${f} ${OUTPUT_DIR} ;\
 	done
 
-lunasec-release:
-	goreleaser release --rm-dist
+cli-release:
+	goreleaser build
 
 docker-release:
 	DOCKER_BUILDKIT=1 docker build -t lunasec/tokenizer-backend:${version} -f docker/Dockerfile.tokenizerbackend .
+
+cli-publish:
+	goreleaser release
+
+docker-publish:
 	docker push lunasec/tokenizer-backend:${version}
 
-release-git-tag:
-	git tag ${version}
-	git push origin ${version}
+release: docker-release cli-release
+	echo "completed building releases for ${version}"
 
-release: lunasec-release docker-release
-	echo "completed release for ${version}"
+publish: docker-publish cli-publish
+	echo "pushed releaser for ${version}"
 
 release-clean:
 	git tag -d ${version}
