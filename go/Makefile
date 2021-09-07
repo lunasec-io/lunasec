@@ -12,7 +12,7 @@ all:
 	done
 
 cli-release:
-	goreleaser build
+	goreleaser build --rm-dist
 
 docker-release:
 	DOCKER_BUILDKIT=1 docker build -t lunasec/tokenizer-backend:${version} -f docker/Dockerfile.tokenizerbackend .
