@@ -2,19 +2,76 @@
 id: "introduction"
 title: "Introduction"
 sidebar_label: "Introduction"
+sidebar_position: 1
 ---
+
 ## What is LunaSec?
-The LunaSec Stack makes it easy and secure to work with sensitive data in web applications.
+LunaSec makes it easy and secure for applications to process and store sensitive data through a process
+known as "Tokenization". 
 
-At its core, LunaSec tokenizes your data, allowing the data to be encrypted at rest while the token is passed throughout your application.
-The LunaSec Stack provides libraries, services, and tools which build upon the secure properties of tokenization to allow fine-grained control over when
-and where your sensitive data _is capable of ever being accessed_. 
+When data is "Tokenized" it is exchanged for a non-sensitive "Token". By itself, a token is a meaningless value.
+It is a random identifier only used to reference the encrypted data that is stored by LunaSec. You need to exchange
+a token with an API call in a process called "Detokenization".
 
-LunaSec products are designed to drop in to existing apps with minimal code changes. By reducing friction to include secure LunaSec components,
-it becomes trivial to prevent a single vulnerability from compromising your entire system.
+This process isn't new. It's commonly used by companies for compliance purposes and there are many tokenization 
+products on the market. But, where most products stop at using tokenization for compliance, LunaSec goes further by 
+leveraging tokenization as a "primitive" for adding additional layers of security.
+
+Tokenization provides a means to "bootstrap" the rest of the LunaSec Stack. This enables you to gradually harden 
+the rest of your system's security over time by onboarding additional LunaSec components when you need them. 
+Read more about what features we offer [here](https://www.lunasec.io/docs/pages/overview/features/).
+
+## How does LunaSec work with my app?
+LunaSec products were designed by Security Engineers to drop in to existing apps with minimal code changes.
+That way you don't need to rewrite everything from scratch in order to meet your security goals.
+
+We've designed onboarding with LunaSec to happen in levels. You can add basic tokenization
+today by just [adding a few lines](https://www.lunasec.io/docs/pages/overview/libraries-services/), and our 
+additional [enterprise-grade security modules](https://www.lunasec.io/docs/pages/overview/security/levels/) can be
+layered on top based on your security requirements. You pick what level of security you need today _or_ tomorrow.
+
+If you're unsure of what level of security you need, please [contact us](https://www.lunasec.io/contact) and we'll be 
+happy to help you! We offer paid, professional support to accelerate onboarding time and to ensure your deployment
+meets your security goals.
+
+## Example: Building an eCommerce App
+Let's say you were building a website where you sold goods to users. A user would need to upload information like their
+home address, their credit card number, or (for age restricted products) a copy of their photo ID.
+
+By directly storing this information in your database, without any encryption, you put all of your customers at risk.
+Any single security issue that results in your database being exposed is now, by default, exposing sensitive customer data.
+
+Examples of possible security issues:
+- Any SQL injection attack,
+- Misconfigured database access,
+- Database backups are stolen,
+- A malicious library is added,
+- A vulnerability in the database, the operating system, or any other code you depend on,
+- Any user with database access shares data (intentionally or unintentionally).
+
+With Tokenization, you would mitigate these security issues by replacing a value in your database with a token
+like this: `lunasec-351d1033-0e9f-4a1b-bbb6-adec04837a5c`. This is all an attacker would see. The data is meaningless.
+
+Now, in order to gain access to the sensitive data, you must go through the "detokenization" flow. By default,
+any individual security issue no longer directly "leaks" data. You must _also_ be able to call the Tokenizer.
+
+But, you might ask, what about if an attacker just calls the Tokenizer directly? Isn't this all moot?
+
+That's where the LunaSec Stack really shines:
+On the front end, cross-domain iFrames dubbed **Secure Frames** handle the creation and display of
+sensitive field. Then, on the backend, sensitive data is handled inside of secure enclaves known as **Secure Resolvers**
+(these are hardened containers running without network access by default).
+
+Okay, but what if the Tokenizer gets hacked? Isn't this _still_ all moot?
+
+In order to answer that question, please go read through our [Security Documentation](https://www.lunasec.io/docs/pages/overview/security/introduction/).
+(Spoiler: The Tokenizer can be completely hacked and still not leak data because detokenization requires tokens.)
+
+We're a team of Security Engineers and we've spent months directly debating amongst ourselves (and working with early users)
+to make this all possible. If this is exciting for you, please throw us a GitHub star and share your thoughts with us at
+developer-feedback at lunasec dot io -- We'd love to hear from you!
 
 ## Who is LunaSec for? 
-
 LunaSec is designed for developers building software that needs to store sensitive data and operate in real-world, production environments.
 
 Our open source software can be used to enhance the security of new or existing applications, and is designed for production
