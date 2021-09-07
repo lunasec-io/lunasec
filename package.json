@@ -11,7 +11,7 @@
     "compile:release:sdks": "cd js/sdks && npm run compile:release",
     "compile:release:services": "cd go && npm run compile:release",
     "compile:release": "npm run compile:release:sdks && npm run compile:release:services",
-    "version:release": "lerna version -y $VERSION_BUMP_TYPE",
+    "version:release": "if [ -z ${VERSION_BUMP_TYPE+x} ]; then echo \"VERSION_BUMP_TYPE is unset\"; else lerna version -y $VERSION_BUMP_TYPE; fi",
     "publish:release:sdks": "lerna publish from-package",
     "publish:release:services": "cd go && npm run publish:release",
     "publish:release": "npm run publish:release:sdks && npm run publish:release:services"
