@@ -1,7 +1,7 @@
 {
   "name": "@lunasec/secure-frame-front-end",
   "private": false,
-  "version": "0.0.1-alpha.3",
+  "version": "0.0.1-alpha.4",
   "description": "",
   "main": "index.js",
   "type": "module",
