@@ -12,9 +12,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-#
-#      - name: Set env.RELEASE_VERSION
-#        run: echo "RELEASE_VERSION=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
 
       - name: setup Node
         uses: actions/setup-node@v2
@@ -32,9 +29,9 @@ jobs:
         run: |
           git config --global user.name 'release-bot'
           git config --global user.email 'release-bot@lunasec.io'
-          git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_PAT@github.com/lunasec-io/lunasec-monorepo
+          git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/lunasec-io/lunasec-monorepo
         env:
-          GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout and pull branch
         run: git checkout "${GITHUB_REF:11}" && git pull
@@ -62,24 +59,22 @@ jobs:
 
       - name: create release version
         run: npm run version:release
+        env:
+          VERSION_BUMP_TYPE: prerelease
 
       - name: compile release versions
         run: npm run compile:release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_PAT }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: compile release versions
         run: npm run compile:release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_PAT }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: publish release versions
         run: npm run publish:release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_PAT }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

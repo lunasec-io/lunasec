@@ -7,6 +7,3 @@ lunasec:
   front_end_assets_folder: ../js/sdks/packages/secure-frame-iframe/public/
 aws_gateway:
   region: us-west-2
-npm_gateway:
-  registry_url: registry.npmjs.org
-  authorization: d41e26b7-5f55-4243-8f34-bb0a4d0938e2
