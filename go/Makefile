@@ -1,5 +1,6 @@
 CMD_DIR = ./cmd
 OUTPUT_DIR ?= "build"
+tag ?= dev
 DEBUG_FLAGS ?=
 
 all:
