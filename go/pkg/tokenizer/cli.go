@@ -14,7 +14,7 @@ import (
 	"github.com/refinery-labs/loq/constants"
 	"github.com/refinery-labs/loq/service"
 	"github.com/refinery-labs/loq/types/event"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"go.uber.org/zap"
 )
 
@@ -31,8 +31,8 @@ type CliOptions struct {
 
 func cliOptionsStruct(c *cli.Context) CliOptions {
 	return CliOptions{
-		URL:                c.GlobalString("url"),
-		CustomerPrivateKey: c.GlobalString("customer-private-key"),
+		URL:                c.String("url"),
+		CustomerPrivateKey: c.String("customer-private-key"),
 		Secret:             c.String("secret"),
 		Token:              c.String("token"),
 		Plaintext:          c.String("plaintext"),
