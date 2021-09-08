@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/refinery-labs/loq/pkg/tokenizer"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func main() {
@@ -27,11 +27,11 @@ func main() {
 				Required: true,
 			},
 		},
-		Commands: []cli.Command{
+		Commands: []*cli.Command{
 			{
 				Name:    "auth",
 				Description: "Manage tokenizer authentication",
-				Subcommands: []cli.Command{
+				Subcommands: []*cli.Command{
 					{
 						Name: "create",
 						Description: "Create a valid auth token for the tokenizer.",
@@ -75,7 +75,7 @@ func main() {
 			},
 			{
 				Name: "metadata",
-				Subcommands: []cli.Command{
+				Subcommands: []*cli.Command{
 					{
 						Name:     "set",
 						Category: "metadata",

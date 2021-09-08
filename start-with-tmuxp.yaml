@@ -1,4 +1,4 @@
-session_name: csp-test
+session_name: lunasec-monorepo
 windows:
 - window_name: services
   layout: tiled
@@ -29,4 +29,5 @@ windows:
     - shell_command:
       - cd go
       - make tokenizerbackend
-      - sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d local-dependencies && env $(cat ../.env.host | xargs) ./build/tokenizerbackend_dev
+      - cd ..
+      - sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d local-dependencies && cd go && env $(cat ../.env.host | xargs) ./build/tokenizerbackend_dev
