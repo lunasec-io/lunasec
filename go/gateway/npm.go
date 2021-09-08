@@ -3,6 +3,7 @@ package gateway
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/hashicorp/go-version"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"io"
@@ -10,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sort"
 	"time"
 )
 
@@ -80,11 +82,11 @@ func NewNpmGateway(logger *zap.Logger, provider config.Provider) NpmGateway {
 	}
 }
 
-func (n *npmGateway) findPackageVersionTar(name, version string) (tarUrl string, err error) {
+func (n *npmGateway) findPackageVersionTar(name, packageVersion string) (tarUrl string, err error) {
 	n.logger.Debug(
 		"downloading package from npm",
 		zap.String("name", name),
-		zap.String("version", version),
+		zap.String("packageVersion", packageVersion),
 	)
 
 	packageURL := n.getPackageURL(name)
@@ -117,9 +119,48 @@ func (n *npmGateway) findPackageVersionTar(name, version string) (tarUrl string,
 		return
 	}
 
-	packageVersionInfo, ok := npmPackgeInfo.Versions[version]
+	var (
+		versions []*version.Version
+		strVersions []string
+		semverVersion *version.Version
+	)
+	for npmPackageVersion, _ := range npmPackgeInfo.Versions {
+		semverVersion, err = version.NewVersion(npmPackageVersion)
+		if err != nil {
+			return
+		}
+		strVersions = append(strVersions, npmPackageVersion)
+		versions = append(versions, semverVersion)
+	}
+
+	sort.Sort(sort.Reverse(version.Collection(versions)))
+
+	versionConstraints, err := version.NewConstraint(fmt.Sprintf("~> %s", packageVersion))
+	if err != nil {
+		return
+	}
+
+	var latestPackageVersion string
+	for _, npmPackageVersion := range versions {
+		if versionConstraints.Check(npmPackageVersion) {
+			latestPackageVersion = npmPackageVersion.String()
+			break
+		}
+	}
+
+	if latestPackageVersion == "" {
+		err = fmt.Errorf("unable to find acceptable version for provided: %s", packageVersion)
+		n.logger.Error(
+			"unable to find acceptable version",
+			zap.String("packageVersion", packageVersion),
+			zap.Strings("versions", strVersions),
+		)
+		return
+	}
+
+	packageVersionInfo, ok := npmPackgeInfo.Versions[latestPackageVersion]
 	if !ok {
-		err = fmt.Errorf("unable to location version %s for package %s", version, name)
+		err = fmt.Errorf("unable to location packageVersion %s for package %s", packageVersion, name)
 		n.logger.Error("", zap.Error(err))
 		return
 	}

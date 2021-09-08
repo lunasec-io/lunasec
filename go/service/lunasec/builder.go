@@ -169,7 +169,10 @@ func (l *builder) getCdnConfig(secureFrameDomainName string) (packageDir, serial
 	mainScriptPattern := regexp.MustCompile(`^js\/main(\.[a-f0-9]+|\-dev)\.js$`)
 	mainStylePattern := regexp.MustCompile(`^main(\.[a-f0-9]+|)\.css$`)
 
-	version := l.buildConfig.StackVersion
+	version, ok := l.buildConfig.ServiceVersions[constants.SecureFrameFrontEndServiceName]
+	if !ok {
+		version = l.buildConfig.StackVersion
+	}
 
 	packageTarFile, err := l.npmGateway.DownloadPackage("@lunasec/secure-frame-front-end", version)
 	if err != nil {

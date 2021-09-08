@@ -13,15 +13,15 @@ FROM base as builder
 RUN --mount=target=. \
     --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    OUTPUT_DIR=/out make tokenizerbackend tag=lambda \
-    && mkdir -p /out/config \
-    && cp -r config/tokenizerbackend /out/config/tokenizerbackend
+    OUTPUT_DIR=/out make tokenizerbackend tag=lambda
 
 FROM scratch
 
+COPY config/tokenizerbackend/config.yaml /config/tokenizerbackend/config.yaml
+COPY views/tokenizerbackend/ /views/tokenizerbackend/
+
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /out/tokenizerbackend_lambda /tokenizerbackend
-COPY --from=builder /out/config/ /config/
 COPY --from=builder /tmp /tmp
 
 WORKDIR /
