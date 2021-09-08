@@ -28,9 +28,6 @@ jobs:
       - name: lerna bootstrap
         run: lerna bootstrap
 
-      - name: build production
-        run: npm run compile:production
-
       - name: Configure CI Git User
         run: |
           git config --global user.name 'release-bot'
@@ -52,13 +49,6 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish package
-        run: "npx lerna publish prepatch --yes --message 'chore: release new version'"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_PAT }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Install GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
@@ -70,8 +60,26 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Create LunaSec infra release
-        working-directory: go
-        run: npm run release
+      - name: create release version
+        run: npm run version:release
+
+      - name: compile release versions
+        run: npm run compile:release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: compile release versions
+        run: npm run compile:release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: publish release versions
+        run: npm run publish:release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
