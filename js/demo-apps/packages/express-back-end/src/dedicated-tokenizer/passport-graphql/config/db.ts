@@ -8,13 +8,14 @@ function initDb() {
     driver: sqlite3.Database,
   }).then(async (db) => {
     await db.migrate({
-      force: false, // force remigrate if true.  You should usually just delete the db file instead to wipe db
+      force: false, // force remigrate if true.  You should usually just delete the db file instead
       migrationsPath: __dirname + '/../migrations',
     });
     return db;
   });
 }
 
+// A little helper to make sure the DB connection is initialized and a singleton
 let DBPromise: Promise<Database<sqlite3.Database, sqlite3.Statement>>;
 export function getDb() {
   if (typeof DBPromise === 'undefined') {

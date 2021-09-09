@@ -31,7 +31,7 @@ export const SecureInputDemo: React.FunctionComponent = () => {
       setError('Please enter a social security number');
       return;
     }
-    const { data } = await axios.post<ApiResponse>(`/user/me`, {
+    const { data } = await axios.post<ApiResponse>(`/user/set-ssn`, {
       ssnToken: ssnToken,
     });
     if (!data.success) {
