@@ -2,6 +2,7 @@
 id: "libraries-services"
 title: "Libraries and Services"
 sidebar_label: "Libraries and Services"
+sidebar_position: 3
 ---
 
 # NPM Modules
