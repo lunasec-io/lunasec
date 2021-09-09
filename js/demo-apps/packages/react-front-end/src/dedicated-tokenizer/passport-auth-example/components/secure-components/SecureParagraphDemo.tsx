@@ -1,5 +1,5 @@
 import { SecureParagraph } from '@lunasec/react-sdk';
-import { Card, CardContent, CardHeader, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Card, CardContent, CardHeader, Grid, Typography } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useState } from 'react';
 
@@ -21,29 +21,29 @@ export const SecureParagraphDemo: React.FunctionComponent = () => {
     );
   }
 
-  function renderAlerts() {
-    return (
-      <>
-        {error !== null ? (
-          <Alert
-            onClose={() => {
-              setError(null);
-            }}
-            severity="error"
-          >
-            <AlertTitle>Error</AlertTitle>
-            {error}
-          </Alert>
-        ) : null}
-      </>
-    );
+  function renderErrors() {
+    if (error !== null) {
+      return (
+        <Alert
+          onClose={() => {
+            setError(null);
+          }}
+          severity="error"
+        >
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      );
+    }
+    return null;
   }
+
   return (
     <Grid item xs={12}>
       <Card>
         <CardHeader title={`User: ${user.username}`} />
         <CardContent>
-          {renderAlerts()}
+          {renderErrors()}
           <Typography>Social Security Number:</Typography>
           <SecureParagraph token={user.ssn_token} errorHandler={(e) => setError(e.message)} />
         </CardContent>
