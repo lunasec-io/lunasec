@@ -77,35 +77,43 @@ export const SecureInputDemo: React.FunctionComponent = () => {
     errorHandler: (e) => setError(e.message),
   };
 
+  function renderAlerts() {
+    return (
+      <>
+        {error !== null ? (
+          <Alert
+            onClose={() => {
+              setError(null);
+            }}
+            severity="error"
+            id="success-alert"
+          >
+            <AlertTitle>Error</AlertTitle>
+            {error}
+          </Alert>
+        ) : null}
+        {showSaveSuccessful ? (
+          <Alert
+            onClose={() => {
+              setShowSaveSuccessful(false);
+            }}
+            severity="success"
+            id="success-alert"
+          >
+            <AlertTitle>Success</AlertTitle>
+            Social Security Number has been Tokenized and Saved
+          </Alert>
+        ) : null}
+      </>
+    );
+  }
+
   return (
     <Grid item xs={12}>
       <Card>
         <CardHeader title={`User: ${user.username}`} />
         <CardContent>
-          {error !== null ? (
-            <Alert
-              onClose={() => {
-                setError(null);
-              }}
-              severity="error"
-              id="success-alert"
-            >
-              <AlertTitle>Error</AlertTitle>
-              {error}
-            </Alert>
-          ) : null}
-          {showSaveSuccessful ? (
-            <Alert
-              onClose={() => {
-                setShowSaveSuccessful(false);
-              }}
-              severity="success"
-              id="success-alert"
-            >
-              <AlertTitle>Success</AlertTitle>
-              Social Security Number has been Tokenized and Saved
-            </Alert>
-          ) : null}
+          {renderAlerts()}
           <SecureForm name="secure-form-example" onSubmit={(e) => handleFormSubmit(e)}>
             <FormGroup>
               <FormLabel htmlFor="ssn-token-input">Social Security Number</FormLabel>
