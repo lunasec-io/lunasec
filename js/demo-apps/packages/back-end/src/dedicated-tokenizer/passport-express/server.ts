@@ -3,9 +3,10 @@ import express from 'express';
 import expressSession from 'express-session';
 import passport from 'passport';
 
+import { getDb } from '../../common/database/db';
+
 import { lunaSec } from './config/configure-lunasec';
 import configurePassport from './config/configure-passport';
-import { getDb } from './config/db';
 import { authRouter } from './routes/auth-router';
 import { documentsRouter } from './routes/documents-router';
 import { userRouter } from './routes/user-router';
