@@ -5,6 +5,8 @@ const __PUBLIC_KEY__ = process.env.SESSION_JWT_PUBLIC_KEY as string;
 interface TokenData {
   session: { id: string };
 }
+// DEPRECATED but left for posterity to show a home-rolled auth flow with no libraries like passport
+
 // Pull the public key to verify the session JWT from an environment variable and turn it into a keyobject, then use it to decode the session
 export async function readSessionFromRequest(req: Request) {
   if (__PUBLIC_KEY__ === undefined) {

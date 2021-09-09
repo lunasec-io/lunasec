@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { Action, action, Computed, computed, createStore, createTypedHooks, Thunk, thunk } from 'easy-peasy';
 
-import { ApiResponse, CurrentUserResponse, UserModel as User } from './types';
+import { ApiResponse, CurrentUserResponse, UserModel } from './types';
 
 interface StoreModel {
-  user: User | null;
+  user: UserModel | null;
   loggedIn: Computed<StoreModel, boolean>;
-  setUser: Action<StoreModel, User>;
+  setUser: Action<StoreModel, UserModel>;
   setSsn: Action<StoreModel, string>;
   saveUser: Thunk<StoreModel, { ssnToken: string }>;
   loadUser: Thunk<StoreModel>;

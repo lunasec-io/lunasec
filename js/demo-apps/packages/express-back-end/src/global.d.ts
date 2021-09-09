@@ -1,10 +1,10 @@
-import { UserModel } from './types';
+import { User } from './types';
 
 declare global {
   namespace Express {
-    type User = UserModel;
+    type User = User;
     interface Request {
-      user: UserModel;
+      user: User;
     }
   }
 }

@@ -1,6 +1,7 @@
-export interface UserModel {
-  id: string;
-  username: string;
-  display_name: string;
-  ssn_token?: string;
-}
+export type { UserModel, UserWithPasswordHash } from './dedicated-tokenizer/passport-express/models/user';
+
+//
+// export interface UserWithPasswordHash extends User {
+//   salt: string;
+//   hashed_password: string;
+// }

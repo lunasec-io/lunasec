@@ -19,7 +19,7 @@ describe('demo app', function () {
     cy.get('form[id=signup-form]').submit();
 
     cy.location('pathname').should('eq', '/');
-    cy.get('p[id=user-status]').contains('Logged in');
+    cy.get('p[id=user-status]').should('contain', 'Logged in');
   });
 
   it('secure input tokenizes', () => {
@@ -29,10 +29,10 @@ describe('demo app', function () {
 
     cy.get('button[type=submit]').click();
 
-    cy.get('#success-alert').contains('Success').should('exist');
+    cy.get('#success-alert').should('contain', 'Success');
   });
 
-  // Broken test, would be nice to have
+  // Broken persistence test, would be nice to have
   // it('secure input detokenizes', () => {
   //     cy.reload()
   //
@@ -46,7 +46,7 @@ describe('demo app', function () {
   it('secure paragraph', () => {
     cy.visit('/secureparagraph');
 
-    cy.iframe().find('.secure-input').contains(fakeSSN);
+    cy.iframe().find('.secure-input').should('contain', fakeSSN);
   });
 
   it('secure upload', () => {
@@ -54,7 +54,7 @@ describe('demo app', function () {
 
     cy.iframe().find('input[type=file]').attachFile({ filePath: 'sid.png', fileName: randomFileName }); // Dont sue me bro
 
-    cy.iframe().find('.file-container').contains(randomFileName).should('exist');
+    cy.iframe().find('.file-container').should('contain', randomFileName);
 
     cy.wait(500);
 
@@ -66,7 +66,7 @@ describe('demo app', function () {
 
     const link = cy.iframe().find('a');
 
-    link.contains(randomFileName).should('exist');
+    link.should('contain', randomFileName);
 
     link.click();
     cy.wait(500);
@@ -81,6 +81,6 @@ describe('demo app', function () {
 
     cy.get('button').contains('Save').click();
 
-    cy.iframe('.lunasec-iframe-paragraph').find('p').contains('some secure text').should('exist');
+    cy.iframe('.lunasec-iframe-paragraph').find('p').should('contain', 'some secure text');
   });
 });

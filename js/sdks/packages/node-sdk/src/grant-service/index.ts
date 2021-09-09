@@ -69,7 +69,7 @@ export class LunaSecGrantService {
   }
 
   // Public verify can also handle arrays for people's convenience, so it mostly deals with handling the array and passes the verifying logic to the private function above
-  public async verify(sessionId: string, tokenOrTokens: string | string[], grantType: GrantTypeUnion) {
+  public async verify(sessionId: string, tokenOrTokens: string | string[], grantType: GrantTypeUnion = 'store_token') {
     // Todo: dry up this array handling from above, we are doing it twice
     if (Array.isArray(tokenOrTokens)) {
       const grantPromises: Promise<void>[] = [];

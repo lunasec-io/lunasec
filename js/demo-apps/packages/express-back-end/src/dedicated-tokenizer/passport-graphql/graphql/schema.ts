@@ -1,49 +1,55 @@
 import { gql } from 'apollo-server-express';
 
-import { lunaSec } from '../../configure-lunasec';
+import { lunaSec } from '../../../configure-lunasec';
 // README - This demo shows how to use the lunasec @token directive in your apollo server
 // Import the directive from the node-sdk and attach it to your schemaDirectives(bottom of this file) which are passed into apollo
 // and declare the directive directly in your schema with the `directive` keyword.
 
 export const typeDefs = gql`
-  type Query {
-    getFormData: FormData
-  }
-
-  type FormData {
-    text_area: String @token
-    email: String @token
-    insecure_field: String
-    files: [String] @token # @token directive also works on arrays of tokens
-  }
-
-  type Mutation {
-    setFormData(formData: FormDataInput): FormData
-  }
-
-  input FormDataInput {
-    email: String @token
-    insecure_field: String
-    text_area: String @token
-    files: [String] @token
-  }
-
+  # Declare the lunasec @token directive
   directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
-`;
 
-// This is a fake little database so we have some data to serve
-const db = {
-  formData: {
-    text_area: '',
-    email: '',
-    insecure_field: 'Some Insecure Data Coexisting',
-    files: [],
-  },
-};
+  # Types
+  type User {
+    username: String
+    ssn_token: String @token
+  }
+
+  type Document {
+    token: String @token
+  }
+  # Inputs
+  input UserInput {
+    username: String
+    password: String
+  }
+
+  input SsnInput {
+    ssn_token: String @token
+  }
+
+  input DocumentsInput {
+    documents: [String] @token
+  }
+
+  # Mutations and Queries
+  type Mutation {
+    signup(userInfo: UserInput): User
+    login(userInfo: UserInput): User
+    setSsn(ssnInfo: SsnInput): User
+    setDocuments(tokenArray: DocumentsInput): Boolean
+  }
+
+  type Query {
+    getCurrentUser: User
+    getUserDocuments: [Document]
+  }
+`;
 
 export const resolvers = {
   Query: {
-    getFormData: () => db.formData, // Once this resolver fires and tokens are retrieved, anything annotated with @token in FormData in the schema will be granted read permission for this session for 15 minutes
+    getCurrentUser: () => {}, // Once this resolver fires and tokens are retrieved, anything annotated with @token in FormData in the schema will be granted read permission for this session for 15 minutes
+    getUserDocuments: () => {},
   },
   Mutation: {
     setFormData: async (

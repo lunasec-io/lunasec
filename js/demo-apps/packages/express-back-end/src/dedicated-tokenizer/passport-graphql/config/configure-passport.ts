@@ -4,7 +4,7 @@ import passport from 'passport';
 // @ts-ignore
 import { Strategy } from 'passport-json';
 
-import { UserModel } from '../../../types';
+import { User } from '../../../types';
 
 import { getDb } from './db';
 
@@ -18,7 +18,7 @@ export default async function configurePassport() {
   // will be set at `req.user` in route handlers after authentication.
   passport.use(
     new Strategy(
-      (username: string, password: string, done: (err: null | string | Error, usr?: false | UserModel) => void) => {
+      (username: string, password: string, done: (err: null | string | Error, usr?: false | User) => void) => {
         db.get('SELECT rowid AS id, * FROM users WHERE username = ?', [username])
           .catch((err) => done(err, false))
           .then((row) => {
