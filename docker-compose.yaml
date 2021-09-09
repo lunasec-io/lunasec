@@ -27,7 +27,7 @@ services:
     hostname: customer-front-end
     build:
       context: .
-      dockerfile: js/docker/demo.Dockerfile
+      dockerfile: js/docker/demo.dockerfile
       target: react-front-end
     ports:
       - "3000:3000"
