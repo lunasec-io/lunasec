@@ -19,7 +19,7 @@ services:
   secure-frame-iframe:
     build:
       context: .
-      dockerfile: js/docker/Dockerfile.demo
+      dockerfile: js/docker/demo.dockerfile
       target: secure-frame-iframe
     ports:
       - "8000:8000"
@@ -27,14 +27,14 @@ services:
     hostname: customer-front-end
     build:
       context: .
-      dockerfile: js/docker/Dockerfile.demo
+      dockerfile: js/docker/demo.Dockerfile
       target: react-front-end
     ports:
       - "3000:3000"
   customer-back-end:
     build:
       context: .
-      dockerfile: js/docker/Dockerfile.demo
+      dockerfile: js/docker/demo.dockerfile
       target: demo-back-end
     ports:
       - "3001:3001"

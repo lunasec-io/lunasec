@@ -19,11 +19,15 @@ FROM lerna-bootstrap as demo-back-end
 
 WORKDIR /repo/js/demo-apps/packages/express-back-end
 
+ENV DEMO_NAME="dedicated-passport-express"
+
 ENTRYPOINT yarn start:dev
 
 FROM lerna-bootstrap as react-front-end
 
 WORKDIR /repo/js/demo-apps/packages/react-front-end
+
+ENV DEMO_NAME="dedicated-passport-express"
 
 ENTRYPOINT npm run start
 
