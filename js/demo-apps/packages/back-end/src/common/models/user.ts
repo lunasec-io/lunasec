@@ -48,10 +48,11 @@ export class UserMethods {
           throw err;
         }
 
-        const insertedUser = await db.run(
-          'INSERT INTO users (username, hashed_password, salt, display_name) VALUES (?, ?, ?, ?)',
-          [userFields.username, hashedPassword, salt]
-        );
+        const insertedUser = await db.run('INSERT INTO users (username, hashed_password, salt) VALUES (?, ?, ?)', [
+          userFields.username,
+          hashedPassword,
+          salt,
+        ]);
 
         if (!insertedUser.lastID) {
           throw new Error('db error');

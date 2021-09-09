@@ -1,15 +1,26 @@
+import { Buffer } from 'buffer';
 import crypto from 'crypto';
 
 import passport from 'passport';
 // @ts-ignore
 import { Strategy } from 'passport-json';
 
-import { User } from '../../../types';
+import { UserMethods, UserModel } from '../../../common/models/user';
 
-import { getDb } from './db';
+function comparePassword(passwordToCheck: string, storedPasswordHash: string, salt: string): Promise<boolean | Error> {
+  return new Promise((resolve, _reject) => {
+    crypto.pbkdf2(passwordToCheck, salt, 10000, 32, 'sha256', function (err, reqPassHash) {
+      if (err) {
+        return resolve(err);
+      }
+
+      const passwordCorrect = crypto.timingSafeEqual(Buffer.from(storedPasswordHash), reqPassHash);
+      resolve(passwordCorrect);
+    });
+  });
+}
 
 export default async function configurePassport() {
-  const db = await getDb();
   // Configure the local strategy for use by Passport.
   //
   // The local strategy requires a `verify` function which receives the credentials
@@ -17,34 +28,32 @@ export default async function configurePassport() {
   // that the password is correct and then invoke `cb` with a user object, which
   // will be set at `req.user` in route handlers after authentication.
   passport.use(
-    new Strategy(
-      (username: string, password: string, done: (err: null | string | Error, usr?: false | User) => void) => {
-        db.get('SELECT rowid AS id, * FROM users WHERE username = ?', [username])
-          .catch((err) => done(err, false))
-          .then((row) => {
-            if (!row) {
-              return done('Incorrect username or password.', false);
-            }
+    new Strategy(async function login(
+      username: string,
+      reqPassword: string,
+      done: (err: null | string | Error, usr?: false | UserModel) => void
+    ) {
+      const userRecord = await UserMethods.getUserWithPasswordHash(username).catch((err) => done(err, false));
 
-            crypto.pbkdf2(password, row.salt, 10000, 32, 'sha256', function (err, hashedPassword) {
-              if (err) {
-                return done(err, false);
-              }
-              if (!crypto.timingSafeEqual(row.hashed_password, hashedPassword)) {
-                return done('Incorrect username or password.', false);
-              }
-
-              const user = {
-                id: row.id.toString(),
-                username: row.username,
-                display_name: row.display_name,
-                ssn_token: row.ssn_token,
-              };
-              return done(null, user);
-            });
-          });
+      if (!userRecord) {
+        return done('Incorrect username or password.', false);
       }
-    )
+
+      const passwordCorrect = await comparePassword(reqPassword, userRecord.hashed_password, userRecord.salt);
+      if (passwordCorrect instanceof Error) {
+        return done(passwordCorrect, false);
+      }
+      if (!passwordCorrect) {
+        return done('Incorrect username or password.', false);
+      }
+
+      const user = {
+        id: userRecord.id.toString(),
+        username: userRecord.username,
+        ssn_token: userRecord.ssn_token,
+      };
+      return done(null, user);
+    })
   );
 
   // Configure Passport authenticated session persistence.
@@ -57,16 +66,14 @@ export default async function configurePassport() {
   passport.serializeUser(function (user, cb) {
     cb(null, { id: user.id, username: user.username });
   });
+  // TODO: Generate session IDs, dont use user IDs like this
 
-  passport.deserializeUser(function (userInfo: { id: string }, cb) {
-    db.get('SELECT rowid AS id, username, display_name, ssn_token FROM users WHERE rowid = ?', [userInfo.id])
-      .catch((err) => cb(err))
-      .then((row) => {
-        const user = {
-          ...row,
-          id: row.id.toString(),
-        };
-        cb(null, user);
-      });
+  passport.deserializeUser(async function (userInfo: { id: string }, cb) {
+    try {
+      const user = await UserMethods.getUser(userInfo.id);
+      cb(null, user);
+    } catch (e) {
+      cb(e);
+    }
   });
 }

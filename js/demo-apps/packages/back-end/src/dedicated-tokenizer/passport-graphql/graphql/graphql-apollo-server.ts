@@ -6,10 +6,9 @@ import { readSessionFromRequest } from '../../../read-session-from-request';
 import { resolvers, schemaDirectives, typeDefs } from './schema';
 
 export async function attachApolloServer(app: Express) {
-  // @ts-ignore
   const server = new ApolloServer({
     typeDefs,
-    resolvers: resolvers as IResolvers,
+    resolvers: resolvers,
     schemaDirectives,
     context: addSessionToContext,
   });
