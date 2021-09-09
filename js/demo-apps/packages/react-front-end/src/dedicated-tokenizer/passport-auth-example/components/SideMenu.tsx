@@ -29,6 +29,63 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+function renderLoginSignupLinks() {
+  return (
+    <>
+      <ListItem button component={NavLink} to="/signup">
+        <ListItemIcon>
+          <VpnKey />
+        </ListItemIcon>
+        <ListItemText primary="Signup" />
+      </ListItem>
+      <ListItem button component={NavLink} to="/login">
+        <ListItemIcon>
+          <LockOpen />
+        </ListItemIcon>
+        <ListItemText primary="Login" />
+      </ListItem>
+    </>
+  );
+}
+
+function renderSecureComponentLinks() {
+  return (
+    <>
+      <ListItem button component={NavLink} to="/secureinput">
+        <ListItemIcon>
+          <ChatBubbleOutline />
+        </ListItemIcon>
+        <ListItemText primary="SecureInput" />
+      </ListItem>
+      <ListItem button component={NavLink} to="/secureparagraph">
+        <ListItemIcon>
+          <FormatTextdirectionLToR />
+        </ListItemIcon>
+        <ListItemText primary="SecureParagraph" />
+      </ListItem>
+      <ListItem button component={NavLink} to="/secureupload">
+        <ListItemIcon>
+          <CloudUpload />
+        </ListItemIcon>
+        <ListItemText primary="SecureUpload" />
+      </ListItem>
+
+      <ListItem button component={NavLink} to="/securedownload">
+        <ListItemIcon>
+          <GetApp />
+        </ListItemIcon>
+        <ListItemText primary="SecureDownload" />
+      </ListItem>
+      <ListItem button component={NavLink} to="/securetextarea">
+        <ListItemIcon>
+          <GetApp />
+        </ListItemIcon>
+        <ListItemText primary="SecureTextArea" />
+      </ListItem>
+    </>
+  );
+}
+
 export const SideMenu: React.FunctionComponent = () => {
   const classes = useStyles({});
   const loggedIn = useStoreState((state) => state.loggedIn);
@@ -49,63 +106,8 @@ export const SideMenu: React.FunctionComponent = () => {
           </ListItemIcon>
           <ListItemText primary="Home" />
         </ListItem>
-        {!loggedIn ? (
-          <ListItem button component={NavLink} to="/signup">
-            <ListItemIcon>
-              <VpnKey />
-            </ListItemIcon>
-            <ListItemText primary="Signup" />
-          </ListItem>
-        ) : null}
-        {!loggedIn ? (
-          <ListItem button component={NavLink} to="/login">
-            <ListItemIcon>
-              <LockOpen />
-            </ListItemIcon>
-            <ListItemText primary="Login" />
-          </ListItem>
-        ) : null}
-        {loggedIn ? (
-          <ListItem button component={NavLink} to="/secureinput">
-            <ListItemIcon>
-              <ChatBubbleOutline />
-            </ListItemIcon>
-            <ListItemText primary="SecureInput" />
-          </ListItem>
-        ) : null}
-        {loggedIn ? (
-          <ListItem button component={NavLink} to="/secureparagraph">
-            <ListItemIcon>
-              <FormatTextdirectionLToR />
-            </ListItemIcon>
-            <ListItemText primary="SecureParagraph" />
-          </ListItem>
-        ) : null}
-        {loggedIn ? (
-          <ListItem button component={NavLink} to="/secureupload">
-            <ListItemIcon>
-              <CloudUpload />
-            </ListItemIcon>
-            <ListItemText primary="SecureUpload" />
-          </ListItem>
-        ) : null}
-
-        {loggedIn ? (
-          <ListItem button component={NavLink} to="/securedownload">
-            <ListItemIcon>
-              <GetApp />
-            </ListItemIcon>
-            <ListItemText primary="SecureDownload" />
-          </ListItem>
-        ) : null}
-        {loggedIn ? (
-          <ListItem button component={NavLink} to="/securetextarea">
-            <ListItemIcon>
-              <GetApp />
-            </ListItemIcon>
-            <ListItemText primary="SecureTextArea" />
-          </ListItem>
-        ) : null}
+        {!loggedIn && renderLoginSignupLinks()}
+        {loggedIn && renderSecureComponentLinks()}
       </List>
     </Drawer>
   );

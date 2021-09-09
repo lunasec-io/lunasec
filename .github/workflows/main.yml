@@ -27,6 +27,7 @@ jobs:
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --exit-code-from integration-test
 
     - name: docker compose logs
+      if: always()
       run: docker-compose logs
 
     - uses: actions/upload-artifact@v2

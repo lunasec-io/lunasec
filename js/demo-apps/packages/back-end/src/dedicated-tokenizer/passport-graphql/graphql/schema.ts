@@ -1,5 +1,7 @@
-import { gql } from 'apollo-server-express';
+import { gql, IResolvers } from 'apollo-server-express';
 
+import { DocumentMethods } from '../../../common/models/documents';
+import { UserMethods } from '../../../common/models/user';
 import { lunaSec } from '../../../configure-lunasec';
 // README - This demo shows how to use the lunasec @token directive in your apollo server
 // Import the directive from the node-sdk and attach it to your schemaDirectives(bottom of this file) which are passed into apollo
@@ -46,24 +48,24 @@ export const typeDefs = gql`
   }
 `;
 
-export const resolvers = {
+export const resolvers: IResolvers = {
   Query: {
-    getCurrentUser: () => {}, // Once this resolver fires and tokens are retrieved, anything annotated with @token in FormData in the schema will be granted read permission for this session for 15 minutes
+    getCurrentUser: (parent, args, context, info) => {}, // Once this resolver fires and tokens are retrieved, anything annotated with @token in FormData in the schema will be granted read permission for this session for 15 minutes
     getUserDocuments: () => {},
   },
   Mutation: {
-    setFormData: async (
-      _parent: never,
-      args: { formData: typeof db['formData'] },
-      _context: { sessionId: string },
-      _info: any
-    ) => {
-      // If the tokens annotated with @token in FormDataInput in the schema are not granted permission to be written to the database for this sessionID
-      // they will throw and we would not reach this resolver
-      db.formData = args.formData;
-      console.debug('setting test data to ', args.formData);
-      return db.formData;
-    },
+    // setFormData: async (
+    //   _parent: never,
+    //   args: { formData: typeof db['formData'] },
+    //   _context: { sessionId: string },
+    //   _info: any
+    // ) => {
+    //   // If the tokens annotated with @token in FormDataInput in the schema are not granted permission to be written to the database for this sessionID
+    //   // they will throw and we would not reach this resolver
+    //   db.formData = args.formData;
+    //   console.debug('setting test data to ', args.formData);
+    //   return db.formData;
+    // },
   },
 };
 
