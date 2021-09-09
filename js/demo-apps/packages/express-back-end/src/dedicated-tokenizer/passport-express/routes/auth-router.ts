@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 
-import { UserMethods } from '../models/user';
+import { UserMethods } from '../../../common/models/user';
 
 export function authRouter() {
   const router = Router();

@@ -1,4 +1,4 @@
-export type { UserModel, UserWithPasswordHash } from './dedicated-tokenizer/passport-express/models/user';
+export type { UserModel, UserWithPasswordHash } from './common/models/user';
 
 //
 // export interface UserWithPasswordHash extends User {

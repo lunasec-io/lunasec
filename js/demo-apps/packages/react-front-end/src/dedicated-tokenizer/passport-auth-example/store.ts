@@ -1,4 +1,5 @@
 import axios from 'axios';
+// easy-peasy is a really cool and simple store based on Redux, with a bad name
 import { Action, action, Computed, computed, createStore, createTypedHooks, Thunk, thunk } from 'easy-peasy';
 
 import { ApiResponse, CurrentUserResponse, UserModel } from './types';

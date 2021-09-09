@@ -1,4 +1,4 @@
-import { getDb } from '../config/db';
+import { getDb } from '../../dedicated-tokenizer/passport-express/config/db';
 
 export class DocumentMethods {
   static async getUserDocuments(userId: string) {

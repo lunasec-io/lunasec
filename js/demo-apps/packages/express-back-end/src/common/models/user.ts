@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import { getDb } from '../config/db';
+import { getDb } from '../../dedicated-tokenizer/passport-express/config/db';
 
 export interface UserModel {
   id: string;

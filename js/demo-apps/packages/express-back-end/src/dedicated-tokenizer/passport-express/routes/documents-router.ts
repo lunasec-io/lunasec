@@ -1,9 +1,9 @@
 import bodyParser from 'body-parser';
 import { Router } from 'express';
 
+import { DocumentMethods } from '../../../common/models/documents';
 import { ensureLoggedIn } from '../config/auth-helpers';
 import { lunaSec } from '../config/configure-lunasec';
-import { DocumentMethods } from '../models/documents';
 
 export function documentsRouter() {
   const router = Router();

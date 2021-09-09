@@ -5,7 +5,7 @@ import passport from 'passport';
 // @ts-ignore
 import { Strategy } from 'passport-json';
 
-import { UserMethods, UserModel } from '../models/user';
+import { UserMethods, UserModel } from '../../../common/models/user';
 
 function comparePassword(passwordToCheck: string, storedPasswordHash: string, salt: string): Promise<boolean | Error> {
   return new Promise((resolve, _reject) => {
