@@ -13,22 +13,13 @@ FROM base as builder
 RUN --mount=target=. \
     --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    OUTPUT_DIR=/out make lunasec tag=cli \
-    && mkdir -p /out/config \
-    && cp -r config/lunasec /out/config/lunasec
-
+    OUTPUT_DIR=/out make lunasec tag=cli
 FROM node
 
-RUN apt-get update || : && apt-get install python3 python3-pip -y
-
 RUN npm i -g aws-cdk@1.114.0 aws-cdk-local@1.65.4
-RUN pip3 install awscli
-
-ENV BUILDER_PATH /out/lunasec_cli
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder $BUILDER_PATH /lunasec
-COPY --from=builder /out/config/ /config/
+COPY --from=builder /out/lunasec_cli /lunasec
 COPY --from=builder /tmp /tmp
 
 WORKDIR /

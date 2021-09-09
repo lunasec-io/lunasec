@@ -1,6 +1,7 @@
 package lunasec
 
 import (
+	"errors"
 	"fmt"
 	"github.com/refinery-labs/loq/constants"
 	"github.com/refinery-labs/loq/gateway"
@@ -16,6 +17,7 @@ var (
 	configPaths = []string{
 		"config.yaml",
 		"config/lunasec/config.yaml",
+		"config/lunasec/dev.yaml",
 	}
 )
 
@@ -36,7 +38,11 @@ func loadConfigFile(configFile string) (provider config.Provider, err error) {
 		}
 	}
 
-	return config.NewYAML(config.File(configFile))
+	configFiles := []string{
+		configFile,
+	}
+	provider = util.GetConfigProviderFromFiles(configFiles)
+	return
 }
 
 func BuildCommand(c *cli.Context) (err error) {
@@ -55,7 +61,7 @@ func BuildCommand(c *cli.Context) (err error) {
 		buildDir = constants.LunasecBuildDir
 	}
 
-	logger, err := zap.NewProduction()
+	logger, err := util.GetLogger()
 	if err != nil {
 		log.Println(err)
 		return
@@ -92,7 +98,9 @@ func DeployCommand(c *cli.Context) (err error) {
 	localDev := c.Bool("local")
 	configOutput := c.String("config-output")
 	if configOutput == "" {
-		configOutput = "config/tokenizerbackend/"
+		err = errors.New("no config output file provided")
+		log.Println(err)
+		return
 	}
 	configFile := c.String("config")
 	provider, err := loadConfigFile(configFile)

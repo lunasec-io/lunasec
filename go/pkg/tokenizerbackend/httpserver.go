@@ -38,7 +38,7 @@ func newServer() http.Handler {
 		panic(err)
 	}
 
-	provider := util.GetConfigProvider("config/tokenizerbackend")
+	provider := util.GetConfigProviderFromDir("config/tokenizerbackend")
 
 	cspMiddleware := controller.WithCSP(provider)
 

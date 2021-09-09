@@ -7,3 +7,7 @@ lunasec:
   front_end_assets_folder: ../js/sdks/packages/secure-frame-iframe/public/
 aws_gateway:
   region: us-west-2
+  access_key_id: ${AWS_ACCESS_KEY_ID}
+  secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+  localstack_url: ${LOCALSTACK_URL}
+  local_https_proxy: ${LOCAL_HTTPS_PROXY}
