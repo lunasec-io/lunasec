@@ -22,7 +22,7 @@ func newServer(configPath string, authType constants.AuthType) http.Handler {
 		panic(err)
 	}
 
-	provider := util.GetConfigProvider(configPath)
+	provider := util.GetConfigProviderFromDir(configPath)
 
 	logger.Debug("loading AWS gateways")
 	gateways := gateway.GetAwsGateways(logger, provider)

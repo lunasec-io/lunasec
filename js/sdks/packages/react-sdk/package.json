@@ -6,7 +6,6 @@
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "https://github.com/lunasec/secure-frame-react-sdk",
   "license": "MIT",
   "keywords": [],
   "scripts": {

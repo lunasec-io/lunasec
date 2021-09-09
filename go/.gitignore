@@ -2,6 +2,7 @@ loq.iml
 build/
 **/secrets.yaml
 **/local.yaml
+**/aws_resources.yaml
 .vscode/
 **/refinery-container-runtime.tar
 nohup.out

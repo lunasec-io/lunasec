@@ -15,8 +15,8 @@ services:
       - proxy
       - cdk-init
       - secure-frame-iframe
-      - customer-front-end
-      - customer-back-end
+      - application-front-end
+      - application-back-end
       - tokenizerbackend
     environment:
       - DISPLAY=${DISPLAY}

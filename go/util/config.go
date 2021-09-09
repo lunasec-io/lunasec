@@ -19,19 +19,12 @@ func FindFirstExistingFile(filePaths []string) string {
 	return ""
 }
 
-func GetConfigProvider(configDir string) config.Provider {
-	files, err := ioutil.ReadDir(configDir)
-	if err != nil {
-		log.Fatalln(err)
+func GetConfigProviderFromFiles(filenames []string) config.Provider {
+	opts := []config.YAMLOption {
+		config.Permissive(),
+		config.Expand(os.LookupEnv),
 	}
 
-	var filenames []string
-	for _, file := range files {
-		filenames = append(filenames, path.Join(configDir, file.Name()))
-	}
-
-	opts := make([]config.YAMLOption, 0, len(filenames)+2)
-	opts = append(opts, config.Permissive(), config.Expand(os.LookupEnv))
 	for _, name := range filenames {
 		opts = append(opts, config.File(name))
 	}
@@ -41,6 +34,19 @@ func GetConfigProvider(configDir string) config.Provider {
 		panic(err)
 	}
 	return provider
+}
+
+func GetConfigProviderFromDir(configDir string) config.Provider {
+	files, err := ioutil.ReadDir(configDir)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var filenames []string
+	for _, file := range files {
+		filenames = append(filenames, path.Join(configDir, file.Name()))
+	}
+	return GetConfigProviderFromFiles(filenames)
 }
 
 func GetStaticConfigProvider(val interface{}) (provider config.Provider, err error) {
