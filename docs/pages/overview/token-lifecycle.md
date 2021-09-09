@@ -2,6 +2,7 @@
 id: "token-lifecycle"
 title: "Token Lifecycle"
 sidebar_label: "Token Lifecycle"
+sidebar_position: 4
 ---
 # Token lifecycle
 
