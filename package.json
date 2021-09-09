@@ -12,7 +12,7 @@
     "compile:release:sdks": "cd js/sdks && npm run compile:release",
     "compile:release:services": "cd go && npm run compile:release",
     "compile:release": "npm run compile:release:sdks && npm run compile:release:services",
-    "publish:release:sdks": "lerna publish from-package",
+    "publish:release:sdks": "lerna publish -y from-package",
     "publish:release:services": "cd go && npm run publish:release",
     "publish:release": "npm run publish:release:sdks && npm run publish:release:services"
   },
