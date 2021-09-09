@@ -7,6 +7,23 @@ export const SecureTextAreaDemo: React.FunctionComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const [textAreaToken, setTextAreaToken] = useState<string | null>(null);
 
+  function renderErrors() {
+    if (error !== null) {
+      return (
+        <Alert
+          onClose={() => {
+            setError(null);
+          }}
+          severity="error"
+        >
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      );
+    }
+    return null;
+  }
+
   return (
     <Grid item xs={12}>
       <Card>
@@ -14,20 +31,10 @@ export const SecureTextAreaDemo: React.FunctionComponent = () => {
         <CardContent>
           <SecureForm
             name="secure-form-example"
-            onSubmit={(e) => console.log('form submitted but didnt do anything because this example is local only')}
+            onSubmit={(e) => console.log('form submitted but didnt call server because this example is local only')}
           >
             <FormGroup>
-              {error !== null ? (
-                <Alert
-                  onClose={() => {
-                    setError(null);
-                  }}
-                  severity="error"
-                >
-                  <AlertTitle>Error</AlertTitle>
-                  {error}
-                </Alert>
-              ) : null}
+              {renderErrors()}
               <FormLabel htmlFor="ssn-token-input">Tokenize multiple lines of text</FormLabel>
               <SecureTextArea
                 style={{ height: '45px' }}
@@ -36,7 +43,7 @@ export const SecureTextAreaDemo: React.FunctionComponent = () => {
                 // token={some.prefilled.value}
                 onChange={(e) => setTextAreaToken(e.target.value)}
                 errorHandler={(e) => setError(e.message)}
-              ></SecureTextArea>
+              />
             </FormGroup>
             <div>
               <Button variant="outlined" color="primary" style={{ textTransform: 'none' }} type="submit">

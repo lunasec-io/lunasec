@@ -23,6 +23,23 @@ export const SecureDownloadDemo: React.FunctionComponent = () => {
     void loadDocuments(); // does this only once
   }, []);
 
+  function renderErrors() {
+    if (error !== null) {
+      return (
+        <Alert
+          onClose={() => {
+            setError(null);
+          }}
+          severity="error"
+        >
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      );
+    }
+    return null;
+  }
+
   if (documents.length < 1) {
     return (
       <Grid item xs={12}>
@@ -37,17 +54,7 @@ export const SecureDownloadDemo: React.FunctionComponent = () => {
 
   return (
     <Grid item xs={12}>
-      {error !== null ? (
-        <Alert
-          onClose={() => {
-            setError(null);
-          }}
-          severity="error"
-        >
-          <AlertTitle>Error</AlertTitle>
-          {error}
-        </Alert>
-      ) : null}
+      {renderErrors()}
       <Card>
         <CardHeader
           title={`Securely Download the last file Uploaded in SecureUpload ${documents[documents.length - 1]}`}

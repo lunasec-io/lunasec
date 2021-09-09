@@ -77,35 +77,40 @@ export const SecureInputDemo: React.FunctionComponent = () => {
     errorHandler: (e) => setError(e.message),
   };
 
-  function renderAlerts() {
-    return (
-      <>
-        {error !== null ? (
-          <Alert
-            onClose={() => {
-              setError(null);
-            }}
-            severity="error"
-            id="success-alert"
-          >
-            <AlertTitle>Error</AlertTitle>
-            {error}
-          </Alert>
-        ) : null}
-        {showSaveSuccessful ? (
-          <Alert
-            onClose={() => {
-              setShowSaveSuccessful(false);
-            }}
-            severity="success"
-            id="success-alert"
-          >
-            <AlertTitle>Success</AlertTitle>
-            Social Security Number has been Tokenized and Saved
-          </Alert>
-        ) : null}
-      </>
-    );
+  function renderErrors() {
+    if (error !== null) {
+      return (
+        <Alert
+          onClose={() => {
+            setError(null);
+          }}
+          severity="error"
+          id="success-alert"
+        >
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      );
+    }
+    return null;
+  }
+
+  function renderSuccessMessage() {
+    if (showSaveSuccessful) {
+      return (
+        <Alert
+          onClose={() => {
+            setShowSaveSuccessful(false);
+          }}
+          severity="success"
+          id="success-alert"
+        >
+          <AlertTitle>Success</AlertTitle>
+          Social Security Number has been Tokenized and Saved
+        </Alert>
+      );
+    }
+    return null;
   }
 
   return (
@@ -113,7 +118,8 @@ export const SecureInputDemo: React.FunctionComponent = () => {
       <Card>
         <CardHeader title={`User: ${user.username}`} />
         <CardContent>
-          {renderAlerts()}
+          {renderSuccessMessage()}
+          {renderErrors()}
           <SecureForm name="secure-form-example" onSubmit={(e) => handleFormSubmit(e)}>
             <FormGroup>
               <FormLabel htmlFor="ssn-token-input">Social Security Number</FormLabel>
@@ -129,7 +135,7 @@ export const SecureInputDemo: React.FunctionComponent = () => {
                   inputComponent: SecureInput,
                   inputProps: secureInputProps,
                 }}
-              ></TextField>
+              />
             </FormGroup>
             <div>
               <Button variant="outlined" color="primary" style={{ textTransform: 'none' }} type="submit">
