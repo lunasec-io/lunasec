@@ -26,6 +26,10 @@ jobs:
     - name: Run e2e tests
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --exit-code-from integration-test
 
+    - name: docker logs
+      if: always()
+      run: docker logs
+
     - name: docker compose logs
       if: always()
       run: docker-compose logs

@@ -21,23 +21,29 @@ export const SecureParagraphDemo: React.FunctionComponent = () => {
     );
   }
 
+  function renderAlerts() {
+    return (
+      <>
+        {error !== null ? (
+          <Alert
+            onClose={() => {
+              setError(null);
+            }}
+            severity="error"
+          >
+            <AlertTitle>Error</AlertTitle>
+            {error}
+          </Alert>
+        ) : null}
+      </>
+    );
+  }
   return (
     <Grid item xs={12}>
       <Card>
         <CardHeader title={`User: ${user.username}`} />
         <CardContent>
-          {error !== null ? (
-            <Alert
-              onClose={() => {
-                setError(null);
-              }}
-              severity="error"
-            >
-              <AlertTitle>Error</AlertTitle>
-              {error}
-            </Alert>
-          ) : null}
-
+          {renderAlerts()}
           <Typography>Social Security Number:</Typography>
           <SecureParagraph token={user.ssn_token} errorHandler={(e) => setError(e.message)} />
         </CardContent>
