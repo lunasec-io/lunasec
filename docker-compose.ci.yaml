@@ -15,7 +15,7 @@ services:
       - proxy
       - cdk-init
       - secure-frame-iframe
-      - customer-front-end
+      - customer-front-end  # Todo: Change these names from customer to "application"
       - customer-back-end
       - secureframe
     environment:
