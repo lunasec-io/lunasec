@@ -3,7 +3,7 @@ package constants
 type JwtVerifierType string
 
 const (
-	CustomerJwtVerifier = "customer_jwt_verifier"
+	AuthJwtVerifier = "auth_jwt_verifier"
 )
 
 type SessionState string

@@ -27,7 +27,7 @@ func newServer(configPath string, authType constants.AuthType) http.Handler {
 	logger.Debug("loading AWS gateways")
 	gateways := gateway.GetAwsGateways(logger, provider)
 
-	authProviderJwtVerifier := service.NewJwtVerifier("customer_jwt_verifier", logger, provider)
+	authProviderJwtVerifier := service.NewJwtVerifier(constants.AuthJwtVerifier, logger, provider)
 
 	GetTokenizerRoutes(authType, sm, logger, provider, gateways, authProviderJwtVerifier)
 

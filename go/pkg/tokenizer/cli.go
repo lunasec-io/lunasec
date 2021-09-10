@@ -19,35 +19,35 @@ import (
 )
 
 type CliOptions struct {
-	URL                string
-	Secret             string
-	Token              string
-	Plaintext          string
-	Input              string
-	Output             string
-	Metadata           string
-	CustomerPrivateKey string
+	URL            string
+	Secret         string
+	Token          string
+	Plaintext      string
+	Input          string
+	Output         string
+	Metadata       string
+	AuthPrivateKey string
 }
 
 func cliOptionsStruct(c *cli.Context) CliOptions {
 	return CliOptions{
-		URL:                c.String("url"),
-		CustomerPrivateKey: c.String("customer-private-key"),
-		Secret:             c.String("secret"),
-		Token:              c.String("token"),
-		Plaintext:          c.String("plaintext"),
-		Input:              c.String("input"),
-		Output:             c.String("output"),
-		Metadata:           c.String("metadata"),
+		URL:            c.String("url"),
+		AuthPrivateKey: c.String("auth-private-key"),
+		Secret:         c.String("secret"),
+		Token:          c.String("token"),
+		Plaintext:      c.String("plaintext"),
+		Input:          c.String("input"),
+		Output:         c.String("output"),
+		Metadata:       c.String("metadata"),
 	}
 }
 
-func newJwtSigner(customerPrivateKey string) service.JwtSigner {
+func newJwtSigner(authPrivateKey string) service.JwtSigner {
 	logger, err := zap.NewDevelopment()
 	if err != nil {
 		panic(err)
 	}
-	decodedPrivateKey, err := ioutil.ReadFile(customerPrivateKey)
+	decodedPrivateKey, err := ioutil.ReadFile(authPrivateKey)
 	if err != nil {
 		panic(err)
 	}
@@ -58,8 +58,8 @@ func newJwtSigner(customerPrivateKey string) service.JwtSigner {
 	return jwtSigner
 }
 
-func newAuthJwt(sessionID string, customerPrivateKey string) string {
-	jwtSigner := newJwtSigner(customerPrivateKey)
+func newAuthJwt(sessionID string, authPrivateKey string) string {
+	jwtSigner := newJwtSigner(authPrivateKey)
 	claims := types.SessionJwtClaims{
 		Claims: jwt.Claims{
 			Subject: string(constants.DeveloperSubject),
@@ -142,7 +142,7 @@ func setGrantForToken(cliOptions CliOptions, sessionID string, tokenID string) (
 		GrantType: constants.ReadToken,
 	}
 	tokenizeURL := fmt.Sprintf("%s/grant/set", cliOptions.URL)
-	_, err = tokenizerRequest(sessionID, tokenizeURL, cliOptions.CustomerPrivateKey, input)
+	_, err = tokenizerRequest(sessionID, tokenizeURL, cliOptions.AuthPrivateKey, input)
 	if err != nil {
 		log.Println(err)
 		return
@@ -153,7 +153,7 @@ func setGrantForToken(cliOptions CliOptions, sessionID string, tokenID string) (
 func CreateJwtAuthCommand(c *cli.Context) (err error) {
 	cliOptions := cliOptionsStruct(c)
 
-	jwtAuth := newAuthJwt(newSessionID(), cliOptions.CustomerPrivateKey)
+	jwtAuth := newAuthJwt(newSessionID(), cliOptions.AuthPrivateKey)
 	log.Printf("jwt: %s", jwtAuth)
 	return
 }
@@ -184,7 +184,7 @@ func TokenizeCommand(c *cli.Context) (err error) {
 
 	input := event.TokenizerSetRequest{}
 	tokenizeURL := fmt.Sprintf("%s/tokenize", cliOptions.URL)
-	data, err := tokenizerRequest(sessionID, tokenizeURL, cliOptions.CustomerPrivateKey, input)
+	data, err := tokenizerRequest(sessionID, tokenizeURL, cliOptions.AuthPrivateKey, input)
 	if err != nil {
 		log.Println(err)
 		return
@@ -234,7 +234,7 @@ func DetokenizeCommand(c *cli.Context) (err error) {
 	}
 
 	detokenizeURL := fmt.Sprintf("%s/detokenize", cliOptions.URL)
-	data, err := tokenizerRequest(sessionID, detokenizeURL, cliOptions.CustomerPrivateKey, input)
+	data, err := tokenizerRequest(sessionID, detokenizeURL, cliOptions.AuthPrivateKey, input)
 	if err != nil {
 		log.Println(err)
 		return
@@ -299,7 +299,7 @@ func SetMetadataCommand(c *cli.Context) (err error) {
 		Metadata: metadata,
 	}
 	metadataSetURL := fmt.Sprintf("%s/metadata/set", cliOptions.URL)
-	data, err := tokenizerRequest(sessionID, metadataSetURL, cliOptions.CustomerPrivateKey, input)
+	data, err := tokenizerRequest(sessionID, metadataSetURL, cliOptions.AuthPrivateKey, input)
 	if err != nil {
 		log.Println(err)
 		return
@@ -340,7 +340,7 @@ func GetMetadataCommand(c *cli.Context) (err error) {
 		TokenID: tokenID,
 	}
 	metadataGetURL := fmt.Sprintf("%s/metadata/get", cliOptions.URL)
-	data, err := tokenizerRequest(sessionID, metadataGetURL, cliOptions.CustomerPrivateKey, input)
+	data, err := tokenizerRequest(sessionID, metadataGetURL, cliOptions.AuthPrivateKey, input)
 	if err != nil {
 		log.Println(err)
 		return

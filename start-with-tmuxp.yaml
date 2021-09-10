@@ -15,12 +15,12 @@ windows:
       - cd js/sdks/packages/secure-frame-iframe
       - npx http-server -a localhost -p 8000
 
-    # Customer Front End
+    # Application Front End
     - shell_command:
       - cd js/demo-apps/packages/react-front-end
       - npm run start
 
-    # Customer Backend, comes up on 3001
+    # Application Backend, comes up on 3001
     - shell_command:
       - cd js/demo-apps/packages/express-back-end
       - SESSION_JWT_PUBLIC_KEY=$(cat ../../../../go/fixtures/tokenizerbackend/auth_provider.pub | base64 -w0) LUNASEC_SIGNING_KEY=$(cat ../../../../go/fixtures/tokenizerbackend/auth_provider_key | base64 -w0) yarn start:dev
