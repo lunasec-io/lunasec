@@ -7,6 +7,7 @@ import { UserModel } from '../../../common/models/user';
 import { resolvers, schemaDirectives, typeDefs } from './schema';
 
 export async function attachApolloServer(app: Express): Promise<void> {
+  console.log('attaching apollo server to express');
   const server = new ApolloServer({
     typeDefs,
     resolvers: resolvers,

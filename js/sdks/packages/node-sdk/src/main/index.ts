@@ -8,6 +8,7 @@ import { SecureResolver } from '../secure-resolver';
 import { SecureResolverSdkConfig } from '../secure-resolver/types';
 
 // Please attempt to keep this configuration organized and named in a way that is easy for the API user to understand
+// Todo: Do TSDoc for all these params
 export interface LunaSecConfig {
   secureFrameURL: string;
   auth: {
