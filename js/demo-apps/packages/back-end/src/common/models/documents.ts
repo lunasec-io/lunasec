@@ -3,7 +3,7 @@ import { getDb } from '../database/db';
 export class DocumentMethods {
   static async getUserDocuments(userId: string) {
     const db = await getDb();
-    return db.all('SELECT token FROM documents WHERE user_id = ?', [userId]);
+    return db.all<Array<{ token: string }>>('SELECT token FROM documents WHERE user_id = ?', [userId]);
   }
 
   static async setUserDocuments(userId: string, documentTokens: string[]) {

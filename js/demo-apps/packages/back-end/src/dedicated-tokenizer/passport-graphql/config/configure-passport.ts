@@ -1,11 +1,10 @@
 import { Buffer } from 'buffer';
 import crypto from 'crypto';
 
+import { GraphQLLocalStrategy } from 'graphql-passport';
 import passport from 'passport';
-// @ts-ignore
-import { Strategy } from 'passport-json';
 
-import { UserMethods, UserModel } from '../../../common/models/user';
+import { UserMethods } from '../../../common/models/user';
 
 function comparePassword(passwordToCheck: string, storedPasswordHash: string, salt: string): Promise<boolean | Error> {
   return new Promise((resolve, _reject) => {
@@ -28,32 +27,31 @@ export default async function configurePassport() {
   // that the password is correct and then invoke `cb` with a user object, which
   // will be set at `req.user` in route handlers after authentication.
   passport.use(
-    new Strategy(async function login(
-      username: string,
-      reqPassword: string,
-      done: (err: null | string | Error, usr?: false | UserModel) => void
-    ) {
-      const userRecord = await UserMethods.getUserWithPasswordHash(username).catch((err) => done(err, false));
+    new GraphQLLocalStrategy(
+      // @ts-ignore these types are wrong in the library
+      async (username: string, reqPassword: string, done: (error: any, user?: any) => void) => {
+        const userRecord = await UserMethods.getUserWithPasswordHash(username).catch((err) => done(err, false));
 
-      if (!userRecord) {
-        return done('Incorrect username or password.', false);
-      }
+        if (!userRecord) {
+          return done('Incorrect username or password.', false);
+        }
 
-      const passwordCorrect = await comparePassword(reqPassword, userRecord.hashed_password, userRecord.salt);
-      if (passwordCorrect instanceof Error) {
-        return done(passwordCorrect, false);
-      }
-      if (!passwordCorrect) {
-        return done('Incorrect username or password.', false);
-      }
+        const passwordCorrect = await comparePassword(reqPassword, userRecord.hashed_password, userRecord.salt);
+        if (passwordCorrect instanceof Error) {
+          return done(passwordCorrect, false);
+        }
+        if (!passwordCorrect) {
+          return done('Incorrect username or password.', false);
+        }
 
-      const user = {
-        id: userRecord.id.toString(),
-        username: userRecord.username,
-        ssn_token: userRecord.ssn_token,
-      };
-      return done(null, user);
-    })
+        const user = {
+          id: userRecord.id.toString(),
+          username: userRecord.username,
+          ssn_token: userRecord.ssn_token,
+        };
+        return done(null, user);
+      }
+    )
   );
 
   // Configure Passport authenticated session persistence.

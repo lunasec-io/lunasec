@@ -3,13 +3,18 @@ import { Express } from 'express';
 config();
 
 import { setupDedicatedPassPortExpressApp } from './dedicated-tokenizer/passport-express/server';
+import { setupDedicatedPassPortGraphQLApp } from './dedicated-tokenizer/passport-graphql/server';
 
 // Reads environment variables and decides which demo express app to launch
 function getApp(): Promise<Express> {
-  if (process.env.DEMO_NAME === 'dedicated-passport-express') {
-    return setupDedicatedPassPortExpressApp();
+  switch (process.env.DEMO_NAME) {
+    case 'dedicated-passport-express':
+      return setupDedicatedPassPortExpressApp();
+    case 'dedicated-passport-graphql':
+      return setupDedicatedPassPortGraphQLApp();
+    default:
+      throw new Error('Must set DEMO_NAME env var to a suitable demo name');
   }
-  throw new Error('Must set DEMO_NAME env var to a suitable demo name');
 }
 
 getApp().then((app) => {
