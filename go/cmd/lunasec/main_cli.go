@@ -30,6 +30,7 @@ func main() {
 		Name:  "lunasec",
 		Version: version,
 		Compiled: time.Now(),
+		HideVersion: false,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "config",
