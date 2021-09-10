@@ -1,10 +1,11 @@
-name: release
+name: LunaSec Release
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - cli-releaser
+    inputs:
+      release_type:
+        description: "Type of release to perform (ie. prerelease, patch, minor, major, etc.)"
+        required: true
 
 permissions:
   contents: write
@@ -64,7 +65,7 @@ jobs:
       - name: create release version
         run: npm run version:release
         env:
-          VERSION_BUMP_TYPE: prerelease
+          RELEASE_TYPE: ${{ github.event.inputs.release_type }}
 
       - name: compile release versions
         run: npm run compile:release
