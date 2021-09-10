@@ -54,7 +54,7 @@ services:
     environment:
       - SERVICES=s3,dynamodb,secretsmanager,sts,cloudformation
       - DEBUG=1
-      - DATA_DIR=/tmp/localstack
+#      - DATA_DIR=/tmp/localstack
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
     volumes:
@@ -91,14 +91,15 @@ services:
     build:
       context: go/
       dockerfile: docker/Dockerfile.lunasec
-    command: --dir /lunasec_local_build deploy --local --build --config-output /config/lunasec/
+    command: --dir /lunasec_local_build deploy --local --build --config-output /config/tokenizerbackend/
     volumes:
       - ./go/config/lunasec/:/config/lunasec/
+      - ./go/config/tokenizerbackend/:/config/tokenizerbackend/
       - ./go/lunasec_local_build/:/lunasec_local_build/
     depends_on:
       proxy:
         condition: service_healthy
-  tokenizerbackend: # This is the tokenizer GO server
+  tokenizerbackend:
     hostname: tokenizerbackend
     env_file:
       - .env.docker

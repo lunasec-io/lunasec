@@ -30,4 +30,4 @@ windows:
       - cd go
       - make tokenizerbackend
       - cd ..
-      - sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d local-dependencies && cd go && env $(cat ../.env.host | xargs) ./build/tokenizerbackend_dev
+      - sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up --remove-orphans -d local-dependencies && cd go && env $(cat ../.env.host | xargs) ./build/tokenizerbackend_dev
