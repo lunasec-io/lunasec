@@ -23,7 +23,7 @@ windows:
     # Demo Application Backend, comes up on 3001
     - shell_command:
       - cd js/demo-apps/packages/back-end
-      - DEMO_NAME="dedicated-passport-express" SESSION_JWT_PUBLIC_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider.pub | base64 -w0) LUNASEC_SIGNING_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider_key | base64 -w0) yarn start:dev
+      - DEMO_NAME="dedicated-passport-graphql" SESSION_JWT_PUBLIC_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider.pub | base64 -w0) LUNASEC_SIGNING_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider_key | base64 -w0) yarn start:dev
 
     # Tokenizer Back End.  Command uses docker compose to start localstack and run CDK deployment scripts against it before starting server locally
     - shell_command:
