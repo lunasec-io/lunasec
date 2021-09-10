@@ -13,7 +13,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-const (
+var (
 	version = ""
 	commit = ""
 	date = ""
