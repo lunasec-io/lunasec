@@ -22,8 +22,8 @@ func main() {
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "customer-private-key",
-				Usage:    "Customer Private Key",
+				Name:     "auth-private-key",
+				Usage:    "Auth Private Key",
 				Required: true,
 			},
 		},

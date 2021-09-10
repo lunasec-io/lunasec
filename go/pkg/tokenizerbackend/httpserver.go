@@ -50,7 +50,7 @@ func newServer() http.Handler {
 
 	gateways := gateway.GetAwsGateways(logger, provider)
 
-	authProviderJwtVerifier := service.NewJwtVerifier(constants.CustomerJwtVerifier, logger, provider)
+	authProviderJwtVerifier := service.NewJwtVerifier(constants.AuthJwtVerifier, logger, provider)
 
 	middleware := []types.Middleware{
 		cspMiddleware,
