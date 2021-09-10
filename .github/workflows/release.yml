@@ -71,6 +71,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # TODO (cthompson) verify that there are no files that have been modified
+
       - name: publish release versions
         run: npm run publish:release
         env:

@@ -19,7 +19,6 @@ require (
 	github.com/rs/cors v1.7.0
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/stretchr/testify v1.7.0
-	github.com/urfave/cli v1.22.5
 	github.com/urfave/cli/v2 v2.2.0
 	go.uber.org/config v1.4.0
 	go.uber.org/multierr v1.7.0 // indirect
