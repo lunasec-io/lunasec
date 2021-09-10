@@ -2,8 +2,8 @@ import bodyParser from 'body-parser';
 import { Router } from 'express';
 
 import { UserMethods } from '../../../common/models/user';
-import { lunaSec } from '../../../configure-lunasec';
 import { ensureLoggedIn } from '../config/auth-helpers';
+import { lunaSec } from '../config/configure-lunasec';
 
 export function userRouter() {
   const router = Router();
