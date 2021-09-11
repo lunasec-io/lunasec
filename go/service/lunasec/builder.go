@@ -34,6 +34,7 @@ type BuildConfig struct {
 	ApplicationFrontEnd     string          `yaml:"application_front_end"`
 	ApplicationBackEnd      string          `yaml:"application_back_end"`
 	SessionPublicKey     string          `yaml:"session_public_key"`
+	SessionJwksEndpoint  string 		 `yaml:"session_jwks_endpoint"`
 	FrontEndAssetsFolder string          `yaml:"front_end_assets_folder"`
 	LocalStackUrl        string          `yaml:"localstack_url"`
 	ServiceVersions    ServiceVersions `yaml:"service_versions"`
@@ -83,6 +84,13 @@ func NewBuilder(
 	npmGateway gateway.NpmGateway,
 ) Builder {
 	buildConfig.StackVersion = util.NormalizeVersionName(buildConfig.StackVersion)
+
+	if buildConfig.SessionPublicKey == "" {
+		jwksURL := fmt.Sprintf("%s/%s",buildConfig.ApplicationBackEnd, ".lunasec/jwks.json")
+		log.Printf("session_public_key not provided, auth will be performed with JWKS url: %s", jwksURL)
+		buildConfig.SessionJwksEndpoint = jwksURL
+	}
+
 	return &builder{
 		builderConfig,
 		buildConfig,
@@ -409,23 +417,28 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 	tokenizerSecret := l.createSecret(stack, "tokenizer-secret", secretDescription)
 
 	if !l.localDev {
-		lambdaEnv := &map[string]*string{
+		lambdaEnv := map[string]*string{
 			"SECURE_FRAME_FRONT_END":     secureFrameCloudfront.AttrDomainName(),
 			"APPLICATION_FRONT_END":         jsii.String(l.buildConfig.ApplicationFrontEnd),
 			"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
 			"APPLICATION_BACK_END":          jsii.String(l.buildConfig.ApplicationBackEnd),
 			"SECURE_FRAME_CDN_CONFIG":    jsii.String(cdnConfig),
 			"TOKENIZER_SECRET_ARN": tokenizerSecret.SecretArn(),
-			"SESSION_PUBLIC_KEY": jsii.String(l.buildConfig.SessionPublicKey),
 			"METADATA_KV_TABLE":   metadataTable.TableName(),
 			"KEYS_KV_TABLE":       keysTable.TableName(),
 			"SESSIONS_KV_TABLE":   sessionsTable.TableName(),
 			"GRANTS_KV_TABLE":   grantsTable.TableName(),
 		}
 
+		if l.buildConfig.SessionPublicKey != "" {
+			lambdaEnv["SESSION_PUBLIC_KEY"] = jsii.String(l.buildConfig.SessionPublicKey)
+		} else {
+			lambdaEnv["SESSION_JWKS_URL"] = jsii.String(l.buildConfig.SessionJwksEndpoint)
+		}
+
 		containerTag := serviceImageLookup[constants.TokenizerBackendServiceName]
 
-		secureFrameLambda := l.getTokenizerBackendLambda(stack, containerTag, lambdaEnv)
+		secureFrameLambda := l.getTokenizerBackendLambda(stack, containerTag, &lambdaEnv)
 		ciphertextBucket.GrantReadWrite(secureFrameLambda, "*")
 		metadataTable.GrantReadWriteData(secureFrameLambda)
 		keysTable.GrantReadWriteData(secureFrameLambda)
