@@ -24,7 +24,11 @@ type awsS3Gateway struct {
 }
 
 type AwsS3GatewayConfig struct {
-	GatewayConfig
+	S3Region string `yaml:"region"`
+	AccessKeyID string `yaml:"access_key_id"`
+	SecretAccessKey string `yaml:"secret_access_key"`
+	LocalstackURL string `yaml:"localstack_url"`
+	LocalHTTPSProxy string `yaml:"local_https_proxy"`
 	S3Bucket string `yaml:"s3_bucket"`
 }
 
@@ -42,9 +46,7 @@ type AwsS3Gateway interface {
 func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
 	return AwsS3GatewayConfigWrapper{
 		AwsGateway: AwsS3GatewayConfig{
-			GatewayConfig: GatewayConfig{
-				S3Region: region,
-			},
+			S3Region: region,
 			S3Bucket: bucket,
 		},
 	}
@@ -104,6 +106,12 @@ type createPresignedUrlFunc func(params createPresignedUrlParams) (url string, e
 
 // adjustUrlFromLocalDev will re-write the URL so that they can be accessed without an https cert in a browser when testing locally.
 func (s *awsS3Gateway) adjustUrlFromLocalDev(url string) string {
+	s.logger.Debug(
+		"adjusting url for local dev",
+		zap.String("https proxy", s.LocalHTTPSProxy),
+		zap.String("localstack url", s.LocalstackURL),
+	)
+
 	return strings.ReplaceAll(url, s.LocalHTTPSProxy, s.LocalstackURL)
 }
 
