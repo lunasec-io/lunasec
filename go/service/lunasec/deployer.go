@@ -161,6 +161,6 @@ func (l *deployer) writeConfig(stackOutputFilePath string) (err error) {
 		return
 	}
 
-	err = ioutil.WriteFile(path.Join(l.configOutputPath, "aws_resources.yaml"), out, 0744)
+	err = ioutil.WriteFile(path.Join(l.configOutputPath, constants.DeployedAwsResourcesConfig), out, 0744)
 	return
 }

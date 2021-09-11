@@ -2,12 +2,11 @@ package util
 
 import (
 	"fmt"
+	"go.uber.org/config"
+	"io/fs"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
-
-	"go.uber.org/config"
 )
 
 func FindFirstExistingFile(filePaths []string) string {
@@ -36,11 +35,16 @@ func GetConfigProviderFromFiles(filenames []string) config.Provider {
 	return provider
 }
 
-func GetConfigProviderFromDir(configDir string) config.Provider {
-	files, err := ioutil.ReadDir(configDir)
+func getFilesInDir(dir string) []fs.FileInfo {
+	files, err := ioutil.ReadDir(dir)
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
+	return files
+}
+
+func GetConfigProviderFromDir(configDir string) config.Provider {
+	files := getFilesInDir(configDir)
 
 	var filenames []string
 	for _, file := range files {
