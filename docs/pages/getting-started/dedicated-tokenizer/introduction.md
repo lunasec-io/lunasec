@@ -17,6 +17,9 @@ Before we start changing code, let's get LunaSec's services running. The main de
 * AWS (we recommend localstack)
 
 We have containerized these and written a docker compose to streamline launching them. 
-CHRIS COULD YOU DOCUMENT THE LAUNCH COMMANDS HERE THANKS I LOVE YOU
+
+```shell
+npm run start:services
+```
 
 Alright, now that the services are running, let's add LunaSec to the code. [Backend setup](./backend.md)

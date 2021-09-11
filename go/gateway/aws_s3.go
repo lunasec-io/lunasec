@@ -68,7 +68,7 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session
 		panic(err)
 	}
 
-	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
+	s3Host := gatewayConfig.S3Bucket + ".s3." + gatewayConfig.S3Region + ".amazonaws.com"
 
 	s3Gateway = &awsS3Gateway{
 		logger:             logger,
