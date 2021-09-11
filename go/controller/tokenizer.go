@@ -26,7 +26,6 @@ type tokenizerController struct {
 }
 
 type tokenizerControllerConfig struct {
-	ApplicationTokenSecret string `yaml:"application_token_secret"`
 }
 
 type TokenizerController interface {
@@ -34,14 +33,20 @@ type TokenizerController interface {
 	TokenizerSet(w http.ResponseWriter, req *http.Request)
 }
 
-func NewTokenizerController(provider config.Provider, tokenizer service.TokenizerService, jwtVerifier service.JwtVerifier, meta service.MetadataService, grant service.GrantService) (controller TokenizerController, err error) {
+func NewTokenizerController(
+	provider config.Provider,
+	tokenizer service.TokenizerService,
+	jwtVerifier service.JwtVerifier,
+	meta service.MetadataService,
+	grant service.GrantService,
+) (controller TokenizerController) {
 	var (
 		controllerConfig tokenizerControllerConfig
 	)
 
-	err = provider.Get("tokenizer_controller").Populate(&controllerConfig)
+	err := provider.Get("tokenizer_controller").Populate(&controllerConfig)
 	if err != nil {
-		return
+		panic(err)
 	}
 
 	controller = &tokenizerController{
@@ -93,7 +98,7 @@ func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	url, headers, err := s.tokenizer.TokenizerGet(s.ApplicationTokenSecret, types.Token(input.TokenID))
+	url, headers, err := s.tokenizer.TokenizerGet(types.Token(input.TokenID))
 	if err != nil {
 		statusCode := 500
 		// TODO: Make this error message a constant
@@ -128,7 +133,7 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	tokenID, url, headers, err := s.tokenizer.TokenizerSet(s.ApplicationTokenSecret)
+	tokenID, url, headers, err := s.tokenizer.TokenizerSet()
 	if err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return

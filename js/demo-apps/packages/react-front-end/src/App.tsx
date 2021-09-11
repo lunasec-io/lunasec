@@ -81,13 +81,13 @@ class App extends React.Component<Record<string, never>, IAppState> {
   async initPage() {
     const res = await fetch('http://localhost:3001/auth', {
       credentials: 'include',
-    })
+    });
     if (res.status === 401) {
-      window.location.href = 'http://localhost:3001/set-id-token'
+      window.location.href = 'http://localhost:3001/set-id-token';
       return;
     }
-    this.setState({loading: false})
-    await this.getFormDataFromDb()
+    this.setState({ loading: false });
+    await this.getFormDataFromDb();
   }
 
   async getFormDataFromDb() {
@@ -197,7 +197,9 @@ class App extends React.Component<Record<string, never>, IAppState> {
     return (
       <section>
         <p style={{ color: 'red' }}>{this.state.authError}</p>
-        <a href="http://localhost:3001/set-id-token">Login</a>
+        <a id="login-link" href="http://localhost:3001/set-id-token">
+          Login
+        </a>
       </section>
     );
   }
@@ -217,10 +219,10 @@ class App extends React.Component<Record<string, never>, IAppState> {
   renderForm() {
     if (this.state.loading) {
       return (
-          <section>
-            <p>Loading...</p>
-          </section>
-      )
+        <section>
+          <p>Loading...</p>
+        </section>
+      );
     }
     return (
       <section>

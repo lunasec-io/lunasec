@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/refinery-labs/loq/constants"
+	"github.com/refinery-labs/loq/types"
 	"net/http"
 
 	"github.com/refinery-labs/loq/service"
@@ -15,7 +16,7 @@ var WithNoAuth = func(
 	return handlerFunc
 }
 
-func WithCSP(provider config.Provider) func(http.HandlerFunc) http.HandlerFunc {
+func WithCSP(provider config.Provider) types.Middleware {
 	csp := service.CreateCSPMiddleware(provider)
 	return csp.Middleware()
 }

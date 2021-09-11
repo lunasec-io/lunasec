@@ -2,6 +2,7 @@ loq.iml
 build/
 **/secrets.yaml
 **/local.yaml
+**/aws_resources.yaml
 .vscode/
 **/refinery-container-runtime.tar
 nohup.out
@@ -27,3 +28,5 @@ nohup.out
 cdk.out
 lunasec_build/
 lunasec_local_build/
+
+dist/

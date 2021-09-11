@@ -5,3 +5,5 @@ node_modules
 *.log
 /docs/pages/node-sdk
 /docs/pages/tokenizer-sdk
+
+.npmrc

@@ -1,10 +1,10 @@
 {
   "name": "react-front-end",
-  "version": "0.1.0",
   "private": true,
+  "version": "0.0.1-alpha.10",
   "dependencies": {
     "@apollo/client": "^3.3.20",
-    "@lunasec/react-sdk": "^1.0.0",
+    "@lunasec/react-sdk": "^0.0.1-alpha.10",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -44,7 +44,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:e2e": "cypress run",
+    "test:e2e": "cypress run --browser chrome",
+    "debug:e2e": "cypress open --browser chrome",
     "eject": "react-scripts eject",
     "prettier": "prettier \"*.{js,json,yml,md}\" \"src/**/*\"",
     "format": "npm run lint -- --fix",
@@ -74,5 +75,4 @@
       "last 1 safari version"
     ]
   }
-
 }

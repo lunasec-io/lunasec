@@ -12,9 +12,9 @@ services:
     depends_on:
       - local-dependencies
       - secure-frame-iframe
-      - customer-front-end
-      - customer-back-end
-      - secureframe
+      - application-front-end
+      - application-back-end
+      - tokenizerbackend
 
   secure-frame-iframe:
     build:
@@ -23,15 +23,15 @@ services:
       target: secure-frame-iframe
     ports:
       - "8000:8000"
-  customer-front-end:
-    hostname: customer-front-end
+  application-front-end:
+    hostname: application-front-end
     build:
       context: .
       dockerfile: js/docker/Dockerfile.demo
       target: react-front-end
     ports:
       - "3000:3000"
-  customer-back-end:
+  application-back-end:
     build:
       context: .
       dockerfile: js/docker/Dockerfile.demo
@@ -39,7 +39,7 @@ services:
     ports:
       - "3001:3001"
     env_file:
-      - .env.dev
+      - .env.docker
   #      healthcheck:
   #        test: ["CMD-SHELL", "curl http://localhost:3001"]
   #        interval: 10s
@@ -53,16 +53,12 @@ services:
       - "4566:4566"
     environment:
       - SERVICES=s3,dynamodb,secretsmanager,sts,cloudformation
-      - DEBUG=${DEBUG- }
-      - DATA_DIR=${DATA_DIR- }
-      - LOCALSTACK_API_KEY=${LOCALSTACK_API_KEY- }
-      - DOCKER_HOST=unix:///var/run/docker.sock
-      - HOST_TMP_FOLDER=${TMPDIR}
+      - DEBUG=1
+#      - DATA_DIR=/tmp/localstack
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
     volumes:
-      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/tmp/localstack:/tmp/localstack"
     healthcheck:
       test: ["CMD-SHELL", "curl http://localhost:4566"]
       interval: 10s
@@ -91,35 +87,36 @@ services:
     stdin_open: true
     tty: true
     env_file:
-      - .env.dev
+      - .env.docker
     build:
       context: go/
       dockerfile: docker/Dockerfile.lunasec
-    command: --dir /lunasec_local_build deploy --local --build --config-output /config/secureframe/
+    command: --dir /lunasec_local_build deploy --local --build --config-output /config/tokenizerbackend/
     volumes:
-      - ./go/config/secureframe/:/config/secureframe/
+      - ./go/config/lunasec/:/config/lunasec/
+      - ./go/config/tokenizerbackend/:/config/tokenizerbackend/
       - ./go/lunasec_local_build/:/lunasec_local_build/
     depends_on:
       proxy:
         condition: service_healthy
-  secureframe: # This is the tokenizer GO server
-    hostname: secureframe
+  tokenizerbackend:
+    hostname: tokenizerbackend
     env_file:
-      - .env.dev
+      - .env.docker
     build:
       context: go/
-      dockerfile: docker/Dockerfile.secureframe
+      dockerfile: docker/Dockerfile.tokenizerbackend
       args:
         BUILD_TAG: dev
     volumes:
-      - ./go/config/secureframe/:/config/secureframe/
+      - ./go/config/tokenizerbackend/:/config/tokenizerbackend/
     ports:
       - 37766:37766
     depends_on:
       cdk-init:
         condition: service_completed_successfully
 
-#      customer-back-end:
+#      application-back-end:
 #        condition: service_healthy
 #    healthcheck:
 #      test: ["CMD-SHELL", "curl http://localhost:37766"]
