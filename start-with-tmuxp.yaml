@@ -29,5 +29,7 @@ windows:
     - shell_command:
       - cd go
       - make tokenizerbackend
-      - cd ..
-      - sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up --remove-orphans -d local-dependencies && cd go && env $(cat ../.env.host | xargs) ./build/tokenizerbackend_dev
+      - rm -f config/tokenizerbackend/aws_resources.yaml
+      - sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up --remove-orphans -d local-dependencies &&
+        until [ -f config/tokenizerbackend/aws_resources.yaml ]; do echo "waiting for aws_resources.yaml..."; sleep 0.5; done &&
+        env $(cat ../.env.host | xargs) ./build/tokenizerbackend_dev

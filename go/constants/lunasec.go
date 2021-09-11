@@ -3,6 +3,7 @@ package constants
 const (
 	LunaSecStackName = "LunasecSecureEnclave"
 	LunasecBuildDir  = "build"
+	DeployedAwsResourcesConfig = "aws_resources.yaml"
 )
 
 type LunaSecServices string
