@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './index.css';
-import { DedicatedPassportReactApp } from './dedicated-tokenizer/passport-auth-example/App';
+import { DedicatedPassportReactApp } from './common/App';
 
 ReactDOM.render(
   <React.StrictMode>

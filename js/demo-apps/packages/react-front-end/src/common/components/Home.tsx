@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
 
-import logo from '../../../static/logo.svg';
+import logo from '../../static/logo.svg';
 
 const useStyles = makeStyles(() => ({
   LogoImg: {
@@ -20,7 +20,7 @@ export const Home: React.FunctionComponent = () => {
     <Grid item xs={12}>
       <Card>
         <CardContent>
-          <img src={logo} className={classes.LogoImg} />
+          <img alt="LunaSec Logo" src={logo} className={classes.LogoImg} />
           <h1>LunaSec Demo: Dedicated Tokenizer with Passport Authentication</h1>
           <Typography>
             This is a fully functional application which uses LunaSec to protect its sensitive data.
