@@ -11,11 +11,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import axios from 'axios';
 import React, { useState } from 'react';
 
 import { useStoreActions, useStoreState } from '../../store';
-import { ApiResponse } from '../../types';
 
 export const SecureInputDemo: React.FunctionComponent = () => {
   const [showSaveSuccessful, setShowSaveSuccessful] = useState<boolean>(false);
@@ -24,23 +22,19 @@ export const SecureInputDemo: React.FunctionComponent = () => {
   const [ssnValid, setSsnValid] = useState<boolean>(true);
 
   const user = useStoreState((state) => state.user);
-  const setSsn = useStoreActions((state) => state.setSsn);
-
+  const saveSsnThunk = useStoreActions((actions) => actions.saveSsn);
   const uploadFormData = async () => {
     if (ssnToken === null) {
       setError('Please enter a social security number');
       return;
     }
-    const { data } = await axios.post<ApiResponse>(`/user/set-ssn`, {
-      ssnToken: ssnToken,
-    });
+    const data = await saveSsnThunk(ssnToken);
+    console.log('thunk responsse ', data);
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;
     }
     setShowSaveSuccessful(true);
-    // Note that we can locally store and read the token in other components without re-fetching it because a Read Grant was automatically created with the token
-    setSsn(ssnToken);
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {

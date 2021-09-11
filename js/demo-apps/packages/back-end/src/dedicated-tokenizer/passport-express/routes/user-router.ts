@@ -27,12 +27,12 @@ export function userRouter() {
     if (!req.user) {
       return res.json({
         success: false,
+        error: 'User not logged in',
       });
     }
-
     try {
-      await lunaSec.grants.verify(req.session.id, req.body.ssnToken);
-      await UserMethods.setSsn(req.user.id, req.body.ssnToken);
+      await lunaSec.grants.verify(req.session.id, req.body.ssn_token);
+      await UserMethods.setSsn(req.user.id, req.body.ssn_token);
     } catch (e) {
       return res.json({
         success: false,
