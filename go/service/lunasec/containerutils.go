@@ -10,14 +10,9 @@ import (
 	"log"
 )
 
-func pullContainerFromPublicEcr(ecrGateway gateway.AwsECRGateway, containerURL string) (containerImg v1.Image, err error) {
-	options, err := gateway.LoadPublicCraneOptions(ecrGateway)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	publicEcrDockerManager := service.NewDockerManager(options)
+// TODO (cthompson) pull latest tag from remote and check against semver. raise notification about upgrading CLI if incompatible version is latest, abort if major version is incompatible
+func pullContainer(containerURL string) (containerImg v1.Image, err error) {
+	publicEcrDockerManager := service.NewDockerManager()
 
 	containerImg, err = publicEcrDockerManager.PullImage(containerURL)
 	if err != nil {
@@ -81,7 +76,7 @@ func mirrorRepoToEcr(accountID, containerURL, newImageName string) (tag string, 
 	ecrRepository := fmt.Sprintf("%s/%s", ecrRegistry, newImageName)
 
 	log.Printf("pulling image from public ecr: %s", containerURL)
-	containerImg, err := pullContainerFromPublicEcr(ecrGateway, containerURL)
+	containerImg, err := pullContainer(containerURL)
 	if err != nil {
 		return
 	}

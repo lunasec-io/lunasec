@@ -6,10 +6,10 @@ This monorepo contains all go services and tools that are a part of Lunasec.
 
 To build an application, specify the *tag* and the *name* for what you want build in this form:
 ```shell
-BUILD_TAG=<tag> make <name>
+make <name> tag=<tag>
 ```
 
 For example, to build the tokenizer cli tool:
 ```shell
-BUILD_TAG=cli make tokenizer
+make tokenizer tag=cli
 ```

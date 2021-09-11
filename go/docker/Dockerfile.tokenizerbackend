@@ -13,14 +13,16 @@ FROM base as builder
 RUN --mount=target=. \
     --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    OUTPUT_DIR=/out make lunasec tag=cli
-FROM node
+    OUTPUT_DIR=/out make tokenizerbackend tag=dev
 
-RUN npm i -g aws-cdk@1.114.0 aws-cdk-local@1.65.4
+FROM scratch
+
+COPY config/tokenizerbackend/config.yaml /config/tokenizerbackend/config.yaml
+COPY views/tokenizerbackend/ /views/tokenizerbackend/
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /out/lunasec_cli /lunasec
+COPY --from=builder /out/tokenizerbackend_dev /tokenizerbackend
 COPY --from=builder /tmp /tmp
 
 WORKDIR /
-ENTRYPOINT ["/lunasec"]
+ENTRYPOINT ["/tokenizerbackend"]

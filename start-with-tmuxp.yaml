@@ -1,4 +1,4 @@
-session_name: csp-test
+session_name: lunasec-monorepo
 windows:
 - window_name: services
   layout: tiled
@@ -15,18 +15,21 @@ windows:
       - cd js/sdks/packages/secure-frame-iframe
       - npx http-server -a localhost -p 8000
 
-    # Customer Front End
+    # Application Front End
     - shell_command:
       - cd js/demo-apps/packages/react-front-end
       - npm run start
 
-    # Customer Backend, comes up on 3001
+    # Application Backend, comes up on 3001
     - shell_command:
       - cd js/demo-apps/packages/express-back-end
-      - SESSION_JWT_PUBLIC_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider.pub | base64 -w0) LUNASEC_SIGNING_KEY=$(cat ../../../../go/fixtures/secureframe/auth_provider_key | base64 -w0) yarn start:dev
+      - SESSION_JWT_PUBLIC_KEY=$(cat ../../../../go/fixtures/tokenizerbackend/auth_provider.pub | base64 -w0) LUNASEC_SIGNING_KEY=$(cat ../../../../go/fixtures/tokenizerbackend/auth_provider_key | base64 -w0) yarn start:dev
 
-    # Secure Frame Back End
+    # Tokenizer Back End
     - shell_command:
       - cd go
-      - make secureframe
-      - sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d local-dependencies && env $(cat ../.env.host | xargs) ./build/secureframe_dev
+      - make tokenizerbackend
+      - rm -f config/tokenizerbackend/aws_resources.yaml
+      - sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up --remove-orphans -d local-dependencies &&
+        until [ -f config/tokenizerbackend/aws_resources.yaml ]; do echo "waiting for aws_resources.yaml..."; sleep 0.5; done &&
+        env $(cat ../.env.host | xargs) ./build/tokenizerbackend_dev

@@ -7,7 +7,14 @@
   "scripts": {
     "test:e2e": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test",
     "lint:fix": "npm run lint -- --fix",
-    "lint": "cd js && eslint --ext .js,.jsx,.ts,.tsx ."
+    "lint": "cd js && eslint --ext .js,.jsx,.ts,.tsx .",
+    "version:release": "if [ -z ${RELEASE_TYPE+x} ]; then echo \"RELEASE_TYPE is unset\"; else lerna version -y $RELEASE_TYPE --no-push --force-publish; fi",
+    "compile:release:sdks": "cd js/sdks && npm run compile:release",
+    "compile:release:services": "cd go && npm run compile:release",
+    "compile:release": "npm run compile:release:sdks && npm run compile:release:services",
+    "publish:release:sdks": "lerna publish -y from-package",
+    "publish:release:services": "cd go && npm run publish:release",
+    "publish:release": "npm run publish:release:sdks && npm run publish:release:services"
   },
   "repository": {
     "type": "git",
@@ -43,6 +50,7 @@
   },
   "workspaces": {
     "packages": [
+      "./go",
       "./js/sdks/packages/*",
       "./js/service/packages/*",
       "./js/demo-apps/packages/*",

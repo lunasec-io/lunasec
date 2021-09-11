@@ -11,17 +11,15 @@ require (
 	github.com/aws/constructs-go/constructs/v3 v3.3.84
 	github.com/aws/jsii-runtime-go v1.30.0
 	github.com/awslabs/aws-lambda-go-api-proxy v0.10.0
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-containerregistry v0.5.0
-	github.com/google/tink/go v1.5.0
 	github.com/google/uuid v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/prashantv/gostub v1.0.0
 	github.com/rs/cors v1.7.0
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/stretchr/testify v1.7.0
-	github.com/urfave/cli v1.22.5
+	github.com/urfave/cli/v2 v2.2.0
 	go.uber.org/config v1.4.0
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.16.0
@@ -33,4 +31,5 @@ require (
 	gopkg.in/square/go-jose.v2 v2.6.0
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+	honnef.co/go/tools v0.0.1-2020.1.4 // indirect
 )
