@@ -1,17 +1,18 @@
 import { SecureDownload } from '@lunasec/react-sdk';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
-import { UserDocumentsResponse } from '../../types';
+import { useStoreActions } from '../../store';
 
 export const SecureDownloadDemo: React.FunctionComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const [documents, setDocuments] = useState<string[]>([]);
 
+  const loadDocumentsThunk = useStoreActions((actions) => actions.loadDocuments);
+
   const loadDocuments = async () => {
-    const { data } = await axios.get<UserDocumentsResponse>(`/documents`);
+    const data = await loadDocumentsThunk();
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;

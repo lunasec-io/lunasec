@@ -1,10 +1,8 @@
 import { Button, FormControl, FormHelperText, FormLabel, makeStyles, Paper, TextField } from '@material-ui/core';
-import axios from 'axios';
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useStoreActions } from '../store';
-import { CurrentUserResponse } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -17,20 +15,19 @@ const useStyles = makeStyles((theme) => ({
 
 export const Signup: React.FunctionComponent = () => {
   const classes = useStyles({});
-  const setUser = useStoreActions((actions) => actions.setUser);
   const history = useHistory();
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const signup = async (e: React.FormEvent) => {
+  const signupThunk = useStoreActions((actions) => actions.signup);
+  const signup = async (e: FormEvent) => {
     e.preventDefault();
-    const { data } = await axios.post<CurrentUserResponse>(`/auth/signup`, { username, password });
+    const data = await signupThunk({ username, password });
     if (!data.success) {
-      setError(JSON.stringify(data.error));
+      setError(data.error);
       return;
     }
-    setUser(data.user);
     history.push('/');
   };
 
@@ -43,7 +40,6 @@ export const Signup: React.FunctionComponent = () => {
             className={classes.margin}
             id="username"
             label="Username"
-            type="email"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             fullWidth

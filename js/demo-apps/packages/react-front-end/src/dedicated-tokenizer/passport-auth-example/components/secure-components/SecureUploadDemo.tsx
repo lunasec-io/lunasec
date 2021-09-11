@@ -10,34 +10,32 @@ import {
   FormLabel,
   Grid,
 } from '@material-ui/core';
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
-import { ApiResponse, UserDocumentsResponse } from '../../types';
-
-async function loadDocuments(
-  setDocuments: React.Dispatch<React.SetStateAction<string[]>>,
-  setError: React.Dispatch<React.SetStateAction<string | null>>
-) {
-  const { data } = await axios.get<UserDocumentsResponse>(`/documents`);
-  if (data.success) {
-    setDocuments(data.documents);
-    return;
-  }
-  setError(data.error);
-}
+import { useStoreActions } from '../../store';
 
 export const SecureUploadDemo: React.FunctionComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const [saveSuccessful, setSaveSuccessful] = useState<boolean | null>(null);
   const [documents, setDocuments] = useState<string[]>([]);
+  const loadDocumentsThunk = useStoreActions((actions) => actions.loadDocuments);
+  const uploadDocumentTokensThunk = useStoreActions((actions) => actions.uploadDocumentTokens);
 
   useEffect(() => {
-    void loadDocuments(setDocuments, setError);
+    void loadDocuments();
   }, []);
 
+  const loadDocuments = async () => {
+    const data = await loadDocumentsThunk();
+    if (data.success) {
+      setDocuments(data.documents);
+      return;
+    }
+    setError(data.error);
+  };
+
   const saveDocuments = async () => {
-    const { data } = await axios.post<ApiResponse>(`/documents`, { documents });
+    const data = await uploadDocumentTokensThunk(documents);
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;

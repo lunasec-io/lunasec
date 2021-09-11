@@ -11,12 +11,12 @@ export interface FailApiResponse {
 
 export type ApiResponse = SuccessApiResponse | FailApiResponse;
 
-interface CurrentUserSuccess {
+interface UserSuccess {
   success: true;
   user: UserModel;
 }
 
-export type CurrentUserResponse = CurrentUserSuccess | FailApiResponse;
+export type UserResponse = UserSuccess | FailApiResponse;
 
 interface UserDocumentsSuccess {
   success: true;

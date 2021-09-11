@@ -1,10 +1,8 @@
 import { Button, FormControl, FormHelperText, FormLabel, makeStyles, Paper, TextField } from '@material-ui/core';
-import axios from 'axios';
 import React, { FormEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useStoreActions } from '../store';
-import { CurrentUserResponse } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -28,15 +26,14 @@ export const Login: React.FunctionComponent = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const setUser = useStoreActions((actions) => actions.setUser);
+  const loginThunk = useStoreActions((actions) => actions.login);
   const login = async (e: FormEvent) => {
     e.preventDefault();
-    const { data } = await axios.post<CurrentUserResponse>(`/auth/login`, { username, password });
+    const data = await loginThunk({ username, password });
     if (!data.success) {
       setError(data.error);
       return;
     }
-    setUser(data.user);
     history.push('/');
   };
 
