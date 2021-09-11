@@ -1,26 +1,24 @@
+import { ApolloClient, ApolloProvider, gql, InMemoryCache, useQuery } from '@apollo/client';
 import axios from 'axios';
 // easy-peasy is a simple store based on Redux, with a bad name
-import { Action, action, Computed, computed, createStore, createTypedHooks, Thunk, thunk } from 'easy-peasy';
+import { action, computed, createStore, thunk } from 'easy-peasy';
 
-import { ApiResponse, UserDocumentsResponse, UserModel, UserResponse } from './types';
+import { ApiResponse, StoreModel, UserDocumentsResponse, UserResponse } from '../../common/types';
 
-// todo: maybe switch from using easy-peasy, this is clunky
-interface StoreModel {
-  // Properties
-  user: UserModel | null;
-  loggedIn: Computed<StoreModel, boolean>;
-  // Actions
-  setUser: Action<StoreModel, UserModel>;
-  setSsn: Action<StoreModel, string>;
-  // Thunks
-  saveSsn: Thunk<StoreModel, string, undefined, StoreModel, Promise<ApiResponse>>;
-  loadUser: Thunk<StoreModel>;
+// async function makeGraphqlRequest<ResponseDataType>(requestBody: string) {
+//   const res = await axios.post(
+//     'http://localhost:3001/graphql',
+//     JSON.stringify({
+//       query: requestBody,
+//     })
+//   );
+//   return res.data as ResponseDataType;
+// }
 
-  loadDocuments: Thunk<StoreModel, undefined, undefined, StoreModel, Promise<UserDocumentsResponse>>;
-  uploadDocumentTokens: Thunk<StoreModel, string[], undefined, StoreModel, Promise<ApiResponse>>;
-  login: Thunk<StoreModel, { username: string; password: string }, undefined, StoreModel, Promise<UserResponse>>;
-  signup: Thunk<StoreModel, { username: string; password: string }, undefined, StoreModel, Promise<UserResponse>>;
-}
+const apollo = new ApolloClient({
+  uri: 'http://localhost:3001',
+  cache: new InMemoryCache(),
+});
 
 export const store = createStore<StoreModel>({
   user: null,
@@ -70,11 +68,22 @@ export const store = createStore<StoreModel>({
   }),
 
   login: thunk(async (actions, { username, password }) => {
-    const { data } = await axios.post<UserResponse>(`/auth/login`, { username, password });
-    if (data.success) {
-      actions.setUser(data.user);
-    }
-    return data;
+    const data = await apollo.mutate({
+      mutation: gql`
+        mutation login(userInfo: {username {
+          getFormData {
+            email
+            insecure_field
+            text_area
+            files
+          }
+      }`
+
+    // const { data } = await axios.post<UserResponse>(`/auth/login`, { username, password });
+    // if (data.success) {
+    //   actions.setUser(data.user);
+    // }
+    // return data;
   }),
 
   signup: thunk(async (actions, { username, password }) => {
@@ -85,9 +94,3 @@ export const store = createStore<StoreModel>({
     return data;
   }),
 });
-
-const typedHooks = createTypedHooks<StoreModel>();
-
-export const useStoreActions = typedHooks.useStoreActions;
-export const useStoreDispatch = typedHooks.useStoreDispatch;
-export const useStoreState = typedHooks.useStoreState;

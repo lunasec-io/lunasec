@@ -15,7 +15,7 @@ import { SecureInputDemo } from './components/secure-components/SecureInputDemo'
 import { SecureParagraphDemo } from './components/secure-components/SecureParagraphDemo';
 import { SecureTextAreaDemo } from './components/secure-components/SecureTextAreaDemo';
 import { SecureUploadDemo } from './components/secure-components/SecureUploadDemo';
-import { store } from './store';
+import { getStore } from './store';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,7 +43,7 @@ export const DedicatedPassportReactApp = () => {
         },
       }}
     >
-      <StoreProvider store={store}>
+      <StoreProvider store={getStore()}>
         <BrowserRouter>
           <div className={classes.root}>
             <CssBaseline />

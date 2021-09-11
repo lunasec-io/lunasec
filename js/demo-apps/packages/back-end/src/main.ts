@@ -7,7 +7,7 @@ import { setupDedicatedPassPortGraphQLApp } from './dedicated-tokenizer/passport
 
 // Reads environment variables and decides which demo express app to launch
 function getApp(): Promise<Express> {
-  switch (process.env.DEMO_NAME) {
+  switch (process.env.REACT_APP_DEMO_NAME) {
     case 'dedicated-passport-express':
       return setupDedicatedPassPortExpressApp();
     case 'dedicated-passport-graphql':
