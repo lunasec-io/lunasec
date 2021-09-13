@@ -182,3 +182,23 @@ community while also enabling our business is our primary motivation. If you hav
 approach, we would love to hear from you.
 
 Please send us an email at developer-feedback at lunasec dot io
+
+## Release Process
+
+The release process is split up into four parts:
+1. Version bump
+1. Compile artifacts
+1. Publish artifacts
+1. Push version tag to repository
+
+Breaking this process up ensures that every part completes without error before moving onto the next step. This greatly reduces the event that some artifacts get published and others do not, leading to a headache of a time debugging a release.
+
+Deployment of the releases is done by Github Actions.
+## Version
+Versioning for releases is done by lerna.
+## Compile
+Since the monorepo has both go and node code, compilation happens in multiple places. For the node sdks, every package has their own compilation package.json script which gets run. The entrypoint which calls into each package’s script is here. For the go code, all compilation code exists within the Makefile under the release target.
+## Publish
+For node artifacts, everything is handled by lerna. For go, publishing is handled by the publish target of the Makefile. Artifacts end up in NPM, DockerHub, and Github.
+## Push
+The version tag that gets pushed contains the version changes for the bumped monorepo version. Here is an example commit.
