@@ -1,14 +1,14 @@
 import { GrantTypeUnion, isToken, Tokenizer } from '@lunasec/tokenizer-sdk';
 import { Request } from 'express';
 
-import { LunaSecAuthentication } from '../authentication';
+import { KeyService } from '../authentication';
 import { SessionIdProvider } from '../authentication/types';
 
 export class LunaSecGrantService {
-  private readonly auth: LunaSecAuthentication;
+  private readonly auth: KeyService;
   private readonly sessionIdProvider: SessionIdProvider | undefined;
 
-  constructor(auth: LunaSecAuthentication, sessionIdProvider?: SessionIdProvider) {
+  constructor(auth: KeyService, sessionIdProvider?: SessionIdProvider) {
     this.auth = auth;
     this.sessionIdProvider = sessionIdProvider;
   }

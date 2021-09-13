@@ -8,7 +8,6 @@ import { lunaSec } from '../config/configure-lunasec';
 export function userRouter() {
   const router = Router();
 
-  router.use(ensureLoggedIn);
   router.use(bodyParser.json());
 
   /* GET users listing. */

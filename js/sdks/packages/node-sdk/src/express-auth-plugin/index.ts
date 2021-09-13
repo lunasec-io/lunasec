@@ -1,24 +1,24 @@
-import { URL } from 'url';
 import path from 'path';
+import { URL } from 'url';
 
 import cookieParser from 'cookie-parser';
 import { Request, Response, Router } from 'express';
 import { JWTPayload } from 'jose/types';
 
-import { LunaSecAuthentication } from '../authentication';
+import { KeyService } from '../authentication';
 import { SessionIdProvider } from '../authentication/types';
 
 export interface ExpressAuthPluginConfig {
   sessionIdProvider: SessionIdProvider;
   payloadClaims?: string[];
   secureFrameURL: string;
-  auth: LunaSecAuthentication;
+  auth: KeyService;
   pluginBaseUrl?: string;
 }
 
 export class LunaSecExpressAuthPlugin {
   private readonly secureFrameUrl: string;
-  private readonly auth: LunaSecAuthentication;
+  private readonly auth: KeyService;
   private readonly config: ExpressAuthPluginConfig;
 
   constructor(config: ExpressAuthPluginConfig) {

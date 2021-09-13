@@ -4,7 +4,7 @@ sqlite3.verbose();
 
 async function initDb() {
   const db = await open({
-    filename: 'db.dedicated-passport-auth-express.sqlite3',
+    filename: `db.${process.env.REACT_APP_DEMO_NAME || 'demo'}.sqlite3`,
     driver: sqlite3.Database,
   });
   await db.migrate({

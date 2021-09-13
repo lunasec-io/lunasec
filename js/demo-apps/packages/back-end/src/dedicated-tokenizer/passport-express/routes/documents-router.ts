@@ -11,7 +11,7 @@ export function documentsRouter() {
   router.use(ensureLoggedIn);
   router.use(bodyParser.json());
 
-  router.get('/', ensureLoggedIn, async (req, res) => {
+  router.get('/', async (req, res) => {
     if (!req.user) {
       throw new Error('not logged in and not caught by middleware');
     }
@@ -31,7 +31,7 @@ export function documentsRouter() {
     }
   });
 
-  router.post('/', ensureLoggedIn, async (req, res) => {
+  router.post('/', async (req, res) => {
     const documentTokens = req.body.documents as string[];
     try {
       await lunaSec.grants.verify(req.session.id, documentTokens); // Handles arrays of tokens like this in addition to individual tokens

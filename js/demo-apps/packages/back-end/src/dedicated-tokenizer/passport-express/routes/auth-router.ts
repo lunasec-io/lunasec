@@ -2,6 +2,7 @@ import { Router } from 'express';
 import passport from 'passport';
 
 import { UserMethods } from '../../../common/models/user';
+import { ensureLoggedIn } from '../config/auth-helpers';
 
 export function authRouter() {
   const router = Router();
@@ -29,7 +30,7 @@ export function authRouter() {
     })(req, res, next);
   });
 
-  router.get('/logout', function (req, res) {
+  router.get('/logout', ensureLoggedIn, (req, res) => {
     req.logout();
     res.redirect('/');
   });

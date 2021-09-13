@@ -29,7 +29,6 @@ export const SecureInputDemo: React.FunctionComponent = () => {
       return;
     }
     const data = await saveSsnThunk(ssnToken);
-    console.log('thunk responsse ', data);
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;
