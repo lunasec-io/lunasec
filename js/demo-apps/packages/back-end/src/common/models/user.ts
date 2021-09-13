@@ -23,7 +23,6 @@ export class UserMethods {
   static async getUser(id: string): Promise<UserModel | null> {
     const db = await getDb();
     const row = await db.get<UserModel>('SELECT rowid AS id, username, ssn_token FROM users WHERE rowid = ?', [id]);
-
     if (!row) {
       return null;
     }

@@ -128,18 +128,6 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
         return { success: false, error: (e as Error).toString() };
       }
     },
-    // setFormData: async (
-    //   _parent: never,
-    //   args: { formData: typeof db['formData'] },
-    //   _context: { sessionId: string },
-    //   _info: any
-    // ) => {
-    //   // If the tokens annotated with @token in FormDataInput in the schema are not granted permission to be written to the database for this sessionID
-    //   // they will throw and we would not reach this resolver
-    //   db.formData = args.formData;
-    //   console.debug('setting test data to ', args.formData);
-    //   return db.formData;
-    // },
   },
 };
 
