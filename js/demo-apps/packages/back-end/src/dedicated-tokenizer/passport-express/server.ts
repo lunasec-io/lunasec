@@ -1,4 +1,5 @@
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express from 'express';
 import expressSession from 'express-session';
 import passport from 'passport';
@@ -20,6 +21,14 @@ export async function setupDedicatedPassPortExpressApp() {
   app.use(express.json());
 
   app.use(cookieParser());
+  app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      optionsSuccessStatus: 200,
+      methods: ['GET', 'PUT', 'POST'],
+      credentials: true,
+    })
+  );
   app.use(expressSession({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
   app.use(passport.initialize());
   app.use(passport.authenticate('session'));

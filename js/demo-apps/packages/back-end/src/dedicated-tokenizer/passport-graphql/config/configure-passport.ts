@@ -64,11 +64,11 @@ export default async function configurePassport() {
   passport.serializeUser(function (user, cb) {
     cb(null, { id: user.id, username: user.username });
   });
-  // TODO: Generate session IDs, dont use user IDs like this
 
   passport.deserializeUser(async function (userInfo: { id: string }, cb) {
     try {
       const user = await UserMethods.getUser(userInfo.id);
+      console.log('');
       cb(null, user);
     } catch (e) {
       cb(e);

@@ -22,16 +22,18 @@ export async function setupDedicatedPassPortGraphQLApp(): Promise<Express> {
   app.use(express.json());
   app.use(
     cors({
-      origin: '*', // TODO: WARNING CHANGE THIS BACK
+      origin: 'http://localhost:3000',
       optionsSuccessStatus: 200,
       methods: ['GET', 'PUT', 'POST'],
       credentials: true,
     })
   );
   app.use(cookieParser());
+
   app.use(expressSession({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use(passport.authenticate('session'));
 
   // Attach the LunaSec authentication plugin
   lunaSec.expressAuthPlugin.register(app);

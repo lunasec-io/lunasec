@@ -1,4 +1,4 @@
-import { ApolloClient, ApolloProvider, gql, InMemoryCache, useQuery } from '@apollo/client';
+import { ApolloClient, ApolloProvider, createHttpLink, gql, InMemoryCache, useQuery } from '@apollo/client';
 import axios from 'axios';
 // easy-peasy is a simple store based on Redux, with a bad name
 import { action, computed, createStore, thunk } from 'easy-peasy';
@@ -14,10 +14,19 @@ import { ApiResponse, StoreModel, UserDocumentsResponse, UserResponse } from '..
 //   );
 //   return res.data as ResponseDataType;
 // }
+const link = createHttpLink({
+  uri: 'http://localhost:3001/graphql',
+  credentials: 'include',
+});
 
 const apollo = new ApolloClient({
-  uri: 'http://localhost:3001',
-  cache: new InMemoryCache(),
+  link,
+  cache: new InMemoryCache(), // Todo: It is a good idea to set up a cache that won't last longer than the grant time.  Here we are just using network-only to bypass that issue
+  defaultOptions: {
+    query: {
+      fetchPolicy: 'network-only',
+    },
+  },
 });
 
 export const store = createStore<StoreModel>({
@@ -38,9 +47,18 @@ export const store = createStore<StoreModel>({
     if (!currentUser) {
       throw new Error('Cant set SSN for a user that isnt logged in');
     }
-    console.log('about to make api call');
-    const { data } = await axios.post<ApiResponse>(`/user/set-ssn`, { ssn_token });
-    console.log('api responded ', data);
+    const res = await apollo.mutate({
+      variables: { ssn_token },
+      mutation: gql`
+        mutation SetSsn($ssn_token: String!) {
+          setSsn(ssnInfo: { ssn_token: $ssn_token }) {
+            success
+            error
+          }
+        }
+      `,
+    });
+    const data = res.data.setSsn;
     if (data.success) {
       actions.setUser({ ...currentUser, ssn_token });
     }
@@ -48,46 +66,105 @@ export const store = createStore<StoreModel>({
   }),
 
   loadUser: thunk(async (actions) => {
-    const { data } = await axios.get<UserResponse>(`/user/me`);
+    const res = await apollo.query({
+      query: gql`
+        query GetCurrentUser {
+          getCurrentUser {
+            success
+            error
+            user {
+              username
+              ssn_token
+            }
+          }
+        }
+      `,
+    });
+    const data = res.data.getCurrentUser;
     if (data.success) {
       actions.setUser(data.user);
-      return data;
     }
     return data;
   }),
 
   loadDocuments: thunk(async () => {
-    const { data } = await axios.get<UserDocumentsResponse>(`/documents`);
-    return data;
+    const res = await apollo.query({
+      query: gql`
+        query GetDocuments {
+          getDocuments {
+            success
+            error
+            documents {
+              token
+            }
+          }
+        }
+      `,
+    });
+    const data = res.data.getDocuments;
+    const unwrappedDocumentTokens = data.documents ? data.documents.map((doc: { token: string }) => doc.token) : null;
+    return {
+      error: data.error,
+      success: data.success,
+      documents: unwrappedDocumentTokens,
+    };
   }),
 
   uploadDocumentTokens: thunk(async (actions, documents) => {
-    console.log('uploading document tokens ', documents);
-    const { data } = await axios.post<ApiResponse>(`/documents`, { documents });
-    return data;
+    const res = await apollo.mutate({
+      variables: { documents },
+      mutation: gql`
+        mutation SetDocuments($documents: [String]!) {
+          setDocuments(tokenArray: { documents: $documents }) {
+            success
+            error
+          }
+        }
+      `,
+    });
+    return res.data.setDocuments;
   }),
 
   login: thunk(async (actions, { username, password }) => {
-    const data = await apollo.mutate({
+    const res = await apollo.mutate({
+      variables: { username, password },
       mutation: gql`
-        mutation login(userInfo: {username {
-          getFormData {
-            email
-            insecure_field
-            text_area
-            files
+        mutation Login($username: String!, $password: String!) {
+          login(userInfo: { username: $username, password: $password }) {
+            success
+            error
+            user {
+              username
+              ssn_token
+            }
           }
-      }`
-
-    // const { data } = await axios.post<UserResponse>(`/auth/login`, { username, password });
-    // if (data.success) {
-    //   actions.setUser(data.user);
-    // }
-    // return data;
+        }
+      `,
+    });
+    const data = res.data.login;
+    if (data.success) {
+      actions.setUser(data.user);
+    }
+    return data;
   }),
 
   signup: thunk(async (actions, { username, password }) => {
-    const { data } = await axios.post<UserResponse>(`/auth/signup`, { username, password });
+    const res = await apollo.mutate({
+      variables: { username, password },
+      mutation: gql`
+        mutation Signup($username: String!, $password: String!) {
+          signup(userInfo: { username: $username, password: $password }) {
+            success
+            error
+            user {
+              username
+              ssn_token
+            }
+          }
+        }
+      `,
+    });
+    const data = res.data.signup;
     if (data.success) {
       actions.setUser(data.user);
     }

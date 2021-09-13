@@ -19,7 +19,7 @@ export async function attachApolloServer(app: Express): Promise<void> {
   server.applyMiddleware({ app, cors: false });
 }
 
-export type AppContext = PassportContext<UserModel, { username: string; password: string }>;
+export type AppContext = PassportContext<UserModel, { username: string; password?: string; id?: string }>;
 
 // export interface ContextWithSessionId {
 //   sessionId: string | null;

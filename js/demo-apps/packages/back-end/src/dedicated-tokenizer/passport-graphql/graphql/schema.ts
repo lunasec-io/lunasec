@@ -64,7 +64,7 @@ export const typeDefs = gql`
 
   type Query {
     getCurrentUser: UserResponse
-    getUserDocuments: DocumentResponse
+    getDocuments: DocumentResponse
   }
 `;
 
@@ -75,7 +75,7 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
       return { success: true, user: user };
     }, // Once this resolver fires and tokens are retrieved, any field annotated with @token will be granted read permission for this session for 15 minutes
 
-    getUserDocuments: async (_parent, _args, context) => {
+    getDocuments: async (_parent, _args, context) => {
       try {
         const user = getUserOrThrow(context);
         const documents = await DocumentMethods.getUserDocuments(user.id);
@@ -89,7 +89,7 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
     signup: async (_parent, args, context) => {
       try {
         const user = await UserMethods.createNewUser(args.userInfo);
-        await context.login(args.userInfo);
+        await context.login(user);
         return { success: true, user: user };
       } catch (e) {
         return { success: false, error: (e as Error).toString() };
@@ -102,8 +102,7 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
           username,
           password,
         });
-
-        await context.login({ username, password });
+        await context.login(user);
         return { success: true, user: user };
       } catch (e) {
         return { success: false, error: (e as Error).toString() };
@@ -112,6 +111,7 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
     setSsn: async (_parent, args, context) => {
       try {
         const user = getUserOrThrow(context);
+        console.log('args to setssn are ');
         await UserMethods.setSsn(user.id, args.ssnInfo.ssn_token);
         return { success: true, user: user };
       } catch (e) {
@@ -122,7 +122,7 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
     setDocuments: async (_parent, args, context) => {
       try {
         const user = getUserOrThrow(context);
-        await DocumentMethods.setUserDocuments(user.id, args.tokenArray);
+        await DocumentMethods.setUserDocuments(user.id, args.tokenArray.documents);
         return { success: true };
       } catch (e) {
         return { success: false, error: (e as Error).toString() };
