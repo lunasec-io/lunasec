@@ -16,7 +16,7 @@ windows:
       - npx http-server -a localhost -p 8000
 
     # Demo React App Front End
-    # Available DEMO_NAMES are 'dedicated-passport-express', 'dedicated-passport-graphql', and 'simple'
+    # Available REACT_APP_DEMO_NAMES are 'dedicated-passport-express', 'dedicated-passport-graphql', and 'simple'
     - shell_command:
       - cd js/demo-apps/packages/react-front-end
       - REACT_APP_DEMO_NAME="dedicated-passport-express" npm run start
