@@ -4628,20 +4628,6 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@lunasec/browser-common@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@lunasec/browser-common/-/browser-common-1.0.0.tgz#8cb5270be7d1b378c36ae92c416142ae5c1d259b"
-  integrity sha512-+WbI/jH19jfUuzXhH64PbUJbOLljcH9ABKpi+ZhiHZi1AKq5pt+8ACBlw5WA6Y4kHKJ8NePWnMtzrtpbhmyykA==
-
-"@lunasec/tokenizer-sdk@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@lunasec/tokenizer-sdk/-/tokenizer-sdk-1.0.0.tgz#85ecaee6b74d1c77ecd2982927152ec2b1a65aea"
-  integrity sha512-+Zi7mMyZ1ocIOZi+nGg6UinUWvH4e6WksBszz2gcCHKSlKFNox805vI1hVRLK0UcOEMYB2LlIzVd5p+k1wwTIw==
-  dependencies:
-    "@lunasec/browser-common" "^1.0.0"
-    axios "^0.21.1"
-    react-dom "^17.0.2"
-
 "@material-ui/core@^4.12.3":
   version "4.12.3"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.12.3.tgz#80d665caf0f1f034e52355c5450c0e38b099d3ca"
