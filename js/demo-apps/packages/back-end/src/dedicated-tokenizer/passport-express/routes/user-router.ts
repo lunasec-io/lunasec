@@ -1,11 +1,11 @@
 import bodyParser from 'body-parser';
 import { Router } from 'express';
 
-import { UserMethods } from '../../../common/models/user';
+import { Models } from '../../../common/models';
 import { ensureLoggedIn } from '../config/auth-helpers';
 import { lunaSec } from '../config/configure-lunasec';
 
-export function userRouter() {
+export function userRouter(models: Models) {
   const router = Router();
 
   router.use(bodyParser.json());
@@ -31,7 +31,7 @@ export function userRouter() {
     }
     try {
       await lunaSec.grants.verify(req.session.id, req.body.ssn_token);
-      await UserMethods.setSsn(req.user.id, req.body.ssn_token);
+      await models.user.setSsn(req.user.id, req.body.ssn_token);
     } catch (e) {
       return res.json({
         success: false,

@@ -1,13 +1,16 @@
 import cors from 'cors';
 import express from 'express';
 
-import { getDb } from '../common/database/db';
+import { initDb } from '../common/database/db';
+import { createModels } from '../common/models';
 
 import { simpleTokenizerBackend } from './config/configure-lunasec';
 import { userRouter } from './routes/user-router';
 
 export async function setupSimpleExpressApp() {
-  await getDb();
+  const db = await initDb('simple-express');
+
+  const models = createModels(db);
   const app = express();
 
   app.use(express.urlencoded({ extended: true }));
@@ -22,7 +25,7 @@ export async function setupSimpleExpressApp() {
     })
   );
 
-  app.use('/user', userRouter());
+  app.use('/user', userRouter(models));
 
   // Attach the LunaSec authentication plugin
   simpleTokenizerBackend.register(app);

@@ -25,7 +25,7 @@ export const TokenizeDemo: React.FunctionComponent = () => {
         setError(tokenizerResponse.error.toString());
         return;
       }
-      const { data } = await axios.post<ApiResponse>(`http://localhost:3001/user/set-ssn`, {
+      const { data } = await axios.post<ApiResponse>(`http://localhost:3003/user/set-ssn`, {
         ssn_token: tokenizerResponse.tokenId,
       });
       if (!data.success) {

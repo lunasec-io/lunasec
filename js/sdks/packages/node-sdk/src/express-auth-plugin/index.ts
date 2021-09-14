@@ -95,7 +95,7 @@ export class LunaSecExpressAuthPlugin {
       return;
     }
 
-    console.log('redirecting...', redirectUrl.href);
+    console.log('LunaSec Auth Plugin is redirecting request...');
 
     res.redirect(redirectUrl.href);
   }
