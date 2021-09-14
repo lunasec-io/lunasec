@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 
-import { getDb } from '../database/db';
+import { Database } from 'sqlite';
+import sqlite3 from 'sqlite3';
 
 export interface UserModel {
   id: string;
@@ -14,15 +15,21 @@ export interface UserWithPasswordHash extends UserModel {
 }
 
 export class UserMethods {
-  static async setSsn(id: string, ssnToken: string) {
-    const db = await getDb();
-    await db.run('UPDATE users SET ssn_token = ? WHERE rowid = ?', [ssnToken, id]);
+  db: Database<sqlite3.Database, sqlite3.Statement>;
+
+  constructor(db: Database<sqlite3.Database, sqlite3.Statement>) {
+    this.db = db;
+  }
+
+  async setSsn(id: string, ssnToken: string) {
+    await this.db.run('UPDATE users SET ssn_token = ? WHERE rowid = ?', [ssnToken, id]);
     return;
   }
 
-  static async getUser(id: string): Promise<UserModel | null> {
-    const db = await getDb();
-    const row = await db.get<UserModel>('SELECT rowid AS id, username, ssn_token FROM users WHERE rowid = ?', [id]);
+  async getUser(id: string): Promise<UserModel | null> {
+    const row = await this.db.get<UserModel>('SELECT rowid AS id, username, ssn_token FROM users WHERE rowid = ?', [
+      id,
+    ]);
     if (!row) {
       return null;
     }
@@ -33,13 +40,12 @@ export class UserMethods {
   }
 
   // just used for login with passport
-  static async getUserWithPasswordHash(username: string) {
-    const db = await getDb();
-    return db.get<UserWithPasswordHash>('SELECT rowid AS id, * FROM users WHERE username = ?', [username]);
+  async getUserWithPasswordHash(username: string) {
+    return this.db.get<UserWithPasswordHash>('SELECT rowid AS id, * FROM users WHERE username = ?', [username]);
   }
 
-  static async createNewUser(userFields: { password: string; username: string }): Promise<UserModel> {
-    const db = await getDb();
+  async createNewUser(userFields: { password: string; username: string }): Promise<UserModel> {
+    const db = this.db;
     const salt = crypto.randomBytes(16);
     return new Promise((resolve) => {
       crypto.pbkdf2(userFields.password, salt, 10000, 32, 'sha256', async function (err, hashedPassword) {

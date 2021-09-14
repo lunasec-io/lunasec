@@ -2,9 +2,11 @@ import { Database, open } from 'sqlite';
 import sqlite3 from 'sqlite3';
 sqlite3.verbose();
 
-async function initDb() {
+export type DbType = Database<sqlite3.Database, sqlite3.Statement>;
+
+export async function initDb(dbName: string): Promise<DbType> {
   const db = await open({
-    filename: `db.${process.env.REACT_APP_DEMO_NAME || 'demo'}.sqlite3`,
+    filename: `db.${dbName}.sqlite3`,
     driver: sqlite3.Database,
   });
   await db.migrate({
@@ -12,12 +14,4 @@ async function initDb() {
     migrationsPath: __dirname + '/migrations',
   });
   return db;
-}
-
-let DBPromise: Promise<Database<sqlite3.Database, sqlite3.Statement>>;
-export function getDb() {
-  if (typeof DBPromise === 'undefined') {
-    DBPromise = initDb();
-  }
-  return DBPromise;
 }
