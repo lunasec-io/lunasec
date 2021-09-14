@@ -2,15 +2,15 @@ app:
   cors:
     allowed_origins:
       - ${SECURE_FRAME_FRONT_END}
-      - ${CUSTOMER_FRONT_END}
+      - ${APPLICATION_FRONT_END}
     allowed_headers:
       - Authorization
 aws_gateway:
   region: us-west-2
-  access_key_id: ${AWS_ACCESS_KEY_ID}
-  secret_access_key: ${AWS_SECRET_ACCESS_KEY}
-  localstack_url: ${LOCALSTACK_URL}
-  local_https_proxy: ${LOCAL_HTTPS_PROXY}
+  access_key_id: ${AWS_ACCESS_KEY_ID:""}
+  secret_access_key: ${AWS_SECRET_ACCESS_KEY:""}
+  localstack_url: ${LOCALSTACK_URL:""}
+  local_https_proxy: ${LOCAL_HTTPS_PROXY:""}
 #  s3_bucket: ${CIPHERTEXT_VAULT_S3_BUCKET}
 #  table_names:
 #    metadata: ${METADATA_KV_TABLE}
@@ -18,16 +18,17 @@ aws_gateway:
 #    sessions: ${SESSIONS_KV_TABLE}
 #    grants: ${GRANTS_KV_TABLE}
 session_controller:
-  auth_callback_host: ${CUSTOMER_BACK_END}
+  auth_callback_host: ${APPLICATION_BACK_END}
   auth_callback_path: ${AUTH_CALLBACK_PATH:/secure-frame}
 secure_frame_controller:
-  views_path: ${SECURE_FRAME_VIEWS_PATH}
+  views_path: ${SECURE_FRAME_VIEWS_PATH:views/tokenizerbackend}
   cdn_config: ${SECURE_FRAME_CDN_CONFIG}
-tokenizer_controller:
-  application_token_secret: TODO
-session_jwt_verifier:
+tokenizer:
+  secret_arn: ${TOKENIZER_SECRET_ARN:""}
+auth_jwt_verifier:
+  # TODO (cthompson) this public key is specifically the auth provider's public key and the configuration should reflect this
   public_key: ${SESSION_PUBLIC_KEY:""}
   jwks_url: ${SESSION_JWKS_URL:""}
-  jwks_kid: ${SESSION_JWKS_KID:""}
+  jwks_kid: ${SESSION_JWKS_KID:"lunasec-signing-key"}
 grant_service:
   grant_ttl: "1h"

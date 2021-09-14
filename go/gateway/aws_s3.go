@@ -3,7 +3,6 @@ package gateway
 import (
 	"crypto/md5"
 	"encoding/base64"
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -27,6 +26,8 @@ type awsS3Gateway struct {
 type AwsS3GatewayConfig struct {
 	S3Region string `yaml:"region"`
 	S3Bucket string `yaml:"s3_bucket"`
+	AccessKeyID string `yaml:"access_key_id"`
+	SecretAccessKey string `yaml:"secret_access_key"`
 	LocalHTTPSProxy string `yaml:"local_https_proxy"`
 	LocalstackURL string `yaml:"localstack_url"`
 }
@@ -67,9 +68,7 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session
 		panic(err)
 	}
 
-	fmt.Printf("%+v", gatewayConfig)
-
-	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
+	s3Host := gatewayConfig.S3Bucket + ".s3." + gatewayConfig.S3Region + ".amazonaws.com"
 
 	s3Gateway = &awsS3Gateway{
 		logger:             logger,
@@ -107,6 +106,12 @@ type createPresignedUrlFunc func(params createPresignedUrlParams) (url string, e
 
 // adjustUrlFromLocalDev will re-write the URL so that they can be accessed without an https cert in a browser when testing locally.
 func (s *awsS3Gateway) adjustUrlFromLocalDev(url string) string {
+	s.logger.Debug(
+		"adjusting url for local dev",
+		zap.String("https proxy", s.LocalHTTPSProxy),
+		zap.String("localstack url", s.LocalstackURL),
+	)
+
 	return strings.ReplaceAll(url, s.LocalHTTPSProxy, s.LocalstackURL)
 }
 

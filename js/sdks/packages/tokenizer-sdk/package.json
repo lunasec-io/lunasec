@@ -1,6 +1,7 @@
 {
   "name": "@lunasec/tokenizer-sdk",
-  "version": "1.0.0",
+  "private": false,
+  "version": "0.0.1-alpha.11",
   "description": "lunasec Tokenizer client for Node.js",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -15,21 +16,22 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.3.9",
     "@types/express": "^4.17.11",
-    "@types/node": "^14.11.8",
     "@types/jest": "^26.0.23",
+    "@types/node": "^14.11.8",
+    "express": "^4.17.1",
     "jest": "^27.0.4",
     "jest-json-to-tap": "^2.1.0",
     "ts-jest": "^27.0.3",
-    "express": "^4.17.1",
     "ts-json-schema-generator": "^0.95.0",
-    "typescript": "^4.2.0",
-    "@openapitools/openapi-generator-cli": "^2.3.9"
+    "typescript": "^4.2.0"
   },
   "dependencies": {
-    "@lunasec/browser-common": "^1.0.0",
-    "@lunasec/isomorphic-common": "^1.0.0",
+    "@lunasec/browser-common": "^0.0.1-alpha.11",
+    "@lunasec/isomorphic-common": "^0.0.1-alpha.11",
     "axios": "^0.21.1",
     "react-dom": "^17.0.2"
-  }
+  },
+  "gitHead": "d0cb89ff028ea0c24cdfa0225874a838006b8c89"
 }

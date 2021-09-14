@@ -2,7 +2,6 @@ const webpack = require('webpack');
 
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const S3Plugin = require('webpack-s3-plugin')
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -40,23 +39,24 @@ plugins.push(new webpack.ProvidePlugin({
 
 plugins.push(new webpack.DefinePlugin(envVarDefs))
 
-if (isProduction) {
-  plugins.push(new S3Plugin({
-    // Exclude uploading of html
-    // exclude: /.*\.html$/,
-    directory: 'build/js',
-    // s3Options are required
-    s3Options: {
-      region: process.env.LUNASEC_ASSET_BUCKET_REGION || 'us-west-2'
-    },
-    s3UploadOptions: {
-      Bucket: process.env.LUNASEC_ASSET_BUCKET_NAME
-    },
-    cdnizerOptions: {
-      defaultCDNBase: process.env.LUNASEC_CDN_BASE_URL
-    }
-  }));
-}
+// if (isProduction) {
+//   const S3Plugin = require('webpack-s3-plugin')
+//   plugins.push(new S3Plugin({
+//     // Exclude uploading of html
+//     // exclude: /.*\.html$/,
+//     directory: 'build/js',
+//     // s3Options are required
+//     s3Options: {
+//       region: process.env.LUNASEC_ASSET_BUCKET_REGION || 'us-west-2'
+//     },
+//     s3UploadOptions: {
+//       Bucket: process.env.LUNASEC_ASSET_BUCKET_NAME
+//     },
+//     cdnizerOptions: {
+//       defaultCDNBase: process.env.LUNASEC_CDN_BASE_URL
+//     }
+//   }));
+// }
 
 module.exports = {
   context: path.resolve(__dirname, 'src/'),

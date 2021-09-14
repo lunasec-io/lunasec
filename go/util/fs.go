@@ -1,12 +1,13 @@
 package util
 
 import (
-    "fmt"
-    "io"
-    "io/ioutil"
-    "os"
-    "path/filepath"
-    "syscall"
+	"archive/tar"
+	"compress/gzip"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 )
 
 func CopyDirectory(scrDir, dest string) error {
@@ -27,11 +28,6 @@ func CopyDirectory(scrDir, dest string) error {
             return err
         }
 
-        stat, ok := fileInfo.Sys().(*syscall.Stat_t)
-        if !ok {
-            return fmt.Errorf("failed to get raw syscall.Stat_t data for '%s'", sourcePath)
-        }
-
         switch fileInfo.Mode() & os.ModeType{
         case os.ModeDir:
             if err := CreateIfNotExists(destPath, 0755); err != nil {
@@ -48,10 +44,6 @@ func CopyDirectory(scrDir, dest string) error {
             if err := Copy(sourcePath, destPath); err != nil {
                 return err
             }
-        }
-
-        if err := os.Lchown(destPath, int(stat.Uid), int(stat.Gid)); err != nil {
-            return err
         }
 
         isSymlink := entry.Mode()&os.ModeSymlink != 0
@@ -112,4 +104,55 @@ func CopySymLink(source, dest string) error {
         return err
     }
     return os.Symlink(link, dest)
+}
+
+func ExtractTgzWithCallback(srcFile string, callback func(filename string, data []byte) (err error)) (err error) {
+	f, err := os.Open(srcFile)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+
+	gzf, err := gzip.NewReader(f)
+	if err != nil {
+		return
+	}
+
+	tarReader := tar.NewReader(gzf)
+
+	for true {
+		var (
+			header *tar.Header
+		)
+
+		header, err = tarReader.Next()
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			return
+		}
+
+		name := header.Name
+
+		switch header.Typeflag {
+		case tar.TypeReg: // = regular file
+			var data []byte
+
+			data, err = io.ReadAll(tarReader)
+			if err != nil {
+				return
+			}
+
+			err = callback(name, data)
+			if err != nil {
+				return
+			}
+		}
+	}
+
+	err = nil
+	return
 }
