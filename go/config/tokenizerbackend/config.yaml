@@ -29,6 +29,6 @@ auth_jwt_verifier:
   # TODO (cthompson) this public key is specifically the auth provider's public key and the configuration should reflect this
   public_key: ${SESSION_PUBLIC_KEY:""}
   jwks_url: ${SESSION_JWKS_URL:""}
-  jwks_kid: ${SESSION_JWKS_KID:""}
+  jwks_kid: ${SESSION_JWKS_KID:"lunasec-signing-key"}
 grant_service:
   grant_ttl: "1h"
