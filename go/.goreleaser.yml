@@ -1,0 +1,42 @@
+project_name: lunasec
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - id: lunasec-cli
+    main: ./cmd/lunasec
+    binary: lunasec
+    flags:
+      - -tags=cli
+      - -v
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - 386
+      - amd64
+# generate .deb, .rpm, and .apk with https://goreleaser.com/customization/nfpm/
+# if we want aur support, we could either use this https://github.com/AnatolyRugalev/kube-commander/blob/master/ci/aur/publish.sh
+# or we could try to land this pr https://github.com/goreleaser/nfpm/pull/141
+archives:
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: '{{.Version}}-SNAPSHOT-{{.ShortCommit}}'
+release:
+  name_template: '{{.ProjectName}}-v{{.Version}}'
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

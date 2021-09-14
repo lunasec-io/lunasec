@@ -1,5 +1,11 @@
 package constants
 
+type JwtVerifierType string
+
+const (
+	AuthJwtVerifier = "auth_jwt_verifier"
+)
+
 type SessionState string
 
 const (

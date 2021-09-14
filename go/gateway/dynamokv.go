@@ -23,6 +23,27 @@ const (
 	GrantStore = types.KVStore("grants")
 )
 
+func validateTableConfig(tableConfig map[types.KVStore]string) {
+	tableNames := []types.KVStore {
+		MetaStore,
+		KeyStore,
+		SessionStore,
+		GrantStore,
+	}
+
+	var errs []error
+	for _, tableName := range tableNames {
+		if _, ok := tableConfig[tableName]; !ok {
+			err := fmt.Errorf("unable to find ARN for table: %s", tableName)
+			errs = append(errs, err)
+		}
+	}
+
+	if len(errs) != 0 {
+		panic(errs)
+	}
+}
+
 type dynamoKvGateway struct {
 	DynamoKvGatewayConfig
 	logger *zap.Logger
@@ -50,6 +71,8 @@ func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider, sess *sess
 		log.Println(err)
 		panic(err)
 	}
+
+	validateTableConfig(gatewayConfig.TableNames)
 
 	logger.Debug("creating new dynamodb session")
 	db := dynamodb.New(sess)

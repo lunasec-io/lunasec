@@ -7,11 +7,11 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/refinery-labs/loq/pkg/secureframe"
+	"github.com/refinery-labs/loq/pkg/tokenizerbackend"
 )
 
 var (
-	gatewayServer = secureframe.NewApiGatewayServer()
+	gatewayServer = tokenizerbackend.NewApiGatewayServer()
 )
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {

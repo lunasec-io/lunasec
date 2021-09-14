@@ -1,0 +1,28 @@
+FROM golang AS base
+
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
+
+WORKDIR /src
+ENV CGO_ENABLED=0
+COPY go.* .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
+
+FROM base as builder
+
+RUN --mount=target=. \
+    --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    OUTPUT_DIR=/out make tokenizerbackend tag=dev
+
+FROM scratch
+
+COPY config/tokenizerbackend/config.yaml /config/tokenizerbackend/config.yaml
+COPY views/tokenizerbackend/ /views/tokenizerbackend/
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /out/tokenizerbackend_dev /tokenizerbackend
+COPY --from=builder /tmp /tmp
+
+WORKDIR /
+ENTRYPOINT ["/tokenizerbackend"]

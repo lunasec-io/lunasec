@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/hex"
 	"errors"
+	"go.uber.org/config"
 
 	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/types"
@@ -10,30 +11,50 @@ import (
 )
 
 type tokenizerService struct {
+	config TokenizerConfig
 	kv gateway.DynamoKvGateway
 	s3 gateway.AwsS3Gateway
+	secret string
+}
+
+type TokenizerConfig struct {
+	SecretArn string `yaml:"secret_arn"`
 }
 
 // TokenizerService ...
 type TokenizerService interface {
-	TokenizerSet(secret string) (types.Token, string, map[string]string, error)
-	TokenizerGet(secret string, token types.Token) (string, map[string]string, error)
-	TokenizerDelete(secret string, token types.Token) error
+	TokenizerSet() (types.Token, string, map[string]string, error)
+	TokenizerGet(token types.Token) (string, map[string]string, error)
+	TokenizerDelete(token types.Token) error
 }
 
 // NewTokenizerService ...
-func NewTokenizerService(kv gateway.DynamoKvGateway, s3 gateway.AwsS3Gateway) TokenizerService {
+func NewTokenizerService(
+	config config.Provider,
+	kv gateway.DynamoKvGateway,
+	s3 gateway.AwsS3Gateway,
+) TokenizerService {
+	var (
+		tokenizerConfig TokenizerConfig
+	)
+
+	err := config.Get("tokenizer").Populate(&tokenizerConfig)
+	if err != nil {
+		panic(err)
+	}
+
 	return &tokenizerService{
+		config: tokenizerConfig,
 		kv: kv,
 		s3: s3,
 	}
 }
 
 // SetTokenizer ...
-func (s *tokenizerService) TokenizerSet(secret string) (types.Token, string, map[string]string, error) {
+func (s *tokenizerService) TokenizerSet() (types.Token, string, map[string]string, error) {
 	token := util.GenToken()
 	Kp := util.Keygen()
-	snk := util.GenerateSaltsAndKey(token, secret)
+	snk := util.GenerateSaltsAndKey(token, s.secret)
 
 	// E(Kt, Kp)
 	encryptedEncryptionKeyBytes, err := util.Encrypt(snk.Kt, Kp)
@@ -57,8 +78,8 @@ func (s *tokenizerService) TokenizerSet(secret string) (types.Token, string, map
 }
 
 // GetTokenizer
-func (s *tokenizerService) TokenizerGet(secret string, token types.Token) (string, map[string]string, error) {
-	snk := util.GenerateSaltsAndKey(token, secret)
+func (s *tokenizerService) TokenizerGet(token types.Token) (string, map[string]string, error) {
+	snk := util.GenerateSaltsAndKey(token, s.secret)
 	encryptionKeyLookupHash := util.GetCompositeHash(token, snk.Sk)
 	encryptedEncryptionKey, err := s.kv.Get(gateway.KeyStore, encryptionKeyLookupHash)
 
@@ -87,6 +108,6 @@ func (s *tokenizerService) TokenizerGet(secret string, token types.Token) (strin
 	return s.s3.GeneratePresignedGetUrl(ciphertextLookupHash, Kp)
 }
 
-func (s *tokenizerService) TokenizerDelete(secret string, token types.Token) error {
+func (s *tokenizerService) TokenizerDelete(token types.Token) error {
 	return nil
 }
