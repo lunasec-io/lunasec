@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/refinery-labs/loq/constants"
+	"github.com/refinery-labs/loq/util"
 	"net/http"
 	"net/http/httputil"
 
@@ -44,6 +45,25 @@ func subjectIsAllowed(subject constants.JwtSubject, allowedSubjects []constants.
 	return false
 }
 
+func (j *jwtHttpAuth) sessionHashMatchesProvidedIdentity(sessionID string, w http.ResponseWriter, r *http.Request) bool {
+	sessionHash := util.CreateSessionHash(sessionID)
+
+	requestSessionHash := r.Header.Get(constants.SessionHashHeader)
+	if requestSessionHash == "" {
+		j.logger.Debug(
+			"session hash header not set, setting it now",
+			zap.String("sessionHash", sessionHash),
+		)
+		w.Header().Set(constants.SessionHashHeader, sessionHash)
+		return true
+	}
+
+	if requestSessionHash == sessionHash {
+		return true
+	}
+	return false
+}
+
 func (j *jwtHttpAuth) WithJwtAuth(allowedSubjects []constants.JwtSubject, next http.HandlerFunc) http.HandlerFunc {
 	unauthHandler := http.HandlerFunc(j.defaultUnauthorizedHandler)
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -68,6 +88,17 @@ func (j *jwtHttpAuth) WithJwtAuth(allowedSubjects []constants.JwtSubject, next h
 			j.logger.Error(
 				"invalid jwt token",
 				zap.String("jwt", jwtToken),
+				zap.Error(err),
+			)
+			unauthHandler.ServeHTTP(w, r)
+			return
+		}
+
+		if !j.sessionHashMatchesProvidedIdentity(claims.SessionID, w, r) {
+			j.logger.Error(
+				"provided identity does not match the pre-existing session",
+				zap.String("jwt", jwtToken),
+				zap.String("sessionHash", ""),
 				zap.Error(err),
 			)
 			unauthHandler.ServeHTTP(w, r)
