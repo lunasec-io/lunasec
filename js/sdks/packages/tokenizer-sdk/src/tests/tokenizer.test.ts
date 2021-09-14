@@ -119,7 +119,7 @@ describe('fetchData', () => {
   });
 
   describe('grants', () => {
-    it('sets read grant', async () => {
+    it('sets full access grant', async () => {
       const axiosRes: { data: SetGrantResponse } = {
         data: {
           success: true,
@@ -131,34 +131,11 @@ describe('fetchData', () => {
       const expectedOutput: TokenizerSetGrantResponse = {
         success: true,
       };
-      const result = tokenizer.createReadGrant('fakeSessionId', 'fakeToken');
+      const result = tokenizer.createFullAccessGrant('fakeSessionId', 'fakeToken');
       await expect(result).resolves.toEqual(expectedOutput);
 
       expect(mockAxios.request).toHaveBeenCalledWith({
         data: '{"sessionId":"fakeSessionId","tokenId":"fakeToken","grantType":"read_token"}',
-        headers: { 'Content-Type': 'application/json' },
-        method: 'POST',
-        url: 'http://fake-tokenizer-backend.com/grant/set',
-      });
-    });
-
-    it('sets store grant', async () => {
-      const axiosRes: { data: SetGrantResponse } = {
-        data: {
-          success: true,
-          data: {},
-        },
-      };
-      mockAxios.request.mockResolvedValue(axiosRes);
-
-      const expectedOutput: TokenizerSetGrantResponse = {
-        success: true,
-      };
-      const result = tokenizer.createDataBaseStoreGrant('fakeSessionId', 'fakeToken');
-      await expect(result).resolves.toEqual(expectedOutput);
-
-      expect(mockAxios.request).toHaveBeenCalledWith({
-        data: '{"sessionId":"fakeSessionId","tokenId":"fakeToken","grantType":"store_token"}',
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
         url: 'http://fake-tokenizer-backend.com/grant/set',

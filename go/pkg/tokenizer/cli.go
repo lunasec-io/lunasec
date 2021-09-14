@@ -139,7 +139,6 @@ func newSessionID() string {
 func setGrantForToken(cliOptions CliOptions, sessionID string, tokenID string) (err error) {
 	input := event.GrantSetRequest{
 		TokenID: tokenID,
-		GrantType: constants.ReadToken,
 	}
 	tokenizeURL := fmt.Sprintf("%s/grant/set", cliOptions.URL)
 	_, err = tokenizerRequest(sessionID, tokenizeURL, cliOptions.AuthPrivateKey, input)

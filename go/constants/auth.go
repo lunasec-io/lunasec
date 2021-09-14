@@ -21,7 +21,8 @@ const (
 )
 
 const (
-	JwtAuthHeader = "Authorization"
+	JwtAuthHeader = "authorization"
+	SessionHashHeader = "lunasec-session-hash"
 )
 
 type JwtSubject string

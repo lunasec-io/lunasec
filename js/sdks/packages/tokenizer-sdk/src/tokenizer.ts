@@ -4,11 +4,9 @@ import { LunaSecError } from '@lunasec/isomorphic-common';
 import { AxiosError } from 'axios';
 
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
-import { CONFIG_DEFAULTS } from './constants';
-import { Configuration, DefaultApi, ErrorResponse, GrantType, MetaData } from './generated';
+import { AUTHORIZATION_HEADER, CONFIG_DEFAULTS, SESSION_HASH_HEADER } from './constants';
+import { Configuration, DefaultApi, ErrorResponse, MetaData } from './generated';
 import {
-  GrantTypeEnum,
-  GrantTypeUnion,
   SuccessOrFailOutput,
   TokenizerClientConfig,
   TokenizerDetokenizeResponse,
@@ -26,11 +24,10 @@ import {
 export class Tokenizer {
   readonly config!: TokenizerClientConfig;
   readonly openApi: DefaultApi;
-  private readonly reqOptions: Record<string, any>;
+  private reqOptions: Record<string, any>;
 
   constructor(config?: Partial<TokenizerClientConfig>) {
     // Deep clone config for mutation safety.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 
     const headers: OutgoingHttpHeaders = {
@@ -38,7 +35,7 @@ export class Tokenizer {
     };
     const jwtToken = this.config.authenticationToken;
     if (jwtToken) {
-      headers[this.config.headers.auth] = jwtToken;
+      headers[AUTHORIZATION_HEADER] = jwtToken;
     }
     this.reqOptions = { headers }; // This is passed to the openapi client on every request
 
@@ -47,6 +44,18 @@ export class Tokenizer {
     // openapi stuff
     const openAPIConfig = new Configuration({ basePath });
     this.openApi = new DefaultApi(openAPIConfig);
+  }
+
+  // the session hash for an iFrame binds the iFrame to a specific session, and will prevent
+  // "grant jacking" attempts where an attacker is able to log someone out and log them into the
+  // attacker's account. This would let an attacker be able to tokenize already detokenized data
+  // which would let the attacker view the plaintext by subsequently detokenized this newly created
+  // token with the victim's plaintext.
+  private setSessionHash(sessionHash: string) {
+    this.reqOptions = {
+      ...this.reqOptions,
+      [SESSION_HASH_HEADER]: sessionHash,
+    };
   }
 
   private getBasePath(): string {
@@ -78,21 +87,12 @@ export class Tokenizer {
     return new LunaSecError({ name: 'unknownTokenizerError', message: 'Unknown Tokenization Error', code: '500' });
   }
 
-  public createReadGrant(sessionId: string, tokenId: string) {
-    return this.createAnyGrant(sessionId, tokenId, GrantType.ReadToken);
-  }
-
-  public createDataBaseStoreGrant(sessionId: string, tokenId: string) {
-    return this.createAnyGrant(sessionId, tokenId, GrantType.StoreToken);
-  }
-
-  private async createAnyGrant(sessionId: string, tokenId: string, grantType: GrantType) {
+  public async createFullAccessGrant(sessionId: string, tokenId: string) {
     try {
       const res = await this.openApi.setGrant(
         {
           sessionId,
           tokenId,
-          grantType: grantType,
         },
         this.reqOptions
       );
@@ -104,25 +104,12 @@ export class Tokenizer {
     }
   }
 
-  // there has got to be a better way than this
-  private convertGrantTypeToEnum(grantTypeString: GrantTypeUnion) {
-    if (grantTypeString === 'read_token') {
-      return GrantTypeEnum.ReadToken;
-    }
-    if (grantTypeString === 'store_token') {
-      return GrantTypeEnum.StoreToken;
-    }
-    throw new Error(`Bad grant type passed to tokenizer: ${grantTypeString.toString()}`);
-  }
-
-  async verifyGrant(sessionId: string, tokenId: string, grantType: GrantTypeUnion) {
-    const ennumifiedGrantType = this.convertGrantTypeToEnum(grantType);
+  async verifyGrant(sessionId: string, tokenId: string) {
     try {
       const res = await this.openApi.verifyGrant(
         {
           sessionId,
           tokenId,
-          grantType: ennumifiedGrantType,
         },
         this.reqOptions
       );
@@ -197,6 +184,21 @@ export class Tokenizer {
         this.reqOptions
       );
       const res = response.data;
+
+      console.log(response.headers);
+
+      const sessionHash = response.headers[SESSION_HASH_HEADER];
+      if (sessionHash === undefined) {
+        return {
+          success: false,
+          error: new LunaSecError({
+            name: 'detokenizationiFrameSessionBinding',
+            message: 'session hash was not set in response when detokenizing, unable to bind iFrame to a session',
+            code: '500',
+          }),
+        };
+      }
+      this.setSessionHash(sessionHash);
 
       if (!res.data) {
         return {

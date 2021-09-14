@@ -1,4 +1,4 @@
-import { GrantTypeUnion, isToken, Tokenizer } from '@lunasec/tokenizer-sdk';
+import { isToken, Tokenizer } from '@lunasec/tokenizer-sdk';
 import { Request } from 'express';
 
 import { LunaSecAuthentication } from '../authentication';
@@ -29,7 +29,7 @@ export class LunaSecGrantService {
       throw new Error('Attempted to create a LunaSec Token Grant from a string that didnt look like a token');
     }
     const tokenizer = await this.initializeTokenizer();
-    const resp = await tokenizer.createReadGrant(sessionId, token);
+    const resp = await tokenizer.createFullAccessGrant(sessionId, token);
     if (!resp.success) {
       throw new Error(`unable to set detokenization grant for: ${token}`);
     }
@@ -49,7 +49,7 @@ export class LunaSecGrantService {
   }
 
   // This private function handles the verifying of just one grant, and is used by the public function below
-  private async verifyOneGrant(sessionId: string, tokenId: string, grantType: GrantTypeUnion) {
+  private async verifyOneGrant(sessionId: string, tokenId: string) {
     const authenticationToken = await this.auth.createAuthenticationJWT('application', {});
 
     const tokenizer = new Tokenizer({
@@ -62,23 +62,23 @@ export class LunaSecGrantService {
     if (!isToken(tokenId)) {
       throw new Error('Attempted to verify a LunaSec Token Grant from a string that didnt look like a token');
     }
-    const resp = await tokenizer.verifyGrant(sessionId, tokenId, grantType);
+    const resp = await tokenizer.verifyGrant(sessionId, tokenId);
     if (!resp.success) {
       throw new Error(`unable to verify tokenization grant for: ${tokenId}`);
     }
   }
 
   // Public verify can also handle arrays for people's convenience, so it mostly deals with handling the array and passes the verifying logic to the private function above
-  public async verify(sessionId: string, tokenOrTokens: string | string[], grantType: GrantTypeUnion) {
+  public async verify(sessionId: string, tokenOrTokens: string | string[]) {
     // Todo: dry up this array handling from above, we are doing it twice
     if (Array.isArray(tokenOrTokens)) {
       const grantPromises: Promise<void>[] = [];
       tokenOrTokens.forEach((t) => {
-        grantPromises.push(this.verifyOneGrant(sessionId, t, grantType));
+        grantPromises.push(this.verifyOneGrant(sessionId, t));
       });
       return await Promise.all(grantPromises);
     } else {
-      return await this.verifyOneGrant(sessionId, tokenOrTokens, grantType);
+      return await this.verifyOneGrant(sessionId, tokenOrTokens);
     }
   }
 
@@ -108,7 +108,7 @@ export class LunaSecGrantService {
     return this.create(await this.getSessionIdFromReq(req), token);
   }
 
-  public async verifyWithAutomaticSessionId(req: Request, token: string | string[], grantType: GrantTypeUnion) {
-    return this.verify(await this.getSessionIdFromReq(req), token, grantType);
+  public async verifyWithAutomaticSessionId(req: Request, token: string | string[]) {
+    return this.verify(await this.getSessionIdFromReq(req), token);
   }
 }

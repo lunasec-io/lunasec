@@ -113,7 +113,7 @@ func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request
 	oauthUrl.Path = s.AuthCallbackPath
 
 	// TODO (cthompson) revisit this cookie ttl
-	util.AddCookie(w, constants.AuthStateCookie, stateToken, "/", time.Hour)
+	util.AddCookie(w, constants.AuthStateCookie, stateToken, "/", time.Minute*15)
 	http.Redirect(w, r, oauthUrl.String(), http.StatusFound)
 }
 
@@ -173,11 +173,15 @@ func (s *sessionController) SessionCreate(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = s.authProviderJwtVerifier.Verify(req.AuthToken)
+	claims, err := s.authProviderJwtVerifier.VerifyWithSessionClaims(req.AuthToken)
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
+
+	encodedSessionHash := util.CreateSessionHash(claims.SessionID)
+
+	w.Header().Set("SESSION_HASH", encodedSessionHash)
 
 	// TODO (cthompson) revist this cookie ttl
 	util.AddCookie(w, constants.DataAccessTokenCookie, req.AuthToken, "/", time.Minute*15)
