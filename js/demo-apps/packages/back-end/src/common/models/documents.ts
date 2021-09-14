@@ -1,13 +1,18 @@
-import { getDb } from '../database/db';
+import { Database } from 'sqlite';
+import sqlite3 from 'sqlite3';
 
 export class DocumentMethods {
-  static async getUserDocuments(userId: string) {
-    const db = await getDb();
-    return db.all<Array<{ token: string }>>('SELECT token FROM documents WHERE user_id = ?', [userId]);
+  db: Database<sqlite3.Database, sqlite3.Statement>;
+
+  constructor(db: Database<sqlite3.Database, sqlite3.Statement>) {
+    this.db = db;
+  }
+  async getUserDocuments(userId: string) {
+    return this.db.all<Array<{ token: string }>>('SELECT token FROM documents WHERE user_id = ?', [userId]);
   }
 
-  static async setUserDocuments(userId: string, documentTokens: string[]) {
-    const db = await getDb();
+  async setUserDocuments(userId: string, documentTokens: string[]) {
+    const db = this.db;
     await db.run('DELETE FROM documents WHERE user_id = (?)', userId); // clear out any old documents
     const insertionPromises: Promise<any>[] = [];
     documentTokens.forEach((documentToken) => {

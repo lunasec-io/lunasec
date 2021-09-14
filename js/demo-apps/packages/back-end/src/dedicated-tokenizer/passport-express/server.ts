@@ -2,9 +2,9 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import expressSession from 'express-session';
-import passport from 'passport';
 
-import { getDb } from '../../common/database/db';
+import { initDb } from '../../common/database/db';
+import { createModels } from '../../common/models';
 
 import { lunaSec } from './config/configure-lunasec';
 import configurePassport from './config/configure-passport';
@@ -13,8 +13,11 @@ import { documentsRouter } from './routes/documents-router';
 import { userRouter } from './routes/user-router';
 
 export async function setupDedicatedPassPortExpressApp() {
-  await configurePassport();
-  await getDb();
+  const db = await initDb('dedicated-passport-express');
+
+  const models = createModels(db);
+  const passport = configurePassport(models);
+
   const app = express();
 
   app.use(express.urlencoded({ extended: true }));
@@ -33,9 +36,9 @@ export async function setupDedicatedPassPortExpressApp() {
   app.use(passport.initialize());
   app.use(passport.authenticate('session'));
 
-  app.use('/user', userRouter());
-  app.use('/auth', authRouter());
-  app.use('/documents', documentsRouter());
+  app.use('/user', userRouter(models));
+  app.use('/auth', authRouter(models));
+  app.use('/documents', documentsRouter(models));
 
   // Attach the LunaSec authentication plugin
   lunaSec.expressAuthPlugin.register(app);

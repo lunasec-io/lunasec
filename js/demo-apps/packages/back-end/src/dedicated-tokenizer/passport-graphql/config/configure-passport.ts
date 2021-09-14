@@ -2,9 +2,9 @@ import { Buffer } from 'buffer';
 import crypto from 'crypto';
 
 import { GraphQLLocalStrategy } from 'graphql-passport';
-import passport from 'passport';
+import { Passport } from 'passport';
 
-import { UserMethods } from '../../../common/models/user';
+import { Models } from '../../../common/models';
 
 function comparePassword(passwordToCheck: string, storedPasswordHash: string, salt: string): Promise<boolean | Error> {
   return new Promise((resolve, _reject) => {
@@ -19,7 +19,9 @@ function comparePassword(passwordToCheck: string, storedPasswordHash: string, sa
   });
 }
 
-export default async function configurePassport() {
+export default function configurePassport(models: Models) {
+  const passport = new Passport();
+
   // Configure the local strategy for use by Passport.
   //
   // The local strategy requires a `verify` function which receives the credentials
@@ -29,14 +31,14 @@ export default async function configurePassport() {
   passport.use(
     new GraphQLLocalStrategy(
       // @ts-ignore these types are wrong in the library
-      async (username: string, reqPassword: string, done: (error: any, user?: any) => void) => {
-        const userRecord = await UserMethods.getUserWithPasswordHash(username).catch((err) => done(err, false));
+      async (username: string, password: string, done: (error: any, user?: any) => void) => {
+        const userRecord = await models.user.getUserWithPasswordHash(username).catch((err) => done(err, false));
 
         if (!userRecord) {
           return done('Incorrect username or password.', false);
         }
 
-        const passwordCorrect = await comparePassword(reqPassword, userRecord.hashed_password, userRecord.salt);
+        const passwordCorrect = await comparePassword(password, userRecord.hashed_password, userRecord.salt);
         if (passwordCorrect instanceof Error) {
           return done(passwordCorrect, false);
         }
@@ -67,11 +69,11 @@ export default async function configurePassport() {
 
   passport.deserializeUser(async function (userInfo: { id: string }, cb) {
     try {
-      const user = await UserMethods.getUser(userInfo.id);
-      console.log('');
+      const user = await models.user.getUser(userInfo.id);
       cb(null, user);
     } catch (e) {
       cb(e);
     }
   });
+  return passport;
 }

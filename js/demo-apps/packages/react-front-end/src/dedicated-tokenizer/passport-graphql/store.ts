@@ -15,7 +15,7 @@ import { ApiResponse, StoreModel, UserDocumentsResponse, UserResponse } from '..
 //   return res.data as ResponseDataType;
 // }
 const link = createHttpLink({
-  uri: 'http://localhost:3001/graphql',
+  uri: 'http://localhost:3002/graphql',
   credentials: 'include',
 });
 

@@ -1,11 +1,11 @@
 import { Buffer } from 'buffer';
 import crypto from 'crypto';
 
-import passport from 'passport';
+import { Passport } from 'passport';
 // @ts-ignore
 import { Strategy } from 'passport-json';
 
-import { UserMethods, UserModel } from '../../../common/models/user';
+import { Models, UserModel } from '../../../common/models';
 
 function comparePassword(passwordToCheck: string, storedPasswordHash: string, salt: string): Promise<boolean | Error> {
   return new Promise((resolve, _reject) => {
@@ -20,7 +20,8 @@ function comparePassword(passwordToCheck: string, storedPasswordHash: string, sa
   });
 }
 
-export default async function configurePassport() {
+export default function configurePassport(models: Models) {
+  const passport = new Passport();
   // Configure the local strategy for use by Passport.
   //
   // The local strategy requires a `verify` function which receives the credentials
@@ -30,16 +31,16 @@ export default async function configurePassport() {
   passport.use(
     new Strategy(async function login(
       username: string,
-      reqPassword: string,
+      password: string,
       done: (err: null | string | Error, usr?: false | UserModel) => void
     ) {
-      const userRecord = await UserMethods.getUserWithPasswordHash(username).catch((err) => done(err, false));
+      const userRecord = await models.user.getUserWithPasswordHash(username).catch((err) => done(err, false));
 
       if (!userRecord) {
         return done('Incorrect username or password.', false);
       }
 
-      const passwordCorrect = await comparePassword(reqPassword, userRecord.hashed_password, userRecord.salt);
+      const passwordCorrect = await comparePassword(password, userRecord.hashed_password, userRecord.salt);
       if (passwordCorrect instanceof Error) {
         return done(passwordCorrect, false);
       }
@@ -70,10 +71,12 @@ export default async function configurePassport() {
 
   passport.deserializeUser(async function (userInfo: { id: string }, cb) {
     try {
-      const user = await UserMethods.getUser(userInfo.id);
+      const user = await models.user.getUser(userInfo.id);
       cb(null, user);
     } catch (e) {
       cb(e);
     }
   });
+
+  return passport;
 }
