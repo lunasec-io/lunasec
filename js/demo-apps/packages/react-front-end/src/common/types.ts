@@ -1,4 +1,8 @@
-import { UserModel } from '@lunasec/demo-back-end';
+export interface UserModel {
+  id: string;
+  username: string;
+  ssn_token?: string;
+}
 
 export interface SuccessApiResponse {
   success: true;
@@ -24,8 +28,6 @@ interface UserDocumentsSuccess {
 }
 
 export type UserDocumentsResponse = UserDocumentsSuccess | FailApiResponse;
-
-export type { UserModel };
 
 // easy-peasy is a simple store based on Redux, with a bad name
 import { Action, Computed, Thunk } from 'easy-peasy';

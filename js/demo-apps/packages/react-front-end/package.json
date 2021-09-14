@@ -1,5 +1,5 @@
 {
-  "name": "react-front-end",
+  "name": "@lunasec/react-front-end",
   "private": true,
   "version": "0.0.1-alpha.11",
   "proxy": "http://localhost:3001",
@@ -20,7 +20,7 @@
     "@aws-sdk/credential-provider-ini": "^3.31.0",
     "@lunasec/demo-back-end": "^0.0.1-alpha.11",
     "@lunasec/react-sdk": "^0.0.1-alpha.11",
-    "@lunasec/tokenizer-sdk": "^1.0.0",
+    "@lunasec/tokenizer-sdk": "^0.0.1-alpha.11",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
