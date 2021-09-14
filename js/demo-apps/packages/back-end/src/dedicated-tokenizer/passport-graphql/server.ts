@@ -3,9 +3,9 @@ config();
 
 import express, { Express } from 'express';
 import expressSession from 'express-session';
-import passport from 'passport';
 
-import { getDb } from '../../common/database/db';
+import { initDb } from '../../common/database/db';
+import { createModels } from '../../common/models';
 
 import { lunaSec } from './config/configure-lunasec';
 import configurePassport from './config/configure-passport';
@@ -15,8 +15,10 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 export async function setupDedicatedPassPortGraphQLApp(): Promise<Express> {
-  await getDb();
-  await configurePassport();
+  const db = await initDb('dedicated-passport-graphql');
+
+  const models = createModels(db);
+  const passport = configurePassport(models);
   const app = express();
 
   app.use(express.json());
@@ -38,6 +40,6 @@ export async function setupDedicatedPassPortGraphQLApp(): Promise<Express> {
   // Attach the LunaSec authentication plugin
   lunaSec.expressAuthPlugin.register(app);
 
-  await attachApolloServer(app);
+  await attachApolloServer(app, models);
   return app;
 }

@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import passport from 'passport';
 
-import { UserMethods } from '../../../common/models/user';
+import { Models } from '../../../common/models';
 import { ensureLoggedIn } from '../config/auth-helpers';
 
-export function authRouter() {
+export function authRouter(models: Models) {
   const router = Router();
 
   router.post('/login', (req, res, next) => {
@@ -37,7 +37,7 @@ export function authRouter() {
 
   router.post('/signup', async (req, res) => {
     try {
-      const user = await UserMethods.createNewUser(req.body);
+      const user = await models.user.createNewUser(req.body);
       return req.login(user, function (err: Error) {
         if (err) {
           throw err;

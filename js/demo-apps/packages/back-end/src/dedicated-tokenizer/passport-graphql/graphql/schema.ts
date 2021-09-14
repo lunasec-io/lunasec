@@ -1,8 +1,6 @@
 import { GraphQLResolverMap } from 'apollo-graphql';
 import { gql } from 'apollo-server-express';
 
-import { DocumentMethods } from '../../../common/models/documents';
-import { UserMethods } from '../../../common/models/user';
 import { getUserOrThrow } from '../config/auth-helpers';
 import { lunaSec } from '../config/configure-lunasec';
 // README - This demo shows how to use the lunasec @token directive in your apollo server
@@ -78,7 +76,7 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
     getDocuments: async (_parent, _args, context) => {
       try {
         const user = getUserOrThrow(context);
-        const documents = await DocumentMethods.getUserDocuments(user.id);
+        const documents = await context.models.documents.getUserDocuments(user.id);
         return { success: true, documents: documents };
       } catch (e) {
         return { success: false, error: (e as Error).toString() };
@@ -88,7 +86,7 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
   Mutation: {
     signup: async (_parent, args, context) => {
       try {
-        const user = await UserMethods.createNewUser(args.userInfo);
+        const user = await context.models.user.createNewUser(args.userInfo);
         await context.login(user);
         return { success: true, user: user };
       } catch (e) {
@@ -112,7 +110,7 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
       try {
         const user = getUserOrThrow(context);
         console.log('args to setssn are ');
-        await UserMethods.setSsn(user.id, args.ssnInfo.ssn_token);
+        await context.models.user.setSsn(user.id, args.ssnInfo.ssn_token);
         return { success: true, user: user };
       } catch (e) {
         return { success: false, error: (e as Error).toString() };
@@ -122,7 +120,7 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
     setDocuments: async (_parent, args, context) => {
       try {
         const user = getUserOrThrow(context);
-        await DocumentMethods.setUserDocuments(user.id, args.tokenArray.documents);
+        await context.models.documents.setUserDocuments(user.id, args.tokenArray.documents);
         return { success: true };
       } catch (e) {
         return { success: false, error: (e as Error).toString() };
