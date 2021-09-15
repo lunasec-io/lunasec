@@ -17,23 +17,14 @@ import (
 const s3EncryptionAlgo = "AES256"
 
 type awsS3Gateway struct {
-	AwsS3GatewayConfig
+	AwsGatewayConfig
 	logger *zap.Logger
 	s3     *session.Session
 	s3Host string
 }
 
-type AwsS3GatewayConfig struct {
-	S3Region string `yaml:"region"`
-	AccessKeyID string `yaml:"access_key_id"`
-	SecretAccessKey string `yaml:"secret_access_key"`
-	LocalstackURL string `yaml:"localstack_url"`
-	LocalHTTPSProxy string `yaml:"local_https_proxy"`
-	S3Bucket string `yaml:"s3_bucket"`
-}
-
 type AwsS3GatewayConfigWrapper struct {
-	AwsGateway AwsS3GatewayConfig `yaml:"aws_gateway"`
+	AwsGateway AwsGatewayConfig `yaml:"aws_gateway"`
 }
 
 // AwsS3Gateway ...
@@ -45,7 +36,7 @@ type AwsS3Gateway interface {
 
 func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
 	return AwsS3GatewayConfigWrapper{
-		AwsGateway: AwsS3GatewayConfig{
+		AwsGateway: AwsGatewayConfig{
 			S3Region: region,
 			S3Bucket: bucket,
 		},
@@ -59,7 +50,7 @@ func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
 // NewAwsS3Gateway...
 func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session.Session) (s3Gateway AwsS3Gateway) {
 	var (
-		gatewayConfig AwsS3GatewayConfig
+		gatewayConfig AwsGatewayConfig
 	)
 
 	err := provider.Get("aws_gateway").Populate(&gatewayConfig)
@@ -72,7 +63,7 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session
 
 	s3Gateway = &awsS3Gateway{
 		logger:             logger,
-		AwsS3GatewayConfig: gatewayConfig,
+		AwsGatewayConfig: gatewayConfig,
 		s3:                 sess,
 		s3Host:             s3Host,
 	}

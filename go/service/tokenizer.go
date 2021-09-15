@@ -3,7 +3,9 @@ package service
 import (
 	"encoding/hex"
 	"errors"
+	"github.com/refinery-labs/loq/constants"
 	"go.uber.org/config"
+	"go.uber.org/zap"
 
 	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/types"
@@ -11,8 +13,10 @@ import (
 )
 
 type tokenizerService struct {
+	logger *zap.Logger
 	config TokenizerConfig
-	kv gateway.DynamoKvGateway
+	cw gateway.AwsCloudwatchGateway
+	kv gateway.AwsDynamoGateway
 	s3 gateway.AwsS3Gateway
 	secret string
 }
@@ -30,8 +34,10 @@ type TokenizerService interface {
 
 // NewTokenizerService ...
 func NewTokenizerService(
+	logger *zap.Logger,
 	config config.Provider,
-	kv gateway.DynamoKvGateway,
+	cw gateway.AwsCloudwatchGateway,
+	kv gateway.AwsDynamoGateway,
 	s3 gateway.AwsS3Gateway,
 ) TokenizerService {
 	var (
@@ -44,7 +50,9 @@ func NewTokenizerService(
 	}
 
 	return &tokenizerService{
+		logger: logger,
 		config: tokenizerConfig,
+		cw: cw,
 		kv: kv,
 		s3: s3,
 	}
@@ -52,6 +60,8 @@ func NewTokenizerService(
 
 // SetTokenizer ...
 func (s *tokenizerService) TokenizerSet() (types.Token, string, map[string]string, error) {
+	s.cw.PutMetric(constants.TokenizerSetStart, 1)
+
 	token := util.GenToken()
 	Kp := util.Keygen()
 	snk := util.GenerateSaltsAndKey(token, s.secret)
@@ -60,6 +70,7 @@ func (s *tokenizerService) TokenizerSet() (types.Token, string, map[string]strin
 	encryptedEncryptionKeyBytes, err := util.Encrypt(snk.Kt, Kp)
 
 	if err != nil {
+		s.cw.PutMetric(constants.TokenizerSetErrorEncrypt, 1)
 		return "", "", nil, err
 	}
 
@@ -69,43 +80,60 @@ func (s *tokenizerService) TokenizerSet() (types.Token, string, map[string]strin
 	encryptedEncryptionKey := hex.EncodeToString(encryptedEncryptionKeyBytes)
 
 	if err := s.kv.Set(gateway.KeyStore, encryptionKeyLookupHash, encryptedEncryptionKey); err != nil {
+		s.cw.PutMetric(constants.TokenizerSetErrorKVStore, 1)
 		return "", "", nil, err
 	}
 
 	url, key, err := s.s3.GeneratePresignedPutUrl(ciphertextLookupHash, Kp)
-
+	if err != nil {
+		s.cw.PutMetric(constants.TokenizerSetErrorPresignedUrl, 1)
+		return token, url, key, err
+	}
+	s.cw.PutMetric(constants.TokenizerSetSuccess, 1)
 	return token, url, key, err
 }
 
 // GetTokenizer
 func (s *tokenizerService) TokenizerGet(token types.Token) (string, map[string]string, error) {
+	s.cw.PutMetric(constants.TokenizerGetStart, 1)
+
 	snk := util.GenerateSaltsAndKey(token, s.secret)
 	encryptionKeyLookupHash := util.GetCompositeHash(token, snk.Sk)
 	encryptedEncryptionKey, err := s.kv.Get(gateway.KeyStore, encryptionKeyLookupHash)
 
 	if err != nil {
+		s.cw.PutMetric(constants.TokenizerGetErrorKVGet, 1)
 		return "", nil, err
 	}
 
 	if len(encryptedEncryptionKey) == 0 {
+		s.cw.PutMetric(constants.TokenizerGetErrorNoEncryptionKey, 1)
 		return "", nil, errors.New("unable to locate data for token")
 	}
 
 	encryptedEncryptionKeyBytes, err := hex.DecodeString(encryptedEncryptionKey)
 
 	if err != nil {
+		s.cw.PutMetric(constants.TokenizerGetErrorDecodeEncryptionKey, 1)
 		return "", nil, err
 	}
 
 	Kp, err := util.Decrypt(snk.Kt, encryptedEncryptionKeyBytes)
 
 	if err != nil {
+		s.cw.PutMetric(constants.TokenizerGetErrorDecryptEncryptionKey, 1)
 		return "", nil, err
 	}
 
 	ciphertextLookupHash := util.GetCompositeHash(token, snk.Sp)
 
-	return s.s3.GeneratePresignedGetUrl(ciphertextLookupHash, Kp)
+	url, key, err := s.s3.GeneratePresignedPutUrl(ciphertextLookupHash, Kp)
+	if err != nil {
+		s.cw.PutMetric(constants.TokenizerGetErrorPresignedUrl, 1)
+		return url, key, err
+	}
+	s.cw.PutMetric(constants.TokenizerGetSuccess, 1)
+	return url, key, err
 }
 
 func (s *tokenizerService) TokenizerDelete(token types.Token) error {
