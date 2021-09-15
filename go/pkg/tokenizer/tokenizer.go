@@ -18,9 +18,9 @@ func getRoutes(
 	gateways gateway.Gateways,
 	authProviderJwtVerifier service.JwtVerifier,
 ) map[string]handler.Config {
-	meta := service.NewMetadataService(gateways.KV)
-	grant := service.NewGrantService(logger, provider, gateways.KV)
-	tokenizer := service.NewTokenizerService(provider, gateways.KV, gateways.S3)
+	meta := service.NewMetadataService(logger, gateways.CW, gateways.KV)
+	grant := service.NewGrantService(logger, provider, gateways.CW, gateways.KV)
+	tokenizer := service.NewTokenizerService(logger, provider, gateways.CW, gateways.KV, gateways.S3)
 
 	metadataController := controller.NewMetaController(meta, authProviderJwtVerifier, grant)
 	grantController := controller.NewGrantController(grant, authProviderJwtVerifier)

@@ -44,7 +44,7 @@ func validateTableConfig(tableConfig map[types.KVStore]string) {
 	}
 }
 
-type dynamoKvGateway struct {
+type dynamoGateway struct {
 	DynamoKvGatewayConfig
 	logger *zap.Logger
 	db     *dynamodb.DynamoDB
@@ -54,14 +54,14 @@ type DynamoKvGatewayConfig struct {
 	TableNames map[types.KVStore]string `yaml:"table_names"`
 }
 
-// DynamoKvGateway ...
-type DynamoKvGateway interface {
+// AwsDynamoGateway ...
+type AwsDynamoGateway interface {
 	Get(store types.KVStore, key string) (string, error)
 	Set(store types.KVStore, key string, value string) error
 }
 
-// NewDynamoKvGateway...
-func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider, sess *session.Session) DynamoKvGateway {
+// NewDynamoGateway...
+func NewDynamoGateway(logger *zap.Logger, provider config.Provider, sess *session.Session) AwsDynamoGateway {
 	var (
 		gatewayConfig DynamoKvGatewayConfig
 	)
@@ -77,14 +77,14 @@ func NewDynamoKvGateway(logger *zap.Logger, provider config.Provider, sess *sess
 	logger.Debug("creating new dynamodb session")
 	db := dynamodb.New(sess)
 
-	return &dynamoKvGateway{
+	return &dynamoGateway{
 		DynamoKvGatewayConfig: gatewayConfig,
 		logger:                logger,
 		db:                    db,
 	}
 }
 
-func (s *dynamoKvGateway) getTableName(store types.KVStore) (tableName string, err error) {
+func (s *dynamoGateway) getTableName(store types.KVStore) (tableName string, err error) {
 	var (
 		ok bool
 	)
@@ -100,7 +100,7 @@ func (s *dynamoKvGateway) getTableName(store types.KVStore) (tableName string, e
 	return
 }
 
-func (s *dynamoKvGateway) Get(store types.KVStore, key string) (string, error) {
+func (s *dynamoGateway) Get(store types.KVStore, key string) (string, error) {
 	tableName, err := s.getTableName(store)
 	if err != nil {
 		return "", err
@@ -128,7 +128,7 @@ func (s *dynamoKvGateway) Get(store types.KVStore, key string) (string, error) {
 	return metadata.Value, nil
 }
 
-func (s *dynamoKvGateway) Set(store types.KVStore, key string, value string) error {
+func (s *dynamoGateway) Set(store types.KVStore, key string, value string) error {
 	tableName, err := s.getTableName(store)
 	if err != nil {
 		return err

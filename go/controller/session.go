@@ -21,7 +21,7 @@ import (
 type sessionController struct {
 	SessionControllerConfig
 	logger                  *zap.Logger
-	kv                      gateway.DynamoKvGateway
+	kv                      gateway.AwsDynamoGateway
 	authProviderJwtVerifier service.JwtVerifier
 }
 
@@ -39,7 +39,7 @@ type SessionController interface {
 func NewSessionController(
 	logger *zap.Logger,
 	provider config.Provider,
-	kv gateway.DynamoKvGateway,
+	kv gateway.AwsDynamoGateway,
 	authProviderJwtVerifier service.JwtVerifier,
 ) (controller SessionController, err error) {
 	var controllerConfig SessionControllerConfig
