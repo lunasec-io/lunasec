@@ -31,8 +31,8 @@ jobs:
       shell: bash
 
     - name: Run e2e tests
-      # TODO: Exit code from breaks CI currently
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --exit-code-from integration-test
+      # TODO: Exit code from breaks CI currently --exit-code-from
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test
 
 #    - name: docker logs
 #      if: always()

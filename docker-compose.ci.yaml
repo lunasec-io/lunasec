@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   integration-test:
-    image: cypress/included:8.1.0
+    image: cypress/included:8.3.1
     entrypoint: cypress
     command: run --browser chrome
     working_dir: /e2e
@@ -15,8 +15,9 @@ services:
       - proxy
       - cdk-init
       - secure-frame-iframe
-      - customer-front-end  # Todo: Change these names from customer "demo" or something
-      - customer-back-end
-      - secureframe
-    environment:
-      - DISPLAY=${DISPLAY}
+      - application-front-end
+      - application-back-end
+      - tokenizerbackend
+# Uncomment to open the cypress UI locally
+#    environment:
+#      - DISPLAY=${DISPLAY}

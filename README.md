@@ -128,8 +128,8 @@ Path: `/go`
 These are the back-end components of the LunaSec stack. They share a common codebase and are built into separate binaries
 by the entrypoints defined in the `/go/cmd` folder. 
 
-You can build each entrypoint by using the Makefile like: `make secureframe` and then invoking the generated binary 
-inside of the `build` folder like: `./build/secureframe_dev`.
+You can build each entrypoint by using the Makefile like: `make tokenizerbackend` and then invoking the generated binary 
+inside of the `build` folder like: `./build/tokenizerbackend_dev`.
 
 # Contributing
 Please review our [contributor document](https://github.com/lunasec-io/lunasec-monorepo/blob/master/CONTRIBUTING.md)
@@ -154,7 +154,7 @@ When you want to shut down the cluster, hit `ctrl+b` and type `:kill-session`. (
 A CLI has been written in go to enable the creation of test data. Build the cli via:
 ```shell
 cd go
-BUILD_TAG=cli make tokenizer
+make tokenizer tag=cli
 ```
 
 and use it by running 

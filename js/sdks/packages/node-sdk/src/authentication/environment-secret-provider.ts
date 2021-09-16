@@ -12,6 +12,7 @@ export function environmentSecretProvider() {
     const signingKey = Buffer.from(__SIGNING_KEY__, 'base64');
     secretKey = createPrivateKey(signingKey);
   } catch (e) {
+    console.error(e);
     throw new Error(
       `Error loading Session Signing Key from environment, check your environment variable LUNASEC_SIGNING_KEY is formatted correctly`
     );

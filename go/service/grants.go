@@ -34,21 +34,23 @@ type GrantService interface {
 }
 
 // NewGrantService ...
-func NewGrantService(logger *zap.Logger, provider config.Provider, kv gateway.DynamoKvGateway) (service GrantService, err error) {
+func NewGrantService(
+	logger *zap.Logger,
+	provider config.Provider,
+	kv gateway.DynamoKvGateway,
+) (service GrantService) {
 	var (
 		serviceConfig grantServiceConfig
 	)
 
-	err = provider.Get("grant_service").Populate(&serviceConfig)
+	err := provider.Get("grant_service").Populate(&serviceConfig)
 	if err != nil {
-		log.Println(err)
-		return
+		panic(err)
 	}
 
 	grantDuration, err := time.ParseDuration(serviceConfig.GrantTTL)
 	if err != nil {
-		log.Println(err)
-		return
+		panic(err)
 	}
 	service = &grantService{
 		logger: logger,

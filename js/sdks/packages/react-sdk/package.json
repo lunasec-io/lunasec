@@ -1,11 +1,11 @@
 {
   "name": "@lunasec/react-sdk",
-  "version": "1.0.0",
+  "private": false,
+  "version": "0.0.1",
   "description": "React SDK for lunasec Secure Frame",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "https://github.com/lunasec/secure-frame-react-sdk",
   "license": "MIT",
   "keywords": [],
   "scripts": {
@@ -46,8 +46,8 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@lunasec/browser-common": "^1.0.0",
-    "@lunasec/isomorphic-common": "^1.0.0",
+    "@lunasec/browser-common": "^0.0.1-alpha.11",
+    "@lunasec/isomorphic-common": "^0.0.1-alpha.11",
     "@types/styled-components": "^5.1.10",
     "classnames": "^2.3.1",
     "react": "^17.0.0",
@@ -118,5 +118,6 @@
     "exclude": [
       "**/*.spec.js"
     ]
-  }
+  },
+  "gitHead": "d0cb89ff028ea0c24cdfa0225874a838006b8c89"
 }

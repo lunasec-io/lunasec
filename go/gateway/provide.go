@@ -47,6 +47,10 @@ func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options
 		return
 	}
 
+	if gatewayConfig.S3Region == "" {
+		gatewayConfig.S3Region = "us-west-2"
+	}
+
 	sharedConfigEnable := session.SharedConfigEnable
 	if gatewayConfig.AccessKeyID != "" && gatewayConfig.SecretAccessKey != "" {
 		logger.Debug(

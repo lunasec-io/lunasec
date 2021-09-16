@@ -1,0 +1,8 @@
+secure_frame_controller:
+  cdn_config:
+    protocol: http
+    host: ${CDN_HOST}
+    main_script: js/main-dev.js
+    main_style: main.css
+session_controller:
+  auth_callback_host: ${APPLICATION_BACK_END}
