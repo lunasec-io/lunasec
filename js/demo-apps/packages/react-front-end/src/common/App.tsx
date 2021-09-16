@@ -2,7 +2,7 @@ import { LunaSecConfigContext, SecureDownload } from '@lunasec/react-sdk';
 import { CssBaseline, makeStyles } from '@material-ui/core';
 import { createStyles, Theme } from '@material-ui/core/styles';
 import { StoreProvider } from 'easy-peasy';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'; // Pages
 
 import { Header } from './components/Header';

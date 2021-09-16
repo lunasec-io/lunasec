@@ -32,13 +32,13 @@ export const SideMenu: React.FunctionComponent = () => {
     >
       <div className={classes.toolbar} />
       <List>
-        <ListItem button component={NavLink} to="/tokenize">
+        <ListItem button component={NavLink} to={{ pathname: '/tokenize', hash: window.location.hash }}>
           <ListItemIcon>
             <Lock />
           </ListItemIcon>
           <ListItemText primary="Tokenize" />
         </ListItem>
-        <ListItem button component={NavLink} to="/detokenize">
+        <ListItem button component={NavLink} to={{ pathname: '/detokenize', hash: window.location.hash }}>
           <ListItemIcon>
             <LockOpen />
           </ListItemIcon>

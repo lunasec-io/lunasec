@@ -94,22 +94,20 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
       }
     },
     login: async (_parent, { userInfo }, context) => {
-      try {
-        const { username, password } = userInfo;
-        const { user } = await context.authenticate('graphql-local', {
-          username,
-          password,
-        });
-        await context.login(user);
-        return { success: true, user: user };
-      } catch (e) {
-        return { success: false, error: (e as Error).toString() };
-      }
+      console.log('LOGIN HANDLER CALLED ', userInfo);
+      const { username, password } = userInfo;
+      const { user } = await context.authenticate('graphql-local', {
+        username,
+        password,
+      });
+      await context.login(user);
+      return { success: true, user: user };
+
+      // return { success: false, error: (e as Error).toString() };
     },
     setSsn: async (_parent, args, context) => {
       try {
         const user = getUserOrThrow(context);
-        console.log('args to setssn are ');
         await context.models.user.setSsn(user.id, args.ssnInfo.ssn_token);
         return { success: true, user: user };
       } catch (e) {

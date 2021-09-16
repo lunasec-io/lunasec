@@ -4,6 +4,8 @@ import { action, computed, createStore, thunk } from 'easy-peasy';
 
 import { ApiResponse, StoreModel, UserDocumentsResponse, UserResponse } from '../../common/types';
 
+axios.defaults.withCredentials = true;
+
 export const store = createStore<StoreModel>({
   user: null,
   loggedIn: computed((state) => !!state.user),
@@ -23,7 +25,7 @@ export const store = createStore<StoreModel>({
       throw new Error('Cant set SSN for a user that isnt logged in');
     }
     console.log('about to make api call');
-    const { data } = await axios.post<ApiResponse>(`/user/set-ssn`, { ssn_token });
+    const { data } = await axios.post<ApiResponse>(`http://localhost:3001/user/set-ssn`, { ssn_token });
     console.log('api responded ', data);
     if (data.success) {
       actions.setUser({ ...currentUser, ssn_token });
@@ -32,7 +34,7 @@ export const store = createStore<StoreModel>({
   }),
 
   loadUser: thunk(async (actions) => {
-    const { data } = await axios.get<UserResponse>(`/user/me`);
+    const { data } = await axios.get<UserResponse>(`http://localhost:3001/user/me`);
     if (data.success) {
       actions.setUser(data.user);
       return data;
@@ -41,18 +43,18 @@ export const store = createStore<StoreModel>({
   }),
 
   loadDocuments: thunk(async () => {
-    const { data } = await axios.get<UserDocumentsResponse>(`/documents`);
+    const { data } = await axios.get<UserDocumentsResponse>(`http://localhost:3001/documents`);
     return data;
   }),
 
   uploadDocumentTokens: thunk(async (actions, documents) => {
     console.log('uploading document tokens ', documents);
-    const { data } = await axios.post<ApiResponse>(`/documents`, { documents });
+    const { data } = await axios.post<ApiResponse>(`http://localhost:3001/documents`, { documents });
     return data;
   }),
 
   login: thunk(async (actions, { username, password }) => {
-    const { data } = await axios.post<UserResponse>(`/auth/login`, { username, password });
+    const { data } = await axios.post<UserResponse>(`http://localhost:3001/auth/login`, { username, password });
     if (data.success) {
       actions.setUser(data.user);
     }
@@ -60,7 +62,7 @@ export const store = createStore<StoreModel>({
   }),
 
   signup: thunk(async (actions, { username, password }) => {
-    const { data } = await axios.post<UserResponse>(`/auth/signup`, { username, password });
+    const { data } = await axios.post<UserResponse>(`http://localhost:3001/auth/signup`, { username, password });
     if (data.success) {
       actions.setUser(data.user);
     }

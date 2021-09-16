@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import passport from 'passport';
 
 import { Models } from '../../../common/models';
 import { ensureLoggedIn } from '../config/auth-helpers';
+import { configurePassport } from '../config/configure-passport';
 
-export function authRouter(models: Models) {
+export function authRouter(models: Models, passport: ReturnType<typeof configurePassport>) {
   const router = Router();
 
   router.post('/login', (req, res, next) => {
@@ -38,9 +38,13 @@ export function authRouter(models: Models) {
   router.post('/signup', async (req, res) => {
     try {
       const user = await models.user.createNewUser(req.body);
+      console.log('created new user ', user);
       return req.login(user, function (err: Error) {
         if (err) {
-          throw err;
+          return res.json({
+            success: false,
+            error: err,
+          });
         }
         return res.json({
           success: true,

@@ -23,6 +23,7 @@ export async function setupDedicatedPassPortGraphQLApp(): Promise<Express> {
 
   app.use(express.json());
   app.use(
+    // This needs to be set both here AND when graphql is initialized in order for passport to work
     cors({
       origin: 'http://localhost:3000',
       optionsSuccessStatus: 200,
