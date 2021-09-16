@@ -20,7 +20,7 @@ function comparePassword(passwordToCheck: string, storedPasswordHash: string, sa
   });
 }
 
-export default function configurePassport(models: Models) {
+export function configurePassport(models: Models) {
   const passport = new Passport();
   // Configure the local strategy for use by Passport.
   //
@@ -77,6 +77,5 @@ export default function configurePassport(models: Models) {
       cb(e);
     }
   });
-
   return passport;
 }

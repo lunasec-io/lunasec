@@ -6,7 +6,7 @@ import { store as dedicatedPassportGraphQlStore } from '../dedicated-tokenizer/p
 import { StoreModel } from './types';
 
 export function getStore() {
-  switch (process.env.REACT_APP_DEMO_NAME) {
+  switch (window.location.hash.substring(1)) {
     case 'dedicated-passport-express':
       return dedicatedPassportExpressStore;
     case 'dedicated-passport-graphql':

@@ -25,7 +25,15 @@ export async function attachApolloServer(app: Express, models: Models): Promise<
   });
   await server.start();
 
-  server.applyMiddleware({ app, cors: false });
+  server.applyMiddleware({
+    app,
+    cors: {
+      origin: 'http://localhost:3000',
+      optionsSuccessStatus: 200,
+      methods: ['GET', 'PUT', 'POST'],
+      credentials: true,
+    },
+  });
 }
 
 export interface AppContext extends PassportContext<UserModel, { username: string; password?: string; id?: string }> {

@@ -34,7 +34,7 @@ export const Login: React.FunctionComponent = () => {
       setError(data.error);
       return;
     }
-    history.push('/');
+    history.push(`/${window.location.hash}`);
   };
 
   return (

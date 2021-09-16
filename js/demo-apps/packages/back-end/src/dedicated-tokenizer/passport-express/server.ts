@@ -7,7 +7,7 @@ import { initDb } from '../../common/database/db';
 import { createModels } from '../../common/models';
 
 import { lunaSec } from './config/configure-lunasec';
-import configurePassport from './config/configure-passport';
+import { configurePassport } from './config/configure-passport';
 import { authRouter } from './routes/auth-router';
 import { documentsRouter } from './routes/documents-router';
 import { userRouter } from './routes/user-router';
@@ -35,9 +35,12 @@ export async function setupDedicatedPassPortExpressApp() {
   app.use(expressSession({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
   app.use(passport.initialize());
   app.use(passport.authenticate('session'));
-
+  // app.use((req, res, next) => {
+  //   req.passport = passport;
+  //   next();
+  // });
   app.use('/user', userRouter(models));
-  app.use('/auth', authRouter(models));
+  app.use('/auth', authRouter(models, passport));
   app.use('/documents', documentsRouter(models));
 
   // Attach the LunaSec authentication plugin

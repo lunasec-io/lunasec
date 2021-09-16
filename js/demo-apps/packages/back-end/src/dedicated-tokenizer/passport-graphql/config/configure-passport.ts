@@ -32,6 +32,7 @@ export default function configurePassport(models: Models) {
     new GraphQLLocalStrategy(
       // @ts-ignore these types are wrong in the library
       async (username: string, password: string, done: (error: any, user?: any) => void) => {
+        console.log('FIRST LINE OF STRATEGY CALLED');
         const userRecord = await models.user.getUserWithPasswordHash(username).catch((err) => done(err, false));
 
         if (!userRecord) {
