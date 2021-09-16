@@ -1,18 +1,3 @@
-#FROM node:14 as dependency-precache
-#
-#
-#COPY ./ /repo
-#
-#WORKDIR /repo
-#
-#RUN ls
-#RUN yarn global add lerna
-#
-#RUN lerna bootstrap
-#
-#WORKDIR /
-#
-#RUN rm -rf repo
 
 
 FROM lunasec/cicd-images:lunasec-precached-dependencies as lerna-bootstrap
