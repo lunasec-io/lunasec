@@ -1,11 +1,13 @@
 package lunasec
 
 import (
+	"errors"
 	"fmt"
+	"github.com/refinery-labs/loq/constants"
 	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/service/lunasec"
 	"github.com/refinery-labs/loq/util"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
@@ -15,6 +17,7 @@ var (
 	configPaths = []string{
 		"config.yaml",
 		"config/lunasec/config.yaml",
+		"config/lunasec/dev.yaml",
 	}
 )
 
@@ -35,26 +38,30 @@ func loadConfigFile(configFile string) (provider config.Provider, err error) {
 		}
 	}
 
-	return config.NewYAML(config.File(configFile))
+	configFiles := []string{
+		configFile,
+	}
+	provider = util.GetConfigProviderFromFiles(configFiles)
+	return
 }
 
 func BuildCommand(c *cli.Context) (err error) {
 	skipMirroring := c.Bool("skip-mirroring")
 	localDev := c.Bool("local")
 
-	configFile := c.GlobalString("config")
+	configFile := c.String("config")
 	provider, err := loadConfigFile(configFile)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	buildDir := c.GlobalString("dir")
+	buildDir := c.String("dir")
 	if buildDir == "" {
-		buildDir = lunasec.LunasecBuildDir
+		buildDir = constants.LunasecBuildDir
 	}
 
-	logger, err := zap.NewProduction()
+	logger, err := util.GetLogger()
 	if err != nil {
 		log.Println(err)
 		return
@@ -72,6 +79,8 @@ func BuildCommand(c *cli.Context) (err error) {
 		return
 	}
 
+	npmGateway := gateway.NewNpmGateway(logger, provider)
+
 	builderConfig := lunasec.NewBuilderConfig(buildDir, localDev, skipMirroring, env)
 
 	buildConfig, err := lunasec.NewBuildConfig(provider)
@@ -80,7 +89,7 @@ func BuildCommand(c *cli.Context) (err error) {
 		return
 	}
 
-	builder := lunasec.NewBuilder(builderConfig, buildConfig)
+	builder := lunasec.NewBuilder(builderConfig, buildConfig, npmGateway)
 	return builder.Build()
 }
 
@@ -89,9 +98,11 @@ func DeployCommand(c *cli.Context) (err error) {
 	localDev := c.Bool("local")
 	configOutput := c.String("config-output")
 	if configOutput == "" {
-		configOutput = "config/secureframe/"
+		err = errors.New("no config output file provided")
+		log.Println(err)
+		return
 	}
-	configFile := c.GlobalString("config")
+	configFile := c.String("config")
 	provider, err := loadConfigFile(configFile)
 	if err != nil {
 		log.Println(err)
@@ -106,9 +117,9 @@ func DeployCommand(c *cli.Context) (err error) {
 		}
 	}
 
-	buildDir := c.GlobalString("dir")
+	buildDir := c.String("dir")
 	if buildDir == "" {
-		buildDir = lunasec.LunasecBuildDir
+		buildDir = constants.LunasecBuildDir
 	}
 
 	logger, err := zap.NewProduction()

@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/refinery-labs/loq/controller"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 
 	app := &cli.App{
 		Name: "lunasec-cli",
-		Commands: []cli.Command{
+		Commands: []*cli.Command{
 			{
 				Name:    "build",
 				Aliases: []string{"b"},

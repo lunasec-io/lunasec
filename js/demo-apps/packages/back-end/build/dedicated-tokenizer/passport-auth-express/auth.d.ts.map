@@ -1,0 +1,1 @@
+{"version":3,"file":"auth.d.ts","sourceRoot":"","sources":["../../../src/dedicated-tokenizer/passport-auth-express/auth.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,YAAY,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAE1D,wBAAgB,cAAc,CAAC,GAAG,EAAE,OAAO,EAAE,GAAG,EAAE,QAAQ,EAAE,IAAI,EAAE,YAAY,QAS7E;AAGD,wBAAgB,wBAAwB,CAAC,GAAG,EAAE,OAAO,GAAG,OAAO,CAAC,MAAM,GAAG,IAAI,CAAC,CAQ7E"}

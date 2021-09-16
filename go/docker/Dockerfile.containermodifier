@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 
 ADD . /code
 WORKDIR /code
-RUN BUILD_TAG=lambda make containermodifier
+RUN make containermodifier tag=lambda
 
 FROM scratch
 

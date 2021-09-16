@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/refinery-labs/loq/constants"
 	"github.com/refinery-labs/loq/types"
 	"go.uber.org/config"
 	"go.uber.org/zap"
@@ -29,10 +30,10 @@ type JwtVerifier interface {
 }
 
 func NewJwtVerifier(
-	configKey string,
+	configKey constants.JwtVerifierType,
 	logger *zap.Logger,
 	provider config.Provider,
-) (verifier JwtVerifier, err error) {
+) (verifier JwtVerifier) {
 	var (
 		publicKey []byte
 		serviceConfig JwtVerifierConfig
@@ -41,37 +42,36 @@ func NewJwtVerifier(
 		jwkKey interface{}
 	)
 
-	err = provider.Get(configKey).Populate(&serviceConfig)
+	err := provider.Get(string(configKey)).Populate(&serviceConfig)
 	if err != nil {
-		return
+		panic(err)
 	}
 
 	if serviceConfig.PublicKey != "" {
 		publicKey, err = base64.StdEncoding.DecodeString(serviceConfig.PublicKey)
 		if err != nil {
-			err = errors.Wrap(err, "unable to decode auth provider public key")
-			return
+			panic(errors.Wrap(err, "unable to decode auth provider public key"))
 		}
 
 		rsaPublicKey, err = x509.ParsePKCS1PublicKey(publicKey)
 		if err != nil {
-			err = errors.Wrap(err, "unable to parse public key from pem")
-			return
+			panic(errors.Wrap(err, "unable to parse public key from pem"))
 		}
 		logger.Debug("loaded public key from config file")
 	} else if serviceConfig.JwksURL != "" {
 		jwksManager, err = NewJwksManager(serviceConfig.JwksURL, true)
 		if err != nil {
 			logger.Error(
-				"Error fetching JSON Web Key(JWKS) from application backend.  Is your application backend running? Env var is ",
+				"Error fetching JSON Web Key(JWKS) from application backend. Is your application backend running? Env var is ",
 				zap.String("SESSION_JWKS_URL", serviceConfig.JwksURL),
-				)
-			return
+				zap.Error(err),
+			)
+			panic(err)
 		}
 
 		jwkKey, err = jwksManager.GetKey("lunasec-signing-key")
 		if err != nil {
-			return
+			panic(err)
 		}
 
 		rsaPublicKey = jwkKey.(*rsa.PublicKey)
@@ -83,7 +83,7 @@ func NewJwtVerifier(
 
 		fmt.Println(base64.StdEncoding.EncodeToString(x509.MarshalPKCS1PublicKey(rsaPublicKey)))
 	} else {
-		err = errors.New("neither public_key or jwks_url were provided in jwt verifier config")
+		panic(errors.New("neither public_key or jwks_url were provided in jwt verifier config"))
 	}
 
 	verifier = &jwtVerifier{

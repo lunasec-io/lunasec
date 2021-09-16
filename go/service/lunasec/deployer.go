@@ -3,8 +3,9 @@ package lunasec
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/refinery-labs/loq/types"
+	"github.com/refinery-labs/loq/constants"
 	"github.com/refinery-labs/loq/service"
+	"github.com/refinery-labs/loq/types"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
@@ -17,17 +18,6 @@ import (
 	"github.com/refinery-labs/loq/gateway"
 )
 
-type SecureFrameService string
-
-const (
-	secureFrameBackendRepoName SecureFrameService = "secure-frame-backend"
-)
-
-const (
-	StackName = "LunasecSecureEnclave"
-	LunasecBuildDir = "build"
-)
-
 type StackOutput map[string]map[string]string
 
 type AwsResources struct {
@@ -36,11 +26,16 @@ type AwsResources struct {
 	LocalstackURL string                `yaml:"localstack_url"`
 }
 
-type AwsResourceConfig struct {
-	AwsGateway AwsResources `yaml:"aws_gateway"`
+type TokenizerConfig struct {
+	SecretArn string `yaml:"secret_arn"`
 }
 
-type ServiceToImageMap map[SecureFrameService]string
+type AwsResourceConfig struct {
+	AwsGateway AwsResources `yaml:"aws_gateway"`
+	Tokenizer TokenizerConfig `yaml:"tokenizer"`
+}
+
+type ServiceToImageMap map[constants.LunaSecServices]string
 
 type LunasecStackProps struct {
 	awscdk.StackProps
@@ -140,9 +135,9 @@ func (l *deployer) writeConfig(stackOutputFilePath string) (err error) {
 		return
 	}
 
-	outputs, ok := stackOutput[StackName]
+	outputs, ok := stackOutput[constants.LunaSecStackName]
 	if !ok {
-		err = fmt.Errorf("stack (%s) does not have any outputs", StackName)
+		err = fmt.Errorf("stack (%s) does not have any outputs", constants.LunaSecStackName)
 		log.Println(err)
 		return
 	}
@@ -158,12 +153,14 @@ func (l *deployer) writeConfig(stackOutputFilePath string) (err error) {
 
 	awsResourceConfig.AwsGateway.LocalstackURL = l.buildConfig.LocalStackUrl
 
+	awsResourceConfig.Tokenizer.SecretArn = outputs[*getOutputName("tokenizer-secret")]
+
 	out, err := yaml.Marshal(awsResourceConfig)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	err = ioutil.WriteFile(path.Join(l.configOutputPath, "aws_resources.yaml"), out, 0744)
+	err = ioutil.WriteFile(path.Join(l.configOutputPath, constants.DeployedAwsResourcesConfig), out, 0744)
 	return
 }
