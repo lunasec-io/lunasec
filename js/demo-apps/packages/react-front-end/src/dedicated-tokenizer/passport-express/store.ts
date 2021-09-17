@@ -4,6 +4,7 @@ import { action, computed, createStore, thunk } from 'easy-peasy';
 
 import { ApiResponse, StoreModel, UserDocumentsResponse, UserResponse } from '../../common/types';
 
+// Its better to instantiate your own copy of axios with axios.create(), this global setting left in for testing purposes
 axios.defaults.withCredentials = true;
 
 export const store = createStore<StoreModel>({

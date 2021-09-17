@@ -1,23 +1,7 @@
-import { Buffer } from 'buffer';
-import crypto from 'crypto';
-
-import { GraphQLLocalStrategy } from 'graphql-passport';
 import { Passport } from 'passport';
+// import Strategy from 'passport-local';
 
 import { Models } from '../../../common/models';
-
-function comparePassword(passwordToCheck: string, storedPasswordHash: string, salt: string): Promise<boolean | Error> {
-  return new Promise((resolve, _reject) => {
-    crypto.pbkdf2(passwordToCheck, salt, 10000, 32, 'sha256', function (err, reqPassHash) {
-      if (err) {
-        return resolve(err);
-      }
-
-      const passwordCorrect = crypto.timingSafeEqual(Buffer.from(storedPasswordHash), reqPassHash);
-      resolve(passwordCorrect);
-    });
-  });
-}
 
 export default function configurePassport(models: Models) {
   const passport = new Passport();
@@ -28,34 +12,10 @@ export default function configurePassport(models: Models) {
   // (`username` and `password`) submitted by the user.  The function must verify
   // that the password is correct and then invoke `cb` with a user object, which
   // will be set at `req.user` in route handlers after authentication.
-  passport.use(
-    new GraphQLLocalStrategy(
-      // @ts-ignore these types are wrong in the library
-      async (username: string, password: string, done: (error: any, user?: any) => void) => {
-        console.log('FIRST LINE OF STRATEGY CALLED');
-        const userRecord = await models.user.getUserWithPasswordHash(username).catch((err) => done(err, false));
-
-        if (!userRecord) {
-          return done('Incorrect username or password.', false);
-        }
-
-        const passwordCorrect = await comparePassword(password, userRecord.hashed_password, userRecord.salt);
-        if (passwordCorrect instanceof Error) {
-          return done(passwordCorrect, false);
-        }
-        if (!passwordCorrect) {
-          return done('Incorrect username or password.', false);
-        }
-
-        const user = {
-          id: userRecord.id.toString(),
-          username: userRecord.username,
-          ssn_token: userRecord.ssn_token,
-        };
-        return done(null, user);
-      }
-    )
-  );
+  // passport.use(
+  //   // @ts-ignore
+  //   new Strategy(async (username: string, password: string, done: any) => {})
+  // );
 
   // Configure Passport authenticated session persistence.
   //
