@@ -11,10 +11,12 @@ export async function attachApolloServer(app: Express, models: Models): Promise<
   console.log('attaching apollo server to express');
 
   function buildContext(context: ExpressContext) {
-    return {
+    const newContext = {
       ...buildPassportContext(context),
       models,
     };
+    console.log('buildcontext made ', newContext);
+    return newContext;
   }
 
   const server = new ApolloServer({

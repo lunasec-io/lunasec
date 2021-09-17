@@ -1,7 +1,7 @@
 import { OutgoingHttpHeaders } from 'http';
 
 import { LunaSecError } from '@lunasec/isomorphic-common';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { CONFIG_DEFAULTS } from './constants';
@@ -43,10 +43,10 @@ export class Tokenizer {
     this.reqOptions = { headers }; // This is passed to the openapi client on every request
 
     const basePath = this.getBasePath();
-
     // openapi stuff
     const openAPIConfig = new Configuration({ basePath });
-    this.openApi = new DefaultApi(openAPIConfig);
+    const axiosInstance = axios.create({});
+    this.openApi = new DefaultApi(openAPIConfig, undefined, axiosInstance);
   }
 
   private getBasePath(): string {

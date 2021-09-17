@@ -1,7 +1,7 @@
 import { GraphQLResolverMap } from 'apollo-graphql';
 import { gql } from 'apollo-server-express';
 
-import { getUserOrThrow } from '../config/auth-helpers';
+import { authenticateUser, getUserOrThrow } from '../config/auth-helpers';
 import { lunaSec } from '../config/configure-lunasec';
 // README - This demo shows how to use the lunasec @token directive in your apollo server
 // Import the directive from the node-sdk and attach it to your schemaDirectives(bottom of this file) which are passed into apollo
@@ -94,16 +94,15 @@ export const resolvers: GraphQLResolverMap<AppContext> = {
       }
     },
     login: async (_parent, { userInfo }, context) => {
-      console.log('LOGIN HANDLER CALLED ', userInfo);
-      const { username, password } = userInfo;
-      const { user } = await context.authenticate('graphql-local', {
-        username,
-        password,
-      });
-      await context.login(user);
-      return { success: true, user: user };
-
-      // return { success: false, error: (e as Error).toString() };
+      try {
+        const { username, password } = userInfo;
+        // bypassed passport entirely for this part, it just wasn't working.  LunaSec does not recommend Passport, this is just an example
+        const user = await authenticateUser(context.models, username, password);
+        await context.login(user);
+        return { success: true, user: user };
+      } catch (e) {
+        return { success: false, error: (e as Error).toString() };
+      }
     },
     setSsn: async (_parent, args, context) => {
       try {

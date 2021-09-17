@@ -5,15 +5,6 @@ import { action, computed, createStore, thunk } from 'easy-peasy';
 
 import { ApiResponse, StoreModel, UserDocumentsResponse, UserResponse } from '../../common/types';
 
-// async function makeGraphqlRequest<ResponseDataType>(requestBody: string) {
-//   const res = await axios.post(
-//     'http://localhost:3001/graphql',
-//     JSON.stringify({
-//       query: requestBody,
-//     })
-//   );
-//   return res.data as ResponseDataType;
-// }
 const link = createHttpLink({
   uri: 'http://localhost:3002/graphql',
   credentials: 'include',
