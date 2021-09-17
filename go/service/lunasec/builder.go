@@ -38,6 +38,7 @@ type BuildConfig struct {
 	FrontEndAssetsFolder string          `yaml:"front_end_assets_folder"`
 	LocalStackUrl        string          `yaml:"localstack_url"`
 	ServiceVersions    ServiceVersions `yaml:"service_versions"`
+	LocalBuildArtifacts bool `yaml:"local_build_artifacts"`
 }
 
 type BuilderConfig struct {
@@ -155,6 +156,7 @@ func (l *builder) mirrorRepos(env *awscdk.Environment) (lookup ServiceToImageMap
 			*env.Account,
 			l.getContainerURL(serviceName),
 			string(serviceName),
+			l.buildConfig.LocalBuildArtifacts,
 		)
 		if err != nil {
 			log.Println(err)
@@ -181,6 +183,8 @@ func (l *builder) getCdnConfig(secureFrameDomainName string) (packageDir, serial
 	if !ok {
 		version = l.buildConfig.StackVersion
 	}
+
+	// TODO (cthompson) when l.buildConfig.LocalBuildArtifacts is set, use a local version of this
 
 	packageTarFile, err := l.npmGateway.DownloadPackage("@lunasec/secure-frame-front-end", version)
 	if err != nil {
@@ -367,10 +371,15 @@ func (l *builder) getTokenizerBackendLambda(stack awscdk.Stack, containerTag str
 	})
 }
 
-func (l *builder) getLambdaRestApi(stack awscdk.Stack, secureFrameLambda awslambda.Function) awsapigateway.LambdaRestApi {
-	return awsapigateway.NewLambdaRestApi(stack, jsii.String("gateway"), &awsapigateway.LambdaRestApiProps{
-		Handler: secureFrameLambda,
+func (l *builder) getLambdaRestApi(stack awscdk.Stack, tokenizerBackendLambda awslambda.Function) awsapigateway.LambdaRestApi {
+	 tokenizerGateway := awsapigateway.NewLambdaRestApi(stack, jsii.String("gateway"), &awsapigateway.LambdaRestApiProps{
+		Handler: tokenizerBackendLambda,
 	})
+	awscdk.NewCfnOutput(stack, getOutputName("tokenizer-gateway"), &awscdk.CfnOutputProps{
+		Value:      tokenizerGateway.Url(),
+		ExportName: getOutputName("tokenizer-gateway"),
+	})
+	return tokenizerGateway
 }
 
 func (l *builder) getTokenizerBackendBucketAssetFolder(secureFrameDomainName string) (assetsFolder, cdnConfig string) {

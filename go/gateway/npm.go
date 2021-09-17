@@ -104,6 +104,12 @@ func (n *npmGateway) findPackageVersionTar(name, packageVersion string) (tarUrl 
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != http.StatusOK {
+		err = fmt.Errorf("request to npm failed: %d", resp.StatusCode)
+		n.logger.Error("", zap.Error(err))
+		return
+	}
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		n.logger.Error("", zap.Error(err))
@@ -119,7 +125,7 @@ func (n *npmGateway) findPackageVersionTar(name, packageVersion string) (tarUrl 
 
 	packageVersionInfo, ok := npmPackgeInfo.Versions[packageVersion]
 	if !ok {
-		err = fmt.Errorf("unable to location packageVersion %s for package %s", packageVersion, name)
+		err = fmt.Errorf("unable to locate package version %s for package %s", packageVersion, name)
 		n.logger.Error("", zap.Error(err))
 		return
 	}
