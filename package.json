@@ -6,7 +6,9 @@
   "private": true,
   "scripts": {
     "start:services": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up tokenizerbackend",
+    "start:demo": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up demo",
     "test:e2e": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test",
+    "test:e2e:local": "cd js/demo-apps/packages/react-front-end && yarn run test:e2e",
     "lint:fix": "npm run lint -- --fix",
     "lint": "cd js/sdks && eslint --ext .js,.jsx,.ts,.tsx .",
     "version:release": "if [ -z ${RELEASE_TYPE+x} ]; then echo \"RELEASE_TYPE is unset\"; else lerna version -y $RELEASE_TYPE --no-push --force-publish; fi",
@@ -64,7 +66,8 @@
       "**/jose",
       "**/eslint",
       "**/ts-node",
-      "**/webpack"
+      "**/webpack",
+      "**/@docusaurus/core"
     ]
   }
 }

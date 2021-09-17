@@ -36,6 +36,11 @@ module.exports = {
         type:'category',
         label: 'Simple Tokenizer',
         items: ['getting-started/simple-tokenizer/guide']
+      },
+      {
+        type:'category',
+        label: 'The Demo Application',
+        items: ['getting-started/demo-app/overview']
       }
     ]},
     {
