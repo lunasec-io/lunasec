@@ -80,6 +80,14 @@ func (e *executor) Execute() (ExecutorResult, error) {
 	}
 
 	cmd.Dir = e.Cwd
+	if e.Cwd == "" {
+		workDir, err := os.Getwd()
+		if err != nil {
+			return ExecutorResult{}, err
+		}
+
+		cmd.Dir = workDir
+	}
 
 	cmd.Env = os.Environ()
 	if len(e.Env) > 0 {

@@ -40,7 +40,11 @@ func validateTableConfig(tableConfig map[types.KVStore]string) {
 	}
 
 	if len(errs) != 0 {
-		panic(errs)
+		errMsg := ""
+		for _, err := range errs {
+			errMsg = errMsg + ", " + err.Error()
+		}
+		panic(errMsg)
 	}
 }
 
