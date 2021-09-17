@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { UserResponse } from '../../../common/types';
 import { tokenizer } from '../configureTokenizer';
 
+// If you need to change axios settings, do it with axios.create({options}), messing with the global instance can cause issues
 export const DetokenizeDemo: React.FunctionComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const [ssn, setSsn] = useState<string | null>(null);

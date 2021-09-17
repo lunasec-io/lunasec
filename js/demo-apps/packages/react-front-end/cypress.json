@@ -3,5 +3,6 @@
     "baseUrl": "http://localhost:3000",
     "IframeOptions": {
         "log": true
-    }
+    },
+    "watchForFileChanges": true
 }
