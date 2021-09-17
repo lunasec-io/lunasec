@@ -61,13 +61,13 @@ export const Header: React.FunctionComponent = () => {
           onChange={handleModeChange}
           aria-label="text formatting"
         >
-          <ToggleButton value="dedicated-passport-express" aria-label="express">
+          <ToggleButton id="select-mode-express" value="dedicated-passport-express" aria-label="express">
             Express
           </ToggleButton>
-          <ToggleButton value="dedicated-passport-graphql" aria-label="graphql">
+          <ToggleButton id="select-mode-graphql" value="dedicated-passport-graphql" aria-label="graphql">
             GraphQl
           </ToggleButton>
-          <ToggleButton value="simple" aria-label="simple">
+          <ToggleButton id="select-mode-simple" value="simple" aria-label="simple">
             Simple
           </ToggleButton>
         </ToggleButtonGroup>
