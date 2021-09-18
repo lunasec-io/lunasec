@@ -19,4 +19,4 @@ You can run it by cloning our repository and running `yarn start:demo`.  This wi
 A local development copy of AWS will be used, so no credentials needed.  The demo app should now be running at [http://localhost:3000](http://localhost:3000).  
 Use the buttons in the top right corner if you would like to change the mode.
 
-Please see [Code Walkthrough](./understanding-the-source.md) for an explanation of how the demo app is structured.
+Please see [Code Walkthrough](pages/overview/demo-app/understanding-the-source.md) for an explanation of how the demo app is structured.
