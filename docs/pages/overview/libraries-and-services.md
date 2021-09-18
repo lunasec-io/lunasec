@@ -1,7 +1,7 @@
 ---
 id: "libraries-services"
 title: "Libraries and Services"
-sidebar_label: "Libraries and Services"
+sidebar_label: "Example Usage"
 sidebar_position: 3
 ---
 
@@ -76,7 +76,7 @@ lunaSec.expressAuthPlugin.register(app);
 See the [authentication](./authentication.md) page to understand when and why you need to register this auth plugin.
 
 #### Apollo GraphQL Directive
-Use this if you're using graphQL.  Automatically create and verify token grants for any field with the @token directive
+If using GraphQL, automatically create and verify token grants for any field with the @token directive
 ```typescript
   const server = new ApolloServer({
     schemaDirectives: {token: lunaSec.tokenDirective},
@@ -86,6 +86,8 @@ Use this if you're using graphQL.  Automatically create and verify token grants 
 In your schema:
 ```graphql
 const typeDefs = gql`
+    directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION # Register the directive
+
     type Query {
         getFormData: FormData
     }
@@ -104,11 +106,9 @@ const typeDefs = gql`
     input FormDataInput {
         email: String @token
         insecure_field: String
-        text_area: String @token
+        text_area: String @token # use on input fields as well so that incoming tokens are checked
         files: [String] @token
     }
-    
-    directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 `;
 ```
 
