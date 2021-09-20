@@ -14,19 +14,32 @@ for the real data with API call in a process called *Detokenization*.
 This isn't new. It's commonly used by companies for compliance purposes and there are many tokenization 
 products on the market. LunaSec is more secure, offers more features, and the core of the system is free and open source.
 
-LunaSec can quickly help an app become secure and compliant with regulations.
+LunaSec can quickly help an app become secure and regulation compliant.
 
 A list of features can be found [here](../features).
 
 ## How does LunaSec work with my app?
-LunaSec provides simple-to-use libraries and a backend server to keep sensitive data out of your app.
+```tsx title="A React form secured with LunaSec"
+import React from 'react';
+import {SecureForm, SecureInput} from '@lunasec/react-sdk';
+
+// Secure components send their contents to your LunaSec server.
+// SecureInput now returns a token instead of the actual SSN.
+export function renderSecureComponent(props) {
+  return (
+    <SecureForm onSubmit={props.onSubmit}>
+      <SecureInput type="text" token={props.value} onChange={props.onChange} name="ssn" />
+      <input type="submit" />
+    </SecureForm>
+  );
+}
+```
+LunaSec provides simple-to-use libraries and a backend server to keep sensitive data out of your app.  You will need to add a 
+LunaSec library to your frontend(as shown here), another to your backend, and host a copy of the Tokenizer Backend server.
+
 These were designed by security engineers to drop in to existing apps with minimal code changes.
 That way you don't need to audit or rewrite everything from scratch to become secure and compliant.  The parts of the system
 that touch sensitive data will have already been secured and audited by our team.
-
-We've designed onboarding with LunaSec to happen in levels. You can add basic tokenization
-today by just [adding a few lines](../libraries-services), and 
-additional [enterprise-grade security modules](../security/levels) can be added to the system later.
 
 If you're unsure of what level of security you need, please [contact us](https://www.lunasec.io/contact) and we'll be 
 happy to help you! We offer paid, professional support to accelerate onboarding time and to ensure your deployment
@@ -45,23 +58,23 @@ Now, let's say a ransomware hacker gets some of that secret information through 
 - Any user with database access shares data (intentionally or unintentionally).
 
 Using LunaSec the data is entered and stored separately from your main application, even on the frontend.  You store in the database a token
-like this: `lunasec-351d1033-0e9f-4a1b-bbb6-adec04837a5c`.  Instead of the sensitive text or file, the attacker gets that token, 
+like: `lunasec-351d1033-0e9f-4a1b-bbb6-adec04837a5c`.  Instead of the sensitive text or file, the attacker gets that token, 
 and there's not much they can do with it. The token is not the full decryption key, only part of it.  The other required pieces can
 only be accessed from within the Dedicated Tokenizer Service, where authentication for the user can be checked, audit logs can be produced, 
 and keys can be rotated if necessary.  
 
 LunaSec provides controls for where and by whom those tokens can be exchanged for sensitive data.  An attacker with the token can't get
-past those unless they compromise multiple parts of the system which been designed by our team to be hardened against attack.
+past those unless they compromise multiple parts of the system which have been designed by our team to be hardened against attack.
 
 ## Who is LunaSec for? 
 LunaSec is designed for developers building software that needs to store sensitive data and operate in real-world, production environments.
 
 Our open source software can be used to enhance the security of new or existing applications, and is designed for production
-use cases that require high availability and scalability by default.
+use cases that require high availability and scalability.
 
 Software security is often overlooked or deemed too difficult/expensive to implement properly. By isolating sensitive parts of the application, LunaSec
 helps developers protect sensitive information without having to worry about the security of every line
-they write or library they import.
+they write or library they import.  To see a list of the most common vulnerabilities and how LunaSec protects you from them, [click here](/pages/overview/security/mitre-cwe-top-25-weaknesses).
 
 If you've ever been hacked or struggled with lengthy security reviews, painful compliance requirements, or otherwise jumped through
 hoops for "data security" or "compliance", then it's likely that LunaSec can help you.
