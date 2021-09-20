@@ -67,7 +67,7 @@ export class Tokenizer {
     if ('response' in e && e.response) {
       // Parse the axios error, if it has any meaningful data about the response
       return new LunaSecError({
-        name: e.response.data.error.name || 'unknownTokenizerError',
+        name: e.response.data.error.name || 'TokenizerError',
         message: e.response.data.error.errorMessage || 'Unknown Tokenizer Error', // TODO: Update this to "message" to conform with openAPI spec once the Tokenizer Backend uses OpenAPI
         code: e.response.status.toString(),
       });
@@ -115,7 +115,11 @@ export class Tokenizer {
     throw new Error(`Bad grant type passed to tokenizer: ${grantTypeString.toString()}`);
   }
 
-  async verifyGrant(sessionId: string, tokenId: string, grantType: GrantTypeUnion) {
+  async verifyGrant(
+    sessionId: string,
+    tokenId: string,
+    grantType: GrantTypeUnion
+  ): Promise<TokenizerFailApiResponse | { success: true; valid: boolean }> {
     const ennumifiedGrantType = this.convertGrantTypeToEnum(grantType);
     try {
       const res = await this.openApi.verifyGrant(

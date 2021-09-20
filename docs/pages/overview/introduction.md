@@ -87,7 +87,7 @@ LunaSec is a largely open-source piece of software that you can host, change, an
 LunaSec is not a proxy. There is no schema of sensitive fields to maintain, that configuration is in your code.
 
 LunaSec works as a "sidecar" in your front-end _and_ backend to provide security.
-That means, if your LunaSec instance is down, it won't instantly break your entire app. It will gracefully degrade. (Like real production software should!)
+That means, if your LunaSec instance is down, it won't take your entire application offline.
 
 #### Your configuration lives in your code
 Store all configuration files in source control so that you can perform meaningful code reviews + track history.

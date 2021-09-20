@@ -16,6 +16,7 @@ export function lunaSecSessionIdProvider(req: Request): Promise<string | null> {
   // LunaSec expects this to return a promise in case we need to do something async
   return new Promise((resolve) => {
     if (req.session.id) {
+      console.log('EXPRESS SERVER GETTING SESSION ID IN CALLBACK ', req.session.id);
       return resolve(req.session.id);
     }
     return resolve(null); // LunaSec Elements will not work in this case

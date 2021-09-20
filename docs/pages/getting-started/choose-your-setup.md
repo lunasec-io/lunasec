@@ -18,7 +18,11 @@ The full tokenizer requires deployed infrastructure, and
 while we've made that as [simple as possible for you TODO: LINK TO DEPLOYMENT DOCS](./choose-your-setup.md), it may be more than 
 some users need.  So, we extracted the core functionality of creating and retrieving tokens into a small express plugin
 that adds two routes to your server, and a small library to access them from the browser.  Like the Dedicated Tokenizer, sensitive 
-data is still stored seperate from your application in S3.  Unlike the Dedicated Tokenizer, 
+data is still stored separate from your application in S3.  Unlike the Dedicated Tokenizer, 
 control over that data is handled in the same process as your app, offering far less security guarantees. This is comparable to many
-of the other tokenization solutions on the market, and is enough to meet many compliance regulations.
+of the other tokenization solutions on the market, and is enough to meet many compliance regulations.  
+
+The Simple Tokenizer is really a 
+separate system than the rest of the LunaSec Stack.  Most of the concepts covered elsewhere in this documentation don't apply to it,
+it's just a small and simple pair of libraries(client and server) to do basic tokenization.  
 

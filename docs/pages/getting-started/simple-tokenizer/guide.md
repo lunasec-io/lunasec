@@ -23,26 +23,25 @@ First, initialize LunaSec and tell the Simple Tokenizer where to store the token
 
 ```typescript
 import { fromIni } from '@aws-sdk/credential-provider-ini';
-import { LunaSec } from '@lunasec/node-sdk';
+import { SimpleTokenizerBackend } from '@lunasec/node-sdk';
 
-const lunaSec = new LunaSec({
-  simpleTokenizerBackendConfig: {
+export const simpleTokenizerBackend = new SimpleTokenizerBackend({
     awsRegion: 'us-west-2',
-    s3Bucket: 'my-bucket',
+    s3Bucket: process.env.CIPHERTEXT_S3_BUCKET || 'YOU MUST SPECIFY A BUCKET',
     getAwsCredentials: () => {
-      return Promise.resolve(fromIni()); // Pass your credentials in a promise
+        return Promise.resolve(fromIni()); // This is one way of several ways to get AWS Credentials
     },
-  },
 });
+
 ```
 
-We recommend setting the bucket to encrypted [using the AWS CLI.](https://github.com/refinery-labs/lunasec-monorepo/blob/master/js/demo-apps/packages/react-front-end/src/SimpleTokenizerExample.tsx)
+We recommend setting the bucket to encrypted [using the AWS CLI.](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3api/put-bucket-encryption.html)
 
 Now just register the plugin with Express:
 
 ```typescript
 const app = express();
-lunaSec.simpleTokenizerBackend.register(app);
+simpleTokenizerBackend.register(app);
 ```
 
 That's it! This will add `/.lunasec/tokenize` and `/.lunasec/detokenize` routes to your server.
@@ -79,6 +78,6 @@ if (!result.success) {
 console.log('Decoded value is ', result.value)
 ```
 
-To see these in a more complete example inside a react app, check out [the relevant part of the demo app.](https://github.com/refinery-labs/lunasec-monorepo/blob/master/js/demo-apps/packages/react-front-end/src/SimpleTokenizerExample.tsx)
+To see these in a more complete example inside a react app, see the Simple Tokenizer sections of [the demo app.](../../../overview/demo-app/walkthrough)
 
 To see the API Reference for these libraries, take a look at [the TypeDoc TODO LINK HERE](./guide.md).
