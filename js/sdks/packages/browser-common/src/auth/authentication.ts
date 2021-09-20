@@ -37,7 +37,7 @@ export class LunaSecAuthentication {
     };
   }
 
-  // TODO: It might be possible to move this authentication logic into the LunaSecConfigContext provider somehow and get rid of a lot of this logic
+  // TODO (forrest) move this authentication logic into the LunaSecConfigContext provider and get rid of a lot of this logic
 
   async authenticateSession(): Promise<Promise<boolean> | void> {
     // Stop every component from making a request on first page load
@@ -68,13 +68,6 @@ export class LunaSecAuthentication {
   }
 
   async validateOrCreateSession(): Promise<boolean> {
-    const firstVerifyResponse = await this.authClient.verifySession(); // If these calls throw, they will be uncaught and crash the app. Do we want that?
-    if (firstVerifyResponse.success) {
-      console.debug('secure frame session is verified');
-      return true;
-    }
-    console.debug('secure frame session is not verified, creating a new session');
-
     /*
       If the above was not a success, we need to send more requests to verify the session.
 
@@ -87,13 +80,14 @@ export class LunaSecAuthentication {
       with 'no-cors' set. It is possible to experience an error in this request flow.
      */
     console.debug('ensuring the secure frame has a valid session');
+    // Todo: there might be a way to eliminate the below verify step
+    // there is no JSON body included because of CORS and the redirection scheme, even though we are including one
     await this.authClient.ensureSession();
 
     console.debug('verifying the created session is valid');
-    const secondVerifyResponse = await this.authClient.verifySession();
-    if (!secondVerifyResponse.success) {
-      const e = new Error(secondVerifyResponse.error);
-      this.errorHandler(e);
+    const verifyResponse = await this.authClient.verifySession();
+    if (!verifyResponse.success) {
+      this.errorHandler(verifyResponse.error);
       return false;
     }
 
