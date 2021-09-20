@@ -2,12 +2,12 @@ version: "3.8"
 
 services:
   integration-test:
-    image: cypress/included:8.3.1
-    entrypoint: cypress
-    command: run --browser chrome
-    working_dir: /e2e
+    build:
+      context: .
+      dockerfile: js/docker/demo.dockerfile
+      target: integration-test
+    entrypoint: npm run cypress:open
     volumes:
-      - ./js/demo-apps/packages/react-front-end:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix
     network_mode: host
     depends_on:
@@ -19,5 +19,5 @@ services:
       - application-back-end
       - tokenizerbackend
 # Uncomment to open the cypress UI locally
-#    environment:
-#      - DISPLAY=${DISPLAY}
+    environment:
+      - DISPLAY=${DISPLAY}
