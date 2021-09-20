@@ -1,29 +1,30 @@
 ---
-id: "understanding-the-source"
-title: "Demo App Source"
+id: "walkthrough"
+title: "Demo App Walkthrough"
 sidebar_label: "Code Walkthrough"
+sidebar_position: 2
+
 ---
-# Understanding the source
-This is a full demonstration of a real-world scenario, complete with a SQL database, front-end state management, and a Component Library(MaterialUI).
+# Understanding the Demo App Source
+This is a full demonstration of a real-world web application, complete with SQL database, front-end state management, and a Component Library(MaterialUI).
 The vast majority of the code
-is just normal application code, like in any other web app.  Only a few lines are LunaSec Specific.
+is just normal application code, like in any other web app.  Only a small part is LunaSec Specific.
 
 ### Folder Structure
 The Demo is separated into two applications, the front-end and back-end in [the demo apps folder](https://github.com/lunasec-io/lunasec-monorepo/tree/master/js/demo-apps/packages).
 
-The apps are really multiple apps in one, for each of the different modes. We wanted to reuse as much code as possible, so
-a lot of code lives in the `common`
+The apps are really multiple apps, one for each of the different modes. We wanted to reuse as much code as possible, which lives in the `common`
 folders of each app.  Only code that needs to be different for each demo is broken into folders like [/src/dedicated-tokenizer/passport-express](https://github.com/lunasec-io/lunasec-monorepo/tree/demo-app-refactor/js/demo-apps/packages/demo-back-end/src/dedicated-tokenizer/passport-express).
-That's a bit confusing but this needs to be maintainable and we also use it for end-to-end integration testing.
+That's a bit confusing but this needs to be maintainable and we also use it for integration testing.
 
 #### Front-end
+The frontend modes that use the `dedicated-tokenizer` are virtually identical and so almost all of their code lives in `common`.
+All frontend features work the same regardless of whether express, graphql, or some other transport layer is used.  The only difference
+is how the tokens(and other data) are fetched, which happens inside the `store` file.
+
 You can see the Secure Components being used [here](https://github.com/lunasec-io/lunasec-monorepo/tree/demo-app-refactor/js/demo-apps/packages/react-front-end/src/common/components/secure-components).
 
 To see the LunaSec Provider wrapping the components, look [here](https://github.com/lunasec-io/lunasec-monorepo/blob/de384d69d4c78e6b39505561c6c25b6a34a34e23/js/demo-apps/packages/react-front-end/src/common/App.tsx#L37).
-
-The frontends that use the `dedicated-tokenizer` are virtually identical and so almost all of their code lives in `common`.
-All frontend features work the same regardless of whether express, graphql, or some other transport layer is used, the only difference
-is where the tokens are fetched from, which in this case happens inside the `store`.
 
 Note the use of the `SecureInput` element [natively with MaterialUi](https://github.com/lunasec-io/lunasec-monorepo/blob/de384d69d4c78e6b39505561c6c25b6a34a34e23/js/demo-apps/packages/react-front-end/src/common/components/secure-components/SecureInputDemo.tsx#L118).
 
