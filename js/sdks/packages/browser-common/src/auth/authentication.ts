@@ -80,8 +80,7 @@ export class LunaSecAuthentication {
       with 'no-cors' set. It is possible to experience an error in this request flow.
      */
     console.debug('ensuring the secure frame has a valid session');
-    // Todo: there might be a way to eliminate the below verify step
-    // there is no JSON body included because of CORS and the redirection scheme, even though we are including one
+    // We can get NO information back from this call because of CORS, so we have to call again afterwards
     await this.authClient.ensureSession();
 
     console.debug('verifying the created session is valid');
