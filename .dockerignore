@@ -1,4 +1,5 @@
 node_modules/
 
 docker-compose.yaml
-js/docker/Dockerfile.demo
+docker-compose.ci.yaml
+js/docker/demo.dockerfile

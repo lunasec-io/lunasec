@@ -64,7 +64,7 @@ export class LunaSecGrantService {
     }
     const resp = await tokenizer.verifyGrant(sessionId, tokenId, grantType);
     if (!resp.success) {
-      throw new Error(`unable to verify tokenization grant for: ${tokenId}`);
+      throw new Error(`unable to verify tokenization grant for: ${tokenId}, ${resp.error}`);
     }
   }
 

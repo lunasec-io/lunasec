@@ -16,6 +16,7 @@ import {
   TokenizerFailApiResponse,
   TokenizerGetMetadataResponse,
   TokenizerTokenizeResponse,
+  TokenizerVerifyGrantResponse,
 } from './types';
 
 // Uses an openAPI generated client to query the tokenizer.  The biggest gotchas here are that:
@@ -57,6 +58,7 @@ export class Tokenizer {
   }
 
   private handleError(e: AxiosError | Error | any): TokenizerFailApiResponse {
+    console.error(e);
     return {
       success: false,
       error: this.constructError(e),
@@ -115,7 +117,11 @@ export class Tokenizer {
     throw new Error(`Bad grant type passed to tokenizer: ${grantTypeString.toString()}`);
   }
 
-  async verifyGrant(sessionId: string, tokenId: string, grantType: GrantTypeUnion) {
+  async verifyGrant(
+    sessionId: string,
+    tokenId: string,
+    grantType: GrantTypeUnion
+  ): SuccessOrFailOutput<TokenizerVerifyGrantResponse> {
     const ennumifiedGrantType = this.convertGrantTypeToEnum(grantType);
     try {
       const res = await this.openApi.verifyGrant(
