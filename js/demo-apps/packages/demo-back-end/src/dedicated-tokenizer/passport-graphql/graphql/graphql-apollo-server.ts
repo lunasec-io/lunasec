@@ -15,7 +15,6 @@ export async function attachApolloServer(app: Express, models: Models): Promise<
       ...buildPassportContext(context),
       models,
     };
-    console.log('buildcontext made ', newContext);
     return newContext;
   }
 
