@@ -1,12 +1,13 @@
 ---
-id: "libraries-services"
-title: "Libraries and Services"
-sidebar_label: "Libraries and Services"
+id: "example-usage"
+title: "LunaSec Example Usage"
+sidebar_label: "Example Usage"
 sidebar_position: 3
 ---
 
-# NPM Modules
-You'll only need two libraries to use LunaSec, one for the client and one for the server. 
+# Example Usage
+These snippets give you an example of how the library works.  You'll only need two libraries to use LunaSec, one for the 
+client and one for the server.  
 
 ## `@lunasec/react-sdk`
 The frontend component of the LunaSec Stack.  Turns your form inputs and other elements into [Secure Frames](./features.md#secure-frame). Support for other frameworks is in development.
@@ -75,8 +76,36 @@ lunaSec.expressAuthPlugin.register(app);
 ```
 See the [authentication](./authentication.md) page to understand when and why you need to register this auth plugin.
 
+#### Grants in Express Routes
+Grants connect the user's session to a token, giving them permission to read it for a short time.  
+
+```typescript
+app.get('/get-ssn', async (req, res) => {
+    const ssnToken = req.user.ssn_token
+
+    await lunaSec.grants.create(req.session.id, ssnToken);
+    
+    res.json({
+      success: true,
+      ssnToken,
+    });
+  });
+
+  // We also need to check the user has permission to store the grant back into the database, otherwise an attacker could steal tokens
+  // and put them into their own database entry, and then fetch them using the above route and read them
+app.post('/set-ssn', async (req, res) => {
+    await lunaSec.grants.verify(req.session.id, req.body.ssn_token); 
+    await models.user.setSsn(req.user.id, req.body.ssn_token);
+    
+    return res.json({
+      success: true,
+    });
+});
+
+```
+
 #### Apollo GraphQL Directive
-Use this if you're using graphQL.  Automatically create and verify token grants for any field with the @token directive
+If using GraphQL, automatically create and verify token grants for any field with the @token directive
 ```typescript
   const server = new ApolloServer({
     schemaDirectives: {token: lunaSec.tokenDirective},
@@ -86,6 +115,8 @@ Use this if you're using graphQL.  Automatically create and verify token grants 
 In your schema:
 ```graphql
 const typeDefs = gql`
+    directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION # Register the directive
+
     type Query {
         getFormData: FormData
     }
@@ -104,11 +135,9 @@ const typeDefs = gql`
     input FormDataInput {
         email: String @token
         insecure_field: String
-        text_area: String @token
+        text_area: String @token # use on input fields as well so that incoming tokens are checked
         files: [String] @token
     }
-    
-    directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 `;
 ```
 
