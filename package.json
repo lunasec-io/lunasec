@@ -7,6 +7,8 @@
   "scripts": {
     "start:services": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up tokenizerbackend",
     "test:e2e": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test",
+    "license:check": "./tools/license-checker/run-license-check.sh check",
+    "license:fix": "./tools/license-checker/run-license-check.sh fix",
     "lint:fix": "npm run lint -- --fix",
     "lint": "cd js && eslint --ext .js,.jsx,.ts,.tsx .",
     "version:release": "if [ -z ${RELEASE_TYPE+x} ]; then echo \"RELEASE_TYPE is unset\"; else lerna version -y $RELEASE_TYPE --no-push --force-publish; fi",

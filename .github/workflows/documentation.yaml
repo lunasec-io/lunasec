@@ -22,20 +22,14 @@ jobs:
         with:
           node-version: '16'
 
-      # Cache the license checking tool
-      - name: Check Apache 2.0 License Header
-        uses: apache/skywalking-eyes@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          config: tools/license-checker/configs/apache2.yaml
+      - name: Install License Checker
+        working-directory: tools/license-checker/
+        run: ./install-skywalker-eyes.sh
 
-      - name: Check CC-BY-SA-4.0 License Header
-        uses: apache/skywalking-eyes@main
+      - name: Check License Headers
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          config: tools/license-checker/configs/CC-BY-SA-4_0.yaml
+        run: npm run license:check
 
       # Speed up builds by caching node_modules
       - uses: actions/cache@v2
