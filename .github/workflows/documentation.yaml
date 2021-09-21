@@ -111,6 +111,7 @@ jobs:
       - name: Install Dependencies
         working-directory: docs/
         run: yarn install
+
 #      - name: Set env.BRANCH
 #        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
 #      - name: Cut new docs for version branch
