@@ -31,14 +31,14 @@ jobs:
       run: ./install-skywalker-eyes.sh
 
     - name: Check Apache 2.0 License Header
-      uses: apache/skywalking-eyes@0.1.0
+      uses: apache/skywalking-eyes@v0.1.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         config: tools/license-checker/configs/apache2.yaml
 
     - name: Check CC-BY-SA-4.0 License Header
-      uses: apache/skywalking-eyes@0.1.0
+      uses: apache/skywalking-eyes@v0.1.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
