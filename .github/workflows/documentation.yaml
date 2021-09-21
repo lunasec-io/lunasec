@@ -22,6 +22,31 @@ jobs:
         with:
           node-version: '16'
 
+      # Cache the license checking tool
+      - uses: actions/cache@v2
+        with:
+          path: |
+            tools/license-checker
+          key: ${{ runner.os }}-modules-${{ hashFiles('tools/license-checker**') }}
+
+      - name: Install License Checker
+        working-directory: tools/license-checker/
+        run: ./install-skywalker-eyes.sh
+
+      - name: Check Apache 2.0 License Header
+        uses: apache/skywalking-eyes@0.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          config: tools/license-checker/configs/apache2.yaml
+
+      - name: Check CC-BY-SA-4.0 License Header
+        uses: apache/skywalking-eyes@0.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          config: tools/license-checker/configs/CC-BY-SA-4_0.yaml
+
       # Speed up builds by caching node_modules
       - uses: actions/cache@v2
         with:
@@ -35,6 +60,7 @@ jobs:
         run: |
           npx lerna bootstrap
           npm run compile:production
+
       - name: Install Dependencies
         working-directory: docs/
         run: yarn install
@@ -42,9 +68,11 @@ jobs:
 #        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
 #      - name: Cut new docs for version branch
 #        run: yarn run docusaurus docs:version $BRANCH
+
       - name: Test Build
         working-directory: docs/
         run: yarn run build
+
   gh-release:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
