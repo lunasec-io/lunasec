@@ -23,16 +23,6 @@ jobs:
           node-version: '16'
 
       # Cache the license checking tool
-      - uses: actions/cache@v2
-        with:
-          path: |
-            tools/license-checker
-          key: ${{ runner.os }}-modules-${{ hashFiles('tools/license-checker**') }}
-
-      - name: Install License Checker
-        working-directory: tools/license-checker/
-        run: ./install-skywalker-eyes.sh
-
       - name: Check Apache 2.0 License Header
         uses: apache/skywalking-eyes@main
         env:
