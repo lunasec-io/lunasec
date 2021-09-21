@@ -6,10 +6,8 @@ LICENSE_TOOL_DIRECTORY=$(dirname $0)
 
 echo $LICENSE_TOOL_DIRECTORY
 
-cd "$LICENSE_TOOL_DIRECTORY/../../" || exit
-
 LICENSE_TOOL_COMMAND="$1"
-LICENSE_TOOL_PATH="$LICENSE_TOOL_DIRECTORY/skywalking-license-eye-0.1.0-bin/bin/linux/license-eye"
+LICENSE_TOOL_PATH="$LICENSE_TOOL_DIRECTORY/skywalking-eyes/bin/linux/license-eye"
 
 # TODO: DRY up the calls to the license tool
 

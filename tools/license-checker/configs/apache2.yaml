@@ -1,7 +1,7 @@
 header:
   license:
     spdx-id: Apache-2.0
-    copyright-owner: LunaSec by Refinery Labs, Inc
+    copyright-owner: by LunaSec (owned by Refinery Labs, Inc)
   paths:
     - '.github/**'
     - 'js/**/*.js'
