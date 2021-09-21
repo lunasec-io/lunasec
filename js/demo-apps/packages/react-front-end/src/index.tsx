@@ -15,9 +15,9 @@ const mode = hash;
 export function getApp() {
   switch (mode) {
     case 'dedicated-passport-express':
-      return <DedicatedPassportReactApp />;
+      return <DedicatedPassportReactApp sessionAuthProvider="express-back-end" />;
     case 'dedicated-passport-graphql': // Same app for this demo, it just loads a different store
-      return <DedicatedPassportReactApp />;
+      return <DedicatedPassportReactApp sessionAuthProvider="graphql-back-end" />;
     case 'simple':
       return <SimpleApp />;
     default:

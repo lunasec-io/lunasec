@@ -30,7 +30,6 @@ export function userRouter(models: Models) {
       });
     }
     try {
-      console.log('In express router session id is ', req.session.id);
       await lunaSec.grants.verify(req.session.id, req.body.ssn_token);
       await models.user.setSsn(req.user.id, req.body.ssn_token);
     } catch (e: any) {

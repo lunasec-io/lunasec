@@ -17,10 +17,12 @@ let authFlowInProgress: Promise<boolean> | null = null;
 export class LunaSecAuthentication {
   private readonly authClient: SecureFrameAuthClient;
   private readonly errorHandler: (e: Error) => void;
+  private readonly sessionAuthProvider?: string;
 
-  constructor(authDomain: string, errorHandler: (e: Error) => void) {
+  constructor(authDomain: string, errorHandler: (e: Error) => void, sessionAuthProvider?: string) {
     this.authClient = new SecureFrameAuthClient(authDomain);
     this.errorHandler = errorHandler;
+    this.sessionAuthProvider = sessionAuthProvider;
   }
 
   async startSessionManagement(): Promise<() => void> {
@@ -87,7 +89,7 @@ export class LunaSecAuthentication {
       with 'no-cors' set. It is possible to experience an error in this request flow.
      */
     console.debug('ensuring the secure frame has a valid session');
-    await this.authClient.ensureSession();
+    await this.authClient.ensureSession(this.sessionAuthProvider);
 
     console.debug('verifying the created session is valid');
     const secondVerifyResponse = await this.authClient.verifySession();
