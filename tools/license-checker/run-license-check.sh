@@ -4,8 +4,6 @@
 
 LICENSE_TOOL_DIRECTORY=$(dirname $0)
 
-echo $LICENSE_TOOL_DIRECTORY
-
 LICENSE_TOOL_COMMAND="$1"
 LICENSE_TOOL_PATH="$LICENSE_TOOL_DIRECTORY/skywalking-eyes/bin/linux/license-eye"
 
