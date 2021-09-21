@@ -19,19 +19,21 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Check Apache 2.0 License Header
-      uses: apache/skywalking-eyes@main
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # Cache the license checking tool
+    - uses: actions/cache@v2
       with:
-        config: tools/license-checker/configs/apache2.yaml
+        path: |
+          tools/license-checker
+        key: ${{ runner.os }}-modules-${{ hashFiles('tools/license-checker/**') }}
 
-    - name: Check CC-BY-SA-4.0 License Header
-      uses: apache/skywalking-eyes@main
+    - name: Install License Checker
+      working-directory: tools/license-checker/
+      run: ./install-skywalker-eyes.sh
+
+    - name: Check License Headers
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        config: tools/license-checker/configs/CC-BY-SA-4_0.yaml
+      run: npm run license:check
 
     - name: logs
       run: .github/print-docker-logs.sh
