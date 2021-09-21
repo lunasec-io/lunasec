@@ -1,4 +1,4 @@
-import { LunaSecConfigContext, SecureDownload } from '@lunasec/react-sdk';
+import { LunaSecConfigContext } from '@lunasec/react-sdk';
 import { CssBaseline, makeStyles } from '@material-ui/core';
 import { createStyles, Theme } from '@material-ui/core/styles';
 import { StoreProvider } from 'easy-peasy';
@@ -30,13 +30,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const DedicatedPassportReactApp = () => {
+interface DedicatedPassportReactAppProps {
+  sessionAuthProvider: string;
+}
+
+export const DedicatedPassportReactApp = (props: DedicatedPassportReactAppProps) => {
   const classes = useStyles({});
+  const { sessionAuthProvider } = props;
 
   return (
     <LunaSecConfigContext.Provider
       value={{
         lunaSecDomain: 'http://localhost:37766',
+        sessionAuthProvider: sessionAuthProvider,
         authenticationErrorHandler: (e: Error) => {
           // setAuthError('Failed to authenticate with LunaSec. \n Is a user logged in?');
           console.error('AUTH ERROR FROM LUNASEC', e);

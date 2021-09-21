@@ -15,13 +15,9 @@ func getSessionManagementRoutes(
 	gateways gateway.Gateways,
 	authProviderJwtVerifier service.JwtVerifier,
 ) (routes map[string]http.HandlerFunc) {
-	sessionController, err := controller.NewSessionController(
+	sessionController := controller.NewSessionController(
 		logger, provider, gateways.KV, authProviderJwtVerifier,
 	)
-	if err != nil {
-		panic(err)
-	}
-
 
 	routes = map[string]http.HandlerFunc{
 		"/session/ensure": sessionController.SessionEnsure,

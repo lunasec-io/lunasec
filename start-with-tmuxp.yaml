@@ -30,8 +30,7 @@ windows:
     # TODO: maybe we can break this into a script in the go folder
     - shell_command:
       - cd go
-      - make tokenizerbackend
       - rm -f config/tokenizerbackend/aws_resources.yaml
       - sudo compose_docker_cli_build=1 docker_buildkit=1 docker-compose up --remove-orphans -d local-dependencies &&
-        until [ -f config/tokenizerbackend/aws_resources.yaml ]; do echo "waiting for aws_resources.yaml..."; sleep 1; done &&
-        env $(cat ../.env.host | xargs) ./build/tokenizerbackend_dev
+        until [ -f config/tokenizerbackend/aws_resources.yaml ]; do echo "waiting for aws_resources.yaml..."; sleep 1; done
+      - make tokenizerbackend && env $(cat ../.env.host | xargs) ./build/tokenizerbackend_dev

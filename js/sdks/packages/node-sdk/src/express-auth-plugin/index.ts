@@ -122,7 +122,7 @@ export class LunaSecExpressAuthPlugin {
 
   register(app: Router) {
     // Rename this route to "/redirect-to-tokenizer", it doesnt have anything to do with the iframe.
-    app.get(this.getUrlPath('/secure-frame'), cookieParser(), this.redirectToTokenizer.bind(this));
+    app.get(this.getUrlPath('/.lunasec/secure-frame'), cookieParser(), this.redirectToTokenizer.bind(this));
     app.get(this.getUrlPath('/.lunasec/jwks.json'), this.handleJwksRequest.bind(this));
   }
 }
