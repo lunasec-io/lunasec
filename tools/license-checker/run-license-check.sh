@@ -7,9 +7,6 @@ ROOT_REPO_DIRECTORY=$(dirname "$0")
 LICENSE_TOOL_COMMAND="$1"
 LICENSE_TOOL_PATH="$ROOT_REPO_DIRECTORY/skywalking-eyes/bin/linux/license-eye"
 
-echo $LICENSE_TOOL_PATH
-echo $(pwd)
-
 # TODO: DRY up the calls to the license tool
 
 if [ "$LICENSE_TOOL_COMMAND" == "fix" ]; then
