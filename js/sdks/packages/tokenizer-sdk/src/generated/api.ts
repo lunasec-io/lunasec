@@ -212,17 +212,6 @@ export interface GetMetadataResponseData {
     metadata: MetaData;
 }
 /**
- * 
- * @export
- * @enum {string}
- */
-
-export enum GrantType {
-    ReadToken = 'read_token',
-    StoreToken = 'store_token'
-}
-
-/**
  * @type MetaData
  * The metadata set for the token.  Metadata is immutable once the token is created.  DataType must be set to tell if it is a string or a file that is tokenized.
  * @export
@@ -247,12 +236,6 @@ export interface SetGrantRequest {
      * @memberof SetGrantRequest
      */
     tokenId: string;
-    /**
-     * 
-     * @type {GrantType}
-     * @memberof SetGrantRequest
-     */
-    grantType: GrantType;
 }
 /**
  * 
@@ -367,12 +350,6 @@ export interface VerifyGrantRequest {
      * @memberof VerifyGrantRequest
      */
     tokenId: string;
-    /**
-     * 
-     * @type {GrantType}
-     * @memberof VerifyGrantRequest
-     */
-    grantType: GrantType;
 }
 /**
  * 

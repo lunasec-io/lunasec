@@ -6,10 +6,11 @@ export const CONFIG_DEFAULTS: TokenizerClientConfig = {
   host: __TOKENIZER_URL__ || 'http://localhost:37766',
   metaEncoding: 'base64',
   baseRoute: '',
-  headers: {
-    auth: 'Authorization'.toLowerCase(),
-  },
 };
 
 export const LUNASEC_TOKEN_REGEXP =
   /^lunasec-[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+
+export const SESSION_HASH_HEADER = 'lunasec-session-hash';
+
+export const AUTHORIZATION_HEADER = 'authorization'.toLowerCase();
