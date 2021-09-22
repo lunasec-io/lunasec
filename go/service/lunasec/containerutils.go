@@ -4,17 +4,21 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/ecr"
+	"github.com/google/go-containerregistry/pkg/crane"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
+	"github.com/gosimple/slug"
 	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/service"
+	"io/ioutil"
 	"log"
+	"os"
 )
 
 // TODO (cthompson) pull latest tag from remote and check against semver. raise notification about upgrading CLI if incompatible version is latest, abort if major version is incompatible
 func pullContainer(containerURL string) (containerImg v1.Image, err error) {
-	publicEcrDockerManager := service.NewDockerManager()
+	dockerHubManager := service.NewDockerManager()
 
-	containerImg, err = publicEcrDockerManager.PullImage(containerURL)
+	containerImg, err = dockerHubManager.PullImage(containerURL)
 	if err != nil {
 		log.Println(err)
 		return
@@ -69,14 +73,56 @@ func createEcrRepository(ecrGateway gateway.AwsECRGateway, repoName string) (err
 	return
 }
 
-func mirrorRepoToEcr(accountID, containerURL, newImageName string) (tag string, err error) {
+func mirrorRepoToEcr(accountID, containerName, newImageName string, containerIsLocal bool) (tag string, err error) {
 	ecrGateway := gateway.NewAwsECRGateway()
 
 	ecrRegistry := fmt.Sprintf("%s.dkr.ecr.us-west-2.amazonaws.com", accountID)
 	ecrRepository := fmt.Sprintf("%s/%s", ecrRegistry, newImageName)
 
-	log.Printf("pulling image from public ecr: %s", containerURL)
-	containerImg, err := pullContainer(containerURL)
+	var (
+		file *os.File
+		containerImg v1.Image
+	)
+
+	if containerIsLocal {
+		log.Printf("loading image from local docker: %s", containerName)
+
+		containerNameSlug := slug.Make(containerName)
+		file, err = ioutil.TempFile(os.TempDir(), fmt.Sprintf("%s.*.tar", containerNameSlug))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		defer os.Remove(file.Name())
+
+		containerImagePath := file.Name()
+
+		cmd := "sudo"
+		args := []string{"docker", "save", "-o", containerImagePath, containerName}
+
+		executor := service.NewExecutor(cmd, args, map[string]string{}, "", nil, true)
+		_, err = executor.Execute()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		cmd = "sudo"
+		args = []string{"chmod", "755", containerImagePath}
+
+		executor = service.NewExecutor(cmd, args, map[string]string{}, "", nil, true)
+		_, err = executor.Execute()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		containerImg, err = crane.Load(containerImagePath)
+	} else {
+		log.Printf("pulling image from dockerhub: %s", containerName)
+		containerImg, err = pullContainer(containerName)
+	}
+
 	if err != nil {
 		return
 	}
