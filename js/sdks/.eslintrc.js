@@ -31,6 +31,7 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:prettier/recommended'
   ],
+  ignorePatterns: ['packages/tokenizer-sdk/src/generated'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {

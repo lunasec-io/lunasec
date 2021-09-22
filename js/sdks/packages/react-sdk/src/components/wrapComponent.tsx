@@ -426,9 +426,15 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         resize: 'none',
       };
 
+      const validatedName = this.props.name !== undefined ? this.props.name : '';
+
+      // TODO: Fix the types so that we don't have to do this anymore.
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      const containerName = `secure-${componentName.toLowerCase()}-container-${validatedName}`;
+
       const containerClass = classnames({
         [`secure-${componentName.toLowerCase()}-container-${this.frameId}`]: true,
-        [`secure-${componentName.toLowerCase()}-container-${this.props.name || ''}`]: !!this.props.name,
+        [containerName]: !!this.props.name,
       });
 
       const renderData: RenderData<W> = {
@@ -449,6 +455,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       };
 
       // clean out our lunasec props so they dont get passed into the wrapped component as html params
+      /* eslint-disable @typescript-eslint/no-unused-vars */
       const {
         token,
         onTokenChange,
@@ -459,6 +466,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         errorHandler,
         ...scrubbedProps
       } = this.props;
+      /* eslint-enable @typescript-eslint/no-unused-vars */
 
       // TODO: Fix this issue, and in the mean time be very careful with your props
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {
@@ -467,7 +475,6 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
       // TODO: Fix this so the properties don't break in typescript.
       // For now be careful and think about what props you pass
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const IgnoredWrapped = Wrapped as any;
 
       return (
@@ -478,9 +485,11 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
   }
 
-  // This small functional component is the only way for a component to access more than one provider, thanks to a major shortcoming of react.
-  // So our "wrapped component" is actually double wrapped, first by this function component to add the providers, then by the class above
-  // You can never be too careful
+  // This small functional component is the only way for a component to access
+  // more than one provider, thanks to a major shortcoming of react. So our
+  // "wrapped component" is actually double wrapped, first by this function
+  // component to add the providers, then by the class above.
+  // You can never be too careful.
   return function ProviderWrapper(props: WrapperProps<W>) {
     return (
       <SecureFormContext.Consumer>
@@ -489,7 +498,10 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
             <LunaSecConfigContext.Consumer>
               {(lunaSecConfigContext) => {
                 return (
-                  // @ts-ignore why the heck are these ts-ignores this necessary!?  Something must be broken with the react intrinsic properties not liking the generic...
+                  // TODO: Why the heck are these ts-ignores this necessary!?
+                  // Something must be broken with the react intrinsic properties not liking the generic...
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
                   <WrappedComponent {...props} formContext={formContext} lunaSecConfigContext={lunaSecConfigContext} />
                 );
               }}

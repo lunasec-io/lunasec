@@ -16,7 +16,9 @@
  */
 import { createPublicKey, KeyObject } from 'crypto';
 
+// eslint-disable-next-line import/no-unresolved
 import { fromKeyLike, JWK } from 'jose/jwk/from_key_like';
+// eslint-disable-next-line import/no-unresolved
 import { KeyLike, SignJWT } from 'jose/jwt/sign';
 
 import { AuthenticationJWT } from './authentication-jwt';
@@ -63,8 +65,12 @@ export class KeyService {
     return await fromKeyLike(publicKey);
   }
 
-  public async createAuthenticationJWT(subject: JwtSubject, claims: Record<string, any>): Promise<AuthenticationJWT> {
+  public async createAuthenticationJWT(
+    subject: JwtSubject,
+    claims: Record<string, unknown>
+  ): Promise<AuthenticationJWT> {
     const privateKey = await this.getSigningPrivateKey();
+
     const jwt = await new SignJWT(claims)
       .setProtectedHeader({ alg: 'RS256' })
       .setIssuedAt()

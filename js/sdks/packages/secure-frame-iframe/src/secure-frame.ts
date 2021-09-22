@@ -214,7 +214,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
     });
   }
 
-  handleError(e: LunaSecError | Error | any) {
+  handleError(e: LunaSecError | Error | unknown) {
     // I'd like to do this check inside the LunaSecError class but this works for now
     if (e instanceof LunaSecError) {
       this.sendErrorMessage(e);

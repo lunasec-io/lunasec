@@ -53,10 +53,7 @@ export default class Uploader extends Component<UploaderProps> {
     const { renderData, className, children, ...otherProps } = this.props;
 
     return (
-      <div
-        className={`${renderData.containerClass} ${this.props.className || ''}`}
-        style={renderData.parentContainerStyle}
-      >
+      <div className={`${renderData.containerClass} ${className || ''}`} style={renderData.parentContainerStyle}>
         <input
           {...otherProps}
           type="file"

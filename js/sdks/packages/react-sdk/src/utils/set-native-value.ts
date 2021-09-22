@@ -37,10 +37,13 @@
 
 export default function setNativeValue(componentName: 'Input' | 'TextArea', element: HTMLElement, value: string) {
   const nativePropertyDescriptor = getNativeProp(componentName);
-  if (!nativePropertyDescriptor) {
-    throw new Error('Couldnt get native value property for setting token');
+  if (nativePropertyDescriptor === undefined) {
+    throw new Error('Could not get native value property for setting token');
   }
-  // @ts-ignore No idea why this is still necessary
+  if (nativePropertyDescriptor.set === undefined) {
+    throw new Error('Unable to set native property descriptor value for element');
+  }
+
   nativePropertyDescriptor.set.call(element, value);
   const e = new Event('input', { bubbles: true });
   element.dispatchEvent(e);

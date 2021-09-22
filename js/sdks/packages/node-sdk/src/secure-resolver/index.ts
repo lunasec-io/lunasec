@@ -76,7 +76,6 @@ export class SecureResolver {
 
   constructor(config: SecureResolverSdkConfig) {
     // Deep clone the config to prevent nested mutation.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.config = config;
 
     if (this.config.deploymentId === undefined) {
@@ -89,7 +88,6 @@ export class SecureResolver {
 
     if (this.config?.functionsConfigPath) {
       // TODO: Extract into a function that processes the schema of this or throws reasonable error messages.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       this.functionConfig = JSON.parse(fs.readFileSync(this.config.functionsConfigPath, 'utf8'));
     }
 
@@ -224,7 +222,7 @@ export class SecureResolver {
         };
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+      // TODO: Add schema validation during parsing
       const response = safeParseJson<unknown>(res.body);
 
       return {
@@ -232,10 +230,9 @@ export class SecureResolver {
         result: response,
       };
     } catch (e) {
-      console.error(e);
+      console.error('Unable to call function:', e);
       return {
         success: false,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         error: e as string,
       };
     }
