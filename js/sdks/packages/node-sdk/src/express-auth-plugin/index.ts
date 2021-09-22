@@ -1,22 +1,24 @@
+import path from 'path';
 import { URL } from 'url';
 
 import cookieParser from 'cookie-parser';
 import { Request, Response, Router } from 'express';
 import { JWTPayload } from 'jose/types';
 
-import { LunaSecAuthentication } from '../authentication';
+import { KeyService } from '../authentication';
 import { SessionIdProvider } from '../authentication/types';
 
 export interface ExpressAuthPluginConfig {
   sessionIdProvider: SessionIdProvider;
   payloadClaims?: string[];
   secureFrameURL: string;
-  auth: LunaSecAuthentication;
+  auth: KeyService;
+  pluginBaseUrl?: string;
 }
 
 export class LunaSecExpressAuthPlugin {
   private readonly secureFrameUrl: string;
-  private readonly auth: LunaSecAuthentication;
+  private readonly auth: KeyService;
   private readonly config: ExpressAuthPluginConfig;
 
   constructor(config: ExpressAuthPluginConfig) {
@@ -60,7 +62,7 @@ export class LunaSecExpressAuthPlugin {
     return redirectUrl;
   }
 
-  async handleSecureFrameAuthRequest(req: Request, res: Response) {
+  async redirectToTokenizer(req: Request, res: Response) {
     const authFlowCorrelationToken = req.query.state;
     if (typeof authFlowCorrelationToken !== 'string') {
       res.status(400).send({
@@ -78,8 +80,12 @@ export class LunaSecExpressAuthPlugin {
       });
       return;
     }
+
+    // session id could be passed in as a number, enforce that this value is a string
+    const normalizedSessionId = sessionId.toString();
+
     // This method creates the JWT that becomes the iframe's "access_token" cookie, which contains the sessionId
-    const redirectUrl = await this.buildSecureFrameRedirectUrl(authFlowCorrelationToken, sessionId);
+    const redirectUrl = await this.buildSecureFrameRedirectUrl(authFlowCorrelationToken, normalizedSessionId);
     if (redirectUrl === null) {
       console.error('unable to complete auth flow, redirectURL not set');
       res.status(400).send({
@@ -89,7 +95,7 @@ export class LunaSecExpressAuthPlugin {
       return;
     }
 
-    console.log('redirecting...', redirectUrl.href);
+    console.log('LunaSec Auth Plugin is redirecting request back to tokenizer backend.W');
 
     res.redirect(redirectUrl.href);
   }
@@ -107,8 +113,16 @@ export class LunaSecExpressAuthPlugin {
     res.json(keys).status(200);
   }
 
+  getUrlPath(urlPath: string): string {
+    if (this.config.pluginBaseUrl !== undefined) {
+      return path.join(this.config.pluginBaseUrl, urlPath);
+    }
+    return urlPath;
+  }
+
   register(app: Router) {
-    app.get('/secure-frame', cookieParser(), this.handleSecureFrameAuthRequest.bind(this));
-    app.get('/.lunasec/jwks.json', this.handleJwksRequest.bind(this));
+    // Rename this route to "/redirect-to-tokenizer", it doesnt have anything to do with the iframe.
+    app.get(this.getUrlPath('/secure-frame'), cookieParser(), this.redirectToTokenizer.bind(this));
+    app.get(this.getUrlPath('/.lunasec/jwks.json'), this.handleJwksRequest.bind(this));
   }
 }

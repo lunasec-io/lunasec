@@ -3,6 +3,7 @@ package util
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/sha1"
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
@@ -124,4 +125,10 @@ func getCipher(keyStr string) (cipher.AEAD, error) {
 	}
 
 	return cipher.NewGCM(block)
+}
+
+func CreateSessionHash(sessionID string) string {
+	shaHash := sha1.New()
+	shaHash.Write([]byte(sessionID))
+	return hex.EncodeToString(shaHash.Sum(nil))
 }

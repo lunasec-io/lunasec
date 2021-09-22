@@ -28,18 +28,10 @@ SetGrantRequest:
       type: string
     tokenId:
       type: string
-    grantType:
-      "$ref": "#/GrantType"
   required:
     - sessionId
     - tokenId
-    - grantType
   additionalProperties: false
-GrantType:
-  type: string
-  enum:
-    - read_token
-    - store_token
 VerifyGrantRequest:
   type: object
   properties:
@@ -47,12 +39,9 @@ VerifyGrantRequest:
       type: string
     tokenId:
       type: string
-    grantType:
-      "$ref": "#/GrantType"
   required:
     - sessionId
     - tokenId
-    - grantType
   additionalProperties: false
 
 GetMetadataRequest:

@@ -1,7 +1,13 @@
-interface SessionResponse {
-  success: boolean;
-  error: string;
+import { LunaSecError } from '@lunasec/isomorphic-common';
+
+interface SuccessResponse {
+  success: true;
 }
+interface FailureResponse {
+  success: false;
+  error: LunaSecError;
+}
+type SessionResponse = SuccessResponse | FailureResponse;
 
 export class SecureFrameAuthClient {
   private readonly url: string;
@@ -14,24 +20,39 @@ export class SecureFrameAuthClient {
     return url.toString();
   }
 
-  private async checkResponse<T>(resp: Response): Promise<T> {
+  private async processResponse(resp: Response): Promise<SessionResponse> {
     const json = await resp.json();
+    // Handle the case where there were network errors or something went truly wrong
     if (json === null || resp.status !== 200) {
-      throw new Error(`request did not succeed (status code: ${resp.status})`);
+      return {
+        success: false,
+        error: new LunaSecError({
+          name: 'authError',
+          message: `Connected to LunaSec Auth endpoint failed`,
+          code: resp.status.toString(),
+        }),
+      };
+    }
+    if (json.error) {
+      return {
+        success: json.success,
+        error: new LunaSecError({ code: '400', name: 'authError', message: json.error }),
+      };
     }
     return json;
   }
+
   // dispatch to the secure frame session verifier to check if the secure frame session exists
   public async verifySession() {
     const resp = await fetch(this.getURL('/session/verify'), {
       credentials: 'include',
       mode: 'cors',
     });
-    return await this.checkResponse<SessionResponse>(resp);
+    return await this.processResponse(resp);
   }
 
   // dispatch to the secure frame to ensure that a session exists
-  public ensureSession() {
+  public async ensureSession() {
     return fetch(this.getURL('/session/ensure'), {
       credentials: 'include',
       mode: 'no-cors',

@@ -51,6 +51,7 @@ export default class TextArea extends Component<TextAreaProps> {
     });
 
     return (
+      // TODO: height of this container is not working properly, fix
       <div style={renderData.parentContainerStyle} className={containerClass}>
         <textarea
           {...otherProps}

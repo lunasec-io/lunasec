@@ -4,9 +4,9 @@ services:
   local-dependencies:
     image: rwgrim/docker-noop
     depends_on:
-      - localstack
+      - localstack # AWS localstack container
       - proxy
-      - cdk-init
+      - cdk-init # communicated with the localstack container to deploy the needed infrastructure
   demo:
     image: rwgrim/docker-noop
     depends_on:
@@ -19,7 +19,7 @@ services:
   secure-frame-iframe:
     build:
       context: .
-      dockerfile: js/docker/Dockerfile.demo
+      dockerfile: js/docker/demo.dockerfile
       target: secure-frame-iframe
     ports:
       - "8000:8000"
@@ -27,17 +27,20 @@ services:
     hostname: application-front-end
     build:
       context: .
-      dockerfile: js/docker/Dockerfile.demo
+      dockerfile: js/docker/demo.dockerfile
       target: react-front-end
     ports:
       - "3000:3000"
   application-back-end:
     build:
       context: .
-      dockerfile: js/docker/Dockerfile.demo
+      dockerfile: js/docker/demo.dockerfile
       target: demo-back-end
     ports:
-      - "3001:3001"
+      - "3001:3001" # express
+      - "3002:3002" # graphql
+      - "3003:3003" # simple-express
+      - "3004:3004" # Not using this one yet, just figured we might need it soon
     env_file:
       - .env.docker
   #      healthcheck:
