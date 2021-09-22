@@ -38,7 +38,7 @@ jobs:
 
       - name: Install License Checker
         working-directory: tools/license-checker/
-        run: ./install-skywalker-eyes.sh
+        run: ./install-skywalking-eyes.sh
 
       - name: Check License Headers
         env:
