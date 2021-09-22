@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -212,17 +228,6 @@ export interface GetMetadataResponseData {
     metadata: MetaData;
 }
 /**
- * 
- * @export
- * @enum {string}
- */
-
-export enum GrantType {
-    ReadToken = 'read_token',
-    StoreToken = 'store_token'
-}
-
-/**
  * @type MetaData
  * The metadata set for the token.  Metadata is immutable once the token is created.  DataType must be set to tell if it is a string or a file that is tokenized.
  * @export
@@ -247,12 +252,6 @@ export interface SetGrantRequest {
      * @memberof SetGrantRequest
      */
     tokenId: string;
-    /**
-     * 
-     * @type {GrantType}
-     * @memberof SetGrantRequest
-     */
-    grantType: GrantType;
 }
 /**
  * 
@@ -367,12 +366,6 @@ export interface VerifyGrantRequest {
      * @memberof VerifyGrantRequest
      */
     tokenId: string;
-    /**
-     * 
-     * @type {GrantType}
-     * @memberof VerifyGrantRequest
-     */
-    grantType: GrantType;
 }
 /**
  * 

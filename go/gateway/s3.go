@@ -1,3 +1,17 @@
+// Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 package gateway
 
 import (
@@ -17,11 +31,12 @@ import (
 const s3EncryptionAlgo = "AES256"
 
 type awsS3Gateway struct {
-	AwsS3GatewayConfig
+	AwsGatewayConfig
 	logger *zap.Logger
 	s3     *session.Session
 	s3Host string
 }
+
 
 type AwsS3GatewayConfig struct {
 	S3Region string `yaml:"region"`
@@ -33,7 +48,7 @@ type AwsS3GatewayConfig struct {
 }
 
 type AwsS3GatewayConfigWrapper struct {
-	AwsGateway AwsS3GatewayConfig `yaml:"aws_gateway"`
+	AwsGateway AwsGatewayConfig `yaml:"aws_gateway"`
 }
 
 // AwsS3Gateway ...
@@ -45,7 +60,7 @@ type AwsS3Gateway interface {
 
 func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
 	return AwsS3GatewayConfigWrapper{
-		AwsGateway: AwsS3GatewayConfig{
+		AwsGateway: AwsGatewayConfig{
 			S3Region: region,
 			S3Bucket: bucket,
 		},
@@ -59,7 +74,7 @@ func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
 // NewAwsS3Gateway...
 func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session.Session) (s3Gateway AwsS3Gateway) {
 	var (
-		gatewayConfig AwsS3GatewayConfig
+		gatewayConfig AwsGatewayConfig
 	)
 
 	err := provider.Get("aws_gateway").Populate(&gatewayConfig)
@@ -72,7 +87,7 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session
 
 	s3Gateway = &awsS3Gateway{
 		logger:             logger,
-		AwsS3GatewayConfig: gatewayConfig,
+		AwsGatewayConfig: gatewayConfig,
 		s3:                 sess,
 		s3Host:             s3Host,
 	}

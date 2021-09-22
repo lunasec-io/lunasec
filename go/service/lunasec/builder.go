@@ -1,3 +1,17 @@
+// Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 package lunasec
 
 import (
@@ -38,6 +52,7 @@ type BuildConfig struct {
 	FrontEndAssetsFolder string          `yaml:"front_end_assets_folder"`
 	LocalStackUrl        string          `yaml:"localstack_url"`
 	ServiceVersions    ServiceVersions `yaml:"service_versions"`
+	LocalBuildArtifacts bool `yaml:"local_build_artifacts"`
 }
 
 type BuilderConfig struct {
@@ -155,6 +170,7 @@ func (l *builder) mirrorRepos(env *awscdk.Environment) (lookup ServiceToImageMap
 			*env.Account,
 			l.getContainerURL(serviceName),
 			string(serviceName),
+			l.buildConfig.LocalBuildArtifacts,
 		)
 		if err != nil {
 			log.Println(err)
@@ -181,6 +197,8 @@ func (l *builder) getCdnConfig(secureFrameDomainName string) (packageDir, serial
 	if !ok {
 		version = l.buildConfig.StackVersion
 	}
+
+	// TODO (cthompson) when l.buildConfig.LocalBuildArtifacts is set, use a local version of this
 
 	packageTarFile, err := l.npmGateway.DownloadPackage("@lunasec/secure-frame-front-end", version)
 	if err != nil {
@@ -367,10 +385,15 @@ func (l *builder) getTokenizerBackendLambda(stack awscdk.Stack, containerTag str
 	})
 }
 
-func (l *builder) getLambdaRestApi(stack awscdk.Stack, secureFrameLambda awslambda.Function) awsapigateway.LambdaRestApi {
-	return awsapigateway.NewLambdaRestApi(stack, jsii.String("gateway"), &awsapigateway.LambdaRestApiProps{
-		Handler: secureFrameLambda,
+func (l *builder) getLambdaRestApi(stack awscdk.Stack, tokenizerBackendLambda awslambda.Function) awsapigateway.LambdaRestApi {
+	 tokenizerGateway := awsapigateway.NewLambdaRestApi(stack, jsii.String("gateway"), &awsapigateway.LambdaRestApiProps{
+		Handler: tokenizerBackendLambda,
 	})
+	awscdk.NewCfnOutput(stack, getOutputName("tokenizer-gateway"), &awscdk.CfnOutputProps{
+		Value:      tokenizerGateway.Url(),
+		ExportName: getOutputName("tokenizer-gateway"),
+	})
+	return tokenizerGateway
 }
 
 func (l *builder) getTokenizerBackendBucketAssetFolder(secureFrameDomainName string) (assetsFolder, cdnConfig string) {
