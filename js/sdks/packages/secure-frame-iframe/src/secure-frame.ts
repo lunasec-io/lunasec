@@ -42,7 +42,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
     this.origin = this.getURLSearchParam('origin');
 
     this.frameNonce = this.getURLSearchParam('n');
-    this.tokenizer = new Tokenizer({ host: window.location.origin });
+    this.tokenizer = new Tokenizer({ host: window.location.origin, lockToSession: true });
     this.rpc = new iFrameRPC(this.origin, () => this.tokenizeField());
     this.startRPC();
   }
