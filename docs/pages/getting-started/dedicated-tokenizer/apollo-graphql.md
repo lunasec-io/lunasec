@@ -2,6 +2,7 @@
 id: "graphql"
 title: "GraphQL"
 sidebar_label: "GraphQL Support"
+sidebar_position: 3
 ---
 
 # Apollo GraphQL Grants

@@ -1,4 +1,4 @@
-import { LunaSecConfigContext, SecureDownload } from '@lunasec/react-sdk';
+import { LunaSecConfigContext } from '@lunasec/react-sdk';
 import { CssBaseline, makeStyles } from '@material-ui/core';
 import { createStyles, Theme } from '@material-ui/core/styles';
 import { StoreProvider } from 'easy-peasy';
