@@ -69,19 +69,20 @@ export class Tokenizer {
     return new URL(this.config.host).origin;
   }
 
-  private handleError(e: AxiosError | Error | any): TokenizerFailApiResponse {
+  private handleError<T extends AxiosError | Error>(e: T): TokenizerFailApiResponse {
     return {
       success: false,
       error: this.constructError(e),
     };
   }
 
-  private constructError(e: AxiosError<ErrorResponse> | Error | any) {
+  private constructError<T extends AxiosError<ErrorResponse> | Error>(e: T): LunaSecError {
     if ('response' in e && e.response) {
       // Parse the axios error, if it has any meaningful data about the response
       return new LunaSecError({
         name: e.response.data.error.name || 'TokenizerError',
-        message: e.response.data.error.errorMessage || e.response.data.error.message || 'Unknown Tokenizer Error', // TODO: Update this to "message" to conform with openAPI spec once the Tokenizer Backend uses OpenAPI
+        // TODO: Update this to "message" to conform with openAPI spec once the Tokenizer Backend uses OpenAPI
+        message: e.response.data.error.message || 'Unknown Tokenizer Error',
         code: e.response.status.toString(),
       });
     }
@@ -104,7 +105,11 @@ export class Tokenizer {
         success: res.data.success,
       };
     } catch (e) {
-      return this.handleError(e);
+      if (e instanceof Error) {
+        return this.handleError(e);
+      }
+
+      throw e;
     }
   }
 
@@ -125,7 +130,11 @@ export class Tokenizer {
         valid: res.data.data.valid,
       };
     } catch (e) {
-      return this.handleError(e);
+      if (e instanceof Error) {
+        return this.handleError(e);
+      }
+
+      throw e;
     }
   }
 
@@ -143,7 +152,11 @@ export class Tokenizer {
         tokenId: tokenId, // Not sure why we pass this back, seems useless in this context
       };
     } catch (e) {
-      return this.handleError(e);
+      if (e instanceof Error) {
+        return this.handleError(e);
+      }
+
+      throw e;
     }
   }
 
@@ -163,8 +176,11 @@ export class Tokenizer {
         tokenId: data.tokenId,
       };
     } catch (e) {
-      console.error(e);
-      return this.handleError(e);
+      if (e instanceof Error) {
+        return this.handleError(e);
+      }
+
+      throw e;
     }
   }
 
@@ -240,11 +256,15 @@ export class Tokenizer {
       return {
         success: true,
         tokenId: tokenId,
-        headers: headers,
+        headers: headers as Record<string, string>,
         downloadUrl: downloadUrl,
       };
     } catch (e) {
-      return this.handleError(e);
+      if (e instanceof Error) {
+        return this.handleError(e);
+      }
+
+      throw e;
     }
   }
 }

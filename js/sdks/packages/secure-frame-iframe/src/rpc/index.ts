@@ -84,7 +84,7 @@ export class iFrameRPC {
     return;
   }
 
-  async processMessage(rawMessage: UnknownFrameMessage, updateAttrCallback: (m: AttributesMessage) => any) {
+  async processMessage(rawMessage: UnknownFrameMessage, updateAttrCallback: (m: AttributesMessage) => void) {
     // TODO: Make this type safe (require every message to be handled)
     if (rawMessage.command === 'CommitToken') {
       const token = await this.getTokenFromFrame(); // This will send an error notification if there is any issue
@@ -101,7 +101,7 @@ export class iFrameRPC {
   }
 
   // TODO: Passing a callback here that only gets called in certain situations kind of stinks
-  listenForRPCMessages(updateAttrCallback: (m: AttributesMessage) => any) {
+  listenForRPCMessages(updateAttrCallback: (m: AttributesMessage) => void) {
     window.addEventListener('message', (event) => {
       // TODO: Is this a security problem?
       if (this.origin !== event.origin) {
