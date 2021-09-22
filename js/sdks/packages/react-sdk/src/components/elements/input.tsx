@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 import { camelCaseObject } from '@lunasec/browser-common';
 import React, { Component, CSSProperties } from 'react';
 
