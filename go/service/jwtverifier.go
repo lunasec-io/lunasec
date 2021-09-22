@@ -26,7 +26,7 @@ type JwtVerifierConfig struct {
 
 type JwtVerifier interface {
 	Verify(token string) (err error)
-	VerifyWithSessionClaims(token string) (claims *types.SessionJwtClaims, err error)
+	VerifyWithSessionClaims(token string) (claims types.SessionJwtClaims, err error)
 }
 
 func NewJwtVerifier(
@@ -61,6 +61,11 @@ func NewJwtVerifier(
 	} else if serviceConfig.JwksURL != "" {
 		jwksManager, err = NewJwksManager(serviceConfig.JwksURL, true)
 		if err != nil {
+			logger.Error(
+				"Error fetching JSON Web Key(JWKS) from application backend. Is your application backend running? Env var is ",
+				zap.String("SESSION_JWKS_URL", serviceConfig.JwksURL),
+				zap.Error(err),
+			)
 			panic(err)
 		}
 
@@ -94,18 +99,21 @@ func (j *jwtVerifier) Verify(token string) (err error) {
 	)
 	parsedToken, err := jwt.ParseSigned(token)
 	if err != nil {
+		err = errors.Wrap(err, "error while parsing token")
+		j.logger.Error("unable to parse token", zap.Error(err))
 		return
 	}
 
 	err = parsedToken.Claims(j.publicKey, &claims)
 	if err != nil {
-		err = errors.Wrap(err, "jwt token is not valid")
+		err = errors.Wrap(err, "unable to verify signature and get claims")
+		j.logger.Error("unable to verify signature and get claims", zap.Error(err))
 		return
 	}
 	return
 }
 
-func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims *types.SessionJwtClaims, err error) {
+func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims types.SessionJwtClaims, err error) {
 	parsedToken, err := jwt.ParseSigned(token)
 	if err != nil {
 		err = errors.Wrap(err, "error while parsing token")
@@ -115,8 +123,8 @@ func (j *jwtVerifier) VerifyWithSessionClaims(token string) (claims *types.Sessi
 
 	err = parsedToken.Claims(j.publicKey, &claims)
 	if err != nil {
-		err = errors.New("jwt token claims are not valid")
-		j.logger.Error(err.Error())
+		err = errors.Wrap(err, "unable to verify signature and get claims")
+		j.logger.Error("unable to verify signature and get claims", zap.Error(err))
 		return
 	}
 	return

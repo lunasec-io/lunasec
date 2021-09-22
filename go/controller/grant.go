@@ -2,14 +2,15 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/refinery-labs/loq/constants"
 	"github.com/refinery-labs/loq/controller/request"
 	"io/ioutil"
 	"log"
 	"net/http"
 
+	"github.com/refinery-labs/loq/service"
 	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/types/event"
-	"github.com/refinery-labs/loq/service"
 	"github.com/refinery-labs/loq/util"
 )
 
@@ -62,7 +63,7 @@ func (s *grantController) SetGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.grant.SetTokenGrantForSession(types.Token(input.TokenID), input.SessionID, input.GrantType); err != nil {
+	if err := s.grant.SetTokenGrantForSession(types.Token(input.TokenID), input.SessionID, constants.TokenFullAccess); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
@@ -88,7 +89,7 @@ func (s *grantController) VerifyGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	valid, err := s.grant.ValidTokenGrantExistsForSession(types.Token(input.TokenID), input.SessionID, input.GrantType)
+	valid, err := s.grant.ValidTokenGrantExistsForSession(types.Token(input.TokenID), input.SessionID, constants.TokenFullAccess)
 	if err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return

@@ -3,6 +3,5 @@ package constants
 type GrantType string
 
 const (
-	ReadToken GrantType = "read_token"
-	StoreToken GrantType = "store_token"
+	TokenFullAccess GrantType = "token_full_access"
 )

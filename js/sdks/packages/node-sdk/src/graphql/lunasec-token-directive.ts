@@ -83,7 +83,7 @@ export class TokenDirective extends SchemaDirectiveVisitor {
           }
           const context: ExpressContext = resolverArguments[2];
           if (value && value !== defaultValue) {
-            await grantService.verifyWithAutomaticSessionId(context.req, value, 'store_token'); // throws an error if no auth, can also handle arrays of tokens
+            await grantService.verifyWithAutomaticSessionId(context.req, value); // throws an error if no auth, can also handle arrays of tokens
           }
         }
 
