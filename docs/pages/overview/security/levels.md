@@ -14,7 +14,7 @@ sidebar_position: 3
 | 3 | [Dedicated](../features.md#dedicated-tokenizer) | [Auth Provider](../features.md#lunasec-secure-auth-proxy) | App | Tokenizer |
 | 4 | [Dedicated](../features.md#dedicated-tokenizer) | [Auth Provider](../features.md#lunasec-secure-auth-proxy) | [Secure Functions](../features.md#secure-function) | Tokenizer |
 
-### Level 1: Small Project
+### Level 1: Simple Tokenizer
 
 ![level 1 config](/img/level-1-config.svg)
 
@@ -22,50 +22,56 @@ sidebar_position: 3
 
 Security - Sensitive plaintext is no longer being passed around by the application. Tokens are used to identify information and the content is only resolved when explicitly needed.
 
-Developer Experience - Almost no changes are needed to the code base.
+Developer Experience - Almost no changes are needed to the code base.  Compatible with any frontend framework.
 
 #### Cons
 
-Security - In the case of RCE in the application, the attacker will be able to have access to all sensitive information.
+Security - In the case of a Remote Code Execution(RCE) in the frontend or backend, the attacker will have access to sensitive information.
 
-### Level 2: Small Team
+#### Suitable For
+Small team, compliance focused security.
+
+### Level 2: Dedicated Tokenizer and Existing Auth
 
 ![level 2 config](/img/level-2-config.svg)
 
-#### Pros
+#### Security
+ LunaSec Secure Frame is an iFrame served from another domain. It becomes very difficult for an attacker to exfiltrate the sensitive information entered and displayed in the secure components.
+ Your application's session management is a point of attack because LunaSec has to trust it.
 
-Security - LunaSec Secure Frame is an iFrame served from another domain. It becomes very difficult for an attacker to exfiltrate the sensitive information entered and displayed in the secure components.
+#### Developer Experience 
+Deployment of a dedicated tokenization server and replacement of frontend components with secure components, only certain frontend frameworks supported.
 
-Developer Experience - Minimal configuration needed for significant security guarantees
+#### Suitable For
+Small to mid-size team in need of hardened security.
 
-#### Cons
-
-Developer Experience - Another service is needed to be deployed and managed.
-
-### Level 3: Business
+### Level 3: Dedicated Tokenizer with Authentication Provider
 
 ![level 3 config](/img/level-3-config.svg)
 
-#### Pros
+#### Security
+Auth Provider hardens the authentication and session management for your existing application to access plaintext directly, very difficult to attack.  
 
-Security - Auth Provider hardens the authentication for your existing application to access plaintext directly, a much more complicated attack scenario is required.
+#### Developer Experience
+User management code such as signup pages and session management is no longer needed, it comes from the auth provider. 
+The auth provider is an additional service that must be configured and deployed.
 
-Developer experience - User management code is no longer needed to be maintained. A secure authentication provider manages identify of users on your platform.
+#### Suitable For
+Enterprises and government organizations in need of very robust security
 
-#### Cons
-
-Developer Experience - An additional service must be deployed and maintained
-
-### Level 4: Enterprise
+### Level 4: All of the above with Secure Function support 
 
 ![level 4 config](/img/level-4-config.svg)
 
-#### Pros
+#### Security 
+Secure Functions are ephemeral virtual machines which allow serverside access to secure data. 
+These functions exist in isolated environments which greatly reduce the attack surface the code which interacts with sensitive information. 
+Additionally, a specialized Secure Function can be created which will control authorization decisions for frontend detokenization.
 
-Security - Secure Functions are ephemeral virtual machines which, aside from a user&#39;s browser, will be the only other place that sensitive data can be accessed. These functions exist in isolated environments which greatly reduce the attack surface the code which interacts with sensitive information. Additionally, a specialized Secure Function can be created which will control authorization decisions for whether or not a user is able to access the plaintext for a given token.
+#### Developer Experience 
+Centralized authorization greatly simplifies compliance requirements. 
+Individual teams do not need to create and maintain authorization code outside of a single location.  
+Security auditors can quickly audit just the small pieces of code that run in the Secure Function.
 
-Developer Experience - Centralized authorization greatly simplifies compliance requirements. Individual teams do not need to create and maintain authorization code outside of a single location.
-
-#### Cons
-
-Developer Experience - Depending on how authorization is currently implemented for your application, it can take some effort to onboard to a centralized authorization function.
+#### Suitable For
+Enterprises and government organizations in need of the most robust security solution, especially where serverside processing of sensitive data is required
