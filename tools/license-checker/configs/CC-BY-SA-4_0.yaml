@@ -31,16 +31,3 @@ header:
     - 'tools/license-checker/skywalking-*/**'
     - '**/node_modules/**'
   comment: on-failure
-
-dependency:
-  files:
-    - '../../../package.json'
-    - '../../../js/demo-apps/packages/express-back-end/package.json'
-    - '../../../js/demo-apps/packages/react-front-end/package.json'
-    - '../../../js/sdks/packages/cli/package.json'
-    - '../../../js/sdks/packages/isomorphic-common/package.json'
-    - '../../../js/sdks/packages/node-sdk/package.json'
-    - '../../../js/sdks/packages/react-sdk/package.json'
-    - '../../../js/sdks/packages/secure-frame-iframe/package.json'
-    - '../../../js/sdks/packages/tokenizer-sdk/package.json'
-

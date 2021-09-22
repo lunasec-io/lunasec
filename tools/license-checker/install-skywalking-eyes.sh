@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Clean up the folder before checkout
+rm -rf skywalking-eyes
+
 # TODO: Replace the cloned version with the "main" Apache version from here:
 # https://github.com/apache/skywalking-eyes
 # Currently waiting for a new Docker release to be cut with the TypeScript fixes.
