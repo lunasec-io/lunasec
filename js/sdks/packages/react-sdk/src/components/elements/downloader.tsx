@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 import React, { Component } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types';
