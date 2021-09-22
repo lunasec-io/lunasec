@@ -28,21 +28,20 @@ import {SecureForm, SecureInput} from '@lunasec/react-sdk';
 export function renderSecureComponent(props) {
   return (
     <SecureForm onSubmit={props.onSubmit}>
-      <SecureInput type="text" token={props.value} onChange={props.onChange} name="ssn" />
+      <SecureInput name="ssn" token={props.value} onChange={props.onChange} errorHandler={props.handleError} />
       <input type="submit" />
     </SecureForm>
   );
 }
 ```
-LunaSec provides simple-to-use libraries and a backend server to keep sensitive data out of your app.  You will need to add a 
-LunaSec library to your frontend(as shown here), another to your backend, and host a copy of the Tokenizer Backend server.
+You will need to add a 
+LunaSec library to your frontend(as shown here), another to your backend, and to host a copy of the Tokenizer Backend server.
 
 These were designed by security engineers to drop in to existing apps with minimal code changes.
 That way you don't need to audit or rewrite everything from scratch to become secure and compliant.  The parts of the system
 that touch sensitive data will have already been secured and audited by our team.
 
-If you're unsure of what level of security you need, please [contact us](https://www.lunasec.io/contact) and we'll be 
-happy to help you! We offer paid, professional support to accelerate onboarding time and to ensure your deployment
+If you're unsure of what level of security you need, please [contact us](https://www.lunasec.io/contact). We offer paid, professional support to accelerate onboarding time and to ensure your deployment
 meets your security goals.
 
 ## Example: Building a site that stores sensitive information
@@ -67,7 +66,7 @@ LunaSec provides controls for where and by whom those tokens can be exchanged fo
 past those unless they compromise multiple parts of the system which have been designed by our team to be hardened against attack.
 
 ## Who is LunaSec for? 
-LunaSec is designed for developers building software that needs to store sensitive data and operate in real-world, production environments.
+LunaSec is designed for web apps that need to store sensitive data and operate in real-world, production environments.
 
 Our open source software can be used to enhance the security of new or existing applications, and is designed for production
 use cases that require high availability and scalability.
@@ -83,9 +82,9 @@ hoops for "data security" or "compliance", then it's likely that LunaSec can hel
 Most security tools are hard to use, closed source, or both. We believe that open source is the best choice for production software.
 
 We designed LunaSec to be simple to use for normal developers without an advanced understanding of software security or cryptography.
-LunaSec does its best to provide clean and easy APIs, ship with plenty of examples and docs, and will always be _open source_ so that you can debug or fix problems yourself.
+LunaSec does its best to provide clean and easy APIs, ship with plenty of examples and docs, and will always be open source or source available so that you can debug or fix problems yourself.
 
-Most of the security vendor software we've used takes months to get onboarded with due to a lengthy sales process.
+Most of the security vendor software we've used takes months to get onboarded with due to a lengthy sales process,
 After signup, you can be blocked when the black box VM image they give you ships with bugs.
 You can't patch the bugs because you can't change the source code. You're stuck.
 
@@ -94,12 +93,12 @@ Unfortunately, these solutions are often worse because they don't live in your i
 You can't run it on your laptop or in your CI for testing. And, if they have downtime or bad performance, your software inherits those problems too.
 They're still black boxes.
 
-LunaSec is a largely open-source piece of software that you can host, change, and extend as needed.
+LunaSec is a largely open-source piece of software that you can start using right now and host, change, and extend as needed.
 
 #### No Proxy Required
 LunaSec is not a proxy. There is no schema of sensitive fields to maintain, that configuration is in your code.
 
-LunaSec works as a "sidecar" in your front-end _and_ backend to provide security.
+LunaSec works as a "sidecar" in your front-end and backend to provide security.
 That means, if your LunaSec instance is down, it won't take your entire application offline.
 
 #### Your configuration lives in your code

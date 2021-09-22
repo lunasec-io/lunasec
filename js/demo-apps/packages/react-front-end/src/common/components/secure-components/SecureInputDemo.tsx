@@ -1,15 +1,5 @@
 import { SecureForm, SecureInput } from '@lunasec/react-sdk';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  FormGroup,
-  FormLabel,
-  Grid,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, FormGroup, FormLabel, Grid, TextField } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useState } from 'react';
 
@@ -130,6 +120,7 @@ export const SecureInputDemo: React.FunctionComponent = () => {
                 }}
               />
             </FormGroup>
+            <SecureInput name="someInput" errorHandler={(e) => setError(e.message)} />
             <div>
               <Button variant="outlined" color="primary" style={{ textTransform: 'none' }} type="submit">
                 Save
