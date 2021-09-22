@@ -11,20 +11,23 @@ import (
 )
 
 type Gateways struct {
-	KV DynamoKvGateway
+	KV AwsDynamoGateway
 	SM AwsSecretsManagerGateway
 	S3 AwsS3Gateway
+	CW AwsCloudwatchGateway
 }
 
-type GatewayConfig struct {
+type AwsGatewayConfig struct {
 	S3Region string `yaml:"region"`
+	S3Bucket string `yaml:"s3_bucket"`
+	CloudwatchNamespace string `yaml:"cloudwatch_namespace"`
 	AccessKeyID string `yaml:"access_key_id"`
 	SecretAccessKey string `yaml:"secret_access_key"`
 	LocalstackURL string `yaml:"localstack_url"`
 	LocalHTTPSProxy string `yaml:"local_https_proxy"`
 }
 
-func NewGatewayConfig(logger *zap.Logger, provider config.Provider) (gatewayConfig GatewayConfig, err error) {
+func NewGatewayConfig(logger *zap.Logger, provider config.Provider) (gatewayConfig AwsGatewayConfig, err error) {
 	err = provider.Get("aws_gateway").Populate(&gatewayConfig)
 	if err != nil {
 		logger.Error("unable to load aws gateway config", zap.Error(err))
@@ -35,10 +38,10 @@ func NewGatewayConfig(logger *zap.Logger, provider config.Provider) (gatewayConf
 
 func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options session.Options, err error) {
 	var (
-		gatewayConfig GatewayConfig
-		creds *credentials.Credentials
-		endpointUrl *string
-		httpClient *http.Client
+		gatewayConfig AwsGatewayConfig
+		creds         *credentials.Credentials
+		endpointUrl   *string
+		httpClient    *http.Client
 	)
 
 	gatewayConfig, err = NewGatewayConfig(logger, provider)
@@ -115,9 +118,12 @@ func GetAwsGateways(logger *zap.Logger, provider config.Provider) (gateways Gate
 	gateways.SM = NewAwsSecretsManagerGateway(logger, provider, sess)
 
 	logger.Debug("loading dynamodb AWS gateway...")
-	gateways.KV = NewDynamoKvGateway(logger, provider, sess)
+	gateways.KV = NewDynamoGateway(logger, provider, sess)
 
 	logger.Debug("loading s3 AWS gateway...")
 	gateways.S3 = NewAwsS3Gateway(logger, provider, sess)
+
+	logger.Debug("loading cloudwatch AWS gateway...")
+	gateways.CW = NewAwsCloudwatchGateway(logger, provider, sess)
 	return
 }

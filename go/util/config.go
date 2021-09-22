@@ -5,6 +5,7 @@ import (
 	"go.uber.org/config"
 	"io/fs"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
 )
@@ -25,6 +26,7 @@ func GetConfigProviderFromFiles(filenames []string) config.Provider {
 	}
 
 	for _, name := range filenames {
+		log.Printf("loading config file %s", name)
 		opts = append(opts, config.File(name))
 	}
 	provider, err := config.NewYAML(opts...)

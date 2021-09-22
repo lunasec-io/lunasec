@@ -15,7 +15,7 @@ type awsSecretsManagerGateway struct {
 }
 
 type awsSecretsManagerGatewayConfig struct {
-	GatewayConfig
+	AwsGatewayConfig
 }
 
 // AwsSecretsManagerGateway ...
