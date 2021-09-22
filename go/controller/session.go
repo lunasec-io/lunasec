@@ -67,7 +67,7 @@ func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request
 	dataAccessToken, err := request.GetJwtToken(r)
 	if err != nil {
 		s.logger.Info("cookie not set when verifying session", zap.String("reportedError", err.Error()))
-		err = errors.New("cookie 'access_token' not set in request")
+		err = errors.New("LunaSec is not logged in")
 		// NOTE we return status ok here because we don't always expect the access_token to be set
 		util.RespondError(w, http.StatusOK, err)
 		return
@@ -76,7 +76,7 @@ func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request
 	err = s.authProviderJwtVerifier.Verify(dataAccessToken)
 	if err != nil {
 		s.logger.Info("unable to verify session", zap.String("reportedError", err.Error()))
-		err = errors.New("unable to verify session")
+		err = errors.New("LunaSec session cookie signing check failed")
 		// NOTE we return status ok here because we don't always expect the session to be valid
 		util.RespondError(w, http.StatusOK, err)
 		return
@@ -143,6 +143,8 @@ func getSessionCreateRequest(r *http.Request) (req event.SessionCreateRequest, e
 	return
 }
 
+// It's worth noting that none of the JSON responses here get returned to the client because of the CORS options
+// including all of these nice errors.  Aside from logging in dev, all this gets lost
 func (s *sessionController) SessionCreate(w http.ResponseWriter, r *http.Request) {
 	s.logger.Info("received session create request")
 	req, err := getSessionCreateRequest(r)

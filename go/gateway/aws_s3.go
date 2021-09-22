@@ -25,11 +25,11 @@ type awsS3Gateway struct {
 
 type AwsS3GatewayConfig struct {
 	S3Region string `yaml:"region"`
+	S3Bucket string `yaml:"s3_bucket"`
 	AccessKeyID string `yaml:"access_key_id"`
 	SecretAccessKey string `yaml:"secret_access_key"`
-	LocalstackURL string `yaml:"localstack_url"`
 	LocalHTTPSProxy string `yaml:"local_https_proxy"`
-	S3Bucket string `yaml:"s3_bucket"`
+	LocalstackURL string `yaml:"localstack_url"`
 }
 
 type AwsS3GatewayConfigWrapper struct {
@@ -68,7 +68,7 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session
 		panic(err)
 	}
 
-	s3Host := gatewayConfig.S3Bucket + ".s3.us-west-2.amazonaws.com"
+	s3Host := gatewayConfig.S3Bucket + ".s3." + gatewayConfig.S3Region + ".amazonaws.com"
 
 	s3Gateway = &awsS3Gateway{
 		logger:             logger,
@@ -147,7 +147,13 @@ func (s *awsS3Gateway) generatePresignedUrl(key string, encryptionKey []byte, cr
 	}
 
 	if s.LocalHTTPSProxy != "" {
+		oldUrl := url
 		url = s.adjustUrlFromLocalDev(url)
+		s.logger.Debug(
+			"adjusting presigned url from https to http",
+			zap.String("old url", oldUrl),
+			zap.String("new url", url),
+		)
 	}
 
 	return url, headers, err

@@ -56,6 +56,7 @@ export type WrapperPropsWithProviders<C extends keyof ClassLookup> = WrapperProp
 // As above, it is combined with the native react props for the given element
 export interface LunaSecWrappedComponentProps<C extends keyof ClassLookup> {
   renderData: RenderData<C>;
+  // inputRef?: any; // Hack: This was leaking in somehow so I put it here as an optional type so we can filter it.
 }
 
 export type WrappedComponentProps<C extends keyof ClassLookup> = LunaSecWrappedComponentProps<C> &
