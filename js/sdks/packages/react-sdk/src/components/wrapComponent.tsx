@@ -475,6 +475,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
       // TODO: Fix this so the properties don't break in typescript.
       // For now be careful and think about what props you pass
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const IgnoredWrapped = Wrapped as any;
 
       return (
