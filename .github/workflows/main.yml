@@ -48,6 +48,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npm run license:check
+      shell: bash
 
     - name: logs
       run: .github/print-docker-logs.sh
