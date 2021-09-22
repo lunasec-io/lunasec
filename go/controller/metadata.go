@@ -41,7 +41,6 @@ func (s *metaController) GetMetadata(w http.ResponseWriter, r *http.Request) {
 
 	input := event.MetadataGetRequest{}
 	b, err := ioutil.ReadAll(r.Body)
-
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return

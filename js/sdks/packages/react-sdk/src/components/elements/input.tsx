@@ -9,6 +9,7 @@ export type InputProps = WrappedComponentProps<'Input'>;
 export default class Input extends Component<InputProps> {
   constructor(props: InputProps) {
     super(props);
+    console.log('props passed to input are ', props);
   }
 
   componentDidMount() {
@@ -41,8 +42,11 @@ export default class Input extends Component<InputProps> {
   }
 
   render() {
-    // Pull the renderData out so we don't weird stuff into our dummy element
+    // Pull the renderData out so we don't put weird stuff into our dummy element
     const { renderData, children, className, name, ...otherProps } = this.props;
+
+    // @ts-ignore inputRef is leaking into here somehow but not sure where it is being set so ts-ignore to remove it
+    const { inputRef, ...scrubbedProps } = otherProps;
 
     return (
       <div
@@ -50,14 +54,14 @@ export default class Input extends Component<InputProps> {
         className={`${renderData.containerClass} ${this.props.className || ''}`}
       >
         <input
-          {...otherProps}
+          {...scrubbedProps}
           ref={renderData.dummyInputStyleRef}
           style={{ ...renderData.dummyElementStyle, ...this.props.style }}
           tabIndex={-1}
           className={`${renderData.hiddenElementClass} ${this.props.className || ''}`}
         />
         <input
-          {...otherProps}
+          {...scrubbedProps}
           name={name} // only the element we want to submit has a name, otherwise validations run
           type="text"
           ref={renderData.dummyRef}

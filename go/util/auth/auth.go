@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func GetRequestClaims(jwtVerifier service.JwtVerifier, r *http.Request) (claims *types.SessionJwtClaims, err error) {
+func GetRequestClaims(jwtVerifier service.JwtVerifier, r *http.Request) (claims types.SessionJwtClaims, err error) {
 	accessToken, err := request.GetJwtToken(r)
 	if err != nil {
 		return

@@ -99,7 +99,8 @@ Docs live in `docs`, and our OpenAPI Spec lives in `api-spec`.
 ### Demo Apps
 Path: `/js/demo-apps/packages`
 
-Demo apps that use our toolkit for testing and demonstration.  The react-app and node-app are the one's currently being developed.  These are our only SDK supported frameworks currently.
+Demo apps that use our toolkit for testing and demonstration.  The react-app and node-app are the one's currently being developed. 
+These are our only SDK supported frameworks currently.
 
 ### TypeScript/JavaScript SDKs
 Path: `/js/sdks`
@@ -118,7 +119,7 @@ Path: `/js/sdks/packages/secure-frame-iframe`
 
 This holds the SDK frontend components which load into the iframe. The React SDK uses this to remove sensitive data 
 from front-end apps by using the iframe as an isoalted "sandbox". We've hardened this component by adding a very strict 
-Content Security Policy that limits the impact of any security issues by heavily restricting network access.
+Content Security Policy (CSP) that limits the impact of any security issues by heavily restricting network access.
 This component is only able to be loaded from an `<iframe>` context in order to prevent attacks from other websites.
 
 ### Tokenizer, Secure Frame Back-End, and CLI
@@ -162,18 +163,18 @@ and use it by running
 ```
 
 ### How to manage and install packages
-We use lerna to manage the monorepo, and yarn as the package manager.  Since yarn doesn't know about 
-local packages like lerna, we can't use `yarn add` to install dependencies. To add a dependency to a
-package, either edit it manually into the package.json and run `lerna bootstrap`, or use 
-`lerna add <dependencyname> <path/to/package/youre/working/on>`.
+We use Lerna to manage the monorepo, and we use yarn as the package manager.
+Because yarn doesn't know about local packages like Lerna, we can't use `yarn add` to install dependencies. 
+To add a dependency to a package, either edit it manually into the `package.json` and run `lerna bootstrap`, 
+or use `lerna add <dependencyname> <path/to/package/youre/working/on>`.
 
 ## Our API spec and OpenAPI
-Our tokenizer API is defined by the openAPI standard(previously named swagger) and can be found in the 
-folder `/api-spec` in the project root. If the spec changes, the generated code that relies on the spec 
-will need to be regenerated. For example, in the tokenizer-sdk package, run `yarn openapi:generate` 
-to regenerate the API client. A similar pattern can be used (check the package.json) to generate an 
-api client in any language you wish, by simply specifying the openapi generator name when calling the 
-openapi-generator npm package.
+
+Our Tokenizer API is defined by the OpenAPI standard (previously named Swagger) and can be found in the folder `/api-spec` in the project root.
+If the spec changes, the generated code that relies on the spec will need to be regenerated. 
+For example, in the tokenizer-sdk package, run `yarn openapi:generate` to regenerate the API client.
+A similar pattern can be used (check the package.json) to generate an api client in any language you wish, 
+by simply specifying the OpenAPI generator name when calling the `openapi-generator` NPM package .
 
 ## Feedback
 Our goal is to build a sustainable business to support LunaSec and finding the right balance to enable us to build a
@@ -181,3 +182,23 @@ community while also enabling our business is our primary motivation. If you hav
 approach, we would love to hear from you.
 
 Please send us an email at developer-feedback at lunasec dot io
+
+## Release Process
+
+The release process is split up into four parts:
+1. Version bump
+1. Compile artifacts
+1. Publish artifacts
+1. Push version tag to repository
+
+Breaking this process up ensures that every part completes without error before moving onto the next step. This greatly reduces the event that some artifacts get published and others do not, leading to a headache of a time debugging a release.
+
+Deployment of the releases is done by Github Actions.
+## Version
+Versioning for releases is done by lerna.
+## Compile
+Since the monorepo has both go and node code, compilation happens in multiple places. For the node sdks, every package has their own compilation package.json script which gets run. The entrypoint which calls into each package’s script is here. For the go code, all compilation code exists within the Makefile under the release target.
+## Publish
+For node artifacts, everything is handled by lerna. For go, publishing is handled by the publish target of the Makefile. Artifacts end up in NPM, DockerHub, and Github.
+## Push
+The version tag that gets pushed contains the version changes for the bumped monorepo version. Here is an example commit.

@@ -1,7 +1,7 @@
 import { OutgoingHttpHeaders } from 'http';
 
 import { LunaSecError } from '@lunasec/isomorphic-common';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { AUTHORIZATION_HEADER, CONFIG_DEFAULTS, SESSION_HASH_HEADER } from './constants';
@@ -40,10 +40,10 @@ export class Tokenizer {
     this.reqOptions = { headers }; // This is passed to the openapi client on every request
 
     const basePath = this.getBasePath();
-
     // openapi stuff
     const openAPIConfig = new Configuration({ basePath });
-    this.openApi = new DefaultApi(openAPIConfig);
+    const axiosInstance = axios.create({});
+    this.openApi = new DefaultApi(openAPIConfig, undefined, axiosInstance);
   }
 
   // the session hash for an iFrame binds the iFrame to a specific session, and will prevent
@@ -76,8 +76,8 @@ export class Tokenizer {
     if ('response' in e && e.response) {
       // Parse the axios error, if it has any meaningful data about the response
       return new LunaSecError({
-        name: e.response.data.error.name || 'unknownTokenizerError',
-        message: e.response.data.error.message || 'Unknown Tokenizer Error',
+        name: e.response.data.error.name || 'TokenizerError',
+        message: e.response.data.error.errorMessage || e.response.data.error.message || 'Unknown Tokenizer Error', // TODO: Update this to "message" to conform with openAPI spec once the Tokenizer Backend uses OpenAPI
         code: e.response.status.toString(),
       });
     }
@@ -104,7 +104,10 @@ export class Tokenizer {
     }
   }
 
-  async verifyGrant(sessionId: string, tokenId: string) {
+  async verifyGrant(
+    sessionId: string,
+    tokenId: string
+  ): Promise<TokenizerFailApiResponse | { success: true; valid: boolean }> {
     try {
       const res = await this.openApi.verifyGrant(
         {
