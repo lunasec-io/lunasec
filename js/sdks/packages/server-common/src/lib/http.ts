@@ -63,6 +63,7 @@ function getRequestParams(host: string, path: string, params: http.ClientRequest
   return { requestModule, requestConfig };
 }
 
+// DEPRECATED.  For the love of all that is sane, just use axios
 export function makeRawRequest(
   host: string,
   path: string,
@@ -74,7 +75,7 @@ export function makeRawRequest(
     let responseBuffer: Buffer;
     const req = requestModule.request(requestConfig, (res) => {
       res.on('data', (chunk: Buffer) => {
-        chunk.copy(responseBuffer);
+        chunk.copy(responseBuffer)
       });
       res.on('end', () => {
         resolve([res, responseBuffer]);
@@ -107,6 +108,7 @@ export function makeRawRequest(
   });
 }
 
+// DEPRECATED.  For the love of all that is sane, just use axios
 export async function makeRequest<T>(
   host: string,
   path: string,
