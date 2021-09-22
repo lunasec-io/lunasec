@@ -1,71 +1,39 @@
 import * as http from 'http';
 
 import { BadHttpResponseError, getUrl, makeRawRequest } from '@lunasec/server-common';
+import globalAxios from 'axios';
 
-function getUploadHeaders(input?: string | Buffer) {
-  if (input !== undefined) {
-    const contentLength = Buffer.byteLength(input);
-
-    return {
-      'Content-Length': contentLength,
-    };
-  }
-
-  return {};
-}
-
-function makeS3HttpRequestOptions(
-  signedUrl: string,
-  headers: http.OutgoingHttpHeaders,
-  method: 'PUT' | 'GET',
-  input?: string | Buffer
-): [string, string, http.ClientRequestArgs, string | Buffer | undefined] {
-  const URL = getUrl();
-  const uploadUrl = new URL(signedUrl);
-
-  const host = uploadUrl.protocol + '//' + uploadUrl.hostname;
-
-  const httpParams: http.ClientRequestArgs = {
-    method: method,
-    headers: {
-      ...headers,
-      ...getUploadHeaders(input),
-    },
-    hostname: uploadUrl.hostname,
-    port: uploadUrl.port,
-    path: uploadUrl.pathname + uploadUrl.search,
-    protocol: uploadUrl.protocol,
-  };
-
-  return [host, uploadUrl.pathname, httpParams, input];
-}
+const axios = globalAxios.create({ withCredentials: false });
 
 export async function uploadToS3WithSignedUrl(
   signedUrl: string,
   headers: http.OutgoingHttpHeaders,
   input: string | Buffer
 ) {
-  // TODO: Add some retry logic here, but it'll need to retry only on 500s or other "known" retry cases.
-  // TODO: Make this stream to S3 so we don't have to read the entire "input" ahead of time.
-  const [res, responseBuffer] = await makeRawRequest(...makeS3HttpRequestOptions(signedUrl, headers, 'PUT', input));
+  const { host, ...scrubbedHeaders } = headers;
 
-  const responseData = responseBuffer.toString();
+  const res = await axios.put(signedUrl, input, {
+    headers: {
+      ...scrubbedHeaders,
+      'Content-Type': 'text/plain', // Needed to get axios to not encode form data and send it raw instead
+    },
+  });
 
-  if (res.statusCode !== 200) {
-    throw new BadHttpResponseError(res.statusCode, responseData);
+  if (res.status !== 200) {
+    throw new BadHttpResponseError(res.status, res.data);
   }
+  return;
 }
 
 export async function downloadFromS3WithSignedUrl(signedUrl: string, headers: http.OutgoingHttpHeaders) {
-  // TODO: Add some retry logic here, but it'll need to retry only on 500s or other "known" retry cases.
-  // TODO: Stream back the output so that large files aren't just buffered straight to memory... Or at least the option for that.
-  const [res, responseBuffer] = await makeRawRequest(...makeS3HttpRequestOptions(signedUrl, headers, 'GET'));
+  const { host, ...scrubbedHeaders } = headers;
+  const res = await axios.get(signedUrl, {
+    headers: scrubbedHeaders,
+  });
 
-  const responseData = responseBuffer.toString();
-
-  if (res.statusCode !== 200) {
-    throw new BadHttpResponseError(res.statusCode, responseData);
+  if (res.status !== 200) {
+    throw new BadHttpResponseError(res.status, res.data); // TODO: Replace with LunaSecError maybe, just to be consistent
   }
 
-  return responseData;
+  return res.data;
 }

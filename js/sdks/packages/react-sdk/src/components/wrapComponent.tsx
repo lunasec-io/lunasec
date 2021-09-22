@@ -110,7 +110,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
 
     throwIfLunaSecConfigNotSet() {
-      // It would be nice if there was an easier way to detect if we had loaded the default provider instead of one set by the customer
+      // It would be nice if there was an easier way to detect if we had loaded the default provider instead of one set by the user
       if (this.props.lunaSecConfigContext.lunaSecDomain.length === 0) {
         throw new Error(
           'LunaSecConfigContext Provider must be registered around any LunaSec components.  You probably want to include it at the top level in your app.tsx'
@@ -420,7 +420,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         frameUrl: this.generateUrl(),
         frameStyleInfo: this.state.frameStyleInfo,
         containerClass,
-        frameClass: classnames({ hidden: !this.state.frameFullyLoaded }),
+        frameClass: classnames(`lunasec-iframe-${componentName.toLowerCase()}`, {
+          hidden: !this.state.frameFullyLoaded,
+        }),
         hiddenElementClass: classnames({ invalid: !this.state.isValid }), // only used by input at the moment
         frameRef: this.frameRef,
         dummyRef: this.dummyRef,
