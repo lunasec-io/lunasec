@@ -1,3 +1,17 @@
+// Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 package controller
 
 import (
@@ -21,7 +35,7 @@ import (
 type sessionController struct {
 	SessionControllerConfig
 	logger                  *zap.Logger
-	kv                      gateway.DynamoKvGateway
+	kv                      gateway.AwsDynamoGateway
 	authProviderJwtVerifier service.JwtVerifier
 }
 
@@ -39,7 +53,7 @@ type SessionController interface {
 func NewSessionController(
 	logger *zap.Logger,
 	provider config.Provider,
-	kv gateway.DynamoKvGateway,
+	kv gateway.AwsDynamoGateway,
 	authProviderJwtVerifier service.JwtVerifier,
 ) (controller SessionController, err error) {
 	var controllerConfig SessionControllerConfig
@@ -113,7 +127,7 @@ func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request
 	oauthUrl.Path = s.AuthCallbackPath
 
 	// TODO (cthompson) revisit this cookie ttl
-	util.AddCookie(w, constants.AuthStateCookie, stateToken, "/", time.Hour)
+	util.AddCookie(w, constants.AuthStateCookie, stateToken, "/", time.Minute*15)
 	http.Redirect(w, r, oauthUrl.String(), http.StatusFound)
 }
 
@@ -175,11 +189,15 @@ func (s *sessionController) SessionCreate(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = s.authProviderJwtVerifier.Verify(req.AuthToken)
+	claims, err := s.authProviderJwtVerifier.VerifyWithSessionClaims(req.AuthToken)
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
+
+	encodedSessionHash := util.CreateSessionHash(claims.SessionID)
+
+	w.Header().Set("SESSION_HASH", encodedSessionHash)
 
 	// TODO (cthompson) revist this cookie ttl
 	util.AddCookie(w, constants.DataAccessTokenCookie, req.AuthToken, "/", time.Minute*15)

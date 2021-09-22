@@ -1,3 +1,17 @@
+// Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 package lunasec
 
 import (
@@ -9,7 +23,6 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
-	"os"
 	"path"
 	"strings"
 
@@ -28,6 +41,7 @@ type AwsResources struct {
 
 type TokenizerConfig struct {
 	SecretArn string `yaml:"secret_arn"`
+	GatewayEndpoint string `yaml:"gateway_endpoint"`
 }
 
 type AwsResourceConfig struct {
@@ -83,19 +97,13 @@ func getOutputName(name string) *string {
 }
 
 func (l *deployer) Deploy() (err error) {
-	workDir, err := os.Getwd()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
 	cmd := "cdk"
 	if l.localDev {
 		cmd = "cdklocal"
 	}
 
 	args := []string{"bootstrap", "-a", l.buildDir}
-	cdkExecutor := service.NewExecutor(cmd, args, map[string]string{}, workDir, nil, true)
+	cdkExecutor := service.NewExecutor(cmd, args, map[string]string{}, "", nil, true)
 	_, err = cdkExecutor.Execute()
 	if err != nil {
 		log.Println(err)
@@ -107,7 +115,7 @@ func (l *deployer) Deploy() (err error) {
 	// TODO (cthompson) we probably want to require approval for this, but for now this is ok
 	args = []string{"deploy", "--require-approval", "never", "-a", l.buildDir, "--outputs-file", stackOutputFilePath}
 
-	cdkExecutor = service.NewExecutor(cmd, args, map[string]string{}, workDir, nil, true)
+	cdkExecutor = service.NewExecutor(cmd, args, map[string]string{}, "", nil, true)
 	_, err = cdkExecutor.Execute()
 	if err != nil {
 		log.Println(err)
@@ -154,6 +162,7 @@ func (l *deployer) writeConfig(stackOutputFilePath string) (err error) {
 	awsResourceConfig.AwsGateway.LocalstackURL = l.buildConfig.LocalStackUrl
 
 	awsResourceConfig.Tokenizer.SecretArn = outputs[*getOutputName("tokenizer-secret")]
+	awsResourceConfig.Tokenizer.GatewayEndpoint = outputs[*getOutputName("tokenizer-gateway")]
 
 	out, err := yaml.Marshal(awsResourceConfig)
 	if err != nil {
