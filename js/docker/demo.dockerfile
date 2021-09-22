@@ -6,12 +6,12 @@ COPY . /repo
 
 WORKDIR /repo
 
-RUN lerna bootstrap
+RUN lerna bootstrap --ignore-scripts --ci
 
 WORKDIR /repo/js/sdks
 
 WORKDIR /repo/js/sdks/
-RUN npx tsc -b tsconfig.build.json
+RUN tsc -b tsconfig.build.json
 
 WORKDIR /repo
 

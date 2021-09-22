@@ -15,9 +15,9 @@
  *
  */
 export class SessionError extends Error {
-  public readonly code!: number;
+  public readonly code?: number;
 
-  constructor(message: string, code: number) {
+  constructor(message: string, code?: number) {
     super(message);
     this.code = code;
   }
