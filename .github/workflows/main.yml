@@ -33,6 +33,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        cache: yarn
+
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '^1.17.1'
+
     # Cache the license checking tool
     - uses: actions/cache@v2
       with:
@@ -48,7 +57,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npm run license:check
-      shell: bash
 
     - name: logs
       run: .github/print-docker-logs.sh
