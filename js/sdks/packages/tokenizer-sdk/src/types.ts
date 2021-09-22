@@ -11,6 +11,7 @@ export interface TokenizerClientConfig {
   metaEncoding: 'base64';
   /** Used for when the tokenizer is running on the serverside and wants to authenticate itself */
   authenticationToken?: string;
+  lockToSession: boolean;
 }
 
 // ______________________ tokenizer.ts Return Types _________________
