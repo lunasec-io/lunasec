@@ -6,6 +6,7 @@ export const CONFIG_DEFAULTS: TokenizerClientConfig = {
   host: __TOKENIZER_URL__ || 'http://localhost:37766',
   metaEncoding: 'base64',
   baseRoute: '',
+  lockToSession: false,
 };
 
 export const LUNASEC_TOKEN_REGEXP =
