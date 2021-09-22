@@ -66,7 +66,7 @@ func (s *tokenizerController) requestHasValidGrantForToken(r *http.Request, toke
 		return
 	}
 
-	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID, constants.ReadToken)
+	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID, constants.TokenFullAccess)
 }
 
 func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Request) {
@@ -152,13 +152,7 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 		}
 	}
 
-	// create grants for both reading the token, in case the front end wants to be able to read the token right away
-	// and also a grant for the customer's backend to verify the token was created by this session id
-	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.ReadToken); err != nil {
-		util.RespondError(w, http.StatusInternalServerError, err)
-		return
-	}
-	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.StoreToken); err != nil {
+	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.TokenFullAccess); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}

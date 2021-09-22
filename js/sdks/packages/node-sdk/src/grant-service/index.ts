@@ -1,5 +1,5 @@
 import { LunaSecError } from '@lunasec/isomorphic-common';
-import { GrantTypeUnion, isToken, Tokenizer } from '@lunasec/tokenizer-sdk';
+import { isToken, Tokenizer } from '@lunasec/tokenizer-sdk';
 import { Request } from 'express';
 
 import { KeyService } from '../authentication';
@@ -32,7 +32,7 @@ export class LunaSecGrantService {
       throw new Error('Attempted to create a LunaSec Token Grant from a string that didnt look like a token');
     }
     const tokenizer = await this.initializeTokenizer();
-    const resp = await tokenizer.createReadGrant(sessionId, token);
+    const resp = await tokenizer.createFullAccessGrant(sessionId, token);
     if (!resp.success) {
       throw new LunaSecError({
         message: `unable to set detokenization grant for: ${token}`,
@@ -64,7 +64,7 @@ export class LunaSecGrantService {
   /**
    * This private function handles the verifying of just one grant, and is used by the public function below
    * */
-  private async verifyOneGrant(sessionId: string, tokenId: string, grantType: GrantTypeUnion) {
+  private async verifyOneGrant(sessionId: string, tokenId: string) {
     const authenticationToken = await this.auth.createAuthenticationJWT('application', {});
 
     const tokenizer = new Tokenizer({
@@ -81,13 +81,18 @@ export class LunaSecGrantService {
         code: '400',
       });
     }
-    const res = await tokenizer.verifyGrant(sessionId, tokenId, grantType);
+
+    const res = await tokenizer.verifyGrant(sessionId, tokenId);
     console.log('tokenizer validate response is ', res);
     if (!res.success) {
       throw res.error;
     }
     if (res.valid === false) {
-      throw new LunaSecError({ name: 'invalidGrant', message: 'Grant Invalid', code: '401' });
+      throw new LunaSecError({
+        name: 'invalidGrant',
+        message: 'Grant Invalid',
+        code: '401',
+      });
     }
     return;
   }
@@ -97,19 +102,18 @@ export class LunaSecGrantService {
    * Verifies a token grant or array of token grants
    * @param sessionId
    * @param tokenOrTokens
-   * @param grantType
    * @throws LunaSecError
    */
-  public async verify(sessionId: string, tokenOrTokens: string | string[], grantType: GrantTypeUnion = 'store_token') {
+  public async verify(sessionId: string, tokenOrTokens: string | string[]) {
     // Todo: dry up this array handling from above, we are doing it twice.
     if (Array.isArray(tokenOrTokens)) {
       const grantPromises: Promise<void>[] = [];
       tokenOrTokens.forEach((t) => {
-        grantPromises.push(this.verifyOneGrant(sessionId, t, grantType));
+        grantPromises.push(this.verifyOneGrant(sessionId, t));
       });
       return await Promise.all(grantPromises);
     } else {
-      return await this.verifyOneGrant(sessionId, tokenOrTokens, grantType);
+      return await this.verifyOneGrant(sessionId, tokenOrTokens);
     }
   }
 
@@ -123,7 +127,7 @@ export class LunaSecGrantService {
       );
     }
     const sessionId = await this.sessionIdProvider(req);
-    // TODO: Will also need to support the case of the user not being logged in somehow, maybe that will be a URL param and can be handled by the customer in their callback
+    // TODO: Will also need to support the case of the user not being logged in somehow, currently we just tell the user to make a temporary session but maybe there is a better solution
     if (typeof sessionId !== 'string') {
       const err = new Error(
         'Session ID from the SessionIdProvider passed in LunaSecOptions did not resolve to a string'
@@ -148,9 +152,8 @@ export class LunaSecGrantService {
    * @throws LunaSecError
    * @param req
    * @param token
-   * @param grantType
    */
-  public async verifyWithAutomaticSessionId(req: Request, token: string | string[], grantType: GrantTypeUnion) {
-    return this.verify(await this.getSessionIdFromReq(req), token, grantType);
+  public async verifyWithAutomaticSessionId(req: Request, token: string | string[]) {
+    return this.verify(await this.getSessionIdFromReq(req), token);
   }
 }
