@@ -10,7 +10,7 @@ git clone https://github.com/freeqaz/skywalking-eyes --depth 1
 cd skywalking-eyes
 
 echo "Checking out specific release..."
-git checkout 06b2db34bb45c2c61c6c2c4e0263da9c5db4db79
+git checkout 2cfd5a1
 
 # TODO: Make this work on multiple platforms. For now, run `make build` to build for all OSes.
 # You can then invoke on Mac, for example, the binary at `./skywalking-eyes/bin/darwin/license-eye`
