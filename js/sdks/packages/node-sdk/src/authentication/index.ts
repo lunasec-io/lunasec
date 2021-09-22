@@ -9,7 +9,7 @@ import { environmentSecretProvider } from './environment-secret-provider';
 import { JwtSubject, SecretConfig } from './types';
 
 // Todo: rename this whole service to JWT service, all it does is make JWTs, it doesnt do "auth" really
-export class LunaSecAuthentication {
+export class KeyService {
   readonly secretConfig: SecretConfig;
 
   constructor(secretConfig: SecretConfig) {
@@ -50,7 +50,7 @@ export class LunaSecAuthentication {
 
   public async createAuthenticationJWT(subject: JwtSubject, claims: Record<string, any>): Promise<AuthenticationJWT> {
     const privateKey = await this.getSigningPrivateKey();
-
+    const publicKey = await this.getSigningPublicKey();
     const jwt = await new SignJWT(claims)
       .setProtectedHeader({ alg: 'RS256' })
       .setIssuedAt()

@@ -45,6 +45,12 @@ detokenize:
           application/json:
             schema:
               $ref: './bodies.yaml#/DetokenizeResponse'
+      '400':
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: './bodies.yaml#/ErrorResponse'
       '500':
         description: An Error Occured
         content:

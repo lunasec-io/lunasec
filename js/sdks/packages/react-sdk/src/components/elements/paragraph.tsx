@@ -37,7 +37,7 @@ export default class Paragraph extends Component<ParagraphProps> {
   }
 
   render() {
-    // Pull the renderData out so we don't weird stuff into our dummy element
+    // Pull the renderData out so we don't put weird stuff into our dummy element
     const { renderData, className, children, ...otherProps } = this.props;
 
     return (
