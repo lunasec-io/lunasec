@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: js/docker/demo.dockerfile
       target: integration-test
-    entrypoint: npm run cypress:open
+    entrypoint: npm run test:e2e
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
     network_mode: host
@@ -19,5 +19,5 @@ services:
       - application-back-end
       - tokenizerbackend
 # Uncomment to open the cypress UI locally
-    environment:
-      - DISPLAY=${DISPLAY}
+#    environment:
+#      - DISPLAY=${DISPLAY}
