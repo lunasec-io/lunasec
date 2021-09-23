@@ -88,7 +88,7 @@ jobs:
       if: always()
       with:
         name: cypress-recording
-        path: js/demo-apps/packages/react-front-end/cypress/videos/secure_components_spec.js.mp4
+        path: /repo/js/demo-apps/packages/react-front-end/cypress/videos/secure_components_spec.ts.mp4
 
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
