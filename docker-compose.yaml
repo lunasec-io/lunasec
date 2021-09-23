@@ -36,11 +36,12 @@ services:
       context: .
       dockerfile: js/docker/demo.dockerfile
       target: demo-back-end
-    ports:
-      - "3001:3001" # express
-      - "3002:3002" # graphql
-      - "3003:3003" # simple-express
-      - "3004:3004" # Not using this one yet, just figured we might need it soon
+    network_mode: host
+#    ports:
+#      - "3001:3001" # express
+#      - "3002:3002" # graphql
+#      - "3003:3003" # simple-express
+#      - "3004:3004" # Not using this one yet, just figured we might need it soon
     env_file:
       - .env.docker
   #      healthcheck:
@@ -113,8 +114,7 @@ services:
         BUILD_TAG: dev
     volumes:
       - ./go/config/tokenizerbackend/:/config/tokenizerbackend/
-    ports:
-      - 37766:37766
+    network_mode: host
     depends_on:
       cdk-init:
         condition: service_completed_successfully

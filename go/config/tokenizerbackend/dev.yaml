@@ -5,4 +5,8 @@ secure_frame_controller:
     main_script: js/main-dev.js
     main_style: main.css
 session_controller:
-  auth_providers: $SESSION_AUTH_PROVIDERS
+  auth_providers:
+    express-back-end:
+      url: http://localhost:3001
+    graphql-back-end:
+      url: http://localhost:3002

@@ -32,6 +32,7 @@ import { SecureParagraphDemo } from './components/secure-components/SecureParagr
 import { SecureTextAreaDemo } from './components/secure-components/SecureTextAreaDemo';
 import { SecureUploadDemo } from './components/secure-components/SecureUploadDemo';
 import { getStore } from './store';
+import {} from '@lunasec/browser-common';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,7 +58,7 @@ export const DedicatedPassportReactApp = (props: DedicatedPassportReactAppProps)
   return (
     <LunaSecConfigContext.Provider
       value={{
-        lunaSecDomain: 'http://localhost:37766',
+        lunaSecDomain: process.env.REACT_APP_SECURE_FRAME_URL ? process.env.REACT_APP_SECURE_FRAME_URL : '',
         sessionAuthProvider: sessionAuthProvider,
         authenticationErrorHandler: (e: Error) => {
           // setAuthError('Failed to authenticate with LunaSec. \n Is a user logged in?');
