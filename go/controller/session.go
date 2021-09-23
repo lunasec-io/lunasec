@@ -1,3 +1,17 @@
+// Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 package controller
 
 import (
@@ -42,7 +56,7 @@ type SessionControllerConfig struct {
 type sessionController struct {
 	SessionControllerConfig
 	logger                  *zap.Logger
-	kv                      gateway.DynamoKvGateway
+	kv                      gateway.AwsDynamoGateway
 	authProviderJwtVerifier service.JwtVerifier
 	authProviders AuthProviderLookup
 	defaultAuthProvider AuthProviderConfig
@@ -118,7 +132,7 @@ func getDefaultAuthProviderFromConfig(logger *zap.Logger, controllerConfig Sessi
 func NewSessionController(
 	logger *zap.Logger,
 	provider config.Provider,
-	kv gateway.DynamoKvGateway,
+	kv gateway.AwsDynamoGateway,
 	authProviderJwtVerifier service.JwtVerifier,
 ) (controller SessionController) {
 	var (
@@ -149,7 +163,7 @@ func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request
 	dataAccessToken, err := request.GetJwtToken(r)
 	if err != nil {
 		s.logger.Info("cookie not set when verifying session", zap.String("reportedError", err.Error()))
-		err = errors.New("cookie 'access_token' not set in request")
+		err = errors.New("LunaSec is not logged in")
 		// NOTE we return status ok here because we don't always expect the access_token to be set
 		util.RespondError(w, http.StatusOK, err)
 		return
@@ -158,7 +172,7 @@ func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request
 	err = s.authProviderJwtVerifier.Verify(dataAccessToken)
 	if err != nil {
 		s.logger.Info("unable to verify session", zap.String("reportedError", err.Error()))
-		err = errors.New("unable to verify session")
+		err = errors.New("LunaSec session cookie signing check failed")
 		// NOTE we return status ok here because we don't always expect the session to be valid
 		util.RespondError(w, http.StatusOK, err)
 		return
@@ -225,7 +239,7 @@ func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request
 	redirectUrl.RawQuery = v.Encode()
 
 	// TODO (cthompson) revisit this cookie ttl
-	util.AddCookie(w, constants.AuthStateCookie, stateToken, "/", time.Hour)
+	util.AddCookie(w, constants.AuthStateCookie, stateToken, "/", time.Minute*15)
 	http.Redirect(w, r, redirectUrl.String(), http.StatusFound)
 }
 
@@ -255,6 +269,8 @@ func getSessionCreateRequest(r *http.Request) (req event.SessionCreateRequest, e
 	return
 }
 
+// It's worth noting that none of the JSON responses here get returned to the client because of the CORS options
+// including all of these nice errors.  Aside from logging in dev, all this gets lost
 func (s *sessionController) SessionCreate(w http.ResponseWriter, r *http.Request) {
 	s.logger.Info("received session create request")
 	req, err := getSessionCreateRequest(r)
@@ -285,11 +301,15 @@ func (s *sessionController) SessionCreate(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = s.authProviderJwtVerifier.Verify(req.AuthToken)
+	claims, err := s.authProviderJwtVerifier.VerifyWithSessionClaims(req.AuthToken)
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
+
+	encodedSessionHash := util.CreateSessionHash(claims.SessionID)
+
+	w.Header().Set("SESSION_HASH", encodedSessionHash)
 
 	// TODO (cthompson) revist this cookie ttl
 	util.AddCookie(w, constants.DataAccessTokenCookie, req.AuthToken, "/", time.Minute*15)

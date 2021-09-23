@@ -14,6 +14,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-containerregistry v0.5.0
 	github.com/google/uuid v1.2.0
+	github.com/gosimple/slug v1.10.0
 	github.com/pkg/errors v0.9.1
 	github.com/prashantv/gostub v1.0.0
 	github.com/rs/cors v1.7.0

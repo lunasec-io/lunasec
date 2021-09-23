@@ -1,24 +1,38 @@
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
 ---
 id: "backend"
 title: "Backend Configuration"
 sidebar_label: "Backend Setup"
+sidebar_position: 2
 ---
 
 # Node Setup
-First, initialize the NodeSDK.  We recommend doing this once and exporting it from a module, since you might want to use the
+First, initialize LunaSec's NodeSDK.  We recommend doing this once and exporting it from a module, since you might want to use the
 SDK from multiple places.
 
 ### Configuration
 ```typescript
-import { LunaSec } from '@lunasec/node-sdk
+import { LunaSec } from '@lunasec/node-sdk'
 export const lunaSec = new LunaSec({
-    secureFrameURL: process.env.SECURE_FRAME_URL, // This is the domain to access the Tokenizer Backend
+    secureFrameURL: process.env.SECURE_FRAME_URL, // This is the domain of the Tokenizer Backend
     auth: {
         secrets: { source: 'environment' },
         payloadClaims: [],
         // pluginBaseUrl: '/api', This prepends the .lunasec routes with any string you wish
 
-        // Provide a small middleware that takes in the req object and returns a promise containing a session token
+        // Provide a small middleware that knows how to read the req object and return a promise containing a session id
         // or null if a user is not logged in.  LunaSec uses this to automatically create and verify token grants
         // and to bootstrap a session if you are using the express-auth-plugin
         sessionIdProvider: lunaSecSessionIdProvider,
@@ -48,17 +62,20 @@ onto the domain that the Dedicated Tokenizer will run on.
 // Attach the LunaSec authentication plugin
 lunaSec.expressAuthPlugin.register(app);
 ```
-See the [authentication](../../overview/authentication.md) page to understand when and why you need to register this auth plugin.
-
+:::info
+See the [authentication page](../../overview/authentication.md) for more information on when to use this plugin and how it works.
+:::
 ### Checking Grants
 Grants connect a user's session to a token for a short time. Grants limit what sessions are allowed to read a specific token.  Your server needs to grant every token being sent to the browser
 and check every token that is coming in. 
+
+If you're using GraphQL instead of Express, this is even easier with [the graphql plugin.](./apollo-graphql.md)
 
 Let's say we have a LunaSec Token representing a Social Security Number:
 ```typescript
 app.get('/get-ssn', async (req, res) => {
     const ssnToken = req.user.ssn_token
-
+    
     await lunaSec.grants.create(req.session.id, ssnToken); // Make a grant 
     
     res.json({
@@ -70,8 +87,8 @@ app.get('/get-ssn', async (req, res) => {
 Grants also ensure that tokens sent up to the server are "granted" to the user and can be safely stored in the database.  Otherwise , 
 if an attacker got ahold of tokens that weren't theirs, they could upload them using the below route and then fetch them using the `/get-ssn` route above and read them.
 
-This is how we verify the user has permission to store the grant back into the database, 
-When new tokens are created on the frontend, a grant will be created automatically.
+This is how we verify the user has permission to store the grant back into the database.
+When new tokens are created by the frontend, a grant will have been created automatically.  
 
 ```typescript
 app.post('/set-ssn', async (req, res) => {
@@ -83,8 +100,48 @@ app.post('/set-ssn', async (req, res) => {
     });
 });
 ```
+:::caution Warning
+Do _not_ forget to verify incoming tokens. It is critical to have this on _every_ incoming token in order to keep your data secure, as a single unchecked token
+could create an "oracle" for an attacker to read any token they can intercept. There will be no warning or error if you forget.
 
-Do _not_ forget this step.  It is critical to have this on _every_ incoming token in order to keep your data secure, as a single unchecked token
-could create an "oracle" for an attacker to read any token they can intercept.  Other systems of permission management without this concern are currently in development.
+Other systems of permission management without this concern are currently in development.
+:::
+### Error Handling
+Both of the methods `grants.create()` and `grants.verify()` can and will throw a `LunaSecError`, so be sure to catch and handle errors appropriately.  
 
-Both of the methods `grants.create()` and `grants.verify()` can and will throw, so be sure to catch and handle errors appropriately.  
+```typescript
+app.get('/get-ssn', async (req, res) => {
+    try {
+        await lunaSec.grants.create(req.session.id, req.body.ssn_token); // Make a grant 
+
+        res.json({
+            success: true,
+            ssnToken,
+        });
+    } catch (e) {
+        res.status(400).json({
+            success: false,
+            error: e
+        })
+        
+    }    
+  });
+```
+
+Since you will be using these methods often, you probably want to simply let them throw(or call `next(e)`) and catch in your global error handler:
+
+```typescript
+app.use((err, req, res, next) => {
+    // LunaSec libraries should always throw an instance of LunaSecError in normal operation
+    // so you can easily check if the error was created by LunaSec
+    if (err instanceof LunaSecError){ 
+        res.status(err.code).json({
+            success: false,
+            error: err
+        })
+    }
+    // ...handle other errors...
+})
+```
+
+That's it for the backend, let's move onto [the frontend.](./frontend.md)
