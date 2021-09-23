@@ -23,6 +23,9 @@ import { SessionIdProvider } from '../authentication/types';
 
 import { SessionError } from './SessionError';
 
+/**
+ * Create and verify grants, LunaSec's permission system.
+ */
 export class LunaSecGrantService {
   private readonly auth: KeyService;
   private readonly sessionIdProvider: SessionIdProvider | undefined;

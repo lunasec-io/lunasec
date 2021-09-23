@@ -33,6 +33,7 @@ export interface ExpressAuthPluginConfig {
   payloadClaims?: string[];
   secureFrameURL: string;
   auth: KeyService;
+  // TODO: (forrest) remove, I'm 99% sure you can do this by just calling `register` on an express router instead of the base app
   pluginBaseUrl?: string;
 }
 
@@ -47,7 +48,7 @@ export class LunaSecExpressAuthPlugin {
     this.secureFrameUrl = config.secureFrameURL;
   }
 
-  filterClaims<T extends JWTPayload>(payload: T): Partial<T> {
+  private filterClaims<T extends JWTPayload>(payload: T): Partial<T> {
     const whitelistedClaims = this.config.payloadClaims;
     if (whitelistedClaims === undefined) {
       return payload;
@@ -62,7 +63,7 @@ export class LunaSecExpressAuthPlugin {
       }, {});
   }
 
-  async buildSecureFrameRedirectUrl(stateToken: string, sessionId: string) {
+  private async buildSecureFrameRedirectUrl(stateToken: string, sessionId: string) {
     // This gets set into the "access_token" cookie by the Secure Frame Backend after the redirect
     let access_token = undefined;
     try {
@@ -82,7 +83,7 @@ export class LunaSecExpressAuthPlugin {
     return redirectUrl;
   }
 
-  async redirectToTokenizer(req: Request, res: Response) {
+  private async redirectToTokenizer(req: Request, res: Response) {
     const authFlowCorrelationToken = req.query.state;
     if (typeof authFlowCorrelationToken !== 'string') {
       res.status(400).send({
@@ -120,7 +121,7 @@ export class LunaSecExpressAuthPlugin {
     res.redirect(redirectUrl.href);
   }
 
-  async handleJwksRequest(_req: Request, res: Response) {
+  private async handleJwksRequest(_req: Request, res: Response) {
     const jwkConfig = await this.auth.getJwksConfig();
     const keys = {
       keys: [
@@ -133,13 +134,18 @@ export class LunaSecExpressAuthPlugin {
     res.json(keys).status(200);
   }
 
-  getUrlPath(urlPath: string): string {
+  private getUrlPath(urlPath: string): string {
     if (this.config.pluginBaseUrl !== undefined) {
       return path.join(this.config.pluginBaseUrl, urlPath);
     }
     return urlPath;
   }
 
+  /**
+   * Registers the authentication plugin onto your express server, creating routes that will allow
+   * the tokenizer to bootstrap a session off of yours
+   * @param app Your instance of Express or an Express Router.
+   */
   register(app: Router) {
     // Rename this route to "/redirect-to-tokenizer", it doesnt have anything to do with the iframe.
     app.get(this.getUrlPath('/secure-frame'), cookieParser(), this.redirectToTokenizer.bind(this));

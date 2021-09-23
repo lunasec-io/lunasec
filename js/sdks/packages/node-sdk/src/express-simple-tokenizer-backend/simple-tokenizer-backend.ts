@@ -28,43 +28,22 @@ export interface AwsCredentials {
   accessKeyId: string;
   secretAccessKey: string;
 }
-
-export interface SimpleTokenizerBackendConfig {
+type S3Credentials = S3RequestPresignerOptions['credentials'];
+interface SimpleTokenizerBackendConfig {
+  /** The bucket name where ciphertext(encrypted secure data) will be store.  We recommend encrypting this bucket in your s3 settings */
   s3Bucket: string;
+  /** The region of the above bucket */
   awsRegion: string;
-  awsCredentials?: S3RequestPresignerOptions['credentials'];
-  getAwsCredentials?: () => Promise<S3RequestPresignerOptions['credentials']>;
+  /** Provide Aws credentials. Expects an AWS Credentials object */
+  awsCredentials: S3Credentials;
 }
 
+/**
+ * The Simple Tokenizer backend.  Does not interoperate with the rest of LunaSec's modules except the SimpleTokenizer.  A simple, paired down version of tokenization that is hosted
+ * right on your existing express server.
+ */
 export class SimpleTokenizerBackend {
-  // config is optional and we throw and run-time if someone tries to register this part of lunasec without configuring it in the main options
-  readonly config?: SimpleTokenizerBackendConfig;
-  constructor(config?: SimpleTokenizerBackendConfig) {
-    this.config = config;
-  }
-
-  async getAwsCredentials() {
-    if (!this.config) {
-      throw new Error('Simple tokenizer backend is not configured');
-    }
-    if (this.config.awsCredentials) {
-      return this.config.awsCredentials;
-    }
-
-    if (!this.config.getAwsCredentials) {
-      throw new Error('Unable to call get AWS Credentials');
-    }
-
-    const credentials = await this.config.getAwsCredentials();
-
-    if (!credentials) {
-      throw new Error('Missing AWS credentials');
-    }
-
-    this.config.awsCredentials = credentials;
-
-    return credentials;
-  }
+  constructor(readonly config: SimpleTokenizerBackendConfig) {}
 
   async generatePresignedS3Url(tokenId: string, method: 'PUT' | 'GET') {
     if (!this.config) {
@@ -74,7 +53,7 @@ export class SimpleTokenizerBackend {
       throw new Error('Invalid token passed to simple express tokenizer backend');
     }
 
-    const credentials = await this.getAwsCredentials();
+    const credentials = this.config.awsCredentials;
 
     const signer = new S3RequestPresigner({
       region: this.config.awsRegion,
@@ -107,18 +86,9 @@ export class SimpleTokenizerBackend {
 
   register(app: Application) {
     if (!this.config) {
-      throw new Error(
-        'You must set simpleTokenizerBackendConfig in your lunasec configuration if you want to register the SimpleTokenizerBackend on your express app'
-      );
+      throw new Error('You must configure SimpleTokenizerBackend');
     }
 
-    if (this.config.awsCredentials && this.config.getAwsCredentials) {
-      throw new Error('Cannot set both credentials and getCredentials');
-    }
-
-    if (!this.config.awsCredentials && !this.config.getAwsCredentials) {
-      throw new Error('Must set credentials or getAwsCredentials');
-    }
     registerExpressMiddleware(app, this); // This pattern works but it would probably make more sense to have this class beneath the middleware instead of on top
   }
 }

@@ -39,6 +39,7 @@ let grantService: LunaSecGrantService | undefined;
 // that has protected properties is not supported in typescript, even with @ts-ignore
 // https://github.com/microsoft/TypeScript/issues/30355
 // If you see a solution please implement it
+// Todo: this singleton pattern can break apps that will use multiple copies of LunaSec in the same memory instance so we should really find a way around this
 
 export function setGrantServiceForDirective(service: LunaSecGrantService) {
   grantService = service;
