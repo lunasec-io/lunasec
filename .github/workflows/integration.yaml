@@ -69,11 +69,12 @@ jobs:
       run: .github/print-docker-logs.sh
       shell: bash
 
-    - id: cache-docker
-      uses: actions/cache@v1
-      with:
-        path: /tmp/docker-registry
-        key: lunasec-integration-test-${{ hashFiles('yarn.lock') }}
+    - name: Docker-compose pull
+      run: docker-compose pull
+
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      # Ignore the failure of a step and avoid terminating the job.
+      continue-on-error: true
 
     - name: Run e2e tests
       # TODO: Exit code from breaks CI currently --exit-code-from
@@ -87,7 +88,7 @@ jobs:
       if: always()
       with:
         name: cypress-recording
-        path: js/demo-apps/packages/react-front-end/cypress/videos/basic_integration_spec.js.mp4
+        path: js/demo-apps/packages/react-front-end/cypress/videos/secure_components_spec.js.mp4
 
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
