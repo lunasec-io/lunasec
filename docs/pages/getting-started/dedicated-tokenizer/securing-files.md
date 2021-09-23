@@ -32,3 +32,10 @@ in the selector by clicking them.
 Here's a screenshot of the secure uploader:
 
 ![picture-of-secure-uploader](/img/secure-upload.png)
+
+### Downloading a file 
+`<SecureDownload>` embeds a link that, when clicked, downloads a file.  
+```tsx
+<SecureDownload token={fileToken} errorHandler={(e) => setError(e.message)} />
+```
+
