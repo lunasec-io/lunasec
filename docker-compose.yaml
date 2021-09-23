@@ -114,7 +114,8 @@ services:
         BUILD_TAG: dev
     volumes:
       - ./go/config/tokenizerbackend/:/config/tokenizerbackend/
-    network_mode: host
+    ports:
+      - "37766:37766"
     depends_on:
       cdk-init:
         condition: service_completed_successfully
