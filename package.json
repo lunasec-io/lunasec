@@ -15,6 +15,7 @@
     "lint:fix": "npm run lint -- --fix",
     "lint": "cd js/sdks && eslint --ext .js,.jsx,.ts,.tsx .",
     "version:release": "if [ -z ${RELEASE_TYPE+x} ]; then echo \"RELEASE_TYPE is unset\"; else lerna version -y $RELEASE_TYPE --no-push --force-publish; fi",
+    "compile:dev:sdks": "cd js/sdks && npm run compile:dev",
     "compile:release:sdks": "cd js/sdks && npm run compile:release",
     "compile:release:services": "cd go && npm run compile:release",
     "compile:release": "npm run compile:release:sdks && npm run compile:release:services",

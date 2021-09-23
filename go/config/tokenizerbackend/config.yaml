@@ -7,6 +7,7 @@ app:
       - Authorization
 aws_gateway:
   region: us-west-2
+  cloudwatch_namespace: ${CLOUDWATCH_NAMESPACE:"lunasec"}
   access_key_id: ${AWS_ACCESS_KEY_ID:""}
   secret_access_key: ${AWS_SECRET_ACCESS_KEY:""}
   localstack_url: ${LOCALSTACK_URL:""}
