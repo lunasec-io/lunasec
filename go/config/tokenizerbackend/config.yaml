@@ -11,12 +11,12 @@ aws_gateway:
   secret_access_key: ${AWS_SECRET_ACCESS_KEY:""}
   localstack_url: ${LOCALSTACK_URL:""}
   local_https_proxy: ${LOCAL_HTTPS_PROXY:""}
-#  s3_bucket: ${CIPHERTEXT_VAULT_S3_BUCKET}
-#  table_names:
-#    metadata: ${METADATA_KV_TABLE}
-#    keys: ${KEYS_KV_TABLE}
-#    sessions: ${SESSIONS_KV_TABLE}
-#    grants: ${GRANTS_KV_TABLE}
+  s3_bucket: ${CIPHERTEXT_VAULT_S3_BUCKET:"newServer"}
+  table_names:
+    metadata: ${METADATA_KV_TABLE:""}
+    keys: ${KEYS_KV_TABLE:""}
+    sessions: ${SESSIONS_KV_TABLE:""}
+    grants: ${GRANTS_KV_TABLE:""}
 session_controller:
   auth_providers:
     application_back_end:

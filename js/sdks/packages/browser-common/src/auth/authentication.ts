@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { SecureFrameAuthClient } from './auth-client';
 
 // This could probably be a local variable but just worried about any potential duplication between a custom app and our libraries makes the singletons a little sketchier
@@ -39,7 +55,7 @@ export class LunaSecAuthentication {
     };
   }
 
-  // TODO: It might be possible to move this authentication logic into the LunaSecConfigContext provider somehow and get rid of a lot of this logic
+  // TODO (forrest) move this authentication logic into the LunaSecConfigContext provider and get rid of a lot of this logic
 
   async authenticateSession(): Promise<Promise<boolean> | void> {
     // Stop every component from making a request on first page load
@@ -70,13 +86,6 @@ export class LunaSecAuthentication {
   }
 
   async validateOrCreateSession(): Promise<boolean> {
-    const firstVerifyResponse = await this.authClient.verifySession(); // If these calls throw, they will be uncaught and crash the app. Do we want that?
-    if (firstVerifyResponse.success) {
-      console.debug('secure frame session is verified');
-      return true;
-    }
-    console.debug('secure frame session is not verified, creating a new session');
-
     /*
       If the above was not a success, we need to send more requests to verify the session.
 
@@ -89,13 +98,14 @@ export class LunaSecAuthentication {
       with 'no-cors' set. It is possible to experience an error in this request flow.
      */
     console.debug('ensuring the secure frame has a valid session');
+
+    // We can get NO information back from this call because of CORS, so we have to call again afterwards
     await this.authClient.ensureSession(this.sessionAuthProvider);
 
     console.debug('verifying the created session is valid');
-    const secondVerifyResponse = await this.authClient.verifySession();
-    if (!secondVerifyResponse.success) {
-      const e = new Error(secondVerifyResponse.error);
-      this.errorHandler(e);
+    const verifyResponse = await this.authClient.verifySession();
+    if (!verifyResponse.success) {
+      this.errorHandler(verifyResponse.error);
       return false;
     }
 

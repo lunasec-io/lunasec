@@ -1,14 +1,28 @@
+/*
+ * Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { OutgoingHttpHeaders } from 'http';
 
 import { LunaSecError } from '@lunasec/isomorphic-common';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
-import { CONFIG_DEFAULTS } from './constants';
-import { Configuration, DefaultApi, ErrorResponse, GrantType, MetaData } from './generated';
+import { AUTHORIZATION_HEADER, CONFIG_DEFAULTS, SESSION_HASH_HEADER } from './constants';
+import { Configuration, DefaultApi, ErrorResponse, MetaData } from './generated';
 import {
-  GrantTypeEnum,
-  GrantTypeUnion,
   SuccessOrFailOutput,
   TokenizerClientConfig,
   TokenizerDetokenizeResponse,
@@ -27,11 +41,10 @@ import {
 export class Tokenizer {
   readonly config!: TokenizerClientConfig;
   readonly openApi: DefaultApi;
-  private readonly reqOptions: Record<string, any>;
+  private reqOptions: { headers: OutgoingHttpHeaders };
 
   constructor(config?: Partial<TokenizerClientConfig>) {
     // Deep clone config for mutation safety.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 
     const headers: OutgoingHttpHeaders = {
@@ -39,7 +52,7 @@ export class Tokenizer {
     };
     const jwtToken = this.config.authenticationToken;
     if (jwtToken) {
-      headers[this.config.headers.auth] = jwtToken;
+      headers[AUTHORIZATION_HEADER] = jwtToken;
     }
     this.reqOptions = { headers }; // This is passed to the openapi client on every request
 
@@ -70,7 +83,7 @@ export class Tokenizer {
       // Parse the axios error, if it has any meaningful data about the response
       return new LunaSecError({
         name: e.response.data.error.name || 'TokenizerError',
-        message: e.response.data.error.errorMessage || 'Unknown Tokenizer Error', // TODO: Update this to "message" to conform with openAPI spec once the Tokenizer Backend uses OpenAPI
+        message: e.response.data.error.errorMessage || e.response.data.error.message || 'Unknown Tokenizer Error', // TODO: Update this to "message" to conform with openAPI spec once the Tokenizer Backend uses OpenAPI
         code: e.response.status.toString(),
       });
     }
@@ -80,21 +93,12 @@ export class Tokenizer {
     return new LunaSecError({ name: 'unknownTokenizerError', message: 'Unknown Tokenization Error', code: '500' });
   }
 
-  public createReadGrant(sessionId: string, tokenId: string) {
-    return this.createAnyGrant(sessionId, tokenId, GrantType.ReadToken);
-  }
-
-  public createDataBaseStoreGrant(sessionId: string, tokenId: string) {
-    return this.createAnyGrant(sessionId, tokenId, GrantType.StoreToken);
-  }
-
-  private async createAnyGrant(sessionId: string, tokenId: string, grantType: GrantType) {
+  public async createFullAccessGrant(sessionId: string, tokenId: string) {
     try {
       const res = await this.openApi.setGrant(
         {
           sessionId,
           tokenId,
-          grantType: grantType,
         },
         this.reqOptions
       );
@@ -106,29 +110,12 @@ export class Tokenizer {
     }
   }
 
-  // there has got to be a better way than this
-  private convertGrantTypeToEnum(grantTypeString: GrantTypeUnion) {
-    if (grantTypeString === 'read_token') {
-      return GrantTypeEnum.ReadToken;
-    }
-    if (grantTypeString === 'store_token') {
-      return GrantTypeEnum.StoreToken;
-    }
-    throw new Error(`Bad grant type passed to tokenizer: ${grantTypeString.toString()}`);
-  }
-
-  async verifyGrant(
-    sessionId: string,
-    tokenId: string,
-    grantType: GrantTypeUnion
-  ): SuccessOrFailOutput<TokenizerVerifyGrantResponse> {
-    const ennumifiedGrantType = this.convertGrantTypeToEnum(grantType);
+  async verifyGrant(sessionId: string, tokenId: string): SuccessOrFailOutput<TokenizerVerifyGrantResponse> {
     try {
       const res = await this.openApi.verifyGrant(
         {
           sessionId,
           tokenId,
-          grantType: ennumifiedGrantType,
         },
         this.reqOptions
       );
@@ -194,6 +181,34 @@ export class Tokenizer {
     };
   }
 
+  /**
+   * Binds this instance of the tokenizer to a session so that any requests after the first detokenization will include
+   * a hash generated by the Tokenizer Backend as a header.  Any requests that include a hash not matching the current session
+   * will not be honored by the Backend, locking this tokenizer to the session of the first request it made
+   */
+  private handleSessionHashTracking(response: AxiosResponse): { success: false; error: LunaSecError } | null {
+    if (!this.config.lockToSession) {
+      return null;
+    }
+    // already bound to a session
+    if (this.reqOptions.headers[SESSION_HASH_HEADER]) {
+      return null;
+    }
+    const sessionHash = response.headers[SESSION_HASH_HEADER] as string | undefined;
+    if (sessionHash === undefined) {
+      return {
+        success: false,
+        error: new LunaSecError({
+          name: 'detokenizationiFrameSessionBinding',
+          message: 'session hash was not set in response when detokenizing, unable to bind iFrame to a session',
+          code: '500',
+        }),
+      };
+    }
+    this.reqOptions.headers[SESSION_HASH_HEADER] = sessionHash;
+    return null;
+  }
+
   async detokenizeToUrl(tokenId: string): SuccessOrFailOutput<TokenizerDetokenizeToUrlResponse> {
     try {
       const response = await this.openApi.detokenize(
@@ -202,6 +217,11 @@ export class Tokenizer {
         },
         this.reqOptions
       );
+      const sessionError = this.handleSessionHashTracking(response);
+      if (sessionError) {
+        return sessionError;
+      }
+
       const res = response.data;
 
       if (!res.data) {

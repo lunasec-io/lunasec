@@ -1,3 +1,17 @@
+// Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 package controller
 
 import (
@@ -66,7 +80,7 @@ func (s *tokenizerController) requestHasValidGrantForToken(r *http.Request, toke
 		return
 	}
 
-	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID, constants.ReadToken)
+	return s.grant.ValidTokenGrantExistsForSession(tokenID, claims.SessionID, constants.TokenFullAccess)
 }
 
 func (s *tokenizerController) TokenizerGet(w http.ResponseWriter, r *http.Request) {
@@ -152,13 +166,7 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 		}
 	}
 
-	// create grants for both reading the token, in case the front end wants to be able to read the token right away
-	// and also a grant for the customer's backend to verify the token was created by this session id
-	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.ReadToken); err != nil {
-		util.RespondError(w, http.StatusInternalServerError, err)
-		return
-	}
-	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.StoreToken); err != nil {
+	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.TokenFullAccess); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
