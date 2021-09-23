@@ -9,6 +9,7 @@ services:
     entrypoint: npm run test:e2e
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - /videos:/repo/js/demo-apps/packages/react-front-end/cypress/videos
     network_mode: host
     depends_on:
       - localstack
