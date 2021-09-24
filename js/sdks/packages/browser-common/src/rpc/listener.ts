@@ -50,6 +50,8 @@ export function addReactEventListener(
   const abortSignal = controller.signal;
 
   // Note: The AbortSignal seems to be unknown to Typescript.
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const eventListenerOptions: AddEventListenerOptions = { signal: abortSignal };
 
   window.addEventListener(
