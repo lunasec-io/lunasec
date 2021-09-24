@@ -83,7 +83,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     // This is created on component mounted to enable server-side rendering
     abortController!: AbortController;
     /**
-     * The frameId is a unique value that is associated with a given iframe instance.
+     * The frameId is a random unique value(nonce) that is associated with a given iframe instance.
      */
     readonly frameId!: string;
 
@@ -155,7 +155,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
     // Pass this to our wrapped component so it can tell us when its on the DOM and ready to give us styles
     // Our pattern causes the component to render twice, the first time without the iframe
-    // in order to capture the style from the dummy element.  Then the this callback is called
+    // in order to capture the style from the dummy element.  Then this callback is called
     // and style is put onto the state, causing the component to rerender with the iframe properly styled
     wrappedComponentDidMount() {
       this.setState({
@@ -211,13 +211,13 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
 
     validationHandler(isValid: boolean) {
-      if (!('onValidate' in this.props)) {
-        throw new Error('Got validation message from iframe for component without an onValidation handler');
-      }
+      // if (!('onValidate' in this.props)) {
+      //   throw new Error('Got validation message from iframe for component without an onValidation handler');
+      // }
       this.setState({ isValid: isValid });
-      if ('onValidate' in this.props) {
-        this.props.onValidate(isValid);
-      }
+      // if ('onValidate' in this.props) {
+      this.props.onValidate(isValid);
+      // }
     }
 
     // Generate some attributes for sending to the iframe via RPC.

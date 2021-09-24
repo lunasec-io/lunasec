@@ -17,10 +17,6 @@ interface SecureInputPropsWithValidator extends BaseComponentProps {
   placeholder?: string;
 }
 
-export type SecureInputProps = SecureInputPropsWithoutValidator | SecureInputPropsWithValidator;
-export type SecureTextAreaProps = BaseComponentProps;
-export type SecureParagraphProps = BaseComponentProps;
-export type SecureDownloadProps = BaseComponentProps;
 // Doesnt extend base props
 interface SecureUploadProps {
   token?: never;
@@ -30,6 +26,11 @@ interface SecureUploadProps {
   onTokenChange?: (token: Array<string>) => void;
   errorHandler: errorHandlerCallback;
 }
+
+export type SecureInputProps = SecureInputPropsWithoutValidator | SecureInputPropsWithValidator;
+export type SecureTextAreaProps = BaseComponentProps;
+export type SecureParagraphProps = BaseComponentProps;
+export type SecureDownloadProps = BaseComponentProps;
 
 export interface LunaSecComponentPropertiesLookup {
   Paragraph: SecureParagraphProps;
