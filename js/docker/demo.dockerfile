@@ -11,7 +11,7 @@ RUN lerna bootstrap --ignore-scripts --ci
 WORKDIR /repo/js/sdks
 
 WORKDIR /repo/js/sdks/
-RUN tsc -b tsconfig.build.json
+RUN yarn run compile
 
 WORKDIR /repo
 
