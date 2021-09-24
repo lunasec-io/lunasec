@@ -1,4 +1,4 @@
-FROM lunasec/cicd-images:lunasec-precached-dependencies as lerna-bootstrap
+FROM lunasec/cached-npm-dependencies:v0.0.1 as lerna-bootstrap
 
 COPY . /repo
 
