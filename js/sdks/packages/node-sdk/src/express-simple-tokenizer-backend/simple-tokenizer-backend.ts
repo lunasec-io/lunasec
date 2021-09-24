@@ -24,18 +24,19 @@ import { Application } from 'express';
 
 import { registerExpressMiddleware } from './express-middleware';
 
+// (forrest) Unsure the purpose of this credential type since we do not use it and unwrap a type out of s3 instead
 export interface AwsCredentials {
   accessKeyId: string;
   secretAccessKey: string;
 }
-type S3Credentials = S3RequestPresignerOptions['credentials'];
-interface SimpleTokenizerBackendConfig {
+
+export interface SimpleTokenizerBackendConfig {
   /** The bucket name where ciphertext(encrypted secure data) will be store.  We recommend encrypting this bucket in your s3 settings */
   s3Bucket: string;
   /** The region of the above bucket */
   awsRegion: string;
   /** Provide Aws credentials. Expects an AWS Credentials object */
-  awsCredentials: S3Credentials;
+  awsCredentials: S3RequestPresignerOptions['credentials'];
 }
 
 /**
@@ -46,9 +47,6 @@ export class SimpleTokenizerBackend {
   constructor(readonly config: SimpleTokenizerBackendConfig) {}
 
   async generatePresignedS3Url(tokenId: string, method: 'PUT' | 'GET') {
-    if (!this.config) {
-      throw new Error('Simple tokenizer backend is not configured');
-    }
     if (!isToken(tokenId)) {
       throw new Error('Invalid token passed to simple express tokenizer backend');
     }

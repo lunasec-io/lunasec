@@ -23,7 +23,8 @@ import wrapComponent from './components/wrapComponent';
 export * from './components/SecureForm';
 export * from './providers/SecureFormContext';
 export * from './providers/LunaSecConfigContext';
-export * from './types';
+export * from './types/internal-types';
+export * from './types/component-types';
 
 export { LunaSecError } from '@lunasec/isomorphic-common'; //expose this so users can use it as well
 

@@ -40,7 +40,7 @@ import {
   TagLookup,
   WrapperProps,
   WrapperPropsWithProviders,
-} from '../types';
+} from '../types/internal-types';
 import setNativeValue from '../utils/set-native-value';
 
 export interface WrapperState {
@@ -211,11 +211,13 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
 
     validationHandler(isValid: boolean) {
-      if (!this.props.onValidate) {
+      if (!('onValidate' in this.props)) {
         throw new Error('Got validation message from iframe for component without an onValidation handler');
       }
       this.setState({ isValid: isValid });
-      this.props.onValidate(isValid);
+      if ('onValidate' in this.props) {
+        this.props.onValidate(isValid);
+      }
     }
 
     // Generate some attributes for sending to the iframe via RPC.
@@ -502,7 +504,6 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
                   // TODO: Why the heck are these ts-ignores this necessary!?
                   // Something must be broken with the react intrinsic properties not liking the generic...
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
                   <WrappedComponent {...props} formContext={formContext} lunaSecConfigContext={lunaSecConfigContext} />
                 );
               }}
