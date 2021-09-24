@@ -28,7 +28,7 @@ import {
 } from '@lunasec/browser-common';
 import { LunaSecError } from '@lunasec/isomorphic-common';
 import classnames from 'classnames';
-import React, { Component, CSSProperties, RefObject } from 'react';
+import React, { Component, CSSProperties, JSXElementConstructor, RefObject } from 'react';
 import styled from 'styled-components';
 
 import { LunaSecConfigContext } from '../providers/LunaSecConfigContext';
@@ -53,7 +53,11 @@ export interface WrapperState {
 // Since almost all the logic of being a Secure Component is shared(such as RPC),
 // this function wraps a component found in ./elements with that logic.
 // and adjusts for any small differences using the componentName to change behaviors between different types of components.
-export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapped: ClassLookup[W], componentName: W) {
+export default function WrapComponent<W extends keyof ClassLookup>(
+  ...params: readonly [UnstyledWrapped: ClassLookup[W], componentName: W]
+) {
+  const [UnstyledWrapped, componentName] = params;
+
   // Add some style to the element, for now just to do loading animations
   const Wrapped = styled(UnstyledWrapped)`
     .loading-animation {
@@ -211,13 +215,13 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
 
     validationHandler(isValid: boolean) {
-      // if (!('onValidate' in this.props)) {
-      //   throw new Error('Got validation message from iframe for component without an onValidation handler');
-      // }
+      if (!('onValidate' in this.props)) {
+        throw new Error('Got validation message from iframe for component without an onValidation handler');
+      }
       this.setState({ isValid: isValid });
-      // if ('onValidate' in this.props) {
-      this.props.onValidate(isValid);
-      // }
+      if ('onValidate' in this.props && this.props.onValidate) {
+        this.props.onValidate(isValid);
+      }
     }
 
     // Generate some attributes for sending to the iframe via RPC.
@@ -244,20 +248,20 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         }
       }
 
-      if (this.props.token && this.props.filetokens) {
+      if ('token' in this.props && 'filetokens' in this.props) {
         throw new Error("Can't have both tokens and filetokens specified in props");
       }
       if (this.props.token) {
         attrs.token = this.props.token;
       }
-      if (this.props.filetokens) {
+      if ('filetokens' in this.props) {
         attrs.fileTokens = this.props.filetokens;
       }
-      if (attrs.component === 'Input' && this.props.placeholder) {
+      if (attrs.component === 'Input' && 'placeholder' in this.props && this.props.placeholder) {
         attrs.placeholder = this.props.placeholder;
       }
 
-      if (this.props.validator) {
+      if ('validator' in this.props) {
         if (attrs.component !== 'Input') {
           throw new Error('Validators can only be set on SecureInputs');
         }
@@ -290,7 +294,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
           void this.sendIFrameAttributes();
           break;
         case 'NotifyOnToken':
-          if (this.props.onTokenChange && 'token' in notification.data) {
+          if ('onTokenChange' in this.props && this.props.onTokenChange && 'token' in notification.data) {
             this.props.onTokenChange(notification.data.token);
           }
           break;
@@ -460,9 +464,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       /* eslint-disable @typescript-eslint/no-unused-vars */
       const {
         token,
-        onTokenChange,
-        onValidate,
-        validator,
+        // onTokenChange,
+        // onValidate,
+        // validator,
         formContext,
         lunaSecConfigContext,
         errorHandler,
@@ -494,16 +498,16 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
   // component to add the providers, then by the class above.
   // You can never be too careful.
   return function ProviderWrapper(props: WrapperProps<W>) {
-    return (
+    const returnedType: React.ReactElement<
+      WrapperProps<W>,
+      JSXElementConstructor<Component<WrapperPropsWithProviders<W>, WrapperState>>
+    > = (
       <SecureFormContext.Consumer>
         {(formContext) => {
           return (
             <LunaSecConfigContext.Consumer>
               {(lunaSecConfigContext) => {
                 return (
-                  // TODO: Why the heck are these ts-ignores this necessary!?
-                  // Something must be broken with the react intrinsic properties not liking the generic...
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   <WrappedComponent {...props} formContext={formContext} lunaSecConfigContext={lunaSecConfigContext} />
                 );
               }}
@@ -512,5 +516,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         }}
       </SecureFormContext.Consumer>
     );
+
+    return returnedType;
   };
 }

@@ -16,7 +16,7 @@
  */
 import React, { Component } from 'react';
 
-import { RenderData, WrappedComponentProps } from '../../types';
+import { RenderData, WrappedComponentProps } from '../../types/internal-types';
 type UploaderRenderData = RenderData<'Uploader'>;
 export type UploaderProps = WrappedComponentProps<'Uploader'>; // change these props to be some whitelisted filepond props
 

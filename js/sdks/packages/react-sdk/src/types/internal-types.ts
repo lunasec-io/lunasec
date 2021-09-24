@@ -15,7 +15,6 @@
  *
  */
 import { ReadElementStyle } from '@lunasec/browser-common';
-import { LunaSecError } from '@lunasec/isomorphic-common';
 import React, { CSSProperties, RefObject } from 'react';
 
 import Downloader from '../components/elements/downloader';
@@ -26,7 +25,7 @@ import Uploader from '../components/elements/uploader';
 import { LunaSecConfigContextType } from '../providers/LunaSecConfigContext';
 import { SecureFormContextType } from '../providers/SecureFormContext';
 
-import { LunaSecComponentPropertiesLookup } from './component-types';
+import { ComponentLookupUnionType } from './component-types';
 
 /**
  * @ignore
@@ -52,8 +51,8 @@ export interface TagLookup {
 export const componentNames: Array<keyof ClassLookup> = ['Paragraph', 'Downloader', 'Uploader', 'TextArea', 'Input'];
 export type ComponentNames = keyof ClassLookup;
 
-export type WrapperProps<C extends keyof ClassLookup> = LunaSecComponentPropertiesLookup[C] &
-  React.ComponentPropsWithoutRef<TagLookup[C]>;
+export type WrapperProps<C extends keyof ClassLookup> = ComponentLookupUnionType &
+  Partial<React.ComponentPropsWithoutRef<TagLookup[C]>>;
 
 interface Providers {
   formContext: SecureFormContextType;
