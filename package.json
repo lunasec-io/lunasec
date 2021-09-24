@@ -6,9 +6,9 @@
   "private": true,
   "scripts": {
     "start:services": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up tokenizerbackend",
-    "test:e2e": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test",
     "license:check": "./tools/license-checker/run-license-check.sh check",
     "license:fix": "./tools/license-checker/run-license-check.sh fix",
+    "license:install": "cd tools/license-checker && ./install-skywalking-eyes.sh",
     "start:demo": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up demo",
     "test:e2e": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test",
     "test:e2e:local": "cd js/demo-apps/packages/react-front-end && yarn run test:e2e",
@@ -18,9 +18,11 @@
     "compile:release:sdks": "cd js/sdks && npm run compile:release",
     "compile:release:services": "cd go && npm run compile:release",
     "compile:release": "npm run compile:release:sdks && npm run compile:release:services",
+    "postinstall": "npm run license:install",
     "publish:release:sdks": "lerna publish -y from-package",
     "publish:release:services": "cd go && npm run publish:release",
-    "publish:release": "npm run publish:release:sdks && npm run publish:release:services"
+    "publish:release": "npm run publish:release:sdks && npm run publish:release:services",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -49,7 +51,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-react": "^7.23.2",
-    "husky": "^6.0.0",
+    "husky": "^7.0.0",
     "lerna": "^4.0.0",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
