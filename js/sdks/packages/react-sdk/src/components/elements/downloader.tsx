@@ -16,7 +16,7 @@
  */
 import React, { Component } from 'react';
 
-import { RenderData, WrappedComponentProps } from '../../types';
+import { RenderData, WrappedComponentProps } from '../../types/internal-types';
 type AnchorRenderData = RenderData<'Downloader'>;
 export type AnchorProps = WrappedComponentProps<'Downloader'>;
 
