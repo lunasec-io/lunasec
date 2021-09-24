@@ -59,7 +59,10 @@ module.exports = {
         out: 'react-sdk',
         sidebar: {
           categoryLabel: "React SDK"
-        }
+        },
+        excludePrivate:true,
+        readme: 'none',
+        sort: ['required-first', 'source-order']
       },
     ],
     [
@@ -75,7 +78,8 @@ module.exports = {
         sidebar: {
           categoryLabel: "Node SDK"
         },
-        excludePrivate:true
+        excludePrivate:true,
+        readme: 'none'
       },
     ],
     [
@@ -90,7 +94,9 @@ module.exports = {
         out: 'tokenizer-sdk',
         sidebar: {
           categoryLabel: "Tokenizer SDK"
-        }
+        },
+        excludePrivate:true,
+        readme: 'none'
       },
     ],
   ],

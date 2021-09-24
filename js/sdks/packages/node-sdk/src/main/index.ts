@@ -64,9 +64,9 @@ export interface LunaSecConfig {
 }
 
 /**
- * This is the main class that customers will create to use LunaSec on their node server
- * When created, it exposes the other customer-facing classes like the grant service and express plugin.
- * It also works as a dependency injector, for example: passing the keyservice into those plugins' constructors so that they are able to make authentication JWTs to talk to the server.
+ * This is the main class that you will instantiate on your node server.
+ * When created, it instantiates other classes and sets them as public properties you can use like the grant service and express plugin.
+ * @example ``` myLunaSec.grants.verify('sessionId','someToken')```
  */
 export class LunaSec {
   public keyService: KeyService;
