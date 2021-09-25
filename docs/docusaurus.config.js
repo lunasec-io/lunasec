@@ -32,25 +32,25 @@ module.exports = {
   projectName: 'lunasec-io.github.io', // Usually your repo name.
   scripts: ['https://cdn.jsdelivr.net/npm/redoc@v2.0.0-rc.54/bundles/redoc.standalone.js'],
   plugins: [
-    // function webpackDefine(context, options) {
-    //   return {
-    //     name: 'webpack-define',
-    //     configureWebpack(config, isServer, utils) {
-    //       return {
-    //        plugins: [ // yo I heard you like plugins so I put a plugin in your plugin
-    //          new webpack.DefinePlugin({
-    //            GITHUB_URL: quotedGithubUrl
-    //          })
-    //        ]
-    //       };
-    //     },
-    //   };
-    // },
+    function webpackDefine(context, options) {
+      return {
+        name: 'webpack-define',
+        configureWebpack(config, isServer, utils) {
+          return {
+           plugins: [ // yo I heard you like plugins so I put a plugin in your plugin
+             new webpack.DefinePlugin({
+               GITHUB_URL: quotedGithubUrl
+             })
+           ]
+          };
+        },
+      };
+    },
     [
       'docusaurus-plugin-typedoc',
       {
         id: 'typedoc-react-sdk',
-        entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
+        entryPoints: ['../js/sdks/packages/react-sdk/src/types/component-types.ts'],
         defaultCategory:'Component',
         tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
@@ -79,7 +79,8 @@ module.exports = {
           categoryLabel: "Node SDK"
         },
         excludePrivate:true,
-        readme: 'none'
+        readme: 'none',
+        sort: ['required-first', 'source-order']
       },
     ],
     [
@@ -96,7 +97,8 @@ module.exports = {
           categoryLabel: "Tokenizer SDK"
         },
         excludePrivate:true,
-        readme: 'none'
+        readme: 'none',
+        sort: ['required-first', 'source-order']
       },
     ],
   ],

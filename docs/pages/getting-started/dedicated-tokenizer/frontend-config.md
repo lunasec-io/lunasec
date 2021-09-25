@@ -1,4 +1,3 @@
-
 ---
 id: "frontend-config"
 title: "Frontend Configuration"
