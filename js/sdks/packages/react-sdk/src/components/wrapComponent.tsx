@@ -26,7 +26,7 @@ import {
   triggerBlur,
   triggerFocus,
 } from '@lunasec/browser-common';
-import { LunaSecError } from '@lunasec/isomorphic-common';
+import { LunaSecError, scrubProperties } from '@lunasec/isomorphic-common';
 import classnames from 'classnames';
 import React, { Component, CSSProperties, JSXElementConstructor, RefObject } from 'react';
 import styled from 'styled-components';
@@ -54,9 +54,12 @@ export interface WrapperState {
 // this function wraps a component found in ./elements with that logic.
 // and adjusts for any small differences using the componentName to change behaviors between different types of components.
 export default function WrapComponent<W extends keyof ClassLookup>(
-  ...params: readonly [UnstyledWrapped: ClassLookup[W], componentName: W]
+  UnstyledWrappedParam: ClassLookup[W],
+  componentNameParam: W
 ) {
-  const [UnstyledWrapped, componentName] = params;
+  // We do this to let typescript know these function parameters will not be modified
+  const UnstyledWrapped: ClassLookup[W] = UnstyledWrappedParam;
+  const componentName: W = componentNameParam;
 
   // Add some style to the element, for now just to do loading animations
   const Wrapped = styled(UnstyledWrapped)`
@@ -251,7 +254,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       if ('token' in this.props && 'filetokens' in this.props) {
         throw new Error("Can't have both tokens and filetokens specified in props");
       }
-      if (this.props.token) {
+      if ('token' in this.props) {
         attrs.token = this.props.token;
       }
       if ('filetokens' in this.props) {
@@ -339,8 +342,8 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       }
     }
 
-    // Left here for posterity, but I (factoidforrest) think we can assume styles wont be changed except by react
-    // and that is caught by ComponentDidUpdate above
+    // Left here for posterity, but I (forrest) think we can assume styles wont be changed except by react
+    // and that is caught by ComponentDidUpdate above.  This function has serious performance impact
     // watchStyle() {
     //   const observer = new MutationObserver(() => this.sendIFrameAttributes());
     //   if (!this.dummyRef.current) {
@@ -460,21 +463,16 @@ export default function WrapComponent<W extends keyof ClassLookup>(
         dummyElementStyle,
       };
 
-      // clean out our lunasec props so they dont get passed into the wrapped component as html params
-      /* eslint-disable @typescript-eslint/no-unused-vars */
-      const {
-        token,
-        // onTokenChange,
-        // onValidate,
-        // validator,
-        formContext,
-        lunaSecConfigContext,
-        errorHandler,
-        ...scrubbedProps
-      } = this.props;
-      /* eslint-enable @typescript-eslint/no-unused-vars */
+      const scrubbedProps = scrubProperties(this.props, [
+        'token',
+        'onTokenChange',
+        'onValidate',
+        'validator',
+        'formContext',
+        'lunaSecConfigContext',
+        'errorHandler',
+      ]);
 
-      // TODO: Fix this issue, and in the mean time be very careful with your props
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {
         renderData,
       };

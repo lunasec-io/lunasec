@@ -25,7 +25,7 @@ import Uploader from '../components/elements/uploader';
 import { LunaSecConfigContextType } from '../providers/LunaSecConfigContext';
 import { SecureFormContextType } from '../providers/SecureFormContext';
 
-import { ComponentLookupUnionType } from './component-types';
+import { AnySecureProps } from './component-types';
 
 /**
  * @ignore
@@ -51,7 +51,7 @@ export interface TagLookup {
 export const componentNames: Array<keyof ClassLookup> = ['Paragraph', 'Downloader', 'Uploader', 'TextArea', 'Input'];
 export type ComponentNames = keyof ClassLookup;
 
-export type WrapperProps<C extends keyof ClassLookup> = ComponentLookupUnionType &
+export type WrapperProps<C extends keyof ClassLookup> = AnySecureProps &
   Partial<React.ComponentPropsWithoutRef<TagLookup[C]>>;
 
 interface Providers {
