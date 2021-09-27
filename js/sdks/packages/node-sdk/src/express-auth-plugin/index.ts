@@ -22,15 +22,14 @@ import { URL } from 'url';
 
 import cookieParser from 'cookie-parser';
 import { Request, Response, Router } from 'express';
-// eslint-disable-next-line import/no-unresolved
-import { JWTPayload } from 'jose/types';
+// import { JWTPayload } from 'jose/types';
 
 import { KeyService } from '../authentication';
 import { SessionIdProvider } from '../authentication/types';
 
 export interface ExpressAuthPluginConfig {
   sessionIdProvider: SessionIdProvider;
-  payloadClaims?: string[];
+  // payloadClaims?: string[]; // Not currently used
   secureFrameURL: string;
   auth: KeyService;
   // TODO: (forrest) remove, I'm 99% sure you can do this by just calling `register` on an express router instead of the base app
@@ -48,20 +47,20 @@ export class LunaSecExpressAuthPlugin {
     this.secureFrameUrl = config.secureFrameURL;
   }
 
-  private filterClaims<T extends JWTPayload>(payload: T): Partial<T> {
-    const whitelistedClaims = this.config.payloadClaims;
-    if (whitelistedClaims === undefined) {
-      return payload;
-    }
-    return Object.keys(payload)
-      .filter((claim) => whitelistedClaims.indexOf(claim) !== -1)
-      .reduce((claims, claim) => {
-        return {
-          ...claims,
-          [claim]: payload[claim],
-        };
-      }, {});
-  }
+  // private filterClaims<T extends JWTPayload>(payload: T): Partial<T> {
+  //   const whitelistedClaims = this.config.payloadClaims; // Not currently used
+  //   if (whitelistedClaims === undefined) {
+  //     return payload;
+  //   }
+  //   return Object.keys(payload)
+  //     .filter((claim) => whitelistedClaims.indexOf(claim) !== -1)
+  //     .reduce((claims, claim) => {
+  //       return {
+  //         ...claims,
+  //         [claim]: payload[claim],
+  //       };
+  //     }, {});
+  // }
 
   private async buildSecureFrameRedirectUrl(stateToken: string, sessionId: string) {
     // This gets set into the "access_token" cookie by the Secure Frame Backend after the redirect
