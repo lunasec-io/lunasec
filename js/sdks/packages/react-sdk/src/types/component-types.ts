@@ -64,7 +64,13 @@ export type AnySecureProps =
   | SecureTextAreaProps
   | SecureInputProps;
 
-/** Used to pick the properties for a specific secure component*/
+/**
+ * A list of all Secure Components and their properties.
+ * Note that many such as SecureInput and SecureParagraph can also take the standard props for their underlying DOM element,
+ * omitted here for brevity.
+ *
+ * `<SecureForm>` doesn't take any special LunaSec properties, only the stock properties for a form (not shown).
+ */
 export interface SecurePropsLookup {
   Paragraph: SecureParagraphProps;
   Downloader: SecureDownloadProps;

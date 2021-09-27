@@ -18,17 +18,23 @@ There are two main ways for LunaSec :
 LunaSec supports both of these schemes.
 
 ## 1. Application Provided Session
-If your application server is creating sessions, the `@lunasec/node-sdk` can read your session information and use it to
-create cookie on the domain of the Secure Frame (where the iFrame and Dedicated Tokenizer live). To do this it follows what is
-essentially an oAuth flow where your backend is the authentication provider. A request is made from our library in the browser to
-the Dedicated Tokenizer, 
-which redirects to your app to get the session information and then sets a session cookie on the Dedicated Tokenizer's domain.  
 
-When you configure `@lunasec/node-sdk`, you pass it a callback that can retrieve the users sessionId from a request. 
-That way, LunaSec can quickly be set up to work with any authentication scheme, whether it is cookie, header, api key based.  
+### How it works
+If your application server is creating sessions, the `@lunasec/node-sdk` can read your session information and use it to
+create a cookie on the domain of the Secure Frame (where the iFrame and Dedicated Tokenizer live). To do this it follows what is
+essentially an oAuth flow where your backend is the authentication provider. A request is made from our library in the browser to
+our plugin in your backend,
+which redirects the browser to the Dedicated Tokenizer which sets a cookie for LunaSec.  This all happens automatically as long as you 
+have registered the `express-auth-plugin` in your app.
+
+![diagram of auth flow](/img/auth-flow-diagram.svg)
+
+### Session Id Provider 
+When you configure `@lunasec/node-sdk`, you pass it a callback that can retrieve the user's sessionId from a request. 
+That way, LunaSec can quickly be set up to work with any authentication scheme, whether it is cookie, header, or api key based.  
 
 Here is an example implementation of this callback where a previous middleware (express-session in this case) has already attached
-a session object to the request.
+a session object to the request as `req.user`.
 ```typescript
 export const lunaSec = new LunaSec({
   // ...
@@ -51,7 +57,8 @@ some kind of unique token in this callback so that LunaSec can continue to work.
 ## 2. Auth Proxy
 In this scheme, an authentication proxy like [ORY Oathkeeper](https://www.ory.sh/oathkeeper/docs/) takes care of the session.
 This is typically a bit more complex as infrastructure but
-much more secure. It gives the strongest guarantees around protecting your data, even if your server is compromised. 
+much more secure. It gives the strongest guarantees around protecting your data, even if your server is compromised. LunaSec can also load faster 
+when session management has already been taken care of.
 
 Enterprises often use a scheme like this.  LunaSec can be adapted to work with different authentication providers.
 

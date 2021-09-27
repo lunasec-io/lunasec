@@ -49,13 +49,15 @@ export interface LunaSecConfig {
      * @example
      * ```
      * {type:'manual',
-     * signingKey: createPrivateKey(signingKey) // This needs to be a node KeyLike object
+     * signingKey: createPrivateKey(signingKey)
      * }
      * ```
+     * This needs to be a node KeyLike object
      */
     secrets: SecretConfig;
     /** Optionally set claims for the JWT, this is currently not used */
-    payloadClaims?: string[]; // Note that not setting this allows unfiltered claims to be set, do we want that?
+    // payloadClaims?: string[]; // Note that not setting this allows unfiltered claims to be set, do we want that?
+
     /** A callback used automatically by LunaSec when we have the req object and would like to know the sessionId.  Used in automatic granting and also the Auth Plugin */
     sessionIdProvider: SessionIdProvider;
   };
@@ -85,7 +87,7 @@ export class LunaSec {
     this.expressAuthPlugin = new LunaSecExpressAuthPlugin({
       auth: this.keyService,
       sessionIdProvider: config.auth.sessionIdProvider,
-      payloadClaims: config.auth.payloadClaims,
+      // payloadClaims: config.auth.payloadClaims,
       secureFrameURL: config.secureFrameURL,
       pluginBaseUrl: config.auth.pluginBaseUrl,
     });
