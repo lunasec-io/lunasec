@@ -82,7 +82,7 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
               <SecureUpload
                 id="drivers-license-upload"
                 name="uploader"
-                filetokens={documents}
+                fileTokens={documents}
                 onTokenChange={(tokens) => {
                   setDocuments(tokens);
                 }}

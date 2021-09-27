@@ -251,14 +251,14 @@ export default function WrapComponent<W extends keyof ClassLookup>(
         }
       }
 
-      if ('token' in this.props && 'filetokens' in this.props) {
-        throw new Error("Can't have both tokens and filetokens specified in props");
+      if ('token' in this.props && 'fileTokens' in this.props) {
+        throw new Error("Can't have both tokens and fileTokens specified in props");
       }
       if ('token' in this.props) {
         attrs.token = this.props.token;
       }
-      if ('filetokens' in this.props) {
-        attrs.fileTokens = this.props.filetokens;
+      if ('fileTokens' in this.props) {
+        attrs.fileTokens = this.props.fileTokens;
       }
       if (attrs.component === 'Input' && 'placeholder' in this.props && this.props.placeholder) {
         attrs.placeholder = this.props.placeholder;
