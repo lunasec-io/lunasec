@@ -43,7 +43,7 @@ export interface SecureUploadProps {
   errorHandler: errorHandlerCallback;
   name?: string;
   /** an array of file tokens to preload into the file picker */
-  filetokens?: string[];
+  fileTokens?: string[];
   /** Called when the files in the filepicker change with an array of tokens, either on addition or deletion */
   onTokenChange?: (token: Array<string>) => void;
 }
