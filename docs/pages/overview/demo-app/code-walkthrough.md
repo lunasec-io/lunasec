@@ -1,4 +1,3 @@
-
 ---
 id: "walkthrough"
 title: "Demo App Walkthrough"
@@ -48,7 +47,8 @@ For an example of LunaSec's node-sdk being configured, [look here](https://githu
 
 To see an Express Route properly creating and checking grants, [look here](https://github.com/lunasec-io/lunasec-monorepo/blob/de384d69d4c78e6b39505561c6c25b6a34a34e23/js/demo-apps/packages/demo-back-end/src/dedicated-tokenizer/passport-express/routes/user-router.ts#L17).
 
-### Production Readiness and Library Choices
+:::warning Production Readiness and Library Choices
 This demo is made to simulate a production application, not be one.  Please use concepts or snippets from it in your code, but we do not 
 recommend cloning it directly or using it as a measuring stick for good library and technology choices.  In particular Passport(the auth library)
 was chosen because it is popular, not because we recommend it.  LunaSec will work with any auth system in exactly the same way as shown here with passport. 
+:::

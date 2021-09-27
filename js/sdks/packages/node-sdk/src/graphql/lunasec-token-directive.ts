@@ -31,9 +31,9 @@ import {
   GraphQLSchema,
 } from 'graphql';
 
-import { LunaSecGrantService } from '../grant-service';
+import { Grants } from '../grant-service';
 
-let grantService: LunaSecGrantService | undefined;
+let grantService: Grants | undefined;
 
 // This dirty stateful hack was necessary because creating a function (to inject this dependency) that exports a private class(the TokenDirective)
 // that has protected properties is not supported in typescript, even with @ts-ignore
@@ -41,7 +41,7 @@ let grantService: LunaSecGrantService | undefined;
 // If you see a solution please implement it
 // Todo: this singleton pattern can break apps that will use multiple copies of LunaSec in the same memory instance so we should really find a way around this
 
-export function setGrantServiceForDirective(service: LunaSecGrantService) {
+export function setGrantServiceForDirective(service: Grants) {
   grantService = service;
 }
 

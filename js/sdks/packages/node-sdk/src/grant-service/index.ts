@@ -26,10 +26,13 @@ import { SessionError } from './SessionError';
 /**
  * Create and verify grants, LunaSec's permission system.
  */
-export class LunaSecGrantService {
+export class Grants {
   private readonly auth: KeyService;
   private readonly sessionIdProvider: SessionIdProvider | undefined;
 
+  /**
+   * @ignore
+   */
   constructor(auth: KeyService, sessionIdProvider?: SessionIdProvider) {
     this.auth = auth;
     this.sessionIdProvider = sessionIdProvider;
