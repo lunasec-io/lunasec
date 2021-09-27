@@ -16,8 +16,8 @@
  */
 import { KeyService } from '../authentication';
 import { SecretConfig, SessionIdProvider } from '../authentication/types';
-import { LunaSecExpressAuthPlugin } from '../express-auth-plugin';
-import { LunaSecGrantService } from '../grant-service';
+import { ExpressAuthPlugin } from '../express-auth-plugin';
+import { Grants } from '../grant-service';
 import { setGrantServiceForDirective, TokenDirective } from '../graphql';
 import { SecureResolver } from '../secure-resolver';
 import { SecureResolverSdkConfig } from '../secure-resolver/types';
@@ -73,9 +73,9 @@ export interface LunaSecConfig {
 export class LunaSec {
   public keyService: KeyService;
   /** an instance of the grant service for handling grants, LunaSecs permission system */
-  public grants: LunaSecGrantService;
+  public grants: Grants;
   /** an instance of the auth plugin that can be optionally registered onto your express server if you would like to bootstrap from your own session management */
-  public expressAuthPlugin: LunaSecExpressAuthPlugin;
+  public expressAuthPlugin: ExpressAuthPlugin;
   /** A graphQL directive for automatically dealing with grants in your schema */
   public tokenDirective: typeof TokenDirective; // Graphql initializes this class, not us
   /** LunaSec Secure Resolvers, for running functions that handle sensitive data in a secure context */
@@ -84,7 +84,7 @@ export class LunaSec {
   constructor(config: LunaSecConfig) {
     this.keyService = new KeyService(config.auth.secrets);
     // This express plugin is created here if users optionally wish to access it and register it onto their app
-    this.expressAuthPlugin = new LunaSecExpressAuthPlugin({
+    this.expressAuthPlugin = new ExpressAuthPlugin({
       auth: this.keyService,
       sessionIdProvider: config.auth.sessionIdProvider,
       // payloadClaims: config.auth.payloadClaims,
@@ -92,7 +92,7 @@ export class LunaSec {
       pluginBaseUrl: config.auth.pluginBaseUrl,
     });
 
-    this.grants = new LunaSecGrantService(this.keyService, config.auth.sessionIdProvider);
+    this.grants = new Grants(this.keyService, config.auth.sessionIdProvider);
     setGrantServiceForDirective(this.grants);
     this.tokenDirective = TokenDirective;
     if (config.secureResolverConfig) {

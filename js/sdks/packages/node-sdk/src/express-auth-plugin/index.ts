@@ -27,6 +27,9 @@ import { Request, Response, Router } from 'express';
 import { KeyService } from '../authentication';
 import { SessionIdProvider } from '../authentication/types';
 
+/**
+ * @ignore
+ */
 export interface ExpressAuthPluginConfig {
   sessionIdProvider: SessionIdProvider;
   // payloadClaims?: string[]; // Not currently used
@@ -36,11 +39,14 @@ export interface ExpressAuthPluginConfig {
   pluginBaseUrl?: string;
 }
 
-export class LunaSecExpressAuthPlugin {
+export class ExpressAuthPlugin {
   private readonly secureFrameUrl: string;
   private readonly auth: KeyService;
   private readonly config: ExpressAuthPluginConfig;
 
+  /**
+   * @ignore
+   */
   constructor(config: ExpressAuthPluginConfig) {
     this.auth = config.auth;
     this.config = config;
