@@ -36,8 +36,6 @@ export interface UnknownFrameMessage {
 export type CommitTokenMessage = Record<string | number, never>;
 // Initialize or update some attribute of the iframe
 
-// It is a bummer to have all of these properties as optionals in the base interface
-// but this code is going away soon when we do the plugin overhaul
 interface BaseAttr {
   id: string;
   component: string;
