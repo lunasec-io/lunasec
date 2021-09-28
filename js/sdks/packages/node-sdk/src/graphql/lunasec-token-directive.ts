@@ -14,6 +14,13 @@
  * limitations under the License.
  *
  */
+
+// WARNING: This file is a bit of a tire fire because of limited type information available from Apollo.
+// Many TypeScript rules are disabled in order to make this functionality work.
+// Please be extra diligent to test your code if you change this file!
+
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any */
+
 import { ExpressContext, SchemaDirectiveVisitor } from 'apollo-server-express';
 import {
   defaultFieldResolver,
@@ -41,8 +48,9 @@ export class TokenDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition(field: GraphQLField<any, string>) {
     const resolve = field.resolve || defaultFieldResolver;
     field.resolve = async function (...args) {
-      //@ts-ignore
+      // @ts-ignore
       const req = args[2].req;
+
       // Fire the user's resolver and get the resulting token
       const result = await resolve.apply(this, args);
       if (!result) {
@@ -82,22 +90,25 @@ export class TokenDirective extends SchemaDirectiveVisitor {
       if (!originalResolver) {
         throw new Error('Cant wrap resolver with token directive without resolver');
       }
-      mutation.resolve = async function wrappedResolver(...resolverArguments: any[]) {
+      mutation.resolve = async function wrappedResolver(...resolverArguments: unknown[]) {
         // @ts-ignore
         const args: GraphQLArgument[] = resolverArguments[1];
         if (!args) {
           throw new Error('Cannot wrap function without args');
         }
 
-        // @ts-ignore
-        const argument = Object.values(args).find((el) => el && el[name]);
+        const argument = Object.values(args).find((el) => {
+          // @ts-ignore
+          return el && el[name];
+        });
         if (argument) {
           // @ts-ignore
           const value = argument[name];
           if (!grantService) {
             throw new Error('LunaSec Grant Service was not configured for the graphql token directive.');
           }
-          const context: ExpressContext = resolverArguments[2];
+
+          const context = resolverArguments[2] as ExpressContext;
           if (value && value !== defaultValue) {
             await grantService.verifyWithAutomaticSessionId(context.req, value); // throws an error if no auth, can also handle arrays of tokens
           }

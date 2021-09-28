@@ -109,38 +109,37 @@ export class FrameMessageCreator {
     message: FrameMessage<OutboundFrameMessageMap, K>
   ): Promise<FrameMessage<InboundFrameMessageMap, OutboundToInboundMessageTypeMap[K]> | null> {
     const startTime = new Date();
-    return new Promise(async (resolve, reject) => {
-      // TODO: Make this domain be configurable
-      frameContext.postMessage(JSON.stringify(message), this.lunaSecDomain);
-      await timeout(2);
 
-      // Spin lock that waits until we receive a response in another "thread".
-      // This will return false when a message is in the response buffer "frameResponses".
-      while (this.frameResponses[message.correlationToken] === undefined) {
-        const currentTime = new Date();
+    // TODO: Make this domain be configurable
+    frameContext.postMessage(JSON.stringify(message), this.lunaSecDomain);
+    await timeout(2);
 
-        // Throw a timeout if we don't get a response.
-        if (currentTime.getTime() - startTime.getTime() > this.timeout) {
-          return reject('Timeout exceeded for frame call: ' + message.correlationToken);
-        }
+    // Spin lock that waits until we receive a response in another "thread".
+    // This will return false when a message is in the response buffer "frameResponses".
+    while (this.frameResponses[message.correlationToken] === undefined) {
+      const currentTime = new Date();
 
-        // Delay loop asynchronously
-        await timeout(5);
+      // Throw a timeout if we don't get a response.
+      if (currentTime.getTime() - startTime.getTime() > this.timeout) {
+        throw new Error('Timeout exceeded for frame call: ' + message.correlationToken);
       }
 
-      const rawResponse = this.frameResponses[message.correlationToken];
+      // Delay loop asynchronously
+      await timeout(5);
+    }
 
-      delete this.frameResponses[message.correlationToken];
+    const rawResponse = this.frameResponses[message.correlationToken];
 
-      if (rawResponse.command !== OutboundToInboundMessageValueMap[message.command]) {
-        console.error('Wrong response message type from secure frame', rawResponse);
-        return null;
-      }
+    delete this.frameResponses[message.correlationToken];
 
-      // TODO: Add JSON validation to prevent badly formatted messaged from slipping through.
-      // Or use Protobuf..?
-      resolve(rawResponse as FrameMessage<InboundFrameMessageMap, OutboundToInboundMessageTypeMap[K]>);
-    });
+    if (rawResponse.command !== OutboundToInboundMessageValueMap[message.command]) {
+      console.error('Wrong response message type from secure frame', rawResponse);
+      return null;
+    }
+
+    // TODO: Add JSON validation to prevent badly formatted messaged from slipping through.
+    // Or use Protobuf..?
+    return rawResponse as FrameMessage<InboundFrameMessageMap, OutboundToInboundMessageTypeMap[K]>;
   }
 
   convertRawMessageToTypedMessage<K extends keyof InboundFrameMessageMap>(
