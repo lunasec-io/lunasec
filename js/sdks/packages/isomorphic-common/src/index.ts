@@ -15,3 +15,4 @@
  *
  */
 export * from './lunasec-error';
+export * from './scrub-properties';

@@ -35,9 +35,10 @@ export function renderSecureComponent(props) {
 }
 ```
 You will need to add a 
-LunaSec library to your frontend(as shown here), another to your backend, and to host a copy of the Tokenizer Backend server.
+LunaSec library to your frontend(as shown here), another to your backend, and to host a copy of the Tokenizer Backend 
+server. For instructions, follow the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/introduction).
 
-These were designed by security engineers to drop in to existing apps with minimal code changes.
+This framework is designed by security engineers to drop in to existing apps with minimal code changes.
 That way you don't need to audit or rewrite everything from scratch to become secure and compliant.  The parts of the system
 that touch sensitive data will have already been secured and audited by our team.
 
