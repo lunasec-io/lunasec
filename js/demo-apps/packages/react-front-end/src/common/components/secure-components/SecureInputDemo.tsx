@@ -136,7 +136,6 @@ export const SecureInputDemo: React.FunctionComponent = () => {
                 }}
               />
             </FormGroup>
-            <SecureInput name="someInput" errorHandler={(e) => setError(e.message)} />
             <div>
               <Button variant="outlined" color="primary" style={{ textTransform: 'none' }} type="submit">
                 Save

@@ -17,7 +17,7 @@
 import { camelCaseObject } from '@lunasec/browser-common';
 import React, { Component, CSSProperties } from 'react';
 
-import { RenderData, WrappedComponentProps } from '../../types';
+import { RenderData, WrappedComponentProps } from '../../types/internal-types';
 
 type InputRenderData = RenderData<'Input'>;
 export type InputProps = WrappedComponentProps<'Input'>;

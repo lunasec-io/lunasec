@@ -18,6 +18,7 @@ import React from 'react';
 
 export interface LunaSecConfigContextProps {
   lunaSecDomain: string;
+  sessionAuthProvider?: string;
   authenticationErrorHandler: (e: Error) => void;
 }
 

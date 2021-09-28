@@ -37,7 +37,24 @@ export interface AwsSecretsManagerConfig {
 }
 
 export type JwtSubject = 'user' | 'application';
-
-export type SecretConfig = EnvironmentSecretConfig | AwsSecretsManagerConfig | ManualSecretConfig;
+/**
+ * A configuration object that tells the LunaSec key generator where to find the signing key
+ *
+ * For example
+ * ```typescript
+ * {
+ *   source: 'environment'
+ * }
+ * ```
+ * which will read the signing key from `process.env.LUNASEC_SIGNING_KEY` as base64 encoded
+ *
+ * Or for example to just pass it in
+ * ```typescript
+ * {type:'manual',
+ * signingKey: createPrivateKey(signingKey) // This needs to be a node KeyLike object
+ * }
+ * ```
+ */
+export type SecretConfig = EnvironmentSecretConfig | AwsSecretsManagerConfig | ManualSecretConfig; // Maybe we should just replace this with letting the user pass in a string like every other parameter, this feels somewhat over-engineered currently
 
 export type SessionIdProvider = (req: Request) => Promise<string | null>;

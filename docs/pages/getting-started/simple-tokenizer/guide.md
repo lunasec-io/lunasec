@@ -1,4 +1,3 @@
-
 ---
 id: "guide"
 title: "Simple Setup"

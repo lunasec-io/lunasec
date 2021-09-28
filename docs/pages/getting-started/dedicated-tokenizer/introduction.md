@@ -10,8 +10,9 @@ sidebar_position: 1
 For now, LunaSec has native support for applications that use React on the frontend and Express or Apollo-GraphQL 
 on the backend. Other frontend frameworks are on the development roadmap, including Vue. Java backend support is in alpha.  
 
+:::info
 To see a full demonstration while you follow this guide, you can follow along in [the demo app](/pages/overview/demo-app/walkthrough).  
-
+:::
 ### Services
 Before we start changing code, let's get LunaSec's services running. The main dependencies we need are:
 * Dedicated Tokenizer Backend

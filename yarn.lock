@@ -8576,6 +8576,14 @@ chownr@^2.0.0:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-2.0.0.tgz#15bfbe53d2eab4cf70f18a8cd68ebe5b3cb1dece"
   integrity sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==
 
+chrome-remote-interface@^0.27.1:
+  version "0.27.2"
+  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.27.2.tgz#e5605605f092b7ef8575d95304e004039c9d0ab9"
+  integrity sha512-pVLljQ29SAx8KIv5tSa9sIf8GrEsAZdPJoeWOmY3/nrIzFmE+EryNNHvDkddGod0cmAFTv+GmPG0uvzxi2NWsA==
+  dependencies:
+    commander "2.11.x"
+    ws "^6.1.0"
+
 chrome-trace-event@^1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/chrome-trace-event/-/chrome-trace-event-1.0.3.tgz#1015eced4741e15d06664a957dbbf50d041e26ac"
@@ -8914,6 +8922,11 @@ comma-separated-tokens@^1.0.0:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/comma-separated-tokens/-/comma-separated-tokens-1.0.8.tgz#632b80b6117867a158f1080ad498b2fbe7e3f5ea"
   integrity sha512-GHuDRO12Sypu2cV70d1dkA2EUmXHgntrzbpvOB+Qy+49ypNfGgFQIC2fhhXbnyrJRynDCAARsT7Ou0M6hirpfw==
+
+commander@2.11.x:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
+  integrity sha512-b0553uYA5YAEGgyYIGYROzKQ7X5RAqedkfjiZxwi0kL1g3bOaBNNZfYkzt/CL0umgD5wc9Jec2FbB98CjkMRvQ==
 
 commander@8.2.0, commander@^8.0.0:
   version "8.2.0"
@@ -10163,6 +10176,25 @@ cypress-iframe@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/cypress-iframe/-/cypress-iframe-1.0.1.tgz#2a286cfd47a240aa9af0ad9f339f4c6f942089f8"
   integrity sha512-Ne+xkZmWMhfq3x6wbfzK/SzsVTCrJru3R3cLXsoSAZyfUtJDamXyaIieHXeea3pQDXF4wE2w4iUuvCYHhoD31g==
+
+cypress-log-to-output@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/cypress-log-to-output/-/cypress-log-to-output-1.1.2.tgz#b9635a907ed06961cd53cc1bff8d6f55a981a773"
+  integrity sha512-C1+ECMc/XXc4HqAEHdlw0X2wFhcoZZ/4qXHZkOAU/rRXMQXnbiO7JJtpLCKrLfOXlxB+jFwDAIdlPxPMfV3cFw==
+  dependencies:
+    chalk "^2.4.2"
+    chrome-remote-interface "^0.27.1"
+
+cypress-terminal-report@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/cypress-terminal-report/-/cypress-terminal-report-3.3.2.tgz#5e34f9fb8decc016bc167b53c28561128d8a7ee2"
+  integrity sha512-cEZA7fD6CesJCq1g4cKcQp92yUrDSnPA2NCeMklIWW8IyksKptt9XBZ4Nd9VvKRutABM0uFMom/IfdxAJ7gSQw==
+  dependencies:
+    chalk "^3.0.0"
+    fs-extra "^9.0.1"
+    methods "^1.1.2"
+    semver "^7.3.5"
+    tv4 "^1.3.0"
 
 cypress@^8.3.0:
   version "8.4.0"
@@ -16809,7 +16841,7 @@ merge@^2.1.0:
   resolved "https://registry.yarnpkg.com/merge/-/merge-2.1.1.tgz#59ef4bf7e0b3e879186436e8481c06a6c162ca98"
   integrity sha512-jz+Cfrg9GWOZbQAnDQ4hlVnQky+341Yk5ru8bZSe6sIDTCIg8n9i/u7hSQGSVOF3C7lH6mGtqjkiT9G4wFLL0w==
 
-methods@~1.1.2:
+methods@^1.1.2, methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
   integrity sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=
@@ -20402,7 +20434,7 @@ react-router-config@^5.1.1:
   dependencies:
     "@babel/runtime" "^7.1.2"
 
-react-router-dom@^5.2.0:
+react-router-dom@^5.2.0, react-router-dom@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-5.3.0.tgz#da1bfb535a0e89a712a93b97dd76f47ad1f32363"
   integrity sha512-ObVBLjUZsphUUMVycibxgMdh5jJ1e3o+KpAZBVeHcNQZ4W+uUGGWsokurzlF4YOldQYRQL4y6yFRWM4m3svmuQ==
@@ -23519,6 +23551,11 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
+tv4@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/tv4/-/tv4-1.3.0.tgz#d020c846fadd50c855abb25ebaecc68fc10f7963"
+  integrity sha1-0CDIRvrdUMhVq7JeuuzGj8EPeWM=
+
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
@@ -25034,7 +25071,7 @@ ws@7.x, "ws@^5.2.0 || ^6.0.0 || ^7.0.0", ws@^7.3.1, ws@^7.4.6:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.5.tgz#8b4bc4af518cfabd0473ae4f99144287b33eb881"
   integrity sha512-BAkMFcAzl8as1G/hArkxOxq3G7pjUqQ3gzYbLL0/5zNkph70e+lCoxBGnm6AW1+/aiNeV4fnKqZ8m4GZewmH2w==
 
-ws@^6.2.1:
+ws@^6.1.0, ws@^6.2.1:
   version "6.2.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-6.2.2.tgz#dd5cdbd57a9979916097652d78f1cc5faea0c32e"
   integrity sha512-zmhltoSR8u1cnDsD43TX59mzoMZsLKqUweyYBAIvTngR3shc0W6aOZylZmq/7hqyVxPdi+5Ud2QInblgyE72fw==

@@ -15,17 +15,21 @@
  *
  */
 import { ReadElementStyle } from '@lunasec/browser-common';
-import { LunaSecError } from '@lunasec/isomorphic-common';
 import React, { CSSProperties, RefObject } from 'react';
 
-import Downloader from './components/elements/downloader';
-import Input from './components/elements/input';
-import Paragraph from './components/elements/paragraph';
-import TextArea from './components/elements/textarea';
-import Uploader from './components/elements/uploader';
-import { LunaSecConfigContextType } from './providers/LunaSecConfigContext';
-import { SecureFormContextType } from './providers/SecureFormContext';
+import Downloader from '../components/elements/downloader';
+import Input from '../components/elements/input';
+import Paragraph from '../components/elements/paragraph';
+import TextArea from '../components/elements/textarea';
+import Uploader from '../components/elements/uploader';
+import { LunaSecConfigContextType } from '../providers/LunaSecConfigContext';
+import { SecureFormContextType } from '../providers/SecureFormContext';
 
+import { AnySecureProps } from './component-types';
+
+/**
+ * @ignore
+ */
 export interface ClassLookup {
   Paragraph: typeof Paragraph;
   Downloader: typeof Downloader;
@@ -33,7 +37,9 @@ export interface ClassLookup {
   TextArea: typeof TextArea;
   Input: typeof Input;
 }
-
+/**
+ * @ignore
+ */
 export interface TagLookup {
   Paragraph: 'p';
   Downloader: 'a';
@@ -44,23 +50,9 @@ export interface TagLookup {
 
 export const componentNames: Array<keyof ClassLookup> = ['Paragraph', 'Downloader', 'Uploader', 'TextArea', 'Input'];
 export type ComponentNames = keyof ClassLookup;
-// The properties our "wrapper" can take.  This, combined with the native react props is what gets passed
-// to the user in "WrapperProps" type below.  Note it is a combination of our custom properties and the properties
-// for whatever react element we are trying to render
-interface LunaSecWrapperProps<C extends keyof ClassLookup> {
-  token?: C extends 'Uploader' ? never : string;
-  name?: string;
-  // special file picker types:
-  filetokens?: C extends 'Uploader' ? string[] : never;
-  onTokenChange?: C extends 'Uploader' ? (token: Array<string>) => void : never;
-  validator?: C extends 'Input' ? 'Email' | 'SSN' | 'EIN' | 'SSN_EIN' : never;
-  onValidate?: C extends 'Input' ? (isValid: boolean) => void : never; // It would be cool to require this whenever `validator` is passed above, not sure how without insane typescript foo though
-  placeholder?: C extends 'Input' ? string : undefined;
-  errorHandler: (errorObject: LunaSecError) => void;
-}
 
-export type WrapperProps<C extends keyof ClassLookup> = LunaSecWrapperProps<C> &
-  React.ComponentPropsWithoutRef<TagLookup[C]>;
+export type WrapperProps<C extends keyof ClassLookup> = AnySecureProps &
+  Partial<React.ComponentPropsWithoutRef<TagLookup[C]>>;
 
 interface Providers {
   formContext: SecureFormContextType;

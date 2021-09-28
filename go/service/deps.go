@@ -72,7 +72,6 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 		"'self'",
 		authConfig.AuthCallbackHost,
 		s3HostURL,
-		"https://localhost:4567",
 	}
 
 	if gatewayConfig.LocalstackURL != "" {

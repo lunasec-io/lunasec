@@ -30,6 +30,7 @@ import {
   TokenizerFailApiResponse,
   TokenizerGetMetadataResponse,
   TokenizerTokenizeResponse,
+  TokenizerVerifyGrantResponse,
 } from './types';
 
 // Uses an openAPI generated client to query the tokenizer.  The biggest gotchas here are that:
@@ -118,10 +119,7 @@ export class Tokenizer {
     }
   }
 
-  async verifyGrant(
-    sessionId: string,
-    tokenId: string
-  ): Promise<TokenizerFailApiResponse | { success: true; valid: boolean }> {
+  async verifyGrant(sessionId: string, tokenId: string): SuccessOrFailOutput<TokenizerVerifyGrantResponse> {
     try {
       const res = await this.openApi.verifyGrant(
         {
