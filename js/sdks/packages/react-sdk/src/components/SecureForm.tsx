@@ -27,8 +27,8 @@ export interface SecureFormProps extends React.ComponentPropsWithoutRef<'form'> 
 }
 
 /**
- * Secure Form Component, a wrapper around HTML Form that can handle SecureElements
- * Use it as you would a normal form in React.
+ * Secure Form Component, a wrapper around HTML Form that can handle SecureElements.
+ * Use it like a normal `<form>` element.
  * ```tsx
  * <SecureForm name="secure-form-example" onSubmit={(e) => this.persistTokens(e)}>
  *   Your input elements, a mix of LunaSec and normal is fine
@@ -36,6 +36,7 @@ export interface SecureFormProps extends React.ComponentPropsWithoutRef<'form'> 
  * </SecureForm>
  * ```
  * @category Component
+ *
  */
 export class SecureForm extends Component<SecureFormProps> {
   declare readonly context: React.ContextType<typeof SecureFormContext>;
@@ -48,7 +49,7 @@ export class SecureForm extends Component<SecureFormProps> {
     this.form = React.createRef();
   }
 
-  async onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  private async onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const commitPromises = Object.keys(this.tokenCommitCallbacks).map((frameId) => {
       const triggerCommit = this.tokenCommitCallbacks[frameId];

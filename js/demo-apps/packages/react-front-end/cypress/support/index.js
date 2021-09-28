@@ -16,3 +16,5 @@
  */
 /// <reference types="cypress" />
 import './commands'
+
+require('cypress-terminal-report/src/installLogsCollector')();

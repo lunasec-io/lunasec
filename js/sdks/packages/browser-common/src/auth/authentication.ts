@@ -33,10 +33,12 @@ let authFlowInProgress: Promise<boolean> | null = null;
 export class LunaSecAuthentication {
   private readonly authClient: SecureFrameAuthClient;
   private readonly errorHandler: (e: Error) => void;
+  private readonly sessionAuthProvider?: string;
 
-  constructor(authDomain: string, errorHandler: (e: Error) => void) {
+  constructor(authDomain: string, errorHandler: (e: Error) => void, sessionAuthProvider?: string) {
     this.authClient = new SecureFrameAuthClient(authDomain);
     this.errorHandler = errorHandler;
+    this.sessionAuthProvider = sessionAuthProvider;
   }
 
   async startSessionManagement(): Promise<() => void> {
@@ -54,7 +56,6 @@ export class LunaSecAuthentication {
   }
 
   // TODO (forrest) move this authentication logic into the LunaSecConfigContext provider and get rid of a lot of this logic
-
   async authenticateSession(): Promise<Promise<boolean> | void> {
     // Stop every component from making a request on first page load
     if (authFlowInProgress) {
@@ -96,8 +97,9 @@ export class LunaSecAuthentication {
       with 'no-cors' set. It is possible to experience an error in this request flow.
      */
     console.debug('ensuring the secure frame has a valid session');
+
     // We can get NO information back from this call because of CORS, so we have to call again afterwards
-    await this.authClient.ensureSession();
+    await this.authClient.ensureSession(this.sessionAuthProvider);
 
     console.debug('verifying the created session is valid');
     const verifyResponse = await this.authClient.verifySession();

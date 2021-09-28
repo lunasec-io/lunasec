@@ -36,6 +36,7 @@ services:
       context: .
       dockerfile: js/docker/demo.dockerfile
       target: demo-back-end
+#    network_mode: host
     ports:
       - "3001:3001" # express
       - "3002:3002" # graphql
@@ -43,11 +44,11 @@ services:
       - "3004:3004" # Not using this one yet, just figured we might need it soon
     env_file:
       - .env.docker
-  #      healthcheck:
-  #        test: ["CMD-SHELL", "curl http://localhost:3001"]
-  #        interval: 10s
-  #        timeout: 5s
-  #        retries: 5
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sk http://localhost:3001"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   localstack:
     container_name: localstack
     hostname: localstack
@@ -55,7 +56,7 @@ services:
     ports:
       - "4566:4566"
     environment:
-      - SERVICES=s3,dynamodb,secretsmanager,sts,cloudformation
+      - SERVICES=s3,dynamodb,secretsmanager,sts,cloudformation,cloudwatch
       - DEBUG=1
 #      - DATA_DIR=/tmp/localstack
       - AWS_ACCESS_KEY_ID=test
@@ -63,7 +64,7 @@ services:
     volumes:
       - "/tmp/localstack:/tmp/localstack"
     healthcheck:
-      test: ["CMD-SHELL", "curl http://localhost:4566"]
+      test: ["CMD-SHELL", "curl -sk http://localhost:4566"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -82,7 +83,7 @@ services:
     ports:
       - "4567:4566"
     healthcheck:
-      test: ["CMD-SHELL", "curl -k https://localhost:4566"]
+      test: ["CMD-SHELL", "curl -sk https://localhost:4566"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -113,14 +114,12 @@ services:
         BUILD_TAG: dev
     volumes:
       - ./go/config/tokenizerbackend/:/config/tokenizerbackend/
-    ports:
-      - 37766:37766
+    network_mode: host
     depends_on:
       cdk-init:
         condition: service_completed_successfully
-
-#      application-back-end:
-#        condition: service_healthy
+      application-back-end:
+        condition: service_healthy
 #    healthcheck:
 #      test: ["CMD-SHELL", "curl http://localhost:37766"]
 #      interval: 10s

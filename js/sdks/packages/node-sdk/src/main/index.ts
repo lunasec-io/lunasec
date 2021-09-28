@@ -16,48 +16,83 @@
  */
 import { KeyService } from '../authentication';
 import { SecretConfig, SessionIdProvider } from '../authentication/types';
-import { LunaSecExpressAuthPlugin } from '../express-auth-plugin';
-import { LunaSecGrantService } from '../grant-service';
+import { ExpressAuthPlugin } from '../express-auth-plugin';
+import { Grants } from '../grant-service';
 import { setGrantServiceForDirective, TokenDirective } from '../graphql';
 import { SecureResolver } from '../secure-resolver';
 import { SecureResolverSdkConfig } from '../secure-resolver/types';
 
-// Please attempt to keep this configuration organized and named in a way that is easy for the API user to understand
-// Todo: Do TSDoc for all these params
+// Please attempt to keep this configuration organized and named in a way that is easy for the API user to understand.
 
+/**
+ * The configuration for the LunaSec Node Plugin
+ */
 export interface LunaSecConfig {
+  /** The URL where the tokenizer backend can be queried */
   secureFrameURL: string;
+  /** The configuration for authentication */
   auth: {
+    /** Optionally add a baseroute to the auth plugin's routes, useful if you need all of your application routes to be behind some route like `/api` */
     pluginBaseUrl?: string;
+    /**
+     * A configuration object that tells the LunaSec JWT generator where to find the signing key.  LunaSec uses JWTs minted on your server in a few places.
+     *
+     * @example
+     * ```
+     * {
+     *   source: 'environment'
+     * }
+     * ```
+     * which will read the signing key from `process.env.LUNASEC_SIGNING_KEY` as base64 encoded
+     *
+     * Or for example to just pass it in directly
+     * @example
+     * ```
+     * {type:'manual',
+     * signingKey: createPrivateKey(signingKey)
+     * }
+     * ```
+     * This needs to be a node KeyLike object
+     */
     secrets: SecretConfig;
-    payloadClaims?: string[]; // Note that not setting this allows unfiltered claims to be set, do we want that?
-    sessionIdProvider: SessionIdProvider; // A callback used in situations where we have the req object and would like to know the sessionId
+    /** Optionally set claims for the JWT, this is currently not used */
+    // payloadClaims?: string[]; // Note that not setting this allows unfiltered claims to be set, do we want that?
+
+    /** A callback used automatically by LunaSec when we have the req object and would like to know the sessionId.  Used in automatic granting and also the Auth Plugin */
+    sessionIdProvider: SessionIdProvider;
   };
+  /** Optionally configure the Secure Resolver functionality of the plugin, must be configured if you want to use Secure Resolvers */
   secureResolverConfig?: SecureResolverSdkConfig;
 }
 
-// This is the main class that customers will create to use LunaSec on their node server
-// When created, it exposes the other customer-facing classes like the grant service and express plugin.
-// It also works as a dependency injector, for example: passing auth into those plugins' constructors so that they are able to make authentication JWTs to talk to the server.
+/**
+ * This is the main class that you will instantiate on your node server.
+ * When created, it instantiates other classes and sets them as public properties you can use like the grant service and express plugin.
+ * @example ``` myLunaSec.grants.verify('sessionId','someToken')```
+ */
 export class LunaSec {
   public keyService: KeyService;
-  public grants: LunaSecGrantService;
-  public expressAuthPlugin: LunaSecExpressAuthPlugin;
+  /** an instance of the grant service for handling grants, LunaSecs permission system */
+  public grants: Grants;
+  /** an instance of the auth plugin that can be optionally registered onto your express server if you would like to bootstrap from your own session management */
+  public expressAuthPlugin: ExpressAuthPlugin;
+  /** A graphQL directive for automatically dealing with grants in your schema */
   public tokenDirective: typeof TokenDirective; // Graphql initializes this class, not us
+  /** LunaSec Secure Resolvers, for running functions that handle sensitive data in a secure context */
   public secureResolvers?: SecureResolver;
 
   constructor(config: LunaSecConfig) {
     this.keyService = new KeyService(config.auth.secrets);
     // This express plugin is created here if users optionally wish to access it and register it onto their app
-    this.expressAuthPlugin = new LunaSecExpressAuthPlugin({
+    this.expressAuthPlugin = new ExpressAuthPlugin({
       auth: this.keyService,
       sessionIdProvider: config.auth.sessionIdProvider,
-      payloadClaims: config.auth.payloadClaims,
+      // payloadClaims: config.auth.payloadClaims,
       secureFrameURL: config.secureFrameURL,
       pluginBaseUrl: config.auth.pluginBaseUrl,
     });
 
-    this.grants = new LunaSecGrantService(this.keyService, config.auth.sessionIdProvider);
+    this.grants = new Grants(this.keyService, config.auth.sessionIdProvider);
     setGrantServiceForDirective(this.grants);
     this.tokenDirective = TokenDirective;
     if (config.secureResolverConfig) {

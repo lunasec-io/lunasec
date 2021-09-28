@@ -24,13 +24,17 @@ import { SessionIdProvider } from '../authentication/types';
 import { SessionError } from './SessionError';
 
 /**
+
  * This Service is a wrapper around the Tokenizer SDK's grant functionality
  * making it more user-friendly
  */
-export class LunaSecGrantService {
+export class Grants {
   private readonly auth: KeyService;
   private readonly sessionIdProvider: SessionIdProvider | undefined;
 
+  /**
+   * @ignore
+   */
   constructor(auth: KeyService, sessionIdProvider?: SessionIdProvider) {
     this.auth = auth;
     this.sessionIdProvider = sessionIdProvider;
@@ -110,7 +114,6 @@ export class LunaSecGrantService {
     }
 
     const res = await tokenizer.verifyGrant(sessionId, tokenId);
-    console.log('tokenizer validate response is ', res);
     if (!res.success) {
       throw res.error;
     }
