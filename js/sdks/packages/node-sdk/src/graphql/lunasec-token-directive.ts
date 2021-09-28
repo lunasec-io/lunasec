@@ -46,13 +46,14 @@ export function setGrantServiceForDirective(service: LunaSecGrantService) {
 
 export class TokenDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition(field: GraphQLField<any, string>) {
-    const resolve = field.resolve || defaultFieldResolver;
+    const usersResolver = field.resolve || defaultFieldResolver;
+    const customDuration: number | undefined = this.args.duration;
     field.resolve = async function (...args) {
       // @ts-ignore
       const req = args[2].req;
 
       // Fire the user's resolver and get the resulting token
-      const result = await resolve.apply(this, args);
+      const result = await usersResolver.apply(this, args);
       if (!result) {
         // handles case where token is an empty string or a null
         return result;
@@ -62,7 +63,8 @@ export class TokenDirective extends SchemaDirectiveVisitor {
           'LunaSec Token Directive attempted to use the grantService but it was not initialized, have you configured LunaSec properly?'
         );
       }
-      await grantService.createWithAutomaticSessionId(req, result);
+      console.log('creating grant with custom duration of ', customDuration);
+      await grantService.createWithAutomaticSessionId(req, result, customDuration);
       return result;
     };
   }

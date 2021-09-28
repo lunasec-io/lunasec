@@ -42,6 +42,8 @@ SetGrantRequest:
       type: string
     tokenId:
       type: string
+    customDuration:
+      type: number
   required:
     - sessionId
     - tokenId
