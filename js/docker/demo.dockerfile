@@ -7,7 +7,7 @@ WORKDIR /repo
 RUN lerna bootstrap --ignore-scripts --ci
 
 WORKDIR /repo/js/sdks
-RUN yarn run compile:dev:sdks
+RUN yarn run compile
 
 WORKDIR /repo
 
