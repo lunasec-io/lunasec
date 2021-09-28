@@ -55,6 +55,8 @@ export class SecureFrameAuthClient {
         error: new LunaSecError({ code: '400', name: 'authError', message: json.error }),
       };
     }
+    // TODO: Add JSON schema validation
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return json;
   }
 

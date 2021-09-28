@@ -50,7 +50,7 @@ module.exports = {
       'docusaurus-plugin-typedoc',
       {
         id: 'typedoc-react-sdk',
-        entryPoints: ['../js/sdks/packages/react-sdk/src/index.ts'],
+        entryPoints: ['../js/sdks/packages/react-sdk/src/types/component-types.ts'],
         defaultCategory:'Component',
         tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
@@ -59,7 +59,10 @@ module.exports = {
         out: 'react-sdk',
         sidebar: {
           categoryLabel: "React SDK"
-        }
+        },
+        excludePrivate:true,
+        readme: 'none',
+        sort: ['required-first', 'source-order']
       },
     ],
     [
@@ -74,8 +77,10 @@ module.exports = {
         out: 'node-sdk',
         sidebar: {
           categoryLabel: "Node SDK"
-
-        }
+        },
+        excludePrivate:true,
+        readme: 'none',
+        sort: ['required-first', 'source-order']
       },
     ],
     [
@@ -90,8 +95,11 @@ module.exports = {
         out: 'tokenizer-sdk',
         sidebar: {
           categoryLabel: "Tokenizer SDK"
-
-        }
+        },
+        excludePrivate:true,
+        readme: 'none',
+        sort: ['required-first', 'source-order'],
+        exclude:['**/generated/**/*']
       },
     ],
   ],

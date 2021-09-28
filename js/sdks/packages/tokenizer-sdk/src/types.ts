@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  */
-export { MetaData } from './generated';
 import { LunaSecError } from '@lunasec/isomorphic-common';
 
 import { MetaData } from './generated';
@@ -60,7 +59,7 @@ export interface TokenizerDetokenizeResponse {
 export interface TokenizerDetokenizeToUrlResponse {
   success: true;
   tokenId: string;
-  headers: Record<any, any>;
+  headers: Record<string, string>;
   downloadUrl: string;
 }
 

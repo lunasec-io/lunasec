@@ -16,7 +16,7 @@
  */
 import React, { Component } from 'react';
 
-import { RenderData, WrappedComponentProps } from '../../types';
+import { RenderData, WrappedComponentProps } from '../../types/internal-types';
 type UploaderRenderData = RenderData<'Uploader'>;
 export type UploaderProps = WrappedComponentProps<'Uploader'>; // change these props to be some whitelisted filepond props
 
@@ -53,10 +53,7 @@ export default class Uploader extends Component<UploaderProps> {
     const { renderData, className, children, ...otherProps } = this.props;
 
     return (
-      <div
-        className={`${renderData.containerClass} ${this.props.className || ''}`}
-        style={renderData.parentContainerStyle}
-      >
+      <div className={`${renderData.containerClass} ${className || ''}`} style={renderData.parentContainerStyle}>
         <input
           {...otherProps}
           type="file"

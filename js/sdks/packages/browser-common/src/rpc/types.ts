@@ -28,11 +28,11 @@ export interface UnknownFrameMessage {
   command: string;
   correlationToken: string;
   frameNonce?: undefined;
-  data: any;
+  data: unknown;
 }
 
 // Tell the iframe to commit its data to the server and send back a token
-export type CommitTokenMessage = Record<any, never>;
+export type CommitTokenMessage = Record<string | number, never>;
 // Initialize or update some attribute of the iframe
 
 interface BaseAttr {
@@ -121,12 +121,12 @@ interface BaseFrameNotification {
 
 export interface NotifyOnBlur extends BaseFrameNotification {
   command: 'NotifyOnBlur';
-  data: Record<any, never>;
+  data: Record<string | number, never>;
 }
 
 export interface NotifyOnStart extends BaseFrameNotification {
   command: 'NotifyOnStart';
-  data: Record<any, never>;
+  data: Record<string | number, never>;
 }
 
 export interface NotifyOnToken extends BaseFrameNotification {
@@ -138,7 +138,7 @@ export interface NotifyOnToken extends BaseFrameNotification {
 
 export interface NotifyOnFullyLoaded extends BaseFrameNotification {
   command: 'NotifyOnFullyLoaded';
-  data: Record<any, never>;
+  data: Record<string | number, never>;
 }
 
 export interface NotifyOnValidate extends BaseFrameNotification {
@@ -148,7 +148,7 @@ export interface NotifyOnValidate extends BaseFrameNotification {
 
 export interface NotifyOnSubmit extends BaseFrameNotification {
   command: 'NotifyOnSubmit';
-  data: Record<any, never>;
+  data: Record<string | number, never>;
 }
 
 export interface NotifyOnError extends BaseFrameNotification {

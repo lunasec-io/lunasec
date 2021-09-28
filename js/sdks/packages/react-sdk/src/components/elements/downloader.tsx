@@ -16,7 +16,7 @@
  */
 import React, { Component } from 'react';
 
-import { RenderData, WrappedComponentProps } from '../../types';
+import { RenderData, WrappedComponentProps } from '../../types/internal-types';
 type AnchorRenderData = RenderData<'Downloader'>;
 export type AnchorProps = WrappedComponentProps<'Downloader'>;
 
@@ -33,6 +33,7 @@ export default class Downloader extends Component<AnchorProps> {
     if (!renderData.frameStyleInfo) {
       return null;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width, ...frameStyle } = renderData.frameStyleInfo;
     // const iframeStyle: CSSProperties = {
     //   display: 'block',
@@ -57,16 +58,13 @@ export default class Downloader extends Component<AnchorProps> {
     // TODO: handle this in the wrapped component by using the styled component callback
 
     return (
-      <div
-        className={`${renderData.containerClass} ${this.props.className || ''}`}
-        style={renderData.parentContainerStyle}
-      >
+      <div className={`${renderData.containerClass} ${className || ''}`} style={renderData.parentContainerStyle}>
         <a
           {...otherProps}
           ref={renderData.dummyRef}
           style={renderData.dummyElementStyle}
           tabIndex={-1}
-          className={this.props.className || ''}
+          className={className || ''}
         >
           &ensp;
         </a>

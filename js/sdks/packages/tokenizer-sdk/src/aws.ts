@@ -16,7 +16,7 @@
  */
 import * as http from 'http';
 
-import { BadHttpResponseError, getUrl, makeRawRequest } from '@lunasec/server-common';
+import { BadHttpResponseError } from '@lunasec/server-common';
 import globalAxios from 'axios';
 
 const axios = globalAxios.create({ withCredentials: false });
@@ -26,6 +26,7 @@ export async function uploadToS3WithSignedUrl(
   headers: http.OutgoingHttpHeaders,
   input: string | Buffer
 ) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { host, ...scrubbedHeaders } = headers;
 
   const res = await axios.put(signedUrl, input, {
@@ -42,6 +43,7 @@ export async function uploadToS3WithSignedUrl(
 }
 
 export async function downloadFromS3WithSignedUrl(signedUrl: string, headers: http.OutgoingHttpHeaders) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { host, ...scrubbedHeaders } = headers;
   const res = await axios.get(signedUrl, {
     headers: scrubbedHeaders,
@@ -51,5 +53,6 @@ export async function downloadFromS3WithSignedUrl(signedUrl: string, headers: ht
     throw new BadHttpResponseError(res.status, res.data); // TODO: Replace with LunaSecError maybe, just to be consistent
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return res.data;
 }

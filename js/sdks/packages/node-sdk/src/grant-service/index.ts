@@ -21,10 +21,18 @@ import { Request } from 'express';
 import { KeyService } from '../authentication';
 import { SessionIdProvider } from '../authentication/types';
 
-export class LunaSecGrantService {
+import { SessionError } from './SessionError';
+
+/**
+ * Create and verify grants, LunaSec's permission system.
+ */
+export class Grants {
   private readonly auth: KeyService;
   private readonly sessionIdProvider: SessionIdProvider | undefined;
 
+  /**
+   * @ignore
+   */
   constructor(auth: KeyService, sessionIdProvider?: SessionIdProvider) {
     this.auth = auth;
     this.sessionIdProvider = sessionIdProvider;
@@ -137,19 +145,17 @@ export class LunaSecGrantService {
 
   private async getSessionIdFromReq(req: Request): Promise<string> {
     if (!this.sessionIdProvider) {
-      throw new Error(
+      throw new SessionError(
         'Attempted to grant or verifyGrant of a token automatically without the sessionIdProvider configured, check your LunaSec Config'
       );
     }
     const sessionId = await this.sessionIdProvider(req);
     // TODO: Will also need to support the case of the user not being logged in somehow, currently we just tell the user to make a temporary session but maybe there is a better solution
     if (typeof sessionId !== 'string') {
-      const err = new Error(
-        'Session ID from the SessionIdProvider passed in LunaSecOptions did not resolve to a string'
+      throw new SessionError(
+        'Session ID from the SessionIdProvider passed in LunaSecOptions did not resolve to a string',
+        401
       );
-      //@ts-ignore node errors have this .code property, don't know what typescript is complaining about
-      err.code = 401;
-      throw err;
     }
     return sessionId;
   }

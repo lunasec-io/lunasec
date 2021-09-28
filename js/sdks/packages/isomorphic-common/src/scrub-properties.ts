@@ -14,11 +14,15 @@
  * limitations under the License.
  *
  */
-import { fromIni } from '@aws-sdk/credential-provider-ini';
-import { SimpleTokenizerBackend } from '@lunasec/node-sdk';
-
-export const simpleTokenizerBackend = new SimpleTokenizerBackend({
-  awsRegion: 'us-west-2',
-  s3Bucket: process.env.CIPHERTEXT_S3_BUCKET || 'YOU MUST SPECIFY A BUCKET',
-  awsCredentials: fromIni(),
-});
+export function scrubProperties<O extends Record<string, unknown>, P extends string[]>(
+  obj: O,
+  propsToRemove: P
+): Omit<O, keyof P> {
+  const newObj: Record<string, unknown> = {};
+  Object.keys(obj).forEach((key) => {
+    if (!propsToRemove.includes(key)) {
+      newObj[key] = obj[key];
+    }
+  });
+  return newObj as Omit<O, keyof P>;
+}
