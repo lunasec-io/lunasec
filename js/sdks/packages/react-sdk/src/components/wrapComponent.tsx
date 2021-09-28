@@ -122,7 +122,8 @@ export default function WrapComponent<W extends keyof ClassLookup>(
 
       this.auth = new LunaSecAuthentication(
         props.lunaSecConfigContext.lunaSecDomain,
-        props.lunaSecConfigContext.authenticationErrorHandler
+        props.lunaSecConfigContext.authenticationErrorHandler,
+        props.lunaSecConfigContext.sessionAuthProvider
       );
 
       this.state = {

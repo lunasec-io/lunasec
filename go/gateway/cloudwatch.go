@@ -15,7 +15,6 @@
 package gateway
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
 	"go.uber.org/config"
@@ -57,23 +56,23 @@ func NewAwsCloudwatchGateway(logger *zap.Logger, provider config.Provider, sess 
 
 func (c *cloudwatchGateway) PutMetric(name string, value int) {
 	// TODO (cthompson) we can potentially do some smart caching here to avoid having to call out to AWS for every metric call
-	input := &cloudwatch.PutMetricDataInput{
-		Namespace: aws.String(c.namespace),
-		MetricData: []*cloudwatch.MetricDatum{
-			{
-				MetricName: aws.String(name),
-				Value: aws.Float64(float64(value)),
-			},
-		},
-	}
-	_, err := c.cw.PutMetricData(input)
-	if err != nil {
-		c.logger.Error(
-			"failed to push metric",
-			zap.Error(err),
-			zap.String("name", name),
-			zap.Int("value", value),
-		)
-	}
+	//input := &cloudwatch.PutMetricDataInput{
+	//	Namespace: aws.String(c.namespace),
+	//	MetricData: []*cloudwatch.MetricDatum{
+	//		{
+	//			MetricName: aws.String(name),
+	//			Value: aws.Float64(float64(value)),
+	//		},
+	//	},
+	//}
+	//_, err := c.cw.PutMetricData(input)
+	//if err != nil {
+	//	c.logger.Error(
+	//		"failed to push metric",
+	//		zap.Error(err),
+	//		zap.String("name", name),
+	//		zap.Int("value", value),
+	//	)
+	//}
 	return
 }
