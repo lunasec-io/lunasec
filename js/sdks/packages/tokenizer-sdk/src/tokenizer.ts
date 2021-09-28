@@ -21,7 +21,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { AUTHORIZATION_HEADER, CONFIG_DEFAULTS, SESSION_HASH_HEADER } from './constants';
-import { Configuration, DefaultApi, ErrorResponse, MetaData } from './generated';
+import { Configuration, DefaultApi, ErrorResponse, ErrorResponseError, MetaData } from './generated';
 import {
   SuccessOrFailOutput,
   TokenizerClientConfig,
@@ -69,20 +69,24 @@ export class Tokenizer {
     return new URL(this.config.host).origin;
   }
 
-  private handleError<T extends AxiosError | Error>(e: T): TokenizerFailApiResponse {
+  private handleError(e: AxiosError | Error): TokenizerFailApiResponse {
     return {
       success: false,
       error: this.constructError(e),
     };
   }
 
-  private constructError<T extends AxiosError<ErrorResponse> | Error>(e: T): LunaSecError {
+  private constructError(e: AxiosError<ErrorResponse> | Error): LunaSecError {
     if ('response' in e && e.response) {
+      const errorWithCoercedType = e.response.data.error as ErrorResponseError & {
+        errorMessage?: string;
+      };
+
       // Parse the axios error, if it has any meaningful data about the response
       return new LunaSecError({
         name: e.response.data.error.name || 'TokenizerError',
         // TODO: Update this to "message" to conform with openAPI spec once the Tokenizer Backend uses OpenAPI
-        message: e.response.data.error.message || 'Unknown Tokenizer Error',
+        message: errorWithCoercedType.message || errorWithCoercedType.errorMessage || 'Unknown Tokenizer Error',
         code: e.response.status.toString(),
       });
     }

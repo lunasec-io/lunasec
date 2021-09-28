@@ -24,7 +24,7 @@ import { Application } from 'express';
 
 import { registerExpressMiddleware } from './express-middleware';
 
-// (forrest) Unsure the purpose of this credential type since we do not use it and unwrap a type out of s3 instead
+// TODO: (forrest) Unsure the purpose of this credential type since we do not use it and unwrap a type out of s3 instead
 export interface AwsCredentials {
   accessKeyId: string;
   secretAccessKey: string;
