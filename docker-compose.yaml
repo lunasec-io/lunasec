@@ -45,7 +45,7 @@ services:
     env_file:
       - .env.docker
     healthcheck:
-      test: ["CMD-SHELL", "curl -sk http://localhost:3001"]
+      test: ["CMD-SHELL", "curl -k http://localhost:3001"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -64,7 +64,7 @@ services:
     volumes:
       - "/tmp/localstack:/tmp/localstack"
     healthcheck:
-      test: ["CMD-SHELL", "curl -sk http://localhost:4566"]
+      test: ["CMD-SHELL", "curl -k http://localhost:4566"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -83,7 +83,7 @@ services:
     ports:
       - "4567:4566"
     healthcheck:
-      test: ["CMD-SHELL", "curl -sk https://localhost:4566"]
+      test: ["CMD-SHELL", "curl -k https://localhost:4566"]
       interval: 10s
       timeout: 5s
       retries: 5
