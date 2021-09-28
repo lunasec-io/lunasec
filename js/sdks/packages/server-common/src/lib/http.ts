@@ -22,6 +22,7 @@ import * as https from 'https';
 // If we do import it, then the Browser webpack build step complains.
 // If we do this, then both Node.js and the browser seem to work. *shrug*
 export function getUrl() {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   return URL;
 }

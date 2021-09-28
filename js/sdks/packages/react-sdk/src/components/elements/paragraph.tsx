@@ -16,8 +16,7 @@
  */
 import React, { Component } from 'react';
 
-import { RenderData, WrappedComponentProps, WrapperPropsWithProviders } from '../../types';
-import { WrapperState } from '../wrapComponent';
+import { RenderData, WrappedComponentProps } from '../../types';
 type ParagraphRenderData = RenderData<'Paragraph'>;
 export type ParagraphProps = WrappedComponentProps<'Paragraph'>;
 
@@ -34,6 +33,7 @@ export default class Paragraph extends Component<ParagraphProps> {
     if (!renderData.frameStyleInfo) {
       return null;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width, ...frameStyle } = renderData.frameStyleInfo;
 
     return (
@@ -53,16 +53,13 @@ export default class Paragraph extends Component<ParagraphProps> {
     const { renderData, className, children, ...otherProps } = this.props;
 
     return (
-      <div
-        style={renderData.parentContainerStyle}
-        className={`${renderData.containerClass} ${this.props.className || ''}`}
-      >
+      <div style={renderData.parentContainerStyle} className={`${renderData.containerClass} ${className || ''}`}>
         <p
           {...otherProps}
           ref={renderData.dummyRef}
           style={renderData.dummyElementStyle}
           tabIndex={-1}
-          className={this.props.className || ''}
+          className={className || ''}
         >
           &ensp;
         </p>

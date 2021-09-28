@@ -1,16 +1,3 @@
-<!--
-  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
-  ~
-  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
-  ~ (the "License"); you may not use this file except in compliance with the
-  ~ License. You may obtain a copy of the License at
-  ~
-  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
-  ~
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  ~
--->
 ---
 id: "token-lifecycle"
 title: "Token Lifecycle"
@@ -32,7 +19,7 @@ Now it's ready to tokenize or detokenize data:
 There are a few steps that happen behind the scenes when data gets tokenized.  This is what happens when a
 user clicks Submit on a form with a `<SecureInput>`.
 1. Secure Frame (typically from the React SDK) calls the Tokenizer with `/tokenize` and gets back a token and an S3 presigned-URL.  
-   Permission for the server to safely store the token from this session is created behind the scenes in what's dubbed a store `Grant`, preventing certain attacks.
+   Permission for your server to safely store the token from this session is created behind the scenes in what's dubbed a store `Grant`, preventing certain attacks.
 2. Secure Frame uploads the sensitive data to S3, data is encrypted by S3's built in encryption. 
 3. Your web app reads the token from the `<SecureInput>` in the same way it would read a change in a normal input.  
    You send the token to your server for storage with the rest of your data.

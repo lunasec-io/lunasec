@@ -6,12 +6,12 @@ COPY . /repo
 
 WORKDIR /repo
 
-RUN lerna bootstrap
+RUN lerna bootstrap --ignore-scripts --ci
 
 WORKDIR /repo/js/sdks
 
 WORKDIR /repo/js/sdks/
-RUN npx tsc -b tsconfig.build.json
+RUN yarn run compile
 
 WORKDIR /repo
 
@@ -29,12 +29,12 @@ WORKDIR /repo/js/demo-apps/packages/react-front-end
 
 ENV DEMO_NAME="dedicated-passport-express"
 
-ENTRYPOINT npm run start
+ENTRYPOINT yarn run start
 
 FROM lerna-bootstrap as secure-frame-iframe
 
 WORKDIR /repo/js/sdks/packages/secure-frame-iframe
-RUN npm run compile
+RUN yarn run compile
 
 RUN npm i -g http-server
 

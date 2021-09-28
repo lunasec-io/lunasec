@@ -76,7 +76,7 @@ export function generateCssText(style: StyleSnapshot): string {
   const declarations = [];
 
   for (const key in style) {
-    if (!style.hasOwnProperty(key)) {
+    if (!Object.hasOwnProperty.call(style, key)) {
       continue;
     }
     declarations.push(`${key}:${style[key]};`);
