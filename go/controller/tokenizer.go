@@ -166,7 +166,7 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 		}
 	}
 
-	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.TokenFullAccess); err != nil {
+	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.TokenFullAccess, 0); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}

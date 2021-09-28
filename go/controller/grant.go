@@ -77,7 +77,7 @@ func (s *grantController) SetGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.grant.SetTokenGrantForSession(types.Token(input.TokenID), input.SessionID, constants.TokenFullAccess); err != nil {
+	if err := s.grant.SetTokenGrantForSession(types.Token(input.TokenID), input.SessionID, constants.TokenFullAccess, input.CustomDuration); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
