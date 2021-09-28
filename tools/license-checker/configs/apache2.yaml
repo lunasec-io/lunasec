@@ -22,6 +22,7 @@ header:
     - '**/dist/**'
     - 'js/**/build/**'
     - 'js/sdks/packages/secure-frame-iframe/public/**'
+    - 'js/sdks/packages/tokenizer-sdk/src/generated/**'
     - 'go/build/**'
     - '**/node_modules/**'
   comment: on-failure
