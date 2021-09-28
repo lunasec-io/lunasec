@@ -14,12 +14,11 @@
  * limitations under the License.
  *
  */
-import { ApolloClient, ApolloProvider, createHttpLink, gql, InMemoryCache, useQuery } from '@apollo/client';
-import axios from 'axios';
+import { ApolloClient, createHttpLink, gql, InMemoryCache } from '@apollo/client';
 // easy-peasy is a simple store based on Redux, with a bad name
 import { action, computed, createStore, thunk } from 'easy-peasy';
 
-import { ApiResponse, StoreModel, UserDocumentsResponse, UserResponse } from '../../common/types';
+import { StoreModel } from '../../common/types';
 
 const link = createHttpLink({
   uri: 'http://localhost:3002/graphql',

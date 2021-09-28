@@ -1,4 +1,8 @@
-FROM node:14 as lunasec-precached-dependencies
+FROM node:14-alpine as lunasec-precached-dependencies
+
+ENV NODE_OPTIONS "--unhandled-rejections=strict"
+
+RUN apk update && apk add openjdk11 curl
 
 COPY ./ /repo
 

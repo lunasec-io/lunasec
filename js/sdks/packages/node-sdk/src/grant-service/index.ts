@@ -107,7 +107,6 @@ export class Grants {
     }
 
     const res = await tokenizer.verifyGrant(sessionId, tokenId);
-    console.log('tokenizer validate response is ', res);
     if (!res.success) {
       throw res.error;
     }
