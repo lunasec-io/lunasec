@@ -8,7 +8,7 @@
     "schema:copy": "cd ./packages/node-sdk && yarn schema:copy",
     "schema:generate": "cd ./packages/tokenizer-sdk && yarn openapi:generate",
     "watch": "yarn schema:copy && yarn schema:generate && tsc -b tsconfig.build.json -w",
-    "compile:sdks": "yarn schema:copy && yarn schema:generate && tsc -b tsconfig.build.json",
+    "compile:sdks": "tsc -b tsconfig.build.json",
     "compile:dev:secure-frame-front-end": "cd packages/secure-frame-iframe && npm run compile:dev",
     "compile:dev": "npm run compile:sdks && npm run compile:dev:secure-frame-front-end",
     "compile:release:secure-frame-front-end": "cd packages/secure-frame-iframe && npm run compile:release",
