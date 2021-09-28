@@ -10,5 +10,4 @@ docker-compose.ci.yaml
 js/docker/demo.dockerfile
 
 **/build/
-**/public/
 **/node_modules/
