@@ -17,7 +17,7 @@ package event
 type GrantSetRequest struct {
 	SessionID string `json:"sessionId"`
 	TokenID  string                 `json:"tokenId"`
-	CustomDuration int `json:"customDuration,omitempty"`
+	CustomDuration int `json:"customDuration"`
 }
 
 type GrantSetResponse struct {
