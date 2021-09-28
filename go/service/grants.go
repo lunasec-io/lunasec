@@ -93,8 +93,8 @@ func getGrantKey(sessionID string, token types.Token, grantType constants.GrantT
 }
 
 func (s *grantService) getGrantDuration(customDurationString string) (int64, error) {
-	s.logger.Info(
-		"setting custom grant duration integer",
+	s.logger.Debug(
+		"read custom grant duration from request:",
 		zap.String("durationString", customDurationString))
 
 	if customDurationString == "" {
