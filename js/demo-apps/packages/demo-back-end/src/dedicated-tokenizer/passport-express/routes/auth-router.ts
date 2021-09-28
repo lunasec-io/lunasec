@@ -54,7 +54,6 @@ export function authRouter(models: Models, passport: ReturnType<typeof configure
   router.post('/signup', async (req, res) => {
     try {
       const user = await models.user.createNewUser(req.body);
-      console.log('created new user ', user);
       return req.login(user, function (err: Error) {
         if (err) {
           return res.json({

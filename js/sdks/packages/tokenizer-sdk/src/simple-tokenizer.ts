@@ -15,15 +15,26 @@
  *
  */
 import { Tokenizer } from './tokenizer';
-import { TokenizerClientConfig } from './types';
 
+// todo: figure out why typedoc for this interface isn't being generated
+export interface SimpleTokenizerClientConfig {
+  /** The address of the tokenizer backend */
+  host: string;
+  /** The base route of the tokenizer backend where routes have been added to your server, defaults to `/.lunasec` which is the default SimpleTokenizerBackend base route */
+  baseRoute?: string;
+  metaEncoding?: 'base64';
+}
 // strips down the methods of the tokenizer client to just the ones supported by the "simple" npm module
+/**
+ * Simple Tokenizer client for calling the Simple Tokenizer Backend running in your express app.  Does not interoperate with the rest of LunaSec's modules, just
+ * a bare bones implementation of tokenization.
+ */
 export class SimpleTokenizer {
   private readonly tokenizer: Tokenizer;
-  constructor(config?: Partial<TokenizerClientConfig>) {
-    if (!config) {
-      config = {};
-    }
+  /**
+   * @param config A configuration object.  You most likely only want to use the `host` parameter to point to your express backend.
+   */
+  constructor(config: SimpleTokenizerClientConfig) {
     if (!config.baseRoute) {
       config.baseRoute = '/.lunasec';
     }
