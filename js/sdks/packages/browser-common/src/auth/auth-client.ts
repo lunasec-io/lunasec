@@ -70,8 +70,9 @@ export class SecureFrameAuthClient {
   }
 
   // dispatch to the secure frame to ensure that a session exists
-  public async ensureSession() {
-    return fetch(this.getURL('/session/ensure'), {
+  public async ensureSession(authProvider?: string) {
+    const authProviderOption = authProvider ? `?auth_provider=${authProvider}` : '';
+    return fetch(this.getURL('/session/ensure' + authProviderOption), {
       credentials: 'include',
       mode: 'no-cors',
       redirect: 'follow',

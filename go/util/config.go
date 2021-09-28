@@ -24,6 +24,10 @@ import (
 	"path"
 )
 
+const (
+	baseConfigFileName = "config.yaml"
+)
+
 func FindFirstExistingFile(filePaths []string) string {
 	for _, file := range filePaths {
 		if _, err := os.Stat(file); err == nil {
@@ -62,10 +66,22 @@ func getFilesInDir(dir string) []fs.FileInfo {
 func GetConfigProviderFromDir(configDir string) config.Provider {
 	files := getFilesInDir(configDir)
 
-	var filenames []string
+	var (
+		filenames []string
+		baseConfigFile string
+	)
 	for _, file := range files {
+		if file.Name() == baseConfigFileName {
+			baseConfigFile = path.Join(configDir, baseConfigFileName)
+			continue
+		}
 		filenames = append(filenames, path.Join(configDir, file.Name()))
 	}
+
+	if baseConfigFile != "" {
+		filenames = append([]string{baseConfigFile}, filenames...)
+	}
+
 	return GetConfigProviderFromFiles(filenames)
 }
 
