@@ -29,6 +29,8 @@ ENTRYPOINT yarn run start
 
 FROM cypress/included:8.4.0 as integration-test
 
+ENV VERBOSE_CYPRESS_LOGS="always"
+
 COPY --from=lerna-bootstrap /repo /repo
 
 WORKDIR /repo/js/demo-apps/packages/react-front-end
