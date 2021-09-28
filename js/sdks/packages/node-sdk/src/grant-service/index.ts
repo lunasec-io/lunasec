@@ -23,6 +23,10 @@ import { SessionIdProvider } from '../authentication/types';
 
 import { SessionError } from './SessionError';
 
+/**
+ * This Service is a wrapper around the Tokenizer SDK's grant functionality
+ * making it more user-friendly
+ */
 export class LunaSecGrantService {
   private readonly auth: KeyService;
   private readonly sessionIdProvider: SessionIdProvider | undefined;
@@ -45,12 +49,12 @@ export class LunaSecGrantService {
   /**
    *   This private function handles the creating of just one grant, and is used by the public function below
    */
-  private async createOneGrant(sessionId: string, token: string) {
+  private async createOneGrant(sessionId: string, token: string, customDuration?: number) {
     if (!isToken(token)) {
       throw new Error('Attempted to create a LunaSec Token Grant from a string that didnt look like a token');
     }
     const tokenizer = await this.initializeTokenizer();
-    const resp = await tokenizer.createFullAccessGrant(sessionId, token);
+    const resp = await tokenizer.createGrant(sessionId, token, customDuration);
     if (!resp.success) {
       throw new LunaSecError({
         message: `unable to set detokenization grant for: ${token}`,
@@ -65,17 +69,22 @@ export class LunaSecGrantService {
    * Creates a grant for a token or array of tokens
    * @throws LunaSecError
    * @param sessionId The session ID of the user to create a grant for, should match whatever your sessionIdProvider in your LunaSec Config returns
-   * @param tokenId The token to create a grant for
+   * @param tokenOrTokens The token to create a grant for, or an array of tokens
+   * @param customDuration The time you would like the grant to last for, not to exceed the grant_maximum_time configured for the Tokenizer Backend.  Omit to use the default configured time.
    * */
-  public async create(sessionId: string, tokenOrTokens: string | string[]) {
+  public async create(
+    sessionId: string,
+    tokenOrTokens: string | string[],
+    customDuration?: number
+  ): Promise<void | void[]> {
     if (Array.isArray(tokenOrTokens)) {
       const grantPromises: Promise<void>[] = [];
       tokenOrTokens.forEach((t) => {
-        grantPromises.push(this.createOneGrant(sessionId, t));
+        grantPromises.push(this.createOneGrant(sessionId, t, customDuration));
       });
       return await Promise.all(grantPromises);
     } else {
-      return await this.createOneGrant(sessionId, tokenOrTokens);
+      return await this.createOneGrant(sessionId, tokenOrTokens, customDuration);
     }
   }
 
@@ -159,9 +168,10 @@ export class LunaSecGrantService {
    * @throws LunaSecError
    * @param req
    * @param token
+   * @param customDuration
    */
-  public async createWithAutomaticSessionId(req: Request, token: string | string[]) {
-    return this.create(await this.getSessionIdFromReq(req), token);
+  public async createWithAutomaticSessionId(req: Request, token: string | string[], customDuration?: number) {
+    return this.create(await this.getSessionIdFromReq(req), token, customDuration);
   }
 
   /**
