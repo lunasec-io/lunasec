@@ -16,12 +16,8 @@
  */
 import React, { Component } from 'react';
 
-import {
-  RenderData,
-  WrappedComponentProps,
-  WrapperPropsWithProviders
-} from '../../types';
-import {WrapperState} from "../wrapComponent";
+import { RenderData, WrappedComponentProps, WrapperPropsWithProviders } from '../../types';
+import { WrapperState } from '../wrapComponent';
 type ParagraphRenderData = RenderData<'Paragraph'>;
 export type ParagraphProps = WrappedComponentProps<'Paragraph'>;
 

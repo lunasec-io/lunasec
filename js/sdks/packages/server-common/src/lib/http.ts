@@ -91,7 +91,7 @@ export function makeRawRequest(
     let responseBuffer: Buffer;
     const req = requestModule.request(requestConfig, (res) => {
       res.on('data', (chunk: Buffer) => {
-        chunk.copy(responseBuffer)
+        chunk.copy(responseBuffer);
       });
       res.on('end', () => {
         resolve([res, responseBuffer]);
