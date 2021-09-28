@@ -53,7 +53,7 @@ export class Grants {
   /**
    *   This private function handles the creating of just one grant, and is used by the public function below
    */
-  private async createOneGrant(sessionId: string, token: string, customDuration?: number) {
+  private async createOneGrant(sessionId: string, token: string, customDuration?: string) {
     if (!isToken(token)) {
       throw new Error('Attempted to create a LunaSec Token Grant from a string that didnt look like a token');
     }
@@ -79,7 +79,7 @@ export class Grants {
   public async create(
     sessionId: string,
     tokenOrTokens: string | string[],
-    customDuration?: number
+    customDuration?: string
   ): Promise<void | void[]> {
     if (Array.isArray(tokenOrTokens)) {
       const grantPromises: Promise<void>[] = [];
@@ -173,7 +173,7 @@ export class Grants {
    * @param token
    * @param customDuration
    */
-  public async createWithAutomaticSessionId(req: Request, token: string | string[], customDuration?: number) {
+  public async createWithAutomaticSessionId(req: Request, token: string | string[], customDuration?: string) {
     return this.create(await this.getSessionIdFromReq(req), token, customDuration);
   }
 

@@ -26,7 +26,6 @@ import (
 	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/util"
-	"strconv"
 )
 
 type TokenGrant struct {
@@ -49,7 +48,7 @@ type grantService struct {
 
 // GrantService manages grants for tokens
 type GrantService interface {
-	SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType, customGrantDuration int) error
+	SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType, customGrantDuration string) error
 	ValidTokenGrantExistsForSession(token types.Token, sessionID string, grantType constants.GrantType) (valid bool, err error)
 }
 
@@ -93,21 +92,27 @@ func getGrantKey(sessionID string, token types.Token, grantType constants.GrantT
 	return util.Sha512Sum(sessionID + string(token) + string(grantType))
 }
 
-func (s *grantService) getGrantDuration(customGrantDuration int) (int64, error) {
+func (s *grantService) getGrantDuration(customDurationString string) (int64, error) {
 	s.logger.Info(
 		"setting custom grant duration integer",
-		zap.String("int", strconv.Itoa(customGrantDuration)))
-	if customGrantDuration == 0 {
+		zap.String("durationString", customDurationString))
+
+	if customDurationString == "" {
 		return time.Now().Add(s.grantDefaultDuration).Unix(), nil
 	}
 
-	if time.Duration(customGrantDuration) > s.grantMaxDuration {
+	customDuration, err := time.ParseDuration(customDurationString)
+	if err != nil {
+		return 0, errors.New("Grant duration parse failed, please use a supported duration format like 30m or 1h20m10s")
+	}
+
+	if customDuration > s.grantMaxDuration {
 		return 0, errors.New("Grant duration set longer than configured maximum time")
 	}
-	return time.Now().Add(time.Duration(customGrantDuration)).Unix(), nil
+	return time.Now().Add(customDuration).Unix(), nil
 }
 
-func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType, customGrantDuration int) (err error) {
+func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType, customGrantDuration string) (err error) {
 	grantExpiry, err := s.getGrantDuration(customGrantDuration)
 	if err != nil {
 		return err

@@ -43,7 +43,8 @@ SetGrantRequest:
     tokenId:
       type: string
     customDuration:
-      type: number
+      type: string
+      description: a string containing a custom time the grant should last, if desired.  Uses golang Duration parsing to parse things like "1h30m20s"
   required:
     - sessionId
     - tokenId

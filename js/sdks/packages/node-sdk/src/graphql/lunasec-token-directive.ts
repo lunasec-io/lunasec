@@ -48,7 +48,7 @@ export function setGrantServiceForDirective(service: Grants) {
 export class TokenDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition(field: GraphQLField<any, string>) {
     const usersResolver = field.resolve || defaultFieldResolver;
-    const customDuration: number | undefined = this.args.duration;
+    const customDuration: string | undefined = this.args.duration;
     field.resolve = async function (...args) {
       // @ts-ignore
       const req = args[2].req;

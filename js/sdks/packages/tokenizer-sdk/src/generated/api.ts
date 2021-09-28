@@ -238,10 +238,10 @@ export interface SetGrantRequest {
     tokenId: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof SetGrantRequest
      */
-    customDuration?: number;
+    customDuration?: string;
 }
 /**
  * 
