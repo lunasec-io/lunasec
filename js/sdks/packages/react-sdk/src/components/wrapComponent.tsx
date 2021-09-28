@@ -58,6 +58,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
   componentNameParam: W
 ) {
   // We do this to let typescript know these function parameters will not be modified
+  // typescript doesn't trust function params to stay locked, but it does trust const
   const UnstyledWrapped: ClassLookup[W] = UnstyledWrappedParam;
   const componentName: W = componentNameParam;
 
@@ -496,7 +497,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
   // component to add the providers, then by the class above.
   // You can never be too careful.
   return function ProviderWrapper(props: WrapperProps<W>) {
-    const returnedType: React.ReactElement<
+    const componentWithProviders: React.ReactElement<
       WrapperProps<W>,
       JSXElementConstructor<Component<WrapperPropsWithProviders<W>, WrapperState>>
     > = (
@@ -515,6 +516,6 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       </SecureFormContext.Consumer>
     );
 
-    return returnedType;
+    return componentWithProviders;
   };
 }
