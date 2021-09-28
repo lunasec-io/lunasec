@@ -25,6 +25,8 @@ import { handleDownload } from './secure-download';
 import { validate } from './validators';
 export type SupportedElement = TagLookup[keyof TagLookup];
 
+// @eslint-disable-next-line @typescript-eslint/no-explicit-any
+type CustomMetadata = Record<string, any>;
 export function timeout(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -50,13 +52,13 @@ export class SecureFrame<E extends keyof ClassLookup> {
   private validatorName?: ValidatorName = undefined;
   readonly tokenizer: Tokenizer;
   public readonly rpc: iFrameRPC;
+  public customMetadata?: CustomMetadata;
 
   constructor(componentName: E, loadingText: Element) {
     this.componentName = componentName;
     this.loadingText = loadingText;
     [this.secureElement, this.form] = this.insertSecureElement(componentName);
     this.origin = this.getURLSearchParam('origin');
-
     this.frameNonce = this.getURLSearchParam('n');
     this.tokenizer = new Tokenizer({ host: window.location.origin, lockToSession: true });
     this.rpc = new iFrameRPC(this.origin, () => this.tokenizeField());
@@ -125,6 +127,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
         this.attachValidator();
       }
     }
+    // end first time setup
 
     if (attrs.style) {
       patchStyle(this.secureElement, safeParseJson<StyleInfo>(attrs.style));
@@ -139,7 +142,11 @@ export class SecureFrame<E extends keyof ClassLookup> {
       }
     }
 
-    if (attrs.token && attrs.token !== this.token) {
+    if ('customMetadata' in attrs && attrs.customMetadata) {
+      this.customMetadata = attrs.customMetadata;
+    }
+
+    if ('token' in attrs && attrs.token && attrs.token !== this.token) {
       this.token = attrs.token;
       await this.handleToken(attrs.token, attrs);
     }
@@ -249,7 +256,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
   async tokenizeField(): Promise<string | null> {
     const value = (this.secureElement as HTMLInputElement).value;
     if (value.length > 0) {
-      const res = await this.tokenizer.tokenize(value, { dataType: 'string' });
+      const res = await this.tokenizer.tokenize(value, { dataType: 'string', customFields: this.customMetadata });
 
       if (!res.success) {
         this.sendErrorMessage(res.error);
