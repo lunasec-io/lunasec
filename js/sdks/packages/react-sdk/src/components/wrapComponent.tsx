@@ -473,6 +473,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
         'formContext',
         'lunaSecConfigContext',
         'errorHandler',
+        'fileTokens',
       ]);
 
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {
