@@ -14,11 +14,15 @@
  * limitations under the License.
  *
  */
+
+// NOTE: TypeScript is unhappy about Express being handed an async function. This disabled that check.
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import path from 'path';
 import { URL } from 'url';
 
 import cookieParser from 'cookie-parser';
 import { Request, Response, Router } from 'express';
+// eslint-disable-next-line import/no-unresolved
 import { JWTPayload } from 'jose/types';
 
 import { KeyService } from '../authentication';
@@ -43,7 +47,7 @@ export class LunaSecExpressAuthPlugin {
     this.secureFrameUrl = config.secureFrameURL;
   }
 
-  filterClaims(payload: JWTPayload): any {
+  filterClaims<T extends JWTPayload>(payload: T): Partial<T> {
     const whitelistedClaims = this.config.payloadClaims;
     if (whitelistedClaims === undefined) {
       return payload;
@@ -65,7 +69,7 @@ export class LunaSecExpressAuthPlugin {
       const claims = { session_id: sessionId };
       access_token = await this.auth.createAuthenticationJWT('user', claims);
     } catch (e) {
-      console.error(`error while attempting to create authentication token: ${e}`);
+      console.error(`error while attempting to create authentication token:`, e);
     }
 
     if (access_token === undefined) {

@@ -56,7 +56,7 @@ interface LunaSecWrapperProps<C extends keyof ClassLookup> {
   validator?: C extends 'Input' ? 'Email' | 'SSN' | 'EIN' | 'SSN_EIN' : never;
   onValidate?: C extends 'Input' ? (isValid: boolean) => void : never; // It would be cool to require this whenever `validator` is passed above, not sure how without insane typescript foo though
   placeholder?: C extends 'Input' ? string : undefined;
-  errorHandler: (errorObject: LunaSecError) => any;
+  errorHandler: (errorObject: LunaSecError) => void;
 }
 
 export type WrapperProps<C extends keyof ClassLookup> = LunaSecWrapperProps<C> &

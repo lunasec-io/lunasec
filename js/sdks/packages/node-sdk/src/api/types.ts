@@ -14,6 +14,10 @@
  * limitations under the License.
  *
  */
+
+// NOTE: We use stubbed types for the future, but TypeScript doesn't like it.
+/* eslint-disable @typescript-eslint/no-empty-interface */
+
 /**
  * When adding a new API request, start by adding it here.
  * Ideally, the Typescript should fail to compile when you do.
