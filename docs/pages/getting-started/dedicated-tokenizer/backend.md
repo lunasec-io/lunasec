@@ -1,16 +1,3 @@
-<!--
-  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
-  ~
-  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
-  ~ (the "License"); you may not use this file except in compliance with the
-  ~ License. You may obtain a copy of the License at
-  ~
-  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
-  ~
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  ~
--->
 ---
 id: "backend"
 title: "Backend Configuration"
@@ -28,10 +15,7 @@ import { LunaSec } from '@lunasec/node-sdk'
 export const lunaSec = new LunaSec({
     secureFrameURL: process.env.SECURE_FRAME_URL, // This is the domain of the Tokenizer Backend
     auth: {
-        secrets: { source: 'environment' },
-        payloadClaims: [],
-        // pluginBaseUrl: '/api', This prepends the .lunasec routes with any string you wish
-
+        secrets: { source: 'environment' }, // Reads base64 encoded RSA key from LUNASEC_SIGNING_KEY
         // Provide a small middleware that knows how to read the req object and return a promise containing a session id
         // or null if a user is not logged in.  LunaSec uses this to automatically create and verify token grants
         // and to bootstrap a session if you are using the express-auth-plugin
@@ -52,7 +36,9 @@ export function lunaSecSessionIdProvider(req: Request): Promise<string | null> {
 }
 ```
 
-TODO: provide extended information on full set of options, probably by linking to typedoc.
+:::tip
+To see full documentation of the LunaSec class and the configuration it takes, see the [NodeSDK typedoc](/pages/node-sdk/classes/LunaSec/).
+:::
 
 Now the SDK is configured and you have access to its modules, like the auth plugin: 
 ### Registering the auth plugin with express

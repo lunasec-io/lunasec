@@ -17,7 +17,7 @@
 import { camelCaseObject } from '@lunasec/browser-common';
 import React, { Component, CSSProperties } from 'react';
 
-import { RenderData, WrappedComponentProps } from '../../types';
+import { RenderData, WrappedComponentProps } from '../../types/internal-types';
 
 type InputRenderData = RenderData<'Input'>;
 export type InputProps = WrappedComponentProps<'Input'>;
@@ -61,20 +61,20 @@ export default class Input extends Component<InputProps> {
     // Pull the renderData out so we don't put weird stuff into our dummy element
     const { renderData, children, className, name, ...otherProps } = this.props;
 
-    // @ts-ignore inputRef is leaking into here somehow but not sure where it is being set so ts-ignore to remove it
+    // TODO: inputRef is leaking into here somehow but not sure where it is being set so ts-ignore to remove it
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { inputRef, ...scrubbedProps } = otherProps;
 
     return (
-      <div
-        style={renderData.parentContainerStyle}
-        className={`${renderData.containerClass} ${this.props.className || ''}`}
-      >
+      <div style={renderData.parentContainerStyle} className={`${renderData.containerClass} ${className || ''}`}>
         <input
           {...scrubbedProps}
           ref={renderData.dummyInputStyleRef}
           style={{ ...renderData.dummyElementStyle, ...this.props.style }}
           tabIndex={-1}
-          className={`${renderData.hiddenElementClass} ${this.props.className || ''}`}
+          className={`${renderData.hiddenElementClass} ${className || ''}`}
         />
         <input
           {...scrubbedProps}
@@ -83,7 +83,7 @@ export default class Input extends Component<InputProps> {
           ref={renderData.dummyRef}
           style={{ ...renderData.dummyElementStyle, ...this.props.style }}
           tabIndex={-1}
-          className={`${renderData.hiddenElementClass} ${this.props.className || ''}`}
+          className={`${renderData.hiddenElementClass} ${className || ''}`}
         />
         {this.renderFrame(renderData)}
         {children}

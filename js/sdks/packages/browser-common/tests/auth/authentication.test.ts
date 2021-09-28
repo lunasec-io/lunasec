@@ -15,7 +15,8 @@
  *
  */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { SecureFrameAuthClient } from '../../src/auth/auth-client'; // Just for type info
+import { LunaSecError } from '../../../isomorphic-common'; // Just for type info
+import { SecureFrameAuthClient } from '../../src/auth/auth-client';
 
 const realDate = Date.now;
 const refreshTime = 60000;
@@ -32,6 +33,7 @@ declare global {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 console.debug = () => {};
 
 describe('authentication.ts', () => {
@@ -97,7 +99,7 @@ describe('authentication.ts', () => {
     beforeEach(() => {
       // First call to verify fails but second one succeeds
       clientMethods.verifySession
-        .mockResolvedValueOnce(Promise.resolve({ success: false, error: 'anError' }))
+        .mockResolvedValueOnce(Promise.resolve({ success: false, error: new LunaSecError(new Error('anError')) }))
         .mockResolvedValue(Promise.resolve({ success: true, error: '' }));
       clientMethods.ensureSession.mockResolvedValue(Promise.resolve({} as Response));
     });
@@ -111,7 +113,9 @@ describe('authentication.ts', () => {
 
   describe('when user has no session cookie and ensure fails to create one', () => {
     beforeEach(() => {
-      clientMethods.verifySession.mockResolvedValue(Promise.resolve({ success: false, error: '' }));
+      clientMethods.verifySession.mockResolvedValue(
+        Promise.resolve({ success: false, error: new LunaSecError(new Error('')) })
+      );
     });
 
     it('should throw when no error handler set ', () => {

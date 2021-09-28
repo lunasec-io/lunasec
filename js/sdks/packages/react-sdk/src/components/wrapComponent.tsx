@@ -26,9 +26,9 @@ import {
   triggerBlur,
   triggerFocus,
 } from '@lunasec/browser-common';
-import { LunaSecError } from '@lunasec/isomorphic-common';
+import { LunaSecError, scrubProperties } from '@lunasec/isomorphic-common';
 import classnames from 'classnames';
-import React, { Component, CSSProperties, RefObject } from 'react';
+import React, { Component, CSSProperties, JSXElementConstructor, RefObject } from 'react';
 import styled from 'styled-components';
 
 import { LunaSecConfigContext } from '../providers/LunaSecConfigContext';
@@ -40,7 +40,7 @@ import {
   TagLookup,
   WrapperProps,
   WrapperPropsWithProviders,
-} from '../types';
+} from '../types/internal-types';
 import setNativeValue from '../utils/set-native-value';
 
 export interface WrapperState {
@@ -53,7 +53,15 @@ export interface WrapperState {
 // Since almost all the logic of being a Secure Component is shared(such as RPC),
 // this function wraps a component found in ./elements with that logic.
 // and adjusts for any small differences using the componentName to change behaviors between different types of components.
-export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapped: ClassLookup[W], componentName: W) {
+export default function WrapComponent<W extends keyof ClassLookup>(
+  UnstyledWrappedParam: ClassLookup[W],
+  componentNameParam: W
+) {
+  // We do this to let typescript know these function parameters will not be modified
+  // typescript doesn't trust function params to stay locked, but it does trust const
+  const UnstyledWrapped: ClassLookup[W] = UnstyledWrappedParam;
+  const componentName: W = componentNameParam;
+
   // Add some style to the element, for now just to do loading animations
   const Wrapped = styled(UnstyledWrapped)`
     .loading-animation {
@@ -83,7 +91,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     // This is created on component mounted to enable server-side rendering
     abortController!: AbortController;
     /**
-     * The frameId is a unique value that is associated with a given iframe instance.
+     * The frameId is a random unique value(nonce) that is associated with a given iframe instance.
      */
     readonly frameId!: string;
 
@@ -156,7 +164,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
 
     // Pass this to our wrapped component so it can tell us when its on the DOM and ready to give us styles
     // Our pattern causes the component to render twice, the first time without the iframe
-    // in order to capture the style from the dummy element.  Then the this callback is called
+    // in order to capture the style from the dummy element.  Then this callback is called
     // and style is put onto the state, causing the component to rerender with the iframe properly styled
     wrappedComponentDidMount() {
       this.setState({
@@ -212,11 +220,13 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
 
     validationHandler(isValid: boolean) {
-      if (!this.props.onValidate) {
+      if (!('onValidate' in this.props)) {
         throw new Error('Got validation message from iframe for component without an onValidation handler');
       }
       this.setState({ isValid: isValid });
-      this.props.onValidate(isValid);
+      if ('onValidate' in this.props && this.props.onValidate) {
+        this.props.onValidate(isValid);
+      }
     }
 
     // Generate some attributes for sending to the iframe via RPC.
@@ -243,20 +253,20 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         }
       }
 
-      if (this.props.token && this.props.filetokens) {
-        throw new Error("Can't have both tokens and filetokens specified in props");
+      if ('token' in this.props && 'fileTokens' in this.props) {
+        throw new Error("Can't have both tokens and fileTokens specified in props");
       }
-      if (this.props.token) {
+      if ('token' in this.props) {
         attrs.token = this.props.token;
       }
-      if (this.props.filetokens) {
-        attrs.fileTokens = this.props.filetokens;
+      if ('fileTokens' in this.props) {
+        attrs.fileTokens = this.props.fileTokens;
       }
-      if (attrs.component === 'Input' && this.props.placeholder) {
+      if (attrs.component === 'Input' && 'placeholder' in this.props && this.props.placeholder) {
         attrs.placeholder = this.props.placeholder;
       }
 
-      if (this.props.validator) {
+      if ('validator' in this.props) {
         if (attrs.component !== 'Input') {
           throw new Error('Validators can only be set on SecureInputs');
         }
@@ -289,7 +299,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
           void this.sendIFrameAttributes();
           break;
         case 'NotifyOnToken':
-          if (this.props.onTokenChange && 'token' in notification.data) {
+          if ('onTokenChange' in this.props && this.props.onTokenChange && 'token' in notification.data) {
             this.props.onTokenChange(notification.data.token);
           }
           break;
@@ -334,8 +344,8 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
       }
     }
 
-    // Left here for posterity, but I (factoidforrest) think we can assume styles wont be changed except by react
-    // and that is caught by ComponentDidUpdate above
+    // Left here for posterity, but I (forrest) think we can assume styles wont be changed except by react
+    // and that is caught by ComponentDidUpdate above.  This function has serious performance impact
     // watchStyle() {
     //   const observer = new MutationObserver(() => this.sendIFrameAttributes());
     //   if (!this.dummyRef.current) {
@@ -427,9 +437,15 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         resize: 'none',
       };
 
+      const validatedName = this.props.name !== undefined ? this.props.name : '';
+
+      // TODO: Fix the types so that we don't have to do this anymore.
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      const containerName = `secure-${componentName.toLowerCase()}-container-${validatedName}`;
+
       const containerClass = classnames({
         [`secure-${componentName.toLowerCase()}-container-${this.frameId}`]: true,
-        [`secure-${componentName.toLowerCase()}-container-${this.props.name || ''}`]: !!this.props.name,
+        [containerName]: !!this.props.name,
       });
 
       const renderData: RenderData<W> = {
@@ -449,26 +465,23 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         dummyElementStyle,
       };
 
-      // clean out our lunasec props so they dont get passed into the wrapped component as html params
-      const {
-        token,
-        onTokenChange,
-        onValidate,
-        validator,
-        formContext,
-        lunaSecConfigContext,
-        errorHandler,
-        ...scrubbedProps
-      } = this.props;
+      const scrubbedProps = scrubProperties(this.props, [
+        'token',
+        'onTokenChange',
+        'onValidate',
+        'validator',
+        'formContext',
+        'lunaSecConfigContext',
+        'errorHandler',
+      ]);
 
-      // TODO: Fix this issue, and in the mean time be very careful with your props
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {
         renderData,
       };
 
       // TODO: Fix this so the properties don't break in typescript.
       // For now be careful and think about what props you pass
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const IgnoredWrapped = Wrapped as any;
 
       return (
@@ -479,18 +492,22 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
     }
   }
 
-  // This small functional component is the only way for a component to access more than one provider, thanks to a major shortcoming of react.
-  // So our "wrapped component" is actually double wrapped, first by this function component to add the providers, then by the class above
-  // You can never be too careful
+  // This small functional component is the only way for a component to access
+  // more than one provider, thanks to a major shortcoming of react. So our
+  // "wrapped component" is actually double wrapped, first by this function
+  // component to add the providers, then by the class above.
+  // You can never be too careful.
   return function ProviderWrapper(props: WrapperProps<W>) {
-    return (
+    const componentWithProviders: React.ReactElement<
+      WrapperProps<W>,
+      JSXElementConstructor<Component<WrapperPropsWithProviders<W>, WrapperState>>
+    > = (
       <SecureFormContext.Consumer>
         {(formContext) => {
           return (
             <LunaSecConfigContext.Consumer>
               {(lunaSecConfigContext) => {
                 return (
-                  // @ts-ignore why the heck are these ts-ignores this necessary!?  Something must be broken with the react intrinsic properties not liking the generic...
                   <WrappedComponent {...props} formContext={formContext} lunaSecConfigContext={lunaSecConfigContext} />
                 );
               }}
@@ -499,5 +516,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(UnstyledWrapp
         }}
       </SecureFormContext.Consumer>
     );
+
+    return componentWithProviders;
   };
 }

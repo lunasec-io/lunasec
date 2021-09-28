@@ -14,6 +14,9 @@
  * limitations under the License.
  *
  */
+
+// NOTE: TypeScript is unhappy about Express being handed an async function. This disabled that check.
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import {
   DetokenizeRequest,
   DetokenizeResponse,

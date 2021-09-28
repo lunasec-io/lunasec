@@ -14,6 +14,8 @@
  * limitations under the License.
  *
  */
+
+/* eslint-disable @typescript-eslint/no-unsafe-return, @typescript-eslint/ban-ts-comment */
 import { ValidatorName } from '@lunasec/browser-common';
 import validator from 'validator';
 
@@ -27,8 +29,12 @@ export function validate(validatorName: ValidatorName, value: string): boolean {
       // @ts-ignore
       return validator.isTaxID(value);
     case 'SSN_EIN':
+      if (isSSN(value)) {
+        return true;
+      }
+
       // @ts-ignore
-      return isSSN(value) || validator.isTaxID(value);
+      return validator.isTaxID(value);
   }
   throw new Error(`Failed to find a validator of the supplied name`);
 }

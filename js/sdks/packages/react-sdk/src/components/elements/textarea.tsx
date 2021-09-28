@@ -18,7 +18,7 @@ import { camelCaseObject } from '@lunasec/browser-common';
 import classnames from 'classnames';
 import React, { Component, CSSProperties } from 'react';
 
-import { RenderData, WrappedComponentProps } from '../../types';
+import { RenderData, WrappedComponentProps } from '../../types/internal-types';
 type TextAreaRenderData = RenderData<'TextArea'>;
 export type TextAreaProps = WrappedComponentProps<'TextArea'>;
 
@@ -60,8 +60,12 @@ export default class TextArea extends Component<TextAreaProps> {
     // Pull the renderData out so we don't weird stuff into our dummy element
     const { renderData, className, children, ...otherProps } = this.props;
 
+    const validatedName = this.props.name !== undefined ? this.props.name : '';
+
+    const containerName = `secure-textarea-container-${renderData.frameId} secure-textarea-container-${validatedName}`;
+
     const containerClass = classnames({
-      [`secure-textarea-container-${renderData.frameId} secure-textarea-container-${this.props.name}`]: true,
+      [containerName]: true,
       // Combine with the classname passed in props because styled-components passes some random classnames to attach our css
       [className || '']: true,
     });

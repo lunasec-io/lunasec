@@ -56,7 +56,6 @@ export class LunaSecAuthentication {
   }
 
   // TODO (forrest) move this authentication logic into the LunaSecConfigContext provider and get rid of a lot of this logic
-
   async authenticateSession(): Promise<Promise<boolean> | void> {
     // Stop every component from making a request on first page load
     if (authFlowInProgress) {

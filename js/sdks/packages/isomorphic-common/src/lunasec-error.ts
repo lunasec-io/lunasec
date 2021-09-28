@@ -14,9 +14,13 @@
  * limitations under the License.
  *
  */
+
 export interface LunaSecErrorProperties {
+  /**  A machine readable name of the error */
   name: string;
+  /** A human readable error message, suitable to be displayed to the end user */
   message: string;
+  /** An error code, typically corresponding to an HTTP response code */
   code: string;
 }
 
@@ -25,6 +29,9 @@ export class LunaSecError extends Error implements LunaSecErrorProperties {
   message: string;
   code: string;
 
+  /**
+   * @param e An existing Error object to wrap or an object of new properties to build an error from
+   */
   constructor(e: LunaSecErrorProperties | Error) {
     super(e.name);
     this.name = e.name;

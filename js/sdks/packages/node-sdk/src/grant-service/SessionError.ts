@@ -14,11 +14,11 @@
  * limitations under the License.
  *
  */
-import { fromIni } from '@aws-sdk/credential-provider-ini';
-import { SimpleTokenizerBackend } from '@lunasec/node-sdk';
+export class SessionError extends Error {
+  public readonly code?: number;
 
-export const simpleTokenizerBackend = new SimpleTokenizerBackend({
-  awsRegion: 'us-west-2',
-  s3Bucket: process.env.CIPHERTEXT_S3_BUCKET || 'YOU MUST SPECIFY A BUCKET',
-  awsCredentials: fromIni(),
-});
+  constructor(message: string, code?: number) {
+    super(message);
+    this.code = code;
+  }
+}

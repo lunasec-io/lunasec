@@ -1,23 +1,13 @@
-<!--
-  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
-  ~
-  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
-  ~ (the "License"); you may not use this file except in compliance with the
-  ~ License. You may obtain a copy of the License at
-  ~
-  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
-  ~
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  ~
--->
 ---
 id: "handling-text"
 title: "Securing Text"
 sidebar_label: "Securing Text"
 sidebar_position: 5
 ---
-
+:::tip
+As you follow along with this guide, you can check the custom properties each component supports(and what those properties do)
+in the [type documentation](/pages/react-sdk/interfaces/SecurePropsLookup).
+::::
 # Secure Forms
 
 Let's create a form secured with LunaSec.  Here is a simple scenario where we want to tokenize a Social Security Number.
@@ -32,8 +22,8 @@ Let's create a form secured with LunaSec.  Here is a simple scenario where we wa
     <button type="submit">Submit</button>
 </SecureForm>
 ```
-If you're used to React, this should look familiar.  Just like a normal form, we watch for changes using onChange and use the `value` to update state. Where possible,
- LunaSec attempts to mimic the behavior of basic DOM elements in order to make 
+If you're used to React this should look familiar.  Just like a normal form, we watch for changes using onChange and use the
+`value` to update state. Where possible, LunaSec elements attempt to mimic the behavior of basic DOM elements in order to make 
 them easy to use and interoperable with other DOM libraries.
 
 For example, `<SecureInput>` calls `onChange` and `onBlur` event handlers just like the native `<input>` element.  For the most part, they can be styled

@@ -21,7 +21,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { AUTHORIZATION_HEADER, CONFIG_DEFAULTS, SESSION_HASH_HEADER } from './constants';
-import { Configuration, DefaultApi, ErrorResponse, MetaData } from './generated';
+import { Configuration, DefaultApi, ErrorResponse, ErrorResponseError, MetaData } from './generated';
 import {
   SuccessOrFailOutput,
   TokenizerClientConfig,
@@ -70,20 +70,24 @@ export class Tokenizer {
     return new URL(this.config.host).origin;
   }
 
-  private handleError(e: AxiosError | Error | any): TokenizerFailApiResponse {
-    console.error(e);
+  private handleError(e: AxiosError | Error): TokenizerFailApiResponse {
     return {
       success: false,
       error: this.constructError(e),
     };
   }
 
-  private constructError(e: AxiosError<ErrorResponse> | Error | any) {
+  private constructError(e: AxiosError<ErrorResponse> | Error): LunaSecError {
     if ('response' in e && e.response) {
+      const errorWithCoercedType = e.response.data.error as ErrorResponseError & {
+        errorMessage?: string;
+      };
+
       // Parse the axios error, if it has any meaningful data about the response
       return new LunaSecError({
         name: e.response.data.error.name || 'TokenizerError',
-        message: e.response.data.error.errorMessage || e.response.data.error.message || 'Unknown Tokenizer Error', // TODO: Update this to "message" to conform with openAPI spec once the Tokenizer Backend uses OpenAPI
+        // TODO: Update this to "message" to conform with openAPI spec once the Tokenizer Backend uses OpenAPI
+        message: errorWithCoercedType.message || errorWithCoercedType.errorMessage || 'Unknown Tokenizer Error',
         code: e.response.status.toString(),
       });
     }
@@ -106,7 +110,11 @@ export class Tokenizer {
         success: res.data.success,
       };
     } catch (e) {
-      return this.handleError(e);
+      if (e instanceof Error) {
+        return this.handleError(e);
+      }
+
+      throw e;
     }
   }
 
@@ -124,7 +132,11 @@ export class Tokenizer {
         valid: res.data.data.valid,
       };
     } catch (e) {
-      return this.handleError(e);
+      if (e instanceof Error) {
+        return this.handleError(e);
+      }
+
+      throw e;
     }
   }
 
@@ -142,7 +154,11 @@ export class Tokenizer {
         tokenId: tokenId, // Not sure why we pass this back, seems useless in this context
       };
     } catch (e) {
-      return this.handleError(e);
+      if (e instanceof Error) {
+        return this.handleError(e);
+      }
+
+      throw e;
     }
   }
 
@@ -162,8 +178,11 @@ export class Tokenizer {
         tokenId: data.tokenId,
       };
     } catch (e) {
-      console.error(e);
-      return this.handleError(e);
+      if (e instanceof Error) {
+        return this.handleError(e);
+      }
+
+      throw e;
     }
   }
 
@@ -239,11 +258,15 @@ export class Tokenizer {
       return {
         success: true,
         tokenId: tokenId,
-        headers: headers,
+        headers: headers as Record<string, string>,
         downloadUrl: downloadUrl,
       };
     } catch (e) {
-      return this.handleError(e);
+      if (e instanceof Error) {
+        return this.handleError(e);
+      }
+
+      throw e;
     }
   }
 }
