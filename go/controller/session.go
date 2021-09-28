@@ -15,7 +15,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -32,16 +31,35 @@ import (
 	"go.uber.org/zap"
 )
 
+const (
+	defaultCallbackPath = "/.lunasec/secure-frame"
+)
+
+type AuthProviderType string
+
+const (
+	BackendApplicationAuthProvider AuthProviderType = "backend_application"
+)
+
+type AuthProviderConfig struct {
+	Url string `yaml:"url"`
+	Type AuthProviderType `yaml:"type"`
+	Default bool `yaml:"default"`
+}
+
+type AuthProviderLookup map[string]AuthProviderConfig
+
+type SessionControllerConfig struct {
+	AuthProviders AuthProviderLookup `yaml:"auth_providers"`
+}
+
 type sessionController struct {
 	SessionControllerConfig
 	logger                  *zap.Logger
 	kv                      gateway.AwsDynamoGateway
 	authProviderJwtVerifier service.JwtVerifier
-}
-
-type SessionControllerConfig struct {
-	AuthCallbackHost string `yaml:"auth_callback_host"`
-	AuthCallbackPath string `yaml:"auth_callback_path"`
+	authProviders AuthProviderLookup
+	defaultAuthProvider AuthProviderConfig
 }
 
 type SessionController interface {
@@ -50,29 +68,93 @@ type SessionController interface {
 	SessionCreate(w http.ResponseWriter, r *http.Request)
 }
 
+func getDefaultAuthProviderFromConfig(logger *zap.Logger, controllerConfig SessionControllerConfig) (authProviders AuthProviderLookup, defaultAuthProvider AuthProviderConfig) {
+	var (
+		hasSetDefaultAuthProvider bool
+	)
+
+	authProviders = AuthProviderLookup{}
+	for authProviderName, authProviderConfig := range controllerConfig.AuthProviders {
+		parsedUrl, err := url.Parse(authProviderConfig.Url)
+		if err != nil {
+			err = errors.New("unable to parse auth provider url")
+			logger.Error(
+				err.Error(),
+				zap.String("auth provider url", authProviderConfig.Url),
+			)
+			panic(err)
+		}
+
+		// if there is no auth provider set, we default to the backend application auth provider type
+		if authProviderConfig.Type == "" {
+			authProviderConfig.Type = BackendApplicationAuthProvider
+
+			// adjust the auth provider url to include the default callback path if it is not set
+			if parsedUrl.Path == "" {
+				parsedUrl.Path = defaultCallbackPath
+				authProviderConfig.Url = parsedUrl.String()
+			}
+		}
+
+		logger.Debug(
+			"loading auth provider",
+			zap.String("authProvider", authProviderName),
+			zap.String("authProviderType", string(authProviderConfig.Type)),
+			zap.String("authProviderUrl", authProviderConfig.Url),
+		)
+
+		authProviders[authProviderName] = authProviderConfig
+
+		// if there is only one auth provider, make this the default
+		if len(controllerConfig.AuthProviders) == 1 {
+			defaultAuthProvider = authProviderConfig
+			break
+		}
+
+		// if the auth provider has declare itself as default, make it the default
+		if authProviderConfig.Default {
+			if hasSetDefaultAuthProvider {
+				err = errors.New("attempting to set multiple default auth providers, this is not allowed")
+				logger.Error(
+					err.Error(),
+					zap.String("current default auth provider", defaultAuthProvider.Url),
+					zap.String("other auth provider", authProviderConfig.Url),
+				)
+				panic(err)
+			}
+			defaultAuthProvider = authProviderConfig
+			hasSetDefaultAuthProvider = true
+		}
+	}
+	return
+}
+
 func NewSessionController(
 	logger *zap.Logger,
 	provider config.Provider,
 	kv gateway.AwsDynamoGateway,
 	authProviderJwtVerifier service.JwtVerifier,
-) (controller SessionController, err error) {
-	var controllerConfig SessionControllerConfig
-	err = provider.Get("session_controller").Populate(&controllerConfig)
+) (controller SessionController) {
+	var (
+		controllerConfig SessionControllerConfig
+	)
+	err := provider.Get("session_controller").Populate(&controllerConfig)
 	if err != nil {
-		return
+		logger.Error(
+			err.Error(),
+		)
+		panic(err)
 	}
 
-	_, err = url.Parse(controllerConfig.AuthCallbackHost)
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	authProviders, defaultAuthProvider := getDefaultAuthProviderFromConfig(logger, controllerConfig)
 
 	controller = &sessionController{
 		SessionControllerConfig: controllerConfig,
 		logger:                  logger,
 		kv:                      kv,
 		authProviderJwtVerifier: authProviderJwtVerifier,
+		authProviders: authProviders,
+		defaultAuthProvider: defaultAuthProvider,
 	}
 	return
 }
@@ -98,12 +180,43 @@ func (s *sessionController) SessionVerify(w http.ResponseWriter, r *http.Request
 	util.RespondSuccess(w)
 }
 
+func (s *sessionController) getAuthProviderWithName(authProviderName string) (authProviderConfig AuthProviderConfig, err error) {
+	var (
+		ok bool
+	)
+
+	if authProviderName == "" {
+		authProviderConfig = s.defaultAuthProvider
+		return
+	}
+
+	authProviderConfig, ok = s.authProviders[authProviderName]
+	if !ok {
+		err = errors.New("unable to find auth provider with provided name")
+	}
+	return
+}
+
 func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request) {
 	// TODO if state token is already present in cookie, do we remove it?
 	s.logger.Info("received session ensure request")
 
+	query := r.URL.Query()
+
+	authProviderName := query.Get(constants.AuthProviderNameQueryParam)
+
+	authProvider, err := s.getAuthProviderWithName(authProviderName)
+	if err != nil {
+		s.logger.Error(
+			err.Error(),
+			zap.String("authProviderName", authProviderName),
+		)
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
+
 	stateToken := uuid.NewString()
-	err := s.kv.Set(gateway.SessionStore, stateToken, string(constants.SessionUnused))
+	err = s.kv.Set(gateway.SessionStore, stateToken, string(constants.SessionUnused))
 	if err != nil {
 		s.logger.Error(
 			"unable to set session store state token status",
@@ -117,18 +230,17 @@ func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request
 	v := url.Values{}
 	v.Set(constants.AuthStateQueryParam, stateToken)
 
-	oauthUrl, err := url.Parse(s.AuthCallbackHost)
+	redirectUrl, err := url.Parse(authProvider.Url)
 	if err != nil {
 		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	oauthUrl.RawQuery = v.Encode()
-	oauthUrl.Path = s.AuthCallbackPath
+	redirectUrl.RawQuery = v.Encode()
 
 	// TODO (cthompson) revisit this cookie ttl
 	util.AddCookie(w, constants.AuthStateCookie, stateToken, "/", time.Minute*15)
-	http.Redirect(w, r, oauthUrl.String(), http.StatusFound)
+	http.Redirect(w, r, redirectUrl.String(), http.StatusFound)
 }
 
 func getSessionCreateRequest(r *http.Request) (req event.SessionCreateRequest, err error) {
