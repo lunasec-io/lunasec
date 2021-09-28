@@ -10,6 +10,6 @@ fi
 
 until [ -f config/tokenizerbackend/aws_resources.yaml ];
 do
-	echo "waiting for aws_resources.yaml...";
+	echo "waiting for aws_resources.yaml, please wait...";
 	sleep 0.5;
 done

@@ -26,6 +26,7 @@ import (
 	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/util"
+	"strconv"
 )
 
 type TokenGrant struct {
@@ -93,6 +94,9 @@ func getGrantKey(sessionID string, token types.Token, grantType constants.GrantT
 }
 
 func (s *grantService) getGrantDuration(customGrantDuration int) (int64, error) {
+	s.logger.Info(
+		"setting custom grant duration integer",
+		zap.String("int", strconv.Itoa(customGrantDuration)))
 	if customGrantDuration == 0 {
 		return time.Now().Add(s.grantDefaultDuration).Unix(), nil
 	}
