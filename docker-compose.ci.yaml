@@ -12,13 +12,14 @@ services:
       - /videos:/repo/js/demo-apps/packages/react-front-end/cypress/videos
     network_mode: host
     depends_on:
-      - localstack
-      - proxy
-      - cdk-init
-      - secure-frame-iframe
-      - application-front-end
-      - application-back-end
-      - tokenizerbackend
+      secure-frame-iframe:
+        condition: service_healthy
+      application-front-end:
+        condition: service_healthy
+      application-back-end:
+        condition: service_healthy
+      tokenizerbackend:
+        condition: service_healthy
 # Uncomment to open the cypress UI locally
 #    environment:
 #      - DISPLAY=${DISPLAY}
