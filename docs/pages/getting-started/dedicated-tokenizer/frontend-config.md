@@ -2,7 +2,7 @@
 id: "frontend-config"
 title: "Frontend Configuration"
 sidebar_label: "Frontend Configuration"
-sidebar_position: 4
+sidebar_position: 3
 ---
 # React Frontend Setup
 
@@ -34,5 +34,5 @@ export const MyApp = () => {
 };
 ```
 
-Now we can use LunaSecs components.  [Next we'll create a Secure Form.](/pages/getting-started/dedicated-tokenizer/securing-text)
+Now we can use LunaSecs components.  [Next we'll create a Secure Form.](./securing-text.md)
 
