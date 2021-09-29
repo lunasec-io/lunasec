@@ -21,12 +21,10 @@ import { Request } from 'express';
 import { KeyService } from '../authentication';
 import { SessionIdProvider } from '../authentication/types';
 
-import { SessionError } from './SessionError';
-
+// This Service is a wrapper around the Tokenizer SDK's grant functionality
+//  making it more user-friendly
 /**
-
- * This Service is a wrapper around the Tokenizer SDK's grant functionality
- * making it more user-friendly
+ * Creates and checks grants.
  */
 export class Grants {
   private readonly auth: KeyService;
@@ -74,7 +72,7 @@ export class Grants {
    * @throws LunaSecError
    * @param sessionId The session ID of the user to create a grant for, should match whatever your sessionIdProvider in your LunaSec Config returns
    * @param tokenOrTokens The token to create a grant for, or an array of tokens
-   * @param customDuration The time you would like the grant to last for, not to exceed the grant_maximum_time configured for the Tokenizer Backend.  Omit to use the default configured time.
+   * @param customDuration The time you would like the grant to last for as a string like "45s" or "1h10m30s", not to exceed the grant_maximum_time configured for the Tokenizer Backend.  Omit to use the default configured time.
    * */
   public async create(
     sessionId: string,
@@ -152,17 +150,21 @@ export class Grants {
 
   private async getSessionIdFromReq(req: Request): Promise<string> {
     if (!this.sessionIdProvider) {
-      throw new SessionError(
-        'Attempted to grant or verifyGrant of a token automatically without the sessionIdProvider configured, check your LunaSec Config'
-      );
+      throw new LunaSecError({
+        code: '500',
+        name: 'sessionError',
+        message:
+          'Attempted to grant or verifyGrant of a token automatically without the sessionIdProvider configured, check your LunaSec Config',
+      });
     }
     const sessionId = await this.sessionIdProvider(req);
     // TODO: Will also need to support the case of the user not being logged in somehow, currently we just tell the user to make a temporary session but maybe there is a better solution
     if (typeof sessionId !== 'string') {
-      throw new SessionError(
-        'Session ID from the SessionIdProvider passed in LunaSecOptions did not resolve to a string',
-        401
-      );
+      throw new LunaSecError({
+        message: 'Session ID from the SessionIdProvider passed in LunaSecOptions did not resolve to a string',
+        code: '401',
+        name: 'sessionError',
+      });
     }
     return sessionId;
   }
