@@ -105,9 +105,11 @@ function runDedicatedModeTests(mode: string) {
 
       cy.iframe().find('.file-container').should('contain', randomFileName);
 
-      cy.wait(500);
+      cy.wait(1000);
 
       cy.get('#save-documents').click();
+
+      cy.iframe().find('.filestatus').should('contain', 'Uploaded');
     });
 
     it('secure download', () => {
@@ -118,7 +120,7 @@ function runDedicatedModeTests(mode: string) {
       link.should('contain', randomFileName);
 
       link.click();
-      cy.wait(500);
+      cy.wait(1000);
       const downloadsFolder = Cypress.config('downloadsFolder');
       cy.readFile(path.join(downloadsFolder, randomFileName)).should('exist');
     });
