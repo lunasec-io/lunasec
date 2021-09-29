@@ -40,11 +40,11 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - uses: whoan/docker-build-with-cache-action@v5
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-        compose_file: docker-compose.yaml > docker-compose.ci.yaml
+#    - uses: whoan/docker-build-with-cache-action@v5
+#      with:
+#        username: ${{ secrets.DOCKERHUB_USERNAME }}
+#        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+#        compose_file: docker-compose.yaml > docker-compose.ci.yaml
 
 #    - uses: actions/setup-node@v2
 #      with:
