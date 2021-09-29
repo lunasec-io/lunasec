@@ -474,6 +474,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       };
 
       const scrubbedProps = scrubProperties(this.props, [
+        'customMetadata',
         'token',
         'onTokenChange',
         'onValidate',

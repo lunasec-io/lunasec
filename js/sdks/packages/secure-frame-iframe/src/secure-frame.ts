@@ -255,16 +255,18 @@ export class SecureFrame<E extends keyof ClassLookup> {
 
   async tokenizeField(): Promise<string | null> {
     const value = (this.secureElement as HTMLInputElement).value;
-    if (value.length > 0) {
-      const res = await this.tokenizer.tokenize(value, { dataType: 'string', customFields: this.customMetadata });
-
-      if (!res.success) {
-        this.sendErrorMessage(res.error);
-        return null;
-      }
-      return res.tokenId;
+    if (value.length === 0) {
+      return '';
     }
-    return '';
+
+    const res = await this.tokenizer.tokenize(value, { dataType: 'string', customFields: this.customMetadata });
+
+    if (!res.success) {
+      this.sendErrorMessage(res.error);
+      return null;
+    }
+    this.token = res.tokenId;
+    return res.tokenId;
   }
 
   async detokenize(token: string) {
