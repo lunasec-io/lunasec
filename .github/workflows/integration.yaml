@@ -40,6 +40,12 @@ jobs:
 
     - uses: actions/checkout@v2
 
+#    - uses: whoan/docker-build-with-cache-action@v5
+#      with:
+#        username: ${{ secrets.DOCKERHUB_USERNAME }}
+#        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+#        compose_file: docker-compose.yaml > docker-compose.ci.yaml
+
 #    - uses: actions/setup-node@v2
 #      with:
 #        node-version: '14'
@@ -64,14 +70,14 @@ jobs:
 #      env:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
-#
-#    - name: logs
-#      run: .github/print-docker-logs.sh
-#      shell: bash
 
     - name: Run e2e tests
-      # TODO: Exit code from breaks CI currently --exit-code-from
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --build integration-test
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --build --exit-code-from integration-test integration-test
+
+    - name: docker logs
+      if: always()
+      run: .github/print-docker-logs.sh
+      shell: bash
 
     - name: docker compose logs
       if: always()
