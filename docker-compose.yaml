@@ -39,8 +39,8 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl -k http://localhost:3000"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 30s
+      retries: 10
   application-back-end:
     hostname: application-back-end
     build:
