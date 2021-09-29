@@ -21,8 +21,9 @@ services:
       context: .
       dockerfile: js/docker/demo.dockerfile
       target: secure-frame-iframe
-    ports:
-      - "8000:8000"
+#    ports:
+#      - "8000:8000"
+    network_mode: host
     healthcheck:
       test: ["CMD-SHELL", "curl -k http://localhost:8000"]
       interval: 10s
@@ -34,8 +35,9 @@ services:
       context: .
       dockerfile: js/docker/demo.dockerfile
       target: react-front-end
-    ports:
-      - "3000:3000"
+#    ports:
+#      - "3000:3000"
+    network_mode: host
     healthcheck:
       test: ["CMD-SHELL", "curl -k http://localhost:3000"]
       interval: 10s
@@ -64,8 +66,9 @@ services:
     container_name: localstack
     hostname: localstack
     image: localstack/localstack
-    ports:
-      - "4566:4566"
+#    ports:
+#      - "4566:4566"
+    network_mode: host
     environment:
       - SERVICES=s3,dynamodb,secretsmanager,sts,cloudformation,cloudwatch
       - DEBUG=1
@@ -91,8 +94,9 @@ services:
         condition: service_healthy
     volumes:
       - ./go/scripts/proxy/:/proxy
-    ports:
-      - "4567:4566"
+#    ports:
+#      - "4567:4566"
+    network_mode: host
     healthcheck:
       test: ["CMD-SHELL", "curl -k https://localhost:4566"]
       interval: 10s
@@ -107,6 +111,7 @@ services:
       context: go/
       dockerfile: docker/Dockerfile.lunasec
     command: --dir /lunasec_local_build deploy --local --build --config-output /config/tokenizerbackend/
+    network_mode: host
     volumes:
       - ./go/config/lunasec/:/config/lunasec/
       - ./go/config/tokenizerbackend/:/config/tokenizerbackend/
