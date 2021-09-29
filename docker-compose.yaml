@@ -86,7 +86,7 @@ services:
     build:
       context: go/
       dockerfile: docker/Dockerfile.httpsproxy
-    command: -s 4566 -n localstack -t 4566 -c /proxy/cert.pem -k /proxy/key.pem
+    command: -s 4568 -n localstack -t 4566 -c /proxy/cert.pem -k /proxy/key.pem
     container_name: localstack_proxy
     hostname: localstack-proxy
     depends_on:
