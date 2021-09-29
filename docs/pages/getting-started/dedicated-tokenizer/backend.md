@@ -130,4 +130,4 @@ app.use((err, req, res, next) => {
 })
 ```
 
-That's it for the backend, let's move onto [the frontend.](./frontend.md)
+That's it for the backend, let's move onto [the frontend.](./frontend-config.md)

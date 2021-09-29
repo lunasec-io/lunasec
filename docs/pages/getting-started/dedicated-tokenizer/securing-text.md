@@ -144,5 +144,5 @@ even where UX is important.  To see it running, try using the SecureInput in the
 
 LunaSec should also work just fine with a form library like Formik.
 
-[Next let's handle some secure files.](/pages/getting-started/dedicated-tokenizer/securing-files)
+[Next let's handle some secure files.](./securing-files.md)
 
