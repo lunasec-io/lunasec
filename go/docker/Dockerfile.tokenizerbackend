@@ -19,6 +19,8 @@ RUN --mount=target=. \
 
 FROM alpine
 
+RUN apk add curl
+
 ARG BUILD_TAG
 
 COPY config/tokenizerbackend/config.yaml /config/tokenizerbackend/config.yaml
