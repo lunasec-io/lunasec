@@ -73,6 +73,11 @@ jobs:
       # TODO: Exit code from breaks CI currently --exit-code-from
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --build integration-test
 
+    - name: docker logs
+      if: always()
+      run: .github/print-docker-logs.sh
+      shell: bash
+
     - name: docker compose logs
       if: always()
       run: docker-compose logs
