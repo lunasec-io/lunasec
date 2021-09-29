@@ -23,6 +23,11 @@ services:
       target: secure-frame-iframe
     ports:
       - "8000:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -k http://localhost:8000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   application-front-end:
     hostname: application-front-end
     build:
@@ -31,17 +36,23 @@ services:
       target: react-front-end
     ports:
       - "3000:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -k http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   application-back-end:
+    hostname: application-back-end
     build:
       context: .
       dockerfile: js/docker/demo.dockerfile
       target: demo-back-end
-#    network_mode: host
-    ports:
-      - "3001:3001" # express
-      - "3002:3002" # graphql
-      - "3003:3003" # simple-express
-      - "3004:3004" # Not using this one yet, just figured we might need it soon
+    network_mode: host
+#    ports:
+#      - "3001:3001" # express
+#      - "3002:3002" # graphql
+#      - "3003:3003" # simple-express
+#      - "3004:3004" # Not using this one yet, just figured we might need it soon
     env_file:
       - .env.docker
     healthcheck:
@@ -114,14 +125,15 @@ services:
         BUILD_TAG: dev
     volumes:
       - ./go/config/tokenizerbackend/:/config/tokenizerbackend/
-    network_mode: host
+    ports:
+      - "37766:37766"
     depends_on:
       cdk-init:
         condition: service_completed_successfully
       application-back-end:
         condition: service_healthy
-#    healthcheck:
-#      test: ["CMD-SHELL", "curl http://localhost:37766"]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://localhost:37766"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
