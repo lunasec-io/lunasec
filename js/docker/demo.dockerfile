@@ -23,6 +23,8 @@ WORKDIR /repo/js/demo-apps/packages/react-front-end
 
 ENV DEMO_NAME="dedicated-passport-express"
 
+RUN yarn run build
+
 ENTRYPOINT yarn run start
 
 FROM cypress/included:8.4.0 as integration-test
