@@ -59,40 +59,21 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			{
-
-			},
-			{
-				Name:    "build",
-				Aliases: []string{"b"},
-				Usage:   "Build secure Lunasec components",
-				Flags: []cli.Flag{
-					&cli.BoolFlag{
-						Name:  "skip-mirroring",
-						Usage: "Skip docker image mirroring.",
-					},
-					&cli.BoolFlag{
-						Name:  "local",
-						Usage: "Build LunaSec locally.",
-					},
-				},
-				Action: lunasec.BuildCommand,
-			},
-			{
 				Name:    "deploy",
 				Aliases: []string{"d"},
 				Usage:   "Deploy secure Lunasec components",
 				Flags: []cli.Flag{
 					&cli.BoolFlag{
-						Name:  "build",
-						Usage: "Build before deploying.",
+						Name:  "dry-run",
+						Usage: "Perform a dry run of deployment which builds all resources that are to be deployed.",
 					},
 					&cli.BoolFlag{
 						Name:  "local",
 						Usage: "Deploy LunaSec locally.",
 					},
 					&cli.StringFlag{
-						Name:  "config-output",
-						Usage: "Path to where the resources config file will be written to.",
+						Name:  "output",
+						Usage: "Path to where the resources output file will be written to.",
 					},
 				},
 				Action: lunasec.DeployCommand,
