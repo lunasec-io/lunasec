@@ -44,9 +44,9 @@ Now the SDK is configured and you have access to its modules, like the auth plug
 
 ### Registering the auth plugin with express
 
-The LunaSec auth plugin uses a provided signing key to create sessions for the Tokenizer Backend. For a simple integration with LunaSec,
-we are going to generate a signing key and then put it in an environment variable. LunaSec supports other methods of storing
-this signing key which you can see [here](TODO).
+The LunaSec auth plugin uses a provided signing key to create sessions for the Tokenizer Backend. If the 
+`environment` secret provider is used (as is shown above in the lunasec configuration), the `LUNASEC_SIGNING_KEY` environment
+variable must be set with a valid RSA key. LunaSec supports other secret providers, and a guide for this can be found [here](./secret-providers.md).
 
 ```shell
 $ ssh-keygen -t rsa -f lunasec_signing_key

@@ -19,17 +19,17 @@ import { KeyLike } from 'crypto';
 import { Request } from 'express';
 
 export interface EnvironmentSecretConfig {
-  source: 'environment';
+  provider: 'environment';
 }
 
 export interface ManualSecretConfig {
-  source: 'manual';
+  provider: 'manual';
   signingKey: KeyLike;
 }
 
 export interface AwsSecretsManagerConfig {
-  source: 'awsSecretsManager';
-  secretsManagerSecretArn: string;
+  provider: 'awsSecretsManager';
+  secretArn: string;
   awsAccessKey?: {
     accessKeyId: string;
     secretAccessKey: string;
@@ -43,7 +43,7 @@ export type JwtSubject = 'user' | 'application';
  * For example
  * ```typescript
  * {
- *   source: 'environment'
+ *   provider: 'environment'
  * }
  * ```
  * which will read the signing key from `process.env.LUNASEC_SIGNING_KEY` as base64 encoded

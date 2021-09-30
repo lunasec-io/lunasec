@@ -40,7 +40,7 @@ export interface LunaSecConfig {
      * @example
      * ```
      * {
-     *   source: 'environment'
+     *   provider: 'environment'
      * }
      * ```
      * which will read the signing key from `process.env.LUNASEC_SIGNING_KEY` as base64 encoded
