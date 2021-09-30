@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package gateway
+package metrics
 
 import (
-	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
+	"github.com/refinery-labs/loq/gateway/configs"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
@@ -34,9 +35,9 @@ type AwsCloudwatchGateway interface {
 }
 
 // NewAwsCloudwatchGateway...
-func NewAwsCloudwatchGateway(logger *zap.Logger, provider config.Provider, sess *session.Session) AwsCloudwatchGateway {
+func NewAwsCloudwatchGateway(logger *zap.Logger, provider config.Provider, sess client.ConfigProvider) AwsCloudwatchGateway {
 	var (
-		gatewayConfig AwsGatewayConfig
+		gatewayConfig configs.AwsGatewayConfig
 	)
 
 	err := provider.Get("aws_gateway").Populate(&gatewayConfig)

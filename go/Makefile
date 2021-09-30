@@ -5,6 +5,7 @@ DEBUG_FLAGS ?=
 
 all:
 	mkdir -p build
+	CGO_ENABLED=0 GOOS=linux go generate ./...
 	for f in $(shell ls cmd); do \
 		echo $${f} ;\
 		cd $(shell pwd)/cmd/$${f} ;\
@@ -35,6 +36,7 @@ release-clean:
 	git push --delete origin ${version}
 
 %:
+	CGO_ENABLED=0 GOOS=linux go generate ./...
 	CGO_ENABLED=0 GOOS=linux go build -tags ${tag} ${DEBUG_FLAGS} -a -installsuffix cgo -o ${OUTPUT_DIR}/$@_${tag} $(shell pwd)/cmd/$@
 
 clean:

@@ -17,7 +17,8 @@ package service
 import (
 	"encoding/json"
 	"github.com/refinery-labs/loq/constants"
-	"go.uber.org/config"
+  "github.com/refinery-labs/loq/gateway/metrics"
+  "go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
 	"time"
@@ -37,8 +38,8 @@ type grantServiceConfig struct {
 
 type grantService struct {
 	logger *zap.Logger
-	cw gateway.AwsCloudwatchGateway
-	kv gateway.AwsDynamoGateway
+	cw     metrics.AwsCloudwatchGateway
+	kv     gateway.AwsDynamoGateway
 	grantDuration time.Duration
 }
 
@@ -52,7 +53,7 @@ type GrantService interface {
 func NewGrantService(
 	logger *zap.Logger,
 	provider config.Provider,
-	cw gateway.AwsCloudwatchGateway,
+	cw metrics.AwsCloudwatchGateway,
 	kv gateway.AwsDynamoGateway,
 ) (service GrantService) {
 	var (

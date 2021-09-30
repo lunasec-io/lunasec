@@ -21,6 +21,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/refinery-labs/loq/constants"
+	"github.com/refinery-labs/loq/gateway/configs"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"io/ioutil"
@@ -31,7 +32,7 @@ import (
 const s3EncryptionAlgo = "AES256"
 
 type awsS3Gateway struct {
-	AwsGatewayConfig
+	configs.AwsGatewayConfig
 	logger *zap.Logger
 	s3     *session.Session
 	s3Host string
@@ -48,7 +49,7 @@ type AwsS3GatewayConfig struct {
 }
 
 type AwsS3GatewayConfigWrapper struct {
-	AwsGateway AwsGatewayConfig `yaml:"aws_gateway"`
+	AwsGateway configs.AwsGatewayConfig `yaml:"aws_gateway"`
 }
 
 // AwsS3Gateway ...
@@ -60,7 +61,7 @@ type AwsS3Gateway interface {
 
 func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
 	return AwsS3GatewayConfigWrapper{
-		AwsGateway: AwsGatewayConfig{
+		AwsGateway: configs.AwsGatewayConfig{
 			S3Region: region,
 			S3Bucket: bucket,
 		},
@@ -74,7 +75,7 @@ func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
 // NewAwsS3Gateway...
 func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session.Session) (s3Gateway AwsS3Gateway) {
 	var (
-		gatewayConfig AwsGatewayConfig
+		gatewayConfig configs.AwsGatewayConfig
 	)
 
 	err := provider.Get("aws_gateway").Populate(&gatewayConfig)

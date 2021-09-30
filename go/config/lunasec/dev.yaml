@@ -11,3 +11,6 @@ aws_gateway:
   secret_access_key: ${AWS_SECRET_ACCESS_KEY}
   localstack_url: ${LOCALSTACK_URL}
   local_https_proxy: ${LOCAL_HTTPS_PROXY}
+metrics:
+  disable: false
+  provider: aws_cloudwatch

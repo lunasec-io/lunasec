@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"github.com/refinery-labs/loq/constants"
 	"github.com/refinery-labs/loq/gateway"
+	"github.com/refinery-labs/loq/gateway/metrics"
 	"github.com/refinery-labs/loq/service/lunasec"
 	"github.com/refinery-labs/loq/util"
 	"github.com/urfave/cli/v2"
@@ -103,7 +104,9 @@ func BuildCommand(c *cli.Context) (err error) {
 		return
 	}
 
-	builder := lunasec.NewBuilder(builderConfig, buildConfig, npmGateway)
+	metricsConfig, err := metrics.NewMetricsConfig(provider)
+
+	builder := lunasec.NewBuilder(builderConfig, buildConfig, npmGateway, metricsConfig)
 	return builder.Build()
 }
 
