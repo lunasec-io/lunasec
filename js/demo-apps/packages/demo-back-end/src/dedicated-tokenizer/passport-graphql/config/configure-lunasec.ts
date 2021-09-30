@@ -25,7 +25,7 @@ if (!process.env.TOKENIZER_URL) {
 export const lunaSec = new LunaSec({
   tokenizerURL: process.env.TOKENIZER_URL,
   auth: {
-    secrets: { source: 'environment' },
+    secrets: { provider: 'environment' },
     // pluginBaseUrl: '/api', This prepends the .lunasec routes with any string you wish, useful if your API lives behind a base route
 
     // Provide a small middleware(ours is called lunaSecSessionIdProvider) that takes in the req object and returns a promise containing a session token
