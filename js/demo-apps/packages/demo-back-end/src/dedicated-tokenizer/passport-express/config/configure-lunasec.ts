@@ -18,14 +18,14 @@ import { LunaSec } from '@lunasec/node-sdk';
 
 import { lunaSecSessionIdProvider } from './auth-helpers';
 
-if (!process.env.SECURE_FRAME_URL) {
+if (!process.env.TOKENIZER_URL) {
   throw new Error('Secure frame url env var is not set');
 }
 
 export const lunaSec = new LunaSec({
-  secureFrameURL: process.env.SECURE_FRAME_URL,
+  tokenizerURL: process.env.TOKENIZER_URL,
   auth: {
-    secrets: { source: 'environment' },
+    secrets: { provider: 'environment' },
     // pluginBaseUrl: '/api', This prepends the .lunasec routes with any string you wish
 
     // Provide a small middleware that takes in the req object and returns a promise containing a session token

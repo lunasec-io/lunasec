@@ -29,7 +29,7 @@ import { SecureResolverSdkConfig } from '../secure-resolver/types';
  */
 export interface LunaSecConfig {
   /** The URL where the tokenizer backend can be queried */
-  secureFrameURL: string;
+  tokenizerURL: string;
   /** The configuration for authentication */
   auth: {
     /** Optionally add a baseroute to the auth plugin's routes, useful if you need all of your application routes to be behind some route like `/api` */
@@ -40,7 +40,7 @@ export interface LunaSecConfig {
      * @example
      * ```
      * {
-     *   source: 'environment'
+     *   provider: 'environment'
      * }
      * ```
      * which will read the signing key from `process.env.LUNASEC_SIGNING_KEY` as base64 encoded
@@ -88,7 +88,7 @@ export class LunaSec {
       auth: this.keyService,
       sessionIdProvider: config.auth.sessionIdProvider,
       // payloadClaims: config.auth.payloadClaims,
-      secureFrameURL: config.secureFrameURL,
+      tokenizerURL: config.tokenizerURL,
       pluginBaseUrl: config.auth.pluginBaseUrl,
     });
 
