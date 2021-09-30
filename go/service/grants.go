@@ -33,8 +33,8 @@ type TokenGrant struct {
 }
 
 type grantServiceConfig struct {
-	GrantTTL string `yaml:"grant_default_life"`
-	GrantMaxTTL string `yaml:"grant_maximum_life"`
+	GrantTTL string `yaml:"grant_default_duration"`
+	GrantMaxTTL string `yaml:"grant_maximum_duration"`
 }
 
 type grantService struct {
