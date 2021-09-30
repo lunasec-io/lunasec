@@ -80,7 +80,7 @@ Let's say we have a LunaSec Token representing a Social Security Number:
 app.get('/get-ssn', async (req, res) => {
     const ssnToken = req.user.ssn_token
     
-    await lunaSec.grants.create(req.session.id, ssnToken); // Make a grant 
+    await lunaSec.grants.create(req.session.id, ssnToken, '15m'); // Make a grant, optionally overriding the default expiration time
     
     res.json({
       success: true,
