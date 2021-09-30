@@ -23,10 +23,10 @@ import (
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/tarball"
 	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/types"
-	"github.com/refinery-labs/loq/types/event"
 	"github.com/refinery-labs/loq/pkg/containermodifier"
 	"github.com/refinery-labs/loq/service"
+	"github.com/refinery-labs/loq/types"
+	"github.com/refinery-labs/loq/types/event"
 	"github.com/refinery-labs/loq/util"
 )
 

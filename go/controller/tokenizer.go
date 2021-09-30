@@ -33,10 +33,10 @@ import (
 
 type tokenizerController struct {
 	tokenizerControllerConfig
-	tokenizer     service.TokenizerService
+	tokenizer   service.TokenizerService
 	jwtVerifier service.JwtVerifier
-	meta          service.MetadataService
-	grant         service.GrantService
+	meta        service.MetadataService
+	grant       service.GrantService
 }
 
 type tokenizerControllerConfig struct {
@@ -66,7 +66,7 @@ func NewTokenizerController(
 	controller = &tokenizerController{
 		tokenizerControllerConfig: controllerConfig,
 		tokenizer:                 tokenizer,
-		jwtVerifier:             jwtVerifier,
+		jwtVerifier:               jwtVerifier,
 		meta:                      meta,
 		grant:                     grant,
 	}
@@ -147,15 +147,16 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	tokenID, url, headers, err := s.tokenizer.TokenizerSet()
-	if err != nil {
-		util.RespondError(w, http.StatusInternalServerError, err)
-		return
-	}
-
 	claims, err := auth.GetRequestClaims(s.jwtVerifier, r)
 	if err != nil {
 		err = errors.Wrap(err, "unable to verify token jwt with claims")
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	tokenID, url, headers, err := s.tokenizer.TokenizerSet()
+	if err != nil {
+		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
 
