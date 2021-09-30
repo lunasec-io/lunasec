@@ -34,3 +34,7 @@ auth_jwt_verifier:
   jwks_kid: ${SESSION_JWKS_KID:"lunasec-signing-key"}
 grant_service:
   grant_ttl: "1h"
+metrics:
+  disable: ${METRICS_DISABLED:false}
+  provider: ${METRICS_PROVIDER:"aws_cloudwatch"}
+  disable_usage_statistics: ${METRICS_DISABLE_USAGE_STATISTICS:false}

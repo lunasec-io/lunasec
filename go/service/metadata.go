@@ -17,7 +17,8 @@ package service
 import (
 	"encoding/json"
 	"errors"
-	"go.uber.org/zap"
+  "github.com/refinery-labs/loq/gateway/metrics"
+  "go.uber.org/zap"
 	"time"
 
 	"github.com/refinery-labs/loq/gateway"
@@ -28,7 +29,7 @@ import (
 type metadataService struct {
 	logger *zap.Logger
 	kv gateway.AwsDynamoGateway
-	cw gateway.AwsCloudwatchGateway
+	cw metrics.AwsCloudwatchGateway
 }
 
 // MetadataService manages metadata for secrets
@@ -40,7 +41,7 @@ type MetadataService interface {
 // NewMetadataService ...
 func NewMetadataService(
 	logger *zap.Logger,
-	cw gateway.AwsCloudwatchGateway,
+	cw metrics.AwsCloudwatchGateway,
 	kv gateway.AwsDynamoGateway,
 ) MetadataService {
 	return &metadataService{
