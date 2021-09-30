@@ -37,6 +37,8 @@ export interface SimpleTokenizerBackendConfig {
   awsRegion: string;
   /** Provide Aws credentials. Expects an AWS Credentials object */
   awsCredentials: S3RequestPresignerOptions['credentials'];
+  /** Override the production AWS URL with a localstack url on port 4566, useful for development */
+  useLocalStack?: boolean;
 }
 
 /**
@@ -46,7 +48,14 @@ export interface SimpleTokenizerBackendConfig {
 export class SimpleTokenizerBackend {
   constructor(readonly config: SimpleTokenizerBackendConfig) {}
 
-  async generatePresignedS3Url(tokenId: string, method: 'PUT' | 'GET') {
+  private generateAWSBaseUrl() {
+    if (this.config.useLocalStack) {
+      return `https://localhost:4566/${this.config.s3Bucket}`;
+    }
+
+    return `https://${this.config.s3Bucket}.s3.${this.config.awsRegion}.amazonaws.com`;
+  }
+  private async generatePresignedS3Url(tokenId: string, method: 'PUT' | 'GET') {
     if (!isToken(tokenId)) {
       throw new Error('Invalid token passed to simple express tokenizer backend');
     }
@@ -58,8 +67,8 @@ export class SimpleTokenizerBackend {
       credentials: credentials,
       sha256: Hash.bind(null, 'sha256'), // In Node.js
     });
-
-    const url = parseUrl(`https://${this.config.s3Bucket}.s3.${this.config.awsRegion}.amazonaws.com/${tokenId}`);
+    const baseUrl = this.generateAWSBaseUrl();
+    const url = parseUrl(`${baseUrl}/${tokenId}`);
 
     const signedUrl = await signer.presign(
       new HttpRequest({
