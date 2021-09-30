@@ -14,14 +14,56 @@
 //
 package constants
 
-//go:generate go-enum -f=$GOFILE --marshal --lower --names -t ./enumtemplates/yamlmarshal.tmpl
+import (
+  "errors"
+  "fmt"
+  "gopkg.in/yaml.v3"
+)
 
 // MetricsProvider
 // Stores a list of valid Metric Providers for logging data to.
 // This is a generated enum.
-/*
-ENUM(
-none,
-aws_cloudwatch,
-) */
-type MetricsProvider int
+type MetricsProvider string
+
+// NOTE: To actually add an enum value, you must also add it to the validProviders list below.
+const (
+  MetricsProviderNone MetricsProvider = "none"
+  MetricsProviderAwsCloudwatch = "aws_cloudwatch"
+)
+
+// Add your new enum value here in order to ensure it is validated at parse time.
+var validProviders = []MetricsProvider{
+  MetricsProviderNone,
+  MetricsProviderAwsCloudwatch,
+}
+
+func parseMetricsProviderEnum(input string) (MetricsProvider, bool) {
+  for _, validProvider := range validProviders {
+    if input == string(validProvider) {
+      return validProvider, true
+    }
+  }
+  return MetricsProviderNone, false
+}
+
+func (x *MetricsProvider) UnmarshalYAML(value *yaml.Node) error {
+  provider, valid := parseMetricsProviderEnum(value.Value)
+
+  if !valid {
+    // TODO: Verify that this is better than returning the error
+    panic(errors.New(fmt.Sprintf("invalid provider name specified, must be: %v", validProviders)))
+  }
+
+  *x = provider
+  return nil
+}
+
+func (x *MetricsProvider) UnmarshalText(text []byte) error {
+  name := string(text)
+  tmp, valid := parseMetricsProviderEnum(name)
+  if !valid {
+    return errors.New(fmt.Sprintf("invalid provider name specified, must be: %v", validProviders))
+  }
+  *x = tmp
+  return nil
+}

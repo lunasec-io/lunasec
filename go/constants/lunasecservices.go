@@ -14,14 +14,45 @@
 //
 package constants
 
-//go:generate go-enum -f=$GOFILE --marshal --lower --names -t ./enumtemplates/yamlmarshal.tmpl
+import (
+  "errors"
+  "fmt"
+  "gopkg.in/yaml.v3"
+)
 
 // LunaSecServices
 // Stores a list of valid LunaSec services.
-// This is a generated enum.
-/*
-ENUM(
-tokenizer-backend,
-secure-frame-frontend,
-) */
-type LunaSecServices int
+type LunaSecServices string
+
+// NOTE: To actually add an enum value, you must also add it to the validServices list below.
+const (
+  LunaSecServicesTokenizerBackend LunaSecServices = "tokenizer-backend"
+  LunaSecServicesSecureFrameFrontend = "secure-frame-frontend"
+)
+
+// Add your new enum value here in order to ensure it is validated at parse time.
+var validServices = []LunaSecServices{
+  LunaSecServicesTokenizerBackend,
+  LunaSecServicesSecureFrameFrontend,
+}
+
+func parseLunaSecServiceEnum(input string) (LunaSecServices, bool) {
+  for _, validService := range validServices {
+    if input == string(validService) {
+      return validService, true
+    }
+  }
+  return LunaSecServicesTokenizerBackend, false
+}
+
+func (x *LunaSecServices) UnmarshalYAML(value *yaml.Node) error {
+  service, valid := parseLunaSecServiceEnum(value.Value)
+
+  if !valid {
+    // TODO: Verify that this is better than returning the error
+    panic(errors.New(fmt.Sprintf("invalid service name specified, must be: %v", validServices)))
+  }
+
+  *x = service
+  return nil
+}
