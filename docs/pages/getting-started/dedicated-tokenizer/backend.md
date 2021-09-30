@@ -13,7 +13,7 @@ SDK from multiple places.
 ```typescript
 import { LunaSec } from '@lunasec/node-sdk'
 export const lunaSec = new LunaSec({
-    secureFrameURL: process.env.SECURE_FRAME_URL, // This is the domain of the Tokenizer Backend
+    tokenizerURL: process.env.TOKENIZER_URL, // This is the domain of the Tokenizer Backend
     auth: {
         secrets: { source: 'environment' }, // Reads base64 encoded RSA key from LUNASEC_SIGNING_KEY
         // Provide a small middleware that knows how to read the req object and return a promise containing a session id
@@ -41,17 +41,35 @@ To see full documentation of the LunaSec class and the configuration it takes, s
 :::
 
 Now the SDK is configured and you have access to its modules, like the auth plugin: 
+
 ### Registering the auth plugin with express
+
+The LunaSec auth plugin uses a provided signing key to create sessions for the Tokenizer Backend. For a simple integration with LunaSec,
+we are going to generate a signing key and then put it in an environment variable. LunaSec supports other methods of storing
+this signing key which you can see [here](TODO).
+
+```shell
+$ ssh-keygen -t rsa -f lunasec_signing_key
+$ cat lunasec_signing_key | base64 -w0
+  <encoded signing key>
+```
+
+Your backend should have the environment variable `LUNASEC_SIGNING_KEY` set to the `<encoded signing key>`.
+
 If you want to use your own session management or use a tool like Passport, register the auth plugin with express. This will transfer the session information
 onto the domain that the Dedicated Tokenizer will run on.
+
 ```typescript
 // Attach the LunaSec authentication plugin
 lunaSec.expressAuthPlugin.register(app);
 ```
+
 :::info
 See the [authentication page](../../overview/authentication.md) for more information on when to use this plugin and how it works.
 :::
+
 ### Checking Grants
+
 Grants connect a user's session to a token for a short time. Grants limit what sessions are allowed to read a specific token.  Your server needs to grant every token being sent to the browser
 and check every token that is coming in. 
 
