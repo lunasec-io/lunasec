@@ -15,7 +15,7 @@
 package constants
 
 const (
-	SecretHeader = "X-Tokenizer-Client-Secret"
+	SecretHeader          = "X-Tokenizer-Client-Secret"
 	DataAccessTokenCookie = "access_token"
 
 	AuthProviderNameQueryParam = "auth_provider"

@@ -34,11 +34,11 @@ const (
 	MetaStore    = types.KVStore("metadata")
 	KeyStore     = types.KVStore("keys")
 	SessionStore = types.KVStore("sessions")
-	GrantStore = types.KVStore("grants")
+	GrantStore   = types.KVStore("grants")
 )
 
 func validateTableConfig(tableConfig map[types.KVStore]string) {
-	tableNames := []types.KVStore {
+	tableNames := []types.KVStore{
 		MetaStore,
 		KeyStore,
 		SessionStore,

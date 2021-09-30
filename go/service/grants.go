@@ -36,9 +36,9 @@ type grantServiceConfig struct {
 }
 
 type grantService struct {
-	logger *zap.Logger
-	cw gateway.AwsCloudwatchGateway
-	kv gateway.AwsDynamoGateway
+	logger        *zap.Logger
+	cw            gateway.AwsCloudwatchGateway
+	kv            gateway.AwsDynamoGateway
 	grantDuration time.Duration
 }
 
@@ -69,9 +69,9 @@ func NewGrantService(
 		panic(err)
 	}
 	service = &grantService{
-		logger: logger,
-		cw: cw,
-		kv: kv,
+		logger:        logger,
+		cw:            cw,
+		kv:            kv,
 		grantDuration: grantDuration,
 	}
 	return

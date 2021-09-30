@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// +build cli
+//go:build cli
 
 package main
 
@@ -29,8 +29,8 @@ import (
 
 var (
 	version = ""
-	commit = ""
-	date = ""
+	commit  = ""
+	date    = ""
 )
 
 func main() {
@@ -41,26 +41,24 @@ func main() {
 	}
 
 	app := &cli.App{
-		Name:  "lunasec",
-		Version: version,
-		Compiled: time.Now(),
+		Name:        "lunasec",
+		Version:     version,
+		Compiled:    time.Now(),
 		HideVersion: false,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:  "config",
+				Name:     "config",
 				Required: false,
-				Usage: "Config file for building secure components.",
+				Usage:    "Config file for building secure components.",
 			},
 			&cli.StringFlag{
-				Name:  "dir",
+				Name:     "dir",
 				Required: false,
-				Usage: "Build directory for built secure components.",
+				Usage:    "Build directory for built secure components.",
 			},
 		},
 		Commands: []*cli.Command{
-			{
-
-			},
+			{},
 			{
 				Name:    "build",
 				Aliases: []string{"b"},
