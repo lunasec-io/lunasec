@@ -17,7 +17,6 @@ package constants
 import (
   "errors"
   "fmt"
-  "gopkg.in/yaml.v3"
 )
 
 // MetricsProvider
@@ -46,18 +45,8 @@ func parseMetricsProviderEnum(input string) (MetricsProvider, bool) {
   return MetricsProviderNone, false
 }
 
-func (x *MetricsProvider) UnmarshalYAML(value *yaml.Node) error {
-  provider, valid := parseMetricsProviderEnum(value.Value)
-
-  if !valid {
-    // TODO: Verify that this is better than returning the error
-    panic(errors.New(fmt.Sprintf("invalid provider name specified, must be: %v", validProviders)))
-  }
-
-  *x = provider
-  return nil
-}
-
+// UnmarshalText
+// This function is used by Yaml and maps the input string into an enum value
 func (x *MetricsProvider) UnmarshalText(text []byte) error {
   name := string(text)
   tmp, valid := parseMetricsProviderEnum(name)
