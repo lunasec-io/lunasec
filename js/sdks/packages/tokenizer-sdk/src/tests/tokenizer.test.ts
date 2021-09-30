@@ -147,7 +147,7 @@ describe('fetchData', () => {
       const expectedOutput: TokenizerSetGrantResponse = {
         success: true,
       };
-      const result = tokenizer.createFullAccessGrant('fakeSessionId', 'fakeToken');
+      const result = tokenizer.createGrant('fakeSessionId', 'fakeToken');
       await expect(result).resolves.toEqual(expectedOutput);
 
       expect(mockAxios.request).toHaveBeenCalledWith({

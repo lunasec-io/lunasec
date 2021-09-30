@@ -165,8 +165,8 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 			return
 		}
 	}
-
-	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.TokenFullAccess); err != nil {
+	//We automatically create grants for new tokens so that they can be set in the DB, and detokenized elsewhere in the same browser session
+	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.TokenFullAccess, ""); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
