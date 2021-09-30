@@ -39,6 +39,7 @@ import (
 	"os"
 	"path"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -379,7 +380,7 @@ func (l *builder) createSecret(stack awscdk.Stack, name, description string) aws
 }
 
 func (l *builder) getTokenizerBackendLambda(stack awscdk.Stack, containerTag string, lambdaEnv *map[string]*string) awslambda.Function {
-	secureFrameRepo := awsecr.Repository_FromRepositoryName(stack, jsii.String("tokenizer-backend-repo"), jsii.String(constants.LunaSecServicesTokenizerBackend.String()))
+	secureFrameRepo := awsecr.Repository_FromRepositoryName(stack, jsii.String("tokenizer-backend-repo"), jsii.String(string(constants.LunaSecServicesTokenizerBackend)))
 
 	return awslambda.NewDockerImageFunction(stack, jsii.String("tokenizer-backend-lambda"), &awslambda.DockerImageFunctionProps{
 		Code: awslambda.DockerImageCode_FromEcr(secureFrameRepo, &awslambda.EcrImageCodeProps{
@@ -455,7 +456,9 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 			"KEYS_KV_TABLE":       keysTable.TableName(),
 			"SESSIONS_KV_TABLE":   sessionsTable.TableName(),
 			"GRANTS_KV_TABLE":   grantsTable.TableName(),
-			//"METRICS_DISABLED": jsii.String(l.metricsConfig.Disabled),
+			"METRICS_DISABLED": jsii.String(strconv.FormatBool(l.metricsConfig.Disabled)),
+			"METRICS_PROVIDER": jsii.String(string(l.metricsConfig.Provider)),
+			"METRICS_DISABLE_USAGE_STATISTICS": jsii.String(strconv.FormatBool(l.metricsConfig.DisableUsageStatisticsMetrics)),
 		}
 
 		if l.buildConfig.SessionPublicKey != "" {

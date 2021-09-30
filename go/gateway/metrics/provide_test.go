@@ -15,6 +15,7 @@
 package metrics
 
 import (
+  "fmt"
   "github.com/aws/aws-sdk-go/aws"
   "github.com/aws/aws-sdk-go/aws/client"
   "github.com/refinery-labs/loq/constants"
@@ -85,7 +86,9 @@ func TestParsingInvalidConfig(t *testing.T) {
     t.Errorf("metrics provider should throw error")
   }
 
-  if strings.Contains(err.Error(), "aws_cloudwatch_fake is not a valid MetricsProvider") == false {
+  fmt.Println(err)
+
+  if strings.Contains(err.Error(), "invalid provider name specified, must be") == false {
     t.Errorf("error should state that given metrics provider is bad")
   }
 
@@ -93,8 +96,8 @@ func TestParsingInvalidConfig(t *testing.T) {
     t.Errorf("metrics should not be disabled")
   }
 
-  if testConfig.Provider != constants.MetricsProviderNone {
-    t.Errorf("metrics provider not 'none': %s", testConfig.Provider)
+  if testConfig.Provider != "" {
+    t.Errorf("metrics provider not empty: %s", testConfig.Provider)
   }
 
   if testConfig.DisableUsageStatisticsMetrics == true {
