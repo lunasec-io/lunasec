@@ -86,6 +86,7 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
                 onTokenChange={(tokens) => {
                   setDocuments(tokens);
                 }}
+                customMetadata={{ customField: 'example' }}
                 errorHandler={(e) => setError(e.message)}
               />
             </FormGroup>
