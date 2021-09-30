@@ -15,12 +15,12 @@
 package metrics
 
 import (
-  "fmt"
   "github.com/aws/aws-sdk-go/aws"
   "github.com/aws/aws-sdk-go/aws/client"
   "github.com/refinery-labs/loq/constants"
   "go.uber.org/config"
   "go.uber.org/zap"
+  "gopkg.in/yaml.v3"
   "strings"
   "testing"
 )
@@ -86,8 +86,6 @@ func TestParsingInvalidConfig(t *testing.T) {
     t.Errorf("metrics provider should throw error")
   }
 
-  fmt.Println(err)
-
   if strings.Contains(err.Error(), "invalid provider name specified, must be") == false {
     t.Errorf("error should state that given metrics provider is bad")
   }
@@ -138,6 +136,67 @@ metrics:
   _, ok := metricsGateway.(NopMetricsGateway)
   if !ok {
     t.Errorf("returned metrics gateway not of type NopMetricsGateway")
+  }
+}
+
+const validMetricsConfig = `
+disabled: false
+provider: aws_cloudwatch
+disable_usage_statistics: false
+`
+
+func TestValidVanillaYamlUnmarshal(t *testing.T) {
+  var metricsConfig MetricProviderConfig
+
+  err := yaml.Unmarshal([]byte(validMetricsConfig), &metricsConfig)
+
+  if err != nil {
+    t.Errorf("should not have yaml error: %v", err)
+  }
+
+  if metricsConfig.Disabled {
+    t.Errorf("expected disabled to be false")
+  }
+
+  if metricsConfig.Provider != constants.MetricsProviderAwsCloudwatch {
+    t.Errorf("invalid provider read from config: %s", metricsConfig.Provider)
+  }
+
+  if metricsConfig.DisableUsageStatisticsMetrics {
+    t.Errorf("expected usage statistics to be false")
+  }
+}
+
+const invalidMetricsConfig = `
+disabled: false
+provider: aws_cloudwatch_fake
+disable_usage_statistics: false
+`
+
+func TestInvalidVanillaYamlUnmarshal(t *testing.T) {
+  var metricsConfig MetricProviderConfig
+
+  // test yaml v3 deserialization
+  err := yaml.Unmarshal([]byte(invalidMetricsConfig), &metricsConfig)
+
+  if err == nil {
+    t.Errorf("metrics provider should throw error")
+  }
+
+  if strings.Contains(err.Error(), "invalid provider name specified, must be") == false {
+    t.Errorf("error should state that given metrics provider is bad")
+  }
+
+  if metricsConfig.Disabled == true {
+    t.Errorf("metrics should not be disabled")
+  }
+
+  if metricsConfig.Provider != "" {
+    t.Errorf("metrics provider not empty: %s", metricsConfig.Provider)
+  }
+
+  if metricsConfig.DisableUsageStatisticsMetrics == true {
+    t.Errorf("usage statistics should not be disabled")
   }
 }
 

@@ -17,7 +17,6 @@ package constants
 import (
   "errors"
   "fmt"
-  "gopkg.in/yaml.v3"
 )
 
 // LunaSecServices
@@ -45,18 +44,8 @@ func parseLunaSecServiceEnum(input string) (LunaSecServices, bool) {
   return LunaSecServicesTokenizerBackend, false
 }
 
-func (x *LunaSecServices) UnmarshalYAML(value *yaml.Node) error {
-  service, valid := parseLunaSecServiceEnum(value.Value)
-
-  if !valid {
-    // TODO: Verify that this is better than returning the error
-    panic(errors.New(fmt.Sprintf("invalid service name specified, must be: %v", validServices)))
-  }
-
-  *x = service
-  return nil
-}
-
+// UnmarshalText
+// This function is used by Yaml and maps the input string into an enum value
 func (x *LunaSecServices) UnmarshalText(text []byte) error {
   name := string(text)
   tmp, valid := parseLunaSecServiceEnum(name)
