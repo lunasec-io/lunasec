@@ -53,11 +53,6 @@ func SetupMetricsGateway(logger *zap.Logger, provider config.Provider, sess clie
     return NewNopMetricsGateway()
   }
 
-  if metricsConfig.Provider == constants.MetricsProviderNone {
-    log.Println("Metrics provider not specified but is required")
-    panic("Must provide metrics provider")
-  }
-
   if metricsConfig.Provider == constants.MetricsProviderAwsCloudwatch {
     return NewAwsCloudwatchGateway(logger, provider, sess)
   }
