@@ -34,15 +34,15 @@ export class KeyService {
   }
 
   private getSigningPrivateKey(): Promise<KeyLike> {
-    if (this.secretConfig.source === 'awsSecretsManager') {
+    if (this.secretConfig.provider === 'awsSecretsManager') {
       return awsSecretProvider(this.secretConfig);
     }
 
-    if (this.secretConfig.source === 'environment') {
+    if (this.secretConfig.provider === 'environment') {
       return environmentSecretProvider();
     }
 
-    if (this.secretConfig.source === 'manual') {
+    if (this.secretConfig.provider === 'manual') {
       return Promise.resolve(this.secretConfig.signingKey) as Promise<KeyLike>; // Very strange to need this casting, typescript is expanding this type and then not matching it
     }
 

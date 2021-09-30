@@ -75,13 +75,12 @@ type builder struct {
 func NewBuilderConfig(
 	buildDir string,
 	localDev bool,
-	skipImageMirroring bool,
 	env *awscdk.Environment,
 ) BuilderConfig {
 	return BuilderConfig{
 		buildDir: buildDir,
 		localDev: localDev,
-		skipImageMirroring: skipImageMirroring,
+		skipImageMirroring: false,
 		env: env,
 	}
 }
@@ -441,7 +440,7 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 
 	if !l.localDev {
 		lambdaEnv := map[string]*string{
-			"SECURE_FRAME_URL":     secureFrameCloudfront.AttrDomainName(),
+			"TOKENIZER_URL":     secureFrameCloudfront.AttrDomainName(),
 			"APPLICATION_FRONT_END":         jsii.String(l.buildConfig.ApplicationFrontEnd),
 			"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
 			"APPLICATION_BACK_END":          jsii.String(l.buildConfig.ApplicationBackEnd),
