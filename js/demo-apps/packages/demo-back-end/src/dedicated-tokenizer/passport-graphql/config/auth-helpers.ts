@@ -36,7 +36,6 @@ export function readSessionFromRequest(req: Express.Request): Promise<string | n
   // LunaSec expects this to return a promise in case we need to do something async
   return new Promise((resolve) => {
     if (req.session.id) {
-      console.log('READ SESSION FROM REQUEST graphql server', req.session.id);
       return resolve(req.session.id);
     }
     return resolve(null); // LunaSec Elements will not work in this case
