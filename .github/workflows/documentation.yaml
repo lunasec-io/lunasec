@@ -63,7 +63,7 @@ jobs:
         working-directory: js/sdks
         run: |
           npx lerna bootstrap
-          npm run compile:production
+          npm run compile:release
 
       - name: Install Dependencies
         working-directory: docs/
@@ -106,8 +106,8 @@ jobs:
       - name: Build repo
         working-directory: js/sdks
         run: |
-          npx lerna bootstrap
-          npm run compile:production
+          npx lerna bootstrap --ci
+          npm run compile:release
       - name: Install Dependencies
         working-directory: docs/
         run: yarn install
