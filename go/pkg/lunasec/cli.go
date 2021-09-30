@@ -15,7 +15,6 @@
 package lunasec
 
 import (
-	"errors"
 	"fmt"
 	"github.com/refinery-labs/loq/constants"
 	"github.com/refinery-labs/loq/gateway"
@@ -24,7 +23,13 @@ import (
 	"github.com/urfave/cli/v2"
 	"go.uber.org/config"
 	"go.uber.org/zap"
+	"io/fs"
+	"io/ioutil"
 	"log"
+	"os"
+	"path"
+	"sort"
+	"time"
 )
 
 var (
@@ -59,20 +64,63 @@ func loadConfigFile(configFile string) (provider config.Provider, err error) {
 	return
 }
 
-func BuildCommand(c *cli.Context) (err error) {
-	skipMirroring := c.Bool("skip-mirroring")
-	localDev := c.Bool("local")
+func getBuildDirectory() (string, error) {
+	t := time.Now()
+	formattedTime := fmt.Sprintf("build_%d-%02d-%02dT%02d:%02d:%02d",
+		t.Year(), t.Month(), t.Day(),
+		t.Hour(), t.Minute(), t.Second())
+	relativeBuildDir := path.Join(constants.LunasecBuildDir, formattedTime)
+	return util.GetHomeDirectory(relativeBuildDir)
+}
 
-	configFile := c.String("config")
-	provider, err := loadConfigFile(configFile)
+func filterDirs(files []fs.FileInfo) (folders []fs.FileInfo) {
+	for _, file := range files {
+		if file.IsDir() {
+			folders = append(folders, file)
+		}
+	}
+	return
+}
+
+func cleanupPreviousBuilds() (err error) {
+	var (
+		files []fs.FileInfo
+	)
+
+	buildDir, err := util.GetHomeDirectory(constants.LunasecBuildDir)
+	if err != nil {
+		return err
+	}
+
+	files, err = ioutil.ReadDir(buildDir)
+
+	folders := filterDirs(files)
+
+	sort.Slice(folders, func(i, j int) bool {
+		return folders[i].ModTime().Before(folders[j].ModTime())
+	})
+
+	listLen := len(folders)
+
+	// only keep the last 10 builds
+	for listLen > 10 {
+		folder := folders[listLen-1]
+		folderPath := path.Join(buildDir, folder.Name())
+
+		err = os.RemoveAll(folderPath)
+		if err != nil {
+			return err
+		}
+		listLen -= 1
+	}
+	return
+}
+
+func BuildCommand(localDev bool, provider config.Provider, buildDir string) (err error) {
+	err = cleanupPreviousBuilds()
 	if err != nil {
 		log.Println(err)
 		return
-	}
-
-	buildDir := c.String("dir")
-	if buildDir == "" {
-		buildDir = constants.LunasecBuildDir
 	}
 
 	logger, err := util.GetLogger()
@@ -95,7 +143,7 @@ func BuildCommand(c *cli.Context) (err error) {
 
 	npmGateway := gateway.NewNpmGateway(logger, provider)
 
-	builderConfig := lunasec.NewBuilderConfig(buildDir, localDev, skipMirroring, env)
+	builderConfig := lunasec.NewBuilderConfig(buildDir, localDev, env)
 
 	buildConfig, err := lunasec.NewBuildConfig(provider)
 	if err != nil {
@@ -108,14 +156,13 @@ func BuildCommand(c *cli.Context) (err error) {
 }
 
 func DeployCommand(c *cli.Context) (err error) {
-	buildBeforeDeploying := c.Bool("build")
+	dryRun := c.Bool("dry-run")
 	localDev := c.Bool("local")
-	configOutput := c.String("config-output")
+	configOutput := c.String("output")
 	if configOutput == "" {
-		err = errors.New("no config output file provided")
-		log.Println(err)
-		return
+		configOutput = constants.DeployedAwsResourcesConfig
 	}
+
 	configFile := c.String("config")
 	provider, err := loadConfigFile(configFile)
 	if err != nil {
@@ -123,17 +170,24 @@ func DeployCommand(c *cli.Context) (err error) {
 		return
 	}
 
-	if buildBeforeDeploying {
-		log.Println("building secure lunasec components")
-		err = BuildCommand(c)
+	buildDir := c.String("dir")
+	if buildDir == "" {
+		buildDir, err = getBuildDirectory()
 		if err != nil {
+			log.Println(err)
 			return err
 		}
 	}
 
-	buildDir := c.String("dir")
-	if buildDir == "" {
-		buildDir = constants.LunasecBuildDir
+	log.Println("building secure lunasec components")
+	err = BuildCommand(localDev, provider, buildDir)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	if dryRun {
+		return
 	}
 
 	logger, err := zap.NewProduction()
@@ -163,5 +217,16 @@ func DeployCommand(c *cli.Context) (err error) {
 	}
 
 	deployer := lunasec.NewDeployer(deployerConfig, buildConfig)
-	return deployer.Deploy()
+	err = deployer.Deploy()
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	err = deployer.WriteConfig()
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
 }

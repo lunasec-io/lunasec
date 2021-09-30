@@ -65,6 +65,7 @@ type DeployerConfig struct {
 
 type Deployer interface {
 	Deploy() (err error)
+	WriteConfig() (err error)
 }
 
 type deployer struct {
@@ -96,6 +97,10 @@ func getOutputName(name string) *string {
 	return jsii.String(strings.Replace(outputName, "-", "", -1))
 }
 
+func (l *deployer) getStackOutputsFilename() string {
+	return path.Join(l.buildDir, constants.StackOutputsFilename)
+}
+
 func (l *deployer) Deploy() (err error) {
 	cmd := "cdk"
 	if l.localDev {
@@ -110,10 +115,8 @@ func (l *deployer) Deploy() (err error) {
 		return
 	}
 
-	stackOutputFilePath := path.Join(l.buildDir, "outputs.json")
-
 	// TODO (cthompson) we probably want to require approval for this, but for now this is ok
-	args = []string{"deploy", "--require-approval", "never", "-a", l.buildDir, "--outputs-file", stackOutputFilePath}
+	args = []string{"deploy", "--require-approval", "never", "-a", l.buildDir, "--outputs-file", l.getStackOutputsFilename()}
 
 	cdkExecutor = service.NewExecutor(cmd, args, map[string]string{}, "", nil, true)
 	_, err = cdkExecutor.Execute()
@@ -121,17 +124,16 @@ func (l *deployer) Deploy() (err error) {
 		log.Println(err)
 		return
 	}
-
-	return l.writeConfig(stackOutputFilePath)
+	return
 }
 
-func (l *deployer) writeConfig(stackOutputFilePath string) (err error) {
+func (l *deployer) WriteConfig() (err error) {
 	var (
 		stackOutput       StackOutput
 		awsResourceConfig AwsResourceConfig
 	)
 
-	outputFile, err := ioutil.ReadFile(stackOutputFilePath)
+	outputFile, err := ioutil.ReadFile(l.getStackOutputsFilename())
 	if err != nil {
 		log.Println(err)
 		return
@@ -170,6 +172,6 @@ func (l *deployer) writeConfig(stackOutputFilePath string) (err error) {
 		return
 	}
 
-	err = ioutil.WriteFile(path.Join(l.configOutputPath, constants.DeployedAwsResourcesConfig), out, 0744)
+	err = ioutil.WriteFile(l.configOutputPath, out, 0744)
 	return
 }

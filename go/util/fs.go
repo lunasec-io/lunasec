@@ -21,8 +21,24 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 )
+
+func GetHomeDirectory(relativeDir string) (dir string, err error) {
+	var (
+		userHome string
+	)
+
+	userHome, err = os.UserHomeDir()
+	if err != nil {
+		return
+	}
+
+	dir = path.Join(userHome, relativeDir)
+	err = os.MkdirAll(dir, 0o755)
+	return
+}
 
 func CopyDirectory(scrDir, dest string) error {
 	if err := CreateIfNotExists(dest, 0755); err != nil {

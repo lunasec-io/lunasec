@@ -1,7 +1,7 @@
 app:
   cors:
     allowed_origins:
-      - ${SECURE_FRAME_URL}
+      - ${TOKENIZER_URL}
       - ${APPLICATION_FRONT_END}
     allowed_headers:
       - Authorization
