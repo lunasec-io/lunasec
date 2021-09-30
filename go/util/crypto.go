@@ -21,11 +21,11 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
-	"github.com/refinery-labs/loq/constants"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"math/rand"
 
 	"github.com/google/uuid"
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"golang.org/x/crypto/sha3"
 )
 

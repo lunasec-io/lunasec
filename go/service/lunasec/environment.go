@@ -19,7 +19,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/pkg/errors"
-	"github.com/refinery-labs/loq/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
 	"log"
 )
 

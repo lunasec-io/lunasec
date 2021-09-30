@@ -15,12 +15,12 @@
 package service
 
 import (
-	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/util"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/refinery-labs/loq/controller/request"
+	"github.com/lunasec-io/lunasec-monorepo/controller/request"
 	"go.uber.org/zap"
 )
 

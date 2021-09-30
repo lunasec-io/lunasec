@@ -17,9 +17,9 @@ package lunasec
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/service"
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/service"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
@@ -28,7 +28,7 @@ import (
 
 	"github.com/aws/aws-cdk-go/awscdk"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/refinery-labs/loq/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
 )
 
 type StackOutput map[string]map[string]string

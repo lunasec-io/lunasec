@@ -22,7 +22,7 @@ import (
 	"time"
 
 	"github.com/prashantv/gostub"
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"github.com/stretchr/testify/assert"
 )
 

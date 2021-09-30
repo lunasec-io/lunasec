@@ -20,9 +20,9 @@ import (
 	"go.uber.org/zap"
 	"time"
 
-	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/types"
-	"github.com/refinery-labs/loq/util"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/types"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 )
 
 type metadataService struct {

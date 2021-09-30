@@ -15,8 +15,8 @@
 package event
 
 import (
-	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 )
 
 type ImageFile struct {
