@@ -1,15 +1,13 @@
-FROM lunasec/cached-npm-dependencies:v0.0.2 as lerna-bootstrap
+FROM lunasec/cached-npm-dependencies:v0.0.3 as lerna-bootstrap
 
 COPY . /repo
 
 WORKDIR /repo
 
 RUN lerna bootstrap --ignore-scripts --ci
+RUN npm rebuild --workspaces
 
-WORKDIR /repo/js/sdks
 RUN yarn run compile:dev:sdks
-
-WORKDIR /repo
 
 FROM lerna-bootstrap as demo-back-end
 
@@ -28,6 +26,8 @@ ENV DEMO_NAME="dedicated-passport-express"
 ENTRYPOINT yarn run start
 
 FROM cypress/included:8.4.0 as integration-test
+
+ENV VERBOSE_CYPRESS_LOGS="always"
 
 COPY --from=lerna-bootstrap /repo /repo
 
