@@ -23,11 +23,22 @@ yarn --version
 npx yarn --version
 npx lerna --version
 
+docker_container() {
+  docker ps | grep $1 | awk '{print $1}'
+}
+docker_health() {
+  docker inspect --format "{{json .State.Health }}" "$(docker_container $1)" | jq '.Log[].Output'
+}
+
+
 echo "# Docker Container Info"
 
 docker ps -a
 
-docker logs "$(docker ps -a | grep "lunasec-monorepo_application-front-end" | cut -c1-12)"
+docker_health secure-frame-iframe
+docker_health application-front-end
+docker_health application-back-end
+docker_health tokenizerbackend
 
 echo "# Current Directory Info"
 
