@@ -75,13 +75,12 @@ type builder struct {
 func NewBuilderConfig(
 	buildDir string,
 	localDev bool,
-	skipImageMirroring bool,
 	env *awscdk.Environment,
 ) BuilderConfig {
 	return BuilderConfig{
 		buildDir: buildDir,
 		localDev: localDev,
-		skipImageMirroring: skipImageMirroring,
+		skipImageMirroring: false,
 		env: env,
 	}
 }

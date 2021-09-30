@@ -36,7 +36,7 @@ lunasec:
 
 And finally to deploy all required LunaSec resources to your AWS account, run:
 ```shell
-lunasec --dir state --build
+lunasec deploy
 ```
 
 TODO add command out
