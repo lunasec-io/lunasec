@@ -56,3 +56,14 @@ func (x *LunaSecServices) UnmarshalYAML(value *yaml.Node) error {
   *x = service
   return nil
 }
+
+func (x *LunaSecServices) UnmarshalText(text []byte) error {
+  name := string(text)
+  tmp, valid := parseLunaSecServiceEnum(name)
+  if !valid {
+    return errors.New(fmt.Sprintf("invalid service name specified, must be: %v", validProviders))
+  }
+  *x = tmp
+  return nil
+}
+
