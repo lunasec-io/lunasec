@@ -33,14 +33,14 @@ import { SessionIdProvider } from '../authentication/types';
 export interface ExpressAuthPluginConfig {
   sessionIdProvider: SessionIdProvider;
   // payloadClaims?: string[]; // Not currently used
-  secureFrameURL: string;
+  tokenizerURL: string;
   auth: KeyService;
   // TODO: (forrest) remove, I'm 99% sure you can do this by just calling `register` on an express router instead of the base app
   pluginBaseUrl?: string;
 }
 
 export class ExpressAuthPlugin {
-  private readonly secureFrameUrl: string;
+  private readonly tokenizerUrl: string;
   private readonly auth: KeyService;
   private readonly config: ExpressAuthPluginConfig;
 
@@ -50,7 +50,7 @@ export class ExpressAuthPlugin {
   constructor(config: ExpressAuthPluginConfig) {
     this.auth = config.auth;
     this.config = config;
-    this.secureFrameUrl = config.secureFrameURL;
+    this.tokenizerUrl = config.tokenizerURL;
   }
 
   // private filterClaims<T extends JWTPayload>(payload: T): Partial<T> {
@@ -82,7 +82,7 @@ export class ExpressAuthPlugin {
       return null;
     }
 
-    const redirectUrl = new URL('/session/create', this.secureFrameUrl);
+    const redirectUrl = new URL('/session/create', this.tokenizerUrl);
     redirectUrl.searchParams.append('state', stateToken);
     redirectUrl.searchParams.append('openid_token', access_token.toString());
     return redirectUrl;

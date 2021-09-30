@@ -17,6 +17,7 @@ package gateway
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/refinery-labs/loq/constants"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"io"
@@ -74,6 +75,10 @@ func NewNpmGateway(logger *zap.Logger, provider config.Provider) NpmGateway {
 	err := provider.Get("npm_gateway").Populate(&gatewayConfig)
 	if err != nil {
 		panic(err)
+	}
+
+	if gatewayConfig.RegistryURL == "" {
+		gatewayConfig.RegistryURL = constants.NpmJsRegistryUrl
 	}
 
 	parsedUrl, err := url.Parse(gatewayConfig.RegistryURL)
