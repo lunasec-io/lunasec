@@ -17,13 +17,13 @@ package service
 import (
 	"encoding/hex"
 	"errors"
-	"github.com/refinery-labs/loq/constants"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 
-	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/types"
-	"github.com/refinery-labs/loq/util"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/types"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 )
 
 type tokenizerService struct {

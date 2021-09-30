@@ -22,7 +22,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/refinery-labs/loq/pkg/lunasec"
+	"github.com/lunasec-io/lunasec-monorepo/pkg/lunasec"
 
 	"github.com/urfave/cli/v2"
 )

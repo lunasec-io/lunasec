@@ -16,17 +16,17 @@ package tokenizerbackend
 
 import (
 	"fmt"
-	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/pkg/tokenizer"
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizer"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"log"
 	"net/http"
 
 	"github.com/awslabs/aws-lambda-go-api-proxy/handlerfunc"
-	"github.com/refinery-labs/loq/controller"
-	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/service"
-	"github.com/refinery-labs/loq/util"
+	"github.com/lunasec-io/lunasec-monorepo/controller"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/service"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"github.com/rs/cors"
 )
 

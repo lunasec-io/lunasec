@@ -15,11 +15,11 @@
 package controller
 
 import (
-	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"net/http"
 
-	"github.com/refinery-labs/loq/service"
+	"github.com/lunasec-io/lunasec-monorepo/service"
 	"go.uber.org/config"
 )
 

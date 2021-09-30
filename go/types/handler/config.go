@@ -15,7 +15,7 @@
 package handler
 
 import (
-	"github.com/refinery-labs/loq/constants"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"net/http"
 )
 
