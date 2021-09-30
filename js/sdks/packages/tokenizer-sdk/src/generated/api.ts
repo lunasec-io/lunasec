@@ -236,6 +236,12 @@ export interface SetGrantRequest {
      * @memberof SetGrantRequest
      */
     tokenId: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SetGrantRequest
+     */
+    customDuration?: string;
 }
 /**
  * 

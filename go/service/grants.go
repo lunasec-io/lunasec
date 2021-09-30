@@ -22,6 +22,7 @@ import (
 	"log"
 	"time"
 
+	"errors"
 	"github.com/refinery-labs/loq/gateway"
 	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/util"
@@ -32,21 +33,25 @@ type TokenGrant struct {
 }
 
 type grantServiceConfig struct {
-	GrantTTL string `yaml:"grant_ttl"`
+	GrantTTL string `yaml:"grant_default_duration"`
+	GrantMaxTTL string `yaml:"grant_maximum_duration"`
 }
 
 type grantService struct {
 	logger *zap.Logger
 	cw gateway.AwsCloudwatchGateway
 	kv gateway.AwsDynamoGateway
-	grantDuration time.Duration
+	grantDefaultDuration time.Duration
+	grantMaxDuration time.Duration
 }
+
 
 // GrantService manages grants for tokens
 type GrantService interface {
-	SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType) error
+	SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType, customGrantDuration string) error
 	ValidTokenGrantExistsForSession(token types.Token, sessionID string, grantType constants.GrantType) (valid bool, err error)
 }
+
 
 // NewGrantService ...
 func NewGrantService(
@@ -64,25 +69,54 @@ func NewGrantService(
 		panic(err)
 	}
 
-	grantDuration, err := time.ParseDuration(serviceConfig.GrantTTL)
+	grantDefaultDuration, err := time.ParseDuration(serviceConfig.GrantTTL)
 	if err != nil {
 		panic(err)
 	}
-	service = &grantService{
-		logger: logger,
-		cw: cw,
-		kv: kv,
-		grantDuration: grantDuration,
+	grantMaxDuration, err := time.ParseDuration(serviceConfig.GrantMaxTTL)
+	if err != nil {
+		panic(err)
 	}
-	return
+
+	service = &grantService{
+		logger:               logger,
+		cw:                   cw,
+		kv:                   kv,
+		grantDefaultDuration: grantDefaultDuration,
+		grantMaxDuration: grantMaxDuration,
+	}
+	return service
 }
 
 func getGrantKey(sessionID string, token types.Token, grantType constants.GrantType) string {
 	return util.Sha512Sum(sessionID + string(token) + string(grantType))
 }
 
-func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType) (err error) {
-	grantExpiry := time.Now().Add(s.grantDuration).Unix()
+func (s *grantService) getGrantDuration(customDurationString string) (int64, error) {
+	s.logger.Debug(
+		"read custom grant duration from request:",
+		zap.String("durationString", customDurationString))
+
+	if customDurationString == "" {
+		return time.Now().Add(s.grantDefaultDuration).Unix(), nil
+	}
+
+	customDuration, err := time.ParseDuration(customDurationString)
+	if err != nil {
+		return 0, errors.New("Grant duration parse failed, please use a supported duration format like 30m or 1h20m10s")
+	}
+
+	if customDuration > s.grantMaxDuration {
+		return 0, errors.New("Grant duration set longer than configured maximum time")
+	}
+	return time.Now().Add(customDuration).Unix(), nil
+}
+
+func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType, customGrantDuration string) (err error) {
+	grantExpiry, err := s.getGrantDuration(customGrantDuration)
+	if err != nil {
+		return err
+	}
 	tokenGrant := TokenGrant{
 		GrantExpiry: grantExpiry,
 	}
