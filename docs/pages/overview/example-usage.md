@@ -58,7 +58,7 @@ and exposes helpers for working with Express or Apollo-GraphQL.
 ```typescript
 import { LunaSec } from '@lunasec/node-sdk
 const lunaSec = new LunaSec({
-  secureFrameURL: process.env.SECURE_FRAME_URL,
+  tokenizerURL: process.env.TOKENIZER_URL,
   auth: {
     secrets: { source: 'environment' },
     payloadClaims: [],
