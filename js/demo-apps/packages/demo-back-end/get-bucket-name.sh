@@ -16,3 +16,5 @@ else
   done
   echo "$name"
 fi
+
+#awk '/s3_bucket/{print $NF}' ../../../../go/config/secureframe/aws_resources.yaml
