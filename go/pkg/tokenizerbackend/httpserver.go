@@ -36,7 +36,7 @@ type CorsConfig struct {
 }
 
 type AppConfig struct {
-	Cors        CorsConfig `yaml:"cors"`
+	Cors CorsConfig `yaml:"cors"`
 }
 
 func newServer() http.Handler {

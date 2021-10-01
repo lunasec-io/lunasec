@@ -23,8 +23,8 @@ import (
 
 	"github.com/Joker/jade"
 	"github.com/pkg/errors"
-	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/service"
+	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/util"
 	"go.uber.org/config"
 	"go.uber.org/zap"

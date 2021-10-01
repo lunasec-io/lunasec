@@ -35,7 +35,7 @@ type DockerContainerModifier interface {
 type dockerContainerModifier struct {
 	baseRef          string
 	modifyEntrypoint bool
-	dockerManager DockerManager
+	dockerManager    DockerManager
 }
 
 func NewDockerContainerModifier(
@@ -46,7 +46,7 @@ func NewDockerContainerModifier(
 	return &dockerContainerModifier{
 		baseRef:          baseRef,
 		modifyEntrypoint: modifyEntrypoint,
-		dockerManager: dockerManager,
+		dockerManager:    dockerManager,
 	}
 }
 

@@ -22,9 +22,9 @@ import (
 	"strings"
 
 	"github.com/refinery-labs/loq/constants"
+	"github.com/refinery-labs/loq/service"
 	"github.com/refinery-labs/loq/types"
 	"github.com/refinery-labs/loq/types/event"
-	"github.com/refinery-labs/loq/service"
 	"github.com/refinery-labs/loq/util"
 	"go.uber.org/zap"
 )

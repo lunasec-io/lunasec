@@ -28,8 +28,8 @@ import (
 
 // JwksManager fetchs and maintains a cache of keys from a public endpoint.
 type JwksManager struct {
-	endpoint string
-	keys     cache
+	endpoint   string
+	keys       cache
 	httpClient *http.Client
 }
 

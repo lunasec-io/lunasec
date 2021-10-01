@@ -57,11 +57,11 @@ func getRoutes(
 			metadataController.SetMetadata,
 			constants.OnlyDeveloperSubject,
 		},
-		"/tokenize":     {
+		"/tokenize": {
 			tokenizerController.TokenizerSet,
 			constants.AnySubject,
 		},
-		"/detokenize":   {
+		"/detokenize": {
 			tokenizerController.TokenizerGet,
 			constants.AnySubject,
 		},
@@ -106,4 +106,3 @@ func GetTokenizerRoutes(
 		sm.HandleFunc(url, authFunc(handlerConfig.AllowedSubjects, routeHandler))
 	}
 }
-
