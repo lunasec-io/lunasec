@@ -1,4 +1,5 @@
-FROM lunasec/cached-npm-dependencies:v0.0.3 as lerna-bootstrap
+# Pulls from this cache with multiple build requirements like java and aws, not just npm
+FROM lunasec/cached-npm-dependencies:v0.0.4 as lerna-bootstrap
 
 COPY . /repo
 
@@ -13,15 +14,11 @@ FROM lerna-bootstrap as demo-back-end
 
 WORKDIR /repo/js/demo-apps/packages/demo-back-end
 
-ENV DEMO_NAME="dedicated-passport-express"
-
 ENTRYPOINT yarn start:dev
 
 FROM lerna-bootstrap as react-front-end
 
 WORKDIR /repo/js/demo-apps/packages/react-front-end
-
-ENV DEMO_NAME="dedicated-passport-express"
 
 ENTRYPOINT yarn run start
 
