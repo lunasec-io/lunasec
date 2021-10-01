@@ -142,4 +142,4 @@ services:
       test: ["CMD-SHELL", "curl http://localhost:37766"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10

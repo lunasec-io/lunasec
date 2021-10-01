@@ -17,4 +17,5 @@ else
   echo "$name"
 fi
 
+#here is a way to read the name out of the resource file if we ever decide we want to do it that way instead
 #awk '/s3_bucket/{print $NF}' ../../../../go/config/secureframe/aws_resources.yaml
