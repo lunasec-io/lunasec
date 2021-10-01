@@ -67,8 +67,8 @@ func loadConfigFile(configFile string) (provider config.Provider, err error) {
 func getBuildDirectory() (string, error) {
 	t := time.Now()
 	formattedTime := fmt.Sprintf("build_%d-%02d-%02dT%02d:%02d:%02d",
-        t.Year(), t.Month(), t.Day(),
-        t.Hour(), t.Minute(), t.Second())
+		t.Year(), t.Month(), t.Day(),
+		t.Hour(), t.Minute(), t.Second())
 	relativeBuildDir := path.Join(constants.LunasecBuildDir, formattedTime)
 	return util.GetHomeDirectory(relativeBuildDir)
 }
@@ -96,7 +96,7 @@ func cleanupPreviousBuilds() (err error) {
 
 	folders := filterDirs(files)
 
-	sort.Slice(folders, func(i, j int) bool{
+	sort.Slice(folders, func(i, j int) bool {
 		return folders[i].ModTime().Before(folders[j].ModTime())
 	})
 

@@ -33,25 +33,23 @@ type TokenGrant struct {
 }
 
 type grantServiceConfig struct {
-	GrantTTL string `yaml:"grant_default_duration"`
+	GrantTTL    string `yaml:"grant_default_duration"`
 	GrantMaxTTL string `yaml:"grant_maximum_duration"`
 }
 
 type grantService struct {
-	logger *zap.Logger
-	cw gateway.AwsCloudwatchGateway
-	kv gateway.AwsDynamoGateway
+	logger               *zap.Logger
+	cw                   gateway.AwsCloudwatchGateway
+	kv                   gateway.AwsDynamoGateway
 	grantDefaultDuration time.Duration
-	grantMaxDuration time.Duration
+	grantMaxDuration     time.Duration
 }
-
 
 // GrantService manages grants for tokens
 type GrantService interface {
 	SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType, customGrantDuration string) error
 	ValidTokenGrantExistsForSession(token types.Token, sessionID string, grantType constants.GrantType) (valid bool, err error)
 }
-
 
 // NewGrantService ...
 func NewGrantService(
@@ -83,7 +81,7 @@ func NewGrantService(
 		cw:                   cw,
 		kv:                   kv,
 		grantDefaultDuration: grantDefaultDuration,
-		grantMaxDuration: grantMaxDuration,
+		grantMaxDuration:     grantMaxDuration,
 	}
 	return service
 }

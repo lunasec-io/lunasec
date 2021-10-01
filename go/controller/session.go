@@ -42,9 +42,9 @@ const (
 )
 
 type AuthProviderConfig struct {
-	Url string `yaml:"url"`
-	Type AuthProviderType `yaml:"type"`
-	Default bool `yaml:"default"`
+	Url     string           `yaml:"url"`
+	Type    AuthProviderType `yaml:"type"`
+	Default bool             `yaml:"default"`
 }
 
 type AuthProviderLookup map[string]AuthProviderConfig
@@ -58,8 +58,8 @@ type sessionController struct {
 	logger                  *zap.Logger
 	kv                      gateway.AwsDynamoGateway
 	authProviderJwtVerifier service.JwtVerifier
-	authProviders AuthProviderLookup
-	defaultAuthProvider AuthProviderConfig
+	authProviders           AuthProviderLookup
+	defaultAuthProvider     AuthProviderConfig
 }
 
 type SessionController interface {
@@ -153,8 +153,8 @@ func NewSessionController(
 		logger:                  logger,
 		kv:                      kv,
 		authProviderJwtVerifier: authProviderJwtVerifier,
-		authProviders: authProviders,
-		defaultAuthProvider: defaultAuthProvider,
+		authProviders:           authProviders,
+		defaultAuthProvider:     defaultAuthProvider,
 	}
 	return
 }

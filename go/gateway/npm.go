@@ -29,7 +29,7 @@ import (
 )
 
 type NpmGatewayConfig struct {
-	RegistryURL string `yaml:"registry_url"`
+	RegistryURL   string `yaml:"registry_url"`
 	Authorization string `yaml:"authorization"`
 }
 
@@ -39,8 +39,8 @@ type NpmGateway interface {
 
 type npmGateway struct {
 	NpmGatewayConfig
-	logger *zap.Logger
-	url *url.URL
+	logger     *zap.Logger
+	url        *url.URL
 	httpClient *http.Client
 }
 
@@ -93,9 +93,9 @@ func NewNpmGateway(logger *zap.Logger, provider config.Provider) NpmGateway {
 
 	return &npmGateway{
 		NpmGatewayConfig: gatewayConfig,
-		logger: logger,
-		url: parsedUrl,
-		httpClient: httpClient,
+		logger:           logger,
+		url:              parsedUrl,
+		httpClient:       httpClient,
 	}
 }
 

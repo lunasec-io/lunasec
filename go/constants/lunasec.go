@@ -19,15 +19,15 @@ const (
 )
 
 const (
-	LunaSecStackName = "LunasecSecureEnclave"
-	LunasecBuildDir  = ".lunasec/builds"
-	StackOutputsFilename = "outputs.json"
+	LunaSecStackName           = "LunasecSecureEnclave"
+	LunasecBuildDir            = ".lunasec/builds"
+	StackOutputsFilename       = "outputs.json"
 	DeployedAwsResourcesConfig = "aws_resources.yaml"
 )
 
 type LunaSecServices string
 
 const (
-	TokenizerBackendServiceName LunaSecServices = "tokenizer-backend"
+	TokenizerBackendServiceName    LunaSecServices = "tokenizer-backend"
 	SecureFrameFrontEndServiceName LunaSecServices = "secure-frame-frontend"
 )
