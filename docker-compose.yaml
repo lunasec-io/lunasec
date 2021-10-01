@@ -110,7 +110,7 @@ services:
     build:
       context: go/
       dockerfile: docker/Dockerfile.lunasec
-    command: --dir /lunasec_local_build deploy --local --build --config-output /config/tokenizerbackend/
+    command: --dir /lunasec_local_build deploy --local --output /config/tokenizerbackend/aws_resources.yaml
     network_mode: host
     volumes:
       - ./go/config/lunasec/:/config/lunasec/

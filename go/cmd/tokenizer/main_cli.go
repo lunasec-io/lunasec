@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// +build cli
+//go:build cli
 
 package main
 
@@ -20,7 +20,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/refinery-labs/loq/pkg/tokenizer"
+	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizer"
 	"github.com/urfave/cli/v2"
 )
 
@@ -43,14 +43,14 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			{
-				Name:    "auth",
+				Name:        "auth",
 				Description: "Manage tokenizer authentication",
 				Subcommands: []*cli.Command{
 					{
-						Name: "create",
+						Name:        "create",
 						Description: "Create a valid auth token for the tokenizer.",
-						Category: "auth",
-						Action: tokenizer.CreateJwtAuthCommand,
+						Category:    "auth",
+						Action:      tokenizer.CreateJwtAuthCommand,
 					},
 				},
 			},

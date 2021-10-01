@@ -16,27 +16,27 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/util/auth"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/util/auth"
 	"io/ioutil"
 	"log"
 	"net/http"
 
 	"go.uber.org/config"
 
+	"github.com/lunasec-io/lunasec-monorepo/service"
+	"github.com/lunasec-io/lunasec-monorepo/types"
+	"github.com/lunasec-io/lunasec-monorepo/types/event"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"github.com/pkg/errors"
-	"github.com/refinery-labs/loq/service"
-	"github.com/refinery-labs/loq/types"
-	"github.com/refinery-labs/loq/types/event"
-	"github.com/refinery-labs/loq/util"
 )
 
 type tokenizerController struct {
 	tokenizerControllerConfig
-	tokenizer     service.TokenizerService
+	tokenizer   service.TokenizerService
 	jwtVerifier service.JwtVerifier
-	meta          service.MetadataService
-	grant         service.GrantService
+	meta        service.MetadataService
+	grant       service.GrantService
 }
 
 type tokenizerControllerConfig struct {
@@ -66,7 +66,7 @@ func NewTokenizerController(
 	controller = &tokenizerController{
 		tokenizerControllerConfig: controllerConfig,
 		tokenizer:                 tokenizer,
-		jwtVerifier:             jwtVerifier,
+		jwtVerifier:               jwtVerifier,
 		meta:                      meta,
 		grant:                     grant,
 	}
@@ -147,15 +147,16 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	tokenID, url, headers, err := s.tokenizer.TokenizerSet()
-	if err != nil {
-		util.RespondError(w, http.StatusInternalServerError, err)
-		return
-	}
-
 	claims, err := auth.GetRequestClaims(s.jwtVerifier, r)
 	if err != nil {
 		err = errors.Wrap(err, "unable to verify token jwt with claims")
+		util.RespondError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	tokenID, url, headers, err := s.tokenizer.TokenizerSet()
+	if err != nil {
+		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -165,8 +166,8 @@ func (s *tokenizerController) TokenizerSet(w http.ResponseWriter, r *http.Reques
 			return
 		}
 	}
-
-	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.TokenFullAccess); err != nil {
+	//We automatically create grants for new tokens so that they can be set in the DB, and detokenized elsewhere in the same browser session
+	if err := s.grant.SetTokenGrantForSession(tokenID, claims.SessionID, constants.TokenFullAccess, ""); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}

@@ -19,7 +19,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 )
 
 // Respond jsonifies a model and sends it to the client.
@@ -63,9 +63,9 @@ func RespondError(w http.ResponseWriter, status int, err error) {
 	errorStr := err.Error()
 	resp := types.HTTPResponse{
 		Success: false,
-		Error:   types.ErrorResponse{
+		Error: types.ErrorResponse{
 			Message: errorStr,
-			Name: "TokenizerError", // Eventually it would be nice to wrap errors with more info like this name field so the frontend can display more meaningful errors
+			Name:    "TokenizerError", // Eventually it would be nice to wrap errors with more info like this name field so the frontend can display more meaningful errors
 		},
 	}
 

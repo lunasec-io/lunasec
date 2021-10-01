@@ -27,14 +27,14 @@ type DockerManager interface {
 }
 
 type dockerManager struct {
-	options          []crane.Option
+	options []crane.Option
 }
 
 func NewDockerManager(
 	options ...crane.Option,
 ) DockerManager {
 	return &dockerManager{
-		options:          options,
+		options: options,
 	}
 }
 

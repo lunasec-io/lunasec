@@ -32,13 +32,13 @@ type Gateways struct {
 }
 
 type AwsGatewayConfig struct {
-	S3Region string `yaml:"region"`
-	S3Bucket string `yaml:"s3_bucket"`
+	S3Region            string `yaml:"region"`
+	S3Bucket            string `yaml:"s3_bucket"`
 	CloudwatchNamespace string `yaml:"cloudwatch_namespace"`
-	AccessKeyID string `yaml:"access_key_id"`
-	SecretAccessKey string `yaml:"secret_access_key"`
-	LocalstackURL string `yaml:"localstack_url"`
-	LocalHTTPSProxy string `yaml:"local_https_proxy"`
+	AccessKeyID         string `yaml:"access_key_id"`
+	SecretAccessKey     string `yaml:"secret_access_key"`
+	LocalstackURL       string `yaml:"localstack_url"`
+	LocalHTTPSProxy     string `yaml:"local_https_proxy"`
 }
 
 func NewGatewayConfig(logger *zap.Logger, provider config.Provider) (gatewayConfig AwsGatewayConfig, err error) {
@@ -102,11 +102,11 @@ func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options
 	options = session.Options{
 		SharedConfigState: sharedConfigEnable,
 		Config: aws.Config{
-			Credentials: creds,
-			Region: aws.String(gatewayConfig.S3Region),
-			Endpoint: endpointUrl,
+			Credentials:      creds,
+			Region:           aws.String(gatewayConfig.S3Region),
+			Endpoint:         endpointUrl,
 			S3ForcePathStyle: aws.Bool(true),
-			HTTPClient: httpClient,
+			HTTPClient:       httpClient,
 		},
 	}
 	return

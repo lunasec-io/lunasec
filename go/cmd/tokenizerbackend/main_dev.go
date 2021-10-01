@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// +build dev
+//go:build dev
 
 package main
 
 import (
 	"log"
 
-	"github.com/refinery-labs/loq/pkg/tokenizerbackend"
+	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizerbackend"
 )
 
 func main() {

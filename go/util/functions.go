@@ -17,7 +17,7 @@ package util
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"io/ioutil"
 	"os"
 )

@@ -15,7 +15,7 @@
 package util
 
 import (
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"net/http"
 	"time"
 )
