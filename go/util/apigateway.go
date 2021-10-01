@@ -16,7 +16,7 @@ package util
 
 import (
 	"encoding/json"
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"

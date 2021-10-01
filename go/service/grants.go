@@ -16,16 +16,15 @@ package service
 
 import (
 	"encoding/json"
-	"github.com/refinery-labs/loq/constants"
+	"errors"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/types"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
 	"time"
-
-	"errors"
-	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/types"
-	"github.com/refinery-labs/loq/util"
 )
 
 type TokenGrant struct {

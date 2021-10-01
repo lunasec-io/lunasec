@@ -16,10 +16,10 @@ package lunasec
 
 import (
 	"fmt"
-	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/service/lunasec"
-	"github.com/refinery-labs/loq/util"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/service/lunasec"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/config"
 	"go.uber.org/zap"

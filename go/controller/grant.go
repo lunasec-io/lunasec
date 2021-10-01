@@ -16,16 +16,16 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/controller/request"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/controller/request"
 	"io/ioutil"
 	"log"
 	"net/http"
 
-	"github.com/refinery-labs/loq/service"
-	"github.com/refinery-labs/loq/types"
-	"github.com/refinery-labs/loq/types/event"
-	"github.com/refinery-labs/loq/util"
+	"github.com/lunasec-io/lunasec-monorepo/service"
+	"github.com/lunasec-io/lunasec-monorepo/types"
+	"github.com/lunasec-io/lunasec-monorepo/types/event"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 )
 
 type grantController struct {
