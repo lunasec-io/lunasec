@@ -7356,6 +7356,13 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
+aws-cli-js@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/aws-cli-js/-/aws-cli-js-2.2.3.tgz#09b9e296af1bbdc3b86d67e18c798665357cb8e4"
+  integrity sha512-QHnL5VXtbXbcZK9xlvIUGr+iua5cgBXqEG0wXRoJ/DCjdG7M2jq0nSn2bV5rzuR7nOFyWFMwgLmaDXiTBSl7wg==
+  dependencies:
+    nodeify-ts "1.0.6"
+
 aws-sdk@^2.784.0:
   version "2.989.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.989.0.tgz#ed3cce6b94856b469784bc3312a0b64438b9fe67"
@@ -17547,6 +17554,11 @@ node-releases@^1.1.61, node-releases@^1.1.75:
   version "1.1.75"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.75.tgz#6dd8c876b9897a1b8e5a02de26afa79bb54ebbfe"
   integrity sha512-Qe5OUajvqrqDSy6wrWFmMwfJ0jVgwiw4T3KqmbTcZ62qW0gQkheXYhcFM1+lOVcGUoRxcEcfyvFMAnDgaF1VWw==
+
+nodeify-ts@1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/nodeify-ts/-/nodeify-ts-1.0.6.tgz#ceef172c4fad1a45a1ae60a31c7e295150b5e221"
+  integrity sha512-jq+8sqVG1aLqy5maMTceL8NUJ1CvarWztlxvrYh3G0aao9BsVeoVmVedUnrUSBLetP7oLIAJrPrw4+iIo7v3GA==
 
 nodemon@^2.0.7:
   version "2.0.12"
