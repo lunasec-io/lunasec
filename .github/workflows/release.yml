@@ -38,21 +38,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14
-          registry-url: 'https://npm.pkg.github.com'
 
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-          
-      - name: Use .npmrc
-        uses: bduff9/use-npmrc@v1.1
-        with:
-          dot-npmrc: //registry.npmjs.org/:_authToken=${NPM_TOKEN}
-
-      - name: Install License Checker
-        working-directory: tools/license-checker/
-        run: ./install-skywalking-eyes.sh
 
       - name: install lerna
         run: npm i -g lerna
@@ -66,16 +56,6 @@ jobs:
           git config --global user.email 'release-bot@lunasec.io'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Authenticate with Registry
-        run: |
-          yarn logout
-          echo "@lunasec:registry=http://registry.npmjs.org/" > .npmrc
-          echo "registry=http://registry.npmjs.org/" >> .npmrc
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
-          npm whoami
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install GoReleaser
         uses: goreleaser/goreleaser-action@v2
@@ -100,20 +80,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-#      # Fix license headers
-#      - name: Fix License Headers
-#        run: npm run license:fix
-#
-#      - name: Update commit
-#        run: git commit --amend --no-edit
-#
-#      # Validate license headers are correct
-#      - name: Check License Headers
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: npm run license:check
-
       # TODO (cthompson) verify that there are no files that have been modified
+      
+      - name: Setup .npmrc
+        run: |
+          yarn logout
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > .npmrc
+          npm whoami
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # Push all artifacts
       - name: publish release versions
