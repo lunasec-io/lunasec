@@ -27,8 +27,8 @@ import (
 
 type metadataService struct {
 	logger *zap.Logger
-	kv gateway.AwsDynamoGateway
-	cw gateway.AwsCloudwatchGateway
+	kv     gateway.AwsDynamoGateway
+	cw     gateway.AwsCloudwatchGateway
 }
 
 // MetadataService manages metadata for secrets
@@ -45,26 +45,26 @@ func NewMetadataService(
 ) MetadataService {
 	return &metadataService{
 		logger: logger,
-		cw: cw,
-		kv: kv,
+		cw:     cw,
+		kv:     kv,
 	}
 }
 
 const TokenMetadataSchemaVersion = 1
 
 type TokenMetadata struct {
-	SchemaVersion int64 `json:"schema_version"`
-	CreatedAt int64 `json:"created_at"`
-	AuthorInfo interface{} `json:"author_info"`
+	SchemaVersion  int64       `json:"schema_version"`
+	CreatedAt      int64       `json:"created_at"`
+	AuthorInfo     interface{} `json:"author_info"`
 	CustomMetadata interface{} `json:"custom_metadata"`
 }
 
 // SetMetadata ...
 func (s *metadataService) SetMetadata(token types.Token, authorInfo interface{}, customMetadata interface{}) (err error) {
 	metadata := TokenMetadata{
-		SchemaVersion: TokenMetadataSchemaVersion,
-		CreatedAt: time.Now().Unix(),
-		AuthorInfo: authorInfo,
+		SchemaVersion:  TokenMetadataSchemaVersion,
+		CreatedAt:      time.Now().Unix(),
+		AuthorInfo:     authorInfo,
 		CustomMetadata: customMetadata,
 	}
 

@@ -29,9 +29,9 @@ import (
 type tokenizerService struct {
 	logger *zap.Logger
 	config TokenizerConfig
-	cw gateway.AwsCloudwatchGateway
-	kv gateway.AwsDynamoGateway
-	s3 gateway.AwsS3Gateway
+	cw     gateway.AwsCloudwatchGateway
+	kv     gateway.AwsDynamoGateway
+	s3     gateway.AwsS3Gateway
 	secret string
 }
 
@@ -66,9 +66,9 @@ func NewTokenizerService(
 	return &tokenizerService{
 		logger: logger,
 		config: tokenizerConfig,
-		cw: cw,
-		kv: kv,
-		s3: s3,
+		cw:     cw,
+		kv:     kv,
+		s3:     s3,
 	}
 }
 

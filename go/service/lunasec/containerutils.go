@@ -94,7 +94,7 @@ func mirrorRepoToEcr(accountID, containerName, newImageName string, containerIsL
 	ecrRepository := fmt.Sprintf("%s/%s", ecrRegistry, newImageName)
 
 	var (
-		file *os.File
+		file         *os.File
 		containerImg v1.Image
 	)
 

@@ -37,14 +37,13 @@ type awsS3Gateway struct {
 	s3Host string
 }
 
-
 type AwsS3GatewayConfig struct {
-	S3Region string `yaml:"region"`
-	S3Bucket string `yaml:"s3_bucket"`
-	AccessKeyID string `yaml:"access_key_id"`
+	S3Region        string `yaml:"region"`
+	S3Bucket        string `yaml:"s3_bucket"`
+	AccessKeyID     string `yaml:"access_key_id"`
 	SecretAccessKey string `yaml:"secret_access_key"`
 	LocalHTTPSProxy string `yaml:"local_https_proxy"`
-	LocalstackURL string `yaml:"localstack_url"`
+	LocalstackURL   string `yaml:"localstack_url"`
 }
 
 type AwsS3GatewayConfigWrapper struct {
@@ -86,10 +85,10 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session
 	s3Host := gatewayConfig.S3Bucket + ".s3." + gatewayConfig.S3Region + ".amazonaws.com"
 
 	s3Gateway = &awsS3Gateway{
-		logger:             logger,
+		logger:           logger,
 		AwsGatewayConfig: gatewayConfig,
-		s3:                 sess,
-		s3Host:             s3Host,
+		s3:               sess,
+		s3Host:           s3Host,
 	}
 	return
 }
@@ -111,9 +110,9 @@ func (s *awsS3Gateway) GetObject(key string) (content []byte, err error) {
 }
 
 type createPresignedUrlParams struct {
-	svc *s3.S3
-	bucket, key string
-	encryptionKey []byte
+	svc                *s3.S3
+	bucket, key        string
+	encryptionKey      []byte
 	encodedKeyChecksum string
 }
 

@@ -20,13 +20,13 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"github.com/lunasec-io/lunasec-monorepo/controller/request"
 	"github.com/lunasec-io/lunasec-monorepo/gateway"
 	"github.com/lunasec-io/lunasec-monorepo/service"
 	"github.com/lunasec-io/lunasec-monorepo/types/event"
 	"github.com/lunasec-io/lunasec-monorepo/util"
+	"github.com/pkg/errors"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 )
@@ -42,9 +42,9 @@ const (
 )
 
 type AuthProviderConfig struct {
-	Url string `yaml:"url"`
-	Type AuthProviderType `yaml:"type"`
-	Default bool `yaml:"default"`
+	Url     string           `yaml:"url"`
+	Type    AuthProviderType `yaml:"type"`
+	Default bool             `yaml:"default"`
 }
 
 type AuthProviderLookup map[string]AuthProviderConfig
@@ -58,8 +58,8 @@ type sessionController struct {
 	logger                  *zap.Logger
 	kv                      gateway.AwsDynamoGateway
 	authProviderJwtVerifier service.JwtVerifier
-	authProviders AuthProviderLookup
-	defaultAuthProvider AuthProviderConfig
+	authProviders           AuthProviderLookup
+	defaultAuthProvider     AuthProviderConfig
 }
 
 type SessionController interface {
@@ -153,8 +153,8 @@ func NewSessionController(
 		logger:                  logger,
 		kv:                      kv,
 		authProviderJwtVerifier: authProviderJwtVerifier,
-		authProviders: authProviders,
-		defaultAuthProvider: defaultAuthProvider,
+		authProviders:           authProviders,
+		defaultAuthProvider:     defaultAuthProvider,
 	}
 	return
 }

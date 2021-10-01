@@ -67,7 +67,7 @@ type cspMiddleware struct {
 	// Note: Package will not check for report-uri
 	reportOnly bool
 
-	headerKey string
+	headerKey  string
 	bufferPool sync.Pool
 }
 
@@ -99,10 +99,10 @@ func NewCSPMiddleware(csp CSPPolicy, byteSize int, reportOnly bool) CSPMiddlware
 		},
 	}
 	return &cspMiddleware{
-		policyTemplate:     policyTemplate,
-		byteSize:     int64(byteSize),
-		headerKey:    headerKey,
-		bufferPool:   bufferPool,
+		policyTemplate: policyTemplate,
+		byteSize:       int64(byteSize),
+		headerKey:      headerKey,
+		bufferPool:     bufferPool,
 	}
 }
 
@@ -147,8 +147,15 @@ func CryptoRandNonce(w io.Writer, n int64) {
 	}
 
 	enc := base64.NewEncoder(base64.RawStdEncoding, w)
-	enc.Write(b)
-	enc.Close()
+	_, err := enc.Write(b)
+	if err != nil {
+		panic(err)
+	}
+
+	err = enc.Close()
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Nonce returns the nonce value present in the context. If no nonce is present it returns an empty string.
@@ -167,12 +174,12 @@ func WithNonce(ctx context.Context, n string) context.Context {
 
 func formatCSPDirectives(directives CSPPolicy) string {
 	const (
-		withQuotes = "'%s'"
+		withQuotes    = "'%s'"
 		withoutQuotes = "%s"
 	)
 	var (
 		newDirectives []string
-		quoteFormat string
+		quoteFormat   string
 	)
 
 	for directive, vals := range directives {

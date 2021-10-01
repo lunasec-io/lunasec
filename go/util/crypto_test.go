@@ -21,8 +21,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/prashantv/gostub"
 	"github.com/lunasec-io/lunasec-monorepo/types"
+	"github.com/prashantv/gostub"
 	"github.com/stretchr/testify/assert"
 )
 

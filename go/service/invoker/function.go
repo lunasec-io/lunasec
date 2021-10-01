@@ -18,15 +18,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"regexp"
-	"strings"
-
 	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/service"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"github.com/lunasec-io/lunasec-monorepo/types/event"
-	"github.com/lunasec-io/lunasec-monorepo/service"
 	"github.com/lunasec-io/lunasec-monorepo/util"
 	"go.uber.org/zap"
+	"regexp"
+	"strings"
 )
 
 var (

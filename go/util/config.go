@@ -38,7 +38,7 @@ func FindFirstExistingFile(filePaths []string) string {
 }
 
 func GetConfigProviderFromFiles(filenames []string) config.Provider {
-	opts := []config.YAMLOption {
+	opts := []config.YAMLOption{
 		config.Permissive(),
 		config.Expand(os.LookupEnv),
 	}
@@ -67,7 +67,7 @@ func GetConfigProviderFromDir(configDir string) config.Provider {
 	files := getFilesInDir(configDir)
 
 	var (
-		filenames []string
+		filenames      []string
 		baseConfigFile string
 	)
 	for _, file := range files {
