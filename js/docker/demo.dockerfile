@@ -1,4 +1,6 @@
-FROM lunasec/cached-npm-dependencies:v0.0.3 as lerna-bootstrap
+FROM node:14 as lerna-bootstrap
+
+RUN apt-get update && apt-get install --yes openjdk-8-jre curl sqlite
 
 COPY . /repo
 
