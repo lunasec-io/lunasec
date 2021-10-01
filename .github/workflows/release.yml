@@ -49,11 +49,6 @@ jobs:
         working-directory: tools/license-checker/
         run: ./install-skywalking-eyes.sh
 
-      - name: Check License Headers
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run license:check
-
       - name: install lerna
         run: npm i -g lerna
 
@@ -88,24 +83,34 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # Bump package versions
       - name: create release version
         run: npm run version:release
         env:
           RELEASE_TYPE: ${{ github.event.inputs.release_type }}
 
+      # Build all packages
       - name: compile release versions
         run: npm run compile:release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Validate license headers are correct
+      - name: Check License Headers
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run license:check
+
       # TODO (cthompson) verify that there are no files that have been modified
 
+      # Push all artifacts
       - name: publish release versions
         run: npm run publish:release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      # Push the tagged release version
       - name: push git version tag
         run: git push
         env:
