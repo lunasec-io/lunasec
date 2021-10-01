@@ -61,7 +61,7 @@ services:
       test: ["CMD-SHELL", "curl -k http://localhost:3001"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 30
   localstack:
     container_name: localstack
     hostname: localstack
