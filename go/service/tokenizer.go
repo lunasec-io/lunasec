@@ -18,6 +18,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 
@@ -29,9 +30,9 @@ import (
 type tokenizerService struct {
 	logger *zap.Logger
 	config TokenizerConfig
-	cw     gateway.AwsCloudwatchGateway
+	cw     metrics.AwsCloudwatchGateway
 	kv     gateway.AwsDynamoGateway
-	s3     gateway.AwsS3Gateway
+	s3 gateway.AwsS3Gateway
 	secret string
 }
 
@@ -50,7 +51,7 @@ type TokenizerService interface {
 func NewTokenizerService(
 	logger *zap.Logger,
 	config config.Provider,
-	cw gateway.AwsCloudwatchGateway,
+	cw metrics.AwsCloudwatchGateway,
 	kv gateway.AwsDynamoGateway,
 	s3 gateway.AwsS3Gateway,
 ) TokenizerService {

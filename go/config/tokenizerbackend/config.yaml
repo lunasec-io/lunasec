@@ -35,3 +35,7 @@ auth_jwt_verifier:
 grant_service:
   grant_default_duration: ${GRANT_DEFAULT_DURATION:"15m"}
   grant_maximum_duration: ${GRANT_MAXIMUM_DURATION:"1h"}
+metrics:
+  disable: ${METRICS_DISABLED:false}
+  provider: ${METRICS_PROVIDER:"aws_cloudwatch"}
+  disable_usage_statistics: ${METRICS_DISABLE_USAGE_STATISTICS:false}

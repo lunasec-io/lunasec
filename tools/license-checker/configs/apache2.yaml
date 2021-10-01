@@ -4,11 +4,7 @@ header:
     copyright-owner: by LunaSec (owned by Refinery Labs, Inc)
   paths:
     - '.github/**'
-    - 'js/**/*.js'
-    - 'js/**/*.jsx'
-    - 'js/**/*.ts'
-    - 'js/**/*.tsx'
-    - 'go/cmd/lunasec/main_cli.go'
+    - 'js/**/*.{js,jsx,ts,tsx}'
     - 'go/**/*.go'
     - 'api-spec/**/*.yaml'
   paths-ignore:

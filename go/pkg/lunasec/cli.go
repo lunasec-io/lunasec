@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/service/lunasec"
 	"github.com/lunasec-io/lunasec-monorepo/util"
 	"github.com/urfave/cli/v2"
@@ -151,7 +152,9 @@ func BuildCommand(localDev bool, provider config.Provider, buildDir string) (err
 		return
 	}
 
-	builder := lunasec.NewBuilder(builderConfig, buildConfig, npmGateway)
+	metricsConfig, err := metrics.NewMetricsConfig(provider)
+
+	builder := lunasec.NewBuilder(builderConfig, buildConfig, npmGateway, metricsConfig)
 	return builder.Build()
 }
 

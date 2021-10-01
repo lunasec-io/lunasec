@@ -12,15 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package constants
+package metrics
 
-const (
-	NpmJsRegistryUrl = "https://registry.npmjs.org"
-)
+type nopMetricsGateway struct {
+}
 
-const (
-	LunaSecStackName           = "LunasecSecureEnclave"
-	LunasecBuildDir            = ".lunasec/builds"
-	StackOutputsFilename       = "outputs.json"
-	DeployedAwsResourcesConfig = "aws_resources.yaml"
-)
+type NopMetricsGateway interface {
+  PutMetric(name string, value int)
+}
+
+// NewNopMetricsGateway
+// This class disables metrics by performing an empty return whenever metrics are emitted.
+func NewNopMetricsGateway() NopMetricsGateway {
+  return &nopMetricsGateway{}
+}
+
+// PutMetric
+// This intentionally does nothing in order to allow "disabling" metrics.
+func (c *nopMetricsGateway) PutMetric(name string, value int) {
+  return
+}

@@ -38,7 +38,7 @@ func TestKeygen(t *testing.T) {
 func TestGenToken(t *testing.T) {
 	token := GenToken()
 
-	assert.Len(t, token, 36)
+	assert.Len(t, token, 44)
 }
 
 func TestKeygenRandReadFails(t *testing.T) {

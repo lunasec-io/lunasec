@@ -30,6 +30,7 @@ import (
 	"github.com/aws/jsii-runtime-go"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"github.com/lunasec-io/lunasec-monorepo/util"
 	"go.uber.org/config"
@@ -38,6 +39,7 @@ import (
 	"os"
 	"path"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -48,7 +50,7 @@ type BuildConfig struct {
 	ApplicationFrontEnd  string          `yaml:"application_front_end"`
 	ApplicationBackEnd   string          `yaml:"application_back_end"`
 	SessionPublicKey     string          `yaml:"session_public_key"`
-	SessionJwksEndpoint  string          `yaml:"session_jwks_endpoint"`
+	SessionJwksEndpoint  string      		 `yaml:"session_jwks_endpoint"`
 	FrontEndAssetsFolder string          `yaml:"front_end_assets_folder"`
 	LocalStackUrl        string          `yaml:"localstack_url"`
 	ServiceVersions      ServiceVersions `yaml:"service_versions"`
@@ -68,8 +70,9 @@ type Builder interface {
 
 type builder struct {
 	BuilderConfig
-	buildConfig BuildConfig
-	npmGateway  gateway.NpmGateway
+	buildConfig   BuildConfig
+	npmGateway    gateway.NpmGateway
+	metricsConfig metrics.MetricProviderConfig
 }
 
 func NewBuilderConfig(
@@ -94,8 +97,9 @@ func NewBuildConfig(
 
 func NewBuilder(
 	builderConfig BuilderConfig,
-	buildConfig BuildConfig,
-	npmGateway gateway.NpmGateway,
+	buildConfig   BuildConfig,
+	npmGateway    gateway.NpmGateway,
+	metricsConfig metrics.MetricProviderConfig,
 ) Builder {
 	buildConfig.StackVersion = util.NormalizeVersionName(buildConfig.StackVersion)
 
@@ -109,6 +113,7 @@ func NewBuilder(
 		builderConfig,
 		buildConfig,
 		npmGateway,
+		metricsConfig,
 	}
 }
 
@@ -152,7 +157,7 @@ func (l *builder) mirrorRepos(env *awscdk.Environment) (lookup ServiceToImageMap
 	)
 
 	lookup = ServiceToImageMap{
-		constants.TokenizerBackendServiceName: "latest",
+		constants.LunaSecServicesTokenizerBackend: "latest",
 	}
 
 	if l.localDev {
@@ -192,7 +197,7 @@ func (l *builder) getCdnConfig(secureFrameDomainName string) (packageDir, serial
 	mainScriptPattern := regexp.MustCompile(`^js\/main(\.[a-f0-9]+|\-dev)\.js$`)
 	mainStylePattern := regexp.MustCompile(`^main(\.[a-f0-9]+|)\.css$`)
 
-	version, ok := l.buildConfig.ServiceVersions[constants.SecureFrameFrontEndServiceName]
+	version, ok := l.buildConfig.ServiceVersions[constants.LunaSecServicesSecureFrameFrontend]
 	if !ok {
 		version = l.buildConfig.StackVersion
 	}
@@ -374,7 +379,7 @@ func (l *builder) createSecret(stack awscdk.Stack, name, description string) aws
 }
 
 func (l *builder) getTokenizerBackendLambda(stack awscdk.Stack, containerTag string, lambdaEnv *map[string]*string) awslambda.Function {
-	secureFrameRepo := awsecr.Repository_FromRepositoryName(stack, jsii.String("tokenizer-backend-repo"), jsii.String(string(constants.TokenizerBackendServiceName)))
+	secureFrameRepo := awsecr.Repository_FromRepositoryName(stack, jsii.String("tokenizer-backend-repo"), jsii.String(string(constants.LunaSecServicesTokenizerBackend)))
 
 	return awslambda.NewDockerImageFunction(stack, jsii.String("tokenizer-backend-lambda"), &awslambda.DockerImageFunctionProps{
 		Code: awslambda.DockerImageCode_FromEcr(secureFrameRepo, &awslambda.EcrImageCodeProps{
@@ -450,6 +455,9 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 			"KEYS_KV_TABLE":              keysTable.TableName(),
 			"SESSIONS_KV_TABLE":          sessionsTable.TableName(),
 			"GRANTS_KV_TABLE":            grantsTable.TableName(),
+			"METRICS_DISABLED": jsii.String(strconv.FormatBool(l.metricsConfig.Disabled)),
+			"METRICS_PROVIDER": jsii.String(string(l.metricsConfig.Provider)),
+			"METRICS_DISABLE_USAGE_STATISTICS": jsii.String(strconv.FormatBool(l.metricsConfig.DisableUsageStatisticsMetrics)),
 		}
 
 		if l.buildConfig.SessionPublicKey != "" {
@@ -458,7 +466,7 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 			lambdaEnv["SESSION_JWKS_URL"] = jsii.String(l.buildConfig.SessionJwksEndpoint)
 		}
 
-		containerTag := serviceImageLookup[constants.TokenizerBackendServiceName]
+		containerTag := serviceImageLookup[constants.LunaSecServicesTokenizerBackend]
 
 		secureFrameLambda := l.getTokenizerBackendLambda(stack, containerTag, &lambdaEnv)
 		ciphertextBucket.GrantReadWrite(secureFrameLambda, "*")
