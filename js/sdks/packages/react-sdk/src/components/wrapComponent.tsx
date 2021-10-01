@@ -229,6 +229,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       }
     }
 
+    // TODO: (Plugins Epic) refactor this into a callback that gets passed to this class
     // Generate some attributes for sending to the iframe via RPC.
     generateIFrameAttributes(): AttributesMessage {
       const id = this.frameId;
@@ -246,20 +247,27 @@ export default function WrapComponent<W extends keyof ClassLookup>(
 
       // Pull from the "type" of an input element if we have one in our wrapped element
       const dummyElement = this.dummyRef.current;
-      if ((componentName === 'Uploader' || componentName === 'Input') && dummyElement) {
+      if ((attrs.component === 'Uploader' || attrs.component === 'Input') && dummyElement) {
         const inputType = dummyElement.getAttribute('type');
         if (inputType) {
           attrs.type = inputType;
         }
       }
 
+      if (attrs.component === 'Uploader' || attrs.component === 'Input' || attrs.component === 'TextArea') {
+        if ('customMetadata' in this.props) {
+          attrs.customMetadata = this.props.customMetadata;
+        }
+      }
+
       if ('token' in this.props && 'fileTokens' in this.props) {
         throw new Error("Can't have both tokens and fileTokens specified in props");
       }
-      if ('token' in this.props) {
+
+      if (attrs.component !== 'Uploader' && 'token' in this.props) {
         attrs.token = this.props.token;
       }
-      if ('fileTokens' in this.props) {
+      if (attrs.component === 'Uploader' && 'fileTokens' in this.props) {
         attrs.fileTokens = this.props.fileTokens;
       }
       if (attrs.component === 'Input' && 'placeholder' in this.props && this.props.placeholder) {
@@ -466,6 +474,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       };
 
       const scrubbedProps = scrubProperties(this.props, [
+        'customMetadata',
         'token',
         'onTokenChange',
         'onValidate',
@@ -473,6 +482,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
         'formContext',
         'lunaSecConfigContext',
         'errorHandler',
+        'fileTokens',
       ]);
 
       const propsForWrapped: LunaSecWrappedComponentProps<W> = {

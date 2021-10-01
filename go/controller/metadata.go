@@ -16,22 +16,22 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/lunasec-io/lunasec-monorepo/util/auth"
 	"github.com/pkg/errors"
-	"github.com/refinery-labs/loq/util/auth"
 	"io/ioutil"
 	"log"
 	"net/http"
 
-	"github.com/refinery-labs/loq/service"
-	"github.com/refinery-labs/loq/types"
-	"github.com/refinery-labs/loq/types/event"
-	"github.com/refinery-labs/loq/util"
+	"github.com/lunasec-io/lunasec-monorepo/service"
+	"github.com/lunasec-io/lunasec-monorepo/types"
+	"github.com/lunasec-io/lunasec-monorepo/types/event"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 )
 
 type metaController struct {
-	meta          service.MetadataService
+	meta        service.MetadataService
 	jwtVerifier service.JwtVerifier
-	grant         service.GrantService
+	grant       service.GrantService
 }
 
 // MetaController ...
@@ -43,9 +43,9 @@ type MetaController interface {
 // NewMetaController ...
 func NewMetaController(meta service.MetadataService, jwtVerifier service.JwtVerifier, grant service.GrantService) MetaController {
 	return &metaController{
-		meta:          meta,
+		meta:        meta,
 		jwtVerifier: jwtVerifier,
-		grant:                     grant,
+		grant:       grant,
 	}
 }
 
@@ -102,6 +102,7 @@ func (s *metaController) SetMetadata(w http.ResponseWriter, r *http.Request) {
 	claims, err := auth.GetRequestClaims(s.jwtVerifier, r)
 	if err != nil {
 		err = errors.Wrap(err, "unable to verify token jwt with claims")
+		util.RespondError(w, http.StatusBadRequest, err)
 		return
 	}
 

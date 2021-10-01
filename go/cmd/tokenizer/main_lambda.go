@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// +build lambda
+//go:build lambda
 
 package main
 
 import (
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/refinery-labs/loq/pkg/tokenizer"
+	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizer"
 )
 
 func main() {

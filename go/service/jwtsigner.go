@@ -17,7 +17,7 @@ package service
 import (
 	"crypto/rsa"
 	"crypto/x509"
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"
 

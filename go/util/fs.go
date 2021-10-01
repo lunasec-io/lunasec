@@ -21,103 +21,119 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 )
 
+func GetHomeDirectory(relativeDir string) (dir string, err error) {
+	var (
+		userHome string
+	)
+
+	userHome, err = os.UserHomeDir()
+	if err != nil {
+		return
+	}
+
+	dir = path.Join(userHome, relativeDir)
+	err = os.MkdirAll(dir, 0o755)
+	return
+}
+
 func CopyDirectory(scrDir, dest string) error {
-    if err := CreateIfNotExists(dest, 0755); err != nil {
-        return err
-    }
+	if err := CreateIfNotExists(dest, 0755); err != nil {
+		return err
+	}
 
-    entries, err := ioutil.ReadDir(scrDir)
-    if err != nil {
-        return err
-    }
-    for _, entry := range entries {
-        sourcePath := filepath.Join(scrDir, entry.Name())
-        destPath := filepath.Join(dest, entry.Name())
+	entries, err := ioutil.ReadDir(scrDir)
+	if err != nil {
+		return err
+	}
+	for _, entry := range entries {
+		sourcePath := filepath.Join(scrDir, entry.Name())
+		destPath := filepath.Join(dest, entry.Name())
 
-        fileInfo, err := os.Stat(sourcePath)
-        if err != nil {
-            return err
-        }
+		fileInfo, err := os.Stat(sourcePath)
+		if err != nil {
+			return err
+		}
 
-        switch fileInfo.Mode() & os.ModeType{
-        case os.ModeDir:
-            if err := CreateIfNotExists(destPath, 0755); err != nil {
-                return err
-            }
-            if err := CopyDirectory(sourcePath, destPath); err != nil {
-                return err
-            }
-        case os.ModeSymlink:
-            if err := CopySymLink(sourcePath, destPath); err != nil {
-                return err
-            }
-        default:
-            if err := Copy(sourcePath, destPath); err != nil {
-                return err
-            }
-        }
+		switch fileInfo.Mode() & os.ModeType {
+		case os.ModeDir:
+			if err := CreateIfNotExists(destPath, 0755); err != nil {
+				return err
+			}
+			if err := CopyDirectory(sourcePath, destPath); err != nil {
+				return err
+			}
+		case os.ModeSymlink:
+			if err := CopySymLink(sourcePath, destPath); err != nil {
+				return err
+			}
+		default:
+			if err := Copy(sourcePath, destPath); err != nil {
+				return err
+			}
+		}
 
-        isSymlink := entry.Mode()&os.ModeSymlink != 0
-        if !isSymlink {
-            if err := os.Chmod(destPath, entry.Mode()); err != nil {
-                return err
-            }
-        }
-    }
-    return nil
+		isSymlink := entry.Mode()&os.ModeSymlink != 0
+		if !isSymlink {
+			if err := os.Chmod(destPath, entry.Mode()); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 func Copy(srcFile, dstFile string) error {
-    out, err := os.Create(dstFile)
-    if err != nil {
-        return err
-    }
+	out, err := os.Create(dstFile)
+	if err != nil {
+		return err
+	}
 
-    defer out.Close()
+	defer out.Close()
 
-    in, err := os.Open(srcFile)
-    defer in.Close()
-    if err != nil {
-        return err
-    }
+	in, err := os.Open(srcFile)
+	defer in.Close()
+	if err != nil {
+		return err
+	}
 
-    _, err = io.Copy(out, in)
-    if err != nil {
-        return err
-    }
+	_, err = io.Copy(out, in)
+	if err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
 
 func Exists(filePath string) bool {
-    if _, err := os.Stat(filePath); os.IsNotExist(err) {
-        return false
-    }
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		return false
+	}
 
-    return true
+	return true
 }
 
 func CreateIfNotExists(dir string, perm os.FileMode) error {
-    if Exists(dir) {
-        return nil
-    }
+	if Exists(dir) {
+		return nil
+	}
 
-    if err := os.MkdirAll(dir, perm); err != nil {
-        return fmt.Errorf("failed to create directory: '%s', error: '%s'", dir, err.Error())
-    }
+	if err := os.MkdirAll(dir, perm); err != nil {
+		return fmt.Errorf("failed to create directory: '%s', error: '%s'", dir, err.Error())
+	}
 
-    return nil
+	return nil
 }
 
 func CopySymLink(source, dest string) error {
-    link, err := os.Readlink(source)
-    if err != nil {
-        return err
-    }
-    return os.Symlink(link, dest)
+	link, err := os.Readlink(source)
+	if err != nil {
+		return err
+	}
+	return os.Symlink(link, dest)
 }
 
 func ExtractTgzWithCallback(srcFile string, callback func(filename string, data []byte) (err error)) (err error) {

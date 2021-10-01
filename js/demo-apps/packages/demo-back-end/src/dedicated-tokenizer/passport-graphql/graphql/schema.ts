@@ -26,7 +26,7 @@ import { lunaSec } from '../config/configure-lunasec';
 import { AppContext } from './graphql-apollo-server';
 export const typeDefs = gql`
   # Declare the lunasec @token directive
-  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+  directive @token(duration: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 
   type User {
     username: String
@@ -40,7 +40,7 @@ export const typeDefs = gql`
   }
 
   type Document {
-    token: String @token
+    token: String @token(duration: "50m")
   }
 
   type DocumentResponse {
