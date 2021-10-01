@@ -15,16 +15,9 @@
 name: documentation
 
 on:
-  pull_request:
-    branches:
-    - version-*
-    tags:
-    - version-*
   push:
     branches:
-    - version-*
-    tags:
-    - version-*
+    - master
 
 jobs:
   checks:
