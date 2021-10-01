@@ -17,10 +17,8 @@ header:
   paths:
     - '*.md'
     - '**/*.md'
-    - 'docs/*.js*'
-    - 'docs/**/*.js*'
-    - 'docs/*.ts*'
-    - 'docs/**/*.ts*'
+    - 'docs/*.{js,jsx,ts,tsx}'
+    - 'docs/**/*.{js,jsx,ts,tsx}'
   paths-ignore:
     - 'docs/typedoc-sidebar.js'
     - 'docs/build/**'
@@ -33,3 +31,5 @@ header:
     - 'tools/license-checker/skywalking-*/**'
     - '**/node_modules/**'
   comment: on-failure
+
+  license-location-threshold: 3000

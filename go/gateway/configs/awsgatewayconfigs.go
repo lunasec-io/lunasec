@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package constants
+package configs
 
-const (
-	NpmJsRegistryUrl = "https://registry.npmjs.org"
-)
-
-const (
-	LunaSecStackName           = "LunasecSecureEnclave"
-	LunasecBuildDir            = ".lunasec/builds"
-	StackOutputsFilename       = "outputs.json"
-	DeployedAwsResourcesConfig = "aws_resources.yaml"
-)
+type AwsGatewayConfig struct {
+  S3Region            string `yaml:"region"`
+  S3Bucket            string `yaml:"s3_bucket"`
+  CloudwatchNamespace string `yaml:"cloudwatch_namespace"`
+  AccessKeyID         string `yaml:"access_key_id"`
+  SecretAccessKey     string `yaml:"secret_access_key"`
+  LocalstackURL       string `yaml:"localstack_url"`
+  LocalHTTPSProxy     string `yaml:"local_https_proxy"`
+}

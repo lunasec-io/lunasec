@@ -17,7 +17,7 @@
 import { LunaSecErrorProperties } from '@lunasec/isomorphic-common';
 
 import { ValidatorName } from '../types';
-// @eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomMetadata = Record<string, any>;
 export interface FrameMessage<K, T extends keyof K> {
   command: T;

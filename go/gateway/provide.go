@@ -19,6 +19,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/configs"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"net/http"
@@ -28,20 +30,10 @@ type Gateways struct {
 	KV AwsDynamoGateway
 	SM AwsSecretsManagerGateway
 	S3 AwsS3Gateway
-	CW AwsCloudwatchGateway
+	CW metrics.AwsCloudwatchGateway
 }
 
-type AwsGatewayConfig struct {
-	S3Region            string `yaml:"region"`
-	S3Bucket            string `yaml:"s3_bucket"`
-	CloudwatchNamespace string `yaml:"cloudwatch_namespace"`
-	AccessKeyID         string `yaml:"access_key_id"`
-	SecretAccessKey     string `yaml:"secret_access_key"`
-	LocalstackURL       string `yaml:"localstack_url"`
-	LocalHTTPSProxy     string `yaml:"local_https_proxy"`
-}
-
-func NewGatewayConfig(logger *zap.Logger, provider config.Provider) (gatewayConfig AwsGatewayConfig, err error) {
+func NewGatewayConfig(logger *zap.Logger, provider config.Provider) (gatewayConfig configs.AwsGatewayConfig, err error) {
 	err = provider.Get("aws_gateway").Populate(&gatewayConfig)
 	if err != nil {
 		logger.Error("unable to load aws gateway config", zap.Error(err))
@@ -52,7 +44,7 @@ func NewGatewayConfig(logger *zap.Logger, provider config.Provider) (gatewayConf
 
 func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options session.Options, err error) {
 	var (
-		gatewayConfig AwsGatewayConfig
+		gatewayConfig configs.AwsGatewayConfig
 		creds         *credentials.Credentials
 		endpointUrl   *string
 		httpClient    *http.Client
@@ -138,6 +130,6 @@ func GetAwsGateways(logger *zap.Logger, provider config.Provider) (gateways Gate
 	gateways.S3 = NewAwsS3Gateway(logger, provider, sess)
 
 	logger.Debug("loading cloudwatch AWS gateway...")
-	gateways.CW = NewAwsCloudwatchGateway(logger, provider, sess)
+	gateways.CW = metrics.NewAwsCloudwatchGateway(logger, provider, sess)
 	return
 }
