@@ -20,7 +20,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/refinery-labs/loq/pkg/tokenizer"
+	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizer"
 	"github.com/urfave/cli/v2"
 )
 

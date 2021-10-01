@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"github.com/pkg/errors"
-	"github.com/refinery-labs/loq/constants"
 )
 
 func GetJwtToken(r *http.Request) (token string, err error) {

@@ -20,10 +20,10 @@ import (
 	"net/http"
 
 	apigateway "github.com/apex/gateway"
-	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/service"
-	"github.com/refinery-labs/loq/util"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/service"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"github.com/rs/cors"
 )
 
