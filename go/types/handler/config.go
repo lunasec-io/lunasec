@@ -20,6 +20,6 @@ import (
 )
 
 type Config struct {
-	Handler http.HandlerFunc
+	Handler         http.HandlerFunc
 	AllowedSubjects []constants.JwtSubject
 }

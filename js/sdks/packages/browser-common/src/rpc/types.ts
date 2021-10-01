@@ -17,7 +17,8 @@
 import { LunaSecErrorProperties } from '@lunasec/isomorphic-common';
 
 import { ValidatorName } from '../types';
-
+// @eslint-disable-next-line @typescript-eslint/no-explicit-any
+type CustomMetadata = Record<string, any>;
 export interface FrameMessage<K, T extends keyof K> {
   command: T;
   correlationToken: string;
@@ -37,11 +38,8 @@ export type CommitTokenMessage = Record<string | number, never>;
 
 interface BaseAttr {
   id: string;
+  component: string;
   style?: string;
-  token?: string;
-  type?: string;
-  hidden?: boolean;
-  fileTokens?: string[];
 }
 
 export interface InputAttr extends BaseAttr {
@@ -50,12 +48,14 @@ export interface InputAttr extends BaseAttr {
   type?: string;
   placeholder?: string;
   validator?: ValidatorName;
+  customMetadata?: CustomMetadata;
 }
 
 export interface TextAreaAttr extends BaseAttr {
   component: 'TextArea';
   token?: string;
   type?: string;
+  customMetadata?: CustomMetadata;
 }
 
 export interface DownloaderAttr extends BaseAttr {
@@ -73,9 +73,18 @@ export interface UploaderAttr extends BaseAttr {
   component: 'Uploader';
   fileTokens?: string[];
   type?: string;
+  customMetadata?: CustomMetadata;
 }
 
 export type AttributesMessage = InputAttr | DownloaderAttr | ParagraphAttr | UploaderAttr | TextAreaAttr;
+
+// export interface AttributesMessageLookup {
+//   Paragraph: ParagraphAttr;
+//   Downloader: DownloaderAttr;
+//   Uploader: UploaderAttr;
+//   TextArea: TextAreaAttr;
+//   Input: InputAttr;
+// }
 
 export interface ReceiveCommittedTokenMessage {
   success: boolean;

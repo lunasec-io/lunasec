@@ -126,6 +126,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
             type: file.type,
             lastModified: file.lastModified,
           },
+          customFields: this.props.secureframe.customMetadata,
         };
         const tokenizer = new Tokenizer();
         const uploadRes = await tokenizer.tokenize(buf, meta);

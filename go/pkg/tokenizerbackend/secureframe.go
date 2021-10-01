@@ -31,7 +31,7 @@ func getSecureFrameRoutes(
 	}
 
 	routes = map[string]http.HandlerFunc{
-		"/frame":          secureFrameController.Frame,
+		"/frame": secureFrameController.Frame,
 	}
 	return
 }

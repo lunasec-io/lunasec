@@ -29,7 +29,7 @@ import (
 )
 
 type grantController struct {
-	grant          service.GrantService
+	grant       service.GrantService
 	jwtVerifier service.JwtVerifier
 }
 
@@ -42,7 +42,7 @@ type GrantController interface {
 // NewGrantController ...
 func NewGrantController(grant service.GrantService, jwtVerifier service.JwtVerifier) GrantController {
 	return &grantController{
-		grant:          grant,
+		grant:       grant,
 		jwtVerifier: jwtVerifier,
 	}
 }
@@ -77,7 +77,7 @@ func (s *grantController) SetGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.grant.SetTokenGrantForSession(types.Token(input.TokenID), input.SessionID, constants.TokenFullAccess); err != nil {
+	if err := s.grant.SetTokenGrantForSession(types.Token(input.TokenID), input.SessionID, constants.TokenFullAccess, input.CustomDuration); err != nil {
 		util.RespondError(w, http.StatusInternalServerError, err)
 		return
 	}

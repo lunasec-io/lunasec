@@ -33,4 +33,5 @@ auth_jwt_verifier:
   jwks_url: ${SESSION_JWKS_URL:""}
   jwks_kid: ${SESSION_JWKS_KID:"lunasec-signing-key"}
 grant_service:
-  grant_ttl: "1h"
+  grant_default_duration: ${GRANT_DEFAULT_DURATION:"15m"}
+  grant_maximum_duration: ${GRANT_MAXIMUM_DURATION:"1h"}

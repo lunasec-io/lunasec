@@ -23,29 +23,32 @@ Here's an example schema that has the @token directive. Note that both input fie
 field that contains a token, or it could be vulnerable.  Arrays of tokens are supported.
 ```graphql
 const typeDefs = gql`
-  type Query {
-    getFormData: FormData
-  }
+    directive @token(duration: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
     
-  type FormData {
-    text_area: String @token
-    email: String @token
-    insecure_field: String
-    files: [String] @token # @token directive also works on arrays of tokens
-  }
+    type Query {
+        getFormData: FormData
+    }
     
-  type Mutation {
-    setFormData(formData: FormDataInput): FormData
-  }
+    type FormData {
+        text_area: String @token(duration: "5m30s")
+        email: String @token
+        insecure_field: String
+        files: [String] @token # @token directive also works on arrays of tokens
+    }
     
-  input FormDataInput {
-    email: String @token
-    insecure_field: String
-    text_area: String @token
-    files: [String] @token
-  }
+    type Mutation {
+     setFormData(formData: FormDataInput): FormData
+    }
     
-  directive @token on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+    input FormDataInput {
+        email: String @token
+        insecure_field: String
+        text_area: String @token
+        files: [String] @token
+    }
+
 `;
 ```
+
+Passing a custom grant duration is optional, just make sure it is below the maximum set in your Tokenizer Backend's configuration.
 

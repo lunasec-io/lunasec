@@ -25,10 +25,10 @@ type authCallbackConfig struct {
 }
 
 type AwsGatewayConfig struct {
-	Region string `yaml:"region"`
-	S3Bucket string `yaml:"s3_bucket"`
+	Region          string `yaml:"region"`
+	S3Bucket        string `yaml:"s3_bucket"`
 	LocalHTTPSProxy string `yaml:"local_https_proxy"`
-	LocalstackURL string `yaml:"localstack_url"`
+	LocalstackURL   string `yaml:"localstack_url"`
 }
 
 func getS3HostURL(gatewayConfig AwsGatewayConfig) string {
@@ -47,7 +47,7 @@ func getS3HostURL(gatewayConfig AwsGatewayConfig) string {
 
 func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 	var (
-		authConfig   authCallbackConfig
+		authConfig    authCallbackConfig
 		gatewayConfig AwsGatewayConfig
 	)
 	// TODO report this to someplace
@@ -64,7 +64,6 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 	if err != nil {
 		panic(err)
 	}
-
 
 	s3HostURL := getS3HostURL(gatewayConfig)
 

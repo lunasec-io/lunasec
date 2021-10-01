@@ -34,19 +34,19 @@ import (
 type StackOutput map[string]map[string]string
 
 type AwsResources struct {
-	TableNames map[types.KVStore]string `yaml:"table_names"`
-	CiphertextBucket string             `yaml:"s3_bucket"`
-	LocalstackURL string                `yaml:"localstack_url"`
+	TableNames       map[types.KVStore]string `yaml:"table_names"`
+	CiphertextBucket string                   `yaml:"s3_bucket"`
+	LocalstackURL    string                   `yaml:"localstack_url"`
 }
 
 type TokenizerConfig struct {
-	SecretArn string `yaml:"secret_arn"`
+	SecretArn       string `yaml:"secret_arn"`
 	GatewayEndpoint string `yaml:"gateway_endpoint"`
 }
 
 type AwsResourceConfig struct {
-	AwsGateway AwsResources `yaml:"aws_gateway"`
-	Tokenizer TokenizerConfig `yaml:"tokenizer"`
+	AwsGateway AwsResources    `yaml:"aws_gateway"`
+	Tokenizer  TokenizerConfig `yaml:"tokenizer"`
 }
 
 type ServiceToImageMap map[constants.LunaSecServices]string
@@ -56,11 +56,11 @@ type LunasecStackProps struct {
 }
 
 type DeployerConfig struct {
-	localDev bool
-	buildDir string
+	localDev         bool
+	buildDir         string
 	configOutputPath string
-	sts gateway.AwsStsGateway
-	env *awscdk.Environment
+	sts              gateway.AwsStsGateway
+	env              *awscdk.Environment
 }
 
 type Deployer interface {
@@ -70,15 +70,15 @@ type Deployer interface {
 
 type deployer struct {
 	DeployerConfig
-	buildConfig        BuildConfig
+	buildConfig BuildConfig
 }
 
 func NewDeployerConfig(localDev bool, buildDir string, configOutputPath string, env *awscdk.Environment) DeployerConfig {
 	return DeployerConfig{
-		localDev: localDev,
-		buildDir: buildDir,
+		localDev:         localDev,
+		buildDir:         buildDir,
 		configOutputPath: configOutputPath,
-		env: env,
+		env:              env,
 	}
 }
 
@@ -88,7 +88,7 @@ func NewDeployer(
 ) Deployer {
 	return &deployer{
 		DeployerConfig: deployerConfig,
-		buildConfig: buildConfig,
+		buildConfig:    buildConfig,
 	}
 }
 
@@ -129,7 +129,7 @@ func (l *deployer) Deploy() (err error) {
 
 func (l *deployer) WriteConfig() (err error) {
 	var (
-		stackOutput StackOutput
+		stackOutput       StackOutput
 		awsResourceConfig AwsResourceConfig
 	)
 

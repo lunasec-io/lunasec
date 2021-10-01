@@ -25,9 +25,9 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/lunasec-io/lunasec-monorepo/types/event"
 	tokenizer "github.com/lunasec-io/lunasec-monorepo/pkg/tokenizer"
 	"github.com/lunasec-io/lunasec-monorepo/service/invoker"
+	"github.com/lunasec-io/lunasec-monorepo/types/event"
 	"github.com/lunasec-io/lunasec-monorepo/util"
 	"go.uber.org/zap"
 )
