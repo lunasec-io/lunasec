@@ -94,11 +94,11 @@ func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options
 	options = session.Options{
 		SharedConfigState: sharedConfigEnable,
 		Config: aws.Config{
-			Credentials: creds,
-			Region: aws.String(gatewayConfig.S3Region),
-			Endpoint: endpointUrl,
+			Credentials:      creds,
+			Region:           aws.String(gatewayConfig.S3Region),
+			Endpoint:         endpointUrl,
 			S3ForcePathStyle: aws.Bool(true),
-			HTTPClient: httpClient,
+			HTTPClient:       httpClient,
 		},
 	}
 	return

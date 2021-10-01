@@ -39,7 +39,7 @@ export async function awsSecretProvider(config: AwsSecretsManagerConfig) {
   const secretsManagerClient = new SecretsManagerClient(getSecretsManagerClientConfig(config.awsAccessKey));
 
   const getSecretValueCommand = new GetSecretValueCommand({
-    SecretId: config.secretsManagerSecretArn,
+    SecretId: config.secretArn,
   });
 
   const response = await secretsManagerClient.send(getSecretValueCommand);
@@ -47,7 +47,7 @@ export async function awsSecretProvider(config: AwsSecretsManagerConfig) {
   const secretValue = response.SecretString;
 
   if (secretValue === undefined) {
-    throw new Error('Unable to read secret value from AWS Secrets Manager for ARN: ' + config.secretsManagerSecretArn);
+    throw new Error('Unable to read secret value from AWS Secrets Manager for ARN: ' + config.secretArn);
   }
 
   return createPrivateKey(secretValue);

@@ -97,12 +97,13 @@ export class Tokenizer {
     return new LunaSecError({ name: 'unknownTokenizerError', message: 'Unknown Tokenization Error', code: '500' });
   }
 
-  public async createFullAccessGrant(sessionId: string, tokenId: string) {
+  public async createGrant(sessionId: string, tokenId: string, customDuration?: string) {
     try {
       const res = await this.openApi.setGrant(
         {
           sessionId,
           tokenId,
+          customDuration,
         },
         this.reqOptions
       );

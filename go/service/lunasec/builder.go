@@ -28,11 +28,11 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/awssecretsmanager"
 	"github.com/aws/constructs-go/constructs/v3"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
 	"github.com/refinery-labs/loq/gateway/metrics"
-	"github.com/refinery-labs/loq/types"
-	"github.com/refinery-labs/loq/util"
+	"github.com/lunasec-io/lunasec-monorepo/types"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"go.uber.org/config"
 	"io/ioutil"
 	"log"
@@ -78,14 +78,13 @@ type builder struct {
 func NewBuilderConfig(
 	buildDir string,
 	localDev bool,
-	skipImageMirroring bool,
 	env *awscdk.Environment,
 ) BuilderConfig {
 	return BuilderConfig{
-		buildDir: buildDir,
-		localDev: localDev,
-		skipImageMirroring: skipImageMirroring,
-		env: env,
+		buildDir:           buildDir,
+		localDev:           localDev,
+		skipImageMirroring: false,
+		env:                env,
 	}
 }
 
@@ -105,7 +104,7 @@ func NewBuilder(
 	buildConfig.StackVersion = util.NormalizeVersionName(buildConfig.StackVersion)
 
 	if buildConfig.SessionPublicKey == "" {
-		jwksURL := fmt.Sprintf("%s/%s",buildConfig.ApplicationBackEnd, ".lunasec/jwks.json")
+		jwksURL := fmt.Sprintf("%s/%s", buildConfig.ApplicationBackEnd, ".lunasec/jwks.json")
 		log.Printf("session_public_key not provided, auth will be performed with JWKS url: %s", jwksURL)
 		buildConfig.SessionJwksEndpoint = jwksURL
 	}
@@ -189,7 +188,7 @@ func (l *builder) mirrorRepos(env *awscdk.Environment) (lookup ServiceToImageMap
 // TODO (cthompson) keep previous versions in the bucket to avoid breaking frontends on different versions?
 func (l *builder) getCdnConfig(secureFrameDomainName string) (packageDir, serializedConfig string, err error) {
 	cdnConfig := types.CDNConfig{
-		Protocol: "https",
+		Protocol:   "https",
 		Host:       secureFrameDomainName,
 		MainScript: "",
 		MainStyle:  "",
@@ -369,7 +368,7 @@ func (l *builder) createBasicDynamodbTable(stack awscdk.Stack, name string) awsd
 
 func (l *builder) createSecret(stack awscdk.Stack, name, description string) awssecretsmanager.Secret {
 	secret := awssecretsmanager.NewSecret(stack, jsii.String(name), &awssecretsmanager.SecretProps{
-		Description: jsii.String(description),
+		Description:   jsii.String(description),
 		RemovalPolicy: awscdk.RemovalPolicy_RETAIN,
 	})
 	awscdk.NewCfnOutput(stack, getOutputName(name), &awscdk.CfnOutputProps{
@@ -391,7 +390,7 @@ func (l *builder) getTokenizerBackendLambda(stack awscdk.Stack, containerTag str
 }
 
 func (l *builder) getLambdaRestApi(stack awscdk.Stack, tokenizerBackendLambda awslambda.Function) awsapigateway.LambdaRestApi {
-	 tokenizerGateway := awsapigateway.NewLambdaRestApi(stack, jsii.String("gateway"), &awsapigateway.LambdaRestApiProps{
+	tokenizerGateway := awsapigateway.NewLambdaRestApi(stack, jsii.String("gateway"), &awsapigateway.LambdaRestApiProps{
 		Handler: tokenizerBackendLambda,
 	})
 	awscdk.NewCfnOutput(stack, getOutputName("tokenizer-gateway"), &awscdk.CfnOutputProps{
@@ -446,16 +445,16 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 
 	if !l.localDev {
 		lambdaEnv := map[string]*string{
-			"SECURE_FRAME_URL":     secureFrameCloudfront.AttrDomainName(),
-			"APPLICATION_FRONT_END":         jsii.String(l.buildConfig.ApplicationFrontEnd),
+			"TOKENIZER_URL":              secureFrameCloudfront.AttrDomainName(),
+			"APPLICATION_FRONT_END":      jsii.String(l.buildConfig.ApplicationFrontEnd),
 			"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
-			"APPLICATION_BACK_END":          jsii.String(l.buildConfig.ApplicationBackEnd),
+			"APPLICATION_BACK_END":       jsii.String(l.buildConfig.ApplicationBackEnd),
 			"SECURE_FRAME_CDN_CONFIG":    jsii.String(cdnConfig),
-			"TOKENIZER_SECRET_ARN": tokenizerSecret.SecretArn(),
-			"METADATA_KV_TABLE":   metadataTable.TableName(),
-			"KEYS_KV_TABLE":       keysTable.TableName(),
-			"SESSIONS_KV_TABLE":   sessionsTable.TableName(),
-			"GRANTS_KV_TABLE":   grantsTable.TableName(),
+			"TOKENIZER_SECRET_ARN":       tokenizerSecret.SecretArn(),
+			"METADATA_KV_TABLE":          metadataTable.TableName(),
+			"KEYS_KV_TABLE":              keysTable.TableName(),
+			"SESSIONS_KV_TABLE":          sessionsTable.TableName(),
+			"GRANTS_KV_TABLE":            grantsTable.TableName(),
 			"METRICS_DISABLED": jsii.String(strconv.FormatBool(l.metricsConfig.Disabled)),
 			"METRICS_PROVIDER": jsii.String(string(l.metricsConfig.Provider)),
 			"METRICS_DISABLE_USAGE_STATISTICS": jsii.String(strconv.FormatBool(l.metricsConfig.DisableUsageStatisticsMetrics)),

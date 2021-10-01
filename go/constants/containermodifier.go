@@ -14,7 +14,7 @@
 //
 package constants
 
-import "github.com/refinery-labs/loq/types"
+import "github.com/lunasec-io/lunasec-monorepo/types"
 
 type Runtime string
 

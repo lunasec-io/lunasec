@@ -1,4 +1,4 @@
-module github.com/refinery-labs/loq
+module github.com/lunasec-io/lunasec-monorepo
 
 go 1.15
 

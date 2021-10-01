@@ -19,9 +19,9 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"fmt"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"github.com/pkg/errors"
-	"github.com/refinery-labs/loq/constants"
-	"github.com/refinery-labs/loq/types"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"gopkg.in/square/go-jose.v2/jwt"
@@ -34,8 +34,8 @@ type jwtVerifier struct {
 
 type JwtVerifierConfig struct {
 	PublicKey string `yaml:"public_key"`
-	JwksURL string `yaml:"jwks_url"`
-	JwksKID string `yaml:"jwks_kid"`
+	JwksURL   string `yaml:"jwks_url"`
+	JwksKID   string `yaml:"jwks_kid"`
 }
 
 type JwtVerifier interface {
@@ -49,11 +49,11 @@ func NewJwtVerifier(
 	provider config.Provider,
 ) (verifier JwtVerifier) {
 	var (
-		publicKey []byte
+		publicKey     []byte
 		serviceConfig JwtVerifierConfig
-		rsaPublicKey *rsa.PublicKey
-		jwksManager *JwksManager
-		jwkKey interface{}
+		rsaPublicKey  *rsa.PublicKey
+		jwksManager   *JwksManager
+		jwkKey        interface{}
 	)
 
 	err := provider.Get(string(configKey)).Populate(&serviceConfig)

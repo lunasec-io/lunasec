@@ -1,4 +1,3 @@
-loq.iml
 build/
 **/secrets.yaml
 **/local.yaml

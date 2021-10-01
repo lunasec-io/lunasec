@@ -17,20 +17,33 @@
 import { LunaSecError } from '../../../isomorphic-common';
 
 /** Gets called whenever the component experiences an error.  Will be called with a LunaSecError */
-type errorHandlerCallback = (errorObject: LunaSecError) => void;
+type ErrorHandlerCallback = (errorObject: LunaSecError) => void;
+// @eslint-disable-next-line @typescript-eslint/no-explicit-any
+type CustomMetadata = Record<string, any>;
 
-export interface BaseComponentProps {
-  errorHandler: errorHandlerCallback;
+/**
+ * The base props for a component that detokenizes(downloads) data
+ */
+export interface BaseDetokenizingComponentProps {
+  errorHandler: ErrorHandlerCallback;
   name?: string;
   /** a token to prefill the element with a secure value from a previous session */
   token?: string;
 }
 
-export interface SecureInputPropsWithoutValidator extends BaseComponentProps {
+/**
+ * The base props for a component that tokenizes (uploads) data
+ */
+export interface BaseTokenizingComponentProps extends BaseDetokenizingComponentProps {
+  // @eslint-disable-next-line @typescript-eslint/no-explicit-any
+  customMetadata: CustomMetadata;
+}
+
+export interface SecureInputPropsWithoutValidator extends BaseTokenizingComponentProps {
   placeholder?: string;
 }
 
-export interface SecureInputPropsWithValidator extends BaseComponentProps {
+export interface SecureInputPropsWithValidator extends BaseTokenizingComponentProps {
   /** The validator in the input you would like to run */
   validator: 'Email' | 'SSN' | 'EIN' | 'SSN_EIN';
   /** Must pass onValidate() callback when a validator is specified.  Use the callback to block the form from submitting and display user feedback.*/
@@ -40,18 +53,19 @@ export interface SecureInputPropsWithValidator extends BaseComponentProps {
 
 // Doesnt extend base props
 export interface SecureUploadProps {
-  errorHandler: errorHandlerCallback;
+  errorHandler: ErrorHandlerCallback;
   name?: string;
   /** an array of file tokens to preload into the file picker */
   fileTokens?: string[];
   /** Called when the files in the filepicker change with an array of tokens, either on addition or deletion */
   onTokenChange?: (token: Array<string>) => void;
+  customMetadata: CustomMetadata;
 }
 
 export type SecureInputProps = SecureInputPropsWithoutValidator | SecureInputPropsWithValidator;
-export type SecureTextAreaProps = BaseComponentProps;
-export type SecureParagraphProps = BaseComponentProps;
-export type SecureDownloadProps = BaseComponentProps;
+export type SecureTextAreaProps = BaseTokenizingComponentProps;
+export type SecureParagraphProps = BaseDetokenizingComponentProps;
+export type SecureDownloadProps = BaseDetokenizingComponentProps;
 
 /**
  * Used to represent all the possible secure props, used when the props could be any of these types

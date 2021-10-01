@@ -35,22 +35,22 @@ const (
 )
 
 const (
-	JwtAuthHeader = "authorization"
+	JwtAuthHeader     = "authorization"
 	SessionHashHeader = "lunasec-session-hash"
 )
 
 type JwtSubject string
 
 const (
-	UserSubject JwtSubject = "user"
+	UserSubject        JwtSubject = "user"
 	ApplicationSubject JwtSubject = "application"
-	DeveloperSubject JwtSubject = "developer"
+	DeveloperSubject   JwtSubject = "developer"
 )
 
 var (
-	AnySubject = []JwtSubject{UserSubject, ApplicationSubject, DeveloperSubject}
+	AnySubject             = []JwtSubject{UserSubject, ApplicationSubject, DeveloperSubject}
 	OnlyApplicationSubject = []JwtSubject{ApplicationSubject}
-	OnlyDeveloperSubject = []JwtSubject{DeveloperSubject}
+	OnlyDeveloperSubject   = []JwtSubject{DeveloperSubject}
 )
 
 func SubjectsToStringSlice(subjects []JwtSubject) (strings []string) {

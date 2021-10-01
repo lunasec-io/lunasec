@@ -74,6 +74,7 @@ export const SecureInputDemo: React.FunctionComponent = () => {
     placeholder: 'XXX-XX-XXXX',
     onChange: (e) => setSsnToken(e.target.value),
     errorHandler: (e) => setError(e.message),
+    customMetadata: { someCustom: 'metadata' },
   };
 
   function renderErrors() {

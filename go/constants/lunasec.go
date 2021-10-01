@@ -15,7 +15,12 @@
 package constants
 
 const (
-	LunaSecStackName = "LunasecSecureEnclave"
-	LunasecBuildDir  = "build"
+	NpmJsRegistryUrl = "https://registry.npmjs.org"
+)
+
+const (
+	LunaSecStackName           = "LunasecSecureEnclave"
+	LunasecBuildDir            = ".lunasec/builds"
+	StackOutputsFilename       = "outputs.json"
 	DeployedAwsResourcesConfig = "aws_resources.yaml"
 )

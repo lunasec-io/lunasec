@@ -15,9 +15,9 @@
 package auth
 
 import (
-	"github.com/refinery-labs/loq/controller/request"
-	"github.com/refinery-labs/loq/service"
-	"github.com/refinery-labs/loq/types"
+	"github.com/lunasec-io/lunasec-monorepo/controller/request"
+	"github.com/lunasec-io/lunasec-monorepo/service"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"net/http"
 )
 

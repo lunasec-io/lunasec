@@ -58,7 +58,7 @@ export const DedicatedPassportReactApp = (props: DedicatedPassportReactAppProps)
   return (
     <LunaSecConfigContext.Provider
       value={{
-        lunaSecDomain: process.env.REACT_APP_SECURE_FRAME_URL ? process.env.REACT_APP_SECURE_FRAME_URL : '',
+        lunaSecDomain: process.env.REACT_APP_TOKENIZER_URL ? process.env.REACT_APP_TOKENIZER_URL : '',
         sessionAuthProvider: sessionAuthProvider,
         authenticationErrorHandler: (e: Error) => {
           // setAuthError('Failed to authenticate with LunaSec. \n Is a user logged in?');

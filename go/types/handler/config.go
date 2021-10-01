@@ -15,11 +15,11 @@
 package handler
 
 import (
-	"github.com/refinery-labs/loq/constants"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"net/http"
 )
 
 type Config struct {
-	Handler http.HandlerFunc
+	Handler         http.HandlerFunc
 	AllowedSubjects []constants.JwtSubject
 }

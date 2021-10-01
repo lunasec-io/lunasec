@@ -24,8 +24,8 @@ import (
 )
 
 type cloudwatchGateway struct {
-	logger *zap.Logger
-	cw *cloudwatch.CloudWatch
+	logger    *zap.Logger
+	cw        *cloudwatch.CloudWatch
 	namespace string
 }
 
@@ -49,8 +49,8 @@ func NewAwsCloudwatchGateway(logger *zap.Logger, provider config.Provider, sess 
 	cw := cloudwatch.New(sess)
 
 	return &cloudwatchGateway{
-		logger:                logger,
-		cw:                    cw,
+		logger:    logger,
+		cw:        cw,
 		namespace: gatewayConfig.CloudwatchNamespace,
 	}
 }
