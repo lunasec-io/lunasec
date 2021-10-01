@@ -21,8 +21,8 @@ import (
 	"github.com/google/go-containerregistry/pkg/crane"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/gosimple/slug"
-	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/service"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/service"
 	"io/ioutil"
 	"log"
 	"os"
@@ -94,7 +94,7 @@ func mirrorRepoToEcr(accountID, containerName, newImageName string, containerIsL
 	ecrRepository := fmt.Sprintf("%s/%s", ecrRegistry, newImageName)
 
 	var (
-		file *os.File
+		file         *os.File
 		containerImg v1.Image
 	)
 

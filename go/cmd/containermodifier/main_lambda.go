@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// +build lambda
+//go:build lambda
 
 package main
 
@@ -20,8 +20,8 @@ import (
 	"log"
 
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/refinery-labs/loq/controller"
-	"github.com/refinery-labs/loq/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/controller"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
 )
 
 func main() {

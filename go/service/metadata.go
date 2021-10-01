@@ -21,14 +21,14 @@ import (
   "go.uber.org/zap"
 	"time"
 
-	"github.com/refinery-labs/loq/gateway"
-	"github.com/refinery-labs/loq/types"
-	"github.com/refinery-labs/loq/util"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/types"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 )
 
 type metadataService struct {
 	logger *zap.Logger
-	kv gateway.AwsDynamoGateway
+	kv     gateway.AwsDynamoGateway
 	cw metrics.AwsCloudwatchGateway
 }
 
@@ -46,26 +46,26 @@ func NewMetadataService(
 ) MetadataService {
 	return &metadataService{
 		logger: logger,
-		cw: cw,
-		kv: kv,
+		cw:     cw,
+		kv:     kv,
 	}
 }
 
 const TokenMetadataSchemaVersion = 1
 
 type TokenMetadata struct {
-	SchemaVersion int64 `json:"schema_version"`
-	CreatedAt int64 `json:"created_at"`
-	AuthorInfo interface{} `json:"author_info"`
+	SchemaVersion  int64       `json:"schema_version"`
+	CreatedAt      int64       `json:"created_at"`
+	AuthorInfo     interface{} `json:"author_info"`
 	CustomMetadata interface{} `json:"custom_metadata"`
 }
 
 // SetMetadata ...
 func (s *metadataService) SetMetadata(token types.Token, authorInfo interface{}, customMetadata interface{}) (err error) {
 	metadata := TokenMetadata{
-		SchemaVersion: TokenMetadataSchemaVersion,
-		CreatedAt: time.Now().Unix(),
-		AuthorInfo: authorInfo,
+		SchemaVersion:  TokenMetadataSchemaVersion,
+		CreatedAt:      time.Now().Unix(),
+		AuthorInfo:     authorInfo,
 		CustomMetadata: customMetadata,
 	}
 

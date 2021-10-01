@@ -15,7 +15,7 @@
 package tokenizerbackend
 
 import (
-	"github.com/refinery-labs/loq/controller"
+	"github.com/lunasec-io/lunasec-monorepo/controller"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"net/http"
@@ -31,7 +31,7 @@ func getSecureFrameRoutes(
 	}
 
 	routes = map[string]http.HandlerFunc{
-		"/frame":          secureFrameController.Frame,
+		"/frame": secureFrameController.Frame,
 	}
 	return
 }
