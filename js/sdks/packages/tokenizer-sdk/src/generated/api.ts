@@ -237,7 +237,7 @@ export interface SetGrantRequest {
      */
     tokenId: string;
     /**
-     * 
+     * a string containing a custom time the grant should last, if desired.  Uses golang Duration parsing to parse things like \"1h30m20s\"
      * @type {string}
      * @memberof SetGrantRequest
      */

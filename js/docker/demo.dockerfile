@@ -1,6 +1,6 @@
 FROM node:14 as lerna-bootstrap
 
-RUN apt-get update && apt-get install --yes openjdk-8-jre curl sqlite
+RUN apt-get update && apt-get install --yes openjdk-8-jre curl sqlite jq
 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip
