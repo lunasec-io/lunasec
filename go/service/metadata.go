@@ -17,8 +17,8 @@ package service
 import (
 	"encoding/json"
 	"errors"
-  "github.com/refinery-labs/loq/gateway/metrics"
-  "go.uber.org/zap"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
+	"go.uber.org/zap"
 	"time"
 
 	"github.com/lunasec-io/lunasec-monorepo/gateway"

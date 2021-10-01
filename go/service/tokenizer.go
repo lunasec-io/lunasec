@@ -18,7 +18,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
-	"github.com/refinery-labs/loq/gateway/metrics"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 

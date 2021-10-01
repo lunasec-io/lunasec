@@ -25,7 +25,7 @@ import { handleDownload } from './secure-download';
 import { validate } from './validators';
 export type SupportedElement = TagLookup[keyof TagLookup];
 
-// @eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomMetadata = Record<string, any>;
 export function timeout(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));

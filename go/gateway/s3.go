@@ -21,7 +21,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
-	"github.com/refinery-labs/loq/gateway/configs"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/configs"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"io/ioutil"

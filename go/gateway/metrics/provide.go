@@ -16,7 +16,7 @@ package metrics
 
 import (
   "github.com/aws/aws-sdk-go/aws/client"
-  "github.com/refinery-labs/loq/constants"
+  "github.com/lunasec-io/lunasec-monorepo/constants"
   "go.uber.org/config"
   "go.uber.org/zap"
   "log"

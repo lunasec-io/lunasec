@@ -18,8 +18,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
-  "github.com/refinery-labs/loq/gateway/configs"
-  "go.uber.org/config"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/configs"
+	"go.uber.org/config"
 	"go.uber.org/zap"
 )
 
