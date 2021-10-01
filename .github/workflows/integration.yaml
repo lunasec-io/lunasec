@@ -38,6 +38,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '^1.17.1'
+
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
@@ -82,6 +86,10 @@ jobs:
 #      env:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
+
+    - name: Run Golang tests
+      working-directory: go/
+      run: go test -cover ./...
 
     - name: Run e2e tests
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --build --exit-code-from integration-test integration-test

@@ -30,7 +30,7 @@ import (
 	"github.com/aws/jsii-runtime-go"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"github.com/lunasec-io/lunasec-monorepo/gateway"
-	"github.com/refinery-labs/loq/gateway/metrics"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"github.com/lunasec-io/lunasec-monorepo/util"
 	"go.uber.org/config"

@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"github.com/lunasec-io/lunasec-monorepo/gateway"
-	"github.com/refinery-labs/loq/gateway/metrics"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/service/lunasec"
 	"github.com/lunasec-io/lunasec-monorepo/util"
 	"github.com/urfave/cli/v2"

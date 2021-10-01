@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
 	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"github.com/lunasec-io/lunasec-monorepo/util"

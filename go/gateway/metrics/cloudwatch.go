@@ -17,7 +17,7 @@ package metrics
 import (
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
-	"github.com/refinery-labs/loq/gateway/configs"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/configs"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
