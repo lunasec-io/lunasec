@@ -95,18 +95,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Fix license headers
-      - name: Fix License Headers
-        run: npm run license:fix
-
-      - name: Update commit
-        run: git commit --amend --no-edit
-
-      # Validate license headers are correct
-      - name: Check License Headers
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run license:check
+#      # Fix license headers
+#      - name: Fix License Headers
+#        run: npm run license:fix
+#
+#      - name: Update commit
+#        run: git commit --amend --no-edit
+#
+#      # Validate license headers are correct
+#      - name: Check License Headers
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        run: npm run license:check
 
       # TODO (cthompson) verify that there are no files that have been modified
 
