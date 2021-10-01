@@ -82,13 +82,9 @@ jobs:
 
       # TODO (cthompson) verify that there are no files that have been modified
       
-      - name: Setup .npmrc
-        run: |
-          yarn logout
-          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > .npmrc
-          npm whoami
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: borales/actions-yarn@v2.3.0
+        with:
+          auth-token: ${{ secrets.NPM_TOKEN }}
 
       # Push all artifacts
       - name: publish release versions
