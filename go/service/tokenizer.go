@@ -74,7 +74,7 @@ func NewTokenizerService(
 
 // SetTokenizer ...
 func (s *tokenizerService) TokenizerSet() (types.Token, string, map[string]string, error) {
-	s.cw.PutMetric(constants.TokenizerSetStart, 1)
+	s.cw.Metric(constants.TokenizerSetStart, 1)
 
 	token := util.GenToken()
 	Kp := util.Keygen()
@@ -84,7 +84,7 @@ func (s *tokenizerService) TokenizerSet() (types.Token, string, map[string]strin
 	encryptedEncryptionKeyBytes, err := util.Encrypt(snk.Kt, Kp)
 
 	if err != nil {
-		s.cw.PutMetric(constants.TokenizerSetErrorEncrypt, 1)
+		s.cw.Metric(constants.TokenizerSetErrorEncrypt, 1)
 		return "", "", nil, err
 	}
 
@@ -94,48 +94,48 @@ func (s *tokenizerService) TokenizerSet() (types.Token, string, map[string]strin
 	encryptedEncryptionKey := hex.EncodeToString(encryptedEncryptionKeyBytes)
 
 	if err := s.kv.Set(gateway.KeyStore, encryptionKeyLookupHash, encryptedEncryptionKey); err != nil {
-		s.cw.PutMetric(constants.TokenizerSetErrorKVStore, 1)
+		s.cw.Metric(constants.TokenizerSetErrorKVStore, 1)
 		return "", "", nil, err
 	}
 
 	url, key, err := s.s3.GeneratePresignedPutUrl(ciphertextLookupHash, Kp)
 	if err != nil {
-		s.cw.PutMetric(constants.TokenizerSetErrorPresignedUrl, 1)
+		s.cw.Metric(constants.TokenizerSetErrorPresignedUrl, 1)
 		return token, url, key, err
 	}
-	s.cw.PutMetric(constants.TokenizerSetSuccess, 1)
+	s.cw.Metric(constants.TokenizerSetSuccess, 1)
 	return token, url, key, err
 }
 
 // GetTokenizer
 func (s *tokenizerService) TokenizerGet(token types.Token) (string, map[string]string, error) {
-	s.cw.PutMetric(constants.TokenizerGetStart, 1)
+	s.cw.Metric(constants.TokenizerGetStart, 1)
 
 	snk := util.GenerateSaltsAndKey(token, s.secret)
 	encryptionKeyLookupHash := util.GetCompositeHash(token, snk.Sk)
 	encryptedEncryptionKey, err := s.kv.Get(gateway.KeyStore, encryptionKeyLookupHash)
 
 	if err != nil {
-		s.cw.PutMetric(constants.TokenizerGetErrorKVGet, 1)
+		s.cw.Metric(constants.TokenizerGetErrorKVGet, 1)
 		return "", nil, err
 	}
 
 	if len(encryptedEncryptionKey) == 0 {
-		s.cw.PutMetric(constants.TokenizerGetErrorNoEncryptionKey, 1)
+		s.cw.Metric(constants.TokenizerGetErrorNoEncryptionKey, 1)
 		return "", nil, errors.New("unable to locate data for token")
 	}
 
 	encryptedEncryptionKeyBytes, err := hex.DecodeString(encryptedEncryptionKey)
 
 	if err != nil {
-		s.cw.PutMetric(constants.TokenizerGetErrorDecodeEncryptionKey, 1)
+		s.cw.Metric(constants.TokenizerGetErrorDecodeEncryptionKey, 1)
 		return "", nil, err
 	}
 
 	Kp, err := util.Decrypt(snk.Kt, encryptedEncryptionKeyBytes)
 
 	if err != nil {
-		s.cw.PutMetric(constants.TokenizerGetErrorDecryptEncryptionKey, 1)
+		s.cw.Metric(constants.TokenizerGetErrorDecryptEncryptionKey, 1)
 		return "", nil, err
 	}
 
@@ -143,10 +143,10 @@ func (s *tokenizerService) TokenizerGet(token types.Token) (string, map[string]s
 
 	url, key, err := s.s3.GeneratePresignedPutUrl(ciphertextLookupHash, Kp)
 	if err != nil {
-		s.cw.PutMetric(constants.TokenizerGetErrorPresignedUrl, 1)
+		s.cw.Metric(constants.TokenizerGetErrorPresignedUrl, 1)
 		return url, key, err
 	}
-	s.cw.PutMetric(constants.TokenizerGetSuccess, 1)
+	s.cw.Metric(constants.TokenizerGetSuccess, 1)
 	return url, key, err
 }
 

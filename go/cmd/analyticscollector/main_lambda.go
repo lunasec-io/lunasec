@@ -12,21 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-//go:build dev
+//go:build lambda
 
 package main
 
-import (
-	"log"
-
-	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizerbackend"
-)
-
 func main() {
 
-	logger, provider, gateways := tokenizerBackendDependencies()
-
-	log.SetFlags(log.Lshortfile)
-	server := tokenizerbackend.NewDevServer(logger, provider, gateways)
-	log.Fatal(server.ListenAndServe())
 }

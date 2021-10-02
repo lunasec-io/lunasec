@@ -19,6 +19,8 @@ import (
 	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizer"
 	"github.com/lunasec-io/lunasec-monorepo/types"
+	"go.uber.org/config"
+	"go.uber.org/zap"
 	"log"
 	"net/http"
 
@@ -39,30 +41,20 @@ type AppConfig struct {
 	Cors CorsConfig `yaml:"cors"`
 }
 
-func newServer() http.Handler {
+func newServer(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways) http.Handler {
 	var (
 		appConfig AppConfig
 	)
 
 	sm := http.NewServeMux()
 
-	logger, err := util.GetLogger()
-	if err != nil {
-		log.Println(err)
-		panic(err)
-	}
-
-	provider := util.GetConfigProviderFromDir("config/tokenizerbackend")
-
 	cspMiddleware := controller.WithCSP(provider)
 
-	err = provider.Get("app").Populate(&appConfig)
+	err := provider.Get("app").Populate(&appConfig)
 	if err != nil {
 		log.Println(err)
 		panic(err)
 	}
-
-	gateways := gateway.GetAwsGateways(logger, provider)
 
 	authProviderJwtVerifier := service.NewJwtVerifier(constants.AuthJwtVerifier, logger, provider)
 
@@ -94,8 +86,8 @@ func newServer() http.Handler {
 	return c.Handler(sm)
 }
 
-func NewDevServer() *http.Server {
-	sm := newServer()
+func NewDevServer(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways) *http.Server {
+	sm := newServer(logger, provider, gateways)
 
 	addr := util.GetEnvWithFallback("SECUREFRAME_HTTP_ADDR", "0.0.0.0:37766")
 	server := &http.Server{
@@ -107,7 +99,7 @@ func NewDevServer() *http.Server {
 	return server
 }
 
-func NewApiGatewayServer() *handlerfunc.HandlerFuncAdapter {
-	sm := newServer()
+func NewApiGatewayServer(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways) *handlerfunc.HandlerFuncAdapter {
+	sm := newServer(logger, provider, gateways)
 	return handlerfunc.New(sm.ServeHTTP)
 }

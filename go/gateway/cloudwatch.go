@@ -15,22 +15,27 @@
 package gateway
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
+	"sync"
 )
 
 type cloudwatchGateway struct {
-	logger    *zap.Logger
-	cw        *cloudwatch.CloudWatch
-	namespace string
+	logger       *zap.Logger
+	cw           *cloudwatch.CloudWatch
+	namespace    string
+	rwMutex      sync.RWMutex
+	metricsCache map[string]int64
 }
 
 // AwsCloudwatchGateway ...
 type AwsCloudwatchGateway interface {
-	PutMetric(name string, value int)
+	Metric(name string, value int)
+	PushMetrics()
 }
 
 // NewAwsCloudwatchGateway...
@@ -54,25 +59,60 @@ func NewAwsCloudwatchGateway(logger *zap.Logger, provider config.Provider, sess 
 	}
 }
 
-func (c *cloudwatchGateway) PutMetric(name string, value int) {
-	// TODO (cthompson) we can potentially do some smart caching here to avoid having to call out to AWS for every metric call
-	//input := &cloudwatch.PutMetricDataInput{
-	//	Namespace: aws.String(c.namespace),
-	//	MetricData: []*cloudwatch.MetricDatum{
-	//		{
-	//			MetricName: aws.String(name),
-	//			Value: aws.Float64(float64(value)),
-	//		},
-	//	},
-	//}
-	//_, err := c.cw.PutMetricData(input)
-	//if err != nil {
-	//	c.logger.Error(
-	//		"failed to push metric",
-	//		zap.Error(err),
-	//		zap.String("name", name),
-	//		zap.Int("value", value),
-	//	)
-	//}
+func (c *cloudwatchGateway) Metric(name string, value int) {
+	c.rwMutex.Lock()
+	defer c.rwMutex.Unlock()
+
+	c.metricsCache[name] += int64(value)
+
 	return
+}
+
+func (c *cloudwatchGateway) cloneMetricsCache() map[string]int64 {
+	c.rwMutex.Lock()
+	defer c.rwMutex.Unlock()
+
+	metricsCache := map[string]int64{}
+	for k, v := range c.metricsCache {
+		metricsCache[k] = v
+	}
+	return metricsCache
+}
+
+func (c *cloudwatchGateway) pushMetricsData(metricsData []*cloudwatch.MetricDatum) {
+	input := &cloudwatch.PutMetricDataInput{
+		Namespace:  aws.String(c.namespace),
+		MetricData: metricsData,
+	}
+
+	_, err := c.cw.PutMetricData(input)
+
+	if err != nil {
+		c.logger.Error(
+			"failed to push metrics",
+			zap.Error(err),
+		)
+	}
+}
+
+func (c *cloudwatchGateway) PushMetrics() {
+	var (
+		metricsData []*cloudwatch.MetricDatum
+	)
+
+	// clone map to avoid blocking
+	metricsCache := c.cloneMetricsCache()
+
+	for name, value := range metricsCache {
+		metric := &cloudwatch.MetricDatum{
+			MetricName: aws.String(name),
+			Value:      aws.Float64(float64(value)),
+		}
+		metricsData = append(metricsData, metric)
+
+		if len(metricsData) == 20 {
+			c.pushMetricsData(metricsData)
+			metricsData = []*cloudwatch.MetricDatum{}
+		}
+	}
 }
