@@ -1,7 +1,7 @@
 {
   "name": "lunasec-go-monorepo",
   "private": true,
-  "version": "0.0.1-alpha.11",
+  "version": "0.0.1-alpha.12",
   "description": "LunaSec Go Monorepo",
   "scripts": {
     "lint": "golangci-lint run",
@@ -13,6 +13,6 @@
   "author": "lunasec",
   "license": "MIT",
   "dependencies": {
-    "@lunasec/isomorphic-common": "^0.0.1-alpha.11"
+    "@lunasec/isomorphic-common": "^0.0.1-alpha.12"
   }
 }
