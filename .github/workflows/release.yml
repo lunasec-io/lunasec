@@ -85,10 +85,11 @@ jobs:
       - name: Authenticate with Registry
         run: |
           yarn logout
-          echo "always-auth=true" >> .npmrc
-          echo "@lunasec:registry=http://registry.npmjs.org/" >> .npmrc
-          echo "registry=http://registry.npmjs.org/" >> .npmrc
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
+          echo 'scope=@lunasec' > .npmrc
+          echo 'always-auth=true' >> .npmrc
+          echo '@lunasec:registry=http://registry.npmjs.org/' >> .npmrc
+          echo 'registry=http://registry.npmjs.org/' >> .npmrc
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
           npm whoami
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
