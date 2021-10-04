@@ -70,13 +70,13 @@ jobs:
 
       # Bump package versions
       - name: create release version
-        run: npm run version:release
+        run: yarn run version:release
         env:
           RELEASE_TYPE: ${{ github.event.inputs.release_type }}
 
       # Build all packages
       - name: compile release versions
-        run: npm run compile:release
+        run: yarn run compile:release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -88,14 +88,14 @@ jobs:
           echo "always-auth=true" >> .npmrc
           echo "@lunasec:registry=http://registry.npmjs.org/" >> .npmrc
           echo "registry=http://registry.npmjs.org/" >> .npmrc
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
           npm whoami
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # Push all artifacts
       - name: publish release versions
-        run: npm run publish:release
+        run: yarn run publish:release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
