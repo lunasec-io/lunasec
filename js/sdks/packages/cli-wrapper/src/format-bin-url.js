@@ -25,11 +25,11 @@ function getOsName() {
     'darwin': 'Darwin',
     'win32': 'Windows',
   }
-  const nodeOsName = os.platform()
+  const nodeOsName = os.platform();
   if (!osNameMap[nodeOsName]) {
-    throw new Error(`Operating system ${nodeOsName} is not supported by LunaSec CLI, you must compile and use your own binary and cannot use this package`)
+    throw new Error(`Operating system ${nodeOsName} is not supported by LunaSec CLI, you must compile and use your own binary and cannot use this package`);
   }
-  return osNameMap[nodeOsName]
+  return osNameMap[nodeOsName];
 }
 
 function getArchName(){
@@ -39,13 +39,13 @@ function getArchName(){
     'x32': 'i386',
   }
   if (!archNameMap[process.arch]){
-    throw new Error('LunaSec Unsupported CPU Architecture')
+    throw new Error('LunaSec Unsupported CPU Architecture');
   }
   if(process.arch === 'arm64'){
-    console.warn('ARM 64 CPU detected by LunaSec CLI Installer.  CLI Support for M1 Macintosh is experimental, please tell us if it works.')
+    console.warn('ARM 64 CPU detected by LunaSec CLI Installer.  CLI Support for M1 Macintosh is experimental, please tell us if it works.');
   }
-  return archNameMap[process.arch]
+  return archNameMap[process.arch];
 }
 
 
-module.exports = `https://github.com/lunasec-io/lunasec-monorepo/releases/download/v${packageVersion}/lunasec_${packageVersion}_${getOsName()}_${getArchName()}.tar.gz`
+module.exports = `https://github.com/lunasec-io/lunasec-monorepo/releases/download/v${packageVersion}/lunasec_${packageVersion}_${getOsName()}_${getArchName()}.tar.gz`;
