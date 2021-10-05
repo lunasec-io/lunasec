@@ -2,6 +2,7 @@
   "name": "@lunasec/react-front-end",
   "private": true,
   "version": "0.0.1-alpha.11",
+  "license": "Apache-2.0",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
