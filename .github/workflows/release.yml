@@ -107,7 +107,7 @@ jobs:
 
       # Push all artifacts
       - name: publish release versions
-        run: lerna publish -y from-package
+        run: lerna publish --no-verify-access -y from-package
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
