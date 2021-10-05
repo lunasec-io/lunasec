@@ -33,8 +33,8 @@ func main() {
 	addr := flag.String("listen", ":8080", "port to listen for HTTP on")
 	flag.StringVar(&cf.Bucket, "bucket", "", "bucket name")
 	flag.StringVar(&cf.DBHost, "db_host", "", "database host or Cloud SQL instance name")
-	flag.StringVar(&cf.DBName, "db_name", "guestbook", "database name")
-	flag.StringVar(&cf.DBUser, "db_user", "guestbook", "database user")
+	flag.StringVar(&cf.DBName, "db_name", "metricsserverbackend", "database name")
+	flag.StringVar(&cf.DBUser, "db_user", "metricsserverbackend", "database user")
 	flag.StringVar(&cf.DBPassword, "db_password", "", "database user password")
 	flag.StringVar(&cf.MOTDVar, "motd_var", "", "message of the day variable location")
 	flag.DurationVar(&cf.MOTDVarWaitTime, "motd_var_wait_time", 1, "polling frequency of message of the day")
@@ -47,18 +47,8 @@ func main() {
 	var cleanup func()
 	var err error
 	switch envFlag {
-	case "gcp":
-		srv, cleanup, err = metricsserverbackend.SetupGCP(ctx, cf)
 	case "aws":
 		srv, cleanup, err = metricsserverbackend.SetupAWS(ctx, cf)
-	case "azure":
-		if cf.DBHost == "" {
-			cf.DBHost = "localhost"
-		}
-		if cf.DBPassword == "" {
-			cf.DBPassword = "xyzzy"
-		}
-		srv, cleanup, err = metricsserverbackend.SetupAzure(ctx, cf)
 	case "local":
 		// The default MySQL instance is running on localhost
 		// with this root password.
@@ -66,7 +56,7 @@ func main() {
 			cf.DBHost = "localhost"
 		}
 		if cf.DBPassword == "" {
-			cf.DBPassword = "xyzzy"
+			cf.DBPassword = "password"
 		}
 		srv, cleanup, err = metricsserverbackend.SetupLocal(ctx, cf)
 	default:

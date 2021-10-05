@@ -20,11 +20,12 @@ package metricsserverbackend
 import (
 	"context"
 	"database/sql"
-	"github.com/go-sql-driver/mysql"
+	"fmt"
 	"github.com/google/wire"
 	"go.opencensus.io/trace"
 	"gocloud.dev/blob"
 	"gocloud.dev/blob/fileblob"
+	"gocloud.dev/postgres"
 	"gocloud.dev/runtimevar"
 	"gocloud.dev/runtimevar/filevar"
 	"gocloud.dev/server"
@@ -61,16 +62,12 @@ func localBucket(flags *CLIFlags) (*blob.Bucket, error) {
 
 // dialLocalSQL is a Wire provider function that connects to a MySQL database
 // (usually on localhost).
-func dialLocalSQL(flags *CLIFlags) (*sql.DB, error) {
-	cfg := &mysql.Config{
-		Net:                  "tcp",
-		Addr:                 flags.DBHost,
-		DBName:               flags.DBName,
-		User:                 flags.DBUser,
-		Passwd:               flags.DBPassword,
-		AllowNativePasswords: true,
-	}
-	return sql.Open("mysql", cfg.FormatDSN())
+func dialLocalSQL(ctx context.Context, flags *CLIFlags) (*sql.DB, error) {
+	var psqlUri = fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", flags.DBUser, flags.DBPassword, flags.DBHost, flags.DBName)
+
+	fmt.Println(psqlUri)
+
+	return postgres.Open(ctx, psqlUri)
 }
 
 // localRuntimeVar is a Wire provider function that returns the Message of the

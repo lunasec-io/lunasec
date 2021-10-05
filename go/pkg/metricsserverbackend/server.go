@@ -1,3 +1,17 @@
+// Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 package metricsserverbackend
 
 import (
@@ -75,7 +89,6 @@ func newApplication(db *sql.DB, bucket *blob.Bucket, motdVar *runtimevar.Variabl
 func (app *application) index(w http.ResponseWriter, r *http.Request) {
   var data struct {
     MOTD      string
-    Env       string
     BannerSrc string
     Greetings []greeting
   }
@@ -87,21 +100,6 @@ func (app *application) index(w http.ResponseWriter, r *http.Request) {
   }
   data.MOTD = snap.Value.(string)
 
-  //switch envFlag {
-  //case "gcp":
-  //  data.Env = "GCP"
-  //  data.BannerSrc = "/blob/gcp.png"
-  //case "aws":
-  //  data.Env = "AWS"
-  //  data.BannerSrc = "/blob/aws.png"
-  //case "azure":
-  //  data.Env = "Azure"
-  //  data.BannerSrc = "/blob/azure.png"
-  //case "local":
-  //
-  //}
-
-  data.Env = "Local"
   data.BannerSrc = "/blob/gophers.jpg"
 
   const query = "SELECT content FROM (SELECT content, post_date FROM greetings ORDER BY post_date DESC LIMIT 100) AS recent_greetings ORDER BY post_date ASC;"
@@ -144,7 +142,7 @@ type greeting struct {
 }
 
 var tmpl = template.Must(template.New("index.html").Parse(`<!DOCTYPE html>
-<title>Guestbook - {{.Env}}</title>
+<title>Guestbook</title>
 <style type="text/css">
 html, body {
 	font-family: Helvetica, sans-serif;
@@ -190,7 +188,7 @@ func (app *application) sign(w http.ResponseWriter, r *http.Request) {
     http.Error(w, "content must not be empty", http.StatusBadRequest)
     return
   }
-  const sqlStmt = "INSERT INTO greetings (content) VALUES (?);"
+  const sqlStmt = "INSERT INTO greetings (content) VALUES ($1);"
   _, err := app.db.ExecContext(r.Context(), sqlStmt, content)
   if err != nil {
     log.Println("sign SQL error:", err)

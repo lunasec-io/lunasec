@@ -13,8 +13,9 @@
 -- limitations under the License.
 
 CREATE TABLE greetings (
-    content VARCHAR(255) CHARACTER SET utf8
+    content text
         NOT NULL
-        CHECK (content <> ''),
-    post_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        CONSTRAINT contentcheck
+        CHECK (char_length(content) > 0),
+    post_date TIMESTAMP NOT NULL DEFAULT NOW()
 );

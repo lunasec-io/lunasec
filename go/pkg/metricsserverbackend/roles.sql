@@ -12,5 +12,5 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
-CREATE USER 'guestbook'@'%' IDENTIFIED BY 'xyzzy';
-GRANT SELECT,INSERT,UPDATE,DELETE ON guestbook.* TO 'guestbook'@'%';
+CREATE USER 'metricsserverbackend'@'%' IDENTIFIED BY 'xyzzy';
+GRANT SELECT,INSERT,UPDATE,DELETE ON metricsserverbackend.* TO 'metricsserverbackend'@'%';

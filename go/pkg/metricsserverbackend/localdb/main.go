@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package metricsserverbackend
+package main
 
 import (
 	"context"
@@ -46,18 +46,19 @@ func main() {
 }
 
 func runLocalDB(containerName, guestbookDir string) error {
-	image := "mysql:5.6"
+	image := "postgres:14"
 
-	log.Printf("Starting container running MySQL")
+	log.Printf("Starting container running Postgres")
 	dockerArgs := []string{"run", "--rm"}
 	if containerName != "" {
 		dockerArgs = append(dockerArgs, "--name", containerName)
 	}
 	dockerArgs = append(dockerArgs,
-		"--env", "MYSQL_DATABASE=guestbook",
-		"--env", "MYSQL_ROOT_PASSWORD=password",
+		"--env", "POSTGRES_DB=metricsserverbackend",
+		"--env", "POSTGRES_USER=metricsserverbackend",
+		"--env", "POSTGRES_PASSWORD=password",
 		"--detach",
-		"--publish", "3306:3306",
+		"--publish", "5432:5432",
 		image)
 	cmd := exec.Command("docker", dockerArgs...)
 	cmd.Stderr = os.Stderr
@@ -99,19 +100,20 @@ func runLocalDB(containerName, guestbookDir string) error {
 	if err != nil {
 		return fmt.Errorf("reading schema: %v", err)
 	}
-	roles, err := ioutil.ReadFile(filepath.Join(guestbookDir, "roles.sql"))
-	if err != nil {
-		return fmt.Errorf("reading roles: %v", err)
-	}
+	//roles, err := ioutil.ReadFile(filepath.Join(guestbookDir, "roles.sql"))
+	//if err != nil {
+	//	return fmt.Errorf("reading roles: %v", err)
+	//}
 	tooMany := 10
 	var i int
 	for i = 0; i < tooMany; i++ {
-		mySQL := `mysql -h"${MYSQL_PORT_3306_TCP_ADDR?}" -P"${MYSQL_PORT_3306_TCP_PORT?}" -uroot -ppassword guestbook`
+		postgresCmd := `PGPASSWORD=password psql -h"${POSTGRES_PORT_5432_TCP_ADDR?}" -p"${POSTGRES_PORT_5432_TCP_PORT?}" -Umetricsserverbackend metricsserverbackend`
 		p := pipe.Line(
-			pipe.Read(strings.NewReader(string(schema)+string(roles))),
-			pipe.Exec("docker", "run", "--rm", "--interactive", "--link", containerID+":mysql", image, "sh", "-c", mySQL),
+			pipe.Read(strings.NewReader(string(schema))),
+			pipe.Exec("docker", "run", "--rm", "--interactive", "--link", containerID+":postgres", image, "sh", "-c", postgresCmd),
 		)
-		if _, stderr, err := pipe.DividedOutput(p); err != nil {
+		stdout, stderr, err := pipe.DividedOutput(p)
+		if err != nil {
 			log.Printf("Failed to seed database: %q; retrying", stderr)
 			select {
 			case <-time.After(time.Second):
@@ -120,13 +122,15 @@ func runLocalDB(containerName, guestbookDir string) error {
 				return errors.New("interrupted while napping in between database seeding attempts")
 			}
 		}
+		fmt.Println(fmt.Sprintf("stdout: %s", stdout))
+		fmt.Println(fmt.Sprintf("stderr: %s", stderr))
 		break
 	}
 	if i == tooMany {
 		return fmt.Errorf("gave up after %d tries to seed database", i)
 	}
 
-	log.Printf("Database running at localhost:3306")
+	log.Printf("Database running at localhost:5432")
 	attach := exec.CommandContext(ctx, "docker", "attach", containerID)
 	attach.Stdout = os.Stdout
 	attach.Stderr = os.Stderr
