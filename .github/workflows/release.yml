@@ -35,14 +35,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Enable tmate debugging of manually-triggered workflows if the input option was provided
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled != 'false' }}
-        timeout-minutes: 15
-
       - name: Current Monorepo Version
         run: cat lerna.json | jq -r .version
 
@@ -88,6 +80,14 @@ jobs:
           npm whoami
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled != 'false' }}
+        timeout-minutes: 15
 
       # Bump package versions
       - name: create release version
