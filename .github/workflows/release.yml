@@ -20,6 +20,10 @@ on:
       release_type:
         description: "Type of release to perform (ie. prerelease, patch, minor, major, etc.)"
         required: true
+      debug_enabled:
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -30,6 +34,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled != 'false' }}
+        timeout-minutes: 15
 
       - name: Current Monorepo Version
         run: cat lerna.json | jq -r .version
@@ -72,6 +84,7 @@ jobs:
         run: |
           yarn logout
           cp .github/npmrc.txt .npmrc
+          cat .npmrc
           npm whoami
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
