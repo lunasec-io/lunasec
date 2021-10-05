@@ -22,19 +22,17 @@ const decompressTargz = require('decompress-targz');
 const ProgressBar = require('progress');
 const binUrl = require('./format-bin-url');
 
-// const binUrl = 'https://cran.r-project.org/src/base/R-4/R-4.1.1.tar.gz' // A good endpoint to test downloading on
 const binFolder = path.resolve(__dirname, '..', 'bin');
 const tarPath = path.resolve(binFolder, 'cli_bin.tar.gz');
 
 async function downloadBinary(url) {
-
+  console.log('Downloading LunaSec CLI binary from ', url)
   // make the bin folder
   fs.mkdirSync(binFolder, { recursive: true });
-
   const {data, headers} = await axios({
     url,
     method: 'GET',
-    responseType: 'stream'
+    responseType: 'stream',
   })
 
   const progressBar = new ProgressBar('-> Downloading LunaSec CLI bin [:bar] :percent :etas', {
