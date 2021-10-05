@@ -14,23 +14,22 @@
  * limitations under the License.
  *
  */
-const fs = require('fs')
-const path = require('path')
-const axios = require('axios')
+const fs = require('fs');
+const path = require('path');
+const axios = require('axios');
 const decompress = require('decompress');
 const decompressTargz = require('decompress-targz');
-const ProgressBar = require('progress')
+const ProgressBar = require('progress');
+const binUrl = require('./format-bin-url');
 
-const binUrl = require('./format-bin-url')
 // const binUrl = 'https://cran.r-project.org/src/base/R-4/R-4.1.1.tar.gz' // A good endpoint to test downloading on
-
-const binFolder = path.resolve(__dirname, '..', 'bin')
-const tarPath = path.resolve(binFolder, 'cli_bin.tar.gz')
+const binFolder = path.resolve(__dirname, '..', 'bin');
+const tarPath = path.resolve(binFolder, 'cli_bin.tar.gz');
 
 async function downloadBinary(url) {
 
-  // make the bin folder if it doesn't exist
-  !fs.existsSync(binFolder) && fs.mkdirSync(binFolder, { recursive: true })
+  // make the bin folder
+  fs.mkdirSync(binFolder, { recursive: true });
 
   const {data, headers} = await axios({
     url,
@@ -46,10 +45,10 @@ async function downloadBinary(url) {
     total: parseInt(headers['content-length'])
   })
 
-  data.on('data', (chunk) => progressBar.tick(chunk.length))
+  data.on('data', (chunk) => progressBar.tick(chunk.length));
 
-  const writer = fs.createWriteStream(tarPath)
-  data.pipe(writer)
+  const writer = fs.createWriteStream(tarPath);
+  data.pipe(writer);
 
   return new Promise((resolve, reject) => {
     writer.on('finish', resolve)
@@ -57,22 +56,22 @@ async function downloadBinary(url) {
   })
 }
 async function downloadAndDecompressCli(){
-
+  if (fs.existsSync(binFolder)){
+   return // Todo: make sure this skip doesn't happen when the package is updated or we will accidentally keep the old binary
+  }
   await downloadBinary(binUrl).catch((e) => {
-    console.error('Error downloading LunaSec CLI bin from github: ', e)
+   throw new Error(`Error downloading LunaSec CLI bin from github: ${e}`);
   })
   // Delete old decompressed files here if needed
-  console.log('Extracting...')
+  console.log('Extracting...');
   await decompress(tarPath, path.resolve(__dirname, '..', 'bin'), {plugins: [decompressTargz()]}).catch((e) => {
-    console.error('Error decompressing LunaSec CLI bin',e )
+   throw new Error(`Error decompressing LunaSec CLI bin ${e}`);
   })
-
-  fs.unlinkSync(tarPath) // Deletes the tar file
+  console.log('LunaSec CLI installed');
+  fs.unlinkSync(tarPath); // Deletes the tar file
 }
 
-downloadAndDecompressCli().then(() => {
-  console.log('LunaSec CLI installed')
-}).catch((e) => {
-  console.error('Error Installing LunaSec CLI: ', e)
-  process.exit(1)
+downloadAndDecompressCli().catch((e) => {
+  console.error('Error Installing LunaSec CLI: ', e);
+  process.exit(1);
 })
