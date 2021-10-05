@@ -15,7 +15,7 @@
   },
   "types": "build/main/index.d.ts",
   "author": "",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.22.0",
     "@aws-sdk/hash-node": "^3.22.0",

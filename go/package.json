@@ -11,7 +11,7 @@
     "version": "node -p 'require(\"./package.json\").version'"
   },
   "author": "lunasec",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "@lunasec/isomorphic-common": "^0.0.1-alpha.11"
   }
