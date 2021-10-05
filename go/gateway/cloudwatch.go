@@ -22,6 +22,7 @@ import (
 	"go.uber.org/zap"
 	"log"
 	"sync"
+	"time"
 )
 
 type cloudwatchGateway struct {
@@ -115,4 +116,23 @@ func (c *cloudwatchGateway) PushMetrics() {
 			metricsData = []*cloudwatch.MetricDatum{}
 		}
 	}
+}
+
+func (c *cloudwatchGateway) GetMetrics() {
+	lastDay := -1 * time.Hour * 24
+	start := time.Now().Add(lastDay)
+	end := time.Now()
+	input := cloudwatch.ListMetricsInput{
+	}
+
+	pageNum := 0
+	maxPages := 10
+	c.cw.ListMetricsPages(
+		&input,
+		func(page *cloudwatch.GetMetricDataOutput, lastPage bool) bool {
+			pageNum++
+			page.MetricDataResults[0].
+			return pageNum <= maxPages
+		},
+	)
 }

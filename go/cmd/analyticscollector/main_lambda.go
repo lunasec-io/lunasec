@@ -16,6 +16,8 @@
 
 package main
 
-func main() {
+import "github.com/lunasec-io/lunasec-monorepo/gateway"
 
+func main() {
+	logger, config, gateways := analyticsCollectorDependencies()
 }
