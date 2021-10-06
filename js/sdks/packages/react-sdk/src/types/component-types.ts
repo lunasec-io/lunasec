@@ -16,6 +16,8 @@
  */
 import { LunaSecError } from '../../../isomorphic-common';
 
+/** Gets called whenever the component experiences an error.  Will be called with a LunaSecError */
+export type ErrorHandlerCallback = (errorObject: LunaSecError) => void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomMetadata = Record<string, any>;
 
@@ -23,8 +25,7 @@ type CustomMetadata = Record<string, any>;
  * The base props for a component that detokenizes(downloads) data
  */
 export interface BaseDetokenizingComponentProps {
-  /** Gets called whenever the component experiences an error.  Will be called with a LunaSecError */
-  errorHandler: (errorObject: LunaSecError) => void; // TODO: Figure out why this type isnt making it to the end user
+  errorHandler: ErrorHandlerCallback;
   name?: string;
   /** a token to prefill the element with a secure value from a previous session */
   token?: string;
