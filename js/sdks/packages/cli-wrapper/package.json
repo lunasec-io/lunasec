@@ -11,7 +11,7 @@
     "tokenizer"
   ],
   "scripts": {
-    "install": "node ./src/download-bin.js"
+    "install": "echo 'TODO!!!! REPLACE THIS WITH INVOKING THE DOWNLOAD-BIN.JS SCRIPT'"
   },
   "dependencies": {
     "decompress": "^4.2.1",
