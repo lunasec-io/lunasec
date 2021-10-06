@@ -104,6 +104,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
     frameReadyForListening = false;
     readonly auth: LunaSecAuthentication;
     stopSessionManagement?: () => void;
+    private lastTokenSent?: string;
 
     constructor(props: WrapperPropsWithProviders<W>) {
       super(props);
@@ -265,7 +266,10 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       }
 
       if (attrs.component !== 'Uploader' && 'token' in this.props) {
-        attrs.token = this.props.token;
+        if (this.props.token !== this.lastTokenSent) {
+          attrs.token = this.props.token;
+          this.lastTokenSent = this.props.token;
+        }
       }
       if (attrs.component === 'Uploader' && 'fileTokens' in this.props) {
         attrs.fileTokens = this.props.fileTokens;

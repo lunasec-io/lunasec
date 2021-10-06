@@ -41,9 +41,7 @@ export const store = createStore<StoreModel>({
     if (!currentUser) {
       throw new Error('Cant set SSN for a user that isnt logged in');
     }
-    console.log('about to make api call');
     const { data } = await axios.post<ApiResponse>(`http://localhost:3001/user/set-ssn`, { ssn_token });
-    console.log('api responded ', data);
     if (data.success) {
       actions.setUser({ ...currentUser, ssn_token });
     }
@@ -65,7 +63,6 @@ export const store = createStore<StoreModel>({
   }),
 
   uploadDocumentTokens: thunk(async (actions, documents) => {
-    console.log('uploading document tokens ', documents);
     const { data } = await axios.post<ApiResponse>(`http://localhost:3001/documents`, { documents });
     return data;
   }),
