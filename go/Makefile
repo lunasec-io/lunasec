@@ -17,7 +17,7 @@ cli-build-release:
 
 docker-build-release:
 	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda -t lunasec/tokenizer-backend:${version} -f docker/Dockerfile.tokenizerbackend .
-	DOCKER_BUILDKIT=1 docker build --build-arg -t lunasec/tokenizer-backend-dev:${version} -f docker/Dockerfile.tokenizerbackend .
+	DOCKER_BUILDKIT=1 docker build -t lunasec/tokenizer-backend-dev:${version} -f docker/Dockerfile.tokenizerbackend .
 
 
 cli-publish:
