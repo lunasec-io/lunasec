@@ -11,8 +11,8 @@ LunaSec needs access to your user's session to make sure they have permission to
 given to a certain user to use a token, we say that the token is `granted`.  The Dedicated Tokenizer keeps a record of the short-lived 
 `grants` that have been created by your application.
 
-There are two main ways for LunaSec :
-1. Your app creates the session and LunaSec trusts it (most existing web applications).
+There are two main ways your application can handle authentication :
+1. Your app creates the session and LunaSec trusts it.
 2. The session is created and managed by a specialized service like an Auth Proxy.
 
 LunaSec supports both of these schemes.
@@ -55,6 +55,11 @@ like as part of a signup flow, you may wish to create a temporary session or oth
 some kind of unique token in this callback so that LunaSec can continue to work. 
 
 ## 2. Auth Proxy
+:::info Still in Development
+Support for third-party auth proxies is still in development.  It is one of the next features on the roadmap and will be
+supported soon. 
+:::
+
 In this scheme, an authentication proxy like [ORY Oathkeeper](https://www.ory.sh/oathkeeper/docs/) takes care of the session.
 This is typically a bit more complex as infrastructure but
 much more secure. It gives the strongest guarantees around protecting your data, even if your server is compromised. LunaSec can also load faster 
@@ -62,6 +67,8 @@ when session management has already been taken care of.
 
 Enterprises often use a scheme like this.  LunaSec can be adapted to work with different authentication providers.
 
+<!---
 :::tip
 LunaSec recommends all users adopt this scheme when possible.  It is more secure against attacks that compromise your backend.  LunaSec to load and work more quickly and reliably in the frontend because it is not doing any session management redirects.
 :::
+--->
