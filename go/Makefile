@@ -12,6 +12,7 @@ all:
 		mv $${f} ${OUTPUT_DIR} ;\
 	done
 
+
 # -----------  BEGIN RELEASE COMMANDS - These commands are called in CI
 # builds release artifacts, doesnt push them
 cli-release:
@@ -22,13 +23,11 @@ docker-release:
 	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda -t lunasec/tokenizer-backend:${version} -f docker/Dockerfile.tokenizerbackend .
 	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=dev -t lunasec/tokenizer-backend-dev:${version} -f docker/Dockerfile.tokenizerbackend .
 
-
 cli-publish:
 	goreleaser release --rm-dist
 
 docker-publish:
 	docker push lunasec/tokenizer-backend:${version}
-	docker push lunasec/tokenizer-backend-dev:${version}
 
 release: docker-release cli-release
 	echo "completed building releases for ${version}"
