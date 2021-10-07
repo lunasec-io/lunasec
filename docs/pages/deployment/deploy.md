@@ -6,20 +6,19 @@ sidebar_position: 1
 ---
 
 # Deploy with AWS
-
-Currently, LunaSec only supports deploying to AWS. However, LunaSec is designed to easily support other cloud providers.
-If you and your organization are interested in a cloud provider being supported, contact us, and we can help you out.
-
+:::info
+Currently, LunaSec is designed to run on AWS. It may be possible (but non-trivial) to adapt LunaSec to other providers.
+If you and your organization are interested in a cloud provider being natively supported, contact us.  
+:::
 In order to deploy LunaSec into your infrastructure, you are going to need two things:
 
 1. AWS credentials with permissions to deploy resources via Cloud Formation
 2. The LunaSec CLI tool
 
-You can get the latest LunaSec CLI tool by going to the [releases page](https://github.com/lunasec-io/lunasec-monorepo/releases)
-and downloading the CLI tool for your system.
+The CLI can be installed via NPM or binary, as described in the [getting started guide](/pages/getting-started/dedicated-tokenizer/introduction/#cli). 
 
-Let's create a folder where we will manage our LunaSec deployment. It is important to note that this folder will contain
-the deployment state of all LunaSec resources the files should be backed up.
+Now let's create a folder where we will manage our LunaSec deployment. It is important to note that this folder will contain
+the deployment state of all LunaSec resources.  These files should be committed to revision control.
 ```shell
 mkdir lunasec_deployment
 cd lunasec_deployment
@@ -57,5 +56,4 @@ export const lunaSec = new LunaSec({
 });
 ```
 
-Once you have done this and performed the required integration steps for your front end and back end applications, you
-will be ready to start protecting your data with LunaSec!
+Once you have done this and performed the required integration steps for your front end and back end applications, your data will be secured in production.
