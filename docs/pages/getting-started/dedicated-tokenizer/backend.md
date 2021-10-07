@@ -9,6 +9,10 @@ sidebar_position: 2
 First, initialize LunaSec's NodeSDK.  We recommend doing this once and exporting it from a module, since you might want to use the
 SDK from multiple places.
 
+Install the module:
+```shell
+yarn add @lunasec/node-sdk
+```
 ### Configuration
 ```typescript
 import { LunaSec } from '@lunasec/node-sdk'

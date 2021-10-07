@@ -39,6 +39,9 @@ The Secure Frame and Secure Functions are backed by a hardened and highly perfor
 When data is tokenized and sent to Token Storage,
 it is encrypted with a unique storage key based on the token (which your application stores) and other secret keys, ensuring that the token
 can only be used by someone who both has a copy of the token and has been granted permission by your application to retrieve it.
+:::tip
+The dedicated tokenizer is extremely fast (thanks to GoLang), inexpensive to host, and practically infinitely scalable. In a standard deployment, it runs as a containerized Lambda on AWS Fargate.
+:::
 
 ### Token Storage
 AWS S3 was chosen as a storage system for tokens because of its low cost, high performance, built-in encryption, and 
@@ -66,7 +69,7 @@ set up development environments, and deploy infrastructure to production.
 
 ### Deployment
 The CLI uses the AWS CDK to deploy a copy of the LunaSec infrastructure into your AWS account.  This means that deploying LunaSec infrastructure
-alongside your own is surprisingly easy.  If your application is already using the CDK, LunaSec's CDK script can be merged into your own.
+alongside your own is surprisingly easy.  If your application is already using the CDK, LunaSec's CDK script can be merged into your own.  
 
 ### LunaSec Enterprise
 We offer commercial support for companies interested in getting extra features, professional support, and access to other tooling we offer.

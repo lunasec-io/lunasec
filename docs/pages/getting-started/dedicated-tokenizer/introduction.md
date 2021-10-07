@@ -21,9 +21,28 @@ Before we start changing code, let's get LunaSec's services running. The main de
 We have containerized these and written a docker compose to make launching them easy.  Clone the LunaSec repository and run:
 
 ```shell
-npm run start:services
+yarn start:services
 ```
 
-Soon these images will be in dockerhub and cloning the repository will no longer be necessary.
+Soon these images will be in dockerhub and cloning the repository will no longer be necessary, it will all be handled by the CLI.  
+
+### CLI
+The LunaSec CLI makes development, testing, and deployment easier. 
+
+The CLI is available as an NPM module. Add it to your `package.json`:
+
+`yarn add @lunasec/cli --dev`
+
+or
+
+`npm install @lunasec/cli --save-dev`
+
+Make sure the CLI stays at the same version as the `@lunasec` packages we install in this guide. 
+
+:::tip
+You can also install the CLI package globally with `yarn global add @lunasec/cli` to make manual commands easier - it will automatically use the locally installed copy if you are in your app folder. Call `lunasec --version` to try it out.
+:::
+The CLI is also available as a binary from the GitHub releases page if you would like to commit it to your repository directly.  Again, make sure the version stays consistent.
+
 
 Now that the services are running, let's add LunaSec to the code. [Backend setup](./backend.md)
