@@ -12,10 +12,10 @@ all:
 		mv $${f} ${OUTPUT_DIR} ;\
 	done
 
-cli-build-release:
+cli-release:
 	goreleaser build --rm-dist
 
-docker-build-release:
+docker-release:
 	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda -t lunasec/tokenizer-backend:${version} -f docker/Dockerfile.tokenizerbackend .
 	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=dev -t lunasec/tokenizer-backend-dev:${version} -f docker/Dockerfile.tokenizerbackend .
 
@@ -27,7 +27,7 @@ docker-publish:
 	docker push lunasec/tokenizer-backend:${version}
 	docker push lunasec/tokenizer-backend-dev:${version}
 
-release: docker-build-release cli-build-release
+release: docker-release cli-release
 	echo "completed building releases for ${version}"
 
 publish: docker-publish cli-publish
