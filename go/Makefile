@@ -12,9 +12,12 @@ all:
 		mv $${f} ${OUTPUT_DIR} ;\
 	done
 
+# -----------  BEGIN RELEASE COMMANDS - These commands are called in CI
+# builds release artifacts, doesnt push them
 cli-release:
 	goreleaser build --rm-dist
 
+# builds release artifacts, doesnt push them
 docker-release:
 	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda -t lunasec/tokenizer-backend:${version} -f docker/Dockerfile.tokenizerbackend .
 	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=dev -t lunasec/tokenizer-backend-dev:${version} -f docker/Dockerfile.tokenizerbackend .
@@ -37,6 +40,9 @@ release-clean:
 	git tag -d ${version}
 	git push --delete origin ${version}
 
+# ------------ END RELEASE COMMANDS ------------
+
+# This wildcard catches the commands where we want to directly build go binaries. For example `make tokenizerbackend`
 %:
 	CGO_ENABLED=0 GOOS=linux go build -tags ${tag} ${DEBUG_FLAGS} -a -installsuffix cgo -o ${OUTPUT_DIR}/$@_${tag} $(shell pwd)/cmd/$@
 
