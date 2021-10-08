@@ -28,12 +28,12 @@ import (
 )
 
 type cloudwatchGateway struct {
-	logger         *zap.Logger
-	cw             *cloudwatch.CloudWatch
-	namespace      string
-	deploymentUUID string
-	rwMutex        sync.RWMutex
-	metricsCache   map[string]int64
+	logger       *zap.Logger
+	cw           *cloudwatch.CloudWatch
+	namespace    string
+	stackID      string
+	rwMutex      sync.RWMutex
+	metricsCache map[string]int64
 }
 
 // AwsCloudwatchGateway ...
@@ -65,11 +65,11 @@ func NewAwsCloudwatchGateway(logger *zap.Logger, provider config.Provider, sess 
 	cw := cloudwatch.New(sess)
 
 	return &cloudwatchGateway{
-		logger:         logger,
-		cw:             cw,
-		namespace:      gatewayConfig.CloudwatchNamespace,
-		deploymentUUID: appConfig.DeploymentUUID,
-		metricsCache:   map[string]int64{},
+		logger:       logger,
+		cw:           cw,
+		namespace:    gatewayConfig.CloudwatchNamespace,
+		stackID:      appConfig.StackID,
+		metricsCache: map[string]int64{},
 	}
 }
 
@@ -135,8 +135,8 @@ func (c *cloudwatchGateway) PushMetrics() {
 			MetricName: aws.String(name),
 			Dimensions: []*cloudwatch.Dimension{
 				{
-					Name:  aws.String("deploymentUUID"),
-					Value: aws.String(c.deploymentUUID),
+					Name:  aws.String("stackID"),
+					Value: aws.String(c.stackID),
 				},
 				{
 					Name:  aws.String("version"),

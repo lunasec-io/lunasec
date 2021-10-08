@@ -65,7 +65,7 @@ func Handler() {
 
 	reportedMetrics := types.ReportedMetrics{
 		Version:          constants.Version,
-		DeploymentUUID:   appConfig.DeploymentUUID,
+		StackID:          appConfig.StackID,
 		CollectedMetrics: collectedMetrics,
 	}
 

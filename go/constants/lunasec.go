@@ -30,4 +30,5 @@ type LunaSecServices string
 const (
 	TokenizerBackendServiceName    LunaSecServices = "tokenizer-backend"
 	SecureFrameFrontEndServiceName LunaSecServices = "secure-frame-frontend"
+	AnalyticsCollectorServiceName  LunaSecServices = "analytics-collector"
 )

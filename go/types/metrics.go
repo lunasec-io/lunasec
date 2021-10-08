@@ -20,6 +20,6 @@ type CollectedMetrics map[constants.ApplicationMetric]int64
 
 type ReportedMetrics struct {
 	Version          string           `json:"version"`
-	DeploymentUUID   string           `json:"deployment_uuid"`
+	StackID          string           `json:"stack_id"`
 	CollectedMetrics CollectedMetrics `json:"collected_metrics"`
 }

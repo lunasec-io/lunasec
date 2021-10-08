@@ -103,7 +103,7 @@ func (d *dockerContainerModifier) SaveImageToFile(img v1.Image, newTag, filename
 
 func getDeploymentIDFromConfig(configFile *v1.ConfigFile) (deploymentID string) {
 	for _, envVar := range configFile.Config.Env {
-		if strings.Index(envVar, "REFINERY_DEPLOYMENT_ID") == 0 {
+		if strings.Index(envVar, "LUNASEC_DEPLOYMENT_ID") == 0 {
 			parts := strings.Split(envVar, "=")
 			deploymentID = parts[len(parts)-1]
 		}

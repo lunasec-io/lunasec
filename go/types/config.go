@@ -22,8 +22,8 @@ type CorsConfig struct {
 }
 
 type AppConfig struct {
-	DeploymentUUID string     `yaml:"deployment_uuid"`
-	Cors           CorsConfig `yaml:"cors"`
+	StackID string     `yaml:"stack_id"`
+	Cors    CorsConfig `yaml:"cors"`
 }
 
 type AnalyticsCollectorConfig struct {

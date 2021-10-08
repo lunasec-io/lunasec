@@ -1,5 +1,5 @@
 app:
-  deployment_uuid: ${DEPLOYMENT_UUID:"deadbeef-cafe-babe-face-8e6f524b4dce"}
+  stack_id: ${STACK_ID:"no-stack-id"}
 analyticscollector:
   analytics_server: ${ANALYTICS_SERVER}
   metrics:
