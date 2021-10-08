@@ -42,12 +42,12 @@ export default function Home() {
   // const {siteConfig} = useDocusaurusContext();
   return (
         <Layout
-          title={`LunaSec Docs`}
-          description="Data Security from the start.">
-          <HomepageHeader />
-          <main>
-            <HomepageFeatures />
-          </main>
+            title={`LunaSec Docs`}
+            description="Data Security from the start.">
+            <HomepageHeader />
+            <main>
+                <HomepageFeatures />
+            </main>
         </Layout>
   );
 }

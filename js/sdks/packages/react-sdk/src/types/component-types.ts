@@ -17,7 +17,7 @@
 import { LunaSecError } from '../../../isomorphic-common';
 
 /** Gets called whenever the component experiences an error.  Will be called with a LunaSecError */
-type ErrorHandlerCallback = (errorObject: LunaSecError) => void;
+export type ErrorHandlerCallback = (errorObject: LunaSecError) => void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomMetadata = Record<string, any>;
 
