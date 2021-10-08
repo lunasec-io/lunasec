@@ -22,7 +22,7 @@ This repo contains all public LunaSec code: the LunaSec SDKs, backend services, 
 For information about LunaSec including tutorials, examples, and technical information, please visit
 our [documentation](https://www.lunasec.io/docs/).  For marketing information, sales, or to get in touch, visit our website: [https://www.lunasec.io/](https://www.lunasec.io/).
 
-The rest of this ReadMe gives instructions on how to change and contribute to LunaSec itself.  If you simply want to use LunaSec, please see the documentation.
+The rest of this ReadMe to work on LunaSec itself.  If you simply want to use LunaSec, please see the documentation.
 # MonoRepo Folder Structure
 We have split code first by language, and then by purpose.
 
