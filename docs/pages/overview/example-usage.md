@@ -6,15 +6,17 @@ sidebar_position: 3
 ---
 
 # Example Usage
-These snippets give you an example of how the library works.  You'll only need two libraries to use LunaSec, one for the 
+You'll only need two libraries to use LunaSec, one for the 
 client and one for the server.  
+
+:::info Guide
+These snippets give you an example of how the library works.  For a complete and up-to-date guide, see the [getting started tutorial](/pages/getting-started/dedicated-tokenizer/introduction/).
+:::
 
 ## `@lunasec/react-sdk`
 The frontend component of the LunaSec Stack.  Turns your form inputs and other elements into [Secure Frames](./features.md#secure-frame). Support for other frameworks is in development.
 
 ### Example usage
-These snippets give you an example of how the library works.  For a full setup tutorial, see SETUP TUTORIAL
-
 #### ClientSide React Form
 Let's look at a simple form that takes in a social security number.
 ```jsx title="normal-form.tsx"
@@ -31,7 +33,7 @@ export function renderInsecureComponent(props) {
 }
 ```
 
-We can add tokenization by simply replacing the components used in the form with the LunaSec replacements.
+We can secure the data by replacing components used in the form with LunaSec ones.
 ```tsx title="secure-form.tsx"
 import React from 'react';
 import {SecureForm, SecureInput} from '@lunasec/react-sdk';
@@ -41,7 +43,7 @@ import {SecureForm, SecureInput} from '@lunasec/react-sdk';
 export function renderSecureComponent(props) {
   return (
     <SecureForm onSubmit={props.onSubmit}>
-      <SecureInput type="text" token={props.value} onChange={props.onChange} name="ssn" />
+      <SecureInput type="text" token={props.value} onChange={props.onChange} onError={props.onError} name="ssn" />
       <input type="submit" />
     </SecureForm>
   );

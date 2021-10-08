@@ -9,10 +9,10 @@ sidebar_position: 1
 
 There are two main ways to use LunaSec tokenization in your app:
 
-* **[Dedicated Tokenizer](./dedicated-tokenizer/introduction.md)** - Full security with a deployed service
+* **[Dedicated Tokenizer](./dedicated-tokenizer/introduction.md)** - Full security with a deployed backend service
 * **[Simple Tokenizer](./simple-tokenizer/guide.md)** - Limited security with an embedded Typescript library
 
-Most of LunaSec's modules(like the React SDK) are designed to work with the Dedicated Tokenizer server. It provides the strongest security guarantees and the most features.  Using it is recommended.
+Most of LunaSec's modules(like the React SDK) are designed to work with the Dedicated Tokenizer Backend. It provides the strongest security guarantees and the most features.  Using it is recommended.
 
 ### Who should use the simple tokenizer?
 The full tokenizer requires deployed infrastructure, and 

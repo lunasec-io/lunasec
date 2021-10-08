@@ -16,7 +16,7 @@
     "compile:release": "yarn run build && yarn run compile:release:secure-frame-front-end"
   },
   "author": "",
-  "license": "PROPRIETARY",
+  "license": "Apache-2.0",
   "devDependencies": {
     "typescript": "^4.4.2"
   }
