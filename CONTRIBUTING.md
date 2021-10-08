@@ -44,8 +44,7 @@ We use JetBrains IntelliJ for our development and our editor configurations are 
 repo in your editor (they're stored in the `.idea` folder).
 
 For TypeScript, we use ESLint, and it should automatically format your code so that you don't have to think about it
-while developing. For Golang, we do not currently have a linter configured, and we ask that you attempt to mimic our
-code style as closely as possible.
+while developing. The GoLang code can be linted with `golangci-lint run`. 
 
 ## Code review workflow
 
