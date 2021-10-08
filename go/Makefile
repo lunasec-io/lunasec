@@ -29,6 +29,7 @@ cli-publish:
 
 docker-publish:
 	docker push lunasec/tokenizer-backend:${version}
+	docker push lunasec/analytics-collector:${version}
 
 release: docker-release cli-release
 	echo "completed building releases for ${version}"
