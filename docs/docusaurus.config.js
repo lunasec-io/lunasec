@@ -30,7 +30,7 @@ module.exports = {
   favicon: 'https://uploads-ssl.webflow.com/60e63e8b40f27c7913def7a1/6112d961cd68c3de06afe04d_WebFlow%20Logo%20-%2032px.png',
   organizationName: 'lunasec-io', // Usually your GitHub org/user name.
   projectName: 'lunasec-io.github.io', // Usually your repo name.
-  scripts: ['https://cdn.jsdelivr.net/npm/redoc@v2.0.0-rc.54/bundles/redoc.standalone.js'],
+  // scripts: ['https://cdn.jsdelivr.net/npm/redoc@v2.0.0-rc.54/bundles/redoc.standalone.js'],
   plugins: [
     function webpackDefine(context, options) {
       return {
