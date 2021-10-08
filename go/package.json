@@ -11,5 +11,5 @@
     "version": "node -p 'require(\"./package.json\").version'"
   },
   "author": "lunasec",
-  "license": "MIT"
+  "license": "Apache-2.0"
 }
