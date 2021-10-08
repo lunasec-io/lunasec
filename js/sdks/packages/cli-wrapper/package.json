@@ -1,0 +1,27 @@
+{
+  "name": "@lunasec/cli",
+  "version": "0.0.1-alpha.11",
+  "description": "a wrapper around the LunaSec CLI enabling it to be used as an NPM package",
+  "main": "src/index.js",
+  "license": "MIT",
+  "keywords": [
+    "lunasec",
+    "lunasec-cli",
+    "tokenization",
+    "tokenizer"
+  ],
+  "scripts": {
+    "install": "echo 'TODO!!!! REPLACE THIS WITH INVOKING THE DOWNLOAD-BIN.JS SCRIPT'"
+  },
+  "dependencies": {
+    "decompress": "^4.2.1",
+    "import-local": "^3.0.3",
+    "progress": "^2.0.3"
+  },
+  "peerDependencies": {
+    "aws-cdk": "^1.126.0"
+  },
+  "bin": {
+    "lunasec": "./src/lunasec.js"
+  }
+}
