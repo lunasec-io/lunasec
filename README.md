@@ -68,7 +68,7 @@ You can build each entrypoint by using the Makefile like: `make tokenizerbackend
 inside of the `build` folder like: `./build/tokenizerbackend_dev`.
 
 # Contributing
-Please review our [contributor document](https://github.com/lunasec-io/lunasec-monorepo/blob/master/CONTRIBUTING.md)
+Please review our [contributor instructions](https://github.com/lunasec-io/lunasec-monorepo/blob/master/CONTRIBUTING.md)
 before forking and submitting a pull request.
 
 ## How to launch LunaSec for development
