@@ -2,6 +2,7 @@
   "name": "docs",
   "version": "0.0.1-alpha.13",
   "private": true,
+  "license": "CC-BY-SA-4.0",
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "yarn run openapi:generate && TYPEDOC_WATCH=true docusaurus start --port 4000",
