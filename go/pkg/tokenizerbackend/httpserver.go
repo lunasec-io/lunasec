@@ -32,23 +32,19 @@ import (
 	"github.com/rs/cors"
 )
 
-type CorsConfig struct {
-	AllowedOrigins []string `yaml:"allowed_origins"`
-	AllowedHeaders []string `yaml:"allowed_headers"`
-}
-
-type AppConfig struct {
-	Cors CorsConfig `yaml:"cors"`
-}
-
 func newServer(logger *zap.Logger, provider config.Provider, gateways gateway.Gateways) http.Handler {
 	var (
-		appConfig AppConfig
+		appConfig types.AppConfig
 	)
 
 	sm := http.NewServeMux()
 
 	cspMiddleware := controller.WithCSP(provider)
+
+	middleware := []types.Middleware{
+		controller.WithJSONContentType,
+		cspMiddleware,
+	}
 
 	err := provider.Get("app").Populate(&appConfig)
 	if err != nil {
@@ -57,10 +53,6 @@ func newServer(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 	}
 
 	authProviderJwtVerifier := service.NewJwtVerifier(constants.AuthJwtVerifier, logger, provider)
-
-	middleware := []types.Middleware{
-		cspMiddleware,
-	}
 
 	secureFrameRoutes := getSecureFrameRoutes(logger, provider)
 

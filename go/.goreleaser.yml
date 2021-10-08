@@ -9,6 +9,8 @@ builds:
     flags:
       - -tags=cli
       - -v
+    ldflags:
+      - -s -w -X constants.Version={{.Version}} -X constants.Commit={{.Commit}} -X constants.Date={{.Date}}
     env:
       - CGO_ENABLED=0
     goos:

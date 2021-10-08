@@ -110,6 +110,12 @@ func (s *grantService) getGrantDuration(customDurationString string) (int64, err
 }
 
 func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType, customGrantDuration string) (err error) {
+	defer func() {
+		if err != nil {
+			s.cw.Metric(constants.CreateGrantFailureMetric, 1)
+		}
+	}()
+
 	grantExpiry, err := s.getGrantDuration(customGrantDuration)
 	if err != nil {
 		return err
@@ -117,6 +123,7 @@ func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID stri
 	tokenGrant := TokenGrant{
 		GrantExpiry: grantExpiry,
 	}
+
 	serializedGrant, err := json.Marshal(tokenGrant)
 	if err != nil {
 		return
@@ -132,6 +139,7 @@ func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID stri
 		zap.String("grantKey", grantKey),
 	)
 
+	s.cw.Metric(constants.CreateGrantSuccessMetric, 1)
 	return s.kv.Set(gateway.GrantStore, grantKey, string(serializedGrant))
 }
 

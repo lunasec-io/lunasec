@@ -1,7 +1,8 @@
 CMD_DIR = ./cmd
 OUTPUT_DIR ?= "build"
+VERSION ?= v0.0.0
 tag ?= dev
-DEBUG_FLAGS ?=
+build_flags ?=
 
 all:
 	mkdir -p build
@@ -15,8 +16,13 @@ all:
 cli-release:
 	goreleaser build --rm-dist
 
-docker-release:
-	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda -t lunasec/tokenizer-backend:${version} -f docker/Dockerfile.tokenizerbackend .
+docker-release-tokenizerbackend:
+	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda --build-arg VERSION=${version} -t lunasec/tokenizer-backend:${version} -f docker/Dockerfile.tokenizerbackend .
+
+docker-release-analyticscollector:
+	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda --build-arg VERSION=${version} -t lunasec/analytics-collector:${version} -f docker/Dockerfile.analyticscollector .
+
+docker-release: docker-release-tokenizerbackend docker-release-analyticscollector
 
 cli-publish:
 	goreleaser release --rm-dist
@@ -35,7 +41,7 @@ release-clean:
 	git push --delete origin ${version}
 
 %:
-	CGO_ENABLED=0 GOOS=linux go build -tags ${tag} ${DEBUG_FLAGS} -a -installsuffix cgo -o ${OUTPUT_DIR}/$@_${tag} $(shell pwd)/cmd/$@
+	CGO_ENABLED=0 GOOS=linux go build -tags ${tag} -ldflags="-X \"github.com/lunasec-io/lunasec-monorepo/constants.Version=${VERSION}\"" ${build_flags} -a -installsuffix cgo -o ${OUTPUT_DIR}/$@_${tag} $(shell pwd)/cmd/$@
 
 clean:
 	rm -rf build

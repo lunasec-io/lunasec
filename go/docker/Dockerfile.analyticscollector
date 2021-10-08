@@ -16,7 +16,7 @@ ARG VERSION
 RUN --mount=target=. \
     --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    OUTPUT_DIR=/out make tokenizerbackend tag=$BUILD_TAG version=$VERSION
+    OUTPUT_DIR=/out make analyticscollector tag=$BUILD_TAG version=$VERSION
 
 FROM alpine
 
@@ -24,12 +24,12 @@ RUN apk add curl
 
 ARG BUILD_TAG
 
-COPY config/tokenizerbackend/config.yaml /config/tokenizerbackend/config.yaml
-COPY views/tokenizerbackend/ /views/tokenizerbackend/
+COPY config/analyticscollector/config.yaml /config/analyticscollector/config.yaml
+COPY views/analyticscollector/ /views/analyticscollector/
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /out/tokenizerbackend_$BUILD_TAG /tokenizerbackend
+COPY --from=builder /out/analyticscollector_$BUILD_TAG /analyticscollector
 COPY --from=builder /tmp /tmp
 
 WORKDIR /
-ENTRYPOINT ["/tokenizerbackend"]
+ENTRYPOINT ["/analyticscollector"]

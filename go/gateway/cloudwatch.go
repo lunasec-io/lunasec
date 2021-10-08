@@ -18,6 +18,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
@@ -26,23 +28,26 @@ import (
 )
 
 type cloudwatchGateway struct {
-	logger       *zap.Logger
-	cw           *cloudwatch.CloudWatch
-	namespace    string
-	rwMutex      sync.RWMutex
-	metricsCache map[string]int64
+	logger         *zap.Logger
+	cw             *cloudwatch.CloudWatch
+	namespace      string
+	deploymentUUID string
+	rwMutex        sync.RWMutex
+	metricsCache   map[string]int64
 }
 
 // AwsCloudwatchGateway ...
 type AwsCloudwatchGateway interface {
-	Metric(name string, value int)
+	Metric(name constants.ApplicationMetric, value int)
 	PushMetrics()
+	GetMetricSumFromPastDay(name constants.ApplicationMetric) (sum int64, err error)
 }
 
 // NewAwsCloudwatchGateway...
 func NewAwsCloudwatchGateway(logger *zap.Logger, provider config.Provider, sess *session.Session) AwsCloudwatchGateway {
 	var (
 		gatewayConfig AwsGatewayConfig
+		appConfig     types.AppConfig
 	)
 
 	err := provider.Get("aws_gateway").Populate(&gatewayConfig)
@@ -51,20 +56,28 @@ func NewAwsCloudwatchGateway(logger *zap.Logger, provider config.Provider, sess 
 		panic(err)
 	}
 
+	err = provider.Get("app").Populate(&appConfig)
+	if err != nil {
+		log.Println(err)
+		panic(err)
+	}
+
 	cw := cloudwatch.New(sess)
 
 	return &cloudwatchGateway{
-		logger:    logger,
-		cw:        cw,
-		namespace: gatewayConfig.CloudwatchNamespace,
+		logger:         logger,
+		cw:             cw,
+		namespace:      gatewayConfig.CloudwatchNamespace,
+		deploymentUUID: appConfig.DeploymentUUID,
+		metricsCache:   map[string]int64{},
 	}
 }
 
-func (c *cloudwatchGateway) Metric(name string, value int) {
+func (c *cloudwatchGateway) Metric(name constants.ApplicationMetric, value int) {
 	c.rwMutex.Lock()
 	defer c.rwMutex.Unlock()
 
-	c.metricsCache[name] += int64(value)
+	c.metricsCache[string(name)] += int64(value)
 
 	return
 }
@@ -77,6 +90,10 @@ func (c *cloudwatchGateway) cloneMetricsCache() map[string]int64 {
 	for k, v := range c.metricsCache {
 		metricsCache[k] = v
 	}
+
+	// clear metrics cache for next set of metrics
+	c.metricsCache = map[string]int64{}
+
 	return metricsCache
 }
 
@@ -101,13 +118,32 @@ func (c *cloudwatchGateway) PushMetrics() {
 		metricsData []*cloudwatch.MetricDatum
 	)
 
+	if len(c.metricsCache) == 0 {
+		return
+	}
+
+	c.logger.Debug(
+		"pushing metric data",
+		zap.Any("metrics", c.metricsCache),
+	)
+
 	// clone map to avoid blocking
 	metricsCache := c.cloneMetricsCache()
 
 	for name, value := range metricsCache {
 		metric := &cloudwatch.MetricDatum{
 			MetricName: aws.String(name),
-			Value:      aws.Float64(float64(value)),
+			Dimensions: []*cloudwatch.Dimension{
+				{
+					Name:  aws.String("deploymentUUID"),
+					Value: aws.String(c.deploymentUUID),
+				},
+				{
+					Name:  aws.String("version"),
+					Value: aws.String(constants.Version),
+				},
+			},
+			Value: aws.Float64(float64(value)),
 		}
 		metricsData = append(metricsData, metric)
 
@@ -116,23 +152,39 @@ func (c *cloudwatchGateway) PushMetrics() {
 			metricsData = []*cloudwatch.MetricDatum{}
 		}
 	}
+
+	// push any remaining metrics
+	c.pushMetricsData(metricsData)
 }
 
-func (c *cloudwatchGateway) GetMetrics() {
-	lastDay := -1 * time.Hour * 24
-	start := time.Now().Add(lastDay)
-	end := time.Now()
-	input := cloudwatch.ListMetricsInput{
+func (c *cloudwatchGateway) GetMetricSumFromPastDay(name constants.ApplicationMetric) (sum int64, err error) {
+	pastDay := -1 * time.Hour * 24
+	startTime := time.Now().Add(pastDay)
+	endTime := time.Now()
+
+	// get metrics in 12 hour periods
+	period := int64(60 * 60 * 12)
+
+	stats := []string{
+		"Sum",
 	}
 
-	pageNum := 0
-	maxPages := 10
-	c.cw.ListMetricsPages(
-		&input,
-		func(page *cloudwatch.GetMetricDataOutput, lastPage bool) bool {
-			pageNum++
-			page.MetricDataResults[0].
-			return pageNum <= maxPages
-		},
-	)
+	input := cloudwatch.GetMetricStatisticsInput{
+		Namespace:  aws.String(c.namespace),
+		MetricName: aws.String(string(name)),
+		StartTime:  &startTime,
+		EndTime:    &endTime,
+		Period:     aws.Int64(period),
+		Statistics: aws.StringSlice(stats),
+	}
+
+	output, err := c.cw.GetMetricStatistics(&input)
+	if err != nil {
+		return
+	}
+
+	for _, dataPoint := range output.Datapoints {
+		sum += int64(*dataPoint.Sum)
+	}
+	return
 }

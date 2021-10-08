@@ -1,0 +1,15 @@
+app:
+  deployment_uuid: ${DEPLOYMENT_UUID:"deadbeef-cafe-babe-face-8e6f524b4dce"}
+analyticscollector:
+  analytics_server: ${ANALYTICS_SERVER}
+  metrics:
+    - tokenizeSuccess
+    - tokenizeFailure
+    - detokenizeSuccess
+    - detokenizeFailure
+    - createGrantSuccess
+    - createGrantFailure
+aws_gateway:
+  region: us-west-2
+  cloudwatch_namespace: ${CLOUDWATCH_NAMESPACE:"lunasec"}
+  localstack_url: ${LOCALSTACK_URL:""}
