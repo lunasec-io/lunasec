@@ -1,5 +1,5 @@
 {
-  "name": "lunasec-cli",
+  "name": "@lunasec/cli",
   "version": "0.0.1-alpha.11",
   "description": "a wrapper around the LunaSec CLI enabling it to be used as an NPM package",
   "main": "src/index.js",
