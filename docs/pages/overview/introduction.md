@@ -34,7 +34,9 @@ export function renderSecureComponent(props) {
   );
 }
 ```
-You will need to add a 
+This seamlessly creates an iFrame in your page, isolating the sensitive data completely.  
+
+You will need to add a
 LunaSec library to your frontend(as shown here), another to your backend, and to host a copy of the Tokenizer Backend 
 server. For instructions, follow the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/introduction).
 
