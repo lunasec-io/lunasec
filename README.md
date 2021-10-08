@@ -15,14 +15,15 @@
 # LunaSec
 LunaSec makes it easy and secure for applications to process and store sensitive data through Tokenization.
 
-## What's in this Repo?
-This repo contains all public LunaSec code: the LunaSec SDKs, backend services, demo applications, documentation, and supporting scripts.
-
 ## [Documentation](https://www.lunasec.io/docs/)
 For information about LunaSec including tutorials, examples, and technical information, please visit
 our [documentation](https://www.lunasec.io/docs/).  For marketing information, sales, or to get in touch, visit our website: [https://www.lunasec.io/](https://www.lunasec.io/).
 
 The rest of this ReadMe explains how to work on LunaSec itself.  If you simply want to use LunaSec, please see the documentation.
+
+## What's in this Repo?
+This repo contains all public LunaSec code: the LunaSec SDKs, backend services, demo applications, documentation, and supporting scripts.
+
 # MonoRepo Folder Structure
 We have split code first by language, and then by purpose.
 
