@@ -71,7 +71,7 @@ async function downloadAndDecompressCli(){
 
 if (process.env.IS_LUNASEC_CI === 'true') {
   console.log('skipping CLI bin download, we are in CI')
-  return exit(0)
+  return process.exit(0)
 }
 downloadAndDecompressCli().catch((e) => {
   console.error('Error Installing LunaSec CLI: ', e);
