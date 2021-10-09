@@ -2,7 +2,6 @@
   "name": "lunasec",
   "version": "1.0.0",
   "description": "This monorepo holds the LunaSec SDKs, servers, and demo application.",
-  "main": "index.js",
   "private": true,
   "scripts": {
     "start:services": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up tokenizerbackend",

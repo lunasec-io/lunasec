@@ -84,15 +84,6 @@
     "typedoc": "^0.20.36",
     "typescript": "^4.2.2"
   },
-  "files": [
-    "build/main",
-    "build/module",
-    "!**/*.spec.*",
-    "!**/*.json",
-    "CHANGELOG.md",
-    "LICENSE",
-    "README.md"
-  ],
   "ava": {
     "failFast": true,
     "timeout": "60s",
