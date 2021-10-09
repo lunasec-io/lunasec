@@ -17,7 +17,7 @@ package service
 import (
 	"encoding/hex"
 	"errors"
-	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 
@@ -76,7 +76,7 @@ func NewTokenizerService(
 func (s *tokenizerService) TokenizerSet() (token types.Token, url string, key map[string]string, err error) {
 	defer func() {
 		if err != nil {
-			s.cw.Metric(constants.TokenizeFailureMetric, 1)
+			s.cw.Metric(metrics.TokenizeFailureMetric, 1)
 		}
 	}()
 
@@ -104,7 +104,7 @@ func (s *tokenizerService) TokenizerSet() (token types.Token, url string, key ma
 	if err != nil {
 		return token, url, key, err
 	}
-	s.cw.Metric(constants.TokenizeSuccessMetric, 1)
+	s.cw.Metric(metrics.TokenizeSuccessMetric, 1)
 	return token, url, key, err
 }
 
@@ -112,7 +112,7 @@ func (s *tokenizerService) TokenizerSet() (token types.Token, url string, key ma
 func (s *tokenizerService) TokenizerGet(token types.Token) (url string, key map[string]string, err error) {
 	defer func() {
 		if err != nil {
-			s.cw.Metric(constants.DetokenizeFailureMetric, 1)
+			s.cw.Metric(metrics.DetokenizeFailureMetric, 1)
 		}
 	}()
 
@@ -146,7 +146,7 @@ func (s *tokenizerService) TokenizerGet(token types.Token) (url string, key map[
 	if err != nil {
 		return url, key, err
 	}
-	s.cw.Metric(constants.DetokenizeSuccessMetric, 1)
+	s.cw.Metric(metrics.DetokenizeSuccessMetric, 1)
 	return url, key, err
 }
 

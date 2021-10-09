@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/gateway"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"github.com/lunasec-io/lunasec-monorepo/util"
@@ -112,7 +113,7 @@ func (s *grantService) getGrantDuration(customDurationString string) (int64, err
 func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType, customGrantDuration string) (err error) {
 	defer func() {
 		if err != nil {
-			s.cw.Metric(constants.CreateGrantFailureMetric, 1)
+			s.cw.Metric(metrics.CreateGrantFailureMetric, 1)
 		}
 	}()
 
@@ -139,7 +140,7 @@ func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID stri
 		zap.String("grantKey", grantKey),
 	)
 
-	s.cw.Metric(constants.CreateGrantSuccessMetric, 1)
+	s.cw.Metric(metrics.CreateGrantSuccessMetric, 1)
 	return s.kv.Set(gateway.GrantStore, grantKey, string(serializedGrant))
 }
 

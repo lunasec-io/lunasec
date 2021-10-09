@@ -24,6 +24,7 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/awsecr"
 	"github.com/aws/aws-cdk-go/awscdk/awsevents"
 	"github.com/aws/aws-cdk-go/awscdk/awseventstargets"
+	"github.com/aws/aws-cdk-go/awscdk/awsiam"
 	"github.com/aws/aws-cdk-go/awscdk/awslambda"
 	"github.com/aws/aws-cdk-go/awscdk/awss3"
 	"github.com/aws/aws-cdk-go/awscdk/awss3deployment"
@@ -386,6 +387,17 @@ func (l *builder) createAnalyticsCollectorCron(stack awscdk.Stack, serviceImageL
 	containerTag := serviceImageLookup[constants.AnalyticsCollectorServiceName]
 
 	analyticsCollectorLambda := l.getAnalyticsCollectorLambda(stack, containerTag, &lambdaEnv)
+
+	metricStatisticsStatement := awsiam.NewPolicyStatement(&awsiam.PolicyStatementProps{
+		Resources: &[]*string{
+			jsii.String("*"),
+		},
+		Actions: &[]*string{
+			jsii.String("cloudwatch:GetMetricStatistics"),
+		},
+	})
+
+	analyticsCollectorLambda.AddToRolePolicy(metricStatisticsStatement)
 
 	everyDayRule := awsevents.NewRule(stack, jsii.String("analytics-collector-cron"), &awsevents.RuleProps{
 		Schedule: awsevents.Schedule_Cron(&awsevents.CronOptions{

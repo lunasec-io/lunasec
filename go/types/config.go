@@ -14,7 +14,9 @@
 //
 package types
 
-import "github.com/lunasec-io/lunasec-monorepo/constants"
+import (
+	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
+)
 
 type CorsConfig struct {
 	AllowedOrigins []string `yaml:"allowed_origins"`
@@ -27,6 +29,6 @@ type AppConfig struct {
 }
 
 type AnalyticsCollectorConfig struct {
-	AnalyticsServer string                        `yaml:"analytics_server"`
-	Metrics         []constants.ApplicationMetric `yaml:"metrics"`
+	AnalyticsServer string                      `yaml:"analytics_server"`
+	Metrics         []metrics.ApplicationMetric `yaml:"metrics"`
 }

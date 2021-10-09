@@ -14,9 +14,11 @@
 //
 package types
 
-import "github.com/lunasec-io/lunasec-monorepo/constants"
+import (
+	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
+)
 
-type CollectedMetrics map[constants.ApplicationMetric]int64
+type CollectedMetrics map[metrics.ApplicationMetric]int64
 
 type ReportedMetrics struct {
 	Version          string           `json:"version"`

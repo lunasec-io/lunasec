@@ -25,7 +25,6 @@ RUN apk add curl
 ARG BUILD_TAG
 
 COPY config/analyticscollector/config.yaml /config/analyticscollector/config.yaml
-COPY views/analyticscollector/ /views/analyticscollector/
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /out/analyticscollector_$BUILD_TAG /analyticscollector

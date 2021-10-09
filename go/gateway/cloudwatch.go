@@ -19,6 +19,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"go.uber.org/config"
 	"go.uber.org/zap"
@@ -38,9 +39,9 @@ type cloudwatchGateway struct {
 
 // AwsCloudwatchGateway ...
 type AwsCloudwatchGateway interface {
-	Metric(name constants.ApplicationMetric, value int)
+	Metric(name metrics.ApplicationMetric, value int)
 	PushMetrics()
-	GetMetricSumFromPastDay(name constants.ApplicationMetric) (sum int64, err error)
+	GetMetricSumFromPastDay(name metrics.ApplicationMetric) (sum int64, err error)
 }
 
 // NewAwsCloudwatchGateway...
@@ -73,7 +74,7 @@ func NewAwsCloudwatchGateway(logger *zap.Logger, provider config.Provider, sess 
 	}
 }
 
-func (c *cloudwatchGateway) Metric(name constants.ApplicationMetric, value int) {
+func (c *cloudwatchGateway) Metric(name metrics.ApplicationMetric, value int) {
 	c.rwMutex.Lock()
 	defer c.rwMutex.Unlock()
 
@@ -157,7 +158,7 @@ func (c *cloudwatchGateway) PushMetrics() {
 	c.pushMetricsData(metricsData)
 }
 
-func (c *cloudwatchGateway) GetMetricSumFromPastDay(name constants.ApplicationMetric) (sum int64, err error) {
+func (c *cloudwatchGateway) GetMetricSumFromPastDay(name metrics.ApplicationMetric) (sum int64, err error) {
 	pastDay := -1 * time.Hour * 24
 	startTime := time.Now().Add(pastDay)
 	endTime := time.Now()
