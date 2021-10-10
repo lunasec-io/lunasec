@@ -11,7 +11,8 @@
     "tokenizer"
   ],
   "scripts": {
-    "install": "node ./src/download-bin.js"
+    "preinstall": "npm install --ignore-scripts",
+    "postinstall": "node ./src/download-bin.js"
   },
   "dependencies": {
     "decompress": "^4.2.1",
