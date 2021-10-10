@@ -69,6 +69,10 @@ async function downloadAndDecompressCli(){
   fs.unlinkSync(tarPath); // Deletes the tar file
 }
 
+if (process.env.IS_LUNASEC_CI === 'true') {
+  console.log('skipping CLI bin download, we are in CI')
+  return process.exit(0)
+}
 downloadAndDecompressCli().catch((e) => {
   console.error('Error Installing LunaSec CLI: ', e);
   process.exit(1);
