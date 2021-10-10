@@ -20,6 +20,10 @@ on:
       release_type:
         description: "Type of release to perform (ie. prerelease, patch, minor, major, etc.)"
         required: true
+      debug_enabled:
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -31,11 +35,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Current Monorepo Version
+        run: cat lerna.json | jq -r .version
+
       - name: setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
-          registry-url: 'https://npm.pkg.github.com'
+          node-version: 14
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
 
       - name: install lerna
         run: npm i -g lerna
@@ -50,21 +61,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Authenticate with Registry
-        run: |
-          yarn logout
-          echo "@lunasec:registry=http://registry.npmjs.org/" > .npmrc
-          echo "registry=http://registry.npmjs.org/" >> .npmrc
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
-          npm whoami
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.17
-
       - name: Install GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
@@ -76,24 +72,47 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: create release version
-        run: npm run version:release
+      - name: Authenticate with Registry
+        run: |
+          yarn logout
+          cp .github/npmrc.txt .npmrc
+          cat .npmrc
+          npm whoami
         env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled != 'false' }}
+        timeout-minutes: 15
+
+      # Bump package versions
+      - name: create release version
+        run: yarn run version:release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           RELEASE_TYPE: ${{ github.event.inputs.release_type }}
 
+      # Build all packages
       - name: compile release versions
-        run: npm run compile:release
+        run: yarn run compile:release
         env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # TODO (cthompson) verify that there are no files that have been modified
 
+      # Push all artifacts
       - name: publish release versions
-        run: npm run publish:release
+        run: yarn run publish:release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Push the tagged release version
       - name: push git version tag
         run: git push
         env:

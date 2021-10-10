@@ -1,6 +1,6 @@
 {
   "name": "@lunasec/isomorphic-common",
-  "version": "0.0.1-alpha.11",
+  "version": "0.0.1-alpha.15",
   "description": "common lunasec things needed on both the client and server",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -11,7 +11,7 @@
   },
   "types": "build/main/index.d.ts",
   "author": "",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "typescript": "^4.2.0"
   }

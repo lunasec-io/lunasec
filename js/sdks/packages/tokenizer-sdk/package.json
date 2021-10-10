@@ -1,7 +1,7 @@
 {
   "name": "@lunasec/tokenizer-sdk",
   "private": false,
-  "version": "0.0.1-alpha.11",
+  "version": "0.0.1-alpha.15",
   "description": "lunasec Tokenizer client for Node.js",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -14,7 +14,7 @@
   },
   "types": "build/main/index.d.ts",
   "author": "",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.3.9",
     "@types/express": "^4.17.11",
@@ -28,8 +28,8 @@
     "typescript": "^4.2.0"
   },
   "dependencies": {
-    "@lunasec/browser-common": "^0.0.1-alpha.11",
-    "@lunasec/isomorphic-common": "^0.0.1-alpha.11",
+    "@lunasec/browser-common": "^0.0.1-alpha.15",
+    "@lunasec/isomorphic-common": "^0.0.1-alpha.15",
     "axios": "^0.21.1",
     "react-dom": "^17.0.2"
   },

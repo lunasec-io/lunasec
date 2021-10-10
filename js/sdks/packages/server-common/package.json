@@ -1,7 +1,7 @@
 {
   "name": "@lunasec/server-common",
   "private": false,
-  "version": "0.0.1-alpha.11",
+  "version": "0.0.1-alpha.15",
   "description": "Base lunasec package",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -14,7 +14,7 @@
   },
   "types": "build/main/index.d.ts",
   "author": "",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "react-dom": "^17.0.2"
   },

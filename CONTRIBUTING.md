@@ -44,8 +44,7 @@ We use JetBrains IntelliJ for our development and our editor configurations are 
 repo in your editor (they're stored in the `.idea` folder).
 
 For TypeScript, we use ESLint, and it should automatically format your code so that you don't have to think about it
-while developing. For Golang, we do not currently have a linter configured, and we ask that you attempt to mimic our
-code style as closely as possible.
+while developing. The GoLang code can be linted with `golangci-lint run`. 
 
 ## Code review workflow
 
@@ -125,17 +124,14 @@ Please check that the full test suite (including your test additions
 or changes) passes successfully on your local machine **before you
 open a pull request**.
 
-Running tests for everything:
-```bash
-npx lerna run test
-```
+Unit tests are still somewhat sparse.  E2E integration tests will be automatically run when you create a pull request. To run the integration tests locally, start all lunasec services and run `yarn test:e2e:local`. 
 
 Running tests for just Golang changes (from within the `go` folder):
 ```bash
 go test
 ```
 
-All submitted pull requests are also automatically
+As mentioned above, all submitted pull requests are also automatically
 run against our test suite via GitHub Actions.
 
 ## Other Questions or Feedback

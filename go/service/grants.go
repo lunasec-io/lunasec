@@ -20,9 +20,10 @@ import (
 	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"github.com/lunasec-io/lunasec-monorepo/util"
-	"go.uber.org/config"
+  "go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
 	"time"
@@ -39,8 +40,8 @@ type grantServiceConfig struct {
 
 type grantService struct {
 	logger               *zap.Logger
-	cw                   gateway.AwsCloudwatchGateway
-	kv                   gateway.AwsDynamoGateway
+	cw     metrics.AwsCloudwatchGateway
+	kv     gateway.AwsDynamoGateway
 	grantDefaultDuration time.Duration
 	grantMaxDuration     time.Duration
 }
@@ -55,7 +56,7 @@ type GrantService interface {
 func NewGrantService(
 	logger *zap.Logger,
 	provider config.Provider,
-	cw gateway.AwsCloudwatchGateway,
+	cw metrics.AwsCloudwatchGateway,
 	kv gateway.AwsDynamoGateway,
 ) (service GrantService) {
 	var (

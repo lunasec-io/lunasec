@@ -1,0 +1,1 @@
+sed -i '/^<\/body>/e cat ./analytics/analytics-fragment.txt' ./build/index.html

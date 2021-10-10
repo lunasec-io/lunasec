@@ -17,6 +17,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"go.uber.org/zap"
 	"time"
 
@@ -28,7 +29,7 @@ import (
 type metadataService struct {
 	logger *zap.Logger
 	kv     gateway.AwsDynamoGateway
-	cw     gateway.AwsCloudwatchGateway
+	cw metrics.AwsCloudwatchGateway
 }
 
 // MetadataService manages metadata for secrets
@@ -40,7 +41,7 @@ type MetadataService interface {
 // NewMetadataService ...
 func NewMetadataService(
 	logger *zap.Logger,
-	cw gateway.AwsCloudwatchGateway,
+	cw metrics.AwsCloudwatchGateway,
 	kv gateway.AwsDynamoGateway,
 ) MetadataService {
 	return &metadataService{
