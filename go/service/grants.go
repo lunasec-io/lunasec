@@ -18,11 +18,12 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/gateway"
-	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
+	metricsgateway "github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"github.com/lunasec-io/lunasec-monorepo/util"
-  "go.uber.org/config"
+	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
 	"time"
@@ -39,8 +40,8 @@ type grantServiceConfig struct {
 
 type grantService struct {
 	logger               *zap.Logger
-	cw     metrics.AwsCloudwatchGateway
-	kv     gateway.AwsDynamoGateway
+	cw                   metricsgateway.AwsCloudwatchGateway
+	kv                   gateway.AwsDynamoGateway
 	grantDefaultDuration time.Duration
 	grantMaxDuration     time.Duration
 }
@@ -55,7 +56,7 @@ type GrantService interface {
 func NewGrantService(
 	logger *zap.Logger,
 	provider config.Provider,
-	cw metrics.AwsCloudwatchGateway,
+	cw metricsgateway.AwsCloudwatchGateway,
 	kv gateway.AwsDynamoGateway,
 ) (service GrantService) {
 	var (
@@ -111,6 +112,12 @@ func (s *grantService) getGrantDuration(customDurationString string) (int64, err
 }
 
 func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID string, grantType constants.GrantType, customGrantDuration string) (err error) {
+	defer func() {
+		if err != nil {
+			s.cw.Metric(metrics.CreateGrantFailureMetric, 1)
+		}
+	}()
+
 	grantExpiry, err := s.getGrantDuration(customGrantDuration)
 	if err != nil {
 		return err
@@ -118,6 +125,7 @@ func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID stri
 	tokenGrant := TokenGrant{
 		GrantExpiry: grantExpiry,
 	}
+
 	serializedGrant, err := json.Marshal(tokenGrant)
 	if err != nil {
 		return
@@ -133,6 +141,7 @@ func (s *grantService) SetTokenGrantForSession(token types.Token, sessionID stri
 		zap.String("grantKey", grantKey),
 	)
 
+	s.cw.Metric(metrics.CreateGrantSuccessMetric, 1)
 	return s.kv.Set(gateway.GrantStore, grantKey, string(serializedGrant))
 }
 

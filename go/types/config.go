@@ -12,8 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package constants
+package types
 
-const (
-	TokenPrefix = "lunasec-"
+import (
+	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
 )
+
+type CorsConfig struct {
+	AllowedOrigins []string `yaml:"allowed_origins"`
+	AllowedHeaders []string `yaml:"allowed_headers"`
+}
+
+type AppConfig struct {
+	StackID string     `yaml:"stack_id"`
+	Cors    CorsConfig `yaml:"cors"`
+}
+
+type AnalyticsCollectorConfig struct {
+	AnalyticsServer string                      `yaml:"analytics_server"`
+	Metrics         []metrics.ApplicationMetric `yaml:"metrics"`
+}

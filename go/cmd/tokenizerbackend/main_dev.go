@@ -23,7 +23,10 @@ import (
 )
 
 func main() {
+
+	logger, provider, gateways := tokenizerBackendDependencies()
+
 	log.SetFlags(log.Lshortfile)
-	server := tokenizerbackend.NewDevServer()
+	server := tokenizerbackend.NewDevServer(logger, provider, gateways)
 	log.Fatal(server.ListenAndServe())
 }

@@ -12,8 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package constants
+//go:build dev
 
-const (
-	TokenPrefix = "lunasec-"
-)
+package main
+
+import "github.com/lunasec-io/lunasec-monorepo/pkg/analyticscollector"
+
+func main() {
+	analyticscollector.Handler()
+}

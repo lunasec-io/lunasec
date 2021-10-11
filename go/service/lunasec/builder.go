@@ -22,6 +22,9 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/awscloudfront"
 	"github.com/aws/aws-cdk-go/awscdk/awsdynamodb"
 	"github.com/aws/aws-cdk-go/awscdk/awsecr"
+	"github.com/aws/aws-cdk-go/awscdk/awsevents"
+	"github.com/aws/aws-cdk-go/awscdk/awseventstargets"
+	"github.com/aws/aws-cdk-go/awscdk/awsiam"
 	"github.com/aws/aws-cdk-go/awscdk/awslambda"
 	"github.com/aws/aws-cdk-go/awscdk/awss3"
 	"github.com/aws/aws-cdk-go/awscdk/awss3deployment"
@@ -50,7 +53,7 @@ type BuildConfig struct {
 	ApplicationFrontEnd  string          `yaml:"application_front_end"`
 	ApplicationBackEnd   string          `yaml:"application_back_end"`
 	SessionPublicKey     string          `yaml:"session_public_key"`
-	SessionJwksEndpoint  string      		 `yaml:"session_jwks_endpoint"`
+	SessionJwksEndpoint  string          `yaml:"session_jwks_endpoint"`
 	FrontEndAssetsFolder string          `yaml:"front_end_assets_folder"`
 	LocalStackUrl        string          `yaml:"localstack_url"`
 	ServiceVersions      ServiceVersions `yaml:"service_versions"`
@@ -97,8 +100,8 @@ func NewBuildConfig(
 
 func NewBuilder(
 	builderConfig BuilderConfig,
-	buildConfig   BuildConfig,
-	npmGateway    gateway.NpmGateway,
+	buildConfig BuildConfig,
+	npmGateway gateway.NpmGateway,
 	metricsConfig metrics.MetricProviderConfig,
 ) Builder {
 	buildConfig.StackVersion = util.NormalizeVersionName(buildConfig.StackVersion)
@@ -157,7 +160,8 @@ func (l *builder) mirrorRepos(env *awscdk.Environment) (lookup ServiceToImageMap
 	)
 
 	lookup = ServiceToImageMap{
-		constants.LunaSecServicesTokenizerBackend: "latest",
+		constants.LunaSecServicesTokenizerBackend:      "latest",
+		constants.LunaSecAnalyticsCollectorServiceName: "latest",
 	}
 
 	if l.localDev {
@@ -378,11 +382,53 @@ func (l *builder) createSecret(stack awscdk.Stack, name, description string) aws
 	return secret
 }
 
+func (l *builder) createAnalyticsCollectorCron(stack awscdk.Stack, serviceImageLookup ServiceToImageMap) {
+	lambdaEnv := map[string]*string{
+		"STACK_ID":         stack.Node().Id(),
+		"ANALYTICS_SERVER": jsii.String(""),
+	}
+
+	containerTag := serviceImageLookup[constants.LunaSecAnalyticsCollectorServiceName]
+
+	analyticsCollectorLambda := l.getAnalyticsCollectorLambda(stack, containerTag, &lambdaEnv)
+
+	metricStatisticsStatement := awsiam.NewPolicyStatement(&awsiam.PolicyStatementProps{
+		Resources: &[]*string{
+			jsii.String("*"),
+		},
+		Actions: &[]*string{
+			jsii.String("cloudwatch:GetMetricStatistics"),
+		},
+	})
+
+	analyticsCollectorLambda.AddToRolePolicy(metricStatisticsStatement)
+
+	everyDayRule := awsevents.NewRule(stack, jsii.String("analytics-collector-cron"), &awsevents.RuleProps{
+		Schedule: awsevents.Schedule_Cron(&awsevents.CronOptions{
+			Minute: jsii.String("0"),
+			Hour:   jsii.String("0"),
+		}),
+	})
+
+	everyDayRule.AddTarget(awseventstargets.NewLambdaFunction(analyticsCollectorLambda, nil))
+}
+
 func (l *builder) getTokenizerBackendLambda(stack awscdk.Stack, containerTag string, lambdaEnv *map[string]*string) awslambda.Function {
-	secureFrameRepo := awsecr.Repository_FromRepositoryName(stack, jsii.String("tokenizer-backend-repo"), jsii.String(string(constants.LunaSecServicesTokenizerBackend)))
+	tokenizerBackendRepo := awsecr.Repository_FromRepositoryName(stack, jsii.String("tokenizer-backend-repo"), jsii.String(string(constants.LunaSecServicesTokenizerBackend)))
 
 	return awslambda.NewDockerImageFunction(stack, jsii.String("tokenizer-backend-lambda"), &awslambda.DockerImageFunctionProps{
-		Code: awslambda.DockerImageCode_FromEcr(secureFrameRepo, &awslambda.EcrImageCodeProps{
+		Code: awslambda.DockerImageCode_FromEcr(tokenizerBackendRepo, &awslambda.EcrImageCodeProps{
+			Tag: jsii.String(containerTag),
+		}),
+		Environment: lambdaEnv,
+	})
+}
+
+func (l *builder) getAnalyticsCollectorLambda(stack awscdk.Stack, containerTag string, lambdaEnv *map[string]*string) awslambda.Function {
+	analyticsCollectorRepo := awsecr.Repository_FromRepositoryName(stack, jsii.String("analytics-collector-repo"), jsii.String(string(constants.LunaSecAnalyticsCollectorServiceName)))
+
+	return awslambda.NewDockerImageFunction(stack, jsii.String("analytics-collector-lambda"), &awslambda.DockerImageFunctionProps{
+		Code: awslambda.DockerImageCode_FromEcr(analyticsCollectorRepo, &awslambda.EcrImageCodeProps{
 			Tag: jsii.String(containerTag),
 		}),
 		Environment: lambdaEnv,
@@ -400,13 +446,13 @@ func (l *builder) getLambdaRestApi(stack awscdk.Stack, tokenizerBackendLambda aw
 	return tokenizerGateway
 }
 
-func (l *builder) getTokenizerBackendBucketAssetFolder(secureFrameDomainName string) (assetsFolder, cdnConfig string) {
+func (l *builder) getTokenizerBackendBucketAssetFolder(tokenizerBackendDomainName string) (assetsFolder, cdnConfig string) {
 	if l.localDev {
 		return l.buildConfig.FrontEndAssetsFolder, ""
 	}
 
 	var err error
-	assetsFolder, cdnConfig, err = l.getCdnConfig(secureFrameDomainName)
+	assetsFolder, cdnConfig, err = l.getCdnConfig(tokenizerBackendDomainName)
 	if err != nil {
 		panic(err)
 	}
@@ -419,15 +465,16 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 		sprops = props.StackProps
 	}
 	stack := awscdk.NewStack(scope, &id, &sprops)
+	stackId := stack.Node().Id()
 
 	ciphertextBucket := l.getCiphertextBucket(stack)
 
 	secureFrameBucket := l.getTokenizerBackendBucket(stack)
 
 	secureFrameCloudfront := l.getCloudfrontDistribution(stack, secureFrameBucket)
-	secureFrameDomainName := l.getTokenizerBackendDomainName(secureFrameCloudfront)
+	tokenizerBackendDomainName := l.getTokenizerBackendDomainName(secureFrameCloudfront)
 
-	assetFolder, cdnConfig := l.getTokenizerBackendBucketAssetFolder(secureFrameDomainName)
+	assetFolder, cdnConfig := l.getTokenizerBackendBucketAssetFolder(tokenizerBackendDomainName)
 	l.getTokenizerBackendBucketDeployment(stack, secureFrameBucket, assetFolder)
 
 	metadataTable := l.createBasicDynamodbTable(stack, "metadata-table")
@@ -445,18 +492,19 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 
 	if !l.localDev {
 		lambdaEnv := map[string]*string{
-			"TOKENIZER_URL":              secureFrameCloudfront.AttrDomainName(),
-			"APPLICATION_FRONT_END":      jsii.String(l.buildConfig.ApplicationFrontEnd),
-			"CIPHERTEXT_VAULT_S3_BUCKET": ciphertextBucket.BucketArn(),
-			"APPLICATION_BACK_END":       jsii.String(l.buildConfig.ApplicationBackEnd),
-			"SECURE_FRAME_CDN_CONFIG":    jsii.String(cdnConfig),
-			"TOKENIZER_SECRET_ARN":       tokenizerSecret.SecretArn(),
-			"METADATA_KV_TABLE":          metadataTable.TableName(),
-			"KEYS_KV_TABLE":              keysTable.TableName(),
-			"SESSIONS_KV_TABLE":          sessionsTable.TableName(),
-			"GRANTS_KV_TABLE":            grantsTable.TableName(),
-			"METRICS_DISABLED": jsii.String(strconv.FormatBool(l.metricsConfig.Disabled)),
-			"METRICS_PROVIDER": jsii.String(string(l.metricsConfig.Provider)),
+			"TOKENIZER_URL":                    secureFrameCloudfront.AttrDomainName(),
+			"APPLICATION_FRONT_END":            jsii.String(l.buildConfig.ApplicationFrontEnd),
+			"CIPHERTEXT_VAULT_S3_BUCKET":       ciphertextBucket.BucketArn(),
+			"APPLICATION_BACK_END":             jsii.String(l.buildConfig.ApplicationBackEnd),
+			"SECURE_FRAME_CDN_CONFIG":          jsii.String(cdnConfig),
+			"TOKENIZER_SECRET_ARN":             tokenizerSecret.SecretArn(),
+			"METADATA_KV_TABLE":                metadataTable.TableName(),
+			"KEYS_KV_TABLE":                    keysTable.TableName(),
+			"SESSIONS_KV_TABLE":                sessionsTable.TableName(),
+			"GRANTS_KV_TABLE":                  grantsTable.TableName(),
+			"STACK_ID":                         stackId,
+			"METRICS_DISABLED":                 jsii.String(strconv.FormatBool(l.metricsConfig.Disabled)),
+			"METRICS_PROVIDER":                 jsii.String(string(l.metricsConfig.Provider)),
 			"METRICS_DISABLE_USAGE_STATISTICS": jsii.String(strconv.FormatBool(l.metricsConfig.DisableUsageStatisticsMetrics)),
 		}
 
@@ -468,14 +516,18 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 
 		containerTag := serviceImageLookup[constants.LunaSecServicesTokenizerBackend]
 
-		secureFrameLambda := l.getTokenizerBackendLambda(stack, containerTag, &lambdaEnv)
-		ciphertextBucket.GrantReadWrite(secureFrameLambda, "*")
-		metadataTable.GrantReadWriteData(secureFrameLambda)
-		keysTable.GrantReadWriteData(secureFrameLambda)
-		sessionsTable.GrantReadWriteData(secureFrameLambda)
-		grantsTable.GrantReadWriteData(secureFrameLambda)
+		tokenizerBackendLambda := l.getTokenizerBackendLambda(stack, containerTag, &lambdaEnv)
+		ciphertextBucket.GrantReadWrite(tokenizerBackendLambda, "*")
+		metadataTable.GrantReadWriteData(tokenizerBackendLambda)
+		keysTable.GrantReadWriteData(tokenizerBackendLambda)
+		sessionsTable.GrantReadWriteData(tokenizerBackendLambda)
+		grantsTable.GrantReadWriteData(tokenizerBackendLambda)
 
-		l.getLambdaRestApi(stack, secureFrameLambda)
+		l.getLambdaRestApi(stack, tokenizerBackendLambda)
+
+		if !l.metricsConfig.Disabled {
+			l.createAnalyticsCollectorCron(stack, serviceImageLookup)
+		}
 	}
 	return stack
 }

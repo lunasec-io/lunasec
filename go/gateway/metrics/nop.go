@@ -14,21 +14,23 @@
 //
 package metrics
 
+import "github.com/lunasec-io/lunasec-monorepo/constants/metrics"
+
 type nopMetricsGateway struct {
 }
 
 type NopMetricsGateway interface {
-  PutMetric(name string, value int)
+	Metric(name metrics.ApplicationMetric, value int)
 }
 
 // NewNopMetricsGateway
 // This class disables metrics by performing an empty return whenever metrics are emitted.
 func NewNopMetricsGateway() NopMetricsGateway {
-  return &nopMetricsGateway{}
+	return &nopMetricsGateway{}
 }
 
 // PutMetric
 // This intentionally does nothing in order to allow "disabling" metrics.
-func (c *nopMetricsGateway) PutMetric(name string, value int) {
-  return
+func (c *nopMetricsGateway) Metric(name metrics.ApplicationMetric, value int) {
+	return
 }

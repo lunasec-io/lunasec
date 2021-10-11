@@ -71,7 +71,7 @@ services:
     network_mode: host
     environment:
       - SERVICES=s3,dynamodb,secretsmanager,sts,cloudformation,cloudwatch
-      - DEBUG=1
+#      - DEBUG=1
 #      - DATA_DIR=/tmp/localstack
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
