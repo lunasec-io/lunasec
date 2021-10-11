@@ -16,7 +16,7 @@ package controller
 
 import (
 	"github.com/lunasec-io/lunasec-monorepo/constants"
-	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	metricsgateway "github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"net/http"
 
@@ -36,7 +36,7 @@ func WithCSP(provider config.Provider) types.Middleware {
 	return csp.Middleware()
 }
 
-func WithMetrics(cloudwatch gateway.AwsCloudwatchGateway) types.Middleware {
+func WithMetrics(cloudwatch metricsgateway.AwsCloudwatchGateway) types.Middleware {
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			next.ServeHTTP(w, r)
