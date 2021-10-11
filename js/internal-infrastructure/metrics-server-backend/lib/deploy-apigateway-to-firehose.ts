@@ -1,26 +1,30 @@
 import * as cdk from '@aws-cdk/core';
 import * as destinations from '@aws-cdk/aws-kinesisfirehose-destinations';
+import {Compression} from '@aws-cdk/aws-kinesisfirehose-destinations';
 import {DeliveryStream, StreamEncryption} from '@aws-cdk/aws-kinesisfirehose';
 import {Bucket} from '@aws-cdk/aws-s3';
 import * as iam from '@aws-cdk/aws-iam';
-import {RestApi} from '@aws-cdk/aws-apigateway';
+import {BasePathMapping, DomainName, EndpointType, RestApi, SecurityPolicy} from '@aws-cdk/aws-apigateway';
 import {StoreMetricSchema} from './apigateway-request-models';
 import * as defaults from '@aws-solutions-constructs/core';
-import {Compression} from '@aws-cdk/aws-kinesisfirehose-destinations';
+import {ARecord, HostedZone, RecordTarget} from '@aws-cdk/aws-route53';
+import {Certificate} from '@aws-cdk/aws-certificatemanager';
+import * as route53targets from '@aws-cdk/aws-route53-targets';
+import {Duration} from '@aws-cdk/core';
 
 interface MetricsLambdaStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
-  // domainName: string;
-  // domainZone: string;
+  domainName: string;
+  domainZoneId: string;
+  domainZoneName: string;
+  certificateArn: string;
 }
 
 export class MetricsLambdaBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: MetricsLambdaStackProps) {
     super(scope, id, props);
 
-    const bucket = new Bucket(this, 'MetricsBucket', {
-
-    });
+    const bucket = new Bucket(this, 'MetricsBucket', {});
 
     const s3Destination = new destinations.S3Bucket(bucket, {
       compression: Compression.SNAPPY,
@@ -39,8 +43,31 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
     });
     stream.grantPutRecords(apiGatewayRole);
 
-    const apiGateway = new RestApi(this, 'lunasec-metrics-api', {
+    const domainZone = HostedZone.fromHostedZoneAttributes(this, 'Zone', {
+      hostedZoneId: props.domainZoneId,
+      zoneName: props.domainZoneName
+    });
 
+    const certificate = Certificate.fromCertificateArn(this, 'lunasec-ssl-certificate', props.certificateArn);
+
+    const apiGateway = new RestApi(this, 'lunasec-metrics-api', {
+    });
+
+    const domainName = new DomainName(this, 'lunasec-metrics-domain-name', {
+      domainName: props.domainName,
+      certificate: certificate as any,
+      endpointType: EndpointType.REGIONAL,
+      mapping: apiGateway,
+      securityPolicy: SecurityPolicy.TLS_1_2
+    });
+
+    new ARecord(this, 'lunasec-dns-a-record', {
+      zone: domainZone,
+      recordName: props.domainName,
+      target: RecordTarget.fromAlias(
+        new route53targets.ApiGatewayDomain(domainName as any)
+      ),
+      ttl: Duration.minutes(5)
     });
 
     const putRecordModel = apiGateway.addModel('PutRecordModel', {
@@ -82,10 +109,10 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
   ""clientIP"": ""$context.identity.sourceIp"",
 }")
 {
-    "DeliveryStreamName": "${streamName}",
-    "Record": {
-        "Data": "$util.base64Encode($data)"
-    }
-}`
+  "DeliveryStreamName": "${streamName}",
+  "Record": {
+    "Data": "$util.base64Encode($data)"
+  }
+}`;
   }
 }

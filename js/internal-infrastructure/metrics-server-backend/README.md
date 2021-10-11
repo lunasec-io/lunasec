@@ -28,13 +28,13 @@ The metrics we collect are listed below. We have made this backend server public
 specifically because we wish to remain as transparent as possible about our collection of data and to earn your trust.
 
 ## Disabling Metrics
-As the developers of LunaSec, we ask that you please leave metrics enabled unless you have a specific reason to do so. 
+As the developers of LunaSec, we ask that you please leave metrics enabled unless you have a specific reason to do so.
 We have created LunaSec and made it freely available for anybody to use, modify, and otherwise derive value from because
 we believe in open-source software. Leaving metrics sharing enabled is one of the easiest ways for you to give back and
 contribute to LunaSec.
 
 If you must disable metrics because of security reasons, or otherwise, and you would still like to give back to LunaSec,
-then please consider [contacting us](https://www.lunasec.io/contact) about subscribing to our paid support plan. Paid 
+then please consider [contacting us](https://www.lunasec.io/contact) about subscribing to our paid support plan. Paid
 support includes early access to security patches _before_ we publish them to our open-source repo, as well as giving us
 the monetary means to continue building and supporting LunaSec.
 
@@ -46,12 +46,17 @@ Regardless, thank you for using LunaSec and helping to improve the security of s
 appreciate it!
 
 ## Metrics Collection Process Overview
-Metrics are published from the Tokenizer to AWS CloudWatch by default. 
+Metrics are published from the Tokenizer to AWS CloudWatch by default.
 
-Once per day (every 24 hours) a Lambda is triggered that reads the metrics data from CloudWatch and generates a summary 
-of the metrics data. This data is an _aggregate sum_ of the data from CloudWatch. We don't collect information about the
-specific events or when they occurred. We intentionally read the metrics data, add it all together, and then publish
-only the aggregate data.
+Once per day (every 24 hours) a Lambda is triggered that reads the metrics data from CloudWatch and generates a summary
+of the metrics data. This data is an _aggregate sum_ of the data from CloudWatch. That means that we don't collect 
+information about the specific events like what data was Tokenized, when exactly the Tokenization occurred, or any other
+data related to your deployment that isn't listed below. We intentionally read the metrics data, add it all together, 
+and then publish only the aggregate data.
+
+We're an open-source data security company -- we're not Facebook. We don't want your data because your data does not 
+make us any money. We only use this data to track our success over time and to help remind us why building LunaSec is
+valuable for the world.
 
 *Metrics Collected:*
 - Deployed Version
@@ -60,10 +65,40 @@ only the aggregate data.
 - Number of Grants Issued
 - Random Nonce (unique per deployment for us to track usage over time and to help us filter fraudulent data)
 
-## Acknowledgements
-This app was built using [Go Cloud Development Kit](https://github.com/google/go-cloud) and is a fork of the 
-[Guestbook](https://gocloud.dev/tutorials/guestbook) sample app.
+## Example Metrics Request
+This is an example JSON blob of what the metrics data actually looks like: 
+```json
+{
+  "version": "0.0.1",
+  "stack_id": "3d9c49ce-8367-43ec-8884-568c8d43faec",
+  "metrics": {
+    "tokenizeSuccess": 4,
+    "tokenizeFailure": 0,
+    "detokenizeSuccess": 2,
+    "detokenizeFailure": 0,
+    "createGrantSuccess": 2,
+    "createGrantFailure": 0
+  }
+}
+```
 
-The Go gopher was designed by Renee French and used under the
-[Creative Commons 3.0 Attributions](https://creativecommons.org/licenses/by/3.0/)
-license.
+If you want to take a look at the exact data that's being submitted, you can review the JSON Schema validator. It's in
+the `./lib/apigateway-request-models.ts` file.
+
+### Useful commands for dev
+
+ * `yarn run build`   compile typescript to js
+ * `yarn run watch`   watch for changes and compile
+ * `yarn run test`    perform the jest unit tests
+ * `cdk deploy`      deploy this stack to your default AWS account/region
+ * `cdk diff`        compare deployed stack with current state
+ * `cdk synth`       emits the synthesized CloudFormation template
+
+## Acknowledgements
+This was built using the TypeScript AWS CDK. Thank you, Amazon, for letting us skip writing CloudFormation!
+
+AWS Services used:
+- API Gateway (validates the request and then directly feeds it into the stream)
+- Kinesis Firehose (packs the data up into compressed blobs that are dumped into S3)
+- S3 (stored the compressed chunks of JSON in a way that can be queried, i.e. a basic data warehouse)
+- Athena (used to query the data in a SQL-like way)
