@@ -23,9 +23,16 @@ import { initializeUploader } from './initialize-uploader';
 import { iFrameRPC } from './rpc';
 import { handleDownload } from './secure-download';
 import { validate } from './validators';
+
 export type SupportedElement = TagLookup[keyof TagLookup];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare global {
+  interface Window {
+    LUNASEC_BACKEND_URL: string;
+  }
+}
+
+// @eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomMetadata = Record<string, any>;
 export function timeout(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -60,7 +67,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
     [this.secureElement, this.form] = this.insertSecureElement(componentName);
     this.origin = this.getURLSearchParam('origin');
     this.frameNonce = this.getURLSearchParam('n');
-    this.tokenizer = new Tokenizer({ host: window.location.origin, lockToSession: true });
+    this.tokenizer = new Tokenizer({ host: window.LUNASEC_BACKEND_URL || window.location.origin, lockToSession: true });
     this.rpc = new iFrameRPC(this.origin, () => this.tokenizeField());
     this.startRPC();
   }

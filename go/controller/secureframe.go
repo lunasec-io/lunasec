@@ -39,6 +39,7 @@ type secureFrameController struct {
 type SecureFrameControllerConfig struct {
 	ViewsPath string          `yaml:"views_path"`
 	CdnConfig types.CDNConfig `yaml:"cdn_config"`
+	IframeBackendUrl string   `yaml:"iframe_backend_url"`
 }
 
 type SecureFrameController interface {
@@ -114,6 +115,7 @@ func (s *secureFrameController) Frame(w http.ResponseWriter, r *http.Request) {
 		RequestNonce:  nonce,
 		ScriptUrl:     scriptURL.String(),
 		StyleUrl:      styleURL.String(),
+		BackendUrl:    s.SecureFrameControllerConfig.IframeBackendUrl,
 	}
 
 	w.Header().Set("Content-Type", "text/html")

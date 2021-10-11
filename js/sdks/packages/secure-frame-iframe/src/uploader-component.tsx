@@ -15,7 +15,7 @@
  *
  */
 import { ComponentNames } from '@lunasec/react-sdk';
-import { MetaData, Tokenizer } from '@lunasec/tokenizer-sdk';
+import { MetaData } from '@lunasec/tokenizer-sdk';
 import React from 'react';
 import Dropzone, { DropzoneProps, FileWithPath } from 'react-dropzone';
 
@@ -72,9 +72,8 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
   }
 
   loadExistingFiles(): void {
-    const tokenizer = new Tokenizer();
     this.fileTokens.map(async (token) => {
-      const metaRes = await tokenizer.getMetadata(token);
+      const metaRes = await this.props.secureframe.tokenizer.getMetadata(token);
       if (!metaRes.success) {
         // If it failed then do nothing and don't show a file
         this.props.secureframe.sendErrorMessage(metaRes.error);
@@ -128,8 +127,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
           },
           customFields: this.props.secureframe.customMetadata,
         };
-        const tokenizer = new Tokenizer();
-        const uploadRes = await tokenizer.tokenize(buf, meta);
+        const uploadRes = await this.props.secureframe.tokenizer.tokenize(buf, meta);
         if (!uploadRes.success) {
           throw uploadRes.error; // caught below along with any other unforseen issues
         }
