@@ -16,6 +16,7 @@ package controller
 
 import (
 	"github.com/lunasec-io/lunasec-monorepo/constants"
+	metricsgateway "github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"net/http"
 
@@ -33,4 +34,20 @@ var WithNoAuth = func(
 func WithCSP(provider config.Provider) types.Middleware {
 	csp := service.CreateCSPMiddleware(provider)
 	return csp.Middleware()
+}
+
+func WithMetrics(cloudwatch metricsgateway.AwsCloudwatchGateway) types.Middleware {
+	return func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			next.ServeHTTP(w, r)
+			cloudwatch.PushMetrics()
+		}
+	}
+}
+
+func WithJSONContentType(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	}
 }

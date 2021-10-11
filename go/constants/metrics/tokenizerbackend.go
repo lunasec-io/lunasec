@@ -12,8 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package constants
+package metrics
+
+type ApplicationMetric string
 
 const (
-	TokenPrefix = "lunasec-"
+	TokenizeSuccessMetric    ApplicationMetric = "tokenizeSuccess"
+	TokenizeFailureMetric                      = "tokenizeFailure"
+	DetokenizeSuccessMetric                    = "detokenizeSuccess"
+	DetokenizeFailureMetric                    = "detokenizeFailure"
+	CreateGrantSuccessMetric                   = "createGrantSuccess"
+	CreateGrantFailureMetric                   = "createGrantFailure"
 )

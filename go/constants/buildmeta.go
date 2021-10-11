@@ -14,6 +14,8 @@
 //
 package constants
 
-const (
-	TokenPrefix = "lunasec-"
+var (
+	Version = ""
+	Commit  = ""
+	Date    = ""
 )

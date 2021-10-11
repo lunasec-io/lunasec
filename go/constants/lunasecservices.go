@@ -15,8 +15,8 @@
 package constants
 
 import (
-  "errors"
-  "fmt"
+	"errors"
+	"fmt"
 )
 
 // LunaSecServices
@@ -25,34 +25,34 @@ type LunaSecServices string
 
 // NOTE: To actually add an enum value, you must also add it to the validServices list below.
 const (
-  LunaSecServicesTokenizerBackend LunaSecServices = "tokenizer-backend"
-  LunaSecServicesSecureFrameFrontend = "secure-frame-frontend"
+	LunaSecServicesTokenizerBackend      LunaSecServices = "tokenizer-backend"
+	LunaSecServicesSecureFrameFrontend                   = "secure-frame-frontend"
+	LunaSecAnalyticsCollectorServiceName                 = "analytics-collector"
 )
 
 // Add your new enum value here in order to ensure it is validated at parse time.
 var validServices = []LunaSecServices{
-  LunaSecServicesTokenizerBackend,
-  LunaSecServicesSecureFrameFrontend,
+	LunaSecServicesTokenizerBackend,
+	LunaSecServicesSecureFrameFrontend,
 }
 
 func parseLunaSecServiceEnum(input string) (LunaSecServices, bool) {
-  for _, validService := range validServices {
-    if input == string(validService) {
-      return validService, true
-    }
-  }
-  return LunaSecServicesTokenizerBackend, false
+	for _, validService := range validServices {
+		if input == string(validService) {
+			return validService, true
+		}
+	}
+	return LunaSecServicesTokenizerBackend, false
 }
 
 // UnmarshalText
 // This function is used by Yaml and maps the input string into an enum value
 func (x *LunaSecServices) UnmarshalText(text []byte) error {
-  name := string(text)
-  tmp, valid := parseLunaSecServiceEnum(name)
-  if !valid {
-    return errors.New(fmt.Sprintf("invalid service name specified, must be: %v", validProviders))
-  }
-  *x = tmp
-  return nil
+	name := string(text)
+	tmp, valid := parseLunaSecServiceEnum(name)
+	if !valid {
+		return errors.New(fmt.Sprintf("invalid service name specified, must be: %v", validProviders))
+	}
+	*x = tmp
+	return nil
 }
-

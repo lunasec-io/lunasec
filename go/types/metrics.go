@@ -12,8 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package constants
+package types
 
-const (
-	TokenPrefix = "lunasec-"
+import (
+	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
 )
+
+type CollectedMetrics map[metrics.ApplicationMetric]int64
+
+type ReportedMetrics struct {
+	Version          string           `json:"version"`
+	StackID          string           `json:"stack_id"`
+	CollectedMetrics CollectedMetrics `json:"collected_metrics"`
+}
