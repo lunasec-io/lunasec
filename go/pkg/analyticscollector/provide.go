@@ -16,13 +16,14 @@ package analyticscollector
 
 import (
 	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/util"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
 )
 
-func analyticsCollectorDependencies() (*zap.Logger, config.Provider, gateway.AwsCloudwatchGateway) {
+func analyticsCollectorDependencies() (*zap.Logger, config.Provider, metrics.AwsCloudwatchGateway) {
 	logger, err := util.GetLogger()
 	if err != nil {
 		log.Println(err)
@@ -36,7 +37,7 @@ func analyticsCollectorDependencies() (*zap.Logger, config.Provider, gateway.Aws
 		panic(err)
 	}
 
-	cloudwatch := gateway.NewAwsCloudwatchGateway(logger, provider, sess)
+	cloudwatch := metrics.NewAwsCloudwatchGateway(logger, provider, sess)
 
 	return logger, provider, cloudwatch
 }

@@ -58,7 +58,6 @@ type BuildConfig struct {
 	LocalStackUrl        string          `yaml:"localstack_url"`
 	ServiceVersions      ServiceVersions `yaml:"service_versions"`
 	LocalBuildArtifacts  bool            `yaml:"local_build_artifacts"`
-	DisableAnalytics     bool            `yaml:"disable_analytics"`
 }
 
 type BuilderConfig struct {
@@ -526,7 +525,7 @@ func (l *builder) addComponentsToStack(scope constructs.Construct, id string, pr
 
 		l.getLambdaRestApi(stack, tokenizerBackendLambda)
 
-		if !l.buildConfig.DisableAnalytics {
+		if !l.metricsConfig.Disabled {
 			l.createAnalyticsCollectorCron(stack, serviceImageLookup)
 		}
 	}
