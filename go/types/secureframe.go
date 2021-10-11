@@ -33,4 +33,5 @@ type FrameVars struct {
 	InputStyle    string
 	ScriptUrl     string
 	StyleUrl      string
+	BackendUrl    string
 }

@@ -5,5 +5,9 @@ html
   body
     h1.d-none Secure Frame
     span.loading-text Loading...
+    script(type="text/javascript", nonce=.CSPNonce).
+        // BEGIN INLINE GLOBALS
+        window.LUNASEC_BACKEND_URL = "#{.BackendUrl}"
+        // END INLINE GLOBALS
     script(src=.ScriptUrl, nonce=.CSPNonce)
 
