@@ -22,7 +22,7 @@ const FeatureList = [
     description: (
       <>
         Data security for your software that doesn't require having a PHD in cryptography.
-        Our libraries focus heavily on the Developer Experience to enable you to add security to your app <i>without</i> rewriting it from scratch.
+        Ship without being blocked by security reviews.
       </>
     ),
   },
@@ -32,7 +32,7 @@ const FeatureList = [
     description: (
       <>
         Remove sensitive data from your database with tokenization,
-        centralize all of your sensitive authorization checks,
+        centralize all of your authorization checks,
         add end-to-end encryption from your front-end to your backend,
         add zero-trust computation to your backend, and more.
       </>
@@ -43,9 +43,7 @@ const FeatureList = [
     Svg: require('../../static/img/60e63e8c40f27c3024def81b_Information flow_Monochromatic.svg').default,
     description: (
       <>
-        We built and designed LunaSec from years of working with developers to help build production software.
-        The LunaSec Stack is designed work alongside your code to make every line "Secure By Default"
-        and enable your software to ship _without_ being blocked by security reviews (or .
+        We built and designed LunaSec from years of experience helping developers write secure production software.
       </>
     ),
   },
