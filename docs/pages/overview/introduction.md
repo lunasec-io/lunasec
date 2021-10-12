@@ -9,10 +9,9 @@ sidebar_position: 1
 LunaSec makes it easy and secure for applications to process and store sensitive data through *Tokenization*. 
 
 Sensitive data is exchanged for a non-sensitive token that is meaningless by itself.  It must be exchanged
-for the real data with API call in a process called *Detokenization*.
+for the real data in a process called *Detokenization*.
 
-This isn't new. It's commonly used by companies for compliance purposes and there are many tokenization 
-products on the market. LunaSec is more secure, offers more features, and the core of the system is free and open source.
+LunaSec offers more attack protection than other tokenizers, has more features, and the core of the system is free and open source.
 
 LunaSec can quickly help an app become secure and regulation compliant.
 
@@ -34,7 +33,7 @@ export function renderSecureComponent(props) {
   );
 }
 ```
-This seamlessly creates an iFrame in your page, isolating the sensitive data completely.  
+This seamlessly creates an iFrame in your page, isolating the sensitive data completely without any change to how your app looks or functions.
 
 You will need to add a
 LunaSec library to your frontend(as shown here), another to your backend, and to host a copy of the Tokenizer Backend 
@@ -60,7 +59,7 @@ Now, let's say a ransomware hacker gets some of that secret information through 
 - Any user with database access shares data (intentionally or unintentionally).
 
 Using LunaSec the data is entered and stored separately from your main application, even on the frontend.  You store in the database a token
-like: `lunasec-351d1033-0e9f-4a1b-bbb6-adec04837a5c`.  Instead of the sensitive text or file, the attacker gets that token, 
+like: `lunasec-351d1033-0e9f-4a1b-bbb6-adec04837a5c`.  Instead of the sensitive text or file, a successful attacker gets that token, 
 and there's not much they can do with it. The token is not the full decryption key, only part of it.  The other required pieces can
 only be accessed from within the Dedicated Tokenizer Service, where authentication for the user can be checked, audit logs can be produced, 
 and keys can be rotated if necessary.  
@@ -83,12 +82,15 @@ If you've ever been hacked or struggled with lengthy security reviews, painful c
 hoops for "data security" or "compliance", then it's likely that LunaSec can help you.
 
 ## Why is LunaSec better?
-Most security tools are hard to use, closed source, or both. We believe that open source is the best choice for production software.
+It's not just for looks.  The other tokenization tools we have audited can make an application compliant with laws and regulations, but they don't actually secure
+data against a number of common attacks. LunaSec *actually* protects your data, even in the browser.
 
-We designed LunaSec to be simple to use for normal developers without an advanced understanding of software security or cryptography.
-LunaSec does its best to provide clean and easy APIs, ship with plenty of examples and docs, and will always be open source or source available so that you can debug or fix problems yourself.
+LunaSec is open mainly open source.  Most security tools are hard to use, closed source, or both. We believe that open source is the best choice for production software.
 
-Most of the security vendor software we've used takes months to get onboarded with due to a lengthy sales process,
+LunaSec is simple for normal developers without an advanced understanding of software security or cryptography.
+LunaSec does its best to provide clean and easy APIs, ship with plenty of examples and docs, and will always be open source or source available so that you can debug, understand, or even fix problems yourself.
+
+You can start integrating LunaSec right now. Most of the security vendor software we've used takes months to get onboarded with due to a lengthy sales process.
 After signup, you can be blocked when the black box VM image they give you ships with bugs.
 You can't patch the bugs because you can't change the source code. You're stuck.
 
@@ -97,23 +99,23 @@ These solutions have their own downsides because they don't live in your infrast
 You can't run them on your laptop or in your CI for testing. And, if they have downtime or bad performance, your software inherits those problems too.
 They're still black boxes.
 
-LunaSec is a largely open-source piece of software that you can start using right now and host, change, and extend as needed.
+In summary, LunaSec is a largely open-source piece of software that you can start using right now and host, change, and extend as needed.
 
 #### No Proxy Required
 LunaSec is not a proxy. There is no schema of sensitive fields to maintain, that configuration is in your code.
 
-LunaSec works as a "sidecar" in your front-end and backend to provide security.
-That means, if your LunaSec instance is down, it won't take your entire application offline.
+LunaSec works as a "sidecar" in your frontend and backend to provide security.
+That means if your LunaSec instance is down it won't take your entire application offline.
 
 #### Your configuration lives in your code
 Store all configuration files in source control so that you can perform meaningful code reviews + track history.
 This also lets you test your changes in CI _before_ they roll out to production.
-You don't need to tweak any dashboard settings when deploy rolls out, the changes go with your code.
+You don't need to tweak any dashboard settings when deployments happen, the changes go with your code.
 
 #### Development == Production
-Your development environment will be one-to-one with your production environment, because LunaSec runs in both.  Our scripts 
-will set up AWS Localstack automatically, meaning the whole system can run on your development machine with next to no configuration, 
-Once it's running you don't even need internet access.
+Your development environment will match your production environment, because LunaSec runs in both.  Our scripts 
+will set up AWS Localstack automatically, meaning the whole system can run on your development machine with next to no configuration.
+Once installed, you don't even need internet access.
 No more chasing bugs that only exist in production, or tunneling your dev instance to production because you can't host locally.
 
 #### Works with GraphQL and Express natively (or gRPC)
