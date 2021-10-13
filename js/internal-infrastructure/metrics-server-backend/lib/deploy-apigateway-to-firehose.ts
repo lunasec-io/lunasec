@@ -42,7 +42,7 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
 
     const bucket = new Bucket(this, 'MetricsBucket', {});
 
-    const s3Destination = new destinations.S3Bucket(bucket, {
+    const s3Destination = new destinations.S3Bucket(bucket as any, {
       compression: Compression.SNAPPY,
       dataOutputPrefix: 'metrics/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/rand=!{firehose:random-string}',
       errorOutputPrefix: 'metrics_failures/!{firehose:error-output-type}/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}',

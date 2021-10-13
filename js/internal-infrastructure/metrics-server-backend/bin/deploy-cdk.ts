@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
  *
@@ -14,7 +15,6 @@
  * limitations under the License.
  *
  */
-#!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import {MetricsLambdaBackendStack} from '../lib/deploy-apigateway-to-firehose';

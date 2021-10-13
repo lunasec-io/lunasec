@@ -6,8 +6,6 @@
     "deploy-cdk": "bin/deploy-cdk.js"
   },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk"
   },
