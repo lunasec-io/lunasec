@@ -15,6 +15,7 @@
     "postinstall": "node ./src/download-bin.js"
   },
   "dependencies": {
+    "@docusaurus/theme-search-algolia": "^2.0.0-beta.6",
     "decompress": "^4.2.1",
     "import-local": "^3.0.3",
     "progress": "^2.0.3"

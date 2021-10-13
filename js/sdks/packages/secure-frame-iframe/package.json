@@ -25,6 +25,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@docusaurus/theme-search-algolia": "^2.0.0-beta.6",
     "@lunasec/browser-common": "0.0.1-alpha.20",
     "@lunasec/isomorphic-common": "0.0.1-alpha.20",
     "@lunasec/react-sdk": "0.0.1-alpha.20",

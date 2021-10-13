@@ -14,5 +14,8 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "typescript": "^4.2.0"
+  },
+  "dependencies": {
+    "@docusaurus/theme-search-algolia": "^2.0.0-beta.6"
   }
 }
