@@ -1,4 +1,3 @@
-
 ---
 id: "hackerone-top-10-vuln-types"
 title: "HackerOne Top 10 Vulnerability Types"

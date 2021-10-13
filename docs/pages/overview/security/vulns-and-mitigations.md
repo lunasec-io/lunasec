@@ -1,4 +1,3 @@
-
 ---
 id: "vulns-and-mitigations"
 title: "Vulnerabilities and Mitigations"
