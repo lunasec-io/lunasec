@@ -1,4 +1,3 @@
-
 ---
 id: "encryption"
 title: "Encryption"

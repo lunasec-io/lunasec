@@ -1,4 +1,3 @@
-
 ---
 id: "mitre-cwe-top-25-weaknesses"
 title: "Mitre CWE Top 25 Weaknesses"
