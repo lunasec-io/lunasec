@@ -32,8 +32,7 @@ declare global {
   }
 }
 
-// @eslint-disable-next-line @typescript-eslint/no-explicit-any
-type CustomMetadata = Record<string, any>;
+type CustomMetadata = Record<string, unknown>;
 export function timeout(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
