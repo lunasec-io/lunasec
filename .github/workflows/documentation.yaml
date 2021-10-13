@@ -23,57 +23,6 @@ on:
 
 jobs:
   checks:
-    if: github.event_name != 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-          cache: yarn
-
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '^1.17.1'
-
-      - name: Install License Checker
-        working-directory: tools/license-checker/
-        run: ./install-skywalking-eyes.sh
-
-      - name: Check License Headers
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run license:check
-
-      # Speed up builds by caching node_modules
-      - uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Build repo
-        working-directory: js/sdks
-        run: |
-          npx lerna bootstrap
-          npm run compile:release
-
-      - name: Install Dependencies
-        working-directory: docs/
-        run: yarn install
-#      - name: Set env.BRANCH
-#        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
-#      - name: Cut new docs for version branch
-#        run: yarn run docusaurus docs:version $BRANCH
-
-      - name: Test Build
-        working-directory: docs/
-        run: yarn run build
-
-  gh-release:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     env:
       LOCAL_FILES_TO_COPY: ./build/
@@ -95,17 +44,11 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
-      - uses: webfactory/ssh-agent@v0.5.0
-        with:
-          ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
       - name: Build repo
         working-directory: js/sdks
         run: |
           npx lerna bootstrap --ci
           npm run compile:release
-      - name: Install Dependencies
-        working-directory: docs/
-        run: yarn install
 #      - name: Set env.BRANCH
 #        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
 #      - name: Cut new docs for version branch
@@ -115,6 +58,7 @@ jobs:
         working-directory: docs/
         run: yarn run build
 
+      #only copies to s3 if we are on master branch
       - name: Copy to S3
         if: success() && github.ref == 'refs/heads/master'
         run: ../.github/copy-docs-to-s3.sh
