@@ -20,7 +20,8 @@
     "progress": "^2.0.3"
   },
   "peerDependencies": {
-    "aws-cdk": "^1.126.0"
+    "aws-cdk": "^1.126.0",
+    "aws-cdk-local": "^1.65.8"
   },
   "bin": {
     "lunasec": "./src/lunasec.js"
