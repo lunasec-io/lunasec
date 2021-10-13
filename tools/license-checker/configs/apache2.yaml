@@ -23,4 +23,4 @@ header:
     - 'go/build/**'
     - '**/node_modules/**'
   comment: on-failure
-
+  license-location-threshold: 3000
