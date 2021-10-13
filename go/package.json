@@ -11,5 +11,8 @@
     "version": "node -p 'require(\"./package.json\").version'"
   },
   "author": "lunasec",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@docusaurus/theme-search-algolia": "^2.0.0-beta.6"
+  }
 }

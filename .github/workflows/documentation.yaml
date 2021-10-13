@@ -44,7 +44,7 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
-      - name: Build repo
+      - name: Lerna Bootstrap and Build Repo
         working-directory: js/sdks
         run: |
           npx lerna bootstrap --ci
