@@ -28,9 +28,9 @@ ENV VERBOSE_CYPRESS_LOGS="always"
 
 COPY --from=lerna-bootstrap /repo /repo
 
-WORKDIR /repo/js/demo-apps/packages/react-front-end
+WORKDIR /repo/
 
-ENTRYPOINT npm run test:e2e
+ENTRYPOINT npm run test:all
 
 FROM lerna-bootstrap as secure-frame-iframe
 
