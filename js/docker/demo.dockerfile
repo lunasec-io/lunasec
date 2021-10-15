@@ -30,8 +30,6 @@ COPY --from=lerna-bootstrap /repo /repo
 
 WORKDIR /repo/
 
-ENTRYPOINT npm run test:all
-
 FROM lerna-bootstrap as secure-frame-iframe
 
 WORKDIR /repo/js/sdks/packages/secure-frame-iframe
