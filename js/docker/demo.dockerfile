@@ -22,6 +22,14 @@ WORKDIR /repo/js/demo-apps/packages/react-front-end
 
 ENTRYPOINT yarn run start
 
+FROM lerna-bootstrap as lunasec-cli
+
+WORKDIR /repo/js/demo-apps/packages/cli
+
+RUN npm link
+
+ENTRYPOINT lunasec
+
 FROM cypress/included:8.4.0 as integration-test
 
 ENV VERBOSE_CYPRESS_LOGS="always"

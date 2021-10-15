@@ -15,37 +15,42 @@
  *
  */
 
-const os = require('os');
-const packageJson = require('../package.json');
-const packageVersion = packageJson.version;
+import os from 'os';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const packageJson = require('../../package.json');
+const packageVersion: string = packageJson.version;
 
 function getOsName() {
-  const osNameMap = {
-    'linux': 'Linux',
-    'darwin': 'Darwin',
-    'win32': 'Windows',
-  }
+  const osNameMap: Record<string, string> = {
+    linux: 'Linux',
+    darwin: 'Darwin',
+    win32: 'Windows',
+  };
   const nodeOsName = os.platform();
   if (!osNameMap[nodeOsName]) {
-    throw new Error(`Operating system ${nodeOsName} is not supported by LunaSec CLI, you must compile and use your own binary and cannot use this package`);
+    throw new Error(
+      `Operating system ${nodeOsName} is not supported by LunaSec CLI, you must compile and use your own binary and cannot use this package`
+    );
   }
   return osNameMap[nodeOsName];
 }
 
-function getArchName(){
-  const archNameMap = {
-    'x64': 'x86_64',
-    'arm64':'arm64',
-    'x32': 'i386',
-  }
-  if (!archNameMap[process.arch]){
+function getArchName() {
+  const archNameMap: Record<string, string> = {
+    x64: 'x86_64',
+    arm64: 'arm64',
+    x32: 'i386',
+  };
+  if (!archNameMap[process.arch]) {
     throw new Error('LunaSec Unsupported CPU Architecture');
   }
-  if(process.arch === 'arm64'){
-    console.warn('ARM 64 CPU detected by LunaSec CLI Installer.  CLI Support for M1 Macintosh is experimental, please tell us if it works.');
+  if (process.arch === 'arm64') {
+    console.warn(
+      'ARM 64 CPU detected by LunaSec CLI Installer.  CLI Support for M1 Macintosh is experimental, please tell us if it works.'
+    );
   }
   return archNameMap[process.arch];
 }
-
 
 module.exports = `https://github.com/lunasec-io/lunasec-monorepo/releases/download/v${packageVersion}/lunasec_${packageVersion}_${getOsName()}_${getArchName()}.tar.gz`;

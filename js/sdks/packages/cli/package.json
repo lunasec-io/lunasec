@@ -1,0 +1,42 @@
+{
+  "name": "@lunasec/cli",
+  "version": "0.0.1-alpha.20",
+  "description": "a wrapper around the LunaSec CLI enabling it to be used as an NPM package",
+  "license": "MIT",
+  "keywords": [
+    "lunasec",
+    "lunasec-cli",
+    "tokenization",
+    "tokenizer"
+  ],
+  "scripts": {
+    "clean": "rm -rf build",
+    "compile:version": "genversion -e src/version.ts",
+    "compile": "yarn run compile:version && tsc -p ./tsconfig.json",
+    "preinstall": "npm install --ignore-scripts",
+    "postinstall": "ts-node src/utils/download-bin.ts"
+  },
+  "bin": {
+    "lunasec": "./build/cli.js"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^7.32.0",
+    "json-schema-to-typescript": "^10.1.5",
+    "ts-node": "^10.3.0",
+    "@types/yargs": "^17.0.3",
+    "genversion": "^3.0.1"
+  },
+  "dependencies": {
+    "yargs": "^17.2.1",
+    "decompress": "^4.2.1",
+    "import-local": "^3.0.3",
+    "js-yaml": "^4.1.0",
+    "progress": "^2.0.3"
+  },
+  "peerDependencies": {
+    "aws-cdk": "^1.126.0"
+  }
+}

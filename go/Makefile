@@ -16,13 +16,17 @@ cli-release:
 	goreleaser build --rm-dist
 
 docker-release:
-	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda -t lunasec/tokenizer-backend:${version} -f docker/Dockerfile.tokenizerbackend .
+	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda -t lunasec/tokenizer-backend:${version} -f docker/tokenizerbackend.dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=dev -t lunasec/tokenizer-backend-demo:${version} -f docker/tokenizerbackend.dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=dev -t lunasec/lunasec-cli-demo:${version} -f docker/lunasec.dockerfile .
 
 cli-publish:
 	goreleaser release --rm-dist
 
 docker-publish:
 	docker push lunasec/tokenizer-backend:${version}
+	docker push lunasec/tokenizer-backend-demo:${version}
+	docker push lunasec/lunasec-cli-demo:${version}
 
 release: docker-release cli-release
 	echo "completed building releases for ${version}"

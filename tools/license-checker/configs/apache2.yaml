@@ -19,7 +19,6 @@ header:
     - 'js/**/build/**'
     - 'js/sdks/packages/secure-frame-iframe/public/**'
     - 'js/sdks/packages/tokenizer-sdk/src/generated/**'
-    - 'js/sdks/packages/cli-wrapper/src/lunasec.js'
     - 'go/build/**'
     - '**/node_modules/**'
   comment: on-failure
