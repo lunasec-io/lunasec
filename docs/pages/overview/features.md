@@ -39,14 +39,15 @@ The Secure Frame and Secure Functions are backed by a hardened and highly perfor
 When data is tokenized and sent to Token Storage,
 it is encrypted with a unique storage key based on the token (which your application stores) and other secret keys, ensuring that the token
 can only be used by someone who both has a copy of the token and has been granted permission by your application to retrieve it.
-:::tip
-The dedicated tokenizer is extremely fast (thanks to GoLang), inexpensive to host, and practically infinitely scalable. In a standard deployment, it runs as a containerized Lambda on AWS Fargate.
+:::tip Tokenizer Performance
+The dedicated tokenizer is extremely fast (thanks to GoLang), inexpensive to host, and practically infinitely scalable.
+In a standard deployment, it runs as a containerized Lambda.
 :::
 
 ### Token Storage
-AWS S3 was chosen as a storage system for tokens because of its low cost, high performance, built-in encryption, and 
+AWS S3 was chosen as a storage system for tokens because of its low cost, high performance and scalability, built-in encryption, and 
 ability to work with large files. The Dedicated Tokenizer creates S3 pre-signed-URLs, and your web application uses them to store and retrieve
-sensitive data from S3 directly.
+sensitive data from S3 directly.  Metadata is stored in DynamoDB.
 
 ### LunaSec Secure Authorizers
 _NOTE: This feature is in development, but will work as described._
