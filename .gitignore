@@ -9,4 +9,5 @@ node_modules
 .npmrc
 
 docker-compose.ci.yaml
+.env.docker
 outputs/
