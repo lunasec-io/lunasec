@@ -18,6 +18,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"log"
 	"os"
 	"time"
@@ -27,22 +28,16 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var (
-	version = ""
-	commit  = ""
-	date    = ""
-)
-
 func main() {
 	log.SetFlags(log.Lshortfile)
 
 	cli.VersionPrinter = func(c *cli.Context) {
-		fmt.Printf("version=%s revision=%s date=%s\n", c.App.Version, commit, date)
+		fmt.Printf("version=%s revision=%s date=%s\n", c.App.Version, constants.Commit, constants.Date)
 	}
 
 	app := &cli.App{
 		Name:        "lunasec",
-		Version:     version,
+		Version:     constants.Version,
 		Compiled:    time.Now(),
 		HideVersion: false,
 		Flags: []cli.Flag{

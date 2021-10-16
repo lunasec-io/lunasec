@@ -14,10 +14,9 @@
  * limitations under the License.
  *
  */
-jest.mock('axios');
-jest.mock('@lunasec/server-common');
-import { getUrl, makeRawRequest } from '@lunasec/server-common';
 import axios from 'axios';
+
+jest.mock('axios');
 
 import { DetokenizeResponse, GetMetadataResponse, SetGrantResponse, TokenizeResponse } from '../generated';
 import { Tokenizer } from '../tokenizer';
@@ -33,12 +32,12 @@ const mockAxios = axios as unknown as jest.Mocked<typeof axios>;
 const tokenizer = new Tokenizer({ host: 'http://fake-tokenizer-backend.com' });
 
 // TODO: test failure cases
-
 describe('fetchData', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    (makeRawRequest as unknown as jest.Mock).mockResolvedValue([{ statusCode: 200 }, Buffer.from('fakeS3Response')]);
-    (getUrl as unknown as jest.Mock).mockReturnValue(URL);
+    mockAxios.create.mockReturnThis();
+    // (makeRawRequest as unknown as jest.Mock).mockResolvedValue([{ statusCode: 200 }, Buffer.from('fakeS3Response')]);
+    // (getUrl as unknown as jest.Mock).mockReturnValue(URL);
   });
 
   describe('tokenize', () => {
@@ -54,6 +53,7 @@ describe('fetchData', () => {
         },
       };
       mockAxios.request.mockResolvedValue(axiosRes);
+      mockAxios.put.mockResolvedValue({ status: 200 });
 
       const expectedOutput: TokenizerTokenizeResponse = {
         success: true,
@@ -61,12 +61,16 @@ describe('fetchData', () => {
       };
       const result = tokenizer.tokenize('fakeString', { dataType: 'string' });
       await expect(result).resolves.toEqual(expectedOutput);
-
+      // request to tokenizer backend
       expect(mockAxios.request).toHaveBeenCalledWith({
         data: '{"metadata":{"dataType":"string"}}',
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
         url: 'http://fake-tokenizer-backend.com/tokenize',
+      });
+      // s3 call
+      expect(mockAxios.put).toHaveBeenCalledWith('http://fakeS3Url.com', 'fakeString', {
+        headers: { 'Content-Type': 'text/plain', fake: 'header' },
       });
     });
   });
@@ -83,7 +87,7 @@ describe('fetchData', () => {
         },
       };
       mockAxios.request.mockResolvedValue(axiosRes);
-
+      mockAxios.get.mockResolvedValue({ status: 200, data: 'fakeS3Response' });
       const expectedOutput: TokenizerDetokenizeResponse = {
         success: true,
         value: 'fakeS3Response',
@@ -91,13 +95,15 @@ describe('fetchData', () => {
       };
       const result = tokenizer.detokenize('fakeToken');
       await expect(result).resolves.toEqual(expectedOutput);
-
+      // tokenizer backend call
       expect(mockAxios.request).toHaveBeenCalledWith({
         data: '{"tokenId":"fakeToken"}',
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
         url: 'http://fake-tokenizer-backend.com/detokenize',
       });
+      // s3 call
+      expect(mockAxios.get).toHaveBeenCalledWith('http://fakeS3Url.com', { headers: { fake: 'header' } });
     });
   });
 
@@ -151,7 +157,7 @@ describe('fetchData', () => {
       await expect(result).resolves.toEqual(expectedOutput);
 
       expect(mockAxios.request).toHaveBeenCalledWith({
-        data: '{"sessionId":"fakeSessionId","tokenId":"fakeToken","grantType":"read_token"}',
+        data: '{"sessionId":"fakeSessionId","tokenId":"fakeToken"}',
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
         url: 'http://fake-tokenizer-backend.com/grant/set',

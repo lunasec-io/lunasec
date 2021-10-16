@@ -11,6 +11,9 @@
     "start:demo": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up demo",
     "test:e2e": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test",
     "test:e2e:local": "cd js/demo-apps/packages/react-front-end && yarn run test:e2e",
+    "test:unit:tokenizer": "cd js/sdks/packages/tokenizer-sdk && yarn run test",
+    "test:unit:auth": "cd js/sdks/packages/browser-common && yarn run test",
+    "test:all": "yarn run test:unit:tokenizer && yarn run test:unit:auth && yarn run test:e2e:local",
     "lint:fix": "yarn run lint -- --fix",
     "lint": "cd js/sdks && eslint --ext .js,.jsx,.ts,.tsx .",
     "version:release": "if [ -z ${RELEASE_TYPE+x} ]; then echo \"RELEASE_TYPE is unset\"; else echo \"$RELEASE_TYPE\" && lerna version -y $RELEASE_TYPE --no-push --force-publish --sign-git-commit; fi",
@@ -32,7 +35,7 @@
     "url": "git+https://github.com/refinery-labs/tokenizer-front-end-sdk.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/refinery-labs/tokenizer-front-end-sdk/issues"
   },

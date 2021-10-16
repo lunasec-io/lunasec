@@ -33,15 +33,15 @@ RUN npm link
 
 ENTRYPOINT lunasec
 
-FROM cypress/included:8.4.0 as integration-test
+FROM cypress/included:8.6.0 as integration-test
 
 ENV VERBOSE_CYPRESS_LOGS="always"
 
 COPY --from=lerna-bootstrap /repo /repo
+# Copies the cypress binary over.  Might work, not sure.
+COPY --from=lerna-bootstrap /root/.cache /root/.cache
 
-WORKDIR /repo/js/demo-apps/packages/react-front-end
-
-ENTRYPOINT npm run test:e2e
+WORKDIR /repo/
 
 FROM lerna-bootstrap as secure-frame-iframe
 

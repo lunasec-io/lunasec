@@ -11,11 +11,12 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 FROM base as builder
 
 ARG BUILD_TAG
+ARG VERSION
 
 RUN --mount=target=. \
     --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    OUTPUT_DIR=/out make tokenizerbackend tag=$BUILD_TAG
+    OUTPUT_DIR=/out make tokenizerbackend tag=$BUILD_TAG version=$VERSION
 
 FROM alpine
 

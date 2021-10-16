@@ -20,7 +20,9 @@ import (
 	"github.com/lunasec-io/lunasec-monorepo/controller"
 	"github.com/lunasec-io/lunasec-monorepo/gateway"
 	"github.com/lunasec-io/lunasec-monorepo/service"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"github.com/lunasec-io/lunasec-monorepo/types/handler"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"net/http"
@@ -93,16 +95,16 @@ func GetTokenizerRoutes(
 		panic(err)
 	}
 
-	setContentType := func(next http.HandlerFunc) http.HandlerFunc {
-		return func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			next.ServeHTTP(w, r)
-		}
+	metricsMiddlware := controller.WithMetrics(gateways.CW)
+
+	middleware := []types.Middleware{
+		controller.WithJSONContentType,
+		metricsMiddlware,
 	}
 
 	tokenizerRoutes := getRoutes(logger, provider, gateways, authProviderJwtVerifier)
 	for url, handlerConfig := range tokenizerRoutes {
-		routeHandler := setContentType(handlerConfig.Handler)
+		routeHandler := util.ApplyMiddlewareToHandler(middleware, handlerConfig.Handler)
 		sm.HandleFunc(url, authFunc(handlerConfig.AllowedSubjects, routeHandler))
 	}
 }

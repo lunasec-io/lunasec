@@ -14,8 +14,9 @@
  * limitations under the License.
  *
  */
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'jsdom',
-  collectCoverage:true
+  testEnvironment: 'node',
+  modulePathIgnorePatterns: ["build"]
 };

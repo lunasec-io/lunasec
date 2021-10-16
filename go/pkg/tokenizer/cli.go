@@ -94,7 +94,7 @@ func tokenizerRequest(sessionID string, url, customerPrivateKey string, input in
 		return
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBody))
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(reqBody))
 	if err != nil {
 		log.Println(err)
 		return

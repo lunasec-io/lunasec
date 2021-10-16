@@ -104,6 +104,17 @@ module.exports = {
     ],
   ],
   themeConfig: {
+    algolia: {
+      apiKey: '8be7ba7f75f58e8dade22b686b1f5d8c',
+      indexName: 'LUNASEC_DOCS',
+      // Optional: see doc section below
+      contextualSearch: true,
+      // Optional: see doc section below
+      appId: 'BH4D9OD16A',
+      // Optional: Algolia search parameters
+      searchParameters: {},
+      //... other Algolia params
+    },
     navbar: {
       logo: {
         alt: 'LunaSec Logo',
