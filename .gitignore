@@ -7,3 +7,6 @@ node_modules
 /docs/pages/tokenizer-sdk
 
 .npmrc
+
+docker-compose.ci.yaml
+outputs/

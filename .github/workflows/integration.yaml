@@ -38,6 +38,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        cache: yarn
+
     - uses: actions/setup-go@v2
       with:
         go-version: '^1.17.1'
@@ -61,11 +66,6 @@ jobs:
 #        username: ${{ secrets.DOCKERHUB_USERNAME }}
 #        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 #        compose_file: docker-compose.yaml > docker-compose.ci.yaml
-
-#    - uses: actions/setup-node@v2
-#      with:
-#        node-version: '14'
-#        cache: yarn
 #
 #    - uses: actions/setup-go@v2
 #      with:
@@ -87,12 +87,25 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
-    - name: Run Golang tests
+    - name: run golang tests
       working-directory: go/
       run: go test -cover ./...
 
-    - name: Run e2e tests
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --build --exit-code-from integration-test integration-test
+    - uses: actions/cache@v2
+      with:
+        path: |
+          node_modules
+        key: ${{ runner.os }}-modules-${{ hashFiles('yarn.lock') }}
+
+    - name: lerna bootstrap
+      run: npx lerna bootstrap
+
+    - name: compile lunasec cli tool
+      working-directory: js/sdks/packages/cli
+      run: yarn run compile && npm link
+
+    - name: run e2e tests
+      run: lunasec start --env ci
 
     - name: docker logs
       if: always()

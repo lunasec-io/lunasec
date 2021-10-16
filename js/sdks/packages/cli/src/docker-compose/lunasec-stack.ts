@@ -233,17 +233,16 @@ export class LunaSecStackDockerCompose {
   lunasecCli(): ComposeService {
     const name: LunaSecService = 'lunasec-cli';
 
+    const outputMount = './outputs/:/outputs/';
+
     const dockerBuildConfig = {
       ...this.dockerImage(`${name}-demo`),
+      volumes: [outputMount],
     };
 
     const localBuildConfig = {
       ...this.dockerfileTarget(demoDockerFile, name),
-      volumes: [
-        './go/config/lunasec/:/config/lunasec/',
-        './go/config/tokenizerbackend/:/config/tokenizerbackend/',
-        './go/lunasec_local_build/:/lunasec_local_build/',
-      ],
+      volumes: ['./go/config/lunasec/:/config/lunasec/', outputMount],
     };
 
     return {
@@ -251,7 +250,7 @@ export class LunaSecStackDockerCompose {
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        command: '--dir /lunasec_local_build deploy --local --output /config/tokenizerbackend/aws_resources.yaml',
+        entrypoint: 'lunasec deploy --local --output /outputs/aws_resources.yaml',
         depends_on: {
           [this.localstackProxy().name]: {
             condition: 'service_healthy',
@@ -276,7 +275,6 @@ export class LunaSecStackDockerCompose {
           BUILD_TAG: 'dev',
         },
       },
-      volumes: ['./go/config/tokenizerbackend/:/config/tokenizerbackend/'],
     };
 
     return {
@@ -284,13 +282,19 @@ export class LunaSecStackDockerCompose {
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
+        volumes: ['./outputs/aws_resources.yaml:/config/tokenizerbackend/aws_resources.yaml'],
         depends_on: {
           [this.lunasecCli().name]: {
             condition: 'service_completed_successfully',
           },
-          [this.applicationBackEnd().name]: {
-            condition: 'service_healthy',
-          },
+          // if we are in demo mode, then have application backend as dependency
+          ...(this.env === 'demo'
+            ? {
+                [this.applicationBackEnd().name]: {
+                  condition: 'service_healthy',
+                },
+              }
+            : {}),
         },
         healthcheck: serviceHealthCheck(37766),
       },

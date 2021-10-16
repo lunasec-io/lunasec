@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
  *
@@ -14,8 +15,6 @@
  * limitations under the License.
  *
  */
-// import { dirname } from 'path';
-// import { fileURLToPath } from 'url';
 
 import os from 'os';
 import path from 'path';
@@ -25,8 +24,6 @@ import * as yargs from 'yargs';
 import { LunaSecStackDockerCompose, LunaSecStackEnvironments } from './docker-compose/lunasec-stack';
 import { runCommand } from './utils/exec';
 import { version } from './version';
-
-// const __dirname = dirname(fileURLToPath(import.meta.url));
 
 yargs
   .scriptName('lunasec')
@@ -54,35 +51,60 @@ yargs
 
       const stack = new LunaSecStackDockerCompose(foundEnv[0], version, args['local-build']);
 
-      const homeDir = os.homedir();
-      const composePath = path.join(homeDir, '.lunasec');
-      const composeFile = stack.write(composePath);
+      const env = {
+        ...process.env,
+        COMPOSE_DOCKER_CLI_BUILD: '1',
+        DOCKER_BUILDKIT: '1',
+      };
 
-      runCommand('sh', ['-c', `sudo docker-compose -f ${composeFile} up`]);
+      if (foundEnv[0] === 'ci') {
+        const composeFile = stack.write(process.cwd());
+
+        // TODO (cthompson) this is a hack for now, we probably want to find a better way of building this command
+        runCommand(
+          'sh',
+          ['-c', `sudo docker-compose -f ${composeFile} up --build --exit-code-from integration-test integration-test`],
+          env
+        );
+      } else {
+        const homeDir = os.homedir();
+        const composePath = path.join(homeDir, '.lunasec');
+        const composeFile = stack.write(composePath);
+
+        runCommand('sh', ['-c', `sudo docker-compose -f ${composeFile} up`], env);
+      }
     }
   )
-  .command('deploy', 'Deploy the LunaSec stack to AWS.', {
-    config: {
-      required: false,
-      description: 'Config file for building secure components.',
+  .command(
+    'deploy',
+    'Deploy the LunaSec stack to AWS.',
+    {
+      config: {
+        required: false,
+        description: 'Config file for building secure components.',
+      },
+      'build-dir': {
+        required: false,
+        description: 'Build directory for built secure components.',
+      },
+      'dry-run': {
+        required: false,
+        description: 'Perform a dry run of deployment that builds all resources which are to be deployed.',
+      },
+      local: {
+        required: false,
+        description: 'Deploy the LunaSec stack to Localstack.',
+      },
+      output: {
+        required: false,
+        description: 'Path to where the resources output file will be written to.',
+      },
     },
-    'build-dir': {
-      required: false,
-      description: 'Build directory for built secure components.',
-    },
-    'dry-run': {
-      required: false,
-      description: 'Perform a dry run of deployment that builds all resources which are to be deployed.',
-    },
-    local: {
-      required: false,
-      description: 'Deploy the LunaSec stack to Localstack.',
-    },
-    output: {
-      required: false,
-      description: 'Path to where the resources output file will be written to.',
-    },
-  })
+    (_args) => {
+      const args = process.argv.slice(2, process.argv.length);
+      runCommand(path.join(__dirname, '../bin/lunasec'), args);
+    }
+  )
   .demandCommand()
   .help();
 

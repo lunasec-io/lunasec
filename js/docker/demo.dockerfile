@@ -1,12 +1,14 @@
 # Pulls from this cache with multiple build requirements like java and aws, not just npm
-FROM lunasec/cached-npm-dependencies:v0.0.4 as lerna-bootstrap
+FROM lunasec/cached-npm-dependencies:v0.0.5 as lerna-bootstrap
 
 COPY . /repo
 
 WORKDIR /repo
 
 RUN lerna bootstrap --ignore-scripts --ci
-RUN npm rebuild --workspaces
+RUN npm cache clean --force
+
+RUN npm rebuild sqlite3
 
 RUN yarn run compile:dev:sdks
 
@@ -24,8 +26,9 @@ ENTRYPOINT yarn run start
 
 FROM lerna-bootstrap as lunasec-cli
 
-WORKDIR /repo/js/demo-apps/packages/cli
+WORKDIR /repo/js/sdks/packages/cli
 
+RUN npm i -g aws-cdk@1.126.0 aws-cdk-local@1.65.4
 RUN npm link
 
 ENTRYPOINT lunasec

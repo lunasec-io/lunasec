@@ -29,7 +29,7 @@ COPY views/tokenizerbackend/ /views/tokenizerbackend/
 
 # base config only for demo app, otherwise remove it
 COPY config/tokenizerbackend/dev.yaml /config/tokenizerbackend/dev.yaml
-RUN if [ "$BIULD_TAG" != "dev" ] ; then rm /config/tokenizerbackend/dev.yaml ; fi
+RUN if [ "$BUILD_TAG" != "dev" ] ; then rm /config/tokenizerbackend/dev.yaml ; fi
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /out/tokenizerbackend_$BUILD_TAG /tokenizerbackend
