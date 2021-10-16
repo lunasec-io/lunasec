@@ -21,6 +21,7 @@ import { SecureFrameAuthClient } from '../../src/auth/auth-client';
 const realDate = Date.now;
 const refreshTime = 60000;
 const startTime = 100000000;
+const errorHandler = jest.fn();
 
 let startSessionManagement: () => Promise<() => void>;
 
@@ -42,7 +43,9 @@ describe('authentication.ts', () => {
     // require-cache messing up subsequent tests, so by using this jest feature, we blow that away.  It ALSO blows away our mocks though,
     // so we have to set up our mocks again each time in this callback
     jest.isolateModules(() => {
-      startSessionManagement = require('../../src/auth/authentication').startSessionManagement;
+      const { LunaSecAuthentication } = require('../../src/auth/authentication');
+      const auth = new LunaSecAuthentication('www.fakedomain.com', errorHandler);
+      startSessionManagement = () => auth.startSessionManagement() as Promise<() => void>;
       client = require('../../src/auth/auth-client').SecureFrameAuthClient as jest.MockedClass<
         typeof SecureFrameAuthClient
       >;
@@ -62,7 +65,8 @@ describe('authentication.ts', () => {
 
   describe('when user has a session cookie', () => {
     beforeEach(() => {
-      clientMethods.verifySession.mockResolvedValue(Promise.resolve({ success: true, error: '' }));
+      clientMethods.verifySession.mockResolvedValue({ success: true });
+      clientMethods.ensureSession.mockResolvedValue({} as Response);
     });
 
     describe('and calls authenticateSession() for the first time', () => {
@@ -75,7 +79,7 @@ describe('authentication.ts', () => {
         await startSessionManagement();
         Date.now = jest.fn(() => startTime + refreshTime + 1);
         jest.advanceTimersByTime(refreshTime + 1);
-        expect(clientMethods.verifySession).toBeCalledTimes(2);
+        expect(clientMethods.ensureSession).toBeCalledTimes(2);
       });
 
       it('should remove call clearInterval when we call the deleteTimer callback', async () => {
@@ -98,46 +102,32 @@ describe('authentication.ts', () => {
   describe('when no cookie is set but ensure successfully creates one successfully', () => {
     beforeEach(() => {
       // First call to verify fails but second one succeeds
-      clientMethods.verifySession
-        .mockResolvedValueOnce(Promise.resolve({ success: false, error: new LunaSecError(new Error('anError')) }))
-        .mockResolvedValue(Promise.resolve({ success: true, error: '' }));
+      clientMethods.verifySession.mockResolvedValue({ success: true });
       clientMethods.ensureSession.mockResolvedValue(Promise.resolve({} as Response));
     });
 
     it('should succeed', async () => {
       const destroyTimer = await startSessionManagement();
-      expect(clientMethods.verifySession).toBeCalledTimes(2);
+      expect(clientMethods.verifySession).toBeCalledTimes(1);
       expect(typeof destroyTimer).toBe('function');
     });
   });
 
   describe('when user has no session cookie and ensure fails to create one', () => {
+    const fakeError = new LunaSecError(new Error(''));
     beforeEach(() => {
-      clientMethods.verifySession.mockResolvedValue(
-        Promise.resolve({ success: false, error: new LunaSecError(new Error('')) })
-      );
-    });
-
-    it('should throw when no error handler set ', () => {
-      expect.assertions(1);
-      expect(startSessionManagement()).rejects.toEqual(
-        new Error(
-          'Unable to create secure frame session, is there a user currently authenticated to this site?  To handle this error gracefully call onLunaSecAuthError'
-        )
-      );
+      clientMethods.verifySession.mockResolvedValue(Promise.resolve({ success: false, error: fakeError }));
     });
 
     it('should call error handler when one set ', async () => {
-      window.LUNASEC_AUTH_ERROR_HANDLER = jest.fn();
       await startSessionManagement();
-      expect(window.LUNASEC_AUTH_ERROR_HANDLER).toBeCalled();
-      window.LUNASEC_AUTH_ERROR_HANDLER = undefined;
+      expect(errorHandler).toBeCalledWith(fakeError);
     });
   });
 
   describe('when a request was already in flight', () => {
     it('it should not make any additional server calls', () => {
-      clientMethods.verifySession.mockResolvedValue(
+      clientMethods.ensureSession.mockResolvedValue(
         new Promise(() => {
           /*block*/
         })
@@ -145,7 +135,7 @@ describe('authentication.ts', () => {
 
       void startSessionManagement();
       void startSessionManagement();
-      expect(clientMethods.verifySession).toBeCalledTimes(1);
+      expect(clientMethods.ensureSession).toHaveBeenCalledTimes(1);
     });
   });
 });

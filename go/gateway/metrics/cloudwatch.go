@@ -105,6 +105,8 @@ func (c *cloudwatchGateway) pushMetricsData(metricsData []*cloudwatch.MetricDatu
 		MetricData: metricsData,
 	}
 
+	c.logger.Debug("pushing metrics data to cloudwatch: ", zap.Any("input", input))
+
 	_, err := c.cw.PutMetricData(input)
 
 	if err != nil {
