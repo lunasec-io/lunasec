@@ -4,6 +4,7 @@
   "description": "This monorepo holds the LunaSec SDKs, servers, and demo application.",
   "private": true,
   "scripts": {
+    "lunasec": "lunasec",
     "start:services": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up tokenizerbackend",
     "license:check": "./tools/license-checker/run-license-check.sh check",
     "license:fix": "./tools/license-checker/run-license-check.sh fix",
@@ -44,6 +45,7 @@
     "lerna": "^4.0.0"
   },
   "devDependencies": {
+    "@lunasec/cli": "^0.0.1-alpha.20",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "eslint": "^7.25.0",

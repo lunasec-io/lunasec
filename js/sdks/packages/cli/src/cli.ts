@@ -36,11 +36,19 @@ yargs
         type: 'string',
         required: false,
         default: 'dev',
+        description: `Environment to start the LunaSec stack in: ${LunaSecStackEnvironments.join(', ')}`,
       },
       'local-build': {
         type: 'boolean',
         required: false,
         default: false,
+        description: 'Build the LunaSec stack locally (command should be run from monorepo root).',
+      },
+      'no-sudo': {
+        type: 'boolean',
+        required: false,
+        default: false,
+        description: 'Do not prepend "sudo" before the docker-compose command.',
       },
     },
     (args) => {
@@ -57,13 +65,18 @@ yargs
         DOCKER_BUILDKIT: '1',
       };
 
+      const useSudo = args['no-sudo'] ? '' : 'sudo ';
+
       if (foundEnv[0] === 'ci') {
         const composeFile = stack.write(process.cwd());
 
         // TODO (cthompson) this is a hack for now, we probably want to find a better way of building this command
         runCommand(
           'sh',
-          ['-c', `sudo docker-compose -f ${composeFile} up --build --exit-code-from integration-test integration-test`],
+          [
+            '-c',
+            useSudo + `docker-compose -f ${composeFile} up --build --exit-code-from integration-test integration-test`,
+          ],
           env
         );
       } else {
@@ -71,7 +84,7 @@ yargs
         const composePath = path.join(homeDir, '.lunasec');
         const composeFile = stack.write(composePath);
 
-        runCommand('sh', ['-c', `sudo docker-compose -f ${composeFile} up`], env);
+        runCommand('sh', ['-c', useSudo + `docker-compose -f ${composeFile} up`], env);
       }
     }
   )

@@ -100,12 +100,8 @@ jobs:
     - name: lerna bootstrap
       run: npx lerna bootstrap
 
-    - name: compile lunasec cli tool
-      working-directory: js/sdks/packages/cli
-      run: yarn run compile && npm link
-
     - name: run e2e tests
-      run: lunasec start --local-build --env ci
+      run: yarn run lunasec start --no-sudo=true --local-build=true --env ci
 
     - name: docker logs
       if: always()
