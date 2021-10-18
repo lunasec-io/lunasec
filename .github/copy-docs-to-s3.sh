@@ -64,9 +64,10 @@ aws s3 sync ${LOCAL_FILES_TO_COPY} s3://${AWS_S3_BUCKET} --exact-timestamps --de
 # If this is missing, the 404 page will attempt to point to broken assets because of mismatched hashes in the URL.
 # It would be nice if we could point to `/docs/index.html` and have S3 return that file during 404, but for some reason
 # the S3 console throws an error when we point it at that file... So we have to point it to the root `index.html`.
-aws s3 cp s3://lunasec-docs/docs/index.html s3://lunasec-docs/index.html --acl public-read --region us-east-1
+aws s3 cp s3://${AWS_S3_BUCKET}/docs/index.html s3://${AWS_S3_BUCKET}/index.html --acl public-read --region ${AWS_DEFAULT_REGION}
 
-# TODO: Add Cloudfront invalidation step
+echo "Invalidation CloudFront cache"
+aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION} --paths "/docs/*"
 
 echo "Cleaning up AWS credentials"
 
