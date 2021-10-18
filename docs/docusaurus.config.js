@@ -105,8 +105,8 @@ module.exports = {
   ],
   themeConfig: {
     algolia: {
-      apiKey: '8be7ba7f75f58e8dade22b686b1f5d8c',
-      indexName: 'LUNASEC_DOCS',
+      apiKey: '3021482545ed8ba09aebac40e2eccccd',
+      indexName: 'lunasec',
       // Optional: see doc section below
       contextualSearch: true,
       // Optional: see doc section below
