@@ -141,7 +141,7 @@ export class LunaSecStackDockerCompose {
 
     const localBuildConfig = {
       build: {
-        context: 'js/docker/',
+        context: '.',
         dockerfile: 'js/docker/httpsproxy.dockerfile',
       },
     };

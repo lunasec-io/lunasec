@@ -4,7 +4,7 @@ RUN apt update && apt install curl
 
 RUN npm install -g local-ssl-proxy
 
-COPY ./proxy /proxy
+COPY ./js/docker/proxy /proxy
 
 WORKDIR /
 
