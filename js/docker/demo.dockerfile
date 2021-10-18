@@ -12,13 +12,13 @@ RUN npm rebuild sqlite3
 
 RUN yarn run compile:dev:sdks
 
-FROM lerna-bootstrap as demo-back-end
+FROM lerna-bootstrap as application-back-end
 
 WORKDIR /repo/js/demo-apps/packages/demo-back-end
 
 ENTRYPOINT yarn start:dev
 
-FROM lerna-bootstrap as react-front-end
+FROM lerna-bootstrap as application-front-end
 
 WORKDIR /repo/js/demo-apps/packages/react-front-end
 
