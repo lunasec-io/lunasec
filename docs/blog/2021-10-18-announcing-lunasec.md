@@ -85,8 +85,8 @@ Our secret is simple: We're a team of Security Engineers that have also built an
 We've been on both sides of the fence.
 
 Our approach is unique because we have seen how software exists in the real world. Unfortunately, software in the real
-world is painful and full of compromises. Those compromises degrade security over time that let cracks start to form.
-Eventually those cracks cascade and ultimately result in security issues like data leaks.
+world is painful and full of compromises. Those compromises degrade security over time and form cracks in the system.
+Eventually those cracks cascade and result in security issues like data leaks.
 
 With LunaSec, we hope to provide the tools and foundation to make it easier to keep data secure. Nothing is completely 
 free -- LunaSec still requires effort to onboard -- but at least we hope to make it easier than it was before and to
