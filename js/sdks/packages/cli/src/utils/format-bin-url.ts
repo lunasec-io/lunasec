@@ -17,7 +17,6 @@
 
 import os from 'os';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require('../../package.json');
 const packageVersion: string = packageJson.version;
 
