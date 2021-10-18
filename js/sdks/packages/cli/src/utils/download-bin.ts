@@ -14,16 +14,21 @@
  * limitations under the License.
  *
  */
-
 import fs from 'fs';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const axios = require('axios');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const decompress = require('decompress');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const decompressTargz = require('decompress-targz');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBar = require('progress');
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const binUrl = require('./format-bin-url');
 
 const binFolder = path.resolve(__dirname, '..', 'bin');
