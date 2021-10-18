@@ -23,6 +23,7 @@ import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { AUTHORIZATION_HEADER, CONFIG_DEFAULTS, SESSION_HASH_HEADER } from './constants';
 import { Configuration, DefaultApi, ErrorResponse, ErrorResponseError, MetaData } from './generated';
 import {
+  FileInfo,
   SuccessOrFailOutput,
   TokenizerClientConfig,
   TokenizerDetokenizeResponse,
@@ -269,5 +270,78 @@ export class Tokenizer {
 
       throw e;
     }
+  }
+
+  /**
+   * // Fetches file info needed by the browser to start a file download.  Grabs the file URL and metadata in parallel
+   * @param token
+   * @throws LunaSecError
+   */
+  async getFileInfo(token: string): Promise<FileInfo> {
+    const metaPromise = this.getMetadata(token);
+    const urlPromise = this.detokenizeToUrl(token);
+    const [metaRes, urlRes] = await Promise.all([metaPromise, urlPromise]);
+    if (!metaRes.success) {
+      throw metaRes.error;
+    }
+    if (!urlRes.success) {
+      throw urlRes.error;
+    }
+
+    const meta = metaRes.metadata;
+
+    if (meta.dataType !== 'file' || !('fileinfo' in meta)) {
+      throw new LunaSecError({
+        name: 'wrongMetaDataType',
+        code: '400',
+        message: "Couldn't find metadata information for a file, it may have been the wrong type of token.",
+      });
+    }
+
+    const fileMeta = meta.fileinfo;
+    return {
+      filename: fileMeta.filename,
+      options: {
+        lastModified: fileMeta.lastModified,
+        type: fileMeta.type,
+      },
+      headers: urlRes.headers,
+      url: urlRes.downloadUrl,
+    };
+  }
+
+  async downloadFileFromFileInfo(fileInfo: FileInfo) {
+    const axiosInstance = axios.create();
+    const res = await axiosInstance.get(fileInfo.url, {
+      headers: fileInfo.headers,
+      responseType: 'blob',
+    });
+    // const bits = await res.data;
+    return new File([res.data], fileInfo.filename, fileInfo.options);
+  }
+
+  async detokenizeFile(token: string): Promise<File> {
+    const fileInfo = await this.getFileInfo(token);
+    return this.downloadFileFromFileInfo(fileInfo);
+  }
+
+  async tokenizeFile(
+    file: File,
+    customMetadata: Record<string, unknown>
+  ): SuccessOrFailOutput<TokenizerTokenizeResponse> {
+    const arrayBuf = await file.arrayBuffer();
+    // Turn the JS ArrayBuffer into a Node type Buffer for tokenizer
+    // todo: try skipping this
+    const buf = Buffer.from(new Uint8Array(arrayBuf));
+    const meta: MetaData = {
+      dataType: 'file',
+      fileinfo: {
+        filename: file.name,
+        type: file.type,
+        lastModified: file.lastModified,
+      },
+      customFields: customMetadata,
+    };
+    return this.tokenize(buf, meta);
   }
 }

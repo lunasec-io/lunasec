@@ -101,7 +101,6 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     });
   }
 
-  // TODO: add the ability to remove a file
   processAddedFiles(files: FileWithPath[]) {
     // Single file mode for now to simplify things
     const file = files[0];

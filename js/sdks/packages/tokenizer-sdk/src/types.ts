@@ -29,6 +29,13 @@ export interface TokenizerClientConfig {
   lockToSession: boolean;
 }
 
+export interface FileInfo {
+  filename: string;
+  options: FilePropertyBag;
+  headers: Record<string, string>;
+  url: string;
+}
+
 // ______________________ tokenizer.ts Return Types _________________
 
 export interface TokenizerSetGrantResponse {
