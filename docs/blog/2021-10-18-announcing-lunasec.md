@@ -72,8 +72,8 @@ actually still do their jobs. The incentives are just not aligned to have securi
 
 That's the problem we aim to solve with LunaSec: We've built a suite of software libraries and services that you can
 integrate directly into your code. They're designed in a way that enables you to split access to sensitive data away 
-from your code. That means you're free to develop software without security reviews while also still guarantee that your user's data is 
-safe.
+from your code. That means you're free to develop software without security reviews while also still guaranteeing that 
+sensitive data remains safe.
 
 LunaSec is modular, too, so you can choose which [level of security](https://www.lunasec.io/docs/pages/overview/security/levels/)
 you need based on your security requirements. And, if they change in the future, you can easily migrate to another level
