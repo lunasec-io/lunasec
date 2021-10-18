@@ -29,6 +29,12 @@ if [ -z "$AWS_S3_BUCKET" ]; then
   exit 1
 fi
 
+
+if [ -z "$AWS_S3_BUCKET_PATH" ]; then
+  echo "AWS_S3_BUCKET_PATH is not set. Quitting."
+  exit 1
+fi
+
 if [ -z "$AWS_ACCESS_KEY_ID" ]; then
   echo "AWS_ACCESS_KEY_ID is not set. Quitting."
   exit 1
@@ -58,13 +64,13 @@ aws_access_key_id = ${AWS_ACCESS_KEY_ID}
 aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" > ~/.aws/credentials
 
 echo "Copying to AWS S3"
-aws s3 sync ${LOCAL_FILES_TO_COPY} s3://${AWS_S3_BUCKET} --exact-timestamps --delete --acl public-read --region ${AWS_DEFAULT_REGION} $*
+aws s3 sync ${LOCAL_FILES_TO_COPY} s3://${AWS_S3_BUCKET}/${AWS_S3_BUCKET_PATH} --exact-timestamps --delete --acl public-read --region ${AWS_DEFAULT_REGION} $*
 
 # This is necessary to ensure that the 404 page works properly because of weird S3 behavior.
 # If this is missing, the 404 page will attempt to point to broken assets because of mismatched hashes in the URL.
 # It would be nice if we could point to `/docs/index.html` and have S3 return that file during 404, but for some reason
 # the S3 console throws an error when we point it at that file... So we have to point it to the root `index.html`.
-aws s3 cp s3://${AWS_S3_BUCKET}/docs/index.html s3://${AWS_S3_BUCKET}/index.html --acl public-read --region ${AWS_DEFAULT_REGION}
+aws s3 cp s3://${AWS_S3_BUCKET}/${AWS_S3_BUCKET_PATH}/index.html s3://${AWS_S3_BUCKET}/index.html --acl public-read --region ${AWS_DEFAULT_REGION}
 
 echo "Invalidation CloudFront cache"
 aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION} --paths "/docs/*"
