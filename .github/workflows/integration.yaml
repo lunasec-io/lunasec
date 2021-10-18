@@ -100,6 +100,9 @@ jobs:
     - name: lerna bootstrap
       run: npx lerna bootstrap
 
+    - name: setup lunasec cli
+      run: yarn run lunasec:setup
+
     - name: run e2e tests
       run: yarn run lunasec start --no-sudo=true --local-build=true --env ci
 
