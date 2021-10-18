@@ -9,6 +9,19 @@ authors:
   image_url: https://github.com/freeqaz.png
   tags: [releases, lunasec]
 ---
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
 We are proud to announce that LunaSec has hit Version 1.0 and has been publicly released on our 
 [GitHub](https://github.com/lunasec-io/lunasec) page. With this release, we've officially hit "stable" and we are now 
 offering support for LunaSec (both paid support and support for our Open Source community).
@@ -102,7 +115,7 @@ We hope to build a community of like-minded individuals to make security tooling
 That's why LunaSec doesn't require re-writing your software from scratch -- you just simply [drop in a line of code](https://www.lunasec.io/docs/pages/overview/example-usage/#lunasecreact-sdk)
 to get onboard an app.
 
-### We're a business too
+### We're a business too!
 Purely Open Source projects are difficult to get support for because they exist only as passion projects for the maintainers.
 
 We're able to provide paid support and enterprise features because LunaSec is a business backed by 
