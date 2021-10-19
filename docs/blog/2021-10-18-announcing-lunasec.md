@@ -133,4 +133,6 @@ If you like what we're doing, and you would like to show your support, we have a
 - Deploy LunaSec in your infrastructure ([guide](https://www.lunasec.io/docs/pages/deployment/deploy-with-aws/)),
 - [Contact us](https://www.lunasec.io/contact) about our paid services (premium support, custom onboarding, and enterprise features)
 
-Thank you for learning about LunaSec and for being a part of the future of Open Source security software!
+Thank you for being a part of Open Source security software with LunaSec!
+
+<br/><br/>
