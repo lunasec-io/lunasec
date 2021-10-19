@@ -6,7 +6,8 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "yarn run openapi:generate && TYPEDOC_WATCH=true docusaurus start --port 4000",
-    "build": "yarn run openapi:generate && TYPEDOC_WATCH=false docusaurus build && yarn insert:analytics",
+    "build": "yarn run openapi:generate && TYPEDOC_WATCH=false yarn run build:docs && yarn insert:analytics",
+    "build:docs": "docusaurus build",
     "insert:analytics": "sh ./analytics/analytics-inserter.sh",
     "swizzle": "docusaurus swizzle",
     "deploy": "yarn run openapi:generate &&  docusaurus deploy",
