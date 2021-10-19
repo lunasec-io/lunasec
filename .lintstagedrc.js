@@ -18,6 +18,12 @@ const fs = require('fs');
 const uuid = require('uuid').v4;
 const yaml = require('js-yaml');
 
+// These are the various Regex checks used to identify files of interest for this script.
+/**
+ * This one is a little bit janky because we have to check for a ton of different filenames...
+ * If you know of a way to clean it up, feel free to. This seemed like the simplest solution though.
+ * @type {RegExp}
+ */
 const javascriptRegex = /\.(cj|mj|j|t)sx?$/i;
 const golangRegex = /\.go$/i;
 const markdownRegex = /\.mdx?$/i;
