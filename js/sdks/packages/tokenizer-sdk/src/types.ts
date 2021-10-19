@@ -75,4 +75,14 @@ export interface TokenizerFailApiResponse {
   error: LunaSecError;
 }
 
+export interface TokenizerDetokenizeFileInfo {
+  success: true;
+  fileInfo: FileInfo;
+}
+
+export interface TokenizerDetokenizeFileResponse {
+  success: true;
+  file: File;
+}
+
 export type SuccessOrFailOutput<S> = Promise<S | TokenizerFailApiResponse>;

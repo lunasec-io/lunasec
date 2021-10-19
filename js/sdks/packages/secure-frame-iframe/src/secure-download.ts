@@ -33,9 +33,13 @@ function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean, to
   async function triggerDownload(e: Event) {
     e.preventDefault();
     a.textContent = 'Loading...';
-    const f = await tokenizer.downloadFileFromFileInfo(fileInfo);
+    const f = await tokenizer.detokenizeFileFromFileInfo(fileInfo);
+    if (!f.success) {
+      a.textContent = 'Error';
+      throw e;
+    }
     a.download = fileInfo.filename;
-    a.href = URL.createObjectURL(f);
+    a.href = URL.createObjectURL(f.file);
     a.textContent = fileInfo.filename;
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     a.removeEventListener('click', triggerDownload);
@@ -52,8 +56,11 @@ function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean, to
 export async function handleDownload(token: string, a: HTMLAnchorElement, tokenizer: Tokenizer, hidden: boolean) {
   a.textContent = '...Loading';
   try {
-    const fileInfo = await tokenizer.getFileInfo(token);
-    setupLink(fileInfo, a, hidden, tokenizer);
+    const fileInfoRes = await tokenizer.detokenizeToFileInfo(token);
+    if (!fileInfoRes.success) {
+      throw fileInfoRes.error;
+    }
+    setupLink(fileInfoRes.fileInfo, a, hidden, tokenizer);
   } catch (e) {
     a.textContent = 'Error';
     throw e;

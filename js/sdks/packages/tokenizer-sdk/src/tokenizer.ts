@@ -18,6 +18,8 @@ import { OutgoingHttpHeaders } from 'http';
 
 import { LunaSecError } from '@lunasec/isomorphic-common';
 import axios, { AxiosError, AxiosResponse } from 'axios';
+import { Simulate } from 'react-dom/test-utils';
+import { FileWithPath } from 'react-dropzone';
 
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { AUTHORIZATION_HEADER, CONFIG_DEFAULTS, SESSION_HASH_HEADER } from './constants';
@@ -26,6 +28,8 @@ import {
   FileInfo,
   SuccessOrFailOutput,
   TokenizerClientConfig,
+  TokenizerDetokenizeFileInfo,
+  TokenizerDetokenizeFileResponse,
   TokenizerDetokenizeResponse,
   TokenizerDetokenizeToUrlResponse,
   TokenizerFailApiResponse,
@@ -71,7 +75,12 @@ export class Tokenizer {
     return new URL(this.config.host).origin;
   }
 
-  private handleError(e: AxiosError | Error): TokenizerFailApiResponse {
+  private handleError(e: AxiosError | Error | unknown): TokenizerFailApiResponse {
+    if (!(e instanceof Error)) {
+      // this will likely never happen but TS makes you handle it
+      throw e;
+    }
+    // this will be what happens
     return {
       success: false,
       error: this.constructError(e),
@@ -112,11 +121,7 @@ export class Tokenizer {
         success: res.data.success,
       };
     } catch (e) {
-      if (e instanceof Error) {
-        return this.handleError(e);
-      }
-
-      throw e;
+      return this.handleError(e);
     }
   }
 
@@ -134,11 +139,7 @@ export class Tokenizer {
         valid: res.data.data.valid,
       };
     } catch (e) {
-      if (e instanceof Error) {
-        return this.handleError(e);
-      }
-
-      throw e;
+      return this.handleError(e);
     }
   }
 
@@ -156,11 +157,7 @@ export class Tokenizer {
         tokenId: tokenId, // Not sure why we pass this back, seems useless in this context
       };
     } catch (e) {
-      if (e instanceof Error) {
-        return this.handleError(e);
-      }
-
-      throw e;
+      return this.handleError(e);
     }
   }
 
@@ -180,11 +177,7 @@ export class Tokenizer {
         tokenId: data.tokenId,
       };
     } catch (e) {
-      if (e instanceof Error) {
-        return this.handleError(e);
-      }
-
-      throw e;
+      return this.handleError(e);
     }
   }
 
@@ -264,42 +257,41 @@ export class Tokenizer {
         downloadUrl: downloadUrl,
       };
     } catch (e) {
-      if (e instanceof Error) {
-        return this.handleError(e);
-      }
-
-      throw e;
+      return this.handleError(e);
     }
   }
 
   /**
-   * // Fetches file info needed by the browser to start a file download.  Grabs the file URL and metadata in parallel
+   * // Fetches file info needed by the browser to start a file download.  Grabs the file URL and metadata in parallel.  Similar to detokenizeToUrl but for files
    * @param token
-   * @throws LunaSecError
    */
-  async getFileInfo(token: string): Promise<FileInfo> {
+  async detokenizeToFileInfo(token: string): SuccessOrFailOutput<TokenizerDetokenizeFileInfo> {
     const metaPromise = this.getMetadata(token);
+    // TODO: make this function able to skip detokenizing to URL optionally because sometimes we dont need it.
     const urlPromise = this.detokenizeToUrl(token);
     const [metaRes, urlRes] = await Promise.all([metaPromise, urlPromise]);
     if (!metaRes.success) {
-      throw metaRes.error;
+      return metaRes;
     }
     if (!urlRes.success) {
-      throw urlRes.error;
+      return urlRes;
     }
 
     const meta = metaRes.metadata;
 
     if (meta.dataType !== 'file' || !('fileinfo' in meta)) {
-      throw new LunaSecError({
-        name: 'wrongMetaDataType',
-        code: '400',
-        message: "Couldn't find metadata information for a file, it may have been the wrong type of token.",
-      });
+      return {
+        success: false,
+        error: new LunaSecError({
+          name: 'wrongMetaDataType',
+          code: '400',
+          message: "Couldn't find metadata information for a file, it may have been the wrong type of token.",
+        }),
+      };
     }
 
     const fileMeta = meta.fileinfo;
-    return {
+    const fileInfo: FileInfo = {
       filename: fileMeta.filename,
       options: {
         lastModified: fileMeta.lastModified,
@@ -308,40 +300,67 @@ export class Tokenizer {
       headers: urlRes.headers,
       url: urlRes.downloadUrl,
     };
-  }
-
-  async downloadFileFromFileInfo(fileInfo: FileInfo) {
-    const axiosInstance = axios.create();
-    const res = await axiosInstance.get(fileInfo.url, {
-      headers: fileInfo.headers,
-      responseType: 'blob',
-    });
-    // const bits = await res.data;
-    return new File([res.data], fileInfo.filename, fileInfo.options);
-  }
-
-  async detokenizeFile(token: string): Promise<File> {
-    const fileInfo = await this.getFileInfo(token);
-    return this.downloadFileFromFileInfo(fileInfo);
-  }
-
-  async tokenizeFile(
-    file: File,
-    customMetadata: Record<string, unknown>
-  ): SuccessOrFailOutput<TokenizerTokenizeResponse> {
-    const arrayBuf = await file.arrayBuffer();
-    // Turn the JS ArrayBuffer into a Node type Buffer for tokenizer
-    // todo: try skipping this
-    const buf = Buffer.from(new Uint8Array(arrayBuf));
-    const meta: MetaData = {
-      dataType: 'file',
-      fileinfo: {
-        filename: file.name,
-        type: file.type,
-        lastModified: file.lastModified,
-      },
-      customFields: customMetadata,
+    return {
+      success: true,
+      fileInfo,
     };
-    return this.tokenize(buf, meta);
+  }
+
+  /**
+   * Triggers a download of a file that we already got the file info for using getFileInfo.
+   * @param fileInfo LunaSec's custom FileInfo object which tells us about the tokenized file
+   */
+  async detokenizeFileFromFileInfo(fileInfo: FileInfo): SuccessOrFailOutput<TokenizerDetokenizeFileResponse> {
+    const axiosInstance = axios.create();
+    try {
+      const res = await axiosInstance.get(fileInfo.url, {
+        headers: fileInfo.headers,
+        responseType: 'blob',
+      });
+      return {
+        success: true,
+        file: new File([res.data], fileInfo.filename, fileInfo.options),
+      };
+    } catch (e) {
+      return this.handleError(e);
+    }
+    // const bits = await res.data;
+  }
+
+  async detokenizeFile(token: string): SuccessOrFailOutput<TokenizerDetokenizeFileResponse> {
+    const fileInfoRes = await this.detokenizeToFileInfo(token);
+    if (!fileInfoRes.success) {
+      return fileInfoRes;
+    }
+    return this.detokenizeFileFromFileInfo(fileInfoRes.fileInfo);
+  }
+
+  /**
+   * uploads a file into LunaSec and returns a tokenId, just like `tokenize`
+   * @param file
+   * @param customMetadata
+   */
+  async tokenizeFile(
+    file: File | FileWithPath,
+    customMetadata?: Record<string, unknown>
+  ): SuccessOrFailOutput<TokenizerTokenizeResponse> {
+    try {
+      const arrayBuf = await file.arrayBuffer();
+      // Turn the JS ArrayBuffer into a Node type Buffer for tokenizer
+      // todo: try skipping this
+      const buf = Buffer.from(new Uint8Array(arrayBuf));
+      const meta: MetaData = {
+        dataType: 'file',
+        fileinfo: {
+          filename: file.name,
+          type: file.type,
+          lastModified: file.lastModified,
+        },
+        customFields: customMetadata,
+      };
+      return this.tokenize(buf, meta);
+    } catch (e) {
+      return this.handleError(e);
+    }
   }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 jest.mock('axios');
 
@@ -162,6 +162,29 @@ describe('fetchData', () => {
         method: 'POST',
         url: 'http://fake-tokenizer-backend.com/grant/set',
       });
+    });
+  });
+
+  describe('files', () => {
+    beforeEach(() => {
+      // const axiosRes: { data: SetGrantResponse } = {
+      //   data: {
+      //     success: true,
+      //     data: {},
+      //   },
+      // };
+      // Todo: dont do this, just mock the internal methods of tokenizer
+      mockAxios.request.mockImplementation((config: AxiosRequestConfig) => {
+        console.log('MOCK AXIOS REQUEST CALLED WITH CONFIG ', config);
+        if (config.url === 'http://fake-tokenizer-backend.com/metadata/get') {
+          return Promise.resolve();
+        }
+        return Promise.resolve(null);
+      });
+    });
+    it.only('gets file info', async () => {
+      await tokenizer.detokenizeToFileInfo('fakeToken');
+      console.log('done');
     });
   });
 });
