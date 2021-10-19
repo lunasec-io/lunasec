@@ -1,3 +1,16 @@
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
 ---
 id: "guide"
 title: "Simple Setup"
@@ -10,11 +23,11 @@ custom_edit_url: null
 If you have chosen to use the Simple Tokenizer, as explained in [Choose your Setup](../choose-your-setup.md), let's get started
 adding the Simple Tokenizer to your web app.  
 
-#### Limitiations
+:::caution Limitiations
 Please note that the Simple Tokenizer doesn't interoperate with the rest of LunaSec's modules that you might see mentioned elsewhere in these docs,
 and automated migration to the full Dedicated Tokenizer from Simple has not yet been implemented.  What you see on this page 
-represents everything the simple tokenizer can do: tokenize and detokenize strings. It is, however, very easy to set up:
-
+represents everything the simple tokenizer can do: tokenize and detokenize strings. It is, however, very easy to set up.
+:::
 ## Express Plugin
 
 The plugin will add the tokenization backend routes to your app and use S3 as a database.
@@ -80,4 +93,4 @@ console.log('Decoded value is ', result.value)
 
 To see these in a more complete example inside a react app, see the Simple Tokenizer sections of [the demo app.](../../../overview/demo-app/walkthrough)
 
-To see the API Reference for these libraries, take a look at [the TypeDoc TODO LINK HERE](./guide.md).
+To see the API Reference for these libraries, take a look at [the TypeDoc for the Simple Tokenizer](/pages/tokenizer-sdk/classes/SimpleTokenizer/)
