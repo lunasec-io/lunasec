@@ -13,7 +13,7 @@
     "test:e2e:local": "cd js/demo-apps/packages/react-front-end && yarn run test:e2e",
     "test:unit:tokenizer": "cd js/sdks/packages/tokenizer-sdk && yarn run test",
     "test:unit:auth": "cd js/sdks/packages/browser-common && yarn run test",
-    "test:unit:go": "cd go && go test ./...",
+    "test:unit:go": "cd go && go test -cover ./...",
     "test:unit": "yarn test:unit:auth && yarn test:unit:tokenizer && yarn test:unit:go",
     "test:all": "yarn test:unit && yarn run test:e2e:local",
     "lint:fix": "yarn run lint -- --fix",
