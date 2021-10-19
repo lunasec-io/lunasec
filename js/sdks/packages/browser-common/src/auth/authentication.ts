@@ -27,6 +27,15 @@ const refreshInterval = 1 * 60000; // 5 mins
 let lastAuthenticatedTime: number | null = null;
 let authFlowInProgress: Promise<boolean> | null = null;
 
+declare global {
+  interface Window {
+    __DEBUG_LUNASEC_AUTH__: boolean | undefined;
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const log = window.__DEBUG_LUNASEC_AUTH__ === true ? console.log : () => {};
+
 // If you can figure out a simpler way to do this, please write it. This function:
 // 1 ) Starts the auth flow by calling authenticate session
 // 2 ) Starts a timer that will do the auth flow again on an interval
@@ -50,11 +59,11 @@ export class LunaSecAuthentication {
   }
 
   async startSessionManagement(): Promise<() => void> {
-    console.log('session management called');
+    log('session management called');
     await this.authenticateSession();
 
     const timer = setInterval(() => {
-      console.log('timer called authenticate session for a second run');
+      log('timer called authenticate session for a second run');
       this.authenticateSession().catch((e) => {
         throw e;
       });
@@ -71,18 +80,18 @@ export class LunaSecAuthentication {
     if (authFlowInProgress) {
       if (lastAuthenticatedTime) {
         // If a request is in flight but we already had an older session, just resolve immediately
-        console.log('previous request in flight but old session exists, returning instantly');
+        log('previous request in flight but old session exists, returning instantly');
         return;
       } else {
         // or if this is the first time and we dont have an older session, block until the session gets set
-        console.log('previous request in flight and no old session, returning request promise');
+        log('previous request in flight and no old session, returning request promise');
         return authFlowInProgress;
       }
     }
-    console.log('authenticate session not skipping');
+    log('authenticate session not skipping');
 
     if (!lastAuthenticatedTime || lastAuthenticatedTime < Date.now() - refreshInterval) {
-      console.log('need to fetch new session');
+      log('need to fetch new session');
       authFlowInProgress = this.validateOrCreateSession();
       const authSuccess = await authFlowInProgress;
       if (authSuccess) {
@@ -90,7 +99,7 @@ export class LunaSecAuthentication {
       }
       authFlowInProgress = null;
     } else {
-      console.log('authenticated recently enough to skip the auth flow');
+      log('authenticated recently enough to skip the auth flow');
     }
   }
 
@@ -104,12 +113,12 @@ export class LunaSecAuthentication {
     with 'no-cors' set. It is possible to experience an error in this request flow.
    */
   async validateOrCreateSession(): Promise<boolean> {
-    console.log('ensuring the secure frame has a valid session');
+    log('ensuring the secure frame has a valid session');
 
     // We can get NO information back from this call because of CORS, so we have to call again afterwards
     await this.authClient.ensureSession(this.sessionAuthProvider);
 
-    console.log('verifying the created session is valid');
+    log('verifying the created session is valid');
     const verifyResponse = await this.authClient.verifySession();
     if (!verifyResponse.success) {
       this.errorHandler(verifyResponse.error);
