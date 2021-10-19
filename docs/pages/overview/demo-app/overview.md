@@ -6,7 +6,6 @@ sidebar_position: 1
 ---
 
 # Demo Applications
- TODO: FIX THE GITHUB LINKS IN THIS PAGE WHEN WE PUBLISH, DONT FORGET TO POINT TO MASTER BRANCH
 
 The demo applications show how to integrate LunaSec into a modern web application.  The frontend uses React with MaterialUi
 and the backend server demonstrates both Express and GraphQL.

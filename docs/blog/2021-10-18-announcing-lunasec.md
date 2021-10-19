@@ -23,11 +23,14 @@ authors:
   ~
 -->
 We are proud to announce that LunaSec has hit Version 1.0 and has been publicly released on our 
-[GitHub](https://github.com/lunasec-io/lunasec) page. With this release, we've officially hit "stable" and we are now 
-offering support for LunaSec (both paid support and support for our Open Source community).
+[GitHub](https://github.com/lunasec-io/lunasec) page. With this release, we've officially hit **stable** and we are now 
+offering enterprise and open-source support for LunaSec.
 
-Please take a moment to learn about LunaSec by reading this post and show your support try our [example app](https://www.lunasec.io/docs/pages/overview/demo-app/overview/).
+AWS, NodeJS, and React is the fully supported stack at the moment, and now we are hard at work adding support for more environments.
 
+Please take a moment to learn about LunaSec by reading the rest of this post and trying the [example app](https://www.lunasec.io/docs/pages/overview/demo-app/overview/)(it's really easy).
+
+Read on....
 <!--truncate-->
 
 ## What problems does LunaSec solve?
@@ -43,19 +46,17 @@ to get right. Even large companies storing highly sensitive data suffer because 
 or because of [one engineer's actions](https://www.cnn.com/2019/07/29/business/capital-one-data-breach/index.html) 
 being able to bring the whole house of cards down.
 
-There has to be a better way to at least make it _harder_ for companies to screw up. It's embarrassing!
+There has to be a better way to at least make it _harder_ for companies to be caught with their security pants down. It's embarrassing!
 
 ## What is LunaSec?
-At it's core, LunaSec works by replacing sensitive data with meaningless identifiers known as "Tokens". Think of a long
+LunaSec does a lot, but the main way it works is by replacing sensitive data with meaningless identifiers known as "Tokens". Think of a long
 random number like a UUID (eg, `lunasec-a215783b-1f0d-4e2a-8e53-76951b9c60fe`). Your code then only ever deals with these 
 Tokens directly. All sensitive data lives in a dedicated encrypted database that's managed by LunaSec.
 
-This process isn't new. It's a common pattern used by enterprise companies known as "Tokenization". By itself, 
-Tokenization is basically just fancy encryption.
+A lot of security products do that, but LunaSec builds more security on-top of that idea than anyone else,
+because a lot of other pieces are needed to make that encryption actually *secure*.
 
-LunaSec isn't just a bunch of encryption code though. You still need a ton of other code to make encryption useful.
-
-### Steps to setup useful encryption:
+### The problems are:
 1. Encryption by itself isn't very useful if somebody can simply query the Database and grab the decryption keys.
 2. You also need to be able to restrict access to decryption keys if you want to be able to meaningfully protect data.
 3. And then you need to have logic to determine who is authorized to decrypt data...
@@ -66,19 +67,17 @@ LunaSec isn't just a bunch of encryption code though. You still need a ton of ot
 
 ... You get the point!
 
-Once you start adding in all the necessary components to make a secure system, it becomes very painful very fast. There
-is a lot of complexity to manage. It's simply too much complexity for most developers to deal with _and_ be able to
-actually still do their jobs. The incentives are just not aligned to have security forced onto teams.
+Once you start adding in all the necessary components to make a secure system, it becomes painful, fast. There
+is a lot of complexity to manage. It's simply too much complexity for most developers to deal with and still
+do their jobs. The incentives are just not aligned to have security forced onto teams.
 
 That's the problem we aim to solve with LunaSec: We've built a suite of software libraries and services that you can
 integrate directly into your code. They're designed in a way that enables you to split access to sensitive data away 
 from your code. That means you're free to develop software without security reviews while also still guaranteeing that 
 sensitive data remains safe.
 
-LunaSec is modular, too, so you can choose which [level of security](https://www.lunasec.io/docs/pages/overview/security/levels/)
-you need based on your security requirements. And, if they change in the future, you can easily migrate to another level
-without rewriting everything from scratch. (For example, you can import any NPM module [without fear](https://www.bleepingcomputer.com/news/security/52-percent-of-all-javascript-npm-packages-could-have-been-hacked-via-weak-credentials/)
-once you've fully onboarded with LunaSec)
+We made a few different levels of how far you want to integrate LunaSec.  The deeper you go, [the more protection from attacks you get](https://www.lunasec.io/docs/pages/overview/security/levels/). 
+When you need more protection, you can add integrate further.
 
 ## Why is LunaSec's approach unique?
 Our secret is simple: We're a team of Security Engineers that have also built and shipped production software. 
@@ -89,7 +88,7 @@ world is painful and full of compromises. Those compromises degrade security ove
 Eventually those cracks cascade and result in security issues like data leaks.
 
 With LunaSec, we hope to provide the tools and foundation to make it easier to keep data secure. Nothing is completely 
-free -- LunaSec still requires effort to onboard -- but at least we hope to make it easier than it was before and to
+free -- LunaSec still requires some effort to onboard -- but at least we hope to make it easier than it was before and to
 make it simpler for companies to prioritize security in the future.
 
 In that spirit, here are a few reasons we think LunaSec is unique:
@@ -113,7 +112,8 @@ We hope to build a community of like-minded individuals to make security tooling
 
 ### We've seen how technical debt bogs down developers and prevents them from fixing bugs (even when they would like to).
 That's why LunaSec doesn't require re-writing your software from scratch -- you just simply [drop in a line of code](https://www.lunasec.io/docs/pages/overview/example-usage/#lunasecreact-sdk)
-to get onboard an app.
+to get onboard an app.  For example, you can import any NPM module [without fear](https://www.bleepingcomputer.com/news/security/52-percent-of-all-javascript-npm-packages-could-have-been-hacked-via-weak-credentials/)
+once you've fully onboarded with LunaSec.
 
 ### We're a business too!
 Purely Open Source projects are difficult to get support for because they exist only as passion projects for the maintainers.
