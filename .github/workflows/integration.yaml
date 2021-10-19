@@ -87,12 +87,10 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
+    #happens with the rest of the unit tests now
 #    - name: Run Golang tests
 #      working-directory: go/
 #      run: go test -cover ./...
-
-    - name: Run Unit Tests
-      run: yarn test:unit
 
     - name: Run e2e tests
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --build --exit-code-from integration-test integration-test
