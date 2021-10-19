@@ -14,13 +14,14 @@
  * limitations under the License.
  *
  */
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
 jest.mock('axios');
 
 import { DetokenizeResponse, GetMetadataResponse, SetGrantResponse, TokenizeResponse } from '../generated';
 import { Tokenizer } from '../tokenizer';
 import {
+  FileInfo,
   TokenizerDetokenizeResponse,
   TokenizerGetMetadataResponse,
   TokenizerSetGrantResponse,
@@ -32,7 +33,7 @@ const mockAxios = axios as unknown as jest.Mocked<typeof axios>;
 const tokenizer = new Tokenizer({ host: 'http://fake-tokenizer-backend.com' });
 
 // TODO: test failure cases
-describe('fetchData', () => {
+describe('tokenizer', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mockAxios.create.mockReturnThis();
@@ -166,25 +167,53 @@ describe('fetchData', () => {
   });
 
   describe('files', () => {
+    const fakeFileInfo: FileInfo = {
+      filename: 'fakefile',
+      options: { lastModified: 123, type: 'application/pdf' },
+      headers: { fake: 'headers' },
+      url: 'www.fakeurl.com',
+    };
+    const fakeBlob = new Blob(['a', 'b', 'c'], { type: 'application/pdf' });
     beforeEach(() => {
-      // const axiosRes: { data: SetGrantResponse } = {
-      //   data: {
-      //     success: true,
-      //     data: {},
-      //   },
-      // };
-      // Todo: dont do this, just mock the internal methods of tokenizer
-      mockAxios.request.mockImplementation((config: AxiosRequestConfig) => {
-        console.log('MOCK AXIOS REQUEST CALLED WITH CONFIG ', config);
-        if (config.url === 'http://fake-tokenizer-backend.com/metadata/get') {
-          return Promise.resolve();
-        }
-        return Promise.resolve(null);
+      jest.spyOn(tokenizer, 'getMetadata').mockResolvedValue({
+        success: true,
+        metadata: {
+          dataType: 'file',
+          createdAt: 123,
+          fileinfo: { filename: 'fakefile', type: 'application/pdf', lastModified: 123 },
+        },
+        tokenId: 'fakeToken', // Not sure why we pass this back, seems useless in this context
+      });
+      jest.spyOn(tokenizer, 'detokenizeToUrl').mockResolvedValue({
+        success: true,
+        headers: { fake: 'headers' },
+        downloadUrl: 'www.fakeurl.com',
+        tokenId: 'fakeToken',
+      });
+
+      mockAxios.get.mockResolvedValue({
+        data: fakeBlob,
       });
     });
-    it.only('gets file info', async () => {
-      await tokenizer.detokenizeToFileInfo('fakeToken');
-      console.log('done');
+    it('gets file info', async () => {
+      const res = await tokenizer.detokenizeToFileInfo('fakeToken');
+      expect(res).toEqual({ success: true, fileInfo: fakeFileInfo });
+    });
+
+    it('detokenizes from file info', async () => {
+      const res = await tokenizer.detokenizeFileFromFileInfo(fakeFileInfo);
+      expect(res).toEqual({
+        success: true,
+        file: new File([fakeBlob], fakeFileInfo.filename, fakeFileInfo.options),
+      });
+    });
+
+    it('detokenizes from token', async () => {
+      const res = await tokenizer.detokenizeFile('fakeToken');
+      expect(res).toEqual({
+        success: true,
+        file: new File([fakeBlob], fakeFileInfo.filename, fakeFileInfo.options),
+      });
     });
   });
 });

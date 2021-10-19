@@ -18,7 +18,6 @@ import { OutgoingHttpHeaders } from 'http';
 
 import { LunaSecError } from '@lunasec/isomorphic-common';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { Simulate } from 'react-dom/test-utils';
 import { FileWithPath } from 'react-dropzone';
 
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
@@ -262,7 +261,9 @@ export class Tokenizer {
   }
 
   /**
-   * // Fetches file info needed by the browser to start a file download.  Grabs the file URL and metadata in parallel.  Similar to detokenizeToUrl but for files
+   * // Fetches file info and pre-signed URL needed to start a file download.
+   * Useful when we want to prepare the option to start a download but not yet start one.
+   * Grabs the file URL and metadata in parallel.  Similar to detokenizeToUrl but for files
    * @param token
    */
   async detokenizeToFileInfo(token: string): SuccessOrFailOutput<TokenizerDetokenizeFileInfo> {
@@ -307,7 +308,8 @@ export class Tokenizer {
   }
 
   /**
-   * Triggers a download of a file that we already got the file info for using getFileInfo.
+   * BROWSER ONLY
+   * Triggers a download of a file that we already got the file info for using getFileInfo
    * @param fileInfo LunaSec's custom FileInfo object which tells us about the tokenized file
    */
   async detokenizeFileFromFileInfo(fileInfo: FileInfo): SuccessOrFailOutput<TokenizerDetokenizeFileResponse> {
@@ -327,6 +329,11 @@ export class Tokenizer {
     // const bits = await res.data;
   }
 
+  /**
+   * BROWSER ONLY
+   * Takes a token and downloads and returns a File object, complete with proper name, mime type, and lastModified fields
+   * @param token
+   */
   async detokenizeFile(token: string): SuccessOrFailOutput<TokenizerDetokenizeFileResponse> {
     const fileInfoRes = await this.detokenizeToFileInfo(token);
     if (!fileInfoRes.success) {
@@ -336,6 +343,7 @@ export class Tokenizer {
   }
 
   /**
+   * BROWSER ONLY
    * uploads a file into LunaSec and returns a tokenId, just like `tokenize`
    * @param file
    * @param customMetadata
