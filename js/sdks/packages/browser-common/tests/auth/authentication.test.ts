@@ -28,11 +28,9 @@ let startSessionManagement: () => Promise<() => void>;
 let client: jest.MockedClass<typeof SecureFrameAuthClient>;
 let clientMethods: typeof client.prototype;
 
-declare global {
-  interface Window {
-    LUNASEC_AUTH_ERROR_HANDLER?: (e: Error) => void;
-  }
-}
+// // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// // @ts-ignore
+// window.__DEBUG_LUNASEC_AUTH__ = true; // USE THIS IF YOU NEED TO DEBUG ANYTHING
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 console.debug = () => {};
