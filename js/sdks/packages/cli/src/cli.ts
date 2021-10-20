@@ -77,9 +77,14 @@ yargs
 
       const homeDir = os.homedir();
 
-      const composePath = path.join(homeDir, '.lunasec');
+      let composePath = path.join(homeDir, '.lunasec');
       if (!fs.existsSync(composePath)) {
         fs.mkdirSync(composePath);
+      }
+
+      // if we are not in demo mode or in dev but not building locally, then write to the current directory
+      if (!(foundEnv[0] === 'demo' || (foundEnv[0] === 'dev' && !args['local-build']))) {
+        composePath = process.cwd();
       }
 
       const composeFile = stack.write(composePath);
