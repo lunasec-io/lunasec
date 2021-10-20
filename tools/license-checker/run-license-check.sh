@@ -15,6 +15,8 @@ if [ "$LICENSE_TOOL_COMMAND" == "fix" ]; then
 elif [ "$LICENSE_TOOL_COMMAND" == "check" ]; then
   $LICENSE_TOOL_PATH -c "$ROOT_REPO_DIRECTORY"/configs/apache2.yaml -v error header check
   $LICENSE_TOOL_PATH -c "$ROOT_REPO_DIRECTORY"/configs/CC-BY-SA-4_0.yaml -v error header check
+elif [ "$LICENSE_TOOL_COMMAND" == "with-config" ]; then
+  $LICENSE_TOOL_PATH -c "$ROOT_REPO_DIRECTORY"/configs/"$2" -v error header fix
 else
     echo "Missing license check command -- Must be 'fix' or 'check'."
 fi
