@@ -1,5 +1,5 @@
 # Pulls from this cache with multiple build requirements like java and aws, not just npm
-FROM lunasec/cached-npm-dependencies:v0.0.5 as lerna-bootstrap
+FROM lunasec/cached-npm-dependencies:v0.0.6 as lerna-bootstrap
 
 COPY . /repo
 
@@ -10,8 +10,8 @@ WORKDIR /repo
 # node_modules/
 #
 # Uncomment to make replicable builds
-# RUN lerna bootstrap --ignore-scripts --ci
-# RUN npm cache clean --force
+RUN lerna bootstrap --ignore-scripts --ci
+RUN npm cache clean --force
 #
 # RUN npm rebuild sqlite3
 

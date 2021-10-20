@@ -3,6 +3,7 @@
 export DOCKER_BUILDKIT=1
 
 if [ "$1" == "build" ]; then
+  docker build -f js/docker/dependency-precache.dockerfile . -t "lunasec/cached-npm-dependencies:${VERSION}"
   docker build -f js/docker/demo.dockerfile . --target demo-back-end -t "lunasec/application-back-end-demo:${VERSION}"
   docker build -f js/docker/demo.dockerfile . --target react-front-end -t "lunasec/application-front-end-demo:${VERSION}"
   docker build -f js/docker/demo.dockerfile . --target secure-frame-iframe -t "lunasec/secure-frame-iframe-demo:${VERSION}"
