@@ -2,7 +2,6 @@
 .idea/
 .github/
 
-node_modules/
 docs/
 
 docker-compose.yaml
@@ -10,5 +9,4 @@ docker-compose.ci.yaml
 js/docker/demo.dockerfile
 
 **/build/
-**/node_modules/
 outputs/

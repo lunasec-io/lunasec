@@ -5,10 +5,15 @@ COPY . /repo
 
 WORKDIR /repo
 
-RUN lerna bootstrap --ignore-scripts --ci
-RUN npm cache clean --force
-
-RUN npm rebuild sqlite3
+# Add the following lines to .dockerignore
+# **/node_modules/
+# node_modules/
+#
+# Uncomment to make replicable builds
+# RUN lerna bootstrap --ignore-scripts --ci
+# RUN npm cache clean --force
+#
+# RUN npm rebuild sqlite3
 
 RUN yarn run compile:dev:sdks
 
