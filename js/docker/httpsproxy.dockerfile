@@ -1,6 +1,6 @@
 FROM node:14
 
-RUN apt update && apt install curl
+RUN apt update && apt install -y curl
 
 RUN npm install -g local-ssl-proxy
 
