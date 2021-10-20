@@ -12,12 +12,12 @@ ENV NODE_OPTIONS "--unhandled-rejections=strict"
 
 RUN yarn global add lerna
 
-# COPY . /repo
+COPY . /repo
 
-# WORKDIR /repo
+WORKDIR /repo
 
-# RUN lerna bootstrap --ignore-scripts --ci
+RUN lerna bootstrap --ignore-scripts --ci
 
-# WORKDIR ../
+WORKDIR ../
 
-# RUN rm -rf /repo
+RUN rm -rf /repo

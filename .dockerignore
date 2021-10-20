@@ -9,3 +9,7 @@ docker-compose.ci.yaml
 js/docker/demo.dockerfile
 
 outputs/
+
+**/build/
+**/node_modules/
+node_modules/

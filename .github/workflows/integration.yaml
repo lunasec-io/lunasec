@@ -90,9 +90,9 @@ jobs:
     - name: run golang tests
       working-directory: go/
       run: go test -cover ./...
-
-    - name: lerna bootstrap
-      run: npx lerna bootstrap
+#
+#    - name: lerna bootstrap
+#      run: npx lerna bootstrap
 
     - name: setup lunasec cli
       run: yarn run lunasec:setup

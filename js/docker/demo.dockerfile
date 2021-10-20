@@ -1,19 +1,15 @@
 # Pulls from this cache with multiple build requirements like java and aws, not just npm
-FROM lunasec/cached-npm-dependencies:v0.0.6 as lerna-bootstrap
+FROM lunasec/cached-npm-dependencies:v0.0.7 as lerna-bootstrap
 
 COPY . /repo
 
 WORKDIR /repo
 
-# Add the following lines to .dockerignore
-# **/node_modules/
-# node_modules/
-#
 # Uncomment to make replicable builds
 RUN lerna bootstrap --ignore-scripts --ci
 RUN npm cache clean --force
 #
-# RUN npm rebuild sqlite3
+RUN npm rebuild sqlite3
 
 RUN yarn run compile:dev:sdks
 

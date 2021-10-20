@@ -4,7 +4,7 @@
   "description": "This monorepo holds the LunaSec SDKs, servers, and demo application.",
   "private": true,
   "scripts": {
-    "lunasec:setup": "cd js/sdks/packages/cli && yarn run compile && npm link",
+    "lunasec:setup": "cd js/sdks/packages/cli && yarn install && yarn run compile && npm link",
     "lunasec": "lunasec",
     "start:services": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up tokenizerbackend",
     "license:check": "./tools/license-checker/run-license-check.sh check",
