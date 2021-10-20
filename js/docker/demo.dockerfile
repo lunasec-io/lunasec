@@ -35,13 +35,15 @@ ENTRYPOINT lunasec
 
 FROM cypress/included:8.6.0 as integration-test
 
+RUN cypress install --force
+
 ENV VERBOSE_CYPRESS_LOGS="always"
 
 COPY --from=lerna-bootstrap /repo /repo
-# Copies the cypress binary over.  Might work, not sure.
-COPY --from=lerna-bootstrap /root/.cache /root/.cache
 
 WORKDIR /repo/
+
+ENTRYPOINT yarn run test:all
 
 FROM lerna-bootstrap as secure-frame-iframe
 

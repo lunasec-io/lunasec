@@ -11,3 +11,4 @@ js/docker/demo.dockerfile
 
 **/build/
 **/node_modules/
+outputs/

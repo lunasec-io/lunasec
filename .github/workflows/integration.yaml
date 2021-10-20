@@ -29,7 +29,7 @@ on:
         default: 'false'
 
 jobs:
-  build:
+  integration-test:
     runs-on: ubuntu-latest
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
@@ -90,12 +90,6 @@ jobs:
     - name: run golang tests
       working-directory: go/
       run: go test -cover ./...
-
-    - uses: actions/cache@v2
-      with:
-        path: |
-          node_modules
-        key: ${{ runner.os }}-modules-${{ hashFiles('yarn.lock') }}
 
     - name: lerna bootstrap
       run: npx lerna bootstrap

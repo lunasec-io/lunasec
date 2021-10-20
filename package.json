@@ -69,6 +69,7 @@
   "workspaces": {
     "packages": [
       "./go",
+      "./js/sdks",
       "./js/sdks/packages/*",
       "./js/service/packages/*",
       "./js/demo-apps/packages/*",
@@ -80,7 +81,8 @@
       "**/eslint",
       "**/ts-node",
       "**/webpack",
-      "**/@docusaurus/core"
+      "**/@docusaurus/core",
+      "**/babel-loader"
     ]
   }
 }

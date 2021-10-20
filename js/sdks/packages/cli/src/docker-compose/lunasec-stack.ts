@@ -19,7 +19,7 @@ import path from 'path';
 
 import { dump } from 'js-yaml';
 
-import { ComposeSpecification, DefinitionsService } from './docker-compose';
+import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
 
 export const LunaSecStackEnvironments = ['dev', 'demo', 'ci'] as const;
 export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];

@@ -21,13 +21,13 @@ docker-release:
 	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=dev -t lunasec/tokenizer-backend-demo:${version} -f docker/tokenizerbackend.dockerfile .
 
 docker-release-tokenizerbackend:
-	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda --build-arg VERSION=${version} -t lunasec/tokenizer-backend:${version} -f docker/Dockerfile.tokenizerbackend .
+	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda --build-arg VERSION=${version} -t lunasec/tokenizer-backend:${version} -f docker/tokenizerbackend.dockerfile .
 
 docker-local-tokenizerbackend:
-	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=dev --build-arg VERSION=${version} -t lunasec/tokenizer-backend-dev:${version} -f docker/Dockerfile.tokenizerbackend .
+	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=dev --build-arg VERSION=${version} -t lunasec/tokenizer-backend-dev:${version} -f docker/tokenizerbackend.dockerfile .
 
 docker-release-analyticscollector:
-	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda --build-arg VERSION=${version} -t lunasec/analytics-collector:${version} -f docker/Dockerfile.analyticscollector .
+	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda --build-arg VERSION=${version} -t lunasec/analytics-collector:${version} -f docker/analyticscollector.dockerfile .
 
 docker-release: docker-release-tokenizerbackend docker-release-analyticscollector
 	echo "created docker releases for version ${version}"

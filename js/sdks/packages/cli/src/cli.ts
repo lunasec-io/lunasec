@@ -44,6 +44,13 @@ yargs
         default: false,
         description: 'Build the LunaSec stack locally (command should be run from monorepo root).',
       },
+      'force-rebuild': {
+        type: 'boolean',
+        required: false,
+        default: false,
+        description:
+          'Rebuild the LunaSec stack (command should be run from monorepo root). Only works if used with `--local-build`.',
+      },
       'no-sudo': {
         type: 'boolean',
         required: false,
@@ -52,6 +59,10 @@ yargs
       },
     },
     (args) => {
+      if (args['force-rebuild'] && !args['local-build']) {
+        throw new Error('Attempted to force a rebuild without specifying `--local-build`.');
+      }
+
       const foundEnv = LunaSecStackEnvironments.filter((env) => env === args.env);
       if (foundEnv.length !== 1) {
         throw new Error(`Provided environment is not one of: ${LunaSecStackEnvironments.join(', ')}`);
@@ -59,33 +70,27 @@ yargs
 
       const stack = new LunaSecStackDockerCompose(foundEnv[0], version, args['local-build']);
 
-      const env = {
-        ...process.env,
-        COMPOSE_DOCKER_CLI_BUILD: '1',
-        DOCKER_BUILDKIT: '1',
-      };
-
       const useSudo = args['no-sudo'] ? '' : 'sudo ';
 
+      const envOverride = 'COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1';
+
+      const homeDir = os.homedir();
+      const composePath = path.join(homeDir, '.lunasec');
+      const composeFile = stack.write(composePath);
+
+      const directory = `--project-directory ${process.cwd()}`;
+
+      const forceRebuild = args['force-rebuild'] ? '--build' : '';
+
+      const baseCmd = `${useSudo} ${envOverride} docker-compose -f ${composeFile} ${directory} up ${forceRebuild}`;
+
       if (foundEnv[0] === 'ci') {
-        const composeFile = stack.write(process.cwd());
-
         // TODO (cthompson) this is a hack for now, we probably want to find a better way of building this command
-        runCommand(
-          'sh',
-          [
-            '-c',
-            useSudo + `docker-compose -f ${composeFile} up --build --exit-code-from integration-test integration-test`,
-          ],
-          env
-        );
-      } else {
-        const homeDir = os.homedir();
-        const composePath = path.join(homeDir, '.lunasec');
-        const composeFile = stack.write(composePath);
-
-        runCommand('sh', ['-c', useSudo + `docker-compose -f ${composeFile} up`], env);
+        runCommand('sh', ['-c', `${baseCmd} --force-recreate --exit-code-from integration-test integration-test`]);
+        return;
       }
+
+      runCommand('sh', ['-c', baseCmd]);
     }
   )
   .command(
