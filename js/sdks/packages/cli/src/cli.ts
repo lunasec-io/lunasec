@@ -16,6 +16,7 @@
  *
  */
 
+import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
@@ -75,7 +76,12 @@ yargs
       const envOverride = 'COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1';
 
       const homeDir = os.homedir();
+
       const composePath = path.join(homeDir, '.lunasec');
+      if (!fs.existsSync(composePath)) {
+        fs.mkdirSync(composePath);
+      }
+
       const composeFile = stack.write(composePath);
 
       const directory = `--project-directory ${process.cwd()}`;
