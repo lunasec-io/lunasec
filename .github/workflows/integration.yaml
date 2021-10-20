@@ -29,7 +29,7 @@ on:
         default: 'false'
 
 jobs:
-  build:
+  integration-test:
     runs-on: ubuntu-latest
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
@@ -37,6 +37,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        cache: yarn
 
     - uses: actions/setup-go@v2
       with:
@@ -61,11 +66,6 @@ jobs:
 #        username: ${{ secrets.DOCKERHUB_USERNAME }}
 #        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 #        compose_file: docker-compose.yaml > docker-compose.ci.yaml
-
-#    - uses: actions/setup-node@v2
-#      with:
-#        node-version: '14'
-#        cache: yarn
 #
 #    - uses: actions/setup-go@v2
 #      with:
@@ -87,13 +87,11 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
-    #happens with the rest of the unit tests now
-#    - name: Run Golang tests
-#      working-directory: go/
-#      run: go test -cover ./...
+    - name: setup lunasec cli
+      run: yarn run lunasec:setup
 
-    - name: Run e2e tests
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --build --exit-code-from integration-test integration-test
+    - name: run e2e tests
+      run: yarn run lunasec start --no-sudo=true --local-build=true --env ci
 
     - name: docker logs
       if: always()
@@ -102,7 +100,7 @@ jobs:
 
     - name: docker compose logs
       if: always()
-      run: docker-compose logs
+      run: docker-compose -f docker-compose.ci.yaml logs
 
     - uses: actions/upload-artifact@v2
       if: always()

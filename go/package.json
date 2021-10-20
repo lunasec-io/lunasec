@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "golangci-lint run",
     "format": "gofmt -w .",
-    "compile:release": "make release version=\"$(npm run --silent version)\"",
-    "publish:release": "make publish version=\"$(npm run --silent version)\"",
+    "compile:release": "make release version=\"$(yarn run --silent version)\"",
+    "publish:release": "make publish version=\"$(yarn run --silent version)\"",
     "version": "node -p 'require(\"./package.json\").version'"
   },
   "author": "lunasec",

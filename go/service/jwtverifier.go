@@ -73,7 +73,7 @@ func NewJwtVerifier(
 		}
 		logger.Debug("loaded public key from config file")
 	} else if serviceConfig.JwksURL != "" {
-		jwksManager, err = NewJwksManager(serviceConfig.JwksURL, true)
+		jwksManager, err = NewJwksManager(logger, serviceConfig.JwksURL, true)
 		if err != nil {
 			logger.Error(
 				"Error fetching JSON Web Key(JWKS) from application backend. Is your application backend running? Env var is ",
