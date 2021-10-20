@@ -8,5 +8,4 @@ docker-compose.yaml
 docker-compose.ci.yaml
 js/docker/demo.dockerfile
 
-**/build/
 outputs/
