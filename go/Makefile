@@ -16,20 +16,16 @@ all:
 cli-release:
 	goreleaser build --rm-dist
 
-docker-release:
-	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda -t lunasec/tokenizer-backend:${version} -f docker/tokenizerbackend.dockerfile .
-	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=dev -t lunasec/tokenizer-backend-demo:${version} -f docker/tokenizerbackend.dockerfile .
-
 docker-release-tokenizerbackend:
 	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda --build-arg VERSION=${version} -t lunasec/tokenizer-backend:${version} -f docker/tokenizerbackend.dockerfile .
 
-docker-local-tokenizerbackend:
+docker-dev-tokenizerbackend:
 	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=dev --build-arg VERSION=${version} -t lunasec/tokenizer-backend-dev:${version} -f docker/tokenizerbackend.dockerfile .
 
 docker-release-analyticscollector:
 	DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TAG=lambda --build-arg VERSION=${version} -t lunasec/analytics-collector:${version} -f docker/analyticscollector.dockerfile .
 
-docker-release: docker-release-tokenizerbackend docker-release-analyticscollector
+docker-release: docker-release-tokenizerbackend docker-dev-tokenizerbackend docker-release-analyticscollector
 	echo "created docker releases for version ${version}"
 
 cli-publish:
@@ -37,7 +33,7 @@ cli-publish:
 
 docker-publish:
 	docker push lunasec/tokenizer-backend:${version}
-	docker push lunasec/tokenizer-backend-demo:${version}
+	docker push lunasec/tokenizer-backend-dev:${version}
 	docker push lunasec/analytics-collector:${version}
 
 release: docker-release cli-release

@@ -5,7 +5,7 @@
 docs/
 
 docker-compose.yaml
-docker-compose.ci.yaml
+docker-compose.*.yaml
 js/docker/demo.dockerfile
 
 outputs/
