@@ -4,7 +4,19 @@ title: "Mitre CWE Top 25 Weaknesses"
 sidebar_label: "Mitre CWE Top 25 Weaknesses"
 sidebar_position: 7
 ---
-
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
 [2021 Common Weakness Enumeration (CWE) 25 Most Dangerous Software Weaknesses](https://cwe.mitre.org/top25/archive/2021/2021_cwe_top25.html)
 
 NOTE: Some weaknesses from this list are not applicable since they only apply to certain software languages which LunaSec does not support.
