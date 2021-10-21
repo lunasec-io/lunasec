@@ -49,9 +49,9 @@ interface healthCheckOptions {
 function serviceHealthCheck(port: number, options?: healthCheckOptions) {
   return {
     test: ['CMD-SHELL', `curl -k http://localhost:${port}`],
-    timeout: '5s',
+    timeout: '30s',
     interval: '10s',
-    retries: 5,
+    retries: 10,
     ...options,
   };
 }
@@ -200,11 +200,7 @@ export class LunaSecStackDockerCompose {
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        healthcheck: serviceHealthCheck(3000, {
-          timeout: '30s',
-          interval: '10s',
-          retries: 10,
-        }),
+        healthcheck: serviceHealthCheck(3000),
       },
     };
   }
