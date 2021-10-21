@@ -28,9 +28,6 @@ docker-release-analyticscollector:
 docker-release: docker-release-tokenizerbackend docker-dev-tokenizerbackend docker-release-analyticscollector
 	echo "created docker releases for version ${version}"
 
-cli-publish:
-	goreleaser release --rm-dist
-
 docker-publish:
 	docker push lunasec/tokenizer-backend:${version}
 	docker push lunasec/tokenizer-backend-dev:${version}
@@ -39,7 +36,7 @@ docker-publish:
 release: docker-release cli-release
 	echo "completed building releases for ${version}"
 
-publish: docker-publish cli-publish
+publish: docker-publish
 	echo "pushed releaser for ${version}"
 
 release-clean:
