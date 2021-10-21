@@ -13,6 +13,7 @@ if [ "$1" == "build" ]; then
 fi
 
 if [ "$1" == "publish" ]; then
+  docker push "lunasec/cached-npm-dependencies:${VERSION}"
   docker push "lunasec/application-back-end-demo:${VERSION}"
   docker push "lunasec/application-front-end-demo:${VERSION}"
   docker push "lunasec/secure-frame-iframe-demo:${VERSION}"
