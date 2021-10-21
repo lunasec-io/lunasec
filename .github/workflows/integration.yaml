@@ -41,7 +41,7 @@ jobs:
 
     - uses: actions/checkout@v2
       with:
-        ref: 0
+        fetch-depth: 0
 
     # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
     - name: Merge target branch

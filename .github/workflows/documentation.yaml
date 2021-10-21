@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: 0
+          fetch-depth: 0
 
       - name: Merge target branch
         run: git merge origin/${{ github.event.pull_request.base.ref }}
