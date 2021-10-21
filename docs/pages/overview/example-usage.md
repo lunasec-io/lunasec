@@ -1,3 +1,16 @@
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
 ---
 id: "example-usage"
 title: "LunaSec Example Usage"
@@ -15,6 +28,7 @@ These snippets give you an example of how the library works.  For a complete and
 
 ## `@lunasec/react-sdk`
 The frontend component of the LunaSec Stack.  Turns your form inputs and other elements into [Secure Frames](./features.md#secure-frame). Support for other frameworks is in development.
+
 
 ### Example usage
 #### ClientSide React Form
