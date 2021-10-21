@@ -14,8 +14,16 @@
  * limitations under the License.
  *
  */
-import { Ref } from "vue";
+import { onMounted, ref } from "vue";
 
-export default function setupSecureComponent(ref: Ref) {
-  console.log("ref passed ", ref);
+export default function setupSecureComponent() {
+  const wrappedElementRef = ref(null);
+
+  onMounted(() => {
+    console.log("value of ref is ", wrappedElementRef.value);
+  });
+
+  return {
+    wrappedElementRef,
+  };
 }
