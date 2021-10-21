@@ -1,3 +1,9 @@
+---
+id: "example-usage"
+title: "LunaSec Example Usage"
+sidebar_label: "Example Usage"
+sidebar_position: 3
+---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
   ~
@@ -11,13 +17,6 @@
   ~ limitations under the License.
   ~
 -->
----
-id: "example-usage"
-title: "LunaSec Example Usage"
-sidebar_label: "Example Usage"
-sidebar_position: 3
----
-
 # Example Usage
 You'll only need two libraries to use LunaSec, one for the 
 client and one for the server.  
