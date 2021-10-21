@@ -104,7 +104,7 @@ jobs:
 
     - name: docker compose logs
       if: always()
-      run: docker-compose -f docker-compose.ci.yaml logs
+      run: docker-compose -f docker-compose.tests.yaml logs
 
     - uses: actions/upload-artifact@v2
       if: always()
