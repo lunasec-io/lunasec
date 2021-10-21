@@ -10,6 +10,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@lunasec/browser-common": "^0.0.1-alpha.20",
     "core-js": "^3.6.5",
     "vue": "^3.0.0"
   },
