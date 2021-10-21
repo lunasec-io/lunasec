@@ -20,8 +20,8 @@ name: CI
 on:
   pull_request:
     branches: [master, '**']
-#  push:
-#    branches: [master]
+  push:
+    branches: [master]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
@@ -40,9 +40,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Merge target branch
-      if: ${{ github.event_name == "pull_request" }} #TODO CHECK THIS WORKS
-      run: git fetch && git merge ${{ github.event.pull_request.base.ref }}
+#    - name: Merge target branch
+#      if: ${{ github.event_name == "pull_request" }} #TODO CHECK THIS WORKS
+#      run: git fetch && git merge ${{ github.event.pull_request.base.ref }}
 
     - uses: actions/setup-node@v2
       with:
