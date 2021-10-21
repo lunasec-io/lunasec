@@ -41,7 +41,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Merge target branch
-      if: ${{ github.event_name == "pull_request" }} #TODO CHECK THIS WORKS
+#      if: ${{ github.event_name == "pull_request" }} #TODO CHECK THIS WORKS
       run: echo "FAKE TEST"
 
     - uses: actions/setup-node@v2
