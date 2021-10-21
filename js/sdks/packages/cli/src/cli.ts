@@ -24,7 +24,9 @@ import * as yargs from 'yargs';
 
 import { LunaSecStackDockerCompose, LunaSecStackEnvironments } from './docker-compose/lunasec-stack';
 import { runCommand } from './utils/exec';
-import { version } from './version';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version } = require('../package.json');
 
 yargs
   .scriptName('lunasec')
@@ -95,7 +97,7 @@ yargs
 
       const baseCmd = `${useSudo} ${envOverride} docker-compose -f ${composeFile} ${directory} up ${forceRebuild}`;
 
-      if (foundEnv[0] === 'ci') {
+      if (foundEnv[0] === 'tests') {
         // TODO (cthompson) this is a hack for now, we probably want to find a better way of building this command
         runCommand('sh', ['-c', `${baseCmd} --force-recreate --exit-code-from integration-test integration-test`]);
         return;

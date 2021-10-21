@@ -21,7 +21,7 @@ import { dump } from 'js-yaml';
 
 import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
 
-export const LunaSecStackEnvironments = ['dev', 'demo', 'ci'] as const;
+export const LunaSecStackEnvironments = ['dev', 'demo', 'tests'] as const;
 export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];
 
 type LunaSecService =
@@ -343,7 +343,7 @@ export class LunaSecStackDockerCompose {
 
     const demoServices = [...tokenizerBackendServices, this.applicationFrontEnd(), this.applicationBackEnd()];
 
-    const ciServices = [...demoServices, this.integrationTest()];
+    const testsServices = [...demoServices, this.integrationTest()];
 
     if (this.env === 'dev') {
       return tokenizerBackendServices;
@@ -353,8 +353,8 @@ export class LunaSecStackDockerCompose {
       return demoServices;
     }
 
-    if (this.env === 'ci') {
-      return ciServices;
+    if (this.env === 'tests') {
+      return testsServices;
     }
     return null;
   }
