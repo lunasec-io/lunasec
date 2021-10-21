@@ -71,11 +71,6 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - name: Install GoReleaser
-        uses: goreleaser/goreleaser-action@v2
-        with:
-          install-only: true
-
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
