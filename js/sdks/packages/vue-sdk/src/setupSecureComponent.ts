@@ -14,13 +14,21 @@
  * limitations under the License.
  *
  */
-import { onMounted, ref } from "vue";
-
-export default function setupSecureComponent() {
+import { onMounted, ref, Ref } from "vue";
+import { getStyleInfo } from "@lunasec/browser-common";
+function cloneStyle(ref: Ref) {
+  return getStyleInfo(ref.value);
+}
+export default function setupSecureComponent(
+  dummyRefName: string,
+  dummyStyleRefName: string
+) {
   const wrappedElementRef = ref(null);
 
   onMounted(() => {
-    console.log("value of ref is ", wrappedElementRef.value);
+    // console.log("value of ref is ", wrappedElementRef.value);
+    // todo: handle the need to pass a different ref for inputs
+    cloneStyle(wrappedElementRef);
   });
 
   return {

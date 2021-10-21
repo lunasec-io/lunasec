@@ -1,9 +1,10 @@
 <template>
-  <input ref="wrappedElementRef" />
+  <input ref="dummyElementRef" />
+  <input ref="dummyStyleRef" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import setupSecureComponent from "@/setupSecureComponent";
 export default defineComponent({
   name: "Demo",
