@@ -18,6 +18,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
+	"go.uber.org/zap"
 	"gopkg.in/square/go-jose.v2"
 	"net/http"
 	"sync"
@@ -26,8 +27,11 @@ import (
 
 // from: https://github.com/upgear/go-jwks/blob/master/client.go
 
+const maxRetries = 10
+
 // JwksManager fetchs and maintains a cache of keys from a public endpoint.
 type JwksManager struct {
+	logger     *zap.Logger
 	endpoint   string
 	keys       cache
 	httpClient *http.Client
@@ -36,7 +40,7 @@ type JwksManager struct {
 // NewClient returns a JwksManager which is used to fetch keys from a supplied endpoint.
 // It will attempt to cache the keys returned before returning. If an error
 // occurs, it will return an error (with the instantiated JwksManager).
-func NewJwksManager(endpoint string, insecureSkipVerify bool) (*JwksManager, error) {
+func NewJwksManager(logger *zap.Logger, endpoint string, insecureSkipVerify bool) (*JwksManager, error) {
 	httpClient := &http.Client{
 		Timeout: 30 * time.Second,
 		Transport: &http.Transport{
@@ -48,6 +52,7 @@ func NewJwksManager(endpoint string, insecureSkipVerify bool) (*JwksManager, err
 	}
 
 	c := &JwksManager{
+		logger:   logger,
 		endpoint: endpoint,
 		keys: cache{
 			kv:  make(map[string]interface{}),
@@ -91,20 +96,36 @@ func (c *JwksManager) updateCache() error {
 	return nil
 }
 
-func (c *JwksManager) fetchJWKs(origin string) ([]jose.JSONWebKey, error) {
-	var ks jose.JSONWebKeySet
+func (c *JwksManager) fetchJWKs(origin string) (keys []jose.JSONWebKey, err error) {
+	var (
+		resp *http.Response
+		ks   jose.JSONWebKeySet
+	)
 
-	resp, err := c.httpClient.Get(origin)
-	if err != nil {
-		return nil, err
+	retries := maxRetries
+	for retries > 0 {
+		resp, err = c.httpClient.Get(origin)
+		if err == nil {
+			break
+		}
+
+		c.logger.Debug(
+			"unable to connect to JWKS server",
+			zap.String("origin", origin),
+			zap.Error(err),
+		)
+
+		retries -= 1
+		time.Sleep(time.Second * 10)
 	}
 	defer resp.Body.Close()
 
-	if err := json.NewDecoder(resp.Body).Decode(&ks); err != nil {
-		return nil, err
+	if err = json.NewDecoder(resp.Body).Decode(&ks); err != nil {
+		return
 	}
 
-	return ks.Keys, nil
+	keys = ks.Keys
+	return
 }
 
 type cache struct {

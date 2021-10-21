@@ -6,6 +6,7 @@
     { "path": "packages/tokenizer-sdk" },
     { "path": "packages/browser-common" },
     { "path": "packages/react-sdk" },
+    { "path": "packages/cli" },
     { "path": "packages/isomorphic-common" },
     { "path": "packages/secure-frame-iframe" },
     { "path": "packages/server-common/tsconfig.module.json"},

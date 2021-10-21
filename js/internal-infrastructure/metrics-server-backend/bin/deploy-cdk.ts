@@ -15,6 +15,7 @@
  * limitations under the License.
  *
  */
+
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import {MetricsLambdaBackendStack} from '../lib/deploy-apigateway-to-firehose';

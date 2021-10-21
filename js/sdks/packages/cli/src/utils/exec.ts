@@ -14,17 +14,18 @@
  * limitations under the License.
  *
  */
-'use strict';
+import { spawn } from 'child_process';
 
-const { spawn } = require( 'child_process' );
+export function runCommand(command: string, args: string[], env?: NodeJS.ProcessEnv) {
+  const cliProcess = spawn(command, args, {
+    env: env || process.env,
+  });
 
-const cliProcess = spawn( __dirname + '/../bin/lunasec', process.argv.slice(2));
+  cliProcess.stdout.on('data', (data) => {
+    console.log(data.toString());
+  });
 
-cliProcess.stdout.on('data', (data) => {
-  console.log(data.toString());
-} );
-
-cliProcess.stderr.on('data', (data) => {
-  console.log(data.toString());
-} );
-
+  cliProcess.stderr.on('data', (data) => {
+    console.log(data.toString());
+  });
+}
