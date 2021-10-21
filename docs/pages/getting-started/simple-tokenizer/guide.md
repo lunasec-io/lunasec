@@ -1,3 +1,10 @@
+---
+id: "guide"
+title: "Simple Setup"
+sidebar_label: "Set Up Guide"
+sidebar_position: 0.5
+custom_edit_url: null
+---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
   ~
@@ -11,14 +18,6 @@
   ~ limitations under the License.
   ~
 -->
----
-id: "guide"
-title: "Simple Setup"
-sidebar_label: "Set Up Guide"
-sidebar_position: 0.5
-custom_edit_url: null
----
-
 # Simple Tokenizer
 If you have chosen to use the Simple Tokenizer, as explained in [Choose your Setup](../choose-your-setup.md), let's get started
 adding the Simple Tokenizer to your web app.  

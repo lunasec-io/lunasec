@@ -1,3 +1,9 @@
+---
+id: "overview"
+title: "Demo App Overview"
+sidebar_label: "Overview and Startup"
+sidebar_position: 1
+---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
   ~
@@ -11,13 +17,6 @@
   ~ limitations under the License.
   ~
 -->
----
-id: "overview"
-title: "Demo App Overview"
-sidebar_label: "Overview and Startup"
-sidebar_position: 1
----
-
 # Demo Applications
 
 The demo applications show how to integrate LunaSec into a modern web application.  The frontend uses React with MaterialUi
