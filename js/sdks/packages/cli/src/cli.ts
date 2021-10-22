@@ -91,7 +91,7 @@ yargs
 
       const composeFile = stack.write(composePath);
 
-      const directory = `--project-directory ${process.cwd()}`;
+      const directory = `--project-directory ${composePath}`;
 
       const forceRebuild = args['force-rebuild'] ? '--build' : '';
 
