@@ -18,6 +18,7 @@ import { Buffer } from 'buffer';
 import crypto from 'crypto';
 
 import { Passport } from 'passport';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Strategy } from 'passport-json';
 
@@ -85,6 +86,7 @@ export function configurePassport(models: Models) {
   });
   // TODO: Generate session IDs, dont use user IDs like this
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   passport.deserializeUser(async function (userInfo: { id: string }, cb) {
     try {
       const user = await models.user.getUser(userInfo.id);

@@ -14,13 +14,14 @@
  * limitations under the License.
  *
  */
+// Note: This config doesn't get invoked directly, it gets picked up during the global eslint and keeps vue from breaking
 module.exports = {
-  root: true,
   env: {
     node: true,
   },
   extends: [
     "plugin:vue/vue3-essential",
+    "eslint:recommended",
     "@vue/typescript/recommended",
     "@vue/prettier",
     "@vue/prettier/@typescript-eslint",

@@ -30,7 +30,7 @@ export class DocumentMethods {
   async setUserDocuments(userId: string, documentTokens: string[]) {
     const db = this.db;
     await db.run('DELETE FROM documents WHERE user_id = (?)', userId); // clear out any old documents
-    const insertionPromises: Promise<any>[] = [];
+    const insertionPromises: Promise<unknown>[] = [];
     documentTokens.forEach((documentToken) => {
       insertionPromises.push(db.run('INSERT INTO documents (user_id, token) VALUES (?, ?)', [userId, documentToken]));
     });

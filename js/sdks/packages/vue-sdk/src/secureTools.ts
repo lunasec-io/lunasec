@@ -14,9 +14,10 @@
  * limitations under the License.
  *
  */
-import { getStyleInfo, generateSecureNonce,FrameMessageCreator } from '@lunasec/browser-common';
-import { onMounted, ref, Ref, inject } from 'vue';
-import {LunaSecConfigProviderAttrs} from "@/secure-components/LunaSecConfigProvider.vue";
+import { FrameMessageCreator, generateSecureNonce, getStyleInfo } from '@lunasec/browser-common';
+import { inject, onMounted, Ref, ref } from 'vue';
+
+import { LunaSecConfigProviderAttrs } from './secure-components/LunaSecConfigProvider.vue';
 
 export class SecureTools {
   frameId: string;
@@ -27,16 +28,15 @@ export class SecureTools {
     console.log('built an instance of SecureTools');
     this.frameId = generateSecureNonce();
 
-    const providerConf = inject<LunaSecConfigProviderAttrs>('lunaSecConfig')
+    const providerConf = inject<LunaSecConfigProviderAttrs>('lunaSecConfig');
     if (!providerConf) {
-      throw new Error('Must register LunaSecConfigProvider above Secure Component')
+      throw new Error('Must register LunaSecConfigProvider above Secure Component');
     }
-    this.lunaSecConfig = providerConf
-    this.messageCreator = new FrameMessageCreator(providerConf.lunaSecDomain, this.frameId, (notification) =>{
+    this.lunaSecConfig = providerConf;
+    this.messageCreator = new FrameMessageCreator(providerConf.lunaSecDomain, this.frameId, (notification) => {
       // this.frameNotificationCallback(notification)
       console.log('frame notification received');
-      }
-    );
+    });
   }
   cloneStyle(ref: Ref) {
     if (!ref.value) {

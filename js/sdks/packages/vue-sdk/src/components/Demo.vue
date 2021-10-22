@@ -4,11 +4,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import SecureInput from "../secure-components/SecureInput.vue";
+import { defineComponent } from 'vue';
+
+import SecureInput from '../secure-components/SecureInput.vue';
 
 export default defineComponent({
-  name: "Demo",
+  name: 'Demo',
   props: {
     msg: String,
   },
