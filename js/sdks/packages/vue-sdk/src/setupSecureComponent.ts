@@ -14,24 +14,48 @@
  * limitations under the License.
  *
  */
-import { onMounted, ref, Ref } from "vue";
-import { getStyleInfo } from "@lunasec/browser-common";
-function cloneStyle(ref: Ref) {
-  return getStyleInfo(ref.value);
-}
-export default function setupSecureComponent(
-  dummyRefName: string,
-  dummyStyleRefName: string
-) {
-  const wrappedElementRef = ref(null);
+import { getStyleInfo, generateSecureNonce,FrameMessageCreator } from '@lunasec/browser-common';
+import { onMounted, ref, Ref, inject } from 'vue';
+import {LunaSecConfigProviderAttrs} from "@/secure-components/LunaSecConfigProvider.vue";
 
-  onMounted(() => {
-    // console.log("value of ref is ", wrappedElementRef.value);
-    // todo: handle the need to pass a different ref for inputs
-    cloneStyle(wrappedElementRef);
-  });
+export class SecureTools {
+  frameId: string;
+  messageCreator: FrameMessageCreator;
+  lunaSecConfig: LunaSecConfigProviderAttrs;
 
-  return {
-    wrappedElementRef,
-  };
+  constructor() {
+    console.log('built an instance of SecureTools');
+    this.frameId = generateSecureNonce();
+
+    const providerConf = inject<LunaSecConfigProviderAttrs>('lunaSecConfig')
+    if (!providerConf) {
+      throw new Error('Must register LunaSecConfigProvider above Secure Component')
+    }
+    this.lunaSecConfig = providerConf
+    this.messageCreator = new FrameMessageCreator(providerConf.lunaSecDomain, this.frameId, (notification) =>{
+      // this.frameNotificationCallback(notification)
+      console.log('frame notification received');
+      }
+    );
+  }
+  cloneStyle(ref: Ref) {
+    if (!ref.value) {
+      throw new Error('attempted to clone styles for element that didnt exist');
+    }
+    return getStyleInfo(ref.value);
+  }
+
+  setupSecureComponent() {
+    const wrappedElementRef = ref(null);
+
+    onMounted(() => {
+      // console.log("value of ref is ", wrappedElementRef.value);
+      // todo: handle the need to pass a different ref for inputs
+      const style = this.cloneStyle(wrappedElementRef);
+    });
+
+    return {
+      wrappedElementRef,
+    };
+  }
 }
