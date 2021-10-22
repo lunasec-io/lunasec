@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:14 as localstack-proxy
 
 RUN apt update && apt install -y curl
 
