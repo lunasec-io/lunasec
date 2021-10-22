@@ -11,15 +11,55 @@
   ~ limitations under the License.
   ~
 -->
+# LunaSec 
+LunaSec is a suite of security tools designed to protect sensitive data in applications by only adding a few lines of code.
 
-# LunaSec
-LunaSec makes it easy and secure for applications to process and store sensitive data through Tokenization.
+LunaSec was built by Security Engineers and is designed to be easy to use for anybody. You don't need to understand security to get started.
+
+The LunaSec stack spans from the front-end to the back-end of your application and works alongside your existing code to keep your data encrypted and secure. To get started, please check out the steps below ("Trying LunaSec in 1 minute").
+
+If you're a company looking for security expertise, we also offer paid, professional support for LunaSec. Just send us a message [here](https://www.lunasec.io/contact) and we'll be happy to work with you to help you level up your security!
+
+## How does it work?
+LunaSec is a bit like a [safety deposity box](https://en.wikipedia.org/wiki/Safe_deposit_box) that holds your sensitive data. Each piece of data gets it's own box, it's own key to unlock it, and a unique number to identify each box by. These boxes are then securely stored deep inside within a bank vault that only a banker with special permissions has access to. Accessing the box requires proof of ownership and the key to unlock the box. 
+
+The boxes that the data is stored in are unable to be opened without the key. That means that even if the bank is evil, they can't open the box. Even if the box is stolen by a theif, the theif can't open the box without the keys. Only you are able to open the box.
+
+Even if a theif steals the keys, they still have to get access the box either through the banker or by breaking into the bank. One is useless without the other.
+
+That's the core value that LunaSec provides for you. LunaSec runs the bank, hires the bankers, and keeps your boxes secure. You just have to provide the data and keep track of the keys to access it.
+
+## Okay, but what is LunaSec _really_?
+LunaSec is a dedicated database, several back-end services, front-end and back-end SDKs, a CLI for manually accessing data, and a tool that deploys the LunaSec stack into your infrastructure. See the diagram below for context. We've documented the components of the stack [here](https://www.lunasec.io/docs/pages/overview/features/).
+
+We've designed LunaSec to mitigate many common security vulnerabilities that developers face. Each component of the LunaSec stack is designed to provide protection against specific attack scenarios. Please read more about the security of LunaSec [here](https://www.lunasec.io/docs/pages/overview/security/levels/).
+
+### LunaSec Components
+![LunaSec Architecture Diagram](https://www.lunasec.io/docs/assets/images/security-model-overview-89b08cc6b46f3f86fc981b9ddf30e567.svg)
+
+## Trying LunaSec in 1 minute
+We've made it very easy for you to get familiar with LunaSec by running our example app locally.
+
+If you have Node and Docker installed, you can try it out with one command:
+
+```
+npx lunasec up
+```
+
+That will pull all of the Docker containers and start the LunaSec demo app on your computer. It's a simple web app that you can play with in your browser.
+
+To see LunaSec in action, just sign up for a new account and then submit some fake data in the app. All data in the app is transparently encrypted and stored in the LunaSec database in the app (take a look at the elements on the page and the network requests for proof).
+
+For a deeper dive into the Demo App, please see this [page](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) for a walkthrough of everything. All of the source code is available [here](https://github.com/lunasec-io/lunasec/tree/master/js/demo-apps/packages).
 
 ## [Documentation](https://www.lunasec.io/docs/)
-For information about LunaSec including tutorials, examples, and technical information, please visit
+For more information about LunaSec including tutorials, examples, and technical information, please visit
 our [documentation](https://www.lunasec.io/docs/).  For marketing information, sales, or to get in touch, visit our website: [https://www.lunasec.io/](https://www.lunasec.io/).
 
 The rest of this ReadMe explains how to work on LunaSec itself.  If you simply want to use LunaSec, please see the documentation.
+
+## Professional Services
+Backing LunaSec is a team of Security Engineers. We offer paid support, onboarding, and additional enterprise features for LunaSec. We're very flexible and happy to work with you to reach your security or compliance milestones. If you're interested, please send us a message [here](https://www.lunasec.io/contact). Thank you!
 
 ## What's in this Repo?
 This repo contains all public LunaSec code: the LunaSec SDKs, backend services, demo applications, documentation, and supporting scripts.
