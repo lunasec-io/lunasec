@@ -2,12 +2,15 @@
 .idea/
 .github/
 
-node_modules/
 docs/
 
 docker-compose.yaml
-docker-compose.ci.yaml
+docker-compose.*.yaml
 js/docker/demo.dockerfile
+
+outputs/
 
 **/build/
 **/node_modules/
+node_modules/
+.npmrc

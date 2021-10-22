@@ -4,6 +4,8 @@
   "description": "This monorepo holds the LunaSec SDKs, servers, and demo application.",
   "private": true,
   "scripts": {
+    "lunasec:setup": "cd js/sdks/packages/cli && yarn install && yarn run compile && npm link",
+    "lunasec": "lunasec",
     "start:services": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up tokenizerbackend",
     "license:check": "./tools/license-checker/run-license-check.sh check",
     "license:fix": "./tools/license-checker/run-license-check.sh fix",
@@ -20,12 +22,15 @@
     "compile:dev:sdks": "cd js/sdks && yarn run compile:dev",
     "compile:release:sdks": "cd js/sdks && yarn run compile:release",
     "compile:release:services": "cd go && yarn run compile:release",
-    "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services",
+    "compile:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh build",
+    "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services && yarn run compile:release:demos",
     "postinstall": "yarn run license:install",
     "publish:release:sdks": "lerna publish --no-verify-access -y from-package",
     "publish:release:services": "cd go && yarn run publish:release",
-    "publish:release": "yarn run publish:release:sdks && yarn run publish:release:services",
-    "prepare": "husky install"
+    "publish:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh publish",
+    "publish:release": "yarn run publish:release:sdks && yarn run publish:release:services && yarn run publish:release:demos",
+    "prepare": "husky install",
+    "monorepo:version": "node -p 'require(\"./lerna.json\").version'"
   },
   "repository": {
     "type": "git",
@@ -56,6 +61,7 @@
     "eslint-plugin-react": "^7.23.2",
     "husky": "^7.0.0",
     "lerna": "^4.0.0",
+    "lint-staged": "^11.2.3",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
     "tslint-config-prettier": "^1.18.0",
@@ -64,6 +70,7 @@
   "workspaces": {
     "packages": [
       "./go",
+      "./js/sdks",
       "./js/sdks/packages/*",
       "./js/service/packages/*",
       "./js/demo-apps/packages/*",
@@ -75,7 +82,8 @@
       "**/eslint",
       "**/ts-node",
       "**/webpack",
-      "**/@docusaurus/core"
+      "**/@docusaurus/core",
+      "**/babel-loader"
     ]
   }
 }

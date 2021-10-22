@@ -1,4 +1,20 @@
 /*
+ * Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+/*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
  * Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
@@ -105,8 +121,8 @@ module.exports = {
   ],
   themeConfig: {
     algolia: {
-      apiKey: '8be7ba7f75f58e8dade22b686b1f5d8c',
-      indexName: 'LUNASEC_DOCS',
+      apiKey: '3021482545ed8ba09aebac40e2eccccd',
+      indexName: 'lunasec',
       // Optional: see doc section below
       contextualSearch: true,
       // Optional: see doc section below
@@ -127,6 +143,11 @@ module.exports = {
           docId: 'overview/introduction',
           position: 'left',
           label: 'Docs'
+        },
+        {
+          to: '/docs/blog',
+          position: 'left',
+          label: 'Blog'
         },
         {
           type: 'docsVersionDropdown',
@@ -163,6 +184,10 @@ module.exports = {
         {
           title: 'More',
           items: [
+            {
+              label: 'Blog',
+              to: '/docs/blog',
+            },
             {
               label: 'Github',
               href: 'https://github.com/refinery-labs/lunasec-monorepo',
