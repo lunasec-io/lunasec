@@ -2,23 +2,71 @@
 
 export DOCKER_BUILDKIT=1
 
+docker_build() {
+  docker build -f "$1" . --target "$2" -t "$3:${VERSION}"
+}
+
+docker_push() {
+  docker push "$1:${VERSION}"
+}
+
 if [ "$1" == "build" ]; then
   # docker build -f js/docker/dependency-precache.dockerfile . -t "lunasec/cached-npm-dependencies:${VERSION}"
-  docker build -f js/docker/demo.dockerfile . --target application-front-end -t "lunasec/application-front-end-demo:${VERSION}"
-  docker build -f js/docker/demo.dockerfile . --target application-back-end -t "lunasec/application-back-end-demo:${VERSION}"
-  docker build -f js/docker/demo.dockerfile . --target secure-frame-iframe -t "lunasec/secure-frame-iframe-demo:${VERSION}"
-  docker build -f js/docker/demo.dockerfile . --target lunasec-cli -t "lunasec/lunasec-cli-demo:${VERSION}"
-  docker build -f js/docker/httpsproxy.dockerfile . -t "lunasec/localstack-proxy-demo:${VERSION}"
+
+  if ! docker_build js/docker/demo.dockerfile application-front-end "lunasec/application-front-end-demo" ; then
+    echo "unable to build application front end"
+    exit 1
+  fi
+
+  if ! docker_build js/docker/demo.dockerfile application-back-end "lunasec/application-back-end-demo" ; then
+    echo "unable to build application back end"
+    exit 1
+  fi
+
+  if ! docker_build js/docker/demo.dockerfile secure-frame-iframe "lunasec/secure-frame-iframe-demo" ; then
+    echo "unable to build secure frame iframe"
+    exit 1
+  fi
+
+  if ! docker_build js/docker/demo.dockerfile lunasec-cli "lunasec/lunasec-cli-demo" ; then
+    echo "unable to build lunasec cli"
+    exit 1
+  fi
+
+  if ! docker_build js/docker/httpsproxy.dockerfile localstack-proxy "lunasec/localstack-proxy-demo" ; then
+    echo "unable to build localstack proxy"
+    exit 1
+  fi
   exit 0
 fi
 
 if [ "$1" == "publish" ]; then
   # docker push "lunasec/cached-npm-dependencies:${VERSION}"
-  docker push "lunasec/application-back-end-demo:${VERSION}"
-  docker push "lunasec/application-front-end-demo:${VERSION}"
-  docker push "lunasec/secure-frame-iframe-demo:${VERSION}"
-  docker push "lunasec/lunasec-cli-demo:${VERSION}"
-  docker push "lunasec/localstack-proxy-demo:${VERSION}"
+
+  if ! docker_push "lunasec/application-back-end-demo" ; then
+    echo "unable to push application back end"
+    exit 1
+  fi
+
+  if ! docker_push "lunasec/application-front-end-demo" ; then
+    echo "unable to push application front end"
+    exit 1
+  fi
+
+  if ! docker_push "lunasec/secure-frame-iframe-demo" ; then
+    echo "unable to push secure frame iframe"
+    exit 1
+  fi
+
+  if ! docker_push "lunasec/lunasec-cli-demo" ; then
+    echo "unable to push lunasec cli"
+    exit 1
+  fi
+
+  if ! docker_push "lunasec/localstack-proxy-demo" ; then
+    echo "unable to push localstack proxy"
+    exit 1
+  fi
   exit 0
 fi
 
