@@ -21,7 +21,7 @@ The LunaSec stack spans from the front-end to the back-end of your application a
 If you're a company looking for security expertise, we also offer paid, professional support for LunaSec. Just send us a message [here](https://www.lunasec.io/contact) and we'll be happy to work with you to help you level up your security!
 
 ## How does it work?
-LunaSec is a bit like a [safety deposity box](https://en.wikipedia.org/wiki/Safe_deposit_box) that holds your sensitive data. Each piece of data gets it's own box, it's own key to unlock it, and a unique number to identify each box by. These boxes are then securely stored deep inside within a bank vault that only a banker with special permissions has access to. Accessing the box requires proof of ownership and the key to unlock the box. 
+LunaSec is a bit like a [safety deposity box](https://en.wikipedia.org/wiki/Safe_deposit_box) that holds your sensitive data. Each piece of data gets it's own box, it's own key to unlock it, and a unique number to identify each box by. These boxes are then securely stored inside of a bank vault that only a banker with special permissions has access to. Accessing the box requires proof of ownership and the key to unlock the box. 
 
 The boxes that the data is stored in are unable to be opened without the key. That means that even if the bank is evil, they can't open the box. Even if the box is stolen by a theif, the theif can't open the box without the keys. Only you are able to open the box.
 
