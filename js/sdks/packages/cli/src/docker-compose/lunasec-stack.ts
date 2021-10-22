@@ -40,19 +40,24 @@ interface ComposeService {
 }
 
 interface healthCheckOptions {
-  test?: string[];
-  timeout?: string;
-  interval?: string;
-  retries?: number;
+  endpoint?: string;
+  composeOptions?: {
+    test?: string[];
+    timeout?: string;
+    interval?: string;
+    retries?: number;
+  };
 }
 
 function serviceHealthCheck(port: number, options?: healthCheckOptions) {
+  const endpoint = options ? (options.endpoint ? options.endpoint : '') : '';
+  const composeOptions = options ? options.composeOptions : {};
   return {
-    test: ['CMD-SHELL', `curl -k http://localhost:${port}`],
+    test: ['CMD-SHELL', `curl -k http://localhost:${port}${endpoint}`],
     timeout: '30s',
     interval: '10s',
     retries: 10,
-    ...options,
+    ...composeOptions,
   };
 }
 
@@ -74,7 +79,7 @@ const dockerDemoEnv: Record<string, string> = {
 
 const demoDockerFile = 'js/docker/demo.dockerfile';
 
-const localstackImage = 'localstack/localstack';
+const localstackImage = 'localstack/localstack:0.12.19';
 
 export class LunaSecStackDockerCompose {
   env: LunaSecStackEnvironment = 'dev';
@@ -127,7 +132,9 @@ export class LunaSecStackDockerCompose {
           'AWS_SECRET_ACCESS_KEY=test',
         ],
         volumes: ['/tmp/localstack:/tmp/localstack'],
-        healthcheck: serviceHealthCheck(4566),
+        healthcheck: serviceHealthCheck(4566, {
+          endpoint: '/health',
+        }),
       },
     };
   }
@@ -157,7 +164,9 @@ export class LunaSecStackDockerCompose {
           },
         },
         healthcheck: serviceHealthCheck(4568, {
-          test: ['CMD-SHELL', `curl -k https://localhost:4568`],
+          composeOptions: {
+            test: ['CMD-SHELL', `curl -k https://localhost:4568`],
+          },
         }),
       },
     };
