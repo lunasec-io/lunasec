@@ -87,10 +87,9 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
-#   happens in container with other unit tests now
-#    - name: run golang tests
-#      working-directory: go/
-#      run: go test -cover ./...
+    - name: run golang tests
+      working-directory: go/
+      run: go test -cover ./...
 
     - name: setup lunasec cli
       run: yarn run lunasec:setup
