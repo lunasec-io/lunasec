@@ -87,11 +87,16 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
+#   happens in container with other unit tests now
+#    - name: run golang tests
+#      working-directory: go/
+#      run: go test -cover ./...
+
     - name: setup lunasec cli
       run: yarn run lunasec:setup
 
     - name: run e2e tests
-      run: yarn run lunasec start --no-sudo=true --local-build=true --env ci
+      run: yarn run lunasec start --no-sudo=true --local-build=true --env tests
 
     - name: docker logs
       if: always()
@@ -100,7 +105,7 @@ jobs:
 
     - name: docker compose logs
       if: always()
-      run: docker-compose -f docker-compose.ci.yaml logs
+      run: docker-compose -f docker-compose.tests.yaml logs
 
     - uses: actions/upload-artifact@v2
       if: always()

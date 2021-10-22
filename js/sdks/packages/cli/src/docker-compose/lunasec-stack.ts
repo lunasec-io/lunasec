@@ -21,7 +21,7 @@ import { dump } from 'js-yaml';
 
 import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
 
-export const LunaSecStackEnvironments = ['dev', 'demo', 'ci'] as const;
+export const LunaSecStackEnvironments = ['dev', 'demo', 'tests'] as const;
 export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];
 
 type LunaSecService =
@@ -49,9 +49,9 @@ interface healthCheckOptions {
 function serviceHealthCheck(port: number, options?: healthCheckOptions) {
   return {
     test: ['CMD-SHELL', `curl -k http://localhost:${port}`],
-    timeout: '5s',
+    timeout: '30s',
     interval: '10s',
-    retries: 5,
+    retries: 10,
     ...options,
   };
 }
@@ -200,11 +200,7 @@ export class LunaSecStackDockerCompose {
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        healthcheck: serviceHealthCheck(3000, {
-          timeout: '30s',
-          interval: '10s',
-          retries: 10,
-        }),
+        healthcheck: serviceHealthCheck(3000),
       },
     };
   }
@@ -343,7 +339,7 @@ export class LunaSecStackDockerCompose {
 
     const demoServices = [...tokenizerBackendServices, this.applicationFrontEnd(), this.applicationBackEnd()];
 
-    const ciServices = [...demoServices, this.integrationTest()];
+    const testsServices = [...demoServices, this.integrationTest()];
 
     if (this.env === 'dev') {
       return tokenizerBackendServices;
@@ -353,8 +349,8 @@ export class LunaSecStackDockerCompose {
       return demoServices;
     }
 
-    if (this.env === 'ci') {
-      return ciServices;
+    if (this.env === 'tests') {
+      return testsServices;
     }
     return null;
   }

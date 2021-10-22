@@ -11,8 +11,7 @@
   ],
   "scripts": {
     "clean": "rm -rf build",
-    "compile:version": "rm -f src/version.ts && genversion -e src/version.ts",
-    "compile": "yarn run compile:version && tsc -p ./tsconfig.json",
+    "compile": "tsc -p ./tsconfig.json",
     "watch": "yarn run compile -- -w"
   },
   "bin": {
