@@ -1,3 +1,4 @@
 **/node_modules
 **/*.js
 **/build
+**/generated

@@ -4,15 +4,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import setupSecureComponent from "@/setupSecureComponent";
+import { defineComponent, ref } from 'vue';
+
+import {SecureTools} from '../secureTools';
+
 export default defineComponent({
-  name: "Demo",
+  name: 'Demo',
   props: {
     msg: String,
   },
   setup() {
-    return setupSecureComponent();
+    const secureTools = new SecureTools()
+    return secureTools.setupSecureComponent();
   },
   methods: {},
 });

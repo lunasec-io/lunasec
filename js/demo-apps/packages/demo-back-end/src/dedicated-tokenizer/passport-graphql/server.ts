@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+// eslint-disable-next-line import/order
 import { config } from 'dotenv';
 config();
 
@@ -27,7 +28,9 @@ import { lunaSec } from './config/configure-lunasec';
 import configurePassport from './config/configure-passport';
 import { attachApolloServer } from './graphql/graphql-apollo-server';
 
+// eslint-disable-next-line import/order
 import cors from 'cors';
+// eslint-disable-next-line import/order
 import cookieParser from 'cookie-parser';
 
 export async function setupDedicatedPassPortGraphQLApp(): Promise<Express> {
