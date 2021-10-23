@@ -27,6 +27,7 @@ docker_container() {
   docker ps | grep $1 | awk '{print $1}'
 }
 docker_health() {
+  echo "$1: $(docker_container $1)"
   docker inspect --format "{{json .State.Health }}" "$(docker_container $1)" | jq '.Log[].Output'
 }
 

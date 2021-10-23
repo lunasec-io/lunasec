@@ -1,5 +1,5 @@
 app:
-  deployment_uuid: ${DEPLOYMENT_UUID:"deadbeef-cafe-babe-face-8e6f524b4dce"}
+  stack_id: ${STACK_ID:"deadbeef-cafe-babe-face-8e6f524b4dce"}
   cors:
     allowed_origins:
       - ${TOKENIZER_URL}
