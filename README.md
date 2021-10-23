@@ -18,8 +18,6 @@ LunaSec was built by Security Engineers and is designed to be easy to use for an
 
 The LunaSec stack spans from the front-end to the back-end of your application and works alongside your existing code to keep your data encrypted and secure. To get started, please check out the steps below ("Trying LunaSec in 1 minute").
 
-If you're a company looking for security expertise, we also offer paid, professional support for LunaSec. Just send us a message [here](https://www.lunasec.io/contact) and we'll be happy to work with you to help you level up your security!
-
 ## [Documentation](https://www.lunasec.io/docs/)
 For more information about LunaSec including tutorials, examples, and technical information, please visit
 our [documentation](https://www.lunasec.io/docs/).  For marketing information, sales, or to get in touch, visit our website: [https://www.lunasec.io/](https://www.lunasec.io/).
@@ -58,7 +56,9 @@ To see LunaSec in action, just sign up for a new account and then submit some fa
 For a deeper dive into the Demo App, please see this [page](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) for a walkthrough of everything. All of the source code is available [here](https://github.com/lunasec-io/lunasec/tree/master/js/demo-apps/packages).
 
 ## Professional Services
-Backing LunaSec is a team of Security Engineers. We offer paid support, onboarding, and additional enterprise features for LunaSec. We're very flexible and happy to work with you to reach your security or compliance milestones. If you're interested, please send us a message [here](https://www.lunasec.io/contact). Thank you!
+If you're a company looking for security expertise, we also offer paid, professional support for LunaSec. 
+
+Backing LunaSec is a team of Security Engineers. We offer paid support, onboarding, and additional enterprise features for LunaSec. We're very flexible and happy to work with you to reach your security or compliance milestones. If you're interested, please send us a message [here](https://www.lunasec.io/contact).
 
 ## What's in this Repo?
 This repo contains all public LunaSec code: the LunaSec SDKs, backend services, demo applications, documentation, and supporting scripts.
