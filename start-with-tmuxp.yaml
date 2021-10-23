@@ -5,11 +5,11 @@ windows:
   panes:
     - shell_command:
       - cd js/sdks
-      - npm run watch
+      - yarn run watch
     # Secure Frame CDN
     - shell_command:
       - cd js/sdks/packages/secure-frame-iframe
-      - npm run watch
+      - yarn run watch
 
     - shell_command:
       - cd js/sdks/packages/secure-frame-iframe
@@ -19,14 +19,18 @@ windows:
     # Available REACT_APP_DEMO_NAMES are 'dedicated-passport-express', 'dedicated-passport-graphql', and 'simple'
     - shell_command:
       - cd js/demo-apps/packages/react-front-end
-      - REACT_APP_DEMO_NAME="dedicated-passport-graphql" npm run start
+      - REACT_APP_DEMO_NAME="dedicated-passport-graphql" yarn run start
 
     # Demo Application Backend, comes up on 3001, 3002, and 3003 in the various modes
     - shell_command:
       - cd js/demo-apps/packages/demo-back-end
       - LUNASEC_SIGNING_KEY=$(cat ./fixtures/auth_provider_key | base64 -w0) yarn start:dev
 
-    # Tokenizer Back End.  Command uses docker compose to start localstack and run CDK deployment scripts against it before starting server locally
+    # Tokenizer Back End.  Command uses docker compose to start localstack and run CDK deployment scripts against it before starting server
     - shell_command:
-      - cd go
-      - ./scripts/start-tokenizerbackend-dependencies.sh && ./scripts/start-tokenizerbackend.sh
+      - ./go/scripts/start-tokenizerbackend-dependencies.sh
+#
+#    TODO (cthompson) tokenizer is not currently built locally, just in docker atm
+#    - shell_command:
+#      - cd go/
+#      - ./scripts/start-tokenizerbackend.sh

@@ -20,12 +20,17 @@ RUN --mount=target=. \
 
 FROM alpine
 
+# TODO (cthompson) we could probably use 'scratch' and just copy the curl bin from another build image
 RUN apk add curl
 
 ARG BUILD_TAG
 
 COPY config/tokenizerbackend/config.yaml /config/tokenizerbackend/config.yaml
 COPY views/tokenizerbackend/ /views/tokenizerbackend/
+
+# base config only for demo app, otherwise remove it
+COPY config/tokenizerbackend/dev.yaml /config/tokenizerbackend/dev.yaml
+RUN if [ "$BUILD_TAG" != "dev" ] ; then rm /config/tokenizerbackend/dev.yaml ; fi
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /out/tokenizerbackend_$BUILD_TAG /tokenizerbackend

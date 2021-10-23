@@ -15,7 +15,7 @@
 package constants
 
 var (
-	Version = ""
+	Version = "0.0.0"
 	Commit  = ""
 	Date    = ""
 )

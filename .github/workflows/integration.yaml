@@ -31,14 +31,27 @@ on:
         default: 'false'
 
 jobs:
-  build:
+  integration-test:
     runs-on: ubuntu-latest
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
 
     steps:
+
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
+    - name: Merge target branch
+      run: git merge origin/${{ github.event.pull_request.base.ref }}
+      if:  github.event_name == 'pull_request'
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        cache: yarn
 
     - uses: actions/setup-go@v2
       with:
@@ -63,11 +76,6 @@ jobs:
 #        username: ${{ secrets.DOCKERHUB_USERNAME }}
 #        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 #        compose_file: docker-compose.yaml > docker-compose.ci.yaml
-
-#    - uses: actions/setup-node@v2
-#      with:
-#        node-version: '14'
-#        cache: yarn
 #
 #    - uses: actions/setup-go@v2
 #      with:
@@ -89,13 +97,15 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
-    #happens with the rest of the unit tests now
-#    - name: Run Golang tests
-#      working-directory: go/
-#      run: go test -cover ./...
+    - name: run golang tests
+      working-directory: go/
+      run: go test -cover ./...
 
-    - name: Run e2e tests
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up --build --exit-code-from integration-test integration-test
+    - name: setup lunasec cli
+      run: yarn run lunasec:setup
+
+    - name: run e2e tests
+      run: yarn run lunasec start --no-sudo=true --local-build=true --env tests
 
     - name: docker logs
       if: always()
@@ -104,7 +114,7 @@ jobs:
 
     - name: docker compose logs
       if: always()
-      run: docker-compose logs
+      run: docker-compose -f docker-compose.tests.yaml logs
 
     - uses: actions/upload-artifact@v2
       if: always()

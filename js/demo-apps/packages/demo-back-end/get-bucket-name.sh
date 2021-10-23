@@ -13,6 +13,7 @@ else
       echo "Received bucket name from aws: $name" >&2
       break
     fi
+    sleep 2
   done
   echo "$name"
 fi

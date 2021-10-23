@@ -5,5 +5,10 @@ node_modules
 *.log
 /docs/pages/node-sdk
 /docs/pages/tokenizer-sdk
+**/package-lock.json
 
 .npmrc
+
+docker-compose.*.yaml
+.env.docker
+outputs/
