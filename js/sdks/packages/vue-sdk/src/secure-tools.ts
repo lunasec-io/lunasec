@@ -17,7 +17,7 @@
 import { FrameMessageCreator, generateSecureNonce, getStyleInfo } from '@lunasec/browser-common';
 import { inject, onMounted, Ref, ref } from 'vue';
 
-import { LunaSecConfigProviderAttrs } from './secure-components/LunaSecConfigProvider.vue';
+import { LunaSecConfigProviderAttrs } from './secure-components/LunaSec-Config-Provider';
 
 export class SecureTools {
   frameId: string;
