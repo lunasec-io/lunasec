@@ -42,7 +42,9 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
     super(scope, id, props);
 
     const bucket = new Bucket(this, 'MetricsBucket', {});
-
+    //todo: Fix this
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const s3Destination = new destinations.S3Bucket(bucket, {
       compression: Compression.SNAPPY,
       dataOutputPrefix:
@@ -73,7 +75,7 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
 
     const domainName = new DomainName(this, 'lunasec-metrics-domain-name', {
       domainName: props.domainName,
-      certificate: certificate as any,
+      certificate: certificate as never,
       endpointType: EndpointType.REGIONAL,
       mapping: apiGateway,
       securityPolicy: SecurityPolicy.TLS_1_2,
@@ -82,7 +84,7 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
     new ARecord(this, 'lunasec-dns-a-record', {
       zone: domainZone,
       recordName: props.domainName,
-      target: RecordTarget.fromAlias(new route53targets.ApiGatewayDomain(domainName as any)),
+      target: RecordTarget.fromAlias(new route53targets.ApiGatewayDomain(domainName as never)),
       ttl: Duration.minutes(5),
     });
 

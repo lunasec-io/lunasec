@@ -4,9 +4,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
-import {SecureTools} from '../secureTools';
+import { SecureTools } from '../secureTools';
 
 export default defineComponent({
   name: 'Demo',
@@ -14,7 +14,7 @@ export default defineComponent({
     msg: String,
   },
   setup() {
-    const secureTools = new SecureTools()
+    const secureTools = new SecureTools();
     return secureTools.setupSecureComponent();
   },
   methods: {},
