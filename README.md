@@ -20,6 +20,11 @@ The LunaSec stack spans from the front-end to the back-end of your application a
 
 If you're a company looking for security expertise, we also offer paid, professional support for LunaSec. Just send us a message [here](https://www.lunasec.io/contact) and we'll be happy to work with you to help you level up your security!
 
+## [Documentation](https://www.lunasec.io/docs/)
+For more information about LunaSec including tutorials, examples, and technical information, please visit
+our [documentation](https://www.lunasec.io/docs/).  For marketing information, sales, or to get in touch, visit our website: [https://www.lunasec.io/](https://www.lunasec.io/).
+
+
 ## How does it work?
 LunaSec is a bit like a [safety deposity box](https://en.wikipedia.org/wiki/Safe_deposit_box) that holds your sensitive data. Each piece of data gets it's own box, it's own key to unlock it, and a unique number to identify each box by. These boxes are then securely stored inside of a bank vault that only a banker with special permissions has access to. Accessing the box requires proof of ownership and the key to unlock the box. 
 
@@ -51,12 +56,6 @@ That will pull all of the Docker containers and start the LunaSec demo app on yo
 To see LunaSec in action, just sign up for a new account and then submit some fake data in the app. All data in the app is transparently encrypted and stored in the LunaSec database in the app (take a look at the elements on the page and the network requests for proof).
 
 For a deeper dive into the Demo App, please see this [page](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) for a walkthrough of everything. All of the source code is available [here](https://github.com/lunasec-io/lunasec/tree/master/js/demo-apps/packages).
-
-## [Documentation](https://www.lunasec.io/docs/)
-For more information about LunaSec including tutorials, examples, and technical information, please visit
-our [documentation](https://www.lunasec.io/docs/).  For marketing information, sales, or to get in touch, visit our website: [https://www.lunasec.io/](https://www.lunasec.io/).
-
-The rest of this ReadMe explains how to work on LunaSec itself.  If you simply want to use LunaSec, please see the documentation.
 
 ## Professional Services
 Backing LunaSec is a team of Security Engineers. We offer paid support, onboarding, and additional enterprise features for LunaSec. We're very flexible and happy to work with you to reach your security or compliance milestones. If you're interested, please send us a message [here](https://www.lunasec.io/contact). Thank you!
