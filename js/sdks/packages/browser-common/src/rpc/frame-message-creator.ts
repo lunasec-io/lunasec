@@ -30,7 +30,7 @@ import {
 export class FrameMessageCreator {
   private readonly frameResponses: Record<string, UnknownFrameMessage>;
   private readonly timeout: number;
-  private readonly frameNotificationCallback!: (notification: FrameNotification) => void;
+  private readonly frameNotificationCallback!: (_notification: FrameNotification) => void;
   private readonly frameNonceFilter: string;
   private readonly lunaSecDomain: string;
 

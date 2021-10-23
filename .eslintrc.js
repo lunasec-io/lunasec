@@ -44,11 +44,11 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
     project: [
-      './js/sdks/packages/vue-sdk/tsconfig.json',
-      './js/sdks/tsconfig.json',
-      './js/demo-apps/packages/demo-back-end/tsconfig.json',
-      './js/demo-apps/packages/react-front-end/tsconfig.json',
-      './js/internal-infrastructure/metrics-server-backend/tsconfig.json',
+      'js/sdks/packages/vue-sdk/tsconfig.json',
+      'js/sdks/tsconfig.json',
+      'js/demo-apps/packages/demo-back-end/tsconfig.json',
+      'js/demo-apps/packages/react-front-end/tsconfig.json',
+      'js/internal-infrastructure/metrics-server-backend/tsconfig.json',
     ]
   },
   plugins: [
@@ -76,6 +76,7 @@ module.exports = {
       'error',
       'tag-aligned',
     ],
+    "react-hooks/exhaustive-deps": "off",
     'prettier/prettier': ['error', { singleQuote: true, printWidth: 120 }],
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'eslint-comments/disable-enable-pair': [
