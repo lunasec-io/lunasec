@@ -42,6 +42,10 @@ ENV VERBOSE_CYPRESS_LOGS="always"
 
 COPY --from=lerna-bootstrap /repo /repo
 
+COPY --from=golang:1.17.2-alpine /usr/local/go/ /usr/local/go/
+
+ENV PATH="/usr/local/go/bin:${PATH}"
+
 WORKDIR /repo/
 
 ENTRYPOINT yarn run test:all
