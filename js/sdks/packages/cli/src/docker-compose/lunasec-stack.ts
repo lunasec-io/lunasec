@@ -238,7 +238,7 @@ export class LunaSecStackDockerCompose {
 
     const localBuildConfig = {
       ...this.dockerfileTarget(demoDockerFile, name),
-      volumes: ['./go/config/lunasec/:/config/lunasec/', outputMount],
+      volumes: ['./js/sdks/packages/cli/config/lunasec/:/config/lunasec/', outputMount],
     };
 
     return {
