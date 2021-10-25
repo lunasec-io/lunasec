@@ -36,15 +36,16 @@ ENTRYPOINT lunasec
 
 FROM cypress/included:8.6.0 as integration-test
 
-RUN cypress install --force
+#RUN cypress install --force
 
 ENV VERBOSE_CYPRESS_LOGS="always"
+
 
 COPY --from=lerna-bootstrap /repo /repo
 
 WORKDIR /repo/
-
-ENTRYPOINT yarn run test:all
+# We would use test:all but couldn't easily get golang into this container, so those run on bare box
+ENTRYPOINT yarn run test:unit:tokenizer && yarn run test:unit:auth && yarn run test:e2e:local
 
 FROM lerna-bootstrap as secure-frame-iframe
 
