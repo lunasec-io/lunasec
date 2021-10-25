@@ -11,7 +11,11 @@
   ~ limitations under the License.
   ~
 -->
+
+
 # LunaSec 
+![All Tests](https://github.com/lunasec-io/lunasec/actions/workflows/integration.yaml/badge.svg)
+
 LunaSec is a suite of security tools designed to protect sensitive data in applications by only adding a few lines of code.
 
 LunaSec was built by Security Engineers and is designed to be easy to use for anybody. You don't need to understand security to get started.
