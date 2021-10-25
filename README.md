@@ -21,7 +21,7 @@
 
 ![All Tests](https://github.com/lunasec-io/lunasec/actions/workflows/integration.yaml/badge.svg)
 
-LunaSec is a suite of security tools designed to protect sensitive data in applications by only adding a few lines of code.
+LunaSec is a suite of security tools designed to protect sensitive data in web applications by only adding a few lines of code.
 
 - [What is LunaSec?](#what-is-lunasec)
 - [Documentation](https://www.lunasec.io/docs/)
@@ -36,16 +36,10 @@ LunaSec is a suite of security tools designed to protect sensitive data in appli
 - [See Also](#see-also)
 
 ## What is LunaSec?
-LunaSec is a dedicated database that holds your sensitive data and gives you back a Token (a UUID) to retrieve the with later.
+LunaSec is an end-to-end system that holds your sensitive data and gives you back a Token (a UUID) to retrieve the data with later.  It protects your system against attacks like XSS to **prevent data leaks**.  The SDKs tokenize strings and files from the browser in a few lines of code and encrypt that data using a **unique encryption key** per record. It scales automatically to handle even the largest loads and was designed by security experts. 
 
-It **scales** automatically;
-**hardens your code** against issues like XSS to **prevents data leaks** if any single component is compromised (including LunaSec);
-was built by **security experts**;
-provides SDKs that let you transparently tokenize data **in only a few lines of code**;
-supports **encryption-in-transit** and**encryption-at-rest** for all data; 
-encrypts data using a **unique encryption key per record**;
-and provides a **centralized system** to store **access control logic**, **generate audit logs**, and 
-**validate data compliance** across all of your services. 
+LunaSec also provides a centralized system to store **access control** logic, generate **audit logs**, and 
+validate **data compliance** across all of your services. 
 
 You can read more [here](https://www.lunasec.io/docs/pages/overview/features/) about what features LunaSec provides.
 
@@ -57,13 +51,13 @@ or open a new GitHub issue if you have a bug or feature to request.
 Please visit our [website](https://www.lunasec.io/) for marketing or sales information, or to [get in contact](https://www.lunasec.io/contact).
 
 ## System Architecture
-LunaSec works across the components of your stack to provide end-to-end data security.
+LunaSec works across the components of your web stack to provide end-to-end data security.
 We've documented the components of the stack [here](https://www.lunasec.io/docs/pages/overview/features/) and in the diagram below.
 
 ![LunaSec Architecture Diagram](docs/static/img/security-model-overview.svg)
 
 ## Who is LunaSec for?
-LunaSec is designed to be used by anybody that needs to store sensitive information in a production system.
+LunaSec is designed to be used by anybody that needs to store sensitive information in a production web application.
 Despite being built by Security Engineers, **LunaSec does not require security expertise to get started**.
 It's designed to be used by ordinary Software Engineers and Developers.
 
