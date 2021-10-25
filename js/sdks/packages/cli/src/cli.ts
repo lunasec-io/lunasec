@@ -60,6 +60,12 @@ yargs
         default: false,
         description: 'Do not prepend "sudo" before the docker-compose command.',
       },
+      verbose: {
+        type: 'boolean',
+        required: false,
+        default: false,
+        description: 'Log all actions performed by the CLI.',
+      },
     },
     (args) => {
       if (args['force-rebuild'] && !args['local-build']) {
@@ -70,8 +76,9 @@ yargs
       if (foundEnv.length !== 1) {
         throw new Error(`Provided environment is not one of: ${LunaSecStackEnvironments.join(', ')}`);
       }
+      const env = foundEnv[0];
 
-      const stack = new LunaSecStackDockerCompose(foundEnv[0], version, args['local-build']);
+      const stack = new LunaSecStackDockerCompose(env, version, args['local-build']);
 
       const useSudo = args['no-sudo'] ? '' : 'sudo ';
 
@@ -85,8 +92,15 @@ yargs
       }
 
       // if we are not in demo mode or in dev but not building locally, then write to the current directory
-      if (!(foundEnv[0] === 'demo' || (foundEnv[0] === 'dev' && !args['local-build']))) {
+      if (!(env === 'demo' || (env === 'dev' && !args['local-build']))) {
         composePath = process.cwd();
+      }
+
+      if (args['local-build']) {
+        const outputsFile = path.join(composePath, './outputs');
+        if (!fs.existsSync(outputsFile)) {
+          fs.mkdirSync(outputsFile);
+        }
       }
 
       const composeFile = stack.write(composePath);
@@ -97,13 +111,37 @@ yargs
 
       const baseCmd = `${useSudo} ${envOverride} docker-compose -f ${composeFile} ${directory} up ${forceRebuild}`;
 
-      if (foundEnv[0] === 'tests') {
+      const shouldStreamStdio = env !== 'demo' || args['verbose'];
+
+      if (env === 'tests') {
         // TODO (cthompson) this is a hack for now, we probably want to find a better way of building this command
-        runCommand('sh', ['-c', `${baseCmd} --force-recreate --exit-code-from integration-test integration-test`]);
-        return;
+        const output = runCommand(
+          `${baseCmd} --force-recreate --exit-code-from integration-test integration-test`,
+          shouldStreamStdio
+        );
+        console.log(output);
+        process.exit(output.status);
       }
 
-      runCommand('sh', ['-c', baseCmd]);
+      if (env === 'demo') {
+        console.log('Starting the LunaSec Stack demo at http://localstack:3000...');
+      } else if (env === 'dev') {
+        console.log(
+          'Starting the LunaSec Stack in dev mode. Tokenizer Backend will be accessible at http://localhost:37766.'
+        );
+      }
+
+      const output = runCommand(baseCmd, shouldStreamStdio);
+      if (env === 'demo' || output.status !== 0) {
+        if (output.stdout !== undefined && output.stdout !== null) {
+          console.log(output.stdout.toString());
+        }
+
+        if (output.stderr !== undefined && output.stderr !== null) {
+          console.log(output.stderr.toString());
+        }
+      }
+      process.exit(output.status);
     }
   )
   .command(
@@ -131,9 +169,9 @@ yargs
         description: 'Path to where the resources output file will be written to.',
       },
     },
-    (_args) => {
+    () => {
       const args = process.argv.slice(2, process.argv.length);
-      runCommand(path.join(__dirname, '../bin/lunasec'), args);
+      runCommand(`${path.join(__dirname, '../bin/lunasec')} ${args.join(' ')}`);
     }
   )
   .demandCommand()

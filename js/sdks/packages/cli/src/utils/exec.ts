@@ -14,18 +14,27 @@
  * limitations under the License.
  *
  */
-import { spawn } from 'child_process';
+import { execSync, ExecSyncOptionsWithBufferEncoding } from 'child_process';
 
-export function runCommand(command: string, args: string[], env?: NodeJS.ProcessEnv) {
-  const cliProcess = spawn(command, args, {
-    env: env || process.env,
-  });
+interface RunCommandResult {
+  status: number;
+  message?: string;
+  stderr?: Buffer;
+  stdout: Buffer;
+}
 
-  cliProcess.stdout.on('data', (data) => {
-    console.log(data.toString());
-  });
+export function runCommand(command: string, streamStdio?: boolean): RunCommandResult {
+  const options: ExecSyncOptionsWithBufferEncoding = {
+    stdio: streamStdio ? 'inherit' : 'pipe',
+  };
 
-  cliProcess.stderr.on('data', (data) => {
-    console.log(data.toString());
-  });
+  try {
+    const r = execSync(`${command}`, options);
+    return {
+      status: 0,
+      stdout: r,
+    };
+  } catch (e) {
+    return e as RunCommandResult;
+  }
 }
