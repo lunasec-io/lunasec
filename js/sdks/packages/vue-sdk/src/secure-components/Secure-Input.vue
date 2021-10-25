@@ -6,7 +6,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import { SecureTools } from '../secureTools';
+import { SecureTools } from '../secure-tools';
 
 export default defineComponent({
   name: 'Demo',

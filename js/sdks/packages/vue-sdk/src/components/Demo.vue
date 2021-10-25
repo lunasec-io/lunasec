@@ -6,7 +6,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import SecureInput from '../secure-components/SecureInput.vue';
+import SecureInput from '../secure-components/Secure-Input.vue';
 
 export default defineComponent({
   name: 'Demo',

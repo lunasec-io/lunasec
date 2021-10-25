@@ -18,13 +18,17 @@ import { OutgoingHttpHeaders } from 'http';
 
 import { LunaSecError } from '@lunasec/isomorphic-common';
 import axios, { AxiosError, AxiosResponse } from 'axios';
+import { FileWithPath } from 'react-dropzone';
 
 import { downloadFromS3WithSignedUrl, uploadToS3WithSignedUrl } from './aws';
 import { AUTHORIZATION_HEADER, CONFIG_DEFAULTS, SESSION_HASH_HEADER } from './constants';
 import { Configuration, DefaultApi, ErrorResponse, ErrorResponseError, MetaData } from './generated';
 import {
+  FileInfo,
   SuccessOrFailOutput,
   TokenizerClientConfig,
+  TokenizerDetokenizeFileInfo,
+  TokenizerDetokenizeFileResponse,
   TokenizerDetokenizeResponse,
   TokenizerDetokenizeToUrlResponse,
   TokenizerFailApiResponse,
@@ -70,7 +74,12 @@ export class Tokenizer {
     return new URL(this.config.host).origin;
   }
 
-  private handleError(e: AxiosError | Error): TokenizerFailApiResponse {
+  private handleError(e: AxiosError | Error | unknown): TokenizerFailApiResponse {
+    if (!(e instanceof Error)) {
+      // this will likely never happen but TS makes you handle it
+      throw e;
+    }
+    // this will be what happens
     return {
       success: false,
       error: this.constructError(e),
@@ -111,11 +120,7 @@ export class Tokenizer {
         success: res.data.success,
       };
     } catch (e) {
-      if (e instanceof Error) {
-        return this.handleError(e);
-      }
-
-      throw e;
+      return this.handleError(e);
     }
   }
 
@@ -133,11 +138,7 @@ export class Tokenizer {
         valid: res.data.data.valid,
       };
     } catch (e) {
-      if (e instanceof Error) {
-        return this.handleError(e);
-      }
-
-      throw e;
+      return this.handleError(e);
     }
   }
 
@@ -155,11 +156,7 @@ export class Tokenizer {
         tokenId: tokenId, // Not sure why we pass this back, seems useless in this context
       };
     } catch (e) {
-      if (e instanceof Error) {
-        return this.handleError(e);
-      }
-
-      throw e;
+      return this.handleError(e);
     }
   }
 
@@ -179,11 +176,7 @@ export class Tokenizer {
         tokenId: data.tokenId,
       };
     } catch (e) {
-      if (e instanceof Error) {
-        return this.handleError(e);
-      }
-
-      throw e;
+      return this.handleError(e);
     }
   }
 
@@ -263,11 +256,118 @@ export class Tokenizer {
         downloadUrl: downloadUrl,
       };
     } catch (e) {
-      if (e instanceof Error) {
-        return this.handleError(e);
-      }
+      return this.handleError(e);
+    }
+  }
 
-      throw e;
+  /**
+   * // Fetches file info and pre-signed URL needed to start a file download.
+   * Useful when we want to prepare the option to start a download but not yet start one.
+   * Grabs the file URL and metadata in parallel.  Similar to detokenizeToUrl but for files
+   * @param token
+   */
+  async detokenizeToFileInfo(token: string): SuccessOrFailOutput<TokenizerDetokenizeFileInfo> {
+    const metaPromise = this.getMetadata(token);
+    // TODO: make this function able to skip detokenizing to URL optionally because sometimes we dont need it.
+    const urlPromise = this.detokenizeToUrl(token);
+    const [metaRes, urlRes] = await Promise.all([metaPromise, urlPromise]);
+    if (!metaRes.success) {
+      return metaRes;
+    }
+    if (!urlRes.success) {
+      return urlRes;
+    }
+
+    const meta = metaRes.metadata;
+
+    if (meta.dataType !== 'file' || !('fileinfo' in meta)) {
+      return {
+        success: false,
+        error: new LunaSecError({
+          name: 'wrongMetaDataType',
+          code: '400',
+          message: "Couldn't find metadata information for a file, it may have been the wrong type of token.",
+        }),
+      };
+    }
+
+    const fileMeta = meta.fileinfo;
+    const fileInfo: FileInfo = {
+      filename: fileMeta.filename,
+      options: {
+        lastModified: fileMeta.lastModified,
+        type: fileMeta.type,
+      },
+      headers: urlRes.headers,
+      url: urlRes.downloadUrl,
+    };
+    return {
+      success: true,
+      fileInfo,
+    };
+  }
+
+  /**
+   * BROWSER ONLY
+   * Triggers a download of a file that we already got the file info for using getFileInfo
+   * @param fileInfo LunaSec's custom FileInfo object which tells us about the tokenized file
+   */
+  async detokenizeFileFromFileInfo(fileInfo: FileInfo): SuccessOrFailOutput<TokenizerDetokenizeFileResponse> {
+    const axiosInstance = axios.create();
+    try {
+      const res = await axiosInstance.get(fileInfo.url, {
+        headers: fileInfo.headers,
+        responseType: 'blob',
+      });
+      return {
+        success: true,
+        file: new File([res.data], fileInfo.filename, fileInfo.options),
+      };
+    } catch (e) {
+      return this.handleError(e);
+    }
+  }
+
+  /**
+   * BROWSER ONLY
+   * Takes a token and downloads and returns a File object, complete with proper name, mime type, and lastModified fields
+   * @param token
+   */
+  async detokenizeFile(token: string): SuccessOrFailOutput<TokenizerDetokenizeFileResponse> {
+    const fileInfoRes = await this.detokenizeToFileInfo(token);
+    if (!fileInfoRes.success) {
+      return fileInfoRes;
+    }
+    return this.detokenizeFileFromFileInfo(fileInfoRes.fileInfo);
+  }
+
+  /**
+   * BROWSER ONLY
+   * uploads a file into LunaSec and returns a tokenId, just like `tokenize`
+   * @param file
+   * @param customMetadata
+   */
+  async tokenizeFile(
+    file: File | FileWithPath,
+    customMetadata?: Record<string, unknown>
+  ): SuccessOrFailOutput<TokenizerTokenizeResponse> {
+    try {
+      const arrayBuf = await file.arrayBuffer();
+      // Turn the JS ArrayBuffer into a Node type Buffer for tokenizer
+      // todo: try skipping this
+      const buf = Buffer.from(new Uint8Array(arrayBuf));
+      const meta: MetaData = {
+        dataType: 'file',
+        fileinfo: {
+          filename: file.name,
+          type: file.type,
+          lastModified: file.lastModified,
+        },
+        customFields: customMetadata,
+      };
+      return this.tokenize(buf, meta);
+    } catch (e) {
+      return this.handleError(e);
     }
   }
 }

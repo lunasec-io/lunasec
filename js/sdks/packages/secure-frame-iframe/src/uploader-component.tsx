@@ -15,11 +15,8 @@
  *
  */
 import { ComponentNames } from '@lunasec/react-sdk';
-import { MetaData } from '@lunasec/tokenizer-sdk';
 import React from 'react';
 import Dropzone, { DropzoneProps, FileWithPath } from 'react-dropzone';
-
-import { LunaSecError } from '../../isomorphic-common';
 
 import { handleDownload } from './secure-download';
 import { SecureFrame } from './secure-frame';
@@ -29,7 +26,7 @@ interface UploaderProps {
   secureframe: SecureFrame<ComponentNames>;
 }
 
-interface FileInfo {
+interface UploadedFileRecord {
   token?: string;
   id: number;
   status: 'Uploading' | 'Uploaded' | 'Error';
@@ -37,7 +34,7 @@ interface FileInfo {
 }
 
 interface UploaderState {
-  files: FileInfo[];
+  files: UploadedFileRecord[];
 }
 
 export default class Uploader extends React.Component<UploaderProps, UploaderState> {
@@ -72,40 +69,26 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
   }
 
   loadExistingFiles(): void {
+    const tokenizer = this.props.secureframe.tokenizer;
     this.fileTokens.map(async (token) => {
-      const metaRes = await this.props.secureframe.tokenizer.getMetadata(token);
-      if (!metaRes.success) {
-        // If it failed then do nothing and don't show a file
-        this.props.secureframe.sendErrorMessage(metaRes.error);
-        return;
+      const fileInfoRes = await tokenizer.detokenizeToFileInfo(token);
+      if (!fileInfoRes.success) {
+        return this.props.secureframe.handleError(fileInfoRes.error);
       }
-      const meta = metaRes.metadata;
-      if (meta.dataType !== 'file' || !('fileinfo' in meta) || !('filename' in meta.fileinfo)) {
-        this.props.secureframe.sendErrorMessage(
-          new LunaSecError({
-            name: 'wrongMetaDataType',
-            code: '400',
-            message: "Couldn't find metadata information for a file, it may have been the wrong type of token.",
-          })
-        );
-        return;
-      }
-      const { filename } = meta.fileinfo;
-      const fileInfo: FileInfo = {
-        name: filename,
+      const fileRecord: UploadedFileRecord = {
+        name: fileInfoRes.fileInfo.filename,
         token: token,
         status: 'Uploaded',
         id: this.state.files.length,
       };
-      this.setState({ files: this.state.files.concat(fileInfo) });
+      this.setState({ files: this.state.files.concat(fileRecord) });
     });
   }
 
-  // TODO: add the ability to remove a file
   processAddedFiles(files: FileWithPath[]) {
     // Single file mode for now to simplify things
     const file = files[0];
-    const fileInfo: FileInfo = {
+    const fileInfo: UploadedFileRecord = {
       name: file.name,
       status: 'Uploading',
       id: this.state.files.length,
@@ -113,36 +96,22 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     // wait for the state to set before continuing
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.setState({ files: this.state.files.concat(fileInfo) }, async () => {
-      try {
-        // TODO: Move this logic into the tokenizer so that tokenizer simply takes a File
-        const arrayBuf = await file.arrayBuffer();
-        // Turn the JS ArrayBuffer into a Node type Buffer for tokenizer
-        const buf = Buffer.from(new Uint8Array(arrayBuf));
-        const meta: MetaData = {
-          dataType: 'file',
-          fileinfo: {
-            filename: file.name,
-            type: file.type,
-            lastModified: file.lastModified,
-          },
-          customFields: this.props.secureframe.customMetadata,
-        };
-        const uploadRes = await this.props.secureframe.tokenizer.tokenize(buf, meta);
-        if (!uploadRes.success) {
-          throw uploadRes.error; // caught below along with any other unforseen issues
-        }
-        const token = uploadRes.tokenId;
-        await this.mutateFileState(fileInfo.id, { status: 'Uploaded', token: token });
-        this.sendTokens();
-      } catch (e) {
-        return this.props.secureframe.handleError(e);
+      const metaData = this.props.secureframe.customMetadata;
+      const tokenizeRes = await this.props.secureframe.tokenizer.tokenizeFile(file, metaData);
+      if (!tokenizeRes.success) {
         await this.mutateFileState(fileInfo.id, { status: 'Error' });
+        this.props.secureframe.handleError(tokenizeRes.error);
+        return;
       }
+      const token = tokenizeRes.tokenId;
+      await this.mutateFileState(fileInfo.id, { status: 'Uploaded', token: token });
+
+      this.sendTokens();
     });
   }
 
   // a helper function to go through the files array and find the file we want to change some fields on
-  mutateFileState(id: number, changedFields: Partial<FileInfo>, destroy = false): Promise<null> {
+  mutateFileState(id: number, changedFields: Partial<UploadedFileRecord>, destroy = false): Promise<null> {
     const modifiedFiles = this.modifyFiles(this.state.files, id, changedFields, destroy);
     // setState is async but doesnt even give us a promise so we have to do this
     return new Promise((resolve) => {
@@ -150,7 +119,12 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
     });
   }
 
-  modifyFiles(files: FileInfo[], id: number, changedFields: Partial<FileInfo>, destroy = false): FileInfo[] {
+  modifyFiles(
+    files: UploadedFileRecord[],
+    id: number,
+    changedFields: Partial<UploadedFileRecord>,
+    destroy = false
+  ): UploadedFileRecord[] {
     if (destroy) {
       return files.filter((f) => f.id !== id);
     }

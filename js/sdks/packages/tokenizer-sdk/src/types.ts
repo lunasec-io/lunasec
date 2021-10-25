@@ -29,6 +29,13 @@ export interface TokenizerClientConfig {
   lockToSession: boolean;
 }
 
+export interface FileInfo {
+  filename: string;
+  options: FilePropertyBag;
+  headers: Record<string, string>;
+  url: string;
+}
+
 // ______________________ tokenizer.ts Return Types _________________
 
 export interface TokenizerSetGrantResponse {
@@ -66,6 +73,16 @@ export interface TokenizerDetokenizeToUrlResponse {
 export interface TokenizerFailApiResponse {
   success: false;
   error: LunaSecError;
+}
+
+export interface TokenizerDetokenizeFileInfo {
+  success: true;
+  fileInfo: FileInfo;
+}
+
+export interface TokenizerDetokenizeFileResponse {
+  success: true;
+  file: File;
 }
 
 export type SuccessOrFailOutput<S> = Promise<S | TokenizerFailApiResponse>;
