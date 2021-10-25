@@ -98,7 +98,6 @@ jobs:
 #      run: npm run license:check
 
     - name: Go Tests
-      working-directory: go/
       run: yarn run test:unit:go
 
     - name: setup lunasec cli
