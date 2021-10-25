@@ -52,10 +52,10 @@ jobs:
       with:
         node-version: '14'
         cache: yarn
-#
-#    - uses: actions/setup-go@v2
-#      with:
-#        go-version: '^1.17.1'
+
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '^1.17.1'
 
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
     - name: Setup tmate session
@@ -96,14 +96,15 @@ jobs:
 #      env:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
-#
-#    - name: Unit Tests
-#      run: yarn run test:unit
+
+    - name: Unit Tests
+      working-directory: go/
+      run: go test -cover ./...
 
     - name: setup lunasec cli
       run: yarn run lunasec:setup
 
-    - name: Run Tests
+    - name: Run All Tests (except go)
       run: yarn run lunasec start --no-sudo=true --local-build=true --env tests
 
     - name: docker logs
