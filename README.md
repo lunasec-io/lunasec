@@ -36,10 +36,18 @@ LunaSec is a suite of security tools designed to protect sensitive data in web a
 - [See Also](#see-also)
 
 ## What is LunaSec?
-LunaSec is an end-to-end system that holds your sensitive data and gives you back a Token (a UUID) to retrieve the data with later.  It protects your system against attacks like XSS to **prevent data leaks**.  The SDKs tokenize strings and files from the browser in a few lines of code and encrypt that data using a **unique encryption key** per record. It scales automatically to handle even the largest loads and was designed by security experts. 
+LunaSec is an end-to-end security system designed to protect your app by encrypting your sensitive data.
+It works by seamlessly storing your sensitive data and giving you back a Token (a UUID) to retrieve data with later.
+LunaSec encrypts and stores the sensitive data, while your application stores only the non-sensitive Token.
 
-LunaSec also provides a centralized system to store **access control** logic, generate **audit logs**, and 
-validate **data compliance** across all of your services. 
+### Features
+- **Secure By Default**: Prevents data leaks by making your software resistant to [many security issues](https://www.lunasec.io/docs/pages/overview/security/vulns-and-mitigations/) like SQL Injection, XSS, and even RCE.
+- **Best-In-Class Compliance Software**: Decrease your compliance overhead by 90%+ with centralized *access control logic*, *audit logs*, and *automatic compliance validation*.
+- **Simple Onboarding**: [Get started in minutes](https://www.lunasec.io/docs/pages/overview/example-usage/) by adding *only a few lines of code* anywhere that sensitive data enters or exits your system.
+- **Built By Security Experts**: Designed to bring leading security practices to your applications *without requiring advanced security knowledge*.  
+- **Trustless Architecture**: All records are [encrypted with a unique key](https://www.lunasec.io/docs/pages/overview/security/encryption/) that even LunaSec can't access. Decryption only happens when you need it to.
+- **Scales Automatically**: Supports even the largest loads by leveraging cloud-scale database services like AWS S3 and DynamoDB.
+- **Enterprise Grade**: We offer warranties, managed deployments, and custom support via our [Premium Support packages](#custom-support-from-the-lunasec-team).
 
 You can read more [here](https://www.lunasec.io/docs/pages/overview/features/) about what features LunaSec provides.
 
