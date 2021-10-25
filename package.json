@@ -75,7 +75,8 @@
       "**/ts-node",
       "**/webpack",
       "**/@docusaurus/core",
-      "**/@vue/**"
+      "**/@vue/**",
+      "**/babel-loader"
     ],
     "packages": [
       "./go",
