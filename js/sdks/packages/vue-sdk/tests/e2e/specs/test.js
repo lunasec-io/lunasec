@@ -14,25 +14,11 @@
  * limitations under the License.
  *
  */
-// import { expect as expectCDK, MatchStyle, matchTemplate } from '@aws-cdk/assert';
-// import * as cdk from '@aws-cdk/core';
-//
-// import * as DeployCdk from '../lib/deploy-cdk-stack';
-//
-// test('Empty Stack', () => {
-//   const app = new cdk.App();
-//   // WHEN
-//   const stack = new DeployCdk.LunaSecMetricsServerBackendStack(app, 'MyTestStack', {
-//     domainName: 'foo.bar.baz',
-//     domainZone: 'baz-foo',
-//   });
-//   // THEN
-//   expectCDK(stack).to(
-//     matchTemplate(
-//       {
-//         Resources: {},
-//       },
-//       MatchStyle.EXACT
-//     )
-//   );
-// });
+// https://docs.cypress.io/api/introduction/api.html
+
+describe("My First Test", () => {
+  it("Visits the app root url", () => {
+    cy.visit("/");
+    cy.contains("h1", "Welcome to Your Vue.js + TypeScript App");
+  });
+});

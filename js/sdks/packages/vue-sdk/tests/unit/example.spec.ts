@@ -14,25 +14,16 @@
  * limitations under the License.
  *
  */
-// import { expect as expectCDK, MatchStyle, matchTemplate } from '@aws-cdk/assert';
-// import * as cdk from '@aws-cdk/core';
+// import { shallowMount } from '@vue/test-utils';
 //
-// import * as DeployCdk from '../lib/deploy-cdk-stack';
-//
-// test('Empty Stack', () => {
-//   const app = new cdk.App();
-//   // WHEN
-//   const stack = new DeployCdk.LunaSecMetricsServerBackendStack(app, 'MyTestStack', {
-//     domainName: 'foo.bar.baz',
-//     domainZone: 'baz-foo',
+// import HelloWorld from '@/components/HelloWorld.vue';
+
+// describe('HelloWorld.vue', () => {
+//   it('renders props.msg when passed', () => {
+//     const msg = 'new message';
+//     const wrapper = shallowMount(HelloWorld, {
+//       props: { msg },
+//     });
+//     expect(wrapper.text()).toMatch(msg);
 //   });
-//   // THEN
-//   expectCDK(stack).to(
-//     matchTemplate(
-//       {
-//         Resources: {},
-//       },
-//       MatchStyle.EXACT
-//     )
-//   );
 // });

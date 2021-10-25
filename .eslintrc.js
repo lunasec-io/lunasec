@@ -15,12 +15,16 @@
  *
  */
 module.exports = {
+  root: true,
   env: {
     browser: true,
-    es2021: true,
     node: true
   },
   extends: [
+    "plugin:vue/vue3-essential",
+    "@vue/typescript/recommended",
+    "@vue/prettier",
+    "@vue/prettier/@typescript-eslint",
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
@@ -29,7 +33,7 @@ module.exports = {
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
-    'plugin:prettier/recommended'
+    'plugin:prettier/recommended',
   ],
   ignorePatterns: ['packages/tokenizer-sdk/src/generated'],
   parser: '@typescript-eslint/parser',
@@ -39,7 +43,13 @@ module.exports = {
     },
     ecmaVersion: 12,
     sourceType: 'module',
-    project: './tsconfig.json'
+    project: [
+      'js/sdks/packages/vue-sdk/tsconfig.json',
+      'js/sdks/tsconfig.json',
+      'js/demo-apps/packages/demo-back-end/tsconfig.json',
+      'js/demo-apps/packages/react-front-end/tsconfig.json',
+      'js/internal-infrastructure/metrics-server-backend/tsconfig.json',
+    ]
   },
   plugins: [
     'react',
@@ -66,13 +76,16 @@ module.exports = {
       'error',
       'tag-aligned',
     ],
+    "react-hooks/exhaustive-deps": "off",
     'prettier/prettier': ['error', { singleQuote: true, printWidth: 120 }],
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'eslint-comments/disable-enable-pair': [
       'error',
       { 'allowWholeFile': true }
     ],
+    'eslint-comments/no-unlimited-disable':'off',
     'eslint-comments/no-unused-disable': 'error',
+    '@typescript-eslint/no-unused-vars':['warn',{ "argsIgnorePattern": "^_" }],
     '@typescript-eslint/no-unsafe-call':'off', // Did this because of a bug with intellij (forrest)
     '@typescript-eslint/no-unsafe-member-access':'off',
     '@typescript-eslint/no-unsafe-assignment':'off',

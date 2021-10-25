@@ -14,6 +14,9 @@
  * limitations under the License.
  *
  */
+// easy-peasy is a simple store based on Redux, with a bad name
+import { Action, Computed, Thunk } from 'easy-peasy';
+
 export interface UserModel {
   id: string;
   username: string;
@@ -44,9 +47,6 @@ interface UserDocumentsSuccess {
 }
 
 export type UserDocumentsResponse = UserDocumentsSuccess | FailApiResponse;
-
-// easy-peasy is a simple store based on Redux, with a bad name
-import { Action, Computed, Thunk } from 'easy-peasy';
 
 // todo: maybe switch from using easy-peasy, this is clunky
 export interface StoreModel {

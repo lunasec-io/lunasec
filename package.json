@@ -1,11 +1,47 @@
 {
-  "name": "lunasec",
-  "version": "1.0.0",
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/refinery-labs/tokenizer-front-end-sdk/issues"
+  },
+  "dependencies": {
+    "lerna": "^4.0.0"
+  },
   "description": "This monorepo holds the LunaSec SDKs, servers, and demo application.",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^5.1.0",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "@vue/eslint-config-typescript": "^7.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-comments": "^1.0.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-import-order": "^2.1.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-vue": "^7.20.0",
+    "husky": "^7.0.0",
+    "lerna": "^4.0.0",
+    "lint-staged": "^11.2.3",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.4.2"
+  },
+  "homepage": "https://github.com/refinery-labs/tokenizer-front-end-sdk#readme",
+  "license": "Apache-2.0",
+  "name": "lunasec",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/refinery-labs/tokenizer-front-end-sdk.git"
+  },
   "scripts": {
     "lunasec:setup": "cd js/sdks/packages/cli && yarn install && yarn run compile && npm link",
-    "lunasec": "lunasec",
     "start:services": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up tokenizerbackend",
     "license:check": "./tools/license-checker/run-license-check.sh check",
     "license:fix": "./tools/license-checker/run-license-check.sh fix",
@@ -19,65 +55,20 @@
     "test:unit": "yarn test:unit:auth && yarn test:unit:tokenizer && yarn test:unit:go",
     "test:all": "yarn test:unit && yarn run test:e2e:local",
     "lint:fix": "yarn run lint -- --fix",
-    "lint": "cd js/sdks && eslint --ext .js,.jsx,.ts,.tsx .",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx,.vue .",
     "version:release": "if [ -z ${RELEASE_TYPE+x} ]; then echo \"RELEASE_TYPE is unset\"; else echo \"$RELEASE_TYPE\" && lerna version -y $RELEASE_TYPE --no-push --force-publish --sign-git-commit; fi",
     "compile:dev:sdks": "cd js/sdks && yarn run compile:dev",
     "compile:release:sdks": "cd js/sdks && yarn run compile:release",
     "compile:release:services": "cd go && yarn run compile:release",
-    "compile:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh build",
-    "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services && yarn run compile:release:demos",
+    "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services",
     "postinstall": "yarn run license:install",
     "publish:release:sdks": "lerna publish --no-verify-access -y from-package",
     "publish:release:services": "cd go && yarn run publish:release",
-    "publish:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh publish",
-    "publish:release": "yarn run publish:release:sdks && yarn run publish:release:services && yarn run publish:release:demos",
-    "prepare": "husky install",
-    "monorepo:version": "node -p 'require(\"./lerna.json\").version'"
+    "publish:release": "yarn run publish:release:sdks && yarn run publish:release:services",
+    "prepare": "husky install"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/refinery-labs/tokenizer-front-end-sdk.git"
-  },
-  "author": "",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/refinery-labs/tokenizer-front-end-sdk/issues"
-  },
-  "homepage": "https://github.com/refinery-labs/tokenizer-front-end-sdk#readme",
-  "dependencies": {
-    "lerna": "^4.0.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "@typescript-eslint/parser": "^4.22.0",
-    "eslint": "^7.25.0",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-config-standard": "^16.0.2",
-    "eslint-plugin-comments": "^1.0.0",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-import-order": "^2.1.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-promise": "^4.3.1",
-    "eslint-plugin-react": "^7.23.2",
-    "husky": "^7.0.0",
-    "lerna": "^4.0.0",
-    "lint-staged": "^11.2.3",
-    "prettier": "^2.2.1",
-    "rimraf": "^3.0.2",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^4.2.3"
-  },
+  "version": "1.0.0",
   "workspaces": {
-    "packages": [
-      "./go",
-      "./js/sdks",
-      "./js/sdks/packages/*",
-      "./js/service/packages/*",
-      "./js/demo-apps/packages/*",
-      "./docs"
-    ],
     "nohoist": [
       "**/react-scripts",
       "**/jose",
@@ -85,7 +76,16 @@
       "**/ts-node",
       "**/webpack",
       "**/@docusaurus/core",
+      "**/@vue/**",
       "**/babel-loader"
+    ],
+    "packages": [
+      "./go",
+      "./js/sdks/packages/*",
+      "./js/service/packages/*",
+      "./js/demo-apps/packages/*",
+      "./docs",
+      "./js/sdks"
     ]
   }
 }
