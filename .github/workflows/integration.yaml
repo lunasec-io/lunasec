@@ -97,14 +97,14 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
-    - name: run golang tests
+    - name: Go Tests
       working-directory: go/
       run: go test -cover ./...
 
     - name: setup lunasec cli
       run: yarn run lunasec:setup
 
-    - name: run e2e tests
+    - name: Run All Tests (except go)
       run: yarn run lunasec start --no-sudo=true --local-build=true --env tests
 
     - name: docker logs
