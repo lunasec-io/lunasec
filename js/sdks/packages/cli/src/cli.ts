@@ -133,9 +133,11 @@ yargs
 
       const output = runCommand(baseCmd, shouldStreamStdio);
       if (env === 'demo' || output.status !== 0) {
-        console.log(output.stdout.toString());
+        if (output.stdout !== undefined && output.stdout !== null) {
+          console.log(output.stdout.toString());
+        }
 
-        if (output.stderr !== undefined) {
+        if (output.stderr !== undefined && output.stderr !== null) {
           console.log(output.stderr.toString());
         }
       }
