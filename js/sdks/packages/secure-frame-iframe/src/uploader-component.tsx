@@ -100,7 +100,8 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
       const tokenizeRes = await this.props.secureframe.tokenizer.tokenizeFile(file, metaData);
       if (!tokenizeRes.success) {
         await this.mutateFileState(fileInfo.id, { status: 'Error' });
-        return this.props.secureframe.handleError(tokenizeRes.error);
+        this.props.secureframe.handleError(tokenizeRes.error);
+        return;
       }
       const token = tokenizeRes.tokenId;
       await this.mutateFileState(fileInfo.id, { status: 'Uploaded', token: token });

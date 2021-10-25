@@ -326,7 +326,6 @@ export class Tokenizer {
     } catch (e) {
       return this.handleError(e);
     }
-    // const bits = await res.data;
   }
 
   /**
