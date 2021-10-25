@@ -16,6 +16,7 @@
 <p align="center">
   <img src='docs/static/img/logo-black-text.svg' width='70%'>
 </p>
+
 ![All Tests](https://github.com/lunasec-io/lunasec/actions/workflows/integration.yaml/badge.svg)
 
 ---
