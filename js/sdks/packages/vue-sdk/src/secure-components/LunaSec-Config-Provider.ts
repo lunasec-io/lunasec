@@ -38,4 +38,9 @@ export default defineComponent({
   setup: (props) => {
     provide('lunaSecConfig', toRefs(props));
   },
+  render() {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return this.$slots.default();
+  },
 });
