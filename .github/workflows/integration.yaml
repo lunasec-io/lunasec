@@ -20,6 +20,8 @@ name: CI
 on:
   pull_request:
     branches: [master, '**']
+  push:
+    branches: [master]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
@@ -36,7 +38,15 @@ jobs:
       TERM: xterm
 
     steps:
+
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
+    - name: Merge target branch
+      run: git merge origin/${{ github.event.pull_request.base.ref }}
+      if:  github.event_name == 'pull_request'
 
     - uses: actions/setup-node@v2
       with:
@@ -87,14 +97,14 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
-    - name: run golang tests
+    - name: Go Tests
       working-directory: go/
       run: go test -cover ./...
 
     - name: setup lunasec cli
       run: yarn run lunasec:setup
 
-    - name: run e2e tests
+    - name: Run All Tests (except go)
       run: yarn run lunasec start --no-sudo=true --local-build=true --env tests
 
     - name: docker logs

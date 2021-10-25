@@ -12,6 +12,8 @@
   ~
 -->
 
+![All Tests](https://github.com/lunasec-io/lunasec/actions/workflows/integration.yaml/badge.svg)
+
 # LunaSec
 LunaSec makes it easy and secure for applications to process and store sensitive data through Tokenization.
 
