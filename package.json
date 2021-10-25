@@ -41,6 +41,7 @@
     "url": "git+https://github.com/refinery-labs/tokenizer-front-end-sdk.git"
   },
   "scripts": {
+    "setup:lunasec": "cd js/sdks/packages/cli && yarn install && yarn run compile && npm link",
     "start:services": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up tokenizerbackend",
     "license:check": "./tools/license-checker/run-license-check.sh check",
     "license:fix": "./tools/license-checker/run-license-check.sh fix",
