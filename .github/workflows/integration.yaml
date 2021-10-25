@@ -99,7 +99,7 @@ jobs:
 
     - name: run golang tests
       working-directory: go/
-      run: go test -cover ./...
+      run: yarn run test:unit:go
 
     - name: setup lunasec cli
       run: yarn run lunasec:setup
