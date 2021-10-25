@@ -121,7 +121,7 @@ We've made it very easy for you to get familiar with LunaSec by running our exam
 You can try it out with one command **if you have Node and Docker installed**:
 
 ```
-npx lunasec up
+npx @lunasec/cli start --env demo
 ```
 
 That will pull all the Docker containers and start the LunaSec demo app on your computer. 
