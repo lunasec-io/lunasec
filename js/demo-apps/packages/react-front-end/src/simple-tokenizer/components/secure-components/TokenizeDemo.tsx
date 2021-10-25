@@ -14,8 +14,7 @@
  * limitations under the License.
  *
  */
-import { SecureForm, SecureInput } from '@lunasec/react-sdk';
-import { Button, Card, CardContent, CardHeader, FormGroup, FormLabel, Grid, TextField } from '@material-ui/core';
+import { Button, Card, CardContent, FormGroup, FormLabel, Grid, TextField } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import axios from 'axios';
 import React, { useState } from 'react';

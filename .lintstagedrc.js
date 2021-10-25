@@ -24,7 +24,7 @@ const yaml = require('js-yaml');
  * If you know of a way to clean it up, feel free to. This seemed like the simplest solution though.
  * @type {RegExp}
  */
-const javascriptRegex = /\.(cj|mj|j|t)sx?$/i;
+const javascriptRegex = /\.(((cj|mj|j|t)sx?)|\.vue)$/i;
 const golangRegex = /\.go$/i;
 const markdownRegex = /\.mdx?$/i;
 
@@ -154,7 +154,7 @@ module.exports = (allStagedFiles) => {
   // Lint all JS files
   const jsFiles = allStagedFiles.filter(file => file.match(javascriptRegex));
   if (jsFiles.length > 0) {
-    outputCommands.push(`sh -c "cd js/sdks && eslint --fix ${jsFiles.join(' ')}"`);
+    outputCommands.push(`sh -c "eslint --fix ${jsFiles.join(' ')}"`);
   }
 
   return outputCommands;
