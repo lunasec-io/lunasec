@@ -96,6 +96,13 @@ yargs
         composePath = process.cwd();
       }
 
+      if (args['local-build']) {
+        const outputsFile = path.join(composePath, './outputs');
+        if (!fs.existsSync(outputsFile)) {
+          fs.mkdirSync(outputsFile);
+        }
+      }
+
       const composeFile = stack.write(composePath);
 
       const directory = `--project-directory ${composePath}`;
