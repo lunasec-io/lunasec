@@ -104,7 +104,7 @@ jobs:
       run: yarn run lunasec:setup
 
     - name: Run All Tests (except go)
-      run: yarn run lunasec start --no-sudo=true --local-build=true --env tests
+      run: lunasec start --no-sudo=true --local-build=true --env tests
 
     - name: docker logs
       if: always()

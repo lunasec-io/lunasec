@@ -15,6 +15,7 @@
  *
  */
 import { FrameMessageCreator, generateSecureNonce, getStyleInfo } from '@lunasec/browser-common';
+import { ReadElementStyle } from '@lunasec/browser-common';
 import { inject, onMounted, Ref, ref } from 'vue';
 
 import { LunaSecConfigProviderAttrs } from './secure-components/LunaSec-Config-Provider';
@@ -23,21 +24,27 @@ export class SecureTools {
   frameId: string;
   messageCreator: FrameMessageCreator;
   lunaSecConfig: LunaSecConfigProviderAttrs;
+  shouldRenderFrame: Ref<boolean>;
+  clonedStyle: Ref<ReadElementStyle | null>;
 
   constructor() {
     console.log('built an instance of SecureTools');
     this.frameId = generateSecureNonce();
 
+    this.shouldRenderFrame = ref(false);
+    this.clonedStyle = ref(null);
     const providerConf = inject<LunaSecConfigProviderAttrs>('lunaSecConfig');
     if (!providerConf) {
       throw new Error('Must register LunaSecConfigProvider above Secure Component');
     }
     this.lunaSecConfig = providerConf;
+    console.log('providerConf is ', providerConf);
     this.messageCreator = new FrameMessageCreator(providerConf.lunaSecDomain, this.frameId, (notification) => {
       // this.frameNotificationCallback(notification)
       console.log('frame notification received');
     });
   }
+
   cloneStyle(ref: Ref) {
     if (!ref.value) {
       throw new Error('attempted to clone styles for element that didnt exist');
@@ -49,13 +56,17 @@ export class SecureTools {
     const wrappedElementRef = ref(null);
 
     onMounted(() => {
-      // console.log("value of ref is ", wrappedElementRef.value);
       // todo: handle the need to pass a different ref for inputs
       const style = this.cloneStyle(wrappedElementRef);
+      console.log('cloned style is ', style);
+      this.clonedStyle.value = style;
+      this.shouldRenderFrame.value = true;
     });
 
     return {
-      wrappedElementRef,
+      dummyStyleRef: wrappedElementRef,
+      shouldRenderFrame: this.shouldRenderFrame,
+      clonedStyle: this.clonedStyle,
     };
   }
 }
