@@ -103,7 +103,7 @@ of LunaSec [here](https://www.lunasec.io/docs/pages/overview/security/levels/).
 We offer paid support, onboarding, and additional enterprise features for LunaSec to help you reach your security or 
 compliance milestones faster. Our team of security engineers is very flexible and happy to work with you. 
 
-If you're interested, please send us a message [here](https://www.lunasec.io/contact). Thank you!
+If you're interested, [please send us a message](https://www.lunasec.io/contact). 
 
 <p align="center">
   <a href="https://www.lunasec.io/contact">
