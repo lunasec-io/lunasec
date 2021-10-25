@@ -54,7 +54,7 @@ jobs:
       - name: lerna bootstrap
         env:
           IS_LUNASEC_CI: true
-        run: lerna bootstrap
+        run: lerna bootstrap --ci
 
       - name: Configure CI Git User
         run: |
