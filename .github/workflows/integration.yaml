@@ -97,7 +97,7 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
-    - name: Unit Tests
+    - name: Go Tests
       working-directory: go/
       run: go test -cover ./...
 
