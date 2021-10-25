@@ -17,9 +17,10 @@
   <img src='docs/static/img/logo-black-text.svg' width='70%'>
 </p>
 
+---
+
 ![All Tests](https://github.com/lunasec-io/lunasec/actions/workflows/integration.yaml/badge.svg)
 
----
 LunaSec is a suite of security tools designed to protect sensitive data in applications by only adding a few lines of code.
 
 - [What is LunaSec?](#what-is-lunasec)
