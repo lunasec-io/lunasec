@@ -74,12 +74,14 @@ before forking and submitting a pull request.  It's short and it's very helpful 
 ## How to launch LunaSec for development
 To launch and use LunaSec to help you develop your application, see the documentation.  To work on LunaSec itself, follow these steps:
 
-Install all dependencies by running `lerna bootstrap` and being patient.
+Install all dependencies by running `lerna bootstrap` and be patient.
+
+Configure the LunaSec CLI tool to be used locally by running `yarn run lunasec:setup`. The `lunasec` command will not be accessible on your path.
 
 Then, install `tmuxp` and run `tmuxp load ./start-with-tmuxp.yaml` in the root directory. 
 You can inspect that file to see what commands are all being run if you'd like to start the cluster without tmuxp.
 
-_Note: You'll have to provide your password for the `sudo docker-compose` command to start._
+_Note: You'll have to provide your password for the `./go/scripts/start-tokenizerbackend-dependencies.sh` command to start._
 
 Open your browser and navigate to `http://localhost:3000` to see the demo application.
 
