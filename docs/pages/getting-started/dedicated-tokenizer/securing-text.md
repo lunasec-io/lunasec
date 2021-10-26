@@ -21,7 +21,7 @@ sidebar_position: 5
 As you follow along with this guide, you can check the custom properties each component supports(and what those properties do)
 in the [type documentation](/pages/react-sdk/interfaces/SecurePropsLookup).
 ::::
-# Secure Forms
+## Secure Forms
 
 Let's create a form secured with LunaSec.  Here is a simple scenario where we want to tokenize a Social Security Number.
 ```tsx
@@ -63,7 +63,7 @@ to tokenize their plaintext.
 hitting `enter` work fine.
 :::
 
-# Displaying Secure Data
+## Displaying Secure Data
 The `<SecureParagraph` element can take a token and display it as text.  
 ```tsx
 <SecureParagraph 
@@ -75,7 +75,7 @@ The major caveat here is that the text can't be displayed inline because we can'
 secured data to the surrounding page.  It's a good idea to style this element large enough to display the text it's 
 going to display.
 
-# Advanced Form Usage
+## Advanced Form Usage
 
 SecureInput supports many options and can be used with component libraries. 
 
@@ -100,8 +100,6 @@ Here is a more complex example of the props that `<SecureInput>` can take:
 Inputs come with support for all the normal input types such as `email` and `password`.  They are able to take a token for
 prefilling the field with some previously created secure data.  You can choose from one of several pre-made validators if you need
 basic validation.
-
-For a full list of the available options, see THE TYPEDOC LINK HERE.
 
 :::note Special Cases
 Some things you would normally do may need to be done differently or may not be possible because your page

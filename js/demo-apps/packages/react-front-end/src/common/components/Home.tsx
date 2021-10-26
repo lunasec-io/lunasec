@@ -14,11 +14,7 @@
  * limitations under the License.
  *
  */
-import { makeStyles } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { Card, CardContent, CardHeader, Divider, Grid, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
 
 import logo from '../../static/logo.svg';
@@ -41,9 +37,56 @@ export const Home: React.FunctionComponent = () => {
           <Typography>
             This is a fully functional application which uses LunaSec to protect its sensitive data.
           </Typography>
-          <hr />
+        </CardContent>
+      </Card>
+      <br />
+      <Card>
+        <CardHeader title="How to sign in and use this Demo" />
+        <CardContent>
           <Typography>
-            You can login to is this site with the credentials - username: <b>test</b> password: <b>test</b>
+            Before trying the LunaSec secure elements you must first login to the site with the links on the left. A
+            test user has been premade and you can login with
+            <p>
+              username: <b>test</b>
+            </p>
+            <p>
+              password: <b>test</b>
+            </p>
+            or register a new user with any username and password. Then you will see a list of elements on the left that
+            you can try.
+            <Divider />
+            <p>
+              Selecting from a mode with the buttons in the header will switch between different demos. You may need to
+              sign in again.
+            </p>
+          </Typography>
+        </CardContent>
+      </Card>
+      <br />
+      <Card>
+        <CardHeader title="Understanding how it works" />
+        <CardContent>
+          <Typography>
+            <p>
+              For an overview of LunaSec, please see the{' '}
+              <a href="https://www.lunasec.io/docs/pages/overview/introduction/">documentation</a>.
+            </p>
+            <Divider />
+
+            <p>
+              To jump into a guide of how to set up the Secure Components you see in this demo in your own application,
+              see the{' '}
+              <a href="https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/introduction/">
+                getting started guide
+              </a>
+              .
+            </p>
+            <Divider />
+
+            <p>
+              For an overview of how this demo app is programmed, including links to the source code,{' '}
+              <a href={'https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/'}>click here</a>.
+            </p>
           </Typography>
         </CardContent>
       </Card>
