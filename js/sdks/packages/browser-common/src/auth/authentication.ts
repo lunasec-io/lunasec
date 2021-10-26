@@ -42,7 +42,7 @@ const log = window.__DEBUG_LUNASEC_AUTH__ === true ? console.log : () => {};
 // 3 ) Returns a promise, which when the first auth flow is complete, resolves to a function that can be called to clear whatever the last timer was.  This is our "abort"
 export class LunaSecAuthentication {
   private readonly authClient: SecureFrameAuthClient;
-  private readonly errorHandler: (e: Error) => void;
+  private readonly errorHandler: (_e: Error) => void;
   private readonly sessionAuthProvider?: string;
 
   constructor(authDomain: string, errorHandler: (e: Error) => void, sessionAuthProvider?: string) {

@@ -18,7 +18,8 @@
 
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
-import {MetricsLambdaBackendStack} from '../lib/deploy-apigateway-to-firehose';
+
+import { MetricsLambdaBackendStack } from '../lib/deploy-apigateway-to-firehose';
 
 const domainName = process.env.STACK_DOMAIN_NAME;
 
@@ -53,6 +54,6 @@ new MetricsLambdaBackendStack(app, 'MetricsBackendToFirehoseToS3', {
 
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION
+    region: process.env.CDK_DEFAULT_REGION,
   },
-})
+});
