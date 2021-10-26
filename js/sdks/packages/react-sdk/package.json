@@ -1,7 +1,7 @@
 {
   "name": "@lunasec/react-sdk",
   "private": false,
-  "version": "1.0.2",
+  "version": "1.0.3-alpha.0",
   "description": "React SDK for lunasec Secure Frame",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -17,8 +17,8 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@lunasec/browser-common": "^1.0.2",
-    "@lunasec/isomorphic-common": "^1.0.2",
+    "@lunasec/browser-common": "^1.0.3-alpha.0",
+    "@lunasec/isomorphic-common": "^1.0.3-alpha.0",
     "@types/styled-components": "^5.1.10",
     "classnames": "^2.3.1",
     "styled-components": "^5.3.0"
