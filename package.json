@@ -58,6 +58,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx,.vue .",
     "version:release": "if [ -z ${RELEASE_TYPE+x} ]; then echo \"RELEASE_TYPE is unset\"; else echo \"$RELEASE_TYPE\" && lerna version -y $RELEASE_TYPE --no-push --force-publish --sign-git-commit; fi",
     "compile:dev:sdks": "cd js/sdks && yarn run compile:dev",
+    "compile:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh build",
     "compile:release:sdks": "cd js/sdks && yarn run compile:release",
     "compile:release:services": "cd go && yarn run compile:release",
     "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services",
