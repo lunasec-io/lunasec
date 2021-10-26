@@ -42,12 +42,9 @@
   },
   "scripts": {
     "lunasec:setup": "cd js/sdks/packages/cli && yarn install && yarn run compile && npm link",
-    "start:services": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up tokenizerbackend",
     "license:check": "./tools/license-checker/run-license-check.sh check",
     "license:fix": "./tools/license-checker/run-license-check.sh fix",
     "license:install": "cd tools/license-checker && ./install-skywalking-eyes.sh",
-    "start:demo": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up demo",
-    "test:e2e": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yaml -f docker-compose.ci.yaml up integration-test",
     "test:e2e:local": "cd js/demo-apps/packages/react-front-end && yarn run test:e2e",
     "test:unit:tokenizer": "cd js/sdks/packages/tokenizer-sdk && yarn run test",
     "test:unit:auth": "cd js/sdks/packages/browser-common && yarn run test",
@@ -60,12 +57,15 @@
     "compile:dev:sdks": "cd js/sdks && yarn run compile:dev",
     "compile:release:sdks": "cd js/sdks && yarn run compile:release",
     "compile:release:services": "cd go && yarn run compile:release",
-    "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services",
+    "compile:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh build",
+    "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services && yarn run compile:release:demos",
     "postinstall": "yarn run license:install",
     "publish:release:sdks": "lerna publish --no-verify-access -y from-package",
     "publish:release:services": "cd go && yarn run publish:release",
-    "publish:release": "yarn run publish:release:sdks && yarn run publish:release:services",
-    "prepare": "husky install"
+    "publish:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh publish",
+    "publish:release": "yarn run publish:release:sdks && yarn run publish:release:services && yarn run publish:release:demos",
+    "prepare": "husky install",
+    "monorepo:version": "node -p 'require(\"./lerna.json\").version'"
   },
   "version": "1.0.0",
   "workspaces": {
