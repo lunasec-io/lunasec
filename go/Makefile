@@ -27,7 +27,7 @@ docker-release: docker-release-tokenizerbackend docker-demo-tokenizerbackend doc
 
 docker-publish:
 	docker push lunasec/tokenizer-backend:${version}
-	docker push lunasec/tokenizer-backend-dev:${version}
+	docker push lunasec/tokenizer-backend-demo:${version}
 	docker push lunasec/analytics-collector:${version}
 
 release: docker-release
