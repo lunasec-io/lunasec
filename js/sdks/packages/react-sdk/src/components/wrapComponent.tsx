@@ -204,10 +204,39 @@ export default function WrapComponent<W extends keyof ClassLookup>(
         if (!this.dummyInputStyleRef.current) {
           throw new Error('Unable to locate dummyInputStyleRef when generating style for input');
         }
-        return getStyleInfo(this.dummyInputStyleRef.current);
+
+        const styleInfo = getStyleInfo(this.dummyInputStyleRef.current);
+
+        if (!styleInfo) {
+          return null;
+        }
+
+        if (!styleInfo.parentStyle) {
+          return null;
+        }
+
+        styleInfo.parentStyle.position = 'absolute';
+        styleInfo.parentStyle.top = '0';
+        styleInfo.parentStyle.left = '0';
+
+        return styleInfo;
       }
       // if its not an input just use the the main dummy element
-      return getStyleInfo(this.dummyRef.current);
+      const styleInfo = getStyleInfo(this.dummyRef.current);
+
+      if (!styleInfo) {
+        return null;
+      }
+
+      if (!styleInfo.parentStyle) {
+        return null;
+      }
+
+      styleInfo.parentStyle.position = 'absolute';
+      styleInfo.parentStyle.top = '0';
+      styleInfo.parentStyle.left = '0';
+
+      return styleInfo;
     }
 
     generateUrl() {
@@ -295,6 +324,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
     // Give the iframe all the information it needs to exist when it wakes up
     async sendIFrameAttributes() {
       const frameAttributes = this.generateIFrameAttributes();
+      console.log({ frameAttributes });
       const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
       if (!this.frameRef.current || !this.frameRef.current.contentWindow) {
         console.error('Frame not initialized for message sending');
@@ -437,9 +467,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       };
 
       const dummyElementStyle: CSSProperties = {
-        position: 'absolute',
-        top: 0,
-        left: 0,
+        // position: 'absolute',
+        // top: 0,
+        // left: 0,
         // We can't set the "visibility" to "collapsed" or "hidden",
         // Or else the "on focus" and "on blur" events won't fire.
         // So we use zIndex instead to "hide" the input.
