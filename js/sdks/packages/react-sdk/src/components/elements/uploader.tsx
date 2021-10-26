@@ -34,7 +34,7 @@ export default class Uploader extends Component<UploaderProps> {
     if (!renderData.frameStyleInfo) {
       return null;
     }
-    const { parentStyle, ...frameStyle } = renderData.frameStyleInfo;
+    const { parentStyle } = renderData.frameStyleInfo;
 
     const iframeStyle: CSSProperties = {
       ...camelCaseObject(parentStyle),
@@ -56,7 +56,7 @@ export default class Uploader extends Component<UploaderProps> {
   }
 
   render() {
-    const { renderData, className, children, ...otherProps } = this.props;
+    const { renderData, children, ...otherProps } = this.props;
 
     return (
       <div

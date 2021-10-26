@@ -34,7 +34,6 @@ export default class Downloader extends Component<AnchorProps> {
     if (!renderData.frameStyleInfo) {
       return null;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { parentStyle, width, ...frameStyle } = renderData.frameStyleInfo;
 
     const iframeStyle: CSSProperties = {
