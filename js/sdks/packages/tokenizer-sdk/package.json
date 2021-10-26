@@ -1,7 +1,7 @@
 {
   "name": "@lunasec/tokenizer-sdk",
   "private": false,
-  "version": "1.0.3-alpha.0",
+  "version": "1.0.3",
   "description": "lunasec Tokenizer client for Node.js",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -29,8 +29,8 @@
     "typescript": "^4.2.0"
   },
   "dependencies": {
-    "@lunasec/browser-common": "^1.0.3-alpha.0",
-    "@lunasec/isomorphic-common": "^1.0.3-alpha.0",
+    "@lunasec/browser-common": "^1.0.3",
+    "@lunasec/isomorphic-common": "^1.0.3",
     "axios": "^0.21.1",
     "react-dom": "^17.0.2"
   },

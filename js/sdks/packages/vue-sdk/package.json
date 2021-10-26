@@ -1,6 +1,6 @@
 {
   "name": "vue-sdk",
-  "version": "1.0.3-alpha.0",
+  "version": "1.0.3",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -10,7 +10,7 @@
     "lint": "echo 'DONT USE THIS, USE THE GLOBAL ONE FROM THE REPO ROOT"
   },
   "dependencies": {
-    "@lunasec/browser-common": "^1.0.3-alpha.0",
+    "@lunasec/browser-common": "^1.0.3",
     "core-js": "^3.6.5",
     "vue": "^3.0.0"
   },
