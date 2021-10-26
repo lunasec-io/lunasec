@@ -171,7 +171,7 @@ yargs
     },
     () => {
       const args = process.argv.slice(2, process.argv.length);
-      runCommand(`${path.join(__dirname, '../bin/lunasec')} ${args.join(' ')}`);
+      runCommand(`${path.join(__dirname, '../bin/lunasec')} ${args.join(' ')}`, true);
     }
   )
   .demandCommand()
