@@ -14,34 +14,46 @@
  * limitations under the License.
  *
  */
-import { FrameMessageCreator, generateSecureNonce, getStyleInfo } from '@lunasec/browser-common';
-import { ReadElementStyle } from '@lunasec/browser-common';
-import { inject, onMounted, Ref, ref } from 'vue';
+import { FrameMessageCreator, generateSecureNonce, getStyleInfo, ReadElementStyle } from '@lunasec/browser-common';
+import { inject, onMounted, reactive, ref, Ref } from 'vue';
 
 import { LunaSecConfigProviderAttrs } from './secure-components/LunaSec-Config-Provider';
 
-export class SecureTools {
+export interface RenderData {
   frameId: string;
-  messageCreator: FrameMessageCreator;
-  lunaSecConfig: LunaSecConfigProviderAttrs;
-  shouldRenderFrame: Ref<boolean>;
-  clonedStyle: Ref<ReadElementStyle | null>;
+  shouldRenderFrame: boolean;
+  clonedStyle: ReadElementStyle | null;
+  dummyElementRef: Ref;
+}
+
+export class SecureTools {
+  // This is a reactive bag of properties used by the secure components
+  renderData: RenderData;
+
+  private messageCreator: FrameMessageCreator;
+  private lunaSecConfig: LunaSecConfigProviderAttrs;
 
   constructor() {
     console.log('built an instance of SecureTools');
-    this.frameId = generateSecureNonce();
 
-    this.shouldRenderFrame = ref(false);
-    this.clonedStyle = ref(null);
     const providerConf = inject<LunaSecConfigProviderAttrs>('lunaSecConfig');
     if (!providerConf) {
       throw new Error('Must register LunaSecConfigProvider above Secure Component');
     }
     this.lunaSecConfig = providerConf;
-    console.log('providerConf is ', providerConf);
-    this.messageCreator = new FrameMessageCreator(providerConf.lunaSecDomain, this.frameId, (notification) => {
+
+    const frameId = generateSecureNonce();
+    this.messageCreator = new FrameMessageCreator(providerConf.lunaSecDomain, frameId, (notification) => {
       // this.frameNotificationCallback(notification)
-      console.log('frame notification received');
+      console.log('frame notification received ', notification);
+    });
+
+    this.renderData = reactive({
+      frameId,
+      // I believe this will automatically become reactive
+      shouldRenderFrame: false,
+      clonedStyle: null,
+      dummyElementRef: ref(null),
     });
   }
 
@@ -52,21 +64,18 @@ export class SecureTools {
     return getStyleInfo(ref.value);
   }
 
-  setupSecureComponent() {
-    const wrappedElementRef = ref(null);
-
+  setupSecureComponent(): RenderData {
     onMounted(() => {
       // todo: handle the need to pass a different ref for inputs
-      const style = this.cloneStyle(wrappedElementRef);
+      const style = this.cloneStyle(this.renderData.dummyElementRef);
       console.log('cloned style is ', style);
-      this.clonedStyle.value = style;
-      this.shouldRenderFrame.value = true;
+      if (!style) {
+        throw new Error('read null style from dummy element');
+      }
+      this.renderData.clonedStyle = style;
+      this.renderData.shouldRenderFrame = true;
     });
-
-    return {
-      dummyStyleRef: wrappedElementRef,
-      shouldRenderFrame: this.shouldRenderFrame,
-      clonedStyle: this.clonedStyle,
-    };
+    console.log('setupSecureComponent returning ', this.renderData);
+    return this.renderData;
   }
 }
