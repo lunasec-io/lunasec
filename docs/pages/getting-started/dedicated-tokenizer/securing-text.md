@@ -42,6 +42,10 @@ them easy to use and interoperable with other DOM libraries.
 For example, `<SecureInput>` calls `onChange` and `onBlur` event handlers just like the native `<input>` element.  For the most part, they can be styled
 just like native elements and will allow you to build forms and pages as you normally would, with a few exceptions.
 
+:::tip
+The secure input we created shouldn't change how the app looks at all(that's the point) but if we right-click and
+inspect it we can see the cross-domain iFrame that LunaSec creates to protect your data.
+:::
 Creating a Text Area for multi-line data entry is pretty similar, this time let's give it some custom styling:
 ```tsx
 // ... inside secure form
@@ -59,8 +63,8 @@ Creating a Text Area for multi-line data entry is pretty similar, this time let'
 :::note
 `<SecureInput>` and `<SecureTextArea>` need to be inside a `<SecureForm>` because it captures submit events and tells them
 to tokenize their plaintext.
-`<SecureForm>` will wait to fire your `onSubmit` handler until they are done.  Note that normal submit methods like a submit button and 
-hitting `enter` work fine.
+`<SecureForm>` will wait to fire your `onSubmit` handler until they are done tokenizing.  Note that normal submit methods like a submit button and 
+hitting `enter` in a text box work fine.
 :::
 
 ## Displaying Secure Data

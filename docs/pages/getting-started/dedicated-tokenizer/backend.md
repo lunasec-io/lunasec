@@ -26,6 +26,7 @@ Install the module:
 yarn add @lunasec/node-sdk
 ```
 ### Configuration
+Here's an example configuration, below we will explain what the values mean:  
 ```typescript
 import { LunaSec } from '@lunasec/node-sdk'
 export const lunaSec = new LunaSec({
@@ -39,6 +40,8 @@ export const lunaSec = new LunaSec({
     },
 });
 ```
+
+#### Session ID Provider
 The session ID provider callback might look like this:
 ```typescript
 export function lunaSecSessionIdProvider(req: Request): Promise<string | null> {
@@ -51,26 +54,30 @@ export function lunaSecSessionIdProvider(req: Request): Promise<string | null> {
   });
 }
 ```
+#### Secret Signing Key
+When we set up the LunaSec Node SDK, we pass a private key that LunaSec uses to establish trust with your app.
+
+If the `environment` secret provider is used (as shown above), the `LUNASEC_SIGNING_KEY` environment
+variable must be set with a valid RSA key, base64 encoded. 
+
+Here is an example of how you would generate a secret key to use for this on arch linux:
+```shell
+ssh-keygen -t rsa -f lunasec_signing_key
+cat lunasec_signing_key | base64 -w0
+```
+
+LunaSec also supports passing a secret key directly or reading one from AWS Secrets manager.
+For instructions, see [the secret provider page](/pages/deployment/secret-providers) of the deployment documentation.
 
 :::tip
-To see full documentation of the LunaSec class and the configuration it takes, see the [NodeSDK typedoc](/pages/node-sdk/classes/LunaSec/).
+To see full documentation of the configuration, see the [config's typedoc](/pages/node-sdk/interfaces/LunaSecConfig/).  To 
+see commented typedoc for everything this class exposes, see the [typedoc for the class](/pages/node-sdk/classes/LunaSec/).
 :::
 
 Now the SDK is configured and you have access to its modules, like the auth plugin: 
 
 ### Registering the auth plugin with express
 
-The LunaSec auth plugin uses a provided signing key to create sessions for the Tokenizer Backend. If the 
-`environment` secret provider is used (as is shown above in the lunasec configuration), the `LUNASEC_SIGNING_KEY` environment
-variable must be set with a valid RSA key. LunaSec supports other secret providers, and a guide for this can be found [here](./secret-providers.md).
-
-```shell
-$ ssh-keygen -t rsa -f lunasec_signing_key
-$ cat lunasec_signing_key | base64 -w0
-  <encoded signing key>
-```
-
-Your backend should have the environment variable `LUNASEC_SIGNING_KEY` set to the `<encoded signing key>`.
 
 If you want to use your own session management or use a tool like Passport, register the auth plugin with express. This will transfer the session information
 onto the domain that the Dedicated Tokenizer will run on.
