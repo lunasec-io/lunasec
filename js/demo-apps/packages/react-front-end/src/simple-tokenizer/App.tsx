@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-target-blank */
 /*
  * Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
  *
@@ -14,49 +15,55 @@
  * limitations under the License.
  *
  */
-import { CssBaseline, makeStyles } from '@material-ui/core';
-import { createStyles, Theme } from '@material-ui/core/styles';
+import { Card, CardContent, Grid, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'; // Pages
+import { Route } from 'react-router-dom'; // Pages
 
-import { Header } from './components/Header';
-import { SideMenu } from './components/SideMenu';
+import logo from '../static/logo.svg';
+
 import { DetokenizeDemo } from './components/secure-components/Detokenize';
 import { TokenizeDemo } from './components/secure-components/TokenizeDemo';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-    },
-    main: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-    },
-    toolbar: theme.mixins.toolbar,
-  })
-);
+const useStyles = makeStyles(() => ({
+  LogoImg: {
+    width: 300,
+    paddingBottom: 5,
+  },
+}));
 
 export const SimpleApp = () => {
   const classes = useStyles({});
 
   return (
-    <BrowserRouter>
-      <div className={classes.root}>
-        <CssBaseline />
-        <Header />
-        <SideMenu />
-        <main className={classes.main}>
-          <div className={classes.toolbar} />
-          <Switch>
-            <Route exact path="/">
-              <Redirect to="/tokenize" />{' '}
-            </Route>
-            <Route exact path="/tokenize" component={TokenizeDemo} />
-            <Route exact path="/detokenize" component={DetokenizeDemo} />
-          </Switch>
-        </main>
-      </div>
-    </BrowserRouter>
+    <>
+      <Route exact path="/simple">
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              <img alt="LunaSec Logo" src={logo} className={classes.LogoImg} />
+              <h1>LunaSec Demo: Simple tokenizer</h1>
+              <Typography>
+                This application uses the LunaSec Simple Tokenizer. It&apos;s less sophisticated than the dedicated
+                tokenizer, but it does not require any dedicated infrastructure to run.
+              </Typography>
+              <br />
+              <Typography>
+                You can read more about the tradeoffs{' '}
+                <a
+                  href="https://www.lunasec.io/docs/pages/getting-started/choose-your-setup/"
+                  target="_blank"
+                  rel="prefetch"
+                >
+                  here
+                </a>
+                .
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Route>
+      <Route path="/simple/tokenize" component={TokenizeDemo} />
+      <Route path="/simple/detokenize" component={DetokenizeDemo} />
+    </>
   );
 };

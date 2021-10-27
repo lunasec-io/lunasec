@@ -18,6 +18,7 @@ import { AppBar, makeStyles, Toolbar, Typography } from '@material-ui/core';
 import { createStyles, Theme } from '@material-ui/core/styles';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import React, { useEffect } from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 
 import { useStoreActions, useStoreState } from '../store';
 
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+// TODO: De-dupe this code with the other header
 export const Header: React.FunctionComponent = () => {
   const classes = useStyles({});
   const user = useStoreState((state) => state.user);
@@ -52,17 +54,18 @@ export const Header: React.FunctionComponent = () => {
     return <Typography id="user-status">Not Logged In</Typography>;
   };
 
+  const history = useHistory();
+
   // When the mode switch button is pushed, this sets the hash and refreshes the page to the desired demo
-  const handleModeChange = (_event: React.MouseEvent<HTMLElement>, value: any) => {
+  const handleModeChange = (_event: React.MouseEvent<HTMLElement>, value: string) => {
     if (!value) {
       return;
     }
-    window.location.hash = value;
-    window.location.reload();
+
+    history.push(`/${encodeURIComponent(value)}`);
   };
 
-  const hash = window.location.hash.substring(1);
-  const mode = hash || 'dedicated-passport-express';
+  const match = useRouteMatch<{ mode: string }>('/:mode');
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
@@ -73,14 +76,14 @@ export const Header: React.FunctionComponent = () => {
         <ToggleButtonGroup
           className={classes.toggleButtonGroup}
           exclusive
-          value={mode}
+          value={match && match.params.mode}
           onChange={handleModeChange}
           aria-label="text formatting"
         >
-          <ToggleButton id="select-mode-express" value="dedicated-passport-express" aria-label="express">
+          <ToggleButton id="select-mode-express" value="express" aria-label="express">
             Express
           </ToggleButton>
-          <ToggleButton id="select-mode-graphql" value="dedicated-passport-graphql" aria-label="graphql">
+          <ToggleButton id="select-mode-graphql" value="graphql" aria-label="graphql">
             GraphQl
           </ToggleButton>
           <ToggleButton id="select-mode-simple" value="simple" aria-label="simple">

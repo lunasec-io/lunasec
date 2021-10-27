@@ -18,7 +18,7 @@ import axios from 'axios';
 // easy-peasy is a simple store based on Redux, with a bad name
 import { action, computed, createStore, thunk } from 'easy-peasy';
 
-import { ApiResponse, StoreModel, UserDocumentsResponse, UserResponse } from '../../common/types';
+import { ApiResponse, StoreModel, UserDocumentsResponse, UserResponse } from './types';
 
 // Its better to instantiate your own copy of axios with axios.create(), this global setting left in for testing purposes
 axios.defaults.withCredentials = true;
