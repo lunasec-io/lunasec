@@ -29,9 +29,9 @@ As you can see in the top right corner, the app can switch between several modes
 ## Running it
 You can start the demo app on your machine easily using our CLI.  First make sure you have `docker`, `docker-compose`, and `node >= v14` installed.  
 
-Then install and run the CLI
+Then install it(and the aws CDK) and run the CLI
 ```shell
-npm i -g @lunasec/cli
+npm i -g @lunasec/cli cdk aws-cdk-local
 lunasec start --env demo
 ``` 
 Depending on your internet speed, this might take a minute.

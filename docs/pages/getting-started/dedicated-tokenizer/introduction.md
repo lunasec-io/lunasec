@@ -29,13 +29,13 @@ To see a full demonstration while you follow this guide, you can follow along in
 ### CLI
 The LunaSec CLI makes development, testing, and deployment easier.  It can bring up the services we need to use LunaSec locally.
 
-The CLI is available as an NPM module. Add it to your `package.json`:
+The CLI is available as an NPM module. Add it to your `package.json` along with the aws cdk packages that it depends on:
 
-`yarn add @lunasec/cli --dev`
+`yarn add @lunasec/cli cdk aws-cdk-local --dev`
 
 or
 
-`npm install @lunasec/cli --save-dev`
+`npm install @lunasec/cli cdk aws-cdk-local --save-dev`
 
 Make sure the CLI stays at the same version as the `@lunasec` packages we install in this guide.
 
@@ -53,6 +53,7 @@ Now that the CLI is installed, we can run:
 ```shell
 lunasec start
 ```
+Depending on your internet speed, this might take a minute.
 
 `lunasec start` brings up the parts of LunaSec you will need for local development, which consists of:
 * the Tokenizer Backend 
@@ -68,7 +69,7 @@ If you'd like to also launch a demo app to try out LunaSec, instead run `lunasec
 You'll be prompted for your password because the cli launches docker as root.  
 You can pass `--no-sudo` to the start command in order to have docker-compose run without `sudo`.
 True rootless docker isn't yet supported, but if you have
-[dangerously added your user to the docker group](https://docs.docker.com/engine/install/linux-postinstall/) it will work.  This is not recommended for security reasons.
+[dangerously added your user to the docker group](https://docs.docker.com/engine/install/linux-postinstall/) it will work without sudo.  This is not recommended for security reasons.
 :::
 
 Now that the services are running, let's add LunaSec to the code. [Backend setup](./backend.md)
