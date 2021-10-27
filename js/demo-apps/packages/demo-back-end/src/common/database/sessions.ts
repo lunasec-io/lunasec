@@ -169,7 +169,6 @@ export class SQLiteStore extends session.Store {
    * @api     public
    */
   length(fn: (err: Error | undefined, length: number) => void) {
-    console.log('length');
     this.db.all(`SELECT COUNT(*) AS count FROM ${this.table}`, function (err, rows) {
       if (err) {
         fn(err, 0);
