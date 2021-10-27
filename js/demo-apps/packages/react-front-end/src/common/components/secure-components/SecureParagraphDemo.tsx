@@ -61,8 +61,8 @@ export const SecureParagraphDemo: React.FunctionComponent = () => {
         <CardContent>
           <p>
             The below paragraph element has been tokenized by LunaSec. It displays the data that was saved in the Secure
-            Input of the previous demo. Even though it&apos;s just text, it&apos;s also in an iFrame and can&apos;t be
-            snooped on cross-origin by JavaScript running on this page.
+            Input of the previous demo. It&apos;s in an iFrame and can&apos;t be snooped by JavaScript running on this
+            page.
           </p>
           <p>
             To see how to set up your own Secure Paragraph,{' '}
