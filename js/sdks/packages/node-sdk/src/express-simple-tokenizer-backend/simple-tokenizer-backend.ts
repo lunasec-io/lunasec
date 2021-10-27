@@ -50,7 +50,7 @@ export class SimpleTokenizerBackend {
 
   private generateAWSBaseUrl() {
     if (this.config.useLocalStack) {
-      return `https://localhost:4566/${this.config.s3Bucket}`;
+      return `http://localhost:4566/${this.config.s3Bucket}`;
     }
 
     return `https://${this.config.s3Bucket}.s3.${this.config.awsRegion}.amazonaws.com`;
