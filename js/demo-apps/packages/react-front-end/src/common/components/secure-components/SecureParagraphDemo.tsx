@@ -15,7 +15,7 @@
  *
  */
 import { SecureParagraph } from '@lunasec/react-sdk';
-import { Card, CardContent, CardHeader, Grid, Typography } from '@material-ui/core';
+import { Card, CardContent, CardHeader, Divider, Grid, Typography } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useState } from 'react';
 
@@ -57,8 +57,26 @@ export const SecureParagraphDemo: React.FunctionComponent = () => {
   return (
     <Grid item xs={12}>
       <Card>
-        <CardHeader title={`User: ${user.username}`} />
+        <CardHeader title="Secure Paragraph Demo" />
         <CardContent>
+          <p>
+            The below paragraph element has been tokenized by LunaSec. It displays the data that was saved in the Secure
+            Input of the previous demo. It&apos;s in an iFrame and can&apos;t be snooped by JavaScript running on this
+            page.
+          </p>
+          <p>
+            To see how to set up your own Secure Paragraph,{' '}
+            <a
+              href={
+                'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-text/#displaying-secure-data'
+              }
+            >
+              see here
+            </a>
+            .
+          </p>
+          <Divider />
+          <br />
           {renderErrors()}
           <Typography>Social Security Number:</Typography>
           <SecureParagraph token={user.ssn_token} errorHandler={(e) => setError(e.message)} />

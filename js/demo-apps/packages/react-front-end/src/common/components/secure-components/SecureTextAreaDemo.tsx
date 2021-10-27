@@ -15,7 +15,17 @@
  *
  */
 import { SecureForm, SecureParagraph, SecureTextArea } from '@lunasec/react-sdk';
-import { Button, Card, CardContent, CardHeader, FormGroup, FormLabel, Grid, Typography } from '@material-ui/core';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  FormGroup,
+  FormLabel,
+  Grid,
+  Typography,
+} from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useState } from 'react';
 
@@ -43,8 +53,23 @@ export const SecureTextAreaDemo: React.FunctionComponent = () => {
   return (
     <Grid item xs={12}>
       <Card>
-        <CardHeader title={`SecureTextArea`} />
+        <CardHeader title="Secure Text Area Demo" />
         <CardContent>
+          <p>
+            This demo shows the Secure Text Area and Secure Paragraph components working together. Right click and
+            inspect to see that they're both in iFrames.
+          </p>
+          <p>
+            To see how to set up your own Secure Text Area,{' '}
+            <a
+              href={'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-text/#secure-forms'}
+            >
+              see here
+            </a>
+            .
+          </p>
+          <Divider />
+          <br />
           <SecureForm
             name="secure-form-example"
             onSubmit={(e) => console.log('form submitted but didnt call server because this example is local only')}
