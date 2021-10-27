@@ -20,6 +20,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Divider,
   FormControl,
   FormGroup,
   FormHelperText,
@@ -74,11 +75,28 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
   return (
     <Grid item xs={12}>
       <Card>
-        <CardHeader title="Documents" />
+        <CardHeader title="Secure Upload Demo" />
         <CardContent>
+          <p>
+            This uploader dialog is a pre-made LunaSec component that uploads files into LunaSec and returns tokens. All
+            file uploads happen from within the a separate iFrame, so this page is never able to see the actual data.
+          </p>
+          <p>
+            To see how to set up your own Secure Uploader,{' '}
+            <a
+              href={
+                'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-files/#uploading-a-file'
+              }
+            >
+              see here
+            </a>
+            .
+          </p>
+          <Divider />
+          <br />
           <FormControl error={!!error}>
             <FormGroup>
-              <FormLabel htmlFor="drivers-license-upload">Driver's License Upload</FormLabel>
+              <FormLabel htmlFor="drivers-license-upload">Select a File to Upload</FormLabel>
               <SecureUpload
                 id="drivers-license-upload"
                 name="uploader"
