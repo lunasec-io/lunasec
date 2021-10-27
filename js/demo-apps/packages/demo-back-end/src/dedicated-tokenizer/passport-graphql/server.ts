@@ -22,6 +22,7 @@ import express, { Express } from 'express';
 import expressSession from 'express-session';
 
 import { initDb } from '../../common/database/db';
+import { SQLiteStore } from '../../common/database/sessions';
 import { createModels } from '../../common/models';
 
 import { lunaSec } from './config/configure-lunasec';
@@ -52,7 +53,18 @@ export async function setupDedicatedPassPortGraphQLApp(): Promise<Express> {
   );
   app.use(cookieParser());
 
-  app.use(expressSession({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+  app.use(
+    expressSession({
+      secret: 'keyboard cat',
+      resave: false,
+      saveUninitialized: false,
+      store: new SQLiteStore({
+        db: 'sessions.sqlite3',
+        table: 'sessions',
+        secret: 'keyboard cat',
+      }),
+    })
+  );
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(passport.authenticate('session'));
