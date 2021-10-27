@@ -23,7 +23,7 @@ found in the [Getting Started Guide](/pages/getting-started/dedicated-tokenizer/
 
 Deploy the LunaSec stack to AWS using the provided config (defaults to `config.yaml` in the working directory).
 
-The CLI reads from a `config.yaml` file found in the working directory,  It has the following options:
+The CLI reads from a `config.yaml` file found in the working directory from which the CLI was called.  It has the following options:
 
 ```yaml
 lunasec:
@@ -44,5 +44,6 @@ lunasec:
   application_front_end: <url of your front end application>
   application_back_end: <url of your back end application>
 ```
+
 
 Once the stack is built, the generated AWS Cloudformation template will be present at `~/.lunasec/builds/build_<time of build>`.
