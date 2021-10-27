@@ -10,13 +10,13 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 
 FROM base as builder
 
-ARG BUILD_TAG
-ARG VERSION
+ARG tag
+ARG version
 
 RUN --mount=target=. \
     --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    OUTPUT_DIR=/out make analyticscollector tag=$BUILD_TAG version=$VERSION
+    OUTPUT_DIR=/out make analyticscollector tag=$tag version=$version
 
 FROM alpine
 
