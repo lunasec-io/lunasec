@@ -58,7 +58,7 @@ lunasec start
 * the Tokenizer Backend 
 * Localstack 
 * HTTPS proxy to Localstack
-* Secure Frame iFrame server.  
+* Secure Frame iFrame server  
   
 LunaSec will start with a clean database on every launch.
 
