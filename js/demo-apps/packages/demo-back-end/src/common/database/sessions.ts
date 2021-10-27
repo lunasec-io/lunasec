@@ -114,6 +114,7 @@ export class SQLiteStore extends session.Store {
    * Attempt to fetch session by the given sid.
    *
    * @param   {String}    sid
+   * @param fn
    * @api     public
    */
   get(sid: string, fn: (err?: Error, row?: any) => void) {
@@ -205,6 +206,7 @@ export class SQLiteStore extends session.Store {
    *
    * @param   {string}    sid
    * @param   {object}    session
+   * @param fn
    * @public
    */
   touch(sid: string, session: session.Session, fn: (err?: Error, touched?: boolean) => void) {
