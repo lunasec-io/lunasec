@@ -48,12 +48,18 @@ Your system must have `docker-compose`, `docker`, and `node >= 14` installed.
 
 ### Starting LunaSec
 
-Now that the CLI is installed, we can run:
+Now that the CLI is installed we can run:
+```shell
+lunasec --version
+```
+and we should see that the CLI is installed.
 
+LunaSec depends on your backend to be running when it starts so that it can query it for signing keys. Once we install the LunaSec plugin into the backend (covered on the next page), we can run:
 ```shell
 lunasec start
-```
-Depending on your internet speed, this might take a minute.
+``` 
+ which will start the LunaSec stack.  Depending on your internet speed, this might take a minute.
+
 
 `lunasec start` brings up the parts of LunaSec you will need for local development, which consists of:
 * the Tokenizer Backend 
@@ -72,4 +78,4 @@ True rootless docker isn't yet supported, but if you have
 [dangerously added your user to the docker group](https://docs.docker.com/engine/install/linux-postinstall/) it will work without sudo.  This is not recommended for security reasons.
 :::
 
-Now that the services are running, let's add LunaSec to the code. [Backend setup](./backend.md)
+Now that the CLI is installed, let's add LunaSec to the code. [Backend setup](./backend.md)
