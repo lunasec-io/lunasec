@@ -36,7 +36,7 @@ Your data is protected against Cross-Site Scripting(XSS), and the parts of the a
 The `react-sdk` provides a suite of "Secure Form" components that follow this pattern. 
 Onboarding is simply replacing your `<form>` and `<input>` elements with drop-in replacement components which handle creating and communicating with the iFrame.
 Your styling and most other DOM features 
-will continue to work normally, even though the element is new securely isolated.  It even works with MaterialUi 
+will continue to work normally, even though the element is now securely isolated.  It even works with MaterialUi 
 and other component libraries.
 
 ### Secure Function

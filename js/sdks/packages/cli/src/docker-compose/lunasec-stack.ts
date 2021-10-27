@@ -24,6 +24,9 @@ import { ComposeSpecification, DefinitionsService } from './docker-compose-types
 export const LunaSecStackEnvironments = ['dev', 'demo', 'tests'] as const;
 export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version } = require('../../package.json');
+
 type LunaSecService =
   | 'localstack'
   | 'localstack-proxy'
@@ -277,7 +280,8 @@ export class LunaSecStackDockerCompose {
         context: 'go/',
         dockerfile: 'docker/tokenizerbackend.dockerfile',
         args: {
-          BUILD_TAG: 'dev',
+          tag: 'dev',
+          version: version,
         },
       },
     };
