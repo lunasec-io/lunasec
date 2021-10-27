@@ -30,4 +30,8 @@ tokenizer backend, Localstack, a https proxy to Localstack, and the Secure Frame
 the state of the stack gets reset, and the mocked AWS resources in Localstack are reinitialized by the LunaSec cli, which is
 run in a container.
 
-If your system does not require docker to be invoked by the root user (ie. if you have setup rootless docker or )
+If your system does not require docker to be invoked by the root user (ie. if you have setup rootless docker or have 
+[dangerously added your user to the docker group](https://docs.docker.com/engine/install/linux-postinstall/)). You must
+pass `--no-sudo` to the start command in order to have docker-compose run without prepending `sudo`.
+
+To build the LunaSec stack from source, pass `--local-build` from the root of the repository monorepo. 
