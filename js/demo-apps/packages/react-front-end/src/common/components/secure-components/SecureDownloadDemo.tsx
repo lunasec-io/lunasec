@@ -15,7 +15,7 @@
  *
  */
 import { SecureDownload } from '@lunasec/react-sdk';
-import { Card, CardContent, CardHeader, Grid, Typography } from '@material-ui/core';
+import { Card, CardContent, CardHeader, Divider, Grid, Typography } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 
@@ -73,10 +73,26 @@ export const SecureDownloadDemo: React.FunctionComponent = () => {
     <Grid item xs={12}>
       {renderErrors()}
       <Card>
-        <CardHeader
-          title={`Securely Download the last file Uploaded in SecureUpload ${documents[documents.length - 1]}`}
-        />
+        <CardHeader title={`Secure Download Demo`} />
         <CardContent>
+          <p>
+            This download link downloads the last file uploaded to Secure Upload in the previous demo. If you right
+            click and inspect the element with your Developer Tools, you will see that it is actually inside of an
+            iFrame. Even the file name is protected by LunaSec.
+          </p>
+          <p>
+            To see how to set up your own Secure Download,{' '}
+            <a
+              href={
+                'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-files/#downloading-a-file'
+              }
+            >
+              see here
+            </a>
+            .
+          </p>
+          <Divider />
+          <br />
           <Typography>Download Link:</Typography>
           <SecureDownload token={documents[documents.length - 1]} errorHandler={(e) => setError(e.message)} />
         </CardContent>

@@ -10,30 +10,30 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 
 FROM base as builder
 
-ARG BUILD_TAG
-ARG VERSION
+ARG tag
+ARG version
 
 RUN --mount=target=. \
     --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    OUTPUT_DIR=/out make tokenizerbackend tag=$BUILD_TAG version=$VERSION
+    OUTPUT_DIR=/out make tokenizerbackend tag=$tag version=$version
 
 FROM alpine
 
 # TODO (cthompson) we could probably use 'scratch' and just copy the curl bin from another build image
 RUN apk add curl
 
-ARG BUILD_TAG
+ARG tag
 
 COPY config/tokenizerbackend/config.yaml /config/tokenizerbackend/config.yaml
 COPY views/tokenizerbackend/ /views/tokenizerbackend/
 
 # base config only for demo app, otherwise remove it
 COPY config/tokenizerbackend/dev.yaml /config/tokenizerbackend/dev.yaml
-RUN if [ "$BUILD_TAG" != "dev" ] ; then rm /config/tokenizerbackend/dev.yaml ; fi
+RUN if [ "$tag" != "dev" ] ; then rm /config/tokenizerbackend/dev.yaml ; fi
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /out/tokenizerbackend_$BUILD_TAG /tokenizerbackend
+COPY --from=builder /out/tokenizerbackend_$tag /tokenizerbackend
 COPY --from=builder /tmp /tmp
 
 WORKDIR /
