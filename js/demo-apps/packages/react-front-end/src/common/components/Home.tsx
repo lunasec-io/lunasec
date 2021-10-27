@@ -104,8 +104,8 @@ export const Home: React.FunctionComponent = () => {
                   behind this app to start understanding how it works.
                 </li>
                 <li>
-                  Simulate an attack by trying to leak the sensitive data in the examples. An attacker that is able to
-                  inject malicious JavaScript into a website is a realistic attack to test out.
+                  Simulate an attack by trying to leak the sensitive data in the examples. Injecting Javascript into the
+                  page should not reveal any sensitive data from the secure fields.
                 </li>
               </ul>
             </p>
