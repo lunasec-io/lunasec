@@ -22,12 +22,12 @@ FROM alpine
 
 RUN apk add curl
 
-ARG BUILD_TAG
+ARG tag
 
 COPY config/analyticscollector/config.yaml /config/analyticscollector/config.yaml
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /out/analyticscollector_$BUILD_TAG /analyticscollector
+COPY --from=builder /out/analyticscollector_$tag /analyticscollector
 COPY --from=builder /tmp /tmp
 
 WORKDIR /
