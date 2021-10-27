@@ -130,7 +130,8 @@ export const SecureInputDemo: React.FunctionComponent = () => {
         <CardContent>
           <p>
             The below input element has been secured with LunaSec. Right click and inspect it to see that it is actually
-            inside of an iFrame.
+            inside of an iFrame. A hacker would be unable to read the text even if they were able to embed malicious
+            JavaScript into this page.
           </p>
           <p>
             To see how to set up your own Secure Input,{' '}
