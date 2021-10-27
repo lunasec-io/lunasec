@@ -1,7 +1,7 @@
 app:
   stack_id: ${STACK_ID:"no-stack-id"}
 analyticscollector:
-  analytics_server: ${ANALYTICS_SERVER}
+  analytics_server: ${ANALYTICS_SERVER:"https://production.deployment-info.lunasec.io/record"}
   metrics:
     - tokenizeSuccess
     - tokenizeFailure
