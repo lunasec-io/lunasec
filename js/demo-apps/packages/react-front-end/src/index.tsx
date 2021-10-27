@@ -14,37 +14,94 @@
  * limitations under the License.
  *
  */
-import React from 'react';
-import ReactDOM from 'react-dom';
 
+import { createStyles, CssBaseline, makeStyles, Theme } from '@material-ui/core';
+import { StoreProvider } from 'easy-peasy';
+import React, { useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import './index.css';
+import { BrowserRouter, Redirect, Route } from 'react-router-dom';
+
 import { DedicatedPassportReactApp } from './common/App';
+import { Header } from './common/components/Header';
+import { SideMenu } from './common/components/SideMenu';
+import { getStore, useStoreActions } from './common/store';
 import { SimpleApp } from './simple-tokenizer/App';
 
-if (!window.location.hash) {
-  window.location.hash = 'dedicated-passport-express';
-}
-const hash = window.location.hash.substring(1);
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+    },
+    main: {
+      flexGrow: 1,
+      padding: theme.spacing(3),
+    },
+    toolbar: theme.mixins.toolbar,
+  })
+);
 
-const mode = hash;
+const modeLookup: Record<string, 'dedicated' | 'simple' | undefined> = {
+  express: 'dedicated',
+  graphql: 'dedicated',
+  simple: 'simple',
+} as const;
 
-export function getApp() {
-  switch (mode) {
-    case 'dedicated-passport-express':
-      return <DedicatedPassportReactApp sessionAuthProvider="express-back-end" />;
-    case 'dedicated-passport-graphql': // Same app for this demo, it just loads a different store
-      return <DedicatedPassportReactApp sessionAuthProvider="graphql-back-end" />;
-    case 'simple':
-      return <SimpleApp />;
-    default:
-      throw new Error('Invalid demo mode set, check the URL hash');
-  }
-}
+export const AppContainer: React.FunctionComponent = () => {
+  const classes = useStyles({});
+
+  const loadUser = useStoreActions((actions) => actions.loadUser);
+  useEffect(() => {
+    loadUser(); // Small hack to do this here but it makes sure the user is loaded whenever a page refreshes
+  }, []);
+
+  return (
+    <BrowserRouter>
+      <Route exact path="/">
+        <Redirect to="/express" />
+      </Route>
+      <Route
+        path="/:mode"
+        render={(routeProps) => {
+          const pathMode = routeProps.match && routeProps.match.params.mode;
+
+          const mode = modeLookup[pathMode];
+
+          if (mode && mode !== 'simple' && mode !== 'dedicated') {
+            throw new Error('Unknown mode for operation. Must be "simple" or "dedicated"');
+          }
+
+          return (
+            <div className={classes.root}>
+              <CssBaseline />
+              <Header />
+              <SideMenu mode={mode} />
+              <main className={classes.main}>
+                <div className={classes.toolbar} />
+                <Route path="/express">
+                  <DedicatedPassportReactApp sessionAuthProvider="express-back-end" />
+                </Route>
+                <Route path="/graphql">
+                  <DedicatedPassportReactApp sessionAuthProvider="graphql-back-end" />
+                </Route>
+                <Route path="/simple">
+                  <SimpleApp />
+                </Route>
+              </main>
+            </div>
+          );
+        }}
+      />
+    </BrowserRouter>
+  );
+};
 
 ReactDOM.render(
   <React.StrictMode>
-    {/*programmatically change which app comes up based on the page hash*/}
-    {getApp()}
+    <StoreProvider store={getStore()}>
+      {/*programmatically change which app comes up based on the page hash*/}
+      <AppContainer />
+    </StoreProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
