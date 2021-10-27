@@ -36,16 +36,19 @@ export const Home: React.FunctionComponent = () => {
           <img alt="LunaSec Logo" src={logo} className={classes.LogoImg} />
           <h1>LunaSec Demo: Dedicated Tokenizer with Passport Authentication</h1>
           <Typography>
-            This is a fully functional application which uses LunaSec to protect it&apos;s sensitive data.
+            This is a fully functional application which uses LunaSec to protect its sensitive data.
           </Typography>
           <br />
           <Typography>
-            It looks like a normal app because it was designed to! Under the hood though, there is a lot of black magic
-            happening. Check out the{' '}
-            <a href="https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/" target="_blank" rel="prefetch">
-              Demo App Walkthrough Guide
-            </a>{' '}
-            if you find yourself confused.
+            It looks and functions like any other web app, but many of the fields have been secured with LunaSec. Under
+            the hood, LunaSec is keeping the data secure. To set up LunaSec in your own application, see the{' '}
+            <a
+              href="https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/introduction/"
+              target="_blank"
+              rel="prefetch"
+            >
+              Getting Started Guide.
+            </a>
           </Typography>
         </CardContent>
       </Card>
@@ -56,7 +59,7 @@ export const Home: React.FunctionComponent = () => {
         <CardContent>
           <Typography>
             Before trying the LunaSec Secure Elements, you must first login to the site by using the links on the left.
-            A test user has been created for you already for you to login with.
+            A test user has been created for you to login with.
             <h4>Login Credentials:</h4>
             <ul>
               <li>
@@ -78,12 +81,16 @@ export const Home: React.FunctionComponent = () => {
             </p>
             <Divider />
             <p>
-              <h4>Ideas To Begin:</h4>
+              <h4>See LunaSec in Action</h4>
+              <p>
+                LunaSec elements are designed to look like normal elements. You will need to dig deeper to see it
+                working:
+              </p>
               <ul>
                 <li>Use your browser&apos;s Dev Tools to inspect the input elements in the example pages.</li>
                 <li>
-                  Look at the network traffic to see the communication with the local AWS S3 bucket to store encrypted
-                  data.
+                  Look at the network traffic to see the communication with the Tokenizer Backend and local AWS S3
+                  bucket to store encrypted data.
                 </li>
                 <li>
                   Review the{' '}
@@ -154,7 +161,10 @@ export const Home: React.FunctionComponent = () => {
                 code).
               </li>
             </ul>
-            <p>On behalf of the LunaSec Development Team, thank you for checking us out!</p>
+            <p>
+              Thank you for trying LunaSec. For professional support,{' '}
+              <a href="https://www.lunasec.io/contact"> contact us</a>.
+            </p>
           </Typography>
         </CardContent>
       </Card>
