@@ -78,8 +78,8 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
         <CardHeader title="Secure Upload Demo" />
         <CardContent>
           <p>
-            This uploader dialog is a pre-made LunaSec component that uploads files into LunaSec and returns tokens.
-            Right click and inspect it to see that it is actually inside an iFrame.
+            This uploader dialog is a pre-made LunaSec component that uploads files into LunaSec and returns tokens. All
+            file uploads happen from within the a separate iFrame, so this page is never able to see the actual data.
           </p>
           <p>
             To see how to set up your own Secure Uploader,{' '}

@@ -76,8 +76,11 @@ export const SecureDownloadDemo: React.FunctionComponent = () => {
         <CardHeader title={`Secure Download Demo`} />
         <CardContent>
           <p>
-            This download link downloads the last file uploaded to Secure Upload in the previous demo. Right click and
-            inspect it to see that it is actually inside an iFrame. Even the file name is protected by LunaSec.
+            This download link downloads the last file uploaded to Secure Upload in the previous demo. If you right
+            click and inspect the element with your Developer Tools, you will see that it is actually inside of an
+            iFrame. Even the file name is protected by LunaSec. Because you&apos;re a developer, you can see the data in
+            the iFrame, but you would be unable to if you attempted to hack this website via embedding malicious
+            JavaScript into the page.
           </p>
           <p>
             To see how to set up your own Secure Download,{' '}

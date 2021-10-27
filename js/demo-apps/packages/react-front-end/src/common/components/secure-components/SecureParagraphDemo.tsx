@@ -60,8 +60,9 @@ export const SecureParagraphDemo: React.FunctionComponent = () => {
         <CardHeader title="Secure Paragraph Demo" />
         <CardContent>
           <p>
-            The below paragraph element has been secured with LunaSec and displays the whatever has been saved in Secure
-            Input in the previous demo. Right click and inspect it to see that it is actually inside an iFrame.
+            The below paragraph element has been tokenized by LunaSec. It displays the data that was saved in the Secure
+            Input of the previous demo. Even though it&apos;s just text, it&apos;s also in an iFrame and can&apos;t be
+            snooped on cross-origin by JavaScript running on this page.
           </p>
           <p>
             To see how to set up your own Secure Paragraph,{' '}
