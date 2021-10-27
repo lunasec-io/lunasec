@@ -18,10 +18,12 @@ sidebar_position: 1
   ~
 -->
 # lunasec deploy
+LunaSec can be deployed to AWS using the LunaSec CLI, available in the @lunasec/cli npm package.  More information on installing and using the CLI can be 
+found in the [Getting Started Guide](/pages/getting-started/dedicated-tokenizer/introduction)
 
-Deploy the LunaSec stack to AWS using the provided config (defaults to `config.yaml` in the local directory).
+Deploy the LunaSec stack to AWS using the provided config (defaults to `config.yaml` in the working directory).
 
-The config file can configure the stack to do the following:
+The CLI reads from a `config.yaml` file found in the working directory,  It has the following options:
 
 ```yaml
 lunasec:
@@ -35,7 +37,7 @@ lunasec:
     <name of service>: <version to pin service to>
 ```
 
-For a standard deployment of LunaSec, you may only need:
+Most of these are optional.  For a standard deployment of LunaSec, you may only need:
 
 ```yaml
 lunasec:

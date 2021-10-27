@@ -25,19 +25,9 @@ on the backend. Other frontend frameworks are on the development roadmap, includ
 :::info
 To see a full demonstration while you follow this guide, you can follow along in [the demo app](/pages/overview/demo-app/walkthrough).  
 :::
-### Services
-Before we start changing code, let's get LunaSec's services running. The main dependencies we need are:
-* Dedicated Tokenizer Backend
-* AWS (preferably running locally using LocalStack)
-
-We have containerized these and written a docker compose to make launching them easy.
-
-```shell
-npx lunasec start
-```
 
 ### CLI
-The LunaSec CLI makes development, testing, and deployment easier. 
+The LunaSec CLI makes development, testing, and deployment easier.  It can bring up the services we need to use LunaSec locally.
 
 The CLI is available as an NPM module. Add it to your `package.json`:
 
@@ -47,11 +37,38 @@ or
 
 `npm install @lunasec/cli --save-dev`
 
-Make sure the CLI stays at the same version as the `@lunasec` packages we install in this guide. 
+Make sure the CLI stays at the same version as the `@lunasec` packages we install in this guide.
 
 :::tip
 You can also install the CLI package globally with `yarn global add @lunasec/cli` to make manual commands easier - it will automatically use the locally installed copy if you are in your app folder. Call `lunasec --version` to try it out.
 :::
 
+### Prerequisites
+Your system must have `docker-compose`, `docker`, and `node >= 14` installed.
+
+### Starting LunaSec
+
+Now that the CLI is installed, we can run:
+
+```shell
+lunasec start
+```
+
+`lunasec start` brings up the parts of LunaSec you will need for local development, which consists of:
+* the Tokenizer Backend 
+* Localstack 
+* HTTPS proxy to Localstack
+* Secure Frame iFrame server.  
+  
+LunaSec will start with a clean database on every launch.
+
+If you'd like to also launch a demo app to try out LunaSec, instead run `lunasec start --env demo`, as described in the [Demo Application](/pages/overview/demo-app/overview) docs.
+
+:::info Password Prompt
+You'll be prompted for your password because the cli launches docker as root.  
+You can pass `--no-sudo` to the start command in order to have docker-compose run without `sudo`.
+True rootless docker isn't yet supported, but if you have
+[dangerously added your user to the docker group](https://docs.docker.com/engine/install/linux-postinstall/) it will work.  This is not recommended for security reasons.
+:::
 
 Now that the services are running, let's add LunaSec to the code. [Backend setup](./backend.md)
