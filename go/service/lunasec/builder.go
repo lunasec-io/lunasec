@@ -384,8 +384,7 @@ func (l *builder) createSecret(stack awscdk.Stack, name, description string) aws
 
 func (l *builder) createAnalyticsCollectorCron(stack awscdk.Stack, serviceImageLookup ServiceToImageMap) {
 	lambdaEnv := map[string]*string{
-		"STACK_ID":         stack.Node().Id(),
-		"ANALYTICS_SERVER": jsii.String(""),
+		"STACK_ID": stack.Node().Id(),
 	}
 
 	containerTag := serviceImageLookup[constants.LunaSecAnalyticsCollectorServiceName]
