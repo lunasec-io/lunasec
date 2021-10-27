@@ -26,10 +26,11 @@
 import events from 'events';
 
 import * as session from 'express-session';
+import { SessionData } from 'express-session';
 import sqlite3 from 'sqlite3';
 
 /**
- * @type {Integer}  One day in milliseconds.
+ * @type {int}  One day in milliseconds.
  */
 const oneDay = 86400000;
 
@@ -72,28 +73,21 @@ export class SQLiteStore extends session.Store {
     this.db = new sqlite3.Database(dbPath, options.mode);
     this.client = new events.EventEmitter();
 
-    this.db.exec(
-      (options.concurrentDb ? 'PRAGMA journal_mode = wal; ' : '') +
-        'CREATE TABLE IF NOT EXISTS ' +
-        this.table +
-        ' (' +
-        'sid PRIMARY KEY, ' +
-        'expired, sess)',
-      (err) => {
-        if (err) {
-          throw err;
-        }
-        this.client.emit('connect');
+    const dbMode = options.concurrentDb ? 'PRAGMA journal_mode = wal; ' : '';
 
-        void this.dbCleanup();
-        setInterval(() => void this.dbCleanup(), oneDay, this).unref();
+    this.db.exec(dbMode + `CREATE TABLE IF NOT EXISTS ${this.table} (sid PRIMARY KEY, expired, sess)`, (err) => {
+      if (err) {
+        throw err;
       }
-    );
+      this.client.emit('connect');
+
+      void this.dbCleanup();
+      setInterval(() => void this.dbCleanup(), oneDay, this).unref();
+    });
   }
 
   /**
    * Remove expired sessions from database.
-   * @param   {Object}    store
    * @api     private
    */
   dbCleanup() {
@@ -117,9 +111,9 @@ export class SQLiteStore extends session.Store {
    * @param fn
    * @api     public
    */
-  get(sid: string, fn: (err?: Error, row?: any) => void) {
+  get(sid: string, fn: (err: unknown, row?: SessionData | null | undefined) => void) {
     const now = new Date().getTime();
-    this.db.get('SELECT sess FROM ' + this.table + ' WHERE sid = ? AND ? <= expired', [sid, now], function (err, row) {
+    this.db.get(`SELECT sess FROM ${this.table} WHERE sid = ? AND ? <= expired`, [sid, now], function (err, row) {
       if (err) {
         fn(err);
         return;
@@ -142,13 +136,13 @@ export class SQLiteStore extends session.Store {
    * @param fn
    * @api     public
    */
-  set(sid: string, sess: session.Session, fn: (err?: any) => void): void {
+  set(sid: string, sess: session.Session, fn: (err?: Error) => void): void {
     const maxAge = sess.cookie.maxAge;
     const now = new Date().getTime();
     const expired = maxAge ? now + maxAge : now + oneDay;
     const serializedSess = JSON.stringify(sess);
 
-    this.db.all('INSERT OR REPLACE INTO ' + this.table + ' VALUES (?, ?, ?)', [sid, expired, serializedSess], fn);
+    this.db.all(`INSERT OR REPLACE INTO ${this.table} VALUES (?, ?, ?)`, [sid, expired, serializedSess], fn);
   }
 
   /**
@@ -159,7 +153,7 @@ export class SQLiteStore extends session.Store {
    * @api     public
    */
   destroy(sid: string, fn: (err?: Error) => void) {
-    this.db.run('DELETE FROM ' + this.table + ' WHERE sid = ?', [sid], (err) => {
+    this.db.run(`DELETE FROM ${this.table} WHERE sid = ?`, [sid], (err) => {
       if (err) {
         fn(err);
         return;
@@ -174,9 +168,9 @@ export class SQLiteStore extends session.Store {
    *
    * @api     public
    */
-  length(fn: (err: any, length: number) => void) {
+  length(fn: (err: Error | undefined, length: number) => void) {
     console.log('length');
-    this.db.all('SELECT COUNT(*) AS count FROM ' + this.table + '', function (err, rows) {
+    this.db.all(`SELECT COUNT(*) AS count FROM ${this.table}`, function (err, rows) {
       if (err) {
         fn(err, 0);
         return;
@@ -192,7 +186,7 @@ export class SQLiteStore extends session.Store {
    * @api     public
    */
   clear(fn: (err?: Error) => void) {
-    this.db.exec('DELETE FROM ' + this.table + '', function (err) {
+    this.db.exec(`DELETE FROM ${this.table}`, function (err) {
       if (err) {
         fn(err);
         return;
@@ -215,7 +209,7 @@ export class SQLiteStore extends session.Store {
       const cookieExpires = new Date(session.cookie.expires).getTime();
 
       this.db.run(
-        'UPDATE ' + this.table + ' SET expired=? WHERE sid = ? AND ? <= expired',
+        `UPDATE ${this.table} SET expired=? WHERE sid = ? AND ? <= expired`,
         [cookieExpires, sid, now],
         function (err) {
           if (err) {
