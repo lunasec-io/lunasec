@@ -15,10 +15,9 @@
  *
  */
 /**
- * Connect - SQLite3
- * Copyright(c) 2012 David Feinberg
- * MIT Licensed
- * forked from https://github.com/tnantoka/connect-sqlite
+ * forked from https://github.com/rawberg/connect-sqlite3
+ * and also forked from https://github.com/tnantoka/connect-sqlite
+ * both of which are MIT licensed.
  */
 
 /**
