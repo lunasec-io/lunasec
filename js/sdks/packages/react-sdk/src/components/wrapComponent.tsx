@@ -199,30 +199,16 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       if (!this.dummyRef.current) {
         throw new Error('Unable to locate `dummyRef` for wrapped component when generating style');
       }
-      // Inputs have a separate dummy element for styling because of issues with html5 validations on inputs
-      if (componentName === 'Input') {
-        if (!this.dummyInputStyleRef.current) {
-          throw new Error('Unable to locate dummyInputStyleRef when generating style for input');
-        }
 
-        const styleInfo = getStyleInfo(this.dummyInputStyleRef.current);
-
-        if (!styleInfo) {
-          return null;
-        }
-
-        if (!styleInfo.parentStyle) {
-          return null;
-        }
-
-        styleInfo.parentStyle.position = 'absolute';
-        styleInfo.parentStyle.top = '0';
-        styleInfo.parentStyle.left = '0';
-
-        return styleInfo;
+      const dummyInputStyleRef = this.dummyInputStyleRef.current;
+      if (componentName === 'Input' && !dummyInputStyleRef) {
+        throw new Error('Unable to locate dummyInputStyleRef when generating style for input');
       }
+
+      // Inputs have a separate dummy element for styling because of issues with html5 validations on inputs
       // if its not an input just use the the main dummy element
-      const styleInfo = getStyleInfo(this.dummyRef.current);
+      const styleRef = componentName === 'Input' && dummyInputStyleRef ? dummyInputStyleRef : this.dummyRef.current;
+      const styleInfo = getStyleInfo(styleRef);
 
       if (!styleInfo) {
         return null;
@@ -324,7 +310,6 @@ export default function WrapComponent<W extends keyof ClassLookup>(
     // Give the iframe all the information it needs to exist when it wakes up
     async sendIFrameAttributes() {
       const frameAttributes = this.generateIFrameAttributes();
-      console.log({ frameAttributes });
       const message = this.messageCreator.createMessageToFrame('Attributes', frameAttributes);
       if (!this.frameRef.current || !this.frameRef.current.contentWindow) {
         console.error('Frame not initialized for message sending');
