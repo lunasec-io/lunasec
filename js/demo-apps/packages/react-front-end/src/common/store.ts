@@ -20,9 +20,9 @@ import { action, computed, createStore, createTypedHooks, thunk } from 'easy-pea
 
 import { expressTransport } from './express-transport';
 import { graphQlTransport } from './graphql-transport';
-import { Mode, StoreModel } from './types';
+import { Mode, StoreModel, Transport } from './types';
 
-export function getTransport(mode: Mode): typeof expressTransport {
+export function getTransport(mode: Mode): Transport {
   if (mode === 'graphql') {
     return graphQlTransport;
   }

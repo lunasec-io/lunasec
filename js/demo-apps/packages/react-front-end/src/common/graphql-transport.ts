@@ -16,7 +16,7 @@
  */
 import { ApolloClient, createHttpLink, gql, InMemoryCache } from '@apollo/client';
 
-import { ApiResponse, UserDocumentsResponse, UserModel, UserResponse } from './types';
+import { ApiResponse, Transport, UserDocumentsResponse, UserModel, UserResponse } from './types';
 
 const link = createHttpLink({
   uri: 'http://localhost:3002/graphql',
@@ -144,7 +144,7 @@ async function signup(username: string, password: string) {
   return res.data.signup as UserResponse;
 }
 
-export const graphQlTransport = {
+export const graphQlTransport: Transport = {
   signup,
   login,
   saveSsn,
