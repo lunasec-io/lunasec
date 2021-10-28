@@ -14,7 +14,8 @@
  * limitations under the License.
  *
  */
-import React, { Component } from 'react';
+import { camelCaseObject } from '@lunasec/browser-common';
+import React, { Component, CSSProperties } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types/internal-types';
 type UploaderRenderData = RenderData<'Uploader'>;
@@ -33,15 +34,20 @@ export default class Uploader extends Component<UploaderProps> {
     if (!renderData.frameStyleInfo) {
       return null;
     }
-    const { ...frameStyle } = renderData.frameStyleInfo;
-    frameStyle.width = '300px';
-    frameStyle.height = '300px';
+    const { parentStyle } = renderData.frameStyleInfo;
+
+    const iframeStyle: CSSProperties = {
+      ...camelCaseObject(parentStyle),
+      width: '300px',
+      height: '300px',
+      display: 'block',
+    };
 
     return (
       <iframe
         ref={renderData.frameRef}
         src={renderData.frameUrl}
-        style={frameStyle}
+        style={iframeStyle}
         frameBorder={0}
         key={renderData.frameUrl}
         className={renderData.frameClass}
@@ -50,10 +56,13 @@ export default class Uploader extends Component<UploaderProps> {
   }
 
   render() {
-    const { renderData, className, children, ...otherProps } = this.props;
+    const { renderData, children, ...otherProps } = this.props;
 
     return (
-      <div className={`${renderData.containerClass} ${className || ''}`} style={renderData.parentContainerStyle}>
+      <div
+        className={`${renderData.containerClass}`}
+        style={{ ...renderData.parentContainerStyle, height: '300px', width: '300px' }}
+      >
         <input
           {...otherProps}
           type="file"
