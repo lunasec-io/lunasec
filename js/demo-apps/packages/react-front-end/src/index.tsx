@@ -53,7 +53,7 @@ export const AppContainer: React.FunctionComponent = () => {
   const loadUser = useStoreActions((actions) => actions.loadUser);
   useEffect(() => {
     loadUser(); // Small hack to do this here but it makes sure the user is loaded whenever a page refreshes
-  }, []);
+  }, [loadUser]);
 
   return (
     <BrowserRouter>

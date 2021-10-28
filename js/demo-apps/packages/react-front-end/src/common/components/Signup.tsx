@@ -18,7 +18,6 @@ import { Button, FormControl, FormHelperText, FormLabel, makeStyles, Paper, Text
 import React, { FormEvent, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 
-import { useStoreActions } from '../store';
 import { UserResponse } from '../types';
 
 const useStyles = makeStyles((theme) => ({

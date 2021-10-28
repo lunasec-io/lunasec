@@ -44,10 +44,11 @@ export const Header: React.FunctionComponent<{
 }> = (props) => {
   const classes = useStyles({});
   const user = useStoreState((state) => state.user);
+  const { loadUser } = props;
 
   useEffect(() => {
-    void props.loadUser(); // Small hack to do this here but it makes sure the user is loaded whenever a page refreshes, ideally would happen in a dedicated component mounted in App
-  }, []);
+    void loadUser(); // Small hack to do this here but it makes sure the user is loaded whenever a page refreshes, ideally would happen in a dedicated component mounted in App
+  }, [loadUser]);
 
   const showLoggedInStatus = () => {
     if (user) {
