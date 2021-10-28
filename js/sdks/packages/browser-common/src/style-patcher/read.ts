@@ -80,7 +80,8 @@ export function getStyleInfo(source: SupportedElement, pseudoSelector?: string):
 
 function getTotalHeight(el: SupportedElement) {
   const { height } = el.getBoundingClientRect();
-  const computedStyle = window.getComputedStyle(el);
-  const marginHeight = parseInt(computedStyle.marginTop) + parseInt(computedStyle.marginBottom);
-  return height + marginHeight;
+  // const computedStyle = window.getComputedStyle(el);
+  // const marginHeight = parseInt(computedStyle.marginTop) + parseInt(computedStyle.marginBottom);
+  // Note: Disabling because this seems to be unnecessary now.
+  return height; // + marginHeight;
 }
