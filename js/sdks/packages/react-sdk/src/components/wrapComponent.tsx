@@ -175,6 +175,16 @@ export default function WrapComponent<W extends keyof ClassLookup>(
         this.formContext.addTokenCommitCallback(this.frameId, () => {
           return this.triggerTokenCommit();
         });
+        // Prefill the dummy element with a token if one was passed in props
+        if ('token' in this.props) {
+          const currentDummy = this.dummyRef.current;
+          if (!currentDummy) {
+            throw new Error('Token Commit cant find dummy element to insert token into');
+          }
+          if ('value' in currentDummy) {
+            currentDummy.value = this.props.token || '';
+          }
+        }
       }
     }
 
