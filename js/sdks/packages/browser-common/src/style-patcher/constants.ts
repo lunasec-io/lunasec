@@ -83,6 +83,7 @@ export const PARENT_ELEMENT_STYLE_ATTRIBUTES = [
   'margin-top',
   'min-height',
   'min-width',
+  // Note: Disabling passing position style data because it breaks elements with a default height of 0.
   'position',
   'right',
   'top',

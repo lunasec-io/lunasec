@@ -68,7 +68,7 @@ export default class Input extends Component<InputProps> {
     const { inputRef, ...scrubbedProps } = otherProps;
 
     return (
-      <div style={renderData.parentContainerStyle} className={`${renderData.containerClass} ${className || ''}`}>
+      <div style={{ ...renderData.parentContainerStyle, flexGrow: 1 }} className={`${renderData.containerClass}`}>
         <input
           {...scrubbedProps}
           ref={renderData.dummyInputStyleRef}
@@ -81,7 +81,7 @@ export default class Input extends Component<InputProps> {
           name={name} // only the element we want to submit has a name, otherwise validations run
           type="text"
           ref={renderData.dummyRef}
-          style={{ ...renderData.dummyElementStyle, ...this.props.style }}
+          style={{ ...renderData.dummyElementStyle, ...this.props.style, position: 'absolute' }}
           tabIndex={-1}
           className={`${renderData.hiddenElementClass} ${className || ''}`}
         />

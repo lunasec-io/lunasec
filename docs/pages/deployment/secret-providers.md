@@ -2,7 +2,7 @@
 id: "secret-providers"
 title: "Secret Providers"
 sidebar_label: "Secret Providers"
-sidebar_position: 7
+sidebar_position: 2
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -19,11 +19,12 @@ sidebar_position: 7
 -->
 # Available Secret Providers
 
-LunaSec currently supports the following secret providers:
+When we set up the LunaSec Node SDK, we pass a private key that LunaSec uses to establish trust with your app.
+LunaSec provides a few different ways to set it:
 
 ## Manual
 
-Provide a `'<siging key>'` as a `KeyLike` value.
+Provide a `'<signing key>'` as a `KeyLike` value.
 
 ```typescript
 import { createPrivateKey } from 'crypto';
@@ -32,7 +33,7 @@ export const lunaSec = new LunaSec({
   auth: {
     secrets: {
       provider: 'manual',
-      signingKey: createPrivateKey('<signing key>')
+      signingKey: createPrivateKey('PRIVATEKEY123ABC')
     },
   }
 });
@@ -40,7 +41,7 @@ export const lunaSec = new LunaSec({
 
 ## Environment Variable
 
-Set the environment variable `LUNASEC_SIGING_KEY` which will be detected by LunaSec at runtime.
+Set the environment variable `LUNASEC_SIGNING_KEY` which will be detected by LunaSec at runtime.
 
 ```typescript
 export const lunaSec = new LunaSec({
