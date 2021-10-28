@@ -27,8 +27,14 @@ and the backend server demonstrates both Express and GraphQL.
 As you can see in the top right corner, the app can switch between several modes to test how LunaSec works with different systems.
 
 ## Running it
-You can run it by cloning our repository and running `yarn start:demo`.  This will start the containers using docker-compose.
-A local development copy of AWS will be used, so no credentials needed.  The demo app should now be running at [http://localhost:3000](http://localhost:3000).  
-Use the buttons in the top right corner if you would like to change the mode.
+You can start the demo app on your machine easily using our CLI.  First make sure you have `docker`, `docker-compose`, and `node >= v14` installed.  
 
-Please see [Code Walkthrough](/pages/overview/demo-app/walkthrough) for an explanation of how the demo app is structured.
+Then install it(and the aws CDK) and run the CLI
+```shell
+npm i -g @lunasec/cli cdk aws-cdk-local
+lunasec start --env demo
+``` 
+Depending on your internet speed, this might take a minute.
+Once done, the demo app should now be running at [http://localhost:3000](http://localhost:3000).  
+
+Please see [Code Walkthrough](/pages/overview/demo-app/walkthrough) for an explanation of how the demo app code is structured.
