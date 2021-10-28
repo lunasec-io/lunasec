@@ -14,7 +14,8 @@
  * limitations under the License.
  *
  */
-import React, { Component } from 'react';
+import { camelCaseObject } from '@lunasec/browser-common';
+import React, { Component, CSSProperties } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types/internal-types';
 type AnchorRenderData = RenderData<'Downloader'>;
@@ -33,18 +34,21 @@ export default class Downloader extends Component<AnchorProps> {
     if (!renderData.frameStyleInfo) {
       return null;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { width, ...frameStyle } = renderData.frameStyleInfo;
-    // const iframeStyle: CSSProperties = {
-    //   display: 'block',
-    //   height: renderData.frameStyleInfo.height,
-    // };
+    const { parentStyle, width, ...frameStyle } = renderData.frameStyleInfo;
+
+    const iframeStyle: CSSProperties = {
+      ...camelCaseObject(parentStyle),
+      display: 'block',
+      width: width,
+    };
+
+    console.log({ frameStyle });
 
     return (
       <iframe
         ref={renderData.frameRef}
         src={renderData.frameUrl}
-        style={frameStyle}
+        style={iframeStyle}
         className={renderData.frameClass}
         frameBorder={0}
         key={renderData.frameUrl}
@@ -58,7 +62,7 @@ export default class Downloader extends Component<AnchorProps> {
     // TODO: handle this in the wrapped component by using the styled component callback
 
     return (
-      <div className={`${renderData.containerClass} ${className || ''}`} style={renderData.parentContainerStyle}>
+      <div className={`${renderData.containerClass}`} style={renderData.parentContainerStyle}>
         <a
           {...otherProps}
           ref={renderData.dummyRef}

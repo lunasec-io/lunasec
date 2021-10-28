@@ -175,6 +175,16 @@ export default function WrapComponent<W extends keyof ClassLookup>(
         this.formContext.addTokenCommitCallback(this.frameId, () => {
           return this.triggerTokenCommit();
         });
+        // Prefill the dummy element with a token if one was passed in props
+        if ('token' in this.props) {
+          const currentDummy = this.dummyRef.current;
+          if (!currentDummy) {
+            throw new Error('Token Commit cant find dummy element to insert token into');
+          }
+          if ('value' in currentDummy) {
+            currentDummy.value = this.props.token || '';
+          }
+        }
       }
     }
 
@@ -199,15 +209,30 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       if (!this.dummyRef.current) {
         throw new Error('Unable to locate `dummyRef` for wrapped component when generating style');
       }
-      // Inputs have a separate dummy element for styling because of issues with html5 validations on inputs
-      if (componentName === 'Input') {
-        if (!this.dummyInputStyleRef.current) {
-          throw new Error('Unable to locate dummyInputStyleRef when generating style for input');
-        }
-        return getStyleInfo(this.dummyInputStyleRef.current);
+
+      const dummyInputStyleRef = this.dummyInputStyleRef.current;
+      if (componentName === 'Input' && !dummyInputStyleRef) {
+        throw new Error('Unable to locate dummyInputStyleRef when generating style for input');
       }
+
+      // Inputs have a separate dummy element for styling because of issues with html5 validations on inputs
       // if its not an input just use the the main dummy element
-      return getStyleInfo(this.dummyRef.current);
+      const styleRef = componentName === 'Input' && dummyInputStyleRef ? dummyInputStyleRef : this.dummyRef.current;
+      const styleInfo = getStyleInfo(styleRef);
+
+      if (!styleInfo) {
+        return null;
+      }
+
+      if (!styleInfo.parentStyle) {
+        return null;
+      }
+
+      styleInfo.parentStyle.position = 'absolute';
+      styleInfo.parentStyle.top = '0';
+      styleInfo.parentStyle.left = '0';
+
+      return styleInfo;
     }
 
     generateUrl() {
@@ -437,9 +462,9 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       };
 
       const dummyElementStyle: CSSProperties = {
-        position: 'absolute',
-        top: 0,
-        left: 0,
+        // position: 'absolute',
+        // top: 0,
+        // left: 0,
         // We can't set the "visibility" to "collapsed" or "hidden",
         // Or else the "on focus" and "on blur" events won't fire.
         // So we use zIndex instead to "hide" the input.

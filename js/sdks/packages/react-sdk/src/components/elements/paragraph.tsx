@@ -14,7 +14,8 @@
  * limitations under the License.
  *
  */
-import React, { Component } from 'react';
+import { camelCaseObject } from '@lunasec/browser-common';
+import React, { Component, CSSProperties } from 'react';
 
 import { RenderData, WrappedComponentProps } from '../../types/internal-types';
 type ParagraphRenderData = RenderData<'Paragraph'>;
@@ -34,14 +35,23 @@ export default class Paragraph extends Component<ParagraphProps> {
       return null;
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { width, ...frameStyle } = renderData.frameStyleInfo;
+    const { parentStyle, width, height, ...frameStyle } = renderData.frameStyleInfo;
+
+    const iframeStyle: CSSProperties = {
+      ...camelCaseObject(parentStyle),
+      display: 'block',
+      width: width,
+      height: height,
+      margin: 0,
+      marginBlock: 0,
+    };
 
     return (
       <iframe
         ref={renderData.frameRef}
         src={renderData.frameUrl}
         className={renderData.frameClass}
-        style={frameStyle}
+        style={iframeStyle}
         frameBorder={0}
         key={renderData.frameUrl}
       />
@@ -53,11 +63,11 @@ export default class Paragraph extends Component<ParagraphProps> {
     const { renderData, className, children, ...otherProps } = this.props;
 
     return (
-      <div style={renderData.parentContainerStyle} className={`${renderData.containerClass} ${className || ''}`}>
+      <div style={renderData.parentContainerStyle} className={`${renderData.containerClass}`}>
         <p
           {...otherProps}
           ref={renderData.dummyRef}
-          style={renderData.dummyElementStyle}
+          style={{ ...renderData.dummyElementStyle }}
           tabIndex={-1}
           className={className || ''}
         >
