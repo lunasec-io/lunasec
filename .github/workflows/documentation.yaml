@@ -32,18 +32,27 @@ jobs:
       AWS_CLOUDFRONT_DISTRIBUTION: ${{secrets.AWS_CLOUDFRONT_DISTRIBUTION}}
       AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
       AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+    strategy:
+      matrix:
+        merge: ["true", "false"]
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
+#      Cancel the merge copy of this build(see the matrix above) if we are not in a PR
+      - name: cancelling
+        uses: andymckay/cancel-action@0.2
+        if: matrix.merge == "true" && github.event_name != 'pull_request'
+
       - name: Merge target branch
         run: git merge origin/${{ github.event.pull_request.base.ref }}
-        if: github.event_name == 'pull_request'
+        if: matrix.merge == "true"
 
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
+      #TODO matrix this node version as well
 
       # Speed up builds by caching node_modules
       - uses: actions/cache@v2
