@@ -43,7 +43,7 @@ describe('setup', () => {
   it('loads homepage', () => {
     cy.visit('/');
     // Wait for the backend to fully spin up
-    cy.wait(60000 * 3);
+    cy.wait(60000 * 2);
   });
 });
 
@@ -68,10 +68,13 @@ function runDedicatedModeTests(mode: string) {
       cy.get('input[id=password]').type('test');
 
       cy.get('form[id=signup-form]').submit();
-      cy.wait(5000);
+
+      cy.wait(1000);
 
       cy.location('pathname').should('eq', `/${mode}/secureinput`);
       cy.get('p[id=user-status]').should('contain', 'Logged in');
+
+      cy.reload();
 
       cy.wait(10000);
     });
