@@ -30,20 +30,22 @@ import {
 import React, { useEffect, useState } from 'react';
 
 import { useStoreActions } from '../../store';
+import { ApiResponse, UserDocumentsResponse } from '../../types';
 
-export const SecureUploadDemo: React.FunctionComponent = () => {
+export const SecureUploadDemo: React.FunctionComponent<{
+  loadDocuments: () => Promise<UserDocumentsResponse>;
+  uploadDocumentTokens: (documents: string[]) => Promise<ApiResponse>;
+}> = (props) => {
   const [error, setError] = useState<string | null>(null);
   const [saveSuccessful, setSaveSuccessful] = useState<boolean | null>(null);
   const [documents, setDocuments] = useState<string[]>([]);
-  const loadDocumentsThunk = useStoreActions((actions) => actions.loadDocuments);
-  const uploadDocumentTokensThunk = useStoreActions((actions) => actions.uploadDocumentTokens);
 
   useEffect(() => {
     void loadDocuments();
   }, []);
 
   const loadDocuments = async () => {
-    const data = await loadDocumentsThunk();
+    const data = await props.loadDocuments();
     if (data.success) {
       setDocuments(data.documents);
       return;
@@ -52,7 +54,7 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
   };
 
   const saveDocuments = async () => {
-    const data = await uploadDocumentTokensThunk(documents);
+    const data = await props.uploadDocumentTokens(documents);
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;
@@ -126,7 +128,10 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
   );
 };
 
-export const Upload: React.FunctionComponent = () => {
+export const Upload: React.FunctionComponent<{
+  loadDocuments: () => Promise<UserDocumentsResponse>;
+  uploadDocumentTokens: (documents: string[]) => Promise<ApiResponse>;
+}> = (props) => {
   // const [authError, setAuthError] = useState<string>('');
-  return <SecureUploadDemo />;
+  return <SecureUploadDemo {...props} />;
 };

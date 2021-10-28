@@ -48,6 +48,15 @@ interface UserDocumentsSuccess {
 
 export type UserDocumentsResponse = UserDocumentsSuccess | FailApiResponse;
 
+export type StoreThunks = 'saveSsn' | 'loadUser' | 'loadDocuments' | 'uploadDocumentTokens' | 'login' | 'signup';
+export type StoreModes = '' | 'gql';
+
+export type StoreThunksWithModes<K extends StoreThunks> = `${K}${Capitalize<StoreModes>}`;
+
+export type CombinedStoreThunks = {
+  [Key in StoreThunks as StoreThunksWithModes<Key>]: StoreModel[Key];
+};
+
 // todo: maybe switch from using easy-peasy, this is clunky
 export interface StoreModel {
   // Properties
@@ -58,10 +67,16 @@ export interface StoreModel {
   setSsn: Action<StoreModel, string>;
   // Thunks
   saveSsn: Thunk<StoreModel, string, undefined, StoreModel, Promise<ApiResponse>>;
+  saveSsnGql: Thunk<StoreModel, string, undefined, StoreModel, Promise<ApiResponse>>;
   loadUser: Thunk<StoreModel>;
+  loadUserGql: Thunk<StoreModel>;
 
   loadDocuments: Thunk<StoreModel, undefined, undefined, StoreModel, Promise<UserDocumentsResponse>>;
+  loadDocumentsGql: Thunk<StoreModel, undefined, undefined, StoreModel, Promise<UserDocumentsResponse>>;
   uploadDocumentTokens: Thunk<StoreModel, string[], undefined, StoreModel, Promise<ApiResponse>>;
+  uploadDocumentTokensGql: Thunk<StoreModel, string[], undefined, StoreModel, Promise<ApiResponse>>;
   login: Thunk<StoreModel, { username: string; password: string }, undefined, StoreModel, Promise<UserResponse>>;
+  loginGql: Thunk<StoreModel, { username: string; password: string }, undefined, StoreModel, Promise<UserResponse>>;
   signup: Thunk<StoreModel, { username: string; password: string }, undefined, StoreModel, Promise<UserResponse>>;
+  signupGql: Thunk<StoreModel, { username: string; password: string }, undefined, StoreModel, Promise<UserResponse>>;
 }

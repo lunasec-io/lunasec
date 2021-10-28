@@ -74,7 +74,7 @@ export const AppContainer: React.FunctionComponent = () => {
           return (
             <div className={classes.root}>
               <CssBaseline />
-              <Header />
+              <Header loadUser={loadUser} />
               <SideMenu mode={mode} />
               <main className={classes.main}>
                 <div className={classes.toolbar} />
