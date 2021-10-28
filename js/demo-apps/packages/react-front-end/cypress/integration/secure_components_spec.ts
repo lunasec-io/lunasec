@@ -42,8 +42,6 @@ function logRequests() {
 describe('setup', () => {
   it('loads homepage', () => {
     cy.visit('/');
-    // Wait for the backend to fully spin up
-    cy.wait(60000 * 2);
   });
 });
 
@@ -69,24 +67,20 @@ function runDedicatedModeTests(mode: string) {
 
       cy.get('form[id=signup-form]').submit();
 
-      cy.wait(1000);
+      cy.wait(200);
 
       cy.location('pathname').should('eq', `/${mode}/secureinput`);
       cy.get('p[id=user-status]').should('contain', 'Logged in');
-
-      cy.reload();
-
-      cy.wait(10000);
     });
 
     it('secure input tokenizes', () => {
       cy.get('a').contains('SecureInput').click();
 
-      cy.iframe().find('.secure-input', { timeout: 20000 }).type(fakeSSN);
+      cy.iframe().find('.secure-input').type(fakeSSN);
 
       cy.get('button[type=submit]').click();
 
-      cy.get('#success-alert', { timeout: 20000 }).should('contain', 'Success');
+      cy.get('#success-alert').should('contain', 'Success');
     });
 
     // Broken persistence test, would be nice to have
@@ -103,29 +97,27 @@ function runDedicatedModeTests(mode: string) {
     it('secure paragraph', () => {
       cy.get('a').contains('SecureParagraph').click();
 
-      cy.iframe().find('.secure-input', { timeout: 20000 }).should('contain', fakeSSN);
+      cy.iframe().find('.secure-input').should('contain', fakeSSN);
     });
 
     it('secure upload', () => {
       cy.get('a').contains('SecureUpload').click();
 
-      cy.iframe()
-        .find('input[type=file]', { timeout: 20000 })
-        .attachFile({ filePath: 'sid.png', fileName: randomFileName }); // Dont sue me bro
+      cy.iframe().find('input[type=file]').attachFile({ filePath: 'sid.png', fileName: randomFileName }); // Dont sue me bro
 
-      cy.iframe().find('.file-container', { timeout: 20000 }).should('contain', randomFileName);
+      cy.iframe().find('.file-container').should('contain', randomFileName);
 
       cy.wait(1000);
 
       cy.get('#save-documents').click();
 
-      cy.iframe().find('.filestatus', { timeout: 20000 }).should('contain', 'Uploaded');
+      cy.iframe().find('.filestatus').should('contain', 'Uploaded');
     });
 
     it('secure download', () => {
       cy.get('a').contains('SecureDownload').click();
 
-      const link = cy.iframe().find('a', { timeout: 20000 });
+      const link = cy.iframe().find('a');
 
       link.should('contain', randomFileName);
 
@@ -138,11 +130,11 @@ function runDedicatedModeTests(mode: string) {
     it('secure text area', () => {
       cy.get('a').contains('SecureTextArea').click();
 
-      cy.iframe('.lunasec-iframe-textarea').find('textarea', { timeout: 20000 }).type('some secure text');
+      cy.iframe('.lunasec-iframe-textarea').find('textarea').type('some secure text');
 
       cy.get('button').contains('Save').click();
 
-      cy.iframe('.lunasec-iframe-paragraph').find('p', { timeout: 20000 }).should('contain', 'some secure text');
+      cy.iframe('.lunasec-iframe-paragraph').find('p').should('contain', 'some secure text');
     });
 
     it('cleans up', () => {

@@ -26,12 +26,7 @@ import { SecureInputDemo } from './components/secure-components/SecureInputDemo'
 import { SecureParagraphDemo } from './components/secure-components/SecureParagraphDemo';
 import { SecureTextAreaDemo } from './components/secure-components/SecureTextAreaDemo';
 import { SecureUploadDemo } from './components/secure-components/SecureUploadDemo';
-import { getActionsForMode } from './mode-actions';
-import { useStoreActions } from './store';
-
-interface DedicatedPassportReactAppProps {
-  sessionAuthProvider: string;
-}
+import { Transport } from './types';
 
 const componentLookup = {
   login: Login,
@@ -41,27 +36,20 @@ const componentLookup = {
   secureparagraph: SecureParagraphDemo,
   securedownload: SecureDownloadDemo,
   securetextarea: SecureTextAreaDemo,
-} as const;
-
-const RenderDemoComponent: React.FunctionComponent = () => {
-  const { component } = useParams<{ component: keyof typeof componentLookup }>();
-  const match = useRouteMatch<{ mode: string }>(`/:mode`);
-
-  const isGraphQlMode = match && match.params.mode;
-  const actions = getActionsForMode(
-    isGraphQlMode ? 'graphql' : 'express',
-    useStoreActions((a) => a)
-  );
-
-  const DemoComponent = componentLookup[component];
-
-  return <DemoComponent {...actions} />;
 };
 
-export const DedicatedPassportReactApp = (props: DedicatedPassportReactAppProps) => {
-  const { path } = useRouteMatch();
-  const { sessionAuthProvider } = props;
+const RenderDemoComponent: React.FunctionComponent<{ transport: Transport }> = (props) => {
+  const { component } = useParams<{ component: keyof typeof componentLookup }>();
+  const DemoComponent = componentLookup[component];
+  return <DemoComponent transport={props.transport} />;
+};
 
+export const DedicatedPassportReactApp: React.FunctionComponent<{
+  transport: Transport;
+  sessionAuthProvider: string;
+}> = (props) => {
+  const { sessionAuthProvider } = props;
+  const { path } = useRouteMatch();
   return (
     <LunaSecConfigContext.Provider
       value={{
@@ -74,7 +62,9 @@ export const DedicatedPassportReactApp = (props: DedicatedPassportReactAppProps)
       }}
     >
       <Route exact path={`${path}/`} component={Home} />
-      <Route path={`${path}/:component`} component={RenderDemoComponent} />
+      <Route path={`${path}/:component`}>
+        <RenderDemoComponent transport={props.transport} />
+      </Route>
     </LunaSecConfigContext.Provider>
   );
 };

@@ -30,7 +30,6 @@ export const DetokenizeDemo: React.FunctionComponent = () => {
   const loadSsn = async () => {
     try {
       const { data } = await axios.get<UserResponse>('http://localhost:3003/user/me');
-      console.log('server responded ', data);
       if (!data.success) {
         setError(data.error);
         return;
