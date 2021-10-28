@@ -46,9 +46,9 @@ jobs:
         fetch-depth: 0
 
     #      Cancel the merge copy of this build(see the matrix above) if we are not in a PR
-    - name: cancelling
-      uses: andymckay/cancel-action@0.2
-      if: matrix.merge == "true" && github.event_name != 'pull_request'
+#    - name: cancelling
+#      uses: andymckay/cancel-action@0.2
+#      if: matrix.merge == "true" && github.event_name != 'pull_request'
 
     - name: Merge target branch
       run: git merge origin/${{ github.event.pull_request.base.ref }}
