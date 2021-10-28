@@ -2,7 +2,7 @@
 id: "graphql"
 title: "GraphQL"
 sidebar_label: "GraphQL Support"
-sidebar_position: 4
+sidebar_position: 3
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
