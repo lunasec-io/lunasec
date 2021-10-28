@@ -30,6 +30,7 @@ import React from 'react';
 import { match, NavLink, useRouteMatch } from 'react-router-dom';
 
 import { useStoreState } from '../store';
+import { Mode } from '../types';
 
 const drawerWidth = 240;
 
@@ -46,26 +47,25 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const RenderLoginSignupLinks: React.FunctionComponent<{ loggedIn: boolean; mode: 'simple' | 'dedicated' | undefined }> =
-  (props) => {
-    const { url } = useRouteMatch();
-    const match = useRouteMatch(`${url}/:component`);
+const RenderLoginSignupLinks: React.FunctionComponent<{ loggedIn: boolean; mode: Mode }> = (props) => {
+  const { url } = useRouteMatch();
+  const match = useRouteMatch(`${url}/:component`);
 
-    if (props.mode === 'simple') {
-      return null;
-    }
+  if (props.mode === 'simple') {
+    return null;
+  }
 
-    if (props.loggedIn) {
-      return null;
-    }
+  if (props.loggedIn) {
+    return null;
+  }
 
-    return (
-      <>
-        {renderListItem(<VpnKey />, `${url}/signup`, 'Signup', match)}
-        {renderListItem(<LockOpen />, `${url}/login`, 'Login', match)}
-      </>
-    );
-  };
+  return (
+    <>
+      {renderListItem(<VpnKey />, `${url}/signup`, 'Signup', match)}
+      {renderListItem(<LockOpen />, `${url}/login`, 'Login', match)}
+    </>
+  );
+};
 
 function renderListItem<T>(icon: JSX.Element, page: string, text: string, routeMatch: match<T> | null) {
   const selected = routeMatch && routeMatch.url === page;
@@ -80,7 +80,7 @@ function renderListItem<T>(icon: JSX.Element, page: string, text: string, routeM
 
 const RenderSecureComponentLinks: React.FunctionComponent<{
   loggedIn: boolean;
-  mode: 'simple' | 'dedicated' | undefined;
+  mode: Mode;
 }> = (props) => {
   const { url } = useRouteMatch();
   const match = useRouteMatch(`${url}/:component`);
@@ -109,7 +109,7 @@ const RenderSecureComponentLinks: React.FunctionComponent<{
   );
 };
 
-export const SideMenu: React.FunctionComponent<{ mode: 'simple' | 'dedicated' | undefined }> = (props) => {
+export const SideMenu: React.FunctionComponent<{ mode: Mode }> = (props) => {
   const classes = useStyles({});
   const loggedIn = useStoreState((state) => state.loggedIn);
 

@@ -14,14 +14,78 @@
  * limitations under the License.
  *
  */
-import { createTypedHooks } from 'easy-peasy';
+// easy-peasy is a simple store based on Redux, with a bad name
 
-import { store } from './global-store';
-import { StoreModel } from './types';
+import { action, computed, createStore, createTypedHooks, thunk } from 'easy-peasy';
 
-export function getStore() {
-  return store;
+import { expressTransport } from './express-transport';
+import { graphQlTransport } from './graphql-transport';
+import { Mode, StoreModel } from './types';
+
+export function getTransport(mode: Mode): typeof expressTransport {
+  if (mode === 'graphql') {
+    return graphQlTransport;
+  }
+  return expressTransport;
 }
+export const store = createStore<StoreModel>({
+  user: null,
+  loggedIn: computed((state) => !!state.user),
+  setUser: action((state, user) => {
+    state.user = user;
+  }),
+  setSsn: action((state, ssn) => {
+    if (!state.user) {
+      throw new Error('Cant set SSN for a user that isnt logged in');
+    }
+    state.user.ssn_token = ssn;
+  }),
+
+  saveSsn: thunk(async (actions, { transport, ssn_token }, { getState }) => {
+    const currentUser = getState().user;
+    if (!currentUser) {
+      throw new Error('Cant set SSN for a user that isnt logged in');
+    }
+    const data = await transport.saveSsn(ssn_token);
+    if (data.success) {
+      actions.setUser({ ...currentUser, ssn_token });
+    }
+    return data;
+  }),
+
+  loadUser: thunk(async (actions, { transport }) => {
+    const data = await transport.loadUser();
+    if (data.success) {
+      actions.setUser(data.user);
+      return data;
+    }
+    return data;
+  }),
+
+  loadDocuments: thunk(async (actions, { transport }) => {
+    return transport.loadDocuments();
+  }),
+
+  uploadDocumentTokens: thunk(async (actions, { transport, documents }) => {
+    return transport.uploadDocumentTokens(documents);
+  }),
+
+  login: thunk(async (actions, { transport, username, password }) => {
+    const data = await transport.login(username, password);
+    if (data.success) {
+      actions.setUser(data.user);
+    }
+    return data;
+  }),
+
+  signup: thunk(async (actions, { transport, username, password }) => {
+    const data = await transport.signup(username, password);
+    if (data.success) {
+      actions.setUser(data.user);
+    }
+    return data;
+  }),
+});
 
 const typedHooks = createTypedHooks<StoreModel>();
 
