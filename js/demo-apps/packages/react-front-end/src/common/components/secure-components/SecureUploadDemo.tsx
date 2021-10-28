@@ -29,7 +29,6 @@ import {
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 
-import { useStoreActions } from '../../store';
 import { ApiResponse, UserDocumentsResponse } from '../../types';
 
 export const SecureUploadDemo: React.FunctionComponent<{
@@ -39,19 +38,21 @@ export const SecureUploadDemo: React.FunctionComponent<{
   const [error, setError] = useState<string | null>(null);
   const [saveSuccessful, setSaveSuccessful] = useState<boolean | null>(null);
   const [documents, setDocuments] = useState<string[]>([]);
+  const { loadDocuments } = props;
 
   useEffect(() => {
-    void loadDocuments();
-  }, []);
+    // TODO: Move this into the Router
+    const loadDocumentsAction = async () => {
+      const data = await loadDocuments();
+      if (data.success) {
+        setDocuments(data.documents);
+        return;
+      }
+      setError(data.error);
+    };
 
-  const loadDocuments = async () => {
-    const data = await props.loadDocuments();
-    if (data.success) {
-      setDocuments(data.documents);
-      return;
-    }
-    setError(data.error);
-  };
+    void loadDocumentsAction();
+  }, [loadDocuments]);
 
   const saveDocuments = async () => {
     const data = await props.uploadDocumentTokens(documents);

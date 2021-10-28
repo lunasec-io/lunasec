@@ -20,14 +20,7 @@ import axios from 'axios';
 // easy-peasy is a simple store based on Redux, with a bad name
 import { action, computed, createStore, thunk } from 'easy-peasy';
 
-import {
-  ApiResponse,
-  CombinedStoreThunks,
-  StoreModel,
-  StoreThunks,
-  UserDocumentsResponse,
-  UserResponse,
-} from './types';
+import { ApiResponse, CombinedStoreThunks, StoreModel, UserDocumentsResponse, UserResponse } from './types';
 
 const link = createHttpLink({
   uri: 'http://localhost:3002/graphql',

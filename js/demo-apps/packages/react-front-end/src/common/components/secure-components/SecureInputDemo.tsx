@@ -30,8 +30,8 @@ import {
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useState } from 'react';
 
-import { useStoreActions, useStoreState } from '../../store';
-import { ApiResponse, UserResponse } from '../../types';
+import { useStoreState } from '../../store';
+import { ApiResponse } from '../../types';
 
 export const SecureInputDemo: React.FunctionComponent<{
   saveSsn: (ssnToken: string) => Promise<ApiResponse>;

@@ -26,19 +26,20 @@ export const SecureDownloadDemo: React.FunctionComponent<{
 }> = (props) => {
   const [error, setError] = useState<string | null>(null);
   const [documents, setDocuments] = useState<string[]>([]);
-
-  const loadDocuments = async () => {
-    const data = await props.loadDocuments();
-    if (!data.success) {
-      setError(JSON.stringify(data.error));
-      return;
-    }
-    setDocuments(data.documents);
-  };
+  const { loadDocuments } = props;
 
   useEffect(() => {
-    void loadDocuments(); // does this only once
-  }, []);
+    const loadDocumentsAction = async () => {
+      const data = await loadDocuments();
+      if (!data.success) {
+        setError(JSON.stringify(data.error));
+        return;
+      }
+      setDocuments(data.documents);
+    };
+
+    void loadDocumentsAction(); // does this only once
+  }, [loadDocuments]);
 
   function renderErrors() {
     if (error !== null) {

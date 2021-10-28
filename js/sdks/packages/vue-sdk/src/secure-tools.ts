@@ -14,8 +14,7 @@
  * limitations under the License.
  *
  */
-import { FrameMessageCreator, generateSecureNonce, getStyleInfo } from '@lunasec/browser-common';
-import { ReadElementStyle } from '@lunasec/browser-common';
+import { FrameMessageCreator, generateSecureNonce, getStyleInfo, ReadElementStyle } from '@lunasec/browser-common';
 import { inject, onMounted, Ref, ref } from 'vue';
 
 import { LunaSecConfigProviderAttrs } from './secure-components/LunaSec-Config-Provider';

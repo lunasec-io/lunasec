@@ -52,9 +52,6 @@ runDedicatedModeTests('graphql');
 function runDedicatedModeTests(mode: string) {
   describe(`demo app in mode: ${mode}`, function () {
     it('loads homepage', () => {
-      // This is necessary because otherwise Cypress won't actually log us out.
-      cy.clearCookie('connect.sid');
-      cy.reload();
       cy.visit(`/${mode}`);
     });
 
@@ -76,13 +73,13 @@ function runDedicatedModeTests(mode: string) {
     });
 
     it('secure input tokenizes', () => {
-      cy.get('a', { timeout: 10000 }).contains('SecureInput').click();
+      cy.get('a').contains('SecureInput').click();
 
-      cy.iframe().find('.secure-input').type(fakeSSN);
+      cy.iframe().find('.secure-input', { timeout: 20000 }).type(fakeSSN);
 
       cy.get('button[type=submit]').click();
 
-      cy.get('#success-alert').should('contain', 'Success');
+      cy.get('#success-alert', { timeout: 20000 }).should('contain', 'Success');
     });
 
     // Broken persistence test, would be nice to have
@@ -99,27 +96,29 @@ function runDedicatedModeTests(mode: string) {
     it('secure paragraph', () => {
       cy.get('a').contains('SecureParagraph').click();
 
-      cy.iframe().find('.secure-input').should('contain', fakeSSN);
+      cy.iframe().find('.secure-input', { timeout: 20000 }).should('contain', fakeSSN);
     });
 
     it('secure upload', () => {
       cy.get('a').contains('SecureUpload').click();
 
-      cy.iframe().find('input[type=file]').attachFile({ filePath: 'sid.png', fileName: randomFileName }); // Dont sue me bro
+      cy.iframe()
+        .find('input[type=file]', { timeout: 20000 })
+        .attachFile({ filePath: 'sid.png', fileName: randomFileName }); // Dont sue me bro
 
-      cy.iframe().find('.file-container').should('contain', randomFileName);
+      cy.iframe().find('.file-container', { timeout: 20000 }).should('contain', randomFileName);
 
       cy.wait(1000);
 
       cy.get('#save-documents').click();
 
-      cy.iframe().find('.filestatus').should('contain', 'Uploaded');
+      cy.iframe().find('.filestatus', { timeout: 20000 }).should('contain', 'Uploaded');
     });
 
     it('secure download', () => {
       cy.get('a').contains('SecureDownload').click();
 
-      const link = cy.iframe().find('a');
+      const link = cy.iframe().find('a', { timeout: 20000 });
 
       link.should('contain', randomFileName);
 
@@ -132,15 +131,17 @@ function runDedicatedModeTests(mode: string) {
     it('secure text area', () => {
       cy.get('a').contains('SecureTextArea').click();
 
-      cy.iframe('.lunasec-iframe-textarea').find('textarea').type('some secure text');
+      cy.iframe('.lunasec-iframe-textarea').find('textarea', { timeout: 20000 }).type('some secure text');
 
       cy.get('button').contains('Save').click();
 
-      cy.iframe('.lunasec-iframe-paragraph').find('p').should('contain', 'some secure text');
+      cy.iframe('.lunasec-iframe-paragraph').find('p', { timeout: 20000 }).should('contain', 'some secure text');
     });
 
     it('cleans up', () => {
-      cy.clearCookies();
+      // This is necessary because otherwise Cypress won't actually log us out.
+      cy.clearCookie('connect.sid');
+      cy.reload();
     });
   });
 }
