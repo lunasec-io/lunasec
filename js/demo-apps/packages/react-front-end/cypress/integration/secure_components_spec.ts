@@ -47,13 +47,12 @@ describe('setup', () => {
 
 // Both these app modes have an identical UX so we run the same set of tests twice, selecting a different mode at the start
 runDedicatedModeTests('express');
-// runDedicatedModeTests('express');
 runDedicatedModeTests('graphql');
 
 function runDedicatedModeTests(mode: string) {
   describe(`demo app in mode: ${mode}`, function () {
     it('loads homepage', () => {
-      cy.clearCookies();
+      // This is necessary because otherwise Cypress won't actually log us out.
       cy.clearCookie('connect.sid');
       cy.reload();
       cy.visit(`/${mode}`);
