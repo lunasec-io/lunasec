@@ -24,7 +24,11 @@ import path from 'path';
 
 import * as yargs from 'yargs';
 
-import { LunaSecStackDockerCompose, LunaSecStackEnvironments } from './docker-compose/lunasec-stack';
+import {
+  LunaSecStackConfigOptions,
+  LunaSecStackDockerCompose,
+  LunaSecStackEnvironments,
+} from './docker-compose/lunasec-stack';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
@@ -41,7 +45,7 @@ async function resolveURL(url: string): Promise<IncomingMessage> {
 
 async function checkURLStatus(url: string): Promise<boolean> {
   const resp = await resolveURL(url);
-  return resp.statusCode === 200;
+  return resp.statusCode === 200 || resp.statusCode === 404;
 }
 
 function timeout(delay: number) {
@@ -93,8 +97,8 @@ function runCommand(command: string, options: RunCommandOptions) {
 
     let attempts = 0;
     let healthy = false;
-    while (!healthy && attempts < 100) {
-      await timeout(500);
+    while (!healthy && attempts < 1000) {
+      await timeout(1000);
       attempts++;
       healthy = await options.healthcheck();
     }
@@ -112,6 +116,27 @@ function* onStdinDemo(data: string) {
     console.log(data);
   }
   yield;
+}
+
+function loadLunaSecStackConfig(): LunaSecStackConfigOptions | undefined {
+  let searchPath = process.cwd();
+  while (searchPath !== '/') {
+    const files = fs.readdirSync(searchPath);
+
+    const configFile = files.filter((f) => f === 'lunasec.js');
+    if (configFile.length !== 1) {
+      searchPath = path.join(searchPath, '../');
+      continue;
+    }
+
+    const configPath = path.join(searchPath, 'lunasec');
+    console.log(`Loaded LunaSec stack config: ${configPath}`);
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const config = require(configPath);
+    return config as LunaSecStackConfigOptions;
+  }
+  return undefined;
 }
 
 yargs
@@ -170,7 +195,9 @@ yargs
       }
       const env = foundEnv[0];
 
-      const stack = new LunaSecStackDockerCompose(env, version, args['local-build']);
+      const lunasecConfig = loadLunaSecStackConfig();
+
+      const stack = new LunaSecStackDockerCompose(env, version, args['local-build'], lunasecConfig);
 
       const useSudo = args['no-sudo'] ? '' : 'sudo ';
 
@@ -226,7 +253,7 @@ yargs
           try {
             const checks = await Promise.all([
               checkURLStatus('http://localhost:3000'),
-              checkURLStatus('http://localhost:37766/health'),
+              checkURLStatus('http://localhost:37766'),
             ]);
             return checks.every((c) => c);
           } catch (e) {
@@ -240,7 +267,7 @@ yargs
         streamStdout: true,
         healthcheck: async (): Promise<boolean> => {
           try {
-            return await checkURLStatus('http://localhost:37766/health');
+            return await checkURLStatus('http://localhost:37766');
           } catch (e) {
             return false;
           }
