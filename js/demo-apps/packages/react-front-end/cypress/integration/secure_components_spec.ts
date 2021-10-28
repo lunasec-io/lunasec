@@ -76,7 +76,7 @@ function runDedicatedModeTests(mode: string) {
     });
 
     it('secure input tokenizes', () => {
-      cy.get('a').contains('SecureInput').click();
+      cy.get('a', { timeout: 10000 }).contains('SecureInput').click();
 
       cy.iframe().find('.secure-input').type(fakeSSN);
 
