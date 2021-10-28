@@ -16,7 +16,7 @@
  */
 import { ApolloClient, createHttpLink, gql, InMemoryCache } from '@apollo/client';
 
-import { ApiResponse, Transport, UserDocumentsResponse, UserModel, UserResponse } from './types';
+import { ApiResponse, Transport, UserDocumentsResponse, UserResponse } from './types';
 
 const link = createHttpLink({
   uri: 'http://localhost:3002/graphql',

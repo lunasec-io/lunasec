@@ -18,7 +18,6 @@
 import { Action, Computed, Thunk } from 'easy-peasy';
 
 import { expressTransport } from './express-transport';
-import { graphQlTransport } from './graphql-transport';
 
 export interface UserModel {
   id: string;

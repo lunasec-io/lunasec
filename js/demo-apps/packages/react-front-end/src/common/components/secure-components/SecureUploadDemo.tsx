@@ -30,7 +30,7 @@ import {
 import React, { useEffect, useState } from 'react';
 
 import { useStoreActions } from '../../store';
-import { ApiResponse, Transport, UserDocumentsResponse } from '../../types';
+import { Transport } from '../../types';
 
 export const SecureUploadDemo: React.FunctionComponent<{
   transport: Transport;
@@ -55,7 +55,7 @@ export const SecureUploadDemo: React.FunctionComponent<{
     };
 
     void loadDocumentsAction();
-  }, [loadDocuments]);
+  }, [loadDocuments, props.transport]);
 
   const saveDocuments = async () => {
     const data = await uploadDocumentTokens({ transport: props.transport, documents });

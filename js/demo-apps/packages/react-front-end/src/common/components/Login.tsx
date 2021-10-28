@@ -19,7 +19,7 @@ import React, { FormEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useStoreActions } from '../store';
-import { Transport, UserResponse } from '../types';
+import { Transport } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
