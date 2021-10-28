@@ -20,7 +20,7 @@ import { StoreProvider } from 'easy-peasy';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { BrowserRouter, Redirect, Route, useLocation, useParams, useRouteMatch } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, useLocation } from 'react-router-dom';
 
 import { DedicatedPassportReactApp } from './common/App';
 import { Header } from './common/components/Header';
@@ -51,7 +51,7 @@ export const AppContainer: React.FunctionComponent = () => {
   const loadUser = useStoreActions((actions) => actions.loadUser);
   useEffect(() => {
     loadUser({ transport });
-  }, []);
+  }, [loadUser, transport]);
 
   return (
     <>

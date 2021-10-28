@@ -21,7 +21,7 @@ import React, { useEffect } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 
 import { useStoreActions, useStoreState } from '../store';
-import { Transport, UserResponse } from '../types';
+import { Transport } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,7 +48,7 @@ export const Header: React.FunctionComponent<{
 
   useEffect(() => {
     void loadUser({ transport: props.transport }); // Small hack to do this here but it makes sure the user is loaded whenever a page refreshes, ideally would happen in a dedicated component mounted in App
-  }, [loadUser]);
+  }, [loadUser, props.transport]);
 
   const showLoggedInStatus = () => {
     if (user) {
