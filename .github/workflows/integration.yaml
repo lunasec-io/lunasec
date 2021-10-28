@@ -36,17 +36,25 @@ jobs:
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
-
+    strategy:
+      matrix:
+        merge: ["true", "false"]
     steps:
 
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
 
-    # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
+    #      Cancel the merge copy of this build(see the matrix above) if we are not in a PR
+    - name: cancelling
+      uses: andymckay/cancel-action@0.2
+      if: matrix.merge == "true" && github.event_name != 'pull_request'
+
     - name: Merge target branch
       run: git merge origin/${{ github.event.pull_request.base.ref }}
-      if:  github.event_name == 'pull_request'
+      if: matrix.merge == "true"
+    # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
+
 
     - uses: actions/setup-node@v2
       with:
