@@ -73,7 +73,6 @@ function runDedicatedModeTests(mode: string) {
       cy.location('pathname').should('eq', `/${mode}/secureinput`);
       cy.get('p[id=user-status]').should('contain', 'Logged in');
 
-      cy.reload();
       cy.wait(10000);
     });
 
