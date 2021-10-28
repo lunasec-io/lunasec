@@ -29,21 +29,24 @@ import {
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 
-import { ApiResponse, UserDocumentsResponse } from '../../types';
+import { useStoreActions } from '../../store';
+import { ApiResponse, Transport, UserDocumentsResponse } from '../../types';
 
 export const SecureUploadDemo: React.FunctionComponent<{
-  loadDocuments: () => Promise<UserDocumentsResponse>;
-  uploadDocumentTokens: (documents: string[]) => Promise<ApiResponse>;
+  transport: Transport;
 }> = (props) => {
   const [error, setError] = useState<string | null>(null);
   const [saveSuccessful, setSaveSuccessful] = useState<boolean | null>(null);
   const [documents, setDocuments] = useState<string[]>([]);
-  const { loadDocuments } = props;
+  const [loadDocuments, uploadDocumentTokens] = useStoreActions((actions) => [
+    actions.loadDocuments,
+    actions.uploadDocumentTokens,
+  ]);
 
   useEffect(() => {
     // TODO: Move this into the Router
     const loadDocumentsAction = async () => {
-      const data = await loadDocuments();
+      const data = await loadDocuments({ transport: props.transport });
       if (data.success) {
         setDocuments(data.documents);
         return;
@@ -55,7 +58,7 @@ export const SecureUploadDemo: React.FunctionComponent<{
   }, [loadDocuments]);
 
   const saveDocuments = async () => {
-    const data = await props.uploadDocumentTokens(documents);
+    const data = await uploadDocumentTokens({ transport: props.transport, documents });
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;
@@ -127,12 +130,4 @@ export const SecureUploadDemo: React.FunctionComponent<{
       </Card>
     </Grid>
   );
-};
-
-export const Upload: React.FunctionComponent<{
-  loadDocuments: () => Promise<UserDocumentsResponse>;
-  uploadDocumentTokens: (documents: string[]) => Promise<ApiResponse>;
-}> = (props) => {
-  // const [authError, setAuthError] = useState<string>('');
-  return <SecureUploadDemo {...props} />;
 };

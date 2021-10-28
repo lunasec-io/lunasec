@@ -18,7 +18,8 @@ import { Button, FormControl, FormHelperText, FormLabel, makeStyles, Paper, Text
 import React, { FormEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { UserResponse } from '../types';
+import { useStoreActions } from '../store';
+import { Transport, UserResponse } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Login: React.FunctionComponent<{
-  login: (params: { username: string; password: string }) => Promise<UserResponse>;
+  transport: Transport;
 }> = (props) => {
   const classes = useStyles({});
 
@@ -43,10 +44,10 @@ export const Login: React.FunctionComponent<{
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  const loginThunk = useStoreActions((actions) => actions.login);
   const login = async (e: FormEvent) => {
     e.preventDefault();
-    const data = await props.login({ username, password });
+    const data = await loginThunk({ transport: props.transport, username, password });
     if (!data.success) {
       setError(data.error);
       return;
