@@ -20,7 +20,8 @@ import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import React, { useEffect } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 
-import { useStoreActions, useStoreState } from '../store';
+import { useStoreState } from '../store';
+import { UserResponse } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,13 +39,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 // TODO: De-dupe this code with the other header
-export const Header: React.FunctionComponent = () => {
+export const Header: React.FunctionComponent<{
+  loadUser: () => Promise<UserResponse>;
+}> = (props) => {
   const classes = useStyles({});
   const user = useStoreState((state) => state.user);
 
-  const loadUser = useStoreActions((actions) => actions.loadUser);
   useEffect(() => {
-    loadUser(); // Small hack to do this here but it makes sure the user is loaded whenever a page refreshes, ideally would happen in a dedicated component mounted in App
+    void props.loadUser(); // Small hack to do this here but it makes sure the user is loaded whenever a page refreshes, ideally would happen in a dedicated component mounted in App
   }, []);
 
   const showLoggedInStatus = () => {

@@ -47,27 +47,32 @@ describe('setup', () => {
 
 // Both these app modes have an identical UX so we run the same set of tests twice, selecting a different mode at the start
 runDedicatedModeTests('express');
+// runDedicatedModeTests('express');
 runDedicatedModeTests('graphql');
 
 function runDedicatedModeTests(mode: string) {
   describe(`demo app in mode: ${mode}`, function () {
     it('loads homepage', () => {
-      cy.visit('/');
+      cy.clearCookies();
+      cy.clearCookie('connect.sid');
+      cy.reload();
+      cy.visit(`/${mode}`);
     });
 
     it('selects mode', () => {
       cy.get(`#select-mode-${mode}`).click();
+      cy.log('element', cy.get(`#select-mode-${mode}`));
     });
 
     it('signs up', () => {
       cy.get('a').contains('Signup').click();
-      cy.get('input[id=username]').type(randomUserName); // Use a random username to avoid DB collisions
+      cy.get('input[id=username]').type(`${mode}-${randomUserName}`); // Use a random username to avoid DB collisions
 
       cy.get('input[id=password]').type('test');
 
       cy.get('form[id=signup-form]').submit();
 
-      cy.location('pathname').should('eq', '/');
+      cy.location('pathname').should('eq', `/${mode}/secureinput`);
       cy.get('p[id=user-status]').should('contain', 'Logged in');
     });
 

@@ -19,16 +19,16 @@ import { Card, CardContent, CardHeader, Divider, Grid, Typography } from '@mater
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 
-import { useStoreActions } from '../../store';
+import { UserDocumentsResponse } from '../../types';
 
-export const SecureDownloadDemo: React.FunctionComponent = () => {
+export const SecureDownloadDemo: React.FunctionComponent<{
+  loadDocuments: () => Promise<UserDocumentsResponse>;
+}> = (props) => {
   const [error, setError] = useState<string | null>(null);
   const [documents, setDocuments] = useState<string[]>([]);
 
-  const loadDocumentsThunk = useStoreActions((actions) => actions.loadDocuments);
-
   const loadDocuments = async () => {
-    const data = await loadDocumentsThunk();
+    const data = await props.loadDocuments();
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;

@@ -26,6 +26,8 @@ import { SecureInputDemo } from './components/secure-components/SecureInputDemo'
 import { SecureParagraphDemo } from './components/secure-components/SecureParagraphDemo';
 import { SecureTextAreaDemo } from './components/secure-components/SecureTextAreaDemo';
 import { SecureUploadDemo } from './components/secure-components/SecureUploadDemo';
+import { getActionsForMode } from './mode-actions';
+import { useStoreActions } from './store';
 
 interface DedicatedPassportReactAppProps {
   sessionAuthProvider: string;
@@ -43,10 +45,17 @@ const componentLookup = {
 
 const RenderDemoComponent: React.FunctionComponent = () => {
   const { component } = useParams<{ component: keyof typeof componentLookup }>();
+  const match = useRouteMatch<{ mode: string }>(`/:mode`);
+
+  const isGraphQlMode = match && match.params.mode;
+  const actions = getActionsForMode(
+    isGraphQlMode ? 'graphql' : 'express',
+    useStoreActions((a) => a)
+  );
 
   const DemoComponent = componentLookup[component];
 
-  return <DemoComponent />;
+  return <DemoComponent {...actions} />;
 };
 
 export const DedicatedPassportReactApp = (props: DedicatedPassportReactAppProps) => {

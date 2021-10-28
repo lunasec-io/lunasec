@@ -30,21 +30,23 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useState } from 'react';
 
 import { useStoreActions, useStoreState } from '../../store';
+import { ApiResponse, UserResponse } from '../../types';
 
-export const SecureInputDemo: React.FunctionComponent = () => {
+export const SecureInputDemo: React.FunctionComponent<{
+  saveSsn: (ssnToken: string) => Promise<ApiResponse>;
+}> = (props) => {
   const [showSaveSuccessful, setShowSaveSuccessful] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [ssnToken, setSsnToken] = useState<string | null>(null);
   const [ssnValid, setSsnValid] = useState<boolean>(true);
 
   const user = useStoreState((state) => state.user);
-  const saveSsnThunk = useStoreActions((actions) => actions.saveSsn);
   const uploadFormData = async () => {
     if (ssnToken === null) {
       setError('Please enter a social security number');
       return;
     }
-    const data = await saveSsnThunk(ssnToken);
+    const data = await props.saveSsn(ssnToken);
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;

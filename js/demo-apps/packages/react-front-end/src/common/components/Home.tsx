@@ -57,7 +57,7 @@ export const Home: React.FunctionComponent = () => {
         <CardHeader title="Getting Started" />
         <Divider />
         <CardContent>
-          <Typography>
+          <Typography component="div">
             Before trying the LunaSec Secure Elements, you must first login to the site by using the links on the left.
             A test user has been created for you to login with.
             <h4>Login Credentials:</h4>
@@ -80,7 +80,7 @@ export const Home: React.FunctionComponent = () => {
               LunaSec into your stack.
             </p>
             <Divider />
-            <p>
+            <div>
               <h4>See LunaSec in Action</h4>
               <p>
                 LunaSec elements are designed to look like normal elements. You will need to dig deeper to see it
@@ -108,7 +108,7 @@ export const Home: React.FunctionComponent = () => {
                   page should not reveal any sensitive data from the secure fields.
                 </li>
               </ul>
-            </p>
+            </div>
           </Typography>
         </CardContent>
       </Card>
@@ -117,7 +117,7 @@ export const Home: React.FunctionComponent = () => {
         <CardHeader title="Resources" />
         <Divider />
         <CardContent>
-          <Typography>
+          <Typography component="div">
             <Box mt={-2}>
               <h3>Documentation Links</h3>
             </Box>
