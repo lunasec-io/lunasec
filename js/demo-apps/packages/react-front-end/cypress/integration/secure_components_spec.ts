@@ -57,7 +57,6 @@ function runDedicatedModeTests(mode: string) {
 
     it('selects mode', () => {
       cy.get(`#select-mode-${mode}`).click();
-      cy.log('element', cy.get(`#select-mode-${mode}`));
     });
 
     it('signs up', () => {
@@ -67,9 +66,13 @@ function runDedicatedModeTests(mode: string) {
       cy.get('input[id=password]').type('test');
 
       cy.get('form[id=signup-form]').submit();
+      cy.wait(5000);
 
       cy.location('pathname').should('eq', `/${mode}/secureinput`);
       cy.get('p[id=user-status]').should('contain', 'Logged in');
+
+      cy.reload();
+      cy.wait(10000);
     });
 
     it('secure input tokenizes', () => {
