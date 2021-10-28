@@ -130,7 +130,7 @@ function loadLunaSecStackConfig(): LunaSecStackConfigOptions | undefined {
     }
 
     const configPath = path.join(searchPath, 'lunasec');
-    console.log(`Loaded LunaSec stack config: ${configPath}`);
+    console.log(`Loaded LunaSec stack config: ${configPath}.js`);
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const config = require(configPath);

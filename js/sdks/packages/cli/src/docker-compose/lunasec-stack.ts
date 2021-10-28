@@ -102,6 +102,10 @@ export class LunaSecStackDockerCompose {
       ...devConfigOptionsDefaults,
       ...stackConfigOptions,
     };
+
+    if (this.stackConfigOptions.sessionJWKSURL === '') {
+      this.stackConfigOptions.sessionJWKSURL = `${this.stackConfigOptions.applicationBackEnd}/.lunasec/jwks.json`;
+    }
   }
 
   dockerImage(name: string) {
