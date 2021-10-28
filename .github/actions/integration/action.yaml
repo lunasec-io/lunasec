@@ -1,0 +1,10 @@
+#
+#name: Integration Tests
+#description: Runs Integration tests
+#inputs:
+#  merge:  # id of input
+#    description: 'Should attempt to merge target PR branch or not'
+#    required: false
+#    default: 'false'
+#
+#runs: composite
