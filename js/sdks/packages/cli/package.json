@@ -32,7 +32,19 @@
     "import-local": "^3.0.3",
     "js-yaml": "^4.1.0",
     "progress": "^2.0.3",
-    "yargs": "^17.2.1"
+    "yargs": "^17.2.1",
+    "@aws-cdk/core": "^1.129.0",
+    "@aws-cdk/aws-apigateway": "^1.129.0",
+    "@aws-cdk/aws-cloudfront": "^1.129.0",
+    "@aws-cdk/aws-dynamodb": "^1.129.0",
+    "@aws-cdk/aws-ecr": "^1.129.0",
+    "@aws-cdk/aws-events": "^1.129.0",
+    "@aws-cdk/aws-events-targets": "^1.129.0",
+    "@aws-cdk/aws-iam": "^1.129.0",
+    "@aws-cdk/aws-lambda": "^1.129.0",
+    "@aws-cdk/aws-s3": "^1.129.0",
+    "@aws-cdk/aws-s3-deployment": "^1.129.0",
+    "@aws-cdk/aws-secretsmanager": "^1.129.0"
   },
   "peerDependencies": {
     "aws-cdk": "^1.126.0",
