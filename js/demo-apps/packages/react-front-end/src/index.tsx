@@ -20,12 +20,13 @@ import { StoreProvider } from 'easy-peasy';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { BrowserRouter, Redirect, Route } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, useLocation, useParams, useRouteMatch } from 'react-router-dom';
 
 import { DedicatedPassportReactApp } from './common/App';
 import { Header } from './common/components/Header';
 import { SideMenu } from './common/components/SideMenu';
-import { getStore, useStoreActions } from './common/store';
+import { getTransport, store, useStoreActions } from './common/store';
+import { Mode } from './common/types';
 import { SimpleApp } from './simple-tokenizer/App';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,48 +42,37 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const modeLookup: Record<string, 'dedicated' | 'simple' | undefined> = {
-  express: 'dedicated',
-  graphql: 'dedicated',
-  simple: 'simple',
-} as const;
-
 export const AppContainer: React.FunctionComponent = () => {
   const classes = useStyles({});
+  const location = useLocation();
+  const mode = location.pathname.split('/')[1] as Mode; //todo: make this work with react router instead..
+  const transport = getTransport(mode);
 
   const loadUser = useStoreActions((actions) => actions.loadUser);
   useEffect(() => {
-    loadUser(); // Small hack to do this here but it makes sure the user is loaded whenever a page refreshes
-  }, [loadUser]);
+    loadUser({ transport });
+  }, []);
 
   return (
-    <BrowserRouter>
+    <>
       <Route exact path="/">
         <Redirect to="/express" />
       </Route>
       <Route
         path="/:mode"
-        render={(routeProps) => {
-          const pathMode = routeProps.match && routeProps.match.params.mode;
-
-          const mode = modeLookup[pathMode];
-
-          if (mode && mode !== 'simple' && mode !== 'dedicated') {
-            throw new Error('Unknown mode for operation. Must be "simple" or "dedicated"');
-          }
-
+        render={() => {
           return (
             <div className={classes.root}>
               <CssBaseline />
-              <Header loadUser={loadUser} />
+              <Header transport={transport} />
               <SideMenu mode={mode} />
               <main className={classes.main}>
                 <div className={classes.toolbar} />
                 <Route path="/express">
-                  <DedicatedPassportReactApp sessionAuthProvider="express-back-end" />
+                  <DedicatedPassportReactApp sessionAuthProvider="express-back-end" transport={transport} />
                 </Route>
                 <Route path="/graphql">
-                  <DedicatedPassportReactApp sessionAuthProvider="graphql-back-end" />
+                  <DedicatedPassportReactApp sessionAuthProvider="graphql-back-end" transport={transport} />
                 </Route>
                 <Route path="/simple">
                   <SimpleApp />
@@ -92,15 +82,16 @@ export const AppContainer: React.FunctionComponent = () => {
           );
         }}
       />
-    </BrowserRouter>
+    </>
   );
 };
 
 ReactDOM.render(
   <React.StrictMode>
-    <StoreProvider store={getStore()}>
-      {/*programmatically change which app comes up based on the page hash*/}
-      <AppContainer />
+    <StoreProvider store={store}>
+      <BrowserRouter>
+        <AppContainer />
+      </BrowserRouter>
     </StoreProvider>
   </React.StrictMode>,
   document.getElementById('root')
