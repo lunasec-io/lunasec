@@ -42,6 +42,8 @@ function logRequests() {
 describe('setup', () => {
   it('loads homepage', () => {
     cy.visit('/');
+    // Wait for the backend to fully spin up
+    cy.wait(60000 * 3);
   });
 });
 
