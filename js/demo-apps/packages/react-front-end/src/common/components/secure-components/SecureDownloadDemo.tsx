@@ -41,7 +41,7 @@ export const SecureDownloadDemo: React.FunctionComponent<{
     };
 
     void loadDocumentsAction(); // does this only once
-  }, [loadDocuments]);
+  }, [loadDocuments, props.transport]);
 
   function renderErrors() {
     if (error !== null) {
