@@ -1,6 +1,6 @@
 {
   "name": "@lunasec/cli",
-  "version": "0.0.1-alpha.27",
+  "version": "1.0.2",
   "description": "a wrapper around the LunaSec CLI enabling it to be used as an NPM package",
   "license": "MIT",
   "keywords": [

@@ -66,6 +66,12 @@ yargs
         default: false,
         description: 'Log all actions performed by the CLI.',
       },
+      'show-logs': {
+        type: 'boolean',
+        required: false,
+        default: false,
+        description: 'Show the logs from a previous run of the LunaSec stack for the specified environment.',
+      },
     },
     (args) => {
       if (args['force-rebuild'] && !args['local-build']) {
@@ -107,9 +113,16 @@ yargs
 
       const directory = `--project-directory ${composePath}`;
 
+      const baseDockerComposeCmd = `${useSudo} ${envOverride} docker-compose -f ${composeFile} ${directory}`;
+
+      if (args['show-logs']) {
+        runCommand(`${baseDockerComposeCmd} logs`, true);
+        process.exit(0);
+      }
+
       const forceRebuild = args['force-rebuild'] ? '--build' : '';
 
-      const baseCmd = `${useSudo} ${envOverride} docker-compose -f ${composeFile} ${directory} up ${forceRebuild}`;
+      const baseCmd = `${baseDockerComposeCmd} up ${forceRebuild}`;
 
       const shouldStreamStdio = env !== 'demo' || args['verbose'];
 

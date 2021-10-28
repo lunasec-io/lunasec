@@ -1,7 +1,7 @@
 {
   "name": "@lunasec/browser-common",
   "private": false,
-  "version": "0.0.1-alpha.27",
+  "version": "1.0.2",
   "description": "Base lunasec package",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -26,6 +26,6 @@
   },
   "gitHead": "d0cb89ff028ea0c24cdfa0225874a838006b8c89",
   "dependencies": {
-    "@lunasec/isomorphic-common": "^0.0.1-alpha.27"
+    "@lunasec/isomorphic-common": "^1.0.2"
   }
 }

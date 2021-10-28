@@ -15,7 +15,18 @@
  *
  */
 import { SecureForm, SecureInput } from '@lunasec/react-sdk';
-import { Box, Button, Card, CardContent, CardHeader, FormGroup, FormLabel, Grid, TextField } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  FormGroup,
+  FormLabel,
+  Grid,
+  TextField,
+} from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useState } from 'react';
 
@@ -116,8 +127,22 @@ export const SecureInputDemo: React.FunctionComponent = () => {
   return (
     <Grid item xs={12}>
       <Card>
-        <CardHeader title={`User: ${user.username}`} />
+        <CardHeader title={'Secure Input Demo'} />
         <CardContent>
+          <p>
+            The below input element has been secured with LunaSec. Right click and inspect it to see that it is actually
+            inside of an iFrame. A hacker would be unable to read the text even if they were able to embed malicious
+            JavaScript into this page.
+          </p>
+          <p>
+            To see how to set up your own Secure Input,{' '}
+            <a href={'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-text/'}>
+              see here
+            </a>
+            .
+          </p>
+          <Divider />
+          <br />
           {renderSuccessMessage()}
           {renderErrors()}
           <SecureForm name="secure-form-example" onSubmit={(e) => handleFormSubmit(e)}>

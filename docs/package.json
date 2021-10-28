@@ -1,6 +1,6 @@
 {
   "name": "docs",
-  "version": "0.0.1-alpha.27",
+  "version": "1.0.2",
   "private": true,
   "license": "CC-BY-SA-4.0",
   "scripts": {
@@ -12,7 +12,6 @@
     "swizzle": "docusaurus swizzle",
     "deploy": "yarn run openapi:generate &&  docusaurus deploy",
     "clear": "docusaurus clear",
-    "serve": "yarn run openapi:generate && yarn build && docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "openapi:generate": "redoc-cli bundle ../api-spec/schema/full-tokenizer.yaml --output static/tokenizer-api-spec-static/index.html"
