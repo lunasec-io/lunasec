@@ -18,7 +18,8 @@ import { Button, FormControl, FormHelperText, FormLabel, makeStyles, Paper, Text
 import React, { FormEvent, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 
-import { UserResponse } from '../types';
+import { useStoreActions } from '../store';
+import { Transport } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -30,20 +31,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Signup: React.FunctionComponent<{
-  signup: (params: { username: string; password: string }) => Promise<UserResponse>;
+  transport: Transport;
 }> = (props) => {
   const classes = useStyles({});
   const history = useHistory();
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  const signupThunk = useStoreActions((actions) => actions.signup);
   const match = useRouteMatch<{ mode: string }>(`/:mode`);
 
   const signup = async (e: FormEvent) => {
     e.preventDefault();
-    const data = await props.signup({ username, password });
-    // const data = await signupThunk({ username, password });
+    const data = await signupThunk({ transport: props.transport, username, password });
     if (!data.success) {
       setError(data.error);
       return;
