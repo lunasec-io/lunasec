@@ -16,17 +16,103 @@
  *
  */
 
+import { spawn } from 'child_process';
 import fs from 'fs';
+import { get, IncomingMessage } from 'http';
 import os from 'os';
 import path from 'path';
 
 import * as yargs from 'yargs';
 
 import { LunaSecStackDockerCompose, LunaSecStackEnvironments } from './docker-compose/lunasec-stack';
-import { runCommand } from './utils/exec';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
+
+async function resolveURL(url: string): Promise<IncomingMessage> {
+  return new Promise((resolve, reject) => {
+    get(url, (res) => {
+      resolve(res);
+    }).on('error', function (e) {
+      reject(e);
+    });
+  });
+}
+
+async function checkURLStatus(url: string): Promise<boolean> {
+  const resp = await resolveURL(url);
+  return resp.statusCode === 200;
+}
+
+function timeout(delay: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, delay);
+  });
+}
+
+interface RunCommandOptions {
+  healthcheck?: () => Promise<boolean>;
+  streamStdout?: boolean;
+  onStdin?: Generator<undefined, void, string>;
+}
+
+function runCommand(command: string, options: RunCommandOptions) {
+  const cmd = spawn('sh', ['-c', command]);
+
+  cmd.stdout.on('data', (data: Buffer) => {
+    const strData = data.toString();
+    if (options.streamStdout) {
+      console.log(strData);
+    }
+
+    if (options.onStdin) {
+      options.onStdin.next(strData);
+    }
+  });
+
+  cmd.stderr.on('data', (data: string) => {
+    console.error(data.toString());
+  });
+
+  cmd.on('close', (code) => {
+    if (code !== null) {
+      process.exit(code);
+    }
+    process.exit(0);
+  });
+
+  process.on('SIGINT', function () {
+    cmd.kill('SIGINT');
+  });
+
+  async function waitForAppToBeReady() {
+    if (options.healthcheck === undefined) {
+      // no healthcheck is defined, assume the app is healthy
+      return;
+    }
+
+    let attempts = 0;
+    let healthy = false;
+    while (!healthy && attempts < 100) {
+      await timeout(500);
+      attempts++;
+      healthy = await options.healthcheck();
+    }
+
+    if (!healthy) {
+      throw new Error(`command did not arrive at healthy state: ${command}`);
+    }
+  }
+
+  return waitForAppToBeReady();
+}
+
+function* onStdinDemo(data: string) {
+  if (data.includes('Starting lunasec_', 0)) {
+    console.log(data);
+  }
+  yield;
+}
 
 yargs
   .scriptName('lunasec')
@@ -73,7 +159,7 @@ yargs
         description: 'Show the logs from a previous run of the LunaSec stack for the specified environment.',
       },
     },
-    (args) => {
+    async (args) => {
       if (args['force-rebuild'] && !args['local-build']) {
         throw new Error('Attempted to force a rebuild without specifying `--local-build`.');
       }
@@ -97,8 +183,7 @@ yargs
         fs.mkdirSync(composePath);
       }
 
-      // if we are not in demo mode or in dev but not building locally, then write to the current directory
-      if (!(env === 'demo' || (env === 'dev' && !args['local-build']))) {
+      if (env === 'tests' || args['local-build']) {
         composePath = process.cwd();
       }
 
@@ -116,45 +201,71 @@ yargs
       const baseDockerComposeCmd = `${useSudo} ${envOverride} docker-compose -f ${composeFile} ${directory}`;
 
       if (args['show-logs']) {
-        runCommand(`${baseDockerComposeCmd} logs`, true);
-        process.exit(0);
+        await runCommand(`${baseDockerComposeCmd} logs`, {
+          streamStdout: true,
+        });
       }
 
       const forceRebuild = args['force-rebuild'] ? '--build' : '';
 
-      const baseCmd = `${baseDockerComposeCmd} up ${forceRebuild}`;
+      const dockerComposeUpCmd = `${baseDockerComposeCmd} up ${forceRebuild}`;
 
       const shouldStreamStdio = env !== 'demo' || args['verbose'];
 
       if (env === 'tests') {
         // TODO (cthompson) this is a hack for now, we probably want to find a better way of building this command
-        const output = runCommand(
-          `${baseCmd} --force-recreate --exit-code-from integration-test integration-test`,
-          shouldStreamStdio
-        );
-        console.log(output);
-        process.exit(output.status);
+        void runCommand(`${dockerComposeUpCmd} --force-recreate --exit-code-from integration-test integration-test`, {
+          streamStdout: true,
+        });
+        return;
       }
+
+      const demoOptions: RunCommandOptions = {
+        streamStdout: shouldStreamStdio,
+        healthcheck: async (): Promise<boolean> => {
+          try {
+            const checks = await Promise.all([
+              checkURLStatus('http://localhost:3000'),
+              checkURLStatus('http://localhost:37766/health'),
+            ]);
+            return checks.every((c) => c);
+          } catch (e) {
+            return false;
+          }
+        },
+        onStdin: onStdinDemo(''),
+      };
+
+      const devOptions: RunCommandOptions = {
+        streamStdout: true,
+        healthcheck: async (): Promise<boolean> => {
+          try {
+            return await checkURLStatus('http://localhost:37766/health');
+          } catch (e) {
+            return false;
+          }
+        },
+      };
+
+      const localBuildOptions: RunCommandOptions = {
+        streamStdout: true,
+      };
+
+      const options = args['local-build'] ? localBuildOptions : env === 'demo' ? demoOptions : devOptions;
 
       if (env === 'demo') {
-        console.log('Starting the LunaSec Stack demo at http://localstack:3000...');
+        console.log('Starting the LunaSec Stack demo...');
       } else if (env === 'dev') {
-        console.log(
-          'Starting the LunaSec Stack in dev mode. Tokenizer Backend will be accessible at http://localhost:37766.'
-        );
+        console.log('Starting the LunaSec Stack in dev mode...');
       }
 
-      const output = runCommand(baseCmd, shouldStreamStdio);
-      if (env === 'demo' || output.status !== 0) {
-        if (output.stdout !== undefined && output.stdout !== null) {
-          console.log(output.stdout.toString());
-        }
+      await runCommand(dockerComposeUpCmd, options);
 
-        if (output.stderr !== undefined && output.stderr !== null) {
-          console.log(output.stderr.toString());
-        }
+      if (env === 'demo') {
+        console.log('LunaSec Stack demo started at http://localhost:3000.');
+      } else if (env === 'dev') {
+        console.log('Tokenizer Backend is accessible at http://localhost:37766.');
       }
-      process.exit(output.status);
     }
   )
   .command(
@@ -182,9 +293,11 @@ yargs
         description: 'Path to where the resources output file will be written to.',
       },
     },
-    () => {
+    async () => {
       const args = process.argv.slice(2, process.argv.length);
-      runCommand(`${path.join(__dirname, '../bin/lunasec')} ${args.join(' ')}`);
+      await runCommand(`${path.join(__dirname, '../bin/lunasec')} ${args.join(' ')}`, {
+        streamStdout: true,
+      });
     }
   )
   .demandCommand()
