@@ -50,9 +50,12 @@ jobs:
 #      uses: andymckay/cancel-action@0.2
 #      if: matrix.merge == "true" && github.event_name != 'pull_request'
 
+    - name: Yell about matrix
+      run: echo "THE MATRIX IS READING ${{matrix.merge}}"
+
     - name: Merge target branch
       run: git merge origin/${{ github.event.pull_request.base.ref }}
-      if: ${{ matrix.merge == "merged" }}
+#      if: ${{ matrix.merge == "merged" }}
     # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
 
 
