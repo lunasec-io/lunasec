@@ -37,11 +37,9 @@ jobs:
         with:
           fetch-depth: 0
 
-
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
-      #TODO matrix this node version as well
 
       # Speed up builds by caching node_modules
       - uses: actions/cache@v2
