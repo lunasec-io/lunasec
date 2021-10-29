@@ -52,7 +52,7 @@ runDedicatedModeTests('graphql');
 function runDedicatedModeTests(mode: string) {
   describe(`demo app in mode: ${mode}`, function () {
     it('loads homepage', () => {
-      cy.visit('/');
+      cy.visit(`/${mode}`);
     });
 
     it('selects mode', () => {
@@ -61,13 +61,15 @@ function runDedicatedModeTests(mode: string) {
 
     it('signs up', () => {
       cy.get('a').contains('Signup').click();
-      cy.get('input[id=username]').type(randomUserName); // Use a random username to avoid DB collisions
+      cy.get('input[id=username]').type(`${mode}-${randomUserName}`); // Use a random username to avoid DB collisions
 
       cy.get('input[id=password]').type('test');
 
       cy.get('form[id=signup-form]').submit();
 
-      cy.location('pathname').should('eq', '/');
+      cy.wait(200);
+
+      cy.location('pathname').should('eq', `/${mode}/secureinput`);
       cy.get('p[id=user-status]').should('contain', 'Logged in');
     });
 
@@ -136,7 +138,9 @@ function runDedicatedModeTests(mode: string) {
     });
 
     it('cleans up', () => {
-      cy.clearCookies();
+      // This is necessary because otherwise Cypress won't actually log us out.
+      cy.clearCookie('connect.sid');
+      cy.reload();
     });
   });
 }

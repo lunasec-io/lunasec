@@ -20,25 +20,28 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 
 import { useStoreActions } from '../../store';
+import { Transport } from '../../types';
 
-export const SecureDownloadDemo: React.FunctionComponent = () => {
+export const SecureDownloadDemo: React.FunctionComponent<{
+  transport: Transport;
+}> = (props) => {
   const [error, setError] = useState<string | null>(null);
   const [documents, setDocuments] = useState<string[]>([]);
 
-  const loadDocumentsThunk = useStoreActions((actions) => actions.loadDocuments);
-
-  const loadDocuments = async () => {
-    const data = await loadDocumentsThunk();
-    if (!data.success) {
-      setError(JSON.stringify(data.error));
-      return;
-    }
-    setDocuments(data.documents);
-  };
+  const loadDocuments = useStoreActions((actions) => actions.loadDocuments);
 
   useEffect(() => {
-    void loadDocuments(); // does this only once
-  }, []);
+    const loadDocumentsAction = async () => {
+      const data = await loadDocuments({ transport: props.transport });
+      if (!data.success) {
+        setError(JSON.stringify(data.error));
+        return;
+      }
+      setDocuments(data.documents);
+    };
+
+    void loadDocumentsAction(); // does this only once
+  }, [loadDocuments, props.transport]);
 
   function renderErrors() {
     if (error !== null) {
