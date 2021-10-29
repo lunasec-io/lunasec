@@ -62,6 +62,7 @@ export async function setupDedicatedPassPortExpressApp() {
     })
   );
   app.use(passport.initialize());
+  app.use(passport.session());
   app.use(passport.authenticate('session'));
 
   app.use('/user', userRouter(models));

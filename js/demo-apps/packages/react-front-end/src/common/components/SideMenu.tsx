@@ -22,13 +22,15 @@ import {
   FormatTextdirectionLToR,
   GetApp,
   Home,
+  Lock,
   LockOpen,
   VpnKey,
 } from '@material-ui/icons';
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { match, NavLink, useRouteMatch } from 'react-router-dom';
 
 import { useStoreState } from '../store';
+import { Mode } from '../types';
 
 const drawerWidth = 240;
 
@@ -45,66 +47,80 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function renderLoginSignupLinks() {
+const RenderLoginSignupLinks: React.FunctionComponent<{ loggedIn: boolean; mode: Mode }> = (props) => {
+  const { url } = useRouteMatch();
+  const match = useRouteMatch(`${url}/:component`);
+
+  if (props.mode === 'simple') {
+    return null;
+  }
+
+  if (props.loggedIn) {
+    return null;
+  }
+
   return (
     <>
-      <ListItem button component={NavLink} to={{ pathname: '/signup', hash: window.location.hash }}>
-        <ListItemIcon>
-          <VpnKey />
-        </ListItemIcon>
-        <ListItemText primary="Signup" />
-      </ListItem>
-      <ListItem button component={NavLink} to={{ pathname: '/login', hash: window.location.hash }}>
-        <ListItemIcon>
-          <LockOpen />
-        </ListItemIcon>
-        <ListItemText primary="Login" />
-      </ListItem>
+      {renderListItem(<VpnKey />, `${url}/signup`, 'Signup', match)}
+      {renderListItem(<LockOpen />, `${url}/login`, 'Login', match)}
     </>
+  );
+};
+
+function renderListItem<T>(icon: JSX.Element, page: string, text: string, routeMatch: match<T> | null) {
+  const selected = routeMatch && routeMatch.url === page;
+
+  return (
+    <ListItem button component={NavLink} to={page} selected={selected || false}>
+      <ListItemIcon>{icon}</ListItemIcon>
+      <ListItemText primary={text} />
+    </ListItem>
   );
 }
 
-function renderSecureComponentLinks() {
+const RenderSecureComponentLinks: React.FunctionComponent<{
+  loggedIn: boolean;
+  mode: Mode;
+}> = (props) => {
+  const { url } = useRouteMatch();
+  const match = useRouteMatch(`${url}/:component`);
+
+  if (props.mode === 'simple') {
+    return (
+      <>
+        {renderListItem(<Lock />, `${url}/tokenize`, 'Tokenize', match)}
+        {renderListItem(<LockOpen />, `${url}/detokenize`, 'Detokenize', match)}
+      </>
+    );
+  }
+
+  if (!props.loggedIn) {
+    return null;
+  }
+
   return (
     <>
-      <ListItem button component={NavLink} to={{ pathname: '/secureinput', hash: window.location.hash }}>
-        <ListItemIcon>
-          <ChatBubbleOutline />
-        </ListItemIcon>
-        <ListItemText primary="SecureInput" />
-      </ListItem>
-      <ListItem button component={NavLink} to={{ pathname: '/secureparagraph', hash: window.location.hash }}>
-        <ListItemIcon>
-          <FormatTextdirectionLToR />
-        </ListItemIcon>
-        <ListItemText primary="SecureParagraph" />
-      </ListItem>
-      <ListItem button component={NavLink} to={{ pathname: '/secureupload', hash: window.location.hash }}>
-        <ListItemIcon>
-          <CloudUpload />
-        </ListItemIcon>
-        <ListItemText primary="SecureUpload" />
-      </ListItem>
-
-      <ListItem button component={NavLink} to={{ pathname: '/securedownload', hash: window.location.hash }}>
-        <ListItemIcon>
-          <GetApp />
-        </ListItemIcon>
-        <ListItemText primary="SecureDownload" />
-      </ListItem>
-      <ListItem button component={NavLink} to={{ pathname: '/securetextarea', hash: window.location.hash }}>
-        <ListItemIcon>
-          <GetApp />
-        </ListItemIcon>
-        <ListItemText primary="SecureTextArea" />
-      </ListItem>
+      {renderListItem(<ChatBubbleOutline />, `${url}/secureinput`, 'SecureInput', match)}
+      {renderListItem(<FormatTextdirectionLToR />, `${url}/secureparagraph`, 'SecureParagraph', match)}
+      {renderListItem(<CloudUpload />, `${url}/secureupload`, 'SecureUpload', match)}
+      {renderListItem(<GetApp />, `${url}/securedownload`, 'SecureDownload', match)}
+      {renderListItem(<GetApp />, `${url}/securetextarea`, 'SecureTextArea', match)}
     </>
   );
-}
+};
 
-export const SideMenu: React.FunctionComponent = () => {
+export const SideMenu: React.FunctionComponent<{ mode: Mode }> = (props) => {
   const classes = useStyles({});
   const loggedIn = useStoreState((state) => state.loggedIn);
+
+  const { mode } = props;
+
+  const { url } = useRouteMatch();
+
+  const match = useRouteMatch({
+    path: url,
+    exact: true,
+  });
 
   return (
     <Drawer
@@ -116,14 +132,9 @@ export const SideMenu: React.FunctionComponent = () => {
     >
       <div className={classes.toolbar} />
       <List>
-        <ListItem button component={NavLink} to={{ pathname: '/', hash: window.location.hash }}>
-          <ListItemIcon>
-            <Home />
-          </ListItemIcon>
-          <ListItemText primary="Home" />
-        </ListItem>
-        {!loggedIn && renderLoginSignupLinks()}
-        {loggedIn && renderSecureComponentLinks()}
+        {renderListItem(<Home />, `${url}`, 'Home', match)}
+        <RenderLoginSignupLinks loggedIn={loggedIn} mode={mode} />
+        <RenderSecureComponentLinks loggedIn={loggedIn} mode={mode} />
       </List>
     </Drawer>
   );

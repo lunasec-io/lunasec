@@ -14,37 +14,85 @@
  * limitations under the License.
  *
  */
-import React from 'react';
-import ReactDOM from 'react-dom';
 
+import { createStyles, CssBaseline, makeStyles, Theme } from '@material-ui/core';
+import { StoreProvider } from 'easy-peasy';
+import React, { useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import './index.css';
+import { BrowserRouter, Redirect, Route, useLocation } from 'react-router-dom';
+
 import { DedicatedPassportReactApp } from './common/App';
+import { Header } from './common/components/Header';
+import { SideMenu } from './common/components/SideMenu';
+import { getTransport, store, useStoreActions } from './common/store';
+import { Mode } from './common/types';
 import { SimpleApp } from './simple-tokenizer/App';
 
-if (!window.location.hash) {
-  window.location.hash = 'dedicated-passport-express';
-}
-const hash = window.location.hash.substring(1);
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+    },
+    main: {
+      flexGrow: 1,
+      padding: theme.spacing(3),
+    },
+    toolbar: theme.mixins.toolbar,
+  })
+);
 
-const mode = hash;
+export const AppContainer: React.FunctionComponent = () => {
+  const classes = useStyles({});
+  const location = useLocation();
+  const mode = location.pathname.split('/')[1] as Mode; //todo: make this work with react router instead..
+  const transport = getTransport(mode);
 
-export function getApp() {
-  switch (mode) {
-    case 'dedicated-passport-express':
-      return <DedicatedPassportReactApp sessionAuthProvider="express-back-end" />;
-    case 'dedicated-passport-graphql': // Same app for this demo, it just loads a different store
-      return <DedicatedPassportReactApp sessionAuthProvider="graphql-back-end" />;
-    case 'simple':
-      return <SimpleApp />;
-    default:
-      throw new Error('Invalid demo mode set, check the URL hash');
-  }
-}
+  const loadUser = useStoreActions((actions) => actions.loadUser);
+  useEffect(() => {
+    loadUser({ transport });
+  }, [loadUser, transport]);
+
+  return (
+    <>
+      <Route exact path="/">
+        <Redirect to="/express" />
+      </Route>
+      <Route
+        path="/:mode"
+        render={() => {
+          return (
+            <div className={classes.root}>
+              <CssBaseline />
+              <Header transport={transport} />
+              <SideMenu mode={mode} />
+              <main className={classes.main}>
+                <div className={classes.toolbar} />
+                <Route path="/express">
+                  <DedicatedPassportReactApp sessionAuthProvider="express-back-end" transport={transport} />
+                </Route>
+                <Route path="/graphql">
+                  <DedicatedPassportReactApp sessionAuthProvider="graphql-back-end" transport={transport} />
+                </Route>
+                <Route path="/simple">
+                  <SimpleApp />
+                </Route>
+              </main>
+            </div>
+          );
+        }}
+      />
+    </>
+  );
+};
 
 ReactDOM.render(
   <React.StrictMode>
-    {/*programmatically change which app comes up based on the page hash*/}
-    {getApp()}
+    <StoreProvider store={store}>
+      <BrowserRouter>
+        <AppContainer />
+      </BrowserRouter>
+    </StoreProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
