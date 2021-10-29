@@ -19,7 +19,7 @@ name: CI
 # Controls when the workflow will run
 on:
   pull_request:
-    branches: [master, '**']
+    branches: ['**', '**']
   push:
     branches: [master]
   # Allows you to run this workflow manually from the Actions tab
@@ -46,13 +46,13 @@ jobs:
         fetch-depth: 0
 
     #      Cancel the merge copy of this build(see the matrix above) if we are not in a PR
-    - name: cancelling
-      uses: andymckay/cancel-action@0.2
+#    - name: cancelling
+#      uses: andymckay/cancel-action@0.2
 #      if: matrix.merge == "true" && github.event_name != 'pull_request'
 
     - name: Merge target branch
       run: git merge origin/${{ github.event.pull_request.base.ref }}
-#      if: matrix.merge == "true"
+      if: ${{ matrix.merge == "merged" }}
     # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
 
 
