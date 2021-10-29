@@ -52,7 +52,7 @@ jobs:
 
     - name: Merge target branch
       run: git merge origin/${{ github.event.pull_request.base.ref }}
-      if: matrix.merge == "true"
+#      if: matrix.merge == "true"
     # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
 
 
