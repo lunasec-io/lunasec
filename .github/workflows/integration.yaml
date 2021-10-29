@@ -45,17 +45,20 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Check if we should skip this build
+      id: job-canceller
+      run: echo "::set-output name=cancelled::${{ matrix.merge == 'true' && github.event_name != 'pull_request'}}"
+
+    - name: try to read that output
+      run: echo "output is ${{ steps.job-canceller.outputs.cancelled }}"
     #      Cancel the merge copy of this build(see the matrix above) if we are not in a PR
 #    - name: cancelling
 #      uses: andymckay/cancel-action@0.2
 #      if: matrix.merge == "true" && github.event_name != 'pull_request'
 
-    - name: Yell about matrix
-      run: echo "THE MATRIX IS READING ${{matrix.merge}}"
-
     - name: Merge target branch
       run: git merge origin/${{ github.event.pull_request.base.ref }}
-      if: ${{ matrix.merge == 'merged' }}
+      if: ${{ matrix.merge == 'merged' && github.event_name == 'pull_request' }}
     # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
 
 
