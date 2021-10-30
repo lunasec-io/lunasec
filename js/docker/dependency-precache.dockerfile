@@ -1,6 +1,8 @@
 FROM node:14-bullseye as lunasec-precached-dependencies
 
-RUN apt-get update && apt-get install --yes openjdk-17-jre curl sqlite3 jq docker
+RUN apt-get update && apt-get install --yes openjdk-17-jre curl sqlite3 jq
+
+RUN curl -fsSL https://get.docker.com | sh
 
 RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
 

@@ -181,7 +181,7 @@ export class LunaSecStackDockerCompose {
     const dockerBuildConfig = {
       ...this.dockerImage(`${name}-demo`),
     };
-
+    // TODO(forrest): why are we splatting these?
     const localBuildConfig = {
       ...this.dockerfileTarget(demoDockerFile, name),
     };
@@ -390,10 +390,11 @@ export class LunaSecStackDockerCompose {
 
   write(dir: string) {
     const dockerCompose = dump(this.getProject());
-
+    console.log('Writing generated docker compose file: ', dockerCompose);
     const dockerDemoEnvPath = path.join(dir, `.env.docker`);
     const composePath = path.join(dir, `docker-compose.${this.env}.yaml`);
-
+    console.log('Writing to: ', composePath);
+    //TODO:QUESTION FOR CHRIS: are we reading from the existing demo.dockerfile before creating this new one?  ask how this all works
     writeFileSync(composePath, dockerCompose);
 
     const dockerEnvFile = Object.keys(dockerDemoEnv)
