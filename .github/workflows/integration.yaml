@@ -100,8 +100,8 @@ jobs:
     - name: Go Tests
       run: yarn run test:unit:go
 
-    - name: setup lunasec cli
-      run: yarn run lunasec:setup
+    - name: Launch CLI container with docker sock
+      run: docker run
 
     - name: Run All Tests (except go)
       run: lunasec start --no-sudo=true --local-build=true --env tests

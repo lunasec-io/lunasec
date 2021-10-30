@@ -87,7 +87,7 @@ yargs
       const stack = new LunaSecStackDockerCompose(env, version, args['local-build']);
 
       const useSudo = args['no-sudo'] ? '' : 'sudo ';
-
+      console.log('USE SUDO IS ', useSudo);
       const envOverride = 'COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1';
 
       const homeDir = os.homedir();
@@ -114,7 +114,6 @@ yargs
       const directory = `--project-directory ${composePath}`;
 
       const baseDockerComposeCmd = `${useSudo} ${envOverride} docker-compose -f ${composeFile} ${directory}`;
-
       if (args['show-logs']) {
         runCommand(`${baseDockerComposeCmd} logs`, true);
         process.exit(0);
@@ -143,6 +142,7 @@ yargs
           'Starting the LunaSec Stack in dev mode. Tokenizer Backend will be accessible at http://localhost:37766.'
         );
       }
+      console.log('calling docker compose: ', baseCmd);
 
       const output = runCommand(baseCmd, shouldStreamStdio);
       if (env === 'demo' || output.status !== 0) {
