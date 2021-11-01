@@ -27,6 +27,8 @@ WORKDIR /repo/js/demo-apps/packages/react-front-end
 ENTRYPOINT yarn run start
 
 FROM lerna-bootstrap as lunasec-cli
+# Overwrite this when calling docker from CI
+ENV HOST_MACHINE_PWD=""
 
 WORKDIR /repo/js/sdks/packages/cli
 

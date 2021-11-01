@@ -238,6 +238,12 @@ export class LunaSecStackDockerCompose {
     };
   }
 
+  buildMountPath(targetPath: string): string {
+    const hostDir = process.env.HOST_MACHINE_PWD;
+    const outputBasePath = hostDir && hostDir !== '' ? hostDir : './';
+    return outputBasePath + targetPath;
+  }
+
   lunasecCli(): ComposeService {
     const name: LunaSecService = 'lunasec-cli';
 
@@ -247,10 +253,11 @@ export class LunaSecStackDockerCompose {
       ...this.dockerImage(`${name}-demo`),
       volumes: [outputMount],
     };
+    const configSourcePath = this.buildMountPath('js/sdks/packages/cli/config/lunasec/');
 
     const localBuildConfig = {
       ...this.dockerfileTarget(demoDockerFile, name),
-      volumes: ['./js/sdks/packages/cli/config/lunasec/:/config/lunasec/', outputMount],
+      volumes: [`${configSourcePath}:/config/lunasec/`, outputMount],
     };
 
     return {
@@ -286,12 +293,14 @@ export class LunaSecStackDockerCompose {
       },
     };
 
+    const awsResourcesPath = this.buildMountPath('outputs/aws_resources.yaml');
+    console.log('aws_resources path is ', awsResourcesPath);
     return {
       name,
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        volumes: ['./outputs/aws_resources.yaml:/config/tokenizerbackend/aws_resources.yaml'],
+        volumes: [`${awsResourcesPath}:/config/tokenizerbackend/aws_resources.yaml`],
         depends_on: {
           [this.lunasecCli().name]: {
             condition: 'service_completed_successfully',
