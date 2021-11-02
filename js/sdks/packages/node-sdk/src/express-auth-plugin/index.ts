@@ -121,7 +121,7 @@ export class ExpressAuthPlugin {
       return;
     }
 
-    console.log('LunaSec Auth Plugin is redirecting request back to tokenizer backend.W');
+    console.log('LunaSec Auth Plugin is redirecting request back to tokenizer backend.');
 
     res.redirect(redirectUrl.href);
   }

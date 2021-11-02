@@ -30,29 +30,35 @@ import {
 import React, { useEffect, useState } from 'react';
 
 import { useStoreActions } from '../../store';
+import { Transport } from '../../types';
 
-export const SecureUploadDemo: React.FunctionComponent = () => {
+export const SecureUploadDemo: React.FunctionComponent<{
+  transport: Transport;
+}> = (props) => {
   const [error, setError] = useState<string | null>(null);
   const [saveSuccessful, setSaveSuccessful] = useState<boolean | null>(null);
   const [documents, setDocuments] = useState<string[]>([]);
-  const loadDocumentsThunk = useStoreActions((actions) => actions.loadDocuments);
-  const uploadDocumentTokensThunk = useStoreActions((actions) => actions.uploadDocumentTokens);
+  const [loadDocuments, uploadDocumentTokens] = useStoreActions((actions) => [
+    actions.loadDocuments,
+    actions.uploadDocumentTokens,
+  ]);
 
   useEffect(() => {
-    void loadDocuments();
-  }, []);
+    // TODO: Move this into the Router
+    const loadDocumentsAction = async () => {
+      const data = await loadDocuments({ transport: props.transport });
+      if (data.success) {
+        setDocuments(data.documents);
+        return;
+      }
+      setError(data.error);
+    };
 
-  const loadDocuments = async () => {
-    const data = await loadDocumentsThunk();
-    if (data.success) {
-      setDocuments(data.documents);
-      return;
-    }
-    setError(data.error);
-  };
+    void loadDocumentsAction();
+  }, [loadDocuments, props.transport]);
 
   const saveDocuments = async () => {
-    const data = await uploadDocumentTokensThunk(documents);
+    const data = await uploadDocumentTokens({ transport: props.transport, documents });
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;
@@ -124,9 +130,4 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
       </Card>
     </Grid>
   );
-};
-
-export const Upload: React.FunctionComponent = () => {
-  // const [authError, setAuthError] = useState<string>('');
-  return <SecureUploadDemo />;
 };

@@ -17,6 +17,8 @@
 // easy-peasy is a simple store based on Redux, with a bad name
 import { Action, Computed, Thunk } from 'easy-peasy';
 
+import { expressTransport } from './express-transport';
+
 export interface UserModel {
   id: string;
   username: string;
@@ -48,7 +50,9 @@ interface UserDocumentsSuccess {
 
 export type UserDocumentsResponse = UserDocumentsSuccess | FailApiResponse;
 
-// todo: maybe switch from using easy-peasy, this is clunky
+// We could use either transport here for typings, TS will throw if the Graphql transport doesnt match this one when we try to use it
+export type Transport = typeof expressTransport;
+
 export interface StoreModel {
   // Properties
   user: UserModel | null;
@@ -57,11 +61,30 @@ export interface StoreModel {
   setUser: Action<StoreModel, UserModel>;
   setSsn: Action<StoreModel, string>;
   // Thunks
-  saveSsn: Thunk<StoreModel, string, undefined, StoreModel, Promise<ApiResponse>>;
-  loadUser: Thunk<StoreModel>;
-
-  loadDocuments: Thunk<StoreModel, undefined, undefined, StoreModel, Promise<UserDocumentsResponse>>;
-  uploadDocumentTokens: Thunk<StoreModel, string[], undefined, StoreModel, Promise<ApiResponse>>;
-  login: Thunk<StoreModel, { username: string; password: string }, undefined, StoreModel, Promise<UserResponse>>;
-  signup: Thunk<StoreModel, { username: string; password: string }, undefined, StoreModel, Promise<UserResponse>>;
+  saveSsn: Thunk<StoreModel, { transport: Transport; ssn_token: string }, undefined, StoreModel, Promise<ApiResponse>>;
+  loadUser: Thunk<StoreModel, { transport: Transport }>;
+  loadDocuments: Thunk<StoreModel, { transport: Transport }, undefined, StoreModel, Promise<UserDocumentsResponse>>;
+  uploadDocumentTokens: Thunk<
+    StoreModel,
+    { transport: Transport; documents: string[] },
+    undefined,
+    StoreModel,
+    Promise<ApiResponse>
+  >;
+  login: Thunk<
+    StoreModel,
+    { transport: Transport; username: string; password: string },
+    undefined,
+    StoreModel,
+    Promise<UserResponse>
+  >;
+  signup: Thunk<
+    StoreModel,
+    { transport: Transport; username: string; password: string },
+    undefined,
+    StoreModel,
+    Promise<UserResponse>
+  >;
 }
+
+export type Mode = 'simple' | 'express' | 'graphql';

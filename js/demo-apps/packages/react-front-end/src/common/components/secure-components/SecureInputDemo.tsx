@@ -31,21 +31,24 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useState } from 'react';
 
 import { useStoreActions, useStoreState } from '../../store';
+import { Transport } from '../../types';
 
-export const SecureInputDemo: React.FunctionComponent = () => {
+export const SecureInputDemo: React.FunctionComponent<{
+  transport: Transport;
+}> = (props) => {
   const [showSaveSuccessful, setShowSaveSuccessful] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [ssnToken, setSsnToken] = useState<string | null>(null);
+  const [ssn_token, setSsnToken] = useState<string | null>(null);
   const [ssnValid, setSsnValid] = useState<boolean>(true);
+  const saveSsn = useStoreActions((actions) => actions.saveSsn);
 
   const user = useStoreState((state) => state.user);
-  const saveSsnThunk = useStoreActions((actions) => actions.saveSsn);
   const uploadFormData = async () => {
-    if (ssnToken === null) {
+    if (ssn_token === null) {
       setError('Please enter a social security number');
       return;
     }
-    const data = await saveSsnThunk(ssnToken);
+    const data = await saveSsn({ transport: props.transport, ssn_token });
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;

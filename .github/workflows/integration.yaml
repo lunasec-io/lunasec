@@ -19,7 +19,7 @@ name: CI
 # Controls when the workflow will run
 on:
   pull_request:
-    branches: [master, '**']
+    branches: ['**', '**']
   push:
     branches: [master]
   # Allows you to run this workflow manually from the Actions tab
@@ -36,17 +36,30 @@ jobs:
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
-
+    strategy:
+      matrix:
+        merge: ["merged", "not-merged"]
     steps:
 
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
 
-    # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
+    #TODO: there may be a more idiomatic way to do this
+    - name: Check if we should skip this build
+      id: job-canceller
+      run: echo "::set-output name=cancelled::${{ matrix.merge == 'true' && github.event_name != 'pull_request'}}"
+
+    # Cancel the merge copy of this build(see the matrix above) if we are not in a PR
+    - name: cancelling
+      uses: andymckay/cancel-action@0.2
+      if: ${{ steps.job-canceller.outputs.cancelled == 'true' }}
+
+      # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
     - name: Merge target branch
       run: git merge origin/${{ github.event.pull_request.base.ref }}
-      if:  github.event_name == 'pull_request'
+      if: ${{ matrix.merge == 'merged' && github.event_name == 'pull_request' }}
+
 
     - uses: actions/setup-node@v2
       with:
@@ -107,23 +120,23 @@ jobs:
       run: lunasec start --no-sudo=true --local-build=true --env tests
 
     - name: docker logs
-      if: always()
+      if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
       run: .github/print-docker-logs.sh
       shell: bash
 
     - name: docker compose logs
-      if: always()
+      if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
       run: docker-compose -f docker-compose.tests.yaml logs
 
     - uses: actions/upload-artifact@v2
-      if: always()
+      if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
       with:
         name: cypress-recording
         path: /videos/secure_components_spec.ts.mp4
 
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
-      if: always()
+      if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_TITLE: PR Build ${{ github.head_ref }} ${{ job.status }}

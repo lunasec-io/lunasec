@@ -16,9 +16,10 @@
  */
 import { Button, FormControl, FormHelperText, FormLabel, makeStyles, Paper, TextField } from '@material-ui/core';
 import React, { FormEvent, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 
 import { useStoreActions } from '../store';
+import { Transport } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -29,22 +30,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Signup: React.FunctionComponent = () => {
+export const Signup: React.FunctionComponent<{
+  transport: Transport;
+}> = (props) => {
   const classes = useStyles({});
   const history = useHistory();
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
   const signupThunk = useStoreActions((actions) => actions.signup);
+  const match = useRouteMatch<{ mode: string }>(`/:mode`);
+
   const signup = async (e: FormEvent) => {
     e.preventDefault();
-    const data = await signupThunk({ username, password });
+    const data = await signupThunk({ transport: props.transport, username, password });
     if (!data.success) {
       setError(data.error);
       return;
     }
-    history.push(`/${window.location.hash}`);
+
+    // Send us to the first example
+    if (match && match.params.mode) {
+      history.push(`/${match.params.mode}/secureinput`);
+    }
   };
 
   return (
