@@ -25,6 +25,7 @@ import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { GetCallerIdentityCommand, STSClient } from '@aws-sdk/client-sts';
+import { parse } from '@typescript-eslint/parser';
 import * as yargs from 'yargs';
 
 import { mirrorRepos } from './cdk-stack/mirror-service-repos';
@@ -234,10 +235,6 @@ yargs
     'deploy',
     'Deploy the LunaSec stack to AWS.',
     {
-      config: {
-        required: false,
-        description: 'Config file for building secure components.',
-      },
       'build-dir': {
         required: false,
         type: 'string',
@@ -301,7 +298,7 @@ yargs
       copyFolderRecursiveSync(out.directory, buildDir);
 
       const region = 'us-west-2';
-      const outputsFilePath = args.output ? args.output : 'outputs.json';
+      const outputsFilePath = path.join(buildDir, 'outputs.json');
 
       const cdkCmd = args.local ? 'cdklocal' : 'cdk';
 
@@ -320,6 +317,10 @@ yargs
 
       // TODO (cthompson) check if file exists
       const outputsFileContent = fs.readFileSync(outputsFilePath, 'utf-8');
+
+      if (args.output) {
+        fs.writeFileSync(args.output, outputsFileContent);
+      }
 
       const stackOutputFile = JSON.parse(outputsFileContent);
 
@@ -373,6 +374,52 @@ yargs
       // const serializedConfig = dump(resourceConfig);
       //
       // fs.writeFileSync();
+    }
+  )
+  .command(
+    'resources',
+    'Show the stack resources for the latest deployment.',
+    {
+      'build-dir': {
+        required: false,
+        type: 'string',
+        description: 'Build directory for built secure components.',
+      },
+    },
+    (args) => {
+      const cacheBuildDir = path.join(os.homedir(), '.lunasec/builds');
+      const dirs = fs.readdirSync(cacheBuildDir).sort().reverse();
+
+      const latestBuildDir = dirs.length ? dirs[0] : undefined;
+
+      const buildDir = args['build-dir']
+        ? args['build-dir']
+        : latestBuildDir
+        ? path.join(cacheBuildDir, latestBuildDir)
+        : undefined;
+
+      if (buildDir === undefined) {
+        throw new Error('There are no LunaSec deploys. Please use `lunasec deploy` to first deploy the stack.');
+      }
+
+      const outputsFilename = path.join(buildDir, 'outputs.json');
+      const outputs = fs.readFileSync(outputsFilename, 'utf-8');
+      const parsedOutputs = JSON.parse(outputs);
+
+      const stackOutputs = parsedOutputs[LunaSecStackName] as Record<string, string>;
+      if (stackOutputs === undefined) {
+        throw new Error(
+          `unable to locate outputs for stack: ${LunaSecStackName} in stack output file ${outputsFilename}`
+        );
+      }
+
+      console.log(`Tokenizer URL: ${stackOutputs[getOutputName('gateway')]}`);
+      console.log(`Tokenizer Secret ARN: ${stackOutputs[getOutputName('tokenizer-secret')]}`);
+      console.log(``);
+      console.log(`Tables:`);
+      console.log(`  Keys Table: ${stackOutputs[getOutputName('keys-table')]}`);
+      console.log(`  Grants Table: ${stackOutputs[getOutputName('grants-table')]}`);
+      console.log(`  Metadata Table: ${stackOutputs[getOutputName('metadata-table')]}`);
     }
   )
   .demandCommand()

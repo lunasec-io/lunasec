@@ -260,7 +260,7 @@ export class LunaSecStackDockerCompose {
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        entrypoint: 'lunasec deploy --local --output /outputs/aws_resources.yaml',
+        entrypoint: 'lunasec deploy --local --output /outputs/aws_resources.json',
         depends_on: {
           [this.localstackProxy().name]: {
             condition: 'service_healthy',
@@ -293,7 +293,7 @@ export class LunaSecStackDockerCompose {
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        volumes: ['./outputs/aws_resources.yaml:/config/tokenizerbackend/aws_resources.yaml'],
+        volumes: ['./outputs/aws_resources.json:/config/tokenizerbackend/aws_resources.json'],
         depends_on: {
           [this.lunasecCli().name]: {
             condition: 'service_completed_successfully',

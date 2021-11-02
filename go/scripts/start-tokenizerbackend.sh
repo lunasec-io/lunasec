@@ -6,9 +6,9 @@ if [ $r -ne 0 ]; then
 		exit 1
 fi
 
-until [ -f ./outputs/aws_resources.yaml ];
+until [ -f ./outputs/aws_resources.json ];
 do
-	echo "waiting for aws_resources.yaml, please wait...";
+	echo "waiting for aws_resources.json, please wait...";
 	sleep 0.5;
 done
 

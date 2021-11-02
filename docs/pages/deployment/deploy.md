@@ -50,20 +50,18 @@ And finally to deploy all required LunaSec resources to your AWS account, run:
 lunasec deploy
 ```
 
-This command will create the file `aws_resources.yaml`. This file will contain the ARNs for the resources that have been deployed to AWS.
-
-Among the resources in the file will be a URL which points to the Tokenizer Backend:
-
-```yaml
-tokenizer:
-  gateway_endpoint: https://<gateway_id>.execute-api.us-west-2.amazonaws.com/prod/
+Let's find the URL that the tokenizer is deployed to:
+```shell
+$ lunasec resources
+Tokenizer URL: https://asdf.execute-api.us-west-2.amazonaws.com/prod/
+...
 ```
 
 This URL will be used when configuring Lunasec in your backend application:
 
 ```typescript
 export const lunaSec = new LunaSec({
-  tokenizerURL: "<tokenizer backend url>",
+  tokenizerURL: "https://asdf.execute-api.us-west-2.amazonaws.com/prod/",
   ...
 });
 ```

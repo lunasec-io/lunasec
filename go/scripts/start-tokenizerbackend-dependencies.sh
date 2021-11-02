@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo rm -f ./outputs/aws_resources.yaml
+sudo rm -f ./outputs/aws_resources.json
 
 yarn run lunasec start --local-build --env dev
 r=$?
