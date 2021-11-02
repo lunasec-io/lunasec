@@ -14,22 +14,13 @@
  * limitations under the License.
  *
  */
-
-import * as s3 from '@aws-cdk/aws-s3';
-import * as cdk from '@aws-cdk/core';
-
-export class CiphertextBucket extends s3.Bucket {
-  constructor(scope: cdk.Construct, name: string) {
-    const props: s3.BucketProps = {
-      cors: [
-        {
-          allowedHeaders: ['*'],
-          // TODO (cthompson) only allow the front end application
-          allowedOrigins: ['*'],
-          allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.PUT],
-        },
-      ],
-    };
-    super(scope, name, props);
-  }
+module.exports = {
+	development: {
+		applicationFrontEnd: 'http://localhost:3000',
+		applicationBackEnd: 'http://localhost:3001'
+	},
+	production: {
+		applicationFrontEnd: 'http://localhost:3000',
+		applicationBackEnd: 'http://localhost:3001'
+	},
 }

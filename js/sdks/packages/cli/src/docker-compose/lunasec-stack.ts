@@ -23,7 +23,7 @@ import { DevConfigOptions, devConfigOptionsDefaults, LunaSecStackConfigOptions }
 
 import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
 
-export const LunaSecStackEnvironments = ['demo', 'dev', 'tests'] as const;
+export const LunaSecStackEnvironments = ['local-dependencies', 'demo', 'dev', 'tests'] as const;
 export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -344,17 +344,17 @@ export class LunaSecStackDockerCompose {
   }
 
   getStackServices(): ComposeService[] | null {
-    const tokenizerBackendServices = [
-      this.localstack(),
-      this.localstackProxy(),
-      this.secureFrameIFrameService(),
-      this.lunasecCli(),
-      this.tokenizerBackEnd(),
-    ];
+    const localDependencies = [this.localstack(), this.localstackProxy(), this.lunasecCli()];
+
+    const tokenizerBackendServices = [...localDependencies, this.tokenizerBackEnd(), this.secureFrameIFrameService()];
 
     const demoServices = [...tokenizerBackendServices, this.applicationFrontEnd(), this.applicationBackEnd()];
 
     const testsServices = [...demoServices, this.integrationTest()];
+
+    if (this.env === 'local-dependencies') {
+      return localDependencies;
+    }
 
     if (this.env === 'dev') {
       return tokenizerBackendServices;

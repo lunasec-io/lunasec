@@ -47,13 +47,12 @@ export interface CDNConfig {
 }
 
 interface AwsResources {
-  table_names: Record<LunaSecStackTableNames, string>;
+  table_names: Record<string, string>;
   ciphertext_bucket: string;
 }
 
 interface TokenizerConfig {
   secret_arn: string;
-  gateway_endpoint: string;
 }
 
 export interface AwsResourceConfig {

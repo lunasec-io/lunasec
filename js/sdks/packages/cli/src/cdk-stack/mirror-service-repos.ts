@@ -18,6 +18,8 @@ import { CreateRepositoryCommand, ECRClient } from '@aws-sdk/client-ecr';
 
 import { mirrorRepo } from '../docker/mirror';
 
+const awsRegion = 'us-west-2';
+
 export async function mirrorRepos(accountID: string, version: string) {
   const serviceToImageName: Record<string, string> = { 'tokenizer-backend': '', 'analytics-collector': '' };
 
@@ -25,7 +27,7 @@ export async function mirrorRepos(accountID: string, version: string) {
 
   const accountRepoBase = `${accountID}.dkr.ecr.us-west-2.amazonaws.com`;
 
-  const ecrClient = new ECRClient({});
+  const ecrClient = new ECRClient({ region: awsRegion });
 
   await Promise.all(
     Object.keys(serviceToImageName).map(async (serviceName: string) => {

@@ -89,13 +89,20 @@ function getTokenizerBackendCloudfront(scope: cdk.Construct) {
   return new TokenizerBackendCloudfront(scope, bucket);
 }
 
-export class LunaSecDeploymentStack extends cdk.Stack {
-  public secureFrameAssets: SecureFrameAssetFiles;
+function getCiphertextBucket(scope: cdk.Construct) {
+  const bucketName = 'ciphertext-bucket';
+  const ciphertextBucket = new CiphertextBucket(scope, bucketName);
+  cfnOutput(scope, bucketName, ciphertextBucket.bucketName);
+  return ciphertextBucket;
+}
 
-  constructor(app: cdk.App, id: string, deploymentConfig: DeploymentConfigOptions) {
+export class LunaSecDeploymentStack extends cdk.Stack {
+  public secureFrameAssets?: SecureFrameAssetFiles;
+
+  constructor(app: cdk.App, id: string, local: boolean, deploymentConfig: DeploymentConfigOptions) {
     super(app, id);
 
-    const ciphertextBucket = new CiphertextBucket(this);
+    const ciphertextBucket = getCiphertextBucket(this);
 
     const metadataTable = createDynamoDBTable(this, 'metadata-table');
     const keysTable = createDynamoDBTable(this, 'keys-table');
@@ -103,6 +110,11 @@ export class LunaSecDeploymentStack extends cdk.Stack {
     const grantsTable = createDynamoDBTable(this, 'grants-table');
 
     const tokenizerSecret = createSecret(this, 'tokenizer-secret', secretDescription);
+
+    // all other resources are not included in the local deployment
+    if (local) {
+      return;
+    }
 
     const secureFrameAssetFolder = secureFrameIFramePublicAssetFolder();
 

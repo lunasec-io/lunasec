@@ -25,7 +25,6 @@ import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { GetCallerIdentityCommand, STSClient } from '@aws-sdk/client-sts';
-import { parse } from '@typescript-eslint/parser';
 import * as yargs from 'yargs';
 
 import { mirrorRepos } from './cdk-stack/mirror-service-repos';
@@ -42,6 +41,8 @@ import { copyFolderRecursiveSync } from './utils/filesystem';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
+
+const awsRegion = 'us-west-2';
 
 async function resolveURL(url: string): Promise<IncomingMessage> {
   return new Promise((resolve, reject) => {
@@ -246,6 +247,8 @@ yargs
       },
       local: {
         required: false,
+        default: false,
+        type: 'boolean',
         description: 'Deploy the LunaSec stack to Localstack.',
       },
       output: {
@@ -260,11 +263,18 @@ yargs
       },
     },
     async (args) => {
-      const cacheBuildDir = path.join(os.homedir(), '.lunasec/builds', `build_${new Date().toISOString()}`);
+      const buildsFolder = path.join(os.homedir(), '.lunasec/builds');
+      if (!fs.existsSync(buildsFolder)) {
+        fs.mkdirSync(buildsFolder, { recursive: true });
+      }
+
+      const cacheBuildDir = path.join(buildsFolder, `build_${new Date().toISOString()}`);
       const buildDir = args['build-dir'] ? args['build-dir'] : cacheBuildDir;
       console.debug(`Building LunaSec Stack to ${buildDir}`);
 
-      const sts = new STSClient({});
+      const awsEndpoint = args.local ? 'http://localhost:4566' : undefined;
+
+      const sts = new STSClient({ region: awsRegion, endpoint: awsEndpoint });
       const cmd = new GetCallerIdentityCommand({});
       const output = await sts.send(cmd);
 
@@ -273,7 +283,7 @@ yargs
         throw new Error("unable to resolve current AWS user's account id");
       }
 
-      if (!args['skip-mirroring']) {
+      if (!(args['skip-mirroring'] || args.local)) {
         await mirrorRepos(accountID, version);
       }
 
@@ -293,16 +303,17 @@ yargs
       }
 
       const app = new cdk.App();
-      const stack = new LunaSecDeploymentStack(app, LunaSecStackName, lunasecConfig.production);
+      const stack = new LunaSecDeploymentStack(app, LunaSecStackName, args.local, lunasecConfig.production);
       const out = app.synth();
       copyFolderRecursiveSync(out.directory, buildDir);
 
-      const region = 'us-west-2';
       const outputsFilePath = path.join(buildDir, 'outputs.json');
 
       const cdkCmd = args.local ? 'cdklocal' : 'cdk';
 
-      const bootstrapResp = runCommand(`${cdkCmd} bootstrap -a ${buildDir} aws://${accountID}/${region}`, true);
+      const account = args.local ? '' : `aws://${accountID}/${awsRegion}`;
+
+      const bootstrapResp = runCommand(`${cdkCmd} bootstrap -a ${buildDir} ${account}`, true);
       if (bootstrapResp.status) {
         throw new Error(`command failed to execute`);
       }
@@ -318,10 +329,6 @@ yargs
       // TODO (cthompson) check if file exists
       const outputsFileContent = fs.readFileSync(outputsFilePath, 'utf-8');
 
-      if (args.output) {
-        fs.writeFileSync(args.output, outputsFileContent);
-      }
-
       const stackOutputFile = JSON.parse(outputsFileContent);
 
       const stackOutputs = stackOutputFile[LunaSecStackName] as Record<string, string>;
@@ -331,49 +338,58 @@ yargs
         );
       }
 
-      const backendBucketOutputName = getOutputName('tokenizer-backend-bucket');
-      const tokenizerBackendAssetBucket = stackOutputs[backendBucketOutputName];
-      if (tokenizerBackendAssetBucket === undefined || tokenizerBackendAssetBucket === '') {
-        throw new Error(
-          `unable to load tokenizer backend bucket name ${backendBucketOutputName} in stack output file ${outputsFilePath}`
-        );
-      }
+      if (!args.local) {
+        const backendBucketOutputName = getOutputName('tokenizer-backend-bucket');
+        const tokenizerBackendAssetBucket = stackOutputs[backendBucketOutputName];
+        if (tokenizerBackendAssetBucket === undefined || tokenizerBackendAssetBucket === '') {
+          throw new Error(
+            `unable to load tokenizer backend bucket name ${backendBucketOutputName} in stack output file ${outputsFilePath}`
+          );
+        }
 
-      for (const secureFrameAssetName of Object.keys(stack.secureFrameAssets.files)) {
-        const secureFrameAssetFilename = secureFrameAssetName as SecureFrameAssetFilename;
-        const secureFrameAsset = stack.secureFrameAssets.files[secureFrameAssetFilename];
+        if (stack.secureFrameAssets === undefined) {
+          throw new Error(`secure frame assets are not defined in the LunaSec stack.`);
+        }
 
-        const s3 = new S3Client({});
-        const cmd = new PutObjectCommand({
-          Bucket: tokenizerBackendAssetBucket,
-          Key: secureFrameAsset.filename,
-          Body: secureFrameAsset.content,
-        });
-        try {
-          await s3.send(cmd);
-        } catch (e) {
-          console.error(e);
+        for (const secureFrameAssetName of Object.keys(stack.secureFrameAssets.files)) {
+          const secureFrameAssetFilename = secureFrameAssetName as SecureFrameAssetFilename;
+          const secureFrameAsset = stack.secureFrameAssets.files[secureFrameAssetFilename];
+
+          const s3 = new S3Client({ region: awsRegion, endpoint: awsEndpoint });
+          const cmd = new PutObjectCommand({
+            Bucket: tokenizerBackendAssetBucket,
+            Key: secureFrameAsset.filename,
+            Body: secureFrameAsset.content,
+          });
+          try {
+            await s3.send(cmd);
+          } catch (e) {
+            console.error(e);
+          }
         }
       }
-      //
-      // const resourceConfig: AwsResourceConfig = {
-      //   aws_gateway: {
-      //     table_names: {
-      //       'metadata-table': stackOutputs[getOutputName('metadata-table')],
-      //       'keys-table': stackOutputs[getOutputName('keys-table')],
-      //       'sessions-table': stackOutputs[getOutputName('sessions-table')],
-      //       'grants-table': stackOutputs[getOutputName('grants-table')],
-      //     },
-      //     ciphertext_bucket: stackOutputs[getOutputName('ciphertext-bucket')],
-      //   },
-      //   tokenizer: {
-      //     secret_arn: stackOutputs[getOutputName('tokenizer-secret')],
-      //     gateway_endpoint: stackOutputs[getOutputName('gateway')],
-      //   },
-      // };
-      // const serializedConfig = dump(resourceConfig);
-      //
-      // fs.writeFileSync();
+
+      const localstackConfig = args.local ? { localstack_url: 'http://localhost:4566' } : {};
+
+      if (args.output) {
+        const resourceConfig: AwsResourceConfig = {
+          aws_gateway: {
+            table_names: {
+              metadata: stackOutputs[getOutputName('metadata-table')],
+              keys: stackOutputs[getOutputName('keys-table')],
+              sessions: stackOutputs[getOutputName('sessions-table')],
+              grants: stackOutputs[getOutputName('grants-table')],
+            },
+            ciphertext_bucket: stackOutputs[getOutputName('ciphertext-bucket')],
+            ...localstackConfig,
+          },
+          tokenizer: {
+            secret_arn: stackOutputs[getOutputName('tokenizer-secret')],
+          },
+        };
+        const serializedConfig = JSON.stringify(resourceConfig, null, 2);
+        fs.writeFileSync(args.output, serializedConfig);
+      }
     }
   )
   .command(
@@ -388,6 +404,10 @@ yargs
     },
     (args) => {
       const cacheBuildDir = path.join(os.homedir(), '.lunasec/builds');
+      if (!fs.existsSync(cacheBuildDir)) {
+        throw new Error('There are no LunaSec deploys. Please use `lunasec deploy` to first deploy the stack.');
+      }
+
       const dirs = fs.readdirSync(cacheBuildDir).sort().reverse();
 
       const latestBuildDir = dirs.length ? dirs[0] : undefined;
