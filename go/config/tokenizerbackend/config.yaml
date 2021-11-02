@@ -13,7 +13,7 @@ aws_gateway:
   secret_access_key: ${AWS_SECRET_ACCESS_KEY:""}
   localstack_url: ${LOCALSTACK_URL:""}
   local_https_proxy: ${LOCAL_HTTPS_PROXY:""}
-  s3_bucket: ${CIPHERTEXT_VAULT_S3_BUCKET:"newServer"}
+  ciphertext_bucket: ${CIPHERTEXT_VAULT_S3_BUCKET:"newServer"}
   table_names:
     metadata: ${METADATA_KV_TABLE:""}
     keys: ${KEYS_KV_TABLE:""}

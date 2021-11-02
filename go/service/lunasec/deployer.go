@@ -35,7 +35,7 @@ type StackOutput map[string]map[string]string
 
 type AwsResources struct {
 	TableNames       map[types.KVStore]string `yaml:"table_names"`
-	CiphertextBucket string                   `yaml:"s3_bucket"`
+	CiphertextBucket string                   `yaml:"ciphertext_bucket"`
 	LocalstackURL    string                   `yaml:"localstack_url"`
 }
 

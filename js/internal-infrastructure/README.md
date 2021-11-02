@@ -15,7 +15,7 @@
 Packages in this directory *are not designed for public usage*. They are used by LunaSec to power our internal 
 infrastructure for our business goals. This tooling is generally not going to be useful for anybody besides us.
 
-For example, we use the Metrics Server Backend to collect anonymous metrics about public usage of LunaSec deployments. 
+For example, we use the Metrics Server Backend to collect anonymous metricsConfig about public usage of LunaSec deployments. 
 This data is useful for us to track adoption of LunaSec and to help us measure our success over time, but it's unlikely
 to be very useful to you as an individual. :)
 

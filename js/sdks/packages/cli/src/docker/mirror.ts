@@ -14,3 +14,13 @@
  * limitations under the License.
  *
  */
+import { pullImage, pushImageToRemote, tagImage } from './index';
+
+export function mirrorRepo(imageName: string, newImageName: string, tag: string) {
+  const formattedImageName = `${imageName}:${tag}`;
+  const formattedNewImageName = `${newImageName}:${tag}`;
+
+  pullImage(formattedImageName);
+  tagImage(formattedImageName, formattedNewImageName);
+  pushImageToRemote(formattedNewImageName);
+}

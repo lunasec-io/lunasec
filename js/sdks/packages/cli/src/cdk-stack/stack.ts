@@ -14,8 +14,125 @@
  * limitations under the License.
  *
  */
-export class ApiLambdaCrudDynamoDBStack extends Stack {
-  constructor(app: App, id: string) {
+
+import path from 'path';
+
+import * as apigateway from '@aws-cdk/aws-apigateway';
+import * as dynamodb from '@aws-cdk/aws-dynamodb';
+import * as lambda from '@aws-cdk/aws-lambda';
+import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
+import * as cdk from '@aws-cdk/core';
+
+import { DeploymentConfigOptions } from '../config/types';
+
+import { AnalyticsCollectorLambda } from './analytics-collector-lambda';
+import { CiphertextBucket } from './ciphertext-bucket';
+import { getSecureFrameAssets } from './s3-assets';
+import { TokenizerBackendBucket, TokenizerBackendCloudfront } from './tokenizer-backend-cloudfront';
+import { TokenizerBackendLambda } from './tokenizer-backend-lambda';
+import { CDNConfig, LunaSecStackResource, SecureFrameAssetFiles } from './types';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version } = require('../../package.json');
+
+const secretDescription = 'Secret used by the tokenizer-backend in generating encryption keys for ciphertexts.';
+
+export function getOutputName(name: LunaSecStackResource) {
+  return `${name.replace(/-/g, '')}Output`;
+}
+
+function secureFrameIFramePublicAssetFolder() {
+  const secureFrameMainScript = require.resolve('@lunasec/secure-frame-front-end');
+  const secureFrameBuildPath = path.dirname(secureFrameMainScript);
+  return path.join(secureFrameBuildPath, '../../public');
+}
+
+function cfnOutput(scope: cdk.Construct, name: LunaSecStackResource, value: string) {
+  new cdk.CfnOutput(scope, getOutputName(name), {
+    value: value,
+    exportName: getOutputName(name),
+  });
+}
+
+function createDynamoDBTable(scope: cdk.Construct, name: LunaSecStackResource) {
+  const table = new dynamodb.Table(scope, name, {
+    partitionKey: {
+      name: 'Key',
+      type: dynamodb.AttributeType.STRING,
+    },
+  });
+  cfnOutput(scope, name, table.tableName);
+  return table;
+}
+
+function createSecret(scope: cdk.Construct, name: LunaSecStackResource, description: string) {
+  const secret = new secretsmanager.Secret(scope, name, {
+    description: description,
+    removalPolicy: cdk.RemovalPolicy.RETAIN,
+  });
+  cfnOutput(scope, name, secret.secretArn);
+  return secret;
+}
+
+function getGateway(scope: cdk.Construct, name: LunaSecStackResource, lambdaProxy: lambda.IFunction) {
+  const gateway = new apigateway.LambdaRestApi(scope, name, {
+    handler: lambdaProxy,
+  });
+  cfnOutput(scope, name, gateway.url);
+}
+
+function getTokenizerBackendCloudfront(scope: cdk.Construct) {
+  const bucketName = 'tokenizer-backend-bucket';
+  const bucket = new TokenizerBackendBucket(scope, bucketName);
+  cfnOutput(scope, bucketName, bucket.bucketName);
+
+  return new TokenizerBackendCloudfront(scope, bucket);
+}
+
+export class LunaSecDeploymentStack extends cdk.Stack {
+  public secureFrameAssets: SecureFrameAssetFiles;
+
+  constructor(app: cdk.App, id: string, deploymentConfig: DeploymentConfigOptions) {
     super(app, id);
+
+    const ciphertextBucket = new CiphertextBucket(this);
+
+    const metadataTable = createDynamoDBTable(this, 'metadata-table');
+    const keysTable = createDynamoDBTable(this, 'keys-table');
+    const sessionsTable = createDynamoDBTable(this, 'sessions-table');
+    const grantsTable = createDynamoDBTable(this, 'grants-table');
+
+    const tokenizerSecret = createSecret(this, 'tokenizer-secret', secretDescription);
+
+    const secureFrameAssetFolder = secureFrameIFramePublicAssetFolder();
+
+    this.secureFrameAssets = getSecureFrameAssets(secureFrameAssetFolder);
+
+    const tokenizerBackendCloudfront = getTokenizerBackendCloudfront(this);
+
+    const cdnConfig: CDNConfig = {
+      protocol: 'https',
+      host: tokenizerBackendCloudfront.domainName,
+      main_script: this.secureFrameAssets.files.mainScript.filename,
+      main_style: this.secureFrameAssets.files.mainStyle.filename,
+    };
+
+    const tokenizerBackendLambda = new TokenizerBackendLambda(this, version, {
+      deploymentConfig: deploymentConfig,
+      cdnConfig: JSON.stringify(cdnConfig),
+      tokenizerBackendCloudfront,
+      ciphertextBucket,
+      tokenizerSecret,
+      metadataTable,
+      keysTable,
+      sessionsTable,
+      grantsTable,
+    });
+
+    getGateway(this, 'gateway', tokenizerBackendLambda);
+
+    if (!deploymentConfig.metrics.disabled) {
+      new AnalyticsCollectorLambda(this, version);
+    }
   }
 }
