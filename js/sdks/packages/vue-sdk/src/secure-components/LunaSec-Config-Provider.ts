@@ -36,7 +36,7 @@ export default defineComponent({
     },
   },
   setup: (props) => {
-    provide('lunaSecConfig', toRefs(props));
+    provide('lunaSecConfig', props);
   },
   render() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

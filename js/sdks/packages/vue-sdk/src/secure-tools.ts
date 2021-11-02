@@ -15,35 +15,29 @@
  *
  */
 import { FrameMessageCreator, generateSecureNonce, getStyleInfo, ReadElementStyle } from '@lunasec/browser-common';
-import { inject, onMounted, reactive, ref, Ref } from 'vue';
+import { CSSProperties, inject, onMounted, reactive, ref, Ref, unref } from 'vue';
 
 import { LunaSecConfigProviderAttrs } from './secure-components/LunaSec-Config-Provider';
 
+/**
+ * A bag of properties that get passed back to the Secure Component when it calls our setup function below
+ * The object itself is not reactive, but note that we manually make the values reactive where needed
+ */
 export interface RenderData {
   shouldRenderFrame: Ref<boolean>;
   clonedStyle: ReadElementStyle | Record<string | number, never>;
   dummyElementRef: Ref;
+  dummyStyleRef: Ref;
+  containerStyle: CSSProperties;
+  dummyElementStyle: CSSProperties;
+  frameUrl: string;
 }
 
-// This is a reactive bag of properties used by the secure components
-// renderData: RenderData;
-//
-// private messageCreator: FrameMessageCreator;
-// private lunaSecConfig: LunaSecConfigProviderAttrs;
-
-// constructor() {
-//   console.log('built an instance of SecureTools');
-//
-//   const renderData: RenderData = {
-//     frameId,
-//     shouldRenderFrame: false,
-//     clonedStyle: null,
-//     dummyElementRef: ref(null),
-//   };
-//   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//   // @ts-ignore
-//   this.renderData = renderData;
-// }
+/**
+ * A callback passed in by the secure component to modify the style object however it needs to
+ * Easier to have this logic passed in a callback than sorting out our render cycle and handling null refs and so-on in every component
+ */
+export type StyleCustomizer = (clonedStyle: ReadElementStyle) => ReadElementStyle;
 
 function cloneStyle(ref: Ref) {
   if (!ref.value) {
@@ -52,7 +46,8 @@ function cloneStyle(ref: Ref) {
   return getStyleInfo(ref.value);
 }
 
-export function setupSecureComponent(): RenderData {
+export function setupSecureComponent(componentName: string, styleCustomizer: StyleCustomizer): RenderData {
+  // Get configuration from provider
   const providerConf = inject<LunaSecConfigProviderAttrs>('lunaSecConfig');
   if (!providerConf) {
     throw new Error('Must register LunaSecConfigProvider above Secure Component');
@@ -67,24 +62,58 @@ export function setupSecureComponent(): RenderData {
   // Set up default reactive variables
   const shouldRenderFrame = ref(false);
   const dummyElementRef = ref(null);
+  const dummyStyleRef = ref(null);
   const clonedStyle = reactive({});
 
   onMounted(() => {
-    // todo: handle the need to pass a different ref for inputs
-    const style = cloneStyle(dummyElementRef);
+    // Clones style from the styleRef if provided, otherwise use elementRef
+    const elementToClone = dummyStyleRef.value !== null ? dummyStyleRef : dummyElementRef;
+    const style = cloneStyle(elementToClone);
     console.log('cloned style is ', style);
     if (!style) {
       throw new Error('read null style from dummy element');
     }
-    Object.assign(clonedStyle, style);
+    const customizedStyle = styleCustomizer(style);
+    Object.assign(clonedStyle, customizedStyle); // Put the style into the reactive object
     shouldRenderFrame.value = true;
     console.log('mounted hook complete, frame should render');
   });
 
-  // console.log('setupSecureComponent returning ', this.renderData);
+  // some static styles all the Secure Elements will need
+  const containerStyle: CSSProperties = {
+    position: 'relative',
+    display: 'block',
+  };
+
+  const dummyElementStyle: CSSProperties = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    // We can't set the "visibility" to "collapsed" or "hidden",
+    // Or else the "on focus" and "on blur" events won't fire.
+    // So we use zIndex instead to "hide" the input.
+    zIndex: -1,
+    opacity: 0,
+    display: 'block',
+    resize: 'none',
+  };
+
+  function generateFrameUrl() {
+    const frameURL = new URL('frame', lunaSecConfig.lunaSecDomain);
+    frameURL.searchParams.set('n', frameId);
+    frameURL.searchParams.set('origin', window.location.origin);
+    frameURL.searchParams.set('component', componentName);
+    return frameURL.toString();
+  }
+  const frameUrl = generateFrameUrl();
+
   return {
     clonedStyle,
     dummyElementRef,
+    dummyStyleRef, // only used by input
     shouldRenderFrame,
+    containerStyle,
+    dummyElementStyle,
+    frameUrl,
   };
 }

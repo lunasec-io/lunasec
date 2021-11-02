@@ -1,47 +1,46 @@
 <template>
-  <p v-if="shouldRenderFrame">
-    TEST PARAGRAPH
-  </p>
-  <iframe v-if="shouldRenderFrame" :style="frameStyle">
-    THIS IS A FRAME
-  </iframe>
-  <input ref="dummyElementRef" />
-  <input ref="dummyStyleRef" />
+  <div :style="containerStyle" class="secure-input-container">
+    <iframe v-if="shouldRenderFrame" :style="frameStyle" :src="frameUrl"/>
+    <input ref="dummyElementRef" :style="dummyStyle"/>
+    <input ref="dummyStyleRef" :style="dummyStyle"/>
+  </div>
 </template>
+
 <script lang="ts">
-import {defineComponent, CSSProperties} from 'vue';
+import { ReadElementStyle } from '@lunasec/browser-common';
+import {defineComponent} from 'vue';
 
 import { setupSecureComponent } from '../secure-tools';
 
 export default defineComponent({
   name: 'SecureInput',
+
   props: {
     token: String,
+    style: Object
   },
+
   computed: {
     frameStyle() {
-      console.log('frame style computed hook fired')
-      console.log('should render frame is ', this.shouldRenderFrame)
-      const clonedStyle = this.clonedStyle;
-      if (clonedStyle === null){
-        console.log('computed framestyle returning empty')
-        return {};
-      }
-      // todo: MAKE SURE THIS WORKS
+      return this.clonedStyle.parentStyle
+    },
+    dummyStyle() {
+      return Object.assign({}, this.dummyElementStyle,  this.$props.style)
+    }
+  },
+
+  setup() {
+    function styleCustomizer(clonedStyle: ReadElementStyle){
       const { parentStyle, width, height } = clonedStyle
-      const iframeStyle: CSSProperties = {
+      clonedStyle.parentStyle = {
         ...parentStyle,
         display: 'block',
         width: width,
         height: height,
       };
-      console.log('computed framestyle as  ', iframeStyle);
-      return iframeStyle;
-    },
-  },
-
-  setup() {
-    const lunaSecRenderData = setupSecureComponent();
+      return clonedStyle;
+    }
+    const lunaSecRenderData = setupSecureComponent('Input', styleCustomizer);
     console.log('lunaSecRenderData is ', lunaSecRenderData)
 
     return lunaSecRenderData
