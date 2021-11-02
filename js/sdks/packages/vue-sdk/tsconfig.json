@@ -28,4 +28,5 @@
     "node_modules"
   ],
   "references": [{ "path": "../browser-common" }]
+
 }

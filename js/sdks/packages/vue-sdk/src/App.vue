@@ -6,14 +6,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
 import Demo from './components/Demo.vue';
 import LunaSecConfigProvider from './secure-components/LunaSec-Config-Provider'
+
 export default defineComponent({
   name: 'App',
   components: {
     Demo,
-    LunaSecConfigProvider
+    LunaSecConfigProvider,
   },
 });
 </script>

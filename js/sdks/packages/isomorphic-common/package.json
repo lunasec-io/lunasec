@@ -1,6 +1,6 @@
 {
   "name": "@lunasec/isomorphic-common",
-  "version": "0.0.1-alpha.27",
+  "version": "1.0.2",
   "description": "common lunasec things needed on both the client and server",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",

@@ -40,7 +40,7 @@ The LunaSec CLI tool needs a configuration file which reflects your infrastructu
 and put this as its contents:
 ```shell
 lunasec:
-  stack_version: 0.0.1-alpha.10
+  stack_version: 1.0.3
   application_front_end: <URL to your application's front end'>
   application_back_end: <URL to your application's back end'>
 ```

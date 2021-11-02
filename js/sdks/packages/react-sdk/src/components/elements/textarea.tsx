@@ -64,21 +64,20 @@ export default class TextArea extends Component<TextAreaProps> {
 
     const containerName = `secure-textarea-container-${renderData.frameId} secure-textarea-container-${validatedName}`;
 
-    const containerClass = classnames({
-      [containerName]: true,
+    const textareaClass = classnames({
       // Combine with the classname passed in props because styled-components passes some random classnames to attach our css
       [className || '']: true,
     });
 
     return (
       // TODO: height of this container is not working properly, fix
-      <div style={renderData.parentContainerStyle} className={containerClass}>
+      <div style={renderData.parentContainerStyle} className={containerName}>
         <textarea
           {...otherProps}
           ref={renderData.dummyRef}
-          style={renderData.dummyElementStyle}
+          style={{ ...renderData.dummyElementStyle, width: '100%' }}
           tabIndex={-1}
-          className={this.props.className || ''}
+          className={textareaClass}
         />
         {this.renderFrame(renderData)}
         {children}

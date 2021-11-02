@@ -20,6 +20,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Divider,
   FormControl,
   FormGroup,
   FormHelperText,
@@ -29,29 +30,35 @@ import {
 import React, { useEffect, useState } from 'react';
 
 import { useStoreActions } from '../../store';
+import { Transport } from '../../types';
 
-export const SecureUploadDemo: React.FunctionComponent = () => {
+export const SecureUploadDemo: React.FunctionComponent<{
+  transport: Transport;
+}> = (props) => {
   const [error, setError] = useState<string | null>(null);
   const [saveSuccessful, setSaveSuccessful] = useState<boolean | null>(null);
   const [documents, setDocuments] = useState<string[]>([]);
-  const loadDocumentsThunk = useStoreActions((actions) => actions.loadDocuments);
-  const uploadDocumentTokensThunk = useStoreActions((actions) => actions.uploadDocumentTokens);
+  const [loadDocuments, uploadDocumentTokens] = useStoreActions((actions) => [
+    actions.loadDocuments,
+    actions.uploadDocumentTokens,
+  ]);
 
   useEffect(() => {
-    void loadDocuments();
-  }, []);
+    // TODO: Move this into the Router
+    const loadDocumentsAction = async () => {
+      const data = await loadDocuments({ transport: props.transport });
+      if (data.success) {
+        setDocuments(data.documents);
+        return;
+      }
+      setError(data.error);
+    };
 
-  const loadDocuments = async () => {
-    const data = await loadDocumentsThunk();
-    if (data.success) {
-      setDocuments(data.documents);
-      return;
-    }
-    setError(data.error);
-  };
+    void loadDocumentsAction();
+  }, [loadDocuments, props.transport]);
 
   const saveDocuments = async () => {
-    const data = await uploadDocumentTokensThunk(documents);
+    const data = await uploadDocumentTokens({ transport: props.transport, documents });
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;
@@ -74,11 +81,28 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
   return (
     <Grid item xs={12}>
       <Card>
-        <CardHeader title="Documents" />
+        <CardHeader title="Secure Upload Demo" />
         <CardContent>
+          <p>
+            This uploader dialog is a pre-made LunaSec component that uploads files into LunaSec and returns tokens. All
+            file uploads happen from within the a separate iFrame, so this page is never able to see the actual data.
+          </p>
+          <p>
+            To see how to set up your own Secure Uploader,{' '}
+            <a
+              href={
+                'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-files/#uploading-a-file'
+              }
+            >
+              see here
+            </a>
+            .
+          </p>
+          <Divider />
+          <br />
           <FormControl error={!!error}>
             <FormGroup>
-              <FormLabel htmlFor="drivers-license-upload">Driver's License Upload</FormLabel>
+              <FormLabel htmlFor="drivers-license-upload">Select a File to Upload</FormLabel>
               <SecureUpload
                 id="drivers-license-upload"
                 name="uploader"
@@ -106,9 +130,4 @@ export const SecureUploadDemo: React.FunctionComponent = () => {
       </Card>
     </Grid>
   );
-};
-
-export const Upload: React.FunctionComponent = () => {
-  // const [authError, setAuthError] = useState<string>('');
-  return <SecureUploadDemo />;
 };

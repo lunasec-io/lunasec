@@ -15,26 +15,40 @@
  *
  */
 import { SecureForm, SecureInput } from '@lunasec/react-sdk';
-import { Button, Card, CardContent, CardHeader, FormGroup, FormLabel, Grid, TextField } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  FormGroup,
+  FormLabel,
+  Grid,
+  TextField,
+} from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useState } from 'react';
 
 import { useStoreActions, useStoreState } from '../../store';
+import { Transport } from '../../types';
 
-export const SecureInputDemo: React.FunctionComponent = () => {
+export const SecureInputDemo: React.FunctionComponent<{
+  transport: Transport;
+}> = (props) => {
   const [showSaveSuccessful, setShowSaveSuccessful] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [ssnToken, setSsnToken] = useState<string | null>(null);
+  const [ssn_token, setSsnToken] = useState<string | null>(null);
   const [ssnValid, setSsnValid] = useState<boolean>(true);
+  const saveSsn = useStoreActions((actions) => actions.saveSsn);
 
   const user = useStoreState((state) => state.user);
-  const saveSsnThunk = useStoreActions((actions) => actions.saveSsn);
   const uploadFormData = async () => {
-    if (ssnToken === null) {
+    if (ssn_token === null) {
       setError('Please enter a social security number');
       return;
     }
-    const data = await saveSsnThunk(ssnToken);
+    const data = await saveSsn({ transport: props.transport, ssn_token });
     if (!data.success) {
       setError(JSON.stringify(data.error));
       return;
@@ -116,8 +130,22 @@ export const SecureInputDemo: React.FunctionComponent = () => {
   return (
     <Grid item xs={12}>
       <Card>
-        <CardHeader title={`User: ${user.username}`} />
+        <CardHeader title={'Secure Input Demo'} />
         <CardContent>
+          <p>
+            The below input element has been secured with LunaSec. Right click and inspect it to see that it is actually
+            inside of an iFrame. A hacker would be unable to read the text even if they were able to embed malicious
+            JavaScript into this page.
+          </p>
+          <p>
+            To see how to set up your own Secure Input,{' '}
+            <a href={'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-text/'}>
+              see here
+            </a>
+            .
+          </p>
+          <Divider />
+          <br />
           {renderSuccessMessage()}
           {renderErrors()}
           <SecureForm name="secure-form-example" onSubmit={(e) => handleFormSubmit(e)}>
@@ -137,11 +165,11 @@ export const SecureInputDemo: React.FunctionComponent = () => {
                 }}
               />
             </FormGroup>
-            <div>
+            <Box sx={{ mt: 1 }}>
               <Button variant="outlined" color="primary" style={{ textTransform: 'none' }} type="submit">
                 Save
               </Button>
-            </div>
+            </Box>
           </SecureForm>
         </CardContent>
       </Card>

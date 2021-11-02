@@ -24,6 +24,9 @@ import { ComposeSpecification, DefinitionsService } from './docker-compose-types
 export const LunaSecStackEnvironments = ['dev', 'demo', 'tests'] as const;
 export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version } = require('../../package.json');
+
 type LunaSecService =
   | 'localstack'
   | 'localstack-proxy'
@@ -49,6 +52,21 @@ interface healthCheckOptions {
   };
 }
 
+export interface LunaSecStackConfigOptions {
+  applicationFrontEnd: string;
+  applicationBackEnd: string;
+  sessionJWKSURL: string;
+  signingKey: string;
+}
+
+const devConfigOptionsDefaults: LunaSecStackConfigOptions = {
+  applicationFrontEnd: 'http://localhost:3000',
+  applicationBackEnd: 'http://localhost:3001',
+  sessionJWKSURL: '',
+  signingKey:
+    'LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktnd2dnU2tBZ0VBQW9JQkFRQ1dmV1pXYWdoR01NWkQKaWxWeHl3SG5JbmNNVWkxUjczTXNWVGlkcXF4OFZnbkxBcklDd2ZqekJRZVFGZlJsRzZ1Y1FTaWEzR2FQY1gwSAo1MW41UXNWN2NtY1d0WU9NM3RjNFhIS2ZjbDllUEJWOFI4RFlYRmdzdkdEQm5GOFVXOXhZS0hhT2gwQ1U4N3JvCnNHMTVKc0NseVc5S2VudmhrY0pJU3Z3TVVLL3N0VG5SM1NnZjdHR3MzV0hwZ3U4c1l0dDBVVm1tL0RWMnNGcFgKc28yODVIeTNpb3h0eE4wT1BsOVk4R1lwbmxwamg3ZWtwZnoxSUZ6d0sxaDhGeDlJenU3aVRGMFlpMzZlUnJiMQpMSXBKZ0hGWXR6aHNVd283QmFQRFNCNzh0dWZDMFVTVkQ1SEpPanNCS1A2ZzByY0pFNUUwQnJGajQ3UHlvdlRSCnk3QzZqZG85QWdNQkFBRUNnZ0VBVGxSM01BT0F5d2dZS28rV2FlU0EyUTNYYVZKY3hJa2VLYlV5QXQ4VGFLUmYKOUlzeW5MemFGNlJHaTNqaC9MNnFWR3FWK0FWQVhPbDFhdWZBclQxVURTMCsrMUwvWmhPWGNuNnNLdElkVWE5MApmM3ZacE1Sc0lOenNmOW9rb3pRdFBMWFMvOXptZ0tGY2FFRnN1ZUt4NDVrMWxFNnNySHh4NDY4a0FrVDlUUGM3CkJpQ3d2REMwM1VCUUdJaFdESGZjZzJ5aTA3VzVLb01VNjZSS0ZxMk5WT1NwdW1Tb2VyMjVNLytKNFZCc05mb3MKeEM0eEc3aWRTNzZZa21JalBMZnZjelZRUk9xNDlnblBnMHE2SWpBZHN2TVNjMHBhYUlYNkVmRUU4K2Ewd3VoWgpqTWUxQWd1V09OMEs0ajZXeHIrT0UwMEJJNjB0akhNaVdsU2JNU3R6QVFLQmdRREhlSHdOUWQ4dE5tYlhPOXB4CmxtdFVwNENOZ09FZEp6b2ZlOG9tRzl2K2gxNGxUcjFOVkZPT3VaSFFsZUFXZnl6ZDZFdmpicDY1VU4wa1h0QnEKOFllNHY5dkJ3S2thL3d1ODJPS0dKMmQ3aTF4Z2U3YjFiSEt4VVQ2Y0F2bFU4cmYzQTEwdHp0MHNMaVlEbythTQo3R25JMkZVU2t3OTg1YU5SNnFKSUtTcFJHd0tCZ1FEQkkyQ3hkd1F3L3ZNVVZvcGN4TzZTMThzNklvODdJV0dVCnpnZXpqZUpIYW1VV3JaSWJRZ2txRU1aWVZSdFhpVXBDZEJySHpNd2pXWFBmN3pVQzRPdWZlZzhVYkJneTNhWUsKMHBzMHlXZTY4VUJpOEdTK2M0M2lhb0pnSGVwcW9ydHVUNlZvdFRJaEN0SnhKYTFNTEZoMHBQbitCN2RFakFocApLbmk4azcyUGh3S0JnUUNTT3p6T1IwVkNrd2hQcjl4VHUwOVNEejRKL3JxSnNkRkZkVzNjQkQ2Q1dXRG1mdFArCmxkeHYzSkVPVm1HaWZIYzY4MnAzQUFpeW1KcVdhRC9vdHNxbDRWbE1zRjRJb1lOTVhiK3JVOFhrWjJWQWdsRzkKbUZSNHM3UHZrYXFSNFNLR250dTNrbGpJWThpUWtKNmJIMUhwNE5aMU9JUjVMcXhOaUhLUjdrUE1rd0tCZ0NmTQpvNE5PZEVXb2MrenYvR2tyaDhJb3g4OCtDZWYwZEFoWEFJMUdvcWQyekVnRkVvT2Rjd2dCRnU1aTgxUnhqU1R1CmlnbzhNS0RrTVJXblZIUTRaeldnMEhTejViU3RxaWEyeVpieUhmY08rZWFwaFFrZUJOSHdndGROc3Qyd2xSRWgKUm9PeU94ZEdCS0dlVXZ6TWNwbnUyVGs0MjlJN1RReG0zU1IzQ1d3SEFvR0JBS1FIZitncCtFUmFOcDExdU1OQgo0b3hpbHhwaklqeE8wOTE2WnkyUWFxTjlqSGV1RFc5YmdyWDBjQm1kdExPMjdRZE9EekVwcloyd1h5SDRDSGkxClRsQzdnSksvYlNUSnYyQnpwcUtjOVVQbXpiMnhTeFJaRnBiQkp3KytnRnF4UFlST0NqRWpIc2lmaWJxSmFPdzAKZkN3dzA5SlJDTkVsUU40R2FwRElXUlQ5Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K',
+};
+
 function serviceHealthCheck(port: number, options?: healthCheckOptions) {
   const endpoint = options ? (options.endpoint ? options.endpoint : '') : '';
   const composeOptions = options ? options.composeOptions : {};
@@ -61,22 +79,6 @@ function serviceHealthCheck(port: number, options?: healthCheckOptions) {
   };
 }
 
-const dockerDemoEnv: Record<string, string> = {
-  STAGE: 'DEV',
-  TOKENIZER_URL: 'http://localhost:37766',
-  APPLICATION_FRONT_END: 'http://localhost:3000',
-  APPLICATION_BACK_END: 'http://localhost:3001',
-  CDN_HOST: 'localhost:8000',
-  LUNASEC_SIGNING_KEY:
-    'LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktnd2dnU2tBZ0VBQW9JQkFRQ1dmV1pXYWdoR01NWkQKaWxWeHl3SG5JbmNNVWkxUjczTXNWVGlkcXF4OFZnbkxBcklDd2ZqekJRZVFGZlJsRzZ1Y1FTaWEzR2FQY1gwSAo1MW41UXNWN2NtY1d0WU9NM3RjNFhIS2ZjbDllUEJWOFI4RFlYRmdzdkdEQm5GOFVXOXhZS0hhT2gwQ1U4N3JvCnNHMTVKc0NseVc5S2VudmhrY0pJU3Z3TVVLL3N0VG5SM1NnZjdHR3MzV0hwZ3U4c1l0dDBVVm1tL0RWMnNGcFgKc28yODVIeTNpb3h0eE4wT1BsOVk4R1lwbmxwamg3ZWtwZnoxSUZ6d0sxaDhGeDlJenU3aVRGMFlpMzZlUnJiMQpMSXBKZ0hGWXR6aHNVd283QmFQRFNCNzh0dWZDMFVTVkQ1SEpPanNCS1A2ZzByY0pFNUUwQnJGajQ3UHlvdlRSCnk3QzZqZG85QWdNQkFBRUNnZ0VBVGxSM01BT0F5d2dZS28rV2FlU0EyUTNYYVZKY3hJa2VLYlV5QXQ4VGFLUmYKOUlzeW5MemFGNlJHaTNqaC9MNnFWR3FWK0FWQVhPbDFhdWZBclQxVURTMCsrMUwvWmhPWGNuNnNLdElkVWE5MApmM3ZacE1Sc0lOenNmOW9rb3pRdFBMWFMvOXptZ0tGY2FFRnN1ZUt4NDVrMWxFNnNySHh4NDY4a0FrVDlUUGM3CkJpQ3d2REMwM1VCUUdJaFdESGZjZzJ5aTA3VzVLb01VNjZSS0ZxMk5WT1NwdW1Tb2VyMjVNLytKNFZCc05mb3MKeEM0eEc3aWRTNzZZa21JalBMZnZjelZRUk9xNDlnblBnMHE2SWpBZHN2TVNjMHBhYUlYNkVmRUU4K2Ewd3VoWgpqTWUxQWd1V09OMEs0ajZXeHIrT0UwMEJJNjB0akhNaVdsU2JNU3R6QVFLQmdRREhlSHdOUWQ4dE5tYlhPOXB4CmxtdFVwNENOZ09FZEp6b2ZlOG9tRzl2K2gxNGxUcjFOVkZPT3VaSFFsZUFXZnl6ZDZFdmpicDY1VU4wa1h0QnEKOFllNHY5dkJ3S2thL3d1ODJPS0dKMmQ3aTF4Z2U3YjFiSEt4VVQ2Y0F2bFU4cmYzQTEwdHp0MHNMaVlEbythTQo3R25JMkZVU2t3OTg1YU5SNnFKSUtTcFJHd0tCZ1FEQkkyQ3hkd1F3L3ZNVVZvcGN4TzZTMThzNklvODdJV0dVCnpnZXpqZUpIYW1VV3JaSWJRZ2txRU1aWVZSdFhpVXBDZEJySHpNd2pXWFBmN3pVQzRPdWZlZzhVYkJneTNhWUsKMHBzMHlXZTY4VUJpOEdTK2M0M2lhb0pnSGVwcW9ydHVUNlZvdFRJaEN0SnhKYTFNTEZoMHBQbitCN2RFakFocApLbmk4azcyUGh3S0JnUUNTT3p6T1IwVkNrd2hQcjl4VHUwOVNEejRKL3JxSnNkRkZkVzNjQkQ2Q1dXRG1mdFArCmxkeHYzSkVPVm1HaWZIYzY4MnAzQUFpeW1KcVdhRC9vdHNxbDRWbE1zRjRJb1lOTVhiK3JVOFhrWjJWQWdsRzkKbUZSNHM3UHZrYXFSNFNLR250dTNrbGpJWThpUWtKNmJIMUhwNE5aMU9JUjVMcXhOaUhLUjdrUE1rd0tCZ0NmTQpvNE5PZEVXb2MrenYvR2tyaDhJb3g4OCtDZWYwZEFoWEFJMUdvcWQyekVnRkVvT2Rjd2dCRnU1aTgxUnhqU1R1CmlnbzhNS0RrTVJXblZIUTRaeldnMEhTejViU3RxaWEyeVpieUhmY08rZWFwaFFrZUJOSHdndGROc3Qyd2xSRWgKUm9PeU94ZEdCS0dlVXZ6TWNwbnUyVGs0MjlJN1RReG0zU1IzQ1d3SEFvR0JBS1FIZitncCtFUmFOcDExdU1OQgo0b3hpbHhwaklqeE8wOTE2WnkyUWFxTjlqSGV1RFc5YmdyWDBjQm1kdExPMjdRZE9EekVwcloyd1h5SDRDSGkxClRsQzdnSksvYlNUSnYyQnpwcUtjOVVQbXpiMnhTeFJaRnBiQkp3KytnRnF4UFlST0NqRWpIc2lmaWJxSmFPdzAKZkN3dzA5SlJDTkVsUU40R2FwRElXUlQ5Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K',
-  AWS_DEFAULT_REGION: 'us-west-2',
-  AWS_ACCESS_KEY_ID: 'test',
-  AWS_SECRET_ACCESS_KEY: 'test',
-  LOCALSTACK_URL: 'http://localhost:4566',
-  LOCAL_HTTPS_PROXY: 'https://localhost:4568',
-  SESSION_JWKS_URL: 'http://localhost:3001/.lunasec/jwks.json',
-};
-
 const demoDockerFile = 'js/docker/demo.dockerfile';
 
 const localstackImage = 'localstack/localstack:0.12.19';
@@ -85,11 +87,25 @@ export class LunaSecStackDockerCompose {
   env: LunaSecStackEnvironment = 'dev';
   localBuild = false;
   version: string;
+  stackConfigOptions: LunaSecStackConfigOptions;
 
-  constructor(env: LunaSecStackEnvironment, stackVersion: string, localBuild: boolean) {
+  constructor(
+    env: LunaSecStackEnvironment,
+    stackVersion: string,
+    localBuild: boolean,
+    stackConfigOptions?: LunaSecStackConfigOptions
+  ) {
     this.env = env;
     this.localBuild = localBuild;
     this.version = stackVersion;
+    this.stackConfigOptions = {
+      ...devConfigOptionsDefaults,
+      ...stackConfigOptions,
+    };
+
+    if (this.stackConfigOptions.sessionJWKSURL === '') {
+      this.stackConfigOptions.sessionJWKSURL = `${this.stackConfigOptions.applicationBackEnd}/.lunasec/jwks.json`;
+    }
   }
 
   dockerImage(name: string) {
@@ -247,7 +263,7 @@ export class LunaSecStackDockerCompose {
 
     const localBuildConfig = {
       ...this.dockerfileTarget(demoDockerFile, name),
-      volumes: ['./go/config/lunasec/:/config/lunasec/', outputMount],
+      volumes: ['./js/sdks/packages/cli/config/lunasec/:/config/lunasec/', outputMount],
     };
 
     return {
@@ -277,7 +293,8 @@ export class LunaSecStackDockerCompose {
         context: 'go/',
         dockerfile: 'docker/tokenizerbackend.dockerfile',
         args: {
-          BUILD_TAG: 'dev',
+          tag: 'dev',
+          version: version,
         },
       },
     };
@@ -384,6 +401,24 @@ export class LunaSecStackDockerCompose {
     };
   }
 
+  getDockerEnv(): Record<string, string> {
+    return {
+      APPLICATION_FRONT_END: this.stackConfigOptions.applicationFrontEnd,
+      APPLICATION_BACK_END: this.stackConfigOptions.applicationBackEnd,
+      LUNASEC_SIGNING_KEY: this.stackConfigOptions.signingKey,
+      SESSION_JWKS_URL: this.stackConfigOptions.sessionJWKSURL,
+
+      STAGE: 'DEV',
+      TOKENIZER_URL: 'http://localhost:37766',
+      CDN_HOST: 'localhost:8000',
+      AWS_DEFAULT_REGION: 'us-west-2',
+      AWS_ACCESS_KEY_ID: 'test',
+      AWS_SECRET_ACCESS_KEY: 'test',
+      LOCALSTACK_URL: 'http://localhost:4566',
+      LOCAL_HTTPS_PROXY: 'https://localhost:4568',
+    };
+  }
+
   write(dir: string) {
     const dockerCompose = dump(this.getProject());
 
@@ -392,8 +427,10 @@ export class LunaSecStackDockerCompose {
 
     writeFileSync(composePath, dockerCompose);
 
-    const dockerEnvFile = Object.keys(dockerDemoEnv)
-      .map((k) => `${k}=${dockerDemoEnv[k]}`)
+    const dockerEnv = this.getDockerEnv();
+
+    const dockerEnvFile = Object.keys(dockerEnv)
+      .map((k) => `${k}=${dockerEnv[k]}`)
       .join('\n');
 
     writeFileSync(dockerDemoEnvPath, dockerEnvFile);

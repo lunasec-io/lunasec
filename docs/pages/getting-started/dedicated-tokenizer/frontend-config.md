@@ -2,7 +2,7 @@
 id: "frontend-config"
 title: "Frontend Configuration"
 sidebar_label: "Frontend Configuration"
-sidebar_position: 3
+sidebar_position: 4
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
