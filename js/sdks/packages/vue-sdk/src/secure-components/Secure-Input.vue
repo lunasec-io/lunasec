@@ -1,13 +1,17 @@
 <template>
-  <iframe v-if="shouldRenderFrame" :style="frameStyle"></iframe>
+  <p v-if="shouldRenderFrame">
+    TEST PARAGRAPH
+  </p>
+  <iframe v-if="shouldRenderFrame" :style="frameStyle">
+    THIS IS A FRAME
+  </iframe>
   <input ref="dummyElementRef" />
   <input ref="dummyStyleRef" />
 </template>
-
 <script lang="ts">
 import {defineComponent, CSSProperties} from 'vue';
 
-import { SecureTools } from '../secure-tools';
+import { setupSecureComponent } from '../secure-tools';
 
 export default defineComponent({
   name: 'SecureInput',
@@ -16,6 +20,8 @@ export default defineComponent({
   },
   computed: {
     frameStyle() {
+      console.log('frame style computed hook fired')
+      console.log('should render frame is ', this.shouldRenderFrame)
       const clonedStyle = this.clonedStyle;
       if (clonedStyle === null){
         console.log('computed framestyle returning empty')
@@ -35,8 +41,7 @@ export default defineComponent({
   },
 
   setup() {
-    const secureTools = new SecureTools();
-    const lunaSecRenderData = secureTools.setupSecureComponent();
+    const lunaSecRenderData = setupSecureComponent();
     console.log('lunaSecRenderData is ', lunaSecRenderData)
 
     return lunaSecRenderData

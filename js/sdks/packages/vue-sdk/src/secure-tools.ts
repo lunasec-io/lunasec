@@ -20,62 +20,71 @@ import { inject, onMounted, reactive, ref, Ref } from 'vue';
 import { LunaSecConfigProviderAttrs } from './secure-components/LunaSec-Config-Provider';
 
 export interface RenderData {
-  frameId: string;
-  shouldRenderFrame: boolean;
-  clonedStyle: ReadElementStyle | null;
+  shouldRenderFrame: Ref<boolean>;
+  clonedStyle: ReadElementStyle | Record<string | number, never>;
   dummyElementRef: Ref;
 }
 
-export class SecureTools {
-  // This is a reactive bag of properties used by the secure components
-  renderData: RenderData;
+// This is a reactive bag of properties used by the secure components
+// renderData: RenderData;
+//
+// private messageCreator: FrameMessageCreator;
+// private lunaSecConfig: LunaSecConfigProviderAttrs;
 
-  private messageCreator: FrameMessageCreator;
-  private lunaSecConfig: LunaSecConfigProviderAttrs;
+// constructor() {
+//   console.log('built an instance of SecureTools');
+//
+//   const renderData: RenderData = {
+//     frameId,
+//     shouldRenderFrame: false,
+//     clonedStyle: null,
+//     dummyElementRef: ref(null),
+//   };
+//   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//   // @ts-ignore
+//   this.renderData = renderData;
+// }
 
-  constructor() {
-    console.log('built an instance of SecureTools');
+function cloneStyle(ref: Ref) {
+  if (!ref.value) {
+    throw new Error('attempted to clone styles for element that didnt exist');
+  }
+  return getStyleInfo(ref.value);
+}
 
-    const providerConf = inject<LunaSecConfigProviderAttrs>('lunaSecConfig');
-    if (!providerConf) {
-      throw new Error('Must register LunaSecConfigProvider above Secure Component');
+export function setupSecureComponent(): RenderData {
+  const providerConf = inject<LunaSecConfigProviderAttrs>('lunaSecConfig');
+  if (!providerConf) {
+    throw new Error('Must register LunaSecConfigProvider above Secure Component');
+  }
+  const lunaSecConfig = providerConf;
+
+  const frameId = generateSecureNonce();
+  const messageCreator = new FrameMessageCreator(providerConf.lunaSecDomain, frameId, (notification) => {
+    // this.frameNotificationCallback(notification)
+    console.log('frame notification received ', notification);
+  });
+  // Set up default reactive variables
+  const shouldRenderFrame = ref(false);
+  const dummyElementRef = ref(null);
+  const clonedStyle = reactive({});
+
+  onMounted(() => {
+    // todo: handle the need to pass a different ref for inputs
+    const style = cloneStyle(dummyElementRef);
+    console.log('cloned style is ', style);
+    if (!style) {
+      throw new Error('read null style from dummy element');
     }
-    this.lunaSecConfig = providerConf;
+    Object.assign(clonedStyle, style);
+    shouldRenderFrame.value = true;
+    console.log('mounted hook complete, frame should render');
+  });
 
-    const frameId = generateSecureNonce();
-    this.messageCreator = new FrameMessageCreator(providerConf.lunaSecDomain, frameId, (notification) => {
-      // this.frameNotificationCallback(notification)
-      console.log('frame notification received ', notification);
-    });
-
-    this.renderData = reactive({
-      frameId,
-      // I believe this will automatically become reactive
-      shouldRenderFrame: false,
-      clonedStyle: null,
-      dummyElementRef: ref(null),
-    });
-  }
-
-  cloneStyle(ref: Ref) {
-    if (!ref.value) {
-      throw new Error('attempted to clone styles for element that didnt exist');
-    }
-    return getStyleInfo(ref.value);
-  }
-
-  setupSecureComponent(): RenderData {
-    onMounted(() => {
-      // todo: handle the need to pass a different ref for inputs
-      const style = this.cloneStyle(this.renderData.dummyElementRef);
-      console.log('cloned style is ', style);
-      if (!style) {
-        throw new Error('read null style from dummy element');
-      }
-      this.renderData.clonedStyle = style;
-      this.renderData.shouldRenderFrame = true;
-    });
-    console.log('setupSecureComponent returning ', this.renderData);
-    return this.renderData;
-  }
+  // console.log('setupSecureComponent returning ', this.renderData);
+  return {
+    clonedStyle,
+    dummyElementRef,
+    shouldRenderFrame,
+  };
 }
