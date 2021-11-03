@@ -1,6 +1,6 @@
 ---
-title: MonoRepo CI
-description: Celebrating the release of the first fully Open Source data security platform
+title: MonoRepo CI with Lerna, here's what we learned
+description: How we got CI working with Lerna, docker-compose, docker.sock, and cypress
 slug: lunasec-ci
 authors:
 - name: Forrest Allison
@@ -71,7 +71,7 @@ We (okay, it was my very smart coworker) even generated
 for the yaml file from the official JSON Schema definition.
 
 [Here's the code](https://github.com/lunasec-io/lunasec/blob/master/js/sdks/packages/cli/src/docker-compose/lunasec-stack.ts) 
-that handles generating the schema.  As you can see, it's pretty darn clean, with each container represented as a function that returns
+that handles generating the `docker-compose.yaml`.  As you can see, it's pretty darn clean, with each container represented as a function that returns
 a config object.  I work with some smart folks.  Hopefully someday docker-compose (or something similar) is going to expose a JS SDK we can call to set up the cluster programmatically,
 but in the meantime, this works very well.  Maybe we will even turn this generator into a library eventually.
 
@@ -88,7 +88,8 @@ to run containers on the host(which I call docker *from* docker).  We read [this
 from the person who helped write docker in docker and went with the docker *from* docker option, explained at the bottom of that blog, for exactly the reasons they outlined,
 namely that we want simplicity and caching.  
 
-So, we added docker-compose and docker packages to our job-runner, and added this flag to the run command
+### How to use docker.sock and Docker Compose together
+We added docker-compose and docker packages to our job-runner, and added this flag to the run command
 ```shell
 docker run -v /var/run/docker.sock:/var/run/docker.sock job-runner
 ```
@@ -125,7 +126,8 @@ own and once with it merged to master to make sure that the app is still going t
 You can see all of our workflows [here](https://github.com/lunasec-io/lunasec/tree/master/.github/workflows).
 
 #### Speed
-CI takes around 30 minutes currently, but we think we could cut that time in half when we get docker builtkit caching working.  We really wish GitHub would let us pay for a faster box
+CI takes around 30 minutes currently, but we think we could cut that time in half when we get docker builtkit caching working.  We really 
+wish GitHub would let us pay for a faster box
 with more than 4gb of cache storage, and we are guessing we're not the only ones who feel that way.  GitHub, if you're reading this,
 take our money please.
 
