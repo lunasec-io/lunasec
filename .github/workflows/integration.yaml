@@ -126,7 +126,7 @@ jobs:
 
     - name: docker compose logs
       if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
-      run: docker-compose -f docker-compose.tests.yaml logs
+      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests --show-logs=true
 
     - uses: actions/upload-artifact@v2
       if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
