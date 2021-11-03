@@ -39,7 +39,7 @@ Here are some of the main things we've figured out.
 * Getting it all going in GitHub Actions
 
 
-### Container Layout
+### Container Setup
 Since we want to actually test a running
 copy of our system, we launch our React testing app and all our services in their own containers and then a container 
 running cypress presses buttons and makes sure things work.  First, we have to actually 
