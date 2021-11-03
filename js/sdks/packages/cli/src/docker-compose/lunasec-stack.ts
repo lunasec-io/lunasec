@@ -19,7 +19,7 @@ import path from 'path';
 
 import { dump } from 'js-yaml';
 
-import { DevConfigOptions, devConfigOptionsDefaults, LunaSecStackConfigOptions } from '../config/types';
+import { devConfigOptionsDefaults, DevelopmentConfigOptions, LunaSecStackConfigOptions } from '../config/types';
 
 import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
 
@@ -73,8 +73,7 @@ const localstackImage = 'localstack/localstack:0.12.19';
 export class LunaSecStackDockerCompose {
   env: LunaSecStackEnvironment = 'dev';
   localBuild = false;
-  version: string;
-  stackConfigOptions: DevConfigOptions;
+  stackConfigOptions: DevelopmentConfigOptions;
 
   constructor(
     env: LunaSecStackEnvironment,
@@ -84,7 +83,6 @@ export class LunaSecStackDockerCompose {
   ) {
     this.env = env;
     this.localBuild = localBuild;
-    this.version = stackVersion;
 
     const devConfigOptions = stackConfigOptions ? stackConfigOptions.development : {};
     this.stackConfigOptions = {
@@ -98,7 +96,7 @@ export class LunaSecStackDockerCompose {
   }
 
   dockerImage(name: string) {
-    const tag: string = this.version;
+    const tag: string = version;
     return {
       image: `lunasec/${name}:${tag}`,
     };

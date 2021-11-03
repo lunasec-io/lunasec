@@ -401,6 +401,11 @@ yargs
         type: 'string',
         description: 'Build directory for built secure components.',
       },
+      json: {
+        required: false,
+        type: 'boolean',
+        description: "Output this stack's resources as a json object.",
+      },
     },
     (args) => {
       const cacheBuildDir = path.join(os.homedir(), '.lunasec/builds');
@@ -431,6 +436,11 @@ yargs
         throw new Error(
           `unable to locate outputs for stack: ${LunaSecStackName} in stack output file ${outputsFilename}`
         );
+      }
+
+      if (args.json) {
+        console.log(JSON.stringify(stackOutputs, null, 2));
+        return;
       }
 
       console.log(`Tokenizer URL: ${stackOutputs[getOutputName('gateway')]}`);

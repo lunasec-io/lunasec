@@ -20,6 +20,7 @@ import path from 'path';
 import {
   deploymentConfigOptionsDefaults,
   devConfigOptionsDefaults,
+  grantConfigOptionsDefaults,
   LunaSecStackConfigOptions,
   metricConfigOptionsDefaults,
 } from './types';
@@ -42,15 +43,24 @@ export function loadLunaSecStackConfig(): LunaSecStackConfigOptions | undefined 
     const config = require(configPath);
     const lunaseConfig = config as LunaSecStackConfigOptions;
 
-    const productionConfig = lunaseConfig.production ? lunaseConfig.production : { metrics: {} };
+    const productionConfig = lunaseConfig.production ? lunaseConfig.production : { metrics: {}, grants: {} };
+    const devConfig = lunaseConfig.development ? lunaseConfig.development : { grants: {} };
     return {
       development: {
         ...devConfigOptionsDefaults,
-        ...(lunaseConfig.development ? lunaseConfig.development : {}),
+        ...devConfig,
+        grants: {
+          ...grantConfigOptionsDefaults,
+          ...devConfig.grants,
+        },
       },
       production: {
         ...deploymentConfigOptionsDefaults,
         ...productionConfig,
+        grants: {
+          ...grantConfigOptionsDefaults,
+          ...productionConfig.grants,
+        },
         metrics: {
           ...metricConfigOptionsDefaults,
           ...productionConfig.metrics,
