@@ -1,5 +1,5 @@
 ---
-title: MonoRepo CI with Lerna, here's what we learned
+title: End-to-End testing a MonoRepo
 description: How we got CI working with Lerna, docker-compose, docker.sock, and cypress
 slug: lunasec-ci
 authors:
