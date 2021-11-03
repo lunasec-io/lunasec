@@ -21,6 +21,7 @@
     "@aws-sdk/hash-node": "^3.22.0",
     "@aws-sdk/protocol-http": "^3.22.0",
     "@aws-sdk/s3-request-presigner": "^3.22.0",
+    "@aws-sdk/types": "^3.38.0",
     "@aws-sdk/url-parser": "^3.22.0",
     "@lunasec/isomorphic-common": "^1.0.2",
     "@lunasec/server-common": "^1.0.2",

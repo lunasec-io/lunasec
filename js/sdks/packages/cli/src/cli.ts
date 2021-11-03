@@ -17,16 +17,94 @@
  */
 
 import fs from 'fs';
+import { get, IncomingMessage } from 'http';
 import os from 'os';
 import path from 'path';
+import 'source-map-support/register';
 
+import * as cdk from '@aws-cdk/core';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetCallerIdentityCommand, STSClient } from '@aws-sdk/client-sts';
 import * as yargs from 'yargs';
 
-import { LunaSecStackDockerCompose, LunaSecStackEnvironments } from './docker-compose/lunasec-stack';
-import { runCommand } from './utils/exec';
+import { mirrorRepos } from './cdk-stack/mirror-service-repos';
+import { getOutputName, LunaSecDeploymentStack } from './cdk-stack/stack';
+import { AwsResourceConfig, LunaSecStackName, SecureFrameAssetFilename } from './cdk-stack/types';
+import { loadLunaSecStackConfig } from './config/load-config';
+import {
+  LunaSecStackDockerCompose,
+  LunaSecStackEnvironment,
+  LunaSecStackEnvironments,
+} from './docker-compose/lunasec-stack';
+import { runCommand, runCommandWithHealthcheck, RunCommandWithHealthcheckOptions } from './utils/exec';
+import { copyFolderRecursiveSync } from './utils/filesystem';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
+
+const awsRegion = 'us-west-2';
+
+async function resolveURL(url: string): Promise<IncomingMessage> {
+  return new Promise((resolve, reject) => {
+    get(url, (res) => {
+      resolve(res);
+    }).on('error', function (e) {
+      reject(e);
+    });
+  });
+}
+
+async function checkURLStatus(url: string): Promise<boolean> {
+  const resp = await resolveURL(url);
+  return resp.statusCode === 200 || resp.statusCode === 404;
+}
+
+function* onStdinDemo(data: string) {
+  if (data.includes('Starting lunasec_', 0)) {
+    console.log(data);
+  }
+  yield;
+}
+
+function getRunStackOptions(env: LunaSecStackEnvironment, localBuild: boolean, shouldStreamStdio: boolean) {
+  const demoOptions: RunCommandWithHealthcheckOptions = {
+    streamStdout: shouldStreamStdio,
+    healthcheck: async (): Promise<boolean> => {
+      try {
+        const checks = await Promise.all([
+          checkURLStatus('http://localhost:3000'),
+          checkURLStatus('http://localhost:37766'),
+        ]);
+        return checks.every((c) => c);
+      } catch (e) {
+        return false;
+      }
+    },
+    onStdin: onStdinDemo(''),
+  };
+
+  const devOptions: RunCommandWithHealthcheckOptions = {
+    streamStdout: true,
+    healthcheck: async (): Promise<boolean> => {
+      try {
+        return await checkURLStatus('http://localhost:37766');
+      } catch (e) {
+        return false;
+      }
+    },
+  };
+
+  const localBuildOptions: RunCommandWithHealthcheckOptions = {
+    streamStdout: true,
+  };
+  if (localBuild) {
+    return localBuildOptions;
+  }
+  if (env === 'demo') {
+    return demoOptions;
+  }
+  return devOptions;
+}
 
 yargs
   .scriptName('lunasec')
@@ -73,7 +151,7 @@ yargs
         description: 'Show the logs from a previous run of the LunaSec stack for the specified environment.',
       },
     },
-    (args) => {
+    async (args) => {
       if (args['force-rebuild'] && !args['local-build']) {
         throw new Error('Attempted to force a rebuild without specifying `--local-build`.');
       }
@@ -84,10 +162,11 @@ yargs
       }
       const env = foundEnv[0];
 
-      const stack = new LunaSecStackDockerCompose(env, version, args['local-build']);
+      const lunasecConfig = loadLunaSecStackConfig();
+
+      const stack = new LunaSecStackDockerCompose(env, version, args['local-build'], lunasecConfig);
 
       const useSudo = args['no-sudo'] ? '' : 'sudo ';
-      console.log('USE SUDO IS ', useSudo);
       const envOverride = 'COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1';
 
       const homeDir = os.homedir();
@@ -97,8 +176,7 @@ yargs
         fs.mkdirSync(composePath);
       }
 
-      // if we are not in demo mode or in dev but not building locally, then write to the current directory
-      if (!(env === 'demo' || (env === 'dev' && !args['local-build']))) {
+      if (env === 'tests' || args['local-build']) {
         composePath = process.cwd();
       }
 
@@ -115,58 +193,50 @@ yargs
 
       const baseDockerComposeCmd = `${useSudo} ${envOverride} docker-compose -f ${composeFile} ${directory}`;
       if (args['show-logs']) {
-        runCommand(`${baseDockerComposeCmd} logs`, true);
-        process.exit(0);
+        const result = runCommand(`${baseDockerComposeCmd} logs`, true);
+        process.exit(result.status);
       }
 
       const forceRebuild = args['force-rebuild'] ? '--build' : '';
 
-      const baseCmd = `${baseDockerComposeCmd} up ${forceRebuild}`;
+      const dockerComposeUpCmd = `${baseDockerComposeCmd} up ${forceRebuild}`;
 
       const shouldStreamStdio = env !== 'demo' || args['verbose'];
 
       if (env === 'tests') {
         // TODO (cthompson) this is a hack for now, we probably want to find a better way of building this command
-        const output = runCommand(
-          `${baseCmd} --force-recreate --exit-code-from integration-test integration-test`,
-          shouldStreamStdio
+        const result = runCommand(
+          `${dockerComposeUpCmd} --force-recreate --exit-code-from integration-test integration-test`,
+          true
         );
-        console.log(output);
-        process.exit(output.status);
+        process.exit(result.status);
       }
+
+      const options = getRunStackOptions(env, args['local-build'], shouldStreamStdio);
 
       if (env === 'demo') {
-        console.log('Starting the LunaSec Stack demo at http://localstack:3000...');
+        console.log('Starting the LunaSec Stack demo...');
       } else if (env === 'dev') {
-        console.log(
-          'Starting the LunaSec Stack in dev mode. Tokenizer Backend will be accessible at http://localhost:37766.'
-        );
+        console.log('Starting the LunaSec Stack in dev mode...');
+        console.log('Make sure your application backend is running and configured in the lunasec.js config.');
       }
-      console.log('calling docker compose: ', baseCmd);
 
-      const output = runCommand(baseCmd, shouldStreamStdio);
-      if (env === 'demo' || output.status !== 0) {
-        if (output.stdout !== undefined && output.stdout !== null) {
-          console.log(output.stdout.toString());
-        }
+      await runCommandWithHealthcheck(dockerComposeUpCmd, options);
 
-        if (output.stderr !== undefined && output.stderr !== null) {
-          console.log(output.stderr.toString());
-        }
+      if (env === 'demo') {
+        console.log('LunaSec Stack demo started at http://localhost:3000.');
+      } else if (env === 'dev') {
+        console.log('Tokenizer Backend is accessible at http://localhost:37766.');
       }
-      process.exit(output.status);
     }
   )
   .command(
     'deploy',
     'Deploy the LunaSec stack to AWS.',
     {
-      config: {
-        required: false,
-        description: 'Config file for building secure components.',
-      },
       'build-dir': {
         required: false,
+        type: 'string',
         description: 'Build directory for built secure components.',
       },
       'dry-run': {
@@ -175,16 +245,199 @@ yargs
       },
       local: {
         required: false,
+        default: false,
+        type: 'boolean',
         description: 'Deploy the LunaSec stack to Localstack.',
       },
       output: {
         required: false,
+        type: 'string',
         description: 'Path to where the resources output file will be written to.',
       },
+      'skip-mirroring': {
+        required: false,
+        default: false,
+        description: 'Skip docker image mirroring.',
+      },
     },
-    () => {
-      const args = process.argv.slice(2, process.argv.length);
-      runCommand(`${path.join(__dirname, '../bin/lunasec')} ${args.join(' ')}`, true);
+    async (args) => {
+      const buildsFolder = path.join(os.homedir(), '.lunasec/builds');
+      if (!fs.existsSync(buildsFolder)) {
+        fs.mkdirSync(buildsFolder, { recursive: true });
+      }
+
+      const cacheBuildDir = path.join(buildsFolder, `build_${new Date().toISOString()}`);
+      const buildDir = args['build-dir'] ? args['build-dir'] : cacheBuildDir;
+      console.debug(`Building LunaSec Stack to ${buildDir}`);
+
+      const awsEndpoint = args.local ? 'http://localhost:4566' : undefined;
+
+      const sts = new STSClient({ region: awsRegion, endpoint: awsEndpoint });
+      const cmd = new GetCallerIdentityCommand({});
+      const output = await sts.send(cmd);
+
+      const accountID = output.Account;
+      if (accountID === undefined) {
+        throw new Error("unable to resolve current AWS user's account id");
+      }
+
+      if (!(args['skip-mirroring'] || args.local)) {
+        await mirrorRepos(accountID, version);
+      }
+
+      const lunasecConfig = loadLunaSecStackConfig();
+      if (lunasecConfig === undefined) {
+        throw new Error(
+          'unable to load lunasec config. Is the file "lunasec.js" accessible in the current directory tree?'
+        );
+      }
+
+      if (lunasecConfig.production.applicationFrontEnd === undefined) {
+        throw new Error('no application front end url provided in lunasec stack config.');
+      }
+
+      if (lunasecConfig.production.applicationBackEnd === undefined) {
+        throw new Error('no application back end url provided in lunasec stack config.');
+      }
+
+      const app = new cdk.App();
+      const stack = new LunaSecDeploymentStack(app, LunaSecStackName, args.local, lunasecConfig.production);
+      const out = app.synth();
+      copyFolderRecursiveSync(out.directory, buildDir);
+
+      const outputsFilePath = path.join(buildDir, 'outputs.json');
+
+      const cdkCmd = args.local ? 'cdklocal' : 'cdk';
+
+      const account = args.local ? '' : `aws://${accountID}/${awsRegion}`;
+
+      const bootstrapResp = runCommand(`${cdkCmd} bootstrap -a ${buildDir} ${account}`, true);
+      if (bootstrapResp.status) {
+        throw new Error(`command failed to execute`);
+      }
+
+      const deployResp = runCommand(
+        `${cdkCmd} deploy --require-approval never -a ${buildDir} --outputs-file ${outputsFilePath}`,
+        true
+      );
+      if (deployResp.status) {
+        throw new Error(`command failed to execute`);
+      }
+
+      // TODO (cthompson) check if file exists
+      const outputsFileContent = fs.readFileSync(outputsFilePath, 'utf-8');
+
+      const stackOutputFile = JSON.parse(outputsFileContent);
+
+      const stackOutputs = stackOutputFile[LunaSecStackName] as Record<string, string>;
+      if (stackOutputs === undefined) {
+        throw new Error(
+          `unable to locate outputs for stack: ${LunaSecStackName} in stack output file ${outputsFilePath}`
+        );
+      }
+
+      if (!args.local) {
+        const backendBucketOutputName = getOutputName('tokenizer-backend-bucket');
+        const tokenizerBackendAssetBucket = stackOutputs[backendBucketOutputName];
+        if (tokenizerBackendAssetBucket === undefined || tokenizerBackendAssetBucket === '') {
+          throw new Error(
+            `unable to load tokenizer backend bucket name ${backendBucketOutputName} in stack output file ${outputsFilePath}`
+          );
+        }
+
+        if (stack.secureFrameAssets === undefined) {
+          throw new Error(`secure frame assets are not defined in the LunaSec stack.`);
+        }
+
+        for (const secureFrameAssetName of Object.keys(stack.secureFrameAssets.files)) {
+          const secureFrameAssetFilename = secureFrameAssetName as SecureFrameAssetFilename;
+          const secureFrameAsset = stack.secureFrameAssets.files[secureFrameAssetFilename];
+
+          const s3 = new S3Client({ region: awsRegion, endpoint: awsEndpoint });
+          const cmd = new PutObjectCommand({
+            Bucket: tokenizerBackendAssetBucket,
+            Key: secureFrameAsset.filename,
+            Body: secureFrameAsset.content,
+          });
+          try {
+            await s3.send(cmd);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+
+      const localstackConfig = args.local ? { localstack_url: 'http://localhost:4566' } : {};
+
+      if (args.output) {
+        const resourceConfig: AwsResourceConfig = {
+          aws_gateway: {
+            table_names: {
+              metadata: stackOutputs[getOutputName('metadata-table')],
+              keys: stackOutputs[getOutputName('keys-table')],
+              sessions: stackOutputs[getOutputName('sessions-table')],
+              grants: stackOutputs[getOutputName('grants-table')],
+            },
+            ciphertext_bucket: stackOutputs[getOutputName('ciphertext-bucket')],
+            ...localstackConfig,
+          },
+          tokenizer: {
+            secret_arn: stackOutputs[getOutputName('tokenizer-secret')],
+          },
+        };
+        const serializedConfig = JSON.stringify(resourceConfig, null, 2);
+        fs.writeFileSync(args.output, serializedConfig);
+      }
+    }
+  )
+  .command(
+    'resources',
+    'Show the stack resources for the latest deployment.',
+    {
+      'build-dir': {
+        required: false,
+        type: 'string',
+        description: 'Build directory for built secure components.',
+      },
+    },
+    (args) => {
+      const cacheBuildDir = path.join(os.homedir(), '.lunasec/builds');
+      if (!fs.existsSync(cacheBuildDir)) {
+        throw new Error('There are no LunaSec deploys. Please use `lunasec deploy` to first deploy the stack.');
+      }
+
+      const dirs = fs.readdirSync(cacheBuildDir).sort().reverse();
+
+      const latestBuildDir = dirs.length ? dirs[0] : undefined;
+
+      const buildDir = args['build-dir']
+        ? args['build-dir']
+        : latestBuildDir
+        ? path.join(cacheBuildDir, latestBuildDir)
+        : undefined;
+
+      if (buildDir === undefined) {
+        throw new Error('There are no LunaSec deploys. Please use `lunasec deploy` to first deploy the stack.');
+      }
+
+      const outputsFilename = path.join(buildDir, 'outputs.json');
+      const outputs = fs.readFileSync(outputsFilename, 'utf-8');
+      const parsedOutputs = JSON.parse(outputs);
+
+      const stackOutputs = parsedOutputs[LunaSecStackName] as Record<string, string>;
+      if (stackOutputs === undefined) {
+        throw new Error(
+          `unable to locate outputs for stack: ${LunaSecStackName} in stack output file ${outputsFilename}`
+        );
+      }
+
+      console.log(`Tokenizer URL: ${stackOutputs[getOutputName('gateway')]}`);
+      console.log(`Tokenizer Secret ARN: ${stackOutputs[getOutputName('tokenizer-secret')]}`);
+      console.log(``);
+      console.log(`Tables:`);
+      console.log(`  Keys Table: ${stackOutputs[getOutputName('keys-table')]}`);
+      console.log(`  Grants Table: ${stackOutputs[getOutputName('grants-table')]}`);
+      console.log(`  Metadata Table: ${stackOutputs[getOutputName('metadata-table')]}`);
     }
   )
   .demandCommand()

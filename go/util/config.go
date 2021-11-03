@@ -21,7 +21,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"path"
+	"path/filepath"
 )
 
 const (
@@ -64,18 +64,28 @@ func getFilesInDir(dir string) []fs.FileInfo {
 }
 
 func GetConfigProviderFromDir(configDir string) config.Provider {
-	files := getFilesInDir(configDir)
-
 	var (
 		filenames      []string
 		baseConfigFile string
 	)
-	for _, file := range files {
-		if file.Name() == baseConfigFileName {
-			baseConfigFile = path.Join(configDir, baseConfigFileName)
-			continue
-		}
-		filenames = append(filenames, path.Join(configDir, file.Name()))
+
+	err := filepath.Walk(configDir,
+		func(filepath string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			if !info.IsDir() {
+				if info.Name() == baseConfigFileName {
+					baseConfigFile = filepath
+					return nil
+				}
+				filenames = append(filenames, filepath)
+			}
+			return nil
+		})
+	if err != nil {
+		log.Println(err)
 	}
 
 	if baseConfigFile != "" {

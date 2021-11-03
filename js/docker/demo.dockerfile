@@ -37,7 +37,7 @@ RUN npm link
 
 WORKDIR /repo
 
-ENTRYPOINT lunasec
+ENTRYPOINT ["lunasec"]
 
 FROM cypress/included:8.6.0 as integration-test
 

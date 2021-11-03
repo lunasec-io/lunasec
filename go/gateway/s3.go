@@ -39,12 +39,12 @@ type awsS3Gateway struct {
 }
 
 type AwsS3GatewayConfig struct {
-	S3Region        string `yaml:"region"`
-	S3Bucket        string `yaml:"s3_bucket"`
-	AccessKeyID     string `yaml:"access_key_id"`
-	SecretAccessKey string `yaml:"secret_access_key"`
-	LocalHTTPSProxy string `yaml:"local_https_proxy"`
-	LocalstackURL   string `yaml:"localstack_url"`
+	S3Region         string `yaml:"region"`
+	CiphertextBucket string `yaml:"ciphertext_bucket"`
+	AccessKeyID      string `yaml:"access_key_id"`
+	SecretAccessKey  string `yaml:"secret_access_key"`
+	LocalHTTPSProxy  string `yaml:"local_https_proxy"`
+	LocalstackURL    string `yaml:"localstack_url"`
 }
 
 type AwsS3GatewayConfigWrapper struct {
@@ -61,8 +61,8 @@ type AwsS3Gateway interface {
 func NewAwsS3GatewayConfig(region, bucket string) AwsS3GatewayConfigWrapper {
 	return AwsS3GatewayConfigWrapper{
 		AwsGateway: configs.AwsGatewayConfig{
-			S3Region: region,
-			S3Bucket: bucket,
+			S3Region:         region,
+			CiphertextBucket: bucket,
 		},
 	}
 }
@@ -83,7 +83,7 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session
 		panic(err)
 	}
 
-	s3Host := gatewayConfig.S3Bucket + ".s3." + gatewayConfig.S3Region + ".amazonaws.com"
+	s3Host := gatewayConfig.CiphertextBucket + ".s3." + gatewayConfig.S3Region + ".amazonaws.com"
 
 	s3Gateway = &awsS3Gateway{
 		logger:           logger,
@@ -97,7 +97,7 @@ func NewAwsS3Gateway(logger *zap.Logger, provider config.Provider, sess *session
 func (s *awsS3Gateway) GetObject(key string) (content []byte, err error) {
 	s3Client := s3.New(s.s3)
 	input := s3.GetObjectInput{
-		Bucket: aws.String(s.S3Bucket),
+		Bucket: aws.String(s.CiphertextBucket),
 		Key:    aws.String(key),
 	}
 	resp, err := s3Client.GetObject(&input)
@@ -145,7 +145,7 @@ func (s *awsS3Gateway) generatePresignedUrl(key string, encryptionKey []byte, cr
 	keyChecksumBase64 := base64.StdEncoding.EncodeToString(keyChecksum[:])
 
 	params := createPresignedUrlParams{
-		svc, s.S3Bucket, key, encryptionKey, keyChecksumBase64,
+		svc, s.CiphertextBucket, key, encryptionKey, keyChecksumBase64,
 	}
 
 	url, err := createPresignedUrl(params)

@@ -58,6 +58,10 @@ func newServer(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 
 	sessionManagementRoutes := getSessionManagementRoutes(logger, provider, gateways, authProviderJwtVerifier)
 
+	sm.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		util.RespondSuccess(w)
+	})
+
 	util.AddRoutesToServer(sm, middleware, secureFrameRoutes)
 	util.AddRoutesToServer(sm, middleware, sessionManagementRoutes)
 

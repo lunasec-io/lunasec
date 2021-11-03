@@ -14,16 +14,32 @@
  * limitations under the License.
  *
  */
-import { execSync, ExecSyncOptionsWithBufferEncoding } from 'child_process';
+import { execSync, ExecSyncOptionsWithBufferEncoding, spawn } from 'child_process';
 
 interface RunCommandResult {
+  status: number;
+  message?: string;
+  stderr?: string;
+  stdout: string;
+}
+
+interface RunCommandError {
   status: number;
   message?: string;
   stderr?: Buffer;
   stdout: Buffer;
 }
 
+export interface RunCommandWithHealthcheckOptions {
+  healthcheck?: () => Promise<boolean>;
+  streamStdout?: boolean;
+  onStdin?: Generator<undefined, void, string>;
+  exitProcess?: boolean;
+}
+
 export function runCommand(command: string, streamStdio?: boolean): RunCommandResult {
+  console.debug(`running command: ${command}`);
+
   const options: ExecSyncOptionsWithBufferEncoding = {
     stdio: streamStdio ? 'inherit' : 'pipe',
   };
@@ -32,9 +48,78 @@ export function runCommand(command: string, streamStdio?: boolean): RunCommandRe
     const r = execSync(`${command}`, options);
     return {
       status: 0,
-      stdout: r,
+      stdout: r.toString(),
     };
   } catch (e) {
-    return e as RunCommandResult;
+    const err = e as RunCommandError;
+    return {
+      status: err.status,
+      message: err.message,
+      stderr: err.stderr ? err.stderr.toString() : '',
+      stdout: err.stdout ? err.stdout.toString() : '',
+    };
   }
+}
+
+function timeout(delay: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, delay);
+  });
+}
+
+export function runCommandWithHealthcheck(command: string, options: RunCommandWithHealthcheckOptions) {
+  console.debug(`running command: ${command}`);
+
+  const cmd = spawn('sh', ['-c', command]);
+
+  cmd.stdout.on('data', (data: Buffer) => {
+    const strData = data.toString();
+    if (options.streamStdout) {
+      console.log(strData);
+    }
+
+    if (options.onStdin) {
+      options.onStdin.next(strData);
+    }
+  });
+
+  cmd.stderr.on('data', (data: string) => {
+    console.error(data.toString());
+  });
+
+  cmd.on('close', (code) => {
+    if (!options.exitProcess) {
+      return;
+    }
+
+    if (code !== null) {
+      process.exit(code);
+    }
+    process.exit(0);
+  });
+
+  process.on('SIGINT', function () {
+    cmd.kill('SIGINT');
+  });
+
+  async function waitForAppToBeReady() {
+    if (options.healthcheck === undefined) {
+      // no healthcheck is defined, assume the app is healthy
+      return;
+    }
+
+    let attempts = 0;
+    let healthy = false;
+    while (!healthy && attempts < 1000) {
+      await timeout(1000);
+      attempts++;
+      healthy = await options.healthcheck();
+    }
+
+    if (!healthy) {
+      throw new Error(`command did not arrive at healthy state: ${command}`);
+    }
+  }
+
+  return waitForAppToBeReady();
 }
