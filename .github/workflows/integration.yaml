@@ -117,7 +117,7 @@ jobs:
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
     - name: Use CLI Container with docker.sock mounted to launch all other containers
-      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) lunasec_lunasec-cli start --no-sudo=true --local-build=true --env=tests
+      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests
 
     - name: docker logs
       if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
