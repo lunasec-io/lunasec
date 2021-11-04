@@ -1,6 +1,6 @@
 ---
-title: MonoRepo CI
-description: Celebrating the release of the first fully Open Source data security platform
+title: End-to-End testing a MonoRepo
+description: How we got CI working with Lerna, docker-compose, docker.sock, and cypress
 slug: lunasec-ci
 authors:
 - name: Forrest Allison
@@ -108,7 +108,7 @@ But a MonoRepo alone isn't enough.  As it turns out, to test in CI, our system a
 
 Here are some of the main things we've figured out.
 
-### Container Layout
+### Container Setup
 Since we want to actually test a running copy of our system, we launch our React testing app and all our services in 
 their own containers. Afterwards, a container running Cypress loads the web app and presses some buttons to makes sure things work.  
 
@@ -142,7 +142,7 @@ We (okay, it was my very smart coworker) even generated
 for the YAML file from the official JSON Schema definition.
 
 [Here's the code](https://github.com/lunasec-io/lunasec/blob/master/js/sdks/packages/cli/src/docker-compose/lunasec-stack.ts) 
-that handles generating the schema.  As you can see, it's pretty darn clean, with each container represented as a function that returns
+that handles generating the `docker-compose.yaml`.  As you can see, it's pretty darn clean, with each container represented as a function that returns
 a config object.  I work with some smart folks.  Hopefully someday Docker Compose (or something similar) is going to 
 expose a JS SDK we can call to set up the cluster programmatically,
 but in the meantime, this works very well.  Maybe we will even turn this generator into a library eventually?
@@ -162,9 +162,10 @@ We read [this really fantastic blog post](https://jpetazzo.github.io/2015/09/03/
 from the person who helped write Docker-in-Docker and went with the Docker *from* Docker option, 
 explained at the bottom of that blog, for exactly the reasons they outlined.
 
-Namely: We wanted simplicity and caching.  
+Namely: We wanted simplicity and caching.
 
-So, we added docker-compose and docker packages to our job-runner, and added this flag to the run command...
+### How to use docker.sock and Docker Compose together
+We added docker-compose and docker packages to our job-runner, and added this flag to the run command...
 ```shell
 docker run -v /var/run/docker.sock:/var/run/docker.sock job-runner
 ```
@@ -208,7 +209,8 @@ You can see all of our workflows [here](https://github.com/lunasec-io/lunasec/tr
 
 ### Speeding up the CI
 CI takes around 30 minutes currently, but we think we could cut that time in half when we get Docker BuiltKit caching working.
-We really wish GitHub would let us pay for a faster box with more than 4gb of cache storage. 
+We really 
+wish GitHub would let us pay for a faster box with more than 4gb of cache storage. 
 
 We're guessing we're not the only ones who feel that way.
 
