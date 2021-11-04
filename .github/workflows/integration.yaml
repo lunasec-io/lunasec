@@ -49,6 +49,8 @@ jobs:
     - name: Set up Docker Buildx
       id: buildx
       uses: docker/setup-buildx-action@v1
+      with:
+        install: true # sets buildx as the default for docker, which should apply to docker-compose commands
 
     #TODO: there may be a more idiomatic way to do this and it doesnt appear to be working anyway
     - name: Check if we should skip this build
@@ -114,10 +116,15 @@ jobs:
           ${{ runner.os }}-buildx-
 
     - name: Build CLI Container
-      run: docker buildx build --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max --cache-from type=local,src=/tmp/.buildx-cache --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
+      run: docker build --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max --cache-from type=local,src=/tmp/.buildx-cache --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
     - name: Log out what we cached
       run: ls /tmp/.buildx-cache-new
+
+    - name: Move cache
+      run: |
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: E2E test using CLI Container to launch other containers
       run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) -e DOCKER_BUILDKIT=1 repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests
