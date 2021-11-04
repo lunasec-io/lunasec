@@ -140,7 +140,7 @@ We're guessing we're not the only ones who feel that way.
 
 ![take my money meme](/img/take-my-money-meme.jpg)
 
-##: Conclusion and takeaway
+## Conclusion and takeaway
 Figuring this out was pretty hard. It took months of work. But, I think we are nearing CI nirvana.  Our builds are very reliable,
 we can reproduce them locally when things break, and we're able to iterate faster with less fear of introducing bugs. 
 
