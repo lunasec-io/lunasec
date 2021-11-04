@@ -241,7 +241,8 @@ export class LunaSecStackDockerCompose {
   buildMountPath(targetPath: string): string {
     const hostDir = process.env.HOST_MACHINE_PWD;
     const outputBasePath = hostDir && hostDir !== '' ? hostDir : './';
-    return path.join(outputBasePath, targetPath);
+    const buildPath = path.join(outputBasePath, targetPath);
+    return outputBasePath === './' ? `./${buildPath}` : buildPath;
   }
 
   lunasecCli(): ComposeService {
@@ -418,11 +419,9 @@ export class LunaSecStackDockerCompose {
 
   write(dir: string) {
     const dockerCompose = dump(this.getProject());
-    console.log('Writing generated docker compose file: ', dockerCompose);
     const dockerDemoEnvPath = path.join(dir, `.env.docker`);
     const composePath = path.join(dir, `docker-compose.${this.env}.yaml`);
-    console.log('Writing to: ', composePath);
-    //TODO:QUESTION FOR CHRIS: are we reading from the existing demo.dockerfile before creating this new one?  ask how this all works
+
     writeFileSync(composePath, dockerCompose);
 
     const dockerEnv = this.getDockerEnv();
