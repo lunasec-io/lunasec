@@ -105,10 +105,21 @@ jobs:
     - name: Go Tests
       run: yarn run test:unit:go
 
-    - name: Build CLI Container
-      run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
 
-    - name: Use CLI Container with docker.sock mounted to launch all other containers
+    - name: Build CLI Container
+      run: docker buildx build --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max --cache-from type=local,src=/tmp/.buildx-cache --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
+
+    - name: Log out what we cached
+      run: ls /tmp/.buildx-cache-new
+
+    - name: E2E test using CLI Container to launch other containers
       run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) -e DOCKER_BUILDKIT=1 repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests
 
     - name: docker logs
