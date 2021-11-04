@@ -1,5 +1,5 @@
 # Pulls from this cache with multiple build requirements like java and aws, not just npm
-FROM lunasec/cached-npm-dependencies:v0.0.8 as lerna-bootstrap
+FROM lunasec/cached-npm-dependencies:v0.0.9 as lerna-bootstrap
 
 COPY . /repo
 
@@ -7,8 +7,9 @@ WORKDIR /repo
 
 # Uncomment to make replicable builds
 RUN lerna bootstrap --ignore-scripts --ci
+# I think this is to save space, not sure if this will work with yarn though
 RUN npm cache clean --force
-#
+
 RUN npm rebuild sqlite3
 
 RUN yarn run compile:dev:sdks
@@ -26,13 +27,17 @@ WORKDIR /repo/js/demo-apps/packages/react-front-end
 ENTRYPOINT yarn run start
 
 FROM lerna-bootstrap as lunasec-cli
+# Overwrite this when calling docker from CI
+ENV HOST_MACHINE_PWD=""
 
 WORKDIR /repo/js/sdks/packages/cli
 
 RUN npm i -g aws-cdk@1.126.0 aws-cdk-local@1.65.4
 RUN npm link
 
-ENTRYPOINT lunasec
+WORKDIR /repo
+
+ENTRYPOINT ["lunasec"]
 
 FROM cypress/included:8.6.0 as integration-test
 
