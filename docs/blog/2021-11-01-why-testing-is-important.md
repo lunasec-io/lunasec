@@ -23,7 +23,7 @@ authors:
   ~
 -->
 
-This section is meant to give you context about why we spent so much time on our testing setup (and why we assume we're idiots).
+This post is meant to give you context about why we worked so hard on our testing setup (and why we assume we're idiots).
 
 ### The 100x Engineer
 Modern software requirements are brutal.  Not only does software need to support a long list of features, but it also
