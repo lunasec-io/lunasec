@@ -60,7 +60,6 @@ jobs:
       run: git merge origin/${{ github.event.pull_request.base.ref }}
       if: ${{ matrix.merge == 'merged' && github.event_name == 'pull_request' }}
 
-
     - uses: actions/setup-node@v2
       with:
         node-version: '14'
