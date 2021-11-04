@@ -141,7 +141,7 @@ jobs:
     name: check if DOCKERHUB_USERNAME is set in github secrets
     runs-on: ubuntu-latest
     outputs:
-      is_MY_SECRET_set: ${{ steps.checksecret_job.outputs.is_DOCKERHUB_USERNAME_set }}
+      is_DOCKERHUB_USERNAME_set: ${{ steps.checksecret_job.outputs.is_DOCKERHUB_USERNAME_set }}
     steps:
       - name: Check whether unity activation requests should be done
         id: checksecret_job
