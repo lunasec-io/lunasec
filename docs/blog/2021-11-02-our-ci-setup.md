@@ -97,16 +97,16 @@ Our system is made up of a lot of parts:
  
 You get the picture.
 
-To simplify wrangling making sure all the pieces work correctly with each other we chose a Git MonoRepo to keep them
-all in sync.
+To simplify wrangling together the components, thereby ensuring that they all the pieces play nicely with each other,
+we chose a Git MonoRepo. A MonoRepo adds complexity to tooling, but it's a great way to manage a large project with many moving parts.
 
-It took a ton of work for us to get everything working, but using a MonoRepo for our entire project has been a lifesaver (especially for local development). 
-From setting up development tools like Lerna and Eslint, keeping microservice APIs in sync, 
-to setting up end-to-end tests and running them in CI, using a MonoRepo has saved us countless hours of effort.
+Getting the MonoRepo working took a ton of work, but using it for our entire project has paid dividends 
+(especially for local development).  From setting up development tools like Lerna and Eslint, keeping microservice APIs 
+in sync, to setting up end-to-end tests and running them in CI, we've saved countless hours of effort by using a MonoRepo.
 
-But a MonoRepo alone isn't enough.  As it turns out, to test in CI, our system actually needs to _run_ in CI.
-
-Here are some of the main things we've figured out.
+But it isn't enough to just have a MonoRepo.  As it turns out, to test everything in CI, the entire system 
+(including AWS) actually needed to _run_ in CI. We couldn't just run some Unit Tests and call it a day. We had to get 
+every service running in CI, and only then run the tests.
 
 ### Container Setup
 Since we want to actually test a running copy of our system, we launch our React testing app and all our services in 
