@@ -46,7 +46,11 @@ jobs:
       with:
         fetch-depth: 0
 
-    #TODO: there may be a more idiomatic way to do this
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
+
+    #TODO: there may be a more idiomatic way to do this and it doesnt appear to be working anyway
     - name: Check if we should skip this build
       id: job-canceller
       run: echo "::set-output name=cancelled::${{ matrix.merge == 'true' && github.event_name != 'pull_request'}}"
