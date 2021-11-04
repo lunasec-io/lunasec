@@ -14,49 +14,49 @@
  * limitations under the License.
  *
  */
-import fs from 'fs';
-import path from 'path';
+import findConfig from 'find-config';
 
 import {
   deploymentConfigOptionsDefaults,
   devConfigOptionsDefaults,
+  grantConfigOptionsDefaults,
   LunaSecStackConfigOptions,
   metricConfigOptionsDefaults,
 } from './types';
 
 export function loadLunaSecStackConfig(): LunaSecStackConfigOptions | undefined {
-  let searchPath = process.cwd();
-  while (searchPath !== '/') {
-    const files = fs.readdirSync(searchPath);
+  const configPath = findConfig('lunasec.js');
 
-    const configFile = files.filter((f) => f === 'lunasec.js');
-    if (configFile.length !== 1) {
-      searchPath = path.join(searchPath, '../');
-      continue;
-    }
-
-    const configPath = path.join(searchPath, 'lunasec');
-    console.log(`Loaded LunaSec stack config: ${configPath}.js`);
-
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const config = require(configPath);
-    const lunaseConfig = config as LunaSecStackConfigOptions;
-
-    const productionConfig = lunaseConfig.production ? lunaseConfig.production : { metrics: {} };
-    return {
-      development: {
-        ...devConfigOptionsDefaults,
-        ...(lunaseConfig.development ? lunaseConfig.development : {}),
-      },
-      production: {
-        ...deploymentConfigOptionsDefaults,
-        ...productionConfig,
-        metrics: {
-          ...metricConfigOptionsDefaults,
-          ...productionConfig.metrics,
-        },
-      },
-    };
+  if (configPath === null) {
+    return undefined;
   }
-  return undefined;
+
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const config = require(configPath);
+  const lunaseConfig = config as LunaSecStackConfigOptions;
+
+  const productionConfig = lunaseConfig.production ? lunaseConfig.production : { metrics: {}, grants: {} };
+  const devConfig = lunaseConfig.development ? lunaseConfig.development : { grants: {} };
+  return {
+    development: {
+      ...devConfigOptionsDefaults,
+      ...devConfig,
+      grants: {
+        ...grantConfigOptionsDefaults,
+        ...devConfig.grants,
+      },
+    },
+    production: {
+      ...deploymentConfigOptionsDefaults,
+      ...productionConfig,
+      grants: {
+        ...grantConfigOptionsDefaults,
+        ...productionConfig.grants,
+      },
+      metrics: {
+        ...metricConfigOptionsDefaults,
+        ...productionConfig.metrics,
+      },
+    },
+  };
 }

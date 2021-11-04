@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import { runCommand } from '../utils/exec';
+import { runCommand, throwOnFailure } from '../utils/exec';
 
 export function pullImage(imageName: string) {
   console.debug(`pulling image ${imageName}`);
@@ -22,31 +22,19 @@ export function pullImage(imageName: string) {
   const cmd = `sudo docker pull ${imageName}`;
 
   const r = runCommand(cmd, false);
-  if (r.status !== 0) {
-    console.error(r.stdout);
-    console.error(r.stderr);
-    throw new Error(`command did not complete successfully: ${cmd}`);
-  }
+  throwOnFailure(r, cmd);
 }
 
 export function tagImage(imageName: string, tag: string) {
   console.debug(`tagging image ${imageName} with ${tag}`);
   const cmd = `sudo docker tag ${imageName} ${tag}`;
   const r = runCommand(cmd, false);
-  if (r.status !== 0) {
-    console.error(r.stdout);
-    console.error(r.stderr);
-    throw new Error(`command did not complete successfully: ${cmd}`);
-  }
+  throwOnFailure(r, cmd);
 }
 
 export function pushImageToRemote(imageName: string) {
   console.debug(`pushing image ${imageName}`);
   const cmd = `sudo docker push ${imageName}`;
   const r = runCommand(cmd, false);
-  if (r.status !== 0) {
-    console.error(r.stdout);
-    console.error(r.stderr);
-    throw new Error(`command did not complete successfully: ${cmd}`);
-  }
+  throwOnFailure(r, cmd);
 }

@@ -14,7 +14,10 @@
  * limitations under the License.
  *
  */
-import { execSync, ExecSyncOptionsWithBufferEncoding, spawn } from 'child_process';
+import { ChildProcessWithoutNullStreams, execSync, ExecSyncOptionsWithBufferEncoding, spawn } from 'child_process';
+
+const signals: NodeJS.Signals[] = [`SIGINT`, `SIGUSR1`, `SIGUSR2`, `SIGTERM`];
+const processSignals: string[] = ['exit', 'uncaughtException'];
 
 interface RunCommandResult {
   status: number;
@@ -35,6 +38,15 @@ export interface RunCommandWithHealthcheckOptions {
   streamStdout?: boolean;
   onStdin?: Generator<undefined, void, string>;
   exitProcess?: boolean;
+}
+
+export function throwOnFailure(r: RunCommandResult, cmd?: string) {
+  if (r.status !== 0) {
+    console.error(r.stdout);
+    console.error(r.stderr);
+    const fmtCmd = cmd ? `: ${cmd}` : '';
+    throw new Error(`command did not complete successfully${fmtCmd}`);
+  }
 }
 
 export function runCommand(command: string, streamStdio?: boolean): RunCommandResult {
@@ -64,6 +76,19 @@ export function runCommand(command: string, streamStdio?: boolean): RunCommandRe
 function timeout(delay: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, delay);
+  });
+}
+
+function registerSignalHandlers(cmd: ChildProcessWithoutNullStreams) {
+  signals.forEach((eventType) => {
+    process.on(eventType, () => {
+      cmd.kill(eventType);
+    });
+  });
+  processSignals.forEach((eventType) => {
+    process.on(eventType, () => {
+      cmd.kill('SIGINT');
+    });
   });
 }
 

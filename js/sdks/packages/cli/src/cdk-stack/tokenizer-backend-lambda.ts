@@ -70,6 +70,7 @@ function getLambdaEnv(stackId: string, props: TokenizerBackendProps): Record<str
   }
 
   const metrics = props.deploymentConfig.metrics;
+  const grants = props.deploymentConfig.grants;
 
   return {
     ...getAuthMethod(props.deploymentConfig),
@@ -78,7 +79,9 @@ function getLambdaEnv(stackId: string, props: TokenizerBackendProps): Record<str
     APPLICATION_BACK_END: applicationBackEnd,
     METRICS_DISABLED: metrics.disabled.toString(),
     METRICS_PROVIDER: metrics.provider,
-    METRICS_DISABLE_USAGE_STATISTICS: metrics.disableUsageStatisticsMetrics.toString(),
+
+    GRANT_DEFAULT_DURATION: grants.grantDefaultDuration,
+    GRANT_MAXIMUM_DURATION: grants.grantMaximumDuration,
 
     TOKENIZER_URL: props.tokenizerBackendCloudfront.domainName,
     CIPHERTEXT_VAULT_S3_BUCKET: props.ciphertextBucket.bucketArn,
