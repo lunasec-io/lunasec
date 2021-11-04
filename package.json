@@ -67,7 +67,8 @@
     "publish:release:services": "cd go && yarn run publish:release",
     "publish:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh publish",
     "publish:release": "yarn run publish:release:sdks && yarn run publish:release:services && yarn run publish:release:demos",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "monorepo:version": "node -p 'require(\"./lerna.json\").version'"
   },
   "version": "1.0.0",
   "workspaces": {
