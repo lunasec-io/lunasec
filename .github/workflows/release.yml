@@ -54,7 +54,7 @@ jobs:
       - name: lerna bootstrap
         env:
           IS_LUNASEC_CI: true
-        run: lerna bootstrap --ci
+        run: lerna bootstrap --ci -- --frozen-lockfile
 
       - name: Configure CI Git User
         run: |

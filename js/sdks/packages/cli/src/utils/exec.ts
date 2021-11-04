@@ -123,9 +123,7 @@ export function runCommandWithHealthcheck(command: string, options: RunCommandWi
     process.exit(0);
   });
 
-  process.on('SIGINT', function () {
-    cmd.kill('SIGINT');
-  });
+  registerSignalHandlers(cmd);
 
   async function waitForAppToBeReady() {
     if (options.healthcheck === undefined) {
