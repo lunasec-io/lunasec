@@ -12,7 +12,8 @@
   "scripts": {
     "clean": "rm -rf build",
     "compile": "tsc -p ./tsconfig.json",
-    "watch": "yarn run compile -- -w"
+    "watch": "yarn run compile -- -w",
+    "types:generate": "json-schema-to-typescript "
   },
   "bin": {
     "lunasec": "./build/cli.js"

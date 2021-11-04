@@ -13,6 +13,7 @@ do
 	sleep 0.5;
 done
 
-cp ../outputs/aws_resources.json config/tokenizerbackend/
+mkdir -p config/tokenizerbackend/outputs
+cp ../outputs/aws_resources.json config/tokenizerbackend/outputs
 
 env $(cat < ../.env.host | xargs) ./build/tokenizerbackend_dev

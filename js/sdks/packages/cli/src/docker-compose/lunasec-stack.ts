@@ -181,7 +181,7 @@ export class LunaSecStackDockerCompose {
     const dockerBuildConfig = {
       ...this.dockerImage(`${name}-demo`),
     };
-
+    // TODO(forrest): why are we splatting these?
     const localBuildConfig = {
       ...this.dockerfileTarget(demoDockerFile, name),
     };
@@ -238,19 +238,28 @@ export class LunaSecStackDockerCompose {
     };
   }
 
+  buildMountPath(targetPath: string): string {
+    const hostDir = process.env.HOST_MACHINE_PWD;
+    const outputBasePath = hostDir && hostDir !== '' ? hostDir : './';
+    return path.join(outputBasePath, targetPath);
+  }
+
   lunasecCli(): ComposeService {
     const name: LunaSecService = 'lunasec-cli';
 
-    const outputMount = './outputs/:/outputs/';
+    const awsResourcesPath = this.buildMountPath('outputs/');
+
+    const outputMount = `${awsResourcesPath}:/outputs/`;
 
     const dockerBuildConfig = {
       ...this.dockerImage(`${name}-demo`),
       volumes: [outputMount],
     };
+    const configSourcePath = this.buildMountPath('js/sdks/packages/cli/config/lunasec/');
 
     const localBuildConfig = {
       ...this.dockerfileTarget(demoDockerFile, name),
-      volumes: ['./js/sdks/packages/cli/config/lunasec/:/config/lunasec/', outputMount],
+      volumes: [`${configSourcePath}:/config/lunasec/`, outputMount],
     };
 
     return {
@@ -286,12 +295,13 @@ export class LunaSecStackDockerCompose {
       },
     };
 
+    const awsResourcesPath = this.buildMountPath('outputs/');
     return {
       name,
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        volumes: ['./outputs/aws_resources.json:/config/tokenizerbackend/aws_resources.json'],
+        volumes: [`${awsResourcesPath}:/config/tokenizerbackend/outputs/`],
         depends_on: {
           [this.lunasecCli().name]: {
             condition: 'service_completed_successfully',
@@ -408,10 +418,11 @@ export class LunaSecStackDockerCompose {
 
   write(dir: string) {
     const dockerCompose = dump(this.getProject());
-
+    console.log('Writing generated docker compose file: ', dockerCompose);
     const dockerDemoEnvPath = path.join(dir, `.env.docker`);
     const composePath = path.join(dir, `docker-compose.${this.env}.yaml`);
-
+    console.log('Writing to: ', composePath);
+    //TODO:QUESTION FOR CHRIS: are we reading from the existing demo.dockerfile before creating this new one?  ask how this all works
     writeFileSync(composePath, dockerCompose);
 
     const dockerEnv = this.getDockerEnv();

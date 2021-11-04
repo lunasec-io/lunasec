@@ -93,6 +93,8 @@ function registerSignalHandlers(cmd: ChildProcessWithoutNullStreams) {
 }
 
 export function runCommandWithHealthcheck(command: string, options: RunCommandWithHealthcheckOptions) {
+  console.debug(`running command: ${command}`);
+
   const cmd = spawn('sh', ['-c', command]);
 
   cmd.stdout.on('data', (data: Buffer) => {
@@ -121,7 +123,9 @@ export function runCommandWithHealthcheck(command: string, options: RunCommandWi
     process.exit(0);
   });
 
-  registerSignalHandlers(cmd);
+  process.on('SIGINT', function () {
+    cmd.kill('SIGINT');
+  });
 
   async function waitForAppToBeReady() {
     if (options.healthcheck === undefined) {

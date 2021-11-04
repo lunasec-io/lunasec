@@ -167,7 +167,6 @@ yargs
       const stack = new LunaSecStackDockerCompose(env, version, args['local-build'], lunasecConfig);
 
       const useSudo = args['no-sudo'] ? '' : 'sudo ';
-
       const envOverride = 'COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1';
 
       const homeDir = os.homedir();
@@ -193,7 +192,6 @@ yargs
       const directory = `--project-directory ${composePath}`;
 
       const baseDockerComposeCmd = `${useSudo} ${envOverride} docker-compose -f ${composeFile} ${directory}`;
-
       if (args['show-logs']) {
         const result = runCommand(`${baseDockerComposeCmd} logs`, true);
         process.exit(result.status);

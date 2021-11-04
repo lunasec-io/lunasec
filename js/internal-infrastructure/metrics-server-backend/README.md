@@ -12,7 +12,7 @@
   ~
 -->
 # Metrics Backend Server
-This is the backend application server to receive analytics metrics from a LunaSec deployment.
+This is the backend application server to receive analytics metricsConfig from a LunaSec deployment.
 
-The only purpose of this server is to receive metrics and store them in the database. Metrics are used by the LunaSec
+The only purpose of this server is to receive metricsConfig and store them in the database. Metrics are used by the LunaSec
 development team to track adoption, feature usage, and to generally understand the community of users better.
