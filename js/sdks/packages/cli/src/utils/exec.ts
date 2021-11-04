@@ -37,7 +37,7 @@ export interface RunCommandWithHealthcheckOptions {
   healthcheck?: () => Promise<boolean>;
   streamStdout?: boolean;
   onStdin?: Generator<undefined, void, string>;
-  exitProcess?: boolean;
+  doNotExitProcess?: boolean;
 }
 
 export function throwOnFailure(r: RunCommandResult, cmd?: string) {
@@ -113,7 +113,7 @@ export function runCommandWithHealthcheck(command: string, options: RunCommandWi
   });
 
   cmd.on('close', (code) => {
-    if (!options.exitProcess) {
+    if (options.doNotExitProcess) {
       return;
     }
 
