@@ -1,7 +1,7 @@
 {
   "name": "@lunasec/secure-frame-front-end",
   "private": false,
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "build/js/main.js",
   "type": "module",
@@ -25,9 +25,9 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@lunasec/browser-common": "^1.0.3",
-    "@lunasec/isomorphic-common": "^1.0.3",
-    "@lunasec/react-sdk": "^1.0.3",
+    "@lunasec/browser-common": "^1.0.4",
+    "@lunasec/isomorphic-common": "^1.0.4",
+    "@lunasec/react-sdk": "^1.0.4",
     "@types/validator": "^13.1.4",
     "browserify": "17.0.0",
     "buffer": "4.9.2",
