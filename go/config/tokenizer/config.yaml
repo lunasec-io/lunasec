@@ -1,7 +1,7 @@
 aws_gateway:
   mock: false
   region: us-west-2
-  s3_bucket: ${CIPHERTEXT_VAULT_S3_BUCKET}
+  ciphertext_bucket: ${CIPHERTEXT_VAULT_S3_BUCKET}
 tokenizer:
   secret_arn: ${TOKENIZER_SECRET_ARN}
 jwt_manager:

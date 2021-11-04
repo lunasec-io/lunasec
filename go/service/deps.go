@@ -25,10 +25,10 @@ type authCallbackConfig struct {
 }
 
 type AwsGatewayConfig struct {
-	Region          string `yaml:"region"`
-	S3Bucket        string `yaml:"s3_bucket"`
-	LocalHTTPSProxy string `yaml:"local_https_proxy"`
-	LocalstackURL   string `yaml:"localstack_url"`
+	Region           string `yaml:"region"`
+	CiphertextBucket string `yaml:"ciphertext_bucket"`
+	LocalHTTPSProxy  string `yaml:"local_https_proxy"`
+	LocalstackURL    string `yaml:"localstack_url"`
 }
 
 func getS3HostURL(gatewayConfig AwsGatewayConfig) string {
@@ -36,7 +36,7 @@ func getS3HostURL(gatewayConfig AwsGatewayConfig) string {
 		return gatewayConfig.LocalstackURL
 	}
 
-	s3Host := gatewayConfig.S3Bucket + ".s3." + gatewayConfig.Region + ".amazonaws.com"
+	s3Host := gatewayConfig.CiphertextBucket + ".s3." + gatewayConfig.Region + ".amazonaws.com"
 
 	s3URL := url.URL{
 		Scheme: "https",

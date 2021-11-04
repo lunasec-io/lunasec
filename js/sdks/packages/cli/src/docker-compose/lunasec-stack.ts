@@ -19,9 +19,11 @@ import path from 'path';
 
 import { dump } from 'js-yaml';
 
+import { devConfigOptionsDefaults, DevelopmentConfigOptions, LunaSecStackConfigOptions } from '../config/types';
+
 import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
 
-export const LunaSecStackEnvironments = ['dev', 'demo', 'tests'] as const;
+export const LunaSecStackEnvironments = ['local-dependencies', 'demo', 'dev', 'tests'] as const;
 export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -52,21 +54,6 @@ interface healthCheckOptions {
   };
 }
 
-export interface LunaSecStackConfigOptions {
-  applicationFrontEnd: string;
-  applicationBackEnd: string;
-  sessionJWKSURL: string;
-  signingKey: string;
-}
-
-const devConfigOptionsDefaults: LunaSecStackConfigOptions = {
-  applicationFrontEnd: 'http://localhost:3000',
-  applicationBackEnd: 'http://localhost:3001',
-  sessionJWKSURL: '',
-  signingKey:
-    'LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktnd2dnU2tBZ0VBQW9JQkFRQ1dmV1pXYWdoR01NWkQKaWxWeHl3SG5JbmNNVWkxUjczTXNWVGlkcXF4OFZnbkxBcklDd2ZqekJRZVFGZlJsRzZ1Y1FTaWEzR2FQY1gwSAo1MW41UXNWN2NtY1d0WU9NM3RjNFhIS2ZjbDllUEJWOFI4RFlYRmdzdkdEQm5GOFVXOXhZS0hhT2gwQ1U4N3JvCnNHMTVKc0NseVc5S2VudmhrY0pJU3Z3TVVLL3N0VG5SM1NnZjdHR3MzV0hwZ3U4c1l0dDBVVm1tL0RWMnNGcFgKc28yODVIeTNpb3h0eE4wT1BsOVk4R1lwbmxwamg3ZWtwZnoxSUZ6d0sxaDhGeDlJenU3aVRGMFlpMzZlUnJiMQpMSXBKZ0hGWXR6aHNVd283QmFQRFNCNzh0dWZDMFVTVkQ1SEpPanNCS1A2ZzByY0pFNUUwQnJGajQ3UHlvdlRSCnk3QzZqZG85QWdNQkFBRUNnZ0VBVGxSM01BT0F5d2dZS28rV2FlU0EyUTNYYVZKY3hJa2VLYlV5QXQ4VGFLUmYKOUlzeW5MemFGNlJHaTNqaC9MNnFWR3FWK0FWQVhPbDFhdWZBclQxVURTMCsrMUwvWmhPWGNuNnNLdElkVWE5MApmM3ZacE1Sc0lOenNmOW9rb3pRdFBMWFMvOXptZ0tGY2FFRnN1ZUt4NDVrMWxFNnNySHh4NDY4a0FrVDlUUGM3CkJpQ3d2REMwM1VCUUdJaFdESGZjZzJ5aTA3VzVLb01VNjZSS0ZxMk5WT1NwdW1Tb2VyMjVNLytKNFZCc05mb3MKeEM0eEc3aWRTNzZZa21JalBMZnZjelZRUk9xNDlnblBnMHE2SWpBZHN2TVNjMHBhYUlYNkVmRUU4K2Ewd3VoWgpqTWUxQWd1V09OMEs0ajZXeHIrT0UwMEJJNjB0akhNaVdsU2JNU3R6QVFLQmdRREhlSHdOUWQ4dE5tYlhPOXB4CmxtdFVwNENOZ09FZEp6b2ZlOG9tRzl2K2gxNGxUcjFOVkZPT3VaSFFsZUFXZnl6ZDZFdmpicDY1VU4wa1h0QnEKOFllNHY5dkJ3S2thL3d1ODJPS0dKMmQ3aTF4Z2U3YjFiSEt4VVQ2Y0F2bFU4cmYzQTEwdHp0MHNMaVlEbythTQo3R25JMkZVU2t3OTg1YU5SNnFKSUtTcFJHd0tCZ1FEQkkyQ3hkd1F3L3ZNVVZvcGN4TzZTMThzNklvODdJV0dVCnpnZXpqZUpIYW1VV3JaSWJRZ2txRU1aWVZSdFhpVXBDZEJySHpNd2pXWFBmN3pVQzRPdWZlZzhVYkJneTNhWUsKMHBzMHlXZTY4VUJpOEdTK2M0M2lhb0pnSGVwcW9ydHVUNlZvdFRJaEN0SnhKYTFNTEZoMHBQbitCN2RFakFocApLbmk4azcyUGh3S0JnUUNTT3p6T1IwVkNrd2hQcjl4VHUwOVNEejRKL3JxSnNkRkZkVzNjQkQ2Q1dXRG1mdFArCmxkeHYzSkVPVm1HaWZIYzY4MnAzQUFpeW1KcVdhRC9vdHNxbDRWbE1zRjRJb1lOTVhiK3JVOFhrWjJWQWdsRzkKbUZSNHM3UHZrYXFSNFNLR250dTNrbGpJWThpUWtKNmJIMUhwNE5aMU9JUjVMcXhOaUhLUjdrUE1rd0tCZ0NmTQpvNE5PZEVXb2MrenYvR2tyaDhJb3g4OCtDZWYwZEFoWEFJMUdvcWQyekVnRkVvT2Rjd2dCRnU1aTgxUnhqU1R1CmlnbzhNS0RrTVJXblZIUTRaeldnMEhTejViU3RxaWEyeVpieUhmY08rZWFwaFFrZUJOSHdndGROc3Qyd2xSRWgKUm9PeU94ZEdCS0dlVXZ6TWNwbnUyVGs0MjlJN1RReG0zU1IzQ1d3SEFvR0JBS1FIZitncCtFUmFOcDExdU1OQgo0b3hpbHhwaklqeE8wOTE2WnkyUWFxTjlqSGV1RFc5YmdyWDBjQm1kdExPMjdRZE9EekVwcloyd1h5SDRDSGkxClRsQzdnSksvYlNUSnYyQnpwcUtjOVVQbXpiMnhTeFJaRnBiQkp3KytnRnF4UFlST0NqRWpIc2lmaWJxSmFPdzAKZkN3dzA5SlJDTkVsUU40R2FwRElXUlQ5Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K',
-};
-
 function serviceHealthCheck(port: number, options?: healthCheckOptions) {
   const endpoint = options ? (options.endpoint ? options.endpoint : '') : '';
   const composeOptions = options ? options.composeOptions : {};
@@ -86,8 +73,7 @@ const localstackImage = 'localstack/localstack:0.12.19';
 export class LunaSecStackDockerCompose {
   env: LunaSecStackEnvironment = 'dev';
   localBuild = false;
-  version: string;
-  stackConfigOptions: LunaSecStackConfigOptions;
+  stackConfigOptions: DevelopmentConfigOptions;
 
   constructor(
     env: LunaSecStackEnvironment,
@@ -97,10 +83,11 @@ export class LunaSecStackDockerCompose {
   ) {
     this.env = env;
     this.localBuild = localBuild;
-    this.version = stackVersion;
+
+    const devConfigOptions = stackConfigOptions ? stackConfigOptions.development : {};
     this.stackConfigOptions = {
       ...devConfigOptionsDefaults,
-      ...stackConfigOptions,
+      ...devConfigOptions,
     };
 
     if (this.stackConfigOptions.sessionJWKSURL === '') {
@@ -109,7 +96,7 @@ export class LunaSecStackDockerCompose {
   }
 
   dockerImage(name: string) {
-    const tag: string = this.version;
+    const tag: string = version;
     return {
       image: `lunasec/${name}:${tag}`,
     };
@@ -271,7 +258,7 @@ export class LunaSecStackDockerCompose {
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        entrypoint: 'lunasec deploy --local --output /outputs/aws_resources.yaml',
+        entrypoint: 'lunasec deploy --local --output /outputs/aws_resources.json',
         depends_on: {
           [this.localstackProxy().name]: {
             condition: 'service_healthy',
@@ -304,7 +291,7 @@ export class LunaSecStackDockerCompose {
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        volumes: ['./outputs/aws_resources.yaml:/config/tokenizerbackend/aws_resources.yaml'],
+        volumes: ['./outputs/aws_resources.json:/config/tokenizerbackend/aws_resources.json'],
         depends_on: {
           [this.lunasecCli().name]: {
             condition: 'service_completed_successfully',
@@ -355,17 +342,17 @@ export class LunaSecStackDockerCompose {
   }
 
   getStackServices(): ComposeService[] | null {
-    const tokenizerBackendServices = [
-      this.localstack(),
-      this.localstackProxy(),
-      this.secureFrameIFrameService(),
-      this.lunasecCli(),
-      this.tokenizerBackEnd(),
-    ];
+    const localDependencies = [this.localstack(), this.localstackProxy(), this.lunasecCli()];
+
+    const tokenizerBackendServices = [...localDependencies, this.tokenizerBackEnd(), this.secureFrameIFrameService()];
 
     const demoServices = [...tokenizerBackendServices, this.applicationFrontEnd(), this.applicationBackEnd()];
 
     const testsServices = [...demoServices, this.integrationTest()];
+
+    if (this.env === 'local-dependencies') {
+      return localDependencies;
+    }
 
     if (this.env === 'dev') {
       return tokenizerBackendServices;

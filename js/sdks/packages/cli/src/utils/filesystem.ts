@@ -15,6 +15,7 @@
  *
  */
 import { promises } from 'fs';
+import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
@@ -30,3 +31,49 @@ export const withTempDir = async (fn: (path: string) => void) => {
     void (await promises.rmdir(dir, { recursive: true }));
   }
 };
+
+export function copyFileSync(source: string, target: string) {
+  let targetFile = target;
+
+  // If target is a directory, a new file with the same name will be created
+  if (fs.existsSync(target)) {
+    if (fs.lstatSync(target).isDirectory()) {
+      targetFile = path.join(target, path.basename(source));
+    }
+  }
+
+  fs.writeFileSync(targetFile, fs.readFileSync(source));
+}
+
+export function copyFolderRecursiveSync(source: string, target: string) {
+  let files = [];
+
+  // Check if folder needs to be created or integrated
+  const targetFolder = target;
+  if (!fs.existsSync(targetFolder)) {
+    fs.mkdirSync(targetFolder);
+  }
+
+  // Copy
+  if (fs.lstatSync(source).isDirectory()) {
+    files = fs.readdirSync(source);
+    files.forEach(function (file) {
+      const curSource = path.join(source, file);
+      if (fs.lstatSync(curSource).isDirectory()) {
+        copyFolderRecursiveSync(curSource, targetFolder);
+      } else {
+        copyFileSync(curSource, targetFolder);
+      }
+    });
+  }
+}
+
+export function findFileMatchingPatternSync(targetFolder: string, filter: RegExp) {
+  const files = fs.readdirSync(targetFolder);
+  for (const file of files) {
+    if (filter.test(file)) {
+      return file;
+    }
+  }
+  return undefined;
+}
