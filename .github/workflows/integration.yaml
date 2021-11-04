@@ -32,6 +32,7 @@ on:
 
 jobs:
   integration-test:
+    needs: [checksecret]
     runs-on: ubuntu-latest
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
@@ -60,7 +61,6 @@ jobs:
       run: git merge origin/${{ github.event.pull_request.base.ref }}
       if: ${{ matrix.merge == 'merged' && github.event_name == 'pull_request' }}
 
-
     - uses: actions/setup-node@v2
       with:
         node-version: '14'
@@ -79,17 +79,12 @@ jobs:
       timeout-minutes: 15
 
     - name: Login to Docker Hub
+      if: needs.checksecret.outputs.is_DOCKERHUB_USERNAME_set == 'true'
       uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-#    - uses: whoan/docker-build-with-cache-action@v5
-#      with:
-#        username: ${{ secrets.DOCKERHUB_USERNAME }}
-#        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-#        compose_file: docker-compose.yaml > docker-compose.ci.yaml
-#
 #    - uses: actions/setup-go@v2
 #      with:
 #        go-version: '^1.17.1'
@@ -141,3 +136,17 @@ jobs:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_TITLE: PR Build ${{ github.head_ref }} ${{ job.status }}
         SLACK_COLOR: ${{ job.status }}
+
+  checksecret:
+    name: check if DOCKERHUB_USERNAME is set in github secrets
+    runs-on: ubuntu-latest
+    outputs:
+      is_MY_SECRET_set: ${{ steps.checksecret_job.outputs.is_DOCKERHUB_USERNAME_set }}
+    steps:
+      - name: Check whether unity activation requests should be done
+        id: checksecret_job
+        env:
+            MY_SECRET: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+            echo "is_DOCKERHUB_USERNAME_set: ${{ env.DOCKERHUB_USERNAME != '' }}"
+            echo "::set-output name=is_DOCKERHUB_USERNAME_set::${{ env.DOCKERHUB_USERNAME != '' }}"
