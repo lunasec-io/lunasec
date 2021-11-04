@@ -30,7 +30,7 @@ deployed to.
 
 #### Defined in
 
-[types.ts:22](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L22)
+[types.ts:22](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L22)
 
 ___
 
@@ -40,4 +40,4 @@ ___
 
 #### Defined in
 
-[types.ts:23](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L23)
+[types.ts:23](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L23)
