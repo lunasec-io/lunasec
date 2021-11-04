@@ -18,13 +18,14 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/sha1"
+	"crypto/rand"
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
-	"github.com/lunasec-io/lunasec-monorepo/constants"
-	"math/rand"
+	mathrand "math/rand"
 
 	"github.com/google/uuid"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"golang.org/x/crypto/sha3"
 )
@@ -85,7 +86,7 @@ func GenToken() types.Token {
 }
 
 // GetRandomStringOfLength ...
-func GetRandomStringOfLength(length int, random *rand.Rand) string {
+func GetRandomStringOfLength(length int, random *mathrand.Rand) string {
 	bytes := make([]byte, length)
 	// There are bigger problems if random numbers can't be generated.
 	if _, err := random.Read(bytes); err != nil {
@@ -101,7 +102,7 @@ func GenerateSaltsAndKey(token types.Token, secret string) types.SaltsAndKey {
 	hashable := sha3.Sum512([]byte(tokenStr))
 	seed := append([]byte(tokenStr), hashable[:]...)
 	seedInt := binary.BigEndian.Uint64(seed)
-	random := rand.New(rand.NewSource(int64(seedInt)))
+	random := mathrand.New(mathrand.NewSource(int64(seedInt)))
 
 	return types.SaltsAndKey{
 		Sp: GetRandomStringOfLength(keySize, random),
