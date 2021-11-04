@@ -1,7 +1,7 @@
 build/
 **/secrets.yaml
 **/local.yaml
-**/aws_resources.yaml
+**/aws_resources.json
 .vscode/
 **/refinery-container-runtime.tar
 nohup.out

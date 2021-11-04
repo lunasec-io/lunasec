@@ -78,7 +78,7 @@ module.exports = {
         sidebar: {
           categoryLabel: "React SDK"
         },
-        excludePrivate:true,
+        excludePrivate: true,
         readme: 'none',
         sort: ['required-first', 'source-order']
       },
@@ -96,7 +96,7 @@ module.exports = {
         sidebar: {
           categoryLabel: "Node SDK"
         },
-        excludePrivate:true,
+        excludePrivate: true,
         readme: 'none',
         sort: ['required-first', 'source-order']
       },
@@ -114,7 +114,26 @@ module.exports = {
         sidebar: {
           categoryLabel: "Tokenizer SDK"
         },
-        excludePrivate:true,
+        excludePrivate: true,
+        readme: 'none',
+        sort: ['required-first', 'source-order'],
+        exclude:['**/generated/**/*']
+      },
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        id: 'typedoc-cli',
+        entryPoints: ['../js/sdks/packages/cli/src/config/types.ts'],
+        tsconfig: '../js/sdks/packages/cli/tsconfig.json',
+        watch: process.env.TYPEDOC_WATCH,
+        // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
+        docsRoot: 'pages',
+        out: 'cli-config',
+        sidebar: {
+          categoryLabel: "CLI Configuration"
+        },
+        excludePrivate: true,
         readme: 'none',
         sort: ['required-first', 'source-order'],
         exclude:['**/generated/**/*']

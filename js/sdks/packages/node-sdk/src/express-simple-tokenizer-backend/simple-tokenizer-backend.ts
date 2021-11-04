@@ -17,6 +17,7 @@
 import { Hash } from '@aws-sdk/hash-node';
 import { HttpRequest } from '@aws-sdk/protocol-http';
 import { S3RequestPresigner, S3RequestPresignerOptions } from '@aws-sdk/s3-request-presigner';
+import { HeaderBag } from '@aws-sdk/types';
 import { parseUrl } from '@aws-sdk/url-parser';
 import { formatUrl } from '@aws-sdk/util-format-url';
 import { isToken } from '@lunasec/tokenizer-sdk';
@@ -83,11 +84,11 @@ export class SimpleTokenizerBackend {
     };
   }
 
-  getTokenPresignedUrl(tokenId: string) {
+  getTokenPresignedUrl(tokenId: string): Promise<{ url: string; headers: HeaderBag }> {
     return this.generatePresignedS3Url(tokenId, 'GET');
   }
 
-  createTokenPresignedUrl(tokenId: string) {
+  createTokenPresignedUrl(tokenId: string): Promise<{ url: string; headers: HeaderBag }> {
     return this.generatePresignedS3Url(tokenId, 'PUT');
   }
 

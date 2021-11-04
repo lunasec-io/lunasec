@@ -29,8 +29,7 @@ windows:
     # Tokenizer Back End.  Command uses docker compose to start localstack and run CDK deployment scripts against it before starting server
     - shell_command:
       - ./go/scripts/start-tokenizerbackend-dependencies.sh
-#
-#    TODO (cthompson) tokenizer is not currently built locally, just in docker atm
-#    - shell_command:
-#      - cd go/
-#      - ./scripts/start-tokenizerbackend.sh
+
+    - shell_command:
+      - cd go/
+      - ./scripts/start-tokenizerbackend.sh
