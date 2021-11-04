@@ -146,7 +146,7 @@ jobs:
       - name: Check whether unity activation requests should be done
         id: checksecret_job
         env:
-            MY_SECRET: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
             echo "is_DOCKERHUB_USERNAME_set: ${{ env.DOCKERHUB_USERNAME != '' }}"
             echo "::set-output name=is_DOCKERHUB_USERNAME_set::${{ env.DOCKERHUB_USERNAME != '' }}"
