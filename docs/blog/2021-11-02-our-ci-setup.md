@@ -32,7 +32,7 @@ This post explores our journey to build a Continuous Integration (CI) pipeline f
 We're going to cover:
 * Why CI is critical for Open Source projects,
 * Our container setup in a Lerna monorepo,
-* Generating a docker-compose.yaml file dynamically using typescript (which is great, actually),
+* Generating a `docker-compose.yaml` file dynamically using TypeScript (which is great, actually),
 * Using Docker-in-Docker to have one container launch a bunch of other containers,
 * Getting it all going in GitHub Actions.
 
