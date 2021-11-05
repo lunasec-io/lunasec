@@ -124,7 +124,7 @@ jobs:
       run: ls -R /tmp/.buildx-cache-new
 
     - name: Pre-generate compose file
-      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli generate-compose --local-build=true --env=tests
+      run: docker run -v .:/repo -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli generate-compose --local-build=true --env=tests
 
     - name: Pre-Bake the docker-compose, using caches
       run: docker buildx bake --set "*.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max" --set "*.cache-from=type=local,src=/tmp/.buildx-cache" -f docker-compose.test.yaml --load --progress plain
