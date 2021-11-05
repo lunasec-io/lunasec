@@ -107,6 +107,17 @@ jobs:
     - name: Go Tests
       run: yarn run test:unit:go
 
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /var/lib/docker
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: tell me whats in folder
+      run: ls /var/lib/docker
+      
     - name: Build CLI Container
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
