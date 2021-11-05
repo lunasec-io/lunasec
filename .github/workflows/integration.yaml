@@ -45,6 +45,13 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
+      with:
+        install: true # sets buildx as the default for docker, which should apply to docker-compose commands
+        driver: docker
+
     #TODO: there may be a more idiomatic way to do this
     - name: Check if we should skip this build
       id: job-canceller
