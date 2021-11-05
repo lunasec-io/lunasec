@@ -129,7 +129,7 @@ jobs:
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: E2E test using CLI Container to launch other containers
-      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) -e DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests
+      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd)  repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests
 
     - name: docker logs
       if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
@@ -138,7 +138,7 @@ jobs:
 
     - name: docker compose logs
       if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
-      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) -e DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests --show-logs=true
+      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests --show-logs=true
 
     - uses: actions/upload-artifact@v2
       if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
