@@ -118,17 +118,17 @@ jobs:
           ${{ runner.os }}-buildx-
 
     - name: Build CLI Container
-      run: docker build --load --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max --cache-from type=local,src=/tmp/.buildx-cache --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
+      run: docker buildx build --load --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max --cache-from type=local,src=/tmp/.buildx-cache --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
     - name: Log out what we cached
       run: ls -R /tmp/.buildx-cache-new
 
     - name: Pre-Bake the docker-compose, using caches
-      run: docker buildx bake --set "*.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max" --set "*.cache-from=type=local,src=/tmp/.buildx-cache"  -f docker-compose.dev.yaml --load --progress plain
+      run: docker buildx bake --set "*.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max" --set "*.cache-from=type=local,src=/tmp/.buildx-cache"  -f docker-compose.test.yaml --load --progress plain
 
     - name: Log out what we cached
       run: ls -R /tmp/.buildx-cache-new
-      
+
     - name: Move cache
       run: |
         rm -rf /tmp/.buildx-cache
