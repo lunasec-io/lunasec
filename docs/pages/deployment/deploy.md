@@ -53,7 +53,7 @@ lunasec deploy
 Let's find the URL that the tokenizer is deployed to:
 ```shell
 $ lunasec resources
-Tokenizer URL: https://asdf.execute-api.us-west-2.amazonaws.com/prod/
+Tokenizer URL: https://<gateway id>.execute-api.us-west-2.amazonaws.com/prod/
 ...
 ```
 
