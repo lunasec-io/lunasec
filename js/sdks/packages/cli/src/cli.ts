@@ -66,6 +66,14 @@ function* onStdinDemo(data: string) {
   yield;
 }
 
+function getEnv(args: yargs.Arguments) {
+  const foundEnv = LunaSecStackEnvironments.filter((env) => env === args.env);
+  if (foundEnv.length !== 1) {
+    throw new Error(`Provided environment is not one of: ${LunaSecStackEnvironments.join(', ')}`);
+  }
+  return foundEnv[0];
+}
+
 function getRunStackOptions(env: LunaSecStackEnvironment, localBuild: boolean, shouldStreamStdio: boolean) {
   const demoOptions: RunCommandWithHealthcheckOptions = {
     streamStdout: shouldStreamStdio,
@@ -156,14 +164,8 @@ yargs
         throw new Error('Attempted to force a rebuild without specifying `--local-build`.');
       }
 
-      const foundEnv = LunaSecStackEnvironments.filter((env) => env === args.env);
-      if (foundEnv.length !== 1) {
-        throw new Error(`Provided environment is not one of: ${LunaSecStackEnvironments.join(', ')}`);
-      }
-      const env = foundEnv[0];
-
       const lunasecConfig = loadLunaSecStackConfig();
-
+      const env = getEnv(args);
       const stack = new LunaSecStackDockerCompose(env, version, args['local-build'], lunasecConfig);
 
       const useSudo = args['no-sudo'] ? '' : 'sudo ';
@@ -448,6 +450,30 @@ yargs
       console.log(`  Keys Table: ${stackOutputs[getOutputName('keys-table')]}`);
       console.log(`  Grants Table: ${stackOutputs[getOutputName('grants-table')]}`);
       console.log(`  Metadata Table: ${stackOutputs[getOutputName('metadata-table')]}`);
+    }
+  )
+  .command(
+    'generate-compose',
+    'generate a docker compose file in the current directory without invoking docker-compose',
+    {
+      'local-build': {
+        type: 'boolean',
+        required: false,
+        default: false,
+        description: 'Build the LunaSec stack locally.',
+      },
+      env: {
+        type: 'string',
+        required: false,
+        default: 'dev',
+        description: `Environment to start the LunaSec stack in: ${LunaSecStackEnvironments.join(', ')}`,
+      },
+    },
+    (args) => {
+      const lunasecConfig = loadLunaSecStackConfig();
+      const env = getEnv(args);
+      const stack = new LunaSecStackDockerCompose(env, version, args['local-build'], lunasecConfig);
+      stack.write(process.cwd());
     }
   )
   .demandCommand()
