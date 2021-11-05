@@ -6,7 +6,7 @@ COPY . /repo
 WORKDIR /repo
 
 # Uncomment to make replicable builds
-RUN lerna bootstrap --ignore-scripts --ci
+RUN lerna bootstrap --ignore-scripts --ci --force-local
 # I think this is to save space, not sure if this will work with yarn though
 RUN npm cache clean --force
 
@@ -33,11 +33,10 @@ ENV HOST_MACHINE_PWD=""
 WORKDIR /repo/js/sdks/packages/cli
 
 RUN npm i -g aws-cdk@1.126.0 aws-cdk-local@1.65.4
-RUN npm link
 
 WORKDIR /repo
 
-ENTRYPOINT ["lunasec"]
+ENTRYPOINT ["node", "js/sdks/packages/cli/build/cli.js"]
 
 FROM cypress/included:8.6.0 as integration-test
 
