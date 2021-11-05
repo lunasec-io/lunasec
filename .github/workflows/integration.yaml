@@ -115,8 +115,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-buildx-
 
-    - name: tell me whats in folder
-      run: ls /var/lib/docker
       
     - name: Build CLI Container
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
@@ -132,6 +130,12 @@ jobs:
     - name: docker compose logs
       if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
       run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests --show-logs=true
+
+    - name: chmod docker
+      run: sudo chmod -R 777 /var/lib/docker
+
+    - name: tell me whats in folder
+      run: ls /var/lib/docker
 
     - uses: actions/upload-artifact@v2
       if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
