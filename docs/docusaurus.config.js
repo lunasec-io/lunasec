@@ -49,6 +49,10 @@ module.exports = {
   organizationName: 'lunasec-io', // Usually your GitHub org/user name.
   projectName: 'lunasec-io.github.io', // Usually your repo name.
   // scripts: ['https://cdn.jsdelivr.net/npm/redoc@v2.0.0-rc.54/bundles/redoc.standalone.js'],
+  scripts: [{
+    async: true,
+    src: 'https://www.lunasec.io/docs/js/broken-link-check.js'
+  }],
   plugins: [
     function webpackDefine(context, options) {
       return {
