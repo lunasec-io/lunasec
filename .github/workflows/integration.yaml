@@ -116,8 +116,8 @@ jobs:
           ${{ runner.os }}-buildx-
 
     - name: tell me whats in folder
-      run: ls /var/lib/docker
-      
+      run: sudo ls /var/lib/docker
+
     - name: Build CLI Container
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
