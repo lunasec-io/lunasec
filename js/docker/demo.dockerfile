@@ -29,6 +29,8 @@ ENTRYPOINT yarn run start
 FROM lerna-bootstrap as lunasec-cli
 # Overwrite this when calling docker from CI
 ENV HOST_MACHINE_PWD=""
+ENV DOCKER_BUILDKIT=1
+ENV COMPOSE_DOCKER_CLI_BUILD=1
 
 WORKDIR /repo/js/sdks/packages/cli
 
