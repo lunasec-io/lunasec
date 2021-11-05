@@ -118,7 +118,7 @@ jobs:
           ${{ runner.os }}-buildx-
 
     - name: Build CLI Container
-      run: docker build --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max --cache-from type=local,src=/tmp/.buildx-cache --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
+      run: docker build --load --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max --cache-from type=local,src=/tmp/.buildx-cache --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
     - name: Log out what we cached
       run: ls -R /tmp/.buildx-cache-new
