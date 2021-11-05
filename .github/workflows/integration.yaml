@@ -52,7 +52,7 @@ jobs:
       uses: docker/setup-buildx-action@v1
       with:
         install: true # sets buildx as the default for docker, which should apply to docker-compose commands
-        driver: docker
+        driver: docker-container
 
     #TODO: there may be a more idiomatic way to do this and it doesnt appear to be working anyway
     - name: Check if we should skip this build
@@ -121,7 +121,7 @@ jobs:
       run: docker build --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max --cache-from type=local,src=/tmp/.buildx-cache --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
     - name: Log out what we cached
-      run: ls /tmp/.buildx-cache-new
+      run: ls -R /tmp/.buildx-cache-new
 
     - name: Move cache
       run: |
