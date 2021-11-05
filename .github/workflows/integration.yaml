@@ -146,6 +146,7 @@ jobs:
 #        name: cypress-recording
 #        path: /videos/secure_components_spec.ts.mp4
 
+# delete this comment
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
       if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
