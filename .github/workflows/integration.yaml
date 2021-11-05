@@ -36,6 +36,8 @@ jobs:
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1 # forces docker_compose to use the docker cli, which will have buildkit enabled
     strategy:
       matrix:
         merge: ["merged", "not-merged"]
@@ -50,9 +52,9 @@ jobs:
       uses: docker/setup-buildx-action@v1
       with:
         install: true # sets buildx as the default for docker, which should apply to docker-compose commands
-        driver: docker
+        driver: docker-container
 
-    #TODO: there may be a more idiomatic way to do this
+    #TODO: there may be a more idiomatic way to do this and it doesnt appear to be working anyway
     - name: Check if we should skip this build
       id: job-canceller
       run: echo "::set-output name=cancelled::${{ matrix.merge == 'true' && github.event_name != 'pull_request'}}"
@@ -110,19 +112,30 @@ jobs:
     - name: Cache Docker layers
       uses: actions/cache@v2
       with:
-        path: /var/lib/docker
+        path: /tmp/.buildx-cache
         key: ${{ runner.os }}-buildx-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-buildx-
 
-    - name: tell me whats in folder
-      run: sudo ls /var/lib/docker
-
     - name: Build CLI Container
-      run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
+      run: docker build --load --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max --cache-from type=local,src=/tmp/.buildx-cache --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
-    - name: Use CLI Container with docker.sock mounted to launch all other containers
-      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests
+    - name: Log out what we cached
+      run: ls -R /tmp/.buildx-cache-new
+
+    - name: Pre-Bake the docker-compose, using caches
+      run: docker buildx bake --set "*.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max" --set "*.cache-from=type=local,src=/tmp/.buildx-cache"  -f docker-compose.dev.yaml --load --progress plain
+
+    - name: Log out what we cached
+      run: ls -R /tmp/.buildx-cache-new
+      
+    - name: Move cache
+      run: |
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+    - name: E2E test using CLI Container to launch other containers
+      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd)  repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests
 
     - name: docker logs
       if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
@@ -139,6 +152,7 @@ jobs:
         name: cypress-recording
         path: /videos/secure_components_spec.ts.mp4
 
+# delete this comment
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
       if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
