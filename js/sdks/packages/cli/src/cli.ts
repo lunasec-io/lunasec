@@ -191,7 +191,7 @@ yargs
 
       const directory = `--project-directory ${composePath}`;
 
-      const baseDockerComposeCmd = `${useSudo} ${envOverride} docker-compose -f ${composeFile} ${directory}`;
+      const baseDockerComposeCmd = `${useSudo} ${envOverride} docker buildx bake -f ${composeFile} ${directory}`;
       if (args['show-logs']) {
         const result = runCommand(`${baseDockerComposeCmd} logs`, true);
         process.exit(result.status);
