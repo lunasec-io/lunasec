@@ -130,8 +130,11 @@ jobs:
     - name: Pre-generate compose file
       run: docker run --mount type=bind,source=/tmp/compose,target=/compose -w /compose -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli generate-compose --local-build=true --env=tests
 
+    - name: log out compose dir
+      run: sudo ls -R /tmp/compose
+
     - name: Pre-Bake the docker-compose, using caches
-      run: cd /tmp/compose && docker buildx bake --set "*.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max" --set "*.cache-from=type=local,src=/tmp/.buildx-cache" -f docker-compose.test.yaml --load --progress plain
+      run: cd /tmp/compose && docker buildx bake --set "*.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max" --set "*.cache-from=type=local,src=/tmp/.buildx-cache" -f docker-compose.tests.yaml --load --progress plain
 
     - name: Log out what we cached
       run: ls -R /tmp/.buildx-cache-new
