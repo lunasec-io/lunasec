@@ -1,7 +1,7 @@
 {
   "name": "lunasec-go-monorepo",
   "private": true,
-  "version": "1.0.5-alpha.0",
+  "version": "1.0.5-alpha.1",
   "description": "LunaSec Go Monorepo",
   "scripts": {
     "lint": "golangci-lint run",
