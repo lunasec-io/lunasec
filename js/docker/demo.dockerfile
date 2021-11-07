@@ -36,7 +36,7 @@ RUN npm i -g aws-cdk@1.126.0 aws-cdk-local@1.65.4
 
 WORKDIR /repo
 
-ENTRYPOINT ["node", "js/sdks/packages/cli/build/cli.js"]
+ENTRYPOINT ["yarn", "run", "lunasec"]
 
 FROM cypress/included:8.6.0 as integration-test
 
