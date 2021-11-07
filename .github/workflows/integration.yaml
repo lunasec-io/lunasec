@@ -99,12 +99,12 @@ jobs:
 #      run: npm run license:check
 
     - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/docker-saved
-          key: ${{ runner.os }}-docker-saved-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-docker-saved-
+      uses: actions/cache@v2
+      with:
+        path: /tmp/docker-saved
+        key: ${{ runner.os }}-docker-saved-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-docker-saved-
 
     - name: Go Tests
       run: yarn run test:unit:go
