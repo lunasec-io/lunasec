@@ -110,7 +110,7 @@ jobs:
       run: yarn run test:unit:go
 
     - name: Restore Docker Cached Containers
-      run: mkdir -p /tmp/docker-saved $(test -f /tmp/docker-saved/saved-images.tgz && docker load --input /tmp/docker-saved/saved-images.tgz) || true
+      run: mkdir -p /tmp/docker-saved && $(test -f /tmp/docker-saved/saved-images.tgz && docker load --input /tmp/docker-saved/saved-images.tgz) || true
 
     - name: Build CLI Container
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
