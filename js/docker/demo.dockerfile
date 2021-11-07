@@ -40,10 +40,9 @@ ENTRYPOINT ["yarn", "run", "lunasec"]
 
 FROM cypress/included:8.6.0 as integration-test
 
-#RUN cypress install --force
+RUN cypress install --force
 
 ENV VERBOSE_CYPRESS_LOGS="always"
-
 
 COPY --from=lerna-bootstrap /repo /repo
 
