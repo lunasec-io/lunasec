@@ -45,6 +45,7 @@ jobs:
       with:
         fetch-depth: 0
 
+
     #TODO: there may be a more idiomatic way to do this
     - name: Check if we should skip this build
       id: job-canceller
@@ -97,8 +98,19 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
+    - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/docker-saved
+          key: ${{ runner.os }}-docker-saved-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-saved-
+
     - name: Go Tests
       run: yarn run test:unit:go
+
+    - name: Restore Docker Cached Containers
+      run: test -f /tmp/docker-saved/saved-images.tgz && docker load --input /tmp/docker-saved/saved-images.tgz
 
     - name: Build CLI Container
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
@@ -128,3 +140,6 @@ jobs:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_TITLE: PR Build ${{ github.head_ref }} ${{ job.status }}
         SLACK_COLOR: ${{ job.status }}
+
+    - name: Save docker images to cache
+      run: docker save -o /tmp/docker-saved/saved-images.tgz lunasec/cached-npm-dependencies:v0.0.9 #docker.io/library/repo_localstack-proxy docker.io/cypress/included:8.6.0
