@@ -6,7 +6,7 @@ COPY . /repo
 WORKDIR /repo
 
 # Uncomment to make replicable builds
-RUN lerna bootstrap --ignore-scripts --ci --force-local
+RUN lerna bootstrap --ignore-scripts --ci
 # I think this is to save space, not sure if this will work with yarn though
 RUN npm cache clean --force
 
@@ -40,7 +40,7 @@ ENTRYPOINT ["yarn", "run", "lunasec"]
 
 FROM cypress/included:8.6.0 as integration-test
 
-RUN cypress install --force
+# RUN cypress install --force
 
 ENV VERBOSE_CYPRESS_LOGS="always"
 
