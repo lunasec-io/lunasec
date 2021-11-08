@@ -6,7 +6,7 @@ COPY . /repo
 WORKDIR /repo
 
 # Uncomment to make replicable builds
-RUN lerna bootstrap --ignore-scripts --ci
+RUN lerna bootstrap --ci
 # I think this is to save space, not sure if this will work with yarn though
 RUN npm cache clean --force
 
