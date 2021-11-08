@@ -1,5 +1,5 @@
 # Pulls from this cache with multiple build requirements like java and aws, not just npm
-FROM lunasec/cached-npm-dependencies:v0.0.9 as lerna-bootstrap
+FROM lunasec/cached-npm-dependencies:v0.0.10 as lerna-bootstrap
 
 COPY . /repo
 
