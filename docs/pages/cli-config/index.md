@@ -36,7 +36,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[types.ts:40](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L40)
+[types.ts:40](https://github.com/refinery-labs/lunasec-monorepo/blob/91280853/js/sdks/packages/cli/src/config/types.ts#L40)
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 #### Defined in
 
-[types.ts:81](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L81)
+[types.ts:81](https://github.com/refinery-labs/lunasec-monorepo/blob/91280853/js/sdks/packages/cli/src/config/types.ts#L81)
 
 ___
 
@@ -56,7 +56,7 @@ ___
 
 #### Defined in
 
-[types.ts:112](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L112)
+[types.ts:112](https://github.com/refinery-labs/lunasec-monorepo/blob/91280853/js/sdks/packages/cli/src/config/types.ts#L112)
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 #### Defined in
 
-[types.ts:159](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L159)
+[types.ts:159](https://github.com/refinery-labs/lunasec-monorepo/blob/91280853/js/sdks/packages/cli/src/config/types.ts#L159)
 
 ## Type aliases
 
@@ -76,7 +76,7 @@ ___
 
 #### Defined in
 
-[types.ts:92](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L92)
+[types.ts:92](https://github.com/refinery-labs/lunasec-monorepo/blob/91280853/js/sdks/packages/cli/src/config/types.ts#L92)
 
 ___
 
@@ -86,7 +86,7 @@ ___
 
 #### Defined in
 
-[types.ts:94](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L94)
+[types.ts:94](https://github.com/refinery-labs/lunasec-monorepo/blob/91280853/js/sdks/packages/cli/src/config/types.ts#L94)
 
 ___
 
@@ -96,4 +96,4 @@ ___
 
 #### Defined in
 
-[types.ts:96](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L96)
+[types.ts:96](https://github.com/refinery-labs/lunasec-monorepo/blob/91280853/js/sdks/packages/cli/src/config/types.ts#L96)

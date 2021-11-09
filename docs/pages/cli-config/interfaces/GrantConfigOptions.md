@@ -31,7 +31,7 @@ Configure how long grants are valid for by default.
 
 #### Defined in
 
-[types.ts:33](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L33)
+[types.ts:33](https://github.com/refinery-labs/lunasec-monorepo/blob/91280853/js/sdks/packages/cli/src/config/types.ts#L33)
 
 ___
 
@@ -43,4 +43,4 @@ Configure the maximum duration of how long grants are valid for.
 
 #### Defined in
 
-[types.ts:37](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L37)
+[types.ts:37](https://github.com/refinery-labs/lunasec-monorepo/blob/91280853/js/sdks/packages/cli/src/config/types.ts#L37)
