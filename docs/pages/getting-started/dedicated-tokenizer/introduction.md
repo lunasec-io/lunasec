@@ -54,7 +54,19 @@ lunasec --version
 ```
 and we should see that the CLI is installed.
 
-LunaSec depends on your backend to be running when it starts so that it can query it for signing keys. Once we install the LunaSec plugin into the backend (covered on the next page), we can run:
+The LunaSec CLI needs to be configured to know where your application's front and back end are. To do this, in the root of your repository create the file `lunasec.js` with the contents:
+```js
+module.exports = {
+    development: {
+        applicationFrontEnd: '<front end url>',
+        applicationBackEnd: '<back end url>'
+    }
+}
+```
+
+LunaSec needs the front end url to properly enforce its CORS policy and back end to be running when it starts so that it can query it for signing keys.
+
+Once we install the LunaSec plugin into the back end (covered on the next page), we can run:
 ```shell
 lunasec start
 ``` 

@@ -41,7 +41,7 @@
     "url": "git+https://github.com/refinery-labs/tokenizer-front-end-sdk.git"
   },
   "scripts": {
-    "lunasec:setup": "cd js/sdks/packages/cli && yarn install && yarn run compile && npm link",
+    "lunasec": "node js/sdks/packages/cli/build/cli.js",
     "start:services": "sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up tokenizerbackend",
     "license:check": "./tools/license-checker/run-license-check.sh check",
     "license:fix": "./tools/license-checker/run-license-check.sh fix",
@@ -62,12 +62,13 @@
     "compile:release:services": "cd go && yarn run compile:release",
     "compile:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh build",
     "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services && yarn run compile:release:demos",
-    "postinstall": "yarn run license:install",
+    "postinstall": "if [ -z ${RUNNING_IN_CI+x} ]; then yarn run license:install; else echo \"running in CI, skipping postinstall hooks...\"; fi",
     "publish:release:sdks": "lerna publish --no-verify-access -y from-package",
     "publish:release:services": "cd go && yarn run publish:release",
     "publish:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh publish",
     "publish:release": "yarn run publish:release:sdks && yarn run publish:release:services && yarn run publish:release:demos",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "monorepo:version": "node -p 'require(\"./lerna.json\").version'"
   },
   "version": "1.0.0",
   "workspaces": {
