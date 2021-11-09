@@ -1,6 +1,8 @@
 ---
-title: BuildKit intermediate caching in CI description: BuildKit intermediate caching in CI slug: buildkit authors:
-
+title: BuildKit intermediate caching in CI
+description: BuildKit intermediate caching in CI
+slug: buildkit
+authors:
 - name: Forrest Allison title: Developer at Lunasec url: https://github.com/factoidforrest
   image_url: https://github.com/factoidforrest.png
   tags: [docker, buildkit, cache, github-actions]
