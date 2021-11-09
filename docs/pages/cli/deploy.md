@@ -18,32 +18,22 @@ sidebar_position: 1
   ~
 -->
 # lunasec deploy
-LunaSec can be deployed to AWS using the LunaSec CLI, available in the @lunasec/cli npm package.  More information on installing and using the CLI can be 
+LunaSec can be deployed to AWS using the LunaSec CLI, available in the `@lunasec/cli` npm package.  More information on installing and using the CLI can be 
 found in the [Getting Started Guide](/pages/getting-started/dedicated-tokenizer/introduction)
 
-Deploy the LunaSec stack to AWS using the provided config (defaults to `config.yaml` in the working directory).
+The deploy command configures a deployment by reading the closest `lunasec.js` file to the current directory. The CLI tool will
+recursively search in parent directories for this file until it gets to the root of the file system.
 
-The CLI reads from a `config.yaml` file found in the working directory from which the CLI was called.  It has the following options:
-
-```yaml
-lunasec:
-  stack_version: <version of the LunaSec stack that you would wish to pin to>
-  application_front_end: <URL to your application's front end>
-  application_back_end: <URL to your application's back end>
-  session_public_key: <public key that was used to sign the session>
-  session_jwks_endpoint: <url for serving the jwks keys used for signing the session>
-  localstack_url: <url used to point to the local aws mock server, Localstack>
-  service_versions:
-    <name of service>: <version to pin service to>
+For a standard deployment of LunaSec, you will only need to specify:
+```js
+module.exports = {
+    production: {
+        applicationFrontEnd: "<deployed application's front end url>",
+        applicationBackEnd: "<deployed application's back end url>"
+    }
+}
 ```
 
-Most of these are optional.  For a standard deployment of LunaSec, you may only need:
-
-```yaml
-lunasec:
-  application_front_end: <url of your front end application>
-  application_back_end: <url of your back end application>
-```
-
+For additional configuration options, please refer to [CLI Configuration](/pages/cli-config/interfaces/DeploymentConfigOptions).
 
 Once the stack is built, the generated AWS Cloudformation template will be present at `~/.lunasec/builds/build_<time of build>`.

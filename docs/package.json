@@ -1,6 +1,6 @@
 {
   "name": "docs",
-  "version": "1.0.4",
+  "version": "1.0.5-alpha.1",
   "private": true,
   "license": "CC-BY-SA-4.0",
   "scripts": {

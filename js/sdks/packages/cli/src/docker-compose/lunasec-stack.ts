@@ -256,6 +256,7 @@ export class LunaSecStackDockerCompose {
       ...this.dockerImage(`${name}-demo`),
       volumes: [outputMount],
     };
+
     const configSourcePath = this.buildMountPath('js/sdks/packages/cli/config/lunasec/');
 
     const localBuildConfig = {
@@ -268,7 +269,7 @@ export class LunaSecStackDockerCompose {
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        entrypoint: 'lunasec deploy --local --output /outputs/aws_resources.json',
+        command: 'deploy --local --output /outputs/aws_resources.json',
         depends_on: {
           [this.localstackProxy().name]: {
             condition: 'service_healthy',
