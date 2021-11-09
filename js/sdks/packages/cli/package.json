@@ -1,6 +1,6 @@
 {
   "name": "@lunasec/cli",
-  "version": "1.0.3",
+  "version": "1.0.5-alpha.1",
   "description": "a wrapper around the LunaSec CLI enabling it to be used as an NPM package",
   "license": "MIT",
   "keywords": [
@@ -13,7 +13,7 @@
     "clean": "rm -rf build",
     "compile": "tsc -p ./tsconfig.json",
     "watch": "yarn run compile -- -w",
-    "types:generate": "json-schema-to-typescript "
+    "types:generate": "json-schema-to-typescript"
   },
   "bin": {
     "lunasec": "./build/cli.js"
@@ -47,7 +47,7 @@
     "@aws-sdk/client-ecr": "^3.39.0",
     "@aws-sdk/client-s3": "^3.39.0",
     "@aws-sdk/client-sts": "^3.39.0",
-    "@lunasec/secure-frame-front-end": "^1.0.4",
+    "@lunasec/secure-frame-front-end": "^1.0.5-alpha.1",
     "adm-zip": "^0.5.9",
     "cmd-ts": "^0.7.0",
     "decompress": "^4.2.1",
