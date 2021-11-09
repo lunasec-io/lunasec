@@ -7,7 +7,7 @@ authors:
   title: Developer at Lunasec
   url: https://github.com/factoidforrest
   image_url: https://github.com/factoidforrest.png
-  tags: [releases, ci, github-actions, docker.sock]
+  tags: [ci, github-actions, docker.sock]
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -30,6 +30,8 @@ Using a monorepo with Lerna for our entire project has been an absolute lifesave
 we're happy with has been a months long effort. 
 
 Here are some of the main things we've figured out.
+
+<!--truncate-->
 
 ### Why is CI important?
 Before we dive in, I should mention that the CI testing pipeline is a critical part of our development and what makes the monorepo possible.
