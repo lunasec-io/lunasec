@@ -31,7 +31,7 @@ Disable metric reporting for the LunaSec stack.
 
 #### Defined in
 
-[types.ts:105](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L105)
+[types.ts:105](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L105)
 
 ___
 
@@ -43,4 +43,4 @@ Specify where metrics are reported to.
 
 #### Defined in
 
-[types.ts:109](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L109)
+[types.ts:109](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L109)
