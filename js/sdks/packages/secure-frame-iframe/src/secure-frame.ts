@@ -80,6 +80,7 @@ export class SecureFrame<E extends keyof ClassLookup> {
       data: {},
       frameNonce: this.frameNonce,
     });
+    console.log('sent start notification');
   }
 
   insertSecureElement(componentName: E): [HTMLElementTagNameMap[TagLookup[E]], HTMLFormElement] {

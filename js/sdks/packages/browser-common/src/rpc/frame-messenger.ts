@@ -17,6 +17,7 @@
 import { timeout } from '../utils/async';
 import { generateSecureNonce } from '../utils/random';
 
+import { addEventListenerWithAbort } from './listener';
 import {
   FrameMessage,
   FrameNotification,
@@ -27,7 +28,7 @@ import {
   UnknownFrameMessage,
 } from './types';
 
-export class FrameMessageCreator {
+export class FrameMessenger {
   private readonly frameResponses: Record<string, UnknownFrameMessage>;
   private readonly timeout: number;
   private readonly frameNotificationCallback!: (_notification: FrameNotification) => void;
@@ -158,5 +159,12 @@ export class FrameMessageCreator {
     }
 
     return null;
+  }
+
+  listen(window: Window, abortController: AbortController): void {
+    addEventListenerWithAbort(this.lunaSecDomain, window, abortController, (message) => {
+      this.postReceived(message);
+    });
+    return;
   }
 }

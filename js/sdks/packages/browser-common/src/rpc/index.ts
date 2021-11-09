@@ -14,6 +14,6 @@
  * limitations under the License.
  *
  */
-export * from './frame-message-creator';
+export * from './frame-messenger';
 export * from './listener';
 export * from './types';

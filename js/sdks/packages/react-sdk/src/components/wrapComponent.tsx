@@ -15,9 +15,8 @@
  *
  */
 import {
-  addReactEventListener,
   AttributesMessage,
-  FrameMessageCreator,
+  FrameMessenger,
   FrameNotification,
   generateSecureNonce,
   getStyleInfo,
@@ -87,7 +86,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
     declare context: SecureFormContextType;
     static contextType = SecureFormContext;
 
-    readonly messageCreator: FrameMessageCreator;
+    readonly messageCreator: FrameMessenger;
     // This is created on component mounted to enable server-side rendering
     abortController!: AbortController;
     /**
@@ -117,7 +116,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       this.formContext = props.formContext;
       this.lunaSecDomain = props.lunaSecConfigContext.lunaSecDomain;
 
-      this.messageCreator = new FrameMessageCreator(this.lunaSecDomain, this.frameId, (notification) =>
+      this.messageCreator = new FrameMessenger(this.lunaSecDomain, this.frameId, (notification) =>
         this.frameNotificationCallback(notification)
       );
 
@@ -154,9 +153,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
 
     componentDidMount() {
       this.abortController = new AbortController();
-      addReactEventListener(this.props.lunaSecConfigContext.lunaSecDomain, window, this.abortController, (message) =>
-        this.messageCreator.postReceived(message)
-      );
+      this.messageCreator.listen(window, this.abortController);
       void this.auth.startSessionManagement().then((abortSessionCallback) => {
         this.setState({ sessionAuthenticated: true });
         this.stopSessionManagement = abortSessionCallback;
@@ -365,7 +362,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       }
       const dummyElement = this.dummyRef.current;
       if (!dummyElement) {
-        throw new Error('Missing element to trigger notification for in secure frame');
+        throw new Error('Missing element to trigger blur');
       }
 
       const currentlyFocusedElement = document.activeElement;

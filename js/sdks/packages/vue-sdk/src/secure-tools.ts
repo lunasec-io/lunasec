@@ -14,8 +14,16 @@
  * limitations under the License.
  *
  */
-import { FrameMessageCreator, generateSecureNonce, getStyleInfo, ReadElementStyle } from '@lunasec/browser-common';
+import {
+  FrameMessenger,
+  FrameNotification,
+  generateSecureNonce,
+  getStyleInfo,
+  ReadElementStyle,
+} from '@lunasec/browser-common';
 import { CSSProperties, inject, onMounted, reactive, ref, Ref, unref } from 'vue';
+
+import { LunaSecError } from '../../isomorphic-common';
 
 import { LunaSecConfigProviderAttrs } from './secure-components/LunaSec-Config-Provider';
 
@@ -25,6 +33,7 @@ import { LunaSecConfigProviderAttrs } from './secure-components/LunaSec-Config-P
  */
 export interface RenderData {
   shouldRenderFrame: Ref<boolean>;
+  frameFullyLoaded: Ref<boolean>;
   clonedStyle: ReadElementStyle | Record<string | number, never>;
   dummyElementRef: Ref;
   dummyStyleRef: Ref;
@@ -55,15 +64,46 @@ export function setupSecureComponent(componentName: string, styleCustomizer: Sty
   const lunaSecConfig = providerConf;
 
   const frameId = generateSecureNonce();
-  const messageCreator = new FrameMessageCreator(providerConf.lunaSecDomain, frameId, (notification) => {
+  const frameMessenger = new FrameMessenger(providerConf.lunaSecDomain, frameId, (notification) => {
     // this.frameNotificationCallback(notification)
     console.log('frame notification received ', notification);
   });
   // Set up default reactive variables
   const shouldRenderFrame = ref(false);
+  const frameFullyLoaded = ref(false);
   const dummyElementRef = ref(null);
   const dummyStyleRef = ref(null);
   const clonedStyle = reactive({});
+
+  const abortController = new AbortController();
+
+  function frameNotificationHandler(notification: FrameNotification) {
+    switch (notification.command) {
+      case 'NotifyOnStart':
+        sendIFrameAttributes();
+        break;
+      case 'NotifyOnToken':
+        // if ('onTokenChange' in this.props && this.props.onTokenChange && 'token' in notification.data) {
+        //   this.props.onTokenChange(notification.data.token);
+        // }
+        break;
+      case 'NotifyOnFullyLoaded':
+        frameFullyLoaded.value = true;
+        break;
+      case 'NotifyOnBlur':
+        // this.blur();
+        break;
+      case 'NotifyOnValidate':
+        // this.validationHandler(notification.data.isValid);
+        break;
+      case 'NotifyOnSubmit':
+        this.formContext.submit();
+        break;
+      case 'NotifyOnError':
+        this.props.errorHandler(new LunaSecError(notification.data)); // Call the application's provided error handler
+        break;
+    }
+  }
 
   onMounted(() => {
     // Clones style from the styleRef if provided, otherwise use elementRef
@@ -75,6 +115,8 @@ export function setupSecureComponent(componentName: string, styleCustomizer: Sty
     }
     const customizedStyle = styleCustomizer(style);
     Object.assign(clonedStyle, customizedStyle); // Put the style into the reactive object
+    frameMessenger.listen(window, abortController);
+
     shouldRenderFrame.value = true;
     console.log('mounted hook complete, frame should render');
   });
@@ -112,6 +154,7 @@ export function setupSecureComponent(componentName: string, styleCustomizer: Sty
     dummyElementRef,
     dummyStyleRef, // only used by input
     shouldRenderFrame,
+    frameFullyLoaded,
     containerStyle,
     dummyElementStyle,
     frameUrl,
