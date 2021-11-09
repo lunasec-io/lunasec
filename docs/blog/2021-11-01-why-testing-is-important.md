@@ -25,6 +25,8 @@ authors:
 
 This post is meant to give you context about why we worked so hard on our testing setup (and why we assume we're idiots).
 
+<!--truncate-->
+
 ### The 100x Engineer
 Modern software requirements are brutal.  Not only does software need to support a long list of features, but it also
 needs to support millions of users, keep their data secure, and also be built (and fixed) as quickly as possible.
