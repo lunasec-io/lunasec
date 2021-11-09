@@ -1,9 +1,11 @@
 ---
 title: How to build an Open Source Business in 2021 (Part 1)
-description: A step-by-step guide to build an Open Source Business from scratch. slug:
-how-to-build-an-open-source-business-in-2021-part-1 authors:
-
-- name: Free Wortley title: Founder of LunaSec url: https://github.com/freeqaz
+description: A step-by-step guide to build an Open Source Business from scratch. 
+slug: how-to-build-an-open-source-business-in-2021-part-1
+authors:
+- name: Free Wortley 
+  title: Founder of LunaSec
+  url: https://github.com/freeqaz
   image_url: https://github.com/freeqaz.png
   tags: [open-source, business, startup, 2021]
 
@@ -21,24 +23,31 @@ how-to-build-an-open-source-business-in-2021-part-1 authors:
   ~ limitations under the License.
   ~
 -->
+In this series, I'm going to work through my thought process about Open Source businesses and walk you through the steps
+I followed while building [LunaSec](https://github.com/lunasec-io/lunasec). In comparison to traditional business 
+models, Open Source businesses can be non-trivial, non-obvious, and daunting to undertake.
 
-In this post, I will be sharing my journey with how I came up with the approach we used to build the business
-behind [LunaSec](https://github.com/lunasec-io/lunasec).
+My goal is to help teach others about [Open Source](https://en.wikipedia.org/wiki/Open_source) businesses by helping 
+you understand the steps involved, the tradeoffs you make by choosing Open Source, and by overall giving you an 
+intuition to help evaluate if Open Source is the right approach for your business.
 
-There are a number of different ways to build a business, and none of them are a one-size-fits-all solution. For
-LunaSec, I chose to use an [Open Source](https://en.wikipedia.org/wiki/Open_source)
-approach to distributing our product and reaching our customers.
+The series will be split up into a series of different posts, each one focusing on a different part of the process
+involved with building and launching an Open Source business. In this post, I'll be explaining the evolution of software
+pricing models, the pros/cones of each, and relating them back to Open Source.
 
-In this series, I'm going to work through my thought process about Open Source business and the steps I followed to
-build LunaSec. My goal is to help teach others about Open Source businesses by helping you understand the steps
-involved, the tradeoffs you make by choosing Open Source, and by overall giving you an intuition to help evaluate if
-Open Source is the right approach for your business.
+I hope this article helps you kickstart your efforts of launching your Open Source business. At the end of this series,
+I will also be sharing with you how to best position your business to raise Angel & VC funding based on our experience
+raising a Seed round.
 
-The series will be split up into a series of different posts, each one focusing on a different part of the process.
+Thanks for reading!
 
 <!--truncate-->
 
 ## Part 1: Software Pricing Models
+
+_The world of software licensing is evolving._
+
+![Change Ahead Sign](/img/open-source-posts/change-ahead-sign.jpg)
 
 Over the years, the software industry has evolved and the simple distribution models of yesterday have evolved along
 with it. Gone are the days of simple brick-and-mortar software purchases, instead having been replaced by more complex
@@ -53,20 +62,26 @@ To help understand the tradeoffs, I will be breaking down the pricing models int
 - **Brick-and-Mortar**: The traditional approach to software development, where you purchase a license and pay for the
   software. Old school and rarely used anymore.
 - **License-Based**: A more flexible approach where you buy a license and, optionally, pay for specific features you
-  use. Often combined with the Shareware or Freemium distribution models.
-- **Custom/Enterprise**: A top-down sales model for software that requires very custom integration work that is unique
-  per customer, requires a lot of upfront or custom work, and that is not easily repeatable.
+  use. Often combined with the [Shareware](https://en.wikipedia.org/wiki/Shareware) and 
+  [Freemium](https://en.wikipedia.org/wiki/Freemium) distribution models.
+- **Custom/Enterprise**: A top-down sales model for software that requires the one-off negotiation of a custom contract,
+  involves a lot of upfront or custom work, and that generally involves a long sales cycle to close customers.
 - **Cloud-Based**: The approach to software development where you purchase a license and pay for the software, but also
-  pay for the infrastructure that powers the software. You don't manage the software or the infrastructure.
-- **Open Source**: Distributed for free, with no licensing or payment required, but also without any support or
-  maintenance guarantees. Software may be modified, improved upon, and resold by anyone and is not locked to a specific
-  customer.
+  pay for the infrastructure that powers the software. You don't ever manage the software or the infrastructure yourself.
+- **Open Source**: Distributed for free with no licensing or payment required. Software is delivered without any support
+  or maintenance guarantees unless offered by a company (generally the author of the software). For software to be Open 
+  Source, it must not be locked to a specific customer, and be able to be modified, improved upon, and resold by anyone 
+  with any restrictions.
 
 Below, I will walk through a brief history of the evolution of software pricing from the early days of the software
 industry to today. It's not a complete history, nor is it 100% accurate, but it's a good starting point to understand
 the different pricing models and to help build your intuition for developing your own pricing model.
 
 ### The First Software Companies
+
+_Software has changed a lot..._
+
+![An old computer being programmed](/img/open-source-posts/bell-labs-coder.jpg)
 
 Many years ago, before the internet, when you wanted to start a software business, you followed a simple set of steps:
 
@@ -79,17 +94,21 @@ possible to duplicate the software disks without specialized hardware ($1,000+),
 Physical possession was a sufficiently difficult challenge to overcome, so companies just sold boxes of software in
 stores.
 
+_A Windows 95 launch event with boxed software being sold._
+
+![The proud owner of a boxed copy of Windows 95](/img/open-source-posts/happy-man-with-windows-95.jpg)
+
 Because of this, software businesses were simple and closely represented traditional business models. Software purchases
 happened like they would for physical goods. You bought a hammer just like you bought a copy of Microsoft Word by simply
 visiting a store and grabbing it off of the shelf.
 
 This approach is simple and easy to understand, but it has a few downsides.
 
-*First*: It's expensive. You have to pay to build a hammer every time you want to sell one. That means, to sell 10,000
-copies of your software, you also have to create, package, and distribute 10,000 copies. That's a non-trivial amount of
-work.
+*First*: It's expensive to scale. You have to pay to build a hammer every time you want to sell one. That means, to sell
+10,000 copies of your software, you also have to create, package, and distribute 10,000 copies. That's a non-trivial 
+amount of work.
 
-*Second*: Piracy started becoming an issue for companies. It became simple for your friend to give you a copy of their
+*Second*: Piracy started becoming an issue for companies. It was simple for your friend to give you a copy of their
 software, thereby hurting the company's sales.
 
 Some companies were able to combat this by adding in copy-protection mechanisms (early DRM), but these would eventually
@@ -102,6 +121,10 @@ As a company, it's expensive to give phone support to a user because it requires
 couldn't afford to pay for phone support for a user that didn't pay for the software.
 
 ### The Creation of Software Licenses
+
+_Windows XP relied on product keys that were verified over the internet to combat piracy._
+
+![Windows XP Installation Screenshot asking for a Product Key](/img/open-source-posts/redis-pricing-page.png)
 
 Over time, these became problems with the physical "Brick-and-Mortar" method of selling software forced a new pricing
 model to be adopted. This new model is often referred to as the "Software Licensing" pricing model.
@@ -128,7 +151,11 @@ company via the phone. No more physical copies of the software had to be produce
 software was purchased, and, because physical copies cost money, the software companies benefited from increased
 software profit margins.
 
-### Price Segmentation
+### Segmenting Customers by Price
+
+_Redis's Pricing Model shows their method of segmenting customers by price._
+
+![Redis Pricing Page](/img/open-source-posts/redis-pricing-page.png)
 
 As companies continued to grow, and relied more heavily on technology, their needs became more complex too. The software
 companies selling the software had to manage the needs of varying types of customers, ranging from individual
@@ -149,6 +176,10 @@ software companies to become some of the most profitable companies in the world.
 
 ### Enterprise Software
 
+_Oracle is a company notorious for their Enterprise sales model._
+
+![Oracle's HQ](/img/open-source-posts/oracle-hq.jpg)
+
 Over time, for many industries, software companies would begin exist to fill every niche. Some of these companies would
 cater on to a small number of very large customers, often referred to as "Enterprise" customers. They would create
 specialized sales teams and onboarding processes that would be tailored to the Enterprise customer's needs. For any
@@ -168,6 +199,10 @@ Red Hat went on to become a very large played in this space, and is one of the p
 Open Source software.
 
 ### The Evolution of the Internet
+
+_The Cloud companies are some of the most successful companies in the world._
+
+![Photo of AWS at a trade show](/img/open-source-posts/aws-tradeshow.jpg)
 
 Fast-forward to the start of the internet era, and the needs of software continued to grow increasingly complex. With
 the scale of internet traffic becoming larger, there became a need for more specialized software to run along with
@@ -196,6 +231,10 @@ many options.
 
 ### The Proliferation of Open Source
 
+_Do you recognize any of these?_
+
+![Some Popular Open Source Logos](/img/open-source-posts/open-source-logos.jpg)
+
 Since the earliest days of computer, there has always been a contingent of software professionals that advocated for
 Open Source software. Much of the software that is run today dates back to these professionals. Most are small tools,
 libraries, and scripts, but some are large applications that are used by many people. One of the most successful
@@ -208,7 +247,11 @@ willing to contribute to the project to continue building it. Cloud companies, l
 run Linux on their servers, and then their customers are able to run any software that runs on Linux against the rented
 server.
 
-### The Evolution of Open Source
+### Open Source Goes Enterprise
+
+_Red Hat, now a part of IBM, was once the largest contributor to Linux._
+
+![Red Hat's Raleigh Office](/img/open-source-posts/redhat-hq.jpg)
 
 By itself, Linux is not a product. It is a language. It is a tool. It is a community. It is a way for companies to build
 and to run software.
@@ -248,6 +291,10 @@ needed a feature, or they needed support to ensure the software was working as e
 
 ## Where are we now?
 
+_You know Open Source is mainstream when even Microsoft wants in..._
+
+![Microsoft buys GitHub](/img/open-source-posts/microsoft-buys-github.png)
+
 In 2021, the number of software companies using Open Source is nearly 100%. It's simply too difficult to develop all
 software in house anymore. At some point, you have to rely on software built by somebody else, and the only way to do
 that is to rely on Open Source (in some capacity).
@@ -259,25 +306,48 @@ way to acquire customers and grow your mind share.
 
 ## "Source Available" Software Licenses
 
-Open Source isn't perfect -- Cloud companies like Amazon have been known to exploit Open Source software projects to
-earn a profit without contributing back either source code or sharing revenue. It's legal and fully within the bounds of
-Open Source for companies to do this -- that's just the risk of choosing an Open Source software licensing model. You do
-not have control, and sometimes that hurts your business.
+_Docker failed to create a viable business model around containerizing applications._
+
+[Container Ship Sinking](/img/open-source-posts/docker-sinking.jpg)
+
+Open Source isn't perfect -- Cloud companies, like Amazon, have been known to 
+[exploit Open Source software projects](https://techcrunch.com/2018/11/29/the-crusade-against-open-source-abuse/) 
+to earn a profit without contributing back either source code or sharing revenue. It's legal and fully within the bounds
+of Open Source for companies to do this -- that's just the risk of choosing an Open Source software licensing model. You
+do not have control, and sometimes that hurts your business. 
 
 In order to mitigate that risk though, there are a number of approaches that attempt to bridge the gap between the
-proprietary and Open Source. These approaches are generally referred to as "Source Available" software licenses.
+proprietary and Open Source by changing the rules of the license to be less "free". These approaches are generally 
+referred to as "Source Available" software licenses, and are not considered "true" Open Source software by the 
+[OSI](https://opensource.org/node/1099).
+
 Licenses like [BSL](https://itsfoss.com/making-the-business-source-license-open-source-compliant/)
 are designed to let their software be used as Open Source software would, but with a few additional restrictions to
-prevent other companies like Amazon from deriving value purely from hosting a managed version the software.
+prevent other companies like Amazon from deriving value purely from hosting a managed version the software. 
+[Redis](https://techcrunch.com/2019/02/21/redis-labs-changes-its-open-source-license-again/), 
+[Elastic](https://www.coss.community/cossc/elastic-license-2-0-and-the-evolution-of-open-source-licensing-3jb3),
+and [MongoDB](https://techcrunch.com/2018/10/16/mongodb-switches-up-its-open-source-license/) are examples of companies 
+that have adopted Source Available licenses in response to competition from Cloud companies.
 
 While it's great to see innovation in the software licensing industry, it's also important to understand that using a
-Source Available license is not a catch-all solution. You still have to think about how you're going to structure the
-pricing for your business. It's not enough to just think "We're going to be Open Source, grow, and then figure it out
-later" because many companies, like
-[Docker](https://www.infoworld.com/article/3632142/how-docker-broke-in-half.html), tried to use Open Source and failed
-to every build a profitable business even after achieving explosive growth.
+Source Available license is not a catch-all solution. You're not actually Open Source when you choose a Source Available
+license, which will hurt your early adoption at any companies requiring that only a 
+[permissive](https://en.wikipedia.org/wiki/Permissive_software_license) software license like Apache 2.0, MIT, or BSD be
+used.
+
+Even if you choose to be Open Source or Source Available, you still have to think about how you're going to structure 
+the pricing model for your business to generate revenue. It's not enough to just think "We're going to be Open Source, 
+grow, and then figure it out later." Many companies, most notably 
+[Docker](https://www.infoworld.com/article/3632142/how-docker-broke-in-half.html), have successfully used an Open Source 
+licensing model to achieve traction and explosive growth, but still failed to create profitable business model despite
+what otherwise seemed like a 
+"[slam dunk](https://techcrunch.com/2018/10/15/docker-has-raised-92-million-in-new-funding/)" to investors.
 
 ## When to use Open Source for your pricing model
+
+_Which path do you take?_
+
+![Cool photo of street signs](/img/open-source-posts/open-source-vs-closed-source.jpg)
 
 There is honestly no way to know if Open Source is the right solution for your business's pricing model. You have to
 think about it, do your own research, and come up with your own conclusion. That's just the unfortunate reality of
@@ -324,6 +394,10 @@ If you don't fall into any of those buckets, then I'll ask you a few questions t
 
 ## Closing Thoughts
 
+_Next Stop, The Moon!_
+
+![LunaSec Premium Support](/img/premium-support-icon.png)
+
 In this post, I've talked about the history of Software Licensing, and I've tried to build up your intuition to
 determine if Open Source is the right choice for your business's pricing model.
 
@@ -331,12 +405,29 @@ Like I said before, there is no clear answer here. I'd recommend doing your own 
 with other people that have done it before, and reviewing the business models of existing companies that have made Open
 Source work for them successfully. This space is rapidly evolving, and there is a lot of nuance to it.
 
-I'll be writing more posts in the series soon. Please email me if you found this useful (free at lunasec.io), and while
-I have your attention, please throw us a star on
-[GitHub](https://github.com/lunasec-io/lunasec). It really helps us out!
+I'll be writing more posts in the series soon. Please email me if you found this useful or if you have any questions
+(free at lunasec dottt io).
 
-Cheers, good luck, and thanks for reading!
+And while I have your attention, please throw us a star on [GitHub](https://github.com/lunasec-io/lunasec). It really 
+helps us out!
+
+Good luck, and thanks for reading.
 
 _Free Wortley, Founder of LunaSec_
+
+----------
+_Credits:_
+- Photo a computer programmer from the 70s from [here](https://media-bell-labs-com.s3.amazonaws.com/pages/articles/2019/01/07/86-300837.jpg.1080x505_q60_crop.jpg)
+- The happy man with his copy of Windows 95 from [NBC News](https://media-cldnry.s-nbcnews.com/image/upload/t_fit-760w,f_auto,q_auto:best/newscms/2015_35/1190851/150824-windows-95-store-559p.jpg)
+- Windows XP Screenshot from
+  [Blogspot](http://2.bp.blogspot.com/-3JEc4dQl0zU/URZyqZS8Y0I/AAAAAAAAGr4/4dp4Tz5qENk/s1600/Windows+XP+Pro+0.82+-+Less+Memory+and+CPU+Usage+3.png)
+- Oracle HQ photo from [here](https://image.cnbcfm.com/api/v1/image/106196179-1571762737792rts2rrde.jpg?v=1620639496&w=929&h=523)
+- AWS trade show photo from [here](https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.silicon.co.uk%2Fwp-content%2Fuploads%2F2015%2F07%2Faws.jpg&f=1&nofb=1)
+- Redis Pricing screenshot from their [website](https://redis.com/redis-enterprise-cloud/pricing/)
+- Open Source logos from Miro's Medium [here](https://miro.medium.com/proxy/0*imtkAJ4D8H4H47If.png)
+- Red Hat HQ photo from BalfourBeattyUs [here](https://www.balfourbeattyus.com/Balfour-dev.allata.com/mediba/content-media/Our%20Work/ProjectImages/Raleigh_RedHatHQ_Gallery6-1280X582.png?ext=.png)
+- Microsoft buys GitHub image from [here](https://sinokingston.com/en/wp-content/uploads/2018/06/microsoft-acquires-github.png)
+- Photo of sinking container ship from [here](https://abevoelker.com/assets/why-i-dont-use-docker-much-anymore/mv-rena-c7ce7a396161e58ebd76d8eee5bfd38606940fa3b14dec1589784f8106d28adc.jpg)
+- Cool photo of street signs from [here](https://d3jh33bzyw1wep.cloudfront.net/s3/W1siZiIsIjIwMTkvMTAvMDIvMTAvNDAvMDgvOTE4L0FydGljbGUgSGVhZGVyLmpwZyJdLFsicCIsInRodW1iIiwiNzUweDQ1MF4iXV0)
 
 <br/><br/>
