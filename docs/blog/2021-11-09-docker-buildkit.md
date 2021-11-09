@@ -3,10 +3,11 @@ title: BuildKit intermediate caching in CI
 description: BuildKit intermediate caching in CI
 slug: buildkit
 authors:
-- name: Forrest Allison title: Developer at Lunasec url: https://github.com/factoidforrest
+- name: Forrest Allison 
+  title: Developer at Lunasec 
+  url: https://github.com/factoidforrest
   image_url: https://github.com/factoidforrest.png
   tags: [docker, buildkit, cache, github-actions]
-
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -22,12 +23,12 @@ authors:
   ~
 -->
 
-### ...and why it didn't make our builds any faster
+#### ...and why it didn't make our builds any faster
 
 Part 2 of a series on optimizing our build system. I explain how our build system is laid out
 in [Part 1](blog/lunasec-ci).
 
-## Docker Buildkit
+### Docker Buildkit
 
 Our CI builds and runs a lot of containers, and takes around 30 minutes. In an attempt to make it faster, I did a deep
 dive into the experimental and semi-documented world of Docker's Buildkit.
@@ -45,7 +46,7 @@ Buildkit by default.
 Just enabling buildkit on our CI machine saved around 5 minutes, so that's an easy win for us. You can keep on using
 docker normally and stop reading this blog post.
 
-## Intermediate Caching
+### Intermediate Caching
 
 The main feature I was after with Buildkit was saving and restoring those fancy intermediate caches from disk, so that
 we could reuse them between CI builds. This is possible with a command like:
@@ -56,7 +57,7 @@ docker buildx build --cache-to type=local,dest=/tmp/.buildx-cache,mode=max --cac
 
 Pretty spiffy, except fancy caching like that isn't supported by docker-integrated Buildkit, which is used by default.
 
-## Integrated mode doesn't support all Buildkit features
+### Integrated mode doesn't support all Buildkit features
 
 Before we can use that command with those cache settings, we have to tell Buildkit to use a different "builder".
 
@@ -82,7 +83,7 @@ To push result image into registry use --push or to load image into docker use -
 The trouble is that now the image we built with that command is only **inside** the container, which is useless except
 to populate the cache of the builder itself.
 
-## Docker Buildkit doesn't run containers, it just builds them.
+### Docker Buildkit doesn't run containers, it just builds them.
 
 To run any images built inside the "docker-container" builder, you have to use the argument `--load` which will spend a
 long time transferring the image into the host's docker. In my case, that cancelled out any speed gains from the
@@ -91,7 +92,7 @@ into the docker engine with `--load`, the process was **much slower** than just 
 At that point, I realized Buildkit wasn't the solution to our slow builds, but clearly it has
 some other advantages that might be useful to us in the future.
 
-## If that's not going to work, what else can docker-container be used for?
+### If that's not going to work, what else can docker-container be used for?
 
 #### Pushing containers
 
@@ -118,7 +119,7 @@ way, the cache would stay populated without the slow --cache-to and --cache-from
 would still take several minutes, but speed gains would probably be worth it. Keep an eye out for a blog post about that
 in the future.
 
-## Final thoughts
+### Final thoughts
 
 Buildkit is a big and complicated part of docker. I only scratched the surface of what it can do. I also came away with
 the sense that while it might be the future of docker, at the moment (2021) it's still an optional and somewhat
