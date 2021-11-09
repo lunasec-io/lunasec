@@ -33,7 +33,7 @@ deployment as close as possible.
 
 #### Defined in
 
-[types.ts:54](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L54)
+[types.ts:54](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L54)
 
 ___
 
@@ -45,7 +45,7 @@ ___
 
 #### Defined in
 
-[types.ts:58](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L58)
+[types.ts:58](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L58)
 
 ___
 
@@ -57,7 +57,7 @@ The JWKS url where the public key for creating sessions will be available. By de
 
 #### Defined in
 
-[types.ts:62](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L62)
+[types.ts:62](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L62)
 
 ___
 
@@ -69,7 +69,7 @@ This is only used in demo mode. The signing key is used by the application backe
 
 #### Defined in
 
-[types.ts:66](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L66)
+[types.ts:66](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L66)
 
 ___
 
@@ -81,7 +81,7 @@ Configure how grants behave.
 
 #### Defined in
 
-[types.ts:74](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L74)
+[types.ts:74](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L74)
 
 ___
 
@@ -93,7 +93,7 @@ The URL for LocalStack.
 
 #### Defined in
 
-[types.ts:70](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L70)
+[types.ts:70](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L70)
 
 ___
 
@@ -105,4 +105,4 @@ Only used when building locally. Use local build artifacts when bringing up the 
 
 #### Defined in
 
-[types.ts:78](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L78)
+[types.ts:78](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L78)

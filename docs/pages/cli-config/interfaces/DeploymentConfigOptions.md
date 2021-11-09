@@ -29,7 +29,7 @@ Deployment configuration options can adjust how the LunaSec stack is deployed to
 
 #### Defined in
 
-[types.ts:151](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L151)
+[types.ts:151](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L151)
 
 ___
 
@@ -39,7 +39,7 @@ ___
 
 #### Defined in
 
-[types.ts:152](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L152)
+[types.ts:152](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L152)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 #### Defined in
 
-[types.ts:124](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L124)
+[types.ts:124](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L124)
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 #### Defined in
 
-[types.ts:128](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L128)
+[types.ts:128](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L128)
 
 ___
 
@@ -75,7 +75,7 @@ Your authentication provider's public key (ex. Auth0) to be used for verifying s
 
 #### Defined in
 
-[types.ts:132](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L132)
+[types.ts:132](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L132)
 
 ___
 
@@ -87,7 +87,7 @@ The JWKS url where the public key for creating sessions will be available. By de
 
 #### Defined in
 
-[types.ts:136](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L136)
+[types.ts:136](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L136)
 
 ___
 
@@ -99,7 +99,7 @@ Only used for local deployments to localstack. The URL for LocalStack.
 
 #### Defined in
 
-[types.ts:140](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L140)
+[types.ts:140](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L140)
 
 ___
 
@@ -113,7 +113,7 @@ a service is breaking, it could be helpful to revert specific services as a hot 
 
 #### Defined in
 
-[types.ts:146](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L146)
+[types.ts:146](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L146)
 
 ___
 
@@ -125,7 +125,7 @@ Only used when building locally. Use local build artifacts when bringing up the 
 
 #### Defined in
 
-[types.ts:150](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L150)
+[types.ts:150](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L150)
 
 ___
 
@@ -137,4 +137,4 @@ Only used when building locally. Specify the build location of where the built s
 
 #### Defined in
 
-[types.ts:156](https://github.com/lunasec-io/lunasec/blob/218df468/js/sdks/packages/cli/src/config/types.ts#L156)
+[types.ts:156](https://github.com/lunasec-io/lunasec/blob/18ce926e/js/sdks/packages/cli/src/config/types.ts#L156)
