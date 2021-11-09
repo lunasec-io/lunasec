@@ -26,3 +26,4 @@ yarn-error.log*
 pages/node-sdk/
 pages/react-sdk/
 pages/tokenizer-sdk/
+pages/cli-config
