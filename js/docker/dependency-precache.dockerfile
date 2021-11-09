@@ -1,6 +1,6 @@
 FROM node:14-bullseye as lunasec-precached-dependencies
 
-RUN apt-get update && apt-get install --yes openjdk-17-jre curl sqlite3 jq
+RUN apt-get update && apt-get install --yes openjdk-17-jre curl sqlite3 jq golang-go
 
 RUN curl -fsSL https://get.docker.com | sh
 
