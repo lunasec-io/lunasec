@@ -29,7 +29,7 @@ Our CI builds and runs a lot of containers, and takes around 30 minutes.  In an 
 into the experimental and semi-documented world of Docker's Buildkit.  
 
 Buildkit is an alternative way of building docker containers, mainly focused on enabling higher performance through strategies like
-**parallel building** of multi-stage dockerfiles and **incremental caching** where every layer of a container is stored and can be 
+**parallel building** of multi-stage dockerfiles and **intermediate caching** where every layer of a container is stored and can be 
 reused in a subsequent build.  It does all those fancy things by keeping track of a dependency graph of your build. You can read more about
 how it works on [Buildkit's Github](https://github.com/moby/buildkit#exploring-llb).
 
@@ -37,8 +37,8 @@ If you just want to enable Buildkit in hopes of speeding up your builds a bit, y
 and that will enable what is called "docker integrated buildkit", meaning your docker commands will start using Buildkit by default.  You can keep
 on using docker normally and stop reading this blog post.
 
-## Incremental Caching
-The main feature I was after with Buildkit was saving and restoring those fancy incremental caches from disk, so that we could reuse them 
+## Intermediate Caching
+The main feature I was after with Buildkit was saving and restoring those fancy intermediate caches from disk, so that we could reuse them 
 between CI builds.  This is possible with a command like:
 ```bash
 docker buildx build --cache-to type=local,dest=/tmp/.buildx-cache,mode=max --cache-from type=local,src=/tmp/.buildx-cache .
@@ -69,7 +69,7 @@ The trouble is that now the image we built with that command is only **inside** 
 ## Docker Buildkit doesn't run containers, it just builds them.  
 
 To run any images built inside the "docker-container" builder, you have to use the argument `--load` which will spend a long time transferring
-the image into the host's docker.  In my case, that cancelled out any speed gains from the incremental caching.  At that point, 
+the image into the host's docker.  In my case, that cancelled out any speed gains from the intermediate caching.  At that point, 
 I realized Buildkit wasn't the solution to our slow builds, but clearly it has other advantages that might be useful to us in the future.  
 
 One thing the docker-container builder *is* excellent at is pushing containers to a remote repository, which it can do directly from the builder.
@@ -84,12 +84,12 @@ Similar to setting `DOCKER_HOST` to a remote docker daemon, buildkit can connect
 ```bash
 docker buildx create --name my-remote-builder tcp://my-docker-host:2375 --use
 ```
-I haven't tried it, but I think we could host a builder on a fast machine on AWS and reuse it between runs.  That way, the cache would stay populated
+I haven't tried it, but it should be possible to host a builder on a fast machine on AWS and reuse it between runs.  That way, the cache would stay populated
 without the slow --cache-to and --cache-from steps.  Exporting the images with --load would still take several minutes, but speed gains would probably be worth it.
 
 ## Final thoughts
-Buildkit is a big and complicated part of docker.  I only scratched the surface of what it can do, but I also came away feeling 
-that while it might be the future of docker, at the moment(2021) it's still an optional and somewhat experimental feature.  
+Buildkit is a big and complicated part of docker.  I only scratched the surface of what it can do.  I also came away with the sense
+that while it might be the future of docker, at the moment (2021) it's still an optional and somewhat experimental feature.  
 Documentation for the average developer is somewhat lacking and the halfway integration of Buildkit into the docker CLI has a steep learning curve.
 
-If Buildkit becomes the standard way to build docker containers, perhaps things we be a lot simpler someday.
+If Buildkit someday becomes the standard way to build docker containers, perhaps things will be more straightforward.
