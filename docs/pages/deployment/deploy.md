@@ -27,23 +27,23 @@ In order to deploy LunaSec into your infrastructure, you are going to need two t
 1. AWS credentials with permissions to deploy resources via Cloud Formation
 2. The LunaSec CLI tool
 
-The CLI can be installed via NPM or binary, as described in the [getting started guide](/pages/getting-started/dedicated-tokenizer/introduction/#cli). 
+The CLI can be installed via NPM, as described in the [getting started guide](/pages/getting-started/dedicated-tokenizer/introduction/#cli). 
 
-Now let's create a folder where we will manage our LunaSec deployment. It is important to note that this folder will contain
-the deployment state of all LunaSec resources.  These files should be committed to revision control.
-```shell
-mkdir lunasec_deployment
-cd lunasec_deployment
-```
-
-The LunaSec CLI tool needs a configuration file which reflects your infrastructure. To do this, create the file `config.yaml`
+The LunaSec CLI tool needs a configuration file which reflects your infrastructure. To do this, create the file (or add to your existing) `lunasec.js`
 and put this as its contents:
-```shell
-lunasec:
-  stack_version: 1.0.3
-  application_front_end: <URL to your application's front end'>
-  application_back_end: <URL to your application's back end'>
+```js
+module.exports = {
+    development: {
+        // ...
+    },
+    production: {
+        applicationFrontEnd: "<deployed application's front end url>",
+        applicationBackEnd: "<deployed application's back end url>"
+    }
+}
 ```
+
+The LunaSec stack will need to know the URL's of both your deployed front end and back end in order to function correctly.
 
 And finally to deploy all required LunaSec resources to your AWS account, run:
 ```shell
@@ -53,7 +53,7 @@ lunasec deploy
 Let's find the URL that the tokenizer is deployed to:
 ```shell
 $ lunasec resources
-Tokenizer URL: https://asdf.execute-api.us-west-2.amazonaws.com/prod/
+Tokenizer URL: https://<gateway id>.execute-api.us-west-2.amazonaws.com/prod/
 ...
 ```
 
@@ -61,7 +61,7 @@ This URL will be used when configuring Lunasec in your backend application:
 
 ```typescript
 export const lunaSec = new LunaSec({
-  tokenizerURL: "https://asdf.execute-api.us-west-2.amazonaws.com/prod/",
+  tokenizerURL: "https://<gateway id>.execute-api.us-west-2.amazonaws.com/prod/",
   ...
 });
 ```
