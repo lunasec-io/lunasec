@@ -36,6 +36,7 @@ jobs:
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
+      RUNNING_IN_CI: true
     strategy:
       matrix:
         merge: ["merged", "not-merged"]

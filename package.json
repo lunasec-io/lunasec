@@ -62,7 +62,7 @@
     "compile:release:services": "cd go && yarn run compile:release",
     "compile:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh build",
     "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services && yarn run compile:release:demos",
-    "postinstall": "yarn run license:install",
+    "postinstall": "if [ -z ${RUNNING_IN_CI+x} ]; then yarn run license:install; else echo \"running in CI, skipping postinstall hooks...\"; fi",
     "publish:release:sdks": "lerna publish --no-verify-access -y from-package",
     "publish:release:services": "cd go && yarn run publish:release",
     "publish:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh publish",
