@@ -54,13 +54,20 @@ function cfnOutput(scope: cdk.Construct, name: LunaSecStackResource, value: stri
   });
 }
 
-function createDynamoDBTable(scope: cdk.Construct, name: LunaSecStackResource, ttl?: string) {
+function createDynamoDBTable(
+  scope: cdk.Construct,
+  name: LunaSecStackResource,
+  options?: { ttl?: string; retain?: boolean }
+) {
+  const ttl = options && options.ttl ? { timeToLiveAttribute: options.ttl } : {};
+  const removalPolicy = options && options.retain ? { removalPolicy: cdk.RemovalPolicy.RETAIN } : {};
   const table = new dynamodb.Table(scope, name, {
+    ...ttl,
+    ...removalPolicy,
     partitionKey: {
       name: 'Key',
       type: dynamodb.AttributeType.STRING,
     },
-    timeToLiveAttribute: ttl,
   });
   cfnOutput(scope, name, table.tableName);
   return table;
@@ -106,9 +113,15 @@ export class LunaSecDeploymentStack extends cdk.Stack {
     const ciphertextBucket = getCiphertextBucket(this);
 
     const metadataTable = createDynamoDBTable(this, 'metadata-table');
-    const keysTable = createDynamoDBTable(this, 'keys-table');
-    const sessionsTable = createDynamoDBTable(this, 'sessions-table', '1h');
-    const grantsTable = createDynamoDBTable(this, 'grants-table', '1h');
+    const keysTable = createDynamoDBTable(this, 'keys-table', {
+      retain: true,
+    });
+    const sessionsTable = createDynamoDBTable(this, 'sessions-table', {
+      ttl: '1h',
+    });
+    const grantsTable = createDynamoDBTable(this, 'grants-table', {
+      ttl: '1h',
+    });
 
     const tokenizerSecret = createSecret(this, 'tokenizer-secret', secretDescription);
 

@@ -21,14 +21,6 @@ module.exports = {
 	},
 	production: {
 		applicationFrontEnd: 'http://localhost:3000',
-		authProviders: {
-			'express-back-end': {
-				url: 'https://f8d9-71-227-170-199.ngrok.io'
-			},
-			'graphql-back-end': {
-				url: 'https://7532-71-227-170-199.ngrok.io'
-			}
-		},
-		debug: true
+		applicationBackEnd: 'http://localhost:3001',
 	},
 }
