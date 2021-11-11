@@ -37,9 +37,9 @@ type secureFrameController struct {
 }
 
 type SecureFrameControllerConfig struct {
-	ViewsPath string          `yaml:"views_path"`
-	CdnConfig types.CDNConfig `yaml:"cdn_config"`
-	IframeBackendUrl string   `yaml:"iframe_backend_url"`
+	ViewsPath    string          `yaml:"views_path"`
+	CdnConfig    types.CDNConfig `yaml:"cdn_config"`
+	TokenizerURL string          `yaml:"tokenizer_url"`
 }
 
 type SecureFrameController interface {
@@ -97,6 +97,13 @@ func (s *secureFrameController) Frame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	tokenizerURL := s.SecureFrameControllerConfig.TokenizerURL
+
+	apiGatewayTokenizerURL := util.GetAPIGatewayTokenizerURL(r)
+	if apiGatewayTokenizerURL != "" {
+		tokenizerURL = apiGatewayTokenizerURL
+	}
+
 	scriptURL := url.URL{
 		Scheme: s.CdnConfig.Protocol,
 		Host:   s.CdnConfig.Host,
@@ -115,7 +122,7 @@ func (s *secureFrameController) Frame(w http.ResponseWriter, r *http.Request) {
 		RequestNonce:  nonce,
 		ScriptUrl:     scriptURL.String(),
 		StyleUrl:      styleURL.String(),
-		BackendUrl:    s.SecureFrameControllerConfig.IframeBackendUrl,
+		BackendUrl:    tokenizerURL,
 	}
 
 	w.Header().Set("Content-Type", "text/html")

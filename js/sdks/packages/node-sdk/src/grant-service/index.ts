@@ -28,13 +28,15 @@ import { SessionIdProvider } from '../authentication/types';
  */
 export class Grants {
   private readonly auth: KeyService;
+  private readonly tokenizerUrl: string;
   private readonly sessionIdProvider: SessionIdProvider | undefined;
 
   /**
    * @ignore
    */
-  constructor(auth: KeyService, sessionIdProvider?: SessionIdProvider) {
+  constructor(auth: KeyService, tokenizerUrl: string, sessionIdProvider?: SessionIdProvider) {
     this.auth = auth;
+    this.tokenizerUrl = tokenizerUrl;
     this.sessionIdProvider = sessionIdProvider;
   }
 

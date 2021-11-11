@@ -17,10 +17,18 @@
 module.exports = {
 	development: {
 		applicationFrontEnd: 'http://localhost:3000',
-		applicationBackEnd: 'http://localhost:3001'
+		applicationBackEnd: 'http://localhost:3001',
 	},
 	production: {
 		applicationFrontEnd: 'http://localhost:3000',
-		applicationBackEnd: 'http://localhost:3001'
+		authProviders: {
+			'express-back-end': {
+				url: 'https://f8d9-71-227-170-199.ngrok.io'
+			},
+			'graphql-back-end': {
+				url: 'https://7532-71-227-170-199.ngrok.io'
+			}
+		},
+		debug: true
 	},
 }

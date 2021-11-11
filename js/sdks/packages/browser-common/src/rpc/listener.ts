@@ -57,7 +57,9 @@ export function addReactEventListener(
   window.addEventListener(
     'message',
     (event) => {
-      if (event.origin !== lunaSecDomain) {
+      const parsedLunaSecDomain = new URL(lunaSecDomain);
+
+      if (event.origin !== parsedLunaSecDomain.origin) {
         return;
       }
 

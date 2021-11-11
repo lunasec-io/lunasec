@@ -19,7 +19,6 @@ package main
 import (
 	"context"
 	"errors"
-
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizerbackend"
@@ -50,6 +49,7 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 			panic(err)
 		}
 	}()
+
 	// If no name is provided in the HTTP request body, throw an error
 	return gatewayServer.ProxyWithContext(ctx, req)
 }

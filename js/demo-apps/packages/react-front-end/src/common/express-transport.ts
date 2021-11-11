@@ -21,33 +21,35 @@ import { ApiResponse, UserDocumentsResponse, UserResponse } from './types';
 // Its better to instantiate your own copy of axios with axios.create(), this global setting left in for testing purposes because it tends to cause more issues
 axios.defaults.withCredentials = true;
 
+const expressUrl = process.env.REACT_APP_EXPRESS_URL as string;
+
 async function loadDocuments() {
-  const { data } = await axios.get<UserDocumentsResponse>(`http://localhost:3001/documents`);
+  const { data } = await axios.get<UserDocumentsResponse>(`${expressUrl}/documents`);
   return data;
 }
 
 async function uploadDocumentTokens(documents: string[]) {
-  const { data } = await axios.post<ApiResponse>(`http://localhost:3001/documents`, { documents });
+  const { data } = await axios.post<ApiResponse>(`${expressUrl}/documents`, { documents });
   return data;
 }
 
 async function login(username: string, password: string) {
-  const { data } = await axios.post<UserResponse>(`http://localhost:3001/auth/login`, { username, password });
+  const { data } = await axios.post<UserResponse>(`${expressUrl}/auth/login`, { username, password });
   return data;
 }
 
 async function signup(username: string, password: string) {
-  const { data } = await axios.post<UserResponse>(`http://localhost:3001/auth/signup`, { username, password });
+  const { data } = await axios.post<UserResponse>(`${expressUrl}/auth/signup`, { username, password });
   return data;
 }
 
 async function saveSsn(ssn_token: string) {
-  const { data } = await axios.post<ApiResponse>(`http://localhost:3001/user/set-ssn`, { ssn_token });
+  const { data } = await axios.post<ApiResponse>(`${expressUrl}/user/set-ssn`, { ssn_token });
   return data;
 }
 
 async function loadUser() {
-  const { data } = await axios.get<UserResponse>(`http://localhost:3001/user/me`);
+  const { data } = await axios.get<UserResponse>(`${expressUrl}/user/me`);
   return data;
 }
 export const expressTransport = {
