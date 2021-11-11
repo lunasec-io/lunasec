@@ -27,6 +27,8 @@ In this series, I'm going to work through my thought process about Open Source b
 I followed while building [LunaSec](https://github.com/lunasec-io/lunasec). In comparison to traditional business 
 models, Open Source businesses can be non-trivial, non-obvious, and daunting to undertake.
 
+<!--truncate-->
+
 My goal is to help teach others about [Open Source](https://en.wikipedia.org/wiki/Open_source) businesses by helping 
 you understand the steps involved, the tradeoffs you make by choosing Open Source, and by overall giving you an 
 intuition to help evaluate if Open Source is the right approach for your business.
@@ -38,10 +40,6 @@ pricing models, the pros/cones of each, and relating them back to Open Source.
 I hope this article helps you kickstart your efforts of launching your Open Source business. At the end of this series,
 I will also be sharing with you how to best position your business to raise Angel & VC funding based on our experience
 raising a Seed round.
-
-Thanks for reading!
-
-<!--truncate-->
 
 ## Part 1: Software Pricing Models
 
@@ -124,7 +122,7 @@ couldn't afford to pay for phone support for a user that didn't pay for the soft
 
 _Windows XP relied on product keys that were verified over the internet to combat piracy._
 
-![Windows XP Installation Screenshot asking for a Product Key](/img/open-source-posts/redis-pricing-page.png)
+![Windows XP Installation Screenshot asking for a Product Key](/img/open-source-posts/windows-xp-product-key.png)
 
 Over time, these became problems with the physical "Brick-and-Mortar" method of selling software forced a new pricing
 model to be adopted. This new model is often referred to as the "Software Licensing" pricing model.
