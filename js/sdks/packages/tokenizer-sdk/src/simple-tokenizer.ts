@@ -38,7 +38,8 @@ export class SimpleTokenizer {
     if (!config.baseRoute) {
       config.baseRoute = '/.lunasec';
     }
-    this.tokenizer = new Tokenizer(config);
+    const url = new URL(config.baseRoute, config.host);
+    this.tokenizer = new Tokenizer({ url: url.toString(), metaEncoding: config.metaEncoding });
   }
 
   tokenize(input: string | Buffer) {

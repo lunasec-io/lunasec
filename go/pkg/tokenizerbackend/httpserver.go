@@ -75,8 +75,24 @@ func newServer(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 	)
 
 	c := cors.New(cors.Options{
-		AllowedHeaders:   appConfig.Cors.AllowedHeaders,
-		AllowedOrigins:   appConfig.Cors.AllowedOrigins,
+		AllowedHeaders: appConfig.Cors.AllowedHeaders,
+		AllowOriginRequestFunc: func(r *http.Request, origin string) bool {
+			tokenizerURL := util.GetAPIGatewayTokenizerURL(r)
+
+			allowedOrigins := appConfig.Cors.AllowedOrigins
+			if tokenizerURL != "" {
+				allowedOrigins = append(allowedOrigins, tokenizerURL)
+			}
+
+			logger.Debug("CORS allowed origins", zap.Strings("allowedOrigins", allowedOrigins))
+
+			for _, allowedOrigin := range allowedOrigins {
+				if origin == allowedOrigin {
+					return true
+				}
+			}
+			return false
+		},
 		AllowCredentials: true,
 	})
 	return c.Handler(sm)

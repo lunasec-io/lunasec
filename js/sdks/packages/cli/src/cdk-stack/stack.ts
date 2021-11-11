@@ -54,12 +54,13 @@ function cfnOutput(scope: cdk.Construct, name: LunaSecStackResource, value: stri
   });
 }
 
-function createDynamoDBTable(scope: cdk.Construct, name: LunaSecStackResource) {
+function createDynamoDBTable(scope: cdk.Construct, name: LunaSecStackResource, ttl?: string) {
   const table = new dynamodb.Table(scope, name, {
     partitionKey: {
       name: 'Key',
       type: dynamodb.AttributeType.STRING,
     },
+    timeToLiveAttribute: ttl,
   });
   cfnOutput(scope, name, table.tableName);
   return table;
@@ -106,8 +107,8 @@ export class LunaSecDeploymentStack extends cdk.Stack {
 
     const metadataTable = createDynamoDBTable(this, 'metadata-table');
     const keysTable = createDynamoDBTable(this, 'keys-table');
-    const sessionsTable = createDynamoDBTable(this, 'sessions-table');
-    const grantsTable = createDynamoDBTable(this, 'grants-table');
+    const sessionsTable = createDynamoDBTable(this, 'sessions-table', '1h');
+    const grantsTable = createDynamoDBTable(this, 'grants-table', '1h');
 
     const tokenizerSecret = createSecret(this, 'tokenizer-secret', secretDescription);
 

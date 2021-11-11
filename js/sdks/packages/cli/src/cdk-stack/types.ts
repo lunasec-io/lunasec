@@ -33,7 +33,7 @@ export interface S3AssetFile {
   content: Buffer;
 }
 
-export type SecureFrameAssetFilename = 'mainScript' | 'mainStyle';
+export type SecureFrameAssetFilename = 'mainScript' | 'mainScriptMap' | 'mainStyle';
 
 export interface SecureFrameAssetFiles {
   files: Record<SecureFrameAssetFilename, S3AssetFile>;

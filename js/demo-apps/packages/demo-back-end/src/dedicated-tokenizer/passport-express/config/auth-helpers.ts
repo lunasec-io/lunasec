@@ -31,6 +31,7 @@ export function ensureLoggedIn(req: Request, res: Response, next: NextFunction) 
 export function lunaSecSessionIdProvider(req: Request): Promise<string | null> {
   // LunaSec expects this to return a promise in case we need to do something async
   return new Promise((resolve) => {
+    console.log(`creating LunaSec session with session id: ${req.session.id}`);
     if (req.session.id) {
       return resolve(req.session.id);
     }

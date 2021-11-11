@@ -92,7 +92,7 @@ export class LunaSec {
       pluginBaseUrl: config.auth.pluginBaseUrl,
     });
 
-    this.grants = new Grants(this.keyService, config.auth.sessionIdProvider);
+    this.grants = new Grants(this.keyService, config.tokenizerURL, config.auth.sessionIdProvider);
     setGrantServiceForDirective(this.grants);
     this.tokenDirective = TokenDirective;
     if (config.secureResolverConfig) {

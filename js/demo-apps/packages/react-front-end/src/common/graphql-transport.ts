@@ -18,8 +18,10 @@ import { ApolloClient, createHttpLink, gql, InMemoryCache } from '@apollo/client
 
 import { ApiResponse, Transport, UserDocumentsResponse, UserResponse } from './types';
 
+const graphqlUrl = process.env.REACT_APP_GRAPHQL_URL as string;
+
 const link = createHttpLink({
-  uri: 'http://localhost:3002/graphql',
+  uri: `${graphqlUrl}/graphql`,
   credentials: 'include',
 });
 

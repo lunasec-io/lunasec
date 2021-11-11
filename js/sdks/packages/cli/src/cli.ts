@@ -298,10 +298,6 @@ yargs
         throw new Error('no application front end url provided in lunasec stack config.');
       }
 
-      if (lunasecConfig.production.applicationBackEnd === undefined) {
-        throw new Error('no application back end url provided in lunasec stack config.');
-      }
-
       const app = new cdk.App();
       const stack = new LunaSecDeploymentStack(app, LunaSecStackName, args.local, lunasecConfig.production);
       const out = app.synth();
@@ -339,6 +335,7 @@ yargs
       }
 
       if (!args.local) {
+        console.debug('Setting up secure frame iframe bucket...');
         const backendBucketOutputName = getOutputName('tokenizer-backend-bucket');
         const tokenizerBackendAssetBucket = stackOutputs[backendBucketOutputName];
         if (tokenizerBackendAssetBucket === undefined || tokenizerBackendAssetBucket === '') {
@@ -372,6 +369,7 @@ yargs
       const localstackConfig = args.local ? { localstack_url: 'http://localhost:4566' } : {};
 
       if (args.output) {
+        console.debug(`Writing resource config to: ${args.output}`);
         const resourceConfig: AwsResourceConfig = {
           aws_gateway: {
             table_names: {
@@ -390,6 +388,8 @@ yargs
         const serializedConfig = JSON.stringify(resourceConfig, null, 2);
         fs.writeFileSync(args.output, serializedConfig);
       }
+
+      console.log(`Completed LunaSec stack deployment for version: ${version as string}`);
     }
   )
   .command(

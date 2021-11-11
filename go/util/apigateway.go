@@ -16,6 +16,8 @@ package util
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/awslabs/aws-lambda-go-api-proxy/core"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"net/http"
 
@@ -63,4 +65,13 @@ func ApiGatewayError(err error) (events.APIGatewayProxyResponse, error) {
 		nil,
 		httpErr,
 	)
+}
+
+func GetAPIGatewayTokenizerURL(r *http.Request) (tokenizerURL string) {
+	requestContext, ok := core.GetAPIGatewayContextFromContext(r.Context())
+	if ok {
+		// the request came from API gateway, build the backend url
+		tokenizerURL = fmt.Sprintf("%s://%s/%s", r.URL.Scheme, requestContext.DomainName, requestContext.Stage)
+	}
+	return
 }
