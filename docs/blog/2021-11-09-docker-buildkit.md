@@ -28,6 +28,8 @@ authors:
 Part 2 of a series on optimizing our build system. I explain how our build system is laid out
 in [Part 1](blog/lunasec-ci).
 
+<!--truncate-->
+
 ### Docker Buildkit
 
 Our CI builds and runs a lot of containers, and takes around 30 minutes. In an attempt to make it faster, I did a deep
