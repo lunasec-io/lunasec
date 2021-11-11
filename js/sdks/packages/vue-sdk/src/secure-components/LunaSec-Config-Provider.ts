@@ -19,7 +19,7 @@ export interface LunaSecConfigProviderAttrs {
   sessionAuthProvider: string;
   authenticationErrorHandler: (e: Error) => void;
 }
-import { defineComponent, provide, toRefs } from 'vue';
+import { defineComponent, provide } from 'vue';
 export default defineComponent({
   name: 'Demo',
   props: {

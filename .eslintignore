@@ -3,3 +3,4 @@
 **/build
 **/generated
 js/demo-apps/packages/react-front-end/cypress/integration/secure_components_spec.ts
+**/webpack.config.cjs
