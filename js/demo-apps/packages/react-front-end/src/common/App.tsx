@@ -57,7 +57,7 @@ export const DedicatedPassportReactApp: React.FunctionComponent<{
         sessionAuthProvider: sessionAuthProvider,
         authenticationErrorHandler: (e: Error) => {
           // setAuthError('Failed to authenticate with LunaSec. \n Is a user logged in?');
-          console.error('AUTH ERROR FROM LUNASEC', e);
+          console.error('AUTH ERROR FROM LUNASEC', JSON.stringify(e));
         },
       }}
     >
