@@ -82,7 +82,7 @@ export class ExpressAuthPlugin {
       return null;
     }
 
-    const redirectUrl = new URL('/session/create', this.tokenizerUrl);
+    const redirectUrl = new URL('session/create', this.tokenizerUrl);
     redirectUrl.searchParams.append('state', stateToken);
     redirectUrl.searchParams.append('openid_token', access_token.toString());
     return redirectUrl;

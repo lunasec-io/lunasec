@@ -21,6 +21,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/lunasec-io/lunasec-monorepo/gateway/configs"
 	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"net/http"
@@ -44,10 +45,11 @@ func NewGatewayConfig(logger *zap.Logger, provider config.Provider) (gatewayConf
 
 func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options session.Options, err error) {
 	var (
-		gatewayConfig configs.AwsGatewayConfig
-		creds         *credentials.Credentials
-		endpointUrl   *string
-		httpClient    *http.Client
+		gatewayConfig    configs.AwsGatewayConfig
+		creds            *credentials.Credentials
+		endpointUrl      *string
+		httpClient       *http.Client
+		s3ForcePathStyle bool
 	)
 
 	gatewayConfig, err = NewGatewayConfig(logger, provider)
@@ -61,7 +63,7 @@ func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options
 	}
 
 	sharedConfigEnable := session.SharedConfigEnable
-	if gatewayConfig.AccessKeyID != "" && gatewayConfig.SecretAccessKey != "" {
+	if !util.IsRunningInLambda() && gatewayConfig.AccessKeyID != "" && gatewayConfig.SecretAccessKey != "" {
 		logger.Debug(
 			"using configured credentials for aws session",
 			zap.String("accessKeyID", gatewayConfig.AccessKeyID),
@@ -72,6 +74,7 @@ func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options
 	}
 
 	if gatewayConfig.LocalstackURL != "" || gatewayConfig.LocalHTTPSProxy != "" {
+		s3ForcePathStyle = true
 		if gatewayConfig.LocalHTTPSProxy != "" {
 			logger.Debug(
 				"using configured localstack url (https proxy) for aws session",
@@ -97,7 +100,7 @@ func newAwsSessionOptions(logger *zap.Logger, provider config.Provider) (options
 			Credentials:      creds,
 			Region:           aws.String(gatewayConfig.S3Region),
 			Endpoint:         endpointUrl,
-			S3ForcePathStyle: aws.Bool(true),
+			S3ForcePathStyle: aws.Bool(s3ForcePathStyle),
 			HTTPClient:       httpClient,
 		},
 	}
