@@ -69,6 +69,8 @@ module.exports = {
       logical: 'parens-new-line',
       prop: 'parens-new-line',
     }],
+    "react/react-in-jsx-scope": 0,
+    "react/display-name":0,
     'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
     'react/jsx-max-props-per-line': ['error', { 'maximum': 3, 'when': 'multiline' }],
     'react/jsx-indent-props': ['error', 2],

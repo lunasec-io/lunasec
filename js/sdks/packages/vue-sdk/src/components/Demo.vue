@@ -1,12 +1,15 @@
 <template>
   <div class="test-app"></div>
-  <SecureInput></SecureInput>
+  <SecureForm onSubmit="handleSubmit">
+    <SecureInput></SecureInput>
+  </SecureForm>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 import SecureInput from '../secure-components/Secure-Input.vue';
+import SecureForm from '../secure-components/Secure-Form';
 
 export default defineComponent({
   name: 'Demo',
@@ -15,6 +18,7 @@ export default defineComponent({
   },
   components: {
     SecureInput,
+    SecureForm
   },
 });
 </script>

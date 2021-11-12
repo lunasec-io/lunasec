@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.json",
 
   "compilerOptions": {
+    "jsx": "preserve",
     "outDir": "build/main",
 //    "rootDir": "src",
     "tsBuildInfoFile": "./build/buildcache.tsbuildinfo",
