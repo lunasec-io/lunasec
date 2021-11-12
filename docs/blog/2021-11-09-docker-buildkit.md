@@ -26,12 +26,13 @@ authors:
 #### ...and why it didn't make our builds any faster
 
 Part 2 of a series on optimizing our build system. I explain how our build system is laid out
-in [Part 1](blog/lunasec-ci).
+in [Part 1](/blog/lunasec-ci).
 
 ### Docker Buildkit
 
 Our CI builds and runs a lot of containers, and takes around 30 minutes. In an attempt to make it faster, I did a deep
 dive into the experimental and semi-documented world of Docker's Buildkit.
+<!--truncate-->
 
 Buildkit is an alternative way of building docker containers, mainly focused on enabling higher performance through
 strategies like
