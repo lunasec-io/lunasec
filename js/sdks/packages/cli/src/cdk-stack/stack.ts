@@ -117,10 +117,10 @@ export class LunaSecDeploymentStack extends cdk.Stack {
       retain: true,
     });
     const sessionsTable = createDynamoDBTable(this, 'sessions-table', {
-      ttl: '1h',
+      ttl: '24h',
     });
     const grantsTable = createDynamoDBTable(this, 'grants-table', {
-      ttl: '1h',
+      ttl: '24h',
     });
 
     const tokenizerSecret = createSecret(this, 'tokenizer-secret', secretDescription);

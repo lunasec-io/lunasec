@@ -170,7 +170,7 @@ export interface DeploymentConfigOptions {
    */
   frontEndAssetsFolder?: string;
   /**
-   * Debug the deployed tokenizer backend. Defaults to false.
+   * Turn on verbose logging for the deployed tokenizer backend. Defaults to false.
    */
   debug: boolean;
 }
