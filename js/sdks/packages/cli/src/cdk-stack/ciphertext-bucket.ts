@@ -29,6 +29,8 @@ export class CiphertextBucket extends s3.Bucket {
           allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.PUT],
         },
       ],
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      publicReadAccess: true,
     };
     super(scope, name, props);
   }

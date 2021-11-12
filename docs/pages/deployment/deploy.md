@@ -45,6 +45,12 @@ module.exports = {
 
 The LunaSec stack will need to know the URL's of both your deployed front end and back end in order to function correctly.
 
+Docker will need credentials to login to your AWS account's ECR registry, to do this run the following:
+
+```shell
+aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <account id>.dkr.ecr.<region>.amazonaws.com
+```
+
 And finally to deploy all required LunaSec resources to your AWS account, run:
 ```shell
 lunasec deploy

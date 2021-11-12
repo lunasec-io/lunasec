@@ -408,7 +408,8 @@ export class LunaSecStackDockerCompose {
       SESSION_JWKS_URL: this.stackConfigOptions.sessionJWKSURL,
 
       STAGE: 'DEV',
-      TOKENIZER_URL: 'http://localhost:37766',
+      TOKENIZER_URL: this.stackConfigOptions.tokenizerUrl,
+      REACT_APP_TOKENIZER_URL: this.stackConfigOptions.tokenizerUrl,
       CDN_HOST: 'localhost:8000',
       AWS_DEFAULT_REGION: 'us-west-2',
       AWS_ACCESS_KEY_ID: 'test',

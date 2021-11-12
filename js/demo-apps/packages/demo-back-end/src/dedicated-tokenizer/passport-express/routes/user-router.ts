@@ -30,6 +30,7 @@ export function userRouter(models: Models) {
   router.get('/me', ensureLoggedIn, async (req, res) => {
     const user = req.user;
     if (user.ssn_token) {
+      console.log(`creating grant for token ${user.ssn_token} with session id ${req.session.id}`);
       await lunaSec.grants.create(req.session.id, user.ssn_token);
     }
     res.json({

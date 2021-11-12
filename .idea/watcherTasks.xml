@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectTasksOptions">
+  <component name="ProjectTasksOptions" suppressed-tasks="Pug/Jade">
     <TaskOptions isEnabled="true">
       <option name="arguments" value="fmt $FilePath$" />
       <option name="checkSyntaxErrors" value="true" />

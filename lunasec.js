@@ -17,10 +17,10 @@
 module.exports = {
 	development: {
 		applicationFrontEnd: 'http://localhost:3000',
-		applicationBackEnd: 'http://localhost:3001'
+		applicationBackEnd: 'http://localhost:3001',
 	},
 	production: {
 		applicationFrontEnd: 'http://localhost:3000',
-		applicationBackEnd: 'http://localhost:3001'
+		applicationBackEnd: 'http://localhost:3001',
 	},
 }

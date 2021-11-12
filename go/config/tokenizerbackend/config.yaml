@@ -2,7 +2,6 @@ app:
   stack_id: ${STACK_ID:"deadbeef-cafe-babe-face-8e6f524b4dce"}
   cors:
     allowed_origins:
-      - ${TOKENIZER_URL}
       - ${APPLICATION_FRONT_END}
     allowed_headers:
       - Authorization
@@ -26,7 +25,7 @@ session_controller:
 secure_frame_controller:
   views_path: ${SECURE_FRAME_VIEWS_PATH:views/tokenizerbackend}
   cdn_config: ${SECURE_FRAME_CDN_CONFIG}
-  iframe_backend_url: ${IFRAME_BACKEND_URL:""} # the url that the iframe will use to call back into the tokenizer, defaults to window.location if left empty
+  tokenizer_url: ${TOKENIZER_URL:""} # the url that the iframe will use to call back into the tokenizer, defaults to window.location if left empty
 tokenizer:
   secret_arn: ${TOKENIZER_SECRET_ARN:""}
 auth_jwt_verifier:

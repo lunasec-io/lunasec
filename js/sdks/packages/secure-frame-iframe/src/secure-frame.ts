@@ -69,7 +69,10 @@ export class SecureFrame<E extends keyof ClassLookup> {
       throw new Error('Serving LunaSec assets or the Tokenizer on the same domain as your application is not secure');
     }
     this.frameNonce = this.getURLSearchParam('n');
-    this.tokenizer = new Tokenizer({ host: window.LUNASEC_BACKEND_URL || window.location.origin, lockToSession: true });
+
+    const url = window.LUNASEC_BACKEND_URL || window.location.origin;
+    this.tokenizer = new Tokenizer({ url, lockToSession: true });
+
     this.rpc = new iFrameRPC(this.origin, () => this.tokenizeField());
     this.startRPC();
   }

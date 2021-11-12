@@ -60,18 +60,10 @@ export class Tokenizer {
     }
     this.reqOptions = { headers }; // This is passed to the openapi client on every request
 
-    const basePath = this.getBasePath();
     // openapi stuff
-    const openAPIConfig = new Configuration({ basePath });
+    const openAPIConfig = new Configuration({ basePath: this.config.url });
     const axiosInstance = axios.create({});
     this.openApi = new DefaultApi(openAPIConfig, undefined, axiosInstance);
-  }
-
-  private getBasePath(): string {
-    if (this.config.baseRoute !== '') {
-      return new URL(this.config.baseRoute, this.config.host).toString();
-    }
-    return new URL(this.config.host).origin;
   }
 
   private handleError(e: AxiosError | Error | unknown): TokenizerFailApiResponse {

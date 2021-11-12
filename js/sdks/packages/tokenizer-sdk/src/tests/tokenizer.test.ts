@@ -30,7 +30,7 @@ import {
 
 const mockAxios = axios as unknown as jest.Mocked<typeof axios>;
 
-const tokenizer = new Tokenizer({ host: 'http://fake-tokenizer-backend.com' });
+const tokenizer = new Tokenizer({ url: 'http://fake-tokenizer-backend.com' });
 
 // TODO: test failure cases
 describe('tokenizer', () => {

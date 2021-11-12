@@ -23,6 +23,7 @@ import { SecureFrameAssetFiles } from './types';
 
 export function getSecureFrameAssets(secureFrameAssetFolder: string): SecureFrameAssetFiles {
   const mainScriptPattern = new RegExp(/^main(\.[a-f0-9]+|-dev)\.js$/);
+  const mainScriptMapPattern = new RegExp(/^main(\.[a-f0-9]+|-dev)\.js\.map$/);
   const mainStylePattern = new RegExp(/^main(\.[a-f0-9]+|)\.css$/);
 
   const jsAssetFolder = path.join(secureFrameAssetFolder, 'js');
@@ -31,12 +32,17 @@ export function getSecureFrameAssets(secureFrameAssetFolder: string): SecureFram
   if (mainScriptFilename === undefined) {
     throw new Error('unable to locate main script in secure frame front end');
   }
+  const mainScriptMapFilename = findFileMatchingPatternSync(jsAssetFolder, mainScriptMapPattern);
+  if (mainScriptMapFilename === undefined) {
+    throw new Error('unable to locate main script map in secure frame front end');
+  }
   const mainStyleFilename = findFileMatchingPatternSync(secureFrameAssetFolder, mainStylePattern);
   if (mainStyleFilename === undefined) {
     throw new Error('unable to locate main style in secure frame front end');
   }
 
   const mainScriptContent = fs.readFileSync(path.join(jsAssetFolder, mainScriptFilename));
+  const mainScriptMapContent = fs.readFileSync(path.join(jsAssetFolder, mainScriptMapFilename));
   const mainStyleContent = fs.readFileSync(path.join(secureFrameAssetFolder, mainStyleFilename));
 
   // TODO (cthompson) currently aws s3 deployment for the cdk is broken so this code won't help us atm
@@ -55,6 +61,10 @@ export function getSecureFrameAssets(secureFrameAssetFolder: string): SecureFram
       mainScript: {
         filename: mainScriptFilename,
         content: mainScriptContent,
+      },
+      mainScriptMap: {
+        filename: mainScriptMapFilename,
+        content: mainScriptMapContent,
       },
       mainStyle: {
         filename: mainStyleFilename,

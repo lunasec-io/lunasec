@@ -20,12 +20,13 @@ import path from 'path';
 import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as dynamo from '@aws-cdk/aws-dynamodb';
 import * as ecr from '@aws-cdk/aws-ecr';
+import * as iam from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as secret from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
 
-import { DeploymentConfigOptions } from '../config/types';
+import { AuthProviderConfig, DeploymentConfigOptions, deploymentConfigOptionsDefaults } from '../config/types';
 
 interface TokenizerBackendProps {
   deploymentConfig: DeploymentConfigOptions;
@@ -39,24 +40,25 @@ interface TokenizerBackendProps {
   grantsTable: dynamo.Table;
 }
 
-function getAuthMethod(deploymentConfig: DeploymentConfigOptions): Record<string, string> {
-  if (deploymentConfig.sessionPublicKey !== undefined) {
-    return {
-      SESSION_PUBLIC_KEY: deploymentConfig.sessionPublicKey,
-    };
+function getAuthenticationProviders(deploymentConfig: DeploymentConfigOptions): Record<string, AuthProviderConfig> {
+  const authProviders = deploymentConfig.authProviders;
+  if (authProviders !== undefined) {
+    return authProviders;
   }
-  if (deploymentConfig.sessionJwksEndpoint !== undefined) {
-    return {
-      SESSION_JWKS_URL: deploymentConfig.sessionJwksEndpoint,
-    };
-  }
+
+  // default case where we use the application back end as the auth provider
   const applicationBackEnd = deploymentConfig.applicationBackEnd;
-  if (applicationBackEnd === undefined) {
-    throw new Error('applicationBackEnd is undefined in config');
+  if (applicationBackEnd !== undefined) {
+    return {
+      application_back_end: {
+        url: applicationBackEnd,
+      },
+    };
   }
-  return {
-    SESSION_JWKS_URL: path.join(applicationBackEnd, '.lunasec/jwks.json'),
-  };
+
+  throw new Error(
+    'Unable to find a suitable authentication provider config. At a minimum, applicationBackEnd must be set in the config.'
+  );
 }
 
 function getLambdaEnv(stackId: string, props: TokenizerBackendProps): Record<string, string> {
@@ -64,19 +66,38 @@ function getLambdaEnv(stackId: string, props: TokenizerBackendProps): Record<str
   if (applicationFrontEnd === undefined) {
     throw new Error('applicationFrontEnd is undefined in config');
   }
-  const applicationBackEnd = props.deploymentConfig.applicationBackEnd;
-  if (applicationBackEnd === undefined) {
-    throw new Error('applicationBackEnd is undefined in config');
-  }
 
   const metrics = props.deploymentConfig.metrics;
   const grants = props.deploymentConfig.grants;
 
+  const debug = props.deploymentConfig.debug ? { STAGE: 'DEV' } : { STAGE: 'PROD' };
+
+  const authProviders = getAuthenticationProviders(props.deploymentConfig);
+
+  if (Object.keys(authProviders).length === 0) {
+    throw new Error(
+      'There are no auth providers configured. At a minimum, applicationBackEnd must be set in the config.'
+    );
+  }
+
+  // TODO (cthompson) this is a hack for now. To truly get multi auth provider support we will need to
+  // have the auth provider set as a request header so that our middleware in the tokenizer can
+  // pick up which auth provider to use.
+  const firstAuthProvider = authProviders[Object.keys(authProviders)[0]];
+
+  let jwksURL = new URL('.lunasec/jwks.json', firstAuthProvider.url);
+  if (firstAuthProvider.jwksPath !== undefined) {
+    jwksURL = new URL(firstAuthProvider.jwksPath, firstAuthProvider.url);
+  }
+
   return {
-    ...getAuthMethod(props.deploymentConfig),
+    ...debug,
 
     APPLICATION_FRONT_END: applicationFrontEnd,
-    APPLICATION_BACK_END: applicationBackEnd,
+    AUTH_PROVIDERS: JSON.stringify(authProviders),
+
+    SESSION_JWKS_URL: jwksURL.toString(),
+
     METRICS_DISABLED: metrics.disabled.toString(),
     METRICS_PROVIDER: metrics.provider,
 
@@ -84,7 +105,7 @@ function getLambdaEnv(stackId: string, props: TokenizerBackendProps): Record<str
     GRANT_MAXIMUM_DURATION: grants.grantMaximumDuration,
 
     TOKENIZER_URL: props.tokenizerBackendCloudfront.domainName,
-    CIPHERTEXT_VAULT_S3_BUCKET: props.ciphertextBucket.bucketArn,
+    CIPHERTEXT_VAULT_S3_BUCKET: props.ciphertextBucket.bucketName,
     SECURE_FRAME_CDN_CONFIG: props.cdnConfig,
     TOKENIZER_SECRET_ARN: props.tokenizerSecret.secretArn,
     METADATA_KV_TABLE: props.metadataTable.tableName,
@@ -110,6 +131,14 @@ export class TokenizerBackendLambda extends lambda.DockerImageFunction {
       timeout: cdk.Duration.seconds(20),
     };
     super(scope, 'tokenizer-backend-lambda', baseProps);
+
+    // allow the tokenizer to put metric statistics into cloudwatch
+    const metricStatisticsStatement = new iam.PolicyStatement({
+      resources: ['*'],
+      actions: ['cloudwatch:PutMetricData'],
+    });
+
+    this.addToRolePolicy(metricStatisticsStatement);
 
     props.ciphertextBucket.grantReadWrite(this);
     props.metadataTable.grantReadWriteData(this);
