@@ -15,17 +15,17 @@
  *
  */
 import {
+  AttributesMessage,
   FrameMessenger,
   FrameNotification,
   generateSecureNonce,
   getStyleInfo,
   ReadElementStyle,
 } from '@lunasec/browser-common';
-import { CSSProperties, inject, onMounted, reactive, ref, Ref, unref } from 'vue';
-
-import { LunaSecError } from '../../isomorphic-common';
+import { CSSProperties, inject, onMounted, reactive, ref, Ref } from 'vue';
 
 import { LunaSecConfigProviderAttrs } from './secure-components/LunaSec-Config-Provider';
+import { LunaSecSecureFormProviderAttrs } from './secure-components/Secure-Form';
 
 /**
  * A bag of properties that get passed back to the Secure Component when it calls our setup function below
@@ -47,40 +47,38 @@ export interface RenderData {
  * Easier to have this logic passed in a callback than sorting out our render cycle and handling null refs and so-on in every component
  */
 export type StyleCustomizer = (clonedStyle: ReadElementStyle) => ReadElementStyle;
+export type AttributeCustomizer = (ref: Element, attrs: Partial<AttributesMessage>) => AttributesMessage;
 
-function cloneStyle(ref: Ref) {
-  if (!ref.value) {
-    throw new Error('attempted to clone styles for element that didnt exist');
-  }
-  return getStyleInfo(ref.value);
-}
-
-export function setupSecureComponent(componentName: string, styleCustomizer: StyleCustomizer): RenderData {
+export function setupSecureComponent(
+  componentName: string,
+  styleCustomizer: StyleCustomizer,
+  attributeCustomizer: AttributeCustomizer
+): RenderData {
+  console.log('secure tools loading');
   // Get configuration from provider
-  const providerConf = inject<LunaSecConfigProviderAttrs>('lunaSecConfig');
-  if (!providerConf) {
+  const confProvider = inject<LunaSecConfigProviderAttrs>('lunaSecConfig');
+  if (!confProvider || !confProvider.lunaSecDomain) {
     throw new Error('Must register LunaSecConfigProvider above Secure Component');
   }
-  const lunaSecConfig = providerConf;
 
   const frameId = generateSecureNonce();
-  const frameMessenger = new FrameMessenger(providerConf.lunaSecDomain, frameId, (notification) => {
-    // this.frameNotificationCallback(notification)
-    console.log('frame notification received ', notification);
-  });
+  const frameMessenger = new FrameMessenger(confProvider.lunaSecDomain, frameId, frameNotificationHandler);
   // Set up default reactive variables
   const shouldRenderFrame = ref(false);
   const frameFullyLoaded = ref(false);
-  const dummyElementRef = ref(null);
-  const dummyStyleRef = ref(null);
+  const dummyElementRef = ref<Element>();
+  const dummyStyleRef = ref<Element>();
   const clonedStyle = reactive({});
 
   const abortController = new AbortController();
+  // todo: make being a form optional by providing a callback to trigger tokenization to the users
+  const formProvider = inject<LunaSecSecureFormProviderAttrs>('lunaSecSecureForm');
 
   function frameNotificationHandler(notification: FrameNotification) {
     switch (notification.command) {
       case 'NotifyOnStart':
-        sendIFrameAttributes();
+        console.log('secure tools got start msg');
+        // sendIFrameAttributes();
         break;
       case 'NotifyOnToken':
         // if ('onTokenChange' in this.props && this.props.onTokenChange && 'token' in notification.data) {
@@ -97,18 +95,93 @@ export function setupSecureComponent(componentName: string, styleCustomizer: Sty
         // this.validationHandler(notification.data.isValid);
         break;
       case 'NotifyOnSubmit':
-        this.formContext.submit();
+        if (!formProvider) {
+          throw new Error('Submit event fired for secure element outside of Secure Form');
+        }
+        formProvider.triggerSubmit();
         break;
       case 'NotifyOnError':
-        this.props.errorHandler(new LunaSecError(notification.data)); // Call the application's provided error handler
-        break;
+        // this.props.errorHandler(new LunaSecError(notification.data)); // Call the application's provided error handler
+        throw new Error(notification.data.toString());
+      // break;
     }
   }
 
+  function cloneStyle() {
+    // Clones style from the styleRef if provided(like with input), otherwise use elementRef
+    const styleElement = dummyStyleRef.value || dummyElementRef.value;
+    if (!styleElement) {
+      throw new Error('attempted to clone styles for element that didnt exist');
+    }
+    const clonedStyle = getStyleInfo(styleElement);
+    if (!clonedStyle) {
+      throw new Error('Attempted to build style for element but it wasnt populated yet');
+    }
+    delete clonedStyle.childStyle.style.display;
+    return clonedStyle;
+  }
+
+  function generateIFrameAttributes(): AttributesMessage {
+    // Build the style for the iframe
+    const childStyle = JSON.stringify(cloneStyle().childStyle);
+    const dummyElement = dummyElementRef.value;
+    if (!dummyElement) {
+      throw new Error('Attempted to generate iframe attributes for unmounted component');
+    }
+    // Todo: make setup function take an optional generic with a custom component name, so that this is dynamic enough for plugin use
+    return attributeCustomizer(dummyElement, {
+      id: frameId,
+      style: childStyle,
+    });
+
+    // Pull from the "type" of an input element if we have one in our wrapped element
+    // const dummyElement = this.dummyRef.current;
+    // if ((attrs.component === 'Uploader' || attrs.component === 'Input') && dummyElement) {
+    //   const inputType = dummyElement.getAttribute('type');
+    //   if (inputType) {
+    //     attrs.type = inputType;
+    //   }
+    // }
+
+    // if (attrs.component === 'Uploader' || attrs.component === 'Input' || attrs.component === 'TextArea') {
+    //   if ('customMetadata' in this.props) {
+    //     attrs.customMetadata = this.props.customMetadata;
+    //   }
+    // }
+
+    // if ('token' in this.props && 'fileTokens' in this.props) {
+    //   throw new Error("Can't have both tokens and fileTokens specified in props");
+    // }
+
+    // if (attrs.component !== 'Uploader' && 'token' in this.props) {
+    //   if (this.props.token !== this.lastTokenSent) {
+    //     attrs.token = this.props.token;
+    //     this.lastTokenSent = this.props.token;
+    //   }
+    // }
+
+    // if (attrs.component === 'Uploader' && 'fileTokens' in this.props) {
+    //   attrs.fileTokens = this.props.fileTokens;
+    // }
+    // if (attrs.component === 'Input' && 'placeholder' in this.props && this.props.placeholder) {
+    //   attrs.placeholder = this.props.placeholder;
+    // }
+
+    // if ('validator' in this.props) {
+    //   if (attrs.component !== 'Input') {
+    //     throw new Error('Validators can only be set on SecureInputs');
+    //   }
+    //   if (!this.props.onValidate) {
+    //     throw new Error(
+    //       'Must pass onValidate() callback when a validator is specified.  Use the callback to block the form from submitting and display user feedback.'
+    //     );
+    //   }
+    //   attrs.validator = this.props.validator;
+    // }
+  }
+
   onMounted(() => {
-    // Clones style from the styleRef if provided, otherwise use elementRef
-    const elementToClone = dummyStyleRef.value !== null ? dummyStyleRef : dummyElementRef;
-    const style = cloneStyle(elementToClone);
+    const style = cloneStyle();
     console.log('cloned style is ', style);
     if (!style) {
       throw new Error('read null style from dummy element');
@@ -140,8 +213,10 @@ export function setupSecureComponent(componentName: string, styleCustomizer: Sty
     resize: 'none',
   };
 
+  // typescript needs this value as a const
+  const scopedConf = confProvider;
   function generateFrameUrl() {
-    const frameURL = new URL('frame', lunaSecConfig.lunaSecDomain);
+    const frameURL = new URL('frame', scopedConf.lunaSecDomain);
     frameURL.searchParams.set('n', frameId);
     frameURL.searchParams.set('origin', window.location.origin);
     frameURL.searchParams.set('component', componentName);

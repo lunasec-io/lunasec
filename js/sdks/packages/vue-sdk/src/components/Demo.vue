@@ -1,5 +1,6 @@
 <template>
   <div class="test-app"></div>
+  <p>demo app</p>
   <SecureForm onSubmit="handleSubmit">
     <SecureInput></SecureInput>
   </SecureForm>

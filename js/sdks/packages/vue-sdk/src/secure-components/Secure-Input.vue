@@ -7,18 +7,18 @@
 </template>
 
 <script lang="ts">
-import { ReadElementStyle } from '@lunasec/browser-common';
-import {defineComponent} from 'vue';
+import {AttributesMessage, InputAttr, ReadElementStyle } from '@lunasec/browser-common';
+import {defineComponent, InputHTMLAttributes, Ref} from 'vue';
 
 import { setupSecureComponent } from '../secure-tools';
 
-export default defineComponent({
-  name: 'SecureInput',
+export interface SecureInputProps extends InputHTMLAttributes {
+  token?: string;
+  customMetadata?: Record<string, any>;
+}
 
-  props: {
-    token: String,
-    style: Object
-  },
+export default defineComponent<SecureInputProps>({
+  name: 'SecureInput',
 
   computed: {
     frameStyle() {
@@ -29,7 +29,7 @@ export default defineComponent({
     }
   },
 
-  setup() {
+  setup(props, context) {
     function styleCustomizer(clonedStyle: ReadElementStyle){
       const { parentStyle, width, height } = clonedStyle
       clonedStyle.parentStyle = {
@@ -40,7 +40,33 @@ export default defineComponent({
       };
       return clonedStyle;
     }
-    const lunaSecRenderData = setupSecureComponent('Input', styleCustomizer);
+
+    let lastToken:string;
+    function attributeCustomizer(dummyElement: Element, {id, style}: { id:string, style:string }): InputAttr {
+      const attrs: Partial<InputAttr> = {id, style}
+      attrs.component = 'Input'
+
+      const inputType = dummyElement.getAttribute('type')
+      if (inputType){
+        attrs.type = inputType
+      }
+
+      if ('customMetadata' in props){
+        attrs.customMetadata = props.customMetadata;
+      }
+
+      if (props.token && props.token !== lastToken){
+        lastToken = props.token;
+        attrs.token = props.token;
+      }
+
+      if (props.placeholder){
+        attrs.placeholder = props.placeholder;
+      }
+
+    }
+
+    const lunaSecRenderData = setupSecureComponent('Input', styleCustomizer, attributeCustomizer);
     console.log('lunaSecRenderData is ', lunaSecRenderData)
 
     return lunaSecRenderData

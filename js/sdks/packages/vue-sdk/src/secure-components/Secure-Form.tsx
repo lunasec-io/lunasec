@@ -16,14 +16,17 @@
  */
 import { timeout } from '@lunasec/browser-common';
 import { defineComponent, FormHTMLAttributes, provide, reactive, ref } from 'vue';
-
+export interface LunaSecSecureFormProviderAttrs {
+  tokenCommitCallbacks: Record<string, () => void>;
+  triggerSubmit: () => void;
+}
 export default defineComponent<FormHTMLAttributes>({
   name: 'SecureForm',
-  setup: (props) => {
+  setup: (props, context) => {
     const formRef = ref();
     //not sure if this needs to be reactive
-    const providerAttrs = reactive({
-      tokenCommitCallbacks: {} as Record<string, () => void>,
+    const providerAttrs = reactive<LunaSecSecureFormProviderAttrs>({
+      tokenCommitCallbacks: {},
       triggerSubmit: () => {
         console.log('form submit called');
         if (!formRef.value) {
@@ -53,12 +56,16 @@ export default defineComponent<FormHTMLAttributes>({
         props.onSubmit(e);
       }
     }
-
+    const { slots } = context;
     // render function
     return () => {
       return (
         <form {...props} onSubmit={onSubmit} ref={formRef}>
-          <slot />
+          <p> Secure Form</p>
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/*
+          // @ts-ignore */}
+          {slots.default()}
         </form>
       );
     };
