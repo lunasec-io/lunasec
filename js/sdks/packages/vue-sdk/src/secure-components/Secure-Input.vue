@@ -1,6 +1,6 @@
 <template>
   <div :style="containerStyle" class="secure-input-container">
-    <iframe v-if="shouldRenderFrame" :style="frameStyle" :src="frameUrl"/>
+    <iframe ref="frameRef" v-if="shouldRenderFrame" :style="frameStyle" :src="frameUrl"/>
     <input ref="dummyElementRef" :style="dummyStyle"/>
     <input ref="dummyStyleRef" :style="dummyStyle"/>
   </div>
@@ -42,16 +42,15 @@ export default defineComponent<SecureInputProps>({
     }
 
     let lastToken:string;
-    function attributeCustomizer(dummyElement: Element, {id, style}: { id:string, style:string }): InputAttr {
-      const attrs: Partial<InputAttr> = {id, style}
-      attrs.component = 'Input'
+    function attributeCustomizer(dummyElement: HTMLElement, {id, style}: { id:string, style:string }): InputAttr {
+      const attrs: InputAttr = {id, style, component:'Input'}
 
       const inputType = dummyElement.getAttribute('type')
       if (inputType){
         attrs.type = inputType
       }
 
-      if ('customMetadata' in props){
+      if (props.customMetadata){
         attrs.customMetadata = props.customMetadata;
       }
 
@@ -64,6 +63,7 @@ export default defineComponent<SecureInputProps>({
         attrs.placeholder = props.placeholder;
       }
 
+      return attrs;
     }
 
     const lunaSecRenderData = setupSecureComponent('Input', styleCustomizer, attributeCustomizer);

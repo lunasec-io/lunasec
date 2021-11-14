@@ -37,6 +37,7 @@ export interface RenderData {
   clonedStyle: ReadElementStyle | Record<string | number, never>;
   dummyElementRef: Ref;
   dummyStyleRef: Ref;
+  frameRef: Ref;
   containerStyle: CSSProperties;
   dummyElementStyle: CSSProperties;
   frameUrl: string;
@@ -47,7 +48,7 @@ export interface RenderData {
  * Easier to have this logic passed in a callback than sorting out our render cycle and handling null refs and so-on in every component
  */
 export type StyleCustomizer = (clonedStyle: ReadElementStyle) => ReadElementStyle;
-export type AttributeCustomizer = (ref: Element, attrs: Partial<AttributesMessage>) => AttributesMessage;
+export type AttributeCustomizer = (el: HTMLElement, attrs: { id: string; style: string }) => AttributesMessage;
 
 export function setupSecureComponent(
   componentName: string,
@@ -66,8 +67,9 @@ export function setupSecureComponent(
   // Set up default reactive variables
   const shouldRenderFrame = ref(false);
   const frameFullyLoaded = ref(false);
-  const dummyElementRef = ref<Element>();
-  const dummyStyleRef = ref<Element>();
+  const dummyElementRef = ref<HTMLElement>();
+  const dummyStyleRef = ref<HTMLElement>();
+  const frameRef = ref<HTMLIFrameElement>();
   const clonedStyle = reactive({});
 
   const abortController = new AbortController();
@@ -78,7 +80,7 @@ export function setupSecureComponent(
     switch (notification.command) {
       case 'NotifyOnStart':
         console.log('secure tools got start msg');
-        // sendIFrameAttributes();
+        void sendIFrameAttributes();
         break;
       case 'NotifyOnToken':
         // if ('onTokenChange' in this.props && this.props.onTokenChange && 'token' in notification.data) {
@@ -180,6 +182,18 @@ export function setupSecureComponent(
     // }
   }
 
+  // Give the iframe all the information it needs to exist when it wakes up
+  async function sendIFrameAttributes() {
+    const frameAttributes = generateIFrameAttributes();
+    const message = frameMessenger.createMessageToFrame('Attributes', frameAttributes);
+    if (!frameRef.value || !frameRef.value.contentWindow) {
+      console.error('Frame not initialized for message sending');
+      return;
+    }
+    await frameMessenger.sendMessageToFrameWithReply(frameRef.value.contentWindow, message);
+    return;
+  }
+
   onMounted(() => {
     const style = cloneStyle();
     console.log('cloned style is ', style);
@@ -228,6 +242,7 @@ export function setupSecureComponent(
     clonedStyle,
     dummyElementRef,
     dummyStyleRef, // only used by input
+    frameRef,
     shouldRenderFrame,
     frameFullyLoaded,
     containerStyle,
