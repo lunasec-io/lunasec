@@ -4,9 +4,4 @@ secure_frame_controller:
     host: ${CDN_HOST}
     main_script: js/main-dev.js
     main_style: main.css
-session_controller:
-  auth_providers:
-    express-back-end:
-      url: http://localhost:3001
-    graphql-back-end:
-      url: http://localhost:3002
+  tokenizer_url: ${REACT_APP_TOKENIZER_URL}

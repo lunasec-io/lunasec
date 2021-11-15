@@ -8,7 +8,7 @@ else
   while :
   do
     echo "Attempting to query aws localstack for bucket name and looping until success, please wait..." >&2
-    name=$(aws --endpoint-url=http://localhost:4566 cloudformation describe-stacks --stack-name lunasec --query "Stacks[0].Outputs[?ExportName==\`ciphertextbucketOutput\`].OutputValue" | jq -r ".[0]")
+    name=$(aws --endpoint-url="http://$LOCALSTACK_HOSTNAME:4566" cloudformation describe-stacks --stack-name lunasec --query "Stacks[0].Outputs[?ExportName==\`ciphertextbucketOutput\`].OutputValue" | jq -r ".[0]")
     if [ "$name" != "" ]; then
       echo "Received bucket name from aws: $name" >&2
       break
