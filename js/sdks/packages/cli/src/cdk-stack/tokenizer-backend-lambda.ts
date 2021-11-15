@@ -25,7 +25,7 @@ import * as secret from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
 
 import { DeploymentConfigOptions } from '../config/types';
-import { getAuthenticationProviders } from '../utils/auth-providers';
+import { formatAuthenticationProviders } from '../utils/auth-providers';
 
 interface TokenizerBackendProps {
   deploymentConfig: DeploymentConfigOptions;
@@ -50,7 +50,7 @@ function getLambdaEnv(stackId: string, props: TokenizerBackendProps): Record<str
 
   const debug = props.deploymentConfig.debug ? { STAGE: 'DEV' } : { STAGE: 'PROD' };
 
-  const authProviders = getAuthenticationProviders(
+  const authProviders = formatAuthenticationProviders(
     props.deploymentConfig.applicationBackEnd,
     props.deploymentConfig.authProviders
   );
