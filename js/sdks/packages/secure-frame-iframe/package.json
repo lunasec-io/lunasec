@@ -8,7 +8,7 @@
   "scripts": {
     "prepack": "npm run compile:release",
     "compile": "npm run compile:dev",
-    "compile:dev": "webpack --config webpack.config.js",
+    "compile:dev": "webpack --config webpack.config.cjs",
     "compile:release": "rm -rf public; NODE_ENV=production npm run compile",
     "serve-assets": "http-server -a localhost -p 8000",
     "watch": "WEBPACK_WATCH=true npm run compile",
