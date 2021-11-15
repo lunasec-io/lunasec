@@ -1,2 +1,0 @@
-session_controller:
-  auth_providers: ${AUTH_PROVIDERS}

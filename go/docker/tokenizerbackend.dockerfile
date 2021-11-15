@@ -32,10 +32,6 @@ COPY views/tokenizerbackend/ /views/tokenizerbackend/
 COPY config/tokenizerbackend/dev.yaml /config/tokenizerbackend/dev.yaml
 RUN if [ "$tag" != "dev" ] ; then rm /config/tokenizerbackend/dev.yaml ; fi
 
-# base config for a production release, otherwise remove it
-COPY config/tokenizerbackend/prod.yaml /config/tokenizerbackend/prod.yaml
-RUN if [ "$tag" != "lambda" ] ; then rm /config/tokenizerbackend/prod.yaml ; fi
-
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /out/tokenizerbackend_$tag /tokenizerbackend
 COPY --from=builder /tmp /tmp
