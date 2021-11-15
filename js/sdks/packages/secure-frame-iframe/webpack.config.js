@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 const webpack = require('webpack');
 
 const path = require('path');
@@ -6,17 +22,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const isProduction = process.env.NODE_ENV === 'production';
 
 const envFile = isProduction ? '.env-prod' : '.env';
-
-const envVars = require('dotenv').config({
-  path: path.resolve(process.cwd(), envFile)
-});
-
-const envVarDefs = Object.keys(envVars.parsed).reduce((envDefs, envVarName) => {
-  return {
-    ...envDefs,
-    [`process.env.${envVarName}`]: JSON.stringify(envVars.parsed[envVarName])
-  }
-}, {})
 
 const buildMode = isProduction ? 'production': 'development';
 
@@ -36,8 +41,6 @@ plugins.push(new webpack.ProvidePlugin({
   process: 'process/browser',
   Buffer: ['buffer', 'Buffer'],
 }));
-
-plugins.push(new webpack.DefinePlugin(envVarDefs))
 
 // if (isProduction) {
 //   const S3Plugin = require('webpack-s3-plugin')

@@ -32,5 +32,6 @@ export const lunaSec = new LunaSec({
     // or null if a user is not logged in.  LunaSec uses this to automatically create and verify token grants
     // and to bootstrap a session if you are using the express-auth-plugin
     sessionIdProvider: lunaSecSessionIdProvider,
+    redirectToLocalhost: true,
   },
 });

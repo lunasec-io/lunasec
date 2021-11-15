@@ -15,8 +15,6 @@
  *
  */
 
-import path from 'path';
-
 import * as cloudfront from '@aws-cdk/aws-cloudfront';
 import * as dynamo from '@aws-cdk/aws-dynamodb';
 import * as ecr from '@aws-cdk/aws-ecr';
@@ -26,7 +24,8 @@ import * as s3 from '@aws-cdk/aws-s3';
 import * as secret from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
 
-import { AuthProviderConfig, DeploymentConfigOptions, deploymentConfigOptionsDefaults } from '../config/types';
+import { DeploymentConfigOptions } from '../config/types';
+import { getAuthenticationProviders } from '../utils/auth-providers';
 
 interface TokenizerBackendProps {
   deploymentConfig: DeploymentConfigOptions;
@@ -40,27 +39,6 @@ interface TokenizerBackendProps {
   grantsTable: dynamo.Table;
 }
 
-function getAuthenticationProviders(deploymentConfig: DeploymentConfigOptions): Record<string, AuthProviderConfig> {
-  const authProviders = deploymentConfig.authProviders;
-  if (authProviders !== undefined) {
-    return authProviders;
-  }
-
-  // default case where we use the application back end as the auth provider
-  const applicationBackEnd = deploymentConfig.applicationBackEnd;
-  if (applicationBackEnd !== undefined) {
-    return {
-      application_back_end: {
-        url: applicationBackEnd,
-      },
-    };
-  }
-
-  throw new Error(
-    'Unable to find a suitable authentication provider config. At a minimum, applicationBackEnd must be set in the config.'
-  );
-}
-
 function getLambdaEnv(stackId: string, props: TokenizerBackendProps): Record<string, string> {
   const applicationFrontEnd = props.deploymentConfig.applicationFrontEnd;
   if (applicationFrontEnd === undefined) {
@@ -72,7 +50,10 @@ function getLambdaEnv(stackId: string, props: TokenizerBackendProps): Record<str
 
   const debug = props.deploymentConfig.debug ? { STAGE: 'DEV' } : { STAGE: 'PROD' };
 
-  const authProviders = getAuthenticationProviders(props.deploymentConfig);
+  const authProviders = getAuthenticationProviders(
+    props.deploymentConfig.applicationBackEnd,
+    props.deploymentConfig.authProviders
+  );
 
   if (Object.keys(authProviders).length === 0) {
     throw new Error(

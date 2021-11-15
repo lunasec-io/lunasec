@@ -19,7 +19,13 @@ import path from 'path';
 
 import { dump } from 'js-yaml';
 
-import { devConfigOptionsDefaults, DevelopmentConfigOptions, LunaSecStackConfigOptions } from '../config/types';
+import {
+  AuthProviderConfig,
+  devConfigOptionsDefaults,
+  DevelopmentConfigOptions,
+  LunaSecStackConfigOptions,
+} from '../config/types';
+import { getAuthenticationProviders } from '../utils/auth-providers';
 
 import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
 
@@ -46,6 +52,7 @@ interface ComposeService {
 
 interface healthCheckOptions {
   endpoint?: string;
+  protocol?: string;
   composeOptions?: {
     test?: string[];
     timeout?: string;
@@ -56,13 +63,25 @@ interface healthCheckOptions {
 
 function serviceHealthCheck(port: number, options?: healthCheckOptions) {
   const endpoint = options ? (options.endpoint ? options.endpoint : '') : '';
+  const protocol = options ? (options.protocol ? options.protocol : 'http') : 'http';
   const composeOptions = options ? options.composeOptions : {};
   return {
-    test: ['CMD-SHELL', `curl -k http://localhost:${port}${endpoint}`],
+    test: ['CMD-SHELL', `curl -k ${protocol}://localhost:${port}${endpoint}`],
     timeout: '30s',
     interval: '10s',
     retries: 10,
     ...composeOptions,
+  };
+}
+
+function composeServicePorts(ports: number[]): DefinitionsService {
+  return {
+    ports: ports.map((port) => {
+      return {
+        target: port,
+        published: port,
+      };
+    }),
   };
 }
 
@@ -115,13 +134,14 @@ export class LunaSecStackDockerCompose {
   baseServiceConfig(name: LunaSecService, excludeEnv?: boolean): DefinitionsService {
     return {
       hostname: name,
-      network_mode: 'host',
       ...(excludeEnv ? {} : { env_file: ['.env.docker'] }),
     };
   }
 
   localstack() {
     const name: LunaSecService = 'localstack';
+
+    const localstackPort = 4566;
 
     return {
       name,
@@ -135,9 +155,10 @@ export class LunaSecStackDockerCompose {
           'AWS_SECRET_ACCESS_KEY=test',
         ],
         volumes: ['/tmp/localstack:/tmp/localstack'],
-        healthcheck: serviceHealthCheck(4566, {
+        healthcheck: serviceHealthCheck(localstackPort, {
           endpoint: '/health',
         }),
+        ...composeServicePorts([localstackPort]),
       },
     };
   }
@@ -156,6 +177,8 @@ export class LunaSecStackDockerCompose {
       },
     };
 
+    const proxyPort = 4568;
+
     return {
       name,
       config: {
@@ -171,6 +194,7 @@ export class LunaSecStackDockerCompose {
             test: ['CMD-SHELL', `curl -k https://localhost:4568`],
           },
         }),
+        ...composeServicePorts([proxyPort]),
       },
     };
   }
@@ -186,12 +210,15 @@ export class LunaSecStackDockerCompose {
       ...this.dockerfileTarget(demoDockerFile, name),
     };
 
+    const secureFramePort = 8000;
+
     return {
       name,
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        healthcheck: serviceHealthCheck(8000),
+        healthcheck: serviceHealthCheck(secureFramePort),
+        ...composeServicePorts([secureFramePort]),
       },
     };
   }
@@ -207,12 +234,15 @@ export class LunaSecStackDockerCompose {
       ...this.dockerfileTarget(demoDockerFile, name),
     };
 
+    const frontEndPort = 3000;
+
     return {
       name,
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        healthcheck: serviceHealthCheck(3000),
+        healthcheck: serviceHealthCheck(frontEndPort),
+        ...composeServicePorts([frontEndPort]),
       },
     };
   }
@@ -228,12 +258,17 @@ export class LunaSecStackDockerCompose {
       ...this.dockerfileTarget(demoDockerFile, name),
     };
 
+    const expressAppPort = 3001;
+    const graphqlAppPort = 3002;
+    const simpleTokenizerAppPort = 3003;
+
     return {
       name,
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
         healthcheck: serviceHealthCheck(3001),
+        ...composeServicePorts([expressAppPort, graphqlAppPort, simpleTokenizerAppPort]),
       },
     };
   }
@@ -297,6 +332,8 @@ export class LunaSecStackDockerCompose {
       },
     };
 
+    const tokenizerPort = 37766;
+
     const awsResourcesPath = this.buildMountPath('outputs/');
     return {
       name,
@@ -317,7 +354,8 @@ export class LunaSecStackDockerCompose {
               }
             : {}),
         },
-        healthcheck: serviceHealthCheck(37766),
+        ...composeServicePorts([tokenizerPort]),
+        healthcheck: serviceHealthCheck(tokenizerPort),
       },
     };
   }
@@ -401,21 +439,34 @@ export class LunaSecStackDockerCompose {
   }
 
   getDockerEnv(): Record<string, string> {
+    const demoAuthProviders: Record<string, AuthProviderConfig> =
+      this.env === 'demo'
+        ? {
+            'express-back-end': {
+              url: 'http://localhost:3001',
+            },
+            'graphql-back-end': {
+              url: 'http://localhost:3002',
+            },
+          }
+        : {};
+    const authProviders = getAuthenticationProviders(this.stackConfigOptions.applicationBackEnd, demoAuthProviders);
     return {
       APPLICATION_FRONT_END: this.stackConfigOptions.applicationFrontEnd,
-      APPLICATION_BACK_END: this.stackConfigOptions.applicationBackEnd,
+      AUTH_PROVIDERS: JSON.stringify(authProviders),
       LUNASEC_SIGNING_KEY: this.stackConfigOptions.signingKey,
       SESSION_JWKS_URL: this.stackConfigOptions.sessionJWKSURL,
 
       STAGE: 'DEV',
-      TOKENIZER_URL: this.stackConfigOptions.tokenizerUrl,
+      TOKENIZER_URL: 'http://tokenizer-backend:37766',
       REACT_APP_TOKENIZER_URL: this.stackConfigOptions.tokenizerUrl,
       CDN_HOST: 'localhost:8000',
       AWS_DEFAULT_REGION: 'us-west-2',
       AWS_ACCESS_KEY_ID: 'test',
       AWS_SECRET_ACCESS_KEY: 'test',
       LOCALSTACK_URL: 'http://localhost:4566',
-      LOCAL_HTTPS_PROXY: 'https://localhost:4568',
+      LOCAL_HTTPS_PROXY: 'https://localstack-proxy:4568',
+      LOCALSTACK_HOSTNAME: 'localstack',
     };
   }
 

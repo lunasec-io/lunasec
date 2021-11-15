@@ -66,7 +66,7 @@ function* onStdinDemo(data: string) {
   yield;
 }
 
-function getEnv(args: yargs.Arguments) {
+function getEnv(args: yargs.Arguments): LunaSecStackEnvironment {
   const foundEnv = LunaSecStackEnvironments.filter((env) => env === args.env);
   if (foundEnv.length !== 1) {
     throw new Error(`Provided environment is not one of: ${LunaSecStackEnvironments.join(', ')}`);
@@ -164,8 +164,8 @@ yargs
         throw new Error('Attempted to force a rebuild without specifying `--local-build`.');
       }
 
-      const lunasecConfig = loadLunaSecStackConfig();
       const env = getEnv(args);
+      const lunasecConfig = loadLunaSecStackConfig(env === 'demo');
       const stack = new LunaSecStackDockerCompose(env, version, args['local-build'], lunasecConfig);
 
       const useSudo = args['no-sudo'] ? '' : 'sudo ';
@@ -201,7 +201,7 @@ yargs
 
       const forceRebuild = args['force-rebuild'] ? '--build' : '';
 
-      const dockerComposeUpCmd = `${baseDockerComposeCmd} up ${forceRebuild}`;
+      const dockerComposeUpCmd = `${baseDockerComposeCmd} up ${forceRebuild} --remove-orphans`;
 
       const shouldStreamStdio = env !== 'demo' || args['verbose'];
 
@@ -272,7 +272,9 @@ yargs
       const buildDir = args['build-dir'] ? args['build-dir'] : cacheBuildDir;
       console.debug(`Building LunaSec Stack to ${buildDir}`);
 
-      const awsEndpoint = args.local ? 'http://localhost:4566' : undefined;
+      const localstackHostname = process.env.LOCALSTACK_HOSTNAME || 'localhost';
+
+      const awsEndpoint = args.local ? `http://${localstackHostname}:4566` : undefined;
 
       const sts = new STSClient({ region: awsRegion, endpoint: awsEndpoint });
       const cmd = new GetCallerIdentityCommand({});
