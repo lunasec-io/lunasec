@@ -25,7 +25,7 @@ import {
   DevelopmentConfigOptions,
   LunaSecStackConfigOptions,
 } from '../config/types';
-import { getAuthenticationProviders } from '../utils/auth-providers';
+import { formatAuthenticationProviders } from '../utils/auth-providers';
 
 import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
 
@@ -438,19 +438,34 @@ export class LunaSecStackDockerCompose {
     };
   }
 
+  getAuthProviderHostname() {
+    if (this.env === 'demo') {
+      return 'localhost';
+    }
+    if (this.env === 'tests') {
+      return 'application-back-end';
+    }
+    return undefined;
+  }
+
+  getAuthenticationProviders(): Record<string, AuthProviderConfig> | undefined {
+    const authProviderHostname = this.getAuthProviderHostname();
+    if (authProviderHostname !== undefined) {
+      return {
+        'express-back-end': {
+          url: `http://${authProviderHostname}:3001`,
+        },
+        'graphql-back-end': {
+          url: `http://${authProviderHostname}:3002`,
+        },
+      };
+    }
+    return this.stackConfigOptions.authProviders;
+  }
+
   getDockerEnv(): Record<string, string> {
-    const demoAuthProviders: Record<string, AuthProviderConfig> =
-      this.env === 'demo'
-        ? {
-            'express-back-end': {
-              url: 'http://localhost:3001',
-            },
-            'graphql-back-end': {
-              url: 'http://localhost:3002',
-            },
-          }
-        : {};
-    const authProviders = getAuthenticationProviders(this.stackConfigOptions.applicationBackEnd, demoAuthProviders);
+    const localAuthProviders = this.getAuthenticationProviders();
+    const authProviders = formatAuthenticationProviders(this.stackConfigOptions.applicationBackEnd, localAuthProviders);
     return {
       APPLICATION_FRONT_END: this.stackConfigOptions.applicationFrontEnd,
       AUTH_PROVIDERS: JSON.stringify(authProviders),

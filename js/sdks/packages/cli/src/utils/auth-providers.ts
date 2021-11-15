@@ -16,7 +16,7 @@
  */
 import { AuthProviderConfig } from '../config/types';
 
-export function getAuthenticationProviders(
+export function formatAuthenticationProviders(
   applicationBackEnd?: string,
   authProviders?: Record<string, AuthProviderConfig>
 ): Record<string, AuthProviderConfig> {

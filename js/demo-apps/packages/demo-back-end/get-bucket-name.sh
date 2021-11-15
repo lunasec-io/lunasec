@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ -z "${LOCALSTACK_HOSTNAME}" ]]; then
+  LOCALSTACK_HOSTNAME="localhost"
+fi
+
 # bucket names are random in localstack, so this script gets the bucket name from aws if none is set in the env vars
 echo "get-bucket-name.sh script started" >&2
 if [ "$CIPHERTEXT_S3_BUCKET" != "" ]; then
