@@ -193,7 +193,7 @@ be founded. Their solution to this divide -- of wanting to only sell to large cu
 as Open Source. Anybody would be able to use their software, and they would sell custom support, features, and training
 to the Enterprise customers separately.
 
-Red Hat went on to become a very large played in this space, and is one of the pioneers of building a business around
+Red Hat went on to become a very large player in this space, and is one of the pioneers of building a business around
 Open Source software.
 
 ### The Evolution of the Internet
@@ -306,7 +306,7 @@ way to acquire customers and grow your mind share.
 
 _Docker failed to create a viable business model around containerizing applications._
 
-[Container Ship Sinking](/img/open-source-posts/docker-sinking.jpg)
+![Container Ship Sinking](/img/open-source-posts/docker-sinking.jpg)
 
 Open Source isn't perfect -- Cloud companies, like Amazon, have been known to 
 [exploit Open Source software projects](https://techcrunch.com/2018/11/29/the-crusade-against-open-source-abuse/) 
