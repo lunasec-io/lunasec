@@ -17,7 +17,7 @@
 import { timeout } from '@lunasec/browser-common';
 import { defineComponent, FormHTMLAttributes, provide, reactive, ref } from 'vue';
 export interface LunaSecSecureFormProviderAttrs {
-  tokenCommitCallbacks: Record<string, () => void>;
+  tokenCommitCallbacks: Record<string, () => Promise<void>>;
   triggerSubmit: () => void;
 }
 export default defineComponent<FormHTMLAttributes>({

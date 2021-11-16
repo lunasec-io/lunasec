@@ -69,6 +69,7 @@ module.exports = {
       logical: 'parens-new-line',
       prop: 'parens-new-line',
     }],
+    "react/no-unknown-property":0,
     "react/react-in-jsx-scope": 0,
     "react/display-name":0,
     'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],

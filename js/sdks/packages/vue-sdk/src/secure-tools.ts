@@ -22,7 +22,7 @@ import {
   getStyleInfo,
   ReadElementStyle,
 } from '@lunasec/browser-common';
-import { CSSProperties, inject, onMounted, reactive, ref, Ref } from 'vue';
+import { CSSProperties, inject, onMounted, onUnmounted, reactive, Ref, ref } from 'vue';
 
 import { LunaSecConfigProviderAttrs } from './secure-components/LunaSec-Config-Provider';
 import { LunaSecSecureFormProviderAttrs } from './secure-components/Secure-Form';
@@ -49,11 +49,14 @@ export interface RenderData {
  */
 export type StyleCustomizer = (clonedStyle: ReadElementStyle) => ReadElementStyle;
 export type AttributeCustomizer = (el: HTMLElement, attrs: { id: string; style: string }) => AttributesMessage;
+export type SetValueCustomizer = (el: HTMLElement, token: string) => void;
 
 export function setupSecureComponent(
   componentName: string,
+  shouldSubmitTokens: boolean,
   styleCustomizer: StyleCustomizer,
-  attributeCustomizer: AttributeCustomizer
+  attributeCustomizer: AttributeCustomizer,
+  setValueCustomizer: SetValueCustomizer
 ): RenderData {
   console.log('secure tools loading');
   // Get configuration from provider
@@ -194,6 +197,60 @@ export function setupSecureComponent(
     return;
   }
 
+  function registerSubmitHandler() {
+    if (!formProvider || !formProvider.tokenCommitCallbacks) {
+      throw new Error('Attempted to register a submit handler for an element not wrapped in a secure form');
+    }
+    formProvider.tokenCommitCallbacks[frameId] = triggerTokenCommit;
+  }
+
+  function removeSubmitHandler() {
+    if (!formProvider || !formProvider.tokenCommitCallbacks) {
+      throw new Error('Attempted to remove a submit handler for an element not wrapped in a secure form');
+    }
+    delete formProvider.tokenCommitCallbacks[frameId];
+  }
+
+  async function triggerTokenCommit(): Promise<void> {
+    if (!setValueCustomizer) {
+      throw new Error('Token commit triggered for a secure element without a setValueCallback defined');
+    }
+
+    const message = frameMessenger.createMessageToFrame('CommitToken', {});
+
+    const currentFrame = frameRef.value;
+    if (!currentFrame || !currentFrame.contentWindow) {
+      console.error('Attempted token commit for unmounted frame');
+      return;
+    }
+    const response = await frameMessenger.sendMessageToFrameWithReply(currentFrame.contentWindow, message);
+
+    // todo: improve this error handling to pass errors to the error handler prop
+    if (!response) {
+      return console.error('No response from frame for token commit');
+    }
+    if (!response.data.success) {
+      return console.error('Tokenization failed: ', response.data.error);
+    }
+    if (response.data.token === undefined) {
+      return console.error('Tokenization didnt return a token: ', response);
+    }
+
+    const dummyElement = dummyElementRef.value;
+    if (!dummyElement) {
+      throw new Error('Token Commit cant find dummy element to insert token into');
+    }
+
+    setValueCustomizer(dummyElement, response.data.token);
+
+    // setNativeValue(componentName, currentDummy, response.data.token);
+    // This timeout is an attempt to give the above events time to propagate and any user code time to execute,
+    // like it would have in a normal form where the user pressed submit.  Yes, we are hacking hard now
+    return new Promise((resolve) => {
+      setTimeout(resolve, 5);
+    });
+  }
+
   onMounted(() => {
     const style = cloneStyle();
     console.log('cloned style is ', style);
@@ -205,7 +262,17 @@ export function setupSecureComponent(
     frameMessenger.listen(window, abortController);
 
     shouldRenderFrame.value = true;
+
+    if (shouldSubmitTokens) {
+      registerSubmitHandler();
+    }
     console.log('mounted hook complete, frame should render');
+  });
+
+  onUnmounted(() => {
+    if (shouldSubmitTokens) {
+      removeSubmitHandler();
+    }
   });
 
   // some static styles all the Secure Elements will need

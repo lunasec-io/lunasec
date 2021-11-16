@@ -9,7 +9,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import SecureInput from '../secure-components/Secure-Input.vue';
+import SecureInput from '../secure-components/Secure-Input';
 import SecureForm from '../secure-components/Secure-Form';
 
 export default defineComponent({

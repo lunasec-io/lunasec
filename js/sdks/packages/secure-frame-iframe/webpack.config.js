@@ -80,7 +80,7 @@ plugins.push(new webpack.DefinePlugin(envVarDefs))
 //   }));
 // }
 
-module.exports = {
+export default {
   context: path.resolve(__dirname, 'src/'),
   devtool: 'source-map',
   entry: './main.ts',
