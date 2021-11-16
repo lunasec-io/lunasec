@@ -24,6 +24,7 @@ import {
   devConfigOptionsDefaults,
   DevelopmentConfigOptions,
   LunaSecStackConfigOptions,
+  testsConfigOptionsDefaults,
 } from '../config/types';
 import { formatAuthenticationProviders } from '../utils/auth-providers';
 
@@ -89,6 +90,16 @@ const demoDockerFile = 'js/docker/demo.dockerfile';
 
 const localstackImage = 'localstack/localstack:0.12.19';
 
+function getStackConfigOptions(env: LunaSecStackEnvironment, configOptions?: DevelopmentConfigOptions) {
+  if (env === 'tests') {
+    return testsConfigOptionsDefaults;
+  }
+  return {
+    ...devConfigOptionsDefaults,
+    ...configOptions,
+  };
+}
+
 export class LunaSecStackDockerCompose {
   env: LunaSecStackEnvironment = 'dev';
   localBuild = false;
@@ -103,14 +114,11 @@ export class LunaSecStackDockerCompose {
     this.env = env;
     this.localBuild = localBuild;
 
-    const devConfigOptions = stackConfigOptions ? stackConfigOptions.development : {};
-    this.stackConfigOptions = {
-      ...devConfigOptionsDefaults,
-      ...devConfigOptions,
-    };
+    const devConfigOptions = stackConfigOptions ? stackConfigOptions.development : undefined;
+    this.stackConfigOptions = getStackConfigOptions(env, devConfigOptions);
 
-    if (this.stackConfigOptions.sessionJWKSURL === '') {
-      this.stackConfigOptions.sessionJWKSURL = `${this.stackConfigOptions.applicationBackEnd}/.lunasec/jwks.json`;
+    if (this.stackConfigOptions.sessionJwksUrl === '') {
+      this.stackConfigOptions.sessionJwksUrl = `${this.stackConfigOptions.applicationBackEnd}/.lunasec/jwks.json`;
     }
   }
 
@@ -438,7 +446,7 @@ export class LunaSecStackDockerCompose {
     };
   }
 
-  getAuthProviderHostname() {
+  getBackEndHostname() {
     if (this.env === 'demo') {
       return 'localhost';
     }
@@ -448,8 +456,22 @@ export class LunaSecStackDockerCompose {
     return undefined;
   }
 
+  getLocalstackHostname() {
+    if (this.env === 'tests') {
+      return 'localstack';
+    }
+    return 'localhost';
+  }
+
+  getSecureFrameHostname() {
+    if (this.env === 'tests') {
+      return 'secure-frame-iframe';
+    }
+    return 'localhost';
+  }
+
   getAuthenticationProviders(): Record<string, AuthProviderConfig> | undefined {
-    const authProviderHostname = this.getAuthProviderHostname();
+    const authProviderHostname = this.getBackEndHostname();
     if (authProviderHostname !== undefined) {
       return {
         'express-back-end': {
@@ -463,25 +485,40 @@ export class LunaSecStackDockerCompose {
     return this.stackConfigOptions.authProviders;
   }
 
+  getApplicationBackEndEnvUrls() {
+    const backEndHostname = this.getBackEndHostname();
+    if (backEndHostname !== undefined) {
+      return {
+        REACT_APP_EXPRESS_URL: `http://${backEndHostname}:3001`,
+        REACT_APP_GRAPHQL_URL: `http://${backEndHostname}:3002`,
+      };
+    }
+    return undefined;
+  }
+
   getDockerEnv(): Record<string, string> {
     const localAuthProviders = this.getAuthenticationProviders();
     const authProviders = formatAuthenticationProviders(this.stackConfigOptions.applicationBackEnd, localAuthProviders);
     return {
+      ...this.getApplicationBackEndEnvUrls(),
+
       APPLICATION_FRONT_END: this.stackConfigOptions.applicationFrontEnd,
       AUTH_PROVIDERS: JSON.stringify(authProviders),
       LUNASEC_SIGNING_KEY: this.stackConfigOptions.signingKey,
-      SESSION_JWKS_URL: this.stackConfigOptions.sessionJWKSURL,
+      SESSION_JWKS_URL: this.stackConfigOptions.sessionJwksUrl,
 
       STAGE: 'DEV',
+      LUNASEC_STACK_ENV: this.env,
       TOKENIZER_URL: 'http://tokenizer-backend:37766',
       REACT_APP_TOKENIZER_URL: this.stackConfigOptions.tokenizerUrl,
-      CDN_HOST: 'localhost:8000',
+      CDN_HOST: `${this.getSecureFrameHostname()}:8000`,
+      LOCALSTACK_URL: `http://${this.getLocalstackHostname()}:4566`,
+      LOCAL_HTTPS_PROXY: 'https://localstack-proxy:4568',
+      LOCALSTACK_HOSTNAME: 'localstack',
+
       AWS_DEFAULT_REGION: 'us-west-2',
       AWS_ACCESS_KEY_ID: 'test',
       AWS_SECRET_ACCESS_KEY: 'test',
-      LOCALSTACK_URL: 'http://localhost:4566',
-      LOCAL_HTTPS_PROXY: 'https://localstack-proxy:4568',
-      LOCALSTACK_HOSTNAME: 'localstack',
     };
   }
 
