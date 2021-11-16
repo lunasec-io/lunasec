@@ -26,7 +26,9 @@ import {
   metricConfigOptionsDefaults,
 } from './types';
 
-export function loadLunaSecStackConfig(onlyUseDefaults?: boolean): LunaSecStackConfigOptions | undefined {
+export function loadLunaSecStackConfig(env?: LunaSecStackEnvironment): LunaSecStackConfigOptions | undefined {
+  const onlyUseDefaults = env ? env === 'demo' || env === 'tests' : false;
+
   const configPath = findConfig('lunasec.js');
 
   if (configPath === null) {

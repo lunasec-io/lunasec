@@ -19,3 +19,7 @@ import "os"
 func IsRunningInLambda() bool {
 	return os.Getenv("LAMBDA_TASK_ROOT") != ""
 }
+
+func IsRunningTests() bool {
+	return os.Getenv("LUNASEC_STACK_ENV") == "tests"
+}

@@ -216,6 +216,7 @@ func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request
 	}
 
 	stateToken := uuid.NewString()
+	s.logger.Debug("creating an auth session", zap.String("stateToken", stateToken))
 	err = s.kv.Set(gateway.SessionStore, stateToken, string(constants.SessionUnused))
 	if err != nil {
 		s.logger.Error(
@@ -237,6 +238,8 @@ func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request
 	}
 
 	redirectUrl.RawQuery = v.Encode()
+
+	s.logger.Debug("redirecting session ensure request", zap.String("redirectUrl", redirectUrl.String()))
 
 	// TODO (cthompson) revisit this cookie ttl
 	util.AddCookie(w, constants.AuthStateCookie, stateToken, "/", time.Minute*15)

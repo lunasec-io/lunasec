@@ -1,6 +1,5 @@
 {
     "chromeWebSecurity": false,
-    "baseUrl": "http://localhost:3000",
     "IframeOptions": {
         "log": true
     },

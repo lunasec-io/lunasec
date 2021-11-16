@@ -36,5 +36,8 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /out/tokenizerbackend_$tag /tokenizerbackend
 COPY --from=builder /tmp /tmp
 
+COPY fixtures/tokenizerbackend/cert.pem /usr/local/share/ca-certificates/proxy.crt
+RUN cat /usr/local/share/ca-certificates/proxy.crt >> /etc/ssl/certs/ca-certificates.crt
+
 WORKDIR /
 ENTRYPOINT ["/tokenizerbackend"]

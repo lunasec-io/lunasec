@@ -165,7 +165,7 @@ yargs
       }
 
       const env = getEnv(args);
-      const lunasecConfig = loadLunaSecStackConfig(env === 'demo');
+      const lunasecConfig = loadLunaSecStackConfig(env);
       const stack = new LunaSecStackDockerCompose(env, version, args['local-build'], lunasecConfig);
 
       const useSudo = args['no-sudo'] ? '' : 'sudo ';
@@ -368,7 +368,9 @@ yargs
         }
       }
 
-      const localstackConfig = args.local ? { localstack_url: 'http://localhost:4566' } : {};
+      const localstackUrl = process.env.LOCALSTACK_URL || 'http://localhost:4566';
+
+      const localstackConfig = args.local ? { localstack_url: localstackUrl } : {};
 
       if (args.output) {
         console.debug(`Writing resource config to: ${args.output}`);

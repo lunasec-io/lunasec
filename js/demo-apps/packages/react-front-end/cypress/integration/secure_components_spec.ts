@@ -24,10 +24,12 @@ const fakeSSN = '123121234';
 const randomUserName = Math.floor(Math.random() * 1000000000).toString();
 const randomFileName = Math.floor(Math.random() * 1000000000).toString() + '.png';
 
+const frontEndUrl: URL = new URL(process.env.APPLICATION_FRONT_END || 'http://localhost:3000');
+
 function logRequests() {
   cy.intercept(
     {
-      url: 'http://localhost:3001/**',
+      url: `http://${frontEndUrl.hostname}:3001/**`,
       middleware: true,
     },
     (req) => {
