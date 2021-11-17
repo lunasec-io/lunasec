@@ -392,9 +392,14 @@ If you don't fall into any of those buckets, then I'll ask you a few questions t
 
 ## Closing Thoughts
 
-_Next Stop, The Moon!_
-
-![LunaSec Premium Support](/img/premium-support-icon.png)
+<p align="center">
+  <i>Next Stop, The Moon!</i>
+  <br/>
+  <br/>
+  <a href="https://www.lunasec.io/contact">
+    <img alt="LunaSec Premium Support" src='/img/premium-support-icon.png' width='50%'/>
+  </a>
+</p>
 
 In this post, I've talked about the history of Software Licensing, and I've tried to build up your intuition to
 determine if Open Source is the right choice for your business's pricing model.
