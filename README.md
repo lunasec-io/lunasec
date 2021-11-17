@@ -14,7 +14,7 @@
 
 
 <p align="center">
-  <img src='docs/static/img/logo-black-text.svg' width='70%'>
+  <img src='docs/static/img/logo-black-text.svg' width='60%'>
 </p>
 
 ---
@@ -53,9 +53,31 @@ and also provide the foundation that LunaSec builds on to offer you additional s
 
 You can read more [here](https://www.lunasec.io/docs/pages/overview/features/) about what features LunaSec provides.
 
+## Trying LunaSec in 1 minute
+We've made it very easy for you to get familiar with LunaSec by running our example app locally.
+
+You can try it out with one command **if you have Node and Docker installed**:
+
+```
+npx @lunasec/cli start --env demo
+```
+
+That will pull all the Docker containers and start the LunaSec demo app on your computer.
+It's a simple web app that you can play with in your browser.
+
+Once it's running, just sign up for a new account and then submit some fake data in the app. (It's a fake account that's on your computer only)
+
+All data in the app is transparently encrypted and stored in the LunaSec database in the app.
+Take a look at the elements on the page and the network requests to view how it's all working.
+
+For a deeper dive into the Demo App, please see this [page](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) for a walkthrough of everything.
+All the source code is available [here](https://github.com/lunasec-io/lunasec/tree/master/js/demo-apps/packages) for you to view.
+
+If you run into any issues, please open up a GitHub issue or chat with us on our [GitHub Discussions page](https://github.com/lunasec-io/lunasec/discussions).
+
 ## [Documentation](https://www.lunasec.io/docs/)
-For more information about LunaSec including tutorials, examples, and technical information, please review 
-our [documentation](https://www.lunasec.io/docs/). For technical questions or help, please reach out via our [GitHub Discussions board](https://github.com/lunasec-io/lunasec/discussions) 
+For more information about LunaSec including tutorials, examples, and technical information, please review
+our [documentation](https://www.lunasec.io/docs/). For technical questions or help, please reach out via our [GitHub Discussions board](https://github.com/lunasec-io/lunasec/discussions)
 or open a new GitHub issue if you have a bug or feature to request.
 
 Please visit our [website](https://www.lunasec.io/) for marketing or sales information, or to [get in contact](https://www.lunasec.io/contact).
@@ -114,28 +136,6 @@ If you're interested, [please send us a message](https://www.lunasec.io/contact)
     <img alt="LunaSec Premium Support Link" src='docs/static/img/premium-support-icon.png' width='70%'>
   </a>
 </p>
-
-## Trying LunaSec in 1 minute
-We've made it very easy for you to get familiar with LunaSec by running our example app locally.
-
-You can try it out with one command **if you have Node and Docker installed**:
-
-```
-npx @lunasec/cli start --env demo
-```
-
-That will pull all the Docker containers and start the LunaSec demo app on your computer. 
-It's a simple web app that you can play with in your browser.
-
-Once it's running, just sign up for a new account and then submit some fake data in the app. (It's a fake account that's on your computer only)
-
-All data in the app is transparently encrypted and stored in the LunaSec database in the app. 
-Take a look at the elements on the page and the network requests to view how it's all working.
-
-For a deeper dive into the Demo App, please see this [page](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) for a walkthrough of everything. 
-All the source code is available [here](https://github.com/lunasec-io/lunasec/tree/master/js/demo-apps/packages) for you to view.
-
-If you run into any issues, please open up a GitHub issue or chat with us on our [GitHub Discussions page](https://github.com/lunasec-io/lunasec/discussions).
 
 ## Deploying LunaSec
 In order to use LunaSec in your production environment, you will need to host a copy yourself. We have made available a
