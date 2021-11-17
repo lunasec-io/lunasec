@@ -53,17 +53,16 @@ and also provide the foundation that LunaSec builds on to offer you additional s
 
 You can read more [here](https://www.lunasec.io/docs/pages/overview/features/) about what features LunaSec provides.
 
-## Trying LunaSec in 1 minute
-We've made it very easy for you to get familiar with LunaSec by running our example app locally.
-
-You can try it out with one command **if you have Node and Docker installed**:
+## Live Demo
+You can try it out LunaSec with one command **if you have Node and Docker installed**:
 
 ```
 npx @lunasec/cli start --env demo
 ```
 
 That will pull all the Docker containers and start the LunaSec demo app on your computer.
-It's a simple web app that you can play with in your browser.
+It's a simple web app that you can play with in your browser. There are a lot of containers to run, so it may take a
+few minutes to finish starting up.
 
 Once it's running, just sign up for a new account and then submit some fake data in the app. (It's a fake account that's on your computer only)
 
