@@ -311,11 +311,9 @@ export class LunaSecStackDockerCompose {
       volumes: [outputMount],
     };
 
-    const configSourcePath = this.buildMountPath('js/sdks/packages/cli/config/lunasec/');
-
     const localBuildConfig = {
       ...this.dockerfileTarget(demoDockerFile, name),
-      volumes: [`${configSourcePath}:/config/lunasec/`, outputMount],
+      volumes: [outputMount],
     };
 
     return {
