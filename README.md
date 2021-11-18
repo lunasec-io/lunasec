@@ -38,7 +38,7 @@ LunaSec is a suite of security tools designed to protect sensitive data in web a
 ## What is LunaSec?
 
 LunaSec is an end-to-end security system designed to protect your application by transparently encrypting sensitive
-data. It works seamlessly by storing your sensitive data and then giving you back a Token (a UUID) to retrieve data with
+data, from browser to database. It works seamlessly by storing your sensitive data and then giving you back a Token (a UUID) to retrieve data with
 later. Tokens aren't sensitive values by themselves, thereby limiting the impact of security issues in your application
 when exposed, and also provide the foundation that LunaSec builds on to offer you additional security and compliance
 features.
