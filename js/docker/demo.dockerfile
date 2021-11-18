@@ -38,7 +38,7 @@ WORKDIR /repo
 
 ENTRYPOINT ["yarn", "run", "lunasec"]
 
-FROM cypress/included:9.0.0 as integration-test
+FROM cypress/included:7.0.0 as integration-test
 
 # RUN cypress install --force
 

@@ -24,23 +24,6 @@ const fakeSSN = '123121234';
 const randomUserName = Math.floor(Math.random() * 1000000000).toString();
 const randomFileName = Math.floor(Math.random() * 1000000000).toString() + '.png';
 
-const frontEndUrl: URL = new URL(process.env.APPLICATION_FRONT_END || 'http://localhost:3000');
-
-function logRequests() {
-  cy.intercept(
-    {
-      url: `http://${frontEndUrl.hostname}:3001/**`,
-      middleware: true,
-    },
-    (req) => {
-      cy.task('log', `express backend request ${req.url} ${JSON.stringify(req.headers)}`);
-      req.on('response', (res) => {
-        cy.task('log', `express backend response ${req.url} ${JSON.stringify(res.headers)}`);
-      });
-    }
-  );
-}
-
 describe('setup', () => {
   it('loads homepage', () => {
     cy.visit('/');
