@@ -21,7 +21,7 @@
 
 ![All Tests](https://github.com/lunasec-io/lunasec/actions/workflows/integration.yaml/badge.svg)
 
-LunaSec is a suite of security tools designed to protect sensitive data in web applications by only adding a few lines of code.
+LunaSec is a suite of security tools designed to protect sensitive data in web applications by adding just a few lines of code.
 
 - [What is LunaSec?](#what-is-lunasec)
 - [Live Demo](#live-demo)
