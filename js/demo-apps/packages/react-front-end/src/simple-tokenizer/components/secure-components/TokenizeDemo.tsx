@@ -22,6 +22,8 @@ import React, { useState } from 'react';
 import { ApiResponse } from '../../../common/types';
 import { tokenizer } from '../configureTokenizer';
 
+const simpleTokenizerUrl = process.env.REACT_APP_SIMPLE_TOKENIZER_URL as string;
+
 export const TokenizeDemo: React.FunctionComponent = () => {
   const [showSaveSuccessful, setShowSaveSuccessful] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +42,7 @@ export const TokenizeDemo: React.FunctionComponent = () => {
         setError(tokenizerResponse.error.toString());
         return;
       }
-      const { data } = await axios.post<ApiResponse>(`http://localhost:3003/user/set-ssn`, {
+      const { data } = await axios.post<ApiResponse>(`${simpleTokenizerUrl}/user/set-ssn`, {
         ssn_token: tokenizerResponse.tokenId,
       });
       if (!data.success) {

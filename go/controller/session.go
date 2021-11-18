@@ -199,8 +199,6 @@ func (s *sessionController) getAuthProviderWithName(authProviderName string) (au
 
 func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request) {
 	// TODO if state token is already present in cookie, do we remove it?
-	s.logger.Info("received session ensure request")
-
 	query := r.URL.Query()
 
 	authProviderName := query.Get(constants.AuthProviderNameQueryParam)
@@ -275,7 +273,6 @@ func getSessionCreateRequest(r *http.Request) (req event.SessionCreateRequest, e
 // It's worth noting that none of the JSON responses here get returned to the client because of the CORS options
 // including all of these nice errors.  Aside from logging in dev, all this gets lost
 func (s *sessionController) SessionCreate(w http.ResponseWriter, r *http.Request) {
-	s.logger.Info("received session create request")
 	req, err := getSessionCreateRequest(r)
 	if err != nil {
 		s.logger.Error(

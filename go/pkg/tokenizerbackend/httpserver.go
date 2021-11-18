@@ -46,6 +46,10 @@ func newServer(logger *zap.Logger, provider config.Provider, gateways gateway.Ga
 		cspMiddleware,
 	}
 
+	if util.IsDevEnv() {
+		middleware = append(middleware, controller.WithHttpLogging)
+	}
+
 	err := provider.Get("app").Populate(&appConfig)
 	if err != nil {
 		log.Println(err)

@@ -49,6 +49,13 @@ export async function setupDedicatedPassPortExpressApp() {
       credentials: true,
     })
   );
+
+  app.set('trust proxy', 1);
+  app.use((req, _res, next) => {
+    req.headers['x-forwarded-proto'] = 'https';
+    next();
+  });
+
   app.use(
     expressSession({
       secret: 'keyboard cat',
@@ -59,8 +66,14 @@ export async function setupDedicatedPassPortExpressApp() {
         table: 'sessions',
         secret: 'keyboard cat',
       }),
+      cookie: {
+        secure: true,
+        httpOnly: true,
+        sameSite: 'none',
+      },
     })
   );
+
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(passport.authenticate('session'));

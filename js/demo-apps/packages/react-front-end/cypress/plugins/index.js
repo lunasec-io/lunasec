@@ -39,4 +39,29 @@ module.exports = (on, config) => {
         printLogsToConsole: process.env.VERBOSE_CYPRESS_LOGS || 'onFail'
     }
     require('cypress-terminal-report/src/installLogsPrinter')(on, options);
+
+    on('before:browser:launch', (browser = {}, launchOptions) => {
+        // if (browser.family === 'chromium' && browser.name !== 'electron') {
+            // auto open devtools
+        launchOptions.args.push('--auto-open-devtools-for-tabs');
+        launchOptions.args.push('--unsafely-treat-insecure-origin-as-secure=http://tokenizer-backend:37766,http://application-back-end:3001,http://application-back-end:3002');
+        // }
+
+        // if (browser.family === 'firefox') {
+        //     // auto open devtools
+        //     launchOptions.args.push('-devtools')
+        // }
+        //
+        // if (browser.name === 'electron') {
+        //     // auto open devtools
+        //     launchOptions.preferences.devTools = true
+        // }
+
+        // `args` is an array of all the arguments that will
+        // be passed to browsers when it launches
+        console.log(launchOptions.args) // print all current args
+
+        // whatever you return here becomes the launchOptions
+        return launchOptions
+    })
 }
