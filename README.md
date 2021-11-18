@@ -107,7 +107,7 @@ We've documented the components of the stack [here](https://www.lunasec.io/docs/
 ![LunaSec Architecture Diagram](docs/static/img/security-model-overview.svg)
 
 ## Who is LunaSec for?
-LunaSec is designed to be used by anybody that needs to store sensitive information in a production web application.
+LunaSec is designed to be used by anybody that needs to store sensitive text for files in a production web application.
 Despite being built by Security Engineers, **LunaSec does not require security expertise to get started**.
 It's designed to be used by ordinary Software Engineers and Developers.
 
