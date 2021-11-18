@@ -15,10 +15,12 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
 	metricsgateway "github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"net/http"
+	"net/http/httputil"
 
 	"github.com/lunasec-io/lunasec-monorepo/service"
 	"go.uber.org/config"
@@ -48,6 +50,18 @@ func WithMetrics(cloudwatch metricsgateway.AwsCloudwatchGateway) types.Middlewar
 func WithJSONContentType(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	}
+}
+
+func WithHttpLogging(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		dump, err := httputil.DumpRequest(r, true)
+		if err == nil {
+			fmt.Printf("%s", string(dump))
+		} else {
+			fmt.Printf("error while dumping request: %v", err)
+		}
 		next.ServeHTTP(w, r)
 	}
 }

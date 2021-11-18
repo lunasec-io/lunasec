@@ -44,11 +44,6 @@ func AddCookie(w http.ResponseWriter, name, value, path string, ttl time.Duratio
 		expire = time.Now().Add(ttl)
 	}
 
-	// if we are not running tests, then we want the cookie to be secure
-	// otherwise, we do not want a secure cookie since the domain it is being set on
-	// is not localhost
-	secure := !IsRunningTests()
-
 	cookie := http.Cookie{
 		Name:  name,
 		Value: value,
@@ -56,7 +51,7 @@ func AddCookie(w http.ResponseWriter, name, value, path string, ttl time.Duratio
 		Expires:  expire,
 		Path:     path,
 		SameSite: http.SameSiteNoneMode,
-		Secure:   secure,
+		Secure:   true,
 	}
 	http.SetCookie(w, &cookie)
 }
