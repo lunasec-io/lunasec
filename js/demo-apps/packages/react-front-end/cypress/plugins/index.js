@@ -46,7 +46,7 @@ module.exports = (on, config) => {
     launchOptions.args.push('--auto-open-devtools-for-tabs');
     launchOptions.args.push('--unsafely-treat-insecure-origin-as-secure=http://tokenizer-backend:37766,http://application-back-end:3001,http://application-back-end:3002');
     launchOptions.args.push('--disable-features=SameSiteByDefaultCookies');
-    launchOptions.args.push('--window-size=1920,1080');
+    launchOptions.args.push('--window-size=1440,900');
     launchOptions.args.push('--force-device-scale-factor=1');
 
     // }
