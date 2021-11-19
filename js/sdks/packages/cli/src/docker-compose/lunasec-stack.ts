@@ -437,7 +437,7 @@ export class LunaSecStackDockerCompose {
     }
 
     return {
-      version: '2',
+      version: '3.8',
       services: {
         ...services.reduce((serviceDefs, service) => {
           if (service.config === null) return serviceDefs;
@@ -505,8 +505,28 @@ export class LunaSecStackDockerCompose {
     const localAuthProviders = this.getAuthenticationProviders();
     const authProviders = formatAuthenticationProviders(this.stackConfigOptions.applicationBackEnd, localAuthProviders);
     const display: Record<string, string> = debug ? { DISPLAY: ':0' } : {};
+    const applicationBackEndUrls = this.getApplicationBackEndEnvUrls();
+
+    const localstackUrl = `http://${this.getLocalstackHostname()}:4566`;
+    const localstackHttpsProxyUrl = 'https://localstack-proxy:4568';
+    const tokenizerHost = 'tokenizer-backend:37766';
+    const cdnHost = `${this.getSecureFrameHostname()}:8000`;
+
+    // These values are for the hosts that the Integration Test depends on in
+    // order to start up. It's passed via Env vars as a comma separated list.
+    const integrationTestDependencies = [
+      tokenizerHost,
+      applicationBackEndUrls?.REACT_APP_EXPRESS_URL,
+      applicationBackEndUrls?.REACT_APP_GRAPHQL_URL,
+      applicationBackEndUrls?.REACT_APP_SIMPLE_TOKENIZER_URL,
+      this.stackConfigOptions.applicationFrontEnd,
+      cdnHost,
+    ]
+      .filter((t) => t)
+      .join(',');
+
     return {
-      ...this.getApplicationBackEndEnvUrls(),
+      ...applicationBackEndUrls,
       ...display,
 
       APPLICATION_FRONT_END: this.stackConfigOptions.applicationFrontEnd,
@@ -516,11 +536,11 @@ export class LunaSecStackDockerCompose {
 
       STAGE: 'DEV',
       LUNASEC_STACK_ENV: this.env,
-      TOKENIZER_URL: 'http://tokenizer-backend:37766',
+      TOKENIZER_URL: `http://${tokenizerHost}`,
       REACT_APP_TOKENIZER_URL: this.stackConfigOptions.tokenizerUrl,
-      CDN_HOST: `${this.getSecureFrameHostname()}:8000`,
-      LOCALSTACK_URL: `http://${this.getLocalstackHostname()}:4566`,
-      LOCAL_HTTPS_PROXY: 'https://localstack-proxy:4568',
+      CDN_HOST: cdnHost,
+      LOCALSTACK_URL: localstackUrl,
+      LOCAL_HTTPS_PROXY: localstackHttpsProxyUrl,
       LOCALSTACK_HOSTNAME: 'localstack',
 
       AWS_DEFAULT_REGION: 'us-west-2',
@@ -528,8 +548,17 @@ export class LunaSecStackDockerCompose {
       AWS_SECRET_ACCESS_KEY: 'test',
 
       CYPRESS_REMOTE_DEBUGGING_PORT: '42042',
+
       // Tell the services to wait for each other for up this number of seconds
       WAIT_FOR_TIMEOUT: '300',
+
+      // These services must wait for the other services before starting up.
+      // They check if another service is up via a script that checks if a port is accessible.
+      // The ports to check are passed like this with commas between values:
+      // "some-host-name:8080,another-host:8001"
+      DEPENDENCIES__CLI: localstackHttpsProxyUrl,
+      DEPENDENCIES__INTEGRATION_TEST: integrationTestDependencies,
+      DEPENDENCIES__LOCALSTACK_PROXY: localstackUrl,
     };
   }
 
