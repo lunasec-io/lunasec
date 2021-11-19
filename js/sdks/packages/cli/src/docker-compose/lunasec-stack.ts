@@ -29,8 +29,9 @@ import {
 import { formatAuthenticationProviders } from '../utils/auth-providers';
 
 import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
+import { generateNginxEnvConfig } from './generate-nginx-config';
 
-export const LunaSecStackEnvironments = ['local-dependencies', 'demo', 'dev', 'tests'] as const;
+export const LunaSecStackEnvironments = ['local-dependencies', 'demo', 'dev', 'hosted-live-demo', 'tests'] as const;
 export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -46,7 +47,8 @@ type LunaSecService =
   | 'application-front-end'
   | 'application-back-end'
   | 'tokenizer-backend'
-  | 'integration-test';
+  | 'integration-test'
+  | 'nginx-live-demo';
 
 interface ComposeService {
   name: string;
@@ -201,6 +203,37 @@ export class LunaSecStackDockerCompose {
           },
         }),
         ...composeServicePorts([proxyPort]),
+      },
+    };
+  }
+
+  /**
+   * This service is only used for the hosted live demo of LunaSec.
+   * TODO (freeqaz) Migrate this out to another file for better code quality.
+   */
+  nginxLiveDemo(): ComposeService {
+    const nginxResourcesPatch = this.buildMountPath('js/internal-infrastructure/public-live-demo/demo-nginx.conf');
+
+    return {
+      name: 'nginx',
+      config: {
+        ...this.baseServiceConfig('nginx-live-demo'),
+        image: 'nginx',
+        depends_on: [
+          this.localstack().name,
+          this.localstackProxy().name,
+          this.applicationBackEnd().name,
+          this.applicationFrontEnd().name,
+          this.tokenizerBackEnd().name,
+          this.secureFrameIFrameService().name,
+        ],
+        healthcheck: serviceHealthCheck(80, {
+          composeOptions: {
+            test: ['CMD-SHELL', 'curl -k http://localhost:80'],
+          },
+        }),
+        volumes: [`${nginxResourcesPatch}:/etc/nginx/conf.d/default.conf:ro`],
+        ...composeServicePorts([80]),
       },
     };
   }
@@ -412,6 +445,8 @@ export class LunaSecStackDockerCompose {
 
     const testsServices = [...demoServices, this.integrationTest()];
 
+    const hostedLiveDemoServices = [...demoServices, this.nginxLiveDemo()];
+
     if (this.env === 'local-dependencies') {
       return localDependencies;
     }
@@ -424,9 +459,14 @@ export class LunaSecStackDockerCompose {
       return demoServices;
     }
 
+    if (this.env === 'hosted-live-demo') {
+      return hostedLiveDemoServices;
+    }
+
     if (this.env === 'tests') {
       return testsServices;
     }
+
     return null;
   }
 
@@ -454,21 +494,21 @@ export class LunaSecStackDockerCompose {
     if (this.env === 'demo') {
       return 'localhost';
     }
-    if (this.env === 'tests') {
+    if (this.env === 'tests' || this.env === 'hosted-live-demo') {
       return 'application-back-end';
     }
     return undefined;
   }
 
   getLocalstackHostname() {
-    if (this.env === 'tests') {
+    if (this.env === 'tests' || this.env === 'hosted-live-demo') {
       return 'localstack';
     }
     return 'localhost';
   }
 
   getSecureFrameHostname() {
-    if (this.env === 'tests') {
+    if (this.env === 'tests' || this.env === 'hosted-live-demo') {
       return 'secure-frame-iframe';
     }
     return 'localhost';
@@ -569,7 +609,10 @@ export class LunaSecStackDockerCompose {
 
     writeFileSync(composePath, dockerCompose);
 
-    const dockerEnv = this.getDockerEnv();
+    // TODO (freeqaz) Create a function for every environment that we support and
+    // have it merge in all of them using something like Ramda.pipe()
+    // As long as every function is referentially transparent, it's a clean abstraction.
+    const dockerEnv = generateNginxEnvConfig(this.env, this.getDockerEnv());
 
     const dockerEnvFile = Object.keys(dockerEnv)
       .map((k) => `${k}=${dockerEnv[k]}`)
