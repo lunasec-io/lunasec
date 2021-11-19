@@ -1,0 +1,8 @@
+aws_gateway:
+    table_names:
+        grants: LunasecSecureEnclave-grantstable88985DF2-08d8e0d8
+        keys: LunasecSecureEnclave-keystableEDD66D8F-8ea6a3e8
+        metadata: LunasecSecureEnclave-metadatatable8303EA95-3b30b652
+        sessions: LunasecSecureEnclave-sessionstableF689416C-3fbf8dea
+    s3_bucket: lunasecsecureenclave-ciphertextbucketd0ba9733-ee8f98a9
+    localstack_url: http://localhost:4566

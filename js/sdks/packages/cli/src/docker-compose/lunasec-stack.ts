@@ -194,11 +194,7 @@ export class LunaSecStackDockerCompose {
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        depends_on: {
-          [this.localstack().name]: {
-            condition: 'service_healthy',
-          },
-        },
+        depends_on: [this.localstack().name],
         healthcheck: serviceHealthCheck(4568, {
           composeOptions: {
             test: ['CMD-SHELL', `curl -k https://localhost:4568`],
@@ -322,11 +318,7 @@ export class LunaSecStackDockerCompose {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
         command: 'deploy --local --output /outputs/aws_resources.json',
-        depends_on: {
-          [this.localstackProxy().name]: {
-            condition: 'service_healthy',
-          },
-        },
+        depends_on: [this.localstackProxy().name],
       },
     };
   }
@@ -352,25 +344,20 @@ export class LunaSecStackDockerCompose {
     const tokenizerPort = 37766;
 
     const awsResourcesPath = this.buildMountPath('outputs/');
+
+    const dependsOnServices = [this.lunasecCli().name];
+
+    if (this.env === 'demo') {
+      dependsOnServices.push(this.applicationBackEnd().name);
+    }
+
     return {
       name,
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
         volumes: [`${awsResourcesPath}:/config/tokenizerbackend/outputs/`],
-        depends_on: {
-          [this.lunasecCli().name]: {
-            condition: 'service_completed_successfully',
-          },
-          // if we are in demo mode, then have application backend as dependency
-          ...(this.env === 'demo'
-            ? {
-                [this.applicationBackEnd().name]: {
-                  condition: 'service_healthy',
-                },
-              }
-            : {}),
-        },
+        depends_on: dependsOnServices,
         ...composeServicePorts([tokenizerPort]),
         healthcheck: serviceHealthCheck(tokenizerPort),
       },
@@ -399,20 +386,12 @@ export class LunaSecStackDockerCompose {
         '/videos:/repo/js/demo-apps/packages/react-front-end/cypress/videos',
         ...debugVolumes,
       ],
-      depends_on: {
-        [this.secureFrameIFrameService().name]: {
-          condition: 'service_healthy',
-        },
-        [this.applicationFrontEnd().name]: {
-          condition: 'service_healthy',
-        },
-        [this.applicationBackEnd().name]: {
-          condition: 'service_healthy',
-        },
-        [this.tokenizerBackEnd().name]: {
-          condition: 'service_healthy',
-        },
-      },
+      depends_on: [
+        this.secureFrameIFrameService().name,
+        this.applicationFrontEnd().name,
+        this.applicationBackEnd().name,
+        this.tokenizerBackEnd().name,
+      ],
     };
 
     return {
@@ -549,6 +528,8 @@ export class LunaSecStackDockerCompose {
       AWS_SECRET_ACCESS_KEY: 'test',
 
       CYPRESS_REMOTE_DEBUGGING_PORT: '42042',
+      // Tell the services to wait for each other for up this number of seconds
+      WAIT_FOR_TIMEOUT: '300',
     };
   }
 
