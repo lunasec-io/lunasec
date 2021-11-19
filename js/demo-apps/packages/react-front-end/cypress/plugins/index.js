@@ -36,7 +36,7 @@ module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
     const options = {
-        printLogsToConsole: process.env.VERBOSE_CYPRESS_LOGS || 'onFail'
+        printLogsToConsole: 'always'
     }
     require('cypress-terminal-report/src/installLogsPrinter')(on, options);
 
@@ -45,6 +45,7 @@ module.exports = (on, config) => {
             // auto open devtools
         launchOptions.args.push('--auto-open-devtools-for-tabs');
         launchOptions.args.push('--unsafely-treat-insecure-origin-as-secure=http://tokenizer-backend:37766,http://application-back-end:3001,http://application-back-end:3002');
+        launchOptions.args.push('--disable-features=SameSiteByDefaultCookies')
         // }
 
         // if (browser.family === 'firefox') {
@@ -63,5 +64,11 @@ module.exports = (on, config) => {
 
         // whatever you return here becomes the launchOptions
         return launchOptions
+    })
+    on('task', {
+      log: function (message) {
+        console.log(JSON.stringify(message, null, 2));
+        return null
+      }
     })
 }

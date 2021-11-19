@@ -18,6 +18,7 @@
 import './commands'
 
 const options = {
+    enableExtendedCollector: true,
     xhr: {
         printHeaderData: true,
         printRequestData: true,
@@ -25,3 +26,19 @@ const options = {
 };
 
 require('cypress-terminal-report/src/installLogsCollector')(options);
+
+// Cypress.on('log:changed', async (options) => {
+//       if (
+//         options.instrument === 'command' && options.name === 'request' &&
+//         options.state !== 'pending'
+//       ) {
+//           Promise.resolve().then(() => {
+//             Cypress.backend('task', {
+//               task: 'log',
+//               arg: options
+//             })
+//               // For some reason cypress throws empty error although the task indeed works.
+//               .catch((error) => {/* noop */})
+//           }).catch(console.error);
+//       }
+//     });
