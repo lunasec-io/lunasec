@@ -23,6 +23,7 @@ import {
   AuthProviderConfig,
   devConfigOptionsDefaults,
   DevelopmentConfigOptions,
+  hostedLiveDemoConfigOptionsDefaults,
   LunaSecStackConfigOptions,
   testsConfigOptionsDefaults,
 } from '../config/types';
@@ -97,6 +98,9 @@ const localstackImage = 'localstack/localstack:0.12.19';
 function getStackConfigOptions(env: LunaSecStackEnvironment, configOptions?: DevelopmentConfigOptions) {
   if (env === 'tests') {
     return testsConfigOptionsDefaults;
+  }
+  if (env === 'hosted-live-demo') {
+    return hostedLiveDemoConfigOptionsDefaults;
   }
   return {
     ...devConfigOptionsDefaults,
@@ -501,10 +505,10 @@ export class LunaSecStackDockerCompose {
   }
 
   getLocalstackHostname() {
-    if (this.env === 'demo') {
-      return 'localhost';
+    if (this.env === 'tests' || this.env === 'hosted-live-demo') {
+      return 'localstack';
     }
-    return 'localstack';
+    return 'localhost';
   }
 
   getSecureFrameHostname() {
@@ -567,7 +571,7 @@ export class LunaSecStackDockerCompose {
 
     const localstackUrl = `http://${this.getLocalstackHostname()}:4566`;
     const localstackHttpsProxyUrl = 'https://localstack-proxy:4568';
-    const tokenizerHost = 'tokenizer-backend:37766';
+    const tokenizerHost = 'http://tokenizer-backend:37766';
     const cdnHost = `${this.getSecureFrameHostname()}:8000`;
 
     // These values are for the hosts that the Integration Test depends on in
@@ -594,7 +598,7 @@ export class LunaSecStackDockerCompose {
 
       STAGE: 'DEV',
       LUNASEC_STACK_ENV: this.env,
-      TOKENIZER_URL: `http://${tokenizerHost}`,
+      TOKENIZER_URL: tokenizerHost,
       REACT_APP_TOKENIZER_URL: this.stackConfigOptions.tokenizerUrl,
       CDN_HOST: cdnHost,
       LOCALSTACK_URL: localstackUrl,
