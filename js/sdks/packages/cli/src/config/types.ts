@@ -122,6 +122,11 @@ export const testsConfigOptionsDefaults: DevelopmentConfigOptions = {
   tokenizerUrl: 'http://tokenizer-backend:37766',
 };
 
+export const hostedLiveDemoConfigOptionsDefaults: DevelopmentConfigOptions = {
+  ...devConfigOptionsDefaults,
+  tokenizerUrl: 'https://tokenizer.lunasec.dev',
+};
+
 export type LunaSecServices = 'tokenizer-backend' | 'secure-frame-frontend' | 'analytics-collector';
 
 export type ServiceVersions = Record<LunaSecServices, string>;

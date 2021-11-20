@@ -61,7 +61,7 @@ export interface LunaSecConfig {
     /** A callback used automatically by LunaSec when we have the req object and would like to know the sessionId.  Used in automatic granting and also the Auth Plugin */
     sessionIdProvider: SessionIdProvider;
     /** Optionally have the auth redirect URL use localhost as the domain name. This is used in the demo mode and local development. */
-    redirectToLocalhost: boolean;
+    publicTokenizerUrl?: string;
   };
   /** Optionally configure the Secure Resolver functionality of the plugin, must be configured if you want to use Secure Resolvers */
   secureResolverConfig?: SecureResolverSdkConfig;
@@ -92,7 +92,7 @@ export class LunaSec {
       // payloadClaims: config.auth.payloadClaims,
       tokenizerURL: config.tokenizerURL,
       pluginBaseUrl: config.auth.pluginBaseUrl,
-      redirectToLocalhost: config.auth.redirectToLocalhost,
+      publicTokenizerUrl: config.auth.publicTokenizerUrl,
     });
 
     this.grants = new Grants(this.keyService, config.tokenizerURL, config.auth.sessionIdProvider);
