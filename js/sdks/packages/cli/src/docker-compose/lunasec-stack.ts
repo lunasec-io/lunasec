@@ -494,17 +494,17 @@ export class LunaSecStackDockerCompose {
     if (this.env === 'demo') {
       return 'localhost';
     }
-    if (this.env === 'tests' || this.env === 'hosted-live-demo') {
+    if (this.env === 'tests') {
       return 'application-back-end';
     }
     return undefined;
   }
 
   getLocalstackHostname() {
-    if (this.env === 'tests' || this.env === 'hosted-live-demo') {
-      return 'localstack';
+    if (this.env === 'demo') {
+      return 'localhost';
     }
-    return 'localhost';
+    return 'localstack';
   }
 
   getSecureFrameHostname() {
@@ -515,6 +515,16 @@ export class LunaSecStackDockerCompose {
   }
 
   getAuthenticationProviders(): Record<string, AuthProviderConfig> | undefined {
+    if (this.env === 'hosted-live-demo') {
+      return {
+        'express-back-end': {
+          url: `http://express.lunasec.dev`,
+        },
+        'graphql-back-end': {
+          url: `http://graphql.lunasec.dev`,
+        },
+      };
+    }
     const authProviderHostname = this.getBackEndHostname();
     if (authProviderHostname !== undefined) {
       return {
