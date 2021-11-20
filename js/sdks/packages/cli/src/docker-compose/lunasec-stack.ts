@@ -540,6 +540,14 @@ export class LunaSecStackDockerCompose {
   }
 
   getApplicationBackEndEnvUrls() {
+    if (this.env === 'hosted-live-demo') {
+      return {
+        REACT_APP_EXPRESS_URL: `http://express.lunasec.dev`,
+        REACT_APP_GRAPHQL_URL: `http://graphql.lunasec.dev`,
+        REACT_APP_SIMPLE_TOKENIZER_URL: `http://simple.lunasec.dev`,
+      };
+    }
+
     const backEndHostname = this.getBackEndHostname();
     if (backEndHostname !== undefined) {
       return {
