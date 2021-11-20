@@ -1,6 +1,6 @@
 {
   "name": "lunasec-sdks",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "private": true,
   "description": "Secure frame SDK",
   "main": "index.js",
