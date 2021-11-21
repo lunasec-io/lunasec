@@ -16,9 +16,12 @@
  */
 import { SimpleTokenizerBackend } from '@lunasec/node-sdk';
 
+const redirectToLocalhost = process.env.LUNASEC_STACK_ENV === 'demo';
+
 export const simpleTokenizerBackend = new SimpleTokenizerBackend({
   awsRegion: 'us-west-2',
   s3Bucket: process.env.CIPHERTEXT_S3_BUCKET || 'You must set a bucket...',
   awsCredentials: { accessKeyId: 'test', secretAccessKey: 'test' },
   useLocalStack: true,
+  redirectToLocalhost: redirectToLocalhost,
 });

@@ -199,8 +199,6 @@ func (s *sessionController) getAuthProviderWithName(authProviderName string) (au
 
 func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request) {
 	// TODO if state token is already present in cookie, do we remove it?
-	s.logger.Info("received session ensure request")
-
 	query := r.URL.Query()
 
 	authProviderName := query.Get(constants.AuthProviderNameQueryParam)
@@ -216,6 +214,7 @@ func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request
 	}
 
 	stateToken := uuid.NewString()
+	s.logger.Debug("creating an auth session", zap.String("stateToken", stateToken))
 	err = s.kv.Set(gateway.SessionStore, stateToken, string(constants.SessionUnused))
 	if err != nil {
 		s.logger.Error(
@@ -237,6 +236,8 @@ func (s *sessionController) SessionEnsure(w http.ResponseWriter, r *http.Request
 	}
 
 	redirectUrl.RawQuery = v.Encode()
+
+	s.logger.Debug("redirecting session ensure request", zap.String("redirectUrl", redirectUrl.String()))
 
 	// TODO (cthompson) revisit this cookie ttl
 	util.AddCookie(w, constants.AuthStateCookie, stateToken, "/", time.Minute*15)
@@ -272,7 +273,6 @@ func getSessionCreateRequest(r *http.Request) (req event.SessionCreateRequest, e
 // It's worth noting that none of the JSON responses here get returned to the client because of the CORS options
 // including all of these nice errors.  Aside from logging in dev, all this gets lost
 func (s *sessionController) SessionCreate(w http.ResponseWriter, r *http.Request) {
-	s.logger.Info("received session create request")
 	req, err := getSessionCreateRequest(r)
 	if err != nil {
 		s.logger.Error(

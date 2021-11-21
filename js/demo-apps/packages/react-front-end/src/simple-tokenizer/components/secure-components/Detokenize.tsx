@@ -22,6 +22,8 @@ import React, { useEffect, useState } from 'react';
 import { UserResponse } from '../../../common/types';
 import { tokenizer } from '../configureTokenizer';
 
+const simpleTokenizerUrl = process.env.REACT_APP_SIMPLE_TOKENIZER_URL as string;
+
 // If you need to change axios settings, do it with axios.create({options}), messing with the global instance can cause issues
 export const DetokenizeDemo: React.FunctionComponent = () => {
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +31,7 @@ export const DetokenizeDemo: React.FunctionComponent = () => {
 
   const loadSsn = async () => {
     try {
-      const { data } = await axios.get<UserResponse>('http://localhost:3003/user/me');
+      const { data } = await axios.get<UserResponse>(`${simpleTokenizerUrl}/user/me`);
       if (!data.success) {
         setError(data.error);
         return;

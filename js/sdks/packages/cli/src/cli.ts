@@ -60,13 +60,13 @@ async function checkURLStatus(url: string): Promise<boolean> {
 }
 
 function* onStdinDemo(data: string) {
-  if (data.includes('Starting lunasec_', 0)) {
+  if (data.includes('Container lunasec', 0)) {
     console.log(data);
   }
   yield;
 }
 
-function getEnv(args: yargs.Arguments) {
+function getEnv(args: yargs.Arguments): LunaSecStackEnvironment {
   const foundEnv = LunaSecStackEnvironments.filter((env) => env === args.env);
   if (foundEnv.length !== 1) {
     throw new Error(`Provided environment is not one of: ${LunaSecStackEnvironments.join(', ')}`);
@@ -164,12 +164,12 @@ yargs
         throw new Error('Attempted to force a rebuild without specifying `--local-build`.');
       }
 
-      const lunasecConfig = loadLunaSecStackConfig();
       const env = getEnv(args);
+      const lunasecConfig = loadLunaSecStackConfig(env);
       const stack = new LunaSecStackDockerCompose(env, version, args['local-build'], lunasecConfig);
 
       const useSudo = args['no-sudo'] ? '' : 'sudo ';
-      const envOverride = 'COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1';
+      const envOverride = 'COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 BUILDKIT_PROGRESS=plain';
 
       const homeDir = os.homedir();
 
@@ -201,7 +201,7 @@ yargs
 
       const forceRebuild = args['force-rebuild'] ? '--build' : '';
 
-      const dockerComposeUpCmd = `${baseDockerComposeCmd} up ${forceRebuild}`;
+      const dockerComposeUpCmd = `${baseDockerComposeCmd} up ${forceRebuild} --remove-orphans`;
 
       const shouldStreamStdio = env !== 'demo' || args['verbose'];
 
@@ -272,7 +272,9 @@ yargs
       const buildDir = args['build-dir'] ? args['build-dir'] : cacheBuildDir;
       console.debug(`Building LunaSec Stack to ${buildDir}`);
 
-      const awsEndpoint = args.local ? 'http://localhost:4566' : undefined;
+      const localstackHostname = process.env.LOCALSTACK_HOSTNAME || 'localhost';
+
+      const awsEndpoint = args.local ? `http://${localstackHostname}:4566` : undefined;
 
       const sts = new STSClient({ region: awsRegion, endpoint: awsEndpoint });
       const cmd = new GetCallerIdentityCommand({});
@@ -366,7 +368,9 @@ yargs
         }
       }
 
-      const localstackConfig = args.local ? { localstack_url: 'http://localhost:4566' } : {};
+      const localstackUrl = process.env.LOCALSTACK_URL || 'http://localhost:4566';
+
+      const localstackConfig = args.local ? { localstack_url: localstackUrl } : {};
 
       if (args.output) {
         console.debug(`Writing resource config to: ${args.output}`);
