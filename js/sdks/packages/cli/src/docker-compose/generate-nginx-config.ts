@@ -27,6 +27,7 @@ export function generateNginxEnvConfig(
   return {
     ...baseEnvConfig,
     APPLICATION_FRONT_END: 'https://app.lunasec.dev',
+    CDN_PROTOCOL: 'https',
     CDN_HOST: 'secure-frame.lunasec.dev',
     LOCALSTACK_URL: 'http://localhost:4566',
     // TODO (freeqaz) I'm not sure what this value needs to be still.
