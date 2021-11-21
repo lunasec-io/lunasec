@@ -16,6 +16,8 @@
  */
 import { SimpleTokenizer } from '@lunasec/tokenizer-sdk';
 
+const simpleTokenizerUrl = process.env.REACT_APP_SIMPLE_TOKENIZER_URL as string;
+
 export const tokenizer = new SimpleTokenizer({
-  host: 'http://localhost:3003',
+  host: simpleTokenizerUrl,
 });

@@ -46,6 +46,7 @@ export class Grants {
     // in the future this will happen inside a lambda instead of making a request to the go server
     const authenticationToken = await this.auth.createAuthenticationJWT('application', {});
     return new Tokenizer({
+      url: this.tokenizerUrl,
       authenticationToken: authenticationToken.toString(),
     });
   }
@@ -99,6 +100,7 @@ export class Grants {
     const authenticationToken = await this.auth.createAuthenticationJWT('application', {});
 
     const tokenizer = new Tokenizer({
+      url: this.tokenizerUrl,
       authenticationToken: authenticationToken.toString(),
     });
 

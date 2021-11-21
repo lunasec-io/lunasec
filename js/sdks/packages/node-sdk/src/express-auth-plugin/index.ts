@@ -37,12 +37,14 @@ export interface ExpressAuthPluginConfig {
   auth: KeyService;
   // TODO: (forrest) remove, I'm 99% sure you can do this by just calling `register` on an express router instead of the base app
   pluginBaseUrl?: string;
+  redirectToLocalhost: boolean;
 }
 
 export class ExpressAuthPlugin {
   private readonly tokenizerUrl: string;
   private readonly auth: KeyService;
   private readonly config: ExpressAuthPluginConfig;
+  private readonly redirectToLocalhost: boolean;
 
   /**
    * @ignore
@@ -51,6 +53,7 @@ export class ExpressAuthPlugin {
     this.auth = config.auth;
     this.config = config;
     this.tokenizerUrl = config.tokenizerURL;
+    this.redirectToLocalhost = config.redirectToLocalhost;
   }
 
   // private filterClaims<T extends JWTPayload>(payload: T): Partial<T> {
@@ -68,6 +71,15 @@ export class ExpressAuthPlugin {
   //     }, {});
   // }
 
+  private getTokenizerAuthUrl() {
+    if (this.redirectToLocalhost) {
+      const url = new URL(this.tokenizerUrl);
+      url.hostname = 'localhost';
+      return url.toString();
+    }
+    return this.tokenizerUrl;
+  }
+
   private async buildSecureFrameRedirectUrl(stateToken: string, sessionId: string) {
     // This gets set into the "access_token" cookie by the Secure Frame Backend after the redirect
     let access_token = undefined;
@@ -82,7 +94,9 @@ export class ExpressAuthPlugin {
       return null;
     }
 
-    const redirectUrl = new URL('session/create', this.tokenizerUrl);
+    const tokenizerUrl = this.getTokenizerAuthUrl();
+
+    const redirectUrl = new URL('session/create', tokenizerUrl);
     redirectUrl.searchParams.append('state', stateToken);
     redirectUrl.searchParams.append('openid_token', access_token.toString());
     return redirectUrl;

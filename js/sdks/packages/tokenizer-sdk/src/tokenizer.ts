@@ -47,7 +47,7 @@ export class Tokenizer {
   readonly openApi: DefaultApi;
   private reqOptions: { headers: OutgoingHttpHeaders };
 
-  constructor(config?: Partial<TokenizerClientConfig>) {
+  constructor(config: Partial<TokenizerClientConfig>) {
     // Deep clone config for mutation safety.
     this.config = JSON.parse(JSON.stringify(Object.assign({}, CONFIG_DEFAULTS, config)));
 

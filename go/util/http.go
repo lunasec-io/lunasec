@@ -43,6 +43,7 @@ func AddCookie(w http.ResponseWriter, name, value, path string, ttl time.Duratio
 	if ttl != -1 {
 		expire = time.Now().Add(ttl)
 	}
+
 	cookie := http.Cookie{
 		Name:  name,
 		Value: value,

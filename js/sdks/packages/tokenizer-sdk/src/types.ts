@@ -21,10 +21,10 @@ import { MetaData } from './generated';
 export interface TokenizerClientConfig {
   /** The address of the tokenizer backend */
   url: string;
-  metaEncoding: 'base64';
+  metaEncoding?: 'base64';
   /** Used for when the tokenizer is running on the serverside and wants to authenticate itself */
   authenticationToken?: string;
-  lockToSession: boolean;
+  lockToSession?: boolean;
 }
 
 export interface FileInfo {

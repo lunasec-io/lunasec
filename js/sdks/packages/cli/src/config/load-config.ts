@@ -16,6 +16,8 @@
  */
 import findConfig from 'find-config';
 
+import { LunaSecStackEnvironment } from '../docker-compose/lunasec-stack';
+
 import {
   deploymentConfigOptionsDefaults,
   devConfigOptionsDefaults,
@@ -24,7 +26,9 @@ import {
   metricConfigOptionsDefaults,
 } from './types';
 
-export function loadLunaSecStackConfig(): LunaSecStackConfigOptions | undefined {
+export function loadLunaSecStackConfig(env?: LunaSecStackEnvironment): LunaSecStackConfigOptions | undefined {
+  const onlyUseDefaults = env ? env === 'demo' || env === 'tests' : false;
+
   const configPath = findConfig('lunasec.js');
 
   if (configPath === null) {
@@ -35,8 +39,9 @@ export function loadLunaSecStackConfig(): LunaSecStackConfigOptions | undefined 
   const config = require(configPath);
   const lunaseConfig = config as LunaSecStackConfigOptions;
 
-  const productionConfig = lunaseConfig.production ? lunaseConfig.production : { metrics: {}, grants: {} };
-  const devConfig = lunaseConfig.development ? lunaseConfig.development : { grants: {} };
+  const productionConfig =
+    lunaseConfig.production && !onlyUseDefaults ? lunaseConfig.production : { metrics: {}, grants: {} };
+  const devConfig = lunaseConfig.development && !onlyUseDefaults ? lunaseConfig.development : { grants: {} };
   return {
     development: {
       ...devConfigOptionsDefaults,

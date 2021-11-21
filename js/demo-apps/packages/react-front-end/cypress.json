@@ -1,8 +1,11 @@
 {
     "chromeWebSecurity": false,
-    "baseUrl": "http://localhost:3000",
     "IframeOptions": {
         "log": true
     },
-    "watchForFileChanges": true
+    "watchForFileChanges": true,
+    "env": {
+        "printHeaderData": "1",
+        "printRequestData": "1"
+    }
 }

@@ -14,6 +14,8 @@
  * limitations under the License.
  *
  */
+import { URL } from 'url';
+
 import { Hash } from '@aws-sdk/hash-node';
 import { HttpRequest } from '@aws-sdk/protocol-http';
 import { S3RequestPresigner, S3RequestPresignerOptions } from '@aws-sdk/s3-request-presigner';
@@ -40,6 +42,7 @@ export interface SimpleTokenizerBackendConfig {
   awsCredentials: S3RequestPresignerOptions['credentials'];
   /** Override the production AWS URL with a localstack url on port 4566, useful for development */
   useLocalStack?: boolean;
+  redirectToLocalhost?: boolean;
 }
 
 /**
@@ -51,11 +54,15 @@ export class SimpleTokenizerBackend {
 
   private generateAWSBaseUrl() {
     if (this.config.useLocalStack) {
-      return `http://localhost:4566/${this.config.s3Bucket}`;
+      if (this.config.redirectToLocalhost) {
+        return `http://localhost:4566/${this.config.s3Bucket}`;
+      }
+      return `http://localstack:4566/${this.config.s3Bucket}`;
     }
 
     return `https://${this.config.s3Bucket}.s3.${this.config.awsRegion}.amazonaws.com`;
   }
+
   private async generatePresignedS3Url(tokenId: string, method: 'PUT' | 'GET') {
     if (!isToken(tokenId)) {
       throw new Error('Invalid token passed to simple express tokenizer backend');
