@@ -14,51 +14,91 @@
 
 
 <p align="center">
-  <img src='docs/static/img/logo-black-text.svg' width='70%'>
+  <img src='docs/static/img/logo-black-text.svg' width='60%'>
 </p>
 
 ---
 
 ![All Tests](https://github.com/lunasec-io/lunasec/actions/workflows/integration.yaml/badge.svg)
 
-LunaSec is a suite of security tools designed to protect sensitive data in web applications by only adding a few lines of code.
+LunaSec is a suite of security tools designed to protect sensitive data in web applications by adding just a few lines of code.
 
 - [What is LunaSec?](#what-is-lunasec)
+- [Live Demo](#live-demo)
 - [Documentation](https://www.lunasec.io/docs/)
 - [System Architecture](#system-architecture)
 - [Who is LunaSec for?](#who-is-lunasec-for)
 - [How does LunaSec work?](#how-does-lunasec-work)
 - [Custom Support from the LunaSec Team](#custom-support-from-the-lunasec-team)
-- [Trying LunaSec in 1 minute](#trying-lunasec-in-1-minute)
 - [Deploying LunaSec](#deploying-lunasec)
 - [Need Help?](#need-help)
 - [Contributing](#contributing)
 - [See Also](#see-also)
 
 ## What is LunaSec?
-LunaSec is an end-to-end security system designed to protect your application by transparently encrypting sensitive data.
-It works seamlessly by storing your sensitive data and then giving you back a Token (a UUID) to retrieve data with later.
-Tokens aren't sensitive values by themselves, thereby limiting the impact of security issues in your application when exposed, 
-and also provide the foundation that LunaSec builds on to offer you additional security and compliance features.
+
+LunaSec is an end-to-end security system designed to protect your application by transparently encrypting sensitive
+data, from browser to database. It works seamlessly by storing your sensitive data and then giving you back a Token (a UUID) to retrieve data with
+later. Tokens aren't sensitive values by themselves, thereby limiting the impact of security issues in your application
+when exposed, and also provide the foundation that LunaSec builds on to offer you additional security and compliance
+features.
 
 ### Features
-- **Secure By Default**: Prevents data leaks by making your software resistant to [many security issues](https://www.lunasec.io/docs/pages/overview/security/vulns-and-mitigations/) like SQL Injection, XSS, and even RCE.
-- **Best-In-Class Compliance Software**: Decrease your compliance overhead by 90%+ with centralized *access control logic*, *audit logs*, and *automatic compliance validation*.
-- **Simple Onboarding**: [Get started in minutes](https://www.lunasec.io/docs/pages/overview/example-usage/) by adding *only a few lines of code* anywhere that sensitive data enters or exits your system.
-- **Built By Security Experts**: Designed to bring leading security practices to your applications *without requiring advanced security knowledge*.  
-- **Self-Hosted And Open**: You retain control over your data by hosting LunaSec yourself. It's open source software licensed under a permissive Apache2.0 license. 
-- **Trustless Architecture**: All records are [encrypted with a unique key](https://www.lunasec.io/docs/pages/overview/security/encryption/) that even LunaSec can't access. Decryption only happens when you need it to.
-- **Scales Automatically**: Supports even the largest loads by leveraging cloud-scale database services like AWS S3 and DynamoDB.
-- **Enterprise Grade**: We offer warranties, managed deployments, and custom support via our [Premium Support packages](#custom-support-from-the-lunasec-team).
+
+- **Secure By Default**: Prevents data leaks by making your software resistant
+  to [many security issues](https://www.lunasec.io/docs/pages/overview/security/vulns-and-mitigations/) like SQL
+  Injection, XSS, and even RCE.
+- **Best-In-Class Compliance Software**: Decrease your compliance overhead by 90%+ with centralized *access control
+  logic*, *audit logs*, and *automatic compliance validation*.
+- **Simple Onboarding**: [Get started in minutes](https://www.lunasec.io/docs/pages/overview/example-usage/) by adding *
+  only a few lines of code* anywhere that sensitive data enters or exits your system.
+- **Built By Security Experts**: Designed to bring leading security practices to your applications *without requiring
+  advanced security knowledge*.
+- **Self-Hosted And Open**: You retain control over your data by hosting LunaSec yourself. It's open source software
+  licensed under a permissive Apache2.0 license.
+- **Zero Trust Architecture**: All records
+  are [encrypted with a unique key](https://www.lunasec.io/docs/pages/overview/security/encryption/) that even LunaSec
+  can't access. Decryption only happens when you need it to.
+- **Scales Automatically**: Supports even the largest loads by leveraging cloud-scale database services like AWS S3 and
+  DynamoDB.
+- **Enterprise Grade**: We offer warranties, managed deployments, and custom support via
+  our [Premium Support packages](#custom-support-from-the-lunasec-team).
 
 You can read more [here](https://www.lunasec.io/docs/pages/overview/features/) about what features LunaSec provides.
 
+## Live Demo
+You can try it out LunaSec with one command **if you have Node and Docker installed**:
+
+```
+npx @lunasec/cli start --env demo
+```
+
+That will pull all the Docker containers and start the LunaSec demo app on your computer. It's a simple web app that you
+can play with in your browser. There are a lot of containers to run, so it may take a few minutes to finish starting up.
+
+Once it's running, just sign up for a new account and then submit some fake data in the app. (It's a fake account that's
+on your computer only)
+
+All data in the app is transparently encrypted and stored in the LunaSec database in the app. Take a look at the
+elements on the page and the network requests to view how it's all working.
+
+For a deeper dive into the Demo App, please see
+this [page](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) for a walkthrough of everything. All the
+source code is available [here](https://github.com/lunasec-io/lunasec/tree/master/js/demo-apps/packages) for you to
+view.
+
+If you run into any issues, please open up a GitHub issue or chat with us on
+our [GitHub Discussions page](https://github.com/lunasec-io/lunasec/discussions).
+
 ## [Documentation](https://www.lunasec.io/docs/)
-For more information about LunaSec including tutorials, examples, and technical information, please review 
-our [documentation](https://www.lunasec.io/docs/). For technical questions or help, please reach out via our [GitHub Discussions board](https://github.com/lunasec-io/lunasec/discussions) 
+
+For more information about LunaSec including tutorials, examples, and technical information, please review
+our [documentation](https://www.lunasec.io/docs/). For technical questions or help, please reach out via
+our [GitHub Discussions board](https://github.com/lunasec-io/lunasec/discussions)
 or open a new GitHub issue if you have a bug or feature to request.
 
-Please visit our [website](https://www.lunasec.io/) for marketing or sales information, or to [get in contact](https://www.lunasec.io/contact).
+Please visit our [website](https://www.lunasec.io/) for marketing or sales information, or
+to [get in contact](https://www.lunasec.io/contact).
 
 ## System Architecture
 LunaSec works across the components of your web stack to provide end-to-end data security.
@@ -67,7 +107,7 @@ We've documented the components of the stack [here](https://www.lunasec.io/docs/
 ![LunaSec Architecture Diagram](docs/static/img/security-model-overview.svg)
 
 ## Who is LunaSec for?
-LunaSec is designed to be used by anybody that needs to store sensitive information in a production web application.
+LunaSec is designed to be used by anybody that needs to store sensitive text for files in a production web application.
 Despite being built by Security Engineers, **LunaSec does not require security expertise to get started**.
 It's designed to be used by ordinary Software Engineers and Developers.
 
@@ -114,28 +154,6 @@ If you're interested, [please send us a message](https://www.lunasec.io/contact)
     <img alt="LunaSec Premium Support Link" src='docs/static/img/premium-support-icon.png' width='70%'>
   </a>
 </p>
-
-## Trying LunaSec in 1 minute
-We've made it very easy for you to get familiar with LunaSec by running our example app locally.
-
-You can try it out with one command **if you have Node and Docker installed**:
-
-```
-npx @lunasec/cli start --env demo
-```
-
-That will pull all the Docker containers and start the LunaSec demo app on your computer. 
-It's a simple web app that you can play with in your browser.
-
-Once it's running, just sign up for a new account and then submit some fake data in the app. (It's a fake account that's on your computer only)
-
-All data in the app is transparently encrypted and stored in the LunaSec database in the app. 
-Take a look at the elements on the page and the network requests to view how it's all working.
-
-For a deeper dive into the Demo App, please see this [page](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) for a walkthrough of everything. 
-All the source code is available [here](https://github.com/lunasec-io/lunasec/tree/master/js/demo-apps/packages) for you to view.
-
-If you run into any issues, please open up a GitHub issue or chat with us on our [GitHub Discussions page](https://github.com/lunasec-io/lunasec/discussions).
 
 ## Deploying LunaSec
 In order to use LunaSec in your production environment, you will need to host a copy yourself. We have made available a

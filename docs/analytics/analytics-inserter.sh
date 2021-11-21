@@ -1,1 +1,1 @@
-sed -i '/^<\/body>/e cat ./analytics/analytics-fragment.txt' ./build/index.html
+find ./build -iname "*.html" | xargs -I % sed -i '/^<\/body>/e cat ./analytics/analytics-fragment.txt' %
