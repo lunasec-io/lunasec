@@ -523,10 +523,10 @@ export class LunaSecStackDockerCompose {
     if (this.env === 'hosted-live-demo') {
       return {
         'express-back-end': {
-          url: `http://express.lunasec.dev`,
+          url: `https://express.lunasec.dev`,
         },
         'graphql-back-end': {
-          url: `http://graphql.lunasec.dev`,
+          url: `https://graphql.lunasec.dev`,
         },
       };
     }
@@ -547,9 +547,9 @@ export class LunaSecStackDockerCompose {
   getApplicationBackEndEnvUrls() {
     if (this.env === 'hosted-live-demo') {
       return {
-        REACT_APP_EXPRESS_URL: `http://express.lunasec.dev`,
-        REACT_APP_GRAPHQL_URL: `http://graphql.lunasec.dev`,
-        REACT_APP_SIMPLE_TOKENIZER_URL: `http://simple.lunasec.dev`,
+        REACT_APP_EXPRESS_URL: `https://express.lunasec.dev`,
+        REACT_APP_GRAPHQL_URL: `https://graphql.lunasec.dev`,
+        REACT_APP_SIMPLE_TOKENIZER_URL: `https://simple.lunasec.dev`,
       };
     }
 
