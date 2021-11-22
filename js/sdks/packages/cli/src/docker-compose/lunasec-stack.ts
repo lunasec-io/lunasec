@@ -27,6 +27,7 @@ import {
   LunaSecStackConfigOptions,
   testsConfigOptionsDefaults,
 } from '../config/types';
+import { awsResourcesOutputFile } from '../constants/cli';
 import { formatAuthenticationProviders } from '../utils/auth-providers';
 
 import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
@@ -354,7 +355,7 @@ export class LunaSecStackDockerCompose {
       config: {
         ...this.baseServiceConfig(name),
         ...(this.localBuild ? localBuildConfig : dockerBuildConfig),
-        command: 'deploy --local --output /outputs/aws_resources.json',
+        command: `deploy --local --output /outputs/${awsResourcesOutputFile}`,
         depends_on: [this.localstackProxy().name],
       },
     };
