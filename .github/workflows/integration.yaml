@@ -32,7 +32,7 @@ on:
 
 jobs:
   integration-test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
@@ -42,6 +42,7 @@ jobs:
     strategy:
       matrix:
         merge: ["merged", "not-merged"]
+        os: ["macos-latest", "ubuntu-latest"]
     steps:
 
     - uses: actions/checkout@v2
