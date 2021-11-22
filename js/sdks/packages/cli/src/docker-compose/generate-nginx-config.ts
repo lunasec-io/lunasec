@@ -29,7 +29,7 @@ export function generateNginxEnvConfig(
     APPLICATION_FRONT_END: 'https://app.lunasec.dev',
     CDN_PROTOCOL: 'https',
     CDN_HOST: 'secure-frame.lunasec.dev',
-    LOCALSTACK_URL: 'http://localhost:4566',
+    LOCALSTACK_URL: 'https://mocked-aws-s3.lunasec.dev',
     // TODO (freeqaz) I'm not sure what this value needs to be still.
     // LOCAL_HTTPS_PROXY: '', // 'https://localstack-proxy:4568',
     // LOCALSTACK_HOSTNAME: 'localstack.lunasec.dev',
