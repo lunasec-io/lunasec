@@ -10,7 +10,7 @@ cmd="$@"
 until test -e "$waitFile"
 do
   >&2 echo "Waiting for file [$waitFile]."
-  sleep 1
+  sleep 5
 done
 
 >&2 echo "Found file [$waitFile]."

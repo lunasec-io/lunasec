@@ -23,5 +23,5 @@ export const simpleTokenizerBackend = new SimpleTokenizerBackend({
   s3Bucket: process.env.CIPHERTEXT_S3_BUCKET || 'You must set a bucket...',
   awsCredentials: { accessKeyId: 'test', secretAccessKey: 'test' },
   useLocalStack: true,
-  redirectToLocalhost: redirectToLocalhost,
+  redirectToLocalhost,
 });
