@@ -38,9 +38,10 @@ WORKDIR /repo
 
 ENTRYPOINT ["yarn", "run", "lunasec"]
 
+# IF YOU CHANGE THIS CYPRESS VERSION, CHANGE IT IN THE DEMO REACT APP PACKAGE.JSON ALSO
 FROM cypress/included:7.0.0 as integration-test
 
-# RUN cypress install --force
+#RUN cypress install --force
 
 ENV VERBOSE_CYPRESS_LOGS="always"
 
