@@ -53,6 +53,20 @@ export const AppContainer: React.FunctionComponent = () => {
     loadUser({ transport });
   }, [loadUser, transport]);
 
+  function injectAnalytics() {
+    if (window.location.origin !== 'https://app.lunasec.dev') {
+      return null;
+    }
+    return (
+      <>
+        <script async defer src="https://sa.lunasec.io/latest.js"></script>
+        <noscript>
+          <img src="https://sa.lunasec.io/noscript.gif" alt="" referrerPolicy="no-referrer-when-downgrade" />
+        </noscript>
+      </>
+    );
+  }
+
   return (
     <>
       <Route exact path="/">
@@ -82,6 +96,7 @@ export const AppContainer: React.FunctionComponent = () => {
           );
         }}
       />
+      {injectAnalytics()}
     </>
   );
 };
