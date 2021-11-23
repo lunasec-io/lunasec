@@ -41,7 +41,9 @@ WORKDIR /repo
 # This gives a better explanation: https://stackoverflow.com/questions/49133234/docker-entrypoint-with-env-variable-and-optional-arguments
 ENTRYPOINT ["bash", "/repo/js/sdks/packages/cli/scripts/docker-entrypoint.sh"]
 
-FROM cypress/included:7.0.0 as integration-test
+FROM cypress/included:8.0.0 as integration-test
+
+RUN apt update && apt install -y xvfb
 
 # RUN cypress install --force
 
@@ -52,7 +54,7 @@ COPY --from=lerna-bootstrap /repo /repo
 WORKDIR /repo/
 
 # We would use test:all but couldn't easily get golang into this container, so those run on bare box
-ENTRYPOINT /repo/tools/service-scripts/wait-for-services.sh "$DEPENDENCIES__INTEGRATION_TEST" yarn run test:unit:tokenizer && yarn run test:unit:auth && yarn run test:e2e:local
+ENTRYPOINT /repo/tools/service-scripts/wait-for-services.sh "$DEPENDENCIES__INTEGRATION_TEST" yarn run test:unit:tokenizer && yarn run test:unit:auth && yarn run test:e2e:docker
 
 FROM lerna-bootstrap as secure-frame-iframe
 
