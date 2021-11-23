@@ -31,6 +31,7 @@ import { mirrorRepos } from './cdk-stack/mirror-service-repos';
 import { getOutputName, LunaSecDeploymentStack } from './cdk-stack/stack';
 import { AwsResourceConfig, LunaSecStackName, SecureFrameAssetFilename } from './cdk-stack/types';
 import { loadLunaSecStackConfig } from './config/load-config';
+import { awsResourcesOutputFile } from './constants/cli';
 import {
   LunaSecStackDockerCompose,
   LunaSecStackEnvironment,
@@ -114,6 +115,21 @@ function getRunStackOptions(env: LunaSecStackEnvironment, localBuild: boolean, s
   return devOptions;
 }
 
+function ensureEmptyOutputsDirectoryExists(composePath: string) {
+  const outputsDir = path.join(composePath, './outputs');
+  if (!fs.existsSync(outputsDir)) {
+    // if the outputs directory doesn't exist, just create the directory and return
+    fs.mkdirSync(outputsDir);
+    return;
+  }
+
+  const outputsFile = path.join(outputsDir, awsResourcesOutputFile);
+  if (fs.existsSync(outputsFile)) {
+    // if a previous outputs file exists, get rid of it before running this command
+    fs.rmSync(path.join(outputsFile));
+  }
+}
+
 yargs
   .scriptName('lunasec')
   .usage('$0 <cmd> [args]')
@@ -182,12 +198,7 @@ yargs
         composePath = process.cwd();
       }
 
-      if (args['local-build']) {
-        const outputsFile = path.join(composePath, './outputs');
-        if (!fs.existsSync(outputsFile)) {
-          fs.mkdirSync(outputsFile);
-        }
-      }
+      ensureEmptyOutputsDirectoryExists(composePath);
 
       const composeFile = stack.write(composePath);
 
