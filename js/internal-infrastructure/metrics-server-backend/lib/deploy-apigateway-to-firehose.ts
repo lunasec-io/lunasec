@@ -46,7 +46,7 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const s3Destination = new destinations.S3Bucket(bucket, {
-      compression: Compression.SNAPPY,
+      compression: Compression.GZIP,
       dataOutputPrefix:
         'metrics/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/rand=!{firehose:random-string}',
       errorOutputPrefix:
@@ -125,12 +125,15 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
   #foreach($key in $inputRoot.keySet())
   ""$key"": $input.json($key),
   #end
-  ""clientIP"": ""$context.identity.sourceIp"",
+  ""clientIP"": ""$context.identity.sourceIp""
 }")
+#set($newLineRegex = '\n')
+#set($formattedJson = "$data.replaceAll($newLineRegex, '')
+")
 {
   "DeliveryStreamName": "${streamName}",
   "Record": {
-    "Data": "$util.base64Encode($data)"
+    "Data": "$util.base64Encode($formattedJson)"
   }
 }`;
   }
