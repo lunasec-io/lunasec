@@ -2,7 +2,7 @@
 id: "choose-your-setup"
 title: "Setup Choice"
 sidebar_label: "Choose Your Setup"
-sidebar_position: 1
+sidebar_position: 2
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)

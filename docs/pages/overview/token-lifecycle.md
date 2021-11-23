@@ -1,7 +1,7 @@
 ---
 id: "token-lifecycle"
-title: "Token Lifecycle"
-sidebar_label: "Token Lifecycle"
+title: "What are Tokens?"
+sidebar_label: "What are Tokens?"
 sidebar_position: 4
 ---
 <!--
@@ -17,38 +17,114 @@ sidebar_position: 4
   ~ limitations under the License.
   ~
 -->
-# Token lifecycle
 
-### Page Loading and setup
-When the browser mounts a LunaSec react element from `@lunasec/react-sdk`, such as `<SecureInput>`, it creates an iFrame that loads from the 
-`Dedicated Tokenizer`. Now we have a cross-domain iFrame on the page which can only communicate with the SDK through secure Post Messages.  This is our
-trusted environment to handle sensitive data. The SDK, running as part of your code 
-in the browser, sends the Secure Frame (iFrame) information it needs like styling information copied from your app, a prexisting token
-to display if desired, any validations that need to run, etc.
+Simply put, Tokens are identifiers similar to a foreign key in a database. They're random values, and they have no meaning
+by themselves. In order to turn a Token into anything useful, you must pass it to LunaSec where it undergoes the process
+of "Detokenization", only then, is it converted back into the original data.
 
-Now it's ready to tokenize or detokenize data:
+This is useful because it prevents any _single point of failure_ from resulting in your data leaking. Even if an attacker 
+dumps your entire database by leveraging an [SQL Injection attack](https://owasp.org/www-community/attacks/SQL_Injection), 
+finds an [exposed database backup](https://techcrunch.com/2019/04/03/facebook-records-exposed-server/), or grabs Tokens 
+via another attack vector, that attacker _still_ has to be able to Detokenize them.
 
-### Tokenization
-There are a few steps that happen behind the scenes when data gets tokenized.  This is what happens when a
-user clicks Submit on a form with a `<SecureInput>`.
-1. Secure Frame (typically from the React SDK) calls the Tokenizer with `/tokenize` and gets back a token and an S3 presigned-URL.  
-   Permission for your server to safely store the token from this session is created behind the scenes in what's dubbed a store `Grant`, preventing certain attacks.
-2. Secure Frame uploads the sensitive data to S3, data is encrypted by S3's built in encryption. 
-3. Your web app reads the token from the `<SecureInput>` in the same way it would read a change in a normal input.  
-   You send the token to your server for storage with the rest of your data.
-4. The `@lunasec/node-sdk` on your server calls to the tokenizer to check that a Grant exists with that session for it to safely store the token. 
-5. You store the token in your database.
+By implementing security controls at the time that Detokenization happens, you are able to monitor, detect, and thwart
+an attack that would otherwise leak your data. You can see the features that LunaSec provides you for more context about
+how we use Tokenization to protect your app against the most common security issues.
 
-![token-creation-lifecycle](/img/tokenstorage.svg)
+### Go try it out! 
 
-### Detokenization
-The process when the frontend turns a token back into a plaintext value is almost identical to the above, but in reverse.
-This is the process to display a token's value to the user.  It happens when you pass a `token` property to a LunaSec Component like `<SecureParagraph>`. 
-Note you can also prefill inputs in the same way.
+If you want to see Detokenization in a real world scenario, you're welcome to check out our 
+[Live Demo](https://app.lunasec.dev). Just
+open up your Network Inspector to see the requests happening. The rest of this document will explain the process in more
+detail to help you better understand what's happening.
 
-1. A request for some data comes from your frontend application, in the same way you would fetch a plaintext field.
-1. Your server reads a token or tokens out of the database(alongside plaintext data).
-2. The `@lunasec/node-sdk` on your server calls to the tokenizer to create a read Grant connected to the users session
-3. You return the token to the browser and use react to pass it to a LunaSec React Component using the `token` property.
-4. The Secure frame calls the Tokenizer to get a presigned URL to download the sensitive data from s3.  The read grant is checked behind the scenes.
-5. The Secure frame gets the real data from s3 and displays it to the user.
+### How does Detokenization work?
+
+It's a multi-part process with the way that LunaSec is implemented. The service responsible for dealing with Tokens in
+LunaSec is aptly named the "Tokenizer". By itself, the Tokenizer doesn't actually store data associated with Tokens.
+It just processes Tokens and then hands back information about where to download (and decrypt) the Token from AWS S3.
+
+We use AWS S3 because it's fast, scales really well, stores files [up to 5TB](https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html),
+and there are a [dozen](https://github.com/topics/s3-storage) of 
+[high-quality](https://github.com/minio/minio) [backends](https://github.com/juicedata/juicefs)
+[that](https://www.backblaze.com/b2/docs/s3_compatible_api.html)
+[support](https://github.com/chrislusf/seaweedfs/wiki/Amazon-S3-API) the same API as S3 to cover any needs.
+
+#### High-Level Steps
+1. The Client makes a POST request with the Token is made to the Tokenizer's `/detokenize` API,
+2. The Tokenizer validates the request (checks Auth, if the Token exists, etc.),
+3. If approved, the Tokenizer returns an AWS S3 [pre-signed URL](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html) to download the data,
+4. The Client makes a GET request to the AWS S3 URL in the request (along with encryption key),
+5. AWS S3 sends back the decrypted data.
+
+_In reality, there is more to it than that. There's a key generation step, a bunch of Authorization checks via Grants or
+Secure Authorizers, and some CORS requests. Those are mostly implementation details though. See the Advanced section for
+a deeper dive._
+
+#### Detokenization HTTP Request Flow 
+
+##### Request to Tokenizer
+```http request
+POST /detokenize HTTP/1.1
+Host: tokenizer.lunasec.dev
+Accept: application/json
+Content-Type: application/json
+Content-Length: 58
+Origin: https://tokenizer.lunasec.dev
+Cookie: access_token=<session_cookie>
+```
+
+**Uploaded JSON**:
+```json
+{
+   "tokenId": "lunasec-2b58d9b2-83c1-4e9b-9692-b149112810c8"
+}
+```
+
+##### Response from Tokenizer
+```http request 
+HTTP/1.1 200 OK
+content-type: application/json
+lunasec-session-hash: 1ca24299df038ec214bbf2ccb88b2ae6315560bd
+vary: Origin
+content-encoding: br
+```
+
+**Response JSON**
+```json
+{
+   "success": true,
+   "error": {},
+   "data": {
+      "downloadUrl": "https://<AWS_S3_URL>/a-very-long-url-very-secure-url
+      "headers": {
+         "host": "lunasec-ciphertextbucket<RANDOM_BUCKET_ID>.s3.us-west-2.amazonaws.com",
+         "x-amz-server-side-encryption-customer-algorithm": "AES256",
+         "x-amz-server-side-encryption-customer-key": "slwQy2d51/WSoPu9h8Fp5PJZ44w+x0VTcwr5dDnq3fI=",
+         "x-amz-server-side-encryption-customer-key-md5": "GkNtl6TYapPdZLbE9ZhR7Q=="
+      }
+   }
+}
+```
+
+##### Request to AWS S3
+```http request
+GET /a-very-long-url-very-secure-url
+Host: lunasec-ciphertextbucket<RANDOM_BUCKET_ID>.s3.us-west-2.amazonaws.com
+Accept: application/json, text/plain, */*
+x-amz-server-side-encryption-customer-algorithm: AES256
+x-amz-server-side-encryption-customer-key: slwQy2d51/WSoPu9h8Fp5PJZ44w+x0VTcwr5dDnq3fI=
+x-amz-server-side-encryption-customer-key-md5: GkNtl6TYapPdZLbE9ZhR7Q==
+Origin: https://tokenizer.lunasec.dev
+```
+
+**Response (Detokenized Data)**
+```text
+some-super-secret-data
+```
+
+And that's it! You can store anything in the data that's uploaded. It's really just a key-value store with some fancy
+security magic sprinkled into it. The rest of the LunaSec stack is where we continue bolting on [layers of security](./security/levels.md).
+
+If you'd like to learn more about how the LunaSec Secure Components work in your browser, we have that info 
+[here](./advanced/how-secure-components-work.md).
