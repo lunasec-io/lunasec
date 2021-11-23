@@ -61,7 +61,7 @@ async function checkURLStatus(url: string): Promise<boolean> {
 }
 
 function* onStdinDemo(data: string) {
-  if (data.includes('Starting lunasec_', 0)) {
+  if (data.includes('Container lunasec', 0)) {
     console.log(data);
   }
   yield;

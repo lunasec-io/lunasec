@@ -1,6 +1,6 @@
 {
   "name": "vue-sdk",
-  "version": "1.0.6-alpha.1",
+  "version": "1.0.5",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -10,7 +10,7 @@
     "lint": "echo 'DONT USE THIS, USE THE GLOBAL ONE FROM THE REPO ROOT"
   },
   "dependencies": {
-    "@lunasec/browser-common": "^1.0.6-alpha.1",
+    "@lunasec/browser-common": "^1.0.7",
     "core-js": "^3.6.5",
     "vue": "^3.0.0"
   },
@@ -19,6 +19,7 @@
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-e2e-cypress": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-plugin-unit-jest": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
