@@ -35,40 +35,43 @@
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-    const options = {
-        printLogsToConsole: 'always'
+  const options = {
+    printLogsToConsole: 'always'
+  }
+  require('cypress-terminal-report/src/installLogsPrinter')(on, options);
+
+  on('before:browser:launch', (browser = {}, launchOptions) => {
+    // if (browser.family === 'chromium' && browser.name !== 'electron') {
+    // auto open devtools
+    launchOptions.args.push('--auto-open-devtools-for-tabs');
+    launchOptions.args.push('--unsafely-treat-insecure-origin-as-secure=http://tokenizer-backend:37766,http://application-back-end:3001,http://application-back-end:3002');
+    launchOptions.args.push('--disable-features=SameSiteByDefaultCookies');
+    launchOptions.args.push('--window-size=1440,900');
+    launchOptions.args.push('--force-device-scale-factor=1');
+
+    // }
+
+    // if (browser.family === 'firefox') {
+    //     // auto open devtools
+    //     launchOptions.args.push('-devtools')
+    // }
+    //
+    // if (browser.name === 'electron') {
+    //     // auto open devtools
+    //     launchOptions.preferences.devTools = true
+    // }
+
+    // `args` is an array of all the arguments that will
+    // be passed to browsers when it launches
+    console.log(launchOptions.args) // print all current args
+
+    // whatever you return here becomes the launchOptions
+    return launchOptions
+  })
+  on('task', {
+    log: function (message) {
+      console.log(JSON.stringify(message, null, 2));
+      return null
     }
-    require('cypress-terminal-report/src/installLogsPrinter')(on, options);
-
-    on('before:browser:launch', (browser = {}, launchOptions) => {
-        // if (browser.family === 'chromium' && browser.name !== 'electron') {
-            // auto open devtools
-        launchOptions.args.push('--auto-open-devtools-for-tabs');
-        launchOptions.args.push('--unsafely-treat-insecure-origin-as-secure=http://tokenizer-backend:37766,http://application-back-end:3001,http://application-back-end:3002');
-        launchOptions.args.push('--disable-features=SameSiteByDefaultCookies')
-        // }
-
-        // if (browser.family === 'firefox') {
-        //     // auto open devtools
-        //     launchOptions.args.push('-devtools')
-        // }
-        //
-        // if (browser.name === 'electron') {
-        //     // auto open devtools
-        //     launchOptions.preferences.devTools = true
-        // }
-
-        // `args` is an array of all the arguments that will
-        // be passed to browsers when it launches
-        console.log(launchOptions.args) // print all current args
-
-        // whatever you return here becomes the launchOptions
-        return launchOptions
-    })
-    on('task', {
-      log: function (message) {
-        console.log(JSON.stringify(message, null, 2));
-        return null
-      }
-    })
+  })
 }

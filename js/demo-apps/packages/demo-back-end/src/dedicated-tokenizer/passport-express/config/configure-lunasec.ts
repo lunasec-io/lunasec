@@ -22,7 +22,7 @@ if (!process.env.TOKENIZER_URL) {
   throw new Error('Secure frame url env var is not set');
 }
 
-const redirectToLocalhost = process.env.LUNASEC_STACK_ENV === 'demo';
+const publicTokenizerUrl = process.env.REACT_APP_TOKENIZER_URL;
 
 export const lunaSec = new LunaSec({
   tokenizerURL: process.env.TOKENIZER_URL,
@@ -34,6 +34,6 @@ export const lunaSec = new LunaSec({
     // or null if a user is not logged in.  LunaSec uses this to automatically create and verify token grants
     // and to bootstrap a session if you are using the express-auth-plugin
     sessionIdProvider: lunaSecSessionIdProvider,
-    redirectToLocalhost,
+    publicTokenizerUrl,
   },
 });
