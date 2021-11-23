@@ -407,7 +407,7 @@ export class LunaSecStackDockerCompose {
 
     const debugEntrypoint = debug
       ? {
-          entrypoint: 'yarn run test:open',
+          entrypoint: 'yarn run test:e2e:docker',
         }
       : {};
 
@@ -567,7 +567,7 @@ export class LunaSecStackDockerCompose {
   getDockerEnv(): Record<string, string> {
     const localAuthProviders = this.getAuthenticationProviders();
     const authProviders = formatAuthenticationProviders(this.stackConfigOptions.applicationBackEnd, localAuthProviders);
-    const display: Record<string, string> = debug ? { DISPLAY: ':0' } : {};
+    const display: Record<string, string> = debug ? { DISPLAY: ':99' } : {};
     const applicationBackEndUrls = this.getApplicationBackEndEnvUrls();
 
     const localstackUrl = `http://${this.getLocalstackHostname()}:4566`;
