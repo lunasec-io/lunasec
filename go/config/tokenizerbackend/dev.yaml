@@ -1,6 +1,6 @@
 secure_frame_controller:
   cdn_config:
-    protocol: http
+    protocol: ${CDN_PROTOCOL:http}
     host: ${CDN_HOST}
     main_script: js/main-dev.js
     main_style: main.css
