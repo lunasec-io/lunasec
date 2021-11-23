@@ -2,7 +2,7 @@
 id: "features"
 title: "Features"
 sidebar_label: "Features"
-sidebar_position: 2
+sidebar_position: 3
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -17,7 +17,6 @@ sidebar_position: 2
   ~ limitations under the License.
   ~
 -->
-# Core Features
 
 ## Tokenization
 LunaSec replaces the sensitive 
