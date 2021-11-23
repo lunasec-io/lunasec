@@ -37,14 +37,14 @@ export interface ExpressAuthPluginConfig {
   auth: KeyService;
   // TODO: (forrest) remove, I'm 99% sure you can do this by just calling `register` on an express router instead of the base app
   pluginBaseUrl?: string;
-  redirectToLocalhost: boolean;
+  publicTokenizerUrl?: string;
 }
 
 export class ExpressAuthPlugin {
   private readonly tokenizerUrl: string;
   private readonly auth: KeyService;
   private readonly config: ExpressAuthPluginConfig;
-  private readonly redirectToLocalhost: boolean;
+  private readonly publicTokenizerUrl?: string;
 
   /**
    * @ignore
@@ -53,7 +53,7 @@ export class ExpressAuthPlugin {
     this.auth = config.auth;
     this.config = config;
     this.tokenizerUrl = config.tokenizerURL;
-    this.redirectToLocalhost = config.redirectToLocalhost;
+    this.publicTokenizerUrl = config.publicTokenizerUrl;
   }
 
   // private filterClaims<T extends JWTPayload>(payload: T): Partial<T> {
@@ -72,10 +72,8 @@ export class ExpressAuthPlugin {
   // }
 
   private getTokenizerAuthUrl() {
-    if (this.redirectToLocalhost) {
-      const url = new URL(this.tokenizerUrl);
-      url.hostname = 'localhost';
-      return url.toString();
+    if (this.publicTokenizerUrl) {
+      return this.publicTokenizerUrl;
     }
     return this.tokenizerUrl;
   }
