@@ -18,6 +18,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"go.uber.org/zap"
 	"gopkg.in/square/go-jose.v2"
 	"net/http"
@@ -118,6 +119,18 @@ func (c *JwksManager) fetchJWKs(origin string) (keys []jose.JSONWebKey, err erro
 		retries -= 1
 		time.Sleep(time.Second * 10)
 	}
+
+	if retries == 0 {
+		err = errors.New(fmt.Sprintf("max retries hit when attempting to contact jwks server: %s", origin))
+
+		c.logger.Error(
+			"unable to connect to JWKS server",
+			zap.String("origin", origin),
+			zap.Error(err),
+		)
+		return
+	}
+
 	defer resp.Body.Close()
 
 	if err = json.NewDecoder(resp.Body).Decode(&ks); err != nil {

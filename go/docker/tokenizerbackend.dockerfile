@@ -39,5 +39,9 @@ COPY --from=builder /tmp /tmp
 COPY fixtures/tokenizerbackend/cert.pem /usr/local/share/ca-certificates/proxy.crt
 RUN cat /usr/local/share/ca-certificates/proxy.crt >> /etc/ssl/certs/ca-certificates.crt
 
+# Sets up the script to wait for the resource config to be available.
+COPY scripts/wait-for-file.sh /tmp/wait-for-file.sh
+RUN chmod +x /tmp/wait-for-file.sh
+
 WORKDIR /
-ENTRYPOINT ["/tokenizerbackend"]
+ENTRYPOINT /tmp/wait-for-file.sh /config/tokenizerbackend/outputs/aws_resources.json /tokenizerbackend

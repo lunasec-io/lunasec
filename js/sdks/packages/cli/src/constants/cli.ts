@@ -15,3 +15,5 @@
  *
  */
 export const lunaSecDir = '.lunasec';
+
+export const awsResourcesOutputFile = 'aws_resources.json';
