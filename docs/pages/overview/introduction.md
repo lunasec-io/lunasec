@@ -18,7 +18,7 @@ sidebar_position: 1
   ~
 -->
 ## What is LunaSec?
-LunaSec makes it easy and secure for applications to process and store sensitive data through *Tokenization*. 
+LunaSec makes it easy and secure for web applications to process and store sensitive data through *Tokenization*. 
 
 Sensitive data is exchanged for a non-sensitive token that is meaningless by itself.  It must be exchanged
 for the real data in a process called *Detokenization*.
@@ -30,13 +30,9 @@ If you're looking for an even faster compliance solution with hands-on guidance 
 to inquire about our paid services.
 
 ## How does LunaSec work with my app?
-```tsx title="A React form secured with LunaSec"
-import React from 'react';
-import {SecureForm, SecureInput} from '@lunasec/react-sdk';
 
-// Your app before adding LunaSec.
-// Values are stored as plaintext.
-// An attacker only needs a single vulnerability like Cross-Site Scripting or SQL Injection to leak your data publicly!
+Imagine that you have a simple React form like this. Values are stored as plaintext. An attacker only needs a single vulnerability like Cross-Site Scripting or SQL Injection to leak your data publicly!
+```tsx title="Before"
 export function renderInsecureComponent(props) {
   return (
     <form onSubmit={props.onSubmit}>
@@ -45,11 +41,13 @@ export function renderInsecureComponent(props) {
     </form>
   );
 }
+```
 
-// Your app after adding LunaSec.
-// SecureInput now returns a token instead of the actual SSN.
-// An attacker is no longer able to leak your sensitive data, even if you're vulnerable to security issues.
-// LunaSec makes it easy to ship your software quickly and without fear of data leaks.
+This is the same form with LunaSec.  `<SecureInput>` now returns a token instead of the actual SSN. An attacker is no longer
+able to leak your sensitive data, even if the main application is compromised.
+```tsx title="After"
+import {SecureForm, SecureInput} from '@lunasec/react-sdk';
+
 export function renderSecureComponent(props) {
   return (
     <SecureForm onSubmit={props.onSubmit}>
