@@ -88,7 +88,7 @@ lunaSec.expressAuthPlugin.register(app);
 ```
 
 :::info
-See the [authentication page](../../overview/authentication.md) for more information on when to use this plugin and how it works.
+See the [authentication page](pages/how-it-works/authentication.md) for more information on when to use this plugin and how it works.
 :::
 
 ### Checking Grants
