@@ -1,7 +1,7 @@
 ---
-id: "authentication"
-title: "Creating a LunaSec Session"
-sidebar_label: "Authentication"
+id: "sessions"
+title: "LunaSec's Session"
+sidebar_label: "Sessions"
 sidebar_position: 6
 ---
 <!--
@@ -18,47 +18,13 @@ sidebar_position: 6
   ~
 -->
 
+Cookies (or any other session data) in the web browser are scoped to a specific domain. 
+Because LunaSec's front-end components run in a separate domain, they don't have access to the session data from your main site. 
 
-### The Problems with Two Domains
+### Why does LunaSec need to know about sessions?
 
-Alright, now that have a baseline to understand how LunaSec provides strong security guarantees on the front-end by
-relying on an `<iframe>`, now we have to explain the problems that come with that approach.
-
-Notably: If you login to `app.your-domain.com`, then you're not automatically logged in to `secure-frame.your-second-domain.com`!
-
-That's because Cookies in the web browser are scoped to a specific domain. Your browser won't send your credentials to a
-random other website thanks to the Same-Origin Policy.
-
-You might think, "Well, isn't it fine if we're not logged in to the Secure Frame? We're logged in on our website already!"
-
-Unfortunately, that's a huge can of _security worms_ to go down that route. There are many attacks that pop up, but the
-simplest is: If an attacker gets their hands on a Token by exploiting a bug like an SQL Injection, then that attacker is
-able to Detokenize any Token now because there is no way to authorize the Detokenization request. There are more problems,
-but that's the most obvious one.
-
-Without a session on the LunaSec domain, we are operating blindly, and we'd have to trust that every request is valid.
-That undermines the entire purpose of the system! To fix this, we have to _bootstrap trust_ between the two domains.
-
-### Tying both websites together via Sessions
-
-In order for LunaSec to protect your information and prevent Tokens from being Detokenized by anybody, 
-your application needs to forward certain information to allow LunaSec to tie back requests to the user signed in on
-your website. This is a process that's basically just [OAuth](https://en.wikipedia.org/wiki/OAuth) between two domains, 
-except we do it for every request. (Or, with our future Auth Proxy support, this will happen via signed JWTs.)
-
-In the [Live Demo app](https://app.lunasec.dev/), after you create an account and login, you can see this session 
-creation process in action with the requests to `/session/ensure` and `/session/verify`. Those requests go out _before_ 
-the Detokenization process happens, and are responsible for gathering the identity of the currently authenticated user.
-
-LunaSec verifies that a user has permission to read and write Tokens by requesting a user's _Session ID_ from your
-application. When permission has been given to a certain user to operate on a Token, we say that the Token is `granted`. 
-The Dedicated Tokenizer keeps a record of the short-lived `grants` that have been created.
-
-When a Token is going to be _Detokenized_, your backend creates a _Detokenization Grant_ and passes the along to LunaSec.
-
-When a plaintext value is going to _Tokenized_, the Tokenizer creates a _Token Store Grant_, stores it, and your
-application _must_ verify that the _Token Store Grant_ is valid. (If it's not verified, it creates an attack oracle 
-which is outside the scope of this document.)
+LunaSec ties token permissions to sessions through short lived [Grants](pages/how-it-works/grants). 
+This makes it harder for an attacker to decode sensitive data, even if they manage to steal a token.
 
 ### Methods of Bootstrapping Sessions
 
@@ -76,8 +42,8 @@ If your application server is creating sessions, the `@lunasec/node-sdk` can rea
 create a cookie on the domain of the Secure Frame (where the iFrame and Dedicated Tokenizer live). To do this, it follows what is
 essentially an [OAuth](https://en.wikipedia.org/wiki/OAuth) flow where your backend is the authentication provider. 
 A request is made from our library in the browser to our plugin in your backend,
-which redirects the browser to the Dedicated Tokenizer which creates a session for LunaSec.  This all happens automatically as long as you 
-have registered the `express-auth-plugin` in your app.
+which redirects the browser to the Dedicated Tokenizer service, which finally creates a session for LunaSec.  This all happens 
+automatically as long as you have registered the `express-auth-plugin` in your app as explained in the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/backend).
 
 ![diagram of auth flow](/img/auth-flow-diagram.svg)
 
@@ -109,8 +75,14 @@ export const lunaSec = new LunaSec({
 If you'd like to use secure elements without a logged-in user,
 like as part of a signup flow, you may wish to create a temporary session or otherwise provide
 some kind of unique token in this callback so that LunaSec can continue to work. Just be careful if you go this route,
-and feel free to message our team if you'd like a hand verifying your approach. (We've seen it done properly for some
-deployments, but it's nuanced and we're planning to document it better soon.)
+and feel free to message our team if you'd like a hand verifying your approach. We've seen it done properly for some
+deployments, but it's nuanced.
+
+:::note
+In the [Live Demo app](https://app.lunasec.dev/), after you create an account and login, you can see this session
+creation process in action with the requests to `/session/ensure` and `/session/verify`. Those requests gather the identity 
+of the user before any tokenization or detokenization takes place.
+:::
 
 ## 2. Auth Proxy
 :::info Still in Development
