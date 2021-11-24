@@ -2,7 +2,7 @@
 id: "authentication"
 title: "Creating a LunaSec Session"
 sidebar_label: "Authentication"
-sidebar_position: 5
+sidebar_position: 6
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -17,97 +17,7 @@ sidebar_position: 5
   ~ limitations under the License.
   ~
 -->
-LunaSec makes it really, really hard for your front-end application to leak sensitive data to somebody attacking it.
-Even if somebody manages to hack your front-end website and inject their own malicious Javascript code into it, they 
-aren't able to decrypt the sensitive data that your site displays. The only information that an attacker sees is an
-opaque LunaSec Token.
 
-But, while it's painful an attacker, it's actually very easy for you. You just swap out HTML elements like an `<input>` 
-with the LunaSec equivalent `<SecureInput>`.
-
-In order to power that simple API, and also provide strong security guarantees, we use multiple cross-origin domains
-via `iframes` with `postMessage`. We circumvent issues with Authentication and Authorization by bootstrapping a session
-off of your application's existing session to provide a "Grant" system that ensures that all requests to the Tokenizer
-are properly authorized.
-
-If that's confusing to you, then please continue reading this page. We're going to dive in and explain how LunaSec
-Detokenization Grants work by first giving you context about why they're necessary in the first place.
-
-Already up to speed on how cross-origin iframes works? Feel free to skip ahead to setting up 
-[Sessions](#the-problems-with-two-domains) below.
-
-### Adding Secure Elements to your Application
-
-Starting with React code like this: 
-```jsx title="normal-form.tsx"
-import React from 'react';
-
-export function renderInsecureComponent(props) {
-  return (
-    <form onSubmit={props.onSubmit}>
-      <input type="text" value={props.value} onChange={props.onChange} name="ssn" />
-      <input type="submit" />
-    </form>
-  );
-}
-```
-
-You swap out elements dealing with sensitive data with drop-in replacements like this:
-```tsx title="secure-form.tsx"
-import React from 'react';
-import {SecureForm, SecureInput} from '@lunasec/react-sdk';
-
-// The returned output from SecureInput is now a token instead of the actual SSN.
-// And, if a token is passed to this component, it will automatically be detokenized (or fail if the user is unauthorized).
-export function renderSecureComponent(props) {
-  return (
-    <SecureForm onSubmit={props.onSubmit}>
-      <SecureInput type="text" token={props.value} onChange={props.onChange} onError={props.onError} name="ssn" />
-      <input type="submit" />
-    </SecureForm>
-  );
-}
-````
-
-Now your application is protected against vulnerabilities like 
-[Cross-Site Scripting](https://en.wikipedia.org/wiki/Cross-site_scripting) (XSS) automatically.
-
-### What makes that more secure?
-
-It's secure because it's LunaSec is now seamlessly inlining a second website into yours in the form of an embedded 
-[iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe). This adds security by splitting your data 
-across two entirely different websites, and your browser is very good at preventing websites from snooping on each other's data.
-
-You might think: "Sure, cool, but doesn't that completely break my app?"
-
-Yes, you're absolutely correct. Simply replacing an `<input>` element with an `<iframe>` would result in your `<form>` 
-no longer functioning at all.
-
-That's where LunaSec comes in. We've spent a _lot_ of time re-implementing the APIs of common HTML elements like 
-`<input>` in our [Secure Components SDK](../getting-started/dedicated-tokenizer/frontend-config.md). Every element uses
-an `<iframe>` internally and only ever exposes the non-sensitive [Token](./token-lifecycle.md) to your app. Every 
-component is able to preserve CSS styling, lifecycle hooks like `onBlur`, and even perform validation on the data. It
-all happens over `postMessage`, and it's designed to work 1:1 with existing apps to make migrating to LunaSec seamless.
-
-### Why is splitting data across websites more secure?
-
-LunaSec relies on the strong protections that web browsers use in order to isolate data on different websites. 
-This functionality is known as the 
-"[Same-Origin Policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)" and it powers every
-website on the internet. It's the functionality that prevents a random website from reading the data from another one
-like, say, your bank or your email.
-
-In order to activate the strong protections granted by the Same-Origin Policy, you need to have 2 separate websites with
-2 different domains. Fortunately, subdomains count as 2 different domains, and that's what we'll use in our examples.
-
-One domain runs your application (`app.your-domain.com`).
-
-The other runs the LunaSec "Secure Frame" (`secure-frame.your-second-domain.com`).
-
-Under the hood of the LunaSec React SDK, you're actually embedding LunaSec into your application via an `<iframe>`.
-Your application is then only interacting with LunaSec via a cross-origin `postMessage` call. `postMessage` is a 
-[secure API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) provided by your browser to make
-cross-origin communication possible.
 
 ### The Problems with Two Domains
 

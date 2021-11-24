@@ -18,15 +18,14 @@ sidebar_position: 1
   ~
 -->
 
-You're interested in seeing what LunaSec is all about? Cool!
+:::tip Try out the live demo
+The easiest way to see LunaSec in action is to check out our [Live Demo app](https://app.lunasec.dev).
+Just create a new user, input some data,
+and try out LunaSec.  To understand what is happening under the hood and what makes this special, read our [demo app documentation](https://www.lunasec.io/docs/pages/overview/demo-app/overview/).
+:::
 
-The easiest way is to check out our [Live Demo app](https://app.lunasec.dev). Just create a new user, input some data, 
-and see what LunaSec is all about. (In reality, it just looks like a plain old' app, so you might want to 
-[read our guide](https://www.lunasec.io/docs/pages/overview/demo-app/overview/) that explains what is so magical about 
-it.)
-
-Alternatively, if you're feeling like you'd like to check it out yourself, then you can run the same exact Demo App 
-locally with just a single command.
+### Local Demo
+You can run the same demo app locally with just a single command:
 
 ```shell
 npx @lunasec/cli start --env demo
@@ -36,6 +35,6 @@ npx @lunasec/cli start --env demo
 
 ### Want to add LunaSec to your app?
 
-Well, we're flattered, and we'd like to direct you towards our [Choose Your Setup](./choose-your-setup.md) guide next.
+Start by [choosing your setup](./choose-your-setup.md).
 
-If you have any questions, feedback, or otherwise, please feel free to [contact us](mailto:contact@lunasec.io).
+If you have any questions or feedback, please feel free to [contact us](mailto:contact@lunasec.io).

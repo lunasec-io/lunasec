@@ -18,7 +18,7 @@ sidebar_position: 2
   ~
 -->
 You'll only need two libraries to start using LunaSec, one for the 
-client and one for the server.  We've put in a ton of effort to ensure that developing with LunaSec is easy, and we hope
+client and one for the server.  We've worked hard to ensure that developing with LunaSec is easy, and we hope
 that our examples below demonstrate that.
 
 If you'd like to see these examples in a real-world setting, please check out our [Live Demo](https://app.lunasec.dev) app.
@@ -28,7 +28,7 @@ These snippets give you an example of how the library works.  For a complete and
 :::
 
 ## `@lunasec/react-sdk`
-The frontend component of the LunaSec Stack.  Turns your form inputs and other elements into [Secure Frames](./features.md#secure-frame). Support for other frameworks is in development.
+The frontend component of the LunaSec Stack.  Turns your form inputs and other elements into [Secure Frames](pages/how-it-works/features.md#secure-frame). Support for other frameworks is in development.
 
 ### Example usage
 #### ClientSide React Form
@@ -89,7 +89,7 @@ const lunaSec = new LunaSec({
 // Attach the LunaSec authentication plugin
 lunaSec.expressAuthPlugin.register(app);
 ```
-See the [authentication](./authentication.md) page to understand when and why you need to register this auth plugin.
+See the [authentication](pages/how-it-works/authentication.md) page to understand when and why you need to register this auth plugin.
 
 #### Grants in Express Routes
 Grants connect the user's session to a token, giving them permission to read it for a short time.  
