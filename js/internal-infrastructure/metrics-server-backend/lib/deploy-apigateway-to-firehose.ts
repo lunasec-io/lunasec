@@ -14,7 +14,8 @@
  * limitations under the License.
  *
  */
-import { DomainName, EndpointType, RestApi, SecurityPolicy } from '@aws-cdk/aws-apigateway';
+import { DomainName, EndpointType, Resource, RestApi, SecurityPolicy } from '@aws-cdk/aws-apigateway';
+import * as jsonSchema from '@aws-cdk/aws-apigateway/lib/json-schema';
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import * as iam from '@aws-cdk/aws-iam';
 import { DeliveryStream, StreamEncryption } from '@aws-cdk/aws-kinesisfirehose';
@@ -27,7 +28,7 @@ import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
 import * as defaults from '@aws-solutions-constructs/core';
 
-import { StoreMetricSchema } from './apigateway-request-models';
+import { StoreCliMetricSchema, StoreDeploymentMetricSchema } from './apigateway-request-models';
 
 interface MetricsLambdaStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
@@ -35,6 +36,71 @@ interface MetricsLambdaStackProps extends cdk.StackProps {
   domainZoneId: string;
   domainZoneName: string;
   certificateArn: string;
+}
+
+function capitalizeWords(s: string) {
+  return s.replace(/(?:^|\s)\S/g, function (a) {
+    return a.toUpperCase();
+  });
+}
+
+function getPutRecordTemplate(streamName: string) {
+  return `#set($inputRoot = $input.path('$'))
+#set($data =  "{
+  #foreach($key in $inputRoot.keySet())
+  ""$key"": $input.json($key),
+  #end
+  ""clientIP"": ""$context.identity.sourceIp""
+}")
+#set($newLineRegex = '\n')
+#set($formattedJson = "$data.replaceAll($newLineRegex, '')
+")
+{
+  "DeliveryStreamName": "${streamName}",
+  "Record": {
+    "Data": "$util.base64Encode($formattedJson)"
+  }
+}`;
+}
+
+function getMetricsApiEndpoint(
+  name: string,
+  schema: jsonSchema.JsonSchema,
+  rootResource: Resource,
+  apiGateway: RestApi,
+  apiGatewayRole: iam.Role,
+  stream: DeliveryStream
+) {
+  const capitalName = capitalizeWords(name);
+  const putRecordModel = apiGateway.addModel(`Put${name}RecordModel`, {
+    contentType: 'application/json',
+    modelName: `Put${capitalName}RecordModel`,
+    description: `Put${capitalName}Record proxy single-record payload`,
+    schema: schema,
+  });
+
+  // Setup API Gateway methods
+  const requestValidator = apiGateway.addRequestValidator(`${name}-request-validator`, {
+    requestValidatorName: `${name}-request-body-validator`,
+    validateRequestBody: true,
+  });
+
+  const recordResource = rootResource.addResource(name);
+
+  defaults.addProxyMethodToApiResource({
+    service: 'firehose',
+    action: 'PutRecord',
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    apiGatewayRole: apiGatewayRole,
+    apiMethod: 'POST',
+    apiResource: recordResource,
+    // TODO: Pull the stream name from a variable
+    requestTemplate: getPutRecordTemplate(stream.deliveryStreamName),
+    contentType: "'x-amz-json-1.1'",
+    requestValidator,
+    requestModel: { 'application/json': putRecordModel },
+  });
 }
 
 export class MetricsLambdaBackendStack extends cdk.Stack {
@@ -88,53 +154,17 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
       ttl: Duration.minutes(5),
     });
 
-    const putRecordModel = apiGateway.addModel('PutRecordModel', {
-      contentType: 'application/json',
-      modelName: 'PutRecordModel',
-      description: 'PutRecord proxy single-record payload',
-      schema: StoreMetricSchema,
-    });
+    // RootRecord
+    const rootRecordResource = apiGateway.root.addResource('record');
 
-    // Setup API Gateway methods
-    const requestValidator = apiGateway.addRequestValidator('request-validator', {
-      requestValidatorName: 'request-body-validator',
-      validateRequestBody: true,
-    });
-
-    // PutRecord
-    const putRecordResource = apiGateway.root.addResource('record');
-    defaults.addProxyMethodToApiResource({
-      service: 'firehose',
-      action: 'PutRecord',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      apiGatewayRole: apiGatewayRole,
-      apiMethod: 'POST',
-      apiResource: putRecordResource,
-      // TODO: Pull the stream name from a variable
-      requestTemplate: this.getPutRecordTemplate(stream.deliveryStreamName),
-      contentType: "'x-amz-json-1.1'",
-      requestValidator,
-      requestModel: { 'application/json': putRecordModel },
-    });
-  }
-
-  getPutRecordTemplate(streamName: string) {
-    return `#set($inputRoot = $input.path('$'))
-#set($data =  "{
-  #foreach($key in $inputRoot.keySet())
-  ""$key"": $input.json($key),
-  #end
-  ""clientIP"": ""$context.identity.sourceIp""
-}")
-#set($newLineRegex = '\n')
-#set($formattedJson = "$data.replaceAll($newLineRegex, '')
-")
-{
-  "DeliveryStreamName": "${streamName}",
-  "Record": {
-    "Data": "$util.base64Encode($formattedJson)"
-  }
-}`;
+    getMetricsApiEndpoint(
+      'deployment',
+      StoreDeploymentMetricSchema,
+      rootRecordResource,
+      apiGateway,
+      apiGatewayRole,
+      stream
+    );
+    getMetricsApiEndpoint('cli', StoreCliMetricSchema, rootRecordResource, apiGateway, apiGatewayRole, stream);
   }
 }

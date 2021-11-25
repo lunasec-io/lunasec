@@ -35,6 +35,7 @@ interface RunCommandError {
 
 export interface RunCommandWithHealthcheckOptions {
   healthcheck?: () => Promise<boolean>;
+  exitHandler?: (code: number, stderr: string) => Promise<void>;
   streamStdout?: boolean;
   onStdin?: Generator<undefined, void, string>;
   doNotExitProcess?: boolean;
@@ -97,6 +98,8 @@ export function runCommandWithHealthcheck(command: string, options: RunCommandWi
 
   const cmd = spawn('sh', ['-c', command]);
 
+  let stderr = '';
+
   cmd.stdout.on('data', (data: Buffer) => {
     const strData = data.toString();
     if (options.streamStdout) {
@@ -109,10 +112,16 @@ export function runCommandWithHealthcheck(command: string, options: RunCommandWi
   });
 
   cmd.stderr.on('data', (data: string) => {
-    console.error(data.toString());
+    const strData = data.toString();
+    stderr += strData;
+    console.error(strData);
   });
 
   cmd.on('close', (code) => {
+    if (options.exitHandler) {
+      void options.exitHandler(code === null ? 0 : code, stderr);
+    }
+
     if (options.doNotExitProcess) {
       return;
     }
