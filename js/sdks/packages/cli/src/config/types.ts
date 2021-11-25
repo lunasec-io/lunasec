@@ -66,11 +66,11 @@ export const grantConfigOptionsDefaults: GrantConfigOptions = {
  */
 export interface DevelopmentConfigOptions {
   /**
-   * [required] The front end of your application where you will be including LunaSec Secure Components.
+   * @required The front end of your application where you will be including LunaSec Secure Components.
    */
   applicationFrontEnd: string;
   /**
-   * [required] The back end of your application where LunaSec will be registered.
+   * @required The back end of your application where LunaSec's node-sdk is installed.
    */
   applicationBackEnd: string;
   /**

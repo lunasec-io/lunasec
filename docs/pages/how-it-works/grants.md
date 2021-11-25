@@ -18,11 +18,28 @@ sidebar_position: 5
   ~
 -->
 
- When permission has been given to a certain user to operate on a Token, we say that the Token is `granted`.
-The Dedicated Tokenizer keeps a record of the short-lived `grants` that have been created.
+Grants are a way of locking the permission to use a token to a user's session.
 
-When a Token is going to be _Detokenized_, your backend creates a _Detokenization Grant_ and passes the along to LunaSec.
+When permission has been given to a certain user to read or store a token, we say that the Token is "granted".
+The Dedicated Tokenizer keeps a record of the short-lived `grants` that have been created, and what session they are connected to.
 
-When a plaintext value is going to _Tokenized_, the Tokenizer creates a _Token Store Grant_, stores it, and your
-application _must_ verify that the _Token Store Grant_ is valid. (If it's not verified, it creates an attack oracle
-which is outside the scope of this document.)
+### Granting
+Grants are created by your application server when tokens are request by the client.  For instance, if your browser is trying to load a
+`user` object and one of the fields is a token, you must create a grant for that token as explained in a the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/backend/#checking-grants).
+
+Tokens grants must also be checked when tokens are uploaded, because otherwise an attack could steal a token and upload one to their own session,
+then download it and have permission to read it.  
+
+### Short Duration
+The short expiration of the grant is critical to security.  The default expiration time is 15 minutes.  This can cause issues with
+applications that might need to detokenize a token more than 15 minutes after it was loaded from your server.  Grant duration 
+[can be customized](/pages/node-sdk/classes/Grants/)
+during creation if you find that you need a longer duration, up to your configured maximum.
+
+The default duration and maximum duration can be configured in your `lunasec.js` [config file](/pages/cli-config/interfaces/DeploymentConfigOptions/), 
+in the grants options. 
+
+### Alternatives
+Grants are simple to use but have some drawbacks, because they place trust in the security of your backend server.  
+[Secure Authorizers](/pages/how-it-works/features/#lunasec-secure-authorizers)
+are in development, which will be small lambdas that deploy along with your code that are responsible for granting token permissions, just-in-time.
