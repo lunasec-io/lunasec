@@ -63,7 +63,9 @@ module.exports = {
     }
 }
 ```
-
+:::info Full options
+A full list of configuration options can be found in [the CLI config typedoc](/pages/cli-config/interfaces/LunaSecStackConfigOptions/).
+:::
 LunaSec needs the front end url to properly enforce its CORS policy and back end to be running when it starts so that it can query it for signing keys.
 
 Once we install the LunaSec plugin into the back end (covered on the next page), we can run:
