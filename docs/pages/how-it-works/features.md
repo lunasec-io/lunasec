@@ -2,7 +2,7 @@
 id: "features"
 title: "Features"
 sidebar_label: "Features"
-sidebar_position: 3
+sidebar_position: 1
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -18,11 +18,12 @@ sidebar_position: 3
   ~
 -->
 
-## Tokenization
+### [Tokenization](/pages/how-it-works/tokens)
 LunaSec replaces the sensitive 
 fields in your application and database with tokens.  When LunaSec is fully integrated, sensitive data never enters
 your application.  On the front end, cross-domain iFrames dubbed **Secure Frames** handle the creation and display of sensitive fields, 
-and on the backend sensitive data is handled inside isolated code blocks dubbed **Secure Functions**. LunaSec is not a proxy: those tools communicate directly with a backend server called the **Dedicated Tokenizer**, which is served on a different domain than your application. 
+and on the backend sensitive data is handled inside isolated code blocks dubbed **Secure Functions**. LunaSec is not a proxy:
+those tools communicate directly with a backend server called the **Dedicated Tokenizer**, which is served on a different domain than your application. 
 Everything from small strings to large files can be **tokenized**.  
 
 ### [Secure Frame](/pages/how-it-works/secure-components)

@@ -2,7 +2,7 @@
 id: "secure-components"
 title: "Secure Components"
 sidebar_label: "Secure Components"
-sidebar_position: 5
+sidebar_position: 3
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -38,7 +38,8 @@ opaque LunaSec Token.
 But, while it's painful an attacker, it's easy for you to implement. You just swap out React elements like an `<input>`
 with the LunaSec equivalent `<SecureInput>`.
 
-Behind the scenes, those components load cross-origin `iFrames` from a server on a separate domain (typically a subdomain of your main website domain).  The iFrames communicate 
+Behind the scenes, those components load cross-origin `iFrames` from a server on a separate domain, typically a subdomain of your website.
+The iFrames communicate 
 with your application over a `postmessage` based communication system, implemented behind the scenes.  They copy and imitate 
 the CSS styling of your page and
 attempt to mimic other browser behaviors like focus/blur, in addition creating and retrieving Lunasec Tokens.
@@ -95,8 +96,9 @@ The LunaSec Demo App shows a SecureInput working seamlessly with Material UI.
 
 ### Why is splitting data across websites more secure?
 
-As we've covered, LunaSec relies on the strong protections that web browsers use in order to isolate data on different websites.  
-In addition to isolation, the separate context allows LunaSec to load a very strict CSP (content security policy).  
+As we've covered, LunaSec relies on the strong protections that web browsers use in order to isolate data on different websites.
+The iFrame and Dedicated Tokenizer run on a different domain. Typically this is a subdomain of your main site, for instance `secure.your-website.com`.
+In addition to isolation, the separate context allows LunaSec to load a very strict CSP (content security policy) for the iFrame.  
 
 One of the main protections of the CSP is the
 [Same-Origin Policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy). It's the functionality 

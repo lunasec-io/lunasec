@@ -44,7 +44,7 @@ export function renderInsecureComponent(props) {
 ```
 
 This is the same form with LunaSec.  `<SecureInput>` now returns a token instead of the actual SSN. An attacker is no longer
-able to leak your sensitive data, even if the main application is compromised.
+able to leak sensitive data, even if the main application is compromised.  The app is now compliant with security regulations.
 ```tsx title="After"
 import {SecureForm, SecureInput} from '@lunasec/react-sdk';
 
@@ -65,9 +65,11 @@ You can go check out our [Live Demo](https://app.lunasec.dev) app right now. You
 you can insert some data into the different fields. All sensitive data in the app is automatically encrypted and decrypted.
 
 In fact, it works so well that you probably will mistake the Demo App for a completely unremarkable, boring app. That's
-by design! We've built LunaSec to take care of the security of your app for you, so that you don't have to.
-
-To learn more about the Demo App, and to understand how LunaSec works, please visit our [Demo App Guide](./demo-app/overview.md).
+by design!
+:::tip
+LunaSec is meant to be invisible, but you
+can see it working by inspecting elements on the page and watching your network requests tab.
+:::
 
 ## Onboard with LunaSec
 
