@@ -24,7 +24,23 @@ FROM lerna-bootstrap as application-front-end
 
 WORKDIR /repo/js/demo-apps/packages/react-front-end
 
-ENTRYPOINT ["yarn", "run", "start"]
+CMD ["start"]
+
+ENTRYPOINT ["yarn", "run"]
+
+FROM lerna-bootstrap as application-front-end_serve-static
+
+# These are required to bake the image at build time (we're compiling assets statically)
+ARG REACT_APP_EXPRESS_URL
+ARG REACT_APP_GRAPHQL_URL
+ARG REACT_APP_TOKENIZER_URL
+ARG REACT_APP_SIMPLE_TOKENIZER_URL
+
+WORKDIR /repo/js/demo-apps/packages/react-front-end
+
+RUN yarn run build
+
+ENTRYPOINT ["yarn", "run", "serve-static", "-l", "3000"]
 
 FROM lerna-bootstrap as lunasec-cli
 # Overwrite this when calling docker from CI
