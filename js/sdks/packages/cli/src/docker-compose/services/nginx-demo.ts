@@ -14,12 +14,13 @@
  * limitations under the License.
  *
  */
-import { LunaSecStackEnvironment } from './lunasec-stack';
+import { LunaSecStackEnvironment } from '../lunasec-stack';
+import { LunaSecDockerEnv } from '../types';
 
 export function generateNginxEnvConfig(
   env: LunaSecStackEnvironment,
-  baseEnvConfig: Record<string, string>
-): Record<string, string> {
+  baseEnvConfig: LunaSecDockerEnv
+): LunaSecDockerEnv {
   if (env !== 'hosted-live-demo') {
     return baseEnvConfig;
   }
@@ -33,9 +34,6 @@ export function generateNginxEnvConfig(
     // TODO (freeqaz) I'm not sure what this value needs to be still.
     // LOCAL_HTTPS_PROXY: '', // 'https://localstack-proxy:4568',
     // LOCALSTACK_HOSTNAME: 'localstack.lunasec.dev',
-    REACT_APP_EXPRESS_URL: 'https://express.lunasec.dev',
-    REACT_APP_GRAPHQL_URL: 'https://graphql.lunasec.dev',
-    REACT_APP_TOKENIZER_URL: 'https://tokenizer.lunasec.dev',
     // TODO Actually make this use the tests config
     SESSION_JWKS_URL: 'http://application-back-end:3001/.lunasec/jwks.json',
   };
