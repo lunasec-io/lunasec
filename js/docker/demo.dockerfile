@@ -18,13 +18,13 @@ FROM lerna-bootstrap as application-back-end
 
 WORKDIR /repo/js/demo-apps/packages/demo-back-end
 
-ENTRYPOINT yarn start:dev
+ENTRYPOINT ["yarn", "start:dev"]
 
 FROM lerna-bootstrap as application-front-end
 
 WORKDIR /repo/js/demo-apps/packages/react-front-end
 
-ENTRYPOINT yarn run start
+ENTRYPOINT ["yarn", "run", "start"]
 
 FROM lerna-bootstrap as lunasec-cli
 # Overwrite this when calling docker from CI
@@ -36,9 +36,14 @@ RUN npm i -g aws-cdk@1.126.0 aws-cdk-local@1.65.4
 
 WORKDIR /repo
 
-ENTRYPOINT ["yarn", "run", "lunasec"]
+# This is required because we aren't able to pass additional command arguments via Docker-Compose unless we are invoking
+# via the "exec" Entrypoint syntax. This lets us then expand environment variables at runtime.
+# This gives a better explanation: https://stackoverflow.com/questions/49133234/docker-entrypoint-with-env-variable-and-optional-arguments
+ENTRYPOINT ["bash", "/repo/js/sdks/packages/cli/scripts/docker-entrypoint.sh"]
 
-FROM cypress/included:7.0.0 as integration-test
+FROM cypress/included:8.0.0 as integration-test
+
+RUN apt update && apt install -y xvfb
 
 # RUN cypress install --force
 
@@ -47,8 +52,9 @@ ENV VERBOSE_CYPRESS_LOGS="always"
 COPY --from=lerna-bootstrap /repo /repo
 
 WORKDIR /repo/
+
 # We would use test:all but couldn't easily get golang into this container, so those run on bare box
-ENTRYPOINT yarn run test:unit:tokenizer && yarn run test:unit:auth && yarn run test:e2e:local
+ENTRYPOINT /repo/tools/service-scripts/wait-for-services.sh "$DEPENDENCIES__INTEGRATION_TEST" yarn run test:unit:tokenizer && yarn run test:unit:auth && yarn run test:e2e:docker
 
 FROM lerna-bootstrap as secure-frame-iframe
 
@@ -58,4 +64,5 @@ RUN yarn run compile
 
 RUN npm i -g http-server
 
-ENTRYPOINT http-server -a 0.0.0.0 -p 8000
+CMD ["-a", "0.0.0.0", "-p", "8000"]
+ENTRYPOINT ["http-server"]
