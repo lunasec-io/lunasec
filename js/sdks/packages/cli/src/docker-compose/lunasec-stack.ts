@@ -33,7 +33,14 @@ import { formatAuthenticationProviders } from '../utils/auth-providers';
 import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
 import { generateNginxEnvConfig } from './generate-nginx-config';
 
-export const LunaSecStackEnvironments = ['local-dependencies', 'demo', 'dev', 'hosted-live-demo', 'tests'] as const;
+export const LunaSecStackEnvironments = [
+  'local-dependencies',
+  'demo',
+  'dev',
+  'hosted-live-demo',
+  'tests',
+  'production',
+] as const;
 export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
