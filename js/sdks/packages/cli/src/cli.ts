@@ -25,10 +25,14 @@ import { deployCmd } from './cmds/deploy';
 import { ejectCmd } from './cmds/eject';
 import { resourcesCmd } from './cmds/resources';
 import { startCmd } from './cmds/start';
+import { debug } from './constants/cli';
 import { LunaSecStackEnvironments } from './docker-compose/lunasec-stack';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+console.debug = debug ? console.debug : (...data: any[]) => {};
 
 yargs
   .scriptName('lunasec')

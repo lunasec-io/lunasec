@@ -17,6 +17,8 @@
 import os from 'os';
 import path from 'path';
 
+export const debug = process.env.DEBUG || false;
+
 export const lunaSecDir = '.lunasec';
 
 export const awsResourcesOutputFile = 'aws_resources.json';
