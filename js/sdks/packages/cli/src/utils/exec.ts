@@ -16,8 +16,8 @@
  */
 import { ChildProcessWithoutNullStreams, execSync, ExecSyncOptionsWithBufferEncoding, spawn } from 'child_process';
 
-const signals: NodeJS.Signals[] = [`SIGINT`, `SIGUSR1`, `SIGUSR2`, `SIGTERM`];
-const processSignals: string[] = ['exit', 'uncaughtException'];
+export const signals: NodeJS.Signals[] = [`SIGINT`, `SIGUSR1`, `SIGUSR2`, `SIGTERM`];
+export const processSignals: string[] = ['exit', 'uncaughtException'];
 
 interface RunCommandResult {
   status: number;
