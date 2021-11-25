@@ -1,8 +1,8 @@
 ---
-id: "token-lifecycle"
+id: "tokens"
 title: "How Tokens Work"
-sidebar_label: "How Tokens Work"
-sidebar_position: 4
+sidebar_label: "Tokens"
+sidebar_position: 2
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -18,14 +18,10 @@ sidebar_position: 4
   ~
 -->
 
-Tokens are like a foreign key in a database. They're random values, and they have no meaning
-by themselves. In order to turn a Token into anything useful, the token is sent to LunaSec, where it is turned into an S3
-signed URL. Your application then uses that to retrieve the real value. 
-
-This prevents any _single point of failure_ from resulting in your data leaking. Even if an attacker 
-dumps your entire database by leveraging an [SQL Injection attack](https://owasp.org/www-community/attacks/SQL_Injection), 
-finds an [exposed database backup](https://techcrunch.com/2019/04/03/facebook-records-exposed-server/), or grabs Tokens 
-via another attack vector, that attacker _still_ has to be able to Detokenize them.
+Tokens are random strings you store in your database, that correspond to a real piece of sensitive data.
+They're random values, and they have no meaning
+by themselves. In order for your web app to turn a Token into anything useful, the token is sent from an iFrame to the Dedicated Tokenizer,
+where it is turned into an S3 signed URL. The iFrame then uses that to retrieve the real value.
 
 :::info Demo
 
@@ -43,10 +39,17 @@ The Tokenizer doesn't store or ever see sensitive data. It is a metadata
 server and gatekeeper in front of the real datastore, which is a direct connection to S3.
 The Tokenizer processes tokens and hands back information about where to download (and decrypt) the Token from AWS S3.
 
+### Security
+Unlike many other systems, the token is not the full decryption key, only part of it. 
+The other required pieces can only be accessed from within the Dedicated Tokenizer Service, 
+where authentication for the user can be checked, audit logs can be produced, and keys can be rotated if necessary.
+
+Please see the [Security Section](/pages/how-it-works/security/introduction/) for more information.
+
 ### Tokenization
 There are a few steps that happen behind the scenes when data gets tokenized.  This is what happens when a
 user clicks Submit on a form with a `<SecureInput>`, .
-1. [Secure Frame](/pages/overview/features/#secure-frame) (typically from the React SDK) calls the Tokenizer at `/tokenize` with some metadata and gets back a token and an S3 presigned-URL.  
+1. [Secure Frame](/pages/overview/features/#secure-frame) (typically created by the React SDK) calls the Tokenizer at `/tokenize` with some metadata and gets back a token and an S3 presigned-URL.  
    Permission for your server to safely store the token from this session is created behind the scenes in what's dubbed a store `Grant`, preventing certain attacks.
 2. Secure Frame uploads the sensitive data to S3, data is encrypted by S3's built in encryption.
 3. Your web app reads the token from the `<SecureInput>` in the same way it would read a change in a normal input.  
@@ -132,7 +135,7 @@ some-super-secret-data
 ```
 
 And that's it! You can store any text or file. It's really just a key-value store with security added.
-The rest of the LunaSec stack is where we add more [layers of security](./security/levels.md).
+The rest of the LunaSec stack is where we add more [layers of security](pages/how-it-works/security/levels.md).
 
 ### Deployment to platforms other than AWS
 

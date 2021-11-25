@@ -2,7 +2,7 @@
 id: "sessions"
 title: "LunaSec's Session"
 sidebar_label: "Sessions"
-sidebar_position: 6
+sidebar_position: 4
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -23,7 +23,7 @@ Because LunaSec's front-end components run in a separate domain, they don't have
 
 ### Why does LunaSec need to know about sessions?
 
-LunaSec ties token permissions to sessions through short lived [Grants](pages/how-it-works/grants). 
+LunaSec ties token permissions to sessions through short lived [Grants](/pages/how-it-works/grants). 
 This makes it harder for an attacker to decode sensitive data, even if they manage to steal a token.
 
 ### Methods of Bootstrapping Sessions
