@@ -135,6 +135,7 @@ describe('demo app in mode: simple', () => {
   it('selects mode', () => {
     cy.get('#select-mode-simple').click();
   });
+
   it('tokenizes', () => {
     cy.get('a').contains('Tokenize').click();
 
@@ -144,6 +145,7 @@ describe('demo app in mode: simple', () => {
 
     cy.get('#success-alert').should('contain', 'Success');
   });
+
   it('detokenizes', () => {
     cy.get('a').contains('Detokenize').click();
 
