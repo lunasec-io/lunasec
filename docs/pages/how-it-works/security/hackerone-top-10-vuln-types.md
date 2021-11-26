@@ -21,13 +21,13 @@ sidebar_position: 5
 
 | Vulnerability | Description | LunaSec Mitigation |
 | --- | --- | --- |
-| Cross Site Scripting (XSS) | | [Cross Site Scripting](pages/how-it-works/security/vulns-and-mitigations.md#cross-site-scripting-xss) |
-| Improper Access Control - Generic | | [Improper Access Control Mitigation](pages/how-it-works/security/vulns-and-mitigations.md#improper-access-control) |
-| Information Disclosure | | [Information Disclosure Mitigation](pages/how-it-works/security/vulns-and-mitigations.md#information-disclosure) |
-| Server-Side Request Forgery (SSRF) | | [Server Side Request Forgery Mitigation](pages/how-it-works/security/vulns-and-mitigations.md#server-side-request-forgery) |
-| Insecure Direct Object Reference (IDOR) | | [Insecure Direct Object Reference Mitigation](pages/how-it-works/security/vulns-and-mitigations.md#insecure-direct-object-reference-idor) |
+| Cross Site Scripting (XSS) | | [Cross Site Scripting](/pages/how-it-works/security/vulns-and-mitigations#cross-site-scripting-xss) |
+| Improper Access Control - Generic | | [Improper Access Control Mitigation](/pages/how-it-works/security/vulns-and-mitigations#improper-access-control) |
+| Information Disclosure | | [Information Disclosure Mitigation](/pages/how-it-works/security/vulns-and-mitigations#information-disclosure) |
+| Server-Side Request Forgery (SSRF) | | [Server Side Request Forgery Mitigation](/pages/how-it-works/security/vulns-and-mitigations#server-side-request-forgery) |
+| Insecure Direct Object Reference (IDOR) | | [Insecure Direct Object Reference Mitigation](/pages/how-it-works/security/vulns-and-mitigations#insecure-direct-object-reference-idor) |
 | Privilege Escalation | Increasing the identity&#39;s scope of permissions to be greater than they are allowed to be, as determined by the normal operation of the system. | The LunaSec Stack is designed to be tolerant of individual compromises, meaning privilege escalation in one component of the stack is not sufficient to gain access to sensitive information. |
-| SQL Injection (SQLi) | | [SQLi Mitigation](pages/how-it-works/security/vulns-and-mitigations.md#sql-injection) |
-| Improper Authentication - Generic | | [Improper Authentication Mitigation](pages/how-it-works/security/vulns-and-mitigations.md#improper-authentication) |
-| Code Injection | | [Code Injection Mitigation](pages/how-it-works/security/vulns-and-mitigations.md#code-injection) |
-| Cross-Site Request Forgery (CSRF) | | [CSRF Mitigation](pages/how-it-works/security/vulns-and-mitigations.md#cross-site-request-forgery-csrf) |
+| SQL Injection (SQLi) | | [SQLi Mitigation](/pages/how-it-works/security/vulns-and-mitigations#sql-injection) |
+| Improper Authentication - Generic | | [Improper Authentication Mitigation](/pages/how-it-works/security/vulns-and-mitigations#improper-authentication) |
+| Code Injection | | [Code Injection Mitigation](/pages/how-it-works/security/vulns-and-mitigations#code-injection) |
+| Cross-Site Request Forgery (CSRF) | | [CSRF Mitigation](/pages/how-it-works/security/vulns-and-mitigations#cross-site-request-forgery-csrf) |

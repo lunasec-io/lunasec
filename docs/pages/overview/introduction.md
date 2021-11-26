@@ -122,7 +122,7 @@ much faster, cheaper, and easier than security auditing and overhauling your ent
 
 Software security is often overlooked or deemed too difficult/expensive to implement properly. By isolating sensitive parts of the application, LunaSec
 helps developers protect sensitive information without having to worry about the security of every line
-they write or library they import.  To see a list of the most common vulnerabilities and how LunaSec protects you from them, [click here](/pages/overview/security/mitre-cwe-top-25-weaknesses).
+they write or library they import.  To see a list of the most common vulnerabilities and how LunaSec protects you from them, [click here](/pages/how-it-works/security/mitre-cwe-top-25-weaknesses).
 
 If you've ever been hacked or struggled with lengthy security reviews, painful compliance requirements, or otherwise jumped through
 hoops for "data security" or "compliance", then it's likely that LunaSec can help you.

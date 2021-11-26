@@ -1,5 +1,5 @@
 ---
-id: "backend"
+id: "backend-setup"
 title: "Backend Configuration"
 sidebar_label: "Backend Setup"
 sidebar_position: 2
@@ -175,4 +175,4 @@ app.use((err, req, res, next) => {
 })
 ```
 
-That's it for the backend, let's move onto [the frontend.](./frontend-config.md)
+That's it for the backend, let's move onto [the frontend.](/pages/getting-started/dedicated-tokenizer/frontend-setup)
