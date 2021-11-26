@@ -134,7 +134,7 @@ jobs:
       if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
       with:
         name: cypress-recording
-        path: /videos/secure_components_spec.ts.mp4
+        path: ~/videos/secure_components_spec.ts.mp4
 
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
