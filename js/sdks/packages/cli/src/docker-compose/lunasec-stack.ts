@@ -15,6 +15,7 @@
  *
  */
 import { writeFileSync } from 'fs';
+import os from 'os';
 import path from 'path';
 
 import { dump } from 'js-yaml';
@@ -421,7 +422,7 @@ export class LunaSecStackDockerCompose {
       ...debugWorkingDir,
       volumes: [
         '/tmp/.X11-unix:/tmp/.X11-unix',
-        '/videos:/repo/js/demo-apps/packages/react-front-end/cypress/videos',
+        '~/videos:/repo/js/demo-apps/packages/react-front-end/cypress/videos',
         ...debugVolumes,
       ],
       depends_on: [
