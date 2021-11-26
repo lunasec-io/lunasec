@@ -21,7 +21,6 @@ import (
 type CollectedMetrics map[metrics.ApplicationMetric]int64
 
 type ReportedMetrics struct {
-	MetricTag        string           `json:"metric_tag"`
 	Version          string           `json:"version"`
 	StackID          string           `json:"stack_id"`
 	CollectedMetrics CollectedMetrics `json:"collected_metrics"`

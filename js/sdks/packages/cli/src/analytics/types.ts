@@ -27,7 +27,6 @@ export interface CliMetricSystemInfo {
 }
 
 export interface CliMetric {
-  metric_tag: string;
   user_id: string;
   version: string;
   command: string;

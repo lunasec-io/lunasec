@@ -24,5 +24,3 @@ const (
 	CreateGrantSuccessMetric                   = "createGrantSuccess"
 	CreateGrantFailureMetric                   = "createGrantFailure"
 )
-
-const MetricTag = "deployment"

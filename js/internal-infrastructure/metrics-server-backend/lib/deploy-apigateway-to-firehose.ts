@@ -44,12 +44,13 @@ function capitalizeWords(s: string) {
   });
 }
 
-function getPutRecordTemplate(streamName: string) {
+function getPutRecordTemplate(endpointName: string, streamName: string) {
   return `#set($inputRoot = $input.path('$'))
 #set($data =  "{
   #foreach($key in $inputRoot.keySet())
   ""$key"": $input.json($key),
   #end
+  ""tag"": ""${endpointName}"",
   ""clientIP"": ""$context.identity.sourceIp""
 }")
 #set($newLineRegex = '\n')
@@ -96,7 +97,7 @@ function getMetricsApiEndpoint(
     apiMethod: 'POST',
     apiResource: recordResource,
     // TODO: Pull the stream name from a variable
-    requestTemplate: getPutRecordTemplate(stream.deliveryStreamName),
+    requestTemplate: getPutRecordTemplate(name, stream.deliveryStreamName),
     contentType: "'x-amz-json-1.1'",
     requestValidator,
     requestModel: { 'application/json': putRecordModel },
@@ -114,7 +115,7 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
     const s3Destination = new destinations.S3Bucket(bucket, {
       compression: Compression.GZIP,
       dataOutputPrefix:
-        'metrics/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/rand=!{firehose:random-string}',
+        'metrics/tag=!{partitionKeyFromQuery:tag}/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/rand=!{firehose:random-string}',
       errorOutputPrefix:
         'metrics_failures/!{firehose:error-output-type}/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}',
     });
