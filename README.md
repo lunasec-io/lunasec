@@ -23,8 +23,6 @@
 
 LunaSec is a suite of security tools designed to protect sensitive data in web applications by adding just a few lines of code.
 
-TEST CHANGE TO MAKE PR POSSIBLE
-
 - [What is LunaSec?](#what-is-lunasec)
 - [Live Demo](#live-demo)
 - [Documentation](https://www.lunasec.io/docs/)
