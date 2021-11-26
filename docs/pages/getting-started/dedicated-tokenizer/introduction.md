@@ -92,4 +92,4 @@ True rootless docker isn't yet supported, but if you have
 [dangerously added your user to the docker group](https://docs.docker.com/engine/install/linux-postinstall/) it will work without sudo.  This is not recommended for security reasons.
 :::
 
-Now that the CLI is installed, let's add LunaSec to the code. [Backend setup](./backend.md)
+Now that the CLI is installed, let's add LunaSec to the code. [Backend setup](/pages/getting-started/dedicated-tokenizer/backend-setup)

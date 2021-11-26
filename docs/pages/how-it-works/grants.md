@@ -25,7 +25,7 @@ The Dedicated Tokenizer keeps a record of the short-lived `grants` that have bee
 
 ### Granting
 Grants are created by your application server when tokens are request by the client.  For instance, if your browser is trying to load a
-`user` object and one of the fields is a token, you must create a grant for that token as explained in a the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/backend/#checking-grants).
+`user` object and one of the fields is a token, you must create a grant for that token as explained in a the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/backend-setup/#checking-grants).
 
 Tokens grants must also be checked when tokens are uploaded, because otherwise an attack could steal a token and upload one to their own session,
 then download it and have permission to read it.  

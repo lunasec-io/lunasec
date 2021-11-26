@@ -19,11 +19,11 @@ sidebar_position: 4
 -->
 
 Cookies (or any other session data) in the web browser are scoped to a specific domain. 
-Because LunaSec's front-end components run in a separate domain, they don't have access to the session data from your main site. 
+Because LunaSec's front-end components [run in a separate domain](/pages/how-it-works/secure-components), they don't have access to the session data from your main site. 
 
 ### Why does LunaSec need to know about sessions?
 
-LunaSec ties token permissions to sessions through short lived [Grants](/pages/how-it-works/grants). 
+LunaSec ties token permissions to sessions through short-lived [Grants](/pages/how-it-works/grants). 
 This makes it harder for an attacker to decode sensitive data, even if they manage to steal a token.
 
 ### Methods of Bootstrapping Sessions
@@ -43,7 +43,7 @@ create a cookie on the domain of the Secure Frame (where the iFrame and Dedicate
 essentially an [OAuth](https://en.wikipedia.org/wiki/OAuth) flow where your backend is the authentication provider. 
 A request is made from our library in the browser to our plugin in your backend,
 which redirects the browser to the Dedicated Tokenizer service, which finally creates a session for LunaSec.  This all happens 
-automatically as long as you have registered the `express-auth-plugin` in your app as explained in the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/backend).
+automatically as long as you have registered the `express-auth-plugin` in your server as explained in the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/backend-setup).
 
 ![diagram of auth flow](/img/auth-flow-diagram.svg)
 

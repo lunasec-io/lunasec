@@ -22,9 +22,9 @@ sidebar_position: 3
 | Level | Tokenizer | Authentication | Authorization | Cryptographic Environment |
 | --- | --- | --- | --- | --- |
 | 1 | Embedded | App | App | None |
-| 2 | [Dedicated](pages/how-it-works/features.md#dedicated-tokenizer) | App | App | Tokenizer |
-| 3 | [Dedicated](pages/how-it-works/features.md#dedicated-tokenizer) | [Auth Provider](pages/how-it-works/features.md#lunasec-secure-auth-proxy) | App | Tokenizer |
-| 4 | [Dedicated](pages/how-it-works/features.md#dedicated-tokenizer) | [Auth Provider](pages/how-it-works/features.md#lunasec-secure-auth-proxy) | [Secure Functions](pages/how-it-works/features.md#secure-function) | Tokenizer |
+| 2 | [Dedicated](/pages/how-it-works/features#dedicated-tokenizer) | App | App | Tokenizer |
+| 3 | [Dedicated](/pages/how-it-works/features#dedicated-tokenizer) | [Auth Provider](/pages/how-it-works/features#lunasec-secure-auth-proxy) | App | Tokenizer |
+| 4 | [Dedicated](/pages/how-it-works/features#dedicated-tokenizer) | [Auth Provider](/pages/how-it-works/features#lunasec-secure-auth-proxy) | [Secure Functions](/pages/how-it-works/features#secure-function) | Tokenizer |
 
 ### Level 1: Simple Tokenizer
 
