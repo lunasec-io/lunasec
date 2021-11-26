@@ -59,7 +59,7 @@
     "yargs": "^17.2.1"
   },
   "peerDependencies": {
-    "aws-cdk": "1.126.0",
+    "aws-cdk": "1.129.0",
     "aws-cdk-local": "1.65.4"
   }
 }
