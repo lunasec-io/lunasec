@@ -18,7 +18,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/lunasec-io/lunasec-monorepo/constants"
-	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
 	"github.com/lunasec-io/lunasec-monorepo/types"
 	"go.uber.org/zap"
 	"log"
@@ -65,7 +64,6 @@ func Handler() {
 	)
 
 	reportedMetrics := types.ReportedMetrics{
-		MetricTag:        metrics.MetricTag,
 		Version:          constants.Version,
 		StackID:          appConfig.StackID,
 		CollectedMetrics: collectedMetrics,

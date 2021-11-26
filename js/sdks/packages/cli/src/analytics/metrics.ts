@@ -121,7 +121,6 @@ export class LunaSecMetrics {
     const userId = this.metadata.user_id;
 
     const metric: CliMetric = {
-      metric_tag: cliMetricTag,
       version: version,
       user_id: userId,
       command: command,

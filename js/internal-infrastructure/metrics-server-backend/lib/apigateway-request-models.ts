@@ -23,10 +23,6 @@ export const StoreDeploymentMetricSchema: jsonSchema.JsonSchema = {
   title: 'The root metrics schema',
   required: ['version', 'stack_id', 'metrics'],
   properties: {
-    metric_tag: {
-      type: JsonSchemaType.STRING,
-      title: 'Tag for the metric that this is.',
-    },
     version: {
       type: JsonSchemaType.STRING,
       title: 'The version schema',
@@ -78,10 +74,6 @@ export const StoreCliMetricSchema: jsonSchema.JsonSchema = {
   title: 'The metrics schema for CLI analytics',
   required: ['version', 'command', 'success'],
   properties: {
-    metric_tag: {
-      type: JsonSchemaType.STRING,
-      title: 'Tag for the metric that this is.',
-    },
     version: {
       type: JsonSchemaType.STRING,
       title: 'The version schema',
