@@ -119,6 +119,15 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
         'metrics_failures/!{firehose:error-output-type}/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}',
     });
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    s3Destination.dynamicPartitioningConfiguration = {
+      enabled: true,
+      retryOptions: {
+        durationInSeconds: 123,
+      },
+    };
+
     const stream = new DeliveryStream(this, 'Delivery Stream', {
       encryption: StreamEncryption.AWS_OWNED,
       destinations: [s3Destination],
