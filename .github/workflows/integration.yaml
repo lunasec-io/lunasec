@@ -42,9 +42,9 @@ jobs:
     strategy:
       matrix:
         merge: ["merged", "not-merged"]
-        include:
-          - merge: "not-merged"
-            os: "ubuntu-latest"
+        lockfile: ["lockfile","no-lockfile"]
+        exclude:
+          - merge: "merged"
             lockfile: "no-lockfile"
 
     steps:
