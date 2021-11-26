@@ -42,6 +42,11 @@ jobs:
     strategy:
       matrix:
         merge: ["merged", "not-merged"]
+        include:
+          - merge: "not-merged"
+            os: "ubuntu-latest"
+            lockfile: "no-lockfile"
+
     steps:
 
     - uses: actions/checkout@v2
@@ -51,7 +56,7 @@ jobs:
     #TODO: there may be a more idiomatic way to do this
     - name: Check if we should skip this build
       id: job-canceller
-      run: echo "::set-output name=cancelled::${{ matrix.merge == 'true' && github.event_name != 'pull_request'}}"
+      run: echo "::set-output name=cancelled::${{ matrix.merge == 'merged' && github.event_name != 'pull_request'}}"
 
     # Cancel the merge copy of this build(see the matrix above) if we are not in a PR
     - name: cancelling
@@ -86,6 +91,10 @@ jobs:
         limit-access-to-actor: true
       if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled != 'false' }}
       timeout-minutes: 15
+
+    - name: Delete Lockfile
+      if: ${{ matrix.lockfile == 'no-lockfile' }}
+      run: rm yarn.lock
 
 #    - uses: actions/setup-go@v2
 #      with:
