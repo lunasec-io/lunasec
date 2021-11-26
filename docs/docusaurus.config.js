@@ -174,9 +174,14 @@ module.exports = {
           position: 'left',
           label: 'Blog'
         },
+        // {
+        //   type: 'docsVersionDropdown',
+        //   position: "right"
+        // },
         {
-          type: 'docsVersionDropdown',
-          position: "right"
+          href: 'https://www.lunasec.io/contact',
+          label: 'Contact Us',
+          position: 'right'
         },
         {
           href: 'https://github.com/refinery-labs/lunasec-monorepo',
@@ -189,11 +194,11 @@ module.exports = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'More',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/pages/intro',
+              label: 'Blog',
+              to: '/docs/blog',
             },
           ],
         },
@@ -204,21 +209,26 @@ module.exports = {
               label: 'Github',
               href: 'https://github.com/refinery-labs/lunasec-monorepo',
             },
+            {
+              label: 'Forums',
+              href: 'https://github.com/lunasec-io/lunasec/discussions'
+            }
           ],
         },
         {
-          title: 'More',
+          title: 'LunaSec',
           items: [
             {
-              label: 'Blog',
-              to: '/docs/blog',
+              label: 'Website',
+              to: 'https://www.lunasec.io/',
             },
             {
-              label: 'Github',
-              href: 'https://github.com/refinery-labs/lunasec-monorepo',
-            },
+              label: 'Contact Us',
+              to: 'https://www.lunasec.io/contact'
+            }
           ],
         },
+
       ],
       copyright: `Copyright © ${new Date().getFullYear()} LunaSec. Built with Docusaurus.`,
     },

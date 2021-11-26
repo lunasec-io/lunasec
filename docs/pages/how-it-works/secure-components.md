@@ -18,17 +18,6 @@ sidebar_position: 3
   ~
 -->
 
-#### Quick Into / TL;DR
-
-When the browser mounts a LunaSec React element from `@lunasec/react-sdk`, such as `<SecureInput>`, it creates an iFrame that loads from the
-`Dedicated Tokenizer`. This is our
-trusted environment to handle sensitive data. The SDK, running as part of your code
-in the browser, sends the Secure Frame (an iFrame) information it needs like styling information copied from your app, a token
-to display if desired, any validations that need to run, etc.
-
-:::tip Supported Frameworks
-React is fully supported and a Vue SDK is in pre-alpha.  A generic web-component based SDK for use with any framework is planned.
-:::
 ## iFrame based security
 LunaSec makes it difficult for your front-end web application to leak sensitive data to somebody attacking it.
 Even if somebody manages to hack your website and inject their own malicious Javascript code into it, they
@@ -43,6 +32,10 @@ The iFrames communicate
 with your application over a `postmessage` based communication system, implemented behind the scenes.  They copy and imitate 
 the CSS styling of your page and
 attempt to mimic other browser behaviors like focus/blur, in addition creating and retrieving LunaSec Tokens.
+
+:::info Supported Frameworks
+React is fully supported and a Vue SDK is in pre-alpha.  A generic web-component based SDK for use with any framework is planned.
+:::
 
 ### Adding Secure Elements to your Application
 
