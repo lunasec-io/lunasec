@@ -49,7 +49,7 @@ Please see the [Security Section](/pages/how-it-works/security/introduction/) fo
 ### Tokenization
 There are a few steps that happen behind the scenes when data gets tokenized.  This is what happens when a
 user clicks Submit on a form with a `<SecureInput>`, .
-1. [Secure Frame](/pages/overview/features/#secure-frame) (typically created by the React SDK) calls the Tokenizer at `/tokenize` with some metadata and gets back a token and an S3 presigned-URL.  
+1. [Secure Frame](/pages/how-it-works/features/#secure-frame) (typically created by the React SDK) calls the Tokenizer at `/tokenize` with some metadata and gets back a token and an S3 presigned-URL.  
    Permission for your server to safely store the token from this session is created behind the scenes in what's dubbed a store `Grant`, preventing certain attacks.
 2. Secure Frame uploads the sensitive data to S3, data is encrypted by S3's built in encryption.
 3. Your web app reads the token from the `<SecureInput>` in the same way it would read a change in a normal input.  
@@ -135,7 +135,7 @@ some-super-secret-data
 ```
 
 And that's it! You can store any text or file. It's really just a key-value store with security added.
-The rest of the LunaSec stack is where we add more [layers of security](pages/how-it-works/security/levels.md).
+The rest of the LunaSec stack is where we add more [layers of security](pages/how-it-works/security/levels).
 
 ### Deployment to platforms other than AWS
 

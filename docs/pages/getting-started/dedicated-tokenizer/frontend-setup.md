@@ -1,5 +1,5 @@
 ---
-id: "frontend-config"
+id: "frontend-setup"
 title: "Frontend Configuration"
 sidebar_label: "Frontend Setup"
 sidebar_position: 4

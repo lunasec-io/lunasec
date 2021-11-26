@@ -35,14 +35,14 @@ Even if somebody manages to hack your website and inject their own malicious Jav
 aren't able to decrypt the sensitive data that your site displays. The only information that an attacker sees is an
 opaque LunaSec Token.
 
-But, while it's painful an attacker, it's easy for you to implement. You just swap out React elements like an `<input>`
+While it's painful an attacker, it's easy for you to implement. You just swap out React elements like an `<input>`
 with the LunaSec equivalent `<SecureInput>`.
 
 Behind the scenes, those components load cross-origin `iFrames` from a server on a separate domain, typically a subdomain of your website.
 The iFrames communicate 
 with your application over a `postmessage` based communication system, implemented behind the scenes.  They copy and imitate 
 the CSS styling of your page and
-attempt to mimic other browser behaviors like focus/blur, in addition creating and retrieving Lunasec Tokens.
+attempt to mimic other browser behaviors like focus/blur, in addition creating and retrieving LunaSec Tokens.
 
 ### Adding Secure Elements to your Application
 
@@ -81,7 +81,7 @@ Now your application is protected against vulnerabilities like
 [Cross-Site Scripting](https://en.wikipedia.org/wiki/Cross-site_scripting) (XSS) automatically.
 
 :::tip
-Documentation for the full set of Secure Components can be found in the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/frontend-config/).
+Documentation for the full set of Secure Components can be found in the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/frontend-setup/).
 :::
 ### User Experience
  
