@@ -17,8 +17,9 @@
 import { execSync } from 'child_process';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
-import { access, readFile, writeFile } from 'fs/promises';
+import { access, mkdir, readFile, writeFile } from 'fs/promises';
 import os from 'os';
+import path from 'path';
 
 import { cliAnalyticsServer, cliMetricTag, metadataFile } from '../constants/cli';
 import { LunaSecStackEnvironment } from '../docker-compose/lunasec-stack';
@@ -64,15 +65,31 @@ async function getCliMetadata() {
   }
 }
 
+async function pathExists(path: string) {
+  return await access(path, fs.constants.F_OK)
+    .then(() => true)
+    .catch(() => false);
+}
+
 async function saveCliMetadata(metadata: LunaSecCliMetadata) {
-  await writeFile(metadataFile, JSON.stringify(metadata));
+  try {
+    const metadataDir = path.dirname(metadataFile);
+    const dirExists = await pathExists(metadataDir);
+    if (!dirExists) {
+      await mkdir(metadataDir, {
+        recursive: true,
+      });
+    }
+
+    await writeFile(metadataFile, JSON.stringify(metadata));
+  } catch (e) {
+    console.debug(e);
+  }
 }
 
 export async function ensureMetadata(): Promise<LunaSecCliMetadata> {
-  const metadataExists = await access(metadataFile, fs.constants.F_OK)
-    .then(() => true)
-    .catch(() => false);
-  if (!metadataExists) {
+  const fileExists = await pathExists(metadataFile);
+  if (!fileExists) {
     const metadata: LunaSecCliMetadata = {
       user_id: randomUUID(),
     };
