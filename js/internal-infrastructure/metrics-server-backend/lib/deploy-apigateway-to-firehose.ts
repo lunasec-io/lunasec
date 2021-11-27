@@ -18,7 +18,7 @@ import { DomainName, EndpointType, Resource, RestApi, SecurityPolicy } from '@aw
 import * as jsonSchema from '@aws-cdk/aws-apigateway/lib/json-schema';
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import * as iam from '@aws-cdk/aws-iam';
-import { DeliveryStream, StreamEncryption } from '@aws-cdk/aws-kinesisfirehose';
+import { DataProcessorConfig, DeliveryStream, StreamEncryption } from '@aws-cdk/aws-kinesisfirehose';
 import { Compression } from '@aws-cdk/aws-kinesisfirehose-destinations';
 import * as destinations from '@aws-cdk/aws-kinesisfirehose-destinations';
 import { ARecord, HostedZone, RecordTarget } from '@aws-cdk/aws-route53';
@@ -109,6 +109,7 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
     super(scope, id, props);
 
     const bucket = new Bucket(this, 'MetricsBucket', {});
+
     //todo: Fix this
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -122,14 +123,55 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    s3Destination.dynamicPartitioningConfiguration = {
-      enabled: true,
-      retryOptions: {
-        durationInSeconds: 123,
-      },
+    const ogBind = s3Destination.bind;
+    s3Destination.bind = function overrideBind(...args) {
+      const output = ogBind.apply(this, args);
+      if (!output || !output.extendedS3DestinationConfiguration) {
+        return output;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      output.extendedS3DestinationConfiguration.dynamicPartitioningConfiguration = {
+        enabled: true,
+        retryOptions: {
+          durationInSeconds: 122,
+        },
+      };
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      output.extendedS3DestinationConfiguration.processingConfiguration = {
+        enabled: true,
+        processors: [
+          {
+            type: 'MetadataExtraction',
+            parameters: [
+              {
+                parameterName: 'MetadataExtractionQuery',
+                parameterValue: '{tag: .tag}',
+              },
+              {
+                parameterName: 'JsonParsingEngine',
+                parameterValue: 'JQ-1.6',
+              },
+            ],
+          },
+          {
+            type: 'AppendDelimiterToRecord',
+            parameters: [
+              {
+                parameterName: 'Delimiter',
+                parameterValue: '\\n',
+              },
+            ],
+          },
+        ],
+      };
+      return output;
     };
 
-    const stream = new DeliveryStream(this, 'Delivery Stream', {
+    const stream = new DeliveryStream(this, 'Metrics Delivery Stream', {
       encryption: StreamEncryption.AWS_OWNED,
       destinations: [s3Destination],
     });
@@ -138,7 +180,7 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
     const apiGatewayRole = new iam.Role(this, 'api-gateway-role', {
       assumedBy: new iam.ServicePrincipal('apigateway.amazonaws.com'),
     });
-    stream.grantPutRecords(apiGatewayRole);
+    stream.grantPutRecords(apiGatewayRole as any);
 
     const domainZone = HostedZone.fromHostedZoneAttributes(this, 'Zone', {
       hostedZoneId: props.domainZoneId,
