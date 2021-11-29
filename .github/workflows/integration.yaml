@@ -134,6 +134,10 @@ jobs:
       if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
       run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests --show-logs=true
 
+    - name: Warn on lockfile failure
+      if: ${{ job.status == 'failure' && matrix.lockfile == 'no-lockfile }}
+      run: echo "::warning  title=lockfile-check::Building without a lockfile failed"
+
     - uses: actions/upload-artifact@v2
       if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
       with:
