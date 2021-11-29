@@ -72,8 +72,6 @@ async function setupProductionSecureFrameBucket(
 }
 
 function writeStackOutputsToConfig(output: string, local: boolean, stackOutputs: Record<string, string>) {
-  console.debug(`Writing resource config to: ${output}`);
-
   const localstackUrl = process.env.LOCALSTACK_URL || 'http://localhost:4566';
 
   const localstackConfig = local ? { localstack_url: localstackUrl } : {};
@@ -111,7 +109,7 @@ export async function deployCmd(metrics: LunaSecMetrics, options: DeployCmdOptio
 
   const cacheBuildDir = path.join(buildsFolder, `build_${new Date().toISOString()}`);
   const buildDir = options.buildDir ? options.buildDir : cacheBuildDir;
-  console.debug(`Building LunaSec Stack to ${buildDir}`);
+  console.log(`Building LunaSec Stack to ${buildDir}`);
 
   const localstackHostname = process.env.LOCALSTACK_HOSTNAME || 'localhost';
 
@@ -152,6 +150,8 @@ export async function deployCmd(metrics: LunaSecMetrics, options: DeployCmdOptio
 
   const account = options.local ? '' : `aws://${accountID}/${awsRegion}`;
 
+  console.log('Bootstrapping LunaSec CDK environment...');
+
   const bootstrapCmd = `${cdkCmd} bootstrap -a ${buildDir} ${account}`;
   const bootstrapResp = runCommand(bootstrapCmd, true);
   if (bootstrapResp.status) {
@@ -159,6 +159,7 @@ export async function deployCmd(metrics: LunaSecMetrics, options: DeployCmdOptio
     throw new Error(`command failed to execute`);
   }
 
+  console.log('Deploying LunaSec CDK resources...');
   const deployCmd = `${cdkCmd} deploy --require-approval never -a ${buildDir} --outputs-file ${outputsFilePath}`;
   const deployResp = runCommand(deployCmd, true);
   if (deployResp.status) {
@@ -177,12 +178,14 @@ export async function deployCmd(metrics: LunaSecMetrics, options: DeployCmdOptio
   }
 
   if (!options.local) {
+    console.log(`Copying LunaSec frontend assets to S3...`);
     // Deploy assets to secure frame bucket if we are doing a production deployment.
     // Note: This is needed because the cdk construct for a s3 deployment is currently broken.
     await setupProductionSecureFrameBucket(stack, outputsFilePath, stackOutputs, awsEndpoint);
   }
 
   if (options.output) {
+    console.log(`Writing resource config to: ${options.output}`);
     writeStackOutputsToConfig(options.output, options.local, stackOutputs);
   }
 

@@ -16,7 +16,7 @@
  */
 import { request } from 'https';
 
-export async function post(url: string, data: any) {
+export async function post(url: string, data: any): Promise<string> {
   const dataString = JSON.stringify(data);
 
   const options = {

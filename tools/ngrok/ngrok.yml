@@ -1,0 +1,7 @@
+tunnels:
+  express-back-end:
+    addr: 3001
+    proto: http
+  graphql-back-end:
+    addr: 3002
+    proto: http

@@ -56,6 +56,7 @@ async function resolveURL(url: string): Promise<IncomingMessage> {
 
 async function checkURLStatus(url: string): Promise<boolean> {
   const resp = await resolveURL(url);
+  console.debug(`${url} responded with ${resp.statusCode || 'undefined'}`);
   return resp.statusCode === 200 || resp.statusCode === 404;
 }
 
@@ -78,7 +79,7 @@ function getRunStackOptions(
       try {
         const checks = await Promise.all([
           checkURLStatus('http://localhost:3000'),
-          checkURLStatus('http://localhost:37766'),
+          checkURLStatus('http://localhost:37766/health'),
         ]);
         return checks.every((c) => c);
       } catch (e) {
@@ -106,11 +107,11 @@ function getRunStackOptions(
     exitHandler,
   };
 
-  if (localBuild) {
-    return localBuildOptions;
-  }
   if (env === 'demo') {
     return demoOptions;
+  }
+  if (localBuild) {
+    return localBuildOptions;
   }
   return devOptions;
 }
