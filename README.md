@@ -265,8 +265,7 @@ A similar pattern can be used (check the package.json) to generate an api client
 by simply specifying the OpenAPI generator name when calling the `openapi-generator` NPM package .
 
 ## Feedback
-Our goal is to build a sustainable business to support LunaSec and finding the right balance to enable us to build a
-community while also enabling our business is our primary motivation. If you have thoughts on how we can improve our
+Our goal is to create a sustainable business to support LunaSec, while also building an Open Source community. If you have thoughts on how we can improve our
 approach, we would love to hear from you.
 
 Please send us an email at developer-feedback at lunasec dot io *or* file an issue on this repository.
