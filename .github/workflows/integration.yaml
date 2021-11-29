@@ -76,6 +76,9 @@ jobs:
     - name: Make videos directory
       run: mkdir ./videos
 
+    - name: Log out github workspace env var
+      run: echo "$GITHUB_WORKSPACE"
+
     - uses: docker-practice/actions-setup-docker@master
       if: ${{matrix.os == 'macos-latest' }}
 
