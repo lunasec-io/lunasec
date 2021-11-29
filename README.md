@@ -39,8 +39,7 @@ LunaSec is a suite of security tools designed to protect sensitive data in web a
 
 LunaSec is an end-to-end security system designed to protect your application by transparently encrypting sensitive
 data, from browser to database. It works seamlessly by storing your sensitive data and then giving you back a Token (a UUID) to retrieve data with
-later. Tokens aren't sensitive values by themselves, thereby limiting the impact of security issues in your application
-when exposed, and also provide the foundation that LunaSec builds on to offer you additional security and compliance
+later. LunaSec builds on that concept to offer many security and compliance
 features.
 
 ### Features
@@ -67,20 +66,16 @@ features.
 You can read more [here](https://www.lunasec.io/docs/pages/overview/features/) about what features LunaSec provides.
 
 ## Live Demo
-You can try it out LunaSec with one command **if you have Node and Docker installed**:
+[Try the live demo.](https://app.lunasec.dev/) It's a simple web app that you
+can play with in your browser. Sign up for a new account and then submit some fake data in the secure inputs. Right-click and inspect secure elements on the page and watch network traffic to see LunaSec working behind-the-scenes to protect private data.
+
+Or launch it locally with one command **if you have Node and Docker installed**:
 
 ```
 npx @lunasec/cli start --env demo
 ```
 
-That will pull all the Docker containers and start the LunaSec demo app on your computer. It's a simple web app that you
-can play with in your browser. There are a lot of containers to run, so it may take a few minutes to finish starting up.
-
-Once it's running, just sign up for a new account and then submit some fake data in the app. (It's a fake account that's
-on your computer only)
-
-All data in the app is transparently encrypted and stored in the LunaSec database in the app. Take a look at the
-elements on the page and the network requests to view how it's all working.
+That will pull all the Docker containers and start the LunaSec demo app on your computer.  There are a lot of containers to run, so it may take a few minutes to finish starting up.
 
 For a deeper dive into the Demo App, please see
 this [page](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) for a walkthrough of everything. All the
@@ -107,7 +102,7 @@ We've documented the components of the stack [here](https://www.lunasec.io/docs/
 ![LunaSec Architecture Diagram](docs/static/img/security-model-overview.svg)
 
 ## Who is LunaSec for?
-LunaSec is designed to be used by anybody that needs to store sensitive text for files in a production web application.
+LunaSec is designed to be used by anyone that needs to collect and store sensitive text or files in a production web application.
 Despite being built by Security Engineers, **LunaSec does not require security expertise to get started**.
 It's designed to be used by ordinary Software Engineers and Developers.
 
@@ -156,9 +151,8 @@ If you're interested, [please send us a message](https://www.lunasec.io/contact)
 </p>
 
 ## Deploying LunaSec
-In order to use LunaSec in your production environment, you will need to host a copy yourself. We have made available a
-deployment CLI tool to make this task easier. Currently, only AWS is support. You don't need to use AWS for your application
-to use LunaSec, however. You just need to have an AWS account for LunaSec to deploy to. (LunaSec will work with any app running anywhere)
+LunaSec is _self hosted_. In order to use LunaSec in your production environment, you will need to host a copy yourself. We built a
+deployment CLI tool to make this easy. Currently, LunaSec only deploys to AWS. LunaSec will work with an app that is hosted on other platforms, you just need to have an AWS account for LunaSec to deploy to.
 
 To get started deploying LunaSec, please see our docs [here](https://www.lunasec.io/docs/pages/deployment/deploy-with-aws/).
 
@@ -271,8 +265,7 @@ A similar pattern can be used (check the package.json) to generate an api client
 by simply specifying the OpenAPI generator name when calling the `openapi-generator` NPM package .
 
 ## Feedback
-Our goal is to build a sustainable business to support LunaSec and finding the right balance to enable us to build a
-community while also enabling our business is our primary motivation. If you have thoughts on how we can improve our
+Our goal is to create a sustainable business to support LunaSec, while also building an Open Source community. If you have thoughts on how we can improve our
 approach, we would love to hear from you.
 
 Please send us an email at developer-feedback at lunasec dot io *or* file an issue on this repository.
