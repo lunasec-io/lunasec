@@ -131,7 +131,9 @@ export class LunaSecMetrics {
     };
 
     try {
-      await post(cliAnalyticsServer, metric);
+      const resp = await post(cliAnalyticsServer, metric);
+      console.debug(`pushed metrics to ${cliAnalyticsServer}: ${JSON.stringify(metric)}`);
+      console.debug(resp);
     } catch (e) {
       // TODO (cthompson) is there anything else we want to do when handling this error?
       console.debug(e);
