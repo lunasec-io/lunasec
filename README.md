@@ -151,9 +151,8 @@ If you're interested, [please send us a message](https://www.lunasec.io/contact)
 </p>
 
 ## Deploying LunaSec
-In order to use LunaSec in your production environment, you will need to host a copy yourself. We have made available a
-deployment CLI tool to make this task easier. Currently, only AWS is support. You don't need to use AWS for your application
-to use LunaSec, however. You just need to have an AWS account for LunaSec to deploy to. (LunaSec will work with any app running anywhere)
+LunaSec is _self hosted_. In order to use LunaSec in your production environment, you will need to host a copy yourself. We built a
+deployment CLI tool to make this easy. Currently, LunaSec only deploys to AWS. LunaSec will work with an app that is hosted on other platforms, you just need to have an AWS account for LunaSec to deploy to.
 
 To get started deploying LunaSec, please see our docs [here](https://www.lunasec.io/docs/pages/deployment/deploy-with-aws/).
 
