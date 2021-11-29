@@ -422,7 +422,7 @@ export class LunaSecStackDockerCompose {
       ...debugWorkingDir,
       volumes: [
         '/tmp/.X11-unix:/tmp/.X11-unix',
-        '~/videos:/repo/js/demo-apps/packages/react-front-end/cypress/videos',
+        './videos:/repo/js/demo-apps/packages/react-front-end/cypress/videos',
         ...debugVolumes,
       ],
       depends_on: [
