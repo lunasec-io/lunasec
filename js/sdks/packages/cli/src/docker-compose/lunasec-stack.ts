@@ -415,7 +415,10 @@ export class LunaSecStackDockerCompose {
     const debugVolumes = debug ? ['./:/repo'] : [];
 
     const debugWorkingDir = debug ? { working_dir: '/repo/js/demo-apps/packages/react-front-end' } : {};
-
+    console.log(
+      'SETTING VIDEO VOLUME DIRECTORY TO ',
+      `${process.env.GITHUB_WORKSPACE || '.'}/videos:/repo/js/demo-apps/packages/react-front-end/cypress/videos`
+    );
     const localBuildConfig: DefinitionsService = {
       ...this.dockerfileTarget(demoDockerFile, name),
       ...debugEntrypoint,
