@@ -16,7 +16,7 @@
  */
 import { SimpleTokenizerBackend } from '@lunasec/node-sdk';
 
-const redirectToLocalhost = process.env.LUNASEC_STACK_ENV === 'demo';
+const redirectToLocalhost = process.env.LUNASEC_STACK_ENV === 'demo' || process.env.LUNASEC_LOCAL_DEV === 'true';
 
 export const simpleTokenizerBackend = new SimpleTokenizerBackend({
   awsRegion: 'us-west-2',
