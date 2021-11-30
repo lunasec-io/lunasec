@@ -45,6 +45,17 @@ A request is made from our library in the browser to our plugin in your backend,
 which redirects the browser to the Dedicated Tokenizer service, which finally creates a session for LunaSec.  This all happens 
 automatically as long as you have registered the `express-auth-plugin` in your server as explained in the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/backend-setup).
 
+1. Once the `Tokenizer` starts, it requests the provided `/.lunasec/jwks.json` endpoint in `Application Backend`
+   (automatically registered to the backend with the `express-auth-plugin`)
+2. Every time a page containing a LunaSec component is loaded the authentication flow is started.
+   The `LunaSec SDK` on the frontend will start an auth redirection flow by requesting the `Tokenizer`.
+3. The `Tokenizer` redirects the `Application Fronted` to the `/.lunasec/secure-frame` endpoint in `Application Backend`
+   which will read the session registered on the `Application Backend` domain and then create a signed JWT containing
+   a session identifier.
+4. The `Application Backend` will redirect the request back to the `Tokenizer` where it will verify the signature of the
+   signed JWT and then set it as a cookie on the `Tokenizer` domain. The identity associated with any subsequent calls
+   to the `Tokenizer` is the identity contained in the signed JWT set as the cookie.
+
 ![diagram of auth flow](/img/auth-flow-diagram.svg)
 
 ### Session ID Provider 
