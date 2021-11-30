@@ -15,7 +15,7 @@
  *
  */
 
-import { createMuiTheme, CssBaseline, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material';
+import { createTheme, CssBaseline, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import { StoreProvider } from 'easy-peasy';
@@ -93,7 +93,7 @@ export const AppContainer: React.FunctionComponent = () => {
   );
 };
 
-const theme = createMuiTheme({
+const theme = createTheme({
   components: {
     MuiTextField: {
       styleOverrides: {
