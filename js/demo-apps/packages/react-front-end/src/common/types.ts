@@ -57,6 +57,8 @@ export interface StoreModel {
   // Properties
   user: UserModel | null;
   loggedIn: Computed<StoreModel, boolean>;
+  sidebarOpen: boolean;
+  setSidebarOpen: Action<StoreModel, boolean>;
   // Actions
   setUser: Action<StoreModel, UserModel>;
   setSsn: Action<StoreModel, string>;
