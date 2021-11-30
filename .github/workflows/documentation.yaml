@@ -53,7 +53,8 @@ jobs:
         working-directory: js/sdks
         run: |
           npx lerna bootstrap --ci
-          npm run compile:release
+          yarn compile:release
+          yarn compile:dev:infrastructure
 #      - name: Set env.BRANCH
 #        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
 #      - name: Cut new docs for version branch
