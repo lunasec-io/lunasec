@@ -32,7 +32,7 @@ export function getTransport(mode: Mode): Transport {
 export const store = createStore<StoreModel>({
   user: null,
   loggedIn: computed((state) => !!state.user),
-  sidebarOpen: true,
+  sidebarOpen: false,
   setSidebarOpen: action((state, isOpen) => {
     state.sidebarOpen = isOpen;
   }),

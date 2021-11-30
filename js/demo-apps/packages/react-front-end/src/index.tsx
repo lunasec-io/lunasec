@@ -15,7 +15,7 @@
  *
  */
 
-import { createStyles, CssBaseline, makeStyles, Theme } from '@material-ui/core';
+import { createMuiTheme, createStyles, CssBaseline, makeStyles, Theme, ThemeProvider } from '@material-ui/core';
 import { StoreProvider } from 'easy-peasy';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
@@ -86,12 +86,16 @@ export const AppContainer: React.FunctionComponent = () => {
   );
 };
 
+const theme = createMuiTheme();
+
 ReactDOM.render(
   <React.StrictMode>
     <StoreProvider store={store}>
-      <BrowserRouter>
-        <AppContainer />
-      </BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <AppContainer />
+        </BrowserRouter>
+      </ThemeProvider>
     </StoreProvider>
   </React.StrictMode>,
   document.getElementById('root')
