@@ -53,6 +53,7 @@ jobs:
         run: |
           npx lerna bootstrap --ci
           yarn compile:dev:infrastructure
+          npx lerna link
 
       - name: Build Repo
         working-directory: js/sdks
