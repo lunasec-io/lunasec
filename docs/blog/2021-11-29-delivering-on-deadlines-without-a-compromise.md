@@ -216,7 +216,7 @@ export function renderInsecureComponent(props) {
 ```
 
 Even if the same vulnerable code path or configuration exists, because of LunaSec's 
-[Secure by Default design](pages/overview/security/intro.md), the sensitive user data cannot be leaked without multiple 
+[Secure by Default design](/pages/overview/security/intro.md), the sensitive user data cannot be leaked without multiple 
 points of compromise. (The SSN is encrypted, and decryption happens in a hardened environment with limited surface area
 for an attacker to find bugs in.)
 
@@ -236,7 +236,7 @@ If you enjoyed this article, please share it and also take a moment to star the
 It really helps us out!
 
 Please also check out our [Live Demo](https://app.lunasec.dev)
-and [Documentation](https://www.lunasec.io/docs/pages/overview/introduction/) to learn more about what we're building.
+and [Documentation](/pages/overview/introduction/) to learn more about what we're building.
 
 For any questions about LunaSecs, this post, or about security in general, feel free to [contact us](https://www.lunasec.io/contact).
 We're always happy to hear your feedback and learn about the problems people are facing!
