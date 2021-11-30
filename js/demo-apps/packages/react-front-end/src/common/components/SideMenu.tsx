@@ -29,7 +29,7 @@ import {
 import React from 'react';
 import { match, NavLink, useRouteMatch } from 'react-router-dom';
 
-import { useStoreState } from '../store';
+import { useStoreActions, useStoreState } from '../store';
 import { Mode } from '../types';
 
 const drawerWidth = 240;
@@ -112,6 +112,8 @@ const RenderSecureComponentLinks: React.FunctionComponent<{
 export const SideMenu: React.FunctionComponent<{ mode: Mode }> = (props) => {
   const classes = useStyles({});
   const loggedIn = useStoreState((state) => state.loggedIn);
+  const sidebarOpen = useStoreState((state) => state.sidebarOpen);
+  const setSidebarOpen = useStoreActions((actions) => actions.setSidebarOpen);
 
   const { mode } = props;
 
@@ -125,10 +127,14 @@ export const SideMenu: React.FunctionComponent<{ mode: Mode }> = (props) => {
   return (
     <Drawer
       className={classes.drawer}
-      variant="permanent"
+      variant="temporary"
+      anchor="left"
+      open={sidebarOpen}
+      onClose={() => setSidebarOpen(false)}
       classes={{
         paper: classes.drawerPaper,
       }}
+      onClick={() => setSidebarOpen(false)} // this should be automatic..but it's not
     >
       <div className={classes.toolbar} />
       <List>

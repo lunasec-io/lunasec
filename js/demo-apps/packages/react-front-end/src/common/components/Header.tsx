@@ -14,14 +14,24 @@
  * limitations under the License.
  *
  */
-import { AppBar, makeStyles, Toolbar, Typography } from '@material-ui/core';
-import { createStyles, Theme } from '@material-ui/core/styles';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import {
+  AppBar,
+  IconButton,
+  makeStyles,
+  MenuItem,
+  Select,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+} from '@material-ui/core';
+import { createStyles, Theme, useTheme } from '@material-ui/core/styles';
+import { Menu as MenuIcon } from '@material-ui/icons';
+// import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import React, { useEffect } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 
 import { useStoreActions, useStoreState } from '../store';
-import { Transport } from '../types';
+import { Mode, Transport } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,6 +45,12 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: 'white',
       marginRight: '30px',
     },
+    sideBarButton: {
+      border: '1px solid grey',
+      borderRadius: '10px',
+      background: 'white',
+      marginRight: '10px',
+    },
   })
 );
 
@@ -46,11 +62,20 @@ export const Header: React.FunctionComponent<{
   const user = useStoreState((state) => state.user);
   const loadUser = useStoreActions((actions) => actions.loadUser);
 
+  const sidebarOpen = useStoreState((state) => state.sidebarOpen);
+  const setSidebarOpen = useStoreActions((actions) => actions.setSidebarOpen);
+
   useEffect(() => {
     void loadUser({ transport: props.transport }); // Small hack to do this here but it makes sure the user is loaded whenever a page refreshes, ideally would happen in a dedicated component mounted in App
   }, [loadUser, props.transport]);
 
+  const theme = useTheme();
+  const onDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
   const showLoggedInStatus = () => {
+    if (!onDesktop) {
+      return null;
+    }
     if (user) {
       return <Typography id="user-status">{`Logged in: ${user.username}`}</Typography>;
     }
@@ -60,7 +85,10 @@ export const Header: React.FunctionComponent<{
   const history = useHistory();
 
   // When the mode switch button is pushed, this sets the hash and refreshes the page to the desired demo
-  const handleModeChange = (_event: React.MouseEvent<HTMLElement>, value: string) => {
+  const handleModeChange = (event: Event) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const value = event.target.value;
     if (!value) {
       return;
     }
@@ -73,26 +101,48 @@ export const Header: React.FunctionComponent<{
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
-        <Typography variant="h6" noWrap className={classes.title}>
-          LunaSec Example App
-        </Typography>
-        <ToggleButtonGroup
-          className={classes.toggleButtonGroup}
-          exclusive
-          value={match && match.params.mode}
-          onChange={handleModeChange}
-          aria-label="text formatting"
+        {/* hamburger icon shows the drawer on click */}
+        <IconButton
+          className={classes.sideBarButton}
+          edge="start"
+          aria-label="open drawer"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
         >
-          <ToggleButton id="select-mode-express" value="express" aria-label="express">
-            Express
-          </ToggleButton>
-          <ToggleButton id="select-mode-graphql" value="graphql" aria-label="graphql">
-            GraphQl
-          </ToggleButton>
-          <ToggleButton id="select-mode-simple" value="simple" aria-label="simple">
-            Simple
-          </ToggleButton>
-        </ToggleButtonGroup>
+          <MenuIcon />
+        </IconButton>{' '}
+        {onDesktop ? (
+          <Typography variant="h6" noWrap className={classes.title}>
+            LunaSec Example App
+          </Typography>
+        ) : null}
+        <Select
+          id="mode-selector"
+          value={match && match.params.mode}
+          label="Mode"
+          // onChange={handleModeChange}
+          aria-label="backend mode"
+        >
+          <MenuItem value="express">Express</MenuItem>
+          <MenuItem value="graphql">Graphql</MenuItem>
+          <MenuItem value="simple">Simple</MenuItem>
+        </Select>
+        {/*<ToggleButtonGroup*/}
+        {/*  className={classes.toggleButtonGroup}*/}
+        {/*  exclusive*/}
+        {/*  value={match && match.params.mode}*/}
+        {/*  onChange={handleModeChange}*/}
+        {/*  aria-label="backend mode"*/}
+        {/*>*/}
+        {/*  <ToggleButton id="select-mode-express" value="express" aria-label="express">*/}
+        {/*    Express*/}
+        {/*  </ToggleButton>*/}
+        {/*  <ToggleButton id="select-mode-graphql" value="graphql" aria-label="graphql">*/}
+        {/*    GraphQl*/}
+        {/*  </ToggleButton>*/}
+        {/*  <ToggleButton id="select-mode-simple" value="simple" aria-label="simple">*/}
+        {/*    Simple*/}
+        {/*  </ToggleButton>*/}
+        {/*</ToggleButtonGroup>*/}
         {showLoggedInStatus()}
       </Toolbar>
     </AppBar>
