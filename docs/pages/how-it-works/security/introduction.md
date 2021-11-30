@@ -18,14 +18,16 @@ sidebar_position: 1
   ~
 -->
 ![security model overview](/img/security-model-overview.svg)
-
+:::note
+Storing a credit card number is just an example.  LunaSec can store any text or even large files.
+:::
 The LunaSec Stack creates trusted contexts in which sensitive data can be stored and/or processed. This is achieved through
 libraries and services, which are integrated into your application, working together through secure communication channels.
 
-To understand how data is encrypted at rest with the LunaSec Tokenizer, you can check out [How LunaSec Tokens are encrypted](./encryption.md).
+To understand how data is encrypted at rest with the LunaSec Tokenizer, you can check out [How LunaSec Tokens are encrypted](/pages/how-it-works/security/encryption).
 
 There are multiple configurations of the stack which allow for a flexible onboarding experience based on your organization's needs.
-To understand the different levels available and what their advantages are, check out [LunaSec Security Levels](./levels.md).
+To understand the different levels available and what their advantages are, check out [LunaSec Security Levels](/pages/how-it-works/security/levels).
 
 Each component of the LunaSec Stack assists in protecting against common security vulnerabilities. To understand how the stack
-works together to achieve this, check out [LunaSec Mitigations for Common Security Vulnerabilities](./vulns-and-mitigations.md).
+works together to achieve this, check out [LunaSec Mitigations for Common Security Vulnerabilities](/pages/how-it-works/security/vulns-and-mitigations).

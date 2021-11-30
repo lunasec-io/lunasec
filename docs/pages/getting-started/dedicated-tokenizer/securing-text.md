@@ -29,7 +29,7 @@ Let's create a form secured with LunaSec.  Here is a simple scenario where we wa
     <SecureInput
         name="ssn"
         onChange={(e) => setSsnToken(e.target.value)} 
-        errorHandler={(e: LunaSecError) => setError(e)} // Unlike a normal input, SecureInput can throw
+        errorHandler={(e: LunaSecError) => setError(e)} // Unlike a normal input, SecureInput can create errors
     />
     <input name="normal-input-coexisting"/>
     <button type="submit">Submit</button>
@@ -43,7 +43,7 @@ For example, `<SecureInput>` calls `onChange` and `onBlur` event handlers just l
 just like native elements and will allow you to build forms and pages as you normally would, with a few exceptions.
 
 :::tip
-The secure input we created shouldn't change how the app looks at all(that's the point) but if we right-click and
+The secure input we created shouldn't change how the app looks at all (that's the point) but if we right-click and
 inspect it we can see the cross-domain iFrame that LunaSec creates to protect your data.
 :::
 Creating a Text Area for multi-line data entry is pretty similar, this time let's give it some custom styling:
@@ -63,25 +63,24 @@ Creating a Text Area for multi-line data entry is pretty similar, this time let'
 :::note
 `<SecureInput>` and `<SecureTextArea>` need to be inside a `<SecureForm>` because it captures submit events and tells them
 to tokenize their plaintext.
-`<SecureForm>` will wait to fire your `onSubmit` handler until they are done tokenizing.  Note that normal submit methods like a submit button and 
-hitting `enter` in a text box work fine.
+`<SecureForm>` will wait to fire your `onSubmit` handler until they are done tokenizing.  Note that normal submit methods like a submit button or 
+hitting `enter` in a text box work normally.
 :::
 
 ## Displaying Secure Data
-The `<SecureParagraph` element can take a token and display it as text.  
+The `<SecureParagraph>` element can take a token and display it as text.  
 ```tsx
 <SecureParagraph 
    token={user.ssn_token} 
    errorHandler={(e) => setError(e.message)} 
 />
 ```
-The major caveat here is that the text can't be displayed inline because we can't leak any information about the length of the 
+The major caveat here is that the text can't be displayed inline because we don't want to leak any information about the length of the 
 secured data to the surrounding page.  It's a good idea to style this element large enough to display the text it's 
-going to display.
+going to hold.
 
-## Advanced Form Usage
-
-SecureInput supports many options and can be used with component libraries. 
+## Advanced Usage
+Now that we've seen a how simple it can be, let's look at a more advanced use case. SecureInput supports many options and can be used with component libraries. 
 
 Here is a more complex example of the props that `<SecureInput>` can take:
 
