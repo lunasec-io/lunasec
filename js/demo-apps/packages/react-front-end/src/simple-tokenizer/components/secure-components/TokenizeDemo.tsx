@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-import { Button, Card, CardContent, FormGroup, FormLabel, Grid, TextField } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Button, Card, CardContent, FormGroup, FormLabel, Grid, TextField } from '@mui/material';
+import { Alert, AlertTitle } from '@mui/material';
 import axios from 'axios';
 import React, { useState } from 'react';
 

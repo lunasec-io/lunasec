@@ -14,26 +14,25 @@
  * limitations under the License.
  *
  */
+import { Menu as MenuIcon } from '@mui/icons-material';
 import {
   AppBar,
-  FormHelperText,
   IconButton,
-  InputLabel,
-  makeStyles,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Toolbar,
   Typography,
   useMediaQuery,
-} from '@material-ui/core';
-import { createStyles, Theme, useTheme } from '@material-ui/core/styles';
-import { Menu as MenuIcon } from '@material-ui/icons';
-// import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+} from '@mui/material';
+import { Theme, useTheme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { useEffect } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 
 import { useStoreActions, useStoreState } from '../store';
-import { Mode, Transport } from '../types';
+import { Transport } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,6 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // marginLeft: '20x',
       // background: 'white',
       // borderRadius: '10px',
+      color: 'white',
     },
   })
 );
@@ -99,7 +99,7 @@ export const Header: React.FunctionComponent<{
   const history = useHistory();
 
   // When the mode switch button is pushed, this sets the hash and refreshes the page to the desired demo
-  const handleModeChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+  const handleModeChange = (event: SelectChangeEvent<string | null>) => {
     const value = event.target.value;
     console.log('selected value ', value);
     if (!value || typeof value !== 'string') {
@@ -121,6 +121,7 @@ export const Header: React.FunctionComponent<{
             edge="start"
             aria-label="open drawer"
             onClick={() => setSidebarOpen(!sidebarOpen)}
+            size="large"
           >
             <MenuIcon />
           </IconButton>
@@ -131,12 +132,14 @@ export const Header: React.FunctionComponent<{
           </Typography>
         ) : null}
         {showLoggedInStatus()}
-        <InputLabel id="mode-selector-label">Mode</InputLabel>
+        {/*<InputLabel id="mode-selector-label">Mode</InputLabel> doesnt work and unclear why */}
         <Select
+          className={classes.modeSelect}
           id="mode-selector"
           labelId="mode-selector-label"
           value={match && match.params.mode}
           autoWidth
+          label="Mode"
           onChange={(e) => handleModeChange(e)}
           aria-label="backend mode"
         >
@@ -144,7 +147,7 @@ export const Header: React.FunctionComponent<{
           <MenuItem value="graphql">Graphql</MenuItem>
           <MenuItem value="simple">Simple</MenuItem>
         </Select>
-        <FormHelperText>Backend Mode</FormHelperText>
+        {/*<FormHelperText>Backend Mode</FormHelperText>*/}
       </Toolbar>
     </AppBar>
   );

@@ -15,8 +15,8 @@
  *
  */
 import { SecureParagraph } from '@lunasec/react-sdk';
-import { Card, CardContent, CardHeader, Divider, Grid, Typography } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Card, CardContent, CardHeader, Divider, Grid, Typography } from '@mui/material';
+import { Alert, AlertTitle } from '@mui/material';
 import React, { useState } from 'react';
 
 import { useStoreState } from '../../store';
