@@ -14,8 +14,6 @@
  * limitations under the License.
  *
  */
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, makeStyles, useMediaQuery } from '@material-ui/core';
-import { createStyles, Theme, useTheme } from '@material-ui/core/styles';
 import {
   ChatBubbleOutline,
   CloudUpload,
@@ -25,9 +23,12 @@ import {
   Lock,
   LockOpen,
   VpnKey,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, useMediaQuery } from '@mui/material';
+import { Theme, useTheme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React from 'react';
-import { render } from 'react-dom';
 import { match, NavLink, useRouteMatch } from 'react-router-dom';
 
 import { useStoreActions, useStoreState } from '../store';
