@@ -31,7 +31,7 @@ You probably have a GitHub account with a few personal projects that you work on
 you feel inspired. Looking at the code after some time, you might ask yourself "did I really write this?"
 It's with a fresh perspective that you notice the same code copy and pasted a few times in odd places. 
 
-For a personal project, that's probably okay. But for a professional project involving a team of developers, it can 
+For a personal project, that's probably okay. For a professional project involving a team of developers, it can 
 quickly become a painful problem.
 
 <!--truncate-->
@@ -48,7 +48,7 @@ could cause a problem for you, your team, the company, or even customers. Even j
 
 ### Constant Vigilance!
 
-![mad eye moody from Harry Potter](/img/blog-images/mad-eye-moody.jpg)
+![mad eye moody from Harry Potter](/img/mad-eye-moody.jpg)
 
 _Pictured: The author before his morning coffee..._
 
@@ -216,7 +216,7 @@ export function renderInsecureComponent(props) {
 ```
 
 Even if the same vulnerable code path or configuration exists, because of LunaSec's 
-[Secure by Default design](/pages/overview/security/intro.md), the sensitive user data cannot be leaked without multiple 
+[Secure by Default design](https://lunasec.io/docs/pages/how-it-works/security/introduction/), the sensitive user data cannot be leaked without multiple 
 points of compromise. (The SSN is encrypted, and decryption happens in a hardened environment with limited surface area
 for an attacker to find bugs in.)
 
@@ -236,7 +236,7 @@ If you enjoyed this article, please share it and also take a moment to star the
 It really helps us out!
 
 Please also check out our [Live Demo](https://app.lunasec.dev)
-and [Documentation](/pages/overview/introduction/) to learn more about what we're building.
+and [Documentation](https://lunasec.io/docs/pages/overview/introduction/) to learn more about what we're building.
 
 For any questions about LunaSecs, this post, or about security in general, feel free to [contact us](https://www.lunasec.io/contact).
 We're always happy to hear your feedback and learn about the problems people are facing!
