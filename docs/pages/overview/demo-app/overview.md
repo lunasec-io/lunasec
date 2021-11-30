@@ -31,7 +31,6 @@ You can start the demo app on your machine easily using our CLI.  First make sur
 
 Then install it(and the aws CDK) and run the CLI
 ```shell
-npm i -g @lunasec/cli cdk aws-cdk-local
 lunasec start --env demo
 ``` 
 Depending on your internet speed, this might take a minute.
