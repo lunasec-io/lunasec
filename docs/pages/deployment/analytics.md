@@ -39,13 +39,16 @@ support includes early access to security patches _before_ we publish them to ou
 the monetary means to continue building and supporting LunaSec.
 
 Should you wish to disable metrics collection, it may be disabled by setting:
-```yaml
-lunasec:
-  ...
-metricsConfig:
-  disable_usage_statistic: true
+```js
+module.exports = {
+    production: {
+        metrics: {
+            disabled: true
+        }
+    }
+}
 ```
-in your YAML before LunaSec is deployed. Setting this flag will disable deploying the Lambda that collects metrics every
+in your `lunasec.json` config before LunaSec is deployed. Setting this flag will disable deploying the Lambda that collects metrics every
 24 hours.
 
 Regardless, thank you for using LunaSec and helping to improve the security of software across the world. We really

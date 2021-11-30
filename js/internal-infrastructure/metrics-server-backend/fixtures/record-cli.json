@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "command": "test",
+  "success": true,
+  "system_info": {
+    "docker_version": "1.0.0",
+    "docker_compose_version": "1.0.0",
+    "node_version": "1.0.0",
+    "host_platform": "windows",
+    "host_release": "1.0.0"
+  }
+}
