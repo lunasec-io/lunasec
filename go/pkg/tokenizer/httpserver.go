@@ -36,6 +36,8 @@ func newServer(configPath string, authType constants.AuthType) http.Handler {
 		panic(err)
 	}
 
+	util.ApplyHealthCheck(sm, logger)
+
 	provider := util.GetConfigProviderFromDir(configPath)
 
 	logger.Debug("loading AWS gateways")

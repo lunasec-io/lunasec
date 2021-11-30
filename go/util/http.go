@@ -16,9 +16,16 @@ package util
 
 import (
 	"github.com/lunasec-io/lunasec-monorepo/types"
+	"go.uber.org/zap"
 	"net/http"
 	"time"
 )
+
+func ApplyHealthCheck(sm *http.ServeMux, logger *zap.Logger) {
+	sm.HandleFunc("/health", func(writer http.ResponseWriter, request *http.Request) {
+		Respond(writer, map[string]string{})
+	})
+}
 
 func ApplyMiddlewareToHandler(middleware []types.Middleware, handler http.HandlerFunc) http.HandlerFunc {
 	for _, middlewareHandler := range middleware {
