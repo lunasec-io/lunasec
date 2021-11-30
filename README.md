@@ -66,10 +66,12 @@ features.
 You can read more [here](https://www.lunasec.io/docs/pages/overview/features/) about what features LunaSec provides.
 
 ## Live Demo
-You can try out a hosted demo of LunaSec with [Live Demo app](https://app.lunasec.dev).  LunaSec is meant to be invisible, but you 
-can see it working by inspecting elements on the page and watching your network requests tab.
 
-You can also try it out LunaSec locally with one command **if you have Node and Docker installed**:
+[Try the live demo.](https://app.lunasec.dev/) It's a simple web app that you
+can play with in your browser. Sign up for a new account and then submit some fake data in the secure inputs. Right-click and inspect secure elements on the page and watch network traffic to see LunaSec working behind-the-scenes to protect private data.
+
+Or launch it locally with one command **if you have Node and Docker installed**:
+
 ```
 npx @lunasec/cli start --env demo
 ```
