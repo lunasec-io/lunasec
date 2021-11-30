@@ -49,6 +49,7 @@ module.exports = {
       'js/demo-apps/packages/demo-back-end/tsconfig.json',
       'js/demo-apps/packages/react-front-end/tsconfig.json',
       'js/internal-infrastructure/metrics-server-backend/tsconfig.json',
+      'js/internal-infrastructure/s3-redirect-generator/tsconfig.json',
     ]
   },
   plugins: [
@@ -89,6 +90,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-call':'off', // Did this because of a bug with intellij (forrest)
     '@typescript-eslint/no-unsafe-member-access':'off',
     '@typescript-eslint/no-unsafe-assignment':'off',
+    '@typescript-eslint/unbound-method':'off',
     'import/order': [
       'error',
       { 'newlines-between': 'always', 'alphabetize': { 'order': 'asc' } }

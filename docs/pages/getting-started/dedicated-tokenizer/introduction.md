@@ -31,11 +31,11 @@ The LunaSec CLI makes development, testing, and deployment easier.  It can bring
 
 The CLI is available as an NPM module. Add it to your `package.json` along with the aws cdk packages that it depends on:
 
-`yarn add @lunasec/cli cdk aws-cdk-local --dev`
+`yarn add @lunasec/cli --dev`
 
 or
 
-`npm install @lunasec/cli cdk aws-cdk-local --save-dev`
+`npm install @lunasec/cli --save-dev`
 
 Make sure the CLI stays at the same version as the `@lunasec` packages we install in this guide.
 
@@ -63,7 +63,9 @@ module.exports = {
     }
 }
 ```
-
+:::info Full options
+A full list of configuration options can be found in [the CLI config typedoc](/pages/cli-config/interfaces/LunaSecStackConfigOptions/).
+:::
 LunaSec needs the front end url to properly enforce its CORS policy and back end to be running when it starts so that it can query it for signing keys.
 
 Once we install the LunaSec plugin into the back end (covered on the next page), we can run:
@@ -90,4 +92,4 @@ True rootless docker isn't yet supported, but if you have
 [dangerously added your user to the docker group](https://docs.docker.com/engine/install/linux-postinstall/) it will work without sudo.  This is not recommended for security reasons.
 :::
 
-Now that the CLI is installed, let's add LunaSec to the code. [Backend setup](./backend.md)
+Now that the CLI is installed, let's add LunaSec to the code. [Backend setup](/pages/getting-started/dedicated-tokenizer/backend-setup)

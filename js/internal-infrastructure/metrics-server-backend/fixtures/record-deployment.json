@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "stack_id": "1234-1234-1234",
+  "metrics": {
+    "tokenizeSuccess": 0,
+    "tokenizeFailure": 0,
+    "detokenizeSuccess": 0,
+    "detokenizeFailure": 0,
+    "createGrantSuccess": 0,
+    "createGrantFailure": 0
+  }
+}
