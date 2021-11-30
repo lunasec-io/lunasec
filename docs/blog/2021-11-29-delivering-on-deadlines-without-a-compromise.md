@@ -138,7 +138,7 @@ return (
 )
 ```
 
-Even if the same vulnerable code path or configuration exists, because of the [secure-by-default design](pages/overview/security/intro.md)
+Even if the same vulnerable code path or configuration exists, because of the [secure-by-default design](https://lunasec.io/docs/pages/overview/security/intro.md)
 of the LunaSec stack, the address of the user cannot be leaked without multiple points of compromise.
 
 We believe that by creating an open source offering, we can build respect with the developers who use the product, trust
