@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
-import { createStyles, Theme } from '@material-ui/core/styles';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, makeStyles, useMediaQuery } from '@material-ui/core';
+import { createStyles, Theme, useTheme } from '@material-ui/core/styles';
 import {
   ChatBubbleOutline,
   CloudUpload,
@@ -27,6 +27,7 @@ import {
   VpnKey,
 } from '@material-ui/icons';
 import React from 'react';
+import { render } from 'react-dom';
 import { match, NavLink, useRouteMatch } from 'react-router-dom';
 
 import { useStoreActions, useStoreState } from '../store';
@@ -124,24 +125,49 @@ export const SideMenu: React.FunctionComponent<{ mode: Mode }> = (props) => {
     exact: true,
   });
 
-  return (
-    <Drawer
-      className={classes.drawer}
-      variant="temporary"
-      anchor="left"
-      open={sidebarOpen}
-      onClose={() => setSidebarOpen(false)}
-      classes={{
-        paper: classes.drawerPaper,
-      }}
-      onClick={() => setSidebarOpen(false)} // this should be automatic..but it's not
-    >
+  const theme = useTheme();
+  const onDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
+  const renderResponsiveDrawer = (slot: JSX.Element) => {
+    if (!onDesktop) {
+      return (
+        <Drawer
+          className={classes.drawer}
+          variant="temporary"
+          anchor="left"
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+          onClick={() => setSidebarOpen(false)} // this should be automatic..but it's not
+        >
+          {slot}
+        </Drawer>
+      );
+    } else {
+      return (
+        <Drawer
+          className={classes.drawer}
+          variant="permanent"
+          anchor="left"
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          {slot}
+        </Drawer>
+      );
+    }
+  };
+  return renderResponsiveDrawer(
+    <>
       <div className={classes.toolbar} />
       <List>
         {renderListItem(<Home />, `${url}`, 'Home', match)}
         <RenderLoginSignupLinks loggedIn={loggedIn} mode={mode} />
         <RenderSecureComponentLinks loggedIn={loggedIn} mode={mode} />
       </List>
-    </Drawer>
+    </>
   );
 };

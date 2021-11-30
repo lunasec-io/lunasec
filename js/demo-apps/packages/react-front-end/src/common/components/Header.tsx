@@ -16,7 +16,9 @@
  */
 import {
   AppBar,
+  FormHelperText,
   IconButton,
+  InputLabel,
   makeStyles,
   MenuItem,
   Select,
@@ -46,10 +48,16 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: '30px',
     },
     sideBarButton: {
-      border: '1px solid grey',
-      borderRadius: '10px',
-      background: 'white',
       marginRight: '10px',
+      color: 'white',
+    },
+    loggedInStatus: {
+      marginRight: '30px',
+    },
+    modeSelect: {
+      // marginLeft: '20x',
+      // background: 'white',
+      // borderRadius: '10px',
     },
   })
 );
@@ -77,19 +85,24 @@ export const Header: React.FunctionComponent<{
       return null;
     }
     if (user) {
-      return <Typography id="user-status">{`Logged in: ${user.username}`}</Typography>;
+      return (
+        <Typography className={classes.loggedInStatus} id="user-status">{`Logged in: ${user.username}`}</Typography>
+      );
     }
-    return <Typography id="user-status">Not Logged In</Typography>;
+    return (
+      <Typography className={classes.loggedInStatus} id="user-status">
+        Not Logged In
+      </Typography>
+    );
   };
 
   const history = useHistory();
 
   // When the mode switch button is pushed, this sets the hash and refreshes the page to the desired demo
-  const handleModeChange = (event: Event) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+  const handleModeChange = (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
     const value = event.target.value;
-    if (!value) {
+    console.log('selected value ', value);
+    if (!value || typeof value !== 'string') {
       return;
     }
 
@@ -102,48 +115,36 @@ export const Header: React.FunctionComponent<{
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
         {/* hamburger icon shows the drawer on click */}
-        <IconButton
-          className={classes.sideBarButton}
-          edge="start"
-          aria-label="open drawer"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-        >
-          <MenuIcon />
-        </IconButton>{' '}
+        {!onDesktop ? (
+          <IconButton
+            className={classes.sideBarButton}
+            edge="start"
+            aria-label="open drawer"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            <MenuIcon />
+          </IconButton>
+        ) : null}
         {onDesktop ? (
           <Typography variant="h6" noWrap className={classes.title}>
             LunaSec Example App
           </Typography>
         ) : null}
+        {showLoggedInStatus()}
+        <InputLabel id="mode-selector-label">Mode</InputLabel>
         <Select
           id="mode-selector"
+          labelId="mode-selector-label"
           value={match && match.params.mode}
-          label="Mode"
-          // onChange={handleModeChange}
+          autoWidth
+          onChange={(e) => handleModeChange(e)}
           aria-label="backend mode"
         >
           <MenuItem value="express">Express</MenuItem>
           <MenuItem value="graphql">Graphql</MenuItem>
           <MenuItem value="simple">Simple</MenuItem>
         </Select>
-        {/*<ToggleButtonGroup*/}
-        {/*  className={classes.toggleButtonGroup}*/}
-        {/*  exclusive*/}
-        {/*  value={match && match.params.mode}*/}
-        {/*  onChange={handleModeChange}*/}
-        {/*  aria-label="backend mode"*/}
-        {/*>*/}
-        {/*  <ToggleButton id="select-mode-express" value="express" aria-label="express">*/}
-        {/*    Express*/}
-        {/*  </ToggleButton>*/}
-        {/*  <ToggleButton id="select-mode-graphql" value="graphql" aria-label="graphql">*/}
-        {/*    GraphQl*/}
-        {/*  </ToggleButton>*/}
-        {/*  <ToggleButton id="select-mode-simple" value="simple" aria-label="simple">*/}
-        {/*    Simple*/}
-        {/*  </ToggleButton>*/}
-        {/*</ToggleButtonGroup>*/}
-        {showLoggedInStatus()}
+        <FormHelperText>Backend Mode</FormHelperText>
       </Toolbar>
     </AppBar>
   );

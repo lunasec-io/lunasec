@@ -54,7 +54,7 @@ export const Home: React.FunctionComponent = () => {
       </Card>
       <br />
       <Card>
-        <CardHeader title="Getting Started" />
+        <CardHeader title="Using this demo" />
         <Divider />
         <CardContent>
           <Typography component="div">
