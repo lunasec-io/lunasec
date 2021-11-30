@@ -1,7 +1,7 @@
 ---
-title: Delivering on Deadlines without a Compromise
-description: BuildKit intermediate caching in CI
-slug: delivering-on-deadlines
+title: How Data Breaches happen and why Secure by Default software is the future
+description: Your software delivery model is broken, but it's not your fault. Delivering on time while also protecting yourself from data breaches is a herculean task. It doesn't have to be though, and we'll show you why!
+slug: how-data-breaches-happen-and-why-secure-by-default-software-is-the-future
 authors:
 - name: Chris Thompson
   title: Developer at Lunasec
@@ -63,7 +63,8 @@ but reality is that these tools exist to help you stay organized and avoid stepp
 
 ### Where does security come in?
 
-At many companies, whenever you're working on a project that touches something sensitive or is otherwise critical to the business,
+At many companies, whenever you're working on a project that touches something sensitive or is otherwise critical to the business (like 
+[GDPR](https://gdpr.eu/checklist/) or [PCI](https://checkify.com/checklists/pci-compliance-checklist/) compliance),
 you're required to undergo a security review before deploying your code to production. This is often a grueling and 
 time-consuming process that takes weeks (or months) for a Security Engineer to complete.
 
@@ -180,7 +181,8 @@ the Security Architecture section:
 
 We're building an Open Source project called [LunaSec](https://github.com/lunasec-io/lunasec) to help developers address
 these problems. The goal of LunaSec is to create drop-in, Secure by Default components that provide strong security and
-compliance guarantees, while not impacting a team's speed or efficiency when meeting deadlines.
+compliance guarantees, while not impacting a team's speed or efficiency when meeting deadlines. It's possible through
+the clever usage of Data Encryption through a process known as [Tokenization](https://www.lunasec.io/docs/pages/how-it-works/tokens/).
 
 Here's an example of the LunaSec React SDK in action:
 
@@ -222,21 +224,23 @@ for an attacker to find bugs in.)
 
 ### Continuous Security
 
-We believe Secure by Default is the future of software security because it's the only way to ensure that software is 
-secure every time a developer writes a line of code. It's not just us either, because even the 
+We believe Secure by Default is the future of Security Software because it's the only way to guarantee security every 
+time a developer writes a line of code. It's not just us either -- even the 
 [US Government](https://www.forbes.com/sites/forbestechcouncil/2021/09/01/zero-trust-plays-a-key-role-in-the-executive-order-to-improve-the-nations-cybersecurity/)
-is adopting this security model now!
+is adopting this security model now by embracing 
+[Zero Trust Architecture](https://www.microsoft.com/en-us/security/business/zero-trust) everywhere!
 
-Thanks for reading!
+The next few years will see a lot of companies adopting this model, and we're excited to see what the future holds.
 
 ### Help Us Make Secure By Default a Reality!
 
-If you enjoyed this article, please share it and also take a moment to star the 
-[LunaSec GitHub repository](https://github.com/lunasec-io/lunasec).
-It really helps us out!
+If you enjoyed this article, please take a moment to star our 
+[LunaSec GitHub repository](https://github.com/lunasec-io/lunasec), share this post with others, and consider adding 
+yourself the list of companies protecting their data with LunaSec.  It's Open Source and free to use!
 
-Please also check out our [Live Demo](https://app.lunasec.dev)
-and [Documentation](https://lunasec.io/docs/pages/overview/introduction/) to learn more about what we're building.
+To get started, you can check out our [Live Demo](https://app.lunasec.dev)
+and [Documentation](https://lunasec.io/docs/pages/overview/introduction/) to learn more about what we're building,
+how it works, and how to get started using it with your production software.
 
 For any questions about LunaSecs, this post, or about security in general, feel free to [contact us](https://www.lunasec.io/contact).
 We're always happy to hear your feedback and learn about the problems people are facing!
