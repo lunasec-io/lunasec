@@ -49,11 +49,14 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
-      - name: Lerna Bootstrap and Build Repo
-        working-directory: js/sdks
+      - name: Lerna Bootstrap and Build Deploy Tool
         run: |
           npx lerna bootstrap --ci
-          npm run compile:release
+          yarn compile:dev:infrastructure
+
+      - name: Build Repo
+        working-directory: js/sdks
+        run: yarn compile:release
 #      - name: Set env.BRANCH
 #        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
 #      - name: Cut new docs for version branch
