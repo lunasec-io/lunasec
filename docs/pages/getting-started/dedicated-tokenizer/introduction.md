@@ -31,11 +31,11 @@ The LunaSec CLI makes development, testing, and deployment easier.  It can bring
 
 The CLI is available as an NPM module. Add it to your `package.json` along with the aws cdk packages that it depends on:
 
-`yarn add @lunasec/cli cdk aws-cdk-local --dev`
+`yarn add @lunasec/cli --dev`
 
 or
 
-`npm install @lunasec/cli cdk aws-cdk-local --save-dev`
+`npm install @lunasec/cli --save-dev`
 
 Make sure the CLI stays at the same version as the `@lunasec` packages we install in this guide.
 
