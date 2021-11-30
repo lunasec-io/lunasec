@@ -18,22 +18,22 @@ sidebar_position: 1
   ~
 -->
 
-### [Tokenization](/pages/how-it-works/tokens)
+### Tokenization
 LunaSec replaces the sensitive 
-fields in your application and database with tokens.  When LunaSec is fully integrated, sensitive data never enters
+fields in your application and database with [tokens](/pages/how-it-works/tokens).  When LunaSec is fully integrated, sensitive data never enters
 your application.  On the front end, cross-domain iFrames dubbed **Secure Frames** handle the creation and display of sensitive fields, 
 and on the backend sensitive data is handled inside isolated code blocks dubbed **Secure Functions**. LunaSec is not a proxy:
 those tools communicate directly with a backend server called the **Dedicated Tokenizer**, which is served on a different domain than your application. 
 Everything from small strings to large files can be **tokenized**.  
 
-### [Secure Frame](/pages/how-it-works/secure-components)
+### Secure Frame
 A secure sandbox that is embedded in your front-end React app. It handles sensitive data inside an iFrame and returns only tokens.
 This is similar to how payment processors like Stripe and PayPal collect credit card information, except that Secure Frames work with
 any type of data and copy their styling information from your application.
 Because iFrames loaded from a different domain run in a separate, isolated process in the browser, sensitive data is protected even if your web application is compromised.
 Your data is protected against Cross-Site Scripting(XSS), and the parts of the application that need to be audited for security are much smaller.
 
-The `react-sdk` provides a suite of "Secure Form" components that follow this pattern. 
+The `react-sdk` provides a suite of ["Secure Form" components](/pages/how-it-works/secure-components) that follow this pattern. 
 Onboarding is simply replacing your `<form>` and `<input>` elements with drop-in replacement components which handle creating and communicating with the iFrame.
 Your styling and most other DOM features 
 will continue to work normally, even though the element is now securely isolated.  It even works with MaterialUi 

@@ -26,7 +26,9 @@ and the backend server demonstrates both Express and GraphQL.
 
 As you can see in the top right corner, the app can switch between several modes to test how LunaSec works with different systems.
 
-## [Try it Live](https://app.lunasec.dev)
+## Try it Live
+
+Check out the live demo application [here](https://app.lunasec.dev).
 
 :::tip
 LunaSec is meant to be invisible, but you
@@ -38,6 +40,7 @@ You can start the demo app on your machine easily using our CLI.  First make sur
 
 Then install it(and the aws CDK) and run the CLI
 ```shell
+npm i -g @lunasec/cli
 lunasec start --env demo
 ``` 
 Depending on your internet speed, this might take a minute.
