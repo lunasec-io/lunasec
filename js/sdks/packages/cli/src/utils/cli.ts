@@ -14,21 +14,15 @@
  * limitations under the License.
  *
  */
-import os from 'os';
-import path from 'path';
+import { LunaSecStackEnvironment, LunaSecStackEnvironments } from '../docker-compose/lunasec-stack';
 
-export const debug = process.env.DEBUG || false;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version } = require('../../package.json');
 
-export const lunaSecDir = '.lunasec';
-
-export const awsResourcesOutputFile = 'aws_resources.json';
-
-export const cliAnalyticsServer = 'https://production.deployment-info.lunasec.io/record/cli';
-
-// TODO (cthompson) pick this up from the environment
-export const awsRegion = 'us-west-2';
-
-export const cliMetricTag = 'cli';
-
-export const metadataFile = path.join(os.homedir(), lunaSecDir, 'metadata.json');
-export const buildsFolder = path.join(os.homedir(), lunaSecDir, 'builds');
+export function validateEnv(env: string): LunaSecStackEnvironment {
+  const foundEnv = LunaSecStackEnvironments.filter((e) => e === env);
+  if (foundEnv.length !== 1) {
+    throw new Error(`Provided environment is not one of: ${LunaSecStackEnvironments.join(', ')}`);
+  }
+  return foundEnv[0];
+}
