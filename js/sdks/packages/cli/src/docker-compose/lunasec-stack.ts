@@ -27,19 +27,25 @@ import {
   LunaSecStackConfigOptions,
   testsConfigOptionsDefaults,
 } from '../config/types';
-import { awsResourcesOutputFile } from '../constants/cli';
+import { awsResourcesOutputFile, debug } from '../constants/cli';
 import { formatAuthenticationProviders } from '../utils/auth-providers';
+import { processSignals } from '../utils/exec';
 
 import { ComposeSpecification, DefinitionsService } from './docker-compose-types';
 import { generateNginxEnvConfig } from './generate-nginx-config';
 
-export const LunaSecStackEnvironments = ['local-dependencies', 'demo', 'dev', 'hosted-live-demo', 'tests'] as const;
+export const LunaSecStackEnvironments = [
+  'local-dependencies',
+  'demo',
+  'dev',
+  'hosted-live-demo',
+  'tests',
+  'production',
+] as const;
 export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../../package.json');
-
-const debug = process.env.DEBUG || false;
 
 type LunaSecService =
   | 'localstack'
