@@ -107,7 +107,7 @@ content-encoding: br
    "success": true,
    "error": {},
    "data": {
-      "downloadUrl": "https://<AWS_S3_URL>/a-very-long-url-very-secure-url
+      "downloadUrl": "https://<AWS_S3_URL>/a-very-long-url-very-secure-url",
       "headers": {
          "host": "lunasec-ciphertextbucket<RANDOM_BUCKET_ID>.s3.us-west-2.amazonaws.com",
          "x-amz-server-side-encryption-customer-algorithm": "AES256",
