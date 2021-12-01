@@ -18,24 +18,36 @@ sidebar_position: 1
   ~
 -->
 ## What is LunaSec?
-LunaSec makes it easy and secure for applications to process and store sensitive data through *Tokenization*. 
+LunaSec makes it easy and secure for web applications to process and store sensitive data through *Tokenization*. 
 
 Sensitive data is exchanged for a non-sensitive token that is meaningless by itself.  It must be exchanged
 for the real data in a process called *Detokenization*.
 
 LunaSec offers more attack protection than other tokenizers, has more features, and the core of the system is free and open source.
 
-LunaSec can quickly help an app become secure and regulation compliant.
-
-A list of features can be found [here](../features).
+LunaSec can quickly help an app become secure and compliant with regulations like SOC2, PCI-DSS, GDPR, HIPAA, and more.
+If you're looking for an even faster compliance solution with hands-on guidance from our team, please [contact us](https://www.lunasec.io/contact)
+to inquire about our paid services.
 
 ## How does LunaSec work with my app?
-```tsx title="A React form secured with LunaSec"
-import React from 'react';
+
+Imagine that you have a simple React form like this. Values are stored as plaintext. An attacker only needs a single vulnerability like Cross-Site Scripting or SQL Injection to leak your data publicly!
+```tsx title="Before"
+export function renderInsecureComponent(props) {
+  return (
+    <form onSubmit={props.onSubmit}>
+      <input name="ssn" value={props.value} onChange={props.onChange} errorHandler={props.handleError} />
+      <input type="submit" />
+    </form>
+  );
+}
+```
+
+This is the same form with LunaSec.  `<SecureInput>` now returns a token instead of the actual SSN. An attacker is no longer
+able to leak sensitive data, even if the main application is compromised.  The app is now compliant with security regulations.
+```tsx title="After"
 import {SecureForm, SecureInput} from '@lunasec/react-sdk';
 
-// Secure components send their contents to your LunaSec server.
-// SecureInput now returns a token instead of the actual SSN.
 export function renderSecureComponent(props) {
   return (
     <SecureForm onSubmit={props.onSubmit}>
@@ -47,16 +59,38 @@ export function renderSecureComponent(props) {
 ```
 This seamlessly creates an iFrame in your page, isolating the sensitive data completely without any change to how your app looks or functions.
 
-You will need to add a
-LunaSec library to your frontend(as shown here), another to your backend, and to host a copy of the Tokenizer Backend 
-server. For instructions, follow the [Getting Started guide](/pages/getting-started/dedicated-tokenizer/introduction).
+## Try it out, live!
 
-This framework is designed by security engineers to drop in to existing apps with minimal code changes.
-That way you don't need to audit or rewrite everything from scratch to become secure and compliant.  The parts of the system
-that touch sensitive data will have already been secured and audited by our team.
+You can go check out our [Live Demo](https://app.lunasec.dev) app right now. You'll need to create yourself a user before
+you can insert some data into the different fields. All sensitive data in the app is automatically encrypted and decrypted.
 
-If you're unsure of what level of security you need, please [contact us](https://www.lunasec.io/contact). We offer paid, professional support to accelerate onboarding time and to ensure your deployment
-meets your security goals.
+In fact, it works so well that you probably will mistake the Demo App for a completely unremarkable, boring app. That's
+by design!
+:::tip
+LunaSec is meant to be invisible, but you
+can see it working by inspecting elements on the page and watching your network requests tab.
+:::
+
+## Onboard with LunaSec
+
+We've put in great effort to ensure a high-quality Developer Experience throughout the entire onboarding process.
+A lunch break is all it takes to onboard your app with our SDKs _and_ deploy your own dedicated LunaSec Stack into 
+production.
+
+To check out how we made that possible, please follow our [Getting Started guide](/pages/getting-started/dedicated-tokenizer/introduction).
+
+## How is it that easy?
+
+LunaSec was designed by Security Engineers to embed into existing apps with minimal code changes.
+You don't need to audit or rewrite everything from scratch to become secure and compliant. 
+
+We built it by leveraging our experience working as Application Security engineers to help dozens of startups and teams
+at large tech companies reach their security goals.  We were tired of seeing the same problems repeating across teams,
+but without any alternatives. That's why we made LunaSec an Open Source project.
+
+If you'd like our team of Security Engineers to help you learn more about LunaSec, or to help you reach your security
+goals, please [contact us](https://www.lunasec.io/contact). We offer paid, professional support to accelerate onboarding
+time and training, as well as security reviews and engagements. 
 
 ## Example: Building a site that stores sensitive information
 A user on your site might need to upload information like their Social Security Number, a copy of their photo ID, or maybe a PDF containing both.
@@ -88,7 +122,7 @@ much faster, cheaper, and easier than security auditing and overhauling your ent
 
 Software security is often overlooked or deemed too difficult/expensive to implement properly. By isolating sensitive parts of the application, LunaSec
 helps developers protect sensitive information without having to worry about the security of every line
-they write or library they import.  To see a list of the most common vulnerabilities and how LunaSec protects you from them, [click here](/pages/overview/security/mitre-cwe-top-25-weaknesses).
+they write or library they import.  To see a list of the most common vulnerabilities and how LunaSec protects you from them, [click here](/pages/how-it-works/security/mitre-cwe-top-25-weaknesses).
 
 If you've ever been hacked or struggled with lengthy security reviews, painful compliance requirements, or otherwise jumped through
 hoops for "data security" or "compliance", then it's likely that LunaSec can help you.

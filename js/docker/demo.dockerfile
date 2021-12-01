@@ -48,8 +48,6 @@ ENV HOST_MACHINE_PWD=""
 
 WORKDIR /repo/js/sdks/packages/cli
 
-RUN npm i -g aws-cdk@1.126.0 aws-cdk-local@1.65.4
-
 WORKDIR /repo
 
 # This is required because we aren't able to pass additional command arguments via Docker-Compose unless we are invoking

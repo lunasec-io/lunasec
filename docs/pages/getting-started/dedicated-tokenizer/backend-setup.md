@@ -1,5 +1,5 @@
 ---
-id: "backend"
+id: "backend-setup"
 title: "Backend Configuration"
 sidebar_label: "Backend Setup"
 sidebar_position: 2
@@ -88,15 +88,18 @@ lunaSec.expressAuthPlugin.register(app);
 ```
 
 :::info
-See the [authentication page](../../overview/authentication.md) for more information on when to use this plugin and how it works.
+See the [session page](/pages/how-it-works/sessions) for more information on when to use this plugin and how it works.
 :::
 
 ### Checking Grants
 
-Grants connect a user's session to a token for a short time. Grants limit what sessions are allowed to read a specific token.  Your server needs to grant every token being sent to the browser
-and check every token that is coming in. 
+Grants connect a user's session to a token for a short time. Grants limit what sessions on the front-end are allowed to read a specific token.  
+Your server **must** grant every token being sent to the browser and check every token that is coming in.  
+:::note
+Grants are not tokenization / detokenization. They are just granting permission for the front-end to do so.
+:::
 
-If you're using GraphQL instead of Express, this is even easier with [the graphql plugin.](./apollo-graphql.md)
+If you're using GraphQL instead of Express, this can be done automatically with [the graphql plugin.](./apollo-graphql.md)
 
 Let's say we have a LunaSec Token representing a Social Security Number:
 ```typescript
@@ -111,8 +114,9 @@ app.get('/get-ssn', async (req, res) => {
     });
   });
 ```
-Grants also ensure that tokens sent up to the server are "granted" to the user and can be safely stored in the database.  Otherwise , 
-if an attacker got ahold of tokens that weren't theirs, they could upload them using the below route and then fetch them using the `/get-ssn` route above and read them.
+Grants also ensure that tokens sent up to the server are "granted" to the user and can be safely stored in the database.  Otherwise, 
+if an attacker got tokens that weren't theirs, they could upload them using the below route and then fetch them using the
+`/get-ssn` route above and read them. Don't forget to check grants for uploaded tokens!
 
 This is how we verify the user has permission to store the grant back into the database.
 When new tokens are created by the frontend, a grant will have been created automatically.  
@@ -171,4 +175,4 @@ app.use((err, req, res, next) => {
 })
 ```
 
-That's it for the backend, let's move onto [the frontend.](./frontend-config.md)
+That's it for the backend, let's move onto [the frontend.](/pages/getting-started/dedicated-tokenizer/frontend-setup)
