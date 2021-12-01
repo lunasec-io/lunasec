@@ -41,7 +41,8 @@ function runDedicatedModeTests(mode: string) {
     });
 
     it('selects mode', () => {
-      cy.get(`#select-mode-${mode}`).click();
+      cy.get('#mode-selector').click();
+      cy.get(`li`).contains(mode, { matchCase: false }).click();
     });
 
     it('signs up', () => {
@@ -133,13 +134,14 @@ function runDedicatedModeTests(mode: string) {
 
 describe('demo app in mode: simple', () => {
   it('selects mode', () => {
-    cy.get('#select-mode-simple').click();
+    cy.get('#mode-selector').click();
+    cy.get(`li`).contains('Simple').click();
   });
 
   it('tokenizes', () => {
     cy.get('a').contains('Tokenize').click();
 
-    cy.get('input').type(fakeSSN);
+    cy.get('#simple-tokenizer-input').type(fakeSSN);
 
     cy.get('button').contains('Save').click();
 
