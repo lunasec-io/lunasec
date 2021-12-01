@@ -124,13 +124,25 @@ contractors that aren't deep experts of your business.
 And, even with a Bug Bounty Program, you're still at the mercy of the hacker. You don't know whether 
 they are going to ethically disclose their vulnerability to you or not, or if they can make more money by exploiting it.
 
+### The DevSecOps Movement
+
+The phrase "[DevSecOps](https://www.redhat.com/en/topics/devops/what-is-devsecops)" is used to describe a trend that 
+aims to continuously improve the security of software while it is being developed. With a DevSecOps process, developers 
+are empowered by security teams to address security requirements directly, rather than waiting for the security team to
+perform a code review.
+
+Security Scanners are often employed as a part of DevSecOps, but they're insufficient to rely on alone (for the reasons
+described above). Because of that, additional tools and strategies are being employed like 
+Secure by Default and Zero Trust Architecture that are designed to make true DevSecOps possible. We'll explain what that
+means in the next section.
+
 ### Flipping the Equation
 
 What if security vulnerabilities just simply couldn't exist? Or if they did, have them be as useful to an attacker as
 dull safety scissors? What if, when a bug is found, it's no longer a security issue?
 
 Those are the questions that have led many companies to implement a 
-"[Secure by Default](https://www.ncsc.gov.uk/information/secure-default)" policy for their code.
+"[Secure by Default](https://www.ncsc.gov.uk/information/secure-default)" policy for their code. 
 
 A good example of this in action is the `dangerouslySetInnerHTML` function of the ReactJS framework. ReactJS is a Javascript
 library for building websites, and one of its key features is that it creates a virtual DOM before writing to the page's
