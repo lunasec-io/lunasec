@@ -130,7 +130,10 @@ What if security vulnerabilities just simply couldn't exist? Or if they did, hav
 dull safety scissors? What if, when a bug is found, it's no longer a security issue?
 
 Those are the questions that have led many companies to implement a 
-"[Secure by Default](https://www.ncsc.gov.uk/information/secure-default)" policy for their code.
+"[Secure by Default](https://www.ncsc.gov.uk/information/secure-default)" policy for their code. This is a part of the
+"[DevSecOps](https://www.redhat.com/en/topics/devops/what-is-devsecops)" movement, which is a trend that aims to 
+continuously improve the security of software while it is being developed. Instead of delegating security, it becomes
+a shared responsibility among the team.
 
 A good example of this in action is the `dangerouslySetInnerHTML` function of the ReactJS framework. ReactJS is a Javascript
 library for building websites, and one of its key features is that it creates a virtual DOM before writing to the page's
