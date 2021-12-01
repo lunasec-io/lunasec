@@ -7,8 +7,10 @@ WORKDIR /repo
 
 # Uncomment to make replicable builds
 RUN lerna bootstrap --ci
-# I think this is to save space, not sure if this will work with yarn though
-RUN npm cache clean --force
+# Do this because this package isnt part of the lerna-bootstrap but we still need to lint it
+RUN cd js/internal-infrastructure/metrics-server-backend && yarn install
+# Do this to save space
+RUN yarn cache clean --all
 
 RUN npm rebuild sqlite3
 
@@ -64,14 +66,3 @@ RUN npm i -g http-server
 
 CMD ["-a", "0.0.0.0", "-p", "8000"]
 ENTRYPOINT ["http-server"]
-
-# ---------- Utility containers for testing in CI ----------
-
-#FROM lerna-bootstrap as lunasec-lint
-#
-#ENTRYPOINT ["yarn"]
-#CMD ["run", "lint"]
-#
-#FROM lerna-bootstrap as lunasec-unit-test
-#ENTRYPOINT ["yarn"]
-#CMD ["run", "test:unit"]
