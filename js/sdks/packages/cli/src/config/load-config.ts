@@ -16,7 +16,7 @@
  */
 import findConfig from 'find-config';
 
-import { LunaSecStackEnvironment } from '../docker-compose/lunasec-stack';
+import { LunaSecStackEnvironment } from '../docker-compose/constants';
 
 import {
   deploymentConfigOptionsDefaults,

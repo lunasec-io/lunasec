@@ -23,7 +23,7 @@ import { AuthProviderConfig, LunaSecStackConfigOptions } from '../config/types';
 import { awsResourcesOutputFile, debug } from '../constants/cli';
 import { formatAuthenticationProviders } from '../utils/auth-providers';
 
-import { demoDockerFile, localstackImage, version } from './constants';
+import { demoDockerFile, localstackImage, LunaSecStackEnvironment, version } from './constants';
 import { ComposeSpecification, DefinitionsService } from './lib/docker-compose-types';
 import {
   baseServiceConfig,
@@ -42,17 +42,8 @@ import {
   LunaSecReactEnv,
   LunaSecService,
   LunaSecServiceCreationConfig,
+  LunaSecServiceDependenciesEnv,
 } from './types';
-
-export const LunaSecStackEnvironments = [
-  'local-dependencies',
-  'demo',
-  'dev',
-  'hosted-live-demo',
-  'tests',
-  'production',
-] as const;
-export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];
 
 export class LunaSecStackDockerCompose {
   serviceCreationConfig!: LunaSecServiceCreationConfig;
@@ -136,7 +127,7 @@ export class LunaSecStackDockerCompose {
    * This service is only used for the hosted live demo of LunaSec.
    * TODO (freeqaz) Migrate this out to another file for better code quality.
    */
-  nginxLiveDemo(): ComposeService {
+  nginxLiveDemo(reactEnv: LunaSecReactEnv): ComposeService {
     const nginxResourcesPatch = this.buildMountPath('js/internal-infrastructure/public-live-demo/demo-nginx.conf');
 
     return {
@@ -148,7 +139,7 @@ export class LunaSecStackDockerCompose {
           this.localstack().name,
           this.localstackProxy().name,
           this.applicationBackEnd().name,
-          this.applicationFrontEnd().name,
+          this.applicationFrontEnd(reactEnv).name,
           this.tokenizerBackEnd().name,
           this.secureFrameIFrameService().name,
         ],
@@ -191,11 +182,7 @@ export class LunaSecStackDockerCompose {
   }
 
   applicationFrontEnd(reactEnv: LunaSecReactEnv): ComposeService {
-    return generateFrontEndDockerConfig(this.serviceCreationConfig, 'dev');
-  }
-
-  applicationFrontEndServeStatic(): ComposeService {
-    return generateFrontEndDockerConfig(this.serviceCreationConfig, 'static');
+    return generateFrontEndDockerConfig(this.serviceCreationConfig, reactEnv);
   }
 
   applicationBackEnd(): ComposeService {
@@ -303,7 +290,7 @@ export class LunaSecStackDockerCompose {
     };
   }
 
-  integrationTest(): ComposeService {
+  integrationTest(reactEnv: LunaSecReactEnv): ComposeService {
     const name: LunaSecService = 'integration-test';
 
     const debugEntrypoint = debug
@@ -327,7 +314,7 @@ export class LunaSecStackDockerCompose {
       ],
       depends_on: [
         this.secureFrameIFrameService().name,
-        this.applicationFrontEnd().name,
+        this.applicationFrontEnd(reactEnv).name,
         this.applicationBackEnd().name,
         this.tokenizerBackEnd().name,
       ],
@@ -342,42 +329,52 @@ export class LunaSecStackDockerCompose {
     };
   }
 
-  getStackServices(dockerEnv: Record<string, string>): ComposeService[] | null {
+  getStackServices(reactEnv: LunaSecReactEnv | undefined): ComposeService[] | null {
+    const env = this.serviceCreationConfig.env;
+
+    if (env === 'production') {
+      return null;
+    }
+
     const localDependencies = [this.localstack(), this.localstackProxy(), this.lunasecCli()];
 
-    const tokenizerBackendServices = [...localDependencies, this.tokenizerBackEnd(), this.secureFrameIFrameService()];
-
-    const demoServices = [...tokenizerBackendServices, this.applicationFrontEnd(dockerEnv), this.applicationBackEnd()];
-
-    const testsServices = [...demoServices, this.integrationTest()];
-
-    const hostedLiveDemoServices = [...demoServices, this.nginxLiveDemo()];
-
-    if (this.serviceCreationConfig.env === 'local-dependencies') {
+    if (env === 'local-dependencies') {
       return localDependencies;
     }
 
-    if (this.serviceCreationConfig.env === 'dev') {
+    const tokenizerBackendServices = [...localDependencies, this.tokenizerBackEnd(), this.secureFrameIFrameService()];
+
+    if (env === 'dev') {
       return tokenizerBackendServices;
     }
 
-    if (this.serviceCreationConfig.env === 'demo') {
+    if (!reactEnv) {
+      throw new Error('Unable to create stack service config without React Environment config');
+    }
+
+    const demoServices = [...tokenizerBackendServices, this.applicationFrontEnd(reactEnv), this.applicationBackEnd()];
+
+    if (env === 'demo') {
       return demoServices;
     }
 
-    if (this.serviceCreationConfig.env === 'hosted-live-demo') {
+    const hostedLiveDemoServices = [...demoServices, this.nginxLiveDemo(reactEnv)];
+
+    if (env === 'hosted-live-demo') {
       return hostedLiveDemoServices;
     }
 
-    if (this.serviceCreationConfig.env === 'tests') {
+    const testsServices = [...demoServices, this.integrationTest(reactEnv)];
+
+    if (env === 'tests') {
       return testsServices;
     }
 
-    return null;
+    throw new Error('Unknown environment to configure Docker services for');
   }
 
-  getProject(dockerEnv: Record<string, string>): ComposeSpecification {
-    const services = this.getStackServices();
+  getProject(reactEnv: LunaSecReactEnv | undefined): ComposeSpecification {
+    const services = this.getStackServices(reactEnv);
     if (services === null) {
       throw new Error(`unsupported stack environment ${this.serviceCreationConfig.env}`);
     }
@@ -482,7 +479,7 @@ export class LunaSecStackDockerCompose {
     const tokenizerHost = 'http://tokenizer-backend:37766';
     const cdnHost = `${this.getSecureFrameHostname()}:8000`;
 
-    return {
+    const config: LunaSecDockerEnv = {
       ...display,
 
       APPLICATION_FRONT_END: applicationFrontEnd,
@@ -508,15 +505,18 @@ export class LunaSecStackDockerCompose {
 
       CYPRESS_REMOTE_DEBUGGING_PORT: '42042',
     };
+
+    return config;
   }
 
-  getDependenciesEnv() {
-    const { environmentConfig } = this.serviceCreationConfig;
-    const { applicationBackEnd, applicationFrontEnd, signingKey, sessionJwksUrl } = environmentConfig;
+  getDependenciesEnv(dockerDevEnv: LunaSecDockerEnv): LunaSecServiceDependenciesEnv {
+    const { environmentConfig, env } = this.serviceCreationConfig;
+    const { applicationFrontEnd } = environmentConfig;
+    const { TOKENIZER_URL, CDN_HOST, LOCAL_HTTPS_PROXY } = dockerDevEnv;
 
     // These values are for the hosts that the Integration Test depends on in
     // order to start up. It's passed via Env vars as a comma separated list.
-    const integrationTestDependenciesList = [tokenizerHost, applicationFrontEnd, cdnHost];
+    const integrationTestDependenciesList = [TOKENIZER_URL, applicationFrontEnd, CDN_HOST];
 
     if (env === 'hosted-live-demo' || env === 'demo' || env === 'tests') {
       const { REACT_APP_EXPRESS_URL, REACT_APP_GRAPHQL_URL, REACT_APP_SIMPLE_TOKENIZER_URL } =
@@ -528,23 +528,44 @@ export class LunaSecStackDockerCompose {
     }
 
     const integrationTestDependencies = integrationTestDependenciesList.join(',');
+
+    return {
+      WAIT_FOR_TIMEOUT: 300,
+      DEPENDENCIES__CLI: LOCAL_HTTPS_PROXY,
+      DEPENDENCIES__INTEGRATION_TEST: integrationTestDependencies,
+      DEPENDENCIES__LOCALSTACK_PROXY: TOKENIZER_URL,
+    };
   }
 
   write(dir: string) {
-    // TODO (freeqaz) Create a function for every environment that we support and
-    // have it merge in all of them using something like Ramda.pipe()
-    // As long as every function is referentially transparent, it's a clean abstraction.
-    // TODO (freeqaz) Split out this function out and it's dependent functions in this file into a folder called "env".
-    const dockerEnv = generateNginxEnvConfig(this.serviceCreationConfig.env, this.getDockerDevEnv());
+    const env = this.serviceCreationConfig.env;
 
-    const dockerCompose = dump(this.getProject(dockerEnv));
+    // TODO (freeqaz) Remove `generateNginxEnvConfig` and use an externally merged config or something.
+    const dockerEnv = generateNginxEnvConfig(env, this.getDockerDevEnv());
+    const dependenciesEnv = this.getDependenciesEnv(dockerEnv);
+
+    let reactEnv: LunaSecReactEnv | undefined = undefined;
+
+    if (env === 'demo' || env === 'hosted-live-demo' || env === 'tests') {
+      reactEnv = this.getFrontEndReactEnv(env);
+    }
+
+    const dockerCompose = dump(this.getProject(reactEnv));
     const dockerDemoEnvPath = path.join(dir, `.env.docker`);
-    const composePath = path.join(dir, `docker-compose.${this.serviceCreationConfig.env}.yaml`);
+    const composePath = path.join(dir, `docker-compose.${env}.yaml`);
 
     writeFileSync(composePath, dockerCompose);
 
-    const dockerEnvFile = Object.keys(dockerEnv)
-      .map((k) => `${k}=${dockerEnv[k]}`)
+    const outputEnvFile = {
+      ...dockerEnv,
+      ...reactEnv,
+      ...dependenciesEnv,
+    };
+
+    const dockerEnvValues = Object.values(outputEnvFile);
+
+    const dockerEnvFile = Object.keys(outputEnvFile)
+      .map((k, i) => `${k}=${dockerEnvValues[i]}`)
       .join('\n');
 
     writeFileSync(dockerDemoEnvPath, dockerEnvFile);

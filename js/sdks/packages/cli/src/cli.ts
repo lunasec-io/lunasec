@@ -26,7 +26,7 @@ import { ejectCmd } from './cmds/eject';
 import { resourcesCmd } from './cmds/resources';
 import { startCmd } from './cmds/start';
 import { debug } from './constants/cli';
-import { LunaSecStackEnvironments } from './docker-compose/lunasec-stack';
+import { LunaSecStackEnvironments } from './docker-compose/constants';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');

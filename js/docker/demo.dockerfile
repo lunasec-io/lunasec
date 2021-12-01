@@ -22,13 +22,7 @@ ENTRYPOINT ["yarn", "start:dev"]
 
 FROM lerna-bootstrap as application-front-end
 
-WORKDIR /repo/js/demo-apps/packages/react-front-end
-
-CMD ["start"]
-
-ENTRYPOINT ["yarn", "run"]
-
-FROM lerna-bootstrap as application-front-end_serve-static
+RUN yarn global add serve
 
 # These are required to bake the image at build time (we're compiling assets statically)
 ARG REACT_APP_EXPRESS_URL
