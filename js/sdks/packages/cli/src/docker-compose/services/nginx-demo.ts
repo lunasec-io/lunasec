@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import { LunaSecStackEnvironment } from '../lunasec-stack';
+import { LunaSecStackEnvironment } from '../constants';
 import { LunaSecDockerEnv } from '../types';
 
 export function generateNginxEnvConfig(
