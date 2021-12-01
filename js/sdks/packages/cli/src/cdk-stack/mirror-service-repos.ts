@@ -31,6 +31,7 @@ export async function mirrorRepos(accountID: string, version: string) {
 
   await Promise.all(
     Object.keys(serviceToImageName).map(async (serviceName: string) => {
+      console.log(`Downloading ${serviceName}...`);
       const cmd = new CreateRepositoryCommand({
         repositoryName: serviceName,
       });

@@ -19,7 +19,7 @@ import { LunaSec } from '@lunasec/node-sdk';
 import { lunaSecSessionIdProvider } from './auth-helpers';
 
 if (!process.env.TOKENIZER_URL) {
-  throw new Error('Secure frame url env var is not set');
+  throw new Error('Tokenizer URL env var is not set');
 }
 
 const publicTokenizerUrl = process.env.REACT_APP_TOKENIZER_URL;

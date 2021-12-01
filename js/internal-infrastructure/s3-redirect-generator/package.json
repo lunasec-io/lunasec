@@ -1,0 +1,26 @@
+{
+  "name": "@lunasec/s3-redirect-generator",
+  "version": "1.0.7",
+  "description": "Generates an S3 Redirect config for dead pages.",
+  "main": "build/index.js",
+  "module": "build/index.js",
+  "typings": "build/index.d.ts",
+  "bin": {
+    "s3-redirect-generator": "./build/cli.js"
+  },
+  "license": "Apache 2.0",
+  "type": "module",
+  "devDependencies": {
+    "@types/ramda": "^0.27.56",
+    "typescript": "^4.4.2"
+  },
+  "dependencies": {
+    "ramda": "^0.27.1"
+  },
+  "scripts": {
+    "clean": "rm -rf build",
+    "compile": "tsc -p tsconfig.json",
+    "generate-config": "node build/cli.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

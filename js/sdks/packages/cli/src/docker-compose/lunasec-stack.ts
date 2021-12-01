@@ -20,10 +20,10 @@ import path from 'path';
 import { dump } from 'js-yaml';
 
 import { AuthProviderConfig, LunaSecStackConfigOptions } from '../config/types';
-import { awsResourcesOutputFile } from '../constants/cli';
+import { awsResourcesOutputFile, debug } from '../constants/cli';
 import { formatAuthenticationProviders } from '../utils/auth-providers';
 
-import { debug, demoDockerFile, localstackImage, version } from './constants';
+import { demoDockerFile, localstackImage, version } from './constants';
 import { ComposeSpecification, DefinitionsService } from './lib/docker-compose-types';
 import {
   baseServiceConfig,
@@ -44,7 +44,14 @@ import {
   LunaSecServiceCreationConfig,
 } from './types';
 
-export const LunaSecStackEnvironments = ['local-dependencies', 'demo', 'dev', 'hosted-live-demo', 'tests'] as const;
+export const LunaSecStackEnvironments = [
+  'local-dependencies',
+  'demo',
+  'dev',
+  'hosted-live-demo',
+  'tests',
+  'production',
+] as const;
 export type LunaSecStackEnvironment = typeof LunaSecStackEnvironments[number];
 
 export class LunaSecStackDockerCompose {

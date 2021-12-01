@@ -56,6 +56,7 @@
       <excludeFolder url="file://$MODULE_DIR$/docs/.docusaurus" />
       <excludeFolder url="file://$MODULE_DIR$/js/demo-apps/packages/demo-back-end/build" />
       <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/cli-wrapper/build" />
+      <excludeFolder url="file://$MODULE_DIR$/js/internal-infrastructure/s3-redirect-generator/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
