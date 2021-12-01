@@ -111,9 +111,6 @@ jobs:
     - name: Go Tests
       run: yarn run test:unit:go
 
-#    - name: Build Bootstrap Container
-#      run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lerna-bootstrap --target lerna-bootstrap .
-
     - name: Build CLI Container
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
