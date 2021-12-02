@@ -41,11 +41,9 @@ const (
 
 // NonceToken is the string token that gets replaced by the middleware with a dynamic nonce directive
 const NonceToken = "{{nonce}}"
-const ApplicationBackend = "{{application_backend}}"
 
 var nonceReplacer = strings.NewReplacer(
 	NonceToken, "nonce-%[1]s",
-	ApplicationBackend, "%[2]s",
 )
 
 // CSP is used to configure the Content Security Policy Middleware. For more about csp please refer the mozilla docs.
@@ -166,6 +164,7 @@ func WithNonce(ctx context.Context, n string) context.Context {
 	return context.WithValue(ctx, nonceKey, n)
 }
 
+
 func formatCSPDirectives(directives CSPPolicy) string {
 	const (
 		withQuotes    = "'%s'"
@@ -175,6 +174,7 @@ func formatCSPDirectives(directives CSPPolicy) string {
 		newDirectives []string
 		quoteFormat   string
 	)
+
 
 	for directive, vals := range directives {
 		switch directive {
