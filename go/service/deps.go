@@ -92,10 +92,10 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 		connectSrcUrls = append(connectSrcUrls, gatewayConfig.LocalHTTPSProxy)
 	}
 
+
 	cspPolicy := map[string][]string{
 		"connect-src": connectSrcUrls,
 		"script-src": {
-			//"unsafe-inline",
 			"{{nonce}}",
 		},
 		"object-src":                {"none"},
