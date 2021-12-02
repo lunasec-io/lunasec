@@ -14,17 +14,19 @@
  * limitations under the License.
  *
  */
-import { boolean, flag, option, string } from 'cmd-ts';
+import { boolean, flag, oneOf, option, optional, string } from 'cmd-ts';
 
-import { LunaSecStackEnvironments } from '../docker-compose/lunasec-stack';
+import { LunaSecStackEnvironment, LunaSecStackEnvironments } from '../docker-compose/lunasec-stack';
+
+const validEnv = (e: LunaSecStackEnvironment) => e !== 'production' && e !== 'hosted-live-demo';
+
+const environmentOptions = LunaSecStackEnvironments.filter(validEnv).map((e) => e as string);
 
 export const envOption = option({
-  type: string,
+  type: oneOf(environmentOptions),
   long: 'env',
   defaultValue: () => 'dev',
-  description: `Environment to start the LunaSec stack in: ${LunaSecStackEnvironments.filter(
-    (e) => e === 'production'
-  ).join(', ')}`,
+  description: `Environment to start the LunaSec stack in. One of [${environmentOptions.join(', ')}]`,
 });
 
 export const localBuildFlag = flag({
@@ -64,7 +66,7 @@ export const showLogsFlag = flag({
 });
 
 export const buildDirOption = option({
-  type: string,
+  type: optional(string),
   long: 'build-dir',
   description: 'Build directory for built secure components.',
 });
@@ -77,7 +79,7 @@ export const localFlag = flag({
 });
 
 export const outputOption = option({
-  type: string,
+  type: optional(string),
   long: 'output',
   description: 'Path to where the resources output file will be written to.',
 });
