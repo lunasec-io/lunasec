@@ -49,15 +49,15 @@
     "@aws-sdk/client-sts": "3.39.0",
     "@lunasec/secure-frame-front-end": "^1.0.7",
     "adm-zip": "^0.5.9",
-    "cmd-ts": "^0.7.0",
+    "aws-cdk": "1.129.0",
+    "aws-cdk-local": "1.65.4",
+    "cmd-ts": "^0.8.0",
     "decompress": "^4.2.1",
     "find-config": "^1.0.0",
     "import-local": "^3.0.3",
     "js-yaml": "^4.1.0",
     "progress": "^2.0.3",
     "source-map-support": "^0.5.20",
-    "yargs": "^17.2.1",
-    "aws-cdk": "1.129.0",
-    "aws-cdk-local": "1.65.4"
+    "yargs": "^17.2.1"
   }
 }

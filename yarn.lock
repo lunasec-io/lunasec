@@ -11179,10 +11179,10 @@ cmd-shim@^4.1.0:
   dependencies:
     mkdirp-infer-owner "^2.0.0"
 
-cmd-ts@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/cmd-ts/-/cmd-ts-0.7.0.tgz#c718555baeb4653b27c235b64206fa7c9ff70bda"
-  integrity sha512-4pmMPaBrVtK2+dC1FxublDtPsukrz3efLA9kc1k1DfX1i7YxZ37UBYZ/b6fTHY91l6hyqntwrTTbwV4MyzqXoQ==
+cmd-ts@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/cmd-ts/-/cmd-ts-0.8.0.tgz#c5c1970d9f8259fdfa5686a39e5b6df37d8c60d0"
+  integrity sha512-7RSjtBLtJIo+ulrXZ1ogMbJUXkCHEKO1EzrrPNG/cXzEGhrpueAweIuW1T0WpgNPwwOWp2uM0uoAdCu/eaXcDQ==
   dependencies:
     chalk "^4.0.0"
     debug "^4.1.1"
