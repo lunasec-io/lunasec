@@ -51,9 +51,8 @@ jobs:
 
       - name: Lerna Bootstrap and Build Deploy Tool
         run: |
-          npx lerna bootstrap --ci
+          yarn install --immutable
           yarn compile:dev:infrastructure
-          npx lerna link
 
       - name: Build Repo
         working-directory: js/sdks
