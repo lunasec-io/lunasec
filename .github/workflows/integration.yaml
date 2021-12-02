@@ -116,11 +116,19 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
+    # TODO: move this into docker, using the same container that the dedicated tokenizer uses
     - name: Go Tests
       run: yarn run test:unit:go
 
     - name: Build CLI Container
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
+
+    # Hijack the cli image to quickly run linting and unit testing
+    - name: Lint
+      run: docker run --entrypoint yarn repo_lunasec-cli lint
+
+    - name: Unit Test
+      run: docker run --entrypoint yarn repo_lunasec-cli test:unit:js
 
     - name: Use CLI Container with docker.sock mounted to launch all other containers
       run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo --local-build --env=tests
