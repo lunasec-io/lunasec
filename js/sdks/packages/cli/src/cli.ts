@@ -80,7 +80,7 @@ yargs
         required: false,
         default: false,
         description: 'Show the logs from a previous run of the LunaSec stack for the specified environment.',
-      },
+      }
     },
     async (args) => {
       const metrics = await getLunaSecMetrics();
@@ -119,12 +119,19 @@ yargs
         default: false,
         description: 'Skip docker image mirroring.',
       },
+      'custom-cdk-command': {
+        type: 'string',
+        required: false,
+        default: undefined,
+        description: 'Custom command used in place of the AWS CDK (supercedes --local-build).',
+      },
     },
     async (args) => {
       const metrics = await getLunaSecMetrics();
       return await deployCmd(metrics, {
         buildDir: args['build-dir'],
         local: args.local,
+        customCdkCommand: args['custom-cdk-command'],
         output: args.output,
         skipMirroring: args['skip-mirroring'],
       });

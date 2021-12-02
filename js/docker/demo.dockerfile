@@ -1,28 +1,34 @@
-# Pulls from this cache with multiple build requirements like java and aws, not just npm
-FROM lunasec/cached-npm-dependencies:v0.0.10 as lerna-bootstrap
+FROM openjdk:18-alpine3.15 as lerna-bootstrap
+
+ENV NODE_OPTIONS "--unhandled-rejections=strict"
+ENV RUNNING_IN_CI "true"
+ENV CI "true"
+
+RUN apk add --no-cache sqlite jq nodejs npm bash
+
+RUN npm install -g yarn
 
 COPY . /repo
 
 WORKDIR /repo
 
-# Uncomment to make replicable builds
-RUN lerna bootstrap --ci
-# I think this is to save space, not sure if this will work with yarn though
-RUN npm cache clean --force
+RUN node -v
 
-RUN npm rebuild sqlite3
+RUN yarn install --immutable
 
 RUN yarn run compile:dev:sdks
 
 FROM lerna-bootstrap as application-back-end
 
+# Sets up the script to wait for the resource config to be available.
+COPY scripts/wait-for-file.sh /tmp/wait-for-file.sh
+RUN chmod +x /tmp/wait-for-file.sh
+
 WORKDIR /repo/js/demo-apps/packages/demo-back-end
 
-ENTRYPOINT ["yarn", "start:dev"]
+ENTRYPOINT ["sh", "/tmp/wait-for-file.sh", "/outputs/aws_resources.json", "yarn", "start:dev"]
 
 FROM lerna-bootstrap as application-front-end
-
-RUN yarn global add serve
 
 # These are required to bake the image at build time (we're compiling assets statically)
 ARG REACT_APP_EXPRESS_URL
@@ -37,6 +43,9 @@ RUN yarn run build
 ENTRYPOINT ["yarn", "run", "serve-static", "-l", "3000"]
 
 FROM lerna-bootstrap as lunasec-cli
+
+RUN apk add --no-cache docker docker-compose curl python3 bash
+
 # Overwrite this when calling docker from CI
 ENV HOST_MACHINE_PWD=""
 
@@ -47,7 +56,7 @@ WORKDIR /repo
 # This is required because we aren't able to pass additional command arguments via Docker-Compose unless we are invoking
 # via the "exec" Entrypoint syntax. This lets us then expand environment variables at runtime.
 # This gives a better explanation: https://stackoverflow.com/questions/49133234/docker-entrypoint-with-env-variable-and-optional-arguments
-ENTRYPOINT ["bash", "/repo/js/sdks/packages/cli/scripts/docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "/repo/js/sdks/packages/cli/scripts/docker-entrypoint.sh"]
 
 FROM cypress/included:8.0.0 as integration-test
 

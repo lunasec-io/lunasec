@@ -95,9 +95,22 @@ function writeStackOutputsToConfig(output: string, local: boolean, stackOutputs:
   fs.writeFileSync(output, serializedConfig);
 }
 
+function getCdkCommand(options: DeployCmdOptions) {
+  if (options.customCdkCommand !== undefined) {
+    return options.customCdkCommand;
+  }
+
+  if (options.local) {
+    return 'cdklocal';
+  }
+
+  return 'cdk';
+}
+
 interface DeployCmdOptions {
   buildDir?: string;
   local: boolean;
+  customCdkCommand: string | undefined;
   skipMirroring: boolean;
   output?: string;
 }
@@ -146,7 +159,7 @@ export async function deployCmd(metrics: LunaSecMetrics, options: DeployCmdOptio
 
   const outputsFilePath = path.join(buildDir, 'outputs.json');
 
-  const cdkCmd = options.local ? 'cdklocal' : 'cdk';
+  const cdkCmd = getCdkCommand(options);
 
   const account = options.local ? '' : `aws://${accountID}/${awsRegion}`;
 

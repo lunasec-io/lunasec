@@ -31,7 +31,8 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "redoc-cli": "^0.12.3",
-    "url-loader": "^4.1.1"
+    "url-loader": "^4.1.1",
+    "webpack": "^5.64.4"
   },
   "browserslist": {
     "production": [
@@ -46,9 +47,9 @@
     ]
   },
   "devDependencies": {
-    "docusaurus-plugin-typedoc": "0.15.3",
-    "typedoc": "0.21.5",
-    "typedoc-plugin-markdown": "3.10.4",
+    "docusaurus-plugin-typedoc": "^0.16.5",
+    "typedoc": "0.22.10",
+    "typedoc-plugin-markdown": "^3.11.7",
     "typescript": "^4.3.5"
   }
 }

@@ -2,8 +2,6 @@
 .idea/
 .github/
 
-docs/
-
 docker-compose.yaml
 docker-compose.*.yaml
 

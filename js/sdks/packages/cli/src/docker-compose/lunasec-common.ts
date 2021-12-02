@@ -75,7 +75,7 @@ export function composeServicePorts(ports: number[]): DefinitionsService {
 }
 
 function getEnvStackConfigOptions(env: LunaSecStackEnvironment, configOptions?: DevelopmentConfigOptions) {
-  if (env === 'tests') {
+  if (env === 'tests' || env === 'demo') {
     return testsConfigOptionsDefaults;
   }
   if (env === 'hosted-live-demo') {

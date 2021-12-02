@@ -11,6 +11,8 @@ if [ "$CIPHERTEXT_S3_BUCKET" != "" ]; then
 else
   while :
   do
+    echo "foo-bad"
+    exit 0
     echo "Attempting to query aws localstack for bucket name and looping until success, please wait..." >&2
     name=$(aws --endpoint-url="http://$LOCALSTACK_HOSTNAME:4566" cloudformation describe-stacks --stack-name lunasec --query "Stacks[0].Outputs[?ExportName==\`ciphertextbucketOutput\`].OutputValue" | jq -r ".[0]")
     if [ "$name" != "" ]; then

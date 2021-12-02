@@ -11,9 +11,9 @@
   ],
   "scripts": {
     "clean": "rm -rf build",
-    "compile": "tsc -p ./tsconfig.json",
+    "compile": "yarn dlx tsc -p ./tsconfig.json",
     "watch": "yarn run compile -- -w",
-    "types:generate": "json-schema-to-typescript"
+    "types:generate": "yarn dlx json-schema-to-typescript"
   },
   "bin": {
     "lunasec": "./build/cli.js"
@@ -22,13 +22,15 @@
     "@types/adm-zip": "^0.4.34",
     "@types/find-config": "^1.0.1",
     "@types/js-yaml": "^4.0.3",
+    "@types/node": "^14.0.0",
     "@types/yargs": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^7.32.0",
     "genversion": "^3.0.1",
     "json-schema-to-typescript": "^10.1.5",
-    "ts-node": "^10.3.0"
+    "ts-node": "^10.3.0",
+    "typescript": "^4.4.2"
   },
   "dependencies": {
     "@aws-cdk/aws-apigateway": "1.129.0",
@@ -49,6 +51,8 @@
     "@aws-sdk/client-sts": "3.39.0",
     "@lunasec/secure-frame-front-end": "^1.0.7",
     "adm-zip": "^0.5.9",
+    "aws-cdk": "1.129.0",
+    "aws-cdk-local": "1.65.8",
     "cmd-ts": "^0.7.0",
     "decompress": "^4.2.1",
     "find-config": "^1.0.0",
@@ -56,8 +60,6 @@
     "js-yaml": "^4.1.0",
     "progress": "^2.0.3",
     "source-map-support": "^0.5.20",
-    "yargs": "^17.2.1",
-    "aws-cdk": "1.129.0",
-    "aws-cdk-local": "1.65.4"
+    "yargs": "^17.2.1"
   }
 }

@@ -5,9 +5,7 @@
   "main": "build/index.js",
   "module": "build/index.js",
   "typings": "build/index.d.ts",
-  "bin": {
-    "s3-redirect-generator": "./build/cli.js"
-  },
+  "bin": "./build/cli.js",
   "license": "Apache 2.0",
   "type": "module",
   "devDependencies": {

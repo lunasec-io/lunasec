@@ -3,19 +3,21 @@
   "version": "1.0.5",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e",
+    "serve": "yarn dlx vue-cli-service serve",
+    "build": "yarn dlx vue-cli-service build",
+    "test:unit": "yarn dlx vue-cli-service test:unit",
+    "test:e2e": "yarn dlx vue-cli-service test:e2e",
     "lint": "echo 'DONT USE THIS, USE THE GLOBAL ONE FROM THE REPO ROOT"
   },
   "dependencies": {
     "@lunasec/browser-common": "^1.0.7",
+    "@lunasec/isomorphic-common": "^1.0.7",
     "core-js": "^3.6.5",
     "vue": "^3.0.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.19",
+    "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",

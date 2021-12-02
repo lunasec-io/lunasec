@@ -1,13 +1,13 @@
 {
   "files": [],
   "references": [
+    { "path": "packages/isomorphic-common" },
     { "path": "packages/server-common"},
     { "path": "packages/node-sdk" },
     { "path": "packages/tokenizer-sdk" },
     { "path": "packages/browser-common" },
     { "path": "packages/react-sdk" },
     { "path": "packages/cli" },
-    { "path": "packages/isomorphic-common" },
     { "path": "packages/secure-frame-iframe" },
     { "path": "packages/vue-sdk" },
     { "path": "packages/server-common/tsconfig.module.json"},

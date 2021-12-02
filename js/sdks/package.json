@@ -5,7 +5,7 @@
   "description": "Secure frame SDK",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -b tsconfig.build.json",
+    "build": "yarn run tsc -b tsconfig.build.json",
     "compile": "yarn schema:copy && yarn schema:generate && yarn run build",
     "schema:copy": "cd ./packages/node-sdk && yarn schema:copy",
     "schema:generate": "cd ./packages/tokenizer-sdk && yarn openapi:generate",
