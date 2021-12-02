@@ -24,6 +24,16 @@ const fakeSSN = '123121234';
 const randomUserName = Math.floor(Math.random() * 1000000000).toString();
 const randomFileName = Math.floor(Math.random() * 1000000000).toString() + '.png';
 
+describe('visit page once to trigger CI bug', () => {
+  it('visits page and catches', () => {
+    try {
+      cy.visit('/');
+    } catch (e) {
+      console.error('caught and handled bug for first visit');
+    }
+  });
+});
+
 // Both these app modes have an identical UX so we run the same set of tests twice, selecting a different mode at the start
 runDedicatedModeTests('express');
 runDedicatedModeTests('graphql');
