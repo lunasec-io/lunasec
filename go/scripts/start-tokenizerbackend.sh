@@ -1,4 +1,5 @@
 #!/bin/bash
+
 make tokenizerbackend
 r=$?
 if [ $r -ne 0 ]; then
@@ -16,4 +17,14 @@ done
 mkdir -p config/tokenizerbackend/outputs
 cp ../outputs/aws_resources.json config/tokenizerbackend/outputs
 
-env $(cat < ../.env.host | xargs) ./build/tokenizerbackend_dev
+_term() {
+  echo "Caught SIGTERM signal!"
+  kill -TERM "$child" 2>/dev/null
+}
+
+trap _term SIGTERM SIGINT SIGHUP SIGQUIT
+
+env $(cat < ../.env.host | xargs) ./build/tokenizerbackend_dev &
+
+child=$!
+wait "$child"
