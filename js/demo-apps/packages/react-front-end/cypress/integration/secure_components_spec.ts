@@ -31,7 +31,7 @@ runDedicatedModeTests('graphql');
 function runDedicatedModeTests(mode: string) {
   describe(`demo app in mode: ${mode}`, function () {
     it('loads homepage', () => {
-      cy.visit(`/`); // Without this the second mode breaks, not sure why
+      cy.visit(`/`, { timeout: 30000 }); // Without doing a visit the second mode breaks, not sure why
     });
 
     it('selects mode', () => {
