@@ -114,7 +114,7 @@ jobs:
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
     - name: Use CLI Container with docker.sock mounted to launch all other containers
-      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests
+      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo --local-build --env=tests
 
     - name: docker logs
       if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
@@ -123,7 +123,7 @@ jobs:
 
     - name: docker compose logs
       if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
-      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests --show-logs=true
+      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo --local-build --show-logs --env=tests
 
     - uses: actions/upload-artifact@v2
       if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
