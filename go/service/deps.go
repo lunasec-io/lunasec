@@ -16,8 +16,9 @@ package service
 
 import (
 	"net/url"
-
+	"strings"
 	"go.uber.org/config"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 )
 
 type authCallbackConfig struct {
@@ -30,6 +31,7 @@ type AwsGatewayConfig struct {
 	LocalHTTPSProxy  string `yaml:"local_https_proxy"`
 	LocalstackURL    string `yaml:"localstack_url"`
 }
+
 
 func getS3HostURL(gatewayConfig AwsGatewayConfig) string {
 	if gatewayConfig.LocalHTTPSProxy != "" {
@@ -49,6 +51,7 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 	var (
 		authConfig    authCallbackConfig
 		gatewayConfig AwsGatewayConfig
+		appConfig types.AppConfig
 	)
 	// TODO report this to someplace
 	reportUri := "http://localhost:5004"
@@ -64,6 +67,14 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 	if err != nil {
 		panic(err)
 	}
+
+	err = provider.Get("app").Populate(&appConfig)
+	if err != nil {
+		panic(err)
+	}
+
+	allowedOriginsArr := appConfig.Cors.AllowedOrigins
+	frameAncestors := strings.Join(allowedOriginsArr, " ")
 
 	s3HostURL := getS3HostURL(gatewayConfig)
 
@@ -89,7 +100,7 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 		},
 		"object-src":                {"none"},
 		"default-src":               {"none"},
-		"frame-ancestors":           {"{{referer}}"},
+		"frame-ancestors":           {frameAncestors},
 		"base-uri":                  {"none"},
 		"require-trusted-types-for": {"script"},
 		"report-uri":                {reportUri},
@@ -98,5 +109,6 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 			"{{nonce}}",
 		},
 	}
+
 	return NewCSPMiddleware(cspPolicy, 16, false)
 }
