@@ -36,7 +36,8 @@ WORKDIR /repo/js/demo-apps/packages/react-front-end
 
 RUN yarn run build
 
-ENTRYPOINT ["yarn", "run", "serve-static", "-l", "3000"]
+CMD ["serve-static", "-l", "3000"]
+ENTRYPOINT ["yarn", "run"]
 
 FROM lerna-bootstrap as lunasec-cli
 
