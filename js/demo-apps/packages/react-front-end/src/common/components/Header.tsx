@@ -143,9 +143,9 @@ export const Header: React.FunctionComponent<{
           onChange={(e) => handleModeChange(e)}
           aria-label="backend mode"
         >
-          <MenuItem value="express">Express</MenuItem>
-          <MenuItem value="graphql">Graphql</MenuItem>
-          <MenuItem value="simple">Simple</MenuItem>
+          <MenuItem value="express">Mode: Express</MenuItem>
+          <MenuItem value="graphql">Mode: Graphql</MenuItem>
+          <MenuItem value="simple">Mode: Simple</MenuItem>
         </Select>
         {/*<FormHelperText>Backend Mode</FormHelperText>*/}
       </Toolbar>
