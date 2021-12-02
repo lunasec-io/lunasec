@@ -15781,7 +15781,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/eslint-plugin", "virtual:7773970250d4ed180d2b9dc95007dad568ae7d882c98dfdaf2970e734b5b2cb2991e170dbdedc5cb6627347fdc48f16724a25650895e8502880b11781e2f40f3#npm:4.33.0"],
             ["@typescript-eslint/parser", "virtual:7773970250d4ed180d2b9dc95007dad568ae7d882c98dfdaf2970e734b5b2cb2991e170dbdedc5cb6627347fdc48f16724a25650895e8502880b11781e2f40f3#npm:4.33.0"],
             ["axios", "npm:0.24.0"],
-            ["cypress", "npm:8.0.0"],
+            ["cypress", "npm:8.1.0"],
             ["cypress-file-upload", "virtual:6b44cc862d3461375244881848413854238c6f2c3b2abacfda02f6a541c01603b3b8ef542aacddba1f86785af05726b9a8927ef0b3b5288baafea59ec30fdd4c#npm:5.0.8"],
             ["cypress-iframe", "virtual:6b44cc862d3461375244881848413854238c6f2c3b2abacfda02f6a541c01603b3b8ef542aacddba1f86785af05726b9a8927ef0b3b5288baafea59ec30fdd4c#npm:1.0.1"],
             ["cypress-log-to-output", "npm:1.1.2"],
@@ -27086,10 +27086,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
           "linkType": "HARD",
         }],
-        ["npm:8.0.0", {
-          "packageLocation": "./.yarn/unplugged/cypress-npm-8.0.0-2ee8bff904/node_modules/cypress/",
+        ["npm:8.1.0", {
+          "packageLocation": "./.yarn/unplugged/cypress-npm-8.1.0-0d157bae5d/node_modules/cypress/",
           "packageDependencies": [
-            ["cypress", "npm:8.0.0"],
+            ["cypress", "npm:8.1.0"],
             ["@cypress/request", "npm:2.88.10"],
             ["@cypress/xvfb", "npm:1.2.4"],
             ["@types/node", "npm:14.17.34"],
@@ -27196,7 +27196,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["cypress-file-upload", "virtual:6b44cc862d3461375244881848413854238c6f2c3b2abacfda02f6a541c01603b3b8ef542aacddba1f86785af05726b9a8927ef0b3b5288baafea59ec30fdd4c#npm:5.0.8"],
             ["@types/cypress", "npm:1.1.3"],
-            ["cypress", "npm:8.0.0"]
+            ["cypress", "npm:8.1.0"]
           ],
           "packagePeers": [
             "@types/cypress",
@@ -27250,7 +27250,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["cypress-terminal-report", "virtual:6b44cc862d3461375244881848413854238c6f2c3b2abacfda02f6a541c01603b3b8ef542aacddba1f86785af05726b9a8927ef0b3b5288baafea59ec30fdd4c#npm:3.4.0"],
             ["@types/cypress", "npm:1.1.3"],
             ["chalk", "npm:3.0.0"],
-            ["cypress", "npm:8.0.0"],
+            ["cypress", "npm:8.1.0"],
             ["fs-extra", "npm:9.1.0"],
             ["methods", "npm:1.1.2"],
             ["semver", "npm:7.3.5"],

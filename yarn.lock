@@ -8078,7 +8078,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^4.22.0
     "@typescript-eslint/parser": ^4.22.0
     axios: ^0.24.0
-    cypress: 8.0.0
+    cypress: 8.1.0
     cypress-file-upload: ^5.0.8
     cypress-iframe: ^1.0.1
     cypress-log-to-output: ^1.1.2
@@ -16858,9 +16858,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:8.0.0":
-  version: 8.0.0
-  resolution: "cypress@npm:8.0.0"
+"cypress@npm:8.1.0":
+  version: 8.1.0
+  resolution: "cypress@npm:8.1.0"
   dependencies:
     "@cypress/request": ^2.88.5
     "@cypress/xvfb": ^1.2.4
@@ -16905,7 +16905,7 @@ __metadata:
     yauzl: ^2.10.0
   bin:
     cypress: bin/cypress
-  checksum: 6f8444843de84fddca64d2dc09b20bad16edd578b61b830db9038793c0a8bf363b187abd9e35c55d1f12f76d7abb5adcc85a03d1556ff4178faa72d1a6a184e1
+  checksum: 564093b5f33e2967437b6579b6911915dddacb323b23c436545f108c72f689de079ba220c4ca7ebaf98a91e5832f3b1940b2354276ddab7f87e4a166359c670f
   languageName: node
   linkType: hard
 

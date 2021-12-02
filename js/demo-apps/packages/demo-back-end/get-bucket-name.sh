@@ -9,19 +9,7 @@ if [ "$CIPHERTEXT_S3_BUCKET" != "" ]; then
   echo "Found s3 bucket in env variable as $CIPHERTEXT_S3_BUCKET, using it" >&2
   echo "$CIPHERTEXT_S3_BUCKET"
 else
-  while :
-  do
-    echo "foo-bad"
-    exit 0
-    echo "Attempting to query aws localstack for bucket name and looping until success, please wait..." >&2
-    name=$(aws --endpoint-url="http://$LOCALSTACK_HOSTNAME:4566" cloudformation describe-stacks --stack-name lunasec --query "Stacks[0].Outputs[?ExportName==\`ciphertextbucketOutput\`].OutputValue" | jq -r ".[0]")
-    if [ "$name" != "" ]; then
-      echo "Received bucket name from aws: $name" >&2
-      break
-    fi
-    sleep 2
-  done
-  echo "$name"
+  jq -r .aws_gateway.ciphertext_bucket /outputs/aws_resources.json
 fi
 
 #here is a way to read the name out of the resource file if we ever decide we want to do it that way instead

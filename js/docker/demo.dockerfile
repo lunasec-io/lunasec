@@ -4,7 +4,7 @@ ENV NODE_OPTIONS "--unhandled-rejections=strict"
 ENV RUNNING_IN_CI "true"
 ENV CI "true"
 
-RUN apk add --no-cache sqlite jq nodejs npm bash
+RUN apk add --no-cache sqlite jq nodejs npm bash curl
 
 RUN npm install -g yarn
 
@@ -20,13 +20,9 @@ RUN yarn run compile:dev:sdks
 
 FROM lerna-bootstrap as application-back-end
 
-# Sets up the script to wait for the resource config to be available.
-COPY scripts/wait-for-file.sh /tmp/wait-for-file.sh
-RUN chmod +x /tmp/wait-for-file.sh
-
 WORKDIR /repo/js/demo-apps/packages/demo-back-end
 
-ENTRYPOINT ["sh", "/tmp/wait-for-file.sh", "/outputs/aws_resources.json", "yarn", "start:dev"]
+ENTRYPOINT ["sh", "/repo/go/scripts/wait-for-file.sh", "/outputs/aws_resources.json", "yarn", "start:dev"]
 
 FROM lerna-bootstrap as application-front-end
 
@@ -58,7 +54,7 @@ WORKDIR /repo
 # This gives a better explanation: https://stackoverflow.com/questions/49133234/docker-entrypoint-with-env-variable-and-optional-arguments
 ENTRYPOINT ["sh", "/repo/js/sdks/packages/cli/scripts/docker-entrypoint.sh"]
 
-FROM cypress/included:8.0.0 as integration-test
+FROM cypress/included:8.1.0 as integration-test
 
 RUN apt update && apt install -y xvfb
 
