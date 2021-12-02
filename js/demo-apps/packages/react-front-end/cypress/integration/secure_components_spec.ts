@@ -24,12 +24,6 @@ const fakeSSN = '123121234';
 const randomUserName = Math.floor(Math.random() * 1000000000).toString();
 const randomFileName = Math.floor(Math.random() * 1000000000).toString() + '.png';
 
-describe('setup', () => {
-  it('loads homepage', () => {
-    cy.visit('/');
-  });
-});
-
 // Both these app modes have an identical UX so we run the same set of tests twice, selecting a different mode at the start
 runDedicatedModeTests('express');
 runDedicatedModeTests('graphql');
@@ -37,12 +31,13 @@ runDedicatedModeTests('graphql');
 function runDedicatedModeTests(mode: string) {
   describe(`demo app in mode: ${mode}`, function () {
     it('loads homepage', () => {
-      cy.visit(`/${mode}`);
+      cy.visit(`/`); // Without this the second mode breaks, not sure why
     });
 
     it('selects mode', () => {
       cy.get('#mode-selector').click();
       cy.get(`li`).contains(mode, { matchCase: false }).click();
+      cy.url().should('include', mode);
     });
 
     it('signs up', () => {
