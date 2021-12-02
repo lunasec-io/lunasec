@@ -111,7 +111,10 @@ jobs:
       run: yarn run test:unit:go
 
     - name: Verify Yarn Cache
-      run: yarn install --check-cache
+      env:
+        IS_LUNASEC_CI: true
+        CI: true
+      run: yarn install --immutable --immutable-cache --check-cache
 
     - name: Build CLI Container
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
