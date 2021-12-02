@@ -84,7 +84,7 @@ func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
 	cspPolicy := map[string][]string{
 		"connect-src": connectSrcUrls,
 		"script-src": {
-			"unsafe-inline",
+			//"unsafe-inline",
 			"{{nonce}}",
 		},
 		"object-src":                {"none"},
