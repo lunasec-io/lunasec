@@ -6,7 +6,6 @@ test
 src/**.js
 coverage
 lib-cov
-yarn.lock
 
 ### Node ###
 # Logs
