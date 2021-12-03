@@ -55,7 +55,7 @@ WORKDIR /repo
 # This gives a better explanation: https://stackoverflow.com/questions/49133234/docker-entrypoint-with-env-variable-and-optional-arguments
 ENTRYPOINT ["sh", "/repo/js/sdks/packages/cli/scripts/docker-entrypoint.sh"]
 
-FROM cypress/included:8.1.0 as integration-test
+FROM cypress/included:9.1.0 as integration-test
 
 RUN apt update && apt install -y xvfb
 
