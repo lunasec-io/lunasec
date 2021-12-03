@@ -13,7 +13,7 @@ windows:
 
     - shell_command:
       - cd js/sdks/packages/secure-frame-iframe
-      - npx http-server -a localhost -p 8000
+      - npx --yes http-server -a localhost -p 8000
 
     # Demo React App Front End
     # Available REACT_APP_DEMO_NAMES are 'dedicated-passport-express', 'dedicated-passport-graphql', and 'simple'
