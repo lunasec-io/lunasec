@@ -18,7 +18,7 @@ export const demoDockerFile = 'js/docker/demo.dockerfile';
 export const localstackImage = 'localstack/localstack:0.12.19';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-export const { version } = require('../../package.json');
+export const { version }: { version: string } = require('../../package.json');
 export const LunaSecStackEnvironments = [
   'local-dependencies',
   'demo',
