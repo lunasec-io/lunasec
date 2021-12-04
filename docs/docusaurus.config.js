@@ -85,8 +85,8 @@ module.exports = {
         },
         excludePrivate: true,
         readme: 'none',
-        sort: ['required-first', 'source-order']
-      },
+        sort: ['required-first', 'source-order'],
+        excludeExternals: true,},
     ],
     [
       'docusaurus-plugin-typedoc',
