@@ -64,7 +64,7 @@ export function generateFrontEndDockerConfig(
   };
 
   if (config.localBuild) {
-    localBuildConfig.command = ['run', 'build', '&&', 'yarn', 'run', 'serve-static', '-l', '3000'];
+    localBuildConfig.command = ['build-and-serve-static', '-l', '3000'];
   }
 
   const frontEndPort = 3000;

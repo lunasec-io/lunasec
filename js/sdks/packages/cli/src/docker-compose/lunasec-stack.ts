@@ -469,8 +469,6 @@ export class LunaSecStackDockerCompose {
       };
     }
 
-    const tokenizerUrl = this.serviceCreationConfig.environmentConfig.tokenizerUrl;
-
     const expressPort = 3001;
     const graphqlPort = 3002;
     const simpleTokenizerPort = 3003;
@@ -480,7 +478,7 @@ export class LunaSecStackDockerCompose {
         REACT_APP_EXPRESS_URL: `http://localhost:${expressPort}`,
         REACT_APP_GRAPHQL_URL: `http://localhost:${graphqlPort}`,
         REACT_APP_SIMPLE_TOKENIZER_URL: `http://localhost:${simpleTokenizerPort}`,
-        REACT_APP_TOKENIZER_URL: tokenizerUrl,
+        REACT_APP_TOKENIZER_URL: 'http://localhost:37766',
       };
     }
 
@@ -489,7 +487,7 @@ export class LunaSecStackDockerCompose {
         REACT_APP_EXPRESS_URL: `http://application-back-end:${expressPort}`,
         REACT_APP_GRAPHQL_URL: `http://application-back-end:${graphqlPort}`,
         REACT_APP_SIMPLE_TOKENIZER_URL: `http://application-back-end:${simpleTokenizerPort}`,
-        REACT_APP_TOKENIZER_URL: tokenizerUrl,
+        REACT_APP_TOKENIZER_URL: 'http://tokenizer-backend:37766',
       };
     }
 

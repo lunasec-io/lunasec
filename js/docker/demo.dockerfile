@@ -59,8 +59,6 @@ FROM cypress/included:9.1.0 as integration-test
 
 RUN apt update && apt install -y xvfb
 
-# RUN cypress install --force
-
 ENV VERBOSE_CYPRESS_LOGS="always"
 
 COPY --from=lerna-bootstrap /repo /repo
