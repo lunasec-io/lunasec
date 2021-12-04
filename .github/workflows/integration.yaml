@@ -96,6 +96,10 @@ jobs:
       if: ${{ matrix.lockfile == 'no-lockfile' }}
       run: rm yarn.lock && unset CI && yarn install
 
+    - name: Yarn install
+      if: ${{ matrix.lockfile == 'no-lockfile' }}
+      run: yarn install
+
 #    - uses: actions/setup-go@v2
 #      with:
 #        go-version: '^1.17.1'
