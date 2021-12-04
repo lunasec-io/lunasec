@@ -92,9 +92,9 @@ jobs:
       if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled != 'false' }}
       timeout-minutes: 15
 
-    - name: Delete Lockfile
+    - name: Delete and Regenerate Lockfile
       if: ${{ matrix.lockfile == 'no-lockfile' }}
-      run: rm yarn.lock
+      run: rm yarn.lock && yarn install
 
 #    - uses: actions/setup-go@v2
 #      with:

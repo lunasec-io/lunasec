@@ -10306,7 +10306,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],
       [
         "yargs",
-        "npm:17.3.0"
+        "npm:16.2.0"
       ],
       [
         "yargs-parser",
@@ -25852,8 +25852,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["progress", "npm:2.0.3"],
             ["source-map-support", "npm:0.5.21"],
             ["ts-node", "virtual:46850b1c6091310cd86d90ea11317452283f1fee7b85aec2a8a677f2c7db9c1480483962701895c498ffc775ede04948402e4317eff349f4d64b46c33aab4e8d#npm:10.4.0"],
-            ["typescript", "patch:typescript@npm%3A4.5.2#~builtin<compat/typescript>::version=4.5.2&hash=493e53"],
-            ["yargs", "npm:17.3.0"]
+            ["typescript", "patch:typescript@npm%3A4.5.2#~builtin<compat/typescript>::version=4.5.2&hash=493e53"]
           ],
           "linkType": "SOFT",
         }]

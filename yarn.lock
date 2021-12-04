@@ -7935,7 +7935,6 @@ __metadata:
     source-map-support: ^0.5.20
     ts-node: ^10.3.0
     typescript: ^4.4.2
-    yargs: ^17.2.1
   bin:
     lunasec: ./build/cli.js
   languageName: unknown
@@ -39372,7 +39371,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.0.1, yargs@npm:^17.2.1":
+"yargs@npm:^17.0.1":
   version: 17.3.0
   resolution: "yargs@npm:17.3.0"
   dependencies:
