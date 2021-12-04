@@ -124,8 +124,8 @@ jobs:
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
     # Hijack the cli image to quickly run linting and unit testing
-    - name: Lint
-      run: docker run --entrypoint yarn repo_lunasec-cli lint
+#    - name: Lint
+#      run: docker run --entrypoint yarn repo_lunasec-cli lint
 
     - name: Unit Test
       run: docker run --entrypoint yarn repo_lunasec-cli test:unit:js
