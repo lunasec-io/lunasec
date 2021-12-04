@@ -18,15 +18,27 @@
 
 import 'source-map-support/register';
 
-import * as yargs from 'yargs';
+import { binary, command, run, subcommands } from 'cmd-ts';
 
 import { getLunaSecMetrics } from './analytics/metrics';
 import { deployCmd } from './cmds/deploy';
 import { ejectCmd } from './cmds/eject';
+import {
+  buildDirOption,
+  envOption,
+  forceRebuildFlag,
+  jsonFlag,
+  localBuildFlag,
+  localFlag,
+  noSudoFlag,
+  outputOption,
+  showLogsFlag,
+  skipMirroringFlag,
+  verboseFlag,
+} from './cmds/options';
 import { resourcesCmd } from './cmds/resources';
 import { startCmd } from './cmds/start';
 import { debug } from './constants/cli';
-import { LunaSecStackEnvironments } from './docker-compose/constants';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
@@ -34,159 +46,92 @@ const { version } = require('../package.json');
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 console.debug = debug ? console.debug : (...data: any[]) => {};
 
-yargs
-  .scriptName('lunasec')
-  .usage('$0 <cmd> [args]')
-  .version(version)
-  .command(
-    'start',
-    'Start LunaSec stack locally.',
-    {
-      env: {
-        type: 'string',
-        required: false,
-        default: 'dev',
-        description: `Environment to start the LunaSec stack in: ${LunaSecStackEnvironments.filter(
-          (e) => e === 'production'
-        ).join(', ')}`,
-      },
-      'local-build': {
-        type: 'boolean',
-        required: false,
-        default: false,
-        description: 'Build the LunaSec stack locally (command should be run from monorepo root).',
-      },
-      'force-rebuild': {
-        type: 'boolean',
-        required: false,
-        default: false,
-        description:
-          'Rebuild the LunaSec stack (command should be run from monorepo root). Only works if used with `--local-build`.',
-      },
-      'no-sudo': {
-        type: 'boolean',
-        required: false,
-        default: false,
-        description: 'Do not prepend "sudo" before the docker-compose command.',
-      },
-      verbose: {
-        type: 'boolean',
-        required: false,
-        default: false,
-        description: 'Log all actions performed by the CLI.',
-      },
-      'show-logs': {
-        type: 'boolean',
-        required: false,
-        default: false,
-        description: 'Show the logs from a previous run of the LunaSec stack for the specified environment.',
-      }
-    },
-    async (args) => {
-      const metrics = await getLunaSecMetrics();
-      return startCmd(metrics, {
-        env: args.env,
-        localBuild: args['local-build'],
-        forceRebuild: args['force-rebuild'],
-        noSudo: args['no-sudo'],
-        verbose: args.verbose,
-        showLogs: args['show-logs'],
-      });
-    }
-  )
-  .command(
-    'deploy',
-    'Deploy the LunaSec stack to AWS.',
-    {
-      'build-dir': {
-        required: false,
-        type: 'string',
-        description: 'Build directory for built secure components.',
-      },
-      local: {
-        required: false,
-        default: false,
-        type: 'boolean',
-        description: 'Deploy the LunaSec stack to Localstack.',
-      },
-      output: {
-        required: false,
-        type: 'string',
-        description: 'Path to where the resources output file will be written to.',
-      },
-      'skip-mirroring': {
-        required: false,
-        default: false,
-        description: 'Skip docker image mirroring.',
-      },
-      'custom-cdk-command': {
-        type: 'string',
-        required: false,
-        default: undefined,
-        description: 'Custom command used in place of the AWS CDK (supercedes --local-build).',
-      },
-    },
-    async (args) => {
-      const metrics = await getLunaSecMetrics();
-      return await deployCmd(metrics, {
-        buildDir: args['build-dir'],
-        local: args.local,
-        customCdkCommand: args['custom-cdk-command'],
-        output: args.output,
-        skipMirroring: args['skip-mirroring'],
-      });
-    }
-  )
-  .command(
-    'resources',
-    'Show the stack resources for the latest deployment.',
-    {
-      'build-dir': {
-        required: false,
-        type: 'string',
-        description: 'Build directory for built secure components.',
-      },
-      json: {
-        required: false,
-        default: false,
-        type: 'boolean',
-        description: "Output this stack's resources as a json object.",
-      },
-    },
-    (args) => {
-      return resourcesCmd({
-        buildDir: args['build-dir'],
-        json: args.json,
-      });
-    }
-  )
-  .command(
-    'eject',
-    'generate a docker compose file in the current directory without invoking docker-compose',
-    {
-      'local-build': {
-        type: 'boolean',
-        required: false,
-        default: false,
-        description: 'Build the LunaSec stack locally.',
-      },
-      env: {
-        type: 'string',
-        required: false,
-        default: 'dev',
-        description: `Environment to start the LunaSec stack in: ${LunaSecStackEnvironments.filter(
-          (e) => e === 'production'
-        ).join(', ')}`,
-      },
-    },
-    (args) => {
-      return ejectCmd({
-        env: args.env,
-        localBuild: args['local-build'],
-      });
-    }
-  )
-  .demandCommand()
-  .help();
+const start = command({
+  name: 'start',
+  description: 'Start LunaSec stack locally.',
+  args: {
+    envOption,
+    localBuildFlag,
+    forceRebuildFlag,
+    noSudoFlag,
+    verboseFlag,
+    showLogsFlag,
+  },
+  handler: async (args) => {
+    const metrics = await getLunaSecMetrics();
+    return startCmd(metrics, {
+      env: args.envOption,
+      localBuild: args.localBuildFlag,
+      forceRebuild: args.forceRebuildFlag,
+      noSudo: args.noSudoFlag,
+      verbose: args.verboseFlag,
+      showLogs: args.showLogsFlag,
+    });
+  },
+});
 
-void yargs.parse();
+const deploy = command({
+  name: 'deploy',
+  description: 'Deploy the LunaSec stack to AWS.',
+  args: {
+    buildDirOption,
+    localFlag,
+    outputOption,
+    skipMirroringFlag,
+  },
+  handler: async (args) => {
+    const metrics = await getLunaSecMetrics();
+    return await deployCmd(metrics, {
+      buildDir: args.buildDirOption,
+      local: args.localFlag,
+      output: args.outputOption,
+      skipMirroring: args.skipMirroringFlag,
+    });
+  },
+});
+
+const resources = command({
+  name: 'resources',
+  description: 'Show the stack resources for the latest deployment.',
+  args: {
+    buildDirOption,
+    jsonFlag,
+  },
+  handler: (args) => {
+    return resourcesCmd({
+      buildDir: args.buildDirOption,
+      json: args.jsonFlag,
+    });
+  },
+});
+
+const eject = command({
+  name: 'eject',
+  description: 'Generate a docker compose file in the current directory without invoking docker-compose.',
+  args: {
+    localBuildFlag,
+    envOption,
+  },
+  handler: (args) => {
+    return ejectCmd({
+      env: args.envOption,
+      localBuild: args.localBuildFlag,
+    });
+  },
+});
+
+const commands = subcommands({
+  name: 'lunasec',
+  description: 'Cli for interacting with LunaSec locally and for deploying.',
+  version: version,
+  cmds: {
+    start,
+    deploy,
+    resources,
+    eject,
+  },
+});
+
+const cli = binary(commands);
+
+void run(cli, process.argv);
