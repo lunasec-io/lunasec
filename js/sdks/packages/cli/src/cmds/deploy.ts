@@ -28,11 +28,9 @@ import { getOutputName, LunaSecDeploymentStack } from '../cdk-stack/stack';
 import { AwsResourceConfig, LunaSecStackName, SecureFrameAssetFilename } from '../cdk-stack/types';
 import { loadLunaSecStackConfig } from '../config/load-config';
 import { awsRegion, buildsFolder, lunaSecDir } from '../constants/cli';
+import { version } from '../docker-compose/constants';
 import { runCommand } from '../utils/exec';
 import { copyFolderRecursiveSync } from '../utils/filesystem';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version } = require('../../package.json');
 
 async function setupProductionSecureFrameBucket(
   stack: LunaSecDeploymentStack,
@@ -96,12 +94,8 @@ function writeStackOutputsToConfig(output: string, local: boolean, stackOutputs:
 }
 
 function getCdkCommand(options: DeployCmdOptions) {
-  if (options.customCdkCommand !== undefined) {
-    return options.customCdkCommand;
-  }
-
   if (options.local) {
-    return 'cdklocal';
+    return 'yarn dlx aws-cdk-local';
   }
 
   return 'cdk';
@@ -110,7 +104,6 @@ function getCdkCommand(options: DeployCmdOptions) {
 interface DeployCmdOptions {
   buildDir?: string;
   local: boolean;
-  customCdkCommand: string | undefined;
   skipMirroring: boolean;
   output?: string;
 }
@@ -204,5 +197,5 @@ export async function deployCmd(metrics: LunaSecMetrics, options: DeployCmdOptio
 
   await metrics.push(`lunasec deploy, options: ${JSON.stringify(options)}`, 'production', true);
 
-  console.log(`Completed LunaSec stack deployment for version: ${version as string}`);
+  console.log(`Completed LunaSec stack deployment for version: ${version}`);
 }

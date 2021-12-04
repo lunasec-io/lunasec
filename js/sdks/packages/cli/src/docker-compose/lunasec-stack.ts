@@ -242,15 +242,12 @@ export class LunaSecStackDockerCompose {
       volumes: [outputMount],
     };
 
-    // This is required with the migration to Yarn V2 with PNP.
-    const cdkCommand = ' --custom-cdk-command "yarn dlx aws-cdk-local"';
-
     return {
       name,
       config: {
         ...this.serviceCreationConfig.getBaseServiceConfig(name),
         ...(this.serviceCreationConfig.localBuild ? localBuildConfig : dockerBuildConfig),
-        command: `deploy --local --output /outputs/${awsResourcesOutputFile}${cdkCommand}`,
+        command: `deploy --local --output /outputs/${awsResourcesOutputFile}`,
         depends_on: [this.localstackProxy().name],
       },
     };
@@ -545,7 +542,7 @@ export class LunaSecStackDockerCompose {
   }
 
   getDependenciesEnv(dockerDevEnv: LunaSecDockerEnv): LunaSecServiceDependenciesEnv {
-    const { environmentConfig, env } = this.serviceCreationConfig;
+    const { environmentConfig } = this.serviceCreationConfig;
     const { applicationFrontEnd, applicationBackEnd } = environmentConfig;
     const { TOKENIZER_URL, CDN_HOST, LOCAL_HTTPS_PROXY } = dockerDevEnv;
 
