@@ -94,7 +94,7 @@ jobs:
 
     - name: Delete and Regenerate Lockfile
       if: ${{ matrix.lockfile == 'no-lockfile' }}
-      run: rm yarn.lock && yarn install
+      run: rm yarn.lock && unset CI && yarn install
 
 #    - uses: actions/setup-go@v2
 #      with:
