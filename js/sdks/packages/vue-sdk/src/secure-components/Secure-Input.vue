@@ -1,5 +1,6 @@
 <template>
-  <iframe v-if="shouldRenderFrame" <input ref="dummyElementRef" />
+  <iframe v-if="shouldRenderFrame"></iframe>
+  <input ref="dummyElementRef" />
   <input ref="dummyStyleRef" />
 </template>
 
