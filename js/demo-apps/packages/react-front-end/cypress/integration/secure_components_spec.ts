@@ -32,23 +32,21 @@ const randomFileName = Math.floor(Math.random() * 1000000000).toString() + '.png
 //
 // Cypress.on('fail', handleFailure);
 //
-// describe('visit page once to trigger CI bug', () => {
-//   // afterEach(() => {
-//   //   // @ts-ignore
-//   //   console.log(this);
-//   // });
-//   //
-//   //   cy.on('fail', (e) => {
-//   //     console.error('!!!!!!!!!!!!!! caught and handled bug for first visit:', e);
-//   //     // runnable.skip();
-//   //     return false;
-//   //   });
-//   it('visits page and catches', () => {
-//     cy.visit('/', { timeout: 180000, retryOnNetworkFailure: true, retryOnStatusCodeFailure: true });
-//
-//     expect(5).to.equal(42);
-//   });
-// });
+describe('visit page once to trigger CI bug', () => {
+  //   // afterEach(() => {
+  //   //   // @ts-ignore
+  //   //   console.log(this);
+  //   // });
+  //   //
+  //   //   cy.on('fail', (e) => {
+  //   //     console.error('!!!!!!!!!!!!!! caught and handled bug for first visit:', e);
+  //   //     // runnable.skip();
+  //   //     return false;
+  //   //   });
+  it('visits page and catches', () => {
+    cy.visit('/', { timeout: 500000, retryOnNetworkFailure: true, retryOnStatusCodeFailure: true });
+  });
+});
 //
 // Cypress.removeListener('fail', handleFailure);
 
