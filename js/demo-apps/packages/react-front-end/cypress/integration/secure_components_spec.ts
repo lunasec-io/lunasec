@@ -44,7 +44,7 @@ describe('visit page once to trigger CI bug', () => {
   //   //     return false;
   //   //   });
   it('visits page and catches', () => {
-    cy.visit('/', { timeout: 500000, retryOnNetworkFailure: true, retryOnStatusCodeFailure: true });
+    cy.visit('/', { timeout: 700000, retryOnNetworkFailure: true, retryOnStatusCodeFailure: true, headers: {Connection: 'Keep-Alive', 'Accept-Encoding': 'gzip, deflate'} });
   });
 });
 //
