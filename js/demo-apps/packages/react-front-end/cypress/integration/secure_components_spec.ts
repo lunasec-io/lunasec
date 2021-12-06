@@ -24,6 +24,11 @@ const fakeSSN = '123121234';
 const randomUserName = Math.floor(Math.random() * 1000000000).toString();
 const randomFileName = Math.floor(Math.random() * 1000000000).toString() + '.png';
 
+Cypress.once('fail', (e) => {
+  console.log('CAUGHT FAIL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+  console.log(e);
+});
+
 describe('visit page once to trigger CI bug', () => {
   // afterEach(() => {
   //   // @ts-ignore
@@ -37,7 +42,7 @@ describe('visit page once to trigger CI bug', () => {
   //   });
   cy.visit('/', { timeout: 180000, retryOnNetworkFailure: true, retryOnStatusCodeFailure: true });
 
-  // expect(5).to.equal(42);
+  expect(5).to.equal(42);
 });
 
 // Both these app modes have an identical UX so we run the same set of tests twice, selecting a different mode at the start
