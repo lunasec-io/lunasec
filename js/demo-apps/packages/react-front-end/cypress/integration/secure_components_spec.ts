@@ -24,26 +24,41 @@ const fakeSSN = '123121234';
 const randomUserName = Math.floor(Math.random() * 1000000000).toString();
 const randomFileName = Math.floor(Math.random() * 1000000000).toString() + '.png';
 
-Cypress.once('fail', (e) => {
-  console.log('CAUGHT FAIL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-  console.log(e);
-});
+// function handleFailure(e: Error) {
+//   console.log('CAUGHT FAIL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+//   console.log(e);
+//   return false;
+// }
+//
+// Cypress.on('fail', handleFailure);
+//
+// describe('visit page once to trigger CI bug', () => {
+//   // afterEach(() => {
+//   //   // @ts-ignore
+//   //   console.log(this);
+//   // });
+//   //
+//   //   cy.on('fail', (e) => {
+//   //     console.error('!!!!!!!!!!!!!! caught and handled bug for first visit:', e);
+//   //     // runnable.skip();
+//   //     return false;
+//   //   });
+//   it('visits page and catches', () => {
+//     cy.visit('/', { timeout: 180000, retryOnNetworkFailure: true, retryOnStatusCodeFailure: true });
+//
+//     expect(5).to.equal(42);
+//   });
+// });
+//
+// Cypress.removeListener('fail', handleFailure);
 
-describe('visit page once to trigger CI bug', () => {
-  // afterEach(() => {
-  //   // @ts-ignore
-  //   console.log(this);
-  // });
-  // it('visits page and catches', () => {
-  //   cy.on('fail', (e) => {
-  //     console.error('!!!!!!!!!!!!!! caught and handled bug for first visit:', e);
-  //     // runnable.skip();
-  //     return false;
-  //   });
-  cy.visit('/', { timeout: 180000, retryOnNetworkFailure: true, retryOnStatusCodeFailure: true });
-
-  expect(5).to.equal(42);
-});
+// describe('waits for startup', () => {
+//   it('wait', () => {
+//     cy.server();
+//     cy.route('GET', '/').as('getRoot');
+//     return cy.wait('@getRoot');
+//   });
+// });
 
 // Both these app modes have an identical UX so we run the same set of tests twice, selecting a different mode at the start
 runDedicatedModeTests('express');
