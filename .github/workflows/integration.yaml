@@ -119,15 +119,19 @@ jobs:
     - name: Go Tests
       run: yarn run test:unit:go
 
+    # specifically tag this bootstrap container to prevent rebuilds
+    - name: Build Lerna Bootstrap container
+      run: docker build --progress plain -f ./js/docker/demo.dockerfile -t lerna-bootstrap --target lerna-bootstrap .
+
     - name: Build CLI Container
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
-    # Hijack the cli image to quickly run linting and unit testing
-#    - name: Lint
-#      run: docker run --entrypoint yarn repo_lunasec-cli lint
+    # Use the bootstrap image to quickly run linting and unit testing
+    - name: Lint
+      run: docker run --entrypoint yarn lerna-bootstrap lint
 
     - name: Unit Test
-      run: docker run --entrypoint yarn repo_lunasec-cli test:unit:js
+      run: docker run --entrypoint yarn lerna-bootstrap test:unit:js
 
     - name: Use CLI Container with docker.sock mounted to launch all other containers
       run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo --local-build --env=tests

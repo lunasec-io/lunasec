@@ -7,7 +7,7 @@
   "typings": "build/types.d.ts",
   "types": "/src/types.ts",
   "scripts": {
-    "start:dev": "CIPHERTEXT_S3_BUCKET=\"$(sh $(pwd)/get-bucket-name.sh)\" yarn run ts-node-dev --files ./src/main.ts",
+    "start:dev": "CIPHERTEXT_S3_BUCKET=\"$(./get-bucket-name.sh)\" yarn run ts-node-dev --files ./src/main.ts",
     "compile": "yarn run tsc -p tsconfig.json",
     "copy-dev-files": "cp -R views build/",
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -66,7 +66,6 @@ COPY --from=lerna-bootstrap /repo /repo
 
 WORKDIR /repo/
 
-# We would use test:all but couldn't easily get golang into this container, so those run on bare box
 ENTRYPOINT /repo/tools/service-scripts/wait-for-services.sh "$DEPENDENCIES__INTEGRATION_TEST" yarn run test:e2e:docker
 
 FROM lerna-bootstrap as secure-frame-iframe

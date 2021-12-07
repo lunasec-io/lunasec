@@ -2437,6 +2437,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:0.1.2"
       ],
       [
+        "@types/source-map-support",
+        "npm:0.5.4"
+      ],
+      [
         "@types/sqlite3",
         "npm:3.1.7"
       ],
@@ -25885,6 +25889,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/find-config", "npm:1.0.1"],
             ["@types/js-yaml", "npm:4.0.5"],
             ["@types/node", "npm:14.18.0"],
+            ["@types/source-map-support", "npm:0.5.4"],
             ["@types/yargs", "npm:17.0.7"],
             ["@typescript-eslint/eslint-plugin", "virtual:d36196dc31dc9c2d34ecbc1159c62bdddfa56217cd5b050ba0e4d2b7b72e1afc5ccc7910925c8b43d6b84eb1f3ba8d7ac60b4e153504de0012ef818333bb47df#npm:5.6.0"],
             ["@typescript-eslint/parser", "virtual:d36196dc31dc9c2d34ecbc1159c62bdddfa56217cd5b050ba0e4d2b7b72e1afc5ccc7910925c8b43d6b84eb1f3ba8d7ac60b4e153504de0012ef818333bb47df#npm:5.6.0"],
@@ -28642,6 +28647,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-source-list-map-npm-0.1.2-1983e10da7-fda8f37537.zip/node_modules/@types/source-list-map/",
           "packageDependencies": [
             ["@types/source-list-map", "npm:0.1.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@types/source-map-support", [
+        ["npm:0.5.4", {
+          "packageLocation": "./.yarn/cache/@types-source-map-support-npm-0.5.4-1c4eb2be20-160ff77e8a.zip/node_modules/@types/source-map-support/",
+          "packageDependencies": [
+            ["@types/source-map-support", "npm:0.5.4"],
+            ["source-map", "npm:0.6.1"]
           ],
           "linkType": "HARD",
         }]
