@@ -14,6 +14,21 @@
  * limitations under the License.
  *
  */
+import os from 'os';
+import path from 'path';
+
+export const debug = process.env.DEBUG || false;
+
 export const lunaSecDir = '.lunasec';
 
 export const awsResourcesOutputFile = 'aws_resources.json';
+
+export const cliAnalyticsServer = 'https://production.deployment-info.lunasec.io/record/cli';
+
+// TODO (cthompson) pick this up from the environment
+export const awsRegion = 'us-west-2';
+
+export const cliMetricTag = 'cli';
+
+export const metadataFile = path.join(os.homedir(), lunaSecDir, 'metadata.json');
+export const buildsFolder = path.join(os.homedir(), lunaSecDir, 'builds');
