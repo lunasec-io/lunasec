@@ -36,7 +36,6 @@ jobs:
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
-      RUNNING_IN_CI: true
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
     strategy:

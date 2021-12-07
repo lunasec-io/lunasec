@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -z ${RUNNING_IN_CI+x} ]; then
+if [ -z ${CI+x} ]; then
   yarn run license:install;
 else
   echo "running in CI, skipping postinstall hooks...";

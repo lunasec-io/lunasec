@@ -1,7 +1,6 @@
 FROM openjdk:18-alpine3.15 as lerna-bootstrap
 
 ENV NODE_OPTIONS "--unhandled-rejections=strict"
-ENV RUNNING_IN_CI "true"
 ENV CI "true"
 
 RUN apk add --no-cache sqlite jq nodejs npm bash curl
