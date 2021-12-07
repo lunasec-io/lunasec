@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
  *
@@ -14,7 +16,6 @@
  * limitations under the License.
  *
  */
-#!/usr/bin/env node
 
 // This script finds any html files in the /build folder where it was called from and adds the analytics snippet to them
 
