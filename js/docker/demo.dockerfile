@@ -45,6 +45,8 @@ RUN apk add --no-cache docker docker-compose curl python3 bash
 # Overwrite this when calling docker from CI
 ENV HOST_MACHINE_PWD=""
 
+ENV DOCKER_BUILDKIT="1"
+
 WORKDIR /repo/js/sdks/packages/cli
 
 WORKDIR /repo
