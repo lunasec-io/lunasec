@@ -21,10 +21,10 @@ module.exports = {
     node: true
   },
   extends: [
-    "plugin:vue/vue3-essential",
-    "@vue/typescript/recommended",
-    "@vue/prettier",
-    "@vue/prettier/@typescript-eslint",
+    // "plugin:vue/vue3-essential",
+    // "@vue/typescript/recommended",
+    // "@vue/prettier",
+    // "@vue/prettier/@typescript-eslint",
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
@@ -54,7 +54,8 @@ module.exports = {
   },
   plugins: [
     'react',
-    '@typescript-eslint'
+    '@typescript-eslint',
+    'jest'
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
