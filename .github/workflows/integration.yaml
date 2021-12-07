@@ -33,22 +33,7 @@ on:
 jobs:
   integration-test:
     runs-on: ubuntu-latest
-    env:
-      # avoid warnings like "tput: No value for $TERM and no -T specified"
-      TERM: xterm
-      RUNNING_IN_CI: true
-      DOCKER_BUILDKIT: 1
-      COMPOSE_DOCKER_CLI_BUILD: 1
-    strategy:
-      matrix:
-        merge: ["merged", "not-merged"]
-        lockfile: ["lockfile"] #,"no-lockfile"]
-        exclude:
-          - merge: "merged"
-            lockfile: "no-lockfile"
-
     steps:
-
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
