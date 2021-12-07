@@ -36,7 +36,7 @@ module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   const options = {
-    printLogsToConsole: 'always'
+    printLogsToConsole: process.env.CI ? 'always' : 'onFail'
   }
 
   require('cypress-terminal-report/src/installLogsPrinter')(on, options);
