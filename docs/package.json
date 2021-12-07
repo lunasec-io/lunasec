@@ -8,7 +8,7 @@
     "start": "yarn run openapi:generate && TYPEDOC_WATCH=true docusaurus start --port 4000",
     "build": "yarn run openapi:generate && TYPEDOC_WATCH=false yarn run build:docs && yarn insert:analytics",
     "build:docs": "docusaurus build",
-    "insert:analytics": "sh ./analytics/analytics-inserter.sh",
+    "insert:analytics": "../tools/analytics-inserter/analytics-inserter.js",
     "swizzle": "docusaurus swizzle",
     "deploy": "yarn run openapi:generate &&  docusaurus deploy",
     "deploy:s3-redirect-config": "s3-redirect-generator --inputConfig ./redirect-config.js --bucket ",

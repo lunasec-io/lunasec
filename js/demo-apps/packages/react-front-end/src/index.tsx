@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+
 export const AppContainer: React.FunctionComponent = () => {
   const classes = useStyles({});
   const location = useLocation();
