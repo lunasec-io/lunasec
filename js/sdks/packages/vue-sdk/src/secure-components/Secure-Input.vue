@@ -1,5 +1,6 @@
 <template>
-  <iframe v-if="shouldRenderFrame" <input ref="dummyElementRef" />
+  <iframe v-if="shouldRenderFrame"></iframe>
+  <input ref="dummyElementRef" />
   <input ref="dummyStyleRef" />
 </template>
 
@@ -9,7 +10,7 @@ import { defineComponent } from 'vue';
 import { SecureTools } from '../secure-tools';
 
 export default defineComponent({
-  name: 'Demo',
+  name: 'SecureInput',
   props: {
     msg: String,
   },

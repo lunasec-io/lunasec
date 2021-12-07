@@ -1,7 +1,6 @@
 FROM openjdk:18-alpine3.15 as lerna-bootstrap
 
 ENV NODE_OPTIONS "--unhandled-rejections=strict"
-ENV RUNNING_IN_CI "true"
 ENV CI "true"
 
 RUN apk add --no-cache sqlite jq nodejs npm bash curl
@@ -46,6 +45,8 @@ RUN apk add --no-cache docker docker-compose curl python3 bash
 # Overwrite this when calling docker from CI
 ENV HOST_MACHINE_PWD=""
 
+ENV DOCKER_BUILDKIT="1"
+
 WORKDIR /repo/js/sdks/packages/cli
 
 WORKDIR /repo
@@ -59,16 +60,13 @@ FROM cypress/included:9.1.0 as integration-test
 
 RUN apt update && apt install -y xvfb
 
-# RUN cypress install --force
-
 ENV VERBOSE_CYPRESS_LOGS="always"
 
 COPY --from=lerna-bootstrap /repo /repo
 
 WORKDIR /repo/
 
-# We would use test:all but couldn't easily get golang into this container, so those run on bare box
-ENTRYPOINT /repo/tools/service-scripts/wait-for-services.sh "$DEPENDENCIES__INTEGRATION_TEST" yarn run test:unit:tokenizer && yarn run test:unit:auth && yarn run test:e2e:docker
+ENTRYPOINT /repo/tools/service-scripts/wait-for-services.sh "$DEPENDENCIES__INTEGRATION_TEST" yarn run test:e2e:docker
 
 FROM lerna-bootstrap as secure-frame-iframe
 

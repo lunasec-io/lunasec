@@ -57,7 +57,7 @@ export const SecureTextAreaDemo: React.FunctionComponent = () => {
         <CardContent>
           <p>
             This demo shows the Secure Text Area and Secure Paragraph components working together. Right click and
-            inspect to see that they're both in iFrames.
+            inspect to see that they&apos;re both in iFrames.
           </p>
           <p>
             To see how to set up your own Secure Text Area,{' '}
@@ -72,7 +72,7 @@ export const SecureTextAreaDemo: React.FunctionComponent = () => {
           <br />
           <SecureForm
             name="secure-form-example"
-            onSubmit={(e) => console.log('form submitted but didnt call server because this example is local only')}
+            onSubmit={(_e) => console.log('form submitted but didnt call server because this example is local only')}
           >
             <FormGroup>
               {renderErrors()}

@@ -5,12 +5,13 @@
   "license": "Apache-2.0",
   "scripts": {
     "start": "yarn run react-scripts start",
-    "build": "yarn run react-scripts build",
+    "build": "yarn run react-scripts build && ../../../../tools/analytics-inserter/analytics-inserter.js",
     "serve-static": "yarn run serve -s build",
+    "build-and-serve-static": "yarn run build && yarn run serve-static",
     "test": "yarn run react-scripts test",
     "test:url": "./get-application-url.sh",
     "test:e2e": "yarn run cypress run --browser chrome ${TEST_OPTIONS:-''} --config baseUrl=$(yarn run --silent test:url)",
-    "test:e2e:docker": "Xvfb :99 & TEST_OPTIONS=\"--headed\" yarn run test:e2e",
+    "test:e2e:docker": "TEST_OPTIONS=\"--headed\" xvfb-run yarn run test:e2e",
     "test:open": "yarn run cypress open --browser chrome --config baseUrl=$(yarn run --silent test:url)",
     "eject": "yarn dlx react-scripts eject",
     "prettier": "yarn run prettier \"*.{js,json,yml,md}\" \"src/**/*\"",
@@ -62,29 +63,12 @@
     "cypress": "9.1.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
-    "eslint": "^7.25.0",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-config-react-app": "^6.0.0",
-    "eslint-config-standard": "^16.0.2",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-import-order": "^2.1.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-promise": "^4.3.1",
-    "eslint-plugin-react": "^7.23.2",
     "jest": "27.4.3",
     "lerna": "^3.22.1",
     "lint-staged": "^10.5.4",
     "serve": "^11.3.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.2.3"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "husky": {
     "hooks": {

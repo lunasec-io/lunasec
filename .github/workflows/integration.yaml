@@ -36,12 +36,16 @@ jobs:
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
-      RUNNING_IN_CI: true
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
     strategy:
       matrix:
         merge: ["merged", "not-merged"]
+        lockfile: ["lockfile"] #,"no-lockfile"]
+        exclude:
+          - merge: "merged"
+            lockfile: "no-lockfile"
+
     steps:
 
     - uses: actions/checkout@v2
@@ -51,7 +55,7 @@ jobs:
     #TODO: there may be a more idiomatic way to do this
     - name: Check if we should skip this build
       id: job-canceller
-      run: echo "::set-output name=cancelled::${{ matrix.merge == 'true' && github.event_name != 'pull_request'}}"
+      run: echo "::set-output name=cancelled::${{ matrix.merge == 'merged' && github.event_name != 'pull_request'}}"
 
     # Cancel the merge copy of this build(see the matrix above) if we are not in a PR
     - name: cancelling
@@ -87,6 +91,10 @@ jobs:
       if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled != 'false' }}
       timeout-minutes: 15
 
+    - name: Delete and Regenerate Lockfile
+      if: ${{ matrix.lockfile == 'no-lockfile' }}
+      run: rm yarn.lock && CI="" yarn install #currently broken
+
 #    - uses: actions/setup-go@v2
 #      with:
 #        go-version: '^1.17.1'
@@ -107,20 +115,26 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
 
+    # TODO: move this into docker, using the same container that the dedicated tokenizer uses
     - name: Go Tests
       run: yarn run test:unit:go
 
-    - name: Verify Yarn Cache
-      env:
-        IS_LUNASEC_CI: true
-        CI: true
-      run: yarn install --immutable --immutable-cache --check-cache --inline-builds
+    # specifically tag this bootstrap container to prevent rebuilds
+    - name: Build Lerna Bootstrap container
+      run: docker build --progress plain -f ./js/docker/demo.dockerfile -t lerna-bootstrap --target lerna-bootstrap .
 
     - name: Build CLI Container
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
 
+    # Use the bootstrap image to quickly run linting and unit testing
+    - name: Lint
+      run: docker run --entrypoint yarn lerna-bootstrap lint
+
+    - name: Unit Test
+      run: docker run --entrypoint yarn lerna-bootstrap test:unit:js
+
     - name: Use CLI Container with docker.sock mounted to launch all other containers
-      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests
+      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo --local-build --env=tests
 
     - name: docker logs
       if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
@@ -129,7 +143,11 @@ jobs:
 
     - name: docker compose logs
       if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
-      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo=true --local-build=true --env=tests --show-logs=true
+      run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo --local-build --show-logs --env=tests
+
+    - name: Warn on lockfile failure
+      if: ${{ job.status == 'failure' && matrix.lockfile == 'no-lockfile' }}
+      run: echo "::warning  title=lockfile-check::Building without a lockfile failed"
 
     - uses: actions/upload-artifact@v2
       if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}

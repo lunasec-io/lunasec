@@ -159,6 +159,7 @@ export const SecureInputDemo: React.FunctionComponent<{
                 // label="Labels don't work quite right yet"
                 InputProps={{
                   /*
+                  // eslint-disable-next-line
                   // @ts-ignore */
                   inputComponent: SecureInput,
                   inputProps: secureInputProps,

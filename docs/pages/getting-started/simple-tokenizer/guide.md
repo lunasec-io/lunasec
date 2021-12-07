@@ -90,6 +90,6 @@ if (!result.success) {
 console.log('Decoded value is ', result.value)
 ```
 
-To see these in a more complete example inside a react app, see the Simple Tokenizer sections of [the demo app.](../../../overview/demo-app/walkthrough)
+To see these in a more complete example inside a react app, see the Simple Tokenizer sections of [the demo app.](/pages/overview/demo-app/walkthrough)
 
 To see the API Reference for these libraries, take a look at [the TypeDoc for the Simple Tokenizer](/pages/tokenizer-sdk/classes/SimpleTokenizer/)
