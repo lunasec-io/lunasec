@@ -14,10 +14,11 @@
  * limitations under the License.
  *
  */
-import { DomainName, EndpointType, RestApi, SecurityPolicy } from '@aws-cdk/aws-apigateway';
+import { DomainName, EndpointType, Resource, RestApi, SecurityPolicy } from '@aws-cdk/aws-apigateway';
+import * as jsonSchema from '@aws-cdk/aws-apigateway/lib/json-schema';
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import * as iam from '@aws-cdk/aws-iam';
-import { DeliveryStream, StreamEncryption } from '@aws-cdk/aws-kinesisfirehose';
+import { DataProcessorConfig, DeliveryStream, StreamEncryption } from '@aws-cdk/aws-kinesisfirehose';
 import { Compression } from '@aws-cdk/aws-kinesisfirehose-destinations';
 import * as destinations from '@aws-cdk/aws-kinesisfirehose-destinations';
 import { ARecord, HostedZone, RecordTarget } from '@aws-cdk/aws-route53';
@@ -27,7 +28,7 @@ import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
 import * as defaults from '@aws-solutions-constructs/core';
 
-import { StoreMetricSchema } from './apigateway-request-models';
+import { StoreCliMetricSchema, StoreDeploymentMetricSchema } from './apigateway-request-models';
 
 interface MetricsLambdaStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
@@ -37,23 +38,140 @@ interface MetricsLambdaStackProps extends cdk.StackProps {
   certificateArn: string;
 }
 
+function capitalizeWords(s: string) {
+  return s.replace(/(?:^|\s)\S/g, function (a) {
+    return a.toUpperCase();
+  });
+}
+
+function getPutRecordTemplate(endpointName: string, streamName: string) {
+  return `#set($inputRoot = $input.path('$'))
+#set($data =  "{
+  #foreach($key in $inputRoot.keySet())
+  ""$key"": $input.json($key),
+  #end
+  ""tag"": ""${endpointName}"",
+  ""clientIP"": ""$context.identity.sourceIp""
+}")
+#set($newLineRegex = '\n')
+#set($formattedJson = "$data.replaceAll($newLineRegex, '')
+")
+{
+  "DeliveryStreamName": "${streamName}",
+  "Record": {
+    "Data": "$util.base64Encode($formattedJson)"
+  }
+}`;
+}
+
+function getMetricsApiEndpoint(
+  name: string,
+  schema: jsonSchema.JsonSchema,
+  rootResource: Resource,
+  apiGateway: RestApi,
+  apiGatewayRole: iam.Role,
+  stream: DeliveryStream
+) {
+  const capitalName = capitalizeWords(name);
+  const putRecordModel = apiGateway.addModel(`Put${name}RecordModel`, {
+    contentType: 'application/json',
+    modelName: `Put${capitalName}RecordModel`,
+    description: `Put${capitalName}Record proxy single-record payload`,
+    schema: schema,
+  });
+
+  // Setup API Gateway methods
+  const requestValidator = apiGateway.addRequestValidator(`${name}-request-validator`, {
+    requestValidatorName: `${name}-request-body-validator`,
+    validateRequestBody: true,
+  });
+
+  const recordResource = rootResource.addResource(name);
+
+  defaults.addProxyMethodToApiResource({
+    service: 'firehose',
+    action: 'PutRecord',
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    apiGatewayRole: apiGatewayRole,
+    apiMethod: 'POST',
+    apiResource: recordResource,
+    // TODO: Pull the stream name from a variable
+    requestTemplate: getPutRecordTemplate(name, stream.deliveryStreamName),
+    contentType: "'x-amz-json-1.1'",
+    requestValidator,
+    requestModel: { 'application/json': putRecordModel },
+  });
+}
+
 export class MetricsLambdaBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: MetricsLambdaStackProps) {
     super(scope, id, props);
 
     const bucket = new Bucket(this, 'MetricsBucket', {});
+
     //todo: Fix this
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const s3Destination = new destinations.S3Bucket(bucket, {
       compression: Compression.GZIP,
       dataOutputPrefix:
-        'metrics/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/rand=!{firehose:random-string}',
+        'metrics/tag=!{partitionKeyFromQuery:tag}/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/rand=!{firehose:random-string}',
       errorOutputPrefix:
         'metrics_failures/!{firehose:error-output-type}/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}',
     });
 
-    const stream = new DeliveryStream(this, 'Delivery Stream', {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const ogBind = s3Destination.bind;
+    s3Destination.bind = function overrideBind(...args) {
+      const output = ogBind.apply(this, args);
+      if (!output || !output.extendedS3DestinationConfiguration) {
+        return output;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      output.extendedS3DestinationConfiguration.dynamicPartitioningConfiguration = {
+        enabled: true,
+        retryOptions: {
+          durationInSeconds: 122,
+        },
+      };
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      output.extendedS3DestinationConfiguration.processingConfiguration = {
+        enabled: true,
+        processors: [
+          {
+            type: 'MetadataExtraction',
+            parameters: [
+              {
+                parameterName: 'MetadataExtractionQuery',
+                parameterValue: '{tag: .tag}',
+              },
+              {
+                parameterName: 'JsonParsingEngine',
+                parameterValue: 'JQ-1.6',
+              },
+            ],
+          },
+          {
+            type: 'AppendDelimiterToRecord',
+            parameters: [
+              {
+                parameterName: 'Delimiter',
+                parameterValue: '\\n',
+              },
+            ],
+          },
+        ],
+      };
+      return output;
+    };
+
+    const stream = new DeliveryStream(this, 'Metrics Delivery Stream', {
       encryption: StreamEncryption.AWS_OWNED,
       destinations: [s3Destination],
     });
@@ -62,7 +180,7 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
     const apiGatewayRole = new iam.Role(this, 'api-gateway-role', {
       assumedBy: new iam.ServicePrincipal('apigateway.amazonaws.com'),
     });
-    stream.grantPutRecords(apiGatewayRole);
+    stream.grantPutRecords(apiGatewayRole as any);
 
     const domainZone = HostedZone.fromHostedZoneAttributes(this, 'Zone', {
       hostedZoneId: props.domainZoneId,
@@ -88,53 +206,17 @@ export class MetricsLambdaBackendStack extends cdk.Stack {
       ttl: Duration.minutes(5),
     });
 
-    const putRecordModel = apiGateway.addModel('PutRecordModel', {
-      contentType: 'application/json',
-      modelName: 'PutRecordModel',
-      description: 'PutRecord proxy single-record payload',
-      schema: StoreMetricSchema,
-    });
+    // RootRecord
+    const rootRecordResource = apiGateway.root.addResource('record');
 
-    // Setup API Gateway methods
-    const requestValidator = apiGateway.addRequestValidator('request-validator', {
-      requestValidatorName: 'request-body-validator',
-      validateRequestBody: true,
-    });
-
-    // PutRecord
-    const putRecordResource = apiGateway.root.addResource('record');
-    defaults.addProxyMethodToApiResource({
-      service: 'firehose',
-      action: 'PutRecord',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      apiGatewayRole: apiGatewayRole,
-      apiMethod: 'POST',
-      apiResource: putRecordResource,
-      // TODO: Pull the stream name from a variable
-      requestTemplate: this.getPutRecordTemplate(stream.deliveryStreamName),
-      contentType: "'x-amz-json-1.1'",
-      requestValidator,
-      requestModel: { 'application/json': putRecordModel },
-    });
-  }
-
-  getPutRecordTemplate(streamName: string) {
-    return `#set($inputRoot = $input.path('$'))
-#set($data =  "{
-  #foreach($key in $inputRoot.keySet())
-  ""$key"": $input.json($key),
-  #end
-  ""clientIP"": ""$context.identity.sourceIp""
-}")
-#set($newLineRegex = '\n')
-#set($formattedJson = "$data.replaceAll($newLineRegex, '')
-")
-{
-  "DeliveryStreamName": "${streamName}",
-  "Record": {
-    "Data": "$util.base64Encode($formattedJson)"
-  }
-}`;
+    getMetricsApiEndpoint(
+      'deployment',
+      StoreDeploymentMetricSchema,
+      rootRecordResource,
+      apiGateway,
+      apiGatewayRole,
+      stream
+    );
+    getMetricsApiEndpoint('cli', StoreCliMetricSchema, rootRecordResource, apiGateway, apiGatewayRole, stream);
   }
 }
