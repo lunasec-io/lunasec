@@ -64,8 +64,9 @@ module.exports = (on, config) => {
 
     // `args` is an array of all the arguments that will
     // be passed to browsers when it launches
-    console.log(launchOptions.args) // print all current args
-
+    if (process.env.CI) {
+      console.log(launchOptions.args) // print all current args
+    }
     // whatever you return here becomes the launchOptions
     return launchOptions
   })

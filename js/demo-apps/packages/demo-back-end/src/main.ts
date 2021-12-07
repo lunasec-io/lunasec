@@ -35,6 +35,6 @@ void setupDedicatedPassPortGraphQLApp().then((app) => {
 
 void setupSimpleExpressApp().then((app) => {
   app.listen(3003, () => {
-    console.log('Simple Server running on 3003 !!!!!!!!!!!!!!!!!!!!!');
+    console.log('Simple Server running on 3003');
   });
 });
