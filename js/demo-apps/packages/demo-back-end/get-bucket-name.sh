@@ -9,6 +9,7 @@ if [ "$CIPHERTEXT_S3_BUCKET" != "" ]; then
   echo "Found s3 bucket in env variable as $CIPHERTEXT_S3_BUCKET, using it" >&2
   echo "$CIPHERTEXT_S3_BUCKET"
 else
+  echo "reading bucket name from file: $(dirname "$0")/../../../../outputs/aws_resources.json" >&2
   jq -r .aws_gateway.ciphertext_bucket $(dirname "$0")/../../../../outputs/aws_resources.json
 fi
 
