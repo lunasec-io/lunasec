@@ -6,3 +6,5 @@
 js/demo-apps/packages/react-front-end/cypress/integration/secure_components_spec.ts
 .pnp.cjs
 *.mjs
+deploy-apigateway-to-firehose.ts
+**/*.vue

@@ -9,7 +9,7 @@ import { defineComponent } from 'vue';
 import SecureInput from '../secure-components/Secure-Input.vue';
 
 export default defineComponent({
-  name: 'Demo',
+  name: 'DemoComponent',
   props: {
     msg: String,
   },

@@ -14,23 +14,8 @@
  * limitations under the License.
  *
  */
-
-import { UserModel } from './types';
-declare global {
-  namespace Express {
-    type User = UserModel;
-    interface Request {
-      user: UserModel;
-    }
+module.exports = {
+  rules: {
+    "@typescript-eslint/no-unsafe-argument": 1 // TODO: Re-enable this rule and fix all errors
   }
-  namespace Request {
-    type User = UserModel;
-  }
-}
-
-declare module 'express-serve-static-core' {
-  type User = UserModel;
-  interface Request {
-    user: UserModel;
-  }
-}
+};

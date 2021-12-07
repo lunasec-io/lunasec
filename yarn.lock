@@ -37117,7 +37117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.1.5, typescript@npm:^4.2.0, typescript@npm:^4.2.2, typescript@npm:^4.2.3, typescript@npm:^4.3.5, typescript@npm:^4.4.2, typescript@npm:^4.4.4":
+"typescript@npm:^4.2.0, typescript@npm:^4.2.2, typescript@npm:^4.2.3, typescript@npm:^4.3.5, typescript@npm:^4.4.2, typescript@npm:^4.4.4, typescript@npm:^4.5.2":
   version: 4.5.2
   resolution: "typescript@npm:4.5.2"
   bin:
@@ -37137,7 +37137,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.1.5#~builtin<compat/typescript>, typescript@patch:typescript@^4.2.0#~builtin<compat/typescript>, typescript@patch:typescript@^4.2.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.2.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.3.5#~builtin<compat/typescript>, typescript@patch:typescript@^4.4.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.4.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.2.0#~builtin<compat/typescript>, typescript@patch:typescript@^4.2.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.2.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.3.5#~builtin<compat/typescript>, typescript@patch:typescript@^4.4.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.4.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.5.2#~builtin<compat/typescript>":
   version: 4.5.2
   resolution: "typescript@patch:typescript@npm%3A4.5.2#~builtin<compat/typescript>::version=4.5.2&hash=493e53"
   bin:
@@ -38165,7 +38165,7 @@ __metadata:
     eslint-plugin-vue: ^8.1.1
     jest: ^26.6.3
     prettier: ^2.2.1
-    typescript: ^4.1.5
+    typescript: ^4.5.2
     vue: ^3.0.0
     vue-jest: ^5.0.0-0
   languageName: unknown

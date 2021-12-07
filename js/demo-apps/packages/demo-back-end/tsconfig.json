@@ -42,11 +42,9 @@
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
 
-    "tsBuildInfoFile": "./build/buildcache.tsbuildinfo"
+    "tsBuildInfoFile": "./build/buildcache.tsbuildinfo",
+
   },
-  "include": [
-    "src/**/*.ts"
-  ],
   "exclude": ["**/*.test.ts"],
   "compileOnSave": true
 }
