@@ -18,6 +18,7 @@ sidebar_position: 1
   ~
 -->
 
+
 ### Tokenization
 LunaSec replaces the sensitive 
 fields in your application and database with [tokens](/pages/how-it-works/tokens).  When LunaSec is fully integrated, sensitive data never enters
@@ -25,7 +26,7 @@ your application.  On the front end, cross-domain iFrames dubbed **Secure Frames
 and on the backend sensitive data is handled inside isolated code blocks dubbed **Secure Functions**. LunaSec is not a proxy:
 those tools communicate directly with a backend server called the **Dedicated Tokenizer**, which is served on a different domain than your application. 
 Everything from small strings to large files can be **tokenized**.  
-
+![lunasec stack gif](/img/arch-animation.gif)
 ### Secure Frame
 A secure sandbox that is embedded in your front-end React app. It handles sensitive data inside an iFrame and returns only tokens.
 This is similar to how payment processors like Stripe and PayPal collect credit card information, except that Secure Frames work with
