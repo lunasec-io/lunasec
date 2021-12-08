@@ -68,6 +68,7 @@ function createDynamoDBTable(
       name: 'Key',
       type: dynamodb.AttributeType.STRING,
     },
+    billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
   });
   cfnOutput(scope, name, table.tableName);
   return table;
