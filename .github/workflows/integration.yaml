@@ -49,7 +49,7 @@ jobs:
     - name: Setup Environment
       uses: ./.github/workflows/composite/setup-docker-ci
       with:
-        merge_master: ${{ matrix.merge === 'merged' }}
+        merge_master: 'hi mom' # ${{ matrix.merge === 'merged' }}
         skip_docker: 'false'
 
     - uses: actions/setup-node@v2
@@ -128,7 +128,7 @@ jobs:
       - name: Setup Environment
         uses: ./.github/workflows/composite/setup-docker-ci
         with:
-          merge_master: ${{ matrix.merge === 'merged' }}
+          merge_master: 'hi mom' # ${{ matrix.merge === 'merged' }}
           skip_docker: 'true'
 
       - uses: actions/setup-go@v2
