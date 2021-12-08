@@ -5,15 +5,10 @@ inputs:
   merge_master:
     description: 'If true, this merges the master branch during setup.'
     required: true
-    default: "false"
   skip_docker:
     description: 'If true, skips the Docker install step'
     required: false
-    default: "false"
-#outputs:
-#  :
-#    description: "Random number"
-#    value: ${{ steps.random-number-generator.outputs.random-id }}
+
 runs:
   using: "composite"
 #  env:
@@ -24,7 +19,7 @@ runs:
     - name: Check if we should skip this build
       shell: bash
       id: job-canceller
-      run: echo "::set-output name=cancelled::${{ inputs.merge-master == true && github.event_name != 'pull_request'}}"
+      run: echo "::set-output name=cancelled::${{ inputs.merge_master == 'true' && github.event_name != 'pull_request'}}"
 
     # Cancel the merge copy of this build(see the matrix above) if we are not in a PR
     - name: cancelling
@@ -35,8 +30,8 @@ runs:
     - name: Merge target branch
       shell: bash
       run: git merge origin/${{ github.event.pull_request.base.ref }}
-      if: ${{ inputs.merge_master == true && github.event_name == 'pull_request' }}
+      if: ${{ inputs.merge_master == 'true' && github.event_name == 'pull_request' }}
 
     - name: Setup Docker Containers
-      uses: ./.github/actions/setup-lunasec-containers
-      if: ${{ inputs.skip_docker != false }}
+      uses: ./.github/workflows/composite/setup-lunasec-containers
+      if: ${{ inputs.skip_docker != 'false' }}
