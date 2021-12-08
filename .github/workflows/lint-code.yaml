@@ -16,7 +16,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - id: Setup Environment
+    - name: Setup Environment
       uses: ./.github/workflows/composite/setup-docker-ci
       with:
         merge_master: 'hi mom' # ${{ matrix.merge === 'merged' }}
