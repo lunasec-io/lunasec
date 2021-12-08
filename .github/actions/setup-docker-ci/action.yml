@@ -34,5 +34,5 @@ runs:
       if: ${{ inputs.merge-master == true && github.event_name == 'pull_request' }}
 
     - name: Setup Docker Containers
-      uses: ./.github/actions/setup-lunasec-containers@v1
+      uses: ./.github/actions/setup-lunasec-containers
       if: ${{ inputs.skip-docker != false }}
