@@ -1,4 +1,4 @@
-name: Lint Code + JS Unit Tests
+name: Lint Code plus JS Unit Tests
 
 # This workflow checks to make sure that all dependency binaries are valid, to prevent a sneaky commit doing something malicious
 on:
