@@ -24,13 +24,13 @@ runs:
       with:
         install: true # sets buildx as the default for docker, which should apply to docker-compose commands
         driver: docker
-      if: ${{ inputs.skip_docker != 'false' }}
+#      if: ${{ inputs.skip_docker != 'false' }}
 
     - uses: actions/setup-node@v2
       with:
         node-version: '14'
         cache: yarn
-      if: ${{ inputs.skip_docker != 'false' }}
+#      if: ${{ inputs.skip_docker != 'false' }}
 
     # specifically tag this bootstrap container to prevent rebuilds
     - name: Build Lerna Bootstrap container
@@ -41,7 +41,7 @@ runs:
         DOCKER_BUILDKIT: 1
         COMPOSE_DOCKER_CLI_BUILD: 1
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t lerna-bootstrap --target lerna-bootstrap .
-      if: ${{ inputs.skip_docker != 'false' }}
+#      if: ${{ inputs.skip_docker != 'false' }}
 
     - name: Build CLI Container
       shell: bash
@@ -51,4 +51,4 @@ runs:
         DOCKER_BUILDKIT: 1
         COMPOSE_DOCKER_CLI_BUILD: 1
       run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
-      if: ${{ inputs.skip_docker != 'false' }}
+#      if: ${{ inputs.skip_docker != 'false' }}
