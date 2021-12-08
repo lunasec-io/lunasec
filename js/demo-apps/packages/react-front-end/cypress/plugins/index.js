@@ -36,7 +36,7 @@ module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   const options = {
-    printLogsToConsole: process.env.CI ? 'always' : 'onFail'
+    printLogsToConsole: process.env.VERBOSE_CYPRESS_LOGS === "always" ? 'always' : 'onFail'
   }
 
   require('cypress-terminal-report/src/installLogsPrinter')(on, options);
@@ -64,7 +64,7 @@ module.exports = (on, config) => {
 
     // `args` is an array of all the arguments that will
     // be passed to browsers when it launches
-    if (process.env.CI) {
+    if (process.env.VERBOSE_CYPRESS_LOGS === "always") {
       console.log(launchOptions.args) // print all current args
     }
     // whatever you return here becomes the launchOptions
