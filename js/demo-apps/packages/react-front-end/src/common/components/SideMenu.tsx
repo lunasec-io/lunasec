@@ -146,20 +146,20 @@ export const SideMenu: React.FunctionComponent<{ mode: Mode }> = (props) => {
           {slot}
         </Drawer>
       );
-    } else {
-      return (
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          anchor="left"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          {slot}
-        </Drawer>
-      );
     }
+
+    return (
+      <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        anchor="left"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        {slot}
+      </Drawer>
+    );
   };
   return renderResponsiveDrawer(
     <>
