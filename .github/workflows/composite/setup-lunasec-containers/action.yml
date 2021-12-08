@@ -27,6 +27,7 @@ runs:
 
   # specifically tag this bootstrap container to prevent rebuilds
   - name: Build Lerna Bootstrap container
+    shell: bash
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
@@ -35,6 +36,7 @@ runs:
     run: docker build --progress plain -f ./js/docker/demo.dockerfile -t lerna-bootstrap --target lerna-bootstrap .
 
   - name: Build CLI Container
+    shell: bash
     env:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
