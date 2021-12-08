@@ -1,22 +1,24 @@
 name: 'Setup Docker CI Environment'
 description: 'Creates the LunaSec CI build environment'
+
+inputs:
   merge_master:
     description: 'If true, this merges the master branch during setup.'
     required: true
-    default: false
+    default: "false"
   skip_docker:
     description: 'If true, skips the Docker install step'
     required: false
-    default: false
+    default: "false"
 #outputs:
 #  :
 #    description: "Random number"
 #    value: ${{ steps.random-number-generator.outputs.random-id }}
 runs:
   using: "composite"
-  env:
-    # avoid warnings like "tput: No value for $TERM and no -T specified"
-    TERM: xterm
+#  env:
+#    # avoid warnings like "tput: No value for $TERM and no -T specified"
+#    TERM: xterm
   steps:
     #TODO: there may be a more idiomatic way to do this
     - name: Check if we should skip this build
