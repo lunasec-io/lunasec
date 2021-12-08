@@ -8,3 +8,4 @@ js/demo-apps/packages/react-front-end/cypress/integration/secure_components_spec
 *.mjs
 deploy-apigateway-to-firehose.ts
 **/*.vue
+**/metrics-server-backend/*

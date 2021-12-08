@@ -61,7 +61,7 @@ export class LunaSecStackDockerCompose {
       env: env || 'dev',
       localBuild: localBuild,
       getBaseServiceConfig: baseServiceConfig,
-      getDockerImageName: dockerImageConfigFn('lunasec/', version as string),
+      getDockerImageName: dockerImageConfigFn('lunasec/', version),
       getDockerfileTarget: dockerfileTarget,
     };
   }
