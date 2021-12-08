@@ -47,7 +47,6 @@ jobs:
             lockfile: "no-lockfile"
 
     steps:
-
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
@@ -71,10 +70,6 @@ jobs:
       with:
         node-version: '14'
         cache: yarn
-
-    - uses: actions/setup-go@v2
-      with:
-        go-version: '^1.17.1'
 
     - name: Set up Docker BuildKit
       id: buildx
@@ -114,10 +109,6 @@ jobs:
 #      env:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
-
-    # TODO: move this into docker, using the same container that the dedicated tokenizer uses
-    - name: Go Tests
-      run: yarn run test:unit:go
 
     # specifically tag this bootstrap container to prevent rebuilds
     - name: Build Lerna Bootstrap container
@@ -162,3 +153,43 @@ jobs:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_TITLE: PR Build ${{ github.head_ref }} ${{ job.status }}
         SLACK_COLOR: ${{ job.status }}
+
+  golang-unit-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        merge: [ "merged", "not-merged" ]
+        lockfile: [ "lockfile" ] #,"no-lockfile"]
+        exclude:
+          - merge: "merged"
+            lockfile: "no-lockfile"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      #TODO: there may be a more idiomatic way to do this
+      - name: Check if we should skip this build
+        id: job-canceller
+        run: echo "::set-output name=cancelled::${{ matrix.merge == 'merged' && github.event_name != 'pull_request'}}"
+
+      # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
+      - name: Merge target branch
+        run: git merge origin/${{ github.event.pull_request.base.ref }}
+        if: ${{ matrix.merge == 'merged' && github.event_name == 'pull_request' }}
+
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.17.1'
+
+      # TODO: move this into docker, using the same container that the dedicated tokenizer uses
+      - name: Go Tests
+        run: yarn run test:unit:go
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: PR Build ${{ github.head_ref }} ${{ job.status }}
+          SLACK_COLOR: ${{ job.status }}
