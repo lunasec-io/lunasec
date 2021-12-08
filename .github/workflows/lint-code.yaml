@@ -16,10 +16,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - id: Setup Environment
-      uses: ./.github/actions/setup-docker-ci.yaml
-      with:
-        merge-master: matrix.merge === 'merged'
+#    - id: Setup Environment
+#      uses: ./.github/actions/setup-docker-ci.yaml
+#      with:
+#        merge-master: matrix.merge === 'merged'
 
     - name: dependencies
       env:
