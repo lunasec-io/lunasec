@@ -19,7 +19,7 @@ jobs:
     - id: Setup Environment
       uses: ./.github/actions/setup-docker-ci.yaml
       with:
-        merge-master: true # matrix.merge === 'merged'
+        merge-master: ${{ matrix.merge === 'merged' }}
 
     - name: dependencies
       env:

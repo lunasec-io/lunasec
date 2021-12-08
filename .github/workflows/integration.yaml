@@ -49,7 +49,7 @@ jobs:
     - id: Setup Environment
       uses: ./.github/actions/setup-docker-ci.yaml
       with:
-        merge-master: matrix.merge === 'merged'
+        merge-master: ${{ matrix.merge === 'merged' }}
 
     - uses: actions/setup-node@v2
       with:
@@ -127,7 +127,7 @@ jobs:
       - id: Setup Environment
         uses: ./.github/actions/setup-docker-ci.yaml
         with:
-          merge-master: matrix.merge === 'merged'
+          merge-master: ${{ matrix.merge === 'merged' }}
           skip-docker: true
 
       - uses: actions/setup-go@v2
