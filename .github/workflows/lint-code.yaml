@@ -1,0 +1,35 @@
+name: Lint Code
+
+# This workflow checks to make sure that all dependency binaries are valid, to prevent a sneaky commit doing something malicious
+on:
+  pull_request:
+    branches: ['**', '**']
+  push:
+    branches: [master]
+
+jobs:
+  check-deps:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - id: Setup Environment
+      uses: $GITHUB_ACTION_PATH/actions/setup-docker-ci.yaml
+      with:
+        merge-master: matrix.merge === 'merged'
+
+    - name: dependencies
+      env:
+        IS_LUNASEC_CI: true
+      run: yarn install --immutable --immutable-cache --inline-builds
+
+    # Use the bootstrap image to quickly run linting and unit testing
+    - name: Lint
+      run: docker run --entrypoint yarn lerna-bootstrap lint
+
+    - name: Unit Test
+      run: docker run --entrypoint yarn lerna-bootstrap test:unit:js
+
