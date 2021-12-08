@@ -30,10 +30,10 @@ runs:
 #      if: ${{ steps.job-canceller.outputs.cancelled == 'true' }}
 
     # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
-  - name: Merge target branch
-    shell: bash
-    run: git merge origin/${{ github.event.pull_request.base.ref }}
-    if: ${{ inputs.merge_master == 'true' && inputs.event_name != 'pull_request' }}
+#  - name: Merge target branch
+#    shell: bash
+#    run: git merge origin/${{ github.event.pull_request.base.ref }}
+#    if: ${{ inputs.merge_master == 'true' && inputs.event_name != 'pull_request' }}
 
   - name: Setup Docker Containers
     uses: ./.github/workflows/composite/setup-lunasec-containers
