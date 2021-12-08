@@ -59,13 +59,15 @@ export function renderSecureComponent(props) {
 ```
 This seamlessly creates an iFrame in your page, isolating the sensitive data completely without any change to how your app looks or functions.
 
+Behind the scenes, the [LunaSec Stack](/pages/how-it-works/features) has secure "sidecars" for each layer of your full-stack web app.  
+
 ## Try it out, live!
 
-You can go check out our [Live Demo](https://app.lunasec.dev) app right now. You'll need to create yourself a user before
-you can insert some data into the different fields. All sensitive data in the app is automatically encrypted and decrypted.
+You can go check out our [Live Demo](https://app.lunasec.dev) app right now. Sign up and then
+you can insert some data into the different Secure Components. All sensitive data in the app is automatically encrypted and decrypted.
 
-In fact, it works so well that you probably will mistake the Demo App for a completely unremarkable, boring app. That's
-by design!
+In fact, it works seamlessly enough that you probably will mistake the Demo App for any other app.
+
 :::tip
 LunaSec is meant to be invisible, but you
 can see it working by inspecting elements on the page and watching your network requests tab.
@@ -73,7 +75,7 @@ can see it working by inspecting elements on the page and watching your network 
 
 ## Onboard with LunaSec
 
-We've put in great effort to ensure a high-quality Developer Experience throughout the entire onboarding process.
+We've put in great effort to ensure a high-quality Developer Experience throughout the onboarding process.
 A lunch break is all it takes to onboard your app with our SDKs _and_ deploy your own dedicated LunaSec Stack into 
 production.
 

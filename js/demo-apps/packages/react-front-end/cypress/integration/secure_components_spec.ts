@@ -142,7 +142,7 @@ function runDedicatedModeTests(mode: string) {
       link.should('contain', randomFileName);
 
       link.click();
-      cy.wait(1000);
+      cy.wait(process.env.CI ? 10000 : 1000);
       const downloadsFolder = Cypress.config('downloadsFolder');
       cy.readFile(path.join(downloadsFolder, randomFileName)).should('exist');
     });
