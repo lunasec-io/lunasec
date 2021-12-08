@@ -7,7 +7,7 @@ inputs:
     required: true
   skip_docker:
     description: 'If true, skips the Docker install step'
-    required: false
+    required: true
 
 runs:
   using: "composite"
