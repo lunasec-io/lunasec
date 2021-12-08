@@ -17,7 +17,7 @@ jobs:
         fetch-depth: 0
 
     - id: Setup Environment
-      uses: ./actions/setup-docker-ci.yaml
+      uses: ./.github/actions/setup-docker-ci.yaml
       with:
         merge-master: matrix.merge === 'merged'
 
