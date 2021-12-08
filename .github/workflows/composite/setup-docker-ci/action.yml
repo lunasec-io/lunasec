@@ -19,15 +19,15 @@ runs:
 #    TERM: xterm
   steps:
     #TODO: there may be a more idiomatic way to do this
-    - name: Check if we should skip this build
-      shell: bash
-      id: job-canceller
-      run: echo "::set-output name=cancelled::${{ inputs.merge_master == 'true' && inputs.event_name != 'pull_request' }}"
+#    - name: Check if we should skip this build
+#      shell: bash
+#      id: job-canceller
+#      run: echo "::set-output name=cancelled::${{ inputs.merge_master == 'true' && inputs.event_name != 'pull_request' }}"
 
     # Cancel the merge copy of this build(see the matrix above) if we are not in a PR
     - name: cancelling
       uses: andymckay/cancel-action@0.2
-      if: ${{ steps.job-canceller.outputs.cancelled == 'true' }}
+      if: ${{ inputs.merge_master == 'true' && inputs.event_name != 'pull_request' }}
 
     # Merge with master (or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
     - name: Merge target branch
