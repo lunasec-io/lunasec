@@ -47,9 +47,9 @@ jobs:
         fetch-depth: 0
 
     - id: Setup Environment
-      uses: ./.github/actions/setup-docker-ci.yaml
+      uses: ./.github/actions/setup-docker-ci
       with:
-        merge-master: ${{ matrix.merge === 'merged' }}
+        merge_master: ${{ matrix.merge === 'merged' }}
 
     - uses: actions/setup-node@v2
       with:
@@ -125,10 +125,10 @@ jobs:
           fetch-depth: 0
 
       - id: Setup Environment
-        uses: ./.github/actions/setup-docker-ci.yaml
+        uses: ./.github/actions/setup-docker-ci
         with:
-          merge-master: ${{ matrix.merge === 'merged' }}
-          skip-docker: true
+          merge_master: ${{ matrix.merge === 'merged' }}
+          skip_docker: true
 
       - uses: actions/setup-go@v2
         with:
