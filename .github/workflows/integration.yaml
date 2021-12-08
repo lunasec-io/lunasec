@@ -51,6 +51,15 @@ jobs:
       with:
         merge_master: ${{ matrix.merge == 'merged' }}
         skip_docker: 'false'
+        event_name: ${{ github.event_name }}
+
+    # Enable tmate debugging of manually-triggered workflows if the input option was provided
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      with:
+        limit-access-to-actor: true
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled != 'false' }}
+      timeout-minutes: 15
 
     - uses: actions/setup-node@v2
       with:
@@ -130,6 +139,7 @@ jobs:
         with:
           merge_master: ${{ matrix.merge == 'merged' }}
           skip_docker: 'true'
+          event_name: ${{ github.event_name }}
 
       - uses: actions/setup-go@v2
         with:

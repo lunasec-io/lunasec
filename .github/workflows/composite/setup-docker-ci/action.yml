@@ -8,6 +8,9 @@ inputs:
   skip_docker:
     description: 'If true, skips the Docker install step'
     required: true
+  event_name:
+    description: Should just be `github.event_name`
+    required: true
 
 runs:
   using: "composite"
@@ -19,7 +22,7 @@ runs:
     - name: Check if we should skip this build
       shell: bash
       id: job-canceller
-      run: echo "::set-output name=cancelled::${{ inputs.merge_master == 'true' && github.event_name != 'pull_request'}}"
+      run: echo "::set-output name=cancelled::${{ inputs.merge_master == 'true' && inputs.event_name != 'pull_request' }}"
 
     # Cancel the merge copy of this build(see the matrix above) if we are not in a PR
     - name: cancelling
@@ -30,7 +33,7 @@ runs:
     - name: Merge target branch
       shell: bash
       run: git merge origin/${{ github.event.pull_request.base.ref }}
-      if: ${{ inputs.merge_master == 'true' && github.event_name == 'pull_request' }}
+      if: ${{ inputs.merge_master == 'true' && inputs.event_name != 'pull_request' }}
 
 
     - name: Setup Docker Containers

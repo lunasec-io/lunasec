@@ -9,9 +9,9 @@ runs:
   using: "composite"
   steps:
     # Cancel the merge copy of this build(see the matrix above) if we are not in a PR
-    - name: cancelling
-      uses: andymckay/cancel-action@0.2
-      if: ${{ steps.job-canceller.outputs.cancelled == 'true' }}
+#    - name: cancelling
+#      uses: andymckay/cancel-action@0.2
+#      if: ${{ steps.job-canceller.outputs.cancelled == 'true' }}
 
     - name: Set up Docker BuildKit
       id: buildx
@@ -24,14 +24,6 @@ runs:
       with:
         node-version: '14'
         cache: yarn
-
-    # Enable tmate debugging of manually-triggered workflows if the input option was provided
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      with:
-        limit-access-to-actor: true
-      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled != 'false' }}
-      timeout-minutes: 15
 
     # specifically tag this bootstrap container to prevent rebuilds
     - name: Build Lerna Bootstrap container
