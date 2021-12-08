@@ -11,37 +11,14 @@
   ~ limitations under the License.
   ~
 -->
-# vue-sdk
+## LunaSec
+LunaSec is an Open Source data-security framework for web apps.  It provides end-to-end security for text, documents, and files.  From the web browser to the server to the database, sensitive data is isolated and secure.
 
-## Project setup
-```
-yarn install
-```
+### [Documentation](https://www.lunasec.io/docs/)
+Our searchable documentation explains the use of this package and more.
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+### [Github](https://github.com/lunasec-io/lunasec)
+Our MonoRepo.
 
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Run your unit tests
-```
-yarn test:unit
-```
-
-### Run your end-to-end tests
-```
-yarn test:e2e
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### [LunaSec Website](https://www.lunasec.io/)
+Visit our website for marketing information and to get in touch.
