@@ -34,7 +34,7 @@ runs:
       shell: bash
 #      run: git merge origin/${{ github.event.pull_request.base.ref }}
       run: echo hi
-      if: ${{ inputs.merge_master == 'true' && inputs.event_name != 'pull_request' }}
+#      if: ${{ inputs.merge_master == 'true' && inputs.event_name != 'pull_request' }}
 
     - name: Set up Docker BuildKit
       id: buildx
