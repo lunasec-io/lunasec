@@ -32,6 +32,6 @@ runs:
       run: git merge origin/${{ github.event.pull_request.base.ref }}
       if: ${{ inputs.merge_master == 'true' && github.event_name == 'pull_request' }}
 
-    - name: Setup Docker Containers
-      uses: ./.github/workflows/composite/setup-lunasec-containers
-      if: ${{ inputs.skip_docker != 'false' }}
+#    - name: Setup Docker Containers
+#      uses: ./.github/workflows/composite/setup-lunasec-containers
+#      if: ${{ inputs.skip_docker != 'false' }}
