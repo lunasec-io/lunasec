@@ -96,6 +96,30 @@ export const Header: React.FunctionComponent<{
     );
   };
 
+  function LeftHeaderContent() {
+    if (!onDesktop) {
+      // hamburger icon shows the drawer on click
+
+      return (
+        <IconButton
+          className={classes.sideBarButton}
+          edge="start"
+          aria-label="open drawer"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          size="large"
+        >
+          <MenuIcon />
+        </IconButton>
+      );
+    }
+
+    return (
+      <Typography variant="h6" noWrap className={classes.title}>
+        LunaSec Example App
+      </Typography>
+    );
+  }
+
   const history = useHistory();
 
   // When the mode switch button is pushed, this sets the hash and refreshes the page to the desired demo
@@ -114,23 +138,7 @@ export const Header: React.FunctionComponent<{
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
-        {/* hamburger icon shows the drawer on click */}
-        {!onDesktop ? (
-          <IconButton
-            className={classes.sideBarButton}
-            edge="start"
-            aria-label="open drawer"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            size="large"
-          >
-            <MenuIcon />
-          </IconButton>
-        ) : null}
-        {onDesktop ? (
-          <Typography variant="h6" noWrap className={classes.title}>
-            LunaSec Example App
-          </Typography>
-        ) : null}
+        {LeftHeaderContent()}
         {showLoggedInStatus()}
         {/*<InputLabel id="mode-selector-label">Mode</InputLabel> doesnt work and unclear why */}
         <Select
