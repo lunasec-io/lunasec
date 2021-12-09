@@ -22,7 +22,6 @@ runs:
     - uses: actions/setup-node@v2
       with:
         node-version: '16'
-        cache: yarn
 
     # specifically tag this bootstrap container to prevent rebuilds
     - name: Build Lerna Bootstrap container
