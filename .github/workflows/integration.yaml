@@ -14,7 +14,7 @@
 #
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Integration Tests
 
 # Controls when the workflow will run
 on:
@@ -51,32 +51,12 @@ jobs:
       with:
         fetch-depth: 0
 
-    #TODO: there may be a more idiomatic way to do this
-    - name: Check if we should skip this build
-      id: job-canceller
-      run: echo "::set-output name=cancelled::${{ matrix.merge == 'merged' && github.event_name != 'pull_request'}}"
+    - name: Setup Branch
+      uses: ./.github/workflows/composite/merge-branch
+      if: ${{ matrix.merge == 'merged' }}
 
-    # Cancel the merge copy of this build(see the matrix above) if we are not in a PR
-    - name: cancelling
-      uses: andymckay/cancel-action@0.2
-      if: ${{ steps.job-canceller.outputs.cancelled == 'true' }}
-
-      # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
-    - name: Merge target branch
-      run: git merge origin/${{ github.event.pull_request.base.ref }}
-      if: ${{ matrix.merge == 'merged' && github.event_name == 'pull_request' }}
-
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-        cache: yarn
-
-    - name: Set up Docker BuildKit
-      id: buildx
-      uses: docker/setup-buildx-action@v1
-      with:
-        install: true # sets buildx as the default for docker, which should apply to docker-compose commands
-        driver: docker
+    - name: Setup Environment
+      uses: ./.github/workflows/composite/setup-docker-ci
 
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
     - name: Setup tmate session
@@ -86,9 +66,13 @@ jobs:
       if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled != 'false' }}
       timeout-minutes: 15
 
-    - name: Delete and Regenerate Lockfile
-      if: ${{ matrix.lockfile == 'no-lockfile' }}
-      run: rm yarn.lock && CI="" yarn install #currently broken
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+#    - name: Delete and Regenerate Lockfile
+#      if: ${{ matrix.lockfile == 'no-lockfile' }}
+#      run: rm yarn.lock && CI="" yarn install #currently broken
 
 #    - uses: actions/setup-go@v2
 #      with:
@@ -109,20 +93,6 @@ jobs:
 #      env:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      run: npm run license:check
-
-    # specifically tag this bootstrap container to prevent rebuilds
-    - name: Build Lerna Bootstrap container
-      run: docker build --progress plain -f ./js/docker/demo.dockerfile -t lerna-bootstrap --target lerna-bootstrap .
-
-    - name: Build CLI Container
-      run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
-
-    # Use the bootstrap image to quickly run linting and unit testing
-    - name: Lint
-      run: docker run --entrypoint yarn lerna-bootstrap lint
-
-    - name: Unit Test
-      run: docker run --entrypoint yarn lerna-bootstrap test:unit:js
 
     - name: Use CLI Container with docker.sock mounted to launch all other containers
       run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo --local-build --env=tests
@@ -168,15 +138,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      #TODO: there may be a more idiomatic way to do this
-      - name: Check if we should skip this build
-        id: job-canceller
-        run: echo "::set-output name=cancelled::${{ matrix.merge == 'merged' && github.event_name != 'pull_request'}}"
-
-      # merge with master(or whatever target branch) so we are actually testing what will happen after PR merges, not just this branch
-      - name: Merge target branch
-        run: git merge origin/${{ github.event.pull_request.base.ref }}
-        if: ${{ matrix.merge == 'merged' && github.event_name == 'pull_request' }}
+      - name: Setup Branch
+        uses: ./.github/workflows/composite/merge-branch
+        if: ${{ matrix.merge == 'merged' }}
 
       - uses: actions/setup-go@v2
         with:
