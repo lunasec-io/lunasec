@@ -11,6 +11,9 @@
   ~ limitations under the License.
   ~
 -->
+# Lunasec CLI
+CLI that configures and launches LunaSec services locally for development, or deploys them to production.  
+
 ## LunaSec
 LunaSec is an Open Source data-security framework for web apps.  It provides end-to-end security for text, documents, and files.  From the web browser to the server to the database, sensitive data is isolated and secure.
 
