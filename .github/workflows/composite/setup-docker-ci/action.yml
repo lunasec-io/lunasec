@@ -8,9 +8,6 @@ inputs:
 
 runs:
   using: "composite"
-#  env:
-#    # avoid warnings like "tput: No value for $TERM and no -T specified"
-#    TERM: xterm
   steps:
     - name: Set up Docker BuildKit
       id: buildx
