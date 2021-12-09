@@ -18,15 +18,6 @@ jobs:
 
     - name: Setup Environment
       uses: ./.github/workflows/composite/setup-docker-ci
-      with:
-        merge_master: ${{ matrix.merge == 'merged' }}
-        skip_docker: 'false'
-        event_name: ${{ github.event_name }}
-
-    - name: dependencies
-      env:
-        IS_LUNASEC_CI: true
-      run: yarn install --immutable --immutable-cache --inline-builds
 
     # Use the bootstrap image to quickly run linting and unit testing
     - name: Lint

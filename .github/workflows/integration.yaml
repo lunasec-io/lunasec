@@ -46,12 +46,12 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Setup Branch
+      uses: ./.github/workflows/composite/merge-branch
+      if: ${{ matrix.merge == 'merged' }}
+
     - name: Setup Environment
       uses: ./.github/workflows/composite/setup-docker-ci
-      with:
-        merge_master: ${{ matrix.merge == 'merged' }}
-        skip_docker: 'false'
-        event_name: ${{ github.event_name }}
 
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
     - name: Setup tmate session
@@ -63,7 +63,7 @@ jobs:
 
     - uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '16'
         cache: yarn
 
 #    - name: Delete and Regenerate Lockfile
@@ -134,12 +134,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Environment
-        uses: ./.github/workflows/composite/setup-docker-ci
-        with:
-          merge_master: ${{ matrix.merge == 'merged' }}
-          skip_docker: 'true'
-          event_name: ${{ github.event_name }}
+      - name: Setup Branch
+        uses: ./.github/workflows/composite/merge-branch
+        if: ${{ matrix.merge == 'merged' }}
 
       - uses: actions/setup-go@v2
         with:
