@@ -172,8 +172,10 @@ methods are still prevalent.
 ### References
 
 [1] https://issues.apache.org/jira/browse/LOG4J2-2109
+
 [2] https://github.com/apache/logging-log4j2/pull/607/files
+
 [3] https://issues.apache.org/jira/browse/LOG4J2-3198
 
-Also kudos to @80vul for [tweeting](https://twitter.com/80vul/status/1468968891489857537)
+Also kudos to @80vul for [tweeting](https://twitter.com/80vul/status/1468968891489857537) about this.
 
