@@ -126,8 +126,8 @@ running Java software!
 
 ### How the LunaSec framework can prevent future attacks
 
-[LunaSec](/pages/overview/introduction/) is our Open Source data security framework.  It isolates and protects data in web applications, meaning 
-that even a full RCE attack like this wouldn't be able to leak sensitive data.  Here is a [list of common attacks](/pages/how-it-works/security/vulns-and-mitigations/#information-disclosure) and how LunaSec prevents them.
+[LunaSec](https://www.lunasec.io/docs/pages/overview/introduction/) is our Open Source data security framework.  It isolates and protects data in web applications, meaning 
+that even a full RCE attack like this wouldn't be able to leak sensitive data.  Here is a [list of common attacks](https://www.lunasec.io/docs/pages/how-it-works/security/vulns-and-mitigations/) and how LunaSec prevents them.
 
 Installing LunaSec can limit your vulnerability to attacks, before they happen.  
 
