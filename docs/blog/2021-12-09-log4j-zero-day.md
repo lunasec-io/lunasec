@@ -1,6 +1,6 @@
 ---
 title: RCE 0-day exploit found in log4j, a popular Java logging package
-description: A non-security person's take on using CSPs in the real world.
+description: Given how ubiquitous this library is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 authors:
 - name: Free Wortley 
