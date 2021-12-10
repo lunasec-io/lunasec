@@ -38,11 +38,11 @@ popular Java logging library `log4j2` was discovered that results in Remote Code
 logging a certain string.
 
 Given how ubiquitous this library is, the impact of the exploit (full server control), and how easy it is to exploit,
-the impact of this vulnerability is quite severe. We're calling it "Log4Shell" for short (CVE-2021-44228 just isn't as memorable).
+the impact of this vulnerability is quite severe. We're calling it "Log4Shell" for short.
 
 The 0-day was [tweeted](https://twitter.com/P0rZ9/status/1468949890571337731) along with a POC posted on
 [GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  ~~Since this vulnerability is still very new, there isn't a CVE to track
-it yet.~~ This has been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/) now.
+it yet.~~ This has been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/).
 
 This post provides resources to help you understand the vulnerability and how to mitigate it for yourself.
 
@@ -59,17 +59,16 @@ Many Open Source projects
 like the Minecraft server, [Paper](https://github.com/PaperMC/Paper/commit/b475c6a683fa34156b964f751985f36a784ca0e0),
 have already begun patching their usage of `log4j2`.
 
-This [proof of concept](https://twitter.com/chvancooten/status/1469340927923826691) of changing an iPhone's name demonstrates
-that physical devices are also affected by this vulnerability. To be clear, this proof of concept only shows the vulnerability
-exists on iPhones, but there is currently no known remote method of triggering it.
+Simply [changing an iPhone's name](https://twitter.com/chvancooten/status/1469340927923826691) has been shown to trigger the 
+vulnerability in Apple's servers.
 
 **Updates (3 hours after posting):**
-According to [this blog post](https://www.cnblogs.com/yyhuni/p/15088134.html) (in [english](https://www-cnblogs-com.translate.goog/yyhuni/p/15088134.html?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en-US)),
+According to [this blog post](https://www.cnblogs.com/yyhuni/p/15088134.html) (see [translation](https://www-cnblogs-com.translate.goog/yyhuni/p/15088134.html?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en-US)),
 JDK versions greater than `6u211`, `7u201`, `8u191`, and `11.0.1` are not affected by the LDAP attack vector. In these versions
-`com.sun.jndi.ldap.object.trustURLCodebase` is set to `false` meaning JNDI cannot load a remote codebase using LDAP. 
+`com.sun.jndi.ldap.object.trustURLCodebase` is set to `false` meaning JNDI cannot load remote code using LDAP. 
 
-However, there are other attack vectors targeting this vulnerability which can result in RCE. Depending on what code is
-present on the server, an attacker could leverage this existing code to execute a payload. An attack targeting the class
+However, there are other attack vectors targeting this vulnerability which can result in RCE. An attacker could still leverage 
+existing code on the server to execute a payload. An attack targeting the class
 `org.apache.naming.factory.BeanFactory`, present on Apache Tomcat servers, is discussed
 in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injections-java). 
 
@@ -79,9 +78,7 @@ in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injec
 
 ## Permanent Mitigation
 
-At the time this post was created (December 9th, 2021), no stable release was available. 
-
-As of December 10th, 2021, Version 2.15.0 was released. log4j-core.jar is available on Maven Central [here](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/), with [[release notes](https://logging.apache.org/log4j/2.x/changes-report.html#a2.15.0)] and 
+Version 2.15.0 of log4j has been released without the vulnerability. log4j-core.jar is available on Maven Central [here](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/), with [[release notes](https://logging.apache.org/log4j/2.x/changes-report.html#a2.15.0)] and 
 [[log4j security announcements](https://logging.apache.org/log4j/2.x/security.html)].
 
 Releases to GitHub appear to still be pending.
@@ -181,10 +178,10 @@ Refreshing the page will show DNS queries which identify hosts who have triggere
 
 :::caution
 
-Due to the widespread use of _dnslog.cn_ for testing log4shell, we advise caution when testing sensitive infrastructure as
-information being sent to this site could be used by the service's owners to exploit applications identified as vulnerable.
+While _dnslog.cn_ has become popular for testing log4shell, we advise caution. When testing sensitive infrastructure,
+information sent to this site could be used by its owner to catalogue and later exploit it.
 
-If this is something of concern to you and wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
+If you wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
 for testing.
 
 :::
@@ -196,13 +193,12 @@ We'll continue to update this post as information about the impact of this explo
 For now, we're just publishing this to help raise awareness and get people patching it. Please tell any of your friends 
 running Java software!
 
-### How you can prevent future attacks
+### Limit your vulnerability to future attacks
 
-Approaches like Tokenization can limit your vulnerability to attacks before they happen by requiring multiple exploits
-to leak sensitive data.
+[LunaSec](https://www.lunasec.io/docs/pages/overview/introduction/) is an Open Source Data Security framework that
+[isolates and protects](https://www.lunasec.io/docs/pages/how-it-works/features/) sensitive data in web applications. 
+It limits vulnerability to attacks like _log4shell_ and can help protect against future 0-days, before they happen.
 
-[LunaSec](https://www.lunasec.io/docs/pages/overview/introduction/) is an Open Source Data Security framework designed 
-to help [mitigate](https://www.lunasec.io/docs/pages/how-it-works/features/) attacks just like this one.
 
 ### Editing this post
 If you have any updates or edits you'd like to make, you can edit this post as Markdown on
