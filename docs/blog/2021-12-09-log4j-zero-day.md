@@ -220,6 +220,7 @@ methods are still prevalent.
 5. Update that 2.15.0 is released.
 6. Added the MS Paint logo[4], and updated example code to be slightly more clear (it's not string concatenation).
 7. Reported on iPhones being affected by the vulnerability, and included local reproduction code + steps.
+8. Updated example code to use Log4j2 syntax.
 
 ### References
 
