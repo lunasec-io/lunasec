@@ -159,7 +159,7 @@ module.exports = {
     announcementBar: {
       id: 'star_us',
       content:
-        'Please Star our <a href="https://github.com/lunasec-io/lunasec" target="_blank" ref="noopener">GitHub Repo</a> and check out our <a href="https://app.lunasec.dev/" target="_blank" ref="noopener">Live Demo</a>!',
+        'Please Star our <a href="https://github.com/lunasec-io/lunasec" target="_blank" ref="noopener">GitHub Repo</a>!',
       backgroundColor: '#fafbfc',
       textColor: '#091E42',
       isCloseable: true,

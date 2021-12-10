@@ -1,5 +1,5 @@
 ---
-title: "Log4Shell: RCE 0-day exploit found in log4j, a popular Java logging package"
+title: "Log4Shell: RCE 0-day exploit found in log4j2, a popular Java logging package"
 description: Given how ubiquitous this library is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
@@ -34,7 +34,7 @@ authors:
 _Updated @ December 10th, 8am PST_
 
 A few hours ago, a 0-day exploit in the
-popular Java logging library `log4j` was discovered that results in Remote Code Execution (RCE) by
+popular Java logging library `log4j2` was discovered that results in Remote Code Execution (RCE) by
 logging a certain string.
 
 Given how ubiquitous this library is, the impact of the exploit (full server control), and how easy it is to exploit,
@@ -57,7 +57,7 @@ the [2017 Equifax data breach](https://en.wikipedia.org/wiki/2017_Equifax_data_b
 
 Many Open Source projects
 like the Minecraft server, [Paper](https://github.com/PaperMC/Paper/commit/b475c6a683fa34156b964f751985f36a784ca0e0),
-have already begun patching their usage of `log4j`.
+have already begun patching their usage of `log4j2`.
 
 This [proof of concept](https://twitter.com/chvancooten/status/1469340927923826691) of changing an iPhone's name demonstrates
 that physical devices are also affected by this vulnerability. To be clear, this proof of concept only shows the vulnerability
@@ -73,7 +73,7 @@ present on the server, an attacker could leverage this existing code to execute 
 `org.apache.naming.factory.BeanFactory`, present on Apache Tomcat servers, is discussed
 in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injections-java). 
 
-## Affected Apache log4j Versions
+## Affected Apache log4j2 Versions
 
 `2.0 <= Apache log4j <= 2.14.1`
 
