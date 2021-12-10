@@ -29,12 +29,13 @@ authors:
 -->
 
 A few hours ago, a 0-day exploit in the
-popular Java logging library, `log4j`, was [tweeted](https://twitter.com/P0rZ9/status/1468949890571337731) along with a POC posted on
-[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc) that results in Remote Code Execution (RCE) if
-`log4j` logs an attacker-controlled string value.
+popular Java logging library `log4j` was discovered that results in Remote Code Execution (RCE) by logging a certain string. 
 
 Given how ubiquitous this library is, the impact of the exploit (full server control), and how easy it is to exploit,
-the impact of this vulnerability is quite severe. Since this vulnerability is still very new, there isn't a CVE to track
+the impact of this vulnerability is quite severe. 
+
+The 0-day was [tweeted](https://twitter.com/P0rZ9/status/1468949890571337731) along with a POC posted on
+[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  Since this vulnerability is still very new, there isn't a CVE to track
 it yet.
 
 This post provides resources to help you understand the vulnerability and how to mitigate it for yourself.
@@ -42,8 +43,8 @@ This post provides resources to help you understand the vulnerability and how to
 <!--truncate-->
 
 ## Who is impacted?
-Cloud services like [Steam, Apple iCloud](https://news.ycombinator.com/item?id=29499867), and apps like
-Minecraft have been found to be vulnerable to this exploit. Many, many others likely are, also.
+Many, many services are vulnerable to this exploit.  Cloud services like [Steam, Apple iCloud](https://news.ycombinator.com/item?id=29499867), and apps like
+Minecraft have already been found to be vulnerable.  
 
 Anybody using Apache Struts is likely vulnerable. We've seen similar vulnerabilities exploited before in breaches like 
 the [2017 Equifax data breach](https://en.wikipedia.org/wiki/2017_Equifax_data_breach#Data_breach).
@@ -76,9 +77,9 @@ Start your server with `log4j2.formatMsgNoLookups` set to `true`, or update to `
 ## How the exploit works
 
 ### Exploit Requirements 
-- A server running with a vulnerable `log4j` version (listed above),
-- A remotely accessible endpoint with any protocol (HTTP, TCP, etc) that allows an attacker to send arbitrary data,
-- A log statement in the endpoint that logs the attacker controlled data.
+- A server with a vulnerable `log4j` version (listed above),
+- an endpoint with any protocol (HTTP, TCP, etc) that allows an attacker to send the exploit string,
+- and a log statement that logs out the string from that request.
 
 ### Example Vulnerable Code
 
@@ -138,3 +139,20 @@ Updated the "Who is impacted?" section to include mitigating factor based on JDK
 methods are still prevalent.
 
 :::
+
+### How the LunaSec framework can prevent future attacks
+
+[LunaSec](/pages/overview/introduction/) is our Open Source data security framework.  It isolates and protects data in web applications, meaning 
+that even a full RCE attack like this wouldn't be able to leak sensitive data.  Here is a [list of common attacks](/pages/how-it-works/security/vulns-and-mitigations/#information-disclosure) and how LunaSec prevents them.
+
+Installing LunaSec can limit your vulnerability to attacks, before they happen.  
+
+### Editing this post
+If you have any updates or edits you'd like to make, you can edit this post as Markdown on
+[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-09-log4j-zero-day.md). And please throw us a Star ⭐!
+
+### Links
+- **[Hacker News](https://news.ycombinator.com/item?id=29504755)**
+- **[Reddit](https://old.reddit.com/r/programming/comments/rcxehp/rce_0day_exploit_found_in_log4j_a_popular_java/)**
+- **[Twitter](https://twitter.com/freeqaz/status/1469121757361569793?s=20)**
+
