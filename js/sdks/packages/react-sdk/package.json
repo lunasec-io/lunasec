@@ -21,7 +21,8 @@
     "@lunasec/isomorphic-common": "^1.0.7",
     "@types/styled-components": "^5.1.10",
     "classnames": "^2.3.1",
-    "styled-components": "^5.3.0"
+    "styled-components": "^5.3.0",
+    "@lunasec/secure-frame-front-end": "1.0.7"
   },
   "peerDependencies": {
     "react": ">=17.0.0"

@@ -161,6 +161,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
         this.setState({ sessionAuthenticated: true });
         this.stopSessionManagement = abortSessionCallback;
       });
+      void this.generateFrameBody();
     }
 
     // Pass this to our wrapped component so it can tell us when its on the DOM and ready to give us styles
@@ -233,6 +234,11 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       styleInfo.parentStyle.left = '0';
 
       return styleInfo;
+    }
+
+    async generateFrameBody() {
+      const { stubFrameBody } = await import('@lunasec/secure-frame-front-end');
+      console.log('loaded framebody ', stubFrameBody);
     }
 
     generateUrl() {

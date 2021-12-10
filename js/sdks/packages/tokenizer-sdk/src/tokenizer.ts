@@ -44,7 +44,7 @@ import {
 
 export class Tokenizer {
   readonly config!: TokenizerClientConfig;
-  readonly openApi: DefaultApi;
+  readonly apiClient: DefaultApi;
   private reqOptions: { headers: OutgoingHttpHeaders };
 
   constructor(config: Partial<TokenizerClientConfig>) {
@@ -63,7 +63,7 @@ export class Tokenizer {
     // openapi stuff
     const openAPIConfig = new Configuration({ basePath: this.config.url });
     const axiosInstance = axios.create({});
-    this.openApi = new DefaultApi(openAPIConfig, undefined, axiosInstance);
+    this.apiClient = new DefaultApi(openAPIConfig, undefined, axiosInstance);
   }
 
   private handleError(e: AxiosError | Error | unknown): TokenizerFailApiResponse {
@@ -100,7 +100,7 @@ export class Tokenizer {
 
   public async createGrant(sessionId: string, tokenId: string, customDuration?: string) {
     try {
-      const res = await this.openApi.setGrant(
+      const res = await this.apiClient.setGrant(
         {
           sessionId,
           tokenId,
@@ -118,7 +118,7 @@ export class Tokenizer {
 
   async verifyGrant(sessionId: string, tokenId: string): SuccessOrFailOutput<TokenizerVerifyGrantResponse> {
     try {
-      const res = await this.openApi.verifyGrant(
+      const res = await this.apiClient.verifyGrant(
         {
           sessionId,
           tokenId,
@@ -136,7 +136,7 @@ export class Tokenizer {
 
   async getMetadata(tokenId: string): SuccessOrFailOutput<TokenizerGetMetadataResponse> {
     try {
-      const res = await this.openApi.getMetaData(
+      const res = await this.apiClient.getMetaData(
         {
           tokenId,
         },
@@ -154,7 +154,7 @@ export class Tokenizer {
 
   async tokenize(input: string | Buffer, metadata: MetaData): SuccessOrFailOutput<TokenizerTokenizeResponse> {
     try {
-      const res = await this.openApi.tokenize(
+      const res = await this.apiClient.tokenize(
         {
           metadata,
         },
@@ -216,7 +216,7 @@ export class Tokenizer {
 
   async detokenizeToUrl(tokenId: string): SuccessOrFailOutput<TokenizerDetokenizeToUrlResponse> {
     try {
-      const response = await this.openApi.detokenize(
+      const response = await this.apiClient.detokenize(
         {
           tokenId,
         },
