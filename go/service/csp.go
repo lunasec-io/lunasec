@@ -21,9 +21,7 @@ import (
 	"context"
 	crand "crypto/rand"
 	"encoding/base64"
-	"errors"
 	"fmt"
-	"github.com/lunasec-io/lunasec-monorepo/util"
 	"io"
 	"net/http"
 	"strings"
@@ -43,11 +41,9 @@ const (
 
 // NonceToken is the string token that gets replaced by the middleware with a dynamic nonce directive
 const NonceToken = "{{nonce}}"
-const Referer = "{{referer}}"
 
 var nonceReplacer = strings.NewReplacer(
 	NonceToken, "nonce-%[1]s",
-	Referer, "%[2]s",
 )
 
 // CSP is used to configure the Content Security Policy Middleware. For more about csp please refer the mozilla docs.
@@ -83,6 +79,7 @@ func NewCSPMiddleware(csp CSPPolicy, byteSize int, reportOnly bool) CSPMiddlware
 	formattedCSP := formatCSPDirectives(csp)
 	policyTemplate := nonceReplacer.Replace(formattedCSP)
 
+
 	if byteSize <= 0 {
 		byteSize = 16
 	}
@@ -110,11 +107,6 @@ func NewCSPMiddleware(csp CSPPolicy, byteSize int, reportOnly bool) CSPMiddlware
 func (c *cspMiddleware) Middleware() func(http.HandlerFunc) http.HandlerFunc {
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
-			referer := r.Header.Get("referer")
-			if referer == "" {
-				util.RespondError(w, http.StatusBadRequest, errors.New("missing origin for request"))
-				return
-			}
 
 			buff := c.bufferPool.Get().(*bytes.Buffer)
 
@@ -123,7 +115,7 @@ func (c *cspMiddleware) Middleware() func(http.HandlerFunc) http.HandlerFunc {
 
 			nonce := buff.Bytes()
 
-			cspPolicy := fmt.Sprintf(c.policyTemplate, nonce, referer)
+			cspPolicy := fmt.Sprintf(c.policyTemplate, nonce)
 			w.Header().Add(c.headerKey, cspPolicy)
 
 			ctx := WithNonce(r.Context(), string(nonce))
@@ -172,6 +164,7 @@ func WithNonce(ctx context.Context, n string) context.Context {
 	return context.WithValue(ctx, nonceKey, n)
 }
 
+
 func formatCSPDirectives(directives CSPPolicy) string {
 	const (
 		withQuotes    = "'%s'"
@@ -181,6 +174,7 @@ func formatCSPDirectives(directives CSPPolicy) string {
 		newDirectives []string
 		quoteFormat   string
 	)
+
 
 	for directive, vals := range directives {
 		switch directive {

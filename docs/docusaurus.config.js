@@ -33,7 +33,7 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const webpack = require('webpack')
 
-const githubUrl = 'https://github.com/refinery-labs/lunasec-monorepo' // restart the server if you change this
+const githubUrl = 'https://github.com/lunasec-io/lunasec' // restart the server if you change this
 const quotedGithubUrl = `"${githubUrl}"`
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
@@ -157,6 +157,14 @@ module.exports = {
       searchParameters: {},
       //... other Algolia params
     },
+    announcementBar: {
+      id: 'star_us',
+      content:
+        'Please Star our <a href="https://github.com/lunasec-io/lunasec" target="_blank" ref="noopener">GitHub Repo</a>!',
+      backgroundColor: '#fafbfc',
+      textColor: '#091E42',
+      isCloseable: true,
+    },
     navbar: {
       logo: {
         alt: 'LunaSec Logo',
@@ -182,12 +190,15 @@ module.exports = {
         {
           href: 'https://www.lunasec.io/contact',
           label: 'Contact Us',
-          position: 'right'
+          position: 'right',
+          rel: ''
         },
         {
-          href: 'https://github.com/refinery-labs/lunasec-monorepo',
-          label: 'GitHub',
-          position: 'right'
+          href: 'https://github.com/lunasec-io/lunasec',
+          label: ' GitHub',
+          position: 'right',
+          rel: 'noopener',
+          className: 'github-nav-link'
         },
       ],
     },
@@ -207,12 +218,15 @@ module.exports = {
           title: 'Community',
           items: [
             {
-              label: 'Github',
-              href: 'https://github.com/refinery-labs/lunasec-monorepo',
+              label: ' GitHub (Star Us 💕)',
+              href: 'https://github.com/lunasec-io/lunasec',
+              className: 'footer__link-item github-nav-link',
+              rel: 'noopener'
             },
             {
               label: 'Forums',
-              href: 'https://github.com/lunasec-io/lunasec/discussions'
+              href: 'https://github.com/lunasec-io/lunasec/discussions',
+              rel: 'noopener'
             }
           ],
         },
@@ -222,10 +236,12 @@ module.exports = {
             {
               label: 'Website',
               to: 'https://www.lunasec.io/',
+              rel: 'noopener'
             },
             {
               label: 'Contact Us',
-              to: 'https://www.lunasec.io/contact'
+              to: 'https://www.lunasec.io/contact',
+              rel: 'noopener'
             }
           ],
         },
@@ -248,13 +264,13 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/refinery-labs/lunasec-monorepo/edit/master/docs/',
+            'https://github.com/lunasec-io/lunasec/edit/master/docs/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/refinery-labs/lunasec-monorepo/edit/master/docs/blog/',
+            'https://github.com/lunasec-io/lunasec/edit/master/docs/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
