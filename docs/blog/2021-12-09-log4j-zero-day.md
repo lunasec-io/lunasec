@@ -141,10 +141,13 @@ methods are still prevalent.
 
 :::
 
-### How LunaSec can help you prevent future attacks
+### How you can prevent future attacks
 
-[LunaSec](https://www.lunasec.io/docs/pages/overview/introduction/) is an Open Source data security framework designed 
-to help mitigate the impacts of 0-days by making Data Leaks require more than just a single vulnerability (like this exploit).
+Approaches like Tokenization can limit your vulnerability to attacks before they happen by requiring multiple exploits
+to leak sensitive data.
+
+[LunaSec](https://www.lunasec.io/docs/pages/overview/introduction/) is an Open Source Data Security framework designed 
+to help [mitigate](https://www.lunasec.io/docs/pages/how-it-works/features/) attacks just like this one.
 
 ### Editing this post
 If you have any updates or edits you'd like to make, you can edit this post as Markdown on
