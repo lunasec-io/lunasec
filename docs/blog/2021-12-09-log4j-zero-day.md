@@ -72,7 +72,7 @@ in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injec
 
 ## Permanent Mitigation
 
-At the time this post was created (December 9th, 2021), no stable release is available. Version 2.15.0 was released on December 10th, 2021. log4j-core.jar is available on Maven Central [here](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/) [release notes](https://logging.apache.org/log4j/2.x/changes-report.html#a2.15.0) [log4j security announcements](https://logging.apache.org/log4j/2.x/security.html).
+At the time this post was created (December 9th, 2021), no stable release is available. Version 2.15.0 was released on December 10th, 2021. log4j-core.jar is available on Maven Central [here](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/) [[release notes](https://logging.apache.org/log4j/2.x/changes-report.html#a2.15.0)] [[log4j security announcements](https://logging.apache.org/log4j/2.x/security.html)].
 On github, the closest tag currently set is `log4j-2.15.0-rc2` and available [here](https://github.com/apache/logging-log4j2/releases/tag/log4j-2.15.0-rc2).
 
 ## Temporary Mitigation
