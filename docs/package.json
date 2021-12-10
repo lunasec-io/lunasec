@@ -18,9 +18,9 @@
     "openapi:generate": "redoc-cli bundle ../api-spec/schema/full-tokenizer.yaml --output static/tokenizer-api-spec-static/index.html"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-beta.6",
-    "@docusaurus/preset-classic": "^2.0.0-beta.6",
-    "@docusaurus/theme-search-algolia": "^2.0.0-beta.6",
+    "@docusaurus/core": "^2.0.0-beta.13",
+    "@docusaurus/preset-classic": "^2.0.0-beta.13",
+    "@docusaurus/theme-search-algolia": "^2.0.0-beta.13",
     "@lunasec/s3-redirect-generator": "^1.0.7",
     "@mdx-js/react": "^1.6.21",
     "@openapitools/openapi-generator-cli": "^2.3.9",

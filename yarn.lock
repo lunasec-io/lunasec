@@ -4968,7 +4968,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/core@npm:2.0.0-beta.ff31de0ff, @docusaurus/core@npm:^2.0.0-beta.6":
+"@docusaurus/core@npm:2.0.0-beta.ff31de0ff, @docusaurus/core@npm:^2.0.0-beta.13":
   version: 2.0.0-beta.ff31de0ff
   resolution: "@docusaurus/core@npm:2.0.0-beta.ff31de0ff"
   dependencies:
@@ -5233,7 +5233,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/preset-classic@npm:^2.0.0-beta.6":
+"@docusaurus/preset-classic@npm:^2.0.0-beta.13":
   version: 2.0.0-beta.ff31de0ff
   resolution: "@docusaurus/preset-classic@npm:2.0.0-beta.ff31de0ff"
   dependencies:
@@ -5318,7 +5318,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/theme-search-algolia@npm:2.0.0-beta.ff31de0ff, @docusaurus/theme-search-algolia@npm:^2.0.0-beta.6":
+"@docusaurus/theme-search-algolia@npm:2.0.0-beta.ff31de0ff, @docusaurus/theme-search-algolia@npm:^2.0.0-beta.13":
   version: 2.0.0-beta.ff31de0ff
   resolution: "@docusaurus/theme-search-algolia@npm:2.0.0-beta.ff31de0ff"
   dependencies:
@@ -17707,9 +17707,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "docs@workspace:docs"
   dependencies:
-    "@docusaurus/core": ^2.0.0-beta.6
-    "@docusaurus/preset-classic": ^2.0.0-beta.6
-    "@docusaurus/theme-search-algolia": ^2.0.0-beta.6
+    "@docusaurus/core": ^2.0.0-beta.13
+    "@docusaurus/preset-classic": ^2.0.0-beta.13
+    "@docusaurus/theme-search-algolia": ^2.0.0-beta.13
     "@lunasec/s3-redirect-generator": ^1.0.7
     "@mdx-js/react": ^1.6.21
     "@openapitools/openapi-generator-cli": ^2.3.9
