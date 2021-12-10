@@ -21,7 +21,7 @@ FROM lerna-bootstrap as application-back-end
 
 WORKDIR /repo/js/demo-apps/packages/demo-back-end
 
-ENTRYPOINT ["sh", "/repo/go/scripts/wait-for-file.sh", "/outputs/aws_resources.json", "yarn", "start:dev"]
+ENTRYPOINT ["sh", "/repo/go/scripts/wait-for-file.sh", "/outputs/aws_resources.json", "yarn", "start:prod"]
 
 FROM lerna-bootstrap as application-front-end
 
