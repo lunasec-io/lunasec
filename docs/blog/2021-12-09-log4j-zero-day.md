@@ -38,11 +38,11 @@ popular Java logging library `log4j2` was discovered that results in Remote Code
 logging a certain string.
 
 Given how ubiquitous this library is, the impact of the exploit (full server control), and how easy it is to exploit,
-the impact of this vulnerability is quite severe. We're calling it "Log4Shell" for short (CVE-2021-44228 just isn't as memorable).
+the impact of this vulnerability is quite severe. We're calling it "Log4Shell" for short.
 
 The 0-day was [tweeted](https://twitter.com/P0rZ9/status/1468949890571337731) along with a POC posted on
 [GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  ~~Since this vulnerability is still very new, there isn't a CVE to track
-it yet.~~ This has been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/) now.
+it yet.~~ This has been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/).
 
 This post provides resources to help you understand the vulnerability and how to mitigate it for yourself.
 
@@ -196,13 +196,12 @@ We'll continue to update this post as information about the impact of this explo
 For now, we're just publishing this to help raise awareness and get people patching it. Please tell any of your friends 
 running Java software!
 
-### How you can prevent future attacks
+### Limit your vulnerability to future attacks
 
-Approaches like Tokenization can limit your vulnerability to attacks before they happen by requiring multiple exploits
-to leak sensitive data.
+[LunaSec](https://www.lunasec.io/docs/pages/overview/introduction/) is an Open Source Data Security framework that
+[isolates and protects](https://www.lunasec.io/docs/pages/how-it-works/features/) sensitive data in web applications. 
+It limits vulnerability to attacks like _log4shell_ and can help protect against future 0-days, before they happen.
 
-[LunaSec](https://www.lunasec.io/docs/pages/overview/introduction/) is an Open Source Data Security framework designed 
-to help [mitigate](https://www.lunasec.io/docs/pages/how-it-works/features/) attacks just like this one.
 
 ### Editing this post
 If you have any updates or edits you'd like to make, you can edit this post as Markdown on
