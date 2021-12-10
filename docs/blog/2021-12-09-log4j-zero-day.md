@@ -1,5 +1,5 @@
 ---
-title: LogJam: RCE 0-day exploit found in log4j, a popular Java logging package
+title: "LogJam: RCE 0-day exploit found in log4j, a popular Java logging package"
 description: Given how ubiquitous this library is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 authors:
