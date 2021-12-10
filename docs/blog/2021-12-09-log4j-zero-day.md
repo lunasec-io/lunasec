@@ -178,7 +178,7 @@ methods are still prevalent.
 3. Update mitigation steps with newer information.
 4. Removed the name "LogJam" because it's already been [used](https://en.wikipedia.org/wiki/Logjam_(computer_security)). Using "Log4Shell" instead.
 5. Update that 2.15.0 is released.
-6. Added the MS Paint logo[4].
+6. Added the MS Paint logo[4], and updated example code to be slightly more clear (it's not string concatenation).
 
 ### References
 
