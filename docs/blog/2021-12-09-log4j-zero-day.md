@@ -72,9 +72,12 @@ in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injec
 
 ## Permanent Mitigation
 
-At the time this post was created (December 9th, 2021) no stable release is available. There is a patched release 
-candidate of `log4j` published with versions `log4j-2.15.0-rc1` and `log4j-2.15.0-rc2` available on GitHub
-[here](https://github.com/apache/logging-log4j2/releases/tag/log4j-2.15.0-rc2).
+At the time this post was created (December 9th, 2021), no stable release was available. 
+
+As of December 10th, 2021, Version 2.15.0 was released. log4j-core.jar is available on Maven Central [here](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/), with [[release notes](https://logging.apache.org/log4j/2.x/changes-report.html#a2.15.0)] and 
+[[log4j security announcements](https://logging.apache.org/log4j/2.x/security.html)].
+
+Releases to GitHub appear to still be pending.
 
 ## Temporary Mitigation
 
@@ -171,6 +174,7 @@ methods are still prevalent.
 2. ~~Named the vulnerability "LogJam",~~ added CVE, and added link to release tags.
 3. Update mitigation steps with newer information.
 4. Removed the name "LogJam" because it's already been [used](https://en.wikipedia.org/wiki/Logjam_(computer_security)). Using "Log4Shell" instead.
+5. Update that 2.15.0 is released.
 
 ### References
 
