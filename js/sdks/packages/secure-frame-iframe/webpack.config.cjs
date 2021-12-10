@@ -19,7 +19,6 @@ const webpack = require('webpack');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-// ----------- Constants -------------------
 const isProduction = process.env.NODE_ENV === 'production';
 
 const envFile = isProduction ? '.env-prod' : '.env';
@@ -32,7 +31,6 @@ const outputStaticFile = isProduction ? '[path][name].[contenthash][ext]' : '[pa
 
 const runWatch = process.env.WEBPACK_WATCH !== undefined;
 
-// ------------ Plugins ---------------------
 const plugins = [];
 
 plugins.push(new CopyWebpackPlugin({
@@ -43,14 +41,6 @@ plugins.push(new webpack.ProvidePlugin({
   process: 'process/browser',
   Buffer: ['buffer', 'Buffer'],
 }));
-
-// These generate the iframe inline html for use in stubbed out dev environments
-// plugins.push(new HtmlWebpackPlugin({
-//   template:path.resolve('./stub-template.js'),
-//   filename: 'stub-output.js',
-//   inject:false,
-// }))  //filename:'../../../react-sdk/stub-iframe.html',
-// plugins.push(new InlineChunkHtmlPlugin(HtmlWebpackPlugin,[/\.js/]))
 
 // if (isProduction) {
 //   const S3Plugin = require('webpack-s3-plugin')
@@ -98,7 +88,7 @@ module.exports = {
   },
   output: {
     filename: outputJsBundle,
-    path: path.resolve(__dirname, 'public/js/'),
+    path: path.resolve(__dirname, 'public/js/')
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
