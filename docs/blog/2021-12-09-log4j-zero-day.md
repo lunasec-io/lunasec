@@ -53,6 +53,15 @@ Many Open Source projects
 like the Minecraft server, [Paper](https://github.com/PaperMC/Paper/commit/b475c6a683fa34156b964f751985f36a784ca0e0),
 have already begun patching their usage of `log4j`.
 
+According to [this blog post](https://www.cnblogs.com/yyhuni/p/15088134.html) (in [english](https://www-cnblogs-com.translate.goog/yyhuni/p/15088134.html?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en-US)),
+JDK versions greater than 6u211, 7u201, 8u191, and 11.0.1 are not affected by the LDAP attack vector. In these versions
+`com.sun.jndi.ldap.object.trustURLCodebase` is set to `false` meaning JNDI cannot load a remote codebase using LDAP. 
+
+However, there are other attack vectors targeting this vulnerability which can result in RCE. Depending on what code is
+present on the server, an attacker could leverage this existing code to execute a payload. An attack targeting the class
+`org.apache.naming.factory.BeanFactory`, present on Apache Tomcat servers, is discussed
+in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injections-java). 
+
 ## Affected Apache log4j Versions
 
 `2.0 <= Apache log4j <= 2.14.1`
@@ -124,6 +133,13 @@ We'll continue to update this post as information about the impact of this explo
 For now, we're just publishing this to help raise awareness and get people patching it. Please tell any of your friends 
 running Java software!
 
+:::info
+
+Updated the "Who is impacted?" section to include mitigating factor based on JDK version, but also suggest other exploitation
+methods are still prevalent.
+
+:::
+
 ### How the LunaSec framework can prevent future attacks
 
 [LunaSec](https://www.lunasec.io/docs/pages/overview/introduction/) is our Open Source data security framework.  It isolates and protects data in web applications, meaning 
@@ -139,3 +155,4 @@ If you have any updates or edits you'd like to make, you can edit this post as M
 - **[Hacker News](https://news.ycombinator.com/item?id=29504755)**
 - **[Reddit](https://old.reddit.com/r/programming/comments/rcxehp/rce_0day_exploit_found_in_log4j_a_popular_java/)**
 - **[Twitter](https://twitter.com/freeqaz/status/1469121757361569793?s=20)**
+
