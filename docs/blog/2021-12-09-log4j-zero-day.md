@@ -189,7 +189,7 @@ for testing.
 
 ## More information
 
-We'll continue to update this post as information about the impact of this exploit becomes available.
+You can follow us on [Twitter](https://twitter.com/LunaSecIO) where we'll continue to update you as information about the impact of this exploit becomes available.
 
 For now, we're just publishing this to help raise awareness and get people patching it. Please tell any of your friends 
 running Java software!
@@ -198,8 +198,7 @@ running Java software!
 
 [LunaSec](https://www.lunasec.io/docs/pages/overview/introduction/) is an Open Source Data Security framework that
 [isolates and protects](https://www.lunasec.io/docs/pages/how-it-works/features/) sensitive data in web applications. 
-It limits vulnerability to attacks like _log4shell_ and can help protect against future 0-days, before they happen.
-
+It limits vulnerability to attacks like _Log4Shell_ and can help protect against future 0-days, before they happen.
 
 ### Editing this post
 If you have any updates or edits you'd like to make, you can edit this post as Markdown on
@@ -220,7 +219,8 @@ methods are still prevalent.
 5. Update that 2.15.0 is released.
 6. Added the MS Paint logo[4], and updated example code to be slightly more clear (it's not string concatenation).
 7. Reported on iPhones being affected by the vulnerability, and included local reproduction code + steps.
-8. Updated example code to use Log4j2 syntax.
+8. Update social info.
+9. Updated example code to use Log4j2 syntax.
 
 ### References
 
