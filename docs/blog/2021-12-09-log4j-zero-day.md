@@ -1,5 +1,5 @@
 ---
-title: RCE 0-day exploit found in log4j, a popular Java logging package
+title: LogJam: RCE 0-day exploit found in log4j, a popular Java logging package
 description: Given how ubiquitous this library is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 authors:
@@ -29,14 +29,15 @@ authors:
 -->
 
 A few hours ago, a 0-day exploit in the
-popular Java logging library `log4j` was discovered that results in Remote Code Execution (RCE) by logging a certain string. 
+popular Java logging library `log4j` (we call it "LogJam") was discovered that results in Remote Code Execution (RCE) by
+logging a certain string. 
 
 Given how ubiquitous this library is, the impact of the exploit (full server control), and how easy it is to exploit,
 the impact of this vulnerability is quite severe. 
 
 The 0-day was [tweeted](https://twitter.com/P0rZ9/status/1468949890571337731) along with a POC posted on
-[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  Since this vulnerability is still very new, there isn't a CVE to track
-it yet.
+[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  ~~Since this vulnerability is still very new, there isn't a CVE to track
+it yet.~~ This has been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/) now.
 
 This post provides resources to help you understand the vulnerability and how to mitigate it for yourself.
 
@@ -83,6 +84,8 @@ As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=2950
 > or
 
 > - Substitute a non-vulnerable or empty implementation of the class org.apache.logging.log4j.core.lookup.JndiLookup, in a way that your classloader uses your replacement instead of the vulnerable version of the class. Refer to your application's or stack's classloading documentation to understand this behavior.
+
+Or update to `log4j-2.15.0-rc2` or [later](https://github.com/apache/logging-log4j2/tags)
 
 [1] https://issues.apache.org/jira/browse/LOG4J2-2109 [2] https://github.com/apache/logging-log4j2/pull/607/files [3] https://issues.apache.org/jira/browse/LOG4J2-3198 
 
@@ -147,13 +150,6 @@ We'll continue to update this post as information about the impact of this explo
 For now, we're just publishing this to help raise awareness and get people patching it. Please tell any of your friends 
 running Java software!
 
-:::info
-
-Updated the "Who is impacted?" section to include mitigating factor based on JDK version, but also suggest other exploitation
-methods are still prevalent.
-
-:::
-
 ### How you can prevent future attacks
 
 Approaches like Tokenization can limit your vulnerability to attacks before they happen by requiring multiple exploits
@@ -170,4 +166,10 @@ If you have any updates or edits you'd like to make, you can edit this post as M
 - **[Hacker News](https://news.ycombinator.com/item?id=29504755)**
 - **[Reddit](https://old.reddit.com/r/programming/comments/rcxehp/rce_0day_exploit_found_in_log4j_a_popular_java/)**
 - **[Twitter](https://twitter.com/freeqaz/status/1469121757361569793?s=20)**
+
+### Edits
+
+1. Updated the "Who is impacted?" section to include mitigating factor based on JDK version, but also suggest other exploitation
+methods are still prevalent.
+2. Named the vulnerability "LogJam", added CVE, and added link to release tags.
 
