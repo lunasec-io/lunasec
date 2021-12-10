@@ -72,8 +72,21 @@ At the time this post was created (December 9th, 2021) a patch is available in `
 
 ## Temporary Mitigation
 
-Start your server with `log4j2.formatMsgNoLookups` set to `true`, or update to `log4j-2.15.0-rc1` or later. 
-(Kudos to @80vul for [tweeting](https://twitter.com/80vul/status/1468968891489857537))
+As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=29507263):
+
+> The 'formatMsgNoLookups' property was added in version 2.10.0, per the JIRA Issue LOG4J2-2109 [1] that proposed it. Therefore the 'formatMsgNoLookups=true' mitigation strategy is available in version 2.10.0 and higher, but is no longer necessary with version 2.15.0, because it then becomes the default behavior [2][3].
+
+> If you are using a version older than 2.10.0 and cannot upgrade, your mitigation choices are:
+
+> - Modify every logging pattern layout to say `%m{nolookups}` instead of `%m` in your logging config files, see details at https://issues.apache.org/jira/browse/LOG4J2-2109
+
+> or
+
+> - Substitute a non-vulnerable or empty implementation of the class org.apache.logging.log4j.core.lookup.JndiLookup, in a way that your classloader uses your replacement instead of the vulnerable version of the class. Refer to your application's or stack's classloading documentation to understand this behavior.
+
+[1] https://issues.apache.org/jira/browse/LOG4J2-2109 [2] https://github.com/apache/logging-log4j2/pull/607/files [3] https://issues.apache.org/jira/browse/LOG4J2-3198 
+
+(Also kudos to @80vul for [tweeting](https://twitter.com/80vul/status/1468968891489857537))
 
 ## How the exploit works
 
