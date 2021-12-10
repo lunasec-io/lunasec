@@ -63,12 +63,12 @@ Simply [changing an iPhone's name](https://twitter.com/chvancooten/status/146934
 vulnerability in Apple's servers.
 
 **Updates (3 hours after posting):**
-According to [this blog post](https://www.cnblogs.com/yyhuni/p/15088134.html) (in [english](https://www-cnblogs-com.translate.goog/yyhuni/p/15088134.html?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en-US)),
+According to [this blog post](https://www.cnblogs.com/yyhuni/p/15088134.html) (see [translation](https://www-cnblogs-com.translate.goog/yyhuni/p/15088134.html?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en-US)),
 JDK versions greater than `6u211`, `7u201`, `8u191`, and `11.0.1` are not affected by the LDAP attack vector. In these versions
 `com.sun.jndi.ldap.object.trustURLCodebase` is set to `false` meaning JNDI cannot load a remote codebase using LDAP. 
 
-However, there are other attack vectors targeting this vulnerability which can result in RCE. Depending on what code is
-present on the server, an attacker could leverage this existing code to execute a payload. An attack targeting the class
+However, there are other attack vectors targeting this vulnerability which can result in RCE. An attacker could still leverage 
+existing code on the server to execute a payload. An attack targeting the class
 `org.apache.naming.factory.BeanFactory`, present on Apache Tomcat servers, is discussed
 in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injections-java). 
 
