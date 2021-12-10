@@ -28,7 +28,7 @@ authors:
   ~
 -->
 
-_Updated @ December 10th, 12am PST_
+_Updated @ December 10th, 1:30am PST_
 
 A few hours ago, a 0-day exploit in the
 popular Java logging library `log4j` was discovered that results in Remote Code Execution (RCE) by
@@ -97,7 +97,7 @@ As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=2950
 
 ### Example Vulnerable Code
 
-```java
+```ts
 import org.apache.log4j.Logger;
 
 import java.io.*;
