@@ -35,8 +35,7 @@ Given how ubiquitous this library is, the impact of the exploit (full server con
 the impact of this vulnerability is quite severe. 
 
 The 0-day was [tweeted](https://twitter.com/P0rZ9/status/1468949890571337731) along with a POC posted on
-[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  Since this vulnerability is still very new, there isn't a CVE to track
-it yet.
+[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  [CVE-2021-44228](https://github.com/advisories/GHSA-jfh8-c2jp-5v3q) has been newly allocated to this vulnerability.
 
 This post provides resources to help you understand the vulnerability and how to mitigate it for yourself.
 
