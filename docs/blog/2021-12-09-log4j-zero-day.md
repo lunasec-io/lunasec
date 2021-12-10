@@ -59,9 +59,7 @@ Many Open Source projects
 like the Minecraft server, [Paper](https://github.com/PaperMC/Paper/commit/b475c6a683fa34156b964f751985f36a784ca0e0),
 have already begun patching their usage of `log4j2`.
 
-This [proof of concept](https://twitter.com/chvancooten/status/1469340927923826691) of changing an iPhone's name demonstrates
-that physical devices are also affected by this vulnerability. To be clear, this proof of concept only shows the vulnerability
-exists on iPhones, but there is currently no known remote method of triggering it.
+This [proof of concept](https://twitter.com/chvancooten/status/1469340927923826691) of changing an iPhone's name shows how widespread the issue is. Given the traffic originates from Apples IPv4 subnet, they transport the changed iPhone name to their backend where it ends up in a Log4j handled output.
 
 **Updates (3 hours after posting):**
 According to [this blog post](https://www.cnblogs.com/yyhuni/p/15088134.html) (in [english](https://www-cnblogs-com.translate.goog/yyhuni/p/15088134.html?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en-US)),
