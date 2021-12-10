@@ -81,7 +81,7 @@ in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injec
 Version 2.15.0 of log4j has been released without the vulnerability. log4j-core.jar is available on Maven Central [here](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/), with [[release notes](https://logging.apache.org/log4j/2.x/changes-report.html#a2.15.0)] and 
 [[log4j security announcements](https://logging.apache.org/log4j/2.x/security.html)].
 
-Releases to GitHub appear to still be pending.
+The release can also be downloaded from the Apache Log4j [Download](https://logging.apache.org/log4j/2.x/download.html) page.
 
 ## Temporary Mitigation
 
