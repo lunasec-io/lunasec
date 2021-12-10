@@ -31,7 +31,7 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-_Updated @ December 10th, 8am PST_
+_Updated @ December 10th, 10am PST_
 
 A few hours ago, a 0-day exploit in the
 popular Java logging library `log4j2` was discovered that results in Remote Code Execution (RCE) by
@@ -222,7 +222,7 @@ methods are still prevalent.
 4. Removed the name "LogJam" because it's already been [used](https://en.wikipedia.org/wiki/Logjam_(computer_security)). Using "Log4Shell" instead.
 5. Update that 2.15.0 is released.
 6. Added the MS Paint logo[4], and updated example code to be slightly more clear (it's not string concatenation).
-7. Reported on iPhones being affected by the vulnerability, included local reproduction code, 
+7. Reported on iPhones being affected by the vulnerability, and included local reproduction code + steps.
 
 ### References
 
