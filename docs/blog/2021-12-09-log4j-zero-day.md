@@ -7,7 +7,11 @@ authors:
   title: CEO at LunaSec 
   url: https://github.com/freeqaz
   image_url: https://github.com/freeqaz.png
-  tags: [zer-day, data-security, data-breaches]
+  tags: [zero-day, security, data-security, data-breaches]
+- name: Chris Thompson
+  title: Developer at Lunasec
+  url: https://github.com/breadchris
+  image_url: https://github.com/breadchris.png
 
 ---
 <!--
