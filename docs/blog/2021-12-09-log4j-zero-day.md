@@ -1,5 +1,5 @@
 ---
-title: LogJam: RCE 0-day exploit found in log4j, a popular Java logging package
+title: "LogJam: RCE 0-day exploit found in log4j, a popular Java logging package"
 description: Given how ubiquitous this library is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 authors:
@@ -28,9 +28,11 @@ authors:
   ~
 -->
 
+_Updated @ December 10th, 12am PST_
+
 A few hours ago, a 0-day exploit in the
-popular Java logging library `log4j` (we call it "LogJam") was discovered that results in Remote Code Execution (RCE) by
-logging a certain string. 
+popular Java logging library `log4j` was discovered that results in Remote Code Execution (RCE) by
+logging a certain string. We're calling it "LogJam" for short ([CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/) just isn't as memorable).
 
 Given how ubiquitous this library is, the impact of the exploit (full server control), and how easy it is to exploit,
 the impact of this vulnerability is quite severe. 
@@ -68,14 +70,23 @@ in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injec
 
 `2.0 <= Apache log4j <= 2.14.1`
 
-At the time this post was created (December 9th, 2021) a patch is available in `log4j-2.15.0-rc1`
-[here](https://github.com/apache/logging-log4j2/releases/tag/log4j-2.15.0-rc1).
+## Permanent Mitigation
+
+At the time this post was created (December 9th, 2021) no stable release is available. There is a patched release 
+candidate of `log4j` published with versions `log4j-2.15.0-rc1` and `log4j-2.15.0-rc2` available on GitHub
+[here](https://github.com/apache/logging-log4j2/releases/tag/log4j-2.15.0-rc2).
 
 ## Temporary Mitigation
 
-Start your server with `log4j2.formatMsgNoLookups` set to `true` (for versions `>= 2.10.0`, or update to 
-`log4j-2.15.0-rc2` or [later](https://github.com/apache/logging-log4j2/tags). 
-(Kudos to @80vul for [tweeting](https://twitter.com/80vul/status/1468968891489857537))
+As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=29507263):
+
+> The 'formatMsgNoLookups' property was added in version 2.10.0, per the JIRA Issue LOG4J2-2109 [1] that proposed it. Therefore the 'formatMsgNoLookups=true' mitigation strategy is available in version 2.10.0 and higher, but is no longer necessary with version 2.15.0, because it then becomes the default behavior [2][3].
+> 
+> If you are using a version older than 2.10.0 and cannot upgrade, your mitigation choices are:
+> 
+> - Modify every logging pattern layout to say `%m{nolookups}` instead of `%m` in your logging config files, see details at https://issues.apache.org/jira/browse/LOG4J2-2109 or,
+>
+> - Substitute a non-vulnerable or empty implementation of the class org.apache.logging.log4j.core.lookup.JndiLookup, in a way that your classloader uses your replacement instead of the vulnerable version of the class. Refer to your application's or stack's classloading documentation to understand this behavior.
 
 ## How the exploit works
 
@@ -158,4 +169,15 @@ If you have any updates or edits you'd like to make, you can edit this post as M
 1. Updated the "Who is impacted?" section to include mitigating factor based on JDK version, but also suggest other exploitation
 methods are still prevalent.
 2. Named the vulnerability "LogJam", added CVE, and added link to release tags.
+3. Update mitigation steps with newer information.
+
+### References
+
+[1] https://issues.apache.org/jira/browse/LOG4J2-2109
+
+[2] https://github.com/apache/logging-log4j2/pull/607/files
+
+[3] https://issues.apache.org/jira/browse/LOG4J2-3198
+
+Also kudos to @80vul for [tweeting](https://twitter.com/80vul/status/1468968891489857537) about this.
 
