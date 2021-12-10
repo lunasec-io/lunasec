@@ -20,14 +20,22 @@ sidebar_position: 1
 ## What is LunaSec?
 LunaSec makes it easy and secure for web applications to process and store sensitive data through *Tokenization*. 
 
-Sensitive data is exchanged for a non-sensitive token that is meaningless by itself.  It must be exchanged
-for the real data in a process called *Detokenization*.
+Sensitive data is exchanged for a non-sensitive _Token_ that is meaningless by itself.  Tokens must be exchanged
+for the raw data in a process called *Detokenization*.
 
-LunaSec offers more attack protection than other tokenizers, has more features, and the core of the system is free and open source.
+LunaSec helps to protect yourself from the impact of 0-day exploits by giving you an additional layer of protection 
+against data leaks. It's also the only Open Source Tokenization platform being used in production today, and offers
+more features than even paid alternatives like Very Good Security, HashiCorp Vault, or BlueFin.
 
-LunaSec can quickly help an app become secure and compliant with regulations like SOC2, PCI-DSS, GDPR, HIPAA, and more.
+With LunaSec you're able to, in minutes, harden your app against 
+[common security problems](/pages/how-it-works/security/introduction/) and make it compliant with privacy regulations (SOC2, PCI-DSS, GDPR, HIPAA, etc).
+
+:::info
+
 If you're looking for an even faster compliance solution with hands-on guidance from our team, please [contact us](https://www.lunasec.io/contact)
 to inquire about our paid services.
+
+:::
 
 ## How does LunaSec work with my app?
 

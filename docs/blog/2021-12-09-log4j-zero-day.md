@@ -53,8 +53,9 @@ Many Open Source projects
 like the Minecraft server, [Paper](https://github.com/PaperMC/Paper/commit/b475c6a683fa34156b964f751985f36a784ca0e0),
 have already begun patching their usage of `log4j`.
 
+**Updates (3 hours after posting):**
 According to [this blog post](https://www.cnblogs.com/yyhuni/p/15088134.html) (in [english](https://www-cnblogs-com.translate.goog/yyhuni/p/15088134.html?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en-US)),
-JDK versions greater than 6u211, 7u201, 8u191, and 11.0.1 are not affected by the LDAP attack vector. In these versions
+JDK versions greater than `6u211`, `7u201`, `8u191`, and `11.0.1` are not affected by the LDAP attack vector. In these versions
 `com.sun.jndi.ldap.object.trustURLCodebase` is set to `false` meaning JNDI cannot load a remote codebase using LDAP. 
 
 However, there are other attack vectors targeting this vulnerability which can result in RCE. Depending on what code is
@@ -140,12 +141,10 @@ methods are still prevalent.
 
 :::
 
-### How the LunaSec framework can prevent future attacks
+### How LunaSec can help you prevent future attacks
 
-[LunaSec](/pages/overview/introduction/) is our Open Source data security framework.  It isolates and protects data in web applications, meaning 
-that even a full RCE attack like this wouldn't be able to leak sensitive data.  Here is a [list of common attacks](/pages/how-it-works/security/vulns-and-mitigations/#information-disclosure) and how LunaSec prevents them.
-
-Installing LunaSec can limit your vulnerability to attacks, before they happen.  
+[LunaSec](https://www.lunasec.io/docs/pages/overview/introduction/) is an Open Source data security framework designed 
+to help mitigate the impacts of 0-days by making Data Leaks require more than just a single vulnerability (like this exploit).
 
 ### Editing this post
 If you have any updates or edits you'd like to make, you can edit this post as Markdown on
