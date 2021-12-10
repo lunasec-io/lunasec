@@ -122,3 +122,11 @@ We'll continue to update this post as information about the impact of this explo
 
 For now, we're just publishing this to help raise awareness and get people patching it. Please tell any of your friends 
 running Java software!
+
+**Note from the Author:** If you have any updates or edits you'd like to make, you can edit this post as Markdown on 
+[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-09-log4j-zero-day.md). And throw us a Star ⭐, please!
+
+## Links
+- **[Hacker News](https://news.ycombinator.com/item?id=29504755)**
+- **[Reddit](https://old.reddit.com/r/programming/comments/rcxehp/rce_0day_exploit_found_in_log4j_a_popular_java/)**
+- **[Twitter](https://twitter.com/freeqaz/status/1469121757361569793?s=20)**
