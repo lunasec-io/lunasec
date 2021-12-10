@@ -20,7 +20,7 @@ FROM lerna-bootstrap as application-back-end
 
 WORKDIR /repo/js/demo-apps/packages/demo-back-end
 
-ENTRYPOINT ["yarn", "start:dev"]
+ENTRYPOINT ["yarn", "start:prod"]
 
 FROM lerna-bootstrap as application-front-end
 
