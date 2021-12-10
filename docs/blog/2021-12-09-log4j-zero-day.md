@@ -28,6 +28,8 @@ authors:
   ~
 -->
 
+_Updated @ December 10th, 12am PST_
+
 A few hours ago, a 0-day exploit in the
 popular Java logging library `log4j` was discovered that results in Remote Code Execution (RCE) by
 logging a certain string. We're calling it "LogJam" for short ([CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/) just isn't as memorable).
