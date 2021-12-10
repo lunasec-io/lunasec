@@ -14,14 +14,14 @@
  * limitations under the License.
  *
  */
-import fs from 'fs'
+import fs from 'fs';
 
 const rawHTML = fs.readFileSync('./stub/raw-frame-contents.html').toString();
 
-const escapedHTML = escape(rawHTML);
+const escapedHTML = encodeURIComponent(rawHTML);
 
 const moduleWithEscapedHTML = `export const stubFrameBody = "${escapedHTML}"`;
 
 fs.writeFileSync('./stub/wrapped-frame-dom-string.js', moduleWithEscapedHTML);
 
-console.log('Generated escaped html ESM wrapper')
+console.log('Generated escaped html ESM wrapper');

@@ -238,7 +238,15 @@ export default function WrapComponent<W extends keyof ClassLookup>(
 
     async generateFrameBody() {
       const { stubFrameBody } = await import('@lunasec/secure-frame-front-end');
-      console.log('loaded framebody ', stubFrameBody);
+      const htmlString = decodeURIComponent(stubFrameBody);
+      console.log('unescaped body is ', htmlString);
+      // const html = new DOMParser().parseFromString(unescapedBody, 'text/html');
+      const frame = document.createElement('iframe');
+      frame.insertAdjacentHTML('beforeend', htmlString);
+
+      // document.createDocumentFragment();
+      // frame.append(htmlString);
+      console.log('iframe is ', frame);
     }
 
     generateUrl() {
