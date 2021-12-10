@@ -105,7 +105,8 @@ As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=2950
 ### Example Vulnerable Code
 
 ```ts
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -113,7 +114,7 @@ import java.util.*;
 
 public class VulnerableLog4jExampleHandler implements HttpHandler {
 
-  static Logger log = Logger.getLogger(log4jExample.class.getName());
+  static Logger log = LogManager.getLogger(log4jExample.class.getName());
 
   /**
    * A simple HTTP endpoint that reads the request's User Agent and logs it back.
