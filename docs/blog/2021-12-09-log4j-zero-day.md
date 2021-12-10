@@ -180,10 +180,10 @@ Refreshing the page will show DNS queries which identify hosts who have triggere
 
 :::caution
 
-Due to the widespread use of _dnslog.cn_ for testing log4shell, we advise caution when testing sensitive infrastructure as
-information being sent to this site could be used by the service's owners to exploit applications identified as vulnerable.
+While _dnslog.cn_ has become popular for testing log4shell, we advise caution. When testing sensitive infrastructure,
+information sent to this site could be used by its owner to catalogue and later exploit it.
 
-If this is something of concern to you and wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
+If you wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
 for testing.
 
 :::
