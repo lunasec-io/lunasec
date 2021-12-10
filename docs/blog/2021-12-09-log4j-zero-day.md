@@ -65,7 +65,7 @@ vulnerability in Apple's servers.
 **Updates (3 hours after posting):**
 According to [this blog post](https://www.cnblogs.com/yyhuni/p/15088134.html) (see [translation](https://www-cnblogs-com.translate.goog/yyhuni/p/15088134.html?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en-US)),
 JDK versions greater than `6u211`, `7u201`, `8u191`, and `11.0.1` are not affected by the LDAP attack vector. In these versions
-`com.sun.jndi.ldap.object.trustURLCodebase` is set to `false` meaning JNDI cannot load a remote codebase using LDAP. 
+`com.sun.jndi.ldap.object.trustURLCodebase` is set to `false` meaning JNDI cannot load remote code using LDAP. 
 
 However, there are other attack vectors targeting this vulnerability which can result in RCE. An attacker could still leverage 
 existing code on the server to execute a payload. An attack targeting the class
