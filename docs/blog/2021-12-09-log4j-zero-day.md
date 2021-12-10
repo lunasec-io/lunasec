@@ -1,5 +1,5 @@
 ---
-title: RCE 0-day exploit found in log4j, a popular Java logging package
+title: "Log4Shell: RCE 0-day exploit found in log4j, a popular Java logging package"
 description: Given how ubiquitous this library is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 authors:
@@ -35,7 +35,7 @@ popular Java logging library `log4j` was discovered that results in Remote Code 
 logging a certain string.
 
 Given how ubiquitous this library is, the impact of the exploit (full server control), and how easy it is to exploit,
-the impact of this vulnerability is quite severe. 
+the impact of this vulnerability is quite severe. We're calling it "Log4Shell" for short (CVE-2021-44228 just isn't as memorable).
 
 The 0-day was [tweeted](https://twitter.com/P0rZ9/status/1468949890571337731) along with a POC posted on
 [GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  ~~Since this vulnerability is still very new, there isn't a CVE to track
@@ -170,7 +170,7 @@ If you have any updates or edits you'd like to make, you can edit this post as M
 methods are still prevalent.
 2. ~~Named the vulnerability "LogJam",~~ added CVE, and added link to release tags.
 3. Update mitigation steps with newer information.
-4. Removed the name "LogJam" because it's already been [used](https://en.wikipedia.org/wiki/Logjam_(computer_security)).
+4. Removed the name "LogJam" because it's already been [used](https://en.wikipedia.org/wiki/Logjam_(computer_security)). Using "Log4Shell" instead.
 
 ### References
 
