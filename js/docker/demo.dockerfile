@@ -49,8 +49,6 @@ ENV DOCKER_BUILDKIT="1"
 
 WORKDIR /repo/js/sdks/packages/cli
 
-WORKDIR /repo
-
 # This is required because we aren't able to pass additional command arguments via Docker-Compose unless we are invoking
 # via the "exec" Entrypoint syntax. This lets us then expand environment variables at runtime.
 # This gives a better explanation: https://stackoverflow.com/questions/49133234/docker-entrypoint-with-env-variable-and-optional-arguments
