@@ -45,6 +45,6 @@
     "tsBuildInfoFile": "./build/buildcache.tsbuildinfo",
 
   },
-  "exclude": ["**/*.test.ts"],
+  "exclude": ["**/*.test.ts", "./build"],
   "compileOnSave": true
 }

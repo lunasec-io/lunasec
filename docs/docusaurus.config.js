@@ -265,12 +265,16 @@ module.exports = {
           // Please change this to your repo.
           editUrl:
             'https://github.com/lunasec-io/lunasec/edit/master/docs/',
+          showLastUpdateAuthor: true,
+          showLastUpdateTime:true,
+
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
             'https://github.com/lunasec-io/lunasec/edit/master/docs/blog/',
+
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -279,6 +283,8 @@ module.exports = {
           changefreq: 'daily',
           priority: 1.0,
         },
+
+
       },
     ],
     //Does not work, redoc runtime appears broken, revisit after things are out of beta
