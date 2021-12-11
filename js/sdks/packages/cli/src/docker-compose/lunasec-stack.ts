@@ -128,7 +128,7 @@ export class LunaSecStackDockerCompose {
    * TODO (freeqaz) Migrate this out to another file for better code quality.
    */
   nginxLiveDemo(reactEnv: LunaSecReactEnv): ComposeService {
-    const nginxResourcesPatch = this.buildMountPath('js/internal-infrastructure/public-live-demo/demo-nginx.conf');
+    // const nginxResourcesPatch = this.buildMountPath('js/internal-infrastructure/public-live-demo/demo-nginx.conf');
 
     return {
       name: 'nginx',
@@ -148,7 +148,7 @@ export class LunaSecStackDockerCompose {
             test: ['CMD-SHELL', 'curl -k http://localhost:80'],
           },
         }),
-        volumes: [`${nginxResourcesPatch}:/etc/nginx/conf.d/default.conf:ro`],
+        // volumes: [`${nginxResourcesPatch}:/etc/nginx/conf.d/default.conf:ro`],
         ...composeServicePorts([80]),
       },
     };
