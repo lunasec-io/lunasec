@@ -1,6 +1,6 @@
 ---
-title: "Log4Shell: RCE 0-day exploit found in log4j2, a popular Java logging package"
-description: Given how ubiquitous this library is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
+title: "Log4Shell: RCE 0-day exploit found in log4j 2, a popular Java logging package"
+description: Given how ubiquitous log4j is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
 authors:
@@ -31,10 +31,12 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-_Updated @ December 10th, 10am PST_
+_Updated @ December 11th, 7:30pm PST_
+
+_This blog post is also available at https://log4shell.com/_
 
 A few hours ago, a 0-day exploit in the
-popular Java logging library `log4j2` was discovered that results in Remote Code Execution (RCE) by
+popular Java logging library `log4j` (version 2) was discovered that results in Remote Code Execution (RCE) by
 logging a certain string.
 
 Given how ubiquitous this library is, the impact of the exploit (full server control), and how easy it is to exploit,
@@ -235,6 +237,7 @@ methods are still prevalent.
 7. Reported on iPhones being affected by the vulnerability, and included local reproduction code + steps.
 8. Update social info.
 9. Updated example code to use Log4j2 syntax.
+10. Update title because of some confusion.
 
 ### References
 
