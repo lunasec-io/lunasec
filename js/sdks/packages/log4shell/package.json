@@ -4,6 +4,9 @@
   "version": "1.0.7",
   "description": "Tools to help remediate the log4shell vulnerability.",
   "main": "build/index.js",
+  "bin": {
+    "log4shell": "./entrypoint.sh"
+  },
   "scripts": {
     "scan-deps": "./find-bad-deps.sh",
     "postinstall": "./setup.sh",
