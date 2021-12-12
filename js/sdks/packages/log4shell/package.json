@@ -1,0 +1,26 @@
+{
+  "name": "@lunasec/log4shell",
+  "private": false,
+  "version": "1.0.7",
+  "description": "Tools to help remediate the log4shell vulnerability.",
+  "main": "build/index.js",
+  "scripts": {
+    "scan-deps": "./find-bad-deps.sh",
+    "postinstall": "./setup.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lunasec-io/lunasec.git"
+  },
+  "keywords": [
+    "log4shell",
+    "lunasec"
+  ],
+  "author": "LunaSec (contact@lunasec.io)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/lunasec-io/lunasec/issues"
+  },
+  "homepage": "https://github.com/lunasec-io/lunasec#readme"
+}
