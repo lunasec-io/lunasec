@@ -1,7 +1,8 @@
 ---
 title: "Guide: How To Detect and Mitigate the Log4Shell Vulnerability (CVE-2021-44228)" 
-description: If you're using log4j 2 in your infrastructure, this guide will help you understand how to migitate the issue quickly.
+description: If you're using log4j 2 in your infrastructure, this guide will help you understand how to check if you're impacted and show you how to quickly and securely migitate the issue.
 slug: log4j-zero-day-mitigation-guide
+date: 2021-12-13
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
 keywords: [log4shell, log4j, log4j2, rce, java, zero-day, mitigation]
 authors:
@@ -36,17 +37,18 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-If you're trying to figure out if you're vulnerable to the recent Log4Shell vulnerability 
-(published as [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=2021-44228)), then this is the right guide
-for you.
+A few days ago, a new vulnerability was identified 
+([CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=2021-44228)) and it has since spread across the 
+internet rapidly.
 
-:::info 
+We were one of the first security companies to write about it, and since then the name we gave it, "Log4Shell", has 
+caught on. This guide will help you figure out how to deal with Log4Shell by identifying and fixing the vulnerabilities 
+it introduces by walking you through the current available options.
 
+:::info
 If you're just trying to understand the Log4Shell vulnerability and understand the impact of it, please [refer to our 
 earlier blog post](https://www.lunasec.io/docs/blog/log4j-zero-day/) about it first.
-
 :::
-
 <!--truncate-->
 
 ## 1. Be careful what Log4Shell advice you trust online
@@ -138,7 +140,7 @@ README.md
 log4shell
 ```
 
-**Installing the Package**
+**Installing the Package (optional)**
 ```shell
 $ sudo cp log4shell /usr/local/bin
 $ log4shell
