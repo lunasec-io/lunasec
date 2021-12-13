@@ -37,7 +37,7 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-**See Our Updated Mitigation Guide**: https://www.lunasec.io/docs/blog/log4j-zero-day-migitation-guide
+**See Our Updated Mitigation Guide**: https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide
 
 ## What is it?
 On Thursday (December 9th), a 0-day exploit in the
@@ -264,7 +264,7 @@ methods are still prevalent.
 9. Updated example code to use Log4j2 syntax.
 10. Update title because of some confusion.
 11. Better DNS testing site and explanation
-12. Added link to the [Log4Shell Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-migitation-guide).
+12. Added link to the [Log4Shell Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
 
 ### References
 
