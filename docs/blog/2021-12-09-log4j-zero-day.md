@@ -4,6 +4,7 @@ description: Given how ubiquitous log4j is, the impact of this vulnerability is 
 slug: log4j-zero-day
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
 date: 2021-12-12
+keywords: [log4shell, log4j, log4j2, rce, java, zero-day]
 authors:
 - name: Free Wortley
   title: CEO at LunaSec
@@ -36,10 +37,7 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-
-_Updated @ December 12th, 11:30pm PST_
-
-_This blog post is also available at https://log4shell.com/_
+**See Our Updated Mitigation Guide**: https://www.lunasec.io/docs/blog/log4j-zero-day-migitation-guide
 
 ## What is it?
 On Thursday (December 9th), a 0-day exploit in the
@@ -55,6 +53,11 @@ The 0-day was [tweeted](https://twitter.com/P0rZ9/status/1468949890571337731) al
 This post provides resources to help you understand the vulnerability and how to mitigate it.
 
 <!--truncate-->
+
+_Originally Posted @ December 9th & Last Updated @ December 13th, 1:32am PST_
+
+_This blog post is also available at https://log4shell.com/_
+
 
 ## Who is impacted?
 
@@ -83,11 +86,22 @@ existing code on the server to execute a payload. An attack targeting the class
 `org.apache.naming.factory.BeanFactory`, present on Apache Tomcat servers, is discussed
 in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injections-java).
 
-## Affected Apache log4j2 Versions
+## Affected Apache log4j Versions
 
-`2.0 <= Apache log4j <= 2.14.1`
+### log4j v2
+
+Almost all versions of log4j version 2 are affected.
+
+`2.0-beta9 <= Apache log4j <= 2.14.1`
+
+### log4j v1
+
+Version 1 of log4j is vulnerable to other RCE attacks, and if you're using it you need to 
+[migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.15.0`.
 
 ## Permanent Mitigation
+
+**For Current Information:** Please read our follow-up guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
 
 Version 2.15.0 of log4j has been released without the vulnerability. log4j-core.jar is available on Maven Central [here](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/), with [[release notes](https://logging.apache.org/log4j/2.x/changes-report.html#a2.15.0)] and
 [[log4j security announcements](https://logging.apache.org/log4j/2.x/security.html)].
@@ -96,15 +110,17 @@ The release can also be downloaded from the Apache Log4j [Download](https://logg
 
 ## Temporary Mitigation
 
+**For Current Information:** Please read our follow-up guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
+
 As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=29507263):
 
 > The 'formatMsgNoLookups' property was added in version 2.10.0, per the JIRA Issue LOG4J2-2109 [1] that proposed it. Therefore the 'formatMsgNoLookups=true' mitigation strategy is available in version 2.10.0 and higher, but is no longer necessary with version 2.15.0, because it then becomes the default behavior [2][3].
 >
 > If you are using a version older than 2.10.0 and cannot upgrade, your mitigation choices are:
 >
-> - Modify every logging pattern layout to say `%m{nolookups}` instead of `%m` in your logging
+> - ~~Modify every logging pattern layout to say `%m{nolookups}` instead of `%m` in your logging
 >   config files, see details at https://issues.apache.org/jira/browse/LOG4J2-2109 (only works on
->   versions >= 2.7) or,
+>   versions >= 2.7) or,~~ This is a bad strategy that will likely result in a vulnerability long-term.
 >
 > - Substitute a non-vulnerable or empty implementation of the
     class org.apache.logging.log4j.core.lookup.JndiLookup, in a way that your classloader uses your
@@ -248,6 +264,7 @@ methods are still prevalent.
 9. Updated example code to use Log4j2 syntax.
 10. Update title because of some confusion.
 11. Better DNS testing site and explanation
+12. Added link to the [Log4Shell Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-migitation-guide).
 
 ### References
 
