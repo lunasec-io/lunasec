@@ -42,9 +42,9 @@ A few days ago, a serious new vulnerability was identified in Apache log4j v2 an
 We were one of the first security companies to write about it, and we named it "Log4Shell".
 
 This guide will help you:
-1. [Help you identify trusted sources for Log4Shell information](#be-careful-what-log4shell-advice-you-trust-online)
+1. [Find trusted sources for Log4Shell information](#be-careful-what-log4shell-advice-you-trust-online)
 2. [Determine if you are impacted by Log4Shell](#determine-if-you-are-impacted-by-log4shell)
-3. [How to Mitigate the Issue](#how-to-mitigate-the-issue)
+3. [Mitigate the Issue](#how-to-mitigate-the-issue)
 
 :::info
 If you're just trying to understand the Log4Shell vulnerability and the impact of it, please [refer to our 
@@ -59,7 +59,7 @@ about it. **Some of this information is outdated or wrong and _will_ leave you v
 
 In contrast, this guide has been written by a team of professional Security Engineers at LunaSec. Everything here has
 been peer-reviewed by multiple security experts, and where possible our sources will be linked for other Security
-professionals to verify against.
+professionals to verify against.  This post links to many other guides and how-tos that we believe are trustworthy.  
 
 The full list of common bad advice is at the [bottom of this post](#known-bad-advice). If you believe you've already 
 mitigated Log4Shell, or you believe you're not vulnerable, please double-check your current information is up-to-date. 
@@ -283,8 +283,8 @@ It's becoming increasingly apparent that Log4Shell is not going to be the last v
 can have security flaws or be malicious, and there is always the risk of accidentally introducing vulnerabilities into your own system.
 
 The only way to implement software that is truly resilient to future security vulnerabilities like Log4Shell is to implement a
-"Secure by Default" architecture. This is what companies, and
-[the federal government](https://www.nextgov.com/cybersecurity/2021/09/biden-administration-releases-draft-zero-trust-guidance/185166/),
+"Secure by Default" architecture. This is what companies and
+[the federal government](https://www.nextgov.com/cybersecurity/2021/09/biden-administration-releases-draft-zero-trust-guidance/185166/)
 are migrating to now because it's the only strategy that protects you long-term.
 
 ### What is "Secure by Default"?
@@ -385,7 +385,7 @@ updates as we post them.
 We're also currently offering a free 30 minute consulation with one of our Security Engineers. If you're interested,
 please [book some time with us here](https://lunasec.youcanbook.me/).
 
-## Good Luck!
+## Stay Strong!
 
 The last few days have been a painful experience for nearly every tech company out there. We hope that this guide helps
 your day be a little better.
