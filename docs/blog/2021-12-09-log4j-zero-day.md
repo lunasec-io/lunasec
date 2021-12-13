@@ -36,6 +36,8 @@ _Updated @ December 11th, 7:30pm PST_
 
 _This blog post is also available at https://log4shell.com/_
 
+**See Our Mitigation Guide**: https://www.lunasec.io/docs/blog/log4j-zero-day-migitation-guide
+
 A few hours ago, a 0-day exploit in the
 popular Java logging library `log4j` (version 2) was discovered that results in Remote Code Execution (RCE) by
 logging a certain string.
@@ -50,8 +52,6 @@ it yet.~~ This has been published as [CVE-2021-44228](https://www.randori.com/bl
 This post provides resources to help you understand the vulnerability and how to mitigate it for yourself.
 
 <!--truncate-->
-
-**Mitigation Guide**: https://www.lunasec.io/docs/blog/log4j-zero-day-migitation-guide
 
 ## Who is impacted?
 
@@ -93,6 +93,8 @@ Version 1 of log4j is vulnerable to other RCE attacks, and if you're using it yo
 
 ## Permanent Mitigation
 
+**Outdated Information:** Please read our guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide) instead.
+
 Version 2.15.0 of log4j has been released without the vulnerability. log4j-core.jar is available on Maven Central [here](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/), with [[release notes](https://logging.apache.org/log4j/2.x/changes-report.html#a2.15.0)] and
 [[log4j security announcements](https://logging.apache.org/log4j/2.x/security.html)].
 
@@ -100,15 +102,17 @@ The release can also be downloaded from the Apache Log4j [Download](https://logg
 
 ## Temporary Mitigation
 
+**Outdated Information:** Please read our guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide) instead.
+
 As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=29507263):
 
 > The 'formatMsgNoLookups' property was added in version 2.10.0, per the JIRA Issue LOG4J2-2109 [1] that proposed it. Therefore the 'formatMsgNoLookups=true' mitigation strategy is available in version 2.10.0 and higher, but is no longer necessary with version 2.15.0, because it then becomes the default behavior [2][3].
 >
 > If you are using a version older than 2.10.0 and cannot upgrade, your mitigation choices are:
 >
-> - Modify every logging pattern layout to say `%m{nolookups}` instead of `%m` in your logging
+> - ~~Modify every logging pattern layout to say `%m{nolookups}` instead of `%m` in your logging
 >   config files, see details at https://issues.apache.org/jira/browse/LOG4J2-2109 (only works on
->   versions >= 2.7) or,
+>   versions >= 2.7) or,~~ This is a bad strategy that will likely result in a vulnerability long-term.
 >
 > - Substitute a non-vulnerable or empty implementation of the
     class org.apache.logging.log4j.core.lookup.JndiLookup, in a way that your classloader uses your
@@ -250,6 +254,7 @@ methods are still prevalent.
 8. Update social info.
 9. Updated example code to use Log4j2 syntax.
 10. Update title because of some confusion.
+11. Added link to the [Log4Shell Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-migitation-guide).
 
 ### References
 

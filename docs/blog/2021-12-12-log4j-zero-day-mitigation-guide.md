@@ -34,8 +34,8 @@ for you.
 
 :::info 
 
-If you're just trying to understand the Log4Shell vulnerability and understand the impact of it, please refer to our 
-earlier blog post about it first.
+If you're just trying to understand the Log4Shell vulnerability and understand the impact of it, please [refer to our 
+earlier blog post](https://www.lunasec.io/docs/blog/log4j-zero-day/) about it first.
 
 :::
 
@@ -43,36 +43,36 @@ earlier blog post about it first.
 
 ## 1. Be careful what Log4Shell advice you trust online
 
-Because of the massive impact from this vulnerability, there has been a massive amount of discussion on the internet
+Because of the several impact from this vulnerability, there has been a lot of discussion on the internet
 about it. **Some of this information is outdated or wrong and _will_ leave you vulnerable if you follow it!**
 
 In contrast, this guide has been written by a team of professional Security Engineers at LunaSec. Everything here has 
-been peer-reviewed by multiple security experts and, where possible, our sources will be linked for other Security 
+been peer-reviewed by multiple security experts, and where possible our sources will be linked for other Security 
 professionals to verify against. (See the end of this post about hiring us to help you.)
 
 We're making an effort to keep this post up-to-date as new information comes out. If you have any questions or you're
-confused about our advice, please [file an Issue](https://github.com/lunasec-io/lunasec/issues) on GitHub here.
+confused about our advice, please [file an Issue](https://github.com/lunasec-io/lunasec/issues) on GitHub.
 
-If you would like to contribute or notice any errors, you may suggest an update yourself because this post is just 
-[a Markdown file on our GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-12-log4j-zero-day-mitigation-guide.md).
+If you would like to contribute, or notice any errors, this post is an Open Source Markdown file on 
+[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-12-log4j-zero-day-mitigation-guide.md).
 
 ## 2. Known Bad Advice
 
-The following are all pieces of advice we've seen thrown around online that are misguided and dangerous. If you see any
+The following are all pieces of advice we've seen thrown around online that are misguided and dangerous. If you see
 advice online that contains any of the following, we please ask you to share this post with the authors to help limit
 the fallout from Log4Shell.
 
 ### A WAF will not save you from Log4Shell
 
 The Log4Shell vulnerability can _not_ be mitigated by using a WAF (Web Application Firewall) because it _does not_
-require your usage of it to be *publicly accessible*. Even Data Pipelines, like Hadoop and Spark, and Desktop apps
-like the NSA's Ghidra are affected by this.
+require your usage of it to be *publicly accessible*. Internal Data Pipelines, like Hadoop and Spark, and Desktop apps
+like the [NSA's Ghidra](https://twitter.com/NSA_CSDirector/status/1469305071116636167) are affected by this.
 
 In addition, there is no simple way to "filter out" malicious requests with a simple WAF rule because Log4Shell payloads
 may be nested. (See [this GitHub](https://github.com/Puliczek/CVE-2021-44228-PoC-log4j-bypass-words) for examples)
 
-If you are using a vulnerable version of log4j, you _must_ patch it if there is _any possible way_ that external input
-could enter into your application!
+If you are using a vulnerable version of log4j, the only secure way to mitigate Log4Shell is through one of the 
+strategies detailed below.
 
 ### Simply updating Java isn't (likely) sufficient long-term
 
@@ -84,7 +84,7 @@ running a vulnerable version of log4j. Just upgrading your Java version is insuf
 as a long-term defense against exploitation.
 
 (Technical explanation: The reports we've received state that it's still possible to instantiate local classes on the 
-server, versus remote classes which are how current exploits function)
+server, versus remote classes which are how current exploits function. See our last [post on this](https://www.lunasec.io/docs/blog/log4j-zero-day).)
 
 ### Simply Updating Your Log Statements Is Dangerous
 
@@ -101,7 +101,7 @@ mitigations instead.
 
 _**: The zz is intentionally wrong here to prevent blind copy-pasting._
 
-## 3. Determine if you're impacted
+## 3. Determine if you are impacted by Log4Shell
 
 This vulnerability affects anybody who's using the log4j packages (`log4j-core`, `log4j-api`, etc). That means it's
 primarily Java, but other languages like Scala, Groovy, or Clojure are also impacted.
@@ -115,15 +115,66 @@ Vendor software in this guide instead.
 
 :::
 
-We've built a command line utility that will check files and tell you which ones are vulnerable. This is effectively 
-what Option #2 is, but automated.
+We've built a command line utility that will check files and tell you which ones are vulnerable.
 
-**Installation via NPM:**
+**[Download from GitHub](https://github.com/lunasec-io/lunasec/releases/tag/v1.0.0-log4shell)**
+
+_Make sure you download the right version for your Operating System._
+
+Once that completes, you can extract that and run `log4shell` command in your terminal.
+
+**Extract Package*
 ```shell
-npm install -g @lunasec/log4shell
+$ tar -xvf lunasec_1.0.0-log4shell_Linux_x86_64.tar.gz 
+README.md
+log4shell
 ```
 
-Once that completes, you can now run the `log4shell` command in your terminal.
+**Installing the Package**
+```shell
+$ sudo cp log4shell /usr/local/bin
+$ log4shell
+```
+
+**Help Text**
+```shell
+$ log4shell
+NAME:
+   log4shell - A new cli application
+
+USAGE:
+   log4shell [global options] command [command options] [arguments...]
+
+VERSION:
+   1.0.0
+
+DESCRIPTION:
+   Identify code dependencies that are vulnerable to the log4shell vulnerability. Read more at log4shell.com.
+
+COMMANDS:
+   scan, s  Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.
+   help, h  Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --verbose      Display verbose information when running commands. (default: false)
+   --json         Display findings in json format. (default: false)
+   --debug        Display helpful information while debugging the CLI. (default: false)
+   --help, -h     show help (default: false)
+   --version, -v  print the version (default: false)
+```
+
+**Scanning a Java JAR file (vulnerable log4j detected)**
+```shell
+$ log4shell scan your-java-project.jar
+8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager$1.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-rest-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.8.2-2.12.0"
+8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/pattern/MessagePatternConverter.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-rest-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12"
+8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager$JndiManagerFactory.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-rest-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12.0-2.12.1"
+8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-rest-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12.0-2.12.1"
+8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager$1.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.8.2-2.12.0"
+8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/pattern/MessagePatternConverter.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12"
+8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager$JndiManagerFactory.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12.0-2.12.1"
+8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12.0-2.12.1"
+```
 
 :::note
 
@@ -131,42 +182,8 @@ Please make sure that you're running this command on your fully built `.jar` or 
 
 :::
 
-To check the current directory (where you run `log4shell`), just run this command:
-```shell
-log4shell scan-deps
-```
-
-Alternatively, you can specify a path to check for dependencies in:
-```shell
-log4shell scan-deps /path/to/folder/to/scan
-```
-
 The source code for this is available on our GitHub 
-[here](https://github.com/lunasec-io/lunasec/js/sdks/packages/log4shell/).
-
-##### Example Output
-
-With vulnerable packages (in current directory):
-```
-$ cd /home/user/code/packages/
-$ log4shell scan-deps                                                    
-
-> @lunasec/log4shell@1.0.0 scan-deps
-> ./find-bad-deps.sh "/home/user/code/packages/"
-
-Found Vulnerable Package At: ./log4j-core-2.14.1.jar
-```
-
-If no vulnerable packages were found:
-```
-$ cd /home/user/code/packages/
-$ log4shell scan-deps                                                    
-
-> @lunasec/log4shell@1.0.0 scan-deps
-> ./find-bad-deps.sh "/home/user/code/packages/"
-
-No bad packages were found with known any hashes.
-```
+[here](https://github.com/lunasec-io/lunasec/tree/master/tools/log4shell/).
 
 ### By Manually Scanning Your Dependencies
 
@@ -174,23 +191,32 @@ You can identify if you're using a vulnerable package version by checking your d
 vulnerable versions. If you have a vulnerable version of a log4j in your built Java project, the hash will match a one 
 of the hashes in the list.
 
+#### Scanning for vulnerable .class files
+
+Alternatively, you can also scan for known vulnerable `.class` files. This is more accurate, but more complicated
+also.
+
+Our automated tool above implements this functionality, but if you need to do this yourself then
+[our Go source code](https://github.com/lunasec-io/lunasec/tree/master/tools/log4shell/constants/vulnerablehashes.go)
+has a list of hashes that you can use to scan with. (Thank you, [hillu](https://github.com/hillu/local-log4j-vuln-scanner/)!)
+
 #### Scanning for vulnerable JAR files
 
 We're going to be using a list of JAR package hashes has been published to GitHub 
 [here](https://github.com/mubix/CVE-2021-44228-Log4Shell-Hashes). (Thank you, mubix!)
 
 This is a less accurate method of detection versus our automated scanner tool because it requires the `.jar` file to be
-present on your disk. This tool _does not_ recursively unpack `.jar` files. This works best if your dependencies are 
-committed into your Repo, or if you're using a tool like Maven that downloads the `.jar` files for you.
+present on your disk (not inside of your built package). This tool _does not_ recursively unpack `.jar` files. This 
+works best if your dependencies are committed into your Repo, or if you're using a tool like Maven that downloads the 
+`.jar` files for you.
 
 **If you're using Maven:** The default directory that `.jar` files are downloaded to is `~/.m2`. You may want to clear
 your cache, and _then_ rebuild your project in order to limit false positives.
 
-
-**Setup*
+**Setup**
 ```shell
 git clone https://github.com/lunasec-io/lunasec.git
-cd lunasec/js/sdks/packages/log4shell
+cd lunasec/tools/log4shell-scripts
 ./setup.sh
 ```
 
@@ -198,17 +224,6 @@ cd lunasec/js/sdks/packages/log4shell
 ```shell
 ./find-bad-deps.sh /path/to/folder/to/scan
 ```
-
-The output should be similar to the example output from the previous section because it's the same script.
-
-#### Scanning for vulnerable .class files
-
-Alternatively, you can also scan for known vulnerable `.class` files. This is more accurate, but more complicated
-also.
-
-Our automated tool above implements this functionality, but if you need to do this yourself then
-[this](https://github.com/hillu/local-log4j-vuln-scanner/blob/master/log4j-vuln-finder.go) Go tool's
-source code has a list of hashes that you can use to scan with. (Thank you, hillu!)
 
 ### By Checking Package Version
 
@@ -226,7 +241,8 @@ version!
 
 #### log4j v1
 
-Version 1 of log4j is vulnerable to other RCE attacks, and if you're using it you need to
+Version 1 of log4j is vulnerable to other RCE attacks (like 
+[CVE-2019-17571](https://www.cvedetails.com/cve/CVE-2019-17571/)), and if you're using it you need to
 [migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.15.0`.
 
 ### By Checking Vendor Software Versions
@@ -304,21 +320,22 @@ The only way to implement software that is truly resilient to security vulnerabi
 are migrating to now because it's the only strategy that protects you long-term.
 
 Log4Shell is not going to be the last major vulnerability that you need to deal with. Any dependency you trust could 
-have bugs just like it. Or you could add a malicious package without realizing. 
-Or you could simply make a mistake that creates a vulnerability.
+also leave you vulnerable or unknowingly be malicious.  
+
+Or your next commit adds a bug that leads to an exploit.
 
 The list goes on.
 
-Those reasons hacks happen because software isn't perfect. The best lesson we've learned in our careers is that preventing
-every bug is an _impossible task_ for companies. After all, even the
-[NSA](https://en.wikipedia.org/wiki/2020_United_States_federal_government_data_breach) has been hacked before. Do you
-really think you're more secure than they are?
+The reasons hacks happen is because real-world software isn't perfect. The best lesson we've learned in our careers is 
+that preventing every bug is an _impossible task_ for companies. After all, even the
+[federal government](https://en.wikipedia.org/wiki/2020_United_States_federal_government_data_breach) has been hacked before. How do
+you think your security compares to what the NSA had when they were breached last year?
 
 ### What is "Secure by Default"?
 
-Short version: It's accepting that you're going to be hacked, and building software with multiple walls to prevent a 
-single hole from giving an attacker the keys to your all of your data. It's designing software to fail gracefully when 
-something bad inevitably happens.
+Short version: When you accept that you're eventually going to be hacked, and building software with multiple walls to prevent a 
+single hole from giving an attacker the keys to your all of your data. Secure by Default software is designed to fail
+predictably under attack.
 
 Long version: We've written about this before in our post on 
 [Why Data Breaches Happen](https://www.lunasec.io/docs/blog/how-data-breaches-happen-and-why-secure-by-default-software-is-the-future/).
@@ -355,7 +372,19 @@ infrastructure. (Note: It's a new tool, so it might have bugs. Please file an is
 ### Stay In Touch
 
 If you're currently scrambling to deal with Log4Shell and you'd like some help, please follow us on 
-[Twitter](https://twitter.com/LunaSecIO) or join our mailing list to receive updates as we post them.
+[Twitter](https://twitter.com/LunaSecIO) or [drop your email](https://mailchi.mp/2e67fecbc157/log4j-updates) to receive 
+updates as we post them.
+
+#### Limited Offer: Free Security Assistance
 
 We're also currently offering a free 30 minute consulation with one of our Security Engineers. If you're interested,
-please [grab some time with us here](https://lunasec.youcanbook.me/).
+please [book some time with us here](https://lunasec.youcanbook.me/).
+
+## Good Luck!
+
+The last few days have been a painful experience for nearly every tech company out there. We hope that this guide helps
+your day be a little better.
+
+If this post helped you, please share it with others to help them with Log4Shell too. 
+
+Thank you!
