@@ -53,7 +53,7 @@ earlier blog post](https://www.lunasec.io/docs/blog/log4j-zero-day/) about it fi
 
 ## 1. Be careful what Log4Shell advice you trust online
 
-Because of the several impact from this vulnerability, there has been a lot of discussion on the internet
+Because of the severe impact from this vulnerability, there has been a lot of discussion on the internet
 about it. **Some of this information is outdated or wrong and _will_ leave you vulnerable if you follow it!**
 
 In contrast, this guide has been written by a team of professional Security Engineers at LunaSec. Everything here has 
