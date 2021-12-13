@@ -397,8 +397,6 @@ your day be a little better.
 
 If this post helped you, please share it with others to help them with Log4Shell too.
 
-Thank you!
-
 ### Social Media Links
 
 Feel free to join the discussion on this post on any of the following websites:
