@@ -1,6 +1,6 @@
 ---
 title: "Guide: How To Detect and Mitigate the Log4Shell Vulnerability (CVE-2021-44228)" 
-description: If you're using log4j 2 in your infrastructure, this guide will help you understand how to check if you're impacted and show you how to quickly and securely migitate the issue.
+description: If you're using log4j 2 in your infrastructure, this guide will help you understand how to check if you're impacted and show you how to quickly and securely mitigate the issue.
 slug: log4j-zero-day-mitigation-guide
 date: 2021-12-13
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
