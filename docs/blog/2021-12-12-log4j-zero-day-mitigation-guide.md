@@ -38,7 +38,7 @@ authors:
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
 A few days ago, a serious new vulnerability was identified in Apache log4j v2 and published as 
-[CVE-2021-44228)(https://cve.mitre.org/cgi-bin/cvename.cgi?name=2021-44228). 
+[CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=2021-44228). 
 We were one of the first security companies to write about it, and we named it "Log4Shell".
 
 This guide will help you:
@@ -64,14 +64,6 @@ professionals to verify against.  This post links to many other guides and how-t
 The full list of common bad advice is at the [bottom of this post](#known-bad-advice). If you believe you've already 
 mitigated Log4Shell, or you believe you're not vulnerable, please double-check your current information is up-to-date. 
 
-:::info
-We're continuously keeping this post up-to-date as new information comes out. If you have any questions, or you're
-confused about our advice, please [file an Issue](https://github.com/lunasec-io/lunasec/issues) on GitHub.
-
-If you would like to contribute, or notice any errors, this post is an Open Source Markdown file on
-[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-12-log4j-zero-day-mitigation-guide.md).
-:::
-
 ## Determine if you are impacted by Log4Shell
 
 This vulnerability affects anybody who's using the log4j packages (`log4j-core`, `log4j-api`, etc). That means it's
@@ -79,31 +71,33 @@ primarily Java, but other languages like Scala, Groovy, or Clojure are also impa
 
 ### Automatically Scanning Your Package
 
-We've built a command line utility that can check `.jar` and `.war` files and report if any are vulnerable. 
+We've built a command line utility that can check `.jar` and `.war` files in your project directory and report if any are vulnerable. 
 It works by scanning for hashes of [known vulnerable log4j classes](https://github.com/mubix/CVE-2021-44228-Log4Shell-Hashes).
 If you have a vulnerable version of a log4j in your built Java project, the hash will match a one
 of the hashes in the list.
 
 **[Download from GitHub](https://github.com/lunasec-io/lunasec/releases/tag/v1.0.0-log4shell)**
 
-_Make sure you download the right version for your Operating System and CPU architecture._
+_Make sure you download the right version for your Operating System and CPU architecture._ Once downloaded, you can extract
+it and run the `log4shell` command in your terminal.  The tool can scan individual files or whole directories.
 
-Once downloaded, you can extract that and run the `log4shell` command in your terminal.
 
-**Extract Package*
-```shell
-$ tar -xvf lunasec_1.0.0-log4shell_Linux_x86_64.tar.gz 
-README.md
-log4shell
+
+**OSX or Linux**
+```shell title="Example *nix Command"
+log4shell scan your-project-dir/
 ```
 
-**Installing the Package (optional)**
-```shell
-$ sudo cp log4shell /usr/local/bin
-$ log4shell
+**Windows**
+```shell title="Example Windows Command"
+log4shell.exe scan your-project-dir/
 ```
 
-**Help Text**
+**Example Output**
+```shell
+8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager$1.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-rest-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.8.2-2.12.0"
+```
+Here is the help text:
 ```shell
 $ log4shell
 NAME:
@@ -141,6 +135,12 @@ $ log4shell scan your-java-project.jar
 8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/pattern/MessagePatternConverter.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12"
 8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager$JndiManagerFactory.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12.0-2.12.1"
 8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12.0-2.12.1"
+```
+
+**Installing the Package on *nix systems (optional)**
+```shell
+$ sudo cp log4shell /usr/local/bin
+$ log4shell
 ```
 
 :::note
@@ -218,6 +218,9 @@ If a vendor has not created an advisory for this, there currently does not exist
 software has been affected. There is an effort by Kevin Beaumont to create a spreadsheet that attempts to capture this
 being worked on, but at this time of this post that effort is still a [work in progress](https://twitter.com/GossiTheDog/status/1470181063980896262).
 
+### Scanning Remote Endpoints
+Please see our instructions to identify vulnerable remote servers in our original [Log4Shell post](https://www.lunasec.io/docs/blog/log4j-zero-day/#how-to-identify-vulnerable-remote-servers).
+
 ## How to Mitigate the Issue
 
 Now that you know where you're vulnerable, the following sections will help you to figure out how to patch it.
@@ -274,8 +277,10 @@ Because of the extensive control Log4Shell gives an attacker, it's actually poss
 This isn't the recommended strategy for various reasons, but it could be a last resort for systems that you can't easily restart or modify.  Note that doing this on a system 
 you don't have permission to is most likely illegal. The fix will only work until the server (or the JVM) is restarted.
 
-How to accomplish this is explained in [this guide](https://github.com/Cybereason/Logout4Shell). We are also currently 
-building a small SASS to apply the patch remotely. (Subscribe at the bottom if you want to be alerted when it's live.)
+How to accomplish this is explained in [this guide](https://github.com/Cybereason/Logout4Shell).
+
+We are currently building a small SASS to apply the patch remotely. 
+[Follow our twitter](https://twitter.com/LunaSecIO) to be alerted when it's live.
 
 ## How to protect yourself from future 0-days
 
@@ -400,6 +405,15 @@ Feel free to join the discussion on this post on any of the following websites:
 - **[Twitter](https://twitter.com/LunaSecIO/status/1470331859166846976?s=20)**
 
 ### Updates
+
+:::info 
+We're continuously keeping this post up-to-date as new information comes out. If you have any questions, or you're
+confused about our advice, please [file an Issue](https://github.com/lunasec-io/lunasec/issues) on GitHub.
+
+If you would like to contribute, or notice any errors, this post is an Open Source Markdown file on
+[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-12-log4j-zero-day-mitigation-guide.md).
+:::
+
 
 1. Fixed some weird grammar.
 2. Added social links.
