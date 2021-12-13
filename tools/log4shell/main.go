@@ -17,37 +17,84 @@ package main
 import (
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"log"
 	"os"
 )
 
-func main() {
-	if os.Getenv("DEBUG") != "" {
-		log.SetFlags(log.Lshortfile)
+func enableGlobalFlags(c *cli.Context) {
+	verbose := c.Bool("verbose")
+	debug := c.Bool("debug")
+
+	if verbose || debug {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	}
 
+	if debug {
+		// include file and line number when logging
+		log.Logger = log.With().Caller().Logger()
+	}
+
+	json := c.Bool("json")
+	if !json {
+		// pretty print output to the console if we are not interested in parsable output
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	}
+}
+
+func scanCommand(c *cli.Context) error {
+	enableGlobalFlags(c)
+
+	searchDirs := c.Args().Slice()
+	log.Debug().Strs("directories", searchDirs).Msg("scanning directories")
+
+	onlyScanArchives := c.Bool("archives")
+
+	scan.SearchDirsForVulnerableClassFiles(searchDirs, onlyScanArchives)
+	return nil
+}
+
+func main() {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+
 	app := &cli.App{
-		Name: "log4shell",
-		Version: constants.Version,
-		Description: "Identify code assets that are vulnerable to the log4shell vulnerability. Read more at log4shell.com.",
+		Name:        "log4shell",
+		Version:     constants.Version,
+		Description: "Identify code dependencies that are vulnerable to the log4shell vulnerability. Read more at log4shell.com.",
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:  "verbose",
+				Usage: "Display verbose information when running commands.",
+			},
+			&cli.BoolFlag{
+				Name:  "json",
+				Usage: "Display findings in json format.",
+			},
+			&cli.BoolFlag{
+				Name:  "debug",
+				Usage: "Display helpful information while debugging the CLI.",
+			},
+		},
 		Commands: []*cli.Command{
 			{
-				Name: "scan",
+				Name:    "scan",
 				Aliases: []string{"s"},
 				Usage:   "Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.",
-				Action: func (c *cli.Context) error {
-					searchDirs := c.Args().Slice()
-					log.Printf("scanning directories: %+v", searchDirs)
-
-					scan.SearchDirsForVulnerableClassFiles(searchDirs)
-					return nil
+				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name:  "archives",
+						Usage: "Only scan for known vulnerable archives. By default the CLI will scan for class files which are known to be vulnerable which will result in higher signal findings. If you are specifically looking for vulnerable Java archive hashes, use this option.",
+					},
 				},
+				Action: scanCommand,
 			},
 		},
 	}
 	err := app.Run(os.Args)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 }
