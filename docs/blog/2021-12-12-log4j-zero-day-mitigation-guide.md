@@ -395,6 +395,6 @@ please [book some time with us here](https://lunasec.youcanbook.me/).
 The last few days have been a painful experience for nearly every tech company out there. We hope that this guide helps
 your day be a little better.
 
-If this post helped you, please share it with others to help them with Log4Shell too. 
+If this post helped you, please share it with others to help them with Log4Shell too.
 
 Thank you!
