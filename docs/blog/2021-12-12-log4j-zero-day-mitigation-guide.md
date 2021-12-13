@@ -399,6 +399,14 @@ If this post helped you, please share it with others to help them with Log4Shell
 
 Thank you!
 
+### Social Media Links
+
+Feel free to join the discussion on this post on any of the following websites:
+- **[Reddit](https://www.reddit.com/r/programming/comments/rfcw6j/guide_how_to_detect_and_mitigate_the_log4shell/)**
+- **[Hacker News](https://news.ycombinator.com/item?id=29538372)**
+- **[Twitter](https://twitter.com/LunaSecIO/status/1470331859166846976?s=20)**
+
 ### Updates
 
 1. Fixed some weird grammar.
+2. Added social links
