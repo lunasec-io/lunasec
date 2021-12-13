@@ -15,11 +15,14 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
+	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+	"io/ioutil"
 	"os"
 )
 
@@ -50,8 +53,26 @@ func scanCommand(c *cli.Context) error {
 	log.Debug().Strs("directories", searchDirs).Msg("scanning directories")
 
 	onlyScanArchives := c.Bool("archives")
+	output := c.String("output")
 
-	scan.SearchDirsForVulnerableClassFiles(searchDirs, onlyScanArchives)
+	findings := scan.SearchDirsForVulnerableClassFiles(searchDirs, onlyScanArchives)
+
+	if output != "" {
+		findingsOutput := types.FindingsOutput{
+			VulnerableLibraries: findings,
+		}
+		serializedOutput, err := json.Marshal(findingsOutput)
+		if err != nil {
+			log.Error().Err(err).Msg("unable to marshall findings output")
+			return err
+		}
+
+		err = ioutil.WriteFile(output, serializedOutput, 0644)
+		if err != nil {
+			log.Error().Err(err).Msg("unable to write findings to output file")
+			return err
+		}
+	}
 	return nil
 }
 
@@ -87,6 +108,10 @@ func main() {
 					&cli.BoolFlag{
 						Name:  "archives",
 						Usage: "Only scan for known vulnerable archives. By default the CLI will scan for class files which are known to be vulnerable which will result in higher signal findings. If you are specifically looking for vulnerable Java archive hashes, use this option.",
+					},
+					&cli.StringFlag{
+						Name:  "output",
+						Usage: "File path for where to output findings in JSON format.",
 					},
 				},
 				Action: scanCommand,

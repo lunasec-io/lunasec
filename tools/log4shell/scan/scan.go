@@ -27,7 +27,7 @@ import (
 	"os"
 )
 
-func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, hashLookup types.VulnerableHashLookup) {
+func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, hashLookup types.VulnerableHashLookup) (finding *types.Finding) {
 	fileHash, err := util.HexEncodedSha256FromReader(reader)
 	if err != nil {
 		log.Warn().
@@ -44,10 +44,19 @@ func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, 
 			Str("path", path).
 			Str("versionInfo", versionInfo).
 			Msg("identified vulnerable path")
+
+		finding = &types.Finding{
+			Path:        path,
+			FileName:    fileName,
+			Hash:        fileHash,
+			VersionInfo: versionInfo,
+		}
+		return
 	}
+	return
 }
 
-func scanClassFile(path string, file *zip.File) {
+func scanClassFile(path string, file *zip.File) (finding *types.Finding) {
 	reader, err := file.Open()
 	if err != nil {
 		log.Warn().
@@ -57,10 +66,10 @@ func scanClassFile(path string, file *zip.File) {
 			Msg("unable to open class file")
 		return
 	}
-	identifyPotentiallyVulnerableFile(reader, path, file.Name, constants.KnownVulnerableClassFileHashes)
+	return identifyPotentiallyVulnerableFile(reader, path, file.Name, constants.KnownVulnerableClassFileHashes)
 }
 
-func scanArchive(path string, file *zip.File) {
+func scanArchive(path string, file *zip.File) (findings []types.Finding) {
 	reader, err := file.Open()
 	if err != nil {
 		log.Warn().
@@ -86,22 +95,25 @@ func scanArchive(path string, file *zip.File) {
 	archiveReader := bytes.NewReader(buffer)
 	archiveSize := int64(len(buffer))
 
-	scanArchiveForVulnerableClassFiles(newPath, archiveReader, archiveSize)
+	return scanArchiveForVulnerableClassFiles(newPath, archiveReader, archiveSize)
 }
 
-func scanFile(path string, file *zip.File) {
+func scanFile(path string, file *zip.File) (findings []types.Finding) {
 	fileExt := util.FileExt(file.Name)
 	switch fileExt {
 	case constants.ClassFileExt:
-		scanClassFile(path, file)
+		finding := scanClassFile(path, file)
+		if finding != nil {
+			findings = []types.Finding{*finding}
+		}
 		return
 	case constants.JarFileExt, constants.WarFileExt:
-		scanArchive(path, file)
-		return
+		return scanArchive(path, file)
 	}
+	return
 }
 
-func scanArchiveForVulnerableClassFiles(path string, reader io.ReaderAt, size int64) {
+func scanArchiveForVulnerableClassFiles(path string, reader io.ReaderAt, size int64) (findings []types.Finding) {
 	zipReader, err := zip.NewReader(reader, size)
 	if err != nil {
 		log.Warn().
@@ -112,11 +124,13 @@ func scanArchiveForVulnerableClassFiles(path string, reader io.ReaderAt, size in
 	}
 
 	for _, zipFile := range zipReader.File {
-		scanFile(path, zipFile)
+		locatedFindings := scanFile(path, zipFile)
+		findings = append(findings, locatedFindings...)
 	}
+	return
 }
 
-func scanLocatedArchive(path string, info os.FileInfo, onlyScanArchives bool) {
+func scanLocatedArchive(path string, info os.FileInfo, onlyScanArchives bool) (findings []types.Finding) {
 	file, err := os.Open(path)
 	if err != nil {
 		log.Warn().
@@ -133,14 +147,14 @@ func scanLocatedArchive(path string, info os.FileInfo, onlyScanArchives bool) {
 		return
 	}
 
-	scanArchiveForVulnerableClassFiles(path, file, info.Size())
+	return scanArchiveForVulnerableClassFiles(path, file, info.Size())
 }
 
 // SearchDirsForVulnerableClassFiles walks each search dir looking for .class files in archives which have a hash
 // matching a known vulnerable file hash. The search will also recursively crawl nested archives while searching.
 // This function by default will scan class files, but can also be configured to only scan and match for vulnerable
 // java archives.
-func SearchDirsForVulnerableClassFiles(searchDirs []string, onlyScanArchives bool) {
+func SearchDirsForVulnerableClassFiles(searchDirs []string, onlyScanArchives bool) (findings []types.Finding) {
 	locatedFileCallback := func(path string, info os.FileInfo, accessError error) (err error) {
 		if accessError != nil {
 			log.Warn().
@@ -161,10 +175,12 @@ func SearchDirsForVulnerableClassFiles(searchDirs []string, onlyScanArchives boo
 				Str("path", path).
 				Msg("scanning archive")
 
-			scanLocatedArchive(path, info, onlyScanArchives)
+			locatedFindings := scanLocatedArchive(path, info, onlyScanArchives)
+			findings = append(findings, locatedFindings...)
 		}
 		return
 	}
 
 	util.SearchDirs(searchDirs, locatedFileCallback)
+	return
 }
