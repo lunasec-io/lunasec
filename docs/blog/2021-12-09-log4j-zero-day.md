@@ -37,7 +37,7 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-**See Our Updated Mitigation Guide**: https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide
+**See Our Updated Mitigation Guide including our automated scanning tool**: https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide
 
 ## What is it?
 On Thursday (December 9th), a 0-day exploit in the
@@ -86,6 +86,8 @@ existing code on the server to execute a payload. An attack targeting the class
 `org.apache.naming.factory.BeanFactory`, present on Apache Tomcat servers, is discussed
 in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injections-java).
 
+** Edit: ** To see if you are impacted, you can use our [automatic scanning tool](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
+
 ## Affected Apache log4j Versions
 
 ### log4j v2
@@ -101,7 +103,7 @@ Version 1 of log4j is vulnerable to other RCE attacks, and if you're using it yo
 
 ## Permanent Mitigation
 
-**For Current Information:** Please read our follow-up guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
+**For Current Information:** We have written a comprehensive guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
 
 Version 2.15.0 of log4j has been released without the vulnerability. log4j-core.jar is available on Maven Central [here](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/), with [[release notes](https://logging.apache.org/log4j/2.x/changes-report.html#a2.15.0)] and
 [[log4j security announcements](https://logging.apache.org/log4j/2.x/security.html)].
