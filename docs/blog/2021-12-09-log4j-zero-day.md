@@ -1,8 +1,9 @@
 ---
-title: "Log4Shell: RCE 0-day exploit found in log4j 2, a popular Java logging package"
+title: "Log4Shell: RCE 0-day exploit found in log4j 2, a popular Java logging package (Updated December 11th, 2021)"
 description: Given how ubiquitous log4j is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
+keywords: [log4shell, log4j, log4j2, rce, java, zero-day]
 authors:
 - name: Free Wortley
   title: CEO at LunaSec
@@ -50,6 +51,8 @@ This post provides resources to help you understand the vulnerability and how to
 
 <!--truncate-->
 
+**Mitigation Guide**: https://www.lunasec.io/docs/blog/log4j-zero-day-migitation-guide
+
 ## Who is impacted?
 
 Many, many services are vulnerable to this exploit.  Cloud services like [Steam, Apple iCloud](https://news.ycombinator.com/item?id=29499867), and apps like
@@ -75,9 +78,18 @@ existing code on the server to execute a payload. An attack targeting the class
 `org.apache.naming.factory.BeanFactory`, present on Apache Tomcat servers, is discussed
 in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injections-java).
 
-## Affected Apache log4j2 Versions
+## Affected Apache log4j Versions
 
-`2.0 <= Apache log4j <= 2.14.1`
+### log4j v2
+
+Almost all versions of log4j version 2 are affected.
+
+`2.0-beta9 <= Apache log4j <= 2.14.1`
+
+### log4j v1
+
+Version 1 of log4j is vulnerable to other RCE attacks, and if you're using it you need to 
+[migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.15.0`.
 
 ## Permanent Mitigation
 
