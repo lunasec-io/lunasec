@@ -5,7 +5,9 @@ if [[ -z $1 ]]; then
   exit 1
 fi
 
-CVE_HASH_PATH="$(pwd)/CVE-2021-44228-Log4Shell-Hashes/sha256sums.txt"
+./setup.sh
+
+CVE_HASH_PATH="$(pwd)/hashes/sha256sums.txt"
 
 cd $1
 
