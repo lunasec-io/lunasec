@@ -10,6 +10,14 @@ authors:
   url: https://github.com/freeqaz
   image_url: https://github.com/freeqaz.png
   tags: [zero-day, security, data-security, data-breaches, guides]
+- name: Chris Thompson
+  title: Developer at Lunasec
+  url: https://github.com/breadchris
+  image_url: https://github.com/breadchris.png
+- name: Forrest Allison
+  title: Developer at LunaSec
+  url: https://github.com/factoidforrest
+  image_url: https://github.com/factoidforrest.png
 
 ---
 <!--
@@ -119,7 +127,7 @@ We've built a command line utility that will check files and tell you which ones
 
 **[Download from GitHub](https://github.com/lunasec-io/lunasec/releases/tag/v1.0.0-log4shell)**
 
-_Make sure you download the right version for your Operating System._
+_Make sure you download the right version for your Operating System and CPU architecture._
 
 Once that completes, you can extract that and run `log4shell` command in your terminal.
 
