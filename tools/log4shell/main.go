@@ -84,7 +84,7 @@ func main() {
 	app := &cli.App{
 		Name:        "log4shell",
 		Version:     constants.Version,
-		Description: "Identify code dependencies that are vulnerable to the log4shell vulnerability. Read more at log4shell.com.",
+		Description: "Identify code dependencies that are vulnerable to the log4shell vulnerability. Read more at https://log4shell.com.",
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:  "verbose",

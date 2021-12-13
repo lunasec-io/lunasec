@@ -16,7 +16,6 @@ package scan
 
 import (
 	"archive/zip"
-	"bufio"
 	"bytes"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
@@ -56,7 +55,7 @@ func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, 
 	return
 }
 
-func scanClassFile(path string, file *zip.File) (finding *types.Finding) {
+func scanArchiveFile(path string, file *zip.File) (finding *types.Finding) {
 	reader, err := file.Open()
 	if err != nil {
 		log.Warn().
@@ -69,7 +68,7 @@ func scanClassFile(path string, file *zip.File) (finding *types.Finding) {
 	return identifyPotentiallyVulnerableFile(reader, path, file.Name, constants.KnownVulnerableClassFileHashes)
 }
 
-func scanArchive(path string, file *zip.File) (findings []types.Finding) {
+func scanArchive(path string, file *zip.File, onlyScanArchives bool) (findings []types.Finding) {
 	reader, err := file.Open()
 	if err != nil {
 		log.Warn().
@@ -95,25 +94,36 @@ func scanArchive(path string, file *zip.File) (findings []types.Finding) {
 	archiveReader := bytes.NewReader(buffer)
 	archiveSize := int64(len(buffer))
 
-	return scanArchiveForVulnerableClassFiles(newPath, archiveReader, archiveSize)
+	return scanArchiveForVulnerableFiles(newPath, archiveReader, archiveSize, onlyScanArchives)
 }
 
-func scanFile(path string, file *zip.File) (findings []types.Finding) {
+func scanFile(path string, file *zip.File, onlyScanArchives bool) (findings []types.Finding) {
 	fileExt := util.FileExt(file.Name)
 	switch fileExt {
 	case constants.ClassFileExt:
-		finding := scanClassFile(path, file)
+		if onlyScanArchives {
+			return
+		}
+
+		finding := scanArchiveFile(path, file)
 		if finding != nil {
 			findings = []types.Finding{*finding}
 		}
 		return
 	case constants.JarFileExt, constants.WarFileExt:
-		return scanArchive(path, file)
+		if onlyScanArchives {
+			finding := scanArchiveFile(path, file)
+			if finding != nil {
+				findings = []types.Finding{*finding}
+			}
+			return
+		}
+		return scanArchive(path, file, onlyScanArchives)
 	}
 	return
 }
 
-func scanArchiveForVulnerableClassFiles(path string, reader io.ReaderAt, size int64) (findings []types.Finding) {
+func scanArchiveForVulnerableFiles(path string, reader io.ReaderAt, size int64, onlyScanArchives bool) (findings []types.Finding) {
 	zipReader, err := zip.NewReader(reader, size)
 	if err != nil {
 		log.Warn().
@@ -124,7 +134,11 @@ func scanArchiveForVulnerableClassFiles(path string, reader io.ReaderAt, size in
 	}
 
 	for _, zipFile := range zipReader.File {
-		locatedFindings := scanFile(path, zipFile)
+		log.Debug().
+			Str("path", path).
+			Str("file", zipFile.Name).
+			Msg("scanning nested archive")
+		locatedFindings := scanFile(path, zipFile, onlyScanArchives)
 		findings = append(findings, locatedFindings...)
 	}
 	return
@@ -141,13 +155,7 @@ func scanLocatedArchive(path string, info os.FileInfo, onlyScanArchives bool) (f
 	}
 	defer file.Close()
 
-	if onlyScanArchives {
-		reader := bufio.NewReader(file)
-		identifyPotentiallyVulnerableFile(reader, path, file.Name(), constants.KnownVulnerableArchiveFileHashes)
-		return
-	}
-
-	return scanArchiveForVulnerableClassFiles(path, file, info.Size())
+	return scanArchiveForVulnerableFiles(path, file, info.Size(), onlyScanArchives)
 }
 
 // SearchDirsForVulnerableClassFiles walks each search dir looking for .class files in archives which have a hash
