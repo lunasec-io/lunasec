@@ -42,14 +42,35 @@ A few days ago, a serious new vulnerability was identified and published as
 We were one of the first security companies to write about it, and we named it "Log4Shell".
 
 This guide will help you:
-1. [Determine if you are impacted by Log4Shell](#determine-if-you-are-impacted-by-log4shell)
-2. [How to Mitigate the Issue](#how-to-mitigate-the-issue)
+1. [Help you identify trusted sources for Log4Shell information](#be-careful-what-log4shell-advice-you-trust-online)
+2. [Determine if you are impacted by Log4Shell](#determine-if-you-are-impacted-by-log4shell)
+3. [How to Mitigate the Issue](#how-to-mitigate-the-issue)
 
 :::info
 If you're just trying to understand the Log4Shell vulnerability and the impact of it, please [refer to our 
 earlier blog post](https://www.lunasec.io/docs/blog/log4j-zero-day/).
 :::
 <!--truncate-->
+
+## Be careful what Log4Shell advice you trust online
+
+Because of the severe impact from this vulnerability, there has been a lot of discussion on the internet
+about it. **Some of this information is outdated or wrong and _will_ leave you vulnerable if you follow it!**
+
+In contrast, this guide has been written by a team of professional Security Engineers at LunaSec. Everything here has
+been peer-reviewed by multiple security experts, and where possible our sources will be linked for other Security
+professionals to verify against.
+
+The full list of common bad advice is at the [bottom of this post](#known-bad-advice). If you believe you've already 
+mitigated Log4Shell, or you believe you're not vulnerable, please double-check your current information is up-to-date. 
+
+:::info
+We're continuously keeping this post up-to-date as new information comes out. If you have any questions, or you're
+confused about our advice, please [file an Issue](https://github.com/lunasec-io/lunasec/issues) on GitHub.
+
+If you would like to contribute, or notice any errors, this post is an Open Source Markdown file on
+[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-12-log4j-zero-day-mitigation-guide.md).
+:::
 
 ## Determine if you are impacted by Log4Shell
 
@@ -241,81 +262,20 @@ Or you can set this using the JVM arguments environment variable.
 It's possible to [modify the JNDI in place](https://news.ycombinator.com/item?id=29507263) to stop the attack at the language level.
 It can even be done while the server is running.  Please note this is a last resort, and should only be done if the above options aren't possible.
 
-The easy to use tool [Log4jHotPatch](https://github.com/corretto/hotpatch-for-apache-log4j2) will apply the JNDI patch automatically.
+The easy-to-use tool [Log4jHotPatch](https://github.com/corretto/hotpatch-for-apache-log4j2) will apply the JNDI patch automatically.
 
 For those using Kubernetes that can't perform any of the above mitigations, a new feature called "Ephemeral Containers" allows applying the hot patch
 to a running container. This could be useful for containerized vendor software.
-[This guide](https://medium.com/@edeNFed/patching-log4shell-in-one-command-without-downtime-using-ephemeral-containers-c69a9155ab1e) explains how to apply the patch.
-
+[This guide](https://medium.com/@edeNFed/patching-log4shell-in-one-command-without-downtime-using-ephemeral-containers-c69a9155ab1e) 
+explains how to apply the patch.
 
 ### Option 4: Remote hot patch / LogOut4Shell
 Because of the extensive control Log4Shell gives an attacker, it's actually possible to use the bug against itself to patch a running server.
 This isn't the recommended strategy for various reasons, but it could be a last resort for systems that you can't easily restart or modify.  Note that doing this on a system 
 you don't have permission to is most likely illegal. The fix will only work until the server (or the JVM) is restarted.
 
-How to accomplish this is explained in [this guide](https://github.com/Cybereason/Logout4Shell). We are also currently building a small SASS to
-apply the patch remotely.
-
-## What not to do
-
-Because of the impact from this vulnerability, there has been a lot of discussion. **Some of this information is outdated
-or wrong and _will_ leave you vulnerable if you follow it!**
-
-In contrast, this guide has been written by a team of professional Security Engineers at LunaSec. Everything here has
-been peer-reviewed by multiple security experts, and where possible our sources will be linked for other Security
-professionals to verify against. (If you need security help, go read the bottom of this post.)
-
-### Be careful what Log4Shell advice you trust online
-
-We're making an effort to keep this post up-to-date as new information comes out. If you have any questions or you're
-confused about our advice, please [file an Issue](https://github.com/lunasec-io/lunasec/issues) on GitHub.
-
-If you would like to contribute, or notice any errors, this post is an Open Source Markdown file on
-[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-12-log4j-zero-day-mitigation-guide.md).
-
-### Known Bad Advice
-
-The following are all pieces of advice we've seen thrown around online that are misguided and dangerous. If you see
-advice online that contains any of the following, we please ask you to share this post with the authors to help limit
-the fallout from Log4Shell.
-
-#### A WAF will not save you from Log4Shell
-
-The Log4Shell vulnerability can _not_ be entirely mitigated by using a WAF (Web Application Firewall) because it _does not_
-require your usage of it to be *publicly accessible*. Internal Data Pipelines, like Hadoop and Spark, and Desktop apps
-like the [NSA's Ghidra](https://twitter.com/NSA_CSDirector/status/1469305071116636167) will still be vulnerable.
-
-In addition, there is no simple way to "filter out" malicious requests with a simple WAF rule because Log4Shell payloads
-may be nested. (See [this GitHub](https://github.com/Puliczek/CVE-2021-44228-PoC-log4j-bypass-words) for examples)
-
-If you are using a vulnerable version of log4j, the only secure way to mitigate Log4Shell is through one of the
-strategies detailed above.
-
-#### Updating Java is insufficient
-
-There are many reports online that only certain Java versions are affected and that you're safe if you're on a newer
-Java version.  Even on newer versions, it's still possible for an attacker to instantiate local classes on the
-server.
-
-We believe it's likely only a matter of time before all current Java versions are impacted when
-running a vulnerable version of log4j. Just upgrading your Java version is insufficient, and you should not rely on this
-as a long-term defense against exploitation.
-
-#### Updating individual log statements isn't a complete fix
-
-Some people online are suggesting updating your logging statements from `%m` to `%m{nolookupzz}` to mitigate this**.
-
-We do not recommend you follow this strategy.  Even if you manage to patch your application 100%
-today, you will still likely accidentally add a `%m` again in the future and _then you will be vulnerable again_.
-
-In addition, it's possible to miss a line in your logging statements or if have a dependency that
-is using log4j with `%m` without you realizing. If either happens _you will still be vulnerable_.
-
-We're strong advocates of a "Secure by Default" mentality with software, and we recommend you follow one of the other
-mitigations instead.
-
-_**: The string is intentionally wrong here to prevent blind copy-pasting._
-
+How to accomplish this is explained in [this guide](https://github.com/Cybereason/Logout4Shell). We are also currently 
+building a small SASS to apply the patch remotely. (Subscribe at the bottom if you want to be alerted when it's live.)
 
 ## How to protect yourself from future 0-days
 
@@ -338,6 +298,55 @@ software is designed to fail predictably under attack, so that the most sensitiv
 
 We've made implementing that as easy as possible with our Open Source security framework [LunaSec](https://www.lunasec.io/docs/pages/overview/introduction/).
 It works inside web apps, embedding an additional layer of isolation around the most sensitive data.  Please leave us a star [on GitHub](https://github.com/lunasec-io/lunasec-monorepo).
+
+
+## Known Bad Advice
+
+The following are all pieces of advice we've seen thrown around online that are misguided and dangerous. If you see
+advice online that contains any of the following, we please ask you to share this post with the authors to help limit
+the fallout from Log4Shell.
+
+### Updating Java is insufficient
+
+There are many reports online that only certain Java versions are affected and that you're safe if you're on a newer
+Java version.  Even on newer versions, it's still possible for an attacker to
+[instantiate local classes](https://www.veracode.com/blog/research/exploiting-jndi-injections-java) on the server to
+trigger an exploit. And, even if no exploits are found right away, it still enables a Denial-of-Service attack when
+you're using a vulnerable version of log4j.
+
+We believe it's likely only a matter of time before all current Java versions are impacted when
+running a vulnerable version of log4j. Just upgrading your Java version is insufficient, and you should not rely on this
+as a long-term defense against exploitation.
+
+### A WAF will not save you from Log4Shell
+
+The Log4Shell vulnerability can _not_ be entirely mitigated by using a WAF (Web Application Firewall) because it _does not_
+require your usage of it to be *publicly accessible*. Internal Data Pipelines, like Hadoop and Spark, and Desktop apps
+like the [NSA's Ghidra](https://twitter.com/NSA_CSDirector/status/1469305071116636167) will still be vulnerable.
+
+In addition, there is no simple way to "filter out" malicious requests with a simple WAF rule because Log4Shell payloads
+may be nested. (See [this GitHub](https://github.com/Puliczek/CVE-2021-44228-PoC-log4j-bypass-words) for examples)
+
+If you are using a vulnerable version of log4j, the only secure way to mitigate Log4Shell is through one of the
+strategies detailed above.
+
+### Updating individual log statements isn't a complete fix
+
+_This only applies to log4j versions `>= 2.7.0`, older versions don't support it_
+
+Some people online are suggesting updating your logging statements from `%m` to `%m{nolookupzz}` to mitigate this**.
+
+We do not recommend you follow this strategy.  Even if you manage to patch your application 100%
+today, you will still likely accidentally add a `%m` again in the future and _then you will be vulnerable again_.
+
+In addition, it's possible to miss a line in your logging statements or if have a dependency that
+is using log4j with `%m` without you realizing. If either happens _you will still be vulnerable_.
+
+We're strong advocates of a "[Secure by Default](#what-is-secure-by-default)" mentality with software, and we
+recommend you follow one of the other mitigations instead.
+
+_**: The string is intentionally wrong here to prevent blind copy-pasting._
+
 
 ### Resources
 
@@ -393,4 +402,5 @@ Feel free to join the discussion on this post on any of the following websites:
 ### Updates
 
 1. Fixed some weird grammar.
-2. Added social links
+2. Added social links.
+3. Reworked some content. Added more options for mitigation.
