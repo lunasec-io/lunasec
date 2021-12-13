@@ -37,7 +37,8 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-A few days ago, a serious [new vulnerability](https://cve.mitre.org/cgi-bin/cvename.cgi?name=2021-44228) was identified. 
+A few days ago, a serious new vulnerability was identified and published as 
+[CVE-2021-44228)(https://cve.mitre.org/cgi-bin/cvename.cgi?name=2021-44228). 
 We were one of the first security companies to write about it, and we named it "Log4Shell".
 
 This guide will help you:
