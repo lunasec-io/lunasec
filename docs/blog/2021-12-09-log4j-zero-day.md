@@ -1,5 +1,5 @@
 ---
-title: "Log4Shell: RCE 0-day exploit found in log4j 2, a popular Java logging package"
+title: "Log4Shell: RCE 0-day exploit found in log4j 2, a popular Java logging package (Updated December 12th, 2021)"
 description: Given how ubiquitous log4j is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
@@ -36,10 +36,12 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
+
 _Updated @ December 12th, 11:30pm PST_
 
 _This blog post is also available at https://log4shell.com/_
 
+## What is it?
 On Thursday (December 9th), a 0-day exploit in the
 popular Java logging library `log4j` (version 2) was discovered that results in Remote Code Execution (RCE) by
 logging a certain string.
@@ -50,7 +52,7 @@ the impact of this vulnerability is quite severe. We're calling it "Log4Shell" f
 The 0-day was [tweeted](https://twitter.com/P0rZ9/status/1468949890571337731) along with a POC posted on
 [GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  It has now been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/).
 
-This post provides resources to help you understand the vulnerability and how to mitigate it for yourself.
+This post provides resources to help you understand the vulnerability and how to mitigate it.
 
 <!--truncate-->
 
