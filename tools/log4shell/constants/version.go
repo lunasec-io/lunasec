@@ -14,4 +14,4 @@
 //
 package constants
 
-const Version = "0.0.1"
+const Version = "1.0.0"

@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package constants
+package types
 
-const (
-	JarFileExt   = ".jar"
-	WarFileExt   = ".war"
-	ClassFileExt = ".class"
-)
+type VulnerableHashLookup map[string]string
