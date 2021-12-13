@@ -1,7 +1,7 @@
 {
   "name": "@lunasec/log4shell",
   "private": false,
-  "version": "1.0.7-beta1",
+  "version": "1.0.7-beta2",
   "description": "Tools to help remediate the log4shell vulnerability.",
   "main": "build/index.js",
   "bin": {
