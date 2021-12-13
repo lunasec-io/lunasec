@@ -19,7 +19,9 @@
 
 ---
 
-![All Tests](https://github.com/lunasec-io/lunasec/actions/workflows/integration.yaml/badge.svg)
+**For Log4Shell Information, please see our [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/)**
+
+---
 
 LunaSec is a suite of security tools designed to protect sensitive data in web applications by adding just a few lines of code.
 
