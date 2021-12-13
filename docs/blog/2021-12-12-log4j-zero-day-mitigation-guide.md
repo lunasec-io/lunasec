@@ -58,7 +58,7 @@ about it. **Some of this information is outdated or wrong and _will_ leave you v
 
 In contrast, this guide has been written by a team of professional Security Engineers at LunaSec. Everything here has 
 been peer-reviewed by multiple security experts, and where possible our sources will be linked for other Security 
-professionals to verify against. (See the end of this post about hiring us to help you.)
+professionals to verify against. (If you need security help, go read the bottom of this post.)
 
 We're making an effort to keep this post up-to-date as new information comes out. If you have any questions or you're
 confused about our advice, please [file an Issue](https://github.com/lunasec-io/lunasec/issues) on GitHub.
@@ -98,7 +98,7 @@ server, versus remote classes which are how current exploits function. See our l
 
 ### Simply Updating Your Log Statements Is Dangerous
 
-Some people online are naively suggesting updating your logging statements from `%m` to `%m{nolookupzz}`**.
+Some people online are suggesting updating your logging statements from `%m` to `%m{nolookupzz}` to mitigate this**.
 
 This is bad advice, and we _do not_ recommend that you follow it. Even if you manage to patch your application 100% 
 today, you will still likely accidentally add a `%m` again in the future and _then you will be vulnerable again_.
@@ -371,7 +371,7 @@ software with only a few lines of code. It's loosely based on the OWASP Applicat
 
 #### [Acra Database Protection](https://github.com/cossacklabs/acra)
 
-An Open-Source database encryption library that helps you prevent data leaks by adding a layer of encryption to your 
+An Open Source database encryption library that helps you prevent data leaks by adding a layer of encryption to your 
 data. It's designed and maintained by Cossack Lab's, which also offers it as a commercial offering.
 
 #### [FullHunt log4j Scanner](https://github.com/fullhunt/log4j-scan)
@@ -398,3 +398,7 @@ your day be a little better.
 If this post helped you, please share it with others to help them with Log4Shell too.
 
 Thank you!
+
+### Updates
+
+1. Fixed some weird grammar.
