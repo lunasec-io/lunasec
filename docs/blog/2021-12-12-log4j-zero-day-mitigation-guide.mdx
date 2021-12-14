@@ -357,24 +357,29 @@ may be nested. (See [this GitHub](https://github.com/Puliczek/CVE-2021-44228-PoC
 If you are using a vulnerable version of log4j, the only secure way to mitigate Log4Shell is through one of the
 strategies detailed above.
 
-### Updating individual log statements isn't a complete fix
+### Updating the log statement format with `%m{nolookupzz}` is not advisable
 
 _This only applies to log4j versions `>= 2.7.0`, older versions don't support it_
 
+:::warning
+This mitigation may be bypassed in certain scenarios and still allows for RCE (see
+[our dedicated post](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046)
+about it), and this has been entirely [removed](https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternMethod)
+in log4j 2.16.0 and newer.
+:::
+
 Some people online are suggesting updating your logging statements from `%m` to `%m{nolookupzz}` to mitigate this**.
 
-_ The string is intentionally wrong here to prevent blind copy-pasting._
+_The string is intentionally wrong here to prevent blind copy-pasting._
 
 We do not recommend you follow this strategy.  Even if you manage to patch your application 100%
 today, you will still likely accidentally add a `%m` again in the future and _then you will be vulnerable again_.
 
-In addition, it's possible to miss a line in your logging statements or if have a dependency that
+In addition, it's possible to miss a line in your logging statements, or if have a dependency that
 is using log4j with `%m` without you realizing. If either happens _you will still be vulnerable_.
 
 We're strong advocates of a "[Secure by Default](#what-is-secure-by-default)" mentality with software, and we
 recommend you follow one of the other mitigations instead.
-
-
 
 ### Resources
 
@@ -404,7 +409,7 @@ infrastructure. (Note: It's a new tool, so it might have bugs. Please file an is
 
 ### Stay In The Loop
 
-If you're currently dealing with Log4Shell and you'd like to stay updated, please follow us on 
+If you're currently dealing with Log4Shell and would like to stay updated, please follow us on
 [Twitter](https://twitter.com/LunaSecIO) or subscribe below to receive security updates as we post them.
 
 import ContactForm from '../src/components/ContactForm.jsx'
@@ -413,7 +418,7 @@ import ContactForm from '../src/components/ContactForm.jsx'
 
 #### Limited Offer: Free Security Assistance
 
-We're also currently offering a free 30 minute consulation with one of our Security Engineers. If you're interested,
+We're also currently offering a free 30-minute consultation with one of our Security Engineers. If you're interested,
 please [book some time with us here](https://lunasec.youcanbook.me/).
 
 ## Stay Strong!
