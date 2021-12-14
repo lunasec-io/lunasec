@@ -1,4 +1,4 @@
-FROM openjdk:18-alpine3.15 as lerna-bootstrap
+FROM lunasec/precached-dependencies:v1.0.0 as lerna-bootstrap
 
 ENV NODE_OPTIONS "--unhandled-rejections=strict"
 ENV CI "true"

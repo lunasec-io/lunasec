@@ -12,7 +12,11 @@ if [ "$CIPHERTEXT_S3_BUCKET" != "" ]; then
 elif [ -f /outputs/aws_resources.json ]; then
   jq -r .aws_gateway.ciphertext_bucket /outputs/aws_resources.json
 else
-  echo "reading bucket name from file: $(dirname "$0")/../../../../outputs/aws_resources.json" >&2
+  echo "assuming local dev mode and reading bucket name from file: $(dirname "$0")/../../../../outputs/aws_resources.json" >&2
+  while [ ! -f "$(dirname "$0")/../../../../outputs/aws_resources.json" ]; do
+     echo "Waiting for aws_resources.json to be created" >&2
+     sleep 1
+   done
   jq -r .aws_gateway.ciphertext_bucket $(dirname "$0")/../../../../outputs/aws_resources.json
 fi
 
