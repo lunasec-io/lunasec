@@ -66,7 +66,7 @@ mitigated Log4Shell, or you believe you're not vulnerable, please double-check y
 
 ## Determine if you are impacted by Log4Shell
 
-This vulnerability affects anybody who's using the log4j packages (`log4j-core`, `log4j-api`, etc). That means it's
+This vulnerability affects anybody who's using the log4j packages. That means it's
 primarily Java, but other languages like Scala, Groovy, or Clojure are also impacted.
 
 ### Automatically Scanning Your Package
@@ -231,7 +231,7 @@ visualization of the Log4Shell exploit.  Take note of the possible solutions (sh
 ![log4shell 0day diagram](/img/log4j-attack-and-mitigations.png)
 
 
-### Option 1: Upgrading to 2.15.0
+### Option 1: Upgrading to 2.16.0
 
 Apache log4j has released a version that fixes the Log4Shell vulnerability as of version `2.15.0`.
 
@@ -279,8 +279,8 @@ you don't have permission to is most likely illegal. The fix will only work unti
 
 How to accomplish this is explained in [this guide](https://github.com/Cybereason/Logout4Shell).
 
-We are currently building a small SASS to apply the patch remotely. 
-[Follow our twitter](https://twitter.com/LunaSecIO) to be alerted when it's live.
+We are currently adding this functionality to our CLI. 
+[Subscribe below](#stay-in-the-loop) to be alerted when it's live.
 
 ## How to protect yourself from future 0-days
 
@@ -341,6 +341,8 @@ _This only applies to log4j versions `>= 2.7.0`, older versions don't support it
 
 Some people online are suggesting updating your logging statements from `%m` to `%m{nolookupzz}` to mitigate this**.
 
+_ The string is intentionally wrong here to prevent blind copy-pasting._
+
 We do not recommend you follow this strategy.  Even if you manage to patch your application 100%
 today, you will still likely accidentally add a `%m` again in the future and _then you will be vulnerable again_.
 
@@ -350,7 +352,6 @@ is using log4j with `%m` without you realizing. If either happens _you will stil
 We're strong advocates of a "[Secure by Default](#what-is-secure-by-default)" mentality with software, and we
 recommend you follow one of the other mitigations instead.
 
-_**: The string is intentionally wrong here to prevent blind copy-pasting._
 
 
 ### Resources
@@ -358,8 +359,8 @@ _**: The string is intentionally wrong here to prevent blind copy-pasting._
 #### [OWASP Application Security Verification Standard](https://owasp.org/www-project-application-security-verification-standard/)
 
 This is a design framework that's being developed by the Open Web Application Security Project (OWASP) to help 
-standardize the levels of security that applications achieve. It's not directly "Secure by Default", but it provides a 
-solid baseline for setting up a roadmap for yourself.
+standardize the levels of security that applications achieve. It provides a 
+solid baseline for setting up a security roadmap for your application.
 
 #### [LunaSec Secure by Default Framework](https://github.com/lunasec-io/lunasec/)
 
@@ -376,14 +377,17 @@ data. It's designed and maintained by Cossack Lab's, which also offers it as a c
 
 #### [FullHunt log4j Scanner](https://github.com/fullhunt/log4j-scan)
 
-Not a "Secure by Default" tool, but this is a CLI tool to help you identify vulnerable log4j endpoints in your 
+This is a CLI tool to help you identify vulnerable log4j endpoints in your 
 infrastructure. (Note: It's a new tool, so it might have bugs. Please file an issue if you find any!)
 
-### Stay In Touch
+### Stay In The Loop
 
-If you're currently scrambling to deal with Log4Shell and you'd like some help, please follow us on 
-[Twitter](https://twitter.com/LunaSecIO) or [drop your email](https://mailchi.mp/2e67fecbc157/log4j-updates) to receive 
-updates as we post them.
+If you're currently dealing with Log4Shell and you'd like to stay updated, please follow us on 
+[Twitter](https://twitter.com/LunaSecIO) or subscribe below to receive security updates as we post them.
+
+import ContactForm from '../src/components/ContactForm.jsx'
+
+<ContactForm/>
 
 #### Limited Offer: Free Security Assistance
 
