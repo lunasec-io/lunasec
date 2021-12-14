@@ -47,7 +47,7 @@ ENV HOST_MACHINE_PWD=""
 
 ENV DOCKER_BUILDKIT="1"
 
-WORKDIR /repo/js/sdks/packages/cli
+WORKDIR /repo
 
 # This is required because we aren't able to pass additional command arguments via Docker-Compose unless we are invoking
 # via the "exec" Entrypoint syntax. This lets us then expand environment variables at runtime.
