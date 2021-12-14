@@ -96,16 +96,21 @@ Almost all versions of log4j version 2 are affected.
 
 `2.0-beta9 <= Apache log4j <= 2.14.1`
 
+:::caution Limited vulnerability in `2.15.0`
+As of Tuesday, Dec 14, version `2.15.0` was found to still have a possible [vulnerability in some apps](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f).
+We recommend updating to `2.16.0` which [defaults to disabling](https://github.com/apache/logging-log4j2/commit/44569090f1cf1e92c711fb96dfd18cd7dccc72ea) JNDI.
+Also, `%m{lookups}` has been [completely removed](https://github.com/apache/logging-log4j2/pull/623).
+:::
 ### log4j v1
 
 Version 1 of log4j is vulnerable to other RCE attacks, and if you're using it you need to 
-[migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.15.0`.
+[migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.16.0`.
 
 ## Permanent Mitigation
 
 **For Current Information:** We have written a comprehensive guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
 
-Version 2.15.0 of log4j has been released without the vulnerability. log4j-core.jar is available on Maven Central [here](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.15.0/), with [[release notes](https://logging.apache.org/log4j/2.x/changes-report.html#a2.15.0)] and
+Version 2.16.0 of log4j has been released without the vulnerability. log4j-core.jar is available on Maven Central [here](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.16.0/), with [[release notes](https://logging.apache.org/log4j/2.x/changes-report.html#a2.16.0)] and
 [[log4j security announcements](https://logging.apache.org/log4j/2.x/security.html)].
 
 The release can also be downloaded from the Apache Log4j [Download](https://logging.apache.org/log4j/2.x/download.html) page.
@@ -113,6 +118,12 @@ The release can also be downloaded from the Apache Log4j [Download](https://logg
 ## Temporary Mitigation
 
 **For Current Information:** Please read our follow-up guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
+
+:::warning `formatMsgNoLookups` Does not protect against all attacks
+As of Tuesday, Dec 14, it's been found that this flag is ineffective at stopping certain attacks, partially explained 
+[CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046).  
+You must update to `2.16.0` or use the JNDI patches for temporary mitigation explained in [our mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).
+:::
 
 As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=29507263):
 
@@ -267,7 +278,7 @@ methods are still prevalent.
 10. Update title because of some confusion.
 11. Better DNS testing site and explanation
 12. Added link to the [Log4Shell Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
-
+13. Add warnings about limited vuln in 2.15 / noMsgFormatLookups
 ### References
 
 [1] [JIRA LOG4J-2190](https://issues.apache.org/jira/browse/LOG4J2-2109)
