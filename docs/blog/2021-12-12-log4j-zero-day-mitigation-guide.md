@@ -180,7 +180,7 @@ your cache, and _then_ rebuild your project in order to limit false positives.
 **Setup**
 ```shell
 git clone https://github.com/lunasec-io/lunasec.git
-cd lunasec/tools/log4shell-scripts
+cd lunasec/tools/log4shell-jar-scripts
 ./setup.sh
 ```
 
