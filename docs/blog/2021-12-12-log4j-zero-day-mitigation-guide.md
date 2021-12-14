@@ -66,7 +66,7 @@ mitigated Log4Shell, or you believe you're not vulnerable, please double-check y
 
 ## Determine if you are impacted by Log4Shell
 
-This vulnerability affects anybody who's using the log4j packages (`log4j-core`, `log4j-api`, etc). That means it's
+This vulnerability affects anybody who's using the log4j packages. That means it's
 primarily Java, but other languages like Scala, Groovy, or Clojure are also impacted.
 
 ### Automatically Scanning Your Package
