@@ -231,7 +231,7 @@ visualization of the Log4Shell exploit.  Take note of the possible solutions (sh
 ![log4shell 0day diagram](/img/log4j-attack-and-mitigations.png)
 
 
-### Option 1: Upgrading to 2.15.0
+### Option 1: Upgrading to 2.16.0
 
 Apache log4j has released a version that fixes the Log4Shell vulnerability as of version `2.15.0`.
 
