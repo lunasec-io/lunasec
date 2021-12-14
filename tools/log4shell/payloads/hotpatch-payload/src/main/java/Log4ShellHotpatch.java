@@ -70,7 +70,6 @@ public class Log4ShellHotpatch implements ObjectFactory {
     }
 
     static void patchLoggerContexts(ContextSelector ctxSelector) throws NoSuchFieldException, IllegalAccessException {
-        log(ctxSelector.toString());
         log(ctxSelector.getLoggerContexts().toString());
         for (LoggerContext ctx: ctxSelector.getLoggerContexts()) {
             log("attempting to reconfigure LoggerContext.");
