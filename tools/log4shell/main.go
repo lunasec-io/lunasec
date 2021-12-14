@@ -148,6 +148,18 @@ func main() {
 						Name:  "output",
 						Usage: "File path for where to output findings in JSON format.",
 					},
+					&cli.BoolFlag{
+						Name:  "verbose",
+						Usage: "Display verbose information when running commands.",
+					},
+					&cli.BoolFlag{
+						Name:  "json",
+						Usage: "Display findings in json format.",
+					},
+					&cli.BoolFlag{
+						Name:  "debug",
+						Usage: "Display helpful information while debugging the CLI.",
+					},
 				},
 				Action: scanCommand,
 			},
