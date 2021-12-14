@@ -50,6 +50,7 @@
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {
+    "@mui/types": "^7.1.0",
     "@testing-library/dom": "^8.11.1",
     "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^11.1.0",
