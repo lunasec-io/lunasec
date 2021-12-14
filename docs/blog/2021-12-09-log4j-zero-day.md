@@ -119,7 +119,9 @@ The release can also be downloaded from the Apache Log4j [Download](https://logg
 **For Current Information:** Please read our follow-up guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
 
 :::warning `formatMsgNoLookups` Does not protect against all attacks
-As of Tuesday, Dec 14, it's been found that this flag is ineffective at stopping certain attacks.  You must update to `2.16.0` or use the JNDI patches for temporary mitigation explained in [our mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).
+As of Tuesday, Dec 14, it's been found that this flag is ineffective at stopping certain attacks, partially explained 
+[CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046).  
+You must update to `2.16.0` or use the JNDI patches for temporary mitigation explained in [our mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).
 :::
 
 As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=29507263):
