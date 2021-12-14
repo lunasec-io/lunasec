@@ -19,6 +19,7 @@ type Finding struct {
 	FileName    string `json:"file_name"`
 	Hash        string `json:"hash"`
 	VersionInfo string `json:"version_info"`
+	Severity    string `json:"severity"`
 }
 
 type FindingsOutput struct {

@@ -14,4 +14,9 @@
 //
 package types
 
-type VulnerableHashLookup map[string]string
+type VulnerableHash struct {
+	Name   string `json:"name"`
+	Severity  string `json:"severity"`
+}
+
+type VulnerableHashLookup map[string]VulnerableHash
