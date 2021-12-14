@@ -1,5 +1,5 @@
 ---
-title: "Guide: How To Detect and Mitigate the Log4Shell Vulnerability (CVE-2021-44228)" 
+title: "Guide: How To Detect and Mitigate the Log4Shell Vulnerability (CVE-2021-44228 & CVE-2021-45046)" 
 description: If you're using log4j 2 in your infrastructure, this guide will help you understand how to check if you're impacted and show you how to quickly and securely mitigate the issue.
 slug: log4j-zero-day-mitigation-guide
 date: 2021-12-13
@@ -254,7 +254,8 @@ that could result in a DOS (but not RCE), users must update to `2.16.0`.
 ### Option 2: Enable `formatMsgNoLookups`
 :::warning This flag does not prevent all vulnerabilities
 As of Dec 14, it's been found that this flag is ineffective at stopping RCE in some situations,
-explained here [by log4j](https://logging.apache.org/log4j/2.x/security.html). We are still investigating this vulnerability.
+explained here [by log4j](https://logging.apache.org/log4j/2.x/security.html) and in
+[CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046). We are still investigating this vulnerability.
 
 You must update to `2.16.0` or use the JNDI patches below.
 :::
@@ -277,7 +278,7 @@ Alternatively, this feature may be set via Environment Variable.
 
 Or you can set this using the JVM arguments environment variable.
 
-`JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true`~~
+`JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true`
 
 ### Option 3: JNDI patch
 It's possible to [modify the JNDI in place](https://news.ycombinator.com/item?id=29507263) to stop the attack at the language level.
