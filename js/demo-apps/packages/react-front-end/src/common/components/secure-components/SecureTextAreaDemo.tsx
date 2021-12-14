@@ -16,6 +16,8 @@
  */
 import { SecureForm, SecureParagraph, SecureTextArea } from '@lunasec/react-sdk';
 import {
+  Alert,
+  AlertTitle,
   Button,
   Card,
   CardContent,
@@ -25,8 +27,7 @@ import {
   FormLabel,
   Grid,
   Typography,
-} from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
+} from '@mui/material';
 import React, { useState } from 'react';
 
 export const SecureTextAreaDemo: React.FunctionComponent = () => {

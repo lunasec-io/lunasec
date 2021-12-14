@@ -16,6 +16,8 @@
  */
 import { SecureForm, SecureInput } from '@lunasec/react-sdk';
 import {
+  Alert,
+  AlertTitle,
   Box,
   Button,
   Card,
@@ -26,8 +28,7 @@ import {
   FormLabel,
   Grid,
   TextField,
-} from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
+} from '@mui/material';
 import React, { useState } from 'react';
 
 import { useStoreActions, useStoreState } from '../../store';

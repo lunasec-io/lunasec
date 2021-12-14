@@ -18,7 +18,7 @@ import { DomainName, EndpointType, Resource, RestApi, SecurityPolicy } from '@aw
 import * as jsonSchema from '@aws-cdk/aws-apigateway/lib/json-schema';
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import * as iam from '@aws-cdk/aws-iam';
-import { DataProcessorConfig, DeliveryStream, StreamEncryption } from '@aws-cdk/aws-kinesisfirehose';
+import { DeliveryStream, StreamEncryption } from '@aws-cdk/aws-kinesisfirehose';
 import { Compression } from '@aws-cdk/aws-kinesisfirehose-destinations';
 import * as destinations from '@aws-cdk/aws-kinesisfirehose-destinations';
 import { ARecord, HostedZone, RecordTarget } from '@aws-cdk/aws-route53';

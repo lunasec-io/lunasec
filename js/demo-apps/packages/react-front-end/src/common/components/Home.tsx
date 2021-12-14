@@ -15,7 +15,8 @@
  * limitations under the License.
  *
  */
-import { Box, Card, CardContent, CardHeader, Divider, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Box, Card, CardContent, CardHeader, Divider, Grid, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import React from 'react';
 
 import logo from '../../static/logo.svg';
@@ -54,7 +55,7 @@ export const Home: React.FunctionComponent = () => {
       </Card>
       <br />
       <Card>
-        <CardHeader title="Getting Started" />
+        <CardHeader title="Using this demo" />
         <Divider />
         <CardContent>
           <Typography component="div">
