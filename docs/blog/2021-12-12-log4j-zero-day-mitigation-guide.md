@@ -144,11 +144,9 @@ $ log4shell
 ```
 
 :::note
-
 Please make sure that you're running this command on your fully built `.jar` or `.war` file. If you are
 using vendor software that you think might be vulnerable, but you can't get the `.jar` or `.war` files to scan yourself (or it is obfuscated), then you'll need to check out the [section on
 vendor software](#checking-vendor-software-versions) advisories instead.
-
 :::
 
 The source code for this is available on our GitHub 
@@ -192,7 +190,12 @@ cd lunasec/tools/log4shell-jar-scripts
 ### Checking Package Version
 
 If you can check what versions of log4j2 are being used, you can check for any below the recently published 
-`2.15.0`.
+`2.16.0`.
+
+:::caution Limited vulnerability in `2.15.0`
+As of Tuesday, Dec 14, version `2.15.0` was found to still have a possible [vulnerability in some apps](https://logging.apache.org/log4j/2.x/security.html).
+We recommend updating to `2.16.0` which removes the message lookup feature entirely.
+:::
 
 #### log4j v2
 
@@ -200,23 +203,26 @@ Almost all versions of log4j version 2 are affected.
 
 `2.0-beta9 <= Apache log4j <= 2.14.1`
 
-In other words, if you're using any version of log4j that is _older_ than `2.15.0`, you are most likely vulnerable.
+In other words, if you're using any version of log4j that is _older_ than `2.15.0`, you are most likely vulnerable, and under very specific situations,
+still possibly vulnerable on `2.15.0`.
 
 #### log4j v1
 
 Version 1 of log4j is vulnerable to other RCE attacks (like 
 [CVE-2019-17571](https://www.cvedetails.com/cve/CVE-2019-17571/)), and if you're using it you need to
-[migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.15.0`.
+[migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.16.0`.
 
 ### Checking Vendor Software Versions
-The above scanning tool might not work for vendor's packages because of obfuscation, and in any case, you'll likely need to contact the vendor for mitigation.
+The above scanning tool might not work for vendor's packages because of obfuscation, and in any case, you'll likely need
+to contact the vendor for mitigation.
 
 Luckily, many vendors have created their own documents to explain the impact of Log4Shell on their products, and an extensive list
 of those advisories is being compiled [here](https://gist.github.com/SwitHak/b66db3a06c2955a9cb71a8718970c592).
 
 If a vendor has not created an advisory for this, there currently does not exist a succinct list of which Vendor 
 software has been affected. There is an effort by Kevin Beaumont to create a spreadsheet that attempts to capture this
-being worked on, but at this time of this post that effort is still a [work in progress](https://twitter.com/GossiTheDog/status/1470181063980896262).
+being worked on, but at this time of this post that effort is still a
+[work in progress](https://twitter.com/GossiTheDog/status/1470181063980896262).
 
 ### Scanning Remote Endpoints
 Please see our instructions to identify vulnerable remote servers in our original [Log4Shell post](https://www.lunasec.io/docs/blog/log4j-zero-day/#how-to-identify-vulnerable-remote-servers).
@@ -233,14 +239,25 @@ visualization of the Log4Shell exploit.  Take note of the possible solutions (sh
 
 ### Option 1: Upgrading to 2.16.0
 
-Apache log4j has released a version that fixes the Log4Shell vulnerability as of version `2.15.0`.
+Apache log4j has released a version that fixes the Log4Shell vulnerability as of version `2.16.0`. This version disables JNDI by 
+default and removes the message lookup feature.
 
 **[Apache log4j Download Page](https://logging.apache.org/log4j/2.x/download.html)**
 
 We recommend you upgrade, if possible.  For most people, this is the final and correct solution to the issue.
 
-### Option 2: Enable `formatMsgNoLookups` 
-The above release of log4j hardcodes the `formatMsgNoLookups` flag to true, preventing the attack.  If you are using log4j
+:::caution Version 2.15.0 still may be vulnerable
+Log4j version `2.15.0` which was previously thought to be secure has been found to still have a [limited vulnerability](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f), 
+that could result in a DOS, users must update to `2.16.0`. 
+:::
+
+### Option 2: Enable `formatMsgNoLookups`
+:::warning This flag does not prevent all vulnerabilities
+As of Dec 14, it's been found that this flag is ineffective at stopping RCE for certain non-default configurations,
+explained here [by log4j](https://logging.apache.org/log4j/2.x/security.html). 
+You must update to `2.16.0` or use the JNDI patches below.
+:::
+The above release of log4j hardcodes the `formatMsgNoLookups` flag to true, ~~preventing the attack~~.  If you are using log4j
 version `2.10.0` to version `2.14.0` and can't yet update, you can still set the flag manually.
 
 Set `formatMsgNoLookups=true` when you configure log4j by performing one of the following:
@@ -259,7 +276,7 @@ Alternatively, this feature may be set via Environment Variable.
 
 Or you can set this using the JVM arguments environment variable.
 
-`JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true`
+`JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true`~~
 
 ### Option 3: JNDI patch
 It's possible to [modify the JNDI in place](https://news.ycombinator.com/item?id=29507263) to stop the attack at the language level.
@@ -421,4 +438,5 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 
 1. Fixed some weird grammar.
 2. Added social links.
-3. Reworked some content. Added more options for mitigation.
+3. Reworked some content. Added more options for mitigation. 
+4. Add warnings about limited vuln in 2.15 / noMsgFormatLookups
