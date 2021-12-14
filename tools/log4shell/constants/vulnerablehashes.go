@@ -85,6 +85,11 @@ var KnownVulnerableClassFileHashes = types.VulnerableHashLookup{
 	"ed5d53deb29f737808521dd6284c2d7a873a59140e702295a80bd0f26988f53a": { Name:"log4j 1.2.5", Severity: "10.0" },          // SocketNode.class
 	"f3b815a2b3c74851ff1b94e414c36f576fbcdf52b82b805b2e18322b3f5fc27c": { Name:"log4j 1.2.12", Severity: "10.0" },         // SocketNode.class
 	"fbda3cfc5853ab4744b853398f2b3580505f5a7d67bfb200716ef6ae5be3c8b7": { Name:"log4j 1.2.13-1.2.14", Severity: "10.0" },  // SocketNode.class
+	// The following shas for version 2.15 detect a valid but lower level of severity vulnerability, CVE  CVE-2021-45046
+	"84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f" :{ Name:"log4j 2.15.0", Severity: "3.7" },			// JNDILookup.class
+	"db07ef1ea174e000b379732681bd835cfede648a7971bf4e9a0d31981582d69e" :{ Name:"log4j 2.15.0", Severity: "3.7" },			// JNDIManager.class
+	"5bfbecc21f5de442035c0361c994c379a4f6b5adb280c66e43256c6f09346bd1"	:{ Name:"log4j 2.15.0", Severity: "3.7" },			// MessagePatternConverter.class
+
 }
 
 // from: https://github.com/mubix/CVE-2021-44228-Log4Shell-Hashes/blob/main/sha256sums.txt
@@ -132,4 +137,6 @@ var KnownVulnerableArchiveFileHashes = types.VulnerableHashLookup{
 	"68d793940c28ddff6670be703690dfdf9e77315970c42c4af40ca7261a8570fa": { Name:"./apache-log4j-2.14.0-bin/log4j-core-2.14.0.jar", Severity: "10.0" },
 	"9da0f5ca7c8eab693d090ae759275b9db4ca5acdbcfe4a63d3871e0b17367463": { Name:"./apache-log4j-2.14.1-bin/log4j-core-2.14.1.jar", Severity: "10.0" },
 	"006fc6623fbb961084243cfc327c885f3c57f2eba8ee05fbc4e93e5358778c85": { Name:"./log4j-2.0-alpha1/log4j-core-2.0-alpha1.jar", Severity: "10.0" },
-}
+	// The following shas for version 2.15 detect a valid but lower level of severity vulnerability, CVE  CVE-2021-45046
+	"e7048ad52e3b6f1267b7ceb2c07200a5ce61271bcf59f98fd238bf60e4137932": { Name:"apache-log4j-2.15.0-bin/log4j-core.2.15.0.jar", Severity: "3.7"},
+	}
