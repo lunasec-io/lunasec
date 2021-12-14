@@ -17,6 +17,7 @@ package main
 import (
 	"encoding/json"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
+	"github.com/lunasec-io/lunasec/tools/log4shell/patch"
 	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/rs/zerolog"
@@ -76,13 +77,42 @@ func scanCommand(c *cli.Context) error {
 	return nil
 }
 
+func hotpatchCommand(c *cli.Context) error {
+	enableGlobalFlags(c)
+
+	ip := c.String("ip")
+
+	if ip == "" {
+		log.Info().Msg("Public IP not provided. Binding to the local network interface.")
+		ip = "localhost"
+	}
+
+	hotpatchServer := patch.NewHotpatchLDAPServer(ip)
+	hotpatchPayloadServer := patch.NewHotpatchPayloadServer(hotpatchFiles)
+
+	log.Info().
+		Msg("Starting Log4Shell hotpatch LDAP and payload servers")
+
+	hotpatchServer.Start()
+	hotpatchPayloadServer.Start()
+
+	return nil
+}
+
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
 	app := &cli.App{
-		Name:        "log4shell",
+		Name:  "log4shell",
+		Usage: "Identify and mitigate the impact of the log4shell (CVE-2021-44228) vulnerability.",
+		Authors: []*cli.Author{
+			{
+				Name:  "lunasec",
+				Email: "contact@lunasec.io",
+			},
+		},
 		Version:     constants.Version,
 		Description: "Identify code dependencies that are vulnerable to the log4shell vulnerability. Read more at https://log4shell.com.",
 		Flags: []cli.Flag{
@@ -115,6 +145,18 @@ func main() {
 					},
 				},
 				Action: scanCommand,
+			},
+			{
+				Name:    "hotpatch",
+				Aliases: []string{"s"},
+				Usage:   "Perform a live hotpatch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "ip",
+						Usage: "If testing locally, set this to a local network interface (view available interfaces with ifconfig/ipconfig). If using on a remote server, set this value to the publicly accessible IP address of the server.",
+					},
+				},
+				Action: hotpatchCommand,
 			},
 		},
 	}
