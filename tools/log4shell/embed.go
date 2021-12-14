@@ -16,5 +16,5 @@ package main
 
 import "embed"
 
-// go:embed payloads/hotpatch-payload/target/log4shell-hotpatch-1.0.jar
+//go:embed Log4ShellHotpatch.class
 var hotpatchFiles embed.FS

