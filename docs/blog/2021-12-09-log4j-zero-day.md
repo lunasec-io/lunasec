@@ -99,6 +99,7 @@ Almost all versions of log4j version 2 are affected.
 :::caution Limited vulnerability in `2.15.0`
 As of Tuesday, Dec 14, version `2.15.0` was found to still have a possible [vulnerability in some apps](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f).
 We recommend updating to `2.16.0` which [defaults to disabling](https://github.com/apache/logging-log4j2/commit/44569090f1cf1e92c711fb96dfd18cd7dccc72ea) JNDI.
+Also, `%m{lookups}` has been [completely removed](https://github.com/apache/logging-log4j2/pull/623).
 :::
 ### log4j v1
 
