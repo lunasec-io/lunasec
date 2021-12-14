@@ -248,13 +248,14 @@ We recommend you upgrade, if possible.  For most people, this is the final and c
 
 :::caution Version 2.15.0 still may be vulnerable
 Log4j version `2.15.0` which was previously thought to be secure has been found to still have a [limited vulnerability](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f), 
-that could result in a DOS, users must update to `2.16.0`. 
+that could result in a DOS (but not RCE), users must update to `2.16.0`. 
 :::
 
 ### Option 2: Enable `formatMsgNoLookups`
 :::warning This flag does not prevent all vulnerabilities
-As of Dec 14, it's been found that this flag is ineffective at stopping RCE for certain non-default configurations,
-explained here [by log4j](https://logging.apache.org/log4j/2.x/security.html). 
+As of Dec 14, it's been found that this flag is ineffective at stopping RCE in some situations,
+explained here [by log4j](https://logging.apache.org/log4j/2.x/security.html). We are still investigating this vulnerability.
+
 You must update to `2.16.0` or use the JNDI patches below.
 :::
 The above release of log4j hardcodes the `formatMsgNoLookups` flag to true, ~~preventing the attack~~.  If you are using log4j
