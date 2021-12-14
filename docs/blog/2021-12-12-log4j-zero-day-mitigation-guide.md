@@ -261,6 +261,12 @@ Or you can set this using the JVM arguments environment variable.
 
 `JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true`
 
+#### Does not fix Thread Context Map Substitutions
+
+Apparently this Option's mitigations do not prevent user controlled context that is passed via ThreadContextMap/ctx (and possibly other [PropertySubstitutions](https://logging.apache.org/log4j/2.x/manual/configuration.html#PropertySubstitution)). See demonstration here https://github.com/kmindi/log4shell-vulnerable-app 
+
+E.g. if your pattern layout contains something like `${ctx:apiversion}` the exploit might still work, at least a DNS lookup is performed.
+
 ### Option 3: JNDI patch
 It's possible to [modify the JNDI in place](https://news.ycombinator.com/item?id=29507263) to stop the attack at the language level.
 It can even be done while the server is running.  Please note this is a last resort, and should only be done if the above options aren't possible.
