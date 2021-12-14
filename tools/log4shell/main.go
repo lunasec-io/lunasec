@@ -20,6 +20,7 @@ import (
 	"github.com/lunasec-io/lunasec/tools/log4shell/patch"
 	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
+	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
@@ -40,8 +41,8 @@ func enableGlobalFlags(c *cli.Context) {
 		log.Logger = log.With().Caller().Logger()
 	}
 
-	json := c.Bool("json")
-	if !json {
+	jsonFlag := c.Bool("json")
+	if !jsonFlag {
 		// pretty print output to the console if we are not interested in parsable output
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}
@@ -95,6 +96,10 @@ func hotpatchCommand(c *cli.Context) error {
 
 	hotpatchServer.Start()
 	hotpatchPayloadServer.Start()
+
+	util.WaitForProcessExit(func() {
+		hotpatchServer.Stop()
+	})
 
 	return nil
 }

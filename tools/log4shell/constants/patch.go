@@ -16,5 +16,5 @@ package constants
 
 const (
 	HotpatchServerPort = 8000
-	HotpatchJarFileName = "lunasec-log4shell-hotpatch-1.0.jar"
+	HotpatchJarFileName = "log4shell-hotpatch-1.0.jar"
 )
