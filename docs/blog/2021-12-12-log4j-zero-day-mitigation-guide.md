@@ -255,7 +255,8 @@ that could result in a DOS (but not RCE), users must update to `2.16.0`.
 :::warning This flag does not prevent all vulnerabilities
 As of Dec 14, it's been found that this flag is ineffective at stopping RCE in some situations,
 explained here [by log4j](https://logging.apache.org/log4j/2.x/security.html) and in
-[CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046). We are still investigating this vulnerability.
+[CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046). We found the CVE wording confusing and
+are still investigating this vulnerability.
 
 You must update to `2.16.0` or use the JNDI patches below.
 :::
