@@ -54,7 +54,7 @@ earlier blog post](https://www.lunasec.io/docs/blog/log4j-zero-day/).
 :::
 <!--truncate-->
 
-_Originally Posted @ December 12th & Last Updated @ December 14th, 4:43pm PST_
+_Originally Posted @ December 12th & Last Updated @ December 14th, 7:37pm PST_
 
 ## Be careful what Log4Shell advice you trust online
 
@@ -80,7 +80,7 @@ It works by scanning for hashes of [known vulnerable log4j classes](https://gith
 If you have a vulnerable version of a log4j in your built Java project, the hash will match a one
 of the hashes in the list.
 
-**[Download from GitHub](https://github.com/lunasec-io/lunasec/releases/tag/v1.0.0-log4shell)**
+**[Download from GitHub](https://github.com/lunasec-io/lunasec/releases/)**
 
 _Make sure you download the right version for your Operating System and CPU architecture._ Once downloaded, you can extract
 it and run the `log4shell` command in your terminal.  The tool can scan individual files or whole directories.
@@ -301,7 +301,7 @@ Because of the extensive control Log4Shell gives an attacker, it's actually poss
 This isn't the recommended strategy for various reasons, but it could be a last resort for systems that you can't easily restart or modify.  Note that doing this on a system 
 you don't have permission to is most likely illegal. The fix will only work until the server (or the JVM) is restarted.
 
-**Update:** We have added this functionality to the [latest release](https://github.com/lunasec-io/lunasec/releases/tag/v1.1.0-log4shell) of our Log4Shell CLI tool.
+**Update:** We have added this functionality to the [latest release](https://github.com/lunasec-io/lunasec/releases) of our Log4Shell CLI tool.
 
 You may also use our hosted version here to patch yourself:
 ```
@@ -465,3 +465,4 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 4. Add warnings about limited vuln in 2.15 / noMsgFormatLookups
 5. Add additional disclaimer about %m.
 6. Added link to 2nd CVE info.
+7. Added info about hot patching, and links to new releases.
