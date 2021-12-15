@@ -37,6 +37,8 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
+**Also read: Our analysis of [CVE-2021-45046](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046) (a second log4j vulnerability)**
+
 A few days ago, a serious new vulnerability was identified in Apache log4j v2 and published as 
 [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=2021-44228). 
 We were one of the first security companies to write about it, and we named it "Log4Shell".
@@ -51,6 +53,8 @@ If you're just trying to understand the Log4Shell vulnerability and the impact o
 earlier blog post](https://www.lunasec.io/docs/blog/log4j-zero-day/).
 :::
 <!--truncate-->
+
+_Originally Posted @ December 12th & Last Updated @ December 14th, 4:43pm PST_
 
 ## Be careful what Log4Shell advice you trust online
 
@@ -355,24 +359,29 @@ may be nested. (See [this GitHub](https://github.com/Puliczek/CVE-2021-44228-PoC
 If you are using a vulnerable version of log4j, the only secure way to mitigate Log4Shell is through one of the
 strategies detailed above.
 
-### Updating individual log statements isn't a complete fix
+### Updating the log statement format with `%m{nolookupzz}` is not advisable
 
 _This only applies to log4j versions `>= 2.7.0`, older versions don't support it_
 
+:::warning
+In addition to the below issues with this strategy, this mitigation may be bypassed in certain scenarios and still allows for RCE (see
+[our dedicated post](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046)
+about it), and this has been entirely [removed](https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternMethod)
+in log4j 2.16.0 and newer.
+:::
+
 Some people online are suggesting updating your logging statements from `%m` to `%m{nolookupzz}` to mitigate this**.
 
-_ The string is intentionally wrong here to prevent blind copy-pasting._
+_The string is intentionally wrong here to prevent blind copy-pasting._
 
 We do not recommend you follow this strategy.  Even if you manage to patch your application 100%
 today, you will still likely accidentally add a `%m` again in the future and _then you will be vulnerable again_.
 
-In addition, it's possible to miss a line in your logging statements or if have a dependency that
+In addition, it's possible to miss a line in your logging statements, or have a dependency that
 is using log4j with `%m` without you realizing. If either happens _you will still be vulnerable_.
 
 We're strong advocates of a "[Secure by Default](#what-is-secure-by-default)" mentality with software, and we
 recommend you follow one of the other mitigations instead.
-
-
 
 ### Resources
 
@@ -402,7 +411,7 @@ infrastructure. (Note: It's a new tool, so it might have bugs. Please file an is
 
 ### Stay In The Loop
 
-If you're currently dealing with Log4Shell and you'd like to stay updated, please follow us on 
+If you're currently dealing with Log4Shell and would like to stay updated, please follow us on
 [Twitter](https://twitter.com/LunaSecIO) or subscribe below to receive security updates as we post them.
 
 import ContactForm from '../src/components/ContactForm.jsx'
@@ -411,7 +420,7 @@ import ContactForm from '../src/components/ContactForm.jsx'
 
 #### Limited Offer: Free Security Assistance
 
-We're also currently offering a free 30 minute consulation with one of our Security Engineers. If you're interested,
+We're also currently offering a free 30-minute consultation with one of our Security Engineers. If you're interested,
 please [book some time with us here](https://lunasec.youcanbook.me/).
 
 ## Stay Strong!
@@ -435,7 +444,7 @@ We're continuously keeping this post up-to-date as new information comes out. If
 confused about our advice, please [file an Issue](https://github.com/lunasec-io/lunasec/issues) on GitHub.
 
 If you would like to contribute, or notice any errors, this post is an Open Source Markdown file on
-[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-12-log4j-zero-day-mitigation-guide.md).
+[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-12-log4j-zero-day-mitigation-guide.mdx).
 :::
 
 
@@ -443,3 +452,5 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 2. Added social links.
 3. Reworked some content. Added more options for mitigation. 
 4. Add warnings about limited vuln in 2.15 / noMsgFormatLookups
+5. Add additional disclaimer about %m.
+6. Added link to 2nd CVE info.
