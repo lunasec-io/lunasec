@@ -96,7 +96,7 @@ func scanArchive(path string, file *zip.File, onlyScanArchives bool) (findings [
 	archiveReader := bytes.NewReader(buffer)
 	archiveSize := int64(len(buffer))
 
-	return scanArchiveForVulnerableFiles(newPath, archiveReader, archiveSize, onlyScanArchives)
+	return SearchArchiveForVulnerableFiles(newPath, archiveReader, archiveSize, onlyScanArchives)
 }
 
 func scanFile(path string, file *zip.File, onlyScanArchives bool) (findings []types.Finding) {
@@ -125,7 +125,8 @@ func scanFile(path string, file *zip.File, onlyScanArchives bool) (findings []ty
 	return
 }
 
-func scanArchiveForVulnerableFiles(path string, reader io.ReaderAt, size int64, onlyScanArchives bool) (findings []types.Finding) {
+// SearchArchiveForVulnerableFiles Takes in a given JAR or WAR file and searches it for findings.
+func SearchArchiveForVulnerableFiles(path string, reader io.ReaderAt, size int64, onlyScanArchives bool) (findings []types.Finding) {
 	zipReader, err := zip.NewReader(reader, size)
 	if err != nil {
 		log.Warn().
@@ -157,7 +158,7 @@ func scanLocatedArchive(path string, info os.FileInfo, onlyScanArchives bool) (f
 	}
 	defer file.Close()
 
-	return scanArchiveForVulnerableFiles(path, file, info.Size(), onlyScanArchives)
+	return SearchArchiveForVulnerableFiles(path, file, info.Size(), onlyScanArchives)
 }
 
 // SearchDirsForVulnerableClassFiles walks each search dir looking for .class files in archives which have a hash

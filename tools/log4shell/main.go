@@ -78,7 +78,7 @@ func scanCommand(c *cli.Context) error {
 	return nil
 }
 
-func hotpatchCommand(c *cli.Context) error {
+func hotPatchCommand(c *cli.Context) error {
 	enableGlobalFlags(c)
 
 	ip := c.String("ip")
@@ -100,6 +100,38 @@ func hotpatchCommand(c *cli.Context) error {
 	util.WaitForProcessExit(func() {
 		hotpatchServer.Stop()
 	})
+
+	return nil
+}
+
+func jarPatchCommand(c *cli.Context) error {
+	enableGlobalFlags(c)
+
+	fileName := c.String("file-name")
+
+	if fileName == "" {
+		log.Info().Msg("Public IP not provided. Binding to the local network interface.")
+		panic("must specify a valid file name to patch")
+	}
+
+	file, err := os.Open(path)
+	if err != nil {
+		log.Warn().
+			Str("path", path).
+			Err(err).
+			Msg("unable to open archive")
+		panic("unable to open specified file")
+	}
+
+	fileInfo, err := file.Stat()
+
+	if err != nil {
+		panic("unable to read file info")
+	}
+
+	findings := scan.SearchArchiveForVulnerableFiles(fileName, file, fileInfo.Size(), false)
+
+	// TODO: Do something with these findings to actually patch them in-place. Either that or add the patching to `SearchArchiveForVulnerableFiles` above.
 
 	return nil
 }
@@ -164,16 +196,28 @@ func main() {
 				Action: scanCommand,
 			},
 			{
-				Name:    "hotpatch",
+				Name:    "in-memory-hot-patch",
 				Aliases: []string{"s"},
-				Usage:   "Perform a live hotpatch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.",
+				Usage:   "Perform a live hot patch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:  "ip",
 						Usage: "If testing locally, set this to a local network interface (view available interfaces with ifconfig/ipconfig). If using on a remote server, set this value to the publicly accessible IP address of the server.",
 					},
 				},
-				Action: hotpatchCommand,
+				Action: hotPatchCommand,
+			},
+			{
+				Name:    "patch-local-jar",
+				Aliases: []string{"s"},
+				Usage:   "Patches a specified JAR or WAR file against log4shell by injecting a fixed version of the vulnerable code into vulnerable log4j instances found within it.",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "file-name",
+						Usage: "Patches the specified file (must be a valid JAR or WAR file).",
+					},
+				},
+				Action: jarPatchCommand,
 			},
 		},
 	}
