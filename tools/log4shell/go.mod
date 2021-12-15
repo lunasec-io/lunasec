@@ -3,10 +3,10 @@ module github.com/lunasec-io/lunasec/tools/log4shell
 go 1.17
 
 require (
+	github.com/breadchris/ldapserver v1.1.0
 	github.com/lor00x/goldap v0.0.0-20180618054307-a546dffdd1a3
 	github.com/rs/zerolog v1.26.0
 	github.com/urfave/cli/v2 v2.3.0
-	github.com/vjeantet/ldapserver v1.0.1
 )
 
 require (

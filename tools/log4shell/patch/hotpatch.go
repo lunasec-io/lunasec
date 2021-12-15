@@ -23,7 +23,7 @@ import (
 )
 
 import (
-	"github.com/vjeantet/ldapserver"
+	"github.com/breadchris/ldapserver"
 )
 
 type Log4ShellLDAPServer interface {
@@ -59,7 +59,7 @@ func (s *HotpatchLDAPServer) Start() {
 
 		log.Info().
 			Str("addr", addr).
-			Msg("Started hotpatch server")
+			Msg("Started live patch server")
 
 		defer func() {
 			if err := recover(); err != nil {
@@ -76,7 +76,7 @@ func (s *HotpatchLDAPServer) Start() {
 				Msg("unable to start ldap server")
 			panic(err)
 		}
-		log.Info().Msg("LivePatch Server Started")
+		log.Info().Msg("Live Patch Server Started")
 	}()
 }
 

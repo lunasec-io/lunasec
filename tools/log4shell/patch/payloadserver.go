@@ -89,7 +89,7 @@ func (s *HotpatchPayloadServer) Start() {
 
 		log.Info().
 			Str("addr", addr).
-			Msg("Started hotpatch payload server")
+			Msg("Started live patch payload server")
 
 		err := http.ListenAndServe(addr, nil)
 		if err != nil {
