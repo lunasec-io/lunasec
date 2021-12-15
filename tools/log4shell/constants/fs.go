@@ -17,5 +17,6 @@ package constants
 const (
 	JarFileExt   = ".jar"
 	WarFileExt   = ".war"
+	ZipFileExt   = ".zip"
 	ClassFileExt = ".class"
 )
