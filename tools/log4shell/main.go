@@ -121,7 +121,7 @@ func livePatchCommand(c *cli.Context) error {
 	hotpatchPayloadServer := patch.NewHotpatchPayloadServer(payloadServerPort, hotpatchFiles, payload)
 
 	log.Info().
-		Msg("Starting Log4Shell hotpatch LDAP and payload servers")
+		Msg("Starting Log4Shell live patch LDAP and payload servers")
 	log.Info().
 		Msgf("Once both servers have started, use payload string: '%s' to hotpatch your servers.", payload)
 
