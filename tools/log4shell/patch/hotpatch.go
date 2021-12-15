@@ -61,6 +61,14 @@ func (s *HotpatchLDAPServer) Start() {
 			Str("addr", addr).
 			Msg("Started hotpatch server")
 
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().
+					Err(err.(error)).
+					Msg("ldap client panic recovered")
+			}
+		}()
+
 		err := s.server.ListenAndServe(addr)
 		if err != nil {
 			log.Error().
@@ -68,7 +76,7 @@ func (s *HotpatchLDAPServer) Start() {
 				Msg("unable to start ldap server")
 			panic(err)
 		}
-		log.Info().Msg("HotPatch Server Started")
+		log.Info().Msg("LivePatch Server Started")
 	}()
 }
 
@@ -82,7 +90,7 @@ func (s *HotpatchLDAPServer) createSearchResultEntry(req ldapmsg.SearchRequest) 
 	payloadClassName := ldapmsg.AttributeValue("Log4ShellHotpatch")
 
 	payloadDescription := fmt.Sprintf(
-		"attempting to patch Log4Shell vulnerability with payload hosted on: %s/%s.class",
+		"attempting to patch Log4Shell vulnerability with payload hosted on: %s%s.class",
 		resolvedJNDICodebase,
 		payloadClassName,
 	)

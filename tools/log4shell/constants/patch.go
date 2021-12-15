@@ -15,8 +15,7 @@
 package constants
 
 const (
-	DefaultLDAPServerHost = "localhost"
 	DefaultLDAPServerPort = 1389
 
-	DefaultPayloadUrl = "http://localhost:8000"
+	DefaultPayloadUrl = "http://localhost:8000/"
 )

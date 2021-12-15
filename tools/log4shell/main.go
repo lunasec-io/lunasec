@@ -84,7 +84,7 @@ func scanCommand(c *cli.Context) error {
 	return nil
 }
 
-func hotpatchCommand(c *cli.Context) error {
+func livePatchCommand(c *cli.Context) error {
 	enableGlobalFlags(c)
 
 	payloadUrl := c.String("payload-url")
@@ -195,9 +195,9 @@ func main() {
 				Action: scanCommand,
 			},
 			{
-				Name:    "hotpatch",
+				Name:    "livepatch",
 				Aliases: []string{"s"},
-				Usage:   "Perform a live hotpatch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.",
+				Usage:   "Perform a live patch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:  "payload-url",
@@ -212,7 +212,7 @@ func main() {
 						Usage: "The port for the Log4Shell LDAP server.",
 					},
 				},
-				Action: hotpatchCommand,
+				Action: livePatchCommand,
 			},
 		},
 	}
