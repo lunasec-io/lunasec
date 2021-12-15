@@ -287,32 +287,41 @@ Or you can set this using the JVM arguments environment variable.
 
 ### Option 3: JNDI patch
 It's possible to [modify the JNDI in place](https://news.ycombinator.com/item?id=29507263) to stop the attack at the language level.
-It can even be done while the server is running.  Please note this is a last resort, and should only be done if the above options aren't possible.
+It can even be done while the server is running.
 
 The easy-to-use tool [Log4jHotPatch](https://github.com/corretto/hotpatch-for-apache-log4j2) will apply the JNDI patch automatically.
 
-For those using Kubernetes that can't perform any of the above mitigations, a new feature called "Ephemeral Containers" allows applying the hot patch
-to a running container. This could be useful for containerized vendor software.
 [This guide](https://medium.com/@edeNFed/patching-log4shell-in-one-command-without-downtime-using-ephemeral-containers-c69a9155ab1e) 
-explains how to apply the patch.
+explains how to apply the patch to Kubernetes services using "Ephemeral Containers".
 
-### Option 4: Remote hot patch (for live servers)
+:::info
+If you need a long-term solution for patching vendor software, please check out our commercial
+[Live Patch service](https://www.lunasec.io/pages/live-dependency-patching) to mitigate Log4Shell _and_ the next
+0-day vulnerability automatically.
+:::
+
+### Option 4: Remote live patch for servers
 Because of the extensive control Log4Shell gives an attacker, it's actually possible to use the bug against itself to patch a running server.
 This isn't the recommended strategy for various reasons, but it could be a last resort for systems that you can't easily restart or modify.  Note that doing this on a system 
 you don't have permission to is most likely illegal. The fix will only work until the server (or the JVM) is restarted.
 
-**Update:** We have added this functionality to the [latest release](https://github.com/lunasec-io/lunasec/releases) of our Log4Shell CLI tool.
-
-You may also use our hosted version here to patch yourself:
+You use our hosted version here to patch yourself:
 ```
 ${jndi:ldap://hotpatch.log4shell.com:1389/a}
 ```
 
 Just simply paste that anywhere into your server where you're vulnerable, and it will work. (For example, in the `main` function when you start up your server)
 
+We have added this functionality to the [latest release](https://github.com/lunasec-io/lunasec/releases) of our
+Log4Shell CLI tool if you'd prefer to run the server yourself instead.
+
 :::warning Not permanent solution!
 
-Please do not rely on this forever (in case our site ever goes down). This should only be used as a stop-gap solution until you can apply a more permanent patch for Log4Shell.
+Please do not rely on this forever (in case our site ever goes down). This should only be used as a stop-gap solution
+until you can apply a more permanent patch for Log4Shell.
+
+If you need a permanent solution for Log4Shell, please check out our commercial
+[Live Patch service](https://www.lunasec.io/pages/live-dependency-patching) for a production-ready alternative.
 :::
 
 How it works and how to accomplish it manually is explained in [this guide](https://github.com/Cybereason/Logout4Shell). Our implementation is based on the work they did.
@@ -466,3 +475,4 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 5. Add additional disclaimer about %m.
 6. Added link to 2nd CVE info.
 7. Added info about hot patching, and links to new releases.
+8. Update info about patching strategies.
