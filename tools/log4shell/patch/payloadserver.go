@@ -29,14 +29,16 @@ type PayloadServer interface {
 }
 
 type HotpatchPayloadServer struct {
+	remotePayloadUrl string
 	port int64
 	payloadFiles embed.FS
 	payloadUrl string
 	payload string
 }
 
-func NewHotpatchPayloadServer(port int64, payloadFiles embed.FS, payload string) PayloadServer {
+func NewHotpatchPayloadServer(remotePayloadUrl string, port int64, payloadFiles embed.FS, payload string) PayloadServer {
 	return &HotpatchPayloadServer{
+		remotePayloadUrl: remotePayloadUrl,
 		port: port,
 		payloadFiles: payloadFiles,
 		payloadUrl: "/Log4ShellHotpatch.class",
@@ -89,6 +91,7 @@ func (s *HotpatchPayloadServer) Start() {
 
 		log.Info().
 			Str("addr", addr).
+			Str("remotePayloadUrl", s.remotePayloadUrl).
 			Msg("Started live patch payload server")
 
 		err := http.ListenAndServe(addr, nil)
