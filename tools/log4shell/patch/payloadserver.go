@@ -67,7 +67,7 @@ func (s *HotpatchPayloadServer) Start() {
 		addr := fmt.Sprintf("0.0.0.0:%d", constants.HotpatchServerPort)
 		log.Info().
 			Str("addr", addr).
-			Msg("starting hotpatch payload server")
+			Msg("Started hotpatch payload server")
 		err := http.ListenAndServe(addr, nil)
 		if err != nil {
 			log.Error().
