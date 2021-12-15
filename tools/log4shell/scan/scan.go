@@ -37,18 +37,21 @@ func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, 
 		return
 	}
 
-	if versionInfo, ok := hashLookup[fileHash]; ok {
+	if vulnerableHash, ok := hashLookup[fileHash]; ok {
 		log.Info().
-			Str("fileName", fileName).
+			Str("severity", vulnerableHash.Severity).
 			Str("path", path).
-			Str("versionInfo", versionInfo).
+			Str("fileName", fileName).
+			Str("versionInfo", vulnerableHash.Name).
+			Str("cve", vulnerableHash.CVE).
 			Msg("identified vulnerable path")
 
 		finding = &types.Finding{
 			Path:        path,
 			FileName:    fileName,
 			Hash:        fileHash,
-			VersionInfo: versionInfo,
+			VersionInfo: vulnerableHash.Name,
+			CVE:         vulnerableHash.CVE,
 		}
 		return
 	}
