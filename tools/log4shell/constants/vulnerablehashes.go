@@ -61,20 +61,20 @@ var KnownVulnerableClassFileHashes = types.VulnerableHashLookup{
 	"9a54a585ed491573e80e0b32e964e5eb4d6c4068d2abffff628e3c69ef9102cf": { Name:"log4j 2.0-beta5", Severity: "10.0" },                // MessagePatternConverter.class
 	"357120b06f61475033d152505c3d43a57c9a9bdc05b835d0939f1662b48fc6c3": { Name:"log4j 2.0-beta6/beta7/beta8", Severity: "10.0" },    // MessagePatternConverter.class
 
-	"6adb3617902180bdf9cbcfc08b5a11f3fac2b44ef1828131296ac41397435e3d": { Name:"log4j 1.2.4", Severity: "10.0" },          // SocketNode.class
-	"3ef93e9cb937295175b75182e42ba9a0aa94f9f8e295236c9eef914348efeef0": { Name:"log4j 1.2.6-1.2.9", Severity: "10.0" },    // SocketNode.class
-	"bee4a5a70843a981e47207b476f1e705c21fc90cb70e95c3b40d04a2191f33e9": { Name:"log4j 1.2.8", Severity: "10.0" },          // SocketNode.class
-	"7b996623c05f1a25a57fb5b43c519c2ec02ec2e647c2b97b3407965af928c9a4": { Name:"log4j 1.2.15", Severity: "10.0" },         // SocketNode.class
-	"688a3dadfb1c0a08fb2a2885a356200eb74e7f0f26a197d358d74f2faf6e8f46": { Name:"log4j 1.2.16", Severity: "10.0" },         // SocketNode.class
-	"8ef0ebdfbf28ec14b2267e6004a8eea947b4411d3c30d228a7b48fae36431d74": { Name:"log4j 1.2.17", Severity: "10.0" },         // SocketNode.class
-	"d778227b779f8f3a2850987e3cfe6020ca26c299037fdfa7e0ac8f81385963e6": { Name:"log4j 1.2.11", Severity: "10.0" },         // SocketNode.class
-	"ed5d53deb29f737808521dd6284c2d7a873a59140e702295a80bd0f26988f53a": { Name:"log4j 1.2.5", Severity: "10.0" },          // SocketNode.class
-	"f3b815a2b3c74851ff1b94e414c36f576fbcdf52b82b805b2e18322b3f5fc27c": { Name:"log4j 1.2.12", Severity: "10.0" },         // SocketNode.class
-	"fbda3cfc5853ab4744b853398f2b3580505f5a7d67bfb200716ef6ae5be3c8b7": { Name:"log4j 1.2.13-1.2.14", Severity: "10.0" },  // SocketNode.class
+	"6adb3617902180bdf9cbcfc08b5a11f3fac2b44ef1828131296ac41397435e3d": { Name:"log4j 1.2.4", Severity: "9.8" },          // SocketNode.class
+	"3ef93e9cb937295175b75182e42ba9a0aa94f9f8e295236c9eef914348efeef0": { Name:"log4j 1.2.6-1.2.9", Severity: "9.8" },    // SocketNode.class
+	"bee4a5a70843a981e47207b476f1e705c21fc90cb70e95c3b40d04a2191f33e9": { Name:"log4j 1.2.8", Severity: "9.8" },          // SocketNode.class
+	"7b996623c05f1a25a57fb5b43c519c2ec02ec2e647c2b97b3407965af928c9a4": { Name:"log4j 1.2.15", Severity: "9.8" },         // SocketNode.class
+	"688a3dadfb1c0a08fb2a2885a356200eb74e7f0f26a197d358d74f2faf6e8f46": { Name:"log4j 1.2.16", Severity: "9.8" },         // SocketNode.class
+	"8ef0ebdfbf28ec14b2267e6004a8eea947b4411d3c30d228a7b48fae36431d74": { Name:"log4j 1.2.17", Severity: "9.8" },         // SocketNode.class
+	"d778227b779f8f3a2850987e3cfe6020ca26c299037fdfa7e0ac8f81385963e6": { Name:"log4j 1.2.11", Severity: "9.8" },         // SocketNode.class
+	"ed5d53deb29f737808521dd6284c2d7a873a59140e702295a80bd0f26988f53a": { Name:"log4j 1.2.5", Severity: "9.8" },          // SocketNode.class
+	"f3b815a2b3c74851ff1b94e414c36f576fbcdf52b82b805b2e18322b3f5fc27c": { Name:"log4j 1.2.12", Severity: "9.8" },         // SocketNode.class
+	"fbda3cfc5853ab4744b853398f2b3580505f5a7d67bfb200716ef6ae5be3c8b7": { Name:"log4j 1.2.13-1.2.14", Severity: "9.8" },  // SocketNode.class
 	// The following shas for version 2.15 detect a valid but lower level of severity vulnerability, CVE  CVE-2021-45046
-	"84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f" :{ Name:"log4j 2.15.0", Severity: "3.7" },			// JNDILookup.class
-	"db07ef1ea174e000b379732681bd835cfede648a7971bf4e9a0d31981582d69e" :{ Name:"log4j 2.15.0", Severity: "3.7" },			// JNDIManager.class
-	"5bfbecc21f5de442035c0361c994c379a4f6b5adb280c66e43256c6f09346bd1"	:{ Name:"log4j 2.15.0", Severity: "3.7" },			// MessagePatternConverter.class
+	"84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f" :{ Name:"log4j 2.15.0", Severity: "3.7" },	// JNDILookup.class
+	"db07ef1ea174e000b379732681bd835cfede648a7971bf4e9a0d31981582d69e" :{ Name:"log4j 2.15.0", Severity: "3.7" },	// JNDIManager.class
+	"5bfbecc21f5de442035c0361c994c379a4f6b5adb280c66e43256c6f09346bd1" :{ Name:"log4j 2.15.0", Severity: "3.7" },	// MessagePatternConverter.class
 
 }
 
