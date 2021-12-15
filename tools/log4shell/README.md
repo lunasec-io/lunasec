@@ -24,6 +24,7 @@ docker run --network=host log4shell
 
 or 
 
+Make sure you have Maven installed, then:
 ```
 ./build-payload.sh && go build . && ./log4shell
 ```
