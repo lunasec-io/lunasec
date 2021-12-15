@@ -1,12 +1,5 @@
 FROM lunasec/precached-dependencies:v1.0.0 as lerna-bootstrap
 
-ENV NODE_OPTIONS "--unhandled-rejections=strict"
-ENV CI "true"
-
-RUN apk add --no-cache sqlite jq nodejs npm bash curl
-
-RUN npm install -g yarn
-
 COPY . /repo
 
 WORKDIR /repo
