@@ -25,7 +25,7 @@ func ParseHostAndPortFromUrlString(urlStr string) (host string, port int64, err 
 		return
 	}
 
-	host = parsedUrl.Host
+	host = parsedUrl.Hostname()
 	port, err = strconv.ParseInt(parsedUrl.Port(), 10, 0)
 	return
 }
