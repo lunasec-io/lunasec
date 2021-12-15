@@ -18,8 +18,9 @@ import (
 	"embed"
 	"fmt"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
+	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/rs/zerolog/log"
-	"io"
+	"html/template"
 	"net/http"
 )
 
@@ -28,14 +29,18 @@ type PayloadServer interface {
 }
 
 type HotpatchPayloadServer struct {
+	port int64
 	payloadFiles embed.FS
 	payloadUrl string
+	payload string
 }
 
-func NewHotpatchPayloadServer(payloadFiles embed.FS) PayloadServer {
+func NewHotpatchPayloadServer(port int64, payloadFiles embed.FS, payload string) PayloadServer {
 	return &HotpatchPayloadServer{
+		port: port,
 		payloadFiles: payloadFiles,
 		payloadUrl: "/Log4ShellHotpatch.class",
+		payload: payload,
 	}
 }
 
@@ -58,16 +63,34 @@ func (s *HotpatchPayloadServer) Start() {
 	httpFS := http.FS(s.payloadFiles)
 	fileServer := http.FileServer(httpFS)
 
+	landingPageTemplate, err := template.New("landing-page").Parse(constants.PayloadLandingPage)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("Unable to parse landing page template")
+		return
+	}
+
+	landingPageVars := types.LandingPage{
+		Payload: s.payload,
+	}
+
 	http.Handle(s.payloadUrl, WithLogging(fileServer))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "Log4Shell Hotpatch service provided by LunaSec. To understand more about this vulnerability please refer to <a href=\"https://log4shell.com\">log4shell.com</a>.")
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		err = landingPageTemplate.Execute(w, landingPageVars)
+		if err != nil {
+			log.Error().Err(err).Msg("Unable to template landing page")
+		}
 	})
 
 	go func() {
-		addr := fmt.Sprintf("0.0.0.0:%d", constants.HotpatchServerPort)
+		addr := fmt.Sprintf("0.0.0.0:%d", s.port)
+
 		log.Info().
 			Str("addr", addr).
 			Msg("starting hotpatch payload server")
+
 		err := http.ListenAndServe(addr, nil)
 		if err != nil {
 			log.Error().

@@ -17,7 +17,6 @@ package patch
 import (
 	"fmt"
 	ldapmsg "github.com/lor00x/goldap/message"
-	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	golog "log"
@@ -33,18 +32,16 @@ type Log4ShellLDAPServer interface {
 }
 
 type HotpatchLDAPServer struct {
-	ipAddress string
+	port int
+	payloadServerUrl string
 	server *ldapserver.Server
 }
 
-func NewHotpatchLDAPServer(ipAddress string) Log4ShellLDAPServer {
+func NewHotpatchLDAPServer(port int, payloadServerUrl string) Log4ShellLDAPServer {
 	return &HotpatchLDAPServer{
-		ipAddress: ipAddress,
+		port: port,
+		payloadServerUrl: payloadServerUrl,
 	}
-}
-
-func (s *HotpatchLDAPServer) hotpatchCodebaseUrl() string {
-	return fmt.Sprintf("http://%s:%d/", s.ipAddress, constants.HotpatchServerPort)
 }
 
 func (s *HotpatchLDAPServer) Start() {
@@ -58,10 +55,12 @@ func (s *HotpatchLDAPServer) Start() {
 	s.server.Handle(routes)
 
 	go func() {
-		addr := "0.0.0.0:1389"
+		addr := fmt.Sprintf("0.0.0.0:%d", s.port)
+
 		log.Info().
 			Str("addr", addr).
 			Msg("starting hotpatch server")
+
 		err := s.server.ListenAndServe(addr)
 		if err != nil {
 			log.Error().
@@ -77,7 +76,7 @@ func (s *HotpatchLDAPServer) Stop() {
 }
 
 func (s *HotpatchLDAPServer) createSearchResultEntry(req ldapmsg.SearchRequest) ldapmsg.SearchResultEntry {
-	resolvedJNDICodebase := ldapmsg.AttributeValue(s.hotpatchCodebaseUrl())
+	resolvedJNDICodebase := ldapmsg.AttributeValue(s.payloadServerUrl)
 
 	e := ldapserver.NewSearchResultEntry("cn=log4shell-hotpatch, " + string(req.BaseObject()))
 	e.AddAttribute("cn", "log4shell-hotpatch")
