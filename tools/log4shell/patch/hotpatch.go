@@ -61,7 +61,7 @@ func (s *HotpatchLDAPServer) Start() {
 		addr := "0.0.0.0:1389"
 		log.Info().
 			Str("addr", addr).
-			Msg("starting hotpatch server")
+			Msg("Started hotpatch server")
 		err := s.server.ListenAndServe(addr)
 		if err != nil {
 			log.Error().
@@ -69,6 +69,7 @@ func (s *HotpatchLDAPServer) Start() {
 				Msg("unable to start ldap server")
 			panic(err)
 		}
+		log.Info().Msg("HotPatch Server Started")
 	}()
 }
 
