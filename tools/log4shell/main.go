@@ -118,7 +118,7 @@ func livePatchCommand(c *cli.Context) error {
 	payload := fmt.Sprintf("${jndi:ldap://%s:%d/a}", ldapHost, ldapPort)
 
 	hotpatchServer := patch.NewHotpatchLDAPServer(ldapPort, payloadUrl)
-	hotpatchPayloadServer := patch.NewHotpatchPayloadServer(payloadServerPort, hotpatchFiles, payload)
+	hotpatchPayloadServer := patch.NewHotpatchPayloadServer(payloadUrl, payloadServerPort, hotpatchFiles, payload)
 
 	log.Info().
 		Msg("Starting Log4Shell live patch LDAP and payload servers")
@@ -171,6 +171,10 @@ func main() {
 				Aliases: []string{"s"},
 				Usage:   "Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.",
 				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name:  "",
+						Usage: "",
+					},
 					&cli.BoolFlag{
 						Name:  "archives",
 						Usage: "Only scan for known vulnerable archives. By default the CLI will scan for class files which are known to be vulnerable which will result in higher signal findings. If you are specifically looking for vulnerable Java archive hashes, use this option.",
