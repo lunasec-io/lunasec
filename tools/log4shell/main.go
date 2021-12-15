@@ -45,7 +45,12 @@ func enableGlobalFlags(c *cli.Context) {
 	jsonFlag := c.Bool("json")
 	if !jsonFlag {
 		// pretty print output to the console if we are not interested in parsable output
-		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+		consoleOutput := zerolog.ConsoleWriter{Out: os.Stderr}
+		consoleOutput.FormatFieldName = func(i interface{}) string {
+			return fmt.Sprintf("\n\t%s: ", util.Colorize(constants.ColorBlue, i))
+		}
+		log.Logger = log.Output(consoleOutput)
+
 	}
 }
 
@@ -117,7 +122,7 @@ func hotpatchCommand(c *cli.Context) error {
 
 	log.Info().
 		Msg("Starting Log4Shell hotpatch LDAP and payload servers")
-
+	log.Info().Msgf("Once both servers have started, use payload string: '${jndi:ldap://%s:1389/a}' to hotpatch", ip)
 	hotpatchServer.Start()
 	hotpatchPayloadServer.Start()
 
