@@ -287,12 +287,11 @@ Or you can set this using the JVM arguments environment variable.
 
 ### Option 3: JNDI patch
 It's possible to [modify the JNDI in place](https://news.ycombinator.com/item?id=29507263) to stop the attack at the language level.
-It can even be done while the server is running.
-
-The easy-to-use tool [Log4jHotPatch](https://github.com/corretto/hotpatch-for-apache-log4j2) will apply the JNDI patch automatically.
+It can even be done while the server is running with tools like
+[Log4jHotPatch](https://github.com/corretto/hotpatch-for-apache-log4j2) (as a temporary mitigation before updating log4j).
 
 [This guide](https://medium.com/@edeNFed/patching-log4shell-in-one-command-without-downtime-using-ephemeral-containers-c69a9155ab1e) 
-explains how to apply the patch to Kubernetes services using "Ephemeral Containers".
+also explains how to apply the patch to Kubernetes services using "Ephemeral Containers" at runtime.
 
 :::info
 If you need a long-term solution for patching vendor software, please check out our commercial
