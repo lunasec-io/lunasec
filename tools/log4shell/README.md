@@ -13,3 +13,22 @@
 -->
 # Log4Shell
 
+A CLI tool for identifying and patching the Log4Shell vulnerability.
+
+## Usage
+
+```
+docker build . -t log4shell
+docker run --network=host log4shell
+```
+
+or 
+
+Make sure you have Maven installed, then:
+```
+./build-payload.sh && go build . && ./log4shell
+```
+
+## Releases
+
+Find the compiled tool for your OS [here](https://github.com/lunasec-io/lunasec/releases/).
