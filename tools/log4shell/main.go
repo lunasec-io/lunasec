@@ -16,6 +16,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/patch"
 	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
@@ -44,7 +45,14 @@ func enableGlobalFlags(c *cli.Context) {
 	jsonFlag := c.Bool("json")
 	if !jsonFlag {
 		// pretty print output to the console if we are not interested in parsable output
-		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+		consoleOutput := zerolog.ConsoleWriter{Out: os.Stderr}
+
+
+		consoleOutput.FormatFieldName = func(i interface{}) string {
+			return fmt.Sprintf("\n\t%s: ", util.Colorize(constants.ColorBlue, i))
+		}
+		log.Logger = log.Output(consoleOutput)
+
 	}
 }
 
