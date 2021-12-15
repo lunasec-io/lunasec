@@ -14,4 +14,19 @@
 //
 package constants
 
-const Version = "1.1.1"
+type TerminalColor int
+
+const (
+	ColorBlack TerminalColor = iota + 30
+	ColorRed
+	ColorGreen
+	ColorYellow
+	ColorBlue
+	ColorMagenta
+	ColorCyan
+	ColorWhite
+
+	ColorBold     = 1
+	ColorDarkGray = 90
+)
+
