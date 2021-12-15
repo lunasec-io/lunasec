@@ -362,7 +362,7 @@ strategies detailed above.
 _This only applies to log4j versions `>= 2.7.0`, older versions don't support it_
 
 :::warning
-This mitigation may be bypassed in certain scenarios and still allows for RCE (see
+In addition to the below issues with this strategy, this mitigation may be bypassed in certain scenarios and still allows for RCE (see
 [our dedicated post](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046)
 about it), and this has been entirely [removed](https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternMethod)
 in log4j 2.16.0 and newer.
@@ -375,7 +375,7 @@ _The string is intentionally wrong here to prevent blind copy-pasting._
 We do not recommend you follow this strategy.  Even if you manage to patch your application 100%
 today, you will still likely accidentally add a `%m` again in the future and _then you will be vulnerable again_.
 
-In addition, it's possible to miss a line in your logging statements, or if have a dependency that
+In addition, it's possible to miss a line in your logging statements, or have a dependency that
 is using log4j with `%m` without you realizing. If either happens _you will still be vulnerable_.
 
 We're strong advocates of a "[Secure by Default](#what-is-secure-by-default)" mentality with software, and we
