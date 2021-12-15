@@ -158,6 +158,11 @@ func scanLocatedArchive(path string, info os.FileInfo, onlyScanArchives bool) (f
 	}
 	defer file.Close()
 
+	finding := identifyPotentiallyVulnerableFile(file, path, file.Name(), constants.KnownVulnerableArchiveFileHashes)
+	if finding != nil {
+		return []types.Finding{*finding}
+	}
+
 	return scanArchiveForVulnerableFiles(path, file, info.Size(), onlyScanArchives)
 }
 
