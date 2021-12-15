@@ -42,7 +42,7 @@ func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, 
 			Str("path", path).
 			Str("fileName", fileName).
 			Str("versionInfo", vulnerableHash.Name).
-			Str("severity", vulnerableHash.Severity).
+			Str("cve", vulnerableHash.CVE).
 			Msg("identified vulnerable path")
 
 		finding = &types.Finding{
@@ -50,7 +50,7 @@ func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, 
 			FileName:    fileName,
 			Hash:        fileHash,
 			VersionInfo: vulnerableHash.Name,
-			Severity:	vulnerableHash.Severity,
+			CVE:         vulnerableHash.CVE,
 		}
 		return
 	}
