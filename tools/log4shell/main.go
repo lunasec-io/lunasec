@@ -85,16 +85,23 @@ func scanCommand(c *cli.Context) error {
 }
 
 func livePatchCommand(c *cli.Context) error {
+
 	enableGlobalFlags(c)
 
 	payloadUrl := c.String("payload-url")
 	ldapHost := c.String("ldap-host")
 	ldapPort := c.Int("ldap-port")
 
+	log.Info().Msg("LunaSec Log4Shell LivePatcher starting")
+	readMe :=  util.Colorize(constants.ColorRed, "Read our blog post about this tool and its risks")
+	blogLink := util.Colorize(constants.ColorBlue, "https://www.lunasec.io/docs/blog/log4shell-live-patch/")
+	log.Info().Msg(fmt.Sprintf("%s: %s", readMe, blogLink))
+
+
 	if payloadUrl == "" {
 		log.Info().
 			Str("defaultPayloadUrl", constants.DefaultPayloadUrl).
-			Msg("Payload URL not provided. Using the default payload url.")
+			Msg("Payload URL (the LDAP Payload Target) not provided. Using localhost")
 		payloadUrl = constants.DefaultPayloadUrl
 	}
 
@@ -205,7 +212,7 @@ func main() {
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:  "payload-url",
-						Usage: "The url for the payload server. This must be an accessible route from any targeted host. (ex. https://hotpatch.lunasec.com)",
+						Usage: "The URL that the LDAP server will tell the target to fetch the payload from. This must be an accessible route FROM any targeted host TO this patch server. (ex. https://hotpatch.lunasec.com)",
 					},
 					&cli.StringFlag{
 						Name:  "ldap-host",

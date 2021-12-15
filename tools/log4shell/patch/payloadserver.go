@@ -90,9 +90,9 @@ func (s *HotpatchPayloadServer) Start() {
 		addr := fmt.Sprintf("0.0.0.0:%d", s.port)
 
 		log.Info().
-			Str("addr", addr).
+			Str("localAddr", addr).
 			Str("remotePayloadUrl", s.remotePayloadUrl).
-			Msg("Started live patch payload server")
+			Msg("Started live patch payload server, visit this address in your browser to view instructions and warnings")
 
 		err := http.ListenAndServe(addr, nil)
 		if err != nil {
