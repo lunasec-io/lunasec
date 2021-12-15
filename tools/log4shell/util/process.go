@@ -12,16 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
+package util
 
-type Finding struct {
-	Path        string `json:"path"`
-	FileName    string `json:"file_name"`
-	Hash        string `json:"hash"`
-	VersionInfo string `json:"version_info"`
-	CVE         string `json:"cve"`
-}
+import (
+	"os"
+	"os/signal"
+	"syscall"
+)
 
-type FindingsOutput struct {
-	VulnerableLibraries []Finding `json:"vulnerable_libraries"`
+func WaitForProcessExit(callback func()) {
+	ch := make(chan os.Signal, 2)
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
+	<-ch
+	close(ch)
+	callback()
 }

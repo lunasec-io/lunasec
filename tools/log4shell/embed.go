@@ -12,16 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
+package main
 
-type Finding struct {
-	Path        string `json:"path"`
-	FileName    string `json:"file_name"`
-	Hash        string `json:"hash"`
-	VersionInfo string `json:"version_info"`
-	CVE         string `json:"cve"`
-}
+import "embed"
 
-type FindingsOutput struct {
-	VulnerableLibraries []Finding `json:"vulnerable_libraries"`
-}
+//go:embed Log4ShellHotpatch.class
+var hotpatchFiles embed.FS
