@@ -17,6 +17,20 @@ A CLI tool for identifying and patching the Log4Shell vulnerability.
 
 ## Usage
 
+Scan a directory for known vulnerable Log4j dependencies.
+
+```shell
+log4shell scan <dir>
+```
+
+Run a Live Patch server.
+
+```shell
+log4shell livepatch
+```
+
+## Building
+
 ```
 docker build . -t log4shell
 docker run --network=host log4shell
