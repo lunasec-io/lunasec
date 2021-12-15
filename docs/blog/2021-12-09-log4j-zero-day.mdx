@@ -3,7 +3,7 @@ title: "Log4Shell: RCE 0-day exploit found in log4j 2, a popular Java logging pa
 description: Given how ubiquitous log4j is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
 slug: log4j-zero-day
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
-date: 2021-12-14
+date: 2021-12-12
 keywords: [log4shell, log4j, log4j2, rce, java, zero-day]
 authors:
 - name: Free Wortley
@@ -37,7 +37,10 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-**See Our Updated Mitigation Guide including our automated scanning tool**: https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide
+**Fixing Log4Shell? See Our [Updated Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide)
+including our automated scanning tool**
+
+**Also read: Our analysis of [CVE-2021-45046](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046) (a second log4j vulnerability)**
 
 ## What is it?
 On Thursday (December 9th), a 0-day exploit in the
@@ -276,8 +279,10 @@ methods are still prevalent.
 9. Updated example code to use Log4j2 syntax.
 10. Update title because of some confusion.
 11. Better DNS testing site and explanation
-12. Added link to the [Log4Shell Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
+12. Added link to the [Log4Shell Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).
 13. Add warnings about limited vuln in 2.15 / noMsgFormatLookups
+14. Added link to 2nd CVE.
+
 ### References
 
 [1] [JIRA LOG4J-2190](https://issues.apache.org/jira/browse/LOG4J2-2109)
