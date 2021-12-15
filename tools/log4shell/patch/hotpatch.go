@@ -79,12 +79,22 @@ func (s *HotpatchLDAPServer) Stop() {
 func (s *HotpatchLDAPServer) createSearchResultEntry(req ldapmsg.SearchRequest) ldapmsg.SearchResultEntry {
 	resolvedJNDICodebase := ldapmsg.AttributeValue(s.payloadServerUrl)
 
+	payloadClassName := ldapmsg.AttributeValue("Log4ShellHotpatch")
+
+	payloadDescription := fmt.Sprintf(
+		"attempting to patch Log4Shell vulnerability with payload hosted on: %s/%s.class",
+		resolvedJNDICodebase,
+		payloadClassName,
+	)
+
+	classNameAttribute := ldapmsg.AttributeValue(payloadDescription)
+
 	e := ldapserver.NewSearchResultEntry("cn=log4shell-hotpatch, " + string(req.BaseObject()))
 	e.AddAttribute("cn", "log4shell-hotpatch")
-	e.AddAttribute("javaClassName", "attempting to patch Log4Shell vulnerability...")
+	e.AddAttribute("javaClassName", classNameAttribute)
 	e.AddAttribute("javaCodeBase", resolvedJNDICodebase)
 	e.AddAttribute("objectclass", "javaNamingReference")
-	e.AddAttribute("javaFactory", "Log4ShellHotpatch")
+	e.AddAttribute("javaFactory", payloadClassName)
 	return e
 }
 

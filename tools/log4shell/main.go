@@ -122,7 +122,9 @@ func hotpatchCommand(c *cli.Context) error {
 
 	log.Info().
 		Msg("Starting Log4Shell hotpatch LDAP and payload servers")
-	log.Info().Msgf("Once both servers have started, use payload string: '${jndi:ldap://%s:1389/a}' to hotpatch", ip)
+	log.Info().
+		Msgf("Once both servers have started, use payload string: '%s' to hotpatch your servers.", payload)
+
 	hotpatchServer.Start()
 	hotpatchPayloadServer.Start()
 
