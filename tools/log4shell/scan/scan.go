@@ -161,7 +161,7 @@ func (s *Log4jDirectoryScanner) scanFile(
 			findings = []types.Finding{*finding}
 		}
 		return
-	case constants.JarFileExt, constants.WarFileExt:
+	case constants.JarFileExt, constants.WarFileExt, constants.ZipFileExt, constants.EarFileExt:
 		if s.onlyScanArchives {
 			finding := s.scanArchiveFile(path, file)
 			if finding != nil {
