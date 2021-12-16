@@ -55,7 +55,7 @@ func ScanCommand(c *cli.Context, log4jLibraryHashes []byte) (err error) {
 		Strs("directories", searchDirs).
 		Msg("scanning directories")
 
-	scanLog4j1 := c.Bool("scan-log4j1")
+	scanLog4j1 := c.Bool("include-log4j1")
 	onlyScanArchives := c.Bool("archives")
 	excludeDirs := c.StringSlice("exclude")
 	versionHashes := c.String("version-hashes")

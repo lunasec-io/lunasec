@@ -115,6 +115,23 @@ var KnownVulnerableArchiveFileHashes = types.VulnerableHashLookup{
 	"68d793940c28ddff6670be703690dfdf9e77315970c42c4af40ca7261a8570fa": { Name:"./apache-log4j-2.14.0-bin/log4j-core-2.14.0.jar", CVE: Log4ShellCve},
 	"9da0f5ca7c8eab693d090ae759275b9db4ca5acdbcfe4a63d3871e0b17367463": { Name:"./apache-log4j-2.14.1-bin/log4j-core-2.14.1.jar", CVE: Log4ShellCve},
 	"006fc6623fbb961084243cfc327c885f3c57f2eba8ee05fbc4e93e5358778c85": { Name:"./log4j-2.0-alpha1/log4j-core-2.0-alpha1.jar", CVE: Log4ShellCve},
+
 	// The following shas for version 2.15 detect a valid but lower level of severity vulnerability, CVE  CVE-2021-45046
-	"e7048ad52e3b6f1267b7ceb2c07200a5ce61271bcf59f98fd238bf60e4137932": { Name:"apache-log4j-2.15.0-bin/log4j-core.2.15.0.jar" , CVE: CtxCve},
-	}
+	"e7048ad52e3b6f1267b7ceb2c07200a5ce61271bcf59f98fd238bf60e4137932": { Name:"apache-log4j-2.15.0-bin/log4j-core.2.15.0.jar" , CVE: CtxCve },
+
+	"61dd97afffe2a162e1469b4b001469479e3b9896b9d44d93a7e5bd81511adb2d": { Name:"./elastic-apm-agent-1.17.0.jar", CVE: Log4ShellCve },
+	"75de6b484b1bc9000589d5d6c616401fed2633ff0a92e74899183023e681155a": { Name:"./elastic-apm-agent-1.18.0.jar", CVE: Log4ShellCve },
+	"89350af2a3fb3e27708a733eec6977b93b41ab5ed6151434efccbe7f7cd83519": { Name:"./elastic-apm-agent-1.18.0.RC1.jar", CVE: Log4ShellCve },
+	"9dc8b6ca5c91dc07ceccd07762e16bc952b210e371f9a45c36bac7b76545add2": { Name:"./elastic-apm-agent-1.18.1.jar.jar", CVE: Log4ShellCve },
+	"06dcd8e2bbe94598b06ca5dba1ba96e6f1186bb33fcc6fb5644fcbdf40a28da6": { Name:"./elastic-apm-agent-1.19.0.jar", CVE: Log4ShellCve },
+	"43f7e13f4871ec2499194bbbeefb434285fa4c0e66839f75b2b00275d1c31a3b": { Name:"./elastic-apm-agent-1.20.0.jar", CVE: Log4ShellCve },
+	"74ccc15ae88174f9bce6f21d25a56ec060faaa4e27ddfe9562d7ad5905c9ec02": { Name:"./elastic-apm-agent-1.21.0.jar", CVE: Log4ShellCve },
+	"17384e49174a6b6c8907df3529577ecae4b48508b7923292938c619aed97cdda": { Name:"./elastic-apm-agent-1.22.0.jar", CVE: Log4ShellCve },
+	"c7be5e9c35c4e80ec1fbcf8f559f0f5724d56c4b89cd72d7c7497198d764e119": { Name:"./elastic-apm-agent-1.23.0.jar", CVE: Log4ShellCve },
+	"e9ef0a51cab764d776fe55c40e549098e5068cd3c150e35e58a58c5d3ea20741": { Name:"./elastic-apm-agent-1.24.0.jar", CVE: Log4ShellCve },
+	"de137c124c9bb5ebae418c2407615619254b4666649e67ee9092fc73dfd1bfdd": { Name:"./elastic-apm-agent-1.25.0.jar", CVE: Log4ShellCve },
+	"ede259f672f6dd4e6ec95b5ae6031df4dcde1b5e269509faca532e48ad168d14": { Name:"./elastic-apm-agent-1.26.0.jar", CVE: Log4ShellCve },
+	"d9db632f4c86cd79b26c79d1ca651b2f4fc767cbf79d323916b08e0bea6fae71": { Name:"./elastic-apm-agent-1.27.0.jar", CVE: Log4ShellCve },
+	"7108d373b74565efaa226b445d3022feef6f6b2f025455f46d593df0afb68027": { Name:"./elastic-apm-agent-1.27.1.jar", CVE: Log4ShellCve },
+	"e00ced4dbf5e8a1ea3a2c43186a5c6f693b2285832dab16da0a0cbd17f0f1b91": { Name:"./elastic-apm-agent-1.28.0.jar", CVE: Log4ShellCve },
+}

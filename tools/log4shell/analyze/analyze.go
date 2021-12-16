@@ -45,31 +45,62 @@ func isVersionACVE202145046Version(semverVersion string) bool {
 	return false
 }
 
-func ProcessArchiveFile(reader io.Reader, filePath, fileName string) (finding *types.Finding) {
-	_, file := path.Split(filePath)
-	version := strings.TrimSuffix(file, path.Ext(file))
+func isVersionACVE201917571Version(semverVersion string) bool {
+	version, _ := semver.Make(semverVersion)
 
-	// small adjustments to the version so that it can be parsed as semver
-	semverVersion := strings.Replace(version, "log4j-core-", "", -1)
+	vulnerableRange, _ := semver.ParseRange(">=1.2.0 <1.2.17")
+	if vulnerableRange(version) {
+		return true
+	}
+	return false
+}
+
+func adjustMissingPatchVersion(semverVersion string) string {
 	if len(semverVersion) == 3 {
 		semverVersion += ".0"
 	}
 	if strings.HasPrefix(semverVersion, "2.0-") {
 		semverVersion = strings.Replace(semverVersion, "2.0-", "2.0.0-", -1)
 	}
+	if strings.HasPrefix(semverVersion, "1.0-") {
+		semverVersion = strings.Replace(semverVersion, "1.0-", "1.0.0-", -1)
+	}
+	return semverVersion
+}
+
+func ProcessArchiveFile(reader io.Reader, filePath, fileName string) (finding *types.Finding) {
+	_, file := path.Split(filePath)
+	version := strings.TrimSuffix(file, path.Ext(file))
+
+	// small adjustments to the version so that it can be parsed as semver
+	semverVersion := strings.Replace(version, "log4j-core-", "", -1)
+	semverVersion = strings.Replace(semverVersion, "logging-log4j-", "", -1)
+	semverVersion = strings.Replace(semverVersion, "jakarta-log4j-", "", -1)
+	semverVersion = strings.Replace(semverVersion, "log4j-", "", -1)
+
+	semverVersion = adjustMissingPatchVersion(semverVersion)
 
 	versionCve := ""
+
 	if isVersionALog4ShellVersion(semverVersion) {
 		if !strings.Contains(fileName, "JndiLookup.class") {
 			return
 		}
 		versionCve = constants.Log4ShellCve
 	}
+
 	if isVersionACVE202145046Version(semverVersion) {
 		if !strings.Contains(fileName, "JndiManager$JndiManagerFactory.class") {
 			return
 		}
 		versionCve = constants.CtxCve
+	}
+
+	if isVersionACVE201917571Version(semverVersion) {
+		if !strings.Contains(fileName, "SocketNode.class") {
+			return
+		}
+		versionCve = constants.Log4j1RceCve
 	}
 
 	if versionCve == "" {
@@ -79,7 +110,7 @@ func ProcessArchiveFile(reader io.Reader, filePath, fileName string) (finding *t
 	fileHash, err := util.HexEncodedSha256FromReader(reader)
 	if err != nil {
 		log.Warn().
-			Str("fileName", fileName).
+			Str("fieName", fileName).
 			Str("path", filePath).
 			Err(err).
 			Msg("unable to hash file")

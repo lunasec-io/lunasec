@@ -22,6 +22,8 @@ import (
 )
 
 func AnalyzeCommand(c *cli.Context) error {
+	enableGlobalFlags(c)
+
 	searchDirs := c.Args().Slice()
 
 	processArchiveFile := analyze.ProcessArchiveFile

@@ -110,6 +110,13 @@ func (s *Log4jDirectoryScanner) scanLocatedArchive(
 	}
 	defer file.Close()
 
+	if s.onlyScanArchives {
+		finding := identifyPotentiallyVulnerableFile(file, path, file.Name(), constants.KnownVulnerableArchiveFileHashes)
+		if finding != nil {
+			return []types.Finding{*finding}
+		}
+	}
+
 	return s.scanArchiveForVulnerableFiles(path, file, info.Size())
 }
 
@@ -215,4 +222,3 @@ func (s *Log4jDirectoryScanner) scanArchive(
 
 	return s.scanArchiveForVulnerableFiles(newPath, archiveReader, archiveSize)
 }
-
