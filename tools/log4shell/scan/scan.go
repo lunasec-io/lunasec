@@ -113,7 +113,7 @@ func scanFile(path string, file *zip.File, onlyScanArchives bool) (findings []ty
 			findings = []types.Finding{*finding}
 		}
 		return
-	case constants.JarFileExt, constants.WarFileExt, constants.ZipFileExt:
+	case constants.JarFileExt, constants.WarFileExt, constants.ZipFileExt, constants.EarFileExt:
 		if onlyScanArchives {
 			finding := scanArchiveFile(path, file)
 			if finding != nil {
@@ -186,7 +186,7 @@ func SearchDirsForVulnerableClassFiles(searchDirs []string, onlyScanArchives boo
 
 		fileExt := util.FileExt(path)
 		switch fileExt {
-		case constants.JarFileExt, constants.WarFileExt, constants.ZipFileExt:
+		case constants.JarFileExt, constants.WarFileExt, constants.ZipFileExt, constants.EarFileExt:
 			log.Debug().
 				Str("path", path).
 				Msg("scanning archive")

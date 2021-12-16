@@ -18,5 +18,6 @@ const (
 	JarFileExt   = ".jar"
 	WarFileExt   = ".war"
 	ZipFileExt   = ".zip"
+	EarFileExt   = ".ear"
 	ClassFileExt = ".class"
 )
