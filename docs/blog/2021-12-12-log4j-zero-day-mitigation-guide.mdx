@@ -316,9 +316,9 @@ We've published articles about this exploit that you can use to learn more about
 ${jndi:ldap://patch.log4shell.com:1389/a}
 ```
 
-Just simply paste that anywhere into your server where you're vulnerable, and it will patch you against future
-exploitation. (For example, in the `main` function when you start up your server, or a known vulnerable field if it's
-a vendor product you depend on.)
+Using this will patch your server against future exploitation _until it restarts_. Just simply paste that anywhere into
+your server where you're vulnerable to use it. For example, in the `main` function when you start up your server, or a known
+vulnerable field if it's a vendor product you depend on.
 
 We have added this functionality to the [latest release](https://github.com/lunasec-io/lunasec/releases) of our
 Log4Shell CLI tool if you'd prefer to run the server yourself instead.
@@ -444,6 +444,14 @@ import ContactForm from '../src/components/ContactForm.jsx'
 
 <ContactForm/>
 
+### Additional Information
+
+We have published a series of posts about Log4Shell on our blog that you might be interested in:
+- **[Original Log4Shell Announcement](https://www.lunasec.io/docs/blog/log4j-zero-day/)**,
+- **[Explanation of the 2nd Log4j CVE](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046/)**,
+- **[Part 1: Log4Shell Live Patch (Background Context)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**,
+- **[Part 2: Log4Shell Live Patch (Technical Deep-Dive)](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical/)**
+
 #### Limited Offer: Free Security Assistance
 
 We're also currently offering a free 30-minute consultation with one of our Security Engineers. If you're interested,
@@ -482,3 +490,4 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 6. Added link to 2nd CVE info.
 7. Added info about hot patching, and links to new releases.
 8. Update info about patching strategies.
+9. Added links to other blog posts.
