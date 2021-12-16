@@ -80,7 +80,8 @@ To perform the exploit, the following steps are completed in this sequence:
 4. The LDAP Server is queried via the URI,
 5. The response is downloaded and passed to the JNDI Manager,
 6. The JNDI Manager loads the response data as Java bytecode into the Java process,
-7. When loading the Java code, all `static` methods are initialized (this is how most exploits are fired),
+7. When loading the Java code, the `getObjectInstance` method is called since the loaded class is an `ObjectFactory`
+   (alternatively, the payload code can be wrapped in a static context with `static {}` which will be triggered upon loading the class),
 8. At this point, an attacker can perform whatever logic they'd like because they have full code execution.
 
 Here is a diagram with roughly the same information, but explained visually (with mitigation info).
@@ -91,10 +92,10 @@ Here is a diagram with roughly the same information, but explained visually (wit
 
 ## The LDAP Lookup
 
-Once log4j has parses the message, the LDAP request is the first leg of the exploit that an attacker must implement in
+Once Log4j has parsed the message, the LDAP request is the first leg of the exploit that an attacker must implement in
 order to attain RCE.
 
-We're going to use the CLI tool `ldapsearch` to allow us to emulate the request being made from within log4j to the
+We're going to use the CLI tool `ldapsearch` to allow us to emulate the request being made from within Log4j to the
 LDAP server. With this tool, we can query the live patch server for its entries:
 
 ```shell
@@ -126,12 +127,13 @@ result: 0 Success
 
 The most important parts of this response data are the `javaCodeBase` and the `javaFactory` fields. These tell the JNDI
 function where to locate the code (`http://patch.log4shell.com:80/`) and what remote class to resolve
-(`Log4ShellHotpatch`).
+(`Log4ShellHotpatch`). In Log4j versions `>= 2.15.0`, `javaCodeBase` will only be resolved if it is [`localhost` or a
+whitelisted host](https://github.com/apache/logging-log4j2/pull/608) meaning this payload will not execute.
 
 ### Other Response Values
 
 For the most part, the other response values exist only to pass the LDAP schema validation step and aren't crucial for
-the exploit to success.
+the exploit to succeed.
 
 For example, the `javaClassName` contains a value which will be logged out when running the live patch on a system. This
 log message will indicate that the second stage Java class file is being downloaded:
@@ -143,13 +145,18 @@ substituted with any string value.
 ## The JNDI Request
 
 With the information now available to tell JNDI where to load the exploit code from, the next request in the exploit
-chain is fired off. The response from this request is the Java bytecode that contains that enables the actual RCE
-vulnerability.
+chain is fired off. The response from this request is contains Java bytecode which enables the actual RCE
+functionality of this vulnerability.
 
-We won't show you the bytecode in the response because its binary data (and not very readable). Instead, we'll show you
-the source code (
+Java bytecode is easily reversible, and we are not making any attempt to [obfuscate the payload](https://owasp.org/www-community/controls/Bytecode_obfuscation).
+Using a tool such as [jdec.app](https://jdec.app/), you can simply download the payload and then reverse engineer it to understand
+exactly what code will be run when the exploit is triggered.
+
+![Log4Shell live patch payload decompiled](https://www.lunasec.io/docs/img/log4shell-live-patch-decompilation.png)
+
+You can alternatively just browse the payload's source on (
 [GitHub](https://github.com/lunasec-io/lunasec/blob/master/tools/log4shell/payloads/hotpatch-payload/src/main/java/Log4ShellHotpatch.java)
-) for the bytecode that's sent back instead:
+).
 
 ```ts
 /* ... imports redacted for brevity ... */
