@@ -25,7 +25,7 @@ func SerializeToFile(outputFile string, findings []types.Finding) error {
 	findingsOutput := types.FindingsOutput{
 		VulnerableLibraries: findings,
 	}
-	serializedOutput, err := json.Marshal(findingsOutput)
+	serializedOutput, err := json.MarshalIndent(findingsOutput, "", "\t")
 	if err != nil {
 		log.Error().Err(err).Msg("unable to marshall findings output")
 		return err

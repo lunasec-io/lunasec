@@ -108,7 +108,9 @@ func main() {
 						Usage: "Display helpful information while debugging the CLI.",
 					},
 				},
-				Action: commands.ScanCommand,
+				Action: func(c *cli.Context) error {
+					return commands.ScanCommand(c, log4jLibraryHashes)
+				},
 			},
 			{
 				Name:    "livepatch",

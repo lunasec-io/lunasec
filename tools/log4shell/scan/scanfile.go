@@ -15,7 +15,6 @@
 package scan
 
 import (
-	"fmt"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
@@ -39,12 +38,15 @@ func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, 
 			Str("fileName", fileName).
 			Str("path", path).
 			Err(err).
-			Msg("unable to hash file")
+			Msg("Unable to hash file")
 		return
 	}
 
 	if strings.Contains(fileName, "JndiLookup.class") {
-		fmt.Println(fileName, fileHash, len(hashLookup))
+		log.Debug().
+			Str("fileName", fileName).
+			Str("fileHash", fileHash).
+			Msg("Scanning a JndiLookup.class file")
 	}
 
 	if vulnerableFile, ok := hashLookup[fileHash]; ok {
@@ -52,23 +54,24 @@ func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, 
 		if !ok {
 			log.Warn().
 				Str("CVE", vulnerableFile.CVE).
-				Msg("no severity provided for CVE")
+				Msg("No severity provided for CVE")
 		}
 
 		log.Log().
 			Str("severity", severity).
 			Str("path", path).
 			Str("fileName", fileName).
+			Str("hash", fileHash).
 			Str("versionInfo", vulnerableFile.Version).
 			Str("cve", vulnerableFile.CVE).
-			Msg("identified vulnerable path")
+			Msg("Identified vulnerable path")
 
 		finding = &types.Finding{
-			Path:        path,
-			FileName:    fileName,
-			Hash:        fileHash,
-			VersionInfo: vulnerableFile.Name,
-			CVE:         vulnerableFile.CVE,
+			Path:     path,
+			FileName: fileName,
+			Hash:     fileHash,
+			Version:  vulnerableFile.Name,
+			CVE:      vulnerableFile.CVE,
 		}
 		return
 	}
