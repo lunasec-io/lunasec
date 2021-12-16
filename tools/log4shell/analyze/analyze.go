@@ -15,15 +15,64 @@
 package analyze
 
 import (
+	"github.com/blang/semver/v4"
+	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog/log"
 	"io"
+	"path"
 	"strings"
 )
 
-func ProcessArchiveFile(reader io.Reader, path, fileName string) (finding *types.Finding) {
-	if !strings.Contains(fileName, "JndiLookup.class") {
+func isVersionALog4ShellVersion(semverVersion string) bool {
+	version, _ := semver.Make(semverVersion)
+
+	vulnerableRange, _ := semver.ParseRange(">=2.0.0-beta9 <=2.14.1")
+	if vulnerableRange(version) {
+		return true
+	}
+	return false
+}
+
+func isVersionACVE202145046Version(semverVersion string) bool {
+	version, _ := semver.Make(semverVersion)
+
+	vulnerableRange, _ := semver.ParseRange("=2.15.0")
+	if vulnerableRange(version) {
+		return true
+	}
+	return false
+}
+
+func ProcessArchiveFile(reader io.Reader, filePath, fileName string) (finding *types.Finding) {
+	_, file := path.Split(filePath)
+	version := strings.TrimSuffix(file, path.Ext(file))
+
+	// small adjustments to the version so that it can be parsed as semver
+	semverVersion := strings.Replace(version, "log4j-core-", "", -1)
+	if len(semverVersion) == 3 {
+		semverVersion += ".0"
+	}
+	if strings.HasPrefix(semverVersion, "2.0-") {
+		semverVersion = strings.Replace(semverVersion, "2.0-", "2.0.0-", -1)
+	}
+
+	versionCve := ""
+	if isVersionALog4ShellVersion(semverVersion) {
+		if !strings.Contains(fileName, "JndiLookup.class") {
+			return
+		}
+		versionCve = constants.Log4ShellCve
+	}
+	if isVersionACVE202145046Version(semverVersion) {
+		if !strings.Contains(fileName, "JndiManager$JndiManagerFactory.class") {
+			return
+		}
+		versionCve = constants.CtxCve
+	}
+
+	if versionCve == "" {
 		return
 	}
 
@@ -31,22 +80,32 @@ func ProcessArchiveFile(reader io.Reader, path, fileName string) (finding *types
 	if err != nil {
 		log.Warn().
 			Str("fileName", fileName).
-			Str("path", path).
+			Str("path", filePath).
 			Err(err).
 			Msg("unable to hash file")
 		return
 	}
 
 	log.Log().
-		Str("path", path).
+		Str("path", filePath).
 		Str("fileName", fileName).
 		Str("fileHash", fileHash).
-		Msg("identified vulnerable path")
+		Msg("identified library version")
+
+	if versionCve == "" {
+		log.Debug().
+			Str("hash", fileHash).
+			Str("version", version).
+			Msg("Skipping version as it is not vulnerable to any known CVE")
+		return nil
+	}
 
 	finding = &types.Finding{
-		Path:        path,
+		Path:        filePath,
 		FileName:    fileName,
 		Hash:        fileHash,
+		Version: semverVersion,
+		CVE: versionCve,
 	}
 	return
 }

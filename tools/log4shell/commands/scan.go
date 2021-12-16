@@ -15,66 +15,39 @@
 package commands
 
 import (
-	"encoding/json"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/findings"
 	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"io/ioutil"
-	"path"
-	"strings"
 )
 
-func isVersionALog4ShellVersion() {
-
-}
-
-func LoadVersionHashes(versionHashes string) (hashLookup types.VulnerableHashLookup, err error) {
-	content, err := ioutil.ReadFile(versionHashes)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("versionHashes", versionHashes).
-			Msg("Unable to read version hashes file")
-		return
-	}
-
-	var findingsOutput types.FindingsOutput
-	err = json.Unmarshal(content, &findingsOutput)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("versionHashes", versionHashes).
-			Msg("Unable to read version hashes file")
-		return
-	}
-
-	hashLookup = types.VulnerableHashLookup{}
-	for _, vulnerableLibrary := range findingsOutput.VulnerableLibraries {
-		dir, file := path.Split(vulnerableLibrary.Path)
-		version := strings.TrimSuffix(file, path.Ext(file))
-
-		log.Debug().
-			Str("hash", vulnerableLibrary.Hash).
-			Str("version", version).
-			Msg("Storing hash for library")
-
-		hashLookup[vulnerableLibrary.Hash] = types.VulnerableHash{
-			Name: dir + "::" + vulnerableLibrary.FileName,
-			Version: version,
-			CVE: "",
+func loadHashLookup(log4jLibraryHashes []byte, versionHashes string, onlyScanArchives bool) (hashLookup types.VulnerableHashLookup, err error) {
+	if versionHashes != "" {
+		hashLookup, err = scan.LoadVersionHashesFromFile(versionHashes)
+		if err != nil {
+			return
 		}
+		return
 	}
-	log.Debug().
-		Int("versionHashes", len(versionHashes)).
-		Msg("Loaded version hashes")
 
+	if onlyScanArchives {
+		hashLookup = constants.KnownVulnerableArchiveFileHashes
+		return
+	}
+
+	hashLookup, err = scan.LoadVersionHashesFromBytes(log4jLibraryHashes)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("Unable to load hash lookup for log4j library hashes")
+		return
+	}
 	return
 }
 
-func ScanCommand(c *cli.Context) (err error) {
+func ScanCommand(c *cli.Context, log4jLibraryHashes []byte) (err error) {
 	enableGlobalFlags(c)
 
 	searchDirs := c.Args().Slice()
@@ -87,17 +60,11 @@ func ScanCommand(c *cli.Context) (err error) {
 	excludeDirs := c.StringSlice("exclude")
 	versionHashes := c.String("version-hashes")
 
-	hashLookup := constants.KnownVulnerableClassFileHashes
-	if versionHashes != "" {
-		hashLookup, err = LoadVersionHashes(versionHashes)
-		if err != nil {
-			return err
-		}
+	hashLookup, err := loadHashLookup(log4jLibraryHashes, versionHashes, onlyScanArchives)
+	if err != nil {
+		return err
 	}
 
-	if onlyScanArchives {
-		hashLookup = constants.KnownVulnerableArchiveFileHashes
-	}
 	processArchiveFile := scan.IdentifyPotentiallyVulnerableFiles(scanLog4j1, hashLookup)
 
 	scanner := scan.NewLog4jDirectoryScanner(excludeDirs, onlyScanArchives, processArchiveFile)

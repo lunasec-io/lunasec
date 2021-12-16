@@ -19,11 +19,11 @@ import "io"
 type ProcessArchiveFile func(reader io.Reader, path, fileName string) (finding *Finding)
 
 type Finding struct {
-	Path        string `json:"path"`
-	FileName    string `json:"file_name"`
-	Hash        string `json:"hash"`
-	VersionInfo string `json:"version_info"`
-	CVE         string `json:"cve"`
+	Path     string `json:"path"`
+	FileName string `json:"file_name"`
+	Hash     string `json:"hash"`
+	Version  string `json:"version"`
+	CVE      string `json:"cve"`
 }
 
 type FindingsOutput struct {
