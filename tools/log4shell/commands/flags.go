@@ -48,11 +48,13 @@ func enableGlobalFlags(c *cli.Context) {
 		consoleOutput.FormatFieldName = func(i interface{}) string {
 			return fmt.Sprintf("\n\t%s: ", util.Colorize(constants.ColorBlue, i))
 		}
+
+
 		consoleOutput.FormatLevel  = func(i interface{}) string {
 			if (i == nil){
 				return util.Colorize(constants.ColorBold,"Scan Result:")
 			}
-			return fmt.Sprintf("%s",i)
+			return fmt.Sprintf("| %-6s |", i)
 		}
 		log.Logger = log.Output(consoleOutput)
 
