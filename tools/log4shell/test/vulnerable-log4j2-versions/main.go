@@ -17,8 +17,16 @@ package main
 import (
 	"encoding/xml"
 	"fmt"
+	"github.com/gocolly/colly/v2"
+	"io"
 	"io/ioutil"
+	"log"
+	"net/http"
+	"net/url"
+	"os"
 	"os/exec"
+	"path/filepath"
+	"strings"
 )
 
 var (
@@ -91,7 +99,7 @@ type Project struct {
 	Profiles []Profiles
 }
 
-func main() {
+func getLog4jFromMaven() {
 	var profiles []Profile
 
 	for _, version := range versions {
@@ -166,4 +174,96 @@ func main() {
 		}
 		fmt.Println(string(out))
 	}
+}
+
+func downloadFile(downloadUrl string) string {
+    // Build fileName from fullPath
+    fileURL, err := url.Parse(downloadUrl)
+    if err != nil {
+        log.Fatal(err)
+    }
+    path := fileURL.Path
+    segments := strings.Split(path, "/")
+    fileName := segments[len(segments)-1]
+
+    filePath := filepath.Join("apache-download", fileName)
+
+    // Create blank file
+    file, err := os.Create(filePath)
+    if err != nil {
+        log.Fatal(err)
+    }
+    client := http.Client{
+        CheckRedirect: func(r *http.Request, via []*http.Request) error {
+            r.URL.Opaque = r.URL.Path
+            return nil
+        },
+    }
+    // Put content on file
+    resp, err := client.Get(downloadUrl)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer resp.Body.Close()
+
+    size, err := io.Copy(file, resp.Body)
+
+    defer file.Close()
+
+    fmt.Printf("Downloaded a file %s with size %d", fileName, size)
+    return filePath
+}
+
+func getLog4jFromApache() {
+	os.Mkdir("apache", 0700)
+	os.Mkdir("apache-download", 0700)
+
+	c := colly.NewCollector(
+		colly.MaxDepth(3),
+		colly.Async(),
+	)
+
+	// Find and visit all links
+	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
+		href := e.Attr("href")
+		if strings.HasPrefix(href, "2") {
+			err := e.Request.Visit(href)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+		if strings.HasPrefix(href, "apache-log4j") && strings.HasSuffix(href, "bin.tar.gz") {
+			downloadUrl := fmt.Sprintf("%s%s", e.Request.URL.String(), href)
+			fmt.Println("Downloading", downloadUrl)
+			downloadedFile := downloadFile(downloadUrl)
+
+			cmd := exec.Command("tar", "zxf", downloadedFile, "-C", "apache")
+			err := cmd.Run()
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+	})
+
+	c.OnRequest(func(r *colly.Request) {
+		fmt.Println("Visiting", r.URL)
+	})
+
+	err := c.Visit("https://archive.apache.org/dist/logging/log4j/")
+	if err != nil {
+		panic(err)
+	}
+
+	c.Wait()
+
+	cmd := exec.Command("rm", "-rf", "apache-download")
+	err = cmd.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func main() {
+	getLog4jFromApache()
+	getLog4jFromMaven()
 }
