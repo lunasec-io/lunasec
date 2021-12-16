@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/test.iml" filepath="$PROJECT_DIR$/test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/vulnerable-log4j2-versions.iml" filepath="$PROJECT_DIR$/vulnerable-log4j2-versions.iml" />
     </modules>
   </component>
 </project>

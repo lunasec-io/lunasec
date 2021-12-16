@@ -226,13 +226,13 @@ func getLog4jFromApache() {
 	// Find and visit all links
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		href := e.Attr("href")
-		if strings.HasPrefix(href, "2") {
+		if strings.HasPrefix(href, "2") || strings.HasPrefix(href, "1") {
 			err := e.Request.Visit(href)
 			if err != nil {
 				fmt.Println(err)
 			}
 		}
-		if strings.HasPrefix(href, "apache-log4j") && strings.HasSuffix(href, "bin.tar.gz") {
+		if strings.Contains(href, "log4j") && strings.HasSuffix(href, ".tar.gz") && !strings.Contains(href, "src") {
 			downloadUrl := fmt.Sprintf("%s%s", e.Request.URL.String(), href)
 			fmt.Println("Downloading", downloadUrl)
 			downloadedFile := downloadFile(downloadUrl)

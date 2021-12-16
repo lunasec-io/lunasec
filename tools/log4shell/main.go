@@ -75,7 +75,7 @@ func main() {
 						Usage: "Exclude subdirectories from scanning. This can be helpful if there are directories which your user does not have access to when starting a scan from `/`.",
 					},
 					&cli.BoolFlag{
-						Name:        "scan-log4j1",
+						Name:        "include-log4j1",
 						Usage:       "Use to also include scanning for Log4j 1.x vulnerabilities.",
 						DefaultText: "false",
 					},
