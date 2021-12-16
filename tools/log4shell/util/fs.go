@@ -15,7 +15,8 @@
 package util
 
 import (
-	"log"
+	"github.com/rs/zerolog/log"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -27,7 +28,11 @@ func FileExt(path string) string {
 func searchDir(searchDir string, callback filepath.WalkFunc) {
 	err := filepath.Walk(searchDir, callback)
 	if err != nil {
-		log.Fatal(err)
+		log.Error().
+			Err(err).
+			Str("searchDir", searchDir).
+			Msg("Unable to walk directory")
+		panic(err)
 	}
 }
 
@@ -36,4 +41,26 @@ func SearchDirs(searchDirs []string, callback filepath.WalkFunc) {
 	for _, dir := range searchDirs {
 		searchDir(dir, callback)
 	}
+}
+
+func ResolveSymlinkFilePathAndInfo(symlinkPath string) (path string, info os.FileInfo, err error) {
+	path, err = filepath.EvalSymlinks(symlinkPath)
+	if err != nil {
+		log.Warn().
+			Str("path", path).
+			Err(err).
+			Msg("unable to read symlink to file")
+		return
+	}
+
+	// use file info of the resolved file
+	info, err = os.Lstat(path)
+	if err != nil {
+		log.Warn().
+			Str("path", path).
+			Err(err).
+			Msg("unable to read file info of symlink file")
+		return
+	}
+	return
 }
