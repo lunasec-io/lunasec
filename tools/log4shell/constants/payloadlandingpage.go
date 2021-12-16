@@ -206,9 +206,15 @@ const PayloadLandingPage = `
 	<body>
 		<h2>Log4Shell Hotpatch Service provided by <a href="https://lunasec.io">LunaSec</a></h2>
 		<blockquote>
-			<p><b>Disclaimer</b>: This service is meant to perform a live hotpatch of the <a href="https://log4shell.com">Log4Shell</a> vulnerability. Please use this service responsibly on hosts which you have had permission to perform this hotpatch on.</p>
+			<p>
+				<b>Disclaimer</b>: 
+					This service is meant to perform a live hotpatch of the <a href="https://log4shell.com">Log4Shell</a> vulnerability. 
+					Please use this service responsibly and ONLY on servers which you own or have permission to perform this hotpatch on.
+					This service is provided without warranty or guarantee of any kind. It is your responsibility to use it legally, 
+					responsibly, and to understand the risks of a hot patch.  We are not liable for any issues it may cause.
+			</p>
 		</blockquote>
-		<p>To understand how this hotpatch works, please refer to <a href="https://www.lunasec.io/docs/blog/">this blog post.</a></p>
+		<p>To understand how this hotpatch works, please refer to <a href="https://www.lunasec.io/docs/blog/log4shell-live-patch/">this blog post.</a></p>
 		<hr />
 		<h3>Payload</h3>
 		<p>Use the following payload on your service to perform the hotpatch:</p>

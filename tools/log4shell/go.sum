@@ -1,4 +1,6 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/blang/semver/v4 v4.0.0 h1:1PFHFE6yCCTv8C1TeyNNarDzntLi7wMI5i/pzqYIsAM=
+github.com/blang/semver/v4 v4.0.0/go.mod h1:IbckMUScFkM3pff0VJDNKRiT6TG/YpiHIM2yvyW5YoQ=
 github.com/breadchris/ldapserver v1.1.0 h1:ddwoUxKfmflSwmfVyRaX00DamD5vmoWULboWdjlcnIw=
 github.com/breadchris/ldapserver v1.1.0/go.mod h1:zsOrJ1DSR/Y4Ton/8EjspbGPZ7rPwhvDjLNaE+WMsn8=
 github.com/coreos/go-systemd/v22 v22.3.2/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=

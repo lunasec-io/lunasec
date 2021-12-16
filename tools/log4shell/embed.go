@@ -18,3 +18,6 @@ import "embed"
 
 //go:embed Log4ShellHotpatch.class
 var hotpatchFiles embed.FS
+
+//go:embed log4j-library-hashes.json
+var log4jLibraryHashes []byte

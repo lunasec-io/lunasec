@@ -15,125 +15,13 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
+	"github.com/lunasec-io/lunasec/tools/log4shell/commands"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
-	"github.com/lunasec-io/lunasec/tools/log4shell/patch"
-	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
-	"github.com/lunasec-io/lunasec/tools/log4shell/types"
-	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"io/ioutil"
 	"os"
 )
-
-func enableGlobalFlags(c *cli.Context) {
-	verbose := c.Bool("verbose")
-	debug := c.Bool("debug")
-
-	if verbose || debug {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	}
-
-	if debug {
-		// include file and line number when logging
-		log.Logger = log.With().Caller().Logger()
-	}
-
-	jsonFlag := c.Bool("json")
-	if !jsonFlag {
-		// pretty print output to the console if we are not interested in parsable output
-		consoleOutput := zerolog.ConsoleWriter{Out: os.Stderr}
-		consoleOutput.FormatFieldName = func(i interface{}) string {
-			return fmt.Sprintf("\n\t%s: ", util.Colorize(constants.ColorBlue, i))
-		}
-		log.Logger = log.Output(consoleOutput)
-
-	}
-}
-
-func scanCommand(c *cli.Context) error {
-	enableGlobalFlags(c)
-
-	searchDirs := c.Args().Slice()
-	log.Debug().Strs("directories", searchDirs).Msg("scanning directories")
-
-	onlyScanArchives := c.Bool("archives")
-	output := c.String("output")
-
-	findings := scan.SearchDirsForVulnerableClassFiles(searchDirs, onlyScanArchives)
-
-	if output != "" {
-		findingsOutput := types.FindingsOutput{
-			VulnerableLibraries: findings,
-		}
-		serializedOutput, err := json.Marshal(findingsOutput)
-		if err != nil {
-			log.Error().Err(err).Msg("unable to marshall findings output")
-			return err
-		}
-
-		err = ioutil.WriteFile(output, serializedOutput, 0644)
-		if err != nil {
-			log.Error().Err(err).Msg("unable to write findings to output file")
-			return err
-		}
-	}
-	return nil
-}
-
-func livePatchCommand(c *cli.Context) error {
-	enableGlobalFlags(c)
-
-	payloadUrl := c.String("payload-url")
-	ldapHost := c.String("ldap-host")
-	ldapPort := c.Int("ldap-port")
-
-	if payloadUrl == "" {
-		log.Info().
-			Str("defaultPayloadUrl", constants.DefaultPayloadUrl).
-			Msg("Payload URL not provided. Using the default payload url.")
-		payloadUrl = constants.DefaultPayloadUrl
-	}
-
-	if ldapPort == 0 {
-		ldapPort = constants.DefaultLDAPServerPort
-	}
-
-	payloadServerHost, payloadServerPort, err := util.ParseHostAndPortFromUrlString(payloadUrl)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("payloadUrl", payloadUrl).
-			Msg("Unable to parse provided payload server URL.")
-		return err
-	}
-
-	if ldapHost == "" {
-		ldapHost = payloadServerHost
-	}
-
-	payload := fmt.Sprintf("${jndi:ldap://%s:%d/a}", ldapHost, ldapPort)
-
-	hotpatchServer := patch.NewHotpatchLDAPServer(ldapPort, payloadUrl)
-	hotpatchPayloadServer := patch.NewHotpatchPayloadServer(payloadServerPort, hotpatchFiles, payload)
-
-	log.Info().
-		Msg("Starting Log4Shell live patch LDAP and payload servers")
-	log.Info().
-		Msgf("Once both servers have started, use payload string: '%s' to hotpatch your servers.", payload)
-
-	hotpatchServer.Start()
-	hotpatchPayloadServer.Start()
-
-	util.WaitForProcessExit(func() {
-		hotpatchServer.Stop()
-	})
-
-	return nil
-}
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
@@ -167,13 +55,37 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			{
+				Name:  "analyze",
+				Usage: "Scan known vulnerable Log4j dependencies and create a mapping of JndiLookup.class hash to version.",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "output",
+						Usage: "File path for where to output findings in JSON format.",
+					},
+				},
+				Action: commands.AnalyzeCommand,
+			},
+			{
 				Name:    "scan",
 				Aliases: []string{"s"},
 				Usage:   "Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.",
 				Flags: []cli.Flag{
+					&cli.StringSliceFlag{
+						Name:  "exclude",
+						Usage: "Exclude subdirectories from scanning. This can be helpful if there are directories which your user does not have access to when starting a scan from `/`.",
+					},
+					&cli.BoolFlag{
+						Name:        "include-log4j1",
+						Usage:       "Use to also include scanning for Log4j 1.x vulnerabilities.",
+						DefaultText: "false",
+					},
 					&cli.BoolFlag{
 						Name:  "archives",
 						Usage: "Only scan for known vulnerable archives. By default the CLI will scan for class files which are known to be vulnerable which will result in higher signal findings. If you are specifically looking for vulnerable Java archive hashes, use this option.",
+					},
+					&cli.StringFlag{
+						Name:  "version-hashes",
+						Usage: "File path of a version hashes file.",
 					},
 					&cli.StringFlag{
 						Name:  "output",
@@ -184,6 +96,10 @@ func main() {
 						Usage: "Display verbose information when running commands.",
 					},
 					&cli.BoolFlag{
+						Name:  "ignore-warnings",
+						Usage: "Do not display warnings, only show findings.",
+					},
+					&cli.BoolFlag{
 						Name:  "json",
 						Usage: "Display findings in json format.",
 					},
@@ -192,7 +108,9 @@ func main() {
 						Usage: "Display helpful information while debugging the CLI.",
 					},
 				},
-				Action: scanCommand,
+				Action: func(c *cli.Context) error {
+					return commands.ScanCommand(c, log4jLibraryHashes)
+				},
 			},
 			{
 				Name:    "livepatch",
@@ -201,7 +119,7 @@ func main() {
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:  "payload-url",
-						Usage: "The url for the payload server. This must be an accessible route from any targeted host. (ex. https://hotpatch.lunasec.com)",
+						Usage: "The URL that the LDAP server will tell the target to fetch the payload from. This must be an accessible route FROM any targeted host TO this patch server. (ex. https://hotpatch.lunasec.com)",
 					},
 					&cli.StringFlag{
 						Name:  "ldap-host",
@@ -212,7 +130,9 @@ func main() {
 						Usage: "The port for the Log4Shell LDAP server.",
 					},
 				},
-				Action: livePatchCommand,
+				Action: func(c *cli.Context) error {
+					return commands.LivePatchCommand(c, hotpatchFiles)
+				},
 			},
 		},
 	}
