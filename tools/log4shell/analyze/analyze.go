@@ -48,7 +48,7 @@ func isVersionACVE202145046Version(semverVersion string) bool {
 func isVersionACVE201917571Version(semverVersion string) bool {
 	version, _ := semver.Make(semverVersion)
 
-	vulnerableRange, _ := semver.ParseRange(">=1.2.0 <1.2.17")
+	vulnerableRange, _ := semver.ParseRange(">=1.2.0 <=1.2.17")
 	if vulnerableRange(version) {
 		return true
 	}
