@@ -12,20 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
+package commands
 
-import "io"
+import (
+	"github.com/lunasec-io/lunasec/tools/log4shell/analyze"
+	"github.com/lunasec-io/lunasec/tools/log4shell/findings"
+	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
+	"github.com/urfave/cli/v2"
+)
 
-type ProcessArchiveFile func(reader io.Reader, path, fileName string) (finding *Finding)
+func AnalyzeCommand(c *cli.Context) error {
+	searchDirs := c.Args().Slice()
 
-type Finding struct {
-	Path        string `json:"path"`
-	FileName    string `json:"file_name"`
-	Hash        string `json:"hash"`
-	VersionInfo string `json:"version_info"`
-	CVE         string `json:"cve"`
-}
+	processArchiveFile := analyze.ProcessArchiveFile
 
-type FindingsOutput struct {
-	VulnerableLibraries []Finding `json:"vulnerable_libraries"`
+	scanner := scan.NewLog4jDirectoryScanner([]string{}, false, processArchiveFile)
+
+	scannerFindings := scanner.Scan(searchDirs)
+
+	output := c.String("output")
+	if output != "" {
+		return findings.SerializeToFile(output, scannerFindings)
+	}
+	return nil
 }
