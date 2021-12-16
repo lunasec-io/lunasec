@@ -15,6 +15,13 @@
 			"cve": "CVE-2019-17571"
 		},
 		{
+			"path": "test/vulnerable-log4j2-versions/apache/apache-log4j-1.2.17/log4j-1.2.17.jar",
+			"file_name": "org/apache/log4j/net/SocketNode.class",
+			"hash": "8ef0ebdfbf28ec14b2267e6004a8eea947b4411d3c30d228a7b48fae36431d74",
+			"version": "1.2.17",
+			"cve": "CVE-2019-17571"
+		},
+		{
 			"path": "test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-beta9-bin/log4j-core-2.0-beta9.jar",
 			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
 			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
