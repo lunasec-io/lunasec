@@ -121,6 +121,10 @@ func main() {
 						Usage: "Do not display warnings, only show findings.",
 					},
 					&cli.BoolFlag{
+						Name:  "no-follow-symlinks",
+						Usage: "Disable the resolution of symlinks while scanning. Note: symlinks might resolve to files outside of the included directories and so this option might be useful if you strictly want to search in said directories.",
+					},
+					&cli.BoolFlag{
 						Name:  "json",
 						Usage: "Display findings in json format.",
 					},
