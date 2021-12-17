@@ -70,7 +70,7 @@ func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, 
 			Path:     path,
 			FileName: fileName,
 			Hash:     fileHash,
-			Version:  vulnerableFile.Name,
+			Version:  vulnerableFile.Version,
 			CVE:      vulnerableFile.CVE,
 		}
 		return

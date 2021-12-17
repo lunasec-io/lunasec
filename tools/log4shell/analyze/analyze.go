@@ -83,14 +83,14 @@ func ProcessArchiveFile(reader io.Reader, filePath, fileName string) (finding *t
 	versionCve := ""
 
 	if isVersionALog4ShellVersion(semverVersion) {
-		if !strings.Contains(fileName, "JndiLookup.class") {
+		if !strings.Contains(fileName, "JndiManager.class") {
 			return
 		}
 		versionCve = constants.Log4ShellCve
 	}
 
 	if isVersionACVE202145046Version(semverVersion) {
-		if !strings.Contains(fileName, "JndiManager$JndiManagerFactory.class") {
+		if !strings.Contains(fileName, "JndiManager.class") {
 			return
 		}
 		versionCve = constants.CtxCve
