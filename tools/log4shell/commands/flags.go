@@ -49,13 +49,29 @@ func enableGlobalFlags(c *cli.Context) {
 			return fmt.Sprintf("\n\t%s: ", util.Colorize(constants.ColorBlue, i))
 		}
 
-
 		consoleOutput.FormatLevel  = func(i interface{}) string {
-			if (i == nil){
+			if i == nil {
 				return util.Colorize(constants.ColorBold,"Scan Result:")
 			}
-			return fmt.Sprintf("| %-6s |", i)
+
+			level := i.(string)
+
+			var formattedLevel string
+			switch level {
+			case "warn":
+				formattedLevel = util.Colorize(constants.ColorYellow, level)
+			case "error":
+				formattedLevel = util.Colorize(constants.ColorRed, level)
+			case "info":
+				formattedLevel = util.Colorize(constants.ColorBlue, level)
+			case "debug":
+				formattedLevel = util.Colorize(constants.ColorGreen, level)
+			default:
+				formattedLevel = util.Colorize(constants.ColorWhite, level)
+			}
+			return fmt.Sprintf("| %s |", formattedLevel)
 		}
+
 		log.Logger = log.Output(consoleOutput)
 
 	}
