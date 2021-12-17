@@ -24,6 +24,7 @@ type Finding struct {
 	Hash     string `json:"hash"`
 	Version  string `json:"version"`
 	CVE      string `json:"cve"`
+	Severity string `json:"severity"`
 }
 
 type FindingsOutput struct {

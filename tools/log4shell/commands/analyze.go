@@ -21,14 +21,14 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func AnalyzeCommand(c *cli.Context) error {
-	enableGlobalFlags(c)
+func AnalyzeCommand(c *cli.Context, globalBoolFlags map[string]bool) error {
+	enableGlobalFlags(c, globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
 
 	processArchiveFile := analyze.ProcessArchiveFile
 
-	scanner := scan.NewLog4jDirectoryScanner([]string{}, false, processArchiveFile)
+	scanner := scan.NewLog4jDirectoryScanner([]string{}, false, false, processArchiveFile)
 
 	scannerFindings := scanner.Scan(searchDirs)
 

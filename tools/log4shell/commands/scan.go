@@ -23,7 +23,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func loadHashLookup(log4jLibraryHashes []byte, versionHashes string, onlyScanArchives bool) (hashLookup types.VulnerableHashLookup, err error) {
+func loadHashLookup(
+	log4jLibraryHashes []byte,
+	versionHashes string,
+	onlyScanArchives bool,
+) (hashLookup types.VulnerableHashLookup, err error) {
 	if versionHashes != "" {
 		hashLookup, err = scan.LoadVersionHashesFromFile(versionHashes)
 		if err != nil {
@@ -47,8 +51,8 @@ func loadHashLookup(log4jLibraryHashes []byte, versionHashes string, onlyScanArc
 	return
 }
 
-func ScanCommand(c *cli.Context, log4jLibraryHashes []byte) (err error) {
-	enableGlobalFlags(c)
+func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHashes []byte) (err error) {
+	enableGlobalFlags(c, globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
 	log.Debug().
@@ -59,6 +63,7 @@ func ScanCommand(c *cli.Context, log4jLibraryHashes []byte) (err error) {
 	onlyScanArchives := c.Bool("archives")
 	excludeDirs := c.StringSlice("exclude")
 	versionHashes := c.String("version-hashes")
+	noFollowSymlinks := c.Bool("no-follow-symlinks")
 
 	hashLookup, err := loadHashLookup(log4jLibraryHashes, versionHashes, onlyScanArchives)
 	if err != nil {
@@ -67,7 +72,8 @@ func ScanCommand(c *cli.Context, log4jLibraryHashes []byte) (err error) {
 
 	processArchiveFile := scan.IdentifyPotentiallyVulnerableFiles(scanLog4j1, hashLookup)
 
-	scanner := scan.NewLog4jDirectoryScanner(excludeDirs, onlyScanArchives, processArchiveFile)
+	scanner := scan.NewLog4jDirectoryScanner(
+		excludeDirs, onlyScanArchives, noFollowSymlinks, processArchiveFile)
 
 	scannerFindings := scanner.Scan(searchDirs)
 
