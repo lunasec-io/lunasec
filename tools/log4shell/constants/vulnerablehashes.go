@@ -14,10 +14,13 @@
 //
 package constants
 
-import "github.com/lunasec-io/lunasec/tools/log4shell/types"
+import (
+	"github.com/blang/semver/v4"
+	"github.com/lunasec-io/lunasec/tools/log4shell/types"
+)
 
-var (
-	NotVulnerable = "Not Vulnerable"
+
+const (
 	Log4ShellCve = "CVE-2021-44228"
 	CtxCve       = "CVE-2021-45046"
 	Log4j1RceCve = "CVE-2019-17571"
@@ -29,9 +32,30 @@ var (
 		CtxCve:       "3.7",
 		Log4j1RceCve: "9.8",
 	}
-)
 
-type Log4jVersion string
+	FileVersionChecks = []types.LibraryFileVersionCheck{
+		{
+			Cve: Log4ShellCve,
+			SemverRange: semver.MustParseRange(">=2.0.0-beta9 <2.1.0"),
+			LibraryFile: "JndiLookup.class",
+		},
+		{
+			Cve: Log4ShellCve,
+			SemverRange: semver.MustParseRange(">=2.1.0 <=2.14.1"),
+			LibraryFile: "JndiManager.class",
+		},
+		{
+			Cve: CtxCve,
+			SemverRange: semver.MustParseRange("=2.15.0"),
+			LibraryFile: "JndiManager.class",
+		},
+		{
+			Cve: Log4j1RceCve,
+			SemverRange: semver.MustParseRange(">=1.2.0 <=1.2.17"),
+			LibraryFile: "SocketNode.class",
+		},
+	}
+)
 
 const (
 	Log4j1x = "1"
