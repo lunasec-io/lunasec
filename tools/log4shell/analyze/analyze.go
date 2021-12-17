@@ -22,34 +22,23 @@ import (
 	"github.com/rs/zerolog/log"
 	"io"
 	"path"
+	"regexp"
 	"strings"
 )
 
-func isVersionALog4ShellVersion(semverVersion string) bool {
-	version, _ := semver.Make(semverVersion)
+var alphaRegex = regexp.MustCompile("([a-z]+)")
 
-	vulnerableRange, _ := semver.ParseRange(">=2.0.0-beta9 <=2.14.1")
-	if vulnerableRange(version) {
-		return true
+func versionIsInRange(fileName string, semverVersion string, semverRange semver.Range) bool {
+	version, err := semver.Make(semverVersion)
+	if err != nil {
+		log.Warn().
+			Str("fileName", fileName).
+			Str("semverVersion", semverVersion).
+			Msg("Unable to parse semver version")
+		return false
 	}
-	return false
-}
 
-func isVersionACVE202145046Version(semverVersion string) bool {
-	version, _ := semver.Make(semverVersion)
-
-	vulnerableRange, _ := semver.ParseRange("=2.15.0")
-	if vulnerableRange(version) {
-		return true
-	}
-	return false
-}
-
-func isVersionACVE201917571Version(semverVersion string) bool {
-	version, _ := semver.Make(semverVersion)
-
-	vulnerableRange, _ := semver.ParseRange(">=1.2.0 <=1.2.17")
-	if vulnerableRange(version) {
+	if semverRange(version) {
 		return true
 	}
 	return false
@@ -68,39 +57,61 @@ func adjustMissingPatchVersion(semverVersion string) string {
 	return semverVersion
 }
 
+func fileNameToSemver(fileNameNoExt string) string {
+	fileNameParts := strings.Split(fileNameNoExt, "-")
+
+	var tag, semverVersion string
+	for i := len(fileNameParts) - 1; i >= 0; i-- {
+		fileNamePart := fileNameParts[i]
+		if (
+			strings.HasPrefix(fileNamePart, "1") ||
+			strings.HasPrefix(fileNamePart, "2")) &&
+			strings.Contains(fileNamePart, ".") {
+
+			tagPart := alphaRegex.FindString(fileNamePart)
+			if tagPart != "" {
+				fileNamePart = strings.Replace(fileNamePart, tagPart, "", 1)
+				if tag == "" {
+					tag = tagPart
+				} else {
+					tag = tagPart + "-" + tag
+				}
+			}
+
+			fileNamePart = adjustMissingPatchVersion(fileNamePart)
+
+			if tag == "" {
+				semverVersion = fileNamePart
+				break
+			}
+			semverVersion = fileNamePart + "-" + tag
+			break
+		}
+		if tag == "" {
+			tag = fileNamePart
+			continue
+		}
+		tag = fileNamePart + "-" + tag
+	}
+	return semverVersion
+}
+
 func ProcessArchiveFile(reader io.Reader, filePath, fileName string) (finding *types.Finding) {
 	_, file := path.Split(filePath)
-	version := strings.TrimSuffix(file, path.Ext(file))
+	fileNameNoExt := strings.TrimSuffix(file, path.Ext(file))
 
 	// small adjustments to the version so that it can be parsed as semver
-	semverVersion := strings.Replace(version, "log4j-core-", "", -1)
-	semverVersion = strings.Replace(semverVersion, "logging-log4j-", "", -1)
-	semverVersion = strings.Replace(semverVersion, "jakarta-log4j-", "", -1)
-	semverVersion = strings.Replace(semverVersion, "log4j-", "", -1)
-
-	semverVersion = adjustMissingPatchVersion(semverVersion)
+	semverVersion := fileNameToSemver(fileNameNoExt)
 
 	versionCve := ""
 
-	if isVersionALog4ShellVersion(semverVersion) {
-		if !strings.Contains(fileName, "JndiManager.class") {
-			return
+	for _, fileVersionCheck := range constants.FileVersionChecks {
+		if versionIsInRange(fileNameNoExt, semverVersion, fileVersionCheck.SemverRange) {
+			if !strings.Contains(fileName, fileVersionCheck.LibraryFile) {
+				return
+			}
+			versionCve = fileVersionCheck.Cve
 		}
-		versionCve = constants.Log4ShellCve
-	}
-
-	if isVersionACVE202145046Version(semverVersion) {
-		if !strings.Contains(fileName, "JndiManager.class") {
-			return
-		}
-		versionCve = constants.CtxCve
-	}
-
-	if isVersionACVE201917571Version(semverVersion) {
-		if !strings.Contains(fileName, "SocketNode.class") {
-			return
-		}
-		versionCve = constants.Log4j1RceCve
 	}
 
 	if versionCve == "" {
@@ -126,7 +137,7 @@ func ProcessArchiveFile(reader io.Reader, filePath, fileName string) (finding *t
 	if versionCve == "" {
 		log.Debug().
 			Str("hash", fileHash).
-			Str("version", version).
+			Str("version", semverVersion).
 			Msg("Skipping version as it is not vulnerable to any known CVE")
 		return nil
 	}

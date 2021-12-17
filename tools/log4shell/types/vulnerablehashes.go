@@ -14,6 +14,8 @@
 //
 package types
 
+import "github.com/blang/semver/v4"
+
 type VulnerableHash struct {
 	Name string `json:"name"`
 	Version string `json:"version"`
@@ -21,3 +23,9 @@ type VulnerableHash struct {
 }
 
 type VulnerableHashLookup map[string]VulnerableHash
+
+type LibraryFileVersionCheck struct {
+	Cve string
+	SemverRange semver.Range
+	LibraryFile string
+}
