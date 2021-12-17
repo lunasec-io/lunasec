@@ -35,13 +35,20 @@ type Log4jVulnerableDependencyScanner interface {
 type Log4jDirectoryScanner struct {
 	excludeDirs []string
 	onlyScanArchives bool
+	noFollowSymlinks bool
 	processArchiveFile types.ProcessArchiveFile
 }
 
-func NewLog4jDirectoryScanner(excludeDirs []string, onlyScanArchives bool, processArchiveFile types.ProcessArchiveFile) Log4jVulnerableDependencyScanner {
+func NewLog4jDirectoryScanner(
+	excludeDirs []string,
+	onlyScanArchives bool,
+	noFollowSymlinks bool,
+	processArchiveFile types.ProcessArchiveFile,
+) Log4jVulnerableDependencyScanner {
 	return &Log4jDirectoryScanner{
 		excludeDirs: excludeDirs,
 		onlyScanArchives: onlyScanArchives,
+		noFollowSymlinks: noFollowSymlinks,
 		processArchiveFile: processArchiveFile,
 	}
 }
@@ -79,7 +86,7 @@ func (s *Log4jDirectoryScanner) Scan(
 			return
 		}
 
-		if info.Mode() & os.ModeSymlink != 0 {
+		if !s.noFollowSymlinks && info.Mode() & os.ModeSymlink != 0 {
 			// overwrite path and info with the resolved symlink file values
 			path, info, err = util.ResolveSymlinkFilePathAndInfo(path)
 			if err != nil {

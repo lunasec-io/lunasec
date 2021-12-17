@@ -28,7 +28,7 @@ func AnalyzeCommand(c *cli.Context, globalBoolFlags map[string]bool) error {
 
 	processArchiveFile := analyze.ProcessArchiveFile
 
-	scanner := scan.NewLog4jDirectoryScanner([]string{}, false, processArchiveFile)
+	scanner := scan.NewLog4jDirectoryScanner([]string{}, false, false, processArchiveFile)
 
 	scannerFindings := scanner.Scan(searchDirs)
 
