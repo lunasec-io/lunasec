@@ -35,13 +35,20 @@ type Log4jVulnerableDependencyScanner interface {
 type Log4jDirectoryScanner struct {
 	excludeDirs []string
 	onlyScanArchives bool
+	noFollowSymlinks bool
 	processArchiveFile types.ProcessArchiveFile
 }
 
-func NewLog4jDirectoryScanner(excludeDirs []string, onlyScanArchives bool, processArchiveFile types.ProcessArchiveFile) Log4jVulnerableDependencyScanner {
+func NewLog4jDirectoryScanner(
+	excludeDirs []string,
+	onlyScanArchives bool,
+	noFollowSymlinks bool,
+	processArchiveFile types.ProcessArchiveFile,
+) Log4jVulnerableDependencyScanner {
 	return &Log4jDirectoryScanner{
 		excludeDirs: excludeDirs,
 		onlyScanArchives: onlyScanArchives,
+		noFollowSymlinks: noFollowSymlinks,
 		processArchiveFile: processArchiveFile,
 	}
 }
@@ -79,6 +86,14 @@ func (s *Log4jDirectoryScanner) Scan(
 			return
 		}
 
+		if !s.noFollowSymlinks && info.Mode() & os.ModeSymlink != 0 {
+			// overwrite path and info with the resolved symlink file values
+			path, info, err = util.ResolveSymlinkFilePathAndInfo(path)
+			if err != nil {
+				return
+			}
+		}
+
 		fileExt := util.FileExt(path)
 		switch fileExt {
 		case constants.JarFileExt, constants.WarFileExt:
@@ -105,7 +120,7 @@ func (s *Log4jDirectoryScanner) scanLocatedArchive(
 		log.Warn().
 			Str("path", path).
 			Err(err).
-			Msg("unable to open archive")
+			Msg("unable to open located archive")
 		return
 	}
 	defer file.Close()
@@ -130,7 +145,7 @@ func (s *Log4jDirectoryScanner) scanArchiveForVulnerableFiles(
 		log.Warn().
 			Str("path", path).
 			Err(err).
-			Msg("unable to open archive")
+			Msg("unable to open archive for scanning")
 		return
 	}
 
@@ -169,7 +184,7 @@ func (s *Log4jDirectoryScanner) scanFile(
 			}
 			return
 		}
-		return s.scanArchive(path, file)
+		return s.scanEmbeddedArchive(path, file)
 	}
 	return
 }
@@ -191,7 +206,7 @@ func (s *Log4jDirectoryScanner) scanArchiveFile(
 	return s.processArchiveFile(reader, path, file.Name)
 }
 
-func (s *Log4jDirectoryScanner) scanArchive(
+func (s *Log4jDirectoryScanner) scanEmbeddedArchive(
 	path string,
 	file *zip.File,
 ) (findings []types.Finding) {
@@ -201,7 +216,7 @@ func (s *Log4jDirectoryScanner) scanArchive(
 			Str("classFile", file.Name).
 			Str("path", path).
 			Err(err).
-			Msg("unable to open archive")
+			Msg("unable to open embedded archive")
 		return
 	}
 	defer reader.Close()
@@ -212,7 +227,7 @@ func (s *Log4jDirectoryScanner) scanArchive(
 			Str("classFile", file.Name).
 			Str("path", path).
 			Err(err).
-			Msg("unable to read archive")
+			Msg("unable to read embedded archive")
 		return
 	}
 

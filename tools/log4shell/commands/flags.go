@@ -24,10 +24,11 @@ import (
 	"os"
 )
 
-func enableGlobalFlags(c *cli.Context) {
-	verbose := c.Bool("verbose")
-	ignoreWarnings := c.Bool("ignore-warnings")
-	debug := c.Bool("debug")
+func enableGlobalFlags(c *cli.Context, globalBoolFlags map[string]bool) {
+	verbose := globalBoolFlags["verbose"]
+	debug := globalBoolFlags["debug"]
+	jsonFlag := globalBoolFlags["json"]
+	ignoreWarnings := globalBoolFlags["ignore-warnings"]
 
 	if verbose || debug {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
@@ -41,13 +42,36 @@ func enableGlobalFlags(c *cli.Context) {
 		log.Logger = log.With().Caller().Logger()
 	}
 
-	jsonFlag := c.Bool("json")
 	if !jsonFlag {
 		// pretty print output to the console if we are not interested in parsable output
-		consoleOutput := zerolog.ConsoleWriter{Out: os.Stderr}
+		consoleOutput := zerolog.ConsoleWriter{Out: os.Stdout}
 		consoleOutput.FormatFieldName = func(i interface{}) string {
 			return fmt.Sprintf("\n\t%s: ", util.Colorize(constants.ColorBlue, i))
 		}
+
+		consoleOutput.FormatLevel  = func(i interface{}) string {
+			if i == nil {
+				return util.Colorize(constants.ColorBold,"Scan Result:")
+			}
+
+			level := i.(string)
+
+			var formattedLevel string
+			switch level {
+			case "warn":
+				formattedLevel = util.Colorize(constants.ColorYellow, level)
+			case "error":
+				formattedLevel = util.Colorize(constants.ColorRed, level)
+			case "info":
+				formattedLevel = util.Colorize(constants.ColorBlue, level)
+			case "debug":
+				formattedLevel = util.Colorize(constants.ColorGreen, level)
+			default:
+				formattedLevel = util.Colorize(constants.ColorWhite, level)
+			}
+			return fmt.Sprintf("| %s |", formattedLevel)
+		}
+
 		log.Logger = log.Output(consoleOutput)
 
 	}
