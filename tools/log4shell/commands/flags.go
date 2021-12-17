@@ -44,7 +44,7 @@ func enableGlobalFlags(c *cli.Context) {
 	jsonFlag := c.Bool("json")
 	if !jsonFlag {
 		// pretty print output to the console if we are not interested in parsable output
-		consoleOutput := zerolog.ConsoleWriter{Out: os.Stderr}
+		consoleOutput := zerolog.ConsoleWriter{Out: os.Stdout}
 		consoleOutput.FormatFieldName = func(i interface{}) string {
 			return fmt.Sprintf("\n\t%s: ", util.Colorize(constants.ColorBlue, i))
 		}
