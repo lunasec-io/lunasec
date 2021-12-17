@@ -81,3 +81,11 @@ make build && ./log4shell
 ## Releases
 
 Find the compiled tool for your OS [here](https://github.com/lunasec-io/lunasec/releases/).
+
+
+## How to manually release to github
+```shell
+git tag -a v<VERSION>-log4shell -m "<RELEASE NAME>"
+git push origin v<VERSION>-log4shell
+GITHUB_TOKEN=<GITHUB_PERSONAL_ACCESS_TOKEN> goreleaser release --rm-dist
+```
