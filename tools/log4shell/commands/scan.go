@@ -47,8 +47,8 @@ func loadHashLookup(log4jLibraryHashes []byte, versionHashes string, onlyScanArc
 	return
 }
 
-func ScanCommand(c *cli.Context, log4jLibraryHashes []byte) (err error) {
-	enableGlobalFlags(c)
+func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHashes []byte) (err error) {
+	enableGlobalFlags(c, globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
 	log.Debug().

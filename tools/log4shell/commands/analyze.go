@@ -21,8 +21,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func AnalyzeCommand(c *cli.Context) error {
-	enableGlobalFlags(c)
+func AnalyzeCommand(c *cli.Context, globalBoolFlags map[string]bool) error {
+	enableGlobalFlags(c, globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
 

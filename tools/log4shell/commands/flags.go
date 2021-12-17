@@ -24,10 +24,11 @@ import (
 	"os"
 )
 
-func enableGlobalFlags(c *cli.Context) {
-	verbose := c.Bool("verbose")
-	ignoreWarnings := c.Bool("ignore-warnings")
-	debug := c.Bool("debug")
+func enableGlobalFlags(c *cli.Context, globalBoolFlags map[string]bool) {
+	verbose := globalBoolFlags["verbose"]
+	debug := globalBoolFlags["debug"]
+	jsonFlag := globalBoolFlags["json"]
+	ignoreWarnings := globalBoolFlags["ignore-warnings"]
 
 	if verbose || debug {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
@@ -41,7 +42,6 @@ func enableGlobalFlags(c *cli.Context) {
 		log.Logger = log.With().Caller().Logger()
 	}
 
-	jsonFlag := c.Bool("json")
 	if !jsonFlag {
 		// pretty print output to the console if we are not interested in parsable output
 		consoleOutput := zerolog.ConsoleWriter{Out: os.Stdout}

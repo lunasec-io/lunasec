@@ -28,6 +28,22 @@ func main() {
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
+	globalBoolFlags := map[string]bool{
+		"verbose":         false,
+		"json":            false,
+		"debug":           false,
+		"ignore-warnings": false,
+	}
+
+	setGlobalBoolFlags := func(c *cli.Context) error {
+		for flag := range globalBoolFlags {
+			if c.IsSet(flag) {
+				globalBoolFlags[flag] = true
+			}
+		}
+		return nil
+	}
+
 	app := &cli.App{
 		Name:  "log4shell",
 		Usage: "Identify and mitigate the impact of the log4shell (CVE-2021-44228) vulnerability.",
@@ -39,6 +55,7 @@ func main() {
 		},
 		Version:     constants.Version,
 		Description: "Identify code dependencies that are vulnerable to the log4shell vulnerability. Read more at https://log4shell.com.",
+		Before:      setGlobalBoolFlags,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:  "verbose",
@@ -55,20 +72,24 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			{
-				Name:  "analyze",
-				Usage: "Scan known vulnerable Log4j dependencies and create a mapping of JndiLookup.class hash to version.",
+				Name:   "analyze",
+				Usage:  "Scan known vulnerable Log4j dependencies and create a mapping of JndiLookup.class hash to version.",
+				Before: setGlobalBoolFlags,
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:  "output",
 						Usage: "File path for where to output findings in JSON format.",
 					},
 				},
-				Action: commands.AnalyzeCommand,
+				Action: func(c *cli.Context) error {
+					return commands.AnalyzeCommand(c, globalBoolFlags)
+				},
 			},
 			{
 				Name:    "scan",
 				Aliases: []string{"s"},
 				Usage:   "Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.",
+				Before:  setGlobalBoolFlags,
 				Flags: []cli.Flag{
 					&cli.StringSliceFlag{
 						Name:  "exclude",
@@ -109,13 +130,14 @@ func main() {
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return commands.ScanCommand(c, log4jLibraryHashes)
+					return commands.ScanCommand(c, globalBoolFlags, log4jLibraryHashes)
 				},
 			},
 			{
 				Name:    "livepatch",
 				Aliases: []string{"s"},
 				Usage:   "Perform a live patch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.",
+				Before:  setGlobalBoolFlags,
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:  "payload-url",
@@ -131,7 +153,7 @@ func main() {
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return commands.LivePatchCommand(c, hotpatchFiles)
+					return commands.LivePatchCommand(c, globalBoolFlags, hotpatchFiles)
 				},
 			},
 		},
