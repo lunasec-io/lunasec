@@ -29,7 +29,7 @@ const (
 var (
 	CveSeverityLookup = map[string]string {
 		Log4ShellCve: "10.0",
-		CtxCve:       "3.7",
+		CtxCve:       "9.0",
 		Log4j1RceCve: "9.8",
 	}
 
