@@ -15,16 +15,11 @@
 package main
 
 import (
-	"encoding/json"
+	"github.com/lunasec-io/lunasec/tools/log4shell/commands"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
-	"github.com/lunasec-io/lunasec/tools/log4shell/patch"
-	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
-	"github.com/lunasec-io/lunasec/tools/log4shell/types"
-	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"io/ioutil"
 	"os"
 )
 
@@ -46,62 +41,6 @@ func enableGlobalFlags(c *cli.Context) {
 		// pretty print output to the console if we are not interested in parsable output
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}
-}
-
-func scanCommand(c *cli.Context) error {
-	enableGlobalFlags(c)
-
-	searchDirs := c.Args().Slice()
-	log.Debug().Strs("directories", searchDirs).Msg("scanning directories")
-
-	onlyScanArchives := c.Bool("archives")
-	output := c.String("output")
-
-	findings := scan.SearchDirsForVulnerableClassFiles(searchDirs, onlyScanArchives)
-
-	if output != "" {
-		findingsOutput := types.FindingsOutput{
-			VulnerableLibraries: findings,
-		}
-		serializedOutput, err := json.Marshal(findingsOutput)
-		if err != nil {
-			log.Error().Err(err).Msg("unable to marshall findings output")
-			return err
-		}
-
-		err = ioutil.WriteFile(output, serializedOutput, 0644)
-		if err != nil {
-			log.Error().Err(err).Msg("unable to write findings to output file")
-			return err
-		}
-	}
-	return nil
-}
-
-func hotPatchCommand(c *cli.Context) error {
-	enableGlobalFlags(c)
-
-	ip := c.String("ip")
-
-	if ip == "" {
-		log.Info().Msg("Public IP not provided. Binding to the local network interface.")
-		ip = "localhost"
-	}
-
-	hotpatchServer := patch.NewHotpatchLDAPServer(ip)
-	hotpatchPayloadServer := patch.NewHotpatchPayloadServer(hotpatchFiles)
-
-	log.Info().
-		Msg("Starting Log4Shell hotpatch LDAP and payload servers")
-
-	hotpatchServer.Start()
-	hotpatchPayloadServer.Start()
-
-	util.WaitForProcessExit(func() {
-		hotpatchServer.Stop()
-	})
-
-	return nil
 }
 
 func jarPatchCommand(c *cli.Context) error {
@@ -141,6 +80,22 @@ func main() {
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
+	globalBoolFlags := map[string]bool{
+		"verbose":         false,
+		"json":            false,
+		"debug":           false,
+		"ignore-warnings": false,
+	}
+
+	setGlobalBoolFlags := func(c *cli.Context) error {
+		for flag := range globalBoolFlags {
+			if c.IsSet(flag) {
+				globalBoolFlags[flag] = true
+			}
+		}
+		return nil
+	}
+
 	app := &cli.App{
 		Name:  "log4shell",
 		Usage: "Identify and mitigate the impact of the log4shell (CVE-2021-44228) vulnerability.",
@@ -152,6 +107,7 @@ func main() {
 		},
 		Version:     constants.Version,
 		Description: "Identify code dependencies that are vulnerable to the log4shell vulnerability. Read more at https://log4shell.com.",
+		Before:      setGlobalBoolFlags,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:  "verbose",
@@ -168,13 +124,41 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			{
+				Name:   "analyze",
+				Usage:  "Scan known vulnerable Log4j dependencies and create a mapping of JndiLookup.class hash to version.",
+				Before: setGlobalBoolFlags,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "output",
+						Usage: "File path for where to output findings in JSON format.",
+					},
+				},
+				Action: func(c *cli.Context) error {
+					return commands.AnalyzeCommand(c, globalBoolFlags)
+				},
+			},
+			{
 				Name:    "scan",
 				Aliases: []string{"s"},
 				Usage:   "Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.",
+				Before:  setGlobalBoolFlags,
 				Flags: []cli.Flag{
+					&cli.StringSliceFlag{
+						Name:  "exclude",
+						Usage: "Exclude subdirectories from scanning. This can be helpful if there are directories which your user does not have access to when starting a scan from `/`.",
+					},
+					&cli.BoolFlag{
+						Name:        "include-log4j1",
+						Usage:       "Use to also include scanning for Log4j 1.x vulnerabilities.",
+						DefaultText: "false",
+					},
 					&cli.BoolFlag{
 						Name:  "archives",
 						Usage: "Only scan for known vulnerable archives. By default the CLI will scan for class files which are known to be vulnerable which will result in higher signal findings. If you are specifically looking for vulnerable Java archive hashes, use this option.",
+					},
+					&cli.StringFlag{
+						Name:  "version-hashes",
+						Usage: "File path of a version hashes file.",
 					},
 					&cli.StringFlag{
 						Name:  "output",
@@ -185,6 +169,14 @@ func main() {
 						Usage: "Display verbose information when running commands.",
 					},
 					&cli.BoolFlag{
+						Name:  "ignore-warnings",
+						Usage: "Do not display warnings, only show findings.",
+					},
+					&cli.BoolFlag{
+						Name:  "no-follow-symlinks",
+						Usage: "Disable the resolution of symlinks while scanning. Note: symlinks might resolve to files outside of the included directories and so this option might be useful if you strictly want to search in said directories.",
+					},
+					&cli.BoolFlag{
 						Name:  "json",
 						Usage: "Display findings in json format.",
 					},
@@ -193,19 +185,32 @@ func main() {
 						Usage: "Display helpful information while debugging the CLI.",
 					},
 				},
-				Action: scanCommand,
+				Action: func(c *cli.Context) error {
+					return commands.ScanCommand(c, globalBoolFlags, log4jLibraryHashes)
+				},
 			},
 			{
-				Name:    "in-memory-hot-patch",
+				Name:    "livepatch",
 				Aliases: []string{"s"},
-				Usage:   "Perform a live hot patch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.",
+				Usage:   "Perform a live patch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.",
+				Before:  setGlobalBoolFlags,
 				Flags: []cli.Flag{
 					&cli.StringFlag{
-						Name:  "ip",
-						Usage: "If testing locally, set this to a local network interface (view available interfaces with ifconfig/ipconfig). If using on a remote server, set this value to the publicly accessible IP address of the server.",
+						Name:  "payload-url",
+						Usage: "The URL that the LDAP server will tell the target to fetch the payload from. This must be an accessible route FROM any targeted host TO this patch server. (ex. https://hotpatch.lunasec.com)",
+					},
+					&cli.StringFlag{
+						Name:  "ldap-host",
+						Usage: "The hostname for the Log4Shell LDAP server.",
+					},
+					&cli.IntFlag{
+						Name:  "ldap-port",
+						Usage: "The port for the Log4Shell LDAP server.",
 					},
 				},
-				Action: hotPatchCommand,
+				Action: func(c *cli.Context) error {
+					return commands.LivePatchCommand(c, globalBoolFlags, hotpatchFiles)
+				},
 			},
 			{
 				Name:    "patch-local-jar",
