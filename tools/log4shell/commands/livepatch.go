@@ -24,8 +24,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func LivePatchCommand(c *cli.Context, hotpatchFiles embed.FS) error {
-	enableGlobalFlags(c)
+func LivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool, hotpatchFiles embed.FS) error {
+	enableGlobalFlags(c, globalBoolFlags)
 
 	payloadUrl := c.String("payload-url")
 	ldapHost := c.String("ldap-host")

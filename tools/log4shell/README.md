@@ -48,6 +48,13 @@ You can disable these by passing `--ignore-warnings`.
 $ log4shell scan --ignore-warnings <dir1> <dir2> ...
 ```
 
+It can be common to run into symlink'ed jar files, and by default they are resolved. To not have this happen
+use the `--no-follow-symlinks` flag.
+
+```shell
+$ log4shell scan --no-follow-symlinks <dir1> <dir2> ...
+```
+
 You may exclude subdirectories while searching by using `--exclude`. This can be used multiple times in the command to
 exclude multiple subdirectories.
 
@@ -81,3 +88,11 @@ make build && ./log4shell
 ## Releases
 
 Find the compiled tool for your OS [here](https://github.com/lunasec-io/lunasec/releases/).
+
+
+## How to manually release to github
+```shell
+git tag -a v<VERSION>-log4shell -m "<RELEASE NAME>"
+git push origin v<VERSION>-log4shell
+GITHUB_TOKEN=<GITHUB_PERSONAL_ACCESS_TOKEN> goreleaser release --rm-dist
+```
