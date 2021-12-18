@@ -15,6 +15,7 @@
 package constants
 
 const (
-	HotpatchServerPort = 8000
-	HotpatchJarFileName = "log4shell-hotpatch-1.0.jar"
+	DefaultLDAPServerPort = 1389
+
+	DefaultPayloadUrl = "http://localhost:8000/"
 )

