@@ -1,6 +1,6 @@
 ---
-title: "How to discuss vulnerabilities in your open source project, for non-security people"
-description: Using the Log4Shell disaster to explain how to properly discuss vulnerabilities in Open Source software.
+title: "How to discuss and fix vulnerabilities in your open source library"
+description: Using the Log4Shell disaster to explain how to properly discuss and patch vulnerabilities in Open Source software.
 slug: how-to-mitigate-open-source
 date: 2021-12-16
 keywords: [open-source, vulnerability, patching, PR, pull-release]
@@ -31,43 +31,124 @@ authors:
 -->
 
 Talking about patching vulnerabilities publicly on GitHub is one of the main ways that attackers find and exploit vulnerabilities
-in Open Source software.  This is a short guide on how to handle the process properly, using the Log4Shell incident as a case study.
+in Open Source software.  This is a step-by-step guide for Open Source maintainers on how to handle the process properly, using the Log4Shell incident as a case study.
 
 ### Things they don't teach you in school
 
 As a "normal" developer who works alongside security engineers, I hear them mention all kinds of best practices that,
 for the most part, I've never heard of.  It turns out that how to properly deal with vulnerabilities in a project you use or contribute to,
-right down to what you say on GitHub, can be just as important as getting the vulnerability patched.log4j is a great case study because,
-even though people had the best intentions, things went catastrophically wrong.
+right down to what you say on GitHub, can be just as important as the patch itself.
 
-At the core of the issue you have a couple of
-developers donating their spare time, doing their best. This is absolutely not
+log4j is a great case study because,
+even though people had the best intentions, things went catastrophically wrong. At the core of the issue you have a couple of
+developers donating their spare time doing their best. This is absolutely not
 meant to be a hit piece against them or Open Source software, but instead a guide to help the next person handle things the right way.
 Together, let's learn how to do this properly.
 
 ### Hackers are crawling GitHub looking for security patches
 
 Patching vulnerabilities is great, and finding one and contributing a fix can be pretty exciting. But for a vulnerability to be patched,
-one has to have first existed.  It's trivially easy to write a webcrawler that looks through GitHub for the words "vulnerability", "security", "injection", etc...
+one has to have first existed.  It's trivially easy to write a webcrawler that looks through GitHub for the words
+"vulnerability", "security", "injection", "exploit", etc...
 and find a package where the last version, if not the current one, has a vulnerability ready to be turned into an exploit.
-Those crawlers are up and running right now, reading your comments and looking for the next 0-day. Let that sink in.
+Those crawlers are up and running _right now_, reading your comments and looking for the next 0-day. Let that sink in.
 
 ## It's about being discreet
 
-### Reporting the vuln
+### Reporting the vulnerability
 
 How the vulnerability first gets reported is critical. In the case of log4j, contrary to what you might think,
-it looks like everything went right.  The log4j team was contacted **privately** about the vulnerability.  If you are
-someone spotting a vulnerability for the first time, this is exactly what you should do.
+it looks like everything went right. According to the log4shell [Wikipedia page](https://en.wikipedia.org/wiki/Log4Shell), the vulnerability was reported
+*privately* to the apache team way back on November 24th by Chen Zhaojun of
+Alibaba Cloud Security Team.
 
-INSERT EXPLANATION OF HOW IT WENT DOWN
+If you are someone spotting a vulnerability for the first time, this is exactly what you should do.
+We can also see that Mitre site created the CVE, **in private**, two days later, november 26th.
 
-Allow a reasonable amount of time
-for them to deal with the issue before you do anything public on GitHub.
+![Picture of CVE date](/img/cve-date.png)
 
-### Patching the vuln
+Up until this point, it was security professionals following a well documented practice called [Responsible Disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure).  Let's move on to
+what happened next:
 
-Discretion is key here. Web crawlers aren't smart enough to recognize that a patch fixes a vulnerability
-without anyone saying it out-loud.  If they were, we'd be in trouble.
+### Patching the vulnerability
 
-https://github.com/apache/logging-log4j2/pull/608
+Often just the nature of the patch can alert those who know what to look for, even without
+anyone spelling out that it's a vulnerability.
+
+Let's look at the first [log4j PR](https://github.com/apache/logging-log4j2/pull/608).
+
+![Pr header](/img/log4j-pr-header.png)
+
+At first glance it doesn't look too bad, at least to an average dev.  Unfortunately, bad actors probably noticed this PR
+almost right away.
+Let's look at the files committed:
+
+![exploit patch file name](/img/log4j-exploit-file.png)
+
+In the PR, there is literally a file named `JndiExploit.java`. Even without using the word exploit, the word JNDI could
+have been enough to attract bad actors.
+
+![person on github asking publicly if its a vuln](/img/security-question-log4j.png)
+
+Cat's out of the bag. It's almost certain this PR, made with the best intentions, made things far worse.
+
+In the end, the vulnerability went public before log4j was ready to ship a fix, and they were left scrambling.
+Their first release of version `2.15.0`, which much of the community installed, proved to still have issues.
+They had to release a second patch in `2.16.0` which we seriously hope is seeing widespread adoption.
+
+## How to do it right
+
+### Step 1: Mitigate in private
+Open source software is public, which means eventually the patch will need to be public.  We want that to happen
+when we are as ready for it as possible, **not before**, so:
+
+#### Make a private fork of your repo
+Developers will need a private space to work on a patch and get ready before that happens.
+This will give them space to make the change, prepare a release, and get documentation ready.
+
+Ideally a security person will be brought into this private process to audit the change, if you can get one. Side note: We are considering
+founding a non-profit to give people this help, and if that's something you'd like to see please [let us know](https://docs.google.com/forms/d/e/1FAIpQLSd1yaB-3ob4yNnHBDzmFvrnl0VyViT234kpdcvadX-9G2M3eQ/viewform?usp=sf_link).
+
+Once a release has been drafted, this is an excellent time to bring in some of your biggest users to try it out.  This has
+the benefit of testing your patch, getting more eyes on the problem, and making sure those consumers have their
+own patched releases ready to go. Let them know they should do this work in private.
+
+In the case of Apache, the biggest users of log4j (like Apache Struts) should have been alerted privately. They could have
+had their own privately prepared releases ready to go public when log4shell did.
+
+In summary, doing it in private gives space and time to go through and fix things properly.
+
+### Step 2: Release Simultaneously
+Now it's time to rip the bandage off.  Publish all changes, releases, and documentation at the same time. Coordinate with any consumers
+that took your change early.
+
+Hopefully the documentation or press release contains all the information needed by users to patch the change, right away.
+Generally, this is just explaining the vulnerability and pointing to the new release.
+
+Making noise and getting the word out about the vulnerability is going to make for more people updating.
+In the case of larger projects and more serious vulnerabilities, it might be a good idea to contact the press directly.
+This can help you keep a handle on the reporting and let you control the narrative around how to fix it.
+
+## Try to get everyone to follow this flow
+Personally, I would recommend a short warning with the protocol to patch security problems in your Issue and Pull Request templates.
+Ours looks like:
+
+**STOP**: Is this a **security vulnerability**?  If so, follow Responsible Disclosure and email us at email@email.com instead of opening an issue.
+
+It's not a bad idea to link to this blog post or the resources below if you are a security researcher reporting a vulnerability to a project.
+Maybe if that had happened with log4j, it would have been handled differently.
+
+## Other resources
+* Google has compiled a little-known [comprehensive guide](https://github.com/google/oss-vulnerability-guide) on dealing with exactly these situations.
+* OpenSSF has a [Vulnerability Disclosures Working Group](https://github.com/ossf/wg-vulnerability-disclosures) that works to improve vulnerability disclosures in Open Source Software.
+
+## That's it
+These steps aren't that hard to follow, but they're different from the normal development flow of Open Source software.
+This is common knowledge in security communities, but now we can say for sure that not every Open Source developer knows them.
+Not everyone has a background in security, and that's okay. It's [our goal](https://www.lunasec.io/docs/) to make security
+as easy and accessible as possible for everyday developers.
+
+### Stay in the loop
+import ContactForm from '../src/components/ContactForm.jsx'
+
+<ContactForm/>
