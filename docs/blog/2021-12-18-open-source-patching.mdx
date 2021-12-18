@@ -2,7 +2,7 @@
 title: "How to Discuss and Fix Vulnerabilities in Your Open Source Library"
 description: Using the Log4Shell disaster to explain how to properly discuss and patch vulnerabilities in Open Source software.
 slug: how-to-mitigate-open-source
-date: 2021-12-17
+date: 2021-12-18
 keywords: [open-source, vulnerability, patching, PR, pull-release]
 tags: [zero-day, security, data-security, data-breaches, guides]
 authors:
@@ -32,8 +32,8 @@ authors:
 
 The worldwide scramble to fix the Log4Shell vulnerability has resulted in a number of paths to resolution without a single
 trusted, clear, and concise recommendation. Ever since our initial report on the Log4Shell vulnerability, we have made
-countless updates to our posts over the past week as more information is uncovered, and new vulnerabilities are found.
-This simply should not happen for a library which is used in about [37% of company Java applications](https://www.contrastsecurity.com/security-influencers/log4shell-by-the-numbers?utm_campaign=WD-Log4jOffer-Q4FY22&utm_content=191438199&utm_medium=social&utm_source=twitter&hss_channel=tw-453210489)*.
+countless updates to our posts over the past week as more information is uncovered and new vulnerabilities are found.
+Ideally, the narrative would be much clearer for a library which is [so widely used](https://www.contrastsecurity.com/security-influencers/log4shell-by-the-numbers?utm_campaign=WD-Log4jOffer-Q4FY22&utm_content=191438199&utm_medium=social&utm_source=twitter&hss_channel=tw-453210489).
 
 We feel that the chaos which has followed the initial report of the Log4Shell vulnerability started with how the public patching
 of Log4j was handled on GitHub. This is a step-by-step guide for Open Source maintainers on how to handle the security
@@ -157,13 +157,15 @@ In the case of larger projects and more serious vulnerabilities, it might be a g
 This can help you keep a handle on the reporting and let you control the narrative around how to fix it.
 
 ## Educate your contributors
-Personally, I would recommend a short warning about the proper way to patch security problems in your Issue and Pull Request templates.
+The above process is something that your contributors need to know about ahead of time. Personally, I would recommend a short warning
+about the proper way to patch security problems in your Issue and Pull Request templates.
+
 Ours looks like:
 
 **STOP**: Is this a **security vulnerability**?  If so, follow Responsible Disclosure and email us at email@email.com instead of opening an issue.
 
 It's a good idea to say something similar in your README and to create a `SECURITY.md` file in the root of your project with disclosure instructions.
-[Here](https://github.com/facebook/react/security/policy) is React's `SECURITY.md`, for example.
+Here is React's [`SECURITY.md`](https://github.com/facebook/react/security/policy), for example.
 
 If you want to customize the process further, here are some useful [templates](https://github.com/google/oss-vulnerability-guide/tree/main/templates)
 for opening security policies and reporting vulnerabilities.
