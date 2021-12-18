@@ -133,14 +133,15 @@ As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=2950
 >
 > If you are using a version older than 2.10.0 and cannot upgrade, your mitigation choices are:
 >
-> - ~~Modify every logging pattern layout to say `%m{nolookups}` instead of `%m` in your logging
+> - ~~Modify every logging pattern layout to say `%m{nolookups}` instead of `%m` in your logging 
 >   config files, see details at https://issues.apache.org/jira/browse/LOG4J2-2109 (only works on
 >   versions >= 2.7) or,~~ This is a bad strategy that will likely result in a vulnerability long-term.
 >
-> - Substitute a non-vulnerable or empty implementation of the
+> - Substitute a ~~non-vulnerable~~ or empty implementation of the
     class org.apache.logging.log4j.core.lookup.JndiLookup, in a way that your classloader uses your
-    replacement instead of the vulnerable version of the class. Refer to your application's or
-    stack's classloading documentation to understand this behavior.
+    replacement instead of the vulnerable version of the class. **Note**, that it's a non-standard 
+    way of fixing that issue cause the security patch in the log4j2 repo does not affect the JNDI Lookup class, 
+    so refer to your application's or stack's classloading documentation to understand this behavior.
 
 ## How the exploit works
 
