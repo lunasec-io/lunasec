@@ -47,9 +47,19 @@ func ResolveSymlinkFilePathAndInfo(symlinkPath string) (path string, info os.Fil
 	path, err = filepath.EvalSymlinks(symlinkPath)
 	if err != nil {
 		log.Warn().
-			Str("path", path).
+			Str("symlinkPath", symlinkPath).
 			Err(err).
 			Msg("unable to read symlink to file")
+		return
+	}
+
+	_, err = os.Stat(path)
+	if err != nil {
+		log.Warn().
+			Str("path", path).
+			Str("symlinkPath", symlinkPath).
+			Err(err).
+			Msg("unable to read evaluated path")
 		return
 	}
 

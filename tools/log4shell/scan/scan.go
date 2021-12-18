@@ -90,7 +90,7 @@ func (s *Log4jDirectoryScanner) Scan(
 			// overwrite path and info with the resolved symlink file values
 			path, info, err = util.ResolveSymlinkFilePathAndInfo(path)
 			if err != nil {
-				return
+				return nil
 			}
 		}
 
