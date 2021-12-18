@@ -35,7 +35,7 @@ trusted, clear, and concise recommendation. Ever since our initial report on the
 countless updates to our posts over the past week as more information is uncovered, and new vulnerabilities are found.
 This simply should not happen for a library which is used in about [37% of company Java applications](https://www.contrastsecurity.com/security-influencers/log4shell-by-the-numbers?utm_campaign=WD-Log4jOffer-Q4FY22&utm_content=191438199&utm_medium=social&utm_source=twitter&hss_channel=tw-453210489)*.
 
-We feel that the chaos which has followed the initial report of the Log4Shell vulnerability all started by how the public patching
+We feel that the chaos which has followed the initial report of the Log4Shell vulnerability started with how the public patching
 of Log4j was handled on GitHub. This is a step-by-step guide for Open Source maintainers on how to handle the security
 patching process properly, using the Log4Shell incident as a retrospective.
 
@@ -43,20 +43,17 @@ patching process properly, using the Log4Shell incident as a retrospective.
 
 Maybe some are more careful than others, but something like Log4Shell could happen to many of us who work in the Open Source world.
 Putting aside vulnerability prevention for a moment, let's talk about what to do when you find out that you released something insecure.
-Staying calm and knowing what to do when this occurs could save time and more importantly, damage to your reputation.
+Staying calm and knowing what to do when the time comes could save a lot of damage down the road.
 
 ### Things they don't teach you in school
 As a "normal" developer who works alongside security engineers, I hear them mention all kinds of best practices that I've never heard of.
 It turns out that how to properly deal with vulnerabilities in a project you use or contribute to,
 right down to what you say on GitHub, can be just as important as the patch itself.
 
-This is not a hit piece against anyone, but truly the core issue is that only a couple of
-developers, who were donating their spare time to a project, had to issue a fix for one of the worst vulnerabilities in
-recent history.
-Log4j is a great case study because even though people had the best intentions, things went catastrophically wrong.
-
-The world is built on open source software, and the next Log4Shell is inevitable.
-We created a guide to help standardize a team's response when handling their next security issue, of any level of severity.
+Log4j is a great case study because even though people had the best intentions, things went catastrophically wrong. At the
+center of the story we have a couple of developers donating their spare time, doing their best. This is absolutely not
+meant to be a hit piece against them or Open Source software, but instead a guide to help the next person handle things the right way.
+Together, let's learn how to do this properly.
 
 ### Hackers are crawling GitHub looking for security patches
 
@@ -116,55 +113,74 @@ They had to release a second patch in `2.16.0` which we seriously hope is seeing
 Open source software is public, which means eventually the patch will need to be public.  We want that to happen
 when we are as ready for it as possible, **not before**, so:
 
-#### Make a private fork of your repo
+#### Use GitHub's Security Advisories and Temporary Private Forks
 Developers will need a private space to work on a patch and get ready before that happens.
 This will give them space to make the change, discuss it, prepare a release, and get documentation ready.
 
-Ideally a security person will be brought into this private process to audit the change, if you can get one. Side note: We are considering
-founding a non-profit to give people this help, and if that's something you'd like to see please [let us know](https://docs.google.com/forms/d/e/1FAIpQLSd1yaB-3ob4yNnHBDzmFvrnl0VyViT234kpdcvadX-9G2M3eQ/viewform?usp=sf_link).
+GitHub actually has a new
+built-in feature for this scenario, called a [Github Security Advisory](https://docs.github.com/en/code-security/security-advisories/creating-a-security-advisory).
+This tooling walks you through the process of creating a private space to talk about the issue, link to or create a CVE, notify your users when the time comes,
+and even helps you create a linked [Temporary Private Fork](https://docs.github.com/en/code-security/security-advisories/collaborating-in-a-temporary-private-fork-to-resolve-a-security-vulnerability)
+in which to work. You should absolutely use this feature and make a private fork.
+
+![github security advisory creation](/img/security-advisory-new-draft-security-advisory-button.png)
+
+As the maintainer, it's also your responsibility to request a CVE.  GitHub is a CVE Numbering Authority, meaning you can create a
+CVE through them.  [Request a CVE](https://docs.github.com/en/code-security/security-advisories/about-github-security-advisories#cve-identification-numbers)
+from the Security Advisory you created above. Being a part of the process helps make sure the CVE is accurate and not confusing
+and miscategorized like some of the log4j CVEs.
+
+Ideally, a security person will be brought into this private process to audit the change, if you can get one. Side note: We are considering
+founding a non-profit to give projects this help, and if that's something you'd like to see please [let us know](https://docs.google.com/forms/d/e/1FAIpQLSd1yaB-3ob4yNnHBDzmFvrnl0VyViT234kpdcvadX-9G2M3eQ/viewform?usp=sf_link).
 
 Once a release has been drafted, this is an excellent time to bring in some of your biggest users to try it out. This has
 the benefit of testing your patch, getting more eyes on the problem, and making sure those consumers have their
 own patched releases ready to go. Let them know they should do this work in private.
 
-In the case of Apache, the biggest users of log4j (like Apache Struts) should have been alerted privately. They could have
+In the case of Apache, it would have been better if the biggest users of log4j (like Apache Struts) were alerted privately. They could have
 had their own privately prepared releases ready to go public when log4shell did.
 
-In summary, doing it in private gives space and time to go through and fix things properly.
+In summary, doing it in private gives space and time to go through and fix things properly. Use GitHub's built-in tool to help
+you manage the process.
 
 ### Step 2: Release Simultaneously
-Now it's time to rip the bandage off. Publish all changes, releases, and documentation at the same time. Coordinate with any consumers
-that took your change early.
+Now it's time to rip the bandage off. Merge all changes, releases, and documentation at the same time. Publish the GitHub
+Security Advisory you created above.  Coordinate with any consumers
+that took your change early.  This process is called **coordinated disclosure**.
 
-Hopefully the documentation or press release contains all the information needed by users to patch the change, right away.
+Hopefully the documentation and Security Advisory contain all the information needed by users to patch the change, right away.
 Generally, this is just explaining the vulnerability and pointing to the new release.
 
 Making noise and getting the word out about the vulnerability is going to make for more people updating.
 In the case of larger projects and more serious vulnerabilities, it might be a good idea to contact the press directly.
 This can help you keep a handle on the reporting and let you control the narrative around how to fix it.
 
-## Try to get everyone to follow this flow
-Personally, I would recommend a short warning with the protocol to patch security problems in your Issue and Pull Request templates.
+## Educate your contributors
+Personally, I would recommend a short warning about the proper way to patch security problems in your Issue and Pull Request templates.
 Ours looks like:
 
 **STOP**: Is this a **security vulnerability**?  If so, follow Responsible Disclosure and email us at email@email.com instead of opening an issue.
 
-It's not a bad idea to link to this blog post or the resources below if you are a security researcher reporting a vulnerability to a project.
+It's a good idea to say something similar in your README and to create a `SECURITY.md` file in the root of your project with disclosure instructions.
+[Here](https://github.com/facebook/react/security/policy) is React's `SECURITY.md`, for example.
+
+If you want to customize the process further, GitHub also supports [templates](https://github.com/google/oss-vulnerability-guide/tree/main/templates)
+for opening security policies and reporting vulnerabilities.
+
+It might not be a bad idea to link to this blog post or the resources below if you are a security researcher reporting a vulnerability to a project.
 Maybe if that had happened with log4j, it would have been handled differently.
 
 ## Other resources
+* Github's guide on [coordinated disclosure](https://docs.github.com/en/code-security/security-advisories/about-coordinated-disclosure-of-security-vulnerabilities)
 * Google has compiled a little-known [comprehensive guide](https://github.com/google/oss-vulnerability-guide) on dealing with exactly these situations.
 * OpenSSF has a [Vulnerability Disclosures Working Group](https://github.com/ossf/wg-vulnerability-disclosures) that works to improve vulnerability disclosures in Open Source Software.
 
 ## That's it
 These steps aren't that hard to follow, but they're different from the normal development flow of Open Source software.
-This is common knowledge in security communities, but now we can say for sure that not every Open Source developer knows them.
+Coordinated disclosure is common knowledge in security communities, but now we can say for sure
+that not every Open Source developer knows how to do it.
 Not everyone has a background in security, and that's okay. It's [our goal](https://www.lunasec.io/docs/) to make security
 as easy and accessible as possible for everyday developers.
-
-### Footnotes
-* This data is collected from Contrast Security's scanned applications which belong to companies which use this service. This data
-is skewed as is with all data, but we feel it gives a reasonable benchmark for all companies.
 
 ### Stay in the loop
 import ContactForm from '../src/components/ContactForm.jsx'
