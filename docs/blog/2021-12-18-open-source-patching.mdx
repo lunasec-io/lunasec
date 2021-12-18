@@ -119,9 +119,10 @@ This will give them space to make the change, discuss it, prepare a release, and
 
 GitHub actually has a new
 built-in feature for this scenario, called a [Github Security Advisory](https://docs.github.com/en/code-security/security-advisories/creating-a-security-advisory).
-This tooling walks you through the process of creating a private space to talk about the issue, link to or create a CVE, notify your users when the time comes,
+This tooling walks you through the process of creating a private space to talk about the issue.  It can link to or create a CVE, notify your users when the time comes,
 and even helps you create a linked [Temporary Private Fork](https://docs.github.com/en/code-security/security-advisories/collaborating-in-a-temporary-private-fork-to-resolve-a-security-vulnerability)
 in which to work. You should absolutely use this feature and make a private fork.
+CI won't run in this fork which means you will need to be careful and test locally, but this is worth the trade-off for privacy.
 
 ![github security advisory creation](/img/security-advisory-new-draft-security-advisory-button.png)
 
@@ -164,7 +165,7 @@ Ours looks like:
 It's a good idea to say something similar in your README and to create a `SECURITY.md` file in the root of your project with disclosure instructions.
 [Here](https://github.com/facebook/react/security/policy) is React's `SECURITY.md`, for example.
 
-If you want to customize the process further, GitHub also supports [templates](https://github.com/google/oss-vulnerability-guide/tree/main/templates)
+If you want to customize the process further, here are some useful [templates](https://github.com/google/oss-vulnerability-guide/tree/main/templates)
 for opening security policies and reporting vulnerabilities.
 
 It might not be a bad idea to link to this blog post or the resources below if you are a security researcher reporting a vulnerability to a project.
