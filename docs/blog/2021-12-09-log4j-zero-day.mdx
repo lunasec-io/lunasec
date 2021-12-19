@@ -101,7 +101,9 @@ Almost all versions of log4j version 2 are affected.
 
 :::caution Limited vulnerability in `2.15.0`
 As of Tuesday, Dec 14, version `2.15.0` was found to still have a possible [vulnerability in some apps](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f).
-We recommend updating to `2.16.0` which [disables](https://github.com/apache/logging-log4j2/commit/44569090f1cf1e92c711fb96dfd18cd7dccc72ea) JNDI and [completely removes](https://github.com/apache/logging-log4j2/pull/623) `%m{lookups}`.
+~We recommend updating to `2.16.0` which [disables](https://github.com/apache/logging-log4j2/commit/44569090f1cf1e92c711fb96dfd18cd7dccc72ea) JNDI and [completely removes](https://github.com/apache/logging-log4j2/pull/623) `%m{lookups}`.~
+We recommend updating to `2.17.0` which includes the fixes introduced in `2.16.0` as well as a fix for a [discovered denial
+of service (DOS) attack](https://logging.apache.org/log4j/2.x/security.html).
 :::
 ### log4j v1
 
@@ -296,6 +298,7 @@ methods are still prevalent.
 15. Updated contact information.
 16. Updated original twitter link from @P0rZ9 as the original tweet was deleted. Changed from `https://twitter.com/P0rZ9/status/1468949890571337731` to `https://web.archive.org/web/20211209230040/https://twitter.com/P0rZ9/status/1468949890571337731`
 17. Added links to other blog posts.
+18. Update post to include latest version 2.17.0 release.
 
 ### Editing this post
 
