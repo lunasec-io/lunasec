@@ -2,7 +2,7 @@
 title: "How to Automatically Mitigate Log4Shell via a Live Patch (CVE-2021-44228 + CVE-2021-45046)"
 description: By simply sending a string to your servers, you can temporarily patch the Log4Shell vulnerability.
 slug: log4shell-live-patch
-date: 2021-12-15
+date: 2021-12-19
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
 keywords: [log4shell, log4j, log4j2, rce, java, zero-day, mitigation]
 authors:
@@ -34,6 +34,8 @@ authors:
   ~ limitations under the License.
   ~
 -->
+
+_Originally Posted @ December 15th & Last Updated @ December 19th, 3:37pm PST_
 
 **TL;DR:** This string will temporarily fix your systems by patching them against Log4Shell, but *please* read the rest
 of this post before you use it! **Update:** We
@@ -187,8 +189,8 @@ with us about it.
 
 We have extensively written about [steps for mitigating Log4Shell](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide),
 and we encourage you to refer to these steps as you work to address this vulnerability. We strongly urge you and
-your team to work towards updating your Log4j versions to `2.16.0` as you are able to (even if you've migrated to
-`2.15.0` already).
+your team to work towards updating your Log4j versions to ~~2.16.0~~ `2.17.0` as you are able to even if you've migrated to
+`2.15.0` or `2.16.0` already. (Update: log4j `2.16.0` has a DOS vulnerability with its own third security advisory.)
 
 If you do find yourself stuck in Dependency or Vendor hell though, you can always try to use the
 [Live Patch](#an-unconventional-silver-lining)
@@ -231,3 +233,4 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 :::
 
 1. Added links to other blog posts.
+2. Updated info to reference new 2.17.0 DOS CVE
