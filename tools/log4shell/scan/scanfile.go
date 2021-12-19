@@ -20,6 +20,7 @@ import (
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog/log"
 	"io"
+	"path/filepath"
 	"strings"
 )
 
@@ -66,8 +67,17 @@ func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, 
 			Str("cve", vulnerableFile.CVE).
 			Msg("Identified vulnerable path")
 
+		absolutePath, err := filepath.Abs(path)
+		if err != nil {
+			log.Warn().
+				Str("fileName", fileName).
+				Str("path", path).
+				Err(err).
+				Msg("Unable to resolve absolute path to file")
+		}
+
 		finding = &types.Finding{
-			Path:     path,
+			Path:     absolutePath,
 			FileName: fileName,
 			Hash:     fileHash,
 			Version:  vulnerableFile.Version,
