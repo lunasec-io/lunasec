@@ -43,38 +43,6 @@ func enableGlobalFlags(c *cli.Context) {
 	}
 }
 
-func jarPatchCommand(c *cli.Context) error {
-	enableGlobalFlags(c)
-
-	fileName := c.String("file-name")
-
-	if fileName == "" {
-		log.Info().Msg("Public IP not provided. Binding to the local network interface.")
-		panic("must specify a valid file name to patch")
-	}
-
-	file, err := os.Open(path)
-	if err != nil {
-		log.Warn().
-			Str("path", path).
-			Err(err).
-			Msg("unable to open archive")
-		panic("unable to open specified file")
-	}
-
-	fileInfo, err := file.Stat()
-
-	if err != nil {
-		panic("unable to read file info")
-	}
-
-	findings := scan.SearchArchiveForVulnerableFiles(fileName, file, fileInfo.Size(), false)
-
-	// TODO: Do something with these findings to actually patch them in-place. Either that or add the patching to `SearchArchiveForVulnerableFiles` above.
-
-	return nil
-}
-
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
@@ -213,16 +181,18 @@ func main() {
 				},
 			},
 			{
-				Name:    "patch-local-jar",
+				Name:    "patch",
 				Aliases: []string{"s"},
-				Usage:   "Patches a specified JAR or WAR file against log4shell by injecting a fixed version of the vulnerable code into vulnerable log4j instances found within it.",
+				Usage:   "Patches findings of libraries vulnerable toLog4Shell by removing the JndiLookup.class file from each.",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
-						Name:  "file-name",
-						Usage: "Patches the specified file (must be a valid JAR or WAR file).",
+						Name:  "findings",
+						Usage: "Patches all vulnerable Java archives which have been identified.",
 					},
 				},
-				Action: jarPatchCommand,
+				Action: func(c *cli.Context) error {
+					return commands.JavaArchivePatchCommand(c, globalBoolFlags)
+				},
 			},
 		},
 	}
