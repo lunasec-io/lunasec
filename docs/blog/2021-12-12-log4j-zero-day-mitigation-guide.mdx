@@ -196,11 +196,13 @@ cd lunasec/tools/log4shell-jar-scripts
 ### Checking Package Version
 
 If you can check what versions of log4j2 are being used, you can check for any below the recently published 
-`2.16.0`.
+`2.17.0`.
 
 :::caution Limited vulnerability in `2.15.0`
 As of Tuesday, Dec 14, version `2.15.0` was found to still have a possible [vulnerability in some apps](https://logging.apache.org/log4j/2.x/security.html).
-We recommend updating to `2.16.0` which removes the message lookup feature entirely.
+~We recommend updating to `2.16.0` which removes the message lookup feature entirely.~
+We recommend updating to `2.17.0` which includes the fixes introduced in `2.16.0` as well as a fix for a [discovered denial
+of service (DOS) attack](https://logging.apache.org/log4j/2.x/security.html).
 :::
 
 #### log4j v2
@@ -214,9 +216,9 @@ still possibly vulnerable on `2.15.0`.
 
 #### log4j v1
 
-Version 1 of log4j is vulnerable to other RCE attacks (like 
+Version 1 of log4j is vulnerable to other RCE attacks (like
 [CVE-2019-17571](https://www.cvedetails.com/cve/CVE-2019-17571/)), and if you're using it you need to
-[migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.16.0`.
+[migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.17.0`.
 
 ### Checking Vendor Software Versions
 The above scanning tool might not work for vendor's packages because of obfuscation, and in any case, you'll likely need
@@ -245,9 +247,9 @@ visualization of the Log4Shell exploit.  Take note of the possible solutions (sh
 </a>
 
 
-### Option 1: Upgrading to 2.16.0
+### Option 1: Upgrading to 2.17.0
 
-Apache log4j has released a version that fixes the Log4Shell vulnerability as of version `2.16.0`. This version disables JNDI by 
+Apache log4j has released a version that fixes the Log4Shell vulnerability as of version `2.17.0`. This version disables JNDI by
 default and removes the message lookup feature.
 
 **[Apache log4j Download Page](https://logging.apache.org/log4j/2.x/download.html)**
@@ -259,6 +261,10 @@ Log4j version `2.15.0` which was previously thought to be secure has been found 
 that could result in a DOS (but not RCE), users must update to `2.16.0`. 
 :::
 
+:::caution Version 2.16.0 vulnerable to DOS
+If you have updated Log4j to version `2.16.0`, a Denial of Service (DOS) attack is still present in [certain logging circumstances](https://logging.apache.org/log4j/2.x/security.html).
+:::
+
 ### Option 2: Enable `formatMsgNoLookups`
 :::warning This flag does not prevent all vulnerabilities
 As of Dec 14, it's been found that this flag is ineffective at stopping RCE in some situations,
@@ -266,7 +272,7 @@ explained here [by log4j](https://logging.apache.org/log4j/2.x/security.html) an
 [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046). We found the CVE wording confusing and
 are still investigating this vulnerability.
 
-You must update to `2.16.0` or use the JNDI patches below.
+You must update to `2.17.0` or use the JNDI patches below.
 :::
 The above release of log4j hardcodes the `formatMsgNoLookups` flag to true, ~~preventing the attack~~.  If you are using log4j
 version `2.10.0` to version `2.14.0` and can't yet update, you can still set the flag manually.
