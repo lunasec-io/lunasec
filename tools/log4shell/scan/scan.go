@@ -126,7 +126,7 @@ func (s *Log4jDirectoryScanner) scanLocatedArchive(
 	defer file.Close()
 
 	if s.onlyScanArchives {
-		finding := identifyPotentiallyVulnerableFile(file, path, file.Name(), constants.KnownVulnerableArchiveFileHashes)
+		finding := identifyPotentiallyVulnerableFile(nil, file, path, file.Name(), constants.KnownVulnerableArchiveFileHashes)
 		if finding != nil {
 			return []types.Finding{*finding}
 		}
@@ -154,13 +154,14 @@ func (s *Log4jDirectoryScanner) scanArchiveForVulnerableFiles(
 		//	Str("path", path).
 		//	Str("file", zipFile.Name).
 		//	Msg("scanning nested archive")
-		locatedFindings := s.scanFile(path, zipFile)
+		locatedFindings := s.scanFile(zipReader, path, zipFile)
 		findings = append(findings, locatedFindings...)
 	}
 	return
 }
 
 func (s *Log4jDirectoryScanner) scanFile(
+	zipReader *zip.Reader,
 	path string,
 	file *zip.File,
 ) (findings []types.Finding) {
@@ -171,14 +172,14 @@ func (s *Log4jDirectoryScanner) scanFile(
 			return
 		}
 
-		finding := s.scanArchiveFile(path, file)
+		finding := s.scanArchiveFile(zipReader, path, file)
 		if finding != nil {
 			findings = []types.Finding{*finding}
 		}
 		return
 	case constants.JarFileExt, constants.WarFileExt, constants.ZipFileExt, constants.EarFileExt:
 		if s.onlyScanArchives {
-			finding := s.scanArchiveFile(path, file)
+			finding := s.scanArchiveFile(zipReader, path, file)
 			if finding != nil {
 				findings = []types.Finding{*finding}
 			}
@@ -191,6 +192,7 @@ func (s *Log4jDirectoryScanner) scanFile(
 
 
 func (s *Log4jDirectoryScanner) scanArchiveFile(
+	zipReader *zip.Reader,
 	path string,
 	file *zip.File,
 ) (finding *types.Finding) {
@@ -203,7 +205,9 @@ func (s *Log4jDirectoryScanner) scanArchiveFile(
 			Msg("unable to open class file")
 		return
 	}
-	return s.processArchiveFile(reader, path, file.Name)
+	defer reader.Close()
+
+	return s.processArchiveFile(zipReader, reader, path, file.Name)
 }
 
 func (s *Log4jDirectoryScanner) scanEmbeddedArchive(

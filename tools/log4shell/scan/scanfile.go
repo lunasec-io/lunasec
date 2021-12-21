@@ -15,6 +15,7 @@
 package scan
 
 import (
+	"archive/zip"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
@@ -27,12 +28,17 @@ import (
 func IdentifyPotentiallyVulnerableFiles(scanLog4j1 bool, archiveHashLookup types.VulnerableHashLookup) types.ProcessArchiveFile {
 	hashLookup := FilterVulnerableHashLookup(archiveHashLookup, scanLog4j1)
 
-	return func(reader io.Reader, path, fileName string) (finding *types.Finding) {
-		return identifyPotentiallyVulnerableFile(reader, path, fileName, hashLookup)
+	return func(zipReader *zip.Reader, reader io.Reader, path, fileName string) (finding *types.Finding) {
+		return identifyPotentiallyVulnerableFile(zipReader, reader, path, fileName, hashLookup)
 	}
 }
 
-func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, hashLookup types.VulnerableHashLookup) (finding *types.Finding) {
+func identifyPotentiallyVulnerableFile(
+	zipReader *zip.Reader,
+	reader io.Reader,
+	path, fileName string,
+	hashLookup types.VulnerableHashLookup,
+) (finding *types.Finding) {
 	fileHash, err := util.HexEncodedSha256FromReader(reader)
 	if err != nil {
 		log.Warn().

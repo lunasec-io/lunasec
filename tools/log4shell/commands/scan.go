@@ -51,10 +51,11 @@ func loadHashLookup(
 	return
 }
 
-func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHashes []byte) (err error) {
-	enableGlobalFlags(c, globalBoolFlags)
-
-	searchDirs := c.Args().Slice()
+func scanDirectoriesForVulnerableLibraries(
+	c *cli.Context,
+	searchDirs []string,
+	log4jLibraryHashes []byte,
+) (scannerFindings []types.Finding, err error) {
 	log.Debug().
 		Strs("directories", searchDirs).
 		Msg("scanning directories")
@@ -67,7 +68,7 @@ func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHa
 
 	hashLookup, err := loadHashLookup(log4jLibraryHashes, versionHashes, onlyScanArchives)
 	if err != nil {
-		return err
+		return
 	}
 
 	processArchiveFile := scan.IdentifyPotentiallyVulnerableFiles(scanLog4j1, hashLookup)
@@ -75,7 +76,18 @@ func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHa
 	scanner := scan.NewLog4jDirectoryScanner(
 		excludeDirs, onlyScanArchives, noFollowSymlinks, processArchiveFile)
 
-	scannerFindings := scanner.Scan(searchDirs)
+	scannerFindings = scanner.Scan(searchDirs)
+	return
+}
+
+func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHashes []byte) (err error) {
+	enableGlobalFlags(c, globalBoolFlags)
+
+	searchDirs := c.Args().Slice()
+	scannerFindings, err := scanDirectoriesForVulnerableLibraries(c, searchDirs, log4jLibraryHashes)
+	if err != nil {
+		return
+	}
 
 	output := c.String("output")
 	if output != "" {
