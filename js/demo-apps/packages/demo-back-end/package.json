@@ -7,7 +7,7 @@
   "typings": "build/types.d.ts",
   "types": "/src/types.ts",
   "scripts": {
-    "start:dev": "CIPHERTEXT_S3_BUCKET=\"$(./get-bucket-name.sh)\" && yarn run ts-node-dev --trace-warnings --files ./src/main.ts",
+    "start:dev": "CIPHERTEXT_S3_BUCKET=\"$(./get-bucket-name.sh)\" yarn run ts-node-dev --trace-warnings --files ./src/main.ts",
     "start:prod": "yarn run compile && cp -r ./src/common/database/migrations ./build/common/database/migrations && CIPHERTEXT_S3_BUCKET=\"$(sh $(pwd)/get-bucket-name.sh)\" pm2-runtime start ./build/main.js --name demo-back-end",
     "compile": "yarn run tsc -p tsconfig.json",
     "copy-dev-files": "cp -R views build/",
