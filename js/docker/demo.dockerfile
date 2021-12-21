@@ -1,4 +1,4 @@
-FROM lunasec/precached-dependencies:v1.0.0 as lerna-bootstrap
+FROM lunasec/precached-dependencies:v1.0.1 as lerna-bootstrap
 
 COPY . /repo
 
@@ -32,8 +32,6 @@ CMD ["serve-static", "-l", "3000"]
 ENTRYPOINT ["yarn", "run"]
 
 FROM lerna-bootstrap as lunasec-cli
-
-RUN apk add --no-cache docker docker-compose curl python3 bash
 
 # Overwrite this when calling docker from CI
 ENV HOST_MACHINE_PWD=""
