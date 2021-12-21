@@ -96,7 +96,7 @@ func (s *Log4jDirectoryScanner) Scan(
 
 		fileExt := util.FileExt(path)
 		switch fileExt {
-		case constants.JarFileExt, constants.WarFileExt:
+		case constants.JarFileExt, constants.WarFileExt, constants.EarFileExt:
 			log.Debug().
 				Str("path", path).
 				Msg("scanning archive")
