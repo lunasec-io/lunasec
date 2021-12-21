@@ -1,5 +1,9 @@
 #!/bin/bash
-sudo rm -f ./outputs/aws_resources.json
+
+# wipe out our previous run-data
+rm -f ./outputs/aws_resources.json
+# make this directory ahead of time so that it has more open permissions when docker creates the volume
+mkdir -p ./outputs
 
 yarn run lunasec start --local-build --env=local-dependencies --force-rebuild=true
 r=$?
