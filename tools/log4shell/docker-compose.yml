@@ -1,0 +1,9 @@
+version: '3'
+services:
+  hotpatch:
+    image: lunasec/log4shell:1.2.0
+    restart: always
+    command: --verbose livepatch --payload-url http://patch.log4shell.com:80/
+    ports:
+    - 1389:1389
+    - 80:80

