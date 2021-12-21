@@ -58,7 +58,7 @@ func JavaArchivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool) er
 			log.Warn().
 				Str("path", finding.Path).
 				Err(err).
-				Msg("unable to open findings archive")
+				Msg("Unable to open findings archive")
 			return err
 		}
 		defer file.Close()
@@ -72,18 +72,27 @@ func JavaArchivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool) er
 			log.Warn().
 				Str("path", finding.Path).
 				Err(err).
-				Msg("unable to open archive for patching")
+				Msg("Unable to open archive for patching")
 			return err
 		}
 
 		var zipFile fs.File
 
-		zipFile, err = zipReader.Open(finding.FileName)
-		if err != nil {
+		if finding.JndiLookupFileName == "" {
 			log.Warn().
 				Str("path", finding.Path).
 				Err(err).
-				Msg("unable to open file from zip")
+				Msg("Finding does not have JndiLookup.class file to patch")
+			continue
+		}
+
+		zipFile, err = zipReader.Open(finding.JndiLookupFileName)
+		if err != nil {
+			log.Warn().
+				Str("path", finding.Path).
+				Str("jndiLookupFileName", finding.JndiLookupFileName).
+				Err(err).
+				Msg("Unable to open file from zip")
 			return err
 		}
 
@@ -93,20 +102,23 @@ func JavaArchivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool) er
 		if err != nil {
 			log.Warn().
 				Str("path", finding.Path).
-				Str("p", finding.Path).
 				Err(err).
-				Msg("unable to hash zip file")
+				Msg("Unable to hash zip file")
 			return err
 		}
 
-		if zipFileHash != finding.Hash {
+		if zipFileHash != finding.JndiLookupHash {
 			log.Warn().
 				Str("path", finding.Path).
-				Str("p", finding.Path).
+				Str("hash", finding.JndiLookupHash).
 				Err(err).
-				Msg("hashes do not match, not deleting")
+				Msg("Hashes do not match, not deleting")
 			return nil
 		}
+		log.Debug().
+			Str("path", finding.Path).
+			Str("path", finding.Path).
+			Msg("Found file to remove")
 	}
 
 	return nil
