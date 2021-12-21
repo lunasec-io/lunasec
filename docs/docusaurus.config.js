@@ -262,7 +262,6 @@ module.exports = {
           path: 'pages',
           routeBasePath: 'pages',
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
           editUrl:
             'https://github.com/lunasec-io/lunasec/edit/master/docs/',
           showLastUpdateAuthor: true,
@@ -283,8 +282,6 @@ module.exports = {
           changefreq: 'daily',
           priority: 1.0,
         },
-
-
       },
     ],
     //Does not work, redoc runtime appears broken, revisit after things are out of beta
