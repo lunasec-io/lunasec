@@ -2,7 +2,7 @@
 title: "Guide: How To Detect and Mitigate the Log4Shell Vulnerability (CVE-2021-44228 & CVE-2021-45046)" 
 description: If you're using log4j 2 in your infrastructure, this guide will help you understand how to check if you're impacted and show you how to quickly and securely mitigate the issue.
 slug: log4j-zero-day-mitigation-guide
-date: 2021-12-13
+date: 2021-12-19
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
 keywords: [log4shell, log4j, log4j2, rce, java, zero-day, mitigation]
 authors:
@@ -37,6 +37,8 @@ authors:
 
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
+_Originally Posted @ December 12th & Last Updated @ December 19th, 3:37pm PST_
+
 **Also read: Our analysis of [CVE-2021-45046](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046) (a second log4j vulnerability)**
 
 A few days ago, a serious new vulnerability was identified in Apache log4j v2 and published as 
@@ -53,8 +55,6 @@ If you're just trying to understand the Log4Shell vulnerability and the impact o
 earlier blog post](https://www.lunasec.io/docs/blog/log4j-zero-day/).
 :::
 <!--truncate-->
-
-_Originally Posted @ December 12th & Last Updated @ December 14th, 10:48pm PST_
 
 ## Be careful what Log4Shell advice you trust online
 
@@ -87,9 +87,17 @@ it and run the `log4shell` command in your terminal.  The tool can scan individu
 
 
 
-**OSX or Linux**
-```shell title="Example *nix Command"
+**Linux**
+```shell title="Example Linux Command"
 log4shell scan your-project-dir/
+```
+
+**OSX**
+```shell title="Example OSX Commands"
+# Replace `<PATH_ON_YOUR_MACHINE>` with your path, eg: `~/Downloads`
+cp <PATH_ON_YOUR_MACHINE>/log4shell_1.4.1-log4shell_Darwin_x86_64 /usr/local/bin/log4shell
+chmod +x /usr/local/bin/log4shell
+log4shell scan your-project-dir
 ```
 
 **Windows**
@@ -196,11 +204,15 @@ cd lunasec/tools/log4shell-jar-scripts
 ### Checking Package Version
 
 If you can check what versions of log4j2 are being used, you can check for any below the recently published 
-`2.16.0`.
+`2.17.0`.
 
 :::caution Limited vulnerability in `2.15.0`
 As of Tuesday, Dec 14, version `2.15.0` was found to still have a possible [vulnerability in some apps](https://logging.apache.org/log4j/2.x/security.html).
-We recommend updating to `2.16.0` which removes the message lookup feature entirely.
+
+~~We recommend updating to `2.16.0` which removes the message lookup feature entirely.~~ (Updated, see below)
+
+We recommend updating to `2.17.0` which includes the fixes introduced in `2.16.0` as well as a fix for a [discovered denial
+of service (DOS) attack](https://logging.apache.org/log4j/2.x/security.html).
 :::
 
 #### log4j v2
@@ -214,9 +226,9 @@ still possibly vulnerable on `2.15.0`.
 
 #### log4j v1
 
-Version 1 of log4j is vulnerable to other RCE attacks (like 
+Version 1 of log4j is vulnerable to other RCE attacks (like
 [CVE-2019-17571](https://www.cvedetails.com/cve/CVE-2019-17571/)), and if you're using it you need to
-[migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.16.0`.
+[migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.17.0`.
 
 ### Checking Vendor Software Versions
 The above scanning tool might not work for vendor's packages because of obfuscation, and in any case, you'll likely need
@@ -245,9 +257,9 @@ visualization of the Log4Shell exploit.  Take note of the possible solutions (sh
 </a>
 
 
-### Option 1: Upgrading to 2.16.0
+### Option 1: Upgrading to 2.17.0
 
-Apache log4j has released a version that fixes the Log4Shell vulnerability as of version `2.16.0`. This version disables JNDI by 
+Apache log4j has released a version that fixes the Log4Shell vulnerability as of version `2.17.0`. This version disables JNDI by
 default and removes the message lookup feature.
 
 **[Apache log4j Download Page](https://logging.apache.org/log4j/2.x/download.html)**
@@ -256,7 +268,11 @@ We recommend you upgrade, if possible.  For most people, this is the final and c
 
 :::caution Version 2.15.0 still may be vulnerable
 Log4j version `2.15.0` which was previously thought to be secure has been found to still have a [limited vulnerability](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f), 
-that could result in a DOS (but not RCE), users must update to `2.16.0`. 
+that could result in a DOS (but not RCE), users must update to `>= 2.16.0`.
+:::
+
+:::caution Version 2.16.0 vulnerable to DOS
+If you have updated Log4j to version `2.16.0`, a Denial of Service (DOS) attack is still present in [certain logging circumstances](https://logging.apache.org/log4j/2.x/security.html).
 :::
 
 ### Option 2: Enable `formatMsgNoLookups`
@@ -266,9 +282,9 @@ explained here [by log4j](https://logging.apache.org/log4j/2.x/security.html) an
 [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046). We found the CVE wording confusing and
 are still investigating this vulnerability.
 
-You must update to `2.16.0` or use the JNDI patches below.
+You must update to `2.17.0` or use the JNDI patches below.
 :::
-The above release of log4j hardcodes the `formatMsgNoLookups` flag to true, ~~preventing the attack~~.  If you are using log4j
+The above release of log4j sets the `formatMsgNoLookups` flag to true by default, ~~preventing the attack~~.  If you are using log4j
 version `2.10.0` to version `2.14.0` and can't yet update, you can still set the flag manually.
 
 Set `formatMsgNoLookups=true` when you configure log4j by performing one of the following:
@@ -395,7 +411,7 @@ _This only applies to log4j versions `>= 2.7.0`, older versions don't support it
 In addition to the below issues with this strategy, this mitigation may be bypassed in certain scenarios and still allows for RCE (see
 [our dedicated post](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046)
 about it), and this has been entirely [removed](https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternMethod)
-in log4j 2.16.0 and newer.
+in log4j `2.16.0` and newer.
 :::
 
 Some people online are suggesting updating your logging statements from `%m` to `%m{nolookupzz}` to mitigate this**.
@@ -493,3 +509,4 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 7. Added info about hot patching, and links to new releases.
 8. Update info about patching strategies.
 9. Added links to other blog posts.
+10. Updated info about 2.16.0 CVE telling users to upgrade to 2.17.0 now

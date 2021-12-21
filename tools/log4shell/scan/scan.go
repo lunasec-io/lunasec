@@ -203,6 +203,8 @@ func (s *Log4jDirectoryScanner) scanArchiveFile(
 			Msg("unable to open class file")
 		return
 	}
+	defer reader.Close()
+
 	return s.processArchiveFile(reader, path, file.Name)
 }
 
