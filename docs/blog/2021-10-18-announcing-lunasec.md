@@ -50,7 +50,7 @@ There has to be a better way to at least make it _harder_ for companies to be ca
 
 ## What is LunaSec?
 LunaSec does a lot, but the main way it works is by replacing sensitive data with meaningless identifiers known as "Tokens". Think of a long
-random number like an UUID (eg, `lunasec-a215783b-1f0d-4e2a-8e53-76951b9c60fe`). Your code then only ever deals with these 
+random number like a UUID (eg, `lunasec-a215783b-1f0d-4e2a-8e53-76951b9c60fe`). Your code then only ever deals with these 
 Tokens directly. All sensitive data lives in a dedicated encrypted database that's managed by LunaSec.
 
 A lot of security products do that, but LunaSec builds more security ontop of that idea, more than anyone else,
