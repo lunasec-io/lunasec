@@ -29,6 +29,9 @@ export function userRouter(models: Models) {
   /* GET users listing. */
   router.get('/me', ensureLoggedIn, async (req, res) => {
     const user = req.user;
+    if (!user) {
+      throw new Error('user null');
+    }
     if (user.ssn_token) {
       console.log(`creating grant for token ${user.ssn_token} with session id ${req.session.id}`);
       await lunaSec.grants.create(req.session.id, user.ssn_token);
@@ -46,9 +49,20 @@ export function userRouter(models: Models) {
         error: 'User not logged in',
       });
     }
+
+    const body = req.body;
+    if (!('ssn_token' in body) || typeof body.ssn_token !== 'string') {
+      return res.json({
+        success: false,
+        error: 'bad body',
+      });
+    }
+
     try {
-      await lunaSec.grants.verify(req.session.id, req.body.ssn_token);
-      await models.user.setSsn(req.user.id, req.body.ssn_token);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      await lunaSec.grants.verify(req.session.id, body.ssn_token);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      await models.user.setSsn(req.user.id, body.ssn_token);
     } catch (e: unknown) {
       console.error(e);
       return res.json({

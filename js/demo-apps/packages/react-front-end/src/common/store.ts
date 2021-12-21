@@ -28,9 +28,14 @@ export function getTransport(mode: Mode): Transport {
   }
   return expressTransport;
 }
+
 export const store = createStore<StoreModel>({
   user: null,
   loggedIn: computed((state) => !!state.user),
+  sidebarOpen: false,
+  setSidebarOpen: action((state, isOpen) => {
+    state.sidebarOpen = isOpen;
+  }),
   setUser: action((state, user) => {
     state.user = user;
   }),
@@ -41,6 +46,7 @@ export const store = createStore<StoreModel>({
     state.user.ssn_token = ssn;
   }),
 
+  // The transport layer (express or graphql) is passed in as an argument from the component that calls the thunk
   saveSsn: thunk(async (actions, { transport, ssn_token }, { getState }) => {
     const currentUser = getState().user;
     if (!currentUser) {

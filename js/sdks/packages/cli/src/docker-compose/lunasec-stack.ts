@@ -188,6 +188,10 @@ export class LunaSecStackDockerCompose {
   applicationBackEnd(): ComposeService {
     const name: LunaSecService = 'application-back-end';
 
+    const awsResourcesPath = this.buildMountPath('outputs/');
+
+    const outputMount = `${awsResourcesPath}:/outputs/`;
+
     const dockerBuildConfig = {
       ...this.serviceCreationConfig.getDockerImageName(`${name}-demo`),
     };
@@ -209,7 +213,7 @@ export class LunaSecStackDockerCompose {
         ...(this.serviceCreationConfig.localBuild ? localBuildConfig : dockerBuildConfig),
         healthcheck: serviceHealthCheck(3001),
         ...composeServicePorts([expressAppPort, graphqlAppPort, simpleTokenizerAppPort]),
-        volumes: debugVolumes,
+        volumes: [...debugVolumes, outputMount],
       },
     };
   }
@@ -394,10 +398,33 @@ export class LunaSecStackDockerCompose {
   }
 
   getSecureFrameHostname() {
-    if (this.serviceCreationConfig.env === 'tests' || this.serviceCreationConfig.env === 'hosted-live-demo') {
-      return 'secure-frame-iframe';
+    const env = this.serviceCreationConfig.env;
+
+    if (env === 'tests') {
+      return {
+        internalHostname: 'http://secure-frame-iframe:8000',
+        externalHostname: 'http://secure-frame-iframe:8000',
+      };
     }
-    return 'localhost';
+
+    if (env === 'demo') {
+      return {
+        internalHostname: 'http://secure-frame-iframe:8000',
+        externalHostname: 'http://localhost:8000',
+      };
+    }
+
+    if (env === 'hosted-live-demo') {
+      return {
+        internalHostname: 'http://secure-frame-iframe:8000',
+        externalHostname: 'https://secure-frame.lunasec.dev',
+      };
+    }
+
+    return {
+      internalHostname: 'http://localhost:8000',
+      externalHostname: 'http://localhost:8000',
+    };
   }
 
   getAuthenticationProviders(): Record<string, AuthProviderConfig> | undefined {
@@ -439,8 +466,6 @@ export class LunaSecStackDockerCompose {
       };
     }
 
-    const tokenizerUrl = this.serviceCreationConfig.environmentConfig.tokenizerUrl;
-
     const expressPort = 3001;
     const graphqlPort = 3002;
     const simpleTokenizerPort = 3003;
@@ -450,7 +475,7 @@ export class LunaSecStackDockerCompose {
         REACT_APP_EXPRESS_URL: `http://localhost:${expressPort}`,
         REACT_APP_GRAPHQL_URL: `http://localhost:${graphqlPort}`,
         REACT_APP_SIMPLE_TOKENIZER_URL: `http://localhost:${simpleTokenizerPort}`,
-        REACT_APP_TOKENIZER_URL: tokenizerUrl,
+        REACT_APP_TOKENIZER_URL: 'http://localhost:37766',
       };
     }
 
@@ -459,7 +484,7 @@ export class LunaSecStackDockerCompose {
         REACT_APP_EXPRESS_URL: `http://application-back-end:${expressPort}`,
         REACT_APP_GRAPHQL_URL: `http://application-back-end:${graphqlPort}`,
         REACT_APP_SIMPLE_TOKENIZER_URL: `http://application-back-end:${simpleTokenizerPort}`,
-        REACT_APP_TOKENIZER_URL: tokenizerUrl,
+        REACT_APP_TOKENIZER_URL: 'http://tokenizer-backend:37766',
       };
     }
 
@@ -477,7 +502,13 @@ export class LunaSecStackDockerCompose {
     const localstackUrl = getLocalstackUrl(this.serviceCreationConfig.env);
     const localstackHttpsProxyUrl = 'https://localstack-proxy:4568';
     const tokenizerHost = 'http://tokenizer-backend:37766';
-    const cdnHost = `${this.getSecureFrameHostname()}:8000`;
+    const cdnHostConfig = this.getSecureFrameHostname();
+
+    // parse a URL into a URL object
+    const cdnExternalUrl = new URL(cdnHostConfig.externalHostname);
+
+    const proto = cdnExternalUrl.protocol.replace(':', '');
+    const host = cdnExternalUrl.host;
 
     const config: LunaSecDockerEnv = {
       ...display,
@@ -491,9 +522,10 @@ export class LunaSecStackDockerCompose {
       LUNASEC_STACK_ENV: this.serviceCreationConfig.env,
       TOKENIZER_URL: tokenizerHost,
 
-      CDN_HOST: cdnHost,
+      CDN_HOST: host,
+      CDN_PROTOCOL: proto,
       // TODO (jwortley) Pass in HTTPS from the main config here.
-      CDN_PROTOCOL: 'http',
+      // CDN_PROTOCOL: cdnHostConfig.internalHostname.split(':')[0],
 
       LOCALSTACK_URL: localstackUrl,
       LOCAL_HTTPS_PROXY: localstackHttpsProxyUrl,
@@ -510,22 +542,13 @@ export class LunaSecStackDockerCompose {
   }
 
   getDependenciesEnv(dockerDevEnv: LunaSecDockerEnv): LunaSecServiceDependenciesEnv {
-    const { environmentConfig, env } = this.serviceCreationConfig;
-    const { applicationFrontEnd } = environmentConfig;
+    const { environmentConfig } = this.serviceCreationConfig;
+    const { applicationFrontEnd, applicationBackEnd } = environmentConfig;
     const { TOKENIZER_URL, CDN_HOST, LOCAL_HTTPS_PROXY } = dockerDevEnv;
 
     // These values are for the hosts that the Integration Test depends on in
     // order to start up. It's passed via Env vars as a comma separated list.
-    const integrationTestDependenciesList = [TOKENIZER_URL, applicationFrontEnd, CDN_HOST];
-
-    if (env === 'hosted-live-demo' || env === 'demo' || env === 'tests') {
-      const { REACT_APP_EXPRESS_URL, REACT_APP_GRAPHQL_URL, REACT_APP_SIMPLE_TOKENIZER_URL } =
-        this.getFrontEndReactEnv(env);
-
-      integrationTestDependenciesList.push(REACT_APP_EXPRESS_URL);
-      integrationTestDependenciesList.push(REACT_APP_GRAPHQL_URL);
-      integrationTestDependenciesList.push(REACT_APP_SIMPLE_TOKENIZER_URL);
-    }
+    const integrationTestDependenciesList = [TOKENIZER_URL, applicationFrontEnd, applicationBackEnd, CDN_HOST];
 
     const integrationTestDependencies = integrationTestDependenciesList.join(',');
 

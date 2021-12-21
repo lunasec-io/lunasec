@@ -63,6 +63,10 @@ export function generateFrontEndDockerConfig(
     ...config.getDockerfileTarget(demoDockerFile, name),
   };
 
+  if (config.localBuild) {
+    localBuildConfig.command = ['build-and-serve-static', '-l', '3000'];
+  }
+
   const frontEndPort = 3000;
 
   const debugVolumes = debug ? ['./:/repo'] : [];
