@@ -14,7 +14,7 @@ WORKDIR /build
 COPY . /build
 COPY --from=java-build /build/hotpatch-payload/target/classes/Log4ShellHotpatch.class /build
 
-RUN go build -o log4shell . 
+RUN CGO_ENABLED=0 go build -o log4shell . 
 
 FROM alpine
 
