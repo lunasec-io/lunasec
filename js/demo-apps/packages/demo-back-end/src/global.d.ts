@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 import { UserModel } from './types';
 declare global {
   namespace Express {
@@ -21,5 +22,15 @@ declare global {
     interface Request {
       user: UserModel;
     }
+  }
+  namespace Request {
+    type User = UserModel;
+  }
+}
+
+declare module 'express-serve-static-core' {
+  type User = UserModel;
+  interface Request {
+    user: UserModel;
   }
 }

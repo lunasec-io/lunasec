@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-import { Card, CardContent, CardHeader, Grid, Typography } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
+import { Alert, AlertTitle } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 

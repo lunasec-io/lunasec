@@ -1,6 +1,5 @@
 {
   "name": "@lunasec/react-sdk",
-  "private": false,
   "version": "1.0.7",
   "description": "React SDK for lunasec Secure Frame",
   "main": "build/main/index.js",
@@ -9,8 +8,8 @@
   "license": "Apache-2.0",
   "keywords": [],
   "scripts": {
-    "build:main": "tsc -p tsconfig.json",
-    "build:module": "tsc -p tsconfig.module.json",
+    "build:main": "yarn dlx tsc -p tsconfig.json",
+    "build:module": "yarn dlx tsc -p tsconfig.module.json",
     "clean": "rm -rf build"
   },
   "engines": {
@@ -21,26 +20,31 @@
     "@lunasec/isomorphic-common": "^1.0.7",
     "@types/styled-components": "^5.1.10",
     "classnames": "^2.3.1",
+    "react-is": "^17.0.2",
     "styled-components": "^5.3.0"
   },
   "peerDependencies": {
     "react": ">=17.0.0"
   },
   "devDependencies": {
-    "@types/node": "^14.14.37",
+    "@types/node": "^14.0.0",
     "@types/react": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
+    "babel-eslint": "^10.0.0",
     "eslint": "^7.8.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-functional": "^3.0.2",
     "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "prettier": "^2.1.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.2",
     "ts-node": "^9.0.0",
-    "typedoc": "^0.20.36",
+    "typedoc": "^0.22.10",
     "typescript": "^4.2.2"
   },
   "prettier": {

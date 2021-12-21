@@ -12,3 +12,13 @@ node_modules
 docker-compose.*.yaml
 .env.docker
 outputs/
+
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+docs/.yarn/.cache/webpack/client-development-en/

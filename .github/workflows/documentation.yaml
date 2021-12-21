@@ -41,19 +41,13 @@ jobs:
         with:
           node-version: '16'
 
-      # Speed up builds by caching node_modules
-      - uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-
       - name: Lerna Bootstrap and Build Deploy Tool
+        env:
+          IS_LUNASEC_CI: true
+          CI: true
         run: |
-          npx lerna bootstrap --ci
+          yarn install --immutable --immutable-cache --inline-builds
           yarn compile:dev:infrastructure
-          npx lerna link
 
       - name: Build Repo
         working-directory: js/sdks

@@ -24,7 +24,7 @@ const yaml = require('js-yaml');
  * If you know of a way to clean it up, feel free to. This seemed like the simplest solution though.
  * @type {RegExp}
  */
-const javascriptRegex = /\.(((cj|mj|j|t)sx?)|\.vue)$/i;
+const javascriptRegex = /\.(((mj|j|t)sx?)|\.vue)$/i;
 const golangRegex = /\.go$/i;
 const markdownRegex = /\.mdx?$/i;
 
@@ -143,7 +143,10 @@ module.exports = (allStagedFiles) => {
   const creativeCommonsConfigInfo = rewriteLicenseFile(
     creativeCommons,
     allStagedFiles,
-      file => file.match(markdownRegex)
+      (file) => {
+        console.log('looping file ' ,file)
+        return file.match(markdownRegex) && !file.match(/pull_request_template.md/)
+      }
   );
 
   // Only append the license check step if we have a valid config.

@@ -81,7 +81,7 @@ export interface LunaSecDockerEnv {
   SESSION_JWKS_URL: string;
   AWS_ACCESS_KEY_ID: 'test';
   CDN_HOST: string;
-  CDN_PROTOCOL: 'https' | 'http';
+  CDN_PROTOCOL: string;
   LOCALSTACK_HOSTNAME: 'localstack';
 }
 

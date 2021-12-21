@@ -10,7 +10,7 @@ rm -rf skywalking-eyes
 echo "Fetching Apache Skywalking Eye source code..."
 git clone https://github.com/freeqaz/skywalking-eyes --depth 1
 
-cd skywalking-eyes
+cd skywalking-eyes || exit 1
 
 echo "Checking out specific release..."
 git checkout 5d4d5bc

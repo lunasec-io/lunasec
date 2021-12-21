@@ -20,14 +20,22 @@ sidebar_position: 1
 ## What is LunaSec?
 LunaSec makes it easy and secure for web applications to process and store sensitive data through *Tokenization*. 
 
-Sensitive data is exchanged for a non-sensitive token that is meaningless by itself.  It must be exchanged
-for the real data in a process called *Detokenization*.
+Sensitive data is exchanged for a non-sensitive _Token_ that is meaningless by itself.  Tokens must be exchanged
+for the raw data in a process called *Detokenization*.
 
-LunaSec offers more attack protection than other tokenizers, has more features, and the core of the system is free and open source.
+LunaSec helps to protect yourself from the impact of 0-day exploits by giving you an additional layer of protection 
+against data leaks. It's also the only Open Source Tokenization platform being used in production today, and offers
+more features than even paid alternatives like Very Good Security, HashiCorp Vault, or BlueFin.
 
-LunaSec can quickly help an app become secure and compliant with regulations like SOC2, PCI-DSS, GDPR, HIPAA, and more.
+With LunaSec you're able to, in minutes, harden your app against 
+[common security problems](/pages/how-it-works/security/introduction/) and make it compliant with privacy regulations (SOC2, PCI-DSS, GDPR, HIPAA, etc).
+
+:::info
+
 If you're looking for an even faster compliance solution with hands-on guidance from our team, please [contact us](https://www.lunasec.io/contact)
 to inquire about our paid services.
+
+:::
 
 ## How does LunaSec work with my app?
 
@@ -59,13 +67,15 @@ export function renderSecureComponent(props) {
 ```
 This seamlessly creates an iFrame in your page, isolating the sensitive data completely without any change to how your app looks or functions.
 
+Behind the scenes, the [LunaSec Stack](/pages/how-it-works/features) has secure "sidecars" for each layer of your full-stack web app.  
+
 ## Try it out, live!
 
-You can go check out our [Live Demo](https://app.lunasec.dev) app right now. You'll need to create yourself a user before
-you can insert some data into the different fields. All sensitive data in the app is automatically encrypted and decrypted.
+You can go check out our [Live Demo](https://app.lunasec.dev) app right now. Sign up and then
+you can insert some data into the different Secure Components. All sensitive data in the app is automatically encrypted and decrypted.
 
-In fact, it works so well that you probably will mistake the Demo App for a completely unremarkable, boring app. That's
-by design!
+In fact, it works seamlessly enough that you probably will mistake the Demo App for any other app.
+
 :::tip
 LunaSec is meant to be invisible, but you
 can see it working by inspecting elements on the page and watching your network requests tab.
@@ -73,7 +83,7 @@ can see it working by inspecting elements on the page and watching your network 
 
 ## Onboard with LunaSec
 
-We've put in great effort to ensure a high-quality Developer Experience throughout the entire onboarding process.
+We've put in great effort to ensure a high-quality Developer Experience throughout the onboarding process.
 A lunch break is all it takes to onboard your app with our SDKs _and_ deploy your own dedicated LunaSec Stack into 
 production.
 

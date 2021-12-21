@@ -1,0 +1,15 @@
+free:
+  name: Free Wortley
+  title: CEO at LunaSec
+  url: https://github.com/freeqaz
+  image_url: https://github.com/freeqaz.png
+chris:
+  name: Chris Thompson
+  title: Developer at Lunasec
+  url: https://github.com/breadchris
+  image_url: https://github.com/breadchris.png
+forrest:
+  name: Forrest Allison
+  title: Developer at LunaSec
+  url: https://github.com/factoidforrest
+  image_url: https://github.com/factoidforrest.png
