@@ -112,7 +112,7 @@ permissive Open Source license (Apache 2.0).
 
 We hope to build a community of like-minded individuals to make security tooling available for everybody to use.
 
-### We've seen how technical departments bog down developers and prevents them from fixing bugs (even when they would like to).
+### We've seen how technical debt bog down developers and prevents them from fixing bugs (even when they would like to).
 That's why LunaSec doesn't require re-writing your software from scratch -- you just simply [drop in a line of code](https://www.lunasec.io/docs/pages/overview/example-usage/#lunasecreact-sdk)
 to get onboard an app.  For example, you can import any NPM module [without fear](https://www.bleepingcomputer.com/news/security/52-percent-of-all-javascript-npm-packages-could-have-been-hacked-via-weak-credentials/)
 once you've fully onboarded with LunaSec.
