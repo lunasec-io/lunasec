@@ -57,11 +57,11 @@ A lot of security products do that, but LunaSec builds more security ontop of th
 because a lot of other pieces are needed to make that encryption actually *secure*.
 
 ### The problems are myriad:
-- Encryption by itself isn't very useful if somebody can simply query the Database and grab the decryption keys
-- You also need to be able to restrict access to decryption keys if you want to be able to meaningfully protect data
-- A logical system is required to determine who is authorized to decrypt data
-- A means of authenticating users to ensure your authorization logic can't be spoofed is necessary
-- A bug in one of your dependencies can bring down the security of the entire system
+- Encryption by itself isn't very useful if somebody can simply query the Database and grab the decryption keys.
+- You need to be able to restrict access to decryption keys if you want to be able to meaningfully protect data.
+- A logical system is required to determine who is authorized to decrypt data.
+- A means of authenticating users to ensure your authorization logic can't be spoofed is necessary.
+- A bug in one of your dependencies can bring down the security of the entire system.
 
 
 How do you effectively address and mitigate such a litany of problems? Does every line of code need to go through a security review now? Do you need an approved list of dependencies and versions now? Does it become necessary to implement organization-wide security procedures that nobody understands or cares about because they're just developers trying to do their job... 
@@ -129,11 +129,11 @@ does differently.)
 ## How to support LunaSec
 If you like what we're doing, and you would like to show your support, we have a few ways that you can help us out:
 
-- Throw us a Star on [Github](https://github.com/lunasec-io/lunasec)
-- Post about us on social media and spread the word by telling your friends
-- Try out our [example app](https://www.lunasec.io/docs/pages/overview/demo-app/overview/) and [tutorials](https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/introduction/)
-- Deploy LunaSec in your infrastructure ([guide](https://www.lunasec.io/docs/pages/deployment/deploy-with-aws/))
-- [Contact us](https://www.lunasec.io/contact) about our paid services (premium support, custom onboarding, and enterprise features)
+- Throw us a Star on [Github](https://github.com/lunasec-io/lunasec).
+- Post about us on social media and spread the word by telling your friends.
+- Try out our [example app](https://www.lunasec.io/docs/pages/overview/demo-app/overview/) and [tutorials](https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/introduction/).
+- Deploy LunaSec in your infrastructure ([guide](https://www.lunasec.io/docs/pages/deployment/deploy-with-aws/)).
+- [Contact us](https://www.lunasec.io/contact) about our paid services (premium support, custom onboarding, and enterprise features).
 
 Thank you for being a part of Open Source security software with LunaSec!
 
