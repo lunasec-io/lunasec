@@ -15,7 +15,8 @@
  * limitations under the License.
  *
  */
-import { Card, CardContent, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Card, CardContent, Grid, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import React from 'react';
 import { Route } from 'react-router-dom'; // Pages
 

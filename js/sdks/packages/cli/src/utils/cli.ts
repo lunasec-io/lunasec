@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import { LunaSecStackEnvironment, LunaSecStackEnvironments } from '../docker-compose/lunasec-stack';
+import { LunaSecStackEnvironment, LunaSecStackEnvironments } from '../docker-compose/constants';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../../package.json');

@@ -18,6 +18,7 @@ const webpack = require('webpack');
 
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const PnpWebpackPlugin = require('pnp-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -38,8 +39,10 @@ plugins.push(new CopyWebpackPlugin({
 }));
 
 plugins.push(new webpack.ProvidePlugin({
-  process: 'process/browser',
-  Buffer: ['buffer', 'Buffer'],
+  events: require.resolve('events'),
+  process: require.resolve('process/browser'),
+  Buffer: [require.resolve('buffer'), 'Buffer'],
+  url: require.resolve('url'),
 }));
 
 // if (isProduction) {
@@ -93,10 +96,13 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
     fallback: {
-      "https": require.resolve("https-browserify"),
-      "http": require.resolve("stream-http"),
-      "buffer": require.resolve("buffer/")
-    }
+      events: require.resolve('events'),
+      https: require.resolve("https-browserify"),
+      http: require.resolve("stream-http"),
+      buffer: require.resolve("buffer/"),
+      url: require.resolve('url'),
+    },
+    symlinks: false
   },
   plugins
 };

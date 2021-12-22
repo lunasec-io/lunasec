@@ -16,9 +16,9 @@
  */
 import { boolean, flag, oneOf, option, optional, string } from 'cmd-ts';
 
-import { LunaSecStackEnvironment, LunaSecStackEnvironments } from '../docker-compose/lunasec-stack';
+import { LunaSecStackEnvironment, LunaSecStackEnvironments } from '../docker-compose/constants';
 
-const validEnv = (e: LunaSecStackEnvironment) => e !== 'production' && e !== 'hosted-live-demo';
+const validEnv = (e: LunaSecStackEnvironment) => e !== 'production';
 
 const environmentOptions = LunaSecStackEnvironments.filter(validEnv).map((e) => e as string);
 

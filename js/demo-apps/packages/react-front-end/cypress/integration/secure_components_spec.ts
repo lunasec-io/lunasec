@@ -24,11 +24,44 @@ const fakeSSN = '123121234';
 const randomUserName = Math.floor(Math.random() * 1000000000).toString();
 const randomFileName = Math.floor(Math.random() * 1000000000).toString() + '.png';
 
-describe('setup', () => {
-  it('loads homepage', () => {
-    cy.visit('/');
+// function handleFailure(e: Error) {
+//   console.log('CAUGHT FAIL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+//   console.log(e);
+//   return false;
+// }
+//
+// Cypress.on('fail', handleFailure);
+//
+describe('visit page once to trigger CI bug', () => {
+  //   // afterEach(() => {
+  //   //   // @ts-ignore
+  //   //   console.log(this);
+  //   // });
+  //   //
+  //   //   cy.on('fail', (e) => {
+  //   //     console.error('!!!!!!!!!!!!!! caught and handled bug for first visit:', e);
+  //   //     // runnable.skip();
+  //   //     return false;
+  //   //   });
+  it('visits page and catches', () => {
+    cy.visit('/', {
+      timeout: 700000,
+      retryOnNetworkFailure: true,
+      retryOnStatusCodeFailure: true,
+      headers: { Connection: 'Keep-Alive', 'Accept-Encoding': 'gzip, deflate' },
+    });
   });
 });
+//
+// Cypress.removeListener('fail', handleFailure);
+
+// describe('waits for startup', () => {
+//   it('wait', () => {
+//     cy.server();
+//     cy.route('GET', '/').as('getRoot');
+//     return cy.wait('@getRoot');
+//   });
+// });
 
 // Both these app modes have an identical UX so we run the same set of tests twice, selecting a different mode at the start
 runDedicatedModeTests('express');
@@ -37,11 +70,13 @@ runDedicatedModeTests('graphql');
 function runDedicatedModeTests(mode: string) {
   describe(`demo app in mode: ${mode}`, function () {
     it('loads homepage', () => {
-      cy.visit(`/${mode}`);
+      cy.visit(`/`, { timeout: 30000 }); // Without doing a visit the second mode breaks, not sure why
     });
 
     it('selects mode', () => {
-      cy.get(`#select-mode-${mode}`).click();
+      cy.get('#mode-selector').click();
+      cy.get(`li`).contains(mode, { matchCase: false }).click();
+      cy.url().should('include', mode);
     });
 
     it('signs up', () => {
@@ -133,13 +168,14 @@ function runDedicatedModeTests(mode: string) {
 
 describe('demo app in mode: simple', () => {
   it('selects mode', () => {
-    cy.get('#select-mode-simple').click();
+    cy.get('#mode-selector').click();
+    cy.get(`li`).contains('Simple').click();
   });
 
   it('tokenizes', () => {
     cy.get('a').contains('Tokenize').click();
 
-    cy.get('input').type(fakeSSN);
+    cy.get('#simple-tokenizer-input').type(fakeSSN);
 
     cy.get('button').contains('Save').click();
 

@@ -121,7 +121,7 @@ func ProcessArchiveFile(reader io.Reader, filePath, fileName string) (finding *t
 	fileHash, err := util.HexEncodedSha256FromReader(reader)
 	if err != nil {
 		log.Warn().
-			Str("fieName", fileName).
+			Str("fileName", fileName).
 			Str("path", filePath).
 			Err(err).
 			Msg("unable to hash file")
