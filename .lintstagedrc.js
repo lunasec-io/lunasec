@@ -24,7 +24,7 @@ const yaml = require('js-yaml');
  * If you know of a way to clean it up, feel free to. This seemed like the simplest solution though.
  * @type {RegExp}
  */
-const javascriptRegex = /\.(((cj|mj|j|t)sx?)|\.vue)$/i;
+const javascriptRegex = /\.(((mj|j|t)sx?)|\.vue)$/i;
 const golangRegex = /\.go$/i;
 const markdownRegex = /\.mdx?$/i;
 

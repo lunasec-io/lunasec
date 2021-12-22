@@ -24,7 +24,7 @@ export function authRouter(models: Models, passport: ReturnType<typeof configure
   const router = Router();
 
   router.post('/login', (req, res, next) => {
-    passport.authenticate('json', (err, user) => {
+    passport.authenticate('json', (err, user: Express.User) => {
       if (err) {
         return res.json({
           success: false,
@@ -54,7 +54,8 @@ export function authRouter(models: Models, passport: ReturnType<typeof configure
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   router.post('/signup', async (req, res) => {
     try {
-      const user = await models.user.createNewUser(req.body);
+      const body = req.body as { username: string; password: string };
+      const user = await models.user.createNewUser(body);
       return req.login(user, function (err: Error) {
         if (err) {
           return res.json({

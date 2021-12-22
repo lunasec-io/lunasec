@@ -14,7 +14,8 @@
  * limitations under the License.
  *
  */
-import { Button, FormControl, FormHelperText, FormLabel, makeStyles, Paper, TextField } from '@material-ui/core';
+import { Button, FormControl, FormHelperText, FormLabel, Paper, TextField } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FormEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -23,7 +24,7 @@ import { Transport } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
-    margin: theme.spacing() * 2,
+    margin: Number(theme.spacing()) * 2,
   },
   center: {
     display: 'flex',

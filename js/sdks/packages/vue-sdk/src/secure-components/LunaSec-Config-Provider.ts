@@ -21,7 +21,7 @@ export interface LunaSecConfigProviderAttrs {
 }
 import { defineComponent, provide, toRefs } from 'vue';
 export default defineComponent({
-  name: 'Demo',
+  name: 'LunasecConfigProvider',
   props: {
     lunaSecDomain: {
       type: String,

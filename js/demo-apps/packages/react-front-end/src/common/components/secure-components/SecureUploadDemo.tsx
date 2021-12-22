@@ -26,7 +26,7 @@ import {
   FormHelperText,
   FormLabel,
   Grid,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import { useStoreActions } from '../../store';

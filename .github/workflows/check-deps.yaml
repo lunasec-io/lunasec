@@ -1,0 +1,23 @@
+name: Check Dependencies
+
+# This workflow checks to make sure that all dependency binaries are valid, to prevent a sneaky commit doing something malicious
+on:
+  pull_request:
+    branches: ['**', '**']
+  push:
+    branches: [master]
+
+jobs:
+  check-deps:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: dependencies
+      env:
+        IS_LUNASEC_CI: true
+      run: yarn install --immutable --immutable-cache --check-cache --inline-builds

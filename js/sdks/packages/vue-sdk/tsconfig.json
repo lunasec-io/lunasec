@@ -3,7 +3,6 @@
 
   "compilerOptions": {
     "outDir": "build/main",
-//    "rootDir": "src",
     "tsBuildInfoFile": "./build/buildcache.tsbuildinfo",
     "baseUrl": ".",
     "types": [

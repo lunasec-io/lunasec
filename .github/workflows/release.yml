@@ -51,10 +51,11 @@ jobs:
       - name: install lerna
         run: npm i -g lerna
 
-      - name: lerna bootstrap
+      - name: dependencies
         env:
           IS_LUNASEC_CI: true
-        run: lerna bootstrap --ci -- --frozen-lockfile
+          CI: true
+        run: yarn install --immutable --immutable-cache --check-cache --inline-builds
 
       - name: Configure CI Git User
         run: |
