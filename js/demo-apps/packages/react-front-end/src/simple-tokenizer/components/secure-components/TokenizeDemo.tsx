@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-import { Button, Card, CardContent, FormGroup, FormLabel, Grid, TextField } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Button, Card, CardContent, FormGroup, FormLabel, Grid, TextField } from '@mui/material';
+import { Alert, AlertTitle } from '@mui/material';
 import axios from 'axios';
 import React, { useState } from 'react';
 
@@ -102,7 +102,7 @@ export const TokenizeDemo: React.FunctionComponent = () => {
             <FormGroup>
               <FormLabel htmlFor="ssn-token-input">Social Security Number</FormLabel>
               {/* Here we are using Material with the LunaSec Secure Input instead of using SecureInput directly.  Experimental */}
-              <TextField variant="outlined" onChange={(e) => setSsn(e.target.value)} />
+              <TextField id="simple-tokenizer-input" variant="outlined" onChange={(e) => setSsn(e.target.value)} />
             </FormGroup>
             <div>
               <Button variant="outlined" color="primary" style={{ textTransform: 'none' }} type="submit">

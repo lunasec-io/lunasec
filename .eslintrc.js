@@ -21,10 +21,10 @@ module.exports = {
     node: true
   },
   extends: [
-    "plugin:vue/vue3-essential",
-    "@vue/typescript/recommended",
-    "@vue/prettier",
-    "@vue/prettier/@typescript-eslint",
+    // "plugin:vue/vue3-essential",
+    // "@vue/typescript/recommended",
+    // "@vue/prettier",
+    // "@vue/prettier/@typescript-eslint",
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
@@ -54,10 +54,12 @@ module.exports = {
   },
   plugins: [
     'react',
-    '@typescript-eslint'
+    '@typescript-eslint',
+    'jest'
   ],
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    "@typescript-eslint/no-unsafe-argument": 1, // TODO: Re-enable this rule and fix all errors
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off', // These never error, currently
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     eqeqeq: 'error',
     quotes: ['error', 'single', { allowTemplateLiterals: true, avoidEscape: true }],

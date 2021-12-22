@@ -5,11 +5,11 @@
   "description": "Secure frame SDK",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -b tsconfig.build.json",
+    "build": "yarn run tsc -b tsconfig.build.json",
     "compile": "yarn schema:copy && yarn schema:generate && yarn run build",
     "schema:copy": "cd ./packages/node-sdk && yarn schema:copy",
     "schema:generate": "cd ./packages/tokenizer-sdk && yarn openapi:generate",
-    "watch": "yarn run compile -- -w",
+    "watch": "yarn run compile -w",
     "compile:dev:secure-frame-front-end": "cd packages/secure-frame-iframe && yarn run compile",
     "compile:dev": "yarn run compile && yarn run compile:dev:secure-frame-front-end",
     "compile:release:secure-frame-front-end": "cd packages/secure-frame-iframe && yarn run compile:release",
@@ -18,6 +18,7 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@types/node": "^14.0.0",
     "typescript": "^4.4.4"
   }
 }

@@ -14,8 +14,7 @@
  * limitations under the License.
  *
  */
-import { promises } from 'fs';
-import fs from 'fs';
+import fs, { promises } from 'fs';
 import os from 'os';
 import path from 'path';
 
