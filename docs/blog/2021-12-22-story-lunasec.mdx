@@ -1,0 +1,112 @@
+---
+title: "The story of LunaSec"
+description: Looking at the latest big attacks to explain why we built the LunaSec Framework.
+slug: lunasec-story
+date: 2021-12-22
+keywords: [open-source, vulnerability, framework, compliance]
+tags: [zero-day, security, data-security, data-breaches, guides]
+authors: [forrest]
+---
+
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+
+INTRO
+
+We've been at the forefront of the reporting around the latest widespread vulnerability, and were even the
+ones to give it the name Log4Shell.  We've been busy keeping the public updated, and building scanning and mitigation
+[tools](/blog/log4j-zero-day-mitigation-guide#automatically-scanning-your-pack).
+
+While hopefully we have helped many users, reporting on
+and dealing with individual vulnerabilities isn't the main focus of our organization, at least so far.  For the better part of a year,
+we've been building a framework to make it so these vulnerabilities, even full RCEs like Log4Shell, can't leak the sensitive data
+that attackers are really after.
+
+## Modern attack surface
+In security, we use the word "attack surface" to talk about how big of an area we need to defend.
+I think of this like the walls around a medieval town. The bigger
+the town is, the harder and more expensive it becomes to build walls and maintain fortifications.
+
+Modern web applications are bigger and have more functionality than ever before and this surface is becoming unmanageable, for many.
+
+#### Types of security tools
+TODO: THIS SECTION BAD MAYBE DELETE
+
+Let's look at what's out there in a software companies toolkit. The most common security tools on the market focus on two things: Static analysis and auditing.
+
+Static analyzers are code scanning tools. They _do_ have their place but frequent false positives can lead to developers
+ignoring them entirely. You probably recognize them as the thing that told you that one of your testing framework's
+dependency's dependency's has a security vulnerability.
+
+Auditing tools are a broad spectrum of logging and data analysis tools that can let you know when you've been hacked. Then you
+can wake up the on-call at three in the morning to try to pick up the pieces.
+
+Both of these tools have their place, but they aren't a complete solution to security. They also aren't a complete fix
+for complying with the increasing **regulations** around private data, like GDPR.
+
+### Compliance focused tools
+Getting sensitive data **out** of these potentially vulnerable web apps is becoming a popular strategy to help with legal compliance, and this is an emerging market
+of tools. The most popular of these
+are proxies that sit between your client and server, converting sensitive fields like a social security number like *123-12-1234*
+into perfectly legal tokens like *token-123abc*. While they claim to be security tools
+and might sound secure at first glance, these tools typically provide next to no actual data security.
+Their focus is mainly just on helping comply with regulations. In fact, one of our researchers "hacked" the most popular of these
+tools with just a single line of javascript (more on that in a future post).
+
+Some tools are better than others, but they all seem to have compromises and some attacks which they don't protect against.
+We wanted a way to *truly* protect data against *every* [common type of attack](/pages/how-it-works/security/vulns-and-mitigations).
+
+### Tools that are actually SECURE
+There's one set of tools with a proven track record for protecting sensitive data on the web, and that's **payment processors**.
+We're talking about tools like Stripe and PayPal that collect your credit card number when you make an online purchase.
+
+If you've never worked with one, here's how they work: They are, in essence, a very small and dedicated web app that
+works alongside your main app. In the browser your app launches an iFrame containing _their_ app. Users see a nice box with a trustworthy logo
+and get to type their credit card information into a safe place. iFrames (in [cross-domain mode](/pages/how-it-works/secure-components)) are
+completely secure when done right because the browser treats them as a totally separate process. This is the strictest security
+tool the browser has. It's like the iFrame is running in a separate tab next to your site, only *appearing* to be a part of it.
+
+After the user is done, the credit card number goes up to the payment processors server. Your server talks to their server,
+and you get the bare minimum information you need to make the sale.
+
+The sensitive data was isolated every step of the way from your system. Even if attackers break in,
+it'll be really hard or even impossible to break through to the payment processor and get the credit card number. The attack surface for the payment processor
+is small because it's isolated from your site. Their security teams can audit the changes they make to their small system without worrying about the rest of your app.
+
+### Making that work for any data
+This is a great strategy, and it's worked for decades. It makes sense: credit cards and the laws protecting them have been around for a very long
+time. Now that similar laws and concerns are expanding to more types of data, we need a more generic solution.
+
+Those iFrames loaded by payment processors are designed to be obviously distinct from the app they're in. That's great for payments,
+but ideally a solution that could store *any* data wouldn't be so obvious. We tested to see if we could
+make an iFrame that disguised itself and blended into any app. It could become a form input, a file input,
+a `<p>` element, etc. and capture and protect sensitive data, all while looking like a native part of the web page.
+
+### We call them "Secure Components"
+Copying and communicating all the information and events to make the various elements look and behave like native elements was a
+serious undertaking. The end result is something that looks and behaves just like a native element, even working well with popular
+component frameworks like Material UI. You can see for yourself in our [Live Demo app](https://app.lunasec.dev/).
+
+Just like how payment processors give you a "payment ID" instead of a credit card number, we return a Token that you
+can store legally and safely in place of the sensitive data.
+
+### The Server Side
+Once we knew it was possible to make a
+
+
+blood brain barrier
+### Show how you can still do what you need to serverside such as search, sending GDPR dumps or converting images ...maybe not dumps actually
+
+
+### Making it really, really easy to use and deploy with AWS
