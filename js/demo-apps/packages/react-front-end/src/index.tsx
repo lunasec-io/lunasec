@@ -15,7 +15,9 @@
  *
  */
 
-import { createStyles, CssBaseline, makeStyles, Theme } from '@material-ui/core';
+import { createTheme, CssBaseline, StyledEngineProvider, Theme, ThemeProvider } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { StoreProvider } from 'easy-peasy';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
@@ -29,8 +31,13 @@ import { getTransport, store, useStoreActions } from './common/store';
 import { Mode } from './common/types';
 import { SimpleApp } from './simple-tokenizer/App';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
+const useStyles = makeStyles((theme: Theme) => {
+  return createStyles({
     root: {
       display: 'flex',
     },
@@ -39,8 +46,8 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(3),
     },
     toolbar: theme.mixins.toolbar,
-  })
-);
+  });
+});
 
 export const AppContainer: React.FunctionComponent = () => {
   const classes = useStyles({});
@@ -86,12 +93,29 @@ export const AppContainer: React.FunctionComponent = () => {
   );
 };
 
+const theme = createTheme({
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          marginTop: '8px',
+          marginBottom: '8px',
+        },
+      },
+    },
+  },
+});
+
 ReactDOM.render(
   <React.StrictMode>
     <StoreProvider store={store}>
-      <BrowserRouter>
-        <AppContainer />
-      </BrowserRouter>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <BrowserRouter>
+            <AppContainer />
+          </BrowserRouter>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </StoreProvider>
   </React.StrictMode>,
   document.getElementById('root')

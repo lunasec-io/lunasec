@@ -22,7 +22,8 @@ import path from 'path';
 import { LunaSecMetrics } from '../analytics/metrics';
 import { loadLunaSecStackConfig } from '../config/load-config';
 import { awsResourcesOutputFile } from '../constants/cli';
-import { LunaSecStackDockerCompose, LunaSecStackEnvironment } from '../docker-compose/lunasec-stack';
+import { LunaSecStackEnvironment } from '../docker-compose/constants';
+import { LunaSecStackDockerCompose } from '../docker-compose/lunasec-stack';
 import { validateEnv } from '../utils/cli';
 import { runCommand, runCommandWithHealthcheck, RunCommandWithHealthcheckOptions } from '../utils/exec';
 

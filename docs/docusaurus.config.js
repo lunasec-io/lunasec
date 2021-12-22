@@ -44,7 +44,8 @@ module.exports = {
   baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  trailingSlash: true,
+  // WARNING: Put this back or else production will be busted!
+  // trailingSlash: true,
   favicon: 'https://uploads-ssl.webflow.com/60e63e8b40f27c7913def7a1/6112d961cd68c3de06afe04d_WebFlow%20Logo%20-%2032px.png',
   organizationName: 'lunasec-io', // Usually your GitHub org/user name.
   projectName: 'lunasec-io.github.io', // Usually your repo name.
@@ -84,8 +85,8 @@ module.exports = {
         },
         excludePrivate: true,
         readme: 'none',
-        sort: ['required-first', 'source-order']
-      },
+        sort: ['required-first', 'source-order'],
+        excludeExternals: true,},
     ],
     [
       'docusaurus-plugin-typedoc',
@@ -261,15 +262,20 @@ module.exports = {
           path: 'pages',
           routeBasePath: 'pages',
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
           editUrl:
             'https://github.com/lunasec-io/lunasec/edit/master/docs/',
+          showLastUpdateAuthor: true,
+          showLastUpdateTime:true,
+
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
             'https://github.com/lunasec-io/lunasec/edit/master/docs/blog/',
+          blogSidebarCount: 'ALL',
+          postsPerPage: 'ALL',
+          blogSidebarTitle: 'All Posts',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

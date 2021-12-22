@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  */
-import { URL } from 'url';
 
 import { Hash } from '@aws-sdk/hash-node';
 import { HttpRequest } from '@aws-sdk/protocol-http';

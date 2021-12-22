@@ -1,0 +1,28 @@
+name: Lint Code plus JS Unit Tests
+
+# This workflow checks to make sure that all dependency binaries are valid, to prevent a sneaky commit doing something malicious
+on:
+  pull_request:
+    branches: ['**', '**']
+  push:
+    branches: [master]
+
+jobs:
+  lint-code:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Setup Environment
+      uses: ./.github/workflows/composite/setup-docker-ci
+
+    # Use the bootstrap image to quickly run linting and unit testing
+    - name: Lint
+      run: docker run --entrypoint yarn lerna-bootstrap lint
+
+    - name: Unit Test
+      run: docker run --entrypoint yarn lerna-bootstrap test:unit:js
+
