@@ -22,7 +22,7 @@ import os from 'os';
 import path from 'path';
 
 import { cliAnalyticsServer, cliMetricTag, metadataFile } from '../constants/cli';
-import { LunaSecStackEnvironment } from '../docker-compose/lunasec-stack';
+import { LunaSecStackEnvironment } from '../docker-compose/constants';
 import { post } from '../utils/http';
 
 import { CliMetric, CliMetricSystemInfo, LunaSecCliMetadata } from './types';

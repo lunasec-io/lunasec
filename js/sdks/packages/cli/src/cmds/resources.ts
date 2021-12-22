@@ -15,7 +15,6 @@
  *
  */
 import fs from 'fs';
-import os from 'os';
 import path from 'path';
 
 import { getOutputName } from '../cdk-stack/stack';

@@ -124,6 +124,7 @@ export class SQLiteStore extends session.Store {
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       fn(undefined, JSON.parse(row.sess));
     });
   }
@@ -175,6 +176,7 @@ export class SQLiteStore extends session.Store {
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       fn(undefined, rows[0].count);
     });
   }

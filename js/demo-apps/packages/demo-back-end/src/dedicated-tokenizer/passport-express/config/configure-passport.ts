@@ -17,7 +17,7 @@
 import { Buffer } from 'buffer';
 import crypto from 'crypto';
 
-import { Passport } from 'passport';
+import { Passport, Strategy as StrategyType } from 'passport';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Strategy } from 'passport-json';
@@ -51,7 +51,7 @@ export function configurePassport(models: Models) {
       password: string,
       done: (err: null | string | Error, usr?: false | UserModel) => void
     ) {
-      const userRecord = await models.user.getUserWithPasswordHash(username).catch((err) => done(err, false));
+      const userRecord = await models.user.getUserWithPasswordHash(username).catch((err: Error) => done(err, false));
 
       if (!userRecord) {
         return done('Incorrect username or password.', false);
@@ -71,7 +71,7 @@ export function configurePassport(models: Models) {
         ssn_token: userRecord.ssn_token,
       };
       return done(null, user);
-    })
+    }) as StrategyType
   );
 
   // Configure Passport authenticated session persistence.

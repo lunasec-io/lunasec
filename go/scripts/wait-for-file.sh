@@ -4,8 +4,9 @@
 set -e
 
 waitFile="$1"
-shift
-cmd="$@"
+cmd="$2"
+shift 2
+args="$*"
 
 until test -e "$waitFile"
 do
@@ -14,4 +15,4 @@ do
 done
 
 >&2 echo "Found file [$waitFile]."
-exec "$cmd"
+exec "$cmd" "$args"
