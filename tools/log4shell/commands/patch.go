@@ -117,7 +117,7 @@ func JavaArchivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool) er
 		}
 		log.Debug().
 			Str("path", finding.Path).
-			Str("path", finding.Path).
+			Str("zipFilePath", finding.JndiLookupFileName).
 			Msg("Found file to remove")
 	}
 
