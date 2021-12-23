@@ -16,10 +16,15 @@ package types
 
 import "github.com/blang/semver/v4"
 
+type VulnerableFile struct {
+	FileName string `json:"file_name"`
+}
+
 type VulnerableHash struct {
 	Name string `json:"name"`
 	Version string `json:"version"`
 	CVE  string `json:"cve"`
+	VulnerableFileHashLookup map[string]VulnerableFile
 }
 
 type VulnerableHashLookup map[string]VulnerableHash

@@ -97,7 +97,7 @@ func fileNameToSemver(fileNameNoExt string) string {
 	return semverVersion
 }
 
-func getJndiLookupHash(zipReader *zip.Reader, filePath string) (fileName, fileHash string, err error) {
+func GetJndiLookupHash(zipReader *zip.Reader, filePath string) (fileName, fileHash string, err error) {
 	fileName = "org/apache/logging/log4j/core/lookup/JndiLookup.class"
 
 	reader, err := zipReader.Open(fileName)
@@ -163,10 +163,15 @@ func ProcessArchiveFile(zipReader *zip.Reader, reader io.Reader, filePath, fileN
 		return
 	}
 
-	jndiLookupFileName, jndiLookupFileHash, err := getJndiLookupHash(zipReader, filePath)
-	if err != nil {
-		jndiLookupFileName = ""
-		jndiLookupFileHash = ""
+	jndiLookupFileName := ""
+	jndiLookupFileHash := ""
+
+	if versionIsInRange(fileNameNoExt, semverVersion, constants.JndiLookupPatchFileVersions) {
+		jndiLookupFileName, jndiLookupFileHash, err = GetJndiLookupHash(zipReader, filePath)
+		if err != nil {
+			jndiLookupFileName = ""
+			jndiLookupFileHash = ""
+		}
 	}
 
 	log.Log().
@@ -185,6 +190,7 @@ func ProcessArchiveFile(zipReader *zip.Reader, reader io.Reader, filePath, fileN
 		JndiLookupHash:        jndiLookupFileHash,
 		Version: semverVersion,
 		CVE: versionCve,
+		Severity: constants.CveSeverityLookup[versionCve],
 	}
 	return
 }

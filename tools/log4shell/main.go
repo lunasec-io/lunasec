@@ -93,7 +93,7 @@ func main() {
 		Commands: []*cli.Command{
 			{
 				Name:   "analyze",
-				Usage:  "Scan known vulnerable Log4j dependencies and create a mapping of JndiLookup.class hash to version.",
+				Usage:  "Note: This command is not used for scanning for vulnerable libraries, use the `scan` command. Analyze known vulnerable Log4j dependencies and create a mapping of JndiLookup.class hash to version.",
 				Before: setGlobalBoolFlags,
 				Flags: []cli.Flag{
 					&cli.StringFlag{

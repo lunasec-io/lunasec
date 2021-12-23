@@ -16,6 +16,7 @@ package scan
 
 import (
 	"archive/zip"
+	"github.com/lunasec-io/lunasec/tools/log4shell/analyze"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
@@ -64,11 +65,27 @@ func identifyPotentiallyVulnerableFile(
 				Msg("No severity provided for CVE")
 		}
 
+		jndiLookupFileName, jndiLookupFileHash, err := analyze.GetJndiLookupHash(zipReader, path)
+		if err == nil {
+			if _, ok := vulnerableFile.VulnerableFileHashLookup[jndiLookupFileHash]; !ok {
+				log.Warn().
+					Str("path", path).
+					Str("jndiLookupFileName", jndiLookupFileName).
+					Str("jndiLookupHash", jndiLookupFileHash).
+					Msg("Discovered JndiLookup.class file is not a known vulnerable file. Patching this file out might have some unintended side effects.")
+			}
+		} else {
+			jndiLookupFileName = ""
+			jndiLookupFileHash = ""
+		}
+
 		log.Log().
 			Str("severity", severity).
 			Str("path", path).
-			Str("fileName", fileName).
-			Str("hash", fileHash).
+			Str("versionIndicatorFileName", fileName).
+			Str("versionIndicatorHash", fileHash).
+			Str("jndiLookupFileName", jndiLookupFileName).
+			Str("jndiLookupHash", jndiLookupFileHash).
 			Str("versionInfo", vulnerableFile.Version).
 			Str("cve", vulnerableFile.CVE).
 			Msg("Identified vulnerable path")
@@ -86,6 +103,8 @@ func identifyPotentiallyVulnerableFile(
 			Path:     absolutePath,
 			FileName: fileName,
 			Hash:     fileHash,
+			JndiLookupFileName: jndiLookupFileName,
+			JndiLookupHash: jndiLookupFileHash,
 			Version:  vulnerableFile.Version,
 			CVE:      vulnerableFile.CVE,
 			Severity: severity,

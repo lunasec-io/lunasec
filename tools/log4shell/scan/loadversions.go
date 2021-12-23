@@ -80,16 +80,26 @@ func LoadVersionHashesFromBytes(versionHashesContent []byte) (hashLookup types.V
 				newVersion += ", " + vulnerableLibrary.Version
 			}
 
+			existingLookup.VulnerableFileHashLookup[vulnerableLibrary.JndiLookupHash] = types.VulnerableFile{
+				FileName: vulnerableLibrary.JndiLookupFileName,
+			}
+
 			hashLookup[vulnerableLibrary.Hash] = types.VulnerableHash{
 				Name: vulnerableLibrary.Path + "::" + vulnerableLibrary.FileName,
 				Version: newVersion,
 				CVE: vulnerableLibrary.CVE,
+				VulnerableFileHashLookup: existingLookup.VulnerableFileHashLookup,
 			}
 		} else {
 			hashLookup[vulnerableLibrary.Hash] = types.VulnerableHash{
 				Name: vulnerableLibrary.Path + "::" + vulnerableLibrary.FileName,
 				Version: vulnerableLibrary.Version,
 				CVE: vulnerableLibrary.CVE,
+				VulnerableFileHashLookup: map[string]types.VulnerableFile{
+					vulnerableLibrary.Hash: {
+						vulnerableLibrary.JndiLookupFileName,
+					},
+				},
 			}
 		}
 	}
