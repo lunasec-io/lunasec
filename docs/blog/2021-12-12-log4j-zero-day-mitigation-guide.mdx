@@ -67,21 +67,29 @@ It works by scanning for hashes of [known vulnerable log4j classes](https://gith
 If you have a vulnerable version of a log4j in your built Java project, the hash will match a one
 of the hashes in the list.
 
-**[Download from GitHub](https://github.com/lunasec-io/lunasec/releases/)**
+**Download from [GitHub](https://github.com/lunasec-io/lunasec/releases/)** or from the command line:
 
-_Make sure you download the right version for your Operating System and CPU architecture._ Once downloaded, you can extract
-it and run the `log4shell` command in your terminal.  The tool can scan individual files or whole directories.
+```shell title="Download Linux CLI"
+curl -OL https://github.com/lunasec-io/lunasec/releases/download/v1.4.1-log4shell/log4shell_1.4.1-log4shell_Linux_x86_64
+```
 
+```shell title="Download OSX CLI"
+curl -OL https://github.com/lunasec-io/lunasec/releases/download/v1.4.1-log4shell/log4shell_1.4.1-log4shell_Darwin_x86_64
+```
 
+_Make sure you download the right version for your Operating System and CPU architecture._ Once downloaded, run the `log4shell`
+command in your terminal.  The tool can scan individual files or whole directories.
 
 **Linux**
-```shell title="Example Linux Command"
+```shell title="Install Linux CLI"
+cp log4shell_1.4.1-log4shell_Linux_x86_64 /usr/local/bin/log4shell
+chmod +x /usr/local/bin/log4shell
 log4shell scan your-project-dir/
 ```
 
 **OSX**
-```shell title="Example OSX Commands"
-# Replace `<PATH_ON_YOUR_MACHINE>` with your path, eg: `~/Downloads`
+```shell title="Install OSX CLI"
+# Replace `<PATH_ON_YOUR_MACHINE>` with your path, eg: `~/Downloads`, if you have downloaded it by visiting the Releases page
 cp <PATH_ON_YOUR_MACHINE>/log4shell_1.4.1-log4shell_Darwin_x86_64 /usr/local/bin/log4shell
 chmod +x /usr/local/bin/log4shell
 log4shell scan your-project-dir
@@ -91,6 +99,7 @@ log4shell scan your-project-dir
 ```shell title="Example Windows Command"
 log4shell.exe scan your-project-dir/
 ```
+
 Because the tool contains exploit strings needed for the `livepatch` command, it might be falsely recognized as malware by some
 virus scanners on Windows. Please add an exception for it.
 
@@ -253,13 +262,12 @@ default and removes the message lookup feature.
 
 We recommend you upgrade, if possible.  For most people, this is the final and correct solution to the issue.
 
-:::caution Version 2.15.0 still may be vulnerable
-Log4j version `2.15.0` which was previously thought to be secure has been found to still have a [limited vulnerability](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f), 
-that could result in a DOS (but not RCE), users must update to `>= 2.16.0`.
-:::
-
 :::caution Version 2.16.0 vulnerable to DOS
+~~Log4j version `2.15.0` which was previously thought to be secure has been found to still have a [limited vulnerability](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f),
+that could result in a DOS (but not RCE), users must update to `>= 2.16.0`.~~
+
 If you have updated Log4j to version `2.16.0`, a Denial of Service (DOS) attack is still present in [certain logging circumstances](https://logging.apache.org/log4j/2.x/security.html).
+Please update to `>=2.17.0`
 :::
 
 ### Option 2: Enable `formatMsgNoLookups`
