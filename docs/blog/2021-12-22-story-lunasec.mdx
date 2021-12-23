@@ -1,5 +1,5 @@
 ---
-title: "The story of LunaSec"
+title: "Why we made LunaSec"
 description: Looking at the latest big attacks to explain why we built the LunaSec Framework.
 slug: lunasec-story
 date: 2021-12-22
@@ -22,14 +22,12 @@ authors: [forrest]
   ~
 -->
 
-INTRO
-
 We've been at the forefront of the reporting around the latest widespread vulnerability, and were even the
 ones to give it the name Log4Shell.  We've been busy keeping the public updated, and building scanning and mitigation
 [tools](/blog/log4j-zero-day-mitigation-guide#automatically-scanning-your-pack).
 
 While hopefully we have helped many users, reporting on
-and dealing with individual vulnerabilities isn't the main focus of our organization, at least so far.  For the better part of a year,
+and dealing with individual vulnerabilities isn't the main focus of our organization. For the better part of a year,
 we've been building a framework to make it so these vulnerabilities, even full RCEs like Log4Shell, can't leak the sensitive data
 that attackers are really after.
 
@@ -61,18 +59,22 @@ of tools. The most popular of these
 are proxies that sit between your client and server, converting sensitive fields like a social security number like *123-12-1234*
 into perfectly legal tokens like *token-123abc*. While they claim to be security tools
 and might sound secure at first glance, these tools typically provide next to no actual data security.
-Their focus is mainly just on helping comply with regulations. In fact, one of our researchers "hacked" the most popular of these
-tools with just a single line of javascript (more on that in a future post).
+Their focus is mainly just on helping comply with regulations.
+
+In fact, one of our researchers "hacked" the most popular of these
+tools with just a single line of javascript (more on that and the problems with token proxies in a future post).
 
 Some tools are better than others, but they all seem to have compromises and some attacks which they don't protect against.
-We wanted a way to *truly* protect data against *every* [common type of attack](/pages/how-it-works/security/vulns-and-mitigations).
+None of them seem to protect data once it reaches the browser.
+We wanted a way to *truly* protect data against *every* [common type of attack](/pages/how-it-works/security/vulns-and-mitigations),
+including attacks like Log4Shell.
 
-### Tools that are actually SECURE
+### Tools that are ACTUALLY secure
 There's one set of tools with a proven track record for protecting sensitive data on the web, and that's **payment processors**.
 We're talking about tools like Stripe and PayPal that collect your credit card number when you make an online purchase.
 
 If you've never worked with one, here's how they work: They are, in essence, a very small and dedicated web app that
-works alongside your main app. In the browser your app launches an iFrame containing _their_ app. Users see a nice box with a trustworthy logo
+works alongside your main app. In the browser your app launches an iFrame containing the payment processor's app. Users see a nice box with a trustworthy logo
 and get to type their credit card information into a safe place. iFrames (in [cross-domain mode](/pages/how-it-works/secure-components)) are
 completely secure when done right because the browser treats them as a totally separate process. This is the strictest security
 tool the browser has. It's like the iFrame is running in a separate tab next to your site, only *appearing* to be a part of it.
@@ -89,21 +91,72 @@ This is a great strategy, and it's worked for decades. It makes sense: credit ca
 time. Now that similar laws and concerns are expanding to more types of data, we need a more generic solution.
 
 Those iFrames loaded by payment processors are designed to be obviously distinct from the app they're in. That's great for payments,
-but ideally a solution that could store *any* data wouldn't be so obvious. We tested to see if we could
+but ideally a solution that could store *any* data wouldn't be so obvious. We tried to
 make an iFrame that disguised itself and blended into any app. It could become a form input, a file input,
 a `<p>` element, etc. and capture and protect sensitive data, all while looking like a native part of the web page.
 
 ### We call them "Secure Components"
-Dealing with all the information and events to make the elements look and behave like normal ones was a
-serious undertaking, but we did it. The end result is something that looks and behaves just like a native element, even working well with popular
-component frameworks like Material UI. You can see for yourself in our [Live Demo app](https://app.lunasec.dev/).
+Dealing with all the information and events to make the elements look and behave like normal ones took months, but we did it.
+The end result is something that looks and behaves just like a native element, even working well with popular
+component frameworks like Material UI. You can see for yourself in our [Live Demo app](https://app.lunasec.dev/). We've written
+more extensively about [how Secure Components work](/pages/how-it-works/secure-components) in our docs.
 
-Just like how payment processors give you a "payment ID" instead of a credit card number, we return a Token that you
-can store legally and safely in place of the sensitive data.
+Just like how payment processors give you a "payment ID" instead of a credit card number, the components return a Token that you
+can store legally and safely in your database, in the same place where you used to put sensitive data.
 
-### The Server Side
-Once we knew it was possible to make a
+### The Dedicated Tokenizer
+Once we knew it was possible to make a totally isolated and secure front-end, we set out to make a backend that was just as secure.
+Since the real data structure still lives in your main app, a key-value store was the simplest model. Also, we knew our users
+might want to store large files, not just short strings of text.
 
+We realized that AWS S3 with it's built in encryption, high speed and low cost was the perfect backend for our key-value storage.
+By using [S3 Presigned Urls](https://medium.com/@aidan.hallett/securing-aws-s3-uploads-using-presigned-urls-aa821c13ae8d) we could
+have the web browser or other consumers upload and download *directly* from S3.  We use a small, fast service to sign those URLs, control access,
+and store metadata.
+
+Now we have a system that's blindingly fast, very cheap, and scales without limit. We've written about this at length in
+our [How Tokens Work](/pages/how-it-works/tokens) documentation.
+
+### Secure Functions
+Processing data serverside is sometimes needed. Sometimes you need to resize a photo, sometimes you need to send something to another service,
+capitalize a line of text, etc... We want to give users a secure place to do these tasks on secret data in a way that even a full RCE
+on the server wouldn't leak the data.
+
+So now we are building Secure Functions, which look and act like normal functions in your server code, but in fact run in an AWS Lambda.
+Your server can pass a token into the function, exchange it for real data, do what needs to be done, and return anything needed, just like a normal function would.
+Here's how these will look in Javascript:
+```typescript title="Secure Photo Resize Example"
+import resizeImg from 'resize-image-buffer'
+
+@secureFunction // this decorator transforms the function into a lambda
+async function resizePhoto(token, width, height){
+    const {value} = await lunasecTokenizer.detokenize(token);
+    const resizedImage = await resizeImg(value, width, height);
+    const newResizedToken = lunasecTokenizer.tokenize(resizedImage);
+    return newResizedToken;
+}
+```
+Our deployment scripts read your code during deployment, find these secure functions, and deploy them to lambdas. I personally
+think this is one of the coolest parts of LunaSec.
+
+### Deployment
+We haven't built a pay-as-you-go SASS for LunaSec (at least not yet) because the tool is Open Source and most of our users have wanted to have their own deployments.
+Instead of leaving users on their own in terms of deployment, we wrote [a CLI](/pages/deployment/deploy-with-aws) that uses AWS CDK to deploy
+everything needed to AWS with a single line:
+```shell
+lunasec deploy
+```
+We've had great luck with the new [AWS LocalStack](https://github.com/localstack/localstack) which is a containerized AWS emulator
+that runs on your development machine.  Calling
+```shell
+lunasec start
+```
+brings up everything you need on your development machine, including that local copy of AWS.  Pretty neat!
+
+### Future roadmap
+We've barely scratched the surface of what LunaSec can do. 
+
+#### Dependence of AWS
 
 blood brain barrier
 ### Show how you can still do what you need to serverside such as search, sending GDPR dumps or converting images ...maybe not dumps actually
