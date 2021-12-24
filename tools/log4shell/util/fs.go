@@ -16,6 +16,7 @@ package util
 
 import (
 	"github.com/rs/zerolog/log"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -73,4 +74,14 @@ func ResolveSymlinkFilePathAndInfo(symlinkPath string) (path string, info os.Fil
 		return
 	}
 	return
+}
+
+func CopyFile(in, out string) (int64, error) {
+   i, e := os.Open(in)
+   if e != nil { return 0, e }
+   defer i.Close()
+   o, e := os.Create(out)
+   if e != nil { return 0, e }
+   defer o.Close()
+   return io.Copy(o, i)
 }

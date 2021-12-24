@@ -76,6 +76,11 @@ func scanDirectoriesForVulnerableLibraries(
 	scanner := scan.NewLog4jDirectoryScanner(
 		excludeDirs, onlyScanArchives, noFollowSymlinks, processArchiveFile)
 
+	log.Info().
+		Strs("searchDirs", searchDirs).
+		Strs("excludeDirs", excludeDirs).
+		Msg("Scanning directories for vulnerable Log4j libraries.")
+
 	scannerFindings = scanner.Scan(searchDirs)
 	return
 }

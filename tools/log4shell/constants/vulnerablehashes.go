@@ -37,6 +37,8 @@ var (
 
 	JndiLookupPatchFileVersions = semver.MustParseRange(">=2.0.0")
 
+	JndiLookupClasspath = "org/apache/logging/log4j/core/lookup/JndiLookup.class"
+
 	FileVersionChecks = []types.LibraryFileVersionCheck{
 		{
 			Cve: Log4ShellCve,
