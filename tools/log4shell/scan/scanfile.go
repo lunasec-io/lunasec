@@ -16,6 +16,7 @@ package scan
 
 import (
 	"archive/zip"
+	"github.com/blang/semver/v4"
 	"github.com/lunasec-io/lunasec/tools/log4shell/analyze"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
@@ -34,12 +35,31 @@ func IdentifyPotentiallyVulnerableFiles(scanLog4j1 bool, archiveHashLookup types
 	}
 }
 
+func isVulnerableIfContainsJndiLookup(versions []string) bool {
+	for _, version := range versions {
+		semverVersion, err := semver.Parse(version)
+		if err != nil {
+			continue
+		}
+
+		if constants.JndiLookupPatchFileVersions(semverVersion) {
+			return true
+		}
+	}
+	return false
+}
+
 func identifyPotentiallyVulnerableFile(
 	zipReader *zip.Reader,
 	reader io.Reader,
 	path, fileName string,
 	hashLookup types.VulnerableHashLookup,
 ) (finding *types.Finding) {
+	var (
+		jndiLookupFileName string
+		jndiLookupFileHash string
+	)
+
 	fileHash, err := util.HexEncodedSha256FromReader(reader)
 	if err != nil {
 		log.Warn().
@@ -50,7 +70,7 @@ func identifyPotentiallyVulnerableFile(
 		return
 	}
 
-	if strings.Contains(fileName, "JndiLookup.class") {
+	if strings.HasSuffix(fileName, "JndiLookup.class") {
 		log.Debug().
 			Str("fileName", fileName).
 			Str("fileHash", fileHash).
@@ -65,8 +85,12 @@ func identifyPotentiallyVulnerableFile(
 				Msg("No severity provided for CVE")
 		}
 
-		jndiLookupFileName, jndiLookupFileHash, err := analyze.GetJndiLookupHash(zipReader, path)
-		if err == nil {
+		versions := strings.Split(vulnerableFile.Version, ", ")
+		patchableVersion := isVulnerableIfContainsJndiLookup(versions)
+
+		jndiLookupFileName, jndiLookupFileHash = analyze.GetJndiLookupHash(zipReader, path)
+
+		if jndiLookupFileHash != "" {
 			if _, ok := vulnerableFile.VulnerableFileHashLookup[jndiLookupFileHash]; !ok {
 				log.Warn().
 					Str("path", path).
@@ -75,8 +99,12 @@ func identifyPotentiallyVulnerableFile(
 					Msg("Discovered JndiLookup.class file is not a known vulnerable file. Patching this file out might have some unintended side effects.")
 			}
 		} else {
-			jndiLookupFileName = ""
-			jndiLookupFileHash = ""
+			if patchableVersion {
+				log.Warn().
+					Str("path", path).
+					Msg("Library has been patched of the Log4Shell vulnerability.")
+				return
+			}
 		}
 
 		log.Log().

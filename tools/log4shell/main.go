@@ -92,9 +92,10 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			{
-				Name:   "analyze",
-				Usage:  "Note: This command is not used for scanning for vulnerable libraries, use the `scan` command. Analyze known vulnerable Log4j dependencies and create a mapping of JndiLookup.class hash to version.",
-				Before: setGlobalBoolFlags,
+				Name:    "analyze",
+				Aliases: []string{"a"},
+				Usage:   "Note: This command is not used for scanning for vulnerable libraries, use the `scan` command. Analyze known vulnerable Log4j dependencies and create a mapping of JndiLookup.class hash to version.",
+				Before:  setGlobalBoolFlags,
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:  "output",
@@ -159,7 +160,7 @@ func main() {
 			},
 			{
 				Name:    "livepatch",
-				Aliases: []string{"s"},
+				Aliases: []string{"l"},
 				Usage:   "Perform a live patch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.",
 				Before:  setGlobalBoolFlags,
 				Flags: []cli.Flag{
@@ -182,16 +183,28 @@ func main() {
 			},
 			{
 				Name:    "patch",
-				Aliases: []string{"s"},
+				Aliases: []string{"p"},
 				Usage:   "Patches findings of libraries vulnerable toLog4Shell by removing the JndiLookup.class file from each.",
 				Flags: []cli.Flag{
+					&cli.StringSliceFlag{
+						Name:  "exclude",
+						Usage: "Exclude subdirectories from scanning. This can be helpful if there are directories which your user does not have access to when starting a scan from `/`.",
+					},
+					&cli.BoolFlag{
+						Name:  "no-follow-symlinks",
+						Usage: "Disable the resolution of symlinks while scanning. Note: symlinks might resolve to files outside of the included directories and so this option might be useful if you strictly want to search in said directories.",
+					},
+					&cli.BoolFlag{
+						Name:  "force-patch",
+						Usage: "Force patch all libraries reported in findings or scanned at runtime. Do not prompt each time a library is about to be patched.",
+					},
 					&cli.StringFlag{
 						Name:  "findings",
 						Usage: "Patches all vulnerable Java archives which have been identified.",
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return commands.JavaArchivePatchCommand(c, globalBoolFlags)
+					return commands.JavaArchivePatchCommand(c, globalBoolFlags, log4jLibraryHashes)
 				},
 			},
 		},

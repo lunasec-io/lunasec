@@ -34,8 +34,8 @@
 			"path": "test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-beta9-bin/log4j-core-2.0-beta9.jar",
 			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
 			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
-			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
-			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "",
+			"jndi_lookup_hash": "",
 			"version": "2.0.0-beta9",
 			"cve": "CVE-2021-44228",
 			"severity": "10.0"
@@ -44,8 +44,8 @@
 			"path": "test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-beta9-osgi-bin/log4j-core-osgi-reduced-2.0-beta9.jar",
 			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
 			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
-			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
-			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "",
+			"jndi_lookup_hash": "",
 			"version": "2.0.0-beta9",
 			"cve": "CVE-2021-44228",
 			"severity": "10.0"
@@ -64,8 +64,8 @@
 			"path": "test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-rc1-bin/log4j-core-2.0-rc1.jar",
 			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
 			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
-			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
-			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "",
+			"jndi_lookup_hash": "",
 			"version": "2.0.0-rc1",
 			"cve": "CVE-2021-44228",
 			"severity": "10.0"
@@ -74,8 +74,8 @@
 			"path": "test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-rc1-osgi-bin/log4j-core-osgi-reduced-2.0-rc1.jar",
 			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
 			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
-			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
-			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "",
+			"jndi_lookup_hash": "",
 			"version": "2.0.0-rc1",
 			"cve": "CVE-2021-44228",
 			"severity": "10.0"
@@ -84,8 +84,8 @@
 			"path": "test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-rc2-bin/log4j-core-2.0-rc2.jar",
 			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
 			"hash": "a03e538ed25eff6c4fe48aabc5514e5ee687542f29f2206256840e74ed59bcd2",
-			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
-			"jndi_lookup_hash": "a03e538ed25eff6c4fe48aabc5514e5ee687542f29f2206256840e74ed59bcd2",
+			"jndi_lookup_file_name": "",
+			"jndi_lookup_hash": "",
 			"version": "2.0.0-rc2",
 			"cve": "CVE-2021-44228",
 			"severity": "10.0"
@@ -259,6 +259,16 @@
 			"version": "2.15.0",
 			"cve": "CVE-2021-45046",
 			"severity": "9.0"
+		},
+		{
+			"path": "test/vulnerable-log4j2-versions/apache/apache-log4j-2.16.0-bin/log4j-core-2.16.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "5210e6aae7dd8a61cd16c56937c5f2ed43941487830f46e99d0d3f45bfa6f953",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.16.0",
+			"cve": "CVE-2021-45105",
+			"severity": "7.5"
 		},
 		{
 			"path": "test/vulnerable-log4j2-versions/apache/apache-log4j-2.2-bin/log4j-core-2.2.jar",
@@ -534,8 +544,8 @@
 			"path": "test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.0-rc1.jar",
 			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
 			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
-			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
-			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "",
+			"jndi_lookup_hash": "",
 			"version": "2.0.0-rc1",
 			"cve": "CVE-2021-44228",
 			"severity": "10.0"
@@ -544,8 +554,8 @@
 			"path": "test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.0-rc2.jar",
 			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
 			"hash": "a03e538ed25eff6c4fe48aabc5514e5ee687542f29f2206256840e74ed59bcd2",
-			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
-			"jndi_lookup_hash": "a03e538ed25eff6c4fe48aabc5514e5ee687542f29f2206256840e74ed59bcd2",
+			"jndi_lookup_file_name": "",
+			"jndi_lookup_hash": "",
 			"version": "2.0.0-rc2",
 			"cve": "CVE-2021-44228",
 			"severity": "10.0"
@@ -729,6 +739,16 @@
 			"version": "2.15.0",
 			"cve": "CVE-2021-45046",
 			"severity": "9.0"
+		},
+		{
+			"path": "test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.16.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "5210e6aae7dd8a61cd16c56937c5f2ed43941487830f46e99d0d3f45bfa6f953",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.16.0",
+			"cve": "CVE-2021-45105",
+			"severity": "7.5"
 		},
 		{
 			"path": "test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.2.jar",
