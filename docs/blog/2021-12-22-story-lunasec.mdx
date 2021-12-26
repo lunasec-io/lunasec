@@ -1,5 +1,5 @@
 ---
-title: "Why we made LunaSec"
+title: "LunaSec can help prevent Open Source vulnerabilities"
 description: Looking at the latest big attacks to explain why we built the LunaSec Framework.
 slug: lunasec-story
 date: 2021-12-22
@@ -26,32 +26,19 @@ We've been at the forefront of the reporting around the latest widespread vulner
 ones to give it the name Log4Shell.  We've been busy keeping the public updated, and building scanning and mitigation
 [tools](/blog/log4j-zero-day-mitigation-guide#automatically-scanning-your-pack).
 
-While hopefully we have helped many users, reporting on
-and dealing with individual vulnerabilities isn't the main focus of our organization. For the better part of a year,
-we've been building a framework to make it so these vulnerabilities, even full RCEs like Log4Shell, can't leak the sensitive data
-that attackers are really after.
+For the better part of a year,
+we've been building an Open Source framework to make it so these vulnerabilities, even full RCEs like Log4Shell, can't leak the sensitive data
+that attackers are really after. It feels more relevant now than ever.
 
 ## Modern attack surface
 In security, we use the word "attack surface" to talk about how big of an area we need to defend.
-I think of this like the walls around a medieval town. The bigger
+I think of this like the walls and gates around an ancient city. The bigger
 the town is, the harder and more expensive it becomes to build walls and maintain fortifications.
 
-Modern web applications are bigger and have more functionality than ever before and this surface is becoming unmanageable, for many.
-
-#### Types of security tools
-TODO: THIS SECTION BAD MAYBE DELETE
-
-Let's look at what's out there in a software companies toolkit. The most common security tools on the market focus on two things: Static analysis and auditing.
-
-Static analyzers are code scanning tools. They _do_ have their place but frequent false positives can lead to developers
-ignoring them entirely. You probably recognize them as the thing that told you that one of your testing framework's
-dependency's dependency's has a security vulnerability.
-
-Auditing tools are a broad spectrum of logging and data analysis tools that can let you know when you've been hacked. Then you
-can wake up the on-call at three in the morning to try to pick up the pieces.
-
-Both of these tools have their place, but they aren't a complete solution to security. They also aren't a complete fix
-for complying with the increasing **regulations** around private data, like GDPR.
+Modern web applications are bigger and have more functionality than ever before and this surface is becoming unmanageable.
+They use many tools and libraries, all of which could have a potential issue like Log4Shell. Looking forward to the next
+inevitable vulnerability like Log4shell,
+let's look at ways to reduce the size of that attack surface to a much smaller amount of well-audited code.
 
 ### Compliance focused tools
 Getting sensitive data **out** of these potentially vulnerable web apps is becoming a popular strategy to help with legal compliance, and this is an emerging market
@@ -62,18 +49,19 @@ and might sound secure at first glance, these tools typically provide next to no
 Their focus is mainly just on helping comply with regulations.
 
 In fact, one of our researchers "hacked" the most popular of these
-tools with just a single line of javascript (more on that and the problems with token proxies in a future post).
+tools with just a single line of javascript (more on that and the problems with token proxies in a future post). The short explanation is:
+there are just too many ways to easily get the protected data.
 
 Some tools are better than others, but they all seem to have compromises and some attacks which they don't protect against.
-None of them seem to protect data once it reaches the browser.
+**None** of them seem to protect data once it reaches the browser.
 We wanted a way to *truly* protect data against *every* [common type of attack](/pages/how-it-works/security/vulns-and-mitigations),
-including attacks like Log4Shell.
+including browser attacks like XSS and even full RCEs like Log4Shell.
 
 ### Tools that are ACTUALLY secure
 There's one set of tools with a proven track record for protecting sensitive data on the web, and that's **payment processors**.
 We're talking about tools like Stripe and PayPal that collect your credit card number when you make an online purchase.
 
-If you've never worked with one, here's how they work: They are, in essence, a very small and dedicated web app that
+They are, in essence, a very small and dedicated web app that
 works alongside your main app. In the browser your app launches an iFrame containing the payment processor's app. Users see a nice box with a trustworthy logo
 and get to type their credit card information into a safe place. iFrames (in [cross-domain mode](/pages/how-it-works/secure-components)) are
 completely secure when done right because the browser treats them as a totally separate process. This is the strictest security
@@ -82,45 +70,50 @@ tool the browser has. It's like the iFrame is running in a separate tab next to 
 After the user is done, the credit card number goes up to the payment processors server. Your server talks to their server,
 and you get the bare minimum information you need to make the sale.
 
-The sensitive data was isolated every step of the way from your system. Even if attackers break in,
+The sensitive data is isolated every step of the way from your system. Even if attackers break in,
 it'll be really hard or even impossible to break through to the payment processor and get the credit card number. The attack surface for the payment processor
 is small because it's isolated from your site. Their security teams can audit the changes they make to their small system without worrying about the rest of your app.
 
 ### Making that work for any data
-This is a great strategy, and it's worked for decades. It makes sense: credit cards and the laws protecting them have been around for a very long
-time. Now that similar laws and concerns are expanding to more types of data, we need a more generic solution.
+This is a great strategy, and it's worked for decades. It makes sense: credit cards and the laws protecting them have been
+around for quite a while. Now that similar laws and concerns are expanding to more types of data, we need a more generic solution.
 
 Those iFrames loaded by payment processors are designed to be obviously distinct from the app they're in. That's great for payments,
-but ideally a solution that could store *any* data wouldn't be so obvious. We tried to
-make an iFrame that disguised itself and blended into any app. It could become a form input, a file input,
+but ideally a solution that could store *any* data wouldn't be so obvious to the user. We tried to
+make an iFrame that could disguise itself and blend into any app. It could become a form input, a file input,
 a `<p>` element, etc. and capture and protect sensitive data, all while looking like a native part of the web page.
 
 ### We call them "Secure Components"
-Dealing with all the information and events to make the elements look and behave like normal ones took months, but we did it.
+Dealing with all the DOM information to make the elements look and behave like normal ones took months, but we did it.
 The end result is something that looks and behaves just like a native element, even working well with popular
 component frameworks like Material UI. You can see for yourself in our [Live Demo app](https://app.lunasec.dev/). We've written
 more extensively about [how Secure Components work](/pages/how-it-works/secure-components) in our docs.
 
-Just like how payment processors give you a "payment ID" instead of a credit card number, the components return a Token that you
+```jsx title="A Secure Component in React, replaces a normal <input>"
+<SecureInput name="ssn" token={props.value} onChange={props.onChange} errorHandler={props.handleError} />
+```
+Just like how payment processors give you a "payment ID" instead of a credit card number, the **components return a token** that you
 can store legally and safely in your database, in the same place where you used to put sensitive data.
 
-### The Dedicated Tokenizer
+### The Backend
 Once we knew it was possible to make a totally isolated and secure front-end, we set out to make a backend that was just as secure.
-Since the real data structure still lives in your main app, a key-value store was the simplest model. Also, we knew our users
+Since the main data structure still lives in your main app, a key-value store was the simplest model. Also, we knew our users
 might want to store large files, not just short strings of text.
 
-We realized that AWS S3 with it's built in encryption, high speed and low cost was the perfect backend for our key-value storage.
+We realized that AWS S3 with it's built in encryption, high speed, and low cost was the perfect backend for our key-value storage.
 By using [S3 Presigned Urls](https://medium.com/@aidan.hallett/securing-aws-s3-uploads-using-presigned-urls-aa821c13ae8d) we could
-have the web browser or other consumers upload and download *directly* from S3.  We use a small, fast service to sign those URLs, control access,
+have the web browser or other consumers upload and download *directly* from S3.  We use a small, fast HTTP service to sign those URLs, control access,
 and store metadata.
 
 Now we have a system that's blindingly fast, very cheap, and scales without limit. We've written about this at length in
 our [How Tokens Work](/pages/how-it-works/tokens) documentation.
 
 ### Secure Functions
+I personally think this is one of the coolest parts of LunaSec.
+
 Processing data serverside is sometimes needed. Sometimes you need to resize a photo, sometimes you need to send something to another service,
-capitalize a line of text, etc... We want to give users a secure place to do these tasks on secret data in a way that even a full RCE
-on the server wouldn't leak the data.
+capitalize a line of text, send a GDPR report, etc... We want to give users a secure place to do these tasks. We knew there must
+be a way for a server to safely use secret data, even in the event of an RCE.
 
 So now we are building Secure Functions, which look and act like normal functions in your server code, but in fact run in an AWS Lambda.
 Your server can pass a token into the function, exchange it for real data, do what needs to be done, and return anything needed, just like a normal function would.
@@ -136,8 +129,8 @@ async function resizePhoto(token, width, height){
     return newResizedToken;
 }
 ```
-Our deployment scripts read your code during deployment, find these secure functions, and deploy them to lambdas. I personally
-think this is one of the coolest parts of LunaSec.
+Our deployment scripts read your code during deployment, find these secure functions, and deploy them to lambdas. You still
+need to make sure these parts of your code are secure, but it's much easier to protect something so small.
 
 ### Deployment
 We haven't built a pay-as-you-go SASS for LunaSec (at least not yet) because the tool is Open Source and most of our users have wanted to have their own deployments.
@@ -151,15 +144,30 @@ that runs on your development machine.  Calling
 ```shell
 lunasec start
 ```
-brings up everything you need on your development machine, including that local copy of AWS.  Pretty neat!
+brings up everything you need on your development machine, including that local copy of AWS.  Pretty neat! Soon we'll have
+a stubbed-out dev mode that doesn't need any servers running at all.
 
 ### Future roadmap
-We've barely scratched the surface of what LunaSec can do. 
+#### Frontend
+At the moment, LunaSec only fully supports React. Our Vue SDK is nearly done, and from there we will be making web-components that should
+work with any framework.
+#### Backend
+NodeJS with either Express or Apollo-Graphql is our currently supported backend. We have an alpha Java SDK that will be finalized soon,
+and we'd also like to add GoLang support. The API for backend service we call "The Tokenizer" is defined in an OpenAPI spec,
+which means you can use the spec file and OpenAPI's generators to generate yourself a simple strongly typed tokenization
+client in almost any language, even if we don't support it officially.
+#### Dependence on AWS
+We are using AWS specific tools pretty heavily. It's not necessary to have an entire app running on AWS,
+just the LunaSec parts. This may still be too much Amazon for some users, and we are not great fans of lock-in, either.
+There is a [massive community](https://github.com/guenter/aws-oss-alternatives) of Open Source projects that aim to be drop
+in replacements for AWS tools. We'd like to give anyone using these tools the same first class support that we give
+to normal AWS users.
 
-#### Dependence of AWS
+### Funding and support
+We're a Y-Combinator backed startup, and we offer paid support to install our tooling or modify it. We ask people to please let us
+know if they need some help or changes! See our founder's post
+[Building an Open Source Business](/blog/how-to-build-an-open-source-business-in-2021-part-1) to learn more about how we pay the bills.
 
-blood brain barrier
-### Show how you can still do what you need to serverside such as search, sending GDPR dumps or converting images ...maybe not dumps actually
-
-
-### Making it really, really easy to use and deploy with AWS
+### Conclusion
+ We've worked hard to make [our docs](/pages/overview/introduction) a great resource so please take a look or use the search bar if
+this article has left you curious.  Thanks for reading!
