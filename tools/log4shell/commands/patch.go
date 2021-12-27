@@ -25,6 +25,7 @@ import (
 	"github.com/urfave/cli/v2"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 func scanForFindings(
@@ -96,7 +97,7 @@ func loadOrScanForFindings(
 	return scanForFindings(log4jLibraryHashes, searchDirs, excludeDirs, noFollowSymlinks)
 }
 
-func askIfShouldSkipLibrary(msg string) (shouldSkip, forcePatch bool) {
+func askIfShouldSkipPatch(msg string) (shouldSkip, forcePatch bool) {
 	var (
 		patchPromptResp string
 	)
@@ -128,6 +129,28 @@ func askIfShouldSkipLibrary(msg string) (shouldSkip, forcePatch bool) {
 	return
 }
 
+func getHashOfZipMember(member *zip.File) (hash string) {
+	memberReader, err := member.Open()
+	if err != nil {
+		log.Warn().
+			Err(err).
+			Str("name", member.Name).
+			Msg("Unable to open zip member")
+		return
+	}
+	defer memberReader.Close()
+
+	hash, err = util.HexEncodedSha256FromReader(memberReader)
+	if err != nil {
+		log.Warn().
+			Err(err).
+			Str("name", member.Name).
+			Msg("Unable to hash zip member")
+		return
+	}
+	return
+}
+
 func filterOutJndiLookupFromZip(
 	finding types.Finding,
 	zipReader *zip.Reader,
@@ -135,12 +158,37 @@ func filterOutJndiLookupFromZip(
 ) error {
 	for _, member := range zipReader.File {
 		if member.Name == finding.JndiLookupFileName {
+			shouldSkip := false
+
 			log.Debug().
 				Str("path", finding.Path).
 				Str("zipFilePath", finding.JndiLookupFileName).
 				Msg("Found file to remove in order to patch log4j library.")
-			continue
+
+			hash := getHashOfZipMember(member)
+			if hash != finding.JndiLookupHash {
+				shouldSkip, _ = askIfShouldSkipPatch(
+					fmt.Sprintf(
+						"located JndiLookup.class file hash does not match expected finding hash: \"%s\" != \"%s\" . Patching might result in unintended side effects.",
+						hash, finding.JndiLookupHash,
+					),
+				)
+			}
+
+			if !shouldSkip {
+				continue
+			}
+
+			log.Info().
+				Str("findingPath", finding.Path).
+				Msg("Skipping library for patching")
 		}
+
+		if member.FileInfo().IsDir() {
+			fmt.Println(member.Name, member.FileInfo().IsDir())
+			fmt.Printf("%+v\n", member.FileHeader)
+		}
+
 
 		if err := writer.Copy(member); err != nil {
 			log.Error().
@@ -152,13 +200,16 @@ func filterOutJndiLookupFromZip(
 	return nil
 }
 
-func patchJavaArchive(finding types.Finding) (err error) {
+func patchJavaArchive(finding types.Finding, dryRun bool) (err error) {
 	var (
 		libraryFile *os.File
 		zipReader   *zip.Reader
 	)
 
-	libraryFile, err = os.Open(finding.Path)
+	zipPaths := strings.Split(finding.Path, "::")
+	var zipReaders []*zip.Reader
+
+	libraryFile, err = os.Open(zipPaths[0])
 	if err != nil {
 		log.Error().
 			Str("path", finding.Path).
@@ -169,14 +220,23 @@ func patchJavaArchive(finding types.Finding) (err error) {
 	defer libraryFile.Close()
 
 	info, _ := os.Stat(finding.Path)
+	zipSize := info.Size()
 
-	zipReader, err = zip.NewReader(libraryFile, info.Size())
-	if err != nil {
-		log.Error().
-			Str("path", finding.Path).
-			Err(err).
-			Msg("Unable to open archive for patching")
-		return
+	for _, zipPath := range zipPaths {
+		nestedZip, err := zipReader.Open(zipPath)
+
+		nestedZip.
+
+		zipReader, err = zip.NewReader(libraryFile, zipSize)
+		if err != nil {
+			log.Error().
+				Str("path", finding.Path).
+				Str("zipPath", zipPath).
+				Err(err).
+				Msg("Unable to open archive for patching")
+			return
+		}
+		zipReaders = append(zipReaders, zipReader)
 	}
 
 	outZip, err := ioutil.TempFile(os.TempDir(), "*.zip")
@@ -217,6 +277,13 @@ func patchJavaArchive(finding types.Finding) (err error) {
 		return
 	}
 
+	if dryRun {
+		log.Info().
+			Str("library", finding.Path).
+			Msg("[Dry Run] Not completing patch process of overwriting existing library.")
+		return
+	}
+
 	_, err = util.CopyFile(outZip.Name(), finding.Path)
 	if err != nil {
 		log.Error().
@@ -246,6 +313,7 @@ func JavaArchivePatchCommand(
 		Msg("Patching found vulnerable Log4j libraries.")
 
 	forcePatch := c.Bool("force-patch")
+	dryRun := c.Bool("dry-run")
 
 	var patchedLibraries []string
 
@@ -263,7 +331,7 @@ func JavaArchivePatchCommand(
 		}
 
 		if !forcePatch {
-			shouldSkip, forcePatch = askIfShouldSkipLibrary(finding.Path)
+			shouldSkip, forcePatch = askIfShouldSkipPatch(finding.Path)
 			if !forcePatch && shouldSkip {
 				log.Info().
 					Str("findingPath", finding.Path).
@@ -272,7 +340,7 @@ func JavaArchivePatchCommand(
 			}
 		}
 
-		err = patchJavaArchive(finding)
+		err = patchJavaArchive(finding, dryRun)
 		if err != nil {
 			continue
 		}

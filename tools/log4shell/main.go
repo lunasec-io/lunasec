@@ -198,6 +198,10 @@ func main() {
 						Name:  "force-patch",
 						Usage: "Force patch all libraries reported in findings or scanned at runtime. Do not prompt each time a library is about to be patched.",
 					},
+					&cli.BoolFlag{
+						Name:  "dry-run",
+						Usage: "Perform a dry run of the patching process by only logging out actions which would be performed.",
+					},
 					&cli.StringFlag{
 						Name:  "findings",
 						Usage: "Patches all vulnerable Java archives which have been identified.",

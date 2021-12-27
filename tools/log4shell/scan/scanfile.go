@@ -55,11 +55,6 @@ func identifyPotentiallyVulnerableFile(
 	path, fileName string,
 	hashLookup types.VulnerableHashLookup,
 ) (finding *types.Finding) {
-	var (
-		jndiLookupFileName string
-		jndiLookupFileHash string
-	)
-
 	fileHash, err := util.HexEncodedSha256FromReader(reader)
 	if err != nil {
 		log.Warn().
@@ -88,13 +83,12 @@ func identifyPotentiallyVulnerableFile(
 		versions := strings.Split(vulnerableFile.Version, ", ")
 		patchableVersion := isVulnerableIfContainsJndiLookup(versions)
 
-		jndiLookupFileName, jndiLookupFileHash = analyze.GetJndiLookupHash(zipReader, path)
-
+		jndiLookupFileHash := analyze.GetJndiLookupHash(zipReader, path)
 		if jndiLookupFileHash != "" {
 			if _, ok := vulnerableFile.VulnerableFileHashLookup[jndiLookupFileHash]; !ok {
 				log.Warn().
 					Str("path", path).
-					Str("jndiLookupFileName", jndiLookupFileName).
+					Str("jndiLookupFileName", constants.JndiLookupClasspath).
 					Str("jndiLookupHash", jndiLookupFileHash).
 					Msg("Discovered JndiLookup.class file is not a known vulnerable file. Patching this file out might have some unintended side effects.")
 			}
@@ -102,6 +96,8 @@ func identifyPotentiallyVulnerableFile(
 			if patchableVersion {
 				log.Warn().
 					Str("path", path).
+					Str("jndiLookupFileName", constants.JndiLookupClasspath).
+					Str("jndiLookupHash", jndiLookupFileHash).
 					Msg("Library has been patched of the Log4Shell vulnerability.")
 				return
 			}
@@ -112,7 +108,7 @@ func identifyPotentiallyVulnerableFile(
 			Str("path", path).
 			Str("versionIndicatorFileName", fileName).
 			Str("versionIndicatorHash", fileHash).
-			Str("jndiLookupFileName", jndiLookupFileName).
+			Str("jndiLookupFileName", constants.JndiLookupClasspath).
 			Str("jndiLookupHash", jndiLookupFileHash).
 			Str("versionInfo", vulnerableFile.Version).
 			Str("cve", vulnerableFile.CVE).
@@ -131,7 +127,7 @@ func identifyPotentiallyVulnerableFile(
 			Path:     absolutePath,
 			FileName: fileName,
 			Hash:     fileHash,
-			JndiLookupFileName: jndiLookupFileName,
+			JndiLookupFileName: constants.JndiLookupClasspath,
 			JndiLookupHash: jndiLookupFileHash,
 			Version:  vulnerableFile.Version,
 			CVE:      vulnerableFile.CVE,
