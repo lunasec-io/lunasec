@@ -77,7 +77,7 @@ in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injec
 
 ** Edit: ** To see if you are impacted, you can use our [automatic scanning tool](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
 
-## Affected Apache log4j Versions:
+## Affected Apache log4j Versions
 
 ### log4j v2
 
@@ -134,13 +134,13 @@ As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=2950
 
 ## How the exploit works
 
-### Exploit Requirements:
+### Exploit Requirements
 
 - A server with a vulnerable `log4j` version (listed above).
 - An endpoint with any protocol (HTTP, TCP, etc), that allows an attacker to send the exploit string.
 - A log statement that logs out the string from that request.
 
-### Example Vulnerable Code:
+### Example Vulnerable Code
 
 ```ts
 import org.apache.logging.log4j.LogManager;
@@ -175,7 +175,7 @@ public class VulnerableLog4jExampleHandler implements HttpHandler {
 }
 ```
 
-#### Reproducing Locally:
+#### Reproducing Locally
 
 If you want to reproduce this vulnerability locally, you can refer to christophetd's [vulnerable app](https://github.com/christophetd/log4shell-vulnerable-app).
 
