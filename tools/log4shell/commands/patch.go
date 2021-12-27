@@ -194,6 +194,8 @@ func tail(s []string) []string {
 }
 
 func addFileToZip(zipWriter *zip.Writer, existingHeader zip.FileHeader, filename string) (err error) {
+	defer zipWriter.Flush()
+
 	fileToZip, err := os.Open(filename)
 	if err != nil {
 		log.Error().
@@ -224,6 +226,7 @@ func addFileToZip(zipWriter *zip.Writer, existingHeader zip.FileHeader, filename
 			Msg("Unable to create zip header")
 		return
 	}
+
 	_, err = io.Copy(writer, fileToZip)
 	if err != nil {
 		log.Error().
@@ -266,7 +269,6 @@ func filterOutJndiLookupFromZip(
 	if err != nil {
 		return
 	}
-	nestedZipWriter.Flush()
 
 	if zipWriter == nil {
 		filename = outZip.Name()
@@ -274,11 +276,13 @@ func filterOutJndiLookupFromZip(
 		return
 	}
 
+	nestedZipWriter.Close()
+	outZip.Close()
+
 	err = addFileToZip(zipWriter, existingHeader, outZip.Name())
 	if err != nil {
 		return
 	}
-	zipWriter.Flush()
 	return
 }
 
@@ -288,6 +292,8 @@ func copyAndFilterFilesFromZip(
 	writer *zip.Writer,
 	nestedPaths []string,
 ) (err error) {
+	defer writer.Flush()
+
 	nestedPath := head(nestedPaths)
 	for _, member := range zipReader.File {
 		if member.Name == nestedPath {
@@ -333,6 +339,15 @@ func copyAndFilterFilesFromZip(
 		}
 
 		if member.FileInfo().IsDir() {
+			_, err = writer.Create(member.Name)
+			if err != nil {
+				log.Error().
+					Err(err).
+					Str("memberName", member.Name).
+					Str("member", fmt.Sprintf("%+v", member.FileHeader)).
+					Msg("Error while copying zip dir.")
+				return
+			}
 			continue
 		}
 
