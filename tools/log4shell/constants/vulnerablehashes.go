@@ -23,6 +23,7 @@ import (
 const (
 	Log4ShellCve = "CVE-2021-44228"
 	CtxCve       = "CVE-2021-45046"
+	RecursiveDosCve = "CVE-2021-45105"
 	Log4j1RceCve = "CVE-2019-17571"
 )
 
@@ -30,8 +31,13 @@ var (
 	CveSeverityLookup = map[string]string {
 		Log4ShellCve: "10.0",
 		CtxCve:       "9.0",
+		RecursiveDosCve: "7.5",
 		Log4j1RceCve: "9.8",
 	}
+
+	JndiLookupPatchFileVersions = semver.MustParseRange(">=2.0.0")
+
+	JndiLookupClasspath = "org/apache/logging/log4j/core/lookup/JndiLookup.class"
 
 	FileVersionChecks = []types.LibraryFileVersionCheck{
 		{
@@ -41,12 +47,17 @@ var (
 		},
 		{
 			Cve: Log4ShellCve,
-			SemverRange: semver.MustParseRange(">=2.1.0 <=2.14.1"),
+			SemverRange: semver.MustParseRange(">=2.1.0 <2.15.0"),
 			LibraryFile: "JndiManager.class",
 		},
 		{
 			Cve: CtxCve,
-			SemverRange: semver.MustParseRange("=2.15.0"),
+			SemverRange: semver.MustParseRange(">=2.15.0 <2.16.0"),
+			LibraryFile: "JndiManager.class",
+		},
+		{
+			Cve: RecursiveDosCve,
+			SemverRange: semver.MustParseRange(">=2.16.0 <2.17.0"),
 			LibraryFile: "JndiManager.class",
 		},
 		{
