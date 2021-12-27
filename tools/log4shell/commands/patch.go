@@ -23,6 +23,7 @@ import (
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+	"io"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -151,13 +152,160 @@ func getHashOfZipMember(member *zip.File) (hash string) {
 	return
 }
 
+func getNestedZipReader(zipReader *zip.Reader, zipPath string) (nestedZipReader *zip.Reader, err error) {
+	if zipPath == "" {
+		nestedZipReader = zipReader
+		return
+	}
+
+	nestedZip, err := zipReader.Open(zipPath)
+	if err != nil {
+		log.Error().Err(err).Str("zipPath", zipPath).Msg("Unable to open nested zip path")
+		return
+	}
+	defer nestedZip.Close()
+
+	info, err := nestedZip.Stat()
+	if err != nil {
+		log.Error().Err(err).Str("zipPath", zipPath).Msg("Unable to stat nested zip")
+		return
+	}
+
+	nestedZipReader, err = util.NewZipFromReader(nestedZip, info.Size())
+	if err != nil {
+		log.Error().Err(err).Str("zipPath", zipPath).Msg("Unable to create new zip reader")
+		return
+	}
+	return
+}
+
+func head(s []string) string {
+	if len(s) > 0 {
+		return s[0]
+	}
+	return ""
+}
+
+func tail(s []string) []string {
+	if len(s) > 1 {
+		return s[1:]
+	}
+	return []string{}
+}
+
+func addFileToZip(zipWriter *zip.Writer, existingHeader zip.FileHeader, filename string) (err error) {
+	fileToZip, err := os.Open(filename)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("filename", filename).
+			Msg("Unable to open file")
+		return
+	}
+	defer fileToZip.Close()
+
+	// Get the file information
+	info, err := fileToZip.Stat()
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("filename", filename).
+			Msg("Unable to stat file")
+		return
+	}
+
+	existingHeader.UncompressedSize64 = uint64(info.Size())
+
+	writer, err := zipWriter.CreateHeader(&existingHeader)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("filename", filename).
+			Msg("Unable to create zip header")
+		return
+	}
+	_, err = io.Copy(writer, fileToZip)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("filename", filename).
+			Msg("Unable to copy file contents to zip writer")
+		return
+	}
+	return
+}
+
 func filterOutJndiLookupFromZip(
 	finding types.Finding,
 	zipReader *zip.Reader,
+	nestedPaths []string,
+	zipWriter *zip.Writer,
+	existingHeader zip.FileHeader,
+) (filename string, err error) {
+	validOutputFile := false
+
+	outZip, err := ioutil.TempFile(os.TempDir(), "*.zip")
+	if err != nil {
+		log.Error().
+			Str("tmpDir", os.TempDir()).
+			Err(err).
+			Msg("Unable to create temporary libraryFile")
+		return
+	}
+	defer func() {
+		outZip.Close()
+		if !validOutputFile {
+			os.Remove(outZip.Name())
+		}
+	}()
+
+	nestedZipWriter := zip.NewWriter(outZip)
+	defer nestedZipWriter.Close()
+
+	err = copyAndFilterFilesFromZip(finding, zipReader, nestedZipWriter, nestedPaths)
+	if err != nil {
+		return
+	}
+	nestedZipWriter.Flush()
+
+	if zipWriter == nil {
+		filename = outZip.Name()
+		validOutputFile = true
+		return
+	}
+
+	err = addFileToZip(zipWriter, existingHeader, outZip.Name())
+	if err != nil {
+		return
+	}
+	zipWriter.Flush()
+	return
+}
+
+func copyAndFilterFilesFromZip(
+	finding types.Finding,
+	zipReader *zip.Reader,
 	writer *zip.Writer,
-) error {
+	nestedPaths []string,
+) (err error) {
+	nestedPath := head(nestedPaths)
 	for _, member := range zipReader.File {
-		if member.Name == finding.JndiLookupFileName {
+		if member.Name == nestedPath {
+			var nestedZipReader *zip.Reader
+
+			nestedZipReader, err = getNestedZipReader(zipReader, nestedPath)
+			if err != nil {
+				return
+			}
+
+			_, err = filterOutJndiLookupFromZip(finding, nestedZipReader, tail(nestedPaths), writer, member.FileHeader)
+			if err != nil {
+				return
+			}
+			continue
+		}
+
+		if len(nestedPaths) == 0 && member.Name == finding.JndiLookupFileName {
 			shouldSkip := false
 
 			log.Debug().
@@ -185,19 +333,20 @@ func filterOutJndiLookupFromZip(
 		}
 
 		if member.FileInfo().IsDir() {
-			fmt.Println(member.Name, member.FileInfo().IsDir())
-			fmt.Printf("%+v\n", member.FileHeader)
+			continue
 		}
 
-
-		if err := writer.Copy(member); err != nil {
+		err = writer.Copy(member)
+		if err != nil {
 			log.Error().
 				Err(err).
+				Str("memberName", member.Name).
+				Str("member", fmt.Sprintf("%+v", member.FileHeader)).
 				Msg("Error while copying zip file.")
-			return err
+			return
 		}
 	}
-	return nil
+	return
 }
 
 func patchJavaArchive(finding types.Finding, dryRun bool) (err error) {
@@ -207,9 +356,10 @@ func patchJavaArchive(finding types.Finding, dryRun bool) (err error) {
 	)
 
 	zipPaths := strings.Split(finding.Path, "::")
-	var zipReaders []*zip.Reader
 
-	libraryFile, err = os.Open(zipPaths[0])
+	fsFile := head(zipPaths)
+
+	libraryFile, err = os.Open(fsFile)
 	if err != nil {
 		log.Error().
 			Str("path", finding.Path).
@@ -219,76 +369,43 @@ func patchJavaArchive(finding types.Finding, dryRun bool) (err error) {
 	}
 	defer libraryFile.Close()
 
-	info, _ := os.Stat(finding.Path)
-	zipSize := info.Size()
-
-	for _, zipPath := range zipPaths {
-		nestedZip, err := zipReader.Open(zipPath)
-
-		nestedZip.
-
-		zipReader, err = zip.NewReader(libraryFile, zipSize)
-		if err != nil {
-			log.Error().
-				Str("path", finding.Path).
-				Str("zipPath", zipPath).
-				Err(err).
-				Msg("Unable to open archive for patching")
-			return
-		}
-		zipReaders = append(zipReaders, zipReader)
-	}
-
-	outZip, err := ioutil.TempFile(os.TempDir(), "*.zip")
+	info, err := os.Stat(fsFile)
 	if err != nil {
 		log.Error().
-			Str("tmpDir", os.TempDir()).
+			Str("path", finding.Path).
 			Err(err).
-			Msg("Unable to create temporary libraryFile")
+			Msg("Cannot stat file.")
 		return
 	}
-	defer os.Remove(outZip.Name())
 
-	writer := zip.NewWriter(outZip)
-	defer writer.Close()
-
-	err = filterOutJndiLookupFromZip(finding, zipReader, writer)
+	zipReader, err = zip.NewReader(libraryFile, info.Size())
 	if err != nil {
+		log.Error().
+			Str("path", finding.Path).
+			Err(err).
+			Msg("Cannot create new zip reader for file.")
 		return
 	}
 
-	writer.Close()
-
-	if err = libraryFile.Close(); err != nil {
-		log.Error().
-			Str("outZipName", outZip.Name()).
-			Str("libraryFileName", finding.Path).
-			Err(err).
-			Msg("Unable to close library file.")
-		return
-	}
-
-	if err = outZip.Close(); err != nil {
-		log.Error().
-			Str("outZipName", outZip.Name()).
-			Str("libraryFileName", finding.Path).
-			Err(err).
-			Msg("Unable to close output zip.")
+	filteredLibrary, err := filterOutJndiLookupFromZip(finding, zipReader, tail(zipPaths), nil, zip.FileHeader{})
+	if err != nil {
 		return
 	}
 
 	if dryRun {
 		log.Info().
-			Str("library", finding.Path).
+			Str("libraryFileName", fsFile).
+			Str("fullPathToLibrary", finding.Path).
 			Msg("[Dry Run] Not completing patch process of overwriting existing library.")
 		return
 	}
 
-	_, err = util.CopyFile(outZip.Name(), finding.Path)
+	_, err = util.CopyFile(filteredLibrary, fsFile)
 	if err != nil {
 		log.Error().
-			Str("outZipName", outZip.Name()).
-			Str("libraryFileName", finding.Path).
+			Str("outZipName", filteredLibrary).
+			Str("libraryFileName", fsFile).
+			Str("fullPathToLibrary", finding.Path).
 			Err(err).
 			Msg("Unable to replace library file with patched library file.")
 		return
@@ -342,6 +459,9 @@ func JavaArchivePatchCommand(
 
 		err = patchJavaArchive(finding, dryRun)
 		if err != nil {
+			log.Error().
+				Str("path", finding.Path).
+				Msg("Unable to patch library successfully.")
 			continue
 		}
 		patchedLibraries = append(patchedLibraries, finding.Path)
@@ -349,6 +469,6 @@ func JavaArchivePatchCommand(
 
 	log.Info().
 		Strs("patchedLibraries", patchedLibraries).
-		Msg("Successfully patched libraries.")
+		Msg("Completed patched libraries.")
 	return nil
 }

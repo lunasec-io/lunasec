@@ -15,8 +15,11 @@
 package util
 
 import (
+	"archive/zip"
+	"bytes"
 	"github.com/rs/zerolog/log"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -76,8 +79,31 @@ func ResolveSymlinkFilePathAndInfo(symlinkPath string) (path string, info os.Fil
 	return
 }
 
+// NewZipFromReader ...
+func NewZipFromReader(file io.ReadCloser, size int64) (*zip.Reader, error) {
+	in := file.(io.Reader)
+
+	if _, ok := in.(io.ReaderAt); ok != true {
+		buffer, err := ioutil.ReadAll(in)
+
+		if err != nil {
+			return nil, err
+		}
+
+		in = bytes.NewReader(buffer)
+		size = int64(len(buffer))
+	}
+
+	reader, err := zip.NewReader(in.(io.ReaderAt), size)
+	if err != nil {
+		return nil, err
+	}
+
+	return reader, nil
+}
+
 func CopyFile(in, out string) (int64, error) {
-   i, e := os.Open(in)
+	i, e := os.Open(in)
    if e != nil { return 0, e }
    defer i.Close()
    o, e := os.Create(out)

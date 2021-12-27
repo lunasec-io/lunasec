@@ -185,6 +185,7 @@ func main() {
 				Name:    "patch",
 				Aliases: []string{"p"},
 				Usage:   "Patches findings of libraries vulnerable toLog4Shell by removing the JndiLookup.class file from each.",
+				Before:  setGlobalBoolFlags,
 				Flags: []cli.Flag{
 					&cli.StringSliceFlag{
 						Name:  "exclude",
@@ -205,6 +206,14 @@ func main() {
 					&cli.StringFlag{
 						Name:  "findings",
 						Usage: "Patches all vulnerable Java archives which have been identified.",
+					},
+					&cli.BoolFlag{
+						Name:  "json",
+						Usage: "Display findings in json format.",
+					},
+					&cli.BoolFlag{
+						Name:  "debug",
+						Usage: "Display helpful information while debugging the CLI.",
 					},
 				},
 				Action: func(c *cli.Context) error {
