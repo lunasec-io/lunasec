@@ -97,11 +97,11 @@ func fileNameToSemver(fileNameNoExt string) string {
 	return semverVersion
 }
 
-func GetJndiLookupHash(zipReader *zip.Reader, filePath string) (fileName, fileHash string) {
+func GetJndiLookupHash(zipReader *zip.Reader, filePath string) (fileHash string) {
 	reader, err := zipReader.Open(constants.JndiLookupClasspath)
 	if err != nil {
 		log.Debug().
-			Str("fieName", fileName).
+			Str("fieName", constants.JndiLookupClasspath).
 			Str("path", filePath).
 			Err(err).
 			Msg("cannot find file in zip")
@@ -112,7 +112,7 @@ func GetJndiLookupHash(zipReader *zip.Reader, filePath string) (fileName, fileHa
 	fileHash, err = util.HexEncodedSha256FromReader(reader)
 	if err != nil {
 		log.Debug().
-			Str("fieName", fileName).
+			Str("fieName", constants.JndiLookupClasspath).
 			Str("path", filePath).
 			Err(err).
 			Msg("unable to hash JndiLookup.class file")
@@ -123,7 +123,6 @@ func GetJndiLookupHash(zipReader *zip.Reader, filePath string) (fileName, fileHa
 
 func ProcessArchiveFile(zipReader *zip.Reader, reader io.Reader, filePath, fileName string) (finding *types.Finding) {
 	var (
-		jndiLookupFileName string
 		jndiLookupFileHash string
 	)
 
@@ -167,14 +166,14 @@ func ProcessArchiveFile(zipReader *zip.Reader, reader io.Reader, filePath, fileN
 	}
 
 	if versionIsInRange(fileNameNoExt, semverVersion, constants.JndiLookupPatchFileVersions) {
-		jndiLookupFileName, jndiLookupFileHash = GetJndiLookupHash(zipReader, filePath)
+		jndiLookupFileHash = GetJndiLookupHash(zipReader, filePath)
 	}
 
 	log.Log().
 		Str("path", filePath).
 		Str("fileName", fileName).
 		Str("fileHash", fileHash).
-		Str("jndiLookupFileName", jndiLookupFileName).
+		Str("jndiLookupFileName", constants.JndiLookupClasspath).
 		Str("jndiLookupFileHash", jndiLookupFileHash).
 		Msg("identified library version")
 
@@ -182,7 +181,7 @@ func ProcessArchiveFile(zipReader *zip.Reader, reader io.Reader, filePath, fileN
 		Path:        filePath,
 		FileName:    fileName,
 		Hash:        fileHash,
-		JndiLookupFileName:    jndiLookupFileName,
+		JndiLookupFileName:    constants.JndiLookupClasspath,
 		JndiLookupHash:        jndiLookupFileHash,
 		Version: semverVersion,
 		CVE: versionCve,
