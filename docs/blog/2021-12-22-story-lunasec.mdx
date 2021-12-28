@@ -1,5 +1,5 @@
 ---
-title: "LunaSec can help prevent Open Source vulnerabilities"
+title: "LunaSec will help protect against Open Source vulnerabilities"
 description: Looking at the latest big attacks to explain why we built the LunaSec Framework.
 slug: lunasec-story
 date: 2021-12-22
@@ -41,15 +41,15 @@ inevitable vulnerability like Log4shell,
 let's look at ways to reduce the size of that attack surface to a much smaller amount of well-audited code.
 
 ### Compliance focused tools
-Getting sensitive data **out** of these potentially vulnerable web apps is becoming a popular strategy to help with legal compliance, and this is an emerging market
-of tools. The most popular of these
-are proxies that sit between your client and server, converting sensitive fields like a social security number like *123-12-1234*
-into perfectly legal tokens like *token-123abc*. While they claim to be security tools
-and might sound secure at first glance, these tools typically provide next to no actual data security.
+Getting sensitive data **out** of these potentially vulnerable web apps is becoming a popular strategy to help with legal compliance.
+An emerging market of tools has become available for companies to use to "secure" their data. The most popular of these
+are token proxies which convert sensitive fields like a social security number, *435-12-9745*,
+into some identifier token, *token-1234-5678*, which only _refers_ to the sensitive field. While a company using a proxy such as this can quickly
+become compliant given they are no longer storing sensitive data themselves, these tools typically provide next to no actual data security.
 Their focus is mainly just on helping comply with regulations.
 
-In fact, one of our researchers "hacked" the most popular of these
-tools with just a single line of javascript (more on that and the problems with token proxies in a future post). The short explanation is:
+In fact, our security researchers have identified actual _vulnerabilities_ in some of these tools which may be trivially exploited
+(more on that and the problems with token proxies in a future post). The short explanation is:
 there are just too many ways to easily get the protected data.
 
 Some tools are better than others, but they all seem to have compromises and some attacks which they don't protect against.
@@ -62,7 +62,7 @@ There's one set of tools with a proven track record for protecting sensitive dat
 We're talking about tools like Stripe and PayPal that collect your credit card number when you make an online purchase.
 
 They are, in essence, a very small and dedicated web app that
-works alongside your main app. In the browser your app launches an iFrame containing the payment processor's app. Users see a nice box with a trustworthy logo
+works alongside your main app. In the browser, your app launches an iFrame containing the payment processor's app. Users see a nice box with a trustworthy logo
 and get to type their credit card information into a safe place. iFrames (in [cross-domain mode](/pages/how-it-works/secure-components)) are
 completely secure when done right because the browser treats them as a totally separate process. This is the strictest security
 tool the browser has. It's like the iFrame is running in a separate tab next to your site, only *appearing* to be a part of it.
@@ -71,7 +71,7 @@ After the user is done, the credit card number goes up to the payment processors
 and you get the bare minimum information you need to make the sale.
 
 The sensitive data is isolated every step of the way from your system. Even if attackers break in,
-it'll be really hard or even impossible to break through to the payment processor and get the credit card number. The attack surface for the payment processor
+it'll be very difficult to break through to the payment processor and get the credit card number. The attack surface for the payment processor
 is small because it's isolated from your site. Their security teams can audit the changes they make to their small system without worrying about the rest of your app.
 
 ### Making that work for any data
@@ -79,9 +79,9 @@ This is a great strategy, and it's worked for decades. It makes sense: credit ca
 around for quite a while. Now that similar laws and concerns are expanding to more types of data, we need a more generic solution.
 
 Those iFrames loaded by payment processors are designed to be obviously distinct from the app they're in. That's great for payments,
-but ideally a solution that could store *any* data wouldn't be so obvious to the user. We tried to
-make an iFrame that could disguise itself and blend into any app. It could become a form input, a file input,
-a `<p>` element, etc. and capture and protect sensitive data, all while looking like a native part of the web page.
+but ideally a solution that could store *any* data wouldn't be so obvious to the user. The iFrame we created automatically disguises itself to 
+blend into any app. With [a few changes](https://www.lunasec.io/docs/pages/overview/introduction) any form you have which collects sensitive data
+can immediately become compliant, without compromising on security, all while looking like a native part of the web page.
 
 ### We call them "Secure Components"
 Dealing with all the DOM information to make the elements look and behave like normal ones took months, but we did it.
