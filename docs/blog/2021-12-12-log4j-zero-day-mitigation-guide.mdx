@@ -61,86 +61,63 @@ This vulnerability affects anybody who's using the log4j packages. Java conseque
 
 ### Automatically Scanning Your Package
 
-We've built a command line utility that can check `.jar` and `.war` files in your project directory and report if any are vulnerable. 
-It works by scanning for hashes of [known vulnerable log4j classes](https://github.com/mubix/CVE-2021-44228-Log4Shell-Hashes).
-If you have a vulnerable version of a log4j in your built Java project, the hash will match one
-of the hashes in the list.
-
-**[Download from GitHub](https://github.com/lunasec-io/lunasec/releases/)**
-
-_Make sure you download the right version for your Operating System and CPU architecture._ Once downloaded, you can extract
-it and run the `log4shell` command in your terminal.  The tool can scan individual files, or whole directories.
+We've built a command line utility for Mac, Windows, and Linux that can check your project's dependencies and report if any are vulnerable.
+It works by scanning for class files which belong to a known vulnerable Log4j version.
 
 
+[Download our `log4shell` scanner from GitHub.](https://github.com/lunasec-io/lunasec/releases/)
 
-**Linux**
-```shell title="Example Linux Command"
+
+_Make sure you download the right version for your Operating System and CPU architecture._ Once downloaded, run the `log4shell`
+command in your terminal. The tool can scan individual files, or whole directories. The Log4j versions our scanner identifies
+[are kept up to date](https://github.com/lunasec-io/lunasec/blob/master/tools/log4shell/log4j-library-hashes.json) with all
+published CVEs, unlike some other scanners that may only scan for the first Log4j CVE. The tool also has built in penetration-testing
+and live-patching functions, explained later in this post.
+
+On OSX you may need to move the binary to somewhere on the `$PATH` and make it executable.
+
+```shell title="OSX Installation Instructions"
+mv ~/downloads/log4shell_1.5.0-log4shell_Darwin_x86_64 /usr/local/bin/log4shell
+sudo chmod +x /usr/local/bin/log4shell
+```
+
+```shell title="Linux and OSX scan"
 log4shell scan your-project-dir/
 ```
 
-**OSX**
-```shell title="Example OSX Commands"
-# Replace `<PATH_ON_YOUR_MACHINE>` with your path, eg: `~/Downloads`
-cp <PATH_ON_YOUR_MACHINE>/log4shell_1.4.1-log4shell_Darwin_x86_64 /usr/local/bin/log4shell
-chmod +x /usr/local/bin/log4shell
-log4shell scan your-project-dir
-```
-
-**Windows**
-```shell title="Example Windows Command"
+```shell title="Windows scan"
 log4shell.exe scan your-project-dir/
 ```
+
+
+
+:::note Virus Scanner False Positive
 Because the tool contains exploit strings needed for the `livepatch` command, it might be falsely recognized as malware by some
 virus scanners on Windows. Please add an exception for it.
+:::
 
-**Example Output**
+**Scan a directory**
 ```shell
-8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager$1.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-rest-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.8.2-2.12.0"
-```
-Here is the help text:
-```shell
-$ log4shell
-NAME:
-   log4shell - A new cli application
-
-USAGE:
-   log4shell [global options] command [command options] [arguments...]
-
-VERSION:
-   1.0.0
-
-DESCRIPTION:
-   Identify code dependencies that are vulnerable to the log4shell vulnerability. Read more at log4shell.com.
-
-COMMANDS:
-   scan, s  Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.
-   help, h  Shows a list of commands or help for one command
-
-GLOBAL OPTIONS:
-   --verbose      Display verbose information when running commands. (default: false)
-   --json         Display findings in json format. (default: false)
-   --debug        Display helpful information while debugging the CLI. (default: false)
-   --help, -h     show help (default: false)
-   --version, -v  print the version (default: false)
+$ log4shell scan test/vulnerable-log4j2-versions/apache
+5:26AM Scan Result: Identified vulnerable path
+        cve: CVE-2021-44228
+        fileName: org/apache/logging/log4j/core/lookup/JndiLookup.class
+        hash: 39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8
+        path: test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-beta9-bin/log4j-core-2.0-beta9.jar
+        severity: 10.0
+        versionInfo: "2.0.0-beta9, 2.0.0-rc1"
 ```
 
-**Scanning a Java JAR file (vulnerable log4j detected)**
+**Scan a specific Java JAR file**
 ```shell
-$ log4shell scan your-java-project.jar
-8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager$1.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-rest-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.8.2-2.12.0"
-8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/pattern/MessagePatternConverter.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-rest-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12"
-8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager$JndiManagerFactory.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-rest-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12.0-2.12.1"
-8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-rest-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12.0-2.12.1"
-8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager$1.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.8.2-2.12.0"
-8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/pattern/MessagePatternConverter.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12"
-8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager$JndiManagerFactory.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12.0-2.12.1"
-8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12.0-2.12.1"
-```
-
-**Installing the Package on *nix systems (optional)**
-```shell
-$ sudo cp log4shell /usr/local/bin
-$ log4shell
+$ log4shell scan test/vulnerable-log4j2-versions/apache/apache-log4j-2.14.0-bin/log4j-core-2.14.0.jar
+5:28AM Scan Result: Identified vulnerable path
+        cve: CVE-2021-44228
+        fileName: org/apache/logging/log4j/core/net/JndiManager.class
+        hash: 77323460255818f4cbfe180141d6001bfb575b429e00a07cbceabd59adf334d6
+        path: test/vulnerable-log4j2-versions/apache/apache-log4j-2.14.0-bin/log4j-core-2.14.0.jar
+        severity: 10.0
+        versionInfo: "2.14.0, 2.14.1"
 ```
 
 :::note
@@ -189,16 +166,15 @@ cd lunasec/tools/log4shell-jar-scripts
 
 ### Checking Package Version
 
-If you can check what versions of log4j2 are being used, you can check for any below the recently published 
+If you have the ability to check what versions of log4j are being used, you should update any below the recently published
 `2.17.0`.
 
-:::caution Limited vulnerability in `2.15.0`
+:::caution Limited vulnerability in `2.15.0` and `2.16.0`
 As of Tuesday, Dec 14, version `2.15.0` was found to still have a possible [vulnerability in some apps](https://logging.apache.org/log4j/2.x/security.html).
+`2.16.0` was then found to have a very limited [denial
+of service (DOS) vulnerability](https://logging.apache.org/log4j/2.x/security.html).
 
-~~We recommend updating to `2.16.0` which removes the message lookup feature entirely.~~ (Updated, see below)
-
-We recommend updating to `2.17.0` which includes the fixes introduced in `2.16.0` as well as a fix for a [discovered denial
-of service (DOS) attack](https://logging.apache.org/log4j/2.x/security.html).
+We recommend updating to `2.17.0` which includes a fix for the above issues.
 :::
 
 #### log4j v2
@@ -251,13 +227,11 @@ default and removes the message lookup feature.
 
 We recommend you upgrade, if possible.  For most people, this is the final and correct solution to the issue.
 
-:::caution Version 2.15.0 still may be vulnerable
-Log4j version `2.15.0` which was previously thought to be secure has been found to still have a [limited vulnerability](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f), 
-that could result in a DOS (but not RCE). Users must update to `>= 2.16.0`.
-:::
 
-:::caution Version 2.16.0 vulnerable to DOS
-If you have updated Log4j to version `2.16.0`, a vulnerability for a Denial of Service (DOS) attack is still present in [certain logging circumstances](https://logging.apache.org/log4j/2.x/security.html).
+:::caution Version 2.15.0 and even 2.16.0 may be vulnerable
+Log4j version `2.15.0` which was previously thought to be secure has been found to still have a [limited vulnerability](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f), 
+that could result in a DOS (but not RCE). In  [certain logging circumstances](https://logging.apache.org/log4j/2.x/security.html)
+a DOS vulnerability is still present in `2.16.0`. Users should update to `>= 2.17.0`.
 :::
 
 ### Option 2: Enable `formatMsgNoLookups`
@@ -307,7 +281,7 @@ If you need a long-term solution for patching vendor software, please check out 
 ### Option 4: Remote live patch for servers
 Because of the extensive control Log4Shell gives an attacker, it's actually possible to use the bug against itself to patch a running server.
 This isn't the recommended strategy for various reasons, but it could be a last resort for systems that you can't easily restart or modify.  Note that doing this on a system 
-you don't have permission to is most likely illegal. The fix will only work until the server (or the JVM), is restarted.
+you don't have permission to is probably illegal. The fix will only work until the server (or the JVM), is restarted.
 
 We have built a live-patching tool and a hosted live-patching server to make this easy. Please see [our post](https://www.lunasec.io/docs/blog/log4shell-live-patch/) about these tools to learn more.
 - **[Technical Deep-dive](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical)**
@@ -327,8 +301,9 @@ Log4Shell CLI tool if you'd prefer to run the server yourself instead.
 
 :::warning Not a permanent solution!
 
-Please do not rely on this forever (in case our site ever goes down). This should only be used as a stop-gap solution
-until you can apply a more permanent patch for Log4Shell.
+Please do not rely on this forever. This should only be used as a stop-gap solution
+until you can apply a more permanent patch for Log4Shell. Scripts depending on our hosted solution could fail if our
+service ever goes down.
 
 If you need a permanent solution for Log4Shell, please check out our commercial
 [Live Patch service](https://www.lunasec.io/pages/live-dependency-patching) for a production-ready alternative.
@@ -493,4 +468,4 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 7. Added info about hot patching, and links to new releases.
 8. Updated info about patching strategies.
 9. Added links to other blog posts.
-10. Updated info about 2.16.0 CVE telling users to upgrade to 2.17.0 now.
+10. Updated info about 2.16.0 CVE telling users to upgrade to 2.17.0.

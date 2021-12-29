@@ -15,6 +15,7 @@
 package analyze
 
 import (
+	"archive/zip"
 	"github.com/blang/semver/v4"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
@@ -96,7 +97,35 @@ func fileNameToSemver(fileNameNoExt string) string {
 	return semverVersion
 }
 
-func ProcessArchiveFile(reader io.Reader, filePath, fileName string) (finding *types.Finding) {
+func GetJndiLookupHash(zipReader *zip.Reader, filePath string) (fileHash string) {
+	reader, err := zipReader.Open(constants.JndiLookupClasspath)
+	if err != nil {
+		log.Debug().
+			Str("fieName", constants.JndiLookupClasspath).
+			Str("path", filePath).
+			Err(err).
+			Msg("cannot find file in zip")
+		return
+	}
+	defer reader.Close()
+
+	fileHash, err = util.HexEncodedSha256FromReader(reader)
+	if err != nil {
+		log.Debug().
+			Str("fieName", constants.JndiLookupClasspath).
+			Str("path", filePath).
+			Err(err).
+			Msg("unable to hash JndiLookup.class file")
+		return
+	}
+	return
+}
+
+func ProcessArchiveFile(zipReader *zip.Reader, reader io.Reader, filePath, fileName string) (finding *types.Finding) {
+	var (
+		jndiLookupFileHash string
+	)
+
 	_, file := path.Split(filePath)
 	fileNameNoExt := strings.TrimSuffix(file, path.Ext(file))
 
@@ -128,26 +157,35 @@ func ProcessArchiveFile(reader io.Reader, filePath, fileName string) (finding *t
 		return
 	}
 
-	log.Log().
-		Str("path", filePath).
-		Str("fileName", fileName).
-		Str("fileHash", fileHash).
-		Msg("identified library version")
-
 	if versionCve == "" {
 		log.Debug().
 			Str("hash", fileHash).
 			Str("version", semverVersion).
 			Msg("Skipping version as it is not vulnerable to any known CVE")
-		return nil
+		return
 	}
+
+	if versionIsInRange(fileNameNoExt, semverVersion, constants.JndiLookupPatchFileVersions) {
+		jndiLookupFileHash = GetJndiLookupHash(zipReader, filePath)
+	}
+
+	log.Log().
+		Str("path", filePath).
+		Str("fileName", fileName).
+		Str("fileHash", fileHash).
+		Str("jndiLookupFileName", constants.JndiLookupClasspath).
+		Str("jndiLookupFileHash", jndiLookupFileHash).
+		Msg("identified library version")
 
 	finding = &types.Finding{
 		Path:        filePath,
 		FileName:    fileName,
 		Hash:        fileHash,
+		JndiLookupFileName:    constants.JndiLookupClasspath,
+		JndiLookupHash:        jndiLookupFileHash,
 		Version: semverVersion,
 		CVE: versionCve,
+		Severity: constants.CveSeverityLookup[versionCve],
 	}
 	return
 }
