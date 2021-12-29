@@ -1,0 +1,116 @@
+---
+title:
+description:
+slug: more-discovered-log4j-vulnerabilities
+date: 2021-12-18
+keywords: [log4shell, log4j, log4j2, rce, java, zero-day, mitigation]
+tags: [zero-day, security, data-security, data-breaches, guides]
+authors: [chris]
+---
+
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+
+TL;DR - Additional vulnerabilities were found with considerably lower severity. Continue to patch your systems to _at least_ Log4j `2.16.0` (Java 8) or `2.12.2` (Java 7).
+
+After releasing Log4j `2.16.0`, additional vulnerabilities were [discovered](https://logging.apache.org/log4j/2.x/security.html);
+CVE-2021-45105 (5.9 severity) and CVE-2021-44832 (6.6 severity).
+
+With as much attention as there is now on the Log4j project, it can be difficult to truly understand the impact of the
+recently disclosed vulnerabilities as they are being compared against the original Log4Shell vulnerability, a perfect 10/10 severity.
+
+In this post we will address these latest developments and hopefully provide you and your team a better focus on what efforts
+you should be pushing forward to continue to protect your company.
+
+<!--truncate-->
+
+We initially changed our recommended version update from `2.15.0` to `2.16.0`. We did this not because
+there was a new version out to address a security vulnerability, but to reflect the severity of `CVE-2021-45046`
+changing from a `3.7` to `9.0`.
+
+It is not obvious, from a single number, how much you should care about a vulnerability. What does a difference in severity
+of `3.1` or `2.4` mean? In `CVE-2021-44832` it says that it is possible that
+an attacker can get remote code execution (RCE), isn't that the same thing that was possible in the original Log4Shell vulnerability?
+
+Having worked on security teams for large companies, we understand how important clear concise guidance is when executing
+a plan for mitigation. Changing what version of Log4j to update to mid-execution is a very costly process as it could leave
+some services, which were updated initially to address Log4Shell, now out of date with the latest recommendation.
+
+While we will never discourage
+anyone from not updating their library version to one that is more secure, it is important to consider the urgency in which to push
+for version changes. Urging developers to update for the sake of updating to the latest version costs the security team's
+social capital with other teams. That is, crying wolf, just like the fable has told us, doesn't build trust.
+
+:::info Simple, Clear Log4Shell Mitigation Guidance
+With all the recent Log4j versions being released, it can be quite confusing what guidance to follow to have a fully patched
+system. Our [mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) is continually updated to
+reflect the most up to date guidance for you and your company to follow.
+:::
+
+Taking a look at these [recent security issues](https://logging.apache.org/log4j/2.x/security.html); `CVE-2021-45105` is a
+Denial of Service (DOS) in a specific logging configuration
+and `CVE-2021-44832` can result in RCE, however reading the attack scenario, this vulnerability requires a _privileged_
+position, which in other words means that the attacker has already gained access to your internal system.
+
+Considering the impact of these vulnerabilities, it is important as a security team to understand when it is important
+to push for actions to be taken. In many ways, this is the essential role of a security team for a company.
+
+## Timeline of Log4j versions and security advisories
+
+### [12/11/21] [Version 2.15.0 Released](https://web.archive.org/web/20211211002105/https://logging.apache.org/log4j/2.x/security.html) to address CVE-2021-44228 - 10.0 (Log4Shell)
+
+Release of `2.15.0` and public recommendation by the Log4j team to update to this version to fix the Log4Shell vulnerability.
+
+Security teams have already started to investigate this issue internally as they have been made aware of this issue well before this post from
+different social media sites. Plans to address this issue internally are underway for some companies.
+
+### [12/15/21] [Version 2.16.0 Released](https://web.archive.org/web/20211215144725/https://logging.apache.org/log4j/2.x/security.html) to address CVE-2021-45046 - 3.7
+
+Release of versions `2.16.0` and `2.12.2` (for Java 7), 4 days have passed since the release of `2.15.0`.
+
+With a low severity, this is has not been considered important to consider as efforts to update to `2.15.0` are well underway
+for most companies and shifting focus on this strategy can lead to confusion. Most likely a number of security teams have pushed
+for upgrading to `2.16.0` to fully have themselves covered.
+
+### [12/18/21] CVE-2021-45046 severity changed from 3.7 to 9.0 _and_ [Version 2.17.0 Released](https://web.archive.org/web/20211218070719/https://logging.apache.org/log4j/2.x/security.html) to address CVE-2021-45105 - 7.5
+
+Version `2.17.0` is released to address DOS vulnerability, but more importantly `2.15.0`, the version initially reported
+upgrading to in order to prevent the Log4Shell vulnerability, contains an RCE with a `9.0` severity rating.
+
+For those security teams that have been proactive in addressing the Log4Shell vulnerability, they now must ask developers
+to instead update to at least `2.16.0` if they wish to prevent a possible RCE. Teams that had started to push for `2.16.0`,
+may ask their developers once again to update to `2.17.0` as fear of Keep in mind that it has been a least a week
+since initial efforts were made to address this issue.
+
+### [12/28/21] [Version 2.17.1 Released](https://web.archive.org/web/20211228204010/https://logging.apache.org/log4j/2.x/security.html) to address CVE-2021-44832 - 6.6
+
+Version `2.17.1` is released to address an RCE vulnerability given a very specific circumstance where the attacker is in a
+privileged position and can control the logging configuration.
+
+Seeing "RCE" in this vulnerability description can be quite confusing now. The initial Log4Shell vulnerability is an RCE
+in probably the last library you would consider to actually contain an RCE. The fix to this was proven by the security
+community to still be widely exploitable. The fix to the fix is now once again proven exploitable.
+
+Considering this by itself, one is lead to believe that another significant effort is needed to update systems, more than two weeks after the initial push.
+Of course, this is all happening during the holidays when a number of critical employees are possibly getting called in
+to work to assess what needs to be done.
+
+## Fixing Log4j Vulnerabilities with Purpose
+Unclear messaging, incomplete fixes, and misleading severity have been prevalent through this entire patching process.
+Responding to the situation without considering how your own messaging can affect other teams
+
+### Stay in the loop
+import ContactForm from '../src/components/ContactForm.jsx'
+
+<ContactForm/>
