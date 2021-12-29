@@ -21,4 +21,4 @@ outputs/
 !.yarn/sdks
 !.yarn/versions
 
-docs/.yarn/.cache/webpack/client-development-en/
+docs/.yarn/.cache/webpack
