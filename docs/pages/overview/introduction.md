@@ -141,7 +141,7 @@ hoops for "data security" or "compliance", then it's likely that LunaSec can hel
 It's not just for looks.  The other tokenization tools we have audited can make an application compliant with laws and regulations, but they don't actually secure
 data against a number of common attacks. LunaSec *actually* protects your data, even in the browser.
 
-LunaSec is open mainly open source.  Most security tools are hard to use, closed source, or both. We believe that open source is the best choice for production software.
+LunaSec is mainly Open Source.  Most security tools are hard to use, closed source, or both. We believe that open source is the best choice for production software.
 
 LunaSec is simple for normal developers without an advanced understanding of software security or cryptography.
 LunaSec does its best to provide clean and easy APIs, ship with plenty of examples and docs, and will always be open source or source available so that you can debug, understand, or even fix problems yourself.

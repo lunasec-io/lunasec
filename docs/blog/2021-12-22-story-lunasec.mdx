@@ -42,7 +42,7 @@ let's look at ways to reduce the size of that attack surface to a much smaller a
 
 ### Compliance focused tools
 Getting sensitive data **out** of these potentially vulnerable web apps is becoming a popular strategy to help with legal compliance.
-An emerging market of tools has become available for companies to use to "secure" their data. The most popular of these
+The most popular tools to do this
 are token proxies which convert sensitive fields like a social security number, *435-12-9745*,
 into some identifier token, *token-1234-5678*, which only _refers_ to the sensitive field. While a company using a proxy such as this can quickly
 become compliant given they are no longer storing sensitive data themselves, these tools typically provide next to no actual data security.
@@ -79,9 +79,9 @@ This is a great strategy, and it's worked for decades. It makes sense: credit ca
 around for quite a while. Now that similar laws and concerns are expanding to more types of data, we need a more generic solution.
 
 Those iFrames loaded by payment processors are designed to be obviously distinct from the app they're in. That's great for payments,
-but ideally a solution that could store *any* data wouldn't be so obvious to the user. The iFrame we created automatically disguises itself to 
-blend into any app. With [a few changes](https://www.lunasec.io/docs/pages/overview/introduction) any form you have which collects sensitive data
-can immediately become compliant, without compromising on security, all while looking like a native part of the web page.
+but ideally a solution that could store *any* data wouldn't be so obvious to the user. We wanted to create an iFrame that visually and functionally disguises
+itself as a part of the surrounding website. Ideally it could be dropped into any form or output that handles sensitive data,
+all while looking like a native part of the web page.
 
 ### We call them "Secure Components"
 Dealing with all the DOM information to make the elements look and behave like normal ones took months, but we did it.
@@ -99,11 +99,6 @@ can store legally and safely in your database, in the same place where you used 
 Once we knew it was possible to make a totally isolated and secure front-end, we set out to make a backend that was just as secure.
 Since the main data structure still lives in your main app, a key-value store was the simplest model. Also, we knew our users
 might want to store large files, not just short strings of text.
-
-We realized that AWS S3 with it's built in encryption, high speed, and low cost was the perfect backend for our key-value storage.
-By using [S3 Presigned Urls](https://medium.com/@aidan.hallett/securing-aws-s3-uploads-using-presigned-urls-aa821c13ae8d) we could
-have the web browser or other consumers upload and download *directly* from S3.  We use a small, fast HTTP service to sign those URLs, control access,
-and store metadata.
 
 Now we have a system that's blindingly fast, very cheap, and scales without limit. We've written about this at length in
 our [How Tokens Work](/pages/how-it-works/tokens) documentation.
