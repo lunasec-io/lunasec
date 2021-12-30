@@ -17,7 +17,6 @@ package scan
 import (
 	"archive/zip"
 	"bytes"
-	"fmt"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
@@ -135,22 +134,12 @@ func (s *Log4jDirectoryScanner) scanLocatedArchive(
 		}
 	}
 
-	offset, err := seekToStartOfArchive(path, file)
+	reader, offset, err := readerAtStartOfArchive(path, file)
 	if err != nil {
 		return
 	}
 
-	if offset != 0 {
-		io.ReadAll(file)
-	}
-
-	a := make([]byte, 10)
-
-	_, _ = file.Read(a)
-
-	fmt.Printf("%s: %+v %d %d\n", path, a, info.Size(), offset)
-
-	return s.scanArchiveForVulnerableFiles(path, file, info.Size() - offset)
+	return s.scanArchiveForVulnerableFiles(path, reader, info.Size() - offset)
 }
 
 func (s *Log4jDirectoryScanner) scanArchiveForVulnerableFiles(
@@ -179,6 +168,11 @@ func (s *Log4jDirectoryScanner) scanFile(
 	path string,
 	file *zip.File,
 ) (findings []types.Finding) {
+	//log.Debug().
+	//	Str("path", path).
+	//	Str("file", file.Name).
+	//	Msg("Scanning archive file")
+
 	fileExt := util.FileExt(file.Name)
 	switch fileExt {
 	case constants.ClassFileExt:

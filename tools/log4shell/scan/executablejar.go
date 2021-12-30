@@ -22,7 +22,7 @@ import (
 	"os"
 )
 
-func readerAtStartOfArchive(path string, file *os.File) (reader io.Reader, err error) {
+func readerAtStartOfArchive(path string, file *os.File) (reader io.ReaderAt, offset int64, err error) {
 	// By default, we assume our original file will be our returned reader
 	reader = file
 
@@ -76,7 +76,8 @@ func readerAtStartOfArchive(path string, file *os.File) (reader io.Reader, err e
 				Msg("unable to locate start of archive in bash executable jar file")
 			return
 		}
-		bytes.NewReader(fileContents[idx:])
+		reader = bytes.NewReader(fileContents[idx:])
+		offset = int64(idx)
 	}
 	return
 }
