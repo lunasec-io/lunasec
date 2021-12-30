@@ -292,8 +292,8 @@ We have built a live-patching tool and a hosted live-patching server to make thi
 ${jndi:ldap://patch.log4shell.com:1389/a}
 ```
 
-Using this will patch your server against future exploitation _until it restarts_. Simply paste the above line anywhere into
-your server where you're vulnerable, to use it. For example, in the `main` function when you start up your server, or in a known
+Using this will patch your server against future exploitation _until it restarts_. Simply paste the above line into a request
+field that your server logs. For example, in the `main` function when you start up your server, or in a known
 vulnerable field if it's a vendor product you depend on.
 
 We have added this functionality to the [latest release](https://github.com/lunasec-io/lunasec/releases) of our
