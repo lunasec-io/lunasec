@@ -4,6 +4,7 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/js/sdks/packages/log4shell/CVE-2021-44228-Log4Shell-Hashes" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/tools/license-checker/skywalking-eyes" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/tools/log4shell/test/vulnerable-apps/git" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/tools/snzip" vcs="Git" />
   </component>
 </project>
