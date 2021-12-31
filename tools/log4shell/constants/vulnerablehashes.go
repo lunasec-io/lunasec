@@ -31,7 +31,7 @@ var (
 	CveSeverityLookup = map[string]string {
 		Log4ShellCve: "10.0",
 		CtxCve:       "9.0",
-		RecursiveDosCve: "7.5",
+		RecursiveDosCve: "5.9",
 		Log4j1RceCve: "9.8",
 	}
 
@@ -47,7 +47,7 @@ var (
 		},
 		{
 			Cve: Log4ShellCve,
-			SemverRange: semver.MustParseRange(">=2.1.0 <2.15.0"),
+			SemverRange: semver.MustParseRange(">=2.1.0 <2.3.1 || >=2.4.0 <2.12.2 || >=2.13.0 <2.15.0"),
 			LibraryFile: "JndiManager.class",
 		},
 		{
@@ -57,7 +57,7 @@ var (
 		},
 		{
 			Cve: RecursiveDosCve,
-			SemverRange: semver.MustParseRange(">=2.16.0 <2.17.0"),
+			SemverRange: semver.MustParseRange(">=2.16.0 <2.17.0 || >=2.12.2 <2.12.3"),
 			LibraryFile: "JndiManager.class",
 		},
 		{

@@ -96,7 +96,9 @@ func (s *Log4jDirectoryScanner) Scan(
 
 		fileExt := util.FileExt(path)
 		switch fileExt {
-		case constants.JarFileExt, constants.WarFileExt, constants.EarFileExt:
+		case constants.JarFileExt,
+		     constants.WarFileExt,
+		     constants.EarFileExt:
 			log.Debug().
 				Str("path", path).
 				Msg("scanning archive")
@@ -132,7 +134,17 @@ func (s *Log4jDirectoryScanner) scanLocatedArchive(
 		}
 	}
 
-	return s.scanArchiveForVulnerableFiles(path, file, info.Size())
+	reader, offset, err := readerAtStartOfArchive(path, file)
+	if err != nil {
+		return
+	}
+
+	// Close the file if the reader has changed
+	if file != reader {
+		file.Close()
+	}
+
+	return s.scanArchiveForVulnerableFiles(path, reader, info.Size() - offset)
 }
 
 func (s *Log4jDirectoryScanner) scanArchiveForVulnerableFiles(
@@ -150,10 +162,6 @@ func (s *Log4jDirectoryScanner) scanArchiveForVulnerableFiles(
 	}
 
 	for _, zipFile := range zipReader.File {
-		//log.Debug().
-		//	Str("path", path).
-		//	Str("file", zipFile.Name).
-		//	Msg("scanning nested archive")
 		locatedFindings := s.scanFile(zipReader, path, zipFile)
 		findings = append(findings, locatedFindings...)
 	}
@@ -165,6 +173,11 @@ func (s *Log4jDirectoryScanner) scanFile(
 	path string,
 	file *zip.File,
 ) (findings []types.Finding) {
+	//log.Debug().
+	//	Str("path", path).
+	//	Str("file", file.Name).
+	//	Msg("Scanning archive file")
+
 	fileExt := util.FileExt(file.Name)
 	switch fileExt {
 	case constants.ClassFileExt:
@@ -177,7 +190,10 @@ func (s *Log4jDirectoryScanner) scanFile(
 			findings = []types.Finding{*finding}
 		}
 		return
-	case constants.JarFileExt, constants.WarFileExt, constants.ZipFileExt, constants.EarFileExt:
+	case constants.JarFileExt,
+		 constants.WarFileExt,
+		 constants.ZipFileExt,
+		 constants.EarFileExt:
 		if s.onlyScanArchives {
 			finding := s.scanArchiveFile(zipReader, path, file)
 			if finding != nil {
@@ -189,7 +205,6 @@ func (s *Log4jDirectoryScanner) scanFile(
 	}
 	return
 }
-
 
 func (s *Log4jDirectoryScanner) scanArchiveFile(
 	zipReader *zip.Reader,
