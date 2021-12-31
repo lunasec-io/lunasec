@@ -23,19 +23,22 @@ authors: [chris]
 -->
 
 *TL;DR* - The latest vulnerabilities found in log4j `2.17.0` are much less serious than the hype would suggest.
-Continue to patch your systems to _at least_ Log4j `2.16.0` (Java 8) or `2.12.2` (Java 7).
+Continue to patch your systems to _at least_ Log4j `2.17.0` (Java 8) or `2.12.3` (Java 7).
 
 ![All aboard the Log4Shell hype train](/img/log4shell-hype-train.png)
 _Anyone on this train deserves a much-needed break._
 
-After releasing Log4j `2.16.0`, additional vulnerabilities were [discovered](https://logging.apache.org/log4j/2.x/security.html)
-CVE-2021-45105 a Denial of Service (DOS) with 5.9 severity patched in `2.17.0` and CVE-2021-44832 a limited Remote Code
-Execution (RCE) with 6.6 severity patched in `2.17.1`. This latest vulnerability requires an attacker to have access to the
+After a DOS attack with limited impact was [discovered](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105)
+in `2.16.0` and log4j was updated to `2.17.0` to fix it, another
+even *less* impactful [vulnerability](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44832) was discovered in
+`2.17.0`. I wonder if we should say "vulnerability" in quotes because
+this latest vulnerability requires an attacker to have access to the
 logger configuration file, which is a very privileged and unlikely scenario. It's so minor, we have chosen not to even
-flag it in our [log4shell scanning tool](/blog/log4j-zero-day-mitigation-guide). We hope the focus will remain on fixing
+flag this version it in our [log4shell scanning tool](/blog/log4j-zero-day-mitigation-guide). We hope the focus will remain on fixing
 the far more critical vulnerabilities in earlier versions.
 
-In this post, we'll look at the motivations and repercussions of hyping up this far less serious attack vector.
+In this post, we'll look at the motivations and repercussions of hyping up this far less serious attack vector. Then,
+we'll look at a timeline of the vulnerabilities discovered in log4j, ending with this latest vulnerability.
 
 <!--truncate-->
 
@@ -82,27 +85,27 @@ system. Our [mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-m
 To really understand why tweeting about a new RCE in Log4j without any context caused such distress to people, you must
 consider the timeline of how this has unfolded. You need not look further than the Log4j [security advisory page](https://logging.apache.org/log4j/2.x/security.html)
 to understand just how chaotic the past few weeks have been, but this is also merely a snapshot into the information
-which has been shared back and forth across the entire Internet.
+which has been shared back and forth across the Internet.
 
 ![Calendar of Log4Shell events](/img/log4shell-event-calendar.png)
 
 _It has been a busy month for security teams._
 
-### [11/24/21] Log4Shell Vulnerability Reported
+### November 24th - Log4Shell Vulnerability Reported
 
 The vulnerability was reported privately to the Log4j team by Chen Zhaojun of the Alibaba Cloud Security Team.
 
-### [12/04/21] Pull request created to fix Log4Shell
+### December 4th - Pull request created to fix Log4Shell
 
 A public [pull request](https://github.com/apache/logging-log4j2/pull/608) was created to fix the Log4Shell vulnerability.
 It is important to note that a CVE has [not been created yet](https://nvd.nist.gov/vuln/detail/CVE-2021-44228) and the vulnerability
 is not very widely known about outside this PR.
 
-### [12/10/21] CVE Assigned for Log4Shell
+### December 10th - CVE Assigned for Log4Shell
 
 The National Vulnerability Database [assigns the Log4Shell vulnerability](https://nvd.nist.gov/vuln/detail/CVE-2021-44228) the identifier CVE-2021-44228 and is given a severity of 10.0.
 
-### [12/11/21] 2.15.0 Released
+### December 11th - 2.15.0 Released
 
 [Release of `2.15.0`](https://web.archive.org/web/20211211002105/https://logging.apache.org/log4j/2.x/security.html) to address CVE-2021-44228 - 10.0 (Log4Shell).
 Public recommendation by the Log4j team to update to this version to fix the Log4Shell vulnerability.
@@ -110,7 +113,7 @@ Public recommendation by the Log4j team to update to this version to fix the Log
 Security teams have already started to investigate this issue internally as they have been made aware of this issue well before this post from
 different social media sites. Plans to address this issue internally are underway for some companies.
 
-### [12/15/21] Version 2.16.0 Released to address CVE-2021-45046 - 3.7
+### December 15th - Version 2.16.0 Released to address CVE-2021-45046 - 3.7
 
 [Release of versions `2.16.0` and `2.12.2` (for Java 7)](https://web.archive.org/web/20211215144725/https://logging.apache.org/log4j/2.x/security.html), 4 days have passed since the release of `2.15.0`.
 
@@ -118,7 +121,7 @@ With a low severity, this is has not been considered important to consider as ef
 for most companies and shifting focus on this strategy can lead to confusion. Most likely a number of security teams have pushed
 for upgrading to `2.16.0` to fully have themselves covered.
 
-### [12/18/21] CVE-2021-45046 severity changed from 3.7 to 9.0 _and_ Version 2.17.0 Released to address CVE-2021-45105 - 7.5
+### December 18th - CVE-2021-45046 severity changed from 3.7 to 9.0 _and_ Version 2.17.0 Released to address CVE-2021-45105 - 7.5
 
 [Version `2.17.0`](https://web.archive.org/web/20211218070719/https://logging.apache.org/log4j/2.x/security.html) is released to address DOS vulnerability, but more importantly `2.15.0`, the version initially reported
 upgrading to in order to prevent the Log4Shell vulnerability, contains an RCE with a `9.0` severity rating.
@@ -128,7 +131,7 @@ to instead update to at least `2.16.0` if they wish to prevent a possible RCE. T
 may ask their developers once again to update to `2.17.0` as fear of Keep in mind that it has been a least a week
 since initial efforts were made to address this issue.
 
-### [12/28/21] Version 2.17.1 Released to address CVE-2021-44832 - 6.6
+### December 28th - Version 2.17.1 Released to address CVE-2021-44832 - 6.6
 
 [Version `2.17.1`](https://web.archive.org/web/20211228204010/https://logging.apache.org/log4j/2.x/security.html) is released
 to address an RCE vulnerability given a very specific circumstance where the attacker is in a
