@@ -19,11 +19,9 @@ A CLI tool to identify and mitigate the impact of the [Log4Shell (CVE-2021-44228
 
 The available commands are:
 
-```shell
-scan, s       Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.
-patch, p      Patches findings of libraries vulnerable toLog4Shell by removing the JndiLookup.class file from each.
-livepatch, l  Perform a live patch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.
-```
+* `scan` - Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.
+* `patch` - Patches findings of libraries vulnerable toLog4Shell by removing the JndiLookup.class file from each.
+* `livepatch` - Perform a live patch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.
 
 ### Scanning
 Scan directories for known vulnerable Log4j dependencies.
