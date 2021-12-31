@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package constants
+package util
 
-const (
-	JarFileExt     = ".jar"
-	WarFileExt     = ".war"
-	ZipFileExt     = ".zip"
-	EarFileExt     = ".ear"
-	ClassFileExt   = ".class"
-)
+import "strings"
+
+func FixStringSlashes(s string) string {
+	return strings.ReplaceAll(s, "\\\\", "\\")
+}
+
+func FixStringSliceSlashes(slice []string) (fixedSlice []string) {
+	for _, s := range slice {
+		fixedSlice = append(fixedSlice, FixStringSlashes(s))
+	}
+	return
+}

@@ -15,41 +15,12 @@
 package commands
 
 import (
-	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/findings"
 	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 )
-
-func loadHashLookup(
-	log4jLibraryHashes []byte,
-	versionHashes string,
-	onlyScanArchives bool,
-) (hashLookup types.VulnerableHashLookup, err error) {
-	if versionHashes != "" {
-		hashLookup, err = scan.LoadVersionHashesFromFile(versionHashes)
-		if err != nil {
-			return
-		}
-		return
-	}
-
-	if onlyScanArchives {
-		hashLookup = constants.KnownVulnerableArchiveFileHashes
-		return
-	}
-
-	hashLookup, err = scan.LoadVersionHashesFromBytes(log4jLibraryHashes)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Msg("Unable to load hash lookup for log4j library hashes")
-		return
-	}
-	return
-}
 
 func scanDirectoriesForVulnerableLibraries(
 	c *cli.Context,
@@ -66,7 +37,7 @@ func scanDirectoriesForVulnerableLibraries(
 	versionHashes := c.String("version-hashes")
 	noFollowSymlinks := c.Bool("no-follow-symlinks")
 
-	hashLookup, err := loadHashLookup(log4jLibraryHashes, versionHashes, onlyScanArchives)
+	hashLookup, err := scan.LoadHashLookup(log4jLibraryHashes, versionHashes, onlyScanArchives)
 	if err != nil {
 		return
 	}

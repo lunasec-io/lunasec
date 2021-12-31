@@ -15,9 +15,9 @@
 package constants
 
 const (
-	JarFileExt     = ".jar"
-	WarFileExt     = ".war"
-	ZipFileExt     = ".zip"
-	EarFileExt     = ".ear"
-	ClassFileExt   = ".class"
+	BashHeader = "#!/bin/bash"
+)
+
+var (
+	ZipHeader = []byte{0x50, 0x4B, 0x03, 0x04}
 )
