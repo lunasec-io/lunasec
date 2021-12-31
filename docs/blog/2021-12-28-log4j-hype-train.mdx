@@ -1,5 +1,5 @@
 ---
-title: All Aboard the Log4j Hype Train!
+title: Vulnerability in log4j 2.17.0 more hype than substance
 description: Understanding what is important to focus on when fixing Log4j vulnerabilities at your company.
 slug: log4j-hype-train
 date: 2021-12-28
@@ -22,19 +22,20 @@ authors: [chris]
   ~
 -->
 
-*TL;DR* - Additional vulnerabilities were found with considerably lower severity, although Internet hype would suggest otherwise.
+*TL;DR* - The latest vulnerabilities found in log4j `2.17.0` are much less serious than the hype would suggest.
 Continue to patch your systems to _at least_ Log4j `2.16.0` (Java 8) or `2.12.2` (Java 7).
 
 ![All aboard the Log4Shell hype train](/img/log4shell-hype-train.png)
-_Anyone who hasn't been voluntarily riding this train deserves a much-needed break or should have one soon._
+_Anyone on this train deserves a much-needed break._
 
-After releasing Log4j `2.16.0`, additional vulnerabilities were [discovered](https://logging.apache.org/log4j/2.x/security.html);
+After releasing Log4j `2.16.0`, additional vulnerabilities were [discovered](https://logging.apache.org/log4j/2.x/security.html)
 CVE-2021-45105 a Denial of Service (DOS) with 5.9 severity patched in `2.17.0` and CVE-2021-44832 a limited Remote Code
-Execution (RCE) with 6.6 severity patched in `2.17.1`.
+Execution (RCE) with 6.6 severity patched in `2.17.1`. This latest vulnerability requires an attacker to have access to the
+logger configuration file, which is a very privileged and unlikely scenario. It's so minor, we have chosen not to even
+flag it in our [log4shell scanning tool](/blog/log4j-zero-day-mitigation-guide). We hope the focus will remain on fixing
+the far more critical vulnerabilities in earlier versions.
 
-In this post, we will not be focusing on the technical details of the vulnerabilities patched in `2.17.0` or `2.17.1`.
-Instead, we will be addressing the how the attention around the recently released versions can negatively impact ongoing
-mitigation efforts.
+In this post, we'll look at the motivations and repercussions of hyping up this far less serious attack vector.
 
 <!--truncate-->
 
@@ -73,11 +74,10 @@ social capital with other teams. That is, crying wolf, just like the fable has t
 
 :::info Simple, Clear Log4Shell Mitigation Guidance
 With all the recent Log4j versions being released, it can be quite confusing what guidance to follow to have a fully patched
-system. Our [mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) is continually updated to
-reflect the most up to date guidance for you and your company to follow.
+system. Our [mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) is continually updated with up-to-date guidance.
 :::
 
-## The Troubling Timeline for Our Poor On-Calls
+## The Troubling Timeline for On-Calls
 
 To really understand why tweeting about a new RCE in Log4j without any context caused such distress to people, you must
 consider the timeline of how this has unfolded. You need not look further than the Log4j [security advisory page](https://logging.apache.org/log4j/2.x/security.html)
@@ -151,7 +151,8 @@ Unclear messaging, incomplete fixes, and misleading severity have been prevalent
 Responding to the situation without considering how your own messaging can affect other teams can be more damaging than helpful.
 
 Having worked on security teams for large companies, we understand how important clear concise guidance is when executing
-a plan for mitigation. Changing what version of Log4j to update to mid-execution is a very costly process as it could leave
+a plan for mitigation. All of these changes in messaging around safe log4j versions are going to make it hard for teams to
+know the right action to take. We are concerned that it could leave
 some services, which were updated initially to address Log4Shell, now out of date with the latest recommendation.
 
 ## Shameless Plug
