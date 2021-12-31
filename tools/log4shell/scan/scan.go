@@ -139,6 +139,11 @@ func (s *Log4jDirectoryScanner) scanLocatedArchive(
 		return
 	}
 
+	// Close the file if the reader has changed
+	if file != reader {
+		file.Close()
+	}
+
 	return s.scanArchiveForVulnerableFiles(path, reader, info.Size() - offset)
 }
 
@@ -200,7 +205,6 @@ func (s *Log4jDirectoryScanner) scanFile(
 	}
 	return
 }
-
 
 func (s *Log4jDirectoryScanner) scanArchiveFile(
 	zipReader *zip.Reader,

@@ -19,3 +19,6 @@ build: payload cli
 
 clean:
 	go clean
+
+setup-tests:
+	cd test/vulnerable-log4j2-versions && go run main.go
