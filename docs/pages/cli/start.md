@@ -1,8 +1,8 @@
 ---
 id: "start"
 title: "lunasec start"
-sidebar_label: "LunaSec Start Stack"
-sidebar_position: 1
+sidebar_label: "Start"
+sidebar_position: 2
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -17,7 +17,6 @@ sidebar_position: 1
   ~ limitations under the License.
   ~
 -->
-# lunasec start
 
 The `lunasec start --env <environment>` command brings up the LunaSec stack in the provided environment configuration. 
 

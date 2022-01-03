@@ -1,8 +1,8 @@
 ---
 id: "deploy"
 title: "lunasec deploy"
-sidebar_label: "LunaSec Deploy Stack"
-sidebar_position: 1
+sidebar_label: "Deploy"
+sidebar_position: 3
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -17,7 +17,6 @@ sidebar_position: 1
   ~ limitations under the License.
   ~
 -->
-# lunasec deploy
 LunaSec can be deployed to AWS using the LunaSec CLI, available in the `@lunasec/cli` npm package.  More information on installing and using the CLI can be 
 found in the [Getting Started Guide](/pages/getting-started/dedicated-tokenizer/introduction)
 
