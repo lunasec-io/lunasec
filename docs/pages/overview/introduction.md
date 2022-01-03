@@ -25,10 +25,10 @@ for the raw data in a process called *Detokenization*.
 
 LunaSec helps to protect yourself from the impact of 0-day exploits by giving you an additional layer of protection 
 against data leaks. It's also the only Open Source Tokenization platform being used in production today, and offers
-more features than even paid alternatives like Very Good Security, HashiCorp Vault, or BlueFin.
+more features than paid alternatives like Very Good Security, HashiCorp Vault, or BlueFin.
 
-With LunaSec you're able to, in minutes, harden your app against 
-[common security problems](/pages/how-it-works/security/introduction/) and make it compliant with privacy regulations (SOC2, PCI-DSS, GDPR, HIPAA, etc).
+With LunaSec you're able to harden your app against 
+[common security problems](/pages/how-it-works/security/introduction/) and become compliant with privacy regulations (SOC2, PCI-DSS, GDPR, HIPAA, etc).
 
 :::info
 
@@ -141,7 +141,7 @@ hoops for "data security" or "compliance", then it's likely that LunaSec can hel
 It's not just for looks.  The other tokenization tools we have audited can make an application compliant with laws and regulations, but they don't actually secure
 data against a number of common attacks. LunaSec *actually* protects your data, even in the browser.
 
-LunaSec is open mainly open source.  Most security tools are hard to use, closed source, or both. We believe that open source is the best choice for production software.
+LunaSec is mainly Open Source.  Most security tools are hard to use, closed source, or both. We believe that open source is the best choice for production software.
 
 LunaSec is simple for normal developers without an advanced understanding of software security or cryptography.
 LunaSec does its best to provide clean and easy APIs, ship with plenty of examples and docs, and will always be open source or source available so that you can debug, understand, or even fix problems yourself.

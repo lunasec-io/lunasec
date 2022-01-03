@@ -1,0 +1,34 @@
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+### Future roadmap
+#### Frontend
+At the moment, LunaSec only fully supports React. Our Vue SDK is nearly done, and from there we will be making web-components that should
+work with any framework.
+#### Backend
+NodeJS with either Express or Apollo-Graphql is our currently supported backend. We have an alpha Java SDK that will be finalized soon,
+and we'd also like to add GoLang support. The API for backend service we call "The Tokenizer" is defined in an OpenAPI spec,
+which means you can use the spec file and OpenAPI's generators to generate yourself a simple strongly typed tokenization
+client in almost any language, even if we don't support it officially.
+#### Dependence on AWS
+We are using AWS specific tools pretty heavily. It's not necessary to have an entire app running on AWS,
+just the LunaSec parts. This may still be too much Amazon for some users, and we are not great fans of lock-in, either.
+There is a [massive community](https://github.com/guenter/aws-oss-alternatives) of Open Source projects that aim to be drop
+in replacements for AWS tools. We'd like to give anyone using these tools the same first class support that we give
+to normal AWS users.
+
+### Funding and support
+We're a Y-Combinator backed startup, and we offer paid support to install our tooling or modify it. We ask people to please let us
+know if they need some help or changes! See our founder's post
+[Building an Open Source Business](/blog/how-to-build-an-open-source-business-in-2021-part-1) to learn more about how we pay the bills
+and make an Open Source business work.
