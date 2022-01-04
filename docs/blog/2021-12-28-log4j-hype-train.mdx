@@ -34,8 +34,8 @@ in `2.16.0` and log4j was updated to `2.17.0` to fix it, another
 even *less* impactful [vulnerability](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44832) was discovered in
 `2.17.0`. I wonder if we should say "vulnerability" in quotes because
 this latest vulnerability requires an attacker to have access to the
-logger configuration file, which is a very privileged and unlikely scenario. It's so minor, we have chosen not to even
-flag this version it in our [log4shell scanning tool](/blog/log4j-zero-day-mitigation-guide). We hope the focus will remain on fixing
+logger configuration file, which is a very privileged and unlikely scenario. It's so minor, we have chosen not to
+scan for it in our [log4shell scanning tool](/blog/log4j-zero-day-mitigation-guide). We hope the focus will remain on fixing
 the far more critical vulnerabilities in earlier versions.
 
 In this post, we'll look at the motivations and repercussions of hyping up this far less serious attack vector. Then,
