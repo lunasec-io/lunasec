@@ -332,7 +332,7 @@ func copyAndFilterFilesFromZip(
 	return
 }
 
-func ProcessJavaArchive(finding types.Finding, dryRun bool) (err error) {
+func ProcessJavaArchive(finding types.Finding, dryRun, backup bool) (err error) {
 	var (
 		libraryFile *os.File
 		zipReader   *zip.Reader
@@ -381,6 +381,23 @@ func ProcessJavaArchive(finding types.Finding, dryRun bool) (err error) {
 			Str("fullPathToLibrary", finding.Path).
 			Msg("[Dry Run] Not completing patch process of overwriting existing library.")
 		return
+	}
+
+	if backup {
+		backupFilePath := fsFile + ".bak"
+		log.Info().
+			Str("libraryFileName", fsFile).
+			Str("backupFileName", backupFilePath).
+			Msg("Backing up library file before overwritting.")
+		_, err = util.CopyFile(fsFile, backupFilePath)
+		if err != nil {
+			log.Error().
+				Str("libraryFileName", fsFile).
+				Str("backupFileName", backupFilePath).
+				Err(err).
+				Msg("Unable to backup library file.")
+			return
+		}
 	}
 
 	_, err = util.CopyFile(filteredLibrary, fsFile)

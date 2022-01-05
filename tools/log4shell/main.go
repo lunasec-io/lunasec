@@ -17,6 +17,7 @@ package main
 import (
 	"github.com/lunasec-io/lunasec/tools/log4shell/commands"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
+	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
@@ -47,6 +48,10 @@ func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+
+	util.RunOnProcessExit(func() {
+		util.RemoveCleanupDirs()
+	})
 
 	globalBoolFlags := map[string]bool{
 		"verbose":         false,
@@ -187,6 +192,10 @@ func main() {
 				Usage:   "Patches findings of libraries vulnerable toLog4Shell by removing the JndiLookup.class file from each.",
 				Before:  setGlobalBoolFlags,
 				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name:  "backup",
+						Usage: "Backup each library to path/to/library.jar.bak before overwriting.",
+					},
 					&cli.StringSliceFlag{
 						Name:  "exclude",
 						Usage: "Exclude subdirectories from scanning. This can be helpful if there are directories which your user does not have access to when starting a scan from `/`.",

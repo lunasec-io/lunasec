@@ -15,7 +15,6 @@
 package scan
 
 import (
-	"archive/zip"
 	"github.com/blang/semver/v4"
 	"github.com/lunasec-io/lunasec/tools/log4shell/analyze"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
@@ -30,8 +29,8 @@ import (
 func IdentifyPotentiallyVulnerableFiles(scanLog4j1 bool, archiveHashLookup types.VulnerableHashLookup) types.ProcessArchiveFile {
 	hashLookup := FilterVulnerableHashLookup(archiveHashLookup, scanLog4j1)
 
-	return func(zipReader *zip.Reader, reader io.Reader, path, fileName string) (finding *types.Finding) {
-		return identifyPotentiallyVulnerableFile(zipReader, reader, path, fileName, hashLookup)
+	return func(resolveArchiveFile types.ResolveArchiveFile, reader io.Reader, path, fileName string) (finding *types.Finding) {
+		return identifyPotentiallyVulnerableFile(resolveArchiveFile, reader, path, fileName, hashLookup)
 	}
 }
 
@@ -50,7 +49,7 @@ func isVulnerableIfContainsJndiLookup(versions []string) bool {
 }
 
 func identifyPotentiallyVulnerableFile(
-	zipReader *zip.Reader,
+	resolveArchiveFile types.ResolveArchiveFile,
 	reader io.Reader,
 	path, fileName string,
 	hashLookup types.VulnerableHashLookup,
@@ -83,7 +82,7 @@ func identifyPotentiallyVulnerableFile(
 		versions := strings.Split(vulnerableFile.Version, ", ")
 		patchableVersion := isVulnerableIfContainsJndiLookup(versions)
 
-		jndiLookupFileHash := analyze.GetJndiLookupHash(zipReader, path)
+		jndiLookupFileHash := analyze.GetJndiLookupHash(resolveArchiveFile, path)
 		if jndiLookupFileHash != "" {
 			if _, ok := vulnerableFile.VulnerableFileHashLookup[jndiLookupFileHash]; !ok {
 				log.Warn().

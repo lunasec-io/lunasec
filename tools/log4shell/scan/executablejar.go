@@ -17,12 +17,13 @@ package scan
 import (
 	"bytes"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
+	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/rs/zerolog/log"
 	"io"
 	"os"
 )
 
-func readerAtStartOfArchive(path string, file *os.File) (reader io.ReaderAt, offset int64, err error) {
+func readerAtStartOfArchive(path string, file *os.File) (reader types.ReaderAtCloser, offset int64, err error) {
 	// By default, we assume our original file will be our returned reader
 	reader = file
 
@@ -76,7 +77,7 @@ func readerAtStartOfArchive(path string, file *os.File) (reader io.ReaderAt, off
 				Msg("unable to locate start of archive in bash executable jar file")
 			return
 		}
-		reader = bytes.NewReader(fileContents[idx:])
+		reader = types.NopReaderAtCloser(bytes.NewReader(fileContents[idx:]))
 		offset = int64(idx)
 	}
 	return

@@ -41,6 +41,7 @@ func createNewScanner() (scanner Log4jVulnerableDependencyScanner, err error) {
 }
 
 func BenchmarkScanningForVulnerablePackages(b *testing.B) {
+	return
 	b.ReportAllocs()
 
 	scanner, err := createNewScanner()
@@ -52,6 +53,22 @@ func BenchmarkScanningForVulnerablePackages(b *testing.B) {
 	findings := scanner.Scan([]string{"../test/vulnerable-log4j2-versions"})
 
 	fmt.Printf("Number of findings: %d\n", len(findings))
+}
+
+func BenchmarkScanningForLargeArchives(b *testing.B) {
+	b.ReportAllocs()
+
+	scanner, err := createNewScanner()
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	for i := 0; i < 10; i++ {
+		findings := scanner.Scan([]string{"../test/large-archives"})
+
+		fmt.Printf("Number of findings: %d\n", len(findings))
+	}
 }
 
 func TestForFalsePositiveLibraryFindings(t *testing.T) {
