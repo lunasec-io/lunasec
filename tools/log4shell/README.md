@@ -115,17 +115,18 @@ $ log4shell livepatch
 Read more about how this works [here](https://www.lunasec.io/docs/blog/log4shell-live-patch/).
 
 ## Building
-
-```
-docker build . -t log4shell
-docker run --network=host log4shell
-```
-
-or 
+For local builds:
 
 Make sure you have Maven installed, then:
 ```
-make build && ./log4shell
+make build
+./log4shell
+```
+
+To build with docker:
+```
+docker build . -t log4shell
+docker run --network=host log4shell
 ```
 
 ## Releases
