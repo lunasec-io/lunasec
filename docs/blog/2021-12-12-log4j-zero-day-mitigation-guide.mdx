@@ -28,7 +28,7 @@ _Originally Posted @ December 12th & Last Updated @ December 19th, 3:37pm PST_
 
 **Also read: Our analysis of [CVE-2021-45046](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046) (a second log4j vulnerability).**
 
-A few days ago, a serious new vulnerability was identified in Apache log4j v2 and published as 
+A few days ago, a serious new vulnerability was identified in Apache `log4j` v2 and published as 
 [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=2021-44228). 
 We were one of the first security companies to write about it, and we named it "Log4Shell".
 
@@ -43,7 +43,7 @@ earlier blog post](https://www.lunasec.io/docs/blog/log4j-zero-day/).
 :::
 <!--truncate-->
 
-## Be careful what Log4Shell advice you trust online
+## Misguided Log4Shell Advice Online
 
 Because of the severe impact from this vulnerability, there has been a lot of discussion on the internet
 about it. **Some of this information is outdated or wrong and _will_ leave you vulnerable if you follow it!**
@@ -55,16 +55,16 @@ professionals to verify against.  This post links to many other guides and how-t
 The full list of common bad advice is at the [bottom of this post](#known-bad-advice). If you believe you've already 
 mitigated Log4Shell, or you believe you're not vulnerable, please double-check that your current information is up-to-date. 
 
-## Determine if you are impacted by Log4Shell
+## Determine Whether You are Impacted by Log4Shell
 
-This vulnerability affects anybody who's using the log4j packages. That means that
+This vulnerability affects anybody who's using the `log4j` packages. That means that
 primarily Java, but also other languages like Scala, Groovy, or Clojure, are impacted.
 
 ### Automatically Scanning Your Package
 
 We've built a command line utility that can check `.jar` and `.war` files in your project directory and report if any are vulnerable. 
 It works by scanning for hashes of [known vulnerable log4j classes](https://github.com/mubix/CVE-2021-44228-Log4Shell-Hashes).
-If you have a vulnerable version of a log4j in your built Java project, the hash will match one
+If you have a vulnerable version of a `log4j` in your built Java project, the hash will match one
 of the hashes in the list.
 
 **[Download from GitHub](https://github.com/lunasec-io/lunasec/releases/)**
@@ -138,7 +138,7 @@ $ log4shell scan your-java-project.jar
 8:08AM INF identified vulnerable path fileName=org/apache/logging/log4j/core/net/JndiManager.class path=test/struts-2.5.28-all/struts-2.5.28/apps/struts2-showcase.war::WEB-INF/lib/log4j-core-2.12.1.jar versionInfo="log4j 2.12.0-2.12.1"
 ```
 
-**Installing the Package on *nix systems (optional)**
+**Installing the Package on *nix Systems (optional)**
 ```shell
 $ sudo cp log4shell /usr/local/bin
 $ log4shell
@@ -157,7 +157,7 @@ The source code for all of this is available on our GitHub
 
 The above CLI tool automatically looks for hashes of vulnerable classes.  Read this if you'd like to build your own tool or scan manually.
 
-#### Scanning for vulnerable .class files
+#### Scanning for Vulnerable .class Files
 
 Our automated tool above implements this functionality, but if you need to do this yourself then
 [our Go source code](https://github.com/lunasec-io/lunasec/tree/master/tools/log4shell/constants/vulnerablehashes.go)
@@ -165,11 +165,11 @@ has a list of hashes that you can use to scan with. (Thank you, [hillu](https://
 
 #### Scanning for the log4j JAR file
 
-You may want to simply scan the filesystem for vulnerable copies of the log4j `.jar` file.  We wrote a small shell script to accomplish
+You may want to simply scan the filesystem for vulnerable copies of the `log4j` `.jar` file.  We wrote a small shell script to accomplish
 that before writing the above CLI.
 
 This is a less accurate method of detection as opposed to our automated scanner tool above because rather than inspecting inside your code,
-it requires the log4j `.jar` file to be present on your filesystem (not inside your built package). It _does not_ recursively unpack `.jar` files. This 
+it requires the `log4j` `.jar` file to be present on your filesystem (not inside your built package). It _does not_ recursively unpack `.jar` files. This 
 works best if your dependencies are committed into your Repo, or if you're using a tool like Maven that downloads the 
 `.jar` files for you.  
 
@@ -190,7 +190,7 @@ cd lunasec/tools/log4shell-jar-scripts
 
 ### Checking Package Version
 
-If you can check what versions of log4j2 are being used, you can check for any below the recently published 
+If you can check what versions of `log4j` v2 are being used, you can check for any below the recently published 
 `2.17.0`.
 
 :::caution Limited vulnerability in `2.15.0`
@@ -204,16 +204,16 @@ of service (DOS) attack](https://logging.apache.org/log4j/2.x/security.html).
 
 #### log4j v2
 
-Almost all versions of log4j version 2 are affected.
+Almost all versions of `log4j` v2 are affected.
 
 `2.0-beta9 <= Apache log4j <= 2.14.1`
 
-In other words, if you're using any version of log4j that is _older_ than `2.15.0`, you are most likely vulnerable, and under very specific situations,
+In other words, if you're using any version of `log4j` that is _older_ than `2.15.0`, you are most likely vulnerable, and under very specific situations,
 still possibly vulnerable on `2.15.0`.
 
 #### log4j v1
 
-Version 1 of log4j is vulnerable to other RCE attacks (like
+Version 1 of `log4j` is vulnerable to other RCE attacks (like
 [CVE-2019-17571](https://www.cvedetails.com/cve/CVE-2019-17571/)), and if you're using it you need to
 [migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.17.0`.
 
@@ -245,7 +245,7 @@ visualization of the Log4Shell exploit.  Take note of the possible solutions (sh
 
 ### Option 1: Upgrading to 2.17.0
 
-Apache log4j has released a version that fixes the Log4Shell vulnerability as of version `2.17.0`. This version disables JNDI by
+Apache `log4j` has released a version that fixes the Log4Shell vulnerability as of version `2.17.0`. This version disables JNDI by
 default and removes the message lookup feature.
 
 **[Apache log4j Download Page](https://logging.apache.org/log4j/2.x/download.html)**
@@ -258,7 +258,7 @@ that could result in a DOS (but not RCE). Users must update to `>= 2.16.0`.
 :::
 
 :::caution Version 2.16.0 vulnerable to DOS
-If you have updated Log4j to version `2.16.0`, a vulnerability for a Denial of Service (DOS) attack is still present in [certain logging circumstances](https://logging.apache.org/log4j/2.x/security.html).
+If you have updated `log4j` to version `2.16.0`, a vulnerability for a Denial of Service (DOS) attack is still present in [certain logging circumstances](https://logging.apache.org/log4j/2.x/security.html).
 :::
 
 ### Option 2: Enable `formatMsgNoLookups`
@@ -270,10 +270,10 @@ are still investigating this vulnerability.
 
 You must update to `2.17.0`, or use the JNDI patches below.
 :::
-The above release of log4j sets the `formatMsgNoLookups` flag to true by default~~, preventing the attack~~.  If you are using log4j
+The above release of `log4j` sets the `formatMsgNoLookups` flag to true by default~~, preventing the attack~~.  If you are using `log4j`
 version `2.10.0` to version `2.14.0` and can't yet update, you can still set the flag manually.
 
-Set `formatMsgNoLookups=true` when you configure log4j by performing one of the following:
+Set `formatMsgNoLookups=true` when you configure `log4j` by performing one of the following:
 
 #### Pass as a JVM Flag
 
@@ -294,7 +294,7 @@ Or you can set this using the JVM arguments environment variable.
 ### Option 3: JNDI patch
 It's possible to [modify the JNDI in place](https://news.ycombinator.com/item?id=29507263) to stop the attack at the language level.
 This can even be done while the server is running with tools like
-[Log4jHotPatch](https://github.com/corretto/hotpatch-for-apache-log4j2) (as a temporary mitigation before updating log4j).
+[Log4jHotPatch](https://github.com/corretto/hotpatch-for-apache-log4j2) (as a temporary mitigation before updating `log4j`).
 
 [This guide](https://medium.com/@edeNFed/patching-log4shell-in-one-command-without-downtime-using-ephemeral-containers-c69a9155ab1e) 
 also explains how to apply the patch to Kubernetes services using "Ephemeral Containers" at runtime.
@@ -336,7 +336,7 @@ If you need a permanent solution for Log4Shell, please check out our commercial
 [Live Patch service](https://www.lunasec.io/pages/live-dependency-patching) for a production-ready alternative.
 :::
 
-## How to protect yourself from future 0-days
+## Protect Yourself From Future 0-days
 
 It's becoming increasingly apparent that Log4Shell is not going to be the last vulnerability of its kind. Any trusted dependency
 can have security flaws or be malicious, and there is always the risk of accidentally introducing vulnerabilities into your own system.
@@ -365,19 +365,19 @@ The following are all pieces of advice we've seen thrown around online that are 
 advice online that contains any of the following, we please ask you to share this post with the authors to help limit
 the fallout from Log4Shell.
 
-### Updating Java is insufficient
+### Updating Java is Insufficient
 
 There are many reports online that only certain Java versions are affected and that you're safe if you're on a newer
 Java version.  Even on newer versions, it's still possible for an attacker to
 [instantiate local classes](https://www.veracode.com/blog/research/exploiting-jndi-injections-java) on the server to
 trigger an exploit. And, even if no exploits are found right away, it still enables a Denial-of-Service attack when
-you're using a vulnerable version of log4j.
+you're using a vulnerable version of `log4j`.
 
 We believe it's likely only a matter of time before all current Java versions are impacted when
-running a vulnerable version of log4j. Just upgrading your Java version is insufficient, and you should not rely on this
+running a vulnerable version of `log4j`. Just upgrading your Java version is insufficient, and you should not rely on this
 as a long-term defense against exploitation.
 
-### A WAF will not save you from Log4Shell
+### A WAF Will Not Save You From Log4Shell
 
 The Log4Shell vulnerability can _not_ be entirely mitigated by using a WAF (Web Application Firewall), because it _does not_
 require your usage of it to be *publicly accessible*. Internal Data Pipelines, like Hadoop and Spark, and Desktop apps
@@ -386,10 +386,10 @@ like the [NSA's Ghidra](https://twitter.com/NSA_CSDirector/status/14693050711166
 In addition, there is no simple way to "filter out" malicious requests with a simple WAF rule because Log4Shell payloads
 may be nested. (See [this GitHub](https://github.com/Puliczek/CVE-2021-44228-PoC-log4j-bypass-words) for examples.)
 
-If you are using a vulnerable version of log4j, the only secure way to mitigate Log4Shell is through one of the
+If you are using a vulnerable version of `log4j`, the only secure way to mitigate Log4Shell is through one of the
 strategies detailed above.
 
-### Updating the log statement format with `%m{nolookupzz}` is not advisable
+### Updating the Log Statement Format With `%m{nolookupzz}` is Not Advisable
 
 _This only applies to log4j versions `>= 2.7.0`, older versions don't support it_
 
@@ -397,7 +397,7 @@ _This only applies to log4j versions `>= 2.7.0`, older versions don't support it
 In addition to the below issues with this strategy, this mitigation may be bypassed in certain scenarios and still allows for RCE (see
 [our dedicated post](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046)
 about it), and this has been entirely [removed](https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternMethod)
-in log4j `2.16.0` and newer.
+in `log4j` `2.16.0` and newer.
 :::
 
 Some people online are suggesting updating your logging statements from `%m` to `%m{nolookupzz}` to mitigate this**.
@@ -408,7 +408,7 @@ We do not recommend you follow this strategy.  Even if you manage to patch your 
 today, you will still likely accidentally add a `%m` again in the future and _then you will be vulnerable again_.
 
 In addition, it's possible to miss a line in your logging statements, or have a dependency that
-is using log4j with `%m` without you realizing. If either happens _you will still be vulnerable_.
+is using `log4j` with `%m` without you realizing. If either happens _you will still be vulnerable_.
 
 We're strong advocates of a "[Secure by Default](#what-is-secure-by-default)" mentality with software, and we
 recommend you follow one of the other mitigations instead.
@@ -451,9 +451,9 @@ import ContactForm from '../src/components/ContactForm.jsx'
 ### Additional Information
 
 We have published a series of posts about Log4Shell on our blog that you may be interested in:
-- **[Original Log4Shell Announcement](https://www.lunasec.io/docs/blog/log4j-zero-day/)**,
-- **[Explanation of the 2nd Log4j CVE](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046/)**,
-- **[Part 1: Log4Shell Live Patch (Background Context)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**,
+- **[Original Log4Shell Announcement](https://www.lunasec.io/docs/blog/log4j-zero-day/)**
+- **[Explanation of the 2nd Log4j CVE](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046/)**
+- **[Part 1: Log4Shell Live Patch (Background Context)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**
 - **[Part 2: Log4Shell Live Patch (Technical Deep-Dive)](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical/)**
 
 #### Limited Offer: Free Security Assistance
