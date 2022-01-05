@@ -49,8 +49,8 @@ Because of the severe impact from this vulnerability, there has been a lot of di
 about it. **Some of this information is outdated or wrong and _will_ leave you vulnerable if you follow it!**
 
 By contrast, this guide has been written by a team of professional Security Engineers at LunaSec. Everything here has
-been peer-reviewed by multiple security experts, and where possible our sources will be linked from other Security
-professionals to verify against.  This post links to many other guides and how-tos that we believe are trustworthy.  
+been peer-reviewed by multiple security experts, and where possible our sources will be linked for other Security
+professionals.  This post links to many other guides and how-tos that we believe are trustworthy.  
 
 The full list of common bad advice is at the [bottom of this post](#known-bad-advice). If you believe you've already 
 mitigated Log4Shell, or you believe you're not vulnerable, please double-check that your current information is up-to-date. 
@@ -59,6 +59,7 @@ mitigated Log4Shell, or you believe you're not vulnerable, please double-check t
 
 This vulnerability affects anybody who's using the `log4j` packages. That means that
 primarily Java, but also other languages like Scala, Groovy, or Clojure, are impacted.
+
 
 ### Automatically Scanning Your Package
 
@@ -150,7 +151,7 @@ using vendor software that you think might be vulnerable, but you can't get the 
 vendor software](#checking-vendor-software-versions) advisories instead.
 :::
 
-The source code for all of this is available on our GitHub 
+The source code for this tool is available on our GitHub 
 [here](https://github.com/lunasec-io/lunasec/tree/master/tools/log4shell/).
 
 ### Manually Scanning Your Dependencies
@@ -310,8 +311,7 @@ Because of the extensive control Log4Shell gives an attacker, it's actually poss
 This isn't the recommended strategy for various reasons, but it could be a last resort for systems that you can't easily restart or modify.  Note that doing this on a system 
 you don't have permission to is most likely illegal. The fix will only work until the server (or the JVM), is restarted.
 
-We've published articles about this exploit that you can use to learn more about how it works.
-- **[Overview (when to use the exploit)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**
+We have built a live-patching tool and a hosted live-patching server to make this easy. Please see [our post](https://www.lunasec.io/docs/blog/log4shell-live-patch/) about these tools to learn more.
 - **[Technical Deep-dive](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical)**
 
 #### Hosted Exploit Payload
@@ -427,7 +427,7 @@ _Spoiler: Maintained by us._
 
 An Open Source development framework that enables you to easily add a "Secure by Default" architecture to your existing
 software with only a few lines of code. It's loosely based on the OWASP Application Security Verification Standard 
-(above), and is also designed to be implemented at [multiple levels](https://www.lunasec.io/docs/pages/how-it-works/security/introduction/).
+(above), and is also designed to be [adopted gradually](https://www.lunasec.io/docs/pages/how-it-works/security/introduction/).
 
 #### [Acra Database Protection](https://github.com/cossacklabs/acra)
 
