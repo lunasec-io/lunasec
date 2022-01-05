@@ -21,3 +21,7 @@ const (
 	EarFileExt     = ".ear"
 	ClassFileExt   = ".class"
 )
+
+var (
+	CleanupDirs []string
+)

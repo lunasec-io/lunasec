@@ -27,3 +27,13 @@ func WaitForProcessExit(callback func()) {
 	close(ch)
 	callback()
 }
+
+func RunOnProcessExit(callback func()) {
+	ch := make(chan os.Signal, 2)
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-ch
+		close(ch)
+		callback()
+	}()
+}

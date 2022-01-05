@@ -21,7 +21,6 @@ import (
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog/log"
-	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -147,9 +146,65 @@ func (s *Log4jDirectoryScanner) scanLocatedArchive(
 	return s.scanArchiveForVulnerableFiles(path, reader, info.Size() - offset)
 }
 
+func (s *Log4jDirectoryScanner) getFilesToScan(
+	path string,
+	size int64,
+	zipReader *zip.Reader,
+) (filesToScan []types.FileToScan, cleanup func(), err error) {
+	if size > 1024 * 1024 * 1024 {
+		var (
+			tmpPath string
+			filenames []string
+		)
+
+		_, name := filepath.Split(path)
+		tmpPath, err = os.MkdirTemp(os.TempDir(), name)
+		if err != nil {
+			log.Warn().
+				Str("path", path).
+				Err(err).
+				Msg("unable to create temporary path")
+			return
+		}
+		util.EnsureDirIsCleanedUp(tmpPath)
+		cleanup = func() {
+			os.RemoveAll(tmpPath)
+			util.RemoveDirFromCleanup(tmpPath)
+		}
+
+		filenames, err = util.Unzip(zipReader, tmpPath)
+		if err != nil {
+			log.Warn().
+				Str("path", path).
+				Err(err).
+				Msg("unable to unzip file")
+			return
+		}
+
+		for _, file := range filenames {
+			dir, extractedFilename := filepath.Split(file)
+
+			fileToScan := &types.DiskFileToScan{
+				Filename: extractedFilename,
+				Path: dir,
+			}
+			filesToScan = append(filesToScan, fileToScan)
+		}
+		return
+	}
+
+	for _, zipFile := range zipReader.File {
+		fileToScan := &types.ZipFileToScan{
+			File: zipFile,
+		}
+		filesToScan = append(filesToScan, fileToScan)
+	}
+	return
+}
+
 func (s *Log4jDirectoryScanner) scanArchiveForVulnerableFiles(
 	path string,
-	reader io.ReaderAt,
+	reader types.ReaderAtCloser,
 	size int64,
 ) (findings []types.Finding) {
 	zipReader, err := zip.NewReader(reader, size)
@@ -161,31 +216,48 @@ func (s *Log4jDirectoryScanner) scanArchiveForVulnerableFiles(
 		return
 	}
 
-	for _, zipFile := range zipReader.File {
-		locatedFindings := s.scanFile(zipReader, path, zipFile)
+	filesToScan, cleanup, err := s.getFilesToScan(path, size, zipReader)
+	if err != nil {
+		return
+	}
+
+	resolveArchiveFile := util.ResolveZipFile(zipReader)
+
+	// if cleanup is specified, then we are reading files from disk
+	// and should close the current zip reader to free up space,
+	// set our archive reader to read files from disk, and defer
+	// a call to cleanup to remove all temporary extracted files
+	if cleanup != nil {
+		reader.Close()
+		resolveArchiveFile = util.ResolveDiskFile
+		defer cleanup()
+	}
+
+	for _, fileToScan := range filesToScan {
+		locatedFindings := s.scanFile(resolveArchiveFile, path, fileToScan)
 		findings = append(findings, locatedFindings...)
 	}
 	return
 }
 
 func (s *Log4jDirectoryScanner) scanFile(
-	zipReader *zip.Reader,
+	resolveArchiveFile types.ResolveArchiveFile,
 	path string,
-	file *zip.File,
+	file types.FileToScan,
 ) (findings []types.Finding) {
 	//log.Debug().
 	//	Str("path", path).
 	//	Str("file", file.Name).
 	//	Msg("Scanning archive file")
 
-	fileExt := util.FileExt(file.Name)
+	fileExt := util.FileExt(file.Name())
 	switch fileExt {
 	case constants.ClassFileExt:
 		if s.onlyScanArchives {
 			return
 		}
 
-		finding := s.scanArchiveFile(zipReader, path, file)
+		finding := s.scanArchiveFile(resolveArchiveFile, path, file)
 		if finding != nil {
 			findings = []types.Finding{*finding}
 		}
@@ -195,7 +267,7 @@ func (s *Log4jDirectoryScanner) scanFile(
 		 constants.ZipFileExt,
 		 constants.EarFileExt:
 		if s.onlyScanArchives {
-			finding := s.scanArchiveFile(zipReader, path, file)
+			finding := s.scanArchiveFile(resolveArchiveFile, path, file)
 			if finding != nil {
 				findings = []types.Finding{*finding}
 			}
@@ -207,14 +279,14 @@ func (s *Log4jDirectoryScanner) scanFile(
 }
 
 func (s *Log4jDirectoryScanner) scanArchiveFile(
-	zipReader *zip.Reader,
+	resolveArchiveFile types.ResolveArchiveFile,
 	path string,
-	file *zip.File,
+	file types.FileToScan,
 ) (finding *types.Finding) {
-	reader, err := file.Open()
+	reader, err := file.Reader()
 	if err != nil {
 		log.Warn().
-			Str("classFile", file.Name).
+			Str("classFile", file.Name()).
 			Str("path", path).
 			Err(err).
 			Msg("unable to open class file")
@@ -222,17 +294,17 @@ func (s *Log4jDirectoryScanner) scanArchiveFile(
 	}
 	defer reader.Close()
 
-	return s.processArchiveFile(zipReader, reader, path, file.Name)
+	return s.processArchiveFile(resolveArchiveFile, reader, path, file.Name())
 }
 
 func (s *Log4jDirectoryScanner) scanEmbeddedArchive(
 	path string,
-	file *zip.File,
+	file types.FileToScan,
 ) (findings []types.Finding) {
-	reader, err := file.Open()
+	reader, err := file.Reader()
 	if err != nil {
 		log.Warn().
-			Str("classFile", file.Name).
+			Str("classFile", file.Name()).
 			Str("path", path).
 			Err(err).
 			Msg("unable to open embedded archive")
@@ -243,15 +315,16 @@ func (s *Log4jDirectoryScanner) scanEmbeddedArchive(
 	buffer, err := ioutil.ReadAll(reader)
 	if err != nil {
 		log.Warn().
-			Str("classFile", file.Name).
+			Str("classFile", file.Name()).
 			Str("path", path).
 			Err(err).
 			Msg("unable to read embedded archive")
 		return
 	}
+	reader.Close()
 
-	newPath := path + "::" + file.Name
-	archiveReader := bytes.NewReader(buffer)
+	newPath := path + "::" + file.Name()
+	archiveReader := types.NopReaderAtCloser(bytes.NewReader(buffer))
 	archiveSize := int64(len(buffer))
 
 	return s.scanArchiveForVulnerableFiles(newPath, archiveReader, archiveSize)
