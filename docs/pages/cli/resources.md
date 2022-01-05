@@ -1,8 +1,8 @@
 ---
 id: "resources"
-title: "lunasec resources"
-sidebar_label: "LunaSec Stack Resources"
-sidebar_position: 1
+title: "LunaSec Stack Resources"
+sidebar_label: "Resources"
+sidebar_position: 4
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -17,7 +17,6 @@ sidebar_position: 1
   ~ limitations under the License.
   ~
 -->
-# lunasec resources
 
 Print out the resources which have been deployed to the LunaSec stack. 
 

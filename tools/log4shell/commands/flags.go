@@ -22,6 +22,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"os"
+	"strings"
 )
 
 func enableGlobalFlags(c *cli.Context, globalBoolFlags map[string]bool) {
@@ -47,6 +48,16 @@ func enableGlobalFlags(c *cli.Context, globalBoolFlags map[string]bool) {
 		consoleOutput := zerolog.ConsoleWriter{Out: os.Stdout}
 		consoleOutput.FormatFieldName = func(i interface{}) string {
 			return fmt.Sprintf("\n\t%s: ", util.Colorize(constants.ColorBlue, i))
+		}
+		consoleOutput.FormatFieldValue = func(i interface{}) string {
+			switch t := i.(type) {
+			case string:
+				return fmt.Sprintf("%s", util.FixStringSlashes(t))
+			case []string:
+				return fmt.Sprintf("[%s]", strings.Join(util.FixStringSliceSlashes(t), ", "))
+			default:
+				return fmt.Sprintf("%s", i)
+			}
 		}
 
 		consoleOutput.FormatLevel  = func(i interface{}) string {

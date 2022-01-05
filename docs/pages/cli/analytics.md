@@ -1,8 +1,8 @@
 ---
 id: "analytics"
-title: "Analytics"
-sidebar_label: "LunaSec CLI Analytics"
-sidebar_position: 1
+title: "CLI Analytics"
+sidebar_label: "Analytics"
+sidebar_position: 5
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
