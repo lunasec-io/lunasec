@@ -15,7 +15,6 @@
 package analyze
 
 import (
-	"archive/zip"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
@@ -25,8 +24,11 @@ import (
 	"strings"
 )
 
-func GetJndiLookupHash(zipReader *zip.Reader, filePath string) (fileHash string) {
-	reader, err := zipReader.Open(constants.JndiLookupClasspath)
+func GetJndiLookupHash(
+	resolveArchiveFile types.ResolveArchiveFile,
+	filePath string,
+) (fileHash string) {
+	reader, err := resolveArchiveFile(constants.JndiLookupClasspath)
 	if err != nil {
 		log.Debug().
 			Str("fieName", constants.JndiLookupClasspath).
@@ -49,7 +51,11 @@ func GetJndiLookupHash(zipReader *zip.Reader, filePath string) (fileHash string)
 	return
 }
 
-func ProcessArchiveFile(zipReader *zip.Reader, reader io.Reader, filePath, fileName string) (finding *types.Finding) {
+func ProcessArchiveFile(
+	resolveArchiveFile types.ResolveArchiveFile,
+	reader io.Reader,
+	filePath, fileName string,
+) (finding *types.Finding) {
 	var (
 		jndiLookupFileHash string
 	)
@@ -93,7 +99,7 @@ func ProcessArchiveFile(zipReader *zip.Reader, reader io.Reader, filePath, fileN
 	}
 
 	if VersionIsInRange(archiveName, semverVersion, constants.JndiLookupPatchFileVersions) {
-		jndiLookupFileHash = GetJndiLookupHash(zipReader, filePath)
+		jndiLookupFileHash = GetJndiLookupHash(resolveArchiveFile, filePath)
 	}
 
 	log.Log().
