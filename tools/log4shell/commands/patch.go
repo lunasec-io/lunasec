@@ -38,6 +38,7 @@ func JavaArchivePatchCommand(
 
 	forcePatch := c.Bool("force-patch")
 	dryRun := c.Bool("dry-run")
+	backup := c.Bool("backup")
 
 	var patchedLibraries []string
 
@@ -64,7 +65,7 @@ func JavaArchivePatchCommand(
 			}
 		}
 
-		err = patch.ProcessJavaArchive(finding, dryRun)
+		err = patch.ProcessJavaArchive(finding, dryRun, backup)
 		if err != nil {
 			log.Error().
 				Str("path", finding.Path).

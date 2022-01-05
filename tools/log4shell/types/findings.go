@@ -15,11 +15,12 @@
 package types
 
 import (
-	"archive/zip"
 	"io"
 )
 
-type ProcessArchiveFile func(zipReader *zip.Reader, reader io.Reader, path, fileName string) (finding *Finding)
+type ResolveArchiveFile func(path string) (io.ReadCloser, error)
+
+type ProcessArchiveFile func(resolveFile ResolveArchiveFile, reader io.Reader, path, file string) (finding *Finding)
 
 type Finding struct {
 	Path     string `json:"path"`
