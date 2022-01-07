@@ -13,9 +13,15 @@
 -->
 # Log4Shell
 
-A CLI tool for identifying and patching the Log4Shell vulnerability.
+A CLI tool to identify and mitigate the impact of the [Log4Shell (CVE-2021-44228)](https://log4shell.com) vulnerability.
 
 ## Usage
+
+The available commands are:
+
+* `scan` - Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.
+* `patch` - Patches findings of libraries vulnerable toLog4Shell by removing the JndiLookup.class file from each.
+* `livepatch` - Perform a live patch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.
 
 ### Scanning
 Scan directories for known vulnerable Log4j dependencies.
@@ -24,13 +30,28 @@ Scan directories for known vulnerable Log4j dependencies.
 $ log4shell scan  <dir1> <dir2> ...
 ```
 
+Note: By default, Log4j 1.x.x vulnerabilities are not included in findings as to reflect that this tool was created
+to identify the Log4Shell vulnerability. To also scan for vulnerabilities affecting these versions, pass the option `--include-log4j1`
+when scanning.
+
 Output findings to a file in json format with `--output`.
 
 ```shell
 $ log4shell scan --output findings.json <dir>
 ... 
-$ cat findings.json
-{"vulnerable_libraries":[{"path":"test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.0-rc1.jar","file_name":"org/apache/logging/log4j/core/lookup/JndiLookup.class","hash":"39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8","version_info":"log4j 2.0-rc1","cve":"CVE-2021-44228"}, ...]}
+$ cat findings.json | jq .
+{
+  "vulnerable_libraries": [
+    {
+      "path": "test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.0-rc1.jar",
+      "file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+      "hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+      "version_info": "log4j 2.0-rc1",
+      "cve": "CVE-2021-44228"
+    },
+    ...
+  ]
+}
 ```
 
 To output findings, as the tool discovers them, in json format, use `--json`.
@@ -62,6 +83,28 @@ exclude multiple subdirectories.
 $ log4shell scan --exclude <subdir1> --exclude <subdir2> <dir1> <dir2>
 ```
 
+Here are some OS specific examples for scanning:
+
+Linux/MacOS
+```shell
+sudo ./log4shell scan --no-follow-symlinks --json --output [YourFIle].json --include-log4j1 [Path]
+```
+
+Windows
+```shell
+# Scan the C drive
+.\log4shell_1.4.0-log4shell_Windows_x86_64.exe scan --no-follow-symlinks --json --output result.json --include-log4j1 c:\
+
+# Scan multiple paths or drives
+.\log4shell_1.4.0-log4shell_Windows_x86_64.exe scan --no-follow-symlinks --json --output result.json --include-log4j1 C:\Users\Oli\Documents\ C:\Users\oli\Downloads\
+
+.\log4shell_1.4.0-log4shell_Windows_x86_64.exe scan --no-follow-symlinks --json --output result.json --include-log4j1 C:\ D:\
+```
+
+### Patch
+
+Patch existing 
+
 ### Live Patch
 Run a Live Patch server.
 
@@ -72,17 +115,18 @@ $ log4shell livepatch
 Read more about how this works [here](https://www.lunasec.io/docs/blog/log4shell-live-patch/).
 
 ## Building
-
-```
-docker build . -t log4shell
-docker run --network=host log4shell
-```
-
-or 
+For local builds:
 
 Make sure you have Maven installed, then:
 ```
-make build && ./log4shell
+make build
+./log4shell
+```
+
+To build with docker:
+```
+docker build . -t log4shell
+docker run --network=host log4shell
 ```
 
 ## Releases

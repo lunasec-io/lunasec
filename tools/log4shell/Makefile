@@ -9,7 +9,7 @@ payload:
 
 cli:
 	touch ${LIBRARY_HASHES}
-	go build -o ${BINARY_NAME} .
+	CGO_ENABLED=0 GOOS=linux go build -o ${BINARY_NAME} .
 
 library-hashes: cli
 	./log4shell analyze --output ${LIBRARY_HASHES} test/vulnerable-log4j2-versions/apache test/vulnerable-log4j2-versions/target/dependency
@@ -19,3 +19,6 @@ build: payload cli
 
 clean:
 	go clean
+
+setup-tests:
+	cd test/vulnerable-log4j2-versions && go run main.go

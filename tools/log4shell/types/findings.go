@@ -14,14 +14,20 @@
 //
 package types
 
-import "io"
+import (
+	"io"
+)
 
-type ProcessArchiveFile func(reader io.Reader, path, fileName string) (finding *Finding)
+type ResolveArchiveFile func(path string) (io.ReadCloser, error)
+
+type ProcessArchiveFile func(resolveFile ResolveArchiveFile, reader io.Reader, path, file string) (finding *Finding)
 
 type Finding struct {
 	Path     string `json:"path"`
 	FileName string `json:"file_name"`
 	Hash     string `json:"hash"`
+	JndiLookupFileName string `json:"jndi_lookup_file_name"`
+	JndiLookupHash     string `json:"jndi_lookup_hash"`
 	Version  string `json:"version"`
 	CVE      string `json:"cve"`
 	Severity string `json:"severity"`
