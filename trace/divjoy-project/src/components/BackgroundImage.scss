@@ -1,0 +1,23 @@
+.BackgroundImage {
+  // Set using CSS vars defined
+  // in element inline style.
+  background-image: var(--image);
+  opacity: var(--opacity);
+  // Fill parent container
+  background-position: center center;
+  background-size: cover;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  // Place under other elements
+  z-index: 0;
+
+  // Make it a repeating pattern
+  &.repeat {
+    background-size: auto;
+    background-position: 0% 0%;
+    background-repeat: true;
+  }
+}

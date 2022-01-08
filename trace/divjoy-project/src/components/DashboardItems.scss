@@ -1,0 +1,24 @@
+.DashboardItems {
+  &__card-items-wrapper {
+    .card-items {
+      min-height: 300px;
+    }
+
+    .featured {
+      background-color: #fdf8c2;
+    }
+
+    .action {
+      padding: 0 0.5rem;
+      color: rgb(116, 116, 116);
+      opacity: 0.8;
+      &:hover {
+        color: inherit;
+        opacity: 1;
+      }
+      &.star-featured {
+        color: #ff9800;
+      }
+    }
+  }
+}

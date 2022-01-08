@@ -1,0 +1,46 @@
+.FooterComponent {
+  &__logo {
+    width: 130px;
+  }
+
+  &__description {
+    margin-top: 1.2rem;
+  }
+
+  &__copyright {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    opacity: 0.6;
+
+    a {
+      color: inherit;
+      margin-left: 0.8rem;
+    }
+  }
+
+  &__menus {
+    ul {
+      margin-left: -0.75rem;
+    }
+
+    li {
+      img {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 0.6rem;
+      }
+
+      a {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        line-height: 1.25;
+        color: #4A4A4A;
+        &:hover {
+          text-decoration: none;
+          background-color: rgba(0, 0, 0, 0.05);
+          border-radius: 3px;
+        }
+      }
+    }
+  }
+}

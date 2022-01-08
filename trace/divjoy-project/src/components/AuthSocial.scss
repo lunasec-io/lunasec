@@ -1,0 +1,15 @@
+.AuthSocial {
+  &__icon {
+    position: absolute;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    width: 1.5em;
+    height: 1.5em;
+    left: 0.5em;
+    img {
+      display: block;
+      width: 20px;
+    }
+  }
+}

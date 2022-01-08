@@ -1,0 +1,9 @@
+.FaqSection {
+  &__faq-item {
+    cursor: pointer;
+    border-bottom: 1px solid #efefef;
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}

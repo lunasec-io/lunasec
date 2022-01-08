@@ -1,0 +1,56 @@
+@charset "utf-8";
+
+// COLORS
+$theme-colors: (
+  "primary": #0074d9,
+  "secondary": #6c757d,
+  "success": #28a745,
+  "danger": #ff4136,
+  "warning": #ffc107,
+  "info": #17a2b8,
+  "light": #f8f9fa,
+  "dark": #343a40,
+  "white": #ffffff,
+  "transparent": transparent,
+);
+
+// TEXT
+$font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-serif: Georgia, "Times New Roman", Times, serif;
+$font-family-base: $font-family-sans-serif;
+$font-size-base: 1rem;
+
+// BREAKPOINTS
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+);
+
+// SEE DOCS FOR MORE:
+// https://bit.ly/2sgFMdb
+
+// IMPORT BOOTSTRAP
+@import "~bootstrap/scss/bootstrap";
+
+// IMPORT FONT AWESOME
+@import url("https://use.fontawesome.com/releases/v5.10.1/css/all.css");
+
+#root {
+  // Full height of screen and flex so that we can push footer
+  // to the bottom even if content is shorter than screen
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  // Push footer to the bottom of the screen
+  > .footer {
+    margin-top: auto;
+  }
+  // Prevent child elements from shrinking when content
+  // is taller than the screen (quirk of having flex parent)
+  > * {
+    flex-shrink: 0;
+  }
+}

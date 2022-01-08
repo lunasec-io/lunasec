@@ -83,7 +83,8 @@
       "./js/demo-apps/packages/*",
       "./docs",
       "./js/sdks",
-      "./js/internal-infrastructure/s3-redirect-generator"
+      "./js/internal-infrastructure/s3-redirect-generator",
+      "./trace/*"
     ]
   },
   "packageManager": "yarn@3.1.1"
