@@ -50,7 +50,8 @@ module.exports = {
       'js/demo-apps/packages/react-front-end/tsconfig.json',
       'js/internal-infrastructure/metrics-server-backend/tsconfig.json',
       'js/internal-infrastructure/s3-redirect-generator/tsconfig.json',
-      'trace/backend/tsconfig.json',
+      'lunatrace/backend/tsconfig.json',
+      'lunatrace/frontend/tsconfig.json'
     ]
   },
   plugins: [
