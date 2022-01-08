@@ -24,11 +24,13 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 
 type Log4jVulnerableDependencyScanner interface {
 	Scan(searchDirs []string) (findings []types.Finding)
+	ScanFiles(files []string) (findings []types.Finding)
 }
 
 type Log4jDirectoryScanner struct {
@@ -52,23 +54,8 @@ func NewLog4jDirectoryScanner(
 	}
 }
 
-func (s *Log4jDirectoryScanner) shouldSkipPath(path string) bool {
-	for _, excludeDir := range s.excludeDirs {
-		if path == excludeDir {
-			return true
-		}
-	}
-	return false
-}
-
-// Scan walks each search dir looking for .class files in archives which have a hash
-// matching a known vulnerable file hash. The search will also recursively crawl nested archives while searching.
-// This function by default will scan class files, but can also be configured to only scan and match for vulnerable
-// java archives.
-func (s *Log4jDirectoryScanner) Scan(
-	searchDirs []string,
-) (findings []types.Finding) {
-	locatedFileCallback := func(path string, info os.FileInfo, accessError error) (err error) {
+func (s *Log4jDirectoryScanner) locatedFileCallback(reportFindings chan<- types.Finding) filepath.WalkFunc {
+	return func(path string, info os.FileInfo, accessError error) (err error) {
 		if s.shouldSkipPath(path) {
 			return filepath.SkipDir
 		}
@@ -85,7 +72,7 @@ func (s *Log4jDirectoryScanner) Scan(
 			return
 		}
 
-		if !s.noFollowSymlinks && info.Mode() & os.ModeSymlink != 0 {
+		if !s.noFollowSymlinks && info.Mode()&os.ModeSymlink != 0 {
 			// overwrite path and info with the resolved symlink file values
 			path, info, err = util.ResolveSymlinkFilePathAndInfo(path)
 			if err != nil {
@@ -96,20 +83,89 @@ func (s *Log4jDirectoryScanner) Scan(
 		fileExt := util.FileExt(path)
 		switch fileExt {
 		case constants.JarFileExt,
-		     constants.WarFileExt,
-		     constants.EarFileExt:
+			constants.WarFileExt,
+			constants.EarFileExt:
 			log.Debug().
 				Str("path", path).
 				Msg("scanning archive")
 
 			locatedFindings := s.scanLocatedArchive(path, info)
-			findings = append(findings, locatedFindings...)
+			for _, finding := range locatedFindings {
+				reportFindings <- finding
+			}
 		}
 		return
 	}
+}
 
-	util.SearchDirs(searchDirs, locatedFileCallback)
+func (s *Log4jDirectoryScanner) shouldSkipPath(path string) bool {
+	for _, excludeDir := range s.excludeDirs {
+		if path == excludeDir {
+			return true
+		}
+	}
+	return false
+}
+
+// Scan walks each search dir looking for .class files in archives which have a hash
+// matching a known vulnerable file hash. The search will also recursively crawl nested archives while searching.
+// This function by default will scan class files, but can also be configured to only scan and match for vulnerable
+// java archives.
+func (s *Log4jDirectoryScanner) Scan(
+	searchDirs []string,
+) (findings []types.Finding) {
+	reportFindings := make(chan types.Finding)
+	callback := s.locatedFileCallback(reportFindings)
+
+	go func() {
+		util.SearchDirs(searchDirs, callback)
+		close(reportFindings)
+	}()
+
+	for finding := range reportFindings {
+		findings = append(findings, finding)
+	}
 	return
+}
+
+func (s *Log4jDirectoryScanner) ScanFiles(
+	files []string,
+) (findings []types.Finding) {
+	reportFindings := make(chan types.Finding)
+	callback := s.locatedFileCallback(reportFindings)
+
+	go func() {
+		defer close(reportFindings)
+
+		for _, file := range files {
+			if !strings.HasPrefix(file, "/") {
+				continue
+			}
+
+			fileInfo, err := os.Stat(file)
+			if err != nil {
+				log.Warn().
+					Str("file", file).
+					Err(err).
+					Msg("Unable to stat file")
+				continue
+			}
+
+			err = callback(file, fileInfo, nil)
+			if err != nil {
+				log.Warn().
+					Str("file", file).
+					Err(err).
+					Msg("Unable to scan file")
+				continue
+			}
+		}
+	}()
+
+	for finding := range reportFindings {
+		findings = append(findings, finding)
+	}
+	return findings
 }
 
 func (s *Log4jDirectoryScanner) scanLocatedArchive(
