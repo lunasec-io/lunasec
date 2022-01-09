@@ -84,6 +84,7 @@
       "./docs",
       "./js/sdks",
       "./js/internal-infrastructure/s3-redirect-generator",
+      "./js/internal-infrastructure/metrics-server-backend",
       "./lunatrace/*"
     ]
   },
