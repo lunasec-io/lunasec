@@ -8,6 +8,7 @@
     "migrate": "yarn run node-pg-migrate --tsconfig ./tsconfig.json"
   },
   "dependencies": {
+    "@vendia/serverless-express": "^4.5.2",
     "config": "^3.3.6",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",

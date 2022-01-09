@@ -13873,6 +13873,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vendia/serverless-express@npm:^4.5.2":
+  version: 4.5.2
+  resolution: "@vendia/serverless-express@npm:4.5.2"
+  checksum: 53f6abc1b17241ac9b02514c6dd18614f97c03156647e32d2196dc06468cede5d08807a67aa19800798481476cf3e05ecc95b416baea406c1ef58de822074c25
+  languageName: node
+  linkType: hard
+
 "@vue/babel-helper-vue-jsx-merge-props@npm:^1.2.1":
   version: 1.2.1
   resolution: "@vue/babel-helper-vue-jsx-merge-props@npm:1.2.1"
@@ -30959,6 +30966,7 @@ __metadata:
   dependencies:
     "@types/config": ^0.0.41
     "@types/express": ^4.17.13
+    "@vendia/serverless-express": ^4.5.2
     config: ^3.3.6
     dotenv: ^10.0.0
     eslint: ^7.25.0

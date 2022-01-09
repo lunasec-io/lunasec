@@ -22,8 +22,84 @@ export const shorthands: ColumnDefinitions | undefined = undefined;
 export function up(pgm: MigrationBuilder) {
   pgm.createTable('users', {
     id: { type: 'uuid', primaryKey: true },
-    name: { type: 'varchar(1000)', notNull: true },
+    name: { type: 'varchar(200)', notNull: true },
+    created_at: {
+      type: 'timestamp',
+      notNull: true,
+      default: pgm.func('current_timestamp'),
+    },
+  });
+
+  pgm.createTable('settings', {
+    id: { type: 'uuid', primaryKey: true },
+    created_at: {
+      type: 'timestamp',
+      notNull: true,
+      default: pgm.func('current_timestamp'),
+    },
+    is_org_settings: 'boolean',
+  });
+
+  pgm.createTable('organizations', {
+    id: { type: 'uuid', primaryKey: true },
+    name: { type: 'varchar(200)', notNull: true },
     createdAt: {
+      type: 'timestamp',
+      notNull: true,
+      default: pgm.func('current_timestamp'),
+    },
+    settings_id: { type: 'uuid', references: '"settings"' },
+  });
+
+  pgm.createTable('projects', {
+    id: { type: 'uuid', primaryKey: true },
+    name: { type: 'varchar(500)', notNull: true },
+    repo: { type: 'varchar(500)' },
+    created_at: {
+      type: 'timestamp',
+      notNull: true,
+      default: pgm.func('current_timestamp'),
+    },
+    settings_id: { type: 'uuid', references: '"settings"' },
+    organization_id: { type: 'uuid', references: '"organizations"' },
+  });
+
+  pgm.createTable('sboms', {
+    id: { type: 'uuid', primaryKey: true },
+    s3_url: { type: 'text' },
+    created_at: {
+      type: 'timestamp',
+      notNull: true,
+      default: pgm.func('current_timestamp'),
+    },
+  });
+
+  pgm.createTable('vulnerabilities', {
+    id: { type: 'uuid', primaryKey: true },
+    name: { type: 'text', unique: true },
+    related_vulnerability_id: { type: 'uuid', references: '"vulnerabilities"' }, // Secondary vulns are chained off of the primary vuln using this foreign key
+    created_at: {
+      type: 'timestamp',
+      notNull: true,
+      default: pgm.func('current_timestamp'),
+    },
+  });
+
+  pgm.createTable('scans', {
+    id: { type: 'uuid', primaryKey: true },
+    project_id: { type: 'uuid', references: '"projects"' },
+    sbom_id: { type: 'uuid', references: '"sboms"' },
+    created_at: {
+      type: 'timestamp',
+      notNull: true,
+      default: pgm.func('current_timestamp'),
+    },
+  });
+
+  pgm.createTable('findings', {
+    id: { type: 'uuid', primaryKey: true },
+    vulnerability_id: { type: 'uuid', references: '"vulnerabilities"' },
+    created_at: {
       type: 'timestamp',
       notNull: true,
       default: pgm.func('current_timestamp'),
@@ -32,5 +108,12 @@ export function up(pgm: MigrationBuilder) {
 }
 
 export function down(pgm: MigrationBuilder) {
+  pgm.dropTable('findings');
+  pgm.dropTable('scans');
+  pgm.dropTable('vulnerabilities');
+  pgm.dropTable('sboms');
+  pgm.dropTable('projects');
+  pgm.dropTable('organizations');
+  pgm.dropTable('settings');
   pgm.dropTable('users');
 }
