@@ -2247,6 +2247,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:4.2.2"
       ],
       [
+        "@types/aws-lambda",
+        "npm:8.10.89"
+      ],
+      [
         "@types/babel__core",
         "npm:7.1.17"
       ],
@@ -9280,6 +9284,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [
         "serve-static",
         "npm:1.14.2"
+      ],
+      [
+        "serverless-http",
+        "npm:2.7.0"
       ],
       [
         "set-blocking",
@@ -29008,6 +29016,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-aria-query-npm-4.2.2-c7fefe27a4-6f2ce11d91.zip/node_modules/@types/aria-query/",
           "packageDependencies": [
             ["@types/aria-query", "npm:4.2.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@types/aws-lambda", [
+        ["npm:8.10.89", {
+          "packageLocation": "./.yarn/cache/@types-aws-lambda-npm-8.10.89-a711181ffe-426c5cce2f.zip/node_modules/@types/aws-lambda/",
+          "packageDependencies": [
+            ["@types/aws-lambda", "npm:8.10.89"]
           ],
           "linkType": "HARD",
         }]
@@ -61796,6 +61813,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["serverless-http", [
+        ["npm:2.7.0", {
+          "packageLocation": "./.yarn/cache/serverless-http-npm-2.7.0-87b2171352-caf128423d.zip/node_modules/serverless-http/",
+          "packageDependencies": [
+            ["serverless-http", "npm:2.7.0"],
+            ["@types/aws-lambda", "npm:8.10.89"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["set-blocking", [
         ["npm:2.0.0", {
           "packageLocation": "./.yarn/cache/set-blocking-npm-2.0.0-49e2cffa24-6e65a05f7c.zip/node_modules/set-blocking/",
@@ -64671,9 +64698,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node", "npm:16.11.19"],
             ["@types/react", "npm:17.0.38"],
             ["@types/react-dom", "npm:17.0.11"],
+            ["dotenv", "npm:10.0.0"],
             ["react", "npm:17.0.2"],
             ["react-dom", "virtual:1f68f4f3643a7deef98c518b17e8f29bdb62249df185f0304ae9a0b161e659ded4cc1ba5ee64f8a0f0c094a9e606506c63068e21d606bb9e112a363dd3a410c4#npm:17.0.2"],
             ["react-scripts", "virtual:1f68f4f3643a7deef98c518b17e8f29bdb62249df185f0304ae9a0b161e659ded4cc1ba5ee64f8a0f0c094a9e606506c63068e21d606bb9e112a363dd3a410c4#npm:5.0.0"],
+            ["serverless-http", "npm:2.7.0"],
             ["typescript", "patch:typescript@npm%3A4.5.4#~builtin<compat/typescript>::version=4.5.4&hash=493e53"],
             ["web-vitals", "npm:2.1.3"]
           ],

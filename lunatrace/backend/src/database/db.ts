@@ -19,6 +19,12 @@ import pgp from 'pg-promise';
 
 const dbConfig = config.get('db');
 
+const conf = { ...(dbConfig as Record<string, any>) };
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export const db = pgp(dbConfig);
+export const db = pgp(conf);
+
+// export function closeDb(_req: Request, _res: Response, next: () => {}) {
+//   db.$pool.end();
+//   next();
+// }
