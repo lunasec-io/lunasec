@@ -23,13 +23,13 @@ import * as cdk from '@aws-cdk/core';
 
 export class AnalyticsCollectorLambda extends lambda.DockerImageFunction {
   constructor(scope: cdk.Construct, versionTag: string) {
-    const tokenizerBcakendRepo = ecr.Repository.fromRepositoryName(
+    const tokenizerBackendRepo = ecr.Repository.fromRepositoryName(
       scope,
       'analytics-collector-repo',
       'analytics-collector'
     );
     const baseProps: lambda.DockerImageFunctionProps = {
-      code: lambda.DockerImageCode.fromEcr(tokenizerBcakendRepo, {
+      code: lambda.DockerImageCode.fromEcr(tokenizerBackendRepo, {
         tag: versionTag,
       }),
       environment: {
