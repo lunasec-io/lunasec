@@ -32,7 +32,9 @@ interface SuccessResponse {
   uploadUrl: { url: string; headers: HeaderBag };
 }
 
-function parseRequest(event: APIGatewayProxyEventV2): ErrorResponse | { error: false; email: string } {
+function parseRequest(
+  event: APIGatewayProxyEventV2
+): ErrorResponse | { error: false; email: string; metadata: string } {
   const queryParams = event.queryStringParameters;
 
   if (!queryParams) {
@@ -58,9 +60,35 @@ function parseRequest(event: APIGatewayProxyEventV2): ErrorResponse | { error: f
     };
   }
 
+  const metadata = queryParams.metadata;
+
+  if (!metadata) {
+    return {
+      error: true,
+      message: 'Missing metadata for request',
+    };
+  }
+
+  try {
+    const parsedMetadata = JSON.parse(metadata);
+
+    if (!parsedMetadata.name) {
+      return {
+        error: true,
+        message: 'Missing name in metadata for request',
+      };
+    }
+  } catch (e) {
+    return {
+      error: true,
+      message: 'Invalid metadata for request, it must be JSON',
+    };
+  }
+
   return {
     error: false,
     email: email,
+    metadata: metadata,
   };
 }
 
@@ -106,7 +134,9 @@ export async function handler(
     const result = await preSignedUrlGenerator.generatePresignedS3Url(
       `${encodeURI(
         requestArgs.email
-      )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}.json.gz`,
+      )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURI(
+        requestArgs.metadata
+      )}.json.gz`,
       'PUT'
     );
 
