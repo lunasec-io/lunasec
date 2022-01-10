@@ -1,0 +1,22 @@
+table:
+  name: organizations
+  schema: public
+object_relationships:
+- name: setting
+  using:
+    foreign_key_constraint_on: settings_id
+array_relationships:
+- name: organization_users
+  using:
+    foreign_key_constraint_on:
+      column: organization_id
+      table:
+        name: organization_user
+        schema: public
+- name: projects
+  using:
+    foreign_key_constraint_on:
+      column: organization_id
+      table:
+        name: projects
+        schema: public

@@ -1,0 +1,39 @@
+table:
+  name: projects
+  schema: public
+object_relationships:
+- name: organization
+  using:
+    foreign_key_constraint_on: organization_id
+- name: setting
+  using:
+    foreign_key_constraint_on: settings_id
+array_relationships:
+- name: scans
+  using:
+    foreign_key_constraint_on:
+      column: project_id
+      table:
+        name: scans
+        schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      organization:
+        organization_users:
+          user:
+            id:
+              _eq: X-Hasura-User-Id
+    columns: []
+  role: owners
+select_permissions:
+- permission:
+    columns: []
+    filter:
+      organization:
+        organization_users:
+          user:
+            id:
+              _eq: X-Hasura-User-Id
+  role: owners
