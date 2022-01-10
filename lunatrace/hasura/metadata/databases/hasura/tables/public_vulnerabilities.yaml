@@ -13,6 +13,15 @@ array_relationships:
       table:
         name: findings
         schema: public
+
+- name: secondary_finding_vulnerabilities
+  using:
+    foreign_key_constraint_on:
+      column: vulnerability_id
+      table:
+        name: secondary_finding_vulnerability
+        schema: public
+
 - name: vulnerabilities
   using:
     foreign_key_constraint_on:
@@ -20,3 +29,14 @@ array_relationships:
       table:
         name: vulnerabilities
         schema: public
+
+select_permissions:
+- permission:
+    columns:
+    - name
+    - created_at
+    - id
+    - related_vulnerability_id
+    filter: {}
+  role: user
+

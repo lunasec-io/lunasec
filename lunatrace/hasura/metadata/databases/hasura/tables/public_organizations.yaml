@@ -20,3 +20,36 @@ array_relationships:
       table:
         name: projects
         schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      organization_users:
+        user:
+          id:
+            _eq: X-Hasura-User-Id
+    columns: []
+  role: user
+select_permissions:
+- permission:
+    columns: []
+    filter:
+      organization_users:
+        user:
+          id:
+            _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check:
+      organization_users:
+        user:
+          id:
+            _eq: X-Hasura-User-Id
+    columns: []
+    filter:
+      organization_users:
+        user:
+          id:
+            _eq: X-Hasura-User-Id
+  role: user
