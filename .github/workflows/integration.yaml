@@ -107,7 +107,7 @@ jobs:
       run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo --local-build --show-logs --env=tests
 
     - name: Warn on lockfile failure
-      if: ${{ job.status == 'failure' && matrix.lockfile == 'no-lockfile' }}
+      if: ${{ job.status == 'failure' }}
       run: echo "::warning  title=lockfile-check::Building without a lockfile failed"
 
 #    - uses: actions/upload-artifact@v2
