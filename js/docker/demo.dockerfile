@@ -63,7 +63,5 @@ WORKDIR /repo/js/sdks/packages/secure-frame-iframe
 
 RUN yarn run compile
 
-RUN npm i -g http-server
-
 CMD ["-a", "0.0.0.0", "-p", "8000"]
-ENTRYPOINT ["http-server"]
+ENTRYPOINT ["yarn", "run", "http-server"]
