@@ -20,6 +20,7 @@ import { S3RequestPresigner, S3RequestPresignerOptions } from '@aws-sdk/s3-reque
 import { HeaderBag } from '@aws-sdk/types';
 import { parseUrl } from '@aws-sdk/url-parser';
 import { formatUrl } from '@aws-sdk/util-format-url';
+import slugify from 'slugify';
 
 export interface AwsCredentials {
   accessKeyId: string;
@@ -52,7 +53,7 @@ export class PreSignedUrlGenerator {
     return `https://${this.config.s3Bucket}.s3.${this.config.awsRegion}.amazonaws.com`;
   }
 
-  async generatePresignedS3Url(tokenId: string, method: 'PUT' | 'GET'): Promise<{ url: string; headers: HeaderBag }> {
+  async generatePresignedS3Url(id: string, method: 'PUT' | 'GET'): Promise<{ url: string; headers: HeaderBag }> {
     const credentials = this.config.awsCredentials;
 
     const signer = new S3RequestPresigner({
@@ -61,7 +62,9 @@ export class PreSignedUrlGenerator {
       sha256: Hash.bind(null, 'sha256'), // In Node.js
     });
     const baseUrl = this.generateAWSBaseUrl();
-    const url = parseUrl(`${baseUrl}/${tokenId}`);
+
+    const sluggedId: string = slugify(id);
+    const url = parseUrl(`${baseUrl}/${sluggedId}`);
 
     const signedUrl = await signer.presign(
       new HttpRequest({
