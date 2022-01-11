@@ -6,6 +6,7 @@ require (
 	github.com/anchore/syft v0.35.0
 	github.com/blang/semver/v4 v4.0.0
 	github.com/breadchris/ldapserver v1.1.0
+	github.com/go-git/go-git/v5 v5.4.2
 	github.com/lor00x/goldap v0.0.0-20180618054307-a546dffdd1a3
 	github.com/rs/zerolog v1.26.0
 	github.com/urfave/cli/v2 v2.3.0
@@ -37,7 +38,6 @@ require (
 	github.com/gabriel-vasile/mimetype v1.3.0 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.3.1 // indirect
-	github.com/go-git/go-git/v5 v5.4.2 // indirect
 	github.com/go-restruct/restruct v1.2.0-alpha // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
