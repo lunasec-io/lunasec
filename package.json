@@ -74,6 +74,10 @@
     "prepare": "yarn run husky install",
     "monorepo:version": "yarn node -p 'require(\"./lerna.json\").version'"
   },
+  "overrides": {
+    "faker": "5.5.3",
+    "colors": "1.4.0"
+  },
   "version": "1.0.0",
   "workspaces": {
     "packages": [
