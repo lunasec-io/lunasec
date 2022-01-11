@@ -132,11 +132,11 @@ export async function handler(
 
   try {
     const result = await preSignedUrlGenerator.generatePresignedS3Url(
-      `${encodeURI(
-        requestArgs.email
-      )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURI(
+      `${new Buffer(requestArgs.email).toString(
+        'base64'
+      )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${new Buffer(
         requestArgs.metadata
-      )}.json.gz`,
+      ).toString('base64')}.json.gz`,
       'PUT'
     );
 
