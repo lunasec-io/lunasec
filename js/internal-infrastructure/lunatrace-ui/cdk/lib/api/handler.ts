@@ -134,9 +134,7 @@ export async function handler(
     const result = await preSignedUrlGenerator.generatePresignedS3Url(
       `${encodeURI(
         requestArgs.email
-      )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURI(
-        requestArgs.metadata
-      )}.json.gz`,
+      )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}.json.gz`,
       'PUT'
     );
 
