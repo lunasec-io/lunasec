@@ -20,7 +20,6 @@ import (
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/urfave/cli/v2"
 	"os"
 )
 
@@ -129,6 +128,10 @@ func main() {
 					&cli.BoolFlag{
 						Name:  "archives",
 						Usage: "Only scan for known vulnerable archives. By default the CLI will scan for class files which are known to be vulnerable which will result in higher signal findings. If you are specifically looking for vulnerable Java archive hashes, use this option.",
+					},
+					&cli.BoolFlag{
+						Name:  "processes",
+						Usage: "Currently only available for Linux systems. Only scan running processes and the files that they have open. This option will greatly improve performance when only running processes are of concern (ex. containers).",
 					},
 					&cli.StringFlag{
 						Name:  "version-hashes",
