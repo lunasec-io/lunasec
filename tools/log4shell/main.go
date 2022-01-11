@@ -20,7 +20,6 @@ import (
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/urfave/cli/v2"
 	"os"
 )
 
@@ -132,7 +131,7 @@ func main() {
 					},
 					&cli.BoolFlag{
 						Name:  "processes",
-						Usage: "Only scan running processes and the files that they have open. This option will greatly improve performance when only running processes are of concern (ex. containers).",
+						Usage: "Currently only available for Linux systems. Only scan running processes and the files that they have open. This option will greatly improve performance when only running processes are of concern (ex. containers).",
 					},
 					&cli.StringFlag{
 						Name:  "version-hashes",
