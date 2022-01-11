@@ -31118,6 +31118,8 @@ __metadata:
     node-pg-migrate: ^6.2.1
     pg: ^8.7.1
     pg-promise: ^10.11.1
+    sqlite: ^4.0.23
+    sqlite3: ^5.0.2
     ts-node: ^10.4.0
     ts-node-dev: ^1.1.8
     typescript: ^4.5.4

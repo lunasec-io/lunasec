@@ -23,4 +23,3 @@ select_permissions:
               id:
                 _eq: X-Hasura-User-Id
   role: user
-
