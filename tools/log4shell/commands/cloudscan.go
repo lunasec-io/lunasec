@@ -63,6 +63,13 @@ func CloudScanCommand(c *cli.Context, globalBoolFlags map[string]bool) (err erro
 
 	searchDirs := c.Args().Slice()
 
+	if len(searchDirs) == 0 {
+		err = errors.New("no search dirs provided")
+		log.Error().
+			Msg("No search directories provided. Please provide at least one search directory as an argument to this command.")
+		return
+	}
+
 	output := c.String("output")
 	email := c.String("email")
 	applicationName := c.String("application-name")
