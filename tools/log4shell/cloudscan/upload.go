@@ -84,8 +84,8 @@ func generateUploadUrl(uploadSbomUrl string) (url string, headers map[string]str
 	return
 }
 
-func serializeAndCompressSboms(sbomModels []model.Document) (buffer bytes.Buffer, err error) {
-	serializedOutput, err := json.Marshal(sbomModels)
+func serializeAndCompressOutput(output types.SbomOutput) (buffer bytes.Buffer, err error) {
+	serializedOutput, err := json.Marshal(output)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to marshall dependencies output")
 		return
@@ -105,7 +105,13 @@ func serializeAndCompressSboms(sbomModels []model.Document) (buffer bytes.Buffer
 }
 
 func UploadCollectedSboms(email, applicationName string, sbomModels []model.Document) (err error) {
-	serializedSboms, err := serializeAndCompressSboms(sbomModels)
+	output := types.SbomOutput{
+		Email:           email,
+		ApplicationName: applicationName,
+		Sboms:           sbomModels,
+	}
+
+	serializedOutput, err := serializeAndCompressOutput(output)
 	if err != nil {
 		return
 	}
@@ -120,7 +126,7 @@ func UploadCollectedSboms(email, applicationName string, sbomModels []model.Docu
 		return
 	}
 
-	data, err := util.HttpRequest(http.MethodPut, uploadUrl, uploadHeaders, &serializedSboms)
+	data, err := util.HttpRequest(http.MethodPut, uploadUrl, uploadHeaders, &serializedOutput)
 	if err != nil {
 		log.Error().
 			Err(err).

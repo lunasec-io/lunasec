@@ -20,7 +20,6 @@ import { S3RequestPresigner, S3RequestPresignerOptions } from '@aws-sdk/s3-reque
 import { HeaderBag } from '@aws-sdk/types';
 import { parseUrl } from '@aws-sdk/url-parser';
 import { formatUrl } from '@aws-sdk/util-format-url';
-import slugify from 'slugify';
 
 export interface AwsCredentials {
   accessKeyId: string;
@@ -63,8 +62,7 @@ export class PreSignedUrlGenerator {
     });
     const baseUrl = this.generateAWSBaseUrl();
 
-    const sluggedId: string = slugify(id);
-    const url = parseUrl(`${baseUrl}/${sluggedId}`);
+    const url = parseUrl(`${baseUrl}/${id}`);
 
     const signedUrl = await signer.presign(
       new HttpRequest({

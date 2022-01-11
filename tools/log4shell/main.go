@@ -129,6 +129,14 @@ func main() {
 						Name:  "output",
 						Usage: "File to write scan results to.",
 					},
+					&cli.StringSliceFlag{
+						Name:  "excluded",
+						Usage: "Excluded dirs from scanning.",
+					},
+					&cli.BoolFlag{
+						Name:  "skip-upload",
+						Usage: "Skip uploading collected dependencies.",
+					},
 				},
 				Action: func(c *cli.Context) error {
 					return commands.CloudScanCommand(c, globalBoolFlags)

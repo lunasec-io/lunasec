@@ -17,22 +17,24 @@ package cloudscan
 import (
 	"crypto"
 	"fmt"
+	"github.com/anchore/syft/syft"
 	"github.com/anchore/syft/syft/artifact"
 	"github.com/anchore/syft/syft/file"
+	"github.com/anchore/syft/syft/pkg/cataloger"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/anchore/syft/syft/source"
 	"github.com/lunasec-io/lunasec/tools/log4shell/constants"
 	"github.com/rs/zerolog/log"
 )
 
-func getSbomForSearchDir(searchDir string) (s sbom.SBOM, err error) {
+func getSbomForSearchDir(searchDir string, excludedDirs []string) (s *sbom.SBOM, err error) {
 	userInput := fmt.Sprintf("dir:%s", searchDir)
 
 	log.Info().
 		Str("searchDir", searchDir).
 		Msg("Scanning search directory for dependencies.")
 
-	src, cleanup, err := source.New(userInput, nil, []string{})
+	src, cleanup, err := source.New(userInput, nil, excludedDirs)
 	if err != nil {
 		err = fmt.Errorf("failed to construct source from user input %q: %w", userInput, err)
 		return
@@ -45,17 +47,23 @@ func getSbomForSearchDir(searchDir string) (s sbom.SBOM, err error) {
 		Str("searchDir", searchDir).
 		Msg("Completed scanning in search directory.")
 
-	s = sbom.SBOM{
+	s = &sbom.SBOM{
 		Source: src.Metadata,
 		Descriptor: sbom.Descriptor{
-			Name:    "LunaTrace",
+			Name:    constants.ApplicationName,
 			Version: constants.Version,
 		},
 	}
+
+	err = collectRelationships(searchDir, s, src)
+	if err != nil {
+		return
+	}
+
 	return
 }
 
-func collectRelationships(searchDir string, s sbom.SBOM, src *source.Source) {
+func collectRelationships(searchDir string, s *sbom.SBOM, src *source.Source) (err error) {
 	log.Info().
 		Str("searchDir", searchDir).
 		Msg("Collecting relationships between dependencies and files.")
@@ -71,13 +79,16 @@ func collectRelationships(searchDir string, s sbom.SBOM, src *source.Source) {
 		relationships = append(relationships, c)
 
 		err = runTask(task, &s.Artifacts, src, c)
+		if err != nil {
+			return
+		}
 	}
 	s.Relationships = append(s.Relationships, mergeRelationships(relationships...)...)
 
 	log.Info().
 		Str("searchDir", searchDir).
 		Msg("Completed collecting relationships between dependencies and files.")
-
+	return
 }
 
 func runTask(t task, a *sbom.Artifacts, src *source.Source, c chan<- artifact.Relationship) (err error) {
@@ -110,7 +121,9 @@ func getTasks() ([]task, error) {
 	var tasks []task
 
 	generators := []func() (task, error){
-		generateCatalogFileDigestsTask,
+		generateCatalogPackagesTask,
+		//generateCatalogFileMetadataTask,
+		//generateCatalogFileClassificationsTask,
 	}
 
 	for _, generator := range generators {
@@ -125,6 +138,65 @@ func getTasks() ([]task, error) {
 	}
 
 	return tasks, nil
+}
+func generateCatalogPackagesTask() (task, error) {
+	task := func(results *sbom.Artifacts, src *source.Source) ([]artifact.Relationship, error) {
+		packageCatalog, relationships, theDistro, err := syft.CatalogPackages(src, cataloger.DefaultConfig())
+		if err != nil {
+			return nil, err
+		}
+
+		results.PackageCatalog = packageCatalog
+		results.Distro = theDistro
+
+		return relationships, nil
+	}
+
+	return task, nil
+}
+
+func generateCatalogFileMetadataTask() (task, error) {
+	metadataCataloger := file.NewMetadataCataloger()
+
+	task := func(results *sbom.Artifacts, src *source.Source) ([]artifact.Relationship, error) {
+		resolver, err := src.FileResolver(source.UnknownScope)
+		if err != nil {
+			return nil, err
+		}
+
+		result, err := metadataCataloger.Catalog(resolver)
+		if err != nil {
+			return nil, err
+		}
+		results.FileMetadata = result
+		return nil, nil
+	}
+
+	return task, nil
+}
+
+func generateCatalogFileClassificationsTask() (task, error) {
+	// TODO: in the future we could expose out the classifiers via configuration
+	classifierCataloger, err := file.NewClassificationCataloger(file.DefaultClassifiers)
+	if err != nil {
+		return nil, err
+	}
+
+	task := func(results *sbom.Artifacts, src *source.Source) ([]artifact.Relationship, error) {
+		resolver, err := src.FileResolver(source.UnknownScope)
+		if err != nil {
+			return nil, err
+		}
+
+		result, err := classifierCataloger.Catalog(resolver)
+		if err != nil {
+			return nil, err
+		}
+		results.FileClassifications = result
+		return nil, nil
+	}
+
+	return task, nil
 }
 
 func generateCatalogFileDigestsTask() (task, error) {

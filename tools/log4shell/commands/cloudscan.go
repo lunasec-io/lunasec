@@ -50,7 +50,7 @@ func writeCloudScanOutput(sboms []model.Document, output string) (err error) {
 	return
 }
 
-func getSbomModels(sboms []sbom.SBOM) (models []model.Document) {
+func getSbomModels(sboms []*sbom.SBOM) (models []model.Document) {
 	for _, appSbom := range sboms {
 		docModel := util.ToSyftJsonFormatModel(appSbom)
 		models = append(models, docModel)
@@ -66,6 +66,8 @@ func CloudScanCommand(c *cli.Context, globalBoolFlags map[string]bool) (err erro
 	output := c.String("output")
 	email := c.String("email")
 	applicationName := c.String("application-name")
+	excludedDirs := c.StringSlice("excluded")
+	skipUpload := c.Bool("skip-upload")
 
 	if email == "" {
 		err = errors.New("email required when performing cloud scan")
@@ -90,7 +92,7 @@ func CloudScanCommand(c *cli.Context, globalBoolFlags map[string]bool) (err erro
 		applicationName = repoRemote
 	}
 
-	sboms, err := cloudscan.CollectSbomsFromSearchDirs(searchDirs)
+	sboms, err := cloudscan.CollectSbomsFromSearchDirs(searchDirs, excludedDirs)
 	if err != nil {
 		return
 	}
@@ -102,6 +104,11 @@ func CloudScanCommand(c *cli.Context, globalBoolFlags map[string]bool) (err erro
 		if err != nil {
 			return
 		}
+	}
+
+	if skipUpload {
+		log.Info().Msg("Skipping upload of SBOM")
+		return
 	}
 
 	err = cloudscan.UploadCollectedSboms(email, applicationName, sbomModels)

@@ -33,7 +33,7 @@ import (
 	"github.com/anchore/syft/syft/source"
 )
 
-func ToSyftJsonFormatModel(s sbom.SBOM) model.Document {
+func ToSyftJsonFormatModel(s *sbom.SBOM) model.Document {
 	src, err := toSourceModel(s.Source)
 	if err != nil {
 		log.Printf("unable to create syft-json source object: %+v", err)
@@ -42,7 +42,7 @@ func ToSyftJsonFormatModel(s sbom.SBOM) model.Document {
 	return model.Document{
 		Artifacts:             toPackageModels(s.Artifacts.PackageCatalog),
 		ArtifactRelationships: toRelationshipModel(s.Relationships),
-		Files:                 toFile(s),
+		Files:                 toFile(*s),
 		Secrets:               toSecrets(s.Artifacts.Secrets),
 		Source:                src,
 		Distro:                toDistroModel(s.Artifacts.Distro),

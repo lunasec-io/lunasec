@@ -14,6 +14,14 @@
 //
 package types
 
+import "github.com/lunasec-io/lunasec/tools/log4shell/types/model"
+
+type SbomOutput struct {
+	Email           string           `json:"email"`
+	ApplicationName string           `json:"application_name"`
+	Sboms           []model.Document `json:"sboms"`
+}
+
 type UploadSbomUrl struct {
 	Url     string            `json:"url"`
 	Headers map[string]string `json:"headers"`

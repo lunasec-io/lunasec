@@ -17,16 +17,25 @@ package cloudscan
 import (
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/rs/zerolog/log"
+	"path/filepath"
 )
 
-func CollectSbomsFromSearchDirs(searchDirs []string) (sboms []sbom.SBOM, err error) {
+func CollectSbomsFromSearchDirs(searchDirs, excludedDirs []string) (sboms []*sbom.SBOM, err error) {
 	for _, searchDir := range searchDirs {
-		var s sbom.SBOM
+		var (
+			s          *sbom.SBOM
+			searchPath string
+		)
 
-		s, err = getSbomForSearchDir(searchDir)
+		searchPath, err = filepath.Abs(searchDir)
+		if err != nil {
+			return
+		}
+
+		s, err = getSbomForSearchDir(searchPath, excludedDirs)
 		if err != nil {
 			log.Error().
-				Str("searchDir", searchDir).
+				Str("searchPath", searchPath).
 				Err(err).
 				Msg("Unable to create SBOM from directory.")
 			return
