@@ -52,7 +52,7 @@ export class PreSignedUrlGenerator {
     return `https://${this.config.s3Bucket}.s3.${this.config.awsRegion}.amazonaws.com`;
   }
 
-  async generatePresignedS3Url(tokenId: string, method: 'PUT' | 'GET'): Promise<{ url: string; headers: HeaderBag }> {
+  async generatePresignedS3Url(id: string, method: 'PUT' | 'GET'): Promise<{ url: string; headers: HeaderBag }> {
     const credentials = this.config.awsCredentials;
 
     const signer = new S3RequestPresigner({
@@ -61,7 +61,8 @@ export class PreSignedUrlGenerator {
       sha256: Hash.bind(null, 'sha256'), // In Node.js
     });
     const baseUrl = this.generateAWSBaseUrl();
-    const url = parseUrl(`${baseUrl}/${tokenId}`);
+
+    const url = parseUrl(`${baseUrl}/${id}`);
 
     const signedUrl = await signer.presign(
       new HttpRequest({

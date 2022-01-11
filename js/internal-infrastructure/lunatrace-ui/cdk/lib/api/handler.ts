@@ -17,6 +17,7 @@
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { HeaderBag } from '@aws-sdk/types';
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
+import slugify from 'slugify';
 import { v4 as uuid } from 'uuid';
 import validate from 'validator';
 
@@ -130,12 +131,14 @@ export async function handler(
   const today = new Date();
   const recordId: string = uuid();
 
+  const sluggedMetadata: string = slugify(requestArgs.metadata);
+
   try {
     const result = await preSignedUrlGenerator.generatePresignedS3Url(
       `${encodeURIComponent(
         requestArgs.email
       )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURIComponent(
-        requestArgs.metadata
+        sluggedMetadata
       )}.json.gz`,
       'PUT'
     );
