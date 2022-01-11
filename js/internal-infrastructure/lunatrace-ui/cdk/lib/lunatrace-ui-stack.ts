@@ -63,7 +63,7 @@ export class LunatraceUiStack extends cdk.Stack {
       },
     });
 
-    bucket.grantWrite(apiHandler);
+    bucket.grantReadWrite(apiHandler);
 
     const lambdaGateway = new apigateway.LambdaRestApi(this, 'cli-api-endpoint', {
       handler: apiHandler,
