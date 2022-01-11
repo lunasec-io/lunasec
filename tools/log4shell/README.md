@@ -20,7 +20,8 @@ A CLI tool to identify and mitigate the impact of the [Log4Shell (CVE-2021-44228
 The available commands are:
 
 * `scan` - Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.
-* `patch` - Patches findings of libraries vulnerable toLog4Shell by removing the JndiLookup.class file from each.
+* `cloud-scan` - Automatically monitors for future vulnerabilities in your archives by uploading a list of dependencies to the LunaTrace Cloud. We'll email you the next time a major security incident happens that affects you.
+* `patch` - Patches findings of libraries vulnerable to Log4Shell by removing the JndiLookup.class file from each.
 * `livepatch` - Perform a live patch of a system by exploiting the log4shell vulnerability for immediate mitigation. The payload executed patches the running process to prevent further payloads from being able to be executed.
 
 ### Scanning
@@ -115,17 +116,18 @@ $ log4shell livepatch
 Read more about how this works [here](https://www.lunasec.io/docs/blog/log4shell-live-patch/).
 
 ## Building
-
-```
-docker build . -t log4shell
-docker run --network=host log4shell
-```
-
-or 
+For local builds:
 
 Make sure you have Maven installed, then:
 ```
-make build && ./log4shell
+make build
+./log4shell
+```
+
+To build with docker:
+```
+docker build . -t log4shell
+docker run --network=host log4shell
 ```
 
 ## Releases
