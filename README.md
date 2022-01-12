@@ -17,17 +17,32 @@
   <img src='docs/static/img/logo-black-text.svg' width='60%'>
 </p>
 
----
+# Software by LunaSec
 
-**For Log4Shell Information, please see our [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/)**
+We're a team of Security Engineers on a mission to make awesome Open Source Application Security tooling. It all lives
+in this repo. Here's a breakdown of everything we've built:
 
-_You can get the [Log4Shell logo](https://www.lunasec.io/docs/img/log4shell-logo.png) printed on a T-Shirt by [showing your support for LunaSec](https://github.com/sponsors/lunasec-io) (limit of first 30 people)._
+- *[Log4Shell CLI](./tools/log4shell)*: A small command line utility to scan for Log4Shell. Also supports patching JAR files against 
+ Log4Shell, scanning running processes on your system, and more. Follow our 
+ [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) for more context. *Status*: Production ready.
+- *[LunaTrace](./lunatrace)*: A more comprehensive scanner that helps you _react_ to security vulnerabilities faster (like Log4Shell)
+ by alerting you of vulnerabilities in your software, patching them automatically, and giving you an inventory of your
+ dependencies (including a Web UI and an optional LunaSec-operated Cloud backend). *Status*: Under active development.
+- *[LunaDefend](https://www.lunasec.io/docs/pages/overview/features/)*: An end-to-end suite of security software built 
+ around Tokenization designed to _proactively_ protect your sensitive data from being hacked, as well as providing an 
+ easier path towards compliance (SOC2, GDPR, PCI-DSS, etc). *Status*: Production ready.
+- *[Our Security Blog](https://www.lunasec.io/docs/blogs/)*: Our ramblings to the internet, including our series on
+ [Log4Shell](https://www.lunasec.io/docs/blog/tags/log-4-shell). It lives in this repo under `/docs/blog` if you feel 
+ like contributing!
 
----
+## LunaDefend
 
-LunaSec is a suite of security tools designed to protect sensitive data in web applications by adding just a few lines of code.
+LunaDefend is a suite of security tools designed to protect sensitive data in web applications by adding just a few 
+lines of code.
 
-- [What is LunaSec?](#what-is-lunasec)
+_This section on LunaDefend is moving into its own folder, as soon as we finish reorganizing everything into folders._
+
+- [What is LunaDefend?](#what-is-lunadefend)
 - [Live Demo](#live-demo)
 - [Documentation](https://www.lunasec.io/docs/)
 - [System Architecture](#system-architecture)
@@ -39,12 +54,11 @@ LunaSec is a suite of security tools designed to protect sensitive data in web a
 - [Contributing](#contributing)
 - [See Also](#see-also)
 
-## What is LunaSec?
+## What is LunaDefend?
 
-LunaSec is an end-to-end security system designed to protect your application by transparently encrypting sensitive
+LunaDefend is an end-to-end security system designed to protect your application by transparently encrypting sensitive
 data, from browser to database. It works seamlessly by storing your sensitive data and then giving you back a Token (a UUID) to retrieve data with
-later. LunaSec builds on that concept to offer many security and compliance
-features.
+later. LunaDefend builds on that concept to offer many security and compliance features.
 
 ### Features
 
@@ -73,7 +87,8 @@ You can read more [here](https://www.lunasec.io/docs/pages/overview/features/) a
 
 [Try the live demo.](https://app.lunasec.dev/) It's a simple web app that you
 can play with in your browser. Sign up for a new account and then submit some fake data in the secure inputs.
-Right-click and inspect secure elements on the page and watch network traffic to see LunaSec working behind-the-scenes to protect private data.
+Right-click and inspect secure elements on the page and watch network traffic to see LunaDefend working 
+behind-the-scenes to protect private data.
 
 Alternatively, you may also launch it locally with one command **if you have Node and Docker installed**:
 
@@ -81,8 +96,8 @@ Alternatively, you may also launch it locally with one command **if you have Nod
 npx @lunasec/cli start --env demo
 ```
 
-That will pull all the Docker containers and start the LunaSec demo app on your computer.  There are a lot of containers
-to run, so it may take a few minutes to finish starting up.
+That will pull all the Docker containers and start the LunaDefend demo app on your computer.  There are a lot of 
+containers to run, so it may take a few minutes to finish starting up.
 
 For a deeper dive into the Demo App, please see
 this [page](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) for a walkthrough of everything. All the
@@ -108,25 +123,27 @@ We've documented the components of the stack [here](https://www.lunasec.io/docs/
 
 ![LunaSec Architecture Diagram](docs/static/img/security-model-overview.svg)
 
-## Who is LunaSec for?
-LunaSec is designed to be used by anyone that needs to collect and store sensitive text or files in a production web application.
-Despite being built by Security Engineers, **LunaSec does not require security expertise to get started**.
+## Who is LunaDefend for?
+LunaDefend is designed to be used by anyone that needs to collect and store sensitive text or files in a production web
+application.
+Despite being built by Security Engineers, **LunaDefend does not require security expertise to get started**.
 It's designed to be used by ordinary Software Engineers and Developers.
 
 Reasons to use LunaSec:
 - **Security & Data Privacy Compliance**: [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) defines sensitive data include
   Name, Email, Phone Number, IP Address, Credit Cards, and [more](https://www.gdpreu.org/the-regulation/key-concepts/personal-data/#Examples_of_Personal_Information).
-  If you are subject to data privacy regulations and store any of that data, then LunaSec will help you achieve compliance more easily.
+  If you are subject to data privacy regulations and store any of that data, then LunaDefend will help you achieve compliance more easily.
 - **Data Leak Protection**: If you store data that needs to remain securely stored and private, then LunaSec will greatly
   increase your defenses against unauthorized data leaks.
-- **Data Inventory**: The centralized nature of LunaSec makes it easy to track and monitor what data you're storing,
+- **Data Inventory**: The centralized nature of LunaDefend makes it easy to track and monitor what data you're storing,
   who and when it's used, and help you enforce access controls around that data.
 
 The LunaSec stack spans from the front-end to the back-end of your application and works alongside your existing code to
-keep your data encrypted and secure. To get started, please check out the steps below (["Trying LunaSec in 1 minute"](#trying-lunasec-in-1-minute)).
+keep your data encrypted and secure. To get started, please check out the steps below 
+(["Trying LunaDefend in 1 minute"](#trying-lunadefend-in-1-minute)).
 
-## How does LunaSec work?
-LunaSec is similar to a [safety deposit box](https://en.wikipedia.org/wiki/Safe_deposit_box) that holds your sensitive data. 
+## How does LunaDefend work?
+LunaDefend is similar to a [safety deposit box](https://en.wikipedia.org/wiki/Safe_deposit_box) that holds your sensitive data. 
 Each piece of data gets a unique box, a unique key to unlock it, and a unique number to identify each box by. These 
 boxes are then securely stored inside a bank vault that only a banker with special permissions has access to. 
 Accessing the box requires proof of ownership and the key to unlock the box. 
@@ -141,9 +158,9 @@ bank. One is useless without the other.
 That's the core value that LunaSec provides for you. LunaSec runs the bank, hires the bankers, and keeps your boxes 
 secure. You just have to provide the data and keep track of the keys to access it.
 
-We've designed LunaSec to mitigate many common security vulnerabilities that developers face. Each component of the 
-LunaSec stack is designed to provide protection against specific attack scenarios. Please read more about the security 
-of LunaSec [here](https://www.lunasec.io/docs/pages/overview/security/levels/).
+We've designed LunaDefend to mitigate many common security vulnerabilities that developers face. Each component of the
+LunaDefend stack is designed to provide protection against specific attack scenarios. Please read more about the security 
+of LunaDefend [here](https://www.lunasec.io/docs/pages/overview/security/levels/).
 
 ## Custom Support from the LunaSec Team
 We offer paid support, onboarding, and additional enterprise features for LunaSec to help you reach your security or 
@@ -158,10 +175,10 @@ If you're interested, [please send us a message](https://www.lunasec.io/contact)
 </p>
 
 ## Deploying LunaSec
-LunaSec is _self hosted_. In order to use LunaSec in your production environment, you will need to host a copy yourself. We built a
+LunaDefend is _self hosted_. In order to use LunaDefend in your production environment, you will need to host a copy yourself. We built a
 deployment CLI tool to make this easy. Currently, LunaSec only deploys to AWS. LunaSec will work with an app that is hosted on other platforms, you just need to have an AWS account for LunaSec to deploy to.
 
-To get started deploying LunaSec, please see our docs [here](https://www.lunasec.io/docs/pages/deployment/deploy-with-aws/).
+To get started deploying LunaDefend, please see our docs [here](https://www.lunasec.io/docs/pages/deployment/deploy-with-aws/).
 
 ## Need Help?
 If you find yourself stuck, you're missing a feature, or you just want to clear up some confusion, then please head over
@@ -288,7 +305,7 @@ Under the hood, the release process is split up into four parts:
 
 Breaking this process up ensures that every part completes without error before moving onto the next step. This greatly reduces the event that some artifacts get published and others do not, leading to a headache of a time debugging a release.
 
-Deployment of the releases is done by Github Actions.
+Deployment of the releases is done by GitHub Actions.
 ## Version
 Versioning for releases is done by lerna.
 ## Compile
