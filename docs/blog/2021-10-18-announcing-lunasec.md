@@ -7,7 +7,7 @@ authors:
   title: Founder of LunaSec
   url: https://github.com/freeqaz
   image_url: https://github.com/freeqaz.png
-  tags: [releases, lunasec]
+tags: [releases, lunasec]
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
