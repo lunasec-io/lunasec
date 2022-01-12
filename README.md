@@ -17,7 +17,7 @@
   <img src='docs/static/img/logo-black-text.svg' width='60%'>
 </p>
 
-# Software in this Repo
+# Our Software
 
 We're a team of Security Engineers on a mission to make awesome Open Source Application Security tooling. It all lives
 in this repo. Here's a breakdown of everything we've built.
