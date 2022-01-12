@@ -22,16 +22,19 @@
 We're a team of Security Engineers on a mission to make awesome Open Source Application Security tooling. It all lives
 in this repo. Here's a breakdown of everything we've built.
 
-- *[Log4Shell CLI](./tools/log4shell)*: A small command line utility to scan for Log4Shell. Also supports patching JAR files against 
+- **[Log4Shell CLI](./tools/log4shell)**: A small command line utility to scan for Log4Shell. Also supports patching JAR files against 
  Log4Shell, scanning running processes on your system, and more. Follow our 
- [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) for more context. *Status*: Production ready.
-- *[LunaTrace](./lunatrace)*: A more comprehensive scanner that helps you _react_ to security vulnerabilities faster (like Log4Shell)
+ [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) for more context. 
+    - **Status**: Production ready.
+- **[LunaTrace](./lunatrace)**: A more comprehensive scanner that helps you _react_ to security vulnerabilities faster (like Log4Shell)
  by alerting you of vulnerabilities in your software, patching them automatically, and giving you an inventory of your
- dependencies (including a Web UI and an optional LunaSec-operated Cloud backend). *Status*: Under active development.
-- *[LunaDefend](https://www.lunasec.io/docs/pages/overview/features/)*: An end-to-end suite of security software built 
+ dependencies (including a Web UI and an optional LunaSec-operated Cloud backend).
+    - **Status**: Under active development.
+- **[LunaDefend](https://www.lunasec.io/docs/pages/overview/features/)**: An end-to-end suite of security software built 
  around Tokenization designed to _proactively_ protect your sensitive data from being hacked, as well as providing an 
- easier path towards compliance (SOC2, GDPR, PCI-DSS, etc). *Status*: Production ready.
-- *[Our Security Blog](https://www.lunasec.io/docs/blogs/)*: Our ramblings to the internet, including our series on
+ easier path towards compliance (SOC2, GDPR, PCI-DSS, etc).
+    - **Status**: Production ready.
+- **[Our Security Blog](https://www.lunasec.io/docs/blogs/)**: Our ramblings to the internet, including our series on
  [Log4Shell](https://www.lunasec.io/docs/blog/tags/log-4-shell). It lives in this repo under `/docs/blog` if you feel 
  like contributing!
 
