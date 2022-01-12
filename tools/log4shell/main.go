@@ -111,6 +111,37 @@ func main() {
 				},
 			},
 			{
+				Name:    "cloud-scan",
+				Aliases: []string{"c"},
+				Usage:   "Scan and report dependencies as a Software Bill of Materials (SBOM) for project. An automatic alert will be when security vulnerabilities are detected to be present in this project. This command will attempt to automatically determine what project the SBOM belongs to by looking for the presence of a git repository. If not found, then a project name must be provided manually.",
+				Before:  setGlobalBoolFlags,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "email",
+						Usage: "Email to send dependency report results to.",
+					},
+					&cli.StringFlag{
+						Name:  "application-name",
+						Usage: "Name of the application to report the SBOM belonging to.",
+					},
+					&cli.StringFlag{
+						Name:  "output",
+						Usage: "File to write scan results to.",
+					},
+					&cli.StringSliceFlag{
+						Name:  "excluded",
+						Usage: "Excluded dirs from scanning.",
+					},
+					&cli.BoolFlag{
+						Name:  "skip-upload",
+						Usage: "Skip uploading collected dependencies.",
+					},
+				},
+				Action: func(c *cli.Context) error {
+					return commands.CloudScanCommand(c, globalBoolFlags)
+				},
+			},
+			{
 				Name:    "scan",
 				Aliases: []string{"s"},
 				Usage:   "Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.",
