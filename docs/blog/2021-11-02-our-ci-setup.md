@@ -7,7 +7,7 @@ authors:
   title: Developer at Lunasec
   url: https://github.com/factoidforrest
   image_url: https://github.com/factoidforrest.png
-  tags: [ci, github-actions, docker.sock]
+tags: [ci, github-actions, docker.sock]
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
