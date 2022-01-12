@@ -129,7 +129,7 @@ prorating for downgrades in between billing cycles. Downgrading your Service may
 of your User Account. LunaSec does not accept any liability for such loss.
 
 (d) Cancellation and Termination by You: You are solely responsible for properly canceling your User Account. Please
-email support@refinery.io to cancel your account. If you cancel your User Account before the end of your current paid up
+email support@lunasec.io to cancel your account. If you cancel your User Account before the end of your current paid up
 month, your cancellation will take effect immediately, and you will not be charged again. Please note that we do not
 provide refunds for unused time in the last billing cycle.
 
@@ -194,10 +194,10 @@ Service and to otherwise have User Content used as part of the Service or as oth
 (i) Data Processing Addendum: If you are a paying subscriber to the Service, to the extent that LunaSec processes any
 Personal Information (as defined in the DPA) contained in User Content that is subject to the GDPR (as defined in the
 DPA), on your behalf, in the provision of the Service, the terms of the data processing addendum
-at http://www.refinery.io/dpa/ ("DPA"), which are hereby incorporated by reference, shall apply and the parties agree to
-comply with such terms. For the purposes of the Standard Contractual Clauses attached to the DPA, when you are the data
-exporter, your agreeing to these Terms of Service shall be treated as signing of the DPA, including, without limitation,
-the Standard Contractual Clauses and their Appendices.
+at http://www.lunasec.io/dpa/ or by request to contact@lunasec.io ("DPA"), which are hereby incorporated by reference,
+shall apply and the parties agree to comply with such terms. For the purposes of the Standard Contractual Clauses
+attached to the DPA, when you are the data exporter, your agreeing to these Terms of Service shall be treated as signing
+of the DPA, including, without limitation, the Standard Contractual Clauses and their Appendices.
 
 (j) Your Posts: The Site and Service include functionality that permits users to post content, images, audio files,
 text, sample code or other materials or works in a manner that is intended to be viewed by other users ("Your Posts"),
@@ -316,8 +316,8 @@ LunaSec may give notice applicable to LunaSec's general Service customer base by
 Service portal, and notices specific to you by electronic mail to your e-mail address on record in your User Account or
 by written communication sent by first class mail or pre-paid post to your address on record in your User Account. If
 you have a dispute with LunaSec, wish to provide a notice under these Terms of Service, or become subject to insolvency
-or other similar legal proceedings, you must promptly send written notice to LunaSec at Refinery Labs, Inc., 
-610 NEWPORT CENTER DR, NEWPORT BEACH, CA, 92660-6419, UNITED STATES; Attn: Legal.
+or other similar legal proceedings, you must promptly send written notice to LunaSec at Refinery Labs, Inc., 610 NEWPORT
+CENTER DR, NEWPORT BEACH, CA, 92660-6419, UNITED STATES; Attn: Legal.
 
 ### General
 
