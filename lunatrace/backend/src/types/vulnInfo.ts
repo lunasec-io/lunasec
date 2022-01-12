@@ -15,6 +15,7 @@
  *
  */
 export interface PkgInfo {
+  vulnerability_name_namespaced: string;
   pkg_name: string;
   version_constraint: string;
   version_format: string;
@@ -29,7 +30,6 @@ export interface VulnInfo {
   namespace: string;
   name_namespaced: string;
   related_vulnerabilities: string;
-  pkgs: PkgInfo[];
   data_source: string;
   record_source: string;
   severity: string;

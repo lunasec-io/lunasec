@@ -1,10 +1,6 @@
 table:
   name: vulnerabilities
   schema: public
-object_relationships:
-- name: vulnerability
-  using:
-    foreign_key_constraint_on: related_vulnerability_id
 array_relationships:
 - name: findings
   using:
@@ -13,6 +9,13 @@ array_relationships:
       table:
         name: findings
         schema: public
+- name: packages
+  using:
+    foreign_key_constraint_on:
+      column: vulnerability_name_namespaced
+      table:
+        name: vulnerability_packages
+        schema: public
 - name: secondary_finding_vulnerabilities
   using:
     foreign_key_constraint_on:
@@ -20,19 +23,19 @@ array_relationships:
       table:
         name: secondary_finding_vulnerability
         schema: public
-- name: vulnerabilities
-  using:
-    foreign_key_constraint_on:
-      column: related_vulnerability_id
-      table:
-        name: vulnerabilities
-        schema: public
 select_permissions:
 - permission:
     columns:
-    - name
     - created_at
+    - data_source
+    - description
     - id
-    - related_vulnerability_id
+    - name
+    - name_namespaced
+    - namespace
+    - record_source
+    - related_vulnerabilities
+    - severity
+    - urls
     filter: {}
   role: user

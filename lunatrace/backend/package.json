@@ -5,6 +5,7 @@
     "start": "yarn run ts-node-dev --trace-warnings --files ./src/server.ts",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
     "test:vulnerability": "yarn run ts-node --files ./src/tests/local-load-vulnerabilities-test.ts",
+    "test:update": "yarn run ts-node --files ./src/tests/upsert-vulns.ts",
     "start:prod": "yarn run compile && pm2-runtime start ./build/server.js --name demo-back-end",
     "compile": "yarn run tsc -p tsconfig.json",
     "migrate": "yarn run node-pg-migrate --tsconfig ./tsconfig.json"
