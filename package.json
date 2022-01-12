@@ -13,7 +13,7 @@
     "@typescript-eslint/parser": "^5.6.0",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^9.1.0",
-    "eslint": "^8.4.1",
+    "eslint": "8.5.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-comments": "^1.0.0",
@@ -37,7 +37,7 @@
     "uuid": "^8.3.2"
   },
   "dependenciesMeta": {
-    "@aws-cdk/aws-lambda-nodejs": {
+    "eslint@8.5.0": {
       "unplugged": true
     }
   },
@@ -89,7 +89,10 @@
       "./docs",
       "./js/sdks",
       "./js/internal-infrastructure/lunatrace-ui/cdk",
-      "./js/internal-infrastructure/s3-redirect-generator"
+      "./js/internal-infrastructure/s3-redirect-generator",
+      "./js/internal-infrastructure/metrics-server-backend",
+      "./lunatrace/frontend",
+      "./lunatrace/backend"
     ]
   },
   "packageManager": "yarn@3.1.1"
