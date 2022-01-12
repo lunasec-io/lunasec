@@ -1,3 +1,7 @@
+---
+id: "terms-of-service"
+title: "Legal - Terms of Service"
+---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
   ~
@@ -11,10 +15,6 @@
   ~ limitations under the License.
   ~
 -->
----
-id: "terms-of-service"
-title: "Legal - Terms of Service"
----
 
 ----------------------
 
