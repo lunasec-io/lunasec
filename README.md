@@ -17,10 +17,10 @@
   <img src='docs/static/img/logo-black-text.svg' width='60%'>
 </p>
 
-# Software by LunaSec
+# Software in this Repo
 
 We're a team of Security Engineers on a mission to make awesome Open Source Application Security tooling. It all lives
-in this repo. Here's a breakdown of everything we've built:
+in this repo. Here's a breakdown of everything we've built.
 
 - *[Log4Shell CLI](./tools/log4shell)*: A small command line utility to scan for Log4Shell. Also supports patching JAR files against 
  Log4Shell, scanning running processes on your system, and more. Follow our 
