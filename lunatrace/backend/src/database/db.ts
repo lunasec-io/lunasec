@@ -15,14 +15,18 @@
  *
  */
 import config from 'config';
-import pgp from 'pg-promise';
+import * as pgPromise from 'pg-promise';
+import { IDatabase, IMain } from 'pg-promise';
 
 const dbConfig = config.get('db');
 
 const conf = { ...(dbConfig as Record<string, any>) };
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export const db = pgp(conf);
+
+const pgp: IMain = pgPromise({});
+
+export const db: IDatabase<any> = pgp(conf);
 
 // export function closeDb(_req: Request, _res: Response, next: () => {}) {
 //   db.$pool.end();

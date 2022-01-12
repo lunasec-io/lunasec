@@ -26,7 +26,9 @@
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
-export interface Vulnerabilities {
+import {GrypeMeta} from "./grypeVulnerabilityMetadata";
+
+export interface GrypeVuln {
   pk: number;
   id: string;
   package_name: string;
@@ -38,6 +40,7 @@ export interface Vulnerabilities {
   fixed_in_versions: string;
   fix_state: FixState;
   advisories: string;
+  metadata?: GrypeMeta;
 }
 
 export enum FixState {
@@ -132,15 +135,15 @@ export enum VersionFormat {
 // Converts JSON strings to/from your types
 // and asserts the results of JSON.parse at runtime
 export class Convert {
-  public static toVulnerabilities(json: string): Vulnerabilities[] {
+  public static toVulnerabilities(json: string): GrypeVuln[] {
     return cast(JSON.parse(json), a(r('Vulnerabilities')));
   }
 
-  public static jsonBlobToVulnerabilities(obj: Record<string, unknown>): Vulnerabilities[] {
+  public static jsonBlobToVulnerabilities(obj: Record<string, unknown>): GrypeVuln[] {
     return cast(obj, a(r('Vulnerabilities')));
   }
 
-  public static vulnerabilitiesToJson(value: Vulnerabilities[]): string {
+  public static vulnerabilitiesToJson(value: GrypeVuln[]): string {
     return JSON.stringify(uncast(value, a(r('Vulnerabilities'))), null, 2);
   }
 }
