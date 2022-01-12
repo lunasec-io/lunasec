@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "@aws-sdk/credential-provider-node": "^3.46.0",
+    "@aws-sdk/hash-node": "^3.46.0",
+    "@aws-sdk/protocol-http": "^3.46.0",
+    "@aws-sdk/s3-request-presigner": "^3.46.0",
+    "@aws-sdk/types": "^3.46.0",
+    "@aws-sdk/url-parser": "^3.46.0",
+    "@aws-sdk/util-format-url": "^3.46.0",
+    "@types/aws-lambda": "^8.10.89",
+    "@types/node": "10.17.27",
+    "@types/uuid": "^8.3.1",
+    "@types/validator": "^13.7.1",
+    "aws-lambda": "^1.0.7",
+    "slugify": "^1.6.5",
+    "source-map-support": "^0.5.16",
+    "typescript": "~3.9.7",
+    "validator": "^13.7.0"
+  }
+}
