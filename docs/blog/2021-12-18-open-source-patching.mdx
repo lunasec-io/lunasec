@@ -24,7 +24,7 @@ authors: [forrest, free]
 
 The worldwide scramble to fix the Log4Shell vulnerability has resulted in a number of paths to resolution without a single
 trusted, clear, and concise recommendation. Ever since our initial report on the Log4Shell vulnerability, we have made
-countless updates to our posts over the past week as more information is uncovered and new vulnerabilities are found.
+countless updates to our posts over the past week as more information has been uncovered and new vulnerabilities are found.
 Ideally, the narrative would be much clearer for a library which is [so widely used](https://www.contrastsecurity.com/security-influencers/log4shell-by-the-numbers?utm_campaign=WD-Log4jOffer-Q4FY22&utm_content=191438199&utm_medium=social&utm_source=twitter&hss_channel=tw-453210489).
 
 We feel that the chaos which has followed the initial report of the Log4Shell vulnerability started with how the public patching
@@ -33,9 +33,9 @@ patching process properly, using the Log4Shell incident as a retrospective.
 
 <!--truncate-->
 
-Maybe some are more careful than others, but something like Log4Shell could happen to many of us who work in the Open Source world.
+While some developers are more careful than others, something like Log4Shell could happen to many of us who work in the Open Source world.
 Putting aside vulnerability prevention for a moment, let's talk about what to do when you find out that you released something insecure.
-Staying calm and knowing what to do when the time comes could save a lot of damage down the road.
+Staying calm and knowing what to do when the time comes could prevent a lot of damage down the road.
 
 ### Things they don't teach you in school
 As a "normal" developer who works alongside security engineers, I hear them mention all kinds of best practices that I've never heard of.
@@ -43,7 +43,7 @@ It turns out that how to properly deal with vulnerabilities in a project you use
 right down to what you say on GitHub, can be just as important as the patch itself.
 
 Log4j is a great case study because even though people had the best intentions, things went catastrophically wrong. At the
-center of the story we have a couple of developers donating their spare time, doing their best. This is absolutely not
+center of the story we have a couple of developers donating their spare time, and doing their best. This is absolutely not
 meant to be a hit piece against them or Open Source software, but instead a guide to help the next person handle things the right way.
 Together, let's learn how to do this properly.
 
@@ -52,9 +52,9 @@ Together, let's learn how to do this properly.
 Finding a vulnerability in a project and contributing a fix can be pretty exciting. Unfortunately, the fact
 that something is being patched can reveal to outsiders that a vulnerability must have existed in the first place.
 It's trivially easy to write a webcrawler that looks through GitHub for the words
-"vulnerability", "security", "injection", "exploit", etc...
+"vulnerability", "security", "injection", "exploit", etc,
 and find a package where the last version, if not the current one, has a vulnerability ready to be turned into an exploit.
-Those crawlers are up and running _right now_, reading your comments and looking for the next 0day.
+Those crawlers are up and running _right now_, reading your comments and looking for the next 0-day.
 
 ## It's about being discreet
 
@@ -62,21 +62,21 @@ Those crawlers are up and running _right now_, reading your comments and looking
 
 How the vulnerability first gets reported is critical. In the case of Log4j, contrary to what you might think,
 it looks like everything went right. According to the Log4Shell [Wikipedia page](https://en.wikipedia.org/wiki/Log4Shell), the vulnerability was reported
-*privately* to the apache team way back on November 24th by Chen Zhaojun of
+*privately* to the Apache team way back on November 24th by Chen Zhaojun of
 Alibaba Cloud Security Team.
 
 If you are someone spotting a vulnerability for the first time, this is exactly what you should do.
-We can also see that Mitre site created the CVE, **in private**, two days later, november 26th.
+We can also see that the Mitre site created the CVE, **in private**, two days later, on November 26th.
 
 ![Picture of CVE date](/img/cve-date.png)
 
 Up until this point, it was security professionals following a well documented practice called [Responsible Disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure).
-Let's move on to what happened next:
+Let's move on to what happened next.
 
 ### Patching the vulnerability
 
 Often just the nature of the patch can alert those who know what to look for, even without
-anyone spelling out that it's a vulnerability.
+anyone spelling out that it's for a vulnerability.
 
 Let's look at the first [Log4j PR](https://github.com/apache/logging-log4j2/pull/608).
 
@@ -93,11 +93,11 @@ have been enough to attract bad actors.
 
 ![person on github asking publicly if its a vuln](/img/security-question-log4j.png)
 
-Cat's out of the bag. It's almost certain this PR, made with the best intentions, made things far worse.
+The cat's out of the bag. It's almost certain this PR, made with the best intentions, made things far worse.
 
 In the end, the vulnerability went public before Log4j was ready to ship a fix, and they were left scrambling.
 Their first release of version `2.15.0`, which much of the community installed, [proved to still have issues](https://www.lunasec.io/docs/blog/log4j-zero-day-severity-of-cve-2021-45046-increased/).
-They had to release a second patch in `2.16.0` which we seriously hope is seeing widespread adoption.
+They had to release a second patch in `2.16.0`, which we seriously hope is seeing widespread adoption.
 
 ## How to do it right
 
@@ -106,13 +106,13 @@ Open source software is public, which means eventually the patch will need to be
 when we are as ready for it as possible, **not before**, so:
 
 #### Use GitHub's Security Advisories and Temporary Private Forks
-Developers will need a private space to work on a patch and get ready before that happens.
+Developers will need a private space to work on a patch and get ready before its release.
 This will give them space to make the change, discuss it, prepare a release, and get documentation ready.
 
 GitHub actually has a new
 built-in feature for this scenario, called a [Github Security Advisory](https://docs.github.com/en/code-security/security-advisories/creating-a-security-advisory).
 This tooling walks you through the process of creating a private space to talk about the issue.  It can link to or create a CVE, notify your users when the time comes,
-and even helps you create a linked [Temporary Private Fork](https://docs.github.com/en/code-security/security-advisories/collaborating-in-a-temporary-private-fork-to-resolve-a-security-vulnerability)
+and even help you create a linked [Temporary Private Fork](https://docs.github.com/en/code-security/security-advisories/collaborating-in-a-temporary-private-fork-to-resolve-a-security-vulnerability)
 in which to work. You should absolutely use this feature and make a private fork.
 CI won't run in this fork which means you will need to be careful and test locally, but this is worth the trade-off for privacy.
 
@@ -121,32 +121,32 @@ CI won't run in this fork which means you will need to be careful and test local
 As the maintainer, it's also your responsibility to request a CVE.  GitHub is a CVE Numbering Authority, meaning you can create a
 CVE through them.  [Request a CVE](https://docs.github.com/en/code-security/security-advisories/about-github-security-advisories#cve-identification-numbers)
 from the Security Advisory you created above. Being a part of the process helps make sure the CVE is accurate and not confusing
-or mis-categorized like some log4j CVEs were.
+or miscategorized like some log4j CVEs were.
 
-Ideally, a security person will be brought into this private process to audit the change, if you can get one. Side note: We are considering
+Ideally, a security person will be brought into this private process to audit the change- if you can get one. Side note: We are considering
 founding a non-profit to give projects this help, and if that's something you'd like to see please [let us know](https://docs.google.com/forms/d/e/1FAIpQLSd1yaB-3ob4yNnHBDzmFvrnl0VyViT234kpdcvadX-9G2M3eQ/viewform?usp=sf_link).
 
 Once a release has been drafted, this is an excellent time to bring in some of your biggest users to try it out. This has
-the benefit of testing your patch, getting more eyes on the problem, and making sure those consumers have their
+the benefit of testing your patch, getting more eyes on the problem, and making sure these consumers have their
 own patched releases ready to go. Let them know they should do this work in private.
 
-In the case of Apache, it would have been better if the biggest users of log4j (like Apache Struts) were alerted privately. They could have
+In the case of Apache, it would have been better if the biggest users of log4j (like Apache Struts), were alerted privately. They could have
 had their own privately prepared releases ready to go public when log4shell did.
 
 In summary, doing it in private gives space and time to go through and fix things properly. Use GitHub's built-in tool to help
 you manage the process.
 
 ### Step 2: Release Simultaneously
-Now it's time to rip the bandage off. Merge all changes, releases, and documentation at the same time. Publish the GitHub
+Now it's time to rip the band-aid off. Merge all changes, releases, and documentation at the same time. Publish the GitHub
 Security Advisory you created above.  Coordinate with any consumers
-that took your change early.  This process is called **coordinated disclosure**.
+that received your change early.  This process is called **coordinated disclosure**.
 
 Hopefully the documentation and Security Advisory contain all the information needed by users to patch the change, right away.
-Generally, this is just explaining the vulnerability and pointing to the new release.
+Generally, these just explain the vulnerability and point to the new release.
 
-Making noise and getting the word out about the vulnerability is going to make for more people updating.
+Making noise and getting the word out about the vulnerability is going to result in more people updating.
 In the case of larger projects and more serious vulnerabilities, it might be a good idea to contact the press directly.
-This can help you keep a handle on the reporting and let you control the narrative around how to fix it.
+This can help you keep a handle on the reporting, and let you control the narrative around how to fix the vulnerability.
 
 ## Educate your contributors
 The above process is something that your contributors need to know about ahead of time. Personally, I would recommend a short warning
@@ -166,7 +166,7 @@ It might not be a bad idea to link to this blog post or the resources below if y
 Maybe if that had happened with log4j, it would have been handled differently.
 
 ## Other resources
-* GitHub's guide on [coordinated disclosure](https://docs.github.com/en/code-security/security-advisories/about-coordinated-disclosure-of-security-vulnerabilities)
+* GitHub has a guide on [coordinated disclosure](https://docs.github.com/en/code-security/security-advisories/about-coordinated-disclosure-of-security-vulnerabilities).
 * Google has compiled a very good but little-known [comprehensive guide](https://github.com/google/oss-vulnerability-guide) on dealing with exactly these situations. Big thank you to them for publishing this.
 * OpenSSF has a [Vulnerability Disclosures Working Group](https://github.com/ossf/wg-vulnerability-disclosures) that works to improve vulnerability disclosures in Open Source Software.
 
