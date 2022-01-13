@@ -33,8 +33,7 @@ dynamic analysis, and live-patching into an enterpise-grade vulnerability soluti
  around Tokenization designed to _proactively_ protect your sensitive data from being hacked, as well as providing an 
  easier path towards compliance (SOC2, GDPR, PCI-DSS, etc).
     - **Status**: Production ready.
-- **[Our Security Blog](https://www.lunasec.io/docs/blogs/)**: Our ramblings to the internet, including our series on
- [Log4Shell](https://www.lunasec.io/docs/blog/tags/log-4-shell). It lives in this repo under `/docs/blog` if you feel 
+- **[Our Security Blog](https://www.lunasec.io/docs/blog/)**: Our ramblings to the internet. This is where we broke the news about the log4j vulnerability and gave it the name [Log4Shell](https://www.lunasec.io/docs/blog/tags/log-4-shell).  The blog lives in this repo under `/docs/blog` if you feel 
  like contributing!
 
 ## LunaDefend
