@@ -21,10 +21,6 @@ import pgPromise from 'pg-promise';
 const dbConfig = config.get('db');
 
 const conf = { ...(dbConfig as Record<string, any>) };
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-
-// const pgp: IMain = pgPromise({});
 
 export const pgp = pgPromise({
   /* initialization options */

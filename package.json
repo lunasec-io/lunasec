@@ -36,6 +36,11 @@
     "typescript": "^4.4.2",
     "uuid": "^8.3.2"
   },
+  "dependenciesMeta": {
+    "eslint@8.5.0": {
+      "unplugged": true
+    }
+  },
   "homepage": "https://github.com/lunasec-io/lunasec#readme",
   "license": "Apache-2.0",
   "name": "lunasec",
@@ -83,15 +88,11 @@
       "./js/demo-apps/packages/*",
       "./docs",
       "./js/sdks",
+      "./js/internal-infrastructure/lunatrace-ui/cdk",
       "./js/internal-infrastructure/s3-redirect-generator",
       "./js/internal-infrastructure/metrics-server-backend",
       "./lunatrace/*"
     ]
   },
-  "packageManager": "yarn@3.1.1",
-  "dependenciesMeta": {
-    "eslint@8.5.0": {
-      "unplugged": true
-    }
-  }
+  "packageManager": "yarn@3.1.1"
 }

