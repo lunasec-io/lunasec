@@ -1,0 +1,73 @@
+table:
+  name: projects
+  schema: public
+object_relationships:
+- name: organization
+  using:
+    foreign_key_constraint_on: organization_id
+- name: setting
+  using:
+    foreign_key_constraint_on: settings_id
+array_relationships:
+- name: scans
+  using:
+    foreign_key_constraint_on:
+      column: project_id
+      table:
+        name: scans
+        schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      organization:
+        organization_users:
+          user:
+            id:
+              _eq: X-Hasura-User-Id
+    columns:
+    - name
+    - organization_id
+    - repo
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - name
+    - organization_id
+    - repo
+    filter:
+      organization:
+        organization_users:
+          user:
+            id:
+              _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check:
+      organization:
+        organization_users:
+          user:
+            id:
+              _eq: X-Hasura-User-Id
+    columns:
+    - name
+    - organization_id
+    - repo
+    filter:
+      organization:
+        organization_users:
+          user:
+            id:
+              _eq: X-Hasura-User-Id
+  role: user
+delete_permissions:
+- permission:
+    filter:
+      organization:
+        organization_users:
+          user:
+            id:
+              _eq: X-Hasura-User-Id
+  role: user

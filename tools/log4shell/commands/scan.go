@@ -18,9 +18,62 @@ import (
 	"github.com/lunasec-io/lunasec/tools/log4shell/findings"
 	"github.com/lunasec-io/lunasec/tools/log4shell/scan"
 	"github.com/lunasec-io/lunasec/tools/log4shell/types"
+	"github.com/prometheus/procfs"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+	"runtime"
 )
+
+func scanSystemProcesses(scanner scan.Log4jVulnerableDependencyScanner) (scannerFindings []types.Finding, err error) {
+	os := runtime.GOOS
+    switch os {
+    case "linux":
+    	break
+    default:
+    	log.Error().Msg("unsupported OS for system process scanning")
+    	return
+    }
+
+	fs, err := procfs.NewFS("/proc")
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("Unable to setup procfs")
+		return
+	}
+
+	procs, err := fs.AllProcs()
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("Unable to get all processes")
+		return
+	}
+
+	for _, proc := range procs {
+		var targets []string
+
+		targets, err = proc.FileDescriptorTargets()
+		if err != nil {
+			log.Debug().
+				Int("proc", proc.PID).
+				Err(err).
+				Msg("Unable to process file descriptor targets")
+			continue
+		}
+
+		processFindings := scanner.ScanFiles(targets)
+		if len(processFindings) > 0 {
+			log.Debug().
+				Int("proc", proc.PID).
+				Strs("targets", targets).
+				Msg("Findings present in process file targets")
+		}
+
+		scannerFindings = append(scannerFindings, processFindings...)
+	}
+	return
+}
 
 func scanDirectoriesForVulnerableLibraries(
 	c *cli.Context,
@@ -36,6 +89,7 @@ func scanDirectoriesForVulnerableLibraries(
 	excludeDirs := c.StringSlice("exclude")
 	versionHashes := c.String("version-hashes")
 	noFollowSymlinks := c.Bool("no-follow-symlinks")
+	scanProcesses := c.Bool("processes")
 
 	hashLookup, err := scan.LoadHashLookup(log4jLibraryHashes, versionHashes, onlyScanArchives)
 	if err != nil {
@@ -46,6 +100,10 @@ func scanDirectoriesForVulnerableLibraries(
 
 	scanner := scan.NewLog4jDirectoryScanner(
 		excludeDirs, onlyScanArchives, noFollowSymlinks, processArchiveFile)
+
+	if scanProcesses {
+		return scanSystemProcesses(scanner)
+	}
 
 	log.Info().
 		Strs("searchDirs", searchDirs).

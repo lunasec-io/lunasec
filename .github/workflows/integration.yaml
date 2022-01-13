@@ -98,7 +98,11 @@ jobs:
       run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo --local-build --env=tests --verbose
 
     - name: docker logs
+<<<<<<< HEAD
       if: ${{ always() }}
+=======
+      if: ${{ always()}}
+>>>>>>> origin/master
       run: .github/print-docker-logs.sh
       shell: bash
 
