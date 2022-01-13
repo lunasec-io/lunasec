@@ -1,6 +1,7 @@
 - "!include public_findings.yaml"
 - "!include public_organization_user.yaml"
 - "!include public_organizations.yaml"
+- "!include public_package_versions.yaml"
 - "!include public_projects.yaml"
 - "!include public_sboms.yaml"
 - "!include public_scans.yaml"

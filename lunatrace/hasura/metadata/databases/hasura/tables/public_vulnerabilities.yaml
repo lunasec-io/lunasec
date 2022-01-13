@@ -9,13 +9,6 @@ array_relationships:
       table:
         name: findings
         schema: public
-- name: packages
-  using:
-    foreign_key_constraint_on:
-      column: vulnerability_name_namespaced
-      table:
-        name: vulnerability_packages
-        schema: public
 - name: secondary_finding_vulnerabilities
   using:
     foreign_key_constraint_on:
@@ -31,11 +24,11 @@ select_permissions:
     - description
     - id
     - name
-    - name_namespaced
     - namespace
     - record_source
     - related_vulnerabilities
     - severity
-    - urls
+    - slug
+    - topic_id
     filter: {}
   role: user
