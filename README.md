@@ -26,9 +26,8 @@ in this repo. Here's a breakdown of everything we've built.
  Log4Shell, scanning running processes on your system, and more. Follow our 
  [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) for more context. 
     - **Status**: Production ready.
-- **[LunaTrace](./lunatrace)**: A more comprehensive scanner that helps you _react_ to security vulnerabilities faster (like Log4Shell)
- by alerting you of vulnerabilities in your software, patching them automatically, and giving you an inventory of your
- dependencies (including a Web UI and an optional LunaSec-operated Cloud backend).
+- **[LunaTrace](./lunatrace)**: A vulnerability scanner and web dashboard that tracks vulnerabilities in real-time. Combines static analysis,
+- dynamic analysis, and live-patching into an enterpise-grade vulnerability solution.
     - **Status**: Under active development.
 - **[LunaDefend](https://www.lunasec.io/docs/pages/overview/features/)**: An end-to-end suite of security software built 
  around Tokenization designed to _proactively_ protect your sensitive data from being hacked, as well as providing an 
