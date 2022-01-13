@@ -27,7 +27,7 @@ in this repo. Here's a breakdown of everything we've built.
  [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) for more context. 
     - **Status**: Production ready.
 - **[LunaTrace](./lunatrace)**: A vulnerability scanner and web dashboard that tracks vulnerabilities in real-time. Combines static analysis,
-- dynamic analysis, and live-patching into an enterpise-grade vulnerability solution.
+dynamic analysis, and live-patching into an enterpise-grade vulnerability solution.
     - **Status**: Under active development.
 - **[LunaDefend](https://www.lunasec.io/docs/pages/overview/features/)**: An end-to-end suite of security software built 
  around Tokenization designed to _proactively_ protect your sensitive data from being hacked, as well as providing an 
