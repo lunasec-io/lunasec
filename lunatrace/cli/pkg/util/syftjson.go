@@ -16,9 +16,9 @@ package util
 
 import (
 	"fmt"
-	"lunasec/log4shell/constants"
-	"lunasec/log4shell/types/model"
 	"log"
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/types/model"
 	"sort"
 	"strconv"
 

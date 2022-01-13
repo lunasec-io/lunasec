@@ -15,9 +15,9 @@
 package analyze
 
 import (
-	"lunasec/log4shell/constants"
-	"lunasec/log4shell/types"
-	"lunasec/log4shell/util"
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/types"
+	"lunasec/lunatrace/pkg/util"
 	"github.com/rs/zerolog/log"
 	"io"
 	"path"

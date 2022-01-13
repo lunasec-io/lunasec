@@ -14,4 +14,7 @@
 //
 package constants
 
-const Version = "1.6.0"
+const (
+	Log4ShellVersion = "1.6.0"
+	LunaTraceVersion = "1.0.0"
+)

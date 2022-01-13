@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package main
+package log4shell
 
 import (
-	"lunasec/log4shell/commands"
-	"lunasec/log4shell/constants"
-	"lunasec/log4shell/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/urfave/cli/v2"
+	"lunasec/lunatrace/pkg/commands"
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/util"
 	"os"
 )
 
@@ -77,7 +78,7 @@ func main() {
 				Email: "contact@lunasec.io",
 			},
 		},
-		Version:     constants.Version,
+		Version:     constants.Log4ShellVersion,
 		Description: "Identify code dependencies that are vulnerable to the log4shell vulnerability. Read more at https://log4shell.com.",
 		Before:      setGlobalBoolFlags,
 		Flags: []cli.Flag{
@@ -121,8 +122,8 @@ func main() {
 						Usage: "Email to send dependency report results to.",
 					},
 					&cli.StringFlag{
-						Name:  "application-name",
-						Usage: "Name of the application to report the SBOM belonging to.",
+						Name:  "application-id",
+						Usage: "Identifier of the application to report the SBOM belonging to.",
 					},
 					&cli.StringFlag{
 						Name:  "output",
@@ -138,7 +139,7 @@ func main() {
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return commands.CloudScanCommand(c, globalBoolFlags)
+					return commands.InventoryCommand(c, globalBoolFlags)
 				},
 			},
 			{

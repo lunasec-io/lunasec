@@ -1,13 +1,13 @@
 LOG4SHELL_BINARY_NAME=log4shell
 LUNATRACE_BINARY_NAME=lunatrace
 LUNATRACE_AGENT_BINARY_NAME=lunatrace-agent
-LIBRARY_HASHES=log4j-library-hashes.json
+LIBRARY_HASHES=cmd/log4shell/log4j-library-hashes.json
 
 payload:
 	cd ../patches/log4shell-livepatch/ && \
 	mvn package && \
 	cd - && \
-	cp ../patches/log4shell-livepatch/target/classes/Log4ShellHotpatch.class Log4ShellHotpatch.class
+	cp ../patches/log4shell-livepatch/target/classes/Log4ShellHotpatch.class cmd/log4shell/Log4ShellHotpatch.class
 
 bindir:
 	mkdir -p bin/

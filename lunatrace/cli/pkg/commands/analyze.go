@@ -15,9 +15,9 @@
 package commands
 
 import (
-	"lunasec/log4shell/analyze"
-	"lunasec/log4shell/findings"
-	"lunasec/log4shell/scan"
+	"lunasec/lunatrace/pkg/analyze"
+	"lunasec/lunatrace/pkg/findings"
+	"lunasec/lunatrace/pkg/scan"
 	"github.com/urfave/cli/v2"
 )
 

@@ -1,4 +1,4 @@
-// Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+// Copyright 2022 by LunaSec (owned by Refinery Labs, Inc)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,17 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-//go:build dev
+package lunatraceagent
 
-package main
-
-import (
-	"log"
-
-	"lunasec/lunadefend/pkg/tokenizer"
-)
+import "github.com/rs/zerolog"
 
 func main() {
-	server := tokenizer.NewLocalDevServer()
-	log.Fatal(server.ListenAndServe())
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 }

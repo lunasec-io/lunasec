@@ -19,20 +19,17 @@ import (
 	"errors"
 	"fmt"
 	"github.com/anchore/syft/syft/sbom"
-	"lunasec/log4shell/cloudscan"
-	"lunasec/log4shell/types/model"
-	"lunasec/log4shell/util"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"io/ioutil"
+	"lunasec/lunatrace/pkg/inventory"
+	"lunasec/lunatrace/pkg/types"
+	"lunasec/lunatrace/pkg/types/model"
+	"lunasec/lunatrace/pkg/util"
 )
 
-type CloudScanOutput struct {
-	Sboms []model.Document `json:"sboms"`
-}
-
 func writeCloudScanOutput(sboms []model.Document, output string) (err error) {
-	depOutput := CloudScanOutput{
+	depOutput := types.InventoryOutput{
 		Sboms: sboms,
 	}
 
@@ -58,7 +55,7 @@ func getSbomModels(sboms []*sbom.SBOM) (models []model.Document) {
 	return
 }
 
-func CloudScanCommand(c *cli.Context, globalBoolFlags map[string]bool) (err error) {
+func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool) (err error) {
 	enableGlobalFlags(c, globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
@@ -72,9 +69,10 @@ func CloudScanCommand(c *cli.Context, globalBoolFlags map[string]bool) (err erro
 
 	output := c.String("output")
 	email := c.String("email")
-	applicationName := c.String("application-name")
+	applicationId := c.String("application-id")
 	excludedDirs := c.StringSlice("excluded")
 	skipUpload := c.Bool("skip-upload")
+	uploadUrl := c.String("upload-url")
 
 	if email == "" {
 		err = errors.New("email required when performing cloud scan")
@@ -86,20 +84,20 @@ func CloudScanCommand(c *cli.Context, globalBoolFlags map[string]bool) (err erro
 
 	repoRemote, err := util.GetRepoRemote()
 	if err != nil {
-		if applicationName == "" {
+		if applicationId == "" {
 			err = fmt.Errorf("unable to automatically detect application name")
 			log.Error().
 				Err(err).
-				Msg("Unable to get application name. Please manually specify `--application-name` or run this command inside of a git repo.")
+				Msg("Unable to get application id. Please manually specify `--application-id` or run this command inside of a git repo.")
 			return
 		}
 	}
 
-	if applicationName == "" {
-		applicationName = repoRemote
+	if applicationId == "" {
+		applicationId = repoRemote
 	}
 
-	sboms, err := cloudscan.CollectSbomsFromSearchDirs(searchDirs, excludedDirs)
+	sboms, err := inventory.CollectSbomsFromSearchDirs(searchDirs, excludedDirs)
 	if err != nil {
 		return
 	}
@@ -118,6 +116,10 @@ func CloudScanCommand(c *cli.Context, globalBoolFlags map[string]bool) (err erro
 		return
 	}
 
-	err = cloudscan.UploadCollectedSboms(email, applicationName, sbomModels)
+	if uploadUrl != "" {
+		err = inventory.UploadCollectedSbomsToUrl(email, applicationId, sbomModels, uploadUrl, map[string]string{})
+		return
+	}
+	err = inventory.UploadCollectedSboms(email, applicationId, sbomModels)
 	return
 }

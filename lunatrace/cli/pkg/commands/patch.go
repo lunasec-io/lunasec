@@ -15,7 +15,7 @@
 package commands
 
 import (
-	"lunasec/log4shell/patch"
+	"lunasec/lunatrace/pkg/patch"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 )

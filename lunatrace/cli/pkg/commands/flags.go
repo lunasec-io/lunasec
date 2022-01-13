@@ -16,8 +16,8 @@ package commands
 
 import (
 	"fmt"
-	"lunasec/log4shell/constants"
-	"lunasec/log4shell/util"
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"

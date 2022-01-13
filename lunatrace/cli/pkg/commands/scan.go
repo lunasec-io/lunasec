@@ -15,9 +15,9 @@
 package commands
 
 import (
-	"lunasec/log4shell/findings"
-	"lunasec/log4shell/scan"
-	"lunasec/log4shell/types"
+	"lunasec/lunatrace/pkg/findings"
+	"lunasec/lunatrace/pkg/scan"
+	"lunasec/lunatrace/pkg/types"
 	"github.com/prometheus/procfs"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"

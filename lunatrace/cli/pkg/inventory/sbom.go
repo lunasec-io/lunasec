@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package cloudscan
+package inventory
 
 import (
 	"crypto"
@@ -23,8 +23,8 @@ import (
 	"github.com/anchore/syft/syft/pkg/cataloger"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/anchore/syft/syft/source"
-	"lunasec/log4shell/constants"
 	"github.com/rs/zerolog/log"
+	"lunasec/lunatrace/pkg/constants"
 )
 
 func getSbomForSearchDir(searchDir string, excludedDirs []string) (s *sbom.SBOM, err error) {

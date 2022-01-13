@@ -17,9 +17,9 @@ package commands
 import (
 	"embed"
 	"fmt"
-	"lunasec/log4shell/constants"
-	"lunasec/log4shell/patch"
-	"lunasec/log4shell/util"
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/patch"
+	"lunasec/lunatrace/pkg/util"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 )

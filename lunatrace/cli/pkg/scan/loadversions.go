@@ -17,7 +17,7 @@ package scan
 import (
 	"encoding/json"
 	"fmt"
-	"lunasec/log4shell/types"
+	"lunasec/lunatrace/pkg/types"
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	"strings"

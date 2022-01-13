@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package cloudscan
+package inventory
 
 import (
 	"bytes"
@@ -20,11 +20,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"lunasec/log4shell/constants"
-	"lunasec/log4shell/types"
-	"lunasec/log4shell/types/model"
-	"lunasec/log4shell/util"
 	"github.com/rs/zerolog/log"
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/types"
+	"lunasec/lunatrace/pkg/types/model"
+	"lunasec/lunatrace/pkg/util"
 	"net/http"
 	"net/url"
 )
@@ -104,24 +104,19 @@ func serializeAndCompressOutput(output types.SbomOutput) (buffer bytes.Buffer, e
 	return
 }
 
-func UploadCollectedSboms(email, applicationName string, sbomModels []model.Document) (err error) {
+func UploadCollectedSbomsToUrl(
+	email, applicationId string,
+	sbomModels []model.Document,
+	uploadUrl string,
+	uploadHeaders map[string]string,
+) (err error) {
 	output := types.SbomOutput{
-		Email:           email,
-		ApplicationName: applicationName,
-		Sboms:           sbomModels,
+		Email:         email,
+		ApplicationId: applicationId,
+		Sboms:         sbomModels,
 	}
 
 	serializedOutput, err := serializeAndCompressOutput(output)
-	if err != nil {
-		return
-	}
-
-	uploadSbomUrl, err := formatGenerateUploadUrl(email, applicationName)
-	if err != nil {
-		return
-	}
-
-	uploadUrl, uploadHeaders, err := generateUploadUrl(uploadSbomUrl)
 	if err != nil {
 		return
 	}
@@ -137,4 +132,17 @@ func UploadCollectedSboms(email, applicationName string, sbomModels []model.Docu
 		return
 	}
 	return
+}
+
+func UploadCollectedSboms(email, applicationId string, sbomModels []model.Document) (err error) {
+	uploadSbomUrl, err := formatGenerateUploadUrl(email, applicationId)
+	if err != nil {
+		return
+	}
+
+	uploadUrl, uploadHeaders, err := generateUploadUrl(uploadSbomUrl)
+	if err != nil {
+		return
+	}
+	return UploadCollectedSbomsToUrl(email, applicationId, sbomModels, uploadUrl, uploadHeaders)
 }

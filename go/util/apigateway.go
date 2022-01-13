@@ -18,7 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/awslabs/aws-lambda-go-api-proxy/core"
-	"github.com/lunasec-io/lunasec-monorepo/types"
+	"lunasec/lunadefend/types"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"

@@ -16,7 +16,7 @@ package findings
 
 import (
 	"encoding/json"
-	"lunasec/log4shell/types"
+	"lunasec/lunatrace/pkg/types"
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
 )
