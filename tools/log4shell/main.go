@@ -20,7 +20,6 @@ import (
 	"github.com/lunasec-io/lunasec/tools/log4shell/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/urfave/cli/v2"
 	"os"
 )
 
@@ -112,6 +111,37 @@ func main() {
 				},
 			},
 			{
+				Name:    "cloud-scan",
+				Aliases: []string{"c"},
+				Usage:   "Scan and report dependencies as a Software Bill of Materials (SBOM) for project. An automatic alert will be when security vulnerabilities are detected to be present in this project. This command will attempt to automatically determine what project the SBOM belongs to by looking for the presence of a git repository. If not found, then a project name must be provided manually.",
+				Before:  setGlobalBoolFlags,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "email",
+						Usage: "Email to send dependency report results to.",
+					},
+					&cli.StringFlag{
+						Name:  "application-name",
+						Usage: "Name of the application to report the SBOM belonging to.",
+					},
+					&cli.StringFlag{
+						Name:  "output",
+						Usage: "File to write scan results to.",
+					},
+					&cli.StringSliceFlag{
+						Name:  "excluded",
+						Usage: "Excluded dirs from scanning.",
+					},
+					&cli.BoolFlag{
+						Name:  "skip-upload",
+						Usage: "Skip uploading collected dependencies.",
+					},
+				},
+				Action: func(c *cli.Context) error {
+					return commands.CloudScanCommand(c, globalBoolFlags)
+				},
+			},
+			{
 				Name:    "scan",
 				Aliases: []string{"s"},
 				Usage:   "Scan directories, passed as arguments, for archives (.jar, .war) which contain class files that are vulnerable to the log4shell vulnerability.",
@@ -129,6 +159,10 @@ func main() {
 					&cli.BoolFlag{
 						Name:  "archives",
 						Usage: "Only scan for known vulnerable archives. By default the CLI will scan for class files which are known to be vulnerable which will result in higher signal findings. If you are specifically looking for vulnerable Java archive hashes, use this option.",
+					},
+					&cli.BoolFlag{
+						Name:  "processes",
+						Usage: "Currently only available for Linux systems. Only scan running processes and the files that they have open. This option will greatly improve performance when only running processes are of concern (ex. containers).",
 					},
 					&cli.StringFlag{
 						Name:  "version-hashes",
