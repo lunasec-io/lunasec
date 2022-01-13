@@ -1,7 +1,3 @@
 table:
   name: package_versions
   schema: public
-object_relationships:
-- name: packages
-  using:
-    foreign_key_constraint_on: pkg_slug

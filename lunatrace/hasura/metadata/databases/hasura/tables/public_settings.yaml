@@ -1,18 +1,3 @@
 table:
   name: settings
   schema: public
-array_relationships:
-- name: organizations
-  using:
-    foreign_key_constraint_on:
-      column: settings_id
-      table:
-        name: organizations
-        schema: public
-- name: projects
-  using:
-    foreign_key_constraint_on:
-      column: settings_id
-      table:
-        name: projects
-        schema: public

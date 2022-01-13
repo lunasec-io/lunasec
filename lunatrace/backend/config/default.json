@@ -2,7 +2,7 @@
   "db": {
     "host": "localhost",
     "port": 5431,
-    "database": "postgres",
+    "database": "lunatrace",
     "user": "postgres",
     "password": "postgrespassword",
     "max": 1,

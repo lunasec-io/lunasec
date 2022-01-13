@@ -18,7 +18,7 @@
 export interface PkgVersion {
   version_constraint: string; // use this to dedup, okay if empty, just overwrite
   version_format: string;
-  fixed_in_versions: string;
+  fixed_in_versions: string[];
   fix_state: string;
   cpes: string[];
   pkg_slug: string; // foreign key -> pkg.id
@@ -35,10 +35,14 @@ export interface VulnInfo {
   name: string;
   namespace: string;
   slug: string; // name : namespace
-  related_vulnerabilities: string;
   data_source: string;
   record_source: string;
   severity: string;
   urls: string[];
   description: string;
+}
+
+export interface RelatedVulnerability {
+  vulnerability_slug: string;
+  related_vulnerability_slug: string;
 }

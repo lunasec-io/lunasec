@@ -1,1 +1,0 @@
-CREATE TABLE "public"."package_versions" ("slug" text NOT NULL, "version_constraint" text NOT NULL, "version_format" text NOT NULL, "fixed_in_versions" Text[] NOT NULL, "fix_state" text NOT NULL, "cpes" jsonb, "pkg_slug" text NOT NULL, PRIMARY KEY ("slug") , UNIQUE ("slug"));
