@@ -1,6 +1,6 @@
 ---
-title: "LunaSec will help protect against Open Source vulnerabilities"
-description: Looking at the latest big attacks to explain why we built the LunaSec Framework.
+title: "LunaDefend can help protect against Open Source vulnerabilities"
+description: Looking at the latest big attacks to explain why we built the LunaDefend Framework.
 slug: lunasec-story
 date: 2021-12-22
 keywords: [open-source, vulnerability, framework, compliance]
@@ -40,7 +40,7 @@ that attackers are really after. It feels more relevant now than ever.
 
 <!--truncate-->
 
-## Modern Attack Surface
+## Modern attack surface
 In security, we use the word "attack surface" to talk about how much territory we need to defend.
 I think of this like the walls and gates around an ancient city. The bigger
 the city is, the harder and more expensive it becomes to build walls and maintain fortifications.
@@ -50,7 +50,7 @@ They use many tools and libraries, all of which could have a potential issue lik
 inevitable vulnerability like Log4shell,
 let's look at ways to reduce the size of that attack surface to a much smaller area of well-audited code.
 
-### Compliance Focused Tools
+### Compliance focused tools
 Getting sensitive data **out** of these potentially vulnerable web apps is becoming a popular strategy to help with legal compliance.
 The most popular tools to do this
 are token proxies which convert sensitive fields like a social security number, *435-12-9745*,
@@ -66,7 +66,7 @@ Some tools are better than others, but they all seem to have compromises and som
 We wanted a way to *truly* protect data against *every* [common type of attack](/pages/how-it-works/security/vulns-and-mitigations),
 from browser attacks such as Cross Site Scripting (XSS), to full Remote Code Execution (RCE) like Log4Shell.
 
-### Tools That Are ACTUALLY Secure
+### Tools that are ACTUALLY secure
 There's one set of tools with a proven track record for protecting sensitive data on the web, and that's **payment processors**.
 We're talking about tools like Stripe and PayPal that collect your credit card number when you make an online purchase.
 
@@ -83,7 +83,7 @@ The sensitive data is isolated from your system every step of the way. Even if a
 it will be very difficult to break through to the payment processor and get the credit card number. The attack surface for the payment processor
 is small because it's isolated from your site. Their security teams can audit the changes they make to their small system without worrying about the rest of your app.
 
-### Making It Work for Any Data
+### Making that work for any data
 This is a great strategy, and it's worked for decades. It makes sense: credit cards and the laws protecting them have been
 around for quite a while. Now that similar laws and concerns are expanding to more types of data, we need a more generic solution.
 
@@ -92,7 +92,7 @@ but ideally a solution that could store *any* data wouldn't be so obvious to the
 itself as a part of the surrounding website. Ideally it could be dropped into any form or output that handles sensitive data,
 all while looking like a native part of the web page.
 
-### We Call Them "Secure Components"
+### We call them "Secure Components"
 Dealing with all the DOM information to make the elements look and behave like normal ones took months, but we did it.
 The end result is something that looks and behaves just like a native element, even working well with popular
 component frameworks like Material UI. You can see for yourself in our [Live Demo app](https://app.lunasec.dev/). We've written
@@ -106,7 +106,7 @@ can store legally and safely in your database, in the same place you used to put
 by a small and [secure backend](/pages/how-it-works/tokens) that's blindingly fast, very cheap, and scales without limit.
 
 ### Secure Functions
-I personally think this is one of the coolest parts of LunaSec.
+I personally think this is one of the coolest parts of LunaDefend.
 
 Processing data serverside is sometimes needed. Sometimes you need to resize a photo, send something to another service,
 capitalize a line of text, send a GDPR report, etc. We want to give users a secure place to do these tasks. We knew there must
@@ -132,14 +132,14 @@ need to make sure these parts of your code are secure, but it's much easier to a
 your entire server.
 
 ### Deployment
-We haven't built a pay-as-you-go SASS for LunaSec (at least not yet), because the tool is Open Source and most of our users have wanted to have their own deployments.
+We haven't built a pay-as-you-go SASS for LunaDefend (at least not yet), because the tool is Open Source and most of our users have wanted to have their own deployments.
 Instead of leaving users on their own in terms of deployment, we wrote [a CLI](/pages/deployment/deploy-with-aws) that uses AWS CDK to deploy
 everything needed to AWS with a single line:
 ```shell
 lunasec deploy
 ```
 
-Unlike token proxies, LunaSec provides a method for testing your application locally, or in CI with
+Unlike token proxies, LunaDefend provides a method for testing your application locally, or in CI with
  [AWS LocalStack](https://github.com/localstack/localstack), a containerized AWS emulator, which will also work in an offline environment. Calling
 ```shell
 lunasec start

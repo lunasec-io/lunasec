@@ -37,7 +37,7 @@ While some developers are more careful than others, something like Log4Shell cou
 Putting aside vulnerability prevention for a moment, let's talk about what to do when you find out that you released something insecure.
 Staying calm and knowing what to do when the time comes could prevent a lot of damage down the road.
 
-### Things They Don't Teach You in School
+### Things they don't teach you in school
 As a "normal" developer who works alongside security engineers, I hear them mention all kinds of best practices that I've never heard of.
 It turns out that how to properly deal with vulnerabilities in a project you use or contribute to,
 right down to what you say on GitHub, can be just as important as the patch itself.
@@ -47,7 +47,7 @@ center of the story we have a couple of developers donating their spare time, an
 meant to be a hit piece against them or Open Source software, but instead a guide to help the next person handle things the right way.
 Together, let's learn how to do this properly.
 
-### Hackers Are Crawling GitHub Looking for Security Patches
+### Hackers are crawling GitHub looking for security patches
 
 Finding a vulnerability in a project and contributing a fix can be pretty exciting. Unfortunately, the fact
 that something is being patched can reveal to outsiders that a vulnerability must have existed in the first place.
@@ -56,9 +56,9 @@ It's trivially easy to write a webcrawler that looks through GitHub for the word
 and find a package where the last version, if not the current one, has a vulnerability ready to be turned into an exploit.
 Those crawlers are up and running _right now_, reading your comments and looking for the next 0-day.
 
-## It's About Being Discreet
+## It's about being discreet
 
-### Reporting the Vulnerability
+### Reporting the vulnerability
 
 How the vulnerability first gets reported is critical. In the case of Log4j, contrary to what you might think,
 it looks like everything went right. According to the Log4Shell [Wikipedia page](https://en.wikipedia.org/wiki/Log4Shell), the vulnerability was reported
@@ -73,7 +73,7 @@ We can also see that the Mitre site created the CVE, **in private**, two days la
 Up until this point, it was security professionals following a well documented practice called [Responsible Disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure).
 Let's move on to what happened next.
 
-### Patching the Vulnerability
+### Patching the vulnerability
 
 Often just the nature of the patch can alert those who know what to look for, even without
 anyone spelling out that it's for a vulnerability.
@@ -99,7 +99,7 @@ In the end, the vulnerability went public before Log4j was ready to ship a fix, 
 Their first release of version `2.15.0`, which much of the community installed, [proved to still have issues](https://www.lunasec.io/docs/blog/log4j-zero-day-severity-of-cve-2021-45046-increased/).
 They had to release a second patch in `2.16.0`, which we seriously hope is seeing widespread adoption.
 
-## How to Do It Right
+## How to do it right
 
 ### Step 1: Mitigate in private
 Open source software is public, which means eventually the patch will need to be public.  We want that to happen
@@ -148,7 +148,7 @@ Making noise and getting the word out about the vulnerability is going to result
 In the case of larger projects and more serious vulnerabilities, it might be a good idea to contact the press directly.
 This can help you keep a handle on the reporting, and let you control the narrative around how to fix the vulnerability.
 
-## Educate Your Contributors
+## Educate your contributors
 The above process is something that your contributors need to know about ahead of time. Personally, I would recommend a short warning
 about the proper way to patch security problems in your Issue and Pull Request templates.
 
@@ -165,19 +165,19 @@ for opening security policies and reporting vulnerabilities.
 It might not be a bad idea to link to this blog post or the resources below if you are a security researcher reporting a vulnerability to a project.
 Maybe if that had happened with log4j, it would have been handled differently.
 
-## Other Resources
+## Other resources
 * GitHub has a guide on [coordinated disclosure](https://docs.github.com/en/code-security/security-advisories/about-coordinated-disclosure-of-security-vulnerabilities).
 * Google has compiled a very good but little-known [comprehensive guide](https://github.com/google/oss-vulnerability-guide) on dealing with exactly these situations. Big thank you to them for publishing this.
 * OpenSSF has a [Vulnerability Disclosures Working Group](https://github.com/ossf/wg-vulnerability-disclosures) that works to improve vulnerability disclosures in Open Source Software.
 
-## That's It
+## That's it
 These steps aren't that hard to follow, but they're different from the normal development flow of Open Source software.
 Coordinated disclosure is common knowledge in security communities, but now we can say for sure
 that not every Open Source developer knows how to do it.
 Not everyone has a background in security, and that's okay. It's [our goal](https://www.lunasec.io/docs/) to make security
 as easy and accessible as possible for everyday developers.
 
-### Stay in The Loop
+### Stay in the loop
 import ContactForm from '../src/components/ContactForm.jsx'
 
 <ContactForm/>

