@@ -15,6 +15,6 @@
 package types
 
 type LandingPage struct {
-	Style string
+	Style   string
 	Payload string
 }

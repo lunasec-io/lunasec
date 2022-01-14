@@ -12,37 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package lunatrace
+package main
 
 import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"lunasec/lunatrace/pkg/commands"
+	"lunasec/lunatrace/inventory"
 	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/util"
 	"os"
 )
-
-func enableGlobalFlags(c *cli.Context) {
-	verbose := c.Bool("verbose")
-	debug := c.Bool("debug")
-
-	if verbose || debug {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	}
-
-	if debug {
-		// include file and line number when logging
-		log.Logger = log.With().Caller().Logger()
-	}
-
-	jsonFlag := c.Bool("json")
-	if !jsonFlag {
-		// pretty print output to the console if we are not interested in parsable output
-		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-	}
-}
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
@@ -128,7 +108,7 @@ func main() {
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return commands.InventoryCommand(c, globalBoolFlags)
+					return inventory.InventoryCommand(c, globalBoolFlags)
 				},
 			},
 			{
@@ -143,7 +123,7 @@ func main() {
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return commands.InventoryServerCommand(c, globalBoolFlags)
+					return inventory.InventoryServerCommand(c, globalBoolFlags)
 				},
 			},
 		},

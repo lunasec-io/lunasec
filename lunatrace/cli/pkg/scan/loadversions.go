@@ -17,9 +17,9 @@ package scan
 import (
 	"encoding/json"
 	"fmt"
-	"lunasec/lunatrace/pkg/types"
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
+	"lunasec/lunatrace/pkg/types"
 	"strings"
 )
 
@@ -85,16 +85,16 @@ func LoadVersionHashesFromBytes(versionHashesContent []byte) (hashLookup types.V
 			}
 
 			hashLookup[vulnerableLibrary.Hash] = types.VulnerableHash{
-				Name: vulnerableLibrary.Path + "::" + vulnerableLibrary.FileName,
-				Version: newVersion,
-				CVE: vulnerableLibrary.CVE,
+				Name:                     vulnerableLibrary.Path + "::" + vulnerableLibrary.FileName,
+				Version:                  newVersion,
+				CVE:                      vulnerableLibrary.CVE,
 				VulnerableFileHashLookup: existingLookup.VulnerableFileHashLookup,
 			}
 		} else {
 			hashLookup[vulnerableLibrary.Hash] = types.VulnerableHash{
-				Name: vulnerableLibrary.Path + "::" + vulnerableLibrary.FileName,
+				Name:    vulnerableLibrary.Path + "::" + vulnerableLibrary.FileName,
 				Version: vulnerableLibrary.Version,
-				CVE: vulnerableLibrary.CVE,
+				CVE:     vulnerableLibrary.CVE,
 				VulnerableFileHashLookup: map[string]types.VulnerableFile{
 					vulnerableLibrary.Hash: {
 						vulnerableLibrary.JndiLookupFileName,
@@ -109,4 +109,3 @@ func LoadVersionHashesFromBytes(versionHashesContent []byte) (hashLookup types.V
 
 	return
 }
-

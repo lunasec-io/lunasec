@@ -44,7 +44,7 @@ type ZipFileToScan struct {
 
 type DiskFileToScan struct {
 	Filename string
-	Path string
+	Path     string
 }
 
 type FileToScan interface {

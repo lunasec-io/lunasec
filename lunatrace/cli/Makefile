@@ -14,18 +14,18 @@ bindir:
 
 log4shell: bindir
 	touch ${LIBRARY_HASHES}
-	CGO_ENABLED=0 GOOS=linux go build -o bin/${LOG4SHELL_BINARY_NAME} cmd/log4shell
+	CGO_ENABLED=0 GOOS=linux go build -o bin/${LOG4SHELL_BINARY_NAME} ./cmd/log4shell
 
 lunatrace: bindir
-	CGO_ENABLED=0 GOOS=linux go build -o bin/${LUNATRACE_BINARY_NAME} cmd/lunatrace
+	CGO_ENABLED=0 GOOS=linux go build -o ./bin/${LUNATRACE_BINARY_NAME} ./cmd/lunatrace
 
 lunatrace-agent: bindir
-	CGO_ENABLED=0 GOOS=linux go build -o bin/${LUNATRACE_AGENT_BINARY_NAME} cmd/lunatraceagent
+	CGO_ENABLED=0 GOOS=linux go build -o bin/${LUNATRACE_AGENT_BINARY_NAME} ./cmd/lunatraceagent
 
-library-hashes: cli
-	./log4shell analyze --output ${LIBRARY_HASHES} test/log4shell/vulnerable-log4j2-versions/apache test/log4shell/vulnerable-log4j2-versions/target/dependency
+library-hashes: log4shell
+	./bin/log4shell analyze --output ${LIBRARY_HASHES} test/log4shell/vulnerable-log4j2-versions/apache test/log4shell/vulnerable-log4j2-versions/target/dependency
 
-build-log4shell: payload cli
+build-log4shell: payload log4shell
 	echo "built ${LOG4SHELL_BINARY_NAME}"
 
 build-lunatrace: lunatrace

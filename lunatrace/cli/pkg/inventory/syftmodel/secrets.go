@@ -12,27 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
+package syftmodel
 
-import "lunasec/lunatrace/pkg/types/model"
+import (
+	"github.com/anchore/syft/syft/file"
+	"github.com/anchore/syft/syft/source"
+)
 
-type InventoryOutput struct {
-	Sboms []model.Document `json:"sboms"`
-}
-
-type SbomOutput struct {
-	Email         string           `json:"email"`
-	ApplicationId string           `json:"application_id"`
-	Sboms         []model.Document `json:"sboms"`
-}
-
-type UploadSbomUrl struct {
-	Url     string            `json:"url"`
-	Headers map[string]string `json:"headers"`
-}
-
-type GenerateUploadUrlResponse struct {
-	Error     bool          `json:"error"`
-	Message   string        `json:"message"`
-	UploadURL UploadSbomUrl `json:"uploadUrl"`
+type Secrets struct {
+	Location source.Coordinates  `json:"location"`
+	Secrets  []file.SearchResult `json:"secrets"`
 }

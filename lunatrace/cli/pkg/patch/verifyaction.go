@@ -50,4 +50,3 @@ func AskIfShouldSkipPatch(msg string) (shouldSkip, forcePatch bool) {
 	}
 	return
 }
-

@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package commands
+package command
 
 import (
 	"fmt"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/util"
 	"os"
 	"strings"
 )
 
-func enableGlobalFlags(c *cli.Context, globalBoolFlags map[string]bool) {
+func EnableGlobalFlags(c *cli.Context, globalBoolFlags map[string]bool) {
 	verbose := globalBoolFlags["verbose"]
 	debug := globalBoolFlags["debug"]
 	jsonFlag := globalBoolFlags["json"]
@@ -60,9 +60,9 @@ func enableGlobalFlags(c *cli.Context, globalBoolFlags map[string]bool) {
 			}
 		}
 
-		consoleOutput.FormatLevel  = func(i interface{}) string {
+		consoleOutput.FormatLevel = func(i interface{}) string {
 			if i == nil {
-				return util.Colorize(constants.ColorBold,"Scan Result:")
+				return util.Colorize(constants.ColorBold, "Scan Result:")
 			}
 
 			level := i.(string)
@@ -84,6 +84,5 @@ func enableGlobalFlags(c *cli.Context, globalBoolFlags map[string]bool) {
 		}
 
 		log.Logger = log.Output(consoleOutput)
-
 	}
 }

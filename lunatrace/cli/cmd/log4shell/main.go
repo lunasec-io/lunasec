@@ -12,37 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package log4shell
+package main
 
 import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"lunasec/lunatrace/pkg/commands"
+	"lunasec/lunatrace/inventory"
+	"lunasec/lunatrace/pkg/analyze"
 	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/livepatch"
+	"lunasec/lunatrace/pkg/patch"
+	"lunasec/lunatrace/pkg/scan"
 	"lunasec/lunatrace/pkg/util"
 	"os"
 )
-
-func enableGlobalFlags(c *cli.Context) {
-	verbose := c.Bool("verbose")
-	debug := c.Bool("debug")
-
-	if verbose || debug {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	}
-
-	if debug {
-		// include file and line number when logging
-		log.Logger = log.With().Caller().Logger()
-	}
-
-	jsonFlag := c.Bool("json")
-	if !jsonFlag {
-		// pretty print output to the console if we are not interested in parsable output
-		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-	}
-}
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
@@ -108,7 +92,7 @@ func main() {
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return commands.AnalyzeCommand(c, globalBoolFlags)
+					return analyze.AnalyzeCommand(c, globalBoolFlags)
 				},
 			},
 			{
@@ -139,7 +123,7 @@ func main() {
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return commands.InventoryCommand(c, globalBoolFlags)
+					return inventory.InventoryCommand(c, globalBoolFlags)
 				},
 			},
 			{
@@ -195,7 +179,7 @@ func main() {
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return commands.ScanCommand(c, globalBoolFlags, log4jLibraryHashes)
+					return scan.ScanCommand(c, globalBoolFlags, log4jLibraryHashes)
 				},
 			},
 			{
@@ -218,7 +202,7 @@ func main() {
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return commands.LivePatchCommand(c, globalBoolFlags, hotpatchFiles)
+					return livepatch.LivePatchCommand(c, globalBoolFlags, hotpatchFiles)
 				},
 			},
 			{
@@ -261,7 +245,7 @@ func main() {
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return commands.JavaArchivePatchCommand(c, globalBoolFlags, log4jLibraryHashes)
+					return patch.JavaArchivePatchCommand(c, globalBoolFlags, log4jLibraryHashes)
 				},
 			},
 		},

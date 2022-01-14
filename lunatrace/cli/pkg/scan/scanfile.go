@@ -16,12 +16,11 @@ package scan
 
 import (
 	"github.com/blang/semver/v4"
-	"lunasec/lunatrace/pkg/analyze"
+	"github.com/rs/zerolog/log"
+	"io"
 	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/types"
 	"lunasec/lunatrace/pkg/util"
-	"github.com/rs/zerolog/log"
-	"io"
 	"path/filepath"
 	"strings"
 )
@@ -46,6 +45,33 @@ func isVulnerableIfContainsJndiLookup(versions []string) bool {
 		}
 	}
 	return false
+}
+
+func GetJndiLookupHash(
+	resolveArchiveFile types.ResolveArchiveFile,
+	filePath string,
+) (fileHash string) {
+	reader, err := resolveArchiveFile(constants.JndiLookupClasspath)
+	if err != nil {
+		log.Debug().
+			Str("fieName", constants.JndiLookupClasspath).
+			Str("path", filePath).
+			Err(err).
+			Msg("cannot find file in zip")
+		return
+	}
+	defer reader.Close()
+
+	fileHash, err = util.HexEncodedSha256FromReader(reader)
+	if err != nil {
+		log.Debug().
+			Str("fieName", constants.JndiLookupClasspath).
+			Str("path", filePath).
+			Err(err).
+			Msg("unable to hash JndiLookup.class file")
+		return
+	}
+	return
 }
 
 func identifyPotentiallyVulnerableFile(
@@ -82,7 +108,7 @@ func identifyPotentiallyVulnerableFile(
 		versions := strings.Split(vulnerableFile.Version, ", ")
 		patchableVersion := isVulnerableIfContainsJndiLookup(versions)
 
-		jndiLookupFileHash := analyze.GetJndiLookupHash(resolveArchiveFile, path)
+		jndiLookupFileHash := GetJndiLookupHash(resolveArchiveFile, path)
 		if jndiLookupFileHash != "" {
 			if _, ok := vulnerableFile.VulnerableFileHashLookup[jndiLookupFileHash]; !ok {
 				log.Warn().
@@ -123,14 +149,14 @@ func identifyPotentiallyVulnerableFile(
 		}
 
 		finding = &types.Finding{
-			Path:     absolutePath,
-			FileName: fileName,
-			Hash:     fileHash,
+			Path:               absolutePath,
+			FileName:           fileName,
+			Hash:               fileHash,
 			JndiLookupFileName: constants.JndiLookupClasspath,
-			JndiLookupHash: jndiLookupFileHash,
-			Version:  vulnerableFile.Version,
-			CVE:      vulnerableFile.CVE,
-			Severity: severity,
+			JndiLookupHash:     jndiLookupFileHash,
+			Version:            vulnerableFile.Version,
+			CVE:                vulnerableFile.CVE,
+			Severity:           severity,
 		}
 		return
 	}

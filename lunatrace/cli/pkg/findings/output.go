@@ -16,9 +16,9 @@ package findings
 
 import (
 	"encoding/json"
-	"lunasec/lunatrace/pkg/types"
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
+	"lunasec/lunatrace/pkg/types"
 )
 
 func SerializeToFile(outputFile string, findings []types.Finding) error {

@@ -29,4 +29,3 @@ const (
 	ColorBold     = 1
 	ColorDarkGray = 90
 )
-

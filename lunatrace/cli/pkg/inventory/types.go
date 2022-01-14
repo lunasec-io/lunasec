@@ -12,8 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package constants
+package inventory
 
-const (
-	UploadSbomUrl = "https://lunatrace.lunasec.io/api/upload-sbom"
+import (
+	"lunasec/lunatrace/inventory/syftmodel"
 )
+
+type InventoryOutput struct {
+	Sboms []syftmodel.Document `json:"sboms"`
+}
+
+type SbomOutput struct {
+	Email         string               `json:"email"`
+	ApplicationId string               `json:"application_id"`
+	Sboms         []syftmodel.Document `json:"sboms"`
+}
+
+type UploadSbomUrl struct {
+	Url     string            `json:"url"`
+	Headers map[string]string `json:"headers"`
+}
+
+type GenerateUploadUrlResponse struct {
+	Error     bool          `json:"error"`
+	Message   string        `json:"message"`
+	UploadURL UploadSbomUrl `json:"uploadUrl"`
+}

@@ -18,13 +18,13 @@ import (
 	"archive/zip"
 	"encoding/json"
 	"fmt"
-	"lunasec/lunatrace/pkg/scan"
-	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/pkg/util"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"io"
 	"io/ioutil"
+	"lunasec/lunatrace/pkg/scan"
+	"lunasec/lunatrace/pkg/types"
+	"lunasec/lunatrace/pkg/util"
 	"os"
 	"strings"
 )
@@ -61,7 +61,7 @@ func LoadOrScanForFindings(
 	if findingsFile != "" {
 		var (
 			findingsContent []byte
-			findingsOutput types.FindingsOutput
+			findingsOutput  types.FindingsOutput
 		)
 
 		findingsContent, err = ioutil.ReadFile(findingsFile)

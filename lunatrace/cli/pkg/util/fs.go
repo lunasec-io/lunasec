@@ -18,11 +18,11 @@ import (
 	"archive/zip"
 	"bytes"
 	"fmt"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
 	"github.com/rs/zerolog/log"
 	"io"
 	"io/ioutil"
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/types"
 	"os"
 	"path/filepath"
 	"strings"
@@ -117,12 +117,16 @@ func NewZipFromReader(file io.ReadCloser, size int64) (*zip.Reader, error) {
 
 func CopyFile(in, out string) (int64, error) {
 	i, e := os.Open(in)
-   if e != nil { return 0, e }
-   defer i.Close()
-   o, e := os.Create(out)
-   if e != nil { return 0, e }
-   defer o.Close()
-   return io.Copy(o, i)
+	if e != nil {
+		return 0, e
+	}
+	defer i.Close()
+	o, e := os.Create(out)
+	if e != nil {
+		return 0, e
+	}
+	defer o.Close()
+	return io.Copy(o, i)
 }
 
 // Unzip will decompress a zip archive, moving all files and folders
@@ -131,52 +135,52 @@ func CopyFile(in, out string) (int64, error) {
 func Unzip(reader *zip.Reader, dest string) (filenames []string, err error) {
 	var (
 		outFile *os.File
-		rc io.ReadCloser
+		rc      io.ReadCloser
 	)
 
-    for _, f := range reader.File {
-        // Store filename/path for returning and using later on
-        fpath := filepath.Join(dest, f.Name)
+	for _, f := range reader.File {
+		// Store filename/path for returning and using later on
+		fpath := filepath.Join(dest, f.Name)
 
-        // Check for ZipSlip. More Info: http://bit.ly/2MsjAWE
-        if !strings.HasPrefix(fpath, filepath.Clean(dest)+string(os.PathSeparator)) {
-            return filenames, fmt.Errorf("%s: illegal file path", fpath)
-        }
+		// Check for ZipSlip. More Info: http://bit.ly/2MsjAWE
+		if !strings.HasPrefix(fpath, filepath.Clean(dest)+string(os.PathSeparator)) {
+			return filenames, fmt.Errorf("%s: illegal file path", fpath)
+		}
 
-        filenames = append(filenames, fpath)
+		filenames = append(filenames, fpath)
 
-        if f.FileInfo().IsDir() {
-            // Make Folder
-            os.MkdirAll(fpath, os.ModePerm)
-            continue
-        }
+		if f.FileInfo().IsDir() {
+			// Make Folder
+			os.MkdirAll(fpath, os.ModePerm)
+			continue
+		}
 
-        // Make File
-        if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
-            return filenames, err
-        }
+		// Make File
+		if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
+			return filenames, err
+		}
 
-        outFile, err = os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-        if err != nil {
-            return filenames, err
-        }
+		outFile, err = os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+		if err != nil {
+			return filenames, err
+		}
 
-        rc, err = f.Open()
-        if err != nil {
-            return filenames, err
-        }
+		rc, err = f.Open()
+		if err != nil {
+			return filenames, err
+		}
 
-        _, err = io.Copy(outFile, rc)
+		_, err = io.Copy(outFile, rc)
 
-        // Close the file without defer to close before next iteration of loop
-        outFile.Close()
-        rc.Close()
+		// Close the file without defer to close before next iteration of loop
+		outFile.Close()
+		rc.Close()
 
-        if err != nil {
-            return
-        }
-    }
-    return
+		if err != nil {
+			return
+		}
+	}
+	return
 }
 
 func EnsureDirIsCleanedUp(dir string) {

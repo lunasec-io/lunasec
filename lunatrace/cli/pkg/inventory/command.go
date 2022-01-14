@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package commands
+package inventory
 
 import (
 	"encoding/json"
@@ -22,14 +22,13 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"io/ioutil"
-	"lunasec/lunatrace/pkg/inventory"
-	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/pkg/types/model"
+	"lunasec/lunatrace/inventory/syftmodel"
+	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/util"
 )
 
-func writeCloudScanOutput(sboms []model.Document, output string) (err error) {
-	depOutput := types.InventoryOutput{
+func writeCloudScanOutput(sboms []syftmodel.Document, output string) (err error) {
+	depOutput := InventoryOutput{
 		Sboms: sboms,
 	}
 
@@ -47,16 +46,16 @@ func writeCloudScanOutput(sboms []model.Document, output string) (err error) {
 	return
 }
 
-func getSbomModels(sboms []*sbom.SBOM) (models []model.Document) {
+func getSbomModels(sboms []*sbom.SBOM) (models []syftmodel.Document) {
 	for _, appSbom := range sboms {
-		docModel := util.ToSyftJsonFormatModel(appSbom)
+		docModel := ToSyftJsonFormatModel(appSbom)
 		models = append(models, docModel)
 	}
 	return
 }
 
 func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool) (err error) {
-	enableGlobalFlags(c, globalBoolFlags)
+	command.EnableGlobalFlags(c, globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
 
@@ -97,7 +96,7 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool) (err erro
 		applicationId = repoRemote
 	}
 
-	sboms, err := inventory.CollectSbomsFromSearchDirs(searchDirs, excludedDirs)
+	sboms, err := CollectSbomsFromSearchDirs(searchDirs, excludedDirs)
 	if err != nil {
 		return
 	}
@@ -117,9 +116,9 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool) (err erro
 	}
 
 	if uploadUrl != "" {
-		err = inventory.UploadCollectedSbomsToUrl(email, applicationId, sbomModels, uploadUrl, map[string]string{})
+		err = UploadCollectedSbomsToUrl(email, applicationId, sbomModels, uploadUrl, map[string]string{})
 		return
 	}
-	err = inventory.UploadCollectedSboms(email, applicationId, sbomModels)
+	err = UploadCollectedSboms(email, applicationId, sbomModels)
 	return
 }

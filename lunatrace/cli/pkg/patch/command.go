@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package commands
+package patch
 
 import (
-	"lunasec/lunatrace/pkg/patch"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+	"lunasec/lunatrace/pkg/command"
 )
 
 func JavaArchivePatchCommand(
@@ -25,9 +25,9 @@ func JavaArchivePatchCommand(
 	globalBoolFlags map[string]bool,
 	log4jLibraryHashes []byte,
 ) error {
-	enableGlobalFlags(c, globalBoolFlags)
+	command.EnableGlobalFlags(c, globalBoolFlags)
 
-	findings, err := patch.LoadOrScanForFindings(c, log4jLibraryHashes)
+	findings, err := LoadOrScanForFindings(c, log4jLibraryHashes)
 	if err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func JavaArchivePatchCommand(
 		}
 
 		if !forcePatch {
-			shouldSkip, forcePatch = patch.AskIfShouldSkipPatch(finding.Path)
+			shouldSkip, forcePatch = AskIfShouldSkipPatch(finding.Path)
 			if !forcePatch && shouldSkip {
 				log.Info().
 					Str("findingPath", finding.Path).
@@ -65,7 +65,7 @@ func JavaArchivePatchCommand(
 			}
 		}
 
-		err = patch.ProcessJavaArchive(finding, dryRun, backup)
+		err = ProcessJavaArchive(finding, dryRun, backup)
 		if err != nil {
 			log.Error().
 				Str("path", finding.Path).

@@ -15,9 +15,9 @@
 package scan
 
 import (
+	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/types"
-	"github.com/rs/zerolog/log"
 	"strings"
 )
 

@@ -50,8 +50,8 @@ func getSbomForSearchDir(searchDir string, excludedDirs []string) (s *sbom.SBOM,
 	s = &sbom.SBOM{
 		Source: src.Metadata,
 		Descriptor: sbom.Descriptor{
-			Name:    constants.ApplicationName,
-			Version: constants.Version,
+			Name:    constants.LunaTraceName,
+			Version: constants.LunaTraceVersion,
 		},
 	}
 

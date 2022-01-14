@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package commands
+package analyze
 
 import (
-	"lunasec/lunatrace/pkg/analyze"
+	"github.com/urfave/cli/v2"
+	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/findings"
 	"lunasec/lunatrace/pkg/scan"
-	"github.com/urfave/cli/v2"
 )
 
 func AnalyzeCommand(c *cli.Context, globalBoolFlags map[string]bool) error {
-	enableGlobalFlags(c, globalBoolFlags)
+	command.EnableGlobalFlags(c, globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
 
-	processArchiveFile := analyze.ProcessArchiveFile
+	processArchiveFile := ProcessArchiveFile
 
 	scanner := scan.NewLog4jDirectoryScanner([]string{}, false, false, processArchiveFile)
 

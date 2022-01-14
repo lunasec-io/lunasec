@@ -12,12 +12,68 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package lunatraceagent
+package main
 
-import "github.com/rs/zerolog"
+import (
+	"bytes"
+	"encoding/json"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"lunasec/lunatrace/pkg/config"
+	"lunasec/lunatrace/pkg/types"
+	"lunasec/lunatrace/pkg/util"
+	"net/http"
+	"net/url"
+)
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+
+	appConfig, err := config.LoadLunaTraceAgentConfig()
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to load config")
+		return
+	}
+
+	controlServer := url.URL{
+		Scheme: "https",
+		Host:   appConfig.ControlServer,
+		Path:   "/application/identify",
+	}
+
+	identifyUrl := controlServer.String()
+
+	identifyRequest := types.IdentifyRequest{
+		ApplicationId: appConfig.ApplicationId,
+	}
+
+	body, err := json.Marshal(identifyRequest)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to marshal identify request")
+		return
+	}
+
+	data, err := util.HttpRequest(http.MethodPost, identifyUrl, map[string]string{}, bytes.NewBuffer(body))
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to marshal identify request")
+		return
+	}
+
+	var identifyResponse types.IdentifyResponse
+
+	err = json.Unmarshal(data, &identifyResponse)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to unmarshal identify response")
+		return
+	}
 }

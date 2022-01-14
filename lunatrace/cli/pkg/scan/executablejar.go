@@ -16,10 +16,10 @@ package scan
 
 import (
 	"bytes"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
 	"github.com/rs/zerolog/log"
 	"io"
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/types"
 	"os"
 )
 
@@ -39,24 +39,24 @@ func readerAtStartOfArchive(path string, file *os.File) (reader types.ReaderAtCl
 	}
 
 	/*
-	 For the old executable Spring Jar format, it contains a shebang followed by the archive's bytes:
+		 For the old executable Spring Jar format, it contains a shebang followed by the archive's bytes:
 
-		$ head zipkin-server-2.23.15-exec.jar
-		#!/bin/bash
-		#
-		#    .   ____          _            __ _ _
-		#   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-		#  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
-		#   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-		#    '  |____| .__|_| |_|_| |_\__, | / / / /
-		#   =========|_|==============|___/=/_/_/_/
-		#   :: Spring Boot Startup Script ::
-		#
-	    ...
-	    PK........
+			$ head zipkin-server-2.23.15-exec.jar
+			#!/bin/bash
+			#
+			#    .   ____          _            __ _ _
+			#   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+			#  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+			#   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+			#    '  |____| .__|_| |_|_| |_\__, | / / / /
+			#   =========|_|==============|___/=/_/_/_/
+			#   :: Spring Boot Startup Script ::
+			#
+		    ...
+		    PK........
 
-		See https://github.com/lunasec-io/lunasec/issues/328
-	 */
+			See https://github.com/lunasec-io/lunasec/issues/328
+	*/
 	if bytes.HasPrefix(fileHeader, []byte(constants.BashHeader)) {
 		var fileContents []byte
 

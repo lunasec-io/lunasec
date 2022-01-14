@@ -17,8 +17,8 @@ package scan
 import (
 	"fmt"
 	"github.com/blang/semver/v4"
-	"lunasec/lunatrace/pkg/analyze"
 	"github.com/rs/zerolog"
+	"lunasec/lunatrace/pkg/analyze"
 	"path"
 	"strings"
 	"testing"

@@ -21,9 +21,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/rs/zerolog/log"
+	"lunasec/lunatrace/inventory/syftmodel"
 	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/pkg/types/model"
 	"lunasec/lunatrace/pkg/util"
 	"net/http"
 	"net/url"
@@ -53,7 +52,7 @@ func formatGenerateUploadUrl(email, applicationName string) (uploadSbomUrl strin
 }
 
 func generateUploadUrl(uploadSbomUrl string) (url string, headers map[string]string, err error) {
-	var generateUploadUrlResp types.GenerateUploadUrlResponse
+	var generateUploadUrlResp GenerateUploadUrlResponse
 
 	data, err := util.HttpRequest(http.MethodGet, uploadSbomUrl, map[string]string{}, nil)
 	if err != nil {
@@ -84,7 +83,7 @@ func generateUploadUrl(uploadSbomUrl string) (url string, headers map[string]str
 	return
 }
 
-func serializeAndCompressOutput(output types.SbomOutput) (buffer bytes.Buffer, err error) {
+func serializeAndCompressOutput(output SbomOutput) (buffer bytes.Buffer, err error) {
 	serializedOutput, err := json.Marshal(output)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to marshall dependencies output")
@@ -106,11 +105,11 @@ func serializeAndCompressOutput(output types.SbomOutput) (buffer bytes.Buffer, e
 
 func UploadCollectedSbomsToUrl(
 	email, applicationId string,
-	sbomModels []model.Document,
+	sbomModels []syftmodel.Document,
 	uploadUrl string,
 	uploadHeaders map[string]string,
 ) (err error) {
-	output := types.SbomOutput{
+	output := SbomOutput{
 		Email:         email,
 		ApplicationId: applicationId,
 		Sboms:         sbomModels,
@@ -134,7 +133,7 @@ func UploadCollectedSbomsToUrl(
 	return
 }
 
-func UploadCollectedSboms(email, applicationId string, sbomModels []model.Document) (err error) {
+func UploadCollectedSboms(email, applicationId string, sbomModels []syftmodel.Document) (err error) {
 	uploadSbomUrl, err := formatGenerateUploadUrl(email, applicationId)
 	if err != nil {
 		return

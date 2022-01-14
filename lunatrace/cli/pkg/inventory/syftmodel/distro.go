@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package model
+package syftmodel
 
-type Relationship struct {
-	Parent   string      `json:"parent"`
-	Child    string      `json:"child"`
-	Type     string      `json:"type"`
-	Metadata interface{} `json:"metadata,omitempty"`
+// Distro provides information about a detected Linux Distro.
+type Distro struct {
+	Name    string `json:"name"`    // Name of the Linux distribution
+	Version string `json:"version"` // Version of the Linux distribution (major or major.minor version)
+	IDLike  string `json:"idLike"`  // the ID_LIKE field found within the /etc/os-release file
 }

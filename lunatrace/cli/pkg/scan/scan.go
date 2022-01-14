@@ -17,16 +17,15 @@ package scan
 import (
 	"archive/zip"
 	"bytes"
+	"github.com/rs/zerolog/log"
+	"io/ioutil"
 	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/types"
 	"lunasec/lunatrace/pkg/util"
-	"github.com/rs/zerolog/log"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 )
-
 
 type Log4jVulnerableDependencyScanner interface {
 	Scan(searchDirs []string) (findings []types.Finding)
@@ -34,9 +33,9 @@ type Log4jVulnerableDependencyScanner interface {
 }
 
 type Log4jDirectoryScanner struct {
-	excludeDirs []string
-	onlyScanArchives bool
-	noFollowSymlinks bool
+	excludeDirs        []string
+	onlyScanArchives   bool
+	noFollowSymlinks   bool
 	processArchiveFile types.ProcessArchiveFile
 }
 
@@ -47,9 +46,9 @@ func NewLog4jDirectoryScanner(
 	processArchiveFile types.ProcessArchiveFile,
 ) Log4jVulnerableDependencyScanner {
 	return &Log4jDirectoryScanner{
-		excludeDirs: excludeDirs,
-		onlyScanArchives: onlyScanArchives,
-		noFollowSymlinks: noFollowSymlinks,
+		excludeDirs:        excludeDirs,
+		onlyScanArchives:   onlyScanArchives,
+		noFollowSymlinks:   noFollowSymlinks,
 		processArchiveFile: processArchiveFile,
 	}
 }
@@ -199,7 +198,7 @@ func (s *Log4jDirectoryScanner) scanLocatedArchive(
 		file.Close()
 	}
 
-	return s.scanArchiveForVulnerableFiles(path, reader, info.Size() - offset)
+	return s.scanArchiveForVulnerableFiles(path, reader, info.Size()-offset)
 }
 
 func (s *Log4jDirectoryScanner) getFilesToScan(
@@ -207,9 +206,9 @@ func (s *Log4jDirectoryScanner) getFilesToScan(
 	size int64,
 	zipReader *zip.Reader,
 ) (filesToScan []types.FileToScan, cleanup func(), err error) {
-	if size > 1024 * 1024 * 1024 {
+	if size > 1024*1024*1024 {
 		var (
-			tmpPath string
+			tmpPath   string
 			filenames []string
 		)
 
@@ -242,7 +241,7 @@ func (s *Log4jDirectoryScanner) getFilesToScan(
 
 			fileToScan := &types.DiskFileToScan{
 				Filename: extractedFilename,
-				Path: dir,
+				Path:     dir,
 			}
 			filesToScan = append(filesToScan, fileToScan)
 		}
@@ -319,9 +318,9 @@ func (s *Log4jDirectoryScanner) scanFile(
 		}
 		return
 	case constants.JarFileExt,
-		 constants.WarFileExt,
-		 constants.ZipFileExt,
-		 constants.EarFileExt:
+		constants.WarFileExt,
+		constants.ZipFileExt,
+		constants.EarFileExt:
 		if s.onlyScanArchives {
 			finding := s.scanArchiveFile(resolveArchiveFile, path, file)
 			if finding != nil {

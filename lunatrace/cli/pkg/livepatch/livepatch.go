@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package patch
+package livepatch
 
 import (
 	"fmt"
@@ -32,14 +32,14 @@ type Log4ShellLDAPServer interface {
 }
 
 type HotpatchLDAPServer struct {
-	port int
+	port             int
 	payloadServerUrl string
-	server *ldapserver.Server
+	server           *ldapserver.Server
 }
 
 func NewHotpatchLDAPServer(port int, payloadServerUrl string) Log4ShellLDAPServer {
 	return &HotpatchLDAPServer{
-		port: port,
+		port:             port,
 		payloadServerUrl: payloadServerUrl,
 	}
 }

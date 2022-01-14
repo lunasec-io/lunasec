@@ -17,10 +17,10 @@ package patch
 import (
 	"embed"
 	"fmt"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
 	"github.com/rs/zerolog/log"
 	"html/template"
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/types"
 	"net/http"
 )
 
@@ -30,35 +30,35 @@ type PayloadServer interface {
 
 type HotpatchPayloadServer struct {
 	remotePayloadUrl string
-	port int64
-	payloadFiles embed.FS
-	payloadUrl string
-	payload string
+	port             int64
+	payloadFiles     embed.FS
+	payloadUrl       string
+	payload          string
 }
 
 func NewHotpatchPayloadServer(remotePayloadUrl string, port int64, payloadFiles embed.FS, payload string) PayloadServer {
 	return &HotpatchPayloadServer{
 		remotePayloadUrl: remotePayloadUrl,
-		port: port,
-		payloadFiles: payloadFiles,
-		payloadUrl: "/Log4ShellHotpatch.class",
-		payload: payload,
+		port:             port,
+		payloadFiles:     payloadFiles,
+		payloadUrl:       "/Log4ShellHotpatch.class",
+		payload:          payload,
 	}
 }
 
 func WithLogging(h http.Handler) http.Handler {
-    logFn := func(rw http.ResponseWriter, r *http.Request) {
-        uri := r.RequestURI
-        method := r.Method
-        h.ServeHTTP(rw, r)
+	logFn := func(rw http.ResponseWriter, r *http.Request) {
+		uri := r.RequestURI
+		method := r.Method
+		h.ServeHTTP(rw, r)
 
-        log.Info().
-        	Str("uri", uri).
-        	Str("method", method).
-        	Str("client", r.RemoteAddr).
-        	Msg("Log4Shell hotpatch being downloaded by remote client")
-    }
-    return http.HandlerFunc(logFn)
+		log.Info().
+			Str("uri", uri).
+			Str("method", method).
+			Str("client", r.RemoteAddr).
+			Msg("Log4Shell hotpatch being downloaded by remote client")
+	}
+	return http.HandlerFunc(logFn)
 }
 
 func (s *HotpatchPayloadServer) Start() {

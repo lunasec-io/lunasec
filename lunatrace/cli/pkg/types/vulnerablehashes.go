@@ -21,16 +21,16 @@ type VulnerableFile struct {
 }
 
 type VulnerableHash struct {
-	Name string `json:"name"`
-	Version string `json:"version"`
-	CVE  string `json:"cve"`
+	Name                     string `json:"name"`
+	Version                  string `json:"version"`
+	CVE                      string `json:"cve"`
 	VulnerableFileHashLookup map[string]VulnerableFile
 }
 
 type VulnerableHashLookup map[string]VulnerableHash
 
 type LibraryFileVersionCheck struct {
-	Cve string
+	Cve         string
 	SemverRange semver.Range
 	LibraryFile string
 }

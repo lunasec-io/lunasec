@@ -15,41 +15,15 @@
 package analyze
 
 import (
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/pkg/util"
 	"github.com/rs/zerolog/log"
 	"io"
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/scan"
+	"lunasec/lunatrace/pkg/types"
+	"lunasec/lunatrace/pkg/util"
 	"path"
 	"strings"
 )
-
-func GetJndiLookupHash(
-	resolveArchiveFile types.ResolveArchiveFile,
-	filePath string,
-) (fileHash string) {
-	reader, err := resolveArchiveFile(constants.JndiLookupClasspath)
-	if err != nil {
-		log.Debug().
-			Str("fieName", constants.JndiLookupClasspath).
-			Str("path", filePath).
-			Err(err).
-			Msg("cannot find file in zip")
-		return
-	}
-	defer reader.Close()
-
-	fileHash, err = util.HexEncodedSha256FromReader(reader)
-	if err != nil {
-		log.Debug().
-			Str("fieName", constants.JndiLookupClasspath).
-			Str("path", filePath).
-			Err(err).
-			Msg("unable to hash JndiLookup.class file")
-		return
-	}
-	return
-}
 
 func ProcessArchiveFile(
 	resolveArchiveFile types.ResolveArchiveFile,
@@ -99,7 +73,7 @@ func ProcessArchiveFile(
 	}
 
 	if VersionIsInRange(archiveName, semverVersion, constants.JndiLookupPatchFileVersions) {
-		jndiLookupFileHash = GetJndiLookupHash(resolveArchiveFile, filePath)
+		jndiLookupFileHash = scan.GetJndiLookupHash(resolveArchiveFile, filePath)
 	}
 
 	log.Log().
@@ -112,14 +86,14 @@ func ProcessArchiveFile(
 		Msg("identified library version")
 
 	finding = &types.Finding{
-		Path:        filePath,
-		FileName:    fileName,
-		Hash:        fileHash,
-		JndiLookupFileName:    constants.JndiLookupClasspath,
-		JndiLookupHash:        jndiLookupFileHash,
-		Version: semverVersion,
-		CVE: versionCve,
-		Severity: constants.CveSeverityLookup[versionCve],
+		Path:               filePath,
+		FileName:           fileName,
+		Hash:               fileHash,
+		JndiLookupFileName: constants.JndiLookupClasspath,
+		JndiLookupHash:     jndiLookupFileHash,
+		Version:            semverVersion,
+		CVE:                versionCve,
+		Severity:           constants.CveSeverityLookup[versionCve],
 	}
 	return
 }

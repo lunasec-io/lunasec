@@ -12,27 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package commands
+package scan
 
 import (
-	"lunasec/lunatrace/pkg/findings"
-	"lunasec/lunatrace/pkg/scan"
-	"lunasec/lunatrace/pkg/types"
 	"github.com/prometheus/procfs"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+	"lunasec/lunatrace/pkg/command"
+	"lunasec/lunatrace/pkg/findings"
+	"lunasec/lunatrace/pkg/types"
 	"runtime"
 )
 
-func scanSystemProcesses(scanner scan.Log4jVulnerableDependencyScanner) (scannerFindings []types.Finding, err error) {
+func scanSystemProcesses(scanner Log4jVulnerableDependencyScanner) (scannerFindings []types.Finding, err error) {
 	os := runtime.GOOS
-    switch os {
-    case "linux":
-    	break
-    default:
-    	log.Error().Msg("unsupported OS for system process scanning")
-    	return
-    }
+	switch os {
+	case "linux":
+		break
+	default:
+		log.Error().Msg("unsupported OS for system process scanning")
+		return
+	}
 
 	fs, err := procfs.NewFS("/proc")
 	if err != nil {
@@ -91,14 +91,14 @@ func scanDirectoriesForVulnerableLibraries(
 	noFollowSymlinks := c.Bool("no-follow-symlinks")
 	scanProcesses := c.Bool("processes")
 
-	hashLookup, err := scan.LoadHashLookup(log4jLibraryHashes, versionHashes, onlyScanArchives)
+	hashLookup, err := LoadHashLookup(log4jLibraryHashes, versionHashes, onlyScanArchives)
 	if err != nil {
 		return
 	}
 
-	processArchiveFile := scan.IdentifyPotentiallyVulnerableFiles(scanLog4j1, hashLookup)
+	processArchiveFile := IdentifyPotentiallyVulnerableFiles(scanLog4j1, hashLookup)
 
-	scanner := scan.NewLog4jDirectoryScanner(
+	scanner := NewLog4jDirectoryScanner(
 		excludeDirs, onlyScanArchives, noFollowSymlinks, processArchiveFile)
 
 	if scanProcesses {
@@ -115,7 +115,7 @@ func scanDirectoriesForVulnerableLibraries(
 }
 
 func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHashes []byte) (err error) {
-	enableGlobalFlags(c, globalBoolFlags)
+	command.EnableGlobalFlags(c, globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
 	scannerFindings, err := scanDirectoriesForVulnerableLibraries(c, searchDirs, log4jLibraryHashes)
@@ -129,4 +129,3 @@ func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHa
 	}
 	return nil
 }
-

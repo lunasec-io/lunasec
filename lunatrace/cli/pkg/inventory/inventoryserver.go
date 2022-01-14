@@ -12,23 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package commands
+package inventory
 
 import (
 	"encoding/json"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"io/ioutil"
-	"lunasec/lunatrace/pkg/types/model"
+	"lunasec/lunatrace/inventory/syftmodel"
+	"lunasec/lunatrace/pkg/command"
 	"net/http"
 	"time"
 )
 
 func InventoryServerCommand(c *cli.Context, globalBoolFlags map[string]bool) (err error) {
-	enableGlobalFlags(c, globalBoolFlags)
+	command.EnableGlobalFlags(c, globalBoolFlags)
 
 	http.HandleFunc("/sbom", HandleSbom)
-	http.HandleFunc("/application/identify", HandleSbom)
+	http.HandleFunc("/application/identify", HandleIdentify)
 
 	err = http.ListenAndServe(":8080", nil)
 	if err != nil {
@@ -39,53 +40,86 @@ func InventoryServerCommand(c *cli.Context, globalBoolFlags map[string]bool) (er
 	return
 }
 
+type HandleIdentifyRequest struct {
+	ApplicationId string `json:"application_id"`
+}
+
 type HandleSbomRequest struct {
-	ApplicationId string           `json:"application_id"`
-	Sboms         []model.Document `json:"sboms"`
+	ApplicationId string               `json:"application_id"`
+	Sboms         []syftmodel.Document `json:"sboms"`
 }
 
 type ApplicationSbomUpload struct {
 	UploadTime time.Time
-	Sboms      []model.Document
+	Sboms      []syftmodel.Document
 }
 
 var (
 	uploadedSboms = map[string][]ApplicationSbomUpload{}
 )
 
+func readBody(r *http.Request, i interface{}) (err error) {
+	reader, err := r.GetBody()
+	if err != nil {
+		log.Error().
+			Msg("unable to get body")
+		return
+	}
+	defer reader.Close()
+
+	body, err := ioutil.ReadAll(reader)
+	if err != nil {
+		log.Error().
+			Msg("unable to read body")
+		return
+	}
+
+	err = json.Unmarshal(body, i)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to unmarshal body")
+		return
+	}
+	return
+}
+
+func HandleIdentify(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodPost:
+		var (
+			handleIdentifyRequest HandleIdentifyRequest
+		)
+
+		err := readBody(r, &handleIdentifyRequest)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		log.Info().
+			Str("applicationId", handleIdentifyRequest.ApplicationId).
+			Msg("application has identified itself")
+	default:
+		log.Error().
+			Str("method", r.Method).
+			Msg("no method handler")
+	}
+}
+
 func HandleSbom(w http.ResponseWriter, r *http.Request) {
 	var (
 		handleSbomRequest HandleSbomRequest
 	)
 
+	err := readBody(r, &handleSbomRequest)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	switch r.Method {
 	case http.MethodPut:
-		reader, err := r.GetBody()
-		if err != nil {
-			log.Error().
-				Msg("unable to get body")
-			w.WriteHeader(500)
-			return
-		}
-		defer reader.Close()
-
-		body, err := ioutil.ReadAll(reader)
-		if err != nil {
-			log.Error().
-				Msg("unable to read body")
-			w.WriteHeader(500)
-			return
-		}
-
-		err = json.Unmarshal(body, &handleSbomRequest)
-		if err != nil {
-			log.Error().
-				Err(err).
-				Msg("unable to unmarshal body")
-			w.WriteHeader(500)
-			return
-		}
-
 		upload := []ApplicationSbomUpload{
 			{
 				UploadTime: time.Now(),

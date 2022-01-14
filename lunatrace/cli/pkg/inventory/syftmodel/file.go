@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package model
+package syftmodel
 
 import (
 	"github.com/anchore/syft/syft/file"
-
 	"github.com/anchore/syft/syft/source"
 )
 

@@ -60,9 +60,8 @@ func ArchiveNameToSemverVersion(filename string) string {
 	var tag, semverVersion string
 	for i := len(fileNameParts) - 1; i >= 0; i-- {
 		fileNamePart := fileNameParts[i]
-		if (
-			strings.HasPrefix(fileNamePart, "1") ||
-				strings.HasPrefix(fileNamePart, "2")) &&
+		if (strings.HasPrefix(fileNamePart, "1") ||
+			strings.HasPrefix(fileNamePart, "2")) &&
 			strings.Contains(fileNamePart, ".") {
 
 			tagPart := alphaRegex.FindString(fileNamePart)

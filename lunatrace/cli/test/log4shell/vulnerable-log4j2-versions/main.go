@@ -30,7 +30,7 @@ import (
 )
 
 var (
-	versions = []string{"2.17.1","2.17.0","2.16.0","2.15.0","2.14.1","2.14.0","2.13.3","2.13.2","2.13.1","2.13.0","2.12.4","2.12.3","2.12.2","2.12.1","2.12.0","2.11.2","2.11.1","2.11.0","2.10.0","2.9.1","2.9.0","2.8.2","2.8.1","2.8","2.7","2.6.2","2.6.1","2.6","2.5","2.4.1","2.4","2.3.2","2.3.1","2.3","2.2","2.1","2.0.2","2.0.1","2.0","2.0-rc2","2.0-rc1"}
+	versions = []string{"2.17.1", "2.17.0", "2.16.0", "2.15.0", "2.14.1", "2.14.0", "2.13.3", "2.13.2", "2.13.1", "2.13.0", "2.12.4", "2.12.3", "2.12.2", "2.12.1", "2.12.0", "2.11.2", "2.11.1", "2.11.0", "2.10.0", "2.9.1", "2.9.0", "2.8.2", "2.8.1", "2.8", "2.7", "2.6.2", "2.6.1", "2.6", "2.5", "2.4.1", "2.4", "2.3.2", "2.3.1", "2.3", "2.2", "2.1", "2.0.2", "2.0.1", "2.0", "2.0-rc2", "2.0-rc1"}
 )
 
 type ArtifactId struct {
@@ -64,11 +64,11 @@ type Id struct {
 }
 
 type Dependency struct {
-	XMLName xml.Name `xml:"dependency"`
-	GroupId GroupId
+	XMLName    xml.Name `xml:"dependency"`
+	GroupId    GroupId
 	ArtifactId ArtifactId
-	Version Version
-	Scope Scope
+	Version    Version
+	Scope      Scope
 }
 
 type Dependencies struct {
@@ -77,8 +77,8 @@ type Dependencies struct {
 }
 
 type Profile struct {
-	XMLName xml.Name `xml:"profile"`
-	Id Id
+	XMLName      xml.Name `xml:"profile"`
+	Id           Id
 	Dependencies []Dependencies
 }
 
@@ -88,15 +88,15 @@ type Profiles struct {
 }
 
 type Project struct {
-	XMLName xml.Name `xml:"project"`
-	Xmlns           string `xml:"xmlns,attr"`
-	XmlnsXsi           string `xml:"xmlns:xsi,attr"`
-	XsiSchemaLocation           string `xml:"xsi:schemaLocation,attr"`
-	Version Version
-	ModelVersion ModelVersion
-	GroupId GroupId
-	ArtifactId ArtifactId
-	Profiles []Profiles
+	XMLName           xml.Name `xml:"project"`
+	Xmlns             string   `xml:"xmlns,attr"`
+	XmlnsXsi          string   `xml:"xmlns:xsi,attr"`
+	XsiSchemaLocation string   `xml:"xsi:schemaLocation,attr"`
+	Version           Version
+	ModelVersion      ModelVersion
+	GroupId           GroupId
+	ArtifactId        ArtifactId
+	Profiles          []Profiles
 }
 
 func getLog4jFromMaven() {
@@ -133,8 +133,8 @@ func getLog4jFromMaven() {
 	}
 
 	project := &Project{
-		Xmlns: "http://maven.apache.org/POM/4.0.0",
-		XmlnsXsi: "http://www.w3.org/2001/XMLSchema-instance",
+		Xmlns:             "http://maven.apache.org/POM/4.0.0",
+		XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
 		XsiSchemaLocation: "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd",
 		Version: Version{
 			Value: "1.0",
@@ -177,41 +177,41 @@ func getLog4jFromMaven() {
 }
 
 func downloadFile(downloadUrl string) string {
-    // Build fileName from fullPath
-    fileURL, err := url.Parse(downloadUrl)
-    if err != nil {
-        log.Fatal(err)
-    }
-    path := fileURL.Path
-    segments := strings.Split(path, "/")
-    fileName := segments[len(segments)-1]
+	// Build fileName from fullPath
+	fileURL, err := url.Parse(downloadUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	path := fileURL.Path
+	segments := strings.Split(path, "/")
+	fileName := segments[len(segments)-1]
 
-    filePath := filepath.Join("apache-download", fileName)
+	filePath := filepath.Join("apache-download", fileName)
 
-    // Create blank file
-    file, err := os.Create(filePath)
-    if err != nil {
-        log.Fatal(err)
-    }
-    client := http.Client{
-        CheckRedirect: func(r *http.Request, via []*http.Request) error {
-            r.URL.Opaque = r.URL.Path
-            return nil
-        },
-    }
-    // Put content on file
-    resp, err := client.Get(downloadUrl)
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer resp.Body.Close()
+	// Create blank file
+	file, err := os.Create(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	client := http.Client{
+		CheckRedirect: func(r *http.Request, via []*http.Request) error {
+			r.URL.Opaque = r.URL.Path
+			return nil
+		},
+	}
+	// Put content on file
+	resp, err := client.Get(downloadUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
 
-    size, err := io.Copy(file, resp.Body)
+	size, err := io.Copy(file, resp.Body)
 
-    defer file.Close()
+	defer file.Close()
 
-    fmt.Printf("Downloaded a file %s with size %d", fileName, size)
-    return filePath
+	fmt.Printf("Downloaded a file %s with size %d", fileName, size)
+	return filePath
 }
 
 func getLog4jFromApache() {

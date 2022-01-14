@@ -5,6 +5,7 @@ before:
 builds:
   - binary: log4shell
     id: log4shell
+    dir: ./cmd/log4shell
     env:
       - CGO_ENABLED=0
     goos:
@@ -14,8 +15,47 @@ builds:
     goarch:
       - amd64
       - arm64
+  - binary: lunatrace
+    id: lunatrace
+    dir: ./cmd/lunatrace
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+  - binary: lunatrace-agent
+    id: lunatrace-agent
+    dir: ./cmd/lunatraceagent
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+      - 386
 archives:
-  - format: binary
+  - id: 64bit-only
+    format: binary
+    builds:
+      - log4shell
+      - lunatrace
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      amd64: x86_64
+
+  - id: 64-and-32bit
+    format: binary
+    builds:
+      - lunatrace-agent
     replacements:
       darwin: Darwin
       linux: Linux

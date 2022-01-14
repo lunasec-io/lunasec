@@ -1,23 +1,14 @@
-module lunasec/lunatrace
+module lunasec/lunatrace/inventory
 
 go 1.17
 
-replace (
-	lunasec/lunadefend => ./../../go
-	lunasec/lunatrace => ./
-	lunasec/lunatrace/inventory => ./pkg/inventory
-)
+replace lunasec/lunatrace => ./../../../cli
 
 require (
-	github.com/blang/semver/v4 v4.0.0
-	github.com/breadchris/ldapserver v1.1.0
-	github.com/go-git/go-git/v5 v5.4.2
-	github.com/lor00x/goldap v0.0.0-20180618054307-a546dffdd1a3
-	github.com/prometheus/procfs v0.7.3
+	github.com/anchore/syft v0.35.1
 	github.com/rs/zerolog v1.26.1
 	github.com/urfave/cli/v2 v2.3.0
-	go.uber.org/config v1.4.0
-	lunasec/lunatrace/inventory v0.0.0-00010101000000-000000000000
+	lunasec/lunatrace v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -29,9 +20,10 @@ require (
 	github.com/anchore/go-version v1.2.2-0.20200701162849-18adb9c92b9b // indirect
 	github.com/anchore/packageurl-go v0.0.0-20210922164639-b3fa992ebd29 // indirect
 	github.com/anchore/stereoscope v0.0.0-20220110181730-c91cf94a3718 // indirect
-	github.com/anchore/syft v0.35.1 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/bmatcuk/doublestar/v4 v4.0.2 // indirect
+	github.com/breadchris/ldapserver v1.1.0 // indirect
 	github.com/containerd/containerd v1.5.9 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.10.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
@@ -47,6 +39,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.3.0 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.3.1 // indirect
+	github.com/go-git/go-git/v5 v5.4.2 // indirect
 	github.com/go-restruct/restruct v1.2.0-alpha // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -62,6 +55,7 @@ require (
 	github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/klauspost/pgzip v1.2.5 // indirect
+	github.com/lor00x/goldap v0.0.0-20180618054307-a546dffdd1a3 // indirect
 	github.com/mattn/go-runewidth v0.0.7 // indirect
 	github.com/mholt/archiver/v3 v3.5.1 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
@@ -74,6 +68,7 @@ require (
 	github.com/pelletier/go-toml v1.9.3 // indirect
 	github.com/pierrec/lz4/v4 v4.1.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/scylladb/go-set v1.0.2 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
@@ -87,20 +82,15 @@ require (
 	github.com/wagoodman/go-progress v0.0.0-20200731105512-1020f39e6240 // indirect
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
-	go.uber.org/atomic v1.7.0 // indirect
-	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e // indirect
-	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/mod v0.5.1 // indirect
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/tools v0.1.7 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/genproto v0.0.0-20211111162719-482062a4217b // indirect
 	google.golang.org/grpc v1.42.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

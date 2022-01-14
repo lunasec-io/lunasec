@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package util
+package inventory
 
 import (
 	"fmt"
 	"log"
+	"lunasec/lunatrace/inventory/syftmodel"
 	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types/model"
 	"sort"
 	"strconv"
 
@@ -33,13 +33,13 @@ import (
 	"github.com/anchore/syft/syft/source"
 )
 
-func ToSyftJsonFormatModel(s *sbom.SBOM) model.Document {
+func ToSyftJsonFormatModel(s *sbom.SBOM) syftmodel.Document {
 	src, err := toSourceModel(s.Source)
 	if err != nil {
 		log.Printf("unable to create syft-json source object: %+v", err)
 	}
 
-	return model.Document{
+	return syftmodel.Document{
 		Artifacts:             toPackageModels(s.Artifacts.PackageCatalog),
 		ArtifactRelationships: toRelationshipModel(s.Relationships),
 		Files:                 toFile(*s),
@@ -47,25 +47,25 @@ func ToSyftJsonFormatModel(s *sbom.SBOM) model.Document {
 		Source:                src,
 		Distro:                toDistroModel(s.Artifacts.Distro),
 		Descriptor:            toDescriptor(s.Descriptor),
-		Schema: model.Schema{
+		Schema: syftmodel.Schema{
 			Version: constants.JSONSchemaVersion,
 			URL:     fmt.Sprintf("https://raw.githubusercontent.com/anchore/syft/main/schema/json/schema-%s.json", constants.JSONSchemaVersion),
 		},
 	}
 }
 
-func toDescriptor(d sbom.Descriptor) model.Descriptor {
-	return model.Descriptor{
+func toDescriptor(d sbom.Descriptor) syftmodel.Descriptor {
+	return syftmodel.Descriptor{
 		Name:          d.Name,
 		Version:       d.Version,
 		Configuration: d.Configuration,
 	}
 }
 
-func toSecrets(data map[source.Coordinates][]file.SearchResult) []model.Secrets {
-	results := make([]model.Secrets, 0)
+func toSecrets(data map[source.Coordinates][]file.SearchResult) []syftmodel.Secrets {
+	results := make([]syftmodel.Secrets, 0)
 	for coordinates, secrets := range data {
-		results = append(results, model.Secrets{
+		results = append(results, syftmodel.Secrets{
 			Location: coordinates,
 			Secrets:  secrets,
 		})
@@ -78,8 +78,8 @@ func toSecrets(data map[source.Coordinates][]file.SearchResult) []model.Secrets 
 	return results
 }
 
-func toFile(s sbom.SBOM) []model.File {
-	results := make([]model.File, 0)
+func toFile(s sbom.SBOM) []syftmodel.File {
+	results := make([]syftmodel.File, 0)
 	artifacts := s.Artifacts
 
 	for _, coordinates := range sbom.AllCoordinates(s) {
@@ -103,7 +103,7 @@ func toFile(s sbom.SBOM) []model.File {
 			contents = contentsForLocation
 		}
 
-		results = append(results, model.File{
+		results = append(results, syftmodel.File{
 			ID:              string(coordinates.ID()),
 			Location:        coordinates,
 			Metadata:        toFileMetadataEntry(coordinates, metadata),
@@ -120,7 +120,7 @@ func toFile(s sbom.SBOM) []model.File {
 	return results
 }
 
-func toFileMetadataEntry(coordinates source.Coordinates, metadata *source.FileMetadata) *model.FileMetadataEntry {
+func toFileMetadataEntry(coordinates source.Coordinates, metadata *source.FileMetadata) *syftmodel.FileMetadataEntry {
 	if metadata == nil {
 		return nil
 	}
@@ -131,7 +131,7 @@ func toFileMetadataEntry(coordinates source.Coordinates, metadata *source.FileMe
 		mode = 0
 	}
 
-	return &model.FileMetadataEntry{
+	return &syftmodel.FileMetadataEntry{
 		Mode:            mode,
 		Type:            metadata.Type,
 		LinkDestination: metadata.LinkDestination,
@@ -141,8 +141,8 @@ func toFileMetadataEntry(coordinates source.Coordinates, metadata *source.FileMe
 	}
 }
 
-func toPackageModels(catalog *pkg.Catalog) []model.Package {
-	artifacts := make([]model.Package, 0)
+func toPackageModels(catalog *pkg.Catalog) []syftmodel.Package {
+	artifacts := make([]syftmodel.Package, 0)
 	if catalog == nil {
 		return artifacts
 	}
@@ -153,7 +153,7 @@ func toPackageModels(catalog *pkg.Catalog) []model.Package {
 }
 
 // toPackageModel crates a new Package from the given pkg.Package.
-func toPackageModel(p pkg.Package) model.Package {
+func toPackageModel(p pkg.Package) syftmodel.Package {
 	var cpes = make([]string, len(p.CPEs))
 	for i, c := range p.CPEs {
 		cpes[i] = pkg.CPEString(c)
@@ -169,8 +169,8 @@ func toPackageModel(p pkg.Package) model.Package {
 		coordinates[i] = l.Coordinates
 	}
 
-	return model.Package{
-		PackageBasicData: model.PackageBasicData{
+	return syftmodel.Package{
+		PackageBasicData: syftmodel.PackageBasicData{
 			ID:        string(p.ID()),
 			Name:      p.Name,
 			Version:   p.Version,
@@ -182,17 +182,17 @@ func toPackageModel(p pkg.Package) model.Package {
 			CPEs:      cpes,
 			PURL:      p.PURL,
 		},
-		PackageCustomData: model.PackageCustomData{
+		PackageCustomData: syftmodel.PackageCustomData{
 			MetadataType: p.MetadataType,
 			Metadata:     p.Metadata,
 		},
 	}
 }
 
-func toRelationshipModel(relationships []artifact.Relationship) []model.Relationship {
-	result := make([]model.Relationship, len(relationships))
+func toRelationshipModel(relationships []artifact.Relationship) []syftmodel.Relationship {
+	result := make([]syftmodel.Relationship, len(relationships))
 	for i, r := range relationships {
-		result[i] = model.Relationship{
+		result[i] = syftmodel.Relationship{
 			Parent:   string(r.From.ID()),
 			Child:    string(r.To.ID()),
 			Type:     string(r.Type),
@@ -203,35 +203,35 @@ func toRelationshipModel(relationships []artifact.Relationship) []model.Relation
 }
 
 // toSourceModel creates a new source object to be represented into JSON.
-func toSourceModel(src source.Metadata) (model.Source, error) {
+func toSourceModel(src source.Metadata) (syftmodel.Source, error) {
 	switch src.Scheme {
 	case source.ImageScheme:
-		return model.Source{
+		return syftmodel.Source{
 			Type:   "image",
 			Target: src.ImageMetadata,
 		}, nil
 	case source.DirectoryScheme:
-		return model.Source{
+		return syftmodel.Source{
 			Type:   "directory",
 			Target: src.Path,
 		}, nil
 	case source.FileScheme:
-		return model.Source{
+		return syftmodel.Source{
 			Type:   "file",
 			Target: src.Path,
 		}, nil
 	default:
-		return model.Source{}, fmt.Errorf("unsupported source: %q", src.Scheme)
+		return syftmodel.Source{}, fmt.Errorf("unsupported source: %q", src.Scheme)
 	}
 }
 
 // toDistroModel creates a struct with the Linux distribution to be represented in JSON.
-func toDistroModel(d *distro.Distro) model.Distro {
+func toDistroModel(d *distro.Distro) syftmodel.Distro {
 	if d == nil {
-		return model.Distro{}
+		return syftmodel.Distro{}
 	}
 
-	return model.Distro{
+	return syftmodel.Distro{
 		Name:    d.Name(),
 		Version: d.FullVersion(),
 		IDLike:  d.IDLike,

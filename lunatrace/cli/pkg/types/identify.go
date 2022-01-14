@@ -12,14 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package model
+package types
 
-import (
-	"github.com/anchore/syft/syft/file"
-	"github.com/anchore/syft/syft/source"
-)
+type IdentifyRequest struct {
+	ApplicationId string `json:"application_id"`
+}
 
-type Secrets struct {
-	Location source.Coordinates  `json:"location"`
-	Secrets  []file.SearchResult `json:"secrets"`
+type IdentifyResponse struct {
 }

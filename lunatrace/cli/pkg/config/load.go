@@ -18,7 +18,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.uber.org/config"
 	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
 	"os"
 	"path/filepath"
 )
@@ -69,34 +68,4 @@ func GetConfigProviderFromDir(configDir string) (provider config.Provider, err e
 	}
 
 	return GetConfigProviderFromFiles(filenames)
-}
-
-func LoadLunaTraceConfig() (appConfig types.LunaTraceConfig, err error) {
-	_, err = os.Stat(constants.LunaTraceConfigFileName)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("configFileName", constants.LunaTraceConfigFileName).
-			Msg("unable to locate lunatrace config file")
-		return
-	}
-
-	provider, err := GetConfigProviderFromFiles([]string{constants.LunaTraceConfigFileName})
-	if err != nil {
-		log.Error().
-			Err(err).
-			Msg("unable to load config provider")
-		return
-	}
-
-	value := provider.Get(constants.LunaTraceProviderName)
-
-	err = value.Populate(appConfig)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Msg("unable populate application config")
-		return
-	}
-	return
 }

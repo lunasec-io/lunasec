@@ -15,4 +15,10 @@
 package types
 
 type LunaTraceConfig struct {
+	ApplicationId string `json:"application_id"`
+}
+
+type LunaTraceAgentConfig struct {
+	ApplicationId string `json:"application_id"`
+	ControlServer string `json:"control_server"`
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package model
+package syftmodel
 
 // Document represents the syft cataloging findings as a JSON document
 type Document struct {
