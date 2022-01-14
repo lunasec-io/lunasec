@@ -1,0 +1,3 @@
+table:
+  name: vulnerabilities
+  schema: public

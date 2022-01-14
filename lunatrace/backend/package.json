@@ -4,6 +4,7 @@
   "scripts": {
     "start": "yarn run ts-node-dev --trace-warnings --files ./src/server.ts",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
+    "test:scan:upload": "yarn run ts-node --files ./src/tests/upload-scan.ts",
     "test:load": "yarn run ts-node --files ./src/tests/local-load-vulnerabilities-test.ts",
     "test:update": "yarn run ts-node --files ./src/tests/upsert-vulns.ts",
     "test:deleted": "yarn run ts-node --files ./src/tests/deleted-vulns-scan.ts",

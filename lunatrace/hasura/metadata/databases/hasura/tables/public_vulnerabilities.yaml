@@ -9,3 +9,10 @@ array_relationships:
       table:
         name: vulnerability_packages
         schema: public
+- name: related_vulnerabilities
+  using:
+    foreign_key_constraint_on:
+      column: vulnerability_slug
+      table:
+        name: related_vulnerabilities
+        schema: public
