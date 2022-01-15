@@ -14,23 +14,21 @@
  * limitations under the License.
  *
  */
-import config from 'config';
-// import * as pgPromise from 'pg-promise';
-import pgPromise from 'pg-promise';
+import os from 'os';
+import path from 'path';
 
-const dbConfig = config.get('db');
+import { VulnerabilityLoader } from '../utils/vulnerabilityLoader';
 
-const conf = { ...(dbConfig as Record<string, any>) };
+const dbPath = path.join(os.homedir(), '.cache/grype/db/3/vulnerability.db');
 
-export const pgp = pgPromise({
-  /* initialization options */
-  capSQL: true, // capitalize all generated SQL
-});
+async function compareReports() {
+  const newData = await VulnerabilityLoader.loadVulnerabilities(dbPath);
+  const oldData = await VulnerabilityLoader.loadVulnerabilities('/home/forrest/tmp/old-vulnerability.db');
+  Object.keys(oldData.vulnIndex).forEach((slug) => {
+    if (newData.vulnIndex[slug] === undefined) {
+      console.log(slug);
+    }
+  });
+}
 
-export const db = pgp(conf);
-console.log('postgres DB initialized');
-
-// export function closeDb(_req: Request, _res: Response, next: () => {}) {
-//   db.$pool.end();
-//   next();
-// }
+void compareReports();
