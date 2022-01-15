@@ -26,17 +26,6 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
---
--- CREATE FUNCTION public.set_current_timestamp_updated_at() RETURNS trigger
---     LANGUAGE plpgsql
---     AS $$
--- DECLARE
---   _new record;
--- BEGIN _new := NEW;
--- _new."updated_at" = NOW();
--- RETURN _new;
--- END;
--- $$;
 
 
 ALTER FUNCTION public.set_current_timestamp_updated_at() OWNER TO postgres;
@@ -93,9 +82,6 @@ CREATE TABLE public.organization_user
 );
 
 
-ALTER TABLE public.organization_user
-    OWNER TO postgres;
-
 --
 -- Name: TABLE organization_user; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -104,8 +90,7 @@ COMMENT ON TABLE public.organization_user IS 'join table';
 
 
 
-ALTER TABLE public.organizations
-    OWNER TO postgres;
+
 
 --
 -- Name: package_versions; Type: TABLE; Schema: public; Owner: postgres
@@ -125,8 +110,6 @@ CREATE TABLE public.package_versions
 
 CREATE INDEX pkg_ver_slug_indx on public.package_versions(slug);
 
-ALTER TABLE public.package_versions
-    OWNER TO postgres;
 
 --
 -- Name: projects; Type: TABLE; Schema: public; Owner: postgres
@@ -143,8 +126,7 @@ CREATE TABLE public.projects
 );
 
 
-ALTER TABLE public.projects
-    OWNER TO postgres;
+
 
 CREATE TABLE public.vulnerabilities
 (
@@ -174,10 +156,10 @@ CREATE TABLE public.related_vulnerabilities
     related_vulnerability_slug text                                  NOT NULL REFERENCES public.vulnerabilities (slug)
 );
 
+ALTER TABLE public.related_vulnerabilities ADD CONSTRAINT constraint_name UNIQUE (vulnerability_slug, related_vulnerability_slug);
+
 CREATE INDEX related_vulnerabilities_indx on public.related_vulnerabilities(vulnerability_slug);
 
-ALTER TABLE public.related_vulnerabilities
-    OWNER TO postgres;
 
 --
 -- Name: TABLE related_vulnerabilities; Type: COMMENT; Schema: public; Owner: postgres
@@ -203,8 +185,6 @@ CREATE TABLE public.reports
 );
 
 
-ALTER TABLE public.reports
-    OWNER TO postgres;
 
 --
 -- Name: TABLE reports; Type: COMMENT; Schema: public; Owner: postgres
@@ -225,8 +205,6 @@ CREATE TABLE public.sboms
 );
 
 
-ALTER TABLE public.sboms
-    OWNER TO postgres;
 
 --
 -- Name: scans; Type: TABLE; Schema: public; Owner: postgres
@@ -240,27 +218,12 @@ CREATE TABLE public.scans
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
-
-ALTER TABLE public.scans
-    OWNER TO postgres;
-
-
-
-ALTER TABLE public.settings
-    OWNER TO postgres;
-
-
-
-ALTER TABLE public.users
-    OWNER TO postgres;
-
 --
 -- Name: vulnerabilities; Type: TABLE; Schema: public; Owner: postgres
 --
 
 
-ALTER TABLE public.vulnerabilities
-    OWNER TO postgres;
+
 
 --
 -- Name: vulnerability_packages; Type: TABLE; Schema: public; Owner: postgres
@@ -270,7 +233,7 @@ CREATE TABLE public.vulnerability_packages
 (
     advisories text                                  NOT NULL,
     vuln_slug  text                                  NOT NULL REFERENCES public.vulnerabilities (slug),
-    slug       text                                  NOT NULL,
+    slug       text                                  NOT NULL UNIQUE,
     name       text,
     id         uuid DEFAULT public.gen_random_uuid() NOT NULL UNIQUE PRIMARY KEY
 );
@@ -278,9 +241,6 @@ CREATE TABLE public.vulnerability_packages
 CREATE INDEX vuln_pkg_slug on public.vulnerability_packages(slug);
 
 
-
-ALTER TABLE public.vulnerability_packages
-    OWNER TO postgres;
 
 --
 -- Name: TABLE vulnerability_packages; Type: COMMENT; Schema: public; Owner: postgres
