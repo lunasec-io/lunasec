@@ -24,6 +24,47 @@ import (
 	"os"
 )
 
+func getInventoryCmd(
+	setGlobalBoolFlags func(c *cli.Context) error,
+	globalBoolFlags map[string]bool,
+) *cli.Command {
+	return &cli.Command{
+		Name:    "inventory",
+		Aliases: []string{"i"},
+		Usage:   "Inventory dependencies as a Software Bill of Materials (SBOM) for project. An automatic alert will be when security vulnerabilities are detected to be present in this project.",
+		Before:  setGlobalBoolFlags,
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "email",
+				Usage: "Email to send dependency report results to.",
+			},
+			&cli.StringFlag{
+				Name:  "application-id",
+				Usage: "Identifier of the application to report the SBOM belonging to.",
+			},
+			&cli.StringFlag{
+				Name:  "output",
+				Usage: "File to write scan results to.",
+			},
+			&cli.StringSliceFlag{
+				Name:  "excluded",
+				Usage: "Excluded dirs from scanning.",
+			},
+			&cli.BoolFlag{
+				Name:  "skip-upload",
+				Usage: "Skip uploading collected dependencies.",
+			},
+			&cli.StringFlag{
+				Name:  "upload-url",
+				Usage: "Upload SBOMs to designated upload url. You can keep track of SBOMs locally by using the `inventory-server` command and setting the upload url to this local server.",
+			},
+		},
+		Action: func(c *cli.Context) error {
+			return inventory.InventoryCommand(c, globalBoolFlags)
+		},
+	}
+}
+
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
@@ -50,8 +91,11 @@ func main() {
 	}
 
 	app := &cli.App{
-		Name:  "lunatrace",
-		Usage: "",
+		Name: "lunatrace",
+		Usage: `
+Use "files" to collect SBOMs from artifacts which are just files on the file system.
+Use "container" to collect an SBOM from a built container.
+`,
 		Authors: []*cli.Author{
 			{
 				Name:  "lunasec",
@@ -59,7 +103,7 @@ func main() {
 			},
 		},
 		Version:     constants.LunaTraceVersion,
-		Description: "",
+		Description: "Collect a Software Bill of Materials (SBOM) from build artifacts.",
 		Before:      setGlobalBoolFlags,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
@@ -77,53 +121,22 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			{
-				Name:    "inventory",
-				Aliases: []string{"i"},
-				Usage:   "Inventory dependencies as a Software Bill of Materials (SBOM) for project. An automatic alert will be when security vulnerabilities are detected to be present in this project. This command will attempt to automatically determine what project the SBOM belongs to by looking for the presence of a git repository. If not found, then a project name must be provided manually.",
+				Name:    "files",
+				Aliases: []string{"f"},
+				Usage:   "",
 				Before:  setGlobalBoolFlags,
-				Flags: []cli.Flag{
-					&cli.StringFlag{
-						Name:  "email",
-						Usage: "Email to send dependency report results to.",
-					},
-					&cli.StringFlag{
-						Name:  "application-id",
-						Usage: "Identifier of the application to report the SBOM belonging to.",
-					},
-					&cli.StringFlag{
-						Name:  "output",
-						Usage: "File to write scan results to.",
-					},
-					&cli.StringSliceFlag{
-						Name:  "excluded",
-						Usage: "Excluded dirs from scanning.",
-					},
-					&cli.BoolFlag{
-						Name:  "skip-upload",
-						Usage: "Skip uploading collected dependencies.",
-					},
-					&cli.StringFlag{
-						Name:  "upload-url",
-						Usage: "Upload SBOMs to designated upload url. You can keep track of SBOMs locally by using the `inventory-server` command and setting the upload url to this local server.",
-					},
-				},
-				Action: func(c *cli.Context) error {
-					return inventory.InventoryCommand(c, globalBoolFlags)
+				Flags:   []cli.Flag{},
+				Subcommands: []*cli.Command{
+					getInventoryCmd(setGlobalBoolFlags, globalBoolFlags),
 				},
 			},
 			{
-				Name:    "inventory-server",
-				Aliases: []string{"s"},
-				Usage:   "Inventory server for creating a local inventory of package dependencies.",
+				Name:    "container",
+				Aliases: []string{"c"},
+				Usage:   "",
 				Before:  setGlobalBoolFlags,
-				Flags: []cli.Flag{
-					&cli.IntFlag{
-						Name:  "port",
-						Usage: "Port to have the inventory server listen on.",
-					},
-				},
-				Action: func(c *cli.Context) error {
-					return inventory.InventoryServerCommand(c, globalBoolFlags)
+				Subcommands: []*cli.Command{
+					getInventoryCmd(setGlobalBoolFlags, globalBoolFlags),
 				},
 			},
 		},

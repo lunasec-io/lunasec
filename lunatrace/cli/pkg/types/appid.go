@@ -14,18 +14,17 @@
 //
 package types
 
-type LunaTraceServer struct {
-	Host     string `json:"host"`
-	ApiToken string `json:"api_token"`
+type ApplicationGitMetadata struct {
+	Commit string `json:"commit"`
+	Remote string `json:"remote"`
 }
 
-type LunaTraceConfig struct {
-	ApplicationId string          `json:"application_id"`
-	Server        LunaTraceServer `json:"server"`
+type ApplicationMetadata struct {
+	GitMetadata ApplicationGitMetadata `json:"git_metadata"`
 }
 
-type LunaTraceAgentConfig struct {
-	ApplicationId string          `json:"application_id"`
-	BuildId       string          `json:"build_id"`
-	Server        LunaTraceServer `json:"server"`
+type ApplicationIdentity struct {
+	BuildId       string              `json:"build_id"`
+	ApplicationId string              `json:"application_id"`
+	Metadata      ApplicationMetadata `json:"metadata"`
 }

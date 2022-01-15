@@ -12,20 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
+package config
 
-type LunaTraceServer struct {
-	Host     string `json:"host"`
-	ApiToken string `json:"api_token"`
-}
+import "lunasec/lunatrace/pkg/types"
 
-type LunaTraceConfig struct {
-	ApplicationId string          `json:"application_id"`
-	Server        LunaTraceServer `json:"server"`
-}
-
-type LunaTraceAgentConfig struct {
-	ApplicationId string          `json:"application_id"`
-	BuildId       string          `json:"build_id"`
-	Server        LunaTraceServer `json:"server"`
+func defaultLunaTraceServerConfig() types.LunaTraceServer {
+	return types.LunaTraceServer{
+		ApiToken: "${LUNATRACE_SERVER_API_TOKEN}",
+		Host:     "${LUNATRACE_SERVER_HOST}",
+	}
 }

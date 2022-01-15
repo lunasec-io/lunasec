@@ -41,7 +41,7 @@ func main() {
 
 	controlServer := url.URL{
 		Scheme: "https",
-		Host:   appConfig.ControlServer,
+		Host:   appConfig.Server.Host,
 		Path:   "/application/identify",
 	}
 
@@ -59,7 +59,11 @@ func main() {
 		return
 	}
 
-	data, err := util.HttpRequest(http.MethodPost, identifyUrl, map[string]string{}, bytes.NewBuffer(body))
+	headers := map[string]string{
+		"X-LunaTrace-Api-Token": appConfig.Server.ApiToken,
+	}
+
+	data, err := util.HttpRequest(http.MethodPost, identifyUrl, headers, bytes.NewBuffer(body))
 	if err != nil {
 		log.Error().
 			Err(err).

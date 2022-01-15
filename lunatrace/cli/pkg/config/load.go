@@ -22,11 +22,13 @@ import (
 	"path/filepath"
 )
 
-func GetConfigProviderFromFiles(filenames []string) (provider config.Provider, err error) {
+func GetConfigProviderFromFiles(filenames []string, defaultOpts ...config.YAMLOption) (provider config.Provider, err error) {
 	opts := []config.YAMLOption{
 		config.Permissive(),
 		config.Expand(os.LookupEnv),
 	}
+
+	opts = append(opts, defaultOpts...)
 
 	for _, name := range filenames {
 		log.Debug().

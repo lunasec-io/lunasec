@@ -12,20 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
+package inventory
 
-type LunaTraceServer struct {
-	Host     string `json:"host"`
-	ApiToken string `json:"api_token"`
-}
+import (
+	"github.com/google/uuid"
+	"lunasec/lunatrace/pkg/types"
+)
 
-type LunaTraceConfig struct {
-	ApplicationId string          `json:"application_id"`
-	Server        LunaTraceServer `json:"server"`
-}
-
-type LunaTraceAgentConfig struct {
-	ApplicationId string          `json:"application_id"`
-	BuildId       string          `json:"build_id"`
-	Server        LunaTraceServer `json:"server"`
+func GetApplicationIdentity(applicationId string) types.ApplicationIdentity {
+	buildId := uuid.New()
+	return types.ApplicationIdentity{
+		BuildId:       buildId.String(),
+		ApplicationId: applicationId,
+	}
 }

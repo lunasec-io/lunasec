@@ -16,18 +16,20 @@ package config
 
 import (
 	"github.com/rs/zerolog/log"
+	"go.uber.org/config"
 	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/types"
 	"os"
 )
 
 func defaultLunaSecAgentConfig() types.LunaTraceAgentConfig {
-	return types.LunaTraceAgentConfig{}
+	return types.LunaTraceAgentConfig{
+		ApplicationId: "${LUNATRACE_APPLICATION_ID}",
+		BuildId:       "${LUNATRACE_BUILD_ID}",
+	}
 }
 
 func LoadLunaTraceAgentConfig() (appConfig types.LunaTraceAgentConfig, err error) {
-	appConfig = defaultLunaSecAgentConfig()
-
 	_, err = os.Stat(constants.LunaTraceConfigFileName)
 	if err != nil {
 		log.Error().
@@ -37,7 +39,9 @@ func LoadLunaTraceAgentConfig() (appConfig types.LunaTraceAgentConfig, err error
 		return
 	}
 
-	provider, err := GetConfigProviderFromFiles([]string{constants.LunaTraceConfigFileName})
+	defaultOps := config.Static(defaultLunaSecAgentConfig())
+
+	provider, err := GetConfigProviderFromFiles([]string{constants.LunaTraceConfigFileName}, defaultOps)
 	if err != nil {
 		log.Error().
 			Err(err).

@@ -12,20 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
-
-type LunaTraceServer struct {
-	Host     string `json:"host"`
-	ApiToken string `json:"api_token"`
-}
-
-type LunaTraceConfig struct {
-	ApplicationId string          `json:"application_id"`
-	Server        LunaTraceServer `json:"server"`
-}
-
-type LunaTraceAgentConfig struct {
-	ApplicationId string          `json:"application_id"`
-	BuildId       string          `json:"build_id"`
-	Server        LunaTraceServer `json:"server"`
-}
+package injectagent
