@@ -32,7 +32,7 @@ _Anyone on this train deserves a much-needed break._
 After a DOS attack with limited impact was [discovered](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105)
 in `2.16.0` and log4j was updated to `2.17.0` to fix it, another
 even *less* impactful [vulnerability](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44832) was discovered in
-`2.17.0`. I wonder if we should say "vulnerability" in quotes because
+`2.17.0`. I wonder whether we should say "vulnerability" in quotes because
 this latest vulnerability requires an attacker to have access to the
 logger configuration file, which is a very privileged and unlikely scenario. It's so minor, we have chosen not to
 scan for it in our [Log4shell scanning tool](/blog/log4j-zero-day-mitigation-guide). We hope the focus will remain on fixing
@@ -47,7 +47,7 @@ we'll look at a timeline of the vulnerabilities discovered in log4j, ending with
 
 Before a CVE was assigned to the RCE discovered in CVE-2021-44832, the Checkmarx security researcher @YNizry released a
 tweet [teasing about a "Log4j 2.17.0 RCE"](https://twitter.com/YNizry/status/1475764153373573120). Teams in charge of responding
-to these security disclosures with their ear to the ground anxiously await for the latest Log4j version to be released. After the disclosure,
+to these security disclosures with their ear to the ground anxiously wait for the latest Log4j version to be released. After the disclosure,
 Checkmarx wrote a [blog post](https://web.archive.org/web/20211229212117/https://webcache.googleusercontent.com/search?q=cache%3ADxLkX7am-JsJ%3Ahttps%3A%2F%2Fcheckmarx.com%2Fblog%2Fcve-2021-44832-apache-log4j-2-17-0-arbitrary-code-execution-via-jdbcappender-datasource-element%2F)
 with [misleading information](https://twitter.com/GossiTheDog/status/1475962632095993856)
 about the severity of this vulnerability. In the section, "Why is it so critical?", they compare their vulnerability to
@@ -58,7 +58,7 @@ the original Log4Shell vulnerability, stating:
 With as much attention as there is now on the Log4j project, it can be difficult to truly understand the impact of the
 recently disclosed vulnerabilities when they are being compared against the original Log4Shell vulnerability, which has a perfect 10/10 severity.
 The truth is that this vulnerability, while technically an RCE, is incredibly unlikely to be jeopardizing to anyone's project.
-It requires the attacker to have a privileged position, at which point they would probably prefer another attack vector to further
+It requires the attacker to have a privileged position, at which point they would probably prefer a different attack vector to further
 compromise a system.
 
 Checkmarx has since backpedaled to [update their post](https://checkmarx.com/blog/cve-2021-44832-apache-log4j-2-17-0-arbitrary-code-execution-via-jdbcappender-datasource-element/)
@@ -77,8 +77,7 @@ for version changes. Urging developers to update for the sake of updating to the
 social capital with other teams. Crying wolf, just like the fable tells us, doesn't build trust.
 
 :::info Simple, Clear Log4Shell Mitigation Guidance
-With all the recent Log4j versions being released, it can be quite confusing what guidance to follow to have a fully patched
-system. Our [mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) is continually updated with up-to-date guidance.
+With all the recent Log4j versions being released, knowing what guidance to follow in order to have a fully patched system can be quite confusing. Our [mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) is continually updated with up-to-date guidance.
 :::
 
 ## The Troubling Timeline for On-Calls
@@ -120,7 +119,7 @@ different social media sites. Plans to address this issue internally are already
 
 With a low severity, this has not been considered important, as efforts to update to `2.15.0` are well underway
 for most companies, and shifting focus on this strategy can lead to confusion. Most likely, a number of security teams have pushed
-for upgrading to `2.16.0` to fully have themselves covered.
+for upgrading to `2.16.0` to have themselves fully covered.
 
 ### December 18th - CVE-2021-45046 severity changed from 3.7 to 9.0 _and_ Version 2.17.0 Released to address CVE-2021-45105 - 7.5
 
@@ -168,7 +167,7 @@ vulnerability makes it obvious why companies do need to care about security.
 The distinction between the approach we take, and the approach taken by companies like Checkmarx, is in the value we provide.
 LunaSec isn't a tool which just surfaces
 vulnerabilities and leaves it up to developers to decipher an alert like: "CVE-2021-44832 was found in your code, fix it now!".
-We know from experience this simply doesn't work.
+We know from experience that this simply doesn't work.
 
 Instead, our Open Source product mitigates vulnerabilities by shrinking the blast radius when the inevitable hack happens.
 Because data in LunaSec is tightly monitored and protected against a full system compromise, there is

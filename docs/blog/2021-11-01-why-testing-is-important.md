@@ -29,42 +29,42 @@ This post is meant to give you context about why we worked so hard on our testin
 
 ### The 100x Engineer
 Modern software requirements are brutal.  Not only does software need to support a long list of features, but it also
-needs to support millions of users, keep their data secure, and also be built (and fixed) as quickly as possible.
+needs to support millions of users, keep their data secure, and be built (and fixed), as quickly as possible.
 
-Fortunately, for the modern developer, they don't have to start from scratch.  Resources are available and better than
+Fortunately for the modern developer, they don't have to start from scratch.  Resources are available and better than
 ever to build software rapidly.
 
 No more physical servers. You have cloud providers!
 
 Stop writing algorithms from scratch. Just import a library!
 
-What used to require an entire company to achieve is now possible to build as a single individual.  
+What used to require an entire company to achieve can now be built as a single individual.  
 Compared to 20 years ago, we're living in the future.
 
 ### Ignorance is bliss...
-Unfortunately, it's not always daisies.  By depending on the work of others, you're also entrusting that they did it properly.
+Unfortunately, it's not always daisies.  By depending on the work of others, you're also trusting that they did the work properly.
 
 For the modern developer, libraries are effectively APIs powered by a magical black box.
-What you gain in productivity, you trade for in headaches when the magic runs out.
+What you gain in productivity, you trade in for headaches when the magic runs out.
 
-Debugging dependencies sucks.  After all, you didn't write the code, you only used it.  Find a bug in AWS somewhere?  Good luck!
+Debugging dependencies sucks.  After all, you didn't write the code, you only used it.  Need to find a bug somewhere in AWS?  Good luck!
 
 Using tools is bliss, until it isn't.
 
 ### Testing is the key
-That's why it's so important for us to ensure that the software we publish as LunaSec is high quality.
+It's vitally important for us to ensure that the software we publish at LunaSec is high quality.
 With great power comes great responsibility for developers building libraries.
 
-To respect our users, our software must be well-designed, documented, and tested before every release. We
+To respect our users, our software must be well designed, well documented, and well tested before every release. We
 _really_ don't want to be the reason for that bug in your software!
 
 Achieving that means that we need to replicate, as closely as possible, the environment where our software would be used by others.
-We need to find the bugs in our code, and fix them, before our users do.
+We need to find the bugs in our code and fix them, before our users do.
 
 ### Coming to terms with being an idiot
 Even if you're a good programmer most of the time, you're still an idiot sometimes.  As a former colleague once said...
 
-"You can't remember not to forget!" - A former colleague
+"You can't remember not to forget!"
 
 If we wanted to live up to our goals of shipping high quality software, we needed to ensure we never skipped a step in our release process.
 We needed to automate the process to make it idiot-proof.
