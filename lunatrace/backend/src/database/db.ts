@@ -15,18 +15,20 @@
  *
  */
 import config from 'config';
-import * as pgPromise from 'pg-promise';
-import { IDatabase, IMain } from 'pg-promise';
+// import * as pgPromise from 'pg-promise';
+import pgPromise from 'pg-promise';
 
 const dbConfig = config.get('db');
 
 const conf = { ...(dbConfig as Record<string, any>) };
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 
-const pgp: IMain = pgPromise({});
+export const pgp = pgPromise({
+  /* initialization options */
+  capSQL: true, // capitalize all generated SQL
+});
 
-export const db: IDatabase<any> = pgp(conf);
+export const db = pgp(conf);
+console.log('postgres DB initialized');
 
 // export function closeDb(_req: Request, _res: Response, next: () => {}) {
 //   db.$pool.end();

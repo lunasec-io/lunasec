@@ -6,6 +6,7 @@ replace lunasec/lunatrace => ./../../../cli
 
 require (
 	github.com/anchore/syft v0.35.1
+	github.com/google/uuid v1.2.0
 	github.com/rs/zerolog v1.26.1
 	github.com/urfave/cli/v2 v2.3.0
 	lunasec/lunatrace v0.0.0-00010101000000-000000000000
@@ -23,7 +24,6 @@ require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/bmatcuk/doublestar/v4 v4.0.2 // indirect
-	github.com/breadchris/ldapserver v1.1.0 // indirect
 	github.com/containerd/containerd v1.5.9 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.10.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
@@ -45,7 +45,6 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/go-containerregistry v0.7.0 // indirect
-	github.com/google/uuid v1.2.0 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/hashicorp/go-version v1.2.0 // indirect
@@ -55,7 +54,6 @@ require (
 	github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/klauspost/pgzip v1.2.5 // indirect
-	github.com/lor00x/goldap v0.0.0-20180618054307-a546dffdd1a3 // indirect
 	github.com/mattn/go-runewidth v0.0.7 // indirect
 	github.com/mholt/archiver/v3 v3.5.1 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
@@ -68,10 +66,9 @@ require (
 	github.com/pelletier/go-toml v1.9.3 // indirect
 	github.com/pierrec/lz4/v4 v4.1.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/scylladb/go-set v1.0.2 // indirect
-	github.com/sergi/go-diff v1.1.0 // indirect
+	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spdx/tools-golang v0.1.0 // indirect
 	github.com/spf13/afero v1.6.0 // indirect

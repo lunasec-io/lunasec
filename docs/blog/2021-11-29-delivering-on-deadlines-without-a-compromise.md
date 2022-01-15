@@ -2,6 +2,7 @@
 title: How Data Breaches happen and why Secure by Default software is the future
 description: Your software delivery model is broken, but it's not your fault. Delivering on time while also protecting yourself from data breaches is a herculean task. It doesn't have to be though, and we'll show you why!
 slug: how-data-breaches-happen-and-why-secure-by-default-software-is-the-future
+tags: [security, data-security, data-breaches]
 authors:
 - name: Chris Thompson
   title: Developer at Lunasec

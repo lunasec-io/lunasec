@@ -91,8 +91,7 @@
       "./js/internal-infrastructure/lunatrace-ui/cdk",
       "./js/internal-infrastructure/s3-redirect-generator",
       "./js/internal-infrastructure/metrics-server-backend",
-      "./lunatrace/frontend",
-      "./lunatrace/backend"
+      "./lunatrace/*"
     ]
   },
   "packageManager": "yarn@3.1.1"
