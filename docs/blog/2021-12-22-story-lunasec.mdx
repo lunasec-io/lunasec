@@ -1,6 +1,6 @@
 ---
-title: "LunaSec will help protect against Open Source vulnerabilities"
-description: Looking at the latest big attacks to explain why we built the LunaSec Framework.
+title: "LunaDefend can help protect against Open Source vulnerabilities"
+description: Looking at the latest big attacks to explain why we built the LunaDefend Framework.
 slug: lunasec-story
 date: 2021-12-22
 keywords: [open-source, vulnerability, framework, compliance]
@@ -30,7 +30,7 @@ know that those responding to Log4Shell are in a stressful situation.
 
 It's easy to imagine walking into a meeting
  and not being able to tell your boss if data has been leaked. Even worse,
-not be able to say for sure if an attack has happened or not.
+to not be able to say for sure if an attack has happened or not.
 While many are having these uncomfortable meetings about security, there has never been a better time
 to lobby for more attention to security and the installation of stronger defences.
 
@@ -43,12 +43,12 @@ that attackers are really after. It feels more relevant now than ever.
 ## Modern attack surface
 In security, we use the word "attack surface" to talk about how much territory we need to defend.
 I think of this like the walls and gates around an ancient city. The bigger
-the town is, the harder and more expensive it becomes to build walls and maintain fortifications.
+the city is, the harder and more expensive it becomes to build walls and maintain fortifications.
 
-Modern web applications are bigger and have more functionality than ever before and this surface is becoming unmanageable.
+Modern web applications are bigger and have more functionality than ever before, and this surface is becoming unmanageable.
 They use many tools and libraries, all of which could have a potential issue like Log4Shell. Looking forward to the next
 inevitable vulnerability like Log4shell,
-let's look at ways to reduce the size of that attack surface to a much smaller amount of well-audited code.
+let's look at ways to reduce the size of that attack surface to a much smaller area of well-audited code.
 
 ### Compliance focused tools
 Getting sensitive data **out** of these potentially vulnerable web apps is becoming a popular strategy to help with legal compliance.
@@ -56,16 +56,15 @@ The most popular tools to do this
 are token proxies which convert sensitive fields like a social security number, *435-12-9745*,
 into some identifier token, *token-1234-5678*, which only _refers_ to the sensitive field. While a company using a proxy such as this can quickly
 become compliant given they are no longer storing sensitive data themselves, these tools typically provide next to no actual data security.
-Their focus is mainly just on helping comply with regulations.
+Their focus is mainly just on helping to comply with regulations.
 
-In fact, our security researchers have identified actual _vulnerabilities_ in some of these tools which may be trivially exploited
-(more on that and the problems with token proxies in a future post). The short explanation is:
+In fact, our security researchers have identified actual _vulnerabilities_ in some of these tools which may be trivially exploited, but more on that and the problems with token proxies in a future post. The short explanation is:
 there are just too many ways to easily get the protected data.
 
-Some tools are better than others, but they all seem to have compromises and some attacks which they don't protect against.
+Some tools are better than others, but they all seem to have compromises and some attacks which they simply don't protect against.
 **None** of them seem to protect data once it reaches the browser.
 We wanted a way to *truly* protect data against *every* [common type of attack](/pages/how-it-works/security/vulns-and-mitigations),
-from browser attacks such as Cross Site Scripting (XSS) to full Remote Code Execution (RCE) like Log4Shell.
+from browser attacks such as Cross Site Scripting (XSS), to full Remote Code Execution (RCE) like Log4Shell.
 
 ### Tools that are ACTUALLY secure
 There's one set of tools with a proven track record for protecting sensitive data on the web, and that's **payment processors**.
@@ -77,11 +76,11 @@ and get to type their credit card information into a safe place. iFrames (in [cr
 completely secure when done right because the browser treats them as a totally separate process. This is the strictest security
 tool the browser has. It's like the iFrame is running in a separate tab next to your site, only *appearing* to be a part of it.
 
-After the user is done, the credit card number goes up to the payment processors server. Your server talks to their server,
+After the user is done, the credit card number goes up to the payment processor's server. Your server talks to their server,
 and you get the bare minimum information you need to make the sale.
 
-The sensitive data is isolated every step of the way from your system. Even if attackers break in,
-it'll be very difficult to break through to the payment processor and get the credit card number. The attack surface for the payment processor
+The sensitive data is isolated from your system every step of the way. Even if attackers break in,
+it will be very difficult to break through to the payment processor and get the credit card number. The attack surface for the payment processor
 is small because it's isolated from your site. Their security teams can audit the changes they make to their small system without worrying about the rest of your app.
 
 ### Making that work for any data
@@ -103,14 +102,14 @@ more extensively about [how Secure Components work](/pages/how-it-works/secure-c
 <SecureInput name="ssn" token={props.value} onChange={props.onChange} errorHandler={props.handleError} />
 ```
 Just like how payment processors give you a "payment ID" instead of a credit card number, the **components return a token** that you
-can store legally and safely in your database, in the same place where you used to put sensitive data. The secure data is handled
-by small and [secure backend](/pages/how-it-works/tokens) that's blindingly fast, very cheap, and scales without limit.
+can store legally and safely in your database, in the same place you used to put sensitive data. The secure data is handled
+by a small and [secure backend](/pages/how-it-works/tokens) that's blindingly fast, very cheap, and scales without limit.
 
 ### Secure Functions
-I personally think this is one of the coolest parts of LunaSec.
+I personally think this is one of the coolest parts of LunaDefend.
 
 Processing data serverside is sometimes needed. Sometimes you need to resize a photo, send something to another service,
-capitalize a line of text, send a GDPR report, etc... We want to give users a secure place to do these tasks. We knew there must
+capitalize a line of text, send a GDPR report, etc. We want to give users a secure place to do these tasks. We knew there must
 be a way for a server to safely use secret data, even in the event of an RCE.
 
 So now we are building Secure Functions. They look and act like normal functions in your server code, but in fact run in an ephemeral, sandboxed environment.
@@ -133,14 +132,14 @@ need to make sure these parts of your code are secure, but it's much easier to a
 your entire server.
 
 ### Deployment
-We haven't built a pay-as-you-go SASS for LunaSec (at least not yet) because the tool is Open Source and most of our users have wanted to have their own deployments.
+We haven't built a pay-as-you-go SASS for LunaDefend (at least not yet), because the tool is Open Source and most of our users have wanted to have their own deployments.
 Instead of leaving users on their own in terms of deployment, we wrote [a CLI](/pages/deployment/deploy-with-aws) that uses AWS CDK to deploy
 everything needed to AWS with a single line:
 ```shell
 lunasec deploy
 ```
 
-Unlike token proxies, LunaSec provides a method for testing your application locally or in CI with
+Unlike token proxies, LunaDefend provides a method for testing your application locally, or in CI with
  [AWS LocalStack](https://github.com/localstack/localstack), a containerized AWS emulator, which will also work in an offline environment. Calling
 ```shell
 lunasec start
@@ -149,7 +148,7 @@ brings up everything you need on your development machine, including that local 
 a stubbed-out dev mode that doesn't need any servers running at all.
 
 ### Conclusion
-In summary, there *are* ways to protect data against attacks like Log4Shell, and we are working to make them accessible
-and affordable (actually, free) for normal companies and developers. We've also worked hard to make [our docs](/pages/overview/introduction)
-a great resource so please take a look or use the search bar if
+There *are* ways to protect data against attacks like Log4Shell, and we are working to make them accessible
+and affordable (actually, free), for normal companies and developers. We've also worked hard to make [our docs](/pages/overview/introduction)
+a great resource, so please take a look or use the search bar if
 this article has left you curious.  Thanks for reading!

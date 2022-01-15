@@ -15,6 +15,11 @@
 package util
 
 import (
+	"bytes"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
 	"net/url"
 	"strconv"
 )
@@ -27,5 +32,37 @@ func ParseHostAndPortFromUrlString(urlStr string) (host string, port int64, err 
 
 	host = parsedUrl.Hostname()
 	port, err = strconv.ParseInt(parsedUrl.Port(), 10, 0)
+	return
+}
+
+func HttpRequest(method, url string, headers map[string]string, body *bytes.Buffer) (data []byte, err error) {
+	if body == nil {
+		body = bytes.NewBuffer([]byte{})
+	}
+
+	req, err := http.NewRequest(method, url, body)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	for k, v := range headers {
+		req.Header.Add(k, v)
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer resp.Body.Close()
+
+	data, err = ioutil.ReadAll(resp.Body)
+
+	if resp.StatusCode != http.StatusOK {
+		err = fmt.Errorf("error in response: %s", resp.Status)
+		return
+	}
 	return
 }

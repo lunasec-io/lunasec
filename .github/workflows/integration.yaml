@@ -98,16 +98,16 @@ jobs:
       run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo --local-build --env=tests --verbose
 
     - name: docker logs
-      if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
+      if: ${{ always()}}
       run: .github/print-docker-logs.sh
       shell: bash
 
     - name: docker compose logs
-      if: ${{ always() && steps.job-canceller.outputs.cancelled == 'false' }}
+      if: ${{ always() }}
       run: docker run -v /var/run/docker.sock:/var/run/docker.sock -e HOST_MACHINE_PWD=$(pwd) repo_lunasec-cli start --no-sudo --local-build --show-logs --env=tests
 
     - name: Warn on lockfile failure
-      if: ${{ job.status == 'failure' && matrix.lockfile == 'no-lockfile' }}
+      if: ${{ job.status == 'failure' }}
       run: echo "::warning  title=lockfile-check::Building without a lockfile failed"
 
 #    - uses: actions/upload-artifact@v2
@@ -118,7 +118,6 @@ jobs:
 
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
-      if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_TITLE: PR Build ${{ github.head_ref }} ${{ job.status }}
@@ -152,7 +151,6 @@ jobs:
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
-        if: ${{ steps.job-canceller.outputs.cancelled == 'false' }}
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_TITLE: PR Build ${{ github.head_ref }} ${{ job.status }}
