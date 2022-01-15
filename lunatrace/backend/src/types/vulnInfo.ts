@@ -14,25 +14,35 @@
  * limitations under the License.
  *
  */
-export interface PkgInfo {
-  pkg_name: string;
-  version_constraint: string;
+
+export interface PkgVersion {
+  version_constraint: string; // use this to dedup, okay if empty, just overwrite
   version_format: string;
-  fixed_in_versions: string;
+  fixed_in_versions: string[];
   fix_state: string;
-  cpes: string;
+  cpes: string[];
+  pkg_slug: string; // foreign key -> pkg.id
+  slug: string; // vuln.name : vuln.namespace : pkg.name : version_constraint
+}
+export interface PkgInfo {
+  vuln_slug: string; // foreign key -> vuln.name_namespaced
+  slug: string; // vuln.name : vuln.namespace : name
+  name: string;
   advisories: string;
 }
 
 export interface VulnInfo {
   name: string;
   namespace: string;
-  name_namespaced: string;
-  related_vulnerabilities: string;
-  pkgs: PkgInfo[];
+  slug: string; // name : namespace
   data_source: string;
   record_source: string;
   severity: string;
-  urls: string;
+  urls: string[];
   description: string;
+}
+
+export interface RelatedVulnerability {
+  vulnerability_slug: string;
+  related_vulnerability_slug: string;
 }
