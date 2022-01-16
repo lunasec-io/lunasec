@@ -20,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
@@ -215,7 +215,13 @@ CREATE TABLE public.scans
     id         uuid                                                  NOT NULL PRIMARY KEY,
     project_id uuid REFERENCES public.projects (id),
     sbom_id    uuid REFERENCES public.sboms,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    source_type text NOT NULL,
+    target text NOT NULL,
+    db_date timestamp NOT NULL,
+    grype_version text NOT NULL,
+    distro_name text,
+    distro_version text
 );
 
 --
@@ -258,6 +264,8 @@ CREATE TABLE public.findings
     vulnerability_id         uuid references public.vulnerabilities (id),
     vulnerability_package_id uuid references public.vulnerability_packages (id),
     package_version_id       uuid references public.package_versions (id),
+    report_id                  uuid references public.reports (id),
+
     package_name             text                                  NOT NULL,
     version                  text                                  NOT NULL,
     version_matcher          text                                  NOT NULL,
