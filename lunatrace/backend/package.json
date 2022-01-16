@@ -6,7 +6,7 @@
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
     "test:scan:upload": "yarn run ts-node --files ./src/tests/upload-scan.ts",
     "test:load": "yarn run ts-node --files ./src/tests/local-load-vulnerabilities-test.ts",
-    "test:update": "yarn run ts-node --files ./src/tests/upsert-vulns.ts",
+    "vulnerabilities:update": "yarn run ts-node --files ./src/tests/upsert-vulns.ts",
     "test:deleted": "yarn run ts-node --files ./src/tests/deleted-vulns-scan.ts",
     "start:prod": "yarn run compile && pm2-runtime start ./build/server.js --name demo-back-end",
     "compile": "yarn run tsc -p tsconfig.json",
