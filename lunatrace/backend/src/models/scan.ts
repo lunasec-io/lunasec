@@ -27,7 +27,8 @@ export class Scan {
   static async uploadScan(sbomPath: string, projectId: string) {
     const rawGrypeReport = await this.runGrypeScan(sbomPath);
     const report = this.parseScan(rawGrypeReport, projectId);
-    const upload = await this.storeReport(report);
+    await this.storeReport(report);
+    console.log('donezo');
   }
   static async runGrypeScan(sbomPath: string): Promise<GrypeScanReport> {
     const { stdout } = await promisifiedExec(`grype ${sbomPath} -o json --quiet\n`);
@@ -77,14 +78,12 @@ export class Scan {
   }
   // todo: rewrite this with sequelize, the ORM is your friend
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   static async storeReport(report: Report) {
-    const queryParts = [
-      pgp.as.format(
-        `
-          BEGIN; 
-          WITH report AS (
-            INSERT INTO reports(
+    const queryBeginning = pgp.as.format(
+      `
+          BEGIN;
+          WITH this_report AS (
+            INSERT INTO public.reports(
                 source_type, 
                 target, 
                 db_date,
@@ -101,46 +100,54 @@ export class Scan {
                  $<distro_version>,
                  $<project_id>
             ) RETURNING id
-          )`,
-        report
-      ),
-    ];
-    report.findings.forEach((finding) => {
-      pgp.as.format(`
-          ( WITH vuln AS (
-            SELECT id FROM vulnerabilities WHERE slug = $<meta.vuln_slug> RETURNING id
-          ), pkg AS (        
-            SELECT id FROM vulnerability_packages WHERE slug = $<meta.pkg_slug> RETURNING id
-          ), version AS (
-            SELECT id FROM package_versions WHERE slug = $<meta.version_slug> RETURNING id
           )
           INSERT INTO findings(
             vulnerability_id,
             vulnerability_package_id,
             package_version_id,
-            artifact_name,
-            artifact_version,
-            artifact_type,
-            artifact_locations,
-            artifact_language,
-            artifact_licenses,
-            artifact_cpes,
-            artifact_package_url,
-            artifact_metadata_virtual_path,
-            artifact_metadata_pom_artifact_id,
-            artifact_metadata_pom_group_id,
-            artifact_metadata_manifest_name,
-            matcher,
-            searched_by_namespace
-            searched_by_cpes
-          ) VALUES (
-            vuln.id,
-            pkg.id,
-            version.id,
-            <arth
-          )
+            report_id,
+            package_name,
+            version,
+            version_matcher,
+            type,
+            locations,
+            language,
+            purl,
+            virtual_path,
+            matcher
+          ) VALUES 
+        `,
+      report
+    );
 
-`);
-    });
+    const findingValueArray = report.findings.map(this.buildFindingInsertQuery);
+    const findingValues = findingValueArray.join(',');
+    const queryEnd = '; COMMIT;';
+    const query = queryBeginning + findingValues + queryEnd;
+    await db.none(query);
+  }
+
+  private static buildFindingInsertQuery(finding: Finding) {
+    return pgp.as.format(
+      `
+            (
+            ( SELECT id FROM public.vulnerabilities WHERE slug = $<meta.vuln_slug> ),
+            ( SELECT id FROM public.vulnerability_packages WHERE slug = $<meta.pkg_slug>),
+            ( SELECT id FROM public.package_versions WHERE slug = $<meta.version_slug>),
+            ( SELECT id FROM this_report ),
+            $<package_name>,
+            $<version>,
+            $<version_matcher>,
+            $<type>,
+            $<locations>,
+            $<language>,
+            $<purl>,
+            $<virtual_path>,
+            $<matcher>
+            
+          )
+        `,
+      finding
+    );
   }
 }
