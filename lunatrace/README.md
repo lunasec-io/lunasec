@@ -30,6 +30,7 @@ Do **not** use the Hasura "console" GUI for managing the database, either creati
 low quality up migrations and broken down migrations that are not maintainable.  For pre-production, modify the existing init migration files.
 For production migration, use `hasura migrate create <name>` to scaffold manual migrations.  
 
+Use `hasura migrate apply --down 1` to do a down migration.
 
 ## Backend Data Ingestion
 Backend services written in typescript can add data to postgres directly, bypassing Hasura when necessary.  These are found in the
