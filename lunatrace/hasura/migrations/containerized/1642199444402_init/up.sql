@@ -126,22 +126,22 @@ CREATE TABLE public.projects
 
 CREATE TABLE public.vulnerabilities
 (
-    id                  uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    name                text                                                         NOT NULL,
-    created_at          timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
-    namespace           text                                                         NOT NULL,
-    data_source         text,
-    record_source       text,
-    severity            text,
-    cvss_version        text,
-    cvss_score          NUMERIC(3, 1),
+    id                        uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    name                      text                                                         NOT NULL,
+    created_at                timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
+    namespace                 text                                                         NOT NULL,
+    data_source               text,
+    record_source             text,
+    severity                  text,
+    cvss_version              text,
+    cvss_score                NUMERIC(3, 1),
     cvss_exploitability_score NUMERIC(3, 1),
-    cvss_impact_score   NUMERIC(3, 1),
-    cvss_inferred       boolean,
-    description         text,
-    slug                text                                                         NOT NULL UNIQUE,
-    topic_id            uuid,
-    urls                text[]
+    cvss_impact_score         NUMERIC(3, 1),
+    cvss_inferred             boolean,
+    description               text,
+    slug                      text                                                         NOT NULL UNIQUE,
+    topic_id                  uuid,
+    urls                      text[]
 );
 
 CREATE INDEX vuln_slug on public.vulnerabilities (slug);
