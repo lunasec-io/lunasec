@@ -1,3 +1,11 @@
 table:
   name: package_versions
   schema: public
+array_relationships:
+- name: findings
+  using:
+    foreign_key_constraint_on:
+      column: package_version_id
+      table:
+        name: findings
+        schema: public

@@ -1,3 +1,32 @@
 table:
   name: vulnerabilities
   schema: public
+array_relationships:
+- name: findings
+  using:
+    foreign_key_constraint_on:
+      column: vulnerability_id
+      table:
+        name: findings
+        schema: public
+- name: relatedVulnerabilitiesByVulnerabilitySlug
+  using:
+    foreign_key_constraint_on:
+      column: vulnerability_slug
+      table:
+        name: related_vulnerabilities
+        schema: public
+- name: related_vulnerabilities
+  using:
+    foreign_key_constraint_on:
+      column: related_vulnerability_slug
+      table:
+        name: related_vulnerabilities
+        schema: public
+- name: vulnerability_packages
+  using:
+    foreign_key_constraint_on:
+      column: vuln_slug
+      table:
+        name: vulnerability_packages
+        schema: public
