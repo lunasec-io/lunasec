@@ -5,6 +5,21 @@
 -- Dumped from database version 12.9 (Debian 12.9-1.pgdg110+1)
 -- Dumped by pg_dump version 13.4
 
+--
+-- Name: set_current_timestamp_updated_at(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.set_current_timestamp_updated_at() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  _new record;
+BEGIN _new := NEW;
+_new."updated_at" = NOW();
+RETURN _new;
+END;
+$$;
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
