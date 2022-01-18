@@ -15,6 +15,7 @@
  *
  */
 
+// TODO: Pull in CVSS
 export interface PkgVersion {
   version_constraint: string; // use this to dedup, okay if empty, just overwrite
   version_format: string;
@@ -31,7 +32,9 @@ export interface PkgInfo {
   advisories: string;
 }
 
-export interface VulnInfo {
+export type VulnInfo = VulnWithoutCvss & CvssColumns;
+
+export interface VulnWithoutCvss {
   name: string;
   namespace: string;
   slug: string; // name : namespace
@@ -40,6 +43,14 @@ export interface VulnInfo {
   severity: string;
   urls: string[];
   description: string;
+}
+
+export interface CvssColumns {
+  cvss_version: string | null;
+  cvss_score: number | null;
+  cvss_exploitability_score: number | null;
+  cvss_impact_score: number | null;
+  cvss_inferred: boolean | null;
 }
 
 export interface RelatedVulnerability {

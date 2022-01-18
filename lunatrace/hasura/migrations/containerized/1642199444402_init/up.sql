@@ -27,7 +27,6 @@ COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 
-
 ALTER FUNCTION public.set_current_timestamp_updated_at() OWNER TO postgres;
 
 SET default_tablespace = '';
@@ -90,8 +89,6 @@ COMMENT ON TABLE public.organization_user IS 'join table';
 
 
 
-
-
 --
 -- Name: package_versions; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -108,7 +105,7 @@ CREATE TABLE public.package_versions
     id                 uuid DEFAULT public.gen_random_uuid() NOT NULL UNIQUE PRIMARY KEY
 );
 
-CREATE INDEX pkg_ver_slug_indx on public.package_versions(slug);
+CREATE INDEX pkg_ver_slug_indx on public.package_versions (slug);
 
 
 --
@@ -127,23 +124,27 @@ CREATE TABLE public.projects
 
 
 
-
 CREATE TABLE public.vulnerabilities
 (
-    id            uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    name          text                                                         NOT NULL,
-    created_at    timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
-    namespace     text                                                         NOT NULL,
-    data_source   text,
-    record_source text,
-    severity      text,
-    description   text,
-    slug          text                                                         NOT NULL UNIQUE,
-    topic_id      uuid,
-    urls          text[]
+    id                  uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    name                text                                                         NOT NULL,
+    created_at          timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
+    namespace           text                                                         NOT NULL,
+    data_source         text,
+    record_source       text,
+    severity            text,
+    cvss_version        text,
+    cvss_score          NUMERIC(3, 1),
+    cvss_exploitability_score NUMERIC(3, 1),
+    cvss_impact_score   NUMERIC(3, 1),
+    cvss_inferred       boolean,
+    description         text,
+    slug                text                                                         NOT NULL UNIQUE,
+    topic_id            uuid,
+    urls                text[]
 );
 
-CREATE INDEX vuln_slug on public.vulnerabilities(slug);
+CREATE INDEX vuln_slug on public.vulnerabilities (slug);
 
 --
 -- Name: related_vulnerabilities; Type: TABLE; Schema: public; Owner: postgres
@@ -156,9 +157,10 @@ CREATE TABLE public.related_vulnerabilities
     related_vulnerability_slug text                                  NOT NULL REFERENCES public.vulnerabilities (slug)
 );
 
-ALTER TABLE public.related_vulnerabilities ADD CONSTRAINT constraint_name UNIQUE (vulnerability_slug, related_vulnerability_slug);
+ALTER TABLE public.related_vulnerabilities
+    ADD CONSTRAINT constraint_name UNIQUE (vulnerability_slug, related_vulnerability_slug);
 
-CREATE INDEX related_vulnerabilities_indx on public.related_vulnerabilities(vulnerability_slug);
+CREATE INDEX related_vulnerabilities_indx on public.related_vulnerabilities (vulnerability_slug);
 
 
 --
@@ -212,23 +214,21 @@ CREATE TABLE public.sboms
 
 CREATE TABLE public.scans
 (
-    id         uuid                                                  NOT NULL PRIMARY KEY,
-    project_id uuid REFERENCES public.projects (id),
-    sbom_id    uuid REFERENCES public.sboms,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    source_type text NOT NULL,
-    target text NOT NULL,
-    db_date timestamp NOT NULL,
-    grype_version text NOT NULL,
-    distro_name text,
+    id             uuid                                                  NOT NULL PRIMARY KEY,
+    project_id     uuid REFERENCES public.projects (id),
+    sbom_id        uuid REFERENCES public.sboms,
+    created_at     timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    source_type    text                                                  NOT NULL,
+    target         text                                                  NOT NULL,
+    db_date        timestamp                                             NOT NULL,
+    grype_version  text                                                  NOT NULL,
+    distro_name    text,
     distro_version text
 );
 
 --
 -- Name: vulnerabilities; Type: TABLE; Schema: public; Owner: postgres
 --
-
-
 
 
 --
@@ -244,7 +244,7 @@ CREATE TABLE public.vulnerability_packages
     id         uuid DEFAULT public.gen_random_uuid() NOT NULL UNIQUE PRIMARY KEY
 );
 
-CREATE INDEX vuln_pkg_slug on public.vulnerability_packages(slug);
+CREATE INDEX vuln_pkg_slug on public.vulnerability_packages (slug);
 
 
 
@@ -264,7 +264,7 @@ CREATE TABLE public.findings
     vulnerability_id         uuid references public.vulnerabilities (id),
     vulnerability_package_id uuid references public.vulnerability_packages (id),
     package_version_id       uuid references public.package_versions (id),
-    report_id                  uuid references public.reports (id),
+    report_id                uuid references public.reports (id),
 
     package_name             text                                  NOT NULL,
     version                  text                                  NOT NULL,
