@@ -3,9 +3,6 @@
   "bugs": {
     "url": "https://github.com/lunasec-io/lunasec/issues"
   },
-  "dependencies": {
-    "lerna": "^4.0.0"
-  },
   "description": "This monorepo holds the LunaSec SDKs, servers, and demo application.",
   "devDependencies": {
     "@jest/globals": "^27.4.2",

@@ -1,3 +1,22 @@
 table:
   name: projects
   schema: public
+object_relationships:
+- name: organization
+  using:
+    foreign_key_constraint_on: organization_id
+array_relationships:
+- name: reports
+  using:
+    foreign_key_constraint_on:
+      column: project_id
+      table:
+        name: reports
+        schema: public
+- name: scans
+  using:
+    foreign_key_constraint_on:
+      column: project_id
+      table:
+        name: scans
+        schema: public
