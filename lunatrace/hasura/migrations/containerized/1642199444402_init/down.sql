@@ -61,3 +61,5 @@ DROP TABLE public.findings
 ,public.organizations
 ,public.organization_user
 CASCADE;
+
+DROP FUNCTION public.set_current_timestamp_updated_at();
