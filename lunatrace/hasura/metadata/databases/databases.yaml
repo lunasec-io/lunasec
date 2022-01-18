@@ -1,4 +1,4 @@
-- name: containerized
+- name: lunatrace
   kind: postgres
   configuration:
     connection_info:
@@ -6,4 +6,4 @@
         from_env: PG_DATABASE_URL
       isolation_level: read-committed
       use_prepared_statements: false
-  tables: "!include containerized/tables/tables.yaml"
+  tables: "!include lunatrace/tables/tables.yaml"
