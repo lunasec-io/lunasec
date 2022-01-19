@@ -1,0 +1,10 @@
+table:
+  name: builds
+  schema: public
+object_relationships:
+- name: project
+  using:
+    foreign_key_constraint_on: project_id
+- name: sbom
+  using:
+    foreign_key_constraint_on: sbom_id

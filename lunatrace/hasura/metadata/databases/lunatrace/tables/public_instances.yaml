@@ -1,0 +1,13 @@
+table:
+  name: instances
+  schema: public
+object_relationships:
+- name: build
+  using:
+    manual_configuration:
+      column_mapping:
+        access_token: access_token
+      insertion_order: null
+      remote_table:
+        name: builds
+        schema: public
