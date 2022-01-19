@@ -11,12 +11,13 @@
     "@types/node": "^16.11.19",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
+    "apollo": "2.33.9",
     "dotenv": "^10.0.0",
     "graphql-tag": "^2.12.6",
     "mobx": "^6.3.12",
     "mobx-react": "^7.2.1",
     "mobx-state-tree": "^5.1.0",
-    "mst-gql": "^0.14.1",
+    "mst-gql": "0.14.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
@@ -28,7 +29,9 @@
     "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "mobx:generate": "yarn run apollo:hack-bin && mst-gql --format ts http://localhost:8080/v1/graphql",
+    "apollo:hack-bin": "ln -sf ../../../apollo-npm-2.33.9-b55398f958/node_modules/apollo/bin/run ../../.yarn/unplugged/mst-gql-virtual-0594efdf1f/node_modules/.bin/apollo"
   },
   "browserslist": {
     "production": [
