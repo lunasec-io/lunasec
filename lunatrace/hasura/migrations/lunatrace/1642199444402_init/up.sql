@@ -292,3 +292,16 @@ CREATE TABLE public.findings
     matcher                  text                                  NOT NULL
 );
 
+CREATE TABLE public.builds
+(
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    project_id     uuid REFERENCES public.projects (id),
+    sbom_id        uuid REFERENCES public.sboms,
+    access_token text NOT NULL
+);
+
+CREATE TABLE public.instances
+(
+    id uuid NOT NULL PRIMARY KEY,
+    last_heartbeat timestamp without time zone NOT NULL
+);
