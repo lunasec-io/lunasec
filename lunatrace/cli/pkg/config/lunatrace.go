@@ -24,8 +24,8 @@ import (
 
 func defaultLunaSecConfig() types.LunaTraceConfig {
 	return types.LunaTraceConfig{
-		ApplicationId: "${LUNATRACE_APPLICATION_ID}",
-		Server:        defaultLunaTraceServerConfig(),
+		ProjectId: "${LUNATRACE_APPLICATION_ID}",
+		Server:    defaultLunaTraceServerConfig(),
 	}
 }
 

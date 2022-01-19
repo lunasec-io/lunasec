@@ -12,19 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
+package constants
 
-type LunaTraceServer struct {
-	Host     string `json:"host"`
-	ApiToken string `json:"api_token"`
-}
-
-type LunaTraceConfig struct {
-	ProjectId string          `json:"project_id"`
-	Server    LunaTraceServer `json:"server"`
-}
-
-type LunaTraceAgentConfig struct {
-	AccessToken string          `json:"access_token"`
-	Server      LunaTraceServer `json:"server"`
-}
+const (
+	UpsertInstanceQuery = `
+mutation UpsertInstance($instance_id: uuid, $build_id: uuid) {
+  insert_instances_one(object: {instance_id: $instance_id, build_id: $build_id}, on_conflict: {constraint: instances_pkey, update_columns: last_heartbeat}) {
+    last_heartbeat
+  }
+}`
+)

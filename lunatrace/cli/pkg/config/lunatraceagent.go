@@ -24,8 +24,7 @@ import (
 
 func defaultLunaSecAgentConfig() types.LunaTraceAgentConfig {
 	return types.LunaTraceAgentConfig{
-		ApplicationId: "${LUNATRACE_APPLICATION_ID}",
-		BuildId:       "${LUNATRACE_BUILD_ID}",
+		AccessToken: "${LUNATRACE_AGENT_ACCESS_TOKEN}",
 	}
 }
 

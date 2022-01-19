@@ -17,13 +17,16 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/pkg/config"
+	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/types"
 	"lunasec/lunatrace/pkg/util"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 func main() {
@@ -40,15 +43,24 @@ func main() {
 	}
 
 	controlServer := url.URL{
-		Scheme: "https",
+		Scheme: "http",
 		Host:   appConfig.Server.Host,
-		Path:   "/application/identify",
+		Path:   "/v1/graphql",
 	}
 
 	identifyUrl := controlServer.String()
 
+	accessToken := os.Getenv("LUNATRACE_AGENT_ACCESS_TOKEN")
+
+	instanceId := uuid.New()
+
 	identifyRequest := types.IdentifyRequest{
-		ApplicationId: appConfig.ApplicationId,
+		Query: constants.UpsertInstanceQuery,
+		Variables: map[string]string{
+			"instance_id":  instanceId.String(),
+			"access_token": accessToken,
+		},
+		OperationName: "UpsertInstance",
 	}
 
 	body, err := json.Marshal(identifyRequest)
@@ -60,7 +72,7 @@ func main() {
 	}
 
 	headers := map[string]string{
-		"X-LunaTrace-Api-Token": appConfig.Server.ApiToken,
+		"X-LunaTrace-Agent-Access-Token": accessToken,
 	}
 
 	data, err := util.HttpRequest(http.MethodPost, identifyUrl, headers, bytes.NewBuffer(body))

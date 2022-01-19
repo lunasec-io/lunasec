@@ -15,7 +15,9 @@
 package types
 
 type IdentifyRequest struct {
-	ApplicationId string `json:"application_id"`
+	Query         string            `json:"query"`
+	Variables     map[string]string `json:"variables"`
+	OperationName string            `json:"operationName"`
 }
 
 type IdentifyResponse struct {
