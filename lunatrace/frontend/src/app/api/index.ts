@@ -14,8 +14,14 @@
  * limitations under the License.
  *
  */
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom/extend-expect';
+import { api as generatedApi } from './generated';
+
+// This extends the generated API so we can add any custom logic needed, as per https://www.graphql-code-generator.com/plugins/typescript-rtk-query
+export const api = generatedApi.enhanceEndpoints({
+  // addTagTypes: ['User'],
+  // endpoints: {
+  //     GetUserById: {
+  //         providesTags: (result, error, arg) => [{ type: 'User', id: arg.userId }]
+  //     }
+  // }
+});

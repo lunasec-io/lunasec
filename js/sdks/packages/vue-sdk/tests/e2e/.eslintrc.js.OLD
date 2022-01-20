@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 by LunaSec (owned by Refinery Labs, Inc)
+ * Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,16 @@
  * limitations under the License.
  *
  */
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom/extend-expect';
+
+ SINCE THIS CODE IS DORMANT AND THE LINTING WAS CAUSING ISSUES, VUE LINTING IS DISABLED UNTIL THIS PROJECT RESUMES
+module.exports = {
+  // root:true,
+  plugins: ["cypress"],
+  env: {
+    mocha: true,
+    "cypress/globals": true,
+  },
+  rules: {
+    strict: "off",
+  },
+};

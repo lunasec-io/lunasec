@@ -14,8 +14,7 @@
  * limitations under the License.
  *
  */
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom/extend-expect';
+// A mock function to mimic making an async request for data
+export function fetchCount(amount = 1) {
+  return new Promise<{ data: number }>((resolve) => setTimeout(() => resolve({ data: amount }), 500));
+}

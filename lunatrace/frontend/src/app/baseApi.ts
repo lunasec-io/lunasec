@@ -14,8 +14,14 @@
  * limitations under the License.
  *
  */
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom/extend-expect';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
+import { GraphQLClient } from 'graphql-request';
+
+// This is the base API that is consumed by the graphql codegen
+export const client = new GraphQLClient('http://localhost:8080/v1/graphql');
+// highlight-start
+export const api = createApi({
+  baseQuery: graphqlRequestBaseQuery({ client }),
+  endpoints: () => ({}),
+});
