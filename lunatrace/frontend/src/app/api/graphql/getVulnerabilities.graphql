@@ -1,0 +1,6 @@
+query GetVulnerabilities {
+    vulnerabilities(limit: 10) {
+        id
+        name
+    }
+}
