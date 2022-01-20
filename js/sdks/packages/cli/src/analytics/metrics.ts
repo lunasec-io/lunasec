@@ -14,6 +14,9 @@
  * limitations under the License.
  *
  */
+
+/* eslint-disable */
+
 import { execSync } from 'child_process';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
@@ -27,7 +30,7 @@ import { post } from '../utils/http';
 
 import { CliMetric, CliMetricSystemInfo, LunaSecCliMetadata } from './types';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+
 const { version } = require('../../package.json');
 
 function getCliVersion(cmd: string) {
@@ -65,7 +68,7 @@ async function getCliMetadata() {
   }
 }
 
-async function pathExists(path: string) {
+async function pathExists(path: string): Promise<boolean> {
   return await access(path, fs.constants.F_OK)
     .then(() => true)
     .catch(() => false);

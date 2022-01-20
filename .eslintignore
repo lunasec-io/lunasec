@@ -11,3 +11,4 @@ deploy-apigateway-to-firehose.ts
 **/*.vue
 **/metrics-server-backend/*
 **/ContactForm.jsx
+**/generated.ts
