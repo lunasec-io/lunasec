@@ -14,17 +14,35 @@
 //
 package types
 
-type LunaTraceServer struct {
-	Host     string `json:"host"`
-	ApiToken string `json:"api_token"`
+type LunaTraceGraphqlServer struct {
+	Url string `yaml:"url"`
+}
+
+type LunaTraceGateways struct {
+	GraphqlServer LunaTraceGraphqlServer `yaml:"graphql_server"`
+}
+
+type LunaTraceApp struct {
+	Stage string `yaml:"stage"`
 }
 
 type LunaTraceConfig struct {
-	ProjectId string          `json:"project_id"`
-	Server    LunaTraceServer `json:"server"`
+	LunaTraceApp       `yaml:"app"`
+	LunaTraceGateways  `yaml:"gateways"`
+	ProjectAccessToken string `yaml:"project_access_token"`
 }
 
 type LunaTraceAgentConfig struct {
-	AccessToken string          `json:"access_token"`
-	Server      LunaTraceServer `json:"server"`
+	LunaTraceApp      `yaml:"app"`
+	LunaTraceGateways `yaml:"gateways"`
+	AgentAccessToken  string `yaml:"agent_access_token"`
+	InstanceId        string `yaml:"instance_id"`
+}
+
+type LunaTraceConfigFile struct {
+	Namespace LunaTraceConfig `yaml:"lunatrace"`
+}
+
+type LunaTraceAgentConfigFile struct {
+	Namespace LunaTraceAgentConfig `yaml:"lunatrace"`
 }

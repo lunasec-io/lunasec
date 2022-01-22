@@ -27,16 +27,14 @@ import (
 	"lunasec/lunatrace/pkg/constants"
 )
 
-func getSbomForSearchDir(searchDir string, excludedDirs []string) (s *sbom.SBOM, err error) {
-	userInput := fmt.Sprintf("dir:%s", searchDir)
-
+func getSbomForSyft(sourceName string, excludedDirs []string) (s *sbom.SBOM, err error) {
 	log.Info().
-		Str("searchDir", searchDir).
-		Msg("Scanning search directory for dependencies.")
+		Str("source", sourceName).
+		Msg("Scanning source for dependencies.")
 
-	src, cleanup, err := source.New(userInput, nil, excludedDirs)
+	src, cleanup, err := source.New(sourceName, nil, excludedDirs)
 	if err != nil {
-		err = fmt.Errorf("failed to construct source from user input %q: %w", userInput, err)
+		err = fmt.Errorf("failed to construct source from user input %q: %w", sourceName, err)
 		return
 	}
 	if cleanup != nil {
@@ -44,8 +42,8 @@ func getSbomForSearchDir(searchDir string, excludedDirs []string) (s *sbom.SBOM,
 	}
 
 	log.Info().
-		Str("searchDir", searchDir).
-		Msg("Completed scanning in search directory.")
+		Str("source", sourceName).
+		Msg("Completed scanning source.")
 
 	s = &sbom.SBOM{
 		Source: src.Metadata,
@@ -55,7 +53,7 @@ func getSbomForSearchDir(searchDir string, excludedDirs []string) (s *sbom.SBOM,
 		},
 	}
 
-	err = collectRelationships(searchDir, s, src)
+	err = collectRelationships(sourceName, s, src)
 	if err != nil {
 		return
 	}

@@ -14,11 +14,15 @@
 //
 package types
 
-type IdentifyRequest struct {
-	Query         string            `json:"query"`
-	Variables     map[string]string `json:"variables"`
-	OperationName string            `json:"operationName"`
+type IdentifyResponse struct {
+	GraphqlErrors
+	Data struct {
+		Method struct {
+			LastHeartbeat string `json:"last_heartbeat"`
+		} `json:"insert_instances_one"`
+	} `json:"data"`
 }
 
-type IdentifyResponse struct {
+func (s *IdentifyResponse) GetLastHeartbeat() string {
+	return s.Data.Method.LastHeartbeat
 }

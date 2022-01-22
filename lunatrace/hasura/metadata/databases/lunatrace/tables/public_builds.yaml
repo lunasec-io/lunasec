@@ -8,11 +8,3 @@ object_relationships:
 - name: sbom
   using:
     foreign_key_constraint_on: sbom_id
-array_relationships:
-- name: instances
-  using:
-    foreign_key_constraint_on:
-      column: build_id
-      table:
-        name: instances
-        schema: public

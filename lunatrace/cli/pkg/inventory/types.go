@@ -19,13 +19,12 @@ import (
 )
 
 type InventoryOutput struct {
-	Sboms []syftmodel.Document `json:"sboms"`
+	Sbom syftmodel.Document `json:"sbom"`
 }
 
 type SbomOutput struct {
-	Email         string               `json:"email"`
-	ApplicationId string               `json:"application_id"`
-	Sboms         []syftmodel.Document `json:"sboms"`
+	ProjectId string             `json:"application_id"`
+	Sbom      syftmodel.Document `json:"sbom"`
 }
 
 type UploadSbomUrl struct {

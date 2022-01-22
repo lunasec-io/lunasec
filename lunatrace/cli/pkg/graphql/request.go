@@ -12,49 +12,52 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package inventory
+package graphql
 
 import (
-	"fmt"
-	"github.com/anchore/syft/syft/sbom"
+	"bytes"
+	"encoding/json"
 	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/pkg/types"
-	"path/filepath"
+	"lunasec/lunatrace/pkg/util"
+	"net/http"
 )
 
-func CollectSbomFromFiles(searchDir string, excludedDirs []string) (sbom *sbom.SBOM, err error) {
-	var (
-		searchPath string
-	)
+func PerformGraphqlRequest(
+	graphqlServer types.LunaTraceGraphqlServer,
+	headers map[string]string,
+	request types.GraphqlRequest,
+	response interface{},
+) (err error) {
+	graphqlUrl := graphqlServer.Url
 
-	searchPath, err = filepath.Abs(searchDir)
+	body, err := json.Marshal(request)
 	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to marshal identify request")
 		return
 	}
 
-	sourceName := fmt.Sprintf("dir:%s", searchPath)
-
-	sbom, err = getSbomForSyft(sourceName, excludedDirs)
+	data, err := util.HttpRequest(http.MethodPost, graphqlUrl, headers, bytes.NewBuffer(body))
 	if err != nil {
 		log.Error().
-			Str("searchPath", searchPath).
 			Err(err).
-			Msg("Unable to create SBOM from directory.")
+			Str("graphqlUrl", graphqlUrl).
+			Msg("unable to marshal graphql request")
 		return
 	}
-	return
-}
 
-func CollectSbomFromContainer(container string, containerType types.ContainerType, excludedDirs []string) (sbom *sbom.SBOM, err error) {
-	sourceName := fmt.Sprintf("%s:%s", containerType, container)
+	if response == nil {
+		return
+	}
 
-	sbom, err = getSbomForSyft(sourceName, excludedDirs)
+	err = json.Unmarshal(data, &response)
 	if err != nil {
 		log.Error().
-			Str("container", container).
-			Str("containerType", string(containerType)).
 			Err(err).
-			Msg("Unable to create SBOM from container.")
+			Str("graphqlUrl", graphqlUrl).
+			Msg("unable to unmarshal graphql response")
 		return
 	}
 	return

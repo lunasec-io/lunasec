@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package config
+package types
 
-import "lunasec/lunatrace/pkg/types"
+type ContainerType string
 
-func defaultLunaTraceGatewayConfig() types.LunaTraceGateways {
-	return types.LunaTraceGateways{
-		GraphqlServer: types.LunaTraceGraphqlServer{
-			Url: "${LUNATRACE_GRAPHQL_SERVER_URL:\"http://localhost:8080/v1/graphql\"}",
-		},
-	}
-}
+const (
+	Docker        ContainerType = "docker"
+	DockerArchive ContainerType = "docker-archive"
+	OCIArchive    ContainerType = "oci-archive"
+	OCIDir        ContainerType = "oci-dir"
+)

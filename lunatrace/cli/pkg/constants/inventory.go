@@ -16,5 +16,4 @@ package constants
 
 const (
 	UploadSbomUrl = "https://lunatrace.lunasec.io/api/upload-sbom"
-	IdentifyUrl   = "https://lunatrace.lunasec.io/api/application/identify"
 )

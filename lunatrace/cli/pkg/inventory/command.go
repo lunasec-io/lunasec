@@ -17,19 +17,17 @@ package inventory
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"github.com/anchore/syft/syft/sbom"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"io/ioutil"
 	"lunasec/lunatrace/inventory/syftmodel"
 	"lunasec/lunatrace/pkg/command"
-	"lunasec/lunatrace/pkg/util"
+	"lunasec/lunatrace/pkg/types"
 )
 
-func writeCloudScanOutput(sboms []syftmodel.Document, output string) (err error) {
+func writeCloudScanOutput(sbom syftmodel.Document, output string) (err error) {
 	depOutput := InventoryOutput{
-		Sboms: sboms,
+		Sbom: sbom,
 	}
 
 	serializedOutput, err := json.MarshalIndent(depOutput, "", "\t")
@@ -46,29 +44,29 @@ func writeCloudScanOutput(sboms []syftmodel.Document, output string) (err error)
 	return
 }
 
-func getSbomModels(sboms []*sbom.SBOM) (models []syftmodel.Document) {
-	for _, appSbom := range sboms {
-		docModel := ToSyftJsonFormatModel(appSbom)
-		models = append(models, docModel)
-	}
-	return
-}
-
-func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool) (err error) {
+func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
 	command.EnableGlobalFlags(c, globalBoolFlags)
 
-	searchDirs := c.Args().Slice()
+	sources := c.Args().Slice()
 
-	if len(searchDirs) == 0 {
-		err = errors.New("no search dirs provided")
+	if len(sources) == 0 {
+		err = errors.New("no source provided")
 		log.Error().
-			Msg("No search directories provided. Please provide at least one search directory as an argument to this command.")
+			Msg("No source provided. Please provide one source as an argument to this command.")
 		return
 	}
 
+	if len(sources) > 1 {
+		err = errors.New("too many sources provided")
+		log.Error().
+			Msg("Please provide only one source as an argument to this command.")
+		return
+	}
+
+	source := sources[0]
+
 	output := c.String("output")
 	email := c.String("email")
-	applicationId := c.String("application-id")
 	excludedDirs := c.StringSlice("excluded")
 	skipUpload := c.Bool("skip-upload")
 	uploadUrl := c.String("upload-url")
@@ -81,30 +79,15 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool) (err erro
 		return
 	}
 
-	repoRemote, err := util.GetRepoRemote()
-	if err != nil {
-		if applicationId == "" {
-			err = fmt.Errorf("unable to automatically detect application name")
-			log.Error().
-				Err(err).
-				Msg("Unable to get application id. Please manually specify `--application-id` or run this command inside of a git repo.")
-			return
-		}
-	}
-
-	if applicationId == "" {
-		applicationId = repoRemote
-	}
-
-	sboms, err := CollectSbomsFromSearchDirs(searchDirs, excludedDirs)
+	sbom, err := CollectSbomFromFiles(source, excludedDirs)
 	if err != nil {
 		return
 	}
 
-	sbomModels := getSbomModels(sboms)
+	sbomModel := ToSyftJsonFormatModel(sbom)
 
 	if output != "" {
-		err = writeCloudScanOutput(sbomModels, output)
+		err = writeCloudScanOutput(sbomModel, output)
 		if err != nil {
 			return
 		}
@@ -116,9 +99,9 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool) (err erro
 	}
 
 	if uploadUrl != "" {
-		err = UploadCollectedSbomsToUrl(email, applicationId, sbomModels, uploadUrl, map[string]string{})
+		err = UploadCollectedSbomsToUrl(appConfig, sbomModel, uploadUrl, map[string]string{})
 		return
 	}
-	err = UploadCollectedSboms(email, applicationId, sbomModels)
+	err = UploadCollectedSboms(appConfig, sbomModel)
 	return
 }

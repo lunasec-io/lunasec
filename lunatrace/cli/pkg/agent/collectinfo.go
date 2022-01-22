@@ -12,14 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package config
+package agent
 
-import "lunasec/lunatrace/pkg/types"
-
-func defaultLunaTraceGatewayConfig() types.LunaTraceGateways {
-	return types.LunaTraceGateways{
-		GraphqlServer: types.LunaTraceGraphqlServer{
-			Url: "${LUNATRACE_GRAPHQL_SERVER_URL:\"http://localhost:8080/v1/graphql\"}",
-		},
-	}
-}
+// TODO (cthompson)

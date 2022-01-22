@@ -4,10 +4,4 @@ table:
 object_relationships:
 - name: build
   using:
-    manual_configuration:
-      column_mapping:
-        access_token: access_token
-      insertion_order: null
-      remote_table:
-        name: builds
-        schema: public
+    foreign_key_constraint_on: agent_access_token

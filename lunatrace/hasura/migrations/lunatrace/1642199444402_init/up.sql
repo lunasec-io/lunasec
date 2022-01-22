@@ -78,7 +78,7 @@ CREATE TABLE public.users
 
 CREATE TABLE public.organizations
 (
-    id          uuid                                                  NOT NULL PRIMARY KEY,
+    id          uuid DEFAULT public.gen_random_uuid()                 NOT NULL PRIMARY KEY,
     name        character varying(200)                                NOT NULL,
     "createdAt" timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     settings_id uuid
@@ -101,8 +101,6 @@ CREATE TABLE public.organization_user
 --
 
 COMMENT ON TABLE public.organization_user IS 'join table';
-
-
 
 --
 -- Name: package_versions; Type: TABLE; Schema: public; Owner: postgres
@@ -137,7 +135,12 @@ CREATE TABLE public.projects
     organization_id uuid REFERENCES public.organizations (id)
 );
 
-
+CREATE TABLE public.project_access_tokens
+(
+    id           uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    project_uuid uuid references public.projects (id) ON DELETE CASCADE NOT NULL,
+    access_token uuid DEFAULT public.gen_random_uuid() NOT NULL UNIQUE
+);
 
 CREATE TABLE public.vulnerabilities
 (
@@ -216,7 +219,7 @@ COMMENT ON TABLE public.reports IS 'scan reports';
 
 CREATE TABLE public.sboms
 (
-    id         uuid                                                  NOT NULL PRIMARY KEY,
+    id         uuid DEFAULT public.gen_random_uuid()                 NOT NULL PRIMARY KEY,
     s3_url     text,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
@@ -297,11 +300,12 @@ CREATE TABLE public.builds
     id uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
     project_id     uuid REFERENCES public.projects (id),
     sbom_id        uuid REFERENCES public.sboms,
-    access_token text NOT NULL
+    agent_access_token uuid DEFAULT public.gen_random_uuid() UNIQUE NOT NULL
 );
 
 CREATE TABLE public.instances
 (
-    id uuid NOT NULL PRIMARY KEY,
-    last_heartbeat timestamp without time zone NOT NULL
+    instance_id uuid NOT NULL PRIMARY KEY,
+    last_heartbeat timestamp without time zone DEFAULT now() NOT NULL,
+    agent_access_token uuid references public.builds (agent_access_token) ON DELETE CASCADE
 );

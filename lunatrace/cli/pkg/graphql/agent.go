@@ -12,6 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package identify
+package graphql
 
-// TODO (cthompson)
+import (
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/types"
+)
+
+func NewIdentifyRequest(instanceId, agentAccessToken string) types.GraphqlRequest {
+	return types.GraphqlRequest{
+		Query: constants.UpsertInstanceQuery,
+		Variables: map[string]string{
+			"instance_id":        instanceId,
+			"agent_access_token": agentAccessToken,
+		},
+		OperationName: "UpsertInstance",
+	}
+}

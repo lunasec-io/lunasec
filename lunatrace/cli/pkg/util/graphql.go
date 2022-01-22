@@ -12,14 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package config
+package util
 
-import "lunasec/lunatrace/pkg/types"
+import (
+	"errors"
+	"github.com/rs/zerolog/log"
+	"lunasec/lunatrace/pkg/types"
+	"strings"
+)
 
-func defaultLunaTraceGatewayConfig() types.LunaTraceGateways {
-	return types.LunaTraceGateways{
-		GraphqlServer: types.LunaTraceGraphqlServer{
-			Url: "${LUNATRACE_GRAPHQL_SERVER_URL:\"http://localhost:8080/v1/graphql\"}",
-		},
+func formatGraphqlErrors(graphqlErrors types.GraphqlErrors) error {
+	var errs []string
+	for _, respErr := range graphqlErrors.Errors {
+		log.Error().
+			Str("error", respErr.Message).
+			Msg("encountered error ")
+		errs = append(errs, respErr.Message)
 	}
+	return errors.New(strings.Join(errs, ", "))
+}
+
+func GetGraphqlError(err error, graphqlErrors types.GraphqlErrors) error {
+	if err != nil {
+		return err
+	}
+	if len(graphqlErrors.Errors) != 0 {
+		err = formatGraphqlErrors(graphqlErrors)
+		return err
+	}
+	return nil
 }

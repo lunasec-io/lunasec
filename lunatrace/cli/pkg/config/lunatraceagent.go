@@ -15,6 +15,7 @@
 package config
 
 import (
+	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/config"
 	"lunasec/lunatrace/pkg/constants"
@@ -22,25 +23,32 @@ import (
 	"os"
 )
 
-func defaultLunaSecAgentConfig() types.LunaTraceAgentConfig {
-	return types.LunaTraceAgentConfig{
-		AccessToken: "${LUNATRACE_AGENT_ACCESS_TOKEN}",
+func defaultLunaSecAgentConfig() types.LunaTraceAgentConfigFile {
+	return types.LunaTraceAgentConfigFile{
+		Namespace: types.LunaTraceAgentConfig{
+			AgentAccessToken:  "${LUNATRACE_AGENT_ACCESS_TOKEN}",
+			InstanceId:        "${LUNATRACE_INSTANCE_ID}",
+			LunaTraceGateways: defaultLunaTraceGatewayConfig(),
+		},
 	}
 }
 
 func LoadLunaTraceAgentConfig() (appConfig types.LunaTraceAgentConfig, err error) {
-	_, err = os.Stat(constants.LunaTraceConfigFileName)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("configFileName", constants.LunaTraceConfigFileName).
-			Msg("unable to locate lunatrace config file")
-		return
-	}
-
 	defaultOps := config.Static(defaultLunaSecAgentConfig())
 
-	provider, err := GetConfigProviderFromFiles([]string{constants.LunaTraceConfigFileName}, defaultOps)
+	configFiles := []string{constants.LunaTraceConfigFileName}
+
+	_, err = os.Stat(constants.LunaTraceConfigFileName)
+	if err != nil {
+		configFiles = []string{}
+
+		log.Warn().
+			Err(err).
+			Str("configFileName", constants.LunaTraceConfigFileName).
+			Msg("using default config, unable to locate lunatrace config file")
+	}
+
+	provider, err := GetConfigProviderFromFiles(configFiles, defaultOps)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -50,12 +58,16 @@ func LoadLunaTraceAgentConfig() (appConfig types.LunaTraceAgentConfig, err error
 
 	value := provider.Get(constants.LunaTraceProviderName)
 
-	err = value.Populate(appConfig)
+	err = value.Populate(&appConfig)
 	if err != nil {
 		log.Error().
 			Err(err).
 			Msg("unable populate application config")
 		return
+	}
+
+	if appConfig.InstanceId == "" {
+		appConfig.InstanceId = uuid.New().String()
 	}
 	return
 }

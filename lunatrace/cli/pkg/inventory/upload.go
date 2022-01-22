@@ -23,21 +23,17 @@ import (
 	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/inventory/syftmodel"
 	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/graphql"
+	"lunasec/lunatrace/pkg/types"
 	"lunasec/lunatrace/pkg/util"
 	"net/http"
 	"net/url"
 )
 
-func formatGenerateUploadUrl(email, applicationName string) (uploadSbomUrl string, err error) {
-	metadata := map[string]string{
-		"name": applicationName,
-	}
-
-	metadataBytes, err := json.Marshal(metadata)
-
+func formatGenerateUploadUrl(orgId, projectId string) (uploadSbomUrl string, err error) {
 	values := url.Values{}
-	values.Set("email", email)
-	values.Set("metadata", string(metadataBytes))
+	values.Set("ordId", orgId)
+	values.Set("projectId", projectId)
 
 	baseUrl, err := url.Parse(constants.UploadSbomUrl)
 	if err != nil {
@@ -104,15 +100,14 @@ func serializeAndCompressOutput(output SbomOutput) (buffer bytes.Buffer, err err
 }
 
 func UploadCollectedSbomsToUrl(
-	email, applicationId string,
-	sbomModels []syftmodel.Document,
+	projectId string,
+	sbomModel syftmodel.Document,
 	uploadUrl string,
 	uploadHeaders map[string]string,
 ) (err error) {
 	output := SbomOutput{
-		Email:         email,
-		ApplicationId: applicationId,
-		Sboms:         sbomModels,
+		ProjectId: projectId,
+		Sbom:      sbomModel,
 	}
 
 	serializedOutput, err := serializeAndCompressOutput(output)
@@ -133,8 +128,30 @@ func UploadCollectedSbomsToUrl(
 	return
 }
 
-func UploadCollectedSboms(email, applicationId string, sbomModels []syftmodel.Document) (err error) {
-	uploadSbomUrl, err := formatGenerateUploadUrl(email, applicationId)
+func UploadCollectedSboms(appConfig types.LunaTraceConfig, sbomModel syftmodel.Document) (err error) {
+	headers := map[string]string{
+		"X-LunaTrace-Project-Access-Token": appConfig.ProjectAccessToken,
+	}
+
+	var projectInfoResponse types.GetProjectInfoResponse
+
+	err = graphql.PerformGraphqlRequest(
+		appConfig.GraphqlServer,
+		headers,
+		graphql.NewGetProjectInfoRequest(),
+		&projectInfoResponse,
+	)
+	if err = util.GetGraphqlError(err, projectInfoResponse.GraphqlErrors); err != nil {
+		log.Error().
+			Err(err).
+			Msg("Unable to get project info. Make sure that your configured LUNASEC_PROJECT_SECRET is correct.")
+		return
+	}
+
+	projectId := projectInfoResponse.GetProjectId()
+	orgId := projectInfoResponse.GetOrganizationId()
+
+	uploadSbomUrl, err := formatGenerateUploadUrl(orgId, projectId)
 	if err != nil {
 		return
 	}
@@ -143,5 +160,25 @@ func UploadCollectedSboms(email, applicationId string, sbomModels []syftmodel.Do
 	if err != nil {
 		return
 	}
-	return UploadCollectedSbomsToUrl(email, applicationId, sbomModels, uploadUrl, uploadHeaders)
+
+	err = UploadCollectedSbomsToUrl(projectId, sbomModel, uploadUrl, uploadHeaders)
+	if err != nil {
+		return
+	}
+
+	var newBuildResponse types.NewBuildResponse
+
+	err = graphql.PerformGraphqlRequest(
+		appConfig.GraphqlServer,
+		headers,
+		graphql.NewInsertNewBuildRequest(projectId, uploadUrl),
+		&newBuildResponse,
+	)
+	if err = util.GetGraphqlError(err, newBuildResponse.GraphqlErrors); err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to create new build for project")
+		return
+	}
+	return
 }

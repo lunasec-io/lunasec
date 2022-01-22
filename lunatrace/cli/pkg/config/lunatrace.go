@@ -24,8 +24,8 @@ import (
 
 func defaultLunaSecConfig() types.LunaTraceConfig {
 	return types.LunaTraceConfig{
-		ProjectId: "${LUNATRACE_APPLICATION_ID}",
-		Server:    defaultLunaTraceServerConfig(),
+		ProjectAccessToken: "${LUNATRACE_PROJECT_SECRET}",
+		LunaTraceGateways:  defaultLunaTraceGatewayConfig(),
 	}
 }
 

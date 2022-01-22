@@ -12,14 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package config
+package graphql
 
-import "lunasec/lunatrace/pkg/types"
+import (
+	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/types"
+)
 
-func defaultLunaTraceGatewayConfig() types.LunaTraceGateways {
-	return types.LunaTraceGateways{
-		GraphqlServer: types.LunaTraceGraphqlServer{
-			Url: "${LUNATRACE_GRAPHQL_SERVER_URL:\"http://localhost:8080/v1/graphql\"}",
+func NewInsertNewBuildRequest(projectId, s3Url string) types.GraphqlRequest {
+	return types.GraphqlRequest{
+		Query: constants.InsertNewBuildQuery,
+		Variables: map[string]string{
+			"project_id": projectId,
+			"s3_url":     s3Url,
 		},
+		OperationName: "InsertNewBuildQuery",
+	}
+}
+
+func NewGetProjectInfoRequest() types.GraphqlRequest {
+	return types.GraphqlRequest{
+		Query:         constants.GetProjectInfoQuery,
+		Variables:     map[string]string{},
+		OperationName: "GetProjectInfoFromAccessToken",
 	}
 }

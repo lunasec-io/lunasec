@@ -15,18 +15,12 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"github.com/google/uuid"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"lunasec/lunatrace/pkg/agent"
 	"lunasec/lunatrace/pkg/config"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/pkg/util"
-	"net/http"
-	"net/url"
-	"os"
+	"time"
 )
 
 func main() {
@@ -36,60 +30,21 @@ func main() {
 
 	appConfig, err := config.LoadLunaTraceAgentConfig()
 	if err != nil {
-		log.Error().
-			Err(err).
-			Msg("unable to load config")
 		return
 	}
 
-	controlServer := url.URL{
-		Scheme: "http",
-		Host:   appConfig.Server.Host,
-		Path:   "/v1/graphql",
+	heartbeat := func() error {
+		return agent.PerformAgentHeartbeat(appConfig)
 	}
 
-	identifyUrl := controlServer.String()
-
-	accessToken := os.Getenv("LUNATRACE_AGENT_ACCESS_TOKEN")
-
-	instanceId := uuid.New()
-
-	identifyRequest := types.IdentifyRequest{
-		Query: constants.UpsertInstanceQuery,
-		Variables: map[string]string{
-			"instance_id":  instanceId.String(),
-			"access_token": accessToken,
-		},
-		OperationName: "UpsertInstance",
-	}
-
-	body, err := json.Marshal(identifyRequest)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Msg("unable to marshal identify request")
-		return
-	}
-
-	headers := map[string]string{
-		"X-LunaTrace-Agent-Access-Token": accessToken,
-	}
-
-	data, err := util.HttpRequest(http.MethodPost, identifyUrl, headers, bytes.NewBuffer(body))
-	if err != nil {
-		log.Error().
-			Err(err).
-			Msg("unable to marshal identify request")
-		return
-	}
-
-	var identifyResponse types.IdentifyResponse
-
-	err = json.Unmarshal(data, &identifyResponse)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Msg("unable to unmarshal identify response")
-		return
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+	for ; true; <-ticker.C {
+		err = backoff.Retry(heartbeat, backoff.NewExponentialBackOff())
+		if err != nil {
+			log.Error().
+				Err(err).
+				Msg("unable to perform heartbeat")
+		}
 	}
 }

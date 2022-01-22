@@ -16,9 +16,27 @@ package constants
 
 const (
 	UpsertInstanceQuery = `
-mutation UpsertInstance($instance_id: uuid, $build_id: uuid) {
-  insert_instances_one(object: {instance_id: $instance_id, build_id: $build_id}, on_conflict: {constraint: instances_pkey, update_columns: last_heartbeat}) {
+mutation UpsertInstance($instance_id: uuid, $agent_access_token: uuid) {
+  insert_instances_one(object: {instance_id: $instance_id, agent_access_token: $agent_access_token}, on_conflict: {constraint: instances_pkey, update_columns: last_heartbeat}) {
     last_heartbeat
+  }
+}`
+
+	InsertNewBuildQuery = `
+mutation InsertNewBuildQuery($project_id: uuid, $s3_url: String) {
+  insert_builds_one(object: {sbom: {data: {s3_url: $s3_url}}, project_id: $project_id}) {
+    id
+	agent_access_token
+  }
+}`
+
+	GetProjectInfoQuery = `
+query GetProjectInfoQuery($access_token: uuid) {
+  project_access_tokens() {
+    project {
+      organization_id
+      id
+    }
   }
 }`
 )

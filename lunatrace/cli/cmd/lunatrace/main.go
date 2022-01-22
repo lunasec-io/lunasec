@@ -19,12 +19,15 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"lunasec/lunatrace/inventory"
+	"lunasec/lunatrace/pkg/config"
 	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/types"
 	"lunasec/lunatrace/pkg/util"
 	"os"
 )
 
 func getInventoryCmd(
+	appConfig types.LunaTraceConfig,
 	setGlobalBoolFlags func(c *cli.Context) error,
 	globalBoolFlags map[string]bool,
 ) *cli.Command {
@@ -60,7 +63,7 @@ func getInventoryCmd(
 			},
 		},
 		Action: func(c *cli.Context) error {
-			return inventory.InventoryCommand(c, globalBoolFlags)
+			return inventory.InventoryCommand(c, globalBoolFlags, appConfig)
 		},
 	}
 }
@@ -88,6 +91,11 @@ func main() {
 			}
 		}
 		return nil
+	}
+
+	appConfig, err := config.LoadLunaTraceConfig()
+	if err != nil {
+		return
 	}
 
 	app := &cli.App{
@@ -127,7 +135,7 @@ Use "container" to collect an SBOM from a built container.
 				Before:  setGlobalBoolFlags,
 				Flags:   []cli.Flag{},
 				Subcommands: []*cli.Command{
-					getInventoryCmd(setGlobalBoolFlags, globalBoolFlags),
+					getInventoryCmd(appConfig, setGlobalBoolFlags, globalBoolFlags),
 				},
 			},
 			{
@@ -136,13 +144,13 @@ Use "container" to collect an SBOM from a built container.
 				Usage:   "",
 				Before:  setGlobalBoolFlags,
 				Subcommands: []*cli.Command{
-					getInventoryCmd(setGlobalBoolFlags, globalBoolFlags),
+					getInventoryCmd(appConfig, setGlobalBoolFlags, globalBoolFlags),
 				},
 			},
 		},
 	}
 
-	err := app.Run(os.Args)
+	err = app.Run(os.Args)
 	if err != nil {
 		log.Fatal().Err(err)
 	}
