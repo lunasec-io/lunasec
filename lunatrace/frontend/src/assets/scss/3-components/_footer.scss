@@ -1,0 +1,14 @@
+footer.footer {
+  background: $footer-background;
+  border-top: 1px solid $footer-border-top-color;
+  padding: $spacer $spacer*0.75;
+  direction: ltr;
+
+  ul {
+    margin-bottom: 0;
+  }
+
+  @include media-breakpoint-down(md) {
+    width: 100vw;
+  }
+}

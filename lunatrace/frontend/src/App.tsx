@@ -16,9 +16,41 @@
  */
 import React from 'react';
 import './App.css';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Provider } from 'react-redux';
+import { useRoutes } from 'react-router-dom';
+
+import { store } from './app/store';
+import { Header } from './components/header/Header';
+import { LayoutProvider } from './contexts/LayoutContext';
+import { SidebarProvider } from './contexts/SidebarContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { routes } from './routes';
 
 function App() {
-  return <div className="App"></div>;
+  const content = useRoutes(routes);
+  return (
+    <HelmetProvider>
+      <Helmet
+        titleTemplate="%s | LunaTrace - Dependency Analysis and Live Tracking"
+        defaultTitle="LunaTrace - Dependency Analysis and Live Tracking"
+      />
+      <Provider store={store}>
+        <ThemeProvider>
+          <SidebarProvider>
+            <LayoutProvider>
+              {/*<ChartJsDefaults />*/}
+              {/*<AuthProvider>*/}
+              {content}
+              {/*</AuthProvider>*/}
+            </LayoutProvider>
+          </SidebarProvider>
+        </ThemeProvider>
+      </Provider>
+    </HelmetProvider>
+  );
+
+  return <div className="App">hi</div>;
 }
 
 export default App;

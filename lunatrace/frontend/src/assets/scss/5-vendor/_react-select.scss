@@ -1,0 +1,35 @@
+.react-select-container {
+  .react-select__control {
+    background-color: $white;
+    border-color: $gray-400;
+    color: $gray-700;
+    transition: none;
+
+    &:hover {
+      border-color: $gray-500;
+    }
+  }
+
+  .react-select__menu {
+    background-color: $white;
+    border: 1px solid $gray-400;
+  }
+
+  .react-select__option {
+    background-color: $white;
+    color: $gray-700;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+  }
+
+  .react-select__indicator-separator {
+    background-color: $white;
+  }
+
+  .react-select__placeholder,
+  .react-select__single-value {
+    color: $gray-700;
+  }
+}

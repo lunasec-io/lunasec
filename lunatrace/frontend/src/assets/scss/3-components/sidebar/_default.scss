@@ -1,0 +1,290 @@
+.sidebar {
+  min-width: $sidebar-width;
+  max-width: $sidebar-width;
+  transition: $sidebar-transition;
+  direction: ltr;
+  @include theme("background", $sidebar-bg);
+}
+
+.sidebar-content {
+  transition: $sidebar-transition;
+  @include theme("background", $sidebar-bg);
+}
+
+body[data-sidebar-behavior="sticky"] {
+  .sidebar-content {
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    left: 0;
+  }
+
+  .ps {
+    overflow-y: hidden;
+  }
+}
+
+.sidebar-nav {
+  padding-left: 0;
+  list-style: none;
+}
+
+// Sidebar links
+.sidebar-link,
+a.sidebar-link {
+  display: block;
+  padding: $sidebar-link-padding;
+  font-weight: $sidebar-link-font-weight;
+  transition: color 75ms ease-in-out;
+  position: relative;
+  text-decoration: none;
+  cursor: pointer;
+
+  @include theme("color", $sidebar-link-color);
+
+  i,
+  svg {
+    margin-right: 0.75rem;
+    @include theme("color", $sidebar-link-icon-color);
+  }
+}
+
+// Sidebar nested links
+.sidebar-dropdown {
+  .sidebar-dropdown {
+    .sidebar-link {
+      padding: $sidebar-link-child-second-padding;
+    }
+
+    .sidebar-dropdown {
+      .sidebar-link {
+        padding: $sidebar-link-child-third-padding;
+      }
+    }
+  }
+}
+
+.sidebar-link:focus {
+  outline: 0;
+}
+
+.sidebar-link:hover {
+  @include theme("color", $sidebar-link-hover-color);
+
+  i,
+  svg {
+    @include theme("color", $sidebar-link-icon-hover-color);
+  }
+}
+
+.sidebar-item.active > .sidebar-link,
+.sidebar-item.active .sidebar-link:hover,
+.sidebar-link.active,
+.sidebar-link.active:hover {
+  @include theme("color", $sidebar-link-active-color);
+
+  i,
+  svg {
+    @include theme("color", $sidebar-link-icon-active-color);
+  }
+}
+
+// Children
+.sidebar-dropdown .sidebar-link {
+  padding: $sidebar-link-child-padding;
+  font-weight: $sidebar-link-child-font-weight;
+  @include theme("color", $sidebar-link-child-color);
+}
+
+.sidebar-dropdown .sidebar-item .sidebar-link:hover {
+  font-weight: $sidebar-link-hover-font-weight;
+  @include theme("color", $sidebar-link-child-hover-color);
+}
+
+.sidebar-dropdown .sidebar-item.active > .sidebar-link:not([data-bs-toggle]),
+.sidebar-dropdown .sidebar-item > .sidebar-link.active {
+  font-weight: $sidebar-link-active-font-weight;
+  @include theme("color", $sidebar-link-child-active-color);
+}
+
+// Chevron
+.sidebar [data-bs-toggle="collapse"] {
+  position: relative;
+}
+
+.sidebar [data-bs-toggle="collapse"]:before {
+  content: " ";
+  border: solid;
+  border-width: 0 0.1rem 0.1rem 0;
+  display: inline-block;
+  padding: 2px;
+  transform: rotate(45deg);
+  position: absolute;
+  top: 1rem;
+  right: 1.7rem;
+  transition: all 0.2s ease-out;
+}
+
+.sidebar [aria-expanded="true"]:before,
+.sidebar [data-bs-toggle="collapse"]:not(.collapsed):before {
+  transform: rotate(-135deg);
+  top: 1.2rem;
+}
+
+.sidebar .sidebar-dropdown [data-toggle="collapse"]:before {
+  top: 1rem;
+}
+
+.sidebar .sidebar-dropdown [aria-expanded="true"]:before,
+.sidebar .sidebar-dropdown [data-toggle="collapse"]:not(.collapsed):before {
+  top: 1.2rem;
+}
+
+// Sidebar brand
+.sidebar-brand {
+  font-weight: $sidebar-brand-font-weight;
+  font-size: $sidebar-brand-font-size;
+  padding: $sidebar-brand-padding-y $sidebar-brand-padding-x;
+  display: block;
+  text-align: center;
+  @include theme("color", $sidebar-brand-color);
+
+  &:hover {
+    text-decoration: none;
+    @include theme("color", $sidebar-brand-color);
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  svg {
+    @include theme("fill", $sidebar-brand-icon-color);
+    height: 24px;
+    width: 24px;
+    margin-right: 0.15rem;
+
+    path:first-child {
+      @include theme("fill", $sidebar-brand-icon-top-color);
+    }
+  }
+}
+
+// Toggle states
+.sidebar-toggle {
+  cursor: pointer;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+body:not([data-sidebar-position="right"]) .sidebar-toggle {
+  margin-right: $spacer;
+}
+
+body[data-sidebar-position="right"] .sidebar-toggle {
+  margin-left: $spacer;
+}
+
+// Sidebar header
+.sidebar-header {
+  background: transparent;
+  padding: $sidebar-header-padding;
+  font-size: $sidebar-header-font-size;
+  @include theme("color", $sidebar-header-color);
+}
+
+// Badge
+.badge-sidebar-primary,
+.badge-sidebar-secondary {
+  position: absolute;
+  right: 20px;
+  top: 12px;
+}
+
+.sidebar-dropdown {
+  .badge-sidebar-primary,
+  .badge-sidebar-secondary {
+    top: 10px;
+  }
+}
+
+.badge-sidebar-primary {
+  @include theme("background", $sidebar-badge-primary-bg);
+  @include theme("color", $sidebar-badge-primary-color);
+}
+
+.badge-sidebar-secondary {
+  @include theme("background", $sidebar-badge-secondary-bg);
+  @include theme("color", $sidebar-badge-secondary-color);
+}
+
+// Collapse behavior if sidebar is on left side
+body:not([data-sidebar-position="right"]) {
+  .sidebar {
+    &.collapsed {
+      margin-left: -$sidebar-width;
+    }
+
+    // Workaround for IE bug, more info:
+    // https://stackoverflow.com/a/25850649
+    @media (min-width: 1px) and (max-width: #{map-get($grid-breakpoints, 'lg') - .02px}) {
+      // Sidebar default state (on mobile)
+      margin-left: -$sidebar-width;
+
+      // Sidebar collapsed state (on mobile)
+      &.collapsed {
+        margin-left: 0;
+      }
+    }
+  }
+
+  .sidebar-toggle {
+    margin-right: $spacer;
+  }
+}
+
+// Collapse behavior if sidebar is on right side
+body[data-sidebar-position="right"] {
+  .sidebar {
+    &.collapsed {
+      margin-right: -$sidebar-width;
+    }
+
+    // Workaround for IE bug, more info:
+    // https://stackoverflow.com/a/25850649
+    @media (min-width: 1px) and (max-width: #{map-get($grid-breakpoints, 'lg') - .02px}) {
+      // Sidebar default state (on mobile)
+      margin-right: -$sidebar-width;
+
+      // Sidebar collapsed state (on mobile)
+      &.collapsed {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .sidebar-toggle {
+    margin-left: $spacer;
+  }
+
+  .simplebar-track.simplebar-vertical {
+    left: 0;
+    right: auto;
+  }
+}
+
+// Sidebar bottom
+.sidebar-cta-content {
+  padding: $sidebar-cta-padding;
+  margin: $sidebar-cta-margin;
+  border-radius: $sidebar-cta-border-radius;
+  @include theme("background", $sidebar-cta-bg);
+
+  &,
+  strong {
+    @include theme("color", $sidebar-cta-color);
+  }
+}

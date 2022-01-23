@@ -1,0 +1,75 @@
+// Variables
+@import "1-variables/app";
+
+// Bootstrap
+@import "bootstrap/scss/bootstrap";
+
+// Theme mixins
+@import "2-mixins/background";
+@import "2-mixins/badge";
+@import "2-mixins/button";
+@import "2-mixins/modal";
+@import "2-mixins/switch";
+@import "2-mixins/tabs";
+@import "2-mixins/theme";
+@import "2-mixins/wizard";
+
+// Theme components
+@import "3-components/accordion";
+@import "3-components/alert";
+@import "3-components/avatar";
+@import "3-components/badge";
+@import "3-components/buttons";
+@import "3-components/card";
+@import "3-components/chart";
+@import "3-components/chat";
+@import "3-components/content";
+@import "3-components/dropdown";
+@import "3-components/feather";
+@import "3-components/footer";
+@import "3-components/forms";
+@import "3-components/hamburger";
+@import "3-components/illustrations";
+@import "3-components/landing";
+@import "3-components/main";
+@import "3-components/modal";
+@import "3-components/navbar";
+@import "3-components/progress";
+@import "3-components/reboot";
+@import "3-components/root";
+@import "3-components/settings";
+@import "3-components/sidebar";
+@import "3-components/sizing";
+@import "3-components/stats";
+@import "3-components/tables";
+@import "3-components/tabs";
+@import "3-components/timeline";
+@import "3-components/type";
+@import "3-components/wizard";
+@import "3-components/wrapper";
+
+// Theme utilities
+@import "4-utilities/background";
+@import "4-utilities/borders";
+@import "4-utilities/cursors";
+@import "4-utilities/font";
+@import "4-utilities/overflow";
+@import "4-utilities/position";
+@import "4-utilities/z-index";
+
+// 3rd party plugins
+@import "@fullcalendar/bootstrap/main";
+@import "apexcharts/src/assets/apexcharts";
+@import "dragula/dist/dragula";
+@import "react-quill/dist/quill.snow";
+@import "react-quill/dist/quill.bubble";
+@import "notyf/notyf.min";
+
+// 3rd party plugin styles
+@import "5-vendor/fullcalendar";
+@import "5-vendor/jvectormap";
+@import "5-vendor/perfect-scrollbar";
+@import "5-vendor/quill";
+@import "5-vendor/react-bootstrap-table";
+@import "5-vendor/react-select";
+@import "5-vendor/react-datetime";

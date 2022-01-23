@@ -16,12 +16,17 @@
  */
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { createBrowserHistory } from 'history';
+// import { createBrowserHistory } from 'history';
+// import { createReduxHistoryContext } from 'redux-first-history';
 
-import counterReducer from '../features/counter/counterSlice';
+import counterReducer from '../components/counter/counterSlice';
 
-export const history = createBrowserHistory();
+// redux-first-history router stuff
+// const { createReduxHistory, routerMiddleware, routerReducer } = createReduxHistoryContext({
+//   history: createBrowserHistory(),
+//   reduxTravelling: true,
+//   savePreviousLocations: 6,
+// });
 
 import { api } from './api';
 export const store = configureStore({
@@ -30,18 +35,19 @@ export const store = configureStore({
     [api.reducerPath]: api.reducer,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    router: connectRouter(history),
+    // router: routerReducer,
   },
   middleware: (getDefaultMiddleware) => {
     const middleware = getDefaultMiddleware();
     middleware.push(api.middleware);
-    middleware.push(routerMiddleware(history));
+    // middleware.push(routerMiddleware);
     return middleware;
   },
 });
+setupListeners(store.dispatch);
+
+// export const history = createReduxHistory(store);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;
-
-setupListeners(store.dispatch);
