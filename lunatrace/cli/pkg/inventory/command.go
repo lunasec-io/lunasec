@@ -69,7 +69,6 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig
 	email := c.String("email")
 	excludedDirs := c.StringSlice("excluded")
 	skipUpload := c.Bool("skip-upload")
-	uploadUrl := c.String("upload-url")
 
 	if email == "" {
 		err = errors.New("email required when performing cloud scan")
@@ -98,10 +97,6 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig
 		return
 	}
 
-	if uploadUrl != "" {
-		err = UploadCollectedSbomsToUrl(appConfig, sbomModel, uploadUrl, map[string]string{})
-		return
-	}
 	err = UploadCollectedSboms(appConfig, sbomModel)
 	return
 }

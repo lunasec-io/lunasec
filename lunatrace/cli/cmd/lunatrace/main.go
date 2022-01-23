@@ -57,10 +57,6 @@ func getInventoryCmd(
 				Name:  "skip-upload",
 				Usage: "Skip uploading collected dependencies.",
 			},
-			&cli.StringFlag{
-				Name:  "upload-url",
-				Usage: "Upload SBOMs to designated upload url. You can keep track of SBOMs locally by using the `inventory-server` command and setting the upload url to this local server.",
-			},
 		},
 		Action: func(c *cli.Context) error {
 			return inventory.InventoryCommand(c, globalBoolFlags, appConfig)

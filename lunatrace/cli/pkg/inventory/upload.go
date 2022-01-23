@@ -99,7 +99,7 @@ func serializeAndCompressOutput(output SbomOutput) (buffer bytes.Buffer, err err
 	return
 }
 
-func UploadCollectedSbomsToUrl(
+func uploadCollectedSbomsToUrl(
 	projectId string,
 	sbomModel syftmodel.Document,
 	uploadUrl string,
@@ -161,7 +161,7 @@ func UploadCollectedSboms(appConfig types.LunaTraceConfig, sbomModel syftmodel.D
 		return
 	}
 
-	err = UploadCollectedSbomsToUrl(projectId, sbomModel, uploadUrl, uploadHeaders)
+	err = uploadCollectedSbomsToUrl(projectId, sbomModel, uploadUrl, uploadHeaders)
 	if err != nil {
 		return
 	}
