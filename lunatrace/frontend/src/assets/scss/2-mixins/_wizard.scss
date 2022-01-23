@@ -1,0 +1,40 @@
+@mixin wizard-variant($color) {
+  &.sw-theme-default > .nav {
+    .nav-link.active {
+      color: $color !important;
+
+      &:after {
+        background: $color !important;
+      }
+    }
+
+    .nav-link.done {
+      color: lighten($color, 15) !important;
+
+      &:after {
+        background: lighten($color, 15) !important;
+      }
+    }
+
+  }
+
+  &.sw-theme-arrows > .nav {
+    .nav-link.active {
+      border-color: $color !important;
+      background: $color !important;
+
+      &:after {
+        border-left-color: $color !important;
+      }
+    }
+
+    .nav-link.done {
+      border-color: lighten($color, 15) !important;
+      background: lighten($color, 15) !important;
+
+      &:after {
+        border-left-color: lighten($color, 15) !important;
+      }
+    }
+  }
+}

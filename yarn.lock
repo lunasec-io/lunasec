@@ -14889,7 +14889,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:^8.5.0, @types/jsonwebtoken@npm:^8.5.4":
+"@types/jsonwebtoken@npm:^8.5.0, @types/jsonwebtoken@npm:^8.5.4, @types/jsonwebtoken@npm:^8.5.8":
   version: 8.5.8
   resolution: "@types/jsonwebtoken@npm:8.5.8"
   dependencies:
@@ -21635,29 +21635,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"connected-react-router@npm:^6.9.2":
-  version: 6.9.2
-  resolution: "connected-react-router@npm:6.9.2"
-  dependencies:
-    immutable: ^3.8.1 || ^4.0.0
-    lodash.isequalwith: ^4.4.0
-    prop-types: ^15.7.2
-    seamless-immutable: ^7.1.3
-  peerDependencies:
-    history: ^4.7.2
-    react: ^16.4.0 || ^17.0.0
-    react-redux: ^6.0.0 || ^7.1.0
-    react-router: ^4.3.1 || ^5.0.0
-    redux: ^3.6.0 || ^4.0.0
-  dependenciesMeta:
-    immutable:
-      optional: true
-    seamless-immutable:
-      optional: true
-  checksum: 3f5e82daec09bf9e4b99f3861c114093738d6848a052c15b797d7f3770d8b37f0e24c38330c4da169c395f0d22e1469f2e7d85ad6573f8114a24611a4d07e043
-  languageName: node
-  linkType: hard
-
 "consola@npm:^2.15.0, consola@npm:^2.15.3":
   version: 2.15.3
   resolution: "consola@npm:2.15.3"
@@ -27049,6 +27026,7 @@ __metadata:
     "@testing-library/react": ^9.5.0
     "@testing-library/user-event": ^7.2.1
     "@types/jest": ^24.9.1
+    "@types/jsonwebtoken": ^8.5.8
     "@types/node": ^12.20.42
     "@types/react": ^16.14.21
     "@types/react-dom": ^16.9.14
@@ -27056,15 +27034,20 @@ __metadata:
     "@types/testing-library__react": ^10.2.0
     apollo: 2.33.9
     bootstrap: ^5.1.3
-    connected-react-router: ^6.9.2
     graphql-request: ^3.7.0
     history: ^5.2.0
+    jsonwebtoken: ^8.5.1
+    jwt-decode: ^3.1.2
     react: ^17.0.2
     react-bootstrap: ^2.1.1
     react-dom: ^17.0.2
+    react-feather: ^2.0.9
+    react-helmet-async: ^1.2.2
+    react-perfect-scrollbar: ^1.5.8
     react-redux: ^7.2.6
-    react-router: ^6.2.1
+    react-router-dom: ^6.2.1
     react-scripts: 5.0.0
+    redux-first-history: ^5.0.8
     typescript: ^4.1.5
   languageName: unknown
   linkType: soft
@@ -29212,13 +29195,6 @@ __metadata:
   version: 9.0.12
   resolution: "immer@npm:9.0.12"
   checksum: bcbec6d76dac65e49068eb67ece4d407116e62b8cde3126aa89c801e408f5047763ba0aeb62f1938c1aa704bb6612f1d8302bb2a86fa1fc60fcc12d8b25dc895
-  languageName: node
-  linkType: hard
-
-"immutable@npm:^3.8.1 || ^4.0.0":
-  version: 4.0.0
-  resolution: "immutable@npm:4.0.0"
-  checksum: 4b5e9181e4d5fa06728a481835ec09c86367e5d03268666c95b522b7644ab891098022e4479a43c4c81a68f2ed82f10751ce5d33e208d7b873b6e7f9dfaf4d87
   languageName: node
   linkType: hard
 
@@ -32803,7 +32779,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwt-decode@npm:3.1.2":
+"jwt-decode@npm:3.1.2, jwt-decode@npm:^3.1.2":
   version: 3.1.2
   resolution: "jwt-decode@npm:3.1.2"
   checksum: 20a4b072d44ce3479f42d0d2c8d3dabeb353081ba4982e40b83a779f2459a70be26441be6c160bfc8c3c6eadf9f6380a036fbb06ac5406b5674e35d8c4205eeb
@@ -33565,13 +33541,6 @@ __metadata:
   version: 4.5.0
   resolution: "lodash.isequal@npm:4.5.0"
   checksum: da27515dc5230eb1140ba65ff8de3613649620e8656b19a6270afe4866b7bd461d9ba2ac8a48dcc57f7adac4ee80e1de9f965d89d4d81a0ad52bb3eec2609644
-  languageName: node
-  linkType: hard
-
-"lodash.isequalwith@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "lodash.isequalwith@npm:4.4.0"
-  checksum: 428ba7a57c47ec05e2dd18c03a4b4c45dac524a46af7ce3f412594bfc7be6a5acaa51acf9ea113d0002598e9aafc6e19ee8d20bc28363145fcb4d21808c9039f
   languageName: node
   linkType: hard
 
@@ -37432,7 +37401,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"perfect-scrollbar@npm:^1.5.1":
+"perfect-scrollbar@npm:^1.5.0, perfect-scrollbar@npm:^1.5.1":
   version: 1.5.5
   resolution: "perfect-scrollbar@npm:1.5.5"
   checksum: 7a8d3097e91df1dd112f28ee9539c1a36ae7a836d986798af2e0d1e32c3ef21380215b3c06bc12434d89547d7f763637ac19b877549049b6c2166da85956c9dc
@@ -39741,7 +39710,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.5.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -40370,10 +40339,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-fast-compare@npm:^3.1.1":
+"react-fast-compare@npm:^3.1.1, react-fast-compare@npm:^3.2.0":
   version: 3.2.0
   resolution: "react-fast-compare@npm:3.2.0"
   checksum: 8ef272c825ae329f61633ce4ce7f15aa5b84e5214d88bc0823880236e03e985a13195befa2c7a4eda7db3b017dc7985729152d88445823f652403cf36c2b86aa
+  languageName: node
+  linkType: hard
+
+"react-feather@npm:^2.0.9":
+  version: 2.0.9
+  resolution: "react-feather@npm:2.0.9"
+  dependencies:
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: ^16.8.6 || ^17
+  checksum: 8535541c1041ba9ce02e1b6fe4425dc6857030ae2223d89fa2aa1faf82b04e542c863b267ee7ba5961d22fe3216f43241200a5807d8a8df48a96485ac8b68bf7
+  languageName: node
+  linkType: hard
+
+"react-helmet-async@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "react-helmet-async@npm:1.2.2"
+  dependencies:
+    "@babel/runtime": ^7.12.5
+    invariant: ^2.2.4
+    prop-types: ^15.7.2
+    react-fast-compare: ^3.2.0
+    shallowequal: ^1.1.0
+  peerDependencies:
+    react: ^16.6.0 || ^17.0.0
+    react-dom: ^16.6.0 || ^17.0.0
+  checksum: 3251ab596143a48f9380a78a9e71f451ef729e25081bb4c1476561a1689eee23d650964e1518792bd44a8d24d95da1f9774b9b7ed80cae8eccc8119d7f5dd3f3
   languageName: node
   linkType: hard
 
@@ -40453,6 +40449,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-perfect-scrollbar@npm:^1.5.8":
+  version: 1.5.8
+  resolution: "react-perfect-scrollbar@npm:1.5.8"
+  dependencies:
+    perfect-scrollbar: ^1.5.0
+    prop-types: ^15.6.1
+  peerDependencies:
+    react: ">=16.3.3"
+    react-dom: ">=16.3.3"
+  checksum: d0bb4713ccab648d25ea13b4ee9fb19b2b075c03bd11e81a6bb02e1da9b4920e3124d87142a7a2a3201c8b7fa5cb6183069acff01f19a0cb5b536331ae7182f4
+  languageName: node
+  linkType: hard
+
 "react-redux@npm:^7.2.6":
   version: 7.2.6
   resolution: "react-redux@npm:7.2.6"
@@ -40517,6 +40526,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-router-dom@npm:^6.2.1":
+  version: 6.2.1
+  resolution: "react-router-dom@npm:6.2.1"
+  dependencies:
+    history: ^5.2.0
+    react-router: 6.2.1
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: fa0edc69fddf0cb1313bcb3dbd5eb2b2ff24a75ee03ba928995e16a6a251585750f91d966612e868eb68a5aebc4a5240be40fd96c4acf1d8d48d33f54ad3f4e2
+  languageName: node
+  linkType: hard
+
 "react-router@npm:5.2.1, react-router@npm:^5.2.0":
   version: 5.2.1
   resolution: "react-router@npm:5.2.1"
@@ -40537,7 +40559,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:^6.2.1":
+"react-router@npm:6.2.1":
   version: 6.2.1
   resolution: "react-router@npm:6.2.1"
   dependencies:
@@ -41148,6 +41170,16 @@ __metadata:
     react-dom: ^16.8.4 || ^17.0.0
     styled-components: ^4.1.1 || ^5.1.1
   checksum: dd04f7b4c3b85478f35a6ebb067eb2a4ce7d107040b716ec4044021d7ce3de1ab16620e1247381d867d9db9ee299a9e45fcd363f58d8094ecb8ba31ab86dc8df
+  languageName: node
+  linkType: hard
+
+"redux-first-history@npm:^5.0.8":
+  version: 5.0.8
+  resolution: "redux-first-history@npm:5.0.8"
+  peerDependencies:
+    history: ^4.7.2 || ^5.0
+    redux: ^3.6.0 || ^4.0.0
+  checksum: 8cd36d47d527dd5a72e29a42c2ea8f2084bcf9db6613c6fad5e33b6ac03bc482d6ac26c174f8057e956a3875052293656860905e9d82b1a94f316bde456e7206
   languageName: node
   linkType: hard
 
@@ -42412,13 +42444,6 @@ __metadata:
   version: 1.1.0
   resolution: "scuid@npm:1.1.0"
   checksum: cd094ac3718b0070a222f9a499b280c698fdea10268cc163fa244421099544c1766dd893fdee0e2a8eba5d53ab9d0bcb11067bedff166665030fa6fda25a096b
-  languageName: node
-  linkType: hard
-
-"seamless-immutable@npm:^7.1.3":
-  version: 7.1.4
-  resolution: "seamless-immutable@npm:7.1.4"
-  checksum: f65c1dc12e460265ccc4b164085b807570f9fb8a619cd3c216fc7ed933fb09c57a24a7df1b638dc9bd6367d8d69c2f00b5370b0c0996b4046242539096d2d0c6
   languageName: node
   linkType: hard
 

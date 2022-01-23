@@ -1,0 +1,13 @@
+@mixin theme($property, $values) {
+  @each $theme, $value in $values {
+    
+    @if $theme == "default" {
+      #{$property}: $value;
+    }
+    @else {
+      body[data-theme=#{$theme}] & {
+        #{$property}: #{$value};
+      }
+    }
+  }
+}

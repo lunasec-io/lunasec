@@ -1,0 +1,12 @@
+@mixin bg-variant($parent, $color, $ignore-warning: false) {
+  #{$parent} {
+    background-color: $color !important;
+  }
+  a#{$parent},
+  button#{$parent} {
+    &:hover,
+    &:focus {
+      background-color: darken($color, 10%) !important;
+    }
+  }
+}
