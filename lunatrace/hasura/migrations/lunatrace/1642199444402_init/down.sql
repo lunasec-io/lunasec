@@ -60,6 +60,8 @@ DROP TABLE public.findings
 ,public.package_versions
 ,public.organizations
 ,public.organization_user
+,public.builds
+,public.instances
 CASCADE;
 
 DROP FUNCTION public.set_current_timestamp_updated_at();
