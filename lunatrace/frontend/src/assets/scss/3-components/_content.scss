@@ -1,0 +1,14 @@
+.content {
+  padding: $content-padding;
+  flex: 1;
+  direction: ltr;
+
+  @include media-breakpoint-down(md) {
+    width: 100vw;
+    max-width: 100vw;
+  }
+
+  @include media-breakpoint-down(lg) {
+    padding: $spacer*1.5;
+  }
+}

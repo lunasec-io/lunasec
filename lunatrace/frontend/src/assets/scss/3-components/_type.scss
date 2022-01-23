@@ -1,0 +1,26 @@
+.text-sm {
+  font-size: $font-size-sm;
+}
+
+.text-lg {
+  font-size: $font-size-lg;
+}
+
+b,
+strong,
+.font-weight-bold {
+  font-weight: $font-weight-bold;
+  color: $text-bold-color;
+}
+
+pre.snippet {
+  .hljs {
+    background: $static-dark;
+    border-radius: $border-radius-lg;
+    padding: $spacer;
+  }
+}
+
+a {
+  cursor: pointer;
+}

@@ -1,0 +1,72 @@
+// Dark theme
+$dark-theme-base: #293042 !default;
+
+// Body
+$body-bg: darken($dark-theme-base, 4.5%) !default;
+
+// Theme colors
+$blue: 			#3F80EA !default;
+$yellow: 		#CC8B37 !default;
+
+$white:    $dark-theme-base !default;
+$gray-100: mix(#fff, $dark-theme-base, 10%) !default;
+$gray-200: mix(#fff, $dark-theme-base, 20%) !default;
+$gray-300: mix(#fff, $dark-theme-base, 30%) !default;
+$gray-400: mix(#fff, $dark-theme-base, 40%) !default;
+$gray-500: mix(#fff, $dark-theme-base, 50%) !default;
+$gray-600: mix(#fff, $dark-theme-base, 60%) !default;
+$gray-700: mix(#fff, $dark-theme-base, 70%) !default;
+$gray-800: mix(#fff, $dark-theme-base, 80%) !default;
+$gray-900: mix(#fff, $dark-theme-base, 90%) !default;
+$black: #fff !default;
+
+$primary:       $blue !default;
+$secondary:     $gray-400 !default;
+$dark:          $gray-900 !default;
+$light: mix(#fff, $dark-theme-base, 5%) !default;
+
+$custom-colors: (
+  primary-dark: lighten($primary, 15%),
+  primary-light: darken($primary, 15%)
+) !default;
+
+// Typography
+$headings-color: $black !default;
+
+// Borders
+$border-color: $gray-200 !default;
+
+// Navbar
+$navbar-bg: transparent !default;
+$navbar-box-shadow: 0 0 2rem 0 rgba($dark-theme-base, .1) !default;
+
+// Navbar input
+$navbar-input-bg: $dark-theme-base !default;
+
+// Cards
+$card-shadow: 0 0 .875rem 0 rgba($dark-theme-base, 0.05) !default;
+$card-title-color: $gray-800 !default;
+
+// Wrapper
+$wrapper-border-color: $gray-100 !default;
+
+// Footer
+$footer-background: transparent !default;
+$footer-border-top-color: $gray-100 !default;
+
+// Alerts
+$alert-bg-scale: 50% !default;
+
+// Tables
+$table-striped-bg: mix(#fff, $dark-theme-base, 5%) !default;
+
+// Stats
+$stat-bg: $gray-100 !default;
+$stat-icon-color: $black !default;
+
+// Illustration
+$illustration-bg: mix(#fff, $dark-theme-base, 5%) !default;
+$illustration-color: $gray-900 !default;
+
+// Select2
+$s2bs-input-single-color: #fff;
