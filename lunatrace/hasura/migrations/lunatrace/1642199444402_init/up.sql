@@ -11,12 +11,14 @@
 
 CREATE FUNCTION public.set_current_timestamp_updated_at() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
+AS
+$$
 DECLARE
-  _new record;
-BEGIN _new := NEW;
-_new."updated_at" = NOW();
-RETURN _new;
+    _new record;
+BEGIN
+    _new := NEW;
+    _new."updated_at" = NOW();
+    RETURN _new;
 END;
 $$;
 
@@ -54,8 +56,8 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.settings
 (
-    id              uuid                                                  NOT NULL PRIMARY KEY,
-    created_at      timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    id              uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    created_at      timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
     is_org_settings boolean
 );
 
@@ -66,10 +68,10 @@ CREATE TABLE public.settings
 
 CREATE TABLE public.users
 (
-    id         uuid                                                  NOT NULL PRIMARY KEY,
-    name       character varying(200)                                NOT NULL,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    email      text                                                  NOT NULL
+    id         uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    name       character varying(200)                                       NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
+    email      text                                                         NOT NULL
 );
 
 --
@@ -78,9 +80,9 @@ CREATE TABLE public.users
 
 CREATE TABLE public.organizations
 (
-    id          uuid                                                  NOT NULL PRIMARY KEY,
-    name        character varying(200)                                NOT NULL,
-    "createdAt" timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    id          uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    name        character varying(200)                                       NOT NULL,
+    "createdAt" timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
     settings_id uuid
 );
 
@@ -294,14 +296,14 @@ CREATE TABLE public.findings
 
 CREATE TABLE public.builds
 (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    project_id     uuid REFERENCES public.projects (id),
-    sbom_id        uuid REFERENCES public.sboms,
-    access_token text NOT NULL
+    id           uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    project_id   uuid REFERENCES public.projects (id),
+    sbom_id      uuid REFERENCES public.sboms,
+    access_token text                                  NOT NULL
 );
 
 CREATE TABLE public.instances
 (
-    id uuid NOT NULL PRIMARY KEY,
+    id             uuid                        NOT NULL PRIMARY KEY,
     last_heartbeat timestamp without time zone NOT NULL
 );
