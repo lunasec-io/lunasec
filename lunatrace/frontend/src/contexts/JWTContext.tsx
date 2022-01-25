@@ -16,10 +16,10 @@
  */
 export const placeholder = {};
 // import { PayloadAction } from '@reduxjs/toolkit';
-// import { createContext, useEffect, useReducer } from 'react';
+// import { createContext, Reducer, useEffect, useReducer } from 'react';
 //
-// import { store } from '../app/store';
-// import { isValidToken, setSession } from '../utils/jwt';
+// import { store } from '../store/store';
+// import { isTokenExpired, setSession } from '../utils/jwt';
 //
 // const INITIALIZE = 'INITIALIZE';
 // const SIGN_IN = 'SIGN_IN';
@@ -38,7 +38,7 @@ export const placeholder = {};
 //   user: null | Record<string, any>;
 // }
 //
-// const JWTReducer = (state: ReturnType<typeof store.getState>, action: PayloadAction<JWTPayload>) => {
+// const JWTReducer: Reducer<JWTPayload, PayloadAction<JWTPayload>> = (state, action) => {
 //   switch (action.type) {
 //     case INITIALIZE:
 //       return {
@@ -73,7 +73,7 @@ export const placeholder = {};
 //
 // const AuthContext = createContext(null);
 //
-// function AuthProvider({ children }: { children: React.ReactNode }) {
+// const AuthProvider: React.FunctionComponent<{ children: React.ReactNode }> = ({ children }) => {
 //   const [state, dispatch] = useReducer(JWTReducer, initialState);
 //
 //   useEffect(() => {
@@ -81,7 +81,7 @@ export const placeholder = {};
 //       try {
 //         const accessToken = window.localStorage.getItem('accessToken');
 //
-//         if (accessToken && isValidToken(accessToken)) {
+//         if (accessToken && isTokenExpired(accessToken)) {
 //           setSession(accessToken);
 //
 //           const response = await axios.get('/api/auth/my-account');
@@ -115,7 +115,7 @@ export const placeholder = {};
 //       }
 //     };
 //
-//     initialize();
+//     return initialize();
 //   }, []);
 //
 //   const signIn = async (email, password) => {
@@ -173,6 +173,6 @@ export const placeholder = {};
 //       {children}
 //     </AuthContext.Provider>
 //   );
-// }
+// };
 //
 // export { AuthContext, AuthProvider };

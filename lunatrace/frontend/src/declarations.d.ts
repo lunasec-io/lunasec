@@ -21,5 +21,11 @@ declare module 'react' {
     // extends React's HTMLAttributes
     depth?: number;
     size?: number;
+    inline?: string;
   }
 }
+
+// declare module 'prettify-date' {
+//   import * as prettifyDate from 'prettify-date';
+//   export default prettifyDate;
+// }

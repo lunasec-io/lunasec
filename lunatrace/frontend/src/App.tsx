@@ -20,12 +20,11 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux';
 import { useRoutes } from 'react-router-dom';
 
-import { store } from './app/store';
-import { Header } from './components/header/Header';
 import { LayoutProvider } from './contexts/LayoutContext';
 import { SidebarProvider } from './contexts/SidebarContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { routes } from './routes';
+import { store } from './store/store';
 
 function App() {
   const content = useRoutes(routes);

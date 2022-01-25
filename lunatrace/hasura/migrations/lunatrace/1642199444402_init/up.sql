@@ -9,6 +9,8 @@
 -- Name: set_current_timestamp_updated_at(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
+CREATE EXTENSION pg_trgm;
+
 CREATE FUNCTION public.set_current_timestamp_updated_at() RETURNS trigger
     LANGUAGE plpgsql
 AS
@@ -147,7 +149,7 @@ CREATE TABLE public.vulnerabilities
     name                      text                                                         NOT NULL,
     created_at                timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
     namespace                 text                                                         NOT NULL,
-    data_source               text,
+    data_source               text                                                        NOT NUll,
     record_source             text,
     severity                  text,
     cvss_version              text,
@@ -162,7 +164,8 @@ CREATE TABLE public.vulnerabilities
 );
 
 CREATE INDEX vuln_slug on public.vulnerabilities (slug);
-
+-- CREATE INDEX vuln_name on public.vulnerabilities (name);
+-- CREATE INDEX vuln_description_gin ON public.vulnerabilities USING gin(description);
 --
 -- Name: related_vulnerabilities; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -261,7 +264,8 @@ CREATE TABLE public.vulnerability_packages
     id         uuid DEFAULT public.gen_random_uuid() NOT NULL UNIQUE PRIMARY KEY
 );
 
-CREATE INDEX vuln_pkg_slug on public.vulnerability_packages (slug);
+CREATE INDEX vuln_pkg_slug_idx on public.vulnerability_packages (slug);
+CREATE INDEX vuln_pkg_vuln_slug_idx on public.vulnerability_packages (vuln_slug);
 
 
 

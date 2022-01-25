@@ -4,6 +4,7 @@
   transition: $sidebar-transition;
   direction: ltr;
   @include theme("background", $sidebar-bg);
+  box-shadow: $sidebar-shadow
 }
 
 .sidebar-content {

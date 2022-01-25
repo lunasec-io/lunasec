@@ -17,11 +17,10 @@
 import { sign, verify } from 'jsonwebtoken';
 import jwtDecode from 'jwt-decode';
 
-const isValidToken = (accessToken: string) => {
+const isTokenExpired = (accessToken: string) => {
   if (!accessToken) {
     return false;
   }
-  // TODO: this might not validate the token
   const decoded = jwtDecode(accessToken);
   const currentTime = Date.now() / 1000;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -52,4 +51,4 @@ const setSession = (accessToken: string) => {
   }
 };
 
-export { verify, sign, isValidToken, setSession };
+export { verify, sign, isTokenExpired, setSession };
