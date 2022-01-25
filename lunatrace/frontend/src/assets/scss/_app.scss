@@ -2,7 +2,7 @@
 @import "1-variables/app";
 
 // Bootstrap
-@import "bootstrap/scss/bootstrap";
+@import "./bootstrap/scss/bootstrap";
 
 // Theme mixins
 @import "2-mixins/background";
@@ -47,6 +47,7 @@
 @import "3-components/type";
 @import "3-components/wizard";
 @import "3-components/wrapper";
+@import "3-components/vulnerability";
 
 // Theme utilities
 @import "4-utilities/background";
@@ -57,13 +58,13 @@
 @import "4-utilities/position";
 @import "4-utilities/z-index";
 
-// 3rd party plugins
-@import "@fullcalendar/bootstrap/main";
-@import "apexcharts/src/assets/apexcharts";
-@import "dragula/dist/dragula";
-@import "react-quill/dist/quill.snow";
-@import "react-quill/dist/quill.bubble";
-@import "notyf/notyf.min";
+//// 3rd party plugins
+//@import "@fullcalendar/bootstrap/main";
+//@import "apexcharts/src/assets/apexcharts";
+//@import "dragula/dist/dragula";
+//@import "react-quill/dist/quill.snow";
+//@import "react-quill/dist/quill.bubble";
+//@import "notyf/notyf.min";
 
 // 3rd party plugin styles
 @import "5-vendor/fullcalendar";

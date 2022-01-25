@@ -15,3 +15,4 @@
  *
  */
 export * from './organizations';
+export * from './vulnerabilities';
