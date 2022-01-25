@@ -15,21 +15,39 @@
  *
  */
 import React from 'react';
-import { useRoutes } from 'react-router-dom';
+import { RouteObject } from 'react-router';
 
 import MainLayout from './layouts/Main';
-import { Organizations } from './pages';
+import { OrganizationsList, VulnerabilitiesMain } from './pages';
 
-type RouteArray = Parameters<typeof useRoutes>[0];
-
-export const routes: RouteArray = [
+export const routes: RouteObject[] = [
   {
-    path: '/organizations',
+    path: 'organizations',
     element: <MainLayout />,
     children: [
       {
         path: '',
-        element: <Organizations />,
+        element: <OrganizationsList />,
+      },
+    ],
+  },
+  {
+    path: 'vulnerabilities',
+    element: <MainLayout />,
+    children: [
+      {
+        path: 'search',
+        element: <VulnerabilitiesMain />,
+      },
+    ],
+  },
+  {
+    path: 'project',
+    element: <MainLayout />,
+    children: [
+      {
+        path: 'search',
+        element: <VulnerabilitiesMain />,
       },
     ],
   },

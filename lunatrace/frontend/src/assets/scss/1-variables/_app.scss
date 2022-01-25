@@ -236,7 +236,7 @@ $card-inner-border-radius: $card-border-radius !default;
 $card-border-width: 0 !default;
 $card-border-color: transparent !default;
 $card-cap-bg: $white !default;
-$card-shadow: 0 0 .875rem 0 rgba($dark, 0.05) !default;
+$card-shadow: 3px 5px 5px #dbdbdb !default;
 $card-title-font-weight: $font-weight-bold !default;
 $card-title-color: $gray-700 !default;
 $card-spacer-y: $spacer*1.25 !default;
@@ -264,7 +264,8 @@ $sidebar-bg: (
   "dark": #293042,
   "light": $static-white
 ) !default;
-  
+$sidebar-shadow: 3px 5px 5px #dbdbdb !default;
+
 // Sidebar brand
 $sidebar-brand-padding-y: 1.15rem !default;
 $sidebar-brand-padding-x: 1.5rem !default;

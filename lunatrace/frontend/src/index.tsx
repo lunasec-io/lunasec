@@ -17,15 +17,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 
-// import { HistoryRouter as Router } from 'redux-first-history/rr6';
 import App from './App';
-import { store } from './app/store';
-import { Header } from './components/header/Header';
 import * as serviceWorker from './serviceWorker';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
   <React.StrictMode>

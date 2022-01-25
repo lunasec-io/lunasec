@@ -9,3 +9,14 @@ array_relationships:
       table:
         name: organization_user
         schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - name
+    - created_at
+    - email
+    filter:
+      id:
+        _eq: X-Hasura-User-Id
+  role: user

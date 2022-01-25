@@ -23,24 +23,32 @@ import { Outlet } from 'react-router-dom';
 // import Settings from '../components/Settings';
 import Wrapper from '../components/Wrapper';
 // import Navbar from '../components/navbar/Navbar';
+import Navbar from '../components/navbar/Navbar';
 import Sidebar from '../components/sidebar/Sidebar';
 import navSections from '../components/sidebar/dashboardItems';
 
-const Dashboard: React.FunctionComponent = ({ children }) => (
-  <React.Fragment>
-    <Wrapper>
-      <Sidebar sections={navSections} />
-      {/*<Main>*/}
-      {/*  <Navbar />*/}
-      {/*  <Content>*/}
-      {/*    {children}*/}
-      {/*    <Outlet />*/}
-      {/*  </Content>*/}
-      {/*  <Footer />*/}
-      {/*</Main>*/}
-    </Wrapper>
-    {/*<Settings />*/}
-  </React.Fragment>
-);
-
-export default Dashboard;
+const MainLayout: React.FunctionComponent = (props) => {
+  console.log('loading main layout with children ', props);
+  return (
+    <React.Fragment>
+      <Wrapper>
+        <Sidebar sections={navSections} />
+        <div className="main">
+          <Navbar />
+          <div className="content">
+            <Outlet />
+          </div>
+        </div>
+        {/*<Main>*/}
+        {/*  <Navbar />*/}
+        {/*  <Content>*/}
+        {/*    <Outlet />*/}
+        {/*  </Content>*/}
+        {/*  <Footer />*/}
+        {/*</Main>*/}
+      </Wrapper>
+      {/*<Settings />*/}
+    </React.Fragment>
+  );
+};
+export default MainLayout;
