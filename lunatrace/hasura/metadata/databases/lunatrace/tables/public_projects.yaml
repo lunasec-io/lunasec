@@ -16,7 +16,7 @@ array_relationships:
 - name: project_access_tokens
   using:
     foreign_key_constraint_on:
-      column: project_id
+      column: project_uuid
       table:
         name: project_access_tokens
         schema: public
@@ -34,3 +34,16 @@ array_relationships:
       table:
         name: scans
         schema: public
+select_permissions:
+- permission:
+    columns:
+    - name
+    - created_at
+    - id
+    - organization_id
+    - settings_id
+    filter:
+      project_access_tokens:
+        access_token:
+          _eq: X-LunaTrace-Project-Access-Token
+  role: cli

@@ -25,7 +25,7 @@ func JavaArchivePatchCommand(
 	globalBoolFlags map[string]bool,
 	log4jLibraryHashes []byte,
 ) error {
-	command.EnableGlobalFlags(c, globalBoolFlags)
+	command.EnableGlobalFlags(globalBoolFlags)
 
 	findings, err := LoadOrScanForFindings(c, log4jLibraryHashes)
 	if err != nil {

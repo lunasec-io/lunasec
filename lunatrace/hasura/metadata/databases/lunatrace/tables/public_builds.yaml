@@ -5,6 +5,18 @@ object_relationships:
 - name: project
   using:
     foreign_key_constraint_on: project_id
-- name: sbom
+array_relationships:
+- name: instances
   using:
-    foreign_key_constraint_on: sbom_id
+    foreign_key_constraint_on:
+      column: agent_access_token
+      table:
+        name: instances
+        schema: public
+- name: scans
+  using:
+    foreign_key_constraint_on:
+      column: build_id
+      table:
+        name: scans
+        schema: public

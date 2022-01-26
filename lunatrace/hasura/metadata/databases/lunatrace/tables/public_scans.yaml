@@ -2,9 +2,9 @@ table:
   name: scans
   schema: public
 object_relationships:
+- name: build
+  using:
+    foreign_key_constraint_on: build_id
 - name: project
   using:
     foreign_key_constraint_on: project_id
-- name: sbom
-  using:
-    foreign_key_constraint_on: sbom_id

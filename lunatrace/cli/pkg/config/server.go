@@ -19,7 +19,7 @@ import "lunasec/lunatrace/pkg/types"
 func defaultLunaTraceGatewayConfig() types.LunaTraceGateways {
 	return types.LunaTraceGateways{
 		GraphqlServer: types.LunaTraceGraphqlServer{
-			Url: "${LUNATRACE_GRAPHQL_SERVER_URL:\"http://localhost:8080/v1/graphql\"}",
+			Url: `${LUNATRACE_GRAPHQL_SERVER_URL:"http://localhost:8080/v1/graphql"}`,
 		},
 	}
 }

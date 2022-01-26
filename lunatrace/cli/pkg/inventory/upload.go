@@ -19,7 +19,6 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/inventory/syftmodel"
 	"lunasec/lunatrace/pkg/constants"
@@ -32,12 +31,14 @@ import (
 
 func formatGenerateUploadUrl(orgId, projectId string) (uploadSbomUrl string, err error) {
 	values := url.Values{}
-	values.Set("ordId", orgId)
+	values.Set("orgId", orgId)
 	values.Set("projectId", projectId)
 
 	baseUrl, err := url.Parse(constants.UploadSbomUrl)
 	if err != nil {
-		fmt.Println("Malformed URL: ", err.Error())
+		log.Error().
+			Err(err).
+			Msg("unable to parse upload sbom url")
 		return
 	}
 
@@ -47,13 +48,19 @@ func formatGenerateUploadUrl(orgId, projectId string) (uploadSbomUrl string, err
 	return
 }
 
-func generateUploadUrl(uploadSbomUrl string) (url string, headers map[string]string, err error) {
+func generateUploadUrl(orgId, projectId string) (url string, headers map[string]string, err error) {
 	var generateUploadUrlResp GenerateUploadUrlResponse
+
+	uploadSbomUrl, err := formatGenerateUploadUrl(orgId, projectId)
+	if err != nil {
+		return
+	}
 
 	data, err := util.HttpRequest(http.MethodGet, uploadSbomUrl, map[string]string{}, nil)
 	if err != nil {
 		log.Error().
 			Err(err).
+			Str("data", string(data)).
 			Msg("Unable to get SBOM upload URL.")
 		return
 	}
@@ -128,15 +135,23 @@ func uploadCollectedSbomsToUrl(
 	return
 }
 
-func UploadCollectedSboms(appConfig types.LunaTraceConfig, sbomModel syftmodel.Document) (err error) {
-	headers := map[string]string{
-		"X-LunaTrace-Project-Access-Token": appConfig.ProjectAccessToken,
+func getLunaTraceProjectAccessTokenHeaders(projectAccessToken string) (headers map[string]string) {
+	headers = map[string]string{
+		"X-LunaTrace-Project-Access-Token": projectAccessToken,
 	}
+	return
+}
 
+func getOrgAndProjectFromAccessToken(
+	graphqlServer types.LunaTraceGraphqlServer,
+	projectAccessToken string,
+) (projectId, orgId string, err error) {
 	var projectInfoResponse types.GetProjectInfoResponse
 
+	headers := getLunaTraceProjectAccessTokenHeaders(projectAccessToken)
+
 	err = graphql.PerformGraphqlRequest(
-		appConfig.GraphqlServer,
+		graphqlServer,
 		headers,
 		graphql.NewGetProjectInfoRequest(),
 		&projectInfoResponse,
@@ -148,15 +163,59 @@ func UploadCollectedSboms(appConfig types.LunaTraceConfig, sbomModel syftmodel.D
 		return
 	}
 
-	projectId := projectInfoResponse.GetProjectId()
-	orgId := projectInfoResponse.GetOrganizationId()
+	if !projectInfoResponse.HasOnlyOneProject() {
+		err = errors.New("multiple projects map to the same secret")
+		log.Error().
+			Err(err).
+			Msg("unable to get project info, multiple projects have the same secret.")
+		return
+	}
 
-	uploadSbomUrl, err := formatGenerateUploadUrl(orgId, projectId)
+	projectId = projectInfoResponse.GetProjectId()
+	orgId = projectInfoResponse.GetOrganizationId()
+	return
+}
+
+func insertNewBuild(
+	graphqlServer types.LunaTraceGraphqlServer,
+	projectAccessToken string,
+	request types.GraphqlRequest,
+) (agentSecret string, err error) {
+	var newBuildResponse types.NewBuildResponse
+
+	headers := getLunaTraceProjectAccessTokenHeaders(projectAccessToken)
+
+	err = graphql.PerformGraphqlRequest(
+		graphqlServer,
+		headers,
+		request,
+		&newBuildResponse,
+	)
+	if err = util.GetGraphqlError(err, newBuildResponse.GraphqlErrors); err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to create new build for project")
+		return
+	}
+
+	agentSecret = newBuildResponse.GetAgentAccessToken()
+	return
+}
+
+func uploadCollectedSboms(
+	appConfig types.LunaTraceConfig,
+	sbomModel syftmodel.Document,
+) (agentSecret string, err error) {
+
+	orgId, projectId, err := getOrgAndProjectFromAccessToken(
+		appConfig.GraphqlServer,
+		appConfig.ProjectAccessToken,
+	)
 	if err != nil {
 		return
 	}
 
-	uploadUrl, uploadHeaders, err := generateUploadUrl(uploadSbomUrl)
+	uploadUrl, uploadHeaders, err := generateUploadUrl(orgId, projectId)
 	if err != nil {
 		return
 	}
@@ -166,19 +225,18 @@ func UploadCollectedSboms(appConfig types.LunaTraceConfig, sbomModel syftmodel.D
 		return
 	}
 
-	var newBuildResponse types.NewBuildResponse
-
-	err = graphql.PerformGraphqlRequest(
-		appConfig.GraphqlServer,
-		headers,
-		graphql.NewInsertNewBuildRequest(projectId, uploadUrl),
-		&newBuildResponse,
-	)
-	if err = util.GetGraphqlError(err, newBuildResponse.GraphqlErrors); err != nil {
+	s3ObjectUrl, err := url.Parse(uploadUrl)
+	if err != nil {
 		log.Error().
 			Err(err).
-			Msg("unable to create new build for project")
+			Msg("unable to parse SBOM s3 upload url")
 		return
 	}
-	return
+	s3ObjectUrl.RawQuery = ""
+
+	return insertNewBuild(
+		appConfig.GraphqlServer,
+		appConfig.ProjectAccessToken,
+		graphql.NewInsertNewBuildRequest(projectId, s3ObjectUrl.String()),
+	)
 }

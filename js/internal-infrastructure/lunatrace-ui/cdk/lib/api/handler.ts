@@ -17,7 +17,6 @@
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { HeaderBag } from '@aws-sdk/types';
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
-import slugify from 'slugify';
 import { v4 as uuid } from 'uuid';
 import validate from 'validator';
 
@@ -41,7 +40,7 @@ function parseRequest(
   if (!queryParams) {
     return {
       error: true,
-      message: 'Missing email in query params',
+      message: 'Missing query params',
     };
   }
 
@@ -126,7 +125,7 @@ export async function handler(
     const result = await preSignedUrlGenerator.generatePresignedS3Url(
       `${encodeURIComponent(
         requestArgs.orgId
-      )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${requestArgs.projectId}.json.gz`,
+      )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURIComponent(requestArgs.projectId)}.json.gz`,
       'PUT'
     );
 

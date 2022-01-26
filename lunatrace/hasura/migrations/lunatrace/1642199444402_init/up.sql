@@ -54,7 +54,7 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.settings
 (
-    id              uuid                                                  NOT NULL PRIMARY KEY,
+    id              uuid DEFAULT public.gen_random_uuid()                 NOT NULL PRIMARY KEY,
     created_at      timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     is_org_settings boolean
 );
@@ -66,7 +66,7 @@ CREATE TABLE public.settings
 
 CREATE TABLE public.users
 (
-    id         uuid                                                  NOT NULL PRIMARY KEY,
+    id         uuid  DEFAULT public.gen_random_uuid()                NOT NULL PRIMARY KEY,
     name       character varying(200)                                NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     email      text                                                  NOT NULL
@@ -128,11 +128,18 @@ CREATE INDEX pkg_ver_slug_indx on public.package_versions (slug);
 CREATE TABLE public.projects
 (
     id              uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    name            character varying(500)                                       NOT NULL,
-    repo            character varying(500),
+    name            text                                       NOT NULL,
     created_at      timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
     settings_id     uuid,
     organization_id uuid REFERENCES public.organizations (id)
+);
+
+CREATE TABLE public.builds
+(
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    project_id     uuid REFERENCES public.projects (id),
+    s3_url     text,
+    agent_access_token uuid DEFAULT public.gen_random_uuid() UNIQUE NOT NULL
 );
 
 CREATE TABLE public.project_access_tokens
@@ -214,19 +221,6 @@ COMMENT ON TABLE public.reports IS 'scan reports';
 
 
 --
--- Name: sboms; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.sboms
-(
-    id         uuid DEFAULT public.gen_random_uuid()                 NOT NULL PRIMARY KEY,
-    s3_url     text,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
-
-
-
---
 -- Name: scans; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -234,7 +228,7 @@ CREATE TABLE public.scans
 (
     id             uuid                                                  NOT NULL PRIMARY KEY,
     project_id     uuid REFERENCES public.projects (id),
-    sbom_id        uuid REFERENCES public.sboms,
+    build_id        uuid REFERENCES public.builds,
     created_at     timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     source_type    text                                                  NOT NULL,
     target         text                                                  NOT NULL,
@@ -293,14 +287,6 @@ CREATE TABLE public.findings
     purl                     text                                  NOT NULL,
     virtual_path             text,
     matcher                  text                                  NOT NULL
-);
-
-CREATE TABLE public.builds
-(
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    project_id     uuid REFERENCES public.projects (id),
-    sbom_id        uuid REFERENCES public.sboms,
-    agent_access_token uuid DEFAULT public.gen_random_uuid() UNIQUE NOT NULL
 );
 
 CREATE TABLE public.instances

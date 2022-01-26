@@ -52,6 +52,10 @@ func PerformGraphqlRequest(
 		return
 	}
 
+	log.Debug().
+		Str("data", string(data)).
+		Msg("response from graphql server")
+
 	err = json.Unmarshal(data, &response)
 	if err != nil {
 		log.Error().

@@ -18,18 +18,19 @@ import (
 	"fmt"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/urfave/cli/v2"
 	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/util"
 	"os"
 	"strings"
 )
 
-func EnableGlobalFlags(c *cli.Context, globalBoolFlags map[string]bool) {
+func EnableGlobalFlags(globalBoolFlags map[string]bool) {
 	verbose := globalBoolFlags["verbose"]
 	debug := globalBoolFlags["debug"]
 	jsonFlag := globalBoolFlags["json"]
 	ignoreWarnings := globalBoolFlags["ignore-warnings"]
+
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
 	if verbose || debug {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)

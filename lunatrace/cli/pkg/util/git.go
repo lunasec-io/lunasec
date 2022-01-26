@@ -47,19 +47,30 @@ func findClosestGitDir() (gitDir string, err error) {
 	return
 }
 
-func GetRepoRemote() (name string, err error) {
+func GetRepo() (repo *git.Repository, err error) {
 	gitDir, err := findClosestGitDir()
 	if err != nil {
 		log.Error().Msg("Unable to locate git folder. Started in the current directory and searched parent folders.")
 		return
 	}
 
-	repo, err := git.PlainOpen(gitDir)
+	repo, err = git.PlainOpen(gitDir)
 	if err != nil {
 		log.Error().Msg("Unable to open git repo")
 		return
 	}
+	return
+}
 
+func GetRepoHead(repo *git.Repository) (branchName, branchHash string, err error) {
+	head, err := repo.Head()
+
+	branchName = head.Name().String()
+	branchHash = head.Hash().String()
+	return
+}
+
+func GetRepoRemote(repo *git.Repository) (name string, err error) {
 	remotes, err := repo.Remotes()
 	if err != nil {
 		log.Error().Msg("Unable to get repo remotes")

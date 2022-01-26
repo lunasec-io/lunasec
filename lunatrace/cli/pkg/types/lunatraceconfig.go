@@ -37,6 +37,7 @@ type LunaTraceAgentConfig struct {
 	LunaTraceGateways `yaml:"gateways"`
 	AgentAccessToken  string `yaml:"agent_access_token"`
 	InstanceId        string `yaml:"instance_id"`
+	HeartbeatDuration string `yaml:"heartbeat_duration"`
 }
 
 type LunaTraceConfigFile struct {

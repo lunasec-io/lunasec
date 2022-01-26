@@ -16,28 +16,46 @@ package main
 
 import (
 	"github.com/cenkalti/backoff/v4"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/pkg/agent"
+	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/config"
+	"lunasec/lunatrace/pkg/constants"
 	"time"
 )
 
 func main() {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	globalBoolFlags := map[string]bool{
+		"json":  true,
+		"debug": false,
+	}
 
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	command.EnableGlobalFlags(globalBoolFlags)
 
 	appConfig, err := config.LoadLunaTraceAgentConfig()
 	if err != nil {
 		return
 	}
 
+	if appConfig.LunaTraceApp.Stage == constants.DevelopmentEnv {
+		globalBoolFlags["debug"] = true
+	}
+
+	command.EnableGlobalFlags(globalBoolFlags)
+
 	heartbeat := func() error {
 		return agent.PerformAgentHeartbeat(appConfig)
 	}
 
-	ticker := time.NewTicker(5 * time.Second)
+	heartbeatDuration, err := time.ParseDuration(appConfig.HeartbeatDuration)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to parse heartbeat duration")
+		return
+	}
+
+	ticker := time.NewTicker(heartbeatDuration)
 	defer ticker.Stop()
 	for ; true; <-ticker.C {
 		err = backoff.Retry(heartbeat, backoff.NewExponentialBackOff())

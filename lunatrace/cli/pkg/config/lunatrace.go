@@ -22,28 +22,34 @@ import (
 	"os"
 )
 
-func defaultLunaSecConfig() types.LunaTraceConfig {
-	return types.LunaTraceConfig{
-		ProjectAccessToken: "${LUNATRACE_PROJECT_SECRET}",
-		LunaTraceGateways:  defaultLunaTraceGatewayConfig(),
+func defaultLunaSecConfig() types.LunaTraceConfigFile {
+	return types.LunaTraceConfigFile{
+		Namespace: types.LunaTraceConfig{
+			LunaTraceApp: types.LunaTraceApp{
+				Stage: constants.ProductionEnv,
+			},
+			ProjectAccessToken: "${LUNATRACE_PROJECT_SECRET}",
+			LunaTraceGateways:  defaultLunaTraceGatewayConfig(),
+		},
 	}
 }
 
 func LoadLunaTraceConfig() (appConfig types.LunaTraceConfig, err error) {
-	appConfig = defaultLunaSecConfig()
+	defaultOps := config.Static(defaultLunaSecConfig())
+
+	configFiles := []string{constants.LunaTraceConfigFileName}
 
 	_, err = os.Stat(constants.LunaTraceConfigFileName)
 	if err != nil {
-		log.Error().
+		configFiles = []string{}
+
+		log.Debug().
 			Err(err).
 			Str("configFileName", constants.LunaTraceConfigFileName).
-			Msg("unable to locate lunatrace config file")
-		return
+			Msg("using default config, unable to locate lunatrace config file")
 	}
 
-	defaultOps := config.Static(defaultLunaSecConfig())
-
-	provider, err := GetConfigProviderFromFiles([]string{constants.LunaTraceConfigFileName}, defaultOps)
+	provider, err := GetConfigProviderFromFiles(configFiles, defaultOps)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -53,7 +59,7 @@ func LoadLunaTraceConfig() (appConfig types.LunaTraceConfig, err error) {
 
 	value := provider.Get(constants.LunaTraceProviderName)
 
-	err = value.Populate(appConfig)
+	err = value.Populate(&appConfig)
 	if err != nil {
 		log.Error().
 			Err(err).

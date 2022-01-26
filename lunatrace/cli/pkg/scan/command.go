@@ -115,7 +115,7 @@ func scanDirectoriesForVulnerableLibraries(
 }
 
 func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHashes []byte) (err error) {
-	command.EnableGlobalFlags(c, globalBoolFlags)
+	command.EnableGlobalFlags(globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
 	scannerFindings, err := scanDirectoriesForVulnerableLibraries(c, searchDirs, log4jLibraryHashes)

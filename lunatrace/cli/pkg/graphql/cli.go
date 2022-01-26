@@ -34,6 +34,6 @@ func NewGetProjectInfoRequest() types.GraphqlRequest {
 	return types.GraphqlRequest{
 		Query:         constants.GetProjectInfoQuery,
 		Variables:     map[string]string{},
-		OperationName: "GetProjectInfoFromAccessToken",
+		OperationName: "GetProjectInfoQuery",
 	}
 }

@@ -4,13 +4,12 @@ table:
 object_relationships:
 - name: project
   using:
-    foreign_key_constraint_on: project_id
+    foreign_key_constraint_on: project_uuid
 select_permissions:
 - permission:
     columns:
     - access_token
-    - id
-    - project_id
+    - project_uuid
     filter:
       access_token:
         _eq: X-LunaTrace-Project-Access-Token

@@ -33,7 +33,7 @@ import (
 	"github.com/anchore/syft/syft/source"
 )
 
-func ToSyftJsonFormatModel(s *sbom.SBOM) syftmodel.Document {
+func toSyftJsonFormatModel(s *sbom.SBOM) syftmodel.Document {
 	src, err := toSourceModel(s.Source)
 	if err != nil {
 		log.Printf("unable to create syft-json source object: %+v", err)

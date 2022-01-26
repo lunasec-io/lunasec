@@ -11,12 +11,15 @@ replace (
 require (
 	github.com/blang/semver/v4 v4.0.0
 	github.com/breadchris/ldapserver v1.1.0
+	github.com/cenkalti/backoff/v4 v4.1.2
 	github.com/go-git/go-git/v5 v5.4.2
+	github.com/google/uuid v1.2.0
 	github.com/lor00x/goldap v0.0.0-20180618054307-a546dffdd1a3
 	github.com/prometheus/procfs v0.7.3
 	github.com/rs/zerolog v1.26.1
 	github.com/urfave/cli/v2 v2.3.0
 	go.uber.org/config v1.4.0
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	lunasec/lunatrace/inventory v0.0.0-00010101000000-000000000000
 )
 
@@ -32,7 +35,6 @@ require (
 	github.com/anchore/syft v0.35.1 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/bmatcuk/doublestar/v4 v4.0.2 // indirect
-	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/containerd/containerd v1.5.9 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.10.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
@@ -53,7 +55,6 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/go-containerregistry v0.7.0 // indirect
-	github.com/google/uuid v1.2.0 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/hashicorp/go-version v1.2.0 // indirect
@@ -78,7 +79,6 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/scylladb/go-set v1.0.2 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
-	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spdx/tools-golang v0.1.0 // indirect
 	github.com/spf13/afero v1.6.0 // indirect

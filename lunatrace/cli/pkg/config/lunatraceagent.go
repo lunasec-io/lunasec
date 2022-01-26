@@ -26,8 +26,9 @@ import (
 func defaultLunaSecAgentConfig() types.LunaTraceAgentConfigFile {
 	return types.LunaTraceAgentConfigFile{
 		Namespace: types.LunaTraceAgentConfig{
-			AgentAccessToken:  "${LUNATRACE_AGENT_ACCESS_TOKEN}",
-			InstanceId:        "${LUNATRACE_INSTANCE_ID}",
+			AgentAccessToken:  "${LUNATRACE_AGENT_SECRET}",
+			InstanceId:        `${LUNATRACE_INSTANCE_ID:""}`,
+			HeartbeatDuration: "5m",
 			LunaTraceGateways: defaultLunaTraceGatewayConfig(),
 		},
 	}
@@ -36,16 +37,16 @@ func defaultLunaSecAgentConfig() types.LunaTraceAgentConfigFile {
 func LoadLunaTraceAgentConfig() (appConfig types.LunaTraceAgentConfig, err error) {
 	defaultOps := config.Static(defaultLunaSecAgentConfig())
 
-	configFiles := []string{constants.LunaTraceConfigFileName}
+	configFiles := []string{constants.LunaTraceAgentConfigFileName}
 
-	_, err = os.Stat(constants.LunaTraceConfigFileName)
+	_, err = os.Stat(constants.LunaTraceAgentConfigFileName)
 	if err != nil {
 		configFiles = []string{}
 
-		log.Warn().
+		log.Debug().
 			Err(err).
-			Str("configFileName", constants.LunaTraceConfigFileName).
-			Msg("using default config, unable to locate lunatrace config file")
+			Str("configFileName", constants.LunaTraceAgentConfigFileName).
+			Msg("using default config, unable to locate lunatrace agent config file")
 	}
 
 	provider, err := GetConfigProviderFromFiles(configFiles, defaultOps)

@@ -26,7 +26,7 @@ import (
 )
 
 func LivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool, hotpatchFiles embed.FS) error {
-	command.EnableGlobalFlags(c, globalBoolFlags)
+	command.EnableGlobalFlags(globalBoolFlags)
 
 	payloadUrl := c.String("payload-url")
 	ldapHost := c.String("ldap-host")

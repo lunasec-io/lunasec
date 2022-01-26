@@ -19,13 +19,14 @@ import (
 	"errors"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"lunasec/lunatrace/inventory/syftmodel"
 	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/types"
 )
 
-func writeCloudScanOutput(sbom syftmodel.Document, output string) (err error) {
+func writeInventoryOutput(sbom syftmodel.Document, output string) (err error) {
 	depOutput := InventoryOutput{
 		Sbom: sbom,
 	}
@@ -44,8 +45,33 @@ func writeCloudScanOutput(sbom syftmodel.Document, output string) (err error) {
 	return
 }
 
+func writeLunaTraceAgentConfigFile(agentSecret, generateConfig string) (err error) {
+	lunaTraceAgentConfig := types.LunaTraceAgentConfigFile{
+		Namespace: types.LunaTraceAgentConfig{
+			AgentAccessToken: agentSecret,
+		},
+	}
+
+	out, err := yaml.Marshal(lunaTraceAgentConfig)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to marshal lunatrace agent config")
+		return
+	}
+
+	err = ioutil.WriteFile(generateConfig, out, 0644)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to write lunatrace agent config file")
+		return
+	}
+	return
+}
+
 func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
-	command.EnableGlobalFlags(c, globalBoolFlags)
+	command.EnableGlobalFlags(globalBoolFlags)
 
 	sources := c.Args().Slice()
 
@@ -66,27 +92,19 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig
 	source := sources[0]
 
 	output := c.String("output")
-	email := c.String("email")
 	excludedDirs := c.StringSlice("excluded")
 	skipUpload := c.Bool("skip-upload")
+	configOutput := c.String("config-output")
 
-	if email == "" {
-		err = errors.New("email required when performing cloud scan")
-		log.Error().
-			Err(err).
-			Msg("Invalid arguments passed to command.")
-		return
-	}
-
-	sbom, err := CollectSbomFromFiles(source, excludedDirs)
+	sbom, err := collectSbom(source, excludedDirs)
 	if err != nil {
 		return
 	}
 
-	sbomModel := ToSyftJsonFormatModel(sbom)
+	sbomModel := toSyftJsonFormatModel(sbom)
 
 	if output != "" {
-		err = writeCloudScanOutput(sbomModel, output)
+		err = writeInventoryOutput(sbomModel, output)
 		if err != nil {
 			return
 		}
@@ -97,6 +115,19 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig
 		return
 	}
 
-	err = UploadCollectedSboms(appConfig, sbomModel)
+	log.Info().Msg("Uploading generated SBOM")
+
+	agentSecret, err := uploadCollectedSboms(appConfig, sbomModel)
+	if err != nil {
+		return
+	}
+
+	if configOutput != "" {
+		err = writeLunaTraceAgentConfigFile(agentSecret, configOutput)
+	} else {
+		log.Info().
+			Str("Agent Secret", agentSecret).
+			Msg("Set the agent secret as environment variable (LUNASEC_AGENT_SECRET) or in config file (.lunatrace_agent.yaml) in deployment.")
+	}
 	return
 }

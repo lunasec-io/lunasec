@@ -19,33 +19,21 @@ import (
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/pkg/types"
-	"path/filepath"
 )
 
-func CollectSbomFromFiles(searchDir string, excludedDirs []string) (sbom *sbom.SBOM, err error) {
-	var (
-		searchPath string
-	)
-
-	searchPath, err = filepath.Abs(searchDir)
-	if err != nil {
-		return
-	}
-
-	sourceName := fmt.Sprintf("dir:%s", searchPath)
-
+func collectSbom(sourceName string, excludedDirs []string) (sbom *sbom.SBOM, err error) {
 	sbom, err = getSbomForSyft(sourceName, excludedDirs)
 	if err != nil {
 		log.Error().
-			Str("searchPath", searchPath).
+			Str("sourceName", sourceName).
 			Err(err).
-			Msg("Unable to create SBOM from directory.")
+			Msg("Unable to create SBOM from provided source.")
 		return
 	}
 	return
 }
 
-func CollectSbomFromContainer(container string, containerType types.ContainerType, excludedDirs []string) (sbom *sbom.SBOM, err error) {
+func collectSbomFromContainer(container string, containerType types.ContainerType, excludedDirs []string) (sbom *sbom.SBOM, err error) {
 	sourceName := fmt.Sprintf("%s:%s", containerType, container)
 
 	sbom, err = getSbomForSyft(sourceName, excludedDirs)

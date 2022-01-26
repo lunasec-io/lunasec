@@ -31,8 +31,8 @@ mutation InsertNewBuildQuery($project_id: uuid, $s3_url: String) {
 }`
 
 	GetProjectInfoQuery = `
-query GetProjectInfoQuery($access_token: uuid) {
-  project_access_tokens() {
+query GetProjectInfoQuery {
+  project_access_tokens {
     project {
       organization_id
       id

@@ -17,7 +17,7 @@ package types
 type GetProjectInfoResponse struct {
 	GraphqlErrors
 	Data struct {
-		Method struct {
+		Method []struct {
 			Project struct {
 				OrganizationId string `json:"organization_id"`
 				Id             string `json:"id"`
@@ -26,12 +26,16 @@ type GetProjectInfoResponse struct {
 	} `json:"data"`
 }
 
+func (s *GetProjectInfoResponse) HasOnlyOneProject() bool {
+	return len(s.Data.Method) == 1
+}
+
 func (s *GetProjectInfoResponse) GetProjectId() string {
-	return s.Data.Method.Project.Id
+	return s.Data.Method[0].Project.Id
 }
 
 func (s *GetProjectInfoResponse) GetOrganizationId() string {
-	return s.Data.Method.Project.OrganizationId
+	return s.Data.Method[0].Project.OrganizationId
 }
 
 type NewBuildResponse struct {

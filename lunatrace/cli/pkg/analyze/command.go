@@ -22,7 +22,7 @@ import (
 )
 
 func AnalyzeCommand(c *cli.Context, globalBoolFlags map[string]bool) error {
-	command.EnableGlobalFlags(c, globalBoolFlags)
+	command.EnableGlobalFlags(globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
 

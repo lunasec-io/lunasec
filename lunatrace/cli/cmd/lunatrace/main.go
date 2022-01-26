@@ -19,6 +19,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"lunasec/lunatrace/inventory"
+	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/config"
 	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/types"
@@ -34,20 +35,16 @@ func getInventoryCmd(
 	return &cli.Command{
 		Name:    "inventory",
 		Aliases: []string{"i"},
-		Usage:   "Inventory dependencies as a Software Bill of Materials (SBOM) for project. An automatic alert will be when security vulnerabilities are detected to be present in this project.",
+		Usage:   "Inventory dependencies as a Software Bill of Materials (SBOM) for project and upload the SBOM.",
 		Before:  setGlobalBoolFlags,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:  "email",
-				Usage: "Email to send dependency report results to.",
-			},
-			&cli.StringFlag{
-				Name:  "application-id",
-				Usage: "Identifier of the application to report the SBOM belonging to.",
-			},
-			&cli.StringFlag{
 				Name:  "output",
-				Usage: "File to write scan results to.",
+				Usage: "File to write generated SBOM to.",
+			},
+			&cli.StringFlag{
+				Name:  "config-output",
+				Usage: "File to write generated LunaTrace Agent config.",
 			},
 			&cli.StringSliceFlag{
 				Name:  "excluded",
@@ -55,7 +52,7 @@ func getInventoryCmd(
 			},
 			&cli.BoolFlag{
 				Name:  "skip-upload",
-				Usage: "Skip uploading collected dependencies.",
+				Usage: "Skip uploading generated SBOM.",
 			},
 		},
 		Action: func(c *cli.Context) error {
@@ -65,20 +62,27 @@ func getInventoryCmd(
 }
 
 func main() {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-
-	util.RunOnProcessExit(func() {
-		util.RemoveCleanupDirs()
-	})
-
 	globalBoolFlags := map[string]bool{
 		"verbose":         false,
 		"json":            false,
 		"debug":           false,
 		"ignore-warnings": false,
 	}
+
+	command.EnableGlobalFlags(globalBoolFlags)
+
+	appConfig, err := config.LoadLunaTraceConfig()
+	if err != nil {
+		return
+	}
+
+	if appConfig.Stage == constants.DevelopmentEnv {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	}
+
+	util.RunOnProcessExit(func() {
+		util.RemoveCleanupDirs()
+	})
 
 	setGlobalBoolFlags := func(c *cli.Context) error {
 		for flag := range globalBoolFlags {
@@ -89,26 +93,19 @@ func main() {
 		return nil
 	}
 
-	appConfig, err := config.LoadLunaTraceConfig()
-	if err != nil {
-		return
-	}
-
 	app := &cli.App{
-		Name: "lunatrace",
-		Usage: `
-Use "files" to collect SBOMs from artifacts which are just files on the file system.
-Use "container" to collect an SBOM from a built container.
-`,
+		Name:  "lunatrace",
+		Usage: "Collect a Software Bill of Materials (SBOM) from a build artifact for a project.",
 		Authors: []*cli.Author{
 			{
 				Name:  "lunasec",
 				Email: "contact@lunasec.io",
 			},
 		},
-		Version:     constants.LunaTraceVersion,
-		Description: "Collect a Software Bill of Materials (SBOM) from build artifacts.",
-		Before:      setGlobalBoolFlags,
+		Version: constants.LunaTraceVersion,
+		Description: `Use "files" to collect SBOMs from artifacts which are just files on the file system.
+Use "container" to collect an SBOM from a built container.`,
+		Before: setGlobalBoolFlags,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:  "verbose",
@@ -127,7 +124,7 @@ Use "container" to collect an SBOM from a built container.
 			{
 				Name:    "files",
 				Aliases: []string{"f"},
-				Usage:   "",
+				Usage:   "Collect SBOM from artifacts that are directories or files.",
 				Before:  setGlobalBoolFlags,
 				Flags:   []cli.Flag{},
 				Subcommands: []*cli.Command{
@@ -137,10 +134,21 @@ Use "container" to collect an SBOM from a built container.
 			{
 				Name:    "container",
 				Aliases: []string{"c"},
-				Usage:   "",
+				Usage:   "Collect SBOM from container and modify container to automatically report status when deployed.",
 				Before:  setGlobalBoolFlags,
 				Subcommands: []*cli.Command{
 					getInventoryCmd(appConfig, setGlobalBoolFlags, globalBoolFlags),
+					{
+						Name:    "inject-agent",
+						Aliases: []string{"a"},
+						Usage:   "Injects the LunaTrace Agent into the container so that the agent will automatically run when the container is deployed.",
+						Before:  setGlobalBoolFlags,
+						Flags:   []cli.Flag{},
+						Action: func(c *cli.Context) error {
+							// TODO (cthompson)
+							return nil
+						},
+					},
 				},
 			},
 		},

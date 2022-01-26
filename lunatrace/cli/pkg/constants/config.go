@@ -15,8 +15,9 @@
 package constants
 
 const (
-	LunaTraceConfigFileName = ".lunatrace.yaml"
-	BaseConfigFileName      = "config.yaml"
+	LunaTraceConfigFileName      = ".lunatrace.yaml"
+	LunaTraceAgentConfigFileName = ".lunatrace_agent.yaml"
+	BaseConfigFileName           = "config.yaml"
 
 	LunaTraceProviderName = "lunatrace"
 )
