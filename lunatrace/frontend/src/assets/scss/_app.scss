@@ -47,7 +47,6 @@
 @import "3-components/type";
 @import "3-components/wizard";
 @import "3-components/wrapper";
-@import "3-components/vulnerability";
 
 // Theme utilities
 @import "4-utilities/background";
@@ -74,3 +73,6 @@
 @import "5-vendor/react-bootstrap-table";
 @import "5-vendor/react-select";
 @import "5-vendor/react-datetime";
+
+@import "6-pages/vulnerability";
+@import "7-globals/globals";

@@ -5,6 +5,7 @@
   @include media-breakpoint-down(md) {
     width: 100vw;
   }
+  font-size: $font-size-sm;
 }
 
 .input-group-navbar {

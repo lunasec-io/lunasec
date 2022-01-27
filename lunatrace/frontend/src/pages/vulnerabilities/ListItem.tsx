@@ -79,23 +79,21 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
             <Row>
               <Col sm="6">
                 <Card.Title>
-                  <h3>
-                    <a href={vuln.data_source || ''}>
-                      {vuln.name} <LogOut size="14" />
-                    </a>
-                  </h3>
+                  <h3>{vuln.name}</h3>
                 </Card.Title>
-                <Card.Subtitle>{vuln.namespace}</Card.Subtitle>
+                <Card.Subtitle>
+                  <a href={vuln.data_source || ''}>{vuln.namespace} ↪</a>
+                </Card.Subtitle>
               </Col>
               <Col sm={{ span: 6 }}>
                 <div style={{ float: 'right' }}>
                   <Card.Title>
                     <h3>
-                      <span className="quieter"> Severity: </span>
+                      <span className="darker"> Severity: </span>
                       {vuln.severity}
                     </h3>
                   </Card.Title>
-                  <Card.Subtitle className="text-right">{prettyDate(vuln.created_at)}</Card.Subtitle>
+                  <Card.Subtitle className="text-right">{prettyDate(new Date(vuln.created_at))}</Card.Subtitle>
                 </div>
               </Col>
             </Row>
