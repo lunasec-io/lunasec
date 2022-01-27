@@ -47,14 +47,13 @@ SET row_security = off;
 -- ALTER TABLE ONLY public.organizations DROP CONSTRAINT organizations_pkey;
 -- ALTER TABLE ONLY public.organization_user DROP CONSTRAINT organization_user_pkey;
 
-DROP TABLE public.findings
+DROP TABLE public.project_access_tokens
+,public.findings
 ,public.vulnerability_packages
 ,public.vulnerabilities
 ,public.users
 ,public.settings
 ,public.scans
-,public.sboms
-,public.reports
 ,public.related_vulnerabilities
 ,public.projects
 ,public.package_versions
@@ -62,6 +61,8 @@ DROP TABLE public.findings
 ,public.organization_user
 ,public.builds
 ,public.instances
+
 CASCADE;
 
 DROP FUNCTION public.set_current_timestamp_updated_at();
+DROP TYPE public.severity_enum;

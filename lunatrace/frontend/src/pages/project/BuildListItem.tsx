@@ -14,8 +14,4 @@
  * limitations under the License.
  *
  */
-import { SearchVulnerabilitiesQuery } from '../../store/api/generated';
-
-export type VulnInfo = SearchVulnerabilitiesQuery['vulnerabilities'][number];
-
-export type Order = 'cvss' | 'date' | 'severity' | 'none';
+export default {};
