@@ -23,8 +23,8 @@ mutation UpsertInstance($instance_id: uuid, $agent_access_token: uuid) {
 }`
 
 	InsertNewBuildQuery = `
-mutation InsertNewBuildQuery($project_id: uuid, $s3_url: String) {
-  insert_builds_one(object: {sbom: {data: {s3_url: $s3_url}}, project_id: $project_id}) {
+mutation InsertNewBuildQuery($project_id: uuid, $s3_url: String, $git_remote: String, $git_branch: String, $git_hash: String) {
+  insert_builds_one(object: {project_id: $project_id, s3_url: $s3_url, git_remote: $git_remote, git_branch: $git_branch, git_hash: $git_hash}) {
     id
 	agent_access_token
   }

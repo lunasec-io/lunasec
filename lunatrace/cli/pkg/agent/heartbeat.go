@@ -25,7 +25,7 @@ func PerformAgentHeartbeat(appConfig types.LunaTraceAgentConfig) (err error) {
 	var identifyResponse types.IdentifyResponse
 
 	headers := map[string]string{
-		"X-LunaTrace-Agent-Access-Token": appConfig.AgentAccessToken,
+		"X-LunaTrace-Access-Token": appConfig.AgentAccessToken,
 	}
 
 	err = graphql.PerformGraphqlRequest(
@@ -37,12 +37,12 @@ func PerformAgentHeartbeat(appConfig types.LunaTraceAgentConfig) (err error) {
 	if err = util.GetGraphqlError(err, identifyResponse.GraphqlErrors); err != nil {
 		log.Error().
 			Err(err).
-			Msg("identified instance as online")
+			Msg("unable to identify instance as online")
 		return
 	}
 
 	log.Info().
 		Str("heartbeat", identifyResponse.Data.Method.LastHeartbeat).
-		Msg("Identified instance as online")
+		Msg("identified instance as online")
 	return
 }

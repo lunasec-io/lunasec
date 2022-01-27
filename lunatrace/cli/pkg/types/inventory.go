@@ -14,6 +14,12 @@
 //
 package types
 
+type RepoMetadata struct {
+	Remote string
+	Branch string
+	Hash   string
+}
+
 type GetProjectInfoResponse struct {
 	GraphqlErrors
 	Data struct {

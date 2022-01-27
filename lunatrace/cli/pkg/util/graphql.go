@@ -16,7 +16,6 @@ package util
 
 import (
 	"errors"
-	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/pkg/types"
 	"strings"
 )
@@ -24,9 +23,6 @@ import (
 func formatGraphqlErrors(graphqlErrors types.GraphqlErrors) error {
 	var errs []string
 	for _, respErr := range graphqlErrors.Errors {
-		log.Error().
-			Str("error", respErr.Message).
-			Msg("encountered error ")
 		errs = append(errs, respErr.Message)
 	}
 	return errors.New(strings.Join(errs, ", "))

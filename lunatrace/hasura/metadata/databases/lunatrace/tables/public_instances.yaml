@@ -5,3 +5,33 @@ object_relationships:
 - name: build
   using:
     foreign_key_constraint_on: agent_access_token
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      agent_access_token:
+        _eq: x-hasura-access-token
+    columns:
+    - agent_access_token
+    - instance_id
+    - last_heartbeat
+  role: cli
+select_permissions:
+- permission:
+    columns:
+    - agent_access_token
+    - instance_id
+    - last_heartbeat
+    filter:
+      agent_access_token:
+        _eq: x-hasura-access-token
+  role: cli
+update_permissions:
+- permission:
+    check: {}
+    columns:
+    - last_heartbeat
+    filter:
+      agent_access_token:
+        _eq: x-hasura-access-token
+  role: cli

@@ -12,5 +12,5 @@ select_permissions:
     - project_uuid
     filter:
       access_token:
-        _eq: X-LunaTrace-Project-Access-Token
+        _eq: x-hasura-access-token
   role: cli

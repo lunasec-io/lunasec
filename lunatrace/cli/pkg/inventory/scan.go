@@ -21,13 +21,15 @@ import (
 	"lunasec/lunatrace/pkg/types"
 )
 
-func collectSbom(sourceName string, excludedDirs []string) (sbom *sbom.SBOM, err error) {
+func collectSbomFromDirectory(pathName string, excludedDirs []string) (sbom *sbom.SBOM, err error) {
+	sourceName := "dir:" + pathName
+
 	sbom, err = getSbomForSyft(sourceName, excludedDirs)
 	if err != nil {
 		log.Error().
-			Str("sourceName", sourceName).
+			Str("pathName", pathName).
 			Err(err).
-			Msg("Unable to create SBOM from provided source.")
+			Msg("Unable to create SBOM from provided directory.")
 		return
 	}
 	return

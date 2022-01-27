@@ -96,7 +96,7 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig
 	skipUpload := c.Bool("skip-upload")
 	configOutput := c.String("config-output")
 
-	sbom, err := collectSbom(source, excludedDirs)
+	sbom, err := collectSbomFromDirectory(source, excludedDirs)
 	if err != nil {
 		return
 	}
@@ -117,7 +117,12 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig
 
 	log.Info().Msg("Uploading generated SBOM")
 
-	agentSecret, err := uploadCollectedSboms(appConfig, sbomModel)
+	projectId, s3Url, err := uploadSbomToS3(appConfig, sbomModel)
+	if err != nil {
+		return
+	}
+
+	agentSecret, err := insertNewBuild(appConfig, projectId, s3Url)
 	if err != nil {
 		return
 	}

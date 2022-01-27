@@ -45,5 +45,5 @@ select_permissions:
     filter:
       project_access_tokens:
         access_token:
-          _eq: X-LunaTrace-Project-Access-Token
+          _eq: x-hasura-access-token
   role: cli

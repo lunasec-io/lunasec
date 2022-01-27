@@ -139,7 +139,10 @@ CREATE TABLE public.builds
     id uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
     project_id     uuid REFERENCES public.projects (id),
     s3_url     text,
-    agent_access_token uuid DEFAULT public.gen_random_uuid() UNIQUE NOT NULL
+    agent_access_token uuid DEFAULT public.gen_random_uuid() UNIQUE NOT NULL,
+    git_remote text,
+    git_branch text,
+    git_hash text
 );
 
 CREATE TABLE public.project_access_tokens

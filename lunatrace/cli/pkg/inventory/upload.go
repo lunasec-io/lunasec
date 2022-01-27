@@ -137,7 +137,7 @@ func uploadCollectedSbomsToUrl(
 
 func getLunaTraceProjectAccessTokenHeaders(projectAccessToken string) (headers map[string]string) {
 	headers = map[string]string{
-		"X-LunaTrace-Project-Access-Token": projectAccessToken,
+		"X-LunaTrace-Access-Token": projectAccessToken,
 	}
 	return
 }
@@ -145,8 +145,11 @@ func getLunaTraceProjectAccessTokenHeaders(projectAccessToken string) (headers m
 func getOrgAndProjectFromAccessToken(
 	graphqlServer types.LunaTraceGraphqlServer,
 	projectAccessToken string,
-) (projectId, orgId string, err error) {
+) (orgId, projectId string, err error) {
 	var projectInfoResponse types.GetProjectInfoResponse
+
+	log.Debug().
+		Msg("Looking up project from access token")
 
 	headers := getLunaTraceProjectAccessTokenHeaders(projectAccessToken)
 
@@ -177,16 +180,17 @@ func getOrgAndProjectFromAccessToken(
 }
 
 func insertNewBuild(
-	graphqlServer types.LunaTraceGraphqlServer,
-	projectAccessToken string,
-	request types.GraphqlRequest,
+	appConfig types.LunaTraceConfig,
+	projectId, s3Url string,
 ) (agentSecret string, err error) {
 	var newBuildResponse types.NewBuildResponse
 
-	headers := getLunaTraceProjectAccessTokenHeaders(projectAccessToken)
+	request := graphql.NewInsertNewBuildRequest(projectId, s3Url)
+
+	headers := getLunaTraceProjectAccessTokenHeaders(appConfig.ProjectAccessToken)
 
 	err = graphql.PerformGraphqlRequest(
-		graphqlServer,
+		appConfig.GraphqlServer,
 		headers,
 		request,
 		&newBuildResponse,
@@ -194,6 +198,7 @@ func insertNewBuild(
 	if err = util.GetGraphqlError(err, newBuildResponse.GraphqlErrors); err != nil {
 		log.Error().
 			Err(err).
+			Interface("request", request).
 			Msg("unable to create new build for project")
 		return
 	}
@@ -202,10 +207,10 @@ func insertNewBuild(
 	return
 }
 
-func uploadCollectedSboms(
+func uploadSbomToS3(
 	appConfig types.LunaTraceConfig,
 	sbomModel syftmodel.Document,
-) (agentSecret string, err error) {
+) (projectId, s3Url string, err error) {
 
 	orgId, projectId, err := getOrgAndProjectFromAccessToken(
 		appConfig.GraphqlServer,
@@ -234,9 +239,6 @@ func uploadCollectedSboms(
 	}
 	s3ObjectUrl.RawQuery = ""
 
-	return insertNewBuild(
-		appConfig.GraphqlServer,
-		appConfig.ProjectAccessToken,
-		graphql.NewInsertNewBuildRequest(projectId, s3ObjectUrl.String()),
-	)
+	s3Url = s3ObjectUrl.String()
+	return
 }

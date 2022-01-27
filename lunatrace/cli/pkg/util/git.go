@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
 	"github.com/rs/zerolog/log"
+	"lunasec/lunatrace/pkg/types"
 	"os"
 	"path/filepath"
 )
@@ -47,7 +48,7 @@ func findClosestGitDir() (gitDir string, err error) {
 	return
 }
 
-func GetRepo() (repo *git.Repository, err error) {
+func getRepo() (repo *git.Repository, err error) {
 	gitDir, err := findClosestGitDir()
 	if err != nil {
 		log.Error().Msg("Unable to locate git folder. Started in the current directory and searched parent folders.")
@@ -62,15 +63,18 @@ func GetRepo() (repo *git.Repository, err error) {
 	return
 }
 
-func GetRepoHead(repo *git.Repository) (branchName, branchHash string, err error) {
+func getRepoHead(repo *git.Repository) (branchName, branchHash string, err error) {
 	head, err := repo.Head()
+	if err != nil {
+		return
+	}
 
 	branchName = head.Name().String()
 	branchHash = head.Hash().String()
 	return
 }
 
-func GetRepoRemote(repo *git.Repository) (name string, err error) {
+func getRepoRemote(repo *git.Repository) (name string, err error) {
 	remotes, err := repo.Remotes()
 	if err != nil {
 		log.Error().Msg("Unable to get repo remotes")
@@ -93,5 +97,24 @@ func GetRepoRemote(repo *git.Repository) (name string, err error) {
 	}
 
 	name = urls[0]
+	return
+}
+
+func CollectRepoMetadata() (metadata types.RepoMetadata) {
+	repo, err := getRepo()
+	if err != nil {
+		return
+	}
+
+	remote, err := getRepoRemote(repo)
+	if err == nil {
+		metadata.Remote = remote
+	}
+
+	branchName, branchHash, err := getRepoHead(repo)
+	if err == nil {
+		metadata.Branch = branchName
+		metadata.Hash = branchHash
+	}
 	return
 }
