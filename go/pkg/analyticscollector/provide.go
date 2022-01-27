@@ -15,9 +15,9 @@
 package analyticscollector
 
 import (
-	"github.com/lunasec-io/lunasec-monorepo/gateway"
-	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
-	"github.com/lunasec-io/lunasec-monorepo/util"
+	"lunasec/lunadefend/gateway"
+	"lunasec/lunadefend/gateway/metrics"
+	"lunasec/lunadefend/util"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"

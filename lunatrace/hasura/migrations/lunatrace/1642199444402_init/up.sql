@@ -58,8 +58,8 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.settings
 (
-    id              uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    created_at      timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
+    id              uuid DEFAULT public.gen_random_uuid()                 NOT NULL PRIMARY KEY,
+    created_at      timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     is_org_settings boolean
 );
 
@@ -70,10 +70,10 @@ CREATE TABLE public.settings
 
 CREATE TABLE public.users
 (
-    id         uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    name       character varying(200)                                       NOT NULL,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
-    email      text                                                         NOT NULL
+    id         uuid  DEFAULT public.gen_random_uuid()                NOT NULL PRIMARY KEY,
+    name       character varying(200)                                NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    email      text                                                  NOT NULL
 );
 
 --
@@ -82,9 +82,9 @@ CREATE TABLE public.users
 
 CREATE TABLE public.organizations
 (
-    id          uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    name        character varying(200)                                       NOT NULL,
-    "createdAt" timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
+    id          uuid DEFAULT public.gen_random_uuid()                 NOT NULL PRIMARY KEY,
+    name        character varying(200)                                NOT NULL,
+    "createdAt" timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     settings_id uuid
 );
 
@@ -106,8 +106,6 @@ CREATE TABLE public.organization_user
 
 COMMENT ON TABLE public.organization_user IS 'join table';
 
-
-
 --
 -- Name: package_versions; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -120,8 +118,7 @@ COMMENT ON TABLE public.organization_user IS 'join table';
 CREATE TABLE public.projects
 (
     id              uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    name            character varying(500)                                       NOT NULL,
-    repo            character varying(500),
+    name            text                                       NOT NULL,
     created_at      timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
     settings_id     uuid,
     organization_id uuid REFERENCES public.organizations (id)
@@ -149,16 +146,17 @@ begin
 end
 $$;
 
-
-
 CREATE TABLE public.builds
 (
-    id                 uuid                        DEFAULT public.gen_random_uuid()        NOT NULL PRIMARY KEY,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
     created_at         timestamp without time zone DEFAULT CURRENT_TIMESTAMP               NOT NULL,
     project_id         uuid REFERENCES public.projects (id),
     s3_url             text,
     agent_access_token uuid                        DEFAULT public.gen_random_uuid() UNIQUE NOT NULL,
     build_number      int,
+    git_remote text,
+    git_branch text,
+    git_hash text,
     UNIQUE (build_number, project_id)
 );
 
@@ -168,9 +166,9 @@ CREATE TRIGGER fill_in_scan_number BEFORE INSERT ON public.builds FOR EACH ROW E
 
 CREATE TABLE public.project_access_tokens
 (
-    id           uuid DEFAULT public.gen_random_uuid()                  NOT NULL PRIMARY KEY,
+    id           uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
     project_uuid uuid references public.projects (id) ON DELETE CASCADE NOT NULL,
-    access_token uuid DEFAULT public.gen_random_uuid()                  NOT NULL UNIQUE
+    access_token uuid DEFAULT public.gen_random_uuid() NOT NULL UNIQUE
 );
 
 -- This allows sorting by severity, VERY nice
@@ -223,7 +221,7 @@ COMMENT ON TABLE public.related_vulnerabilities IS 'join table for adding holdin
 
 
 --
--- Name: reports; Type: TABLE; Schema: public; Owner: postgres
+-- Name: scans; Type: TABLE; Schema: public; Owner: postgres
 --
 
 
@@ -269,30 +267,12 @@ CREATE TABLE public.scans
 
 CREATE TRIGGER fill_in_scan_number BEFORE INSERT ON public.scans FOR EACH ROW EXECUTE PROCEDURE public.fill_in_scan_number();
 
-
-
 --
 -- Name: TABLE reports; Type: COMMENT; Schema: public; Owner: postgres
 --
 
-COMMENT ON TABLE public.scans IS 'An individual time a scan was run on a build';
---
--- Name: scans; Type: TABLE; Schema: public; Owner: postgres
---
 
--- CREATE TABLE public.scans
--- (
---     id             uuid                                                  NOT NULL PRIMARY KEY,
---     project_id     uuid REFERENCES public.projects (id),
---     sbom_id        uuid REFERENCES public.sboms,
---     created_at     timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
---     source_type    text                                                  NOT NULL,
---     target         text                                                  NOT NULL,
---     db_date        timestamp                                             NOT NULL,
---     grype_version  text                                                  NOT NULL,
---     distro_name    text,
---     distro_version text
--- );
+COMMENT ON TABLE public.scans IS 'An individual time a scan was run on a build';
 
 --
 -- Name: vulnerabilities; Type: TABLE; Schema: public; Owner: postgres
@@ -370,7 +350,8 @@ CREATE INDEX finding_build_id_index ON public.findings(build_id);
 
 CREATE TABLE public.instances
 (
-    id             uuid                                                  NOT NULL PRIMARY KEY,
+    instance_id             uuid                                                  NOT NULL PRIMARY KEY,
     created_at     timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_heartbeat timestamp without time zone                           NOT NULL
+    last_heartbeat timestamp without time zone                           DEFAULT now() NOT NULL,
+    agent_access_token uuid references public.builds (agent_access_token) ON DELETE CASCADE
 );
