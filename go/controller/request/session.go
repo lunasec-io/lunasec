@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"lunasec/lunadefend/constants"
 	"github.com/pkg/errors"
 )
 

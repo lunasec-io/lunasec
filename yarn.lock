@@ -34021,6 +34021,8 @@ __metadata:
     typescript: ^4.4.2
     uuid: ^8.3.2
   dependenciesMeta:
+    "@aws-cdk/aws-lambda-nodejs@1.138.1":
+      unplugged: true
     apollo@2.33.9:
       unplugged: true
     eslint@8.5.0:

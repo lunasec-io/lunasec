@@ -15,8 +15,8 @@
 package event
 
 import (
-	"github.com/lunasec-io/lunasec-monorepo/constants"
-	"github.com/lunasec-io/lunasec-monorepo/types"
+	"lunasec/lunadefend/constants"
+	"lunasec/lunadefend/types"
 )
 
 type ImageFile struct {

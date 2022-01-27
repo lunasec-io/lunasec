@@ -16,16 +16,16 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/lunasec-io/lunasec-monorepo/constants"
-	"github.com/lunasec-io/lunasec-monorepo/controller/request"
+	"lunasec/lunadefend/constants"
+	"lunasec/lunadefend/controller/request"
 	"io/ioutil"
 	"log"
 	"net/http"
 
-	"github.com/lunasec-io/lunasec-monorepo/service"
-	"github.com/lunasec-io/lunasec-monorepo/types"
-	"github.com/lunasec-io/lunasec-monorepo/types/event"
-	"github.com/lunasec-io/lunasec-monorepo/util"
+	"lunasec/lunadefend/service"
+	"lunasec/lunadefend/types"
+	"lunasec/lunadefend/types/event"
+	"lunasec/lunadefend/util"
 )
 
 type grantController struct {
