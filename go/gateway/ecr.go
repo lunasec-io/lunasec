@@ -28,7 +28,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ecr"
 	"github.com/aws/aws-sdk-go/service/ecrpublic"
 	"github.com/google/go-containerregistry/pkg/authn"
-	"github.com/lunasec-io/lunasec-monorepo/util"
+	"lunasec/lunadefend/util"
 )
 
 type awsECRGateway struct {
