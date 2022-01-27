@@ -20,10 +20,12 @@ export interface Finding {
   version_matcher: string;
   type: string;
   locations: string[];
+  severity: string;
   language: string;
   purl: string;
   virtual_path: string | null;
   matcher: string;
+  dedupe_slug: string; // A combo of the CVE name and package name combined with all the locations it was found, the issue with this is that if locations change or reorder a new finding will be created
   meta: {
     vuln_slug: string;
     pkg_slug: string;
@@ -39,5 +41,5 @@ export interface Report {
   grype_version: string;
   distro_name: string;
   distro_version: string;
-  project_id: string;
+  build_id: string;
 }

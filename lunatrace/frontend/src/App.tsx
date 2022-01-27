@@ -15,24 +15,41 @@
  *
  */
 import React from 'react';
-
-import logo from './logo.svg';
 import './App.css';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Provider } from 'react-redux';
+import { useRoutes } from 'react-router-dom';
+
+import { LayoutProvider } from './contexts/LayoutContext';
+import { SidebarProvider } from './contexts/SidebarContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { routes } from './routes';
+import { store } from './store/store';
 
 function App() {
+  const content = useRoutes(routes);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
-    </div>
+    <HelmetProvider>
+      <Helmet
+        titleTemplate="%s | LunaTrace - Dependency Analysis and Live Tracking"
+        defaultTitle="LunaTrace - Dependency Analysis and Live Tracking"
+      />
+      <Provider store={store}>
+        <ThemeProvider>
+          <SidebarProvider>
+            <LayoutProvider>
+              {/*<ChartJsDefaults />*/}
+              {/*<AuthProvider>*/}
+              {content}
+              {/*</AuthProvider>*/}
+            </LayoutProvider>
+          </SidebarProvider>
+        </ThemeProvider>
+      </Provider>
+    </HelmetProvider>
   );
+
+  return <div className="App">hi</div>;
 }
 
 export default App;

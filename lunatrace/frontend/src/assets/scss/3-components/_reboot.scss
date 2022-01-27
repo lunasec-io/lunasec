@@ -1,0 +1,22 @@
+body, html, #root {
+  height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-y: scroll;
+  opacity: 1 !important;
+}
+
+body[data-sidebar-position=right] {
+  direction: rtl;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  html {
+    overflow-x: hidden;
+  }
+}

@@ -23,16 +23,9 @@ array_relationships:
 - name: reports
   using:
     foreign_key_constraint_on:
-      column: project_id
+      column: project_uuid
       table:
-        name: reports
-        schema: public
-- name: scans
-  using:
-    foreign_key_constraint_on:
-      column: project_id
-      table:
-        name: scans
+        name: project_access_tokens
         schema: public
 select_permissions:
 - permission:

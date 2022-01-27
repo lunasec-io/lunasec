@@ -1,0 +1,36 @@
+.wizard {
+  @include wizard-variant($primary);
+}
+
+@each $color, $value in $theme-colors {
+  .wizard-#{$color}{
+    @include wizard-variant($value);
+  }
+}
+
+.wizard {
+  background: $white;
+  background-color: $card-bg;
+  background-clip: border-box;
+  border: $card-border-width solid $card-border-color;
+  box-shadow: $box-shadow;
+  border-radius: $card-border-radius !important;
+  margin-bottom: 2rem;
+}
+
+.wizard .tab-pane {
+  padding: $card-spacer-x !important;
+}
+
+.wizard.sw-theme-default .sw-toolbar-bottom,
+.wizard.sw-theme-arrows .sw-toolbar-bottom {
+  background: $white;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: $gray-300;
+}
+
+.wizard.sw-theme-default .step-content,
+.wizard.sw-theme-arrows .step-content {
+  padding: 10px;
+}

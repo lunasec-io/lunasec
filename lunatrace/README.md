@@ -19,7 +19,8 @@ analysis at build time with runtime tracking and the capability to automatically
 ## Development
 Hasura manages the GraphQl API and postgres database, found in the `./hasura` folder.
 ### Starting Hasura
-Start hasura by running `sudo docker-compose up -d` from the hasura folder. Migrate the database using `hasura migrate apply`.
+Start hasura by running `sudo docker-compose up -d` from the hasura folder.  Run `hasura metadata apply` to transfer metadata
+from local hasura folder into the running engine.  Then, migrate the database using `hasura migrate apply`.
 This launches the graphql engine and a copy of postgres that volume mounts to your local postgres. 
 ### Using the Database
 To use PSQL console or for connecting other services to the db, use the connection string found in the docker-compose.yaml file,

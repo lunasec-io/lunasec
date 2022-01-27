@@ -27,3 +27,4 @@ DROP TABLE public.findings
 CASCADE;
 
 DROP FUNCTION public.set_current_timestamp_updated_at();
+DROP TYPE public.severity_enum;
