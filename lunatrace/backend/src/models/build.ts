@@ -14,4 +14,7 @@
  * limitations under the License.
  *
  */
+// TODO: USE THIS SUBQUERY TO INCREMENT BUILD NUMBER
+// ROW_NUMBER() OVER(PARTITION BY ID ORDER BY DATA),
+// https://stackoverflow.com/questions/6821871/postgresql-sequence-based-on-another-column
 export default {};
