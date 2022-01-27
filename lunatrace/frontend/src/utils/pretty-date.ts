@@ -14,8 +14,12 @@
  * limitations under the License.
  *
  */
-import { SearchVulnerabilitiesQuery } from '../../store/api/generated';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import prettifyDate from 'prettify-date'; // This lib works great, is old, and has no types
 
-export type VulnInfo = SearchVulnerabilitiesQuery['vulnerabilities'][number];
-
-export type Order = 'cvss' | 'date' | 'severity' | 'none';
+export const prettyDate = (d: string) => {
+  const dateFormat = prettifyDate.format as (d: Date) => string;
+  const prettyDate = dateFormat(new Date(d));
+  return prettyDate.charAt(0).toUpperCase() + prettyDate.slice(1);
+};

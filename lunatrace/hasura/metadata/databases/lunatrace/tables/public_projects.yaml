@@ -6,17 +6,17 @@ object_relationships:
   using:
     foreign_key_constraint_on: organization_id
 array_relationships:
-- name: reports
+- name: builds
   using:
     foreign_key_constraint_on:
       column: project_id
       table:
-        name: reports
+        name: builds
         schema: public
-- name: scans
+- name: project_access_tokens
   using:
     foreign_key_constraint_on:
-      column: project_id
+      column: project_uuid
       table:
-        name: scans
+        name: project_access_tokens
         schema: public

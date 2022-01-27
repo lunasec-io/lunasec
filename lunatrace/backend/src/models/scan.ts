@@ -24,9 +24,20 @@ import { Finding, Report } from '../types/scan';
 const promisifiedExec = promisify(exec);
 
 export class Scan {
-  static async uploadScan(sbomPath: string, projectId: string) {
+  static async uploadScan(sbomPath: string, buildId: string) {
     const rawGrypeReport = await this.runGrypeScan(sbomPath);
-    const report = this.parseScan(rawGrypeReport, projectId);
+    const report = this.parseScan(rawGrypeReport, buildId);
+
+    // const findingDupes: Record<string, number> = {};
+    // report.findings.forEach((f) => {
+    //   const cve = f.meta.version_slug; //f.meta.pkg_slug + f.locations.join(':');
+    //   const preExisting = findingDupes[cve];
+    //   if (preExisting) {
+    //     return (findingDupes[cve] = preExisting + 1);
+    //   }
+    //   return (findingDupes[cve] = 1);
+    // });
+    // console.log('finding dupes are ', findingDupes);
     await this.storeReport(report);
     console.log('donezo');
   }
@@ -35,7 +46,7 @@ export class Scan {
     return Convert.toScanReport(stdout);
   }
 
-  static parseScan(scan: GrypeScanReport, projectId: string): Report {
+  static parseScan(scan: GrypeScanReport, buildId: string): Report {
     return {
       findings: this.parseMatches(scan.matches),
       source_type: scan.source.type,
@@ -44,7 +55,7 @@ export class Scan {
       grype_version: scan.descriptor.version,
       distro_name: scan.distro.name,
       distro_version: scan.distro.version,
-      project_id: projectId,
+      build_id: buildId,
     };
   }
 
@@ -66,8 +77,10 @@ export class Scan {
         locations: locations,
         language: artifact.language,
         purl: artifact.purl,
+        severity: vulnerability.severity,
         virtual_path: artifact.metadata ? artifact.metadata.VirtualPath : null,
         matcher: details.matcher,
+        dedupe_slug: pkg_slug + locations.sort().join(':'),
         meta: {
           vuln_slug,
           pkg_slug,
@@ -82,15 +95,16 @@ export class Scan {
     const queryBeginning = pgp.as.format(
       `
           BEGIN;
-          WITH this_report AS (
-            INSERT INTO public.reports(
+          WITH this_scan AS (
+            INSERT INTO public.scans(
                 source_type, 
                 target, 
                 db_date,
                 grype_version, 
                 distro_name, 
                 distro_version, 
-                project_id)
+                build_id
+                )
             VALUES(
                  $<source_type>,
                  $<target>,
@@ -98,14 +112,15 @@ export class Scan {
                  $<grype_version>,
                  $<distro_name>,
                  $<distro_version>,
-                 $<project_id>
-            ) RETURNING id
+                 $<build_id>
+            ) RETURNING id, build_id
           )
           INSERT INTO findings(
             vulnerability_id,
             vulnerability_package_id,
             package_version_id,
-            report_id,
+            scan_id,
+            build_id,
             package_name,
             version,
             version_matcher,
@@ -114,7 +129,9 @@ export class Scan {
             language,
             purl,
             virtual_path,
-            matcher
+            matcher,
+            dedupe_slug,
+            severity
           ) VALUES 
         `,
       report
@@ -122,7 +139,12 @@ export class Scan {
 
     const findingValueArray = report.findings.map(this.buildFindingInsertQuery);
     const findingValues = findingValueArray.join(',');
-    const queryEnd = '; COMMIT;';
+    const queryEnd = `    ON CONFLICT (dedupe_slug) DO UPDATE
+                            SET
+                                version = EXCLUDED.version,
+                                virtual_path = EXCLUDED.virtual_path,
+                                severity = EXCLUDED.severity
+                      ; COMMIT;`;
     const query = queryBeginning + findingValues + queryEnd;
     await db.none(query);
   }
@@ -134,7 +156,8 @@ export class Scan {
             ( SELECT id FROM public.vulnerabilities WHERE slug = $<meta.vuln_slug> ),
             ( SELECT id FROM public.vulnerability_packages WHERE slug = $<meta.pkg_slug>),
             ( SELECT id FROM public.package_versions WHERE slug = $<meta.version_slug>),
-            ( SELECT id FROM this_report ),
+            ( SELECT id FROM this_scan ),
+            ( SELECT build_id FROM this_scan ),
             $<package_name>,
             $<version>,
             $<version_matcher>,
@@ -143,8 +166,9 @@ export class Scan {
             $<language>,
             $<purl>,
             $<virtual_path>,
-            $<matcher>
-            
+            $<matcher>,
+            $<dedupe_slug>,
+            $<severity>
           )
         `,
       finding

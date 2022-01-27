@@ -18,6 +18,8 @@ import React, { useState } from 'react';
 import { Button, Col, Dropdown, Form, FormGroup, InputGroup, Row } from 'react-bootstrap';
 import { AlignLeft, ChevronDown, Filter, Search } from 'react-feather';
 
+import useTheme from '../../hooks/useTheme';
+
 import { Order } from './types';
 
 export interface VulnerabilitiesControlsProps {
@@ -30,6 +32,7 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
   const [search, setSearch] = useState('');
   const [namespaceFilter, setNamespaceFilter] = useState('');
   const { submitOrder, order } = props;
+  const { theme } = useTheme();
   return (
     <Row className="mb-2 mb-xl-3">
       <Col sm="3" className="d-none d-sm-block">
@@ -58,10 +61,19 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
 
       <Col sm="4" className="ms-auto text-end">
         <Dropdown autoClose="outside" className="d-inline me-2">
-          <Dropdown.Toggle variant="light" className="bg-white shadow-sm">
+          <Dropdown.Toggle
+            variant={order !== 'none' && theme === 'dark' ? 'primary' : ''}
+            className="bg-white shadow-sm"
+          >
             <AlignLeft className="feather align-middle mt-n1" /> Sort
           </Dropdown.Toggle>
           <Dropdown.Menu>
+            <Dropdown.Item
+              active={order === 'severity'}
+              onClick={(e) => submitOrder(order !== 'severity' ? 'severity' : 'none')}
+            >
+              Severity <ChevronDown />
+            </Dropdown.Item>
             <Dropdown.Item active={order === 'cvss'} onClick={(e) => submitOrder(order !== 'cvss' ? 'cvss' : 'none')}>
               CVSS Score <ChevronDown />
             </Dropdown.Item>

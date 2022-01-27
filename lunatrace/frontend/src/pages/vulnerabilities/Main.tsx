@@ -41,7 +41,8 @@ export const VulnerabilitiesMain: React.FunctionComponent = () => {
 
   const postgresSearch = searchString ? `%${searchString}%` : '%%'; // Bit of a hack, it would be a faster query to pull out this where clause
   const postgresFilter = filterString ? { _ilike: `%${filterString}%` } : {};
-  const orderMap: Record<Order, Record<string, unknown>> = {
+  const postgresOrderMap: Record<Order, Record<string, unknown>> = {
+    severity: { severity: Order_By.Asc },
     cvss: { cvss_score: Order_By.DescNullsLast },
     date: { created_at: Order_By.Desc },
     none: {},
@@ -53,7 +54,7 @@ export const VulnerabilitiesMain: React.FunctionComponent = () => {
   const { data, error, isFetching } = useSearchVulnerabilitiesQuery({
     search: postgresSearch,
     namespace: postgresFilter,
-    order_by: orderMap[orderBy],
+    order_by: postgresOrderMap[orderBy],
   });
 
   return (

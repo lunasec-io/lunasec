@@ -1,6 +1,10 @@
 table:
   name: package_versions
   schema: public
+object_relationships:
+- name: vulnerability_package
+  using:
+    foreign_key_constraint_on: pkg_slug
 array_relationships:
 - name: findings
   using:
