@@ -15,7 +15,7 @@
 package handler
 
 import (
-	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"lunasec/lunadefend/constants"
 	"net/http"
 )
 
