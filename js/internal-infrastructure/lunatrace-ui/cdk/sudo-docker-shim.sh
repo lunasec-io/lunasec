@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo $@
+
 if [ -z "${14}" ]; then
   exec sudo docker "$@"
 fi

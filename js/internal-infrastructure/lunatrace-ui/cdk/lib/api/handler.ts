@@ -17,7 +17,6 @@
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { HeaderBag } from '@aws-sdk/types';
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
-import slugify from 'slugify';
 import { v4 as uuid } from 'uuid';
 import validate from 'validator';
 
@@ -35,61 +34,52 @@ interface SuccessResponse {
 
 function parseRequest(
   event: APIGatewayProxyEventV2
-): ErrorResponse | { error: false; email: string; metadata: string } {
+): ErrorResponse | { error: false; orgId: string; projectId: string } {
   const queryParams = event.queryStringParameters;
 
   if (!queryParams) {
     return {
       error: true,
-      message: 'Missing email in query params',
+      message: 'Missing query params',
     };
   }
 
-  const email = queryParams.email;
+  const orgId = queryParams.orgId;
 
-  if (!email) {
+  if (!orgId) {
     return {
       error: true,
-      message: 'Missing email in query params',
+      message: 'Missing orgId in query params',
     };
   }
 
-  if (!validate.isEmail(email)) {
+  if (!validate.isUUID(orgId)) {
     return {
       error: true,
-      message: 'Invalid email specified in request',
+      message: 'Invalid orgId specified in request',
     };
   }
 
-  const metadata = queryParams.metadata;
+  const projectId = queryParams.projectId;
 
-  if (!metadata) {
+  if (!projectId) {
     return {
       error: true,
-      message: 'Missing metadata for request',
+      message: 'Missing projectId for request',
     };
   }
 
-  try {
-    const parsedMetadata = JSON.parse(metadata);
-
-    if (!parsedMetadata.name) {
-      return {
-        error: true,
-        message: 'Missing name in metadata for request',
-      };
-    }
-  } catch (e) {
+  if (!validate.isUUID(projectId)) {
     return {
       error: true,
-      message: 'Invalid metadata for request, it must be JSON',
+      message: 'Invalid projectId specified in request',
     };
   }
 
   return {
     error: false,
-    email: email,
-    metadata: metadata,
+    orgId: orgId,
+    projectId: projectId,
   };
 }
 
@@ -131,15 +121,11 @@ export async function handler(
   const today = new Date();
   const recordId: string = uuid();
 
-  const sluggedMetadata: string = slugify(requestArgs.metadata);
-
   try {
     const result = await preSignedUrlGenerator.generatePresignedS3Url(
       `${encodeURIComponent(
-        requestArgs.email
-      )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURIComponent(
-        sluggedMetadata
-      )}.json.gz`,
+        requestArgs.orgId
+      )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURIComponent(requestArgs.projectId)}.json.gz`,
       'PUT'
     );
 

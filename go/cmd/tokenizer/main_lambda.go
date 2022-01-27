@@ -18,7 +18,7 @@ package main
 
 import (
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizer"
+	"lunasec/lunadefend/pkg/tokenizer"
 )
 
 func main() {

@@ -34,6 +34,9 @@
     "uuid": "^8.3.2"
   },
   "dependenciesMeta": {
+    "@aws-cdk/aws-lambda-nodejs@1.138.1": {
+      "unplugged": true
+    },
     "apollo@2.33.9": {
       "unplugged": true
     },
