@@ -19,39 +19,47 @@ import { RouteObject } from 'react-router';
 
 import MainLayout from './layouts/Main';
 import { OrganizationsList, VulnerabilitiesMain } from './pages';
+import { ProjectMain } from './pages/project/Main';
 
 export const routes: RouteObject[] = [
   {
-    path: 'organizations',
+    path: '/',
     element: <MainLayout />,
     children: [
       {
-        path: '',
-        element: <OrganizationsList />,
+        path: 'vulnerabilities',
+        children: [
+          {
+            path: 'search',
+            element: <VulnerabilitiesMain />,
+          },
+        ],
       },
-    ],
-  },
-  {
-    path: 'vulnerabilities',
-    element: <MainLayout />,
-    children: [
       {
-        path: 'search',
-        element: <VulnerabilitiesMain />,
+        path: 'organizations',
+        children: [
+          {
+            path: '',
+            element: <OrganizationsList />,
+          },
+          {
+            path: ':id',
+            // element: <Organization />,
+          },
+        ],
       },
-    ],
-  },
-  {
-    path: 'project',
-    element: <MainLayout />,
-    children: [
       {
-        path: 'search',
-        element: <VulnerabilitiesMain />,
+        path: 'project',
+        children: [
+          {
+            path: ':project_id',
+            element: <ProjectMain />,
+          },
+        ],
+      },
+      {
+        element: <p>404</p>, //doesnt work
       },
     ],
-  },
-  {
-    element: <p>404</p>, //doesnt work
   },
 ];

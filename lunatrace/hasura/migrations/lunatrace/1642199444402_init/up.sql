@@ -9,7 +9,7 @@
 -- Name: set_current_timestamp_updated_at(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE EXTENSION pg_trgm;
+-- CREATE EXTENSION pg_trgm;
 
 CREATE FUNCTION public.set_current_timestamp_updated_at() RETURNS trigger
     LANGUAGE plpgsql
@@ -112,20 +112,6 @@ COMMENT ON TABLE public.organization_user IS 'join table';
 -- Name: package_versions; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.package_versions
-(
-    slug               text                                  NOT NULL UNIQUE,
-    version_constraint text                                  NOT NULL,
-    version_format     text                                  NOT NULL,
-    fixed_in_versions  text[]                                NOT NULL,
-    fix_state          text                                  NOT NULL,
-    pkg_slug           text                                  NOT NULL,
-    cpes               text[]                                NOT NULL,
-    id                 uuid DEFAULT public.gen_random_uuid() NOT NULL UNIQUE PRIMARY KEY
-);
-
-CREATE INDEX pkg_ver_slug_indx on public.package_versions (slug);
-
 
 --
 -- Name: projects; Type: TABLE; Schema: public; Owner: postgres
@@ -142,6 +128,24 @@ CREATE TABLE public.projects
 );
 
 
+CREATE TABLE public.builds
+(
+    id                 uuid                        DEFAULT public.gen_random_uuid()        NOT NULL PRIMARY KEY,
+    created_at         timestamp without time zone DEFAULT CURRENT_TIMESTAMP               NOT NULL,
+    project_id         uuid REFERENCES public.projects (id),
+    s3_url             text,
+    agent_access_token uuid                        DEFAULT public.gen_random_uuid() UNIQUE NOT NULL
+);
+
+CREATE TABLE public.project_access_tokens
+(
+    id           uuid DEFAULT public.gen_random_uuid()                  NOT NULL PRIMARY KEY,
+    project_uuid uuid references public.projects (id) ON DELETE CASCADE NOT NULL,
+    access_token uuid DEFAULT public.gen_random_uuid()                  NOT NULL UNIQUE
+);
+
+-- This allows sorting by severity, VERY nice
+CREATE TYPE public.severity_enum AS ENUM ('Critical','High','Medium','Low','Negligible','Unknown');
 
 CREATE TABLE public.vulnerabilities
 (
@@ -149,9 +153,9 @@ CREATE TABLE public.vulnerabilities
     name                      text                                                         NOT NULL,
     created_at                timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
     namespace                 text                                                         NOT NULL,
-    data_source               text                                                        NOT NUll,
+    data_source               text                                                         NOT NUll,
     record_source             text,
-    severity                  text,
+    severity                  public.severity_enum                                         NOT NULL,
     cvss_version              text,
     cvss_score                NUMERIC(3, 1),
     cvss_exploitability_score NUMERIC(3, 1),
@@ -174,11 +178,10 @@ CREATE TABLE public.related_vulnerabilities
 (
     id                         uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
     vulnerability_slug         text                                  NOT NULL REFERENCES public.vulnerabilities (slug),
-    related_vulnerability_slug text                                  NOT NULL REFERENCES public.vulnerabilities (slug)
+    related_vulnerability_slug text                                  NOT NULL REFERENCES public.vulnerabilities (slug),
+    UNIQUE (vulnerability_slug, related_vulnerability_slug)
 );
 
-ALTER TABLE public.related_vulnerabilities
-    ADD CONSTRAINT constraint_name UNIQUE (vulnerability_slug, related_vulnerability_slug);
 
 CREATE INDEX related_vulnerabilities_indx on public.related_vulnerabilities (vulnerability_slug);
 
@@ -194,16 +197,17 @@ COMMENT ON TABLE public.related_vulnerabilities IS 'join table for adding holdin
 -- Name: reports; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.reports
+CREATE TABLE public.scans
 (
+    created_at      timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
     source_type    text                                  NOT NULL,
     target         text                                  NOT NULL,
     id             uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    build_id       uuid                                  NOT NULL REFERENCES public.builds (id),
     db_date        date                                  NOT NULL,
     grype_version  text                                  NOT NULL,
     distro_name    text                                  NOT NULL,
-    distro_version text                                  NOT NULL,
-    project_id     uuid                                  NOT NULL REFERENCES public.projects (id)
+    distro_version text                                  NOT NULL
 );
 
 
@@ -212,39 +216,24 @@ CREATE TABLE public.reports
 -- Name: TABLE reports; Type: COMMENT; Schema: public; Owner: postgres
 --
 
-COMMENT ON TABLE public.reports IS 'scan reports';
-
-
---
--- Name: sboms; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.sboms
-(
-    id         uuid                                                  NOT NULL PRIMARY KEY,
-    s3_url     text,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
-
-
-
+COMMENT ON TABLE public.scans IS 'An individual time a scan was run on a build';
 --
 -- Name: scans; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.scans
-(
-    id             uuid                                                  NOT NULL PRIMARY KEY,
-    project_id     uuid REFERENCES public.projects (id),
-    sbom_id        uuid REFERENCES public.sboms,
-    created_at     timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    source_type    text                                                  NOT NULL,
-    target         text                                                  NOT NULL,
-    db_date        timestamp                                             NOT NULL,
-    grype_version  text                                                  NOT NULL,
-    distro_name    text,
-    distro_version text
-);
+-- CREATE TABLE public.scans
+-- (
+--     id             uuid                                                  NOT NULL PRIMARY KEY,
+--     project_id     uuid REFERENCES public.projects (id),
+--     sbom_id        uuid REFERENCES public.sboms,
+--     created_at     timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+--     source_type    text                                                  NOT NULL,
+--     target         text                                                  NOT NULL,
+--     db_date        timestamp                                             NOT NULL,
+--     grype_version  text                                                  NOT NULL,
+--     distro_name    text,
+--     distro_version text
+-- );
 
 --
 -- Name: vulnerabilities; Type: TABLE; Schema: public; Owner: postgres
@@ -267,7 +256,19 @@ CREATE TABLE public.vulnerability_packages
 CREATE INDEX vuln_pkg_slug_idx on public.vulnerability_packages (slug);
 CREATE INDEX vuln_pkg_vuln_slug_idx on public.vulnerability_packages (vuln_slug);
 
+CREATE TABLE public.package_versions
+(
+    slug               text                                  NOT NULL UNIQUE,
+    version_constraint text                                  NOT NULL,
+    version_format     text                                  NOT NULL,
+    fixed_in_versions  text[]                                NOT NULL,
+    fix_state          text                                  NOT NULL,
+    pkg_slug           text                                  NOT NULL REFERENCES public.vulnerability_packages (slug),
+    cpes               text[]                                NOT NULL,
+    id                 uuid DEFAULT public.gen_random_uuid() NOT NULL UNIQUE PRIMARY KEY
+);
 
+CREATE INDEX pkg_ver_slug_indx on public.package_versions (slug);
 
 --
 -- Name: TABLE vulnerability_packages; Type: COMMENT; Schema: public; Owner: postgres
@@ -281,33 +282,36 @@ COMMENT ON TABLE public.vulnerability_packages IS 'All of the package vulnerabil
 
 CREATE TABLE public.findings
 (
-    id                       uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    vulnerability_id         uuid references public.vulnerabilities (id),
+    id                       uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    created_at               timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
+    updated_at               timestamp with time zone    DEFAULT now()                    NOT NULL,
+    vulnerability_id         uuid references public.vulnerabilities (id)                  NOT NULL,
     vulnerability_package_id uuid references public.vulnerability_packages (id),
     package_version_id       uuid references public.package_versions (id),
-    report_id                uuid references public.reports (id),
-
-    package_name             text                                  NOT NULL,
-    version                  text                                  NOT NULL,
-    version_matcher          text                                  NOT NULL,
-    type                     text                                  NOT NULL,
-    locations                text[]                                NOT NULL,
-    language                 text                                  NOT NULL,
-    purl                     text                                  NOT NULL,
+    scan_id                  uuid references public.scans (id)                            NOT NULL,
+    build_id                 uuid references public.builds (id)                           NOT NULL,
+    package_name             text                                                         NOT NULL,
+    version                  text                                                         NOT NULL,
+    version_matcher          text                                                         NOT NULL,
+    type                     text                                                         NOT NULL,
+    locations                text[]                                                       NOT NULL,
+    language                 text                                                         NOT NULL,
+    purl                     text                                                         NOT NULL,
     virtual_path             text,
-    matcher                  text                                  NOT NULL
+    matcher                  text                                                         NOT NULL,
+    dedupe_slug              text                                                         NOT NULL,
+    severity                 public.severity_enum                                         NOT NULL,
+    UNIQUE (dedupe_slug)
 );
 
-CREATE TABLE public.builds
-(
-    id           uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    project_id   uuid REFERENCES public.projects (id),
-    sbom_id      uuid REFERENCES public.sboms,
-    access_token text                                  NOT NULL
-);
+CREATE INDEX finding_severity_index ON public.findings(severity);
+CREATE INDEX finding_vuln_id_index ON public.findings(vulnerability_id);
+CREATE INDEX finding_build_id_index ON public.findings(build_id);
+
 
 CREATE TABLE public.instances
 (
-    id             uuid                        NOT NULL PRIMARY KEY,
-    last_heartbeat timestamp without time zone NOT NULL
+    id             uuid                                                  NOT NULL PRIMARY KEY,
+    created_at     timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_heartbeat timestamp without time zone                           NOT NULL
 );

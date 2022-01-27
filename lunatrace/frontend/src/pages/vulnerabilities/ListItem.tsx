@@ -14,12 +14,11 @@
  * limitations under the License.
  *
  */
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import prettifyDate from 'prettify-date';
 import React from 'react';
 import { Card, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
-import { Copy } from 'react-feather';
+import { Copy, LogOut } from 'react-feather';
+
+import { prettyDate } from '../../utils/pretty-date';
 
 import { VulnInfo } from './types';
 
@@ -29,9 +28,6 @@ interface VulnerabilityListItemProps {
 
 export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListItemProps> = ({ vuln }) => {
   const packageNamesString = vuln.vulnerability_packages.map((p) => p.name).join(', ');
-  const dateFormat = prettifyDate.format as (d: Date) => string;
-  const prettyDate = dateFormat(new Date(vuln.created_at));
-  const prettyDateCapitalized = prettyDate.charAt(0).toUpperCase() + prettyDate.slice(1);
 
   const renderCvssScore = () => {
     if (!vuln.cvss_score) {
@@ -84,7 +80,9 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
               <Col sm="6">
                 <Card.Title>
                   <h3>
-                    <a href={vuln.data_source || ''}>{vuln.name}</a>
+                    <a href={vuln.data_source || ''}>
+                      {vuln.name} <LogOut size="14" />
+                    </a>
                   </h3>
                 </Card.Title>
                 <Card.Subtitle>{vuln.namespace}</Card.Subtitle>
@@ -92,9 +90,12 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
               <Col sm={{ span: 6 }}>
                 <div style={{ float: 'right' }}>
                   <Card.Title>
-                    <h3>Severity: {vuln.severity}</h3>
+                    <h3>
+                      <span className="quieter"> Severity: </span>
+                      {vuln.severity}
+                    </h3>
                   </Card.Title>
-                  <Card.Subtitle className="text-right">{prettyDateCapitalized}</Card.Subtitle>
+                  <Card.Subtitle className="text-right">{prettyDate(vuln.created_at)}</Card.Subtitle>
                 </div>
               </Col>
             </Row>

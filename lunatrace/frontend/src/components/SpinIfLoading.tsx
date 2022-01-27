@@ -14,8 +14,9 @@
  * limitations under the License.
  *
  */
-import { SearchVulnerabilitiesQuery } from '../../store/api/generated';
+import React from 'react';
+import { Spinner } from 'react-bootstrap';
 
-export type VulnInfo = SearchVulnerabilitiesQuery['vulnerabilities'][number];
-
-export type Order = 'cvss' | 'date' | 'severity' | 'none';
+export const SpinIfLoading: React.FunctionComponent<{ isLoading: boolean }> = ({ isLoading, children }) => {
+  return <>{isLoading ? <Spinner animation="border" variant="primary" /> : children}</>;
+};
