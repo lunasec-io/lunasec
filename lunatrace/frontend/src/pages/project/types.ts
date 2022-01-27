@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-import { Scan } from '../models/scan';
+import { GetProjectQuery } from '../../store/api/generated';
 
-void Scan.uploadScan('~/tmp/syftoutput.json', '3e88ce02-8410-4824-a6bb-e9aac157ba61').then((res) => {
-  console.log(res);
-});
+export type ProjectInfo = GetProjectQuery['projects'][number];
+
+export type BuildInfo = ProjectInfo['builds'][number];

@@ -14,8 +14,22 @@
  * limitations under the License.
  *
  */
-import { Scan } from '../models/scan';
 
-void Scan.uploadScan('~/tmp/syftoutput.json', '3e88ce02-8410-4824-a6bb-e9aac157ba61').then((res) => {
-  console.log(res);
-});
+import React from 'react';
+import { Col, Row } from 'react-bootstrap';
+
+import { ProjectInfo } from './types';
+
+export interface ProjectHeaderProps {
+  project: ProjectInfo;
+}
+export const ProjectHeader: React.FunctionComponent<ProjectHeaderProps> = ({ project }) => {
+  return (
+    <Row>
+      <Col xs="12" className="d-none d-sm-block" style={{ textAlign: 'center' }}>
+        <h1>{project.name}</h1>
+        <br />
+      </Col>
+    </Row>
+  );
+};

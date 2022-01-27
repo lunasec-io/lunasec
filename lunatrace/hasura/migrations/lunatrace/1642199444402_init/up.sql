@@ -128,14 +128,43 @@ CREATE TABLE public.projects
 );
 
 
+-- The below functions let us automatically fill the "build_number" column, scoped to whatever project the build is in
+CREATE FUNCTION public.make_project_sequence_for_build() RETURNS trigger
+    LANGUAGE plpgsql
+AS $$
+begin
+    execute format('create sequence if not exists project_builds_sequence_%s', translate(NEW.id::text, '-','_'));
+    return NEW;
+end
+$$;
+
+CREATE TRIGGER make_project_sequence_for_build AFTER INSERT ON public.projects FOR EACH ROW EXECUTE PROCEDURE public.make_project_sequence_for_build();
+
+CREATE FUNCTION public.fill_in_build_number() RETURNS trigger
+    LANGUAGE plpgsql
+AS $$
+begin
+    NEW.build_number := nextval('project_builds_sequence_' || translate(NEW.project_id::text, '-','_'));
+    RETURN NEW;
+end
+$$;
+
+
+
 CREATE TABLE public.builds
 (
     id                 uuid                        DEFAULT public.gen_random_uuid()        NOT NULL PRIMARY KEY,
     created_at         timestamp without time zone DEFAULT CURRENT_TIMESTAMP               NOT NULL,
     project_id         uuid REFERENCES public.projects (id),
     s3_url             text,
-    agent_access_token uuid                        DEFAULT public.gen_random_uuid() UNIQUE NOT NULL
+    agent_access_token uuid                        DEFAULT public.gen_random_uuid() UNIQUE NOT NULL,
+    build_number      int,
+    UNIQUE (build_number, project_id)
 );
+
+CREATE TRIGGER fill_in_scan_number BEFORE INSERT ON public.builds FOR EACH ROW EXECUTE PROCEDURE public.fill_in_build_number();
+
+
 
 CREATE TABLE public.project_access_tokens
 (
@@ -197,6 +226,32 @@ COMMENT ON TABLE public.related_vulnerabilities IS 'join table for adding holdin
 -- Name: reports; Type: TABLE; Schema: public; Owner: postgres
 --
 
+
+
+-- The below functions let us automatically fill the "scan_number" column, scoped to whatever build the scan is for
+CREATE FUNCTION public.make_scans_seq_for_build() RETURNS trigger
+    LANGUAGE plpgsql
+AS $$
+begin
+    execute format('create sequence if not exists build_scans_seq_%s', translate(NEW.id::text, '-','_'));
+    return NEW;
+end
+$$;
+
+CREATE TRIGGER make_scans_seq_for_build AFTER INSERT ON public.builds FOR EACH ROW EXECUTE PROCEDURE public.make_scans_seq_for_build();
+
+CREATE FUNCTION public.fill_in_scan_number() RETURNS trigger
+    LANGUAGE plpgsql
+AS $$
+begin
+    NEW.scan_number := nextval('build_scans_seq_' || translate(NEW.build_id::text, '-','_'));
+    RETURN NEW;
+end
+$$;
+
+
+
+
 CREATE TABLE public.scans
 (
     created_at      timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
@@ -207,8 +262,12 @@ CREATE TABLE public.scans
     db_date        date                                  NOT NULL,
     grype_version  text                                  NOT NULL,
     distro_name    text                                  NOT NULL,
-    distro_version text                                  NOT NULL
+    distro_version text                                  NOT NULL,
+    scan_number    int,
+    UNIQUE(scan_number, build_id)
 );
+
+CREATE TRIGGER fill_in_scan_number BEFORE INSERT ON public.scans FOR EACH ROW EXECUTE PROCEDURE public.fill_in_scan_number();
 
 
 

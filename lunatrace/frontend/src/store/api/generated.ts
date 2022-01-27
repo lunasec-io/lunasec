@@ -5335,7 +5335,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null | undefined, repo?: string | null | undefined, settings_id?: any | null | undefined, organization?: { __typename?: 'organizations', name: string } | null | undefined, builds: Array<{ __typename?: 'builds', id: any, findings_aggregate: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null | undefined }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, scans: Array<{ __typename?: 'scans', created_at: any }> }> }> };
+export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null | undefined, repo?: string | null | undefined, settings_id?: any | null | undefined, organization?: { __typename?: 'organizations', name: string } | null | undefined, builds: Array<{ __typename?: 'builds', id: any, created_at: any, findings_aggregate: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null | undefined }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, scans: Array<{ __typename?: 'scans', created_at: any }> }> }> };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5376,6 +5376,7 @@ export const GetProjectDocument = `
     }
     builds(order_by: {created_at: desc}) {
       id
+      created_at
       findings_aggregate(
         distinct_on: package_name
         where: {severity: {_eq: "Critical"}}
