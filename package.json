@@ -34,7 +34,7 @@
     "uuid": "^8.3.2"
   },
   "dependenciesMeta": {
-    "@aws-cdk/aws-lambda-nodejs@1.138.1": {
+    "@aws-cdk/aws-lambda-nodejs": {
       "unplugged": true
     },
     "apollo@2.33.9": {
@@ -94,10 +94,12 @@
       "./js/demo-apps/packages/*",
       "./docs",
       "./js/sdks",
-      "./js/internal-infrastructure/lunatrace-ui/cdk",
+      "./lunatrace/bsl/backend",
       "./js/internal-infrastructure/s3-redirect-generator",
       "./js/internal-infrastructure/metrics-server-backend",
-      "./lunatrace/*"
+      "./lunatrace/*",
+      "./lunatrace/bsl/backend",
+      "./lunatrace/bsl/backend-cdk"
     ]
   },
   "packageManager": "yarn@3.1.1"

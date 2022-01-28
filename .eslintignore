@@ -4,7 +4,7 @@
 **/build
 **/generated
 js/demo-apps/packages/react-front-end/cypress/integration/secure_components_spec.ts
-js/internal-infrastructure/lunatrace-ui/cdk/lib/api/
+lunatrace/bsl/backend/lib/api/
 .pnp.cjs
 *.mjs
 deploy-apigateway-to-firehose.ts
