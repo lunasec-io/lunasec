@@ -1,0 +1,42 @@
+table:
+  name: projects
+  schema: public
+object_relationships:
+- name: organization
+  using:
+    foreign_key_constraint_on: organization_id
+array_relationships:
+- name: builds
+  using:
+    foreign_key_constraint_on:
+      column: project_id
+      table:
+        name: builds
+        schema: public
+- name: project_access_tokens
+  using:
+    foreign_key_constraint_on:
+      column: project_uuid
+      table:
+        name: project_access_tokens
+        schema: public
+- name: reports
+  using:
+    foreign_key_constraint_on:
+      column: project_uuid
+      table:
+        name: project_access_tokens
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - name
+    - created_at
+    - id
+    - organization_id
+    - settings_id
+    filter:
+      project_access_tokens:
+        access_token:
+          _eq: x-hasura-access-token
+  role: cli

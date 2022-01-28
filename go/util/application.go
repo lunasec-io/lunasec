@@ -15,7 +15,7 @@
 package util
 
 import (
-	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"lunasec/lunadefend/constants"
 	"os"
 )
 

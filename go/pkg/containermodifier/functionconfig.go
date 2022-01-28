@@ -25,9 +25,9 @@ import (
 
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/tarball"
-	"github.com/lunasec-io/lunasec-monorepo/constants"
-	"github.com/lunasec-io/lunasec-monorepo/types"
-	"github.com/lunasec-io/lunasec-monorepo/util"
+	"lunasec/lunadefend/constants"
+	"lunasec/lunadefend/types"
+	"lunasec/lunadefend/util"
 )
 
 func LoadFunctionConfig(functionsConfigFile string) (configFile types.FunctionConfigFile, err error) {
