@@ -16,19 +16,19 @@ package tokenizerbackend
 
 import (
 	"fmt"
-	"github.com/lunasec-io/lunasec-monorepo/constants"
-	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizer"
-	"github.com/lunasec-io/lunasec-monorepo/types"
+	"lunasec/lunadefend/constants"
+	"lunasec/lunadefend/pkg/tokenizer"
+	"lunasec/lunadefend/types"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
 	"net/http"
 
 	"github.com/awslabs/aws-lambda-go-api-proxy/handlerfunc"
-	"github.com/lunasec-io/lunasec-monorepo/controller"
-	"github.com/lunasec-io/lunasec-monorepo/gateway"
-	"github.com/lunasec-io/lunasec-monorepo/service"
-	"github.com/lunasec-io/lunasec-monorepo/util"
+	"lunasec/lunadefend/controller"
+	"lunasec/lunadefend/gateway"
+	"lunasec/lunadefend/service"
+	"lunasec/lunadefend/util"
 	"github.com/rs/cors"
 )
 

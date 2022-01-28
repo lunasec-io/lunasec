@@ -1,0 +1,12 @@
+actions:
+- name: sbom_upload_url
+  definition:
+    kind: ""
+    handler: http://localhost:3000
+custom_types:
+  enums: []
+  input_objects:
+  - name: SbomUploadUrlInput
+  objects:
+  - name: SbomUploadUrlOutput
+  scalars: []
