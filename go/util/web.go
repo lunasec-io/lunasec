@@ -19,7 +19,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/lunasec-io/lunasec-monorepo/types"
+	"lunasec/lunadefend/types"
 )
 
 // Respond jsonifies a model and sends it to the client.

@@ -41,7 +41,7 @@ release-clean:
 	git push --delete origin ${version}
 
 %:
-	CGO_ENABLED=0 GOOS=linux go build -tags ${tag} -ldflags="-X \"github.com/lunasec-io/lunasec-monorepo/constants.Version=${version}\"" ${build_flags} -a -installsuffix cgo -o ${OUTPUT_DIR}/$@_${tag} $(shell pwd)/cmd/$@
+	CGO_ENABLED=0 GOOS=linux go build -tags ${tag} -ldflags="-X \"lunasec/lunadefend/constants.Version=${version}\"" ${build_flags} -a -installsuffix cgo -o ${OUTPUT_DIR}/$@_${tag} $(shell pwd)/cmd/$@
 
 clean:
 	rm -rf build

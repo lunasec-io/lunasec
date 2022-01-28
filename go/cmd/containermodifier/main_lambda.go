@@ -20,8 +20,8 @@ import (
 	"log"
 
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/lunasec-io/lunasec-monorepo/controller"
-	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"lunasec/lunadefend/controller"
+	"lunasec/lunadefend/gateway"
 )
 
 func main() {
