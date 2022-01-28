@@ -1,0 +1,244 @@
+$settings-width: 320px;
+
+.settings {
+  display: none;
+  direction: ltr;
+
+  @include media-breakpoint-up(xl) {
+    display: block;
+  }
+}
+
+.settings-toggle {
+  background: $white;
+  color: $black;
+  position: fixed;
+  top: 200px;
+  z-index: 10;
+  right: 0;
+  width: 54px;
+  height: 150px;
+  padding: $spacer*0.5;
+  border-top-left-radius: $border-radius;
+  border-bottom-left-radius: $border-radius;
+  box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.1);
+  transition: all .1s ease-in-out;
+  cursor: pointer;
+}
+
+body[data-theme=dark] {
+  .settings-toggle {
+    background: $gray-100;
+  }
+}
+
+.settings-toggle-option {
+  display: block;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  font-weight: $font-weight-bold;
+  writing-mode: vertical-rl;
+  color: $black;
+  background: darken($gray-100, 2);
+  padding: $spacer*0.5;
+  border-radius: $border-radius;
+  height: 34px;
+
+  &:hover {
+    background: darken($gray-100, 5);
+    color: $black;
+  }
+  
+  &:first-child {
+    color: darken($primary, 10);
+    margin-bottom: $spacer*0.5;
+  }
+
+  svg {
+    stroke-width: 2;
+  }
+}
+
+body[data-theme=dark] {
+  .settings-toggle-option {
+    background: $gray-200;
+
+    &:hover {
+      background: lighten($gray-200, 5);
+    }
+
+    &:first-child {
+      color: $static-white;
+    }
+  }
+}
+
+.settings-toggle-option-text {
+  height: 93px;
+
+  svg {
+    transform: rotate(-90deg);
+  }
+}
+
+.settings-panel {
+  background: $white;
+  border-left: $card-border-width solid $card-border-color;
+  display: block;
+  height: 100%;
+  position: fixed;
+  width: $settings-width;
+  z-index: 100;
+  top: 0;
+  bottom: 0;
+  right: -$settings-width;
+  transition: right .2s ease-in-out;
+
+  .settings.open &:before {
+    content: "";
+    background: rgba($static-black, 0.325);
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .settings.open & {
+    right: 0;
+  }
+}
+
+.settings-content {
+  height: 100%;
+  overflow: auto;
+  position: relative;
+  background: $white;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-title {
+  padding: $spacer*1.35 $spacer*1.5;
+  font-size: .875rem;
+  background: $white;
+  color: $black;
+  border-bottom: 1px solid $gray-200;
+
+  h4,
+  .close {
+    color: $black;
+  }
+}
+
+.settings-body {
+  padding: $spacer $spacer*1.5;
+  flex: 1;
+}
+
+.settings-footer {
+  padding: $spacer $spacer*1.5;
+}
+
+.settings-scheme:after {
+  content: "\2713";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  font-weight: 900;
+  font-size: 10px;
+  line-height: 17px;
+  z-index: 1;
+  border-radius: 50%;
+  color: $white;
+  background: $primary;
+  opacity: 0;
+}
+
+.settings-scheme-label {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.settings-scheme-label + .settings-scheme {
+  border: 1px solid $gray-300;
+}
+
+.settings-scheme-label:checked + .settings-scheme {
+  border: 1px solid $primary;
+  color: $primary;
+
+  &:after {
+    opacity: 1;
+  }
+}
+
+.settings-scheme {
+  background: $white;
+  height: 80px;
+  border-radius: $border-radius-lg;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-base;
+  position: relative;
+}
+
+.settings-scheme-theme {
+  width: 50px;
+  height: 50px;
+  background: red;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px $static-white;
+  position: relative;
+}
+
+.settings-scheme-theme-default {
+  background-image: linear-gradient(-45deg, #222E3C 50%, darken($static-gray-100, 2%) 50%);
+}
+
+.settings-scheme-theme-colored {
+  background-image: linear-gradient(-45deg, $primary 50%, darken($static-gray-100, 2%) 50%);
+}
+
+.settings-scheme-theme-dark {
+  background: #222E3C;
+}
+
+.settings-scheme-theme-light {
+  background: darken($static-gray-100, 2%);
+}
+
+.settings-button-label {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.settings-button-label + .settings-button {
+  background: $gray-200;
+  color: $dark;
+  border-radius: 5px;
+  padding: $input-btn-padding-y-lg $input-btn-padding-x-lg;
+  font-size: $input-btn-font-size;
+  border-radius: $btn-border-radius-lg;
+  cursor: pointer;
+}
+
+.settings-button-label:checked + .settings-button {
+  background: $primary;
+  color: $static-white;
+
+  &:after {
+    opacity: 1;
+  }
+}

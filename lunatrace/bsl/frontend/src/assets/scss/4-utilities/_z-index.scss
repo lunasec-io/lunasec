@@ -1,0 +1,5 @@
+@for $i from 1 through 50 {
+  .z-#{$i}{
+    z-index: $i;
+  }
+}

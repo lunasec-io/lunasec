@@ -1,0 +1,3 @@
+lunatrace:
+  app:
+    stage: development

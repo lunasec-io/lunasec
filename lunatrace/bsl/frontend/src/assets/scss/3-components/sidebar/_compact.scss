@@ -1,0 +1,176 @@
+body[data-sidebar-behavior=compact] {
+  // Hide elements
+  .sidebar-header,
+  .sidebar-brand span,
+  .sidebar-badge,
+  .sidebar-cta,
+  .sidebar-nav > .sidebar-item > .sidebar-link:before,
+  .sidebar-nav > .sidebar-item > .sidebar-dropdown,
+  .sidebar-nav > .sidebar-item > .sidebar-link > span {
+    display: none;
+  }
+
+  .simplebar-vertical,
+  .simplebar-horizontal {
+    visibility: hidden !important;
+  }
+
+  // Allow overflow
+  .simplebar-wrapper,
+  .simplebar-height-auto-observer-wrapper,
+  .simplebar-mask,
+  .simplebar-content-wrapper {
+    overflow: visible !important;
+  }
+
+  // Remove Bootstrap's default animation
+  .sidebar-dropdown.collapsing {
+    transition: none;
+    overflow: visible;
+    height: auto;
+  }
+
+  // Sidebar
+  .sidebar {
+    min-width: $sidebar-compact-width;
+    max-width: $sidebar-compact-width;
+    z-index: 2;
+  }
+
+  // Sidebar item
+  .sidebar-item {
+    position: relative;
+  }
+
+  // Sidebar dropdown
+  .sidebar-nav > .sidebar-item > .sidebar-dropdown {
+    display: none;
+    overflow: visible;
+    position: absolute;
+    z-index: 1;
+    width: $sidebar-compact-dropdown-width;
+    box-shadow: $sidebar-compact-dropdown-box-shadow;
+    border-radius: $sidebar-compact-dropdown-border-radius;
+    background: $sidebar-compact-dropdown-background;
+    padding: $sidebar-compact-dropdown-padding;
+    top: 0;
+
+    // Make sure hover state is not lost
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 16px;
+      height: 100%;
+    }
+  }
+
+  // Sidebar dropdown items
+  .sidebar-nav > .sidebar-item > .sidebar-dropdown > .sidebar-item {
+    .sidebar-link {
+      padding: $sidebar-compact-dropdown-link-padding;
+      color: $sidebar-compact-dropdown-link-color;
+    }
+
+    .sidebar-link:hover {
+      color: $sidebar-compact-dropdown-link-hover-color;
+    }
+
+    .sidebar-item.active .sidebar-link,
+    .sidebar-item.active .sidebar-link:hover {
+      color: $sidebar-compact-dropdown-link-active-color;
+    }
+  }
+
+  // Dropdown children
+  .sidebar-nav > .sidebar-item > .sidebar-dropdown {
+    .sidebar-dropdown {
+      .sidebar-link {
+        padding: $sidebar-compact-dropdown-child-link-padding;
+      }
+
+      .sidebar-dropdown {
+        .sidebar-link {
+          padding: $sidebar-compact-dropdown-child-second-link-padding;
+        }
+      }
+    }
+  }
+
+  // Chevron icons
+  .sidebar .sidebar-dropdown [data-bs-toggle="collapse"]:before {
+    top: 0.9rem;
+  }
+  
+  .sidebar .sidebar-dropdown [aria-expanded="true"]:before,
+  .sidebar .sidebar-dropdown [data-bs-toggle="collapse"]:not(.collapsed):before {
+    top: 1.1rem;
+  }
+
+  // Hover
+  .sidebar-nav > .sidebar-item:hover > .sidebar-dropdown {
+    display: block;
+  }
+}
+
+// Collapse behavior if compact sidebar is on left side
+body[data-sidebar-behavior=compact]:not([data-sidebar-position=right]) {
+  .sidebar-nav > .sidebar-item > .sidebar-dropdown {
+    left: $sidebar-compact-width + 12px;;
+
+    &:before {
+      left: -16px;
+    }
+  }
+
+  // Sidebar collapse
+  .sidebar {
+    &.collapsed {
+      margin-left: -$sidebar-compact-width;
+    }
+
+    // Workaround for IE bug, more info:
+    // https://stackoverflow.com/a/25850649
+    @media (min-width: 1px) and (max-width: #{map-get($grid-breakpoints, 'lg') - .02px}) {
+
+      // Sidebar default state (on mobile)
+      margin-left: -$sidebar-compact-width;
+
+      // Sidebar collapsed state (on mobile)
+      &.collapsed {
+        margin-left: 0;
+      }
+    }
+  }
+}
+
+// Collapse behavior if compact sidebar is on right side
+body[data-sidebar-behavior=compact][data-sidebar-position=right] {
+  .sidebar-nav > .sidebar-item > .sidebar-dropdown {
+    right: $sidebar-compact-width + 12px;
+
+    &:before {
+      right: -16px;
+    }
+  }
+
+  // Sidebar collapse
+  .sidebar {
+    &.collapsed {
+      margin-right: -$sidebar-compact-width;
+    }
+
+    // Workaround for IE bug, more info:
+    // https://stackoverflow.com/a/25850649
+    @media (min-width: 1px) and (max-width: #{map-get($grid-breakpoints, 'lg') - .02px}) {
+
+      // Sidebar default state (on mobile)
+      margin-right: -$sidebar-compact-width;
+
+      // Sidebar collapsed state (on mobile)
+      &.collapsed {
+        margin-right: 0;
+      }
+    }
+  }
+}

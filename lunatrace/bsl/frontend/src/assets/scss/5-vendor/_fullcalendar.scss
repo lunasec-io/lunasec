@@ -1,0 +1,28 @@
+.fc-theme-bootstrap {
+  margin-bottom: $spacer;
+
+  .fc-content,
+  .fc-divider,
+  .fc-list-heading td,
+  .fc-list-view,
+  .fc-popover,
+  .fc-row,
+  tbody,
+  td,
+  th,
+  thead {
+    border-color: $gray-300;
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  table {
+    border-color: $gray-300;
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  .fc-col-header-cell-cushion {
+    padding: 4px 8px;
+  }
+}

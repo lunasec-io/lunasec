@@ -1,0 +1,17 @@
+.illustration {
+  background: $illustration-bg;
+  color: $illustration-color;
+}
+
+.illustration-text {
+  color: $illustration-color;
+}
+
+.illustration-img {
+  max-width: 150px;
+  width: 100%;
+
+  @include media-breakpoint-up(xxl) {
+    max-width: 175px;
+  }
+}

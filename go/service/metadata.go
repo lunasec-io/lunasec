@@ -17,13 +17,13 @@ package service
 import (
 	"encoding/json"
 	"errors"
-	"github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
+	"lunasec/lunadefend/gateway/metrics"
 	"go.uber.org/zap"
 	"time"
 
-	"github.com/lunasec-io/lunasec-monorepo/gateway"
-	"github.com/lunasec-io/lunasec-monorepo/types"
-	"github.com/lunasec-io/lunasec-monorepo/util"
+	"lunasec/lunadefend/gateway"
+	"lunasec/lunadefend/types"
+	"lunasec/lunadefend/util"
 )
 
 type metadataService struct {

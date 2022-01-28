@@ -1,0 +1,19 @@
+.wrapper{
+  align-items: stretch;
+  display: flex;
+  width: 100%;
+}
+
+body[data-layout=boxed] {
+  .wrapper {
+    max-width: 1800px;
+    margin: 0 auto;
+    border-left: 1px solid $wrapper-border-color;
+    border-right: 1px solid $wrapper-border-color;
+    overflow: hidden;
+
+    @include media-breakpoint-up(xxl) {
+      width: 90vw;
+    }
+  }
+}
