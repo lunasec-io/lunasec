@@ -1,4 +1,4 @@
-module github.com/lunasec-io/lunasec-monorepo
+module lunasec/lunadefend
 
 go 1.15
 

@@ -1,0 +1,32 @@
+query GetProject($project_id: uuid!) {
+    projects(where: {id: {_eq: $project_id}}) {
+        created_at
+        id
+        name
+        organization_id
+        repo
+        settings_id
+        organization {
+            name
+        }
+        builds(order_by: {created_at: desc}) {
+            id
+            created_at
+            build_number
+            critical_packages: findings_aggregate(distinct_on: package_name, where: {severity: {_eq: "Critical"}}) {
+                aggregate {
+                    count(distinct: true, columns: package_name)
+                }
+            }
+            scans_aggregate {
+                aggregate {
+                    count
+                }
+            }
+            scans(limit: 1, order_by: {created_at: desc}) {
+                created_at
+                scan_number
+            }
+        }
+    }
+}

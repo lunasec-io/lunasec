@@ -15,7 +15,7 @@
 package util
 
 import (
-	"github.com/lunasec-io/lunasec-monorepo/types"
+	"lunasec/lunadefend/types"
 	"go.uber.org/zap"
 	"net/http"
 	"time"
