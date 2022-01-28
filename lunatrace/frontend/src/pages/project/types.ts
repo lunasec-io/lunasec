@@ -1,17 +1,4 @@
 /*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-/*
  * Copyright 2022 by LunaSec (owned by Refinery Labs, Inc)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,8 +14,8 @@
  * limitations under the License.
  *
  */
-import { Scan } from '../models/scan';
+import { GetProjectQuery } from '../../store/api/generated';
 
-void Scan.uploadScan('~/tmp/syftoutput.json', '3e88ce02-8410-4824-a6bb-e9aac157ba61').then((res) => {
-  console.log(res);
-});
+export type ProjectInfo = GetProjectQuery['projects'][number];
+
+export type BuildInfo = ProjectInfo['builds'][number];
