@@ -11,6 +11,8 @@ query GetProject($project_id: uuid!) {
         }
         builds(order_by: {created_at: desc}) {
             id
+            created_at
+            build_number
             findings_aggregate(distinct_on: package_name, where: {severity: {_eq: "Critical"}}) {
                 aggregate {
                     count(distinct: true, columns: package_name)
@@ -23,6 +25,7 @@ query GetProject($project_id: uuid!) {
             }
             scans(limit: 1, order_by: {created_at: desc}) {
                 created_at
+                scan_number
             }
         }
     }

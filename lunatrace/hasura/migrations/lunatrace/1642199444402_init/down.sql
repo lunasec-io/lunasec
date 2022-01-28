@@ -28,3 +28,7 @@ CASCADE;
 
 DROP FUNCTION public.set_current_timestamp_updated_at();
 DROP TYPE public.severity_enum;
+DROP FUNCTION public.make_project_sequence_for_build();
+DROP FUNCTION public.fill_in_build_number();
+DROP FUNCTION public.make_scans_seq_for_build();
+DROP FUNCTION public.fill_in_scan_number();

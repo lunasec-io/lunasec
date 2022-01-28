@@ -14,4 +14,34 @@
  * limitations under the License.
  *
  */
-export default {};
+
+import React from 'react';
+import { Container, Row } from 'react-bootstrap';
+
+import { BuildListItem } from './BuildListItem';
+import { BuildInfo } from './types';
+interface BuildListProps {
+  builds: BuildInfo[];
+}
+
+export const BuildList: React.FunctionComponent<BuildListProps> = ({ builds }) => {
+  const buildCards = builds.map((build) => {
+    return (
+      <Row key={build.id}>
+        <BuildListItem build={build} />
+      </Row>
+    );
+  });
+
+  return (
+    <Container className="vulnerability-list">
+      {/*<br />*/}
+      {/*<Row>*/}
+      {/*  <h2>Builds</h2>*/}
+      {/*</Row>*/}
+      <br />
+
+      {buildCards}
+    </Container>
+  );
+};
