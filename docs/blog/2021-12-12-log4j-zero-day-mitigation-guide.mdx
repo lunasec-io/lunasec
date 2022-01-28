@@ -71,7 +71,7 @@ It works by scanning for class files which belong to a known vulnerable Log4j ve
 
 _Make sure you download the right version for your Operating System and CPU architecture._ Once downloaded, run the `log4shell`
 command in your terminal. The tool can scan individual files, or whole directories. The Log4j versions our scanner identifies
-[are kept up to date](https://github.com/lunasec-io/lunasec/blob/master/tools/log4shell/log4j-library-hashes.json) with all
+[are kept up to date](https://github.com/lunasec-io/lunasec/blob/master/lunatrace/cli/cmd/log4shell/log4j-library-hashes.json) with all
 published CVEs, unlike some other scanners that may only scan for the first Log4j CVE. The tool also has built in penetration-testing
 and live-patching functions, explained later in this post.
 
@@ -128,7 +128,7 @@ vendor software](#checking-vendor-software-versions) advisories instead.
 :::
 
 The source code for this tool is available on our GitHub 
-[here](https://github.com/lunasec-io/lunasec/tree/master/tools/log4shell/).
+[here](https://github.com/lunasec-io/lunasec/tree/master/lunatrace/cli/cmd/log4shell/).
 
 ### Manually Scanning Your Dependencies
 
@@ -137,7 +137,7 @@ The above CLI tool automatically looks for hashes of vulnerable classes.  Read t
 #### Scanning for vulnerable .class files
 
 Our automated tool above implements this functionality, but if you need to do this yourself then
-[our Go source code](https://github.com/lunasec-io/lunasec/tree/master/tools/log4shell/constants/vulnerablehashes.go)
+[our Go source code](https://github.com/lunasec-io/lunasec/tree/master/lunatrace/cli/pkg/constants/constants/vulnerablehashes.go)
 has a list of hashes that you can use to scan with. (Thank you, [hillu](https://github.com/hillu/local-log4j-vuln-scanner/)!)
 
 #### Scanning for the log4j JAR file

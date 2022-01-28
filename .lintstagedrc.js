@@ -25,8 +25,12 @@ const yaml = require('js-yaml');
  * @type {RegExp}
  */
 const javascriptRegex = /\.(((mj|j|t)sx?)|\.vue)$/i;
+const cssRegex = /\.(css|scss|sass|less)$/i;
+const buildOutputRegex = /\/build\//i;
 const golangRegex = /\.go$/i;
 const markdownRegex = /\.mdx?$/i;
+
+const bslLicenseRegex = /.*\/bsl\/.*/i
 
 const filePrefix = '# AUTO-GENERATED FILE CREATED BY LINTER\n\n';
 
@@ -67,10 +71,12 @@ function substituteConfigFiles(baseConfig, files) {
  */
 function readBaseLicenseConfigs() {
   const apacheConfig = fs.readFileSync('./tools/license-checker/configs/apache2.yaml', 'utf8');
+  const bslConfig = fs.readFileSync('./tools/license-checker/configs/bsl-lunatrace.yaml', 'utf8');
   const creativeCommonsConfig = fs.readFileSync('./tools/license-checker/configs/CC-BY-SA-4_0.yaml', 'utf8');
 
   return {
     apache2: yaml.load(apacheConfig.toString()),
+    bsl: yaml.load(bslConfig.toString()),
     creativeCommons: yaml.load(creativeCommonsConfig.toString())
   };
 }
@@ -115,6 +121,10 @@ function generateLicenseToolCommand(configInfo) {
   return `sh -c './tools/license-checker/run-license-check.sh with-config "${configInfo.filename}"; rm -f ${configInfo.path}'`;
 }
 
+function isFileCode(file) {
+  return file.match(javascriptRegex) || file.match(golangRegex) || (file.match(cssRegex) && file.match(buildOutputRegex));
+}
+
 /**
  * This script is invoked whenever a commit happens by Husky and lint-staged.
  * The output of this function is an array of commands that are run by lint-staged.
@@ -125,13 +135,13 @@ function generateLicenseToolCommand(configInfo) {
 module.exports = (allStagedFiles) => {
   const outputCommands = [];
 
-  const {apache2, creativeCommons} = readBaseLicenseConfigs();
+  const {apache2, bsl, creativeCommons} = readBaseLicenseConfigs();
 
   // Writes a custom file for the License checking script to use.
   const apacheConfigInfo = rewriteLicenseFile(
     apache2,
     allStagedFiles,
-      file => file.match(javascriptRegex) || file.match(golangRegex)
+      file => !file.match(bslLicenseRegex) && isFileCode(file)
   );
 
   // Only append the license check step if we have a valid config.
@@ -140,11 +150,21 @@ module.exports = (allStagedFiles) => {
   }
 
   // Writes a custom file for the License checking script to use.
+  const bslConfigInfo = rewriteLicenseFile(
+    bsl,
+    allStagedFiles,
+    file => file.match(bslLicenseRegex) && isFileCode(file)  );
+
+  // Only append the license check step if we have a valid config.
+  if (bslConfigInfo !== null) {
+    outputCommands.push(generateLicenseToolCommand(bslConfigInfo));
+  }
+
+  // Writes a custom file for the License checking script to use.
   const creativeCommonsConfigInfo = rewriteLicenseFile(
     creativeCommons,
     allStagedFiles,
       (file) => {
-        console.log('looping file ' ,file)
         return file.match(markdownRegex) && !file.match(/pull_request_template.md/)
       }
   );

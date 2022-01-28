@@ -21,7 +21,7 @@ import (
 	"errors"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizerbackend"
+	"lunasec/lunadefend/pkg/tokenizerbackend"
 )
 
 var (

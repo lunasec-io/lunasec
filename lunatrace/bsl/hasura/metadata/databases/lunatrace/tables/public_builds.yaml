@@ -1,0 +1,58 @@
+table:
+  name: builds
+  schema: public
+object_relationships:
+- name: project
+  using:
+    foreign_key_constraint_on: project_id
+array_relationships:
+- name: findings
+  using:
+    foreign_key_constraint_on:
+      column: agent_access_token
+      table:
+        name: findings
+        schema: public
+- name: scans
+  using:
+    foreign_key_constraint_on:
+      column: build_id
+      table:
+        name: scans
+        schema: public
+- name: scans
+  using:
+    foreign_key_constraint_on:
+      column: build_id
+      table:
+        name: scans
+        schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - id
+    - project_id
+    - s3_url
+    - agent_access_token
+    - git_remote
+    - git_branch
+    - git_hash
+  role: cli
+select_permissions:
+- permission:
+    columns:
+    - git_branch
+    - git_hash
+    - git_remote
+    - s3_url
+    - agent_access_token
+    - id
+    - project_id
+    filter:
+      project:
+        project_access_tokens:
+          access_token:
+            _eq: x-hasura-access-token
+  role: cli
