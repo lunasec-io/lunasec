@@ -13,7 +13,7 @@ query GetProject($project_id: uuid!) {
             id
             created_at
             build_number
-            findings_aggregate(distinct_on: package_name, where: {severity: {_eq: "Critical"}}) {
+            critical_packages: findings_aggregate(distinct_on: package_name, where: {severity: {_eq: "Critical"}}) {
                 aggregate {
                     count(distinct: true, columns: package_name)
                 }

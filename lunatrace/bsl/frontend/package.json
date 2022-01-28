@@ -47,8 +47,9 @@
     "sass": "^1.49.0"
   },
   "scripts": {
-    "sass:build": "sass src/assets/scss/main:public/css",
-    "dev:sass:watch": "sass --watch src/assets/scss/main:public/css",
+    "sass:pull": "git submodule init && git submodule update",
+    "sass:build": "sass src/scss/main:public/css",
+    "dev:sass:watch": "sass --watch src/scss/main:public/css",
     "sass:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
     "build:css": "npm-run-all sass:build sass:autoprefixer",
     "dev:react-scripts": "DISABLE_ESLINT_PLUGIN=true PORT=3000 react-scripts start",

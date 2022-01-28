@@ -1,0 +1,10 @@
+// Variables
+@import "proprietary-theme/1-variables/app";
+
+// Bootstrap
+@import "./bootstrap/scss/bootstrap";
+
+@import "./proprietary-theme/main";
+
+@import "pages/vulnerability";
+@import "globals/globals";

@@ -11,22 +11,7 @@
  * limitations under the License.
  *
  */
-/*
- * Copyright 2022 by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+
 import { api } from '../baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -60,6 +45,31 @@ export type Boolean_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Boolean']>;
   _neq?: InputMaybe<Scalars['Boolean']>;
   _nin?: InputMaybe<Array<Scalars['Boolean']>>;
+};
+
+/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
+export type Int_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['Int']>;
+  _gt?: InputMaybe<Scalars['Int']>;
+  _gte?: InputMaybe<Scalars['Int']>;
+  _in?: InputMaybe<Array<Scalars['Int']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['Int']>;
+  _lte?: InputMaybe<Scalars['Int']>;
+  _neq?: InputMaybe<Scalars['Int']>;
+  _nin?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+export type SbomUploadUrlInput = {
+  orgId: Scalars['String'];
+  projectId: Scalars['String'];
+};
+
+export type SbomUploadUrlOutput = {
+  __typename?: 'SbomUploadUrlOutput';
+  error: Scalars['Boolean'];
+  headers: Scalars['String'];
+  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -112,11 +122,15 @@ export type _Text_Comparison_Exp = {
 export type Builds = {
   __typename?: 'builds';
   agent_access_token: Scalars['uuid'];
+  build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
   /** An array relationship */
   findings: Array<Findings>;
   /** An aggregate relationship */
   findings_aggregate: Findings_Aggregate;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   /** An object relationship */
   project?: Maybe<Projects>;
@@ -178,9 +192,17 @@ export type Builds_Aggregate = {
 /** aggregate fields of "builds" */
 export type Builds_Aggregate_Fields = {
   __typename?: 'builds_aggregate_fields';
+  avg?: Maybe<Builds_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<Builds_Max_Fields>;
   min?: Maybe<Builds_Min_Fields>;
+  stddev?: Maybe<Builds_Stddev_Fields>;
+  stddev_pop?: Maybe<Builds_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Builds_Stddev_Samp_Fields>;
+  sum?: Maybe<Builds_Sum_Fields>;
+  var_pop?: Maybe<Builds_Var_Pop_Fields>;
+  var_samp?: Maybe<Builds_Var_Samp_Fields>;
+  variance?: Maybe<Builds_Variance_Fields>;
 };
 
 
@@ -192,9 +214,17 @@ export type Builds_Aggregate_FieldsCountArgs = {
 
 /** order by aggregate values of table "builds" */
 export type Builds_Aggregate_Order_By = {
+  avg?: InputMaybe<Builds_Avg_Order_By>;
   count?: InputMaybe<Order_By>;
   max?: InputMaybe<Builds_Max_Order_By>;
   min?: InputMaybe<Builds_Min_Order_By>;
+  stddev?: InputMaybe<Builds_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Builds_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Builds_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Builds_Sum_Order_By>;
+  var_pop?: InputMaybe<Builds_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Builds_Var_Samp_Order_By>;
+  variance?: InputMaybe<Builds_Variance_Order_By>;
 };
 
 /** input type for inserting array relation for remote table "builds" */
@@ -204,14 +234,29 @@ export type Builds_Arr_Rel_Insert_Input = {
   on_conflict?: InputMaybe<Builds_On_Conflict>;
 };
 
+/** aggregate avg on columns */
+export type Builds_Avg_Fields = {
+  __typename?: 'builds_avg_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "builds" */
+export type Builds_Avg_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
 /** Boolean expression to filter rows from the table "builds". All fields are combined with a logical 'AND'. */
 export type Builds_Bool_Exp = {
   _and?: InputMaybe<Array<Builds_Bool_Exp>>;
   _not?: InputMaybe<Builds_Bool_Exp>;
   _or?: InputMaybe<Array<Builds_Bool_Exp>>;
   agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
+  build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
+  git_branch?: InputMaybe<String_Comparison_Exp>;
+  git_hash?: InputMaybe<String_Comparison_Exp>;
+  git_remote?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -224,14 +269,25 @@ export enum Builds_Constraint {
   /** unique or primary key constraint */
   BuildsAgentAccessTokenKey = 'builds_agent_access_token_key',
   /** unique or primary key constraint */
+  BuildsBuildNumberProjectIdKey = 'builds_build_number_project_id_key',
+  /** unique or primary key constraint */
   BuildsPkey = 'builds_pkey'
 }
+
+/** input type for incrementing numeric columns in table "builds" */
+export type Builds_Inc_Input = {
+  build_number?: InputMaybe<Scalars['Int']>;
+};
 
 /** input type for inserting data into table "builds" */
 export type Builds_Insert_Input = {
   agent_access_token?: InputMaybe<Scalars['uuid']>;
+  build_number?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
+  git_branch?: InputMaybe<Scalars['String']>;
+  git_hash?: InputMaybe<Scalars['String']>;
+  git_remote?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: InputMaybe<Scalars['uuid']>;
@@ -243,7 +299,11 @@ export type Builds_Insert_Input = {
 export type Builds_Max_Fields = {
   __typename?: 'builds_max_fields';
   agent_access_token?: Maybe<Scalars['uuid']>;
+  build_number?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamp']>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
   s3_url?: Maybe<Scalars['String']>;
@@ -252,7 +312,11 @@ export type Builds_Max_Fields = {
 /** order by max() on columns of table "builds" */
 export type Builds_Max_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
+  build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  git_branch?: InputMaybe<Order_By>;
+  git_hash?: InputMaybe<Order_By>;
+  git_remote?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
@@ -262,7 +326,11 @@ export type Builds_Max_Order_By = {
 export type Builds_Min_Fields = {
   __typename?: 'builds_min_fields';
   agent_access_token?: Maybe<Scalars['uuid']>;
+  build_number?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamp']>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
   s3_url?: Maybe<Scalars['String']>;
@@ -271,7 +339,11 @@ export type Builds_Min_Fields = {
 /** order by min() on columns of table "builds" */
 export type Builds_Min_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
+  build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  git_branch?: InputMaybe<Order_By>;
+  git_hash?: InputMaybe<Order_By>;
+  git_remote?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
@@ -303,8 +375,12 @@ export type Builds_On_Conflict = {
 /** Ordering options when selecting data from "builds". */
 export type Builds_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
+  build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
+  git_branch?: InputMaybe<Order_By>;
+  git_hash?: InputMaybe<Order_By>;
+  git_remote?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_id?: InputMaybe<Order_By>;
@@ -322,7 +398,15 @@ export enum Builds_Select_Column {
   /** column name */
   AgentAccessToken = 'agent_access_token',
   /** column name */
+  BuildNumber = 'build_number',
+  /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  GitBranch = 'git_branch',
+  /** column name */
+  GitHash = 'git_hash',
+  /** column name */
+  GitRemote = 'git_remote',
   /** column name */
   Id = 'id',
   /** column name */
@@ -334,10 +418,58 @@ export enum Builds_Select_Column {
 /** input type for updating data in table "builds" */
 export type Builds_Set_Input = {
   agent_access_token?: InputMaybe<Scalars['uuid']>;
+  build_number?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
+  git_branch?: InputMaybe<Scalars['String']>;
+  git_hash?: InputMaybe<Scalars['String']>;
+  git_remote?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   project_id?: InputMaybe<Scalars['uuid']>;
   s3_url?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate stddev on columns */
+export type Builds_Stddev_Fields = {
+  __typename?: 'builds_stddev_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "builds" */
+export type Builds_Stddev_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Builds_Stddev_Pop_Fields = {
+  __typename?: 'builds_stddev_pop_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "builds" */
+export type Builds_Stddev_Pop_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Builds_Stddev_Samp_Fields = {
+  __typename?: 'builds_stddev_samp_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "builds" */
+export type Builds_Stddev_Samp_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Builds_Sum_Fields = {
+  __typename?: 'builds_sum_fields';
+  build_number?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "builds" */
+export type Builds_Sum_Order_By = {
+  build_number?: InputMaybe<Order_By>;
 };
 
 /** update columns of table "builds" */
@@ -345,7 +477,15 @@ export enum Builds_Update_Column {
   /** column name */
   AgentAccessToken = 'agent_access_token',
   /** column name */
+  BuildNumber = 'build_number',
+  /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  GitBranch = 'git_branch',
+  /** column name */
+  GitHash = 'git_hash',
+  /** column name */
+  GitRemote = 'git_remote',
   /** column name */
   Id = 'id',
   /** column name */
@@ -353,6 +493,39 @@ export enum Builds_Update_Column {
   /** column name */
   S3Url = 's3_url'
 }
+
+/** aggregate var_pop on columns */
+export type Builds_Var_Pop_Fields = {
+  __typename?: 'builds_var_pop_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "builds" */
+export type Builds_Var_Pop_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Builds_Var_Samp_Fields = {
+  __typename?: 'builds_var_samp_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "builds" */
+export type Builds_Var_Samp_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Builds_Variance_Fields = {
+  __typename?: 'builds_variance_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "builds" */
+export type Builds_Variance_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
 
 /** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
 export type Date_Comparison_Exp = {
@@ -387,7 +560,7 @@ export type Findings = {
   /** An object relationship */
   scan: Scans;
   scan_id: Scalars['uuid'];
-  severity?: Maybe<Scalars['severity_enum']>;
+  severity: Scalars['severity_enum'];
   type: Scalars['String'];
   updated_at: Scalars['timestamptz'];
   version: Scalars['String'];
@@ -749,8 +922,11 @@ export enum Findings_Update_Column {
 /** columns and relationships of "instances" */
 export type Instances = {
   __typename?: 'instances';
+  agent_access_token?: Maybe<Scalars['uuid']>;
+  /** An object relationship */
+  build?: Maybe<Builds>;
   created_at: Scalars['timestamp'];
-  id: Scalars['uuid'];
+  instance_id: Scalars['uuid'];
   last_heartbeat: Scalars['timestamp'];
 };
 
@@ -781,8 +957,10 @@ export type Instances_Bool_Exp = {
   _and?: InputMaybe<Array<Instances_Bool_Exp>>;
   _not?: InputMaybe<Instances_Bool_Exp>;
   _or?: InputMaybe<Array<Instances_Bool_Exp>>;
+  agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
+  build?: InputMaybe<Builds_Bool_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
+  instance_id?: InputMaybe<Uuid_Comparison_Exp>;
   last_heartbeat?: InputMaybe<Timestamp_Comparison_Exp>;
 };
 
@@ -794,24 +972,28 @@ export enum Instances_Constraint {
 
 /** input type for inserting data into table "instances" */
 export type Instances_Insert_Input = {
+  agent_access_token?: InputMaybe<Scalars['uuid']>;
+  build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
   created_at?: InputMaybe<Scalars['timestamp']>;
-  id?: InputMaybe<Scalars['uuid']>;
+  instance_id?: InputMaybe<Scalars['uuid']>;
   last_heartbeat?: InputMaybe<Scalars['timestamp']>;
 };
 
 /** aggregate max on columns */
 export type Instances_Max_Fields = {
   __typename?: 'instances_max_fields';
+  agent_access_token?: Maybe<Scalars['uuid']>;
   created_at?: Maybe<Scalars['timestamp']>;
-  id?: Maybe<Scalars['uuid']>;
+  instance_id?: Maybe<Scalars['uuid']>;
   last_heartbeat?: Maybe<Scalars['timestamp']>;
 };
 
 /** aggregate min on columns */
 export type Instances_Min_Fields = {
   __typename?: 'instances_min_fields';
+  agent_access_token?: Maybe<Scalars['uuid']>;
   created_at?: Maybe<Scalars['timestamp']>;
-  id?: Maybe<Scalars['uuid']>;
+  instance_id?: Maybe<Scalars['uuid']>;
   last_heartbeat?: Maybe<Scalars['timestamp']>;
 };
 
@@ -833,39 +1015,46 @@ export type Instances_On_Conflict = {
 
 /** Ordering options when selecting data from "instances". */
 export type Instances_Order_By = {
+  agent_access_token?: InputMaybe<Order_By>;
+  build?: InputMaybe<Builds_Order_By>;
   created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
+  instance_id?: InputMaybe<Order_By>;
   last_heartbeat?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: instances */
 export type Instances_Pk_Columns_Input = {
-  id: Scalars['uuid'];
+  instance_id: Scalars['uuid'];
 };
 
 /** select columns of table "instances" */
 export enum Instances_Select_Column {
   /** column name */
+  AgentAccessToken = 'agent_access_token',
+  /** column name */
   CreatedAt = 'created_at',
   /** column name */
-  Id = 'id',
+  InstanceId = 'instance_id',
   /** column name */
   LastHeartbeat = 'last_heartbeat'
 }
 
 /** input type for updating data in table "instances" */
 export type Instances_Set_Input = {
+  agent_access_token?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
-  id?: InputMaybe<Scalars['uuid']>;
+  instance_id?: InputMaybe<Scalars['uuid']>;
   last_heartbeat?: InputMaybe<Scalars['timestamp']>;
 };
 
 /** update columns of table "instances" */
 export enum Instances_Update_Column {
   /** column name */
+  AgentAccessToken = 'agent_access_token',
+  /** column name */
   CreatedAt = 'created_at',
   /** column name */
-  Id = 'id',
+  InstanceId = 'instance_id',
   /** column name */
   LastHeartbeat = 'last_heartbeat'
 }
@@ -909,10 +1098,6 @@ export type Mutation_Root = {
   delete_related_vulnerabilities?: Maybe<Related_Vulnerabilities_Mutation_Response>;
   /** delete single row from the table: "related_vulnerabilities" */
   delete_related_vulnerabilities_by_pk?: Maybe<Related_Vulnerabilities>;
-  /** delete data from the table: "reports" */
-  delete_reports?: Maybe<Reports_Mutation_Response>;
-  /** delete single row from the table: "reports" */
-  delete_reports_by_pk?: Maybe<Reports>;
   /** delete data from the table: "scans" */
   delete_scans?: Maybe<Scans_Mutation_Response>;
   /** delete single row from the table: "scans" */
@@ -969,10 +1154,6 @@ export type Mutation_Root = {
   insert_related_vulnerabilities?: Maybe<Related_Vulnerabilities_Mutation_Response>;
   /** insert a single row into the table: "related_vulnerabilities" */
   insert_related_vulnerabilities_one?: Maybe<Related_Vulnerabilities>;
-  /** insert data into the table: "reports" */
-  insert_reports?: Maybe<Reports_Mutation_Response>;
-  /** insert a single row into the table: "reports" */
-  insert_reports_one?: Maybe<Reports>;
   /** insert data into the table: "scans" */
   insert_scans?: Maybe<Scans_Mutation_Response>;
   /** insert a single row into the table: "scans" */
@@ -1029,10 +1210,6 @@ export type Mutation_Root = {
   update_related_vulnerabilities?: Maybe<Related_Vulnerabilities_Mutation_Response>;
   /** update single row of the table: "related_vulnerabilities" */
   update_related_vulnerabilities_by_pk?: Maybe<Related_Vulnerabilities>;
-  /** update data of the table: "reports" */
-  update_reports?: Maybe<Reports_Mutation_Response>;
-  /** update single row of the table: "reports" */
-  update_reports_by_pk?: Maybe<Reports>;
   /** update data of the table: "scans" */
   update_scans?: Maybe<Scans_Mutation_Response>;
   /** update single row of the table: "scans" */
@@ -1088,7 +1265,7 @@ export type Mutation_RootDelete_InstancesArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Instances_By_PkArgs = {
-  id: Scalars['uuid'];
+  instance_id: Scalars['uuid'];
 };
 
 
@@ -1160,18 +1337,6 @@ export type Mutation_RootDelete_Related_VulnerabilitiesArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Related_Vulnerabilities_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_ReportsArgs = {
-  where: Reports_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Reports_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -1363,20 +1528,6 @@ export type Mutation_RootInsert_Related_Vulnerabilities_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_ReportsArgs = {
-  objects: Array<Reports_Insert_Input>;
-  on_conflict?: InputMaybe<Reports_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Reports_OneArgs = {
-  object: Reports_Insert_Input;
-  on_conflict?: InputMaybe<Reports_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_ScansArgs = {
   objects: Array<Scans_Insert_Input>;
   on_conflict?: InputMaybe<Scans_On_Conflict>;
@@ -1448,6 +1599,7 @@ export type Mutation_RootInsert_Vulnerability_Packages_OneArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_BuildsArgs = {
+  _inc?: InputMaybe<Builds_Inc_Input>;
   _set?: InputMaybe<Builds_Set_Input>;
   where: Builds_Bool_Exp;
 };
@@ -1455,6 +1607,7 @@ export type Mutation_RootUpdate_BuildsArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Builds_By_PkArgs = {
+  _inc?: InputMaybe<Builds_Inc_Input>;
   _set?: InputMaybe<Builds_Set_Input>;
   pk_columns: Builds_Pk_Columns_Input;
 };
@@ -1573,21 +1726,8 @@ export type Mutation_RootUpdate_Related_Vulnerabilities_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_ReportsArgs = {
-  _set?: InputMaybe<Reports_Set_Input>;
-  where: Reports_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Reports_By_PkArgs = {
-  _set?: InputMaybe<Reports_Set_Input>;
-  pk_columns: Reports_Pk_Columns_Input;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_ScansArgs = {
+  _inc?: InputMaybe<Scans_Inc_Input>;
   _set?: InputMaybe<Scans_Set_Input>;
   where: Scans_Bool_Exp;
 };
@@ -1595,6 +1735,7 @@ export type Mutation_RootUpdate_ScansArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Scans_By_PkArgs = {
+  _inc?: InputMaybe<Scans_Inc_Input>;
   _set?: InputMaybe<Scans_Set_Input>;
   pk_columns: Scans_Pk_Columns_Input;
 };
@@ -2503,6 +2644,10 @@ export type Projects = {
   /** An aggregate relationship */
   project_access_tokens_aggregate: Project_Access_Tokens_Aggregate;
   repo?: Maybe<Scalars['String']>;
+  /** An array relationship */
+  reports: Array<Project_Access_Tokens>;
+  /** An aggregate relationship */
+  reports_aggregate: Project_Access_Tokens_Aggregate;
   settings_id?: Maybe<Scalars['uuid']>;
 };
 
@@ -2539,6 +2684,26 @@ export type ProjectsProject_Access_TokensArgs = {
 
 /** columns and relationships of "projects" */
 export type ProjectsProject_Access_Tokens_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Project_Access_Tokens_Order_By>>;
+  where?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsReportsArgs = {
+  distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Project_Access_Tokens_Order_By>>;
+  where?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsReports_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -2595,6 +2760,7 @@ export type Projects_Bool_Exp = {
   organization_id?: InputMaybe<Uuid_Comparison_Exp>;
   project_access_tokens?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
   repo?: InputMaybe<String_Comparison_Exp>;
+  reports?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
   settings_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
@@ -2614,6 +2780,7 @@ export type Projects_Insert_Input = {
   organization_id?: InputMaybe<Scalars['uuid']>;
   project_access_tokens?: InputMaybe<Project_Access_Tokens_Arr_Rel_Insert_Input>;
   repo?: InputMaybe<Scalars['String']>;
+  reports?: InputMaybe<Project_Access_Tokens_Arr_Rel_Insert_Input>;
   settings_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -2692,6 +2859,7 @@ export type Projects_Order_By = {
   organization_id?: InputMaybe<Order_By>;
   project_access_tokens_aggregate?: InputMaybe<Project_Access_Tokens_Aggregate_Order_By>;
   repo?: InputMaybe<Order_By>;
+  reports_aggregate?: InputMaybe<Project_Access_Tokens_Aggregate_Order_By>;
   settings_id?: InputMaybe<Order_By>;
 };
 
@@ -2798,12 +2966,7 @@ export type Query_Root = {
   related_vulnerabilities_aggregate: Related_Vulnerabilities_Aggregate;
   /** fetch data from the table: "related_vulnerabilities" using primary key columns */
   related_vulnerabilities_by_pk?: Maybe<Related_Vulnerabilities>;
-  /** fetch data from the table: "reports" */
-  reports: Array<Reports>;
-  /** fetch aggregated fields from the table: "reports" */
-  reports_aggregate: Reports_Aggregate;
-  /** fetch data from the table: "reports" using primary key columns */
-  reports_by_pk?: Maybe<Reports>;
+  sbom_upload_url?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   scans: Array<Scans>;
   /** An aggregate relationship */
@@ -2902,7 +3065,7 @@ export type Query_RootInstances_AggregateArgs = {
 
 
 export type Query_RootInstances_By_PkArgs = {
-  id: Scalars['uuid'];
+  instance_id: Scalars['uuid'];
 };
 
 
@@ -3044,26 +3207,8 @@ export type Query_RootRelated_Vulnerabilities_By_PkArgs = {
 };
 
 
-export type Query_RootReportsArgs = {
-  distinct_on?: InputMaybe<Array<Reports_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Reports_Order_By>>;
-  where?: InputMaybe<Reports_Bool_Exp>;
-};
-
-
-export type Query_RootReports_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Reports_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Reports_Order_By>>;
-  where?: InputMaybe<Reports_Bool_Exp>;
-};
-
-
-export type Query_RootReports_By_PkArgs = {
-  id: Scalars['uuid'];
+export type Query_RootSbom_Upload_UrlArgs = {
+  arg1: SbomUploadUrlInput;
 };
 
 
@@ -3352,191 +3497,6 @@ export enum Related_Vulnerabilities_Update_Column {
 }
 
 /**
- * scan reports
- *
- *
- * columns and relationships of "reports"
- *
- */
-export type Reports = {
-  __typename?: 'reports';
-  db_date: Scalars['date'];
-  distro_name: Scalars['String'];
-  distro_version: Scalars['String'];
-  grype_version: Scalars['String'];
-  id: Scalars['uuid'];
-  project_id: Scalars['uuid'];
-  source_type: Scalars['String'];
-  target: Scalars['String'];
-};
-
-/** aggregated selection of "reports" */
-export type Reports_Aggregate = {
-  __typename?: 'reports_aggregate';
-  aggregate?: Maybe<Reports_Aggregate_Fields>;
-  nodes: Array<Reports>;
-};
-
-/** aggregate fields of "reports" */
-export type Reports_Aggregate_Fields = {
-  __typename?: 'reports_aggregate_fields';
-  count: Scalars['Int'];
-  max?: Maybe<Reports_Max_Fields>;
-  min?: Maybe<Reports_Min_Fields>;
-};
-
-
-/** aggregate fields of "reports" */
-export type Reports_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Reports_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** Boolean expression to filter rows from the table "reports". All fields are combined with a logical 'AND'. */
-export type Reports_Bool_Exp = {
-  _and?: InputMaybe<Array<Reports_Bool_Exp>>;
-  _not?: InputMaybe<Reports_Bool_Exp>;
-  _or?: InputMaybe<Array<Reports_Bool_Exp>>;
-  db_date?: InputMaybe<Date_Comparison_Exp>;
-  distro_name?: InputMaybe<String_Comparison_Exp>;
-  distro_version?: InputMaybe<String_Comparison_Exp>;
-  grype_version?: InputMaybe<String_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  project_id?: InputMaybe<Uuid_Comparison_Exp>;
-  source_type?: InputMaybe<String_Comparison_Exp>;
-  target?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "reports" */
-export enum Reports_Constraint {
-  /** unique or primary key constraint */
-  ReportsPkey = 'reports_pkey'
-}
-
-/** input type for inserting data into table "reports" */
-export type Reports_Insert_Input = {
-  db_date?: InputMaybe<Scalars['date']>;
-  distro_name?: InputMaybe<Scalars['String']>;
-  distro_version?: InputMaybe<Scalars['String']>;
-  grype_version?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  project_id?: InputMaybe<Scalars['uuid']>;
-  source_type?: InputMaybe<Scalars['String']>;
-  target?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregate max on columns */
-export type Reports_Max_Fields = {
-  __typename?: 'reports_max_fields';
-  db_date?: Maybe<Scalars['date']>;
-  distro_name?: Maybe<Scalars['String']>;
-  distro_version?: Maybe<Scalars['String']>;
-  grype_version?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['uuid']>;
-  project_id?: Maybe<Scalars['uuid']>;
-  source_type?: Maybe<Scalars['String']>;
-  target?: Maybe<Scalars['String']>;
-};
-
-/** aggregate min on columns */
-export type Reports_Min_Fields = {
-  __typename?: 'reports_min_fields';
-  db_date?: Maybe<Scalars['date']>;
-  distro_name?: Maybe<Scalars['String']>;
-  distro_version?: Maybe<Scalars['String']>;
-  grype_version?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['uuid']>;
-  project_id?: Maybe<Scalars['uuid']>;
-  source_type?: Maybe<Scalars['String']>;
-  target?: Maybe<Scalars['String']>;
-};
-
-/** response of any mutation on the table "reports" */
-export type Reports_Mutation_Response = {
-  __typename?: 'reports_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Reports>;
-};
-
-/** on conflict condition type for table "reports" */
-export type Reports_On_Conflict = {
-  constraint: Reports_Constraint;
-  update_columns?: Array<Reports_Update_Column>;
-  where?: InputMaybe<Reports_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "reports". */
-export type Reports_Order_By = {
-  db_date?: InputMaybe<Order_By>;
-  distro_name?: InputMaybe<Order_By>;
-  distro_version?: InputMaybe<Order_By>;
-  grype_version?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  project_id?: InputMaybe<Order_By>;
-  source_type?: InputMaybe<Order_By>;
-  target?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: reports */
-export type Reports_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** select columns of table "reports" */
-export enum Reports_Select_Column {
-  /** column name */
-  DbDate = 'db_date',
-  /** column name */
-  DistroName = 'distro_name',
-  /** column name */
-  DistroVersion = 'distro_version',
-  /** column name */
-  GrypeVersion = 'grype_version',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  ProjectId = 'project_id',
-  /** column name */
-  SourceType = 'source_type',
-  /** column name */
-  Target = 'target'
-}
-
-/** input type for updating data in table "reports" */
-export type Reports_Set_Input = {
-  db_date?: InputMaybe<Scalars['date']>;
-  distro_name?: InputMaybe<Scalars['String']>;
-  distro_version?: InputMaybe<Scalars['String']>;
-  grype_version?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  project_id?: InputMaybe<Scalars['uuid']>;
-  source_type?: InputMaybe<Scalars['String']>;
-  target?: InputMaybe<Scalars['String']>;
-};
-
-/** update columns of table "reports" */
-export enum Reports_Update_Column {
-  /** column name */
-  DbDate = 'db_date',
-  /** column name */
-  DistroName = 'distro_name',
-  /** column name */
-  DistroVersion = 'distro_version',
-  /** column name */
-  GrypeVersion = 'grype_version',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  ProjectId = 'project_id',
-  /** column name */
-  SourceType = 'source_type',
-  /** column name */
-  Target = 'target'
-}
-
-/**
  * An individual time a scan was run on a build
  *
  *
@@ -3558,6 +3518,7 @@ export type Scans = {
   findings_aggregate: Findings_Aggregate;
   grype_version: Scalars['String'];
   id: Scalars['uuid'];
+  scan_number?: Maybe<Scalars['Int']>;
   source_type: Scalars['String'];
   target: Scalars['String'];
 };
@@ -3604,9 +3565,17 @@ export type Scans_Aggregate = {
 /** aggregate fields of "scans" */
 export type Scans_Aggregate_Fields = {
   __typename?: 'scans_aggregate_fields';
+  avg?: Maybe<Scans_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<Scans_Max_Fields>;
   min?: Maybe<Scans_Min_Fields>;
+  stddev?: Maybe<Scans_Stddev_Fields>;
+  stddev_pop?: Maybe<Scans_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Scans_Stddev_Samp_Fields>;
+  sum?: Maybe<Scans_Sum_Fields>;
+  var_pop?: Maybe<Scans_Var_Pop_Fields>;
+  var_samp?: Maybe<Scans_Var_Samp_Fields>;
+  variance?: Maybe<Scans_Variance_Fields>;
 };
 
 
@@ -3618,9 +3587,17 @@ export type Scans_Aggregate_FieldsCountArgs = {
 
 /** order by aggregate values of table "scans" */
 export type Scans_Aggregate_Order_By = {
+  avg?: InputMaybe<Scans_Avg_Order_By>;
   count?: InputMaybe<Order_By>;
   max?: InputMaybe<Scans_Max_Order_By>;
   min?: InputMaybe<Scans_Min_Order_By>;
+  stddev?: InputMaybe<Scans_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Scans_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Scans_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Scans_Sum_Order_By>;
+  var_pop?: InputMaybe<Scans_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Scans_Var_Samp_Order_By>;
+  variance?: InputMaybe<Scans_Variance_Order_By>;
 };
 
 /** input type for inserting array relation for remote table "scans" */
@@ -3628,6 +3605,17 @@ export type Scans_Arr_Rel_Insert_Input = {
   data: Array<Scans_Insert_Input>;
   /** on conflict condition */
   on_conflict?: InputMaybe<Scans_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Scans_Avg_Fields = {
+  __typename?: 'scans_avg_fields';
+  scan_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "scans" */
+export type Scans_Avg_Order_By = {
+  scan_number?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "scans". All fields are combined with a logical 'AND'. */
@@ -3644,6 +3632,7 @@ export type Scans_Bool_Exp = {
   findings?: InputMaybe<Findings_Bool_Exp>;
   grype_version?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  scan_number?: InputMaybe<Int_Comparison_Exp>;
   source_type?: InputMaybe<String_Comparison_Exp>;
   target?: InputMaybe<String_Comparison_Exp>;
 };
@@ -3651,8 +3640,15 @@ export type Scans_Bool_Exp = {
 /** unique or primary key constraints on table "scans" */
 export enum Scans_Constraint {
   /** unique or primary key constraint */
-  ScansPkey = 'scans_pkey'
+  ScansPkey = 'scans_pkey',
+  /** unique or primary key constraint */
+  ScansScanNumberBuildIdKey = 'scans_scan_number_build_id_key'
 }
+
+/** input type for incrementing numeric columns in table "scans" */
+export type Scans_Inc_Input = {
+  scan_number?: InputMaybe<Scalars['Int']>;
+};
 
 /** input type for inserting data into table "scans" */
 export type Scans_Insert_Input = {
@@ -3665,6 +3661,7 @@ export type Scans_Insert_Input = {
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
   grype_version?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
+  scan_number?: InputMaybe<Scalars['Int']>;
   source_type?: InputMaybe<Scalars['String']>;
   target?: InputMaybe<Scalars['String']>;
 };
@@ -3679,6 +3676,7 @@ export type Scans_Max_Fields = {
   distro_version?: Maybe<Scalars['String']>;
   grype_version?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  scan_number?: Maybe<Scalars['Int']>;
   source_type?: Maybe<Scalars['String']>;
   target?: Maybe<Scalars['String']>;
 };
@@ -3692,6 +3690,7 @@ export type Scans_Max_Order_By = {
   distro_version?: InputMaybe<Order_By>;
   grype_version?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  scan_number?: InputMaybe<Order_By>;
   source_type?: InputMaybe<Order_By>;
   target?: InputMaybe<Order_By>;
 };
@@ -3706,6 +3705,7 @@ export type Scans_Min_Fields = {
   distro_version?: Maybe<Scalars['String']>;
   grype_version?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  scan_number?: Maybe<Scalars['Int']>;
   source_type?: Maybe<Scalars['String']>;
   target?: Maybe<Scalars['String']>;
 };
@@ -3719,6 +3719,7 @@ export type Scans_Min_Order_By = {
   distro_version?: InputMaybe<Order_By>;
   grype_version?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  scan_number?: InputMaybe<Order_By>;
   source_type?: InputMaybe<Order_By>;
   target?: InputMaybe<Order_By>;
 };
@@ -3757,6 +3758,7 @@ export type Scans_Order_By = {
   findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
   grype_version?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  scan_number?: InputMaybe<Order_By>;
   source_type?: InputMaybe<Order_By>;
   target?: InputMaybe<Order_By>;
 };
@@ -3783,6 +3785,8 @@ export enum Scans_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  ScanNumber = 'scan_number',
+  /** column name */
   SourceType = 'source_type',
   /** column name */
   Target = 'target'
@@ -3797,8 +3801,53 @@ export type Scans_Set_Input = {
   distro_version?: InputMaybe<Scalars['String']>;
   grype_version?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
+  scan_number?: InputMaybe<Scalars['Int']>;
   source_type?: InputMaybe<Scalars['String']>;
   target?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate stddev on columns */
+export type Scans_Stddev_Fields = {
+  __typename?: 'scans_stddev_fields';
+  scan_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "scans" */
+export type Scans_Stddev_Order_By = {
+  scan_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Scans_Stddev_Pop_Fields = {
+  __typename?: 'scans_stddev_pop_fields';
+  scan_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "scans" */
+export type Scans_Stddev_Pop_Order_By = {
+  scan_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Scans_Stddev_Samp_Fields = {
+  __typename?: 'scans_stddev_samp_fields';
+  scan_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "scans" */
+export type Scans_Stddev_Samp_Order_By = {
+  scan_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Scans_Sum_Fields = {
+  __typename?: 'scans_sum_fields';
+  scan_number?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "scans" */
+export type Scans_Sum_Order_By = {
+  scan_number?: InputMaybe<Order_By>;
 };
 
 /** update columns of table "scans" */
@@ -3818,10 +3867,45 @@ export enum Scans_Update_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  ScanNumber = 'scan_number',
+  /** column name */
   SourceType = 'source_type',
   /** column name */
   Target = 'target'
 }
+
+/** aggregate var_pop on columns */
+export type Scans_Var_Pop_Fields = {
+  __typename?: 'scans_var_pop_fields';
+  scan_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "scans" */
+export type Scans_Var_Pop_Order_By = {
+  scan_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Scans_Var_Samp_Fields = {
+  __typename?: 'scans_var_samp_fields';
+  scan_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "scans" */
+export type Scans_Var_Samp_Order_By = {
+  scan_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Scans_Variance_Fields = {
+  __typename?: 'scans_variance_fields';
+  scan_number?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "scans" */
+export type Scans_Variance_Order_By = {
+  scan_number?: InputMaybe<Order_By>;
+};
 
 /** columns and relationships of "settings" */
 export type Settings = {
@@ -4014,12 +4098,6 @@ export type Subscription_Root = {
   related_vulnerabilities_aggregate: Related_Vulnerabilities_Aggregate;
   /** fetch data from the table: "related_vulnerabilities" using primary key columns */
   related_vulnerabilities_by_pk?: Maybe<Related_Vulnerabilities>;
-  /** fetch data from the table: "reports" */
-  reports: Array<Reports>;
-  /** fetch aggregated fields from the table: "reports" */
-  reports_aggregate: Reports_Aggregate;
-  /** fetch data from the table: "reports" using primary key columns */
-  reports_by_pk?: Maybe<Reports>;
   /** An array relationship */
   scans: Array<Scans>;
   /** An aggregate relationship */
@@ -4118,7 +4196,7 @@ export type Subscription_RootInstances_AggregateArgs = {
 
 
 export type Subscription_RootInstances_By_PkArgs = {
-  id: Scalars['uuid'];
+  instance_id: Scalars['uuid'];
 };
 
 
@@ -4256,29 +4334,6 @@ export type Subscription_RootRelated_Vulnerabilities_AggregateArgs = {
 
 
 export type Subscription_RootRelated_Vulnerabilities_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootReportsArgs = {
-  distinct_on?: InputMaybe<Array<Reports_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Reports_Order_By>>;
-  where?: InputMaybe<Reports_Bool_Exp>;
-};
-
-
-export type Subscription_RootReports_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Reports_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Reports_Order_By>>;
-  where?: InputMaybe<Reports_Bool_Exp>;
-};
-
-
-export type Subscription_RootReports_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -5348,7 +5403,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null | undefined, repo?: string | null | undefined, settings_id?: any | null | undefined, organization?: { __typename?: 'organizations', name: string } | null | undefined, builds: Array<{ __typename?: 'builds', id: any, created_at: any, findings_aggregate: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null | undefined }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, scans: Array<{ __typename?: 'scans', created_at: any }> }> }> };
+export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null | undefined, repo?: string | null | undefined, settings_id?: any | null | undefined, organization?: { __typename?: 'organizations', name: string } | null | undefined, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null | undefined, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null | undefined }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null | undefined }> }> }> };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5390,7 +5445,8 @@ export const GetProjectDocument = `
     builds(order_by: {created_at: desc}) {
       id
       created_at
-      findings_aggregate(
+      build_number
+      critical_packages: findings_aggregate(
         distinct_on: package_name
         where: {severity: {_eq: "Critical"}}
       ) {
@@ -5405,6 +5461,7 @@ export const GetProjectDocument = `
       }
       scans(limit: 1, order_by: {created_at: desc}) {
         created_at
+        scan_number
       }
     }
   }
