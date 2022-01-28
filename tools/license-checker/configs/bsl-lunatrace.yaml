@@ -14,9 +14,7 @@ header:
       See the License for the specific language governing permissions and
       limitations under the License.
   paths:
-    - 'lunatrace/backend/**/*.{js,jsx,ts,tsx}'
-    - 'lunatrace/frontend/**/*.{js,jsx,ts,tsx,css,scss,less}'
-    - 'lunatrace/hasura/**/*.{js,jsx,ts,tsx,sql,yaml,yml,graphql}'
+    - 'lunatrace/bsl/**/*.{js,jsx,ts,tsx}'
   paths-ignore:
     - '.git'
     - '.idea'

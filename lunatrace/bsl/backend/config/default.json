@@ -1,0 +1,11 @@
+{
+  "db": {
+    "host": "localhost",
+    "port": 5431,
+    "database": "lunatrace",
+    "user": "postgres",
+    "password": "postgrespassword",
+    "max": 1,
+    "allowExitOnIdle": true
+  }
+}
