@@ -97,8 +97,8 @@
       "./lunatrace/bsl/backend",
       "./js/internal-infrastructure/s3-redirect-generator",
       "./js/internal-infrastructure/metrics-server-backend",
-      "./lunatrace/*",
       "./lunatrace/bsl/backend",
+      "./lunatrace/bsl/frontend",
       "./lunatrace/bsl/backend-cdk"
     ]
   },
