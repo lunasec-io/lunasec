@@ -19,7 +19,7 @@ package main
 import (
 	"log"
 
-	"lunasec/lunadefend/pkg/tokenizer"
+	"github.com/lunasec-io/lunasec-monorepo/pkg/tokenizer"
 )
 
 func main() {

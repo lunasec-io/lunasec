@@ -17,14 +17,14 @@ package service
 import (
 	"encoding/hex"
 	"errors"
-	"lunasec/lunadefend/constants/metrics"
-	metricservice "lunasec/lunadefend/gateway/metrics"
+	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
+	metricservice "github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 
-	"lunasec/lunadefend/gateway"
-	"lunasec/lunadefend/types"
-	"lunasec/lunadefend/util"
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/types"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 )
 
 type tokenizerService struct {

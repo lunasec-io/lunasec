@@ -37,14 +37,6 @@ func FindFirstExistingFile(filePaths []string) string {
 	return ""
 }
 
-func getFilesInDir(dir string) []fs.FileInfo {
-	files, err := ioutil.ReadDir(dir)
-	if err != nil {
-		panic(err)
-	}
-	return files
-}
-
 func GetConfigProviderFromFiles(filenames []string) config.Provider {
 	opts := []config.YAMLOption{
 		config.Permissive(),
@@ -61,6 +53,14 @@ func GetConfigProviderFromFiles(filenames []string) config.Provider {
 		panic(err)
 	}
 	return provider
+}
+
+func getFilesInDir(dir string) []fs.FileInfo {
+	files, err := ioutil.ReadDir(dir)
+	if err != nil {
+		panic(err)
+	}
+	return files
 }
 
 func GetConfigProviderFromDir(configDir string) config.Provider {
@@ -84,7 +84,6 @@ func GetConfigProviderFromDir(configDir string) config.Provider {
 			}
 			return nil
 		})
-
 	if err != nil {
 		log.Println(err)
 	}

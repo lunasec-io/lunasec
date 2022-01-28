@@ -25,8 +25,8 @@ import (
 	mathrand "math/rand"
 
 	"github.com/google/uuid"
-	"lunasec/lunadefend/constants"
-	"lunasec/lunadefend/types"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"golang.org/x/crypto/sha3"
 )
 

@@ -2,7 +2,9 @@
 <project version="4">
   <component name="FrameworkDetectionExcludesConfiguration">
     <type id="Python" />
-    <type id="web" />
+  </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/tools/log4shell/types/patch.go" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_10" project-jdk-name="10" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />

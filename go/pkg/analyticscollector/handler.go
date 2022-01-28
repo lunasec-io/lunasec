@@ -17,8 +17,8 @@ package analyticscollector
 import (
 	"bytes"
 	"encoding/json"
-	"lunasec/lunadefend/constants"
-	"lunasec/lunadefend/types"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"go.uber.org/zap"
 	"log"
 	"net/http"
