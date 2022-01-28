@@ -13,6 +13,6 @@
  */
 import { Scan } from '../models/scan';
 
-void Scan.uploadScan('~/tmp/syftoutput.json', '3e88ce02-8410-4824-a6bb-e9aac157ba61').then((res) => {
+void Scan.uploadScan('~/tmp/syftoutput.json', 'ddbb00e7-2454-495f-a7ce-ba6522559b62').then((res) => {
   console.log(res);
 });

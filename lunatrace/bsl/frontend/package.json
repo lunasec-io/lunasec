@@ -27,7 +27,8 @@
     "react-scripts": "5.0.0",
     "redux-first-history": "^5.0.8",
     "sass-loader": "^12.4.0",
-    "typescript": "^4.1.5"
+    "typescript": "^4.1.5",
+    "watch": "^1.0.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.3.1",
@@ -49,7 +50,7 @@
   "scripts": {
     "sass:pull": "git submodule init && git submodule update",
     "sass:build": "sass src/scss/main:public/css",
-    "dev:sass:watch": "sass --watch src/scss/main:public/css",
+    "dev:sass:watch": "yarn run sass:build && watch 'yarn run sass:build && echo sass_rebuilt' ./src/scss",
     "sass:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
     "build:css": "npm-run-all sass:build sass:autoprefixer",
     "dev:react-scripts": "DISABLE_ESLINT_PLUGIN=true PORT=3000 react-scripts start",
