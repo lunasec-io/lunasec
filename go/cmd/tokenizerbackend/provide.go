@@ -15,11 +15,11 @@
 package main
 
 import (
+	"github.com/lunasec-io/lunasec-monorepo/gateway"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
-	"lunasec/lunadefend/gateway"
-	"lunasec/lunadefend/util"
 )
 
 func tokenizerBackendDependencies() (*zap.Logger, config.Provider, gateway.Gateways) {

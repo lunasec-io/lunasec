@@ -1,0 +1,1124 @@
+{
+	"vulnerable_libraries": [
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-beta9-bin/log4j-core-2.0-beta9.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"version": "2.0.0-beta9, 2.0.0-rc1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-beta9-osgi-bin/log4j-core-osgi-reduced-2.0-beta9.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"version": "2.0.0-beta9, 2.0.0-rc1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-bin/log4j-core-2.0.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "fd6c63c11f7a6b52eff04be1de3477c9ddbbc925022f7216320e6db93f1b7d29",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "fd6c63c11f7a6b52eff04be1de3477c9ddbbc925022f7216320e6db93f1b7d29",
+			"version": "2.0.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-rc1-bin/log4j-core-2.0-rc1.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"version": "2.0.0-beta9, 2.0.0-rc1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-rc1-osgi-bin/log4j-core-osgi-reduced-2.0-rc1.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"version": "2.0.0-beta9, 2.0.0-rc1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.0-rc2-bin/log4j-core-2.0-rc2.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "a03e538ed25eff6c4fe48aabc5514e5ee687542f29f2206256840e74ed59bcd2",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a03e538ed25eff6c4fe48aabc5514e5ee687542f29f2206256840e74ed59bcd2",
+			"version": "2.0.0-rc2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.0.1-bin/log4j-core-2.0.1.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "964fa0bf8c045097247fa0c973e0c167df08720409fd9e44546e0ceda3925f3e",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "964fa0bf8c045097247fa0c973e0c167df08720409fd9e44546e0ceda3925f3e",
+			"version": "2.0.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.0.2-bin/log4j-core-2.0.2.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "9626798cce6abd0f2ffef89f1a3d0092a60d34a837a02bbe571dbe00236a2c8c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "9626798cce6abd0f2ffef89f1a3d0092a60d34a837a02bbe571dbe00236a2c8c",
+			"version": "2.0.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.1-bin/log4j-core-2.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "ae950f9435c0ef3373d4030e7eff175ee11044e584b7f205b7a9804bbe795f9c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a768e5383990b512f9d4f97217eda94031c2fa4aea122585f5a475ab99dc7307",
+			"version": "2.1.0, 2.2.0, 2.3.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.10.0-bin/log4j-core-2.10.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.11.0-bin/log4j-core-2.11.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.11.1-bin/log4j-core-2.11.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.11.2-bin/log4j-core-2.11.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.12.0-bin/log4j-core-2.12.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1fa92c00fa0b305b6bbe6e2ee4b012b588a906a20a05e135cbe64c9d77d676de",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "5c104d16ff9831b456e4d7eaf66bcf531f086767782d08eece3fb37e40467279",
+			"version": "2.12.0, 2.12.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.12.1-bin/log4j-core-2.12.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1fa92c00fa0b305b6bbe6e2ee4b012b588a906a20a05e135cbe64c9d77d676de",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "5c104d16ff9831b456e4d7eaf66bcf531f086767782d08eece3fb37e40467279",
+			"version": "2.12.0, 2.12.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.12.2-bin/log4j-core-2.12.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "b1960d63a3946f9e16e1920624f37c152b58b98932ed04df99ed5d9486732afb",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "febbc7867784d0f06934fec59df55ee45f6b24c55b17fff71cc4fca80bf22ebb",
+			"version": "2.12.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.13.0-bin/log4j-core-2.13.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.13.1-bin/log4j-core-2.13.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.13.2-bin/log4j-core-2.13.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.13.3-bin/log4j-core-2.13.3.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.14.0-bin/log4j-core-2.14.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "77323460255818f4cbfe180141d6001bfb575b429e00a07cbceabd59adf334d6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.14.0, 2.14.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.14.1-bin/log4j-core-2.14.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "77323460255818f4cbfe180141d6001bfb575b429e00a07cbceabd59adf334d6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.14.0, 2.14.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.15.0-bin/log4j-core-2.15.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "db07ef1ea174e000b379732681bd835cfede648a7971bf4e9a0d31981582d69e",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.15.0",
+			"cve": "CVE-2021-45046",
+			"severity": "9.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.16.0-bin/log4j-core-2.16.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "5210e6aae7dd8a61cd16c56937c5f2ed43941487830f46e99d0d3f45bfa6f953",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.16.0",
+			"cve": "CVE-2021-45105",
+			"severity": "7.5"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.2-bin/log4j-core-2.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "ae950f9435c0ef3373d4030e7eff175ee11044e584b7f205b7a9804bbe795f9c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a768e5383990b512f9d4f97217eda94031c2fa4aea122585f5a475ab99dc7307",
+			"version": "2.1.0, 2.2.0, 2.3.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.3-bin/log4j-core-2.3.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "ae950f9435c0ef3373d4030e7eff175ee11044e584b7f205b7a9804bbe795f9c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a768e5383990b512f9d4f97217eda94031c2fa4aea122585f5a475ab99dc7307",
+			"version": "2.1.0, 2.2.0, 2.3.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.4-bin/log4j-core-2.4.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "3bff6b3011112c0b5139a5c3aa5e698ab1531a2f130e86f9e4262dd6018916d7",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a534961bbfce93966496f86c9314f46939fd082bb89986b48b7430c3bea903f7",
+			"version": "2.4.0, 2.4.1, 2.5.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.4.1-bin/log4j-core-2.4.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "3bff6b3011112c0b5139a5c3aa5e698ab1531a2f130e86f9e4262dd6018916d7",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a534961bbfce93966496f86c9314f46939fd082bb89986b48b7430c3bea903f7",
+			"version": "2.4.0, 2.4.1, 2.5.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.5-bin/log4j-core-2.5.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "3bff6b3011112c0b5139a5c3aa5e698ab1531a2f130e86f9e4262dd6018916d7",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a534961bbfce93966496f86c9314f46939fd082bb89986b48b7430c3bea903f7",
+			"version": "2.4.0, 2.4.1, 2.5.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.6-bin/log4j-core-2.6.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "6540d5695ddac8b0a343c2e91d58316cfdbfdc5b99c6f3f91bc381bc6f748246",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "e8ffed196e04f81b015f847d4ec61f22f6731c11b5a21b1cfc45ccbc58b8ea45",
+			"version": "2.6.0, 2.6.1, 2.6.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.6.1-bin/log4j-core-2.6.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "6540d5695ddac8b0a343c2e91d58316cfdbfdc5b99c6f3f91bc381bc6f748246",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "e8ffed196e04f81b015f847d4ec61f22f6731c11b5a21b1cfc45ccbc58b8ea45",
+			"version": "2.6.0, 2.6.1, 2.6.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.6.2-bin/log4j-core-2.6.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "6540d5695ddac8b0a343c2e91d58316cfdbfdc5b99c6f3f91bc381bc6f748246",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "e8ffed196e04f81b015f847d4ec61f22f6731c11b5a21b1cfc45ccbc58b8ea45",
+			"version": "2.6.0, 2.6.1, 2.6.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.7-bin/log4j-core-2.7.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1584b839cfceb33a372bb9e6f704dcea9701fa810a9ba1ad3961615a5b998c32",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "cee2305065bb61d434cdb45cfdaa46e7da148e5c6a7678d56f3e3dc8d7073eae",
+			"version": "2.7.0, 2.8.0, 2.8.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.8-bin/log4j-core-2.8.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1584b839cfceb33a372bb9e6f704dcea9701fa810a9ba1ad3961615a5b998c32",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "66c89e2d5ae674641138858b571e65824df6873abb1677f7b2ef5c0dd4dbc442",
+			"version": "2.7.0, 2.8.0, 2.8.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.8.1-bin/log4j-core-2.8.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1584b839cfceb33a372bb9e6f704dcea9701fa810a9ba1ad3961615a5b998c32",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "66c89e2d5ae674641138858b571e65824df6873abb1677f7b2ef5c0dd4dbc442",
+			"version": "2.7.0, 2.8.0, 2.8.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.8.2-bin/log4j-core-2.8.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "764b06686dbe06e3d5f6d15891250ab04073a0d1c357d114b7365c70fa8a7407",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "d4ec57440cd6db6eaf6bcb6b197f1cbaf5a3e26253d59578d51db307357cbf15",
+			"version": "2.8.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.9.0-bin/log4j-core-2.9.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.9.1-bin/log4j-core-2.9.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.0-beta9-bin/log4j-core-2.0-beta9.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"version": "2.0.0-beta9, 2.0.0-rc1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.0-beta9-osgi-bin/log4j-core-osgi-reduced-2.0-beta9.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"version": "2.0.0-beta9, 2.0.0-rc1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.0-bin/log4j-core-2.0.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "fd6c63c11f7a6b52eff04be1de3477c9ddbbc925022f7216320e6db93f1b7d29",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "fd6c63c11f7a6b52eff04be1de3477c9ddbbc925022f7216320e6db93f1b7d29",
+			"version": "2.0.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.0-rc1-bin/log4j-core-2.0-rc1.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"version": "2.0.0-beta9, 2.0.0-rc1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.0-rc1-osgi-bin/log4j-core-osgi-reduced-2.0-rc1.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"version": "2.0.0-beta9, 2.0.0-rc1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.0-rc2-bin/log4j-core-2.0-rc2.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "a03e538ed25eff6c4fe48aabc5514e5ee687542f29f2206256840e74ed59bcd2",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a03e538ed25eff6c4fe48aabc5514e5ee687542f29f2206256840e74ed59bcd2",
+			"version": "2.0.0-rc2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.0.1-bin/log4j-core-2.0.1.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "964fa0bf8c045097247fa0c973e0c167df08720409fd9e44546e0ceda3925f3e",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "964fa0bf8c045097247fa0c973e0c167df08720409fd9e44546e0ceda3925f3e",
+			"version": "2.0.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.0.2-bin/log4j-core-2.0.2.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "9626798cce6abd0f2ffef89f1a3d0092a60d34a837a02bbe571dbe00236a2c8c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "9626798cce6abd0f2ffef89f1a3d0092a60d34a837a02bbe571dbe00236a2c8c",
+			"version": "2.0.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.1-bin/log4j-core-2.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "ae950f9435c0ef3373d4030e7eff175ee11044e584b7f205b7a9804bbe795f9c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a768e5383990b512f9d4f97217eda94031c2fa4aea122585f5a475ab99dc7307",
+			"version": "2.1.0, 2.2.0, 2.3.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.10.0-bin/log4j-core-2.10.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.11.0-bin/log4j-core-2.11.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.11.1-bin/log4j-core-2.11.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.11.2-bin/log4j-core-2.11.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.12.0-bin/log4j-core-2.12.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1fa92c00fa0b305b6bbe6e2ee4b012b588a906a20a05e135cbe64c9d77d676de",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "5c104d16ff9831b456e4d7eaf66bcf531f086767782d08eece3fb37e40467279",
+			"version": "2.12.0, 2.12.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.12.1-bin/log4j-core-2.12.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1fa92c00fa0b305b6bbe6e2ee4b012b588a906a20a05e135cbe64c9d77d676de",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "5c104d16ff9831b456e4d7eaf66bcf531f086767782d08eece3fb37e40467279",
+			"version": "2.12.0, 2.12.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.12.2-bin/log4j-core-2.12.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "b1960d63a3946f9e16e1920624f37c152b58b98932ed04df99ed5d9486732afb",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "febbc7867784d0f06934fec59df55ee45f6b24c55b17fff71cc4fca80bf22ebb",
+			"version": "2.12.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.13.0-bin/log4j-core-2.13.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.13.1-bin/log4j-core-2.13.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.13.2-bin/log4j-core-2.13.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.13.3-bin/log4j-core-2.13.3.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.14.0-bin/log4j-core-2.14.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "77323460255818f4cbfe180141d6001bfb575b429e00a07cbceabd59adf334d6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.14.0, 2.14.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.14.1-bin/log4j-core-2.14.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "77323460255818f4cbfe180141d6001bfb575b429e00a07cbceabd59adf334d6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.14.0, 2.14.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.15.0-bin/log4j-core-2.15.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "db07ef1ea174e000b379732681bd835cfede648a7971bf4e9a0d31981582d69e",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.15.0",
+			"cve": "CVE-2021-45046",
+			"severity": "9.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.16.0-bin/log4j-core-2.16.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "5210e6aae7dd8a61cd16c56937c5f2ed43941487830f46e99d0d3f45bfa6f953",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.16.0",
+			"cve": "CVE-2021-45105",
+			"severity": "7.5"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.2-bin/log4j-core-2.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "ae950f9435c0ef3373d4030e7eff175ee11044e584b7f205b7a9804bbe795f9c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a768e5383990b512f9d4f97217eda94031c2fa4aea122585f5a475ab99dc7307",
+			"version": "2.1.0, 2.2.0, 2.3.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.3-bin/log4j-core-2.3.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "ae950f9435c0ef3373d4030e7eff175ee11044e584b7f205b7a9804bbe795f9c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a768e5383990b512f9d4f97217eda94031c2fa4aea122585f5a475ab99dc7307",
+			"version": "2.1.0, 2.2.0, 2.3.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.4-bin/log4j-core-2.4.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "3bff6b3011112c0b5139a5c3aa5e698ab1531a2f130e86f9e4262dd6018916d7",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a534961bbfce93966496f86c9314f46939fd082bb89986b48b7430c3bea903f7",
+			"version": "2.4.0, 2.4.1, 2.5.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.4.1-bin/log4j-core-2.4.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "3bff6b3011112c0b5139a5c3aa5e698ab1531a2f130e86f9e4262dd6018916d7",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a534961bbfce93966496f86c9314f46939fd082bb89986b48b7430c3bea903f7",
+			"version": "2.4.0, 2.4.1, 2.5.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.5-bin/log4j-core-2.5.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "3bff6b3011112c0b5139a5c3aa5e698ab1531a2f130e86f9e4262dd6018916d7",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a534961bbfce93966496f86c9314f46939fd082bb89986b48b7430c3bea903f7",
+			"version": "2.4.0, 2.4.1, 2.5.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.6-bin/log4j-core-2.6.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "6540d5695ddac8b0a343c2e91d58316cfdbfdc5b99c6f3f91bc381bc6f748246",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "e8ffed196e04f81b015f847d4ec61f22f6731c11b5a21b1cfc45ccbc58b8ea45",
+			"version": "2.6.0, 2.6.1, 2.6.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.6.1-bin/log4j-core-2.6.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "6540d5695ddac8b0a343c2e91d58316cfdbfdc5b99c6f3f91bc381bc6f748246",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "e8ffed196e04f81b015f847d4ec61f22f6731c11b5a21b1cfc45ccbc58b8ea45",
+			"version": "2.6.0, 2.6.1, 2.6.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.6.2-bin/log4j-core-2.6.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "6540d5695ddac8b0a343c2e91d58316cfdbfdc5b99c6f3f91bc381bc6f748246",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "e8ffed196e04f81b015f847d4ec61f22f6731c11b5a21b1cfc45ccbc58b8ea45",
+			"version": "2.6.0, 2.6.1, 2.6.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.7-bin/log4j-core-2.7.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1584b839cfceb33a372bb9e6f704dcea9701fa810a9ba1ad3961615a5b998c32",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "cee2305065bb61d434cdb45cfdaa46e7da148e5c6a7678d56f3e3dc8d7073eae",
+			"version": "2.7.0, 2.8.0, 2.8.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.8-bin/log4j-core-2.8.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1584b839cfceb33a372bb9e6f704dcea9701fa810a9ba1ad3961615a5b998c32",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "66c89e2d5ae674641138858b571e65824df6873abb1677f7b2ef5c0dd4dbc442",
+			"version": "2.7.0, 2.8.0, 2.8.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.8.1-bin/log4j-core-2.8.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1584b839cfceb33a372bb9e6f704dcea9701fa810a9ba1ad3961615a5b998c32",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "66c89e2d5ae674641138858b571e65824df6873abb1677f7b2ef5c0dd4dbc442",
+			"version": "2.7.0, 2.8.0, 2.8.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.8.2-bin/log4j-core-2.8.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "764b06686dbe06e3d5f6d15891250ab04073a0d1c357d114b7365c70fa8a7407",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "d4ec57440cd6db6eaf6bcb6b197f1cbaf5a3e26253d59578d51db307357cbf15",
+			"version": "2.8.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.9.0-bin/log4j-core-2.9.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache-patch/apache-log4j-2.9.1-bin/log4j-core-2.9.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/apache/apache-log4j-2.0.1-bin/log4j-core-2.0.1.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "964fa0bf8c045097247fa0c973e0c167df08720409fd9e44546e0ceda3925f3e",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "964fa0bf8c045097247fa0c973e0c167df08720409fd9e44546e0ceda3925f3e",
+			"version": "2.0.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.0-rc1.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "39a495034d37c7934b64a9aa686ea06b61df21aa222044cc50a47d6903ba1ca8",
+			"version": "2.0.0-beta9, 2.0.0-rc1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.0-rc2.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "a03e538ed25eff6c4fe48aabc5514e5ee687542f29f2206256840e74ed59bcd2",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a03e538ed25eff6c4fe48aabc5514e5ee687542f29f2206256840e74ed59bcd2",
+			"version": "2.0.0-rc2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.0.1.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "964fa0bf8c045097247fa0c973e0c167df08720409fd9e44546e0ceda3925f3e",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "964fa0bf8c045097247fa0c973e0c167df08720409fd9e44546e0ceda3925f3e",
+			"version": "2.0.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.0.2.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "9626798cce6abd0f2ffef89f1a3d0092a60d34a837a02bbe571dbe00236a2c8c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "9626798cce6abd0f2ffef89f1a3d0092a60d34a837a02bbe571dbe00236a2c8c",
+			"version": "2.0.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.0.jar",
+			"file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"hash": "fd6c63c11f7a6b52eff04be1de3477c9ddbbc925022f7216320e6db93f1b7d29",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "fd6c63c11f7a6b52eff04be1de3477c9ddbbc925022f7216320e6db93f1b7d29",
+			"version": "2.0.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "ae950f9435c0ef3373d4030e7eff175ee11044e584b7f205b7a9804bbe795f9c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a768e5383990b512f9d4f97217eda94031c2fa4aea122585f5a475ab99dc7307",
+			"version": "2.1.0, 2.2.0, 2.3.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.10.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.11.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.11.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.11.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.12.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1fa92c00fa0b305b6bbe6e2ee4b012b588a906a20a05e135cbe64c9d77d676de",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "5c104d16ff9831b456e4d7eaf66bcf531f086767782d08eece3fb37e40467279",
+			"version": "2.12.0, 2.12.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.12.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1fa92c00fa0b305b6bbe6e2ee4b012b588a906a20a05e135cbe64c9d77d676de",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "5c104d16ff9831b456e4d7eaf66bcf531f086767782d08eece3fb37e40467279",
+			"version": "2.12.0, 2.12.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.12.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "b1960d63a3946f9e16e1920624f37c152b58b98932ed04df99ed5d9486732afb",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "febbc7867784d0f06934fec59df55ee45f6b24c55b17fff71cc4fca80bf22ebb",
+			"version": "2.12.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.13.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.13.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.13.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.13.3.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "c3e95da6542945c1a096b308bf65bbd7fcb96e3d201e5a2257d85d4dedc6a078",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "2b32bfc0556ea59307b9b2fde75b6dfbb5bf4f1d008d1402bc9a2357d8a8c61f",
+			"version": "2.13.0, 2.13.1, 2.13.2, 2.13.3",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.14.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "77323460255818f4cbfe180141d6001bfb575b429e00a07cbceabd59adf334d6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.14.0, 2.14.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.14.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "77323460255818f4cbfe180141d6001bfb575b429e00a07cbceabd59adf334d6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.14.0, 2.14.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.15.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "db07ef1ea174e000b379732681bd835cfede648a7971bf4e9a0d31981582d69e",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.15.0",
+			"cve": "CVE-2021-45046",
+			"severity": "9.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.16.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "5210e6aae7dd8a61cd16c56937c5f2ed43941487830f46e99d0d3f45bfa6f953",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "84057480ba7da6fb6d9ea50c53a00848315833c1f34bf8f4a47f11a14499ae3f",
+			"version": "2.16.0",
+			"cve": "CVE-2021-45105",
+			"severity": "7.5"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "ae950f9435c0ef3373d4030e7eff175ee11044e584b7f205b7a9804bbe795f9c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a768e5383990b512f9d4f97217eda94031c2fa4aea122585f5a475ab99dc7307",
+			"version": "2.1.0, 2.2.0, 2.3.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.3.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "ae950f9435c0ef3373d4030e7eff175ee11044e584b7f205b7a9804bbe795f9c",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a768e5383990b512f9d4f97217eda94031c2fa4aea122585f5a475ab99dc7307",
+			"version": "2.1.0, 2.2.0, 2.3.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.4.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "3bff6b3011112c0b5139a5c3aa5e698ab1531a2f130e86f9e4262dd6018916d7",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a534961bbfce93966496f86c9314f46939fd082bb89986b48b7430c3bea903f7",
+			"version": "2.4.0, 2.4.1, 2.5.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.4.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "3bff6b3011112c0b5139a5c3aa5e698ab1531a2f130e86f9e4262dd6018916d7",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a534961bbfce93966496f86c9314f46939fd082bb89986b48b7430c3bea903f7",
+			"version": "2.4.0, 2.4.1, 2.5.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.5.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "3bff6b3011112c0b5139a5c3aa5e698ab1531a2f130e86f9e4262dd6018916d7",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "a534961bbfce93966496f86c9314f46939fd082bb89986b48b7430c3bea903f7",
+			"version": "2.4.0, 2.4.1, 2.5.0",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.6.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "6540d5695ddac8b0a343c2e91d58316cfdbfdc5b99c6f3f91bc381bc6f748246",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "e8ffed196e04f81b015f847d4ec61f22f6731c11b5a21b1cfc45ccbc58b8ea45",
+			"version": "2.6.0, 2.6.1, 2.6.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.6.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "6540d5695ddac8b0a343c2e91d58316cfdbfdc5b99c6f3f91bc381bc6f748246",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "e8ffed196e04f81b015f847d4ec61f22f6731c11b5a21b1cfc45ccbc58b8ea45",
+			"version": "2.6.0, 2.6.1, 2.6.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.6.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "6540d5695ddac8b0a343c2e91d58316cfdbfdc5b99c6f3f91bc381bc6f748246",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "e8ffed196e04f81b015f847d4ec61f22f6731c11b5a21b1cfc45ccbc58b8ea45",
+			"version": "2.6.0, 2.6.1, 2.6.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.7.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1584b839cfceb33a372bb9e6f704dcea9701fa810a9ba1ad3961615a5b998c32",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "cee2305065bb61d434cdb45cfdaa46e7da148e5c6a7678d56f3e3dc8d7073eae",
+			"version": "2.7.0, 2.8.0, 2.8.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.8.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1584b839cfceb33a372bb9e6f704dcea9701fa810a9ba1ad3961615a5b998c32",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "66c89e2d5ae674641138858b571e65824df6873abb1677f7b2ef5c0dd4dbc442",
+			"version": "2.7.0, 2.8.0, 2.8.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.8.2.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "764b06686dbe06e3d5f6d15891250ab04073a0d1c357d114b7365c70fa8a7407",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "d4ec57440cd6db6eaf6bcb6b197f1cbaf5a3e26253d59578d51db307357cbf15",
+			"version": "2.8.2",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.8.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "1584b839cfceb33a372bb9e6f704dcea9701fa810a9ba1ad3961615a5b998c32",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "66c89e2d5ae674641138858b571e65824df6873abb1677f7b2ef5c0dd4dbc442",
+			"version": "2.7.0, 2.8.0, 2.8.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.9.0.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		},
+		{
+			"path": "/home/breadchris/projects/lunasec-monorepo/tools/log4shell/test/vulnerable-log4j2-versions/target/dependency/log4j-core-2.9.1.jar",
+			"file_name": "org/apache/logging/log4j/core/net/JndiManager.class",
+			"hash": "293d7e83d4197f0496855f40a7745cfcdd10026dc057dfc1816de57295be88a6",
+			"jndi_lookup_file_name": "org/apache/logging/log4j/core/lookup/JndiLookup.class",
+			"jndi_lookup_hash": "0f038a1e0aa0aff76d66d1440c88a2b35a3d023ad8b2e3bac8e25a3208499f7e",
+			"version": "2.10.0, 2.11.0, 2.11.1, 2.11.2, 2.9.0, 2.9.1",
+			"cve": "CVE-2021-44228",
+			"severity": "10.0"
+		}
+	]
+}

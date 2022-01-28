@@ -6,8 +6,6 @@ header:
     - '.github/**'
     - 'js/**/*.{js,jsx,ts,tsx}'
     - 'go/**/*.go'
-    - 'lunatrace/cli/**/*.go'
-    - 'lunatrace/tools/**/*.go'
     - 'api-spec/**/*.yaml'
   paths-ignore:
     - '.git'

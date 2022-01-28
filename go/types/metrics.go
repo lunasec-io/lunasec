@@ -15,7 +15,7 @@
 package types
 
 import (
-	"lunasec/lunadefend/constants/metrics"
+	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
 )
 
 type CollectedMetrics map[metrics.ApplicationMetric]int64
