@@ -16,10 +16,64 @@
  */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import prettifyDate from 'prettify-date'; // This lib works great, is old, and has no types
 
-export const prettyDate = (d: string) => {
-  const dateFormat = prettifyDate.format as (d: Date) => string;
-  const prettyDate = dateFormat(new Date(d));
-  return prettyDate.charAt(0).toUpperCase() + prettyDate.slice(1);
-};
+/**
+ * If in last hour: x mins e.g. 10 min
+ * If in last 24 hrs: x hrs e.g. 4 hrs
+ * Else: Month Day at Time AM/PM: e.g. November 15th at 10:35 AM
+ *
+ * Note: date must be a date object (new Date(x)).
+ */
+export function prettyDate(date: Date) {
+  const secondsSince = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+  const secPerDay = 86400;
+  const secPerHour = 3600;
+  const secPerMin = 60;
+
+  // time is over a two days old
+  if (secondsSince >= 2 * secPerDay) {
+    const monthOptions: Intl.DateTimeFormatOptions = {
+      month: 'long',
+      day: 'numeric',
+    };
+
+    const hourOptions: Intl.DateTimeFormatOptions = {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    };
+
+    const monthDay = date.toLocaleString('en-US', monthOptions);
+    const hrMin = date.toLocaleString('en-US', hourOptions);
+    return `${monthDay} at ${hrMin}`;
+  }
+
+  // time is over a day old
+  if (secondsSince >= secPerDay) {
+    return 'Yesterday';
+  }
+
+  // time is over an hour old
+  if (secondsSince >= secPerHour) {
+    const hoursSince = Math.floor(secondsSince / secPerHour);
+    return `${hoursSince} hour${hoursSince > 1 ? 's' : ''} ago`;
+  }
+
+  // time is over a minute old
+  if (secondsSince >= secPerMin) {
+    const minutesSince = Math.floor(secondsSince / secPerMin);
+    return `${minutesSince} minute${minutesSince > 1 ? 's' : ''} ago`;
+  }
+
+  // if it was posted in the last minute
+  else {
+    return 'Just now';
+  }
+}
+
+// export const prettyDate = (d: string) => {
+//   console.log('got date string', d);
+//   const dateFormat = format as (d: Date) => string;
+//   const prettyDate = dateFormat(new Date(d));
+//   return prettyDate.charAt(0).toUpperCase() + prettyDate.slice(1);
+// };

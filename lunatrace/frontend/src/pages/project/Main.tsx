@@ -14,13 +14,18 @@
  * limitations under the License.
  *
  */
-import React from 'react';
-import { Container } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Container, Nav, Row } from 'react-bootstrap';
+import { Box, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
 import { SpinIfLoading } from '../../components/SpinIfLoading';
-import { GetProjectQuery, useGetProjectQuery } from '../../store/api/generated';
+import { useGetProjectQuery } from '../../store/api/generated';
+
+import { BuildList } from './BuildList';
+import { ProjectHeader } from './Header';
+import { ProjectInfo } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
   console.log('RENDERING PROJECT');
@@ -31,21 +36,43 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
     project_id,
   });
 
-  const renderProjectView = (data: GetProjectQuery) => {
-    const p = data.projects[0];
-    // <VulnerabilitiesControls
-    //     submitFilter={submitFilter}
-    //     submitSearch={submitSearch}
-    //     submitOrder={setOrderBy}
-    //     order={orderBy}
-    // />
-    // <VulnerabilitiesList vulnerabilities={data ? data.vulnerabilities : []} isLoading={isFetching} />
-    return <span>{p.name}</span>;
+  const [activeTab, setActiveTab] = useState<'builds' | 'settings'>('builds');
+  const renderProjectNav = (p: ProjectInfo) => {
+    return (
+      <>
+        <Helmet title={p.name} />
+        <ProjectHeader project={p} />
+        <Nav className="container-fluid fs-lg" variant="tabs" activeKey={activeTab}>
+          <Nav.Item>
+            <Nav.Link onClick={() => setActiveTab('builds')} eventKey="builds">
+              Builds <Box size="17" />
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item className="ms-auto">
+            <Nav.Link onClick={() => setActiveTab('settings')} eventKey="settings">
+              Settings <Settings size="17" />
+            </Nav.Link>
+          </Nav.Item>
+        </Nav>
+        {renderProjectSubPage(p)}
+      </>
+    );
   };
+
+  const renderProjectSubPage = (p: ProjectInfo) => {
+    if (activeTab === 'builds') {
+      return <BuildList builds={p.builds} />;
+    }
+    if (activeTab === 'settings') {
+      return null;
+    }
+  };
+
   return (
     <SpinIfLoading isLoading={isLoading}>
-      <Helmet title="Vulnerabilities Index" />
-      <Container>{data && data.projects[0] ? renderProjectView(data) : null}</Container>
+      <Container className="project-page">
+        {data && data.projects[0] ? renderProjectNav(data.projects[0]) : null}
+      </Container>
     </SpinIfLoading>
   );
 };
