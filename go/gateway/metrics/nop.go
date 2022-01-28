@@ -14,7 +14,7 @@
 //
 package metrics
 
-import "lunasec/lunadefend/constants/metrics"
+import "github.com/lunasec-io/lunasec-monorepo/constants/metrics"
 
 type nopMetricsGateway struct {
 }

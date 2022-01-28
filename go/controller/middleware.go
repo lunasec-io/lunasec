@@ -16,13 +16,13 @@ package controller
 
 import (
 	"fmt"
-	"lunasec/lunadefend/constants"
-	metricsgateway "lunasec/lunadefend/gateway/metrics"
-	"lunasec/lunadefend/types"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	metricsgateway "github.com/lunasec-io/lunasec-monorepo/gateway/metrics"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"net/http"
 	"net/http/httputil"
 
-	"lunasec/lunadefend/service"
+	"github.com/lunasec-io/lunasec-monorepo/service"
 	"go.uber.org/config"
 )
 

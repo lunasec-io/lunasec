@@ -15,12 +15,12 @@
 package service
 
 import (
-	"lunasec/lunadefend/constants"
-	"lunasec/lunadefend/util"
+	"github.com/lunasec-io/lunasec-monorepo/constants"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"net/http"
 	"net/http/httputil"
 
-	"lunasec/lunadefend/controller/request"
+	"github.com/lunasec-io/lunasec-monorepo/controller/request"
 	"go.uber.org/zap"
 )
 

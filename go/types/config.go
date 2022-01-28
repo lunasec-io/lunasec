@@ -15,7 +15,7 @@
 package types
 
 import (
-	"lunasec/lunadefend/constants/metrics"
+	"github.com/lunasec-io/lunasec-monorepo/constants/metrics"
 )
 
 type CorsConfig struct {

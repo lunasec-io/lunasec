@@ -11,4 +11,3 @@ outputs/
 **/node_modules/
 node_modules/
 .npmrc
-lunatrace/cli/test/**

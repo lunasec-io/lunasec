@@ -3,6 +3,9 @@
   "bugs": {
     "url": "https://github.com/lunasec-io/lunasec/issues"
   },
+  "dependencies": {
+    "lerna": "^4.0.0"
+  },
   "description": "This monorepo holds the LunaSec SDKs, servers, and demo application.",
   "devDependencies": {
     "@jest/globals": "^27.4.2",
@@ -34,16 +37,7 @@
     "uuid": "^8.3.2"
   },
   "dependenciesMeta": {
-    "@aws-cdk/aws-lambda-nodejs": {
-      "unplugged": true
-    },
-    "apollo@2.33.9": {
-      "unplugged": true
-    },
     "eslint@8.5.0": {
-      "unplugged": true
-    },
-    "mst-gql@0.14.1": {
       "unplugged": true
     }
   },
@@ -94,12 +88,10 @@
       "./js/demo-apps/packages/*",
       "./docs",
       "./js/sdks",
-      "./lunatrace/bsl/backend",
+      "./js/internal-infrastructure/lunatrace-ui/cdk",
       "./js/internal-infrastructure/s3-redirect-generator",
       "./js/internal-infrastructure/metrics-server-backend",
-      "./lunatrace/bsl/backend",
-      "./lunatrace/bsl/frontend",
-      "./lunatrace/bsl/backend-cdk"
+      "./lunatrace/*"
     ]
   },
   "packageManager": "yarn@3.1.1"

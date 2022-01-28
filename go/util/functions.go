@@ -17,7 +17,7 @@ package util
 import (
 	"encoding/json"
 	"fmt"
-	"lunasec/lunadefend/types"
+	"github.com/lunasec-io/lunasec-monorepo/types"
 	"io/ioutil"
 	"os"
 )

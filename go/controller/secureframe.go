@@ -22,9 +22,9 @@ import (
 	"path"
 
 	"github.com/Joker/jade"
-	"lunasec/lunadefend/service"
-	"lunasec/lunadefend/types"
-	"lunasec/lunadefend/util"
+	"github.com/lunasec-io/lunasec-monorepo/service"
+	"github.com/lunasec-io/lunasec-monorepo/types"
+	"github.com/lunasec-io/lunasec-monorepo/util"
 	"github.com/pkg/errors"
 	"go.uber.org/config"
 	"go.uber.org/zap"
