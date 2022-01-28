@@ -6,6 +6,7 @@ node_modules
 /docs/pages/node-sdk
 /docs/pages/tokenizer-sdk
 **/package-lock.json
+**/yarn.lock-workspace
 
 .npmrc
 
