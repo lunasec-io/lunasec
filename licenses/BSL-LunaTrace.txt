@@ -7,29 +7,17 @@ Licensed Work:        LunaTrace 1.0
                       The Licensed Work is (c) 2022 Refinery Labs, Inc.
 Additional Use Grant: Your company** may make production use*** of the Licensed Work, provided
                       you comply with all the following conditions:
+
                       1. Use of the software for the benefit of your company is use for a
                        permitted purpose if your company has fewer than 100 total individuals
                        working as employees and independent contractors, and less than
-                       10,000,000 USD (2019) total revenue in the prior tax year. Adjust
+                       10,000,000 USD (2021) total revenue in the prior tax year. Adjust
                        this revenue threshold for inflation according to the United States
                        Bureau of Labor Statistics’ consumer price index for all urban
                        consumers, U.S. city average, for all items, not seasonally adjusted,
                        with 1982–1984=100 reference base.
 
-                      2. Unless given explicit written permission by the LunaSec Team, via
-                        emailing oss-licensing@lunasec.io, you may not disable analytics
-                        reporting, and you must ensure that the LunaSec analytics server is
-                        reachable by your deployed instances via the internet to successfully
-                        upload analytics data to, and you must include the same unique
-                        identifier across all of your instances so that your
-                        usage may be effectively calculated by LunaSec****,
-
-                      3. You may not remove the name, logo, copyright, or other branding
-                        material from the Licensed Work to create a "rebranded"
-                        or "white labeled" version to distribute as part of
-                        any commercial or for-profit product or service.
-
-                      4. You may not use the Licensed Work for a Hosting Service*****.
+                      2. You may not use the Licensed Work for a Hosting Service*****.
 
                       ** Your company is any legal entity, sole proprietorship, or other
                       kind of organization that you work for, plus all organizations that
@@ -47,12 +35,7 @@ Additional Use Grant: Your company** may make production use*** of the Licensed 
                       obligation, such as to provide evidence about security
                       vulnerabilities to a third party organization.
 
-                      **** Analytics data uploaded to LunaSec will be anonymized
-                      and used to calculate your usage, and will not include
-                      information about specific vulnerabilities or packages in
-                      any SBOMs.
-
-                      ***** A “Hosting Service” is a commercial offering that
+                      **** A “Hosting Service” is a commercial offering that
                       allows third parties (other than your employees and
                       contractors), even if it is provided free of charge,
                       to access the functionality of the Licensed Work by deploying
