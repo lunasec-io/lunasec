@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   oathkeeper:
-    build: .
+    build: ./ory
     ports:
       - "4455:4455"
       - "4456:4456"
