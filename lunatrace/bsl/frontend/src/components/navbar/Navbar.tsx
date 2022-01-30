@@ -21,6 +21,7 @@ import useTheme from '../../hooks/useTheme';
 
 import NavbarDropdown from './NavbarDropdown';
 import NavbarDropdownItem from './NavbarDropdownItem';
+import { ProjectSearch } from './NavbarProjectSearch';
 import NavbarUser from './NavbarUser';
 
 const notifications = [
@@ -67,15 +68,7 @@ const NavbarComponent = () => {
         <i className="hamburger align-self-center" />
       </span>
 
-      <Form inline="true" className="d-none d-sm-inline-block">
-        <InputGroup className="input-group-navbar">
-          <Form.Control placeholder="Search Projects" aria-label="Search Projects" />
-          <Button variant="">
-            <Search className="feather" />
-          </Button>
-        </InputGroup>
-      </Form>
-
+      <ProjectSearch />
       {/*TODO: PUT ROUTE BREADCRUMBS HERE*/}
 
       <Navbar.Collapse>

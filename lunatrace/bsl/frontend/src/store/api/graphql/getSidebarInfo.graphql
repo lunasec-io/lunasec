@@ -1,0 +1,12 @@
+query GetSidebarInfo {
+    projects(order_by: {name: asc}) {
+        name
+        id
+        created_at
+    }
+    organizations(order_by: {projects_aggregate: {count: asc}}) {
+        name
+        id
+        createdAt
+    }
+}

@@ -17,8 +17,8 @@ const SidebarFooter = () => {
   return (
     <div className="sidebar-cta">
       <div className="sidebar-cta-content">
-        <strong className="d-inline-block mb-2">Monthly Sales Report</strong>
-        <div className="mb-3 text-sm">Your monthly sales report is ready for download!</div>
+        <strong className="d-inline-block mb-2">Upgrade to Premium</strong>
+        <div className="mb-3 text-sm">LunaTrace Premium</div>
 
         <div className="d-grid">
           <a
@@ -27,7 +27,7 @@ const SidebarFooter = () => {
             target="_blank"
             rel="noreferrer"
           >
-            Download
+            Upgrade
           </a>
         </div>
       </div>

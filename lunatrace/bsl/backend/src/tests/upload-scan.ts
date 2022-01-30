@@ -13,6 +13,12 @@
  */
 import { Scan } from '../models/scan';
 
-void Scan.uploadScan('~/tmp/syftoutput.json', 'ddbb00e7-2454-495f-a7ce-ba6522559b62').then((res) => {
-  console.log(res);
-});
+import { scaffoldBuild } from './scaffold-project-and-build';
+
+async function uploadScan() {
+  void Scan.uploadScan('~/tmp/syftoutput.json', await scaffoldBuild()).then((res) => {
+    console.log('completed scan upload: ', res);
+  });
+}
+
+void uploadScan();

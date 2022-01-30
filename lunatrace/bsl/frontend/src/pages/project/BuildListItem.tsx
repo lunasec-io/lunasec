@@ -28,7 +28,7 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
 
   return (
     <>
-      <Card className="flex-fill w-100 build">
+      <Card className="flex-fill w-100 build build-card">
         <Card.Header>
           {/*<div className="card-actions float-end">*/}
           {/*  <Dropdown align="end">*/}
