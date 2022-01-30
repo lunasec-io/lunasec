@@ -27,20 +27,20 @@ export const routes: RouteObject[] = [
         path: 'vulnerabilities',
         children: [
           {
-            path: 'search',
+            path: '',
             element: <VulnerabilitiesMain />,
           },
         ],
       },
       {
-        path: 'organizations',
+        path: 'organization',
         children: [
           {
             path: '',
             element: <OrganizationsList />,
           },
           {
-            path: ':id',
+            path: ':organization_id',
             // element: <Organization />,
           },
         ],

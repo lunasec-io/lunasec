@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 import { api } from '../baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -5410,6 +5409,11 @@ export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; 
 
 export type SampleVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, name: string, namespace: string, record_source?: string | null | undefined, severity: any, cvss_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, created_at: any, description?: string | null | undefined, slug: string, data_source: string, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null | undefined, id: any, slug: string }> }> };
 
+export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any }> };
+
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
   namespace?: InputMaybe<String_Comparison_Exp>;
@@ -5489,6 +5493,20 @@ export const SampleVulnerabilitiesDocument = `
   }
 }
     `;
+export const GetSidebarInfoDocument = `
+    query GetSidebarInfo {
+  projects(order_by: {name: asc}) {
+    name
+    id
+    created_at
+  }
+  organizations(order_by: {projects_aggregate: {count: asc}}) {
+    name
+    id
+    createdAt
+  }
+}
+    `;
 export const SearchVulnerabilitiesDocument = `
     query SearchVulnerabilities($search: String!, $namespace: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerabilities_order_by!] = {}) {
   vulnerabilities(
@@ -5539,6 +5557,9 @@ const injectedRtkApi = api.injectEndpoints({
     SampleVulnerabilities: build.query<SampleVulnerabilitiesQuery, SampleVulnerabilitiesQueryVariables | void>({
       query: (variables) => ({ document: SampleVulnerabilitiesDocument, variables })
     }),
+    GetSidebarInfo: build.query<GetSidebarInfoQuery, GetSidebarInfoQueryVariables | void>({
+      query: (variables) => ({ document: GetSidebarInfoDocument, variables })
+    }),
     SearchVulnerabilities: build.query<SearchVulnerabilitiesQuery, SearchVulnerabilitiesQueryVariables>({
       query: (variables) => ({ document: SearchVulnerabilitiesDocument, variables })
     }),
@@ -5546,5 +5567,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useGetCurrentUserQuery, useLazyGetCurrentUserQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery } = injectedRtkApi;
+export const { useGetCurrentUserQuery, useLazyGetCurrentUserQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery } = injectedRtkApi;
 
