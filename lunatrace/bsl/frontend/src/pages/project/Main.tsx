@@ -12,7 +12,7 @@
  *
  */
 import React, { useState } from 'react';
-import { Container, Nav, Row } from 'react-bootstrap';
+import { Container, Nav } from 'react-bootstrap';
 import { Box, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
@@ -20,7 +20,7 @@ import { useParams } from 'react-router-dom';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
 import { useGetProjectQuery } from '../../store/api/generated';
 
-import { BuildList } from './BuildList';
+import { Builds } from './Builds';
 import { ProjectHeader } from './Header';
 import { ProjectInfo } from './types';
 
@@ -60,7 +60,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
 
   const renderProjectSubPage = (p: ProjectInfo) => {
     if (activeTab === 'builds') {
-      return <BuildList builds={p.builds} />;
+      return <Builds builds={p.builds} />;
     }
     if (activeTab === 'settings') {
       return null;
