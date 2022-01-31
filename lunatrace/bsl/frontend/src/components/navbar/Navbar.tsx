@@ -13,12 +13,14 @@
  */
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import React from 'react';
-import { Button, Form, InputGroup, Nav, Navbar } from 'react-bootstrap';
+import { Breadcrumb, Button, Col, Container, Form, InputGroup, Nav, Navbar } from 'react-bootstrap';
 import { AlertCircle, Bell, BellOff, Home, Search, UserPlus } from 'react-feather';
+import useBreadCrumbs from 'use-react-router-breadcrumbs';
 
 import useSidebar from '../../hooks/useSidebar';
 import useTheme from '../../hooks/useTheme';
 
+import { NavbarBreadcrumbs } from './NavbarBreadcrumbs';
 import NavbarDropdown from './NavbarDropdown';
 import NavbarDropdownItem from './NavbarDropdownItem';
 import { ProjectSearch } from './NavbarProjectSearch';
@@ -58,20 +60,23 @@ const NavbarComponent = () => {
   const { theme, setTheme } = useTheme();
 
   return (
-    <Navbar variant="light" expand className="navbar-bg">
-      <span
-        className="sidebar-toggle d-flex"
-        onClick={() => {
-          setIsOpen(!isOpen);
-        }}
-      >
-        <i className="hamburger align-self-center" />
-      </span>
+    <Navbar variant="light" expand="lg" className="navbar-bg">
+      <Container fluid>
+        <span
+          className="sidebar-toggle d-flex"
+          onClick={() => {
+            setIsOpen(!isOpen);
+          }}
+        >
+          <i className="hamburger align-self-center" />
+        </span>
 
-      <ProjectSearch />
-      {/*TODO: PUT ROUTE BREADCRUMBS HERE*/}
+        <ProjectSearch />
 
-      <Navbar.Collapse>
+        <Navbar.Collapse style={{ display: 'flex', justifyContent: 'center' }}>
+          <NavbarBreadcrumbs />
+        </Navbar.Collapse>
+
         <Nav className="navbar-align">
           {/*<NavbarDropdown*/}
           {/*  header="New Messages"*/}
@@ -105,7 +110,6 @@ const NavbarComponent = () => {
             style="border"
             size="sm"
           />
-
           <NavbarDropdown
             header="New Notifications"
             footer="Show all notifications"
@@ -138,11 +142,10 @@ const NavbarComponent = () => {
               );
             })}
           </NavbarDropdown>
-
           {/*<NavbarLanguages />*/}
           <NavbarUser />
         </Nav>
-      </Navbar.Collapse>
+      </Container>
     </Navbar>
   );
 };

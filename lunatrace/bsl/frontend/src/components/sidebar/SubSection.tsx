@@ -26,7 +26,6 @@ interface SidebarSubSectionProps {
 
 export const SubSection: React.FunctionComponent<SidebarSubSectionProps> = (props) => {
   const routeMatch = !!useMatch(props.section.href);
-  console.log('routematch is ', routeMatch, ' for section ', props.section.href);
   const [open, setOpen] = React.useState(routeMatch);
 
   const handleToggle = () => {
