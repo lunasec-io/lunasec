@@ -15384,7 +15384,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/history@npm:*":
+"@types/history@npm:*, @types/history@npm:^4.7.11":
   version: 4.7.11
   resolution: "@types/history@npm:4.7.11"
   checksum: c92e2ba407dcab0581a9afdf98f533aa41b61a71133420a6d92b1ca9839f741ab1f9395b17454ba5b88cb86020b70b22d74a1950ccfbdfd9beeaa5459fdc3464
@@ -15843,6 +15843,27 @@ __metadata:
     hoist-non-react-statics: ^3.3.0
     redux: ^4.0.0
   checksum: eef458c0cda27eabd8d458b7fc40553aab8d2f218145b896b9059b86d88680ae479079aee13683f2a0f35774f20346b732e91182252402bd8777455e004561c9
+  languageName: node
+  linkType: hard
+
+"@types/react-router-bootstrap@npm:^0.24.5":
+  version: 0.24.5
+  resolution: "@types/react-router-bootstrap@npm:0.24.5"
+  dependencies:
+    "@types/react": "*"
+    "@types/react-router-dom": "*"
+  checksum: bafa33a75fdf5a891b0550ec0bc734b0546be6591bd45866b66e1f77ba9e1433a64e2869a6317ccea41cf8d4a1d646d94dd29d81087efa551f2c4be9cfe4c591
+  languageName: node
+  linkType: hard
+
+"@types/react-router-dom@npm:*":
+  version: 5.3.3
+  resolution: "@types/react-router-dom@npm:5.3.3"
+  dependencies:
+    "@types/history": ^4.7.11
+    "@types/react": "*"
+    "@types/react-router": "*"
+  checksum: 28c4ea48909803c414bf5a08502acbb8ba414669b4b43bb51297c05fe5addc4df0b8fd00e0a9d1e3535ec4073ef38aaafac2c4a2b95b787167d113bc059beff3
   languageName: node
   linkType: hard
 
@@ -27869,6 +27890,7 @@ __metadata:
     "@types/react": ^16.14.21
     "@types/react-dom": ^16.9.14
     "@types/react-redux": ^7.1.22
+    "@types/react-router-bootstrap": ^0.24.5
     "@types/testing-library__react": ^10.2.0
     apollo: 2.33.9
     bootstrap: 5.1.3
@@ -27885,15 +27907,18 @@ __metadata:
     react-dom: ^17.0.2
     react-feather: ^2.0.9
     react-helmet-async: ^1.2.2
+    react-icons: ^4.3.1
     react-perfect-scrollbar: ^1.5.8
     react-redux: ^7.2.6
     react-router: ^6.2.1
+    react-router-bootstrap: ^0.26.0
     react-router-dom: ^6.2.1
     react-scripts: 5.0.0
     redux-first-history: ^5.0.8
     sass: ^1.49.0
     sass-loader: ^12.4.0
     typescript: ^4.1.5
+    use-react-router-breadcrumbs: ^3.0.2
     watch: ^1.0.2
   languageName: unknown
   linkType: soft
@@ -41371,6 +41396,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-icons@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "react-icons@npm:4.3.1"
+  peerDependencies:
+    react: "*"
+  checksum: 2cc608acdd3e906aa3aaee290b8398220639677c949382d86e554020e5dab6a9f1ed7484418aa5272cb5c5c018e1fc9a323d433d901697a76530029f9ecb1263
+  languageName: node
+  linkType: hard
+
 "react-is@npm:*, react-is@npm:^17.0.1, react-is@npm:^17.0.2":
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
@@ -41510,6 +41544,18 @@ __metadata:
   version: 0.8.3
   resolution: "react-refresh@npm:0.8.3"
   checksum: 3cffe5a9cbac1c5d59bf74bf9fff43c987d87ef32098b9092ea94b6637377d86c08565b9374d9397f446b3fbcd95de986ec77220a16f979687cb39b7b89e2f91
+  languageName: node
+  linkType: hard
+
+"react-router-bootstrap@npm:^0.26.0":
+  version: 0.26.0
+  resolution: "react-router-bootstrap@npm:0.26.0"
+  dependencies:
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: ">=16.13.1"
+    react-router-dom: ">=6.0.0"
+  checksum: 48ba047754e09a766daf5570eaad99572da95bcf2271c35c5b138e4ae79172970475edf6a6cc468d8e7aaf93db259605d8f99056a7dbea6333369d0e713fbfd5
   languageName: node
   linkType: hard
 
@@ -47753,6 +47799,16 @@ __metadata:
     "@types/react":
       optional: true
   checksum: f0cb3a49119e14ed46db8a946b1aa17b838b8834c8a652bde314877ede6057c55b50654a97ee802597a5839c070180195e58ea3a756b7c33db7f540642f0ddea
+  languageName: node
+  linkType: hard
+
+"use-react-router-breadcrumbs@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "use-react-router-breadcrumbs@npm:3.0.2"
+  peerDependencies:
+    react: ">=16.8"
+    react-router: ">=6.0.0"
+  checksum: 265601d3e568f04dbd6f0b877c1918109a71ba55c966a7a2380803d2729442774caa4490fca9e47df8d96aca680ea94813ebaffdd1af251c7babf84b1c4de980
   languageName: node
   linkType: hard
 
