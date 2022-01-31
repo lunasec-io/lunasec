@@ -18,13 +18,14 @@ import { BuildListItem } from './BuildListItem';
 import { BuildInfo } from './types';
 interface BuildListProps {
   builds: BuildInfo[];
+  setBuildDetailId: (id: string | null) => void;
 }
 
-export const BuildList: React.FunctionComponent<BuildListProps> = ({ builds }) => {
+export const BuildList: React.FunctionComponent<BuildListProps> = ({ builds, setBuildDetailId }) => {
   const buildCards = builds.map((build) => {
     return (
       <Row key={build.id}>
-        <BuildListItem build={build} />
+        <BuildListItem onClick={() => setBuildDetailId(build.id as string)} build={build} />
       </Row>
     );
   });
