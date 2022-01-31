@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { api } from '../baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -5392,6 +5379,13 @@ export enum Vulnerability_Packages_Update_Column {
   VulnSlug = 'vuln_slug'
 }
 
+export type GetBuildDetailsQueryVariables = Exact<{
+  build_id?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null | undefined, created_at: any, git_branch?: string | null | undefined, git_hash?: string | null | undefined, git_remote?: string | null | undefined, id: any, project_id?: any | null | undefined, s3_url?: string | null | undefined, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null | undefined, source_type: string, target: string }>, findings: Array<{ __typename?: 'findings', package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null | undefined, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null | undefined, vulnerability_id: any, vulnerability_package_id?: any | null | undefined }> }> };
+
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -5424,6 +5418,49 @@ export type SearchVulnerabilitiesQueryVariables = Exact<{
 export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, namespace: string, name: string, created_at: any, cvss_exploitability_score?: any | null | undefined, cvss_impact_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, cvss_score?: any | null | undefined, cvss_version?: string | null | undefined, data_source: string, description?: string | null | undefined, record_source?: string | null | undefined, severity: any, slug: string, topic_id?: any | null | undefined, urls?: any | null | undefined, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', id: any, name: string, namespace: string } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null | undefined, id: any, slug: string }> }> };
 
 
+export const GetBuildDetailsDocument = `
+    query GetBuildDetails($build_id: uuid) {
+  builds(where: {id: {_eq: $build_id}}) {
+    build_number
+    created_at
+    git_branch
+    git_hash
+    git_remote
+    id
+    project_id
+    s3_url
+    scans {
+      created_at
+      db_date
+      distro_name
+      distro_version
+      grype_version
+      id
+      scan_number
+      source_type
+      target
+    }
+    findings {
+      package_name
+      created_at
+      id
+      language
+      locations
+      matcher
+      package_version_id
+      purl
+      severity
+      type
+      version
+      updated_at
+      version_matcher
+      virtual_path
+      vulnerability_id
+      vulnerability_package_id
+    }
+  }
+}
+    `;
 export const GetCurrentUserDocument = `
     query GetCurrentUser {
   users {
@@ -5548,6 +5585,9 @@ export const SearchVulnerabilitiesDocument = `
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables | void>({
+      query: (variables) => ({ document: GetBuildDetailsDocument, variables })
+    }),
     GetCurrentUser: build.query<GetCurrentUserQuery, GetCurrentUserQueryVariables | void>({
       query: (variables) => ({ document: GetCurrentUserDocument, variables })
     }),
@@ -5567,5 +5607,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useGetCurrentUserQuery, useLazyGetCurrentUserQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery } = injectedRtkApi;
+export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetCurrentUserQuery, useLazyGetCurrentUserQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery } = injectedRtkApi;
 
