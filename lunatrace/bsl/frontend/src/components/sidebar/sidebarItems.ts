@@ -39,7 +39,7 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined): Nav
           href: '/project/:project_id',
           icon: Folder,
           title: 'Projects',
-          badge: data.projects.length.toString(),
+          // badge: data.projects.length.toString(),
           children: data.projects.map((p) => {
             return {
               href: `/project/${p.id as string}`,
@@ -51,7 +51,7 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined): Nav
           href: '/organization/:organization_id',
           icon: Briefcase,
           title: 'Organizations',
-          badge: data.organizations.length.toString(),
+          // badge: data.organizations.length.toString(),
           children: data.organizations.map((o) => {
             return {
               href: `/project/${o.id as string}`,
