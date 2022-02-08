@@ -17,6 +17,8 @@ import { RouteObject } from 'react-router';
 import MainLayout from './layouts/Main';
 import { OrganizationsList, VulnerabilitiesMain } from './pages';
 import { ProjectMain } from './pages/project/Main';
+import { BuildDetails } from './pages/project/build/BuildDetails';
+import { Builds } from './pages/project/build/Builds';
 
 export const routes: RouteObject[] = [
   {
@@ -51,6 +53,16 @@ export const routes: RouteObject[] = [
           {
             path: ':project_id',
             element: <ProjectMain />,
+            children: [
+              {
+                path: '', // the default
+                element: <Builds />,
+              },
+              {
+                path: 'build/:build_id',
+                element: <BuildDetails />,
+              },
+            ],
           },
         ],
       },

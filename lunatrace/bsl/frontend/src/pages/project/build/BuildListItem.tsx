@@ -14,9 +14,9 @@
 import React, { MouseEventHandler } from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
-import { prettyDate } from '../../utils/pretty-date';
+import { prettyDate } from '../../../utils/pretty-date';
 
-import { BuildInfo } from './types';
+import { BuildInfo } from '../types';
 
 interface BuildListItemProps {
   build: BuildInfo;
@@ -28,20 +28,8 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
   const lastScannedDate = build.scans[0] ? prettyDate(new Date(build.scans[0].created_at as string)) : 'Never';
 
   return (
-    <Card onClick={onClick} className="flex-fill w-100 build build-card">
+    <Card onClick={onClick} className="flex-fill w-100 build build-card clickable-card">
       <Card.Header>
-        {/*<div className="card-actions float-end">*/}
-        {/*  <Dropdown align="end">*/}
-        {/*    <Dropdown.Toggle as="a" bsPrefix="-">*/}
-        {/*      <MoreHorizontal />*/}
-        {/*    </Dropdown.Toggle>*/}
-        {/*    <Dropdown.Menu>*/}
-        {/*      <Dropdown.Item>Action</Dropdown.Item>*/}
-        {/*      <Dropdown.Istem>Another Action</Dropdown.Item>*/}
-        {/*      <Dropdown.Item>Something else here</Dropdown.Item>*/}
-        {/*    </Dropdown.Menu>*/}
-        {/*  </Dropdown>*/}
-        {/*</div>*/}
         <Container fluid>
           <Row>
             <Col sm="6">
@@ -67,12 +55,12 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
       <Card.Body className="d-flex">
         <Container fluid>
           <Row>
-            <Col xs="12" sm={{ order: 'last', span: 3, offset: 6 }}>
-              <h6 style={{ float: 'right' }}>
+            <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>
+              <h6 style={{ textAlign:'right' }}>
                 <span className="darker"> Last scanned:</span> {lastScannedDate}
               </h6>
-              <h6 style={{ float: 'right' }}>
-                <span className="darker">Scanned {build.scans_aggregate.aggregate?.count} times</span>
+              <h6 style={{ textAlign:'right'  }}>
+                <span className="darker">Scanned {build.scans_aggregate.aggregate?.count} time{build.scans_aggregate.aggregate?.count !== 1 ? 's':''}</span>
               </h6>
             </Col>
             <Col xs="12" sm="3">
@@ -85,30 +73,7 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
                 </h6>
               </div>
             </Col>
-            {/*<Col*/}
-            {/*    <Col sm="3" xs="12">*/}
-            {/*      <Card.Text>*/}
-            {/*        Packages:{' '}*/}
-            {/*        <p>*/}
-            {/*          <strong>{packageNamesString}</strong>*/}
-            {/*        </p>*/}
-            {/*      </Card.Text>*/}
-            {/*      <div className="align-self-center w-100">*/}
-            {/*        /!*<div className="chart chart-lg">*!/*/}
-            {/*        /!*  <Bar data={data} options={options} />*!/*/}
-            {/*        /!*</div>*!/*/}
-            {/*      </div>*/}
-            {/*    </Col>*/}
-            {/*    <Col sm="6" xs="12">*/}
-            {/*      {vuln.description ? (*/}
-            {/*        <>*/}
-            {/*          Description:*/}
-            {/*          <p>*/}
-            {/*            <strong>{vuln.description}</strong>*/}
-            {/*          </p>*/}
-            {/*        </>*/}
-            {/*      ) : null}*/}
-            {/*    </Col>*/}
+
           </Row>
         </Container>
       </Card.Body>

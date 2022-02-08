@@ -8,7 +8,7 @@ query GetBuildDetails($build_id: uuid) {
         id
         project_id
         s3_url
-        scans {
+        scans(order_by: {created_at: asc}) {
             created_at
             db_date
             distro_name
@@ -19,7 +19,14 @@ query GetBuildDetails($build_id: uuid) {
             source_type
             target
         }
+        scans_aggregate {
+            aggregate {
+                count
+            }
+        }
         findings {
+            fix_state
+            fix_versions
             package_name
             created_at
             id
@@ -36,6 +43,19 @@ query GetBuildDetails($build_id: uuid) {
             virtual_path
             vulnerability_id
             vulnerability_package_id
+            vulnerability {
+                cvss_score
+                name
+                namespace
+                data_source
+                vulnerability_packages {
+                    id
+                    package_versions {
+                        fix_state
+                        fixed_in_versions
+                    }
+                }
+            }
         }
     }
 }
