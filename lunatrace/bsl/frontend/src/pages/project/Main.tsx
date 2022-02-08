@@ -15,18 +15,17 @@ import React, { useState } from 'react';
 import { Container, Nav } from 'react-bootstrap';
 import { Box, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
-import { useParams } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 import { SpinIfLoading } from '../../components/SpinIfLoading';
 import { useGetProjectQuery } from '../../store/api/generated';
 
-import { Builds } from './Builds';
 import { ProjectHeader } from './Header';
 import { ProjectInfo } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
-  console.log('RENDERING PROJECT');
   const { project_id } = useParams();
+  const navigate = useNavigate();
 
   // RUN SEARCH QUERY
   const { data, error, isLoading } = useGetProjectQuery({
@@ -43,7 +42,13 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
         <ProjectHeader project={p} />
         <Nav className="container-fluid fs-lg" variant="tabs" activeKey={activeTab}>
           <Nav.Item>
-            <Nav.Link onClick={() => setActiveTab('builds')} eventKey="builds">
+            <Nav.Link
+              onClick={() => {
+                setActiveTab('builds');
+                navigate(`/project/${project_id as string}`);
+              }}
+              eventKey="builds"
+            >
               Builds <Box size="17" />
             </Nav.Link>
           </Nav.Item>
@@ -53,6 +58,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
             </Nav.Link>
           </Nav.Item>
         </Nav>
+        <br />
         {renderProjectSubPage(p)}
       </>
     );
@@ -60,10 +66,10 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
 
   const renderProjectSubPage = (p: ProjectInfo) => {
     if (activeTab === 'builds') {
-      return <Builds builds={p.builds} />;
+      return <Outlet />;
     }
     if (activeTab === 'settings') {
-      return null;
+      return <span>settings placeholder</span>;
     }
   };
 

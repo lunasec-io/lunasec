@@ -1,3 +1,16 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1 
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { api } from '../baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -13,6 +26,7 @@ export type Scalars = {
   Float: number;
   _text: any;
   date: any;
+  fix_state_enum: any;
   numeric: any;
   severity_enum: any;
   timestamp: any;
@@ -534,6 +548,8 @@ export type Findings = {
   build_id: Scalars['uuid'];
   created_at: Scalars['timestamp'];
   dedupe_slug: Scalars['String'];
+  fix_state: Scalars['fix_state_enum'];
+  fix_versions?: Maybe<Scalars['_text']>;
   id: Scalars['uuid'];
   language: Scalars['String'];
   locations: Scalars['_text'];
@@ -605,6 +621,8 @@ export type Findings_Bool_Exp = {
   build_id?: InputMaybe<Uuid_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   dedupe_slug?: InputMaybe<String_Comparison_Exp>;
+  fix_state?: InputMaybe<Fix_State_Enum_Comparison_Exp>;
+  fix_versions?: InputMaybe<_Text_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   language?: InputMaybe<String_Comparison_Exp>;
   locations?: InputMaybe<_Text_Comparison_Exp>;
@@ -641,6 +659,8 @@ export type Findings_Insert_Input = {
   build_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   dedupe_slug?: InputMaybe<Scalars['String']>;
+  fix_state?: InputMaybe<Scalars['fix_state_enum']>;
+  fix_versions?: InputMaybe<Scalars['_text']>;
   id?: InputMaybe<Scalars['uuid']>;
   language?: InputMaybe<Scalars['String']>;
   locations?: InputMaybe<Scalars['_text']>;
@@ -771,6 +791,8 @@ export type Findings_Order_By = {
   build_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   dedupe_slug?: InputMaybe<Order_By>;
+  fix_state?: InputMaybe<Order_By>;
+  fix_versions?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   language?: InputMaybe<Order_By>;
   locations?: InputMaybe<Order_By>;
@@ -806,6 +828,10 @@ export enum Findings_Select_Column {
   CreatedAt = 'created_at',
   /** column name */
   DedupeSlug = 'dedupe_slug',
+  /** column name */
+  FixState = 'fix_state',
+  /** column name */
+  FixVersions = 'fix_versions',
   /** column name */
   Id = 'id',
   /** column name */
@@ -845,6 +871,8 @@ export type Findings_Set_Input = {
   build_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   dedupe_slug?: InputMaybe<Scalars['String']>;
+  fix_state?: InputMaybe<Scalars['fix_state_enum']>;
+  fix_versions?: InputMaybe<Scalars['_text']>;
   id?: InputMaybe<Scalars['uuid']>;
   language?: InputMaybe<Scalars['String']>;
   locations?: InputMaybe<Scalars['_text']>;
@@ -871,6 +899,10 @@ export enum Findings_Update_Column {
   CreatedAt = 'created_at',
   /** column name */
   DedupeSlug = 'dedupe_slug',
+  /** column name */
+  FixState = 'fix_state',
+  /** column name */
+  FixVersions = 'fix_versions',
   /** column name */
   Id = 'id',
   /** column name */
@@ -904,6 +936,19 @@ export enum Findings_Update_Column {
   /** column name */
   VulnerabilityPackageId = 'vulnerability_package_id'
 }
+
+/** Boolean expression to compare columns of type "fix_state_enum". All fields are combined with logical 'AND'. */
+export type Fix_State_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['fix_state_enum']>;
+  _gt?: InputMaybe<Scalars['fix_state_enum']>;
+  _gte?: InputMaybe<Scalars['fix_state_enum']>;
+  _in?: InputMaybe<Array<Scalars['fix_state_enum']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['fix_state_enum']>;
+  _lte?: InputMaybe<Scalars['fix_state_enum']>;
+  _neq?: InputMaybe<Scalars['fix_state_enum']>;
+  _nin?: InputMaybe<Array<Scalars['fix_state_enum']>>;
+};
 
 /** columns and relationships of "instances" */
 export type Instances = {
@@ -5384,7 +5429,7 @@ export type GetBuildDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null | undefined, created_at: any, git_branch?: string | null | undefined, git_hash?: string | null | undefined, git_remote?: string | null | undefined, id: any, project_id?: any | null | undefined, s3_url?: string | null | undefined, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null | undefined, source_type: string, target: string }>, findings: Array<{ __typename?: 'findings', package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null | undefined, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null | undefined, vulnerability_id: any, vulnerability_package_id?: any | null | undefined }> }> };
+export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null | undefined, created_at: any, git_branch?: string | null | undefined, git_hash?: string | null | undefined, git_remote?: string | null | undefined, id: any, project_id?: any | null | undefined, s3_url?: string | null | undefined, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null | undefined, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null | undefined, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null | undefined, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null | undefined, vulnerability_id: any, vulnerability_package_id?: any | null | undefined, vulnerability: { __typename?: 'vulnerabilities', cvss_score?: any | null | undefined, name: string, namespace: string, data_source: string, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', id: any, package_versions: Array<{ __typename?: 'package_versions', fix_state: string, fixed_in_versions: any }> }> } }> }> };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5406,7 +5451,7 @@ export type SampleVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabil
 export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any }> };
+export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null | undefined }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any }> };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -5429,7 +5474,7 @@ export const GetBuildDetailsDocument = `
     id
     project_id
     s3_url
-    scans {
+    scans(order_by: {created_at: asc}) {
       created_at
       db_date
       distro_name
@@ -5440,7 +5485,14 @@ export const GetBuildDetailsDocument = `
       source_type
       target
     }
+    scans_aggregate {
+      aggregate {
+        count
+      }
+    }
     findings {
+      fix_state
+      fix_versions
       package_name
       created_at
       id
@@ -5457,6 +5509,19 @@ export const GetBuildDetailsDocument = `
       virtual_path
       vulnerability_id
       vulnerability_package_id
+      vulnerability {
+        cvss_score
+        name
+        namespace
+        data_source
+        vulnerability_packages {
+          id
+          package_versions {
+            fix_state
+            fixed_in_versions
+          }
+        }
+      }
     }
   }
 }
@@ -5536,6 +5601,10 @@ export const GetSidebarInfoDocument = `
     name
     id
     created_at
+    builds {
+      id
+      build_number
+    }
   }
   organizations(order_by: {projects_aggregate: {count: asc}}) {
     name

@@ -13,14 +13,12 @@
  */
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import React from 'react';
-import { Breadcrumb, Button, Col, Container, Form, InputGroup, Nav, Navbar } from 'react-bootstrap';
-import { AlertCircle, Bell, BellOff, Home, Search, UserPlus } from 'react-feather';
-import useBreadCrumbs from 'use-react-router-breadcrumbs';
+import { Container, Nav, Navbar } from 'react-bootstrap';
+import { AlertCircle, Bell, BellOff, Home, UserPlus } from 'react-feather';
 
 import useSidebar from '../../hooks/useSidebar';
 import useTheme from '../../hooks/useTheme';
 
-import { NavbarBreadcrumbs } from './NavbarBreadcrumbs';
 import NavbarDropdown from './NavbarDropdown';
 import NavbarDropdownItem from './NavbarDropdownItem';
 import { ProjectSearch } from './NavbarProjectSearch';
@@ -72,10 +70,6 @@ const NavbarComponent = () => {
         </span>
 
         <ProjectSearch />
-
-        <Navbar.Collapse style={{ display: 'flex', justifyContent: 'center' }}>
-          <NavbarBreadcrumbs />
-        </Navbar.Collapse>
 
         <Nav className="navbar-align">
           {/*<NavbarDropdown*/}

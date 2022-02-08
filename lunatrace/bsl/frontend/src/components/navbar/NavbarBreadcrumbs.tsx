@@ -14,33 +14,57 @@
 import React from 'react';
 import { Breadcrumb } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { Params } from 'react-router-dom';
 import useBreadCrumbs, {
   BreadcrumbComponentProps,
   BreadcrumbComponentType,
   BreadcrumbsRoute,
 } from 'use-react-router-breadcrumbs';
 
-import { useGetSidebarInfoQuery } from '../../store/api/generated';
-export const NavbarBreadcrumbs: React.FunctionComponent = () => {
+import { GetSidebarInfoQuery, useGetSidebarInfoQuery } from '../../store/api/generated';
+
+type Project = GetSidebarInfoQuery['projects'][number];
+
+const getCurrentProject = (projects: Project[], params: Params): Project => {
+  return projects.filter((p) => p.id === params.project_id)[0];
+};
+
+// These small little components can figure out how to display their own names, since the IDs from the URL are too ugly
+const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
   const { data } = useGetSidebarInfoQuery();
   if (!data) {
     return null;
   }
   const projects = data.projects;
 
-  const DynamicProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
-    const currentProject = projects.filter((p) => p.id === crumbProps.match.params.project_id)[0];
-    return <span>{currentProject.name}</span>;
-  };
+  const currentProject = getCurrentProject(projects, crumbProps.match.params);
+  return <span>{currentProject.name}</span>;
+};
 
-  const customRoutes: BreadcrumbsRoute[] = [{ path: '/project/:project_id', breadcrumb: DynamicProjectBreadCrumb }];
+const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
+  const { data } = useGetSidebarInfoQuery();
+  if (!data) {
+    return null;
+  }
+  const projects = data.projects;
+
+  const currentProject = getCurrentProject(projects, crumbProps.match.params);
+
+  const buildNumber = currentProject.builds.filter((b) => b.id === crumbProps.match.params.build_id)[0]?.build_number;
+  return <span># {buildNumber}</span>;
+};
+
+export const NavbarBreadcrumbs: React.FunctionComponent = () => {
+  // These custom breadcrumbs override the defaults from the library
+  const customRoutes: BreadcrumbsRoute[] = [
+    { path: '/project/:project_id', breadcrumb: ProjectBreadCrumb },
+    { path: '/project/:project_id/build/:build_id', breadcrumb: BuildBreadCrumb },
+  ];
   const breadCrumbs = useBreadCrumbs(customRoutes);
 
   return (
-    <Breadcrumb>
+    <Breadcrumb className="breadcrumb-navigation">
       {breadCrumbs.map((breadCrumbInfo) => {
-        console.log('pathname is ', breadCrumbInfo.match);
         return (
           <LinkContainer key={breadCrumbInfo.key} to={breadCrumbInfo.match.pathname}>
             <Breadcrumb.Item href={breadCrumbInfo.match.pathname} key={breadCrumbInfo.key}>

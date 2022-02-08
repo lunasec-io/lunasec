@@ -22,6 +22,7 @@ import { Outlet } from 'react-router-dom';
 import Wrapper from '../components/Wrapper';
 // import Navbar from '../components/navbar/Navbar';
 import Navbar from '../components/navbar/Navbar';
+import { NavbarBreadcrumbs } from '../components/navbar/NavbarBreadcrumbs';
 import Sidebar from '../components/sidebar/Sidebar';
 import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import { useGetSidebarInfoQuery } from '../store/api/generated';
@@ -35,6 +36,8 @@ const MainLayout: React.FunctionComponent = (props) => {
         <Sidebar sections={generateSidebarItems(data)} />
         <div className="main">
           <Navbar />
+          <NavbarBreadcrumbs />
+
           <div className="content">
             <Outlet />
           </div>

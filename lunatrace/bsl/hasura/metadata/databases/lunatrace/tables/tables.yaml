@@ -7,7 +7,6 @@
 - "!include public_project_access_tokens.yaml"
 - "!include public_projects.yaml"
 - "!include public_related_vulnerabilities.yaml"
-- "!include public_reports.yaml"
 - "!include public_scans.yaml"
 - "!include public_settings.yaml"
 - "!include public_users.yaml"
