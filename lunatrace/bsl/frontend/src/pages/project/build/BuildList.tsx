@@ -13,30 +13,31 @@
  */
 import React from 'react';
 import { Container, Row } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 import { BuildListItem } from './BuildListItem';
-import { BuildInfo } from './types';
+import { BuildInfo } from '../types';
 interface BuildListProps {
   builds: BuildInfo[];
-  setBuildDetailId: (id: string | null) => void;
 }
 
-export const BuildList: React.FunctionComponent<BuildListProps> = ({ builds, setBuildDetailId }) => {
+export const BuildList: React.FunctionComponent<BuildListProps> = ({ builds }) => {
+  const navigate = useNavigate();
   const buildCards = builds.map((build) => {
     return (
       <Row key={build.id}>
-        <BuildListItem onClick={() => setBuildDetailId(build.id as string)} build={build} />
+        <BuildListItem onClick={() => navigate(`./build/${build.id as string}`)} build={build} />
       </Row>
     );
   });
 
   return (
-    <Container className="vulnerability-list">
+    <Container className="build-list">
       {/*<br />*/}
       {/*<Row>*/}
       {/*  <h2>Builds</h2>*/}
       {/*</Row>*/}
-      <br />
+
 
       {buildCards}
     </Container>

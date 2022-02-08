@@ -14,6 +14,7 @@
 import { db } from '../database/db';
 
 export async function scaffoldBuild() {
+  console.log('scaffolding project with a build and scan');
   const existingProject = await db.oneOrNone(`
   SELECT id, name FROM public.projects WHERE name = 'Automatic Project' LIMIT 1
 `);

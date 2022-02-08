@@ -3,6 +3,10 @@ query GetSidebarInfo {
         name
         id
         created_at
+        builds {
+            id
+            build_number
+        }
     }
     organizations(order_by: {projects_aggregate: {count: asc}}) {
         name

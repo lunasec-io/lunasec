@@ -9,16 +9,9 @@ array_relationships:
 - name: findings
   using:
     foreign_key_constraint_on:
-      column: agent_access_token
-      table:
-        name: findings
-        schema: public
-- name: scans
-  using:
-    foreign_key_constraint_on:
       column: build_id
       table:
-        name: scans
+        name: findings
         schema: public
 - name: scans
   using:
