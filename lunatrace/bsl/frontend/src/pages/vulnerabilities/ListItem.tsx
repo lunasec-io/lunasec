@@ -64,18 +64,6 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
         className="flex-fill w-100 vulnerability clickable-card"
       >
         <Card.Header>
-          {/*<div className="card-actions float-end">*/}
-          {/*  <Dropdown align="end">*/}
-          {/*    <Dropdown.Toggle as="a" bsPrefix="-">*/}
-          {/*      <MoreHorizontal />*/}
-          {/*    </Dropdown.Toggle>*/}
-          {/*    <Dropdown.Menu>*/}
-          {/*      <Dropdown.Item>Action</Dropdown.Item>*/}
-          {/*      <Dropdown.Istem>Another Action</Dropdown.Item>*/}
-          {/*      <Dropdown.Item>Something else here</Dropdown.Item>*/}
-          {/*    </Dropdown.Menu>*/}
-          {/*  </Dropdown>*/}
-          {/*</div>*/}
           <Container fluid>
             <Row>
               <Col sm="6">

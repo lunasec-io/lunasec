@@ -12,14 +12,15 @@
  *
  */
 import React from 'react';
-import { Card, Col, Container, Modal, Row, Table } from 'react-bootstrap';
+import { Card, Col, Container, Modal, OverlayTrigger, Row, Table, Tooltip } from 'react-bootstrap';
 import { ExternalLink } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { SpinIfLoading } from '../../components/SpinIfLoading';
 import { useGetVulnerabilityDetailsQuery } from '../../store/api/generated';
 export const VulnerabilityDetail: React.FunctionComponent = () => {
+  const navigate = useNavigate();
   const { vulnerability_id } = useParams();
   const { data, error, isLoading } = useGetVulnerabilityDetailsQuery({ vulnerability_id });
 
@@ -92,7 +93,7 @@ export const VulnerabilityDetail: React.FunctionComponent = () => {
             <Col xs="12">
               <Card>
                 <Card.Body>
-                  <Card.Title>Affected Packages:</Card.Title>{' '}
+                  <Card.Title>Affected Packages</Card.Title>{' '}
                   <Table>
                     <thead>
                       <tr>
@@ -125,6 +126,48 @@ export const VulnerabilityDetail: React.FunctionComponent = () => {
               </Card>
             </Col>
           </Row>
+          {vuln.related_vulnerabilities.length < 1 ? null : (
+            <Row>
+              <Col xs="12">
+                <Card>
+                  <Card.Body>
+                    <Card.Title>Related Vulnerabilities</Card.Title>
+                    <Table size="sm" hover>
+                      <thead>
+                        <tr>
+                          <th>Source</th>
+                          <th>Vulnerability Number</th>
+                          <th>Severity</th>
+                          <th>CVSS</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {vuln.related_vulnerabilities.map(({ vulnerability: relatedVuln }) => {
+                          return (
+                            <OverlayTrigger
+                              placement="bottom"
+                              overlay={<Tooltip className="wide-tooltip"> {relatedVuln.description}</Tooltip>}
+                              key={relatedVuln.id}
+                            >
+                              <tr
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => navigate(`/vulnerabilities/${relatedVuln.id as string}`)}
+                              >
+                                <td>{relatedVuln.namespace}</td>
+                                <td>{relatedVuln.name}</td>
+                                <td>{relatedVuln.severity}</td>
+                                <td>{relatedVuln.cvss_score} </td>
+                              </tr>
+                            </OverlayTrigger>
+                          );
+                        })}
+                      </tbody>
+                    </Table>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          )}
         </Container>
         {/*<Row>*/}
         {/*  <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>*/}
