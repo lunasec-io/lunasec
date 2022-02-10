@@ -11,11 +11,30 @@
  * limitations under the License.
  *
  */
+import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
 import Express from 'express';
 
+import { generatePresignedUrl } from './s3/handler';
+import { findVulnsForPackages } from './vulnerabilities/handler';
+
 const app = Express();
+app.use(cors());
+app.use(Express.json());
+
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+app.get('/api/upload-sbom', generatePresignedUrl);
+
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+app.post('/api/package/vulns', findVulnsForPackages);
+
+app.get('/health', (_req: Express.Request, res: Express.Response) => {
+  res.send({
+    status: 'ok',
+  });
+  res.status(200);
+});
 
 app.get('/', (_req: Express.Request, res: Express.Response) => {
   res.send('Hello World!');

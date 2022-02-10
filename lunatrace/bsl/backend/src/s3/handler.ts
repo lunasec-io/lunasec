@@ -12,8 +12,7 @@
  *
  */
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
-import { HeaderBag } from '@aws-sdk/types';
-import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
+import { Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import validate from 'validator';
 
@@ -24,24 +23,8 @@ interface ErrorResponse {
   message: string;
 }
 
-interface SuccessResponse {
-  error: false;
-  uploadUrl: { url: string; headers: HeaderBag };
-}
-
-function parseRequest(
-  event: APIGatewayProxyEventV2
-): ErrorResponse | { error: false; orgId: string; projectId: string } {
-  const queryParams = event.queryStringParameters;
-
-  if (!queryParams) {
-    return {
-      error: true,
-      message: 'Missing query params',
-    };
-  }
-
-  const orgId = queryParams.orgId;
+function parseRequest(req: Request): ErrorResponse | { error: false; orgId: string; projectId: string } {
+  const orgId = req.query.orgId;
 
   if (!orgId) {
     return {
@@ -50,14 +33,14 @@ function parseRequest(
     };
   }
 
-  if (!validate.isUUID(orgId)) {
+  if (typeof orgId !== 'string' || !validate.isUUID(orgId)) {
     return {
       error: true,
       message: 'Invalid orgId specified in request',
     };
   }
 
-  const projectId = queryParams.projectId;
+  const projectId = req.query.projectId;
 
   if (!projectId) {
     return {
@@ -66,7 +49,7 @@ function parseRequest(
     };
   }
 
-  if (!validate.isUUID(projectId)) {
+  if (typeof projectId !== 'string' || !validate.isUUID(projectId)) {
     return {
       error: true,
       message: 'Invalid projectId specified in request',
@@ -80,33 +63,26 @@ function parseRequest(
   };
 }
 
-function generateErrorResponse(errorMessage: string, statusCode = 500): Promise<APIGatewayProxyResultV2> {
-  return Promise.resolve({
-    statusCode: statusCode,
-    headers: { 'Content-Type': 'text/json' },
-    body: JSON.stringify({ error: true, message: errorMessage }),
-  });
+function generateErrorResponse(res: Response, errorMessage: string, statusCode = 500) {
+  res.send(JSON.stringify({ error: true, message: errorMessage }));
+  res.status(statusCode);
 }
 
-export async function generateS3PresignedUrl(
-  event: APIGatewayProxyEventV2
-): Promise<APIGatewayProxyResultV2<ErrorResponse | SuccessResponse>> {
+export async function generatePresignedUrl(req: Request, res: Response) {
   const region = process.env.AWS_REGION;
-
   if (!region) {
-    return generateErrorResponse('Missing AWS region');
+    return generateErrorResponse(res, 'Missing AWS region');
   }
 
   const bucket = process.env.S3_BUCKET_NAME;
 
   if (!bucket) {
-    return generateErrorResponse('Missing S3 Bucket name');
+    return generateErrorResponse(res, 'Missing S3 Bucket name');
   }
 
-  const requestArgs = parseRequest(event);
-
-  if (requestArgs.error) {
-    return generateErrorResponse(requestArgs.message, 400);
+  const parsedRequest = parseRequest(req);
+  if (parsedRequest.error) {
+    return generateErrorResponse(res, parsedRequest.message);
   }
 
   const preSignedUrlGenerator = new PreSignedUrlGenerator({
@@ -121,19 +97,17 @@ export async function generateS3PresignedUrl(
   try {
     const result = await preSignedUrlGenerator.generatePresignedS3Url(
       `${encodeURIComponent(
-        requestArgs.orgId
+        parsedRequest.orgId
       )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURIComponent(
-        requestArgs.projectId
+        parsedRequest.projectId
       )}.json.gz`,
       'PUT'
     );
 
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'text/json' },
-      body: JSON.stringify({ error: false, uploadUrl: result }),
-    };
+    res.send(JSON.stringify({ error: false, uploadUrl: result }));
+    res.status(200);
   } catch (e) {
-    return generateErrorResponse('Unable to generate ');
+    return generateErrorResponse(res, 'Unable to generate ');
   }
+  return;
 }
