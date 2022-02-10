@@ -14,24 +14,62 @@
  */
 
 import 'source-map-support/register';
+import { readFileSync } from 'fs';
+
 import * as cdk from '@aws-cdk/core';
 
 import { LunatraceBackendStack } from '../lib/lunatrace-backend-stack';
+import { VPCStack } from '../lib/vpc-stack';
 
-const domainName = process.env.STACK_DOMAIN_NAME;
-
-if (!domainName) {
-  throw new Error('STACK_DOMAIN_NAME is not set');
+interface StackInputsType {
+  appName: string;
+  domainName: string;
+  domainZoneId: string;
+  cdkDefaultRegion: string;
+  cdkDefaultAccount: string;
+  certificateArn: string;
+  databaseUrl: string;
+  vpcId: string;
 }
 
-const domainZoneId = process.env.STACK_DOMAIN_ZONE_ID;
+const stackInputsFileContents = readFileSync('./stack-inputs.json');
+const stackInputsJson = JSON.parse(stackInputsFileContents.toString());
 
-if (!domainZoneId) {
-  throw new Error('STACK_DOMAIN_ZONE_ID is not set');
-}
+const requiredFields = [
+  'appName',
+  'stackDomainName',
+  'stackDomainZoneId',
+  'cdkDefaultRegion',
+  'cdkDefaultAccount',
+  'certificateArn',
+  'databaseUrl',
+  'vpcId',
+];
+
+requiredFields.forEach((field) => {
+  if (!stackInputsJson[field]) {
+    throw Error(`${field} was not provided in stack-inputs.json`);
+  }
+});
+
+const stackInputs = stackInputsJson as StackInputsType;
 
 const app = new cdk.App();
-new LunatraceBackendStack(app, 'LunatraceBackendStack', {
-  domainName,
-  domainZoneId,
+
+const appName = stackInputs.appName;
+const env = {
+  account: stackInputs.cdkDefaultAccount,
+  region: stackInputs.cdkDefaultRegion,
+};
+
+const vpcStack = new VPCStack(app, `${appName}-VpcStack`, { env, vpcId: stackInputs.vpcId });
+
+new LunatraceBackendStack(app, `${appName}-BackendStack`, {
+  env: env,
+  appName: appName,
+  domainName: stackInputs.domainName,
+  domainZoneId: stackInputs.domainZoneId,
+  vpc: vpcStack.vpc,
+  certificateArn: stackInputs.certificateArn,
+  databaseUrl: stackInputs.databaseUrl,
 });
