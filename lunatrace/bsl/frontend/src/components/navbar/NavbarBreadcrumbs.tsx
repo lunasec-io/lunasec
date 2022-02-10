@@ -21,7 +21,11 @@ import useBreadCrumbs, {
   BreadcrumbsRoute,
 } from 'use-react-router-breadcrumbs';
 
-import { GetSidebarInfoQuery, useGetSidebarInfoQuery } from '../../store/api/generated';
+import {
+  GetSidebarInfoQuery,
+  useGetSidebarInfoQuery,
+  useGetVulnerabilityDetailsQuery,
+} from '../../store/api/generated';
 
 type Project = GetSidebarInfoQuery['projects'][number];
 
@@ -31,6 +35,7 @@ const getCurrentProject = (projects: Project[], params: Params): Project => {
 
 // These small little components can figure out how to display their own names, since the IDs from the URL are too ugly
 const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
+  // Doing queries here is actually completely performant thanks to the cache system, no new queries will fire
   const { data } = useGetSidebarInfoQuery();
   if (!data) {
     return null;
@@ -54,11 +59,22 @@ const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponen
   return <span># {buildNumber}</span>;
 };
 
+const VulnBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
+  const vulnerability_id = crumbProps.match.params.vulnerability_id;
+  const { data } = useGetVulnerabilityDetailsQuery({ vulnerability_id });
+  if (!data) {
+    return null;
+  }
+  const vuln = data.vulnerabilities[0];
+  return <span>{vuln.name}</span>;
+};
+
 export const NavbarBreadcrumbs: React.FunctionComponent = () => {
   // These custom breadcrumbs override the defaults from the library
   const customRoutes: BreadcrumbsRoute[] = [
     { path: '/project/:project_id', breadcrumb: ProjectBreadCrumb },
     { path: '/project/:project_id/build/:build_id', breadcrumb: BuildBreadCrumb },
+    { path: '/vulnerabilities/:vulnerability_id', breadcrumb: VulnBreadCrumb },
   ];
   const breadCrumbs = useBreadCrumbs(customRoutes);
 

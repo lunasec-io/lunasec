@@ -5429,7 +5429,7 @@ export type GetBuildDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null | undefined, created_at: any, git_branch?: string | null | undefined, git_hash?: string | null | undefined, git_remote?: string | null | undefined, id: any, project_id?: any | null | undefined, s3_url?: string | null | undefined, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null | undefined, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null | undefined, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null | undefined, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null | undefined, vulnerability_id: any, vulnerability_package_id?: any | null | undefined, vulnerability: { __typename?: 'vulnerabilities', cvss_score?: any | null | undefined, name: string, namespace: string, data_source: string, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', id: any, package_versions: Array<{ __typename?: 'package_versions', fix_state: string, fixed_in_versions: any }> }> } }> }> };
+export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null | undefined, created_at: any, git_branch?: string | null | undefined, git_hash?: string | null | undefined, git_remote?: string | null | undefined, id: any, project_id?: any | null | undefined, s3_url?: string | null | undefined, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null | undefined, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null | undefined, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null | undefined, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null | undefined, vulnerability_id: any, vulnerability_package_id?: any | null | undefined, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null | undefined, cvss_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, name: string, namespace: string, data_source: string } }> }> };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5461,6 +5461,13 @@ export type SearchVulnerabilitiesQueryVariables = Exact<{
 
 
 export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, namespace: string, name: string, created_at: any, cvss_exploitability_score?: any | null | undefined, cvss_impact_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, cvss_score?: any | null | undefined, cvss_version?: string | null | undefined, data_source: string, description?: string | null | undefined, record_source?: string | null | undefined, severity: any, slug: string, topic_id?: any | null | undefined, urls?: any | null | undefined, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', id: any, name: string, namespace: string } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null | undefined, id: any, slug: string }> }> };
+
+export type GetVulnerabilityDetailsQueryVariables = Exact<{
+  vulnerability_id?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null | undefined, cvss_impact_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, cvss_score?: any | null | undefined, cvss_version?: string | null | undefined, data_source: string, description?: string | null | undefined, id: any, name: string, namespace: string, record_source?: string | null | undefined, severity: any, slug: string, topic_id?: any | null | undefined, urls?: any | null | undefined, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null | undefined, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
 
 
 export const GetBuildDetailsDocument = `
@@ -5510,17 +5517,14 @@ export const GetBuildDetailsDocument = `
       vulnerability_id
       vulnerability_package_id
       vulnerability {
+        id
+        slug
+        description
         cvss_score
+        cvss_inferred
         name
         namespace
         data_source
-        vulnerability_packages {
-          id
-          package_versions {
-            fix_state
-            fixed_in_versions
-          }
-        }
       }
     }
   }
@@ -5651,6 +5655,47 @@ export const SearchVulnerabilitiesDocument = `
   }
 }
     `;
+export const GetVulnerabilityDetailsDocument = `
+    query GetVulnerabilityDetails($vulnerability_id: uuid) {
+  vulnerabilities(where: {id: {_eq: $vulnerability_id}}) {
+    created_at
+    cvss_exploitability_score
+    cvss_impact_score
+    cvss_inferred
+    cvss_score
+    cvss_version
+    data_source
+    description
+    id
+    name
+    namespace
+    record_source
+    severity
+    slug
+    topic_id
+    urls
+    related_vulnerabilities {
+      vulnerability {
+        name
+        namespace
+      }
+    }
+    vulnerability_packages {
+      advisories
+      id
+      name
+      package_versions {
+        cpes
+        fix_state
+        fixed_in_versions
+        id
+        version_constraint
+        version_format
+      }
+    }
+  }
+}
+    `;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -5672,9 +5717,12 @@ const injectedRtkApi = api.injectEndpoints({
     SearchVulnerabilities: build.query<SearchVulnerabilitiesQuery, SearchVulnerabilitiesQueryVariables>({
       query: (variables) => ({ document: SearchVulnerabilitiesDocument, variables })
     }),
+    GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables | void>({
+      query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
+    }),
   }),
 });
 
 export { injectedRtkApi as api };
-export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetCurrentUserQuery, useLazyGetCurrentUserQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery } = injectedRtkApi;
+export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetCurrentUserQuery, useLazyGetCurrentUserQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery, useGetVulnerabilityDetailsQuery, useLazyGetVulnerabilityDetailsQuery } = injectedRtkApi;
 

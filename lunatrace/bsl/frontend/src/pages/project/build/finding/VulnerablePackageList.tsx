@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import React, {useState} from 'react';
 import { Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { VulnerablePackageItem} from "./VulnerablePackageItem";
@@ -44,14 +44,24 @@ function groupByPackage(findings:Finding[]): VulnerablePackage[] {
                 findings:[f]
             }
         }
-        // just add the new vuln to the existing pkg
-        pkgs[f.purl].findings.push(f);
+        // just add the new vuln to the existing pkg, unless its a dupe from another location
+        if (preExisting.findings.filter((pf) => pf.vulnerability.slug === f.vulnerability.slug).length === 0) {
+            pkgs[f.purl].findings.push(f);
+        }
         // add any new locations
         (f.locations as string[]).forEach((l) =>{
             if (!preExisting.locations.includes(l)){
                 preExisting.locations = [...preExisting.locations, l]
             }
         })
+        // set the highest CVSS score to the package score
+        try {
+            if (f.vulnerability.namespace === 'nvd' && Number(f.vulnerability.cvss_score) > Number(preExisting.cvss_score)){
+                preExisting.cvss_score = f.vulnerability.cvss_score
+            }
+        } catch {
+            console.error('failed converting cvss to number')
+        }
         // Add any fix versions/state
         if (f.fix_state === 'fixed'){
             preExisting.fix_state = f.fix_state;
@@ -72,12 +82,14 @@ function groupByPackage(findings:Finding[]): VulnerablePackage[] {
 export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = ({ findings }) => {
     console.log('rendering finding list')
     const navigate = useNavigate();
+    const [severityFilter, setSeverityFilter] = useState(severityOrder.indexOf('Critical'))
+
     const vulnerablePkgs = groupByPackage(findings);
     console.log('found vulnerable packages', vulnerablePkgs)
     const pkgCards = vulnerablePkgs.map((pkg) => {
         return (
             <Row key={pkg.purl}>
-                <VulnerablePackageItem pkg={pkg} />
+                <VulnerablePackageItem severityFilter={severityFilter} pkg={pkg} />
             </Row>
         );
     });

@@ -47,6 +47,17 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
                 setActiveTab('builds');
                 navigate(`/project/${project_id as string}`);
               }}
+              eventKey="dashboard"
+            >
+              Dashboard <Box size="17" />
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link
+              onClick={() => {
+                setActiveTab('builds');
+                navigate(`/project/${project_id as string}`);
+              }}
               eventKey="builds"
             >
               Builds <Box size="17" />
