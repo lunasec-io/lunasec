@@ -13,7 +13,8 @@
  */
 import React from 'react';
 import { Card, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
-import { Copy, LogOut } from 'react-feather';
+import { Copy } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 import { prettyDate } from '../../utils/pretty-date';
 
@@ -25,7 +26,7 @@ interface VulnerabilityListItemProps {
 
 export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListItemProps> = ({ vuln }) => {
   const packageNamesString = vuln.vulnerability_packages.map((p) => p.name).join(', ');
-
+  const navigate = useNavigate();
   const renderCvssScore = () => {
     if (!vuln.cvss_score) {
       return null;
@@ -58,7 +59,10 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
 
   return (
     <>
-      <Card className="flex-fill w-100 vulnerability">
+      <Card
+        onClick={() => navigate(`/vulnerabilities/${vuln.id as string}`)}
+        className="flex-fill w-100 vulnerability clickable-card"
+      >
         <Card.Header>
           {/*<div className="card-actions float-end">*/}
           {/*  <Dropdown align="end">*/}
@@ -99,10 +103,10 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
         <Card.Body className="d-flex">
           <Container fluid>
             <Row>
-              <Col sm={{ order: 'last', span: 3 }}>
+              <Col xs="12" sm={{ order: 'last', span: 3 }}>
                 <div style={{ float: 'right' }}>{renderCvssScore()}</div>
               </Col>
-              <Col sm="3" xs="12">
+              <Col sm="9" xs="12">
                 <Card.Text>
                   Packages:{' '}
                   <p>
@@ -115,17 +119,18 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
                   {/*</div>*/}
                 </div>
               </Col>
-              <Col sm="6" xs="12">
-                {vuln.description ? (
-                  <>
-                    Description:
-                    <p>
-                      <strong>{vuln.description}</strong>
-                    </p>
-                  </>
-                ) : null}
-              </Col>
             </Row>
+
+            {vuln.description ? (
+              <Row>
+                <Col xs="12">
+                  Description:
+                  <p>
+                    <strong>{vuln.description}</strong>
+                  </p>
+                </Col>
+              </Row>
+            ) : null}
           </Container>
         </Card.Body>
       </Card>

@@ -11,22 +11,60 @@
  * limitations under the License.
  *
  */
-import React, { MouseEventHandler } from 'react';
-import { Card, Col, Container, Row } from 'react-bootstrap';
+import React, {MouseEventHandler, useState} from 'react';
+import {Card, Col, Collapse, Container, Fade, Row, Table, Accordion, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import semverSort from 'semver-sort'
 
-import { prettyDate } from '../../../../utils/pretty-date';
+import {prettyDate} from '../../../../utils/pretty-date';
 import {VulnerablePackage} from "./types";
-
+import {ChevronDown, ChevronUp, Copy} from "react-feather";
+import {severityOrder} from "./types";
+import {useNavigate} from "react-router-dom";
 
 interface FindingListItemProps {
     pkg: VulnerablePackage;
+    severityFilter: number;
 }
 
-export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps> = ({ pkg }) => {
+export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps> = ({pkg, severityFilter}) => {
+    const navigate = useNavigate();
     const createdAt = prettyDate(new Date(pkg.created_at as string));
+    // const [filterLevel, setFilterLevel] = useState(severityFilter)
+    const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
+    const filteredFindings = pkg.findings.filter((f) => {
+        return severityOrder.indexOf(f.severity) >= severityFilter || !shouldFilterFindings;
+    })
+
+    const fixVersions = [...pkg.fix_versions];
+
+    // if (!fixVersions.some((f) => isNaN(Number(f)))){
+    //     console.log('using number sort ', pkg.fix_versions)
+    //     // attempt to sort using number conversion
+    //     fixVersions.sort((a,b) => Number(b) - Number(a))
+    //     console.log('sorted versions are ', fixVersions)
+    // } else {
+    //     console.log('falling back to string sort for ', pkg.fix_versions)
+    //     fixVersions.sort();
+    // }
+
+    const recommendVersion = semverSort.desc(fixVersions)[0]
+
+    const renderCvssInferredWarning = (inferred:boolean) => {
+        if (!inferred) {
+            return null;
+        }
+        return (
+            <OverlayTrigger
+                placement="left"
+                overlay={<Tooltip>This CVSS score has been inferred from a linked NVD vulnerability.</Tooltip>}
+            >
+                <Copy size="12" />
+            </OverlayTrigger>
+        );
+    };
 
     return (
-        <Card className="vulnpkg-card clickable-card">
+        <Card className="vulnpkg-card">
             <Card.Header>
                 <Container fluid>
                     <Row>
@@ -38,14 +76,15 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
                             </Card.Title>
                             <Card.Subtitle> <span className="darker">Version: </span>{pkg.version}</Card.Subtitle>
                         </Col>
-                        <Col sm={{ span: 6 }}>
-                            <div style={{ float: 'right', textAlign: 'right' }}>
+                        <Col sm={{span: 6}}>
+                            <div style={{float: 'right', textAlign: 'right'}}>
                                 <Card.Title>
                                     <span className="text-right darker"> Severity: </span>
-                                    <h3 style={{ display: 'inline' }}>{pkg.severity}</h3>
+                                    <h4 style={{display: 'inline'}}>{pkg.severity}</h4>
 
                                 </Card.Title>
-                                {pkg.cvss_score ? <Card.Subtitle> <span className="darker">CVSS: </span>{pkg.cvss_score}</Card.Subtitle> : null}
+                                {pkg.cvss_score ? <Card.Subtitle> <span className="darker">CVSS: </span>{pkg.cvss_score}
+                                </Card.Subtitle> : null}
 
                             </div>
                         </Col>
@@ -54,66 +93,76 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
             </Card.Header>
             <Card.Body>
                 <Container fluid>
-                    { pkg.fix_state === 'fixed' ?  <Row>
-                        <h3>Fixed in: {pkg.fix_versions?.toString()}</h3>
+                    {pkg.fix_state === 'fixed' ? <Row>
+                        <h5> <span className="darker">Recommended version: </span>{recommendVersion}</h5>
                     </Row> : null}
+                    <Row>
+                        <Col xs="12">
+                            <h5
+                                className="darker">Path{pkg.locations.length === 1 ? '' : 's'}:</h5> {pkg.locations.map((l) => {
+                                    return <>
+                                        <h5>{l}</h5>
+                                    </>
+                            })}
+
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Accordion>
+                            <Accordion.Item eventKey="0">
+                                <Accordion.Header>{filteredFindings.length} {shouldFilterFindings ? severityOrder[severityFilter] : null} finding{filteredFindings.length === 1 ? '' : 's'}</Accordion.Header>
+                                <Accordion.Body>
+                                    <Table hover size="sm">
+                                        <thead>
+                                        <tr>
+                                            <th>Source</th>
+                                            <th>Vulnerability Number</th>
+                                            <th>Severity</th>
+                                            <th>CVSS</th>
+                                            <th>Fix</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {filteredFindings.map((f) => {
+                                            return (
+                                                <OverlayTrigger
+                                                    placement="bottom"
+                                                    overlay={<Tooltip className="wide-tooltip"> {f.vulnerability.description}</Tooltip>}
+                                                    key={f.id}
+                                                >
+                                                    <tr style={{cursor:"pointer"}} onClick={() => navigate(`/vulnerabilities/${f.vulnerability.id}`)} key={f.id}>
+                                                        <td>{f.vulnerability.namespace}</td>
+                                                        <td>{f.vulnerability.name}</td>
+                                                        <td>{f.severity}</td>
+                                                        <td>{f.vulnerability.cvss_score} {renderCvssInferredWarning(f.vulnerability.cvss_inferred || false)}</td>
+                                                        <td>{f.fix_versions || 'unknown'}</td>
+                                                    </tr>
+                                                </OverlayTrigger>
+
+
+                                            )
+                                        })}
+                                        </tbody>
+                                    </Table>
+                                    {shouldFilterFindings ? (pkg.findings.length > filteredFindings.length ? <span style={{cursor: 'pointer'}}
+                                                                  onClick={() => setShouldFilterFindings(false)}>
+                                        Show {pkg.findings.length - filteredFindings.length} lower severity findings
+                                        <ChevronDown/>
+                                    </span>: null) :
+                                        <span style={{cursor: 'pointer'}}
+                                              onClick={() => setShouldFilterFindings(true)}>
+                                        Hide lower severity findings
+                                        <ChevronUp/>
+                                    </span>}
+
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
+                    </Row>
                 </Container>
             </Card.Body>
         </Card>
     )
-    // const lastScannedDate = build.scans[0] ? prettyDate(new Date(build.scans[0].created_at as string)) : 'Never';
-    //
-    // return (
-    //     <Card onClick={onClick} className="flex-fill w-100 build build-card">
-    //         <Card.Header>
-    //             <Container fluid>
-    //                 <Row>
-    //                     <Col sm="6">
-    //                         <Card.Title>
-    //                             <h3>
-    //                                 <span className="darker">Build # </span>
-    //                                 {build.build_number}{' '}
-    //                             </h3>
-    //                         </Card.Title>
-    //                         <Card.Subtitle className="darker">Uploaded {uploadDate}</Card.Subtitle>
-    //                     </Col>
-    //                     <Col sm={{ span: 6 }}>
-    //                         <div style={{ float: 'right', textAlign: 'right' }}>
-    //                             <Card.Title>
-    //                                 <h3 style={{ display: 'inline' }}>{build.critical_packages.aggregate?.count}</h3>
-    //                                 <span className="text-right darker"> critical packages</span>
-    //                             </Card.Title>
-    //                         </div>
-    //                     </Col>
-    //                 </Row>
-    //             </Container>
-    //         </Card.Header>
-    //         <Card.Body className="d-flex">
-    //             <Container fluid>
-    //                 <Row>
-    //                     <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>
-    //                         <h6 style={{ textAlign:'right' }}>
-    //                             <span className="darker"> Last scanned:</span> {lastScannedDate}
-    //                         </h6>
-    //                         <h6 style={{ textAlign:'right'  }}>
-    //                             <span className="darker">Scanned {build.scans_aggregate.aggregate?.count} time{build.scans_aggregate.aggregate?.count !== 1 ? 's':''}</span>
-    //                         </h6>
-    //                     </Col>
-    //                     <Col xs="12" sm="3">
-    //                         <div className="build-git-info">
-    //                             <h6>
-    //                                 <span className="darker">Branch: </span> master
-    //                             </h6>
-    //                             <h6>
-    //                                 <span className="darker">Commit: </span> 1231adf... ↪
-    //                             </h6>
-    //                         </div>
-    //                     </Col>
-    //
-    //                 </Row>
-    //             </Container>
-    //         </Card.Body>
-    //     </Card>
-    // );
     return null;
 };
