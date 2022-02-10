@@ -15,7 +15,6 @@ import React, { MouseEventHandler } from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
 import { prettyDate } from '../../../utils/pretty-date';
-
 import { BuildInfo } from '../types';
 
 interface BuildListItemProps {
@@ -56,11 +55,14 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
         <Container fluid>
           <Row>
             <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>
-              <h6 style={{ textAlign:'right' }}>
+              <h6 style={{ textAlign: 'right' }}>
                 <span className="darker"> Last scanned:</span> {lastScannedDate}
               </h6>
-              <h6 style={{ textAlign:'right'  }}>
-                <span className="darker">Scanned {build.scans_aggregate.aggregate?.count} time{build.scans_aggregate.aggregate?.count !== 1 ? 's':''}</span>
+              <h6 style={{ textAlign: 'right' }}>
+                <span className="darker">
+                  Scanned {build.scans_aggregate.aggregate?.count} time
+                  {build.scans_aggregate.aggregate?.count !== 1 ? 's' : ''}
+                </span>
               </h6>
             </Col>
             <Col xs="12" sm="3">
@@ -73,7 +75,6 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
                 </h6>
               </div>
             </Col>
-
           </Row>
         </Container>
       </Card.Body>

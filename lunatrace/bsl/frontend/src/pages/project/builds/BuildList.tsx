@@ -15,8 +15,9 @@ import React from 'react';
 import { Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-import { BuildListItem } from './BuildListItem';
 import { BuildInfo } from '../types';
+
+import { BuildListItem } from './BuildListItem';
 interface BuildListProps {
   builds: BuildInfo[];
 }
@@ -37,7 +38,6 @@ export const BuildList: React.FunctionComponent<BuildListProps> = ({ builds }) =
       {/*<Row>*/}
       {/*  <h2>Builds</h2>*/}
       {/*</Row>*/}
-
 
       {buildCards}
     </Container>

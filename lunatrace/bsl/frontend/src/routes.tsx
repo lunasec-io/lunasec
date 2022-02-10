@@ -17,8 +17,8 @@ import { RouteObject } from 'react-router';
 import MainLayout from './layouts/Main';
 import { OrganizationsList, VulnerabilitiesMain } from './pages';
 import { ProjectMain } from './pages/project/Main';
-import { BuildDetails } from './pages/project/build/BuildDetails';
-import { Builds } from './pages/project/build/Builds';
+import { BuildDetails } from './pages/project/builds/BuildDetails';
+import { Builds } from './pages/project/builds/Builds';
 import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
 
 export const routes: RouteObject[] = [
