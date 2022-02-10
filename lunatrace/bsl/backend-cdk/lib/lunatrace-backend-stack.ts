@@ -13,27 +13,23 @@
  */
 
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
-import { IVpc, SubnetType } from '@aws-cdk/aws-ec2';
+import { IVpc } from '@aws-cdk/aws-ec2';
 import {
-  Capability,
   ContainerDependencyCondition,
   ContainerImage,
   Secret as EcsSecret,
   FargateTaskDefinition,
-  LinuxParameters,
   LogDriver,
 } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
 import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
-import * as rds from '@aws-cdk/aws-rds';
-import { ParameterGroup } from '@aws-cdk/aws-rds';
 import { HostedZone } from '@aws-cdk/aws-route53';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
 import { Secret, SecretStringValueBeta1 } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
-import { CfnOutput } from '@aws-cdk/core';
+import { CfnOutput, RemovalPolicy } from '@aws-cdk/core';
 
 interface LunaTraceStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
@@ -41,7 +37,7 @@ interface LunaTraceStackProps extends cdk.StackProps {
   domainZoneId: string;
   appName: string;
   certificateArn: string;
-  databaseUrl: string;
+  databaseSecretArn: string;
   vpc: IVpc;
 }
 
@@ -108,12 +104,12 @@ export class LunatraceBackendStack extends cdk.Stack {
     //     'host'
     //   )}:${getDbSecretValue('port')}/`
     // );
-    const secretValue = SecretStringValueBeta1.fromUnsafePlaintext(props.databaseUrl);
 
-    const hasuraDatabaseUrlSecret = new Secret(this, 'HasuraDatabaseUrlSecret', {
-      secretName: `${props.appName}-HasuraDatabaseUrl`,
-      secretStringBeta1: secretValue,
-    });
+    const hasuraDatabaseUrlSecret = Secret.fromSecretCompleteArn(
+      this,
+      'HasuraDatabaseUrlSecret',
+      props.databaseSecretArn
+    );
 
     new CfnOutput(this, 'HasuraDatabaseUrlSecretArn', {
       value: hasuraDatabaseUrlSecret.secretArn,
