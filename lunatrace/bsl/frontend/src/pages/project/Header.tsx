@@ -22,9 +22,8 @@ export interface ProjectHeaderProps {
 export const ProjectHeader: React.FunctionComponent<ProjectHeaderProps> = ({ project }) => {
   return (
     <Row>
-      <Col xs="12" className="d-none d-sm-block" style={{ textAlign: 'center' }}>
+      <Col xs="12" style={{ textAlign: 'center' }}>
         <h1>{project.name}</h1>
-        <br />
       </Col>
     </Row>
   );

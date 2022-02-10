@@ -4628,7 +4628,7 @@ textarea.form-control-lg {
 }
 .accordion-button:not(.collapsed) {
   color: #3973d3;
-  background-color: #ecf2fd;
+  background-color: var(--bs-body-bg);
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.125);
 }
 .accordion-button:not(.collapsed)::after {
@@ -14124,7 +14124,7 @@ a.badge-soft-dark:focus, a.badge-soft-dark.focus {
 }
 
 .content {
-  padding: 2.5rem 2.5rem 1.5rem;
+  padding: 0.75rem 2.5rem 1.5rem;
   flex: 1;
   direction: ltr;
 }
@@ -17464,6 +17464,10 @@ td.rdtYear:hover {
   text-align: right;
 }
 
+.wide-tooltip > .tooltip-inner {
+  max-width: 50em;
+}
+
 .breadcrumb-item + .breadcrumb-item::before {
   content: var(--bs-breadcrumb-divider, ">") !important;
 }
@@ -17489,6 +17493,10 @@ td.rdtYear:hover {
 
 .darker {
   color: #a9acb3;
+}
+
+.lighter {
+  color: #fff;
 }
 
 /*# sourceMappingURL=dark.css.map */

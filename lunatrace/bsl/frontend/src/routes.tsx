@@ -19,6 +19,7 @@ import { OrganizationsList, VulnerabilitiesMain } from './pages';
 import { ProjectMain } from './pages/project/Main';
 import { BuildDetails } from './pages/project/build/BuildDetails';
 import { Builds } from './pages/project/build/Builds';
+import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
 
 export const routes: RouteObject[] = [
   {
@@ -31,6 +32,10 @@ export const routes: RouteObject[] = [
           {
             path: '',
             element: <VulnerabilitiesMain />,
+          },
+          {
+            path: ':vulnerability_id',
+            element: <VulnerabilityDetail />,
           },
         ],
       },

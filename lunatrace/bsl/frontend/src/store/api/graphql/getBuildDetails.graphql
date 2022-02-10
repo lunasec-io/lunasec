@@ -44,17 +44,14 @@ query GetBuildDetails($build_id: uuid) {
             vulnerability_id
             vulnerability_package_id
             vulnerability {
+                id
+                slug
+                description
                 cvss_score
+                cvss_inferred
                 name
                 namespace
                 data_source
-                vulnerability_packages {
-                    id
-                    package_versions {
-                        fix_state
-                        fixed_in_versions
-                    }
-                }
             }
         }
     }
