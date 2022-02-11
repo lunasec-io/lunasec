@@ -12,6 +12,7 @@
  *
  */
 import React from 'react';
+import { Spinner } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
 
 // import Content from '../components/Content';
@@ -21,17 +22,22 @@ import { Outlet } from 'react-router-dom';
 import Wrapper from '../components/Wrapper';
 // import Navbar from '../components/navbar/Navbar';
 import Navbar from '../components/navbar/Navbar';
+import { NavbarBreadcrumbs } from '../components/navbar/NavbarBreadcrumbs';
 import Sidebar from '../components/sidebar/Sidebar';
-import navSections from '../components/sidebar/dashboardItems';
+import { generateSidebarItems } from '../components/sidebar/sidebarItems';
+import { useGetSidebarInfoQuery } from '../store/api/generated';
 
 const MainLayout: React.FunctionComponent = (props) => {
+  const { data, error, isLoading } = useGetSidebarInfoQuery();
   console.log('loading main layout with children ', props);
   return (
     <React.Fragment>
       <Wrapper>
-        <Sidebar sections={navSections} />
+        <Sidebar sections={generateSidebarItems(data)} />
         <div className="main">
           <Navbar />
+          <NavbarBreadcrumbs />
+
           <div className="content">
             <Outlet />
           </div>

@@ -96,6 +96,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-member-access':'off',
     '@typescript-eslint/no-unsafe-assignment':'off',
     '@typescript-eslint/unbound-method':'off',
+    '@typescript-eslint/restrict-template-expressions':'off',
     'import/order': [
       'error',
       { 'newlines-between': 'always', 'alphabetize': { 'order': 'asc' } }

@@ -5,9 +5,6 @@ object_relationships:
 - name: build
   using:
     foreign_key_constraint_on: build_id
-- name: project
-  using:
-    foreign_key_constraint_on: project_id
 array_relationships:
 - name: findings
   using:

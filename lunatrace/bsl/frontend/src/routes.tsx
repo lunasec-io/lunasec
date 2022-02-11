@@ -17,6 +17,9 @@ import { RouteObject } from 'react-router';
 import MainLayout from './layouts/Main';
 import { OrganizationsList, VulnerabilitiesMain } from './pages';
 import { ProjectMain } from './pages/project/Main';
+import { BuildDetails } from './pages/project/builds/BuildDetails';
+import { Builds } from './pages/project/builds/Builds';
+import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
 
 export const routes: RouteObject[] = [
   {
@@ -27,20 +30,24 @@ export const routes: RouteObject[] = [
         path: 'vulnerabilities',
         children: [
           {
-            path: 'search',
+            path: '',
             element: <VulnerabilitiesMain />,
+          },
+          {
+            path: ':vulnerability_id',
+            element: <VulnerabilityDetail />,
           },
         ],
       },
       {
-        path: 'organizations',
+        path: 'organization',
         children: [
           {
             path: '',
             element: <OrganizationsList />,
           },
           {
-            path: ':id',
+            path: ':organization_id',
             // element: <Organization />,
           },
         ],
@@ -51,6 +58,16 @@ export const routes: RouteObject[] = [
           {
             path: ':project_id',
             element: <ProjectMain />,
+            children: [
+              {
+                path: '', // the default
+                element: <Builds />,
+              },
+              {
+                path: 'build/:build_id',
+                element: <BuildDetails />,
+              },
+            ],
           },
         ],
       },

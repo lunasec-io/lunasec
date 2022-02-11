@@ -1,0 +1,10 @@
+.clickable-card:hover {
+  transform: scale(1.02);
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+
+}
+
+.clickable-card {
+  transition: .2s transform cubic-bezier(.155,1.105,.295,1.12),.2s box-shadow,.2s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);
+}
