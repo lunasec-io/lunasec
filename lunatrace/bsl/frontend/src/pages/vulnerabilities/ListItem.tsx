@@ -11,25 +11,10 @@
  * limitations under the License.
  *
  */
-/*
- * Copyright 2022 by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import React from 'react';
 import { Card, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
-import { Copy, LogOut } from 'react-feather';
+import { Copy } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 import { prettyDate } from '../../utils/pretty-date';
 
@@ -41,7 +26,7 @@ interface VulnerabilityListItemProps {
 
 export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListItemProps> = ({ vuln }) => {
   const packageNamesString = vuln.vulnerability_packages.map((p) => p.name).join(', ');
-
+  const navigate = useNavigate();
   const renderCvssScore = () => {
     if (!vuln.cvss_score) {
       return null;
@@ -74,20 +59,11 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
 
   return (
     <>
-      <Card className="flex-fill w-100 vulnerability">
+      <Card
+        onClick={() => navigate(`/vulnerabilities/${vuln.id as string}`)}
+        className="flex-fill w-100 vulnerability clickable-card"
+      >
         <Card.Header>
-          {/*<div className="card-actions float-end">*/}
-          {/*  <Dropdown align="end">*/}
-          {/*    <Dropdown.Toggle as="a" bsPrefix="-">*/}
-          {/*      <MoreHorizontal />*/}
-          {/*    </Dropdown.Toggle>*/}
-          {/*    <Dropdown.Menu>*/}
-          {/*      <Dropdown.Item>Action</Dropdown.Item>*/}
-          {/*      <Dropdown.Istem>Another Action</Dropdown.Item>*/}
-          {/*      <Dropdown.Item>Something else here</Dropdown.Item>*/}
-          {/*    </Dropdown.Menu>*/}
-          {/*  </Dropdown>*/}
-          {/*</div>*/}
           <Container fluid>
             <Row>
               <Col sm="6">
@@ -115,10 +91,10 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
         <Card.Body className="d-flex">
           <Container fluid>
             <Row>
-              <Col sm={{ order: 'last', span: 3 }}>
+              <Col xs="12" sm={{ order: 'last', span: 3 }}>
                 <div style={{ float: 'right' }}>{renderCvssScore()}</div>
               </Col>
-              <Col sm="3" xs="12">
+              <Col sm="9" xs="12">
                 <Card.Text>
                   Packages:{' '}
                   <p>
@@ -131,17 +107,18 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
                   {/*</div>*/}
                 </div>
               </Col>
-              <Col sm="6" xs="12">
-                {vuln.description ? (
-                  <>
-                    Description:
-                    <p>
-                      <strong>{vuln.description}</strong>
-                    </p>
-                  </>
-                ) : null}
-              </Col>
             </Row>
+
+            {vuln.description ? (
+              <Row>
+                <Col xs="12">
+                  Description:
+                  <p>
+                    <strong>{vuln.description}</strong>
+                  </p>
+                </Col>
+              </Row>
+            ) : null}
           </Container>
         </Card.Body>
       </Card>

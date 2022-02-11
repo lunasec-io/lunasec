@@ -23,6 +23,8 @@ export interface Finding {
   virtual_path: string | null;
   matcher: string;
   dedupe_slug: string; // A combo of the CVE name and package name combined with all the locations it was found, the issue with this is that if locations change or reorder a new finding will be created
+  fix_state: string | null;
+  fix_versions: string[] | null;
   meta: {
     vuln_slug: string;
     pkg_slug: string;

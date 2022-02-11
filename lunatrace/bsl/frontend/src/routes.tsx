@@ -11,28 +11,15 @@
  * limitations under the License.
  *
  */
-/*
- * Copyright 2022 by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import React from 'react';
 import { RouteObject } from 'react-router';
 
 import MainLayout from './layouts/Main';
 import { OrganizationsList, VulnerabilitiesMain } from './pages';
 import { ProjectMain } from './pages/project/Main';
+import { BuildDetails } from './pages/project/builds/BuildDetails';
+import { Builds } from './pages/project/builds/Builds';
+import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
 
 export const routes: RouteObject[] = [
   {
@@ -43,20 +30,24 @@ export const routes: RouteObject[] = [
         path: 'vulnerabilities',
         children: [
           {
-            path: 'search',
+            path: '',
             element: <VulnerabilitiesMain />,
+          },
+          {
+            path: ':vulnerability_id',
+            element: <VulnerabilityDetail />,
           },
         ],
       },
       {
-        path: 'organizations',
+        path: 'organization',
         children: [
           {
             path: '',
             element: <OrganizationsList />,
           },
           {
-            path: ':id',
+            path: ':organization_id',
             // element: <Organization />,
           },
         ],
@@ -67,6 +58,16 @@ export const routes: RouteObject[] = [
           {
             path: ':project_id',
             element: <ProjectMain />,
+            children: [
+              {
+                path: '', // the default
+                element: <Builds />,
+              },
+              {
+                path: 'build/:build_id',
+                element: <BuildDetails />,
+              },
+            ],
           },
         ],
       },

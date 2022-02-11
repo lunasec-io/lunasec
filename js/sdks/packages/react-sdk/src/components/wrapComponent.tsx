@@ -477,7 +477,7 @@ export default function WrapComponent<W extends keyof ClassLookup>(
       const validatedName = this.props.name !== undefined ? this.props.name : '';
 
       // TODO: Fix the types so that we don't have to do this anymore.
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
       const containerName = `secure-${componentName.toLowerCase()}-container-${validatedName}`;
 
       const containerClass = classnames({
