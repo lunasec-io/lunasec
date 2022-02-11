@@ -11,20 +11,6 @@
  * limitations under the License.
  *
  */
-import React from 'react';
-import { Col, Row } from 'react-bootstrap';
-
-import { ProjectInfo } from './types';
-
-export interface ProjectHeaderProps {
-  project: ProjectInfo;
+export function capitalizeFirstLetter(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
-export const ProjectHeader: React.FunctionComponent<ProjectHeaderProps> = ({ project }) => {
-  return (
-    <Row>
-      <Col xs="12" style={{ textAlign: 'center' }}>
-        <h1>{project.name}</h1>
-      </Col>
-    </Row>
-  );
-};

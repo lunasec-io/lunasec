@@ -78,6 +78,8 @@ export class Scan {
         virtual_path: artifact.metadata ? artifact.metadata.VirtualPath : null,
         matcher: details.matcher,
         dedupe_slug: pkg_slug + locations.sort().join(':'),
+        fix_state: vulnerability.fix?.state || null,
+        fix_versions: vulnerability.fix?.versions || null,
         meta: {
           vuln_slug,
           pkg_slug,
@@ -128,7 +130,9 @@ export class Scan {
             virtual_path,
             matcher,
             dedupe_slug,
-            severity
+            severity,
+            fix_state,
+            fix_versions
           ) VALUES 
         `,
       report
@@ -165,7 +169,9 @@ export class Scan {
             $<virtual_path>,
             $<matcher>,
             $<dedupe_slug>,
-            $<severity>
+            $<severity>,
+            $<fix_state>,
+            $<fix_versions>
           )
         `,
       finding
