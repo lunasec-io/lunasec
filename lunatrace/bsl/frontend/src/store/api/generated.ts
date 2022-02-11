@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 import { api } from '../baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -27,6 +26,7 @@ export type Scalars = {
   Float: number;
   _text: any;
   date: any;
+  fix_state_enum: any;
   numeric: any;
   severity_enum: any;
   timestamp: any;
@@ -548,6 +548,8 @@ export type Findings = {
   build_id: Scalars['uuid'];
   created_at: Scalars['timestamp'];
   dedupe_slug: Scalars['String'];
+  fix_state: Scalars['fix_state_enum'];
+  fix_versions?: Maybe<Scalars['_text']>;
   id: Scalars['uuid'];
   language: Scalars['String'];
   locations: Scalars['_text'];
@@ -619,6 +621,8 @@ export type Findings_Bool_Exp = {
   build_id?: InputMaybe<Uuid_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   dedupe_slug?: InputMaybe<String_Comparison_Exp>;
+  fix_state?: InputMaybe<Fix_State_Enum_Comparison_Exp>;
+  fix_versions?: InputMaybe<_Text_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   language?: InputMaybe<String_Comparison_Exp>;
   locations?: InputMaybe<_Text_Comparison_Exp>;
@@ -655,6 +659,8 @@ export type Findings_Insert_Input = {
   build_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   dedupe_slug?: InputMaybe<Scalars['String']>;
+  fix_state?: InputMaybe<Scalars['fix_state_enum']>;
+  fix_versions?: InputMaybe<Scalars['_text']>;
   id?: InputMaybe<Scalars['uuid']>;
   language?: InputMaybe<Scalars['String']>;
   locations?: InputMaybe<Scalars['_text']>;
@@ -785,6 +791,8 @@ export type Findings_Order_By = {
   build_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   dedupe_slug?: InputMaybe<Order_By>;
+  fix_state?: InputMaybe<Order_By>;
+  fix_versions?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   language?: InputMaybe<Order_By>;
   locations?: InputMaybe<Order_By>;
@@ -820,6 +828,10 @@ export enum Findings_Select_Column {
   CreatedAt = 'created_at',
   /** column name */
   DedupeSlug = 'dedupe_slug',
+  /** column name */
+  FixState = 'fix_state',
+  /** column name */
+  FixVersions = 'fix_versions',
   /** column name */
   Id = 'id',
   /** column name */
@@ -859,6 +871,8 @@ export type Findings_Set_Input = {
   build_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   dedupe_slug?: InputMaybe<Scalars['String']>;
+  fix_state?: InputMaybe<Scalars['fix_state_enum']>;
+  fix_versions?: InputMaybe<Scalars['_text']>;
   id?: InputMaybe<Scalars['uuid']>;
   language?: InputMaybe<Scalars['String']>;
   locations?: InputMaybe<Scalars['_text']>;
@@ -885,6 +899,10 @@ export enum Findings_Update_Column {
   CreatedAt = 'created_at',
   /** column name */
   DedupeSlug = 'dedupe_slug',
+  /** column name */
+  FixState = 'fix_state',
+  /** column name */
+  FixVersions = 'fix_versions',
   /** column name */
   Id = 'id',
   /** column name */
@@ -918,6 +936,19 @@ export enum Findings_Update_Column {
   /** column name */
   VulnerabilityPackageId = 'vulnerability_package_id'
 }
+
+/** Boolean expression to compare columns of type "fix_state_enum". All fields are combined with logical 'AND'. */
+export type Fix_State_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['fix_state_enum']>;
+  _gt?: InputMaybe<Scalars['fix_state_enum']>;
+  _gte?: InputMaybe<Scalars['fix_state_enum']>;
+  _in?: InputMaybe<Array<Scalars['fix_state_enum']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['fix_state_enum']>;
+  _lte?: InputMaybe<Scalars['fix_state_enum']>;
+  _neq?: InputMaybe<Scalars['fix_state_enum']>;
+  _nin?: InputMaybe<Array<Scalars['fix_state_enum']>>;
+};
 
 /** columns and relationships of "instances" */
 export type Instances = {
@@ -5393,6 +5424,13 @@ export enum Vulnerability_Packages_Update_Column {
   VulnSlug = 'vuln_slug'
 }
 
+export type GetBuildDetailsQueryVariables = Exact<{
+  build_id?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null | undefined, created_at: any, git_branch?: string | null | undefined, git_hash?: string | null | undefined, git_remote?: string | null | undefined, id: any, project_id?: any | null | undefined, s3_url?: string | null | undefined, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null | undefined, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null | undefined, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null | undefined, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null | undefined, vulnerability_id: any, vulnerability_package_id?: any | null | undefined, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null | undefined, cvss_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, name: string, namespace: string, data_source: string } }> }> };
+
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -5410,6 +5448,11 @@ export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; 
 
 export type SampleVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, name: string, namespace: string, record_source?: string | null | undefined, severity: any, cvss_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, created_at: any, description?: string | null | undefined, slug: string, data_source: string, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null | undefined, id: any, slug: string }> }> };
 
+export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null | undefined }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any }> };
+
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
   namespace?: InputMaybe<String_Comparison_Exp>;
@@ -5419,7 +5462,74 @@ export type SearchVulnerabilitiesQueryVariables = Exact<{
 
 export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, namespace: string, name: string, created_at: any, cvss_exploitability_score?: any | null | undefined, cvss_impact_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, cvss_score?: any | null | undefined, cvss_version?: string | null | undefined, data_source: string, description?: string | null | undefined, record_source?: string | null | undefined, severity: any, slug: string, topic_id?: any | null | undefined, urls?: any | null | undefined, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', id: any, name: string, namespace: string } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null | undefined, id: any, slug: string }> }> };
 
+export type GetVulnerabilityDetailsQueryVariables = Exact<{
+  vulnerability_id?: InputMaybe<Scalars['uuid']>;
+}>;
 
+
+export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null | undefined, cvss_impact_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, cvss_score?: any | null | undefined, cvss_version?: string | null | undefined, data_source: string, description?: string | null | undefined, id: any, name: string, namespace: string, record_source?: string | null | undefined, severity: any, slug: string, topic_id?: any | null | undefined, urls?: any | null | undefined, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null | undefined, severity: any, cvss_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null | undefined, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
+
+
+export const GetBuildDetailsDocument = `
+    query GetBuildDetails($build_id: uuid) {
+  builds(where: {id: {_eq: $build_id}}) {
+    build_number
+    created_at
+    git_branch
+    git_hash
+    git_remote
+    id
+    project_id
+    s3_url
+    scans(order_by: {created_at: asc}) {
+      created_at
+      db_date
+      distro_name
+      distro_version
+      grype_version
+      id
+      scan_number
+      source_type
+      target
+    }
+    scans_aggregate {
+      aggregate {
+        count
+      }
+    }
+    findings {
+      fix_state
+      fix_versions
+      package_name
+      created_at
+      id
+      language
+      locations
+      matcher
+      package_version_id
+      purl
+      severity
+      type
+      version
+      updated_at
+      version_matcher
+      virtual_path
+      vulnerability_id
+      vulnerability_package_id
+      vulnerability {
+        id
+        slug
+        description
+        cvss_score
+        cvss_inferred
+        name
+        namespace
+        data_source
+      }
+    }
+  }
+}
+    `;
 export const GetCurrentUserDocument = `
     query GetCurrentUser {
   users {
@@ -5489,6 +5599,24 @@ export const SampleVulnerabilitiesDocument = `
   }
 }
     `;
+export const GetSidebarInfoDocument = `
+    query GetSidebarInfo {
+  projects(order_by: {name: asc}) {
+    name
+    id
+    created_at
+    builds {
+      id
+      build_number
+    }
+  }
+  organizations(order_by: {projects_aggregate: {count: asc}}) {
+    name
+    id
+    createdAt
+  }
+}
+    `;
 export const SearchVulnerabilitiesDocument = `
     query SearchVulnerabilities($search: String!, $namespace: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerabilities_order_by!] = {}) {
   vulnerabilities(
@@ -5527,9 +5655,58 @@ export const SearchVulnerabilitiesDocument = `
   }
 }
     `;
+export const GetVulnerabilityDetailsDocument = `
+    query GetVulnerabilityDetails($vulnerability_id: uuid) {
+  vulnerabilities(where: {id: {_eq: $vulnerability_id}}) {
+    created_at
+    cvss_exploitability_score
+    cvss_impact_score
+    cvss_inferred
+    cvss_score
+    cvss_version
+    data_source
+    description
+    id
+    name
+    namespace
+    record_source
+    severity
+    slug
+    topic_id
+    urls
+    related_vulnerabilities {
+      vulnerability {
+        name
+        namespace
+        description
+        severity
+        cvss_score
+        cvss_inferred
+        id
+      }
+    }
+    vulnerability_packages {
+      advisories
+      id
+      name
+      package_versions {
+        cpes
+        fix_state
+        fixed_in_versions
+        id
+        version_constraint
+        version_format
+      }
+    }
+  }
+}
+    `;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables | void>({
+      query: (variables) => ({ document: GetBuildDetailsDocument, variables })
+    }),
     GetCurrentUser: build.query<GetCurrentUserQuery, GetCurrentUserQueryVariables | void>({
       query: (variables) => ({ document: GetCurrentUserDocument, variables })
     }),
@@ -5539,12 +5716,18 @@ const injectedRtkApi = api.injectEndpoints({
     SampleVulnerabilities: build.query<SampleVulnerabilitiesQuery, SampleVulnerabilitiesQueryVariables | void>({
       query: (variables) => ({ document: SampleVulnerabilitiesDocument, variables })
     }),
+    GetSidebarInfo: build.query<GetSidebarInfoQuery, GetSidebarInfoQueryVariables | void>({
+      query: (variables) => ({ document: GetSidebarInfoDocument, variables })
+    }),
     SearchVulnerabilities: build.query<SearchVulnerabilitiesQuery, SearchVulnerabilitiesQueryVariables>({
       query: (variables) => ({ document: SearchVulnerabilitiesDocument, variables })
+    }),
+    GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables | void>({
+      query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
     }),
   }),
 });
 
 export { injectedRtkApi as api };
-export const { useGetCurrentUserQuery, useLazyGetCurrentUserQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery } = injectedRtkApi;
+export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetCurrentUserQuery, useLazyGetCurrentUserQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery, useGetVulnerabilityDetailsQuery, useLazyGetVulnerabilityDetailsQuery } = injectedRtkApi;
 
