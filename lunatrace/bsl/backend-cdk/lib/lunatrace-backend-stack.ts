@@ -126,12 +126,6 @@ export class LunatraceBackendStack extends cdk.Stack {
       value: hasuraAdminSecret.secretArn,
     });
 
-    const hasuraJwtSecretValue = {
-      type: 'RS256',
-      jwk_url: 'http://localhost:4456/.well-known/jwks.json',
-      issuer: 'http://oathkeeper/',
-    };
-
     const taskDef = new FargateTaskDefinition(this, 'TaskDefinition', {
       family: 'LunaTraceAppTaskDefinition',
       executionRole: execRole,
@@ -167,6 +161,12 @@ export class LunatraceBackendStack extends cdk.Stack {
         PORT: '8000',
       },
     });
+
+    const hasuraJwtSecretValue = {
+      type: 'RS256',
+      jwk_url: 'http://localhost:4456/.well-known/jwks.json',
+      issuer: 'http://oathkeeper:4455/',
+    };
 
     const hasura = taskDef.addContainer('HasuraContainer', {
       image: ContainerImage.fromRegistry('hasura/graphql-engine:v2.2.0'),

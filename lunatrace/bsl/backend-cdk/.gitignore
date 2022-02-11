@@ -8,3 +8,4 @@ node_modules
 cdk.out
 
 stack-inputs.json
+cdk.context.json
