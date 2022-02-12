@@ -14,14 +14,14 @@
 import React from 'react';
 import { Col, Container, Row, Spinner } from 'react-bootstrap';
 import { ArrowLeft } from 'react-feather';
+import { Helmet } from 'react-helmet-async';
 import { NavLink, useParams } from 'react-router-dom';
 
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
-import { GetBuildDetailsQuery, useGetBuildDetailsQuery } from '../../../store/api/generated';
+import { useGetBuildDetailsQuery } from '../../../store/api/generated';
 import { prettyDate } from '../../../utils/pretty-date';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
-
-import { VulnerablePackageList } from './finding/VulnerablePackageList';
+import { VulnerablePackageList } from '../finding/VulnerablePackageList';
 export const BuildDetails: React.FunctionComponent = () => {
   console.log('rendering build details');
   const { build_id } = useParams();
@@ -38,6 +38,7 @@ export const BuildDetails: React.FunctionComponent = () => {
 
     return (
       <>
+        <Helmet title={`#${build.build_number} Build`} />
         <Row>
           <Col xs="3">
             <NavLink to="..">
@@ -47,6 +48,7 @@ export const BuildDetails: React.FunctionComponent = () => {
           </Col>
           <Col xs="6" style={{ textAlign: 'center' }}>
             <h1>Build # {build.build_number}</h1>
+            <span>{build.project?.name}</span>
             <h5>{uploadDate}</h5>
           </Col>
         </Row>
@@ -83,8 +85,10 @@ export const BuildDetails: React.FunctionComponent = () => {
   };
 
   return (
-    <Container className="build-page">
-      <SpinIfLoading isLoading={isLoading}>{renderBuildDetails()}</SpinIfLoading>
-    </Container>
+    <>
+      <Container className="build-page">
+        <SpinIfLoading isLoading={isLoading}>{renderBuildDetails()}</SpinIfLoading>
+      </Container>
+    </>
   );
 };
