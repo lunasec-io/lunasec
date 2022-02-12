@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { GetBuildDetailsQuery } from '../../../../store/api/generated';
+import { GetBuildDetailsQuery } from '../../../store/api/generated';
 
 export type Finding = GetBuildDetailsQuery['builds'][number]['findings'][number];
 

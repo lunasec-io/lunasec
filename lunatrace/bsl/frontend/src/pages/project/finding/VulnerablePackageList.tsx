@@ -12,7 +12,8 @@
  *
  */
 import React, { useState } from 'react';
-import { Container, Row } from 'react-bootstrap';
+import { Col, Container, Dropdown, Row } from 'react-bootstrap';
+import { Filter } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 
 import { VulnerablePackageItem } from './VulnerablePackageItem';
@@ -81,12 +82,13 @@ function groupByPackage(findings: Finding[]): VulnerablePackage[] {
 
 export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = ({ findings }) => {
   console.log('rendering finding list');
-  const navigate = useNavigate();
   const [severityFilter, setSeverityFilter] = useState(severityOrder.indexOf('Critical'));
+  const prettySeverity = severityOrder[severityFilter] === 'Unknown' ? 'None' : severityOrder[severityFilter];
 
   const vulnerablePkgs = groupByPackage(findings);
-  console.log('found vulnerable packages', vulnerablePkgs);
-  const pkgCards = vulnerablePkgs.map((pkg) => {
+  const filteredVulnerablePkgs = vulnerablePkgs.filter((pkg) => severityOrder.indexOf(pkg.severity) >= severityFilter);
+
+  const pkgCards = filteredVulnerablePkgs.map((pkg) => {
     return (
       <Row key={pkg.purl}>
         <VulnerablePackageItem severityFilter={severityFilter} pkg={pkg} />
@@ -97,14 +99,40 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
   return (
     <Container className="vulnerability-list">
       <Row>
-        <h2>Vulnerable Packages</h2>
+        <Col md="6">
+          <h2>Vulnerable Packages</h2>
+        </Col>
+        <Col md="6" style={{ display: 'flex', justifyContent: 'right' }}>
+          <Dropdown align={{ md: 'end' }} className="d-inline me-2">
+            <Dropdown.Toggle>Minimum Severity: {prettySeverity}</Dropdown.Toggle>
+            <Dropdown.Menu>
+              {severityOrder
+                .map((severityName, severityIndex) => {
+                  return (
+                    <Dropdown.Item
+                      active={severityIndex === severityFilter}
+                      onClick={() => setSeverityFilter(severityIndex)}
+                      key={severityIndex}
+                    >
+                      {severityName === 'Unknown' ? 'None' : severityName}
+                    </Dropdown.Item>
+                  );
+                })
+                .reverse()}
+            </Dropdown.Menu>
+          </Dropdown>
+        </Col>
       </Row>
-      {/*<br />*/}
-      {/*<Row>*/}
-      {/*  <h2>Builds</h2>*/}
-      {/*</Row>*/}
-
+      <br />
       {pkgCards}
+      {vulnerablePkgs.length > filteredVulnerablePkgs.length ? (
+        <Row className="text-center">
+          {' '}
+          <span className="link-primary cursor-pointer" onClick={() => setSeverityFilter(0)}>
+            Show {vulnerablePkgs.length - filteredVulnerablePkgs.length} lower severity vulnerabilities...{' '}
+          </span>
+        </Row>
+      ) : null}
     </Container>
   );
 };

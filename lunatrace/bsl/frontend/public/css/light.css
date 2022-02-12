@@ -17464,6 +17464,10 @@ td.rdtYear:hover {
   text-align: right;
 }
 
+.vulnerability-detail-page .cvss-scores div {
+  margin-bottom: 0.6em;
+}
+
 .wide-tooltip > .tooltip-inner {
   max-width: 50em;
 }
@@ -17497,6 +17501,10 @@ td.rdtYear:hover {
 
 .lighter {
   color: #495057;
+}
+
+.modal-body {
+  margin-bottom: 1em;
 }
 
 /*# sourceMappingURL=light.css.map */
