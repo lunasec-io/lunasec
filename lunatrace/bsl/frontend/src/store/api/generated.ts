@@ -3367,11 +3367,11 @@ export type Query_RootVulnerability_Packages_By_PkArgs = {
 export type Related_Vulnerabilities = {
   __typename?: 'related_vulnerabilities';
   id: Scalars['uuid'];
+  /** An object relationship */
+  parent: Vulnerabilities;
   related_vulnerability_slug: Scalars['String'];
   /** An object relationship */
   vulnerability: Vulnerabilities;
-  /** An object relationship */
-  vulnerabilityByVulnerabilitySlug: Vulnerabilities;
   vulnerability_slug: Scalars['String'];
 };
 
@@ -3417,9 +3417,9 @@ export type Related_Vulnerabilities_Bool_Exp = {
   _not?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
   _or?: InputMaybe<Array<Related_Vulnerabilities_Bool_Exp>>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  parent?: InputMaybe<Vulnerabilities_Bool_Exp>;
   related_vulnerability_slug?: InputMaybe<String_Comparison_Exp>;
   vulnerability?: InputMaybe<Vulnerabilities_Bool_Exp>;
-  vulnerabilityByVulnerabilitySlug?: InputMaybe<Vulnerabilities_Bool_Exp>;
   vulnerability_slug?: InputMaybe<String_Comparison_Exp>;
 };
 
@@ -3434,9 +3434,9 @@ export enum Related_Vulnerabilities_Constraint {
 /** input type for inserting data into table "related_vulnerabilities" */
 export type Related_Vulnerabilities_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
+  parent?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
   related_vulnerability_slug?: InputMaybe<Scalars['String']>;
   vulnerability?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
-  vulnerabilityByVulnerabilitySlug?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
   vulnerability_slug?: InputMaybe<Scalars['String']>;
 };
 
@@ -3489,9 +3489,9 @@ export type Related_Vulnerabilities_On_Conflict = {
 /** Ordering options when selecting data from "related_vulnerabilities". */
 export type Related_Vulnerabilities_Order_By = {
   id?: InputMaybe<Order_By>;
+  parent?: InputMaybe<Vulnerabilities_Order_By>;
   related_vulnerability_slug?: InputMaybe<Order_By>;
   vulnerability?: InputMaybe<Vulnerabilities_Order_By>;
-  vulnerabilityByVulnerabilitySlug?: InputMaybe<Vulnerabilities_Order_By>;
   vulnerability_slug?: InputMaybe<Order_By>;
 };
 
@@ -4711,13 +4711,13 @@ export type Vulnerabilities = {
   namespace: Scalars['String'];
   record_source?: Maybe<Scalars['String']>;
   /** An array relationship */
-  relatedVulnerabilitiesByVulnerabilitySlug: Array<Related_Vulnerabilities>;
-  /** An aggregate relationship */
-  relatedVulnerabilitiesByVulnerabilitySlug_aggregate: Related_Vulnerabilities_Aggregate;
-  /** An array relationship */
   related_vulnerabilities: Array<Related_Vulnerabilities>;
   /** An aggregate relationship */
   related_vulnerabilities_aggregate: Related_Vulnerabilities_Aggregate;
+  /** An array relationship */
+  reverse_related_vulnerabilities: Array<Related_Vulnerabilities>;
+  /** An aggregate relationship */
+  reverse_related_vulnerabilities_aggregate: Related_Vulnerabilities_Aggregate;
   severity: Scalars['severity_enum'];
   slug: Scalars['String'];
   topic_id?: Maybe<Scalars['uuid']>;
@@ -4750,26 +4750,6 @@ export type VulnerabilitiesFindings_AggregateArgs = {
 
 
 /** columns and relationships of "vulnerabilities" */
-export type VulnerabilitiesRelatedVulnerabilitiesByVulnerabilitySlugArgs = {
-  distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Related_Vulnerabilities_Order_By>>;
-  where?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
-};
-
-
-/** columns and relationships of "vulnerabilities" */
-export type VulnerabilitiesRelatedVulnerabilitiesByVulnerabilitySlug_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Related_Vulnerabilities_Order_By>>;
-  where?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
-};
-
-
-/** columns and relationships of "vulnerabilities" */
 export type VulnerabilitiesRelated_VulnerabilitiesArgs = {
   distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -4781,6 +4761,26 @@ export type VulnerabilitiesRelated_VulnerabilitiesArgs = {
 
 /** columns and relationships of "vulnerabilities" */
 export type VulnerabilitiesRelated_Vulnerabilities_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Related_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerabilities" */
+export type VulnerabilitiesReverse_Related_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Related_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerabilities" */
+export type VulnerabilitiesReverse_Related_Vulnerabilities_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -4864,8 +4864,8 @@ export type Vulnerabilities_Bool_Exp = {
   name?: InputMaybe<String_Comparison_Exp>;
   namespace?: InputMaybe<String_Comparison_Exp>;
   record_source?: InputMaybe<String_Comparison_Exp>;
-  relatedVulnerabilitiesByVulnerabilitySlug?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
   related_vulnerabilities?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
+  reverse_related_vulnerabilities?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
   severity?: InputMaybe<Severity_Enum_Comparison_Exp>;
   slug?: InputMaybe<String_Comparison_Exp>;
   topic_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -4903,8 +4903,8 @@ export type Vulnerabilities_Insert_Input = {
   name?: InputMaybe<Scalars['String']>;
   namespace?: InputMaybe<Scalars['String']>;
   record_source?: InputMaybe<Scalars['String']>;
-  relatedVulnerabilitiesByVulnerabilitySlug?: InputMaybe<Related_Vulnerabilities_Arr_Rel_Insert_Input>;
   related_vulnerabilities?: InputMaybe<Related_Vulnerabilities_Arr_Rel_Insert_Input>;
+  reverse_related_vulnerabilities?: InputMaybe<Related_Vulnerabilities_Arr_Rel_Insert_Input>;
   severity?: InputMaybe<Scalars['severity_enum']>;
   slug?: InputMaybe<Scalars['String']>;
   topic_id?: InputMaybe<Scalars['uuid']>;
@@ -4986,8 +4986,8 @@ export type Vulnerabilities_Order_By = {
   name?: InputMaybe<Order_By>;
   namespace?: InputMaybe<Order_By>;
   record_source?: InputMaybe<Order_By>;
-  relatedVulnerabilitiesByVulnerabilitySlug_aggregate?: InputMaybe<Related_Vulnerabilities_Aggregate_Order_By>;
   related_vulnerabilities_aggregate?: InputMaybe<Related_Vulnerabilities_Aggregate_Order_By>;
+  reverse_related_vulnerabilities_aggregate?: InputMaybe<Related_Vulnerabilities_Aggregate_Order_By>;
   severity?: InputMaybe<Order_By>;
   slug?: InputMaybe<Order_By>;
   topic_id?: InputMaybe<Order_By>;
@@ -5429,7 +5429,7 @@ export type GetBuildDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null | undefined, created_at: any, git_branch?: string | null | undefined, git_hash?: string | null | undefined, git_remote?: string | null | undefined, id: any, project_id?: any | null | undefined, s3_url?: string | null | undefined, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null | undefined, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null | undefined, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null | undefined, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null | undefined, vulnerability_id: any, vulnerability_package_id?: any | null | undefined, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null | undefined, cvss_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, name: string, namespace: string, data_source: string } }> }> };
+export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null | undefined, created_at: any, git_branch?: string | null | undefined, git_hash?: string | null | undefined, git_remote?: string | null | undefined, id: any, project_id?: any | null | undefined, s3_url?: string | null | undefined, project?: { __typename?: 'projects', name: string } | null | undefined, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null | undefined, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null | undefined, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null | undefined, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null | undefined, vulnerability_id: any, vulnerability_package_id?: any | null | undefined, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null | undefined, cvss_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, name: string, namespace: string, data_source: string } }> }> };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5480,6 +5480,9 @@ export const GetBuildDetailsDocument = `
     git_remote
     id
     project_id
+    project {
+      name
+    }
     s3_url
     scans(order_by: {created_at: asc}) {
       created_at
