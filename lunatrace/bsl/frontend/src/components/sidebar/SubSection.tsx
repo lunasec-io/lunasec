@@ -44,7 +44,7 @@ export const SubSection: React.FunctionComponent<SidebarSubSectionProps> = (prop
         className={`sidebar-link ${open ? '' : 'collapsed'}`}
         data-bs-toggle="collapse"
         aria-expanded={open ? 'true' : 'false'}
-        depth={props.depth}
+        // depth={props.depth}
         onClick={handleToggle}
       >
         {section.icon && <section.icon className="feather align-middle" />}{' '}
