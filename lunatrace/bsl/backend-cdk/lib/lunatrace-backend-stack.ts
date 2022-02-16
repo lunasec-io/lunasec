@@ -12,88 +12,211 @@
  *
  */
 
-import * as path from 'path';
-
-import * as apigateway from '@aws-cdk/aws-apigateway';
-import * as acm from '@aws-cdk/aws-certificatemanager';
-import { DockerImageAsset } from '@aws-cdk/aws-ecr-assets';
-import { ARecord, HostedZone, RecordTarget } from '@aws-cdk/aws-route53';
-import * as targets from '@aws-cdk/aws-route53-targets';
-import * as s3 from '@aws-cdk/aws-s3';
+import { Certificate } from '@aws-cdk/aws-certificatemanager';
+import { IVpc } from '@aws-cdk/aws-ec2';
+import {
+  ContainerDependencyCondition,
+  ContainerImage,
+  Secret as EcsSecret,
+  FargateTaskDefinition,
+  LogDriver,
+} from '@aws-cdk/aws-ecs';
+import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
+import { SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
+import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
+import { HostedZone } from '@aws-cdk/aws-route53';
+import { Bucket } from '@aws-cdk/aws-s3';
+import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
+import { Secret, SecretStringValueBeta1 } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
-import { Duration } from '@aws-cdk/core';
+import { CfnOutput, RemovalPolicy } from '@aws-cdk/core';
 
 interface LunaTraceStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
   domainName: string;
   domainZoneId: string;
+  appName: string;
+  certificateArn: string;
+  databaseSecretArn: string;
+  vpc: IVpc;
 }
 
 export class LunatraceBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
     super(scope, id, props);
 
-    const bucket = new s3.Bucket(this, 'lunatrace-data-bucket');
+    const bucket = new Bucket(this, 'DataBucket');
+    const oryConfigBucket = new Bucket(this, 'OryConfig');
 
-    // S3_BUCKET_NAME: bucket.bucketName,
-    const asset = new DockerImageAsset(this, 'LunaTraceBackend', {
-      directory: path.resolve(path.join(__dirname, '../../../../')),
-      file: 'lunatrace/bsl/backend/Dockerfile',
-      buildArgs: {},
-      invalidation: {
-        buildArgs: false,
+    new BucketDeployment(this, 'DeployWebsite', {
+      sources: [Source.asset('../ory/')],
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      destinationBucket: oryConfigBucket,
+    });
+
+    // const backendImageAsset = new DockerImageAsset(this, 'LunaTraceBackend', {
+    //   directory: path.resolve(path.join(__dirname, '../../backend')),
+    //   buildArgs: {},
+    //   invalidation: {
+    //     buildArgs: false,
+    //   },
+    // });
+
+    const domainZone = HostedZone.fromHostedZoneAttributes(this, 'HostedZone', {
+      hostedZoneId: props.domainZoneId,
+      zoneName: props.domainName,
+    });
+
+    const certificate = Certificate.fromCertificateArn(this, 'Certificate', props.certificateArn);
+
+    const execRole = new Role(this, 'TaskExecutionRole', {
+      assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com'),
+    });
+    execRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerRegistryPowerUser'));
+
+    // const cluster = new rds.ServerlessCluster(this, 'RdsServerlessCluster', {
+    //   engine: rds.DatabaseClusterEngine.AURORA_POSTGRESQL,
+    //   vpc: props.vpc,
+    //   vpcSubnets: {
+    //     subnetType: SubnetType.PRIVATE_ISOLATED,
+    //   },
+    //   enableDataApi: true, // Optional - will be automatically set if you call grantDataApiAccess()
+    //   parameterGroup: ParameterGroup.fromParameterGroupName(this, 'ParameterGroup', 'default.aurora-postgresql10'),
+    // });
+
+    // const cluster = rds.ServerlessCluster.fromServerlessClusterAttributes(this, 'RdsServerlessCluster', {
+    //   clusterIdentifier: 'lunatrace-db',
+    // });
+
+    // new CfnOutput(this, 'HasuraDatabaseMasterSecretArn', {
+    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    //   value: cluster.secret!.secretArn,
+    // });
+    //
+    // const getDbSecretValue = (field: string) => {
+    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    //   return cluster.secret!.secretValueFromJson(field).toString();
+    // };
+
+    // const secretValue = SecretStringValueBeta1.fromToken(
+    //   `postgres://${getDbSecretValue('username')}:${getDbSecretValue('password')}@${getDbSecretValue(
+    //     'host'
+    //   )}:${getDbSecretValue('port')}/`
+    // );
+
+    const hasuraDatabaseUrlSecret = Secret.fromSecretCompleteArn(
+      this,
+      'HasuraDatabaseUrlSecret',
+      props.databaseSecretArn
+    );
+
+    new CfnOutput(this, 'HasuraDatabaseUrlSecretArn', {
+      value: hasuraDatabaseUrlSecret.secretArn,
+    });
+
+    const hasuraAdminSecret = new Secret(this, 'HasuraAdminSecret', {
+      secretName: `${props.appName}-HasuraAdminSecret`,
+      generateSecretString: {
+        passwordLength: 16,
       },
     });
 
-    // declare const cluster: ecs.Cluster;
-    // const loadBalancedFargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, 'Service', {
-    //   cluster,
-    //   memoryLimitMiB: 1024,
-    //   cpu: 512,
-    //   taskImageOptions: {
-    //     image: ecs.ContainerImage.fromRegistry('amazon/amazon-ecs-sample'),
-    //   },
-    // });
-    //
-    // loadBalancedFargateService.targetGroup.configureHealthCheck({
-    //   path: '/custom-health-path',
-    // });
-    //
-    // bucket.grantReadWrite(asset);
-    //
-    // const lambdaGateway = new apigateway.LambdaRestApi(this, 'cli-api-endpoint', {
-    //   handler: apiHandler,
-    // });
-    //
-    // new cdk.CfnOutput(this, 'ApiGatewayUrl', {
-    //   value: lambdaGateway.url,
-    //   exportName: 'ApiGatewayUrl',
-    // });
-    //
-    // const hostedZone = HostedZone.fromHostedZoneAttributes(this, 'lunatrace-zone', {
-    //   hostedZoneId: props.domainZoneId,
-    //   zoneName: props.domainName,
-    // });
-    //
-    // const certificate = new acm.DnsValidatedCertificate(this, 'lunatrace-certificate', {
-    //   domainName: props.domainName,
-    //   hostedZone: hostedZone,
-    //   region: 'us-west-2',
-    // });
-    //
-    // const domainName = new apigateway.DomainName(this, 'lunatrace-domain-name', {
-    //   domainName: props.domainName,
-    //   certificate: certificate,
-    //   endpointType: apigateway.EndpointType.REGIONAL,
-    //   mapping: lambdaGateway,
-    //   securityPolicy: apigateway.SecurityPolicy.TLS_1_2,
-    // });
-    //
-    // new ARecord(this, 'lunatrace-dns-a-record', {
-    //   zone: hostedZone,
-    //   recordName: props.domainName,
-    //   target: RecordTarget.fromAlias(new targets.ApiGatewayDomain(domainName)),
-    //   ttl: Duration.minutes(5),
-    // });
+    new CfnOutput(this, 'HasuraAdminSecretArn', {
+      value: hasuraAdminSecret.secretArn,
+    });
+
+    const taskDef = new FargateTaskDefinition(this, 'TaskDefinition', {
+      family: 'LunaTraceAppTaskDefinition',
+      executionRole: execRole,
+    });
+
+    const oathkeeper = taskDef.addContainer('OathkeeperContainer', {
+      image: ContainerImage.fromRegistry('lunasec/lunatrace-ory:v0.0.4'),
+      portMappings: [{ containerPort: 4455 }],
+      logging: LogDriver.awsLogs({
+        streamPrefix: 'lunatrace-oathkeeper',
+      }),
+      command: ['--config', '/config.yaml', 'serve'],
+      environment: {
+        SERVE_PROXY_PORT: '4455',
+        MUTATORS_ID_TOKEN_CONFIG_ISSUER_URL: 'http://oathkeeper/',
+        ACCESS_RULES_REPOSITORIES: oryConfigBucket.s3UrlForObject('oathkeeper/rules.yaml'),
+        MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: oryConfigBucket.s3UrlForObject('oathkeeper/jwks.json'),
+      },
+      healthCheck: {
+        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4456/health/alive || exit 1'],
+      },
+    });
+
+    const backend = taskDef.addContainer('BackendContainer', {
+      image: ContainerImage.fromRegistry('lunasec/lunatrace-backend:v0.0.1'),
+      containerName: 'LunaTraceBackendContainer',
+      portMappings: [{ containerPort: 8000 }],
+      logging: LogDriver.awsLogs({
+        streamPrefix: 'lunatrace-backend',
+      }),
+      environment: {
+        S3_BUCKET_NAME: bucket.bucketName,
+        PORT: '8000',
+      },
+    });
+
+    const hasuraJwtSecretValue = {
+      type: 'RS256',
+      jwk_url: 'http://localhost:4456/.well-known/jwks.json',
+      issuer: 'http://oathkeeper:4455/',
+    };
+
+    const hasura = taskDef.addContainer('HasuraContainer', {
+      image: ContainerImage.fromRegistry('hasura/graphql-engine:v2.2.0'),
+      portMappings: [{ containerPort: 8080 }],
+      logging: LogDriver.awsLogs({
+        streamPrefix: 'lunatrace-hasura',
+      }),
+      environment: {
+        HASURA_GRAPHQL_ENABLE_CONSOLE: 'true',
+        HASURA_GRAPHQL_PG_CONNECTIONS: '100',
+        HASURA_GRAPHQL_LOG_LEVEL: 'debug',
+        HASURA_GRAPHQL_JWT_SECRET: JSON.stringify(hasuraJwtSecretValue),
+      },
+      secrets: {
+        HASURA_GRAPHQL_METADATA_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+        HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+        HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+      },
+    });
+
+    hasura.addContainerDependencies({
+      container: oathkeeper,
+      condition: ContainerDependencyCondition.HEALTHY,
+    });
+
+    backend.addContainerDependencies({
+      container: oathkeeper,
+      condition: ContainerDependencyCondition.HEALTHY,
+    });
+
+    const loadBalancedFargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, 'Service', {
+      vpc: props.vpc,
+      cpu: 1024,
+      memoryLimitMiB: 2048,
+      certificate,
+      domainZone,
+      publicLoadBalancer: true,
+      assignPublicIp: true,
+      redirectHTTP: true,
+      sslPolicy: SslPolicy.RECOMMENDED,
+      domainName: props.domainName,
+      taskDefinition: taskDef,
+    });
+
+    loadBalancedFargateService.targetGroup.healthCheck = {
+      enabled: true,
+      path: '/health',
+    };
+
+    bucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
+    oryConfigBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
   }
 }

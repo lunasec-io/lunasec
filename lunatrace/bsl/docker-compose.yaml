@@ -1,15 +1,36 @@
 version: '3.6'
 services:
   backend:
-    build: ../backend
+    build: ./backend
     ports:
       - "3002:80"
   oathkeeper:
-    build: .
+    build: ./ory/oathkeeper
     ports:
       - "4455:4455"
       - "4456:4456"
     command: '--config /config.yaml serve'
+    environment:
+      ACCESS_RULES_REPOSITORIES: file:///config/rules.local.yaml
+      MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///config/jwks.json
+    volumes:
+      - "./ory/oathkeeper:/config"
+
+  # kratos -c ory/kratos/config.yaml migrate sql -e --yes
+  kratos:
+    image: oryd/kratos:v0.8.2-alpha.1
+    ports:
+      - '4433:4433' # public
+      - '4434:4434' # admin
+    restart: unless-stopped
+    environment:
+      - DSN=postgres://postgres:postgrespassword@postgres:5432
+      - LOG_LEVEL=trace
+    command: serve -c /etc/config/kratos/config.yaml --dev --watch-courier
+    volumes:
+      - type: bind
+        source: ./ory/kratos/
+        target: /etc/config/kratos
   postgres:
     image: postgres:12
     restart: always
@@ -43,6 +64,11 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
       HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256", "jwk_url": "http://oathkeeper:4456/.well-known/jwks.json", "issuer": "http://oathkeeper:4455/"}'
       HASURA_GRAPHQL_LOG_LEVEL: debug
+  mailslurper:
+    image: oryd/mailslurper:latest-smtps
+    ports:
+      - '4436:4436'
+      - '4437:4437'
 
 volumes:
   db_data:

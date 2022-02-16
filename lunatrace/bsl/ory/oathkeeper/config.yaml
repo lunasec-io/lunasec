@@ -4,9 +4,9 @@ serve:
   api:
     port: 4456 # run the api at port 4456
 
-access_rules:
-  repositories:
-    - file:///rules.yaml
+#access_rules:
+#  repositories:
+#    - file:///config/rules.local.yaml
 
 errors:
   fallback:
@@ -24,12 +24,6 @@ errors:
 mutators:
   header:
     enabled: true
-    config:
-      headers:
-        X-User: "{{ print .Subject }}"
-        # You could add some other headers, for example with data from the
-        # session.
-        # X-Some-Arbitrary-Data: "{{ print .Extra.some.arbitrary.data }}"
   noop:
     enabled: true
 
@@ -37,7 +31,7 @@ mutators:
     enabled: true
     config:
       issuer_url: http://oathkeeper:4455/
-      jwks_url: file:///jwks.json
+#      jwks_url: file:///config/jwks.json
 
 authorizers:
   allow:
