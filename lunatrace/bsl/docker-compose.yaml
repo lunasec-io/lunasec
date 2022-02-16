@@ -1,9 +1,9 @@
 version: '3.6'
 services:
-  backend:
-    build: ./backend
-    ports:
-      - "3002:80"
+#  backend:
+#    build: ./backend
+#    ports:
+#      - "3002:80"
   oathkeeper:
     build: ./ory/oathkeeper
     ports:
@@ -17,20 +17,20 @@ services:
       - "./ory/oathkeeper:/config"
 
   # kratos -c ory/kratos/config.yaml migrate sql -e --yes
-  kratos:
-    image: oryd/kratos:v0.8.2-alpha.1
-    ports:
-      - '4433:4433' # public
-      - '4434:4434' # admin
-    restart: unless-stopped
-    environment:
-      - DSN=postgres://postgres:postgrespassword@postgres:5432
-      - LOG_LEVEL=trace
-    command: serve -c /etc/config/kratos/config.yaml --dev --watch-courier
-    volumes:
-      - type: bind
-        source: ./ory/kratos/
-        target: /etc/config/kratos
+#  kratos:
+#    image: oryd/kratos:v0.8.2-alpha.1
+#    ports:
+#      - '4433:4433' # public
+#      - '4434:4434' # admin
+#    restart: unless-stopped
+#    environment:
+#      - DSN=postgres://postgres:postgrespassword@postgres:5432
+#      - LOG_LEVEL=trace
+#    command: serve -c /etc/config/kratos/config.yaml --dev --watch-courier
+#    volumes:
+#      - type: bind
+#        source: ./ory/kratos/
+#        target: /etc/config/kratos
   postgres:
     image: postgres:12
     restart: always
@@ -54,7 +54,7 @@ services:
       ## postgres database to store Hasura metadata
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/lunatrace
       ## this env var can be used to add the above postgres database to Hasura as a data source. this can be removed/updated based on your needs
-      PG_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/lunatrace
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/lunatrace
       ## enable the console served by server
       HASURA_GRAPHQL_ENABLE_CONSOLE: "false" # set to "false" to disable console
       ## enable debugging mode. It is recommended to disable this in production
