@@ -87,7 +87,7 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
           }}
           style={{ display: 'inline' }}
         >
-          <FormGroup style={{ width: '150px' }} inline="true" className="d-sm-inline-block">
+          <FormGroup style={{ width: '150px' }} className="d-sm-inline-block">
             <InputGroup className="input-group-vulnerabilities">
               <Form.Control
                 placeholder="NameSpace"
