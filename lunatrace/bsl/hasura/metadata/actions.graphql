@@ -1,3 +1,9 @@
+type Mutation {
+  presignManifestUpload(
+    project_id: String!
+  ): PresignedUrlResponse
+}
+
 type Query {
   sbom_upload_url(
     arg1: SbomUploadUrlInput!
@@ -13,5 +19,9 @@ type SbomUploadUrlOutput {
   error: Boolean!
   url: String!
   headers: String!
+}
+
+type PresignedUrlResponse {
+  presigned_url: String!
 }
 

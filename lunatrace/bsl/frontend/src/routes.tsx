@@ -68,12 +68,6 @@ export const routes: RouteObject[] = [
           {
             path: '',
             element: <ProjectMain />,
-            children: [
-              {
-                path: '', // the default
-                element: <Builds />,
-              },
-            ],
           },
           {
             path: 'build/:build_id',
