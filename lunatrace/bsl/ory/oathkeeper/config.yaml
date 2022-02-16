@@ -4,9 +4,9 @@ serve:
   api:
     port: 4456 # run the api at port 4456
 
-#access_rules:
-#  repositories:
-#    - file:///config/rules.local.yaml
+access_rules:
+  repositories:
+    - file:///config/rules.local.yaml
 
 errors:
   fallback:
@@ -23,7 +23,7 @@ errors:
 
 mutators:
   header:
-    enabled: true
+    enabled: false
   noop:
     enabled: true
 
@@ -31,7 +31,7 @@ mutators:
     enabled: true
     config:
       issuer_url: http://oathkeeper:4455/
-#      jwks_url: file:///config/jwks.json
+      jwks_url: file:///config/jwks.json
 
 authorizers:
   allow:
