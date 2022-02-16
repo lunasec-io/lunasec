@@ -2,7 +2,7 @@ actions:
 - name: presignManifestUpload
   definition:
     kind: synchronous
-    handler: http://host.docker.internal/s3/presign-manifest-upload
+    handler: http://host.docker.internal:3002/s3/presign-manifest-upload
     request_transform:
       method: POST
       query_params: {}
