@@ -40,3 +40,17 @@ select_permissions:
         access_token:
           _eq: x-hasura-access-token
   role: cli
+- permission:
+    columns:
+    - name
+    - repo
+    - created_at
+    - id
+    - organization_id
+    - settings_id
+    filter:
+      organization:
+        organization_users:
+          user_id:
+            _eq: X-Hasura-User-Id
+  role: user

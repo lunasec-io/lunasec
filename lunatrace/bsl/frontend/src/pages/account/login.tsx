@@ -20,10 +20,13 @@ import { useLocation, useNavigate } from 'react-router';
 import { Flow } from '../../components/auth';
 import { ActionCard, CenterLink, Head, Link, MarginCard } from '../../components/auth/Common';
 import { createLogoutHandler } from '../../hooks/createLogoutHandler';
+import { useAuth } from '../../hooks/useAuth';
 import { handleFlowError, handleGetFlowError } from '../../utils/handleGetFlowError';
 import ory from '../../utils/sdk';
 
-const Login = () => {
+export const Login = () => {
+  const auth = useAuth();
+
   const [flow, setFlow] = useState<SelfServiceLoginFlow>();
 
   const search = useLocation().search;
@@ -75,48 +78,22 @@ const Login = () => {
       .catch(handleFlowError(navigate, 'login', setFlow));
   }, [flowId, aal, refresh, returnTo, flow]);
 
-  const onSubmit = (values: SubmitSelfServiceLoginFlowBody) => {
-    // On submission, add the flow ID to the URL but do not navigate. This prevents the user loosing
-    // his data when she/he reloads the page.
-    navigate(`/login?flow=${flow?.id}`, { replace: true });
-    ory
-      .submitSelfServiceLoginFlow(String(flow?.id), undefined, values)
-      // We logged in successfully! Let's bring the user home.
-      .then((res) => {
-        if (flow?.return_to) {
-          window.location.href = flow?.return_to;
-          return;
-        }
-        navigate('/');
-      })
-      .catch(handleFlowError(navigate, 'login', setFlow))
-      .catch((err: AxiosError) => {
-        // If the previous handler did not catch the error it's most likely a form validation error
-        if (err.response?.status === 400) {
-          // Yup, it is!
-          setFlow(err.response?.data);
-          return;
-        }
-
-        return Promise.reject(err);
-      });
-  };
-
   const title = flow?.refresh
     ? 'Confirm Action'
     : flow?.requested_aal === 'aal2'
     ? 'Two-Factor Authentication'
-    : 'Sign In';
+    : 'Login';
 
   return (
     <>
-      <Head>
-        <title>Sign in - Ory NextJS Integration Example</title>
-        <meta name="description" content="NextJS + React + Vercel + Ory" />
-      </Head>
       <MarginCard>
         <CardTitle>{title}</CardTitle>
-        <Flow onSubmit={onSubmit} flow={flow} />
+        <Flow
+          onSubmit={(values: SubmitSelfServiceLoginFlowBody) => {
+            auth.signIn(flow, setFlow, values);
+          }}
+          flow={flow}
+        />
       </MarginCard>
       {aal || refresh ? (
         <ActionCard>
@@ -135,5 +112,3 @@ const Login = () => {
     </>
   );
 };
-
-export default Login;

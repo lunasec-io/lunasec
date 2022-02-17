@@ -12,28 +12,26 @@
  *
  */
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
 
-// import Content from '../components/Content';
-// import Footer from '../components/Footer';
-// import Main from '../components/Main';
-// import Settings from '../components/Settings';
 import Wrapper from '../components/Wrapper';
-// import Navbar from '../components/navbar/Navbar';
 import Navbar from '../components/navbar/Navbar';
 import { NavbarBreadcrumbs } from '../components/navbar/NavbarBreadcrumbs';
 import Sidebar from '../components/sidebar/Sidebar';
 import { generateSidebarItems } from '../components/sidebar/sidebarItems';
+import { useAuth } from '../hooks/useAuth';
 import { useGetSidebarInfoQuery } from '../store/api/generated';
 
 const MainLayout: React.FunctionComponent = (props) => {
   const { data, error, isLoading } = useGetSidebarInfoQuery();
+
+  const auth = useAuth();
+
   console.log('loading main layout with children ', props);
   return (
     <React.Fragment>
       <Wrapper>
-        <Sidebar sections={generateSidebarItems(data)} />
+        <Sidebar sections={generateSidebarItems(data, auth)} />
         <div className="main">
           <Navbar />
           <NavbarBreadcrumbs />
@@ -42,13 +40,6 @@ const MainLayout: React.FunctionComponent = (props) => {
             <Outlet />
           </div>
         </div>
-        {/*<Main>*/}
-        {/*  <Navbar />*/}
-        {/*  <Content>*/}
-        {/*    <Outlet />*/}
-        {/*  </Content>*/}
-        {/*  <Footer />*/}
-        {/*</Main>*/}
       </Wrapper>
       {/*<Settings />*/}
     </React.Fragment>

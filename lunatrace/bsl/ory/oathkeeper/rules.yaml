@@ -3,11 +3,11 @@
     preserve_host: true
     url: "http://localhost:8080"
   match:
-    url: "<https|http>://lunatrace.lunasec.io/v1/graphql"
+    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/v1/graphql"
     methods:
       - POST
   authenticators:
-    - handler: anonymous
+    - handler: cookie_session
   authorizer:
     handler: allow
   mutators:
@@ -17,11 +17,19 @@
         claims: |
           {
             "https://hasura.io/jwt/claims": {
-              "x-hasura-access-token": "{{ .MatchContext.Header.Get "X-LunaTrace-Access-Token" }}",
-              "x-hasura-allowed-roles": ["cli"],
-              "x-hasura-default-role": "cli"
+              "x-hasura-access-token": "{{ .Subject }}",
+              "x-hasura-allowed-roles": ["user"],
+              "x-hasura-default-role": "user"
             }
           }
+#        claims: |
+#          {
+#            "https://hasura.io/jwt/claims": {
+#              "x-hasura-access-token": "{{ .MatchContext.Header.Get "X-LunaTrace-Access-Token" }}",
+#              "x-hasura-allowed-roles": ["cli"],
+#              "x-hasura-default-role": "cli"
+#            }
+#          }
 
 - id: "ory:lunatrace:health"
   upstream:
@@ -44,7 +52,27 @@
     strip_path: "/hasura"
     url: "http://localhost:8080"
   match:
-    url: "<https|http>://lunatrace.lunasec.io/hasura/<.*>"
+    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/hasura/<.*>"
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+  authenticators:
+    - handler: anonymous
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: noop
+
+- id: "ory:lunatrace:kratos"
+  upstream:
+    preserve_host: true
+    url: "http://localhost:4433"
+    strip_path: "/kratos"
+  match:
+    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/kratos/<.*>"
     methods:
       - GET
       - POST

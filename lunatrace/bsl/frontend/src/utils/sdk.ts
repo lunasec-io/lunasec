@@ -15,7 +15,7 @@ import { Configuration, V0alpha2Api } from '@ory/kratos-client';
 
 const ory = new V0alpha2Api(
   new Configuration({
-    basePath: 'http://lunatrace.lunasec.local:4455/kratos',
+    basePath: 'http://localhost:4455/kratos',
   })
 );
 

@@ -43,7 +43,7 @@ export function createLogoutHandler(deps?: DependencyList) {
 
   return () => {
     if (logoutToken) {
-      void ory.submitSelfServiceLogoutFlow(logoutToken).then(() => navigate('/login'));
+      void ory.submitSelfServiceLogoutFlow(logoutToken).then(() => navigate('/account/login'));
     }
   };
 }

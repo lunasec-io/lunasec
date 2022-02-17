@@ -30,3 +30,24 @@ array_relationships:
       table:
         name: vulnerability_packages
         schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - name
+    - created_at
+    - namespace
+    - data_source
+    - record_source
+    - severity
+    - cvss_version
+    - cvss_score
+    - cvss_exploitability_score
+    - cvss_impact_score
+    - cvss_inferred
+    - description
+    - slug
+    - topic_id
+    - urls
+    filter: {}
+  role: user
