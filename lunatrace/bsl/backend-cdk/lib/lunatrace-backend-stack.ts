@@ -13,7 +13,7 @@
  */
 
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
-import { IVpc } from '@aws-cdk/aws-ec2';
+import { Port, SecurityGroup, Vpc } from '@aws-cdk/aws-ec2';
 import {
   ContainerDependencyCondition,
   ContainerImage,
@@ -27,9 +27,8 @@ import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import { HostedZone } from '@aws-cdk/aws-route53';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
-import { Secret, SecretStringValueBeta1 } from '@aws-cdk/aws-secretsmanager';
+import { Secret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
-import { CfnOutput, RemovalPolicy } from '@aws-cdk/core';
 
 interface LunaTraceStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
@@ -38,22 +37,12 @@ interface LunaTraceStackProps extends cdk.StackProps {
   appName: string;
   certificateArn: string;
   databaseSecretArn: string;
-  vpc: IVpc;
+  vpcId: string;
 }
 
 export class LunatraceBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
     super(scope, id, props);
-
-    const bucket = new Bucket(this, 'DataBucket');
-    const oryConfigBucket = new Bucket(this, 'OryConfig');
-
-    new BucketDeployment(this, 'DeployWebsite', {
-      sources: [Source.asset('../ory/')],
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      destinationBucket: oryConfigBucket,
-    });
 
     // const backendImageAsset = new DockerImageAsset(this, 'LunaTraceBackend', {
     //   directory: path.resolve(path.join(__dirname, '../../backend')),
@@ -62,18 +51,6 @@ export class LunatraceBackendStack extends cdk.Stack {
     //     buildArgs: false,
     //   },
     // });
-
-    const domainZone = HostedZone.fromHostedZoneAttributes(this, 'HostedZone', {
-      hostedZoneId: props.domainZoneId,
-      zoneName: props.domainName,
-    });
-
-    const certificate = Certificate.fromCertificateArn(this, 'Certificate', props.certificateArn);
-
-    const execRole = new Role(this, 'TaskExecutionRole', {
-      assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com'),
-    });
-    execRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerRegistryPowerUser'));
 
     // const cluster = new rds.ServerlessCluster(this, 'RdsServerlessCluster', {
     //   engine: rds.DatabaseClusterEngine.AURORA_POSTGRESQL,
@@ -105,15 +82,44 @@ export class LunatraceBackendStack extends cdk.Stack {
     //   )}:${getDbSecretValue('port')}/`
     // );
 
+    const vpc = Vpc.fromLookup(this, 'Vpc', {
+      vpcId: props.vpcId,
+    });
+
+    const dbSecurityGroup = SecurityGroup.fromSecurityGroupId(
+      this,
+      'DatabaseClusterSecurityGroup',
+      'sg-05b9e1c5e5c1b123a'
+    );
+
+    const vpcDbSecurityGroup = new SecurityGroup(this, 'sg', {
+      vpc: vpc,
+      securityGroupName: 'LunaTrace VPC database connection',
+    });
+    dbSecurityGroup.addIngressRule(vpcDbSecurityGroup, Port.tcp(5432), 'LunaTrace VPC database connection');
+
+    const bucket = new Bucket(this, 'DataBucket');
+    const oryConfigBucket = new Bucket(this, 'OryConfig');
+
+    new BucketDeployment(this, 'DeployWebsite', {
+      sources: [Source.asset('../ory/')],
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      destinationBucket: oryConfigBucket,
+    });
+
+    const domainZone = HostedZone.fromHostedZoneAttributes(this, 'HostedZone', {
+      hostedZoneId: props.domainZoneId,
+      zoneName: props.domainName,
+    });
+
+    const certificate = Certificate.fromCertificateArn(this, 'Certificate', props.certificateArn);
+
     const hasuraDatabaseUrlSecret = Secret.fromSecretCompleteArn(
       this,
       'HasuraDatabaseUrlSecret',
       props.databaseSecretArn
     );
-
-    new CfnOutput(this, 'HasuraDatabaseUrlSecretArn', {
-      value: hasuraDatabaseUrlSecret.secretArn,
-    });
 
     const hasuraAdminSecret = new Secret(this, 'HasuraAdminSecret', {
       secretName: `${props.appName}-HasuraAdminSecret`,
@@ -122,9 +128,10 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    new CfnOutput(this, 'HasuraAdminSecretArn', {
-      value: hasuraAdminSecret.secretArn,
+    const execRole = new Role(this, 'TaskExecutionRole', {
+      assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com'),
     });
+    execRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerRegistryPowerUser'));
 
     const taskDef = new FargateTaskDefinition(this, 'TaskDefinition', {
       family: 'LunaTraceAppTaskDefinition',
@@ -198,9 +205,8 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
 
     const loadBalancedFargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, 'Service', {
-      vpc: props.vpc,
+      vpc: vpc,
       cpu: 1024,
-      memoryLimitMiB: 2048,
       certificate,
       domainZone,
       publicLoadBalancer: true,
@@ -209,6 +215,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       sslPolicy: SslPolicy.RECOMMENDED,
       domainName: props.domainName,
       taskDefinition: taskDef,
+      securityGroups: [vpcDbSecurityGroup],
     });
 
     loadBalancedFargateService.targetGroup.healthCheck = {

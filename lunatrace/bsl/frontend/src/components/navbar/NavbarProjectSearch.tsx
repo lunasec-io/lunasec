@@ -43,7 +43,6 @@ export const ProjectSearch: React.FunctionComponent = () => {
           labelKey="name"
           options={!data ? [] : data.projects}
           highlightOnlyResult={true}
-          selectHintOnEnter={true}
         />
         <Button variant="">
           <Search className="feather" />

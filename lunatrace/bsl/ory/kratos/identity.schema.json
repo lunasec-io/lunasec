@@ -7,6 +7,19 @@
     "traits": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "object",
+          "properties": {
+            "first": {
+              "title": "First Name",
+              "type": "string"
+            },
+            "last": {
+              "title": "Last Name",
+              "type": "string"
+            }
+          }
+        },
         "email": {
           "type": "string",
           "format": "email",
@@ -23,19 +36,6 @@
             },
             "recovery": {
               "via": "email"
-            }
-          }
-        },
-        "name": {
-          "type": "object",
-          "properties": {
-            "first": {
-              "title": "First Name",
-              "type": "string"
-            },
-            "last": {
-              "title": "Last Name",
-              "type": "string"
             }
           }
         }
