@@ -8,3 +8,11 @@ object_relationships:
 - name: vulnerabilityByVulnerabilitySlug
   using:
     foreign_key_constraint_on: vulnerability_slug
+select_permissions:
+- permission:
+    columns:
+    - related_vulnerability_slug
+    - vulnerability_slug
+    - id
+    filter: {}
+  role: user

@@ -21,6 +21,7 @@ interface SidebarLinkOrSectionProps {
   item: SidebarItem;
   depth: number;
 }
+
 export const SidebarLinkOrSection: React.FunctionComponent<SidebarLinkOrSectionProps> = (props) => {
   const { item, ...otherprops } = props;
   if ('children' in item) {

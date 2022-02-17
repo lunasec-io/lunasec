@@ -27,6 +27,7 @@ export interface SidebarLink {
   title: string;
   icon?: Icon;
   badge?: string;
+  onClick?: () => void;
 }
 
 export interface SidebarSubSection extends SidebarLink {
