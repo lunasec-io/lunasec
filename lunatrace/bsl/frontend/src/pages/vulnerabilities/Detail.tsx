@@ -17,12 +17,13 @@ import { ExternalLink } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { CvssInferredWarning } from '../../components/CvssInferredWarning';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
 import { useGetVulnerabilityDetailsQuery } from '../../store/api/generated';
 export const VulnerabilityDetail: React.FunctionComponent = () => {
   const navigate = useNavigate();
   const { vulnerability_id } = useParams();
-  const { data, error, isLoading } = useGetVulnerabilityDetailsQuery({ vulnerability_id });
+  const { data, error, isLoading, isFetching } = useGetVulnerabilityDetailsQuery({ vulnerability_id });
 
   const renderVulnDetails = () => {
     if (!data) {
@@ -34,15 +35,16 @@ export const VulnerabilityDetail: React.FunctionComponent = () => {
     return (
       <>
         <Helmet title={vuln.name} />
-        <Container>
+        <Container className="vulnerability-detail-page">
           <Row>
             <Col xs="12">
-              <a href={vuln.data_source || ''}>
-                <h1>{vuln.name}</h1>
-                <h5>
+              <h1>{vuln.name}</h1>
+
+              <h5>
+                <a href={vuln.data_source || ''}>
                   {vuln.namespace} <ExternalLink />
-                </h5>
-              </a>
+                </a>
+              </h5>
             </Col>
             <hr />
             <Col md={{ span: 4, order: 'last' }} xs="12">
@@ -54,20 +56,26 @@ export const VulnerabilityDetail: React.FunctionComponent = () => {
                   </Modal.Title>
                 </Modal.Header>
 
-                <Modal.Body>
-                  <h2>
-                    <h2 className="d-inline-block"> {vuln.cvss_score} </h2>{' '}
-                    <h6 className="d-inline-block darker">/ 10 overall CVSS v.{vuln.cvss_version}</h6>
-                  </h2>
+                <Modal.Body className="cvss-scores">
+                  {vuln.cvss_score ? (
+                    <>
+                      <div>
+                        <h2 className="d-inline-block"> {vuln.cvss_score} </h2>{' '}
+                        <h6 className="d-inline-block darker">/ 10 overall CVSS v.{vuln.cvss_version}</h6>
+                      </div>
 
-                  <h5>
-                    <h5 className="d-inline-block">{vuln.cvss_impact_score}</h5>
-                    <span className="darker"> impact score</span>
-                  </h5>
-                  <h5>
-                    <h5 className="d-inline-block">{vuln.cvss_exploitability_score}</h5>
-                    <span className="darker"> exploitability score</span>
-                  </h5>
+                      <div>
+                        <h5 className="d-inline-block">{vuln.cvss_impact_score}</h5>
+                        <span className="darker"> impact score</span>
+                      </div>
+                      <div>
+                        <h5 className="d-inline-block">{vuln.cvss_exploitability_score}</h5>
+                        <span className="darker"> exploitability score</span>
+                      </div>
+                    </>
+                  ) : (
+                    <span>No CVSS score</span>
+                  )}
                 </Modal.Body>
               </Card>
             </Col>
@@ -157,7 +165,10 @@ export const VulnerabilityDetail: React.FunctionComponent = () => {
                                 <td>{relatedVuln.namespace}</td>
                                 <td>{relatedVuln.name}</td>
                                 <td>{relatedVuln.severity}</td>
-                                <td>{relatedVuln.cvss_score} </td>
+                                <td>
+                                  {relatedVuln.cvss_score}{' '}
+                                  <CvssInferredWarning inferred={relatedVuln.cvss_inferred || false} placement="top" />
+                                </td>
                               </tr>
                             </OverlayTrigger>
                           );
@@ -204,7 +215,7 @@ export const VulnerabilityDetail: React.FunctionComponent = () => {
 
   return (
     <Container className="vuln-page">
-      <SpinIfLoading isLoading={isLoading}>{renderVulnDetails()}</SpinIfLoading>
+      <SpinIfLoading isLoading={isFetching}>{renderVulnDetails()}</SpinIfLoading>
     </Container>
   );
 };

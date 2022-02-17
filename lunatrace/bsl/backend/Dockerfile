@@ -1,5 +1,8 @@
 FROM node:16-slim
 
+RUN corepack enable
+RUN npm install -g yarn@2
+
 COPY . /app
 WORKDIR /app
 

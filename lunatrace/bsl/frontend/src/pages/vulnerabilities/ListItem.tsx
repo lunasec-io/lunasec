@@ -16,6 +16,7 @@ import { Card, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootst
 import { Copy } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 
+import { CvssInferredWarning } from '../../components/CvssInferredWarning';
 import { prettyDate } from '../../utils/pretty-date';
 
 import { VulnInfo } from './types';
@@ -36,24 +37,10 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
         <span>
           CVSS:{' '}
           <h3>
-            {vuln.cvss_score} {renderCvssInferredWarning()}
+            {vuln.cvss_score} <CvssInferredWarning inferred={vuln.cvss_inferred || false} />
           </h3>
         </span>
       </>
-    );
-  };
-
-  const renderCvssInferredWarning = () => {
-    if (!vuln.cvss_inferred) {
-      return null;
-    }
-    return (
-      <OverlayTrigger
-        placement="left"
-        overlay={<Tooltip>This CVSS score has been inferred from a linked NVD vulnerability.</Tooltip>}
-      >
-        <Copy size="12" />
-      </OverlayTrigger>
     );
   };
 
