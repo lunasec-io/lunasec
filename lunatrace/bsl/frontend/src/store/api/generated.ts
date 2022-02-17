@@ -60,6 +60,12 @@ export type Int_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Int']>>;
 };
 
+export type PresignedUrlResponse = {
+  __typename?: 'PresignedUrlResponse';
+  headers: Scalars['String'];
+  url: Scalars['String'];
+};
+
 export type SbomUploadUrlInput = {
   orgId: Scalars['String'];
   projectId: Scalars['String'];
@@ -1090,6 +1096,191 @@ export enum Instances_Update_Column {
   LastHeartbeat = 'last_heartbeat'
 }
 
+/** columns and relationships of "manifests" */
+export type Manifests = {
+  __typename?: 'manifests';
+  created_at: Scalars['timestamp'];
+  filename: Scalars['String'];
+  id: Scalars['uuid'];
+  /** An object relationship */
+  project: Projects;
+  project_id: Scalars['uuid'];
+  s3_url: Scalars['String'];
+};
+
+/** aggregated selection of "manifests" */
+export type Manifests_Aggregate = {
+  __typename?: 'manifests_aggregate';
+  aggregate?: Maybe<Manifests_Aggregate_Fields>;
+  nodes: Array<Manifests>;
+};
+
+/** aggregate fields of "manifests" */
+export type Manifests_Aggregate_Fields = {
+  __typename?: 'manifests_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Manifests_Max_Fields>;
+  min?: Maybe<Manifests_Min_Fields>;
+};
+
+
+/** aggregate fields of "manifests" */
+export type Manifests_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Manifests_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "manifests" */
+export type Manifests_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Manifests_Max_Order_By>;
+  min?: InputMaybe<Manifests_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "manifests" */
+export type Manifests_Arr_Rel_Insert_Input = {
+  data: Array<Manifests_Insert_Input>;
+  /** on conflict condition */
+  on_conflict?: InputMaybe<Manifests_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "manifests". All fields are combined with a logical 'AND'. */
+export type Manifests_Bool_Exp = {
+  _and?: InputMaybe<Array<Manifests_Bool_Exp>>;
+  _not?: InputMaybe<Manifests_Bool_Exp>;
+  _or?: InputMaybe<Array<Manifests_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  filename?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  project?: InputMaybe<Projects_Bool_Exp>;
+  project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  s3_url?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "manifests" */
+export enum Manifests_Constraint {
+  /** unique or primary key constraint */
+  ManifestsPkey = 'manifests_pkey',
+  /** unique or primary key constraint */
+  ManifestsS3UrlKey = 'manifests_s3_url_key'
+}
+
+/** input type for inserting data into table "manifests" */
+export type Manifests_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  filename?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
+  project_id?: InputMaybe<Scalars['uuid']>;
+  s3_url?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Manifests_Max_Fields = {
+  __typename?: 'manifests_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  filename?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  project_id?: Maybe<Scalars['uuid']>;
+  s3_url?: Maybe<Scalars['String']>;
+};
+
+/** order by max() on columns of table "manifests" */
+export type Manifests_Max_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  filename?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  s3_url?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Manifests_Min_Fields = {
+  __typename?: 'manifests_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  filename?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  project_id?: Maybe<Scalars['uuid']>;
+  s3_url?: Maybe<Scalars['String']>;
+};
+
+/** order by min() on columns of table "manifests" */
+export type Manifests_Min_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  filename?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  s3_url?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "manifests" */
+export type Manifests_Mutation_Response = {
+  __typename?: 'manifests_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Manifests>;
+};
+
+/** on conflict condition type for table "manifests" */
+export type Manifests_On_Conflict = {
+  constraint: Manifests_Constraint;
+  update_columns?: Array<Manifests_Update_Column>;
+  where?: InputMaybe<Manifests_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "manifests". */
+export type Manifests_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  filename?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project?: InputMaybe<Projects_Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  s3_url?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: manifests */
+export type Manifests_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "manifests" */
+export enum Manifests_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Filename = 'filename',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProjectId = 'project_id',
+  /** column name */
+  S3Url = 's3_url'
+}
+
+/** input type for updating data in table "manifests" */
+export type Manifests_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  filename?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  project_id?: InputMaybe<Scalars['uuid']>;
+  s3_url?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "manifests" */
+export enum Manifests_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Filename = 'filename',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProjectId = 'project_id',
+  /** column name */
+  S3Url = 's3_url'
+}
+
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
@@ -1105,6 +1296,10 @@ export type Mutation_Root = {
   delete_instances?: Maybe<Instances_Mutation_Response>;
   /** delete single row from the table: "instances" */
   delete_instances_by_pk?: Maybe<Instances>;
+  /** delete data from the table: "manifests" */
+  delete_manifests?: Maybe<Manifests_Mutation_Response>;
+  /** delete single row from the table: "manifests" */
+  delete_manifests_by_pk?: Maybe<Manifests>;
   /** delete data from the table: "organization_user" */
   delete_organization_user?: Maybe<Organization_User_Mutation_Response>;
   /** delete single row from the table: "organization_user" */
@@ -1161,6 +1356,10 @@ export type Mutation_Root = {
   insert_instances?: Maybe<Instances_Mutation_Response>;
   /** insert a single row into the table: "instances" */
   insert_instances_one?: Maybe<Instances>;
+  /** insert data into the table: "manifests" */
+  insert_manifests?: Maybe<Manifests_Mutation_Response>;
+  /** insert a single row into the table: "manifests" */
+  insert_manifests_one?: Maybe<Manifests>;
   /** insert data into the table: "organization_user" */
   insert_organization_user?: Maybe<Organization_User_Mutation_Response>;
   /** insert a single row into the table: "organization_user" */
@@ -1205,6 +1404,8 @@ export type Mutation_Root = {
   insert_vulnerability_packages?: Maybe<Vulnerability_Packages_Mutation_Response>;
   /** insert a single row into the table: "vulnerability_packages" */
   insert_vulnerability_packages_one?: Maybe<Vulnerability_Packages>;
+  /** get s3 presigned url for manifest upload */
+  presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "builds" */
   update_builds?: Maybe<Builds_Mutation_Response>;
   /** update single row of the table: "builds" */
@@ -1217,6 +1418,10 @@ export type Mutation_Root = {
   update_instances?: Maybe<Instances_Mutation_Response>;
   /** update single row of the table: "instances" */
   update_instances_by_pk?: Maybe<Instances>;
+  /** update data of the table: "manifests" */
+  update_manifests?: Maybe<Manifests_Mutation_Response>;
+  /** update single row of the table: "manifests" */
+  update_manifests_by_pk?: Maybe<Manifests>;
   /** update data of the table: "organization_user" */
   update_organization_user?: Maybe<Organization_User_Mutation_Response>;
   /** update single row of the table: "organization_user" */
@@ -1297,6 +1502,18 @@ export type Mutation_RootDelete_InstancesArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Instances_By_PkArgs = {
   instance_id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_ManifestsArgs = {
+  where: Manifests_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Manifests_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -1475,6 +1692,20 @@ export type Mutation_RootInsert_Instances_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_ManifestsArgs = {
+  objects: Array<Manifests_Insert_Input>;
+  on_conflict?: InputMaybe<Manifests_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Manifests_OneArgs = {
+  object: Manifests_Insert_Input;
+  on_conflict?: InputMaybe<Manifests_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_Organization_UserArgs = {
   objects: Array<Organization_User_Insert_Input>;
   on_conflict?: InputMaybe<Organization_User_On_Conflict>;
@@ -1629,6 +1860,12 @@ export type Mutation_RootInsert_Vulnerability_Packages_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootPresignManifestUploadArgs = {
+  project_id: Scalars['String'];
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_BuildsArgs = {
   _inc?: InputMaybe<Builds_Inc_Input>;
   _set?: InputMaybe<Builds_Set_Input>;
@@ -1669,6 +1906,20 @@ export type Mutation_RootUpdate_InstancesArgs = {
 export type Mutation_RootUpdate_Instances_By_PkArgs = {
   _set?: InputMaybe<Instances_Set_Input>;
   pk_columns: Instances_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_ManifestsArgs = {
+  _set?: InputMaybe<Manifests_Set_Input>;
+  where: Manifests_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Manifests_By_PkArgs = {
+  _set?: InputMaybe<Manifests_Set_Input>;
+  pk_columns: Manifests_Pk_Columns_Input;
 };
 
 
@@ -2666,6 +2917,10 @@ export type Projects = {
   builds_aggregate: Builds_Aggregate;
   created_at: Scalars['timestamp'];
   id: Scalars['uuid'];
+  /** An array relationship */
+  manifests: Array<Manifests>;
+  /** An aggregate relationship */
+  manifests_aggregate: Manifests_Aggregate;
   name: Scalars['String'];
   /** An object relationship */
   organization?: Maybe<Organizations>;
@@ -2700,6 +2955,26 @@ export type ProjectsBuilds_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Builds_Order_By>>;
   where?: InputMaybe<Builds_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsManifestsArgs = {
+  distinct_on?: InputMaybe<Array<Manifests_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifests_Order_By>>;
+  where?: InputMaybe<Manifests_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsManifests_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Manifests_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifests_Order_By>>;
+  where?: InputMaybe<Manifests_Bool_Exp>;
 };
 
 
@@ -2786,6 +3061,7 @@ export type Projects_Bool_Exp = {
   builds?: InputMaybe<Builds_Bool_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifests?: InputMaybe<Manifests_Bool_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   organization?: InputMaybe<Organizations_Bool_Exp>;
   organization_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -2806,6 +3082,7 @@ export type Projects_Insert_Input = {
   builds?: InputMaybe<Builds_Arr_Rel_Insert_Input>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   id?: InputMaybe<Scalars['uuid']>;
+  manifests?: InputMaybe<Manifests_Arr_Rel_Insert_Input>;
   name?: InputMaybe<Scalars['String']>;
   organization?: InputMaybe<Organizations_Obj_Rel_Insert_Input>;
   organization_id?: InputMaybe<Scalars['uuid']>;
@@ -2885,6 +3162,7 @@ export type Projects_Order_By = {
   builds_aggregate?: InputMaybe<Builds_Aggregate_Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  manifests_aggregate?: InputMaybe<Manifests_Aggregate_Order_By>;
   name?: InputMaybe<Order_By>;
   organization?: InputMaybe<Organizations_Order_By>;
   organization_id?: InputMaybe<Order_By>;
@@ -2961,6 +3239,12 @@ export type Query_Root = {
   instances_aggregate: Instances_Aggregate;
   /** fetch data from the table: "instances" using primary key columns */
   instances_by_pk?: Maybe<Instances>;
+  /** An array relationship */
+  manifests: Array<Manifests>;
+  /** An aggregate relationship */
+  manifests_aggregate: Manifests_Aggregate;
+  /** fetch data from the table: "manifests" using primary key columns */
+  manifests_by_pk?: Maybe<Manifests>;
   /** fetch data from the table: "organization_user" */
   organization_user: Array<Organization_User>;
   /** fetch aggregated fields from the table: "organization_user" */
@@ -3097,6 +3381,29 @@ export type Query_RootInstances_AggregateArgs = {
 
 export type Query_RootInstances_By_PkArgs = {
   instance_id: Scalars['uuid'];
+};
+
+
+export type Query_RootManifestsArgs = {
+  distinct_on?: InputMaybe<Array<Manifests_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifests_Order_By>>;
+  where?: InputMaybe<Manifests_Bool_Exp>;
+};
+
+
+export type Query_RootManifests_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Manifests_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifests_Order_By>>;
+  where?: InputMaybe<Manifests_Bool_Exp>;
+};
+
+
+export type Query_RootManifests_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -3367,11 +3674,11 @@ export type Query_RootVulnerability_Packages_By_PkArgs = {
 export type Related_Vulnerabilities = {
   __typename?: 'related_vulnerabilities';
   id: Scalars['uuid'];
+  /** An object relationship */
+  parent: Vulnerabilities;
   related_vulnerability_slug: Scalars['String'];
   /** An object relationship */
   vulnerability: Vulnerabilities;
-  /** An object relationship */
-  vulnerabilityByVulnerabilitySlug: Vulnerabilities;
   vulnerability_slug: Scalars['String'];
 };
 
@@ -3417,9 +3724,9 @@ export type Related_Vulnerabilities_Bool_Exp = {
   _not?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
   _or?: InputMaybe<Array<Related_Vulnerabilities_Bool_Exp>>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  parent?: InputMaybe<Vulnerabilities_Bool_Exp>;
   related_vulnerability_slug?: InputMaybe<String_Comparison_Exp>;
   vulnerability?: InputMaybe<Vulnerabilities_Bool_Exp>;
-  vulnerabilityByVulnerabilitySlug?: InputMaybe<Vulnerabilities_Bool_Exp>;
   vulnerability_slug?: InputMaybe<String_Comparison_Exp>;
 };
 
@@ -3434,9 +3741,9 @@ export enum Related_Vulnerabilities_Constraint {
 /** input type for inserting data into table "related_vulnerabilities" */
 export type Related_Vulnerabilities_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
+  parent?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
   related_vulnerability_slug?: InputMaybe<Scalars['String']>;
   vulnerability?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
-  vulnerabilityByVulnerabilitySlug?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
   vulnerability_slug?: InputMaybe<Scalars['String']>;
 };
 
@@ -3489,9 +3796,9 @@ export type Related_Vulnerabilities_On_Conflict = {
 /** Ordering options when selecting data from "related_vulnerabilities". */
 export type Related_Vulnerabilities_Order_By = {
   id?: InputMaybe<Order_By>;
+  parent?: InputMaybe<Vulnerabilities_Order_By>;
   related_vulnerability_slug?: InputMaybe<Order_By>;
   vulnerability?: InputMaybe<Vulnerabilities_Order_By>;
-  vulnerabilityByVulnerabilitySlug?: InputMaybe<Vulnerabilities_Order_By>;
   vulnerability_slug?: InputMaybe<Order_By>;
 };
 
@@ -4093,6 +4400,12 @@ export type Subscription_Root = {
   instances_aggregate: Instances_Aggregate;
   /** fetch data from the table: "instances" using primary key columns */
   instances_by_pk?: Maybe<Instances>;
+  /** An array relationship */
+  manifests: Array<Manifests>;
+  /** An aggregate relationship */
+  manifests_aggregate: Manifests_Aggregate;
+  /** fetch data from the table: "manifests" using primary key columns */
+  manifests_by_pk?: Maybe<Manifests>;
   /** fetch data from the table: "organization_user" */
   organization_user: Array<Organization_User>;
   /** fetch aggregated fields from the table: "organization_user" */
@@ -4228,6 +4541,29 @@ export type Subscription_RootInstances_AggregateArgs = {
 
 export type Subscription_RootInstances_By_PkArgs = {
   instance_id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootManifestsArgs = {
+  distinct_on?: InputMaybe<Array<Manifests_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifests_Order_By>>;
+  where?: InputMaybe<Manifests_Bool_Exp>;
+};
+
+
+export type Subscription_RootManifests_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Manifests_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifests_Order_By>>;
+  where?: InputMaybe<Manifests_Bool_Exp>;
+};
+
+
+export type Subscription_RootManifests_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -4711,13 +5047,13 @@ export type Vulnerabilities = {
   namespace: Scalars['String'];
   record_source?: Maybe<Scalars['String']>;
   /** An array relationship */
-  relatedVulnerabilitiesByVulnerabilitySlug: Array<Related_Vulnerabilities>;
-  /** An aggregate relationship */
-  relatedVulnerabilitiesByVulnerabilitySlug_aggregate: Related_Vulnerabilities_Aggregate;
-  /** An array relationship */
   related_vulnerabilities: Array<Related_Vulnerabilities>;
   /** An aggregate relationship */
   related_vulnerabilities_aggregate: Related_Vulnerabilities_Aggregate;
+  /** An array relationship */
+  reverse_related_vulnerabilities: Array<Related_Vulnerabilities>;
+  /** An aggregate relationship */
+  reverse_related_vulnerabilities_aggregate: Related_Vulnerabilities_Aggregate;
   severity: Scalars['severity_enum'];
   slug: Scalars['String'];
   topic_id?: Maybe<Scalars['uuid']>;
@@ -4750,26 +5086,6 @@ export type VulnerabilitiesFindings_AggregateArgs = {
 
 
 /** columns and relationships of "vulnerabilities" */
-export type VulnerabilitiesRelatedVulnerabilitiesByVulnerabilitySlugArgs = {
-  distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Related_Vulnerabilities_Order_By>>;
-  where?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
-};
-
-
-/** columns and relationships of "vulnerabilities" */
-export type VulnerabilitiesRelatedVulnerabilitiesByVulnerabilitySlug_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Related_Vulnerabilities_Order_By>>;
-  where?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
-};
-
-
-/** columns and relationships of "vulnerabilities" */
 export type VulnerabilitiesRelated_VulnerabilitiesArgs = {
   distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -4781,6 +5097,26 @@ export type VulnerabilitiesRelated_VulnerabilitiesArgs = {
 
 /** columns and relationships of "vulnerabilities" */
 export type VulnerabilitiesRelated_Vulnerabilities_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Related_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerabilities" */
+export type VulnerabilitiesReverse_Related_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Related_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerabilities" */
+export type VulnerabilitiesReverse_Related_Vulnerabilities_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Related_Vulnerabilities_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -4864,8 +5200,8 @@ export type Vulnerabilities_Bool_Exp = {
   name?: InputMaybe<String_Comparison_Exp>;
   namespace?: InputMaybe<String_Comparison_Exp>;
   record_source?: InputMaybe<String_Comparison_Exp>;
-  relatedVulnerabilitiesByVulnerabilitySlug?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
   related_vulnerabilities?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
+  reverse_related_vulnerabilities?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
   severity?: InputMaybe<Severity_Enum_Comparison_Exp>;
   slug?: InputMaybe<String_Comparison_Exp>;
   topic_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -4903,8 +5239,8 @@ export type Vulnerabilities_Insert_Input = {
   name?: InputMaybe<Scalars['String']>;
   namespace?: InputMaybe<Scalars['String']>;
   record_source?: InputMaybe<Scalars['String']>;
-  relatedVulnerabilitiesByVulnerabilitySlug?: InputMaybe<Related_Vulnerabilities_Arr_Rel_Insert_Input>;
   related_vulnerabilities?: InputMaybe<Related_Vulnerabilities_Arr_Rel_Insert_Input>;
+  reverse_related_vulnerabilities?: InputMaybe<Related_Vulnerabilities_Arr_Rel_Insert_Input>;
   severity?: InputMaybe<Scalars['severity_enum']>;
   slug?: InputMaybe<Scalars['String']>;
   topic_id?: InputMaybe<Scalars['uuid']>;
@@ -4986,8 +5322,8 @@ export type Vulnerabilities_Order_By = {
   name?: InputMaybe<Order_By>;
   namespace?: InputMaybe<Order_By>;
   record_source?: InputMaybe<Order_By>;
-  relatedVulnerabilitiesByVulnerabilitySlug_aggregate?: InputMaybe<Related_Vulnerabilities_Aggregate_Order_By>;
   related_vulnerabilities_aggregate?: InputMaybe<Related_Vulnerabilities_Aggregate_Order_By>;
+  reverse_related_vulnerabilities_aggregate?: InputMaybe<Related_Vulnerabilities_Aggregate_Order_By>;
   severity?: InputMaybe<Order_By>;
   slug?: InputMaybe<Order_By>;
   topic_id?: InputMaybe<Order_By>;
@@ -5429,7 +5765,7 @@ export type GetBuildDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null | undefined, created_at: any, git_branch?: string | null | undefined, git_hash?: string | null | undefined, git_remote?: string | null | undefined, id: any, project_id?: any | null | undefined, s3_url?: string | null | undefined, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null | undefined, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null | undefined, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null | undefined, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null | undefined, vulnerability_id: any, vulnerability_package_id?: any | null | undefined, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null | undefined, cvss_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, name: string, namespace: string, data_source: string } }> }> };
+export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, project_id?: any | null, s3_url?: string | null, project?: { __typename?: 'projects', name: string } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string } }> }> };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5441,17 +5777,17 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null | undefined, repo?: string | null | undefined, settings_id?: any | null | undefined, organization?: { __typename?: 'organizations', name: string } | null | undefined, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null | undefined, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null | undefined }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null | undefined }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null | undefined }> }> }> };
+export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SampleVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, name: string, namespace: string, record_source?: string | null | undefined, severity: any, cvss_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, created_at: any, description?: string | null | undefined, slug: string, data_source: string, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null | undefined, id: any, slug: string }> }> };
+export type SampleVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, name: string, namespace: string, record_source?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, created_at: any, description?: string | null, slug: string, data_source: string, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null, id: any, slug: string }> }> };
 
 export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null | undefined }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any }> };
+export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any }> };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -5460,14 +5796,30 @@ export type SearchVulnerabilitiesQueryVariables = Exact<{
 }>;
 
 
-export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, namespace: string, name: string, created_at: any, cvss_exploitability_score?: any | null | undefined, cvss_impact_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, cvss_score?: any | null | undefined, cvss_version?: string | null | undefined, data_source: string, description?: string | null | undefined, record_source?: string | null | undefined, severity: any, slug: string, topic_id?: any | null | undefined, urls?: any | null | undefined, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', id: any, name: string, namespace: string } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null | undefined, id: any, slug: string }> }> };
+export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, namespace: string, name: string, created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', id: any, name: string, namespace: string } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null, id: any, slug: string }> }> };
 
 export type GetVulnerabilityDetailsQueryVariables = Exact<{
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 }>;
 
 
-export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null | undefined, cvss_impact_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, cvss_score?: any | null | undefined, cvss_version?: string | null | undefined, data_source: string, description?: string | null | undefined, id: any, name: string, namespace: string, record_source?: string | null | undefined, severity: any, slug: string, topic_id?: any | null | undefined, urls?: any | null | undefined, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null | undefined, severity: any, cvss_score?: any | null | undefined, cvss_inferred?: boolean | null | undefined, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null | undefined, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
+export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
+
+export type InsertManifestMutationVariables = Exact<{
+  s3_url: Scalars['String'];
+  project_id: Scalars['uuid'];
+  filename: Scalars['String'];
+}>;
+
+
+export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null };
+
+export type PresignManifestUrlMutationVariables = Exact<{
+  project_id: Scalars['String'];
+}>;
+
+
+export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string } | null };
 
 
 export const GetBuildDetailsDocument = `
@@ -5480,6 +5832,9 @@ export const GetBuildDetailsDocument = `
     git_remote
     id
     project_id
+    project {
+      name
+    }
     s3_url
     scans(order_by: {created_at: asc}) {
       created_at
@@ -5701,6 +6056,23 @@ export const GetVulnerabilityDetailsDocument = `
   }
 }
     `;
+export const InsertManifestDocument = `
+    mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!) {
+  insert_manifests_one(
+    object: {filename: $filename, s3_url: $s3_url, project_id: $project_id}
+  ) {
+    id
+  }
+}
+    `;
+export const PresignManifestUrlDocument = `
+    mutation presignManifestUrl($project_id: String!) {
+  presignManifestUpload(project_id: $project_id) {
+    url
+    headers
+  }
+}
+    `;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -5725,9 +6097,15 @@ const injectedRtkApi = api.injectEndpoints({
     GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
     }),
+    insertManifest: build.mutation<InsertManifestMutation, InsertManifestMutationVariables>({
+      query: (variables) => ({ document: InsertManifestDocument, variables })
+    }),
+    presignManifestUrl: build.mutation<PresignManifestUrlMutation, PresignManifestUrlMutationVariables>({
+      query: (variables) => ({ document: PresignManifestUrlDocument, variables })
+    }),
   }),
 });
 
 export { injectedRtkApi as api };
-export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetCurrentUserQuery, useLazyGetCurrentUserQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery, useGetVulnerabilityDetailsQuery, useLazyGetVulnerabilityDetailsQuery } = injectedRtkApi;
+export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetCurrentUserQuery, useLazyGetCurrentUserQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery, useGetVulnerabilityDetailsQuery, useLazyGetVulnerabilityDetailsQuery, useInsertManifestMutation, usePresignManifestUrlMutation } = injectedRtkApi;
 

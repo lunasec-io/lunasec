@@ -33,7 +33,7 @@ export const ProjectSearch: React.FunctionComponent = () => {
     navigate(`/project/${selected.id as string}`);
   };
   return (
-    <Form inline="true" className="d-none d-sm-inline-block">
+    <Form className="d-none d-sm-inline-block">
       <InputGroup className="input-group-navbar">
         <Typeahead
           id="project-search-form"
@@ -43,7 +43,6 @@ export const ProjectSearch: React.FunctionComponent = () => {
           labelKey="name"
           options={!data ? [] : data.projects}
           highlightOnlyResult={true}
-          selectHintOnEnter={true}
         />
         <Button variant="">
           <Search className="feather" />

@@ -21,8 +21,9 @@ import { BuildList } from './BuildList';
 export const Builds: React.FunctionComponent = () => {
   // const [buildDetailId, setBuildDetailId] = useState<string | null>(null);
   // if (!buildDetailId) {
-
+  console.log('rendering builds');
   const { project_id } = useParams();
+  console.log('attempting to load project id ', project_id);
 
   // RUN SEARCH QUERY
   const { data, error, isLoading } = useGetProjectQuery({

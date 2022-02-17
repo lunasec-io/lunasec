@@ -13,7 +13,7 @@
  */
 import React, { useState } from 'react';
 import { Container, Nav } from 'react-bootstrap';
-import { Box, Settings } from 'react-feather';
+import { Box, Home, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
@@ -21,6 +21,8 @@ import { SpinIfLoading } from '../../components/SpinIfLoading';
 import { useGetProjectQuery } from '../../store/api/generated';
 
 import { ProjectHeader } from './Header';
+import { Builds } from './builds';
+import { ProjectDashboardMain } from './dashboard/Main';
 import { ProjectInfo } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
@@ -34,7 +36,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
 
   console.log('fetched data from hasura ', data);
 
-  const [activeTab, setActiveTab] = useState<'builds' | 'settings'>('builds');
+  const [activeTab, setActiveTab] = useState<'builds' | 'settings' | 'dashboard'>('dashboard');
   const renderProjectNav = (p: ProjectInfo) => {
     return (
       <>
@@ -44,28 +46,26 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
           <Nav.Item>
             <Nav.Link
               onClick={() => {
-                setActiveTab('builds');
-                navigate(`/project/${project_id as string}`);
+                setActiveTab('dashboard');
               }}
               eventKey="dashboard"
             >
-              Dashboard <Box size="17" />
+              <Home size="17" /> Dashboard
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
             <Nav.Link
               onClick={() => {
                 setActiveTab('builds');
-                navigate(`/project/${project_id as string}`);
               }}
               eventKey="builds"
             >
-              Builds <Box size="17" />
+              <Box size="17" /> Builds
             </Nav.Link>
           </Nav.Item>
           <Nav.Item className="ms-auto">
             <Nav.Link onClick={() => setActiveTab('settings')} eventKey="settings">
-              Settings <Settings size="17" />
+              <Settings size="17" /> Settings
             </Nav.Link>
           </Nav.Item>
         </Nav>
@@ -76,11 +76,15 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   };
 
   const renderProjectSubPage = (p: ProjectInfo) => {
-    if (activeTab === 'builds') {
-      return <Outlet />;
-    }
-    if (activeTab === 'settings') {
-      return <span>settings placeholder</span>;
+    switch (activeTab) {
+      case 'dashboard':
+        return <ProjectDashboardMain />;
+      case 'builds':
+        return <Builds />;
+      case 'settings':
+        return <span>settings placeholder</span>;
+      default:
+        return <ProjectMain />;
     }
   };
 
