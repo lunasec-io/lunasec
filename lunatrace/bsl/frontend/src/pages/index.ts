@@ -14,3 +14,4 @@
 export * from './organizations';
 export * from './vulnerabilities';
 export * from './account';
+export * from './project';
