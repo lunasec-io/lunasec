@@ -29,7 +29,7 @@ func defaultLunaSecAgentConfig() types.LunaTraceAgentConfigFile {
 			AgentAccessToken:  "${LUNATRACE_AGENT_SECRET}",
 			InstanceId:        `${LUNATRACE_INSTANCE_ID:""}`,
 			HeartbeatDuration: "5m",
-			LunaTraceGateways: defaultLunaTraceGatewayConfig(),
+			LunaTraceGateway:  defaultLunaTraceGatewayConfig(),
 		},
 	}
 }

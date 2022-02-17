@@ -11,6 +11,12 @@
  * limitations under the License.
  *
  */
-export * from './organizations';
-export * from './vulnerabilities';
-export * from './account';
+import { Configuration, V0alpha2Api } from '@ory/kratos-client';
+
+const ory = new V0alpha2Api(
+  new Configuration({
+    basePath: 'http://lunatrace.lunasec.local:4455/kratos',
+  })
+);
+
+export default ory;

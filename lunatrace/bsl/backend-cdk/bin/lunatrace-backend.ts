@@ -62,14 +62,12 @@ const env = {
   region: stackInputs.cdkDefaultRegion,
 };
 
-const vpcStack = new VPCStack(app, `${appName}-VpcStack`, { env, vpcId: stackInputs.vpcId });
-
 new LunatraceBackendStack(app, `${appName}-BackendStack`, {
   env: env,
   appName: appName,
   domainName: stackInputs.domainName,
   domainZoneId: stackInputs.domainZoneId,
-  vpc: vpcStack.vpc,
+  vpcId: stackInputs.vpcId,
   certificateArn: stackInputs.certificateArn,
   databaseSecretArn: stackInputs.databaseSecretArn,
 });

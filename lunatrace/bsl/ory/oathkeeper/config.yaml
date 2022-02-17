@@ -23,7 +23,7 @@ errors:
 
 mutators:
   header:
-    enabled: true
+    enabled: false
   noop:
     enabled: true
 

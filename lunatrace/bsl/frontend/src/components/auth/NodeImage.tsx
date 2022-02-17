@@ -11,6 +11,14 @@
  * limitations under the License.
  *
  */
-export * from './organizations';
-export * from './vulnerabilities';
-export * from './account';
+import { UiNode, UiNodeImageAttributes } from '@ory/kratos-client';
+import React from 'react';
+
+interface Props {
+  node: UiNode;
+  attributes: UiNodeImageAttributes;
+}
+
+export const NodeImage = ({ node, attributes }: Props) => {
+  return <img data-testid={`node/image/${attributes.id}`} src={attributes.src} alt={node.meta.label?.text} />;
+};

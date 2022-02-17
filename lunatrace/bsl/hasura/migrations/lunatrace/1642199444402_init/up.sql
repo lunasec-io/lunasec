@@ -11,7 +11,7 @@
 
 -- CREATE EXTENSION pg_trgm;
 
-create schema "public";
+-- create schema "public";
 
 CREATE
 FUNCTION public.set_current_timestamp_updated_at() RETURNS trigger

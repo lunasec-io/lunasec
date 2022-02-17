@@ -11,6 +11,11 @@
  * limitations under the License.
  *
  */
-export * from './organizations';
-export * from './vulnerabilities';
-export * from './account';
+import React from 'react';
+
+import { NodeInputProps } from './helpers';
+
+export function NodeInputHidden<T>({ attributes }: NodeInputProps) {
+  // Render a hidden input field
+  return <input type={attributes.type} name={attributes.name} value={attributes.value || 'true'} />;
+}

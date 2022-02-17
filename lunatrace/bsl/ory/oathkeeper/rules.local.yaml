@@ -57,3 +57,23 @@
     handler: allow
   mutators:
     - handler: noop
+
+- id: "ory:lunatrace:frontend"
+  upstream:
+    preserve_host: true
+    url: "http://frontend:8080"
+    strip_path: "/hasura"
+  match:
+    url: "http://<localhost|lunatrace.lunasec.local>:4455/<.*>"
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+  authenticators:
+    - handler: anonymous
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: noop
