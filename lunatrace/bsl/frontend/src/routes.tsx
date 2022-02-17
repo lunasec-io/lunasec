@@ -22,6 +22,16 @@ import { Builds } from './pages/project/builds/Builds';
 import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
 
 export const routes: RouteObject[] = [
+  // {
+  //   path:'/login',
+  //   element: <NotLoggedInLayout/>
+  //   children: [
+  //     {
+  //       path: '',
+  //       element: <LoginPage/>
+  //     }
+  //   ]
+  // },
   {
     path: '/',
     element: <MainLayout />,
@@ -70,21 +80,15 @@ export const routes: RouteObject[] = [
         ],
       },
       {
-        path: 'project',
+        path: 'project/:project_id',
         children: [
           {
-            path: ':project_id',
+            path: '',
             element: <ProjectMain />,
-            children: [
-              {
-                path: '', // the default
-                element: <Builds />,
-              },
-              {
-                path: 'build/:build_id',
-                element: <BuildDetails />,
-              },
-            ],
+          },
+          {
+            path: 'build/:build_id',
+            element: <BuildDetails />,
           },
         ],
       },

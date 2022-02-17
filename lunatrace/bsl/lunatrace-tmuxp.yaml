@@ -1,0 +1,15 @@
+session_name: lunatrace
+windows:
+  - window_name: services
+    layout: tiled
+    panes:
+      - shell_command:
+          - cd backend
+          - yarn run start
+      # Secure Frame CDN
+      - shell_command:
+          - cd hasura
+          - hasura console
+      - shell_command:
+          - cd frontend
+          - yarn start
