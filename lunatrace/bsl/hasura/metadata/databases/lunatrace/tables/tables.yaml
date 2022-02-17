@@ -1,6 +1,7 @@
 - "!include public_builds.yaml"
 - "!include public_findings.yaml"
 - "!include public_instances.yaml"
+- "!include public_manifests.yaml"
 - "!include public_organization_user.yaml"
 - "!include public_organizations.yaml"
 - "!include public_package_versions.yaml"
