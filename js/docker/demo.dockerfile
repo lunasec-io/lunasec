@@ -10,6 +10,8 @@ RUN yarn install --immutable
 
 RUN yarn run compile:dev:sdks
 
+ENV NODE_OPTIONS="--max-old-space-size=8192"
+
 FROM lerna-bootstrap as application-back-end
 
 WORKDIR /repo/js/demo-apps/packages/demo-back-end

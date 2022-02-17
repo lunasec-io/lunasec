@@ -1,9 +1,9 @@
 version: '3.6'
 services:
-  backend:
-    build: ./backend
-    ports:
-      - "8000:80"
+#  backend:
+#    build: ./backend
+#    ports:
+#      - "3002:80"
   oathkeeper:
     build: ./ory/oathkeeper
     ports:
@@ -44,6 +44,8 @@ services:
     image: hasura/graphql-engine:v2.1.1
     ports:
     - "8080:8080"
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
     depends_on:
     - "postgres"
     - "oathkeeper"
@@ -52,7 +54,7 @@ services:
       ## postgres database to store Hasura metadata
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/lunatrace
       ## this env var can be used to add the above postgres database to Hasura as a data source. this can be removed/updated based on your needs
-      PG_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/lunatrace
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/lunatrace
       ## enable the console served by server
       HASURA_GRAPHQL_ENABLE_CONSOLE: "false" # set to "false" to disable console
       ## enable debugging mode. It is recommended to disable this in production

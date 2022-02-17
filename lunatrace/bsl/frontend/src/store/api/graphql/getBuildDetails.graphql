@@ -7,6 +7,9 @@ query GetBuildDetails($build_id: uuid) {
         git_remote
         id
         project_id
+        project {
+            name
+        }
         s3_url
         scans(order_by: {created_at: asc}) {
             created_at
