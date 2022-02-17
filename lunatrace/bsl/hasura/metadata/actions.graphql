@@ -22,6 +22,7 @@ type SbomUploadUrlOutput {
 }
 
 type PresignedUrlResponse {
-  presigned_url: String!
+  url: String!
+  headers: String!
 }
 
