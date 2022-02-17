@@ -1,24 +1,24 @@
 version: '3.6'
 services:
-  frontend:
-    build: ./frontend
-    ports:
-      - "8000:80"
+#  frontend:
+#    build: ./frontend
+#    ports:
+#      - "8000:80"
+#  oathkeeper:
+#    build: ./ory/oathkeeper
+#    ports:
+#      - "4455:4455"
+#      - "4456:4456"
+#    command: '--config /config.yaml serve'
+#    environment:
+#      ACCESS_RULES_REPOSITORIES: file:///config/rules.local.yaml
+#      MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///config/jwks.json
+#    volumes:
+#      - "./ory/oathkeeper:/config"
   backend:
     build: ./backend
     ports:
       - "8000:80"
-  oathkeeper:
-    build: ./ory/oathkeeper
-    ports:
-      - "4455:4455"
-      - "4456:4456"
-    command: '--config /config.yaml serve'
-    environment:
-      ACCESS_RULES_REPOSITORIES: file:///config/rules.local.yaml
-      MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///config/jwks.json
-    volumes:
-      - "./ory/oathkeeper:/config"
 
   # kratos -c ory/kratos/config.yaml migrate sql -e --yes
   kratos:
@@ -64,8 +64,10 @@ services:
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-      HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256", "jwk_url": "http://oathkeeper:4456/.well-known/jwks.json", "issuer": "http://oathkeeper:4455/"}'
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256", "jwk_url": "http://host.docker.internal:4456/.well-known/jwks.json", "issuer": "http://oathkeeper:4455/"}'
       HASURA_GRAPHQL_LOG_LEVEL: debug
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
   mailslurper:
     image: oryd/mailslurper:latest-smtps
     ports:

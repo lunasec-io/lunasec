@@ -19,11 +19,14 @@ import { useLocation, useNavigate } from 'react-router';
 
 import { Flow } from '../../components/auth';
 import { ActionCard, CenterLink, Head, MarginCard } from '../../components/auth/Common';
+import { useAuth } from '../../hooks/useAuth';
 import { handleFlowError } from '../../utils/handleGetFlowError';
 import ory from '../../utils/sdk';
 
 // Renders the registration page
-const Registration = () => {
+export const Registration = () => {
+  const auth = useAuth();
+
   const search = useLocation().search;
   const searchParams = new URLSearchParams(search);
 
@@ -65,34 +68,6 @@ const Registration = () => {
       .catch(handleFlowError(navigate, 'register', setFlow));
   }, [flowId, returnTo, flow]);
 
-  const onSubmit = (values: SubmitSelfServiceRegistrationFlowBody) => {
-    // On submission, add the flow ID to the URL but do not navigate. This prevents the user loosing
-    // his data when she/he reloads the page.
-    navigate(`/account/register?flow=${flow?.id}`, { replace: true });
-    ory
-      .submitSelfServiceRegistrationFlow(String(flow?.id), values)
-      .then(({ data }) => {
-        // If we ended up here, it means we are successfully signed up!
-        //
-        // You can do cool stuff here, like having access to the identity which just signed up:
-        console.log('This is the user session: ', data, data.identity);
-
-        // For now however we just want to redirect home!
-        return navigate(flow?.return_to || '/');
-      })
-      .catch(handleFlowError(navigate, 'register', setFlow))
-      .catch((err: AxiosError) => {
-        // If the previous handler did not catch the error it's most likely a form validation error
-        if (err.response?.status === 400) {
-          // Yup, it is!
-          setFlow(err.response?.data);
-          return;
-        }
-
-        return Promise.reject(err);
-      });
-  };
-
   return (
     <>
       <Head>
@@ -100,7 +75,12 @@ const Registration = () => {
       </Head>
       <MarginCard>
         <CardTitle>Create account</CardTitle>
-        <Flow<SubmitSelfServiceRegistrationFlowBody> onSubmit={onSubmit} flow={flow} />
+        <Flow
+          onSubmit={(values: SubmitSelfServiceRegistrationFlowBody) => {
+            auth.signUp(flow, setFlow, values);
+          }}
+          flow={flow}
+        />
       </MarginCard>
       <ActionCard>
         <CenterLink data-testid="cta-link" href="/account/login">
@@ -110,5 +90,3 @@ const Registration = () => {
     </>
   );
 };
-
-export default Registration;

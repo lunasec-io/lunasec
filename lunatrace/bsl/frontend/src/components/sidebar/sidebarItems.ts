@@ -25,11 +25,12 @@ import {
   PieChart,
 } from 'react-feather';
 
+import { OryAuthContext } from '../../contexts/OryContext';
 import { GetSidebarInfoQuery } from '../../store/api/generated';
 
 import { NavSection, SidebarItem } from './types';
 
-export function generateSidebarItems(data: GetSidebarInfoQuery | undefined): NavSection[] {
+export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, auth: OryAuthContext): NavSection[] {
   const projectsSection: SidebarItem[] = !data
     ? []
     : [
@@ -68,11 +69,18 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined): Nav
   ];
 
   const accountSection: SidebarItem[] = [
-    {
-      href: '/account/login',
-      icon: Lock,
-      title: 'Login',
-    },
+    auth.state.session
+      ? {
+          href: '/account/logout',
+          icon: Lock,
+          title: 'Logout',
+          onClick: auth.signOut,
+        }
+      : {
+          href: '/account/login',
+          icon: Lock,
+          title: 'Login',
+        },
     {
       href: '/account/register',
       icon: BookOpen,

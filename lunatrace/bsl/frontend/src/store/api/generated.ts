@@ -25,8 +25,10 @@ export type Scalars = {
   Int: number;
   Float: number;
   _text: any;
+  bytea: any;
   date: any;
   fix_state_enum: any;
+  jsonb: any;
   numeric: any;
   severity_enum: any;
   timestamp: any;
@@ -527,6 +529,507 @@ export type Builds_Variance_Order_By = {
   build_number?: InputMaybe<Order_By>;
 };
 
+/** Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'. */
+export type Bytea_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['bytea']>;
+  _gt?: InputMaybe<Scalars['bytea']>;
+  _gte?: InputMaybe<Scalars['bytea']>;
+  _in?: InputMaybe<Array<Scalars['bytea']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['bytea']>;
+  _lte?: InputMaybe<Scalars['bytea']>;
+  _neq?: InputMaybe<Scalars['bytea']>;
+  _nin?: InputMaybe<Array<Scalars['bytea']>>;
+};
+
+/** columns and relationships of "continuity_containers" */
+export type Continuity_Containers = {
+  __typename?: 'continuity_containers';
+  created_at: Scalars['timestamp'];
+  expires_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  identity_id?: Maybe<Scalars['uuid']>;
+  name: Scalars['String'];
+  nid?: Maybe<Scalars['uuid']>;
+  payload?: Maybe<Scalars['jsonb']>;
+  updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "continuity_containers" */
+export type Continuity_ContainersPayloadArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "continuity_containers" */
+export type Continuity_Containers_Aggregate = {
+  __typename?: 'continuity_containers_aggregate';
+  aggregate?: Maybe<Continuity_Containers_Aggregate_Fields>;
+  nodes: Array<Continuity_Containers>;
+};
+
+/** aggregate fields of "continuity_containers" */
+export type Continuity_Containers_Aggregate_Fields = {
+  __typename?: 'continuity_containers_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Continuity_Containers_Max_Fields>;
+  min?: Maybe<Continuity_Containers_Min_Fields>;
+};
+
+
+/** aggregate fields of "continuity_containers" */
+export type Continuity_Containers_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Continuity_Containers_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Continuity_Containers_Append_Input = {
+  payload?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "continuity_containers". All fields are combined with a logical 'AND'. */
+export type Continuity_Containers_Bool_Exp = {
+  _and?: InputMaybe<Array<Continuity_Containers_Bool_Exp>>;
+  _not?: InputMaybe<Continuity_Containers_Bool_Exp>;
+  _or?: InputMaybe<Array<Continuity_Containers_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  expires_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  identity_id?: InputMaybe<Uuid_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  payload?: InputMaybe<Jsonb_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "continuity_containers" */
+export enum Continuity_Containers_Constraint {
+  /** unique or primary key constraint */
+  ContinuityContainersPkey = 'continuity_containers_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Continuity_Containers_Delete_At_Path_Input = {
+  payload?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Continuity_Containers_Delete_Elem_Input = {
+  payload?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Continuity_Containers_Delete_Key_Input = {
+  payload?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "continuity_containers" */
+export type Continuity_Containers_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  payload?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Continuity_Containers_Max_Fields = {
+  __typename?: 'continuity_containers_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+  nid?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Continuity_Containers_Min_Fields = {
+  __typename?: 'continuity_containers_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+  nid?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "continuity_containers" */
+export type Continuity_Containers_Mutation_Response = {
+  __typename?: 'continuity_containers_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Continuity_Containers>;
+};
+
+/** on conflict condition type for table "continuity_containers" */
+export type Continuity_Containers_On_Conflict = {
+  constraint: Continuity_Containers_Constraint;
+  update_columns?: Array<Continuity_Containers_Update_Column>;
+  where?: InputMaybe<Continuity_Containers_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "continuity_containers". */
+export type Continuity_Containers_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  expires_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  identity_id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  payload?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: continuity_containers */
+export type Continuity_Containers_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Continuity_Containers_Prepend_Input = {
+  payload?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "continuity_containers" */
+export enum Continuity_Containers_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  Payload = 'payload',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "continuity_containers" */
+export type Continuity_Containers_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  payload?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "continuity_containers" */
+export enum Continuity_Containers_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  Payload = 'payload',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** columns and relationships of "courier_messages" */
+export type Courier_Messages = {
+  __typename?: 'courier_messages';
+  body: Scalars['String'];
+  created_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  nid?: Maybe<Scalars['uuid']>;
+  recipient: Scalars['String'];
+  status: Scalars['Int'];
+  subject: Scalars['String'];
+  template_data?: Maybe<Scalars['bytea']>;
+  template_type: Scalars['String'];
+  type: Scalars['Int'];
+  updated_at: Scalars['timestamp'];
+};
+
+/** aggregated selection of "courier_messages" */
+export type Courier_Messages_Aggregate = {
+  __typename?: 'courier_messages_aggregate';
+  aggregate?: Maybe<Courier_Messages_Aggregate_Fields>;
+  nodes: Array<Courier_Messages>;
+};
+
+/** aggregate fields of "courier_messages" */
+export type Courier_Messages_Aggregate_Fields = {
+  __typename?: 'courier_messages_aggregate_fields';
+  avg?: Maybe<Courier_Messages_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Courier_Messages_Max_Fields>;
+  min?: Maybe<Courier_Messages_Min_Fields>;
+  stddev?: Maybe<Courier_Messages_Stddev_Fields>;
+  stddev_pop?: Maybe<Courier_Messages_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Courier_Messages_Stddev_Samp_Fields>;
+  sum?: Maybe<Courier_Messages_Sum_Fields>;
+  var_pop?: Maybe<Courier_Messages_Var_Pop_Fields>;
+  var_samp?: Maybe<Courier_Messages_Var_Samp_Fields>;
+  variance?: Maybe<Courier_Messages_Variance_Fields>;
+};
+
+
+/** aggregate fields of "courier_messages" */
+export type Courier_Messages_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Courier_Messages_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type Courier_Messages_Avg_Fields = {
+  __typename?: 'courier_messages_avg_fields';
+  status?: Maybe<Scalars['Float']>;
+  type?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "courier_messages". All fields are combined with a logical 'AND'. */
+export type Courier_Messages_Bool_Exp = {
+  _and?: InputMaybe<Array<Courier_Messages_Bool_Exp>>;
+  _not?: InputMaybe<Courier_Messages_Bool_Exp>;
+  _or?: InputMaybe<Array<Courier_Messages_Bool_Exp>>;
+  body?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  recipient?: InputMaybe<String_Comparison_Exp>;
+  status?: InputMaybe<Int_Comparison_Exp>;
+  subject?: InputMaybe<String_Comparison_Exp>;
+  template_data?: InputMaybe<Bytea_Comparison_Exp>;
+  template_type?: InputMaybe<String_Comparison_Exp>;
+  type?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "courier_messages" */
+export enum Courier_Messages_Constraint {
+  /** unique or primary key constraint */
+  CourierMessagesPkey = 'courier_messages_pkey'
+}
+
+/** input type for incrementing numeric columns in table "courier_messages" */
+export type Courier_Messages_Inc_Input = {
+  status?: InputMaybe<Scalars['Int']>;
+  type?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "courier_messages" */
+export type Courier_Messages_Insert_Input = {
+  body?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  recipient?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['Int']>;
+  subject?: InputMaybe<Scalars['String']>;
+  template_data?: InputMaybe<Scalars['bytea']>;
+  template_type?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['Int']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Courier_Messages_Max_Fields = {
+  __typename?: 'courier_messages_max_fields';
+  body?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  recipient?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['Int']>;
+  subject?: Maybe<Scalars['String']>;
+  template_type?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['Int']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Courier_Messages_Min_Fields = {
+  __typename?: 'courier_messages_min_fields';
+  body?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  recipient?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['Int']>;
+  subject?: Maybe<Scalars['String']>;
+  template_type?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['Int']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "courier_messages" */
+export type Courier_Messages_Mutation_Response = {
+  __typename?: 'courier_messages_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Courier_Messages>;
+};
+
+/** on conflict condition type for table "courier_messages" */
+export type Courier_Messages_On_Conflict = {
+  constraint: Courier_Messages_Constraint;
+  update_columns?: Array<Courier_Messages_Update_Column>;
+  where?: InputMaybe<Courier_Messages_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "courier_messages". */
+export type Courier_Messages_Order_By = {
+  body?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  recipient?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  subject?: InputMaybe<Order_By>;
+  template_data?: InputMaybe<Order_By>;
+  template_type?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: courier_messages */
+export type Courier_Messages_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "courier_messages" */
+export enum Courier_Messages_Select_Column {
+  /** column name */
+  Body = 'body',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  Recipient = 'recipient',
+  /** column name */
+  Status = 'status',
+  /** column name */
+  Subject = 'subject',
+  /** column name */
+  TemplateData = 'template_data',
+  /** column name */
+  TemplateType = 'template_type',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "courier_messages" */
+export type Courier_Messages_Set_Input = {
+  body?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  recipient?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['Int']>;
+  subject?: InputMaybe<Scalars['String']>;
+  template_data?: InputMaybe<Scalars['bytea']>;
+  template_type?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['Int']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate stddev on columns */
+export type Courier_Messages_Stddev_Fields = {
+  __typename?: 'courier_messages_stddev_fields';
+  status?: Maybe<Scalars['Float']>;
+  type?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Courier_Messages_Stddev_Pop_Fields = {
+  __typename?: 'courier_messages_stddev_pop_fields';
+  status?: Maybe<Scalars['Float']>;
+  type?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Courier_Messages_Stddev_Samp_Fields = {
+  __typename?: 'courier_messages_stddev_samp_fields';
+  status?: Maybe<Scalars['Float']>;
+  type?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate sum on columns */
+export type Courier_Messages_Sum_Fields = {
+  __typename?: 'courier_messages_sum_fields';
+  status?: Maybe<Scalars['Int']>;
+  type?: Maybe<Scalars['Int']>;
+};
+
+/** update columns of table "courier_messages" */
+export enum Courier_Messages_Update_Column {
+  /** column name */
+  Body = 'body',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  Recipient = 'recipient',
+  /** column name */
+  Status = 'status',
+  /** column name */
+  Subject = 'subject',
+  /** column name */
+  TemplateData = 'template_data',
+  /** column name */
+  TemplateType = 'template_type',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** aggregate var_pop on columns */
+export type Courier_Messages_Var_Pop_Fields = {
+  __typename?: 'courier_messages_var_pop_fields';
+  status?: Maybe<Scalars['Float']>;
+  type?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Courier_Messages_Var_Samp_Fields = {
+  __typename?: 'courier_messages_var_samp_fields';
+  status?: Maybe<Scalars['Float']>;
+  type?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Courier_Messages_Variance_Fields = {
+  __typename?: 'courier_messages_variance_fields';
+  status?: Maybe<Scalars['Float']>;
+  type?: Maybe<Scalars['Float']>;
+};
+
 /** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
 export type Date_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['date']>;
@@ -950,6 +1453,1502 @@ export type Fix_State_Enum_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['fix_state_enum']>>;
 };
 
+/** columns and relationships of "identities" */
+export type Identities = {
+  __typename?: 'identities';
+  created_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  nid?: Maybe<Scalars['uuid']>;
+  schema_id: Scalars['String'];
+  state: Scalars['String'];
+  state_changed_at?: Maybe<Scalars['timestamp']>;
+  traits: Scalars['jsonb'];
+  updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "identities" */
+export type IdentitiesTraitsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "identities" */
+export type Identities_Aggregate = {
+  __typename?: 'identities_aggregate';
+  aggregate?: Maybe<Identities_Aggregate_Fields>;
+  nodes: Array<Identities>;
+};
+
+/** aggregate fields of "identities" */
+export type Identities_Aggregate_Fields = {
+  __typename?: 'identities_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Identities_Max_Fields>;
+  min?: Maybe<Identities_Min_Fields>;
+};
+
+
+/** aggregate fields of "identities" */
+export type Identities_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Identities_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Identities_Append_Input = {
+  traits?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "identities". All fields are combined with a logical 'AND'. */
+export type Identities_Bool_Exp = {
+  _and?: InputMaybe<Array<Identities_Bool_Exp>>;
+  _not?: InputMaybe<Identities_Bool_Exp>;
+  _or?: InputMaybe<Array<Identities_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  schema_id?: InputMaybe<String_Comparison_Exp>;
+  state?: InputMaybe<String_Comparison_Exp>;
+  state_changed_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  traits?: InputMaybe<Jsonb_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "identities" */
+export enum Identities_Constraint {
+  /** unique or primary key constraint */
+  IdentitiesPkey = 'identities_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Identities_Delete_At_Path_Input = {
+  traits?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Identities_Delete_Elem_Input = {
+  traits?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Identities_Delete_Key_Input = {
+  traits?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "identities" */
+export type Identities_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  schema_id?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  state_changed_at?: InputMaybe<Scalars['timestamp']>;
+  traits?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Identities_Max_Fields = {
+  __typename?: 'identities_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  schema_id?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  state_changed_at?: Maybe<Scalars['timestamp']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Identities_Min_Fields = {
+  __typename?: 'identities_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  schema_id?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  state_changed_at?: Maybe<Scalars['timestamp']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "identities" */
+export type Identities_Mutation_Response = {
+  __typename?: 'identities_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Identities>;
+};
+
+/** on conflict condition type for table "identities" */
+export type Identities_On_Conflict = {
+  constraint: Identities_Constraint;
+  update_columns?: Array<Identities_Update_Column>;
+  where?: InputMaybe<Identities_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "identities". */
+export type Identities_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  schema_id?: InputMaybe<Order_By>;
+  state?: InputMaybe<Order_By>;
+  state_changed_at?: InputMaybe<Order_By>;
+  traits?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: identities */
+export type Identities_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Identities_Prepend_Input = {
+  traits?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "identities" */
+export enum Identities_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  SchemaId = 'schema_id',
+  /** column name */
+  State = 'state',
+  /** column name */
+  StateChangedAt = 'state_changed_at',
+  /** column name */
+  Traits = 'traits',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "identities" */
+export type Identities_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  schema_id?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  state_changed_at?: InputMaybe<Scalars['timestamp']>;
+  traits?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "identities" */
+export enum Identities_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  SchemaId = 'schema_id',
+  /** column name */
+  State = 'state',
+  /** column name */
+  StateChangedAt = 'state_changed_at',
+  /** column name */
+  Traits = 'traits',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** columns and relationships of "identity_credential_identifiers" */
+export type Identity_Credential_Identifiers = {
+  __typename?: 'identity_credential_identifiers';
+  created_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  identifier: Scalars['String'];
+  identity_credential_id: Scalars['uuid'];
+  identity_credential_type_id: Scalars['uuid'];
+  nid?: Maybe<Scalars['uuid']>;
+  updated_at: Scalars['timestamp'];
+};
+
+/** aggregated selection of "identity_credential_identifiers" */
+export type Identity_Credential_Identifiers_Aggregate = {
+  __typename?: 'identity_credential_identifiers_aggregate';
+  aggregate?: Maybe<Identity_Credential_Identifiers_Aggregate_Fields>;
+  nodes: Array<Identity_Credential_Identifiers>;
+};
+
+/** aggregate fields of "identity_credential_identifiers" */
+export type Identity_Credential_Identifiers_Aggregate_Fields = {
+  __typename?: 'identity_credential_identifiers_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Identity_Credential_Identifiers_Max_Fields>;
+  min?: Maybe<Identity_Credential_Identifiers_Min_Fields>;
+};
+
+
+/** aggregate fields of "identity_credential_identifiers" */
+export type Identity_Credential_Identifiers_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Identity_Credential_Identifiers_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "identity_credential_identifiers". All fields are combined with a logical 'AND'. */
+export type Identity_Credential_Identifiers_Bool_Exp = {
+  _and?: InputMaybe<Array<Identity_Credential_Identifiers_Bool_Exp>>;
+  _not?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
+  _or?: InputMaybe<Array<Identity_Credential_Identifiers_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  identifier?: InputMaybe<String_Comparison_Exp>;
+  identity_credential_id?: InputMaybe<Uuid_Comparison_Exp>;
+  identity_credential_type_id?: InputMaybe<Uuid_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "identity_credential_identifiers" */
+export enum Identity_Credential_Identifiers_Constraint {
+  /** unique or primary key constraint */
+  IdentityCredentialIdentifiersIdentifierNidTypeUqIdx = 'identity_credential_identifiers_identifier_nid_type_uq_idx',
+  /** unique or primary key constraint */
+  IdentityCredentialIdentifiersPkey = 'identity_credential_identifiers_pkey'
+}
+
+/** input type for inserting data into table "identity_credential_identifiers" */
+export type Identity_Credential_Identifiers_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identifier?: InputMaybe<Scalars['String']>;
+  identity_credential_id?: InputMaybe<Scalars['uuid']>;
+  identity_credential_type_id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Identity_Credential_Identifiers_Max_Fields = {
+  __typename?: 'identity_credential_identifiers_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identifier?: Maybe<Scalars['String']>;
+  identity_credential_id?: Maybe<Scalars['uuid']>;
+  identity_credential_type_id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Identity_Credential_Identifiers_Min_Fields = {
+  __typename?: 'identity_credential_identifiers_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identifier?: Maybe<Scalars['String']>;
+  identity_credential_id?: Maybe<Scalars['uuid']>;
+  identity_credential_type_id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "identity_credential_identifiers" */
+export type Identity_Credential_Identifiers_Mutation_Response = {
+  __typename?: 'identity_credential_identifiers_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Identity_Credential_Identifiers>;
+};
+
+/** on conflict condition type for table "identity_credential_identifiers" */
+export type Identity_Credential_Identifiers_On_Conflict = {
+  constraint: Identity_Credential_Identifiers_Constraint;
+  update_columns?: Array<Identity_Credential_Identifiers_Update_Column>;
+  where?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "identity_credential_identifiers". */
+export type Identity_Credential_Identifiers_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  identifier?: InputMaybe<Order_By>;
+  identity_credential_id?: InputMaybe<Order_By>;
+  identity_credential_type_id?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: identity_credential_identifiers */
+export type Identity_Credential_Identifiers_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "identity_credential_identifiers" */
+export enum Identity_Credential_Identifiers_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Identifier = 'identifier',
+  /** column name */
+  IdentityCredentialId = 'identity_credential_id',
+  /** column name */
+  IdentityCredentialTypeId = 'identity_credential_type_id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "identity_credential_identifiers" */
+export type Identity_Credential_Identifiers_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identifier?: InputMaybe<Scalars['String']>;
+  identity_credential_id?: InputMaybe<Scalars['uuid']>;
+  identity_credential_type_id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "identity_credential_identifiers" */
+export enum Identity_Credential_Identifiers_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Identifier = 'identifier',
+  /** column name */
+  IdentityCredentialId = 'identity_credential_id',
+  /** column name */
+  IdentityCredentialTypeId = 'identity_credential_type_id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** columns and relationships of "identity_credential_types" */
+export type Identity_Credential_Types = {
+  __typename?: 'identity_credential_types';
+  id: Scalars['uuid'];
+  name: Scalars['String'];
+};
+
+/** aggregated selection of "identity_credential_types" */
+export type Identity_Credential_Types_Aggregate = {
+  __typename?: 'identity_credential_types_aggregate';
+  aggregate?: Maybe<Identity_Credential_Types_Aggregate_Fields>;
+  nodes: Array<Identity_Credential_Types>;
+};
+
+/** aggregate fields of "identity_credential_types" */
+export type Identity_Credential_Types_Aggregate_Fields = {
+  __typename?: 'identity_credential_types_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Identity_Credential_Types_Max_Fields>;
+  min?: Maybe<Identity_Credential_Types_Min_Fields>;
+};
+
+
+/** aggregate fields of "identity_credential_types" */
+export type Identity_Credential_Types_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Identity_Credential_Types_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "identity_credential_types". All fields are combined with a logical 'AND'. */
+export type Identity_Credential_Types_Bool_Exp = {
+  _and?: InputMaybe<Array<Identity_Credential_Types_Bool_Exp>>;
+  _not?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
+  _or?: InputMaybe<Array<Identity_Credential_Types_Bool_Exp>>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "identity_credential_types" */
+export enum Identity_Credential_Types_Constraint {
+  /** unique or primary key constraint */
+  IdentityCredentialTypesNameIdx = 'identity_credential_types_name_idx',
+  /** unique or primary key constraint */
+  IdentityCredentialTypesPkey = 'identity_credential_types_pkey'
+}
+
+/** input type for inserting data into table "identity_credential_types" */
+export type Identity_Credential_Types_Insert_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Identity_Credential_Types_Max_Fields = {
+  __typename?: 'identity_credential_types_max_fields';
+  id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Identity_Credential_Types_Min_Fields = {
+  __typename?: 'identity_credential_types_min_fields';
+  id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "identity_credential_types" */
+export type Identity_Credential_Types_Mutation_Response = {
+  __typename?: 'identity_credential_types_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Identity_Credential_Types>;
+};
+
+/** on conflict condition type for table "identity_credential_types" */
+export type Identity_Credential_Types_On_Conflict = {
+  constraint: Identity_Credential_Types_Constraint;
+  update_columns?: Array<Identity_Credential_Types_Update_Column>;
+  where?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "identity_credential_types". */
+export type Identity_Credential_Types_Order_By = {
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: identity_credential_types */
+export type Identity_Credential_Types_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "identity_credential_types" */
+export enum Identity_Credential_Types_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name'
+}
+
+/** input type for updating data in table "identity_credential_types" */
+export type Identity_Credential_Types_Set_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "identity_credential_types" */
+export enum Identity_Credential_Types_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name'
+}
+
+/** columns and relationships of "identity_credentials" */
+export type Identity_Credentials = {
+  __typename?: 'identity_credentials';
+  config: Scalars['jsonb'];
+  created_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  identity_credential_type_id: Scalars['uuid'];
+  identity_id: Scalars['uuid'];
+  nid?: Maybe<Scalars['uuid']>;
+  updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "identity_credentials" */
+export type Identity_CredentialsConfigArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "identity_credentials" */
+export type Identity_Credentials_Aggregate = {
+  __typename?: 'identity_credentials_aggregate';
+  aggregate?: Maybe<Identity_Credentials_Aggregate_Fields>;
+  nodes: Array<Identity_Credentials>;
+};
+
+/** aggregate fields of "identity_credentials" */
+export type Identity_Credentials_Aggregate_Fields = {
+  __typename?: 'identity_credentials_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Identity_Credentials_Max_Fields>;
+  min?: Maybe<Identity_Credentials_Min_Fields>;
+};
+
+
+/** aggregate fields of "identity_credentials" */
+export type Identity_Credentials_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Identity_Credentials_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Identity_Credentials_Append_Input = {
+  config?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "identity_credentials". All fields are combined with a logical 'AND'. */
+export type Identity_Credentials_Bool_Exp = {
+  _and?: InputMaybe<Array<Identity_Credentials_Bool_Exp>>;
+  _not?: InputMaybe<Identity_Credentials_Bool_Exp>;
+  _or?: InputMaybe<Array<Identity_Credentials_Bool_Exp>>;
+  config?: InputMaybe<Jsonb_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  identity_credential_type_id?: InputMaybe<Uuid_Comparison_Exp>;
+  identity_id?: InputMaybe<Uuid_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "identity_credentials" */
+export enum Identity_Credentials_Constraint {
+  /** unique or primary key constraint */
+  IdentityCredentialsPkey = 'identity_credentials_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Identity_Credentials_Delete_At_Path_Input = {
+  config?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Identity_Credentials_Delete_Elem_Input = {
+  config?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Identity_Credentials_Delete_Key_Input = {
+  config?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "identity_credentials" */
+export type Identity_Credentials_Insert_Input = {
+  config?: InputMaybe<Scalars['jsonb']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_credential_type_id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Identity_Credentials_Max_Fields = {
+  __typename?: 'identity_credentials_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_credential_type_id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Identity_Credentials_Min_Fields = {
+  __typename?: 'identity_credentials_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_credential_type_id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "identity_credentials" */
+export type Identity_Credentials_Mutation_Response = {
+  __typename?: 'identity_credentials_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Identity_Credentials>;
+};
+
+/** on conflict condition type for table "identity_credentials" */
+export type Identity_Credentials_On_Conflict = {
+  constraint: Identity_Credentials_Constraint;
+  update_columns?: Array<Identity_Credentials_Update_Column>;
+  where?: InputMaybe<Identity_Credentials_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "identity_credentials". */
+export type Identity_Credentials_Order_By = {
+  config?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  identity_credential_type_id?: InputMaybe<Order_By>;
+  identity_id?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: identity_credentials */
+export type Identity_Credentials_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Identity_Credentials_Prepend_Input = {
+  config?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "identity_credentials" */
+export enum Identity_Credentials_Select_Column {
+  /** column name */
+  Config = 'config',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityCredentialTypeId = 'identity_credential_type_id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "identity_credentials" */
+export type Identity_Credentials_Set_Input = {
+  config?: InputMaybe<Scalars['jsonb']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_credential_type_id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "identity_credentials" */
+export enum Identity_Credentials_Update_Column {
+  /** column name */
+  Config = 'config',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityCredentialTypeId = 'identity_credential_type_id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** columns and relationships of "identity_recovery_addresses" */
+export type Identity_Recovery_Addresses = {
+  __typename?: 'identity_recovery_addresses';
+  created_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  identity_id: Scalars['uuid'];
+  nid?: Maybe<Scalars['uuid']>;
+  updated_at: Scalars['timestamp'];
+  value: Scalars['String'];
+  via: Scalars['String'];
+};
+
+/** aggregated selection of "identity_recovery_addresses" */
+export type Identity_Recovery_Addresses_Aggregate = {
+  __typename?: 'identity_recovery_addresses_aggregate';
+  aggregate?: Maybe<Identity_Recovery_Addresses_Aggregate_Fields>;
+  nodes: Array<Identity_Recovery_Addresses>;
+};
+
+/** aggregate fields of "identity_recovery_addresses" */
+export type Identity_Recovery_Addresses_Aggregate_Fields = {
+  __typename?: 'identity_recovery_addresses_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Identity_Recovery_Addresses_Max_Fields>;
+  min?: Maybe<Identity_Recovery_Addresses_Min_Fields>;
+};
+
+
+/** aggregate fields of "identity_recovery_addresses" */
+export type Identity_Recovery_Addresses_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Identity_Recovery_Addresses_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "identity_recovery_addresses". All fields are combined with a logical 'AND'. */
+export type Identity_Recovery_Addresses_Bool_Exp = {
+  _and?: InputMaybe<Array<Identity_Recovery_Addresses_Bool_Exp>>;
+  _not?: InputMaybe<Identity_Recovery_Addresses_Bool_Exp>;
+  _or?: InputMaybe<Array<Identity_Recovery_Addresses_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  identity_id?: InputMaybe<Uuid_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  value?: InputMaybe<String_Comparison_Exp>;
+  via?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "identity_recovery_addresses" */
+export enum Identity_Recovery_Addresses_Constraint {
+  /** unique or primary key constraint */
+  IdentityRecoveryAddressesPkey = 'identity_recovery_addresses_pkey',
+  /** unique or primary key constraint */
+  IdentityRecoveryAddressesStatusViaUqIdx = 'identity_recovery_addresses_status_via_uq_idx'
+}
+
+/** input type for inserting data into table "identity_recovery_addresses" */
+export type Identity_Recovery_Addresses_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  value?: InputMaybe<Scalars['String']>;
+  via?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Identity_Recovery_Addresses_Max_Fields = {
+  __typename?: 'identity_recovery_addresses_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  value?: Maybe<Scalars['String']>;
+  via?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Identity_Recovery_Addresses_Min_Fields = {
+  __typename?: 'identity_recovery_addresses_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  value?: Maybe<Scalars['String']>;
+  via?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "identity_recovery_addresses" */
+export type Identity_Recovery_Addresses_Mutation_Response = {
+  __typename?: 'identity_recovery_addresses_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Identity_Recovery_Addresses>;
+};
+
+/** on conflict condition type for table "identity_recovery_addresses" */
+export type Identity_Recovery_Addresses_On_Conflict = {
+  constraint: Identity_Recovery_Addresses_Constraint;
+  update_columns?: Array<Identity_Recovery_Addresses_Update_Column>;
+  where?: InputMaybe<Identity_Recovery_Addresses_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "identity_recovery_addresses". */
+export type Identity_Recovery_Addresses_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  identity_id?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+  via?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: identity_recovery_addresses */
+export type Identity_Recovery_Addresses_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "identity_recovery_addresses" */
+export enum Identity_Recovery_Addresses_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value',
+  /** column name */
+  Via = 'via'
+}
+
+/** input type for updating data in table "identity_recovery_addresses" */
+export type Identity_Recovery_Addresses_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  value?: InputMaybe<Scalars['String']>;
+  via?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "identity_recovery_addresses" */
+export enum Identity_Recovery_Addresses_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value',
+  /** column name */
+  Via = 'via'
+}
+
+/** columns and relationships of "identity_recovery_tokens" */
+export type Identity_Recovery_Tokens = {
+  __typename?: 'identity_recovery_tokens';
+  created_at: Scalars['timestamp'];
+  expires_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  identity_id: Scalars['uuid'];
+  identity_recovery_address_id?: Maybe<Scalars['uuid']>;
+  issued_at: Scalars['timestamp'];
+  nid?: Maybe<Scalars['uuid']>;
+  selfservice_recovery_flow_id?: Maybe<Scalars['uuid']>;
+  token: Scalars['String'];
+  updated_at: Scalars['timestamp'];
+  used: Scalars['Boolean'];
+  used_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregated selection of "identity_recovery_tokens" */
+export type Identity_Recovery_Tokens_Aggregate = {
+  __typename?: 'identity_recovery_tokens_aggregate';
+  aggregate?: Maybe<Identity_Recovery_Tokens_Aggregate_Fields>;
+  nodes: Array<Identity_Recovery_Tokens>;
+};
+
+/** aggregate fields of "identity_recovery_tokens" */
+export type Identity_Recovery_Tokens_Aggregate_Fields = {
+  __typename?: 'identity_recovery_tokens_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Identity_Recovery_Tokens_Max_Fields>;
+  min?: Maybe<Identity_Recovery_Tokens_Min_Fields>;
+};
+
+
+/** aggregate fields of "identity_recovery_tokens" */
+export type Identity_Recovery_Tokens_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Identity_Recovery_Tokens_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "identity_recovery_tokens". All fields are combined with a logical 'AND'. */
+export type Identity_Recovery_Tokens_Bool_Exp = {
+  _and?: InputMaybe<Array<Identity_Recovery_Tokens_Bool_Exp>>;
+  _not?: InputMaybe<Identity_Recovery_Tokens_Bool_Exp>;
+  _or?: InputMaybe<Array<Identity_Recovery_Tokens_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  expires_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  identity_id?: InputMaybe<Uuid_Comparison_Exp>;
+  identity_recovery_address_id?: InputMaybe<Uuid_Comparison_Exp>;
+  issued_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  selfservice_recovery_flow_id?: InputMaybe<Uuid_Comparison_Exp>;
+  token?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  used?: InputMaybe<Boolean_Comparison_Exp>;
+  used_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "identity_recovery_tokens" */
+export enum Identity_Recovery_Tokens_Constraint {
+  /** unique or primary key constraint */
+  IdentityRecoveryAddressesCodeUqIdx = 'identity_recovery_addresses_code_uq_idx',
+  /** unique or primary key constraint */
+  IdentityRecoveryTokensPkey = 'identity_recovery_tokens_pkey'
+}
+
+/** input type for inserting data into table "identity_recovery_tokens" */
+export type Identity_Recovery_Tokens_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  identity_recovery_address_id?: InputMaybe<Scalars['uuid']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  selfservice_recovery_flow_id?: InputMaybe<Scalars['uuid']>;
+  token?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  used?: InputMaybe<Scalars['Boolean']>;
+  used_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Identity_Recovery_Tokens_Max_Fields = {
+  __typename?: 'identity_recovery_tokens_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  identity_recovery_address_id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  selfservice_recovery_flow_id?: Maybe<Scalars['uuid']>;
+  token?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  used_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Identity_Recovery_Tokens_Min_Fields = {
+  __typename?: 'identity_recovery_tokens_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  identity_recovery_address_id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  selfservice_recovery_flow_id?: Maybe<Scalars['uuid']>;
+  token?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  used_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "identity_recovery_tokens" */
+export type Identity_Recovery_Tokens_Mutation_Response = {
+  __typename?: 'identity_recovery_tokens_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Identity_Recovery_Tokens>;
+};
+
+/** on conflict condition type for table "identity_recovery_tokens" */
+export type Identity_Recovery_Tokens_On_Conflict = {
+  constraint: Identity_Recovery_Tokens_Constraint;
+  update_columns?: Array<Identity_Recovery_Tokens_Update_Column>;
+  where?: InputMaybe<Identity_Recovery_Tokens_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "identity_recovery_tokens". */
+export type Identity_Recovery_Tokens_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  expires_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  identity_id?: InputMaybe<Order_By>;
+  identity_recovery_address_id?: InputMaybe<Order_By>;
+  issued_at?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  selfservice_recovery_flow_id?: InputMaybe<Order_By>;
+  token?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  used?: InputMaybe<Order_By>;
+  used_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: identity_recovery_tokens */
+export type Identity_Recovery_Tokens_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "identity_recovery_tokens" */
+export enum Identity_Recovery_Tokens_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  IdentityRecoveryAddressId = 'identity_recovery_address_id',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  SelfserviceRecoveryFlowId = 'selfservice_recovery_flow_id',
+  /** column name */
+  Token = 'token',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Used = 'used',
+  /** column name */
+  UsedAt = 'used_at'
+}
+
+/** input type for updating data in table "identity_recovery_tokens" */
+export type Identity_Recovery_Tokens_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  identity_recovery_address_id?: InputMaybe<Scalars['uuid']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  selfservice_recovery_flow_id?: InputMaybe<Scalars['uuid']>;
+  token?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  used?: InputMaybe<Scalars['Boolean']>;
+  used_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "identity_recovery_tokens" */
+export enum Identity_Recovery_Tokens_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  IdentityRecoveryAddressId = 'identity_recovery_address_id',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  SelfserviceRecoveryFlowId = 'selfservice_recovery_flow_id',
+  /** column name */
+  Token = 'token',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Used = 'used',
+  /** column name */
+  UsedAt = 'used_at'
+}
+
+/** columns and relationships of "identity_verifiable_addresses" */
+export type Identity_Verifiable_Addresses = {
+  __typename?: 'identity_verifiable_addresses';
+  created_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  identity_id: Scalars['uuid'];
+  nid?: Maybe<Scalars['uuid']>;
+  status: Scalars['String'];
+  updated_at: Scalars['timestamp'];
+  value: Scalars['String'];
+  verified: Scalars['Boolean'];
+  verified_at?: Maybe<Scalars['timestamp']>;
+  via: Scalars['String'];
+};
+
+/** aggregated selection of "identity_verifiable_addresses" */
+export type Identity_Verifiable_Addresses_Aggregate = {
+  __typename?: 'identity_verifiable_addresses_aggregate';
+  aggregate?: Maybe<Identity_Verifiable_Addresses_Aggregate_Fields>;
+  nodes: Array<Identity_Verifiable_Addresses>;
+};
+
+/** aggregate fields of "identity_verifiable_addresses" */
+export type Identity_Verifiable_Addresses_Aggregate_Fields = {
+  __typename?: 'identity_verifiable_addresses_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Identity_Verifiable_Addresses_Max_Fields>;
+  min?: Maybe<Identity_Verifiable_Addresses_Min_Fields>;
+};
+
+
+/** aggregate fields of "identity_verifiable_addresses" */
+export type Identity_Verifiable_Addresses_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Identity_Verifiable_Addresses_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "identity_verifiable_addresses". All fields are combined with a logical 'AND'. */
+export type Identity_Verifiable_Addresses_Bool_Exp = {
+  _and?: InputMaybe<Array<Identity_Verifiable_Addresses_Bool_Exp>>;
+  _not?: InputMaybe<Identity_Verifiable_Addresses_Bool_Exp>;
+  _or?: InputMaybe<Array<Identity_Verifiable_Addresses_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  identity_id?: InputMaybe<Uuid_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  status?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  value?: InputMaybe<String_Comparison_Exp>;
+  verified?: InputMaybe<Boolean_Comparison_Exp>;
+  verified_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  via?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "identity_verifiable_addresses" */
+export enum Identity_Verifiable_Addresses_Constraint {
+  /** unique or primary key constraint */
+  IdentityVerifiableAddressesPkey = 'identity_verifiable_addresses_pkey',
+  /** unique or primary key constraint */
+  IdentityVerifiableAddressesStatusViaUqIdx = 'identity_verifiable_addresses_status_via_uq_idx'
+}
+
+/** input type for inserting data into table "identity_verifiable_addresses" */
+export type Identity_Verifiable_Addresses_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  status?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  value?: InputMaybe<Scalars['String']>;
+  verified?: InputMaybe<Scalars['Boolean']>;
+  verified_at?: InputMaybe<Scalars['timestamp']>;
+  via?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Identity_Verifiable_Addresses_Max_Fields = {
+  __typename?: 'identity_verifiable_addresses_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  status?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  value?: Maybe<Scalars['String']>;
+  verified_at?: Maybe<Scalars['timestamp']>;
+  via?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Identity_Verifiable_Addresses_Min_Fields = {
+  __typename?: 'identity_verifiable_addresses_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  status?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  value?: Maybe<Scalars['String']>;
+  verified_at?: Maybe<Scalars['timestamp']>;
+  via?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "identity_verifiable_addresses" */
+export type Identity_Verifiable_Addresses_Mutation_Response = {
+  __typename?: 'identity_verifiable_addresses_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Identity_Verifiable_Addresses>;
+};
+
+/** on conflict condition type for table "identity_verifiable_addresses" */
+export type Identity_Verifiable_Addresses_On_Conflict = {
+  constraint: Identity_Verifiable_Addresses_Constraint;
+  update_columns?: Array<Identity_Verifiable_Addresses_Update_Column>;
+  where?: InputMaybe<Identity_Verifiable_Addresses_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "identity_verifiable_addresses". */
+export type Identity_Verifiable_Addresses_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  identity_id?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+  verified?: InputMaybe<Order_By>;
+  verified_at?: InputMaybe<Order_By>;
+  via?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: identity_verifiable_addresses */
+export type Identity_Verifiable_Addresses_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "identity_verifiable_addresses" */
+export enum Identity_Verifiable_Addresses_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  Status = 'status',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value',
+  /** column name */
+  Verified = 'verified',
+  /** column name */
+  VerifiedAt = 'verified_at',
+  /** column name */
+  Via = 'via'
+}
+
+/** input type for updating data in table "identity_verifiable_addresses" */
+export type Identity_Verifiable_Addresses_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  status?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  value?: InputMaybe<Scalars['String']>;
+  verified?: InputMaybe<Scalars['Boolean']>;
+  verified_at?: InputMaybe<Scalars['timestamp']>;
+  via?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "identity_verifiable_addresses" */
+export enum Identity_Verifiable_Addresses_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  Status = 'status',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value',
+  /** column name */
+  Verified = 'verified',
+  /** column name */
+  VerifiedAt = 'verified_at',
+  /** column name */
+  Via = 'via'
+}
+
+/** columns and relationships of "identity_verification_tokens" */
+export type Identity_Verification_Tokens = {
+  __typename?: 'identity_verification_tokens';
+  created_at: Scalars['timestamp'];
+  expires_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  identity_verifiable_address_id: Scalars['uuid'];
+  issued_at: Scalars['timestamp'];
+  nid?: Maybe<Scalars['uuid']>;
+  selfservice_verification_flow_id?: Maybe<Scalars['uuid']>;
+  token: Scalars['String'];
+  updated_at: Scalars['timestamp'];
+  used: Scalars['Boolean'];
+  used_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregated selection of "identity_verification_tokens" */
+export type Identity_Verification_Tokens_Aggregate = {
+  __typename?: 'identity_verification_tokens_aggregate';
+  aggregate?: Maybe<Identity_Verification_Tokens_Aggregate_Fields>;
+  nodes: Array<Identity_Verification_Tokens>;
+};
+
+/** aggregate fields of "identity_verification_tokens" */
+export type Identity_Verification_Tokens_Aggregate_Fields = {
+  __typename?: 'identity_verification_tokens_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Identity_Verification_Tokens_Max_Fields>;
+  min?: Maybe<Identity_Verification_Tokens_Min_Fields>;
+};
+
+
+/** aggregate fields of "identity_verification_tokens" */
+export type Identity_Verification_Tokens_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Identity_Verification_Tokens_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "identity_verification_tokens". All fields are combined with a logical 'AND'. */
+export type Identity_Verification_Tokens_Bool_Exp = {
+  _and?: InputMaybe<Array<Identity_Verification_Tokens_Bool_Exp>>;
+  _not?: InputMaybe<Identity_Verification_Tokens_Bool_Exp>;
+  _or?: InputMaybe<Array<Identity_Verification_Tokens_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  expires_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  identity_verifiable_address_id?: InputMaybe<Uuid_Comparison_Exp>;
+  issued_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  selfservice_verification_flow_id?: InputMaybe<Uuid_Comparison_Exp>;
+  token?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  used?: InputMaybe<Boolean_Comparison_Exp>;
+  used_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "identity_verification_tokens" */
+export enum Identity_Verification_Tokens_Constraint {
+  /** unique or primary key constraint */
+  IdentityVerificationTokensPkey = 'identity_verification_tokens_pkey',
+  /** unique or primary key constraint */
+  IdentityVerificationTokensTokenUqIdx = 'identity_verification_tokens_token_uq_idx'
+}
+
+/** input type for inserting data into table "identity_verification_tokens" */
+export type Identity_Verification_Tokens_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_verifiable_address_id?: InputMaybe<Scalars['uuid']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  selfservice_verification_flow_id?: InputMaybe<Scalars['uuid']>;
+  token?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  used?: InputMaybe<Scalars['Boolean']>;
+  used_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Identity_Verification_Tokens_Max_Fields = {
+  __typename?: 'identity_verification_tokens_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_verifiable_address_id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  selfservice_verification_flow_id?: Maybe<Scalars['uuid']>;
+  token?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  used_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Identity_Verification_Tokens_Min_Fields = {
+  __typename?: 'identity_verification_tokens_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_verifiable_address_id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  selfservice_verification_flow_id?: Maybe<Scalars['uuid']>;
+  token?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  used_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "identity_verification_tokens" */
+export type Identity_Verification_Tokens_Mutation_Response = {
+  __typename?: 'identity_verification_tokens_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Identity_Verification_Tokens>;
+};
+
+/** on conflict condition type for table "identity_verification_tokens" */
+export type Identity_Verification_Tokens_On_Conflict = {
+  constraint: Identity_Verification_Tokens_Constraint;
+  update_columns?: Array<Identity_Verification_Tokens_Update_Column>;
+  where?: InputMaybe<Identity_Verification_Tokens_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "identity_verification_tokens". */
+export type Identity_Verification_Tokens_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  expires_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  identity_verifiable_address_id?: InputMaybe<Order_By>;
+  issued_at?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  selfservice_verification_flow_id?: InputMaybe<Order_By>;
+  token?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  used?: InputMaybe<Order_By>;
+  used_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: identity_verification_tokens */
+export type Identity_Verification_Tokens_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "identity_verification_tokens" */
+export enum Identity_Verification_Tokens_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityVerifiableAddressId = 'identity_verifiable_address_id',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  SelfserviceVerificationFlowId = 'selfservice_verification_flow_id',
+  /** column name */
+  Token = 'token',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Used = 'used',
+  /** column name */
+  UsedAt = 'used_at'
+}
+
+/** input type for updating data in table "identity_verification_tokens" */
+export type Identity_Verification_Tokens_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_verifiable_address_id?: InputMaybe<Scalars['uuid']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  selfservice_verification_flow_id?: InputMaybe<Scalars['uuid']>;
+  token?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  used?: InputMaybe<Scalars['Boolean']>;
+  used_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "identity_verification_tokens" */
+export enum Identity_Verification_Tokens_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityVerifiableAddressId = 'identity_verifiable_address_id',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  SelfserviceVerificationFlowId = 'selfservice_verification_flow_id',
+  /** column name */
+  Token = 'token',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Used = 'used',
+  /** column name */
+  UsedAt = 'used_at'
+}
+
 /** columns and relationships of "instances" */
 export type Instances = {
   __typename?: 'instances';
@@ -1090,6 +3089,29 @@ export enum Instances_Update_Column {
   LastHeartbeat = 'last_heartbeat'
 }
 
+/** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
+export type Jsonb_Comparison_Exp = {
+  /** is the column contained in the given json value */
+  _contained_in?: InputMaybe<Scalars['jsonb']>;
+  /** does the column contain the given json value at the top level */
+  _contains?: InputMaybe<Scalars['jsonb']>;
+  _eq?: InputMaybe<Scalars['jsonb']>;
+  _gt?: InputMaybe<Scalars['jsonb']>;
+  _gte?: InputMaybe<Scalars['jsonb']>;
+  /** does the string exist as a top-level key in the column */
+  _has_key?: InputMaybe<Scalars['String']>;
+  /** do all of these strings exist as top-level keys in the column */
+  _has_keys_all?: InputMaybe<Array<Scalars['String']>>;
+  /** do any of these strings exist as top-level keys in the column */
+  _has_keys_any?: InputMaybe<Array<Scalars['String']>>;
+  _in?: InputMaybe<Array<Scalars['jsonb']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['jsonb']>;
+  _lte?: InputMaybe<Scalars['jsonb']>;
+  _neq?: InputMaybe<Scalars['jsonb']>;
+  _nin?: InputMaybe<Array<Scalars['jsonb']>>;
+};
+
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
@@ -1097,14 +3119,58 @@ export type Mutation_Root = {
   delete_builds?: Maybe<Builds_Mutation_Response>;
   /** delete single row from the table: "builds" */
   delete_builds_by_pk?: Maybe<Builds>;
+  /** delete data from the table: "continuity_containers" */
+  delete_continuity_containers?: Maybe<Continuity_Containers_Mutation_Response>;
+  /** delete single row from the table: "continuity_containers" */
+  delete_continuity_containers_by_pk?: Maybe<Continuity_Containers>;
+  /** delete data from the table: "courier_messages" */
+  delete_courier_messages?: Maybe<Courier_Messages_Mutation_Response>;
+  /** delete single row from the table: "courier_messages" */
+  delete_courier_messages_by_pk?: Maybe<Courier_Messages>;
   /** delete data from the table: "findings" */
   delete_findings?: Maybe<Findings_Mutation_Response>;
   /** delete single row from the table: "findings" */
   delete_findings_by_pk?: Maybe<Findings>;
+  /** delete data from the table: "identities" */
+  delete_identities?: Maybe<Identities_Mutation_Response>;
+  /** delete single row from the table: "identities" */
+  delete_identities_by_pk?: Maybe<Identities>;
+  /** delete data from the table: "identity_credential_identifiers" */
+  delete_identity_credential_identifiers?: Maybe<Identity_Credential_Identifiers_Mutation_Response>;
+  /** delete single row from the table: "identity_credential_identifiers" */
+  delete_identity_credential_identifiers_by_pk?: Maybe<Identity_Credential_Identifiers>;
+  /** delete data from the table: "identity_credential_types" */
+  delete_identity_credential_types?: Maybe<Identity_Credential_Types_Mutation_Response>;
+  /** delete single row from the table: "identity_credential_types" */
+  delete_identity_credential_types_by_pk?: Maybe<Identity_Credential_Types>;
+  /** delete data from the table: "identity_credentials" */
+  delete_identity_credentials?: Maybe<Identity_Credentials_Mutation_Response>;
+  /** delete single row from the table: "identity_credentials" */
+  delete_identity_credentials_by_pk?: Maybe<Identity_Credentials>;
+  /** delete data from the table: "identity_recovery_addresses" */
+  delete_identity_recovery_addresses?: Maybe<Identity_Recovery_Addresses_Mutation_Response>;
+  /** delete single row from the table: "identity_recovery_addresses" */
+  delete_identity_recovery_addresses_by_pk?: Maybe<Identity_Recovery_Addresses>;
+  /** delete data from the table: "identity_recovery_tokens" */
+  delete_identity_recovery_tokens?: Maybe<Identity_Recovery_Tokens_Mutation_Response>;
+  /** delete single row from the table: "identity_recovery_tokens" */
+  delete_identity_recovery_tokens_by_pk?: Maybe<Identity_Recovery_Tokens>;
+  /** delete data from the table: "identity_verifiable_addresses" */
+  delete_identity_verifiable_addresses?: Maybe<Identity_Verifiable_Addresses_Mutation_Response>;
+  /** delete single row from the table: "identity_verifiable_addresses" */
+  delete_identity_verifiable_addresses_by_pk?: Maybe<Identity_Verifiable_Addresses>;
+  /** delete data from the table: "identity_verification_tokens" */
+  delete_identity_verification_tokens?: Maybe<Identity_Verification_Tokens_Mutation_Response>;
+  /** delete single row from the table: "identity_verification_tokens" */
+  delete_identity_verification_tokens_by_pk?: Maybe<Identity_Verification_Tokens>;
   /** delete data from the table: "instances" */
   delete_instances?: Maybe<Instances_Mutation_Response>;
   /** delete single row from the table: "instances" */
   delete_instances_by_pk?: Maybe<Instances>;
+  /** delete data from the table: "networks" */
+  delete_networks?: Maybe<Networks_Mutation_Response>;
+  /** delete single row from the table: "networks" */
+  delete_networks_by_pk?: Maybe<Networks>;
   /** delete data from the table: "organization_user" */
   delete_organization_user?: Maybe<Organization_User_Mutation_Response>;
   /** delete single row from the table: "organization_user" */
@@ -1133,6 +3199,36 @@ export type Mutation_Root = {
   delete_scans?: Maybe<Scans_Mutation_Response>;
   /** delete single row from the table: "scans" */
   delete_scans_by_pk?: Maybe<Scans>;
+  /** delete data from the table: "schema_migration" */
+  delete_schema_migration?: Maybe<Schema_Migration_Mutation_Response>;
+  /** delete data from the table: "selfservice_errors" */
+  delete_selfservice_errors?: Maybe<Selfservice_Errors_Mutation_Response>;
+  /** delete single row from the table: "selfservice_errors" */
+  delete_selfservice_errors_by_pk?: Maybe<Selfservice_Errors>;
+  /** delete data from the table: "selfservice_login_flows" */
+  delete_selfservice_login_flows?: Maybe<Selfservice_Login_Flows_Mutation_Response>;
+  /** delete single row from the table: "selfservice_login_flows" */
+  delete_selfservice_login_flows_by_pk?: Maybe<Selfservice_Login_Flows>;
+  /** delete data from the table: "selfservice_recovery_flows" */
+  delete_selfservice_recovery_flows?: Maybe<Selfservice_Recovery_Flows_Mutation_Response>;
+  /** delete single row from the table: "selfservice_recovery_flows" */
+  delete_selfservice_recovery_flows_by_pk?: Maybe<Selfservice_Recovery_Flows>;
+  /** delete data from the table: "selfservice_registration_flows" */
+  delete_selfservice_registration_flows?: Maybe<Selfservice_Registration_Flows_Mutation_Response>;
+  /** delete single row from the table: "selfservice_registration_flows" */
+  delete_selfservice_registration_flows_by_pk?: Maybe<Selfservice_Registration_Flows>;
+  /** delete data from the table: "selfservice_settings_flows" */
+  delete_selfservice_settings_flows?: Maybe<Selfservice_Settings_Flows_Mutation_Response>;
+  /** delete single row from the table: "selfservice_settings_flows" */
+  delete_selfservice_settings_flows_by_pk?: Maybe<Selfservice_Settings_Flows>;
+  /** delete data from the table: "selfservice_verification_flows" */
+  delete_selfservice_verification_flows?: Maybe<Selfservice_Verification_Flows_Mutation_Response>;
+  /** delete single row from the table: "selfservice_verification_flows" */
+  delete_selfservice_verification_flows_by_pk?: Maybe<Selfservice_Verification_Flows>;
+  /** delete data from the table: "sessions" */
+  delete_sessions?: Maybe<Sessions_Mutation_Response>;
+  /** delete single row from the table: "sessions" */
+  delete_sessions_by_pk?: Maybe<Sessions>;
   /** delete data from the table: "settings" */
   delete_settings?: Maybe<Settings_Mutation_Response>;
   /** delete single row from the table: "settings" */
@@ -1153,14 +3249,58 @@ export type Mutation_Root = {
   insert_builds?: Maybe<Builds_Mutation_Response>;
   /** insert a single row into the table: "builds" */
   insert_builds_one?: Maybe<Builds>;
+  /** insert data into the table: "continuity_containers" */
+  insert_continuity_containers?: Maybe<Continuity_Containers_Mutation_Response>;
+  /** insert a single row into the table: "continuity_containers" */
+  insert_continuity_containers_one?: Maybe<Continuity_Containers>;
+  /** insert data into the table: "courier_messages" */
+  insert_courier_messages?: Maybe<Courier_Messages_Mutation_Response>;
+  /** insert a single row into the table: "courier_messages" */
+  insert_courier_messages_one?: Maybe<Courier_Messages>;
   /** insert data into the table: "findings" */
   insert_findings?: Maybe<Findings_Mutation_Response>;
   /** insert a single row into the table: "findings" */
   insert_findings_one?: Maybe<Findings>;
+  /** insert data into the table: "identities" */
+  insert_identities?: Maybe<Identities_Mutation_Response>;
+  /** insert a single row into the table: "identities" */
+  insert_identities_one?: Maybe<Identities>;
+  /** insert data into the table: "identity_credential_identifiers" */
+  insert_identity_credential_identifiers?: Maybe<Identity_Credential_Identifiers_Mutation_Response>;
+  /** insert a single row into the table: "identity_credential_identifiers" */
+  insert_identity_credential_identifiers_one?: Maybe<Identity_Credential_Identifiers>;
+  /** insert data into the table: "identity_credential_types" */
+  insert_identity_credential_types?: Maybe<Identity_Credential_Types_Mutation_Response>;
+  /** insert a single row into the table: "identity_credential_types" */
+  insert_identity_credential_types_one?: Maybe<Identity_Credential_Types>;
+  /** insert data into the table: "identity_credentials" */
+  insert_identity_credentials?: Maybe<Identity_Credentials_Mutation_Response>;
+  /** insert a single row into the table: "identity_credentials" */
+  insert_identity_credentials_one?: Maybe<Identity_Credentials>;
+  /** insert data into the table: "identity_recovery_addresses" */
+  insert_identity_recovery_addresses?: Maybe<Identity_Recovery_Addresses_Mutation_Response>;
+  /** insert a single row into the table: "identity_recovery_addresses" */
+  insert_identity_recovery_addresses_one?: Maybe<Identity_Recovery_Addresses>;
+  /** insert data into the table: "identity_recovery_tokens" */
+  insert_identity_recovery_tokens?: Maybe<Identity_Recovery_Tokens_Mutation_Response>;
+  /** insert a single row into the table: "identity_recovery_tokens" */
+  insert_identity_recovery_tokens_one?: Maybe<Identity_Recovery_Tokens>;
+  /** insert data into the table: "identity_verifiable_addresses" */
+  insert_identity_verifiable_addresses?: Maybe<Identity_Verifiable_Addresses_Mutation_Response>;
+  /** insert a single row into the table: "identity_verifiable_addresses" */
+  insert_identity_verifiable_addresses_one?: Maybe<Identity_Verifiable_Addresses>;
+  /** insert data into the table: "identity_verification_tokens" */
+  insert_identity_verification_tokens?: Maybe<Identity_Verification_Tokens_Mutation_Response>;
+  /** insert a single row into the table: "identity_verification_tokens" */
+  insert_identity_verification_tokens_one?: Maybe<Identity_Verification_Tokens>;
   /** insert data into the table: "instances" */
   insert_instances?: Maybe<Instances_Mutation_Response>;
   /** insert a single row into the table: "instances" */
   insert_instances_one?: Maybe<Instances>;
+  /** insert data into the table: "networks" */
+  insert_networks?: Maybe<Networks_Mutation_Response>;
+  /** insert a single row into the table: "networks" */
+  insert_networks_one?: Maybe<Networks>;
   /** insert data into the table: "organization_user" */
   insert_organization_user?: Maybe<Organization_User_Mutation_Response>;
   /** insert a single row into the table: "organization_user" */
@@ -1189,6 +3329,38 @@ export type Mutation_Root = {
   insert_scans?: Maybe<Scans_Mutation_Response>;
   /** insert a single row into the table: "scans" */
   insert_scans_one?: Maybe<Scans>;
+  /** insert data into the table: "schema_migration" */
+  insert_schema_migration?: Maybe<Schema_Migration_Mutation_Response>;
+  /** insert a single row into the table: "schema_migration" */
+  insert_schema_migration_one?: Maybe<Schema_Migration>;
+  /** insert data into the table: "selfservice_errors" */
+  insert_selfservice_errors?: Maybe<Selfservice_Errors_Mutation_Response>;
+  /** insert a single row into the table: "selfservice_errors" */
+  insert_selfservice_errors_one?: Maybe<Selfservice_Errors>;
+  /** insert data into the table: "selfservice_login_flows" */
+  insert_selfservice_login_flows?: Maybe<Selfservice_Login_Flows_Mutation_Response>;
+  /** insert a single row into the table: "selfservice_login_flows" */
+  insert_selfservice_login_flows_one?: Maybe<Selfservice_Login_Flows>;
+  /** insert data into the table: "selfservice_recovery_flows" */
+  insert_selfservice_recovery_flows?: Maybe<Selfservice_Recovery_Flows_Mutation_Response>;
+  /** insert a single row into the table: "selfservice_recovery_flows" */
+  insert_selfservice_recovery_flows_one?: Maybe<Selfservice_Recovery_Flows>;
+  /** insert data into the table: "selfservice_registration_flows" */
+  insert_selfservice_registration_flows?: Maybe<Selfservice_Registration_Flows_Mutation_Response>;
+  /** insert a single row into the table: "selfservice_registration_flows" */
+  insert_selfservice_registration_flows_one?: Maybe<Selfservice_Registration_Flows>;
+  /** insert data into the table: "selfservice_settings_flows" */
+  insert_selfservice_settings_flows?: Maybe<Selfservice_Settings_Flows_Mutation_Response>;
+  /** insert a single row into the table: "selfservice_settings_flows" */
+  insert_selfservice_settings_flows_one?: Maybe<Selfservice_Settings_Flows>;
+  /** insert data into the table: "selfservice_verification_flows" */
+  insert_selfservice_verification_flows?: Maybe<Selfservice_Verification_Flows_Mutation_Response>;
+  /** insert a single row into the table: "selfservice_verification_flows" */
+  insert_selfservice_verification_flows_one?: Maybe<Selfservice_Verification_Flows>;
+  /** insert data into the table: "sessions" */
+  insert_sessions?: Maybe<Sessions_Mutation_Response>;
+  /** insert a single row into the table: "sessions" */
+  insert_sessions_one?: Maybe<Sessions>;
   /** insert data into the table: "settings" */
   insert_settings?: Maybe<Settings_Mutation_Response>;
   /** insert a single row into the table: "settings" */
@@ -1209,14 +3381,58 @@ export type Mutation_Root = {
   update_builds?: Maybe<Builds_Mutation_Response>;
   /** update single row of the table: "builds" */
   update_builds_by_pk?: Maybe<Builds>;
+  /** update data of the table: "continuity_containers" */
+  update_continuity_containers?: Maybe<Continuity_Containers_Mutation_Response>;
+  /** update single row of the table: "continuity_containers" */
+  update_continuity_containers_by_pk?: Maybe<Continuity_Containers>;
+  /** update data of the table: "courier_messages" */
+  update_courier_messages?: Maybe<Courier_Messages_Mutation_Response>;
+  /** update single row of the table: "courier_messages" */
+  update_courier_messages_by_pk?: Maybe<Courier_Messages>;
   /** update data of the table: "findings" */
   update_findings?: Maybe<Findings_Mutation_Response>;
   /** update single row of the table: "findings" */
   update_findings_by_pk?: Maybe<Findings>;
+  /** update data of the table: "identities" */
+  update_identities?: Maybe<Identities_Mutation_Response>;
+  /** update single row of the table: "identities" */
+  update_identities_by_pk?: Maybe<Identities>;
+  /** update data of the table: "identity_credential_identifiers" */
+  update_identity_credential_identifiers?: Maybe<Identity_Credential_Identifiers_Mutation_Response>;
+  /** update single row of the table: "identity_credential_identifiers" */
+  update_identity_credential_identifiers_by_pk?: Maybe<Identity_Credential_Identifiers>;
+  /** update data of the table: "identity_credential_types" */
+  update_identity_credential_types?: Maybe<Identity_Credential_Types_Mutation_Response>;
+  /** update single row of the table: "identity_credential_types" */
+  update_identity_credential_types_by_pk?: Maybe<Identity_Credential_Types>;
+  /** update data of the table: "identity_credentials" */
+  update_identity_credentials?: Maybe<Identity_Credentials_Mutation_Response>;
+  /** update single row of the table: "identity_credentials" */
+  update_identity_credentials_by_pk?: Maybe<Identity_Credentials>;
+  /** update data of the table: "identity_recovery_addresses" */
+  update_identity_recovery_addresses?: Maybe<Identity_Recovery_Addresses_Mutation_Response>;
+  /** update single row of the table: "identity_recovery_addresses" */
+  update_identity_recovery_addresses_by_pk?: Maybe<Identity_Recovery_Addresses>;
+  /** update data of the table: "identity_recovery_tokens" */
+  update_identity_recovery_tokens?: Maybe<Identity_Recovery_Tokens_Mutation_Response>;
+  /** update single row of the table: "identity_recovery_tokens" */
+  update_identity_recovery_tokens_by_pk?: Maybe<Identity_Recovery_Tokens>;
+  /** update data of the table: "identity_verifiable_addresses" */
+  update_identity_verifiable_addresses?: Maybe<Identity_Verifiable_Addresses_Mutation_Response>;
+  /** update single row of the table: "identity_verifiable_addresses" */
+  update_identity_verifiable_addresses_by_pk?: Maybe<Identity_Verifiable_Addresses>;
+  /** update data of the table: "identity_verification_tokens" */
+  update_identity_verification_tokens?: Maybe<Identity_Verification_Tokens_Mutation_Response>;
+  /** update single row of the table: "identity_verification_tokens" */
+  update_identity_verification_tokens_by_pk?: Maybe<Identity_Verification_Tokens>;
   /** update data of the table: "instances" */
   update_instances?: Maybe<Instances_Mutation_Response>;
   /** update single row of the table: "instances" */
   update_instances_by_pk?: Maybe<Instances>;
+  /** update data of the table: "networks" */
+  update_networks?: Maybe<Networks_Mutation_Response>;
+  /** update single row of the table: "networks" */
+  update_networks_by_pk?: Maybe<Networks>;
   /** update data of the table: "organization_user" */
   update_organization_user?: Maybe<Organization_User_Mutation_Response>;
   /** update single row of the table: "organization_user" */
@@ -1245,6 +3461,36 @@ export type Mutation_Root = {
   update_scans?: Maybe<Scans_Mutation_Response>;
   /** update single row of the table: "scans" */
   update_scans_by_pk?: Maybe<Scans>;
+  /** update data of the table: "schema_migration" */
+  update_schema_migration?: Maybe<Schema_Migration_Mutation_Response>;
+  /** update data of the table: "selfservice_errors" */
+  update_selfservice_errors?: Maybe<Selfservice_Errors_Mutation_Response>;
+  /** update single row of the table: "selfservice_errors" */
+  update_selfservice_errors_by_pk?: Maybe<Selfservice_Errors>;
+  /** update data of the table: "selfservice_login_flows" */
+  update_selfservice_login_flows?: Maybe<Selfservice_Login_Flows_Mutation_Response>;
+  /** update single row of the table: "selfservice_login_flows" */
+  update_selfservice_login_flows_by_pk?: Maybe<Selfservice_Login_Flows>;
+  /** update data of the table: "selfservice_recovery_flows" */
+  update_selfservice_recovery_flows?: Maybe<Selfservice_Recovery_Flows_Mutation_Response>;
+  /** update single row of the table: "selfservice_recovery_flows" */
+  update_selfservice_recovery_flows_by_pk?: Maybe<Selfservice_Recovery_Flows>;
+  /** update data of the table: "selfservice_registration_flows" */
+  update_selfservice_registration_flows?: Maybe<Selfservice_Registration_Flows_Mutation_Response>;
+  /** update single row of the table: "selfservice_registration_flows" */
+  update_selfservice_registration_flows_by_pk?: Maybe<Selfservice_Registration_Flows>;
+  /** update data of the table: "selfservice_settings_flows" */
+  update_selfservice_settings_flows?: Maybe<Selfservice_Settings_Flows_Mutation_Response>;
+  /** update single row of the table: "selfservice_settings_flows" */
+  update_selfservice_settings_flows_by_pk?: Maybe<Selfservice_Settings_Flows>;
+  /** update data of the table: "selfservice_verification_flows" */
+  update_selfservice_verification_flows?: Maybe<Selfservice_Verification_Flows_Mutation_Response>;
+  /** update single row of the table: "selfservice_verification_flows" */
+  update_selfservice_verification_flows_by_pk?: Maybe<Selfservice_Verification_Flows>;
+  /** update data of the table: "sessions" */
+  update_sessions?: Maybe<Sessions_Mutation_Response>;
+  /** update single row of the table: "sessions" */
+  update_sessions_by_pk?: Maybe<Sessions>;
   /** update data of the table: "settings" */
   update_settings?: Maybe<Settings_Mutation_Response>;
   /** update single row of the table: "settings" */
@@ -1277,6 +3523,30 @@ export type Mutation_RootDelete_Builds_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootDelete_Continuity_ContainersArgs = {
+  where: Continuity_Containers_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Continuity_Containers_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Courier_MessagesArgs = {
+  where: Courier_Messages_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Courier_Messages_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
 export type Mutation_RootDelete_FindingsArgs = {
   where: Findings_Bool_Exp;
 };
@@ -1284,6 +3554,102 @@ export type Mutation_RootDelete_FindingsArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Findings_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_IdentitiesArgs = {
+  where: Identities_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identities_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Credential_IdentifiersArgs = {
+  where: Identity_Credential_Identifiers_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Credential_Identifiers_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Credential_TypesArgs = {
+  where: Identity_Credential_Types_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Credential_Types_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_CredentialsArgs = {
+  where: Identity_Credentials_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Credentials_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Recovery_AddressesArgs = {
+  where: Identity_Recovery_Addresses_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Recovery_Addresses_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Recovery_TokensArgs = {
+  where: Identity_Recovery_Tokens_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Recovery_Tokens_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Verifiable_AddressesArgs = {
+  where: Identity_Verifiable_Addresses_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Verifiable_Addresses_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Verification_TokensArgs = {
+  where: Identity_Verification_Tokens_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identity_Verification_Tokens_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -1297,6 +3663,18 @@ export type Mutation_RootDelete_InstancesArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Instances_By_PkArgs = {
   instance_id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_NetworksArgs = {
+  where: Networks_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Networks_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -1385,6 +3763,96 @@ export type Mutation_RootDelete_Scans_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootDelete_Schema_MigrationArgs = {
+  where: Schema_Migration_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_ErrorsArgs = {
+  where: Selfservice_Errors_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_Errors_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_Login_FlowsArgs = {
+  where: Selfservice_Login_Flows_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_Login_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_Recovery_FlowsArgs = {
+  where: Selfservice_Recovery_Flows_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_Recovery_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_Registration_FlowsArgs = {
+  where: Selfservice_Registration_Flows_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_Registration_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_Settings_FlowsArgs = {
+  where: Selfservice_Settings_Flows_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_Settings_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_Verification_FlowsArgs = {
+  where: Selfservice_Verification_Flows_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Selfservice_Verification_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_SessionsArgs = {
+  where: Sessions_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Sessions_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
 export type Mutation_RootDelete_SettingsArgs = {
   where: Settings_Bool_Exp;
 };
@@ -1447,6 +3915,34 @@ export type Mutation_RootInsert_Builds_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Continuity_ContainersArgs = {
+  objects: Array<Continuity_Containers_Insert_Input>;
+  on_conflict?: InputMaybe<Continuity_Containers_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Continuity_Containers_OneArgs = {
+  object: Continuity_Containers_Insert_Input;
+  on_conflict?: InputMaybe<Continuity_Containers_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Courier_MessagesArgs = {
+  objects: Array<Courier_Messages_Insert_Input>;
+  on_conflict?: InputMaybe<Courier_Messages_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Courier_Messages_OneArgs = {
+  object: Courier_Messages_Insert_Input;
+  on_conflict?: InputMaybe<Courier_Messages_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_FindingsArgs = {
   objects: Array<Findings_Insert_Input>;
   on_conflict?: InputMaybe<Findings_On_Conflict>;
@@ -1461,6 +3957,118 @@ export type Mutation_RootInsert_Findings_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_IdentitiesArgs = {
+  objects: Array<Identities_Insert_Input>;
+  on_conflict?: InputMaybe<Identities_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identities_OneArgs = {
+  object: Identities_Insert_Input;
+  on_conflict?: InputMaybe<Identities_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Credential_IdentifiersArgs = {
+  objects: Array<Identity_Credential_Identifiers_Insert_Input>;
+  on_conflict?: InputMaybe<Identity_Credential_Identifiers_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Credential_Identifiers_OneArgs = {
+  object: Identity_Credential_Identifiers_Insert_Input;
+  on_conflict?: InputMaybe<Identity_Credential_Identifiers_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Credential_TypesArgs = {
+  objects: Array<Identity_Credential_Types_Insert_Input>;
+  on_conflict?: InputMaybe<Identity_Credential_Types_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Credential_Types_OneArgs = {
+  object: Identity_Credential_Types_Insert_Input;
+  on_conflict?: InputMaybe<Identity_Credential_Types_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_CredentialsArgs = {
+  objects: Array<Identity_Credentials_Insert_Input>;
+  on_conflict?: InputMaybe<Identity_Credentials_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Credentials_OneArgs = {
+  object: Identity_Credentials_Insert_Input;
+  on_conflict?: InputMaybe<Identity_Credentials_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Recovery_AddressesArgs = {
+  objects: Array<Identity_Recovery_Addresses_Insert_Input>;
+  on_conflict?: InputMaybe<Identity_Recovery_Addresses_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Recovery_Addresses_OneArgs = {
+  object: Identity_Recovery_Addresses_Insert_Input;
+  on_conflict?: InputMaybe<Identity_Recovery_Addresses_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Recovery_TokensArgs = {
+  objects: Array<Identity_Recovery_Tokens_Insert_Input>;
+  on_conflict?: InputMaybe<Identity_Recovery_Tokens_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Recovery_Tokens_OneArgs = {
+  object: Identity_Recovery_Tokens_Insert_Input;
+  on_conflict?: InputMaybe<Identity_Recovery_Tokens_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Verifiable_AddressesArgs = {
+  objects: Array<Identity_Verifiable_Addresses_Insert_Input>;
+  on_conflict?: InputMaybe<Identity_Verifiable_Addresses_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Verifiable_Addresses_OneArgs = {
+  object: Identity_Verifiable_Addresses_Insert_Input;
+  on_conflict?: InputMaybe<Identity_Verifiable_Addresses_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Verification_TokensArgs = {
+  objects: Array<Identity_Verification_Tokens_Insert_Input>;
+  on_conflict?: InputMaybe<Identity_Verification_Tokens_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identity_Verification_Tokens_OneArgs = {
+  object: Identity_Verification_Tokens_Insert_Input;
+  on_conflict?: InputMaybe<Identity_Verification_Tokens_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_InstancesArgs = {
   objects: Array<Instances_Insert_Input>;
   on_conflict?: InputMaybe<Instances_On_Conflict>;
@@ -1471,6 +4079,20 @@ export type Mutation_RootInsert_InstancesArgs = {
 export type Mutation_RootInsert_Instances_OneArgs = {
   object: Instances_Insert_Input;
   on_conflict?: InputMaybe<Instances_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_NetworksArgs = {
+  objects: Array<Networks_Insert_Input>;
+  on_conflict?: InputMaybe<Networks_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Networks_OneArgs = {
+  object: Networks_Insert_Input;
+  on_conflict?: InputMaybe<Networks_On_Conflict>;
 };
 
 
@@ -1573,6 +4195,118 @@ export type Mutation_RootInsert_Scans_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Schema_MigrationArgs = {
+  objects: Array<Schema_Migration_Insert_Input>;
+  on_conflict?: InputMaybe<Schema_Migration_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Schema_Migration_OneArgs = {
+  object: Schema_Migration_Insert_Input;
+  on_conflict?: InputMaybe<Schema_Migration_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_ErrorsArgs = {
+  objects: Array<Selfservice_Errors_Insert_Input>;
+  on_conflict?: InputMaybe<Selfservice_Errors_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_Errors_OneArgs = {
+  object: Selfservice_Errors_Insert_Input;
+  on_conflict?: InputMaybe<Selfservice_Errors_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_Login_FlowsArgs = {
+  objects: Array<Selfservice_Login_Flows_Insert_Input>;
+  on_conflict?: InputMaybe<Selfservice_Login_Flows_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_Login_Flows_OneArgs = {
+  object: Selfservice_Login_Flows_Insert_Input;
+  on_conflict?: InputMaybe<Selfservice_Login_Flows_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_Recovery_FlowsArgs = {
+  objects: Array<Selfservice_Recovery_Flows_Insert_Input>;
+  on_conflict?: InputMaybe<Selfservice_Recovery_Flows_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_Recovery_Flows_OneArgs = {
+  object: Selfservice_Recovery_Flows_Insert_Input;
+  on_conflict?: InputMaybe<Selfservice_Recovery_Flows_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_Registration_FlowsArgs = {
+  objects: Array<Selfservice_Registration_Flows_Insert_Input>;
+  on_conflict?: InputMaybe<Selfservice_Registration_Flows_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_Registration_Flows_OneArgs = {
+  object: Selfservice_Registration_Flows_Insert_Input;
+  on_conflict?: InputMaybe<Selfservice_Registration_Flows_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_Settings_FlowsArgs = {
+  objects: Array<Selfservice_Settings_Flows_Insert_Input>;
+  on_conflict?: InputMaybe<Selfservice_Settings_Flows_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_Settings_Flows_OneArgs = {
+  object: Selfservice_Settings_Flows_Insert_Input;
+  on_conflict?: InputMaybe<Selfservice_Settings_Flows_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_Verification_FlowsArgs = {
+  objects: Array<Selfservice_Verification_Flows_Insert_Input>;
+  on_conflict?: InputMaybe<Selfservice_Verification_Flows_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Selfservice_Verification_Flows_OneArgs = {
+  object: Selfservice_Verification_Flows_Insert_Input;
+  on_conflict?: InputMaybe<Selfservice_Verification_Flows_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_SessionsArgs = {
+  objects: Array<Sessions_Insert_Input>;
+  on_conflict?: InputMaybe<Sessions_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Sessions_OneArgs = {
+  object: Sessions_Insert_Input;
+  on_conflict?: InputMaybe<Sessions_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_SettingsArgs = {
   objects: Array<Settings_Insert_Input>;
   on_conflict?: InputMaybe<Settings_On_Conflict>;
@@ -1645,6 +4379,46 @@ export type Mutation_RootUpdate_Builds_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Continuity_ContainersArgs = {
+  _append?: InputMaybe<Continuity_Containers_Append_Input>;
+  _delete_at_path?: InputMaybe<Continuity_Containers_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Continuity_Containers_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Continuity_Containers_Delete_Key_Input>;
+  _prepend?: InputMaybe<Continuity_Containers_Prepend_Input>;
+  _set?: InputMaybe<Continuity_Containers_Set_Input>;
+  where: Continuity_Containers_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Continuity_Containers_By_PkArgs = {
+  _append?: InputMaybe<Continuity_Containers_Append_Input>;
+  _delete_at_path?: InputMaybe<Continuity_Containers_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Continuity_Containers_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Continuity_Containers_Delete_Key_Input>;
+  _prepend?: InputMaybe<Continuity_Containers_Prepend_Input>;
+  _set?: InputMaybe<Continuity_Containers_Set_Input>;
+  pk_columns: Continuity_Containers_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Courier_MessagesArgs = {
+  _inc?: InputMaybe<Courier_Messages_Inc_Input>;
+  _set?: InputMaybe<Courier_Messages_Set_Input>;
+  where: Courier_Messages_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Courier_Messages_By_PkArgs = {
+  _inc?: InputMaybe<Courier_Messages_Inc_Input>;
+  _set?: InputMaybe<Courier_Messages_Set_Input>;
+  pk_columns: Courier_Messages_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_FindingsArgs = {
   _set?: InputMaybe<Findings_Set_Input>;
   where: Findings_Bool_Exp;
@@ -1659,6 +4433,138 @@ export type Mutation_RootUpdate_Findings_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_IdentitiesArgs = {
+  _append?: InputMaybe<Identities_Append_Input>;
+  _delete_at_path?: InputMaybe<Identities_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Identities_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Identities_Delete_Key_Input>;
+  _prepend?: InputMaybe<Identities_Prepend_Input>;
+  _set?: InputMaybe<Identities_Set_Input>;
+  where: Identities_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identities_By_PkArgs = {
+  _append?: InputMaybe<Identities_Append_Input>;
+  _delete_at_path?: InputMaybe<Identities_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Identities_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Identities_Delete_Key_Input>;
+  _prepend?: InputMaybe<Identities_Prepend_Input>;
+  _set?: InputMaybe<Identities_Set_Input>;
+  pk_columns: Identities_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Credential_IdentifiersArgs = {
+  _set?: InputMaybe<Identity_Credential_Identifiers_Set_Input>;
+  where: Identity_Credential_Identifiers_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Credential_Identifiers_By_PkArgs = {
+  _set?: InputMaybe<Identity_Credential_Identifiers_Set_Input>;
+  pk_columns: Identity_Credential_Identifiers_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Credential_TypesArgs = {
+  _set?: InputMaybe<Identity_Credential_Types_Set_Input>;
+  where: Identity_Credential_Types_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Credential_Types_By_PkArgs = {
+  _set?: InputMaybe<Identity_Credential_Types_Set_Input>;
+  pk_columns: Identity_Credential_Types_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_CredentialsArgs = {
+  _append?: InputMaybe<Identity_Credentials_Append_Input>;
+  _delete_at_path?: InputMaybe<Identity_Credentials_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Identity_Credentials_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Identity_Credentials_Delete_Key_Input>;
+  _prepend?: InputMaybe<Identity_Credentials_Prepend_Input>;
+  _set?: InputMaybe<Identity_Credentials_Set_Input>;
+  where: Identity_Credentials_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Credentials_By_PkArgs = {
+  _append?: InputMaybe<Identity_Credentials_Append_Input>;
+  _delete_at_path?: InputMaybe<Identity_Credentials_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Identity_Credentials_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Identity_Credentials_Delete_Key_Input>;
+  _prepend?: InputMaybe<Identity_Credentials_Prepend_Input>;
+  _set?: InputMaybe<Identity_Credentials_Set_Input>;
+  pk_columns: Identity_Credentials_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Recovery_AddressesArgs = {
+  _set?: InputMaybe<Identity_Recovery_Addresses_Set_Input>;
+  where: Identity_Recovery_Addresses_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Recovery_Addresses_By_PkArgs = {
+  _set?: InputMaybe<Identity_Recovery_Addresses_Set_Input>;
+  pk_columns: Identity_Recovery_Addresses_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Recovery_TokensArgs = {
+  _set?: InputMaybe<Identity_Recovery_Tokens_Set_Input>;
+  where: Identity_Recovery_Tokens_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Recovery_Tokens_By_PkArgs = {
+  _set?: InputMaybe<Identity_Recovery_Tokens_Set_Input>;
+  pk_columns: Identity_Recovery_Tokens_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Verifiable_AddressesArgs = {
+  _set?: InputMaybe<Identity_Verifiable_Addresses_Set_Input>;
+  where: Identity_Verifiable_Addresses_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Verifiable_Addresses_By_PkArgs = {
+  _set?: InputMaybe<Identity_Verifiable_Addresses_Set_Input>;
+  pk_columns: Identity_Verifiable_Addresses_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Verification_TokensArgs = {
+  _set?: InputMaybe<Identity_Verification_Tokens_Set_Input>;
+  where: Identity_Verification_Tokens_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identity_Verification_Tokens_By_PkArgs = {
+  _set?: InputMaybe<Identity_Verification_Tokens_Set_Input>;
+  pk_columns: Identity_Verification_Tokens_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_InstancesArgs = {
   _set?: InputMaybe<Instances_Set_Input>;
   where: Instances_Bool_Exp;
@@ -1669,6 +4575,20 @@ export type Mutation_RootUpdate_InstancesArgs = {
 export type Mutation_RootUpdate_Instances_By_PkArgs = {
   _set?: InputMaybe<Instances_Set_Input>;
   pk_columns: Instances_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_NetworksArgs = {
+  _set?: InputMaybe<Networks_Set_Input>;
+  where: Networks_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Networks_By_PkArgs = {
+  _set?: InputMaybe<Networks_Set_Input>;
+  pk_columns: Networks_Pk_Columns_Input;
 };
 
 
@@ -1773,6 +4693,182 @@ export type Mutation_RootUpdate_Scans_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Schema_MigrationArgs = {
+  _inc?: InputMaybe<Schema_Migration_Inc_Input>;
+  _set?: InputMaybe<Schema_Migration_Set_Input>;
+  where: Schema_Migration_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_ErrorsArgs = {
+  _append?: InputMaybe<Selfservice_Errors_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Errors_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Errors_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Errors_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Errors_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Errors_Set_Input>;
+  where: Selfservice_Errors_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_Errors_By_PkArgs = {
+  _append?: InputMaybe<Selfservice_Errors_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Errors_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Errors_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Errors_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Errors_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Errors_Set_Input>;
+  pk_columns: Selfservice_Errors_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_Login_FlowsArgs = {
+  _append?: InputMaybe<Selfservice_Login_Flows_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Login_Flows_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Login_Flows_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Login_Flows_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Login_Flows_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Login_Flows_Set_Input>;
+  where: Selfservice_Login_Flows_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_Login_Flows_By_PkArgs = {
+  _append?: InputMaybe<Selfservice_Login_Flows_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Login_Flows_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Login_Flows_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Login_Flows_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Login_Flows_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Login_Flows_Set_Input>;
+  pk_columns: Selfservice_Login_Flows_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_Recovery_FlowsArgs = {
+  _append?: InputMaybe<Selfservice_Recovery_Flows_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Recovery_Flows_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Recovery_Flows_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Recovery_Flows_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Recovery_Flows_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Recovery_Flows_Set_Input>;
+  where: Selfservice_Recovery_Flows_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_Recovery_Flows_By_PkArgs = {
+  _append?: InputMaybe<Selfservice_Recovery_Flows_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Recovery_Flows_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Recovery_Flows_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Recovery_Flows_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Recovery_Flows_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Recovery_Flows_Set_Input>;
+  pk_columns: Selfservice_Recovery_Flows_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_Registration_FlowsArgs = {
+  _append?: InputMaybe<Selfservice_Registration_Flows_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Registration_Flows_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Registration_Flows_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Registration_Flows_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Registration_Flows_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Registration_Flows_Set_Input>;
+  where: Selfservice_Registration_Flows_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_Registration_Flows_By_PkArgs = {
+  _append?: InputMaybe<Selfservice_Registration_Flows_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Registration_Flows_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Registration_Flows_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Registration_Flows_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Registration_Flows_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Registration_Flows_Set_Input>;
+  pk_columns: Selfservice_Registration_Flows_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_Settings_FlowsArgs = {
+  _append?: InputMaybe<Selfservice_Settings_Flows_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Settings_Flows_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Settings_Flows_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Settings_Flows_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Settings_Flows_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Settings_Flows_Set_Input>;
+  where: Selfservice_Settings_Flows_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_Settings_Flows_By_PkArgs = {
+  _append?: InputMaybe<Selfservice_Settings_Flows_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Settings_Flows_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Settings_Flows_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Settings_Flows_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Settings_Flows_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Settings_Flows_Set_Input>;
+  pk_columns: Selfservice_Settings_Flows_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_Verification_FlowsArgs = {
+  _append?: InputMaybe<Selfservice_Verification_Flows_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Verification_Flows_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Verification_Flows_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Verification_Flows_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Verification_Flows_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Verification_Flows_Set_Input>;
+  where: Selfservice_Verification_Flows_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Selfservice_Verification_Flows_By_PkArgs = {
+  _append?: InputMaybe<Selfservice_Verification_Flows_Append_Input>;
+  _delete_at_path?: InputMaybe<Selfservice_Verification_Flows_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Selfservice_Verification_Flows_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Selfservice_Verification_Flows_Delete_Key_Input>;
+  _prepend?: InputMaybe<Selfservice_Verification_Flows_Prepend_Input>;
+  _set?: InputMaybe<Selfservice_Verification_Flows_Set_Input>;
+  pk_columns: Selfservice_Verification_Flows_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_SessionsArgs = {
+  _append?: InputMaybe<Sessions_Append_Input>;
+  _delete_at_path?: InputMaybe<Sessions_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Sessions_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Sessions_Delete_Key_Input>;
+  _prepend?: InputMaybe<Sessions_Prepend_Input>;
+  _set?: InputMaybe<Sessions_Set_Input>;
+  where: Sessions_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Sessions_By_PkArgs = {
+  _append?: InputMaybe<Sessions_Append_Input>;
+  _delete_at_path?: InputMaybe<Sessions_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Sessions_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Sessions_Delete_Key_Input>;
+  _prepend?: InputMaybe<Sessions_Prepend_Input>;
+  _set?: InputMaybe<Sessions_Set_Input>;
+  pk_columns: Sessions_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_SettingsArgs = {
   _set?: InputMaybe<Settings_Set_Input>;
   where: Settings_Bool_Exp;
@@ -1828,6 +4924,130 @@ export type Mutation_RootUpdate_Vulnerability_Packages_By_PkArgs = {
   _set?: InputMaybe<Vulnerability_Packages_Set_Input>;
   pk_columns: Vulnerability_Packages_Pk_Columns_Input;
 };
+
+/** columns and relationships of "networks" */
+export type Networks = {
+  __typename?: 'networks';
+  created_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  updated_at: Scalars['timestamp'];
+};
+
+/** aggregated selection of "networks" */
+export type Networks_Aggregate = {
+  __typename?: 'networks_aggregate';
+  aggregate?: Maybe<Networks_Aggregate_Fields>;
+  nodes: Array<Networks>;
+};
+
+/** aggregate fields of "networks" */
+export type Networks_Aggregate_Fields = {
+  __typename?: 'networks_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Networks_Max_Fields>;
+  min?: Maybe<Networks_Min_Fields>;
+};
+
+
+/** aggregate fields of "networks" */
+export type Networks_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Networks_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "networks". All fields are combined with a logical 'AND'. */
+export type Networks_Bool_Exp = {
+  _and?: InputMaybe<Array<Networks_Bool_Exp>>;
+  _not?: InputMaybe<Networks_Bool_Exp>;
+  _or?: InputMaybe<Array<Networks_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "networks" */
+export enum Networks_Constraint {
+  /** unique or primary key constraint */
+  NetworksPkey = 'networks_pkey'
+}
+
+/** input type for inserting data into table "networks" */
+export type Networks_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Networks_Max_Fields = {
+  __typename?: 'networks_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Networks_Min_Fields = {
+  __typename?: 'networks_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "networks" */
+export type Networks_Mutation_Response = {
+  __typename?: 'networks_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Networks>;
+};
+
+/** on conflict condition type for table "networks" */
+export type Networks_On_Conflict = {
+  constraint: Networks_Constraint;
+  update_columns?: Array<Networks_Update_Column>;
+  where?: InputMaybe<Networks_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "networks". */
+export type Networks_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: networks */
+export type Networks_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "networks" */
+export enum Networks_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "networks" */
+export type Networks_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "networks" */
+export enum Networks_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
 
 /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
 export type Numeric_Comparison_Exp = {
@@ -2949,18 +6169,84 @@ export type Query_Root = {
   builds_aggregate: Builds_Aggregate;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
+  /** fetch data from the table: "continuity_containers" */
+  continuity_containers: Array<Continuity_Containers>;
+  /** fetch aggregated fields from the table: "continuity_containers" */
+  continuity_containers_aggregate: Continuity_Containers_Aggregate;
+  /** fetch data from the table: "continuity_containers" using primary key columns */
+  continuity_containers_by_pk?: Maybe<Continuity_Containers>;
+  /** fetch data from the table: "courier_messages" */
+  courier_messages: Array<Courier_Messages>;
+  /** fetch aggregated fields from the table: "courier_messages" */
+  courier_messages_aggregate: Courier_Messages_Aggregate;
+  /** fetch data from the table: "courier_messages" using primary key columns */
+  courier_messages_by_pk?: Maybe<Courier_Messages>;
   /** An array relationship */
   findings: Array<Findings>;
   /** An aggregate relationship */
   findings_aggregate: Findings_Aggregate;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
+  /** fetch data from the table: "identities" */
+  identities: Array<Identities>;
+  /** fetch aggregated fields from the table: "identities" */
+  identities_aggregate: Identities_Aggregate;
+  /** fetch data from the table: "identities" using primary key columns */
+  identities_by_pk?: Maybe<Identities>;
+  /** fetch data from the table: "identity_credential_identifiers" */
+  identity_credential_identifiers: Array<Identity_Credential_Identifiers>;
+  /** fetch aggregated fields from the table: "identity_credential_identifiers" */
+  identity_credential_identifiers_aggregate: Identity_Credential_Identifiers_Aggregate;
+  /** fetch data from the table: "identity_credential_identifiers" using primary key columns */
+  identity_credential_identifiers_by_pk?: Maybe<Identity_Credential_Identifiers>;
+  /** fetch data from the table: "identity_credential_types" */
+  identity_credential_types: Array<Identity_Credential_Types>;
+  /** fetch aggregated fields from the table: "identity_credential_types" */
+  identity_credential_types_aggregate: Identity_Credential_Types_Aggregate;
+  /** fetch data from the table: "identity_credential_types" using primary key columns */
+  identity_credential_types_by_pk?: Maybe<Identity_Credential_Types>;
+  /** fetch data from the table: "identity_credentials" */
+  identity_credentials: Array<Identity_Credentials>;
+  /** fetch aggregated fields from the table: "identity_credentials" */
+  identity_credentials_aggregate: Identity_Credentials_Aggregate;
+  /** fetch data from the table: "identity_credentials" using primary key columns */
+  identity_credentials_by_pk?: Maybe<Identity_Credentials>;
+  /** fetch data from the table: "identity_recovery_addresses" */
+  identity_recovery_addresses: Array<Identity_Recovery_Addresses>;
+  /** fetch aggregated fields from the table: "identity_recovery_addresses" */
+  identity_recovery_addresses_aggregate: Identity_Recovery_Addresses_Aggregate;
+  /** fetch data from the table: "identity_recovery_addresses" using primary key columns */
+  identity_recovery_addresses_by_pk?: Maybe<Identity_Recovery_Addresses>;
+  /** fetch data from the table: "identity_recovery_tokens" */
+  identity_recovery_tokens: Array<Identity_Recovery_Tokens>;
+  /** fetch aggregated fields from the table: "identity_recovery_tokens" */
+  identity_recovery_tokens_aggregate: Identity_Recovery_Tokens_Aggregate;
+  /** fetch data from the table: "identity_recovery_tokens" using primary key columns */
+  identity_recovery_tokens_by_pk?: Maybe<Identity_Recovery_Tokens>;
+  /** fetch data from the table: "identity_verifiable_addresses" */
+  identity_verifiable_addresses: Array<Identity_Verifiable_Addresses>;
+  /** fetch aggregated fields from the table: "identity_verifiable_addresses" */
+  identity_verifiable_addresses_aggregate: Identity_Verifiable_Addresses_Aggregate;
+  /** fetch data from the table: "identity_verifiable_addresses" using primary key columns */
+  identity_verifiable_addresses_by_pk?: Maybe<Identity_Verifiable_Addresses>;
+  /** fetch data from the table: "identity_verification_tokens" */
+  identity_verification_tokens: Array<Identity_Verification_Tokens>;
+  /** fetch aggregated fields from the table: "identity_verification_tokens" */
+  identity_verification_tokens_aggregate: Identity_Verification_Tokens_Aggregate;
+  /** fetch data from the table: "identity_verification_tokens" using primary key columns */
+  identity_verification_tokens_by_pk?: Maybe<Identity_Verification_Tokens>;
   /** fetch data from the table: "instances" */
   instances: Array<Instances>;
   /** fetch aggregated fields from the table: "instances" */
   instances_aggregate: Instances_Aggregate;
   /** fetch data from the table: "instances" using primary key columns */
   instances_by_pk?: Maybe<Instances>;
+  /** fetch data from the table: "networks" */
+  networks: Array<Networks>;
+  /** fetch aggregated fields from the table: "networks" */
+  networks_aggregate: Networks_Aggregate;
+  /** fetch data from the table: "networks" using primary key columns */
+  networks_by_pk?: Maybe<Networks>;
   /** fetch data from the table: "organization_user" */
   organization_user: Array<Organization_User>;
   /** fetch aggregated fields from the table: "organization_user" */
@@ -3004,6 +6290,52 @@ export type Query_Root = {
   scans_aggregate: Scans_Aggregate;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** fetch data from the table: "schema_migration" */
+  schema_migration: Array<Schema_Migration>;
+  /** fetch aggregated fields from the table: "schema_migration" */
+  schema_migration_aggregate: Schema_Migration_Aggregate;
+  /** fetch data from the table: "selfservice_errors" */
+  selfservice_errors: Array<Selfservice_Errors>;
+  /** fetch aggregated fields from the table: "selfservice_errors" */
+  selfservice_errors_aggregate: Selfservice_Errors_Aggregate;
+  /** fetch data from the table: "selfservice_errors" using primary key columns */
+  selfservice_errors_by_pk?: Maybe<Selfservice_Errors>;
+  /** fetch data from the table: "selfservice_login_flows" */
+  selfservice_login_flows: Array<Selfservice_Login_Flows>;
+  /** fetch aggregated fields from the table: "selfservice_login_flows" */
+  selfservice_login_flows_aggregate: Selfservice_Login_Flows_Aggregate;
+  /** fetch data from the table: "selfservice_login_flows" using primary key columns */
+  selfservice_login_flows_by_pk?: Maybe<Selfservice_Login_Flows>;
+  /** fetch data from the table: "selfservice_recovery_flows" */
+  selfservice_recovery_flows: Array<Selfservice_Recovery_Flows>;
+  /** fetch aggregated fields from the table: "selfservice_recovery_flows" */
+  selfservice_recovery_flows_aggregate: Selfservice_Recovery_Flows_Aggregate;
+  /** fetch data from the table: "selfservice_recovery_flows" using primary key columns */
+  selfservice_recovery_flows_by_pk?: Maybe<Selfservice_Recovery_Flows>;
+  /** fetch data from the table: "selfservice_registration_flows" */
+  selfservice_registration_flows: Array<Selfservice_Registration_Flows>;
+  /** fetch aggregated fields from the table: "selfservice_registration_flows" */
+  selfservice_registration_flows_aggregate: Selfservice_Registration_Flows_Aggregate;
+  /** fetch data from the table: "selfservice_registration_flows" using primary key columns */
+  selfservice_registration_flows_by_pk?: Maybe<Selfservice_Registration_Flows>;
+  /** fetch data from the table: "selfservice_settings_flows" */
+  selfservice_settings_flows: Array<Selfservice_Settings_Flows>;
+  /** fetch aggregated fields from the table: "selfservice_settings_flows" */
+  selfservice_settings_flows_aggregate: Selfservice_Settings_Flows_Aggregate;
+  /** fetch data from the table: "selfservice_settings_flows" using primary key columns */
+  selfservice_settings_flows_by_pk?: Maybe<Selfservice_Settings_Flows>;
+  /** fetch data from the table: "selfservice_verification_flows" */
+  selfservice_verification_flows: Array<Selfservice_Verification_Flows>;
+  /** fetch aggregated fields from the table: "selfservice_verification_flows" */
+  selfservice_verification_flows_aggregate: Selfservice_Verification_Flows_Aggregate;
+  /** fetch data from the table: "selfservice_verification_flows" using primary key columns */
+  selfservice_verification_flows_by_pk?: Maybe<Selfservice_Verification_Flows>;
+  /** fetch data from the table: "sessions" */
+  sessions: Array<Sessions>;
+  /** fetch aggregated fields from the table: "sessions" */
+  sessions_aggregate: Sessions_Aggregate;
+  /** fetch data from the table: "sessions" using primary key columns */
+  sessions_by_pk?: Maybe<Sessions>;
   /** fetch data from the table: "settings" */
   settings: Array<Settings>;
   /** fetch aggregated fields from the table: "settings" */
@@ -3054,6 +6386,52 @@ export type Query_RootBuilds_By_PkArgs = {
 };
 
 
+export type Query_RootContinuity_ContainersArgs = {
+  distinct_on?: InputMaybe<Array<Continuity_Containers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Continuity_Containers_Order_By>>;
+  where?: InputMaybe<Continuity_Containers_Bool_Exp>;
+};
+
+
+export type Query_RootContinuity_Containers_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Continuity_Containers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Continuity_Containers_Order_By>>;
+  where?: InputMaybe<Continuity_Containers_Bool_Exp>;
+};
+
+
+export type Query_RootContinuity_Containers_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootCourier_MessagesArgs = {
+  distinct_on?: InputMaybe<Array<Courier_Messages_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Courier_Messages_Order_By>>;
+  where?: InputMaybe<Courier_Messages_Bool_Exp>;
+};
+
+
+export type Query_RootCourier_Messages_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Courier_Messages_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Courier_Messages_Order_By>>;
+  where?: InputMaybe<Courier_Messages_Bool_Exp>;
+};
+
+
+export type Query_RootCourier_Messages_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Query_RootFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3073,6 +6451,190 @@ export type Query_RootFindings_AggregateArgs = {
 
 
 export type Query_RootFindings_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootIdentitiesArgs = {
+  distinct_on?: InputMaybe<Array<Identities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identities_Order_By>>;
+  where?: InputMaybe<Identities_Bool_Exp>;
+};
+
+
+export type Query_RootIdentities_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identities_Order_By>>;
+  where?: InputMaybe<Identities_Bool_Exp>;
+};
+
+
+export type Query_RootIdentities_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootIdentity_Credential_IdentifiersArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credential_Identifiers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credential_Identifiers_Order_By>>;
+  where?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Credential_Identifiers_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credential_Identifiers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credential_Identifiers_Order_By>>;
+  where?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Credential_Identifiers_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootIdentity_Credential_TypesArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credential_Types_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credential_Types_Order_By>>;
+  where?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Credential_Types_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credential_Types_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credential_Types_Order_By>>;
+  where?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Credential_Types_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootIdentity_CredentialsArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credentials_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credentials_Order_By>>;
+  where?: InputMaybe<Identity_Credentials_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Credentials_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credentials_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credentials_Order_By>>;
+  where?: InputMaybe<Identity_Credentials_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Credentials_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootIdentity_Recovery_AddressesArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Recovery_Addresses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Recovery_Addresses_Order_By>>;
+  where?: InputMaybe<Identity_Recovery_Addresses_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Recovery_Addresses_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Recovery_Addresses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Recovery_Addresses_Order_By>>;
+  where?: InputMaybe<Identity_Recovery_Addresses_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Recovery_Addresses_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootIdentity_Recovery_TokensArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Recovery_Tokens_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Recovery_Tokens_Order_By>>;
+  where?: InputMaybe<Identity_Recovery_Tokens_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Recovery_Tokens_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Recovery_Tokens_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Recovery_Tokens_Order_By>>;
+  where?: InputMaybe<Identity_Recovery_Tokens_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Recovery_Tokens_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootIdentity_Verifiable_AddressesArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Verifiable_Addresses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Verifiable_Addresses_Order_By>>;
+  where?: InputMaybe<Identity_Verifiable_Addresses_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Verifiable_Addresses_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Verifiable_Addresses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Verifiable_Addresses_Order_By>>;
+  where?: InputMaybe<Identity_Verifiable_Addresses_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Verifiable_Addresses_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootIdentity_Verification_TokensArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Verification_Tokens_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Verification_Tokens_Order_By>>;
+  where?: InputMaybe<Identity_Verification_Tokens_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Verification_Tokens_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Verification_Tokens_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Verification_Tokens_Order_By>>;
+  where?: InputMaybe<Identity_Verification_Tokens_Bool_Exp>;
+};
+
+
+export type Query_RootIdentity_Verification_Tokens_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -3097,6 +6659,29 @@ export type Query_RootInstances_AggregateArgs = {
 
 export type Query_RootInstances_By_PkArgs = {
   instance_id: Scalars['uuid'];
+};
+
+
+export type Query_RootNetworksArgs = {
+  distinct_on?: InputMaybe<Array<Networks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Networks_Order_By>>;
+  where?: InputMaybe<Networks_Bool_Exp>;
+};
+
+
+export type Query_RootNetworks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Networks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Networks_Order_By>>;
+  where?: InputMaybe<Networks_Bool_Exp>;
+};
+
+
+export type Query_RootNetworks_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -3262,6 +6847,185 @@ export type Query_RootScans_AggregateArgs = {
 
 
 export type Query_RootScans_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootSchema_MigrationArgs = {
+  distinct_on?: InputMaybe<Array<Schema_Migration_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Schema_Migration_Order_By>>;
+  where?: InputMaybe<Schema_Migration_Bool_Exp>;
+};
+
+
+export type Query_RootSchema_Migration_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Schema_Migration_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Schema_Migration_Order_By>>;
+  where?: InputMaybe<Schema_Migration_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_ErrorsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Errors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Errors_Order_By>>;
+  where?: InputMaybe<Selfservice_Errors_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Errors_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Errors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Errors_Order_By>>;
+  where?: InputMaybe<Selfservice_Errors_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Errors_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootSelfservice_Login_FlowsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Login_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Login_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Login_Flows_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Login_Flows_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Login_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Login_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Login_Flows_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Login_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootSelfservice_Recovery_FlowsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Recovery_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Recovery_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Recovery_Flows_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Recovery_Flows_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Recovery_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Recovery_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Recovery_Flows_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Recovery_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootSelfservice_Registration_FlowsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Registration_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Registration_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Registration_Flows_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Registration_Flows_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Registration_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Registration_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Registration_Flows_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Registration_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootSelfservice_Settings_FlowsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Settings_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Settings_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Settings_Flows_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Settings_Flows_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Settings_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Settings_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Settings_Flows_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Settings_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootSelfservice_Verification_FlowsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Verification_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Verification_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Verification_Flows_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Verification_Flows_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Verification_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Verification_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Verification_Flows_Bool_Exp>;
+};
+
+
+export type Query_RootSelfservice_Verification_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootSessionsArgs = {
+  distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Sessions_Order_By>>;
+  where?: InputMaybe<Sessions_Bool_Exp>;
+};
+
+
+export type Query_RootSessions_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Sessions_Order_By>>;
+  where?: InputMaybe<Sessions_Bool_Exp>;
+};
+
+
+export type Query_RootSessions_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -3938,6 +7702,1975 @@ export type Scans_Variance_Order_By = {
   scan_number?: InputMaybe<Order_By>;
 };
 
+/** columns and relationships of "schema_migration" */
+export type Schema_Migration = {
+  __typename?: 'schema_migration';
+  version: Scalars['String'];
+  version_self: Scalars['Int'];
+};
+
+/** aggregated selection of "schema_migration" */
+export type Schema_Migration_Aggregate = {
+  __typename?: 'schema_migration_aggregate';
+  aggregate?: Maybe<Schema_Migration_Aggregate_Fields>;
+  nodes: Array<Schema_Migration>;
+};
+
+/** aggregate fields of "schema_migration" */
+export type Schema_Migration_Aggregate_Fields = {
+  __typename?: 'schema_migration_aggregate_fields';
+  avg?: Maybe<Schema_Migration_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Schema_Migration_Max_Fields>;
+  min?: Maybe<Schema_Migration_Min_Fields>;
+  stddev?: Maybe<Schema_Migration_Stddev_Fields>;
+  stddev_pop?: Maybe<Schema_Migration_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Schema_Migration_Stddev_Samp_Fields>;
+  sum?: Maybe<Schema_Migration_Sum_Fields>;
+  var_pop?: Maybe<Schema_Migration_Var_Pop_Fields>;
+  var_samp?: Maybe<Schema_Migration_Var_Samp_Fields>;
+  variance?: Maybe<Schema_Migration_Variance_Fields>;
+};
+
+
+/** aggregate fields of "schema_migration" */
+export type Schema_Migration_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Schema_Migration_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type Schema_Migration_Avg_Fields = {
+  __typename?: 'schema_migration_avg_fields';
+  version_self?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "schema_migration". All fields are combined with a logical 'AND'. */
+export type Schema_Migration_Bool_Exp = {
+  _and?: InputMaybe<Array<Schema_Migration_Bool_Exp>>;
+  _not?: InputMaybe<Schema_Migration_Bool_Exp>;
+  _or?: InputMaybe<Array<Schema_Migration_Bool_Exp>>;
+  version?: InputMaybe<String_Comparison_Exp>;
+  version_self?: InputMaybe<Int_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "schema_migration" */
+export enum Schema_Migration_Constraint {
+  /** unique or primary key constraint */
+  SchemaMigrationVersionIdx = 'schema_migration_version_idx'
+}
+
+/** input type for incrementing numeric columns in table "schema_migration" */
+export type Schema_Migration_Inc_Input = {
+  version_self?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "schema_migration" */
+export type Schema_Migration_Insert_Input = {
+  version?: InputMaybe<Scalars['String']>;
+  version_self?: InputMaybe<Scalars['Int']>;
+};
+
+/** aggregate max on columns */
+export type Schema_Migration_Max_Fields = {
+  __typename?: 'schema_migration_max_fields';
+  version?: Maybe<Scalars['String']>;
+  version_self?: Maybe<Scalars['Int']>;
+};
+
+/** aggregate min on columns */
+export type Schema_Migration_Min_Fields = {
+  __typename?: 'schema_migration_min_fields';
+  version?: Maybe<Scalars['String']>;
+  version_self?: Maybe<Scalars['Int']>;
+};
+
+/** response of any mutation on the table "schema_migration" */
+export type Schema_Migration_Mutation_Response = {
+  __typename?: 'schema_migration_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Schema_Migration>;
+};
+
+/** on conflict condition type for table "schema_migration" */
+export type Schema_Migration_On_Conflict = {
+  constraint: Schema_Migration_Constraint;
+  update_columns?: Array<Schema_Migration_Update_Column>;
+  where?: InputMaybe<Schema_Migration_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "schema_migration". */
+export type Schema_Migration_Order_By = {
+  version?: InputMaybe<Order_By>;
+  version_self?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "schema_migration" */
+export enum Schema_Migration_Select_Column {
+  /** column name */
+  Version = 'version',
+  /** column name */
+  VersionSelf = 'version_self'
+}
+
+/** input type for updating data in table "schema_migration" */
+export type Schema_Migration_Set_Input = {
+  version?: InputMaybe<Scalars['String']>;
+  version_self?: InputMaybe<Scalars['Int']>;
+};
+
+/** aggregate stddev on columns */
+export type Schema_Migration_Stddev_Fields = {
+  __typename?: 'schema_migration_stddev_fields';
+  version_self?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Schema_Migration_Stddev_Pop_Fields = {
+  __typename?: 'schema_migration_stddev_pop_fields';
+  version_self?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Schema_Migration_Stddev_Samp_Fields = {
+  __typename?: 'schema_migration_stddev_samp_fields';
+  version_self?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate sum on columns */
+export type Schema_Migration_Sum_Fields = {
+  __typename?: 'schema_migration_sum_fields';
+  version_self?: Maybe<Scalars['Int']>;
+};
+
+/** update columns of table "schema_migration" */
+export enum Schema_Migration_Update_Column {
+  /** column name */
+  Version = 'version',
+  /** column name */
+  VersionSelf = 'version_self'
+}
+
+/** aggregate var_pop on columns */
+export type Schema_Migration_Var_Pop_Fields = {
+  __typename?: 'schema_migration_var_pop_fields';
+  version_self?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Schema_Migration_Var_Samp_Fields = {
+  __typename?: 'schema_migration_var_samp_fields';
+  version_self?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Schema_Migration_Variance_Fields = {
+  __typename?: 'schema_migration_variance_fields';
+  version_self?: Maybe<Scalars['Float']>;
+};
+
+/** columns and relationships of "selfservice_errors" */
+export type Selfservice_Errors = {
+  __typename?: 'selfservice_errors';
+  created_at: Scalars['timestamp'];
+  csrf_token: Scalars['String'];
+  errors: Scalars['jsonb'];
+  id: Scalars['uuid'];
+  nid?: Maybe<Scalars['uuid']>;
+  seen_at?: Maybe<Scalars['timestamp']>;
+  updated_at: Scalars['timestamp'];
+  was_seen: Scalars['Boolean'];
+};
+
+
+/** columns and relationships of "selfservice_errors" */
+export type Selfservice_ErrorsErrorsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "selfservice_errors" */
+export type Selfservice_Errors_Aggregate = {
+  __typename?: 'selfservice_errors_aggregate';
+  aggregate?: Maybe<Selfservice_Errors_Aggregate_Fields>;
+  nodes: Array<Selfservice_Errors>;
+};
+
+/** aggregate fields of "selfservice_errors" */
+export type Selfservice_Errors_Aggregate_Fields = {
+  __typename?: 'selfservice_errors_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Selfservice_Errors_Max_Fields>;
+  min?: Maybe<Selfservice_Errors_Min_Fields>;
+};
+
+
+/** aggregate fields of "selfservice_errors" */
+export type Selfservice_Errors_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Selfservice_Errors_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Errors_Append_Input = {
+  errors?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "selfservice_errors". All fields are combined with a logical 'AND'. */
+export type Selfservice_Errors_Bool_Exp = {
+  _and?: InputMaybe<Array<Selfservice_Errors_Bool_Exp>>;
+  _not?: InputMaybe<Selfservice_Errors_Bool_Exp>;
+  _or?: InputMaybe<Array<Selfservice_Errors_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  csrf_token?: InputMaybe<String_Comparison_Exp>;
+  errors?: InputMaybe<Jsonb_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  seen_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  was_seen?: InputMaybe<Boolean_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "selfservice_errors" */
+export enum Selfservice_Errors_Constraint {
+  /** unique or primary key constraint */
+  SelfserviceErrorsPkey = 'selfservice_errors_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Selfservice_Errors_Delete_At_Path_Input = {
+  errors?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Selfservice_Errors_Delete_Elem_Input = {
+  errors?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Selfservice_Errors_Delete_Key_Input = {
+  errors?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "selfservice_errors" */
+export type Selfservice_Errors_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  csrf_token?: InputMaybe<Scalars['String']>;
+  errors?: InputMaybe<Scalars['jsonb']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  seen_at?: InputMaybe<Scalars['timestamp']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  was_seen?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate max on columns */
+export type Selfservice_Errors_Max_Fields = {
+  __typename?: 'selfservice_errors_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  csrf_token?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  seen_at?: Maybe<Scalars['timestamp']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Selfservice_Errors_Min_Fields = {
+  __typename?: 'selfservice_errors_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  csrf_token?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  seen_at?: Maybe<Scalars['timestamp']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "selfservice_errors" */
+export type Selfservice_Errors_Mutation_Response = {
+  __typename?: 'selfservice_errors_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Selfservice_Errors>;
+};
+
+/** on conflict condition type for table "selfservice_errors" */
+export type Selfservice_Errors_On_Conflict = {
+  constraint: Selfservice_Errors_Constraint;
+  update_columns?: Array<Selfservice_Errors_Update_Column>;
+  where?: InputMaybe<Selfservice_Errors_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "selfservice_errors". */
+export type Selfservice_Errors_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  csrf_token?: InputMaybe<Order_By>;
+  errors?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  seen_at?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  was_seen?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: selfservice_errors */
+export type Selfservice_Errors_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Errors_Prepend_Input = {
+  errors?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "selfservice_errors" */
+export enum Selfservice_Errors_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CsrfToken = 'csrf_token',
+  /** column name */
+  Errors = 'errors',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  SeenAt = 'seen_at',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  WasSeen = 'was_seen'
+}
+
+/** input type for updating data in table "selfservice_errors" */
+export type Selfservice_Errors_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  csrf_token?: InputMaybe<Scalars['String']>;
+  errors?: InputMaybe<Scalars['jsonb']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  seen_at?: InputMaybe<Scalars['timestamp']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  was_seen?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** update columns of table "selfservice_errors" */
+export enum Selfservice_Errors_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CsrfToken = 'csrf_token',
+  /** column name */
+  Errors = 'errors',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  SeenAt = 'seen_at',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  WasSeen = 'was_seen'
+}
+
+/** columns and relationships of "selfservice_login_flows" */
+export type Selfservice_Login_Flows = {
+  __typename?: 'selfservice_login_flows';
+  active_method: Scalars['String'];
+  created_at: Scalars['timestamp'];
+  csrf_token: Scalars['String'];
+  expires_at: Scalars['timestamp'];
+  forced: Scalars['Boolean'];
+  id: Scalars['uuid'];
+  internal_context: Scalars['jsonb'];
+  issued_at: Scalars['timestamp'];
+  nid?: Maybe<Scalars['uuid']>;
+  request_url: Scalars['String'];
+  requested_aal: Scalars['String'];
+  type: Scalars['String'];
+  ui?: Maybe<Scalars['jsonb']>;
+  updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "selfservice_login_flows" */
+export type Selfservice_Login_FlowsInternal_ContextArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "selfservice_login_flows" */
+export type Selfservice_Login_FlowsUiArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "selfservice_login_flows" */
+export type Selfservice_Login_Flows_Aggregate = {
+  __typename?: 'selfservice_login_flows_aggregate';
+  aggregate?: Maybe<Selfservice_Login_Flows_Aggregate_Fields>;
+  nodes: Array<Selfservice_Login_Flows>;
+};
+
+/** aggregate fields of "selfservice_login_flows" */
+export type Selfservice_Login_Flows_Aggregate_Fields = {
+  __typename?: 'selfservice_login_flows_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Selfservice_Login_Flows_Max_Fields>;
+  min?: Maybe<Selfservice_Login_Flows_Min_Fields>;
+};
+
+
+/** aggregate fields of "selfservice_login_flows" */
+export type Selfservice_Login_Flows_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Selfservice_Login_Flows_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Login_Flows_Append_Input = {
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "selfservice_login_flows". All fields are combined with a logical 'AND'. */
+export type Selfservice_Login_Flows_Bool_Exp = {
+  _and?: InputMaybe<Array<Selfservice_Login_Flows_Bool_Exp>>;
+  _not?: InputMaybe<Selfservice_Login_Flows_Bool_Exp>;
+  _or?: InputMaybe<Array<Selfservice_Login_Flows_Bool_Exp>>;
+  active_method?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  csrf_token?: InputMaybe<String_Comparison_Exp>;
+  expires_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  forced?: InputMaybe<Boolean_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  internal_context?: InputMaybe<Jsonb_Comparison_Exp>;
+  issued_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  request_url?: InputMaybe<String_Comparison_Exp>;
+  requested_aal?: InputMaybe<String_Comparison_Exp>;
+  type?: InputMaybe<String_Comparison_Exp>;
+  ui?: InputMaybe<Jsonb_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "selfservice_login_flows" */
+export enum Selfservice_Login_Flows_Constraint {
+  /** unique or primary key constraint */
+  SelfserviceLoginRequestsPkey = 'selfservice_login_requests_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Selfservice_Login_Flows_Delete_At_Path_Input = {
+  internal_context?: InputMaybe<Array<Scalars['String']>>;
+  ui?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Selfservice_Login_Flows_Delete_Elem_Input = {
+  internal_context?: InputMaybe<Scalars['Int']>;
+  ui?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Selfservice_Login_Flows_Delete_Key_Input = {
+  internal_context?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "selfservice_login_flows" */
+export type Selfservice_Login_Flows_Insert_Input = {
+  active_method?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  csrf_token?: InputMaybe<Scalars['String']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  forced?: InputMaybe<Scalars['Boolean']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  request_url?: InputMaybe<Scalars['String']>;
+  requested_aal?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Selfservice_Login_Flows_Max_Fields = {
+  __typename?: 'selfservice_login_flows_max_fields';
+  active_method?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  csrf_token?: Maybe<Scalars['String']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  request_url?: Maybe<Scalars['String']>;
+  requested_aal?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Selfservice_Login_Flows_Min_Fields = {
+  __typename?: 'selfservice_login_flows_min_fields';
+  active_method?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  csrf_token?: Maybe<Scalars['String']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  request_url?: Maybe<Scalars['String']>;
+  requested_aal?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "selfservice_login_flows" */
+export type Selfservice_Login_Flows_Mutation_Response = {
+  __typename?: 'selfservice_login_flows_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Selfservice_Login_Flows>;
+};
+
+/** on conflict condition type for table "selfservice_login_flows" */
+export type Selfservice_Login_Flows_On_Conflict = {
+  constraint: Selfservice_Login_Flows_Constraint;
+  update_columns?: Array<Selfservice_Login_Flows_Update_Column>;
+  where?: InputMaybe<Selfservice_Login_Flows_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "selfservice_login_flows". */
+export type Selfservice_Login_Flows_Order_By = {
+  active_method?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  csrf_token?: InputMaybe<Order_By>;
+  expires_at?: InputMaybe<Order_By>;
+  forced?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  internal_context?: InputMaybe<Order_By>;
+  issued_at?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  request_url?: InputMaybe<Order_By>;
+  requested_aal?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  ui?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: selfservice_login_flows */
+export type Selfservice_Login_Flows_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Login_Flows_Prepend_Input = {
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "selfservice_login_flows" */
+export enum Selfservice_Login_Flows_Select_Column {
+  /** column name */
+  ActiveMethod = 'active_method',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CsrfToken = 'csrf_token',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Forced = 'forced',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  InternalContext = 'internal_context',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  RequestUrl = 'request_url',
+  /** column name */
+  RequestedAal = 'requested_aal',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  Ui = 'ui',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "selfservice_login_flows" */
+export type Selfservice_Login_Flows_Set_Input = {
+  active_method?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  csrf_token?: InputMaybe<Scalars['String']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  forced?: InputMaybe<Scalars['Boolean']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  request_url?: InputMaybe<Scalars['String']>;
+  requested_aal?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "selfservice_login_flows" */
+export enum Selfservice_Login_Flows_Update_Column {
+  /** column name */
+  ActiveMethod = 'active_method',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CsrfToken = 'csrf_token',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Forced = 'forced',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  InternalContext = 'internal_context',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  RequestUrl = 'request_url',
+  /** column name */
+  RequestedAal = 'requested_aal',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  Ui = 'ui',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** columns and relationships of "selfservice_recovery_flows" */
+export type Selfservice_Recovery_Flows = {
+  __typename?: 'selfservice_recovery_flows';
+  active_method?: Maybe<Scalars['String']>;
+  created_at: Scalars['timestamp'];
+  csrf_token: Scalars['String'];
+  expires_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  issued_at: Scalars['timestamp'];
+  nid?: Maybe<Scalars['uuid']>;
+  recovered_identity_id?: Maybe<Scalars['uuid']>;
+  request_url: Scalars['String'];
+  state: Scalars['String'];
+  type: Scalars['String'];
+  ui?: Maybe<Scalars['jsonb']>;
+  updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "selfservice_recovery_flows" */
+export type Selfservice_Recovery_FlowsUiArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "selfservice_recovery_flows" */
+export type Selfservice_Recovery_Flows_Aggregate = {
+  __typename?: 'selfservice_recovery_flows_aggregate';
+  aggregate?: Maybe<Selfservice_Recovery_Flows_Aggregate_Fields>;
+  nodes: Array<Selfservice_Recovery_Flows>;
+};
+
+/** aggregate fields of "selfservice_recovery_flows" */
+export type Selfservice_Recovery_Flows_Aggregate_Fields = {
+  __typename?: 'selfservice_recovery_flows_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Selfservice_Recovery_Flows_Max_Fields>;
+  min?: Maybe<Selfservice_Recovery_Flows_Min_Fields>;
+};
+
+
+/** aggregate fields of "selfservice_recovery_flows" */
+export type Selfservice_Recovery_Flows_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Selfservice_Recovery_Flows_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Recovery_Flows_Append_Input = {
+  ui?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "selfservice_recovery_flows". All fields are combined with a logical 'AND'. */
+export type Selfservice_Recovery_Flows_Bool_Exp = {
+  _and?: InputMaybe<Array<Selfservice_Recovery_Flows_Bool_Exp>>;
+  _not?: InputMaybe<Selfservice_Recovery_Flows_Bool_Exp>;
+  _or?: InputMaybe<Array<Selfservice_Recovery_Flows_Bool_Exp>>;
+  active_method?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  csrf_token?: InputMaybe<String_Comparison_Exp>;
+  expires_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  issued_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  recovered_identity_id?: InputMaybe<Uuid_Comparison_Exp>;
+  request_url?: InputMaybe<String_Comparison_Exp>;
+  state?: InputMaybe<String_Comparison_Exp>;
+  type?: InputMaybe<String_Comparison_Exp>;
+  ui?: InputMaybe<Jsonb_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "selfservice_recovery_flows" */
+export enum Selfservice_Recovery_Flows_Constraint {
+  /** unique or primary key constraint */
+  SelfserviceRecoveryRequestsPkey = 'selfservice_recovery_requests_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Selfservice_Recovery_Flows_Delete_At_Path_Input = {
+  ui?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Selfservice_Recovery_Flows_Delete_Elem_Input = {
+  ui?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Selfservice_Recovery_Flows_Delete_Key_Input = {
+  ui?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "selfservice_recovery_flows" */
+export type Selfservice_Recovery_Flows_Insert_Input = {
+  active_method?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  csrf_token?: InputMaybe<Scalars['String']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  recovered_identity_id?: InputMaybe<Scalars['uuid']>;
+  request_url?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Selfservice_Recovery_Flows_Max_Fields = {
+  __typename?: 'selfservice_recovery_flows_max_fields';
+  active_method?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  csrf_token?: Maybe<Scalars['String']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  recovered_identity_id?: Maybe<Scalars['uuid']>;
+  request_url?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Selfservice_Recovery_Flows_Min_Fields = {
+  __typename?: 'selfservice_recovery_flows_min_fields';
+  active_method?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  csrf_token?: Maybe<Scalars['String']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  recovered_identity_id?: Maybe<Scalars['uuid']>;
+  request_url?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "selfservice_recovery_flows" */
+export type Selfservice_Recovery_Flows_Mutation_Response = {
+  __typename?: 'selfservice_recovery_flows_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Selfservice_Recovery_Flows>;
+};
+
+/** on conflict condition type for table "selfservice_recovery_flows" */
+export type Selfservice_Recovery_Flows_On_Conflict = {
+  constraint: Selfservice_Recovery_Flows_Constraint;
+  update_columns?: Array<Selfservice_Recovery_Flows_Update_Column>;
+  where?: InputMaybe<Selfservice_Recovery_Flows_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "selfservice_recovery_flows". */
+export type Selfservice_Recovery_Flows_Order_By = {
+  active_method?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  csrf_token?: InputMaybe<Order_By>;
+  expires_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  issued_at?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  recovered_identity_id?: InputMaybe<Order_By>;
+  request_url?: InputMaybe<Order_By>;
+  state?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  ui?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: selfservice_recovery_flows */
+export type Selfservice_Recovery_Flows_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Recovery_Flows_Prepend_Input = {
+  ui?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "selfservice_recovery_flows" */
+export enum Selfservice_Recovery_Flows_Select_Column {
+  /** column name */
+  ActiveMethod = 'active_method',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CsrfToken = 'csrf_token',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  RecoveredIdentityId = 'recovered_identity_id',
+  /** column name */
+  RequestUrl = 'request_url',
+  /** column name */
+  State = 'state',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  Ui = 'ui',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "selfservice_recovery_flows" */
+export type Selfservice_Recovery_Flows_Set_Input = {
+  active_method?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  csrf_token?: InputMaybe<Scalars['String']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  recovered_identity_id?: InputMaybe<Scalars['uuid']>;
+  request_url?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "selfservice_recovery_flows" */
+export enum Selfservice_Recovery_Flows_Update_Column {
+  /** column name */
+  ActiveMethod = 'active_method',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CsrfToken = 'csrf_token',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  RecoveredIdentityId = 'recovered_identity_id',
+  /** column name */
+  RequestUrl = 'request_url',
+  /** column name */
+  State = 'state',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  Ui = 'ui',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** columns and relationships of "selfservice_registration_flows" */
+export type Selfservice_Registration_Flows = {
+  __typename?: 'selfservice_registration_flows';
+  active_method: Scalars['String'];
+  created_at: Scalars['timestamp'];
+  csrf_token: Scalars['String'];
+  expires_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  internal_context: Scalars['jsonb'];
+  issued_at: Scalars['timestamp'];
+  nid?: Maybe<Scalars['uuid']>;
+  request_url: Scalars['String'];
+  type: Scalars['String'];
+  ui?: Maybe<Scalars['jsonb']>;
+  updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "selfservice_registration_flows" */
+export type Selfservice_Registration_FlowsInternal_ContextArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "selfservice_registration_flows" */
+export type Selfservice_Registration_FlowsUiArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "selfservice_registration_flows" */
+export type Selfservice_Registration_Flows_Aggregate = {
+  __typename?: 'selfservice_registration_flows_aggregate';
+  aggregate?: Maybe<Selfservice_Registration_Flows_Aggregate_Fields>;
+  nodes: Array<Selfservice_Registration_Flows>;
+};
+
+/** aggregate fields of "selfservice_registration_flows" */
+export type Selfservice_Registration_Flows_Aggregate_Fields = {
+  __typename?: 'selfservice_registration_flows_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Selfservice_Registration_Flows_Max_Fields>;
+  min?: Maybe<Selfservice_Registration_Flows_Min_Fields>;
+};
+
+
+/** aggregate fields of "selfservice_registration_flows" */
+export type Selfservice_Registration_Flows_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Selfservice_Registration_Flows_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Registration_Flows_Append_Input = {
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "selfservice_registration_flows". All fields are combined with a logical 'AND'. */
+export type Selfservice_Registration_Flows_Bool_Exp = {
+  _and?: InputMaybe<Array<Selfservice_Registration_Flows_Bool_Exp>>;
+  _not?: InputMaybe<Selfservice_Registration_Flows_Bool_Exp>;
+  _or?: InputMaybe<Array<Selfservice_Registration_Flows_Bool_Exp>>;
+  active_method?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  csrf_token?: InputMaybe<String_Comparison_Exp>;
+  expires_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  internal_context?: InputMaybe<Jsonb_Comparison_Exp>;
+  issued_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  request_url?: InputMaybe<String_Comparison_Exp>;
+  type?: InputMaybe<String_Comparison_Exp>;
+  ui?: InputMaybe<Jsonb_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "selfservice_registration_flows" */
+export enum Selfservice_Registration_Flows_Constraint {
+  /** unique or primary key constraint */
+  SelfserviceRegistrationRequestsPkey = 'selfservice_registration_requests_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Selfservice_Registration_Flows_Delete_At_Path_Input = {
+  internal_context?: InputMaybe<Array<Scalars['String']>>;
+  ui?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Selfservice_Registration_Flows_Delete_Elem_Input = {
+  internal_context?: InputMaybe<Scalars['Int']>;
+  ui?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Selfservice_Registration_Flows_Delete_Key_Input = {
+  internal_context?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "selfservice_registration_flows" */
+export type Selfservice_Registration_Flows_Insert_Input = {
+  active_method?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  csrf_token?: InputMaybe<Scalars['String']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  request_url?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Selfservice_Registration_Flows_Max_Fields = {
+  __typename?: 'selfservice_registration_flows_max_fields';
+  active_method?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  csrf_token?: Maybe<Scalars['String']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  request_url?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Selfservice_Registration_Flows_Min_Fields = {
+  __typename?: 'selfservice_registration_flows_min_fields';
+  active_method?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  csrf_token?: Maybe<Scalars['String']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  request_url?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "selfservice_registration_flows" */
+export type Selfservice_Registration_Flows_Mutation_Response = {
+  __typename?: 'selfservice_registration_flows_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Selfservice_Registration_Flows>;
+};
+
+/** on conflict condition type for table "selfservice_registration_flows" */
+export type Selfservice_Registration_Flows_On_Conflict = {
+  constraint: Selfservice_Registration_Flows_Constraint;
+  update_columns?: Array<Selfservice_Registration_Flows_Update_Column>;
+  where?: InputMaybe<Selfservice_Registration_Flows_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "selfservice_registration_flows". */
+export type Selfservice_Registration_Flows_Order_By = {
+  active_method?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  csrf_token?: InputMaybe<Order_By>;
+  expires_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  internal_context?: InputMaybe<Order_By>;
+  issued_at?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  request_url?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  ui?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: selfservice_registration_flows */
+export type Selfservice_Registration_Flows_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Registration_Flows_Prepend_Input = {
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "selfservice_registration_flows" */
+export enum Selfservice_Registration_Flows_Select_Column {
+  /** column name */
+  ActiveMethod = 'active_method',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CsrfToken = 'csrf_token',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  InternalContext = 'internal_context',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  RequestUrl = 'request_url',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  Ui = 'ui',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "selfservice_registration_flows" */
+export type Selfservice_Registration_Flows_Set_Input = {
+  active_method?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  csrf_token?: InputMaybe<Scalars['String']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  request_url?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "selfservice_registration_flows" */
+export enum Selfservice_Registration_Flows_Update_Column {
+  /** column name */
+  ActiveMethod = 'active_method',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CsrfToken = 'csrf_token',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  InternalContext = 'internal_context',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  RequestUrl = 'request_url',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  Ui = 'ui',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** columns and relationships of "selfservice_settings_flows" */
+export type Selfservice_Settings_Flows = {
+  __typename?: 'selfservice_settings_flows';
+  active_method?: Maybe<Scalars['String']>;
+  created_at: Scalars['timestamp'];
+  expires_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  identity_id: Scalars['uuid'];
+  internal_context: Scalars['jsonb'];
+  issued_at: Scalars['timestamp'];
+  nid?: Maybe<Scalars['uuid']>;
+  request_url: Scalars['String'];
+  state: Scalars['String'];
+  type: Scalars['String'];
+  ui?: Maybe<Scalars['jsonb']>;
+  updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "selfservice_settings_flows" */
+export type Selfservice_Settings_FlowsInternal_ContextArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "selfservice_settings_flows" */
+export type Selfservice_Settings_FlowsUiArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "selfservice_settings_flows" */
+export type Selfservice_Settings_Flows_Aggregate = {
+  __typename?: 'selfservice_settings_flows_aggregate';
+  aggregate?: Maybe<Selfservice_Settings_Flows_Aggregate_Fields>;
+  nodes: Array<Selfservice_Settings_Flows>;
+};
+
+/** aggregate fields of "selfservice_settings_flows" */
+export type Selfservice_Settings_Flows_Aggregate_Fields = {
+  __typename?: 'selfservice_settings_flows_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Selfservice_Settings_Flows_Max_Fields>;
+  min?: Maybe<Selfservice_Settings_Flows_Min_Fields>;
+};
+
+
+/** aggregate fields of "selfservice_settings_flows" */
+export type Selfservice_Settings_Flows_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Selfservice_Settings_Flows_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Settings_Flows_Append_Input = {
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "selfservice_settings_flows". All fields are combined with a logical 'AND'. */
+export type Selfservice_Settings_Flows_Bool_Exp = {
+  _and?: InputMaybe<Array<Selfservice_Settings_Flows_Bool_Exp>>;
+  _not?: InputMaybe<Selfservice_Settings_Flows_Bool_Exp>;
+  _or?: InputMaybe<Array<Selfservice_Settings_Flows_Bool_Exp>>;
+  active_method?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  expires_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  identity_id?: InputMaybe<Uuid_Comparison_Exp>;
+  internal_context?: InputMaybe<Jsonb_Comparison_Exp>;
+  issued_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  request_url?: InputMaybe<String_Comparison_Exp>;
+  state?: InputMaybe<String_Comparison_Exp>;
+  type?: InputMaybe<String_Comparison_Exp>;
+  ui?: InputMaybe<Jsonb_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "selfservice_settings_flows" */
+export enum Selfservice_Settings_Flows_Constraint {
+  /** unique or primary key constraint */
+  SelfserviceProfileManagementRequestsPkey = 'selfservice_profile_management_requests_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Selfservice_Settings_Flows_Delete_At_Path_Input = {
+  internal_context?: InputMaybe<Array<Scalars['String']>>;
+  ui?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Selfservice_Settings_Flows_Delete_Elem_Input = {
+  internal_context?: InputMaybe<Scalars['Int']>;
+  ui?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Selfservice_Settings_Flows_Delete_Key_Input = {
+  internal_context?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "selfservice_settings_flows" */
+export type Selfservice_Settings_Flows_Insert_Input = {
+  active_method?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  request_url?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Selfservice_Settings_Flows_Max_Fields = {
+  __typename?: 'selfservice_settings_flows_max_fields';
+  active_method?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  request_url?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Selfservice_Settings_Flows_Min_Fields = {
+  __typename?: 'selfservice_settings_flows_min_fields';
+  active_method?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  request_url?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "selfservice_settings_flows" */
+export type Selfservice_Settings_Flows_Mutation_Response = {
+  __typename?: 'selfservice_settings_flows_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Selfservice_Settings_Flows>;
+};
+
+/** on conflict condition type for table "selfservice_settings_flows" */
+export type Selfservice_Settings_Flows_On_Conflict = {
+  constraint: Selfservice_Settings_Flows_Constraint;
+  update_columns?: Array<Selfservice_Settings_Flows_Update_Column>;
+  where?: InputMaybe<Selfservice_Settings_Flows_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "selfservice_settings_flows". */
+export type Selfservice_Settings_Flows_Order_By = {
+  active_method?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  expires_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  identity_id?: InputMaybe<Order_By>;
+  internal_context?: InputMaybe<Order_By>;
+  issued_at?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  request_url?: InputMaybe<Order_By>;
+  state?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  ui?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: selfservice_settings_flows */
+export type Selfservice_Settings_Flows_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Settings_Flows_Prepend_Input = {
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "selfservice_settings_flows" */
+export enum Selfservice_Settings_Flows_Select_Column {
+  /** column name */
+  ActiveMethod = 'active_method',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  InternalContext = 'internal_context',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  RequestUrl = 'request_url',
+  /** column name */
+  State = 'state',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  Ui = 'ui',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "selfservice_settings_flows" */
+export type Selfservice_Settings_Flows_Set_Input = {
+  active_method?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  internal_context?: InputMaybe<Scalars['jsonb']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  request_url?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "selfservice_settings_flows" */
+export enum Selfservice_Settings_Flows_Update_Column {
+  /** column name */
+  ActiveMethod = 'active_method',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  InternalContext = 'internal_context',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  RequestUrl = 'request_url',
+  /** column name */
+  State = 'state',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  Ui = 'ui',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** columns and relationships of "selfservice_verification_flows" */
+export type Selfservice_Verification_Flows = {
+  __typename?: 'selfservice_verification_flows';
+  active_method?: Maybe<Scalars['String']>;
+  created_at: Scalars['timestamp'];
+  csrf_token: Scalars['String'];
+  expires_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  issued_at: Scalars['timestamp'];
+  nid?: Maybe<Scalars['uuid']>;
+  request_url: Scalars['String'];
+  state: Scalars['String'];
+  type: Scalars['String'];
+  ui?: Maybe<Scalars['jsonb']>;
+  updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "selfservice_verification_flows" */
+export type Selfservice_Verification_FlowsUiArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "selfservice_verification_flows" */
+export type Selfservice_Verification_Flows_Aggregate = {
+  __typename?: 'selfservice_verification_flows_aggregate';
+  aggregate?: Maybe<Selfservice_Verification_Flows_Aggregate_Fields>;
+  nodes: Array<Selfservice_Verification_Flows>;
+};
+
+/** aggregate fields of "selfservice_verification_flows" */
+export type Selfservice_Verification_Flows_Aggregate_Fields = {
+  __typename?: 'selfservice_verification_flows_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Selfservice_Verification_Flows_Max_Fields>;
+  min?: Maybe<Selfservice_Verification_Flows_Min_Fields>;
+};
+
+
+/** aggregate fields of "selfservice_verification_flows" */
+export type Selfservice_Verification_Flows_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Selfservice_Verification_Flows_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Verification_Flows_Append_Input = {
+  ui?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "selfservice_verification_flows". All fields are combined with a logical 'AND'. */
+export type Selfservice_Verification_Flows_Bool_Exp = {
+  _and?: InputMaybe<Array<Selfservice_Verification_Flows_Bool_Exp>>;
+  _not?: InputMaybe<Selfservice_Verification_Flows_Bool_Exp>;
+  _or?: InputMaybe<Array<Selfservice_Verification_Flows_Bool_Exp>>;
+  active_method?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  csrf_token?: InputMaybe<String_Comparison_Exp>;
+  expires_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  issued_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  request_url?: InputMaybe<String_Comparison_Exp>;
+  state?: InputMaybe<String_Comparison_Exp>;
+  type?: InputMaybe<String_Comparison_Exp>;
+  ui?: InputMaybe<Jsonb_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "selfservice_verification_flows" */
+export enum Selfservice_Verification_Flows_Constraint {
+  /** unique or primary key constraint */
+  SelfserviceVerificationRequestsPkey = 'selfservice_verification_requests_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Selfservice_Verification_Flows_Delete_At_Path_Input = {
+  ui?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Selfservice_Verification_Flows_Delete_Elem_Input = {
+  ui?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Selfservice_Verification_Flows_Delete_Key_Input = {
+  ui?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "selfservice_verification_flows" */
+export type Selfservice_Verification_Flows_Insert_Input = {
+  active_method?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  csrf_token?: InputMaybe<Scalars['String']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  request_url?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Selfservice_Verification_Flows_Max_Fields = {
+  __typename?: 'selfservice_verification_flows_max_fields';
+  active_method?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  csrf_token?: Maybe<Scalars['String']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  request_url?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Selfservice_Verification_Flows_Min_Fields = {
+  __typename?: 'selfservice_verification_flows_min_fields';
+  active_method?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  csrf_token?: Maybe<Scalars['String']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  nid?: Maybe<Scalars['uuid']>;
+  request_url?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "selfservice_verification_flows" */
+export type Selfservice_Verification_Flows_Mutation_Response = {
+  __typename?: 'selfservice_verification_flows_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Selfservice_Verification_Flows>;
+};
+
+/** on conflict condition type for table "selfservice_verification_flows" */
+export type Selfservice_Verification_Flows_On_Conflict = {
+  constraint: Selfservice_Verification_Flows_Constraint;
+  update_columns?: Array<Selfservice_Verification_Flows_Update_Column>;
+  where?: InputMaybe<Selfservice_Verification_Flows_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "selfservice_verification_flows". */
+export type Selfservice_Verification_Flows_Order_By = {
+  active_method?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  csrf_token?: InputMaybe<Order_By>;
+  expires_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  issued_at?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  request_url?: InputMaybe<Order_By>;
+  state?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  ui?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: selfservice_verification_flows */
+export type Selfservice_Verification_Flows_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Selfservice_Verification_Flows_Prepend_Input = {
+  ui?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "selfservice_verification_flows" */
+export enum Selfservice_Verification_Flows_Select_Column {
+  /** column name */
+  ActiveMethod = 'active_method',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CsrfToken = 'csrf_token',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  RequestUrl = 'request_url',
+  /** column name */
+  State = 'state',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  Ui = 'ui',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "selfservice_verification_flows" */
+export type Selfservice_Verification_Flows_Set_Input = {
+  active_method?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  csrf_token?: InputMaybe<Scalars['String']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  request_url?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  ui?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "selfservice_verification_flows" */
+export enum Selfservice_Verification_Flows_Update_Column {
+  /** column name */
+  ActiveMethod = 'active_method',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CsrfToken = 'csrf_token',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  RequestUrl = 'request_url',
+  /** column name */
+  State = 'state',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  Ui = 'ui',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** columns and relationships of "sessions" */
+export type Sessions = {
+  __typename?: 'sessions';
+  aal: Scalars['String'];
+  active?: Maybe<Scalars['Boolean']>;
+  authenticated_at: Scalars['timestamp'];
+  authentication_methods: Scalars['jsonb'];
+  created_at: Scalars['timestamp'];
+  expires_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  identity_id: Scalars['uuid'];
+  issued_at: Scalars['timestamp'];
+  logout_token?: Maybe<Scalars['String']>;
+  nid?: Maybe<Scalars['uuid']>;
+  token?: Maybe<Scalars['String']>;
+  updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "sessions" */
+export type SessionsAuthentication_MethodsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "sessions" */
+export type Sessions_Aggregate = {
+  __typename?: 'sessions_aggregate';
+  aggregate?: Maybe<Sessions_Aggregate_Fields>;
+  nodes: Array<Sessions>;
+};
+
+/** aggregate fields of "sessions" */
+export type Sessions_Aggregate_Fields = {
+  __typename?: 'sessions_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Sessions_Max_Fields>;
+  min?: Maybe<Sessions_Min_Fields>;
+};
+
+
+/** aggregate fields of "sessions" */
+export type Sessions_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Sessions_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Sessions_Append_Input = {
+  authentication_methods?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "sessions". All fields are combined with a logical 'AND'. */
+export type Sessions_Bool_Exp = {
+  _and?: InputMaybe<Array<Sessions_Bool_Exp>>;
+  _not?: InputMaybe<Sessions_Bool_Exp>;
+  _or?: InputMaybe<Array<Sessions_Bool_Exp>>;
+  aal?: InputMaybe<String_Comparison_Exp>;
+  active?: InputMaybe<Boolean_Comparison_Exp>;
+  authenticated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  authentication_methods?: InputMaybe<Jsonb_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  expires_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  identity_id?: InputMaybe<Uuid_Comparison_Exp>;
+  issued_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  logout_token?: InputMaybe<String_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  token?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "sessions" */
+export enum Sessions_Constraint {
+  /** unique or primary key constraint */
+  SessionsLogoutTokenUqIdx = 'sessions_logout_token_uq_idx',
+  /** unique or primary key constraint */
+  SessionsPkey = 'sessions_pkey',
+  /** unique or primary key constraint */
+  SessionsTokenUqIdx = 'sessions_token_uq_idx'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Sessions_Delete_At_Path_Input = {
+  authentication_methods?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Sessions_Delete_Elem_Input = {
+  authentication_methods?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Sessions_Delete_Key_Input = {
+  authentication_methods?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "sessions" */
+export type Sessions_Insert_Input = {
+  aal?: InputMaybe<Scalars['String']>;
+  active?: InputMaybe<Scalars['Boolean']>;
+  authenticated_at?: InputMaybe<Scalars['timestamp']>;
+  authentication_methods?: InputMaybe<Scalars['jsonb']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  logout_token?: InputMaybe<Scalars['String']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  token?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Sessions_Max_Fields = {
+  __typename?: 'sessions_max_fields';
+  aal?: Maybe<Scalars['String']>;
+  authenticated_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  logout_token?: Maybe<Scalars['String']>;
+  nid?: Maybe<Scalars['uuid']>;
+  token?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Sessions_Min_Fields = {
+  __typename?: 'sessions_min_fields';
+  aal?: Maybe<Scalars['String']>;
+  authenticated_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  expires_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  identity_id?: Maybe<Scalars['uuid']>;
+  issued_at?: Maybe<Scalars['timestamp']>;
+  logout_token?: Maybe<Scalars['String']>;
+  nid?: Maybe<Scalars['uuid']>;
+  token?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "sessions" */
+export type Sessions_Mutation_Response = {
+  __typename?: 'sessions_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Sessions>;
+};
+
+/** on conflict condition type for table "sessions" */
+export type Sessions_On_Conflict = {
+  constraint: Sessions_Constraint;
+  update_columns?: Array<Sessions_Update_Column>;
+  where?: InputMaybe<Sessions_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "sessions". */
+export type Sessions_Order_By = {
+  aal?: InputMaybe<Order_By>;
+  active?: InputMaybe<Order_By>;
+  authenticated_at?: InputMaybe<Order_By>;
+  authentication_methods?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  expires_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  identity_id?: InputMaybe<Order_By>;
+  issued_at?: InputMaybe<Order_By>;
+  logout_token?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  token?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: sessions */
+export type Sessions_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Sessions_Prepend_Input = {
+  authentication_methods?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "sessions" */
+export enum Sessions_Select_Column {
+  /** column name */
+  Aal = 'aal',
+  /** column name */
+  Active = 'active',
+  /** column name */
+  AuthenticatedAt = 'authenticated_at',
+  /** column name */
+  AuthenticationMethods = 'authentication_methods',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  LogoutToken = 'logout_token',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  Token = 'token',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "sessions" */
+export type Sessions_Set_Input = {
+  aal?: InputMaybe<Scalars['String']>;
+  active?: InputMaybe<Scalars['Boolean']>;
+  authenticated_at?: InputMaybe<Scalars['timestamp']>;
+  authentication_methods?: InputMaybe<Scalars['jsonb']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  expires_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  identity_id?: InputMaybe<Scalars['uuid']>;
+  issued_at?: InputMaybe<Scalars['timestamp']>;
+  logout_token?: InputMaybe<Scalars['String']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  token?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "sessions" */
+export enum Sessions_Update_Column {
+  /** column name */
+  Aal = 'aal',
+  /** column name */
+  Active = 'active',
+  /** column name */
+  AuthenticatedAt = 'authenticated_at',
+  /** column name */
+  AuthenticationMethods = 'authentication_methods',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiresAt = 'expires_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdentityId = 'identity_id',
+  /** column name */
+  IssuedAt = 'issued_at',
+  /** column name */
+  LogoutToken = 'logout_token',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  Token = 'token',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
 /** columns and relationships of "settings" */
 export type Settings = {
   __typename?: 'settings';
@@ -4081,18 +9814,84 @@ export type Subscription_Root = {
   builds_aggregate: Builds_Aggregate;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
+  /** fetch data from the table: "continuity_containers" */
+  continuity_containers: Array<Continuity_Containers>;
+  /** fetch aggregated fields from the table: "continuity_containers" */
+  continuity_containers_aggregate: Continuity_Containers_Aggregate;
+  /** fetch data from the table: "continuity_containers" using primary key columns */
+  continuity_containers_by_pk?: Maybe<Continuity_Containers>;
+  /** fetch data from the table: "courier_messages" */
+  courier_messages: Array<Courier_Messages>;
+  /** fetch aggregated fields from the table: "courier_messages" */
+  courier_messages_aggregate: Courier_Messages_Aggregate;
+  /** fetch data from the table: "courier_messages" using primary key columns */
+  courier_messages_by_pk?: Maybe<Courier_Messages>;
   /** An array relationship */
   findings: Array<Findings>;
   /** An aggregate relationship */
   findings_aggregate: Findings_Aggregate;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
+  /** fetch data from the table: "identities" */
+  identities: Array<Identities>;
+  /** fetch aggregated fields from the table: "identities" */
+  identities_aggregate: Identities_Aggregate;
+  /** fetch data from the table: "identities" using primary key columns */
+  identities_by_pk?: Maybe<Identities>;
+  /** fetch data from the table: "identity_credential_identifiers" */
+  identity_credential_identifiers: Array<Identity_Credential_Identifiers>;
+  /** fetch aggregated fields from the table: "identity_credential_identifiers" */
+  identity_credential_identifiers_aggregate: Identity_Credential_Identifiers_Aggregate;
+  /** fetch data from the table: "identity_credential_identifiers" using primary key columns */
+  identity_credential_identifiers_by_pk?: Maybe<Identity_Credential_Identifiers>;
+  /** fetch data from the table: "identity_credential_types" */
+  identity_credential_types: Array<Identity_Credential_Types>;
+  /** fetch aggregated fields from the table: "identity_credential_types" */
+  identity_credential_types_aggregate: Identity_Credential_Types_Aggregate;
+  /** fetch data from the table: "identity_credential_types" using primary key columns */
+  identity_credential_types_by_pk?: Maybe<Identity_Credential_Types>;
+  /** fetch data from the table: "identity_credentials" */
+  identity_credentials: Array<Identity_Credentials>;
+  /** fetch aggregated fields from the table: "identity_credentials" */
+  identity_credentials_aggregate: Identity_Credentials_Aggregate;
+  /** fetch data from the table: "identity_credentials" using primary key columns */
+  identity_credentials_by_pk?: Maybe<Identity_Credentials>;
+  /** fetch data from the table: "identity_recovery_addresses" */
+  identity_recovery_addresses: Array<Identity_Recovery_Addresses>;
+  /** fetch aggregated fields from the table: "identity_recovery_addresses" */
+  identity_recovery_addresses_aggregate: Identity_Recovery_Addresses_Aggregate;
+  /** fetch data from the table: "identity_recovery_addresses" using primary key columns */
+  identity_recovery_addresses_by_pk?: Maybe<Identity_Recovery_Addresses>;
+  /** fetch data from the table: "identity_recovery_tokens" */
+  identity_recovery_tokens: Array<Identity_Recovery_Tokens>;
+  /** fetch aggregated fields from the table: "identity_recovery_tokens" */
+  identity_recovery_tokens_aggregate: Identity_Recovery_Tokens_Aggregate;
+  /** fetch data from the table: "identity_recovery_tokens" using primary key columns */
+  identity_recovery_tokens_by_pk?: Maybe<Identity_Recovery_Tokens>;
+  /** fetch data from the table: "identity_verifiable_addresses" */
+  identity_verifiable_addresses: Array<Identity_Verifiable_Addresses>;
+  /** fetch aggregated fields from the table: "identity_verifiable_addresses" */
+  identity_verifiable_addresses_aggregate: Identity_Verifiable_Addresses_Aggregate;
+  /** fetch data from the table: "identity_verifiable_addresses" using primary key columns */
+  identity_verifiable_addresses_by_pk?: Maybe<Identity_Verifiable_Addresses>;
+  /** fetch data from the table: "identity_verification_tokens" */
+  identity_verification_tokens: Array<Identity_Verification_Tokens>;
+  /** fetch aggregated fields from the table: "identity_verification_tokens" */
+  identity_verification_tokens_aggregate: Identity_Verification_Tokens_Aggregate;
+  /** fetch data from the table: "identity_verification_tokens" using primary key columns */
+  identity_verification_tokens_by_pk?: Maybe<Identity_Verification_Tokens>;
   /** fetch data from the table: "instances" */
   instances: Array<Instances>;
   /** fetch aggregated fields from the table: "instances" */
   instances_aggregate: Instances_Aggregate;
   /** fetch data from the table: "instances" using primary key columns */
   instances_by_pk?: Maybe<Instances>;
+  /** fetch data from the table: "networks" */
+  networks: Array<Networks>;
+  /** fetch aggregated fields from the table: "networks" */
+  networks_aggregate: Networks_Aggregate;
+  /** fetch data from the table: "networks" using primary key columns */
+  networks_by_pk?: Maybe<Networks>;
   /** fetch data from the table: "organization_user" */
   organization_user: Array<Organization_User>;
   /** fetch aggregated fields from the table: "organization_user" */
@@ -4135,6 +9934,52 @@ export type Subscription_Root = {
   scans_aggregate: Scans_Aggregate;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** fetch data from the table: "schema_migration" */
+  schema_migration: Array<Schema_Migration>;
+  /** fetch aggregated fields from the table: "schema_migration" */
+  schema_migration_aggregate: Schema_Migration_Aggregate;
+  /** fetch data from the table: "selfservice_errors" */
+  selfservice_errors: Array<Selfservice_Errors>;
+  /** fetch aggregated fields from the table: "selfservice_errors" */
+  selfservice_errors_aggregate: Selfservice_Errors_Aggregate;
+  /** fetch data from the table: "selfservice_errors" using primary key columns */
+  selfservice_errors_by_pk?: Maybe<Selfservice_Errors>;
+  /** fetch data from the table: "selfservice_login_flows" */
+  selfservice_login_flows: Array<Selfservice_Login_Flows>;
+  /** fetch aggregated fields from the table: "selfservice_login_flows" */
+  selfservice_login_flows_aggregate: Selfservice_Login_Flows_Aggregate;
+  /** fetch data from the table: "selfservice_login_flows" using primary key columns */
+  selfservice_login_flows_by_pk?: Maybe<Selfservice_Login_Flows>;
+  /** fetch data from the table: "selfservice_recovery_flows" */
+  selfservice_recovery_flows: Array<Selfservice_Recovery_Flows>;
+  /** fetch aggregated fields from the table: "selfservice_recovery_flows" */
+  selfservice_recovery_flows_aggregate: Selfservice_Recovery_Flows_Aggregate;
+  /** fetch data from the table: "selfservice_recovery_flows" using primary key columns */
+  selfservice_recovery_flows_by_pk?: Maybe<Selfservice_Recovery_Flows>;
+  /** fetch data from the table: "selfservice_registration_flows" */
+  selfservice_registration_flows: Array<Selfservice_Registration_Flows>;
+  /** fetch aggregated fields from the table: "selfservice_registration_flows" */
+  selfservice_registration_flows_aggregate: Selfservice_Registration_Flows_Aggregate;
+  /** fetch data from the table: "selfservice_registration_flows" using primary key columns */
+  selfservice_registration_flows_by_pk?: Maybe<Selfservice_Registration_Flows>;
+  /** fetch data from the table: "selfservice_settings_flows" */
+  selfservice_settings_flows: Array<Selfservice_Settings_Flows>;
+  /** fetch aggregated fields from the table: "selfservice_settings_flows" */
+  selfservice_settings_flows_aggregate: Selfservice_Settings_Flows_Aggregate;
+  /** fetch data from the table: "selfservice_settings_flows" using primary key columns */
+  selfservice_settings_flows_by_pk?: Maybe<Selfservice_Settings_Flows>;
+  /** fetch data from the table: "selfservice_verification_flows" */
+  selfservice_verification_flows: Array<Selfservice_Verification_Flows>;
+  /** fetch aggregated fields from the table: "selfservice_verification_flows" */
+  selfservice_verification_flows_aggregate: Selfservice_Verification_Flows_Aggregate;
+  /** fetch data from the table: "selfservice_verification_flows" using primary key columns */
+  selfservice_verification_flows_by_pk?: Maybe<Selfservice_Verification_Flows>;
+  /** fetch data from the table: "sessions" */
+  sessions: Array<Sessions>;
+  /** fetch aggregated fields from the table: "sessions" */
+  sessions_aggregate: Sessions_Aggregate;
+  /** fetch data from the table: "sessions" using primary key columns */
+  sessions_by_pk?: Maybe<Sessions>;
   /** fetch data from the table: "settings" */
   settings: Array<Settings>;
   /** fetch aggregated fields from the table: "settings" */
@@ -4185,6 +10030,52 @@ export type Subscription_RootBuilds_By_PkArgs = {
 };
 
 
+export type Subscription_RootContinuity_ContainersArgs = {
+  distinct_on?: InputMaybe<Array<Continuity_Containers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Continuity_Containers_Order_By>>;
+  where?: InputMaybe<Continuity_Containers_Bool_Exp>;
+};
+
+
+export type Subscription_RootContinuity_Containers_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Continuity_Containers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Continuity_Containers_Order_By>>;
+  where?: InputMaybe<Continuity_Containers_Bool_Exp>;
+};
+
+
+export type Subscription_RootContinuity_Containers_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootCourier_MessagesArgs = {
+  distinct_on?: InputMaybe<Array<Courier_Messages_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Courier_Messages_Order_By>>;
+  where?: InputMaybe<Courier_Messages_Bool_Exp>;
+};
+
+
+export type Subscription_RootCourier_Messages_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Courier_Messages_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Courier_Messages_Order_By>>;
+  where?: InputMaybe<Courier_Messages_Bool_Exp>;
+};
+
+
+export type Subscription_RootCourier_Messages_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Subscription_RootFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -4204,6 +10095,190 @@ export type Subscription_RootFindings_AggregateArgs = {
 
 
 export type Subscription_RootFindings_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootIdentitiesArgs = {
+  distinct_on?: InputMaybe<Array<Identities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identities_Order_By>>;
+  where?: InputMaybe<Identities_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentities_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identities_Order_By>>;
+  where?: InputMaybe<Identities_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentities_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootIdentity_Credential_IdentifiersArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credential_Identifiers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credential_Identifiers_Order_By>>;
+  where?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Credential_Identifiers_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credential_Identifiers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credential_Identifiers_Order_By>>;
+  where?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Credential_Identifiers_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootIdentity_Credential_TypesArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credential_Types_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credential_Types_Order_By>>;
+  where?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Credential_Types_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credential_Types_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credential_Types_Order_By>>;
+  where?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Credential_Types_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootIdentity_CredentialsArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credentials_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credentials_Order_By>>;
+  where?: InputMaybe<Identity_Credentials_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Credentials_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Credentials_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Credentials_Order_By>>;
+  where?: InputMaybe<Identity_Credentials_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Credentials_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootIdentity_Recovery_AddressesArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Recovery_Addresses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Recovery_Addresses_Order_By>>;
+  where?: InputMaybe<Identity_Recovery_Addresses_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Recovery_Addresses_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Recovery_Addresses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Recovery_Addresses_Order_By>>;
+  where?: InputMaybe<Identity_Recovery_Addresses_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Recovery_Addresses_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootIdentity_Recovery_TokensArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Recovery_Tokens_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Recovery_Tokens_Order_By>>;
+  where?: InputMaybe<Identity_Recovery_Tokens_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Recovery_Tokens_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Recovery_Tokens_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Recovery_Tokens_Order_By>>;
+  where?: InputMaybe<Identity_Recovery_Tokens_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Recovery_Tokens_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootIdentity_Verifiable_AddressesArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Verifiable_Addresses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Verifiable_Addresses_Order_By>>;
+  where?: InputMaybe<Identity_Verifiable_Addresses_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Verifiable_Addresses_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Verifiable_Addresses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Verifiable_Addresses_Order_By>>;
+  where?: InputMaybe<Identity_Verifiable_Addresses_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Verifiable_Addresses_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootIdentity_Verification_TokensArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Verification_Tokens_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Verification_Tokens_Order_By>>;
+  where?: InputMaybe<Identity_Verification_Tokens_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Verification_Tokens_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identity_Verification_Tokens_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identity_Verification_Tokens_Order_By>>;
+  where?: InputMaybe<Identity_Verification_Tokens_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentity_Verification_Tokens_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -4228,6 +10303,29 @@ export type Subscription_RootInstances_AggregateArgs = {
 
 export type Subscription_RootInstances_By_PkArgs = {
   instance_id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootNetworksArgs = {
+  distinct_on?: InputMaybe<Array<Networks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Networks_Order_By>>;
+  where?: InputMaybe<Networks_Bool_Exp>;
+};
+
+
+export type Subscription_RootNetworks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Networks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Networks_Order_By>>;
+  where?: InputMaybe<Networks_Bool_Exp>;
+};
+
+
+export type Subscription_RootNetworks_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -4388,6 +10486,185 @@ export type Subscription_RootScans_AggregateArgs = {
 
 
 export type Subscription_RootScans_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSchema_MigrationArgs = {
+  distinct_on?: InputMaybe<Array<Schema_Migration_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Schema_Migration_Order_By>>;
+  where?: InputMaybe<Schema_Migration_Bool_Exp>;
+};
+
+
+export type Subscription_RootSchema_Migration_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Schema_Migration_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Schema_Migration_Order_By>>;
+  where?: InputMaybe<Schema_Migration_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_ErrorsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Errors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Errors_Order_By>>;
+  where?: InputMaybe<Selfservice_Errors_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Errors_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Errors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Errors_Order_By>>;
+  where?: InputMaybe<Selfservice_Errors_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Errors_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSelfservice_Login_FlowsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Login_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Login_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Login_Flows_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Login_Flows_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Login_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Login_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Login_Flows_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Login_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSelfservice_Recovery_FlowsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Recovery_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Recovery_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Recovery_Flows_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Recovery_Flows_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Recovery_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Recovery_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Recovery_Flows_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Recovery_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSelfservice_Registration_FlowsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Registration_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Registration_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Registration_Flows_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Registration_Flows_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Registration_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Registration_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Registration_Flows_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Registration_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSelfservice_Settings_FlowsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Settings_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Settings_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Settings_Flows_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Settings_Flows_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Settings_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Settings_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Settings_Flows_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Settings_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSelfservice_Verification_FlowsArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Verification_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Verification_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Verification_Flows_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Verification_Flows_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Selfservice_Verification_Flows_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Selfservice_Verification_Flows_Order_By>>;
+  where?: InputMaybe<Selfservice_Verification_Flows_Bool_Exp>;
+};
+
+
+export type Subscription_RootSelfservice_Verification_Flows_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSessionsArgs = {
+  distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Sessions_Order_By>>;
+  where?: InputMaybe<Sessions_Bool_Exp>;
+};
+
+
+export type Subscription_RootSessions_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Sessions_Order_By>>;
+  where?: InputMaybe<Sessions_Bool_Exp>;
+};
+
+
+export type Subscription_RootSessions_By_PkArgs = {
   id: Scalars['uuid'];
 };
 

@@ -11,14 +11,8 @@
  * limitations under the License.
  *
  */
-import { useContext } from 'react';
+import React from 'react';
 
-import { AuthContext } from '../contexts/OryContext';
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-
-  if (!context) throw new Error('AuthContext must be placed within AuthProvider');
-
-  return context;
+export const Account = () => {
+  return <></>;
 };
