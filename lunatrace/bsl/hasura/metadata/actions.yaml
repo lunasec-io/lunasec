@@ -1,4 +1,13 @@
 actions:
+- name: presignManifestUpload
+  definition:
+    kind: synchronous
+    handler: http://host.docker.internal:3002/s3/presign-manifest-upload
+    request_transform:
+      method: POST
+      query_params: {}
+      template_engine: Kriti
+  comment: get s3 presigned url for manifest upload
 - name: sbom_upload_url
   definition:
     kind: ""
@@ -9,4 +18,5 @@ custom_types:
   - name: SbomUploadUrlInput
   objects:
   - name: SbomUploadUrlOutput
+  - name: PresignedUrlResponse
   scalars: []

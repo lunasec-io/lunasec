@@ -11,7 +11,7 @@
 
 -- CREATE EXTENSION pg_trgm;
 
-create schema "public";
+-- create schema "public";
 
 CREATE
 FUNCTION public.set_current_timestamp_updated_at() RETURNS trigger
@@ -384,3 +384,13 @@ CREATE TABLE public.instances
     last_heartbeat     timestamp without time zone DEFAULT now() NOT NULL,
     agent_access_token uuid references public.builds (agent_access_token) ON DELETE CASCADE
 );
+
+CREATE TABLE public.manifests
+(
+    id         uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    project_id uuid references public.projects (id) NOT NULL,
+    s3_url     text                                 NOT NULL UNIQUE,
+    filename   text                                 NOT NULL
+)
+

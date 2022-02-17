@@ -1,0 +1,5 @@
+mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!) {
+    insert_manifests_one(object: {filename: $filename, s3_url: $s3_url, project_id: $project_id}){
+        id
+    }
+}

@@ -17,7 +17,9 @@ import { ChevronDown, ChevronUp, Copy } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import semverSort from 'semver-sort';
 
-import { prettyDate } from '../../../../utils/pretty-date';
+import { CvssInferredWarning } from '../../../components/CvssInferredWarning';
+import { prettyDate } from '../../../utils/pretty-date';
+import { capitalizeFirstLetter } from '../../../utils/string-utils';
 
 import { severityOrder, VulnerablePackage } from './types';
 
@@ -48,20 +50,6 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
   // }
 
   const recommendVersion = semverSort.desc(fixVersions)[0];
-
-  const renderCvssInferredWarning = (inferred: boolean) => {
-    if (!inferred) {
-      return null;
-    }
-    return (
-      <OverlayTrigger
-        placement="left"
-        overlay={<Tooltip>This CVSS score has been inferred from a linked NVD vulnerability.</Tooltip>}
-      >
-        <Copy size="12" />
-      </OverlayTrigger>
-    );
-  };
 
   return (
     <Card className="vulnpkg-card">
@@ -107,7 +95,15 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
               </h5>
             </Row>
           ) : null}
-
+          <Row>
+            <Col xs="12">
+              <h5>
+                {' '}
+                <span className="darker">Language: </span>
+                {capitalizeFirstLetter(pkg.language)}
+              </h5>
+            </Col>
+          </Row>
           <Row>
             <Col xs="12">
               <h5 className="darker">Path{pkg.locations.length === 1 ? '' : 's'}:</h5>{' '}
@@ -120,12 +116,17 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
               })}
             </Col>
           </Row>
-
           <Row>
             <Accordion>
               <Accordion.Item eventKey="0">
                 <Accordion.Header>
-                  {filteredFindings.length} {shouldFilterFindings ? severityOrder[severityFilter] : null} finding
+                  {filteredFindings.length}{' '}
+                  {shouldFilterFindings && severityOrder[severityFilter] !== 'Unknown'
+                    ? severityOrder[severityFilter] +
+                      (severityFilter < severityOrder.indexOf('Critical') ? ' (or higher) ' : ' ')
+                    : null}
+                  {/*Todo: break this into a function*/}
+                  finding
                   {filteredFindings.length === 1 ? '' : 's'}
                 </Accordion.Header>
                 <Accordion.Body>
@@ -157,7 +158,10 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
                               <td>{f.severity}</td>
                               <td>
                                 {f.vulnerability.cvss_score}{' '}
-                                {renderCvssInferredWarning(f.vulnerability.cvss_inferred || false)}
+                                <CvssInferredWarning
+                                  inferred={f.vulnerability.cvss_inferred || false}
+                                  placement="top"
+                                />{' '}
                               </td>
                               <td>{f.fix_versions || 'unknown'}</td>
                             </tr>

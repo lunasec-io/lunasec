@@ -11,6 +11,6 @@
  * limitations under the License.
  *
  */
-export * from './organizations';
-export * from './vulnerabilities';
-export * from './project';
+export * from './Header';
+export * from './Main';
+export * from './builds';

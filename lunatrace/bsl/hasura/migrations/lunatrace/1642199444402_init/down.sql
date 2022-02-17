@@ -9,7 +9,9 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP TABLE public.findings
+DROP TABLE
+    public.manifests
+    ,public.findings
     ,public.vulnerability_packages
 ,public.vulnerabilities
 ,public.users
@@ -23,11 +25,18 @@ DROP TABLE public.findings
 ,public.builds
 ,public.instances
 ,public.project_access_tokens
+
 CASCADE;
 
-DROP FUNCTION public.set_current_timestamp_updated_at();
-DROP TYPE public.severity_enum;
-DROP FUNCTION public.make_project_sequence_for_build();
-DROP FUNCTION public.fill_in_build_number();
-DROP FUNCTION public.make_scans_seq_for_build();
-DROP FUNCTION public.fill_in_scan_number();
+DROP
+FUNCTION public.set_current_timestamp_updated_at();
+DROP
+TYPE public.severity_enum;
+DROP
+FUNCTION public.make_project_sequence_for_build();
+DROP
+FUNCTION public.fill_in_build_number();
+DROP
+FUNCTION public.make_scans_seq_for_build();
+DROP
+FUNCTION public.fill_in_scan_number();
