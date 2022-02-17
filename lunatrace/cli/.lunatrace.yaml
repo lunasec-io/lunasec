@@ -1,3 +1,6 @@
 lunatrace:
   app:
     stage: development
+  gateway:
+    graphql_server:
+      url: http://lunatrace.lunasec.local:4455/v1/graphql

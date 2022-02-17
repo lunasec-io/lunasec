@@ -44,17 +44,13 @@ func PerformGraphqlRequest(
 		log.Error().
 			Err(err).
 			Str("graphqlUrl", graphqlUrl).
-			Msg("unable to marshal graphql request")
+			Msg("unable to perform graphql request")
 		return
 	}
 
 	if response == nil {
 		return
 	}
-
-	log.Debug().
-		Str("data", string(data)).
-		Msg("response from graphql server")
 
 	err = json.Unmarshal(data, &response)
 	if err != nil {
