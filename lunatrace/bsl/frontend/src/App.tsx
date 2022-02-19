@@ -18,7 +18,6 @@ import { Provider } from 'react-redux';
 import { useRoutes } from 'react-router-dom';
 
 import { LayoutProvider } from './contexts/LayoutContext';
-import { AuthProvider } from './contexts/OryContext';
 import { SidebarProvider } from './contexts/SidebarContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { routes } from './routes';
@@ -37,7 +36,7 @@ function App() {
           <SidebarProvider>
             <LayoutProvider>
               {/*<ChartJsDefaults />*/}
-              <AuthProvider>{content}</AuthProvider>
+              {content}
             </LayoutProvider>
           </SidebarProvider>
         </ThemeProvider>

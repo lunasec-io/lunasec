@@ -17,8 +17,10 @@ services:
 #      - "./ory/oathkeeper:/config"
   backend:
     build: ./backend
+    environment:
+      AWS_DEFAULT_REGION: us-west-2
     ports:
-      - "8000:80"
+      - "3002:80"
 
   # kratos -c ory/kratos/config.yaml migrate sql -e --yes
   kratos:

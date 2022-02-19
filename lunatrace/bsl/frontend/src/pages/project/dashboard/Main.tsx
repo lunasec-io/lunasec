@@ -14,12 +14,40 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
+import { ProjectInfo } from '../types';
+
 import { ManifestDrop } from './ManifestDrop';
 
-export const ProjectDashboardMain: React.FunctionComponent = () => {
+interface ProjectDashboardMainProps {
+  project: ProjectInfo;
+}
+
+interface ProjectAccessTokensProps {
+  project: ProjectInfo;
+}
+
+const ProjectAccessTokens: React.FunctionComponent<ProjectAccessTokensProps> = ({ project }) => {
+  return (
+    <>
+      <h3>Project Access Tokens</h3>
+      <ul>
+        {project.project_access_tokens.map((token) => {
+          return <li key={token.id}>{token.access_token}</li>;
+        })}
+      </ul>
+    </>
+  );
+};
+
+export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project }) => {
   console.log('rendering main dashboard');
   const { project_id } = useParams();
   if (!project_id) return null;
 
-  return <ManifestDrop project_id={project_id} />;
+  return (
+    <>
+      <ManifestDrop project_id={project_id} />
+      <ProjectAccessTokens project={project} />
+    </>
+  );
 };

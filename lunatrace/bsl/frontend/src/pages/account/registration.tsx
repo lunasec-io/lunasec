@@ -11,30 +11,28 @@
  * limitations under the License.
  *
  */
-import { SelfServiceRegistrationFlow, SubmitSelfServiceRegistrationFlowBody } from '@ory/kratos-client';
+import { SubmitSelfServiceRegistrationFlowBody } from '@ory/kratos-client';
 import { CardTitle } from '@ory/themes';
-import { AxiosError } from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
 import { Flow } from '../../components/auth';
 import { ActionCard, CenterLink, Head, MarginCard } from '../../components/auth/Common';
-import { useAuth } from '../../hooks/useAuth';
+import useAppDispatch from '../../hooks/useAppDispatch';
+import useAppSelector from '../../hooks/useAppSelector';
+import { register, resetRegisterFlow, selectRegisterFlow, setRegisterFlow } from '../../store/slices/authentication';
 import { handleFlowError } from '../../utils/handleGetFlowError';
 import ory from '../../utils/sdk';
 
 // Renders the registration page
 export const Registration = () => {
-  const auth = useAuth();
+  const dispatch = useAppDispatch();
+  const flow = useAppSelector(selectRegisterFlow);
 
   const search = useLocation().search;
   const searchParams = new URLSearchParams(search);
 
   const navigate = useNavigate();
-
-  // The "flow" represents a registration process and contains
-  // information about the form we need to render (e.g. username + password)
-  const [flow, setFlow] = useState<SelfServiceRegistrationFlow>();
 
   // Get ?flow=... from the URL
   const flowId = searchParams.get('flow');
@@ -53,9 +51,9 @@ export const Registration = () => {
         .getSelfServiceRegistrationFlow(String(flowId))
         .then(({ data }) => {
           // We received the flow - let's use its data and render the form!
-          setFlow(data);
+          dispatch(setRegisterFlow(data));
         })
-        .catch(handleFlowError(navigate, 'register', setFlow));
+        .catch(handleFlowError(navigate, 'register', () => dispatch(resetRegisterFlow())));
       return;
     }
 
@@ -63,9 +61,9 @@ export const Registration = () => {
     ory
       .initializeSelfServiceRegistrationFlowForBrowsers(returnTo ? String(returnTo) : undefined)
       .then(({ data }) => {
-        setFlow(data);
+        dispatch(setRegisterFlow(data));
       })
-      .catch(handleFlowError(navigate, 'register', setFlow));
+      .catch(handleFlowError(navigate, 'register', () => dispatch(resetRegisterFlow())));
   }, [flowId, returnTo, flow]);
 
   return (
@@ -77,7 +75,7 @@ export const Registration = () => {
         <CardTitle>Create account</CardTitle>
         <Flow
           onSubmit={(values: SubmitSelfServiceRegistrationFlowBody) => {
-            auth.signUp(flow, setFlow, values);
+            dispatch(register(navigate, values));
           }}
           flow={flow}
         />
