@@ -5787,17 +5787,12 @@ export type GetBuildDetailsQueryVariables = Exact<{
 
 export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, project_id?: any | null, s3_url?: string | null, project?: { __typename?: 'projects', name: string } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string } }> }> };
 
-export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetCurrentUserQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', created_at: any, email: string, id: any, name: string }> };
-
 export type GetProjectQueryVariables = Exact<{
   project_id: Scalars['uuid'];
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
+export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, access_token: any }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5907,16 +5902,6 @@ export const GetBuildDetailsDocument = `
   }
 }
     `;
-export const GetCurrentUserDocument = `
-    query GetCurrentUser {
-  users {
-    created_at
-    email
-    id
-    name
-  }
-}
-    `;
 export const GetProjectDocument = `
     query GetProject($project_id: uuid!) {
   projects(where: {id: {_eq: $project_id}}) {
@@ -5928,6 +5913,10 @@ export const GetProjectDocument = `
     settings_id
     organization {
       name
+    }
+    project_access_tokens {
+      id
+      access_token
     }
     builds(order_by: {created_at: desc}) {
       id
@@ -6110,9 +6099,6 @@ const injectedRtkApi = api.injectEndpoints({
     GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetBuildDetailsDocument, variables })
     }),
-    GetCurrentUser: build.query<GetCurrentUserQuery, GetCurrentUserQueryVariables | void>({
-      query: (variables) => ({ document: GetCurrentUserDocument, variables })
-    }),
     GetProject: build.query<GetProjectQuery, GetProjectQueryVariables>({
       query: (variables) => ({ document: GetProjectDocument, variables })
     }),
@@ -6138,5 +6124,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetCurrentUserQuery, useLazyGetCurrentUserQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery, useGetVulnerabilityDetailsQuery, useLazyGetVulnerabilityDetailsQuery, useInsertManifestMutation, usePresignManifestUrlMutation } = injectedRtkApi;
+export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery, useGetVulnerabilityDetailsQuery, useLazyGetVulnerabilityDetailsQuery, useInsertManifestMutation, usePresignManifestUrlMutation } = injectedRtkApi;
 

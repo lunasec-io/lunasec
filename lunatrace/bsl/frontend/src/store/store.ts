@@ -14,14 +14,13 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 
-import counterReducer from '../components/counter/counterSlice';
-
 import { api } from './api';
 import { alertsReducer } from './slices/alerts';
+import { authSlice } from './slices/authentication';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    auth: authSlice.reducer,
     [api.reducerPath]: api.reducer,
     alerts: alertsReducer,
   },

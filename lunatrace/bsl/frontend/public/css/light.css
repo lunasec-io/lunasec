@@ -17471,6 +17471,95 @@ td.rdtYear:hover {
   margin-left: 30px;
 }
 
+.ory-input > input {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.925rem;
+  font-weight: 400;
+  line-height: 1.625;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  appearance: none;
+  border-radius: 0.2rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ory-input > input {
+    transition: none;
+  }
+}
+.ory-input > input[type=file] {
+  overflow: hidden;
+}
+.ory-input > input[type=file]:not(:disabled):not([readonly]) {
+  cursor: pointer;
+}
+.ory-input > input:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #9fc0f5;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(63, 128, 234, 0.25);
+}
+.ory-input > input::-webkit-date-and-time-value {
+  height: 1.625em;
+}
+.ory-input > input::placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+.ory-input > input:disabled, .ory-input > input[readonly] {
+  background-color: #e2e8ee;
+  opacity: 1;
+}
+.ory-input > input::file-selector-button {
+  padding: 0.25rem 0.7rem;
+  margin: -0.25rem -0.7rem;
+  margin-inline-end: 0.7rem;
+  color: #495057;
+  background-color: #e2e8ee;
+  pointer-events: none;
+  border-color: inherit;
+  border-style: solid;
+  border-width: 0;
+  border-inline-end-width: 1px;
+  border-radius: 0;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ory-input > input::file-selector-button {
+    transition: none;
+  }
+}
+.ory-input > input:hover:not(:disabled):not([readonly])::file-selector-button {
+  background-color: #d7dce2;
+}
+.ory-input > input::-webkit-file-upload-button {
+  padding: 0.25rem 0.7rem;
+  margin: -0.25rem -0.7rem;
+  margin-inline-end: 0.7rem;
+  color: #495057;
+  background-color: #e2e8ee;
+  pointer-events: none;
+  border-color: inherit;
+  border-style: solid;
+  border-width: 0;
+  border-inline-end-width: 1px;
+  border-radius: 0;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ory-input > input::-webkit-file-upload-button {
+    transition: none;
+  }
+}
+.ory-input > input:hover:not(:disabled):not([readonly])::-webkit-file-upload-button {
+  background-color: #d7dce2;
+}
+
 .clickable-card:hover {
   transform: scale(1.02);
   cursor: pointer;

@@ -1,20 +1,28 @@
 version: '3.6'
 services:
+#  frontend:
+#    build: ./frontend
+#    ports:
+#      - "8000:80"
+#  oathkeeper:
+#    build: ./ory/oathkeeper
+#    ports:
+#      - "4455:4455"
+#      - "4456:4456"
+#    command: '--config /config.yaml serve'
+#    environment:
+#      ACCESS_RULES_REPOSITORIES: file:///config/rules.yaml,file:///config/rules.frontend.yaml
+#      MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///config/jwks.json
+#    volumes:
+#      - "./ory/oathkeeper:/config"
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
 #  backend:
 #    build: ./backend
+#    environment:
+#      AWS_DEFAULT_REGION: us-west-2
 #    ports:
 #      - "3002:80"
-  oathkeeper:
-    build: ./ory/oathkeeper
-    ports:
-      - "4455:4455"
-      - "4456:4456"
-    command: '--config /config.yaml serve'
-    environment:
-      ACCESS_RULES_REPOSITORIES: file:///config/rules.local.yaml
-      MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///config/jwks.json
-    volumes:
-      - "./ory/oathkeeper:/config"
 
   # kratos -c ory/kratos/config.yaml migrate sql -e --yes
   kratos:
@@ -24,7 +32,7 @@ services:
       - '4434:4434' # admin
     restart: unless-stopped
     environment:
-      - DSN=postgres://postgres:postgrespassword@postgres:5432
+      - DSN=postgres://postgres:postgrespassword@postgres:5432/lunatrace
       - LOG_LEVEL=trace
     command: serve -c /etc/config/kratos/config.yaml --dev --watch-courier
     volumes:
@@ -44,8 +52,6 @@ services:
     image: hasura/graphql-engine:v2.1.1
     ports:
     - "8080:8080"
-    extra_hosts:
-    - "host.docker.internal:host-gateway"
     depends_on:
     - "postgres"
     - "oathkeeper"
@@ -62,14 +68,15 @@ services:
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-      HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256", "jwk_url": "http://oathkeeper:4456/.well-known/jwks.json", "issuer": "http://oathkeeper:4455/"}'
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256", "jwk_url": "http://host.docker.internal:4456/.well-known/jwks.json", "issuer": "http://oathkeeper:4455/"}'
       HASURA_GRAPHQL_LOG_LEVEL: debug
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   mailslurper:
     image: oryd/mailslurper:latest-smtps
     ports:
       - '4436:4436'
       - '4437:4437'
-
 volumes:
   db_data:
 
