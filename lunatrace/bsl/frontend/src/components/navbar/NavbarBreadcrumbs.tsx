@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+import micromatch from 'micromatch';
 import React from 'react';
 import { Breadcrumb } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -56,7 +57,7 @@ const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponen
   const currentProject = getCurrentProject(projects, crumbProps.match.params);
 
   const buildNumber = currentProject.builds.filter((b) => b.id === crumbProps.match.params.build_id)[0]?.build_number;
-  return <span># {buildNumber}</span>;
+  return <span>Build # {buildNumber}</span>;
 };
 
 const VulnBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
@@ -78,14 +79,20 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
   ];
   const breadCrumbs = useBreadCrumbs(customRoutes);
 
+  // Really wanted to use micromatch for this but it doesnt work in the browser, so it's regexp :(
+  const blackList = ['/project$', '/project/.*/build$'];
+
   return (
     <Breadcrumb className="breadcrumb-navigation">
-      {breadCrumbs.map((breadCrumbInfo) => {
+      {breadCrumbs.map((crumbMeta) => {
+        const isBanned = blackList.some((banned) => {
+          return crumbMeta.match.pathname.match(new RegExp(banned));
+        });
+        if (isBanned) return;
+
         return (
-          <LinkContainer key={breadCrumbInfo.key} to={breadCrumbInfo.match.pathname}>
-            <Breadcrumb.Item href={breadCrumbInfo.match.pathname} key={breadCrumbInfo.key}>
-              {breadCrumbInfo.breadcrumb}
-            </Breadcrumb.Item>
+          <LinkContainer key={crumbMeta.key} to={crumbMeta.match.pathname}>
+            <Breadcrumb.Item key={crumbMeta.key}>{crumbMeta.breadcrumb}</Breadcrumb.Item>
           </LinkContainer>
         );
       })}
