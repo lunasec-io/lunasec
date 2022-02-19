@@ -10,6 +10,7 @@ RUN yarn install --immutable
 
 RUN yarn run compile:dev:sdks
 
+# Increases the amount of memory that node can use, which is needed for our massive linting job.
 ENV NODE_OPTIONS="--max-old-space-size=8192"
 
 FROM lerna-bootstrap as application-back-end

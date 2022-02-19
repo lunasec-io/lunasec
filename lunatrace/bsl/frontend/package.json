@@ -68,7 +68,6 @@
     "build": "yarn run generate && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "schema:download": "apollo client:download-schema --endpoint http://localhost:8080/v1/graphql schema-codegen.graphql",
     "generate": "graphql-codegen --config codegen.yml"
   },
   "browserslist": {

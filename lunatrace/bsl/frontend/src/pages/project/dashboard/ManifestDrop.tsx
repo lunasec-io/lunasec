@@ -12,26 +12,29 @@
  *
  */
 import axios, { AxiosRequestHeaders } from 'axios';
-import React, { useEffect } from 'react';
-import { Card } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Card, Col, Row, Spinner } from 'react-bootstrap';
 import { DropzoneOptions, useDropzone } from 'react-dropzone';
+import { FilePlus } from 'react-feather';
 
+import useAppDispatch from '../../../hooks/useAppDispatch';
 import { useInsertManifestMutation, usePresignManifestUrlMutation } from '../../../store/api/generated';
+import { add } from '../../../store/slices/alerts';
+import { showAlert } from '../../../utils/showAlert';
 
 const axiosInstance = axios.create();
 
 export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ project_id }) => {
+  const dispatch = useAppDispatch();
   console.log('rendering dropzone for project id ', project_id);
 
   const [generatePresignedUrl] = usePresignManifestUrlMutation();
   const [insertManifest] = useInsertManifestMutation();
 
-  const onDrop: DropzoneOptions['onDrop'] = async (acceptedFiles) => {
-    console.log('File dropped! ', acceptedFiles);
-    const file = acceptedFiles[0];
+  const [uploadInProgress, setUploadInProgress] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState('');
 
-    if (!file) return;
-
+  const doUploadFlow = async (file: File): Promise<string | undefined> => {
     const presignRequest = await generatePresignedUrl({ project_id }).unwrap(); //unwrap turns this into an inline call
     const presignResult = presignRequest.presignManifestUpload;
     if (!presignResult) {
@@ -45,11 +48,12 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
       },
     };
 
-    const uploadResult = await axios.put(presignResult.url, file, options);
+    setUploadStatus(`Uploading ${file.name}`);
+    const uploadResult = await axiosInstance.put(presignResult.url, file, options);
     console.log('upload success ', uploadResult.data);
     const manifestUrl = presignResult.url.split('?')[0];
     console.log('new file is at ', manifestUrl);
-
+    setUploadStatus(`File uploaded, notifying LunaTrace`);
     const insertRequest = await insertManifest({ s3_url: manifestUrl, project_id, filename: file.name }).unwrap();
     if (!insertRequest.insert_manifests_one) {
       console.error('Failed to notify lunatrace up uploaded manifest');
@@ -57,14 +61,68 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     }
     const manifestId = insertRequest.insert_manifests_one.id;
     console.log('manifest id is ', manifestId);
+    setUploadStatus(`Scan in progress, you will be automatically redirected when complete...`);
+
     // return axios.put(signedUrl, file, options);
   };
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
+  const onDropAccepted: DropzoneOptions['onDropAccepted'] = async (acceptedFiles) => {
+    setUploadInProgress(true);
+
+    const file = acceptedFiles[0];
+    if (!file) return;
+    const error = await doUploadFlow(file);
+    setUploadInProgress(false);
+    setUploadStatus('');
+  };
+
+  const onDropRejected: DropzoneOptions['onDropRejected'] = (fileRejections) => {
+    console.error('rejected file with errors ', fileRejections);
+    const rejection = fileRejections[0];
+    if (!rejection) return;
+    dispatch(add({ message: rejection.errors[0].message }));
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDropAccepted: onDropAccepted,
+    onDropRejected: onDropRejected,
+    maxFiles: 1,
+    maxSize: 52428800,
+  });
+
+  const renderDropPrompt = () => {
+    if (isDragActive) {
+      return <p>Drop the file here ...</p>;
+    }
+    return (
+      <span>
+        <FilePlus />
+        Click here or drop a manifest file to manually submit a build. (ex: package.lock)
+      </span>
+    );
+  };
+
+  const renderUploadStatus = () => {
+    return (
+      <>
+        <Col xs="auto">
+          <Spinner animation="border" />
+        </Col>
+        <Col xs="auto">
+          <span>{uploadStatus}</span>
+        </Col>
+      </>
+    );
+  };
   return (
-    <Card variant="dark" className="clickable-card text-center" {...getRootProps()}>
-      <input {...getInputProps()} />
-      {isDragActive ? <p>Drop the files here ...</p> : <p>Drop a package.lock file here to manually submit a build</p>}
+    <Card variant="dark" className="clickable-card" {...getRootProps()}>
+      <Card.Body>
+        <input {...getInputProps()} />
+
+        <Row className="justify-content-center">
+          {uploadInProgress ? renderUploadStatus() : <Col xs="auto">{renderDropPrompt()}</Col>}
+        </Row>
+      </Card.Body>
     </Card>
   );
 };
