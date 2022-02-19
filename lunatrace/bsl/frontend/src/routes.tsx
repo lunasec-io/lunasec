@@ -15,7 +15,7 @@ import React from 'react';
 import { RouteObject } from 'react-router';
 
 import MainLayout from './layouts/Main';
-import { OrganizationsList, VulnerabilitiesMain } from './pages';
+import { Account, Login, OrganizationsList, Registration, VulnerabilitiesMain } from './pages';
 import { ProjectMain } from './pages/project/Main';
 import { BuildDetails } from './pages/project/builds/BuildDetails';
 import { Builds } from './pages/project/builds/Builds';
@@ -36,6 +36,23 @@ export const routes: RouteObject[] = [
     path: '/',
     element: <MainLayout />,
     children: [
+      {
+        path: 'account',
+        children: [
+          {
+            path: 'account',
+            element: <Account />,
+          },
+          {
+            path: 'login',
+            element: <Login />,
+          },
+          {
+            path: 'register',
+            element: <Registration />,
+          },
+        ],
+      },
       {
         path: 'vulnerabilities',
         children: [

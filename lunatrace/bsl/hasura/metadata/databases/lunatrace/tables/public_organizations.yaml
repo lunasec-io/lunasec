@@ -16,3 +16,15 @@ array_relationships:
       table:
         name: projects
         schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - name
+    - createdAt
+    - settings_id
+    filter:
+      organization_users:
+        user_id:
+          _eq: X-Hasura-User-Id
+  role: user

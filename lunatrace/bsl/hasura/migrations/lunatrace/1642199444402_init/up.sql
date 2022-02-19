@@ -65,19 +65,6 @@ CREATE TABLE public.settings
     is_org_settings boolean
 );
 
-
---
--- Name: users; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.users
-(
-    id         uuid                        DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    name       character varying(200) NOT NULL,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    email      text                   NOT NULL
-);
-
 --
 -- Name: organizations; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -97,7 +84,7 @@ CREATE TABLE public.organization_user
     id              uuid                     DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
     created_at      timestamp with time zone DEFAULT now() NOT NULL,
     updated_at      timestamp with time zone DEFAULT now() NOT NULL,
-    user_id         uuid NOT NULL REFERENCES public.users (id),
+    user_id         uuid NOT NULL REFERENCES public.identities (id),
     organization_id uuid NOT NULL REFERENCES public.organizations (id)
 );
 
