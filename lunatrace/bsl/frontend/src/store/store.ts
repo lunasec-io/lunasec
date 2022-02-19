@@ -13,37 +13,26 @@
  */
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-// import { createBrowserHistory } from 'history';
-// import { createReduxHistoryContext } from 'redux-first-history';
 
 import counterReducer from '../components/counter/counterSlice';
 
-// redux-first-history router stuff
-// const { createReduxHistory, routerMiddleware, routerReducer } = createReduxHistoryContext({
-//   history: createBrowserHistory(),
-//   reduxTravelling: true,
-//   savePreviousLocations: 6,
-// });
-
 import { api } from './api';
+import { alertsReducer } from './slices/alerts';
+
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     [api.reducerPath]: api.reducer,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // router: routerReducer,
+    alerts: alertsReducer,
   },
   middleware: (getDefaultMiddleware) => {
     const middleware = getDefaultMiddleware();
     middleware.push(api.middleware);
-    // middleware.push(routerMiddleware);
     return middleware;
   },
 });
-setupListeners(store.dispatch);
 
-// export const history = createReduxHistory(store);
+setupListeners(store.dispatch);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
