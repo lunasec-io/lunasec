@@ -6,7 +6,8 @@ serve:
 
 access_rules:
   repositories:
-    - file:///config/rules.local.yaml
+    - file://rules.frontend.yaml
+    - file://rules.yaml
 
 errors:
   fallback:
@@ -31,7 +32,12 @@ mutators:
     enabled: true
     config:
       issuer_url: http://oathkeeper:4455/
-      jwks_url: file:///config/jwks.json
+      jwks_url: file://jwks.json
+      claims: |
+        {
+          "session": {{ .Extra | toJson }}
+          "X-Hasura-User-Id": {{ .Subject }}
+        }
 
 authorizers:
   allow:
@@ -44,3 +50,13 @@ authenticators:
     enabled: true
     config:
       subject: guest
+
+  cookie_session:
+    enabled: true
+    config:
+      check_session_url: http://localhost:4433/sessions/whoami
+      preserve_path: true
+      extra_from: "@this"
+      subject_from: "identity.id"
+      only:
+        - ory_kratos_session

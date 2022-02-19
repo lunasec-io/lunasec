@@ -13,3 +13,25 @@ array_relationships:
       table:
         name: findings
         schema: public
+select_permissions:
+- permission:
+    allow_aggregations: true
+    columns:
+    - db_date
+    - scan_number
+    - distro_name
+    - distro_version
+    - grype_version
+    - source_type
+    - target
+    - created_at
+    - build_id
+    - id
+    filter:
+      build:
+        project:
+          organization:
+            organization_users:
+              user_id:
+                _eq: X-Hasura-User-Id
+  role: user

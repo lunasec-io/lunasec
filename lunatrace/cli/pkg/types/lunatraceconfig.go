@@ -18,7 +18,7 @@ type LunaTraceGraphqlServer struct {
 	Url string `yaml:"url"`
 }
 
-type LunaTraceGateways struct {
+type LunaTraceGateway struct {
 	GraphqlServer LunaTraceGraphqlServer `yaml:"graphql_server"`
 }
 
@@ -28,13 +28,13 @@ type LunaTraceApp struct {
 
 type LunaTraceConfig struct {
 	LunaTraceApp       `yaml:"app"`
-	LunaTraceGateways  `yaml:"gateways"`
+	LunaTraceGateway   `yaml:"gateway"`
 	ProjectAccessToken string `yaml:"project_access_token"`
 }
 
 type LunaTraceAgentConfig struct {
 	LunaTraceApp      `yaml:"app"`
-	LunaTraceGateways `yaml:"gateways"`
+	LunaTraceGateway  `yaml:"gateway"`
 	AgentAccessToken  string `yaml:"agent_access_token"`
 	InstanceId        string `yaml:"instance_id"`
 	HeartbeatDuration string `yaml:"heartbeat_duration"`
