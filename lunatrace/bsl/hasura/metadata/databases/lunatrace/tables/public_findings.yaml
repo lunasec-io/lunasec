@@ -17,3 +17,36 @@ object_relationships:
 - name: vulnerability_package
   using:
     foreign_key_constraint_on: vulnerability_package_id
+select_permissions:
+- permission:
+    allow_aggregations: true
+    columns:
+    - fix_versions
+    - locations
+    - dedupe_slug
+    - language
+    - matcher
+    - package_name
+    - purl
+    - type
+    - version
+    - version_matcher
+    - virtual_path
+    - created_at
+    - updated_at
+    - fix_state
+    - severity
+    - build_id
+    - id
+    - package_version_id
+    - scan_id
+    - vulnerability_id
+    - vulnerability_package_id
+    filter:
+      build:
+        project:
+          organization:
+            organization_users:
+              user_id:
+                _eq: X-Hasura-User-Id
+  role: user

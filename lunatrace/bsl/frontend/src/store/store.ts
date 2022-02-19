@@ -16,7 +16,8 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 // import { createBrowserHistory } from 'history';
 // import { createReduxHistoryContext } from 'redux-first-history';
 
-import counterReducer from '../components/counter/counterSlice';
+import { api } from './api';
+import { authSlice } from './slices/authentication';
 
 // redux-first-history router stuff
 // const { createReduxHistory, routerMiddleware, routerReducer } = createReduxHistoryContext({
@@ -25,19 +26,14 @@ import counterReducer from '../components/counter/counterSlice';
 //   savePreviousLocations: 6,
 // });
 
-import { api } from './api';
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    auth: authSlice.reducer,
     [api.reducerPath]: api.reducer,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // router: routerReducer,
   },
   middleware: (getDefaultMiddleware) => {
     const middleware = getDefaultMiddleware();
     middleware.push(api.middleware);
-    // middleware.push(routerMiddleware);
     return middleware;
   },
 });

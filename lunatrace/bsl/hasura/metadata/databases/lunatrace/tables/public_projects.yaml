@@ -38,12 +38,14 @@ select_permissions:
 - permission:
     columns:
     - name
+    - repo
     - created_at
     - id
     - organization_id
     - settings_id
     filter:
-      project_access_tokens:
-        access_token:
-          _eq: x-hasura-access-token
-  role: cli
+      organization:
+        organization_users:
+          user_id:
+            _eq: X-Hasura-User-Id
+  role: user

@@ -33,6 +33,7 @@ export const Link: React.FunctionComponent<SidebarLinkProps> = (props) => {
       <NavLink
         depth={props.depth}
         to={props.link.href}
+        onClick={props.link.onClick}
         className={({ isActive }) => ['sidebar-link', isActive ? 'active' : null].filter(Boolean).join(' ')}
       >
         {props.link.icon && <props.link.icon className="feather align-middle" />}{' '}
