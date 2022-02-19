@@ -78,7 +78,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   const renderProjectSubPage = (p: ProjectInfo) => {
     switch (activeTab) {
       case 'dashboard':
-        return <ProjectDashboardMain />;
+        return <ProjectDashboardMain project={p} />;
       case 'builds':
         return <Builds />;
       case 'settings':

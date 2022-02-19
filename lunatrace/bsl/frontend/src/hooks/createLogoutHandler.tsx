@@ -13,37 +13,32 @@
  */
 import { AxiosError } from 'axios';
 import { DependencyList, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
 import ory from '../utils/sdk';
 
 // Returns a function which will log the user out
-export function createLogoutHandler(deps?: DependencyList) {
-  const [logoutToken, setLogoutToken] = useState<string>('');
+export function createLogoutHandler(navigate: NavigateFunction) {
+  const logoutToken = ory
+    .createSelfServiceLogoutFlowUrlForBrowsers()
+    .then(({ data }) => {
+      return data.logout_token;
+    })
+    .catch((err: AxiosError) => {
+      switch (err.response?.status) {
+        case 401:
+          // do nothing, the user is not logged in
+          return;
+      }
 
-  const navigate = useNavigate();
+      // Something else happened!
+      return Promise.reject(err);
+    });
 
-  useEffect(() => {
-    ory
-      .createSelfServiceLogoutFlowUrlForBrowsers()
-      .then(({ data }) => {
-        setLogoutToken(data.logout_token);
-      })
-      .catch((err: AxiosError) => {
-        switch (err.response?.status) {
-          case 401:
-            // do nothing, the user is not logged in
-            return;
-        }
-
-        // Something else happened!
-        return Promise.reject(err);
-      });
-  }, deps);
-
-  return () => {
-    if (logoutToken) {
-      void ory.submitSelfServiceLogoutFlow(logoutToken).then(() => navigate('/account/login'));
+  return async () => {
+    const resolvedLogoutToken = await logoutToken;
+    if (resolvedLogoutToken) {
+      void ory.submitSelfServiceLogoutFlow(resolvedLogoutToken).then(() => navigate('/account/login'));
     }
   };
 }

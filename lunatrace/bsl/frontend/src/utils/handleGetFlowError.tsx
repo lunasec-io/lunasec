@@ -19,7 +19,7 @@ import { NavigateFunction } from 'react-router';
 export function handleGetFlowError<S>(
   navigate: NavigateFunction,
   flowType: 'login' | 'register' | 'settings' | 'recovery' | 'verification',
-  resetFlow: Dispatch<SetStateAction<S | undefined>>
+  resetFlow: () => void
 ) {
   return async (err: AxiosError) => {
     switch (err.response?.data.error?.id) {
@@ -38,24 +38,24 @@ export function handleGetFlowError<S>(
       case 'self_service_flow_return_to_forbidden':
         // The flow expired, let's request a new one.
         console.error('The return_to address is not allowed.');
-        resetFlow(undefined);
+        resetFlow();
         navigate('/account/' + flowType);
         return;
       case 'self_service_flow_expired':
         // The flow expired, let's request a new one.
         console.error('Your interaction expired, please fill out the form again.');
-        resetFlow(undefined);
+        resetFlow();
         navigate('/account/' + flowType);
         return;
       case 'security_csrf_violation':
         // A CSRF violation occurred. Best to just refresh the flow!
         console.error('A security violation was detected, please fill out the form again.');
-        resetFlow(undefined);
+        resetFlow();
         navigate('/account/' + flowType);
         return;
       case 'security_identity_mismatch':
         // The requested item was intended for someone else. Let's request a new flow...
-        resetFlow(undefined);
+        resetFlow();
         navigate('/account/' + flowType);
         return;
       case 'browser_location_change_required':
@@ -67,7 +67,7 @@ export function handleGetFlowError<S>(
     switch (err.response?.status) {
       case 410:
         // The flow expired, let's request a new one.
-        resetFlow(undefined);
+        resetFlow();
         navigate('/' + flowType);
         return;
     }

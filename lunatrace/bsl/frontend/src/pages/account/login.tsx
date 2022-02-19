@@ -13,21 +13,20 @@
  */
 import { SelfServiceLoginFlow, SubmitSelfServiceLoginFlowBody } from '@ory/kratos-client';
 import { CardTitle } from '@ory/themes';
-import { AxiosError } from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
 import { Flow } from '../../components/auth';
-import { ActionCard, CenterLink, Head, Link, MarginCard } from '../../components/auth/Common';
-import { createLogoutHandler } from '../../hooks/createLogoutHandler';
-import { useAuth } from '../../hooks/useAuth';
+import { ActionCard, CenterLink, Link, MarginCard } from '../../components/auth/Common';
+import useAppDispatch from '../../hooks/useAppDispatch';
+import useAppSelector from '../../hooks/useAppSelector';
+import { login, logout, resetLoginFlow, selectLoginFlow, setLoginFlow } from '../../store/slices/authentication';
 import { handleFlowError, handleGetFlowError } from '../../utils/handleGetFlowError';
 import ory from '../../utils/sdk';
 
 export const Login = () => {
-  const auth = useAuth();
-
-  const [flow, setFlow] = useState<SelfServiceLoginFlow>();
+  const dispatch = useAppDispatch();
+  const flow = useAppSelector(selectLoginFlow);
 
   const search = useLocation().search;
   const searchParams = new URLSearchParams(search);
@@ -44,10 +43,6 @@ export const Login = () => {
   // to perform two-factor authentication/verification.
   const aal = searchParams.get('aal');
 
-  // This might be confusing, but we want to show the user an option
-  // to sign out if they are performing two-factor authentication!
-  const onLogout = createLogoutHandler([aal, refresh]);
-
   useEffect(() => {
     // If the router is not ready yet, or we already have a flow, do nothing.
     if (flow) {
@@ -59,9 +54,9 @@ export const Login = () => {
       ory
         .getSelfServiceLoginFlow(String(flowId))
         .then(({ data }) => {
-          setFlow(data);
+          dispatch(setLoginFlow(data));
         })
-        .catch(handleGetFlowError(navigate, 'login', setFlow));
+        .catch(handleGetFlowError(navigate, 'login', () => dispatch(resetLoginFlow())));
       return;
     }
 
@@ -73,9 +68,9 @@ export const Login = () => {
         returnTo ? String(returnTo) : undefined
       )
       .then(({ data }) => {
-        setFlow(data);
+        dispatch(setLoginFlow(data));
       })
-      .catch(handleFlowError(navigate, 'login', setFlow));
+      .catch(handleFlowError(navigate, 'login', () => dispatch(resetLoginFlow())));
   }, [flowId, aal, refresh, returnTo, flow]);
 
   const title = flow?.refresh
@@ -90,14 +85,14 @@ export const Login = () => {
         <CardTitle>{title}</CardTitle>
         <Flow
           onSubmit={(values: SubmitSelfServiceLoginFlowBody) => {
-            auth.signIn(flow, setFlow, values);
+            dispatch(login(navigate, values));
           }}
           flow={flow}
         />
       </MarginCard>
       {aal || refresh ? (
         <ActionCard>
-          <CenterLink onClick={onLogout}>Log out</CenterLink>
+          <CenterLink onClick={() => dispatch(logout(navigate))}>Log out</CenterLink>
         </ActionCard>
       ) : (
         <>

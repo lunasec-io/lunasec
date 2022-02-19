@@ -55,7 +55,6 @@ const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCompon
 
   const currentProject = getCurrentProject(projects, crumbProps.match.params);
   if (currentProject === null) {
-    console.error('could not find current project');
     return null;
   }
 

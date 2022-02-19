@@ -38,18 +38,6 @@ select_permissions:
 - permission:
     columns:
     - name
-    - created_at
-    - id
-    - organization_id
-    - settings_id
-    filter:
-      project_access_tokens:
-        access_token:
-          _eq: x-hasura-access-token
-  role: cli
-- permission:
-    columns:
-    - name
     - repo
     - created_at
     - id
