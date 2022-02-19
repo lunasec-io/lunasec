@@ -17,8 +17,8 @@ package util
 import (
 	"bytes"
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -36,13 +36,21 @@ func ParseHostAndPortFromUrlString(urlStr string) (host string, port int64, err 
 }
 
 func HttpRequest(method, url string, headers map[string]string, body *bytes.Buffer) (data []byte, err error) {
+	defer func() {
+		log.Debug().
+			Str("data", string(data)).
+			Msg("response from http request")
+	}()
+
 	if body == nil {
 		body = bytes.NewBuffer([]byte{})
 	}
 
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
-		log.Println(err)
+		log.Error().
+			Err(err).
+			Msg("unable to create new http request")
 		return
 	}
 
@@ -53,7 +61,9 @@ func HttpRequest(method, url string, headers map[string]string, body *bytes.Buff
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println(err)
+		log.Error().
+			Err(err).
+			Msg("unable to make http request")
 		return
 	}
 	defer resp.Body.Close()

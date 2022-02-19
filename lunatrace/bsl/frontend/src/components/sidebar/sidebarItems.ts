@@ -12,7 +12,6 @@
  *
  */
 import {
-  AlertCircle,
   AlertOctagon,
   Bell,
   BookOpen,
@@ -20,9 +19,8 @@ import {
   Calendar,
   CheckSquare,
   Folder,
-  Grid,
-  Heart,
   List,
+  Lock,
   MapPin,
   PieChart,
 } from 'react-feather';
@@ -31,7 +29,11 @@ import { GetSidebarInfoQuery } from '../../store/api/generated';
 
 import { NavSection, SidebarItem } from './types';
 
-export function generateSidebarItems(data: GetSidebarInfoQuery | undefined): NavSection[] {
+export function generateSidebarItems(
+  data: GetSidebarInfoQuery | undefined,
+  isAuthenticated: boolean,
+  logout: () => void
+): NavSection[] {
   const projectsSection: SidebarItem[] = !data
     ? []
     : [
@@ -66,6 +68,26 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined): Nav
       href: '/vulnerabilities',
       icon: AlertOctagon,
       title: 'Vulnerabilities',
+    },
+  ];
+
+  const accountSection: SidebarItem[] = [
+    isAuthenticated
+      ? {
+          href: '/account/logout',
+          icon: Lock,
+          title: 'Logout',
+          onClick: logout,
+        }
+      : {
+          href: '/account/login',
+          icon: Lock,
+          title: 'Login',
+        },
+    {
+      href: '/account/register',
+      icon: BookOpen,
+      title: 'Register',
     },
   ];
 
@@ -162,6 +184,10 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined): Nav
   ];
 
   return [
+    {
+      title: 'Account',
+      items: accountSection,
+    },
     {
       title: 'Projects & Organizations',
       items: projectsSection,
