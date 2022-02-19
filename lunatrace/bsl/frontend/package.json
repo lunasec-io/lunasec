@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.52.0",
     "@reduxjs/toolkit": "^1.7.1",
     "@rtk-query/graphql-request-base-query": "^1.0.3",
     "@testing-library/jest-dom": "^4.2.4",

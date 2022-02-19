@@ -20,7 +20,6 @@ import { FilePlus } from 'react-feather';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import { useInsertManifestMutation, usePresignManifestUrlMutation } from '../../../store/api/generated';
 import { add } from '../../../store/slices/alerts';
-import { showAlert } from '../../../utils/showAlert';
 
 const axiosInstance = axios.create();
 
@@ -35,13 +34,15 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
   const [uploadStatus, setUploadStatus] = useState('');
 
   const doUploadFlow = async (file: File): Promise<string | undefined> => {
-    const presignRequest = await generatePresignedUrl({ project_id }).unwrap(); //unwrap turns this into an inline call
-    const presignResult = presignRequest.presignManifestUpload;
-    if (!presignResult) {
-      console.error('failed presigning url');
-      return;
+    // Get a presigned URL (hasura action reaches through and hits express backend
+    const presignResponse = await generatePresignedUrl({ project_id }).unwrap(); //unwrap turns this into an inline call
+    const presign = presignResponse.presignManifestUpload;
+    if (!presign) {
+      return 'Failed to pre-sign upload URL to AWS S3';
     }
-    console.log('presign result ', presignResult);
+    console.log('presign result ', presign);
+
+    // Upload the file directly to S3
     const options = {
       headers: {
         'Content-Type': file.type,
@@ -49,12 +50,21 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     };
 
     setUploadStatus(`Uploading ${file.name}`);
-    const uploadResult = await axiosInstance.put(presignResult.url, file, options);
+    const uploadResult = await axiosInstance.put(presign.url, file, options);
     console.log('upload success ', uploadResult.data);
-    const manifestUrl = presignResult.url.split('?')[0];
+    const manifestUrl = presign.url.split('?')[0];
     console.log('new file is at ', manifestUrl);
     setUploadStatus(`File uploaded, notifying LunaTrace`);
-    const insertRequest = await insertManifest({ s3_url: manifestUrl, project_id, filename: file.name }).unwrap();
+
+    // Tell lunatrace the file uploaded, which simultaneously records the file path in hasura and calls express to kick
+    // off the build via an action
+    const insertRequest = await insertManifest({
+      s3_url: manifestUrl,
+      project_id,
+      filename: file.name,
+      key: presign.key,
+      bucket: presign.bucket,
+    }).unwrap();
     if (!insertRequest.insert_manifests_one) {
       console.error('Failed to notify lunatrace up uploaded manifest');
       return;
@@ -72,6 +82,9 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     const file = acceptedFiles[0];
     if (!file) return;
     const error = await doUploadFlow(file);
+    if (error) {
+      dispatch(add({ message: error }));
+    }
     setUploadInProgress(false);
     setUploadStatus('');
   };

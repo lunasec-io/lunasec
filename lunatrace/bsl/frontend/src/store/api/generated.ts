@@ -62,7 +62,11 @@ export type Int_Comparison_Exp = {
 
 export type PresignedUrlResponse = {
   __typename?: 'PresignedUrlResponse';
+  bucket: Scalars['String'];
+  error: Scalars['Boolean'];
+  error_message?: Maybe<Scalars['String']>;
   headers: Scalars['String'];
+  key: Scalars['String'];
   url: Scalars['String'];
 };
 
@@ -76,6 +80,13 @@ export type SbomUploadUrlOutput = {
   error: Scalars['Boolean'];
   headers: Scalars['String'];
   url: Scalars['String'];
+};
+
+export type ScanManifestOutput = {
+  __typename?: 'ScanManifestOutput';
+  build_id: Scalars['String'];
+  error: Scalars['Boolean'];
+  error_message?: Maybe<Scalars['String']>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -1406,6 +1417,8 @@ export type Mutation_Root = {
   insert_vulnerability_packages_one?: Maybe<Vulnerability_Packages>;
   /** get s3 presigned url for manifest upload */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
+  /** This performs the manifest sbom generation and creates the first build from the manifest */
+  scanManifest?: Maybe<ScanManifestOutput>;
   /** update data of the table: "builds" */
   update_builds?: Maybe<Builds_Mutation_Response>;
   /** update single row of the table: "builds" */
@@ -1862,6 +1875,13 @@ export type Mutation_RootInsert_Vulnerability_Packages_OneArgs = {
 /** mutation root */
 export type Mutation_RootPresignManifestUploadArgs = {
   project_id: Scalars['String'];
+};
+
+
+/** mutation root */
+export type Mutation_RootScanManifestArgs = {
+  bucket: Scalars['String'];
+  key: Scalars['String'];
 };
 
 
@@ -5809,17 +5829,19 @@ export type InsertManifestMutationVariables = Exact<{
   s3_url: Scalars['String'];
   project_id: Scalars['uuid'];
   filename: Scalars['String'];
+  bucket: Scalars['String'];
+  key: Scalars['String'];
 }>;
 
 
-export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null };
+export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null, scanManifest?: { __typename?: 'ScanManifestOutput', build_id: string, error: boolean, error_message?: string | null } | null };
 
 export type PresignManifestUrlMutationVariables = Exact<{
   project_id: Scalars['String'];
 }>;
 
 
-export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string } | null };
+export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string, key: string, bucket: string, error: boolean, error_message?: string | null } | null };
 
 
 export const GetBuildDetailsDocument = `
@@ -6057,11 +6079,16 @@ export const GetVulnerabilityDetailsDocument = `
 }
     `;
 export const InsertManifestDocument = `
-    mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!) {
+    mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!, $bucket: String!, $key: String!) {
   insert_manifests_one(
     object: {filename: $filename, s3_url: $s3_url, project_id: $project_id}
   ) {
     id
+  }
+  scanManifest(bucket: $bucket, key: $key) {
+    build_id
+    error
+    error_message
   }
 }
     `;
@@ -6070,6 +6097,10 @@ export const PresignManifestUrlDocument = `
   presignManifestUpload(project_id: $project_id) {
     url
     headers
+    key
+    bucket
+    error
+    error_message
   }
 }
     `;
