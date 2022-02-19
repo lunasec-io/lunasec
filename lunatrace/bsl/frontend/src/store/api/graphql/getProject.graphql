@@ -9,6 +9,10 @@ query GetProject($project_id: uuid!) {
         organization {
             name
         }
+        project_access_tokens {
+            id
+            access_token
+        }
         builds(order_by: {created_at: desc}) {
             id
             created_at

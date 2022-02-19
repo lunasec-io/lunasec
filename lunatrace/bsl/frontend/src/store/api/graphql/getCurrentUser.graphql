@@ -1,8 +1,0 @@
-query GetCurrentUser {
-    users {
-        created_at
-        email
-        id
-        name
-    }
-}
