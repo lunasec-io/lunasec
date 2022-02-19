@@ -21,7 +21,6 @@ import { NavbarBreadcrumbs } from '../components/navbar/NavbarBreadcrumbs';
 import Sidebar from '../components/sidebar/Sidebar';
 import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import { useGetSidebarInfoQuery } from '../store/api/generated';
-import { showAlert } from '../utils/showAlert';
 
 const MainLayout: React.FunctionComponent = (props) => {
   const { data, error, isLoading } = useGetSidebarInfoQuery();
