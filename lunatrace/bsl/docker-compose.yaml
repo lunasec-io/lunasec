@@ -11,16 +11,18 @@ services:
 #      - "4456:4456"
 #    command: '--config /config.yaml serve'
 #    environment:
-#      ACCESS_RULES_REPOSITORIES: file:///config/rules.local.yaml
+#      ACCESS_RULES_REPOSITORIES: file:///config/rules.yaml,file:///config/rules.frontend.yaml
 #      MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///config/jwks.json
 #    volumes:
 #      - "./ory/oathkeeper:/config"
-  backend:
-    build: ./backend
-    environment:
-      AWS_DEFAULT_REGION: us-west-2
-    ports:
-      - "3002:80"
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+#  backend:
+#    build: ./backend
+#    environment:
+#      AWS_DEFAULT_REGION: us-west-2
+#    ports:
+#      - "3002:80"
 
   # kratos -c ory/kratos/config.yaml migrate sql -e --yes
   kratos:
@@ -69,13 +71,12 @@ services:
       HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256", "jwk_url": "http://host.docker.internal:4456/.well-known/jwks.json", "issuer": "http://oathkeeper:4455/"}'
       HASURA_GRAPHQL_LOG_LEVEL: debug
     extra_hosts:
-    - "host.docker.internal:host-gateway"
+      - "host.docker.internal:host-gateway"
   mailslurper:
     image: oryd/mailslurper:latest-smtps
     ports:
       - '4436:4436'
       - '4437:4437'
-
 volumes:
   db_data:
 
