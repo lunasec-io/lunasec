@@ -8,10 +8,10 @@ actions:
       query_params: {}
       template_engine: Kriti
   comment: get s3 presigned url for manifest upload
-- name: sbom_upload_url
+- name: sbombUploadUrl
   definition:
     kind: ""
-    handler: http://localhost:3000
+    handler: http://host.docker.internal:3002
 custom_types:
   enums: []
   input_objects:

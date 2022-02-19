@@ -31,9 +31,20 @@ export const BuildDetails: React.FunctionComponent = () => {
     if (!data) {
       return null;
     }
+
+    if (data.builds.length === 0) {
+      console.error(`no builds are available: ${data}`);
+      return null;
+    }
     const build = data.builds[0];
+
+    if (build.scans.length === 0) {
+      console.error(`build does not have any scans: ${build}`);
+      return null;
+    }
     const firstScan = build.scans[0];
-    const lastScannedDate = build.scans[0] ? prettyDate(new Date(build.scans[0].created_at as string)) : 'Never';
+
+    const lastScannedDate = firstScan ? prettyDate(new Date(firstScan.created_at as string)) : 'Never';
     const uploadDate = prettyDate(new Date(build.created_at as string));
 
     return (

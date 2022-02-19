@@ -29,8 +29,14 @@ import {
 
 type Project = GetSidebarInfoQuery['projects'][number];
 
-const getCurrentProject = (projects: Project[], params: Params): Project => {
-  return projects.filter((p) => p.id === params.project_id)[0];
+const getCurrentProject = (projects: Project[], params: Params): Project | null => {
+  const filteredProjects = projects.filter((p) => p.id === params.project_id);
+
+  if (filteredProjects.length === 0) {
+    return null;
+  }
+
+  return filteredProjects[0];
 };
 
 // These small little components can figure out how to display their own names, since the IDs from the URL are too ugly
@@ -42,7 +48,16 @@ const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCompon
   }
   const projects = data.projects;
 
+  if (projects.length === 0) {
+    console.error('no projects were found');
+    return null;
+  }
+
   const currentProject = getCurrentProject(projects, crumbProps.match.params);
+  if (currentProject === null) {
+    return null;
+  }
+
   return <span>{currentProject.name}</span>;
 };
 
@@ -53,7 +68,16 @@ const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponen
   }
   const projects = data.projects;
 
+  if (projects.length === 0) {
+    console.error('no projects were found');
+    return null;
+  }
+
   const currentProject = getCurrentProject(projects, crumbProps.match.params);
+  if (currentProject === null) {
+    console.error('could not find current project');
+    return null;
+  }
 
   const buildNumber = currentProject.builds.filter((b) => b.id === crumbProps.match.params.build_id)[0]?.build_number;
   return <span># {buildNumber}</span>;

@@ -16,8 +16,8 @@ package config
 
 import "lunasec/lunatrace/pkg/types"
 
-func defaultLunaTraceGatewayConfig() types.LunaTraceGateways {
-	return types.LunaTraceGateways{
+func defaultLunaTraceGatewayConfig() types.LunaTraceGateway {
+	return types.LunaTraceGateway{
 		GraphqlServer: types.LunaTraceGraphqlServer{
 			Url: `${LUNATRACE_GRAPHQL_SERVER_URL:"https://lunatrace.lunasec.io/v1/graphql"}`,
 		},
