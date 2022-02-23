@@ -23,17 +23,14 @@ import {
   Lock,
   MapPin,
   PieChart,
+  Plus,
 } from 'react-feather';
 
-import { GetSidebarInfoQuery } from '../../store/api/generated';
+import { GetSidebarInfoQuery } from '../../api/generated';
 
 import { NavSection, SidebarItem } from './types';
 
-export function generateSidebarItems(
-  data: GetSidebarInfoQuery | undefined,
-  isAuthenticated: boolean,
-  logout: () => void
-): NavSection[] {
+export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAuthenticated: boolean): NavSection[] {
   const projectsSection: SidebarItem[] = !data
     ? []
     : [
@@ -42,12 +39,19 @@ export function generateSidebarItems(
           icon: Folder,
           title: 'Projects',
           // badge: data.projects.length.toString(),
-          children: data.projects.map((p) => {
-            return {
-              href: `/project/${p.id as string}`,
-              title: p.name,
-            };
-          }),
+          children: [
+            ...data.projects.map((p) => {
+              return {
+                href: `/project/${p.id as string}`,
+                title: p.name,
+              };
+            }),
+            {
+              href: `/project/create`,
+              title: 'New Project',
+              icon: Plus,
+            },
+          ],
         },
         {
           href: '/organization/:organization_id',
@@ -72,18 +76,11 @@ export function generateSidebarItems(
   ];
 
   const accountSection: SidebarItem[] = [
-    isAuthenticated
-      ? {
-          href: '/account/logout',
-          icon: Lock,
-          title: 'Logout',
-          onClick: logout,
-        }
-      : {
-          href: '/account/login',
-          icon: Lock,
-          title: 'Login',
-        },
+    {
+      href: '/account/login',
+      icon: Lock,
+      title: 'Login',
+    },
     {
       href: '/account/register',
       icon: BookOpen,
@@ -183,11 +180,18 @@ export function generateSidebarItems(
     },
   ];
 
-  return [
+  const loggedOutSections = [
     {
       title: 'Account',
       items: accountSection,
     },
+    {
+      title: 'Information & Databases',
+      items: databaseSection,
+    },
+  ];
+
+  const loggedInSections = [
     {
       title: 'Projects & Organizations',
       items: projectsSection,
@@ -201,4 +205,6 @@ export function generateSidebarItems(
       items: pluginsSection,
     },
   ];
+
+  return isAuthenticated ? loggedInSections : loggedOutSections;
 }

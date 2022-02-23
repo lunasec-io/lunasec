@@ -21,11 +21,8 @@ import useBreadCrumbs, {
   BreadcrumbsRoute,
 } from 'use-react-router-breadcrumbs';
 
-import {
-  GetSidebarInfoQuery,
-  useGetSidebarInfoQuery,
-  useGetVulnerabilityDetailsQuery,
-} from '../../store/api/generated';
+import api from '../../api/';
+import { GetSidebarInfoQuery } from '../../api/generated';
 
 type Project = GetSidebarInfoQuery['projects'][number];
 
@@ -42,7 +39,7 @@ const getCurrentProject = (projects: Project[], params: Params): Project | null 
 // These small little components can figure out how to display their own names, since the IDs from the URL are too ugly
 const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
   // Doing queries here is actually completely performant thanks to the cache system, no new queries will fire
-  const { data } = useGetSidebarInfoQuery();
+  const { data } = api.useGetSidebarInfoQuery();
   if (!data) {
     return null;
   }
@@ -62,7 +59,7 @@ const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCompon
 };
 
 const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
-  const { data } = useGetSidebarInfoQuery();
+  const { data } = api.useGetSidebarInfoQuery();
   if (!data) {
     return null;
   }
@@ -85,7 +82,7 @@ const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponen
 
 const VulnBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
   const vulnerability_id = crumbProps.match.params.vulnerability_id;
-  const { data } = useGetVulnerabilityDetailsQuery({ vulnerability_id });
+  const { data } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id });
   if (!data) {
     return null;
   }

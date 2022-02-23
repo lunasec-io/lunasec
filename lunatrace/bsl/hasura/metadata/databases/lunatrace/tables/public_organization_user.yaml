@@ -8,3 +8,52 @@ object_relationships:
 - name: user
   using:
     foreign_key_constraint_on: user_id
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      _or:
+      - organization:
+          creator_id:
+            _eq: X-Hasura-User-Id
+      - organization:
+          organization_users:
+            _and:
+            - user_id:
+                _eq: X-Hasura-User-Id
+            - role:
+                _eq: admin
+    columns:
+    - organization_id
+    - role
+    - user_id
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - created_at
+    - id
+    - organization_id
+    - role
+    - updated_at
+    - user_id
+    filter:
+      organization:
+        organization_users:
+          user_id:
+            _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - role
+    filter:
+      organization:
+        organization_users:
+          _and:
+          - user_id:
+              _eq: X-Hasura-User-Id
+          - role:
+              _eq: admin
+  role: user

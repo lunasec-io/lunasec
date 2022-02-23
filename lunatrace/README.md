@@ -18,21 +18,36 @@ analysis at build time with runtime tracking and the capability to automatically
 
 ## Development
 Hasura manages the GraphQl API and postgres database, found in the `./hasura` folder.
-### Starting Hasura
-Start hasura by running `sudo docker-compose up -d` from the hasura folder.  Run `hasura metadata apply` to transfer metadata
-from local hasura folder into the running engine.  Then, migrate the database using `hasura migrate apply`.
-This launches the graphql engine and a copy of postgres that volume mounts to your local postgres. 
+
 ### Using the Database
 To use PSQL console or for connecting other services to the db, use the connection string found in the docker-compose.yaml file,
 under the key `PG_DATABASE_URL`
 
 #### Migrating the Database
+The database must be migrated before the app can run.  First, make sure the database is running by doing `sudo docker-compose up`.
+Migrate Kratos:
+```bash 
+cd bsl/ory/cratos
+export DSN='postgres://postgres:postgrespassword@localhost:5431/lunatrace'
+kratos -c config.yaml migrate sql -e --yes    
+```
+Now migrate hasura which depends on the tables created by kratos. Make sure kratos is running as part of the docker-compose
+```bash
+cd bsl/hasura
+hasura metadata apply
+hasura migrate apply
+```
 Do **not** use the Hasura "console" GUI for managing the database, either creating tables or modifying them.  Hasura produces
 low quality up migrations and broken down migrations that are not maintainable.  For pre-production, modify the existing init migration files.
-For production migration, use `hasura migrate create <name>` to scaffold manual migrations.  
+For production migration, use `hasura migrate create <name>` to scaffold manual migrations.
 
 Use `hasura migrate apply --down 1` to do a down migration.
+
+### Starting Everything
+Tmux-p is used to start the cluster in dev mode. From the bsl folder, run `tmuxp load luantrace-tmuxp.yaml`
 
 ## Backend Data Ingestion
 Backend services written in typescript can add data to postgres directly, bypassing Hasura when necessary.  These are found in the
 `./backend` folder.  Run `yarn run vulnerabilities:update` from this folder to load the database with grype vulnerabilities. 
+
+To scaffold a project and a build/scan run `yarn run test:scan:upload`
