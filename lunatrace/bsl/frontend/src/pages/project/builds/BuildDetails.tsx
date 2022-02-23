@@ -17,15 +17,15 @@ import { ArrowLeft } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { NavLink, useParams } from 'react-router-dom';
 
+import api from '../../../api';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
-import { useGetBuildDetailsQuery } from '../../../store/api/generated';
 import { prettyDate } from '../../../utils/pretty-date';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
 import { VulnerablePackageList } from '../finding/VulnerablePackageList';
 export const BuildDetails: React.FunctionComponent = () => {
   console.log('rendering build details');
   const { build_id } = useParams();
-  const { data, error, isLoading } = useGetBuildDetailsQuery({ build_id });
+  const { data, error, isLoading } = api.useGetBuildDetailsQuery({ build_id });
 
   const renderBuildDetails = () => {
     if (!data) {

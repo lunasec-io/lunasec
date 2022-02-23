@@ -67,6 +67,7 @@ export class AwsUtils {
       stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
     });
   }
+
   public async getFileFromS3(key: string, bucket: string): Promise<string> {
     const s3Client = new S3Client({ region: this.config.awsRegion, credentials: this.config.awsCredentials });
     const { Body } = await s3Client.send(new GetObjectCommand({ Key: key, Bucket: bucket })); // gosh what a bad API

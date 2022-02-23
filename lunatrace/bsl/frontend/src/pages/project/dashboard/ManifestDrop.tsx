@@ -17,18 +17,17 @@ import { Card, Col, Row, Spinner } from 'react-bootstrap';
 import { DropzoneOptions, useDropzone } from 'react-dropzone';
 import { FilePlus } from 'react-feather';
 
+import api from '../../../api';
 import useAppDispatch from '../../../hooks/useAppDispatch';
-import { useInsertManifestMutation, usePresignManifestUrlMutation } from '../../../store/api/generated';
 import { add } from '../../../store/slices/alerts';
-
 const axiosInstance = axios.create();
 
 export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ project_id }) => {
   const dispatch = useAppDispatch();
   console.log('rendering dropzone for project id ', project_id);
 
-  const [generatePresignedUrl] = usePresignManifestUrlMutation();
-  const [insertManifest] = useInsertManifestMutation();
+  const [generatePresignedUrl] = api.usePresignManifestUrlMutation();
+  const [insertManifest] = api.useInsertManifestMutation();
 
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');

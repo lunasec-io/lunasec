@@ -20,7 +20,6 @@ import useAppSelector from '../hooks/useAppSelector';
 export const AlertsHeader: React.FC = () => {
   const dispatch = useAppDispatch();
   const alertsIndex = useAppSelector((state) => state.alerts.alerts);
-  console.log('ALERTS HEADER RERENDERING and alerts are ', alertsIndex);
   const alerts = Object.values(alertsIndex);
   if (alerts.length === 0) {
     return null;
