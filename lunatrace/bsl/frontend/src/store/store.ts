@@ -14,19 +14,21 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 
-import { api } from './api';
+import appApi, { rtkQueryErrorLogger } from '../api';
+
 import { alertsReducer } from './slices/alerts';
 import { authSlice } from './slices/authentication';
 
 export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
-    [api.reducerPath]: api.reducer,
+    [appApi.reducerPath]: appApi.reducer,
     alerts: alertsReducer,
   },
   middleware: (getDefaultMiddleware) => {
     const middleware = getDefaultMiddleware();
-    middleware.push(api.middleware);
+    middleware.push(appApi.middleware);
+    middleware.push(rtkQueryErrorLogger);
     return middleware;
   },
 });

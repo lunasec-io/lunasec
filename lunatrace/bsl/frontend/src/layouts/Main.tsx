@@ -16,6 +16,7 @@ import { AxiosError } from 'axios';
 import React, { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
+import api from '../api';
 import { AlertsHeader } from '../components/AlertsHeader';
 import Wrapper from '../components/Wrapper';
 import Navbar from '../components/navbar/Navbar';
@@ -24,7 +25,6 @@ import Sidebar from '../components/sidebar/Sidebar';
 import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import useAppDispatch from '../hooks/useAppDispatch';
 import useAppSelector from '../hooks/useAppSelector';
-import { useGetSidebarInfoQuery } from '../store/api/generated';
 import { logout, selectIsAuthenticated, setSession } from '../store/slices/authentication';
 import ory from '../utils/sdk';
 
@@ -60,12 +60,12 @@ const MainLayout: React.FunctionComponent = (props) => {
 
   const doLogout = () => void dispatch(logout(navigate));
 
-  const { data, error, isLoading } = useGetSidebarInfoQuery();
+  const { data } = api.useGetSidebarInfoQuery();
 
   return (
     <React.Fragment>
       <Wrapper>
-        <Sidebar sections={generateSidebarItems(data, isAuthenticated, doLogout)} />
+        <Sidebar sections={generateSidebarItems(data, isAuthenticated)} />
         <div className="main">
           <Navbar />
           <NavbarBreadcrumbs />

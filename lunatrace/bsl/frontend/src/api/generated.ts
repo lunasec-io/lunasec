@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { api } from '../baseApi';
+import { api } from './baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -27,6 +27,7 @@ export type Scalars = {
   _text: any;
   date: any;
   fix_state_enum: any;
+  jsonb: any;
   numeric: any;
   severity_enum: any;
   timestamp: any;
@@ -967,6 +968,221 @@ export type Fix_State_Enum_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['fix_state_enum']>>;
 };
 
+/** columns and relationships of "identities" */
+export type Identities = {
+  __typename?: 'identities';
+  created_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  nid?: Maybe<Scalars['uuid']>;
+  schema_id: Scalars['String'];
+  state: Scalars['String'];
+  state_changed_at?: Maybe<Scalars['timestamp']>;
+  traits: Scalars['jsonb'];
+  updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "identities" */
+export type IdentitiesTraitsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "identities" */
+export type Identities_Aggregate = {
+  __typename?: 'identities_aggregate';
+  aggregate?: Maybe<Identities_Aggregate_Fields>;
+  nodes: Array<Identities>;
+};
+
+/** aggregate fields of "identities" */
+export type Identities_Aggregate_Fields = {
+  __typename?: 'identities_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Identities_Max_Fields>;
+  min?: Maybe<Identities_Min_Fields>;
+};
+
+
+/** aggregate fields of "identities" */
+export type Identities_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Identities_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Identities_Append_Input = {
+  traits?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "identities". All fields are combined with a logical 'AND'. */
+export type Identities_Bool_Exp = {
+  _and?: InputMaybe<Array<Identities_Bool_Exp>>;
+  _not?: InputMaybe<Identities_Bool_Exp>;
+  _or?: InputMaybe<Array<Identities_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  nid?: InputMaybe<Uuid_Comparison_Exp>;
+  schema_id?: InputMaybe<String_Comparison_Exp>;
+  state?: InputMaybe<String_Comparison_Exp>;
+  state_changed_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  traits?: InputMaybe<Jsonb_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "identities" */
+export enum Identities_Constraint {
+  /** unique or primary key constraint */
+  IdentitiesPkey = 'identities_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Identities_Delete_At_Path_Input = {
+  traits?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Identities_Delete_Elem_Input = {
+  traits?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Identities_Delete_Key_Input = {
+  traits?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "identities" */
+export type Identities_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  schema_id?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  state_changed_at?: InputMaybe<Scalars['timestamp']>;
+  traits?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Identities_Max_Fields = {
+  __typename?: 'identities_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  schema_id?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  state_changed_at?: Maybe<Scalars['timestamp']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Identities_Min_Fields = {
+  __typename?: 'identities_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  nid?: Maybe<Scalars['uuid']>;
+  schema_id?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  state_changed_at?: Maybe<Scalars['timestamp']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "identities" */
+export type Identities_Mutation_Response = {
+  __typename?: 'identities_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Identities>;
+};
+
+/** input type for inserting object relation for remote table "identities" */
+export type Identities_Obj_Rel_Insert_Input = {
+  data: Identities_Insert_Input;
+  /** on conflict condition */
+  on_conflict?: InputMaybe<Identities_On_Conflict>;
+};
+
+/** on conflict condition type for table "identities" */
+export type Identities_On_Conflict = {
+  constraint: Identities_Constraint;
+  update_columns?: Array<Identities_Update_Column>;
+  where?: InputMaybe<Identities_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "identities". */
+export type Identities_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nid?: InputMaybe<Order_By>;
+  schema_id?: InputMaybe<Order_By>;
+  state?: InputMaybe<Order_By>;
+  state_changed_at?: InputMaybe<Order_By>;
+  traits?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: identities */
+export type Identities_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Identities_Prepend_Input = {
+  traits?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "identities" */
+export enum Identities_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  SchemaId = 'schema_id',
+  /** column name */
+  State = 'state',
+  /** column name */
+  StateChangedAt = 'state_changed_at',
+  /** column name */
+  Traits = 'traits',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "identities" */
+export type Identities_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  nid?: InputMaybe<Scalars['uuid']>;
+  schema_id?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  state_changed_at?: InputMaybe<Scalars['timestamp']>;
+  traits?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "identities" */
+export enum Identities_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Nid = 'nid',
+  /** column name */
+  SchemaId = 'schema_id',
+  /** column name */
+  State = 'state',
+  /** column name */
+  StateChangedAt = 'state_changed_at',
+  /** column name */
+  Traits = 'traits',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
 /** columns and relationships of "instances" */
 export type Instances = {
   __typename?: 'instances';
@@ -1106,6 +1322,29 @@ export enum Instances_Update_Column {
   /** column name */
   LastHeartbeat = 'last_heartbeat'
 }
+
+/** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
+export type Jsonb_Comparison_Exp = {
+  /** is the column contained in the given json value */
+  _contained_in?: InputMaybe<Scalars['jsonb']>;
+  /** does the column contain the given json value at the top level */
+  _contains?: InputMaybe<Scalars['jsonb']>;
+  _eq?: InputMaybe<Scalars['jsonb']>;
+  _gt?: InputMaybe<Scalars['jsonb']>;
+  _gte?: InputMaybe<Scalars['jsonb']>;
+  /** does the string exist as a top-level key in the column */
+  _has_key?: InputMaybe<Scalars['String']>;
+  /** do all of these strings exist as top-level keys in the column */
+  _has_keys_all?: InputMaybe<Array<Scalars['String']>>;
+  /** do any of these strings exist as top-level keys in the column */
+  _has_keys_any?: InputMaybe<Array<Scalars['String']>>;
+  _in?: InputMaybe<Array<Scalars['jsonb']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['jsonb']>;
+  _lte?: InputMaybe<Scalars['jsonb']>;
+  _neq?: InputMaybe<Scalars['jsonb']>;
+  _nin?: InputMaybe<Array<Scalars['jsonb']>>;
+};
 
 /** columns and relationships of "manifests" */
 export type Manifests = {
@@ -1303,6 +1542,10 @@ export type Mutation_Root = {
   delete_findings?: Maybe<Findings_Mutation_Response>;
   /** delete single row from the table: "findings" */
   delete_findings_by_pk?: Maybe<Findings>;
+  /** delete data from the table: "identities" */
+  delete_identities?: Maybe<Identities_Mutation_Response>;
+  /** delete single row from the table: "identities" */
+  delete_identities_by_pk?: Maybe<Identities>;
   /** delete data from the table: "instances" */
   delete_instances?: Maybe<Instances_Mutation_Response>;
   /** delete single row from the table: "instances" */
@@ -1343,10 +1586,6 @@ export type Mutation_Root = {
   delete_settings?: Maybe<Settings_Mutation_Response>;
   /** delete single row from the table: "settings" */
   delete_settings_by_pk?: Maybe<Settings>;
-  /** delete data from the table: "users" */
-  delete_users?: Maybe<Users_Mutation_Response>;
-  /** delete single row from the table: "users" */
-  delete_users_by_pk?: Maybe<Users>;
   /** delete data from the table: "vulnerabilities" */
   delete_vulnerabilities?: Maybe<Vulnerabilities_Mutation_Response>;
   /** delete single row from the table: "vulnerabilities" */
@@ -1363,6 +1602,10 @@ export type Mutation_Root = {
   insert_findings?: Maybe<Findings_Mutation_Response>;
   /** insert a single row into the table: "findings" */
   insert_findings_one?: Maybe<Findings>;
+  /** insert data into the table: "identities" */
+  insert_identities?: Maybe<Identities_Mutation_Response>;
+  /** insert a single row into the table: "identities" */
+  insert_identities_one?: Maybe<Identities>;
   /** insert data into the table: "instances" */
   insert_instances?: Maybe<Instances_Mutation_Response>;
   /** insert a single row into the table: "instances" */
@@ -1403,10 +1646,6 @@ export type Mutation_Root = {
   insert_settings?: Maybe<Settings_Mutation_Response>;
   /** insert a single row into the table: "settings" */
   insert_settings_one?: Maybe<Settings>;
-  /** insert data into the table: "users" */
-  insert_users?: Maybe<Users_Mutation_Response>;
-  /** insert a single row into the table: "users" */
-  insert_users_one?: Maybe<Users>;
   /** insert data into the table: "vulnerabilities" */
   insert_vulnerabilities?: Maybe<Vulnerabilities_Mutation_Response>;
   /** insert a single row into the table: "vulnerabilities" */
@@ -1427,6 +1666,10 @@ export type Mutation_Root = {
   update_findings?: Maybe<Findings_Mutation_Response>;
   /** update single row of the table: "findings" */
   update_findings_by_pk?: Maybe<Findings>;
+  /** update data of the table: "identities" */
+  update_identities?: Maybe<Identities_Mutation_Response>;
+  /** update single row of the table: "identities" */
+  update_identities_by_pk?: Maybe<Identities>;
   /** update data of the table: "instances" */
   update_instances?: Maybe<Instances_Mutation_Response>;
   /** update single row of the table: "instances" */
@@ -1467,10 +1710,6 @@ export type Mutation_Root = {
   update_settings?: Maybe<Settings_Mutation_Response>;
   /** update single row of the table: "settings" */
   update_settings_by_pk?: Maybe<Settings>;
-  /** update data of the table: "users" */
-  update_users?: Maybe<Users_Mutation_Response>;
-  /** update single row of the table: "users" */
-  update_users_by_pk?: Maybe<Users>;
   /** update data of the table: "vulnerabilities" */
   update_vulnerabilities?: Maybe<Vulnerabilities_Mutation_Response>;
   /** update single row of the table: "vulnerabilities" */
@@ -1502,6 +1741,18 @@ export type Mutation_RootDelete_FindingsArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Findings_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_IdentitiesArgs = {
+  where: Identities_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Identities_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -1627,18 +1878,6 @@ export type Mutation_RootDelete_Settings_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_UsersArgs = {
-  where: Users_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Users_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDelete_VulnerabilitiesArgs = {
   where: Vulnerabilities_Bool_Exp;
 };
@@ -1687,6 +1926,20 @@ export type Mutation_RootInsert_FindingsArgs = {
 export type Mutation_RootInsert_Findings_OneArgs = {
   object: Findings_Insert_Input;
   on_conflict?: InputMaybe<Findings_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_IdentitiesArgs = {
+  objects: Array<Identities_Insert_Input>;
+  on_conflict?: InputMaybe<Identities_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Identities_OneArgs = {
+  object: Identities_Insert_Input;
+  on_conflict?: InputMaybe<Identities_On_Conflict>;
 };
 
 
@@ -1831,20 +2084,6 @@ export type Mutation_RootInsert_Settings_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_UsersArgs = {
-  objects: Array<Users_Insert_Input>;
-  on_conflict?: InputMaybe<Users_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Users_OneArgs = {
-  object: Users_Insert_Input;
-  on_conflict?: InputMaybe<Users_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_VulnerabilitiesArgs = {
   objects: Array<Vulnerabilities_Insert_Input>;
   on_conflict?: InputMaybe<Vulnerabilities_On_Conflict>;
@@ -1912,6 +2151,30 @@ export type Mutation_RootUpdate_FindingsArgs = {
 export type Mutation_RootUpdate_Findings_By_PkArgs = {
   _set?: InputMaybe<Findings_Set_Input>;
   pk_columns: Findings_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_IdentitiesArgs = {
+  _append?: InputMaybe<Identities_Append_Input>;
+  _delete_at_path?: InputMaybe<Identities_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Identities_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Identities_Delete_Key_Input>;
+  _prepend?: InputMaybe<Identities_Prepend_Input>;
+  _set?: InputMaybe<Identities_Set_Input>;
+  where: Identities_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Identities_By_PkArgs = {
+  _append?: InputMaybe<Identities_Append_Input>;
+  _delete_at_path?: InputMaybe<Identities_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Identities_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Identities_Delete_Key_Input>;
+  _prepend?: InputMaybe<Identities_Prepend_Input>;
+  _set?: InputMaybe<Identities_Set_Input>;
+  pk_columns: Identities_Pk_Columns_Input;
 };
 
 
@@ -2058,20 +2321,6 @@ export type Mutation_RootUpdate_Settings_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_UsersArgs = {
-  _set?: InputMaybe<Users_Set_Input>;
-  where: Users_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_By_PkArgs = {
-  _set?: InputMaybe<Users_Set_Input>;
-  pk_columns: Users_Pk_Columns_Input;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_VulnerabilitiesArgs = {
   _inc?: InputMaybe<Vulnerabilities_Inc_Input>;
   _set?: InputMaybe<Vulnerabilities_Set_Input>;
@@ -2145,7 +2394,7 @@ export type Organization_User = {
   organization_id: Scalars['uuid'];
   updated_at: Scalars['timestamptz'];
   /** An object relationship */
-  user: Users;
+  user: Identities;
   user_id: Scalars['uuid'];
 };
 
@@ -2195,7 +2444,7 @@ export type Organization_User_Bool_Exp = {
   organization?: InputMaybe<Organizations_Bool_Exp>;
   organization_id?: InputMaybe<Uuid_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  user?: InputMaybe<Users_Bool_Exp>;
+  user?: InputMaybe<Identities_Bool_Exp>;
   user_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
@@ -2212,7 +2461,7 @@ export type Organization_User_Insert_Input = {
   organization?: InputMaybe<Organizations_Obj_Rel_Insert_Input>;
   organization_id?: InputMaybe<Scalars['uuid']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
-  user?: InputMaybe<Users_Obj_Rel_Insert_Input>;
+  user?: InputMaybe<Identities_Obj_Rel_Insert_Input>;
   user_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -2277,7 +2526,7 @@ export type Organization_User_Order_By = {
   organization?: InputMaybe<Organizations_Order_By>;
   organization_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  user?: InputMaybe<Users_Order_By>;
+  user?: InputMaybe<Identities_Order_By>;
   user_id?: InputMaybe<Order_By>;
 };
 
@@ -3253,6 +3502,12 @@ export type Query_Root = {
   findings_aggregate: Findings_Aggregate;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
+  /** fetch data from the table: "identities" */
+  identities: Array<Identities>;
+  /** fetch aggregated fields from the table: "identities" */
+  identities_aggregate: Identities_Aggregate;
+  /** fetch data from the table: "identities" using primary key columns */
+  identities_by_pk?: Maybe<Identities>;
   /** fetch data from the table: "instances" */
   instances: Array<Instances>;
   /** fetch aggregated fields from the table: "instances" */
@@ -3314,12 +3569,6 @@ export type Query_Root = {
   settings_aggregate: Settings_Aggregate;
   /** fetch data from the table: "settings" using primary key columns */
   settings_by_pk?: Maybe<Settings>;
-  /** fetch data from the table: "users" */
-  users: Array<Users>;
-  /** fetch aggregated fields from the table: "users" */
-  users_aggregate: Users_Aggregate;
-  /** fetch data from the table: "users" using primary key columns */
-  users_by_pk?: Maybe<Users>;
   /** fetch data from the table: "vulnerabilities" */
   vulnerabilities: Array<Vulnerabilities>;
   /** fetch aggregated fields from the table: "vulnerabilities" */
@@ -3377,6 +3626,29 @@ export type Query_RootFindings_AggregateArgs = {
 
 
 export type Query_RootFindings_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootIdentitiesArgs = {
+  distinct_on?: InputMaybe<Array<Identities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identities_Order_By>>;
+  where?: InputMaybe<Identities_Bool_Exp>;
+};
+
+
+export type Query_RootIdentities_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identities_Order_By>>;
+  where?: InputMaybe<Identities_Bool_Exp>;
+};
+
+
+export type Query_RootIdentities_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -3616,29 +3888,6 @@ export type Query_RootSettings_By_PkArgs = {
 };
 
 
-export type Query_RootUsersArgs = {
-  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Order_By>>;
-  where?: InputMaybe<Users_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Order_By>>;
-  where?: InputMaybe<Users_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
 export type Query_RootVulnerabilitiesArgs = {
   distinct_on?: InputMaybe<Array<Vulnerabilities_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3699,6 +3948,8 @@ export type Related_Vulnerabilities = {
   related_vulnerability_slug: Scalars['String'];
   /** An object relationship */
   vulnerability: Vulnerabilities;
+  /** An object relationship */
+  vulnerabilityByVulnerabilitySlug: Vulnerabilities;
   vulnerability_slug: Scalars['String'];
 };
 
@@ -3747,6 +3998,7 @@ export type Related_Vulnerabilities_Bool_Exp = {
   parent?: InputMaybe<Vulnerabilities_Bool_Exp>;
   related_vulnerability_slug?: InputMaybe<String_Comparison_Exp>;
   vulnerability?: InputMaybe<Vulnerabilities_Bool_Exp>;
+  vulnerabilityByVulnerabilitySlug?: InputMaybe<Vulnerabilities_Bool_Exp>;
   vulnerability_slug?: InputMaybe<String_Comparison_Exp>;
 };
 
@@ -3764,6 +4016,7 @@ export type Related_Vulnerabilities_Insert_Input = {
   parent?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
   related_vulnerability_slug?: InputMaybe<Scalars['String']>;
   vulnerability?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
+  vulnerabilityByVulnerabilitySlug?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
   vulnerability_slug?: InputMaybe<Scalars['String']>;
 };
 
@@ -3819,6 +4072,7 @@ export type Related_Vulnerabilities_Order_By = {
   parent?: InputMaybe<Vulnerabilities_Order_By>;
   related_vulnerability_slug?: InputMaybe<Order_By>;
   vulnerability?: InputMaybe<Vulnerabilities_Order_By>;
+  vulnerabilityByVulnerabilitySlug?: InputMaybe<Vulnerabilities_Order_By>;
   vulnerability_slug?: InputMaybe<Order_By>;
 };
 
@@ -4414,6 +4668,12 @@ export type Subscription_Root = {
   findings_aggregate: Findings_Aggregate;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
+  /** fetch data from the table: "identities" */
+  identities: Array<Identities>;
+  /** fetch aggregated fields from the table: "identities" */
+  identities_aggregate: Identities_Aggregate;
+  /** fetch data from the table: "identities" using primary key columns */
+  identities_by_pk?: Maybe<Identities>;
   /** fetch data from the table: "instances" */
   instances: Array<Instances>;
   /** fetch aggregated fields from the table: "instances" */
@@ -4474,12 +4734,6 @@ export type Subscription_Root = {
   settings_aggregate: Settings_Aggregate;
   /** fetch data from the table: "settings" using primary key columns */
   settings_by_pk?: Maybe<Settings>;
-  /** fetch data from the table: "users" */
-  users: Array<Users>;
-  /** fetch aggregated fields from the table: "users" */
-  users_aggregate: Users_Aggregate;
-  /** fetch data from the table: "users" using primary key columns */
-  users_by_pk?: Maybe<Users>;
   /** fetch data from the table: "vulnerabilities" */
   vulnerabilities: Array<Vulnerabilities>;
   /** fetch aggregated fields from the table: "vulnerabilities" */
@@ -4537,6 +4791,29 @@ export type Subscription_RootFindings_AggregateArgs = {
 
 
 export type Subscription_RootFindings_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootIdentitiesArgs = {
+  distinct_on?: InputMaybe<Array<Identities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identities_Order_By>>;
+  where?: InputMaybe<Identities_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentities_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Identities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Identities_Order_By>>;
+  where?: InputMaybe<Identities_Bool_Exp>;
+};
+
+
+export type Subscription_RootIdentities_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -4771,29 +5048,6 @@ export type Subscription_RootSettings_By_PkArgs = {
 };
 
 
-export type Subscription_RootUsersArgs = {
-  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Order_By>>;
-  where?: InputMaybe<Users_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Order_By>>;
-  where?: InputMaybe<Users_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
 export type Subscription_RootVulnerabilitiesArgs = {
   distinct_on?: InputMaybe<Array<Vulnerabilities_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -4864,175 +5118,6 @@ export type Timestamptz_Comparison_Exp = {
   _neq?: InputMaybe<Scalars['timestamptz']>;
   _nin?: InputMaybe<Array<Scalars['timestamptz']>>;
 };
-
-/** columns and relationships of "users" */
-export type Users = {
-  __typename?: 'users';
-  created_at: Scalars['timestamp'];
-  email: Scalars['String'];
-  id: Scalars['uuid'];
-  name: Scalars['String'];
-  /** An array relationship */
-  organization_users: Array<Organization_User>;
-  /** An aggregate relationship */
-  organization_users_aggregate: Organization_User_Aggregate;
-};
-
-
-/** columns and relationships of "users" */
-export type UsersOrganization_UsersArgs = {
-  distinct_on?: InputMaybe<Array<Organization_User_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Organization_User_Order_By>>;
-  where?: InputMaybe<Organization_User_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users" */
-export type UsersOrganization_Users_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Organization_User_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Organization_User_Order_By>>;
-  where?: InputMaybe<Organization_User_Bool_Exp>;
-};
-
-/** aggregated selection of "users" */
-export type Users_Aggregate = {
-  __typename?: 'users_aggregate';
-  aggregate?: Maybe<Users_Aggregate_Fields>;
-  nodes: Array<Users>;
-};
-
-/** aggregate fields of "users" */
-export type Users_Aggregate_Fields = {
-  __typename?: 'users_aggregate_fields';
-  count: Scalars['Int'];
-  max?: Maybe<Users_Max_Fields>;
-  min?: Maybe<Users_Min_Fields>;
-};
-
-
-/** aggregate fields of "users" */
-export type Users_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Users_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
-export type Users_Bool_Exp = {
-  _and?: InputMaybe<Array<Users_Bool_Exp>>;
-  _not?: InputMaybe<Users_Bool_Exp>;
-  _or?: InputMaybe<Array<Users_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  email?: InputMaybe<String_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  name?: InputMaybe<String_Comparison_Exp>;
-  organization_users?: InputMaybe<Organization_User_Bool_Exp>;
-};
-
-/** unique or primary key constraints on table "users" */
-export enum Users_Constraint {
-  /** unique or primary key constraint */
-  UsersPkey = 'users_pkey'
-}
-
-/** input type for inserting data into table "users" */
-export type Users_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamp']>;
-  email?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  name?: InputMaybe<Scalars['String']>;
-  organization_users?: InputMaybe<Organization_User_Arr_Rel_Insert_Input>;
-};
-
-/** aggregate max on columns */
-export type Users_Max_Fields = {
-  __typename?: 'users_max_fields';
-  created_at?: Maybe<Scalars['timestamp']>;
-  email?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['uuid']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-/** aggregate min on columns */
-export type Users_Min_Fields = {
-  __typename?: 'users_min_fields';
-  created_at?: Maybe<Scalars['timestamp']>;
-  email?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['uuid']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-/** response of any mutation on the table "users" */
-export type Users_Mutation_Response = {
-  __typename?: 'users_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Users>;
-};
-
-/** input type for inserting object relation for remote table "users" */
-export type Users_Obj_Rel_Insert_Input = {
-  data: Users_Insert_Input;
-  /** on conflict condition */
-  on_conflict?: InputMaybe<Users_On_Conflict>;
-};
-
-/** on conflict condition type for table "users" */
-export type Users_On_Conflict = {
-  constraint: Users_Constraint;
-  update_columns?: Array<Users_Update_Column>;
-  where?: InputMaybe<Users_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "users". */
-export type Users_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  email?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
-  organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
-};
-
-/** primary key columns input for table: users */
-export type Users_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** select columns of table "users" */
-export enum Users_Select_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Email = 'email',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name'
-}
-
-/** input type for updating data in table "users" */
-export type Users_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamp']>;
-  email?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  name?: InputMaybe<Scalars['String']>;
-};
-
-/** update columns of table "users" */
-export enum Users_Update_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Email = 'email',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name'
-}
 
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
 export type Uuid_Comparison_Exp = {
@@ -5831,6 +5916,23 @@ export type InsertManifestMutationVariables = Exact<{
 
 export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null, scanManifest?: { __typename?: 'ScanManifestOutput', build_id: string, error: boolean, error_message?: string | null } | null };
 
+export type CreateOrganizationAndProjectMutationVariables = Exact<{
+  identity_id: Scalars['uuid'];
+  organization_name: Scalars['String'];
+  project_name: Scalars['String'];
+}>;
+
+
+export type CreateOrganizationAndProjectMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', projects: Array<{ __typename?: 'projects', id: any }> } | null };
+
+export type InsertProjectMutationVariables = Exact<{
+  name: Scalars['String'];
+  organization_id: Scalars['uuid'];
+}>;
+
+
+export type InsertProjectMutation = { __typename?: 'mutation_root', insert_projects_one?: { __typename?: 'projects', id: any } | null };
+
 export type PresignManifestUrlMutationVariables = Exact<{
   project_id: Scalars['String'];
 }>;
@@ -6081,6 +6183,24 @@ export const InsertManifestDocument = `
   }
 }
     `;
+export const CreateOrganizationAndProjectDocument = `
+    mutation CreateOrganizationAndProject($identity_id: uuid!, $organization_name: String!, $project_name: String!) {
+  insert_organizations_one(
+    object: {name: $organization_name, organization_users: {data: {user_id: $identity_id}}, projects: {data: {name: $project_name}}}
+  ) {
+    projects {
+      id
+    }
+  }
+}
+    `;
+export const InsertProjectDocument = `
+    mutation InsertProject($name: String!, $organization_id: uuid!) {
+  insert_projects_one(object: {name: $name, organization_id: $organization_id}) {
+    id
+  }
+}
+    `;
 export const PresignManifestUrlDocument = `
     mutation presignManifestUrl($project_id: String!) {
   presignManifestUpload(project_id: $project_id) {
@@ -6117,6 +6237,12 @@ const injectedRtkApi = api.injectEndpoints({
     insertManifest: build.mutation<InsertManifestMutation, InsertManifestMutationVariables>({
       query: (variables) => ({ document: InsertManifestDocument, variables })
     }),
+    CreateOrganizationAndProject: build.mutation<CreateOrganizationAndProjectMutation, CreateOrganizationAndProjectMutationVariables>({
+      query: (variables) => ({ document: CreateOrganizationAndProjectDocument, variables })
+    }),
+    InsertProject: build.mutation<InsertProjectMutation, InsertProjectMutationVariables>({
+      query: (variables) => ({ document: InsertProjectDocument, variables })
+    }),
     presignManifestUrl: build.mutation<PresignManifestUrlMutation, PresignManifestUrlMutationVariables>({
       query: (variables) => ({ document: PresignManifestUrlDocument, variables })
     }),
@@ -6124,5 +6250,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery, useGetVulnerabilityDetailsQuery, useLazyGetVulnerabilityDetailsQuery, useInsertManifestMutation, usePresignManifestUrlMutation } = injectedRtkApi;
+
 

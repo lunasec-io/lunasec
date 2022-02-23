@@ -25,7 +25,7 @@ interface SidebarProps {
   sections: NavSection[];
   showFooter?: boolean;
 }
-const Sidebar: React.FunctionComponent<SidebarProps> = ({ sections, showFooter = true }) => {
+const Sidebar: React.FunctionComponent<SidebarProps> = ({ sections, showFooter = false }) => {
   const { isOpen } = useSidebar();
 
   return (
