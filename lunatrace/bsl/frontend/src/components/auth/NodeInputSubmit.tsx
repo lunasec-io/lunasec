@@ -22,7 +22,7 @@ export function NodeInputSubmit<T>({ node, attributes, setValue, disabled, dispa
     <>
       <Button
         name={attributes.name}
-        onClick={(e) => {
+        onClick={(e: any) => {
           // On click, we set this value, and once set, dispatch the submission!
           void setValue(attributes.value).then(() => dispatchSubmit(e));
         }}

@@ -47,7 +47,7 @@ export function NodeInputDefault<T>(props: NodeInputProps) {
       title={node.meta.label?.text}
       className={'ory-input'}
       onClick={onClick}
-      onChange={(e) => {
+      onChange={(e: any) => {
         void setValue(e.target.value);
       }}
       type={attributes.type}
