@@ -11,52 +11,40 @@
  * limitations under the License.
  *
  */
-import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import express from 'express';
 import { v4 as uuid } from 'uuid';
 
-import { PreSignedUrlGenerator } from '../s3/pre-signed-url-generator';
-
+import { aws } from '../utils/aws-utils';
 export const s3Router = express.Router();
 
-const awsRegion = process.env.AWS_DEFAULT_REGION;
 const manifestBucket = process.env.S3_MANIFEST_BUCKET || 'test-manifest-bucket-one';
 
-if (!awsRegion || !manifestBucket) {
-  throw new Error('Missing AWS_DEFAULT_REGION or S3_MANIFEST_BUCKET env var');
+if (!manifestBucket) {
+  throw new Error('Missing S3_MANIFEST_BUCKET env var');
 }
 
+// TODO: move this to the manifest router
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 s3Router.post('/presign-manifest-upload', async (req, res) => {
-  console.log('PRESIGN ROUTE CALLED');
-  const preSignedUrlGenerator = new PreSignedUrlGenerator({
-    awsCredentials: defaultProvider(),
-    awsRegion,
-    s3Bucket: manifestBucket,
-  });
-  console.log('created s3 generator');
   const projectId = req.body.input.project_id as string | undefined;
-  console.log('request body is ', req.body);
   if (!projectId) {
-    return res.status(400).send({ error: true, message: 'Missing project_id in request' });
+    return res.status(400).send({ error: true, error_message: 'Missing project_id in request' });
   }
 
   const today = new Date();
   const uniqueId = uuid();
 
-  const objectKey = `${encodeURIComponent(projectId)}
-  /${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}
-  /${encodeURIComponent(uniqueId)}`;
-  console.log('about to try');
+  const objectKey = `${encodeURIComponent(
+    projectId
+  )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${encodeURIComponent(uniqueId)}`;
 
+  console.log('object key is ', objectKey);
   try {
-    console.log('attempting to contact s3');
-    const result = await preSignedUrlGenerator.generatePresignedS3Url(objectKey, 'PUT');
-    console.log('s3 responded ', result);
-    return res.json({ error: false, ...result });
+    const result = await aws.generatePresignedS3Url(manifestBucket, objectKey, 'PUT');
+    return res.json({ error: false, key: objectKey, bucket: manifestBucket, ...result });
   } catch (e) {
-    return res.status(400).json({ error: true, message: 'Failed to generate S3 presigned url' });
+    return res.status(400).json({ error: true, error_message: 'Failed to generate S3 presigned url' });
   }
 });

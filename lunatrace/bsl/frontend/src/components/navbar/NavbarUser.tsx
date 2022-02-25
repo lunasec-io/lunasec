@@ -14,21 +14,35 @@
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { PieChart, Settings, User } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
+import useAppDispatch from '../../hooks/useAppDispatch';
+import useAppSelector from '../../hooks/useAppSelector';
+import { logout, selectSession } from '../../store/slices/authentication';
 // import avatar1 from '../../assets/img/avatars/avatar.jpg';
 
-const NavbarUser = () => {
+const NavbarUser: React.FunctionComponent = () => {
+  const user = useAppSelector(selectSession);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const doLogout = () => void dispatch(logout(navigate));
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <Dropdown className="nav-item" align="end">
       <span className="d-inline-block d-sm-none">
         <Dropdown.Toggle as="a" className="nav-link">
-          <Settings size={18} className="align-middle" />
+          <User size={18} className="align-middle" />
         </Dropdown.Toggle>
       </span>
       <span className="d-none d-sm-inline-block">
         <Dropdown.Toggle as="a" className="nav-link">
           {/*<img src={avatar1} className="avatar img-fluid rounded-circle me-1" alt="Chris Wood" />*/}
-          <span className="text-dark">Chris Wood</span>
+          <User size={18} />
+          <span className="text-dark">{` ${user.identity.traits.name.first} `}</span>
         </Dropdown.Toggle>
       </span>
       <Dropdown.Menu>
@@ -43,7 +57,7 @@ const NavbarUser = () => {
         <Dropdown.Divider />
         <Dropdown.Item>Settings & Privacy</Dropdown.Item>
         <Dropdown.Item>Help</Dropdown.Item>
-        <Dropdown.Item>Sign out</Dropdown.Item>
+        <Dropdown.Item onClick={() => doLogout()}>Sign out</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
   );

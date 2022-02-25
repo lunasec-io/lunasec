@@ -4,6 +4,7 @@ services:
 #    build: ./frontend
 #    ports:
 #      - "8000:80"
+  # RUNNING OATHKEEPER MANUALLY ON HOST FOR NOW
 #  oathkeeper:
 #    build: ./ory/oathkeeper
 #    ports:
@@ -17,6 +18,7 @@ services:
 #      - "./ory/oathkeeper:/config"
 #    extra_hosts:
 #      - "host.docker.internal:host-gateway"
+#
 #  backend:
 #    build: ./backend
 #    environment:

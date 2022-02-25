@@ -17,13 +17,13 @@ import { ExternalLink } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import api from '../../api';
 import { CvssInferredWarning } from '../../components/CvssInferredWarning';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
-import { useGetVulnerabilityDetailsQuery } from '../../store/api/generated';
 export const VulnerabilityDetail: React.FunctionComponent = () => {
   const navigate = useNavigate();
   const { vulnerability_id } = useParams();
-  const { data, error, isLoading, isFetching } = useGetVulnerabilityDetailsQuery({ vulnerability_id });
+  const { data, isFetching } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id });
 
   const renderVulnDetails = () => {
     if (!data) {
