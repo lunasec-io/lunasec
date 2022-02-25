@@ -2,12 +2,12 @@ overwrite: true
 schema:
   - "http://localhost:8080/v1/graphql":
       headers: {"x-hasura-admin-secret": "myadminsecretkey"}
-documents: "src/store/api/graphql/**/*.graphql"
+documents: "src/api/graphql/**/*.graphql"
 generates:
-  ./src/store/api/generated.ts:
+  ./src/api/generated.ts:
     plugins:
       - "typescript"
       - "typescript-operations"
       - "typescript-rtk-query":
-          importBaseApiFrom: '../baseApi'
-          exportHooks: true
+          importBaseApiFrom: './baseApi'
+          exportHooks: false

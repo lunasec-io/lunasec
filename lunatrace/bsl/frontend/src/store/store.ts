@@ -13,33 +13,27 @@
  */
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-// import { createBrowserHistory } from 'history';
-// import { createReduxHistoryContext } from 'redux-first-history';
 
-import { api } from './api';
+import appApi, { rtkQueryErrorLogger } from '../api';
+
+import { alertsReducer } from './slices/alerts';
 import { authSlice } from './slices/authentication';
-
-// redux-first-history router stuff
-// const { createReduxHistory, routerMiddleware, routerReducer } = createReduxHistoryContext({
-//   history: createBrowserHistory(),
-//   reduxTravelling: true,
-//   savePreviousLocations: 6,
-// });
 
 export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
-    [api.reducerPath]: api.reducer,
+    [appApi.reducerPath]: appApi.reducer,
+    alerts: alertsReducer,
   },
   middleware: (getDefaultMiddleware) => {
     const middleware = getDefaultMiddleware();
-    middleware.push(api.middleware);
+    middleware.push(appApi.middleware);
+    middleware.push(rtkQueryErrorLogger);
     return middleware;
   },
 });
-setupListeners(store.dispatch);
 
-// export const history = createReduxHistory(store);
+setupListeners(store.dispatch);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
