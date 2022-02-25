@@ -76,6 +76,7 @@ export const selectIsAuthenticated = (state: RootState) => state.auth.session !=
 export const selectSession = (state: RootState) => state.auth.session;
 export const selectLoginFlow = (state: RootState) => state.auth.loginFlow;
 export const selectRegisterFlow = (state: RootState) => state.auth.registerFlow;
+export const selectUserId = (state: RootState) => state.auth.session?.identity.id;
 
 export const login =
   (navigate: NavigateFunction, values: SubmitSelfServiceLoginFlowBody): AppThunk =>

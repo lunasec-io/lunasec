@@ -14,23 +14,17 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useGetProjectQuery } from '../../../store/api/generated';
+import api from '../../../api';
 
 import { BuildList } from './BuildList';
 
 export const Builds: React.FunctionComponent = () => {
-  // const [buildDetailId, setBuildDetailId] = useState<string | null>(null);
-  // if (!buildDetailId) {
-  console.log('rendering builds');
   const { project_id } = useParams();
-  console.log('attempting to load project id ', project_id);
 
   // RUN SEARCH QUERY
-  const { data, error, isLoading } = useGetProjectQuery({
+  const { data } = api.useGetProjectQuery({
     project_id,
   });
 
   return data ? <BuildList builds={data.projects[0].builds} /> : null;
-  // }
-  // return <BuildDetails buildId={buildDetailId} />;
 };

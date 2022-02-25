@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { GetProjectQuery } from '../../store/api/generated';
+import { GetProjectQuery } from '../../api/generated';
 
 export type ProjectInfo = GetProjectQuery['projects'][number];
 

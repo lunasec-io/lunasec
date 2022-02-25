@@ -1,0 +1,61 @@
+query GetBuildDetails($build_id: uuid) {
+    builds(where: {id: {_eq: $build_id}}) {
+        build_number
+        created_at
+        git_branch
+        git_hash
+        git_remote
+        id
+        project_id
+        project {
+            name
+        }
+        s3_url
+        scans(order_by: {created_at: asc}) {
+            created_at
+            db_date
+            distro_name
+            distro_version
+            grype_version
+            id
+            scan_number
+            source_type
+            target
+        }
+        scans_aggregate {
+            aggregate {
+                count
+            }
+        }
+        findings {
+            fix_state
+            fix_versions
+            package_name
+            created_at
+            id
+            language
+            locations
+            matcher
+            package_version_id
+            purl
+            severity
+            type
+            version
+            updated_at
+            version_matcher
+            virtual_path
+            vulnerability_id
+            vulnerability_package_id
+            vulnerability {
+                id
+                slug
+                description
+                cvss_score
+                cvss_inferred
+                name
+                namespace
+                data_source
+            }
+        }
+    }
+}

@@ -13,6 +13,7 @@
  */
 import React from 'react';
 
+// Todo: this is not in use but left for posterity in case we want to use it again
 const SidebarFooter = () => {
   return (
     <div className="sidebar-cta">

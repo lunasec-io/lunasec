@@ -17,8 +17,8 @@ import { Box, Home, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
+import api from '../../api';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
-import { useGetProjectQuery } from '../../store/api/generated';
 
 import { ProjectHeader } from './Header';
 import { Builds } from './builds';
@@ -30,7 +30,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   const navigate = useNavigate();
 
   // RUN SEARCH QUERY
-  const { data, error, isLoading } = useGetProjectQuery({
+  const { data, error, isLoading } = api.useGetProjectQuery({
     project_id,
   });
 
@@ -41,7 +41,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
     return (
       <>
         <Helmet title={p.name} />
-        <ProjectHeader project={p} />
+        <ProjectHeader projectName={p.name} />
         <Nav className="container-fluid fs-lg" variant="tabs" activeKey={activeTab}>
           <Nav.Item>
             <Nav.Link
