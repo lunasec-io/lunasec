@@ -25,11 +25,10 @@ import Sidebar from '../components/sidebar/Sidebar';
 import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import useAppDispatch from '../hooks/useAppDispatch';
 import useAppSelector from '../hooks/useAppSelector';
-import { logout, selectIsAuthenticated, setSession } from '../store/slices/authentication';
+import { selectIsAuthenticated, setSession } from '../store/slices/authentication';
 import ory from '../utils/sdk';
 
 const MainLayout: React.FunctionComponent = (props) => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   // TODO move this somewhere more else
@@ -58,9 +57,13 @@ const MainLayout: React.FunctionComponent = (props) => {
       });
   }, []);
 
-  const doLogout = () => void dispatch(logout(navigate));
-
-  const { data } = api.useGetSidebarInfoQuery();
+  const [trigger, result, lastPromiseInfo] = api.useLazyGetSidebarInfoQuery();
+  const { data } = result;
+  useEffect(() => {
+    if (isAuthenticated) {
+      void trigger();
+    }
+  }, [isAuthenticated]);
 
   return (
     <React.Fragment>
