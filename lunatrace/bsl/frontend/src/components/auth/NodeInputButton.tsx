@@ -34,7 +34,7 @@ export function NodeInputButton<T>({ node, attributes, setValue, disabled, dispa
     <>
       <Button
         name={attributes.name}
-        onClick={async (e) => {
+        onClick={async (e: any) => {
           onClick();
           await setValue(attributes.value).then(() => dispatchSubmit(e));
         }}

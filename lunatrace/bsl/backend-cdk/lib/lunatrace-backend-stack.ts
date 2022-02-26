@@ -22,7 +22,7 @@ import {
   LogDriver,
 } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
-import { SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
+import { ApplicationProtocol, ListenerCondition, SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
 import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import { HostedZone } from '@aws-cdk/aws-route53';
 import { Bucket } from '@aws-cdk/aws-s3';
@@ -135,29 +135,68 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const taskDef = new FargateTaskDefinition(this, 'TaskDefinition', {
       family: 'LunaTraceAppTaskDefinition',
+      cpu: 4096,
+      memoryLimitMiB: 8192,
       executionRole: execRole,
     });
 
+    const frontend = taskDef.addContainer('FrontendContainer', {
+      cpu: 256,
+      memoryLimitMiB: 512,
+      image: ContainerImage.fromRegistry('lunasec/lunatrace-frontend:v0.0.3'),
+      containerName: 'LunaTraceFrontendContainer',
+      portMappings: [{ containerPort: 80 }],
+      logging: LogDriver.awsLogs({
+        streamPrefix: 'lunatrace-frontend',
+      }),
+      healthCheck: {
+        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost || exit 1'],
+      },
+    });
+
     const oathkeeper = taskDef.addContainer('OathkeeperContainer', {
-      image: ContainerImage.fromRegistry('lunasec/lunatrace-ory:v0.0.4'),
+      containerName: 'OathkeeperContainer',
+      cpu: 256,
+      memoryLimitMiB: 512,
+      image: ContainerImage.fromRegistry('lunasec/lunatrace-ory:v0.0.5'),
       portMappings: [{ containerPort: 4455 }],
       logging: LogDriver.awsLogs({
         streamPrefix: 'lunatrace-oathkeeper',
       }),
       command: ['--config', '/config.yaml', 'serve'],
       environment: {
-        SERVE_PROXY_PORT: '4455',
-        MUTATORS_ID_TOKEN_CONFIG_ISSUER_URL: 'http://oathkeeper/',
-        ACCESS_RULES_REPOSITORIES: oryConfigBucket.s3UrlForObject('oathkeeper/rules.yaml'),
         MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: oryConfigBucket.s3UrlForObject('oathkeeper/jwks.json'),
+        ACCESS_RULES_REPOSITORIES: 'file://rules.yaml',
       },
       healthCheck: {
-        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4456/health/alive || exit 1'],
+        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4456/health/ready || exit 1'],
+      },
+    });
+
+    const kratos = taskDef.addContainer('KratosContainer', {
+      cpu: 256,
+      memoryLimitMiB: 512,
+      image: ContainerImage.fromRegistry('lunasec/lunatrace-kratos:v0.0.3'),
+      portMappings: [{ containerPort: 4433 }],
+      logging: LogDriver.awsLogs({
+        streamPrefix: 'lunatrace-kratos',
+      }),
+      command: ['--config', '/config.yaml', 'serve'],
+      environment: {
+        LOG_LEVEL: 'debug',
+      },
+      secrets: {
+        DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      },
+      healthCheck: {
+        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4434/health/ready || exit 1'],
       },
     });
 
     const backend = taskDef.addContainer('BackendContainer', {
-      image: ContainerImage.fromRegistry('lunasec/lunatrace-backend:v0.0.1'),
+      cpu: 256,
+      memoryLimitMiB: 512,
+      image: ContainerImage.fromRegistry('lunasec/lunatrace-backend:v0.0.2'),
       containerName: 'LunaTraceBackendContainer',
       portMappings: [{ containerPort: 8000 }],
       logging: LogDriver.awsLogs({
@@ -166,6 +205,9 @@ export class LunatraceBackendStack extends cdk.Stack {
       environment: {
         S3_BUCKET_NAME: bucket.bucketName,
         PORT: '8000',
+      },
+      healthCheck: {
+        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:8000/health || exit 1'],
       },
     });
 
@@ -176,6 +218,8 @@ export class LunatraceBackendStack extends cdk.Stack {
     };
 
     const hasura = taskDef.addContainer('HasuraContainer', {
+      cpu: 256,
+      memoryLimitMiB: 512,
       image: ContainerImage.fromRegistry('hasura/graphql-engine:v2.2.0'),
       portMappings: [{ containerPort: 8080 }],
       logging: LogDriver.awsLogs({
@@ -192,6 +236,9 @@ export class LunatraceBackendStack extends cdk.Stack {
         HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
         HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
       },
+      // healthCheck: {
+      //   command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1'],
+      // },
     });
 
     hasura.addContainerDependencies({
@@ -204,9 +251,18 @@ export class LunatraceBackendStack extends cdk.Stack {
       condition: ContainerDependencyCondition.HEALTHY,
     });
 
+    frontend.addContainerDependencies({
+      container: oathkeeper,
+      condition: ContainerDependencyCondition.HEALTHY,
+    });
+
+    kratos.addContainerDependencies({
+      container: oathkeeper,
+      condition: ContainerDependencyCondition.HEALTHY,
+    });
+
     const loadBalancedFargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, 'Service', {
       vpc: vpc,
-      cpu: 1024,
       certificate,
       domainZone,
       publicLoadBalancer: true,
@@ -218,10 +274,28 @@ export class LunatraceBackendStack extends cdk.Stack {
       securityGroups: [vpcDbSecurityGroup],
     });
 
-    loadBalancedFargateService.targetGroup.healthCheck = {
+    loadBalancedFargateService.listener.addTargets('LunaTraceApiTargets', {
+      priority: 10,
+      conditions: [ListenerCondition.pathPatterns(['/health', '/api/*', '/v1/graphql'])],
+      protocol: ApplicationProtocol.HTTP,
+      port: 4455,
+      targets: [
+        loadBalancedFargateService.service.loadBalancerTarget({
+          containerPort: 4455,
+          containerName: oathkeeper.containerName,
+        }),
+      ],
+      healthCheck: {
+        enabled: true,
+        path: '/api/health',
+        port: '4455',
+      },
+    });
+
+    loadBalancedFargateService.targetGroup.configureHealthCheck({
       enabled: true,
       path: '/health',
-    };
+    });
 
     bucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
     oryConfigBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
