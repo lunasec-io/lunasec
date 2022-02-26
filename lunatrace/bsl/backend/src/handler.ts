@@ -18,12 +18,12 @@ type LambdaEnvironment = 'stubbed' | 'localstack' | 'prod';
 
 const lambdaEnv: LambdaEnvironment = (process.env.LAMBDA_ENV as LambdaEnvironment) || 'stubbed';
 
-const sbomEtlActions = ['uploadSbom', 'scanSbom'] as const;
+const sbomEtlActions = ['generateSbom', 'scanSbom'] as const;
 type SbomEtlActionTuple = typeof sbomEtlActions;
 type SbomEtlAction = SbomEtlActionTuple[number];
 
 const queueUrlForAction: Record<SbomEtlAction, string> = {
-  uploadSbom: process.env.UPLOAD_SBOM_SQS_QUEUE || '',
+  generateSbom: process.env.GENERATE_SBOM_SQS_QUEUE || '',
   scanSbom: process.env.SCAN_SBOM_SQS_QUEUE || '',
 };
 
@@ -31,8 +31,8 @@ interface SbomEtlMessage {
   action: SbomEtlAction;
 }
 
-interface SbomEtlMessageUpload extends SbomEtlMessage {
-  action: 'uploadSbom';
+interface SbomEtlMessageGenerate extends SbomEtlMessage {
+  action: 'generateSbom';
   projectId: string;
 }
 
@@ -41,7 +41,7 @@ interface SbomEtlMessageScan extends SbomEtlMessage {
   sbomUrl: string;
 }
 
-function handleUploadSbom(msg: SbomEtlMessageUpload) {
+function handleUploadSbom(msg: SbomEtlMessageGenerate) {
   // TODO: handle sbom upload
   console.log(`hello from handleUploadSbom: ${msg.projectId}`);
   return;
@@ -55,8 +55,8 @@ function handleScanSbom(msg: SbomEtlMessageScan) {
 
 // eslint-disable-next-line @typescript-eslint/require-await
 async function processMessage(record: DequeuedMessage): Promise<void> {
-  if (record.message.action === 'uploadSbom') {
-    const msg: SbomEtlMessageUpload = record.message as SbomEtlMessageUpload;
+  if (record.message.action === 'generateSbom') {
+    const msg: SbomEtlMessageGenerate = record.message as SbomEtlMessageGenerate;
     return handleUploadSbom(msg);
   }
   if (record.message.action === 'scanSbom') {
