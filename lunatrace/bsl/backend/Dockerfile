@@ -1,5 +1,8 @@
 FROM node:16-slim
 
+RUN apt update
+RUN apt install -y wget
+
 RUN corepack enable
 
 COPY . /app
