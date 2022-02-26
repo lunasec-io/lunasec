@@ -17,13 +17,13 @@ import { Col, Row } from 'react-bootstrap';
 import { ProjectInfo } from './types';
 
 export interface ProjectHeaderProps {
-  project: ProjectInfo;
+  projectName: string;
 }
-export const ProjectHeader: React.FunctionComponent<ProjectHeaderProps> = ({ project }) => {
+export const ProjectHeader: React.FunctionComponent<ProjectHeaderProps> = ({ projectName }) => {
   return (
     <Row>
       <Col xs="12" style={{ textAlign: 'center' }}>
-        <h1>{project.name}</h1>
+        <h1>{projectName}</h1>
       </Col>
     </Row>
   );

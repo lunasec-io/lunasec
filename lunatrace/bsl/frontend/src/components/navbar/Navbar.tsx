@@ -24,33 +24,6 @@ import NavbarDropdownItem from './NavbarDropdownItem';
 import { ProjectSearch } from './NavbarProjectSearch';
 import NavbarUser from './NavbarUser';
 
-const notifications = [
-  {
-    type: 'important',
-    title: 'Update completed',
-    description: 'Restart server 12 to complete the update.',
-    time: '2h ago',
-  },
-  {
-    type: 'default',
-    title: 'Lorem ipsum',
-    description: 'Aliquam ex eros, imperdiet vulputate hendrerit et.',
-    time: '6h ago',
-  },
-  {
-    type: 'login',
-    title: 'Login from 192.186.1.1',
-    description: '',
-    time: '6h ago',
-  },
-  {
-    type: 'request',
-    title: 'New connection',
-    description: 'Anna accepted your request.',
-    time: '12h ago',
-  },
-];
-
 const NavbarComponent = () => {
   // const { t } = useTranslation();
   const { isOpen, setIsOpen } = useSidebar();
@@ -104,38 +77,7 @@ const NavbarComponent = () => {
             style="border"
             size="sm"
           />
-          <NavbarDropdown
-            header="New Notifications"
-            footer="Show all notifications"
-            icon={BellOff}
-            count={notifications.length}
-          >
-            {notifications.map((item, key) => {
-              let icon = <Bell size={18} className="text-warning" />;
 
-              if (item.type === 'important') {
-                icon = <AlertCircle size={18} className="text-danger" />;
-              }
-
-              if (item.type === 'login') {
-                icon = <Home size={18} className="text-primary" />;
-              }
-
-              if (item.type === 'request') {
-                icon = <UserPlus size={18} className="text-success" />;
-              }
-
-              return (
-                <NavbarDropdownItem
-                  key={key}
-                  icon={icon}
-                  title={item.title}
-                  description={item.description}
-                  time={item.time}
-                />
-              );
-            })}
-          </NavbarDropdown>
           {/*<NavbarLanguages />*/}
           <NavbarUser />
         </Nav>

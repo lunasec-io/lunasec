@@ -1,11 +1,11 @@
 overwrite: true
 schema: schema.graphql
-documents: "src/store/api/graphql/**/*.graphql"
+documents: "src/api/graphql/**/*.graphql"
 generates:
-  ./src/store/api/generated.ts:
+  ./src/api/generated.ts:
     plugins:
       - "typescript"
       - "typescript-operations"
       - "typescript-rtk-query":
-          importBaseApiFrom: '../baseApi'
-          exportHooks: true
+          importBaseApiFrom: './baseApi'
+          exportHooks: false

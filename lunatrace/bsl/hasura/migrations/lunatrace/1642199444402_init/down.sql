@@ -10,33 +10,26 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 DROP TABLE
-    public.manifests
-    ,public.findings
+    public.manifests ,public.findings
     ,public.vulnerability_packages
-,public.vulnerabilities
-,public.users
-,public.settings
-,public.scans
-,public.related_vulnerabilities
-,public.projects
-,public.package_versions
-,public.organizations
-,public.organization_user
-,public.builds
-,public.instances
-,public.project_access_tokens
+    ,public.vulnerabilities
+    ,public.settings
+    ,public.scans
+    ,public.related_vulnerabilities
+    ,public.projects
+    ,public.package_versions
+    ,public.organizations
+    ,public.organization_user
+    ,public.builds
+    ,public.instances
+    ,public.project_access_tokens
+    CASCADE;
 
-CASCADE;
-
-DROP
-FUNCTION public.set_current_timestamp_updated_at();
-DROP
-TYPE public.severity_enum;
-DROP
-FUNCTION public.make_project_sequence_for_build();
-DROP
-FUNCTION public.fill_in_build_number();
-DROP
-FUNCTION public.make_scans_seq_for_build();
-DROP
-FUNCTION public.fill_in_scan_number();
+DROP FUNCTION public.set_current_timestamp_updated_at();
+DROP TYPE public.severity_enum;
+DROP TYPE public.fix_state_enum;
+DROP TYPE public.organization_user_role;
+DROP FUNCTION public.make_project_sequence_for_build();
+DROP FUNCTION public.fill_in_build_number();
+DROP FUNCTION public.make_scans_seq_for_build();
+DROP FUNCTION public.fill_in_scan_number();

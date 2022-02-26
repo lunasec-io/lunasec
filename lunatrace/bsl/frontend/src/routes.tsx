@@ -16,6 +16,7 @@ import { RouteObject } from 'react-router';
 
 import MainLayout from './layouts/Main';
 import { Account, Login, OrganizationsList, Registration, VulnerabilitiesMain } from './pages';
+import { ProjectCreate } from './pages/project/Create';
 import { ProjectMain } from './pages/project/Main';
 import { BuildDetails } from './pages/project/builds/BuildDetails';
 import { Builds } from './pages/project/builds/Builds';
@@ -78,6 +79,10 @@ export const routes: RouteObject[] = [
             // element: <Organization />,
           },
         ],
+      },
+      {
+        path: 'project/create', //maybe this should be under a project group...not sure
+        element: <ProjectCreate />,
       },
       {
         path: 'project/:project_id',

@@ -34,6 +34,19 @@ array_relationships:
       table:
         name: project_access_tokens
         schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      organization:
+        organization_users:
+          user_id:
+            _eq: X-Hasura-User-Id
+    columns:
+    - name
+    - organization_id
+    - repo
+  role: user
 select_permissions:
 - permission:
     columns:

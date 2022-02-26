@@ -1,0 +1,5 @@
+mutation InsertProject($name: String!, $organization_id: uuid!) {
+    insert_projects_one(object: {name: $name, organization_id: $organization_id}) {
+        id
+    }
+}

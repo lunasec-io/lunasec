@@ -16,7 +16,7 @@ import { Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import validate from 'validator';
 
-import { PreSignedUrlGenerator } from './pre-signed-url-generator';
+import { AwsUtils } from '../utils/aws-utils';
 
 interface ErrorResponse {
   error: true;
@@ -85,17 +85,17 @@ export async function generatePresignedUrl(req: Request, res: Response) {
     return generateErrorResponse(res, parsedRequest.message);
   }
 
-  const preSignedUrlGenerator = new PreSignedUrlGenerator({
+  const aws = new AwsUtils({
     awsCredentials: defaultProvider(),
     awsRegion: region,
-    s3Bucket: bucket,
   });
 
   const today = new Date();
   const recordId: string = uuid();
 
   try {
-    const result = await preSignedUrlGenerator.generatePresignedS3Url(
+    const result = await aws.generatePresignedS3Url(
+      bucket,
       `${encodeURIComponent(
         parsedRequest.orgId
       )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURIComponent(
