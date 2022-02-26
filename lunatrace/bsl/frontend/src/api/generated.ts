@@ -2384,7 +2384,6 @@ export enum Order_By {
  *
  *
  * columns and relationships of "organization_user"
- *
  */
 export type Organization_User = {
   __typename?: 'organization_user';
@@ -3972,7 +3971,6 @@ export type Query_RootVulnerability_Packages_By_PkArgs = {
  *
  *
  * columns and relationships of "related_vulnerabilities"
- *
  */
 export type Related_Vulnerabilities = {
   __typename?: 'related_vulnerabilities';
@@ -4147,7 +4145,6 @@ export enum Related_Vulnerabilities_Update_Column {
  *
  *
  * columns and relationships of "scans"
- *
  */
 export type Scans = {
   __typename?: 'scans';
@@ -4175,7 +4172,6 @@ export type Scans = {
  *
  *
  * columns and relationships of "scans"
- *
  */
 export type ScansFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -4191,7 +4187,6 @@ export type ScansFindingsArgs = {
  *
  *
  * columns and relationships of "scans"
- *
  */
 export type ScansFindings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -5628,7 +5623,6 @@ export type Vulnerabilities_Variance_Fields = {
  *
  *
  * columns and relationships of "vulnerability_packages"
- *
  */
 export type Vulnerability_Packages = {
   __typename?: 'vulnerability_packages';
@@ -5655,7 +5649,6 @@ export type Vulnerability_Packages = {
  *
  *
  * columns and relationships of "vulnerability_packages"
- *
  */
 export type Vulnerability_PackagesFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -5671,7 +5664,6 @@ export type Vulnerability_PackagesFindingsArgs = {
  *
  *
  * columns and relationships of "vulnerability_packages"
- *
  */
 export type Vulnerability_PackagesFindings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -5687,7 +5679,6 @@ export type Vulnerability_PackagesFindings_AggregateArgs = {
  *
  *
  * columns and relationships of "vulnerability_packages"
- *
  */
 export type Vulnerability_PackagesPackage_VersionsArgs = {
   distinct_on?: InputMaybe<Array<Package_Versions_Select_Column>>;
@@ -5703,7 +5694,6 @@ export type Vulnerability_PackagesPackage_VersionsArgs = {
  *
  *
  * columns and relationships of "vulnerability_packages"
- *
  */
 export type Vulnerability_PackagesPackage_Versions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Package_Versions_Select_Column>>;

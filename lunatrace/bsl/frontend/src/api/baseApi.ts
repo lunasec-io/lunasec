@@ -16,7 +16,7 @@ import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
 import { GraphQLClient } from 'graphql-request';
 
 // This is the base API that is consumed by the graphql codegen
-export const client = new GraphQLClient('http://localhost:4455/v1/graphql');
+export const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_API || 'http://localhost:4455/v1/graphql');
 // highlight-start
 export const api = createApi({
   baseQuery: graphqlRequestBaseQuery({ client }),

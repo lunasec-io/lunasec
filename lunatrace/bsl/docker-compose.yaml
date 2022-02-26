@@ -4,7 +4,9 @@ services:
 #    build: ./frontend
 #    ports:
 #      - "8000:80"
-  # RUNNING OATHKEEPER MANUALLY ON HOST FOR NOW
+#    healthcheck:
+#      timeout: 10s
+#      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost || exit 1']
 #  oathkeeper:
 #    build: ./ory/oathkeeper
 #    ports:
@@ -18,13 +20,15 @@ services:
 #      - "./ory/oathkeeper:/config"
 #    extra_hosts:
 #      - "host.docker.internal:host-gateway"
-#
 #  backend:
 #    build: ./backend
 #    environment:
 #      AWS_DEFAULT_REGION: us-west-2
 #    ports:
 #      - "3002:80"
+#    healthcheck:
+#      timeout: 10s
+#      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost/health || exit 1']
 
   # kratos -c ory/kratos/config.yaml migrate sql -e --yes
   kratos:
@@ -36,11 +40,11 @@ services:
     environment:
       - DSN=postgres://postgres:postgrespassword@postgres:5432/lunatrace
       - LOG_LEVEL=trace
-    command: serve -c /etc/config/kratos/config.yaml --dev --watch-courier
+    command: serve -c /config/config.yaml --dev --watch-courier
     volumes:
-      - type: bind
-        source: ./ory/kratos/
-        target: /etc/config/kratos
+      - ./ory/kratos:/config
+    healthcheck:
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4434/health/ready || exit 1']
   postgres:
     image: postgres:12
     restart: always
@@ -56,7 +60,6 @@ services:
     - "8080:8080"
     depends_on:
     - "postgres"
-    - "oathkeeper"
     restart: always
     environment:
       ## postgres database to store Hasura metadata
