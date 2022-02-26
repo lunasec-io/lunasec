@@ -18,12 +18,12 @@ import { Option } from 'react-bootstrap-typeahead/types/types';
 import { Search } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 
-import { GetSidebarInfoQuery, useGetSidebarInfoQuery } from '../../store/api/generated';
-
+import api from '../../api';
+import { GetSidebarInfoQuery } from '../../api/generated';
 export const ProjectSearch: React.FunctionComponent = () => {
   const navigate = useNavigate();
   // Just reuse the same query from the sidebar despite the overfetch, because it will be cached
-  const { data, error, isLoading } = useGetSidebarInfoQuery();
+  const { data } = api.useGetSidebarInfoQuery();
 
   const handleProjectSelected = (options: Option[]) => {
     const selected = options[0] as GetSidebarInfoQuery['projects'][number] | undefined;

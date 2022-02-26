@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { SearchVulnerabilitiesQuery } from '../../store/api/generated';
+import { SearchVulnerabilitiesQuery } from '../../api/generated';
 
 export type VulnInfo = SearchVulnerabilitiesQuery['vulnerabilities'][number];
 

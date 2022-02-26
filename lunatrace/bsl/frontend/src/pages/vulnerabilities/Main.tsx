@@ -15,7 +15,8 @@ import React, { useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 
-import { Order_By, useSearchVulnerabilitiesQuery } from '../../store/api/generated';
+import api from '../../api';
+import { Order_By } from '../../api/generated';
 
 import { VulnerabilitiesControls } from './Controls';
 import { VulnerabilitiesList } from './List';
@@ -48,7 +49,7 @@ export const VulnerabilitiesMain: React.FunctionComponent = () => {
   const [orderBy, setOrderBy] = useState<Order>('none');
 
   // RUN SEARCH QUERY
-  const { data, error, isFetching } = useSearchVulnerabilitiesQuery({
+  const { data, error, isFetching } = api.useSearchVulnerabilitiesQuery({
     search: postgresSearch,
     namespace: postgresFilter,
     order_by: postgresOrderMap[orderBy],

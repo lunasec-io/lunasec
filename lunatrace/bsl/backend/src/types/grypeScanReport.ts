@@ -228,7 +228,9 @@ export interface Source {
 // and asserts the results of JSON.parse at runtime
 export class Convert {
   public static toScanReport(json: string): GrypeScanReport {
-    return cast(JSON.parse(json), r('ScanReport'));
+      // disable all type reflection/checking for now as it is too fragile
+    //return cast(JSON.parse(json), r('ScanReport'));
+      return JSON.parse(json) as GrypeScanReport;
   }
 
   public static scanReportToJson(value: GrypeScanReport): string {

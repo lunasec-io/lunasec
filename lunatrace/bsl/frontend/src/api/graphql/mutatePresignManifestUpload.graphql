@@ -3,7 +3,11 @@ mutation presignManifestUrl($project_id: String!) {
         project_id: $project_id
     ) {
     url
-        headers
+    headers
+    key
+    bucket
+    error
+    error_message
 }
 
 }

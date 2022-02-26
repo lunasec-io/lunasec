@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { api } from '../baseApi';
+import { api } from './baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -29,6 +29,7 @@ export type Scalars = {
   fix_state_enum: any;
   jsonb: any;
   numeric: any;
+  organization_user_role: any;
   severity_enum: any;
   timestamp: any;
   timestamptz: any;
@@ -63,7 +64,11 @@ export type Int_Comparison_Exp = {
 
 export type PresignedUrlResponse = {
   __typename?: 'PresignedUrlResponse';
+  bucket: Scalars['String'];
+  error: Scalars['Boolean'];
+  error_message?: Maybe<Scalars['String']>;
   headers: Scalars['String'];
+  key: Scalars['String'];
   url: Scalars['String'];
 };
 
@@ -77,6 +82,13 @@ export type SbomUploadUrlOutput = {
   error: Scalars['Boolean'];
   headers: Scalars['String'];
   url: Scalars['String'];
+};
+
+export type ScanManifestOutput = {
+  __typename?: 'ScanManifestOutput';
+  build_id: Scalars['String'];
+  error: Scalars['Boolean'];
+  error_message?: Maybe<Scalars['String']>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -1645,6 +1657,8 @@ export type Mutation_Root = {
   insert_vulnerability_packages_one?: Maybe<Vulnerability_Packages>;
   /** get s3 presigned url for manifest upload */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
+  /** This performs the manifest sbom generation and creates the first build from the manifest */
+  scanManifest?: Maybe<ScanManifestOutput>;
   /** update data of the table: "builds" */
   update_builds?: Maybe<Builds_Mutation_Response>;
   /** update single row of the table: "builds" */
@@ -2105,6 +2119,13 @@ export type Mutation_RootPresignManifestUploadArgs = {
 
 
 /** mutation root */
+export type Mutation_RootScanManifestArgs = {
+  bucket: Scalars['String'];
+  key: Scalars['String'];
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_BuildsArgs = {
   _inc?: InputMaybe<Builds_Inc_Input>;
   _set?: InputMaybe<Builds_Set_Input>;
@@ -2371,6 +2392,7 @@ export type Organization_User = {
   /** An object relationship */
   organization: Organizations;
   organization_id: Scalars['uuid'];
+  role: Scalars['organization_user_role'];
   updated_at: Scalars['timestamptz'];
   /** An object relationship */
   user: Identities;
@@ -2422,6 +2444,7 @@ export type Organization_User_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   organization?: InputMaybe<Organizations_Bool_Exp>;
   organization_id?: InputMaybe<Uuid_Comparison_Exp>;
+  role?: InputMaybe<Organization_User_Role_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   user?: InputMaybe<Identities_Bool_Exp>;
   user_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -2439,6 +2462,7 @@ export type Organization_User_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   organization?: InputMaybe<Organizations_Obj_Rel_Insert_Input>;
   organization_id?: InputMaybe<Scalars['uuid']>;
+  role?: InputMaybe<Scalars['organization_user_role']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
   user?: InputMaybe<Identities_Obj_Rel_Insert_Input>;
   user_id?: InputMaybe<Scalars['uuid']>;
@@ -2504,6 +2528,7 @@ export type Organization_User_Order_By = {
   id?: InputMaybe<Order_By>;
   organization?: InputMaybe<Organizations_Order_By>;
   organization_id?: InputMaybe<Order_By>;
+  role?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
   user?: InputMaybe<Identities_Order_By>;
   user_id?: InputMaybe<Order_By>;
@@ -2512,6 +2537,19 @@ export type Organization_User_Order_By = {
 /** primary key columns input for table: organization_user */
 export type Organization_User_Pk_Columns_Input = {
   id: Scalars['uuid'];
+};
+
+/** Boolean expression to compare columns of type "organization_user_role". All fields are combined with logical 'AND'. */
+export type Organization_User_Role_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['organization_user_role']>;
+  _gt?: InputMaybe<Scalars['organization_user_role']>;
+  _gte?: InputMaybe<Scalars['organization_user_role']>;
+  _in?: InputMaybe<Array<Scalars['organization_user_role']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['organization_user_role']>;
+  _lte?: InputMaybe<Scalars['organization_user_role']>;
+  _neq?: InputMaybe<Scalars['organization_user_role']>;
+  _nin?: InputMaybe<Array<Scalars['organization_user_role']>>;
 };
 
 /** select columns of table "organization_user" */
@@ -2523,6 +2561,8 @@ export enum Organization_User_Select_Column {
   /** column name */
   OrganizationId = 'organization_id',
   /** column name */
+  Role = 'role',
+  /** column name */
   UpdatedAt = 'updated_at',
   /** column name */
   UserId = 'user_id'
@@ -2533,6 +2573,7 @@ export type Organization_User_Set_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
   organization_id?: InputMaybe<Scalars['uuid']>;
+  role?: InputMaybe<Scalars['organization_user_role']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
   user_id?: InputMaybe<Scalars['uuid']>;
 };
@@ -2546,6 +2587,8 @@ export enum Organization_User_Update_Column {
   /** column name */
   OrganizationId = 'organization_id',
   /** column name */
+  Role = 'role',
+  /** column name */
   UpdatedAt = 'updated_at',
   /** column name */
   UserId = 'user_id'
@@ -2555,6 +2598,7 @@ export enum Organization_User_Update_Column {
 export type Organizations = {
   __typename?: 'organizations';
   createdAt: Scalars['timestamp'];
+  creator_id?: Maybe<Scalars['uuid']>;
   id: Scalars['uuid'];
   name: Scalars['String'];
   /** An array relationship */
@@ -2636,6 +2680,7 @@ export type Organizations_Bool_Exp = {
   _not?: InputMaybe<Organizations_Bool_Exp>;
   _or?: InputMaybe<Array<Organizations_Bool_Exp>>;
   createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
+  creator_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   organization_users?: InputMaybe<Organization_User_Bool_Exp>;
@@ -2652,6 +2697,7 @@ export enum Organizations_Constraint {
 /** input type for inserting data into table "organizations" */
 export type Organizations_Insert_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
+  creator_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
   name?: InputMaybe<Scalars['String']>;
   organization_users?: InputMaybe<Organization_User_Arr_Rel_Insert_Input>;
@@ -2663,6 +2709,7 @@ export type Organizations_Insert_Input = {
 export type Organizations_Max_Fields = {
   __typename?: 'organizations_max_fields';
   createdAt?: Maybe<Scalars['timestamp']>;
+  creator_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
   name?: Maybe<Scalars['String']>;
   settings_id?: Maybe<Scalars['uuid']>;
@@ -2672,6 +2719,7 @@ export type Organizations_Max_Fields = {
 export type Organizations_Min_Fields = {
   __typename?: 'organizations_min_fields';
   createdAt?: Maybe<Scalars['timestamp']>;
+  creator_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
   name?: Maybe<Scalars['String']>;
   settings_id?: Maybe<Scalars['uuid']>;
@@ -2703,6 +2751,7 @@ export type Organizations_On_Conflict = {
 /** Ordering options when selecting data from "organizations". */
 export type Organizations_Order_By = {
   createdAt?: InputMaybe<Order_By>;
+  creator_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
@@ -2720,6 +2769,8 @@ export enum Organizations_Select_Column {
   /** column name */
   CreatedAt = 'createdAt',
   /** column name */
+  CreatorId = 'creator_id',
+  /** column name */
   Id = 'id',
   /** column name */
   Name = 'name',
@@ -2730,6 +2781,7 @@ export enum Organizations_Select_Column {
 /** input type for updating data in table "organizations" */
 export type Organizations_Set_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
+  creator_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
   name?: InputMaybe<Scalars['String']>;
   settings_id?: InputMaybe<Scalars['uuid']>;
@@ -2739,6 +2791,8 @@ export type Organizations_Set_Input = {
 export enum Organizations_Update_Column {
   /** column name */
   CreatedAt = 'createdAt',
+  /** column name */
+  CreatorId = 'creator_id',
   /** column name */
   Id = 'id',
   /** column name */
@@ -5879,17 +5933,36 @@ export type InsertManifestMutationVariables = Exact<{
   s3_url: Scalars['String'];
   project_id: Scalars['uuid'];
   filename: Scalars['String'];
+  bucket: Scalars['String'];
+  key: Scalars['String'];
 }>;
 
 
-export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null };
+export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null, scanManifest?: { __typename?: 'ScanManifestOutput', build_id: string, error: boolean, error_message?: string | null } | null };
+
+export type CreateOrganizationAndProjectMutationVariables = Exact<{
+  identity_id: Scalars['uuid'];
+  organization_name: Scalars['String'];
+  project_name: Scalars['String'];
+}>;
+
+
+export type CreateOrganizationAndProjectMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', projects: Array<{ __typename?: 'projects', id: any }> } | null };
+
+export type InsertProjectMutationVariables = Exact<{
+  name: Scalars['String'];
+  organization_id: Scalars['uuid'];
+}>;
+
+
+export type InsertProjectMutation = { __typename?: 'mutation_root', insert_projects_one?: { __typename?: 'projects', id: any } | null };
 
 export type PresignManifestUrlMutationVariables = Exact<{
   project_id: Scalars['String'];
 }>;
 
 
-export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string } | null };
+export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string, key: string, bucket: string, error: boolean, error_message?: string | null } | null };
 
 
 export const GetBuildDetailsDocument = `
@@ -6121,10 +6194,33 @@ export const GetVulnerabilityDetailsDocument = `
 }
     `;
 export const InsertManifestDocument = `
-    mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!) {
+    mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!, $bucket: String!, $key: String!) {
   insert_manifests_one(
     object: {filename: $filename, s3_url: $s3_url, project_id: $project_id}
   ) {
+    id
+  }
+  scanManifest(bucket: $bucket, key: $key) {
+    build_id
+    error
+    error_message
+  }
+}
+    `;
+export const CreateOrganizationAndProjectDocument = `
+    mutation CreateOrganizationAndProject($identity_id: uuid!, $organization_name: String!, $project_name: String!) {
+  insert_organizations_one(
+    object: {name: $organization_name, organization_users: {data: {user_id: $identity_id}}, projects: {data: {name: $project_name}}}
+  ) {
+    projects {
+      id
+    }
+  }
+}
+    `;
+export const InsertProjectDocument = `
+    mutation InsertProject($name: String!, $organization_id: uuid!) {
+  insert_projects_one(object: {name: $name, organization_id: $organization_id}) {
     id
   }
 }
@@ -6134,6 +6230,10 @@ export const PresignManifestUrlDocument = `
   presignManifestUpload(project_id: $project_id) {
     url
     headers
+    key
+    bucket
+    error
+    error_message
   }
 }
     `;
@@ -6161,6 +6261,12 @@ const injectedRtkApi = api.injectEndpoints({
     insertManifest: build.mutation<InsertManifestMutation, InsertManifestMutationVariables>({
       query: (variables) => ({ document: InsertManifestDocument, variables })
     }),
+    CreateOrganizationAndProject: build.mutation<CreateOrganizationAndProjectMutation, CreateOrganizationAndProjectMutationVariables>({
+      query: (variables) => ({ document: CreateOrganizationAndProjectDocument, variables })
+    }),
+    InsertProject: build.mutation<InsertProjectMutation, InsertProjectMutationVariables>({
+      query: (variables) => ({ document: InsertProjectDocument, variables })
+    }),
     presignManifestUrl: build.mutation<PresignManifestUrlMutation, PresignManifestUrlMutationVariables>({
       query: (variables) => ({ document: PresignManifestUrlDocument, variables })
     }),
@@ -6168,5 +6274,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery, useGetVulnerabilityDetailsQuery, useLazyGetVulnerabilityDetailsQuery, useInsertManifestMutation, usePresignManifestUrlMutation } = injectedRtkApi;
+
 

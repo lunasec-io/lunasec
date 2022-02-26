@@ -11,10 +11,13 @@
  * limitations under the License.
  *
  */
+
 import { AxiosError } from 'axios';
 import React, { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
+import api from '../api';
+import { AlertsHeader } from '../components/AlertsHeader';
 import Wrapper from '../components/Wrapper';
 import Navbar from '../components/navbar/Navbar';
 import { NavbarBreadcrumbs } from '../components/navbar/NavbarBreadcrumbs';
@@ -22,7 +25,6 @@ import Sidebar from '../components/sidebar/Sidebar';
 import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import useAppDispatch from '../hooks/useAppDispatch';
 import useAppSelector from '../hooks/useAppSelector';
-import { useGetSidebarInfoQuery } from '../store/api/generated';
 import { logout, selectIsAuthenticated, setSession } from '../store/slices/authentication';
 import ory from '../utils/sdk';
 
@@ -30,7 +32,7 @@ const MainLayout: React.FunctionComponent = (props) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-
+  // TODO move this somewhere more else
   useEffect(() => {
     ory
       .toSession()
@@ -56,18 +58,18 @@ const MainLayout: React.FunctionComponent = (props) => {
       });
   }, []);
 
-  const doLogout = () => dispatch(logout(navigate));
+  const doLogout = () => void dispatch(logout(navigate));
 
-  const { data, error, isLoading } = useGetSidebarInfoQuery();
+  const { data } = api.useGetSidebarInfoQuery();
 
-  console.log('loading main layout with children ', props);
   return (
     <React.Fragment>
       <Wrapper>
-        <Sidebar sections={generateSidebarItems(data, isAuthenticated, doLogout)} />
+        <Sidebar sections={generateSidebarItems(data, isAuthenticated)} />
         <div className="main">
           <Navbar />
           <NavbarBreadcrumbs />
+          <AlertsHeader />
 
           <div className="content">
             <Outlet />

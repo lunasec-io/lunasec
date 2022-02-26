@@ -11,8 +11,8 @@
  * limitations under the License.
  *
  */
+import React from 'react';
 import { Icon } from 'react-feather';
-
 /* Can either be a link or a subsection with child links*/
 // export interface SidebarItem {
 //   href: string;
@@ -26,7 +26,8 @@ export interface SidebarLink {
   href: string;
   title: string;
   icon?: Icon;
-  badge?: string;
+  badge?: string | React.ReactNode;
+  customElement?: React.ReactNode;
   onClick?: () => void;
 }
 
