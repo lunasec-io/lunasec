@@ -13,7 +13,7 @@
  */
 import { TextInput } from '@ory/themes';
 import React from 'react';
-import { Form } from 'react-bootstrap';
+import { FloatingLabel, Form } from 'react-bootstrap';
 
 import { NodeInputProps } from './helpers';
 
@@ -65,21 +65,23 @@ export function NodeInputDefault<T>(props: NodeInputProps) {
   // Render a generic text input field.
   return (
     <Form.Group className="mb-3">
-      <Form.Label>{node.meta.label?.text}</Form.Label>
-      <Form.Control
-        title={node.meta.label?.text}
-        className={'ory-input'}
-        onClick={onClick}
-        onChange={(e) => {
-          void setValue(e.target.value);
-        }}
-        type={attributes.type}
-        name={attributes.name}
-        value={value}
-        disabled={attributes.disabled || disabled}
-        required={attributes.required}
-        // help={node.messages.length > 0}
-      />
+      {/*<Form.Label>{node.meta.label?.text}</Form.Label>*/}
+      <FloatingLabel controlId="floatingInput" label={node.meta.label?.text} className="mb-3">
+        <Form.Control
+          title={node.meta.label?.text}
+          className={'ory-input'}
+          onClick={onClick}
+          onChange={(e) => {
+            void setValue(e.target.value);
+          }}
+          type={attributes.type}
+          name={attributes.name}
+          value={value}
+          disabled={attributes.disabled || disabled}
+          required={attributes.required}
+          // help={node.messages.length > 0}
+        />
+      </FloatingLabel>
       {subtitle ? <Form.Text className="text-muted">{subtitle}</Form.Text> : null}
     </Form.Group>
   );
