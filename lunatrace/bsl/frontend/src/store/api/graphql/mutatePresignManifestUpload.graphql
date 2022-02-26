@@ -1,9 +1,0 @@
-mutation presignManifestUrl($project_id: String!) {
-    presignManifestUpload(
-        project_id: $project_id
-    ) {
-    url
-        headers
-}
-
-}

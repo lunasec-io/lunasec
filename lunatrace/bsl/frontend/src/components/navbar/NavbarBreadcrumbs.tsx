@@ -21,11 +21,8 @@ import useBreadCrumbs, {
   BreadcrumbsRoute,
 } from 'use-react-router-breadcrumbs';
 
-import {
-  GetSidebarInfoQuery,
-  useGetSidebarInfoQuery,
-  useGetVulnerabilityDetailsQuery,
-} from '../../store/api/generated';
+import api from '../../api/';
+import { GetSidebarInfoQuery } from '../../api/generated';
 
 type Project = GetSidebarInfoQuery['projects'][number];
 
@@ -42,7 +39,7 @@ const getCurrentProject = (projects: Project[], params: Params): Project | null 
 // These small little components can figure out how to display their own names, since the IDs from the URL are too ugly
 const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
   // Doing queries here is actually completely performant thanks to the cache system, no new queries will fire
-  const { data } = useGetSidebarInfoQuery();
+  const { data } = api.useGetSidebarInfoQuery();
   if (!data) {
     return null;
   }
@@ -62,7 +59,7 @@ const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCompon
 };
 
 const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
-  const { data } = useGetSidebarInfoQuery();
+  const { data } = api.useGetSidebarInfoQuery();
   if (!data) {
     return null;
   }
@@ -80,12 +77,12 @@ const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponen
   }
 
   const buildNumber = currentProject.builds.filter((b) => b.id === crumbProps.match.params.build_id)[0]?.build_number;
-  return <span># {buildNumber}</span>;
+  return <span>Build # {buildNumber}</span>;
 };
 
 const VulnBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
   const vulnerability_id = crumbProps.match.params.vulnerability_id;
-  const { data } = useGetVulnerabilityDetailsQuery({ vulnerability_id });
+  const { data } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id });
   if (!data) {
     return null;
   }
@@ -102,14 +99,20 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
   ];
   const breadCrumbs = useBreadCrumbs(customRoutes);
 
+  // Really wanted to use micromatch for this but it doesnt work in the browser, so it's regexp :(
+  const blackList = ['/project$', '/project/.*/build$'];
+
   return (
     <Breadcrumb className="breadcrumb-navigation">
-      {breadCrumbs.map((breadCrumbInfo) => {
+      {breadCrumbs.map((crumbMeta) => {
+        const isBanned = blackList.some((banned) => {
+          return crumbMeta.match.pathname.match(new RegExp(banned));
+        });
+        if (isBanned) return;
+
         return (
-          <LinkContainer key={breadCrumbInfo.key} to={breadCrumbInfo.match.pathname}>
-            <Breadcrumb.Item href={breadCrumbInfo.match.pathname} key={breadCrumbInfo.key}>
-              {breadCrumbInfo.breadcrumb}
-            </Breadcrumb.Item>
+          <LinkContainer key={crumbMeta.key} to={crumbMeta.match.pathname}>
+            <Breadcrumb.Item key={crumbMeta.key}>{crumbMeta.breadcrumb}</Breadcrumb.Item>
           </LinkContainer>
         );
       })}

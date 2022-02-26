@@ -14,7 +14,7 @@
 import React from 'react';
 import './App.css';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { Provider } from 'react-redux';
+import { Provider as StoreProvider } from 'react-redux';
 import { useRoutes } from 'react-router-dom';
 
 import { LayoutProvider } from './contexts/LayoutContext';
@@ -31,16 +31,21 @@ function App() {
         titleTemplate="%s | LunaTrace - Dependency Analysis and Live Tracking"
         defaultTitle="LunaTrace - Dependency Analysis and Live Tracking"
       />
-      <Provider store={store}>
+      <StoreProvider store={store}>
         <ThemeProvider>
           <SidebarProvider>
             <LayoutProvider>
+              {content}
               {/*<ChartJsDefaults />*/}
+
+              {/*<AuthProvider>*/}
+              {/*</AuthProvider>*/}
+
               {content}
             </LayoutProvider>
           </SidebarProvider>
         </ThemeProvider>
-      </Provider>
+      </StoreProvider>
     </HelmetProvider>
   );
 
