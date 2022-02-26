@@ -24,7 +24,7 @@ export const NodeAnchor = ({ attributes }: Props) => {
   return (
     <Button
       data-testid={`node/anchor/${attributes.id}`}
-      onClick={(e) => {
+      onClick={(e: any) => {
         e.stopPropagation();
         e.preventDefault();
         window.location.href = attributes.href;

@@ -23,8 +23,6 @@ errors:
         to: https://www.ory.sh/docs
 
 mutators:
-  header:
-    enabled: false
   noop:
     enabled: true
 
