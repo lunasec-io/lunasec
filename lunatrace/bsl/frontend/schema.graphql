@@ -44,7 +44,11 @@ input Int_comparison_exp {
 }
 
 type PresignedUrlResponse {
+  bucket: String!
+  error: Boolean!
+  error_message: String
   headers: String!
+  key: String!
   url: String!
 }
 
@@ -57,6 +61,12 @@ type SbomUploadUrlOutput {
   error: Boolean!
   headers: String!
   url: String!
+}
+
+type ScanManifestOutput {
+  build_id: String!
+  error: Boolean!
+  error_message: String
 }
 
 """
@@ -747,10 +757,10 @@ unique or primary key constraints on table "findings"
 """
 enum findings_constraint {
   """unique or primary key constraint"""
-  findings_dedupe_slug_key
+  findings_pkey
 
   """unique or primary key constraint"""
-  findings_pkey
+  temp_dedupe_fix
 }
 
 """
@@ -2286,6 +2296,11 @@ type mutation_root {
   presignManifestUpload(project_id: String!): PresignedUrlResponse
 
   """
+  This performs the manifest sbom generation and creates the first build from the manifest
+  """
+  scanManifest(bucket: String!, key: String!): ScanManifestOutput
+
+  """
   update data of the table: "builds"
   """
   update_builds(
@@ -2698,6 +2713,7 @@ type organization_user {
   """An object relationship"""
   organization: organizations!
   organization_id: uuid!
+  role: organization_user_role!
   updated_at: timestamptz!
 
   """An object relationship"""
@@ -2752,6 +2768,7 @@ input organization_user_bool_exp {
   id: uuid_comparison_exp
   organization: organizations_bool_exp
   organization_id: uuid_comparison_exp
+  role: organization_user_role_comparison_exp
   updated_at: timestamptz_comparison_exp
   user: identities_bool_exp
   user_id: uuid_comparison_exp
@@ -2773,6 +2790,7 @@ input organization_user_insert_input {
   id: uuid
   organization: organizations_obj_rel_insert_input
   organization_id: uuid
+  role: organization_user_role
   updated_at: timestamptz
   user: identities_obj_rel_insert_input
   user_id: uuid
@@ -2844,6 +2862,7 @@ input organization_user_order_by {
   id: order_by
   organization: organizations_order_by
   organization_id: order_by
+  role: order_by
   updated_at: order_by
   user: identities_order_by
   user_id: order_by
@@ -2852,6 +2871,23 @@ input organization_user_order_by {
 """primary key columns input for table: organization_user"""
 input organization_user_pk_columns_input {
   id: uuid!
+}
+
+scalar organization_user_role
+
+"""
+Boolean expression to compare columns of type "organization_user_role". All fields are combined with logical 'AND'.
+"""
+input organization_user_role_comparison_exp {
+  _eq: organization_user_role
+  _gt: organization_user_role
+  _gte: organization_user_role
+  _in: [organization_user_role!]
+  _is_null: Boolean
+  _lt: organization_user_role
+  _lte: organization_user_role
+  _neq: organization_user_role
+  _nin: [organization_user_role!]
 }
 
 """
@@ -2868,6 +2904,9 @@ enum organization_user_select_column {
   organization_id
 
   """column name"""
+  role
+
+  """column name"""
   updated_at
 
   """column name"""
@@ -2881,6 +2920,7 @@ input organization_user_set_input {
   created_at: timestamptz
   id: uuid
   organization_id: uuid
+  role: organization_user_role
   updated_at: timestamptz
   user_id: uuid
 }
@@ -2899,6 +2939,9 @@ enum organization_user_update_column {
   organization_id
 
   """column name"""
+  role
+
+  """column name"""
   updated_at
 
   """column name"""
@@ -2910,6 +2953,7 @@ columns and relationships of "organizations"
 """
 type organizations {
   createdAt: timestamp!
+  creator_id: uuid
   id: uuid!
   name: String!
 
@@ -3012,6 +3056,7 @@ input organizations_bool_exp {
   _not: organizations_bool_exp
   _or: [organizations_bool_exp!]
   createdAt: timestamp_comparison_exp
+  creator_id: uuid_comparison_exp
   id: uuid_comparison_exp
   name: String_comparison_exp
   organization_users: organization_user_bool_exp
@@ -3032,6 +3077,7 @@ input type for inserting data into table "organizations"
 """
 input organizations_insert_input {
   createdAt: timestamp
+  creator_id: uuid
   id: uuid
   name: String
   organization_users: organization_user_arr_rel_insert_input
@@ -3042,6 +3088,7 @@ input organizations_insert_input {
 """aggregate max on columns"""
 type organizations_max_fields {
   createdAt: timestamp
+  creator_id: uuid
   id: uuid
   name: String
   settings_id: uuid
@@ -3050,6 +3097,7 @@ type organizations_max_fields {
 """aggregate min on columns"""
 type organizations_min_fields {
   createdAt: timestamp
+  creator_id: uuid
   id: uuid
   name: String
   settings_id: uuid
@@ -3088,6 +3136,7 @@ input organizations_on_conflict {
 """Ordering options when selecting data from "organizations"."""
 input organizations_order_by {
   createdAt: order_by
+  creator_id: order_by
   id: order_by
   name: order_by
   organization_users_aggregate: organization_user_aggregate_order_by
@@ -3108,6 +3157,9 @@ enum organizations_select_column {
   createdAt
 
   """column name"""
+  creator_id
+
+  """column name"""
   id
 
   """column name"""
@@ -3122,6 +3174,7 @@ input type for updating data in table "organizations"
 """
 input organizations_set_input {
   createdAt: timestamp
+  creator_id: uuid
   id: uuid
   name: String
   settings_id: uuid
@@ -3133,6 +3186,9 @@ update columns of table "organizations"
 enum organizations_update_column {
   """column name"""
   createdAt
+
+  """column name"""
+  creator_id
 
   """column name"""
   id

@@ -7,6 +7,8 @@ actions:
       method: POST
       query_params: {}
       template_engine: Kriti
+  permissions:
+  - role: user
   comment: get s3 presigned url for manifest upload
 - name: sbom_upload_url
   definition:
