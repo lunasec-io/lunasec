@@ -140,7 +140,7 @@ export class Scan {
 
     const findingValueArray = report.findings.map(this.buildFindingInsertQuery);
     const findingValues = findingValueArray.join(',');
-    const queryEnd = `    ON CONFLICT (dedupe_slug) DO UPDATE
+    const queryEnd = `    ON CONFLICT (dedupe_slug, build_id) DO UPDATE
                             SET
                                 version = EXCLUDED.version,
                                 virtual_path = EXCLUDED.virtual_path,

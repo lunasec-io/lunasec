@@ -37,10 +37,11 @@ export interface PreSignedUrlGeneratorConfig {
   redirectToLocalhost?: boolean;
 }
 
-const awsRegion = process.env.AWS_DEFAULT_REGION;
-if (!awsRegion) {
-  throw new Error('Missing AWS_DEFAULT_REGION env var');
+if (process.env.NODE_ENV === 'production' && !process.env.AWS_DEFAULT_REGION) {
+  throw new Error('Must set AWS_DEFAULT_REGION in production');
 }
+
+const awsRegion = process.env.AWS_DEFAULT_REGION || 'us-west-2';
 
 export class AwsUtils {
   constructor(readonly config: PreSignedUrlGeneratorConfig) {}
