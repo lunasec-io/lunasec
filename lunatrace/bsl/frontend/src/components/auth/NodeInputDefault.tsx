@@ -13,12 +13,13 @@
  */
 import { TextInput } from '@ory/themes';
 import React from 'react';
+import { FloatingLabel, Form } from 'react-bootstrap';
 
 import { NodeInputProps } from './helpers';
 
 export function NodeInputDefault<T>(props: NodeInputProps) {
   const { node, attributes, value = '', setValue, disabled } = props;
-
+  console.log('rendering default input node ', node, attributes, value);
   // Some attributes have dynamic JavaScript - this is for example required for WebAuthn.
   const onClick = () => {
     // This section is only used for WebAuthn. The script is loaded via a <script> node
@@ -41,22 +42,47 @@ export function NodeInputDefault<T>(props: NodeInputProps) {
     </>
   );
 
+  const nothing = () => {
+    return (
+      <TextInput
+        title={node.meta.label?.text}
+        className={'ory-input'}
+        onClick={onClick}
+        onChange={(e) => {
+          void setValue(e.target.value);
+        }}
+        type={attributes.type}
+        name={attributes.name}
+        value={value}
+        disabled={attributes.disabled || disabled}
+        help={node.messages.length > 0}
+        state={node.messages.find(({ type }) => type === 'error') ? 'error' : 'success'}
+        subtitle={subtitle}
+      />
+    );
+  };
+
   // Render a generic text input field.
   return (
-    <TextInput
-      title={node.meta.label?.text}
-      className={'ory-input'}
-      onClick={onClick}
-      onChange={(e: any) => {
-        void setValue(e.target.value);
-      }}
-      type={attributes.type}
-      name={attributes.name}
-      value={value}
-      disabled={attributes.disabled || disabled}
-      help={node.messages.length > 0}
-      state={node.messages.find(({ type }) => type === 'error') ? 'error' : 'success'}
-      subtitle={subtitle}
-    />
+    <Form.Group className="mb-3">
+      {/*<Form.Label>{node.meta.label?.text}</Form.Label>*/}
+      <FloatingLabel controlId="floatingInput" label={node.meta.label?.text} className="mb-3">
+        <Form.Control
+          title={node.meta.label?.text}
+          className={'ory-input'}
+          onClick={onClick}
+          onChange={(e) => {
+            void setValue(e.target.value);
+          }}
+          type={attributes.type}
+          name={attributes.name}
+          value={value}
+          disabled={attributes.disabled || disabled}
+          required={attributes.required}
+          // help={node.messages.length > 0}
+        />
+      </FloatingLabel>
+      {subtitle ? <Form.Text className="text-muted">{subtitle}</Form.Text> : null}
+    </Form.Group>
   );
 }
