@@ -12,7 +12,7 @@ windows:
 
   - shell_command:
     - cd backend
-    - AWS_DEFAULT_REGION=us-west2 yarn run start
+    - yarn run start
 
   # Secure Frame CDN
   - shell_command:

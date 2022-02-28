@@ -12,8 +12,8 @@
  *
  */
 import { getNodeLabel } from '@ory/integrations/ui';
-import { Button } from '@ory/themes';
 import React from 'react';
+import { Button } from 'react-bootstrap';
 
 import { NodeInputProps } from './helpers';
 
