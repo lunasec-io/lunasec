@@ -16844,17 +16844,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pg@npm:^8.0.0":
-  version: 8.6.4
-  resolution: "@types/pg@npm:8.6.4"
-  dependencies:
-    "@types/node": "*"
-    pg-protocol: "*"
-    pg-types: ^2.2.0
-  checksum: cebc40d6f034ff5651a8415e38aeacf86925d6a7eebfd3d20a7db9e7935b0a376a81ecdfffcbeb54425344ecc9a5a8886955bcbb3501226521209900d7a57aef
-  languageName: node
-  linkType: hard
-
 "@types/prettier@npm:^2.0.0, @types/prettier@npm:^2.1.5":
   version: 2.4.4
   resolution: "@types/prettier@npm:2.4.4"
@@ -17681,13 +17670,6 @@ __metadata:
     "@typescript-eslint/types": 5.12.0
     eslint-visitor-keys: ^3.0.0
   checksum: c3774f542aae801926edf86fe6cab534c4cdac914b035730912443ed53fcc701b0f0e7b1a0d5fc959484637c55f63409fc43df5508c334e202d66d4654484d11
-  languageName: node
-  linkType: hard
-
-"@vendia/serverless-express@npm:^4.5.2":
-  version: 4.5.4
-  resolution: "@vendia/serverless-express@npm:4.5.4"
-  checksum: ba9964cf3d80cdb59693a28d876c966b8e8e2c2b87426c734b5117714522ec3a860cf58c689f0799bbd08ae762edc8ad0bf50bbb3a84812f0edfcd04952fdb19
   languageName: node
   linkType: hard
 
@@ -25327,7 +25309,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"decamelize@npm:^5.0.0, decamelize@npm:^5.0.1":
+"decamelize@npm:^5.0.1":
   version: 5.0.1
   resolution: "decamelize@npm:5.0.1"
   checksum: 7c3b1ed4b3e60e7fbc00a35fb248298527c1cdfe603e41dfcf05e6c4a8cb9efbee60630deb677ed428908fb4e74e322966c687a094d1478ddc9c3a74e9dc7140
@@ -36364,7 +36346,6 @@ __metadata:
     "@types/semver": ^7.3.9
     "@types/uuid": ^8.3.4
     "@types/validator": ^13.7.1
-    "@vendia/serverless-express": ^4.5.2
     aws-lambda: ^1.0.7
     aws-sdk: ^2.1082.0
     concurrently: ^7.0.0
@@ -36383,7 +36364,6 @@ __metadata:
     eslint-plugin-react: ^7.23.2
     express: 5.0.0-beta.1
     generate-lockfile: ^0.0.11
-    node-pg-migrate: ^6.2.1
     nodemon: ^2.0.15
     pg: ^8.7.1
     pg-promise: ^10.11.1
@@ -37345,7 +37325,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:*, mkdirp@npm:1.0.4, mkdirp@npm:1.x, mkdirp@npm:^1.0.3, mkdirp@npm:^1.0.4, mkdirp@npm:~1.0.0":
+"mkdirp@npm:*, mkdirp@npm:1.0.4, mkdirp@npm:1.x, mkdirp@npm:^1.0.3, mkdirp@npm:^1.0.4":
   version: 1.0.4
   resolution: "mkdirp@npm:1.0.4"
   bin:
@@ -38115,22 +38095,6 @@ __metadata:
     uuid: ^8.3.0
     which: ^2.0.2
   checksum: 7db1683003f6aaa4324959dfa663cd56e301ccc0165977a9e7737989ffe3b4763297f9fc85f44d0662b63a4fd85516eda43411b492a4d2fae207afb23773f912
-  languageName: node
-  linkType: hard
-
-"node-pg-migrate@npm:^6.2.1":
-  version: 6.2.1
-  resolution: "node-pg-migrate@npm:6.2.1"
-  dependencies:
-    "@types/pg": ^8.0.0
-    decamelize: ^5.0.0
-    mkdirp: ~1.0.0
-    yargs: ~17.3.0
-  peerDependencies:
-    pg: ">=4.3.0 <9.0.0"
-  bin:
-    node-pg-migrate: bin/node-pg-migrate
-  checksum: 6b97f7cc97a5f1f5b5410bbc4585f0a02f00574c4dbc976df9105f87df71e7c0bc7dc844a532390fbdac76b11ffbb818bd21b4182c41a118cd9420c8affd7af5
   languageName: node
   linkType: hard
 
@@ -40012,14 +39976,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-protocol@npm:*, pg-protocol@npm:^1.5.0":
+"pg-protocol@npm:^1.5.0":
   version: 1.5.0
   resolution: "pg-protocol@npm:1.5.0"
   checksum: b839d12cafe942ef9cbc5b13c174eb2356804fb4fe8ead8279f46a36be90722d19a91409955beb8a3d5301639c44854e49749de4aef02dc361fee3e2a61fb1e4
   languageName: node
   linkType: hard
 
-"pg-types@npm:^2.1.0, pg-types@npm:^2.2.0":
+"pg-types@npm:^2.1.0":
   version: 2.2.0
   resolution: "pg-types@npm:2.2.0"
   dependencies:
@@ -52324,7 +52288,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.0.0, yargs@npm:^17.0.1, yargs@npm:~17.3.0":
+"yargs@npm:^17.0.0, yargs@npm:^17.0.1":
   version: 17.3.1
   resolution: "yargs@npm:17.3.1"
   dependencies:

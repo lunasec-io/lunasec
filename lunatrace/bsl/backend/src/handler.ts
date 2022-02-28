@@ -41,23 +41,22 @@ interface SbomEtlMessageScan extends SbomEtlMessage {
   sbomUrl: string;
 }
 
-function handleUploadSbom(msg: SbomEtlMessageGenerate) {
-  // TODO: handle sbom upload
-  console.log(`hello from handleUploadSbom: ${msg.projectId}`);
-  return;
+function handleGenerateSbom(msg: SbomEtlMessageGenerate) {
+  // TODO: handle sbom generation from uploaded manifest/ project file
+  console.log(`hello from handleUploadSbom`, msg);
+  return Promise.resolve();
 }
 
 function handleScanSbom(msg: SbomEtlMessageScan) {
-  // TODO: handle sbom scan
-  console.log(`hello from handleScanSbom: ${msg.sbomUrl}`);
-  return;
+  // TODO: handle sbom scan and produce vulnerability findings
+  console.log(`hello from handleScanSbom: `, msg);
+  return Promise.resolve();
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await
-async function processMessage(record: DequeuedMessage): Promise<void> {
+function processMessage(record: DequeuedMessage): Promise<void> {
   if (record.message.action === 'generateSbom') {
     const msg: SbomEtlMessageGenerate = record.message as SbomEtlMessageGenerate;
-    return handleUploadSbom(msg);
+    return handleGenerateSbom(msg);
   }
   if (record.message.action === 'scanSbom') {
     const msg: SbomEtlMessageScan = record.message as SbomEtlMessageScan;
@@ -65,6 +64,7 @@ async function processMessage(record: DequeuedMessage): Promise<void> {
   }
 
   console.error(`unable to handle record from sqs. unknown message action: ${record.message.action}`);
+  return Promise.resolve();
 }
 
 interface DequeuedMessage {
