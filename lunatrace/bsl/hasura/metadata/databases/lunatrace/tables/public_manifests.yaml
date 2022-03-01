@@ -5,3 +5,38 @@ object_relationships:
 - name: project
   using:
     foreign_key_constraint_on: project_id
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      project:
+        organization:
+          organization_users:
+            user_id:
+              _eq: X-Hasura-User-Id
+    columns:
+    - created_at
+    - filename
+    - id
+    - project_id
+    - s3_key
+    - s3_url
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - filename
+    - message
+    - s3_key
+    - s3_url
+    - status
+    - created_at
+    - id
+    - project_id
+    filter:
+      project:
+        organization:
+          organization_users:
+            user_id:
+              _eq: X-Hasura-User-Id
+  role: user

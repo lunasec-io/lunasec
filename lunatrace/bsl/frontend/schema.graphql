@@ -1558,11 +1558,14 @@ type manifests {
   created_at: timestamp!
   filename: String!
   id: uuid!
+  message: String
 
   """An object relationship"""
   project: projects!
   project_id: uuid!
+  s3_key: String!
   s3_url: String!
+  status: String
 }
 
 """
@@ -1611,9 +1614,12 @@ input manifests_bool_exp {
   created_at: timestamp_comparison_exp
   filename: String_comparison_exp
   id: uuid_comparison_exp
+  message: String_comparison_exp
   project: projects_bool_exp
   project_id: uuid_comparison_exp
+  s3_key: String_comparison_exp
   s3_url: String_comparison_exp
+  status: String_comparison_exp
 }
 
 """
@@ -1634,9 +1640,12 @@ input manifests_insert_input {
   created_at: timestamp
   filename: String
   id: uuid
+  message: String
   project: projects_obj_rel_insert_input
   project_id: uuid
+  s3_key: String
   s3_url: String
+  status: String
 }
 
 """aggregate max on columns"""
@@ -1644,8 +1653,11 @@ type manifests_max_fields {
   created_at: timestamp
   filename: String
   id: uuid
+  message: String
   project_id: uuid
+  s3_key: String
   s3_url: String
+  status: String
 }
 
 """
@@ -1655,8 +1667,11 @@ input manifests_max_order_by {
   created_at: order_by
   filename: order_by
   id: order_by
+  message: order_by
   project_id: order_by
+  s3_key: order_by
   s3_url: order_by
+  status: order_by
 }
 
 """aggregate min on columns"""
@@ -1664,8 +1679,11 @@ type manifests_min_fields {
   created_at: timestamp
   filename: String
   id: uuid
+  message: String
   project_id: uuid
+  s3_key: String
   s3_url: String
+  status: String
 }
 
 """
@@ -1675,8 +1693,11 @@ input manifests_min_order_by {
   created_at: order_by
   filename: order_by
   id: order_by
+  message: order_by
   project_id: order_by
+  s3_key: order_by
   s3_url: order_by
+  status: order_by
 }
 
 """
@@ -1704,9 +1725,12 @@ input manifests_order_by {
   created_at: order_by
   filename: order_by
   id: order_by
+  message: order_by
   project: projects_order_by
   project_id: order_by
+  s3_key: order_by
   s3_url: order_by
+  status: order_by
 }
 
 """primary key columns input for table: manifests"""
@@ -1728,10 +1752,19 @@ enum manifests_select_column {
   id
 
   """column name"""
+  message
+
+  """column name"""
   project_id
 
   """column name"""
+  s3_key
+
+  """column name"""
   s3_url
+
+  """column name"""
+  status
 }
 
 """
@@ -1741,8 +1774,11 @@ input manifests_set_input {
   created_at: timestamp
   filename: String
   id: uuid
+  message: String
   project_id: uuid
+  s3_key: String
   s3_url: String
+  status: String
 }
 
 """
@@ -1759,10 +1795,19 @@ enum manifests_update_column {
   id
 
   """column name"""
+  message
+
+  """column name"""
   project_id
 
   """column name"""
+  s3_key
+
+  """column name"""
   s3_url
+
+  """column name"""
+  status
 }
 
 """mutation root"""

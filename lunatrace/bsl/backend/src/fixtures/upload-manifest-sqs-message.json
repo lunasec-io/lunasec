@@ -1,0 +1,38 @@
+{
+  "Records": [
+    {
+      "eventVersion": "2.1",
+      "eventSource": "aws:s3",
+      "awsRegion": "us-west-2",
+      "eventTime": "2022-03-01T02:35:41.517Z",
+      "eventName": "ObjectCreated:Put",
+      "userIdentity": {
+        "principalId": "AWS:AIDAVIMGPIUYVIO3EH3UK"
+      },
+      "requestParameters": {
+        "sourceIPAddress": "172.58.43.96"
+      },
+      "responseElements": {
+        "x-amz-request-id": "JJSV9THNFKNXH8CY",
+        "x-amz-id-2": "NraMgF4I20I8jgwb2Lpx0o6gSfjSsS2RrVF09i4QUbHapnO24AQtJnHn4aA0nOM4sJwYWQkwFemPo4PABM9iKewAWn6TcOzy"
+      },
+      "s3": {
+        "s3SchemaVersion": "1.0",
+        "configurationId": "manifestUploaded",
+        "bucket": {
+          "name": "test-manifest-bucket-one",
+          "ownerIdentity": {
+            "principalId": "A2JVTBJPNY0TKW"
+          },
+          "arn": "arn:aws:s3:::test-manifest-bucket-one"
+        },
+        "object": {
+          "key": "c4fabcc6-9c72-48b5-bf98-e22df5f73e05/2022/1/1/18/4c564207-45dc-4615-bff4-966b4eac63c4",
+          "size": 1809525,
+          "eTag": "37d2b21c491e198b3d8860001dbed8e1",
+          "sequencer": "00621D867D5560E7FC"
+        }
+      }
+    }
+  ]
+}

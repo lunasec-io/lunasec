@@ -1,10 +1,5 @@
-mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!, $bucket: String!, $key: String!) {
-    insert_manifests_one(object: {filename: $filename, s3_url: $s3_url, project_id: $project_id}){
+mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!, $key: String!) {
+    insert_manifests_one(object: {filename: $filename, s3_url: $s3_url, project_id: $project_id, s3_key: $key}){
         id
-    }
-    scanManifest(bucket: $bucket, key: $key) {
-        build_id
-        error
-        error_message
     }
 }

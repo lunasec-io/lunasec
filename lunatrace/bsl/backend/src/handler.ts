@@ -11,9 +11,12 @@
  * limitations under the License.
  *
  */
-import { Callback, Context, SQSEvent } from 'aws-lambda';
+import { inspect } from 'util';
+
+import { Callback, Context, Handler, SQSEvent } from 'aws-lambda';
 import { SQS } from 'aws-sdk';
 
+import { SqsMessage, SqsMessages } from './types/SqsMessage';
 type LambdaEnvironment = 'stubbed' | 'localstack' | 'prod';
 
 const lambdaEnv: LambdaEnvironment = (process.env.LAMBDA_ENV as LambdaEnvironment) || 'stubbed';
@@ -41,29 +44,29 @@ interface SbomEtlMessageScan extends SbomEtlMessage {
   sbomUrl: string;
 }
 
-function handleGenerateSbom(msg: SbomEtlMessageGenerate) {
+export function handleGenerateSbom(msg: SbomEtlMessageGenerate) {
   // TODO: handle sbom generation from uploaded manifest/ project file
   console.log(`hello from handleUploadSbom`, msg);
   return Promise.resolve();
 }
 
-function handleScanSbom(msg: SbomEtlMessageScan) {
+export function handleScanSbom(msg: SbomEtlMessageScan) {
   // TODO: handle sbom scan and produce vulnerability findings
   console.log(`hello from handleScanSbom: `, msg);
   return Promise.resolve();
 }
 
-function processMessage(record: DequeuedMessage): Promise<void> {
-  if (record.message.action === 'generateSbom') {
-    const msg: SbomEtlMessageGenerate = record.message as SbomEtlMessageGenerate;
-    return handleGenerateSbom(msg);
-  }
-  if (record.message.action === 'scanSbom') {
-    const msg: SbomEtlMessageScan = record.message as SbomEtlMessageScan;
-    return handleScanSbom(msg);
-  }
+function processMessage(record: SqsMessage): Promise<void> {
+  // if (record.message.action === 'generateSbom') {
+  //   const msg: SbomEtlMessageGenerate = record.message as SbomEtlMessageGenerate;
+  //   return handleGenerateSbom(msg);
+  // }
+  // if (record.message.action === 'scanSbom') {
+  //   const msg: SbomEtlMessageScan = record.message as SbomEtlMessageScan;
+  //   return handleScanSbom(msg);
+  // }
 
-  console.error(`unable to handle record from sqs. unknown message action: ${record.message.action}`);
+  console.error(`unable to handle record from sqs. unknown message action: ${record}`);
   return Promise.resolve();
 }
 
@@ -129,42 +132,36 @@ function makeBlockingStream(stream: any) {
   stream._handle.setBlocking(true);
 }
 
-export async function handler(event: SQSEvent) {
-  makeBlockingStream(process.stdout);
-  makeBlockingStream(process.stderr);
+export const handler: Handler = async (event, context) => {
+  // makeBlockingStream(process.stdout);
+  // makeBlockingStream(process.stderr);
+  console.log('beginning handler with event ', inspect(event, { depth: Infinity }));
+  return context.logStreamName;
 
-  const dequeuedMessages: DequeuedMessage[] = event.Records.map((record) => {
-    const message: SbomEtlMessage = JSON.parse(record.body);
-    return {
-      id: record.messageId,
-      receiptHandle: record.receiptHandle,
-      message,
-    };
-  });
-
-  const messagesToDelete: DequeuedMessage[] = [];
-
-  const promises = dequeuedMessages.map(async (message) => {
-    try {
-      await processMessage(message);
-      messagesToDelete.push(message);
-    } catch (error) {
-      if (error instanceof NonRetriableError) {
-        messagesToDelete.push(message);
-        console.error('Processing message', message, 'caused a non retriable error. Error:', error);
-      } else {
-        console.error('Processing message', message, 'caused a retriable error. Error:', error);
-      }
-    }
-  });
-  await Promise.all(promises);
-
-  const numRetriableMessages = dequeuedMessages.length - messagesToDelete.length;
-  if (numRetriableMessages > 0) {
-    await deleteMessages(messagesToDelete);
-
-    const errorMessage = `Failing due to ${numRetriableMessages} unsuccessful and retriable errors.`;
-
-    throw new PartialFailureError(errorMessage);
-  }
-}
+  //
+  // const messagesToDelete: DequeuedMessage[] = [];
+  //
+  // const promises = dequeuedMessages.map(async (message) => {
+  //   try {
+  //     await processMessage(message);
+  //     messagesToDelete.push(message);
+  //   } catch (error) {
+  //     if (error instanceof NonRetriableError) {
+  //       messagesToDelete.push(message);
+  //       console.error('Processing message', message, 'caused a non retriable error. Error:', error);
+  //     } else {
+  //       console.error('Processing message', message, 'caused a retriable error. Error:', error);
+  //     }
+  //   }
+  // });
+  // await Promise.all(promises);
+  //
+  // const numRetriableMessages = dequeuedMessages.length - messagesToDelete.length;
+  // if (numRetriableMessages > 0) {
+  //   await deleteMessages(messagesToDelete);
+  //
+  //   const errorMessage = `Failing due to ${numRetriableMessages} unsuccessful and retriable errors.`;
+  //
+  //   throw new PartialFailureError(errorMessage);
+  // }
+};

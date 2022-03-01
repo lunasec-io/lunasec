@@ -40,6 +40,20 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
       return 'Failed to pre-sign upload URL to AWS S3';
     }
     console.log('presign result ', presign);
+    const manifestUrl = presign.url.split('?')[0];
+
+    const insertRequest = await insertManifest({
+      s3_url: manifestUrl,
+      project_id,
+      filename: file.name,
+      key: presign.key,
+    }).unwrap();
+    if (!insertRequest.insert_manifests_one) {
+      console.error('Failed to notify lunatrace up uploaded manifest');
+      return;
+    }
+    const manifestId = insertRequest.insert_manifests_one.id;
+    console.log('manifest id is ', manifestId);
 
     // Upload the file directly to S3
     const options = {
@@ -51,25 +65,12 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     setUploadStatus(`Uploading ${file.name}`);
     const uploadResult = await axiosInstance.put(presign.url, file, options);
     console.log('upload success ', uploadResult.data);
-    const manifestUrl = presign.url.split('?')[0];
     console.log('new file is at ', manifestUrl);
     setUploadStatus(`File uploaded, notifying LunaTrace`);
 
     // Tell lunatrace the file uploaded, which simultaneously records the file path in hasura and calls express to kick
     // off the build via an action
-    const insertRequest = await insertManifest({
-      s3_url: manifestUrl,
-      project_id,
-      filename: file.name,
-      key: presign.key,
-      bucket: presign.bucket,
-    }).unwrap();
-    if (!insertRequest.insert_manifests_one) {
-      console.error('Failed to notify lunatrace up uploaded manifest');
-      return;
-    }
-    const manifestId = insertRequest.insert_manifests_one.id;
-    console.log('manifest id is ', manifestId);
+
     setUploadStatus(`Scan in progress, you will be automatically redirected when complete...`);
 
     // return axios.put(signedUrl, file, options);
