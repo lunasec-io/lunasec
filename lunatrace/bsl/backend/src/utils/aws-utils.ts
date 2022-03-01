@@ -57,7 +57,7 @@ export class AwsUtils {
     return `https://${bucket}.s3.${this.config.awsRegion}.amazonaws.com`;
   }
 
-  private async streamToString(stream: GetObjectCommandOutput['Body']): Promise<string> {
+  public async streamToString(stream: GetObjectCommandOutput['Body']): Promise<string> {
     if (!(stream instanceof Readable)) {
       throw new Error('S3 load stream is of wrong type');
     }
@@ -69,11 +69,11 @@ export class AwsUtils {
     });
   }
 
-  public async getFileFromS3(key: string, bucket: string): Promise<string> {
+  public async getFileFromS3(key: string, bucket: string): Promise<GetObjectCommandOutput['Body']> {
     const s3Client = new S3Client({ region: this.config.awsRegion, credentials: this.config.awsCredentials });
     const { Body } = await s3Client.send(new GetObjectCommand({ Key: key, Bucket: bucket })); // gosh what a bad API
-    const fileString = await this.streamToString(Body);
-    return fileString;
+    // const fileString = await this.streamToString(Body);
+    return Body;
   }
 
   async generatePresignedS3Url(
