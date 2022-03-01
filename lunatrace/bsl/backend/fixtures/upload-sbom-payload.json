@@ -1,9 +1,0 @@
-{
-    "Records": [
-        {
-            "messageId": "message-id1",
-            "receiptHandle": "message-handle1",
-            "body": "{\"action\":\"generateSbom\",\"projectId\":\"5d1f9f0f-bdb3-4dc9-8454-2c77a58744f0\"}"
-        }
-    ]
-}

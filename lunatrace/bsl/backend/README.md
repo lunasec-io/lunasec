@@ -24,26 +24,13 @@ Express server for trace backend.  Presigns upload URLs, runs grype tests, and s
 ### Running Lambda
 
 #### Sqs Queue Payload
-Edit `fixtures/upload-sbom-payload.json` or `fixtures/scan-sbom-payload.json`
-```json
-{
-    "Records": [
-        {
-            "messageId": "message-id1",
-            "receiptHandle": "message-handle1",
-            "body": "{\"action\":\"uploadSbom\",\"projectId\":\"5d1f9f0f-bdb3-4dc9-8454-2c77a58744f0\"}"
-        }
-    ]
-}
-```
+Edit `fixtures/upload-sbom-payload.json` or `fixtures/scan-sbom-payload.json` to see the payloads
 
 #### Building lambda docker container
 Build lambda docker container
 ```shell
 sudo docker build -f lambda.dockerfile . -t lunasec/lunatrace-backend-lambda
 ```
-
-
 
 #### Running lambda docker container
 Run lambda docker container
@@ -53,7 +40,7 @@ run docker run -p 9000:8080 lunasec/lunatrace-backend-lambda
 
 or run lambda docker container with volume mount
 ```shell
-sudo docker run -p 9000:8080 -v $(pwd)/build:/var/task lunasec/lunatrace-backend-lambda
+sudo docker run -p 9000:8080 -v $(pwd)/build:/var/task -e HASURA_ADMIN_SECRET=myadminsecretkey lunasec/lunatrace-backend-lambda
 ```
 
 #### Sending data to lambda
