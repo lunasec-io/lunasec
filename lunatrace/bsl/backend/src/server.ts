@@ -11,9 +11,79 @@
  * limitations under the License.
  *
  */
+import { DeleteMessageCommand, GetQueueUrlCommand, ReceiveMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
+
 import { app } from './app';
 
-const port = process.env.PORT || 3002; // This port needs to be exposed to the hasura backend, via the docker-compose
-app.listen(port, () => {
-  console.log('Server is running on port ', port);
-});
+const executionMode = process.env.EXECUTION_MODE || 'server';
+const queueName = process.env.QUEUE_NAME || '';
+
+if (typeof queueName !== 'string') {
+  throw new Error('queueName is not a string');
+}
+
+const REGION = 'us-west-2';
+const sqsClient = new SQSClient({ region: REGION });
+
+console.log(`execution mode: ${executionMode}`);
+
+async function readDataFromQueue() {
+  const strQueueName: string = queueName;
+
+  const { QueueUrl } = await sqsClient.send(
+    new GetQueueUrlCommand({
+      QueueName: strQueueName,
+    })
+  );
+
+  try {
+    const params = {
+      AttributeNames: ['SentTimestamp'],
+      MaxNumberOfMessages: 10,
+      MessageAttributeNames: ['All'],
+      QueueUrl: QueueUrl,
+      VisibilityTimeout: 60,
+      WaitTimeSeconds: 5,
+    };
+
+    const data = await sqsClient.send(new ReceiveMessageCommand(params));
+    if (data.Messages) {
+      console.log('got data from queue');
+      console.log(data);
+
+      const deleteParams = {
+        QueueUrl: QueueUrl,
+        ReceiptHandle: data.Messages[0].ReceiptHandle,
+      };
+      try {
+        const data = await sqsClient.send(new DeleteMessageCommand(deleteParams));
+        console.log('Message deleted', data);
+      } catch (err) {
+        console.log('Error', err);
+      }
+    }
+  } catch (err) {
+    console.log('Receive Error', err);
+  }
+}
+
+if (executionMode === 'process-manifest-queue') {
+  void (async () => {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      await readDataFromQueue();
+    }
+  })();
+} else if (executionMode === 'process-sbom-queue') {
+  void (async () => {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      await readDataFromQueue();
+    }
+  })();
+} else {
+  const port = process.env.PORT || 3002; // This port needs to be exposed to the hasura backend, via the docker-compose
+  app.listen(port, () => {
+    console.log('Server is running on port ', port);
+  });
+}

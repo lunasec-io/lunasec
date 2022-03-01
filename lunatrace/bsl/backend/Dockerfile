@@ -10,7 +10,7 @@ WORKDIR /app
 
 RUN mv yarn.lock-workspace yarn.lock
 
-RUN yarn install
+RUN yarn install --ci --frozen-lockfile
 
 RUN yarn run compile
 

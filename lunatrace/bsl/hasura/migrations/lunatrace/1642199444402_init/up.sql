@@ -48,7 +48,7 @@ SET row_security = off;
 -- COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
-ALTER FUNCTION public.set_current_timestamp_updated_at() OWNER TO postgres;
+-- ALTER FUNCTION public.set_current_timestamp_updated_at() OWNER TO postgres;
 
 SET default_tablespace = '';
 
