@@ -177,7 +177,8 @@ module.exports = (allStagedFiles) => {
   // Lint all JS files
   const jsFiles = allStagedFiles.filter(file => file.match(javascriptRegex));
   if (jsFiles.length > 0) {
-    outputCommands.push(`sh -c "eslint --fix ${jsFiles.join(' ')}"`);
+    // Setting this to "production" allows us to disable certain nit-picky Lint rules while developing.
+    outputCommands.push(`sh -c "NODE_ENV=production eslint --fix ${jsFiles.join(' ')}"`);
   }
 
   return outputCommands;
