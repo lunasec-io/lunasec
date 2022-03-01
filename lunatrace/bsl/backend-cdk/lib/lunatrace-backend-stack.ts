@@ -15,6 +15,7 @@
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import { Port, SecurityGroup, Vpc } from '@aws-cdk/aws-ec2';
 import {
+  Cluster,
   ContainerDependencyCondition,
   ContainerImage,
   Secret as EcsSecret,
@@ -29,6 +30,7 @@ import { Bucket, EventType, HttpMethods } from '@aws-cdk/aws-s3';
 import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
 import { SqsDestination } from '@aws-cdk/aws-s3-notifications';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
+import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
 
@@ -267,8 +269,13 @@ export class LunatraceBackendStack extends cdk.Stack {
       condition: ContainerDependencyCondition.HEALTHY,
     });
 
-    const loadBalancedFargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, 'Service', {
+    const fargateCluster = new Cluster(this, 'LunaTraceFargateCluster', {
       vpc,
+      enableFargateCapacityProviders: true,
+    });
+
+    const loadBalancedFargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, 'Service', {
+      cluster: fargateCluster,
       certificate,
       domainZone,
       publicLoadBalancer: true,
@@ -306,15 +313,27 @@ export class LunatraceBackendStack extends cdk.Stack {
       path: '/health',
     });
 
+    const processManifestDeadLetterQueue = new Queue(this, 'ProcessManifestProcessingDeadLetterQueue', {
+      retentionPeriod: Duration.days(14),
+    });
+
+    const processManifestSqsQueue = new Queue(this, 'ProcessManifestProcessingQueue', {
+      visibilityTimeout: Duration.minutes(1),
+      deadLetterQueue: {
+        queue: processManifestDeadLetterQueue,
+        maxReceiveCount: 10,
+      },
+    });
+
     const processManifestQueueService = new ecsPatterns.QueueProcessingFargateService(
       this,
       'ProcessManifestQueueService',
       {
-        cluster: loadBalancedFargateService.cluster,
+        cluster: fargateCluster,
         image: backendContainerImage,
+        queue: processManifestSqsQueue,
         assignPublicIp: true,
         enableLogging: true,
-        visibilityTimeout: Duration.minutes(1),
         environment: {
           EXECUTION_MODE: 'process-manifest-queue',
           SBOM_BUCKET_NAME: sbomBucket.bucketName,
@@ -330,12 +349,24 @@ export class LunatraceBackendStack extends cdk.Stack {
       }
     );
 
+    const processSbomDeadLetterQueue = new Queue(this, 'ProcessSbomProcessingDeadLetterQueue', {
+      retentionPeriod: Duration.days(14),
+    });
+
+    const processSbomSqsQueue = new Queue(this, 'ProcessSbomProcessingQueue', {
+      visibilityTimeout: Duration.minutes(1),
+      deadLetterQueue: {
+        queue: processSbomDeadLetterQueue,
+        maxReceiveCount: 10,
+      },
+    });
+
     const processSbomQueueService = new ecsPatterns.QueueProcessingFargateService(this, 'ProcessSbomQueueService', {
-      cluster: loadBalancedFargateService.cluster,
+      cluster: fargateCluster,
       image: backendContainerImage,
+      queue: processSbomSqsQueue,
       enableLogging: true,
       assignPublicIp: true,
-      visibilityTimeout: Duration.minutes(1),
       environment: {
         EXECUTION_MODE: 'process-sbom-queue',
       },
@@ -351,15 +382,10 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     manifestBucket.addEventNotification(
       EventType.OBJECT_CREATED,
-      new SqsDestination(processManifestQueueService.sqsQueue),
-      {
-        prefix: '/',
-      }
+      new SqsDestination(processManifestQueueService.sqsQueue)
     );
 
-    sbomBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(processSbomQueueService.sqsQueue), {
-      prefix: '/',
-    });
+    sbomBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(processSbomQueueService.sqsQueue));
 
     sbomBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
     oryConfigBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
