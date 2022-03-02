@@ -24,7 +24,6 @@ const app = Express();
 app.use(cors());
 app.use(Express.json());
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 app.get('/api/upload-sbom', generatePresignedUrl);
 
 app.get('/health', (_req: Express.Request, res: Express.Response) => {

@@ -392,6 +392,11 @@ CREATE TABLE public.manifests
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
     project_id uuid references public.projects (id)                         NOT NULL,
     s3_url     text                                                         NOT NULL UNIQUE,
-    filename   text                                                         NOT NULL
-)
+    filename   text                                                         NOT NULL,
+    status     text,
+    message    text,
+    s3_key         text                                                            NOT NULL
+);
+
+CREATE INDEX manifest_s3_key_index  ON public.manifests (s3_key);
 
