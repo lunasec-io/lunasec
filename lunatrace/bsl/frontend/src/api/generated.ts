@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { api } from './baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -667,9 +654,9 @@ export type Findings_Bool_Exp = {
 /** unique or primary key constraints on table "findings" */
 export enum Findings_Constraint {
   /** unique or primary key constraint */
-  FindingsDedupeSlugBuildIdKey = 'findings_dedupe_slug_build_id_key',
+  FindingsPkey = 'findings_pkey',
   /** unique or primary key constraint */
-  FindingsPkey = 'findings_pkey'
+  TempDedupeFix = 'temp_dedupe_fix'
 }
 
 /** input type for inserting data into table "findings" */
@@ -1353,10 +1340,13 @@ export type Manifests = {
   created_at: Scalars['timestamp'];
   filename: Scalars['String'];
   id: Scalars['uuid'];
+  message?: Maybe<Scalars['String']>;
   /** An object relationship */
   project: Projects;
   project_id: Scalars['uuid'];
+  s3_key: Scalars['String'];
   s3_url: Scalars['String'];
+  status?: Maybe<Scalars['String']>;
 };
 
 /** aggregated selection of "manifests" */
@@ -1403,9 +1393,12 @@ export type Manifests_Bool_Exp = {
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   filename?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  message?: InputMaybe<String_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  s3_key?: InputMaybe<String_Comparison_Exp>;
   s3_url?: InputMaybe<String_Comparison_Exp>;
+  status?: InputMaybe<String_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "manifests" */
@@ -1421,9 +1414,12 @@ export type Manifests_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamp']>;
   filename?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
+  message?: InputMaybe<Scalars['String']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: InputMaybe<Scalars['uuid']>;
+  s3_key?: InputMaybe<Scalars['String']>;
   s3_url?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
@@ -1432,8 +1428,11 @@ export type Manifests_Max_Fields = {
   created_at?: Maybe<Scalars['timestamp']>;
   filename?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  message?: Maybe<Scalars['String']>;
   project_id?: Maybe<Scalars['uuid']>;
+  s3_key?: Maybe<Scalars['String']>;
   s3_url?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
 };
 
 /** order by max() on columns of table "manifests" */
@@ -1441,8 +1440,11 @@ export type Manifests_Max_Order_By = {
   created_at?: InputMaybe<Order_By>;
   filename?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
+  s3_key?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
@@ -1451,8 +1453,11 @@ export type Manifests_Min_Fields = {
   created_at?: Maybe<Scalars['timestamp']>;
   filename?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  message?: Maybe<Scalars['String']>;
   project_id?: Maybe<Scalars['uuid']>;
+  s3_key?: Maybe<Scalars['String']>;
   s3_url?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
 };
 
 /** order by min() on columns of table "manifests" */
@@ -1460,8 +1465,11 @@ export type Manifests_Min_Order_By = {
   created_at?: InputMaybe<Order_By>;
   filename?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
+  s3_key?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "manifests" */
@@ -1485,9 +1493,12 @@ export type Manifests_Order_By = {
   created_at?: InputMaybe<Order_By>;
   filename?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_id?: InputMaybe<Order_By>;
+  s3_key?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: manifests */
@@ -1504,9 +1515,15 @@ export enum Manifests_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  Message = 'message',
+  /** column name */
   ProjectId = 'project_id',
   /** column name */
-  S3Url = 's3_url'
+  S3Key = 's3_key',
+  /** column name */
+  S3Url = 's3_url',
+  /** column name */
+  Status = 'status'
 }
 
 /** input type for updating data in table "manifests" */
@@ -1514,8 +1531,11 @@ export type Manifests_Set_Input = {
   created_at?: InputMaybe<Scalars['timestamp']>;
   filename?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
+  message?: InputMaybe<Scalars['String']>;
   project_id?: InputMaybe<Scalars['uuid']>;
+  s3_key?: InputMaybe<Scalars['String']>;
   s3_url?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['String']>;
 };
 
 /** update columns of table "manifests" */
@@ -1527,9 +1547,15 @@ export enum Manifests_Update_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  Message = 'message',
+  /** column name */
   ProjectId = 'project_id',
   /** column name */
-  S3Url = 's3_url'
+  S3Key = 's3_key',
+  /** column name */
+  S3Url = 's3_url',
+  /** column name */
+  Status = 'status'
 }
 
 /** mutation root */
@@ -5933,12 +5959,11 @@ export type InsertManifestMutationVariables = Exact<{
   s3_url: Scalars['String'];
   project_id: Scalars['uuid'];
   filename: Scalars['String'];
-  bucket: Scalars['String'];
   key: Scalars['String'];
 }>;
 
 
-export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null, scanManifest?: { __typename?: 'ScanManifestOutput', build_id: string, error: boolean, error_message?: string | null } | null };
+export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null };
 
 export type CreateOrganizationAndProjectMutationVariables = Exact<{
   identity_id: Scalars['uuid'];
@@ -6194,16 +6219,11 @@ export const GetVulnerabilityDetailsDocument = `
 }
     `;
 export const InsertManifestDocument = `
-    mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!, $bucket: String!, $key: String!) {
+    mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!, $key: String!) {
   insert_manifests_one(
-    object: {filename: $filename, s3_url: $s3_url, project_id: $project_id}
+    object: {filename: $filename, s3_url: $s3_url, project_id: $project_id, s3_key: $key}
   ) {
     id
-  }
-  scanManifest(bucket: $bucket, key: $key) {
-    build_id
-    error
-    error_message
   }
 }
     `;

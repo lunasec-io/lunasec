@@ -26,7 +26,7 @@ if (!manifestBucket) {
 // TODO: move this to the manifest router
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
+
 s3Router.post('/presign-manifest-upload', async (req, res) => {
   const projectId = req.body.input.project_id as string | undefined;
   if (!projectId) {
