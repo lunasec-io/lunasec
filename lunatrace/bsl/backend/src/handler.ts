@@ -34,6 +34,7 @@ interface SbomEtlMessage {
   action: SbomEtlAction;
 }
 
+
 interface SbomEtlMessageGenerate extends SbomEtlMessage {
   action: 'generateSbom';
   projectId: string;
@@ -138,6 +139,7 @@ export const handler: Handler = async (event, context) => {
   // makeBlockingStream(process.stderr);
   console.log("beginning handler with event ", inspect(event, { depth: Infinity }));
   return context.logStreamName;
+
 
 
   //
