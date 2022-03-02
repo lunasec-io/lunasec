@@ -178,7 +178,7 @@ module.exports = (allStagedFiles) => {
   const jsFiles = allStagedFiles.filter(file => file.match(javascriptRegex));
   if (jsFiles.length > 0) {
     // Setting this to "production" allows us to disable certain nit-picky Lint rules while developing.
-    outputCommands.push(`sh -c "STRICT_LINT=true eslint --fix ${jsFiles.join(' ')}"`);
+    outputCommands.push(`sh -c "STRICT_LINT=true SLOW_LINT=true eslint --fix ${jsFiles.join(' ')}"`);
   }
 
   return outputCommands;

@@ -254,7 +254,6 @@ export class SecureFrame<E extends keyof ClassLookup> {
   }
 
   attachOnSubmitNotifier() {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (this.validatorName) {

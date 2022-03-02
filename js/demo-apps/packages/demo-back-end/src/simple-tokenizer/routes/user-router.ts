@@ -25,7 +25,7 @@ export function userRouter(models: Models) {
   router.use(bodyParser.json());
 
   /* GET users listing. */
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
   router.get('/me', async (_req, res) => {
     const user = await models.user.getUser('1'); // Just get the pre-created user from the db migration
     res.json({
@@ -34,7 +34,6 @@ export function userRouter(models: Models) {
     });
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   router.post('/set-ssn', async (req, res) => {
     try {
       // Note the lack of grant checking.  There are no grants in the simple-tokenizer.  If you have the token you can get the data, simple.
