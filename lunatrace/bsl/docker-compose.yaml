@@ -40,7 +40,7 @@ services:
     environment:
       - DSN=postgres://postgres:postgrespassword@postgres:5432/lunatrace
       - LOG_LEVEL=trace
-    command: serve -c /config/config.yaml --dev --watch-courier
+    command: serve -c /config/config.yaml -c /config/config.dev.yaml --dev --watch-courier
     volumes:
       - ./ory/kratos:/config
     healthcheck:
