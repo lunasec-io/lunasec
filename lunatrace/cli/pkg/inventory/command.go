@@ -17,6 +17,7 @@ package inventory
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/anchore/syft/syft"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
@@ -27,21 +28,29 @@ import (
 	"lunasec/lunatrace/pkg/types"
 )
 
-func writeInventoryOutput(sbom syftmodel.Document, output string) (err error) {
+func serializeSbom(sbom syftmodel.Document) (serializedOutput []byte, err error) {
 	depOutput := InventoryOutput{
 		Sbom: sbom,
 	}
 
-	serializedOutput, err := json.MarshalIndent(depOutput, "", "\t")
+	serializedOutput, err = json.MarshalIndent(depOutput, "", "\t")
 	if err != nil {
 		log.Error().Err(err).Msg("unable to marshall dependencies output")
-		return err
+		return
+	}
+	return
+}
+
+func writeInventoryOutput(sbom syftmodel.Document, output string) (err error) {
+	serializedOutput, err := serializeSbom(sbom)
+	if err != nil {
+		return
 	}
 
 	err = ioutil.WriteFile(output, serializedOutput, 0644)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to write dependencies to output file")
-		return err
+		return
 	}
 	return
 }
@@ -108,6 +117,7 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 	output := c.String("output")
 	excludedDirs := c.StringSlice("excluded")
 	skipUpload := c.Bool("skip-upload")
+	printToStdout := c.Bool("stdout")
 	configOutput := c.String("config-output")
 
 	sbom, err := getSbomForSyft(source, excludedDirs, useStdin)
@@ -122,6 +132,17 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 		if err != nil {
 			return
 		}
+	}
+
+	if printToStdout {
+		var serializedSbom []byte
+
+		serializedSbom, err = serializeSbom(sbomModel)
+		if err != nil {
+			return
+		}
+
+		fmt.Println(string(serializedSbom))
 	}
 
 	if skipUpload {
