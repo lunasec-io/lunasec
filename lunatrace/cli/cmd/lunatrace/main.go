@@ -32,6 +32,7 @@ func main() {
 		"json":            false,
 		"debug":           false,
 		"ignore-warnings": false,
+		"log-to-stderr":   false,
 	}
 
 	command.EnableGlobalFlags(globalBoolFlags)
@@ -83,6 +84,10 @@ func main() {
 				Name:  "debug",
 				Usage: "Display helpful information while debugging the CLI.",
 			},
+			&cli.BoolFlag{
+				Name:  "log-to-stderr",
+				Usage: "Log all structured logs to stderr. This is useful if you are consuming some output via stdout and do not want to parse the logs.",
+			},
 		},
 		Commands: []*cli.Command{
 			{
@@ -116,6 +121,10 @@ func main() {
 							&cli.StringFlag{
 								Name:  "stdin-filename",
 								Usage: "Read from stdin and use the provided filename as the source.",
+							},
+							&cli.BoolFlag{
+								Name:  "stdout",
+								Usage: "Print created SBOM to stdout.",
 							},
 						},
 						Action: func(c *cli.Context) error {
