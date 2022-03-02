@@ -14,6 +14,10 @@
  * limitations under the License.
  *
  */
+
+const productionOnly = process.env.NODE_ENV !== 'production' ? 'error' : 'off';
+const warnInDev = process.env.NODE_ENV !== 'production' ? 'error' : 'warn';
+
 module.exports = {
   root: true,
   env: {
@@ -35,7 +39,10 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:prettier/recommended',
   ],
-  ignorePatterns: ['packages/tokenizer-sdk/src/generated'],
+  ignorePatterns: [
+    'packages/tokenizer-sdk/src/generated',
+    'lunatrace/bsl/frontend/src/api/generated.ts'
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -62,47 +69,71 @@ module.exports = {
   ],
   rules: {
     "@typescript-eslint/no-unsafe-argument": 1, // TODO: Re-enable this rule and fix all errors
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off', // These never error, currently
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-console': productionOnly, // These never error, currently
+    'no-debugger': productionOnly,
     eqeqeq: 'error',
-    quotes: ['error', 'single', { allowTemplateLiterals: true, avoidEscape: true }],
-    'react/jsx-wrap-multilines': ['error', {
-      declaration: 'parens-new-line',
-      assignment: 'parens-new-line',
-      return: 'parens-new-line',
-      arrow: 'parens-new-line',
-      condition: 'parens-new-line',
-      logical: 'parens-new-line',
-      prop: 'parens-new-line',
-    }],
-    'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
-    'react/jsx-max-props-per-line': ['error', { 'maximum': 3, 'when': 'multiline' }],
-    'react/jsx-indent-props': ['error', 2],
+    quotes: [warnInDev, 'single', { allowTemplateLiterals: true, avoidEscape: true }],
+    'react/jsx-wrap-multilines': [
+      productionOnly,
+      {
+        declaration: 'parens-new-line',
+        assignment: 'parens-new-line',
+        return: 'parens-new-line',
+        arrow: 'parens-new-line',
+        condition: 'parens-new-line',
+        logical: 'parens-new-line',
+        prop: 'parens-new-line',
+      }
+    ],
+    'react/jsx-first-prop-new-line': [
+      productionOnly,
+      'multiline-multiprop'
+    ],
+    'react/jsx-max-props-per-line': [
+      productionOnly,
+      {
+        'maximum': 3,
+        'when': 'multiline'
+      }
+    ],
+    'react/jsx-indent-props': [
+      productionOnly,
+      2
+    ],
     'react/jsx-closing-bracket-location': [
-      'error',
+      productionOnly,
       'tag-aligned',
     ],
     "react-hooks/exhaustive-deps": "off",
-    'prettier/prettier': ['error', { singleQuote: true, printWidth: 120 }],
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    'prettier/prettier': [
+      productionOnly,
+      {
+        singleQuote: true,
+        printWidth: 120
+      }
+      ],
+    '@typescript-eslint/explicit-module-boundary-types': 'warn',
     'eslint-comments/disable-enable-pair': [
       'error',
       { 'allowWholeFile': true }
     ],
-    'eslint-comments/no-unlimited-disable':'off',
+    'eslint-comments/no-unlimited-disable': 'off',
     'eslint-comments/no-unused-disable': 'error',
-    '@typescript-eslint/no-unused-vars':['warn',{ "argsIgnorePattern": "^_" }],
-    '@typescript-eslint/no-unsafe-call':'off', // Did this because of a bug with intellij (forrest)
-    '@typescript-eslint/no-unsafe-member-access':'off',
-    '@typescript-eslint/no-unsafe-assignment':'off',
-    '@typescript-eslint/unbound-method':'off',
-    '@typescript-eslint/restrict-template-expressions':'off',
+    '@typescript-eslint/no-unused-vars':[
+      productionOnly,
+      { "argsIgnorePattern": "^_" }
+    ],
+    '@typescript-eslint/no-unsafe-call': 'warn',
+    '@typescript-eslint/no-unsafe-member-access': 'warn',
+    '@typescript-eslint/no-unsafe-assignment': 'warn',
+    '@typescript-eslint/unbound-method': 'warn',
+    '@typescript-eslint/restrict-template-expressions': 'off',
     'import/order': [
-      'error',
+      productionOnly,
       { 'newlines-between': 'always', 'alphabetize': { 'order': 'asc' } }
     ],
     'sort-imports': [
-      'error',
+      productionOnly,
       { 'ignoreDeclarationSort': true, 'ignoreCase': true }
     ]
   },

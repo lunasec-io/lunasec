@@ -136,8 +136,9 @@ function makeBlockingStream(stream: any) {
 export const handler: Handler = async (event, context) => {
   // makeBlockingStream(process.stdout);
   // makeBlockingStream(process.stderr);
-  console.log('beginning handler with event ', inspect(event, { depth: Infinity }));
+  console.log("beginning handler with event ", inspect(event, { depth: Infinity }));
   return context.logStreamName;
+
 
   //
   // const messagesToDelete: DequeuedMessage[] = [];
