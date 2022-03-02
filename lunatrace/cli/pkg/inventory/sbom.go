@@ -15,6 +15,7 @@
 package inventory
 
 import (
+	"bufio"
 	"crypto"
 	"fmt"
 	"github.com/anchore/syft/syft"
@@ -25,18 +26,88 @@ import (
 	"github.com/anchore/syft/syft/source"
 	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/pkg/constants"
+	"os"
+	"path"
 )
 
-func getSbomForSyft(sourceName string, excludedDirs []string) (s *sbom.SBOM, err error) {
-	log.Info().
-		Str("source", sourceName).
-		Msg("Scanning source for dependencies.")
+func readFileFromStdin(srcFile *os.File) (err error) {
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		_, err = srcFile.Write(scanner.Bytes())
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("sourceFile", srcFile.Name()).
+				Msg("unable to write to source file")
+			return
+		}
+	}
+	if err = scanner.Err(); err != nil {
+		log.Error().Err(err).Msg("unable to read sbom from stdin")
+		return
+	}
+	return
+}
 
-	src, cleanup, err := source.New(sourceName, nil, excludedDirs)
+func getSyftSource(sourceName string, excludedDirs []string, useStdin bool) (src *source.Source, cleanup func(), err error) {
+	if useStdin {
+		var (
+			name          string
+			tmpSourceFile *os.File
+		)
+
+		name, err = os.MkdirTemp("", "syft-source")
+		if err != nil {
+			log.Error().Err(err).Msg("unable to create temporary directory")
+			return
+		}
+
+		tmpSourcePath := path.Join(name, sourceName)
+		tmpSourceFile, err = os.Create(tmpSourcePath)
+		if err != nil {
+			log.Error().Err(err).Msg("unable to create temporary source file")
+			return
+		}
+
+		err = readFileFromStdin(tmpSourceFile)
+		if err != nil {
+			log.Error().Err(err).Msg("unable to copy from stdin to temporary source file")
+			return
+		}
+
+		syftSrc, cleanupFunc := source.NewFromFile(tmpSourcePath)
+		src = &syftSrc
+
+		cleanup = func() {
+			log.Debug().
+				Str("dir", name).
+				Msg("cleaning up created source dir")
+			err := os.RemoveAll(name)
+			if err != nil {
+				log.Error().
+					Err(err).
+					Str("sourceName", sourceName).
+					Msg("unable to cleanup temporary directory")
+			}
+			cleanupFunc()
+		}
+		return
+	}
+
+	src, cleanup, err = source.New(sourceName, nil, excludedDirs)
 	if err != nil {
 		err = fmt.Errorf("failed to construct source from user input %q: %w", sourceName, err)
 		return
 	}
+	return
+}
+
+func getSbomForSyft(sourceName string, excludedDirs []string, useStdin bool) (s *sbom.SBOM, err error) {
+	log.Info().
+		Str("source", sourceName).
+		Msg("Scanning source for dependencies.")
+
+	src, cleanup, err := getSyftSource(sourceName, excludedDirs, useStdin)
 	if cleanup != nil {
 		defer cleanup()
 	}
@@ -145,7 +216,7 @@ func generateCatalogPackagesTask() (task, error) {
 		}
 
 		results.PackageCatalog = packageCatalog
-		results.Distro = theDistro
+		results.LinuxDistribution = theDistro
 
 		return relationships, nil
 	}

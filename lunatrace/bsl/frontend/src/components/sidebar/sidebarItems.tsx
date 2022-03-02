@@ -11,20 +11,7 @@
  * limitations under the License.
  *
  */
-import {
-  AlertOctagon,
-  Bell,
-  BookOpen,
-  Briefcase,
-  Calendar,
-  CheckSquare,
-  Folder,
-  List,
-  Lock,
-  MapPin,
-  PieChart,
-  Plus,
-} from 'react-feather';
+import { AlertOctagon, BookOpen, Briefcase, Folder, Lock, Plus } from 'react-feather';
 
 import { GetSidebarInfoQuery } from '../../api/generated';
 
@@ -88,98 +75,6 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
     },
   ];
 
-  const pluginsSection: SidebarItem[] = [
-    {
-      href: '/form-plugins',
-      icon: CheckSquare,
-      title: 'Form Plugins',
-      children: [
-        {
-          href: '/form-plugins/advanced-inputs',
-          title: 'Advanced Inputs',
-        },
-        {
-          href: '/form-plugins/formik',
-          title: 'Formik',
-          badge: 'New',
-        },
-        {
-          href: '/form-plugins/editors',
-          title: 'Editors',
-        },
-      ],
-    },
-    {
-      href: '/advanced-tables',
-      icon: List,
-      title: 'Advanced Tables',
-      children: [
-        {
-          href: '/advanced-tables/pagination',
-          title: 'Pagination',
-        },
-        {
-          href: '/advanced-tables/column-sorting',
-          title: 'Column Sorting',
-        },
-        {
-          href: '/advanced-tables/column-filtering',
-          title: 'Column Filtering',
-        },
-        {
-          href: '/advanced-tables/row-expanding',
-          title: 'Row Expanding',
-        },
-        {
-          href: '/advanced-tables/row-selection',
-          title: 'Row Selection',
-        },
-      ],
-    },
-    {
-      href: '/charts',
-      icon: PieChart,
-      title: 'Charts',
-      badge: 'New',
-      children: [
-        {
-          href: '/charts/chartjs',
-          title: 'Chart.js',
-        },
-        {
-          href: '/charts/apexcharts',
-          title: 'ApexCharts',
-          badge: 'New',
-        },
-      ],
-    },
-    {
-      href: '/notifications',
-      icon: Bell,
-      title: 'Notifications',
-    },
-    {
-      href: '/maps',
-      icon: MapPin,
-      title: 'Maps',
-      children: [
-        {
-          href: '/maps/google-maps',
-          title: 'Google Maps',
-        },
-        {
-          href: '/maps/vector-maps',
-          title: 'Vector Maps',
-        },
-      ],
-    },
-    {
-      href: '/calendar',
-      icon: Calendar,
-      title: 'Calendar',
-    },
-  ];
-
   const loggedOutSections = [
     {
       title: 'Account',
@@ -199,10 +94,6 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
     {
       title: 'Information & Databases',
       items: databaseSection,
-    },
-    {
-      title: 'Settings & Policies',
-      items: pluginsSection,
     },
   ];
 
