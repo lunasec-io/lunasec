@@ -1,6 +1,7 @@
+import fs from 'fs';
+
 import sbomS3EventSqsMessageFixture from '../fixtures/upload-manifest-sqs-message.json';
 import { handleGenerateSbom } from '../handlers/generateSbom';
-import fs from 'fs';
 
 describe('manifest handler', () => {
   it('should run', async () => {

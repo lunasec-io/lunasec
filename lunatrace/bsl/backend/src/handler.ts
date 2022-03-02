@@ -44,6 +44,7 @@ interface SbomEtlMessageScan extends SbomEtlMessage {
   sbomUrl: string;
 }
 
+
 export function handleGenerateSbom(msg: SbomEtlMessageGenerate) {
   // TODO: handle sbom generation from uploaded manifest/ project file
   console.log(`hello from handleUploadSbom`, msg);
