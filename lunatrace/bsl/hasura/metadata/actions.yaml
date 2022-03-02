@@ -2,7 +2,7 @@ actions:
 - name: presignManifestUpload
   definition:
     kind: synchronous
-    handler: http://host.docker.internal:3002/s3/presign-manifest-upload
+    handler: http://localhost:8000/s3/presign-manifest-upload
     request_transform:
       method: POST
       query_params: {}
@@ -17,7 +17,7 @@ actions:
 - name: scanManifest
   definition:
     kind: synchronous
-    handler: http://host.docker.internal:3002/manifest/scan
+    handler: http://localhost:8000/manifest/scan
   comment: This performs the manifest sbom generation and creates the first build
     from the manifest
 custom_types:
