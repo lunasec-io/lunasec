@@ -22,44 +22,9 @@ import (
 	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/config"
 	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
 	"lunasec/lunatrace/pkg/util"
 	"os"
 )
-
-func getInventoryCmd(
-	appConfig types.LunaTraceConfig,
-	setGlobalBoolFlags func(c *cli.Context) error,
-	globalBoolFlags map[string]bool,
-) *cli.Command {
-	return &cli.Command{
-		Name:    "inventory",
-		Aliases: []string{"i"},
-		Usage:   "Inventory dependencies as a Software Bill of Materials (SBOM) for project and upload the SBOM.",
-		Before:  setGlobalBoolFlags,
-		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:  "output",
-				Usage: "File to write generated SBOM to.",
-			},
-			&cli.StringFlag{
-				Name:  "config-output",
-				Usage: "File to write generated LunaTrace Agent config.",
-			},
-			&cli.StringSliceFlag{
-				Name:  "excluded",
-				Usage: "Excluded dirs from scanning.",
-			},
-			&cli.BoolFlag{
-				Name:  "skip-upload",
-				Usage: "Skip uploading generated SBOM.",
-			},
-		},
-		Action: func(c *cli.Context) error {
-			return inventory.InventoryCommand(c, globalBoolFlags, appConfig)
-		},
-	}
-}
 
 func main() {
 	globalBoolFlags := map[string]bool{
@@ -102,10 +67,9 @@ func main() {
 				Email: "contact@lunasec.io",
 			},
 		},
-		Version: constants.LunaTraceVersion,
-		Description: `Use "files" to collect SBOMs from artifacts which are just files on the file system.
-Use "container" to collect an SBOM from a built container.`,
-		Before: setGlobalBoolFlags,
+		Version:     constants.LunaTraceVersion,
+		Description: ``,
+		Before:      setGlobalBoolFlags,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:  "verbose",
@@ -122,31 +86,58 @@ Use "container" to collect an SBOM from a built container.`,
 		},
 		Commands: []*cli.Command{
 			{
-				Name:    "files",
-				Aliases: []string{"f"},
-				Usage:   "Collect SBOM from artifacts that are directories or files.",
-				Before:  setGlobalBoolFlags,
-				Flags:   []cli.Flag{},
-				Subcommands: []*cli.Command{
-					getInventoryCmd(appConfig, setGlobalBoolFlags, globalBoolFlags),
-				},
-			},
-			{
-				Name:    "container",
-				Aliases: []string{"c"},
-				Usage:   "Collect SBOM from container and modify container to automatically report status when deployed.",
+				Name:    "inventory",
+				Aliases: []string{"i"},
+				Usage:   "Inventory dependencies as a Software Bill of Materials (SBOM) for project and upload the SBOM.",
 				Before:  setGlobalBoolFlags,
 				Subcommands: []*cli.Command{
-					getInventoryCmd(appConfig, setGlobalBoolFlags, globalBoolFlags),
 					{
-						Name:    "inject-agent",
-						Aliases: []string{"a"},
-						Usage:   "Injects the LunaTrace Agent into the container so that the agent will automatically run when the container is deployed.",
+						Name:    "create",
+						Aliases: []string{"c"},
+						Usage:   "Create an inventory of dependencies as a SBOM for project and upload the SBOM.",
 						Before:  setGlobalBoolFlags,
-						Flags:   []cli.Flag{},
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name:  "output",
+								Usage: "File to write generated SBOM to.",
+							},
+							&cli.StringFlag{
+								Name:  "config-output",
+								Usage: "File to write generated LunaTrace Agent config.",
+							},
+							&cli.StringSliceFlag{
+								Name:  "excluded",
+								Usage: "Excluded dirs from scanning.",
+							},
+							&cli.BoolFlag{
+								Name:  "skip-upload",
+								Usage: "Skip uploading generated SBOM.",
+							},
+							&cli.StringFlag{
+								Name:  "stdin-filename",
+								Usage: "Read from stdin and use the provided filename as the source.",
+							},
+						},
 						Action: func(c *cli.Context) error {
-							// TODO (cthompson)
-							return nil
+							return inventory.CreateCommand(c, globalBoolFlags, appConfig)
+						},
+					},
+					{
+						Name:    "scan",
+						Aliases: []string{"s"},
+						Usage:   "Scan a created SBOM for known risks.",
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name:  "sbom",
+								Usage: "SBOM to identify risky dependencies from.",
+							},
+							&cli.BoolFlag{
+								Name:  "stdin-filename",
+								Usage: "Read an sbom from stdin and set the filename for the source.",
+							},
+						},
+						Action: func(c *cli.Context) error {
+							return inventory.ScanCommand(c, globalBoolFlags, appConfig)
 						},
 					},
 				},
