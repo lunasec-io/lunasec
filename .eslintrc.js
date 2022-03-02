@@ -15,8 +15,8 @@
  *
  */
 
-const productionOnly = process.env.NODE_ENV !== 'production' ? 'error' : 'off';
-const warnInDev = process.env.NODE_ENV !== 'production' ? 'error' : 'warn';
+const productionOnly = process.env.STRICT_LINT === 'true' ? 'error' : 'off';
+const warnInDev = process.env.STRICT_LINT === 'true' ? 'error' : 'warn';
 
 module.exports = {
   root: true,
@@ -48,6 +48,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true
     },
+    tsconfigRootDir: __dirname,
     ecmaVersion: 12,
     sourceType: 'module',
     project: [
