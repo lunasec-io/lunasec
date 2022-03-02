@@ -17,7 +17,6 @@ package inventory
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/anchore/syft/syft"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
@@ -72,33 +71,6 @@ func writeLunaTraceAgentConfigFile(agentSecret, generateConfig string) (err erro
 	return
 }
 
-type zerologLogger struct{}
-
-func (l *zerologLogger) Errorf(format string, args ...interface{}) {
-	log.Error().Msg(fmt.Sprintf(format, args))
-}
-func (l *zerologLogger) Error(args ...interface{}) {
-	log.Error().Msg(fmt.Sprintf("%v", args))
-}
-func (l *zerologLogger) Warnf(format string, args ...interface{}) {
-	log.Warn().Msg(fmt.Sprintf(format, args))
-}
-func (l *zerologLogger) Warn(args ...interface{}) {
-	log.Warn().Msg(fmt.Sprintf("%v", args))
-}
-func (l *zerologLogger) Infof(format string, args ...interface{}) {
-	log.Info().Msg(fmt.Sprintf(format, args))
-}
-func (l *zerologLogger) Info(args ...interface{}) {
-	log.Info().Msg(fmt.Sprintf("%v", args))
-}
-func (l *zerologLogger) Debugf(format string, args ...interface{}) {
-	log.Debug().Msg(fmt.Sprintf(format, args))
-}
-func (l *zerologLogger) Debug(args ...interface{}) {
-	log.Debug().Msg(fmt.Sprintf("%v", args))
-}
-
 func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
 	var (
 		source   string
@@ -107,7 +79,7 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 
 	command.EnableGlobalFlags(globalBoolFlags)
 
-	syft.SetLogger(&zerologLogger{})
+	syft.SetLogger(&types.ZerologLogger{})
 
 	sources := c.Args().Slice()
 
