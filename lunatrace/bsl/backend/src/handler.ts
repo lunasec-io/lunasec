@@ -34,7 +34,6 @@ interface SbomEtlMessage {
   action: SbomEtlAction;
 }
 
-
 interface SbomEtlMessageGenerate extends SbomEtlMessage {
   action: 'generateSbom';
   projectId: string;
@@ -44,7 +43,6 @@ interface SbomEtlMessageScan extends SbomEtlMessage {
   action: 'scanSbom';
   sbomUrl: string;
 }
-
 
 export function handleGenerateSbom(msg: SbomEtlMessageGenerate) {
   // TODO: handle sbom generation from uploaded manifest/ project file
@@ -137,10 +135,8 @@ function makeBlockingStream(stream: any) {
 export const handler: Handler = async (event, context) => {
   // makeBlockingStream(process.stdout);
   // makeBlockingStream(process.stderr);
-  console.log("beginning handler with event ", inspect(event, { depth: Infinity }));
+  console.log('beginning handler with event ', inspect(event, { depth: Infinity }));
   return context.logStreamName;
-
-
 
   //
   // const messagesToDelete: DequeuedMessage[] = [];

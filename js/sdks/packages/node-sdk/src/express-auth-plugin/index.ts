@@ -16,7 +16,7 @@
  */
 
 // NOTE: TypeScript is unhappy about Express being handed an async function. This disabled that check.
-/* eslint-disable @typescript-eslint/no-misused-promises */
+
 import path from 'path';
 import { URL } from 'url';
 

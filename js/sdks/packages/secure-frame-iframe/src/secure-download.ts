@@ -41,11 +41,11 @@ function setupLink(fileInfo: FileInfo, a: HTMLAnchorElement, hidden: boolean, to
     a.download = fileInfo.filename;
     a.href = URL.createObjectURL(f.file);
     a.textContent = fileInfo.filename;
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
     a.removeEventListener('click', triggerDownload);
     a.click();
   }
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
   a.addEventListener('click', triggerDownload);
   // If the element is in hidden mode, start the download ourselves.
   if (hidden) {

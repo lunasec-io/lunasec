@@ -69,8 +69,8 @@ export class AwsUtils {
     });
   }
 
-  public async getFileFromS3(key: string, bucket: string): Promise<GetObjectCommandOutput['Body']> {
-    const s3Client = new S3Client({ region: this.config.awsRegion, credentials: this.config.awsCredentials });
+  public async getFileFromS3(key: string, bucket: string, region?: string): Promise<GetObjectCommandOutput['Body']> {
+    const s3Client = new S3Client({ region: region || this.config.awsRegion, credentials: this.config.awsCredentials });
     const { Body } = await s3Client.send(new GetObjectCommand({ Key: key, Bucket: bucket })); // gosh what a bad API
     // const fileString = await this.streamToString(Body);
     return Body;
