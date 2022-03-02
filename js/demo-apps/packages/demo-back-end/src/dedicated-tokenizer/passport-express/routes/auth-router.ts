@@ -51,7 +51,6 @@ export function authRouter(models: Models, passport: ReturnType<typeof configure
     res.redirect('/');
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   router.post('/signup', async (req, res) => {
     try {
       const body = req.body as { username: string; password: string };

@@ -86,7 +86,6 @@ export function configurePassport(models: Models) {
   });
   // TODO: Generate session IDs, dont use user IDs like this
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   passport.deserializeUser(async function (userInfo: { id: string }, cb) {
     try {
       const user = await models.user.getUser(userInfo.id);

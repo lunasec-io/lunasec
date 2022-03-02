@@ -31,7 +31,7 @@
     "genversion": "^3.0.1",
     "json-schema-to-typescript": "^10.1.5",
     "ts-node": "^10.3.0",
-    "typescript": "^4.4.2"
+    "typescript": "~4.4.2"
   },
   "dependencies": {
     "@aws-cdk/aws-apigateway": "1.138.2",

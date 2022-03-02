@@ -11,33 +11,55 @@
  * limitations under the License.
  *
  */
+import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import util from 'util';
 
 import { fetchSetManifestStatus } from '../hasura-calls/updateManifestStatus';
 import { SqsMessage } from '../types/SqsMessage';
+import { S3ObjectMetadata } from '../types/s3';
 import { aws } from '../utils/aws-utils';
-const writeFilePromise = util.promisify(fs.writeFile);
-export async function handleGenerateSbom(message: SqsMessage) {
-  const region = message.awsRegion;
-  const bucket = message.s3.bucket.name;
-  const key = message.s3.object.key;
+
+export async function handleGenerateSbom(message: S3ObjectMetadata) {
+  const { key, region, bucketName } = message;
   try {
     const hasuraRes = await fetchSetManifestStatus(key, 'processing');
-    console.log('filename is  ', hasuraRes);
-    const fileBuffer = await aws.getFileFromS3(key, bucket);
+    console.log('hasuraRes is  ', hasuraRes);
+    const fileBuffer = await aws.getFileFromS3(key, bucketName, region);
     const fileString = await aws.streamToString(fileBuffer);
-    console.log('filestring is ', fileString);
-    //todo: possible security issue with taking filename from client and writing it to disk
-    const filePath = path.resolve(`./tmp/${hasuraRes.filename}`);
-    fs.writeFileSync(filePath, fileString);
-    console.log('done writing file ', filePath);
+    console.log('filestring length ', fileString.length);
+    // const commandString = `${__dirname}/../../../../cli/bin/lunatrace --log-to-stderr inventory create --stdin-filename ${hasuraRes.filename} --skip-upload --stdout 2> /dev/null`;
+    // console.log('command string is ', commandString);
+    const sbom = await new Promise((resolve, reject) => {
+      const lunatraceCli = spawn('lunatrace',['--log-to-stderr','inventory','create','--stdin-filename', hasuraRes.filename, '--skip-upload','--stdout','2>','/dev/null']);
+      lunatraceCli.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+      });
+
+
+      lunatraceCli.stderr.on('data', (data) => {
+        console.log(`stderr: ${data}`);
+      });
+
+      lunatraceCli.on('error', (error) => {
+        console.log(`error: ${error.message}`);
+        reject(error);
+      });
+
+      lunatraceCli.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+        Promise.resolve('donezo');
+      });
+      lunatraceCli.stdin.write(`${fileString}\n`, () => console.log('FLUSHED data to stdin'));
+    });
+    console.log('sbom is ', sbom);
   } catch (e) {
-    if (e instanceof Error) {
-      console.error(e);
-      // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
-      await fetchSetManifestStatus(key, 'error', e.message);
-    }
+    console.error(e);
+    // if ('message' in e) {
+    //
+    //   // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
+    //   await fetchSetManifestStatus(key, 'error', e.message);
+    // }
   }
 }

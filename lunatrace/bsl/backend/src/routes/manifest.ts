@@ -17,7 +17,7 @@ export const manifestRouter = express.Router();
 import { aws } from '../utils/aws-utils';
 
 // Promises in handlers are fine now, they work great in express 5.  Just no types yet.
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
+
 manifestRouter.post('/scan', async (req, res) => {
   console.log('scan manifest called! ', req.body);
   const { key, bucket } = req.body.input;
