@@ -26,7 +26,7 @@ export async function fetchSetManifestStatus(
     message: message || null,
   });
   const data = res.data.data;
-  console.log('data is ', data)
+  console.log('data is ', data);
   if ('errors' in data && data.errors && data.errors.length > 0) {
     console.error('Errors from hasura: ', data.errors);
     throw new Error('Failed to download manifest for processing');
