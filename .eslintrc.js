@@ -15,8 +15,12 @@
  *
  */
 
-const productionOnly = process.env.NODE_ENV !== 'production' ? 'error' : 'off';
-const warnInDev = process.env.NODE_ENV !== 'production' ? 'error' : 'warn';
+const productionError = process.env.STRICT_LINT === 'true' ? 'error' : 'off';
+const productionWarn = process.env.STRICT_LINT === 'true' ? 'warn' : 'off';
+const warnInDev = process.env.STRICT_LINT === 'true' ? 'error' : 'warn';
+
+
+const slow = process.env.SLOW_LINT === 'true'
 
 module.exports = {
   root: true,
@@ -48,6 +52,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true
     },
+    tsconfigRootDir: __dirname,
     ecmaVersion: 12,
     sourceType: 'module',
     project: [
@@ -69,12 +74,15 @@ module.exports = {
   ],
   rules: {
     "@typescript-eslint/no-unsafe-argument": 1, // TODO: Re-enable this rule and fix all errors
-    'no-console': productionOnly, // These never error, currently
-    'no-debugger': productionOnly,
+    "@typescript-eslint/no-misused-promises": slow ? 'error':'off',
+    "import/namespace":slow ? 'error':'off',
+    "@typescript-eslint/no-unsafe-assignment": slow ? 'warn':'off',
+    'no-console': productionWarn,
+    'no-debugger': productionError,
     eqeqeq: 'error',
     quotes: [warnInDev, 'single', { allowTemplateLiterals: true, avoidEscape: true }],
     'react/jsx-wrap-multilines': [
-      productionOnly,
+      productionError,
       {
         declaration: 'parens-new-line',
         assignment: 'parens-new-line',
@@ -86,27 +94,27 @@ module.exports = {
       }
     ],
     'react/jsx-first-prop-new-line': [
-      productionOnly,
+      productionError,
       'multiline-multiprop'
     ],
     'react/jsx-max-props-per-line': [
-      productionOnly,
+      productionError,
       {
         'maximum': 3,
         'when': 'multiline'
       }
     ],
     'react/jsx-indent-props': [
-      productionOnly,
+      productionError,
       2
     ],
     'react/jsx-closing-bracket-location': [
-      productionOnly,
+      productionError,
       'tag-aligned',
     ],
     "react-hooks/exhaustive-deps": "off",
     'prettier/prettier': [
-      productionOnly,
+      productionError,
       {
         singleQuote: true,
         printWidth: 120
@@ -120,20 +128,19 @@ module.exports = {
     'eslint-comments/no-unlimited-disable': 'off',
     'eslint-comments/no-unused-disable': 'error',
     '@typescript-eslint/no-unused-vars':[
-      productionOnly,
+      productionWarn,
       { "argsIgnorePattern": "^_" }
     ],
     '@typescript-eslint/no-unsafe-call': 'warn',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
-    '@typescript-eslint/no-unsafe-assignment': 'warn',
     '@typescript-eslint/unbound-method': 'warn',
     '@typescript-eslint/restrict-template-expressions': 'off',
     'import/order': [
-      productionOnly,
+      productionError,
       { 'newlines-between': 'always', 'alphabetize': { 'order': 'asc' } }
     ],
     'sort-imports': [
-      productionOnly,
+      productionError,
       { 'ignoreDeclarationSort': true, 'ignoreCase': true }
     ]
   },

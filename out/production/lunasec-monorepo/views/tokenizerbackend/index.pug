@@ -1,0 +1,13 @@
+html
+  head
+    title Secure Frame
+    link(href=.StyleUrl, rel="stylesheet", nonce=.CSPNonce)
+  body
+    h1.d-none Secure Frame
+    span.loading-text Loading...
+    script(type="text/javascript", nonce=.CSPNonce).
+        // BEGIN INLINE GLOBALS
+        window.LUNASEC_BACKEND_URL = "#{.BackendUrl}"
+        // END INLINE GLOBALS
+    script(charset="UTF-8", src=.ScriptUrl, nonce=.CSPNonce)
+

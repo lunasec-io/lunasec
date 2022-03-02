@@ -94,7 +94,7 @@ export default class Uploader extends React.Component<UploaderProps, UploaderSta
       id: this.state.files.length,
     };
     // wait for the state to set before continuing
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+
     this.setState({ files: this.state.files.concat(fileInfo) }, async () => {
       const metaData = this.props.secureframe.customMetadata;
       const tokenizeRes = await this.props.secureframe.tokenizer.tokenizeFile(file, metaData);
