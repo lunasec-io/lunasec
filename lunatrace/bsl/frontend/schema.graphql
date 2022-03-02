@@ -757,7 +757,7 @@ unique or primary key constraints on table "findings"
 """
 enum findings_constraint {
   """unique or primary key constraint"""
-  findings_dedupe_slug_key
+  findings_dedupe_slug_build_id_key
 
   """unique or primary key constraint"""
   findings_pkey

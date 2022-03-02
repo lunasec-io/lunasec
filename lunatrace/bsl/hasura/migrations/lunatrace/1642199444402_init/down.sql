@@ -10,7 +10,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 DROP TABLE
-    public.findings
+    public.manifests ,public.findings
     ,public.vulnerability_packages
     ,public.vulnerabilities
     ,public.settings

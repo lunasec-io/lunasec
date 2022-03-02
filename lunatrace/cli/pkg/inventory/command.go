@@ -17,6 +17,8 @@ package inventory
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"github.com/anchore/syft/syft"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
@@ -70,38 +72,78 @@ func writeLunaTraceAgentConfigFile(agentSecret, generateConfig string) (err erro
 	return
 }
 
-func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+type zerologLogger struct{}
+
+func (l *zerologLogger) Errorf(format string, args ...interface{}) {
+	log.Error().Msg(fmt.Sprintf(format, args))
+}
+func (l *zerologLogger) Error(args ...interface{}) {
+	log.Error().Msg(fmt.Sprintf("%v", args))
+}
+func (l *zerologLogger) Warnf(format string, args ...interface{}) {
+	log.Warn().Msg(fmt.Sprintf(format, args))
+}
+func (l *zerologLogger) Warn(args ...interface{}) {
+	log.Warn().Msg(fmt.Sprintf("%v", args))
+}
+func (l *zerologLogger) Infof(format string, args ...interface{}) {
+	log.Info().Msg(fmt.Sprintf(format, args))
+}
+func (l *zerologLogger) Info(args ...interface{}) {
+	log.Info().Msg(fmt.Sprintf("%v", args))
+}
+func (l *zerologLogger) Debugf(format string, args ...interface{}) {
+	log.Debug().Msg(fmt.Sprintf(format, args))
+}
+func (l *zerologLogger) Debug(args ...interface{}) {
+	log.Debug().Msg(fmt.Sprintf("%v", args))
+}
+
+func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+	var (
+		source   string
+		useStdin bool
+	)
+
 	command.EnableGlobalFlags(globalBoolFlags)
+
+	syft.SetLogger(&zerologLogger{})
 
 	sources := c.Args().Slice()
 
-	if len(sources) == 0 {
-		err = errors.New("no source provided")
-		log.Error().
-			Msg("No source provided. Please provide one source as an argument to this command.")
-		return
-	}
+	stdinFilename := c.String("stdin-filename")
+	useStdin = stdinFilename != ""
 
-	if len(sources) > 1 {
-		err = errors.New("too many sources provided")
-		log.Error().
-			Msg("Please provide only one source as an argument to this command.")
-		return
-	}
+	if useStdin {
+		source = stdinFilename
+	} else {
+		if len(sources) == 0 {
+			err = errors.New("no source provided")
+			log.Error().
+				Msg("No source provided. Please provide one source as an argument to this command.")
+			return
+		}
 
-	source := sources[0]
+		if len(sources) > 1 {
+			err = errors.New("too many sources provided")
+			log.Error().
+				Msg("Please provide only one source as an argument to this command.")
+			return
+		}
+		source = sources[0]
+	}
 
 	output := c.String("output")
 	excludedDirs := c.StringSlice("excluded")
 	skipUpload := c.Bool("skip-upload")
 	configOutput := c.String("config-output")
 
-	sbom, err := collectSbomFromDirectory(source, excludedDirs)
+	sbom, err := getSbomForSyft(source, excludedDirs, useStdin)
 	if err != nil {
 		return
 	}
 
-	sbomModel := toSyftJsonFormatModel(sbom)
+	sbomModel := ToFormatModel(*sbom)
 
 	if output != "" {
 		err = writeInventoryOutput(sbomModel, output)
@@ -134,5 +176,30 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig
 			Str("Agent Secret", agentSecret).
 			Msg("Set the agent secret as environment variable (LUNASEC_AGENT_SECRET) or in config file (.lunatrace_agent.yaml) in deployment.")
 	}
+	return
+}
+
+func readSbomFromFile() (sbom string, err error) {
+	return
+}
+
+func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+	command.EnableGlobalFlags(globalBoolFlags)
+
+	sbomFilename := c.String("sbom")
+
+	var sbom string
+	if sbomFilename != "" {
+		sbom, err = readSbomFromFile()
+	} else {
+		err = errors.New("neither 'sbom' or 'stdin' were provided, please specify at least one")
+		return
+	}
+
+	if err != nil {
+		return
+	}
+
+	log.Debug().Str("sbom", sbom).Msg("got sbom")
 	return
 }
