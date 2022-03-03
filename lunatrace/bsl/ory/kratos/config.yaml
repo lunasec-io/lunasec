@@ -46,17 +46,21 @@ selfservice:
 
     logout:
       after:
-        default_browser_return_url: http://localhost:4455/api/kratos/login
+        default_browser_return_url: http://localhost:4455/account/login
 
     login:
-      ui_url: http://localhost:4455/api/kratos/login
+      ui_url: http://localhost:4455/account/login
       lifespan: 10m
 
     registration:
       lifespan: 10m
-      ui_url: http://localhost:4455/api/kratos/registration
+      ui_url: http://localhost:4455/account/register
       after:
         password:
+          hooks:
+            -
+              hook: session
+        oidc:
           hooks:
             -
               hook: session
