@@ -395,7 +395,7 @@ CREATE TABLE public.manifests
     filename   text                                                         NOT NULL,
     status     text,
     message    text,
-    s3_key         text                                                            NOT NULL
+    s3_key         text                                                            NOT NULL,
 );
 
 CREATE INDEX manifest_s3_key_index  ON public.manifests (s3_key);

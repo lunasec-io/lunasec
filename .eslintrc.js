@@ -45,7 +45,8 @@ module.exports = {
   ],
   ignorePatterns: [
     'packages/tokenizer-sdk/src/generated',
-    'lunatrace/bsl/frontend/src/api/generated.ts'
+    'lunatrace/bsl/frontend/src/api/generated.ts',
+    '@aws-sdk/**'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -74,7 +75,7 @@ module.exports = {
   ],
   rules: {
     "@typescript-eslint/no-unsafe-argument": 1, // TODO: Re-enable this rule and fix all errors
-    "@typescript-eslint/no-misused-promises": slow ? 'error':'off',
+    "@typescript-eslint/no-misused-promises": slow ? 'warn':'off',
     "import/namespace":slow ? 'error':'off',
     "@typescript-eslint/no-unsafe-assignment": slow ? 'warn':'off',
     'no-console': productionWarn,

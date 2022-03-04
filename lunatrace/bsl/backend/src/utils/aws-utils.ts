@@ -13,14 +13,16 @@
  */
 import { Readable } from 'stream';
 
-import { GetObjectCommand, GetObjectCommandOutput, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, GetObjectCommandOutput, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { Hash } from '@aws-sdk/hash-node';
+import { Upload } from '@aws-sdk/lib-storage';
 import { HttpRequest } from '@aws-sdk/protocol-http';
 import { S3RequestPresigner, S3RequestPresignerOptions } from '@aws-sdk/s3-request-presigner';
 import { HeaderBag } from '@aws-sdk/types';
 import { parseUrl } from '@aws-sdk/url-parser';
 import { formatUrl } from '@aws-sdk/util-format-url';
+import { v4 as uuid } from 'uuid';
 export interface AwsCredentials {
   accessKeyId: string;
   secretAccessKey: string;
@@ -46,7 +48,7 @@ const awsRegion = process.env.AWS_DEFAULT_REGION || 'us-west-2';
 export class AwsUtils {
   constructor(readonly config: PreSignedUrlGeneratorConfig) {}
 
-  private generateAWSBaseUrl(bucket: string) {
+  public generateAWSBaseUrl(bucket: string) {
     if (this.config.useLocalStack) {
       if (this.config.redirectToLocalhost) {
         return `http://localhost:4566/${bucket}`;
@@ -57,6 +59,7 @@ export class AwsUtils {
     return `https://${bucket}.s3.${this.config.awsRegion}.amazonaws.com`;
   }
 
+  // deprecated
   public async streamToString(stream: GetObjectCommandOutput['Body']): Promise<string> {
     if (!(stream instanceof Readable)) {
       throw new Error('S3 load stream is of wrong type');
@@ -69,11 +72,26 @@ export class AwsUtils {
     });
   }
 
-  public async getFileFromS3(key: string, bucket: string, region?: string): Promise<GetObjectCommandOutput['Body']> {
+  public async getFileFromS3(key: string, bucket: string, region?: string): Promise<Readable> {
     const s3Client = new S3Client({ region: region || this.config.awsRegion, credentials: this.config.awsCredentials });
     const { Body } = await s3Client.send(new GetObjectCommand({ Key: key, Bucket: bucket })); // gosh what a bad API
     // const fileString = await this.streamToString(Body);
+    if (!(Body instanceof Readable)) {
+      throw new Error('S3 load stream is of wrong type');
+    }
     return Body;
+  }
+
+  public async uploadGzipFileToS3(key: string, bucket: string, body: ReadableStream | Readable, region?: string) {
+    const s3Client = new S3Client({ region: region || this.config.awsRegion, credentials: this.config.awsCredentials });
+    const parallelUpload = new Upload({
+      client: s3Client,
+      queueSize: 4, // optional concurrency configuration
+      leavePartsOnError: false, // optional manually handle dropped parts
+      params: { Key: key, Bucket: bucket, Body: body, ContentEncoding: 'gzip' },
+    });
+    await parallelUpload.done();
+    return `${this.generateAWSBaseUrl(bucket)}/${key}`;
   }
 
   async generatePresignedS3Url(
@@ -103,6 +121,17 @@ export class AwsUtils {
       url: formatUrl(signedUrl),
       headers: signedUrl.headers,
     };
+  }
+
+  public generateSbomS3Key(orgId: string, projectId: string): string {
+    const today = new Date();
+    const recordId: string = uuid();
+
+    return `${encodeURIComponent(
+      orgId
+    )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURIComponent(
+      projectId
+    )}.json.gz`;
   }
 }
 

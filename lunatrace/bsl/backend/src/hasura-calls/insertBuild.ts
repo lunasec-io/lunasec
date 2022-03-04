@@ -15,45 +15,24 @@ import { callHasura } from './baseHasuraClient';
 
 // todo: in prod add status: {_is_null: true} to the query
 const operation = `
-  mutation UpdateManifest($key_eq: String!, $set_status: String!, $message: String, $build_id: uuid) {
-    update_manifests(where: { s3_key: {_eq: $key_eq}}, _set: {status: $set_status, message:$message, build_id: $build_id}) {
-      returning {
-        filename
-        project_id
-        project {
-          organization_id
+    mutation InsertBuild($project_id: uuid!, $s3_url: String!) {
+        insert_builds_one(object: {project_id: $project_id, s3_url: $s3_url}) {
+          id
         }
-      }
     }
-  }
 `;
 
-interface ManifestMetadata {
-  filename: string;
-  project_id: string;
-  project: {
-    organization_id: string;
-  };
+interface BuildData {
+  id: string;
 }
 
-export async function setManifestStatus(
-  key_eq: string,
-  set_status: string,
-  message: string | null,
-  build_id: string | null
-): Promise<ManifestMetadata> {
-  const data = await callHasura(operation, 'UpdateManifest', {
-    key_eq: key_eq,
-    set_status: set_status,
-    message: message,
-    build_id: build_id,
-  });
-
-  if (!data.update_manifests || data.update_manifests.returning.length < 1) {
+export async function insertBuild(variables: { project_id: string; s3_url: string }): Promise<BuildData> {
+  const data = await callHasura(operation, 'InsertBuild', variables);
+  if (!data.insert_builds_one) {
     console.error('Hasura response missing fields ', data);
     throw new Error('Failed to download manifest for processing');
   }
-  return data.update_manifests.returning[0] as ManifestMetadata;
+  return data.insert_builds_one as BuildData;
 }
 
 // fetchMyMutation()
