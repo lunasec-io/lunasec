@@ -1,11 +1,28 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { callHasura } from './baseHasuraClient';
 
 // todo: in prod add status: {_is_null: true} to the query
 const operation = `
-  mutation MyMutation($key_eq: String!, $set_status: String!, $message: String) {
-    update_manifests(where: { s3_key: {_eq: $key_eq}}, _set: {status: $set_status, message:$message}) {
+  mutation UpdateManifest($key_eq: String!, $set_status: String!, $message: String, $build_id: uuid) {
+    update_manifests(where: { s3_key: {_eq: $key_eq}}, _set: {status: $set_status, message:$message, build_id: $build_id}) {
       returning {
         filename
+        project_id
+        project {
+          organization_id
+        }
       }
     }
   }
@@ -13,29 +30,30 @@ const operation = `
 
 interface ManifestMetadata {
   filename: string;
+  project_id: string;
+  project: {
+    organization_id: string;
+  };
 }
 
-export async function fetchSetManifestStatus(
+export async function setManifestStatus(
   key_eq: string,
   set_status: string,
-  message?: string
+  message: string | null,
+  build_id: string | null
 ): Promise<ManifestMetadata> {
-  const res = await callHasura(operation, 'MyMutation', {
+  const data = await callHasura(operation, 'UpdateManifest', {
     key_eq: key_eq,
     set_status: set_status,
-    message: message || null,
+    message: message,
+    build_id: build_id,
   });
-  const data = res.data.data;
-  console.log('data is ', data);
-  if ('errors' in data && data.errors && data.errors.length > 0) {
-    console.error('Errors from hasura: ', data.errors);
-    throw new Error('Failed to download manifest for processing');
-  }
+
   if (!data.update_manifests || data.update_manifests.returning.length < 1) {
     console.error('Hasura response missing fields ', data);
     throw new Error('Failed to download manifest for processing');
   }
-  return data.update_manifests.returning[0];
+  return data.update_manifests.returning[0] as ManifestMetadata;
 }
 
 // fetchMyMutation()

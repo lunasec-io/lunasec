@@ -1,3 +1,16 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 export interface SqsMessages {
   Records: SqsMessage[];
 }
@@ -27,7 +40,7 @@ export interface S3 {
   s3SchemaVersion: string;
   configurationId: string;
   bucket: Bucket;
-  object: Object;
+  object: S3Object;
 }
 
 export interface Bucket {
@@ -40,7 +53,7 @@ export interface ErIdentity {
   principalId: string;
 }
 
-export interface Object {
+export interface S3Object {
   key: string;
   size: number;
   eTag: string;

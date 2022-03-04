@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import axios, { AxiosRequestHeaders } from 'axios';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { Card, Col, Row, Spinner } from 'react-bootstrap';
 import { DropzoneOptions, useDropzone } from 'react-dropzone';
@@ -28,7 +28,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
 
   const [generatePresignedUrl] = api.usePresignManifestUrlMutation();
   const [insertManifest] = api.useInsertManifestMutation();
-
+  // const [subscribeManfiest] = api.useManifestSubscription();
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
 
@@ -66,8 +66,8 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     const uploadResult = await axiosInstance.put(presign.url, file, options);
     console.log('upload success ', uploadResult.data);
     console.log('new file is at ', manifestUrl);
-    setUploadStatus(`File uploaded, notifying LunaTrace`);
 
+    setUploadStatus(`File uploaded, waiting for scan to begin`);
     // Tell lunatrace the file uploaded, which simultaneously records the file path in hasura and calls express to kick
     // off the build via an action
 
@@ -75,7 +75,8 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
 
     // return axios.put(signedUrl, file, options);
   };
-
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const onDropAccepted: DropzoneOptions['onDropAccepted'] = async (acceptedFiles) => {
     setUploadInProgress(true);
 

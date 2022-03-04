@@ -16,7 +16,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 import Express from 'express';
 
-import { manifestRouter } from './routes/manifest';
 import { s3Router } from './routes/s3-router';
 import { generatePresignedUrl } from './s3/handler';
 
@@ -44,6 +43,5 @@ app.get('/', (_req: Express.Request, res: Express.Response) => {
 });
 
 app.use('/s3', s3Router);
-app.use('/manifest/', manifestRouter);
 
 export { app };

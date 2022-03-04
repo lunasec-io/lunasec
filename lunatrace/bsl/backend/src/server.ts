@@ -29,6 +29,8 @@ if (executionMode === 'process-manifest-queue') {
 } else if (executionMode === 'process-sbom-queue') {
   void (async () => {
     const processMessage = (object: S3ObjectMetadata) => {
+      // Todo: might want to have this be careful and poll hasura to make sure the build exists first..im not sure how fast those sqs
+      // s3 events are but we dont want a race condition where we havent created the build in hasura yet but have uploaded the sbom
       console.log(object);
     };
     // eslint-disable-next-line no-constant-condition

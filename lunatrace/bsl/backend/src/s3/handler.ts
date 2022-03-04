@@ -13,7 +13,6 @@
  */
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { Request, Response } from 'express';
-import { v4 as uuid } from 'uuid';
 import validate from 'validator';
 
 import { AwsUtils } from '../utils/aws-utils';
@@ -74,7 +73,7 @@ export async function generatePresignedUrl(req: Request, res: Response) {
     return generateErrorResponse(res, 'Missing AWS region');
   }
 
-  const bucket = process.env.S3_BUCKET_NAME;
+  const bucket = process.env.S3_SBOM_BUCKET_NAME;
 
   if (!bucket) {
     return generateErrorResponse(res, 'Missing S3 Bucket name');
@@ -90,17 +89,10 @@ export async function generatePresignedUrl(req: Request, res: Response) {
     awsRegion: region,
   });
 
-  const today = new Date();
-  const recordId: string = uuid();
-
   try {
     const result = await aws.generatePresignedS3Url(
       bucket,
-      `${encodeURIComponent(
-        parsedRequest.orgId
-      )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURIComponent(
-        parsedRequest.projectId
-      )}.json.gz`,
+      aws.generateSbomS3Key(parsedRequest.orgId, parsedRequest.projectId),
       'PUT'
     );
 
