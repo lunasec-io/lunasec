@@ -1,3 +1,16 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1 
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { api } from './baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -1337,6 +1350,9 @@ export type Jsonb_Comparison_Exp = {
 /** columns and relationships of "manifests" */
 export type Manifests = {
   __typename?: 'manifests';
+  /** An object relationship */
+  build?: Maybe<Builds>;
+  build_id?: Maybe<Scalars['uuid']>;
   created_at: Scalars['timestamp'];
   filename: Scalars['String'];
   id: Scalars['uuid'];
@@ -1390,6 +1406,8 @@ export type Manifests_Bool_Exp = {
   _and?: InputMaybe<Array<Manifests_Bool_Exp>>;
   _not?: InputMaybe<Manifests_Bool_Exp>;
   _or?: InputMaybe<Array<Manifests_Bool_Exp>>;
+  build?: InputMaybe<Builds_Bool_Exp>;
+  build_id?: InputMaybe<Uuid_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   filename?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -1411,6 +1429,8 @@ export enum Manifests_Constraint {
 
 /** input type for inserting data into table "manifests" */
 export type Manifests_Insert_Input = {
+  build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
+  build_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   filename?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
@@ -1425,6 +1445,7 @@ export type Manifests_Insert_Input = {
 /** aggregate max on columns */
 export type Manifests_Max_Fields = {
   __typename?: 'manifests_max_fields';
+  build_id?: Maybe<Scalars['uuid']>;
   created_at?: Maybe<Scalars['timestamp']>;
   filename?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
@@ -1437,6 +1458,7 @@ export type Manifests_Max_Fields = {
 
 /** order by max() on columns of table "manifests" */
 export type Manifests_Max_Order_By = {
+  build_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   filename?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -1450,6 +1472,7 @@ export type Manifests_Max_Order_By = {
 /** aggregate min on columns */
 export type Manifests_Min_Fields = {
   __typename?: 'manifests_min_fields';
+  build_id?: Maybe<Scalars['uuid']>;
   created_at?: Maybe<Scalars['timestamp']>;
   filename?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
@@ -1462,6 +1485,7 @@ export type Manifests_Min_Fields = {
 
 /** order by min() on columns of table "manifests" */
 export type Manifests_Min_Order_By = {
+  build_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   filename?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -1490,6 +1514,8 @@ export type Manifests_On_Conflict = {
 
 /** Ordering options when selecting data from "manifests". */
 export type Manifests_Order_By = {
+  build?: InputMaybe<Builds_Order_By>;
+  build_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   filename?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -1508,6 +1534,8 @@ export type Manifests_Pk_Columns_Input = {
 
 /** select columns of table "manifests" */
 export enum Manifests_Select_Column {
+  /** column name */
+  BuildId = 'build_id',
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
@@ -1528,6 +1556,7 @@ export enum Manifests_Select_Column {
 
 /** input type for updating data in table "manifests" */
 export type Manifests_Set_Input = {
+  build_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   filename?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
@@ -1540,6 +1569,8 @@ export type Manifests_Set_Input = {
 
 /** update columns of table "manifests" */
 export enum Manifests_Update_Column {
+  /** column name */
+  BuildId = 'build_id',
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
@@ -5989,6 +6020,13 @@ export type PresignManifestUrlMutationVariables = Exact<{
 
 export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string, key: string, bucket: string, error: boolean, error_message?: string | null } | null };
 
+export type ManifestSubscriptionSubscriptionVariables = Exact<{
+  id?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type ManifestSubscriptionSubscription = { __typename?: 'subscription_root', manifests: Array<{ __typename?: 'manifests', build_id?: any | null, project_id: any, status?: string | null, message?: string | null }> };
+
 
 export const GetBuildDetailsDocument = `
     query GetBuildDetails($build_id: uuid) {
@@ -6257,6 +6295,16 @@ export const PresignManifestUrlDocument = `
   }
 }
     `;
+export const ManifestSubscriptionDocument = `
+    subscription ManifestSubscription($id: uuid = "") {
+  manifests(where: {id: {_eq: $id}}) {
+    build_id
+    project_id
+    status
+    message
+  }
+}
+    `;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -6294,5 +6342,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-
+export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery, useGetVulnerabilityDetailsQuery, useLazyGetVulnerabilityDetailsQuery, useInsertManifestMutation, useCreateOrganizationAndProjectMutation, useInsertProjectMutation, usePresignManifestUrlMutation } = injectedRtkApi;
 

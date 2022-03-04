@@ -1555,6 +1555,9 @@ input jsonb_comparison_exp {
 columns and relationships of "manifests"
 """
 type manifests {
+  """An object relationship"""
+  build: builds
+  build_id: uuid
   created_at: timestamp!
   filename: String!
   id: uuid!
@@ -1611,6 +1614,8 @@ input manifests_bool_exp {
   _and: [manifests_bool_exp!]
   _not: manifests_bool_exp
   _or: [manifests_bool_exp!]
+  build: builds_bool_exp
+  build_id: uuid_comparison_exp
   created_at: timestamp_comparison_exp
   filename: String_comparison_exp
   id: uuid_comparison_exp
@@ -1637,6 +1642,8 @@ enum manifests_constraint {
 input type for inserting data into table "manifests"
 """
 input manifests_insert_input {
+  build: builds_obj_rel_insert_input
+  build_id: uuid
   created_at: timestamp
   filename: String
   id: uuid
@@ -1650,6 +1657,7 @@ input manifests_insert_input {
 
 """aggregate max on columns"""
 type manifests_max_fields {
+  build_id: uuid
   created_at: timestamp
   filename: String
   id: uuid
@@ -1664,6 +1672,7 @@ type manifests_max_fields {
 order by max() on columns of table "manifests"
 """
 input manifests_max_order_by {
+  build_id: order_by
   created_at: order_by
   filename: order_by
   id: order_by
@@ -1676,6 +1685,7 @@ input manifests_max_order_by {
 
 """aggregate min on columns"""
 type manifests_min_fields {
+  build_id: uuid
   created_at: timestamp
   filename: String
   id: uuid
@@ -1690,6 +1700,7 @@ type manifests_min_fields {
 order by min() on columns of table "manifests"
 """
 input manifests_min_order_by {
+  build_id: order_by
   created_at: order_by
   filename: order_by
   id: order_by
@@ -1722,6 +1733,8 @@ input manifests_on_conflict {
 
 """Ordering options when selecting data from "manifests"."""
 input manifests_order_by {
+  build: builds_order_by
+  build_id: order_by
   created_at: order_by
   filename: order_by
   id: order_by
@@ -1742,6 +1755,9 @@ input manifests_pk_columns_input {
 select columns of table "manifests"
 """
 enum manifests_select_column {
+  """column name"""
+  build_id
+
   """column name"""
   created_at
 
@@ -1771,6 +1787,7 @@ enum manifests_select_column {
 input type for updating data in table "manifests"
 """
 input manifests_set_input {
+  build_id: uuid
   created_at: timestamp
   filename: String
   id: uuid
@@ -1785,6 +1802,9 @@ input manifests_set_input {
 update columns of table "manifests"
 """
 enum manifests_update_column {
+  """column name"""
+  build_id
+
   """column name"""
   created_at
 

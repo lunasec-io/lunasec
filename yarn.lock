@@ -5393,6 +5393,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-sdk/lib-storage@npm:^3.53.1":
+  version: 3.53.1
+  resolution: "@aws-sdk/lib-storage@npm:3.53.1"
+  dependencies:
+    buffer: 5.6.0
+    events: 3.3.0
+    stream-browserify: 3.0.0
+    tslib: ^2.3.0
+  peerDependencies:
+    "@aws-sdk/abort-controller": ^3.0.0
+    "@aws-sdk/client-s3": ^3.0.0
+  checksum: 1553c3bc2927f4165b4dee845d685f52847df4333e9f254da3d7e8485c915ae2da74aa52082e3972169e8f4c10413de42465a7701b662bb32b798a4dff1a458d
+  languageName: node
+  linkType: hard
+
 "@aws-sdk/md5-js@npm:3.38.0":
   version: 3.38.0
   resolution: "@aws-sdk/md5-js@npm:3.38.0"
@@ -19948,6 +19963,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"buffer@npm:5.6.0":
+  version: 5.6.0
+  resolution: "buffer@npm:5.6.0"
+  dependencies:
+    base64-js: ^1.0.2
+    ieee754: ^1.1.4
+  checksum: d659494c5032dd39d03d2912e64179cc44c6340e7e9d1f68d3840e7ab4559989fbce92b4950174593c38d05268224235ba404f0878775cab2a616b6dcad9c23e
+  languageName: node
+  linkType: hard
+
 "buffer@npm:^5.2.1, buffer@npm:^5.5.0, buffer@npm:^5.6.0, buffer@npm:^5.7.0":
   version: 5.7.1
   resolution: "buffer@npm:5.7.1"
@@ -25884,7 +25909,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"events@npm:*, events@npm:^3.0.0, events@npm:^3.2.0, events@npm:^3.3.0":
+"events@npm:*, events@npm:3.3.0, events@npm:^3.0.0, events@npm:^3.2.0, events@npm:^3.3.0":
   version: 3.3.0
   resolution: "events@npm:3.3.0"
   checksum: f6f487ad2198aa41d878fa31452f1a3c00958f46e9019286ff4787c84aac329332ab45c9cdc8c445928fc6d7ded294b9e005a7fce9426488518017831b272780
@@ -34548,6 +34573,7 @@ __metadata:
     "@aws-sdk/client-sqs": ^3.53.0
     "@aws-sdk/credential-provider-node": ^3.46.0
     "@aws-sdk/hash-node": ^3.46.0
+    "@aws-sdk/lib-storage": ^3.53.1
     "@aws-sdk/protocol-http": ^3.46.0
     "@aws-sdk/s3-request-presigner": ^3.46.0
     "@aws-sdk/types": ^3.46.0
@@ -45173,6 +45199,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"stream-browserify@npm:3.0.0, stream-browserify@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "stream-browserify@npm:3.0.0"
+  dependencies:
+    inherits: ~2.0.4
+    readable-stream: ^3.5.0
+  checksum: 4c47ef64d6f03815a9ca3874e2319805e8e8a85f3550776c47ce523b6f4c6cd57f40e46ec6a9ab8ad260fde61863c2718f250d3bedb3fe9052444eb9abfd9921
+  languageName: node
+  linkType: hard
+
 "stream-browserify@npm:^2.0.1":
   version: 2.0.2
   resolution: "stream-browserify@npm:2.0.2"
@@ -45180,16 +45216,6 @@ __metadata:
     inherits: ~2.0.1
     readable-stream: ^2.0.2
   checksum: 8de7bcab5582e9a931ae1a4768be7efe8fa4b0b95fd368d16d8cf3e494b897d6b0a7238626de5d71686e53bddf417fd59d106cfa3af0ec055f61a8d1f8fc77b3
-  languageName: node
-  linkType: hard
-
-"stream-browserify@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "stream-browserify@npm:3.0.0"
-  dependencies:
-    inherits: ~2.0.4
-    readable-stream: ^3.5.0
-  checksum: 4c47ef64d6f03815a9ca3874e2319805e8e8a85f3550776c47ce523b6f4c6cd57f40e46ec6a9ab8ad260fde61863c2718f250d3bedb3fe9052444eb9abfd9921
   languageName: node
   linkType: hard
 

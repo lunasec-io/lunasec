@@ -18,6 +18,7 @@
     "@aws-sdk/client-sqs": "^3.53.0",
     "@aws-sdk/credential-provider-node": "^3.46.0",
     "@aws-sdk/hash-node": "^3.46.0",
+    "@aws-sdk/lib-storage": "^3.53.1",
     "@aws-sdk/protocol-http": "^3.46.0",
     "@aws-sdk/s3-request-presigner": "^3.46.0",
     "@aws-sdk/types": "^3.46.0",

@@ -1,0 +1,8 @@
+subscription ManifestSubscription($id: uuid = "") {
+    manifests(where: {id: {_eq: $id}}) {
+        build_id
+        project_id
+        status
+        message
+    }
+}
