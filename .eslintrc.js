@@ -35,7 +35,7 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:prettier/recommended',
   ],
-  ignorePatterns: ['packages/tokenizer-sdk/src/generated'],
+  ignorePatterns: ['packages/tokenizer-sdk/src/generated', 'lunatrace/bsl/backend-cdk/cdk.out'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -91,6 +91,12 @@ module.exports = {
     ],
     'eslint-comments/no-unlimited-disable':'off',
     'eslint-comments/no-unused-disable': 'error',
+    '@typescript-eslint/no-misused-promises': [
+      'warn',
+      {
+        'checksVoidReturn': true
+      }
+    ],
     '@typescript-eslint/no-unused-vars':['warn',{ "argsIgnorePattern": "^_" }],
     '@typescript-eslint/no-unsafe-call':'off', // Did this because of a bug with intellij (forrest)
     '@typescript-eslint/no-unsafe-member-access':'off',
