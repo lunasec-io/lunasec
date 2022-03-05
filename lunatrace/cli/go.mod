@@ -19,7 +19,6 @@ require (
 	github.com/rs/zerolog v1.26.1
 	github.com/urfave/cli/v2 v2.3.0
 	go.uber.org/config v1.4.0
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	lunasec/lunatrace/inventory v0.0.0-00010101000000-000000000000
 )
 
@@ -105,4 +104,5 @@ require (
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
