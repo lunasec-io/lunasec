@@ -226,6 +226,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         streamPrefix: 'lunatrace-hasura',
       }),
       environment: {
+        HASURA_GRAPHQL_CORS_DOMAIN: `https://${props.domainName}`,
         HASURA_GRAPHQL_ENABLE_CONSOLE: 'true',
         HASURA_GRAPHQL_PG_CONNECTIONS: '100',
         HASURA_GRAPHQL_LOG_LEVEL: 'debug',
