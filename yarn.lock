@@ -28493,7 +28493,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-tag@npm:^2.10.1, graphql-tag@npm:^2.11.0, graphql-tag@npm:^2.12.3, graphql-tag@npm:^2.12.5":
+"graphql-tag@npm:^2.10.1, graphql-tag@npm:^2.11.0, graphql-tag@npm:^2.12.3, graphql-tag@npm:^2.12.5, graphql-tag@npm:^2.12.6":
   version: 2.12.6
   resolution: "graphql-tag@npm:2.12.6"
   dependencies:
@@ -34647,6 +34647,7 @@ __metadata:
     express: 5.0.0-beta.1
     generate-lockfile: ^0.0.11
     graphql-request: ^4.0.0
+    graphql-tag: ^2.12.6
     graphqurl: ^1.0.1
     jest: ^27.5.1
     nodemon: ^2.0.15
