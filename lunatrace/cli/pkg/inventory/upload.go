@@ -258,8 +258,8 @@ func presignSbomUpload(
 		return
 	}
 	url = presignSbomResponse.GetUrl()
-	headers = presignSbomResponse.GetHeaders()
-	return
+	s3Headers := presignSbomResponse.GetHeaders()
+	return url, s3Headers, err
 }
 
 func setBuildS3Url(
