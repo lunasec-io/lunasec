@@ -181,7 +181,7 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 	} else {
 		log.Info().
 			Str("Agent Secret", agentSecret).
-			Msg("Set the agent secret as environment variable (LUNASEC_AGENT_SECRET) or in config file (.lunatrace_agent.yaml) in deployment.")
+			Msg("Set this agent secret as an environment variable (LUNASEC_AGENT_SECRET) or in the config file (.lunatrace_agent.yaml) in your deployed service to use live monitoring:")
 	}
 	return
 }
