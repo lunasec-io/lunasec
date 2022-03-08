@@ -8,9 +8,6 @@ windows:
     - oathkeeper --config config.yaml serve
 
   - shell_command:
-    - sudo docker-compose up
-
-  - shell_command:
     - cd backend
     - yarn run start
 
@@ -22,3 +19,6 @@ windows:
   - shell_command:
     - cd frontend
     - yarn start
+
+  - shell_command:
+    - sudo docker-compose up
