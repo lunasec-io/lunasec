@@ -23,6 +23,12 @@ const app = Express();
 app.use(cors());
 app.use(Express.json());
 
+app.post('/api/github/kratos-callback', (req, res) => {
+  console.log(req.body);
+  res.send({ ok: true });
+  return;
+});
+
 app.get('/api/upload-sbom', generatePresignedUrl);
 
 app.get('/health', (_req: Express.Request, res: Express.Response) => {
@@ -30,8 +36,6 @@ app.get('/health', (_req: Express.Request, res: Express.Response) => {
     status: 'ok',
   });
 });
-
-app.use(Express.json());
 
 app.use((req, res, next) => {
   console.log('REQUEST RECEIVED ', req.path);
