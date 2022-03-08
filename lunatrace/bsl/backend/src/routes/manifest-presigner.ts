@@ -14,20 +14,12 @@
 import express from 'express';
 import { v4 as uuid } from 'uuid';
 
+import { manifestBucket } from '../constants';
 import { aws } from '../utils/aws-utils';
-export const s3Router = express.Router();
 
-const manifestBucket = process.env.S3_MANIFEST_BUCKET || 'test-manifest-bucket-one';
+export const manifestPresignerRouter = express.Router();
 
-if (!manifestBucket) {
-  throw new Error('Missing S3_MANIFEST_BUCKET env var');
-}
-
-// TODO: move this to the manifest router
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-
-s3Router.post('/presign-manifest-upload', async (req, res) => {
+manifestPresignerRouter.post('/s3/presign-manifest-upload', async (req, res) => {
   const projectId = req.body.input.project_id as string | undefined;
   if (!projectId) {
     return res.status(400).send({ error: true, error_message: 'Missing project_id in request' });

@@ -8,4 +8,4 @@ generates:
       - "typescript-operations"
       - "typescript-rtk-query":
           importBaseApiFrom: './baseApi'
-          exportHooks: true
+          exportHooks: false

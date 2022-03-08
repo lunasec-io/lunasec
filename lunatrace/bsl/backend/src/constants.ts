@@ -11,10 +11,14 @@
  * limitations under the License.
  *
  */
-import fs from 'fs';
+if (!process.env.S3_SBOM_BUCKET && process.env.NODE_ENV === 'production') {
+  throw new Error('Missing S3_SBOM_BUCKET env var');
+}
 
-import { Scan } from '../models/scan';
+export const sbomBucket = process.env.S3_SBOM_BUCKET || 'sbom-test-bucket';
 
-void Scan.runGrypeScan(fs.createReadStream('~/tmp/syftoutput.json')).then((res) => {
-  console.log(res);
-});
+if (!process.env.S3_MANIFEST_BUCKET && process.env.NODE_ENV === 'production') {
+  throw new Error('Missing S3_MANIFEST_BUCKET env var');
+}
+
+export const manifestBucket = process.env.S3_MANIFEST_BUCKET || 'test-manifest-bucket-one';
