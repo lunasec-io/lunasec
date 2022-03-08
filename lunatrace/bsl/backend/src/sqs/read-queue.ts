@@ -9,7 +9,6 @@ import {
 import { S3ObjectMetadata } from '../types/s3';
 import { S3SqsEvent } from '../types/sqs';
 
-const executionMode = process.env.EXECUTION_MODE || 'server';
 const queueName = process.env.QUEUE_NAME || '';
 
 if (typeof queueName !== 'string') {
@@ -19,7 +18,7 @@ if (typeof queueName !== 'string') {
 const REGION = 'us-west-2';
 const sqsClient: SQSClient = new SQSClient({ region: REGION });
 
-export async function readDataFromQueue(processObjectCallback: (object: S3ObjectMetadata) => void) {
+export async function readDataFromQueue(processObjectCallback: (object: S3ObjectMetadata) => Promise<void>) {
   const strQueueName: string = queueName;
 
   const { QueueUrl } = await sqsClient.send(
@@ -59,7 +58,7 @@ export async function readDataFromQueue(processObjectCallback: (object: S3Object
       }, [] as S3ObjectMetadata[]);
 
       s3Objects.forEach((object) => {
-        processObjectCallback(object);
+        void processObjectCallback(object);
       });
 
       const deleteParams = {
@@ -70,10 +69,10 @@ export async function readDataFromQueue(processObjectCallback: (object: S3Object
         const data = await sqsClient.send(new DeleteMessageCommand(deleteParams));
         console.log('Message deleted', data);
       } catch (err) {
-        console.log('Error', err);
+        console.log('Error deleting message', err);
       }
     }
   } catch (err) {
-    console.log('Receive Error', err);
+    console.log('SQS processor top level error: ', err);
   }
 }
