@@ -11,8 +11,10 @@
  * limitations under the License.
  *
  */
+import fs from 'fs';
+
 import { Scan } from '../models/scan';
 
-void Scan.runGrypeScan('~/tmp/syftoutput.json').then((res) => {
+void Scan.runGrypeScan(fs.createReadStream('~/tmp/syftoutput.json')).then((res) => {
   console.log(res);
 });
