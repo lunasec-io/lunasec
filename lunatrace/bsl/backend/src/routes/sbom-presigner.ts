@@ -66,8 +66,8 @@ function parseRequest(req: Request): ErrorResponse | { error: false; buildId: st
 }
 
 function generateErrorResponse(res: Response, errorMessage: string, statusCode = 500) {
-  res.send(JSON.stringify({ error: true, message: errorMessage }));
   res.status(statusCode);
+  res.send(JSON.stringify({ error: true, message: errorMessage }));
 }
 
 sbomPresignerRouter.post('/s3/presign-sbom-upload', async (req, res) => {
