@@ -15,11 +15,11 @@ import fs from 'fs';
 import path from 'path';
 
 import sbomS3EventSqsMessageFixture from '../fixtures/upload-manifest-sqs-message.json';
-import { callLunatrace, handleGenerateSbom } from '../handlers/generateSbom';
+import { callLunatrace, handleGenerateSbom } from '../sqs-handlers/generateSbom';
 import { S3ObjectMetadata } from '../types/s3';
 
 const objectMetadata: S3ObjectMetadata = {
-  key: '64ce049e-7dac-49a9-b9cb-0e3a53c23e37/2022/2/4/12/e98ecc53-4d1c-4398-adef-e526d7f4d5f4',
+  key: '64ce049e-7dac-49a9-b9cb-0e3a53c23e37/2022/2/5/13/9c20ac11-556d-4c2a-886e-00dc12b81ab4',
   bucketName: 'test-manifest-bucket-one',
   region: 'us-west-2',
 };

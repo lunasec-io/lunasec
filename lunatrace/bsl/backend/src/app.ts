@@ -16,20 +16,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 import Express from 'express';
 
-import { s3Router } from './routes/s3-router';
-import { generatePresignedUrl } from './s3/handler';
+import { lookupAccessTokenRouter } from './routes/lookupAccessToken';
+import { manifestPresignerRouter } from './routes/manifest-presigner';
+import { sbomPresignerRouter } from './routes/sbom-presigner';
 
 const app = Express();
 app.use(cors());
 app.use(Express.json());
-
-app.post('/api/github/kratos-callback', (req, res) => {
-  console.log(req.body);
-  res.send({ ok: true });
-  return;
-});
-
-app.get('/api/upload-sbom', generatePresignedUrl);
 
 app.get('/health', (_req: Express.Request, res: Express.Response) => {
   res.send({
@@ -37,15 +30,21 @@ app.get('/health', (_req: Express.Request, res: Express.Response) => {
   });
 });
 
-app.use((req, res, next) => {
-  console.log('REQUEST RECEIVED ', req.path);
-  next();
-});
+app.use(Express.json());
+
+if (process.env.NODE_ENV !== 'production') {
+  app.use((req, res, next) => {
+    console.log('REQUEST RECEIVED ', req.path);
+    console.log('WITH BODY: ', req.body);
+    next();
+  });
+}
 
 app.get('/', (_req: Express.Request, res: Express.Response) => {
   res.send('Hello World!');
 });
 
-app.use('/s3', s3Router);
-
+app.use(manifestPresignerRouter);
+app.use(sbomPresignerRouter);
+app.use(lookupAccessTokenRouter);
 export { app };

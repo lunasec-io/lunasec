@@ -40,6 +40,7 @@ interface LunaTraceStackProps extends cdk.StackProps {
   domainZoneId: string;
   appName: string;
   certificateArn: string;
+  backendStaticSecretArn: string;
   databaseSecretArn: string;
   vpcId: string;
 }
@@ -202,22 +203,27 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
+    const backendStaticSecret = Secret.fromSecretCompleteArn(this, 'BackendStaticSecret', props.backendStaticSecretArn);
+
     const backendContainerImage = ContainerImage.fromAsset('../backend');
 
     const backend = taskDef.addContainer('BackendContainer', {
       image: backendContainerImage,
       containerName: 'LunaTraceBackendContainer',
-      portMappings: [{ containerPort: 8000 }],
+      portMappings: [{ containerPort: 3002 }],
       logging: LogDriver.awsLogs({
         streamPrefix: 'lunatrace-backend',
       }),
       environment: {
         S3_BUCKET_NAME: sbomBucket.bucketName,
         S3_MANIFEST_BUCKET: manifestBucket.bucketName,
-        PORT: '8000',
+        PORT: '3002',
+      },
+      secrets: {
+        STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
       },
       healthCheck: {
-        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:8000/health || exit 1'],
+        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:3002/health || exit 1'],
       },
     });
 

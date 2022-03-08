@@ -12,18 +12,37 @@
  *
  */
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
-import { Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import validate from 'validator';
 
-import { AwsUtils } from '../utils/aws-utils';
+import { sbomBucket } from '../constants';
+import { aws } from '../utils/aws-utils';
 
 interface ErrorResponse {
   error: true;
   message: string;
 }
 
-function parseRequest(req: Request): ErrorResponse | { error: false; orgId: string; projectId: string } {
-  const orgId = req.query.orgId;
+export const sbomPresignerRouter = express.Router();
+
+function parseRequest(req: Request): ErrorResponse | { error: false; buildId: string; orgId: string } {
+  const buildId = req?.body?.input?.buildId;
+
+  if (!buildId) {
+    return {
+      error: true,
+      message: 'Missing buildId in query params',
+    };
+  }
+
+  if (typeof buildId !== 'string' || !validate.isUUID(buildId)) {
+    return {
+      error: true,
+      message: 'Invalid buildId specified in request',
+    };
+  }
+
+  const orgId = req?.body?.input?.orgId;
 
   if (!orgId) {
     return {
@@ -39,60 +58,28 @@ function parseRequest(req: Request): ErrorResponse | { error: false; orgId: stri
     };
   }
 
-  const projectId = req.query.projectId;
-
-  if (!projectId) {
-    return {
-      error: true,
-      message: 'Missing projectId for request',
-    };
-  }
-
-  if (typeof projectId !== 'string' || !validate.isUUID(projectId)) {
-    return {
-      error: true,
-      message: 'Invalid projectId specified in request',
-    };
-  }
-
   return {
     error: false,
+    buildId: buildId,
     orgId: orgId,
-    projectId: projectId,
   };
 }
 
 function generateErrorResponse(res: Response, errorMessage: string, statusCode = 500) {
-  res.send(JSON.stringify({ error: true, message: errorMessage }));
   res.status(statusCode);
+  res.send(JSON.stringify({ error: true, message: errorMessage }));
 }
 
-export async function generatePresignedUrl(req: Request, res: Response) {
-  const region = process.env.AWS_REGION;
-  if (!region) {
-    return generateErrorResponse(res, 'Missing AWS region');
-  }
-
-  const bucket = process.env.S3_SBOM_BUCKET_NAME;
-
-  if (!bucket) {
-    return generateErrorResponse(res, 'Missing S3 Bucket name');
-  }
-
+sbomPresignerRouter.post('/s3/presign-sbom-upload', async (req, res) => {
   const parsedRequest = parseRequest(req);
   if (parsedRequest.error) {
     return generateErrorResponse(res, parsedRequest.message);
   }
 
-  const aws = new AwsUtils({
-    awsCredentials: defaultProvider(),
-    awsRegion: region,
-  });
-
   try {
     const result = await aws.generatePresignedS3Url(
-      bucket,
-      aws.generateSbomS3Key(parsedRequest.orgId, parsedRequest.projectId),
+      sbomBucket,
+      aws.generateSbomS3Key(parsedRequest.orgId, parsedRequest.buildId),
       'PUT'
     );
 
@@ -102,4 +89,4 @@ export async function generatePresignedUrl(req: Request, res: Response) {
     return generateErrorResponse(res, 'Unable to generate ');
   }
   return;
-}
+});

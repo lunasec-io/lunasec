@@ -13,7 +13,7 @@
  */
 import { Readable } from 'stream';
 
-import { GetObjectCommand, GetObjectCommandOutput, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, GetObjectCommandOutput, S3Client } from '@aws-sdk/client-s3';
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { Hash } from '@aws-sdk/hash-node';
 import { Upload } from '@aws-sdk/lib-storage';
@@ -119,19 +119,16 @@ export class AwsUtils {
 
     return {
       url: formatUrl(signedUrl),
-      headers: signedUrl.headers,
+      headers: { ...signedUrl.headers, 'Content-Encoding': 'gzip' },
     };
   }
 
-  public generateSbomS3Key(orgId: string, projectId: string): string {
+  public generateSbomS3Key(orgId: string, buildId: string): string {
     const today = new Date();
-    const recordId: string = uuid();
 
     return `${encodeURIComponent(
       orgId
-    )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${recordId}-${encodeURIComponent(
-      projectId
-    )}.json.gz`;
+    )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${encodeURIComponent(buildId)}`;
   }
 }
 

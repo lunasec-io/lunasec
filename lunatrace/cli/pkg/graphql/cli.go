@@ -28,10 +28,9 @@ func getGitMetadataVariables(variables map[string]string) {
 	variables["git_branch"] = gitMeta.Branch
 }
 
-func NewInsertNewBuildRequest(projectId, s3Url string) types.GraphqlRequest {
+func NewInsertNewBuildRequest(projectId string) types.GraphqlRequest {
 	variables := map[string]string{
 		"project_id": projectId,
-		"s3_url":     s3Url,
 	}
 
 	getGitMetadataVariables(variables)
@@ -40,6 +39,44 @@ func NewInsertNewBuildRequest(projectId, s3Url string) types.GraphqlRequest {
 		Query:         constants.InsertNewBuildQuery,
 		Variables:     variables,
 		OperationName: "InsertNewBuildQuery",
+	}
+}
+
+func UpdateBuildS3UrlRequest(buildId string, s3Url string) types.GraphqlRequest {
+	variables := map[string]string{
+		"id":     buildId,
+		"s3_url": s3Url,
+	}
+
+	return types.GraphqlRequest{
+		Query:         constants.SetBuildS3UrlQuery,
+		Variables:     variables,
+		OperationName: "SetBuildS3Url",
+	}
+}
+
+func DeleteBuildRequest(buildId string) types.GraphqlRequest {
+	variables := map[string]string{
+		"id": buildId,
+	}
+
+	return types.GraphqlRequest{
+		Query:         constants.DeleteBuildQuery,
+		Variables:     variables,
+		OperationName: "DeleteBuild",
+	}
+}
+
+func PresignSbomUploadRequest(orgId string, buildId string) types.GraphqlRequest {
+	variables := map[string]string{
+		"orgId":   orgId,
+		"buildId": buildId,
+	}
+
+	return types.GraphqlRequest{
+		Query:         constants.PresignSbomQuery,
+		Variables:     variables,
+		OperationName: "presignSbomUpload",
 	}
 }
 
