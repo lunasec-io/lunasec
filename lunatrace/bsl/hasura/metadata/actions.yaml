@@ -10,10 +10,17 @@ actions:
   permissions:
   - role: user
   comment: get s3 presigned url for manifest upload
-- name: sbom_upload_url
+- name: presignSbomUpload
   definition:
     kind: ""
-    handler: ""
+    handler: http://host.docker.internal:3002/s3/presign-sbom-upload
+    request_transform:
+      method: POST
+      query_params: {}
+      template_engine: Kriti
+  permissions:
+  - role: service
+  - role: cli
 - name: scanManifest
   definition:
     kind: synchronous
@@ -30,4 +37,5 @@ custom_types:
   - name: PresignedUrlResponse
   - name: ScanManifestOutput
   - name: SampleOutput
+  - name: UploadUrl
   scalars: []

@@ -11,36 +11,41 @@
  * limitations under the License.
  *
  */
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { spawn } from 'child_process';
+import { Readable } from 'stream';
 
 import { db, pgp } from '../database/db';
 import { Convert, Match as GrypeMatch, GrypeScanReport } from '../types/grypeScanReport';
 import { Finding, Report } from '../types/scan';
 
-const promisifiedExec = promisify(exec);
-
 export class Scan {
-  static async uploadScan(sbomPath: string, buildId: string) {
-    const rawGrypeReport = await this.runGrypeScan(sbomPath);
-    const report = this.parseScan(rawGrypeReport, buildId);
-
-    // const findingDupes: Record<string, number> = {};
-    // report.findings.forEach((f) => {
-    //   const cve = f.meta.version_slug; //f.meta.pkg_slug + f.locations.join(':');
-    //   const preExisting = findingDupes[cve];
-    //   if (preExisting) {
-    //     return (findingDupes[cve] = preExisting + 1);
-    //   }
-    //   return (findingDupes[cve] = 1);
-    // });
-    // console.log('finding dupes are ', findingDupes);
+  static async uploadScan(sbomStream: Readable, buildId: string): Promise<void> {
+    const rawGrypeReport = await this.runGrypeScan(sbomStream);
+    const typedRawGrypeReport = Convert.toScanReport(rawGrypeReport);
+    const report = this.parseScan(typedRawGrypeReport, buildId);
     await this.storeReport(report);
-    console.log('donezo');
   }
-  static async runGrypeScan(sbomPath: string): Promise<GrypeScanReport> {
-    const { stdout } = await promisifiedExec(`grype ${sbomPath} -o json --quiet\n`);
-    return Convert.toScanReport(stdout);
+
+  static async runGrypeScan(sbomStream: Readable): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const grypeCli = spawn(`grype -o json --quiet`);
+
+      grypeCli.on('error', reject);
+      const outputBuffers: Buffer[] = [];
+      grypeCli.stdout.on('data', (chunk) => {
+        Buffer.from(chunk);
+      });
+      grypeCli.on('close', (code) => {
+        if (code !== 0) {
+          return reject(`Grype exited with non-zero code: ${code}`);
+        }
+        resolve(Buffer.concat(outputBuffers).toString());
+      });
+
+      sbomStream.on('data', (chunk) => grypeCli.stdin.write(chunk));
+      sbomStream.on('end', () => grypeCli.stdin.end(() => console.log('Finished passing sbom contents to grype')));
+      sbomStream.on('error', reject);
+    });
   }
 
   static parseScan(scan: GrypeScanReport, buildId: string): Report {
@@ -88,7 +93,6 @@ export class Scan {
       };
     });
   }
-  // todo: rewrite this with sequelize, the ORM is your friend
 
   static async storeReport(report: Report) {
     const queryBeginning = pgp.as.format(

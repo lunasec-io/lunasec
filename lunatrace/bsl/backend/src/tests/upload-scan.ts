@@ -11,12 +11,14 @@
  * limitations under the License.
  *
  */
+import fs from 'fs';
+
 import { Scan } from '../models/scan';
 
 import { scaffoldBuild } from './scaffold-project-and-build';
 
 async function uploadScan() {
-  void Scan.uploadScan('~/tmp/syftoutput.json', await scaffoldBuild()).then((res) => {
+  void Scan.uploadScan(fs.createReadStream('~/tmp/syftoutput.json'), await scaffoldBuild()).then((res) => {
     console.log('completed scan upload: ', res);
   });
 }

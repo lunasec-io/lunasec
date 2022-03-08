@@ -52,11 +52,6 @@ type PresignedUrlResponse {
   url: String!
 }
 
-input SbomUploadUrlInput {
-  orgId: String!
-  projectId: String!
-}
-
 type SbomUploadUrlOutput {
   error: Boolean!
   headers: String!
@@ -757,10 +752,10 @@ unique or primary key constraints on table "findings"
 """
 enum findings_constraint {
   """unique or primary key constraint"""
-  findings_dedupe_slug_build_id_key
+  findings_pkey
 
   """unique or primary key constraint"""
-  findings_pkey
+  temp_dedupe_fix
 }
 
 """
@@ -2358,7 +2353,7 @@ type mutation_root {
   ): vulnerability_packages
 
   """get s3 presigned url for manifest upload"""
-  presignManifestUpload(project_id: String!): PresignedUrlResponse
+  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
 
   """
   This performs the manifest sbom generation and creates the first build from the manifest
@@ -4472,6 +4467,7 @@ type query_root {
   fetch data from the table: "package_versions" using primary key columns
   """
   package_versions_by_pk(id: uuid!): package_versions
+  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
 
   """An array relationship"""
   project_access_tokens(
@@ -4593,7 +4589,6 @@ type query_root {
   fetch data from the table: "related_vulnerabilities" using primary key columns
   """
   related_vulnerabilities_by_pk(id: uuid!): related_vulnerabilities
-  sbom_upload_url(arg1: SbomUploadUrlInput!): SbomUploadUrlOutput
 
   """An array relationship"""
   scans(

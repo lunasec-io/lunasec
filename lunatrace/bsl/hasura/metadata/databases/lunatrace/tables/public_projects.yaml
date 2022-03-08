@@ -57,8 +57,17 @@ select_permissions:
     - organization_id
     - settings_id
     filter:
-      organization:
-        organization_users:
-          user_id:
-            _eq: X-Hasura-User-Id
+      project_access_tokens:
+        access_token:
+          _eq: X-Hasura-Access-Token
+  role: cli
+- permission:
+    columns:
+    - name
+    - repo
+    - created_at
+    - id
+    - organization_id
+    - settings_id
+    filter: {}
   role: user
