@@ -45,6 +45,8 @@ services:
       - ./ory/kratos:/config
     healthcheck:
       test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4434/health/ready || exit 1']
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
   postgres:
     image: postgres:12
     restart: always
