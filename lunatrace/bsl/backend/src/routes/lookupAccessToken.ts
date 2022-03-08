@@ -65,7 +65,7 @@ function generateErrorResponse(res: Response, errorMessage: string, statusCode =
   res.send(JSON.stringify({ error: true, message: errorMessage }));
 }
 
-export async function lookupProjectAccessToken(req: Request, res: Response): void {
+export async function lookupProjectAccessToken(req: Request, res: Response): Promise<void> {
   const parsedRequest = parseRequest(req);
 
   if (parsedRequest.error) {
