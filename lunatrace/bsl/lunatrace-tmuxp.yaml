@@ -8,9 +8,6 @@ windows:
     - oathkeeper --config config.yaml serve
 
   - shell_command:
-    - sudo docker-compose up
-
-  - shell_command:
     - cd backend
     - STATIC_SECRET_ACCESS_TOKEN=fc7efb9e-04e0-4883-b7b4-8f2e86d1e2e1 yarn run start
 
@@ -22,3 +19,6 @@ windows:
   - shell_command:
     - cd frontend
     - yarn start
+
+  - shell_command:
+    - sudo docker-compose up
