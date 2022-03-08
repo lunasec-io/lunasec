@@ -34,7 +34,9 @@
     methods:
       - POST
   authenticators:
-    - handler: anonymous
+    - handler: bearer_token
+      config:
+        check_session_url: http://localhost:3002/api/internal/auth/lookup-project-access-token
   authorizer:
     handler: allow
   mutators:
@@ -44,8 +46,8 @@
         claims: |
           {
             "https://hasura.io/jwt/claims": {
-              "x-hasura-user-id": "{{ .Subject }}",
-              "x-hasura-access-token": "{{ .MatchContext.Header.Get "X-LunaTrace-Access-Token" }}",
+              "x-hasura-access-token": "{{ .Subject }}",
+              "x-hasura-project-uuid": "{{ .Extra.project_uuid }}",
               "x-hasura-allowed-roles": ["cli"],
               "x-hasura-default-role": "cli"
             }
@@ -61,7 +63,9 @@
     methods:
       - POST
   authenticators:
-    - handler: bearer
+    - handler: bearer_token
+      config:
+        check_session_url: http://localhost:3002/api/internal/auth/lookup-static-access-token
   authorizer:
     handler: allow
   mutators:
@@ -71,8 +75,7 @@
         claims: |
           {
             "https://hasura.io/jwt/claims": {
-              "x-hasura-user-id": "{{ .Subject }}",
-              "x-hasura-access-token": "{{ .MatchContext.Header.Get "X-LunaTrace-Access-Token" }}",
+              "x-hasura-user-id": "",
               "x-hasura-allowed-roles": ["cli"],
               "x-hasura-default-role": "cli"
             }
