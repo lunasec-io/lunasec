@@ -76,7 +76,7 @@ func PresignSbomUploadRequest(orgId string, buildId string) types.GraphqlRequest
 	return types.GraphqlRequest{
 		Query:         constants.PresignSbomQuery,
 		Variables:     variables,
-		OperationName: "presignSbomUpload",
+		OperationName: "PresignSbom",
 	}
 }
 

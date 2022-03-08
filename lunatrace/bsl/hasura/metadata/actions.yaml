@@ -19,8 +19,8 @@ actions:
       query_params: {}
       template_engine: Kriti
   permissions:
-  - role: service
   - role: cli
+  - role: service
 - name: scanManifest
   definition:
     kind: synchronous

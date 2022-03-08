@@ -1,0 +1,11 @@
+mutation UpdateManifest($key_eq: String!, $set_status: String!, $message: String, $build_id: uuid) {
+    update_manifests(where: { s3_key: {_eq: $key_eq}}, _set: {status: $set_status, message:$message, build_id: $build_id}) {
+        returning {
+            filename
+            project_id
+            project {
+                organization_id
+            }
+        }
+    }
+}
