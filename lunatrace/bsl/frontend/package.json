@@ -34,7 +34,7 @@
     "redux-first-history": "^5.0.8",
     "sass-loader": "^12.4.0",
     "semver-sort": "^1.0.0",
-    "typescript": "~4.1.5",
+    "typescript": "~4.5.5",
     "use-react-router-breadcrumbs": "^3.0.2",
     "watch": "^1.0.2"
   },

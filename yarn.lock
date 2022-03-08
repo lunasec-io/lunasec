@@ -12056,7 +12056,7 @@ __metadata:
     jest-json-to-tap: ^2.1.0
     ts-jest: ^27.0.7
     ts-node: ^10.0.0
-    typescript: ~4.2.0
+    typescript: ~4.5.0
   languageName: unknown
   linkType: soft
 
@@ -12103,7 +12103,7 @@ __metadata:
     progress: ^2.0.3
     source-map-support: ^0.5.20
     ts-node: ^10.3.0
-    typescript: ~4.4.2
+    typescript: ~4.5.2
   bin:
     lunasec: ./build/cli.js
   languageName: unknown
@@ -12163,7 +12163,7 @@ __metadata:
     ts-node: ^10.2.1
     ts-node-dev: ^1.1.8
     tslint-config-prettier: ^1.18.0
-    typescript: ~4.2.3
+    typescript: ~4.5.3
     uuid: ^8.3.2
   languageName: unknown
   linkType: soft
@@ -12173,7 +12173,7 @@ __metadata:
   resolution: "@lunasec/isomorphic-common@workspace:js/sdks/packages/isomorphic-common"
   dependencies:
     "@types/node": ^14.0.0
-    typescript: ~4.2.0
+    typescript: ~4.5.0
   languageName: unknown
   linkType: soft
 
@@ -12209,7 +12209,7 @@ __metadata:
     graphql: ^15.5.1
     jose: 3.12.3
     js-yaml: ^4.1.0
-    typescript: ~4.2.0
+    typescript: ~4.5.0
     uuid: ^8.3.2
   dependenciesMeta:
     body-parser:
@@ -12270,7 +12270,7 @@ __metadata:
     rimraf: ^3.0.2
     serve: ^11.3.0
     tslint-config-prettier: ^1.18.0
-    typescript: ~4.2.3
+    typescript: ~4.5.3
     web-vitals: ^1.0.1
   languageName: unknown
   linkType: soft
@@ -12303,7 +12303,7 @@ __metadata:
     styled-components: ^5.3.0
     ts-node: ^9.0.0
     typedoc: ^0.22.10
-    typescript: ~4.2.2
+    typescript: ~4.5.2
   peerDependencies:
     react: ">=17.0.0"
   languageName: unknown
@@ -12316,7 +12316,7 @@ __metadata:
     "@types/node": ^14.0.0
     "@types/ramda": ^0.27.56
     ramda: ^0.27.1
-    typescript: ~4.4.2
+    typescript: ~4.5.2
   bin:
     s3-redirect-generator: ./build/cli.js
   languageName: unknown
@@ -12350,7 +12350,7 @@ __metadata:
     react-dropzone: 11.3.2
     stream-http: 3.2.0
     ts-loader: ^8.0.18
-    typescript: ~4.2.3
+    typescript: ~4.5.3
     url: ^0.11.0
     validator: 13.6.0
     webpack: ^5.64.4
@@ -12366,7 +12366,7 @@ __metadata:
     "@types/node": ^14.0.0
     react: ^17.0.2
     react-dom: ^17.0.2
-    typescript: ~4.2.0
+    typescript: ~4.5.0
   languageName: unknown
   linkType: soft
 
@@ -12390,7 +12390,7 @@ __metadata:
     react-dropzone: ^11.4.2
     ts-jest: ^27.0.7
     ts-json-schema-generator: ^0.95.0
-    typescript: ~4.2.0
+    typescript: ~4.5.0
   languageName: unknown
   linkType: soft
 
@@ -18592,7 +18592,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aws-sdk@npm:^2.1068.0, aws-sdk@npm:^2.1082.0, aws-sdk@npm:^2.784.0, aws-sdk@npm:^2.814.0, aws-sdk@npm:^2.848.0, aws-sdk@npm:^2.979.0":
+"aws-sdk@npm:^2.1068.0, aws-sdk@npm:^2.784.0, aws-sdk@npm:^2.814.0, aws-sdk@npm:^2.848.0, aws-sdk@npm:^2.979.0":
   version: 2.1085.0
   resolution: "aws-sdk@npm:2.1085.0"
   dependencies:
@@ -18606,6 +18606,23 @@ __metadata:
     uuid: 3.3.2
     xml2js: 0.4.19
   checksum: 0545a4a4459b78773b87407e4a163bbe83cee52568121549506db5d4ab1caecb7abcd6d40208638fc24599c7df256944e4d265e039fc8976714c23426aaf53a8
+  languageName: node
+  linkType: hard
+
+"aws-sdk@npm:^2.1082.0":
+  version: 2.1089.0
+  resolution: "aws-sdk@npm:2.1089.0"
+  dependencies:
+    buffer: 4.9.2
+    events: 1.1.1
+    ieee754: 1.1.13
+    jmespath: 0.16.0
+    querystring: 0.2.0
+    sax: 1.2.1
+    url: 0.10.3
+    uuid: 3.3.2
+    xml2js: 0.4.19
+  checksum: ad31c214a14cded9777c894b011f21ea54594412b1ceba51a28189d03c0b7a2cc04973bfa72a05fe15e09c43dae73e491b4c745bc3aef6d12bbb30ef39d33994
   languageName: node
   linkType: hard
 
@@ -24198,7 +24215,7 @@ __metadata:
     redoc-cli: ^0.12.3
     typedoc: 0.21.5
     typedoc-plugin-markdown: 3.10.4
-    typescript: ~4.3.5
+    typescript: ~4.5.5
     url-loader: ^4.1.1
     webpack: ^5.0.0
   languageName: unknown
@@ -27337,7 +27354,7 @@ __metadata:
     sass: ^1.49.0
     sass-loader: ^12.4.0
     semver-sort: ^1.0.0
-    typescript: ~4.1.5
+    typescript: ~4.5.5
     use-react-router-breadcrumbs: ^3.0.2
     watch: ^1.0.2
   languageName: unknown
@@ -34493,7 +34510,7 @@ __metadata:
   resolution: "lunasec-sdks@workspace:js/sdks"
   dependencies:
     "@types/node": ^14.0.0
-    typescript: ~4.4.4
+    typescript: ~4.5.4
   languageName: unknown
   linkType: soft
 
@@ -47548,27 +47565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~4.1.5":
-  version: 4.1.6
-  resolution: "typescript@npm:4.1.6"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 54aed909f94b16178c8a8d8911871b4e1c04454a3e6c82166715e28083e7ce6271e4d1df6f82c89544a4759b07aec780785032534e9c93b254e2107a18712c05
-  languageName: node
-  linkType: hard
-
-"typescript@npm:~4.2.0, typescript@npm:~4.2.2, typescript@npm:~4.2.3":
-  version: 4.2.4
-  resolution: "typescript@npm:4.2.4"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 89c397df192f239359ad798b96d8e8d552e12c0c189ac5676cec4c20c410d6eec636b8e59a88f2aef0a56d961a9678d99c400099be9b7cae2f7b062eb4b7b171
-  languageName: node
-  linkType: hard
-
-"typescript@npm:~4.3.4, typescript@npm:~4.3.5":
+"typescript@npm:~4.3.4":
   version: 4.3.5
   resolution: "typescript@npm:4.3.5"
   bin:
@@ -47578,17 +47575,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~4.4.2, typescript@npm:~4.4.4":
-  version: 4.4.4
-  resolution: "typescript@npm:4.4.4"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 89ecb8436bb48ef5594d49289f5f89103071716b6e4844278f4fb3362856e31203e187a9c76d205c3f0b674d221a058fd28310dbcbcf5d95e9a57229bb5203f1
-  languageName: node
-  linkType: hard
-
-"typescript@npm:~4.5.2, typescript@npm:~4.5.5":
+"typescript@npm:~4.5.0, typescript@npm:~4.5.2, typescript@npm:~4.5.3, typescript@npm:~4.5.4, typescript@npm:~4.5.5":
   version: 4.5.5
   resolution: "typescript@npm:4.5.5"
   bin:
@@ -47608,27 +47595,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@~4.1.5#~builtin<compat/typescript>":
-  version: 4.1.6
-  resolution: "typescript@patch:typescript@npm%3A4.1.6#~builtin<compat/typescript>::version=4.1.6&hash=493e53"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 3bd9915f236817e4e2d32dd0d90e8902875929f014bb87a478000e32adda91d12f0425931ee6f9d6a2bc7d0c9242588fcee1050ac294497dfabf27d3d73b335c
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@~4.2.0#~builtin<compat/typescript>, typescript@patch:typescript@~4.2.2#~builtin<compat/typescript>, typescript@patch:typescript@~4.2.3#~builtin<compat/typescript>":
-  version: 4.2.4
-  resolution: "typescript@patch:typescript@npm%3A4.2.4#~builtin<compat/typescript>::version=4.2.4&hash=493e53"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: bafcad6990f5d8ea9ccff09e440ce42630b2e42a5752dde5455b55c806ae43f8726a03770577d4fc6c2aa624597f796725cc6fe2c173f558a753a2f23a5198a4
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@~4.3.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.3.5#~builtin<compat/typescript>":
+"typescript@patch:typescript@~4.3.4#~builtin<compat/typescript>":
   version: 4.3.5
   resolution: "typescript@patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=493e53"
   bin:
@@ -47638,17 +47605,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@~4.4.2#~builtin<compat/typescript>, typescript@patch:typescript@~4.4.4#~builtin<compat/typescript>":
-  version: 4.4.4
-  resolution: "typescript@patch:typescript@npm%3A4.4.4#~builtin<compat/typescript>::version=4.4.4&hash=493e53"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: bd629ad0da4a15d79aaad56baf3ee7d96f6a181760d430ae77f8c5325df7bffd9edee57544a3970e3651e8b796fe03a5838a7eb39c6d46cc3866c0b23d36a0dd
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@~4.5.2#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.5#~builtin<compat/typescript>":
+"typescript@patch:typescript@~4.5.0#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.2#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.3#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.5#~builtin<compat/typescript>":
   version: 4.5.5
   resolution: "typescript@patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=493e53"
   bin:

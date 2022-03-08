@@ -15,52 +15,34 @@ builds:
     goarch:
       - amd64
       - arm64
-  - binary: lunatrace
-    id: lunatrace
-    dir: ./cmd/lunatrace
+      - ppc64le
+
+  - binary: log4shell
+    id: log4shell-ppc64le
+    dir: ./cmd/log4shell
     env:
       - CGO_ENABLED=0
     goos:
       - linux
-      - windows
-      - darwin
     goarch:
-      - amd64
-      - arm64
-  - binary: lunatrace-agent
-    id: lunatrace-agent
-    dir: ./cmd/lunatraceagent
-    env:
-      - CGO_ENABLED=0
-    goos:
-      - linux
-      - windows
-      - darwin
-    goarch:
-      - amd64
-      - arm64
-      - 386
+      - ppc64le
 archives:
   - id: 64bit-only
     format: binary
     builds:
       - log4shell
-      - lunatrace
     replacements:
       darwin: Darwin
       linux: Linux
       windows: Windows
       amd64: x86_64
 
-  - id: 64-and-32bit
+  - id: ppc64l-only
     format: binary
     builds:
-      - lunatrace-agent
+      - log4shell-ppc64le
     replacements:
-      darwin: Darwin
       linux: Linux
-      windows: Windows
-      amd64: x86_64
 
 checksum:
   name_template: 'checksums.txt'
