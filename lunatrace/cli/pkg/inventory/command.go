@@ -165,6 +165,7 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 
 	s3Url, err := uploadSbomToS3(appConfig, sbomModel, buildId, orgId, projectId)
 	if err != nil {
+		log.Info().Msg("Upload failed, attempting to delete record")
 		deleteErr := deleteBuild(appConfig, buildId)
 		if deleteErr != nil {
 			return
@@ -186,6 +187,7 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 	return
 }
 
+// todo: finish this stub?
 func readSbomFromFile() (sbom string, err error) {
 	return
 }

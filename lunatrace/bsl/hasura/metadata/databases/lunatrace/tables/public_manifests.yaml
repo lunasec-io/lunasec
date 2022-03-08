@@ -11,6 +11,20 @@ object_relationships:
 insert_permissions:
 - permission:
     backend_only: false
+    check: {}
+    columns:
+    - filename
+    - message
+    - s3_key
+    - s3_url
+    - status
+    - created_at
+    - build_id
+    - id
+    - project_id
+  role: service
+- permission:
+    backend_only: false
     check:
       project:
         organization:
@@ -37,6 +51,19 @@ select_permissions:
     - build_id
     - id
     - project_id
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - filename
+    - message
+    - s3_key
+    - s3_url
+    - status
+    - created_at
+    - build_id
+    - id
+    - project_id
     filter:
       project:
         organization:
@@ -44,3 +71,22 @@ select_permissions:
             user_id:
               _eq: X-Hasura-User-Id
   role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - filename
+    - message
+    - s3_key
+    - s3_url
+    - status
+    - created_at
+    - build_id
+    - id
+    - project_id
+    filter: {}
+  role: service
+delete_permissions:
+- permission:
+    filter: {}
+  role: service

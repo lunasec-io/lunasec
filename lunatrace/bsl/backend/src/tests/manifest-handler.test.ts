@@ -15,7 +15,7 @@ import fs from 'fs';
 import path from 'path';
 
 import sbomS3EventSqsMessageFixture from '../fixtures/upload-manifest-sqs-message.json';
-import { callLunatrace, handleGenerateSbom } from '../sqs-handlers/generateSbom';
+import { callLunatraceCli, handleGenerateSbom } from '../sqs-handlers/generateSbom';
 import { S3ObjectMetadata } from '../types/s3';
 
 const objectMetadata: S3ObjectMetadata = {
@@ -27,19 +27,18 @@ const objectMetadata: S3ObjectMetadata = {
 jest.setTimeout(30000);
 
 describe('manifest handler', () => {
-  it.only('should do full manifest processing flow', async () => {
+  it('should do full manifest processing flow', async () => {
     await handleGenerateSbom(objectMetadata);
   });
 
-  it('should call lunatrace cli', (done) => {
+  it('should call lunatrace cli (this is a subset of the above test)', (done) => {
     const fileContents = fs.createReadStream(path.resolve(__dirname, '../fixtures/package-lock.json'));
-    const spawnedCommand = callLunatrace(fileContents, 'package-lock.json');
+    const spawnedCommand = callLunatraceCli(fileContents, 'package-lock.json');
 
     const stdoutDataCallback = jest.fn();
     spawnedCommand.stdout.on('data', stdoutDataCallback);
     spawnedCommand.on('close', () => {
       expect(stdoutDataCallback).toBeCalled();
-      console.log('command finished');
       done();
     });
   });

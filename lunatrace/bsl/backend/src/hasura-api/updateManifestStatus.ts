@@ -29,6 +29,9 @@ const operation = `
 `;
 
 interface ManifestMetadata {
+  update_manifests [
+
+      ]
   filename: string;
   project_id: string;
   project: {
@@ -42,7 +45,7 @@ export async function setManifestStatus(
   message: string | null,
   build_id: string | null
 ): Promise<ManifestMetadata> {
-  const data = await callHasura(operation, 'UpdateManifest', {
+  const data = await callHasura<ManifestMetadata>(operation, 'UpdateManifest', {
     key_eq: key_eq,
     set_status: set_status,
     message: message,

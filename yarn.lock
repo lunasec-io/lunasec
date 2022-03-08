@@ -9270,6 +9270,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-codegen/typescript-graphql-request@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "@graphql-codegen/typescript-graphql-request@npm:4.4.0"
+  dependencies:
+    "@graphql-codegen/plugin-helpers": ^2.4.0
+    "@graphql-codegen/visitor-plugin-common": 2.7.1
+    auto-bind: ~4.0.0
+    tslib: ~2.3.0
+  peerDependencies:
+    graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    graphql-request: ^3.4.0 || ^4.0.0
+    graphql-tag: ^2.0.0
+  checksum: 1866cee7c0b309bad3f92a7a48ab3a2e6ba8f8f9629468d0fa1cb997e2a195a2b1f90fc87cd5256016b5859a52aeabcd082fdb4d38579a2b7870f7e2fc6d50b9
+  languageName: node
+  linkType: hard
+
 "@graphql-codegen/typescript-operations@npm:^2.2.2":
   version: 2.3.2
   resolution: "@graphql-codegen/typescript-operations@npm:2.3.2"
@@ -34579,6 +34595,11 @@ __metadata:
     "@aws-sdk/types": ^3.46.0
     "@aws-sdk/url-parser": ^3.46.0
     "@aws-sdk/util-format-url": ^3.46.0
+    "@graphql-codegen/cli": 2.3.1
+    "@graphql-codegen/introspection": 2.1.1
+    "@graphql-codegen/typescript": 2.4.2
+    "@graphql-codegen/typescript-graphql-request": ^4.4.0
+    "@graphql-codegen/typescript-operations": ^2.2.2
     "@types/aws-lambda": ^8.10.89
     "@types/axios": ^0.14.0
     "@types/config": ^0.0.41
@@ -34608,6 +34629,8 @@ __metadata:
     eslint-plugin-react: ^7.23.2
     express: 5.0.0-beta.1
     generate-lockfile: ^0.0.11
+    graphql-request: ^4.0.0
+    graphqurl: ^1.0.1
     jest: ^27.5.1
     nodemon: ^2.0.15
     pg: ^8.7.1
