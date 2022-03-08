@@ -49,44 +49,6 @@ export class LunatraceBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
     super(scope, id, props);
 
-    // const backendImageAsset = new DockerImageAsset(this, 'LunaTraceBackend', {
-    //   directory: path.resolve(path.join(__dirname, '../../backend')),
-    //   buildArgs: {},
-    //   invalidation: {
-    //     buildArgs: false,
-    //   },
-    // });
-
-    // const cluster = new rds.ServerlessCluster(this, 'RdsServerlessCluster', {
-    //   engine: rds.DatabaseClusterEngine.AURORA_POSTGRESQL,
-    //   vpc: props.vpc,
-    //   vpcSubnets: {
-    //     subnetType: SubnetType.PRIVATE_ISOLATED,
-    //   },
-    //   enableDataApi: true, // Optional - will be automatically set if you call grantDataApiAccess()
-    //   parameterGroup: ParameterGroup.fromParameterGroupName(this, 'ParameterGroup', 'default.aurora-postgresql10'),
-    // });
-
-    // const cluster = rds.ServerlessCluster.fromServerlessClusterAttributes(this, 'RdsServerlessCluster', {
-    //   clusterIdentifier: 'lunatrace-db',
-    // });
-
-    // new CfnOutput(this, 'HasuraDatabaseMasterSecretArn', {
-    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    //   value: cluster.secret!.secretArn,
-    // });
-    //
-    // const getDbSecretValue = (field: string) => {
-    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    //   return cluster.secret!.secretValueFromJson(field).toString();
-    // };
-
-    // const secretValue = SecretStringValueBeta1.fromToken(
-    //   `postgres://${getDbSecretValue('username')}:${getDbSecretValue('password')}@${getDbSecretValue(
-    //     'host'
-    //   )}:${getDbSecretValue('port')}/`
-    // );
-
     const vpc = Vpc.fromLookup(this, 'Vpc', {
       vpcId: props.vpcId,
     });
@@ -156,8 +118,10 @@ export class LunatraceBackendStack extends cdk.Stack {
       executionRole: execRole,
     });
 
+    const frontendContainerImage = ContainerImage.fromAsset('../frontend');
+
     const frontend = taskDef.addContainer('FrontendContainer', {
-      image: ContainerImage.fromRegistry('lunasec/lunatrace-frontend:v0.0.4'),
+      image: frontendContainerImage,
       containerName: 'LunaTraceFrontendContainer',
       portMappings: [{ containerPort: 80 }],
       logging: LogDriver.awsLogs({
@@ -168,9 +132,11 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
+    const oathkeeperContainerImage = ContainerImage.fromAsset('../ory/oathkeeper');
+
     const oathkeeper = taskDef.addContainer('OathkeeperContainer', {
       containerName: 'OathkeeperContainer',
-      image: ContainerImage.fromRegistry('lunasec/lunatrace-ory:v0.0.5'),
+      image: oathkeeperContainerImage,
       portMappings: [{ containerPort: 4455 }],
       logging: LogDriver.awsLogs({
         streamPrefix: 'lunatrace-oathkeeper',
@@ -185,8 +151,10 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
+    const kratosContainerImage = ContainerImage.fromAsset('../ory/kratos');
+
     const kratos = taskDef.addContainer('KratosContainer', {
-      image: ContainerImage.fromRegistry('lunasec/lunatrace-kratos:v0.0.3'),
+      image: kratosContainerImage,
       portMappings: [{ containerPort: 4433 }],
       logging: LogDriver.awsLogs({
         streamPrefix: 'lunatrace-kratos',
