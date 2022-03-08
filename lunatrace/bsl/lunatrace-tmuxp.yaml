@@ -9,7 +9,7 @@ windows:
 
   - shell_command:
     - cd backend
-    - yarn run start
+    - STATIC_SECRET_ACCESS_TOKEN=fc7efb9e-04e0-4883-b7b4-8f2e86d1e2e1 yarn run start
 
   # Secure Frame CDN
   - shell_command:
