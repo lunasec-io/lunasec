@@ -29,10 +29,10 @@ module.exports = {
     node: true
   },
   extends: [
-    // "plugin:vue/vue3-essential",
-    // "@vue/typescript/recommended",
-    // "@vue/prettier",
-    // "@vue/prettier/@typescript-eslint",
+    // "plugin:vue/vue3-essential',
+    // '@vue/typescript/recommended',
+    // '@vue/prettier',
+    // '@vue/prettier/@typescript-eslint',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
@@ -46,7 +46,8 @@ module.exports = {
   ignorePatterns: [
     'packages/tokenizer-sdk/src/generated',
     'lunatrace/bsl/frontend/src/api/generated.ts',
-    '@aws-sdk/**'
+    '@aws-sdk/**',
+    'lunatrace/bsl/backend-cdk/cdk.out'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -74,10 +75,10 @@ module.exports = {
     'jest'
   ],
   rules: {
-    "@typescript-eslint/no-unsafe-argument": 1, // TODO: Re-enable this rule and fix all errors
-    "@typescript-eslint/no-misused-promises": slow ? 'warn':'off',
-    "import/namespace":slow ? 'error':'off',
-    "@typescript-eslint/no-unsafe-assignment": slow ? 'warn':'off',
+    '@typescript-eslint/no-unsafe-argument': 1, // TODO: Re-enable this rule and fix all errors
+    '@typescript-eslint/no-misused-promises': slow ? 'warn':'off',
+    'import/namespace':slow ? 'error':'off',
+    '@typescript-eslint/no-unsafe-assignment': slow ? 'warn':'off',
     'no-console': productionWarn,
     'no-debugger': productionError,
     eqeqeq: 'error',
@@ -113,7 +114,7 @@ module.exports = {
       productionError,
       'tag-aligned',
     ],
-    "react-hooks/exhaustive-deps": "off",
+    'react-hooks/exhaustive-deps': 'off',
     'prettier/prettier': [
       productionError,
       {
@@ -128,9 +129,15 @@ module.exports = {
     ],
     'eslint-comments/no-unlimited-disable': 'off',
     'eslint-comments/no-unused-disable': 'error',
+    '@typescript-eslint/no-misused-promises': [
+      'warn',
+      {
+        'checksVoidReturn': true
+      }
+    ],
     '@typescript-eslint/no-unused-vars':[
       productionWarn,
-      { "argsIgnorePattern": "^_" }
+      { 'argsIgnorePattern': '^_' }
     ],
     '@typescript-eslint/no-unsafe-call': 'warn',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
