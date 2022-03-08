@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { api } from './baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -667,9 +654,9 @@ export type Findings_Bool_Exp = {
 /** unique or primary key constraints on table "findings" */
 export enum Findings_Constraint {
   /** unique or primary key constraint */
-  FindingsDedupeSlugBuildIdKey = 'findings_dedupe_slug_build_id_key',
+  FindingsPkey = 'findings_pkey',
   /** unique or primary key constraint */
-  FindingsPkey = 'findings_pkey'
+  TempDedupeFix = 'temp_dedupe_fix'
 }
 
 /** input type for inserting data into table "findings" */

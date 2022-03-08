@@ -37,6 +37,11 @@ insert_permissions:
     - project_id
     - s3_url
   role: cli
+- permission:
+    backend_only: false
+    check: {}
+    columns: []
+  role: service
 select_permissions:
 - permission:
     columns:
@@ -55,6 +60,19 @@ select_permissions:
           access_token:
             _eq: X-Hasura-Access-Token
   role: cli
+- permission:
+    columns:
+    - build_number
+    - git_branch
+    - git_hash
+    - git_remote
+    - s3_url
+    - created_at
+    - agent_access_token
+    - id
+    - project_id
+    filter: {}
+  role: service
 - permission:
     columns:
     - build_number
@@ -89,6 +107,20 @@ update_permissions:
 - permission:
     check: null
     columns:
+    - build_number
+    - git_branch
+    - git_hash
+    - git_remote
+    - s3_url
+    - created_at
+    - agent_access_token
+    - id
+    - project_id
+    filter: {}
+  role: service
+- permission:
+    check: null
+    columns:
     - s3_url
     filter:
       agent_access_token:
@@ -102,6 +134,9 @@ delete_permissions:
           access_token:
             _eq: X-Hasura-Access-Token
   role: cli
+- permission:
+    filter: {}
+  role: service
 - permission:
     filter:
       agent_access_token:
