@@ -54,6 +54,43 @@ type NewBuildResponse struct {
 	} `json:"data"`
 }
 
+type SetBuildS3UrlResponse struct {
+	GraphqlErrors
+	Data struct {
+		Method struct {
+			Id string `json:"id"`
+		} `json:"update_builds_by_pk"`
+	} `json:"data"`
+}
+
+type DeleteBuildResponse struct {
+	GraphqlErrors
+	Data struct {
+		Method struct {
+			Id string `json:"id"`
+		} `json:"delete_builds_by_pk"`
+	} `json:"data"`
+}
+
+type PresignSbomResponse struct {
+	GraphqlErrors
+	Data struct {
+		Method struct {
+			UploadUrl struct {
+				Url     string            `json:"url"`
+				Headers map[string]string `json:"headers"`
+			} `json:"uploadUrl"`
+		} `json:"presignSbomUpload"`
+	} `json:"data"`
+}
+
+func (s *PresignSbomResponse) GetUrl() string {
+	return s.Data.Method.UploadUrl.Url
+}
+func (s *PresignSbomResponse) GetHeaders() map[string]string {
+	return s.Data.Method.UploadUrl.Headers
+}
+
 func (s *NewBuildResponse) GetBuildId() string {
 	return s.Data.Method.Id
 }

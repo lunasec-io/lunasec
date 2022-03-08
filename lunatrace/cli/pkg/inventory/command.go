@@ -150,14 +150,28 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 		return
 	}
 
-	log.Info().Msg("Uploading generated SBOM")
+	log.Info().Msg("Retrieving org and project ID using access token")
+	orgId, projectId, err := getOrgAndProjectFromAccessToken(
+		appConfig.GraphqlServer,
+		appConfig.ProjectAccessToken,
+	)
 
-	projectId, s3Url, err := uploadSbomToS3(appConfig, sbomModel)
+	log.Info().Msg("Creating build in LunaTrace database")
+	agentSecret, buildId, err := insertNewBuild(appConfig, projectId)
 	if err != nil {
 		return
 	}
+	log.Info().Msg("Uploading generated SBOM")
 
-	agentSecret, err := insertNewBuild(appConfig, projectId, s3Url)
+	s3Url, err := uploadSbomToS3(appConfig, sbomModel, buildId, orgId, projectId)
+	if err != nil {
+		deleteErr := deleteBuild(appConfig, buildId)
+		if deleteErr != nil {
+			return
+		}
+		return
+	}
+	err = setBuildS3Url(appConfig, buildId, s3Url)
 	if err != nil {
 		return
 	}

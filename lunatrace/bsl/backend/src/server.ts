@@ -13,7 +13,7 @@
  */
 
 import { app } from './app';
-import { handleGenerateSbom } from './handlers/generateSbom';
+import { handleGenerateSbom } from './sqs-handlers/generateSbom';
 import { readDataFromQueue } from './sqs/read-queue';
 import { S3ObjectMetadata } from './types/s3';
 

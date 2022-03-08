@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { api } from './baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -667,9 +654,9 @@ export type Findings_Bool_Exp = {
 /** unique or primary key constraints on table "findings" */
 export enum Findings_Constraint {
   /** unique or primary key constraint */
-  FindingsDedupeSlugBuildIdKey = 'findings_dedupe_slug_build_id_key',
+  FindingsPkey = 'findings_pkey',
   /** unique or primary key constraint */
-  FindingsPkey = 'findings_pkey'
+  TempDedupeFix = 'temp_dedupe_fix'
 }
 
 /** input type for inserting data into table "findings" */
@@ -5953,6 +5940,13 @@ export type GetBuildDetailsQueryVariables = Exact<{
 
 export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, project_id?: any | null, s3_url?: string | null, project?: { __typename?: 'projects', name: string } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string } }> }> };
 
+export type GetManifestQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetManifestQuery = { __typename?: 'query_root', manifests_by_pk?: { __typename?: 'manifests', build_id?: any | null, project_id: any, status?: string | null, message?: string | null } | null };
+
 export type GetProjectQueryVariables = Exact<{
   project_id: Scalars['uuid'];
 }>;
@@ -6020,13 +6014,6 @@ export type PresignManifestUrlMutationVariables = Exact<{
 
 export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string, key: string, bucket: string, error: boolean, error_message?: string | null } | null };
 
-export type ManifestSubscriptionSubscriptionVariables = Exact<{
-  id?: InputMaybe<Scalars['uuid']>;
-}>;
-
-
-export type ManifestSubscriptionSubscription = { __typename?: 'subscription_root', manifests: Array<{ __typename?: 'manifests', build_id?: any | null, project_id: any, status?: string | null, message?: string | null }> };
-
 
 export const GetBuildDetailsDocument = `
     query GetBuildDetails($build_id: uuid) {
@@ -6088,6 +6075,16 @@ export const GetBuildDetailsDocument = `
         data_source
       }
     }
+  }
+}
+    `;
+export const GetManifestDocument = `
+    query GetManifest($id: uuid = "") {
+  manifests_by_pk(id: $id) {
+    build_id
+    project_id
+    status
+    message
   }
 }
     `;
@@ -6295,21 +6292,14 @@ export const PresignManifestUrlDocument = `
   }
 }
     `;
-export const ManifestSubscriptionDocument = `
-    subscription ManifestSubscription($id: uuid = "") {
-  manifests(where: {id: {_eq: $id}}) {
-    build_id
-    project_id
-    status
-    message
-  }
-}
-    `;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetBuildDetailsDocument, variables })
+    }),
+    GetManifest: build.query<GetManifestQuery, GetManifestQueryVariables | void>({
+      query: (variables) => ({ document: GetManifestDocument, variables })
     }),
     GetProject: build.query<GetProjectQuery, GetProjectQueryVariables>({
       query: (variables) => ({ document: GetProjectDocument, variables })
@@ -6342,5 +6332,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery, useGetVulnerabilityDetailsQuery, useLazyGetVulnerabilityDetailsQuery, useInsertManifestMutation, useCreateOrganizationAndProjectMutation, useInsertProjectMutation, usePresignManifestUrlMutation } = injectedRtkApi;
+export const { useGetBuildDetailsQuery, useLazyGetBuildDetailsQuery, useGetManifestQuery, useLazyGetManifestQuery, useGetProjectQuery, useLazyGetProjectQuery, useSampleVulnerabilitiesQuery, useLazySampleVulnerabilitiesQuery, useGetSidebarInfoQuery, useLazyGetSidebarInfoQuery, useSearchVulnerabilitiesQuery, useLazySearchVulnerabilitiesQuery, useGetVulnerabilityDetailsQuery, useLazyGetVulnerabilityDetailsQuery, useInsertManifestMutation, useCreateOrganizationAndProjectMutation, useInsertProjectMutation, usePresignManifestUrlMutation } = injectedRtkApi;
 
