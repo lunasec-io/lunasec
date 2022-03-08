@@ -16,6 +16,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import Express from 'express';
 
+import { lookupAccessTokenRouter } from './routes/lookupAccessToken';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
 
@@ -45,4 +46,5 @@ app.get('/', (_req: Express.Request, res: Express.Response) => {
 
 app.use(manifestPresignerRouter);
 app.use(sbomPresignerRouter);
+app.use(lookupAccessTokenRouter);
 export { app };
