@@ -28,6 +28,7 @@ interface StackInputsType {
   cdkDefaultRegion: string;
   cdkDefaultAccount: string;
   certificateArn: string;
+  backendStaticSecretArn: string;
   databaseSecretArn: string;
   vpcId: string;
 }
@@ -69,5 +70,6 @@ new LunatraceBackendStack(app, `${appName}-BackendStack`, {
   domainZoneId: stackInputs.domainZoneId,
   vpcId: stackInputs.vpcId,
   certificateArn: stackInputs.certificateArn,
+  backendStaticSecretArn: stackInputs.backendStaticSecretArn,
   databaseSecretArn: stackInputs.databaseSecretArn,
 });
