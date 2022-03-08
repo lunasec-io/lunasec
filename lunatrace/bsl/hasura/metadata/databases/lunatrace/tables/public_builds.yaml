@@ -24,20 +24,37 @@ insert_permissions:
 - permission:
     backend_only: false
     check:
-      agent_access_token:
-        _eq: X-Hasura-Access-Token
+      project:
+        project_access_tokens:
+          access_token:
+            _eq: X-Hasura-Access-Token
     columns:
+    - agent_access_token
     - build_number
     - git_branch
     - git_hash
     - git_remote
+    - project_id
     - s3_url
-    - created_at
+  role: cli
+select_permissions:
+- permission:
+    columns:
     - agent_access_token
+    - build_number
+    - created_at
+    - git_branch
+    - git_hash
+    - git_remote
     - id
     - project_id
-  role: user
-select_permissions:
+    - s3_url
+    filter:
+      project:
+        project_access_tokens:
+          access_token:
+            _eq: X-Hasura-Access-Token
+  role: cli
 - permission:
     columns:
     - build_number
@@ -64,10 +81,27 @@ update_permissions:
     columns:
     - s3_url
     filter:
+      project:
+        project_access_tokens:
+          access_token:
+            _eq: X-Hasura-Access-Token
+  role: cli
+- permission:
+    check: null
+    columns:
+    - s3_url
+    filter:
       agent_access_token:
         _eq: X-Hasura-Access-Token
   role: user
 delete_permissions:
+- permission:
+    filter:
+      project:
+        project_access_tokens:
+          access_token:
+            _eq: X-Hasura-Access-Token
+  role: cli
 - permission:
     filter:
       agent_access_token:
