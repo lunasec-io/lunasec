@@ -27,13 +27,15 @@
   upstream:
     preserve_host: true
     url: "http://localhost:8080"
-    strip_path: "/cli"
+    strip_path: "/api/cli"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/cli/v1/graphql"
+    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/api/cli/v1/graphql"
     methods:
       - POST
   authenticators:
-    - handler: anonymous
+    - handler: bearer_token
+      config:
+        check_session_url: http://localhost:3002/api/internal/auth/lookup-project-access-token
   authorizer:
     handler: allow
   mutators:
@@ -43,8 +45,36 @@
         claims: |
           {
             "https://hasura.io/jwt/claims": {
-              "x-hasura-user-id": "{{ .Subject }}",
-              "x-hasura-access-token": "{{ .MatchContext.Header.Get "X-LunaTrace-Access-Token" }}",
+              "x-hasura-access-token": "{{ .Subject }}",
+              "x-hasura-project-uuid": "{{ .Extra.project_uuid }}",
+              "x-hasura-allowed-roles": ["cli"],
+              "x-hasura-default-role": "cli"
+            }
+          }
+
+- id: "ory:lunatrace:hasura:graphql:service"
+  upstream:
+    preserve_host: true
+    url: "http://localhost:8080"
+    strip_path: "/api/service"
+  match:
+    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/api/service/v1/graphql"
+    methods:
+      - POST
+  authenticators:
+    - handler: bearer_token
+      config:
+        check_session_url: http://localhost:3002/api/internal/auth/lookup-static-access-token
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: id_token
+      config:
+        issuer_url: http://oathkeeper:4455/
+        claims: |
+          {
+            "https://hasura.io/jwt/claims": {
+              "x-hasura-user-id": "",
               "x-hasura-allowed-roles": ["cli"],
               "x-hasura-default-role": "cli"
             }

@@ -52,15 +52,9 @@ type PresignedUrlResponse {
   url: String!
 }
 
-input SbomUploadUrlInput {
-  orgId: String!
-  projectId: String!
-}
-
 type SbomUploadUrlOutput {
   error: Boolean!
-  headers: String!
-  url: String!
+  uploadUrl: UploadUrl
 }
 
 type ScanManifestOutput {
@@ -120,6 +114,11 @@ input String_comparison_exp {
 
   """does the column match the given SQL regular expression"""
   _similar: String
+}
+
+type UploadUrl {
+  headers: String!
+  url: String!
 }
 
 scalar _text
@@ -277,7 +276,7 @@ input type for inserting array relation for remote table "builds"
 input builds_arr_rel_insert_input {
   data: [builds_insert_input!]!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: builds_on_conflict
 }
 
@@ -426,12 +425,12 @@ input type for inserting object relation for remote table "builds"
 input builds_obj_rel_insert_input {
   data: builds_insert_input!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: builds_on_conflict
 }
 
 """
-on conflict condition type for table "builds"
+on_conflict condition type for table "builds"
 """
 input builds_on_conflict {
   constraint: builds_constraint!
@@ -713,7 +712,7 @@ input type for inserting array relation for remote table "findings"
 input findings_arr_rel_insert_input {
   data: [findings_insert_input!]!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: findings_on_conflict
 }
 
@@ -895,7 +894,7 @@ type findings_mutation_response {
 }
 
 """
-on conflict condition type for table "findings"
+on_conflict condition type for table "findings"
 """
 input findings_on_conflict {
   constraint: findings_constraint!
@@ -1256,12 +1255,12 @@ input type for inserting object relation for remote table "identities"
 input identities_obj_rel_insert_input {
   data: identities_insert_input!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: identities_on_conflict
 }
 
 """
-on conflict condition type for table "identities"
+on_conflict condition type for table "identities"
 """
 input identities_on_conflict {
   constraint: identities_constraint!
@@ -1454,7 +1453,7 @@ type instances_mutation_response {
 }
 
 """
-on conflict condition type for table "instances"
+on_conflict condition type for table "instances"
 """
 input instances_on_conflict {
   constraint: instances_constraint!
@@ -1603,7 +1602,7 @@ input type for inserting array relation for remote table "manifests"
 input manifests_arr_rel_insert_input {
   data: [manifests_insert_input!]!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: manifests_on_conflict
 }
 
@@ -1723,7 +1722,7 @@ type manifests_mutation_response {
 }
 
 """
-on conflict condition type for table "manifests"
+on_conflict condition type for table "manifests"
 """
 input manifests_on_conflict {
   constraint: manifests_constraint!
@@ -2034,7 +2033,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [builds_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: builds_on_conflict
   ): builds_mutation_response
 
@@ -2045,7 +2044,7 @@ type mutation_root {
     """the row to be inserted"""
     object: builds_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: builds_on_conflict
   ): builds
 
@@ -2056,7 +2055,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [findings_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: findings_on_conflict
   ): findings_mutation_response
 
@@ -2067,7 +2066,7 @@ type mutation_root {
     """the row to be inserted"""
     object: findings_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: findings_on_conflict
   ): findings
 
@@ -2078,7 +2077,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [identities_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: identities_on_conflict
   ): identities_mutation_response
 
@@ -2089,7 +2088,7 @@ type mutation_root {
     """the row to be inserted"""
     object: identities_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: identities_on_conflict
   ): identities
 
@@ -2100,7 +2099,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [instances_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: instances_on_conflict
   ): instances_mutation_response
 
@@ -2111,7 +2110,7 @@ type mutation_root {
     """the row to be inserted"""
     object: instances_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: instances_on_conflict
   ): instances
 
@@ -2122,7 +2121,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [manifests_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: manifests_on_conflict
   ): manifests_mutation_response
 
@@ -2133,7 +2132,7 @@ type mutation_root {
     """the row to be inserted"""
     object: manifests_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: manifests_on_conflict
   ): manifests
 
@@ -2144,7 +2143,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [organization_user_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: organization_user_on_conflict
   ): organization_user_mutation_response
 
@@ -2155,7 +2154,7 @@ type mutation_root {
     """the row to be inserted"""
     object: organization_user_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: organization_user_on_conflict
   ): organization_user
 
@@ -2166,7 +2165,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [organizations_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: organizations_on_conflict
   ): organizations_mutation_response
 
@@ -2177,7 +2176,7 @@ type mutation_root {
     """the row to be inserted"""
     object: organizations_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: organizations_on_conflict
   ): organizations
 
@@ -2188,7 +2187,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [package_versions_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: package_versions_on_conflict
   ): package_versions_mutation_response
 
@@ -2199,7 +2198,7 @@ type mutation_root {
     """the row to be inserted"""
     object: package_versions_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: package_versions_on_conflict
   ): package_versions
 
@@ -2210,7 +2209,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [project_access_tokens_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: project_access_tokens_on_conflict
   ): project_access_tokens_mutation_response
 
@@ -2221,7 +2220,7 @@ type mutation_root {
     """the row to be inserted"""
     object: project_access_tokens_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: project_access_tokens_on_conflict
   ): project_access_tokens
 
@@ -2232,7 +2231,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [projects_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: projects_on_conflict
   ): projects_mutation_response
 
@@ -2243,7 +2242,7 @@ type mutation_root {
     """the row to be inserted"""
     object: projects_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: projects_on_conflict
   ): projects
 
@@ -2254,7 +2253,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [related_vulnerabilities_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: related_vulnerabilities_on_conflict
   ): related_vulnerabilities_mutation_response
 
@@ -2265,7 +2264,7 @@ type mutation_root {
     """the row to be inserted"""
     object: related_vulnerabilities_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: related_vulnerabilities_on_conflict
   ): related_vulnerabilities
 
@@ -2276,7 +2275,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [scans_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: scans_on_conflict
   ): scans_mutation_response
 
@@ -2287,7 +2286,7 @@ type mutation_root {
     """the row to be inserted"""
     object: scans_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: scans_on_conflict
   ): scans
 
@@ -2298,7 +2297,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [settings_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: settings_on_conflict
   ): settings_mutation_response
 
@@ -2309,7 +2308,7 @@ type mutation_root {
     """the row to be inserted"""
     object: settings_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: settings_on_conflict
   ): settings
 
@@ -2320,7 +2319,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [vulnerabilities_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: vulnerabilities_on_conflict
   ): vulnerabilities_mutation_response
 
@@ -2331,7 +2330,7 @@ type mutation_root {
     """the row to be inserted"""
     object: vulnerabilities_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: vulnerabilities_on_conflict
   ): vulnerabilities
 
@@ -2342,7 +2341,7 @@ type mutation_root {
     """the rows to be inserted"""
     objects: [vulnerability_packages_insert_input!]!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: vulnerability_packages_on_conflict
   ): vulnerability_packages_mutation_response
 
@@ -2353,12 +2352,12 @@ type mutation_root {
     """the row to be inserted"""
     object: vulnerability_packages_insert_input!
 
-    """on conflict condition"""
+    """upsert condition"""
     on_conflict: vulnerability_packages_on_conflict
   ): vulnerability_packages
 
   """get s3 presigned url for manifest upload"""
-  presignManifestUpload(project_id: String!): PresignedUrlResponse
+  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
 
   """
   This performs the manifest sbom generation and creates the first build from the manifest
@@ -2818,7 +2817,7 @@ input type for inserting array relation for remote table "organization_user"
 input organization_user_arr_rel_insert_input {
   data: [organization_user_insert_input!]!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: organization_user_on_conflict
 }
 
@@ -2913,7 +2912,7 @@ type organization_user_mutation_response {
 }
 
 """
-on conflict condition type for table "organization_user"
+on_conflict condition type for table "organization_user"
 """
 input organization_user_on_conflict {
   constraint: organization_user_constraint!
@@ -3185,12 +3184,12 @@ input type for inserting object relation for remote table "organizations"
 input organizations_obj_rel_insert_input {
   data: organizations_insert_input!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: organizations_on_conflict
 }
 
 """
-on conflict condition type for table "organizations"
+on_conflict condition type for table "organizations"
 """
 input organizations_on_conflict {
   constraint: organizations_constraint!
@@ -3350,7 +3349,7 @@ input type for inserting array relation for remote table "package_versions"
 input package_versions_arr_rel_insert_input {
   data: [package_versions_insert_input!]!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: package_versions_on_conflict
 }
 
@@ -3461,12 +3460,12 @@ input type for inserting object relation for remote table "package_versions"
 input package_versions_obj_rel_insert_input {
   data: package_versions_insert_input!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: package_versions_on_conflict
 }
 
 """
-on conflict condition type for table "package_versions"
+on_conflict condition type for table "package_versions"
 """
 input package_versions_on_conflict {
   constraint: package_versions_constraint!
@@ -3609,7 +3608,7 @@ input type for inserting array relation for remote table "project_access_tokens"
 input project_access_tokens_arr_rel_insert_input {
   data: [project_access_tokens_insert_input!]!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: project_access_tokens_on_conflict
 }
 
@@ -3691,7 +3690,7 @@ type project_access_tokens_mutation_response {
 }
 
 """
-on conflict condition type for table "project_access_tokens"
+on_conflict condition type for table "project_access_tokens"
 """
 input project_access_tokens_on_conflict {
   constraint: project_access_tokens_constraint!
@@ -3939,7 +3938,7 @@ input type for inserting array relation for remote table "projects"
 input projects_arr_rel_insert_input {
   data: [projects_insert_input!]!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: projects_on_conflict
 }
 
@@ -4049,12 +4048,12 @@ input type for inserting object relation for remote table "projects"
 input projects_obj_rel_insert_input {
   data: projects_insert_input!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: projects_on_conflict
 }
 
 """
-on conflict condition type for table "projects"
+on_conflict condition type for table "projects"
 """
 input projects_on_conflict {
   constraint: projects_constraint!
@@ -4472,6 +4471,7 @@ type query_root {
   fetch data from the table: "package_versions" using primary key columns
   """
   package_versions_by_pk(id: uuid!): package_versions
+  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
 
   """An array relationship"""
   project_access_tokens(
@@ -4593,7 +4593,6 @@ type query_root {
   fetch data from the table: "related_vulnerabilities" using primary key columns
   """
   related_vulnerabilities_by_pk(id: uuid!): related_vulnerabilities
-  sbom_upload_url(arg1: SbomUploadUrlInput!): SbomUploadUrlOutput
 
   """An array relationship"""
   scans(
@@ -4818,7 +4817,7 @@ input type for inserting array relation for remote table "related_vulnerabilitie
 input related_vulnerabilities_arr_rel_insert_input {
   data: [related_vulnerabilities_insert_input!]!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: related_vulnerabilities_on_conflict
 }
 
@@ -4904,7 +4903,7 @@ type related_vulnerabilities_mutation_response {
 }
 
 """
-on conflict condition type for table "related_vulnerabilities"
+on_conflict condition type for table "related_vulnerabilities"
 """
 input related_vulnerabilities_on_conflict {
   constraint: related_vulnerabilities_constraint!
@@ -5070,7 +5069,7 @@ input type for inserting array relation for remote table "scans"
 input scans_arr_rel_insert_input {
   data: [scans_insert_input!]!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: scans_on_conflict
 }
 
@@ -5220,12 +5219,12 @@ input type for inserting object relation for remote table "scans"
 input scans_obj_rel_insert_input {
   data: scans_insert_input!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: scans_on_conflict
 }
 
 """
-on conflict condition type for table "scans"
+on_conflict condition type for table "scans"
 """
 input scans_on_conflict {
   constraint: scans_constraint!
@@ -5503,7 +5502,7 @@ type settings_mutation_response {
 }
 
 """
-on conflict condition type for table "settings"
+on_conflict condition type for table "settings"
 """
 input settings_on_conflict {
   constraint: settings_constraint!
@@ -6577,12 +6576,12 @@ input type for inserting object relation for remote table "vulnerabilities"
 input vulnerabilities_obj_rel_insert_input {
   data: vulnerabilities_insert_input!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: vulnerabilities_on_conflict
 }
 
 """
-on conflict condition type for table "vulnerabilities"
+on_conflict condition type for table "vulnerabilities"
 """
 input vulnerabilities_on_conflict {
   constraint: vulnerabilities_constraint!
@@ -6918,7 +6917,7 @@ input type for inserting array relation for remote table "vulnerability_packages
 input vulnerability_packages_arr_rel_insert_input {
   data: [vulnerability_packages_insert_input!]!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: vulnerability_packages_on_conflict
 }
 
@@ -7021,12 +7020,12 @@ input type for inserting object relation for remote table "vulnerability_package
 input vulnerability_packages_obj_rel_insert_input {
   data: vulnerability_packages_insert_input!
 
-  """on conflict condition"""
+  """upsert condition"""
   on_conflict: vulnerability_packages_on_conflict
 }
 
 """
-on conflict condition type for table "vulnerability_packages"
+on_conflict condition type for table "vulnerability_packages"
 """
 input vulnerability_packages_on_conflict {
   constraint: vulnerability_packages_constraint!

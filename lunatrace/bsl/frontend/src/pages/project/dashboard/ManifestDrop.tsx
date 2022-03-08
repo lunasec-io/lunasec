@@ -11,13 +11,16 @@
  * limitations under the License.
  *
  */
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Card, Col, Row, Spinner } from 'react-bootstrap';
 import { DropzoneOptions, useDropzone } from 'react-dropzone';
 import { FilePlus } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 import api from '../../../api';
+import { GetManifestQuery } from '../../../api/generated';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import { add } from '../../../store/slices/alerts';
 const axiosInstance = axios.create();
@@ -25,12 +28,22 @@ const axiosInstance = axios.create();
 export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ project_id }) => {
   const dispatch = useAppDispatch();
   console.log('rendering dropzone for project id ', project_id);
-
+  const navigate = useNavigate();
   const [generatePresignedUrl] = api.usePresignManifestUrlMutation();
   const [insertManifest] = api.useInsertManifestMutation();
-  // const [subscribeManfiest] = api.useManifestSubscription();
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
+  const [getManifestTrigger, lastManifestArg] = api.endpoints.GetManifest.useLazyQuerySubscription({
+    pollingInterval: 1000,
+  });
+  // ok so this hook pulls the last fetched result out of redux for the given arguments
+  // The above subscription short poll will eventually return data and this is how we get it back out...just not a great API and the types are broken
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  const manifestQuery = api.endpoints.GetManifest.useQueryState(lastManifestArg || skipToken) as {
+    status: string;
+    currentData: GetManifestQuery;
+  } | null;
 
   const doUploadFlow = async (file: File): Promise<string | undefined> => {
     // Get a presigned URL (hasura action reaches through and hits express backend
@@ -67,14 +80,36 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     console.log('upload success ', uploadResult.data);
     console.log('new file is at ', manifestUrl);
 
-    setUploadStatus(`File uploaded, waiting for scan to begin`);
+    setUploadStatus(`File uploaded, waiting for package inventory to begin`);
     // Tell lunatrace the file uploaded, which simultaneously records the file path in hasura and calls express to kick
     // off the build via an action
 
-    setUploadStatus(`Scan in progress, you will be automatically redirected when complete...`);
-
-    // return axios.put(signedUrl, file, options);
+    void getManifestTrigger({ id: manifestId });
   };
+
+  console.log('manifest info is ', manifestQuery);
+  useEffect(() => {
+    if (manifestQuery && manifestQuery.status === 'fulfilled' && manifestQuery.currentData.manifests_by_pk) {
+      switch (manifestQuery.currentData.manifests_by_pk.status) {
+        case 'sbom-processing':
+          setUploadStatus('Package inventory in progress');
+          break;
+        case 'sbom-generated':
+          setUploadStatus('Package inventory complete, waiting for vulnerabilities scan to begin');
+          break;
+        case 'scan-started':
+          setUploadStatus('Vulnerability scan started, you will be redirected when complete...');
+          break;
+        case 'scan-generated':
+          navigate(`/build/${manifestQuery.currentData.manifests_by_pk.build_id}`);
+          break;
+        case 'error':
+          dispatch(add({ message: `Error processing manifest: ${manifestQuery.currentData.manifests_by_pk.message}` }));
+          setUploadInProgress(false);
+      }
+    }
+  }, [manifestQuery]);
+
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const onDropAccepted: DropzoneOptions['onDropAccepted'] = async (acceptedFiles) => {
@@ -85,9 +120,8 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     const error = await doUploadFlow(file);
     if (error) {
       dispatch(add({ message: error }));
+      setUploadInProgress(false);
     }
-    setUploadInProgress(false);
-    setUploadStatus('');
   };
 
   const onDropRejected: DropzoneOptions['onDropRejected'] = (fileRejections) => {
@@ -102,6 +136,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     onDropRejected: onDropRejected,
     maxFiles: 1,
     maxSize: 52428800,
+    disabled: uploadInProgress,
   });
 
   const renderDropPrompt = () => {
