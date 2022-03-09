@@ -28,6 +28,10 @@ input Boolean_comparison_exp {
   _nin: [Boolean!]
 }
 
+type GithubProjectsOutput {
+  projectDetails: [String!]
+}
+
 """
 Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 """
@@ -50,11 +54,6 @@ type PresignedUrlResponse {
   headers: String!
   key: String!
   url: String!
-}
-
-type SbomUploadUrlOutput {
-  error: Boolean!
-  uploadUrl: UploadUrl
 }
 
 type ScanManifestOutput {
@@ -114,11 +113,6 @@ input String_comparison_exp {
 
   """does the column match the given SQL regular expression"""
   _similar: String
-}
-
-type UploadUrl {
-  headers: String!
-  url: String!
 }
 
 scalar _text
@@ -756,10 +750,10 @@ unique or primary key constraints on table "findings"
 """
 enum findings_constraint {
   """unique or primary key constraint"""
-  findings_pkey
+  findings_dedupe_slug_build_id_key
 
   """unique or primary key constraint"""
-  temp_dedupe_fix
+  findings_pkey
 }
 
 """
@@ -2357,7 +2351,7 @@ type mutation_root {
   ): vulnerability_packages
 
   """get s3 presigned url for manifest upload"""
-  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
+  presignManifestUpload(project_id: String!): PresignedUrlResponse
 
   """
   This performs the manifest sbom generation and creates the first build from the manifest
@@ -4471,7 +4465,6 @@ type query_root {
   fetch data from the table: "package_versions" using primary key columns
   """
   package_versions_by_pk(id: uuid!): package_versions
-  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
 
   """An array relationship"""
   project_access_tokens(
@@ -4675,6 +4668,9 @@ type query_root {
 
   """fetch data from the table: "settings" using primary key columns"""
   settings_by_pk(id: uuid!): settings
+
+  """Get Github Projects for a User"""
+  userGithubProjects: GithubProjectsOutput
 
   """
   fetch data from the table: "vulnerabilities"
