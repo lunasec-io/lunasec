@@ -23,9 +23,12 @@ import (
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"lunasec/lunatrace/inventory/scan"
 	"lunasec/lunatrace/inventory/syftmodel"
 	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/types"
+	"lunasec/lunatrace/pkg/util"
+	"os"
 )
 
 func serializeSbom(sbom syftmodel.Document) (serializedOutput []byte, err error) {
@@ -187,28 +190,31 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 	return
 }
 
-// todo: finish this stub?
-func readSbomFromFile() (sbom string, err error) {
-	return
-}
-
 func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+	var (
+		sbomFile *os.File
+	)
+
 	command.EnableGlobalFlags(globalBoolFlags)
 
-	sbomFilename := c.String("sbom")
+	readFromStdin := c.Bool("stdin")
 
-	var sbom string
-	if sbomFilename != "" {
-		sbom, err = readSbomFromFile()
-	} else {
-		err = errors.New("neither 'sbom' or 'stdin' were provided, please specify at least one")
-		return
+	if readFromStdin {
+		sbomFile, err = util.GetFileFromStdin("sbom.json")
+		defer func() {
+			util.CleanupTmpFileDirectory(sbomFile)
+		}()
+
+		if err != nil {
+			return
+		}
 	}
 
-	if err != nil {
-		return
+	if sbomFile != nil {
+		err = scan.GrypeSbomScanFromFile(sbomFile.Name())
+		if err != nil {
+			return
+		}
 	}
-
-	log.Debug().Str("sbom", sbom).Msg("got sbom")
 	return
 }

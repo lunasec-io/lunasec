@@ -116,7 +116,7 @@ func validateDBLoad(loadErr error, status *db.Status) error {
 	return nil
 }
 
-func grypeSbomScan() (err error) {
+func GrypeSbomScanFromFile(filename string) (err error) {
 	var (
 		provider                   vulnerability.Provider
 		metadataProvider           vulnerability.MetadataProvider
@@ -149,7 +149,7 @@ func grypeSbomScan() (err error) {
 			RegistryOptions: appConfig.Registry.ToOptions(),
 			Exclusions:      appConfig.Exclusions,
 		}
-		packages, context, err = pkg.Provide("sbom:asdf", providerConfig)
+		packages, context, err = pkg.Provide("sbom:"+filename, providerConfig)
 		if err != nil {
 			errs <- fmt.Errorf("failed to catalog: %w", err)
 			return
@@ -162,6 +162,8 @@ func grypeSbomScan() (err error) {
 		return
 	}
 
-	// allMatches := grype.FindVulnerabilitiesForPackage(provider, context.Distro, packages...)
+	allMatches := grype.FindVulnerabilitiesForPackage(provider, context.Distro, packages...)
+
+	println(allMatches.Count())
 	return
 }

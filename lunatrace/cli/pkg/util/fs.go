@@ -16,6 +16,7 @@ package util
 
 import (
 	"archive/zip"
+	"bufio"
 	"bytes"
 	"fmt"
 	"github.com/rs/zerolog/log"
@@ -24,6 +25,7 @@ import (
 	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/types"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -203,5 +205,76 @@ func RemoveDirFromCleanup(dir string) {
 func RemoveCleanupDirs() {
 	for _, cleanupDir := range constants.CleanupDirs {
 		os.RemoveAll(cleanupDir)
+	}
+}
+
+func ReadFileFromStdin(srcFile *os.File) (err error) {
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		_, err = srcFile.Write(scanner.Bytes())
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("sourceFile", srcFile.Name()).
+				Msg("unable to write to source file")
+			return
+		}
+	}
+	if err = scanner.Err(); err != nil {
+		log.Error().Err(err).Msg("unable to read sbom from stdin")
+		return
+	}
+	return
+}
+
+func GetFileFromStdin(filename string) (tmpFile *os.File, err error) {
+	var (
+		name string
+	)
+
+	name, err = os.MkdirTemp("", "lunatrace")
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to create temporary directory")
+		return
+	}
+
+	tmpPath := path.Join(name, filename)
+	tmpFile, err = os.Create(tmpPath)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to create temporary file")
+		return
+	}
+
+	err = ReadFileFromStdin(tmpFile)
+	if err != nil {
+		defer func() {
+			cleanupErr := os.Remove(tmpFile.Name())
+			log.Error().
+				Err(cleanupErr).
+				Msg("unable to clean up temporary file")
+		}()
+
+		log.Error().
+			Err(err).
+			Msg("unable to copy from stdin to temporary file")
+		return
+	}
+	return
+}
+
+func CleanupTmpFileDirectory(tmpFile *os.File) {
+	dir := filepath.Dir(tmpFile.Name())
+	log.Debug().
+		Str("dir", dir).
+		Msg("cleaning up created tmp dir")
+	err := os.RemoveAll(dir)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to cleanup temporary directory")
 	}
 }
