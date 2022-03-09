@@ -183,7 +183,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         streamPrefix: 'lunatrace-backend',
       }),
       environment: {
-        S3_BUCKET_NAME: sbomBucket.bucketName,
+        S3_SBOM_BUCKET: sbomBucket.bucketName,
         S3_MANIFEST_BUCKET: manifestBucket.bucketName,
         PORT: '3002',
       },
