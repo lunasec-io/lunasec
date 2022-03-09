@@ -18,6 +18,10 @@ type LunaTraceGraphqlServer struct {
 	Url string `yaml:"url"`
 }
 
+type LunaTraceExpressServer struct {
+	Url string `yaml:"url"`
+}
+
 type LunaTraceGateway struct {
 	GraphqlServer LunaTraceGraphqlServer `yaml:"graphql_server"`
 }

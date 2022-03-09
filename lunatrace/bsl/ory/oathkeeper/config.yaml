@@ -58,3 +58,13 @@ authenticators:
       subject_from: "identity.id"
       only:
         - ory_kratos_session
+
+  bearer_token:
+    enabled: true
+    config:
+      check_session_url: http://localhost:8000/api/internal/auth/lookup-project-access-token
+      force_method: GET
+      preserve_path: true
+      preserve_query: true
+      token_from:
+        header: X-LunaTrace-Access-Token

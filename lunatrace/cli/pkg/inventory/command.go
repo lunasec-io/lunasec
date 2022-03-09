@@ -17,30 +17,40 @@ package inventory
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"github.com/anchore/grype/grype/match"
+	"github.com/anchore/syft/syft"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"lunasec/lunatrace/inventory/scan"
 	"lunasec/lunatrace/inventory/syftmodel"
 	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/types"
+	"lunasec/lunatrace/pkg/util"
+	"os"
 )
 
-func writeInventoryOutput(sbom syftmodel.Document, output string) (err error) {
-	depOutput := InventoryOutput{
-		Sbom: sbom,
-	}
-
-	serializedOutput, err := json.MarshalIndent(depOutput, "", "\t")
+func serializeSbom(sbom syftmodel.Document) (serializedOutput []byte, err error) {
+	serializedOutput, err = json.MarshalIndent(sbom, "", "\t")
 	if err != nil {
 		log.Error().Err(err).Msg("unable to marshall dependencies output")
-		return err
+		return
+	}
+	return
+}
+
+func writeInventoryOutput(sbom syftmodel.Document, output string) (err error) {
+	serializedOutput, err := serializeSbom(sbom)
+	if err != nil {
+		return
 	}
 
 	err = ioutil.WriteFile(output, serializedOutput, 0644)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to write dependencies to output file")
-		return err
+		return
 	}
 	return
 }
@@ -70,38 +80,52 @@ func writeLunaTraceAgentConfigFile(agentSecret, generateConfig string) (err erro
 	return
 }
 
-func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+	var (
+		source   string
+		useStdin bool
+	)
+
 	command.EnableGlobalFlags(globalBoolFlags)
+
+	syft.SetLogger(&types.ZerologLogger{})
 
 	sources := c.Args().Slice()
 
-	if len(sources) == 0 {
-		err = errors.New("no source provided")
-		log.Error().
-			Msg("No source provided. Please provide one source as an argument to this command.")
-		return
-	}
+	stdinFilename := c.String("stdin-filename")
+	useStdin = stdinFilename != ""
 
-	if len(sources) > 1 {
-		err = errors.New("too many sources provided")
-		log.Error().
-			Msg("Please provide only one source as an argument to this command.")
-		return
-	}
+	if useStdin {
+		source = stdinFilename
+	} else {
+		if len(sources) == 0 {
+			err = errors.New("no source provided")
+			log.Error().
+				Msg("No source provided. Please provide one source as an argument to this command.")
+			return
+		}
 
-	source := sources[0]
+		if len(sources) > 1 {
+			err = errors.New("too many sources provided")
+			log.Error().
+				Msg("Please provide only one source as an argument to this command.")
+			return
+		}
+		source = sources[0]
+	}
 
 	output := c.String("output")
 	excludedDirs := c.StringSlice("excluded")
 	skipUpload := c.Bool("skip-upload")
+	printToStdout := c.Bool("stdout")
 	configOutput := c.String("config-output")
 
-	sbom, err := collectSbomFromDirectory(source, excludedDirs)
+	sbom, err := getSbomForSyft(source, excludedDirs, useStdin)
 	if err != nil {
 		return
 	}
 
-	sbomModel := toSyftJsonFormatModel(sbom)
+	sbomModel := ToFormatModel(*sbom)
 
 	if output != "" {
 		err = writeInventoryOutput(sbomModel, output)
@@ -110,19 +134,45 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig
 		}
 	}
 
+	if printToStdout {
+		var serializedSbom []byte
+
+		serializedSbom, err = serializeSbom(sbomModel)
+		if err != nil {
+			return
+		}
+
+		fmt.Println(string(serializedSbom))
+	}
+
 	if skipUpload {
 		log.Info().Msg("Skipping upload of SBOM")
 		return
 	}
 
-	log.Info().Msg("Uploading generated SBOM")
+	log.Info().Msg("Retrieving org and project ID using access token")
+	orgId, projectId, err := getOrgAndProjectFromAccessToken(
+		appConfig.GraphqlServer,
+		appConfig.ProjectAccessToken,
+	)
 
-	projectId, s3Url, err := uploadSbomToS3(appConfig, sbomModel)
+	log.Info().Msg("Creating build in LunaTrace database")
+	agentSecret, buildId, err := insertNewBuild(appConfig, projectId)
 	if err != nil {
 		return
 	}
+	log.Info().Msg("Uploading generated SBOM")
 
-	agentSecret, err := insertNewBuild(appConfig, projectId, s3Url)
+	s3Url, err := uploadSbomToS3(appConfig, sbomModel, buildId, orgId, projectId)
+	if err != nil {
+		log.Info().Msg("Upload failed, attempting to delete record")
+		deleteErr := deleteBuild(appConfig, buildId)
+		if deleteErr != nil {
+			return
+		}
+		return
+	}
+	err = setBuildS3Url(appConfig, buildId, s3Url)
 	if err != nil {
 		return
 	}
@@ -132,7 +182,66 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig
 	} else {
 		log.Info().
 			Str("Agent Secret", agentSecret).
-			Msg("Set the agent secret as environment variable (LUNASEC_AGENT_SECRET) or in config file (.lunatrace_agent.yaml) in deployment.")
+			Msg("Set this agent secret as an environment variable (LUNASEC_AGENT_SECRET) or in the config file (.lunatrace_agent.yaml) in your deployed service to use live monitoring:")
+	}
+	return
+}
+
+func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+	var (
+		sbomFile *os.File
+		matches  match.Matches
+	)
+
+	command.EnableGlobalFlags(globalBoolFlags)
+
+	printToStdout := c.Bool("stdout")
+	readFromStdin := c.Bool("stdin")
+
+	if readFromStdin {
+		sbomFile, err = util.GetFileFromStdin("sbom.json")
+		defer func() {
+			util.CleanupTmpFileDirectory(sbomFile)
+		}()
+
+		if err != nil {
+			return
+		}
+	}
+
+	if sbomFile == nil {
+		err = errors.New("SBOM file is not provided")
+		return
+	}
+
+	matches, err = scan.GrypeSbomScanFromFile(sbomFile.Name())
+	if err != nil {
+		return
+	}
+
+	if printToStdout {
+		type FindingsOutput struct {
+			Findings []match.Match `json:"findings"`
+		}
+
+		var findings []match.Match
+
+		var serializedFindings []byte
+
+		for vulnMatch := range matches.Enumerate() {
+			findings = append(findings, vulnMatch)
+		}
+
+		findingsOutput := FindingsOutput{
+			Findings: findings,
+		}
+
+		serializedFindings, err = json.Marshal(findingsOutput)
+		if err != nil {
+			return
+		}
+
+		fmt.Println(string(serializedFindings))
 	}
 	return
 }

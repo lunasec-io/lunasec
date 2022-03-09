@@ -16,8 +16,10 @@ import React from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { AlertCircle, Bell, BellOff, Home, UserPlus } from 'react-feather';
 
+import useAppSelector from '../../hooks/useAppSelector';
 import useSidebar from '../../hooks/useSidebar';
 import useTheme from '../../hooks/useTheme';
+import { selectIsAuthenticated } from '../../store/slices/authentication';
 
 import NavbarDropdown from './NavbarDropdown';
 import NavbarDropdownItem from './NavbarDropdownItem';
@@ -27,7 +29,7 @@ import NavbarUser from './NavbarUser';
 const NavbarComponent = () => {
   // const { t } = useTranslation();
   const { isOpen, setIsOpen } = useSidebar();
-
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const { theme, setTheme } = useTheme();
 
   return (
@@ -42,7 +44,7 @@ const NavbarComponent = () => {
           <i className="hamburger align-self-center" />
         </span>
 
-        <ProjectSearch />
+        {isAuthenticated ? <ProjectSearch /> : null}
 
         <Nav className="navbar-align">
           {/*<NavbarDropdown*/}

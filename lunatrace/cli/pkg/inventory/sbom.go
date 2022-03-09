@@ -25,18 +25,45 @@ import (
 	"github.com/anchore/syft/syft/source"
 	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/util"
+	"os"
 )
 
-func getSbomForSyft(sourceName string, excludedDirs []string) (s *sbom.SBOM, err error) {
-	log.Info().
-		Str("source", sourceName).
-		Msg("Scanning source for dependencies.")
+func getSyftSource(sourceName string, excludedDirs []string, useStdin bool) (src *source.Source, cleanup func(), err error) {
+	if useStdin {
+		var (
+			tmpSourceFile *os.File
+		)
 
-	src, cleanup, err := source.New(sourceName, nil, excludedDirs)
+		tmpSourceFile, err = util.GetFileFromStdin(sourceName)
+		if err != nil {
+			return
+		}
+
+		syftSrc, cleanupFunc := source.NewFromFile(tmpSourceFile.Name())
+		src = &syftSrc
+
+		cleanup = func() {
+			util.CleanupTmpFileDirectory(tmpSourceFile)
+			cleanupFunc()
+		}
+		return
+	}
+
+	src, cleanup, err = source.New(sourceName, nil, excludedDirs)
 	if err != nil {
 		err = fmt.Errorf("failed to construct source from user input %q: %w", sourceName, err)
 		return
 	}
+	return
+}
+
+func getSbomForSyft(sourceName string, excludedDirs []string, useStdin bool) (s *sbom.SBOM, err error) {
+	log.Info().
+		Str("source", sourceName).
+		Msg("Scanning source for dependencies.")
+
+	src, cleanup, err := getSyftSource(sourceName, excludedDirs, useStdin)
 	if cleanup != nil {
 		defer cleanup()
 	}
@@ -145,7 +172,7 @@ func generateCatalogPackagesTask() (task, error) {
 		}
 
 		results.PackageCatalog = packageCatalog
-		results.Distro = theDistro
+		results.LinuxDistribution = theDistro
 
 		return relationships, nil
 	}

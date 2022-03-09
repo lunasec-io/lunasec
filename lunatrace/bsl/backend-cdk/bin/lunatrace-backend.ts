@@ -28,7 +28,12 @@ interface StackInputsType {
   cdkDefaultRegion: string;
   cdkDefaultAccount: string;
   certificateArn: string;
+  backendStaticSecretArn: string;
   databaseSecretArn: string;
+  githubOauthAppLoginSecretArn: string;
+  githubOauthAppLoginClientIdArn: string;
+  kratosCookieSecretArn: string;
+  kratosCipherSecretArn: string;
   vpcId: string;
 }
 
@@ -43,6 +48,10 @@ const requiredFields = [
   'cdkDefaultAccount',
   'certificateArn',
   'databaseSecretArn',
+  'githubOauthAppLoginSecretArn',
+  'githubOauthAppLoginClientIdArn',
+  'kratosCookieSecretArn',
+  'kratosCipherSecretArn',
   'vpcId',
 ];
 
@@ -69,5 +78,10 @@ new LunatraceBackendStack(app, `${appName}-BackendStack`, {
   domainZoneId: stackInputs.domainZoneId,
   vpcId: stackInputs.vpcId,
   certificateArn: stackInputs.certificateArn,
+  backendStaticSecretArn: stackInputs.backendStaticSecretArn,
   databaseSecretArn: stackInputs.databaseSecretArn,
+  githubOauthAppLoginClientIdArn: stackInputs.githubOauthAppLoginClientIdArn,
+  githubOauthAppLoginSecretArn: stackInputs.githubOauthAppLoginSecretArn,
+  kratosCookieSecretArn: stackInputs.kratosCookieSecretArn,
+  kratosCipherSecretArn: stackInputs.kratosCipherSecretArn,
 });
