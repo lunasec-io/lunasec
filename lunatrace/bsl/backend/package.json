@@ -18,6 +18,7 @@
     "compile:watch": "tsc -p tsconfig.json -w"
   },
   "dependencies": {
+    "@aws-sdk/abort-controller": "^3.53.0",
     "@aws-sdk/client-s3": "^3.46.0",
     "@aws-sdk/client-sqs": "^3.53.0",
     "@aws-sdk/credential-provider-node": "^3.46.0",

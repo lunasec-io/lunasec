@@ -32,6 +32,8 @@ interface StackInputsType {
   databaseSecretArn: string;
   githubOauthAppLoginSecretArn: string;
   githubOauthAppLoginClientIdArn: string;
+  kratosCookieSecretArn: string;
+  kratosCipherSecretArn: string;
   vpcId: string;
 }
 
@@ -48,6 +50,8 @@ const requiredFields = [
   'databaseSecretArn',
   'githubOauthAppLoginSecretArn',
   'githubOauthAppLoginClientIdArn',
+  'kratosCookieSecretArn',
+  'kratosCipherSecretArn',
   'vpcId',
 ];
 
@@ -78,4 +82,6 @@ new LunatraceBackendStack(app, `${appName}-BackendStack`, {
   databaseSecretArn: stackInputs.databaseSecretArn,
   githubOauthAppLoginClientIdArn: stackInputs.githubOauthAppLoginClientIdArn,
   githubOauthAppLoginSecretArn: stackInputs.githubOauthAppLoginSecretArn,
+  kratosCookieSecretArn: stackInputs.kratosCookieSecretArn,
+  kratosCipherSecretArn: stackInputs.kratosCipherSecretArn,
 });
