@@ -25,6 +25,14 @@ selfservice:
             mapper_url: file:///config/oidc.github.jsonnet
             scope:
               - user:email
+          - id: github-oauth-developer
+            provider: github
+            client_id: fake-value
+            client_secret: another-fake-value
+            mapper_url: file:///config/oidc.github.jsonnet
+            scope:
+              - read:user
+              - user:email
 
   flows:
     error:

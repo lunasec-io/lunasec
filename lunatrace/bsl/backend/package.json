@@ -3,7 +3,7 @@
   "license": "BSL-LunaTrace",
   "scripts": {
     "start": "tsc && concurrently \"tsc -w\" \"nodemon build/server.js\"",
-    "start:sqs-listener":  "tsc && concurrently \"tsc -w\" \"nodemon build/sqs/read-queue.js\"",
+    "start:sqs-listener": "tsc && concurrently \"tsc -w\" \"nodemon build/sqs/read-queue.js\"",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
     "test:scan:upload": "yarn run ts-node --files ./src/tests/upload-scan.ts",
     "test:load": "yarn run ts-node --files ./src/tests/local-load-vulnerabilities-test.ts",
@@ -28,6 +28,8 @@
     "@aws-sdk/types": "^3.46.0",
     "@aws-sdk/url-parser": "^3.46.0",
     "@aws-sdk/util-format-url": "^3.46.0",
+    "@octokit/graphql": "^4.8.0",
+    "@ory/kratos-client": "v0.8.2-alpha.1",
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1082.0",
     "axios": "^0.26.0",
