@@ -18,6 +18,7 @@
           {
             "https://hasura.io/jwt/claims": {
               "x-hasura-user-id": "{{ .Subject }}",
+              "x-hasura-access-token": "2883ad68-4940-461b-83f7-844b0604bb8c",
               "x-hasura-allowed-roles": ["user"],
               "x-hasura-default-role": "user"
             }

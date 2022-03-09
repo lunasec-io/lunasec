@@ -15,7 +15,6 @@
 package inventory
 
 import (
-	"bufio"
 	"crypto"
 	"fmt"
 	"github.com/anchore/syft/syft"
@@ -26,69 +25,26 @@ import (
 	"github.com/anchore/syft/syft/source"
 	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/util"
 	"os"
-	"path"
 )
-
-func readFileFromStdin(srcFile *os.File) (err error) {
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		_, err = srcFile.Write(scanner.Bytes())
-		if err != nil {
-			log.Error().
-				Err(err).
-				Str("sourceFile", srcFile.Name()).
-				Msg("unable to write to source file")
-			return
-		}
-	}
-	if err = scanner.Err(); err != nil {
-		log.Error().Err(err).Msg("unable to read sbom from stdin")
-		return
-	}
-	return
-}
 
 func getSyftSource(sourceName string, excludedDirs []string, useStdin bool) (src *source.Source, cleanup func(), err error) {
 	if useStdin {
 		var (
-			name          string
 			tmpSourceFile *os.File
 		)
 
-		name, err = os.MkdirTemp("", "syft-source")
+		tmpSourceFile, err = util.GetFileFromStdin(sourceName)
 		if err != nil {
-			log.Error().Err(err).Msg("unable to create temporary directory")
 			return
 		}
 
-		tmpSourcePath := path.Join(name, sourceName)
-		tmpSourceFile, err = os.Create(tmpSourcePath)
-		if err != nil {
-			log.Error().Err(err).Msg("unable to create temporary source file")
-			return
-		}
-
-		err = readFileFromStdin(tmpSourceFile)
-		if err != nil {
-			log.Error().Err(err).Msg("unable to copy from stdin to temporary source file")
-			return
-		}
-
-		syftSrc, cleanupFunc := source.NewFromFile(tmpSourcePath)
+		syftSrc, cleanupFunc := source.NewFromFile(tmpSourceFile.Name())
 		src = &syftSrc
 
 		cleanup = func() {
-			log.Debug().
-				Str("dir", name).
-				Msg("cleaning up created source dir")
-			err := os.RemoveAll(name)
-			if err != nil {
-				log.Error().
-					Err(err).
-					Str("sourceName", sourceName).
-					Msg("unable to cleanup temporary directory")
-			}
+			util.CleanupTmpFileDirectory(tmpSourceFile)
 			cleanupFunc()
 		}
 		return

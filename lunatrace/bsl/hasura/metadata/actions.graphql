@@ -1,14 +1,7 @@
 type Mutation {
   presignManifestUpload(
-    project_id: uuid!
+    project_id: String!
   ): PresignedUrlResponse
-}
-
-type Query {
-  presignSbomUpload(
-    orgId: uuid!
-    buildId: uuid!
-  ): SbomUploadUrlOutput
 }
 
 type Mutation {
@@ -16,6 +9,10 @@ type Mutation {
     key: String!
     bucket: String!
   ): ScanManifestOutput
+}
+
+type Query {
+  userGithubProjects: GithubProjectsOutput
 }
 
 input SbomUploadUrlInput {
@@ -30,7 +27,8 @@ input SampleInput {
 
 type SbomUploadUrlOutput {
   error: Boolean!
-  uploadUrl: UploadUrl
+  url: String!
+  headers: String!
 }
 
 type PresignedUrlResponse {
@@ -52,8 +50,7 @@ type SampleOutput {
   accessToken: String!
 }
 
-type UploadUrl {
-  url: String!
-  headers: String!
+type GithubProjectsOutput {
+  projectDetails: [String!]
 }
 
