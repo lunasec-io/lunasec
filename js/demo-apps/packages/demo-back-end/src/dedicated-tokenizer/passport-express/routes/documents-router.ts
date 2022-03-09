@@ -27,7 +27,6 @@ export function documentsRouter(models: Models) {
   router.use(ensureLoggedIn);
   router.use(bodyParser.json());
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   router.get('/', async (req, res) => {
     if (!req.user) {
       throw new Error('not logged in and not caught by middleware');
@@ -48,7 +47,6 @@ export function documentsRouter(models: Models) {
     }
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   router.post('/', async (req, res) => {
     const documentTokens = req.body.documents as string[];
     try {

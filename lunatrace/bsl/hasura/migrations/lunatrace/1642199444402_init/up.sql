@@ -48,7 +48,7 @@ SET row_security = off;
 -- COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
-ALTER FUNCTION public.set_current_timestamp_updated_at() OWNER TO postgres;
+-- ALTER FUNCTION public.set_current_timestamp_updated_at() OWNER TO postgres;
 
 SET default_tablespace = '';
 
@@ -370,7 +370,7 @@ CREATE TABLE public.findings
     matcher                  text                                                         NOT NULL,
     dedupe_slug              text                                                         NOT NULL,
     severity                 public.severity_enum                                         NOT NULL,
-    UNIQUE (dedupe_slug)
+    UNIQUE (dedupe_slug, build_id)
 );
 
 CREATE INDEX finding_severity_index ON public.findings (build_id, severity);
@@ -392,6 +392,11 @@ CREATE TABLE public.manifests
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP        NOT NULL,
     project_id uuid references public.projects (id)                         NOT NULL,
     s3_url     text                                                         NOT NULL UNIQUE,
-    filename   text                                                         NOT NULL
-)
+    filename   text                                                         NOT NULL,
+    status     text,
+    message    text,
+    s3_key         text                                                            NOT NULL
+);
+
+CREATE INDEX manifest_s3_key_index  ON public.manifests (s3_key);
 

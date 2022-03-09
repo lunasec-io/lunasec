@@ -8,11 +8,8 @@ windows:
     - oathkeeper --config config.yaml serve
 
   - shell_command:
-    - sudo docker-compose up
-
-  - shell_command:
     - cd backend
-    - AWS_DEFAULT_REGION=us-west2 yarn run start
+    - yarn run start
 
   # Secure Frame CDN
   - shell_command:
@@ -22,3 +19,6 @@ windows:
   - shell_command:
     - cd frontend
     - yarn start
+
+  - shell_command:
+    - sudo docker-compose up

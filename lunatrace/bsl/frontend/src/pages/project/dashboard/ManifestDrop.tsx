@@ -11,13 +11,16 @@
  * limitations under the License.
  *
  */
-import axios, { AxiosRequestHeaders } from 'axios';
-import React, { useState } from 'react';
+import { skipToken } from '@reduxjs/toolkit/query/react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Card, Col, Row, Spinner } from 'react-bootstrap';
 import { DropzoneOptions, useDropzone } from 'react-dropzone';
 import { FilePlus } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 import api from '../../../api';
+import { GetManifestQuery } from '../../../api/generated';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import { add } from '../../../store/slices/alerts';
 const axiosInstance = axios.create();
@@ -25,12 +28,22 @@ const axiosInstance = axios.create();
 export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ project_id }) => {
   const dispatch = useAppDispatch();
   console.log('rendering dropzone for project id ', project_id);
-
+  const navigate = useNavigate();
   const [generatePresignedUrl] = api.usePresignManifestUrlMutation();
   const [insertManifest] = api.useInsertManifestMutation();
-
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
+  const [getManifestTrigger, lastManifestArg] = api.endpoints.GetManifest.useLazyQuerySubscription({
+    pollingInterval: 1000,
+  });
+  // ok so this hook pulls the last fetched result out of redux for the given arguments
+  // The above subscription short poll will eventually return data and this is how we get it back out...just not a great API and the types are broken
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  const manifestQuery = api.endpoints.GetManifest.useQueryState(lastManifestArg || skipToken) as {
+    status: string;
+    currentData: GetManifestQuery;
+  } | null;
 
   const doUploadFlow = async (file: File): Promise<string | undefined> => {
     // Get a presigned URL (hasura action reaches through and hits express backend
@@ -40,6 +53,20 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
       return 'Failed to pre-sign upload URL to AWS S3';
     }
     console.log('presign result ', presign);
+    const manifestUrl = presign.url.split('?')[0];
+
+    const insertRequest = await insertManifest({
+      s3_url: manifestUrl,
+      project_id,
+      filename: file.name,
+      key: presign.key,
+    }).unwrap();
+    if (!insertRequest.insert_manifests_one) {
+      console.error('Failed to notify lunatrace up uploaded manifest');
+      return;
+    }
+    const manifestId = insertRequest.insert_manifests_one.id;
+    console.log('manifest id is ', manifestId);
 
     // Upload the file directly to S3
     const options = {
@@ -51,30 +78,40 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     setUploadStatus(`Uploading ${file.name}`);
     const uploadResult = await axiosInstance.put(presign.url, file, options);
     console.log('upload success ', uploadResult.data);
-    const manifestUrl = presign.url.split('?')[0];
     console.log('new file is at ', manifestUrl);
-    setUploadStatus(`File uploaded, notifying LunaTrace`);
 
+    setUploadStatus(`File uploaded, waiting for package inventory to begin`);
     // Tell lunatrace the file uploaded, which simultaneously records the file path in hasura and calls express to kick
     // off the build via an action
-    const insertRequest = await insertManifest({
-      s3_url: manifestUrl,
-      project_id,
-      filename: file.name,
-      key: presign.key,
-      bucket: presign.bucket,
-    }).unwrap();
-    if (!insertRequest.insert_manifests_one) {
-      console.error('Failed to notify lunatrace up uploaded manifest');
-      return;
-    }
-    const manifestId = insertRequest.insert_manifests_one.id;
-    console.log('manifest id is ', manifestId);
-    setUploadStatus(`Scan in progress, you will be automatically redirected when complete...`);
 
-    // return axios.put(signedUrl, file, options);
+    void getManifestTrigger({ id: manifestId });
   };
 
+  console.log('manifest info is ', manifestQuery);
+  useEffect(() => {
+    if (manifestQuery && manifestQuery.status === 'fulfilled' && manifestQuery.currentData.manifests_by_pk) {
+      switch (manifestQuery.currentData.manifests_by_pk.status) {
+        case 'sbom-processing':
+          setUploadStatus('Package inventory in progress');
+          break;
+        case 'sbom-generated':
+          setUploadStatus('Package inventory complete, waiting for vulnerabilities scan to begin');
+          break;
+        case 'scaning':
+          setUploadStatus('Vulnerability scan started, you will be redirected when complete...');
+          break;
+        case 'scanned':
+          navigate(`/build/${manifestQuery.currentData.manifests_by_pk.build_id}`);
+          break;
+        case 'error':
+          dispatch(add({ message: `Error processing manifest: ${manifestQuery.currentData.manifests_by_pk.message}` }));
+          setUploadInProgress(false);
+      }
+    }
+  }, [manifestQuery]);
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const onDropAccepted: DropzoneOptions['onDropAccepted'] = async (acceptedFiles) => {
     setUploadInProgress(true);
 
@@ -83,9 +120,8 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     const error = await doUploadFlow(file);
     if (error) {
       dispatch(add({ message: error }));
+      setUploadInProgress(false);
     }
-    setUploadInProgress(false);
-    setUploadStatus('');
   };
 
   const onDropRejected: DropzoneOptions['onDropRejected'] = (fileRejections) => {
@@ -100,6 +136,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     onDropRejected: onDropRejected,
     maxFiles: 1,
     maxSize: 52428800,
+    disabled: uploadInProgress,
   });
 
   const renderDropPrompt = () => {
@@ -109,7 +146,8 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     return (
       <span>
         <FilePlus />
-        Click here or drop a manifest file to manually submit a build. (ex: package.lock)
+        Click here or drop-and-drop a manifest file or bundled project to manually submit a build. (ex:
+        package-lock.json, my-project.jar, my-project.zip)
       </span>
     );
   };

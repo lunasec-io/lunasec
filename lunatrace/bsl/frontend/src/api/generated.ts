@@ -72,16 +72,10 @@ export type PresignedUrlResponse = {
   url: Scalars['String'];
 };
 
-export type SbomUploadUrlInput = {
-  orgId: Scalars['String'];
-  projectId: Scalars['String'];
-};
-
 export type SbomUploadUrlOutput = {
   __typename?: 'SbomUploadUrlOutput';
   error: Scalars['Boolean'];
-  headers: Scalars['String'];
-  url: Scalars['String'];
+  uploadUrl?: Maybe<UploadUrl>;
 };
 
 export type ScanManifestOutput = {
@@ -122,6 +116,12 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
+};
+
+export type UploadUrl = {
+  __typename?: 'UploadUrl';
+  headers: Scalars['String'];
+  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -249,7 +249,7 @@ export type Builds_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "builds" */
 export type Builds_Arr_Rel_Insert_Input = {
   data: Array<Builds_Insert_Input>;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Builds_On_Conflict>;
 };
 
@@ -380,11 +380,11 @@ export type Builds_Mutation_Response = {
 /** input type for inserting object relation for remote table "builds" */
 export type Builds_Obj_Rel_Insert_Input = {
   data: Builds_Insert_Input;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Builds_On_Conflict>;
 };
 
-/** on conflict condition type for table "builds" */
+/** on_conflict condition type for table "builds" */
 export type Builds_On_Conflict = {
   constraint: Builds_Constraint;
   update_columns?: Array<Builds_Update_Column>;
@@ -627,7 +627,7 @@ export type Findings_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "findings" */
 export type Findings_Arr_Rel_Insert_Input = {
   data: Array<Findings_Insert_Input>;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Findings_On_Conflict>;
 };
 
@@ -667,9 +667,9 @@ export type Findings_Bool_Exp = {
 /** unique or primary key constraints on table "findings" */
 export enum Findings_Constraint {
   /** unique or primary key constraint */
-  FindingsDedupeSlugKey = 'findings_dedupe_slug_key',
+  FindingsPkey = 'findings_pkey',
   /** unique or primary key constraint */
-  FindingsPkey = 'findings_pkey'
+  TempDedupeFix = 'temp_dedupe_fix'
 }
 
 /** input type for inserting data into table "findings" */
@@ -797,7 +797,7 @@ export type Findings_Mutation_Response = {
   returning: Array<Findings>;
 };
 
-/** on conflict condition type for table "findings" */
+/** on_conflict condition type for table "findings" */
 export type Findings_On_Conflict = {
   constraint: Findings_Constraint;
   update_columns?: Array<Findings_Update_Column>;
@@ -1099,11 +1099,11 @@ export type Identities_Mutation_Response = {
 /** input type for inserting object relation for remote table "identities" */
 export type Identities_Obj_Rel_Insert_Input = {
   data: Identities_Insert_Input;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Identities_On_Conflict>;
 };
 
-/** on conflict condition type for table "identities" */
+/** on_conflict condition type for table "identities" */
 export type Identities_On_Conflict = {
   constraint: Identities_Constraint;
   update_columns?: Array<Identities_Update_Column>;
@@ -1271,7 +1271,7 @@ export type Instances_Mutation_Response = {
   returning: Array<Instances>;
 };
 
-/** on conflict condition type for table "instances" */
+/** on_conflict condition type for table "instances" */
 export type Instances_On_Conflict = {
   constraint: Instances_Constraint;
   update_columns?: Array<Instances_Update_Column>;
@@ -1350,13 +1350,19 @@ export type Jsonb_Comparison_Exp = {
 /** columns and relationships of "manifests" */
 export type Manifests = {
   __typename?: 'manifests';
+  /** An object relationship */
+  build?: Maybe<Builds>;
+  build_id?: Maybe<Scalars['uuid']>;
   created_at: Scalars['timestamp'];
   filename: Scalars['String'];
   id: Scalars['uuid'];
+  message?: Maybe<Scalars['String']>;
   /** An object relationship */
   project: Projects;
   project_id: Scalars['uuid'];
+  s3_key: Scalars['String'];
   s3_url: Scalars['String'];
+  status?: Maybe<Scalars['String']>;
 };
 
 /** aggregated selection of "manifests" */
@@ -1391,7 +1397,7 @@ export type Manifests_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "manifests" */
 export type Manifests_Arr_Rel_Insert_Input = {
   data: Array<Manifests_Insert_Input>;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Manifests_On_Conflict>;
 };
 
@@ -1400,12 +1406,17 @@ export type Manifests_Bool_Exp = {
   _and?: InputMaybe<Array<Manifests_Bool_Exp>>;
   _not?: InputMaybe<Manifests_Bool_Exp>;
   _or?: InputMaybe<Array<Manifests_Bool_Exp>>;
+  build?: InputMaybe<Builds_Bool_Exp>;
+  build_id?: InputMaybe<Uuid_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   filename?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  message?: InputMaybe<String_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  s3_key?: InputMaybe<String_Comparison_Exp>;
   s3_url?: InputMaybe<String_Comparison_Exp>;
+  status?: InputMaybe<String_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "manifests" */
@@ -1418,50 +1429,71 @@ export enum Manifests_Constraint {
 
 /** input type for inserting data into table "manifests" */
 export type Manifests_Insert_Input = {
+  build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
+  build_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   filename?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
+  message?: InputMaybe<Scalars['String']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: InputMaybe<Scalars['uuid']>;
+  s3_key?: InputMaybe<Scalars['String']>;
   s3_url?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
 export type Manifests_Max_Fields = {
   __typename?: 'manifests_max_fields';
+  build_id?: Maybe<Scalars['uuid']>;
   created_at?: Maybe<Scalars['timestamp']>;
   filename?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  message?: Maybe<Scalars['String']>;
   project_id?: Maybe<Scalars['uuid']>;
+  s3_key?: Maybe<Scalars['String']>;
   s3_url?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
 };
 
 /** order by max() on columns of table "manifests" */
 export type Manifests_Max_Order_By = {
+  build_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   filename?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
+  s3_key?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Manifests_Min_Fields = {
   __typename?: 'manifests_min_fields';
+  build_id?: Maybe<Scalars['uuid']>;
   created_at?: Maybe<Scalars['timestamp']>;
   filename?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  message?: Maybe<Scalars['String']>;
   project_id?: Maybe<Scalars['uuid']>;
+  s3_key?: Maybe<Scalars['String']>;
   s3_url?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
 };
 
 /** order by min() on columns of table "manifests" */
 export type Manifests_Min_Order_By = {
+  build_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   filename?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
+  s3_key?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "manifests" */
@@ -1473,7 +1505,7 @@ export type Manifests_Mutation_Response = {
   returning: Array<Manifests>;
 };
 
-/** on conflict condition type for table "manifests" */
+/** on_conflict condition type for table "manifests" */
 export type Manifests_On_Conflict = {
   constraint: Manifests_Constraint;
   update_columns?: Array<Manifests_Update_Column>;
@@ -1482,12 +1514,17 @@ export type Manifests_On_Conflict = {
 
 /** Ordering options when selecting data from "manifests". */
 export type Manifests_Order_By = {
+  build?: InputMaybe<Builds_Order_By>;
+  build_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   filename?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_id?: InputMaybe<Order_By>;
+  s3_key?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: manifests */
@@ -1498,38 +1535,58 @@ export type Manifests_Pk_Columns_Input = {
 /** select columns of table "manifests" */
 export enum Manifests_Select_Column {
   /** column name */
+  BuildId = 'build_id',
+  /** column name */
   CreatedAt = 'created_at',
   /** column name */
   Filename = 'filename',
   /** column name */
   Id = 'id',
   /** column name */
+  Message = 'message',
+  /** column name */
   ProjectId = 'project_id',
   /** column name */
-  S3Url = 's3_url'
+  S3Key = 's3_key',
+  /** column name */
+  S3Url = 's3_url',
+  /** column name */
+  Status = 'status'
 }
 
 /** input type for updating data in table "manifests" */
 export type Manifests_Set_Input = {
+  build_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   filename?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
+  message?: InputMaybe<Scalars['String']>;
   project_id?: InputMaybe<Scalars['uuid']>;
+  s3_key?: InputMaybe<Scalars['String']>;
   s3_url?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['String']>;
 };
 
 /** update columns of table "manifests" */
 export enum Manifests_Update_Column {
   /** column name */
+  BuildId = 'build_id',
+  /** column name */
   CreatedAt = 'created_at',
   /** column name */
   Filename = 'filename',
   /** column name */
   Id = 'id',
   /** column name */
+  Message = 'message',
+  /** column name */
   ProjectId = 'project_id',
   /** column name */
-  S3Url = 's3_url'
+  S3Key = 's3_key',
+  /** column name */
+  S3Url = 's3_url',
+  /** column name */
+  Status = 'status'
 }
 
 /** mutation root */
@@ -2114,7 +2171,7 @@ export type Mutation_RootInsert_Vulnerability_Packages_OneArgs = {
 
 /** mutation root */
 export type Mutation_RootPresignManifestUploadArgs = {
-  project_id: Scalars['String'];
+  project_id: Scalars['uuid'];
 };
 
 
@@ -2431,7 +2488,7 @@ export type Organization_User_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "organization_user" */
 export type Organization_User_Arr_Rel_Insert_Input = {
   data: Array<Organization_User_Insert_Input>;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Organization_User_On_Conflict>;
 };
 
@@ -2515,7 +2572,7 @@ export type Organization_User_Mutation_Response = {
   returning: Array<Organization_User>;
 };
 
-/** on conflict condition type for table "organization_user" */
+/** on_conflict condition type for table "organization_user" */
 export type Organization_User_On_Conflict = {
   constraint: Organization_User_Constraint;
   update_columns?: Array<Organization_User_Update_Column>;
@@ -2737,11 +2794,11 @@ export type Organizations_Mutation_Response = {
 /** input type for inserting object relation for remote table "organizations" */
 export type Organizations_Obj_Rel_Insert_Input = {
   data: Organizations_Insert_Input;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Organizations_On_Conflict>;
 };
 
-/** on conflict condition type for table "organizations" */
+/** on_conflict condition type for table "organizations" */
 export type Organizations_On_Conflict = {
   constraint: Organizations_Constraint;
   update_columns?: Array<Organizations_Update_Column>;
@@ -2872,7 +2929,7 @@ export type Package_Versions_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "package_versions" */
 export type Package_Versions_Arr_Rel_Insert_Input = {
   data: Array<Package_Versions_Insert_Input>;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Package_Versions_On_Conflict>;
 };
 
@@ -2969,11 +3026,11 @@ export type Package_Versions_Mutation_Response = {
 /** input type for inserting object relation for remote table "package_versions" */
 export type Package_Versions_Obj_Rel_Insert_Input = {
   data: Package_Versions_Insert_Input;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Package_Versions_On_Conflict>;
 };
 
-/** on conflict condition type for table "package_versions" */
+/** on_conflict condition type for table "package_versions" */
 export type Package_Versions_On_Conflict = {
   constraint: Package_Versions_Constraint;
   update_columns?: Array<Package_Versions_Update_Column>;
@@ -3093,7 +3150,7 @@ export type Project_Access_Tokens_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "project_access_tokens" */
 export type Project_Access_Tokens_Arr_Rel_Insert_Input = {
   data: Array<Project_Access_Tokens_Insert_Input>;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Project_Access_Tokens_On_Conflict>;
 };
 
@@ -3163,7 +3220,7 @@ export type Project_Access_Tokens_Mutation_Response = {
   returning: Array<Project_Access_Tokens>;
 };
 
-/** on conflict condition type for table "project_access_tokens" */
+/** on_conflict condition type for table "project_access_tokens" */
 export type Project_Access_Tokens_On_Conflict = {
   constraint: Project_Access_Tokens_Constraint;
   update_columns?: Array<Project_Access_Tokens_Update_Column>;
@@ -3351,7 +3408,7 @@ export type Projects_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "projects" */
 export type Projects_Arr_Rel_Insert_Input = {
   data: Array<Projects_Insert_Input>;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Projects_On_Conflict>;
 };
 
@@ -3448,11 +3505,11 @@ export type Projects_Mutation_Response = {
 /** input type for inserting object relation for remote table "projects" */
 export type Projects_Obj_Rel_Insert_Input = {
   data: Projects_Insert_Input;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Projects_On_Conflict>;
 };
 
-/** on conflict condition type for table "projects" */
+/** on_conflict condition type for table "projects" */
 export type Projects_On_Conflict = {
   constraint: Projects_Constraint;
   update_columns?: Array<Projects_Update_Column>;
@@ -3571,6 +3628,7 @@ export type Query_Root = {
   package_versions_aggregate: Package_Versions_Aggregate;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
+  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** An aggregate relationship */
@@ -3589,7 +3647,6 @@ export type Query_Root = {
   related_vulnerabilities_aggregate: Related_Vulnerabilities_Aggregate;
   /** fetch data from the table: "related_vulnerabilities" using primary key columns */
   related_vulnerabilities_by_pk?: Maybe<Related_Vulnerabilities>;
-  sbom_upload_url?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   scans: Array<Scans>;
   /** An aggregate relationship */
@@ -3801,6 +3858,12 @@ export type Query_RootPackage_Versions_By_PkArgs = {
 };
 
 
+export type Query_RootPresignSbomUploadArgs = {
+  buildId: Scalars['uuid'];
+  orgId: Scalars['uuid'];
+};
+
+
 export type Query_RootProject_Access_TokensArgs = {
   distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3867,11 +3930,6 @@ export type Query_RootRelated_Vulnerabilities_AggregateArgs = {
 
 export type Query_RootRelated_Vulnerabilities_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootSbom_Upload_UrlArgs = {
-  arg1: SbomUploadUrlInput;
 };
 
 
@@ -4017,7 +4075,7 @@ export type Related_Vulnerabilities_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "related_vulnerabilities" */
 export type Related_Vulnerabilities_Arr_Rel_Insert_Input = {
   data: Array<Related_Vulnerabilities_Insert_Input>;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Related_Vulnerabilities_On_Conflict>;
 };
 
@@ -4091,7 +4149,7 @@ export type Related_Vulnerabilities_Mutation_Response = {
   returning: Array<Related_Vulnerabilities>;
 };
 
-/** on conflict condition type for table "related_vulnerabilities" */
+/** on_conflict condition type for table "related_vulnerabilities" */
 export type Related_Vulnerabilities_On_Conflict = {
   constraint: Related_Vulnerabilities_Constraint;
   update_columns?: Array<Related_Vulnerabilities_Update_Column>;
@@ -4244,7 +4302,7 @@ export type Scans_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "scans" */
 export type Scans_Arr_Rel_Insert_Input = {
   data: Array<Scans_Insert_Input>;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Scans_On_Conflict>;
 };
 
@@ -4377,11 +4435,11 @@ export type Scans_Mutation_Response = {
 /** input type for inserting object relation for remote table "scans" */
 export type Scans_Obj_Rel_Insert_Input = {
   data: Scans_Insert_Input;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Scans_On_Conflict>;
 };
 
-/** on conflict condition type for table "scans" */
+/** on_conflict condition type for table "scans" */
 export type Scans_On_Conflict = {
   constraint: Scans_Constraint;
   update_columns?: Array<Scans_Update_Column>;
@@ -4624,7 +4682,7 @@ export type Settings_Mutation_Response = {
   returning: Array<Settings>;
 };
 
-/** on conflict condition type for table "settings" */
+/** on_conflict condition type for table "settings" */
 export type Settings_On_Conflict = {
   constraint: Settings_Constraint;
   update_columns?: Array<Settings_Update_Column>;
@@ -5430,11 +5488,11 @@ export type Vulnerabilities_Mutation_Response = {
 /** input type for inserting object relation for remote table "vulnerabilities" */
 export type Vulnerabilities_Obj_Rel_Insert_Input = {
   data: Vulnerabilities_Insert_Input;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Vulnerabilities_On_Conflict>;
 };
 
-/** on conflict condition type for table "vulnerabilities" */
+/** on_conflict condition type for table "vulnerabilities" */
 export type Vulnerabilities_On_Conflict = {
   constraint: Vulnerabilities_Constraint;
   update_columns?: Array<Vulnerabilities_Update_Column>;
@@ -5735,7 +5793,7 @@ export type Vulnerability_Packages_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "vulnerability_packages" */
 export type Vulnerability_Packages_Arr_Rel_Insert_Input = {
   data: Array<Vulnerability_Packages_Insert_Input>;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Vulnerability_Packages_On_Conflict>;
 };
 
@@ -5824,11 +5882,11 @@ export type Vulnerability_Packages_Mutation_Response = {
 /** input type for inserting object relation for remote table "vulnerability_packages" */
 export type Vulnerability_Packages_Obj_Rel_Insert_Input = {
   data: Vulnerability_Packages_Insert_Input;
-  /** on conflict condition */
+  /** upsert condition */
   on_conflict?: InputMaybe<Vulnerability_Packages_On_Conflict>;
 };
 
-/** on conflict condition type for table "vulnerability_packages" */
+/** on_conflict condition type for table "vulnerability_packages" */
 export type Vulnerability_Packages_On_Conflict = {
   constraint: Vulnerability_Packages_Constraint;
   update_columns?: Array<Vulnerability_Packages_Update_Column>;
@@ -5896,6 +5954,13 @@ export type GetBuildDetailsQueryVariables = Exact<{
 
 export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, project_id?: any | null, s3_url?: string | null, project?: { __typename?: 'projects', name: string } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string } }> }> };
 
+export type GetManifestQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetManifestQuery = { __typename?: 'query_root', manifests_by_pk?: { __typename?: 'manifests', build_id?: any | null, project_id: any, status?: string | null, message?: string | null } | null };
+
 export type GetProjectQueryVariables = Exact<{
   project_id: Scalars['uuid'];
 }>;
@@ -5933,12 +5998,11 @@ export type InsertManifestMutationVariables = Exact<{
   s3_url: Scalars['String'];
   project_id: Scalars['uuid'];
   filename: Scalars['String'];
-  bucket: Scalars['String'];
   key: Scalars['String'];
 }>;
 
 
-export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null, scanManifest?: { __typename?: 'ScanManifestOutput', build_id: string, error: boolean, error_message?: string | null } | null };
+export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null };
 
 export type CreateOrganizationAndProjectMutationVariables = Exact<{
   identity_id: Scalars['uuid'];
@@ -5958,7 +6022,7 @@ export type InsertProjectMutationVariables = Exact<{
 export type InsertProjectMutation = { __typename?: 'mutation_root', insert_projects_one?: { __typename?: 'projects', id: any } | null };
 
 export type PresignManifestUrlMutationVariables = Exact<{
-  project_id: Scalars['String'];
+  project_id: Scalars['uuid'];
 }>;
 
 
@@ -6025,6 +6089,16 @@ export const GetBuildDetailsDocument = `
         data_source
       }
     }
+  }
+}
+    `;
+export const GetManifestDocument = `
+    query GetManifest($id: uuid = "") {
+  manifests_by_pk(id: $id) {
+    build_id
+    project_id
+    status
+    message
   }
 }
     `;
@@ -6194,16 +6268,11 @@ export const GetVulnerabilityDetailsDocument = `
 }
     `;
 export const InsertManifestDocument = `
-    mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!, $bucket: String!, $key: String!) {
+    mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!, $key: String!) {
   insert_manifests_one(
-    object: {filename: $filename, s3_url: $s3_url, project_id: $project_id}
+    object: {filename: $filename, s3_url: $s3_url, project_id: $project_id, s3_key: $key}
   ) {
     id
-  }
-  scanManifest(bucket: $bucket, key: $key) {
-    build_id
-    error
-    error_message
   }
 }
     `;
@@ -6226,7 +6295,7 @@ export const InsertProjectDocument = `
 }
     `;
 export const PresignManifestUrlDocument = `
-    mutation presignManifestUrl($project_id: String!) {
+    mutation presignManifestUrl($project_id: uuid!) {
   presignManifestUpload(project_id: $project_id) {
     url
     headers
@@ -6242,6 +6311,9 @@ const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetBuildDetailsDocument, variables })
+    }),
+    GetManifest: build.query<GetManifestQuery, GetManifestQueryVariables | void>({
+      query: (variables) => ({ document: GetManifestDocument, variables })
     }),
     GetProject: build.query<GetProjectQuery, GetProjectQueryVariables>({
       query: (variables) => ({ document: GetProjectDocument, variables })

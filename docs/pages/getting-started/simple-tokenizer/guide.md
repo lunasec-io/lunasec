@@ -41,7 +41,7 @@ export const simpleTokenizerBackend = new SimpleTokenizerBackend({
     awsRegion: 'us-west-2',
     s3Bucket: process.env.CIPHERTEXT_S3_BUCKET || 'YOU MUST SPECIFY A BUCKET',
     getAwsCredentials: () => {
-        return Promise.resolve(fromIni()); // This is one way of several ways to get AWS Credentials
+        return Promise.resolve(fromIni()); // This is one way of several ways to get AWS KratosCredentials
     },
 });
 
