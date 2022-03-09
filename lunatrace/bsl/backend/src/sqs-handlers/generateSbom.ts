@@ -16,8 +16,7 @@ import { Readable } from 'stream';
 import zlib from 'zlib';
 
 import { sbomBucket } from '../constants';
-import { insertBuild } from '../hasura-calls/insertBuild';
-import { setManifestStatus } from '../hasura-calls/updateManifestStatus';
+import { hasura } from '../hasura-api';
 import { S3ObjectMetadata } from '../types/s3';
 import { aws } from '../utils/aws-utils';
 
@@ -31,27 +30,35 @@ export async function handleGenerateSbom(message: S3ObjectMetadata) {
   const { key, region, bucketName } = message;
   try {
     // let hasura know we are starting the process, so it ends up in the UI.  Also will throw if there is no manifest
-    const hasuraRes = await setManifestStatus(key, 'sbom-processing', null, null);
+    const hasuraRes = await hasura.UpdateManifest({ key_eq: key, set_status: 'sbom-processing' });
+    const manifest = hasuraRes.update_manifests?.returning[0];
+    if (!manifest) {
+      throw new Error('Failed to find manifest matching SBOM, exiting');
+    }
     // Get manifest from s3, streaming
     const fileStream = await aws.getFileFromS3(key, bucketName, region);
     // spawn a copy of the CLI to make an sbom, stream in the manifest
-    const spawnedCli = callLunatrace(fileStream, hasuraRes.filename);
+    const spawnedCli = callLunatraceCli(fileStream, manifest.filename);
     // gzip the sbom stream
     const gZippedSbomStream = spawnedCli.stdout.pipe(gZip);
     // upload the sbom to s3, streaming
-    const newSbomS3Key = aws.generateSbomS3Key(hasuraRes.project.organization_id, hasuraRes.project_id);
+    const newSbomS3Key = aws.generateSbomS3Key(manifest.project.organization_id, manifest.project_id);
     const s3Url = await aws.uploadGzipFileToS3(newSbomS3Key, sbomBucket, gZippedSbomStream);
     // Create a new build
-    const buildRes = await insertBuild({ s3_url: s3Url, project_id: hasuraRes.project_id });
-    await setManifestStatus(key, 'sbom-generated', null, buildRes.id);
+    const { insert_builds_one } = await hasura.InsertBuild({ s3_url: s3Url, project_id: manifest.project_id });
+    if (!insert_builds_one) {
+      throw new Error('Failed to insert a new build');
+    }
+    // update the manifest status
+    await hasura.UpdateManifest({ key_eq: key, set_status: 'sbom-generated', build_id: insert_builds_one.id });
   } catch (e) {
     console.error(e);
     // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
-    await setManifestStatus(key, 'error', String(e), null);
+    await hasura.UpdateManifest({ key_eq: key, set_status: 'error', message: String(e) });
   }
 }
 
-export function callLunatrace(fileContentsStream: Readable, fileName: string) {
+export function callLunatraceCli(fileContentsStream: Readable, fileName: string) {
   const lunatraceCli = spawn('lunatrace', [
     '--debug',
     '--log-to-stderr',
