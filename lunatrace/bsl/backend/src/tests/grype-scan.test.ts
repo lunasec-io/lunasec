@@ -16,6 +16,7 @@ import path from 'path';
 
 import { Scan } from '../models/scan';
 
+jest.setTimeout(20000);
 describe('Grype scanner', () => {
   it('should run scan from local file', async () => {
     const res = await Scan.runGrypeScan(fs.createReadStream(path.join(__dirname, '/../fixtures/sbom.json')));

@@ -92,7 +92,7 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: (objec
       );
     }
   } catch (err) {
-    console.log('SQS processor top level error: ', err);
+    console.error('SQS processor top level error: ', err);
   }
 }
 
