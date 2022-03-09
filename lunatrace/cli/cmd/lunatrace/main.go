@@ -136,13 +136,13 @@ func main() {
 						Aliases: []string{"s"},
 						Usage:   "Scan a created SBOM for known risks.",
 						Flags: []cli.Flag{
-							&cli.StringFlag{
-								Name:  "sbom",
-								Usage: "SBOM to identify risky dependencies from.",
+							&cli.BoolFlag{
+								Name:  "stdin",
+								Usage: "Read SBOM from stdin.",
 							},
 							&cli.BoolFlag{
-								Name:  "stdin-filename",
-								Usage: "Read an sbom from stdin and set the filename for the source.",
+								Name:  "stdout",
+								Usage: "Print findings to stdout.",
 							},
 						},
 						Action: func(c *cli.Context) error {
