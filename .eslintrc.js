@@ -20,7 +20,7 @@ const productionWarn = process.env.STRICT_LINT === 'true' ? 'warn' : 'off';
 const warnInDev = process.env.STRICT_LINT === 'true' ? 'error' : 'warn';
 
 
-const slow = process.env.SLOW_LINT === 'true'
+const slow = true;
 
 module.exports = {
   root: true,
