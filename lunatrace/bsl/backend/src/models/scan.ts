@@ -22,6 +22,7 @@ export class Scan {
   static async uploadScan(sbomStream: Readable, buildId: string): Promise<void> {
     const rawGrypeReport = await this.runGrypeScan(sbomStream);
     const typedRawGrypeReport = Convert.toScanReport(rawGrypeReport);
+    console.log('typed raw report is  ', typedRawGrypeReport);
     const report = this.parseScan(typedRawGrypeReport, buildId);
     await this.storeReport(report);
   }
@@ -30,12 +31,12 @@ export class Scan {
     return new Promise((resolve, reject) => {
       const stdoutStream = new Stream.Writable();
       // const stderrStream = new Stream.Writeable();
-      const grypeCli = spawn(`grype`, ['-o', 'json', '--quiet'], { stdio: 'pipe' });
+      const grypeCli = spawn(`lunatrace`, ['i', 's', '--stdin', '--stdout']);
       grypeCli.stdin.write('');
       grypeCli.on('error', reject);
       const outputBuffers: Buffer[] = [];
       grypeCli.stdout.on('data', (chunk) => {
-        Buffer.from(chunk);
+        outputBuffers.push(Buffer.from(chunk));
       });
       grypeCli.stderr.on('data', (errorChunk) => {
         console.error(errorChunk.toString());
@@ -66,6 +67,7 @@ export class Scan {
   }
 
   static parseMatches(matches: GrypeMatch[]): Finding[] {
+    console.log('parsing matches ', matches);
     return matches.map((match): Finding => {
       const { vulnerability, artifact } = match;
       const details = match.matchDetails[0];

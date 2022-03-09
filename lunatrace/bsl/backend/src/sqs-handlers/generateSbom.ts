@@ -19,7 +19,6 @@ import { sbomBucket } from '../constants';
 import { hasura } from '../hasura-api';
 import { S3ObjectMetadata } from '../types/s3';
 import { aws } from '../utils/aws-utils';
-
 const gZip = zlib.createGzip();
 
 export async function handleGenerateSbom(message: S3ObjectMetadata) {
