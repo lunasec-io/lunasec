@@ -2,7 +2,8 @@ actions:
 - name: presignManifestUpload
   definition:
     kind: synchronous
-    handler: http://host.docker.internal:3002/s3/presign-manifest-upload
+    handler: '{{ACTION_BASE_URL}}/s3/presign-manifest-upload'
+    forward_client_headers: true
     request_transform:
       method: POST
       query_params: {}
@@ -13,7 +14,8 @@ actions:
 - name: presignSbomUpload
   definition:
     kind: ""
-    handler: http://host.docker.internal:3002/s3/presign-sbom-upload
+    handler: '{{ACTION_BASE_URL}}/s3/presign-sbom-upload'
+    forward_client_headers: true
     request_transform:
       method: POST
       query_params: {}

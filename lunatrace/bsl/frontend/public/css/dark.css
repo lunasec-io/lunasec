@@ -13186,20 +13186,6 @@ textarea.form-control-lg {
   color: #a9acb3;
 }
 
-.alert {
-  padding: 0;
-  display: flex;
-  color: #eaeaec;
-}
-.alert b, .alert strong {
-  color: #fff;
-}
-.alert .close:hover,
-.alert .close:focus {
-  color: #fff;
-  opacity: 1;
-}
-
 .alert-outline,
 .alert-outline-coloured {
   color: #a9acb3;

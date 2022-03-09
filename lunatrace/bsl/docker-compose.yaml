@@ -77,6 +77,7 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
       HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256", "jwk_url": "http://host.docker.internal:4456/.well-known/jwks.json", "issuer": "http://oathkeeper:4455/"}'
       HASURA_GRAPHQL_LOG_LEVEL: debug
+      ACTION_BASE_URL: http://host.docker.internal:3002
     extra_hosts:
       - "host.docker.internal:host-gateway"
   mailslurper:
