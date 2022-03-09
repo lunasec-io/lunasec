@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+
 import { app } from './app';
 
 const port = process.env.PORT || 3002; // This port needs to be exposed to the hasura backend, via the docker-compose

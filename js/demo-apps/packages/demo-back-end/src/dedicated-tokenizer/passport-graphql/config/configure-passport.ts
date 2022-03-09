@@ -44,7 +44,6 @@ export default function configurePassport(models: Models) {
     cb(null, { id: user.id, username: user.username });
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   passport.deserializeUser(async function (userInfo: { id: string }, cb) {
     try {
       const user = await models.user.getUser(userInfo.id);

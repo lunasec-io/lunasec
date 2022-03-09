@@ -25,9 +25,10 @@ under the key `PG_DATABASE_URL`
 
 #### Migrating the Database
 The database must be migrated before the app can run.  First, make sure the database is running by doing `sudo docker-compose up`.
+Install kratos CLI according to the docs: https://www.ory.sh/docs/kratos/install
 Migrate Kratos:
 ```bash 
-cd bsl/ory/cratos
+cd bsl/ory/kratos
 export DSN='postgres://postgres:postgrespassword@localhost:5431/lunatrace'
 kratos -c config.yaml migrate sql -e --yes    
 ```
