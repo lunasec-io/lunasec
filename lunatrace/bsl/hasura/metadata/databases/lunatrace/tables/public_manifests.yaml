@@ -48,7 +48,6 @@ select_permissions:
     - s3_url
     - status
     - created_at
-    - build_id
     - id
     - project_id
     filter: {}

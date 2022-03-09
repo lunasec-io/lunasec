@@ -13243,7 +13243,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/graphql@npm:^4.5.8":
+"@octokit/graphql@npm:^4.5.8, @octokit/graphql@npm:^4.8.0":
   version: 4.8.0
   resolution: "@octokit/graphql@npm:4.8.0"
   dependencies:
@@ -13506,6 +13506,15 @@ __metadata:
   dependencies:
     axios: ^0.21.1
   checksum: 95dd75e7746cf5ec32ce0e8adbfb167ee81a63858c6316e559e7532b33af3776a96e8ec13c779f22f575426406c63620499810d8391cbbf28a261e472c7de884
+  languageName: node
+  linkType: hard
+
+"@ory/kratos-client@npm:v0.8.2-alpha.1":
+  version: 0.8.2-alpha.1
+  resolution: "@ory/kratos-client@npm:0.8.2-alpha.1"
+  dependencies:
+    axios: ^0.21.1
+  checksum: d103ffdf08f76e565622abda8e748b5d17f9829c727e37a74e50b87b6d86431499b2e2f191ad2b6571202c1dea0455840585734c09b8ed923843aa7ca84f107a
   languageName: node
   linkType: hard
 
@@ -18592,7 +18601,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aws-sdk@npm:^2.1068.0, aws-sdk@npm:^2.784.0, aws-sdk@npm:^2.814.0, aws-sdk@npm:^2.848.0, aws-sdk@npm:^2.979.0":
+"aws-sdk@npm:^2.1068.0, aws-sdk@npm:^2.1082.0, aws-sdk@npm:^2.784.0, aws-sdk@npm:^2.814.0, aws-sdk@npm:^2.848.0, aws-sdk@npm:^2.979.0":
   version: 2.1085.0
   resolution: "aws-sdk@npm:2.1085.0"
   dependencies:
@@ -18606,23 +18615,6 @@ __metadata:
     uuid: 3.3.2
     xml2js: 0.4.19
   checksum: 0545a4a4459b78773b87407e4a163bbe83cee52568121549506db5d4ab1caecb7abcd6d40208638fc24599c7df256944e4d265e039fc8976714c23426aaf53a8
-  languageName: node
-  linkType: hard
-
-"aws-sdk@npm:^2.1082.0":
-  version: 2.1089.0
-  resolution: "aws-sdk@npm:2.1089.0"
-  dependencies:
-    buffer: 4.9.2
-    events: 1.1.1
-    ieee754: 1.1.13
-    jmespath: 0.16.0
-    querystring: 0.2.0
-    sax: 1.2.1
-    url: 0.10.3
-    uuid: 3.3.2
-    xml2js: 0.4.19
-  checksum: ad31c214a14cded9777c894b011f21ea54594412b1ceba51a28189d03c0b7a2cc04973bfa72a05fe15e09c43dae73e491b4c745bc3aef6d12bbb30ef39d33994
   languageName: node
   linkType: hard
 
@@ -34624,6 +34616,8 @@ __metadata:
     "@graphql-codegen/typescript": 2.4.2
     "@graphql-codegen/typescript-graphql-request": ^4.4.0
     "@graphql-codegen/typescript-operations": ^2.2.2
+    "@octokit/graphql": ^4.8.0
+    "@ory/kratos-client": v0.8.2-alpha.1
     "@types/aws-lambda": ^8.10.89
     "@types/axios": ^0.14.0
     "@types/config": ^0.0.41
