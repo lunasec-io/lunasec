@@ -20,10 +20,6 @@ import { hasura } from '../hasura-api';
 import { S3ObjectMetadata } from '../types/s3';
 import { aws } from '../utils/aws-utils';
 
-if (process.env.NODE_ENV === 'production' && !process.env.S3_SBOM_BUCKET_NAME) {
-  throw new Error('Must set S3_SBOM_BUCKET_NAME env var');
-}
-
 const gZip = zlib.createGzip();
 
 export async function handleGenerateSbom(message: S3ObjectMetadata) {
