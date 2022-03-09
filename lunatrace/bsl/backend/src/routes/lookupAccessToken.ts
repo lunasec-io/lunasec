@@ -19,8 +19,8 @@ import { db } from '../database/db';
 
 export const lookupAccessTokenRouter = express.Router();
 
-lookupAccessTokenRouter.get('/api/internal/auth/lookup-project-access-token', lookupProjectAccessToken);
-lookupAccessTokenRouter.get('/api/internal/auth/lookup-static-access-token', lookupStaticAccessToken);
+lookupAccessTokenRouter.get('/internal/auth/lookup-project-access-token', lookupProjectAccessToken);
+lookupAccessTokenRouter.get('/internal/auth/lookup-static-access-token', lookupStaticAccessToken);
 
 interface ErrorResponse {
   error: true;
