@@ -4482,7 +4482,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-sdk/abort-controller@npm:3.53.0":
+"@aws-sdk/abort-controller@npm:3.53.0, @aws-sdk/abort-controller@npm:^3.53.0":
   version: 3.53.0
   resolution: "@aws-sdk/abort-controller@npm:3.53.0"
   dependencies:
@@ -34601,6 +34601,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "lunatrace-backend@workspace:lunatrace/bsl/backend"
   dependencies:
+    "@aws-sdk/abort-controller": ^3.53.0
     "@aws-sdk/client-s3": ^3.46.0
     "@aws-sdk/client-sqs": ^3.53.0
     "@aws-sdk/credential-provider-node": ^3.46.0

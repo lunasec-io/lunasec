@@ -44,6 +44,8 @@ interface LunaTraceStackProps extends cdk.StackProps {
   databaseSecretArn: string;
   githubOauthAppLoginSecretArn: string;
   githubOauthAppLoginClientIdArn: string;
+  kratosCookieSecretArn: string;
+  kratosCipherSecretArn: string;
   vpcId: string;
 }
 
@@ -166,6 +168,9 @@ export class LunatraceBackendStack extends cdk.Stack {
       props.githubOauthAppLoginSecretArn
     );
 
+    const kratosCookieSecret = Secret.fromSecretCompleteArn(this, 'KratosCookieSecret', props.kratosCookieSecretArn);
+    const kratosCipherSecret = Secret.fromSecretCompleteArn(this, 'KratosCipherSecret', props.kratosCookieSecretArn);
+
     const kratos = taskDef.addContainer('KratosContainer', {
       image: kratosContainerImage,
       portMappings: [{ containerPort: 4433 }],
@@ -174,7 +179,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       }),
       command: ['--config', '/config.yaml', 'serve'],
       environment: {
-        LOG_LEVEL: 'debug',
+        LOG_LEVEL: 'trace', // Set this to 'debug' if this is too much data
       },
       secrets: {
         DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
@@ -182,6 +187,8 @@ export class LunatraceBackendStack extends cdk.Stack {
           EcsSecret.fromSecretsManager(githubOauthAppLoginClientId),
         SELFSERVICE_METHODS_OIDC_CONFIG_PROVIDERS_0_CLIENT_SECRET:
           EcsSecret.fromSecretsManager(githubOauthAppLoginSecret),
+        SECRETS_COOKIE: EcsSecret.fromSecretsManager(kratosCookieSecret),
+        SECRETS_CIPHER: EcsSecret.fromSecretsManager(kratosCipherSecret),
       },
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4434/health/ready || exit 1'],
