@@ -15,9 +15,11 @@
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import { Port, SecurityGroup, Vpc } from '@aws-cdk/aws-ec2';
 import {
+  AssetImageProps,
   Cluster,
   ContainerDependencyCondition,
   ContainerImage,
+  DeploymentControllerType,
   Secret as EcsSecret,
   FargateTaskDefinition,
   LogDriver,
@@ -48,6 +50,12 @@ interface LunaTraceStackProps extends cdk.StackProps {
   kratosCipherSecretArn: string;
   vpcId: string;
 }
+
+const commonBuildProps: AssetImageProps = {
+  invalidation: {
+    buildArgs: false,
+  },
+};
 
 export class LunatraceBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
@@ -122,7 +130,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       executionRole: execRole,
     });
 
-    const frontendContainerImage = ContainerImage.fromAsset('../frontend');
+    const frontendContainerImage = ContainerImage.fromAsset('../frontend', commonBuildProps);
 
     const frontend = taskDef.addContainer('FrontendContainer', {
       image: frontendContainerImage,
@@ -136,7 +144,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const oathkeeperContainerImage = ContainerImage.fromAsset('../ory/oathkeeper');
+    const oathkeeperContainerImage = ContainerImage.fromAsset('../ory/oathkeeper', commonBuildProps);
 
     const oathkeeper = taskDef.addContainer('OathkeeperContainer', {
       containerName: 'OathkeeperContainer',
@@ -155,7 +163,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const kratosContainerImage = ContainerImage.fromAsset('../ory/kratos');
+    const kratosContainerImage = ContainerImage.fromAsset('../ory/kratos', commonBuildProps);
 
     const githubOauthAppLoginClientId = Secret.fromSecretCompleteArn(
       this,
@@ -169,7 +177,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     );
 
     const kratosCookieSecret = Secret.fromSecretCompleteArn(this, 'KratosCookieSecret', props.kratosCookieSecretArn);
-    const kratosCipherSecret = Secret.fromSecretCompleteArn(this, 'KratosCipherSecret', props.kratosCookieSecretArn);
+    const kratosCipherSecret = Secret.fromSecretCompleteArn(this, 'KratosCipherSecret', props.kratosCipherSecretArn);
 
     const kratos = taskDef.addContainer('KratosContainer', {
       image: kratosContainerImage,
@@ -177,9 +185,10 @@ export class LunatraceBackendStack extends cdk.Stack {
       logging: LogDriver.awsLogs({
         streamPrefix: 'lunatrace-kratos',
       }),
-      command: ['--config', '/config.yaml', 'serve'],
+      command: ['--config', '/config/config.yaml', '--config', '/config/config.production.yaml', 'serve'],
       environment: {
-        LOG_LEVEL: 'trace', // Set this to 'debug' if this is too much data
+        // Set this to 'trace' if you need more data
+        LOG_LEVEL: 'debug',
       },
       secrets: {
         DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
@@ -197,7 +206,7 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const backendStaticSecret = Secret.fromSecretCompleteArn(this, 'BackendStaticSecret', props.backendStaticSecretArn);
 
-    const backendContainerImage = ContainerImage.fromAsset('../backend');
+    const backendContainerImage = ContainerImage.fromAsset('../backend', commonBuildProps);
 
     const backend = taskDef.addContainer('BackendContainer', {
       image: backendContainerImage,
@@ -286,6 +295,10 @@ export class LunatraceBackendStack extends cdk.Stack {
       securityGroups: [vpcDbSecurityGroup],
       circuitBreaker: {
         rollback: true,
+      },
+      deploymentController: {
+        // This sets up Blue/Green deploys
+        type: DeploymentControllerType.CODE_DEPLOY,
       },
     });
 
