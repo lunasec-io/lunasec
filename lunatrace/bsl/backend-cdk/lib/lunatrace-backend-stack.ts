@@ -42,6 +42,8 @@ interface LunaTraceStackProps extends cdk.StackProps {
   certificateArn: string;
   backendStaticSecretArn: string;
   databaseSecretArn: string;
+  githubOauthAppLoginSecretArn: string;
+  githubOauthAppLoginClientIdArn: string;
   vpcId: string;
 }
 
@@ -153,6 +155,17 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const kratosContainerImage = ContainerImage.fromAsset('../ory/kratos');
 
+    const githubOauthAppLoginClientId = Secret.fromSecretCompleteArn(
+      this,
+      'GithubOauthAppLoginClientId',
+      props.githubOauthAppLoginClientIdArn
+    );
+    const githubOauthAppLoginSecret = Secret.fromSecretCompleteArn(
+      this,
+      'GithubOauthAppLoginSecret',
+      props.githubOauthAppLoginSecretArn
+    );
+
     const kratos = taskDef.addContainer('KratosContainer', {
       image: kratosContainerImage,
       portMappings: [{ containerPort: 4433 }],
@@ -165,6 +178,10 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
       secrets: {
         DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+        SELFSERVICE_METHODS_OIDC_CONFIG_PROVIDERS_0_CLIENT_ID:
+          EcsSecret.fromSecretsManager(githubOauthAppLoginClientId),
+        SELFSERVICE_METHODS_OIDC_CONFIG_PROVIDERS_0_CLIENT_SECRET:
+          EcsSecret.fromSecretsManager(githubOauthAppLoginSecret),
       },
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4434/health/ready || exit 1'],

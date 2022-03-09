@@ -36,7 +36,7 @@
   authenticators:
     - handler: bearer_token
       config:
-        check_session_url: http://localhost:3002/api/internal/auth/lookup-project-access-token
+        check_session_url: http://localhost:3002/internal/auth/lookup-project-access-token
   authorizer:
     handler: allow
   mutators:
@@ -65,7 +65,7 @@
   authenticators:
     - handler: bearer_token
       config:
-        check_session_url: http://localhost:3002/api/internal/auth/lookup-static-access-token
+        check_session_url: http://localhost:3002/internal/auth/lookup-static-access-token
   authorizer:
     handler: allow
   mutators:
@@ -84,7 +84,7 @@
 - id: "ory:lunatrace:health"
   upstream:
     preserve_host: true
-    url: "http://localhost:8000"
+    url: "http://localhost:3002"
     strip_path: "/api"
   match:
     url: "<http|https>://<.*>/api/health"
