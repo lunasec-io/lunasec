@@ -7,5 +7,7 @@
   "vpcId": "vpc-0c99b65a5fed1049e",
   "certificateArn": "arn:aws:acm:us-west-2:134071937287:certificate/5a390bf1-cb77-4394-8d75-900d3b857fc7",
   "backendStaticSecretArn": "arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceBackendStaticSecret-rMiBGh",
-  "databaseSecretArn": "arn:aws:secretsmanager:us-west-2:134071937287:secret:lunatrace-HasuraDatabaseUrlSecret-QepHEY"
+  "databaseSecretArn": "arn:aws:secretsmanager:us-west-2:134071937287:secret:lunatrace-HasuraDatabaseUrlSecret-QepHEY",
+  "githubOauthAppLoginSecretArn": "arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosGitHubOAuthAppLoginSecret-zrd4WX",
+  "githubOauthAppLoginClientIdArn": "arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosGitHubOAuthAppLoginClientId-ryyGXL"
 }

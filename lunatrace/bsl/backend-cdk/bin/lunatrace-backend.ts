@@ -30,6 +30,8 @@ interface StackInputsType {
   certificateArn: string;
   backendStaticSecretArn: string;
   databaseSecretArn: string;
+  githubOauthAppLoginSecretArn: string;
+  githubOauthAppLoginClientIdArn: string;
   vpcId: string;
 }
 
@@ -44,6 +46,8 @@ const requiredFields = [
   'cdkDefaultAccount',
   'certificateArn',
   'databaseSecretArn',
+  'githubOauthAppLoginSecretArn',
+  'githubOauthAppLoginClientIdArn',
   'vpcId',
 ];
 
@@ -72,4 +76,6 @@ new LunatraceBackendStack(app, `${appName}-BackendStack`, {
   certificateArn: stackInputs.certificateArn,
   backendStaticSecretArn: stackInputs.backendStaticSecretArn,
   databaseSecretArn: stackInputs.databaseSecretArn,
+  githubOauthAppLoginClientIdArn: stackInputs.githubOauthAppLoginClientIdArn,
+  githubOauthAppLoginSecretArn: stackInputs.githubOauthAppLoginSecretArn,
 });
