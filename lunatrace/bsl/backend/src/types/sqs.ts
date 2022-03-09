@@ -12,7 +12,7 @@
  *
  */
 export interface S3SqsEvent {
-  Records: Record[];
+  Records?: Record[];
 }
 
 export interface Record {

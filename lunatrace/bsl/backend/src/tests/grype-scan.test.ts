@@ -12,9 +12,14 @@
  *
  */
 import fs from 'fs';
+import path from 'path';
 
 import { Scan } from '../models/scan';
 
-void Scan.runGrypeScan(fs.createReadStream('~/tmp/syftoutput.json')).then((res) => {
-  console.log(res);
+describe('Grype scanner', () => {
+  it('should run scan from local file', async () => {
+    const res = await Scan.runGrypeScan(fs.createReadStream(path.join(__dirname, '/../fixtures/sbom.json')));
+    expect(res).toBeTruthy();
+    console.log('res from grype scan is ', res);
+  });
 });

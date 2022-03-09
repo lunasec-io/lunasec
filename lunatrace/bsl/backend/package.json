@@ -3,6 +3,7 @@
   "license": "BSL-LunaTrace",
   "scripts": {
     "start": "tsc && concurrently \"tsc -w\" \"nodemon build/server.js\"",
+    "start:sqs-listener":  "tsc && concurrently \"tsc -w\" \"nodemon build/sqs/read-queue.js\"",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
     "test:scan:upload": "yarn run ts-node --files ./src/tests/upload-scan.ts",
     "test:load": "yarn run ts-node --files ./src/tests/local-load-vulnerabilities-test.ts",
@@ -35,6 +36,7 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "5.0.0-beta.1",
+    "graphql": "^16.3.0",
     "graphql-request": "^4.0.0",
     "graphql-tag": "^2.12.6",
     "nodemon": "^2.0.15",

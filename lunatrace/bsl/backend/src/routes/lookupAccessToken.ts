@@ -14,6 +14,7 @@
 import express, { Request, Response } from 'express';
 import { validate as validateUUID } from 'uuid';
 
+import { staticAccessToken } from '../constants';
 import { db } from '../database/db';
 
 export const lookupAccessTokenRouter = express.Router();
@@ -26,7 +27,7 @@ interface ErrorResponse {
   message: string;
 }
 
-function parseRequest(req: Request): ErrorResponse | { error: false; accessToken: string } {
+function parseRequestHeaders(req: Request): ErrorResponse | { error: false; accessToken: string } {
   const accessTokenHeader = req.header('X-LunaTrace-Access-Token');
 
   if (!accessTokenHeader) {
@@ -65,8 +66,9 @@ function generateErrorResponse(res: Response, errorMessage: string, statusCode =
   res.send(JSON.stringify({ error: true, message: errorMessage }));
 }
 
+// Oathkeeper calls this when requests from the CLI come through the gateway
 export async function lookupProjectAccessToken(req: Request, res: Response): Promise<void> {
-  const parsedRequest = parseRequest(req);
+  const parsedRequest = parseRequestHeaders(req);
 
   if (parsedRequest.error) {
     return generateErrorResponse(res, parsedRequest.message);
@@ -92,15 +94,16 @@ export async function lookupProjectAccessToken(req: Request, res: Response): Pro
   return;
 }
 
+// Oathkeeper calls this when requests from a backend service come through the gateway, this is a string matcher behind a rest endpoint :p
 export function lookupStaticAccessToken(req: Request, res: Response): void {
-  const parsedRequest = parseRequest(req);
+  const parsedRequest = parseRequestHeaders(req);
 
   if (parsedRequest.error) {
     return generateErrorResponse(res, parsedRequest.message);
   }
 
   // TODO: Make this read from Secrets Manager instead.
-  if (!parsedRequest.accessToken || parsedRequest.accessToken !== process.env.STATIC_SECRET_ACCESS_TOKEN) {
+  if (!parsedRequest.accessToken || parsedRequest.accessToken !== staticAccessToken) {
     return generateErrorResponse(res, 'Invalid Access Token specified in X-LunaTrace-Access-Token header', 401);
   }
 
