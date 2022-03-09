@@ -12,7 +12,7 @@
  *
  */
 import { spawn } from 'child_process';
-import { Readable } from 'stream';
+import Stream, { Readable } from 'stream';
 
 import { db, pgp } from '../database/db';
 import { Convert, Match as GrypeMatch, GrypeScanReport } from '../types/grypeScanReport';
@@ -28,12 +28,17 @@ export class Scan {
 
   static async runGrypeScan(sbomStream: Readable): Promise<string> {
     return new Promise((resolve, reject) => {
-      const grypeCli = spawn(`grype -o json --quiet`);
-
+      const stdoutStream = new Stream.Writable();
+      // const stderrStream = new Stream.Writeable();
+      const grypeCli = spawn(`grype`, ['-o', 'json', '--quiet'], { stdio: 'pipe' });
+      grypeCli.stdin.write('');
       grypeCli.on('error', reject);
       const outputBuffers: Buffer[] = [];
       grypeCli.stdout.on('data', (chunk) => {
         Buffer.from(chunk);
+      });
+      grypeCli.stderr.on('data', (errorChunk) => {
+        console.error(errorChunk.toString());
       });
       grypeCli.on('close', (code) => {
         if (code !== 0) {
@@ -41,7 +46,6 @@ export class Scan {
         }
         resolve(Buffer.concat(outputBuffers).toString());
       });
-
       sbomStream.on('data', (chunk) => grypeCli.stdin.write(chunk));
       sbomStream.on('end', () => grypeCli.stdin.end(() => console.log('Finished passing sbom contents to grype')));
       sbomStream.on('error', reject);

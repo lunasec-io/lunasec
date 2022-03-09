@@ -76,8 +76,8 @@
           {
             "https://hasura.io/jwt/claims": {
               "x-hasura-user-id": "",
-              "x-hasura-allowed-roles": ["cli"],
-              "x-hasura-default-role": "cli"
+              "x-hasura-allowed-roles": ["service"],
+              "x-hasura-default-role": "service"
             }
           }
 

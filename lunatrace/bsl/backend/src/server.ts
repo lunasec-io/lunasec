@@ -13,33 +13,8 @@
  */
 
 import { app } from './app';
-import { handleGenerateSbom } from './sqs-handlers/generateSbom';
-import { handleScanSbom } from './sqs-handlers/scanSbom';
-import { readDataFromQueue } from './sqs/read-queue';
-import { S3ObjectMetadata } from './types/s3';
 
-const executionMode = process.env.EXECUTION_MODE || 'server';
-
-if (executionMode === 'process-manifest-queue') {
-  void (async () => {
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      await readDataFromQueue(handleGenerateSbom);
-    }
-  })();
-} else if (executionMode === 'process-sbom-queue') {
-  void (async () => {
-    const processMessage = (object: S3ObjectMetadata) => {
-      console.log(object);
-    };
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      await readDataFromQueue(handleScanSbom);
-    }
-  })();
-} else {
-  const port = process.env.PORT || 3002; // This port needs to be exposed to the hasura backend, via the docker-compose
-  app.listen(port, () => {
-    console.log('Server is running on port ', port);
-  });
-}
+const port = process.env.PORT || 3002; // This port needs to be exposed to the hasura backend, via the docker-compose
+app.listen(port, () => {
+  console.log('Server is running on port ', port);
+});

@@ -28542,6 +28542,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"graphql@npm:^16.3.0":
+  version: 16.3.0
+  resolution: "graphql@npm:16.3.0"
+  checksum: ba540641e9cd2a8de5b989ff1433b015f232fa73aaef478d6709c1339cd43113347917acb965a5799c004667687852fc8ff0cfaa935eb26374c91c1fd7fdaeb1
+  languageName: node
+  linkType: hard
+
 "graphqurl@npm:^1.0.1":
   version: 1.0.1
   resolution: "graphqurl@npm:1.0.1"
@@ -34646,6 +34653,7 @@ __metadata:
     eslint-plugin-react: ^7.23.2
     express: 5.0.0-beta.1
     generate-lockfile: ^0.0.11
+    graphql: ^16.3.0
     graphql-request: ^4.0.0
     graphql-tag: ^2.12.6
     graphqurl: ^1.0.1
