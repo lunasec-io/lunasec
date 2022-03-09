@@ -61,6 +61,9 @@ export class LunatraceBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
     super(scope, id, props);
 
+    const publicBaseUrl = `https://${props.domainName}`;
+    const publicHasuraServiceUrl = `${publicBaseUrl}/api/service/v1/graphql`;
+
     const vpc = Vpc.fromLookup(this, 'Vpc', {
       vpcId: props.vpcId,
     });
@@ -83,7 +86,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       cors: [
         {
           allowedMethods: [HttpMethods.GET, HttpMethods.PUT],
-          allowedOrigins: [`https://${props.domainName}`],
+          allowedOrigins: [publicBaseUrl],
           allowedHeaders: ['*'],
         },
       ],
@@ -343,16 +346,19 @@ export class LunatraceBackendStack extends cdk.Stack {
       {
         cluster: fargateCluster,
         image: backendContainerImage,
-        queue: processManifestSqsQueue,
+        queue: processManifestSqsQueue, // will pass queue_name env var automatically
         assignPublicIp: true,
         enableLogging: true,
         environment: {
-          EXECUTION_MODE: 'process-manifest-queue',
-          SBOM_BUCKET_NAME: sbomBucket.bucketName,
+          QUEUE_HANDLER: 'process-manifest-queue',
+          S3_SBOM_BUCKET: sbomBucket.bucketName,
+          S3_MANIFEST_BUCKET: manifestBucket.bucketName,
+          HASURA_URL: publicHasuraServiceUrl,
         },
         secrets: {
           HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
           HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+          STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
         },
         containerName: 'ProcessManifestQueueContainer',
         circuitBreaker: {
@@ -360,6 +366,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         },
       }
     );
+    //STATIC_SECRET_ACCESS_TOKEN
 
     const processSbomDeadLetterQueue = new Queue(this, 'ProcessSbomProcessingDeadLetterQueue', {
       retentionPeriod: Duration.days(14),
@@ -376,15 +383,19 @@ export class LunatraceBackendStack extends cdk.Stack {
     const processSbomQueueService = new ecsPatterns.QueueProcessingFargateService(this, 'ProcessSbomQueueService', {
       cluster: fargateCluster,
       image: backendContainerImage,
-      queue: processSbomSqsQueue,
+      queue: processSbomSqsQueue, // will pass queue_name env var automatically
       enableLogging: true,
       assignPublicIp: true,
       environment: {
-        EXECUTION_MODE: 'process-sbom-queue',
+        QUEUE_HANDLER: 'process-sbom-queue',
+        S3_SBOM_BUCKET: sbomBucket.bucketName,
+        S3_MANIFEST_BUCKET: manifestBucket.bucketName,
+        HASURA_URL: publicHasuraServiceUrl,
       },
       secrets: {
         HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
         HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+        STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
       },
       containerName: 'ProcessSbomQueueService',
       circuitBreaker: {
