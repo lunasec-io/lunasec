@@ -249,6 +249,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         HASURA_GRAPHQL_PG_CONNECTIONS: '100',
         HASURA_GRAPHQL_LOG_LEVEL: 'debug',
         HASURA_GRAPHQL_JWT_SECRET: JSON.stringify(hasuraJwtSecretValue),
+        ACTION_BASE_URL: `http://localhost:${backend.containerPort}`,
       },
       secrets: {
         HASURA_GRAPHQL_METADATA_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
