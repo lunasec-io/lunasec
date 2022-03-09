@@ -16,6 +16,7 @@ package scan
 
 import (
 	"fmt"
+	"github.com/adrg/xdg"
 	"github.com/anchore/grype/grype"
 	"github.com/anchore/grype/grype/db"
 	"github.com/anchore/grype/grype/match"
@@ -24,7 +25,7 @@ import (
 	"github.com/anchore/stereoscope/pkg/image"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
-	"sync"
+	"path"
 )
 
 type RegistryCredentials struct {
@@ -103,6 +104,18 @@ var (
 	appConfig *Application
 )
 
+func init() {
+	appConfig = &Application{
+		DB: database{
+			Dir:                   path.Join(xdg.CacheHome, "grype", "db"),
+			UpdateURL:             "https://toolbox-data.anchore.io/grype/databases/listing.json",
+			CACert:                "",
+			AutoUpdate:            true,
+			ValidateByHashOnStart: false,
+		},
+	}
+}
+
 func validateDBLoad(loadErr error, status *db.Status) error {
 	if loadErr != nil {
 		return fmt.Errorf("failed to load vulnerability db: %w", loadErr)
@@ -116,54 +129,36 @@ func validateDBLoad(loadErr error, status *db.Status) error {
 	return nil
 }
 
-func GrypeSbomScanFromFile(filename string) (err error) {
+func GrypeSbomScanFromFile(filename string) (matches match.Matches, err error) {
 	var (
-		provider                   vulnerability.Provider
-		metadataProvider           vulnerability.MetadataProvider
-		dbStatus                   *db.Status
-		packages                   []pkg.Package
-		context                    pkg.Context
-		wg                         = &sync.WaitGroup{}
-		loadedDB, gatheredPackages bool
+		provider vulnerability.Provider
+		dbStatus *db.Status
+		packages []pkg.Package
+		context  pkg.Context
 	)
 
-	errs := make(chan error)
-
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		log.Debug().Msg("loading DB")
-		provider, metadataProvider, dbStatus, err = grype.LoadVulnerabilityDB(appConfig.DB.ToCuratorConfig(), appConfig.DB.AutoUpdate)
-		if err = validateDBLoad(err, dbStatus); err != nil {
-			errs <- err
-			return
-		}
-		loadedDB = true
-	}()
-
-	go func() {
-		defer wg.Done()
-		log.Debug().Msg("gathering packages")
-		providerConfig := pkg.ProviderConfig{
-			RegistryOptions: appConfig.Registry.ToOptions(),
-			Exclusions:      appConfig.Exclusions,
-		}
-		packages, context, err = pkg.Provide("sbom:"+filename, providerConfig)
-		if err != nil {
-			errs <- fmt.Errorf("failed to catalog: %w", err)
-			return
-		}
-		gatheredPackages = true
-	}()
-
-	wg.Wait()
-	if !loadedDB || !gatheredPackages {
+	log.Debug().Msg("loading DB")
+	provider, _, dbStatus, err = grype.LoadVulnerabilityDB(appConfig.DB.ToCuratorConfig(), appConfig.DB.AutoUpdate)
+	if err = validateDBLoad(err, dbStatus); err != nil {
+		log.Error().Err(err).Msg("unable to load db")
 		return
 	}
+	log.Debug().Msg("finished loading DB")
 
-	allMatches := grype.FindVulnerabilitiesForPackage(provider, context.Distro, packages...)
+	log.Debug().Msg("gathering packages")
+	providerConfig := pkg.ProviderConfig{
+		//RegistryOptions: appConfig.Registry.ToOptions(),
+		Exclusions: appConfig.Exclusions,
+	}
+	packages, context, err = pkg.Provide("sbom:"+filename, providerConfig)
+	if err != nil {
+		log.Error().Err(err).Msg("unable to load sbom")
+		return
+	}
+	log.Debug().Msg("finished gathering packages")
 
-	println(allMatches.Count())
+	log.Debug().Msg("finding vulnerabilities")
+	matches = grype.FindVulnerabilitiesForPackage(provider, context.Distro, packages...)
+	log.Debug().Msg("done looking for vulnerabilities")
 	return
 }
