@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/anchore/grype/grype/match"
 	"github.com/anchore/syft/syft"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
@@ -32,11 +33,7 @@ import (
 )
 
 func serializeSbom(sbom syftmodel.Document) (serializedOutput []byte, err error) {
-	depOutput := InventoryOutput{
-		Sbom: sbom,
-	}
-
-	serializedOutput, err = json.MarshalIndent(depOutput, "", "\t")
+	serializedOutput, err = json.MarshalIndent(sbom, "", "\t")
 	if err != nil {
 		log.Error().Err(err).Msg("unable to marshall dependencies output")
 		return
@@ -193,10 +190,12 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
 	var (
 		sbomFile *os.File
+		matches  match.Matches
 	)
 
 	command.EnableGlobalFlags(globalBoolFlags)
 
+	printToStdout := c.Bool("stdout")
 	readFromStdin := c.Bool("stdin")
 
 	if readFromStdin {
@@ -210,11 +209,39 @@ func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig type
 		}
 	}
 
-	if sbomFile != nil {
-		err = scan.GrypeSbomScanFromFile(sbomFile.Name())
+	if sbomFile == nil {
+		err = errors.New("SBOM file is not provided")
+		return
+	}
+
+	matches, err = scan.GrypeSbomScanFromFile(sbomFile.Name())
+	if err != nil {
+		return
+	}
+
+	if printToStdout {
+		type FindingsOutput struct {
+			Findings []match.Match `json:"findings"`
+		}
+
+		var findings []match.Match
+
+		var serializedFindings []byte
+
+		for vulnMatch := range matches.Enumerate() {
+			findings = append(findings, vulnMatch)
+		}
+
+		findingsOutput := FindingsOutput{
+			Findings: findings,
+		}
+
+		serializedFindings, err = json.Marshal(findingsOutput)
 		if err != nil {
 			return
 		}
+
+		fmt.Println(string(serializedFindings))
 	}
 	return
 }

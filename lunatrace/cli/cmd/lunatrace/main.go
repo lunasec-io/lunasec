@@ -140,6 +140,10 @@ func main() {
 								Name:  "stdin",
 								Usage: "Read SBOM from stdin.",
 							},
+							&cli.BoolFlag{
+								Name:  "stdout",
+								Usage: "Print findings to stdout.",
+							},
 						},
 						Action: func(c *cli.Context) error {
 							return inventory.ScanCommand(c, globalBoolFlags, appConfig)

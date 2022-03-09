@@ -18,10 +18,6 @@ import (
 	"lunasec/lunatrace/inventory/syftmodel"
 )
 
-type InventoryOutput struct {
-	Sbom syftmodel.Document `json:"sbom"`
-}
-
 type SbomOutput struct {
 	ProjectId string             `json:"application_id"`
 	Sbom      syftmodel.Document `json:"sbom"`
