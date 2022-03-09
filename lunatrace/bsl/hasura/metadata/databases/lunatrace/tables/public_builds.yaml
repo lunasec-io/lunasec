@@ -40,7 +40,16 @@ insert_permissions:
 - permission:
     backend_only: false
     check: {}
-    columns: []
+    columns:
+    - build_number
+    - git_branch
+    - git_hash
+    - git_remote
+    - s3_url
+    - created_at
+    - agent_access_token
+    - id
+    - project_id
   role: service
 select_permissions:
 - permission:
