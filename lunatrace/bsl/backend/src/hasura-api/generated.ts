@@ -1,17 +1,6 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-import { api } from './baseApi';
+import { GraphQLClient } from 'graphql-request';
+import * as Dom from 'graphql-request/dist/types.dom';
+import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -5947,404 +5936,83 @@ export enum Vulnerability_Packages_Update_Column {
   VulnSlug = 'vuln_slug'
 }
 
-export type GetBuildDetailsQueryVariables = Exact<{
+export type InsertBuildMutationVariables = Exact<{
+  project_id: Scalars['uuid'];
+  s3_url: Scalars['String'];
+}>;
+
+
+export type InsertBuildMutation = { __typename?: 'mutation_root', insert_builds_one?: { __typename?: 'builds', id: any } | null };
+
+export type UpdateManifestStatusIfExistsMutationVariables = Exact<{
+  buildId: Scalars['uuid'];
+  status: Scalars['String'];
+}>;
+
+
+export type UpdateManifestStatusIfExistsMutation = { __typename?: 'mutation_root', update_manifests?: { __typename?: 'manifests_mutation_response', affected_rows: number } | null };
+
+export type UpdateManifestMutationVariables = Exact<{
+  key_eq: Scalars['String'];
+  set_status: Scalars['String'];
+  message?: InputMaybe<Scalars['String']>;
   build_id?: InputMaybe<Scalars['uuid']>;
 }>;
 
 
-export type GetBuildDetailsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, project_id?: any | null, s3_url?: string | null, project?: { __typename?: 'projects', name: string } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string } }> }> };
-
-export type GetManifestQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['uuid']>;
-}>;
+export type UpdateManifestMutation = { __typename?: 'mutation_root', update_manifests?: { __typename?: 'manifests_mutation_response', returning: Array<{ __typename?: 'manifests', filename: string, project_id: any, project: { __typename?: 'projects', organization_id?: any | null } }> } | null };
 
 
-export type GetManifestQuery = { __typename?: 'query_root', manifests_by_pk?: { __typename?: 'manifests', build_id?: any | null, project_id: any, status?: string | null, message?: string | null } | null };
-
-export type GetProjectQueryVariables = Exact<{
-  project_id: Scalars['uuid'];
-}>;
-
-
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, access_token: any }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
-
-export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SampleVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, name: string, namespace: string, record_source?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, created_at: any, description?: string | null, slug: string, data_source: string, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null, id: any, slug: string }> }> };
-
-export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any }> };
-
-export type SearchVulnerabilitiesQueryVariables = Exact<{
-  search: Scalars['String'];
-  namespace?: InputMaybe<String_Comparison_Exp>;
-  order_by?: InputMaybe<Array<Vulnerabilities_Order_By> | Vulnerabilities_Order_By>;
-}>;
-
-
-export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, namespace: string, name: string, created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', id: any, name: string, namespace: string } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null, id: any, slug: string }> }> };
-
-export type GetVulnerabilityDetailsQueryVariables = Exact<{
-  vulnerability_id?: InputMaybe<Scalars['uuid']>;
-}>;
-
-
-export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
-
-export type InsertManifestMutationVariables = Exact<{
-  s3_url: Scalars['String'];
-  project_id: Scalars['uuid'];
-  filename: Scalars['String'];
-  key: Scalars['String'];
-}>;
-
-
-export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null };
-
-export type CreateOrganizationAndProjectMutationVariables = Exact<{
-  identity_id: Scalars['uuid'];
-  organization_name: Scalars['String'];
-  project_name: Scalars['String'];
-}>;
-
-
-export type CreateOrganizationAndProjectMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', projects: Array<{ __typename?: 'projects', id: any }> } | null };
-
-export type InsertProjectMutationVariables = Exact<{
-  name: Scalars['String'];
-  organization_id: Scalars['uuid'];
-}>;
-
-
-export type InsertProjectMutation = { __typename?: 'mutation_root', insert_projects_one?: { __typename?: 'projects', id: any } | null };
-
-export type PresignManifestUrlMutationVariables = Exact<{
-  project_id: Scalars['uuid'];
-}>;
-
-
-export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string, key: string, bucket: string, error: boolean, error_message?: string | null } | null };
-
-
-export const GetBuildDetailsDocument = `
-    query GetBuildDetails($build_id: uuid) {
-  builds(where: {id: {_eq: $build_id}}) {
-    build_number
-    created_at
-    git_branch
-    git_hash
-    git_remote
+export const InsertBuildDocument = gql`
+    mutation InsertBuild($project_id: uuid!, $s3_url: String!) {
+  insert_builds_one(object: {project_id: $project_id, s3_url: $s3_url}) {
     id
-    project_id
-    project {
-      name
-    }
-    s3_url
-    scans(order_by: {created_at: asc}) {
-      created_at
-      db_date
-      distro_name
-      distro_version
-      grype_version
-      id
-      scan_number
-      source_type
-      target
-    }
-    scans_aggregate {
-      aggregate {
-        count
-      }
-    }
-    findings {
-      fix_state
-      fix_versions
-      package_name
-      created_at
-      id
-      language
-      locations
-      matcher
-      package_version_id
-      purl
-      severity
-      type
-      version
-      updated_at
-      version_matcher
-      virtual_path
-      vulnerability_id
-      vulnerability_package_id
-      vulnerability {
-        id
-        slug
-        description
-        cvss_score
-        cvss_inferred
-        name
-        namespace
-        data_source
-      }
-    }
   }
 }
     `;
-export const GetManifestDocument = `
-    query GetManifest($id: uuid = "") {
-  manifests_by_pk(id: $id) {
-    build_id
-    project_id
-    status
-    message
-  }
-}
-    `;
-export const GetProjectDocument = `
-    query GetProject($project_id: uuid!) {
-  projects(where: {id: {_eq: $project_id}}) {
-    created_at
-    id
-    name
-    organization_id
-    repo
-    settings_id
-    organization {
-      name
-    }
-    project_access_tokens {
-      id
-      access_token
-    }
-    builds(order_by: {created_at: desc}) {
-      id
-      created_at
-      build_number
-      critical_packages: findings_aggregate(
-        distinct_on: package_name
-        where: {severity: {_eq: "Critical"}}
-      ) {
-        aggregate {
-          count(distinct: true, columns: package_name)
-        }
-      }
-      scans_aggregate {
-        aggregate {
-          count
-        }
-      }
-      scans(limit: 1, order_by: {created_at: desc}) {
-        created_at
-        scan_number
-      }
-    }
-  }
-}
-    `;
-export const SampleVulnerabilitiesDocument = `
-    query SampleVulnerabilities {
-  vulnerabilities(limit: 15) {
-    id
-    name
-    namespace
-    record_source
-    severity
-    cvss_score
-    cvss_inferred
-    created_at
-    description
-    slug
-    data_source
-    vulnerability_packages {
-      name
-      id
-      slug
-    }
-  }
-}
-    `;
-export const GetSidebarInfoDocument = `
-    query GetSidebarInfo {
-  projects(order_by: {name: asc}) {
-    name
-    id
-    created_at
-    builds {
-      id
-      build_number
-    }
-  }
-  organizations(order_by: {projects_aggregate: {count: asc}}) {
-    name
-    id
-    createdAt
-  }
-}
-    `;
-export const SearchVulnerabilitiesDocument = `
-    query SearchVulnerabilities($search: String!, $namespace: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerabilities_order_by!] = {}) {
-  vulnerabilities(
-    where: {_or: [{name: {_ilike: $search}}, {description: {_ilike: $search}}, {vulnerability_packages: {name: {_ilike: $search}}}], namespace: $namespace}
-    order_by: $order_by
-    limit: 30
+export const UpdateManifestStatusIfExistsDocument = gql`
+    mutation UpdateManifestStatusIfExists($buildId: uuid!, $status: String!) {
+  update_manifests(
+    where: {_and: {build_id: {_eq: $buildId}, status: {_eq: "sbom-generated"}}}
+    _set: {status: $status}
   ) {
-    id
-    namespace
-    name
-    created_at
-    cvss_exploitability_score
-    cvss_impact_score
-    cvss_inferred
-    cvss_score
-    cvss_version
-    data_source
-    description
-    record_source
-    severity
-    slug
-    topic_id
-    urls
-    related_vulnerabilities {
-      vulnerability {
-        id
-        name
-        namespace
-      }
-    }
-    vulnerability_packages {
-      name
-      id
-      slug
-    }
+    affected_rows
   }
 }
     `;
-export const GetVulnerabilityDetailsDocument = `
-    query GetVulnerabilityDetails($vulnerability_id: uuid) {
-  vulnerabilities(where: {id: {_eq: $vulnerability_id}}) {
-    created_at
-    cvss_exploitability_score
-    cvss_impact_score
-    cvss_inferred
-    cvss_score
-    cvss_version
-    data_source
-    description
-    id
-    name
-    namespace
-    record_source
-    severity
-    slug
-    topic_id
-    urls
-    related_vulnerabilities {
-      vulnerability {
-        name
-        namespace
-        description
-        severity
-        cvss_score
-        cvss_inferred
-        id
-      }
-    }
-    vulnerability_packages {
-      advisories
-      id
-      name
-      package_versions {
-        cpes
-        fix_state
-        fixed_in_versions
-        id
-        version_constraint
-        version_format
-      }
-    }
-  }
-}
-    `;
-export const InsertManifestDocument = `
-    mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!, $key: String!) {
-  insert_manifests_one(
-    object: {filename: $filename, s3_url: $s3_url, project_id: $project_id, s3_key: $key}
+export const UpdateManifestDocument = gql`
+    mutation UpdateManifest($key_eq: String!, $set_status: String!, $message: String, $build_id: uuid) {
+  update_manifests(
+    where: {s3_key: {_eq: $key_eq}}
+    _set: {status: $set_status, message: $message, build_id: $build_id}
   ) {
-    id
-  }
-}
-    `;
-export const CreateOrganizationAndProjectDocument = `
-    mutation CreateOrganizationAndProject($identity_id: uuid!, $organization_name: String!, $project_name: String!) {
-  insert_organizations_one(
-    object: {name: $organization_name, organization_users: {data: {user_id: $identity_id}}, projects: {data: {name: $project_name}}}
-  ) {
-    projects {
-      id
+    returning {
+      filename
+      project_id
+      project {
+        organization_id
+      }
     }
   }
 }
     `;
-export const InsertProjectDocument = `
-    mutation InsertProject($name: String!, $organization_id: uuid!) {
-  insert_projects_one(object: {name: $name, organization_id: $organization_id}) {
-    id
-  }
+
+export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
+
+
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+
+export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
+  return {
+    InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');
+    },
+    UpdateManifestStatusIfExists(variables: UpdateManifestStatusIfExistsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateManifestStatusIfExistsMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateManifestStatusIfExistsMutation>(UpdateManifestStatusIfExistsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateManifestStatusIfExists', 'mutation');
+    },
+    UpdateManifest(variables: UpdateManifestMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateManifestMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateManifestMutation>(UpdateManifestDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateManifest', 'mutation');
+    }
+  };
 }
-    `;
-export const PresignManifestUrlDocument = `
-    mutation presignManifestUrl($project_id: uuid!) {
-  presignManifestUpload(project_id: $project_id) {
-    url
-    headers
-    key
-    bucket
-    error
-    error_message
-  }
-}
-    `;
-
-const injectedRtkApi = api.injectEndpoints({
-  endpoints: (build) => ({
-    GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables | void>({
-      query: (variables) => ({ document: GetBuildDetailsDocument, variables })
-    }),
-    GetManifest: build.query<GetManifestQuery, GetManifestQueryVariables | void>({
-      query: (variables) => ({ document: GetManifestDocument, variables })
-    }),
-    GetProject: build.query<GetProjectQuery, GetProjectQueryVariables>({
-      query: (variables) => ({ document: GetProjectDocument, variables })
-    }),
-    SampleVulnerabilities: build.query<SampleVulnerabilitiesQuery, SampleVulnerabilitiesQueryVariables | void>({
-      query: (variables) => ({ document: SampleVulnerabilitiesDocument, variables })
-    }),
-    GetSidebarInfo: build.query<GetSidebarInfoQuery, GetSidebarInfoQueryVariables | void>({
-      query: (variables) => ({ document: GetSidebarInfoDocument, variables })
-    }),
-    SearchVulnerabilities: build.query<SearchVulnerabilitiesQuery, SearchVulnerabilitiesQueryVariables>({
-      query: (variables) => ({ document: SearchVulnerabilitiesDocument, variables })
-    }),
-    GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables | void>({
-      query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
-    }),
-    insertManifest: build.mutation<InsertManifestMutation, InsertManifestMutationVariables>({
-      query: (variables) => ({ document: InsertManifestDocument, variables })
-    }),
-    CreateOrganizationAndProject: build.mutation<CreateOrganizationAndProjectMutation, CreateOrganizationAndProjectMutationVariables>({
-      query: (variables) => ({ document: CreateOrganizationAndProjectDocument, variables })
-    }),
-    InsertProject: build.mutation<InsertProjectMutation, InsertProjectMutationVariables>({
-      query: (variables) => ({ document: InsertProjectDocument, variables })
-    }),
-    presignManifestUrl: build.mutation<PresignManifestUrlMutation, PresignManifestUrlMutationVariables>({
-      query: (variables) => ({ document: PresignManifestUrlDocument, variables })
-    }),
-  }),
-});
-
-export { injectedRtkApi as api };
-
-
+export type Sdk = ReturnType<typeof getSdk>;

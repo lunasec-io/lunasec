@@ -11,10 +11,15 @@
  * limitations under the License.
  *
  */
+import fs from 'fs';
+import path from 'path';
 
-import { app } from './app';
+import { Scan } from '../models/scan';
 
-const port = process.env.PORT || 3002; // This port needs to be exposed to the hasura backend, via the docker-compose
-app.listen(port, () => {
-  console.log('Server is running on port ', port);
+describe('Grype scanner', () => {
+  it('should run scan from local file', async () => {
+    const res = await Scan.runGrypeScan(fs.createReadStream(path.join(__dirname, '/../fixtures/sbom.json')));
+    expect(res).toBeTruthy();
+    console.log('res from grype scan is ', res);
+  });
 });

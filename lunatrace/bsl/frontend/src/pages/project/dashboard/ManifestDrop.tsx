@@ -13,7 +13,7 @@
  */
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Col, Row, Spinner } from 'react-bootstrap';
 import { DropzoneOptions, useDropzone } from 'react-dropzone';
 import { FilePlus } from 'react-feather';
@@ -97,10 +97,10 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
         case 'sbom-generated':
           setUploadStatus('Package inventory complete, waiting for vulnerabilities scan to begin');
           break;
-        case 'scan-started':
+        case 'scaning':
           setUploadStatus('Vulnerability scan started, you will be redirected when complete...');
           break;
-        case 'scan-generated':
+        case 'scanned':
           navigate(`/build/${manifestQuery.currentData.manifests_by_pk.build_id}`);
           break;
         case 'error':
@@ -146,7 +146,8 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     return (
       <span>
         <FilePlus />
-        Click here or drop a manifest file to manually submit a build. (ex: package.lock)
+        Click here or drop-and-drop a manifest file or bundled project to manually submit a build. (ex:
+        package-lock.json, my-project.jar, my-project.zip)
       </span>
     );
   };

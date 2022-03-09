@@ -3,6 +3,7 @@
   "license": "BSL-LunaTrace",
   "scripts": {
     "start": "tsc && concurrently \"tsc -w\" \"nodemon build/server.js\"",
+    "start:sqs-listener":  "tsc && concurrently \"tsc -w\" \"nodemon build/sqs/read-queue.js\"",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
     "test:scan:upload": "yarn run ts-node --files ./src/tests/upload-scan.ts",
     "test:load": "yarn run ts-node --files ./src/tests/local-load-vulnerabilities-test.ts",
@@ -10,6 +11,9 @@
     "vulnerabilities:update": "yarn run ts-node --files ./src/tests/upsert-vulns.ts",
     "test:deleted": "yarn run ts-node --files ./src/tests/deleted-vulns-scan.ts",
     "start:prod": "pm2-runtime start ./build/server.js --name demo-back-end",
+    "generate:schema": "gq http://localhost:8080/v1/graphql -H \"X-Hasura-Admin-Secret: myadminsecretkey\" --introspect > schema.graphql",
+    "generate:hasura-calls": "yarn run generate:schema && graphql-codegen --config codegen.yml",
+    "graphqurl": "^1.0.1",
     "compile": "tsc -p tsconfig.json",
     "compile:watch": "tsc -p tsconfig.json -w"
   },
@@ -32,6 +36,9 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "5.0.0-beta.1",
+    "graphql": "^16.3.0",
+    "graphql-request": "^4.0.0",
+    "graphql-tag": "^2.12.6",
     "nodemon": "^2.0.15",
     "pg": "^8.7.1",
     "pg-promise": "^10.11.1",
@@ -44,6 +51,11 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "2.3.1",
+    "@graphql-codegen/introspection": "2.1.1",
+    "@graphql-codegen/typescript": "2.4.2",
+    "@graphql-codegen/typescript-graphql-request": "^4.4.0",
+    "@graphql-codegen/typescript-operations": "^2.2.2",
     "@types/aws-lambda": "^8.10.89",
     "@types/axios": "^0.14.0",
     "@types/config": "^0.0.41",
@@ -65,6 +77,7 @@
     "eslint-plugin-promise": "^5.2.0",
     "eslint-plugin-react": "^7.23.2",
     "generate-lockfile": "^0.0.11",
+    "graphqurl": "^1.0.1",
     "jest": "^27.5.1",
     "source-map-support": "^0.5.16",
     "ts-jest": "^27.1.3",

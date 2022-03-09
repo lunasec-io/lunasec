@@ -22,3 +22,8 @@ if (!process.env.S3_MANIFEST_BUCKET && process.env.NODE_ENV === 'production') {
 }
 
 export const manifestBucket = process.env.S3_MANIFEST_BUCKET || 'test-manifest-bucket-one';
+
+if (process.env.NODE_ENV === 'production' && !process.env.STATIC_SECRET_ACCESS_TOKEN) {
+  throw new Error('Must set STATIC_SECRET_ACCESS_TOKEN in production');
+}
+export const staticAccessToken = process.env.STATIC_SECRET_ACCESS_TOKEN || 'fc7efb9e-04e0-4883-b7b4-8f2e86d1e2e1';
