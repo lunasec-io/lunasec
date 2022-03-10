@@ -34653,6 +34653,7 @@ __metadata:
     graphql-tag: ^2.12.6
     graphqurl: ^1.0.1
     jest: ^27.5.1
+    jwt-decode: ^3.1.2
     nodemon: ^2.0.15
     pg: ^8.7.1
     pg-promise: ^10.11.1
