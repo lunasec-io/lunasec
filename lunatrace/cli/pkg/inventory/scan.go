@@ -13,39 +13,3 @@
 // limitations under the License.
 //
 package inventory
-
-import (
-	"fmt"
-	"github.com/anchore/syft/syft/sbom"
-	"github.com/rs/zerolog/log"
-	"lunasec/lunatrace/pkg/types"
-)
-
-func collectSbomFromDirectory(pathName string, excludedDirs []string) (sbom *sbom.SBOM, err error) {
-	sourceName := "dir:" + pathName
-
-	sbom, err = getSbomForSyft(sourceName, excludedDirs)
-	if err != nil {
-		log.Error().
-			Str("pathName", pathName).
-			Err(err).
-			Msg("Unable to create SBOM from provided directory.")
-		return
-	}
-	return
-}
-
-func collectSbomFromContainer(container string, containerType types.ContainerType, excludedDirs []string) (sbom *sbom.SBOM, err error) {
-	sourceName := fmt.Sprintf("%s:%s", containerType, container)
-
-	sbom, err = getSbomForSyft(sourceName, excludedDirs)
-	if err != nil {
-		log.Error().
-			Str("container", container).
-			Str("containerType", string(containerType)).
-			Err(err).
-			Msg("Unable to create SBOM from container.")
-		return
-	}
-	return
-}

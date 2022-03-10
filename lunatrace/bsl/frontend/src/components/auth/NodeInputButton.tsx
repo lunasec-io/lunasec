@@ -12,8 +12,8 @@
  *
  */
 import { getNodeLabel } from '@ory/integrations/ui';
-import { Button } from '@ory/themes';
 import React from 'react';
+import { Button } from 'react-bootstrap';
 
 import { NodeInputProps } from './helpers';
 
@@ -34,9 +34,9 @@ export function NodeInputButton<T>({ node, attributes, setValue, disabled, dispa
     <>
       <Button
         name={attributes.name}
-        onClick={async (e: any) => {
+        onClick={(e: any) => {
           onClick();
-          await setValue(attributes.value).then(() => dispatchSubmit(e));
+          void setValue(attributes.value).then(() => dispatchSubmit(e));
         }}
         value={attributes.value || ''}
         disabled={attributes.disabled || disabled}

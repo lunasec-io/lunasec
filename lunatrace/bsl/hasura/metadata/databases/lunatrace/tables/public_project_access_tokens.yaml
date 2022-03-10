@@ -12,9 +12,15 @@ select_permissions:
     - id
     - project_uuid
     filter:
-      project:
-        organization:
-          organization_users:
-            user_id:
-              _eq: X-Hasura-User-Id
+      access_token:
+        _eq: X-Hasura-Access-Token
+  role: cli
+- permission:
+    columns:
+    - access_token
+    - id
+    - project_uuid
+    filter:
+      access_token:
+        _eq: X-Hasura-Access-Token
   role: user

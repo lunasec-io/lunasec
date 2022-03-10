@@ -1,4 +1,3 @@
-
 FROM maven:3.8.4-openjdk-17 AS java-build
 
 WORKDIR /build/hotpatch-payload
@@ -14,7 +13,7 @@ WORKDIR /build
 COPY . /build
 COPY --from=java-build /build/hotpatch-payload/target/classes/Log4ShellHotpatch.class /build
 
-RUN CGO_ENABLED=0 go build -o log4shell .
+RUN make log4shell
 
 FROM alpine
 
