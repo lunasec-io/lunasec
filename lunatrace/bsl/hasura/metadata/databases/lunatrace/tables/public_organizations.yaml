@@ -28,6 +28,15 @@ insert_permissions:
 select_permissions:
 - permission:
     columns:
+    - name
+    - createdAt
+    - creator_id
+    - id
+    - settings_id
+    filter: {}
+  role: service
+- permission:
+    columns:
     - id
     - name
     - createdAt

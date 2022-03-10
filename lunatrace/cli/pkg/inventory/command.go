@@ -155,6 +155,9 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 		appConfig.GraphqlServer,
 		appConfig.ProjectAccessToken,
 	)
+	if err != nil {
+		return
+	}
 
 	log.Info().Msg("Creating build in LunaTrace database")
 	agentSecret, buildId, err := insertNewBuild(appConfig, projectId)

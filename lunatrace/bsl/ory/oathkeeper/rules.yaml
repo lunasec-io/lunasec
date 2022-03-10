@@ -48,6 +48,7 @@
             "https://hasura.io/jwt/claims": {
               "x-hasura-access-token": "{{ .Subject }}",
               "x-hasura-project-uuid": "{{ .Extra.project_uuid }}",
+              "x-hasura-project-data": "{{ .Extra.project_data }}",
               "x-hasura-allowed-roles": ["cli"],
               "x-hasura-default-role": "cli"
             }
