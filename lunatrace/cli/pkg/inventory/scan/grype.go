@@ -21,6 +21,7 @@ import (
 	"github.com/anchore/grype/grype/db"
 	"github.com/anchore/grype/grype/match"
 	"github.com/anchore/grype/grype/pkg"
+	"github.com/anchore/grype/grype/presenter/models"
 	"github.com/anchore/grype/grype/vulnerability"
 	"github.com/anchore/stereoscope/pkg/image"
 	"github.com/rs/zerolog/log"
@@ -129,16 +130,19 @@ func validateDBLoad(loadErr error, status *db.Status) error {
 	return nil
 }
 
-func GrypeSbomScanFromFile(filename string) (matches match.Matches, err error) {
+func GrypeSbomScanFromFile(filename string) (document models.Document, err error) {
 	var (
-		provider vulnerability.Provider
-		dbStatus *db.Status
-		packages []pkg.Package
-		context  pkg.Context
+		provider         vulnerability.Provider
+		dbStatus         *db.Status
+		packages         []pkg.Package
+		context          pkg.Context
+		metadataProvider vulnerability.MetadataProvider
+		ignoredMatches   []match.IgnoredMatch
+		matches          match.Matches
 	)
 
 	log.Debug().Msg("loading DB")
-	provider, _, dbStatus, err = grype.LoadVulnerabilityDB(appConfig.DB.ToCuratorConfig(), appConfig.DB.AutoUpdate)
+	provider, metadataProvider, dbStatus, err = grype.LoadVulnerabilityDB(appConfig.DB.ToCuratorConfig(), appConfig.DB.AutoUpdate)
 	if err = validateDBLoad(err, dbStatus); err != nil {
 		log.Error().Err(err).Msg("unable to load db")
 		return
@@ -160,5 +164,11 @@ func GrypeSbomScanFromFile(filename string) (matches match.Matches, err error) {
 	log.Debug().Msg("finding vulnerabilities")
 	matches = grype.FindVulnerabilitiesForPackage(provider, context.Distro, packages...)
 	log.Debug().Msg("done looking for vulnerabilities")
+
+	document, err = models.NewDocument(packages, context, matches, ignoredMatches, metadataProvider, appConfig, dbStatus)
+	if err != nil {
+		log.Error().Err(err).Msg("unable to load sbom")
+		return
+	}
 	return
 }
