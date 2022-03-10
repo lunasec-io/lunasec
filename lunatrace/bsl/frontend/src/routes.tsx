@@ -16,6 +16,7 @@ import { RouteObject } from 'react-router';
 
 import MainLayout from './layouts/Main';
 import { Account, Login, OrganizationsList, Registration, VulnerabilitiesMain } from './pages';
+import { Home } from './pages/home';
 import { ProjectCreate } from './pages/project/Create';
 import { ProjectMain } from './pages/project/Main';
 import { BuildDetails } from './pages/project/builds/BuildDetails';
@@ -37,6 +38,10 @@ export const routes: RouteObject[] = [
     path: '/',
     element: <MainLayout />,
     children: [
+      {
+        index: true,
+        element: <Home />,
+      },
       {
         path: 'account',
         children: [
