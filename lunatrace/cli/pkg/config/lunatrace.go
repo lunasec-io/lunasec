@@ -28,7 +28,7 @@ func defaultLunaSecConfig() types.LunaTraceConfigFile {
 			LunaTraceApp: types.LunaTraceApp{
 				Stage: constants.ProductionEnv,
 			},
-			ProjectAccessToken: "${LUNATRACE_PROJECT_SECRET}",
+			ProjectAccessToken: "${LUNATRACE_PROJECT_SECRET:\"\"}",
 			LunaTraceGateway:   defaultLunaTraceGatewayConfig(),
 		},
 	}

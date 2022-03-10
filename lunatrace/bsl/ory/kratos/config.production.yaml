@@ -1,0 +1,43 @@
+serve:
+  public:
+    base_url: https://lunatrace.lunasec.io/api/kratos/
+    cors:
+      enabled: true
+  admin:
+    base_url: http://localhost:4434/
+
+selfservice:
+  default_browser_return_url: https://lunatrace.lunasec.io/
+  whitelisted_return_urls:
+    - https://lunatrace.lunasec.io
+
+  flows:
+    error:
+      ui_url: https://lunatrace.lunasec.io/api/kratos/error
+
+    settings:
+      ui_url: https://lunatrace.lunasec.io/api/kratos/settings
+
+    recovery:
+      ui_url: https://lunatrace.lunasec.io/api/kratos/recovery
+
+    verification:
+      ui_url: https://lunatrace.lunasec.io/api/kratos/verification
+      after:
+        default_browser_return_url: https://lunatrace.lunasec.io/
+
+    logout:
+      after:
+        default_browser_return_url: https://lunatrace.lunasec.io/account/login
+
+    login:
+      ui_url: https://lunatrace.lunasec.io/account/login
+
+    registration:
+      ui_url: https://lunatrace.lunasec.io/account/register
+
+log:
+  level: debug
+  format: text
+  leak_sensitive_values: false
+

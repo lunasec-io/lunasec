@@ -80,7 +80,7 @@ export const VulnerabilityDetail: React.FunctionComponent = () => {
               </Card>
             </Col>
             <Col md="8" xs="12">
-              <Card style={{ height: '90%' }}>
+              <Card>
                 <Modal.Header>
                   <Modal.Title className="darker">Description</Modal.Title>
                 </Modal.Header>

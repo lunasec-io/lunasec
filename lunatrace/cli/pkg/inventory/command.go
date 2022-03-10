@@ -19,6 +19,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/anchore/grype/grype/presenter/models"
+	"github.com/anchore/syft/syft"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
@@ -27,24 +28,29 @@ import (
 	"lunasec/lunatrace/inventory/syftmodel"
 	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/types"
+	"lunasec/lunatrace/pkg/util"
 	"os"
 )
 
-func writeInventoryOutput(sbom syftmodel.Document, output string) (err error) {
-	depOutput := InventoryOutput{
-		Sbom: sbom,
-	}
-
-	serializedOutput, err := json.MarshalIndent(depOutput, "", "\t")
+func serializeSbom(sbom syftmodel.Document) (serializedOutput []byte, err error) {
+	serializedOutput, err = json.MarshalIndent(sbom, "", "\t")
 	if err != nil {
 		log.Error().Err(err).Msg("unable to marshall dependencies output")
-		return err
+		return
+	}
+	return
+}
+
+func writeInventoryOutput(sbom syftmodel.Document, output string) (err error) {
+	serializedOutput, err := serializeSbom(sbom)
+	if err != nil {
+		return
 	}
 
 	err = ioutil.WriteFile(output, serializedOutput, 0644)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to write dependencies to output file")
-		return err
+		return
 	}
 	return
 }
@@ -74,38 +80,52 @@ func writeLunaTraceAgentConfigFile(agentSecret, generateConfig string) (err erro
 	return
 }
 
-func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+	var (
+		source   string
+		useStdin bool
+	)
+
 	command.EnableGlobalFlags(globalBoolFlags)
+
+	syft.SetLogger(&types.ZerologLogger{})
 
 	sources := c.Args().Slice()
 
-	if len(sources) == 0 {
-		err = errors.New("no source provided")
-		log.Error().
-			Msg("No source provided. Please provide one source as an argument to this command.")
-		return
-	}
+	stdinFilename := c.String("stdin-filename")
+	useStdin = stdinFilename != ""
 
-	if len(sources) > 1 {
-		err = errors.New("too many sources provided")
-		log.Error().
-			Msg("Please provide only one source as an argument to this command.")
-		return
-	}
+	if useStdin {
+		source = stdinFilename
+	} else {
+		if len(sources) == 0 {
+			err = errors.New("no source provided")
+			log.Error().
+				Msg("No source provided. Please provide one source as an argument to this command.")
+			return
+		}
 
-	source := sources[0]
+		if len(sources) > 1 {
+			err = errors.New("too many sources provided")
+			log.Error().
+				Msg("Please provide only one source as an argument to this command.")
+			return
+		}
+		source = sources[0]
+	}
 
 	output := c.String("output")
 	excludedDirs := c.StringSlice("excluded")
 	skipUpload := c.Bool("skip-upload")
+	printToStdout := c.Bool("stdout")
 	configOutput := c.String("config-output")
 
-	sbom, err := collectSbomFromDirectory(source, excludedDirs)
+	sbom, err := getSbomForSyft(source, excludedDirs, useStdin)
 	if err != nil {
 		return
 	}
 
-	sbomModel := toSyftJsonFormatModel(sbom)
+	sbomModel := ToFormatModel(*sbom)
 
 	if output != "" {
 		err = writeInventoryOutput(sbomModel, output)
@@ -114,19 +134,45 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig
 		}
 	}
 
+	if printToStdout {
+		var serializedSbom []byte
+
+		serializedSbom, err = serializeSbom(sbomModel)
+		if err != nil {
+			return
+		}
+
+		fmt.Println(string(serializedSbom))
+	}
+
 	if skipUpload {
 		log.Info().Msg("Skipping upload of SBOM")
 		return
 	}
 
-	log.Info().Msg("Uploading generated SBOM")
+	log.Info().Msg("Retrieving org and project ID using access token")
+	orgId, projectId, err := getOrgAndProjectFromAccessToken(
+		appConfig.GraphqlServer,
+		appConfig.ProjectAccessToken,
+	)
 
-	projectId, s3Url, err := uploadSbomToS3(appConfig, sbomModel)
+	log.Info().Msg("Creating build in LunaTrace database")
+	agentSecret, buildId, err := insertNewBuild(appConfig, projectId)
 	if err != nil {
 		return
 	}
+	log.Info().Msg("Uploading generated SBOM")
 
-	agentSecret, err := insertNewBuild(appConfig, projectId, s3Url)
+	s3Url, err := uploadSbomToS3(appConfig, sbomModel, buildId, orgId, projectId)
+	if err != nil {
+		log.Info().Msg("Upload failed, attempting to delete record")
+		deleteErr := deleteBuild(appConfig, buildId)
+		if deleteErr != nil {
+			return
+		}
+		return
+	}
+	err = setBuildS3Url(appConfig, buildId, s3Url)
 	if err != nil {
 		return
 	}

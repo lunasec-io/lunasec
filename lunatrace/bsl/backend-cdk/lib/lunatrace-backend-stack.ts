@@ -15,8 +15,11 @@
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import { Port, SecurityGroup, Vpc } from '@aws-cdk/aws-ec2';
 import {
+  AssetImageProps,
+  Cluster,
   ContainerDependencyCondition,
   ContainerImage,
+  DeploymentControllerType,
   Secret as EcsSecret,
   FargateTaskDefinition,
   LogDriver,
@@ -25,10 +28,13 @@ import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ApplicationProtocol, ListenerCondition, SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
 import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import { HostedZone } from '@aws-cdk/aws-route53';
-import { Bucket } from '@aws-cdk/aws-s3';
+import { Bucket, EventType, HttpMethods } from '@aws-cdk/aws-s3';
 import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
+import { SqsDestination } from '@aws-cdk/aws-s3-notifications';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
+import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
+import { Duration } from '@aws-cdk/core';
 
 interface LunaTraceStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
@@ -36,51 +42,27 @@ interface LunaTraceStackProps extends cdk.StackProps {
   domainZoneId: string;
   appName: string;
   certificateArn: string;
+  backendStaticSecretArn: string;
   databaseSecretArn: string;
+  githubOauthAppLoginSecretArn: string;
+  githubOauthAppLoginClientIdArn: string;
+  kratosCookieSecretArn: string;
+  kratosCipherSecretArn: string;
   vpcId: string;
 }
+
+const commonBuildProps: AssetImageProps = {
+  invalidation: {
+    buildArgs: false,
+  },
+};
 
 export class LunatraceBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
     super(scope, id, props);
 
-    // const backendImageAsset = new DockerImageAsset(this, 'LunaTraceBackend', {
-    //   directory: path.resolve(path.join(__dirname, '../../backend')),
-    //   buildArgs: {},
-    //   invalidation: {
-    //     buildArgs: false,
-    //   },
-    // });
-
-    // const cluster = new rds.ServerlessCluster(this, 'RdsServerlessCluster', {
-    //   engine: rds.DatabaseClusterEngine.AURORA_POSTGRESQL,
-    //   vpc: props.vpc,
-    //   vpcSubnets: {
-    //     subnetType: SubnetType.PRIVATE_ISOLATED,
-    //   },
-    //   enableDataApi: true, // Optional - will be automatically set if you call grantDataApiAccess()
-    //   parameterGroup: ParameterGroup.fromParameterGroupName(this, 'ParameterGroup', 'default.aurora-postgresql10'),
-    // });
-
-    // const cluster = rds.ServerlessCluster.fromServerlessClusterAttributes(this, 'RdsServerlessCluster', {
-    //   clusterIdentifier: 'lunatrace-db',
-    // });
-
-    // new CfnOutput(this, 'HasuraDatabaseMasterSecretArn', {
-    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    //   value: cluster.secret!.secretArn,
-    // });
-    //
-    // const getDbSecretValue = (field: string) => {
-    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    //   return cluster.secret!.secretValueFromJson(field).toString();
-    // };
-
-    // const secretValue = SecretStringValueBeta1.fromToken(
-    //   `postgres://${getDbSecretValue('username')}:${getDbSecretValue('password')}@${getDbSecretValue(
-    //     'host'
-    //   )}:${getDbSecretValue('port')}/`
-    // );
+    const publicBaseUrl = `https://${props.domainName}`;
+    const publicHasuraServiceUrl = `${publicBaseUrl}/api/service/v1/graphql`;
 
     const vpc = Vpc.fromLookup(this, 'Vpc', {
       vpcId: props.vpcId,
@@ -98,8 +80,19 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
     dbSecurityGroup.addIngressRule(vpcDbSecurityGroup, Port.tcp(5432), 'LunaTrace VPC database connection');
 
-    const bucket = new Bucket(this, 'DataBucket');
     const oryConfigBucket = new Bucket(this, 'OryConfig');
+
+    const manifestBucket = new Bucket(this, 'ManifestBucket', {
+      cors: [
+        {
+          allowedMethods: [HttpMethods.GET, HttpMethods.PUT],
+          allowedOrigins: [publicBaseUrl],
+          allowedHeaders: ['*'],
+        },
+      ],
+    });
+
+    const sbomBucket = new Bucket(this, 'SbomBucket');
 
     new BucketDeployment(this, 'DeployWebsite', {
       sources: [Source.asset('../ory/')],
@@ -140,10 +133,10 @@ export class LunatraceBackendStack extends cdk.Stack {
       executionRole: execRole,
     });
 
+    const frontendContainerImage = ContainerImage.fromAsset('../frontend', commonBuildProps);
+
     const frontend = taskDef.addContainer('FrontendContainer', {
-      cpu: 256,
-      memoryLimitMiB: 512,
-      image: ContainerImage.fromRegistry('lunasec/lunatrace-frontend:v0.0.3'),
+      image: frontendContainerImage,
       containerName: 'LunaTraceFrontendContainer',
       portMappings: [{ containerPort: 80 }],
       logging: LogDriver.awsLogs({
@@ -154,11 +147,11 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
+    const oathkeeperContainerImage = ContainerImage.fromAsset('../ory/oathkeeper', commonBuildProps);
+
     const oathkeeper = taskDef.addContainer('OathkeeperContainer', {
       containerName: 'OathkeeperContainer',
-      cpu: 256,
-      memoryLimitMiB: 512,
-      image: ContainerImage.fromRegistry('lunasec/lunatrace-ory:v0.0.5'),
+      image: oathkeeperContainerImage,
       portMappings: [{ containerPort: 4455 }],
       logging: LogDriver.awsLogs({
         streamPrefix: 'lunatrace-oathkeeper',
@@ -173,41 +166,68 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
+    const kratosContainerImage = ContainerImage.fromAsset('../ory/kratos', commonBuildProps);
+
+    const githubOauthAppLoginClientId = Secret.fromSecretCompleteArn(
+      this,
+      'GithubOauthAppLoginClientId',
+      props.githubOauthAppLoginClientIdArn
+    );
+    const githubOauthAppLoginSecret = Secret.fromSecretCompleteArn(
+      this,
+      'GithubOauthAppLoginSecret',
+      props.githubOauthAppLoginSecretArn
+    );
+
+    const kratosCookieSecret = Secret.fromSecretCompleteArn(this, 'KratosCookieSecret', props.kratosCookieSecretArn);
+    const kratosCipherSecret = Secret.fromSecretCompleteArn(this, 'KratosCipherSecret', props.kratosCipherSecretArn);
+
     const kratos = taskDef.addContainer('KratosContainer', {
-      cpu: 256,
-      memoryLimitMiB: 512,
-      image: ContainerImage.fromRegistry('lunasec/lunatrace-kratos:v0.0.3'),
+      image: kratosContainerImage,
       portMappings: [{ containerPort: 4433 }],
       logging: LogDriver.awsLogs({
         streamPrefix: 'lunatrace-kratos',
       }),
-      command: ['--config', '/config.yaml', 'serve'],
+      command: ['--config', '/config/config.yaml', '--config', '/config/config.production.yaml', 'serve'],
       environment: {
+        // Set this to 'trace' if you need more data
         LOG_LEVEL: 'debug',
       },
       secrets: {
         DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+        SELFSERVICE_METHODS_OIDC_CONFIG_PROVIDERS_0_CLIENT_ID:
+          EcsSecret.fromSecretsManager(githubOauthAppLoginClientId),
+        SELFSERVICE_METHODS_OIDC_CONFIG_PROVIDERS_0_CLIENT_SECRET:
+          EcsSecret.fromSecretsManager(githubOauthAppLoginSecret),
+        SECRETS_COOKIE: EcsSecret.fromSecretsManager(kratosCookieSecret),
+        SECRETS_CIPHER: EcsSecret.fromSecretsManager(kratosCipherSecret),
       },
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4434/health/ready || exit 1'],
       },
     });
 
+    const backendStaticSecret = Secret.fromSecretCompleteArn(this, 'BackendStaticSecret', props.backendStaticSecretArn);
+
+    const backendContainerImage = ContainerImage.fromAsset('../backend', commonBuildProps);
+
     const backend = taskDef.addContainer('BackendContainer', {
-      cpu: 256,
-      memoryLimitMiB: 512,
-      image: ContainerImage.fromRegistry('lunasec/lunatrace-backend:v0.0.2'),
+      image: backendContainerImage,
       containerName: 'LunaTraceBackendContainer',
-      portMappings: [{ containerPort: 8000 }],
+      portMappings: [{ containerPort: 3002 }],
       logging: LogDriver.awsLogs({
         streamPrefix: 'lunatrace-backend',
       }),
       environment: {
-        S3_BUCKET_NAME: bucket.bucketName,
-        PORT: '8000',
+        S3_SBOM_BUCKET: sbomBucket.bucketName,
+        S3_MANIFEST_BUCKET: manifestBucket.bucketName,
+        PORT: '3002',
+      },
+      secrets: {
+        STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
       },
       healthCheck: {
-        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:8000/health || exit 1'],
+        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:3002/health || exit 1'],
       },
     });
 
@@ -218,19 +238,18 @@ export class LunatraceBackendStack extends cdk.Stack {
     };
 
     const hasura = taskDef.addContainer('HasuraContainer', {
-      cpu: 256,
-      memoryLimitMiB: 512,
       image: ContainerImage.fromRegistry('hasura/graphql-engine:v2.2.0'),
       portMappings: [{ containerPort: 8080 }],
       logging: LogDriver.awsLogs({
         streamPrefix: 'lunatrace-hasura',
       }),
       environment: {
-        HASURA_GRAPHQL_CORS_DOMAIN: `https://${props.domainName}`,
+        HASURA_GRAPHQL_CORS_DOMAIN: `https://${props.domainName}, http://localhost:9695`,
         HASURA_GRAPHQL_ENABLE_CONSOLE: 'true',
         HASURA_GRAPHQL_PG_CONNECTIONS: '100',
         HASURA_GRAPHQL_LOG_LEVEL: 'debug',
         HASURA_GRAPHQL_JWT_SECRET: JSON.stringify(hasuraJwtSecretValue),
+        ACTION_BASE_URL: `http://localhost:${backend.containerPort}`,
       },
       secrets: {
         HASURA_GRAPHQL_METADATA_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
@@ -262,8 +281,13 @@ export class LunatraceBackendStack extends cdk.Stack {
       condition: ContainerDependencyCondition.HEALTHY,
     });
 
+    const fargateCluster = new Cluster(this, 'LunaTraceFargateCluster', {
+      vpc,
+      enableFargateCapacityProviders: true,
+    });
+
     const loadBalancedFargateService = new ecsPatterns.ApplicationLoadBalancedFargateService(this, 'Service', {
-      vpc: vpc,
+      cluster: fargateCluster,
       certificate,
       domainZone,
       publicLoadBalancer: true,
@@ -273,6 +297,13 @@ export class LunatraceBackendStack extends cdk.Stack {
       domainName: props.domainName,
       taskDefinition: taskDef,
       securityGroups: [vpcDbSecurityGroup],
+      circuitBreaker: {
+        rollback: true,
+      },
+      deploymentController: {
+        // This sets up Blue/Green deploys
+        type: DeploymentControllerType.CODE_DEPLOY,
+      },
     });
 
     loadBalancedFargateService.listener.addTargets('LunaTraceApiTargets', {
@@ -298,7 +329,95 @@ export class LunatraceBackendStack extends cdk.Stack {
       path: '/health',
     });
 
-    bucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
+    const processManifestDeadLetterQueue = new Queue(this, 'ProcessManifestProcessingDeadLetterQueue', {
+      retentionPeriod: Duration.days(14),
+    });
+
+    const processManifestSqsQueue = new Queue(this, 'ProcessManifestProcessingQueue', {
+      visibilityTimeout: Duration.minutes(1),
+      deadLetterQueue: {
+        queue: processManifestDeadLetterQueue,
+        maxReceiveCount: 10,
+      },
+    });
+
+    const processManifestQueueService = new ecsPatterns.QueueProcessingFargateService(
+      this,
+      'ProcessManifestQueueService',
+      {
+        cluster: fargateCluster,
+        image: backendContainerImage,
+        queue: processManifestSqsQueue, // will pass queue_name env var automatically
+        assignPublicIp: true,
+        enableLogging: true,
+        environment: {
+          QUEUE_HANDLER: 'process-manifest-queue',
+          S3_SBOM_BUCKET: sbomBucket.bucketName,
+          S3_MANIFEST_BUCKET: manifestBucket.bucketName,
+          HASURA_URL: publicHasuraServiceUrl,
+        },
+        secrets: {
+          HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+          HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+          STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
+        },
+        containerName: 'ProcessManifestQueueContainer',
+        circuitBreaker: {
+          rollback: true,
+        },
+      }
+    );
+    //STATIC_SECRET_ACCESS_TOKEN
+
+    const processSbomDeadLetterQueue = new Queue(this, 'ProcessSbomProcessingDeadLetterQueue', {
+      retentionPeriod: Duration.days(14),
+    });
+
+    const processSbomSqsQueue = new Queue(this, 'ProcessSbomProcessingQueue', {
+      visibilityTimeout: Duration.minutes(1),
+      deadLetterQueue: {
+        queue: processSbomDeadLetterQueue,
+        maxReceiveCount: 10,
+      },
+    });
+
+    const processSbomQueueService = new ecsPatterns.QueueProcessingFargateService(this, 'ProcessSbomQueueService', {
+      cluster: fargateCluster,
+      image: backendContainerImage,
+      queue: processSbomSqsQueue, // will pass queue_name env var automatically
+      enableLogging: true,
+      assignPublicIp: true,
+      environment: {
+        QUEUE_HANDLER: 'process-sbom-queue',
+        S3_SBOM_BUCKET: sbomBucket.bucketName,
+        S3_MANIFEST_BUCKET: manifestBucket.bucketName,
+        HASURA_URL: publicHasuraServiceUrl,
+      },
+      secrets: {
+        HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+        HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+        STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
+      },
+      containerName: 'ProcessSbomQueueService',
+      circuitBreaker: {
+        rollback: true,
+      },
+    });
+
+    manifestBucket.addEventNotification(
+      EventType.OBJECT_CREATED,
+      new SqsDestination(processManifestQueueService.sqsQueue)
+    );
+
+    sbomBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(processSbomQueueService.sqsQueue));
+
+    sbomBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
     oryConfigBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
+    manifestBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
+
+    manifestBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
+    sbomBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
+
+    sbomBucket.grantReadWrite(processSbomQueueService.taskDefinition.taskRole);
   }
 }

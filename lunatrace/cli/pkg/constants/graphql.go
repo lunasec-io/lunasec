@@ -30,6 +30,33 @@ mutation InsertNewBuildQuery($project_id: uuid, $s3_url: String, $git_remote: St
   }
 }`
 
+	DeleteBuildQuery = `
+mutation DeleteBuild($id: uuid!) {
+  delete_builds_by_pk(id: $id){
+   id 
+  }
+}
+`
+
+	SetBuildS3UrlQuery = `
+mutation SetBuildS3Url($id: uuid!, $s3_url: String!) {
+  update_builds_by_pk(pk_columns: {id: $id}, _set: {s3_url: $s3_url}) {
+    id
+  }
+}
+`
+
+	PresignSbomQuery = `
+query PresignSbom($orgId: uuid!, $buildId: uuid!) {
+  presignSbomUpload(orgId: $orgId, buildId: $buildId) {
+    uploadUrl {
+      url
+      headers
+    }
+    error
+  }
+}
+`
 	GetProjectInfoQuery = `
 query GetProjectInfoQuery {
   project_access_tokens {

@@ -14,6 +14,14 @@
  * limitations under the License.
  *
  */
+
+const productionError = process.env.STRICT_LINT === 'true' ? 'error' : 'off';
+const productionWarn = process.env.STRICT_LINT === 'true' ? 'warn' : 'off';
+const warnInDev = process.env.STRICT_LINT === 'true' ? 'error' : 'warn';
+
+
+const slow = true;
+
 module.exports = {
   root: true,
   env: {
@@ -21,10 +29,10 @@ module.exports = {
     node: true
   },
   extends: [
-    // "plugin:vue/vue3-essential",
-    // "@vue/typescript/recommended",
-    // "@vue/prettier",
-    // "@vue/prettier/@typescript-eslint",
+    // "plugin:vue/vue3-essential',
+    // '@vue/typescript/recommended',
+    // '@vue/prettier',
+    // '@vue/prettier/@typescript-eslint',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
@@ -35,12 +43,18 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:prettier/recommended',
   ],
-  ignorePatterns: ['packages/tokenizer-sdk/src/generated', 'lunatrace/bsl/backend-cdk/cdk.out'],
+  ignorePatterns: [
+    'packages/tokenizer-sdk/src/generated',
+    'lunatrace/bsl/frontend/src/api/generated.ts',
+    '@aws-sdk/**',
+    'lunatrace/bsl/backend-cdk/cdk.out'
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
       jsx: true
     },
+    tsconfigRootDir: __dirname,
     ecmaVersion: 12,
     sourceType: 'module',
     project: [
@@ -61,35 +75,59 @@ module.exports = {
     'jest'
   ],
   rules: {
-    "@typescript-eslint/no-unsafe-argument": 1, // TODO: Re-enable this rule and fix all errors
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off', // These never error, currently
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    '@typescript-eslint/no-unsafe-argument': 1, // TODO: Re-enable this rule and fix all errors
+    '@typescript-eslint/no-misused-promises': slow ? 'warn':'off',
+    'import/namespace':slow ? 'error':'off',
+    '@typescript-eslint/no-unsafe-assignment': slow ? 'warn':'off',
+    'no-console': productionWarn,
+    'no-debugger': productionError,
     eqeqeq: 'error',
-    quotes: ['error', 'single', { allowTemplateLiterals: true, avoidEscape: true }],
-    'react/jsx-wrap-multilines': ['error', {
-      declaration: 'parens-new-line',
-      assignment: 'parens-new-line',
-      return: 'parens-new-line',
-      arrow: 'parens-new-line',
-      condition: 'parens-new-line',
-      logical: 'parens-new-line',
-      prop: 'parens-new-line',
-    }],
-    'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
-    'react/jsx-max-props-per-line': ['error', { 'maximum': 3, 'when': 'multiline' }],
-    'react/jsx-indent-props': ['error', 2],
+    quotes: [warnInDev, 'single', { allowTemplateLiterals: true, avoidEscape: true }],
+    'react/jsx-wrap-multilines': [
+      productionError,
+      {
+        declaration: 'parens-new-line',
+        assignment: 'parens-new-line',
+        return: 'parens-new-line',
+        arrow: 'parens-new-line',
+        condition: 'parens-new-line',
+        logical: 'parens-new-line',
+        prop: 'parens-new-line',
+      }
+    ],
+    'react/jsx-first-prop-new-line': [
+      productionError,
+      'multiline-multiprop'
+    ],
+    'react/jsx-max-props-per-line': [
+      productionError,
+      {
+        'maximum': 3,
+        'when': 'multiline'
+      }
+    ],
+    'react/jsx-indent-props': [
+      productionError,
+      2
+    ],
     'react/jsx-closing-bracket-location': [
-      'error',
+      productionError,
       'tag-aligned',
     ],
-    "react-hooks/exhaustive-deps": "off",
-    'prettier/prettier': ['error', { singleQuote: true, printWidth: 120 }],
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    'react-hooks/exhaustive-deps': 'off',
+    'prettier/prettier': [
+      productionError,
+      {
+        singleQuote: true,
+        printWidth: 120
+      }
+      ],
+    '@typescript-eslint/explicit-module-boundary-types': 'warn',
     'eslint-comments/disable-enable-pair': [
       'error',
       { 'allowWholeFile': true }
     ],
-    'eslint-comments/no-unlimited-disable':'off',
+    'eslint-comments/no-unlimited-disable': 'off',
     'eslint-comments/no-unused-disable': 'error',
     '@typescript-eslint/no-misused-promises': [
       'warn',
@@ -97,18 +135,20 @@ module.exports = {
         'checksVoidReturn': true
       }
     ],
-    '@typescript-eslint/no-unused-vars':['warn',{ "argsIgnorePattern": "^_" }],
-    '@typescript-eslint/no-unsafe-call':'off', // Did this because of a bug with intellij (forrest)
-    '@typescript-eslint/no-unsafe-member-access':'off',
-    '@typescript-eslint/no-unsafe-assignment':'off',
-    '@typescript-eslint/unbound-method':'off',
-    '@typescript-eslint/restrict-template-expressions':'off',
+    '@typescript-eslint/no-unused-vars':[
+      productionWarn,
+      { 'argsIgnorePattern': '^_' }
+    ],
+    '@typescript-eslint/no-unsafe-call': 'warn',
+    '@typescript-eslint/no-unsafe-member-access': 'warn',
+    '@typescript-eslint/unbound-method': 'warn',
+    '@typescript-eslint/restrict-template-expressions': 'off',
     'import/order': [
-      'error',
+      productionError,
       { 'newlines-between': 'always', 'alphabetize': { 'order': 'asc' } }
     ],
     'sort-imports': [
-      'error',
+      productionError,
       { 'ignoreDeclarationSort': true, 'ignoreCase': true }
     ]
   },
