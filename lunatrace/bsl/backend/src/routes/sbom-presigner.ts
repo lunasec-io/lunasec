@@ -73,8 +73,7 @@ function parseRequest(req: Request): ErrorResponse | ParsedPresignRequestData {
     };
   }
   const decodedJwt = jwt_decode(authHeader);
-  console.log('jwt is ', decodedJwt);
-  // messy data coming from oathkeeper, stringifying this value wasnt working so its one big weird golang string
+  // messy data coming from oathkeeper, stringifying this value wasnt working so its one big weird golang string, fix later
   const authorizedBuilds = (decodedJwt as any)['https://hasura.io/jwt/claims']?.['x-hasura-builds'] as
     | string
     | undefined;
@@ -101,7 +100,6 @@ function generateErrorResponse(res: Response, errorMessage: string, statusCode =
 
 // Presigns sbombs that are uploaded from the CLI.  Note that the backend can also generate sboms out of uploaded manifests,
 // but it uploads them directly and doesnt use this logic
-
 sbomPresignerRouter.post('/s3/presign-sbom-upload', async (req, res) => {
   const parsedRequest = parseRequest(req);
   if (parsedRequest.error) {
