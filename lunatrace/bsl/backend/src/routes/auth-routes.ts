@@ -16,9 +16,11 @@ import { validate as validateUUID } from 'uuid';
 
 import { staticAccessToken } from '../constants';
 import { db } from '../database/db';
+import { hasura } from '../hasura-api';
 
 export const lookupAccessTokenRouter = express.Router();
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 lookupAccessTokenRouter.get('/internal/auth/lookup-project-access-token', lookupProjectAccessToken);
 lookupAccessTokenRouter.get('/internal/auth/lookup-static-access-token', lookupStaticAccessToken);
 
@@ -29,7 +31,7 @@ interface ErrorResponse {
 
 function parseRequestHeaders(req: Request): ErrorResponse | { error: false; accessToken: string } {
   const accessTokenHeader = req.header('X-LunaTrace-Access-Token');
-
+  console.log('token header is ', accessTokenHeader);
   if (!accessTokenHeader) {
     return {
       error: true,
@@ -66,29 +68,31 @@ function generateErrorResponse(res: Response, errorMessage: string, statusCode =
   res.send(JSON.stringify({ error: true, message: errorMessage }));
 }
 
-// Oathkeeper calls this when requests from the CLI come through the gateway
+// Oathkeeper calls this when requests from the CLI come through the gateway.. We append this data here just for the action
+// but currently this fires for all calls..could clean that up with a new oathkeeper rule
 export async function lookupProjectAccessToken(req: Request, res: Response): Promise<void> {
+  // console.log('full request from oathkeeper is ', req);
   const parsedRequest = parseRequestHeaders(req);
-
+  console.log('parsed request is ', parsedRequest);
   if (parsedRequest.error) {
     return generateErrorResponse(res, parsedRequest.message);
   }
 
-  const projectResult = await db.oneOrNone<{ project_uuid: string } | null>(
-    'SELECT project_uuid FROM project_access_tokens WHERE access_token = $1',
-    parsedRequest.accessToken
-  );
-
-  if (!projectResult) {
+  console.log('calling hasura with ', { access_token: parsedRequest.accessToken });
+  const hasuraRes = await hasura.GetAuthDataFromProjectToken({ access_token: parsedRequest.accessToken });
+  console.log('hasura res is ', hasuraRes);
+  if (!hasuraRes.project_access_tokens?.[0]) {
     return generateErrorResponse(res, 'Invalid Access Token specified in X-LunaTrace-Access-Token header', 401);
   }
+  const projectData = hasuraRes.project_access_tokens[0];
 
   res.send({
     error: false,
     subject: parsedRequest.accessToken,
     // Put anything else needed into here
     extra: {
-      project_uuid: projectResult.project_uuid,
+      project_uuid: projectData.project.id,
+      project_data: projectData,
     },
   });
   return;
