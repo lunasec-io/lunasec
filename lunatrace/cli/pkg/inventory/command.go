@@ -18,7 +18,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/anchore/grype/grype/match"
+	"github.com/anchore/grype/grype/presenter/models"
 	"github.com/anchore/syft/syft"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
@@ -185,15 +185,15 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 	} else {
 		log.Info().
 			Str("Agent Secret", agentSecret).
-			Msg("Set this agent secret as an environment variable (LUNASEC_AGENT_SECRET) or in the config file (.lunatrace_agent.yaml) in your deployed service to use live monitoring:")
+			Msg("Set this agent secret as an environment variable (LUNASEC_AGENT_SECRET) or in the config file (.lunatrace_agent.yaml) in your deployed service to use live monitoring")
 	}
 	return
 }
 
 func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
 	var (
-		sbomFile *os.File
-		matches  match.Matches
+		sbomFile         *os.File
+		findingsDocument models.Document
 	)
 
 	command.EnableGlobalFlags(globalBoolFlags)
@@ -217,34 +217,23 @@ func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig type
 		return
 	}
 
-	matches, err = scan.GrypeSbomScanFromFile(sbomFile.Name())
+	findingsDocument, err = scan.GrypeSbomScanFromFile(sbomFile.Name())
 	if err != nil {
 		return
 	}
 
 	if printToStdout {
-		type FindingsOutput struct {
-			Findings []match.Match `json:"findings"`
-		}
-
-		var findings []match.Match
-
 		var serializedFindings []byte
 
-		for vulnMatch := range matches.Enumerate() {
-			findings = append(findings, vulnMatch)
-		}
-
-		findingsOutput := FindingsOutput{
-			Findings: findings,
-		}
-
-		serializedFindings, err = json.Marshal(findingsOutput)
+		serializedFindings, err = json.Marshal(findingsDocument)
 		if err != nil {
 			return
 		}
 
 		fmt.Println(string(serializedFindings))
 	}
+	log.Debug().
+		Int("findingsCount", len(findingsDocument.Matches)).
+		Msg("completed scanning for vulnerabilities")
 	return
 }
