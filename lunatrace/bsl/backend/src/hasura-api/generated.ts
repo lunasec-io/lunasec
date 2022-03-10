@@ -1714,7 +1714,7 @@ export type Mutation_Root = {
   insert_vulnerability_packages?: Maybe<Vulnerability_Packages_Mutation_Response>;
   /** insert a single row into the table: "vulnerability_packages" */
   insert_vulnerability_packages_one?: Maybe<Vulnerability_Packages>;
-  /** get s3 presigned url for manifest upload, note that this is used by both the CLI _and_ the frontend */
+  /** get s3 presigned url for manifest upload, used only by the frontend */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** This performs the manifest sbom generation and creates the first build from the manifest */
   scanManifest?: Maybe<ScanManifestOutput>;
@@ -3630,6 +3630,7 @@ export type Query_Root = {
   package_versions_aggregate: Package_Versions_Aggregate;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
+  /** get s3 presigned url for manifest upload, used by the CLI */
   presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;

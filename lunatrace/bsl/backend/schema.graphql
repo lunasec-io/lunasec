@@ -2356,9 +2356,7 @@ type mutation_root {
     on_conflict: vulnerability_packages_on_conflict
   ): vulnerability_packages
 
-  """
-  get s3 presigned url for manifest upload, note that this is used by both the CLI _and_ the frontend
-  """
+  """get s3 presigned url for manifest upload, used only by the frontend"""
   presignManifestUpload(project_id: uuid!): PresignedUrlResponse
 
   """
@@ -4473,6 +4471,8 @@ type query_root {
   fetch data from the table: "package_versions" using primary key columns
   """
   package_versions_by_pk(id: uuid!): package_versions
+
+  """get s3 presigned url for manifest upload, used by the CLI"""
   presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
 
   """An array relationship"""
