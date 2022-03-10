@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import express, { Request, Response } from 'express';
 import validate from 'validator';
 
@@ -27,7 +26,7 @@ export const sbomPresignerRouter = express.Router();
 
 function parseRequest(req: Request): ErrorResponse | { error: false; buildId: string; orgId: string } {
   const buildId = req?.body?.input?.buildId;
-
+  console.log('headers are ', req.headers);
   if (!buildId) {
     return {
       error: true,
