@@ -17,13 +17,17 @@ package inventory
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"github.com/anchore/grype/grype/presenter/models"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"lunasec/lunatrace/inventory/scan"
 	"lunasec/lunatrace/inventory/syftmodel"
 	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/types"
+	"os"
 )
 
 func writeInventoryOutput(sbom syftmodel.Document, output string) (err error) {
@@ -132,7 +136,55 @@ func InventoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig
 	} else {
 		log.Info().
 			Str("Agent Secret", agentSecret).
-			Msg("Set the agent secret as environment variable (LUNASEC_AGENT_SECRET) or in config file (.lunatrace_agent.yaml) in deployment.")
+			Msg("Set this agent secret as an environment variable (LUNASEC_AGENT_SECRET) or in the config file (.lunatrace_agent.yaml) in your deployed service to use live monitoring")
 	}
+	return
+}
+
+func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+	var (
+		sbomFile         *os.File
+		findingsDocument models.Document
+	)
+
+	command.EnableGlobalFlags(globalBoolFlags)
+
+	printToStdout := c.Bool("stdout")
+	readFromStdin := c.Bool("stdin")
+
+	if readFromStdin {
+		sbomFile, err = util.GetFileFromStdin("sbom.json")
+		defer func() {
+			util.CleanupTmpFileDirectory(sbomFile)
+		}()
+
+		if err != nil {
+			return
+		}
+	}
+
+	if sbomFile == nil {
+		err = errors.New("SBOM file is not provided")
+		return
+	}
+
+	findingsDocument, err = scan.GrypeSbomScanFromFile(sbomFile.Name())
+	if err != nil {
+		return
+	}
+
+	if printToStdout {
+		var serializedFindings []byte
+
+		serializedFindings, err = json.Marshal(findingsDocument)
+		if err != nil {
+			return
+		}
+
+		fmt.Println(string(serializedFindings))
+	}
+	log.Debug().
+		Int("findingsCount", len(findingsDocument.Matches)).
+		Msg("completed scanning for vulnerabilities")
 	return
 }
