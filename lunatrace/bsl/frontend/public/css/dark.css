@@ -13186,6 +13186,20 @@ textarea.form-control-lg {
   color: #a9acb3;
 }
 
+.alert {
+  padding: 0;
+  display: flex;
+  color: #eaeaec;
+}
+.alert b, .alert strong {
+  color: #fff;
+}
+.alert .close:hover,
+.alert .close:focus {
+  color: #fff;
+  opacity: 1;
+}
+
 .alert-outline,
 .alert-outline-coloured {
   color: #a9acb3;
@@ -14110,7 +14124,7 @@ a.badge-soft-dark:focus, a.badge-soft-dark.focus {
 }
 
 .content {
-  padding: 0.75rem 2.5rem 1.5rem;
+  padding: 2.5rem 2.5rem 1.5rem;
   flex: 1;
   direction: ltr;
 }
