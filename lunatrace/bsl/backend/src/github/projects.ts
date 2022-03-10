@@ -17,22 +17,7 @@ import express from 'express';
 
 import { callHasura } from '../hasura-calls/baseHasuraClient';
 
-const operation = `
-    mutation GetUserAccessToken($user_id: uuid!) {
-        insert_builds_one(object: {project_id: $project_id, s3_url: $s3_url}) {
-          id
-        }
-    }
-`;
-
-export async function getUserGithubAccessToken(variables: { user_id: string }): Promise<string> {
-  const data = await callHasura(operation, 'InsertBuild', variables);
-  if (!data.insert_builds_one) {
-    console.error('Hasura response missing fields ', data);
-    throw new Error('Failed to download manifest for processing');
-  }
-  return '';
-}
+import { pullDataForInstallation } from './installation-populate';
 
 export const githubApiRouter = express.Router();
 
@@ -47,6 +32,39 @@ export interface KratosIdentityProvider {
   initial_access_token: string;
   initial_refresh_token: string;
 }
+
+githubApiRouter.get('/github/install', async (req, res) => {
+  const installationIdQueryParam = req.query.installation_id;
+  const setupActionQueryParam = req.query.setup_action;
+
+  const error = req.query.error;
+  const error_description = req.query.error_description;
+  const error_uri = req.query.error_uri;
+
+  if (error) {
+    res.status(401).send({
+      error: error,
+      description: error_description,
+      uri: error_uri,
+    });
+    return;
+  }
+
+  if (!installationIdQueryParam || typeof installationIdQueryParam !== 'string') {
+    res.status(401).send({
+      error: 'installation_id not provided in query params',
+    });
+    return;
+  }
+
+  const installationId = parseInt(installationIdQueryParam, 10);
+
+  console.log(installationId);
+
+  await pullDataForInstallation(installationId);
+
+  res.status(302).redirect('http://localhost:4455/');
+});
 
 function getGithubAccessToken(identity: Identity) {
   if (!identity.credentials) {
