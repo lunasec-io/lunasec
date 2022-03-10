@@ -20,3 +20,30 @@ Express server for trace backend.  Presigns upload URLs, runs grype tests, and s
 * serverless (via serverless-express package?)
 * auth with ORY?
 * deployment with CDK
+
+### Running Lambda
+
+#### Sqs Queue Payload
+Edit `fixtures/upload-sbom-payload.json` or `fixtures/scan-sbom-payload.json` to see the payloads
+
+#### Building lambda docker container
+Build lambda docker container
+```shell
+sudo docker build -f lambda.dockerfile . -t lunasec/lunatrace-backend-lambda
+```
+
+#### Running lambda docker container
+Run lambda docker container
+```shell
+run docker run -p 9000:8080 lunasec/lunatrace-backend-lambda
+```
+
+or run lambda docker container with volume mount
+```shell
+sudo docker run -p 9000:8080 -v $(pwd)/build:/var/task -e HASURA_ADMIN_SECRET=myadminsecretkey lunasec/lunatrace-backend-lambda
+```
+
+#### Sending data to lambda
+```shell
+curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d @fixtures/upload-sbom-payload.json | jq .
+```

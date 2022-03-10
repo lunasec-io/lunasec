@@ -29,6 +29,7 @@ func EnableGlobalFlags(globalBoolFlags map[string]bool) {
 	debug := globalBoolFlags["debug"]
 	jsonFlag := globalBoolFlags["json"]
 	ignoreWarnings := globalBoolFlags["ignore-warnings"]
+	logToStderr := globalBoolFlags["log-to-stderr"]
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
@@ -44,9 +45,14 @@ func EnableGlobalFlags(globalBoolFlags map[string]bool) {
 		log.Logger = log.With().Caller().Logger()
 	}
 
+	outStream := os.Stdout
+	if logToStderr {
+		outStream = os.Stderr
+	}
+
 	if !jsonFlag {
 		// pretty print output to the console if we are not interested in parsable output
-		consoleOutput := zerolog.ConsoleWriter{Out: os.Stdout}
+		consoleOutput := zerolog.ConsoleWriter{Out: outStream}
 		consoleOutput.FormatFieldName = func(i interface{}) string {
 			return fmt.Sprintf("\n\t%s: ", util.Colorize(constants.ColorBlue, i))
 		}

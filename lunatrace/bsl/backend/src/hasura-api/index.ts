@@ -11,8 +11,14 @@
  * limitations under the License.
  *
  */
-import { Scan } from '../models/scan';
+import { GraphQLClient } from 'graphql-request';
 
-void Scan.runGrypeScan('~/tmp/syftoutput.json').then((res) => {
-  console.log(res);
-});
+import { staticAccessToken } from '../constants';
+
+import { getSdk } from './generated';
+
+const headers = { 'X-LunaTrace-Access-Token': 'Bearer ' + staticAccessToken };
+const hasuraEndpoint = process.env.HASURA_URL || 'http://localhost:4455/api/service/v1/graphql';
+
+const client = new GraphQLClient(hasuraEndpoint, { headers });
+export const hasura = getSdk(client);

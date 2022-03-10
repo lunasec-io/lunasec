@@ -1,0 +1,8 @@
+query GetManifest($id: uuid = "") {
+    manifests_by_pk(id: $id) {
+        build_id
+        project_id
+        status
+        message
+    }
+}

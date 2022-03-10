@@ -1,0 +1,9 @@
+overwrite: true
+schema: schema.graphql
+documents: "src/hasura-api/graphql/**/*.graphql"
+generates:
+  ./src/hasura-calls/generated.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-graphql-request"

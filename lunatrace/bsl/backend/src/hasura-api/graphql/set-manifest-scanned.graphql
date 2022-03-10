@@ -1,0 +1,5 @@
+mutation UpdateManifestStatusIfExists($buildId: uuid!, $status: String!) {
+    update_manifests(where: {_and: {build_id: {_eq: $buildId}, status: {_eq: "sbom-generated"}}}, _set: {status: $status}) {
+        affected_rows
+    }
+}

@@ -1,0 +1,9 @@
+{
+    \"Records\": [
+        {
+            \"messageId\": "message-id1",
+            "receiptHandle": "message-handle1",
+            "body": "{\"action\":\"scanSbom\",\"sbomUrl\":\"http://example.com\"}"
+        }
+    ]
+}

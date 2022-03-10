@@ -1,0 +1,5 @@
+mutation InsertBuild($project_id: uuid!, $s3_url: String!) {
+    insert_builds_one(object: {project_id: $project_id, s3_url: $s3_url}) {
+        id
+    }
+}
