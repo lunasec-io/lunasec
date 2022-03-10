@@ -52,9 +52,9 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     if (!presign) {
       return 'Failed to pre-sign upload URL to AWS S3';
     }
-    console.log('presign result ', presign);
+    // get the URL without the query string
     const manifestUrl = presign.url.split('?')[0];
-
+    // todo: doing this second could introduce a race condition, fix later. take manifest ID and send it to the backend where it can verify ownership...
     const insertRequest = await insertManifest({
       s3_url: manifestUrl,
       project_id,
@@ -62,7 +62,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
       key: presign.key,
     }).unwrap();
     if (!insertRequest.insert_manifests_one) {
-      console.error('Failed to notify lunatrace up uploaded manifest');
+      console.error('Failed to notify lunatrace of uploaded manifest');
       return;
     }
     const manifestId = insertRequest.insert_manifests_one.id;
