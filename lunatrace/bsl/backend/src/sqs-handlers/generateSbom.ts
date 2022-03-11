@@ -30,22 +30,34 @@ export async function handleGenerateSbom(message: S3ObjectMetadata) {
     if (!manifest) {
       throw new Error('Failed to find manifest matching SBOM, exiting');
     }
+
+    // Create a new build
+    const { insert_builds_one } = await hasura.InsertBuild({ project_id: manifest.project_id });
+    if (!insert_builds_one || !insert_builds_one.id) {
+      throw new Error('Failed to insert a new build');
+    }
+    const buildId = insert_builds_one.id;
     // Get manifest from s3, streaming
-    const fileStream = await aws.getFileFromS3(key, bucketName, region);
+    const [fileStream, _fileLength] = await aws.getFileFromS3(key, bucketName, region);
     // spawn a copy of the CLI to make an sbom, stream in the manifest
     const spawnedCli = callLunatraceCli(fileStream, manifest.filename);
+    spawnedCli.stdout.on('data', (chunk) => {
+      console.log('syft cli emitted stdout: ', chunk.toString().length);
+    });
+    spawnedCli.stdout.on('end', () => console.log('syft outstream ended'));
     // gzip the sbom stream
     const gZippedSbomStream = spawnedCli.stdout.pipe(gZip);
     // upload the sbom to s3, streaming
-    const newSbomS3Key = aws.generateSbomS3Key(manifest.project.organization_id, manifest.project_id);
+    const newSbomS3Key = aws.generateSbomS3Key(manifest.project.organization_id, buildId);
     const s3Url = await aws.uploadGzipFileToS3(newSbomS3Key, sbomBucket, gZippedSbomStream);
-    // Create a new build
-    const { insert_builds_one } = await hasura.InsertBuild({ s3_url: s3Url, project_id: manifest.project_id });
-    if (!insert_builds_one) {
-      throw new Error('Failed to insert a new build');
+    // update build to have s3 url
+    const { update_builds_by_pk } = await hasura.SetBuildS3Url({ id: buildId, s3_url: s3Url });
+    if (!update_builds_by_pk) {
+      throw new Error('Failed to update build s3 url');
     }
+
     // update the manifest status
-    await hasura.UpdateManifest({ key_eq: key, set_status: 'sbom-generated', build_id: insert_builds_one.id });
+    await hasura.UpdateManifest({ key_eq: key, set_status: 'sbom-generated', build_id: buildId });
   } catch (e) {
     console.error(e);
     // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
@@ -64,20 +76,23 @@ export function callLunatraceCli(fileContentsStream: Readable, fileName: string)
     '--skip-upload',
     '--stdout',
   ]);
+  console.log('syft spawned at pid', lunatraceCli.pid);
 
   lunatraceCli.stderr.on('data', (data) => {
     console.log(`stderr: ${data}`);
   });
 
   lunatraceCli.on('error', (error) => {
-    console.log(`error: ${error.message}`);
+    console.error(`error: ${error.message}`);
     // todo: might get gobbled?
     throw error;
   });
 
   fileContentsStream.on('data', (chunk) => lunatraceCli.stdin.write(chunk));
   fileContentsStream.on('end', () =>
-    lunatraceCli.stdin.end(() => console.log('Finished passing manifest contents to syft'))
+    lunatraceCli.stdin.end(() =>
+      console.log('Finished downloading and passing manifest contents to syft, closing stdin')
+    )
   );
   fileContentsStream.on('error', (e) => {
     throw e;

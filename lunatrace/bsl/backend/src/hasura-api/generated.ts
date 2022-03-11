@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -5959,14 +5946,23 @@ export type GetAuthDataFromProjectTokenQuery = { __typename?: 'query_root', proj
 
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
-  s3_url: Scalars['String'];
+  s3_url?: InputMaybe<Scalars['String']>;
 }>;
 
 
 export type InsertBuildMutation = { __typename?: 'mutation_root', insert_builds_one?: { __typename?: 'builds', id: any } | null };
 
+export type SetBuildS3UrlMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  s3_url: Scalars['String'];
+}>;
+
+
+export type SetBuildS3UrlMutation = { __typename?: 'mutation_root', update_builds_by_pk?: { __typename?: 'builds', id: any } | null };
+
 export type UpdateManifestStatusIfExistsMutationVariables = Exact<{
   buildId: Scalars['uuid'];
+  message?: InputMaybe<Scalars['String']>;
   status: Scalars['String'];
 }>;
 
@@ -5997,17 +5993,24 @@ export const GetAuthDataFromProjectTokenDocument = gql`
 }
     `;
 export const InsertBuildDocument = gql`
-    mutation InsertBuild($project_id: uuid!, $s3_url: String!) {
+    mutation InsertBuild($project_id: uuid!, $s3_url: String) {
   insert_builds_one(object: {project_id: $project_id, s3_url: $s3_url}) {
     id
   }
 }
     `;
+export const SetBuildS3UrlDocument = gql`
+    mutation SetBuildS3Url($id: uuid!, $s3_url: String!) {
+  update_builds_by_pk(pk_columns: {id: $id}, _set: {s3_url: $s3_url}) {
+    id
+  }
+}
+    `;
 export const UpdateManifestStatusIfExistsDocument = gql`
-    mutation UpdateManifestStatusIfExists($buildId: uuid!, $status: String!) {
+    mutation UpdateManifestStatusIfExists($buildId: uuid!, $message: String, $status: String!) {
   update_manifests(
-    where: {_and: {build_id: {_eq: $buildId}, status: {_eq: "sbom-generated"}}}
-    _set: {status: $status}
+    where: {build_id: {_eq: $buildId}}
+    _set: {status: $status, message: $message}
   ) {
     affected_rows
   }
@@ -6042,6 +6045,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');
+    },
+    SetBuildS3Url(variables: SetBuildS3UrlMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SetBuildS3UrlMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SetBuildS3UrlMutation>(SetBuildS3UrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'SetBuildS3Url', 'mutation');
     },
     UpdateManifestStatusIfExists(variables: UpdateManifestStatusIfExistsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateManifestStatusIfExistsMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateManifestStatusIfExistsMutation>(UpdateManifestStatusIfExistsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateManifestStatusIfExists', 'mutation');
