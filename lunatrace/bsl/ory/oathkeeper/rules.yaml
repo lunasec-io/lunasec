@@ -3,7 +3,7 @@
     preserve_host: true
     url: "http://localhost:8080"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/v1/graphql"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/v1/graphql"
     methods:
       - POST
   authenticators:
@@ -30,7 +30,7 @@
     url: "http://localhost:8080"
     strip_path: "/api/cli"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/api/cli/v1/graphql"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/cli/v1/graphql"
     methods:
       - POST
   authenticators:
@@ -60,7 +60,7 @@
     url: "http://localhost:8080"
     strip_path: "/api/service"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/api/service/v1/graphql"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/service/v1/graphql"
     methods:
       - POST
   authenticators:
@@ -105,7 +105,7 @@
     strip_path: "/api/hasura"
     url: "http://localhost:8080"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/api/hasura/<.*>"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/hasura/<.*>"
     methods:
       - GET
       - POST
@@ -125,7 +125,7 @@
     url: "http://localhost:4433"
     strip_path: "/api/kratos"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/api/kratos/<.*>"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/kratos/<.*>"
     methods:
       - GET
       - POST

@@ -43,6 +43,20 @@ input Int_comparison_exp {
   _nin: [Int!]
 }
 
+type PresignedUrlResponse {
+  bucket: String!
+  error: Boolean!
+  error_message: String
+  headers: String!
+  key: String!
+  url: String!
+}
+
+type SbomUploadUrlOutput {
+  error: Boolean!
+  uploadUrl: UploadUrl
+}
+
 type ScanManifestOutput {
   build_id: String!
   error: Boolean!
@@ -100,6 +114,11 @@ input String_comparison_exp {
 
   """does the column match the given SQL regular expression"""
   _similar: String
+}
+
+type UploadUrl {
+  headers: String!
+  url: String!
 }
 
 scalar _text
@@ -2337,6 +2356,9 @@ type mutation_root {
     on_conflict: vulnerability_packages_on_conflict
   ): vulnerability_packages
 
+  """get s3 presigned url for manifest upload, used only by the frontend"""
+  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
+
   """
   This performs the manifest sbom generation and creates the first build from the manifest
   """
@@ -4449,6 +4471,9 @@ type query_root {
   fetch data from the table: "package_versions" using primary key columns
   """
   package_versions_by_pk(id: uuid!): package_versions
+
+  """get s3 presigned url for manifest upload, used by the CLI"""
+  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
 
   """An array relationship"""
   project_access_tokens(
