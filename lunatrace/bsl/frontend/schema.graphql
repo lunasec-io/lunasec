@@ -2536,6 +2536,9 @@ type mutation_root {
   update data of the table: "organizations"
   """
   update_organizations(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: organizations_inc_input
+
     """sets the columns of the filtered rows to the given values"""
     _set: organizations_set_input
 
@@ -2547,6 +2550,9 @@ type mutation_root {
   update single row of the table: "organizations"
   """
   update_organizations_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: organizations_inc_input
+
     """sets the columns of the filtered rows to the given values"""
     _set: organizations_set_input
     pk_columns: organizations_pk_columns_input!
@@ -3019,6 +3025,7 @@ type organizations {
   createdAt: timestamp!
   creator_id: uuid
   id: uuid!
+  installation_id: Int!
   name: String!
 
   """An array relationship"""
@@ -3107,9 +3114,22 @@ type organizations_aggregate {
 aggregate fields of "organizations"
 """
 type organizations_aggregate_fields {
+  avg: organizations_avg_fields
   count(columns: [organizations_select_column!], distinct: Boolean): Int!
   max: organizations_max_fields
   min: organizations_min_fields
+  stddev: organizations_stddev_fields
+  stddev_pop: organizations_stddev_pop_fields
+  stddev_samp: organizations_stddev_samp_fields
+  sum: organizations_sum_fields
+  var_pop: organizations_var_pop_fields
+  var_samp: organizations_var_samp_fields
+  variance: organizations_variance_fields
+}
+
+"""aggregate avg on columns"""
+type organizations_avg_fields {
+  installation_id: Float
 }
 
 """
@@ -3122,6 +3142,7 @@ input organizations_bool_exp {
   createdAt: timestamp_comparison_exp
   creator_id: uuid_comparison_exp
   id: uuid_comparison_exp
+  installation_id: Int_comparison_exp
   name: String_comparison_exp
   organization_users: organization_user_bool_exp
   projects: projects_bool_exp
@@ -3137,12 +3158,20 @@ enum organizations_constraint {
 }
 
 """
+input type for incrementing numeric columns in table "organizations"
+"""
+input organizations_inc_input {
+  installation_id: Int
+}
+
+"""
 input type for inserting data into table "organizations"
 """
 input organizations_insert_input {
   createdAt: timestamp
   creator_id: uuid
   id: uuid
+  installation_id: Int
   name: String
   organization_users: organization_user_arr_rel_insert_input
   projects: projects_arr_rel_insert_input
@@ -3154,6 +3183,7 @@ type organizations_max_fields {
   createdAt: timestamp
   creator_id: uuid
   id: uuid
+  installation_id: Int
   name: String
   settings_id: uuid
 }
@@ -3163,6 +3193,7 @@ type organizations_min_fields {
   createdAt: timestamp
   creator_id: uuid
   id: uuid
+  installation_id: Int
   name: String
   settings_id: uuid
 }
@@ -3202,6 +3233,7 @@ input organizations_order_by {
   createdAt: order_by
   creator_id: order_by
   id: order_by
+  installation_id: order_by
   name: order_by
   organization_users_aggregate: organization_user_aggregate_order_by
   projects_aggregate: projects_aggregate_order_by
@@ -3227,6 +3259,9 @@ enum organizations_select_column {
   id
 
   """column name"""
+  installation_id
+
+  """column name"""
   name
 
   """column name"""
@@ -3240,8 +3275,29 @@ input organizations_set_input {
   createdAt: timestamp
   creator_id: uuid
   id: uuid
+  installation_id: Int
   name: String
   settings_id: uuid
+}
+
+"""aggregate stddev on columns"""
+type organizations_stddev_fields {
+  installation_id: Float
+}
+
+"""aggregate stddev_pop on columns"""
+type organizations_stddev_pop_fields {
+  installation_id: Float
+}
+
+"""aggregate stddev_samp on columns"""
+type organizations_stddev_samp_fields {
+  installation_id: Float
+}
+
+"""aggregate sum on columns"""
+type organizations_sum_fields {
+  installation_id: Int
 }
 
 """
@@ -3258,10 +3314,28 @@ enum organizations_update_column {
   id
 
   """column name"""
+  installation_id
+
+  """column name"""
   name
 
   """column name"""
   settings_id
+}
+
+"""aggregate var_pop on columns"""
+type organizations_var_pop_fields {
+  installation_id: Float
+}
+
+"""aggregate var_samp on columns"""
+type organizations_var_samp_fields {
+  installation_id: Float
+}
+
+"""aggregate variance on columns"""
+type organizations_variance_fields {
+  installation_id: Float
 }
 
 """

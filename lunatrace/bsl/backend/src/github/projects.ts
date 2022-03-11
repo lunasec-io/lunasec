@@ -21,18 +21,6 @@ import { pullDataForInstallation } from './installation-populate';
 
 export const githubApiRouter = express.Router();
 
-export interface KratosIdentityConfig {
-  providers: KratosIdentityProvider[];
-}
-
-export interface KratosIdentityProvider {
-  initial_id_token: string;
-  subject: string;
-  provider: string;
-  initial_access_token: string;
-  initial_refresh_token: string;
-}
-
 githubApiRouter.get('/github/install', async (req, res) => {
   const installationIdQueryParam = req.query.installation_id;
   const setupActionQueryParam = req.query.setup_action;
@@ -59,75 +47,95 @@ githubApiRouter.get('/github/install', async (req, res) => {
 
   const installationId = parseInt(installationIdQueryParam, 10);
 
-  console.log(installationId);
+  const installationData = await pullDataForInstallation(installationId);
 
-  await pullDataForInstallation(installationId);
+  const {
+    data: { repositories },
+  } = installationData;
+
+  repositories.map((repo) => {
+    const organizationName = repo.owner.login;
+    const organizationId = repo.owner.id;
+    const repoUrl = repo.clone_url;
+  });
 
   res.status(302).redirect('http://localhost:4455/');
 });
 
-function getGithubAccessToken(identity: Identity) {
-  if (!identity.credentials) {
-    throw new Error('credentials are not set for identity');
-  }
-
-  const oidcCreds = identity.credentials['oidc'];
-  if (!oidcCreds.config) {
-    throw new Error('config is not set for oidc credentials');
-  }
-
-  const config = oidcCreds.config as KratosIdentityConfig;
-  const githubProviders = config.providers.filter((provider) => provider.provider === 'github-oauth');
-  if (githubProviders.length !== 1) {
-    throw new Error('could not find exactly one github oidc provider');
-  }
-
-  const githubProvider = githubProviders[0];
-  return githubProvider.initial_access_token;
-}
-
-githubApiRouter.post('/github/user/projects', async (req, res) => {
-  const kratosConfig = new Configuration({
-    basePath: 'http://localhost:4434',
-  });
-
-  const kratosApiClient = V0alpha2ApiFactory(kratosConfig);
-
-  const userId = req.body.user_id;
-
-  const identity = await kratosApiClient.adminGetIdentity(userId, ['oidc']);
-
-  const accessToken = getGithubAccessToken(identity.data);
-
-  const graphqlWithAuth = graphql.defaults({
-    headers: {
-      authorization: `token ${accessToken}`,
-    },
-  });
-
-  try {
-    const response = await graphqlWithAuth(
-      `query ($login: String!) {
-      organization(login: $login) {
-        repositories(privacy: PRIVATE) {
-          totalCount
-        }
-      }
-    }`,
-      { login: 'breadchris' }
-    );
-    res.send(response);
-  } catch (e) {
-    console.error(e);
-    if (e instanceof GraphqlResponseError) {
-      res.send({
-        error: e.message,
-      });
-    } else {
-      // TODO (cthompson) what other error types exist?
-      res.send({
-        error: e,
-      });
-    }
-  }
-});
+// function getGithubAccessToken(identity: Identity) {
+//   if (!identity.credentials) {
+//     throw new Error('credentials are not set for identity');
+//   }
+//
+//   const oidcCreds = identity.credentials['oidc'];
+//   if (!oidcCreds.config) {
+//     throw new Error('config is not set for oidc credentials');
+//   }
+//
+//   const config = oidcCreds.config as KratosIdentityConfig;
+//   const githubProviders = config.providers.filter((provider) => provider.provider === 'github-oauth');
+//   if (githubProviders.length !== 1) {
+//     throw new Error('could not find exactly one github oidc provider');
+//   }
+//
+//   const githubProvider = githubProviders[0];
+//   return githubProvider.initial_access_token;
+// }
+//
+// export interface KratosIdentityConfig {
+//   providers: KratosIdentityProvider[];
+// }
+//
+// export interface KratosIdentityProvider {
+//   initial_id_token: string;
+//   subject: string;
+//   provider: string;
+//   initial_access_token: string;
+//   initial_refresh_token: string;
+// }
+//
+// githubApiRouter.post('/github/user/projects', async (req, res) => {
+//   const kratosConfig = new Configuration({
+//     basePath: 'http://localhost:4434',
+//   });
+//
+//   const kratosApiClient = V0alpha2ApiFactory(kratosConfig);
+//
+//   const userId = req.body.user_id;
+//
+//   const identity = await kratosApiClient.adminGetIdentity(userId, ['oidc']);
+//
+//   const accessToken = getGithubAccessToken(identity.data);
+//
+//   const graphqlWithAuth = graphql.defaults({
+//     headers: {
+//       authorization: `token ${accessToken}`,
+//     },
+//   });
+//
+//   try {
+//     const response = await graphqlWithAuth(
+//       `query ($login: String!) {
+//       organization(login: $login) {
+//         repositories(privacy: PRIVATE) {
+//           totalCount
+//         }
+//       }
+//     }`,
+//       { login: 'breadchris' }
+//     );
+//     res.send(response);
+//   } catch (e) {
+//     console.error(e);
+//     if (e instanceof GraphqlResponseError) {
+//       res.send({
+//         error: e.message,
+//       });
+//     } else {
+//       // TODO (cthompson) what other error types exist?
+//       res.send({
+//         error: e,
+//       });
+//     }
+//   }
+// });
