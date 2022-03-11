@@ -2280,6 +2280,7 @@ export type Mutation_RootUpdate_Organization_User_By_PkArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_OrganizationsArgs = {
+  _inc?: InputMaybe<Organizations_Inc_Input>;
   _set?: InputMaybe<Organizations_Set_Input>;
   where: Organizations_Bool_Exp;
 };
@@ -2287,6 +2288,7 @@ export type Mutation_RootUpdate_OrganizationsArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Organizations_By_PkArgs = {
+  _inc?: InputMaybe<Organizations_Inc_Input>;
   _set?: InputMaybe<Organizations_Set_Input>;
   pk_columns: Organizations_Pk_Columns_Input;
 };
@@ -2657,6 +2659,7 @@ export type Organizations = {
   createdAt: Scalars['timestamp'];
   creator_id?: Maybe<Scalars['uuid']>;
   id: Scalars['uuid'];
+  installation_id: Scalars['Int'];
   name: Scalars['String'];
   /** An array relationship */
   organization_users: Array<Organization_User>;
@@ -2719,9 +2722,17 @@ export type Organizations_Aggregate = {
 /** aggregate fields of "organizations" */
 export type Organizations_Aggregate_Fields = {
   __typename?: 'organizations_aggregate_fields';
+  avg?: Maybe<Organizations_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<Organizations_Max_Fields>;
   min?: Maybe<Organizations_Min_Fields>;
+  stddev?: Maybe<Organizations_Stddev_Fields>;
+  stddev_pop?: Maybe<Organizations_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Organizations_Stddev_Samp_Fields>;
+  sum?: Maybe<Organizations_Sum_Fields>;
+  var_pop?: Maybe<Organizations_Var_Pop_Fields>;
+  var_samp?: Maybe<Organizations_Var_Samp_Fields>;
+  variance?: Maybe<Organizations_Variance_Fields>;
 };
 
 
@@ -2729,6 +2740,12 @@ export type Organizations_Aggregate_Fields = {
 export type Organizations_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Organizations_Select_Column>>;
   distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type Organizations_Avg_Fields = {
+  __typename?: 'organizations_avg_fields';
+  installation_id?: Maybe<Scalars['Float']>;
 };
 
 /** Boolean expression to filter rows from the table "organizations". All fields are combined with a logical 'AND'. */
@@ -2739,6 +2756,7 @@ export type Organizations_Bool_Exp = {
   createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
   creator_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  installation_id?: InputMaybe<Int_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   organization_users?: InputMaybe<Organization_User_Bool_Exp>;
   projects?: InputMaybe<Projects_Bool_Exp>;
@@ -2751,11 +2769,17 @@ export enum Organizations_Constraint {
   OrganizationsPkey = 'organizations_pkey'
 }
 
+/** input type for incrementing numeric columns in table "organizations" */
+export type Organizations_Inc_Input = {
+  installation_id?: InputMaybe<Scalars['Int']>;
+};
+
 /** input type for inserting data into table "organizations" */
 export type Organizations_Insert_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
   creator_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
+  installation_id?: InputMaybe<Scalars['Int']>;
   name?: InputMaybe<Scalars['String']>;
   organization_users?: InputMaybe<Organization_User_Arr_Rel_Insert_Input>;
   projects?: InputMaybe<Projects_Arr_Rel_Insert_Input>;
@@ -2768,6 +2792,7 @@ export type Organizations_Max_Fields = {
   createdAt?: Maybe<Scalars['timestamp']>;
   creator_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  installation_id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   settings_id?: Maybe<Scalars['uuid']>;
 };
@@ -2778,6 +2803,7 @@ export type Organizations_Min_Fields = {
   createdAt?: Maybe<Scalars['timestamp']>;
   creator_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  installation_id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   settings_id?: Maybe<Scalars['uuid']>;
 };
@@ -2810,6 +2836,7 @@ export type Organizations_Order_By = {
   createdAt?: InputMaybe<Order_By>;
   creator_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  installation_id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
   projects_aggregate?: InputMaybe<Projects_Aggregate_Order_By>;
@@ -2830,6 +2857,8 @@ export enum Organizations_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  InstallationId = 'installation_id',
+  /** column name */
   Name = 'name',
   /** column name */
   SettingsId = 'settings_id'
@@ -2840,8 +2869,33 @@ export type Organizations_Set_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
   creator_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
+  installation_id?: InputMaybe<Scalars['Int']>;
   name?: InputMaybe<Scalars['String']>;
   settings_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** aggregate stddev on columns */
+export type Organizations_Stddev_Fields = {
+  __typename?: 'organizations_stddev_fields';
+  installation_id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Organizations_Stddev_Pop_Fields = {
+  __typename?: 'organizations_stddev_pop_fields';
+  installation_id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Organizations_Stddev_Samp_Fields = {
+  __typename?: 'organizations_stddev_samp_fields';
+  installation_id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate sum on columns */
+export type Organizations_Sum_Fields = {
+  __typename?: 'organizations_sum_fields';
+  installation_id?: Maybe<Scalars['Int']>;
 };
 
 /** update columns of table "organizations" */
@@ -2853,10 +2907,30 @@ export enum Organizations_Update_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  InstallationId = 'installation_id',
+  /** column name */
   Name = 'name',
   /** column name */
   SettingsId = 'settings_id'
 }
+
+/** aggregate var_pop on columns */
+export type Organizations_Var_Pop_Fields = {
+  __typename?: 'organizations_var_pop_fields';
+  installation_id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Organizations_Var_Samp_Fields = {
+  __typename?: 'organizations_var_samp_fields';
+  installation_id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Organizations_Variance_Fields = {
+  __typename?: 'organizations_variance_fields';
+  installation_id?: Maybe<Scalars['Float']>;
+};
 
 /** columns and relationships of "package_versions" */
 export type Package_Versions = {

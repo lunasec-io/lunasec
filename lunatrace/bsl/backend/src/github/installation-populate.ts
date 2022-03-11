@@ -11,6 +11,8 @@
  * limitations under the License.
  *
  */
+import fs from 'fs';
+
 import { createAppAuth } from '@octokit/auth-app';
 import { App, Octokit } from 'octokit';
 
@@ -30,7 +32,8 @@ if (!githubAppIdRaw || typeof githubAppIdRaw !== 'string') {
 
 const githubAppId = parseInt(githubAppIdRaw, 10);
 
-export async function pullDataForInstallation(installationId: number): Promise<void> {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export async function pullDataForInstallation(installationId: number) {
   const auth = createAppAuth({
     appId: githubAppId,
     privateKey: githubPrivateKey,
@@ -42,13 +45,8 @@ export async function pullDataForInstallation(installationId: number): Promise<v
     installationId: installationId,
   });
 
-  console.log(installationAuthentication);
   const octokit = new Octokit({ auth: installationAuthentication.token });
 
   // authenticates as app based on request URLs
-  const {
-    data: { repositories },
-  } = await octokit.rest.apps.listReposAccessibleToInstallation({});
-
-  // console.log(repositories);
+  return await octokit.rest.apps.listReposAccessibleToInstallation({});
 }
