@@ -13,3 +13,16 @@ array_relationships:
       table:
         name: findings
         schema: public
+select_permissions:
+- permission:
+    columns:
+    - cpes
+    - fixed_in_versions
+    - fix_state
+    - pkg_slug
+    - slug
+    - version_constraint
+    - version_format
+    - id
+    filter: {}
+  role: user
