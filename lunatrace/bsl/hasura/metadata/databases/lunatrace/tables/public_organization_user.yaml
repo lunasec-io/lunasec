@@ -32,6 +32,16 @@ select_permissions:
 - permission:
     columns:
     - created_at
+    - updated_at
+    - role
+    - id
+    - organization_id
+    - user_id
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - created_at
     - id
     - organization_id
     - role

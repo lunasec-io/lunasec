@@ -1714,7 +1714,7 @@ export type Mutation_Root = {
   insert_vulnerability_packages?: Maybe<Vulnerability_Packages_Mutation_Response>;
   /** insert a single row into the table: "vulnerability_packages" */
   insert_vulnerability_packages_one?: Maybe<Vulnerability_Packages>;
-  /** get s3 presigned url for manifest upload */
+  /** get s3 presigned url for manifest upload, note that this is used by both the CLI _and_ the frontend */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** This performs the manifest sbom generation and creates the first build from the manifest */
   scanManifest?: Maybe<ScanManifestOutput>;
@@ -5949,6 +5949,13 @@ export enum Vulnerability_Packages_Update_Column {
   VulnSlug = 'vuln_slug'
 }
 
+export type GetAuthDataFromProjectTokenQueryVariables = Exact<{
+  access_token: Scalars['uuid'];
+}>;
+
+
+export type GetAuthDataFromProjectTokenQuery = { __typename?: 'query_root', project_access_tokens: Array<{ __typename?: 'project_access_tokens', project: { __typename?: 'projects', id: any, builds: Array<{ __typename?: 'builds', id: any }> } }> };
+
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
   s3_url: Scalars['String'];
@@ -5976,6 +5983,18 @@ export type UpdateManifestMutationVariables = Exact<{
 export type UpdateManifestMutation = { __typename?: 'mutation_root', update_manifests?: { __typename?: 'manifests_mutation_response', returning: Array<{ __typename?: 'manifests', filename: string, project_id: any, project: { __typename?: 'projects', organization_id?: any | null } }> } | null };
 
 
+export const GetAuthDataFromProjectTokenDocument = gql`
+    query GetAuthDataFromProjectToken($access_token: uuid!) {
+  project_access_tokens(where: {access_token: {_eq: $access_token}}) {
+    project {
+      id
+      builds {
+        id
+      }
+    }
+  }
+}
+    `;
 export const InsertBuildDocument = gql`
     mutation InsertBuild($project_id: uuid!, $s3_url: String!) {
   insert_builds_one(object: {project_id: $project_id, s3_url: $s3_url}) {
@@ -6017,6 +6036,9 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    GetAuthDataFromProjectToken(variables: GetAuthDataFromProjectTokenQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAuthDataFromProjectTokenQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetAuthDataFromProjectTokenQuery>(GetAuthDataFromProjectTokenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetAuthDataFromProjectToken', 'query');
+    },
     InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');
     },

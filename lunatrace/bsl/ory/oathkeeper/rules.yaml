@@ -46,8 +46,9 @@
         claims: |
           {
             "https://hasura.io/jwt/claims": {
-              "x-hasura-access-token": "{{ .Subject }}",
+              "x-hasura-access-token": "{{ .Extra.access_token }}",
               "x-hasura-project-uuid": "{{ .Extra.project_uuid }}",
+              "x-hasura-builds": "{{ .Extra.builds }}",
               "x-hasura-allowed-roles": ["cli"],
               "x-hasura-default-role": "cli"
             }
@@ -72,11 +73,12 @@
     - handler: id_token
       config:
         issuer_url: http://oathkeeper:4455/
+        # backend can pretend to be a user if we want to check some auth stuff from the backend..so that role is allowed
         claims: |
           {
             "https://hasura.io/jwt/claims": {
               "x-hasura-user-id": "",
-              "x-hasura-allowed-roles": ["service"],
+              "x-hasura-allowed-roles": ["service", "user"], 
               "x-hasura-default-role": "service"
             }
           }
