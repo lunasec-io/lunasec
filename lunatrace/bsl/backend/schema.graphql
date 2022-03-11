@@ -2356,7 +2356,9 @@ type mutation_root {
     on_conflict: vulnerability_packages_on_conflict
   ): vulnerability_packages
 
-  """get s3 presigned url for manifest upload"""
+  """
+  get s3 presigned url for manifest upload, note that this is used by both the CLI _and_ the frontend
+  """
   presignManifestUpload(project_id: uuid!): PresignedUrlResponse
 
   """
