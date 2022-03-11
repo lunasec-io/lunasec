@@ -14,23 +14,39 @@
 import { getNodeLabel } from '@ory/integrations/ui';
 import React from 'react';
 import { Button } from 'react-bootstrap';
+import GithubButton from 'react-github-login-button';
 
 import { NodeInputProps } from './helpers';
 
 export function NodeInputSubmit<T>({ node, attributes, setValue, disabled, dispatchSubmit }: NodeInputProps) {
+  if (attributes.value === 'github-oauth') {
+    return (
+      <>
+        <GithubButton
+          className="github-signin-button"
+          type="dark"
+          onClick={(e) => {
+            // On click, we set this value, and once set, dispatch the submission!
+            void setValue(attributes.value).then(() => dispatchSubmit(e));
+          }}
+          // value={attributes.value || ''}
+          disabled={attributes.disabled || disabled}
+        />
+      </>
+    );
+  }
+
   return (
-    <>
-      <Button
-        name={attributes.name}
-        onClick={(e: any) => {
-          // On click, we set this value, and once set, dispatch the submission!
-          void setValue(attributes.value).then(() => dispatchSubmit(e));
-        }}
-        value={attributes.value || ''}
-        disabled={attributes.disabled || disabled}
-      >
-        {getNodeLabel(node)}
-      </Button>
-    </>
+    <Button
+      name={attributes.name}
+      onClick={(e: any) => {
+        // On click, we set this value, and once set, dispatch the submission!
+        void setValue(attributes.value).then(() => dispatchSubmit(e));
+      }}
+      value={attributes.value || ''}
+      disabled={attributes.disabled || disabled}
+    >
+      {getNodeLabel(node)}
+    </Button>
   );
 }
