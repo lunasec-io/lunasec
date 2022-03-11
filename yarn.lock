@@ -18564,7 +18564,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aws-cdk@npm:1.147.0, aws-cdk@npm:^1.129.0, aws-cdk@npm:^1.134.0":
+"aws-cdk@npm:1.147.0, aws-cdk@npm:^1.134.0":
   version: 1.147.0
   resolution: "aws-cdk@npm:1.147.0"
   dependencies:
@@ -20474,7 +20474,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cdk-assets@npm:^1.129.0":
+"cdk-assets@npm:1.147.0":
   version: 1.147.0
   resolution: "cdk-assets@npm:1.147.0"
   dependencies:
