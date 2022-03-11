@@ -4,6 +4,7 @@
   "scripts": {
     "start": "tsc && concurrently 'yarn dev:graphql:watch' \"tsc -w\" \"nodemon build/server.js\"",
     "start:sqs-listener": "tsc && concurrently \"tsc -w\" \"nodemon build/sqs/read-queue.js\"",
+    "prod:sqs-listener": "node build/sqs/read-queue.js",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
     "test:scan:upload": "yarn run ts-node --files ./src/tests/upload-scan.ts",
     "test:load": "yarn run ts-node --files ./src/tests/local-load-vulnerabilities-test.ts",
