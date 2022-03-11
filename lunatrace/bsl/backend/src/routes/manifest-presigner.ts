@@ -32,7 +32,6 @@ manifestPresignerRouter.post('/s3/presign-manifest-upload', async (req, res) => 
     projectId
   )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${encodeURIComponent(uniqueId)}`;
 
-  console.log('object key is ', objectKey);
   try {
     const result = await aws.generatePresignedS3Url(manifestBucket, objectKey, 'PUT');
     return res.json({ error: false, key: objectKey, bucket: manifestBucket, ...result });

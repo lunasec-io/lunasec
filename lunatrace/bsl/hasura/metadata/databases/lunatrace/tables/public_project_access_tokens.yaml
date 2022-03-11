@@ -20,6 +20,13 @@ select_permissions:
     - access_token
     - id
     - project_uuid
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - access_token
+    - id
+    - project_uuid
     filter:
       access_token:
         _eq: X-Hasura-Access-Token

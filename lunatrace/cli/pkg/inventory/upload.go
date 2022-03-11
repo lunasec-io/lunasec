@@ -160,7 +160,7 @@ func getOrgAndProjectFromAccessToken(
 	if err = util.GetGraphqlError(err, projectInfoResponse.GraphqlErrors); err != nil {
 		log.Error().
 			Err(err).
-			Msg("Unable to get project info. Make sure that your configured LUNASEC_PROJECT_SECRET is correct.")
+			Msg("Unable to get project info using project secret. Make sure that your configured LUNASEC_PROJECT_SECRET is correct.")
 		return
 	}
 
