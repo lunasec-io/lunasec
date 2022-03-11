@@ -17570,6 +17570,10 @@ td.rdtYear:hover {
   transition: 0.2s transform cubic-bezier(0.155, 1.105, 0.295, 1.12), 0.2s box-shadow, 0.2s -webkit-transform cubic-bezier(0.155, 1.105, 0.295, 1.12);
 }
 
+.github-signin-button {
+  background-color: #24292f !important;
+}
+
 .darker {
   color: #a9acb3;
 }
