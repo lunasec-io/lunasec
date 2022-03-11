@@ -24,22 +24,25 @@ const objectMetadata: S3ObjectMetadata = {
   region: 'us-west-2',
 };
 
-jest.setTimeout(30000);
+jest.setTimeout(5000);
 
 describe('manifest handler', () => {
-  it('should do full manifest processing flow', async () => {
-    await handleGenerateSbom(objectMetadata);
-  });
-
-  it('should call lunatrace cli (this is a subset of the above test)', (done) => {
-    const fileContents = fs.createReadStream(path.resolve(__dirname, '../fixtures/package-lock.json'));
-    const spawnedCommand = callLunatraceCli(fileContents, 'package-lock.json');
-
-    const stdoutDataCallback = jest.fn();
-    spawnedCommand.stdout.on('data', stdoutDataCallback);
-    spawnedCommand.on('close', () => {
-      expect(stdoutDataCallback).toBeCalled();
-      done();
+  for (let n = 0; n < 3; n++) {
+    it('should do full manifest processing flow', async () => {
+      await handleGenerateSbom(objectMetadata);
     });
-  });
+  }
+  for (let n = 0; n < 3; n++) {
+    it('should call lunatrace cli (this is a subset of the above test)', (done) => {
+      const fileContents = fs.createReadStream(path.resolve(__dirname, '../fixtures/package-lock.json'));
+      const spawnedCommand = callLunatraceCli(fileContents, 'package-lock.json');
+
+      const stdoutDataCallback = jest.fn();
+      spawnedCommand.stdout.on('data', stdoutDataCallback);
+      spawnedCommand.on('close', () => {
+        expect(stdoutDataCallback).toBeCalled();
+        done();
+      });
+    });
+  }
 });
