@@ -44,7 +44,7 @@ export async function handleGenerateSbom(message: S3ObjectMetadata) {
     spawnedCli.stdout.on('data', (chunk) => {
       console.log('syft cli emitted stdout: ', chunk.toString().length);
     });
-    spawnedCli.stdout.on('end', () => console.log('syft outstream ended'));
+    spawnedCli.stdout.on('close', () => console.log('syft outstream ended'));
     // gzip the sbom stream
     const gZippedSbomStream = spawnedCli.stdout.pipe(gZip);
     // upload the sbom to s3, streaming
