@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 schema {
   query: query_root
   mutation: mutation_root
@@ -7104,5 +7103,3 @@ enum vulnerability_packages_update_column {
   vuln_slug
 }
 
-=======
->>>>>>> Stashed changes
