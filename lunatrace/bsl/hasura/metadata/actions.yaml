@@ -24,7 +24,7 @@ actions:
   permissions:
   - role: cli
   - role: service
-  comment: get s3 presigned url for sbom upload, used by the CLI
+  comment: get s3 presigned url for manifest upload, used by the CLI
 - name: scanManifest
   definition:
     kind: synchronous

@@ -28,7 +28,7 @@ export interface GrypeVuln {
   pk: number;
   id: string;
   package_name: string;
-  namespace: Namespace;
+  namespace: string;
   version_constraint: string;
   version_format: VersionFormat;
   cpes: string;
@@ -136,7 +136,7 @@ export class Convert {
   }
 
   public static jsonBlobToVulnerabilities(obj: Record<string, unknown>): GrypeVuln[] {
-    return cast(obj, a(r('Vulnerabilities')));
+    return obj as unknown as GrypeVuln[]; // just cast it because these type validators have turned out to be too fragile
   }
 
   public static vulnerabilitiesToJson(value: GrypeVuln[]): string {
