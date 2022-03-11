@@ -14,7 +14,6 @@
 import fs from 'fs';
 import path from 'path';
 
-import sbomS3EventSqsMessageFixture from '../fixtures/upload-manifest-sqs-message.json';
 import { callLunatraceCli, handleGenerateSbom } from '../sqs-handlers/generateSbom';
 import { S3ObjectMetadata } from '../types/s3';
 
@@ -24,7 +23,7 @@ const objectMetadata: S3ObjectMetadata = {
   region: 'us-west-2',
 };
 
-jest.setTimeout(5000);
+jest.setTimeout(15000);
 
 describe('manifest handler', () => {
   for (let n = 0; n < 3; n++) {

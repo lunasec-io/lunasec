@@ -19,7 +19,6 @@ import { sbomBucket } from '../constants';
 import { hasura } from '../hasura-api';
 import { S3ObjectMetadata } from '../types/s3';
 import { aws } from '../utils/aws-utils';
-const gZip = zlib.createGzip();
 
 export async function handleGenerateSbom(message: S3ObjectMetadata) {
   const { key, region, bucketName } = message;
@@ -44,9 +43,13 @@ export async function handleGenerateSbom(message: S3ObjectMetadata) {
     spawnedCli.stdout.on('data', (chunk) => {
       console.log('syft cli emitted stdout: ', chunk.toString().length);
     });
-    spawnedCli.stdout.on('close', () => console.log('syft outstream ended'));
+
+    spawnedCli.stdout.on('close', () => {
+      console.log('syft outstream ended');
+    });
+    spawnedCli.on('close', () => console.log('SYFT PROCESS CLOSED'));
     // gzip the sbom stream
-    const gZippedSbomStream = spawnedCli.stdout.pipe(gZip);
+    const gZippedSbomStream = spawnedCli.stdout.pipe(zlib.createGzip());
     // upload the sbom to s3, streaming
     const newSbomS3Key = aws.generateSbomS3Key(manifest.project.organization_id, buildId);
     const s3Url = await aws.uploadGzipFileToS3(newSbomS3Key, sbomBucket, gZippedSbomStream);
@@ -85,17 +88,19 @@ export function callLunatraceCli(fileContentsStream: Readable, fileName: string)
   lunatraceCli.on('error', (error) => {
     console.error(`error: ${error.message}`);
     // todo: might get gobbled?
-    throw error;
+    // throw error;
   });
 
   fileContentsStream.on('data', (chunk) => lunatraceCli.stdin.write(chunk));
-  fileContentsStream.on('end', () =>
-    lunatraceCli.stdin.end(() =>
-      console.log('Finished downloading and passing manifest contents to syft, closing stdin')
-    )
-  );
+  fileContentsStream.on('end', () => {
+    lunatraceCli.stdin.end(() => {
+      console.log('Finished downloading and passing manifest contents to syft, closing stdin');
+    });
+    fileContentsStream.destroy();
+  });
   fileContentsStream.on('error', (e) => {
-    throw e;
+    // throw e;
+    console.error(e);
   });
 
   return lunatraceCli;
