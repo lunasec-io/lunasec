@@ -975,11 +975,35 @@ export type Identities = {
   created_at: Scalars['timestamp'];
   id: Scalars['uuid'];
   nid?: Maybe<Scalars['uuid']>;
+  /** An array relationship */
+  organization_users: Array<Organization_User>;
+  /** An aggregate relationship */
+  organization_users_aggregate: Organization_User_Aggregate;
   schema_id: Scalars['String'];
   state: Scalars['String'];
   state_changed_at?: Maybe<Scalars['timestamp']>;
   traits: Scalars['jsonb'];
   updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "identities" */
+export type IdentitiesOrganization_UsersArgs = {
+  distinct_on?: InputMaybe<Array<Organization_User_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Organization_User_Order_By>>;
+  where?: InputMaybe<Organization_User_Bool_Exp>;
+};
+
+
+/** columns and relationships of "identities" */
+export type IdentitiesOrganization_Users_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Organization_User_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Organization_User_Order_By>>;
+  where?: InputMaybe<Organization_User_Bool_Exp>;
 };
 
 
@@ -1023,6 +1047,7 @@ export type Identities_Bool_Exp = {
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   nid?: InputMaybe<Uuid_Comparison_Exp>;
+  organization_users?: InputMaybe<Organization_User_Bool_Exp>;
   schema_id?: InputMaybe<String_Comparison_Exp>;
   state?: InputMaybe<String_Comparison_Exp>;
   state_changed_at?: InputMaybe<Timestamp_Comparison_Exp>;
@@ -1056,6 +1081,7 @@ export type Identities_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamp']>;
   id?: InputMaybe<Scalars['uuid']>;
   nid?: InputMaybe<Scalars['uuid']>;
+  organization_users?: InputMaybe<Organization_User_Arr_Rel_Insert_Input>;
   schema_id?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
   state_changed_at?: InputMaybe<Scalars['timestamp']>;
@@ -1115,6 +1141,7 @@ export type Identities_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   nid?: InputMaybe<Order_By>;
+  organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
   schema_id?: InputMaybe<Order_By>;
   state?: InputMaybe<Order_By>;
   state_changed_at?: InputMaybe<Order_By>;
@@ -3112,7 +3139,13 @@ export enum Package_Versions_Update_Column {
 export type Project_Access_Tokens = {
   __typename?: 'project_access_tokens';
   access_token: Scalars['uuid'];
+  created_at: Scalars['timestamp'];
+  /** An object relationship */
+  created_by_user?: Maybe<Identities>;
+  created_by_user_id?: Maybe<Scalars['uuid']>;
   id: Scalars['uuid'];
+  last_used?: Maybe<Scalars['timestamp']>;
+  name?: Maybe<Scalars['String']>;
   /** An object relationship */
   project: Projects;
   project_uuid: Scalars['uuid'];
@@ -3160,7 +3193,12 @@ export type Project_Access_Tokens_Bool_Exp = {
   _not?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
   _or?: InputMaybe<Array<Project_Access_Tokens_Bool_Exp>>;
   access_token?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_by_user?: InputMaybe<Identities_Bool_Exp>;
+  created_by_user_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  last_used?: InputMaybe<Timestamp_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_uuid?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -3176,7 +3214,12 @@ export enum Project_Access_Tokens_Constraint {
 /** input type for inserting data into table "project_access_tokens" */
 export type Project_Access_Tokens_Insert_Input = {
   access_token?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_by_user?: InputMaybe<Identities_Obj_Rel_Insert_Input>;
+  created_by_user_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_used?: InputMaybe<Scalars['timestamp']>;
+  name?: InputMaybe<Scalars['String']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_uuid?: InputMaybe<Scalars['uuid']>;
 };
@@ -3185,14 +3228,22 @@ export type Project_Access_Tokens_Insert_Input = {
 export type Project_Access_Tokens_Max_Fields = {
   __typename?: 'project_access_tokens_max_fields';
   access_token?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  created_by_user_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  last_used?: Maybe<Scalars['timestamp']>;
+  name?: Maybe<Scalars['String']>;
   project_uuid?: Maybe<Scalars['uuid']>;
 };
 
 /** order by max() on columns of table "project_access_tokens" */
 export type Project_Access_Tokens_Max_Order_By = {
   access_token?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  created_by_user_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  last_used?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
   project_uuid?: InputMaybe<Order_By>;
 };
 
@@ -3200,14 +3251,22 @@ export type Project_Access_Tokens_Max_Order_By = {
 export type Project_Access_Tokens_Min_Fields = {
   __typename?: 'project_access_tokens_min_fields';
   access_token?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  created_by_user_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  last_used?: Maybe<Scalars['timestamp']>;
+  name?: Maybe<Scalars['String']>;
   project_uuid?: Maybe<Scalars['uuid']>;
 };
 
 /** order by min() on columns of table "project_access_tokens" */
 export type Project_Access_Tokens_Min_Order_By = {
   access_token?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  created_by_user_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  last_used?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
   project_uuid?: InputMaybe<Order_By>;
 };
 
@@ -3230,7 +3289,12 @@ export type Project_Access_Tokens_On_Conflict = {
 /** Ordering options when selecting data from "project_access_tokens". */
 export type Project_Access_Tokens_Order_By = {
   access_token?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  created_by_user?: InputMaybe<Identities_Order_By>;
+  created_by_user_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  last_used?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_uuid?: InputMaybe<Order_By>;
 };
@@ -3245,7 +3309,15 @@ export enum Project_Access_Tokens_Select_Column {
   /** column name */
   AccessToken = 'access_token',
   /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CreatedByUserId = 'created_by_user_id',
+  /** column name */
   Id = 'id',
+  /** column name */
+  LastUsed = 'last_used',
+  /** column name */
+  Name = 'name',
   /** column name */
   ProjectUuid = 'project_uuid'
 }
@@ -3253,7 +3325,11 @@ export enum Project_Access_Tokens_Select_Column {
 /** input type for updating data in table "project_access_tokens" */
 export type Project_Access_Tokens_Set_Input = {
   access_token?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_by_user_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_used?: InputMaybe<Scalars['timestamp']>;
+  name?: InputMaybe<Scalars['String']>;
   project_uuid?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -3262,7 +3338,15 @@ export enum Project_Access_Tokens_Update_Column {
   /** column name */
   AccessToken = 'access_token',
   /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CreatedByUserId = 'created_by_user_id',
+  /** column name */
   Id = 'id',
+  /** column name */
+  LastUsed = 'last_used',
+  /** column name */
+  Name = 'name',
   /** column name */
   ProjectUuid = 'project_uuid'
 }
@@ -5948,6 +6032,13 @@ export enum Vulnerability_Packages_Update_Column {
   VulnSlug = 'vuln_slug'
 }
 
+export type DeleteProjectAccessTokenMutationVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type DeleteProjectAccessTokenMutation = { __typename?: 'mutation_root', delete_project_access_tokens_by_pk?: { __typename?: 'project_access_tokens', id: any } | null };
+
 export type GetBuildDetailsQueryVariables = Exact<{
   build_id?: InputMaybe<Scalars['uuid']>;
 }>;
@@ -5967,7 +6058,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, access_token: any }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
+export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5994,6 +6085,15 @@ export type GetVulnerabilityDetailsQueryVariables = Exact<{
 
 
 export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
+
+export type InsertProjectAccessTokenMutationVariables = Exact<{
+  access_token: Scalars['uuid'];
+  name: Scalars['String'];
+  project_uuid: Scalars['uuid'];
+}>;
+
+
+export type InsertProjectAccessTokenMutation = { __typename?: 'mutation_root', insert_project_access_tokens_one?: { __typename?: 'project_access_tokens', id: any } | null };
 
 export type InsertManifestMutationVariables = Exact<{
   s3_url: Scalars['String'];
@@ -6030,6 +6130,13 @@ export type PresignManifestUrlMutationVariables = Exact<{
 export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string, key: string, bucket: string, error: boolean, error_message?: string | null } | null };
 
 
+export const DeleteProjectAccessTokenDocument = `
+    mutation DeleteProjectAccessToken($id: uuid!) {
+  delete_project_access_tokens_by_pk(id: $id) {
+    id
+  }
+}
+    `;
 export const GetBuildDetailsDocument = `
     query GetBuildDetails($build_id: uuid) {
   builds(where: {id: {_eq: $build_id}}) {
@@ -6117,7 +6224,13 @@ export const GetProjectDocument = `
     }
     project_access_tokens {
       id
-      access_token
+      project_uuid
+      name
+      created_at
+      last_used
+      created_by_user {
+        traits
+      }
     }
     builds(order_by: {created_at: desc}) {
       id
@@ -6268,6 +6381,15 @@ export const GetVulnerabilityDetailsDocument = `
   }
 }
     `;
+export const InsertProjectAccessTokenDocument = `
+    mutation InsertProjectAccessToken($access_token: uuid!, $name: String!, $project_uuid: uuid!) {
+  insert_project_access_tokens_one(
+    object: {access_token: $access_token, name: $name, project_uuid: $project_uuid}
+  ) {
+    id
+  }
+}
+    `;
 export const InsertManifestDocument = `
     mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!, $key: String!) {
   insert_manifests_one(
@@ -6310,6 +6432,9 @@ export const PresignManifestUrlDocument = `
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    DeleteProjectAccessToken: build.mutation<DeleteProjectAccessTokenMutation, DeleteProjectAccessTokenMutationVariables>({
+      query: (variables) => ({ document: DeleteProjectAccessTokenDocument, variables })
+    }),
     GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetBuildDetailsDocument, variables })
     }),
@@ -6330,6 +6455,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
+    }),
+    InsertProjectAccessToken: build.mutation<InsertProjectAccessTokenMutation, InsertProjectAccessTokenMutationVariables>({
+      query: (variables) => ({ document: InsertProjectAccessTokenDocument, variables })
     }),
     insertManifest: build.mutation<InsertManifestMutation, InsertManifestMutationVariables>({
       query: (variables) => ({ document: InsertManifestDocument, variables })
