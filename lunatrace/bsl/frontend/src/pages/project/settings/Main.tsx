@@ -16,7 +16,7 @@ import { Container } from 'react-bootstrap';
 
 import { ProjectInfo } from '../types';
 
-import { ProjectTokens } from './Tokens';
+import { ProjectTokens } from './tokens/Main';
 
 interface ProjectSettingsProps {
   project: ProjectInfo;
