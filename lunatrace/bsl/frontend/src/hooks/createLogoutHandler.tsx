@@ -38,7 +38,10 @@ export function createLogoutHandler(navigate: NavigateFunction) {
   return async () => {
     const resolvedLogoutToken = await logoutToken;
     if (resolvedLogoutToken) {
-      void ory.submitSelfServiceLogoutFlow(resolvedLogoutToken).then(() => navigate('/account/login'));
+      await ory.submitSelfServiceLogoutFlow(resolvedLogoutToken).then(() => {
+        navigate('/');
+        window.location.reload();
+      });
     }
   };
 }

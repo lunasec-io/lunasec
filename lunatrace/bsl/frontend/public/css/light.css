@@ -17458,6 +17458,10 @@ td.rdtYear:hover {
   max-width: 50em;
 }
 
+.secret-more-info-accordion-header > button {
+  color: #3F80EA;
+}
+
 .breadcrumb-item + .breadcrumb-item::before {
   content: var(--bs-breadcrumb-divider, ">") !important;
 }

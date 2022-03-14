@@ -11,7 +11,13 @@ query GetProject($project_id: uuid!) {
         }
         project_access_tokens {
             id
-            access_token
+            project_uuid
+            name
+            created_at
+            last_used
+            created_by_user {
+                traits
+            }
         }
         builds(order_by: {created_at: desc}) {
             id

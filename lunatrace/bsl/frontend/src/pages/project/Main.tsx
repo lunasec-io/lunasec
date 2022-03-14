@@ -23,6 +23,7 @@ import { SpinIfLoading } from '../../components/SpinIfLoading';
 import { ProjectHeader } from './Header';
 import { Builds } from './builds';
 import { ProjectDashboardMain } from './dashboard/Main';
+import { ProjectSettingsMain } from './settings/Main';
 import { ProjectInfo } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
@@ -41,7 +42,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
     return (
       <>
         <Helmet title={p.name} />
-        <ProjectHeader projectName={p.name} />
+        <ProjectHeader projectName={p.name} organizationName={p.organization?.name} />
         <Nav className="container-fluid fs-lg" variant="tabs" activeKey={activeTab}>
           <Nav.Item>
             <Nav.Link
@@ -65,7 +66,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
           </Nav.Item>
           <Nav.Item className="ms-auto">
             <Nav.Link onClick={() => setActiveTab('settings')} eventKey="settings">
-              <Settings size="17" /> Settings
+              <Settings size="17" /> Settings and Secrets
             </Nav.Link>
           </Nav.Item>
         </Nav>
@@ -82,7 +83,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
       case 'builds':
         return <Builds />;
       case 'settings':
-        return <span>settings placeholder</span>;
+        return <ProjectSettingsMain project={p} />;
       default:
         return <ProjectMain />;
     }
