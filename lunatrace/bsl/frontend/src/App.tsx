@@ -17,6 +17,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Provider as StoreProvider } from 'react-redux';
 import { useRoutes } from 'react-router-dom';
 
+import { LoadSession } from './components/auth/LoadSession';
 import { LayoutProvider } from './contexts/LayoutContext';
 import { SidebarProvider } from './contexts/SidebarContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -32,18 +33,20 @@ function App() {
         defaultTitle="LunaTrace - Dependency Analysis and Live Tracking"
       />
       <StoreProvider store={store}>
-        <ThemeProvider>
-          <SidebarProvider>
-            <LayoutProvider>
-              {/*<ChartJsDefaults />*/}
+        <LoadSession>
+          <ThemeProvider>
+            <SidebarProvider>
+              <LayoutProvider>
+                {/*<ChartJsDefaults />*/}
 
-              {/*<AuthProvider>*/}
-              {/*</AuthProvider>*/}
+                {/*<AuthProvider>*/}
+                {/*</AuthProvider>*/}
 
-              {content}
-            </LayoutProvider>
-          </SidebarProvider>
-        </ThemeProvider>
+                {content}
+              </LayoutProvider>
+            </SidebarProvider>
+          </ThemeProvider>
+        </LoadSession>
       </StoreProvider>
     </HelmetProvider>
   );
