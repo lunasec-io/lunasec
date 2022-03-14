@@ -47,7 +47,7 @@ export const ProjectTokens: React.FC<ProjectTokensProps> = ({ project }) => {
               <Accordion.Header>More info and examples</Accordion.Header>
               <Accordion.Body>
                 These tokens are designed to be embedded in a build job, and do not expire. Anyone with this secret can
-                create builds of your project, so keep it secret and do not commit it. Project Secrets can only be
+                create builds of your project to LunaTrace, so keep it secret and do not commit it. Project Secrets can only be
                 copied at the time of creation. If you lose the key, you must create a new one. Project secrets are
                 passed to the LunaTrace CLI as an environment variable.
                 <CopyBlock
@@ -60,10 +60,10 @@ export const ProjectTokens: React.FC<ProjectTokensProps> = ({ project }) => {
                 />
                 If the project is linked to a repo in GitHub, LunaTrace will attempt to clone the repo and automatically
                 perform a scan, which would make it unnecessary to create a token and call the CLI manually, as shown
-                above. However, in many cases we will wish to scan a specific artifact such as a zip, jarfile,
-                container, or manifest file that is not committed to git. This is especially useful for languages which
+                above. However, in many cases you may wish to scan a specific artifact such as a zip, jarfile,
+                container, or manifest file that is not committed to Git. This is especially useful for languages which
                 do not have complete manifest files and need to be scanned after compilation, such as Java, and in cases
-                where we want to scan a docker container.
+                where we want to scan a Docker container.
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
