@@ -2,8 +2,9 @@
   "name": "lunatrace-backend",
   "license": "BSL-LunaTrace",
   "scripts": {
-    "start": "tsc && concurrently \"tsc -w\" \"nodemon build/server.js\"",
+    "start": "tsc && concurrently 'yarn dev:graphql:watch' \"tsc -w\" \"nodemon build/server.js\"",
     "start:sqs-listener": "tsc && concurrently \"tsc -w\" \"nodemon build/sqs/read-queue.js\"",
+    "prod:sqs-listener": "node build/sqs/read-queue.js",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
     "test:scan:upload": "yarn run ts-node --files ./src/tests/upload-scan.ts",
     "test:load": "yarn run ts-node --files ./src/tests/local-load-vulnerabilities-test.ts",
@@ -13,6 +14,7 @@
     "start:prod": "pm2-runtime start ./build/server.js --name demo-back-end",
     "generate:schema": "gq http://localhost:8080/v1/graphql -H \"X-Hasura-Admin-Secret: myadminsecretkey\" --introspect > schema.graphql",
     "generate:hasura-calls": "yarn run generate:schema && graphql-codegen --config codegen.yml",
+    "dev:graphql:watch": "yarn run generate:hasura-calls && watch 'yarn run generate:hasura-calls' ./src/hasura-api/graphql",
     "graphqurl": "^1.0.1",
     "compile": "tsc -p tsconfig.json",
     "compile:watch": "tsc -p tsconfig.json -w"
