@@ -29,7 +29,7 @@ export const ConfirmationDailog: React.FC<ConfirmationDialogProps> = ({ onClose,
         {body ? <Modal.Body>{body}</Modal.Body> : null}
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => onClose(true)}>
+          <Button variant="secondary" onClick={() => onClose(false)}>
             Go Back
           </Button>
           <Button variant="primary" onClick={() => onClose(true)}>
