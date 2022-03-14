@@ -30,6 +30,8 @@ export function NodeInputButton<T>({ node, attributes, setValue, disabled, dispa
     }
   };
 
+  console.log('input button attributes are ', attributes);
+
   return (
     <>
       <Button

@@ -62,9 +62,6 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: (objec
 
     const data: ReceiveMessageCommandOutput = await sqsClient.send(new ReceiveMessageCommand(params));
     if (data.Messages) {
-      console.log('got data from queue');
-      console.log(data);
-
       await Promise.all(
         data.Messages.map(async (message) => {
           if (!message.Body) {
