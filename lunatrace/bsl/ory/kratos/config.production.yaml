@@ -28,10 +28,10 @@ selfservice:
 
     logout:
       after:
-        default_browser_return_url: https://lunatrace.lunasec.io/account/login
+        default_browser_return_url: https://lunatrace.lunasec.io
 
     login:
-      ui_url: https://lunatrace.lunasec.io/account/login
+      ui_url: https://lunatrace.lunasec.io
 
     registration:
       ui_url: https://lunatrace.lunasec.io/account/register

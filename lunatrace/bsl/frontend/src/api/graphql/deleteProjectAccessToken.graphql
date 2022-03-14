@@ -1,0 +1,5 @@
+mutation DeleteProjectAccessToken($id: uuid!) {
+    delete_project_access_tokens_by_pk(id: $id){
+        id
+    }
+}
