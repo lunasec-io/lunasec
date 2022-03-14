@@ -12,24 +12,19 @@
  *
  */
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
 
 import { ProjectInfo } from '../types';
 
-import { ManifestDrop } from './ManifestDrop';
+import { ProjectTokens } from './Tokens';
 
-interface ProjectDashboardMainProps {
+interface ProjectSettingsProps {
   project: ProjectInfo;
 }
-
-export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project }) => {
-  console.log('rendering main dashboard');
-  const { project_id } = useParams();
-  if (!project_id) return null;
-
+export const ProjectSettingsMain: React.FC<ProjectSettingsProps> = ({ project }) => {
   return (
-    <>
-      <ManifestDrop project_id={project_id} />
-    </>
+    <Container>
+      <ProjectTokens project={project} />
+    </Container>
   );
 };

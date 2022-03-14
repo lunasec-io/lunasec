@@ -90,17 +90,30 @@ const VulnBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponent
   return <span>{vuln.name}</span>;
 };
 
+const OrganizationBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
+  const { data } = api.useGetSidebarInfoQuery();
+  if (!data) {
+    return null;
+  }
+  const filteredOrg = data.organizations.find((o) => o.id === crumbProps.match.params.project_id);
+  if (!filteredOrg) {
+    console.error('breadcrumb couldnt find org');
+    return null;
+  }
+  return <span>{filteredOrg.name}</span>;
+};
 export const NavbarBreadcrumbs: React.FunctionComponent = () => {
   // These custom breadcrumbs override the defaults from the library
   const customRoutes: BreadcrumbsRoute[] = [
     { path: '/project/:project_id', breadcrumb: ProjectBreadCrumb },
     { path: '/project/:project_id/build/:build_id', breadcrumb: BuildBreadCrumb },
     { path: '/vulnerabilities/:vulnerability_id', breadcrumb: VulnBreadCrumb },
+    { path: 'organization/:project_id', breadcrumb: OrganizationBreadCrumb },
   ];
   const breadCrumbs = useBreadCrumbs(customRoutes);
 
   // Really wanted to use micromatch for this but it doesnt work in the browser, so it's regexp :(
-  const blackList = ['/project$', '/project/.*/build$'];
+  const blackList = ['/project$', '/project/.*/build$', '/organization$'];
 
   return (
     <Breadcrumb className="breadcrumb-navigation">
@@ -108,6 +121,7 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
         const isBanned = blackList.some((banned) => {
           return crumbMeta.match.pathname.match(new RegExp(banned));
         });
+
         if (isBanned) return;
 
         return (

@@ -14,17 +14,21 @@
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 
-import { ProjectInfo } from './types';
-
 export interface ProjectHeaderProps {
   projectName: string;
+  organizationName?: string;
 }
-export const ProjectHeader: React.FunctionComponent<ProjectHeaderProps> = ({ projectName }) => {
+export const ProjectHeader: React.FunctionComponent<ProjectHeaderProps> = ({ projectName, organizationName }) => {
   return (
     <Row>
       <Col xs="12" style={{ textAlign: 'center' }}>
         <h1>{projectName}</h1>
       </Col>
+      {organizationName ? (
+        <Col xs="12" style={{ textAlign: 'center' }}>
+          <h5 className="darker">{organizationName}</h5>
+        </Col>
+      ) : null}
     </Row>
   );
 };

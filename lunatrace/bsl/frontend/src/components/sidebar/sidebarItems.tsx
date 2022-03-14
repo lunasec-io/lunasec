@@ -47,7 +47,7 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
           // badge: data.organizations.length.toString(),
           children: data.organizations.map((o) => {
             return {
-              href: `/project/${o.id as string}`,
+              href: `/organization/${o.id as string}`,
               title: o.name,
             };
           }),

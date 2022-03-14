@@ -1,3 +1,21 @@
 table:
   name: identities
   schema: public
+array_relationships:
+- name: organization_users
+  using:
+    foreign_key_constraint_on:
+      column: user_id
+      table:
+        name: organization_user
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - traits
+    filter:
+      organization_users:
+        user:
+          id:
+            _eq: X-Hasura-User-Id
+  role: user
