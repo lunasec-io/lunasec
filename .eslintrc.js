@@ -116,7 +116,7 @@ module.exports = {
     ],
     'react-hooks/exhaustive-deps': 'off',
     'prettier/prettier': [
-      productionError,
+      productionWarn,
       {
         singleQuote: true,
         printWidth: 120
