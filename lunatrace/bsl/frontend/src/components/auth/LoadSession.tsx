@@ -38,8 +38,6 @@ export const LoadSession: React.FC = (props) => {
             break;
           case 401:
             dispatch(setConfirmedUnauthenticated(true));
-
-            // do nothing, the user is not logged in
             break;
           default:
             // Something else happened!
