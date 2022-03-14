@@ -39,10 +39,10 @@ export const TokenItem: React.FC<{ token: ProjectInfo['project_access_tokens'][n
         </Col>
         <Col>
           {/* flexbox wouldn't work but float worked*/}
-          <Button variant="danger" className="float-sm-end" onClick={() => setShowConfirmation(true)}>
+          <Button variant="secondary" className="float-sm-end" onClick={() => setShowConfirmation(true)}>
             Delete
             {deleteResult.isLoading ? (
-              <Spinner className="me-2" as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
             ) : (
               <XCircle size={18} className="align-middle ms-2" />
             )}
