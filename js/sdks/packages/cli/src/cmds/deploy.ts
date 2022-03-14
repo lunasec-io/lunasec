@@ -95,7 +95,7 @@ function writeStackOutputsToConfig(output: string, local: boolean, stackOutputs:
 
 function getCdkCommand(options: DeployCmdOptions) {
   if (options.local) {
-    return 'yarn dlx aws-cdk-local';
+    return 'yarn dlx aws-cdk-local@1.65.8';
   }
 
   return 'cdk';
