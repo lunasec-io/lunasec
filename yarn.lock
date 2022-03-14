@@ -27336,6 +27336,7 @@ __metadata:
     react-dom: ^17.0.2
     react-dropzone: ^12.0.4
     react-feather: ^2.0.9
+    react-github-login-button: ^1.0.1
     react-helmet-async: ^1.2.2
     react-icons: ^4.3.1
     react-perfect-scrollbar: ^1.5.8
@@ -41577,6 +41578,17 @@ __metadata:
   peerDependencies:
     react: ^16.8.6 || ^17
   checksum: 8535541c1041ba9ce02e1b6fe4425dc6857030ae2223d89fa2aa1faf82b04e542c863b267ee7ba5961d22fe3216f43241200a5807d8a8df48a96485ac8b68bf7
+  languageName: node
+  linkType: hard
+
+"react-github-login-button@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "react-github-login-button@npm:1.0.1"
+  dependencies:
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: "*"
+  checksum: 4f9f87044a1aa2adcc7675d4acd15d24222eeaa5fb643f5b7563b0ed77242f047ccdb18cfbb0f6986ed93eae6fd47293ce46cf79cc2f0b5dda066cc24688f305
   languageName: node
   linkType: hard
 
