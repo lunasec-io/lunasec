@@ -25,7 +25,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import useAppDispatch from '../hooks/useAppDispatch';
 import useAppSelector from '../hooks/useAppSelector';
-import { selectIsAuthenticated, setSession } from '../store/slices/authentication';
+import { selectIsAuthenticated, setConfirmedUnauthenticated, setSession } from '../store/slices/authentication';
 import ory from '../utils/sdk';
 
 const MainLayout: React.FunctionComponent = (props) => {
@@ -48,6 +48,8 @@ const MainLayout: React.FunctionComponent = (props) => {
             console.error('second factor not completed');
             break;
           case 401:
+            dispatch(setConfirmedUnauthenticated(true));
+
             // do nothing, the user is not logged in
             break;
           default:
