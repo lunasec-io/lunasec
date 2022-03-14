@@ -97,11 +97,11 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
         case 'sbom-generated':
           setUploadStatus('Package inventory complete, waiting for vulnerabilities scan to begin');
           break;
-        case 'scaning':
+        case 'scanning':
           setUploadStatus('Vulnerability scan started, you will be redirected when complete...');
           break;
         case 'scanned':
-          navigate(`/build/${manifestQuery.currentData.manifests_by_pk.build_id}`);
+          navigate(`./build/${manifestQuery.currentData.manifests_by_pk.build_id}`);
           break;
         case 'error':
           dispatch(add({ message: `Error processing manifest: ${manifestQuery.currentData.manifests_by_pk.message}` }));
@@ -146,8 +146,9 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     return (
       <span>
         <FilePlus />
-        Click here or drop-and-drop a manifest file or bundled project to manually submit a build. (ex:
-        package-lock.json, my-project.jar, my-project.zip)
+        Click here or drop-and-drop a manifest file or bundled project to manually submit a build.
+        <br />
+        (ex: package-lock.json, my-project.jar, my-project.zip)
       </span>
     );
   };
@@ -169,7 +170,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
       <Card.Body>
         <input {...getInputProps()} />
 
-        <Row className="justify-content-center">
+        <Row className="justify-content-center text-center">
           {uploadInProgress ? renderUploadStatus() : <Col xs="auto">{renderDropPrompt()}</Col>}
         </Row>
       </Card.Body>
