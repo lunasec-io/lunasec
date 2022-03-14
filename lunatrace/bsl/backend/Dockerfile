@@ -1,4 +1,4 @@
-FROM node:16-slim
+FROM node:16-slim as lunatrace-backend-base
 
 RUN apt update
 RUN apt install -y wget
@@ -18,4 +18,8 @@ RUN yarn run compile
 
 ENV PORT 80
 
+FROM lunatrace-backend-base as backend-express-server
 ENTRYPOINT ["yarn", "start:prod"]
+
+FROM lunatrace-backend-base as backend-queue-processor
+ENTRYPOINT ["yarn","start:sqs-listener"]
