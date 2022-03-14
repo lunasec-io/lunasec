@@ -16,6 +16,7 @@ import { Accordion, Button, Col, ListGroup, Row } from 'react-bootstrap';
 import { CopyBlock, dracula } from 'react-code-blocks';
 import { Plus } from 'react-feather';
 
+import { ConditionallyRender } from '../../../../components/utils/ConditionallyRender';
 import { ProjectInfo } from '../../types';
 
 import { CreateTokenForm } from './TokenForm';
@@ -75,7 +76,7 @@ export const ProjectTokens: React.FC<ProjectTokensProps> = ({ project }) => {
           {formOpen ? <CreateTokenForm project={project} setFormOpen={setFormOpen} /> : null}
         </ListGroup>
       </Row>
-      {formOpen ? null : (
+      <ConditionallyRender if={!formOpen}>
         <Row className="justify-content-sm-center">
           <Col className="text-right" sm="3">
             <Button variant="success" className="m-2" onClick={() => setFormOpen(true)}>
@@ -84,7 +85,7 @@ export const ProjectTokens: React.FC<ProjectTokensProps> = ({ project }) => {
             </Button>
           </Col>
         </Row>
-      )}
+      </ConditionallyRender>
       <hr />
     </>
   );

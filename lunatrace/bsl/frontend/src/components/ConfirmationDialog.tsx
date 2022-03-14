@@ -14,6 +14,8 @@
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
+import { ConditionallyRender } from './utils/ConditionallyRender';
+
 interface ConfirmationDialogProps {
   onClose: (success: boolean) => void;
   show: boolean;
@@ -23,20 +25,23 @@ interface ConfirmationDialogProps {
 
 export const ConfirmationDailog: React.FC<ConfirmationDialogProps> = ({ onClose, show, title, body }) => {
   return (
-    <>
-      <Modal show={show} onHide={() => onClose(false)}>
-        <Modal.Header closeButton>{title ? <Modal.Title>{title}</Modal.Title> : null}</Modal.Header>
-        {body ? <Modal.Body>{body}</Modal.Body> : null}
-
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => onClose(false)}>
-            Go Back
-          </Button>
-          <Button variant="primary" onClick={() => onClose(true)}>
-            Continue
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+    <Modal show={show} onHide={() => onClose(false)}>
+      <Modal.Header closeButton>
+        <ConditionallyRender if={title}>
+          <Modal.Title>{title}</Modal.Title>
+        </ConditionallyRender>
+      </Modal.Header>
+      <ConditionallyRender if={body}>
+        <Modal.Body>{body}</Modal.Body>
+      </ConditionallyRender>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => onClose(false)}>
+          Go Back
+        </Button>
+        <Button variant="primary" onClick={() => onClose(true)}>
+          Continue
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
