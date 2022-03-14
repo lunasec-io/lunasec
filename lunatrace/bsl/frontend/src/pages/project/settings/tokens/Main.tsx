@@ -44,12 +44,12 @@ export const ProjectTokens: React.FC<ProjectTokensProps> = ({ project }) => {
         <Col>
           <Accordion flush={true}>
             <Accordion.Item eventKey="0">
-              <Accordion.Header>More info and examples</Accordion.Header>
+              <Accordion.Header className="secret-more-info-accordion-header">More info and examples</Accordion.Header>
               <Accordion.Body>
                 These tokens are designed to be embedded in a build job, and do not expire. Anyone with this secret can
-                create builds of your project to LunaTrace, so keep it secret and do not commit it. Project Secrets can only be
-                copied at the time of creation. If you lose the key, you must create a new one. Project secrets are
-                passed to the LunaTrace CLI as an environment variable.
+                create builds of your project to LunaTrace, so keep it secret and do not commit it. Project Secrets can
+                only be copied at the time of creation. If you lose the key, you must create a new one. Project secrets
+                are passed to the LunaTrace CLI as an environment variable.
                 <CopyBlock
                   text={'LUNATRACE_PROJECT_SECRET=<YOUR SECRET> lunatrace inventory create <YOUR ARTIFACT>'}
                   language="bash"
