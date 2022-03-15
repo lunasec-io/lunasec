@@ -69,7 +69,7 @@ func getRepoHead(repo *git.Repository) (branchName, branchHash string, err error
 		return
 	}
 
-	branchName = head.Name().String()
+	branchName = head.Name().Short()
 	branchHash = head.Hash().String()
 	return
 }

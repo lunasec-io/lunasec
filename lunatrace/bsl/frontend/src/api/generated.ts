@@ -6074,6 +6074,7 @@ export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
   namespace?: InputMaybe<String_Comparison_Exp>;
   order_by?: InputMaybe<Array<Vulnerabilities_Order_By> | Vulnerabilities_Order_By>;
+  limit: Scalars['Int'];
 }>;
 
 
@@ -6298,11 +6299,11 @@ export const GetSidebarInfoDocument = `
 }
     `;
 export const SearchVulnerabilitiesDocument = `
-    query SearchVulnerabilities($search: String!, $namespace: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerabilities_order_by!] = {}) {
+    query SearchVulnerabilities($search: String!, $namespace: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerabilities_order_by!] = {}, $limit: Int!) {
   vulnerabilities(
     where: {_or: [{name: {_ilike: $search}}, {description: {_ilike: $search}}, {vulnerability_packages: {name: {_ilike: $search}}}], namespace: $namespace}
     order_by: $order_by
-    limit: 30
+    limit: $limit
   ) {
     id
     namespace

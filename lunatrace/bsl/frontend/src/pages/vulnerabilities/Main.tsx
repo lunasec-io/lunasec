@@ -13,6 +13,7 @@
  */
 import React, { useState } from 'react';
 import { Container } from 'react-bootstrap';
+import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 import { Helmet } from 'react-helmet-async';
 
 import api from '../../api';
@@ -24,7 +25,7 @@ import { Order } from './types';
 
 export const VulnerabilitiesMain: React.FunctionComponent = () => {
   const [searchString, setSearchString] = useState('');
-
+  const [vulnLimit, setVulnLimit] = useState(20);
   const submitSearch = (search: string) => {
     setSearchString(search);
   };
@@ -49,11 +50,26 @@ export const VulnerabilitiesMain: React.FunctionComponent = () => {
   const [orderBy, setOrderBy] = useState<Order>('none');
 
   // RUN SEARCH QUERY
-  const { data, error, isFetching } = api.useSearchVulnerabilitiesQuery({
+  const { data, isFetching, refetch } = api.useSearchVulnerabilitiesQuery({
     search: postgresSearch,
     namespace: postgresFilter,
     order_by: postgresOrderMap[orderBy],
+    limit: vulnLimit,
   });
+
+  // lazy loading. Reloads all the old vulns when expanding the batch size but..it works fine
+  useBottomScrollListener(
+    () => {
+      if (data && data.vulnerabilities) {
+        const vulnCount = data.vulnerabilities.length;
+        if (vulnCount === vulnLimit) {
+          setVulnLimit(vulnLimit + 20);
+          refetch();
+        }
+      }
+    },
+    { offset: 200 }
+  );
 
   return (
     <>
