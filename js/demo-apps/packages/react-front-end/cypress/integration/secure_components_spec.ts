@@ -80,6 +80,9 @@ function runDedicatedModeTests(mode: string) {
     });
 
     it('signs up', () => {
+
+      cy.wait(5000);
+
       cy.get('a').contains('Signup').click();
       cy.get('input[id=username]').type(`${mode}-${randomUserName}`); // Use a random username to avoid DB collisions
 

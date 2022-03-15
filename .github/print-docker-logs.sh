@@ -20,8 +20,7 @@ echo "# Node version info"
 node --version
 npm --version
 yarn --version
-npx yarn --version
-npx lerna --version
+yarn run lerna --version
 
 docker_container() {
   docker ps | grep $1 | awk '{print $1}'
