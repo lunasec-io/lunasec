@@ -32,12 +32,17 @@ if (!githubAppIdRaw || typeof githubAppIdRaw !== 'string') {
 
 const githubAppId = parseInt(githubAppIdRaw, 10);
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export async function pullDataForInstallation(installationId: number) {
-  const auth = createAppAuth({
+export function getGithubAppAuth(clientInfo?: { clientId: string; clientSecret: string }) {
+  return createAppAuth({
     appId: githubAppId,
     privateKey: githubPrivateKey,
+    ...clientInfo,
   });
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export async function pullDataForInstallation(installationId: number) {
+  const auth = getGithubAppAuth();
 
   // Retrieve installation access token
   const installationAuthentication = await auth({

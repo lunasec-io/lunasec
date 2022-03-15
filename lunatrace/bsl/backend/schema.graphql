@@ -756,10 +756,10 @@ unique or primary key constraints on table "findings"
 """
 enum findings_constraint {
   """unique or primary key constraint"""
-  findings_pkey
+  findings_dedupe_slug_build_id_key
 
   """unique or primary key constraint"""
-  temp_dedupe_fix
+  findings_pkey
 }
 
 """
@@ -1118,11 +1118,411 @@ input fix_state_enum_comparison_exp {
 }
 
 """
+Metadata about a github repository and where to find it.
+
+
+columns and relationships of "github_repositories"
+
+"""
+type github_repositories {
+  api_response(
+    """JSON select path"""
+    path: String
+  ): jsonb!
+  git_url: String!
+  github_id: Int!
+  id: uuid!
+
+  """An object relationship"""
+  project: projects!
+  project_id: uuid!
+}
+
+"""
+aggregated selection of "github_repositories"
+"""
+type github_repositories_aggregate {
+  aggregate: github_repositories_aggregate_fields
+  nodes: [github_repositories!]!
+}
+
+"""
+aggregate fields of "github_repositories"
+"""
+type github_repositories_aggregate_fields {
+  avg: github_repositories_avg_fields
+  count(columns: [github_repositories_select_column!], distinct: Boolean): Int!
+  max: github_repositories_max_fields
+  min: github_repositories_min_fields
+  stddev: github_repositories_stddev_fields
+  stddev_pop: github_repositories_stddev_pop_fields
+  stddev_samp: github_repositories_stddev_samp_fields
+  sum: github_repositories_sum_fields
+  var_pop: github_repositories_var_pop_fields
+  var_samp: github_repositories_var_samp_fields
+  variance: github_repositories_variance_fields
+}
+
+"""
+order by aggregate values of table "github_repositories"
+"""
+input github_repositories_aggregate_order_by {
+  avg: github_repositories_avg_order_by
+  count: order_by
+  max: github_repositories_max_order_by
+  min: github_repositories_min_order_by
+  stddev: github_repositories_stddev_order_by
+  stddev_pop: github_repositories_stddev_pop_order_by
+  stddev_samp: github_repositories_stddev_samp_order_by
+  sum: github_repositories_sum_order_by
+  var_pop: github_repositories_var_pop_order_by
+  var_samp: github_repositories_var_samp_order_by
+  variance: github_repositories_variance_order_by
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input github_repositories_append_input {
+  api_response: jsonb
+}
+
+"""
+input type for inserting array relation for remote table "github_repositories"
+"""
+input github_repositories_arr_rel_insert_input {
+  data: [github_repositories_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: github_repositories_on_conflict
+}
+
+"""aggregate avg on columns"""
+type github_repositories_avg_fields {
+  github_id: Float
+}
+
+"""
+order by avg() on columns of table "github_repositories"
+"""
+input github_repositories_avg_order_by {
+  github_id: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "github_repositories". All fields are combined with a logical 'AND'.
+"""
+input github_repositories_bool_exp {
+  _and: [github_repositories_bool_exp!]
+  _not: github_repositories_bool_exp
+  _or: [github_repositories_bool_exp!]
+  api_response: jsonb_comparison_exp
+  git_url: String_comparison_exp
+  github_id: Int_comparison_exp
+  id: uuid_comparison_exp
+  project: projects_bool_exp
+  project_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "github_repositories"
+"""
+enum github_repositories_constraint {
+  """unique or primary key constraint"""
+  github_repository_pkey
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input github_repositories_delete_at_path_input {
+  api_response: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input github_repositories_delete_elem_input {
+  api_response: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input github_repositories_delete_key_input {
+  api_response: String
+}
+
+"""
+input type for incrementing numeric columns in table "github_repositories"
+"""
+input github_repositories_inc_input {
+  github_id: Int
+}
+
+"""
+input type for inserting data into table "github_repositories"
+"""
+input github_repositories_insert_input {
+  api_response: jsonb
+  git_url: String
+  github_id: Int
+  id: uuid
+  project: projects_obj_rel_insert_input
+  project_id: uuid
+}
+
+"""aggregate max on columns"""
+type github_repositories_max_fields {
+  git_url: String
+  github_id: Int
+  id: uuid
+  project_id: uuid
+}
+
+"""
+order by max() on columns of table "github_repositories"
+"""
+input github_repositories_max_order_by {
+  git_url: order_by
+  github_id: order_by
+  id: order_by
+  project_id: order_by
+}
+
+"""aggregate min on columns"""
+type github_repositories_min_fields {
+  git_url: String
+  github_id: Int
+  id: uuid
+  project_id: uuid
+}
+
+"""
+order by min() on columns of table "github_repositories"
+"""
+input github_repositories_min_order_by {
+  git_url: order_by
+  github_id: order_by
+  id: order_by
+  project_id: order_by
+}
+
+"""
+response of any mutation on the table "github_repositories"
+"""
+type github_repositories_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [github_repositories!]!
+}
+
+"""
+on_conflict condition type for table "github_repositories"
+"""
+input github_repositories_on_conflict {
+  constraint: github_repositories_constraint!
+  update_columns: [github_repositories_update_column!]! = []
+  where: github_repositories_bool_exp
+}
+
+"""Ordering options when selecting data from "github_repositories"."""
+input github_repositories_order_by {
+  api_response: order_by
+  git_url: order_by
+  github_id: order_by
+  id: order_by
+  project: projects_order_by
+  project_id: order_by
+}
+
+"""primary key columns input for table: github_repositories"""
+input github_repositories_pk_columns_input {
+  id: uuid!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input github_repositories_prepend_input {
+  api_response: jsonb
+}
+
+"""
+select columns of table "github_repositories"
+"""
+enum github_repositories_select_column {
+  """column name"""
+  api_response
+
+  """column name"""
+  git_url
+
+  """column name"""
+  github_id
+
+  """column name"""
+  id
+
+  """column name"""
+  project_id
+}
+
+"""
+input type for updating data in table "github_repositories"
+"""
+input github_repositories_set_input {
+  api_response: jsonb
+  git_url: String
+  github_id: Int
+  id: uuid
+  project_id: uuid
+}
+
+"""aggregate stddev on columns"""
+type github_repositories_stddev_fields {
+  github_id: Float
+}
+
+"""
+order by stddev() on columns of table "github_repositories"
+"""
+input github_repositories_stddev_order_by {
+  github_id: order_by
+}
+
+"""aggregate stddev_pop on columns"""
+type github_repositories_stddev_pop_fields {
+  github_id: Float
+}
+
+"""
+order by stddev_pop() on columns of table "github_repositories"
+"""
+input github_repositories_stddev_pop_order_by {
+  github_id: order_by
+}
+
+"""aggregate stddev_samp on columns"""
+type github_repositories_stddev_samp_fields {
+  github_id: Float
+}
+
+"""
+order by stddev_samp() on columns of table "github_repositories"
+"""
+input github_repositories_stddev_samp_order_by {
+  github_id: order_by
+}
+
+"""aggregate sum on columns"""
+type github_repositories_sum_fields {
+  github_id: Int
+}
+
+"""
+order by sum() on columns of table "github_repositories"
+"""
+input github_repositories_sum_order_by {
+  github_id: order_by
+}
+
+"""
+update columns of table "github_repositories"
+"""
+enum github_repositories_update_column {
+  """column name"""
+  api_response
+
+  """column name"""
+  git_url
+
+  """column name"""
+  github_id
+
+  """column name"""
+  id
+
+  """column name"""
+  project_id
+}
+
+"""aggregate var_pop on columns"""
+type github_repositories_var_pop_fields {
+  github_id: Float
+}
+
+"""
+order by var_pop() on columns of table "github_repositories"
+"""
+input github_repositories_var_pop_order_by {
+  github_id: order_by
+}
+
+"""aggregate var_samp on columns"""
+type github_repositories_var_samp_fields {
+  github_id: Float
+}
+
+"""
+order by var_samp() on columns of table "github_repositories"
+"""
+input github_repositories_var_samp_order_by {
+  github_id: order_by
+}
+
+"""aggregate variance on columns"""
+type github_repositories_variance_fields {
+  github_id: Float
+}
+
+"""
+order by variance() on columns of table "github_repositories"
+"""
+input github_repositories_variance_order_by {
+  github_id: order_by
+}
+
+"""
 columns and relationships of "identities"
 """
 type identities {
   created_at: timestamp!
   id: uuid!
+
+  """An array relationship"""
+  identity_verifiable_addresses(
+    """distinct select on columns"""
+    distinct_on: [identity_verifiable_addresses_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_verifiable_addresses_order_by!]
+
+    """filter the rows returned"""
+    where: identity_verifiable_addresses_bool_exp
+  ): [identity_verifiable_addresses!]!
+
+  """An aggregate relationship"""
+  identity_verifiable_addresses_aggregate(
+    """distinct select on columns"""
+    distinct_on: [identity_verifiable_addresses_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_verifiable_addresses_order_by!]
+
+    """filter the rows returned"""
+    where: identity_verifiable_addresses_bool_exp
+  ): identity_verifiable_addresses_aggregate!
   nid: uuid
   schema_id: String!
   state: String!
@@ -1165,6 +1565,7 @@ input identities_bool_exp {
   _or: [identities_bool_exp!]
   created_at: timestamp_comparison_exp
   id: uuid_comparison_exp
+  identity_verifiable_addresses: identity_verifiable_addresses_bool_exp
   nid: uuid_comparison_exp
   schema_id: String_comparison_exp
   state: String_comparison_exp
@@ -1208,6 +1609,7 @@ input type for inserting data into table "identities"
 input identities_insert_input {
   created_at: timestamp
   id: uuid
+  identity_verifiable_addresses: identity_verifiable_addresses_arr_rel_insert_input
   nid: uuid
   schema_id: String
   state: String
@@ -1272,6 +1674,7 @@ input identities_on_conflict {
 input identities_order_by {
   created_at: order_by
   id: order_by
+  identity_verifiable_addresses_aggregate: identity_verifiable_addresses_aggregate_order_by
   nid: order_by
   schema_id: order_by
   state: order_by
@@ -1360,6 +1763,293 @@ enum identities_update_column {
 
   """column name"""
   updated_at
+}
+
+"""
+columns and relationships of "identity_verifiable_addresses"
+"""
+type identity_verifiable_addresses {
+  created_at: timestamp!
+  id: uuid!
+
+  """An object relationship"""
+  identity: identities!
+  identity_id: uuid!
+  nid: uuid
+  status: String!
+  updated_at: timestamp!
+  value: String!
+  verified: Boolean!
+  verified_at: timestamp
+  via: String!
+}
+
+"""
+aggregated selection of "identity_verifiable_addresses"
+"""
+type identity_verifiable_addresses_aggregate {
+  aggregate: identity_verifiable_addresses_aggregate_fields
+  nodes: [identity_verifiable_addresses!]!
+}
+
+"""
+aggregate fields of "identity_verifiable_addresses"
+"""
+type identity_verifiable_addresses_aggregate_fields {
+  count(columns: [identity_verifiable_addresses_select_column!], distinct: Boolean): Int!
+  max: identity_verifiable_addresses_max_fields
+  min: identity_verifiable_addresses_min_fields
+}
+
+"""
+order by aggregate values of table "identity_verifiable_addresses"
+"""
+input identity_verifiable_addresses_aggregate_order_by {
+  count: order_by
+  max: identity_verifiable_addresses_max_order_by
+  min: identity_verifiable_addresses_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "identity_verifiable_addresses"
+"""
+input identity_verifiable_addresses_arr_rel_insert_input {
+  data: [identity_verifiable_addresses_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: identity_verifiable_addresses_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "identity_verifiable_addresses". All fields are combined with a logical 'AND'.
+"""
+input identity_verifiable_addresses_bool_exp {
+  _and: [identity_verifiable_addresses_bool_exp!]
+  _not: identity_verifiable_addresses_bool_exp
+  _or: [identity_verifiable_addresses_bool_exp!]
+  created_at: timestamp_comparison_exp
+  id: uuid_comparison_exp
+  identity: identities_bool_exp
+  identity_id: uuid_comparison_exp
+  nid: uuid_comparison_exp
+  status: String_comparison_exp
+  updated_at: timestamp_comparison_exp
+  value: String_comparison_exp
+  verified: Boolean_comparison_exp
+  verified_at: timestamp_comparison_exp
+  via: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "identity_verifiable_addresses"
+"""
+enum identity_verifiable_addresses_constraint {
+  """unique or primary key constraint"""
+  identity_verifiable_addresses_pkey
+
+  """unique or primary key constraint"""
+  identity_verifiable_addresses_status_via_uq_idx
+}
+
+"""
+input type for inserting data into table "identity_verifiable_addresses"
+"""
+input identity_verifiable_addresses_insert_input {
+  created_at: timestamp
+  id: uuid
+  identity: identities_obj_rel_insert_input
+  identity_id: uuid
+  nid: uuid
+  status: String
+  updated_at: timestamp
+  value: String
+  verified: Boolean
+  verified_at: timestamp
+  via: String
+}
+
+"""aggregate max on columns"""
+type identity_verifiable_addresses_max_fields {
+  created_at: timestamp
+  id: uuid
+  identity_id: uuid
+  nid: uuid
+  status: String
+  updated_at: timestamp
+  value: String
+  verified_at: timestamp
+  via: String
+}
+
+"""
+order by max() on columns of table "identity_verifiable_addresses"
+"""
+input identity_verifiable_addresses_max_order_by {
+  created_at: order_by
+  id: order_by
+  identity_id: order_by
+  nid: order_by
+  status: order_by
+  updated_at: order_by
+  value: order_by
+  verified_at: order_by
+  via: order_by
+}
+
+"""aggregate min on columns"""
+type identity_verifiable_addresses_min_fields {
+  created_at: timestamp
+  id: uuid
+  identity_id: uuid
+  nid: uuid
+  status: String
+  updated_at: timestamp
+  value: String
+  verified_at: timestamp
+  via: String
+}
+
+"""
+order by min() on columns of table "identity_verifiable_addresses"
+"""
+input identity_verifiable_addresses_min_order_by {
+  created_at: order_by
+  id: order_by
+  identity_id: order_by
+  nid: order_by
+  status: order_by
+  updated_at: order_by
+  value: order_by
+  verified_at: order_by
+  via: order_by
+}
+
+"""
+response of any mutation on the table "identity_verifiable_addresses"
+"""
+type identity_verifiable_addresses_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [identity_verifiable_addresses!]!
+}
+
+"""
+on_conflict condition type for table "identity_verifiable_addresses"
+"""
+input identity_verifiable_addresses_on_conflict {
+  constraint: identity_verifiable_addresses_constraint!
+  update_columns: [identity_verifiable_addresses_update_column!]! = []
+  where: identity_verifiable_addresses_bool_exp
+}
+
+"""
+Ordering options when selecting data from "identity_verifiable_addresses".
+"""
+input identity_verifiable_addresses_order_by {
+  created_at: order_by
+  id: order_by
+  identity: identities_order_by
+  identity_id: order_by
+  nid: order_by
+  status: order_by
+  updated_at: order_by
+  value: order_by
+  verified: order_by
+  verified_at: order_by
+  via: order_by
+}
+
+"""primary key columns input for table: identity_verifiable_addresses"""
+input identity_verifiable_addresses_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "identity_verifiable_addresses"
+"""
+enum identity_verifiable_addresses_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  identity_id
+
+  """column name"""
+  nid
+
+  """column name"""
+  status
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  value
+
+  """column name"""
+  verified
+
+  """column name"""
+  verified_at
+
+  """column name"""
+  via
+}
+
+"""
+input type for updating data in table "identity_verifiable_addresses"
+"""
+input identity_verifiable_addresses_set_input {
+  created_at: timestamp
+  id: uuid
+  identity_id: uuid
+  nid: uuid
+  status: String
+  updated_at: timestamp
+  value: String
+  verified: Boolean
+  verified_at: timestamp
+  via: String
+}
+
+"""
+update columns of table "identity_verifiable_addresses"
+"""
+enum identity_verifiable_addresses_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  identity_id
+
+  """column name"""
+  nid
+
+  """column name"""
+  status
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  value
+
+  """column name"""
+  verified
+
+  """column name"""
+  verified_at
+
+  """column name"""
+  via
 }
 
 """
@@ -1858,6 +2548,19 @@ type mutation_root {
   delete_findings_by_pk(id: uuid!): findings
 
   """
+  delete data from the table: "github_repositories"
+  """
+  delete_github_repositories(
+    """filter the rows which have to be deleted"""
+    where: github_repositories_bool_exp!
+  ): github_repositories_mutation_response
+
+  """
+  delete single row from the table: "github_repositories"
+  """
+  delete_github_repositories_by_pk(id: uuid!): github_repositories
+
+  """
   delete data from the table: "identities"
   """
   delete_identities(
@@ -1869,6 +2572,19 @@ type mutation_root {
   delete single row from the table: "identities"
   """
   delete_identities_by_pk(id: uuid!): identities
+
+  """
+  delete data from the table: "identity_verifiable_addresses"
+  """
+  delete_identity_verifiable_addresses(
+    """filter the rows which have to be deleted"""
+    where: identity_verifiable_addresses_bool_exp!
+  ): identity_verifiable_addresses_mutation_response
+
+  """
+  delete single row from the table: "identity_verifiable_addresses"
+  """
+  delete_identity_verifiable_addresses_by_pk(id: uuid!): identity_verifiable_addresses
 
   """
   delete data from the table: "instances"
@@ -2071,6 +2787,28 @@ type mutation_root {
   ): findings
 
   """
+  insert data into the table: "github_repositories"
+  """
+  insert_github_repositories(
+    """the rows to be inserted"""
+    objects: [github_repositories_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: github_repositories_on_conflict
+  ): github_repositories_mutation_response
+
+  """
+  insert a single row into the table: "github_repositories"
+  """
+  insert_github_repositories_one(
+    """the row to be inserted"""
+    object: github_repositories_insert_input!
+
+    """upsert condition"""
+    on_conflict: github_repositories_on_conflict
+  ): github_repositories
+
+  """
   insert data into the table: "identities"
   """
   insert_identities(
@@ -2091,6 +2829,28 @@ type mutation_root {
     """upsert condition"""
     on_conflict: identities_on_conflict
   ): identities
+
+  """
+  insert data into the table: "identity_verifiable_addresses"
+  """
+  insert_identity_verifiable_addresses(
+    """the rows to be inserted"""
+    objects: [identity_verifiable_addresses_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: identity_verifiable_addresses_on_conflict
+  ): identity_verifiable_addresses_mutation_response
+
+  """
+  insert a single row into the table: "identity_verifiable_addresses"
+  """
+  insert_identity_verifiable_addresses_one(
+    """the row to be inserted"""
+    object: identity_verifiable_addresses_insert_input!
+
+    """upsert condition"""
+    on_conflict: identity_verifiable_addresses_on_conflict
+  ): identity_verifiable_addresses
 
   """
   insert data into the table: "instances"
@@ -2411,6 +3171,74 @@ type mutation_root {
   ): findings
 
   """
+  update data of the table: "github_repositories"
+  """
+  update_github_repositories(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: github_repositories_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: github_repositories_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: github_repositories_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: github_repositories_delete_key_input
+
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: github_repositories_inc_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: github_repositories_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: github_repositories_set_input
+
+    """filter the rows which have to be updated"""
+    where: github_repositories_bool_exp!
+  ): github_repositories_mutation_response
+
+  """
+  update single row of the table: "github_repositories"
+  """
+  update_github_repositories_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: github_repositories_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: github_repositories_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: github_repositories_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: github_repositories_delete_key_input
+
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: github_repositories_inc_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: github_repositories_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: github_repositories_set_input
+    pk_columns: github_repositories_pk_columns_input!
+  ): github_repositories
+
+  """
   update data of the table: "identities"
   """
   update_identities(
@@ -2471,6 +3299,26 @@ type mutation_root {
     _set: identities_set_input
     pk_columns: identities_pk_columns_input!
   ): identities
+
+  """
+  update data of the table: "identity_verifiable_addresses"
+  """
+  update_identity_verifiable_addresses(
+    """sets the columns of the filtered rows to the given values"""
+    _set: identity_verifiable_addresses_set_input
+
+    """filter the rows which have to be updated"""
+    where: identity_verifiable_addresses_bool_exp!
+  ): identity_verifiable_addresses_mutation_response
+
+  """
+  update single row of the table: "identity_verifiable_addresses"
+  """
+  update_identity_verifiable_addresses_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: identity_verifiable_addresses_set_input
+    pk_columns: identity_verifiable_addresses_pk_columns_input!
+  ): identity_verifiable_addresses
 
   """
   update data of the table: "instances"
@@ -2536,6 +3384,9 @@ type mutation_root {
   update data of the table: "organizations"
   """
   update_organizations(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: organizations_inc_input
+
     """sets the columns of the filtered rows to the given values"""
     _set: organizations_set_input
 
@@ -2547,6 +3398,9 @@ type mutation_root {
   update single row of the table: "organizations"
   """
   update_organizations_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: organizations_inc_input
+
     """sets the columns of the filtered rows to the given values"""
     _set: organizations_set_input
     pk_columns: organizations_pk_columns_input!
@@ -2844,6 +3698,9 @@ unique or primary key constraints on table "organization_user"
 enum organization_user_constraint {
   """unique or primary key constraint"""
   organization_user_pkey
+
+  """unique or primary key constraint"""
+  organization_user_user_id_organization_id_key
 }
 
 """
@@ -3018,7 +3875,9 @@ columns and relationships of "organizations"
 type organizations {
   createdAt: timestamp!
   creator_id: uuid
+  github_id: Int!
   id: uuid!
+  installation_id: Int!
   name: String!
 
   """An array relationship"""
@@ -3107,9 +3966,23 @@ type organizations_aggregate {
 aggregate fields of "organizations"
 """
 type organizations_aggregate_fields {
+  avg: organizations_avg_fields
   count(columns: [organizations_select_column!], distinct: Boolean): Int!
   max: organizations_max_fields
   min: organizations_min_fields
+  stddev: organizations_stddev_fields
+  stddev_pop: organizations_stddev_pop_fields
+  stddev_samp: organizations_stddev_samp_fields
+  sum: organizations_sum_fields
+  var_pop: organizations_var_pop_fields
+  var_samp: organizations_var_samp_fields
+  variance: organizations_variance_fields
+}
+
+"""aggregate avg on columns"""
+type organizations_avg_fields {
+  github_id: Float
+  installation_id: Float
 }
 
 """
@@ -3121,7 +3994,9 @@ input organizations_bool_exp {
   _or: [organizations_bool_exp!]
   createdAt: timestamp_comparison_exp
   creator_id: uuid_comparison_exp
+  github_id: Int_comparison_exp
   id: uuid_comparison_exp
+  installation_id: Int_comparison_exp
   name: String_comparison_exp
   organization_users: organization_user_bool_exp
   projects: projects_bool_exp
@@ -3137,12 +4012,22 @@ enum organizations_constraint {
 }
 
 """
+input type for incrementing numeric columns in table "organizations"
+"""
+input organizations_inc_input {
+  github_id: Int
+  installation_id: Int
+}
+
+"""
 input type for inserting data into table "organizations"
 """
 input organizations_insert_input {
   createdAt: timestamp
   creator_id: uuid
+  github_id: Int
   id: uuid
+  installation_id: Int
   name: String
   organization_users: organization_user_arr_rel_insert_input
   projects: projects_arr_rel_insert_input
@@ -3153,7 +4038,9 @@ input organizations_insert_input {
 type organizations_max_fields {
   createdAt: timestamp
   creator_id: uuid
+  github_id: Int
   id: uuid
+  installation_id: Int
   name: String
   settings_id: uuid
 }
@@ -3162,7 +4049,9 @@ type organizations_max_fields {
 type organizations_min_fields {
   createdAt: timestamp
   creator_id: uuid
+  github_id: Int
   id: uuid
+  installation_id: Int
   name: String
   settings_id: uuid
 }
@@ -3201,7 +4090,9 @@ input organizations_on_conflict {
 input organizations_order_by {
   createdAt: order_by
   creator_id: order_by
+  github_id: order_by
   id: order_by
+  installation_id: order_by
   name: order_by
   organization_users_aggregate: organization_user_aggregate_order_by
   projects_aggregate: projects_aggregate_order_by
@@ -3224,7 +4115,13 @@ enum organizations_select_column {
   creator_id
 
   """column name"""
+  github_id
+
+  """column name"""
   id
+
+  """column name"""
+  installation_id
 
   """column name"""
   name
@@ -3239,9 +4136,35 @@ input type for updating data in table "organizations"
 input organizations_set_input {
   createdAt: timestamp
   creator_id: uuid
+  github_id: Int
   id: uuid
+  installation_id: Int
   name: String
   settings_id: uuid
+}
+
+"""aggregate stddev on columns"""
+type organizations_stddev_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""aggregate stddev_pop on columns"""
+type organizations_stddev_pop_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""aggregate stddev_samp on columns"""
+type organizations_stddev_samp_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""aggregate sum on columns"""
+type organizations_sum_fields {
+  github_id: Int
+  installation_id: Int
 }
 
 """
@@ -3255,13 +4178,37 @@ enum organizations_update_column {
   creator_id
 
   """column name"""
+  github_id
+
+  """column name"""
   id
+
+  """column name"""
+  installation_id
 
   """column name"""
   name
 
   """column name"""
   settings_id
+}
+
+"""aggregate var_pop on columns"""
+type organizations_var_pop_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""aggregate var_samp on columns"""
+type organizations_var_samp_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""aggregate variance on columns"""
+type organizations_variance_fields {
+  github_id: Float
+  installation_id: Float
 }
 
 """
@@ -3788,6 +4735,44 @@ type projects {
     where: builds_bool_exp
   ): builds_aggregate!
   created_at: timestamp!
+
+  """
+  fetch data from the table: "github_repositories"
+  """
+  github_repositories(
+    """distinct select on columns"""
+    distinct_on: [github_repositories_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [github_repositories_order_by!]
+
+    """filter the rows returned"""
+    where: github_repositories_bool_exp
+  ): [github_repositories!]!
+
+  """An aggregate relationship"""
+  github_repositories_aggregate(
+    """distinct select on columns"""
+    distinct_on: [github_repositories_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [github_repositories_order_by!]
+
+    """filter the rows returned"""
+    where: github_repositories_bool_exp
+  ): github_repositories_aggregate!
   id: uuid!
 
   """An array relationship"""
@@ -3828,8 +4813,8 @@ type projects {
   name: String!
 
   """An object relationship"""
-  organization: organizations
-  organization_id: uuid
+  organization: organizations!
+  organization_id: uuid!
 
   """An array relationship"""
   project_access_tokens(
@@ -3951,6 +4936,7 @@ input projects_bool_exp {
   _or: [projects_bool_exp!]
   builds: builds_bool_exp
   created_at: timestamp_comparison_exp
+  github_repositories: github_repositories_bool_exp
   id: uuid_comparison_exp
   manifests: manifests_bool_exp
   name: String_comparison_exp
@@ -3976,6 +4962,7 @@ input type for inserting data into table "projects"
 input projects_insert_input {
   builds: builds_arr_rel_insert_input
   created_at: timestamp
+  github_repositories: github_repositories_arr_rel_insert_input
   id: uuid
   manifests: manifests_arr_rel_insert_input
   name: String
@@ -4065,6 +5052,7 @@ input projects_on_conflict {
 input projects_order_by {
   builds_aggregate: builds_aggregate_order_by
   created_at: order_by
+  github_repositories_aggregate: github_repositories_aggregate_order_by
   id: order_by
   manifests_aggregate: manifests_aggregate_order_by
   name: order_by
@@ -4219,6 +5207,49 @@ type query_root {
   findings_by_pk(id: uuid!): findings
 
   """
+  fetch data from the table: "github_repositories"
+  """
+  github_repositories(
+    """distinct select on columns"""
+    distinct_on: [github_repositories_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [github_repositories_order_by!]
+
+    """filter the rows returned"""
+    where: github_repositories_bool_exp
+  ): [github_repositories!]!
+
+  """An aggregate relationship"""
+  github_repositories_aggregate(
+    """distinct select on columns"""
+    distinct_on: [github_repositories_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [github_repositories_order_by!]
+
+    """filter the rows returned"""
+    where: github_repositories_bool_exp
+  ): github_repositories_aggregate!
+
+  """
+  fetch data from the table: "github_repositories" using primary key columns
+  """
+  github_repositories_by_pk(id: uuid!): github_repositories
+
+  """
   fetch data from the table: "identities"
   """
   identities(
@@ -4260,6 +5291,47 @@ type query_root {
 
   """fetch data from the table: "identities" using primary key columns"""
   identities_by_pk(id: uuid!): identities
+
+  """An array relationship"""
+  identity_verifiable_addresses(
+    """distinct select on columns"""
+    distinct_on: [identity_verifiable_addresses_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_verifiable_addresses_order_by!]
+
+    """filter the rows returned"""
+    where: identity_verifiable_addresses_bool_exp
+  ): [identity_verifiable_addresses!]!
+
+  """An aggregate relationship"""
+  identity_verifiable_addresses_aggregate(
+    """distinct select on columns"""
+    distinct_on: [identity_verifiable_addresses_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_verifiable_addresses_order_by!]
+
+    """filter the rows returned"""
+    where: identity_verifiable_addresses_bool_exp
+  ): identity_verifiable_addresses_aggregate!
+
+  """
+  fetch data from the table: "identity_verifiable_addresses" using primary key columns
+  """
+  identity_verifiable_addresses_by_pk(id: uuid!): identity_verifiable_addresses
 
   """
   fetch data from the table: "instances"
@@ -4719,9 +5791,7 @@ type query_root {
   """fetch data from the table: "vulnerabilities" using primary key columns"""
   vulnerabilities_by_pk(id: uuid!): vulnerabilities
 
-  """
-  fetch data from the table: "vulnerability_packages"
-  """
+  """An array relationship"""
   vulnerability_packages(
     """distinct select on columns"""
     distinct_on: [vulnerability_packages_select_column!]
@@ -5656,6 +6726,49 @@ type subscription_root {
   findings_by_pk(id: uuid!): findings
 
   """
+  fetch data from the table: "github_repositories"
+  """
+  github_repositories(
+    """distinct select on columns"""
+    distinct_on: [github_repositories_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [github_repositories_order_by!]
+
+    """filter the rows returned"""
+    where: github_repositories_bool_exp
+  ): [github_repositories!]!
+
+  """An aggregate relationship"""
+  github_repositories_aggregate(
+    """distinct select on columns"""
+    distinct_on: [github_repositories_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [github_repositories_order_by!]
+
+    """filter the rows returned"""
+    where: github_repositories_bool_exp
+  ): github_repositories_aggregate!
+
+  """
+  fetch data from the table: "github_repositories" using primary key columns
+  """
+  github_repositories_by_pk(id: uuid!): github_repositories
+
+  """
   fetch data from the table: "identities"
   """
   identities(
@@ -5697,6 +6810,47 @@ type subscription_root {
 
   """fetch data from the table: "identities" using primary key columns"""
   identities_by_pk(id: uuid!): identities
+
+  """An array relationship"""
+  identity_verifiable_addresses(
+    """distinct select on columns"""
+    distinct_on: [identity_verifiable_addresses_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_verifiable_addresses_order_by!]
+
+    """filter the rows returned"""
+    where: identity_verifiable_addresses_bool_exp
+  ): [identity_verifiable_addresses!]!
+
+  """An aggregate relationship"""
+  identity_verifiable_addresses_aggregate(
+    """distinct select on columns"""
+    distinct_on: [identity_verifiable_addresses_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_verifiable_addresses_order_by!]
+
+    """filter the rows returned"""
+    where: identity_verifiable_addresses_bool_exp
+  ): identity_verifiable_addresses_aggregate!
+
+  """
+  fetch data from the table: "identity_verifiable_addresses" using primary key columns
+  """
+  identity_verifiable_addresses_by_pk(id: uuid!): identity_verifiable_addresses
 
   """
   fetch data from the table: "instances"
@@ -6155,9 +7309,7 @@ type subscription_root {
   """fetch data from the table: "vulnerabilities" using primary key columns"""
   vulnerabilities_by_pk(id: uuid!): vulnerabilities
 
-  """
-  fetch data from the table: "vulnerability_packages"
-  """
+  """An array relationship"""
   vulnerability_packages(
     """distinct select on columns"""
     distinct_on: [vulnerability_packages_select_column!]
@@ -6379,9 +7531,7 @@ type vulnerabilities {
   topic_id: uuid
   urls: _text
 
-  """
-  fetch data from the table: "vulnerability_packages"
-  """
+  """An array relationship"""
   vulnerability_packages(
     """distinct select on columns"""
     distinct_on: [vulnerability_packages_select_column!]

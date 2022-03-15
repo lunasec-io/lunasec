@@ -16099,6 +16099,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/deepmerge@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@types/deepmerge@npm:2.2.0"
+  dependencies:
+    deepmerge: "*"
+  checksum: f68385937c649b39bcbf6be701f91293be46efb17885d4eb5b376753f661b0f90747abec5a8c2472abf8f7b8881ec15cfe5c9867bca43df6768ec3a7e835e0f0
+  languageName: node
+  linkType: hard
+
 "@types/eslint-scope@npm:^3.7.3":
   version: 3.7.3
   resolution: "@types/eslint-scope@npm:3.7.3"
@@ -25147,17 +25156,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"deepmerge@npm:*, deepmerge@npm:^4.0.0, deepmerge@npm:^4.2.2":
+  version: 4.2.2
+  resolution: "deepmerge@npm:4.2.2"
+  checksum: a8c43a1ed8d6d1ed2b5bf569fa4c8eb9f0924034baf75d5d406e47e157a451075c4db353efea7b6bcc56ec48116a8ce72fccf867b6e078e7c561904b5897530b
+  languageName: node
+  linkType: hard
+
 "deepmerge@npm:^1.5.2":
   version: 1.5.2
   resolution: "deepmerge@npm:1.5.2"
   checksum: 5ecfe328e0105f2c554b90af555cbba052ab4468f1893e3b26800cb8869d3c1a1c590a5bbe1fdf481a8cc89b1bc47b5ac73a7153d5a0e4b702ea6eca081038a8
-  languageName: node
-  linkType: hard
-
-"deepmerge@npm:^4.0.0, deepmerge@npm:^4.2.2":
-  version: 4.2.2
-  resolution: "deepmerge@npm:4.2.2"
-  checksum: a8c43a1ed8d6d1ed2b5bf569fa4c8eb9f0924034baf75d5d406e47e157a451075c4db353efea7b6bcc56ec48116a8ce72fccf867b6e078e7c561904b5897530b
   languageName: node
   linkType: hard
 
@@ -36132,6 +36141,7 @@ __metadata:
     "@types/axios": ^0.14.0
     "@types/config": ^0.0.41
     "@types/cors": ^2.8.12
+    "@types/deepmerge": ^2.2.0
     "@types/express": ^4.17.13
     "@types/jest": ^27.4.1
     "@types/node": ^14.0.0
@@ -36144,6 +36154,7 @@ __metadata:
     concurrently: ^7.0.0
     config: ^3.3.6
     cors: ^2.8.5
+    deepmerge: ^4.2.2
     dotenv: ^10.0.0
     eslint: ^7.25.0
     eslint-config-prettier: ^6.15.0

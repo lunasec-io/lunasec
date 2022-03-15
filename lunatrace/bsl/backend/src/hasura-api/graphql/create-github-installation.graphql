@@ -1,0 +1,8 @@
+mutation CreateOrganizations($objects: [organizations_insert_input!] = {}) {
+  insert_organizations(objects: $objects) {
+    affected_rows
+    returning {
+      id
+    }
+  }
+}
