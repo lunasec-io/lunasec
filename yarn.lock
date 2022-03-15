@@ -27400,6 +27400,7 @@ __metadata:
     react: ^17.0.2
     react-bootstrap: ^2.1.1
     react-bootstrap-typeahead: ^6.0.0-alpha.6
+    react-bottom-scroll-listener: ^5.0.0
     react-code-blocks: ^0.0.9-0
     react-dom: ^17.0.2
     react-dropzone: ^12.0.4
@@ -41519,6 +41520,18 @@ __metadata:
     react: ">=16.14.0"
     react-dom: ">=16.14.0"
   checksum: 68abcd9dfbd15966884f2cf24aad2e9f803f0ef977b7bb646f4a345ed5ec99a309262e6ded72f341a982129a593c019be535c0e2a0e05f7ccafdf4efcf69341e
+  languageName: node
+  linkType: hard
+
+"react-bottom-scroll-listener@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "react-bottom-scroll-listener@npm:5.0.0"
+  dependencies:
+    lodash.debounce: ^4.0.8
+  peerDependencies:
+    react: ^16.0.0 || ^17.0.0
+    react-dom: ^16.0.0 || ^17.0.0
+  checksum: 0a735bc8e12b88c8b713b9bbcdd15bd1c28a5f6f2b290c7216f4043c09d2b3ae453a9fe3ee2abefb758595faf6850f26cd721973d608fa39f1996326edaa5611
   languageName: node
   linkType: hard
 

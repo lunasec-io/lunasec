@@ -34,8 +34,8 @@ export const VulnerabilitiesList: React.FunctionComponent<VulnerabilityListProps
   });
   return (
     <Container className="vulnerability-list">
-      {isLoading ? <Spinner animation="border" variant="primary" /> : null}
       {vulnCards}
+      {isLoading ? <Spinner animation="border" variant="primary" /> : null}
     </Container>
   );
 };
