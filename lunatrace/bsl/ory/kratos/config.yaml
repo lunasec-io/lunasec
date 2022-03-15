@@ -49,6 +49,14 @@ selfservice:
     login:
       ui_url: http://localhost:4455/account/login
       lifespan: 10m
+      after:
+        oidc:
+          hooks:
+            - hook: web_hook
+              config:
+                url: http://host.docker.internal:3002/webhook/github/login
+                method: POST
+                body: file:///config/oidc.hook.jsonnet
 
     registration:
       lifespan: 10m
@@ -62,6 +70,11 @@ selfservice:
           hooks:
             -
               hook: session
+            - hook: web_hook
+              config:
+                url: http://host.docker.internal:3002/webhook/github/login
+                method: POST
+                body: file:///config/oidc.hook.jsonnet
 
 log:
   level: debug
