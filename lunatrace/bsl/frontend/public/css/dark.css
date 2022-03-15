@@ -13186,6 +13186,20 @@ textarea.form-control-lg {
   color: #a9acb3;
 }
 
+.alert {
+  padding: 0;
+  display: flex;
+  color: #eaeaec;
+}
+.alert b, .alert strong {
+  color: #fff;
+}
+.alert .close:hover,
+.alert .close:focus {
+  color: #fff;
+  opacity: 1;
+}
+
 .alert-outline,
 .alert-outline-coloured {
   color: #a9acb3;
@@ -17456,6 +17470,10 @@ td.rdtYear:hover {
 
 .wide-tooltip > .tooltip-inner {
   max-width: 50em;
+}
+
+.secret-more-info-accordion-header > button {
+  color: #3F80EA;
 }
 
 .breadcrumb-item + .breadcrumb-item::before {

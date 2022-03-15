@@ -1,0 +1,5 @@
+mutation SetBuildS3Url($id: uuid!, $s3_url: String!) {
+    update_builds_by_pk(pk_columns: {id: $id}, _set: {s3_url: $s3_url}) {
+        id
+    }
+}
