@@ -13,7 +13,7 @@
  */
 import { Readable } from 'stream';
 
-import { GetObjectCommand, GetObjectCommandOutput, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, GetObjectCommandOutput, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { Hash } from '@aws-sdk/hash-node';
 import { Upload } from '@aws-sdk/lib-storage';
@@ -60,7 +60,7 @@ export class AwsUtils {
   }
 
   // deprecated
-  public async streamToString(stream: GetObjectCommandOutput['Body']): Promise<string> {
+  public async bundleStreamChunks(stream: GetObjectCommandOutput['Body']): Promise<Buffer> {
     if (!(stream instanceof Readable)) {
       throw new Error('S3 load stream is of wrong type');
     }
@@ -68,29 +68,52 @@ export class AwsUtils {
     return new Promise((resolve, reject) => {
       stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
       stream.on('error', (err) => reject(err));
-      stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+      stream.on('end', () => resolve(Buffer.concat(chunks)));
     });
   }
 
-  public async getFileFromS3(key: string, bucket: string, region?: string): Promise<Readable> {
+  public async getFileFromS3(key: string, bucket: string, region?: string): Promise<[Readable, number]> {
     const s3Client = new S3Client({ region: region || this.config.awsRegion, credentials: this.config.awsCredentials });
-    const { Body } = await s3Client.send(new GetObjectCommand({ Key: key, Bucket: bucket })); // gosh what a bad API
+    const { Body, ContentLength, $metadata } = await s3Client.send(new GetObjectCommand({ Key: key, Bucket: bucket })); // gosh what a bad API
+    const code = $metadata.httpStatusCode;
+    if (!code || code > 299) {
+      throw new Error(`got non-200 code when fetching file from s3: ${code}`);
+    }
     // const fileString = await this.streamToString(Body);
     if (!(Body instanceof Readable)) {
       throw new Error('S3 load stream is of wrong type');
     }
-    return Body;
+    if (!ContentLength) {
+      throw new Error('Missing content length for downloaded s3 sbom');
+    }
+    return [Body, ContentLength];
   }
 
   public async uploadGzipFileToS3(key: string, bucket: string, body: ReadableStream | Readable, region?: string) {
+    const bundledUploadData = await this.bundleStreamChunks(body); // streaming uploads appear to be straight up broken, in all their forms.  tire fire
+
     const s3Client = new S3Client({ region: region || this.config.awsRegion, credentials: this.config.awsCredentials });
-    const parallelUpload = new Upload({
-      client: s3Client,
-      queueSize: 4, // optional concurrency configuration
-      leavePartsOnError: false, // optional manually handle dropped parts
-      params: { Key: key, Bucket: bucket, Body: body, ContentEncoding: 'gzip' },
+    const command = new PutObjectCommand({
+      Key: key,
+      Bucket: bucket,
+      Body: bundledUploadData,
+      ContentEncoding: 'gzip',
     });
-    await parallelUpload.done();
+    const response = await s3Client.send(command);
+    const code = response.$metadata.httpStatusCode;
+    if (!code || code > 299) {
+      throw new Error(`got non-200 code when uploading file to s3: ${code}`);
+    }
+    // const parallelUpload = new Upload({
+    //   client: s3Client,
+    //   queueSize: 4, // optional concurrency configuration
+    //   leavePartsOnError: false, // optional manually handle dropped parts
+    //   params: { Key: key, Bucket: bucket, Body: body, ContentEncoding: 'gzip' },
+    // });
+    // parallelUpload.on('httpUploadProgress', (progress) => {
+    //   console.log('FILE UPLOAD PROGRESS IS,', progress);
+    // });
+    // await parallelUpload.done();
     return `${this.generateAWSBaseUrl(bucket)}/${key}`;
   }
 
