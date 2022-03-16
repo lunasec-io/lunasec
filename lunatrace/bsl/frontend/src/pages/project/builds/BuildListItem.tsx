@@ -14,6 +14,7 @@
 import React, { MouseEventHandler } from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { prettyDate } from '../../../utils/pretty-date';
 import { BuildInfo } from '../types';
 
@@ -54,7 +55,7 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
       <Card.Body className="d-flex">
         <Container fluid>
           <Row>
-            <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>
+            <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }} className="align-self-end">
               <h6 style={{ textAlign: 'right' }}>
                 <span className="darker"> Last scanned:</span> {lastScannedDate}
               </h6>
@@ -67,12 +68,16 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
             </Col>
             <Col xs="12" sm="3">
               <div className="build-git-info">
-                <h6>
-                  <span className="darker">Branch: </span> master
-                </h6>
-                <h6>
-                  <span className="darker">Commit: </span> 1231adf... ↪
-                </h6>
+                <ConditionallyRender if={build.git_branch}>
+                  <h6>
+                    <span className="darker">Branch: </span> {build.git_branch}
+                  </h6>
+                </ConditionallyRender>
+                <ConditionallyRender if={build.git_hash}>
+                  <h6>
+                    <span className="darker">Commit: </span> {build.git_hash?.substring(0, 8)}... ↪
+                  </h6>
+                </ConditionallyRender>
               </div>
             </Col>
           </Row>
