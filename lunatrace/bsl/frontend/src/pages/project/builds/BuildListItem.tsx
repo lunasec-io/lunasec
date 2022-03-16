@@ -55,7 +55,7 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
       <Card.Body className="d-flex">
         <Container fluid>
           <Row>
-            <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }} className="align-self-end">
+            <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>
               <h6 style={{ textAlign: 'right' }}>
                 <span className="darker"> Last scanned:</span> {lastScannedDate}
               </h6>
