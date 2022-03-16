@@ -1,0 +1,5 @@
+mutation InsertProjectAccessToken($access_token: uuid!, $name: String!, $project_uuid: uuid!) {
+    insert_project_access_tokens_one(object: {access_token: $access_token, name: $name, project_uuid: $project_uuid}) {
+        id
+    }
+}

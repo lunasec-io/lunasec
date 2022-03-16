@@ -17472,6 +17472,10 @@ td.rdtYear:hover {
   max-width: 50em;
 }
 
+.secret-more-info-accordion-header > button {
+  color: #3F80EA;
+}
+
 .breadcrumb-item + .breadcrumb-item::before {
   content: var(--bs-breadcrumb-divider, ">") !important;
 }
@@ -17582,6 +17586,10 @@ td.rdtYear:hover {
 
 .clickable-card {
   transition: 0.2s transform cubic-bezier(0.155, 1.105, 0.295, 1.12), 0.2s box-shadow, 0.2s -webkit-transform cubic-bezier(0.155, 1.105, 0.295, 1.12);
+}
+
+.github-signin-button {
+  background-color: #24292f !important;
 }
 
 .darker {

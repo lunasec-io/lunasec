@@ -667,9 +667,9 @@ export type Findings_Bool_Exp = {
 /** unique or primary key constraints on table "findings" */
 export enum Findings_Constraint {
   /** unique or primary key constraint */
-  FindingsDedupeSlugBuildIdKey = 'findings_dedupe_slug_build_id_key',
+  FindingsPkey = 'findings_pkey',
   /** unique or primary key constraint */
-  FindingsPkey = 'findings_pkey'
+  TempDedupeFix = 'temp_dedupe_fix'
 }
 
 /** input type for inserting data into table "findings" */
@@ -969,346 +969,41 @@ export type Fix_State_Enum_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['fix_state_enum']>>;
 };
 
-/**
- * Metadata about a github repository and where to find it.
- *
- *
- * columns and relationships of "github_repositories"
- */
-export type Github_Repositories = {
-  __typename?: 'github_repositories';
-  api_response: Scalars['jsonb'];
-  git_url: Scalars['String'];
-  github_id: Scalars['Int'];
-  id: Scalars['uuid'];
-  /** An object relationship */
-  project: Projects;
-  project_id: Scalars['uuid'];
-};
-
-
-/**
- * Metadata about a github repository and where to find it.
- *
- *
- * columns and relationships of "github_repositories"
- */
-export type Github_RepositoriesApi_ResponseArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregated selection of "github_repositories" */
-export type Github_Repositories_Aggregate = {
-  __typename?: 'github_repositories_aggregate';
-  aggregate?: Maybe<Github_Repositories_Aggregate_Fields>;
-  nodes: Array<Github_Repositories>;
-};
-
-/** aggregate fields of "github_repositories" */
-export type Github_Repositories_Aggregate_Fields = {
-  __typename?: 'github_repositories_aggregate_fields';
-  avg?: Maybe<Github_Repositories_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<Github_Repositories_Max_Fields>;
-  min?: Maybe<Github_Repositories_Min_Fields>;
-  stddev?: Maybe<Github_Repositories_Stddev_Fields>;
-  stddev_pop?: Maybe<Github_Repositories_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Github_Repositories_Stddev_Samp_Fields>;
-  sum?: Maybe<Github_Repositories_Sum_Fields>;
-  var_pop?: Maybe<Github_Repositories_Var_Pop_Fields>;
-  var_samp?: Maybe<Github_Repositories_Var_Samp_Fields>;
-  variance?: Maybe<Github_Repositories_Variance_Fields>;
-};
-
-
-/** aggregate fields of "github_repositories" */
-export type Github_Repositories_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Github_Repositories_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "github_repositories" */
-export type Github_Repositories_Aggregate_Order_By = {
-  avg?: InputMaybe<Github_Repositories_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Github_Repositories_Max_Order_By>;
-  min?: InputMaybe<Github_Repositories_Min_Order_By>;
-  stddev?: InputMaybe<Github_Repositories_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Github_Repositories_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Github_Repositories_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Github_Repositories_Sum_Order_By>;
-  var_pop?: InputMaybe<Github_Repositories_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Github_Repositories_Var_Samp_Order_By>;
-  variance?: InputMaybe<Github_Repositories_Variance_Order_By>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Github_Repositories_Append_Input = {
-  api_response?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** input type for inserting array relation for remote table "github_repositories" */
-export type Github_Repositories_Arr_Rel_Insert_Input = {
-  data: Array<Github_Repositories_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Github_Repositories_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type Github_Repositories_Avg_Fields = {
-  __typename?: 'github_repositories_avg_fields';
-  github_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "github_repositories" */
-export type Github_Repositories_Avg_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "github_repositories". All fields are combined with a logical 'AND'. */
-export type Github_Repositories_Bool_Exp = {
-  _and?: InputMaybe<Array<Github_Repositories_Bool_Exp>>;
-  _not?: InputMaybe<Github_Repositories_Bool_Exp>;
-  _or?: InputMaybe<Array<Github_Repositories_Bool_Exp>>;
-  api_response?: InputMaybe<Jsonb_Comparison_Exp>;
-  git_url?: InputMaybe<String_Comparison_Exp>;
-  github_id?: InputMaybe<Int_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  project?: InputMaybe<Projects_Bool_Exp>;
-  project_id?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "github_repositories" */
-export enum Github_Repositories_Constraint {
-  /** unique or primary key constraint */
-  GithubRepositoryPkey = 'github_repository_pkey'
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Github_Repositories_Delete_At_Path_Input = {
-  api_response?: InputMaybe<Array<Scalars['String']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Github_Repositories_Delete_Elem_Input = {
-  api_response?: InputMaybe<Scalars['Int']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Github_Repositories_Delete_Key_Input = {
-  api_response?: InputMaybe<Scalars['String']>;
-};
-
-/** input type for incrementing numeric columns in table "github_repositories" */
-export type Github_Repositories_Inc_Input = {
-  github_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "github_repositories" */
-export type Github_Repositories_Insert_Input = {
-  api_response?: InputMaybe<Scalars['jsonb']>;
-  git_url?: InputMaybe<Scalars['String']>;
-  github_id?: InputMaybe<Scalars['Int']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
-  project_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate max on columns */
-export type Github_Repositories_Max_Fields = {
-  __typename?: 'github_repositories_max_fields';
-  git_url?: Maybe<Scalars['String']>;
-  github_id?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['uuid']>;
-  project_id?: Maybe<Scalars['uuid']>;
-};
-
-/** order by max() on columns of table "github_repositories" */
-export type Github_Repositories_Max_Order_By = {
-  git_url?: InputMaybe<Order_By>;
-  github_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  project_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Github_Repositories_Min_Fields = {
-  __typename?: 'github_repositories_min_fields';
-  git_url?: Maybe<Scalars['String']>;
-  github_id?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['uuid']>;
-  project_id?: Maybe<Scalars['uuid']>;
-};
-
-/** order by min() on columns of table "github_repositories" */
-export type Github_Repositories_Min_Order_By = {
-  git_url?: InputMaybe<Order_By>;
-  github_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  project_id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "github_repositories" */
-export type Github_Repositories_Mutation_Response = {
-  __typename?: 'github_repositories_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Github_Repositories>;
-};
-
-/** on_conflict condition type for table "github_repositories" */
-export type Github_Repositories_On_Conflict = {
-  constraint: Github_Repositories_Constraint;
-  update_columns?: Array<Github_Repositories_Update_Column>;
-  where?: InputMaybe<Github_Repositories_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "github_repositories". */
-export type Github_Repositories_Order_By = {
-  api_response?: InputMaybe<Order_By>;
-  git_url?: InputMaybe<Order_By>;
-  github_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  project?: InputMaybe<Projects_Order_By>;
-  project_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: github_repositories */
-export type Github_Repositories_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Github_Repositories_Prepend_Input = {
-  api_response?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** select columns of table "github_repositories" */
-export enum Github_Repositories_Select_Column {
-  /** column name */
-  ApiResponse = 'api_response',
-  /** column name */
-  GitUrl = 'git_url',
-  /** column name */
-  GithubId = 'github_id',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  ProjectId = 'project_id'
-}
-
-/** input type for updating data in table "github_repositories" */
-export type Github_Repositories_Set_Input = {
-  api_response?: InputMaybe<Scalars['jsonb']>;
-  git_url?: InputMaybe<Scalars['String']>;
-  github_id?: InputMaybe<Scalars['Int']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  project_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate stddev on columns */
-export type Github_Repositories_Stddev_Fields = {
-  __typename?: 'github_repositories_stddev_fields';
-  github_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "github_repositories" */
-export type Github_Repositories_Stddev_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Github_Repositories_Stddev_Pop_Fields = {
-  __typename?: 'github_repositories_stddev_pop_fields';
-  github_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "github_repositories" */
-export type Github_Repositories_Stddev_Pop_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Github_Repositories_Stddev_Samp_Fields = {
-  __typename?: 'github_repositories_stddev_samp_fields';
-  github_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "github_repositories" */
-export type Github_Repositories_Stddev_Samp_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate sum on columns */
-export type Github_Repositories_Sum_Fields = {
-  __typename?: 'github_repositories_sum_fields';
-  github_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "github_repositories" */
-export type Github_Repositories_Sum_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "github_repositories" */
-export enum Github_Repositories_Update_Column {
-  /** column name */
-  ApiResponse = 'api_response',
-  /** column name */
-  GitUrl = 'git_url',
-  /** column name */
-  GithubId = 'github_id',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  ProjectId = 'project_id'
-}
-
-/** aggregate var_pop on columns */
-export type Github_Repositories_Var_Pop_Fields = {
-  __typename?: 'github_repositories_var_pop_fields';
-  github_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "github_repositories" */
-export type Github_Repositories_Var_Pop_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type Github_Repositories_Var_Samp_Fields = {
-  __typename?: 'github_repositories_var_samp_fields';
-  github_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "github_repositories" */
-export type Github_Repositories_Var_Samp_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Github_Repositories_Variance_Fields = {
-  __typename?: 'github_repositories_variance_fields';
-  github_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "github_repositories" */
-export type Github_Repositories_Variance_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-};
-
 /** columns and relationships of "identities" */
 export type Identities = {
   __typename?: 'identities';
   created_at: Scalars['timestamp'];
   id: Scalars['uuid'];
   nid?: Maybe<Scalars['uuid']>;
+  /** An array relationship */
+  organization_users: Array<Organization_User>;
+  /** An aggregate relationship */
+  organization_users_aggregate: Organization_User_Aggregate;
   schema_id: Scalars['String'];
   state: Scalars['String'];
   state_changed_at?: Maybe<Scalars['timestamp']>;
   traits: Scalars['jsonb'];
   updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "identities" */
+export type IdentitiesOrganization_UsersArgs = {
+  distinct_on?: InputMaybe<Array<Organization_User_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Organization_User_Order_By>>;
+  where?: InputMaybe<Organization_User_Bool_Exp>;
+};
+
+
+/** columns and relationships of "identities" */
+export type IdentitiesOrganization_Users_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Organization_User_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Organization_User_Order_By>>;
+  where?: InputMaybe<Organization_User_Bool_Exp>;
 };
 
 
@@ -1352,6 +1047,7 @@ export type Identities_Bool_Exp = {
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   nid?: InputMaybe<Uuid_Comparison_Exp>;
+  organization_users?: InputMaybe<Organization_User_Bool_Exp>;
   schema_id?: InputMaybe<String_Comparison_Exp>;
   state?: InputMaybe<String_Comparison_Exp>;
   state_changed_at?: InputMaybe<Timestamp_Comparison_Exp>;
@@ -1385,6 +1081,7 @@ export type Identities_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamp']>;
   id?: InputMaybe<Scalars['uuid']>;
   nid?: InputMaybe<Scalars['uuid']>;
+  organization_users?: InputMaybe<Organization_User_Arr_Rel_Insert_Input>;
   schema_id?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
   state_changed_at?: InputMaybe<Scalars['timestamp']>;
@@ -1444,6 +1141,7 @@ export type Identities_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   nid?: InputMaybe<Order_By>;
+  organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
   schema_id?: InputMaybe<Order_By>;
   state?: InputMaybe<Order_By>;
   state_changed_at?: InputMaybe<Order_By>;
@@ -1929,10 +1627,6 @@ export type Mutation_Root = {
   delete_findings?: Maybe<Findings_Mutation_Response>;
   /** delete single row from the table: "findings" */
   delete_findings_by_pk?: Maybe<Findings>;
-  /** delete data from the table: "github_repositories" */
-  delete_github_repositories?: Maybe<Github_Repositories_Mutation_Response>;
-  /** delete single row from the table: "github_repositories" */
-  delete_github_repositories_by_pk?: Maybe<Github_Repositories>;
   /** delete data from the table: "identities" */
   delete_identities?: Maybe<Identities_Mutation_Response>;
   /** delete single row from the table: "identities" */
@@ -1993,10 +1687,6 @@ export type Mutation_Root = {
   insert_findings?: Maybe<Findings_Mutation_Response>;
   /** insert a single row into the table: "findings" */
   insert_findings_one?: Maybe<Findings>;
-  /** insert data into the table: "github_repositories" */
-  insert_github_repositories?: Maybe<Github_Repositories_Mutation_Response>;
-  /** insert a single row into the table: "github_repositories" */
-  insert_github_repositories_one?: Maybe<Github_Repositories>;
   /** insert data into the table: "identities" */
   insert_identities?: Maybe<Identities_Mutation_Response>;
   /** insert a single row into the table: "identities" */
@@ -2049,7 +1739,7 @@ export type Mutation_Root = {
   insert_vulnerability_packages?: Maybe<Vulnerability_Packages_Mutation_Response>;
   /** insert a single row into the table: "vulnerability_packages" */
   insert_vulnerability_packages_one?: Maybe<Vulnerability_Packages>;
-  /** get s3 presigned url for manifest upload */
+  /** get s3 presigned url for manifest upload, used only by the frontend */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** This performs the manifest sbom generation and creates the first build from the manifest */
   scanManifest?: Maybe<ScanManifestOutput>;
@@ -2061,10 +1751,6 @@ export type Mutation_Root = {
   update_findings?: Maybe<Findings_Mutation_Response>;
   /** update single row of the table: "findings" */
   update_findings_by_pk?: Maybe<Findings>;
-  /** update data of the table: "github_repositories" */
-  update_github_repositories?: Maybe<Github_Repositories_Mutation_Response>;
-  /** update single row of the table: "github_repositories" */
-  update_github_repositories_by_pk?: Maybe<Github_Repositories>;
   /** update data of the table: "identities" */
   update_identities?: Maybe<Identities_Mutation_Response>;
   /** update single row of the table: "identities" */
@@ -2140,18 +1826,6 @@ export type Mutation_RootDelete_FindingsArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Findings_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Github_RepositoriesArgs = {
-  where: Github_Repositories_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Github_Repositories_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -2337,20 +2011,6 @@ export type Mutation_RootInsert_FindingsArgs = {
 export type Mutation_RootInsert_Findings_OneArgs = {
   object: Findings_Insert_Input;
   on_conflict?: InputMaybe<Findings_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Github_RepositoriesArgs = {
-  objects: Array<Github_Repositories_Insert_Input>;
-  on_conflict?: InputMaybe<Github_Repositories_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Github_Repositories_OneArgs = {
-  object: Github_Repositories_Insert_Input;
-  on_conflict?: InputMaybe<Github_Repositories_On_Conflict>;
 };
 
 
@@ -2580,32 +2240,6 @@ export type Mutation_RootUpdate_Findings_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Github_RepositoriesArgs = {
-  _append?: InputMaybe<Github_Repositories_Append_Input>;
-  _delete_at_path?: InputMaybe<Github_Repositories_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Github_Repositories_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Github_Repositories_Delete_Key_Input>;
-  _inc?: InputMaybe<Github_Repositories_Inc_Input>;
-  _prepend?: InputMaybe<Github_Repositories_Prepend_Input>;
-  _set?: InputMaybe<Github_Repositories_Set_Input>;
-  where: Github_Repositories_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Github_Repositories_By_PkArgs = {
-  _append?: InputMaybe<Github_Repositories_Append_Input>;
-  _delete_at_path?: InputMaybe<Github_Repositories_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Github_Repositories_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Github_Repositories_Delete_Key_Input>;
-  _inc?: InputMaybe<Github_Repositories_Inc_Input>;
-  _prepend?: InputMaybe<Github_Repositories_Prepend_Input>;
-  _set?: InputMaybe<Github_Repositories_Set_Input>;
-  pk_columns: Github_Repositories_Pk_Columns_Input;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_IdentitiesArgs = {
   _append?: InputMaybe<Identities_Append_Input>;
   _delete_at_path?: InputMaybe<Identities_Delete_At_Path_Input>;
@@ -2673,7 +2307,6 @@ export type Mutation_RootUpdate_Organization_User_By_PkArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_OrganizationsArgs = {
-  _inc?: InputMaybe<Organizations_Inc_Input>;
   _set?: InputMaybe<Organizations_Set_Input>;
   where: Organizations_Bool_Exp;
 };
@@ -2681,7 +2314,6 @@ export type Mutation_RootUpdate_OrganizationsArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Organizations_By_PkArgs = {
-  _inc?: InputMaybe<Organizations_Inc_Input>;
   _set?: InputMaybe<Organizations_Set_Input>;
   pk_columns: Organizations_Pk_Columns_Input;
 };
@@ -3051,9 +2683,7 @@ export type Organizations = {
   __typename?: 'organizations';
   createdAt: Scalars['timestamp'];
   creator_id?: Maybe<Scalars['uuid']>;
-  github_id: Scalars['Int'];
   id: Scalars['uuid'];
-  installation_id: Scalars['Int'];
   name: Scalars['String'];
   /** An array relationship */
   organization_users: Array<Organization_User>;
@@ -3116,17 +2746,9 @@ export type Organizations_Aggregate = {
 /** aggregate fields of "organizations" */
 export type Organizations_Aggregate_Fields = {
   __typename?: 'organizations_aggregate_fields';
-  avg?: Maybe<Organizations_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<Organizations_Max_Fields>;
   min?: Maybe<Organizations_Min_Fields>;
-  stddev?: Maybe<Organizations_Stddev_Fields>;
-  stddev_pop?: Maybe<Organizations_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Organizations_Stddev_Samp_Fields>;
-  sum?: Maybe<Organizations_Sum_Fields>;
-  var_pop?: Maybe<Organizations_Var_Pop_Fields>;
-  var_samp?: Maybe<Organizations_Var_Samp_Fields>;
-  variance?: Maybe<Organizations_Variance_Fields>;
 };
 
 
@@ -3136,13 +2758,6 @@ export type Organizations_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** aggregate avg on columns */
-export type Organizations_Avg_Fields = {
-  __typename?: 'organizations_avg_fields';
-  github_id?: Maybe<Scalars['Float']>;
-  installation_id?: Maybe<Scalars['Float']>;
-};
-
 /** Boolean expression to filter rows from the table "organizations". All fields are combined with a logical 'AND'. */
 export type Organizations_Bool_Exp = {
   _and?: InputMaybe<Array<Organizations_Bool_Exp>>;
@@ -3150,9 +2765,7 @@ export type Organizations_Bool_Exp = {
   _or?: InputMaybe<Array<Organizations_Bool_Exp>>;
   createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
   creator_id?: InputMaybe<Uuid_Comparison_Exp>;
-  github_id?: InputMaybe<Int_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  installation_id?: InputMaybe<Int_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   organization_users?: InputMaybe<Organization_User_Bool_Exp>;
   projects?: InputMaybe<Projects_Bool_Exp>;
@@ -3165,19 +2778,11 @@ export enum Organizations_Constraint {
   OrganizationsPkey = 'organizations_pkey'
 }
 
-/** input type for incrementing numeric columns in table "organizations" */
-export type Organizations_Inc_Input = {
-  github_id?: InputMaybe<Scalars['Int']>;
-  installation_id?: InputMaybe<Scalars['Int']>;
-};
-
 /** input type for inserting data into table "organizations" */
 export type Organizations_Insert_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
   creator_id?: InputMaybe<Scalars['uuid']>;
-  github_id?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['uuid']>;
-  installation_id?: InputMaybe<Scalars['Int']>;
   name?: InputMaybe<Scalars['String']>;
   organization_users?: InputMaybe<Organization_User_Arr_Rel_Insert_Input>;
   projects?: InputMaybe<Projects_Arr_Rel_Insert_Input>;
@@ -3189,9 +2794,7 @@ export type Organizations_Max_Fields = {
   __typename?: 'organizations_max_fields';
   createdAt?: Maybe<Scalars['timestamp']>;
   creator_id?: Maybe<Scalars['uuid']>;
-  github_id?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['uuid']>;
-  installation_id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   settings_id?: Maybe<Scalars['uuid']>;
 };
@@ -3201,9 +2804,7 @@ export type Organizations_Min_Fields = {
   __typename?: 'organizations_min_fields';
   createdAt?: Maybe<Scalars['timestamp']>;
   creator_id?: Maybe<Scalars['uuid']>;
-  github_id?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['uuid']>;
-  installation_id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   settings_id?: Maybe<Scalars['uuid']>;
 };
@@ -3235,9 +2836,7 @@ export type Organizations_On_Conflict = {
 export type Organizations_Order_By = {
   createdAt?: InputMaybe<Order_By>;
   creator_id?: InputMaybe<Order_By>;
-  github_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  installation_id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
   projects_aggregate?: InputMaybe<Projects_Aggregate_Order_By>;
@@ -3256,11 +2855,7 @@ export enum Organizations_Select_Column {
   /** column name */
   CreatorId = 'creator_id',
   /** column name */
-  GithubId = 'github_id',
-  /** column name */
   Id = 'id',
-  /** column name */
-  InstallationId = 'installation_id',
   /** column name */
   Name = 'name',
   /** column name */
@@ -3271,39 +2866,9 @@ export enum Organizations_Select_Column {
 export type Organizations_Set_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
   creator_id?: InputMaybe<Scalars['uuid']>;
-  github_id?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['uuid']>;
-  installation_id?: InputMaybe<Scalars['Int']>;
   name?: InputMaybe<Scalars['String']>;
   settings_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate stddev on columns */
-export type Organizations_Stddev_Fields = {
-  __typename?: 'organizations_stddev_fields';
-  github_id?: Maybe<Scalars['Float']>;
-  installation_id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Organizations_Stddev_Pop_Fields = {
-  __typename?: 'organizations_stddev_pop_fields';
-  github_id?: Maybe<Scalars['Float']>;
-  installation_id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Organizations_Stddev_Samp_Fields = {
-  __typename?: 'organizations_stddev_samp_fields';
-  github_id?: Maybe<Scalars['Float']>;
-  installation_id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate sum on columns */
-export type Organizations_Sum_Fields = {
-  __typename?: 'organizations_sum_fields';
-  github_id?: Maybe<Scalars['Int']>;
-  installation_id?: Maybe<Scalars['Int']>;
 };
 
 /** update columns of table "organizations" */
@@ -3313,37 +2878,12 @@ export enum Organizations_Update_Column {
   /** column name */
   CreatorId = 'creator_id',
   /** column name */
-  GithubId = 'github_id',
-  /** column name */
   Id = 'id',
-  /** column name */
-  InstallationId = 'installation_id',
   /** column name */
   Name = 'name',
   /** column name */
   SettingsId = 'settings_id'
 }
-
-/** aggregate var_pop on columns */
-export type Organizations_Var_Pop_Fields = {
-  __typename?: 'organizations_var_pop_fields';
-  github_id?: Maybe<Scalars['Float']>;
-  installation_id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate var_samp on columns */
-export type Organizations_Var_Samp_Fields = {
-  __typename?: 'organizations_var_samp_fields';
-  github_id?: Maybe<Scalars['Float']>;
-  installation_id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate variance on columns */
-export type Organizations_Variance_Fields = {
-  __typename?: 'organizations_variance_fields';
-  github_id?: Maybe<Scalars['Float']>;
-  installation_id?: Maybe<Scalars['Float']>;
-};
 
 /** columns and relationships of "package_versions" */
 export type Package_Versions = {
@@ -3599,7 +3139,13 @@ export enum Package_Versions_Update_Column {
 export type Project_Access_Tokens = {
   __typename?: 'project_access_tokens';
   access_token: Scalars['uuid'];
+  created_at: Scalars['timestamp'];
+  /** An object relationship */
+  created_by_user?: Maybe<Identities>;
+  created_by_user_id?: Maybe<Scalars['uuid']>;
   id: Scalars['uuid'];
+  last_used?: Maybe<Scalars['timestamp']>;
+  name?: Maybe<Scalars['String']>;
   /** An object relationship */
   project: Projects;
   project_uuid: Scalars['uuid'];
@@ -3647,7 +3193,12 @@ export type Project_Access_Tokens_Bool_Exp = {
   _not?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
   _or?: InputMaybe<Array<Project_Access_Tokens_Bool_Exp>>;
   access_token?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_by_user?: InputMaybe<Identities_Bool_Exp>;
+  created_by_user_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  last_used?: InputMaybe<Timestamp_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_uuid?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -3663,7 +3214,12 @@ export enum Project_Access_Tokens_Constraint {
 /** input type for inserting data into table "project_access_tokens" */
 export type Project_Access_Tokens_Insert_Input = {
   access_token?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_by_user?: InputMaybe<Identities_Obj_Rel_Insert_Input>;
+  created_by_user_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_used?: InputMaybe<Scalars['timestamp']>;
+  name?: InputMaybe<Scalars['String']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_uuid?: InputMaybe<Scalars['uuid']>;
 };
@@ -3672,14 +3228,22 @@ export type Project_Access_Tokens_Insert_Input = {
 export type Project_Access_Tokens_Max_Fields = {
   __typename?: 'project_access_tokens_max_fields';
   access_token?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  created_by_user_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  last_used?: Maybe<Scalars['timestamp']>;
+  name?: Maybe<Scalars['String']>;
   project_uuid?: Maybe<Scalars['uuid']>;
 };
 
 /** order by max() on columns of table "project_access_tokens" */
 export type Project_Access_Tokens_Max_Order_By = {
   access_token?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  created_by_user_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  last_used?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
   project_uuid?: InputMaybe<Order_By>;
 };
 
@@ -3687,14 +3251,22 @@ export type Project_Access_Tokens_Max_Order_By = {
 export type Project_Access_Tokens_Min_Fields = {
   __typename?: 'project_access_tokens_min_fields';
   access_token?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  created_by_user_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  last_used?: Maybe<Scalars['timestamp']>;
+  name?: Maybe<Scalars['String']>;
   project_uuid?: Maybe<Scalars['uuid']>;
 };
 
 /** order by min() on columns of table "project_access_tokens" */
 export type Project_Access_Tokens_Min_Order_By = {
   access_token?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  created_by_user_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  last_used?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
   project_uuid?: InputMaybe<Order_By>;
 };
 
@@ -3717,7 +3289,12 @@ export type Project_Access_Tokens_On_Conflict = {
 /** Ordering options when selecting data from "project_access_tokens". */
 export type Project_Access_Tokens_Order_By = {
   access_token?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  created_by_user?: InputMaybe<Identities_Order_By>;
+  created_by_user_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  last_used?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_uuid?: InputMaybe<Order_By>;
 };
@@ -3732,7 +3309,15 @@ export enum Project_Access_Tokens_Select_Column {
   /** column name */
   AccessToken = 'access_token',
   /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CreatedByUserId = 'created_by_user_id',
+  /** column name */
   Id = 'id',
+  /** column name */
+  LastUsed = 'last_used',
+  /** column name */
+  Name = 'name',
   /** column name */
   ProjectUuid = 'project_uuid'
 }
@@ -3740,7 +3325,11 @@ export enum Project_Access_Tokens_Select_Column {
 /** input type for updating data in table "project_access_tokens" */
 export type Project_Access_Tokens_Set_Input = {
   access_token?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_by_user_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_used?: InputMaybe<Scalars['timestamp']>;
+  name?: InputMaybe<Scalars['String']>;
   project_uuid?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -3749,7 +3338,15 @@ export enum Project_Access_Tokens_Update_Column {
   /** column name */
   AccessToken = 'access_token',
   /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CreatedByUserId = 'created_by_user_id',
+  /** column name */
   Id = 'id',
+  /** column name */
+  LastUsed = 'last_used',
+  /** column name */
+  Name = 'name',
   /** column name */
   ProjectUuid = 'project_uuid'
 }
@@ -3762,10 +3359,6 @@ export type Projects = {
   /** An aggregate relationship */
   builds_aggregate: Builds_Aggregate;
   created_at: Scalars['timestamp'];
-  /** fetch data from the table: "github_repositories" */
-  github_repositories: Array<Github_Repositories>;
-  /** An aggregate relationship */
-  github_repositories_aggregate: Github_Repositories_Aggregate;
   id: Scalars['uuid'];
   /** An array relationship */
   manifests: Array<Manifests>;
@@ -3773,8 +3366,8 @@ export type Projects = {
   manifests_aggregate: Manifests_Aggregate;
   name: Scalars['String'];
   /** An object relationship */
-  organization: Organizations;
-  organization_id: Scalars['uuid'];
+  organization?: Maybe<Organizations>;
+  organization_id?: Maybe<Scalars['uuid']>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** An aggregate relationship */
@@ -3805,26 +3398,6 @@ export type ProjectsBuilds_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Builds_Order_By>>;
   where?: InputMaybe<Builds_Bool_Exp>;
-};
-
-
-/** columns and relationships of "projects" */
-export type ProjectsGithub_RepositoriesArgs = {
-  distinct_on?: InputMaybe<Array<Github_Repositories_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Github_Repositories_Order_By>>;
-  where?: InputMaybe<Github_Repositories_Bool_Exp>;
-};
-
-
-/** columns and relationships of "projects" */
-export type ProjectsGithub_Repositories_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Github_Repositories_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Github_Repositories_Order_By>>;
-  where?: InputMaybe<Github_Repositories_Bool_Exp>;
 };
 
 
@@ -3930,7 +3503,6 @@ export type Projects_Bool_Exp = {
   _or?: InputMaybe<Array<Projects_Bool_Exp>>;
   builds?: InputMaybe<Builds_Bool_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  github_repositories?: InputMaybe<Github_Repositories_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   manifests?: InputMaybe<Manifests_Bool_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
@@ -3952,7 +3524,6 @@ export enum Projects_Constraint {
 export type Projects_Insert_Input = {
   builds?: InputMaybe<Builds_Arr_Rel_Insert_Input>;
   created_at?: InputMaybe<Scalars['timestamp']>;
-  github_repositories?: InputMaybe<Github_Repositories_Arr_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['uuid']>;
   manifests?: InputMaybe<Manifests_Arr_Rel_Insert_Input>;
   name?: InputMaybe<Scalars['String']>;
@@ -4033,7 +3604,6 @@ export type Projects_On_Conflict = {
 export type Projects_Order_By = {
   builds_aggregate?: InputMaybe<Builds_Aggregate_Order_By>;
   created_at?: InputMaybe<Order_By>;
-  github_repositories_aggregate?: InputMaybe<Github_Repositories_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   manifests_aggregate?: InputMaybe<Manifests_Aggregate_Order_By>;
   name?: InputMaybe<Order_By>;
@@ -4106,12 +3676,6 @@ export type Query_Root = {
   findings_aggregate: Findings_Aggregate;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
-  /** fetch data from the table: "github_repositories" */
-  github_repositories: Array<Github_Repositories>;
-  /** An aggregate relationship */
-  github_repositories_aggregate: Github_Repositories_Aggregate;
-  /** fetch data from the table: "github_repositories" using primary key columns */
-  github_repositories_by_pk?: Maybe<Github_Repositories>;
   /** fetch data from the table: "identities" */
   identities: Array<Identities>;
   /** fetch aggregated fields from the table: "identities" */
@@ -4148,6 +3712,7 @@ export type Query_Root = {
   package_versions_aggregate: Package_Versions_Aggregate;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
+  /** get s3 presigned url for manifest upload, used by the CLI */
   presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
@@ -4185,7 +3750,7 @@ export type Query_Root = {
   vulnerabilities_aggregate: Vulnerabilities_Aggregate;
   /** fetch data from the table: "vulnerabilities" using primary key columns */
   vulnerabilities_by_pk?: Maybe<Vulnerabilities>;
-  /** An array relationship */
+  /** fetch data from the table: "vulnerability_packages" */
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** An aggregate relationship */
   vulnerability_packages_aggregate: Vulnerability_Packages_Aggregate;
@@ -4236,29 +3801,6 @@ export type Query_RootFindings_AggregateArgs = {
 
 
 export type Query_RootFindings_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootGithub_RepositoriesArgs = {
-  distinct_on?: InputMaybe<Array<Github_Repositories_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Github_Repositories_Order_By>>;
-  where?: InputMaybe<Github_Repositories_Bool_Exp>;
-};
-
-
-export type Query_RootGithub_Repositories_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Github_Repositories_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Github_Repositories_Order_By>>;
-  where?: InputMaybe<Github_Repositories_Bool_Exp>;
-};
-
-
-export type Query_RootGithub_Repositories_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -5298,12 +4840,6 @@ export type Subscription_Root = {
   findings_aggregate: Findings_Aggregate;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
-  /** fetch data from the table: "github_repositories" */
-  github_repositories: Array<Github_Repositories>;
-  /** An aggregate relationship */
-  github_repositories_aggregate: Github_Repositories_Aggregate;
-  /** fetch data from the table: "github_repositories" using primary key columns */
-  github_repositories_by_pk?: Maybe<Github_Repositories>;
   /** fetch data from the table: "identities" */
   identities: Array<Identities>;
   /** fetch aggregated fields from the table: "identities" */
@@ -5376,7 +4912,7 @@ export type Subscription_Root = {
   vulnerabilities_aggregate: Vulnerabilities_Aggregate;
   /** fetch data from the table: "vulnerabilities" using primary key columns */
   vulnerabilities_by_pk?: Maybe<Vulnerabilities>;
-  /** An array relationship */
+  /** fetch data from the table: "vulnerability_packages" */
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** An aggregate relationship */
   vulnerability_packages_aggregate: Vulnerability_Packages_Aggregate;
@@ -5427,29 +4963,6 @@ export type Subscription_RootFindings_AggregateArgs = {
 
 
 export type Subscription_RootFindings_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootGithub_RepositoriesArgs = {
-  distinct_on?: InputMaybe<Array<Github_Repositories_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Github_Repositories_Order_By>>;
-  where?: InputMaybe<Github_Repositories_Bool_Exp>;
-};
-
-
-export type Subscription_RootGithub_Repositories_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Github_Repositories_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Github_Repositories_Order_By>>;
-  where?: InputMaybe<Github_Repositories_Bool_Exp>;
-};
-
-
-export type Subscription_RootGithub_Repositories_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -5822,7 +5335,7 @@ export type Vulnerabilities = {
   slug: Scalars['String'];
   topic_id?: Maybe<Scalars['uuid']>;
   urls?: Maybe<Scalars['_text']>;
-  /** An array relationship */
+  /** fetch data from the table: "vulnerability_packages" */
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** An aggregate relationship */
   vulnerability_packages_aggregate: Vulnerability_Packages_Aggregate;
@@ -6519,6 +6032,13 @@ export enum Vulnerability_Packages_Update_Column {
   VulnSlug = 'vuln_slug'
 }
 
+export type DeleteProjectAccessTokenMutationVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type DeleteProjectAccessTokenMutation = { __typename?: 'mutation_root', delete_project_access_tokens_by_pk?: { __typename?: 'project_access_tokens', id: any } | null };
+
 export type GetBuildDetailsQueryVariables = Exact<{
   build_id?: InputMaybe<Scalars['uuid']>;
 }>;
@@ -6538,7 +6058,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id: any, repo?: string | null, settings_id?: any | null, organization: { __typename?: 'organizations', name: string }, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, access_token: any }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
+export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6565,6 +6085,15 @@ export type GetVulnerabilityDetailsQueryVariables = Exact<{
 
 
 export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
+
+export type InsertProjectAccessTokenMutationVariables = Exact<{
+  access_token: Scalars['uuid'];
+  name: Scalars['String'];
+  project_uuid: Scalars['uuid'];
+}>;
+
+
+export type InsertProjectAccessTokenMutation = { __typename?: 'mutation_root', insert_project_access_tokens_one?: { __typename?: 'project_access_tokens', id: any } | null };
 
 export type InsertManifestMutationVariables = Exact<{
   s3_url: Scalars['String'];
@@ -6601,6 +6130,13 @@ export type PresignManifestUrlMutationVariables = Exact<{
 export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string, key: string, bucket: string, error: boolean, error_message?: string | null } | null };
 
 
+export const DeleteProjectAccessTokenDocument = `
+    mutation DeleteProjectAccessToken($id: uuid!) {
+  delete_project_access_tokens_by_pk(id: $id) {
+    id
+  }
+}
+    `;
 export const GetBuildDetailsDocument = `
     query GetBuildDetails($build_id: uuid) {
   builds(where: {id: {_eq: $build_id}}) {
@@ -6688,7 +6224,13 @@ export const GetProjectDocument = `
     }
     project_access_tokens {
       id
-      access_token
+      project_uuid
+      name
+      created_at
+      last_used
+      created_by_user {
+        traits
+      }
     }
     builds(order_by: {created_at: desc}) {
       id
@@ -6839,6 +6381,15 @@ export const GetVulnerabilityDetailsDocument = `
   }
 }
     `;
+export const InsertProjectAccessTokenDocument = `
+    mutation InsertProjectAccessToken($access_token: uuid!, $name: String!, $project_uuid: uuid!) {
+  insert_project_access_tokens_one(
+    object: {access_token: $access_token, name: $name, project_uuid: $project_uuid}
+  ) {
+    id
+  }
+}
+    `;
 export const InsertManifestDocument = `
     mutation insertManifest($s3_url: String!, $project_id: uuid!, $filename: String!, $key: String!) {
   insert_manifests_one(
@@ -6881,6 +6432,9 @@ export const PresignManifestUrlDocument = `
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    DeleteProjectAccessToken: build.mutation<DeleteProjectAccessTokenMutation, DeleteProjectAccessTokenMutationVariables>({
+      query: (variables) => ({ document: DeleteProjectAccessTokenDocument, variables })
+    }),
     GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetBuildDetailsDocument, variables })
     }),
@@ -6901,6 +6455,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
+    }),
+    InsertProjectAccessToken: build.mutation<InsertProjectAccessTokenMutation, InsertProjectAccessTokenMutationVariables>({
+      query: (variables) => ({ document: InsertProjectAccessTokenDocument, variables })
     }),
     insertManifest: build.mutation<InsertManifestMutation, InsertManifestMutationVariables>({
       query: (variables) => ({ document: InsertManifestDocument, variables })

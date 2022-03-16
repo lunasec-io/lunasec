@@ -13,7 +13,7 @@
  */
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { PieChart, Settings, User } from 'react-feather';
+import { LogOut, PieChart, Settings, User } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 
 import useAppDispatch from '../../hooks/useAppDispatch';
@@ -57,7 +57,10 @@ const NavbarUser: React.FunctionComponent = () => {
         <Dropdown.Divider />
         <Dropdown.Item>Settings & Privacy</Dropdown.Item>
         <Dropdown.Item>Help</Dropdown.Item>
-        <Dropdown.Item onClick={() => doLogout()}>Sign out</Dropdown.Item>
+        <Dropdown.Item onClick={() => doLogout()}>
+          <LogOut size={18} className="align-middle me-2" />
+          Sign out
+        </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
   );

@@ -17,7 +17,7 @@ dotenv.config();
 import Express from 'express';
 
 import { githubApiRouter } from './github/projects';
-import { lookupAccessTokenRouter } from './routes/lookupAccessToken';
+import { lookupAccessTokenRouter } from './routes/auth-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
 
