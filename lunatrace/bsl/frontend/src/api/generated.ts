@@ -6058,7 +6058,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
+export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, critical_packages: { __typename?: 'findings_aggregate', aggregate?: { __typename?: 'findings_aggregate_fields', count: number } | null }, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6074,6 +6074,7 @@ export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
   namespace?: InputMaybe<String_Comparison_Exp>;
   order_by?: InputMaybe<Array<Vulnerabilities_Order_By> | Vulnerabilities_Order_By>;
+  limit: Scalars['Int'];
 }>;
 
 
@@ -6253,6 +6254,9 @@ export const GetProjectDocument = `
         created_at
         scan_number
       }
+      git_branch
+      git_hash
+      git_remote
     }
   }
 }
@@ -6298,11 +6302,11 @@ export const GetSidebarInfoDocument = `
 }
     `;
 export const SearchVulnerabilitiesDocument = `
-    query SearchVulnerabilities($search: String!, $namespace: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerabilities_order_by!] = {}) {
+    query SearchVulnerabilities($search: String!, $namespace: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerabilities_order_by!] = {}, $limit: Int!) {
   vulnerabilities(
     where: {_or: [{name: {_ilike: $search}}, {description: {_ilike: $search}}, {vulnerability_packages: {name: {_ilike: $search}}}], namespace: $namespace}
     order_by: $order_by
-    limit: 30
+    limit: $limit
   ) {
     id
     namespace

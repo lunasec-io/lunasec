@@ -119,7 +119,11 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 	skipUpload := c.Bool("skip-upload")
 	printToStdout := c.Bool("stdout")
 	configOutput := c.String("config-output")
-
+	branch := c.String("git-branch")
+	commit := c.String("git-commit")
+	remote := c.String("git-remote")
+	log.Info().Msg("GIT BRANCH IS ")
+	log.Info().Msg(branch)
 	sbom, err := getSbomForSyft(source, excludedDirs, useStdin)
 	if err != nil {
 		return
@@ -160,7 +164,7 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 	}
 
 	log.Info().Msg("Creating build in LunaTrace database")
-	agentSecret, buildId, err := insertNewBuild(appConfig, projectId)
+	agentSecret, buildId, err := insertNewBuild(appConfig, projectId, branch, commit, remote)
 	if err != nil {
 		return
 	}
