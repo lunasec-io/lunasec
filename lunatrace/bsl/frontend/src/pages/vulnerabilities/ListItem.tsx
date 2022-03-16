@@ -64,10 +64,12 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
               <Col sm={{ span: 6 }}>
                 <div style={{ float: 'right' }}>
                   <Card.Title>
-                    <h3>
-                      <span className="darker"> Severity: </span>
-                      {vuln.severity}
-                    </h3>
+                    <span className="darker h4"> Severity: </span>
+                    <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
+                      <h4 className={` ${vuln.severity}`} style={{ display: 'inline' }}>
+                        {vuln.severity}
+                      </h4>
+                    </div>
                   </Card.Title>
                   <Card.Subtitle className="text-right">{prettyDate(new Date(vuln.created_at))}</Card.Subtitle>
                 </div>

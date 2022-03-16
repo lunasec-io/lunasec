@@ -14,6 +14,7 @@
 import React from 'react';
 import { RouteObject } from 'react-router';
 
+import { RouteGuard } from './components/auth/RouteGuard';
 import MainLayout from './layouts/Main';
 import { OrganizationsList, VulnerabilitiesMain } from './pages';
 import { HomePage } from './pages/homepage/Home';
@@ -49,28 +50,44 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: '',
-            element: <OrganizationsList />,
+            element: (
+              <RouteGuard>
+                <OrganizationsList />
+              </RouteGuard>
+            ),
           },
           {
             path: ':organization_id',
-            // element: <Organization />,
+            element: <RouteGuard></RouteGuard>,
           },
         ],
       },
       {
         path: 'project/create', //maybe this should be under a project group...not sure
-        element: <ProjectCreate />,
+        element: (
+          <RouteGuard>
+            <ProjectCreate />
+          </RouteGuard>
+        ),
       },
       {
         path: 'project/:project_id',
         children: [
           {
             path: '',
-            element: <ProjectMain />,
+            element: (
+              <RouteGuard>
+                <ProjectMain />
+              </RouteGuard>
+            ),
           },
           {
             path: 'build/:build_id',
-            element: <BuildDetails />,
+            element: (
+              <RouteGuard>
+                <BuildDetails />
+              </RouteGuard>
+            ),
           },
         ],
       },

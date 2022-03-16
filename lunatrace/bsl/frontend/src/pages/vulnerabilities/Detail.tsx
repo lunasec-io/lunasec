@@ -52,7 +52,11 @@ export const VulnerabilityDetail: React.FunctionComponent = () => {
                 <Modal.Header>
                   <Modal.Title>
                     <span className="darker "> Severity: </span>
-                    {vuln.severity}
+                    <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
+                      <h4 className={`${vuln.severity}`} style={{ display: 'inline' }}>
+                        {vuln.severity}
+                      </h4>
+                    </div>
                   </Modal.Title>
                 </Modal.Header>
 
