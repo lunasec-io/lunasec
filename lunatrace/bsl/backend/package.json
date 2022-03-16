@@ -2,8 +2,8 @@
   "name": "lunatrace-backend",
   "license": "BSL-LunaTrace",
   "scripts": {
-    "start": "tsc && concurrently 'yarn dev:graphql:watch' \"tsc -w\" \"nodemon build/server.js\"",
-    "start:without-graphql": "nodemon src/server.ts",
+    "start": "concurrently 'yarn dev:graphql:watch' 'yarn run start:server'",
+    "start:server": "nodemon src/server.ts",
     "start:sqs-listener": "tsc && concurrently \"tsc -w\" \"nodemon build/sqs/read-queue.js\"",
     "prod:sqs-listener": "node build/sqs/read-queue.js",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",

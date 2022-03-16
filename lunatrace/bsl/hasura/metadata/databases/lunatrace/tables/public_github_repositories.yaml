@@ -16,3 +16,24 @@ insert_permissions:
     - id
     - project_id
   role: service
+select_permissions:
+- permission:
+    columns:
+    - github_id
+    - api_response
+    - git_url
+    - id
+    - project_id
+    filter: {}
+  role: service
+update_permissions:
+- permission:
+    check: {}
+    columns:
+    - github_id
+    - api_response
+    - git_url
+    - id
+    - project_id
+    filter: {}
+  role: service
