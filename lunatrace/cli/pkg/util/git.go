@@ -51,7 +51,7 @@ func findClosestGitDir() (gitDir string, err error) {
 func getRepo() (repo *git.Repository, err error) {
 	gitDir, err := findClosestGitDir()
 	if err != nil {
-		log.Error().Msg("Unable to locate git folder. Started in the current directory and searched parent folders.")
+		log.Warn().Msg("Unable to locate git project. Please pass git information via command line if you would like to track it")
 		return
 	}
 
