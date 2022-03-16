@@ -20,17 +20,14 @@ import { clear } from '../../store/slices/alerts';
 import { selectConfirmedUnauthenticated } from '../../store/slices/authentication';
 
 export const RouteGuard: React.FC = (props) => {
-  console.log('route guard rendering');
   const confirmedNotAuthenticed = useAppSelector(selectConfirmedUnauthenticated);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   useEffect(() => {
-    console.log('isinitialized is ', confirmedNotAuthenticed);
     if (confirmedNotAuthenticed) {
       console.warn('Detected use not logged in, redirecting to login page and saving URL for redirect back afterwards');
 
       // navigate to the login screen, saving the current url as a redirect that kratos will pick up after login
-      navigate(`/?return_to=${window.location.href}`);
+      navigate(`/?return_to=${encodeURIComponent(window.location.href)}`);
       // Trying to load a page designed for a logged in user without one often causes async errors and reloading fixes it..Seems ok in this case
       window.location.reload();
     }
