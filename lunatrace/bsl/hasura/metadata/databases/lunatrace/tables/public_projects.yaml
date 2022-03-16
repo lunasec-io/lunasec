@@ -105,6 +105,17 @@ select_permissions:
   role: user
 update_permissions:
 - permission:
+    check: {}
+    columns:
+    - name
+    - repo
+    - created_at
+    - id
+    - organization_id
+    - settings_id
+    filter: {}
+  role: service
+- permission:
     check: null
     columns:
     - name

@@ -1,5 +1,11 @@
 mutation CreateOrganizations($objects: [organizations_insert_input!] = {}) {
-  insert_organizations(objects: $objects) {
+  insert_organizations(
+      objects: $objects,
+      on_conflict: {
+          constraint: organizations_github_id_key,
+          update_columns: installation_id
+      }
+  ) {
     affected_rows
     returning {
       id

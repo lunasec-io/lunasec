@@ -1227,6 +1227,9 @@ unique or primary key constraints on table "github_repositories"
 """
 enum github_repositories_constraint {
   """unique or primary key constraint"""
+  github_repositories_github_id_key
+
+  """unique or primary key constraint"""
   github_repository_pkey
 }
 
@@ -1524,6 +1527,42 @@ type identities {
     where: identity_verifiable_addresses_bool_exp
   ): identity_verifiable_addresses_aggregate!
   nid: uuid
+
+  """An array relationship"""
+  organization_users(
+    """distinct select on columns"""
+    distinct_on: [organization_user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [organization_user_order_by!]
+
+    """filter the rows returned"""
+    where: organization_user_bool_exp
+  ): [organization_user!]!
+
+  """An aggregate relationship"""
+  organization_users_aggregate(
+    """distinct select on columns"""
+    distinct_on: [organization_user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [organization_user_order_by!]
+
+    """filter the rows returned"""
+    where: organization_user_bool_exp
+  ): organization_user_aggregate!
   schema_id: String!
   state: String!
   state_changed_at: timestamp
@@ -1567,6 +1606,7 @@ input identities_bool_exp {
   id: uuid_comparison_exp
   identity_verifiable_addresses: identity_verifiable_addresses_bool_exp
   nid: uuid_comparison_exp
+  organization_users: organization_user_bool_exp
   schema_id: String_comparison_exp
   state: String_comparison_exp
   state_changed_at: timestamp_comparison_exp
@@ -1611,6 +1651,7 @@ input identities_insert_input {
   id: uuid
   identity_verifiable_addresses: identity_verifiable_addresses_arr_rel_insert_input
   nid: uuid
+  organization_users: organization_user_arr_rel_insert_input
   schema_id: String
   state: String
   state_changed_at: timestamp
@@ -1676,6 +1717,7 @@ input identities_order_by {
   id: order_by
   identity_verifiable_addresses_aggregate: identity_verifiable_addresses_aggregate_order_by
   nid: order_by
+  organization_users_aggregate: organization_user_aggregate_order_by
   schema_id: order_by
   state: order_by
   state_changed_at: order_by
@@ -3116,7 +3158,7 @@ type mutation_root {
     on_conflict: vulnerability_packages_on_conflict
   ): vulnerability_packages
 
-  """get s3 presigned url for manifest upload"""
+  """get s3 presigned url for manifest upload, used only by the frontend"""
   presignManifestUpload(project_id: uuid!): PresignedUrlResponse
 
   """
@@ -4008,6 +4050,9 @@ unique or primary key constraints on table "organizations"
 """
 enum organizations_constraint {
   """unique or primary key constraint"""
+  organizations_github_id_key
+
+  """unique or primary key constraint"""
   organizations_pkey
 }
 
@@ -4516,7 +4561,14 @@ columns and relationships of "project_access_tokens"
 """
 type project_access_tokens {
   access_token: uuid!
+  created_at: timestamp!
+
+  """An object relationship"""
+  created_by_user: identities
+  created_by_user_id: uuid
   id: uuid!
+  last_used: timestamp
+  name: String
 
   """An object relationship"""
   project: projects!
@@ -4567,7 +4619,12 @@ input project_access_tokens_bool_exp {
   _not: project_access_tokens_bool_exp
   _or: [project_access_tokens_bool_exp!]
   access_token: uuid_comparison_exp
+  created_at: timestamp_comparison_exp
+  created_by_user: identities_bool_exp
+  created_by_user_id: uuid_comparison_exp
   id: uuid_comparison_exp
+  last_used: timestamp_comparison_exp
+  name: String_comparison_exp
   project: projects_bool_exp
   project_uuid: uuid_comparison_exp
 }
@@ -4588,7 +4645,12 @@ input type for inserting data into table "project_access_tokens"
 """
 input project_access_tokens_insert_input {
   access_token: uuid
+  created_at: timestamp
+  created_by_user: identities_obj_rel_insert_input
+  created_by_user_id: uuid
   id: uuid
+  last_used: timestamp
+  name: String
   project: projects_obj_rel_insert_input
   project_uuid: uuid
 }
@@ -4596,7 +4658,11 @@ input project_access_tokens_insert_input {
 """aggregate max on columns"""
 type project_access_tokens_max_fields {
   access_token: uuid
+  created_at: timestamp
+  created_by_user_id: uuid
   id: uuid
+  last_used: timestamp
+  name: String
   project_uuid: uuid
 }
 
@@ -4605,14 +4671,22 @@ order by max() on columns of table "project_access_tokens"
 """
 input project_access_tokens_max_order_by {
   access_token: order_by
+  created_at: order_by
+  created_by_user_id: order_by
   id: order_by
+  last_used: order_by
+  name: order_by
   project_uuid: order_by
 }
 
 """aggregate min on columns"""
 type project_access_tokens_min_fields {
   access_token: uuid
+  created_at: timestamp
+  created_by_user_id: uuid
   id: uuid
+  last_used: timestamp
+  name: String
   project_uuid: uuid
 }
 
@@ -4621,7 +4695,11 @@ order by min() on columns of table "project_access_tokens"
 """
 input project_access_tokens_min_order_by {
   access_token: order_by
+  created_at: order_by
+  created_by_user_id: order_by
   id: order_by
+  last_used: order_by
+  name: order_by
   project_uuid: order_by
 }
 
@@ -4648,7 +4726,12 @@ input project_access_tokens_on_conflict {
 """Ordering options when selecting data from "project_access_tokens"."""
 input project_access_tokens_order_by {
   access_token: order_by
+  created_at: order_by
+  created_by_user: identities_order_by
+  created_by_user_id: order_by
   id: order_by
+  last_used: order_by
+  name: order_by
   project: projects_order_by
   project_uuid: order_by
 }
@@ -4666,7 +4749,19 @@ enum project_access_tokens_select_column {
   access_token
 
   """column name"""
+  created_at
+
+  """column name"""
+  created_by_user_id
+
+  """column name"""
   id
+
+  """column name"""
+  last_used
+
+  """column name"""
+  name
 
   """column name"""
   project_uuid
@@ -4677,7 +4772,11 @@ input type for updating data in table "project_access_tokens"
 """
 input project_access_tokens_set_input {
   access_token: uuid
+  created_at: timestamp
+  created_by_user_id: uuid
   id: uuid
+  last_used: timestamp
+  name: String
   project_uuid: uuid
 }
 
@@ -4689,7 +4788,19 @@ enum project_access_tokens_update_column {
   access_token
 
   """column name"""
+  created_at
+
+  """column name"""
+  created_by_user_id
+
+  """column name"""
   id
+
+  """column name"""
+  last_used
+
+  """column name"""
+  name
 
   """column name"""
   project_uuid
@@ -4952,6 +5063,9 @@ input projects_bool_exp {
 unique or primary key constraints on table "projects"
 """
 enum projects_constraint {
+  """unique or primary key constraint"""
+  projects_name_organization_id_key
+
   """unique or primary key constraint"""
   projects_pkey
 }
@@ -5543,6 +5657,8 @@ type query_root {
   fetch data from the table: "package_versions" using primary key columns
   """
   package_versions_by_pk(id: uuid!): package_versions
+
+  """get s3 presigned url for manifest upload, used by the CLI"""
   presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
 
   """An array relationship"""
