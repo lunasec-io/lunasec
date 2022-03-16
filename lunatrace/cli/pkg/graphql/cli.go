@@ -17,23 +17,9 @@ package graphql
 import (
 	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/pkg/util"
 )
 
-func getGitMetadataVariables(variables map[string]string) {
-	gitMeta := util.CollectRepoMetadata()
-
-	variables["git_remote"] = gitMeta.Remote
-	variables["git_hash"] = gitMeta.Hash
-	variables["git_branch"] = gitMeta.Branch
-}
-
-func NewInsertNewBuildRequest(projectId string) types.GraphqlRequest {
-	variables := map[string]string{
-		"project_id": projectId,
-	}
-
-	getGitMetadataVariables(variables)
+func NewInsertNewBuildRequest(variables map[string]string) types.GraphqlRequest {
 
 	return types.GraphqlRequest{
 		Query:         constants.InsertNewBuildQuery,
