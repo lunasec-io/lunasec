@@ -95,7 +95,9 @@ function writeStackOutputsToConfig(output: string, local: boolean, stackOutputs:
 
 function getCdkCommand(options: DeployCmdOptions) {
   if (options.local) {
-    return 'yarn dlx aws-cdk-local';
+    const envVars = options.localStackHostname ? `LOCALSTACK_HOSTNAME=${options.localStackHostname} ` : '';
+
+    return `${envVars}cd /repo/js/sdks/packages/cli/ && yarn run cdklocal -v`;
   }
 
   return 'cdk';
@@ -104,6 +106,7 @@ function getCdkCommand(options: DeployCmdOptions) {
 interface DeployCmdOptions {
   buildDir?: string;
   local: boolean;
+  localStackHostname?: string;
   skipMirroring: boolean;
   output?: string;
 }
@@ -117,9 +120,9 @@ export async function deployCmd(metrics: LunaSecMetrics, options: DeployCmdOptio
   const buildDir = options.buildDir ? options.buildDir : cacheBuildDir;
   console.log(`Building LunaSec Stack to ${buildDir}`);
 
-  const localstackHostname = process.env.LOCALSTACK_HOSTNAME || 'localhost';
+  const localStackHostname = process.env.LOCALSTACK_HOSTNAME || 'localhost';
 
-  const awsEndpoint = options.local ? `http://${localstackHostname}:4566` : undefined;
+  const awsEndpoint = options.local ? `http://${localStackHostname}:4566` : undefined;
 
   const sts = new STSClient({ region: awsRegion, endpoint: awsEndpoint });
   const cmd = new GetCallerIdentityCommand({});
@@ -152,7 +155,10 @@ export async function deployCmd(metrics: LunaSecMetrics, options: DeployCmdOptio
 
   const outputsFilePath = path.join(buildDir, 'outputs.json');
 
-  const cdkCmd = getCdkCommand(options);
+  const cdkCmd = getCdkCommand({
+    localStackHostname: localStackHostname,
+    ...options,
+  });
 
   const account = options.local ? '' : `aws://${accountID}/${awsRegion}`;
 

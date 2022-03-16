@@ -3,7 +3,7 @@
     preserve_host: true
     url: "http://localhost:8080"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/v1/graphql"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/v1/graphql"
     methods:
       - POST
   authenticators:
@@ -30,7 +30,7 @@
     url: "http://localhost:8080"
     strip_path: "/api/cli"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/api/cli/v1/graphql"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/cli/v1/graphql"
     methods:
       - POST
   authenticators:
@@ -46,8 +46,9 @@
         claims: |
           {
             "https://hasura.io/jwt/claims": {
-              "x-hasura-access-token": "{{ .Subject }}",
+              "x-hasura-access-token": "{{ .Extra.access_token }}",
               "x-hasura-project-uuid": "{{ .Extra.project_uuid }}",
+              "x-hasura-builds": "{{ .Extra.builds }}",
               "x-hasura-allowed-roles": ["cli"],
               "x-hasura-default-role": "cli"
             }
@@ -59,7 +60,7 @@
     url: "http://localhost:8080"
     strip_path: "/api/service"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/api/service/v1/graphql"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/service/v1/graphql"
     methods:
       - POST
   authenticators:
@@ -72,11 +73,12 @@
     - handler: id_token
       config:
         issuer_url: http://oathkeeper:4455/
+        # backend can pretend to be a user if we want to check some auth stuff from the backend..so that role is allowed
         claims: |
           {
             "https://hasura.io/jwt/claims": {
               "x-hasura-user-id": "",
-              "x-hasura-allowed-roles": ["service"],
+              "x-hasura-allowed-roles": ["service", "user"], 
               "x-hasura-default-role": "service"
             }
           }
@@ -119,7 +121,7 @@
     strip_path: "/api/hasura"
     url: "http://localhost:8080"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/api/hasura/<.*>"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/hasura/<.*>"
     methods:
       - GET
       - POST
@@ -139,7 +141,7 @@
     url: "http://localhost:4433"
     strip_path: "/api/kratos"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/api/kratos/<.*>"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/kratos/<.*>"
     methods:
       - GET
       - POST

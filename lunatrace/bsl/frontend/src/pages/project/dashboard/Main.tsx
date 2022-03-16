@@ -22,23 +22,6 @@ interface ProjectDashboardMainProps {
   project: ProjectInfo;
 }
 
-interface ProjectAccessTokensProps {
-  project: ProjectInfo;
-}
-
-const ProjectAccessTokens: React.FunctionComponent<ProjectAccessTokensProps> = ({ project }) => {
-  return (
-    <>
-      <h3>Project Access Tokens</h3>
-      <ul>
-        {project.project_access_tokens.map((token) => {
-          return <li key={token.id}>{token.access_token}</li>;
-        })}
-      </ul>
-    </>
-  );
-};
-
 export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project }) => {
   console.log('rendering main dashboard');
   const { project_id } = useParams();
@@ -47,7 +30,6 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
   return (
     <>
       <ManifestDrop project_id={project_id} />
-      <ProjectAccessTokens project={project} />
     </>
   );
 };

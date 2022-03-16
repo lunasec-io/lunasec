@@ -209,7 +209,10 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const backendStaticSecret = Secret.fromSecretCompleteArn(this, 'BackendStaticSecret', props.backendStaticSecretArn);
 
-    const backendContainerImage = ContainerImage.fromAsset('../backend', commonBuildProps);
+    const backendContainerImage = ContainerImage.fromAsset('../backend', {
+      ...commonBuildProps,
+      target: 'backend-express-server',
+    });
 
     const backend = taskDef.addContainer('BackendContainer', {
       image: backendContainerImage,
@@ -244,7 +247,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         streamPrefix: 'lunatrace-hasura',
       }),
       environment: {
-        HASURA_GRAPHQL_CORS_DOMAIN: `https://${props.domainName}, http://localhost:9695`,
+        HASURA_GRAPHQL_CORS_DOMAIN: `${publicBaseUrl}, http://localhost:9695`,
         HASURA_GRAPHQL_ENABLE_CONSOLE: 'true',
         HASURA_GRAPHQL_PG_CONNECTIONS: '100',
         HASURA_GRAPHQL_LOG_LEVEL: 'debug',
@@ -341,12 +344,17 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
+    const QueueProcessorContainerImage = ContainerImage.fromAsset('../backend', {
+      ...commonBuildProps,
+      target: 'backend-queue-processor',
+    });
+
     const processManifestQueueService = new ecsPatterns.QueueProcessingFargateService(
       this,
       'ProcessManifestQueueService',
       {
         cluster: fargateCluster,
-        image: backendContainerImage,
+        image: QueueProcessorContainerImage,
         queue: processManifestSqsQueue, // will pass queue_name env var automatically
         assignPublicIp: true,
         enableLogging: true,
@@ -383,7 +391,7 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const processSbomQueueService = new ecsPatterns.QueueProcessingFargateService(this, 'ProcessSbomQueueService', {
       cluster: fargateCluster,
-      image: backendContainerImage,
+      image: QueueProcessorContainerImage,
       queue: processSbomSqsQueue, // will pass queue_name env var automatically
       enableLogging: true,
       assignPublicIp: true,

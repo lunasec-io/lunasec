@@ -19,27 +19,48 @@ import { hasura } from '../hasura-api';
 import { Scan } from '../models/scan';
 import { S3ObjectMetadata } from '../types/s3';
 import { aws } from '../utils/aws-utils';
-const gunzip = zlib.createGunzip();
 
 export async function handleScanSbom(message: S3ObjectMetadata) {
+  const { key, region, bucketName } = message;
+  const buildId = key.split('/').pop();
+  if (!buildId || !validate.isUUID(buildId)) {
+    console.error('invalid build uuid from s3 object at key ', key);
+    return; // not much we can do without a valid buildId
+  }
+
   try {
     console.log('scanning sbom ', message);
-    const { key, region, bucketName } = message;
-    const sbomStream = await aws.getFileFromS3(key, bucketName, region);
+
+    const [sbomStream, sbomLength] = await aws.getFileFromS3(key, bucketName, region);
+    console.log('started streaming file from s3');
+    const gunzip = zlib.createGunzip({ chunkSize: sbomLength });
+
     const unZippedSbomStream = sbomStream.pipe(gunzip);
-    console.log('got file from s3');
+    unZippedSbomStream.on('error', (e) => {
+      console.error('Error unzipping sbom ', e);
+      unZippedSbomStream.end(() => console.log('closed stream due to error'));
+      // throw e;
+    });
+    console.log('started unzipping file');
     const buildId = key.split('/').pop();
     if (!buildId || !validate.isUUID(buildId)) {
       // Todo: make sure throwing from these handlers is what we want to do, it will crash the main thread if not caught and that may not be what we want
       throw new Error('Build ID parsed from s3 key is not a valid uuid');
     }
+    console.log('build id is ', buildId);
     await hasura.UpdateManifestStatusIfExists({ status: 'scanning', buildId: buildId });
+    console.log('updated manifest status to scanning if it existed');
     await Scan.uploadScan(unZippedSbomStream, buildId);
     console.log('upload complete, notifying manifest if one exists');
     await hasura.UpdateManifestStatusIfExists({ status: 'scanned', buildId: buildId });
     console.log('done with scan');
   } catch (e) {
     console.error(e);
+    await hasura.UpdateManifestStatusIfExists({
+      status: 'error',
+      message: String(e),
+      buildId: buildId,
+    });
     // todo: somehow write this error back to the db
   }
 }

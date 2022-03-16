@@ -16,31 +16,20 @@ import { RouteObject } from 'react-router';
 
 import MainLayout from './layouts/Main';
 import { Account, Login, OrganizationsList, Registration, VulnerabilitiesMain } from './pages';
-import { Home } from './pages/home';
+import { HomePage, HomePage } from './pages/homepage/Home';
 import { ProjectCreate } from './pages/project/Create';
 import { ProjectMain } from './pages/project/Main';
 import { BuildDetails } from './pages/project/builds/BuildDetails';
-import { Builds } from './pages/project/builds/Builds';
 import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
 
 export const routes: RouteObject[] = [
-  // {
-  //   path:'/login',
-  //   element: <NotLoggedInLayout/>
-  //   children: [
-  //     {
-  //       path: '',
-  //       element: <LoginPage/>
-  //     }
-  //   ]
-  // },
   {
     path: '/',
     element: <MainLayout />,
     children: [
       {
-        index: true,
-        element: <Home />,
+        path: '',
+        element: <HomePage />,
       },
       {
         path: 'account',

@@ -9,8 +9,9 @@ actions:
       query_params: {}
       template_engine: Kriti
   permissions:
+  - role: cli
   - role: user
-  comment: get s3 presigned url for manifest upload
+  comment: get s3 presigned url for manifest upload, used only by the frontend
 - name: presignSbomUpload
   definition:
     kind: ""
@@ -23,6 +24,7 @@ actions:
   permissions:
   - role: cli
   - role: service
+  comment: get s3 presigned url for manifest upload, used by the CLI
 - name: scanManifest
   definition:
     kind: synchronous

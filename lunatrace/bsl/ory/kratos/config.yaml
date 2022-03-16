@@ -44,10 +44,10 @@ selfservice:
 
     logout:
       after:
-        default_browser_return_url: http://localhost:4455/account/login
+        default_browser_return_url: http://localhost:4455
 
     login:
-      ui_url: http://localhost:4455/account/login
+      ui_url: http://localhost:4455
       lifespan: 10m
       after:
         oidc:
