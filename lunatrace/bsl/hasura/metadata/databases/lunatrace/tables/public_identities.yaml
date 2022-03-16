@@ -9,6 +9,13 @@ array_relationships:
       table:
         name: identity_verifiable_addresses
         schema: public
+- name: organization_users
+  using:
+    foreign_key_constraint_on:
+      column: user_id
+      table:
+        name: organization_user
+        schema: public
 select_permissions:
 - permission:
     columns:
@@ -22,3 +29,12 @@ select_permissions:
     - nid
     filter: {}
   role: service
+- permission:
+    columns:
+      - traits
+    filter:
+      organization_users:
+        user:
+          id:
+            _eq: X-Hasura-User-Id
+  role: user

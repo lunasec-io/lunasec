@@ -20,9 +20,11 @@
     "react": "^17.0.2",
     "react-bootstrap": "^2.1.1",
     "react-bootstrap-typeahead": "^6.0.0-alpha.6",
+    "react-code-blocks": "^0.0.9-0",
     "react-dom": "^17.0.2",
     "react-dropzone": "^12.0.4",
     "react-feather": "^2.0.9",
+    "react-github-login-button": "^1.0.1",
     "react-helmet-async": "^1.2.2",
     "react-icons": "^4.3.1",
     "react-perfect-scrollbar": "^1.5.8",
@@ -36,6 +38,7 @@
     "semver-sort": "^1.0.0",
     "typescript": "~4.5.5",
     "use-react-router-breadcrumbs": "^3.0.2",
+    "uuid": "^8.3.2",
     "watch": "^1.0.2"
   },
   "devDependencies": {
@@ -57,6 +60,7 @@
     "@types/react-router-bootstrap": "^0.24.5",
     "@types/semver-sort": "^0.0.1",
     "@types/testing-library__react": "^10.2.0",
+    "@types/uuid": "^8.3.4",
     "apollo": "2.33.9",
     "graphqurl": "^1.0.1",
     "npm-run-all": "^4.1.5",
