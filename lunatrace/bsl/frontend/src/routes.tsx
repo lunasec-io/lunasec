@@ -15,11 +15,9 @@ import React from 'react';
 import { RouteObject } from 'react-router';
 
 import MainLayout from './layouts/Main';
-import { Account, Login, OrganizationsList, Registration, VulnerabilitiesMain } from './pages';
-import { HomePage, HomePage } from './pages/homepage/Home';
+import { BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
+import { HomePage } from './pages/homepage/Home';
 import { ProjectCreate } from './pages/project/Create';
-import { ProjectMain } from './pages/project/Main';
-import { BuildDetails } from './pages/project/builds/BuildDetails';
 import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
 
 export const routes: RouteObject[] = [
@@ -30,23 +28,6 @@ export const routes: RouteObject[] = [
       {
         path: '',
         element: <HomePage />,
-      },
-      {
-        path: 'account',
-        children: [
-          {
-            path: 'account',
-            element: <Account />,
-          },
-          {
-            path: 'login',
-            element: <Login />,
-          },
-          {
-            path: 'register',
-            element: <Registration />,
-          },
-        ],
       },
       {
         path: 'vulnerabilities',

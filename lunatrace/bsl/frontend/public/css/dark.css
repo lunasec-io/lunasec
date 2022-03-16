@@ -14124,7 +14124,7 @@ a.badge-soft-dark:focus, a.badge-soft-dark.focus {
 }
 
 .content {
-  padding: 2.5rem 2.5rem 1.5rem;
+  padding: 0.75rem 2.5rem 1.5rem;
   flex: 1;
   direction: ltr;
 }
