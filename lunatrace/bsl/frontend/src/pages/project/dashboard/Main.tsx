@@ -30,6 +30,7 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
   return (
     <>
       <ManifestDrop project_id={project_id} />
+      Github URL Github Name short github description blurb most recent several builds, master first probably
     </>
   );
 };

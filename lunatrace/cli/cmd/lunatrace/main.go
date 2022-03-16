@@ -126,6 +126,18 @@ func main() {
 								Name:  "stdout",
 								Usage: "Print created SBOM to stdout.",
 							},
+							&cli.StringFlag{
+								Name:  "git-branch",
+								Usage: "Manually specify a branch, otherwise we will attempt to read from a local .git folder.",
+							},
+							&cli.StringFlag{
+								Name:  "git-commit",
+								Usage: "Manually specify a commit, otherwise we will attempt to read from a local .git folder.",
+							},
+							&cli.StringFlag{
+								Name:  "git-remote",
+								Usage: "Manually specify a remote, otherwise we will attempt to read from a local .git folder.",
+							},
 						},
 						Action: func(c *cli.Context) error {
 							return inventory.CreateCommand(c, globalBoolFlags, appConfig)
