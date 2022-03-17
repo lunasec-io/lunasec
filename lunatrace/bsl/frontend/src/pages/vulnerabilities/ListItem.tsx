@@ -61,9 +61,9 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
                   <a href={vuln.data_source || ''}>{vuln.namespace} ↪</a>
                 </Card.Subtitle>
               </Col>
-              <Col sm={{ span: 6 }}>
-                <div style={{ float: 'right' }}>
-                  <Card.Title>
+              <Col sm={{ span: 6 }} className="mt-xs-2 mt-sm-0">
+                <div>
+                  <Card.Title className="text-right">
                     <span className="darker h4"> Severity: </span>
                     <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
                       <h4 className={` ${vuln.severity}`} style={{ display: 'inline' }}>
@@ -71,7 +71,10 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
                       </h4>
                     </div>
                   </Card.Title>
-                  <Card.Subtitle className="text-right">{prettyDate(new Date(vuln.created_at))}</Card.Subtitle>
+                  <Card.Subtitle className="text-right">
+                    <span className="darker">Indexed on: </span>
+                    {prettyDate(new Date(vuln.created_at))}
+                  </Card.Subtitle>
                 </div>
               </Col>
             </Row>

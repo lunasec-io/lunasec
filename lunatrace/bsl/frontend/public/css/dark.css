@@ -17455,21 +17455,21 @@ td.rdtYear:hover {
 }
 
 .vulnerability-severity-badge h4, .vulnerability-severity-badge .h4, .vulnerability-severity-badge h3, .vulnerability-severity-badge .h3 {
-  color: white;
-  border-radius: 4px;
-  padding: 0.1em 0.2em;
+  text-decoration: underline;
+  text-decoration-color: red;
+  text-decoration-thickness: 0.2em;
 }
 .vulnerability-severity-badge .Critical {
-  background-color: #AD1A1A;
+  text-decoration-color: #AD1A1A;
 }
 .vulnerability-severity-badge .High {
-  background-color: #CC4F19;
+  text-decoration-color: #CC4F19;
 }
 .vulnerability-severity-badge .Medium {
-  background-color: #D68100;
+  text-decoration-color: #D68100;
 }
 .vulnerability-severity-badge .Low, .vulnerability-severity-badge .Negligible, .vulnerability-severity-badge .Unknown {
-  background-color: #86859D;
+  text-decoration-color: #86859D;
 }
 
 .wide-tooltip > .tooltip-inner {
