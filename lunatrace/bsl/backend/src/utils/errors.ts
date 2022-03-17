@@ -11,17 +11,8 @@
  * limitations under the License.
  *
  */
-import { GraphQLClient } from 'graphql-request';
 
-import { getHasuraConfig } from '../config';
-
-import { getSdk } from './generated';
-
-const hasuraConfig = getHasuraConfig();
-
-const headers = {
-  'X-LunaTrace-Access-Token': hasuraConfig.staticAccessToken,
-};
-
-const client = new GraphQLClient(hasuraConfig.hasuraEndpoint, { headers });
-export const hasura = getSdk(client);
+export function logError(error: Error): void {
+  console.error(error.message);
+  console.error(error.stack);
+}

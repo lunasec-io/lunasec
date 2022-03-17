@@ -20,19 +20,16 @@ import {
   SQSClient,
 } from '@aws-sdk/client-sqs';
 
+import { getAwsConfig, getQueueHandlerConfig } from '../config';
 import { handleGenerateSbom } from '../sqs-handlers/generateSbom';
 import { handleScanSbom } from '../sqs-handlers/scanSbom';
 import { S3ObjectMetadata } from '../types/s3';
 import { S3SqsEvent } from '../types/sqs';
 
-const queueName = process.env.QUEUE_NAME || '';
+const awsConfig = getAwsConfig();
+const queueHandlerConfig = getQueueHandlerConfig();
 
-if (typeof queueName !== 'string') {
-  throw new Error('queueName is not a string, must set QUEUE_NAME env var');
-}
-
-const REGION = 'us-west-2';
-const sqsClient: SQSClient = new SQSClient({ region: REGION });
+const sqsClient: SQSClient = new SQSClient({ region: awsConfig.awsRegion });
 
 type HandlerCallback = (object: S3ObjectMetadata) => Promise<void>;
 
@@ -93,18 +90,13 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: (objec
   }
 }
 
-const handlerName = process.env.QUEUE_HANDLER;
-
 const handlers: Record<string, HandlerCallback> = {
   'process-manifest-queue': handleGenerateSbom,
   'process-sbom-queue': handleScanSbom,
 };
 
 function determineHandler(): HandlerCallback {
-  if (!handlerName || typeof handlerName !== 'string') {
-    throw new Error('Must set QUEUE_HANDLER env var for queue handler job');
-  }
-
+  const handlerName = queueHandlerConfig.handlerName;
   if (!(handlerName in handlers)) {
     throw new Error('Unknown queue handler: ' + handlerName);
   }
@@ -112,6 +104,8 @@ function determineHandler(): HandlerCallback {
 }
 
 export async function setupQueue() {
+  const queueName = queueHandlerConfig.queueName;
+
   const { QueueUrl } = await sqsClient.send(
     new GetQueueUrlCommand({
       QueueName: queueName,

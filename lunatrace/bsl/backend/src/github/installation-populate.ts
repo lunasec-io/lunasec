@@ -14,34 +14,24 @@
 import fs from 'fs';
 
 import { createAppAuth } from '@octokit/auth-app';
-import { App, Octokit } from 'octokit';
+import { Octokit } from 'octokit';
 
-const githubPrivateKeyRaw = process.env.GITHUB_APP_PRIVATE_KEY;
+import { getGithubAppConfig } from '../config';
+import { ListReposAccessibleToInstallationResponseType } from '../types/github';
 
-if (!githubPrivateKeyRaw || typeof githubPrivateKeyRaw !== 'string') {
-  throw new Error('Must specify GitHub App Private Key in GITHUB_APP_PRIVATE_KEY');
-}
-
-const githubPrivateKey = Buffer.from(githubPrivateKeyRaw, 'base64').toString('utf-8');
-
-const githubAppIdRaw = process.env.GITHUB_APP_ID;
-
-if (!githubAppIdRaw || typeof githubAppIdRaw !== 'string') {
-  throw new Error('Must specify GitHub App Id in GITHUB_APP_ID');
-}
-
-const githubAppId = parseInt(githubAppIdRaw, 10);
+const githubAppConfig = getGithubAppConfig();
 
 export function getGithubAppAuth(clientInfo?: { clientId: string; clientSecret: string }) {
   return createAppAuth({
-    appId: githubAppId,
-    privateKey: githubPrivateKey,
+    appId: githubAppConfig.githubAppId,
+    privateKey: githubAppConfig.githubPrivateKey,
     ...clientInfo,
   });
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export async function pullDataForInstallation(installationId: number) {
+export async function pullDataForInstallation(
+  installationId: number
+): Promise<ListReposAccessibleToInstallationResponseType> {
   const auth = getGithubAppAuth();
 
   // Retrieve installation access token
