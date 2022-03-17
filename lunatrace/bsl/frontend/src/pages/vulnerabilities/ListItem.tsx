@@ -58,7 +58,14 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
                   <h3>{vuln.name}</h3>
                 </Card.Title>
                 <Card.Subtitle>
-                  <a href={vuln.data_source || ''}>{vuln.namespace} ↪</a>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    href={vuln.data_source || ''}
+                  >
+                    {vuln.namespace} ↪
+                  </a>
                 </Card.Subtitle>
               </Col>
               <Col sm={{ span: 6 }} className="mt-xs-2 mt-sm-0">
