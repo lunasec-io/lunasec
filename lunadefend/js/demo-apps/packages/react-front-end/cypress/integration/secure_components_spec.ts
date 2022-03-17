@@ -16,9 +16,9 @@
  */
 import * as path from 'path';
 
-Cypress.Cookies.defaults({
-  preserve: ['connect.sid', 'access_token'],
-});
+// Cypress.Cookies.defaults({
+//   preserve: ['connect.sid', 'access_token'],
+// });
 
 const fakeSSN = '123121234';
 const randomUserName = Math.floor(Math.random() * 1000000000).toString();
@@ -92,8 +92,22 @@ function runDedicatedModeTests(mode: string) {
 
       cy.wait(200);
 
+      cy.reload();
+
+      cy.wait(2000);
+
       cy.location('pathname').should('eq', `/${mode}/secureinput`);
       cy.get('p[id=user-status]').should('contain', 'Logged in');
+
+      cy.wait(200);
+
+      cy.get('a').contains('SecureInput').click();
+
+      cy.iframe().find('.secure-input').type(fakeSSN);
+
+      cy.get('button[type=submit]').click();
+
+      cy.get('#success-alert').should('contain', 'Success');
     });
 
     it('secure input tokenizes', () => {

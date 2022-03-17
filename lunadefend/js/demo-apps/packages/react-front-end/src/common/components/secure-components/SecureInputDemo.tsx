@@ -162,7 +162,8 @@ export const SecureInputDemo: React.FunctionComponent<{
                   /*
                   // eslint-disable-next-line
                   // @ts-ignore */
-                  inputComponent: SecureInput,
+                  // eslint-disable-next-line react/display-name
+                  inputComponent: React.forwardRef((props, ref) => <SecureInput {...props} ref={ref} />),
                   inputProps: secureInputProps,
                 }}
               />

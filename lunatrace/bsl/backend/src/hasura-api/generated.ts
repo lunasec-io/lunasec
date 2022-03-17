@@ -1,3 +1,16 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1 
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -656,9 +669,9 @@ export type Findings_Bool_Exp = {
 /** unique or primary key constraints on table "findings" */
 export enum Findings_Constraint {
   /** unique or primary key constraint */
-  FindingsPkey = 'findings_pkey',
+  FindingsDedupeSlugBuildIdKey = 'findings_dedupe_slug_build_id_key',
   /** unique or primary key constraint */
-  TempDedupeFix = 'temp_dedupe_fix'
+  FindingsPkey = 'findings_pkey'
 }
 
 /** input type for inserting data into table "findings" */
@@ -964,11 +977,35 @@ export type Identities = {
   created_at: Scalars['timestamp'];
   id: Scalars['uuid'];
   nid?: Maybe<Scalars['uuid']>;
+  /** An array relationship */
+  organization_users: Array<Organization_User>;
+  /** An aggregate relationship */
+  organization_users_aggregate: Organization_User_Aggregate;
   schema_id: Scalars['String'];
   state: Scalars['String'];
   state_changed_at?: Maybe<Scalars['timestamp']>;
   traits: Scalars['jsonb'];
   updated_at: Scalars['timestamp'];
+};
+
+
+/** columns and relationships of "identities" */
+export type IdentitiesOrganization_UsersArgs = {
+  distinct_on?: InputMaybe<Array<Organization_User_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Organization_User_Order_By>>;
+  where?: InputMaybe<Organization_User_Bool_Exp>;
+};
+
+
+/** columns and relationships of "identities" */
+export type IdentitiesOrganization_Users_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Organization_User_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Organization_User_Order_By>>;
+  where?: InputMaybe<Organization_User_Bool_Exp>;
 };
 
 
@@ -1012,6 +1049,7 @@ export type Identities_Bool_Exp = {
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   nid?: InputMaybe<Uuid_Comparison_Exp>;
+  organization_users?: InputMaybe<Organization_User_Bool_Exp>;
   schema_id?: InputMaybe<String_Comparison_Exp>;
   state?: InputMaybe<String_Comparison_Exp>;
   state_changed_at?: InputMaybe<Timestamp_Comparison_Exp>;
@@ -1045,6 +1083,7 @@ export type Identities_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamp']>;
   id?: InputMaybe<Scalars['uuid']>;
   nid?: InputMaybe<Scalars['uuid']>;
+  organization_users?: InputMaybe<Organization_User_Arr_Rel_Insert_Input>;
   schema_id?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
   state_changed_at?: InputMaybe<Scalars['timestamp']>;
@@ -1104,6 +1143,7 @@ export type Identities_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   nid?: InputMaybe<Order_By>;
+  organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
   schema_id?: InputMaybe<Order_By>;
   state?: InputMaybe<Order_By>;
   state_changed_at?: InputMaybe<Order_By>;
@@ -3101,7 +3141,13 @@ export enum Package_Versions_Update_Column {
 export type Project_Access_Tokens = {
   __typename?: 'project_access_tokens';
   access_token: Scalars['uuid'];
+  created_at: Scalars['timestamp'];
+  /** An object relationship */
+  created_by_user?: Maybe<Identities>;
+  created_by_user_id?: Maybe<Scalars['uuid']>;
   id: Scalars['uuid'];
+  last_used?: Maybe<Scalars['timestamp']>;
+  name?: Maybe<Scalars['String']>;
   /** An object relationship */
   project: Projects;
   project_uuid: Scalars['uuid'];
@@ -3149,7 +3195,12 @@ export type Project_Access_Tokens_Bool_Exp = {
   _not?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
   _or?: InputMaybe<Array<Project_Access_Tokens_Bool_Exp>>;
   access_token?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_by_user?: InputMaybe<Identities_Bool_Exp>;
+  created_by_user_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  last_used?: InputMaybe<Timestamp_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_uuid?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -3165,7 +3216,12 @@ export enum Project_Access_Tokens_Constraint {
 /** input type for inserting data into table "project_access_tokens" */
 export type Project_Access_Tokens_Insert_Input = {
   access_token?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_by_user?: InputMaybe<Identities_Obj_Rel_Insert_Input>;
+  created_by_user_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_used?: InputMaybe<Scalars['timestamp']>;
+  name?: InputMaybe<Scalars['String']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_uuid?: InputMaybe<Scalars['uuid']>;
 };
@@ -3174,14 +3230,22 @@ export type Project_Access_Tokens_Insert_Input = {
 export type Project_Access_Tokens_Max_Fields = {
   __typename?: 'project_access_tokens_max_fields';
   access_token?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  created_by_user_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  last_used?: Maybe<Scalars['timestamp']>;
+  name?: Maybe<Scalars['String']>;
   project_uuid?: Maybe<Scalars['uuid']>;
 };
 
 /** order by max() on columns of table "project_access_tokens" */
 export type Project_Access_Tokens_Max_Order_By = {
   access_token?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  created_by_user_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  last_used?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
   project_uuid?: InputMaybe<Order_By>;
 };
 
@@ -3189,14 +3253,22 @@ export type Project_Access_Tokens_Max_Order_By = {
 export type Project_Access_Tokens_Min_Fields = {
   __typename?: 'project_access_tokens_min_fields';
   access_token?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  created_by_user_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['uuid']>;
+  last_used?: Maybe<Scalars['timestamp']>;
+  name?: Maybe<Scalars['String']>;
   project_uuid?: Maybe<Scalars['uuid']>;
 };
 
 /** order by min() on columns of table "project_access_tokens" */
 export type Project_Access_Tokens_Min_Order_By = {
   access_token?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  created_by_user_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  last_used?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
   project_uuid?: InputMaybe<Order_By>;
 };
 
@@ -3219,7 +3291,12 @@ export type Project_Access_Tokens_On_Conflict = {
 /** Ordering options when selecting data from "project_access_tokens". */
 export type Project_Access_Tokens_Order_By = {
   access_token?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  created_by_user?: InputMaybe<Identities_Order_By>;
+  created_by_user_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  last_used?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_uuid?: InputMaybe<Order_By>;
 };
@@ -3234,7 +3311,15 @@ export enum Project_Access_Tokens_Select_Column {
   /** column name */
   AccessToken = 'access_token',
   /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CreatedByUserId = 'created_by_user_id',
+  /** column name */
   Id = 'id',
+  /** column name */
+  LastUsed = 'last_used',
+  /** column name */
+  Name = 'name',
   /** column name */
   ProjectUuid = 'project_uuid'
 }
@@ -3242,7 +3327,11 @@ export enum Project_Access_Tokens_Select_Column {
 /** input type for updating data in table "project_access_tokens" */
 export type Project_Access_Tokens_Set_Input = {
   access_token?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_by_user_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_used?: InputMaybe<Scalars['timestamp']>;
+  name?: InputMaybe<Scalars['String']>;
   project_uuid?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -3251,7 +3340,15 @@ export enum Project_Access_Tokens_Update_Column {
   /** column name */
   AccessToken = 'access_token',
   /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CreatedByUserId = 'created_by_user_id',
+  /** column name */
   Id = 'id',
+  /** column name */
+  LastUsed = 'last_used',
+  /** column name */
+  Name = 'name',
   /** column name */
   ProjectUuid = 'project_uuid'
 }

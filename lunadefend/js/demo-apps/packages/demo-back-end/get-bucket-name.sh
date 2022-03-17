@@ -17,7 +17,7 @@ else
      echo "Waiting for aws_resources.json to be created" >&2
      sleep 1
    done
-  jq -r .aws_gateway.ciphertext_bucket $(dirname "$0")/../../../../../outputs/aws_resources.json
+  jq -r .aws_gateway.ciphertext_bucket "$(dirname "$0")/../../../../../outputs/aws_resources.json" | sed 's/"//g'
 fi
 
 #here is a way to read the name out of the resource file if we ever decide we want to do it that way instead
