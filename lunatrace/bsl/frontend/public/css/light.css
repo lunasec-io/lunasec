@@ -17472,6 +17472,11 @@ td.rdtYear:hover {
   text-decoration-color: #86859D;
 }
 
+.vuln-sort-dropdown {
+  height: calc(2.4875rem + 2px);
+  margin-bottom: 6px;
+}
+
 .wide-tooltip > .tooltip-inner {
   max-width: 50em;
 }
@@ -17484,9 +17489,8 @@ td.rdtYear:hover {
   content: var(--bs-breadcrumb-divider, ">") !important;
 }
 
-.breadcrumb {
-  padding-top: 15px;
-  font-size: larger;
+.navbar-nav .switch {
+  border-radius: 0.25rem;
 }
 
 .breadcrumb-navigation {
@@ -17594,6 +17598,11 @@ td.rdtYear:hover {
 
 .github-signin-button {
   background-color: #24292f !important;
+}
+
+.breadcrumb {
+  font-size: 1rem;
+  padding-top: 15px;
 }
 
 .darker {
