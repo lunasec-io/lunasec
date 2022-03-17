@@ -1,0 +1,6 @@
+query AuthorizedUserOrganizations($github_org_ids: [Int!]) {
+  organizations(where: {github_id: {_in: $github_org_ids}}) {
+    id
+    github_id
+  }
+}
