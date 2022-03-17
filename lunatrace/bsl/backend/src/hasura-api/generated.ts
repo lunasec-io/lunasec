@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -1085,7 +1072,7 @@ export enum Github_Repositories_Constraint {
   /** unique or primary key constraint */
   GithubRepositoriesGithubIdKey = 'github_repositories_github_id_key',
   /** unique or primary key constraint */
-  GithubRepositoryPkey = 'github_repository_pkey'
+  GithubRepositoriesPkey = 'github_repositories_pkey'
 }
 
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
@@ -3409,9 +3396,9 @@ export type Organizations = {
   __typename?: 'organizations';
   createdAt: Scalars['timestamp'];
   creator_id?: Maybe<Scalars['uuid']>;
-  github_id: Scalars['Int'];
+  github_id?: Maybe<Scalars['Int']>;
   id: Scalars['uuid'];
-  installation_id: Scalars['Int'];
+  installation_id?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
   /** An array relationship */
   organization_users: Array<Organization_User>;
@@ -7002,7 +6989,7 @@ export type AuthorizedUserOrganizationsQueryVariables = Exact<{
 }>;
 
 
-export type AuthorizedUserOrganizationsQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, github_id: number }> };
+export type AuthorizedUserOrganizationsQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, github_id?: number | null }> };
 
 export type CreateOrganizationsMutationVariables = Exact<{
   objects?: InputMaybe<Array<Organizations_Insert_Input> | Organizations_Insert_Input>;

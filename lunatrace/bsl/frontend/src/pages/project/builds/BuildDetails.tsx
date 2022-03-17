@@ -34,13 +34,17 @@ export const BuildDetails: React.FunctionComponent = () => {
 
     if (data.builds.length === 0) {
       console.error(`no builds are available: ${data}`);
-      return null;
+      return <span>404: Couldn&apos;t find a build with this ID.</span>;
     }
     const build = data.builds[0];
 
     if (build.scans.length === 0) {
-      console.error(`build does not have any scans: ${build}`);
-      return null;
+      return (
+        <span>
+          Error: This build has not yet been scanned. Please wait a short time for the scan to finish and then return to
+          this page.
+        </span>
+      );
     }
     const firstScan = build.scans[0];
 
@@ -78,10 +82,10 @@ export const BuildDetails: React.FunctionComponent = () => {
           <Col xs="12" sm="3">
             <div className="build-git-info">
               <h6>
-                <span className="darker">Branch: </span> master
+                <span className="darker">Branch: </span> {build.git_branch}
               </h6>
               <h6>
-                <span className="darker">Commit: </span> 1231adf... ↪
+                <span className="darker">Commit: </span> {build.git_hash?.substring(0, 8)}... ↪
               </h6>
               <h6>
                 <span className="darker">{capitalizeFirstLetter(firstScan.source_type)}:</span> {firstScan.target}

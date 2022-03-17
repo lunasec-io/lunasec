@@ -58,7 +58,7 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
           <Row>
             <Col sm="6">
               <Card.Title>
-                <h3>{pkg.package_name} </h3>
+                <h2>{pkg.package_name} </h2>
               </Card.Title>
               <Card.Subtitle>
                 {' '}
@@ -70,7 +70,11 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
               <div style={{ float: 'right', textAlign: 'right' }}>
                 <Card.Title>
                   <span className="text-right darker"> Severity: </span>
-                  <h4 style={{ display: 'inline' }}>{pkg.severity}</h4>
+                  <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
+                    <h4 className={`p-1 ${pkg.severity}`} style={{ display: 'inline' }}>
+                      {pkg.severity}
+                    </h4>
+                  </div>
                 </Card.Title>
                 {pkg.cvss_score ? (
                   <Card.Subtitle>

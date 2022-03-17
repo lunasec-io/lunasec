@@ -177,14 +177,41 @@ func getOrgAndProjectFromAccessToken(
 	return
 }
 
+func getGitMetadataVariablesIfEmpty(variables map[string]string) {
+	gitMeta := util.CollectRepoMetadata()
+	if variables["git_remote"] == "" {
+		variables["git_remote"] = gitMeta.Remote
+	}
+	if variables["git_hash"] == "" {
+		variables["git_hash"] = gitMeta.Hash
+	}
+	if variables["git_branch"] == "" {
+		variables["git_branch"] = gitMeta.Branch
+	}
+}
+
 // todo: dry out the next 3 methods
 func insertNewBuild(
 	appConfig types.LunaTraceConfig,
 	projectId string,
+	branchArg string,
+	commitArg string,
+	remoteArg string,
 ) (agentSecret string, buildId string, err error) {
 	var newBuildResponse types.NewBuildResponse
 
-	request := graphql.NewInsertNewBuildRequest(projectId)
+	variables := map[string]string{
+		"project_id": projectId,
+		"git_branch": branchArg,
+		"git_hash":   commitArg,
+		"git_remote": remoteArg,
+	}
+
+	if branchArg == "" || commitArg == "" || remoteArg == "" {
+		getGitMetadataVariablesIfEmpty(variables)
+	}
+
+	request := graphql.NewInsertNewBuildRequest(variables)
 
 	headers := getLunaTraceProjectAccessTokenHeaders(appConfig.ProjectAccessToken)
 
