@@ -16,3 +16,10 @@ export function logError(error: Error): void {
   console.error(error.message);
   console.error(error.stack);
 }
+
+export function errorResponse(msg: string) {
+  return {
+    error: true,
+    message: msg,
+  };
+}
