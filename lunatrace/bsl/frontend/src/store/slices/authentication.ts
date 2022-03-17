@@ -28,7 +28,7 @@ import ory from '../../utils/sdk';
 import { AppThunk, RootState } from '../store';
 
 export interface AuthState {
-  isInitialized: boolean;
+  confirmedUnauthenticated: boolean;
   session: null | Session;
 
   loginFlow: SelfServiceLoginFlow | undefined;
@@ -36,7 +36,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-  isInitialized: false,
+  confirmedUnauthenticated: false,
   session: null,
 
   loginFlow: undefined,
@@ -63,20 +63,27 @@ export const authSlice = createSlice({
     setSession: (state, action: PayloadAction<Session | null>) => {
       state.session = action.payload;
     },
-    setIsInitialized: (state, action: PayloadAction<boolean>) => {
-      state.isInitialized = action.payload;
+    setConfirmedUnauthenticated: (state, action: PayloadAction<boolean>) => {
+      state.confirmedUnauthenticated = action.payload;
     },
   },
 });
 
-export const { setLoginFlow, resetLoginFlow, setRegisterFlow, resetRegisterFlow, setSession, setIsInitialized } =
-  authSlice.actions;
+export const {
+  setLoginFlow,
+  resetLoginFlow,
+  setRegisterFlow,
+  resetRegisterFlow,
+  setSession,
+  setConfirmedUnauthenticated,
+} = authSlice.actions;
 
 export const selectIsAuthenticated = (state: RootState) => state.auth.session !== null;
 export const selectSession = (state: RootState) => state.auth.session;
 export const selectLoginFlow = (state: RootState) => state.auth.loginFlow;
 export const selectRegisterFlow = (state: RootState) => state.auth.registerFlow;
 export const selectUserId = (state: RootState) => state.auth.session?.identity.id;
+export const selectConfirmedUnauthenticated = (state: RootState) => state.auth.confirmedUnauthenticated;
 
 export const login =
   (navigate: NavigateFunction, values: SubmitSelfServiceLoginFlowBody): AppThunk =>
