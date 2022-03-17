@@ -28,10 +28,9 @@ import { ProjectInfo } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
   const { project_id } = useParams();
-  const navigate = useNavigate();
 
   // RUN SEARCH QUERY
-  const { data, error, isLoading } = api.useGetProjectQuery({
+  const { data, isLoading } = api.useGetProjectQuery({
     project_id,
   });
 
@@ -51,7 +50,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
               }}
               eventKey="dashboard"
             >
-              <Home size="17" /> Dashboard
+              <Home size="1em" className="mb-2 me-1" /> Dashboard
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
@@ -61,12 +60,12 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
               }}
               eventKey="builds"
             >
-              <Box size="17" /> Builds
+              <Box size="1em" className="mb-2 me-1" /> Builds
             </Nav.Link>
           </Nav.Item>
           <Nav.Item className="ms-auto">
             <Nav.Link onClick={() => setActiveTab('settings')} eventKey="settings">
-              <Settings size="17" /> Settings and Secrets
+              <Settings size="1em" className="mb-2 me-1" /> Settings and Secrets
             </Nav.Link>
           </Nav.Item>
         </Nav>
