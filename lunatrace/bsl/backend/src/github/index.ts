@@ -13,15 +13,15 @@
  */
 import { GraphQLClient } from 'graphql-request';
 
-import { getHasuraConfig } from '../config';
-
 import { getSdk } from './generated';
 
-const hasuraConfig = getHasuraConfig();
+const githubEndpoint = 'https://api.github.com/graphql';
 
-const headers = {
-  'X-LunaTrace-Access-Token': hasuraConfig.staticAccessToken,
-};
-
-const client = new GraphQLClient(hasuraConfig.hasuraEndpoint, { headers });
-export const hasura = getSdk(client);
+export function generateGithubGraphqlClient(accessToken: string) {
+  const client = new GraphQLClient(githubEndpoint, {
+    headers: {
+      authorization: `token ${accessToken}`,
+    },
+  });
+  return getSdk(client);
+}

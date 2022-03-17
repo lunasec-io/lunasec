@@ -11,17 +11,14 @@
  * limitations under the License.
  *
  */
-import { GraphQLClient } from 'graphql-request';
+export interface KratosIdentityConfig {
+  providers: KratosIdentityProvider[];
+}
 
-import { getHasuraConfig } from '../config';
-
-import { getSdk } from './generated';
-
-const hasuraConfig = getHasuraConfig();
-
-const headers = {
-  'X-LunaTrace-Access-Token': hasuraConfig.staticAccessToken,
-};
-
-const client = new GraphQLClient(hasuraConfig.hasuraEndpoint, { headers });
-export const hasura = getSdk(client);
+export interface KratosIdentityProvider {
+  initial_id_token: string;
+  subject: string;
+  provider: string;
+  initial_access_token: string;
+  initial_refresh_token: string;
+}
