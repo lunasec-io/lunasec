@@ -13,12 +13,15 @@
  */
 import { GraphQLClient } from 'graphql-request';
 
-import { staticAccessToken } from '../constants';
+import { getHasuraConfig } from '../config';
 
 import { getSdk } from './generated';
 
-const headers = { 'X-LunaTrace-Access-Token': staticAccessToken };
-const hasuraEndpoint = process.env.HASURA_URL || 'http://localhost:4455/api/service/v1/graphql';
+const hasuraConfig = getHasuraConfig();
 
-const client = new GraphQLClient(hasuraEndpoint, { headers });
+const headers = {
+  'X-LunaTrace-Access-Token': hasuraConfig.staticAccessToken,
+};
+
+const client = new GraphQLClient(hasuraConfig.hasuraEndpoint, { headers });
 export const hasura = getSdk(client);
