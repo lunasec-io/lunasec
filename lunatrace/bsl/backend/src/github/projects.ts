@@ -24,7 +24,7 @@ import {
 } from '../hasura-api/generated';
 import { getGithubAccessTokenFromKratos } from '../kratos';
 import { ListReposAccessibleToInstallationResponseType } from '../types/github';
-import { logError } from '../utils/errors';
+import { errorResponse, logError } from '../utils/errors';
 import { tryParseInt } from '../utils/parse-int';
 import { isError, Try, tryF } from '../utils/try';
 
@@ -43,18 +43,14 @@ githubApiRouter.get('/github/install', async (req, res) => {
   const setupActionQueryParam = req.query.setup_action;
 
   if (!installationIdQueryParam || typeof installationIdQueryParam !== 'string') {
-    res.status(401).send({
-      error: 'installation_id not provided in query params',
-    });
+    res.status(401).send(errorResponse('installation_id not provided in query params'));
     return;
   }
 
   const installationIdRet = tryParseInt(installationIdQueryParam, 10);
 
   if (!installationIdRet.success) {
-    res.status(401).send({
-      error: 'installation_id is not a valid integer',
-    });
+    res.status(401).send(errorResponse('installation_id is not a valid integer'));
     return;
   }
 
@@ -68,11 +64,15 @@ githubApiRouter.get('/github/install', async (req, res) => {
 
   if (error) {
     console.log(`[installId: ${installationId}] Error installing Github App: ${errorDescription}`);
-    res.status(401).send({
-      error: error,
-      description: errorDescription,
-      uri: errorUri,
-    });
+    res.status(401).send(
+      errorResponse(
+        JSON.stringify({
+          error: error,
+          description: errorDescription,
+          uri: errorUri,
+        })
+      )
+    );
     return;
   }
 
@@ -82,10 +82,7 @@ githubApiRouter.get('/github/install', async (req, res) => {
 
   if (isError(installDataRes)) {
     logError(installDataRes);
-    res.status(500).send({
-      error: true,
-      message: 'unable to collect Github information for install.',
-    });
+    res.status(500).send(errorResponse('unable to collect Github information for install.'));
     return;
   }
 
@@ -107,10 +104,9 @@ githubApiRouter.get('/github/install', async (req, res) => {
 
   if (isError(createOrgsRes)) {
     logError(createOrgsRes);
-    res.status(500).send({
-      error: true,
-      message: 'unable to create LunaTrace organizations from collected Github Organizations.',
-    });
+    res
+      .status(500)
+      .send(errorResponse('unable to create LunaTrace organizations from collected Github Organizations.'));
     return;
   }
 
@@ -213,10 +209,7 @@ githubApiRouter.post('/github/login', async (req, res) => {
 
   if (isError(userGithubOrgs) || userGithubOrgs === null) {
     logError(userGithubOrgs === null ? new Error('userGithubOrgs is null') : userGithubOrgs);
-    res.status(500).send({
-      error: true,
-      message: 'cannot collect user Github orgs from api',
-    });
+    res.status(500).send(errorResponse('cannot collect user Github orgs from api'));
     return;
   }
 
@@ -224,10 +217,7 @@ githubApiRouter.post('/github/login', async (req, res) => {
 
   const githubOrgIds = getGithubOrgIdsFromApiResponse(userId, userGithubOrgs);
   if (githubOrgIds === null) {
-    res.status(500).send({
-      error: true,
-      message: 'unable to collect User Organization Ids from GitHub API.',
-    });
+    res.status(500).send(errorResponse('unable to collect User Organization Ids from GitHub API.'));
     return;
   }
 
@@ -244,10 +234,7 @@ githubApiRouter.post('/github/login', async (req, res) => {
 
   if (isError(authorizedUserOrgs)) {
     logError(authorizedUserOrgs);
-    res.status(500).send({
-      error: true,
-      message: 'unable to collect User Organization Ids from GitHub API.',
-    });
+    res.status(500).send(errorResponse('unable to collect User Organization Ids from GitHub API.'));
     return;
   }
 
@@ -269,8 +256,16 @@ githubApiRouter.post('/github/login', async (req, res) => {
       })
   );
 
-  if (isError(updatedOrganizations) || !updatedOrganizations.insert_organization_user) {
-    throw new Error(`[user: ${userId}] Updating LunaTrace user organizations failed`);
+  if (isError(updatedOrganizations)) {
+    logError(updatedOrganizations);
+    res.status(500).send(errorResponse('updated organizations.'));
+    return;
+  }
+
+  if (!updatedOrganizations.insert_organization_user) {
+    logError(new Error('updated organizations response is null'));
+    res.status(500).send(errorResponse('unable to updated LunaTrace organizations from Github organizations.'));
+    return;
   }
 
   console.log(
@@ -280,6 +275,7 @@ githubApiRouter.post('/github/login', async (req, res) => {
   );
 
   res.send({
-    authenticated_orgs: updatedOrganizations.insert_organization_user?.affected_rows,
+    error: false,
+    message: 'Github login callback completed successfully',
   });
 });
