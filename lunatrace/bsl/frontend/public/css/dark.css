@@ -15020,7 +15020,8 @@ body[data-theme=light] a.sidebar-link {
 .sidebar-link svg,
 a.sidebar-link i,
 a.sidebar-link svg {
-  margin-right: 0.75rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.1rem;
   color: rgba(233, 236, 239, 0.5);
 }
 body[data-theme=colored] .sidebar-link i,
@@ -15092,7 +15093,7 @@ body[data-theme=colored] .sidebar-item.active > .sidebar-link,
 body[data-theme=colored] .sidebar-item.active .sidebar-link:hover,
 body[data-theme=colored] .sidebar-link.active,
 body[data-theme=colored] .sidebar-link.active:hover {
-  color: #f8f9fa;
+  color: #e9ecef;
 }
 body[data-theme=dark] .sidebar-item.active > .sidebar-link,
 body[data-theme=dark] .sidebar-item.active .sidebar-link:hover,
@@ -15196,6 +15197,10 @@ body[data-theme=light] .sidebar-dropdown .sidebar-item > .sidebar-link.active {
 
 .sidebar [data-bs-toggle=collapse] {
   position: relative;
+}
+
+.sidebar [aria-expanded=true]:before, .sidebar [data-bs-toggle=collapse]:not(.collapsed):before {
+  top: 50%;
 }
 
 .sidebar [data-bs-toggle=collapse]:before {
@@ -15308,6 +15313,8 @@ body[data-sidebar-position=right] .sidebar-toggle {
   background: transparent;
   padding: 1.5rem 1.5rem 0.375rem;
   font-size: 0.875rem;
+  letter-spacing: 0.005rem;
+  font-weight: 700;
   color: #ced4da;
 }
 body[data-theme=colored] .sidebar-header {
