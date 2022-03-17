@@ -55,7 +55,7 @@ Other containers we run:
   this *much* easier than getting Cypress installed on our own container.
 * **AWS Localstack** - a simulated copy of AWS using the AWS Localstack container.  Seriously helpful for both local dev and CI.
   
-You can find these dockerfiles in our repo [here](https://github.com/lunasec-io/lunasec/tree/master/js/docker), mostly in `demo.dockerfile`.
+You can find these dockerfiles in our repo [here](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/docker), mostly in `demo.dockerfile`.
 
 ### Docker Compose
 The standard way to launch a cluster of containers is via Docker Compose.  For our project, we want to control which containers come
@@ -66,10 +66,10 @@ We looked around at other big projects like ours and saw that some of them use m
 That's okay, but we wanted more programmatic control over Docker Compose, so we wrote a script that generates the YAML file.  
 
 We (okay, it was my very smart coworker) even generated
-[typescript types](https://github.com/lunasec-io/lunasec/blob/master/js/sdks/packages/cli/src/docker-compose/docker-compose-types.ts) 
+[typescript types](https://github.com/lunasec-io/lunasec/blob/master/lunadefend/js/sdks/packages/cli/src/docker-compose/docker-compose-types.ts) 
 for the YAML file from the official JSON Schema definition.
 
-[Here's the code](https://github.com/lunasec-io/lunasec/blob/master/js/sdks/packages/cli/src/docker-compose/lunasec-stack.ts) 
+[Here's the code](https://github.com/lunasec-io/lunasec/blob/master/lunadefend/js/sdks/packages/cli/src/docker-compose/lunasec-stack.ts) 
 that handles generating the `docker-compose.yaml`.  As you can see, it's pretty darn clean, with each container represented as a function that returns
 a config object.  I work with some smart folks.  Hopefully someday Docker Compose (or something similar) is going to 
 expose a JS SDK we can call to set up the cluster programmatically,

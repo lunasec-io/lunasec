@@ -1,0 +1,32 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "build/js",
+    "rootDir": "src",
+    "jsx": "react",
+    "module": "esnext", // So typescript doesnt mangle our dynamic imports for webpack chunking
+    /* Debugging Options */
+    "traceResolution": false /* Report module resolution log messages. */,
+    "listEmittedFiles": false /* Print names of generated files part of the compilation. */,
+    "listFiles": false /* Print names of files part of the compilation. */,
+
+    "lib": ["es2017", "dom"],
+    "typeRoots": ["node_modules/@types", "src/types"],
+    "tsBuildInfoFile": "./build/buildcache.tsbuildinfo",
+    "types": ["node"]
+  },
+  "files": [
+    "src/main.ts"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.d.ts"
+  ],
+  "references": [
+    { "path": "../browser-common"},
+    { "path": "../react-sdk"},
+    { "path": "../tokenizer-sdk"}
+  ],
+  "compileOnSave": true
+}

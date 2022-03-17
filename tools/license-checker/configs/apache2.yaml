@@ -19,9 +19,9 @@ header:
     - 'docs/**'
     - '**/dist/**'
     - 'js/**/build/**'
-    - 'js/sdks/packages/secure-frame-iframe/public/**'
-    - 'js/sdks/packages/tokenizer-sdk/src/generated/**'
-    - 'js/sdks/packages/cli/src/cli.ts'
+    - 'lunadefend/js/sdks/packages/secure-frame-iframe/public/**'
+    - 'lunadefend/js/sdks/packages/tokenizer-sdk/src/generated/**'
+    - 'lunadefend/js/sdks/packages/cli/src/cli.ts'
     - 'go/build/**'
     - '**/node_modules/**'
   comment: on-failure

@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./build",
+    "rootDir": "./src",
+    "tsBuildInfoFile": "./build/buildcache",
+    "target": "es2018",
+    "types": ["node"]
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}

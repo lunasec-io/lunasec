@@ -26,4 +26,6 @@ docs/.yarn/.cache/webpack
 
 .eslintcache
 
+lunadefend/js/internal-infrastructure-unused
+
 

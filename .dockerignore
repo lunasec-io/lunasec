@@ -12,3 +12,4 @@ outputs/
 node_modules/
 .npmrc
 lunatrace/cli/test/**
+lunadefend/js/internal-infrastructure-unused/

@@ -42,7 +42,7 @@ runs:
         TERM: xterm
         DOCKER_BUILDKIT: 1
         COMPOSE_DOCKER_CLI_BUILD: 1
-      run: docker build --progress plain -f ./js/docker/demo.dockerfile -t lerna-bootstrap --target lerna-bootstrap .
+      run: docker build --progress plain -f ./lunadefend/js/docker/demo.dockerfile -t lerna-bootstrap --target lerna-bootstrap .
 
     - name: Build CLI Container
       shell: bash
@@ -51,4 +51,4 @@ runs:
         TERM: xterm
         DOCKER_BUILDKIT: 1
         COMPOSE_DOCKER_CLI_BUILD: 1
-      run: docker build --progress plain -f ./js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .
+      run: docker build --progress plain -f ./lunadefend/js/docker/demo.dockerfile -t repo_lunasec-cli --target lunasec-cli .

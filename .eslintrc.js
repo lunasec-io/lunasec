@@ -44,7 +44,7 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   ignorePatterns: [
-    'packages/tokenizer-sdk/src/generated',
+    'lunadefend/sdks/packages/tokenizer-sdk/src/generated',
     'lunatrace/bsl/frontend/src/api/generated.ts',
     '@aws-sdk/**',
     'lunatrace/bsl/backend-cdk/cdk.out'
@@ -58,12 +58,12 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
     project: [
-      'js/sdks/packages/vue-sdk/tsconfig.json',
-      'js/sdks/tsconfig.json',
-      'js/demo-apps/packages/demo-back-end/tsconfig.json',
-      'js/demo-apps/packages/react-front-end/tsconfig.json',
-      'js/internal-infrastructure/metrics-server-backend/tsconfig.json',
-      'js/internal-infrastructure/s3-redirect-generator/tsconfig.json',
+      'lunadefend/js/sdks/packages/vue-sdk/tsconfig.json',
+      'lunadefend/js/sdks/tsconfig.json',
+      'lunadefend/js/demo-apps/packages/demo-back-end/tsconfig.json',
+      'lunadefend/js/demo-apps/packages/react-front-end/tsconfig.json',
+      'lunadefend/js/internal-infrastructure/metrics-server-backend/tsconfig.json',
+      'lunadefend/js/internal-infrastructure/s3-redirect-generator/tsconfig.json',
       'lunatrace/bsl/frontend/tsconfig.json',
       'lunatrace/bsl/backend-cdk/tsconfig.json',
       'lunatrace/bsl/backend/tsconfig.json'

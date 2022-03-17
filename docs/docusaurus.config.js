@@ -73,9 +73,9 @@ module.exports = {
       'docusaurus-plugin-typedoc',
       {
         id: 'typedoc-react-sdk',
-        entryPoints: ['../js/sdks/packages/react-sdk/src/types/component-types.ts'],
+        entryPoints: ['../lunadefend/js/sdks/packages/react-sdk/src/types/component-types.ts'],
         defaultCategory:'Component',
-        tsconfig: '../js/sdks/packages/react-sdk/tsconfig.json',
+        tsconfig: '../lunadefend/js/sdks/packages/react-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
         docsRoot: 'pages',
@@ -92,8 +92,8 @@ module.exports = {
       'docusaurus-plugin-typedoc',
       {
         id: 'typedoc-node-sdk',
-        entryPoints: ['../js/sdks/packages/node-sdk/src/index.ts'],
-        tsconfig: '../js/sdks/packages/node-sdk/tsconfig.json',
+        entryPoints: ['../lunadefend/js/sdks/packages/node-sdk/src/index.ts'],
+        tsconfig: '../lunadefend/js/sdks/packages/node-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
         docsRoot: 'pages',
@@ -110,8 +110,8 @@ module.exports = {
       'docusaurus-plugin-typedoc',
       {
         id: 'typedoc-tokenizer',
-        entryPoints: ['../js/sdks/packages/tokenizer-sdk/src/index.ts'],
-        tsconfig: '../js/sdks/packages/tokenizer-sdk/tsconfig.json',
+        entryPoints: ['../lunadefend/js/sdks/packages/tokenizer-sdk/src/index.ts'],
+        tsconfig: '../lunadefend/js/sdks/packages/tokenizer-sdk/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
         docsRoot: 'pages',
@@ -129,8 +129,8 @@ module.exports = {
       'docusaurus-plugin-typedoc',
       {
         id: 'typedoc-cli',
-        entryPoints: ['../js/sdks/packages/cli/src/config/types.ts'],
-        tsconfig: '../js/sdks/packages/cli/tsconfig.json',
+        entryPoints: ['../lunadefend/js/sdks/packages/cli/src/config/types.ts'],
+        tsconfig: '../lunadefend/js/sdks/packages/cli/tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
         docsRoot: 'pages',
