@@ -30,7 +30,7 @@ import { isError, Try, tryF } from '../utils/try';
 
 import { GetUserOrganizationsQuery } from './generated';
 import { pullDataForInstallation } from './installation-populate';
-import { lunatraceOrgsFromGithubOrgs, OrganizationInputLookup } from './organizations';
+import { lunatraceOrgsFromGithubOrgs } from './organizations';
 
 import { generateGithubGraphqlClient } from './index';
 

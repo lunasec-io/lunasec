@@ -13,7 +13,7 @@
  */
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { LogOut, PieChart, Settings, User } from 'react-feather';
+import { LogOut, User } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 
 import useAppDispatch from '../../hooks/useAppDispatch';

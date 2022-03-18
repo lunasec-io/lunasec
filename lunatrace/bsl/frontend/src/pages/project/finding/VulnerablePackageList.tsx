@@ -13,8 +13,6 @@
  */
 import React, { useState } from 'react';
 import { Col, Container, Dropdown, Row } from 'react-bootstrap';
-import { Filter } from 'react-feather';
-import { useNavigate } from 'react-router-dom';
 
 import { VulnerablePackageItem } from './VulnerablePackageItem';
 import { Finding, severityOrder, VulnerablePackage } from './types';

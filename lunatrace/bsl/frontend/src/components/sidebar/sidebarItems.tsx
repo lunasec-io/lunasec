@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { AlertOctagon, BookOpen, Briefcase, Folder, Lock, LogIn, Plus } from 'react-feather';
+import { AlertOctagon, Briefcase, Folder, LogIn, Plus } from 'react-feather';
 
 import { GetSidebarInfoQuery } from '../../api/generated';
 
