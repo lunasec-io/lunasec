@@ -11,3 +11,8 @@
  * limitations under the License.
  *
  */
+
+import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods';
+
+export type ListReposAccessibleToInstallationResponseType =
+  RestEndpointMethodTypes['apps']['listReposAccessibleToInstallation']['response'];

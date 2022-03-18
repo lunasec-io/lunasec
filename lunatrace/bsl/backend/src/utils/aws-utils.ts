@@ -16,13 +16,16 @@ import { Readable } from 'stream';
 import { GetObjectCommand, GetObjectCommandOutput, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { Hash } from '@aws-sdk/hash-node';
-import { Upload } from '@aws-sdk/lib-storage';
 import { HttpRequest } from '@aws-sdk/protocol-http';
 import { S3RequestPresigner, S3RequestPresignerOptions } from '@aws-sdk/s3-request-presigner';
 import { HeaderBag } from '@aws-sdk/types';
 import { parseUrl } from '@aws-sdk/url-parser';
 import { formatUrl } from '@aws-sdk/util-format-url';
-import { v4 as uuid } from 'uuid';
+
+import { getAwsConfig } from '../config';
+
+const awsConfig = getAwsConfig();
+
 export interface AwsCredentials {
   accessKeyId: string;
   secretAccessKey: string;
@@ -38,12 +41,6 @@ export interface PreSignedUrlGeneratorConfig {
   useLocalStack?: boolean;
   redirectToLocalhost?: boolean;
 }
-
-if (process.env.NODE_ENV === 'production' && !process.env.AWS_DEFAULT_REGION) {
-  throw new Error('Must set AWS_DEFAULT_REGION in production');
-}
-
-const awsRegion = process.env.AWS_DEFAULT_REGION || 'us-west-2';
 
 export class AwsUtils {
   constructor(readonly config: PreSignedUrlGeneratorConfig) {}
@@ -158,5 +155,5 @@ export class AwsUtils {
 // Just preconfigure things so we dont have to do this everywhere
 export const aws = new AwsUtils({
   awsCredentials: defaultProvider(),
-  awsRegion,
+  awsRegion: awsConfig.awsRegion,
 });
