@@ -9,7 +9,7 @@ windows:
 
   - shell_command:
     - cd backend
-    - GITHUB_APP_ID=179126 GITHUB_APP_PRIVATE_KEY=$(cat dev-lunatrace-by-lunasec.2022-03-09.private-key.pem | base64 -w0) yarn run start
+    - GITHUB_APP_ID=179126 GITHUB_APP_PRIVATE_KEY=$(cat github-app-dev.2022-03-09.private-key.pem | base64 -w0) yarn run start
 
   - shell_command:
     - cd hasura
