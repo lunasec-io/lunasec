@@ -14,7 +14,7 @@
 
 import { AxiosError } from 'axios';
 import React, { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 import api from '../api';
 import { AlertsHeader } from '../components/AlertsHeader';

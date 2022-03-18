@@ -15,7 +15,7 @@ import React, { useState } from 'react';
 import { Container, Nav } from 'react-bootstrap';
 import { Box, Home, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import api from '../../api';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
