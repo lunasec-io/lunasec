@@ -1,5 +1,5 @@
 ---
-title: "Protestware": How node-ipc turned into malware
+title: Protestware - How node-ipc turned into malware that targets russian IPs
 description: The node-ipc package has turned into malware for Russian computers.
 slug: node-ipc-protestware
 date: 2022-03-18
@@ -23,7 +23,7 @@ authors: [chris]
   ~
 -->
 
-`node-ipc` is a package used in a number of projects. Here is a long, but not exhaustive list of projects that include
+[node-ipc](https://www.npmjs.com/package/node-ipc) is a popular package to help with inter-process communication in Node. Here is a long, but not exhaustive list of projects that include
 this dependency: https://github.com/zlw9991/node-ipc-dependencies-list. Among the list of projects affected is most notably is the [Vue web framework](https://www.npmjs.com/package/@vue/cli-shared-utils).
 
 Snyk has written a [blog post](https://snyk.io/blog/peacenotwar-malicious-npm-node-ipc-package-vulnerability/) detailing
