@@ -1,0 +1,9 @@
+overwrite: true
+schema: github.graphql
+documents: "src/github/graphql/**/*.graphql"
+generates:
+  ./src/github/generated.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-graphql-request"
