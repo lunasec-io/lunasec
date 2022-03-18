@@ -11,12 +11,9 @@
  * limitations under the License.
  *
  */
-import { Configuration, V0alpha2Api } from '@ory/kratos-client';
+import React from 'react';
 
-const ory = new V0alpha2Api(
-  new Configuration({
-    basePath: process.env.REACT_APP_KRATOS_URL || 'http://localhost:4455/api/kratos',
-  })
-);
-
-export default ory;
+import AuthErrorComponent from '../../components/auth/Error';
+export const AuthError: React.FC = () => {
+  return <AuthErrorComponent />;
+};

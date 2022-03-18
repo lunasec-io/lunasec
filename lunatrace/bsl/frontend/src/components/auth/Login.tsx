@@ -20,7 +20,7 @@ import useAppDispatch from '../../hooks/useAppDispatch';
 import useAppSelector from '../../hooks/useAppSelector';
 import { login, resetLoginFlow, selectLoginFlow, setLoginFlow } from '../../store/slices/authentication';
 import { handleFlowError, handleGetFlowError } from '../../utils/handleGetFlowError';
-import ory from '../../utils/sdk';
+import oryClient from '../../utils/ory-client';
 
 export const Login = () => {
   const dispatch = useAppDispatch();
@@ -49,7 +49,7 @@ export const Login = () => {
 
     // If ?flow=.. was in the URL, we fetch it
     if (flowId) {
-      ory
+      oryClient
         .getSelfServiceLoginFlow(String(flowId))
         .then(({ data }) => {
           dispatch(setLoginFlow(data));
@@ -59,7 +59,7 @@ export const Login = () => {
     }
 
     // Otherwise we initialize it
-    ory
+    oryClient
       .initializeSelfServiceLoginFlowForBrowsers(
         Boolean(refresh),
         aal ? String(aal) : undefined,

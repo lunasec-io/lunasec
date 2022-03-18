@@ -15,7 +15,7 @@ import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 
-export const Home: React.FunctionComponent = (_props) => {
+export const AuthenticatedHome: React.FunctionComponent = (_props) => {
   return (
     <>
       <Helmet title="home" />

@@ -14,11 +14,11 @@
 import { AxiosError } from 'axios';
 import { NavigateFunction } from 'react-router-dom';
 
-import ory from '../utils/sdk';
+import oryClient from '../utils/ory-client';
 
 // Returns a function which will log the user out
 export function createLogoutHandler(navigate: NavigateFunction) {
-  const logoutToken = ory
+  const logoutToken = oryClient
     .createSelfServiceLogoutFlowUrlForBrowsers()
     .then(({ data }) => {
       return data.logout_token;
@@ -37,7 +37,7 @@ export function createLogoutHandler(navigate: NavigateFunction) {
   return async () => {
     const resolvedLogoutToken = await logoutToken;
     if (resolvedLogoutToken) {
-      await ory.submitSelfServiceLogoutFlow(resolvedLogoutToken).then(() => {
+      await oryClient.submitSelfServiceLogoutFlow(resolvedLogoutToken).then(() => {
         navigate('/');
         window.location.reload();
       });
