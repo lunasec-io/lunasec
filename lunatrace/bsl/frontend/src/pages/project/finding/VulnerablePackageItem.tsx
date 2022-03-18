@@ -11,9 +11,9 @@
  * limitations under the License.
  *
  */
-import React, { MouseEventHandler, useState } from 'react';
-import { Accordion, Card, Col, Collapse, Container, Fade, OverlayTrigger, Row, Table, Tooltip } from 'react-bootstrap';
-import { ChevronDown, ChevronUp, Copy } from 'react-feather';
+import React, { useState } from 'react';
+import { Accordion, Card, Col, Container, OverlayTrigger, Row, Table, Tooltip } from 'react-bootstrap';
+import { ChevronDown, ChevronUp } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import semverSort from 'semver-sort';
 

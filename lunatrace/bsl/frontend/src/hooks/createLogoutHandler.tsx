@@ -12,8 +12,7 @@
  *
  */
 import { AxiosError } from 'axios';
-import { DependencyList, useEffect, useState } from 'react';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { NavigateFunction } from 'react-router-dom';
 
 import ory from '../utils/sdk';
 

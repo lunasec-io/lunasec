@@ -12,8 +12,7 @@
  *
  */
 import React from 'react';
-import { Card, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
-import { Copy } from 'react-feather';
+import { Card, Col, Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 import { CvssInferredWarning } from '../../components/CvssInferredWarning';
