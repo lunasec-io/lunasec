@@ -48,7 +48,7 @@
   --bs-black-rgb: 255, 255, 255;
   --bs-body-color-rgb: 169, 172, 179;
   --bs-body-bg-rgb: 32, 38, 52;
-  --bs-font-sans-serif: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --bs-font-sans-serif: "Cantarell", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(41, 48, 66, 0.15), rgba(41, 48, 66, 0));
   --bs-body-font-family: var(--bs-font-sans-serif);
