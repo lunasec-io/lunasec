@@ -266,12 +266,11 @@ func GetFileFromStdin(filename string) (tmpFile *os.File, err error) {
 	return
 }
 
-func CleanupTmpFileDirectory(tmpFile *os.File) {
-	dir := filepath.Dir(tmpFile.Name())
+func CleanupTmpFileDirectory(tmpDir string) {
 	log.Debug().
-		Str("dir", dir).
+		Str("tmpDir", tmpDir).
 		Msg("cleaning up created tmp dir")
-	err := os.RemoveAll(dir)
+	err := os.RemoveAll(tmpDir)
 	if err != nil {
 		log.Error().
 			Err(err).

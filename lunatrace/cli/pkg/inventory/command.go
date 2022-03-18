@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"github.com/anchore/grype/grype/presenter/models"
 	"github.com/anchore/syft/syft"
+	"github.com/go-git/go-git/v5"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
@@ -29,7 +30,10 @@ import (
 	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/types"
 	"lunasec/lunatrace/pkg/util"
+	"net/url"
 	"os"
+	"path"
+	"path/filepath"
 )
 
 func serializeSbom(sbom syftmodel.Document) (serializedOutput []byte, err error) {
@@ -80,6 +84,39 @@ func writeLunaTraceAgentConfigFile(agentSecret, generateConfig string) (err erro
 	return
 }
 
+func RepositoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+	command.EnableGlobalFlags(globalBoolFlags)
+
+	repos := c.Args().Slice()
+
+	if len(repos) != 1 {
+		err = errors.New("please provide exactly one repository to inventory")
+		return
+	}
+
+	parsedRepo, err := url.Parse(repos[0])
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to parse repository url")
+		return
+	}
+
+	repoTmpDir, err := os.MkdirTemp("", path.Clean(parsedRepo.Path))
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to create temporary directory")
+		return
+	}
+	defer util.CleanupTmpFileDirectory(repoTmpDir)
+
+	repo, err := git.PlainClone(repoTmpDir, false, &git.CloneOptions{
+		URL:      parsedRepo.String(),
+		Progress: os.Stdout,
+	})
+}
+
 func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
 	var (
 		source   string
@@ -119,12 +156,12 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 	skipUpload := c.Bool("skip-upload")
 	printToStdout := c.Bool("stdout")
 	configOutput := c.String("config-output")
+
 	branch := c.String("git-branch")
 	commit := c.String("git-commit")
 	remote := c.String("git-remote")
-	log.Info().Msg("GIT BRANCH IS ")
-	log.Info().Msg(branch)
-	sbom, err := getSbomForSyft(source, excludedDirs, useStdin)
+
+	sbom, err := getSbomFromStdinFile(source, excludedDirs, useStdin)
 	if err != nil {
 		return
 	}
@@ -208,7 +245,8 @@ func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig type
 	if readFromStdin {
 		sbomFile, err = util.GetFileFromStdin("sbom.json")
 		defer func() {
-			util.CleanupTmpFileDirectory(sbomFile)
+			tmpDir := filepath.Dir(sbomFile.Name())
+			util.CleanupTmpFileDirectory(tmpDir)
 		}()
 
 		if err != nil {
