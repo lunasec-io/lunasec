@@ -97,6 +97,15 @@ func main() {
 				Before:  setGlobalBoolFlags,
 				Subcommands: []*cli.Command{
 					{
+						Name:   "repository",
+						Usage:  "Create an inventory of dependencies for a repository.",
+						Before: setGlobalBoolFlags,
+						Flags:  []cli.Flag{},
+						Action: func(c *cli.Context) error {
+							return inventory.RepositoryCommand(c, globalBoolFlags, appConfig)
+						},
+					},
+					{
 						Name:    "create",
 						Aliases: []string{"c"},
 						Usage:   "Create an inventory of dependencies as a SBOM for project and upload the SBOM.",

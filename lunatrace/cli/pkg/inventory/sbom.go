@@ -27,6 +27,7 @@ import (
 	"lunasec/lunatrace/pkg/constants"
 	"lunasec/lunatrace/pkg/util"
 	"os"
+	"path/filepath"
 )
 
 func getSyftSource(sourceName string, excludedDirs []string, useStdin bool) (src *source.Source, cleanup func(), err error) {
@@ -44,13 +45,14 @@ func getSyftSource(sourceName string, excludedDirs []string, useStdin bool) (src
 		src = &syftSrc
 
 		cleanup = func() {
-			util.CleanupTmpFileDirectory(tmpSourceFile)
+			tmpDir := filepath.Dir(tmpSourceFile.Name())
+			util.CleanupTmpFileDirectory(tmpDir)
 			cleanupFunc()
 		}
 		return
 	}
 
-	src, cleanup, err = source.New(sourceName, nil, excludedDirs)
+	src, cleanup, err = source.New("file:"+sourceName, nil, excludedDirs)
 	if err != nil {
 		err = fmt.Errorf("failed to construct source from user input %q: %w", sourceName, err)
 		return
@@ -58,7 +60,7 @@ func getSyftSource(sourceName string, excludedDirs []string, useStdin bool) (src
 	return
 }
 
-func getSbomForSyft(sourceName string, excludedDirs []string, useStdin bool) (s *sbom.SBOM, err error) {
+func getSbomFromStdinFile(sourceName string, excludedDirs []string, useStdin bool) (s *sbom.SBOM, err error) {
 	log.Info().
 		Str("source", sourceName).
 		Msg("Scanning source for dependencies.")
@@ -84,7 +86,36 @@ func getSbomForSyft(sourceName string, excludedDirs []string, useStdin bool) (s 
 	if err != nil {
 		return
 	}
+	return
+}
 
+func getSbomFromRepository(repoDir string, excludedDirs []string) (s *sbom.SBOM, err error) {
+	log.Info().
+		Str("repoDir", repoDir).
+		Msg("Scanning repository directory for dependencies.")
+
+	src, cleanup, err := source.New("dir:"+repoDir, nil, excludedDirs)
+	if err != nil {
+		err = fmt.Errorf("failed to construct source from user input %q: %w", sourceName, err)
+		return
+	}
+
+	log.Info().
+		Str("source", sourceName).
+		Msg("Completed scanning source.")
+
+	s = &sbom.SBOM{
+		Source: src.Metadata,
+		Descriptor: sbom.Descriptor{
+			Name:    constants.LunaTraceName,
+			Version: constants.LunaTraceVersion,
+		},
+	}
+
+	err = collectRelationships(sourceName, s, src)
+	if err != nil {
+		return
+	}
 	return
 }
 
