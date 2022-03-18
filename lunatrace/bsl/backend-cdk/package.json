@@ -34,7 +34,7 @@
     "@aws-cdk/core": "1.147.0",
     "@aws-sdk/types": "^3.22.0",
     "@types/jest": "^26.0.10",
-    "@types/node": "^17.0.14",
+    "@types/node": "^14.0.0",
     "aws-cdk": "1.147.0",
     "aws-sdk": "^2.1068.0",
     "jest": "^26.4.2",

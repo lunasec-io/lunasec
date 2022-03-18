@@ -15,8 +15,10 @@ import express, { Request, Response } from 'express';
 import jwt_decode from 'jwt-decode';
 import validate from 'validator';
 
-import { sbomBucket } from '../constants';
+import { getSbomHandlerConfig } from '../config';
 import { aws } from '../utils/aws-utils';
+
+const sbomHandlerConfig = getSbomHandlerConfig();
 
 interface ErrorResponse {
   error: true;
@@ -115,7 +117,7 @@ sbomPresignerRouter.post('/s3/presign-sbom-upload', async (req, res) => {
 
   try {
     const result = await aws.generatePresignedS3Url(
-      sbomBucket,
+      sbomHandlerConfig.sbomBucket,
       aws.generateSbomS3Key(parsedRequest.orgId, parsedRequest.buildId),
       'PUT'
     );

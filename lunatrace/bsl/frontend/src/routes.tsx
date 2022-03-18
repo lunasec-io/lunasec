@@ -16,11 +16,9 @@ import { RouteObject } from 'react-router';
 
 import { RouteGuard } from './components/auth/RouteGuard';
 import MainLayout from './layouts/Main';
-import { OrganizationsList, VulnerabilitiesMain } from './pages';
+import { BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
 import { HomePage } from './pages/homepage/Home';
 import { ProjectCreate } from './pages/project/Create';
-import { ProjectMain } from './pages/project/Main';
-import { BuildDetails } from './pages/project/builds/BuildDetails';
 import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
 
 export const routes: RouteObject[] = [

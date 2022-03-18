@@ -14,9 +14,10 @@
 import express, { Request, Response } from 'express';
 import { validate as validateUUID } from 'uuid';
 
-import { staticAccessToken } from '../constants';
-import { db } from '../database/db';
+import { getHasuraConfig } from '../config';
 import { hasura } from '../hasura-api';
+
+const hasuraConfig = getHasuraConfig();
 
 export const lookupAccessTokenRouter = express.Router();
 
@@ -104,7 +105,7 @@ export function serviceAuthorizer(req: Request, res: Response): void {
   }
 
   // TODO: Make this read from Secrets Manager instead.
-  if (!parsedRequest.accessToken || parsedRequest.accessToken !== staticAccessToken) {
+  if (!parsedRequest.accessToken || parsedRequest.accessToken !== hasuraConfig.staticAccessToken) {
     return generateErrorResponse(res, 'Invalid Access Token specified in X-LunaTrace-Access-Token header', 401);
   }
 

@@ -11,105 +11,271 @@
  * limitations under the License.
  *
  */
-import { graphql, GraphqlResponseError } from '@octokit/graphql';
-import { Configuration, Identity, V0alpha2ApiFactory } from '@ory/kratos-client';
+import deepmerge from 'deepmerge';
 import express from 'express';
 
-import { callHasura } from '../hasura-calls/baseHasuraClient';
+import { getServerConfig } from '../config';
+import { hasura } from '../hasura-api';
+import {
+  AuthorizedUserOrganizationsQuery,
+  CreateOrganizationsMutation,
+  Organization_User_Insert_Input,
+  UpdateOrganizationsForUserMutation,
+} from '../hasura-api/generated';
+import { getGithubAccessTokenFromKratos } from '../kratos';
+import { ListReposAccessibleToInstallationResponseType } from '../types/github';
+import { errorResponse, logError } from '../utils/errors';
+import { tryParseInt } from '../utils/parse-int';
+import { isError, Try, tryF } from '../utils/try';
 
-const operation = `
-    mutation GetUserAccessToken($user_id: uuid!) {
-        insert_builds_one(object: {project_id: $project_id, s3_url: $s3_url}) {
-          id
-        }
-    }
-`;
+import { GetUserOrganizationsQuery } from './generated';
+import { pullDataForInstallation } from './installation-populate';
+import { lunatraceOrgsFromGithubOrgs, OrganizationInputLookup } from './organizations';
 
-export async function getUserGithubAccessToken(variables: { user_id: string }): Promise<string> {
-  const data = await callHasura(operation, 'InsertBuild', variables);
-  if (!data.insert_builds_one) {
-    console.error('Hasura response missing fields ', data);
-    throw new Error('Failed to download manifest for processing');
-  }
-  return '';
-}
+import { generateGithubGraphqlClient } from './index';
 
 export const githubApiRouter = express.Router();
 
-export interface KratosIdentityConfig {
-  providers: KratosIdentityProvider[];
-}
+const serverConfig = getServerConfig();
 
-export interface KratosIdentityProvider {
-  initial_id_token: string;
-  subject: string;
-  provider: string;
-  initial_access_token: string;
-  initial_refresh_token: string;
-}
+githubApiRouter.get('/github/install', async (req, res) => {
+  const installationIdQueryParam = req.query.installation_id;
+  const setupActionQueryParam = req.query.setup_action;
 
-function getGithubAccessToken(identity: Identity) {
-  if (!identity.credentials) {
-    throw new Error('credentials are not set for identity');
+  if (!installationIdQueryParam || typeof installationIdQueryParam !== 'string') {
+    res.status(401).send(errorResponse('installation_id not provided in query params'));
+    return;
   }
 
-  const oidcCreds = identity.credentials['oidc'];
-  if (!oidcCreds.config) {
-    throw new Error('config is not set for oidc credentials');
+  const installationIdRet = tryParseInt(installationIdQueryParam, 10);
+
+  if (!installationIdRet.success) {
+    res.status(401).send(errorResponse('installation_id is not a valid integer'));
+    return;
   }
 
-  const config = oidcCreds.config as KratosIdentityConfig;
-  const githubProviders = config.providers.filter((provider) => provider.provider === 'github-oauth');
-  if (githubProviders.length !== 1) {
-    throw new Error('could not find exactly one github oidc provider');
-  }
+  const installationId = installationIdRet.value;
 
-  const githubProvider = githubProviders[0];
-  return githubProvider.initial_access_token;
-}
+  console.log(`[installId: ${installationId}] Installing Github App to organization`);
 
-githubApiRouter.post('/github/user/projects', async (req, res) => {
-  const kratosConfig = new Configuration({
-    basePath: 'http://localhost:4434',
-  });
+  const error = req.query.error;
+  const errorDescription = req.query.error_description;
+  const errorUri = req.query.error_uri;
 
-  const kratosApiClient = V0alpha2ApiFactory(kratosConfig);
-
-  const userId = req.body.user_id;
-
-  const identity = await kratosApiClient.adminGetIdentity(userId, ['oidc']);
-
-  const accessToken = getGithubAccessToken(identity.data);
-
-  const graphqlWithAuth = graphql.defaults({
-    headers: {
-      authorization: `token ${accessToken}`,
-    },
-  });
-
-  try {
-    const response = await graphqlWithAuth(
-      `query ($login: String!) {
-      organization(login: $login) {
-        repositories(privacy: PRIVATE) {
-          totalCount
-        }
-      }
-    }`,
-      { login: 'breadchris' }
+  if (error) {
+    console.log(`[installId: ${installationId}] Error installing Github App: ${errorDescription}`);
+    res.status(401).send(
+      errorResponse(
+        JSON.stringify({
+          error: error,
+          description: errorDescription,
+          uri: errorUri,
+        })
+      )
     );
-    res.send(response);
-  } catch (e) {
-    console.error(e);
-    if (e instanceof GraphqlResponseError) {
-      res.send({
-        error: e.message,
-      });
-    } else {
-      // TODO (cthompson) what other error types exist?
-      res.send({
-        error: e,
-      });
-    }
+    return;
   }
+
+  const installDataRes: Try<ListReposAccessibleToInstallationResponseType> = await tryF(
+    async () => await pullDataForInstallation(installationId)
+  );
+
+  if (isError(installDataRes)) {
+    logError(installDataRes);
+    res.status(500).send(errorResponse('unable to collect Github information for install.'));
+    return;
+  }
+
+  const organizations = lunatraceOrgsFromGithubOrgs(installationId, installDataRes);
+  const orgObjectList = Object.values(organizations);
+
+  console.log(
+    `[installId: ${installationId}] Creating LunaTrace organizations and projects: ${orgObjectList.map(
+      (org) => org.name
+    )}`
+  );
+
+  const createOrgsRes: Try<CreateOrganizationsMutation> = await tryF(
+    async () =>
+      await hasura.CreateOrganizations({
+        objects: orgObjectList,
+      })
+  );
+
+  if (isError(createOrgsRes)) {
+    logError(createOrgsRes);
+    res
+      .status(500)
+      .send(errorResponse('unable to create LunaTrace organizations from collected Github Organizations.'));
+    return;
+  }
+
+  const orgIds = createOrgsRes.insert_organizations
+    ? createOrgsRes.insert_organizations.returning.map((o) => o.id as string)
+    : [];
+
+  console.log(`[installId: ${installationId}] Created/updated LunaTrace organizations: ${orgIds}`);
+
+  res.status(302).redirect(serverConfig.sitePublicUrl);
+});
+
+async function collectUserGithubOrgs(userId: string, accessToken: string) {
+  const github = generateGithubGraphqlClient(accessToken);
+
+  let orgsAfter: string | null | undefined = undefined;
+  let allUserOrgs: GetUserOrganizationsQuery | null = null;
+  let moreDataAvailable = true;
+
+  while (moreDataAvailable) {
+    console.log(`[user: ${userId}] Requesting Github user's organizations page`);
+
+    const userOrgs: Try<GetUserOrganizationsQuery> = await tryF(
+      async () =>
+        await github.GetUserOrganizations({
+          orgsAfter: orgsAfter,
+        })
+    );
+
+    if (isError(userOrgs)) {
+      // TODO (cthompson) is there a way that we can more gracefully handle this error? We might need to redirect the user back to the github auth page?
+      console.debug(
+        'If you are seeing this then you should delete the user from kratos and go through this flow again.'
+      );
+      throw new Error(
+        `Unable to get user's organizations. This is most likely due to the user having revoked the Github auth from their account and attempting to login again.`
+      );
+    }
+
+    allUserOrgs = deepmerge(allUserOrgs || {}, userOrgs);
+
+    if (!userOrgs.viewer) {
+      break;
+    }
+
+    const orgPageInfo = userOrgs.viewer.organizations.pageInfo;
+
+    orgsAfter = orgPageInfo.hasNextPage ? orgPageInfo.startCursor : null;
+    moreDataAvailable = !!orgsAfter;
+  }
+  return allUserOrgs;
+}
+
+function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserOrganizationsQuery): number[] | null {
+  const orgNodes = userGithubOrgs.viewer.organizations.nodes;
+
+  if (!orgNodes) {
+    console.error(
+      `orgNodes is null, api response from github is incomplete: ${userGithubOrgs.viewer.organizations.nodes}`
+    );
+    return null;
+  }
+
+  console.debug(`[user: ${userId}] Github user's organizations count: ${orgNodes.length}`);
+
+  return orgNodes.reduce<number[]>((filtered, org) => {
+    if (!org) {
+      return filtered;
+    }
+    /*
+     * Example: MDEyOk9yZ2FuaXphdGlvbjgzMjQ0NTUw -> 012:Organization83244550
+     * We have to parse here because the value that comes from repo.owner.id when installing
+     * the github app is the number id;
+     */
+    const idDecoded = Buffer.from(org.id, 'base64').toString();
+    const idParts = idDecoded.split(':');
+    const idNormalized = idParts[1].replace('Organization', '');
+    const idNumber = tryParseInt(idNormalized, 10);
+
+    if (!idNumber.success) {
+      console.error(`[user: ${userId}] Unable to parse github organization id: ${idNormalized}`);
+      return filtered;
+    }
+
+    return [...filtered, idNumber.value];
+  }, []);
+}
+
+githubApiRouter.post('/github/login', async (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const userId: string = req.body.ctx.identity.id as string;
+
+  console.log(`[user: ${userId}] Github login webhook started`);
+
+  const accessToken = await getGithubAccessTokenFromKratos(userId);
+
+  const userGithubOrgs: Try<GetUserOrganizationsQuery | null> = await tryF(
+    async () => await collectUserGithubOrgs(userId, accessToken)
+  );
+
+  if (isError(userGithubOrgs) || userGithubOrgs === null) {
+    logError(userGithubOrgs === null ? new Error('userGithubOrgs is null') : userGithubOrgs);
+    res.status(500).send(errorResponse('cannot collect user Github orgs from api'));
+    return;
+  }
+
+  console.log(`[user: ${userId}] Collected Github user's organizations.`);
+
+  const githubOrgIds = getGithubOrgIdsFromApiResponse(userId, userGithubOrgs);
+  if (githubOrgIds === null) {
+    res.status(500).send(errorResponse('unable to collect User Organization Ids from GitHub API.'));
+    return;
+  }
+
+  console.debug(`[user: ${userId}] Github user's organization ids: ${githubOrgIds}`);
+
+  // TODO (cthompson) handle error cases for when this fails
+
+  const authorizedUserOrgs: Try<AuthorizedUserOrganizationsQuery> = await tryF(
+    async () =>
+      await hasura.AuthorizedUserOrganizations({
+        github_org_ids: githubOrgIds,
+      })
+  );
+
+  if (isError(authorizedUserOrgs)) {
+    logError(authorizedUserOrgs);
+    res.status(500).send(errorResponse('unable to collect User Organization Ids from GitHub API.'));
+    return;
+  }
+
+  console.debug(
+    `[user: ${userId}] Authorized LunaTrace organizations: ${JSON.stringify(authorizedUserOrgs.organizations)}`
+  );
+
+  const organizationUserInput: Organization_User_Insert_Input[] = authorizedUserOrgs.organizations.map((org) => {
+    return {
+      user_id: userId,
+      organization_id: org.id,
+    };
+  });
+
+  const updatedOrganizations: Try<UpdateOrganizationsForUserMutation> = await tryF(
+    async () =>
+      await hasura.UpdateOrganizationsForUser({
+        organizations_for_user: organizationUserInput,
+      })
+  );
+
+  if (isError(updatedOrganizations)) {
+    logError(updatedOrganizations);
+    res.status(500).send(errorResponse('updated organizations.'));
+    return;
+  }
+
+  if (!updatedOrganizations.insert_organization_user) {
+    logError(new Error('updated organizations response is null'));
+    res.status(500).send(errorResponse('unable to updated LunaTrace organizations from Github organizations.'));
+    return;
+  }
+
+  console.log(
+    `[user: ${userId}] Authenticated user to LunaTrace organizations: ${JSON.stringify(
+      updatedOrganizations.insert_organization_user.returning
+    )}`
+  );
+
+  res.send({
+    error: false,
+    message: 'Github login callback completed successfully',
+  });
 });
