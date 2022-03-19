@@ -58,7 +58,7 @@ export function getServerConfig(): ServerConfig {
   };
 }
 
-export function getSbomHandlerConfig(): SbomHandlerConfig {
+export function getBucketConfig(): SbomHandlerConfig {
   const sbomBucket = checkEnvVar('S3_SBOM_BUCKET', 'sbom-test-bucket');
 
   const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET', 'test-manifest-bucket-one');
