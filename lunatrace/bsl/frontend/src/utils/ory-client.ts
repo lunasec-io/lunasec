@@ -11,20 +11,12 @@
  * limitations under the License.
  *
  */
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Configuration, V0alpha2Api } from '@ory/kratos-client';
 
-import api from '../../../api';
+const oryClient = new V0alpha2Api(
+  new Configuration({
+    basePath: process.env.REACT_APP_KRATOS_URL || 'http://localhost:4455/api/kratos',
+  })
+);
 
-import { BuildList } from './BuildList';
-
-export const Builds: React.FunctionComponent = () => {
-  const { project_id } = useParams();
-
-  // RUN SEARCH QUERY
-  const { data } = api.useGetProjectQuery({
-    project_id,
-  });
-
-  return data ? <BuildList builds={data.projects[0].builds} /> : null;
-};
+export default oryClient;

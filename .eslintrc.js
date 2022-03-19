@@ -72,7 +72,8 @@ module.exports = {
   plugins: [
     'react',
     '@typescript-eslint',
-    'jest'
+    'jest',
+    'unused-imports'
   ],
   rules: {
     '@typescript-eslint/no-unsafe-argument': 1, // TODO: Re-enable this rule and fix all errors
@@ -139,6 +140,7 @@ module.exports = {
       productionWarn,
       { 'argsIgnorePattern': '^_' }
     ],
+    // 'unused-imports/no-unused-imports': 'error', turn this on if you want to --fix all of these out of the codebase
     '@typescript-eslint/no-unsafe-call': 'warn',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
     '@typescript-eslint/unbound-method': 'warn',

@@ -13,7 +13,7 @@
  */
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { LogOut, PieChart, Settings, User } from 'react-feather';
+import { LogOut, User } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 
 import useAppDispatch from '../../hooks/useAppDispatch';
@@ -46,17 +46,17 @@ const NavbarUser: React.FunctionComponent = () => {
         </Dropdown.Toggle>
       </span>
       <Dropdown.Menu>
-        <Dropdown.Item>
-          <User size={18} className="align-middle me-2" />
-          Profile
-        </Dropdown.Item>
-        <Dropdown.Item>
-          <PieChart size={18} className="align-middle me-2" />
-          Analytics
-        </Dropdown.Item>
-        <Dropdown.Divider />
-        <Dropdown.Item>Settings & Privacy</Dropdown.Item>
-        <Dropdown.Item>Help</Dropdown.Item>
+        {/*<Dropdown.Item>*/}
+        {/*  <User size={18} className="align-middle me-2" />*/}
+        {/*  Profile*/}
+        {/*</Dropdown.Item>*/}
+        {/*<Dropdown.Item>*/}
+        {/*  <PieChart size={18} className="align-middle me-2" />*/}
+        {/*  Analytics*/}
+        {/*</Dropdown.Item>*/}
+        {/*<Dropdown.Divider />*/}
+        {/*<Dropdown.Item>Settings & Privacy</Dropdown.Item>*/}
+        {/*<Dropdown.Item>Help</Dropdown.Item>*/}
         <Dropdown.Item onClick={() => doLogout()}>
           <LogOut size={18} className="align-middle me-2" />
           Sign out

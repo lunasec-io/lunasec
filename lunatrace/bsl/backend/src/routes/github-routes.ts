@@ -11,20 +11,11 @@
  * limitations under the License.
  *
  */
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import express from 'express';
 
-import api from '../../../api';
+import { githubInstall, githubLogin } from '../github/projects';
 
-import { BuildList } from './BuildList';
+export const githubApiRouter = express.Router();
 
-export const Builds: React.FunctionComponent = () => {
-  const { project_id } = useParams();
-
-  // RUN SEARCH QUERY
-  const { data } = api.useGetProjectQuery({
-    project_id,
-  });
-
-  return data ? <BuildList builds={data.projects[0].builds} /> : null;
-};
+githubApiRouter.get('/github/install', githubInstall);
+githubApiRouter.post('/github/login', githubLogin);

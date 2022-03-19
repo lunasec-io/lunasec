@@ -21,6 +21,7 @@ import { S3ObjectMetadata } from '../types/s3';
 import { aws } from '../utils/aws-utils';
 
 const { sbomBucket } = getBucketConfig();
+
 export async function handleGenerateSbom(message: S3ObjectMetadata) {
   const { key, region, bucketName } = message;
   try {

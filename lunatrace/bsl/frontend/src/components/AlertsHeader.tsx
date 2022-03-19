@@ -12,7 +12,7 @@
  *
  */
 import React from 'react';
-import { Alert, Col, Container, Row } from 'react-bootstrap';
+import { Alert, Container } from 'react-bootstrap';
 
 import useAppDispatch from '../hooks/useAppDispatch';
 import useAppSelector from '../hooks/useAppSelector';

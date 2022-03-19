@@ -22,7 +22,7 @@ import useAppDispatch from '../../hooks/useAppDispatch';
 import useAppSelector from '../../hooks/useAppSelector';
 import { register, resetRegisterFlow, selectRegisterFlow, setRegisterFlow } from '../../store/slices/authentication';
 import { handleFlowError } from '../../utils/handleGetFlowError';
-import ory from '../../utils/sdk';
+import oryClient from '../../utils/ory-client';
 
 // Renders the registration page
 export const Registration = () => {
@@ -47,7 +47,7 @@ export const Registration = () => {
 
     // If ?flow=.. was in the URL, we fetch it
     if (flowId) {
-      ory
+      oryClient
         .getSelfServiceRegistrationFlow(String(flowId))
         .then(({ data }) => {
           // We received the flow - let's use its data and render the form!
@@ -58,7 +58,7 @@ export const Registration = () => {
     }
 
     // Otherwise we initialize it
-    ory
+    oryClient
       .initializeSelfServiceRegistrationFlowForBrowsers(returnTo ? String(returnTo) : undefined)
       .then(({ data }) => {
         dispatch(setRegisterFlow(data));
