@@ -15,10 +15,10 @@ import express, { Request, Response } from 'express';
 import jwt_decode from 'jwt-decode';
 import validate from 'validator';
 
-import { getSbomHandlerConfig } from '../config';
+import { getBucketConfig } from '../config';
 import { aws } from '../utils/aws-utils';
 
-const sbomHandlerConfig = getSbomHandlerConfig();
+const sbomHandlerConfig = getBucketConfig();
 
 interface ErrorResponse {
   error: true;
