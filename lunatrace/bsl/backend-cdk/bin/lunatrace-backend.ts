@@ -19,7 +19,6 @@ import { readFileSync } from 'fs';
 import * as cdk from '@aws-cdk/core';
 
 import { LunatraceBackendStack } from '../lib/lunatrace-backend-stack';
-import { VPCStack } from '../lib/vpc-stack';
 
 interface StackInputsType {
   appName: string;

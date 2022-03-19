@@ -16,8 +16,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import Express from 'express';
 
-import { githubApiRouter } from './github/projects';
 import { lookupAccessTokenRouter } from './routes/auth-routes';
+import { githubApiRouter } from './routes/github-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
 

@@ -14,9 +14,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import useAppDispatch from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { clear } from '../../store/slices/alerts';
 import { selectConfirmedUnauthenticated } from '../../store/slices/authentication';
 
 export const RouteGuard: React.FC = (props) => {

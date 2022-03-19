@@ -41,8 +41,9 @@ export const VulnerabilityDetail: React.FunctionComponent = () => {
               <h1>{vuln.name}</h1>
 
               <h5>
-                <a href={vuln.data_source || ''}>
-                  {vuln.namespace} <ExternalLink />
+                <a className="text-lg" href={vuln.data_source || ''}>
+                  <ExternalLink size="1em" className="mb-1 me-1" />
+                  {vuln.namespace}
                 </a>
               </h5>
             </Col>

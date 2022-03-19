@@ -14,7 +14,7 @@
 
 import { AxiosError } from 'axios';
 import React, { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 import api from '../api';
 import { AlertsHeader } from '../components/AlertsHeader';
@@ -26,14 +26,14 @@ import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import useAppDispatch from '../hooks/useAppDispatch';
 import useAppSelector from '../hooks/useAppSelector';
 import { selectIsAuthenticated, setConfirmedUnauthenticated, setSession } from '../store/slices/authentication';
-import ory from '../utils/sdk';
+import oryClient from '../utils/ory-client';
 
 const MainLayout: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   // TODO move this somewhere more else
   useEffect(() => {
-    ory
+    oryClient
       .toSession()
       .then(({ data }) => {
         dispatch(setSession(data));
