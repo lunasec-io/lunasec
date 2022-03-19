@@ -102,8 +102,7 @@ That said, there are a few reasons this approach is probably not the right path:
 
 * Unlike something designed for an end user, a supply-chain attack like this targets so many projects and it's very hard to
   say who in the end will be effected. It's not
-  hard to imagine this exploit running on a hospital computer, for instance, and wiping out important and even
-  life-saving information.
+  hard to imagine this exploit running on a hospital computer, for instance, and wiping out important information.
 
 * The end-product that uses the library ends up itself becoming malware without the knowledge of its developer. In my mind it should be up to the creator
   of that software whether their product is distributed in Russia, and certainly whether it does something malicious.
