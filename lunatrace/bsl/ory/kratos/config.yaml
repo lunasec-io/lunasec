@@ -23,6 +23,9 @@ selfservice:
             client_id: fake-value
             client_secret: another-fake-value
             mapper_url: file:///config/oidc.github.jsonnet
+            scope:
+              - email
+              - read:user
 
   flows:
     error:
