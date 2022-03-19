@@ -17,6 +17,7 @@ import { RouteObject } from 'react-router';
 import { RouteGuard } from './components/auth/RouteGuard';
 import MainLayout from './layouts/Main';
 import { BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
+import { AuthError } from './pages/auth/Error';
 import { HomePage } from './pages/homepage/Home';
 import { ProjectCreate } from './pages/project/Create';
 import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
@@ -89,6 +90,7 @@ export const routes: RouteObject[] = [
           },
         ],
       },
+      { path: 'auth', children: [{ path: 'error', element: <AuthError /> }] },
       {
         element: <p>404</p>, //doesnt work
       },

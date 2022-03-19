@@ -11,18 +11,16 @@
  * limitations under the License.
  *
  */
-import { SelfServiceLoginFlow, SubmitSelfServiceLoginFlowBody } from '@ory/kratos-client';
-import { CardTitle } from '@ory/themes';
-import React, { useEffect, useMemo, useState } from 'react';
+import { SubmitSelfServiceLoginFlowBody } from '@ory/kratos-client';
+import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
 import { Flow } from '../../components/auth';
-import { ActionCard, CenterLink, Link, MarginCard } from '../../components/auth/Common';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import useAppSelector from '../../hooks/useAppSelector';
-import { login, logout, resetLoginFlow, selectLoginFlow, setLoginFlow } from '../../store/slices/authentication';
+import { login, resetLoginFlow, selectLoginFlow, setLoginFlow } from '../../store/slices/authentication';
 import { handleFlowError, handleGetFlowError } from '../../utils/handleGetFlowError';
-import ory from '../../utils/sdk';
+import oryClient from '../../utils/ory-client';
 
 export const Login = () => {
   const dispatch = useAppDispatch();
@@ -51,7 +49,7 @@ export const Login = () => {
 
     // If ?flow=.. was in the URL, we fetch it
     if (flowId) {
-      ory
+      oryClient
         .getSelfServiceLoginFlow(String(flowId))
         .then(({ data }) => {
           dispatch(setLoginFlow(data));
@@ -61,7 +59,7 @@ export const Login = () => {
     }
 
     // Otherwise we initialize it
-    ory
+    oryClient
       .initializeSelfServiceLoginFlowForBrowsers(
         Boolean(refresh),
         aal ? String(aal) : undefined,

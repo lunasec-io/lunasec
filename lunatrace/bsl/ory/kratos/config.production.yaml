@@ -13,7 +13,7 @@ selfservice:
 
   flows:
     error:
-      ui_url: https://lunatrace.lunasec.io/api/kratos/error
+      ui_url: https://lunatrace.lunasec.io/auth/error
 
     settings:
       ui_url: https://lunatrace.lunasec.io/api/kratos/settings

@@ -2,7 +2,17 @@
   content: var(--bs-breadcrumb-divider, ">") !important;
 }
 
-.breadcrumb {
-  padding-top:15px;
-  font-size: larger;
+//.switch-group {
+//  border-radius: 1rem !important;
+//
+//  .switch-on, .switch-off {
+//    border-radius: 1rem !important;
+//
+//  }
+//}
+
+.navbar-nav {
+  .switch {
+    border-radius: .25rem;
+  }
 }

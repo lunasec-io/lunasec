@@ -13,16 +13,8 @@
  */
 import * as path from 'path';
 
-import {
-  AuthorizationType,
-  CfnAuthorizer,
-  CfnMethod,
-  LambdaIntegration,
-  MethodLoggingLevel,
-  RestApi,
-} from '@aws-cdk/aws-apigateway';
-import { SubnetType, Vpc } from '@aws-cdk/aws-ec2';
-import { Code, Function, FunctionProps, Runtime } from '@aws-cdk/aws-lambda';
+import { LambdaIntegration, MethodLoggingLevel, RestApi } from '@aws-cdk/aws-apigateway';
+import { Code, Function, Runtime } from '@aws-cdk/aws-lambda';
 import { AddressRecordTarget, ARecord, PublicHostedZone } from '@aws-cdk/aws-route53';
 import * as route53_targets from '@aws-cdk/aws-route53-targets';
 import { Construct, Duration, Stack, StackProps } from '@aws-cdk/core';

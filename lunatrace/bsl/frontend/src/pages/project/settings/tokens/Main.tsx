@@ -80,7 +80,7 @@ export const ProjectTokens: React.FC<ProjectTokensProps> = ({ project }) => {
         <Row className="justify-content-sm-center">
           <Col className="text-right" sm="3">
             <Button variant="success" className="m-2" onClick={() => setFormOpen(true)}>
-              <Plus size={18} className="align-middle me-2" />
+              <Plus size="1.2em" className="align-middle mb-1 me-2" />
               Create New Secret
             </Button>
           </Col>
