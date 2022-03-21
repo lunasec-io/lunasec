@@ -20,4 +20,4 @@ windows:
     - yarn start
 
   - shell_command:
-    - sudo docker-compose down && sudo docker-compose up
+    - sudo docker-compose up --force-recreate
