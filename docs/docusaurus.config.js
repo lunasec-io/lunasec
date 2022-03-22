@@ -160,7 +160,7 @@ module.exports = {
     announcementBar: {
       id: 'star_us',
       content:
-        '<a href="https://www.lunasec.io/docs/pages/how-it-works/features/" target="_blank" rel="nooper">Learn how</a> LunaSec helps protect you from 0-days, and Star us on <a href="https://github.com/lunasec-io/lunasec" target="_blank" ref="noopener">GitHub</a>.',
+        'Show your support for Open Source Security tools by starring us on <a href="https://github.com/lunasec-io/lunasec" target="_blank" rel="noopener">GitHub</a>.',
       backgroundColor: '#fafbfc',
       textColor: '#091E42',
       isCloseable: true,
