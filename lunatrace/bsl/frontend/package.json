@@ -80,8 +80,7 @@
     "build:docker": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "generate:schema": "gq http://localhost:8080/v1/graphql -H \"X-Hasura-Admin-Secret: myadminsecretkey\" --introspect > schema.graphql",
-    "generate": "yarn run generate:schema && graphql-codegen --config codegen.yml"
+    "generate": "graphql-codegen --config codegen.yml"
   },
   "browserslist": {
     "production": [

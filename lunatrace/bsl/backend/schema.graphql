@@ -61,6 +61,9 @@ type ScanManifestOutput {
   build_id: String!
   error: Boolean!
   error_message: String
+
+  """An object relationship"""
+  scan_build_id_relationship: builds!
 }
 
 """
@@ -1117,6 +1120,166 @@ input fix_state_enum_comparison_exp {
   _nin: [fix_state_enum!]
 }
 
+"""An ISO-8601 encoded UTC date string."""
+scalar github_DateTime
+
+"""A string containing HTML code."""
+scalar github_HTML
+
+type github_Query {
+  """Lookup a user by login."""
+  user(
+    """The user's login."""
+    login: String!
+  ): github_User
+
+  """The currently authenticated user."""
+  viewer: github_User!
+}
+
+"""An RFC 3986, RFC 3987, and RFC 6570 (level 4) compliant URI string."""
+scalar github_URI
+
+"""
+A user is an individual's account on GitHub that owns repositories and can make new content.
+"""
+type github_User {
+  """A URL pointing to the user's public avatar."""
+  avatarUrl(
+    """The size of the resulting square image."""
+    size: Int
+  ): github_URI!
+
+  """The user's public profile bio."""
+  bio: String
+
+  """The user's public profile bio as HTML."""
+  bioHTML: github_HTML!
+
+  """The user's public profile company."""
+  company: String
+
+  """The user's public profile company as HTML."""
+  companyHTML: github_HTML!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: github_DateTime!
+
+  """Identifies the primary key from the database."""
+  databaseId: Int
+
+  """The user's publicly visible profile email."""
+  email: String!
+
+  """
+  The estimated next GitHub Sponsors payout for this user/organization in cents (USD).
+  """
+  estimatedNextSponsorsPayoutInCents: Int!
+
+  """True if this user/organization has a GitHub Sponsors listing."""
+  hasSponsorsListing: Boolean!
+  id: ID!
+
+  """
+  Whether or not this user is a participant in the GitHub Security Bug Bounty.
+  """
+  isBountyHunter: Boolean!
+
+  """
+  Whether or not this user is a participant in the GitHub Campus Experts Program.
+  """
+  isCampusExpert: Boolean!
+
+  """Whether or not this user is a GitHub Developer Program member."""
+  isDeveloperProgramMember: Boolean!
+
+  """Whether or not this user is a GitHub employee."""
+  isEmployee: Boolean!
+
+  """
+  Whether or not this user is following the viewer. Inverse of viewer_is_following
+  """
+  isFollowingViewer: Boolean!
+
+  """Whether or not this user is a member of the GitHub Stars Program."""
+  isGitHubStar: Boolean!
+
+  """Whether or not the user has marked themselves as for hire."""
+  isHireable: Boolean!
+
+  """Whether or not this user is a site administrator."""
+  isSiteAdmin: Boolean!
+
+  """True if the viewer is sponsored by this user/organization."""
+  isSponsoringViewer: Boolean!
+
+  """Whether or not this user is the viewing user."""
+  isViewer: Boolean!
+
+  """The user's public profile location."""
+  location: String
+
+  """The username used to login."""
+  login: String!
+
+  """
+  The estimated monthly GitHub Sponsors income for this user/organization in cents (USD).
+  """
+  monthlyEstimatedSponsorsIncomeInCents: Int!
+
+  """The user's public profile name."""
+  name: String
+
+  """
+  Verified email addresses that match verified domains for a specified organization the user is a member of.
+  """
+  organizationVerifiedDomainEmails(
+    """The login of the organization to match verified domains from."""
+    login: String!
+  ): [String!]!
+
+  """The HTTP path listing user's projects"""
+  projectsResourcePath: github_URI!
+
+  """The HTTP URL listing user's projects"""
+  projectsUrl: github_URI!
+
+  """The HTTP path for this user"""
+  resourcePath: github_URI!
+
+  """The user's Twitter username."""
+  twitterUsername: String
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: github_DateTime!
+
+  """The HTTP URL for this user"""
+  url: github_URI!
+
+  """Can the viewer pin repositories and gists to the profile?"""
+  viewerCanChangePinnedItems: Boolean!
+
+  """Can the current viewer create new projects on this owner."""
+  viewerCanCreateProjects: Boolean!
+
+  """Whether or not the viewer is able to follow the user."""
+  viewerCanFollow: Boolean!
+
+  """Whether or not the viewer is able to sponsor this user/organization."""
+  viewerCanSponsor: Boolean!
+
+  """
+  Whether or not this user is followed by the viewer. Inverse of is_following_viewer.
+  """
+  viewerIsFollowing: Boolean!
+
+  """True if the viewer is sponsoring this user/organization."""
+  viewerIsSponsoring: Boolean!
+
+  """A URL pointing to the user's public website/blog."""
+  websiteUrl: github_URI
+}
+
 """
 Metadata about a github repository and where to find it.
 
@@ -1802,6 +1965,551 @@ enum identities_update_column {
 
   """column name"""
   traits
+
+  """column name"""
+  updated_at
+}
+
+"""
+columns and relationships of "identity_credential_identifiers"
+"""
+type identity_credential_identifiers {
+  created_at: timestamp!
+  id: uuid!
+  identifier: String!
+  identity_credential_id: uuid!
+  identity_credential_type_id: uuid!
+  nid: uuid
+  updated_at: timestamp!
+}
+
+"""
+aggregated selection of "identity_credential_identifiers"
+"""
+type identity_credential_identifiers_aggregate {
+  aggregate: identity_credential_identifiers_aggregate_fields
+  nodes: [identity_credential_identifiers!]!
+}
+
+"""
+aggregate fields of "identity_credential_identifiers"
+"""
+type identity_credential_identifiers_aggregate_fields {
+  count(columns: [identity_credential_identifiers_select_column!], distinct: Boolean): Int!
+  max: identity_credential_identifiers_max_fields
+  min: identity_credential_identifiers_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "identity_credential_identifiers". All fields are combined with a logical 'AND'.
+"""
+input identity_credential_identifiers_bool_exp {
+  _and: [identity_credential_identifiers_bool_exp!]
+  _not: identity_credential_identifiers_bool_exp
+  _or: [identity_credential_identifiers_bool_exp!]
+  created_at: timestamp_comparison_exp
+  id: uuid_comparison_exp
+  identifier: String_comparison_exp
+  identity_credential_id: uuid_comparison_exp
+  identity_credential_type_id: uuid_comparison_exp
+  nid: uuid_comparison_exp
+  updated_at: timestamp_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "identity_credential_identifiers"
+"""
+enum identity_credential_identifiers_constraint {
+  """unique or primary key constraint"""
+  identity_credential_identifiers_identifier_nid_type_uq_idx
+
+  """unique or primary key constraint"""
+  identity_credential_identifiers_pkey
+}
+
+"""
+input type for inserting data into table "identity_credential_identifiers"
+"""
+input identity_credential_identifiers_insert_input {
+  created_at: timestamp
+  id: uuid
+  identifier: String
+  identity_credential_id: uuid
+  identity_credential_type_id: uuid
+  nid: uuid
+  updated_at: timestamp
+}
+
+"""aggregate max on columns"""
+type identity_credential_identifiers_max_fields {
+  created_at: timestamp
+  id: uuid
+  identifier: String
+  identity_credential_id: uuid
+  identity_credential_type_id: uuid
+  nid: uuid
+  updated_at: timestamp
+}
+
+"""aggregate min on columns"""
+type identity_credential_identifiers_min_fields {
+  created_at: timestamp
+  id: uuid
+  identifier: String
+  identity_credential_id: uuid
+  identity_credential_type_id: uuid
+  nid: uuid
+  updated_at: timestamp
+}
+
+"""
+response of any mutation on the table "identity_credential_identifiers"
+"""
+type identity_credential_identifiers_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [identity_credential_identifiers!]!
+}
+
+"""
+on_conflict condition type for table "identity_credential_identifiers"
+"""
+input identity_credential_identifiers_on_conflict {
+  constraint: identity_credential_identifiers_constraint!
+  update_columns: [identity_credential_identifiers_update_column!]! = []
+  where: identity_credential_identifiers_bool_exp
+}
+
+"""
+Ordering options when selecting data from "identity_credential_identifiers".
+"""
+input identity_credential_identifiers_order_by {
+  created_at: order_by
+  id: order_by
+  identifier: order_by
+  identity_credential_id: order_by
+  identity_credential_type_id: order_by
+  nid: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: identity_credential_identifiers"""
+input identity_credential_identifiers_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "identity_credential_identifiers"
+"""
+enum identity_credential_identifiers_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  identifier
+
+  """column name"""
+  identity_credential_id
+
+  """column name"""
+  identity_credential_type_id
+
+  """column name"""
+  nid
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "identity_credential_identifiers"
+"""
+input identity_credential_identifiers_set_input {
+  created_at: timestamp
+  id: uuid
+  identifier: String
+  identity_credential_id: uuid
+  identity_credential_type_id: uuid
+  nid: uuid
+  updated_at: timestamp
+}
+
+"""
+update columns of table "identity_credential_identifiers"
+"""
+enum identity_credential_identifiers_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  identifier
+
+  """column name"""
+  identity_credential_id
+
+  """column name"""
+  identity_credential_type_id
+
+  """column name"""
+  nid
+
+  """column name"""
+  updated_at
+}
+
+"""
+columns and relationships of "identity_credential_types"
+"""
+type identity_credential_types {
+  id: uuid!
+  name: String!
+}
+
+"""
+aggregated selection of "identity_credential_types"
+"""
+type identity_credential_types_aggregate {
+  aggregate: identity_credential_types_aggregate_fields
+  nodes: [identity_credential_types!]!
+}
+
+"""
+aggregate fields of "identity_credential_types"
+"""
+type identity_credential_types_aggregate_fields {
+  count(columns: [identity_credential_types_select_column!], distinct: Boolean): Int!
+  max: identity_credential_types_max_fields
+  min: identity_credential_types_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "identity_credential_types". All fields are combined with a logical 'AND'.
+"""
+input identity_credential_types_bool_exp {
+  _and: [identity_credential_types_bool_exp!]
+  _not: identity_credential_types_bool_exp
+  _or: [identity_credential_types_bool_exp!]
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "identity_credential_types"
+"""
+enum identity_credential_types_constraint {
+  """unique or primary key constraint"""
+  identity_credential_types_name_idx
+
+  """unique or primary key constraint"""
+  identity_credential_types_pkey
+}
+
+"""
+input type for inserting data into table "identity_credential_types"
+"""
+input identity_credential_types_insert_input {
+  id: uuid
+  name: String
+}
+
+"""aggregate max on columns"""
+type identity_credential_types_max_fields {
+  id: uuid
+  name: String
+}
+
+"""aggregate min on columns"""
+type identity_credential_types_min_fields {
+  id: uuid
+  name: String
+}
+
+"""
+response of any mutation on the table "identity_credential_types"
+"""
+type identity_credential_types_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [identity_credential_types!]!
+}
+
+"""
+on_conflict condition type for table "identity_credential_types"
+"""
+input identity_credential_types_on_conflict {
+  constraint: identity_credential_types_constraint!
+  update_columns: [identity_credential_types_update_column!]! = []
+  where: identity_credential_types_bool_exp
+}
+
+"""Ordering options when selecting data from "identity_credential_types"."""
+input identity_credential_types_order_by {
+  id: order_by
+  name: order_by
+}
+
+"""primary key columns input for table: identity_credential_types"""
+input identity_credential_types_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "identity_credential_types"
+"""
+enum identity_credential_types_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  name
+}
+
+"""
+input type for updating data in table "identity_credential_types"
+"""
+input identity_credential_types_set_input {
+  id: uuid
+  name: String
+}
+
+"""
+update columns of table "identity_credential_types"
+"""
+enum identity_credential_types_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  name
+}
+
+"""
+columns and relationships of "identity_credentials"
+"""
+type identity_credentials {
+  config(
+    """JSON select path"""
+    path: String
+  ): jsonb!
+  created_at: timestamp!
+  id: uuid!
+  identity_credential_type_id: uuid!
+  identity_id: uuid!
+  nid: uuid
+  updated_at: timestamp!
+}
+
+"""
+aggregated selection of "identity_credentials"
+"""
+type identity_credentials_aggregate {
+  aggregate: identity_credentials_aggregate_fields
+  nodes: [identity_credentials!]!
+}
+
+"""
+aggregate fields of "identity_credentials"
+"""
+type identity_credentials_aggregate_fields {
+  count(columns: [identity_credentials_select_column!], distinct: Boolean): Int!
+  max: identity_credentials_max_fields
+  min: identity_credentials_min_fields
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input identity_credentials_append_input {
+  config: jsonb
+}
+
+"""
+Boolean expression to filter rows from the table "identity_credentials". All fields are combined with a logical 'AND'.
+"""
+input identity_credentials_bool_exp {
+  _and: [identity_credentials_bool_exp!]
+  _not: identity_credentials_bool_exp
+  _or: [identity_credentials_bool_exp!]
+  config: jsonb_comparison_exp
+  created_at: timestamp_comparison_exp
+  id: uuid_comparison_exp
+  identity_credential_type_id: uuid_comparison_exp
+  identity_id: uuid_comparison_exp
+  nid: uuid_comparison_exp
+  updated_at: timestamp_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "identity_credentials"
+"""
+enum identity_credentials_constraint {
+  """unique or primary key constraint"""
+  identity_credentials_pkey
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input identity_credentials_delete_at_path_input {
+  config: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input identity_credentials_delete_elem_input {
+  config: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input identity_credentials_delete_key_input {
+  config: String
+}
+
+"""
+input type for inserting data into table "identity_credentials"
+"""
+input identity_credentials_insert_input {
+  config: jsonb
+  created_at: timestamp
+  id: uuid
+  identity_credential_type_id: uuid
+  identity_id: uuid
+  nid: uuid
+  updated_at: timestamp
+}
+
+"""aggregate max on columns"""
+type identity_credentials_max_fields {
+  created_at: timestamp
+  id: uuid
+  identity_credential_type_id: uuid
+  identity_id: uuid
+  nid: uuid
+  updated_at: timestamp
+}
+
+"""aggregate min on columns"""
+type identity_credentials_min_fields {
+  created_at: timestamp
+  id: uuid
+  identity_credential_type_id: uuid
+  identity_id: uuid
+  nid: uuid
+  updated_at: timestamp
+}
+
+"""
+response of any mutation on the table "identity_credentials"
+"""
+type identity_credentials_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [identity_credentials!]!
+}
+
+"""
+on_conflict condition type for table "identity_credentials"
+"""
+input identity_credentials_on_conflict {
+  constraint: identity_credentials_constraint!
+  update_columns: [identity_credentials_update_column!]! = []
+  where: identity_credentials_bool_exp
+}
+
+"""Ordering options when selecting data from "identity_credentials"."""
+input identity_credentials_order_by {
+  config: order_by
+  created_at: order_by
+  id: order_by
+  identity_credential_type_id: order_by
+  identity_id: order_by
+  nid: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: identity_credentials"""
+input identity_credentials_pk_columns_input {
+  id: uuid!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input identity_credentials_prepend_input {
+  config: jsonb
+}
+
+"""
+select columns of table "identity_credentials"
+"""
+enum identity_credentials_select_column {
+  """column name"""
+  config
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  identity_credential_type_id
+
+  """column name"""
+  identity_id
+
+  """column name"""
+  nid
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "identity_credentials"
+"""
+input identity_credentials_set_input {
+  config: jsonb
+  created_at: timestamp
+  id: uuid
+  identity_credential_type_id: uuid
+  identity_id: uuid
+  nid: uuid
+  updated_at: timestamp
+}
+
+"""
+update columns of table "identity_credentials"
+"""
+enum identity_credentials_update_column {
+  """column name"""
+  config
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  identity_credential_type_id
+
+  """column name"""
+  identity_id
+
+  """column name"""
+  nid
 
   """column name"""
   updated_at
@@ -2616,6 +3324,45 @@ type mutation_root {
   delete_identities_by_pk(id: uuid!): identities
 
   """
+  delete data from the table: "identity_credential_identifiers"
+  """
+  delete_identity_credential_identifiers(
+    """filter the rows which have to be deleted"""
+    where: identity_credential_identifiers_bool_exp!
+  ): identity_credential_identifiers_mutation_response
+
+  """
+  delete single row from the table: "identity_credential_identifiers"
+  """
+  delete_identity_credential_identifiers_by_pk(id: uuid!): identity_credential_identifiers
+
+  """
+  delete data from the table: "identity_credential_types"
+  """
+  delete_identity_credential_types(
+    """filter the rows which have to be deleted"""
+    where: identity_credential_types_bool_exp!
+  ): identity_credential_types_mutation_response
+
+  """
+  delete single row from the table: "identity_credential_types"
+  """
+  delete_identity_credential_types_by_pk(id: uuid!): identity_credential_types
+
+  """
+  delete data from the table: "identity_credentials"
+  """
+  delete_identity_credentials(
+    """filter the rows which have to be deleted"""
+    where: identity_credentials_bool_exp!
+  ): identity_credentials_mutation_response
+
+  """
+  delete single row from the table: "identity_credentials"
+  """
+  delete_identity_credentials_by_pk(id: uuid!): identity_credentials
+
+  """
   delete data from the table: "identity_verifiable_addresses"
   """
   delete_identity_verifiable_addresses(
@@ -2871,6 +3618,72 @@ type mutation_root {
     """upsert condition"""
     on_conflict: identities_on_conflict
   ): identities
+
+  """
+  insert data into the table: "identity_credential_identifiers"
+  """
+  insert_identity_credential_identifiers(
+    """the rows to be inserted"""
+    objects: [identity_credential_identifiers_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: identity_credential_identifiers_on_conflict
+  ): identity_credential_identifiers_mutation_response
+
+  """
+  insert a single row into the table: "identity_credential_identifiers"
+  """
+  insert_identity_credential_identifiers_one(
+    """the row to be inserted"""
+    object: identity_credential_identifiers_insert_input!
+
+    """upsert condition"""
+    on_conflict: identity_credential_identifiers_on_conflict
+  ): identity_credential_identifiers
+
+  """
+  insert data into the table: "identity_credential_types"
+  """
+  insert_identity_credential_types(
+    """the rows to be inserted"""
+    objects: [identity_credential_types_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: identity_credential_types_on_conflict
+  ): identity_credential_types_mutation_response
+
+  """
+  insert a single row into the table: "identity_credential_types"
+  """
+  insert_identity_credential_types_one(
+    """the row to be inserted"""
+    object: identity_credential_types_insert_input!
+
+    """upsert condition"""
+    on_conflict: identity_credential_types_on_conflict
+  ): identity_credential_types
+
+  """
+  insert data into the table: "identity_credentials"
+  """
+  insert_identity_credentials(
+    """the rows to be inserted"""
+    objects: [identity_credentials_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: identity_credentials_on_conflict
+  ): identity_credentials_mutation_response
+
+  """
+  insert a single row into the table: "identity_credentials"
+  """
+  insert_identity_credentials_one(
+    """the row to be inserted"""
+    object: identity_credentials_insert_input!
+
+    """upsert condition"""
+    on_conflict: identity_credentials_on_conflict
+  ): identity_credentials
 
   """
   insert data into the table: "identity_verifiable_addresses"
@@ -3341,6 +4154,108 @@ type mutation_root {
     _set: identities_set_input
     pk_columns: identities_pk_columns_input!
   ): identities
+
+  """
+  update data of the table: "identity_credential_identifiers"
+  """
+  update_identity_credential_identifiers(
+    """sets the columns of the filtered rows to the given values"""
+    _set: identity_credential_identifiers_set_input
+
+    """filter the rows which have to be updated"""
+    where: identity_credential_identifiers_bool_exp!
+  ): identity_credential_identifiers_mutation_response
+
+  """
+  update single row of the table: "identity_credential_identifiers"
+  """
+  update_identity_credential_identifiers_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: identity_credential_identifiers_set_input
+    pk_columns: identity_credential_identifiers_pk_columns_input!
+  ): identity_credential_identifiers
+
+  """
+  update data of the table: "identity_credential_types"
+  """
+  update_identity_credential_types(
+    """sets the columns of the filtered rows to the given values"""
+    _set: identity_credential_types_set_input
+
+    """filter the rows which have to be updated"""
+    where: identity_credential_types_bool_exp!
+  ): identity_credential_types_mutation_response
+
+  """
+  update single row of the table: "identity_credential_types"
+  """
+  update_identity_credential_types_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: identity_credential_types_set_input
+    pk_columns: identity_credential_types_pk_columns_input!
+  ): identity_credential_types
+
+  """
+  update data of the table: "identity_credentials"
+  """
+  update_identity_credentials(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: identity_credentials_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: identity_credentials_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: identity_credentials_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: identity_credentials_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: identity_credentials_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: identity_credentials_set_input
+
+    """filter the rows which have to be updated"""
+    where: identity_credentials_bool_exp!
+  ): identity_credentials_mutation_response
+
+  """
+  update single row of the table: "identity_credentials"
+  """
+  update_identity_credentials_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: identity_credentials_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: identity_credentials_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: identity_credentials_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: identity_credentials_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: identity_credentials_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: identity_credentials_set_input
+    pk_columns: identity_credentials_pk_columns_input!
+  ): identity_credentials
 
   """
   update data of the table: "identity_verifiable_addresses"
@@ -5319,6 +6234,7 @@ type query_root {
 
   """fetch data from the table: "findings" using primary key columns"""
   findings_by_pk(id: uuid!): findings
+  github: github_Query
 
   """
   fetch data from the table: "github_repositories"
@@ -5405,6 +6321,141 @@ type query_root {
 
   """fetch data from the table: "identities" using primary key columns"""
   identities_by_pk(id: uuid!): identities
+
+  """
+  fetch data from the table: "identity_credential_identifiers"
+  """
+  identity_credential_identifiers(
+    """distinct select on columns"""
+    distinct_on: [identity_credential_identifiers_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credential_identifiers_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credential_identifiers_bool_exp
+  ): [identity_credential_identifiers!]!
+
+  """
+  fetch aggregated fields from the table: "identity_credential_identifiers"
+  """
+  identity_credential_identifiers_aggregate(
+    """distinct select on columns"""
+    distinct_on: [identity_credential_identifiers_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credential_identifiers_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credential_identifiers_bool_exp
+  ): identity_credential_identifiers_aggregate!
+
+  """
+  fetch data from the table: "identity_credential_identifiers" using primary key columns
+  """
+  identity_credential_identifiers_by_pk(id: uuid!): identity_credential_identifiers
+
+  """
+  fetch data from the table: "identity_credential_types"
+  """
+  identity_credential_types(
+    """distinct select on columns"""
+    distinct_on: [identity_credential_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credential_types_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credential_types_bool_exp
+  ): [identity_credential_types!]!
+
+  """
+  fetch aggregated fields from the table: "identity_credential_types"
+  """
+  identity_credential_types_aggregate(
+    """distinct select on columns"""
+    distinct_on: [identity_credential_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credential_types_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credential_types_bool_exp
+  ): identity_credential_types_aggregate!
+
+  """
+  fetch data from the table: "identity_credential_types" using primary key columns
+  """
+  identity_credential_types_by_pk(id: uuid!): identity_credential_types
+
+  """
+  fetch data from the table: "identity_credentials"
+  """
+  identity_credentials(
+    """distinct select on columns"""
+    distinct_on: [identity_credentials_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credentials_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credentials_bool_exp
+  ): [identity_credentials!]!
+
+  """
+  fetch aggregated fields from the table: "identity_credentials"
+  """
+  identity_credentials_aggregate(
+    """distinct select on columns"""
+    distinct_on: [identity_credentials_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credentials_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credentials_bool_exp
+  ): identity_credentials_aggregate!
+
+  """
+  fetch data from the table: "identity_credentials" using primary key columns
+  """
+  identity_credentials_by_pk(id: uuid!): identity_credentials
 
   """An array relationship"""
   identity_verifiable_addresses(
@@ -6926,6 +7977,141 @@ type subscription_root {
 
   """fetch data from the table: "identities" using primary key columns"""
   identities_by_pk(id: uuid!): identities
+
+  """
+  fetch data from the table: "identity_credential_identifiers"
+  """
+  identity_credential_identifiers(
+    """distinct select on columns"""
+    distinct_on: [identity_credential_identifiers_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credential_identifiers_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credential_identifiers_bool_exp
+  ): [identity_credential_identifiers!]!
+
+  """
+  fetch aggregated fields from the table: "identity_credential_identifiers"
+  """
+  identity_credential_identifiers_aggregate(
+    """distinct select on columns"""
+    distinct_on: [identity_credential_identifiers_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credential_identifiers_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credential_identifiers_bool_exp
+  ): identity_credential_identifiers_aggregate!
+
+  """
+  fetch data from the table: "identity_credential_identifiers" using primary key columns
+  """
+  identity_credential_identifiers_by_pk(id: uuid!): identity_credential_identifiers
+
+  """
+  fetch data from the table: "identity_credential_types"
+  """
+  identity_credential_types(
+    """distinct select on columns"""
+    distinct_on: [identity_credential_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credential_types_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credential_types_bool_exp
+  ): [identity_credential_types!]!
+
+  """
+  fetch aggregated fields from the table: "identity_credential_types"
+  """
+  identity_credential_types_aggregate(
+    """distinct select on columns"""
+    distinct_on: [identity_credential_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credential_types_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credential_types_bool_exp
+  ): identity_credential_types_aggregate!
+
+  """
+  fetch data from the table: "identity_credential_types" using primary key columns
+  """
+  identity_credential_types_by_pk(id: uuid!): identity_credential_types
+
+  """
+  fetch data from the table: "identity_credentials"
+  """
+  identity_credentials(
+    """distinct select on columns"""
+    distinct_on: [identity_credentials_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credentials_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credentials_bool_exp
+  ): [identity_credentials!]!
+
+  """
+  fetch aggregated fields from the table: "identity_credentials"
+  """
+  identity_credentials_aggregate(
+    """distinct select on columns"""
+    distinct_on: [identity_credentials_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_credentials_order_by!]
+
+    """filter the rows returned"""
+    where: identity_credentials_bool_exp
+  ): identity_credentials_aggregate!
+
+  """
+  fetch data from the table: "identity_credentials" using primary key columns
+  """
+  identity_credentials_by_pk(id: uuid!): identity_credentials
 
   """An array relationship"""
   identity_verifiable_addresses(
