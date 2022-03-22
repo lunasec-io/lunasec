@@ -12,7 +12,6 @@
  *
  */
 import express, { Request, Response } from 'express';
-import jwt_decode from 'jwt-decode';
 import validate from 'validator';
 
 import { getBucketConfig } from '../config';
@@ -74,11 +73,14 @@ function parseRequest(req: Request): ErrorResponse | ParsedPresignRequestData {
       message: 'Missing auth header in request',
     };
   }
-  const decodedJwt = jwt_decode(authHeader);
-  // messy data coming from oathkeeper, stringifying this value wasnt working so its one big weird golang string, fix later
-  const authorizedBuilds = (decodedJwt as any)['https://hasura.io/jwt/claims']?.['x-hasura-builds'] as
-    | string
-    | undefined;
+
+  const user = req.user as Record<string, Record<string, string | undefined>>;
+
+  const hasuraClaims = user['https://hasura.io/jwt/claims'];
+
+  // messy data coming from oathkeeper, stringifying this value wasn't working so its one big weird golang string, fix later
+  const authorizedBuilds =
+    hasuraClaims && hasuraClaims['x-hasura-builds'] !== undefined && hasuraClaims['x-hasura-builds'];
 
   if (!authorizedBuilds) {
     return {
