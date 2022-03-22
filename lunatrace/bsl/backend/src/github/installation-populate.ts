@@ -12,34 +12,18 @@
  *
  */
 
-import { createAppAuth } from '@octokit/auth-app';
 import { Octokit } from 'octokit';
 
-import { getGithubAppConfig } from '../config';
 import { ListReposAccessibleToInstallationResponseType } from '../types/github';
 
-const githubAppConfig = getGithubAppConfig();
-
-export function getGithubAppAuth(clientInfo?: { clientId: string; clientSecret: string }) {
-  return createAppAuth({
-    appId: githubAppConfig.githubAppId,
-    privateKey: githubAppConfig.githubPrivateKey,
-    ...clientInfo,
-  });
-}
+import { getGithubAppAuth, getInstallationAccessToken } from './auth';
 
 export async function pullDataForInstallation(
   installationId: number
 ): Promise<ListReposAccessibleToInstallationResponseType> {
-  const auth = getGithubAppAuth();
+  const installationAuthenticationToken = await getInstallationAccessToken(installationId);
 
-  // Retrieve installation access token
-  const installationAuthentication = await auth({
-    type: 'installation',
-    installationId: installationId,
-  });
-
-  const octokit = new Octokit({ auth: installationAuthentication.token });
+  const octokit = new Octokit({ auth: installationAuthenticationToken });
 
   // authenticates as app based on request URLs
   return await octokit.rest.apps.listReposAccessibleToInstallation({});

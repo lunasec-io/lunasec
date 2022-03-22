@@ -1,1 +1,175 @@
-[]
+- name: GitHubProxy
+  definition:
+    url: http://host.docker.internal:3003/github/graphql
+    timeout_seconds: 60
+    customization:
+      type_names:
+        prefix: github_
+        mapping: {}
+      root_fields_namespace: github
+    forward_client_headers: true
+  comment: ""
+  permissions:
+  - role: user
+    definition:
+      schema: |-
+        schema  { query: Query }
+
+        scalar DateTime
+
+        scalar HTML
+
+        scalar URI
+
+        type Query { user(login: String!): User
+          viewer: User!
+        }
+
+        type User { avatarUrl: URI!
+          bio: String
+          bioHTML: HTML!
+          company: String
+          companyHTML: HTML!
+          createdAt: DateTime!
+          databaseId: Int
+          email: String!
+          estimatedNextSponsorsPayoutInCents: Int!
+          hasSponsorsListing: Boolean!
+          id: ID!
+          isBountyHunter: Boolean!
+          isCampusExpert: Boolean!
+          isDeveloperProgramMember: Boolean!
+          isEmployee: Boolean!
+          isFollowingViewer: Boolean!
+          isGitHubStar: Boolean!
+          isHireable: Boolean!
+          isSiteAdmin: Boolean!
+          isSponsoringViewer: Boolean!
+          isViewer: Boolean!
+          location: String
+          login: String!
+          monthlyEstimatedSponsorsIncomeInCents: Int!
+          name: String
+          projectsResourcePath: URI!
+          projectsUrl: URI!
+          resourcePath: URI!
+          twitterUsername: String
+          updatedAt: DateTime!
+          url: URI!
+          viewerCanChangePinnedItems: Boolean!
+          viewerCanCreateProjects: Boolean!
+          viewerCanFollow: Boolean!
+          viewerCanSponsor: Boolean!
+          viewerIsFollowing: Boolean!
+          viewerIsSponsoring: Boolean!
+          websiteUrl: URI
+        }
+  - role: service
+    definition:
+      schema: |-
+        schema  { query: Query }
+
+        scalar DateTime
+
+        scalar HTML
+
+        scalar URI
+
+        type Query { user(login: String!): User
+          viewer: User!
+        }
+
+        type User { avatarUrl: URI!
+          bio: String
+          bioHTML: HTML!
+          company: String
+          companyHTML: HTML!
+          createdAt: DateTime!
+          databaseId: Int
+          email: String!
+          estimatedNextSponsorsPayoutInCents: Int!
+          hasSponsorsListing: Boolean!
+          id: ID!
+          isBountyHunter: Boolean!
+          isCampusExpert: Boolean!
+          isDeveloperProgramMember: Boolean!
+          isEmployee: Boolean!
+          isFollowingViewer: Boolean!
+          isGitHubStar: Boolean!
+          isHireable: Boolean!
+          isSiteAdmin: Boolean!
+          isSponsoringViewer: Boolean!
+          isViewer: Boolean!
+          location: String
+          login: String!
+          monthlyEstimatedSponsorsIncomeInCents: Int!
+          name: String
+          projectsResourcePath: URI!
+          projectsUrl: URI!
+          resourcePath: URI!
+          twitterUsername: String
+          updatedAt: DateTime!
+          url: URI!
+          viewerCanChangePinnedItems: Boolean!
+          viewerCanCreateProjects: Boolean!
+          viewerCanFollow: Boolean!
+          viewerCanSponsor: Boolean!
+          viewerIsFollowing: Boolean!
+          viewerIsSponsoring: Boolean!
+          websiteUrl: URI
+        }
+  - role: cli
+    definition:
+      schema: |-
+        schema  { query: Query }
+
+        scalar DateTime
+
+        scalar HTML
+
+        scalar URI
+
+        type Query { user(login: String!): User
+          viewer: User!
+        }
+
+        type User { avatarUrl: URI!
+          bio: String
+          bioHTML: HTML!
+          company: String
+          companyHTML: HTML!
+          createdAt: DateTime!
+          databaseId: Int
+          email: String!
+          estimatedNextSponsorsPayoutInCents: Int!
+          hasSponsorsListing: Boolean!
+          id: ID!
+          isBountyHunter: Boolean!
+          isCampusExpert: Boolean!
+          isDeveloperProgramMember: Boolean!
+          isEmployee: Boolean!
+          isFollowingViewer: Boolean!
+          isGitHubStar: Boolean!
+          isHireable: Boolean!
+          isSiteAdmin: Boolean!
+          isSponsoringViewer: Boolean!
+          isViewer: Boolean!
+          location: String
+          login: String!
+          monthlyEstimatedSponsorsIncomeInCents: Int!
+          name: String
+          organizationVerifiedDomainEmails(login: String!): [String!]!
+          projectsResourcePath: URI!
+          projectsUrl: URI!
+          resourcePath: URI!
+          twitterUsername: String
+          updatedAt: DateTime!
+          url: URI!
+          viewerCanChangePinnedItems: Boolean!
+          viewerCanCreateProjects: Boolean!
+          viewerCanFollow: Boolean!
+          viewerCanSponsor: Boolean!
+          viewerIsFollowing: Boolean!
+          viewerIsSponsoring: Boolean!
+          websiteUrl: URI
+        }
