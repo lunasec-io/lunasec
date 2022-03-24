@@ -11,12 +11,15 @@
  * limitations under the License.
  *
  */
-import { Configuration, V0alpha2Api } from '@ory/kratos-client';
 
-const ory = new V0alpha2Api(
-  new Configuration({
-    basePath: process.env.REACT_APP_KRATOS_URL || 'http://localhost:4455/api/kratos',
-  })
-);
+export function logError(error: Error): void {
+  console.error(error.message);
+  console.error(error.stack);
+}
 
-export default ory;
+export function errorResponse(msg: string) {
+  return {
+    error: true,
+    message: msg,
+  };
+}

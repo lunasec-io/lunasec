@@ -18,25 +18,18 @@ selfservice:
       enabled: true
       config:
         providers:
-          - id: github-oauth
-            provider: github
+          - id: github-app
+            provider: github-app
             client_id: fake-value
             client_secret: another-fake-value
             mapper_url: file:///config/oidc.github.jsonnet
             scope:
-              - user:email
-          - id: github-oauth-developer
-            provider: github
-            client_id: fake-value
-            client_secret: another-fake-value
-            mapper_url: file:///config/oidc.github.jsonnet
-            scope:
+              - email
               - read:user
-              - user:email
 
   flows:
     error:
-      ui_url: http://localhost:4455/api/kratos/error
+      ui_url: http://localhost:4455/auth/error
 
     settings:
       ui_url: http://localhost:4455/api/kratos/settings
@@ -59,6 +52,14 @@ selfservice:
     login:
       ui_url: http://localhost:4455
       lifespan: 10m
+      after:
+        oidc:
+          hooks:
+            - hook: web_hook
+              config:
+                url: http://host.docker.internal:3002/github/login
+                method: POST
+                body: file:///config/oidc.hook.jsonnet
 
     registration:
       lifespan: 10m
@@ -66,12 +67,16 @@ selfservice:
       after:
         password:
           hooks:
-            -
-              hook: session
+            - hook: session
         oidc:
           hooks:
-            -
-              hook: session
+            - hook: session
+            - hook: web_hook
+              config:
+                url: http://host.docker.internal:3002/github/login
+                method: POST
+                body: file:///config/oidc.hook.jsonnet
+                
 
 log:
   level: debug

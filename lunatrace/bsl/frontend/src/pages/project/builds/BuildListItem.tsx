@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';

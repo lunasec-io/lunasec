@@ -13,8 +13,10 @@
  */
 
 import { app } from './app';
+import { getServerConfig } from './config';
 
-const port = process.env.PORT || 3002; // This port needs to be exposed to the hasura backend, via the docker-compose
-app.listen(port, () => {
-  console.log('Server is running on port ', port);
+const serverConfig = getServerConfig();
+
+app.listen(serverConfig.serverPort, () => {
+  console.log('Server is running on port ', serverConfig.serverPort);
 });
