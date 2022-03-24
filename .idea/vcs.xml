@@ -4,5 +4,6 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/lunatrace/bsl/frontend/src/scss/proprietary-theme" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/tools/license-checker/skywalking-eyes" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/tools/snzip" vcs="Git" />
   </component>
 </project>
