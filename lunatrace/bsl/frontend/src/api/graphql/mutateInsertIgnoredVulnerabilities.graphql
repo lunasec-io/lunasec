@@ -1,0 +1,5 @@
+mutation InsertIgnoredVulnerabilities($vulnerability_id: uuid!, $project_id: uuid!, $note: String!, $locations: jsonb!) {
+    insert_ignored_vulnerabilities(objects: {locations: $locations, note: $note, project_id: $project_id, vulnerability_id: $vulnerability_id}, on_conflict: {constraint: ignored_vulnerabilities_project_id_vulnerability_id_key, update_columns: locations}) {
+        affected_rows
+    }
+}
