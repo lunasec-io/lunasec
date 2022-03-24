@@ -30,4 +30,5 @@ export interface VulnerablePackage {
   fix_state: string | null;
   fix_versions: string[];
   findings: Finding[];
+  project_id: string;
 }
