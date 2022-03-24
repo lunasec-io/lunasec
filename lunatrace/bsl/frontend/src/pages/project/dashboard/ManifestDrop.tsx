@@ -146,7 +146,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     return (
       <span>
         <FilePlus />
-        Click here or drop-and-drop a manifest file or bundled project to manually submit a build.
+        Click here or drap-and-drop a manifest file or bundled project to manually submit a build.
         <br />
         (ex: package-lock.json, my-project.jar, my-project.zip)
       </span>

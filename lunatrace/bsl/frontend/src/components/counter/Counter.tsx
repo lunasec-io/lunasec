@@ -14,7 +14,6 @@
 import React, { useState } from 'react';
 
 import useAppDispatch from '../../hooks/useAppDispatch';
-import useAppSelector from '../../hooks/useAppSelector';
 
 import styles from './Counter.module.css';
 import { decrement, increment, incrementAsync, incrementByAmount } from './counterSlice';

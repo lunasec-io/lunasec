@@ -44,7 +44,7 @@ export const TokenItem: React.FC<{ token: ProjectInfo['project_access_tokens'][n
             {deleteResult.isLoading ? (
               <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
             ) : (
-              <XCircle size={18} className="align-middle ms-2" />
+              <XCircle size="1.2em" className="align-middle mb-1 ms-2" />
             )}
           </Button>
           <ConfirmationDailog
