@@ -13,10 +13,11 @@
  */
 import React, { MouseEventHandler, useState } from 'react';
 import { Accordion, Card, Col, Collapse, Container, Fade, OverlayTrigger, Row, Table, Tooltip } from 'react-bootstrap';
-import { ChevronDown, ChevronUp, Copy } from 'react-feather';
+import { ChevronDown, ChevronUp, Copy, XSquare } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import semverSort from 'semver-sort';
 
+import api from '../../../api';
 import { CvssInferredWarning } from '../../../components/CvssInferredWarning';
 import { prettyDate } from '../../../utils/pretty-date';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
@@ -32,6 +33,7 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
   const navigate = useNavigate();
   const createdAt = prettyDate(new Date(pkg.created_at));
   // const [filterLevel, setFilterLevel] = useState(severityFilter)
+  const [insertVulnIgnore, _insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
   const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
   const filteredFindings = pkg.findings.filter((f) => {
     return severityOrder.indexOf(f.severity) >= severityFilter || !shouldFilterFindings;
@@ -142,6 +144,7 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
                         <th>Severity</th>
                         <th>CVSS</th>
                         <th>Fix</th>
+                        <th>Ignore</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -168,6 +171,21 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
                                 />{' '}
                               </td>
                               <td>{f.fix_versions || 'unknown'}</td>
+                              <td>
+                                <XSquare
+                                  className="ignore-vuln-button"
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    console.log('locations are', f.locations);
+                                    await insertVulnIgnore({
+                                      project_id: pkg.project_id,
+                                      vulnerability_id: f.vulnerability_id,
+                                      note: '',
+                                      locations: f.locations,
+                                    });
+                                  }}
+                                />
+                              </td>
                             </tr>
                           </OverlayTrigger>
                         );
