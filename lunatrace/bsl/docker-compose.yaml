@@ -33,6 +33,7 @@ services:
   # kratos -c ory/kratos/config.yaml migrate sql -e --yes
   kratos:
     build: ./ory/kratos
+    image: lunatrace-kratos:lunatrace-dev
     ports:
       - '4433:4433' # public
       - '4434:4434' # admin
@@ -40,6 +41,7 @@ services:
     environment:
       - DSN=postgres://postgres:postgrespassword@postgres:5432/lunatrace
       - LOG_LEVEL=trace
+      - KRATOS_ADMIN_URL=http://localhost:4434
     command: serve -c /config/config.yaml -c /config/config.dev.yaml --dev --watch-courier
     volumes:
       - ./ory/kratos:/config
