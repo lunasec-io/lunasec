@@ -12,7 +12,7 @@
  *
  */
 import React from 'react';
-import { Col, Container, Row, Spinner } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { ArrowLeft } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { NavLink, useParams } from 'react-router-dom';

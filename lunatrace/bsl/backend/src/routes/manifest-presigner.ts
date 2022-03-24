@@ -14,10 +14,12 @@
 import express from 'express';
 import { v4 as uuid } from 'uuid';
 
-import { manifestBucket } from '../constants';
+import { getBucketConfig } from '../config';
 import { aws } from '../utils/aws-utils';
 
 export const manifestPresignerRouter = express.Router();
+
+const sbomHandlerConfig = getBucketConfig();
 
 manifestPresignerRouter.post('/s3/presign-manifest-upload', async (req, res) => {
   const projectId = req.body.input.project_id as string | undefined;
@@ -33,8 +35,8 @@ manifestPresignerRouter.post('/s3/presign-manifest-upload', async (req, res) => 
   )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${encodeURIComponent(uniqueId)}`;
 
   try {
-    const result = await aws.generatePresignedS3Url(manifestBucket, objectKey, 'PUT');
-    return res.json({ error: false, key: objectKey, bucket: manifestBucket, ...result });
+    const result = await aws.generatePresignedS3Url(sbomHandlerConfig.manifestBucket, objectKey, 'PUT');
+    return res.json({ error: false, key: objectKey, bucket: sbomHandlerConfig.manifestBucket, ...result });
   } catch (e) {
     return res.status(400).json({ error: true, error_message: 'Failed to generate S3 presigned url' });
   }
