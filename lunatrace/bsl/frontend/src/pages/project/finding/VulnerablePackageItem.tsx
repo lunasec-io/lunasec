@@ -11,16 +11,33 @@
  * limitations under the License.
  *
  */
-import React, { useState } from 'react';
-import { Accordion, Card, Col, Container, OverlayTrigger, Row, Table, Tooltip } from 'react-bootstrap';
+import React, { LegacyRef, MouseEventHandler, ReactPropTypes, useState } from 'react';
+import {
+  Accordion,
+  Card,
+  Col,
+  Collapse,
+  Container,
+  Dropdown,
+  Fade,
+  FloatingLabel,
+  Form,
+  FormControl,
+  OverlayTrigger,
+  Row,
+  Spinner,
+  Table,
+  Tooltip,
+} from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
-import { useNavigate } from 'react-router-dom';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import semverSort from 'semver-sort';
 
-import { CvssInferredWarning } from '../../../components/CvssInferredWarning';
-import { prettyDate } from '../../../utils/pretty-date';
+import api from '../../../api';
+import { ConfirmationDailog } from '../../../components/ConfirmationDialog';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
 
+import { VulnerabilityTableItem } from './VulnerabilityTableItem';
 import { severityOrder, VulnerablePackage } from './types';
 
 interface FindingListItemProps {
@@ -29,171 +46,221 @@ interface FindingListItemProps {
 }
 
 export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps> = ({ pkg, severityFilter }) => {
-  const navigate = useNavigate();
-  const createdAt = prettyDate(new Date(pkg.created_at));
-  // const [filterLevel, setFilterLevel] = useState(severityFilter)
+  // const navigate = useNavigate();
+  // const createdAt = prettyDate(new Date(pkg.created_at));
+
   const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [ignoreNote, setIgnoreNote] = useState('');
+
   const filteredFindings = pkg.findings.filter((f) => {
     return severityOrder.indexOf(f.severity) >= severityFilter || !shouldFilterFindings;
   });
 
-  const fixVersions = [...pkg.fix_versions];
+  const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
 
-  // if (!fixVersions.some((f) => isNaN(Number(f)))){
-  //     console.log('using number sort ', pkg.fix_versions)
-  //     // attempt to sort using number conversion
-  //     fixVersions.sort((a,b) => Number(b) - Number(a))
-  //     console.log('sorted versions are ', fixVersions)
-  // } else {
-  //     console.log('falling back to string sort for ', pkg.fix_versions)
-  //     fixVersions.sort();
-  // }
+  const fixVersions = [...pkg.fix_versions];
 
   const recommendVersion = semverSort.desc(fixVersions)[0];
 
+  const bulkIgnoreVulns = async () => {
+    const toIgnore = pkg.findings.map((f) => {
+      return {
+        vulnerability_id: f.vulnerability_id,
+        project_id: pkg.project_id,
+        note: ignoreNote,
+        locations: f.locations,
+      };
+    });
+    await insertVulnIgnore({ objects: toIgnore });
+  };
+  // eslint-disable-next-line react/display-name
+  const customMenuToggle = React.forwardRef<
+    HTMLAnchorElement,
+    { onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void }
+  >(({ children, onClick }, ref) => (
+    <a
+      className="text-right position-absolute top-0 end-0 m-3 btn-white"
+      href=""
+      ref={ref}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick(e);
+      }}
+    >
+      <BsThreeDotsVertical size={25} className="text-right position-absolute top-0 end-0 me-n3" />
+      {children}
+    </a>
+  ));
+
   return (
-    <Card className="vulnpkg-card">
-      <Card.Header>
-        <Container fluid>
-          <Row>
-            <Col sm="6">
-              <Card.Title>
-                <h2>{pkg.package_name} </h2>
-              </Card.Title>
-              <Card.Subtitle>
-                {' '}
-                <span className="darker">Version: </span>
-                {pkg.version}
-              </Card.Subtitle>
-            </Col>
-            <Col sm={{ span: 6 }}>
-              <div style={{ float: 'right', textAlign: 'right' }}>
-                <Card.Title>
-                  <span className="text-right darker"> Severity: </span>
-                  <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
-                    <h4 className={`p-1 ${pkg.severity}`} style={{ display: 'inline' }}>
-                      {pkg.severity}
-                    </h4>
-                  </div>
-                </Card.Title>
-                {pkg.cvss_score ? (
-                  <Card.Subtitle>
-                    {' '}
-                    <span className="darker">CVSS: </span>
-                    {pkg.cvss_score}
-                  </Card.Subtitle>
-                ) : null}
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </Card.Header>
-      <Card.Body>
-        <Container fluid>
-          {pkg.fix_state === 'fixed' ? (
+    <>
+      <Card className="vulnpkg-card">
+        {insertVulnIgnoreState.isUninitialized ? (
+          <Dropdown align="end">
+            <Dropdown.Toggle as={customMenuToggle} />
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={(e) => setShowConfirmation(true)}>Ignore</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        ) : (
+          <Spinner animation="border" className="position-absolute top-0 end-0 m-3" />
+        )}
+        <Card.Header>
+          <Container fluid>
             <Row>
-              <h5>
-                {' '}
-                <span className="darker">Recommended version: </span>
-                {recommendVersion}
-              </h5>
+              <Col sm="6">
+                <Card.Title>
+                  <h2>{pkg.package_name} </h2>
+                </Card.Title>
+                <Card.Subtitle>
+                  {' '}
+                  <span className="darker">Version: </span>
+                  {pkg.version}
+                </Card.Subtitle>
+              </Col>
+              <Col sm={{ span: 6 }}>
+                <div style={{ float: 'right', textAlign: 'right' }}>
+                  <Card.Title>
+                    <span className="text-right darker"> Severity: </span>
+                    <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
+                      <h4 className={`p-1 ${pkg.severity}`} style={{ display: 'inline' }}>
+                        {pkg.severity}
+                      </h4>
+                    </div>
+                  </Card.Title>
+                  {pkg.cvss_score ? (
+                    <Card.Subtitle>
+                      {' '}
+                      <span className="darker">CVSS: </span>
+                      {pkg.cvss_score}
+                    </Card.Subtitle>
+                  ) : null}
+                </div>
+              </Col>
             </Row>
-          ) : null}
-          <Row>
-            <Col xs="12">
-              <h5>
-                {' '}
-                <span className="darker">Language: </span>
-                {capitalizeFirstLetter(pkg.language)}
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs="12">
-              <h5 className="darker">Path{pkg.locations.length === 1 ? '' : 's'}:</h5>{' '}
-              {pkg.locations.map((l) => {
-                return (
-                  <>
-                    <h5>{l}</h5>
-                  </>
-                );
-              })}
-            </Col>
-          </Row>
-          <Row>
-            <Accordion>
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>
-                  {filteredFindings.length}{' '}
-                  {shouldFilterFindings && severityOrder[severityFilter] !== 'Unknown'
-                    ? severityOrder[severityFilter] +
-                      (severityFilter < severityOrder.indexOf('Critical') ? ' (or higher) ' : ' ')
-                    : null}
-                  {/*Todo: break this into a function*/}
-                  finding
-                  {filteredFindings.length === 1 ? '' : 's'}
-                </Accordion.Header>
-                <Accordion.Body>
-                  <Table hover size="sm">
-                    <thead>
-                      <tr>
-                        <th>Source</th>
-                        <th>Vulnerability Number</th>
-                        <th>Severity</th>
-                        <th>CVSS</th>
-                        <th>Fix</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredFindings.map((f) => {
-                        return (
-                          <OverlayTrigger
-                            placement="bottom"
-                            overlay={<Tooltip className="wide-tooltip"> {f.vulnerability.description}</Tooltip>}
-                            key={f.id}
-                          >
-                            <tr
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => navigate(`/vulnerabilities/${f.vulnerability.id as string}`)}
-                              key={f.id}
-                            >
-                              <td>{f.vulnerability.namespace}</td>
-                              <td>{f.vulnerability.name}</td>
-                              <td>{f.severity}</td>
-                              <td>
-                                {f.vulnerability.cvss_score}{' '}
-                                <CvssInferredWarning
-                                  inferred={f.vulnerability.cvss_inferred || false}
-                                  placement="top"
-                                />{' '}
-                              </td>
-                              <td>{f.fix_versions || 'unknown'}</td>
-                            </tr>
-                          </OverlayTrigger>
-                        );
-                      })}
-                    </tbody>
-                  </Table>
-                  {shouldFilterFindings ? (
-                    pkg.findings.length > filteredFindings.length ? (
-                      <span style={{ cursor: 'pointer' }} onClick={() => setShouldFilterFindings(false)}>
-                        Show {pkg.findings.length - filteredFindings.length} lower severity findings
-                        <ChevronDown />
+          </Container>
+        </Card.Header>
+        <Card.Body>
+          <Container fluid>
+            {pkg.fix_state === 'fixed' ? (
+              <Row>
+                <h5>
+                  {' '}
+                  <span className="darker">Recommended version: </span>
+                  {recommendVersion}
+                </h5>
+              </Row>
+            ) : null}
+            <Row>
+              <Col xs="12">
+                <h5>
+                  {' '}
+                  <span className="darker">Language: </span>
+                  {capitalizeFirstLetter(pkg.language)}
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="12">
+                <h5 className="darker">Path{pkg.locations.length === 1 ? '' : 's'}:</h5>{' '}
+                {pkg.locations.map((l) => {
+                  return (
+                    <>
+                      <h5>{l}</h5>
+                    </>
+                  );
+                })}
+              </Col>
+            </Row>
+            <Row>
+              <Accordion>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>
+                    {filteredFindings.length}{' '}
+                    {shouldFilterFindings && severityOrder[severityFilter] !== 'Unknown'
+                      ? severityOrder[severityFilter] +
+                        (severityFilter < severityOrder.indexOf('Critical') ? ' (or higher) ' : ' ')
+                      : null}
+                    {/*Todo: break this into a function*/}
+                    finding
+                    {filteredFindings.length === 1 ? '' : 's'}
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <Table hover size="sm">
+                      <thead>
+                        <tr>
+                          <th>Source</th>
+                          <th>Vulnerability Number</th>
+                          <th>Severity</th>
+                          <th>CVSS</th>
+                          <th>Fix</th>
+                          <th>Ignore</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredFindings.map((f) => (
+                          <VulnerabilityTableItem key={f.id} finding={f} />
+                        ))}
+                      </tbody>
+                    </Table>
+
+                    {shouldFilterFindings ? (
+                      pkg.findings.length > filteredFindings.length ? (
+                        <span style={{ cursor: 'pointer' }} onClick={() => setShouldFilterFindings(false)}>
+                          Show {pkg.findings.length - filteredFindings.length} lower severity findings
+                          <ChevronDown />
+                        </span>
+                      ) : null
+                    ) : (
+                      <span style={{ cursor: 'pointer' }} onClick={() => setShouldFilterFindings(true)}>
+                        Hide lower severity findings
+                        <ChevronUp />
                       </span>
-                    ) : null
-                  ) : (
-                    <span style={{ cursor: 'pointer' }} onClick={() => setShouldFilterFindings(true)}>
-                      Hide lower severity findings
-                      <ChevronUp />
-                    </span>
-                  )}
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-          </Row>
-        </Container>
-      </Card.Body>
-    </Card>
+                    )}
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </Row>
+          </Container>
+        </Card.Body>
+      </Card>
+      <ConfirmationDailog
+        title={`Ignore All Findings For This Package`}
+        body={(
+          <>
+            <p>
+              Bulk ignore every currently reported finding for this package. Future vulnerabilities or the same
+              vulnerabilities at new locations can still cause this package to appear again. This action is not yet
+              reversible but will be in a future version.
+            </p>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault();
+                setShowConfirmation(false);
+                void bulkIgnoreVulns();
+              }}
+            >
+              <FloatingLabel controlId="floatingInput" label="Reason (optional)" className="mb-3">
+                <FormControl
+                  value={ignoreNote}
+                  onChange={(e) => setIgnoreNote(e.target.value)}
+                  required={false}
+                  placeholder="Enter reason"
+                />
+              </FloatingLabel>
+            </Form>
+          </>
+        )}
+        onClose={(success) => {
+          setShowConfirmation(false);
+          if (success) {
+            void bulkIgnoreVulns();
+          }
+        }}
+        show={showConfirmation}
+      />
+    </>
   );
   return null;
 };
