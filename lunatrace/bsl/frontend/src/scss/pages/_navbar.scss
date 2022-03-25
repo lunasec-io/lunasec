@@ -2,17 +2,11 @@
   content: var(--bs-breadcrumb-divider, ">") !important;
 }
 
-//.switch-group {
-//  border-radius: 1rem !important;
-//
-//  .switch-on, .switch-off {
-//    border-radius: 1rem !important;
-//
-//  }
-//}
 
 .navbar-nav {
   .switch {
     border-radius: .25rem;
+    height:38px;
+    align-self: center;
   }
 }
