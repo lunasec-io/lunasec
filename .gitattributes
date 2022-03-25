@@ -1,5 +1,0 @@
-lunatrace/bsl/frontend/schema.graphql merge=ours
-lunatrace/bsl/backend/schema.graphql merge=ours
-lunatrace/bsl/frontend/public/css merge=ours
-lunatrace/bsl/frontend/src/api/generated.ts merge=ours
-lunatrace/bsl/backend/src/asura-api/generated.ts merge=ours
