@@ -756,10 +756,10 @@ unique or primary key constraints on table "findings"
 """
 enum findings_constraint {
   """unique or primary key constraint"""
-  findings_dedupe_slug_build_id_key
+  findings_pkey
 
   """unique or primary key constraint"""
-  findings_pkey
+  temp_dedupe_fix
 }
 
 """
@@ -2095,6 +2095,276 @@ enum identity_verifiable_addresses_update_column {
 }
 
 """
+columns and relationships of "ignored_vulnerabilities"
+"""
+type ignored_vulnerabilities {
+  """An object relationship"""
+  creator: identities
+  creator_id: uuid
+  id: uuid!
+  locations(
+    """JSON select path"""
+    path: String
+  ): jsonb!
+  note: String!
+
+  """An object relationship"""
+  project: projects!
+  project_id: uuid!
+
+  """An object relationship"""
+  vulnerability: vulnerabilities!
+  vulnerability_id: uuid!
+}
+
+"""
+aggregated selection of "ignored_vulnerabilities"
+"""
+type ignored_vulnerabilities_aggregate {
+  aggregate: ignored_vulnerabilities_aggregate_fields
+  nodes: [ignored_vulnerabilities!]!
+}
+
+"""
+aggregate fields of "ignored_vulnerabilities"
+"""
+type ignored_vulnerabilities_aggregate_fields {
+  count(columns: [ignored_vulnerabilities_select_column!], distinct: Boolean): Int!
+  max: ignored_vulnerabilities_max_fields
+  min: ignored_vulnerabilities_min_fields
+}
+
+"""
+order by aggregate values of table "ignored_vulnerabilities"
+"""
+input ignored_vulnerabilities_aggregate_order_by {
+  count: order_by
+  max: ignored_vulnerabilities_max_order_by
+  min: ignored_vulnerabilities_min_order_by
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input ignored_vulnerabilities_append_input {
+  locations: jsonb
+}
+
+"""
+input type for inserting array relation for remote table "ignored_vulnerabilities"
+"""
+input ignored_vulnerabilities_arr_rel_insert_input {
+  data: [ignored_vulnerabilities_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: ignored_vulnerabilities_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "ignored_vulnerabilities". All fields are combined with a logical 'AND'.
+"""
+input ignored_vulnerabilities_bool_exp {
+  _and: [ignored_vulnerabilities_bool_exp!]
+  _not: ignored_vulnerabilities_bool_exp
+  _or: [ignored_vulnerabilities_bool_exp!]
+  creator: identities_bool_exp
+  creator_id: uuid_comparison_exp
+  id: uuid_comparison_exp
+  locations: jsonb_comparison_exp
+  note: String_comparison_exp
+  project: projects_bool_exp
+  project_id: uuid_comparison_exp
+  vulnerability: vulnerabilities_bool_exp
+  vulnerability_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "ignored_vulnerabilities"
+"""
+enum ignored_vulnerabilities_constraint {
+  """unique or primary key constraint"""
+  ignored_vulnerabilities_pkey
+
+  """unique or primary key constraint"""
+  ignored_vulnerabilities_project_id_vulnerability_id_key
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input ignored_vulnerabilities_delete_at_path_input {
+  locations: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input ignored_vulnerabilities_delete_elem_input {
+  locations: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input ignored_vulnerabilities_delete_key_input {
+  locations: String
+}
+
+"""
+input type for inserting data into table "ignored_vulnerabilities"
+"""
+input ignored_vulnerabilities_insert_input {
+  creator: identities_obj_rel_insert_input
+  creator_id: uuid
+  id: uuid
+  locations: jsonb
+  note: String
+  project: projects_obj_rel_insert_input
+  project_id: uuid
+  vulnerability: vulnerabilities_obj_rel_insert_input
+  vulnerability_id: uuid
+}
+
+"""aggregate max on columns"""
+type ignored_vulnerabilities_max_fields {
+  creator_id: uuid
+  id: uuid
+  note: String
+  project_id: uuid
+  vulnerability_id: uuid
+}
+
+"""
+order by max() on columns of table "ignored_vulnerabilities"
+"""
+input ignored_vulnerabilities_max_order_by {
+  creator_id: order_by
+  id: order_by
+  note: order_by
+  project_id: order_by
+  vulnerability_id: order_by
+}
+
+"""aggregate min on columns"""
+type ignored_vulnerabilities_min_fields {
+  creator_id: uuid
+  id: uuid
+  note: String
+  project_id: uuid
+  vulnerability_id: uuid
+}
+
+"""
+order by min() on columns of table "ignored_vulnerabilities"
+"""
+input ignored_vulnerabilities_min_order_by {
+  creator_id: order_by
+  id: order_by
+  note: order_by
+  project_id: order_by
+  vulnerability_id: order_by
+}
+
+"""
+response of any mutation on the table "ignored_vulnerabilities"
+"""
+type ignored_vulnerabilities_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [ignored_vulnerabilities!]!
+}
+
+"""
+on_conflict condition type for table "ignored_vulnerabilities"
+"""
+input ignored_vulnerabilities_on_conflict {
+  constraint: ignored_vulnerabilities_constraint!
+  update_columns: [ignored_vulnerabilities_update_column!]! = []
+  where: ignored_vulnerabilities_bool_exp
+}
+
+"""Ordering options when selecting data from "ignored_vulnerabilities"."""
+input ignored_vulnerabilities_order_by {
+  creator: identities_order_by
+  creator_id: order_by
+  id: order_by
+  locations: order_by
+  note: order_by
+  project: projects_order_by
+  project_id: order_by
+  vulnerability: vulnerabilities_order_by
+  vulnerability_id: order_by
+}
+
+"""primary key columns input for table: ignored_vulnerabilities"""
+input ignored_vulnerabilities_pk_columns_input {
+  id: uuid!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input ignored_vulnerabilities_prepend_input {
+  locations: jsonb
+}
+
+"""
+select columns of table "ignored_vulnerabilities"
+"""
+enum ignored_vulnerabilities_select_column {
+  """column name"""
+  creator_id
+
+  """column name"""
+  id
+
+  """column name"""
+  locations
+
+  """column name"""
+  note
+
+  """column name"""
+  project_id
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
+input type for updating data in table "ignored_vulnerabilities"
+"""
+input ignored_vulnerabilities_set_input {
+  creator_id: uuid
+  id: uuid
+  locations: jsonb
+  note: String
+  project_id: uuid
+  vulnerability_id: uuid
+}
+
+"""
+update columns of table "ignored_vulnerabilities"
+"""
+enum ignored_vulnerabilities_update_column {
+  """column name"""
+  creator_id
+
+  """column name"""
+  id
+
+  """column name"""
+  locations
+
+  """column name"""
+  note
+
+  """column name"""
+  project_id
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
 columns and relationships of "instances"
 """
 type instances {
@@ -2629,6 +2899,19 @@ type mutation_root {
   delete_identity_verifiable_addresses_by_pk(id: uuid!): identity_verifiable_addresses
 
   """
+  delete data from the table: "ignored_vulnerabilities"
+  """
+  delete_ignored_vulnerabilities(
+    """filter the rows which have to be deleted"""
+    where: ignored_vulnerabilities_bool_exp!
+  ): ignored_vulnerabilities_mutation_response
+
+  """
+  delete single row from the table: "ignored_vulnerabilities"
+  """
+  delete_ignored_vulnerabilities_by_pk(id: uuid!): ignored_vulnerabilities
+
+  """
   delete data from the table: "instances"
   """
   delete_instances(
@@ -2893,6 +3176,28 @@ type mutation_root {
     """upsert condition"""
     on_conflict: identity_verifiable_addresses_on_conflict
   ): identity_verifiable_addresses
+
+  """
+  insert data into the table: "ignored_vulnerabilities"
+  """
+  insert_ignored_vulnerabilities(
+    """the rows to be inserted"""
+    objects: [ignored_vulnerabilities_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: ignored_vulnerabilities_on_conflict
+  ): ignored_vulnerabilities_mutation_response
+
+  """
+  insert a single row into the table: "ignored_vulnerabilities"
+  """
+  insert_ignored_vulnerabilities_one(
+    """the row to be inserted"""
+    object: ignored_vulnerabilities_insert_input!
+
+    """upsert condition"""
+    on_conflict: ignored_vulnerabilities_on_conflict
+  ): ignored_vulnerabilities
 
   """
   insert data into the table: "instances"
@@ -3361,6 +3666,68 @@ type mutation_root {
     _set: identity_verifiable_addresses_set_input
     pk_columns: identity_verifiable_addresses_pk_columns_input!
   ): identity_verifiable_addresses
+
+  """
+  update data of the table: "ignored_vulnerabilities"
+  """
+  update_ignored_vulnerabilities(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: ignored_vulnerabilities_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: ignored_vulnerabilities_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: ignored_vulnerabilities_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: ignored_vulnerabilities_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: ignored_vulnerabilities_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: ignored_vulnerabilities_set_input
+
+    """filter the rows which have to be updated"""
+    where: ignored_vulnerabilities_bool_exp!
+  ): ignored_vulnerabilities_mutation_response
+
+  """
+  update single row of the table: "ignored_vulnerabilities"
+  """
+  update_ignored_vulnerabilities_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: ignored_vulnerabilities_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: ignored_vulnerabilities_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: ignored_vulnerabilities_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: ignored_vulnerabilities_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: ignored_vulnerabilities_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: ignored_vulnerabilities_set_input
+    pk_columns: ignored_vulnerabilities_pk_columns_input!
+  ): ignored_vulnerabilities
 
   """
   update data of the table: "instances"
@@ -4887,6 +5254,42 @@ type projects {
   id: uuid!
 
   """An array relationship"""
+  ignored_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): [ignored_vulnerabilities!]!
+
+  """An aggregate relationship"""
+  ignored_vulnerabilities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): ignored_vulnerabilities_aggregate!
+
+  """An array relationship"""
   manifests(
     """distinct select on columns"""
     distinct_on: [manifests_select_column!]
@@ -5049,6 +5452,7 @@ input projects_bool_exp {
   created_at: timestamp_comparison_exp
   github_repositories: github_repositories_bool_exp
   id: uuid_comparison_exp
+  ignored_vulnerabilities: ignored_vulnerabilities_bool_exp
   manifests: manifests_bool_exp
   name: String_comparison_exp
   organization: organizations_bool_exp
@@ -5078,6 +5482,7 @@ input projects_insert_input {
   created_at: timestamp
   github_repositories: github_repositories_arr_rel_insert_input
   id: uuid
+  ignored_vulnerabilities: ignored_vulnerabilities_arr_rel_insert_input
   manifests: manifests_arr_rel_insert_input
   name: String
   organization: organizations_obj_rel_insert_input
@@ -5168,6 +5573,7 @@ input projects_order_by {
   created_at: order_by
   github_repositories_aggregate: github_repositories_aggregate_order_by
   id: order_by
+  ignored_vulnerabilities_aggregate: ignored_vulnerabilities_aggregate_order_by
   manifests_aggregate: manifests_aggregate_order_by
   name: order_by
   organization: organizations_order_by
@@ -5446,6 +5852,47 @@ type query_root {
   fetch data from the table: "identity_verifiable_addresses" using primary key columns
   """
   identity_verifiable_addresses_by_pk(id: uuid!): identity_verifiable_addresses
+
+  """An array relationship"""
+  ignored_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): [ignored_vulnerabilities!]!
+
+  """An aggregate relationship"""
+  ignored_vulnerabilities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): ignored_vulnerabilities_aggregate!
+
+  """
+  fetch data from the table: "ignored_vulnerabilities" using primary key columns
+  """
+  ignored_vulnerabilities_by_pk(id: uuid!): ignored_vulnerabilities
 
   """
   fetch data from the table: "instances"
@@ -6968,6 +7415,47 @@ type subscription_root {
   """
   identity_verifiable_addresses_by_pk(id: uuid!): identity_verifiable_addresses
 
+  """An array relationship"""
+  ignored_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): [ignored_vulnerabilities!]!
+
+  """An aggregate relationship"""
+  ignored_vulnerabilities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): ignored_vulnerabilities_aggregate!
+
+  """
+  fetch data from the table: "ignored_vulnerabilities" using primary key columns
+  """
+  ignored_vulnerabilities_by_pk(id: uuid!): ignored_vulnerabilities
+
   """
   fetch data from the table: "instances"
   """
@@ -7567,6 +8055,42 @@ type vulnerabilities {
     where: findings_bool_exp
   ): findings_aggregate!
   id: uuid!
+
+  """An array relationship"""
+  ignored_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): [ignored_vulnerabilities!]!
+
+  """An aggregate relationship"""
+  ignored_vulnerabilities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): ignored_vulnerabilities_aggregate!
   name: String!
   namespace: String!
   record_source: String
@@ -7733,6 +8257,7 @@ input vulnerabilities_bool_exp {
   description: String_comparison_exp
   findings: findings_bool_exp
   id: uuid_comparison_exp
+  ignored_vulnerabilities: ignored_vulnerabilities_bool_exp
   name: String_comparison_exp
   namespace: String_comparison_exp
   record_source: String_comparison_exp
@@ -7779,6 +8304,7 @@ input vulnerabilities_insert_input {
   description: String
   findings: findings_arr_rel_insert_input
   id: uuid
+  ignored_vulnerabilities: ignored_vulnerabilities_arr_rel_insert_input
   name: String
   namespace: String
   record_source: String
@@ -7867,6 +8393,7 @@ input vulnerabilities_order_by {
   description: order_by
   findings_aggregate: findings_aggregate_order_by
   id: order_by
+  ignored_vulnerabilities_aggregate: ignored_vulnerabilities_aggregate_order_by
   name: order_by
   namespace: order_by
   record_source: order_by

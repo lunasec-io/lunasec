@@ -26,6 +26,11 @@ export const LoadSession: React.FC = (props) => {
       .toSession()
       .then(({ data }) => {
         dispatch(setSession(data));
+        window.Atlas.identify({
+          userId: data.identity.id,
+          name: data.identity.traits.name,
+          email: data.identity.traits.email,
+        });
       })
       .catch((err: AxiosError) => {
         switch (err.response?.status) {

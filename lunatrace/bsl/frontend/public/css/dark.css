@@ -13291,10 +13291,8 @@ textarea.form-control-lg {
 }
 
 .avatar {
-  margin-top: -15px;
-  margin-bottom: -15px;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
 }
 
 .badge {
@@ -17498,6 +17496,8 @@ td.rdtYear:hover {
 
 .navbar-nav .switch {
   border-radius: 0.25rem;
+  height: 38px;
+  align-self: center;
 }
 
 .breadcrumb-navigation {
