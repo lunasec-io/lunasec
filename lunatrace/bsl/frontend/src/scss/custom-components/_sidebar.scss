@@ -1,0 +1,6 @@
+.sidebar-link.active{
+  background-image: linear-gradient(to right, #3c77d87d, rgb(0,0,0,0));
+  color:white !important;
+  font-weight:bold !important;
+  //width: 105%; // This is to make it look connected to the main view, might cause some issues someday
+}

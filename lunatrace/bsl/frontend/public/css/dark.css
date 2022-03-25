@@ -13998,7 +13998,7 @@ a.badge-soft-dark:focus, a.badge-soft-dark.focus {
 
 .card {
   margin-bottom: 24px;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08), 0 0 6px rgba(41, 48, 66, 0.05);
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.08), 0 0 6px rgba(41, 48, 66, 0.05);
 }
 
 .card-header {
@@ -17490,14 +17490,8 @@ td.rdtYear:hover {
   color: #3F80EA;
 }
 
-.breadcrumb-item + .breadcrumb-item::before {
-  content: var(--bs-breadcrumb-divider, ">") !important;
-}
-
-.navbar-nav .switch {
-  border-radius: 0.25rem;
-  height: 38px;
-  align-self: center;
+.ignore-vuln-button:hover {
+  color: red;
 }
 
 .breadcrumb-navigation {
@@ -17593,6 +17587,37 @@ td.rdtYear:hover {
   background-color: #505563;
 }
 
+.homepage-manifest-drop {
+  background-color: var(--bs-body-bg);
+}
+
+.homepage-subtitle {
+  border-left: 2px solid var(--bs-secondary);
+  margin-left: 11px;
+  margin-bottom: 4px;
+  padding: 10px 20px 20px 20px;
+}
+
+.homepage-subtitle.active {
+  border-color: var(--bs-primary);
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: var(--bs-breadcrumb-divider, ">") !important;
+}
+
+.navbar-nav .switch {
+  border-radius: 0.25rem;
+  height: 38px;
+  align-self: center;
+}
+
+.sidebar-link.active {
+  background-image: linear-gradient(to right, #3c77d87d, rgba(0, 0, 0, 0));
+  color: white !important;
+  font-weight: bold !important;
+}
+
 .clickable-card:hover {
   transform: scale(1.02);
   cursor: pointer;
@@ -17622,6 +17647,18 @@ td.rdtYear:hover {
 
 .modal-body {
   margin-bottom: 1em;
+}
+
+.bubble {
+  background-color: var(--bs-primary) !important;
+}
+
+#atlas-chat .bubble .bubble-icon {
+  display: none;
+}
+#atlas-chat .bubble::after {
+  margin-top: 0.75em;
+  content: url('data:image/svg+xml,<svg stroke="currentColor" fill="white" stroke-width="0" viewBox="0 0 16 16" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path d="M14 0a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z"></path></svg>') !important;
 }
 
 /*# sourceMappingURL=dark.css.map */

@@ -12,11 +12,14 @@
  *
  */
 import React from 'react';
+import { Accordion } from 'react-bootstrap';
+import { AiOutlineInfoCircle } from 'react-icons/ai';
 import { useParams } from 'react-router-dom';
 
 import { ProjectInfo } from '../types';
 
 import { ManifestDrop } from './ManifestDrop';
+import { ScanTypesExplanation } from './ScanTypesExplanation';
 
 interface ProjectDashboardMainProps {
   project: ProjectInfo;
@@ -25,12 +28,37 @@ interface ProjectDashboardMainProps {
 export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project }) => {
   console.log('rendering main dashboard');
   const { project_id } = useParams();
-  if (!project_id) return null;
+  if (!project_id) {
+    return null;
+  }
 
   return (
     <>
       <ManifestDrop project_id={project_id} />
       Github URL Github Name short github description blurb most recent several builds, master first probably
+      <Accordion flush={true}>
+        <Accordion.Item eventKey="0">
+          <Accordion.Header className="text-center secret-more-info-accordion-header">
+            {' '}
+            <AiOutlineInfoCircle className="me-2" size="1rem" /> How to collect Snapshots
+          </Accordion.Header>
+          <Accordion.Body>
+            <ScanTypesExplanation />
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
+      {/*<Row>*/}
+      {/*  <Card className="">*/}
+      {/*    <Card.Body>*/}
+      {/*      <Card.Title>LunaTrace CLI</Card.Title>*/}
+      {/*      <Card.Text>*/}
+      {/*        Manually create and scan SBOMs for your projects. The CLI can be used in any environment and will report*/}
+      {/*        its findings to your project&apos;s dashboard.*/}
+      {/*      </Card.Text>*/}
+      {/*      <Card.Link href="#">Setup</Card.Link>*/}
+      {/*    </Card.Body>*/}
+      {/*  </Card>*/}
+      {/*</Row>*/}
     </>
   );
 };

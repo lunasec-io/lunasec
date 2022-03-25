@@ -13,7 +13,8 @@
  */
 import express from 'express';
 
-import { githubInstall, githubLogin } from '../github/projects';
+import { githubInstall } from '../github/projects';
+import { githubLogin } from '../github/users';
 
 export const githubApiRouter = express.Router();
 

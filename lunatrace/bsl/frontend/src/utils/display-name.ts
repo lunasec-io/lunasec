@@ -18,7 +18,6 @@ interface IdentityTraits {
 
 export function displayName(traits?: IdentityTraits, fullName = true): string {
   // maybe this will be the case for anonymous sessions someday, put here just in case
-  console.log('user traits ', traits);
   if (!traits) {
     return 'Anonymous';
   }
