@@ -77,7 +77,8 @@ export const CreateTokenForm: React.FC<{ project: ProjectInfo; setFormOpen: (o: 
             </Button>
             <ConfirmationDailog
               title={`Remember to copy the secret value`}
-              body={`This is your last chance to copy the secret. Please make sure you copied it before hitting continue. Remember, don't commit it to revision control.`}
+              body={`This is your last chance to copy the secret. Please make sure you copied it before hitting continue.
+                  Remember, don't commit it to revision control.`}
               onClose={(success) => {
                 setShowConfirmation(false);
                 if (success) {
