@@ -46,6 +46,7 @@ const renderNavlinkBody = (props: SidebarLinkProps): React.ReactNode => {
     </>
   );
 };
+
 export const Link: React.FunctionComponent<SidebarLinkProps> = (props) => {
   return (
     <li className="sidebar-item">
@@ -53,7 +54,7 @@ export const Link: React.FunctionComponent<SidebarLinkProps> = (props) => {
         depth={props.depth}
         to={props.link.href}
         onClick={props.link.onClick}
-        className={({ isActive }) => ['sidebar-link', isActive ? 'active' : null].filter(Boolean).join(' ')}
+        className={({ isActive }) => ['sidebar-link', isActive ? 'active ' : null].filter(Boolean).join(' ')}
       >
         {renderNavlinkBody(props)}
       </NavLink>

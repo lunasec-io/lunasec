@@ -24,7 +24,6 @@ import { ProjectSearch } from './NavbarProjectSearch';
 import NavbarUser from './NavbarUser';
 
 const NavbarComponent = () => {
-  // const { t } = useTranslation();
   const { isOpen, setIsOpen } = useSidebar();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const { theme, setTheme } = useTheme();
@@ -43,27 +42,7 @@ const NavbarComponent = () => {
 
         {isAuthenticated ? <ProjectSearch /> : null}
 
-        <Nav className="navbar-align">
-          {/*<NavbarDropdown*/}
-          {/*  header="New Messages"*/}
-          {/*  footer="Show all messages"*/}
-          {/*  icon={MessageCircle}*/}
-          {/*  count={messages.length}*/}
-          {/*  showBadge*/}
-          {/*>*/}
-          {/*  {messages.map((item, key) => {*/}
-          {/*    return (*/}
-          {/*      <NavbarDropdownItem*/}
-          {/*        key={key}*/}
-          {/*        icon={<img className="avatar img-fluid rounded-circle" src={item.avatar} alt={item.name} />}*/}
-          {/*        title={item.name}*/}
-          {/*        description={item.description}*/}
-          {/*        time={item.time}*/}
-          {/*        spacing*/}
-          {/*      />*/}
-          {/*    );*/}
-          {/*  })}*/}
-          {/*</NavbarDropdown>*/}
+        <Nav className="navbar-align flex-row">
           <BootstrapSwitchButton
             checked={theme === 'dark'}
             onChange={(checked: boolean) => {

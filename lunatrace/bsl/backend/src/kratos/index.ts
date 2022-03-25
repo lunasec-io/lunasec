@@ -27,7 +27,7 @@ export async function getGithubAccessTokenFromKratos(
 
   console.log('calling kratos for oidc token');
   const kratosRes = await kratosApiClient.adminGetIdentity(userId, ['oidc']);
-  console.log('got response from kratos ', kratosRes);
+  // console.log('got response from kratos ', kratosRes);
   const identity = kratosRes.data;
 
   if (!identity.credentials) {

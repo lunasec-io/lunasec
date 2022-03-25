@@ -8,9 +8,19 @@ query GetSidebarInfo {
             build_number
         }
     }
+
     organizations(order_by: {projects_aggregate: {count: asc}}) {
         name
         id
         createdAt
+        projects(order_by: {name: asc}) {
+            name
+            id
+            created_at
+            builds {
+                id
+                build_number
+            }
+        }
     }
 }

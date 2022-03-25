@@ -20,39 +20,53 @@ import { NavSection, SidebarItem } from './types';
 export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAuthenticated: boolean): NavSection[] {
   const projectsSection: SidebarItem[] = !data
     ? []
-    : [
-        {
-          href: '/project/:project_id',
-          icon: Folder,
-          title: 'Projects',
-          // badge: data.projects.length.toString(),
-          children: [
-            ...data.projects.map((p) => {
-              return {
-                href: `/project/${p.id as string}`,
-                title: p.name,
-              };
-            }),
-            {
-              href: `/project/create`,
-              title: 'New Project',
-              icon: Plus,
-            },
-          ],
-        },
-        {
+    : data.organizations.map((o) => {
+        return {
           href: '/organization/:organization_id',
-          icon: Briefcase,
-          title: 'Organizations',
-          // badge: data.organizations.length.toString(),
-          children: data.organizations.map((o) => {
+          icon: Briefcase, // todo: replace this with an icon from github
+          title: o.name,
+          children: o.projects.map((p) => {
             return {
-              href: `/organization/${o.id as string}`,
-              title: o.name,
+              href: `project/${p.id}`,
+              title: p.name,
             };
           }),
-        },
-      ];
+        };
+      });
+
+  // [
+  //   {
+  //     href: '/project/:project_id',
+  //     icon: Folder,
+  //     title: 'Projects',
+  //     // badge: data.projects.length.toString(),
+  //     children: [
+  //       ...data.projects.map((p) => {
+  //         return {
+  //           href: `/project/${p.id as string}`,
+  //           title: p.name,
+  //         };
+  //       }),
+  //       {
+  //         href: `/project/create`,
+  //         title: 'New Project',
+  //         icon: Plus,
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     href: '/organization/:organization_id',
+  //     icon: Briefcase,
+  //     title: 'Organizations',
+  //     // badge: data.organizations.length.toString(),
+  //     children: data.organizations.map((o) => {
+  //       return {
+  //         href: `/organization/${o.id as string}`,
+  //         title: o.name,
+  //       };
+  //     }),
+  //   },
+  // ];
 
   const databaseSection: SidebarItem[] = [
     {
@@ -83,7 +97,7 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
 
   const loggedInSections = [
     {
-      title: 'Projects & Organizations',
+      title: 'Organizations',
       items: projectsSection,
     },
     {

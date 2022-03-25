@@ -13,7 +13,7 @@
  */
 import React from 'react';
 import { Badge, Collapse } from 'react-bootstrap';
-import { useMatch } from 'react-router-dom';
+import { matchPath, useLocation, useMatch } from 'react-router-dom';
 
 import { SidebarItem, SidebarSubSection } from '../sidebar/types';
 
@@ -25,14 +25,26 @@ interface SidebarSubSectionProps {
 }
 
 export const SubSection: React.FunctionComponent<SidebarSubSectionProps> = (props) => {
-  const routeMatch = !!useMatch(props.section.href);
-  const [open, setOpen] = React.useState(routeMatch);
+  const section = props.section;
+  // const routeMatch = !!useMatch(props.section.href);
+  const { pathname } = useLocation();
+  // recursive function
+  function checkIfChildActive(item: SidebarItem) {
+    if (item.href && matchPath(item.href, pathname)) {
+      return true;
+    }
+    if ('children' in item && item.children) {
+      return item.children.some(checkIfChildActive);
+    }
+    return false;
+  }
+  const isActive = checkIfChildActive(section);
+
+  const [open, setOpen] = React.useState(isActive);
 
   const handleToggle = () => {
     setOpen((isOpen) => !isOpen);
   };
-
-  const section = props.section;
 
   const children = section.children.map((child: SidebarItem) => {
     return <SidebarLinkOrSection key={child.href} item={child} depth={props.depth + 1} />;

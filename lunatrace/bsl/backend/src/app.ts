@@ -36,7 +36,7 @@ app.use(Express.json());
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
     console.log('REQUEST RECEIVED ', req.path);
-    console.log('WITH BODY: ', req.body);
+    // console.log('WITH BODY: ', req.body);
     next();
   });
 }
