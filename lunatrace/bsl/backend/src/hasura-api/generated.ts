@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -1817,6 +1804,241 @@ export enum Identity_Verifiable_Addresses_Update_Column {
   Via = 'via'
 }
 
+/** columns and relationships of "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities = {
+  __typename?: 'ignored_vulnerabilities';
+  /** An object relationship */
+  creator?: Maybe<Identities>;
+  creator_id?: Maybe<Scalars['uuid']>;
+  id: Scalars['uuid'];
+  locations: Scalars['jsonb'];
+  note: Scalars['String'];
+  /** An object relationship */
+  project: Projects;
+  project_id: Scalars['uuid'];
+  /** An object relationship */
+  vulnerability: Vulnerabilities;
+  vulnerability_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "ignored_vulnerabilities" */
+export type Ignored_VulnerabilitiesLocationsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities_Aggregate = {
+  __typename?: 'ignored_vulnerabilities_aggregate';
+  aggregate?: Maybe<Ignored_Vulnerabilities_Aggregate_Fields>;
+  nodes: Array<Ignored_Vulnerabilities>;
+};
+
+/** aggregate fields of "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities_Aggregate_Fields = {
+  __typename?: 'ignored_vulnerabilities_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Ignored_Vulnerabilities_Max_Fields>;
+  min?: Maybe<Ignored_Vulnerabilities_Min_Fields>;
+};
+
+
+/** aggregate fields of "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Ignored_Vulnerabilities_Max_Order_By>;
+  min?: InputMaybe<Ignored_Vulnerabilities_Min_Order_By>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Ignored_Vulnerabilities_Append_Input = {
+  locations?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** input type for inserting array relation for remote table "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities_Arr_Rel_Insert_Input = {
+  data: Array<Ignored_Vulnerabilities_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Ignored_Vulnerabilities_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "ignored_vulnerabilities". All fields are combined with a logical 'AND'. */
+export type Ignored_Vulnerabilities_Bool_Exp = {
+  _and?: InputMaybe<Array<Ignored_Vulnerabilities_Bool_Exp>>;
+  _not?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+  _or?: InputMaybe<Array<Ignored_Vulnerabilities_Bool_Exp>>;
+  creator?: InputMaybe<Identities_Bool_Exp>;
+  creator_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  locations?: InputMaybe<Jsonb_Comparison_Exp>;
+  note?: InputMaybe<String_Comparison_Exp>;
+  project?: InputMaybe<Projects_Bool_Exp>;
+  project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  vulnerability?: InputMaybe<Vulnerabilities_Bool_Exp>;
+  vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "ignored_vulnerabilities" */
+export enum Ignored_Vulnerabilities_Constraint {
+  /** unique or primary key constraint */
+  IgnoredVulnerabilitiesPkey = 'ignored_vulnerabilities_pkey',
+  /** unique or primary key constraint */
+  IgnoredVulnerabilitiesProjectIdVulnerabilityIdKey = 'ignored_vulnerabilities_project_id_vulnerability_id_key'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Ignored_Vulnerabilities_Delete_At_Path_Input = {
+  locations?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Ignored_Vulnerabilities_Delete_Elem_Input = {
+  locations?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Ignored_Vulnerabilities_Delete_Key_Input = {
+  locations?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities_Insert_Input = {
+  creator?: InputMaybe<Identities_Obj_Rel_Insert_Input>;
+  creator_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  locations?: InputMaybe<Scalars['jsonb']>;
+  note?: InputMaybe<Scalars['String']>;
+  project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
+  project_id?: InputMaybe<Scalars['uuid']>;
+  vulnerability?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
+  vulnerability_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** aggregate max on columns */
+export type Ignored_Vulnerabilities_Max_Fields = {
+  __typename?: 'ignored_vulnerabilities_max_fields';
+  creator_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  note?: Maybe<Scalars['String']>;
+  project_id?: Maybe<Scalars['uuid']>;
+  vulnerability_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities_Max_Order_By = {
+  creator_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  note?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Ignored_Vulnerabilities_Min_Fields = {
+  __typename?: 'ignored_vulnerabilities_min_fields';
+  creator_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  note?: Maybe<Scalars['String']>;
+  project_id?: Maybe<Scalars['uuid']>;
+  vulnerability_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by min() on columns of table "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities_Min_Order_By = {
+  creator_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  note?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities_Mutation_Response = {
+  __typename?: 'ignored_vulnerabilities_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Ignored_Vulnerabilities>;
+};
+
+/** on_conflict condition type for table "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities_On_Conflict = {
+  constraint: Ignored_Vulnerabilities_Constraint;
+  update_columns?: Array<Ignored_Vulnerabilities_Update_Column>;
+  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "ignored_vulnerabilities". */
+export type Ignored_Vulnerabilities_Order_By = {
+  creator?: InputMaybe<Identities_Order_By>;
+  creator_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  locations?: InputMaybe<Order_By>;
+  note?: InputMaybe<Order_By>;
+  project?: InputMaybe<Projects_Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  vulnerability?: InputMaybe<Vulnerabilities_Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: ignored_vulnerabilities */
+export type Ignored_Vulnerabilities_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Ignored_Vulnerabilities_Prepend_Input = {
+  locations?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "ignored_vulnerabilities" */
+export enum Ignored_Vulnerabilities_Select_Column {
+  /** column name */
+  CreatorId = 'creator_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Locations = 'locations',
+  /** column name */
+  Note = 'note',
+  /** column name */
+  ProjectId = 'project_id',
+  /** column name */
+  VulnerabilityId = 'vulnerability_id'
+}
+
+/** input type for updating data in table "ignored_vulnerabilities" */
+export type Ignored_Vulnerabilities_Set_Input = {
+  creator_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  locations?: InputMaybe<Scalars['jsonb']>;
+  note?: InputMaybe<Scalars['String']>;
+  project_id?: InputMaybe<Scalars['uuid']>;
+  vulnerability_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** update columns of table "ignored_vulnerabilities" */
+export enum Ignored_Vulnerabilities_Update_Column {
+  /** column name */
+  CreatorId = 'creator_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Locations = 'locations',
+  /** column name */
+  Note = 'note',
+  /** column name */
+  ProjectId = 'project_id',
+  /** column name */
+  VulnerabilityId = 'vulnerability_id'
+}
+
 /** columns and relationships of "instances" */
 export type Instances = {
   __typename?: 'instances';
@@ -2245,6 +2467,10 @@ export type Mutation_Root = {
   delete_identity_verifiable_addresses?: Maybe<Identity_Verifiable_Addresses_Mutation_Response>;
   /** delete single row from the table: "identity_verifiable_addresses" */
   delete_identity_verifiable_addresses_by_pk?: Maybe<Identity_Verifiable_Addresses>;
+  /** delete data from the table: "ignored_vulnerabilities" */
+  delete_ignored_vulnerabilities?: Maybe<Ignored_Vulnerabilities_Mutation_Response>;
+  /** delete single row from the table: "ignored_vulnerabilities" */
+  delete_ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
   /** delete data from the table: "instances" */
   delete_instances?: Maybe<Instances_Mutation_Response>;
   /** delete single row from the table: "instances" */
@@ -2313,6 +2539,10 @@ export type Mutation_Root = {
   insert_identity_verifiable_addresses?: Maybe<Identity_Verifiable_Addresses_Mutation_Response>;
   /** insert a single row into the table: "identity_verifiable_addresses" */
   insert_identity_verifiable_addresses_one?: Maybe<Identity_Verifiable_Addresses>;
+  /** insert data into the table: "ignored_vulnerabilities" */
+  insert_ignored_vulnerabilities?: Maybe<Ignored_Vulnerabilities_Mutation_Response>;
+  /** insert a single row into the table: "ignored_vulnerabilities" */
+  insert_ignored_vulnerabilities_one?: Maybe<Ignored_Vulnerabilities>;
   /** insert data into the table: "instances" */
   insert_instances?: Maybe<Instances_Mutation_Response>;
   /** insert a single row into the table: "instances" */
@@ -2385,6 +2615,10 @@ export type Mutation_Root = {
   update_identity_verifiable_addresses?: Maybe<Identity_Verifiable_Addresses_Mutation_Response>;
   /** update single row of the table: "identity_verifiable_addresses" */
   update_identity_verifiable_addresses_by_pk?: Maybe<Identity_Verifiable_Addresses>;
+  /** update data of the table: "ignored_vulnerabilities" */
+  update_ignored_vulnerabilities?: Maybe<Ignored_Vulnerabilities_Mutation_Response>;
+  /** update single row of the table: "ignored_vulnerabilities" */
+  update_ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
   /** update data of the table: "instances" */
   update_instances?: Maybe<Instances_Mutation_Response>;
   /** update single row of the table: "instances" */
@@ -2492,6 +2726,18 @@ export type Mutation_RootDelete_Identity_Verifiable_AddressesArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Identity_Verifiable_Addresses_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Ignored_VulnerabilitiesArgs = {
+  where: Ignored_Vulnerabilities_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Ignored_Vulnerabilities_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -2707,6 +2953,20 @@ export type Mutation_RootInsert_Identity_Verifiable_AddressesArgs = {
 export type Mutation_RootInsert_Identity_Verifiable_Addresses_OneArgs = {
   object: Identity_Verifiable_Addresses_Insert_Input;
   on_conflict?: InputMaybe<Identity_Verifiable_Addresses_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Ignored_VulnerabilitiesArgs = {
+  objects: Array<Ignored_Vulnerabilities_Insert_Input>;
+  on_conflict?: InputMaybe<Ignored_Vulnerabilities_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Ignored_Vulnerabilities_OneArgs = {
+  object: Ignored_Vulnerabilities_Insert_Input;
+  on_conflict?: InputMaybe<Ignored_Vulnerabilities_On_Conflict>;
 };
 
 
@@ -2982,6 +3242,30 @@ export type Mutation_RootUpdate_Identity_Verifiable_AddressesArgs = {
 export type Mutation_RootUpdate_Identity_Verifiable_Addresses_By_PkArgs = {
   _set?: InputMaybe<Identity_Verifiable_Addresses_Set_Input>;
   pk_columns: Identity_Verifiable_Addresses_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Ignored_VulnerabilitiesArgs = {
+  _append?: InputMaybe<Ignored_Vulnerabilities_Append_Input>;
+  _delete_at_path?: InputMaybe<Ignored_Vulnerabilities_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Ignored_Vulnerabilities_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Ignored_Vulnerabilities_Delete_Key_Input>;
+  _prepend?: InputMaybe<Ignored_Vulnerabilities_Prepend_Input>;
+  _set?: InputMaybe<Ignored_Vulnerabilities_Set_Input>;
+  where: Ignored_Vulnerabilities_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Ignored_Vulnerabilities_By_PkArgs = {
+  _append?: InputMaybe<Ignored_Vulnerabilities_Append_Input>;
+  _delete_at_path?: InputMaybe<Ignored_Vulnerabilities_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Ignored_Vulnerabilities_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Ignored_Vulnerabilities_Delete_Key_Input>;
+  _prepend?: InputMaybe<Ignored_Vulnerabilities_Prepend_Input>;
+  _set?: InputMaybe<Ignored_Vulnerabilities_Set_Input>;
+  pk_columns: Ignored_Vulnerabilities_Pk_Columns_Input;
 };
 
 
@@ -4185,6 +4469,10 @@ export type Projects = {
   github_repositories_aggregate: Github_Repositories_Aggregate;
   id: Scalars['uuid'];
   /** An array relationship */
+  ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
+  /** An aggregate relationship */
+  ignored_vulnerabilities_aggregate: Ignored_Vulnerabilities_Aggregate;
+  /** An array relationship */
   manifests: Array<Manifests>;
   /** An aggregate relationship */
   manifests_aggregate: Manifests_Aggregate;
@@ -4242,6 +4530,26 @@ export type ProjectsGithub_Repositories_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Github_Repositories_Order_By>>;
   where?: InputMaybe<Github_Repositories_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsIgnored_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsIgnored_Vulnerabilities_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
 };
 
 
@@ -4349,6 +4657,7 @@ export type Projects_Bool_Exp = {
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   github_repositories?: InputMaybe<Github_Repositories_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  ignored_vulnerabilities?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
   manifests?: InputMaybe<Manifests_Bool_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   organization?: InputMaybe<Organizations_Bool_Exp>;
@@ -4373,6 +4682,7 @@ export type Projects_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamp']>;
   github_repositories?: InputMaybe<Github_Repositories_Arr_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['uuid']>;
+  ignored_vulnerabilities?: InputMaybe<Ignored_Vulnerabilities_Arr_Rel_Insert_Input>;
   manifests?: InputMaybe<Manifests_Arr_Rel_Insert_Input>;
   name?: InputMaybe<Scalars['String']>;
   organization?: InputMaybe<Organizations_Obj_Rel_Insert_Input>;
@@ -4454,6 +4764,7 @@ export type Projects_Order_By = {
   created_at?: InputMaybe<Order_By>;
   github_repositories_aggregate?: InputMaybe<Github_Repositories_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
+  ignored_vulnerabilities_aggregate?: InputMaybe<Ignored_Vulnerabilities_Aggregate_Order_By>;
   manifests_aggregate?: InputMaybe<Manifests_Aggregate_Order_By>;
   name?: InputMaybe<Order_By>;
   organization?: InputMaybe<Organizations_Order_By>;
@@ -4543,6 +4854,12 @@ export type Query_Root = {
   identity_verifiable_addresses_aggregate: Identity_Verifiable_Addresses_Aggregate;
   /** fetch data from the table: "identity_verifiable_addresses" using primary key columns */
   identity_verifiable_addresses_by_pk?: Maybe<Identity_Verifiable_Addresses>;
+  /** An array relationship */
+  ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
+  /** An aggregate relationship */
+  ignored_vulnerabilities_aggregate: Ignored_Vulnerabilities_Aggregate;
+  /** fetch data from the table: "ignored_vulnerabilities" using primary key columns */
+  ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
   /** fetch data from the table: "instances" */
   instances: Array<Instances>;
   /** fetch aggregated fields from the table: "instances" */
@@ -4731,6 +5048,29 @@ export type Query_RootIdentity_Verifiable_Addresses_AggregateArgs = {
 
 
 export type Query_RootIdentity_Verifiable_Addresses_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootIgnored_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+};
+
+
+export type Query_RootIgnored_Vulnerabilities_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+};
+
+
+export type Query_RootIgnored_Vulnerabilities_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -5765,6 +6105,12 @@ export type Subscription_Root = {
   identity_verifiable_addresses_aggregate: Identity_Verifiable_Addresses_Aggregate;
   /** fetch data from the table: "identity_verifiable_addresses" using primary key columns */
   identity_verifiable_addresses_by_pk?: Maybe<Identity_Verifiable_Addresses>;
+  /** An array relationship */
+  ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
+  /** An aggregate relationship */
+  ignored_vulnerabilities_aggregate: Ignored_Vulnerabilities_Aggregate;
+  /** fetch data from the table: "ignored_vulnerabilities" using primary key columns */
+  ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
   /** fetch data from the table: "instances" */
   instances: Array<Instances>;
   /** fetch aggregated fields from the table: "instances" */
@@ -5951,6 +6297,29 @@ export type Subscription_RootIdentity_Verifiable_Addresses_AggregateArgs = {
 
 
 export type Subscription_RootIdentity_Verifiable_Addresses_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootIgnored_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+};
+
+
+export type Subscription_RootIgnored_Vulnerabilities_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+};
+
+
+export type Subscription_RootIgnored_Vulnerabilities_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -6285,6 +6654,10 @@ export type Vulnerabilities = {
   /** An aggregate relationship */
   findings_aggregate: Findings_Aggregate;
   id: Scalars['uuid'];
+  /** An array relationship */
+  ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
+  /** An aggregate relationship */
+  ignored_vulnerabilities_aggregate: Ignored_Vulnerabilities_Aggregate;
   name: Scalars['String'];
   namespace: Scalars['String'];
   record_source?: Maybe<Scalars['String']>;
@@ -6324,6 +6697,26 @@ export type VulnerabilitiesFindings_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Findings_Order_By>>;
   where?: InputMaybe<Findings_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerabilities" */
+export type VulnerabilitiesIgnored_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerabilities" */
+export type VulnerabilitiesIgnored_Vulnerabilities_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
 };
 
 
@@ -6439,6 +6832,7 @@ export type Vulnerabilities_Bool_Exp = {
   description?: InputMaybe<String_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  ignored_vulnerabilities?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   namespace?: InputMaybe<String_Comparison_Exp>;
   record_source?: InputMaybe<String_Comparison_Exp>;
@@ -6478,6 +6872,7 @@ export type Vulnerabilities_Insert_Input = {
   description?: InputMaybe<Scalars['String']>;
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['uuid']>;
+  ignored_vulnerabilities?: InputMaybe<Ignored_Vulnerabilities_Arr_Rel_Insert_Input>;
   name?: InputMaybe<Scalars['String']>;
   namespace?: InputMaybe<Scalars['String']>;
   record_source?: InputMaybe<Scalars['String']>;
@@ -6561,6 +6956,7 @@ export type Vulnerabilities_Order_By = {
   description?: InputMaybe<Order_By>;
   findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
+  ignored_vulnerabilities_aggregate?: InputMaybe<Ignored_Vulnerabilities_Aggregate_Order_By>;
   name?: InputMaybe<Order_By>;
   namespace?: InputMaybe<Order_By>;
   record_source?: InputMaybe<Order_By>;
