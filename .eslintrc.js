@@ -84,6 +84,7 @@ module.exports = {
     'no-debugger': productionError,
     eqeqeq: 'error',
     quotes: [warnInDev, 'single', { allowTemplateLiterals: true, avoidEscape: true }],
+    curly:'warn',
     'react/jsx-wrap-multilines': [
       productionError,
       {
