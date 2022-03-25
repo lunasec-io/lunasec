@@ -25,7 +25,9 @@ interface ProjectDashboardMainProps {
 export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project }) => {
   console.log('rendering main dashboard');
   const { project_id } = useParams();
-  if (!project_id) return null;
+  if (!project_id) {
+    return null;
+  }
 
   return (
     <>
