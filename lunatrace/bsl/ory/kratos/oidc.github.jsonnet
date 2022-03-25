@@ -12,6 +12,11 @@ local claims = {
       // Therefore we only return the email if it (a) exists and (b) is marked verified
       // by GitHub.
       [if "email" in claims && claims.email_verified then "email" else null]: claims.email,
+      [if "name" in claims then "name" else null]: claims.name,
+      [if "username" in claims then "username" else null]: claims.nickname,
+      [if "website" in claims then "website" else null]: claims.website,
+      [if "picture" in claims then "picture" else null]: claims.picture,
+      [if "profile" in claims then "profileUrl" else null]: claims.profile
     },
   },
 }
