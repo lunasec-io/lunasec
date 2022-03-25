@@ -7470,10 +7470,7 @@ export type InsertProjectAccessTokenMutationVariables = Exact<{
 export type InsertProjectAccessTokenMutation = { __typename?: 'mutation_root', insert_project_access_tokens_one?: { __typename?: 'project_access_tokens', id: any } | null };
 
 export type InsertIgnoredVulnerabilitiesMutationVariables = Exact<{
-  vulnerability_id: Scalars['uuid'];
-  project_id: Scalars['uuid'];
-  note: Scalars['String'];
-  locations: Scalars['jsonb'];
+  objects: Array<Ignored_Vulnerabilities_Insert_Input> | Ignored_Vulnerabilities_Insert_Input;
 }>;
 
 
@@ -7825,9 +7822,9 @@ export const InsertProjectAccessTokenDocument = `
 }
     `;
 export const InsertIgnoredVulnerabilitiesDocument = `
-    mutation InsertIgnoredVulnerabilities($vulnerability_id: uuid!, $project_id: uuid!, $note: String!, $locations: jsonb!) {
+    mutation InsertIgnoredVulnerabilities($objects: [ignored_vulnerabilities_insert_input!]!) {
   insert_ignored_vulnerabilities(
-    objects: {locations: $locations, note: $note, project_id: $project_id, vulnerability_id: $vulnerability_id}
+    objects: $objects
     on_conflict: {constraint: ignored_vulnerabilities_project_id_vulnerability_id_key, update_columns: locations}
   ) {
     affected_rows

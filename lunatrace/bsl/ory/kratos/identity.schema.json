@@ -28,18 +28,29 @@
           }
         },
         "name": {
-          "type": "object",
-          "group": "profile",
-          "properties": {
-            "first": {
-              "title": "First Name",
-              "type": "string"
-            },
-            "last": {
-              "title": "Last Name",
-              "type": "string"
-            }
-          }
+          "title": "Name",
+          "type": "string",
+          "group": "profile"
+        },
+        "username": {
+          "title": "Username",
+          "type": "string",
+          "group": "profile"
+        },
+        "website": {
+          "title": "Website",
+          "type": "string",
+          "group": "profile"
+        },
+        "picture": {
+          "title": "Picture",
+          "type": "string",
+          "group": "profile"
+        },
+        "profileUrl": {
+          "title": "ProfileUrl",
+          "type": "string",
+          "group": "profile"
         }
       },
       "required": [
