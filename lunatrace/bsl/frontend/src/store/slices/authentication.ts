@@ -105,7 +105,9 @@ export const login =
           window.location.href = flow.return_to;
           return;
         }
-        dispatch(setSession(res.data.session));
+        const session: Session = res.data.session;
+        dispatch(setSession(session));
+
         navigate('/');
       })
       .catch(handleFlowError(navigate, 'login', () => dispatch(resetLoginFlow())))
@@ -165,4 +167,5 @@ export const logout =
     const logoutHandler = createLogoutHandler(navigate);
     void logoutHandler();
     dispatch(setSession(null));
+    window.Atlas.shutdown();
   };
