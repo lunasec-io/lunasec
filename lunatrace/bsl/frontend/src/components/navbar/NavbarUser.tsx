@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import useAppSelector from '../../hooks/useAppSelector';
 import { logout, selectSession } from '../../store/slices/authentication';
+import { displayName } from '../../utils/display-name';
 // import avatar1 from '../../assets/img/avatars/avatar.jpg';
 
 const NavbarUser: React.FunctionComponent = () => {
@@ -40,9 +41,17 @@ const NavbarUser: React.FunctionComponent = () => {
       </span>
       <span className="d-none d-sm-inline-block">
         <Dropdown.Toggle as="a" className="nav-link">
-          {/*<img src={avatar1} className="avatar img-fluid rounded-circle me-1" alt="Chris Wood" />*/}
-          <User size={18} />
-          <span className="text-dark">{` ${user.identity.traits.name.first} `}</span>
+          {user.identity.traits?.picture ? (
+            <img
+              src={user.identity.traits.picture}
+              className="avatar img-fluid rounded-circle me-2 "
+              alt="Users display image"
+            />
+          ) : (
+            <User size={18} className="me-1" />
+          )}
+
+          <span className="text-dark">{displayName(user.identity.traits)}</span>
         </Dropdown.Toggle>
       </span>
       <Dropdown.Menu>

@@ -22,6 +22,22 @@ declare module 'react' {
   }
 }
 
+declare global {
+  interface Window {
+    Atlas: {
+      identify: (o: Record<string, string>) => void;
+      shutdown: () => void;
+      recording: {
+        start: () => void;
+        stop: () => void;
+      };
+    };
+    AtlasScriptTag: {
+      onload: () => void;
+    };
+  }
+}
+
 // declare module 'prettify-date' {
 //   import * as prettifyDate from 'prettify-date';
 //   export default prettifyDate;
