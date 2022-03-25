@@ -1,0 +1,14 @@
+.homepage-manifest-drop {
+  background-color: var(--bs-body-bg);
+}
+
+.homepage-subtitle {
+  border-left: 2px solid var(--bs-secondary);
+  margin-left: 11px;
+  margin-bottom: 4px;
+  padding: 10px 20px 20px 20px;
+}
+
+.homepage-subtitle.active {
+  border-color: var(--bs-primary);
+}

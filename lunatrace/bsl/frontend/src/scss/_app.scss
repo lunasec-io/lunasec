@@ -8,10 +8,12 @@
 
 @import "pages/vulnerability";
 @import "pages/project";
-@import "pages/navbar";
 @import "pages/layout";
 @import "pages/account";
+@import "pages/homepage";
 
+@import "custom-components/navbar";
+@import "custom-components/sidebar";
 @import "custom-components/card";
 @import "custom-components/github";
 @import "custom-components/breadcrumb";

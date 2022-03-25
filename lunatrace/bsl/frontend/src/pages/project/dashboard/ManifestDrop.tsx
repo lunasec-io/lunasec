@@ -25,7 +25,10 @@ import useAppDispatch from '../../../hooks/useAppDispatch';
 import { add } from '../../../store/slices/alerts';
 const axiosInstance = axios.create();
 
-export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ project_id }) => {
+export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHomepage?: boolean }> = ({
+  forHomepage,
+  project_id,
+}) => {
   const dispatch = useAppDispatch();
   console.log('rendering dropzone for project id ', project_id);
   const navigate = useNavigate();
@@ -116,7 +119,9 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     setUploadInProgress(true);
 
     const file = acceptedFiles[0];
-    if (!file) return;
+    if (!file) {
+      return;
+    }
     const error = await doUploadFlow(file);
     if (error) {
       dispatch(add({ message: error }));
@@ -127,7 +132,9 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
   const onDropRejected: DropzoneOptions['onDropRejected'] = (fileRejections) => {
     console.error('rejected file with errors ', fileRejections);
     const rejection = fileRejections[0];
-    if (!rejection) return;
+    if (!rejection) {
+      return;
+    }
     dispatch(add({ message: rejection.errors[0].message }));
   };
 
@@ -166,11 +173,14 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     );
   };
   return (
-    <Card variant="dark" className="clickable-card" {...getRootProps()}>
+    <Card
+      className={forHomepage ? 'clickable-card ms-md-6 me-md-6 homepage-manifest-drop' : 'clickable-card'}
+      {...getRootProps()}
+    >
       <Card.Body>
         <input {...getInputProps()} />
 
-        <Row className="justify-content-center text-center">
+        <Row className="justify-content-center text-center ">
           {uploadInProgress ? renderUploadStatus() : <Col xs="auto">{renderDropPrompt()}</Col>}
         </Row>
       </Card.Body>
