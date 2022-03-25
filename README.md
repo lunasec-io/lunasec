@@ -57,8 +57,7 @@ _This section on LunaDefend is moving into its own folder, as soon as we finish 
 
 ## What is LunaDefend?
 
-LunaDefend is an end-to-end security system 
-protect your web application by transparently encrypting sensitive
+LunaDefend is an end-to-end security system designed to protect your application by transparently encrypting sensitive
 data, from browser to database. It works seamlessly by storing your sensitive data and then giving you back a Token (a UUID) to retrieve data with
 later. LunaDefend builds on that concept to offer many security and compliance features.
 
