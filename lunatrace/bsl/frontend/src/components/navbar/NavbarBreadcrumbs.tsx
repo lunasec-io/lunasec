@@ -122,7 +122,9 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
           return crumbMeta.match.pathname.match(new RegExp(banned));
         });
 
-        if (isBanned) return;
+        if (isBanned) {
+          return;
+        }
 
         return (
           <LinkContainer key={crumbMeta.key} to={crumbMeta.match.pathname}>
