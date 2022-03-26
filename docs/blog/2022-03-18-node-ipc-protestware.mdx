@@ -247,8 +247,8 @@ pulling in _and_ to use something like LunaTrace to help you review new updates 
 
 We're building a "fork" of NPM where all package updates are reviewed by our dedicated Security
 Engineers _before_ your developers can install them. This prevents scenarios where you "fat finger" during an NPM install
-and end up running malicious code (aka "Typosquatting"), and it also prevents "supply chain" attacks with Protestware 
-like `node-ipc` from adding malicious code automatically.
+and end up running malicious code (aka "Typosquatting"), and it also prevents "supply chain" attacks (like `node-ipc` or
+`faker.js`) from adding malicious code automatically.
 
 It's tedious work to review every line of code, but somebody has to do it.
 
@@ -273,7 +273,7 @@ actually what made us start building LunaTrace in the first place!
 LunaSec has always been about building Open Source Application Security tooling, but it's only after Log4Shell and
 speaking with hundreds of companies that we decided to start building tooling dedicated to addressing Dependency Security.
 
-## Help us stop Protestware
+## Help us stop malicious dependencies
 
 Here are a few ways you can help:
 - [Star LunaTrace on GitHub](https://github.com/lunasec-io/lunasec) (Under active development still),
