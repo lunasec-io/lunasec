@@ -23,9 +23,11 @@ import { SidebarProvider } from './contexts/SidebarContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { routes } from './routes';
 import { store } from './store/store';
+import { startAtlas } from './utils/start-atlas-session-recording';
 
 function App() {
   const content = useRoutes(routes);
+  startAtlas();
   return (
     <HelmetProvider>
       <Helmet
