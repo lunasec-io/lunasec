@@ -1,26 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
     <meta
-      name="description"
-      content="Web site created using create-react-app"
+            name="description"
+            content="Web site created using create-react-app"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png"/>
 
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <script>
-      (()=>{"use strict";const t={appId:"0xd5141432",q:[],identify:function(t){this.q.push(["identify",t])}};window.Atlas=t;const e=document.createElement("script");e.async=!0,e.src="https://app.getatlas.io/client-js/atlas.bundle.js";const s=document.getElementsByTagName("script")[0];s.parentNode?.insertBefore(e,s)})();
+        (() => {
+            "use strict";
+            const t = {
+                appId: "0xd5141432", q: [], identify: function (t) {
+                    this.q.push(["identify", t])
+                }
+            };
+            window.Atlas = t;
+            const e = document.createElement("script");
+            e.async = !0;
+            e.src = "https://app.getatlas.io/client-js/atlas.bundle.js";
+            const s = document.getElementsByTagName("script")[0];
+            s.parentNode?.insertBefore(e, s);
+            window.AtlasScriptTag = s;
+        })();
     </script>
     <link href="/css/dark.css" rel="stylesheet" class="js-stylesheet">
     <title>LunaTrace</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+</head>
+<body>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<div id="root"></div>
+</body>
 </html>

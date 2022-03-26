@@ -32,6 +32,12 @@ const appApi = generatedApi.enhanceEndpoints({
     DeleteProjectAccessToken: {
       invalidatesTags: ['ProjectDetails'],
     },
+    InsertIgnoredVulnerabilities: {
+      invalidatesTags: ['Builds'],
+    },
+    GetBuildDetails: {
+      providesTags: ['Builds'],
+    },
     GetProject: {
       providesTags: ['ProjectDetails'],
     },

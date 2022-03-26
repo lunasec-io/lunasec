@@ -387,7 +387,9 @@ export class LunaSecStackDockerCompose {
       version: '3.8',
       services: {
         ...services.reduce((serviceDefs, service) => {
-          if (service.config === null) return serviceDefs;
+          if (service.config === null) {
+            return serviceDefs;
+          }
           return {
             ...serviceDefs,
             [service.name]: service.config,
