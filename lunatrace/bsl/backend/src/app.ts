@@ -49,6 +49,7 @@ app.get('/', (_req: Express.Request, res: Express.Response) => {
 
 // Unauthenticated Routes (implement custom auth)
 app.use(lookupAccessTokenRouter);
+app.use(githubApiRouter);
 
 // Routes Authenticated via JWT
 app.use(
@@ -68,6 +69,5 @@ app.use(
 
 app.use(manifestPresignerRouter);
 app.use(sbomPresignerRouter);
-app.use(githubApiRouter);
 
 export { app };

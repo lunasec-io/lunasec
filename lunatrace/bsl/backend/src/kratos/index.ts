@@ -18,16 +18,15 @@ import { KratosIdentityConfig } from '../types/kratos';
 export async function getGithubAccessTokenFromKratos(
   userId: string
 ): Promise<{ error: false; token: string } | { error: true; message: string }> {
-  console.log('getGithubAccessTokenFromKratos called');
+  console.log('getGithubAccessTokenFromKratos called for user:', userId);
   const kratosConfig = new Configuration({
     basePath: 'http://localhost:4434',
   });
 
   const kratosApiClient = V0alpha2ApiFactory(kratosConfig);
 
-  console.log('calling kratos for oidc token');
   const kratosRes = await kratosApiClient.adminGetIdentity(userId, ['oidc']);
-  console.log('got response from kratos ', kratosRes);
+
   const identity = kratosRes.data;
 
   if (!identity.credentials) {
