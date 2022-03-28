@@ -16,7 +16,7 @@ import { Octokit } from 'octokit';
 
 import { ListReposAccessibleToInstallationResponseType } from '../types/github';
 
-import { getGithubAppAuth, getInstallationAccessToken } from './auth';
+import { getInstallationAccessToken } from './auth';
 
 export async function pullDataForInstallation(
   installationId: number

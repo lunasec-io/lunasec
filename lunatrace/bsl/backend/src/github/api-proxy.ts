@@ -16,13 +16,13 @@ import { graphqlHTTP } from 'express-graphql';
 import { buildSchema } from 'graphql';
 import httpProxy from 'http-proxy';
 
-import { hasura } from '../hasura-api';
-
 export interface GitHubApiProxyConfig {
   graphqlSchema: string;
 }
 
-export function SetupGitHubApiProxy(config: GitHubApiProxyConfig) {
+export function SetupGitHubApiProxy(
+  config: GitHubApiProxyConfig
+): (req: express.Request, res: express.Response) => void {
   // const parsedSchema = makeExecutableSchema({
   //   typeDefs: config.graphqlSchema
   // });
@@ -48,19 +48,34 @@ export function SetupGitHubApiProxy(config: GitHubApiProxyConfig) {
     graphiql: false,
   });
 
+  gitHubGraphqlProxy.on('proxyRes', function (proxyRes, req, res) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    console.log('RAW Response from the target', JSON.stringify(proxyRes.headers, true, 2));
+  });
+
   return function gitHubApiProxy(req: express.Request, res: express.Response) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (req.body.operationName === 'IntrospectionQuery') {
       // Provides us the ability to "filter" the schema that we let Hasura see.
-      graphqlIntrospectionHandler(req, res);
+      void graphqlIntrospectionHandler(req, res);
       return;
     }
 
-    const hasuraRes = await hasura.gitHubGraphqlProxy.web(req, res, {
-      headers: {
-        // TODO: Make this pass a "real" bearer token.
-        Authorization: 'bearer foobar',
+    gitHubGraphqlProxy.web(
+      req,
+      res,
+      {
+        headers: {
+          // TODO: Make this pass a "real" bearer token.
+          Authorization: 'bearer ',
+        },
       },
-    });
+      (err) => {
+        console.log('got response', err);
+        res.send('yeeeeeee');
+      }
+    );
     return;
   };
 }
