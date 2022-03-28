@@ -38,7 +38,7 @@ export const githubApiRouter = express.Router();
 
 const serverConfig = getServerConfig();
 
-githubApiRouter.get('/github/install', async (req, res) => {
+githubApiRouter.get('/github/webhook/install', async (req, res) => {
   const installationIdQueryParam = req.query.installation_id;
   const setupActionQueryParam = req.query.setup_action;
 
@@ -160,6 +160,18 @@ async function collectUserGithubOrgs(userId: string, accessToken: string) {
   return allUserOrgs;
 }
 
+function parseGithubEncodedId(encodedId: string, entityName: string) {
+  /*
+   * Example: MDEyOk9yZ2FuaXphdGlvbjgzMjQ0NTUw -> 012:Organization83244550
+   * We have to parse here because the value that comes from repo.owner.id when installing
+   * the github app is the number id;
+   */
+  const idDecoded = Buffer.from(encodedId, 'base64').toString();
+  const idParts = idDecoded.split(':');
+  const idNormalized = idParts[1].replace(entityName, '');
+  return tryParseInt(idNormalized, 10);
+}
+
 function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserOrganizationsQuery): number[] | null {
   const orgNodes = userGithubOrgs.viewer.organizations.nodes;
 
@@ -172,27 +184,33 @@ function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserO
 
   console.debug(`[user: ${userId}] Github user's organizations count: ${orgNodes.length}`);
 
-  return orgNodes.reduce<number[]>((filtered, org) => {
+  const userGithubId = parseGithubEncodedId(userGithubOrgs.viewer.id, 'User');
+
+  if (!userGithubId.success) {
+    console.error(`[user: ${userId}] Unable to parse github user id: ${userGithubOrgs.viewer.id}`);
+    return null;
+  }
+
+  const orgIds = orgNodes.reduce<number[]>((filtered, org) => {
     if (!org) {
       return filtered;
     }
-    /*
-     * Example: MDEyOk9yZ2FuaXphdGlvbjgzMjQ0NTUw -> 012:Organization83244550
-     * We have to parse here because the value that comes from repo.owner.id when installing
-     * the github app is the number id;
-     */
-    const idDecoded = Buffer.from(org.id, 'base64').toString();
-    const idParts = idDecoded.split(':');
-    const idNormalized = idParts[1].replace('Organization', '');
-    const idNumber = tryParseInt(idNormalized, 10);
+
+    const idNumber = parseGithubEncodedId(org.id, 'Organization');
 
     if (!idNumber.success) {
-      console.error(`[user: ${userId}] Unable to parse github organization id: ${idNormalized}`);
+      console.error(`[user: ${userId}] Unable to parse github organization id: ${org.id}`);
       return filtered;
     }
 
     return [...filtered, idNumber.value];
   }, []);
+
+  return [
+    ...orgIds,
+    // the user github id is also considered an organization, include it in this list
+    userGithubId.value,
+  ];
 }
 
 githubApiRouter.post('/github/login', async (req, res) => {

@@ -15,7 +15,7 @@ import { spawn } from 'child_process';
 import Stream, { Readable } from 'stream';
 
 import { db, pgp } from '../database/db';
-import { Convert, Match as GrypeMatch, GrypeScanReport } from '../types/grypeScanReport';
+import { Convert, Match as GrypeMatch, GrypeScanReport } from '../types/grype-scan-report';
 import { Finding, Report } from '../types/scan';
 
 export class Scan {
@@ -30,7 +30,7 @@ export class Scan {
     return new Promise((resolve, reject) => {
       const stdoutStream = new Stream.Writable();
       // const stderrStream = new Stream.Writeable();
-      const grypeCli = spawn(`lunatrace`, ['--log-to-stderr', 'i', 's', '--stdin', '--stdout']);
+      const grypeCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
       grypeCli.on('error', reject);
       const outputBuffers: Buffer[] = [];
       grypeCli.stdout.on('data', (chunk) => {

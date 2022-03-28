@@ -15,7 +15,6 @@
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import { Port, SecurityGroup, Vpc } from '@aws-cdk/aws-ec2';
 import {
-  AssetImageProps,
   Cluster,
   ContainerDependencyCondition,
   ContainerImage,
@@ -28,13 +27,14 @@ import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ApplicationProtocol, ListenerCondition, SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
 import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import { HostedZone } from '@aws-cdk/aws-route53';
-import { Bucket, EventType, HttpMethods } from '@aws-cdk/aws-s3';
+import { Bucket, HttpMethods } from '@aws-cdk/aws-s3';
 import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
-import { SqsDestination } from '@aws-cdk/aws-s3-notifications';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
-import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
-import { Duration } from '@aws-cdk/core';
+
+import { commonBuildProps } from './constants';
+import { EtlStack } from './etl-stack';
+import { EtlStorageStack } from './etl-storage-stack';
 
 interface LunaTraceStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
@@ -50,12 +50,6 @@ interface LunaTraceStackProps extends cdk.StackProps {
   kratosCipherSecretArn: string;
   vpcId: string;
 }
-
-const commonBuildProps: AssetImageProps = {
-  invalidation: {
-    buildArgs: false,
-  },
-};
 
 export class LunatraceBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
@@ -82,18 +76,6 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const oryConfigBucket = new Bucket(this, 'OryConfig');
 
-    const manifestBucket = new Bucket(this, 'ManifestBucket', {
-      cors: [
-        {
-          allowedMethods: [HttpMethods.GET, HttpMethods.PUT],
-          allowedOrigins: [publicBaseUrl],
-          allowedHeaders: ['*'],
-        },
-      ],
-    });
-
-    const sbomBucket = new Bucket(this, 'SbomBucket');
-
     new BucketDeployment(this, 'DeployWebsite', {
       sources: [Source.asset('../ory/')],
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -119,6 +101,12 @@ export class LunatraceBackendStack extends cdk.Stack {
       generateSecretString: {
         passwordLength: 16,
       },
+    });
+
+    const backendStaticSecret = Secret.fromSecretCompleteArn(this, 'BackendStaticSecret', props.backendStaticSecretArn);
+
+    const storageStack = new EtlStorageStack(this, 'EtlStorageStack', {
+      publicBaseUrl,
     });
 
     const execRole = new Role(this, 'TaskExecutionRole', {
@@ -207,8 +195,6 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const backendStaticSecret = Secret.fromSecretCompleteArn(this, 'BackendStaticSecret', props.backendStaticSecretArn);
-
     const backendContainerImage = ContainerImage.fromAsset('../backend', {
       ...commonBuildProps,
       target: 'backend-express-server',
@@ -222,8 +208,8 @@ export class LunatraceBackendStack extends cdk.Stack {
         streamPrefix: 'lunatrace-backend',
       }),
       environment: {
-        S3_SBOM_BUCKET: sbomBucket.bucketName,
-        S3_MANIFEST_BUCKET: manifestBucket.bucketName,
+        S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
+        S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
         PORT: '3002',
       },
       secrets: {
@@ -332,100 +318,17 @@ export class LunatraceBackendStack extends cdk.Stack {
       path: '/health',
     });
 
-    const processManifestDeadLetterQueue = new Queue(this, 'ProcessManifestProcessingDeadLetterQueue', {
-      retentionPeriod: Duration.days(14),
-    });
-
-    const processManifestSqsQueue = new Queue(this, 'ProcessManifestProcessingQueue', {
-      visibilityTimeout: Duration.minutes(1),
-      deadLetterQueue: {
-        queue: processManifestDeadLetterQueue,
-        maxReceiveCount: 10,
-      },
-    });
-
-    const QueueProcessorContainerImage = ContainerImage.fromAsset('../backend', {
-      ...commonBuildProps,
-      target: 'backend-queue-processor',
-    });
-
-    const processManifestQueueService = new ecsPatterns.QueueProcessingFargateService(
-      this,
-      'ProcessManifestQueueService',
-      {
-        cluster: fargateCluster,
-        image: QueueProcessorContainerImage,
-        queue: processManifestSqsQueue, // will pass queue_name env var automatically
-        assignPublicIp: true,
-        enableLogging: true,
-        environment: {
-          QUEUE_HANDLER: 'process-manifest-queue',
-          S3_SBOM_BUCKET: sbomBucket.bucketName,
-          S3_MANIFEST_BUCKET: manifestBucket.bucketName,
-          HASURA_URL: publicHasuraServiceUrl,
-        },
-        secrets: {
-          HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-          HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-          STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
-        },
-        containerName: 'ProcessManifestQueueContainer',
-        circuitBreaker: {
-          rollback: true,
-        },
-      }
-    );
-    //STATIC_SECRET_ACCESS_TOKEN
-
-    const processSbomDeadLetterQueue = new Queue(this, 'ProcessSbomProcessingDeadLetterQueue', {
-      retentionPeriod: Duration.days(14),
-    });
-
-    const processSbomSqsQueue = new Queue(this, 'ProcessSbomProcessingQueue', {
-      visibilityTimeout: Duration.minutes(1),
-      deadLetterQueue: {
-        queue: processSbomDeadLetterQueue,
-        maxReceiveCount: 10,
-      },
-    });
-
-    const processSbomQueueService = new ecsPatterns.QueueProcessingFargateService(this, 'ProcessSbomQueueService', {
-      cluster: fargateCluster,
-      image: QueueProcessorContainerImage,
-      queue: processSbomSqsQueue, // will pass queue_name env var automatically
-      enableLogging: true,
-      assignPublicIp: true,
-      environment: {
-        QUEUE_HANDLER: 'process-sbom-queue',
-        S3_SBOM_BUCKET: sbomBucket.bucketName,
-        S3_MANIFEST_BUCKET: manifestBucket.bucketName,
-        HASURA_URL: publicHasuraServiceUrl,
-      },
-      secrets: {
-        HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-        HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-        STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
-      },
-      containerName: 'ProcessSbomQueueService',
-      circuitBreaker: {
-        rollback: true,
-      },
-    });
-
-    manifestBucket.addEventNotification(
-      EventType.OBJECT_CREATED,
-      new SqsDestination(processManifestQueueService.sqsQueue)
-    );
-
-    sbomBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(processSbomQueueService.sqsQueue));
-
-    sbomBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
+    storageStack.sbomBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
     oryConfigBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
-    manifestBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
+    storageStack.manifestBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
 
-    manifestBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
-    sbomBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
-
-    sbomBucket.grantReadWrite(processSbomQueueService.taskDefinition.taskRole);
+    new EtlStack(this, 'EtlStack', {
+      storageStack,
+      fargateCluster,
+      publicHasuraServiceUrl,
+      hasuraDatabaseUrlSecret,
+      hasuraAdminSecret,
+      backendStaticSecret,
+    });
   }
 }

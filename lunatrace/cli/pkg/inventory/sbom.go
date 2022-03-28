@@ -96,12 +96,13 @@ func getSbomFromRepository(repoDir string, excludedDirs []string) (s *sbom.SBOM,
 
 	src, cleanup, err := source.New("dir:"+repoDir, nil, excludedDirs)
 	if err != nil {
-		err = fmt.Errorf("failed to construct source from user input %q: %w", sourceName, err)
+		err = fmt.Errorf("failed to construct source from repo %s: %w", repoDir, err)
 		return
 	}
+	defer cleanup()
 
 	log.Info().
-		Str("source", sourceName).
+		Str("repoDir", repoDir).
 		Msg("Completed scanning source.")
 
 	s = &sbom.SBOM{
@@ -112,7 +113,7 @@ func getSbomFromRepository(repoDir string, excludedDirs []string) (s *sbom.SBOM,
 		},
 	}
 
-	err = collectRelationships(sourceName, s, src)
+	err = collectRelationships(repoDir, s, src)
 	if err != nil {
 		return
 	}

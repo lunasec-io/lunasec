@@ -211,7 +211,7 @@ func RemoveCleanupDirs() {
 func ReadFileFromStdin(srcFile *os.File) (err error) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
-		_, err = srcFile.Write(scanner.Bytes())
+		_, err = srcFile.WriteString(scanner.Text() + "\n")
 		if err != nil {
 			log.Error().
 				Err(err).

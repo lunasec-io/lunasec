@@ -1,0 +1,7 @@
+query GetProjectIdFromGitUrl($git_url: String) {
+  github_repositories(where: {git_url: {_eq: $git_url}}) {
+    project {
+      id
+    }
+  }
+}
