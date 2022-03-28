@@ -11,11 +11,12 @@
  * limitations under the License.
  *
  */
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { prettyDate } from '../../../utils/pretty-date';
+import { filterFindingsByIgnored, groupByPackage } from '../finding/filter-findings';
 import { BuildInfo } from '../types';
 
 interface BuildListItemProps {
@@ -26,6 +27,10 @@ interface BuildListItemProps {
 export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ build, onClick }) => {
   const uploadDate = prettyDate(new Date(build.created_at as string));
   const lastScannedDate = build.scans[0] ? prettyDate(new Date(build.scans[0].created_at as string)) : 'Never';
+
+  const filteredFindings = filterFindingsByIgnored(build.findings);
+  const vulnerablePackages = groupByPackage(build.project_id, filteredFindings);
+  const criticalVulnerablePackages = vulnerablePackages.filter((p) => p.severity === 'Critical');
 
   return (
     <Card onClick={onClick} className="flex-fill w-100 build build-card clickable-card">
@@ -44,7 +49,7 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
             <Col sm={{ span: 6 }}>
               <div style={{ float: 'right', textAlign: 'right' }}>
                 <Card.Title>
-                  <h3 style={{ display: 'inline' }}>{build.critical_packages.aggregate?.count}</h3>
+                  <h3 style={{ display: 'inline' }}>{criticalVulnerablePackages.length}</h3>
                   <span className="text-right darker"> critical packages</span>
                 </Card.Title>
               </div>

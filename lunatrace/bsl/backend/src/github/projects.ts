@@ -12,7 +12,7 @@
  *
  */
 import deepmerge from 'deepmerge';
-import express from 'express';
+import express, { Request, Response } from 'express';
 
 import { getServerConfig } from '../config';
 import { hasura } from '../hasura-api';
@@ -30,15 +30,13 @@ import { isError, Try, tryF } from '../utils/try';
 
 import { GetUserOrganizationsQuery } from './generated';
 import { pullDataForInstallation } from './installation-populate';
-import { lunatraceOrgsFromGithubOrgs, OrganizationInputLookup } from './organizations';
+import { lunatraceOrgsFromGithubOrgs } from './organizations';
 
 import { generateGithubGraphqlClient } from './index';
 
-export const githubApiRouter = express.Router();
-
 const serverConfig = getServerConfig();
 
-githubApiRouter.get('/github/webhook/install', async (req, res) => {
+export const githubInstall = async (req: Request, res: Response) => {
   const installationIdQueryParam = req.query.installation_id;
   const setupActionQueryParam = req.query.setup_action;
 
@@ -117,7 +115,7 @@ githubApiRouter.get('/github/webhook/install', async (req, res) => {
   console.log(`[installId: ${installationId}] Created/updated LunaTrace organizations: ${orgIds}`);
 
   res.status(302).redirect(serverConfig.sitePublicUrl);
-});
+};
 
 async function collectUserGithubOrgs(userId: string, accessToken: string) {
   const github = generateGithubGraphqlClient(accessToken);
@@ -213,16 +211,21 @@ function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserO
   ];
 }
 
-githubApiRouter.post('/github/login', async (req, res) => {
+export const githubLogin = async (req: Request, res: Response): Promise<void> => {
+  // todo: fix this unsafe property access
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const userId: string = req.body.ctx.identity.id as string;
 
   console.log(`[user: ${userId}] Github login webhook started`);
 
-  const accessToken = await getGithubAccessTokenFromKratos(userId);
+  const kratosResponse = await getGithubAccessTokenFromKratos(userId);
+  if (kratosResponse.error) {
+    res.status(500).send(kratosResponse.message);
+    return;
+  }
 
   const userGithubOrgs: Try<GetUserOrganizationsQuery | null> = await tryF(
-    async () => await collectUserGithubOrgs(userId, accessToken)
+    async () => await collectUserGithubOrgs(userId, kratosResponse.token)
   );
 
   if (isError(userGithubOrgs) || userGithubOrgs === null) {
@@ -296,4 +299,4 @@ githubApiRouter.post('/github/login', async (req, res) => {
     error: false,
     message: 'Github login callback completed successfully',
   });
-});
+};

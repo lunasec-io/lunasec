@@ -11,12 +11,12 @@
  * limitations under the License.
  *
  */
-import { Configuration, V0alpha2Api } from '@ory/kratos-client';
-
-const ory = new V0alpha2Api(
-  new Configuration({
-    basePath: process.env.REACT_APP_KRATOS_URL || 'http://localhost:4455/api/kratos',
-  })
-);
-
-export default ory;
+export function startAtlas() {
+  if (window.Atlas.recording) {
+    window.Atlas.recording.start();
+    return;
+  }
+  window.AtlasScriptTag.onload = () => {
+    window.Atlas.recording.start();
+  };
+}

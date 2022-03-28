@@ -12,7 +12,7 @@
  *
  */
 import React from 'react';
-import { Col, Container, Row, Spinner } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { ArrowLeft } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { NavLink, useParams } from 'react-router-dom';
@@ -22,10 +22,12 @@ import { SpinIfLoading } from '../../../components/SpinIfLoading';
 import { prettyDate } from '../../../utils/pretty-date';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
 import { VulnerablePackageList } from '../finding/VulnerablePackageList';
+import { filterFindingsByIgnored } from '../finding/filter-findings';
 export const BuildDetails: React.FunctionComponent = () => {
-  console.log('rendering build details');
-  const { build_id } = useParams();
-  const { data, error, isLoading } = api.useGetBuildDetailsQuery({ build_id });
+  const { build_id, project_id } = useParams();
+  const { data, isLoading } = api.useGetBuildDetailsQuery({ build_id, project_id });
+
+  // await triggerInsertIgnored({ locations, note, project_id, vulnerability_id });
 
   const renderBuildDetails = () => {
     if (!data) {
@@ -47,6 +49,8 @@ export const BuildDetails: React.FunctionComponent = () => {
       );
     }
     const firstScan = build.scans[0];
+
+    const filteredFindings = filterFindingsByIgnored(build.findings);
 
     const lastScannedDate = firstScan ? prettyDate(new Date(firstScan.created_at as string)) : 'Never';
     const uploadDate = prettyDate(new Date(build.created_at as string));
@@ -94,7 +98,7 @@ export const BuildDetails: React.FunctionComponent = () => {
           </Col>
         </Row>
         <hr />
-        <VulnerablePackageList findings={build.findings} />
+        <VulnerablePackageList project_id={build.project_id} findings={filteredFindings} />
       </>
     );
   };

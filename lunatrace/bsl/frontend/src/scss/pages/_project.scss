@@ -11,3 +11,7 @@
 .secret-more-info-accordion-header > button {
   color: $primary;
 }
+
+.ignore-vuln-button:hover {
+  color:red;
+}

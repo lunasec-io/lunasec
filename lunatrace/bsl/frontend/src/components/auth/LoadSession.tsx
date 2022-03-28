@@ -16,16 +16,21 @@ import React, { useEffect } from 'react';
 
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { setConfirmedUnauthenticated, setSession } from '../../store/slices/authentication';
-import ory from '../../utils/sdk';
+import oryClient from '../../utils/ory-client';
 
 export const LoadSession: React.FC = (props) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    ory
+    oryClient
       .toSession()
       .then(({ data }) => {
         dispatch(setSession(data));
+        window.Atlas.identify({
+          userId: data.identity.id,
+          name: data.identity.traits.name,
+          email: data.identity.traits.email,
+        });
       })
       .catch((err: AxiosError) => {
         switch (err.response?.status) {

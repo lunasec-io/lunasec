@@ -12,25 +12,18 @@
  *
  */
 interface IdentityTraits {
-  name?: {
-    first?: string;
-    last?: string;
-  };
+  name?: string;
   email: string; //lets assume this is always present, I guess
 }
 
 export function displayName(traits?: IdentityTraits, fullName = true): string {
   // maybe this will be the case for anonymous sessions someday, put here just in case
+  console.log('user traits ', traits);
   if (!traits) {
     return 'Anonymous';
   }
   if ('name' in traits && traits.name) {
-    if (traits.name.first && traits.name.last && fullName) {
-      return `${traits.name.first} ${traits.name.last}`;
-    }
-    if (traits.name.first) {
-      return traits.name.first;
-    }
+    return traits.name;
   }
   if (!traits.email) {
     return 'Anonymous';

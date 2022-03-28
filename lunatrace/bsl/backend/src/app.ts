@@ -17,9 +17,9 @@ import dotenv from 'dotenv';
 import EventSource from 'eventsource';
 import Express from 'express';
 
-import { githubApiRouter } from './github/projects';
 import { webhooks } from './github/webhooks';
 import { lookupAccessTokenRouter } from './routes/auth-routes';
+import { githubApiRouter } from './routes/github-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
 

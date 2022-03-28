@@ -30,7 +30,9 @@ function useSettingsState(key: string, initialValue: ThemeChoice): [string, (the
     if (key === 'theme') {
       const theme = value === 'dark' ? 'dark' : 'light';
       const stylesheet = document.querySelector('.js-stylesheet');
-      if (!stylesheet) throw new Error('missing theme stylesheet');
+      if (!stylesheet) {
+        throw new Error('missing theme stylesheet');
+      }
       stylesheet.setAttribute('href', `/css/${theme}.css`);
     }
   }, [value, key]);
