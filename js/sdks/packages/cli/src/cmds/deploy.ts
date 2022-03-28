@@ -15,7 +15,6 @@
  *
  */
 import fs from 'fs';
-import os from 'os';
 import path from 'path';
 
 import * as cdk from '@aws-cdk/core';
@@ -27,7 +26,7 @@ import { mirrorRepos } from '../cdk-stack/mirror-service-repos';
 import { getOutputName, LunaSecDeploymentStack } from '../cdk-stack/stack';
 import { AwsResourceConfig, LunaSecStackName, SecureFrameAssetFilename } from '../cdk-stack/types';
 import { loadLunaSecStackConfig } from '../config/load-config';
-import { awsRegion, buildsFolder, lunaSecDir } from '../constants/cli';
+import { awsRegion, buildsFolder } from '../constants/cli';
 import { version } from '../docker-compose/constants';
 import { runCommand } from '../utils/exec';
 import { copyFolderRecursiveSync } from '../utils/filesystem';

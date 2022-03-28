@@ -15,33 +15,40 @@ import { Configuration, V0alpha2ApiFactory } from '@ory/kratos-client';
 
 import { KratosIdentityConfig } from '../types/kratos';
 
-export async function getGithubAccessTokenFromKratos(userId: string) {
+export async function getGithubAccessTokenFromKratos(
+  userId: string
+): Promise<{ error: false; token: string } | { error: true; message: string }> {
+  console.log('getGithubAccessTokenFromKratos called');
   const kratosConfig = new Configuration({
     basePath: 'http://localhost:4434',
   });
 
   const kratosApiClient = V0alpha2ApiFactory(kratosConfig);
 
-  const kratosResp = await kratosApiClient.adminGetIdentity(userId, ['oidc']);
-
-  const identity = kratosResp.data;
+  console.log('calling kratos for oidc token');
+  const kratosRes = await kratosApiClient.adminGetIdentity(userId, ['oidc']);
+  console.log('got response from kratos ', kratosRes);
+  const identity = kratosRes.data;
 
   if (!identity.credentials) {
-    throw new Error('credentials are not set for identity');
+    return { error: true, message: 'credentials are not set for identity' };
   }
 
   const oidcCreds = identity.credentials['oidc'];
   if (!oidcCreds.config) {
-    throw new Error('config is not set for oidc credentials');
+    return { error: true, message: 'config is not set for oidc credentials' };
   }
 
   const config = oidcCreds.config as KratosIdentityConfig;
 
   const githubProviders = config.providers.filter((provider) => provider.provider === 'github-app');
-  if (githubProviders.length !== 1) {
-    throw new Error('could not find exactly one github oidc provider');
+  if (githubProviders.length < 1) {
+    return { error: true, message: 'No oidc providers for this user' };
+  }
+  if (githubProviders.length > 1) {
+    return { error: true, message: 'Too many oidc providers for this user, there should be only one' };
   }
 
   const githubProvider = githubProviders[0];
-  return githubProvider.initial_access_token;
+  return { error: false, token: githubProvider.initial_access_token };
 }

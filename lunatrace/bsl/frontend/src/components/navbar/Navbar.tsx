@@ -14,15 +14,12 @@
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import React from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
-import { AlertCircle, Bell, BellOff, Home, UserPlus } from 'react-feather';
 
 import useAppSelector from '../../hooks/useAppSelector';
 import useSidebar from '../../hooks/useSidebar';
 import useTheme from '../../hooks/useTheme';
 import { selectIsAuthenticated } from '../../store/slices/authentication';
 
-import NavbarDropdown from './NavbarDropdown';
-import NavbarDropdownItem from './NavbarDropdownItem';
 import { ProjectSearch } from './NavbarProjectSearch';
 import NavbarUser from './NavbarUser';
 

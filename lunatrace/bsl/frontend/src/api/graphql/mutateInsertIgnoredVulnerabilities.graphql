@@ -1,0 +1,5 @@
+mutation InsertIgnoredVulnerabilities($objects: [ignored_vulnerabilities_insert_input!]!) {
+    insert_ignored_vulnerabilities(objects: $objects, on_conflict: {constraint: ignored_vulnerabilities_project_id_vulnerability_id_key, update_columns: locations}) {
+        affected_rows
+    }
+}

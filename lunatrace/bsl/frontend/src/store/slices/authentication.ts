@@ -24,7 +24,7 @@ import { NavigateFunction } from 'react-router-dom';
 
 import { createLogoutHandler } from '../../hooks/createLogoutHandler';
 import { handleFlowError } from '../../utils/handleGetFlowError';
-import ory from '../../utils/sdk';
+import oryClient from '../../utils/ory-client';
 import { AppThunk, RootState } from '../store';
 
 export interface AuthState {
@@ -97,7 +97,7 @@ export const login =
     // On submission, add the flow ID to the URL but do not navigate. This prevents the user loosing
     // his data when she/he reloads the page.
     navigate(`/login?flow=${flow.id}`, { replace: true });
-    ory
+    oryClient
       .submitSelfServiceLoginFlow(String(flow.id), undefined, values)
       // We logged in successfully! Let's bring the user home.
       .then((res) => {
@@ -105,7 +105,9 @@ export const login =
           window.location.href = flow.return_to;
           return;
         }
-        dispatch(setSession(res.data.session));
+        const session: Session = res.data.session;
+        dispatch(setSession(session));
+
         navigate('/');
       })
       .catch(handleFlowError(navigate, 'login', () => dispatch(resetLoginFlow())))
@@ -133,7 +135,7 @@ export const register =
     // On submission, add the flow ID to the URL but do not navigate. This prevents the user loosing
     // his data when she/he reloads the page.
     navigate(`/account/register?flow=${flow.id}`, { replace: true });
-    ory
+    oryClient
       .submitSelfServiceRegistrationFlow(String(flow.id), values)
       .then(({ data }) => {
         // If we ended up here, it means we are successfully signed up!
@@ -165,4 +167,5 @@ export const logout =
     const logoutHandler = createLogoutHandler(navigate);
     void logoutHandler();
     dispatch(setSession(null));
+    window.Atlas.shutdown();
   };

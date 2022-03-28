@@ -116,7 +116,9 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     setUploadInProgress(true);
 
     const file = acceptedFiles[0];
-    if (!file) return;
+    if (!file) {
+      return;
+    }
     const error = await doUploadFlow(file);
     if (error) {
       dispatch(add({ message: error }));
@@ -127,7 +129,9 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
   const onDropRejected: DropzoneOptions['onDropRejected'] = (fileRejections) => {
     console.error('rejected file with errors ', fileRejections);
     const rejection = fileRejections[0];
-    if (!rejection) return;
+    if (!rejection) {
+      return;
+    }
     dispatch(add({ message: rejection.errors[0].message }));
   };
 
@@ -146,7 +150,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     return (
       <span>
         <FilePlus />
-        Click here or drop-and-drop a manifest file or bundled project to manually submit a build.
+        Click here or drap-and-drop a manifest file or bundled project to manually submit a build.
         <br />
         (ex: package-lock.json, my-project.jar, my-project.zip)
       </span>
