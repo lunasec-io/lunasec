@@ -6,6 +6,7 @@
 - "!include public_identity_credential_types.yaml"
 - "!include public_identity_credentials.yaml"
 - "!include public_identity_verifiable_addresses.yaml"
+- "!include public_ignored_vulnerabilities.yaml"
 - "!include public_instances.yaml"
 - "!include public_manifests.yaml"
 - "!include public_organization_user.yaml"
