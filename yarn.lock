@@ -14202,15 +14202,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rtk-query/graphql-request-base-query@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@rtk-query/graphql-request-base-query@npm:1.0.3"
+"@rtk-query/graphql-request-base-query@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "@rtk-query/graphql-request-base-query@npm:2.0.1"
   dependencies:
-    graphql-request: ^3.4.0
+    graphql-request: ^4.0.0
   peerDependencies:
-    "@reduxjs/toolkit": ^1.6.0
+    "@reduxjs/toolkit": ^1.7.1
     graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-  checksum: 0c8780c502d3572330a7c9a40ac400e84704bd2bf3718365f6d1734eb2b1958c6543e9dfe6d0c1b6f67af041b6bce7491e5e04da1f0ad10fdcedc6ddd96565e2
+  checksum: 8684ec821536aa55b1db25c0ebc0e5d413a3d2fd0e259f15f010ea2dc588f5d8f451e67d01cf2c63c2ae35b0c8e2e1bb34e0a6d53655ae7b837f7b434de7f61c
   languageName: node
   linkType: hard
 
@@ -27699,7 +27699,7 @@ __metadata:
     "@ory/kratos-client": 0.8.0-alpha.2
     "@ory/themes": ~0.0.101
     "@reduxjs/toolkit": ^1.7.1
-    "@rtk-query/graphql-request-base-query": ^1.0.3
+    "@rtk-query/graphql-request-base-query": ^2.0.0
     "@testing-library/jest-dom": ^4.2.4
     "@testing-library/react": ^9.5.0
     "@testing-library/user-event": ^7.2.1
@@ -27718,7 +27718,7 @@ __metadata:
     axios: ^0.26.0
     bootstrap: 5.1.3
     bootstrap-switch-button-react: ^1.2.0
-    graphql-request: ^3.7.0
+    graphql-request: ^4.0.0
     graphqurl: ^1.0.1
     history: ^5.2.0
     jsonwebtoken: ^8.5.1
@@ -28835,19 +28835,6 @@ __metadata:
     ws:
       optional: true
   checksum: 63d03fe489b42ea59cecc9c67934cfb6ec510a3f040149fad4b98be5d888b599ea077eefe464e17872c431c0d71fcb4ede9a302ff33a38545dc7bf9dc05f4e25
-  languageName: node
-  linkType: hard
-
-"graphql-request@npm:^3.4.0, graphql-request@npm:^3.7.0":
-  version: 3.7.0
-  resolution: "graphql-request@npm:3.7.0"
-  dependencies:
-    cross-fetch: ^3.0.6
-    extract-files: ^9.0.0
-    form-data: ^3.0.0
-  peerDependencies:
-    graphql: 14 - 16
-  checksum: db3800cc4ee884cd1514d7d5eafafb9ed27694278fdddd7402345754a7d25e7d713246c72aa510b439b6df2633b74f2cf74fb36864a22a857d5fb2de1cf0b4d8
   languageName: node
   linkType: hard
 
