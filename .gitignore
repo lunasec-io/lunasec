@@ -28,3 +28,4 @@ docs/.yarn/.cache/webpack
 
 
 deployment-secrets/
+.gitattributes

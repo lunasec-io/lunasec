@@ -202,9 +202,7 @@ intentions by the developer as more people started to pay attention to what was 
 Snyk has written a [blog post](https://snyk.io/blog/peacenotwar-malicious-npm-node-ipc-package-vulnerability/) detailing
 the timeline of events around the releasing of this malicious version.
 
-## Our product
-
-### Stopping Future Supply Chain Attacks
+## Stopping Future Supply Chain Attacks
 
 All of this is happening on the coat-tail of the widely used libraries `faker.js` and `colors.js` having code changes
 pushed
@@ -224,28 +222,67 @@ Dependency scanning tools like [GitHub Dependabot](https://github.com/dependabot
 These tools are only designed to scan changes _after_ they're committed to source control. That's too late to prevent
 exploitation though because developers can be attacked the moment they run `npm install`.
 
-### Tooling to Block these attacks
+## Tooling to Block these attacks
 
 Stopping these attacks needs to happen _before_ an `npm install` runs. But how does that work?
 
 Have a developer review every line of code in new packages _prior to it being available on
-NPM to download_ is absolutely impractical. Our new tool, LunaTrace, is being built to solve this problem.
+NPM to download_ is absolutely impractical, but it's the best short-term solution. Our new tool, LunaTrace, is being 
+built to solve this problem. (See below for more details.)
 
-To make it possible, we are building a "fork" of NPM where all package updates are reviewed by our dedicated Security
-Engineers before your developers can install them.
+### Dependency Sandboxes (WIP)
 
-It's tedious work, but somebody has to do it.
+The long-term approach is to "sandbox" all packages by default and to grant them _only the permissions they require_.
+Unfortunately, this takes massive engineering effort to not just implement the engine, but also to "retrofit" existing
+NPM modules with a list of permissions.
 
-The core of LunaTrace is
-[open source and available on GitHub](https://github.com/lunasec-io/lunasec/tree/master/lunatrace). We're
-planning to publicly release the managed Cloud version in the coming days.
+Projects like Deno and Endo are aiming to make this long-term approach possible, and they both are currently under 
+active development.
 
-If you want access to our private NPM registry of pre-vetted packages, please get in touch with us. (It's hard work and
-we're still scaling our team up to handle the load.)
+It will be years before we're at a point where the Node ecosystem (and other ecosystems too) have the tools available
+to fix these problems from the "ground up". Until then, the best approach is to be careful of what dependencies you're
+pulling in _and_ to use something like LunaTrace to help you review new updates to them.
 
-### Request Early Access
+### Use a Trusted Package Registry (Preview)
+
+We're building a "fork" of NPM where all package updates are reviewed by our dedicated Security
+Engineers _before_ your developers can install them. This prevents scenarios where you "fat finger" during an NPM install
+and end up running malicious code (aka "Typosquatting"), and it also prevents "supply chain" attacks (like `node-ipc` or
+`faker.js`) from adding malicious code automatically.
+
+It's tedious work to review every line of code, but somebody has to do it.
+
+The core LunaTrace is available as
+[open source on GitHub](https://github.com/lunasec-io/lunasec/tree/master/lunatrace), and we're launching a public 
+SaaS/Cloud version very soon. (Please get in touch if you want to get early access.)
+
+Please [get in touch](mailto:contact@lunasec.io) with us if you want access to our "Private NPM Registry" where Security
+Engineers review new NPM packages. (It's hard work, so it's something we charge for.)
 
 If you're interested in working with us while we continue to develop and improve LunaTrace, please email us about early
 access at: [contact@lunasec.io](mailto:contact@lunasec.io)
 
-More details will be added to our website shortly. Cheers!
+### Get notified automatically
+
+It's just a matter of time before something like this happens again and, when it does, we will email you about it the
+moment we find out.
+
+We're the same team that first wrote about (and named) Log4Shell back in December. In fact, that vulnerability is
+actually what made us start building LunaTrace in the first place!
+
+LunaSec has always been about building Open Source Application Security tooling, but it's only after Log4Shell and
+speaking with hundreds of companies that we decided to start building tooling dedicated to addressing Dependency Security.
+
+## Help us stop malicious dependencies
+
+Here are a few ways you can help:
+- [Star LunaTrace on GitHub](https://github.com/lunasec-io/lunasec) (Under active development still),
+- Subscribe to our newsletter below (only a few emails per month, promise!),
+- [Retweet this post](https://twitter.com/LunaSecIO/status/1505946916797894657) and follow us on [Twitter](https://twitter.com/LunaSecIO/),
+- [Email us](mailto:contact@lunasec.io) about using trying an early build of LunaTrace.
+
+Thank you!
+
+import ContactForm from '../src/components/ContactForm.jsx'
+
+<ContactForm/>
