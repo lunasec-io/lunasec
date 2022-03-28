@@ -58,11 +58,11 @@ app.use(
       cache: true,
       rateLimit: true,
       jwksRequestsPerMinute: 5,
-      jwksUri: `http://localhost:4456/.well-known/jwks.json`,
+      jwksUri: process.env.JWKS_URI || 'http://localhost:4456/.well-known/jwks.json',
     }),
 
     // audience: 'urn:my-resource-server',
-    issuer: 'http://oathkeeper:4455/',
+    issuer: process.env.JWKS_ISSUER || 'http://oathkeeper:4455/',
     algorithms: ['RS256'],
   })
 );
