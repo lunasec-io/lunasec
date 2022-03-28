@@ -18,14 +18,10 @@ import Express from 'express';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 
-import { SetupGitHubApiProxy } from './github/api-proxy';
 import { lookupAccessTokenRouter } from './routes/auth-routes';
 import { githubApiRouter } from './routes/github-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
-
-import path from 'path';
-import fs from 'fs';
 
 const app = Express();
 app.use(cors());
@@ -53,19 +49,6 @@ app.get('/', (_req: Express.Request, res: Express.Response) => {
 
 // Unauthenticated Routes (implement custom auth)
 app.use(lookupAccessTokenRouter);
-
-const schema = path.join(process.cwd(), './github.graphql');
-
-const rawGitHubSchema = fs.readFileSync(schema);
-
-const githubProxy = SetupGitHubApiProxy({
-  graphqlSchema: rawGitHubSchema.toString('utf-8'),
-});
-
-app.use('/github/graphql', githubProxy, (req, res) => {
-  console.log('lmao wat');
-  res.send('this is fucked');
-});
 
 // Routes Authenticated via JWT
 app.use(
