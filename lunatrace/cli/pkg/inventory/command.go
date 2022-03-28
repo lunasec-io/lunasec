@@ -15,15 +15,19 @@
 package inventory
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/anchore/grype/grype/presenter/models"
 	"github.com/anchore/syft/syft"
+	"github.com/anchore/syft/syft/sbom"
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
+	"io"
 	"io/ioutil"
 	"lunasec/lunatrace/inventory/scan"
 	"lunasec/lunatrace/inventory/syftmodel"
@@ -84,6 +88,20 @@ func writeLunaTraceAgentConfigFile(agentSecret, generateConfig string) (err erro
 	return
 }
 
+func getGitCloneOptions(gitUrl, gitBranch string, progress io.Writer) *git.CloneOptions {
+	cloneOptions := git.CloneOptions{
+		URL:      gitUrl,
+		Progress: progress,
+		Depth:    1,
+	}
+
+	if gitBranch != "" {
+		cloneOptions.ReferenceName = plumbing.NewBranchReferenceName(gitBranch)
+		cloneOptions.SingleBranch = true
+	}
+	return &cloneOptions
+}
+
 func RepositoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
 	command.EnableGlobalFlags(globalBoolFlags)
 
@@ -94,6 +112,8 @@ func RepositoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfi
 		return
 	}
 
+	inventoryOptions := types.NewInventoryOptionsFromCli(c)
+
 	parsedRepo, err := url.Parse(repos[0])
 	if err != nil {
 		log.Error().
@@ -102,7 +122,9 @@ func RepositoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfi
 		return
 	}
 
-	repoTmpDir, err := os.MkdirTemp("", path.Clean(parsedRepo.Path))
+	dirname := util.RepoNameToDirname(path.Clean(parsedRepo.Path))
+
+	repoTmpDir, err := os.MkdirTemp("", dirname)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -111,65 +133,154 @@ func RepositoryCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfi
 	}
 	defer util.CleanupTmpFileDirectory(repoTmpDir)
 
-	repo, err := git.PlainClone(repoTmpDir, false, &git.CloneOptions{
-		URL:      parsedRepo.String(),
-		Progress: os.Stdout,
-	})
-}
+	log.Info().
+		Str("url", parsedRepo.String()).
+		Msg("cloning repository")
 
-func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
-	var (
-		source   string
-		useStdin bool
-	)
+	progressBuffer := bytes.NewBufferString("")
 
-	command.EnableGlobalFlags(globalBoolFlags)
+	cloneOptions := getGitCloneOptions(parsedRepo.String(), inventoryOptions.GitBranch, progressBuffer)
 
-	syft.SetLogger(&types.ZerologLogger{})
-
-	sources := c.Args().Slice()
-
-	stdinFilename := c.String("stdin-filename")
-	useStdin = stdinFilename != ""
-
-	if useStdin {
-		source = stdinFilename
-	} else {
-		if len(sources) == 0 {
-			err = errors.New("no source provided")
-			log.Error().
-				Msg("No source provided. Please provide one source as an argument to this command.")
-			return
-		}
-
-		if len(sources) > 1 {
-			err = errors.New("too many sources provided")
-			log.Error().
-				Msg("Please provide only one source as an argument to this command.")
-			return
-		}
-		source = sources[0]
+	repo, err := git.PlainClone(repoTmpDir, false, cloneOptions)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("repo", repos[0]).
+			Str("progress", progressBuffer.String()).
+			Msg("unable to clone git repo")
+		return
 	}
 
-	output := c.String("output")
-	excludedDirs := c.StringSlice("excluded")
-	skipUpload := c.Bool("skip-upload")
-	printToStdout := c.Bool("stdout")
-	configOutput := c.String("config-output")
+	repoMeta := util.CollectRepoMetadataFromObj(repo)
 
-	branch := c.String("git-branch")
-	commit := c.String("git-commit")
-	remote := c.String("git-remote")
+	log.Debug().
+		Str("remote", repoMeta.RemoteUrl).
+		Str("branch", repoMeta.BranchName).
+		Str("commit", repoMeta.CommitHash).
+		Msg("collected repo information")
 
-	sbom, err := getSbomFromStdinFile(source, excludedDirs, useStdin)
+	collectedSbom, err := getSbomFromRepository(repoTmpDir, []string{})
+
+	err = processSbom(c, appConfig, inventoryOptions, collectedSbom, repoMeta)
+	return
+}
+
+func getInventoryManifestFilename(c *cli.Context) (filename string, err error) {
+	filenames := c.Args().Slice()
+	if len(filenames) == 0 {
+		err = errors.New("no filenames provided")
+		log.Error().
+			Msg("No filename provided. Please provide one filename as an argument to this command.")
+		return
+	}
+
+	if len(filenames) > 1 {
+		err = errors.New("too many filenames provided")
+		log.Error().
+			Msg("Please provide only one filename as an argument to this command.")
+		return
+	}
+
+	filename = filenames[0]
+	return
+}
+
+func NewInventoryManifestOptionsFromCli(c *cli.Context) (options types.InventoryManifestOptions, err error) {
+	useStdin := c.Bool("stdin")
+
+	filename, err := getInventoryManifestFilename(c)
 	if err != nil {
 		return
 	}
 
+	options = types.InventoryManifestOptions{
+		UseStdin: useStdin,
+		Filename: filename,
+	}
+	return
+}
+
+func ManifestCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig types.LunaTraceConfig) (err error) {
+	command.EnableGlobalFlags(globalBoolFlags)
+
+	syft.SetLogger(&types.ZerologLogger{})
+
+	cliOptions, err := NewInventoryManifestOptionsFromCli(c)
+	if err != nil {
+		return
+	}
+
+	inventoryOptions := types.NewInventoryOptionsFromCli(c)
+
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to get working dir")
+		return
+	}
+
+	repoMeta := util.CollectRepoMetadata(dir)
+	repoMeta.Merge(
+		inventoryOptions.GitRemote,
+		inventoryOptions.GitBranch,
+		inventoryOptions.GitCommit,
+	)
+
+	collectedSbom, err := getSbomFromStdinFile(
+		cliOptions.Filename,
+		inventoryOptions.Excluded,
+		cliOptions.UseStdin,
+	)
+	if err != nil {
+		return
+	}
+
+	err = processSbom(c, appConfig, inventoryOptions, collectedSbom, repoMeta)
+	return
+}
+
+func processSbom(
+	c *cli.Context,
+	appConfig types.LunaTraceConfig,
+	options types.InventoryOptions,
+	sbom *sbom.SBOM,
+	repoMeta types.RepoMetadata,
+) (err error) {
 	sbomModel := ToFormatModel(*sbom)
 
-	if output != "" {
-		err = writeInventoryOutput(sbomModel, output)
+	printToStdout := c.Bool("stdout")
+	outputFile := c.String("output-file")
+	err = outputSbom(sbomModel, printToStdout, outputFile)
+
+	skipUpload := c.Bool("skip-upload")
+
+	if skipUpload {
+		log.Info().Msg("Skipping upload of SBOM")
+		return
+	}
+
+	agentSecret, err := uploadSbom(appConfig, sbomModel, repoMeta)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("Failed to upload sbom")
+		return
+	}
+
+	if options.AgentOutput != "" {
+		err = writeLunaTraceAgentConfigFile(agentSecret, options.AgentOutput)
+	} else {
+		log.Info().
+			Str("Agent Secret", agentSecret).
+			Msg("Set this agent secret as an environment variable (LUNASEC_AGENT_SECRET) or in the config file (.lunatrace_agent.yaml) in your deployed service to use live monitoring")
+	}
+	return
+}
+
+func outputSbom(sbom syftmodel.Document, printToStdout bool, outputFile string) (err error) {
+	if outputFile != "" {
+		err = writeInventoryOutput(sbom, outputFile)
 		if err != nil {
 			return
 		}
@@ -178,21 +289,23 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 	if printToStdout {
 		var serializedSbom []byte
 
-		serializedSbom, err = serializeSbom(sbomModel)
+		serializedSbom, err = serializeSbom(sbom)
 		if err != nil {
 			return
 		}
 
 		fmt.Println(string(serializedSbom))
 	}
+	return
+}
 
-	if skipUpload {
-		log.Info().Msg("Skipping upload of SBOM")
-		return
-	}
+func uploadSbom(appConfig types.LunaTraceConfig, sbom syftmodel.Document, repoMeta types.RepoMetadata) (agentSecret string, err error) {
+	var (
+		orgId, projectId, buildId, s3Url string
+	)
 
 	log.Info().Msg("Retrieving org and project ID using access token")
-	orgId, projectId, err := getOrgAndProjectFromAccessToken(
+	orgId, projectId, err = getOrgAndProjectFromAccessToken(
 		appConfig.GraphqlServer,
 		appConfig.ProjectAccessToken,
 	)
@@ -201,13 +314,13 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 	}
 
 	log.Info().Msg("Creating build in LunaTrace database")
-	agentSecret, buildId, err := insertNewBuild(appConfig, projectId, branch, commit, remote)
+	agentSecret, buildId, err = insertNewBuild(appConfig, projectId, repoMeta)
 	if err != nil {
 		return
 	}
 	log.Info().Msg("Uploading generated SBOM")
 
-	s3Url, err := uploadSbomToS3(appConfig, sbomModel, buildId, orgId, projectId)
+	s3Url, err = uploadSbomToS3(appConfig, sbom, buildId, orgId, projectId)
 	if err != nil {
 		log.Info().Msg("Upload failed, attempting to delete record")
 		deleteErr := deleteBuild(appConfig, buildId)
@@ -219,14 +332,6 @@ func CreateCommand(c *cli.Context, globalBoolFlags map[string]bool, appConfig ty
 	err = setBuildS3Url(appConfig, buildId, s3Url)
 	if err != nil {
 		return
-	}
-
-	if configOutput != "" {
-		err = writeLunaTraceAgentConfigFile(agentSecret, configOutput)
-	} else {
-		log.Info().
-			Str("Agent Secret", agentSecret).
-			Msg("Set this agent secret as an environment variable (LUNASEC_AGENT_SECRET) or in the config file (.lunatrace_agent.yaml) in your deployed service to use live monitoring")
 	}
 	return
 }

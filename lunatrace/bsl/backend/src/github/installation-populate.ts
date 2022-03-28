@@ -29,9 +29,7 @@ export function getGithubAppAuth(clientInfo?: { clientId: string; clientSecret: 
   });
 }
 
-export async function pullDataForInstallation(
-  installationId: number
-): Promise<ListReposAccessibleToInstallationResponseType> {
+export async function getGithubInstallationToken(installationId: number) {
   const auth = getGithubAppAuth();
 
   // Retrieve installation access token
@@ -39,8 +37,15 @@ export async function pullDataForInstallation(
     type: 'installation',
     installationId: installationId,
   });
+  return installationAuthentication.token;
+}
 
-  const octokit = new Octokit({ auth: installationAuthentication.token });
+export async function pullDataForInstallation(
+  installationId: number
+): Promise<ListReposAccessibleToInstallationResponseType> {
+  const installationToken = await getGithubInstallationToken(installationId);
+
+  const octokit = new Octokit({ auth: installationToken });
 
   // authenticates as app based on request URLs
   return await octokit.rest.apps.listReposAccessibleToInstallation({});
