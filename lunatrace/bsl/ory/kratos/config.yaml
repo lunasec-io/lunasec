@@ -27,6 +27,7 @@ selfservice:
               - email
               - read:user
 
+
   flows:
     error:
       ui_url: http://localhost:4455/auth/error
