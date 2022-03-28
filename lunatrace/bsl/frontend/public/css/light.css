@@ -19,7 +19,7 @@
   --bs-white: #fff;
   --bs-gray: #6c757d;
   --bs-gray-dark: #020202;
-  --bs-gray-100: #f4f7f9;
+  --bs-gray-100: #156da5;
   --bs-gray-200: #e2e8ee;
   --bs-gray-300: #dee6ed;
   --bs-gray-400: #ced4da;
@@ -48,7 +48,7 @@
   --bs-black-rgb: 0, 0, 0;
   --bs-body-color-rgb: 108, 117, 125;
   --bs-body-bg-rgb: 248, 249, 251;
-  --bs-font-sans-serif: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --bs-font-sans-serif: "Cantarell", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   --bs-body-font-family: var(--bs-font-sans-serif);
@@ -2010,7 +2010,7 @@ progress {
   --bs-table-bg: transparent;
   --bs-table-accent-bg: transparent;
   --bs-table-striped-color: #6c757d;
-  --bs-table-striped-bg: #f4f7f9;
+  --bs-table-striped-bg: #156da5;
   --bs-table-active-color: #6c757d;
   --bs-table-active-bg: rgba(0, 0, 0, 0.1);
   --bs-table-hover-color: #6c757d;
@@ -3705,7 +3705,7 @@ textarea.form-control-lg {
 .dropdown-item:hover, .dropdown-item:focus {
   color: #42484e;
   text-decoration: none;
-  background-color: #f4f7f9;
+  background-color: #156da5;
 }
 .dropdown-item.active, .dropdown-item:active {
   color: #fff;
@@ -5016,7 +5016,7 @@ textarea.form-control-lg {
   z-index: 1;
   color: #495057;
   text-decoration: none;
-  background-color: #f4f7f9;
+  background-color: #156da5;
 }
 .list-group-item-action:active {
   color: #6c757d;
@@ -13291,10 +13291,8 @@ textarea.form-control-lg {
 }
 
 .avatar {
-  margin-top: -15px;
-  margin-bottom: -15px;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
 }
 
 .badge {
@@ -14174,7 +14172,7 @@ a.badge-soft-dark:focus, a.badge-soft-dark.focus {
   border-radius: 0;
 }
 .dropdown .list-group .list-group-item:hover {
-  background: #f4f7f9;
+  background: #156da5;
 }
 
 .dropdown-menu {
@@ -14572,7 +14570,7 @@ body[data-sidebar-position=right] .navbar-align {
   font-weight: 500;
   font-size: 1.15rem;
   padding: 0.875rem 0;
-  color: #f4f7f9;
+  color: #156da5;
   display: block;
 }
 .navbar-brand svg,
@@ -14745,7 +14743,7 @@ body[data-sidebar-position=right] {
 }
 
 body[data-theme=dark] .settings-toggle {
-  background: #f4f7f9;
+  background: #156da5;
 }
 
 .settings-toggle-option {
@@ -14756,13 +14754,13 @@ body[data-theme=dark] .settings-toggle {
   font-weight: 500;
   writing-mode: vertical-rl;
   color: #000;
-  background: #edf2f5;
+  background: #14679c;
   padding: 0.5rem;
   border-radius: 0.2rem;
   height: 34px;
 }
 .settings-toggle-option:hover {
-  background: #e4ebf0;
+  background: #125e8e;
   color: #000;
 }
 .settings-toggle-option:first-child {
@@ -15020,7 +15018,8 @@ body[data-theme=light] a.sidebar-link {
 .sidebar-link svg,
 a.sidebar-link i,
 a.sidebar-link svg {
-  margin-right: 0.75rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.1rem;
   color: rgba(233, 236, 239, 0.5);
 }
 body[data-theme=colored] .sidebar-link i,
@@ -15092,7 +15091,7 @@ body[data-theme=colored] .sidebar-item.active > .sidebar-link,
 body[data-theme=colored] .sidebar-item.active .sidebar-link:hover,
 body[data-theme=colored] .sidebar-link.active,
 body[data-theme=colored] .sidebar-link.active:hover {
-  color: #f8f9fa;
+  color: #e9ecef;
 }
 body[data-theme=dark] .sidebar-item.active > .sidebar-link,
 body[data-theme=dark] .sidebar-item.active .sidebar-link:hover,
@@ -15196,6 +15195,10 @@ body[data-theme=light] .sidebar-dropdown .sidebar-item > .sidebar-link.active {
 
 .sidebar [data-bs-toggle=collapse] {
   position: relative;
+}
+
+.sidebar [aria-expanded=true]:before, .sidebar [data-bs-toggle=collapse]:not(.collapsed):before {
+  top: 50%;
 }
 
 .sidebar [data-bs-toggle=collapse]:before {
@@ -15308,6 +15311,8 @@ body[data-sidebar-position=right] .sidebar-toggle {
   background: transparent;
   padding: 1.5rem 1.5rem 0.375rem;
   font-size: 0.875rem;
+  letter-spacing: 0.005rem;
+  font-weight: 700;
   color: #ced4da;
 }
 body[data-theme=colored] .sidebar-header {
@@ -16908,12 +16913,12 @@ svg {
 
 .ql-bubble .ql-editor code,
 .ql-bubble .ql-editor pre {
-  background-color: #f4f7f9;
+  background-color: #156da5;
 }
 
 .ql-bubble .ql-editor pre.ql-syntax {
-  background-color: #f4f7f9;
-  color: #f4f7f9;
+  background-color: #156da5;
+  color: #156da5;
 }
 
 .ql-bubble .ql-picker {
@@ -17097,12 +17102,12 @@ svg {
 
 .ql-snow .ql-editor code,
 .ql-snow .ql-editor pre {
-  background-color: #f4f7f9;
+  background-color: #156da5;
 }
 
 .ql-snow .ql-editor pre.ql-syntax {
-  background-color: #f4f7f9;
-  color: #f4f7f9;
+  background-color: #156da5;
+  color: #156da5;
 }
 
 .ql-snow .ql-picker {
@@ -17198,7 +17203,7 @@ svg {
   color: #495057;
 }
 .react-select-container .react-select__option:hover {
-  background-color: #f4f7f9;
+  background-color: #156da5;
 }
 .react-select-container .react-select__indicator-separator {
   background-color: #fff;
@@ -17455,21 +17460,26 @@ td.rdtYear:hover {
 }
 
 .vulnerability-severity-badge h4, .vulnerability-severity-badge .h4, .vulnerability-severity-badge h3, .vulnerability-severity-badge .h3 {
-  color: white;
-  border-radius: 4px;
-  padding: 0.1em 0.2em;
+  text-decoration: underline;
+  text-decoration-color: red;
+  text-decoration-thickness: 0.2em;
 }
 .vulnerability-severity-badge .Critical {
-  background-color: #AD1A1A;
+  text-decoration-color: #AD1A1A;
 }
 .vulnerability-severity-badge .High {
-  background-color: #CC4F19;
+  text-decoration-color: #CC4F19;
 }
 .vulnerability-severity-badge .Medium {
-  background-color: #D68100;
+  text-decoration-color: #D68100;
 }
 .vulnerability-severity-badge .Low, .vulnerability-severity-badge .Negligible, .vulnerability-severity-badge .Unknown {
-  background-color: #86859D;
+  text-decoration-color: #86859D;
+}
+
+.vuln-sort-dropdown {
+  height: calc(2.4875rem + 2px);
+  margin-bottom: 6px;
 }
 
 .wide-tooltip > .tooltip-inner {
@@ -17480,13 +17490,18 @@ td.rdtYear:hover {
   color: #3F80EA;
 }
 
+.ignore-vuln-button:hover {
+  color: red;
+}
+
 .breadcrumb-item + .breadcrumb-item::before {
   content: var(--bs-breadcrumb-divider, ">") !important;
 }
 
-.breadcrumb {
-  padding-top: 15px;
-  font-size: larger;
+.navbar-nav .switch {
+  border-radius: 0.25rem;
+  height: 38px;
+  align-self: center;
 }
 
 .breadcrumb-navigation {
@@ -17594,6 +17609,11 @@ td.rdtYear:hover {
 
 .github-signin-button {
   background-color: #24292f !important;
+}
+
+.breadcrumb {
+  font-size: 1rem;
+  padding-top: 15px;
 }
 
 .darker {

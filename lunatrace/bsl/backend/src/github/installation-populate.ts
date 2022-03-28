@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-import fs from 'fs';
 
 import { createAppAuth } from '@octokit/auth-app';
 import { Octokit } from 'octokit';

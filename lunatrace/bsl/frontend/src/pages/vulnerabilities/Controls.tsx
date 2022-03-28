@@ -60,7 +60,7 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
         <Dropdown autoClose="outside" className="d-inline me-2">
           <Dropdown.Toggle
             variant={order !== 'none' && theme === 'dark' ? 'primary' : ''}
-            className="bg-white shadow-sm"
+            className="bg-white shadow-sm drop vuln-sort-dropdown"
           >
             <AlignLeft className="feather align-middle mt-n1" /> Sort
           </Dropdown.Toggle>
@@ -96,7 +96,7 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
                 onChange={(e) => setNamespaceFilter(e.target.value)}
               />
               <Button type="submit" variant="">
-                <Filter className="feather" />
+                <Filter className="feather mb-1" size="1em" />
               </Button>
             </InputGroup>
           </FormGroup>
