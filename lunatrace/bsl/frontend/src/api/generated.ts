@@ -154,6 +154,7 @@ export type Builds = {
   /** An object relationship */
   project?: Maybe<Projects>;
   project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['Int']>;
   s3_url?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
@@ -257,11 +258,13 @@ export type Builds_Arr_Rel_Insert_Input = {
 export type Builds_Avg_Fields = {
   __typename?: 'builds_avg_fields';
   build_number?: Maybe<Scalars['Float']>;
+  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "builds" */
 export type Builds_Avg_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "builds". All fields are combined with a logical 'AND'. */
@@ -279,6 +282,7 @@ export type Builds_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  pull_request_id?: InputMaybe<Int_Comparison_Exp>;
   s3_url?: InputMaybe<String_Comparison_Exp>;
   scans?: InputMaybe<Scans_Bool_Exp>;
 };
@@ -296,6 +300,7 @@ export enum Builds_Constraint {
 /** input type for incrementing numeric columns in table "builds" */
 export type Builds_Inc_Input = {
   build_number?: InputMaybe<Scalars['Int']>;
+  pull_request_id?: InputMaybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "builds" */
@@ -310,6 +315,7 @@ export type Builds_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: InputMaybe<Scalars['uuid']>;
+  pull_request_id?: InputMaybe<Scalars['Int']>;
   s3_url?: InputMaybe<Scalars['String']>;
   scans?: InputMaybe<Scans_Arr_Rel_Insert_Input>;
 };
@@ -325,6 +331,7 @@ export type Builds_Max_Fields = {
   git_remote?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['Int']>;
   s3_url?: Maybe<Scalars['String']>;
 };
 
@@ -338,6 +345,7 @@ export type Builds_Max_Order_By = {
   git_remote?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
 };
 
@@ -352,6 +360,7 @@ export type Builds_Min_Fields = {
   git_remote?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['Int']>;
   s3_url?: Maybe<Scalars['String']>;
 };
 
@@ -365,6 +374,7 @@ export type Builds_Min_Order_By = {
   git_remote?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
 };
 
@@ -403,6 +413,7 @@ export type Builds_Order_By = {
   id?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
   scans_aggregate?: InputMaybe<Scans_Aggregate_Order_By>;
 };
@@ -431,6 +442,8 @@ export enum Builds_Select_Column {
   /** column name */
   ProjectId = 'project_id',
   /** column name */
+  PullRequestId = 'pull_request_id',
+  /** column name */
   S3Url = 's3_url'
 }
 
@@ -444,6 +457,7 @@ export type Builds_Set_Input = {
   git_remote?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   project_id?: InputMaybe<Scalars['uuid']>;
+  pull_request_id?: InputMaybe<Scalars['Int']>;
   s3_url?: InputMaybe<Scalars['String']>;
 };
 
@@ -451,44 +465,52 @@ export type Builds_Set_Input = {
 export type Builds_Stddev_Fields = {
   __typename?: 'builds_stddev_fields';
   build_number?: Maybe<Scalars['Float']>;
+  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "builds" */
 export type Builds_Stddev_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Builds_Stddev_Pop_Fields = {
   __typename?: 'builds_stddev_pop_fields';
   build_number?: Maybe<Scalars['Float']>;
+  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "builds" */
 export type Builds_Stddev_Pop_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Builds_Stddev_Samp_Fields = {
   __typename?: 'builds_stddev_samp_fields';
   build_number?: Maybe<Scalars['Float']>;
+  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "builds" */
 export type Builds_Stddev_Samp_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Builds_Sum_Fields = {
   __typename?: 'builds_sum_fields';
   build_number?: Maybe<Scalars['Int']>;
+  pull_request_id?: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "builds" */
 export type Builds_Sum_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** update columns of table "builds" */
@@ -510,6 +532,8 @@ export enum Builds_Update_Column {
   /** column name */
   ProjectId = 'project_id',
   /** column name */
+  PullRequestId = 'pull_request_id',
+  /** column name */
   S3Url = 's3_url'
 }
 
@@ -517,33 +541,39 @@ export enum Builds_Update_Column {
 export type Builds_Var_Pop_Fields = {
   __typename?: 'builds_var_pop_fields';
   build_number?: Maybe<Scalars['Float']>;
+  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "builds" */
 export type Builds_Var_Pop_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Builds_Var_Samp_Fields = {
   __typename?: 'builds_var_samp_fields';
   build_number?: Maybe<Scalars['Float']>;
+  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "builds" */
 export type Builds_Var_Samp_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Builds_Variance_Fields = {
   __typename?: 'builds_variance_fields';
   build_number?: Maybe<Scalars['Float']>;
+  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "builds" */
 export type Builds_Variance_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
@@ -3408,6 +3438,7 @@ export type Organizations = {
   createdAt: Scalars['timestamp'];
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
+  github_owner_type?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   installation_id?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
@@ -3507,6 +3538,7 @@ export type Organizations_Bool_Exp = {
   createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
   creator_id?: InputMaybe<Uuid_Comparison_Exp>;
   github_id?: InputMaybe<Int_Comparison_Exp>;
+  github_owner_type?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   installation_id?: InputMaybe<Int_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
@@ -3534,6 +3566,7 @@ export type Organizations_Insert_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
   creator_id?: InputMaybe<Scalars['uuid']>;
   github_id?: InputMaybe<Scalars['Int']>;
+  github_owner_type?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   installation_id?: InputMaybe<Scalars['Int']>;
   name?: InputMaybe<Scalars['String']>;
@@ -3548,6 +3581,7 @@ export type Organizations_Max_Fields = {
   createdAt?: Maybe<Scalars['timestamp']>;
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
+  github_owner_type?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   installation_id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
@@ -3560,6 +3594,7 @@ export type Organizations_Min_Fields = {
   createdAt?: Maybe<Scalars['timestamp']>;
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
+  github_owner_type?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   installation_id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
@@ -3594,6 +3629,7 @@ export type Organizations_Order_By = {
   createdAt?: InputMaybe<Order_By>;
   creator_id?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
+  github_owner_type?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   installation_id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
@@ -3616,6 +3652,8 @@ export enum Organizations_Select_Column {
   /** column name */
   GithubId = 'github_id',
   /** column name */
+  GithubOwnerType = 'github_owner_type',
+  /** column name */
   Id = 'id',
   /** column name */
   InstallationId = 'installation_id',
@@ -3630,6 +3668,7 @@ export type Organizations_Set_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
   creator_id?: InputMaybe<Scalars['uuid']>;
   github_id?: InputMaybe<Scalars['Int']>;
+  github_owner_type?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   installation_id?: InputMaybe<Scalars['Int']>;
   name?: InputMaybe<Scalars['String']>;
@@ -3672,6 +3711,8 @@ export enum Organizations_Update_Column {
   CreatorId = 'creator_id',
   /** column name */
   GithubId = 'github_id',
+  /** column name */
+  GithubOwnerType = 'github_owner_type',
   /** column name */
   Id = 'id',
   /** column name */

@@ -11,15 +11,34 @@
  * limitations under the License.
  *
  */
+import { createNodeMiddleware } from '@octokit/webhooks';
 import cors from 'cors';
 import dotenv from 'dotenv';
-dotenv.config();
+import EventSource from 'eventsource';
 import Express from 'express';
 
 import { githubApiRouter } from './github/projects';
+import { webhooks } from './github/webhooks';
 import { lookupAccessTokenRouter } from './routes/auth-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
+
+const webhookProxyUrl = 'https://smee.io/hVHR69JytEbLgEjU';
+const source = new EventSource(webhookProxyUrl);
+
+dotenv.config();
+
+source.onmessage = (event) => {
+  const webhookEvent = JSON.parse(event.data);
+  webhooks
+    .verifyAndReceive({
+      id: webhookEvent['x-request-id'],
+      name: webhookEvent['x-github-event'],
+      signature: webhookEvent['x-hub-signature'],
+      payload: webhookEvent.body,
+    })
+    .catch(console.error);
+};
 
 const app = Express();
 app.use(cors());
@@ -32,6 +51,12 @@ app.get('/health', (_req: Express.Request, res: Express.Response) => {
 });
 
 app.use(Express.json());
+
+app.use(
+  createNodeMiddleware(webhooks, {
+    path: '/github/webhook/events',
+  })
+);
 
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {

@@ -15,9 +15,9 @@
  *
  */
 
-const productionError = process.env.STRICT_LINT === 'true' ? 'error' : 'off';
-const productionWarn = process.env.STRICT_LINT === 'true' ? 'warn' : 'off';
-const warnInDev = process.env.STRICT_LINT === 'true' ? 'error' : 'warn';
+const productionError = process.env.HIDE_ERRORS_IN_DEV === 'true' ? 'off': 'error';
+const productionWarn = process.env.HIDE_ERRORS_IN_DEV === 'true' ? 'off': 'warn';
+const warnInDev = process.env.HIDE_ERRORS_IN_DEV === 'true' ? 'warn' : 'error';
 
 
 const slow = true;
