@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -29,12 +16,6 @@ export type Scalars = {
   _text: any;
   date: any;
   fix_state_enum: any;
-  /** An ISO-8601 encoded UTC date string. */
-  github_DateTime: any;
-  /** A string containing HTML code. */
-  github_HTML: any;
-  /** An RFC 3986, RFC 3987, and RFC 6570 (level 4) compliant URI string. */
-  github_URI: any;
   jsonb: any;
   numeric: any;
   organization_user_role: any;
@@ -677,9 +658,9 @@ export type Findings_Bool_Exp = {
 /** unique or primary key constraints on table "findings" */
 export enum Findings_Constraint {
   /** unique or primary key constraint */
-  FindingsPkey = 'findings_pkey',
+  FindingsDedupeSlugBuildIdKey = 'findings_dedupe_slug_build_id_key',
   /** unique or primary key constraint */
-  TempDedupeFix = 'temp_dedupe_fix'
+  FindingsPkey = 'findings_pkey'
 }
 
 /** input type for inserting data into table "findings" */
@@ -977,113 +958,6 @@ export type Fix_State_Enum_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['fix_state_enum']>;
   _neq?: InputMaybe<Scalars['fix_state_enum']>;
   _nin?: InputMaybe<Array<Scalars['fix_state_enum']>>;
-};
-
-export type Github_Query = {
-  __typename?: 'github_Query';
-  /** Lookup a user by login. */
-  user?: Maybe<Github_User>;
-  /** The currently authenticated user. */
-  viewer: Github_User;
-};
-
-
-export type Github_QueryUserArgs = {
-  login: Scalars['String'];
-};
-
-/** A user is an individual's account on GitHub that owns repositories and can make new content. */
-export type Github_User = {
-  __typename?: 'github_User';
-  /** A URL pointing to the user's public avatar. */
-  avatarUrl: Scalars['github_URI'];
-  /** The user's public profile bio. */
-  bio?: Maybe<Scalars['String']>;
-  /** The user's public profile bio as HTML. */
-  bioHTML: Scalars['github_HTML'];
-  /** The user's public profile company. */
-  company?: Maybe<Scalars['String']>;
-  /** The user's public profile company as HTML. */
-  companyHTML: Scalars['github_HTML'];
-  /** Identifies the date and time when the object was created. */
-  createdAt: Scalars['github_DateTime'];
-  /** Identifies the primary key from the database. */
-  databaseId?: Maybe<Scalars['Int']>;
-  /** The user's publicly visible profile email. */
-  email: Scalars['String'];
-  /** The estimated next GitHub Sponsors payout for this user/organization in cents (USD). */
-  estimatedNextSponsorsPayoutInCents: Scalars['Int'];
-  /** True if this user/organization has a GitHub Sponsors listing. */
-  hasSponsorsListing: Scalars['Boolean'];
-  id: Scalars['ID'];
-  /** Whether or not this user is a participant in the GitHub Security Bug Bounty. */
-  isBountyHunter: Scalars['Boolean'];
-  /** Whether or not this user is a participant in the GitHub Campus Experts Program. */
-  isCampusExpert: Scalars['Boolean'];
-  /** Whether or not this user is a GitHub Developer Program member. */
-  isDeveloperProgramMember: Scalars['Boolean'];
-  /** Whether or not this user is a GitHub employee. */
-  isEmployee: Scalars['Boolean'];
-  /** Whether or not this user is following the viewer. Inverse of viewer_is_following */
-  isFollowingViewer: Scalars['Boolean'];
-  /** Whether or not this user is a member of the GitHub Stars Program. */
-  isGitHubStar: Scalars['Boolean'];
-  /** Whether or not the user has marked themselves as for hire. */
-  isHireable: Scalars['Boolean'];
-  /** Whether or not this user is a site administrator. */
-  isSiteAdmin: Scalars['Boolean'];
-  /** True if the viewer is sponsored by this user/organization. */
-  isSponsoringViewer: Scalars['Boolean'];
-  /** Whether or not this user is the viewing user. */
-  isViewer: Scalars['Boolean'];
-  /** The user's public profile location. */
-  location?: Maybe<Scalars['String']>;
-  /** The username used to login. */
-  login: Scalars['String'];
-  /** The estimated monthly GitHub Sponsors income for this user/organization in cents (USD). */
-  monthlyEstimatedSponsorsIncomeInCents: Scalars['Int'];
-  /** The user's public profile name. */
-  name?: Maybe<Scalars['String']>;
-  /** Verified email addresses that match verified domains for a specified organization the user is a member of. */
-  organizationVerifiedDomainEmails: Array<Scalars['String']>;
-  /** The HTTP path listing user's projects */
-  projectsResourcePath: Scalars['github_URI'];
-  /** The HTTP URL listing user's projects */
-  projectsUrl: Scalars['github_URI'];
-  /** The HTTP path for this user */
-  resourcePath: Scalars['github_URI'];
-  /** The user's Twitter username. */
-  twitterUsername?: Maybe<Scalars['String']>;
-  /** Identifies the date and time when the object was last updated. */
-  updatedAt: Scalars['github_DateTime'];
-  /** The HTTP URL for this user */
-  url: Scalars['github_URI'];
-  /** Can the viewer pin repositories and gists to the profile? */
-  viewerCanChangePinnedItems: Scalars['Boolean'];
-  /** Can the current viewer create new projects on this owner. */
-  viewerCanCreateProjects: Scalars['Boolean'];
-  /** Whether or not the viewer is able to follow the user. */
-  viewerCanFollow: Scalars['Boolean'];
-  /** Whether or not the viewer is able to sponsor this user/organization. */
-  viewerCanSponsor: Scalars['Boolean'];
-  /** Whether or not this user is followed by the viewer. Inverse of is_following_viewer. */
-  viewerIsFollowing: Scalars['Boolean'];
-  /** True if the viewer is sponsoring this user/organization. */
-  viewerIsSponsoring: Scalars['Boolean'];
-  /** A URL pointing to the user's public website/blog. */
-  websiteUrl?: Maybe<Scalars['github_URI']>;
-};
-
-
-/** A user is an individual's account on GitHub that owns repositories and can make new content. */
-export type Github_UserAvatarUrlArgs = {
-  size?: InputMaybe<Scalars['Int']>;
-};
-
-
-/** A user is an individual's account on GitHub that owns repositories and can make new content. */
-export type Github_UserOrganizationVerifiedDomainEmailsArgs = {
-  login: Scalars['String'];
 };
 
 /**
@@ -5612,7 +5486,6 @@ export type Query_Root = {
   findings_aggregate: Findings_Aggregate;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
-  github?: Maybe<Github_Query>;
   /** fetch data from the table: "github_repositories" */
   github_repositories: Array<Github_Repositories>;
   /** An aggregate relationship */
