@@ -11,15 +11,36 @@
  * limitations under the License.
  *
  */
+import { createNodeMiddleware } from '@octokit/webhooks';
 import cors from 'cors';
 import dotenv from 'dotenv';
-dotenv.config();
+import EventSource from 'eventsource';
 import Express from 'express';
+import jwt from 'express-jwt';
+import jwksRsa from 'jwks-rsa';
 
+import { webhooks } from './github/webhooks';
 import { lookupAccessTokenRouter } from './routes/auth-routes';
 import { githubApiRouter } from './routes/github-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
+
+const webhookProxyUrl = 'https://smee.io/hVHR69JytEbLgEjU';
+const source = new EventSource(webhookProxyUrl);
+
+dotenv.config();
+
+source.onmessage = (event) => {
+  const webhookEvent = JSON.parse(event.data);
+  webhooks
+    .verifyAndReceive({
+      id: webhookEvent['x-request-id'],
+      name: webhookEvent['x-github-event'],
+      signature: webhookEvent['x-hub-signature'],
+      payload: webhookEvent.body,
+    })
+    .catch(console.error);
+};
 
 const app = Express();
 app.use(cors());
@@ -33,6 +54,12 @@ app.get('/health', (_req: Express.Request, res: Express.Response) => {
 
 app.use(Express.json());
 
+app.use(
+  createNodeMiddleware(webhooks, {
+    path: '/github/webhook/events',
+  })
+);
+
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
     console.log('REQUEST RECEIVED ', req.path);
@@ -45,8 +72,27 @@ app.get('/', (_req: Express.Request, res: Express.Response) => {
   res.send('Hello World!');
 });
 
-app.use(manifestPresignerRouter);
-app.use(sbomPresignerRouter);
+// Unauthenticated Routes (implement custom auth)
 app.use(lookupAccessTokenRouter);
 app.use(githubApiRouter);
+
+// Routes Authenticated via JWT
+app.use(
+  jwt({
+    secret: jwksRsa.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: process.env.JWKS_URI || 'http://localhost:4456/.well-known/jwks.json',
+    }),
+
+    // audience: 'urn:my-resource-server',
+    issuer: process.env.JWKS_ISSUER || 'http://oathkeeper:4455/',
+    algorithms: ['RS256'],
+  })
+);
+
+app.use(manifestPresignerRouter);
+app.use(sbomPresignerRouter);
+
 export { app };
