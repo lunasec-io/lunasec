@@ -17,9 +17,10 @@ import { EventType } from '@aws-cdk/aws-s3';
 import { SqsDestination } from '@aws-cdk/aws-s3-notifications';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
+import { Construct } from '@aws-cdk/core';
 
 import { commonBuildProps } from './constants';
-import { EtlStorageStack } from './etl-storage-stack';
+import { EtlStorageStackState } from './etl-storage-stack';
 
 interface EtlStackProps extends cdk.StackProps {
   fargateCluster: Cluster;
@@ -27,13 +28,25 @@ interface EtlStackProps extends cdk.StackProps {
   hasuraDatabaseUrlSecret: ISecret;
   hasuraAdminSecret: ISecret;
   backendStaticSecret: ISecret;
-  storageStack: EtlStorageStack;
+  storageStack: EtlStorageStackState;
 }
 
 export class EtlStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: EtlStackProps) {
     super(scope, id, props);
 
+    EtlStack.createEtlStack(this, props);
+  }
+
+  /**
+   * This static because multi-stack CloudFormation is very complicated and full of pitfalls.
+   * See these articles for some info:
+   * https://stackoverflow.com/questions/62989129/resolution-error-cannot-use-resource-x-in-a-cross-environment-fashion-the-re
+   * https://awsmaniac.com/sharing-resources-in-aws-cdk/
+   * @param context The `this` context of an AWS CDK Stack.
+   * @param props Variables required for the stack to deploy properly.
+   */
+  public static createEtlStack(context: Construct, props: EtlStackProps): void {
     const {
       fargateCluster,
       publicHasuraServiceUrl,
@@ -50,7 +63,7 @@ export class EtlStack extends cdk.Stack {
     });
 
     const processManifestQueueService = new ecsPatterns.QueueProcessingFargateService(
-      this,
+      context,
       'ProcessManifestQueueService',
       {
         cluster: fargateCluster,
@@ -79,7 +92,7 @@ export class EtlStack extends cdk.Stack {
     storageStack.sbomBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
 
     // Process SBOM Service - Generates findings from a provided SBOM
-    const processSbomQueueService = new ecsPatterns.QueueProcessingFargateService(this, 'ProcessSbomQueueService', {
+    const processSbomQueueService = new ecsPatterns.QueueProcessingFargateService(context, 'ProcessSbomQueueService', {
       cluster: fargateCluster,
       image: QueueProcessorContainerImage,
       queue: storageStack.processSbomSqsQueue, // will pass queue_name env var automatically

@@ -686,9 +686,9 @@ export type Findings_Bool_Exp = {
 /** unique or primary key constraints on table "findings" */
 export enum Findings_Constraint {
   /** unique or primary key constraint */
-  FindingsPkey = 'findings_pkey',
+  FindingsDedupeSlugBuildIdKey = 'findings_dedupe_slug_build_id_key',
   /** unique or primary key constraint */
-  TempDedupeFix = 'temp_dedupe_fix'
+  FindingsPkey = 'findings_pkey'
 }
 
 /** input type for inserting data into table "findings" */
