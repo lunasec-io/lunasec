@@ -13291,8 +13291,10 @@ textarea.form-control-lg {
 }
 
 .avatar {
-  width: 36px;
-  height: 36px;
+  margin-top: -15px;
+  margin-bottom: -15px;
+  width: 40px;
+  height: 40px;
 }
 
 .badge {
@@ -13998,7 +14000,7 @@ a.badge-soft-dark:focus, a.badge-soft-dark.focus {
 
 .card {
   margin-bottom: 24px;
-  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.08), 0 0 6px rgba(41, 48, 66, 0.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08), 0 0 6px rgba(41, 48, 66, 0.05);
 }
 
 .card-header {
