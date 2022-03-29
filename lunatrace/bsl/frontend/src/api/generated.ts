@@ -7486,15 +7486,6 @@ export type InsertManifestMutationVariables = Exact<{
 
 export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null };
 
-export type CreateOrganizationAndProjectMutationVariables = Exact<{
-  identity_id: Scalars['uuid'];
-  organization_name: Scalars['String'];
-  project_name: Scalars['String'];
-}>;
-
-
-export type CreateOrganizationAndProjectMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', projects: Array<{ __typename?: 'projects', id: any }> } | null };
-
 export type InsertProjectMutationVariables = Exact<{
   name: Scalars['String'];
   organization_id: Scalars['uuid'];
@@ -7849,17 +7840,6 @@ export const InsertManifestDocument = `
   }
 }
     `;
-export const CreateOrganizationAndProjectDocument = `
-    mutation CreateOrganizationAndProject($identity_id: uuid!, $organization_name: String!, $project_name: String!) {
-  insert_organizations_one(
-    object: {name: $organization_name, organization_users: {data: {user_id: $identity_id}}, projects: {data: {name: $project_name}}}
-  ) {
-    projects {
-      id
-    }
-  }
-}
-    `;
 export const InsertProjectDocument = `
     mutation InsertProject($name: String!, $organization_id: uuid!) {
   insert_projects_one(object: {name: $name, organization_id: $organization_id}) {
@@ -7914,9 +7894,6 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     insertManifest: build.mutation<InsertManifestMutation, InsertManifestMutationVariables>({
       query: (variables) => ({ document: InsertManifestDocument, variables })
-    }),
-    CreateOrganizationAndProject: build.mutation<CreateOrganizationAndProjectMutation, CreateOrganizationAndProjectMutationVariables>({
-      query: (variables) => ({ document: CreateOrganizationAndProjectDocument, variables })
     }),
     InsertProject: build.mutation<InsertProjectMutation, InsertProjectMutationVariables>({
       query: (variables) => ({ document: InsertProjectDocument, variables })

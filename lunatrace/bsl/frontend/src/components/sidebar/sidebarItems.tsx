@@ -26,12 +26,19 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
           href: '/organization/:organization_id',
           icon: o.name === 'Personal' ? RiParkingFill : Briefcase, // todo: replace this with an icon from github
           title: o.name,
-          children: o.projects.map((p) => {
-            return {
-              href: `project/${p.id}`,
-              title: p.name,
-            };
-          }),
+          children: [
+            ...o.projects.map((p) => {
+              return {
+                href: `project/${p.id}`,
+                title: p.name,
+              };
+            }),
+            {
+              href: `/new-project/${o.id}`,
+              title: 'New Project',
+              icon: Plus,
+            },
+          ],
         };
       });
 
