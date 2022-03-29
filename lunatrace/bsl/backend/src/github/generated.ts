@@ -23997,17 +23997,36 @@ export type WorkflowRunPendingDeploymentRequestsArgs = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
+export type CommentOnPullRequestMutationVariables = Exact<{
+  pullRequestId?: InputMaybe<Scalars['ID']>;
+  body: Scalars['String'];
+}>;
+
+
+export type CommentOnPullRequestMutation = { __typename?: 'Mutation', addPullRequestReviewComment?: { __typename?: 'AddPullRequestReviewCommentPayload', comment?: { __typename?: 'PullRequestReviewComment', id: string } | null } | null };
+
 export type GetUserOrganizationsQueryVariables = Exact<{
   orgsAfter?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type GetUserOrganizationsQuery = { __typename?: 'Query', viewer: { __typename?: 'User', organizations: { __typename?: 'OrganizationConnection', pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, hasNextPage: boolean, endCursor?: string | null }, nodes?: Array<{ __typename?: 'Organization', name?: string | null, id: string } | null> | null } } };
+export type GetUserOrganizationsQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, login: string, organizations: { __typename?: 'OrganizationConnection', pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, hasNextPage: boolean, endCursor?: string | null }, nodes?: Array<{ __typename?: 'Organization', name?: string | null, id: string } | null> | null } } };
 
 
+export const CommentOnPullRequestDocument = gql`
+    mutation CommentOnPullRequest($pullRequestId: ID, $body: String!) {
+  addPullRequestReviewComment(input: {body: $body, pullRequestId: $pullRequestId}) {
+    comment {
+      id
+    }
+  }
+}
+    `;
 export const GetUserOrganizationsDocument = gql`
     query GetUserOrganizations($orgsAfter: String) {
   viewer {
+    id
+    login
     organizations(first: 100, after: $orgsAfter) {
       pageInfo {
         startCursor
@@ -24030,6 +24049,9 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    CommentOnPullRequest(variables: CommentOnPullRequestMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CommentOnPullRequestMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CommentOnPullRequestMutation>(CommentOnPullRequestDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CommentOnPullRequest', 'mutation');
+    },
     GetUserOrganizations(variables?: GetUserOrganizationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserOrganizationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserOrganizationsQuery>(GetUserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserOrganizations', 'query');
     }

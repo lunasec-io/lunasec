@@ -13580,14 +13580,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/webhooks-types@npm:5.5.1":
+"@octokit/webhooks-types@npm:5.5.1, @octokit/webhooks-types@npm:^5.5.1":
   version: 5.5.1
   resolution: "@octokit/webhooks-types@npm:5.5.1"
   checksum: c9b1eacc02f68c0bcdccaa662c4c1adc19e6d5799370d5f4f9429a382ecb2d63b4be52711da7058aafa36afb6d98bf0ddb4bcf1d8dda8251068c720cf9fa2b40
   languageName: node
   linkType: hard
 
-"@octokit/webhooks@npm:^9.0.1":
+"@octokit/webhooks@npm:^9.0.1, @octokit/webhooks@npm:^9.23.0":
   version: 9.23.0
   resolution: "@octokit/webhooks@npm:9.23.0"
   dependencies:
@@ -14887,6 +14887,13 @@ __metadata:
   version: 0.0.39
   resolution: "@types/estree@npm:0.0.39"
   checksum: 412fb5b9868f2c418126451821833414189b75cc6bf84361156feed733e3d92ec220b9d74a89e52722e03d5e241b2932732711b7497374a404fad49087adc248
+  languageName: node
+  linkType: hard
+
+"@types/eventsource@npm:^1.1.8":
+  version: 1.1.8
+  resolution: "@types/eventsource@npm:1.1.8"
+  checksum: 2832bccf42f808946b1b71c4fa6b525187a780a6e5efbb72b331d3d5ba9626b3b2fcf1a8654f630a2d2e48f1326b4fed83d923a06379a744712c1aa0c8b814ed
   languageName: node
   linkType: hard
 
@@ -26238,6 +26245,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eventsource@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "eventsource@npm:2.0.0"
+  checksum: df6b4e905beb33db370caae62c5819cac4e390088dff180827db4990c3c185e81738b4a869c357f83a63f650428fb7547a513e4954d8b860896806175d317d2c
+  languageName: node
+  linkType: hard
+
 "evp_bytestokey@npm:^1.0.0, evp_bytestokey@npm:^1.0.3":
   version: 1.0.3
   resolution: "evp_bytestokey@npm:1.0.3"
@@ -34949,12 +34963,15 @@ __metadata:
     "@octokit/auth-app": ^3.6.1
     "@octokit/graphql": ^4.8.0
     "@octokit/plugin-rest-endpoint-methods": ^5.13.0
+    "@octokit/webhooks": ^9.23.0
+    "@octokit/webhooks-types": ^5.5.1
     "@ory/kratos-client": v0.8.2-alpha.1
     "@types/aws-lambda": ^8.10.89
     "@types/axios": ^0.14.0
     "@types/config": ^0.0.41
     "@types/cors": ^2.8.12
     "@types/deepmerge": ^2.2.0
+    "@types/eventsource": ^1.1.8
     "@types/express": ^4.17.13
     "@types/jest": ^27.4.1
     "@types/node": ^14.0.0
@@ -34979,6 +34996,7 @@ __metadata:
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-promise: ^5.2.0
     eslint-plugin-react: ^7.23.2
+    eventsource: ^2.0.0
     express: 5.0.0-beta.1
     generate-lockfile: ^0.0.11
     graphql: ^16.3.0

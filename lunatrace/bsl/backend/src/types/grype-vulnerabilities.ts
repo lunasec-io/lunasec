@@ -22,7 +22,7 @@
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
-import {GrypeMeta} from "./grypeVulnerabilityMetadata";
+import {GrypeMeta} from "./grype-vulnerability-metadata";
 
 export interface GrypeVuln {
   pk: number;
