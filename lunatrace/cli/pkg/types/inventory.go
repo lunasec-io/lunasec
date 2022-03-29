@@ -15,9 +15,21 @@
 package types
 
 type RepoMetadata struct {
-	Remote string
-	Branch string
-	Hash   string
+	RemoteUrl  string
+	BranchName string
+	CommitHash string
+}
+
+func (s *RepoMetadata) Merge(remoteUrl, branchName, commitHash string) {
+	if remoteUrl != "" {
+		s.RemoteUrl = remoteUrl
+	}
+	if branchName != "" {
+		s.BranchName = branchName
+	}
+	if commitHash != "" {
+		s.CommitHash = commitHash
+	}
 }
 
 type GetProjectInfoResponse struct {

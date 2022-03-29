@@ -49,6 +49,7 @@ export function lunatraceOrgsFromGithubOrgs(
     const repoName = repo.name;
     const repoId = repo.id;
     const gitUrl = repo.git_url;
+    const gitOwnerType = repo.owner.type;
 
     const repoOnConflict: Github_Repositories_On_Conflict = {
       constraint: Github_Repositories_Constraint.GithubRepositoriesGithubIdKey,
@@ -78,6 +79,7 @@ export function lunatraceOrgsFromGithubOrgs(
       name: orgName,
       installation_id: installationId,
       github_id: organizationId,
+      github_owner_type: gitOwnerType,
       projects: {
         data: [...getExistingProjects(orgLookup, orgName), project],
         on_conflict: projectOnConflict,

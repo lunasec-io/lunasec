@@ -21,14 +21,14 @@ import (
 	"lunasec/lunatrace/pkg/types"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
-func findClosestGitDir() (gitDir string, err error) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		return
-	}
+func RepoNameToDirname(repoName string) string {
+	return strings.Replace(repoName, "/", "", -1)
+}
 
+func findClosestGitDir(currentDir string) (gitDir string, err error) {
 	maxSearchDepth := 20
 
 	for i := 0; i < maxSearchDepth && currentDir != "/"; i += 1 {
@@ -48,8 +48,8 @@ func findClosestGitDir() (gitDir string, err error) {
 	return
 }
 
-func getRepo() (repo *git.Repository, err error) {
-	gitDir, err := findClosestGitDir()
+func getRepo(dir string) (repo *git.Repository, err error) {
+	gitDir, err := findClosestGitDir(dir)
 	if err != nil {
 		log.Warn().Msg("Unable to locate git project. Please pass git information via command line if you would like to track it")
 		return
@@ -100,21 +100,24 @@ func getRepoRemote(repo *git.Repository) (name string, err error) {
 	return
 }
 
-func CollectRepoMetadata() (metadata types.RepoMetadata) {
-	repo, err := getRepo()
+func CollectRepoMetadata(dir string) (metadata types.RepoMetadata) {
+	repo, err := getRepo(dir)
 	if err != nil {
 		return
 	}
+	return CollectRepoMetadataFromObj(repo)
+}
 
+func CollectRepoMetadataFromObj(repo *git.Repository) (metadata types.RepoMetadata) {
 	remote, err := getRepoRemote(repo)
 	if err == nil {
-		metadata.Remote = remote
+		metadata.RemoteUrl = remote
 	}
 
 	branchName, branchHash, err := getRepoHead(repo)
 	if err == nil {
-		metadata.Branch = branchName
-		metadata.Hash = branchHash
+		metadata.BranchName = branchName
+		metadata.CommitHash = branchHash
 	}
 	return
 }

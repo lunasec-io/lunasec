@@ -12,3 +12,4 @@ deploy-apigateway-to-firehose.ts
 **/metrics-server-backend/*
 **/ContactForm.jsx
 **/generated.ts
+**/cdk.out/**

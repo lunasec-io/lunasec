@@ -83,15 +83,16 @@
             }
           }
 
-- id: "ory:lunatrace:backend:webhooks"
+- id: "ory:lunatrace:backend:github:webhook"
   upstream:
     preserve_host: true
     url: "http://localhost:3002"
-    strip_path: "/api/webhook"
+    strip_path: "/api"
   match:
-    url: "<https|http>://<localhost:4455|lunatrace.lunasec.io>/api/webhook/github/install"
+    url: "<https|http>://<.*.ngrok.io|localhost:4455|lunatrace.lunasec.io>/api/github/webhook/<.*>"
     methods:
       - GET
+      - POST
   authenticators:
     - handler: anonymous
   authorizer:

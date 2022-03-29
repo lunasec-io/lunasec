@@ -91,76 +91,47 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			{
-				Name:    "inventory",
+				Name:    "import",
 				Aliases: []string{"i"},
 				Usage:   "Inventory dependencies as a Software Bill of Materials (SBOM) for project and upload the SBOM.",
 				Before:  setGlobalBoolFlags,
+				Flags:   constants.InventoryCliFlags,
 				Subcommands: []*cli.Command{
 					{
-						Name:    "create",
-						Aliases: []string{"c"},
-						Usage:   "Create an inventory of dependencies as a SBOM for project and upload the SBOM.",
-						Before:  setGlobalBoolFlags,
-						Flags: []cli.Flag{
-							&cli.StringFlag{
-								Name:  "output",
-								Usage: "File to write generated SBOM to.",
-							},
-							&cli.StringFlag{
-								Name:  "config-output",
-								Usage: "File to write generated LunaTrace Agent config.",
-							},
-							&cli.StringSliceFlag{
-								Name:  "excluded",
-								Usage: "Excluded dirs from scanning.",
-							},
-							&cli.BoolFlag{
-								Name:  "skip-upload",
-								Usage: "Skip uploading generated SBOM.",
-							},
-							&cli.StringFlag{
-								Name:  "stdin-filename",
-								Usage: "Read from stdin and use the provided filename as the source.",
-							},
-							&cli.BoolFlag{
-								Name:  "stdout",
-								Usage: "Print created SBOM to stdout.",
-							},
-							&cli.StringFlag{
-								Name:  "git-branch",
-								Usage: "Manually specify a branch, otherwise we will attempt to read from a local .git folder.",
-							},
-							&cli.StringFlag{
-								Name:  "git-commit",
-								Usage: "Manually specify a commit, otherwise we will attempt to read from a local .git folder.",
-							},
-							&cli.StringFlag{
-								Name:  "git-remote",
-								Usage: "Manually specify a remote, otherwise we will attempt to read from a local .git folder.",
-							},
-						},
+						Name:   "repository",
+						Usage:  "Create an inventory of dependencies for a repository.",
+						Before: setGlobalBoolFlags,
+						Flags:  constants.InventoryRepositoryCliFlags,
 						Action: func(c *cli.Context) error {
-							return inventory.CreateCommand(c, globalBoolFlags, appConfig)
+							return inventory.RepositoryCommand(c, globalBoolFlags, appConfig)
 						},
 					},
 					{
-						Name:    "scan",
-						Aliases: []string{"s"},
-						Usage:   "Scan a created SBOM for known risks.",
-						Flags: []cli.Flag{
-							&cli.BoolFlag{
-								Name:  "stdin",
-								Usage: "Read SBOM from stdin.",
-							},
-							&cli.BoolFlag{
-								Name:  "stdout",
-								Usage: "Print findings to stdout.",
-							},
-						},
+						Name:   "manifest",
+						Usage:  "Create an inventory of dependencies as a SBOM for project and upload the SBOM.",
+						Before: setGlobalBoolFlags,
+						Flags:  constants.InventoryManifestCliFlags,
 						Action: func(c *cli.Context) error {
-							return inventory.ScanCommand(c, globalBoolFlags, appConfig)
+							return inventory.ManifestCommand(c, globalBoolFlags, appConfig)
 						},
 					},
+				},
+			},
+			{
+				Name:  "scan",
+				Usage: "Scan a created SBOM for known risks.",
+				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name:  "stdin",
+						Usage: "Read SBOM from stdin.",
+					},
+					&cli.BoolFlag{
+						Name:  "stdout",
+						Usage: "Print findings to stdout.",
+					},
+				},
+				Action: func(c *cli.Context) error {
+					return inventory.ScanCommand(c, globalBoolFlags, appConfig)
 				},
 			},
 		},
