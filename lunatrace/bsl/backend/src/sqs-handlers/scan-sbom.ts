@@ -16,7 +16,7 @@ import zlib from 'zlib';
 import validate from 'validator';
 
 import { generateGithubGraphqlClient } from '../github';
-import { getGithubInstallationToken } from '../github/installation-populate';
+import { getInstallationAccessToken } from '../github/auth';
 import { hasura } from '../hasura-api';
 import { Scan } from '../models/scan';
 import { S3ObjectMetadata } from '../types/s3';
@@ -59,7 +59,7 @@ async function notifyScanResults(buildId: string, results: string) {
     build_id: buildId,
   });
 
-  if (!notifyInfo.builds_by_pk || !notifyInfo.builds_by_pk.project) {
+  if (!notifyInfo.builds_by_pk || !notifyInfo.builds_by_pk.project || !notifyInfo.builds_by_pk.project.organization) {
     console.error(`unable to get required scan notify information for buildId: ${buildId}`);
     return;
   }
@@ -77,7 +77,7 @@ async function notifyScanResults(buildId: string, results: string) {
     return;
   }
 
-  const installationToken = await getGithubInstallationToken(installationId);
+  const installationToken = await getInstallationAccessToken(installationId);
 
   const github = generateGithubGraphqlClient(installationToken);
   await github.CommentOnPullRequest({
