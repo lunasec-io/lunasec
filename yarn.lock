@@ -9556,18 +9556,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/merge@npm:8.2.4":
-  version: 8.2.4
-  resolution: "@graphql-tools/merge@npm:8.2.4"
-  dependencies:
-    "@graphql-tools/utils": 8.6.3
-    tslib: ~2.3.0
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: aa5aac531289aedc88e3bc6d369846d1918abd1627a2cd2676a3eb55ef8c7c1208a287897b7360fb30535bca8fb631794a0c321bee360058b5ed49404a3163de
-  languageName: node
-  linkType: hard
-
 "@graphql-tools/merge@npm:^8.2.1, @graphql-tools/merge@npm:^8.2.3":
   version: 8.2.3
   resolution: "@graphql-tools/merge@npm:8.2.3"
@@ -9648,20 +9636,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:^8.3.3":
-  version: 8.3.3
-  resolution: "@graphql-tools/schema@npm:8.3.3"
-  dependencies:
-    "@graphql-tools/merge": 8.2.4
-    "@graphql-tools/utils": 8.6.3
-    tslib: ~2.3.0
-    value-or-promise: 1.0.11
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: a4c0bdce558ee36a4759efe636eb6cbec0dfa83b6b2e4315c5c366e1fbed2fdaf3082dfb70b491a5d3d594dc763f8b46770d2c13269001664c06b9922e400b26
-  languageName: node
-  linkType: hard
-
 "@graphql-tools/url-loader@npm:^7.0.11, @graphql-tools/url-loader@npm:^7.4.2, @graphql-tools/url-loader@npm:^7.7.2":
   version: 7.7.2
   resolution: "@graphql-tools/url-loader@npm:7.7.2"
@@ -9699,17 +9673,6 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
   checksum: 322642c498678b10d9783bdf3ec8a279b4841ed54d74b0e80e118ddfcdc64e4af495b8bbf5c2116f1e532fae8936ef4313a436b3af351b0cbca09664cb3eaa73
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/utils@npm:8.6.3":
-  version: 8.6.3
-  resolution: "@graphql-tools/utils@npm:8.6.3"
-  dependencies:
-    tslib: ~2.3.0
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 9903d3df3f59140391ef810cc01c1bf4f59f3f889cc7da05942483fc5d3822f1c92f42015334a6f143ef419a14382a7404e5ef5fca986cf425a1947f63243b53
   languageName: node
   linkType: hard
 
@@ -35081,7 +35044,6 @@ __metadata:
     "@graphql-codegen/typescript": 2.4.2
     "@graphql-codegen/typescript-graphql-request": ^4.4.0
     "@graphql-codegen/typescript-operations": ^2.2.2
-    "@graphql-tools/schema": ^8.3.3
     "@octokit/auth-app": ^3.6.1
     "@octokit/graphql": ^4.8.0
     "@octokit/plugin-rest-endpoint-methods": ^5.13.0
