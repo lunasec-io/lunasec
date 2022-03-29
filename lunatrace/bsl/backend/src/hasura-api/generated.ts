@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -699,9 +686,9 @@ export type Findings_Bool_Exp = {
 /** unique or primary key constraints on table "findings" */
 export enum Findings_Constraint {
   /** unique or primary key constraint */
-  FindingsPkey = 'findings_pkey',
+  FindingsDedupeSlugBuildIdKey = 'findings_dedupe_slug_build_id_key',
   /** unique or primary key constraint */
-  TempDedupeFix = 'temp_dedupe_fix'
+  FindingsPkey = 'findings_pkey'
 }
 
 /** input type for inserting data into table "findings" */
@@ -1006,6 +993,7 @@ export type Fix_State_Enum_Comparison_Exp = {
  *
  *
  * columns and relationships of "github_repositories"
+ *
  */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
@@ -1024,6 +1012,7 @@ export type Github_Repositories = {
  *
  *
  * columns and relationships of "github_repositories"
+ *
  */
 export type Github_RepositoriesApi_ResponseArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -3519,6 +3508,7 @@ export enum Order_By {
  *
  *
  * columns and relationships of "organization_user"
+ *
  */
 export type Organization_User = {
   __typename?: 'organization_user';
@@ -5415,6 +5405,7 @@ export type Query_RootVulnerability_Packages_By_PkArgs = {
  *
  *
  * columns and relationships of "related_vulnerabilities"
+ *
  */
 export type Related_Vulnerabilities = {
   __typename?: 'related_vulnerabilities';
@@ -5589,6 +5580,7 @@ export enum Related_Vulnerabilities_Update_Column {
  *
  *
  * columns and relationships of "scans"
+ *
  */
 export type Scans = {
   __typename?: 'scans';
@@ -5616,6 +5608,7 @@ export type Scans = {
  *
  *
  * columns and relationships of "scans"
+ *
  */
 export type ScansFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -5631,6 +5624,7 @@ export type ScansFindingsArgs = {
  *
  *
  * columns and relationships of "scans"
+ *
  */
 export type ScansFindings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -7181,6 +7175,7 @@ export type Vulnerabilities_Variance_Fields = {
  *
  *
  * columns and relationships of "vulnerability_packages"
+ *
  */
 export type Vulnerability_Packages = {
   __typename?: 'vulnerability_packages';
@@ -7207,6 +7202,7 @@ export type Vulnerability_Packages = {
  *
  *
  * columns and relationships of "vulnerability_packages"
+ *
  */
 export type Vulnerability_PackagesFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -7222,6 +7218,7 @@ export type Vulnerability_PackagesFindingsArgs = {
  *
  *
  * columns and relationships of "vulnerability_packages"
+ *
  */
 export type Vulnerability_PackagesFindings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -7237,6 +7234,7 @@ export type Vulnerability_PackagesFindings_AggregateArgs = {
  *
  *
  * columns and relationships of "vulnerability_packages"
+ *
  */
 export type Vulnerability_PackagesPackage_VersionsArgs = {
   distinct_on?: InputMaybe<Array<Package_Versions_Select_Column>>;
@@ -7252,6 +7250,7 @@ export type Vulnerability_PackagesPackage_VersionsArgs = {
  *
  *
  * columns and relationships of "vulnerability_packages"
+ *
  */
 export type Vulnerability_PackagesPackage_Versions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Package_Versions_Select_Column>>;
@@ -7473,7 +7472,7 @@ export type GetScanReportNotifyInfoForBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetScanReportNotifyInfoForBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: number | null, project?: { __typename?: 'projects', organization: { __typename?: 'organizations', installation_id?: number | null } } | null } | null };
+export type GetScanReportNotifyInfoForBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: number | null, project?: { __typename?: 'projects', organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
 
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
