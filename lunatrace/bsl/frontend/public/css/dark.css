@@ -13291,8 +13291,10 @@ textarea.form-control-lg {
 }
 
 .avatar {
-  width: 36px;
-  height: 36px;
+  margin-top: -15px;
+  margin-bottom: -15px;
+  width: 40px;
+  height: 40px;
 }
 
 .badge {

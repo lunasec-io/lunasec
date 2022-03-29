@@ -14,18 +14,18 @@
 import zlib from 'zlib';
 
 import { generateSbomFromAsset } from '../cli/call-cli';
-import { getSbomHandlerConfig } from '../config';
+import { getBucketConfig } from '../config';
 import { hasura } from '../hasura-api';
 import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
 import { aws } from '../utils/aws-utils';
 
-const sbomHandlerConfig = getSbomHandlerConfig();
+const bucketConfig = getBucketConfig();
 
 export async function uploadSbomToS3(organizationId: string, buildId: string, gzippedSbom: zlib.Gzip) {
   // upload the sbom to s3, streaming
   const newSbomS3Key = aws.generateSbomS3Key(organizationId, buildId);
-  const s3Url = await aws.uploadGzipFileToS3(newSbomS3Key, sbomHandlerConfig.sbomBucket, gzippedSbom);
+  const s3Url = await aws.uploadGzipFileToS3(newSbomS3Key, bucketConfig.sbomBucket, gzippedSbom);
   // update build to have s3 url
   const { update_builds_by_pk } = await hasura.SetBuildS3Url({ id: buildId, s3_url: s3Url });
   if (!update_builds_by_pk) {
