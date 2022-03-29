@@ -36,7 +36,7 @@
     "@octokit/plugin-rest-endpoint-methods": "^5.13.0",
     "@octokit/webhooks": "^9.23.0",
     "@octokit/webhooks-types": "^5.5.1",
-    "@ory/kratos-client": "v0.8.2-alpha.1",
+    "@ory/kratos-client": "0.9.0-alpha.3",
     "@types/deepmerge": "^2.2.0",
     "@types/eventsource": "^1.1.8",
     "@types/express-jwt": "^6.0.4",

@@ -13690,21 +13690,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ory/kratos-client@npm:0.8.0-alpha.2, @ory/kratos-client@npm:>=0.8.0-alpha.2":
+"@ory/kratos-client@npm:0.9.0-alpha.3":
+  version: 0.9.0-alpha.3
+  resolution: "@ory/kratos-client@npm:0.9.0-alpha.3"
+  dependencies:
+    axios: ^0.21.4
+  checksum: fe3bb372ae82667c9c50a05816abfb976eb8aeadf2adbbfd7b938562c635592d9f2aa9ee3bdac5e3adad30bb52545742b196a8366f74e046b5f73ba9bf5568fc
+  languageName: node
+  linkType: hard
+
+"@ory/kratos-client@npm:>=0.8.0-alpha.2":
   version: 0.8.0-alpha.2
   resolution: "@ory/kratos-client@npm:0.8.0-alpha.2"
   dependencies:
     axios: ^0.21.1
   checksum: 95dd75e7746cf5ec32ce0e8adbfb167ee81a63858c6316e559e7532b33af3776a96e8ec13c779f22f575426406c63620499810d8391cbbf28a261e472c7de884
-  languageName: node
-  linkType: hard
-
-"@ory/kratos-client@npm:v0.8.2-alpha.1":
-  version: 0.8.2-alpha.1
-  resolution: "@ory/kratos-client@npm:0.8.2-alpha.1"
-  dependencies:
-    axios: ^0.21.1
-  checksum: d103ffdf08f76e565622abda8e748b5d17f9829c727e37a74e50b87b6d86431499b2e2f191ad2b6571202c1dea0455840585734c09b8ed923843aa7ca84f107a
   languageName: node
   linkType: hard
 
@@ -27673,7 +27673,7 @@ __metadata:
     "@graphql-codegen/typescript-operations": ^2.2.2
     "@graphql-codegen/typescript-rtk-query": ^2.2.2
     "@ory/integrations": ~0.2.2
-    "@ory/kratos-client": 0.8.0-alpha.2
+    "@ory/kratos-client": 0.9.0-alpha.3
     "@ory/themes": ~0.0.101
     "@reduxjs/toolkit": ^1.7.1
     "@rtk-query/graphql-request-base-query": ^2.0.0
@@ -35063,7 +35063,7 @@ __metadata:
     "@octokit/plugin-rest-endpoint-methods": ^5.13.0
     "@octokit/webhooks": ^9.23.0
     "@octokit/webhooks-types": ^5.5.1
-    "@ory/kratos-client": v0.8.2-alpha.1
+    "@ory/kratos-client": 0.9.0-alpha.3
     "@types/aws-lambda": ^8.10.89
     "@types/axios": ^0.14.0
     "@types/config": ^0.0.41

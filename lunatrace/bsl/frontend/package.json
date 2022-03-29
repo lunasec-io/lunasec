@@ -5,7 +5,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.52.0",
     "@ory/integrations": "~0.2.2",
-    "@ory/kratos-client": "0.8.0-alpha.2",
+    "@ory/kratos-client": "0.9.0-alpha.3",
     "@ory/themes": "~0.0.101",
     "@reduxjs/toolkit": "^1.7.1",
     "@rtk-query/graphql-request-base-query": "^2.0.0",
