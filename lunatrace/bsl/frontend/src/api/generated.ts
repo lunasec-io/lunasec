@@ -83,8 +83,6 @@ export type ScanManifestOutput = {
   build_id: Scalars['String'];
   error: Scalars['Boolean'];
   error_message?: Maybe<Scalars['String']>;
-  /** An object relationship */
-  scan_build_id_relationship: Builds;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -156,7 +154,7 @@ export type Builds = {
   /** An object relationship */
   project?: Maybe<Projects>;
   project_id?: Maybe<Scalars['uuid']>;
-  pull_request_id?: Maybe<Scalars['Int']>;
+  pull_request_id?: Maybe<Scalars['String']>;
   s3_url?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
@@ -260,13 +258,11 @@ export type Builds_Arr_Rel_Insert_Input = {
 export type Builds_Avg_Fields = {
   __typename?: 'builds_avg_fields';
   build_number?: Maybe<Scalars['Float']>;
-  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "builds" */
 export type Builds_Avg_Order_By = {
   build_number?: InputMaybe<Order_By>;
-  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "builds". All fields are combined with a logical 'AND'. */
@@ -284,7 +280,7 @@ export type Builds_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
-  pull_request_id?: InputMaybe<Int_Comparison_Exp>;
+  pull_request_id?: InputMaybe<String_Comparison_Exp>;
   s3_url?: InputMaybe<String_Comparison_Exp>;
   scans?: InputMaybe<Scans_Bool_Exp>;
 };
@@ -302,7 +298,6 @@ export enum Builds_Constraint {
 /** input type for incrementing numeric columns in table "builds" */
 export type Builds_Inc_Input = {
   build_number?: InputMaybe<Scalars['Int']>;
-  pull_request_id?: InputMaybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "builds" */
@@ -317,7 +312,7 @@ export type Builds_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: InputMaybe<Scalars['uuid']>;
-  pull_request_id?: InputMaybe<Scalars['Int']>;
+  pull_request_id?: InputMaybe<Scalars['String']>;
   s3_url?: InputMaybe<Scalars['String']>;
   scans?: InputMaybe<Scans_Arr_Rel_Insert_Input>;
 };
@@ -333,7 +328,7 @@ export type Builds_Max_Fields = {
   git_remote?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
-  pull_request_id?: Maybe<Scalars['Int']>;
+  pull_request_id?: Maybe<Scalars['String']>;
   s3_url?: Maybe<Scalars['String']>;
 };
 
@@ -362,7 +357,7 @@ export type Builds_Min_Fields = {
   git_remote?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
-  pull_request_id?: Maybe<Scalars['Int']>;
+  pull_request_id?: Maybe<Scalars['String']>;
   s3_url?: Maybe<Scalars['String']>;
 };
 
@@ -459,7 +454,7 @@ export type Builds_Set_Input = {
   git_remote?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   project_id?: InputMaybe<Scalars['uuid']>;
-  pull_request_id?: InputMaybe<Scalars['Int']>;
+  pull_request_id?: InputMaybe<Scalars['String']>;
   s3_url?: InputMaybe<Scalars['String']>;
 };
 
@@ -467,52 +462,44 @@ export type Builds_Set_Input = {
 export type Builds_Stddev_Fields = {
   __typename?: 'builds_stddev_fields';
   build_number?: Maybe<Scalars['Float']>;
-  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "builds" */
 export type Builds_Stddev_Order_By = {
   build_number?: InputMaybe<Order_By>;
-  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Builds_Stddev_Pop_Fields = {
   __typename?: 'builds_stddev_pop_fields';
   build_number?: Maybe<Scalars['Float']>;
-  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "builds" */
 export type Builds_Stddev_Pop_Order_By = {
   build_number?: InputMaybe<Order_By>;
-  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Builds_Stddev_Samp_Fields = {
   __typename?: 'builds_stddev_samp_fields';
   build_number?: Maybe<Scalars['Float']>;
-  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "builds" */
 export type Builds_Stddev_Samp_Order_By = {
   build_number?: InputMaybe<Order_By>;
-  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Builds_Sum_Fields = {
   __typename?: 'builds_sum_fields';
   build_number?: Maybe<Scalars['Int']>;
-  pull_request_id?: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "builds" */
 export type Builds_Sum_Order_By = {
   build_number?: InputMaybe<Order_By>;
-  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** update columns of table "builds" */
@@ -543,39 +530,33 @@ export enum Builds_Update_Column {
 export type Builds_Var_Pop_Fields = {
   __typename?: 'builds_var_pop_fields';
   build_number?: Maybe<Scalars['Float']>;
-  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "builds" */
 export type Builds_Var_Pop_Order_By = {
   build_number?: InputMaybe<Order_By>;
-  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Builds_Var_Samp_Fields = {
   __typename?: 'builds_var_samp_fields';
   build_number?: Maybe<Scalars['Float']>;
-  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "builds" */
 export type Builds_Var_Samp_Order_By = {
   build_number?: InputMaybe<Order_By>;
-  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Builds_Variance_Fields = {
   __typename?: 'builds_variance_fields';
   build_number?: Maybe<Scalars['Float']>;
-  pull_request_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "builds" */
 export type Builds_Variance_Order_By = {
   build_number?: InputMaybe<Order_By>;
-  pull_request_id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
@@ -1603,488 +1584,6 @@ export enum Identities_Update_Column {
   UpdatedAt = 'updated_at'
 }
 
-/** columns and relationships of "identity_credential_identifiers" */
-export type Identity_Credential_Identifiers = {
-  __typename?: 'identity_credential_identifiers';
-  created_at: Scalars['timestamp'];
-  id: Scalars['uuid'];
-  identifier: Scalars['String'];
-  identity_credential_id: Scalars['uuid'];
-  identity_credential_type_id: Scalars['uuid'];
-  nid?: Maybe<Scalars['uuid']>;
-  updated_at: Scalars['timestamp'];
-};
-
-/** aggregated selection of "identity_credential_identifiers" */
-export type Identity_Credential_Identifiers_Aggregate = {
-  __typename?: 'identity_credential_identifiers_aggregate';
-  aggregate?: Maybe<Identity_Credential_Identifiers_Aggregate_Fields>;
-  nodes: Array<Identity_Credential_Identifiers>;
-};
-
-/** aggregate fields of "identity_credential_identifiers" */
-export type Identity_Credential_Identifiers_Aggregate_Fields = {
-  __typename?: 'identity_credential_identifiers_aggregate_fields';
-  count: Scalars['Int'];
-  max?: Maybe<Identity_Credential_Identifiers_Max_Fields>;
-  min?: Maybe<Identity_Credential_Identifiers_Min_Fields>;
-};
-
-
-/** aggregate fields of "identity_credential_identifiers" */
-export type Identity_Credential_Identifiers_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Identity_Credential_Identifiers_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** Boolean expression to filter rows from the table "identity_credential_identifiers". All fields are combined with a logical 'AND'. */
-export type Identity_Credential_Identifiers_Bool_Exp = {
-  _and?: InputMaybe<Array<Identity_Credential_Identifiers_Bool_Exp>>;
-  _not?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
-  _or?: InputMaybe<Array<Identity_Credential_Identifiers_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  identifier?: InputMaybe<String_Comparison_Exp>;
-  identity_credential_id?: InputMaybe<Uuid_Comparison_Exp>;
-  identity_credential_type_id?: InputMaybe<Uuid_Comparison_Exp>;
-  nid?: InputMaybe<Uuid_Comparison_Exp>;
-  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "identity_credential_identifiers" */
-export enum Identity_Credential_Identifiers_Constraint {
-  /** unique or primary key constraint */
-  IdentityCredentialIdentifiersIdentifierNidTypeUqIdx = 'identity_credential_identifiers_identifier_nid_type_uq_idx',
-  /** unique or primary key constraint */
-  IdentityCredentialIdentifiersPkey = 'identity_credential_identifiers_pkey'
-}
-
-/** input type for inserting data into table "identity_credential_identifiers" */
-export type Identity_Credential_Identifiers_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamp']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  identifier?: InputMaybe<Scalars['String']>;
-  identity_credential_id?: InputMaybe<Scalars['uuid']>;
-  identity_credential_type_id?: InputMaybe<Scalars['uuid']>;
-  nid?: InputMaybe<Scalars['uuid']>;
-  updated_at?: InputMaybe<Scalars['timestamp']>;
-};
-
-/** aggregate max on columns */
-export type Identity_Credential_Identifiers_Max_Fields = {
-  __typename?: 'identity_credential_identifiers_max_fields';
-  created_at?: Maybe<Scalars['timestamp']>;
-  id?: Maybe<Scalars['uuid']>;
-  identifier?: Maybe<Scalars['String']>;
-  identity_credential_id?: Maybe<Scalars['uuid']>;
-  identity_credential_type_id?: Maybe<Scalars['uuid']>;
-  nid?: Maybe<Scalars['uuid']>;
-  updated_at?: Maybe<Scalars['timestamp']>;
-};
-
-/** aggregate min on columns */
-export type Identity_Credential_Identifiers_Min_Fields = {
-  __typename?: 'identity_credential_identifiers_min_fields';
-  created_at?: Maybe<Scalars['timestamp']>;
-  id?: Maybe<Scalars['uuid']>;
-  identifier?: Maybe<Scalars['String']>;
-  identity_credential_id?: Maybe<Scalars['uuid']>;
-  identity_credential_type_id?: Maybe<Scalars['uuid']>;
-  nid?: Maybe<Scalars['uuid']>;
-  updated_at?: Maybe<Scalars['timestamp']>;
-};
-
-/** response of any mutation on the table "identity_credential_identifiers" */
-export type Identity_Credential_Identifiers_Mutation_Response = {
-  __typename?: 'identity_credential_identifiers_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Identity_Credential_Identifiers>;
-};
-
-/** on_conflict condition type for table "identity_credential_identifiers" */
-export type Identity_Credential_Identifiers_On_Conflict = {
-  constraint: Identity_Credential_Identifiers_Constraint;
-  update_columns?: Array<Identity_Credential_Identifiers_Update_Column>;
-  where?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "identity_credential_identifiers". */
-export type Identity_Credential_Identifiers_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  identifier?: InputMaybe<Order_By>;
-  identity_credential_id?: InputMaybe<Order_By>;
-  identity_credential_type_id?: InputMaybe<Order_By>;
-  nid?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: identity_credential_identifiers */
-export type Identity_Credential_Identifiers_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** select columns of table "identity_credential_identifiers" */
-export enum Identity_Credential_Identifiers_Select_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Identifier = 'identifier',
-  /** column name */
-  IdentityCredentialId = 'identity_credential_id',
-  /** column name */
-  IdentityCredentialTypeId = 'identity_credential_type_id',
-  /** column name */
-  Nid = 'nid',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-/** input type for updating data in table "identity_credential_identifiers" */
-export type Identity_Credential_Identifiers_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamp']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  identifier?: InputMaybe<Scalars['String']>;
-  identity_credential_id?: InputMaybe<Scalars['uuid']>;
-  identity_credential_type_id?: InputMaybe<Scalars['uuid']>;
-  nid?: InputMaybe<Scalars['uuid']>;
-  updated_at?: InputMaybe<Scalars['timestamp']>;
-};
-
-/** update columns of table "identity_credential_identifiers" */
-export enum Identity_Credential_Identifiers_Update_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Identifier = 'identifier',
-  /** column name */
-  IdentityCredentialId = 'identity_credential_id',
-  /** column name */
-  IdentityCredentialTypeId = 'identity_credential_type_id',
-  /** column name */
-  Nid = 'nid',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-/** columns and relationships of "identity_credential_types" */
-export type Identity_Credential_Types = {
-  __typename?: 'identity_credential_types';
-  id: Scalars['uuid'];
-  name: Scalars['String'];
-};
-
-/** aggregated selection of "identity_credential_types" */
-export type Identity_Credential_Types_Aggregate = {
-  __typename?: 'identity_credential_types_aggregate';
-  aggregate?: Maybe<Identity_Credential_Types_Aggregate_Fields>;
-  nodes: Array<Identity_Credential_Types>;
-};
-
-/** aggregate fields of "identity_credential_types" */
-export type Identity_Credential_Types_Aggregate_Fields = {
-  __typename?: 'identity_credential_types_aggregate_fields';
-  count: Scalars['Int'];
-  max?: Maybe<Identity_Credential_Types_Max_Fields>;
-  min?: Maybe<Identity_Credential_Types_Min_Fields>;
-};
-
-
-/** aggregate fields of "identity_credential_types" */
-export type Identity_Credential_Types_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Identity_Credential_Types_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** Boolean expression to filter rows from the table "identity_credential_types". All fields are combined with a logical 'AND'. */
-export type Identity_Credential_Types_Bool_Exp = {
-  _and?: InputMaybe<Array<Identity_Credential_Types_Bool_Exp>>;
-  _not?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
-  _or?: InputMaybe<Array<Identity_Credential_Types_Bool_Exp>>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  name?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "identity_credential_types" */
-export enum Identity_Credential_Types_Constraint {
-  /** unique or primary key constraint */
-  IdentityCredentialTypesNameIdx = 'identity_credential_types_name_idx',
-  /** unique or primary key constraint */
-  IdentityCredentialTypesPkey = 'identity_credential_types_pkey'
-}
-
-/** input type for inserting data into table "identity_credential_types" */
-export type Identity_Credential_Types_Insert_Input = {
-  id?: InputMaybe<Scalars['uuid']>;
-  name?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregate max on columns */
-export type Identity_Credential_Types_Max_Fields = {
-  __typename?: 'identity_credential_types_max_fields';
-  id?: Maybe<Scalars['uuid']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-/** aggregate min on columns */
-export type Identity_Credential_Types_Min_Fields = {
-  __typename?: 'identity_credential_types_min_fields';
-  id?: Maybe<Scalars['uuid']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-/** response of any mutation on the table "identity_credential_types" */
-export type Identity_Credential_Types_Mutation_Response = {
-  __typename?: 'identity_credential_types_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Identity_Credential_Types>;
-};
-
-/** on_conflict condition type for table "identity_credential_types" */
-export type Identity_Credential_Types_On_Conflict = {
-  constraint: Identity_Credential_Types_Constraint;
-  update_columns?: Array<Identity_Credential_Types_Update_Column>;
-  where?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "identity_credential_types". */
-export type Identity_Credential_Types_Order_By = {
-  id?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: identity_credential_types */
-export type Identity_Credential_Types_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** select columns of table "identity_credential_types" */
-export enum Identity_Credential_Types_Select_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name'
-}
-
-/** input type for updating data in table "identity_credential_types" */
-export type Identity_Credential_Types_Set_Input = {
-  id?: InputMaybe<Scalars['uuid']>;
-  name?: InputMaybe<Scalars['String']>;
-};
-
-/** update columns of table "identity_credential_types" */
-export enum Identity_Credential_Types_Update_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name'
-}
-
-/** columns and relationships of "identity_credentials" */
-export type Identity_Credentials = {
-  __typename?: 'identity_credentials';
-  config: Scalars['jsonb'];
-  created_at: Scalars['timestamp'];
-  id: Scalars['uuid'];
-  identity_credential_type_id: Scalars['uuid'];
-  identity_id: Scalars['uuid'];
-  nid?: Maybe<Scalars['uuid']>;
-  updated_at: Scalars['timestamp'];
-};
-
-
-/** columns and relationships of "identity_credentials" */
-export type Identity_CredentialsConfigArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregated selection of "identity_credentials" */
-export type Identity_Credentials_Aggregate = {
-  __typename?: 'identity_credentials_aggregate';
-  aggregate?: Maybe<Identity_Credentials_Aggregate_Fields>;
-  nodes: Array<Identity_Credentials>;
-};
-
-/** aggregate fields of "identity_credentials" */
-export type Identity_Credentials_Aggregate_Fields = {
-  __typename?: 'identity_credentials_aggregate_fields';
-  count: Scalars['Int'];
-  max?: Maybe<Identity_Credentials_Max_Fields>;
-  min?: Maybe<Identity_Credentials_Min_Fields>;
-};
-
-
-/** aggregate fields of "identity_credentials" */
-export type Identity_Credentials_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Identity_Credentials_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Identity_Credentials_Append_Input = {
-  config?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** Boolean expression to filter rows from the table "identity_credentials". All fields are combined with a logical 'AND'. */
-export type Identity_Credentials_Bool_Exp = {
-  _and?: InputMaybe<Array<Identity_Credentials_Bool_Exp>>;
-  _not?: InputMaybe<Identity_Credentials_Bool_Exp>;
-  _or?: InputMaybe<Array<Identity_Credentials_Bool_Exp>>;
-  config?: InputMaybe<Jsonb_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  identity_credential_type_id?: InputMaybe<Uuid_Comparison_Exp>;
-  identity_id?: InputMaybe<Uuid_Comparison_Exp>;
-  nid?: InputMaybe<Uuid_Comparison_Exp>;
-  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "identity_credentials" */
-export enum Identity_Credentials_Constraint {
-  /** unique or primary key constraint */
-  IdentityCredentialsPkey = 'identity_credentials_pkey'
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Identity_Credentials_Delete_At_Path_Input = {
-  config?: InputMaybe<Array<Scalars['String']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Identity_Credentials_Delete_Elem_Input = {
-  config?: InputMaybe<Scalars['Int']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Identity_Credentials_Delete_Key_Input = {
-  config?: InputMaybe<Scalars['String']>;
-};
-
-/** input type for inserting data into table "identity_credentials" */
-export type Identity_Credentials_Insert_Input = {
-  config?: InputMaybe<Scalars['jsonb']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  identity_credential_type_id?: InputMaybe<Scalars['uuid']>;
-  identity_id?: InputMaybe<Scalars['uuid']>;
-  nid?: InputMaybe<Scalars['uuid']>;
-  updated_at?: InputMaybe<Scalars['timestamp']>;
-};
-
-/** aggregate max on columns */
-export type Identity_Credentials_Max_Fields = {
-  __typename?: 'identity_credentials_max_fields';
-  created_at?: Maybe<Scalars['timestamp']>;
-  id?: Maybe<Scalars['uuid']>;
-  identity_credential_type_id?: Maybe<Scalars['uuid']>;
-  identity_id?: Maybe<Scalars['uuid']>;
-  nid?: Maybe<Scalars['uuid']>;
-  updated_at?: Maybe<Scalars['timestamp']>;
-};
-
-/** aggregate min on columns */
-export type Identity_Credentials_Min_Fields = {
-  __typename?: 'identity_credentials_min_fields';
-  created_at?: Maybe<Scalars['timestamp']>;
-  id?: Maybe<Scalars['uuid']>;
-  identity_credential_type_id?: Maybe<Scalars['uuid']>;
-  identity_id?: Maybe<Scalars['uuid']>;
-  nid?: Maybe<Scalars['uuid']>;
-  updated_at?: Maybe<Scalars['timestamp']>;
-};
-
-/** response of any mutation on the table "identity_credentials" */
-export type Identity_Credentials_Mutation_Response = {
-  __typename?: 'identity_credentials_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Identity_Credentials>;
-};
-
-/** on_conflict condition type for table "identity_credentials" */
-export type Identity_Credentials_On_Conflict = {
-  constraint: Identity_Credentials_Constraint;
-  update_columns?: Array<Identity_Credentials_Update_Column>;
-  where?: InputMaybe<Identity_Credentials_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "identity_credentials". */
-export type Identity_Credentials_Order_By = {
-  config?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  identity_credential_type_id?: InputMaybe<Order_By>;
-  identity_id?: InputMaybe<Order_By>;
-  nid?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: identity_credentials */
-export type Identity_Credentials_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Identity_Credentials_Prepend_Input = {
-  config?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** select columns of table "identity_credentials" */
-export enum Identity_Credentials_Select_Column {
-  /** column name */
-  Config = 'config',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  IdentityCredentialTypeId = 'identity_credential_type_id',
-  /** column name */
-  IdentityId = 'identity_id',
-  /** column name */
-  Nid = 'nid',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-/** input type for updating data in table "identity_credentials" */
-export type Identity_Credentials_Set_Input = {
-  config?: InputMaybe<Scalars['jsonb']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  identity_credential_type_id?: InputMaybe<Scalars['uuid']>;
-  identity_id?: InputMaybe<Scalars['uuid']>;
-  nid?: InputMaybe<Scalars['uuid']>;
-  updated_at?: InputMaybe<Scalars['timestamp']>;
-};
-
-/** update columns of table "identity_credentials" */
-export enum Identity_Credentials_Update_Column {
-  /** column name */
-  Config = 'config',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  IdentityCredentialTypeId = 'identity_credential_type_id',
-  /** column name */
-  IdentityId = 'identity_id',
-  /** column name */
-  Nid = 'nid',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
 /** columns and relationships of "identity_verifiable_addresses" */
 export type Identity_Verifiable_Addresses = {
   __typename?: 'identity_verifiable_addresses';
@@ -2990,18 +2489,6 @@ export type Mutation_Root = {
   delete_identities?: Maybe<Identities_Mutation_Response>;
   /** delete single row from the table: "identities" */
   delete_identities_by_pk?: Maybe<Identities>;
-  /** delete data from the table: "identity_credential_identifiers" */
-  delete_identity_credential_identifiers?: Maybe<Identity_Credential_Identifiers_Mutation_Response>;
-  /** delete single row from the table: "identity_credential_identifiers" */
-  delete_identity_credential_identifiers_by_pk?: Maybe<Identity_Credential_Identifiers>;
-  /** delete data from the table: "identity_credential_types" */
-  delete_identity_credential_types?: Maybe<Identity_Credential_Types_Mutation_Response>;
-  /** delete single row from the table: "identity_credential_types" */
-  delete_identity_credential_types_by_pk?: Maybe<Identity_Credential_Types>;
-  /** delete data from the table: "identity_credentials" */
-  delete_identity_credentials?: Maybe<Identity_Credentials_Mutation_Response>;
-  /** delete single row from the table: "identity_credentials" */
-  delete_identity_credentials_by_pk?: Maybe<Identity_Credentials>;
   /** delete data from the table: "identity_verifiable_addresses" */
   delete_identity_verifiable_addresses?: Maybe<Identity_Verifiable_Addresses_Mutation_Response>;
   /** delete single row from the table: "identity_verifiable_addresses" */
@@ -3074,18 +2561,6 @@ export type Mutation_Root = {
   insert_identities?: Maybe<Identities_Mutation_Response>;
   /** insert a single row into the table: "identities" */
   insert_identities_one?: Maybe<Identities>;
-  /** insert data into the table: "identity_credential_identifiers" */
-  insert_identity_credential_identifiers?: Maybe<Identity_Credential_Identifiers_Mutation_Response>;
-  /** insert a single row into the table: "identity_credential_identifiers" */
-  insert_identity_credential_identifiers_one?: Maybe<Identity_Credential_Identifiers>;
-  /** insert data into the table: "identity_credential_types" */
-  insert_identity_credential_types?: Maybe<Identity_Credential_Types_Mutation_Response>;
-  /** insert a single row into the table: "identity_credential_types" */
-  insert_identity_credential_types_one?: Maybe<Identity_Credential_Types>;
-  /** insert data into the table: "identity_credentials" */
-  insert_identity_credentials?: Maybe<Identity_Credentials_Mutation_Response>;
-  /** insert a single row into the table: "identity_credentials" */
-  insert_identity_credentials_one?: Maybe<Identity_Credentials>;
   /** insert data into the table: "identity_verifiable_addresses" */
   insert_identity_verifiable_addresses?: Maybe<Identity_Verifiable_Addresses_Mutation_Response>;
   /** insert a single row into the table: "identity_verifiable_addresses" */
@@ -3162,18 +2637,6 @@ export type Mutation_Root = {
   update_identities?: Maybe<Identities_Mutation_Response>;
   /** update single row of the table: "identities" */
   update_identities_by_pk?: Maybe<Identities>;
-  /** update data of the table: "identity_credential_identifiers" */
-  update_identity_credential_identifiers?: Maybe<Identity_Credential_Identifiers_Mutation_Response>;
-  /** update single row of the table: "identity_credential_identifiers" */
-  update_identity_credential_identifiers_by_pk?: Maybe<Identity_Credential_Identifiers>;
-  /** update data of the table: "identity_credential_types" */
-  update_identity_credential_types?: Maybe<Identity_Credential_Types_Mutation_Response>;
-  /** update single row of the table: "identity_credential_types" */
-  update_identity_credential_types_by_pk?: Maybe<Identity_Credential_Types>;
-  /** update data of the table: "identity_credentials" */
-  update_identity_credentials?: Maybe<Identity_Credentials_Mutation_Response>;
-  /** update single row of the table: "identity_credentials" */
-  update_identity_credentials_by_pk?: Maybe<Identity_Credentials>;
   /** update data of the table: "identity_verifiable_addresses" */
   update_identity_verifiable_addresses?: Maybe<Identity_Verifiable_Addresses_Mutation_Response>;
   /** update single row of the table: "identity_verifiable_addresses" */
@@ -3277,42 +2740,6 @@ export type Mutation_RootDelete_IdentitiesArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Identities_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Identity_Credential_IdentifiersArgs = {
-  where: Identity_Credential_Identifiers_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Identity_Credential_Identifiers_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Identity_Credential_TypesArgs = {
-  where: Identity_Credential_Types_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Identity_Credential_Types_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Identity_CredentialsArgs = {
-  where: Identity_Credentials_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Identity_Credentials_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -3538,48 +2965,6 @@ export type Mutation_RootInsert_IdentitiesArgs = {
 export type Mutation_RootInsert_Identities_OneArgs = {
   object: Identities_Insert_Input;
   on_conflict?: InputMaybe<Identities_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Identity_Credential_IdentifiersArgs = {
-  objects: Array<Identity_Credential_Identifiers_Insert_Input>;
-  on_conflict?: InputMaybe<Identity_Credential_Identifiers_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Identity_Credential_Identifiers_OneArgs = {
-  object: Identity_Credential_Identifiers_Insert_Input;
-  on_conflict?: InputMaybe<Identity_Credential_Identifiers_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Identity_Credential_TypesArgs = {
-  objects: Array<Identity_Credential_Types_Insert_Input>;
-  on_conflict?: InputMaybe<Identity_Credential_Types_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Identity_Credential_Types_OneArgs = {
-  object: Identity_Credential_Types_Insert_Input;
-  on_conflict?: InputMaybe<Identity_Credential_Types_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Identity_CredentialsArgs = {
-  objects: Array<Identity_Credentials_Insert_Input>;
-  on_conflict?: InputMaybe<Identity_Credentials_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Identity_Credentials_OneArgs = {
-  object: Identity_Credentials_Insert_Input;
-  on_conflict?: InputMaybe<Identity_Credentials_On_Conflict>;
 };
 
 
@@ -3869,58 +3254,6 @@ export type Mutation_RootUpdate_Identities_By_PkArgs = {
   _prepend?: InputMaybe<Identities_Prepend_Input>;
   _set?: InputMaybe<Identities_Set_Input>;
   pk_columns: Identities_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Identity_Credential_IdentifiersArgs = {
-  _set?: InputMaybe<Identity_Credential_Identifiers_Set_Input>;
-  where: Identity_Credential_Identifiers_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Identity_Credential_Identifiers_By_PkArgs = {
-  _set?: InputMaybe<Identity_Credential_Identifiers_Set_Input>;
-  pk_columns: Identity_Credential_Identifiers_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Identity_Credential_TypesArgs = {
-  _set?: InputMaybe<Identity_Credential_Types_Set_Input>;
-  where: Identity_Credential_Types_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Identity_Credential_Types_By_PkArgs = {
-  _set?: InputMaybe<Identity_Credential_Types_Set_Input>;
-  pk_columns: Identity_Credential_Types_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Identity_CredentialsArgs = {
-  _append?: InputMaybe<Identity_Credentials_Append_Input>;
-  _delete_at_path?: InputMaybe<Identity_Credentials_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Identity_Credentials_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Identity_Credentials_Delete_Key_Input>;
-  _prepend?: InputMaybe<Identity_Credentials_Prepend_Input>;
-  _set?: InputMaybe<Identity_Credentials_Set_Input>;
-  where: Identity_Credentials_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Identity_Credentials_By_PkArgs = {
-  _append?: InputMaybe<Identity_Credentials_Append_Input>;
-  _delete_at_path?: InputMaybe<Identity_Credentials_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Identity_Credentials_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Identity_Credentials_Delete_Key_Input>;
-  _prepend?: InputMaybe<Identity_Credentials_Prepend_Input>;
-  _set?: InputMaybe<Identity_Credentials_Set_Input>;
-  pk_columns: Identity_Credentials_Pk_Columns_Input;
 };
 
 
@@ -5183,8 +4516,8 @@ export type Projects = {
   manifests_aggregate: Manifests_Aggregate;
   name: Scalars['String'];
   /** An object relationship */
-  organization?: Maybe<Organizations>;
-  organization_id?: Maybe<Scalars['uuid']>;
+  organization: Organizations;
+  organization_id: Scalars['uuid'];
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** An aggregate relationship */
@@ -5553,24 +4886,6 @@ export type Query_Root = {
   identities_aggregate: Identities_Aggregate;
   /** fetch data from the table: "identities" using primary key columns */
   identities_by_pk?: Maybe<Identities>;
-  /** fetch data from the table: "identity_credential_identifiers" */
-  identity_credential_identifiers: Array<Identity_Credential_Identifiers>;
-  /** fetch aggregated fields from the table: "identity_credential_identifiers" */
-  identity_credential_identifiers_aggregate: Identity_Credential_Identifiers_Aggregate;
-  /** fetch data from the table: "identity_credential_identifiers" using primary key columns */
-  identity_credential_identifiers_by_pk?: Maybe<Identity_Credential_Identifiers>;
-  /** fetch data from the table: "identity_credential_types" */
-  identity_credential_types: Array<Identity_Credential_Types>;
-  /** fetch aggregated fields from the table: "identity_credential_types" */
-  identity_credential_types_aggregate: Identity_Credential_Types_Aggregate;
-  /** fetch data from the table: "identity_credential_types" using primary key columns */
-  identity_credential_types_by_pk?: Maybe<Identity_Credential_Types>;
-  /** fetch data from the table: "identity_credentials" */
-  identity_credentials: Array<Identity_Credentials>;
-  /** fetch aggregated fields from the table: "identity_credentials" */
-  identity_credentials_aggregate: Identity_Credentials_Aggregate;
-  /** fetch data from the table: "identity_credentials" using primary key columns */
-  identity_credentials_by_pk?: Maybe<Identity_Credentials>;
   /** An array relationship */
   identity_verifiable_addresses: Array<Identity_Verifiable_Addresses>;
   /** An aggregate relationship */
@@ -5748,75 +5063,6 @@ export type Query_RootIdentities_AggregateArgs = {
 
 
 export type Query_RootIdentities_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootIdentity_Credential_IdentifiersArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credential_Identifiers_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credential_Identifiers_Order_By>>;
-  where?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
-};
-
-
-export type Query_RootIdentity_Credential_Identifiers_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credential_Identifiers_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credential_Identifiers_Order_By>>;
-  where?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
-};
-
-
-export type Query_RootIdentity_Credential_Identifiers_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootIdentity_Credential_TypesArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credential_Types_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credential_Types_Order_By>>;
-  where?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
-};
-
-
-export type Query_RootIdentity_Credential_Types_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credential_Types_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credential_Types_Order_By>>;
-  where?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
-};
-
-
-export type Query_RootIdentity_Credential_Types_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootIdentity_CredentialsArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credentials_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credentials_Order_By>>;
-  where?: InputMaybe<Identity_Credentials_Bool_Exp>;
-};
-
-
-export type Query_RootIdentity_Credentials_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credentials_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credentials_Order_By>>;
-  where?: InputMaybe<Identity_Credentials_Bool_Exp>;
-};
-
-
-export type Query_RootIdentity_Credentials_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -6895,24 +6141,6 @@ export type Subscription_Root = {
   identities_aggregate: Identities_Aggregate;
   /** fetch data from the table: "identities" using primary key columns */
   identities_by_pk?: Maybe<Identities>;
-  /** fetch data from the table: "identity_credential_identifiers" */
-  identity_credential_identifiers: Array<Identity_Credential_Identifiers>;
-  /** fetch aggregated fields from the table: "identity_credential_identifiers" */
-  identity_credential_identifiers_aggregate: Identity_Credential_Identifiers_Aggregate;
-  /** fetch data from the table: "identity_credential_identifiers" using primary key columns */
-  identity_credential_identifiers_by_pk?: Maybe<Identity_Credential_Identifiers>;
-  /** fetch data from the table: "identity_credential_types" */
-  identity_credential_types: Array<Identity_Credential_Types>;
-  /** fetch aggregated fields from the table: "identity_credential_types" */
-  identity_credential_types_aggregate: Identity_Credential_Types_Aggregate;
-  /** fetch data from the table: "identity_credential_types" using primary key columns */
-  identity_credential_types_by_pk?: Maybe<Identity_Credential_Types>;
-  /** fetch data from the table: "identity_credentials" */
-  identity_credentials: Array<Identity_Credentials>;
-  /** fetch aggregated fields from the table: "identity_credentials" */
-  identity_credentials_aggregate: Identity_Credentials_Aggregate;
-  /** fetch data from the table: "identity_credentials" using primary key columns */
-  identity_credentials_by_pk?: Maybe<Identity_Credentials>;
   /** An array relationship */
   identity_verifiable_addresses: Array<Identity_Verifiable_Addresses>;
   /** An aggregate relationship */
@@ -7088,75 +6316,6 @@ export type Subscription_RootIdentities_AggregateArgs = {
 
 
 export type Subscription_RootIdentities_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootIdentity_Credential_IdentifiersArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credential_Identifiers_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credential_Identifiers_Order_By>>;
-  where?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
-};
-
-
-export type Subscription_RootIdentity_Credential_Identifiers_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credential_Identifiers_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credential_Identifiers_Order_By>>;
-  where?: InputMaybe<Identity_Credential_Identifiers_Bool_Exp>;
-};
-
-
-export type Subscription_RootIdentity_Credential_Identifiers_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootIdentity_Credential_TypesArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credential_Types_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credential_Types_Order_By>>;
-  where?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
-};
-
-
-export type Subscription_RootIdentity_Credential_Types_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credential_Types_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credential_Types_Order_By>>;
-  where?: InputMaybe<Identity_Credential_Types_Bool_Exp>;
-};
-
-
-export type Subscription_RootIdentity_Credential_Types_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootIdentity_CredentialsArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credentials_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credentials_Order_By>>;
-  where?: InputMaybe<Identity_Credentials_Bool_Exp>;
-};
-
-
-export type Subscription_RootIdentity_Credentials_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Identity_Credentials_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Identity_Credentials_Order_By>>;
-  where?: InputMaybe<Identity_Credentials_Bool_Exp>;
-};
-
-
-export type Subscription_RootIdentity_Credentials_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -8308,7 +7467,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
+export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id: any, repo?: string | null, settings_id?: any | null, organization: { __typename?: 'organizations', name: string }, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
