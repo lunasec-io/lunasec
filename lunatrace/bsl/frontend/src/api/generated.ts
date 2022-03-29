@@ -4516,8 +4516,8 @@ export type Projects = {
   manifests_aggregate: Manifests_Aggregate;
   name: Scalars['String'];
   /** An object relationship */
-  organization: Organizations;
-  organization_id: Scalars['uuid'];
+  organization?: Maybe<Organizations>;
+  organization_id?: Maybe<Scalars['uuid']>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** An aggregate relationship */
@@ -7467,7 +7467,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id: any, repo?: string | null, settings_id?: any | null, organization: { __typename?: 'organizations', name: string }, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
+export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -7477,7 +7477,7 @@ export type SampleVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabil
 export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any }> };
+export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }> };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -7521,15 +7521,6 @@ export type InsertManifestMutationVariables = Exact<{
 
 
 export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null };
-
-export type CreateOrganizationAndProjectMutationVariables = Exact<{
-  identity_id: Scalars['uuid'];
-  organization_name: Scalars['String'];
-  project_name: Scalars['String'];
-}>;
-
-
-export type CreateOrganizationAndProjectMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', projects: Array<{ __typename?: 'projects', id: any }> } | null };
 
 export type InsertProjectMutationVariables = Exact<{
   name: Scalars['String'];
@@ -7761,6 +7752,15 @@ export const GetSidebarInfoDocument = `
     name
     id
     createdAt
+    projects(order_by: {name: asc}) {
+      name
+      id
+      created_at
+      builds {
+        id
+        build_number
+      }
+    }
   }
 }
     `;
@@ -7876,17 +7876,6 @@ export const InsertManifestDocument = `
   }
 }
     `;
-export const CreateOrganizationAndProjectDocument = `
-    mutation CreateOrganizationAndProject($identity_id: uuid!, $organization_name: String!, $project_name: String!) {
-  insert_organizations_one(
-    object: {name: $organization_name, organization_users: {data: {user_id: $identity_id}}, projects: {data: {name: $project_name}}}
-  ) {
-    projects {
-      id
-    }
-  }
-}
-    `;
 export const InsertProjectDocument = `
     mutation InsertProject($name: String!, $organization_id: uuid!) {
   insert_projects_one(object: {name: $name, organization_id: $organization_id}) {
@@ -7941,9 +7930,6 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     insertManifest: build.mutation<InsertManifestMutation, InsertManifestMutationVariables>({
       query: (variables) => ({ document: InsertManifestDocument, variables })
-    }),
-    CreateOrganizationAndProject: build.mutation<CreateOrganizationAndProjectMutation, CreateOrganizationAndProjectMutationVariables>({
-      query: (variables) => ({ document: CreateOrganizationAndProjectDocument, variables })
     }),
     InsertProject: build.mutation<InsertProjectMutation, InsertProjectMutationVariables>({
       query: (variables) => ({ document: InsertProjectDocument, variables })
