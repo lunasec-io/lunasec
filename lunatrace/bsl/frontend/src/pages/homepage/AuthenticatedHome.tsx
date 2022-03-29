@@ -80,31 +80,8 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
                 </Col>
               </Row>
             </Card.Body>
-            {/*<NavLink href="https://github.com/apps/dev-lunatrace-by-lunasec/installations/new">*/}
-            {/*  <h3 className=" text-reset">Connect to Github</h3>*/}
-            {/*</NavLink>*/}
-            {/*  </Card.Title>*/}
-
-            {/*  <Card.Text className="fs-4">*/}
-            {/*    Install LunaTrace into at least one repository you would like to scan.*/}
-            {/*  </Card.Text>*/}
-            {/*</Card.Body>*/}
           </Card>
         </Row>
-        {/*<p className="text-center fs-3">*/}
-        {/*  - <span className="fw-bolder">or</span> -*/}
-        {/*</p>*/}
-        {/*<Row>*/}
-        {/*  <Card className="">*/}
-        {/*    <Card.Body className="text-center">*/}
-        {/*      <Card.Title>*/}
-        {/*        <AiFillFileAdd size="60px" className="mb-3" />*/}
-        {/*        <h3>Drag-and-Drop</h3>*/}
-        {/*      </Card.Title>*/}
-        {/*      <ManifestDrop forHomepage={true} project_id={'1234'} />*/}
-        {/*    </Card.Body>*/}
-        {/*  </Card>*/}
-        {/*</Row>*/}
       </Container>
     </>
   );
