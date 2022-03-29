@@ -47,18 +47,6 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
-      {/*<Row>*/}
-      {/*  <Card className="">*/}
-      {/*    <Card.Body>*/}
-      {/*      <Card.Title>LunaTrace CLI</Card.Title>*/}
-      {/*      <Card.Text>*/}
-      {/*        Manually create and scan SBOMs for your projects. The CLI can be used in any environment and will report*/}
-      {/*        its findings to your project&apos;s dashboard.*/}
-      {/*      </Card.Text>*/}
-      {/*      <Card.Link href="#">Setup</Card.Link>*/}
-      {/*    </Card.Body>*/}
-      {/*  </Card>*/}
-      {/*</Row>*/}
     </>
   );
 };
