@@ -154,6 +154,7 @@ export type Builds = {
   /** An object relationship */
   project?: Maybe<Projects>;
   project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
   s3_url?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
@@ -279,6 +280,7 @@ export type Builds_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  pull_request_id?: InputMaybe<String_Comparison_Exp>;
   s3_url?: InputMaybe<String_Comparison_Exp>;
   scans?: InputMaybe<Scans_Bool_Exp>;
 };
@@ -310,6 +312,7 @@ export type Builds_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: InputMaybe<Scalars['uuid']>;
+  pull_request_id?: InputMaybe<Scalars['String']>;
   s3_url?: InputMaybe<Scalars['String']>;
   scans?: InputMaybe<Scans_Arr_Rel_Insert_Input>;
 };
@@ -325,6 +328,7 @@ export type Builds_Max_Fields = {
   git_remote?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
   s3_url?: Maybe<Scalars['String']>;
 };
 
@@ -338,6 +342,7 @@ export type Builds_Max_Order_By = {
   git_remote?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
 };
 
@@ -352,6 +357,7 @@ export type Builds_Min_Fields = {
   git_remote?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
   s3_url?: Maybe<Scalars['String']>;
 };
 
@@ -365,6 +371,7 @@ export type Builds_Min_Order_By = {
   git_remote?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
 };
 
@@ -403,6 +410,7 @@ export type Builds_Order_By = {
   id?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
   scans_aggregate?: InputMaybe<Scans_Aggregate_Order_By>;
 };
@@ -431,6 +439,8 @@ export enum Builds_Select_Column {
   /** column name */
   ProjectId = 'project_id',
   /** column name */
+  PullRequestId = 'pull_request_id',
+  /** column name */
   S3Url = 's3_url'
 }
 
@@ -444,6 +454,7 @@ export type Builds_Set_Input = {
   git_remote?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   project_id?: InputMaybe<Scalars['uuid']>;
+  pull_request_id?: InputMaybe<Scalars['String']>;
   s3_url?: InputMaybe<Scalars['String']>;
 };
 
@@ -509,6 +520,8 @@ export enum Builds_Update_Column {
   Id = 'id',
   /** column name */
   ProjectId = 'project_id',
+  /** column name */
+  PullRequestId = 'pull_request_id',
   /** column name */
   S3Url = 's3_url'
 }
@@ -667,9 +680,9 @@ export type Findings_Bool_Exp = {
 /** unique or primary key constraints on table "findings" */
 export enum Findings_Constraint {
   /** unique or primary key constraint */
-  FindingsPkey = 'findings_pkey',
+  FindingsDedupeSlugBuildIdKey = 'findings_dedupe_slug_build_id_key',
   /** unique or primary key constraint */
-  TempDedupeFix = 'temp_dedupe_fix'
+  FindingsPkey = 'findings_pkey'
 }
 
 /** input type for inserting data into table "findings" */
@@ -974,6 +987,7 @@ export type Fix_State_Enum_Comparison_Exp = {
  *
  *
  * columns and relationships of "github_repositories"
+ *
  */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
@@ -992,6 +1006,7 @@ export type Github_Repositories = {
  *
  *
  * columns and relationships of "github_repositories"
+ *
  */
 export type Github_RepositoriesApi_ResponseArgs = {
   path?: InputMaybe<Scalars['String']>;
@@ -3487,6 +3502,7 @@ export enum Order_By {
  *
  *
  * columns and relationships of "organization_user"
+ *
  */
 export type Organization_User = {
   __typename?: 'organization_user';
@@ -3705,6 +3721,7 @@ export type Organizations = {
   createdAt: Scalars['timestamp'];
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
+  github_owner_type?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   installation_id?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
@@ -3804,6 +3821,7 @@ export type Organizations_Bool_Exp = {
   createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
   creator_id?: InputMaybe<Uuid_Comparison_Exp>;
   github_id?: InputMaybe<Int_Comparison_Exp>;
+  github_owner_type?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   installation_id?: InputMaybe<Int_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
@@ -3831,6 +3849,7 @@ export type Organizations_Insert_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
   creator_id?: InputMaybe<Scalars['uuid']>;
   github_id?: InputMaybe<Scalars['Int']>;
+  github_owner_type?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   installation_id?: InputMaybe<Scalars['Int']>;
   name?: InputMaybe<Scalars['String']>;
@@ -3845,6 +3864,7 @@ export type Organizations_Max_Fields = {
   createdAt?: Maybe<Scalars['timestamp']>;
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
+  github_owner_type?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   installation_id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
@@ -3857,6 +3877,7 @@ export type Organizations_Min_Fields = {
   createdAt?: Maybe<Scalars['timestamp']>;
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
+  github_owner_type?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   installation_id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
@@ -3891,6 +3912,7 @@ export type Organizations_Order_By = {
   createdAt?: InputMaybe<Order_By>;
   creator_id?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
+  github_owner_type?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   installation_id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
@@ -3913,6 +3935,8 @@ export enum Organizations_Select_Column {
   /** column name */
   GithubId = 'github_id',
   /** column name */
+  GithubOwnerType = 'github_owner_type',
+  /** column name */
   Id = 'id',
   /** column name */
   InstallationId = 'installation_id',
@@ -3927,6 +3951,7 @@ export type Organizations_Set_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
   creator_id?: InputMaybe<Scalars['uuid']>;
   github_id?: InputMaybe<Scalars['Int']>;
+  github_owner_type?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   installation_id?: InputMaybe<Scalars['Int']>;
   name?: InputMaybe<Scalars['String']>;
@@ -3969,6 +3994,8 @@ export enum Organizations_Update_Column {
   CreatorId = 'creator_id',
   /** column name */
   GithubId = 'github_id',
+  /** column name */
+  GithubOwnerType = 'github_owner_type',
   /** column name */
   Id = 'id',
   /** column name */
@@ -4489,8 +4516,8 @@ export type Projects = {
   manifests_aggregate: Manifests_Aggregate;
   name: Scalars['String'];
   /** An object relationship */
-  organization?: Maybe<Organizations>;
-  organization_id?: Maybe<Scalars['uuid']>;
+  organization: Organizations;
+  organization_id: Scalars['uuid'];
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** An aggregate relationship */
@@ -5372,6 +5399,7 @@ export type Query_RootVulnerability_Packages_By_PkArgs = {
  *
  *
  * columns and relationships of "related_vulnerabilities"
+ *
  */
 export type Related_Vulnerabilities = {
   __typename?: 'related_vulnerabilities';
@@ -5546,6 +5574,7 @@ export enum Related_Vulnerabilities_Update_Column {
  *
  *
  * columns and relationships of "scans"
+ *
  */
 export type Scans = {
   __typename?: 'scans';
@@ -5573,6 +5602,7 @@ export type Scans = {
  *
  *
  * columns and relationships of "scans"
+ *
  */
 export type ScansFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -5588,6 +5618,7 @@ export type ScansFindingsArgs = {
  *
  *
  * columns and relationships of "scans"
+ *
  */
 export type ScansFindings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -7138,6 +7169,7 @@ export type Vulnerabilities_Variance_Fields = {
  *
  *
  * columns and relationships of "vulnerability_packages"
+ *
  */
 export type Vulnerability_Packages = {
   __typename?: 'vulnerability_packages';
@@ -7164,6 +7196,7 @@ export type Vulnerability_Packages = {
  *
  *
  * columns and relationships of "vulnerability_packages"
+ *
  */
 export type Vulnerability_PackagesFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -7179,6 +7212,7 @@ export type Vulnerability_PackagesFindingsArgs = {
  *
  *
  * columns and relationships of "vulnerability_packages"
+ *
  */
 export type Vulnerability_PackagesFindings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
@@ -7194,6 +7228,7 @@ export type Vulnerability_PackagesFindings_AggregateArgs = {
  *
  *
  * columns and relationships of "vulnerability_packages"
+ *
  */
 export type Vulnerability_PackagesPackage_VersionsArgs = {
   distinct_on?: InputMaybe<Array<Package_Versions_Select_Column>>;
@@ -7209,6 +7244,7 @@ export type Vulnerability_PackagesPackage_VersionsArgs = {
  *
  *
  * columns and relationships of "vulnerability_packages"
+ *
  */
 export type Vulnerability_PackagesPackage_Versions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Package_Versions_Select_Column>>;
@@ -7431,7 +7467,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
+export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id: any, repo?: string | null, settings_id?: any | null, organization: { __typename?: 'organizations', name: string }, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -7441,7 +7477,7 @@ export type SampleVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabil
 export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }> };
+export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any }> };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -7485,6 +7521,15 @@ export type InsertManifestMutationVariables = Exact<{
 
 
 export type InsertManifestMutation = { __typename?: 'mutation_root', insert_manifests_one?: { __typename?: 'manifests', id: any } | null };
+
+export type CreateOrganizationAndProjectMutationVariables = Exact<{
+  identity_id: Scalars['uuid'];
+  organization_name: Scalars['String'];
+  project_name: Scalars['String'];
+}>;
+
+
+export type CreateOrganizationAndProjectMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', projects: Array<{ __typename?: 'projects', id: any }> } | null };
 
 export type InsertProjectMutationVariables = Exact<{
   name: Scalars['String'];
@@ -7716,15 +7761,6 @@ export const GetSidebarInfoDocument = `
     name
     id
     createdAt
-    projects(order_by: {name: asc}) {
-      name
-      id
-      created_at
-      builds {
-        id
-        build_number
-      }
-    }
   }
 }
     `;
@@ -7840,6 +7876,17 @@ export const InsertManifestDocument = `
   }
 }
     `;
+export const CreateOrganizationAndProjectDocument = `
+    mutation CreateOrganizationAndProject($identity_id: uuid!, $organization_name: String!, $project_name: String!) {
+  insert_organizations_one(
+    object: {name: $organization_name, organization_users: {data: {user_id: $identity_id}}, projects: {data: {name: $project_name}}}
+  ) {
+    projects {
+      id
+    }
+  }
+}
+    `;
 export const InsertProjectDocument = `
     mutation InsertProject($name: String!, $organization_id: uuid!) {
   insert_projects_one(object: {name: $name, organization_id: $organization_id}) {
@@ -7894,6 +7941,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     insertManifest: build.mutation<InsertManifestMutation, InsertManifestMutationVariables>({
       query: (variables) => ({ document: InsertManifestDocument, variables })
+    }),
+    CreateOrganizationAndProject: build.mutation<CreateOrganizationAndProjectMutation, CreateOrganizationAndProjectMutationVariables>({
+      query: (variables) => ({ document: CreateOrganizationAndProjectDocument, variables })
     }),
     InsertProject: build.mutation<InsertProjectMutation, InsertProjectMutationVariables>({
       query: (variables) => ({ document: InsertProjectDocument, variables })

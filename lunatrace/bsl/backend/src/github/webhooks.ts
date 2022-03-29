@@ -30,7 +30,7 @@ webhooks.on('pull_request', async (event) => {
     const cloneUrl = event.payload.repository.clone_url;
     const gitUrl = event.payload.repository.git_url;
     const gitBranch = event.payload.pull_request.head.ref;
-    const pullRequestId = event.payload.pull_request.id;
+    const pullRequestId = event.payload.pull_request.node_id;
 
     console.log(`generating SBOM for repository: ${cloneUrl} at branch name ${gitBranch}`);
 

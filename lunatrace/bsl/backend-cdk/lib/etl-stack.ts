@@ -13,8 +13,6 @@
  */
 import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
-import { EventType } from '@aws-cdk/aws-s3';
-import { SqsDestination } from '@aws-cdk/aws-s3-notifications';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
 import { Construct } from '@aws-cdk/core';
@@ -133,15 +131,5 @@ export class EtlStack extends cdk.Stack {
       },
     });
     storageStack.sbomBucket.grantReadWrite(processSbomQueueService.taskDefinition.taskRole);
-
-    storageStack.manifestBucket.addEventNotification(
-      EventType.OBJECT_CREATED,
-      new SqsDestination(processManifestQueueService.sqsQueue)
-    );
-
-    storageStack.sbomBucket.addEventNotification(
-      EventType.OBJECT_CREATED,
-      new SqsDestination(processSbomQueueService.sqsQueue)
-    );
   }
 }
