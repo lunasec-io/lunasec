@@ -18,6 +18,7 @@ import { readFileSync } from 'fs';
 
 import * as cdk from '@aws-cdk/core';
 
+import { EtlStorageStack } from '../lib/etl-storage-stack';
 import { LunatraceBackendStack } from '../lib/lunatrace-backend-stack';
 
 interface StackInputsType {
@@ -70,17 +71,28 @@ const env = {
   region: stackInputs.cdkDefaultRegion,
 };
 
-new LunatraceBackendStack(app, `${appName}-BackendStack`, {
-  env: env,
-  appName: appName,
-  domainName: stackInputs.domainName,
-  domainZoneId: stackInputs.domainZoneId,
-  vpcId: stackInputs.vpcId,
-  certificateArn: stackInputs.certificateArn,
-  backendStaticSecretArn: stackInputs.backendStaticSecretArn,
-  databaseSecretArn: stackInputs.databaseSecretArn,
-  githubOauthAppLoginClientIdArn: stackInputs.githubOauthAppLoginClientIdArn,
-  githubOauthAppLoginSecretArn: stackInputs.githubOauthAppLoginSecretArn,
-  kratosCookieSecretArn: stackInputs.kratosCookieSecretArn,
-  kratosCipherSecretArn: stackInputs.kratosCipherSecretArn,
-});
+function deployStack() {
+  if (process.env.DEVELOPMENT) {
+    const publicBaseUrl = `http://localhost:4455`;
+    return new EtlStorageStack(app, `${appName}-EtlStorage`, {
+      env,
+      publicBaseUrl,
+    });
+  }
+  return new LunatraceBackendStack(app, `${appName}-BackendStack`, {
+    env: env,
+    appName: appName,
+    domainName: stackInputs.domainName,
+    domainZoneId: stackInputs.domainZoneId,
+    vpcId: stackInputs.vpcId,
+    certificateArn: stackInputs.certificateArn,
+    backendStaticSecretArn: stackInputs.backendStaticSecretArn,
+    databaseSecretArn: stackInputs.databaseSecretArn,
+    githubOauthAppLoginClientIdArn: stackInputs.githubOauthAppLoginClientIdArn,
+    githubOauthAppLoginSecretArn: stackInputs.githubOauthAppLoginSecretArn,
+    kratosCookieSecretArn: stackInputs.kratosCookieSecretArn,
+    kratosCipherSecretArn: stackInputs.kratosCipherSecretArn,
+  });
+}
+
+deployStack();
