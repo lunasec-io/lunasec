@@ -47,6 +47,7 @@ interface LunaTraceStackProps extends cdk.StackProps {
   databaseSecretArn: string;
   gitHubAppId: string;
   gitHubAppPrivateKey: string;
+  gitHubAppWebHookSecret: string;
   githubOauthAppLoginSecretArn: string;
   githubOauthAppLoginClientIdArn: string;
   kratosCookieSecretArn: string;
@@ -108,6 +109,11 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const backendStaticSecret = Secret.fromSecretCompleteArn(this, 'BackendStaticSecret', props.backendStaticSecretArn);
     const gitHubAppPrivateKey = Secret.fromSecretCompleteArn(this, 'GitHubAppPrivateKey', props.gitHubAppPrivateKey);
+    const gitHubAppWebHookSecret = Secret.fromSecretCompleteArn(
+      this,
+      'GitHubAppWebHookSecret',
+      props.gitHubAppWebHookSecret
+    );
 
     const storageStackStage = EtlStorageStack.createEtlStorageStack(this, {
       env: props.env,
@@ -221,6 +227,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       secrets: {
         STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
         GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
+        GITHUB_APP_WEBHOOK_SECRET: EcsSecret.fromSecretsManager(gitHubAppWebHookSecret),
       },
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:3002/health || exit 1'],
@@ -333,6 +340,8 @@ export class LunatraceBackendStack extends cdk.Stack {
       env: props.env,
       storageStack: storageStackStage,
       fargateCluster,
+      gitHubAppId: props.gitHubAppId,
+      gitHubAppPrivateKey,
       publicHasuraServiceUrl,
       hasuraDatabaseUrlSecret,
       hasuraAdminSecret,

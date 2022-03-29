@@ -22,7 +22,7 @@ import { isError, Try, tryF } from '../utils/try';
 import { getInstallationAccessToken } from './auth';
 
 export const webhooks = new Webhooks({
-  secret: 'mysecret',
+  secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
 });
 
 webhooks.on('pull_request', async (event) => {
