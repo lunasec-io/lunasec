@@ -720,22 +720,22 @@ input AddReactionInput {
   The Node ID of the subject to modify.
   """
   subjectId: ID!
-    @possibleTypes(
-      concreteTypes: [
-        "CommitComment"
-        "Discussion"
-        "DiscussionComment"
-        "Issue"
-        "IssueComment"
-        "PullRequest"
-        "PullRequestReview"
-        "PullRequestReviewComment"
-        "Release"
-        "TeamDiscussion"
-        "TeamDiscussionComment"
-      ]
-      abstractType: "Reactable"
-    )
+  @possibleTypes(
+    concreteTypes: [
+      "CommitComment"
+      "Discussion"
+      "DiscussionComment"
+      "Issue"
+      "IssueComment"
+      "PullRequest"
+      "PullRequestReview"
+      "PullRequestReviewComment"
+      "Release"
+      "TeamDiscussion"
+      "TeamDiscussionComment"
+    ]
+    abstractType: "Reactable"
+  )
 }
 
 """
@@ -1134,7 +1134,7 @@ type AssignedEvent implements Node {
   Identifies the user who was assigned.
   """
   user: User
-    @deprecated(reason: "Assignees can now be mannequins. Use the `assignee` field instead. Removal on 2020-01-01 UTC.")
+  @deprecated(reason: "Assignees can now be mannequins. Use the `assignee` field instead. Removal on 2020-01-01 UTC.")
 }
 
 """
@@ -4733,14 +4733,14 @@ repository nameWithOwner and branch name.
 
 Specify a branch using a global node ID:
 
-    { "id": "MDM6UmVmMTpyZWZzL2hlYWRzL21haW4=" }
+{ "id": "MDM6UmVmMTpyZWZzL2hlYWRzL21haW4=" }
 
 Specify a branch using nameWithOwner and branch name:
 
-    {
-      "nameWithOwner": "github/graphql-client",
-      "branchName": "main"
-    }
+{
+"nameWithOwner": "github/graphql-client",
+"branchName": "main"
+}
 """
 input CommittableBranch {
   """
@@ -10355,9 +10355,9 @@ type EnterpriseBillingInfo {
   The number of available seats across all owned organizations based on the unique number of billable users.
   """
   availableSeats: Int!
-    @deprecated(
-      reason: "`availableSeats` will be replaced with `totalAvailableLicenses` to provide more clarity on the value being returned Use EnterpriseBillingInfo.totalAvailableLicenses instead. Removal on 2020-01-01 UTC."
-    )
+  @deprecated(
+    reason: "`availableSeats` will be replaced with `totalAvailableLicenses` to provide more clarity on the value being returned Use EnterpriseBillingInfo.totalAvailableLicenses instead. Removal on 2020-01-01 UTC."
+  )
 
   """
   The bandwidth quota in GB for all organizations owned by the enterprise.
@@ -10378,9 +10378,9 @@ type EnterpriseBillingInfo {
   The total seats across all organizations owned by the enterprise.
   """
   seats: Int!
-    @deprecated(
-      reason: "`seats` will be replaced with `totalLicenses` to provide more clarity on the value being returned Use EnterpriseBillingInfo.totalLicenses instead. Removal on 2020-01-01 UTC."
-    )
+  @deprecated(
+    reason: "`seats` will be replaced with `totalLicenses` to provide more clarity on the value being returned Use EnterpriseBillingInfo.totalLicenses instead. Removal on 2020-01-01 UTC."
+  )
 
   """
   The storage quota in GB for all organizations owned by the enterprise.
@@ -11583,9 +11583,9 @@ type EnterpriseOwnerInfo {
     """
     query: String
   ): EnterprisePendingCollaboratorConnection!
-    @deprecated(
-      reason: "Repository invitations can now be associated with an email, not only an invitee. Use the `pendingCollaboratorInvitations` field instead. Removal on 2020-10-01 UTC."
-    )
+  @deprecated(
+    reason: "Repository invitations can now be associated with an email, not only an invitee. Use the `pendingCollaboratorInvitations` field instead. Removal on 2020-10-01 UTC."
+  )
 
   """
   A list of pending member invitations for organizations in the enterprise.
@@ -12966,77 +12966,77 @@ git commit can be described using the `FileChanges` type as follows:
 
 1. New file addition: create file `hello world\n` at path `docs/README.txt`:
 
-       {
-         "additions" [
-           {
-             "path": "docs/README.txt",
-             "contents": base64encode("hello world\n")
-           }
-         ]
-       }
+{
+"additions" [
+{
+"path": "docs/README.txt",
+"contents": base64encode("hello world\n")
+}
+]
+}
 
 2. Existing file modification: change existing `docs/README.txt` to have new
-   content `new content here\n`:
+content `new content here\n`:
 
-       {
-         "additions" [
-           {
-             "path": "docs/README.txt",
-             "contents": base64encode("new content here\n")
-           }
-         ]
-       }
+{
+"additions" [
+{
+"path": "docs/README.txt",
+"contents": base64encode("new content here\n")
+}
+]
+}
 
 3. Existing file deletion: remove existing file `docs/README.txt`.
-   Note that the path is required to exist -- specifying a
-   path that does not exist on the given branch will abort the
-   commit and return an error.
+Note that the path is required to exist -- specifying a
+path that does not exist on the given branch will abort the
+commit and return an error.
 
-       {
-         "deletions" [
-           {
-             "path": "docs/README.txt"
-           }
-         ]
-       }
+{
+"deletions" [
+{
+"path": "docs/README.txt"
+}
+]
+}
 
 
 4. File rename with no changes: rename `docs/README.txt` with
-   previous content `hello world\n` to the same content at
-   `newdocs/README.txt`:
+previous content `hello world\n` to the same content at
+`newdocs/README.txt`:
 
-       {
-         "deletions" [
-           {
-             "path": "docs/README.txt",
-           }
-         ],
-         "additions" [
-           {
-             "path": "newdocs/README.txt",
-             "contents": base64encode("hello world\n")
-           }
-         ]
-       }
+{
+"deletions" [
+{
+"path": "docs/README.txt",
+}
+],
+"additions" [
+{
+"path": "newdocs/README.txt",
+"contents": base64encode("hello world\n")
+}
+]
+}
 
 
 5. File rename with changes: rename `docs/README.txt` with
-   previous content `hello world\n` to a file at path
-   `newdocs/README.txt` with content `new contents\n`:
+previous content `hello world\n` to a file at path
+`newdocs/README.txt` with content `new contents\n`:
 
-       {
-         "deletions" [
-           {
-             "path": "docs/README.txt",
-           }
-         ],
-         "additions" [
-           {
-             "path": "newdocs/README.txt",
-             "contents": base64encode("new contents\n")
-           }
-         ]
-       }
+{
+"deletions" [
+{
+"path": "docs/README.txt",
+}
+],
+"additions" [
+{
+"path": "newdocs/README.txt",
+"contents": base64encode("new contents\n")
+}
+]
+}
 """
 input FileChanges {
   """
@@ -14973,7 +14973,7 @@ type Issue implements Assignable & Closable & Comment & Labelable & Lockable & N
     """
     since: DateTime
   ): IssueTimelineConnection!
-    @deprecated(reason: "`timeline` will be removed Use Issue.timelineItems instead. Removal on 2020-10-01 UTC.")
+  @deprecated(reason: "`timeline` will be removed Use Issue.timelineItems instead. Removal on 2020-10-01 UTC.")
 
   """
   A list of events, comments, commits, etc. associated with the issue.
@@ -15602,7 +15602,7 @@ type IssueTimelineConnection {
 An item in an issue timeline
 """
 union IssueTimelineItem =
-    AssignedEvent
+  AssignedEvent
   | ClosedEvent
   | Commit
   | CrossReferencedEvent
@@ -15641,7 +15641,7 @@ type IssueTimelineItemEdge {
 An item in an issue timeline
 """
 union IssueTimelineItems =
-    AddedToProjectEvent
+  AddedToProjectEvent
   | AssignedEvent
   | ClosedEvent
   | CommentDeletedEvent
@@ -17596,9 +17596,9 @@ enum MergeStateStatus {
   The merge is blocked due to the pull request being a draft.
   """
   DRAFT
-    @deprecated(
-      reason: "DRAFT state will be removed from this enum and `isDraft` should be used instead Use PullRequest.isDraft instead. Removal on 2021-01-01 UTC."
-    )
+  @deprecated(
+    reason: "DRAFT state will be removed from this enum and `isDraft` should be used instead Use PullRequest.isDraft instead. Removal on 2021-01-01 UTC."
+  )
 
   """
   Mergeable with passing commit status and pre-receive hooks.
@@ -18135,10 +18135,10 @@ input MinimizeCommentInput {
   The Node ID of the subject to modify.
   """
   subjectId: ID!
-    @possibleTypes(
-      concreteTypes: ["CommitComment", "DiscussionComment", "GistComment", "IssueComment", "PullRequestReviewComment"]
-      abstractType: "Minimizable"
-    )
+  @possibleTypes(
+    concreteTypes: ["CommitComment", "DiscussionComment", "GistComment", "IssueComment", "PullRequestReviewComment"]
+    abstractType: "Minimizable"
+  )
 }
 
 """
@@ -22756,7 +22756,7 @@ type OrgRestoreMemberAuditEntry implements AuditEntry & Node & OrganizationAudit
 Types of memberships that can be restored for an Organization member.
 """
 union OrgRestoreMemberAuditEntryMembership =
-    OrgRestoreMemberMembershipOrganizationAuditEntryData
+  OrgRestoreMemberMembershipOrganizationAuditEntryData
   | OrgRestoreMemberMembershipRepositoryAuditEntryData
   | OrgRestoreMemberMembershipTeamAuditEntryData
 
@@ -24577,7 +24577,7 @@ type Organization implements Actor & MemberStatusable & Node & PackageOwner & Pr
 An audit entry in an organization audit log.
 """
 union OrganizationAuditEntry =
-    MembersCanDeleteReposClearAuditEntry
+  MembersCanDeleteReposClearAuditEntry
   | MembersCanDeleteReposDisableAuditEntry
   | MembersCanDeleteReposEnableAuditEntry
   | OauthApplicationCreateAuditEntry
@@ -25544,9 +25544,9 @@ enum PackageType {
   A docker image.
   """
   DOCKER
-    @deprecated(
-      reason: "DOCKER will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2021-06-21 UTC."
-    )
+  @deprecated(
+    reason: "DOCKER will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2021-06-21 UTC."
+  )
 
   """
   A maven package.
@@ -28655,7 +28655,7 @@ type PullRequest implements Assignable & Closable & Comment & Labelable & Lockab
     """
     since: DateTime
   ): PullRequestTimelineConnection!
-    @deprecated(reason: "`timeline` will be removed Use PullRequest.timelineItems instead. Removal on 2020-10-01 UTC.")
+  @deprecated(reason: "`timeline` will be removed Use PullRequest.timelineItems instead. Removal on 2020-10-01 UTC.")
 
   """
   A list of events, comments, commits, etc. associated with the pull request.
@@ -30102,7 +30102,7 @@ type PullRequestTimelineConnection {
 An item in a pull request timeline
 """
 union PullRequestTimelineItem =
-    AssignedEvent
+  AssignedEvent
   | BaseRefDeletedEvent
   | BaseRefForcePushedEvent
   | ClosedEvent
@@ -30155,7 +30155,7 @@ type PullRequestTimelineItemEdge {
 An item in a pull request timeline
 """
 union PullRequestTimelineItems =
-    AddedToProjectEvent
+  AddedToProjectEvent
   | AssignedEvent
   | AutoMergeDisabledEvent
   | AutoMergeEnabledEvent
@@ -31502,9 +31502,9 @@ type ReactionGroup {
     """
     last: Int
   ): ReactingUserConnection!
-    @deprecated(
-      reason: "Reactors can now be mannequins, bots, and organizations. Use the `reactors` field instead. Removal on 2021-10-01 UTC."
-    )
+  @deprecated(
+    reason: "Reactors can now be mannequins, bots, and organizations. Use the `reactors` field instead. Removal on 2021-10-01 UTC."
+  )
 
   """
   Whether or not the authenticated user has left a reaction on the subject.
@@ -32655,22 +32655,22 @@ input RemoveReactionInput {
   The Node ID of the subject to modify.
   """
   subjectId: ID!
-    @possibleTypes(
-      concreteTypes: [
-        "CommitComment"
-        "Discussion"
-        "DiscussionComment"
-        "Issue"
-        "IssueComment"
-        "PullRequest"
-        "PullRequestReview"
-        "PullRequestReviewComment"
-        "Release"
-        "TeamDiscussion"
-        "TeamDiscussionComment"
-      ]
-      abstractType: "Reactable"
-    )
+  @possibleTypes(
+    concreteTypes: [
+      "CommitComment"
+      "Discussion"
+      "DiscussionComment"
+      "Issue"
+      "IssueComment"
+      "PullRequest"
+      "PullRequestReview"
+      "PullRequestReviewComment"
+      "Release"
+      "TeamDiscussion"
+      "TeamDiscussionComment"
+    ]
+    abstractType: "Reactable"
+  )
 }
 
 """
@@ -37394,9 +37394,9 @@ enum RepositoryInvitationOrderField {
   Order repository invitations by invitee login
   """
   INVITEE_LOGIN
-    @deprecated(
-      reason: "`INVITEE_LOGIN` is no longer a valid field value. Repository invitations can now be associated with an email, not only an invitee. Removal on 2020-10-01 UTC."
-    )
+  @deprecated(
+    reason: "`INVITEE_LOGIN` is no longer a valid field value. Repository invitations can now be associated with an email, not only an invitee. Removal on 2020-10-01 UTC."
+  )
 }
 
 """
@@ -40628,9 +40628,9 @@ type Sponsorship implements Node {
   The entity that is being sponsored
   """
   maintainer: User!
-    @deprecated(
-      reason: "`Sponsorship.maintainer` will be removed. Use `Sponsorship.sponsorable` instead. Removal on 2020-04-01 UTC."
-    )
+  @deprecated(
+    reason: "`Sponsorship.maintainer` will be removed. Use `Sponsorship.sponsorable` instead. Removal on 2020-04-01 UTC."
+  )
 
   """
   The privacy level for this sponsorship.
@@ -40641,9 +40641,9 @@ type Sponsorship implements Node {
   The user that is sponsoring. Returns null if the sponsorship is private or if sponsor is not a user.
   """
   sponsor: User
-    @deprecated(
-      reason: "`Sponsorship.sponsor` will be removed. Use `Sponsorship.sponsorEntity` instead. Removal on 2020-10-01 UTC."
-    )
+  @deprecated(
+    reason: "`Sponsorship.sponsor` will be removed. Use `Sponsorship.sponsorEntity` instead. Removal on 2020-10-01 UTC."
+  )
 
   """
   The user or organization that is sponsoring, if you have permission to view them.
@@ -43983,7 +43983,7 @@ type UnassignedEvent implements Node {
   Identifies the subject (user) who was unassigned.
   """
   user: User
-    @deprecated(reason: "Assignees can now be mannequins. Use the `assignee` field instead. Removal on 2020-01-01 UTC.")
+  @deprecated(reason: "Assignees can now be mannequins. Use the `assignee` field instead. Removal on 2020-01-01 UTC.")
 }
 
 """
@@ -44338,10 +44338,10 @@ input UnminimizeCommentInput {
   The Node ID of the subject to modify.
   """
   subjectId: ID!
-    @possibleTypes(
-      concreteTypes: ["CommitComment", "DiscussionComment", "GistComment", "IssueComment", "PullRequestReviewComment"]
-      abstractType: "Minimizable"
-    )
+  @possibleTypes(
+    concreteTypes: ["CommitComment", "DiscussionComment", "GistComment", "IssueComment", "PullRequestReviewComment"]
+    abstractType: "Minimizable"
+  )
 }
 
 """
@@ -46525,10 +46525,10 @@ input UpdateSubscriptionInput {
   The Node ID of the subscribable object to modify.
   """
   subscribableId: ID!
-    @possibleTypes(
-      concreteTypes: ["Commit", "Discussion", "Issue", "PullRequest", "Repository", "Team", "TeamDiscussion"]
-      abstractType: "Subscribable"
-    )
+  @possibleTypes(
+    concreteTypes: ["Commit", "Discussion", "Issue", "PullRequest", "Repository", "Team", "TeamDiscussion"]
+    abstractType: "Subscribable"
+  )
 }
 
 """

@@ -13727,6 +13727,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@panva/asn1.js@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@panva/asn1.js@npm:1.0.0"
+  checksum: cb6bcc1918a7f08e81e7d7f5bde83c20a66b30248ddc3ef10b1612e0e0b9f722c2b07ca6b586a089a49c1b6cfb29d63fdd23d4bc00c8cc40538b5595bec66d7d
+  languageName: node
+  linkType: hard
+
 "@pm2/agent@npm:~1.0.8":
   version: 1.0.8
   resolution: "@pm2/agent@npm:1.0.8"
@@ -14158,15 +14165,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rtk-query/graphql-request-base-query@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@rtk-query/graphql-request-base-query@npm:1.0.3"
+"@rtk-query/graphql-request-base-query@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "@rtk-query/graphql-request-base-query@npm:2.0.1"
   dependencies:
-    graphql-request: ^3.4.0
+    graphql-request: ^4.0.0
   peerDependencies:
-    "@reduxjs/toolkit": ^1.6.0
+    "@reduxjs/toolkit": ^1.7.1
     graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-  checksum: 0c8780c502d3572330a7c9a40ac400e84704bd2bf3718365f6d1734eb2b1958c6543e9dfe6d0c1b6f67af041b6bce7491e5e04da1f0ad10fdcedc6ddd96565e2
+  checksum: 8684ec821536aa55b1db25c0ebc0e5d413a3d2fd0e259f15f010ea2dc588f5d8f451e67d01cf2c63c2ae35b0c8e2e1bb34e0a6d53655ae7b837f7b434de7f61c
   languageName: node
   linkType: hard
 
@@ -14897,6 +14904,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/express-jwt@npm:0.0.42":
+  version: 0.0.42
+  resolution: "@types/express-jwt@npm:0.0.42"
+  dependencies:
+    "@types/express": "*"
+    "@types/express-unless": "*"
+  checksum: b69148367b40c74876e77438a7a2449d3478d222a6094bce008308cf87ea43dcce5d74ebaef5d28bb224b0f0dd695bcf25a634a69d3c186575458eb1a1a6e4f8
+  languageName: node
+  linkType: hard
+
+"@types/express-jwt@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@types/express-jwt@npm:6.0.4"
+  dependencies:
+    "@types/express": "*"
+    "@types/express-unless": "*"
+  checksum: bf4b80b10fbeb9d45491e605c79d4b2925823af76929ca833a208c13f73be45a7ab639e76054d0185457f97fef10b0232833dcc3f44dfcf14baabae26801420e
+  languageName: node
+  linkType: hard
+
 "@types/express-serve-static-core@npm:*, @types/express-serve-static-core@npm:^4.17.18, @types/express-serve-static-core@npm:^4.17.21":
   version: 4.17.28
   resolution: "@types/express-serve-static-core@npm:4.17.28"
@@ -14914,6 +14941,15 @@ __metadata:
   dependencies:
     "@types/express": "*"
   checksum: 3047c30e3eafec89a670445ca7162ff595e25d8baa9490a2e1a0dfcb41eb09d0fb680515b8ba9ab36abfe7303438833ef90f6cbbce319b5be0d80b09ae4f795f
+  languageName: node
+  linkType: hard
+
+"@types/express-unless@npm:*":
+  version: 0.5.3
+  resolution: "@types/express-unless@npm:0.5.3"
+  dependencies:
+    "@types/express": "*"
+  checksum: 5c76425ff7490123f3c072c942ae6d18bb3cbf91d5d9857c52fca1f9a3d11b72413dbfb3e4af28fdd7f745d1a443f90daadbcf7daff714d608eef10bd7c8763c
   languageName: node
   linkType: hard
 
@@ -18619,6 +18655,13 @@ __metadata:
   dependencies:
     lodash: ^4.17.10
   checksum: 8929b1d22a75e0f62f6f5289fcddb90ffae0ca59ce28aee4cddd479650d82fdaa11843f79e0bc5e71d7f1808ec980f1ac0952375e29dc7b4a6b9ec5dfa6777ba
+  languageName: node
+  linkType: hard
+
+"async@npm:^1.5.0":
+  version: 1.5.2
+  resolution: "async@npm:1.5.2"
+  checksum: fe5d6214d8f15bd51eee5ae8ec5079b228b86d2d595f47b16369dec2e11b3ff75a567bb5f70d12d79006665fbbb7ee0a7ec0e388524eefd454ecbe651c124ebd
   languageName: node
   linkType: hard
 
@@ -26476,6 +26519,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"express-jwt@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "express-jwt@npm:6.1.1"
+  dependencies:
+    async: ^1.5.0
+    express-unless: ^1.0.0
+    jsonwebtoken: ^8.1.0
+    lodash: ^4.17.21
+  checksum: 91b3da4c2bb080a2c3d125327a492f6f2b90a55c3b0fbdf51c78e979b636a6c94cb73fd2dbcebbdd5eedd9dcfe858f2b4ea4ce9c1285e60547f246546d31d9c1
+  languageName: node
+  linkType: hard
+
 "express-openapi-validate@npm:^0.6.1":
   version: 0.6.1
   resolution: "express-openapi-validate@npm:0.6.1"
@@ -26523,6 +26578,13 @@ __metadata:
     safe-buffer: 5.2.1
     uid-safe: ~2.1.5
   checksum: 9e05cff29865c039f2b3a623325a66707a6229598a33f6e6f082c1581b0afa0bf9196d93c70445883e610138a36698842ff9ddeccdafc9c3ef65ff2a6e237d83
+  languageName: node
+  linkType: hard
+
+"express-unless@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "express-unless@npm:1.0.0"
+  checksum: 0f27f8eae1ecb3ad41d65da903c855879f529412545e06f9df28bc6712b03460f79b74ffe3c51c9bfafa685dbdac11217c505e54d48f2f58e6d6928b7dbbad37
   languageName: node
   linkType: hard
 
@@ -27614,7 +27676,7 @@ __metadata:
     "@ory/kratos-client": 0.8.0-alpha.2
     "@ory/themes": ~0.0.101
     "@reduxjs/toolkit": ^1.7.1
-    "@rtk-query/graphql-request-base-query": ^1.0.3
+    "@rtk-query/graphql-request-base-query": ^2.0.0
     "@testing-library/jest-dom": ^4.2.4
     "@testing-library/react": ^9.5.0
     "@testing-library/user-event": ^7.2.1
@@ -27633,7 +27695,7 @@ __metadata:
     axios: ^0.26.0
     bootstrap: 5.1.3
     bootstrap-switch-button-react: ^1.2.0
-    graphql-request: ^3.7.0
+    graphql-request: ^4.0.0
     graphqurl: ^1.0.1
     history: ^5.2.0
     jsonwebtoken: ^8.5.1
@@ -28750,19 +28812,6 @@ __metadata:
     ws:
       optional: true
   checksum: 63d03fe489b42ea59cecc9c67934cfb6ec510a3f040149fad4b98be5d888b599ea077eefe464e17872c431c0d71fcb4ede9a302ff33a38545dc7bf9dc05f4e25
-  languageName: node
-  linkType: hard
-
-"graphql-request@npm:^3.4.0, graphql-request@npm:^3.7.0":
-  version: 3.7.0
-  resolution: "graphql-request@npm:3.7.0"
-  dependencies:
-    cross-fetch: ^3.0.6
-    extract-files: ^9.0.0
-    form-data: ^3.0.0
-  peerDependencies:
-    graphql: 14 - 16
-  checksum: db3800cc4ee884cd1514d7d5eafafb9ed27694278fdddd7402345754a7d25e7d713246c72aa510b439b6df2633b74f2cf74fb36864a22a857d5fb2de1cf0b4d8
   languageName: node
   linkType: hard
 
@@ -32997,6 +33046,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jose@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "jose@npm:2.0.5"
+  dependencies:
+    "@panva/asn1.js": ^1.0.0
+  checksum: 80a3447b51f794f8f2c7e21395dd880b55d374a055564595c69ff17722fb07aeb2dff722b5da9030651f67fafc7494e9ec5f5b56f5e1836d1ac94e604e6096ea
+  languageName: node
+  linkType: hard
+
 "jpeg-js@npm:^0.4.1":
   version: 0.4.3
   resolution: "jpeg-js@npm:0.4.3"
@@ -33477,7 +33535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^8.5.1":
+"jsonwebtoken@npm:^8.1.0, jsonwebtoken@npm:^8.5.1":
   version: 8.5.1
   resolution: "jsonwebtoken@npm:8.5.1"
   dependencies:
@@ -33623,6 +33681,19 @@ __metadata:
     ecdsa-sig-formatter: 1.0.11
     safe-buffer: ^5.0.1
   checksum: ff30ea7c2dcc61f3ed2098d868bf89d43701605090c5b21b5544b512843ec6fd9e028381a4dda466cbcdb885c2d1150f7c62e7168394ee07941b4098e1035e2f
+  languageName: node
+  linkType: hard
+
+"jwks-rsa@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "jwks-rsa@npm:2.0.5"
+  dependencies:
+    "@types/express-jwt": 0.0.42
+    debug: ^4.3.2
+    jose: ^2.0.5
+    limiter: ^1.1.5
+    lru-memoizer: ^2.1.4
+  checksum: c96d66f16971952826d81299ef027144761b5982e622d17994f57ab76d677fbfd1b4660d8e1bf48a9a92bfb3ab949e35d60a3894cca93b69161daa196acd8942
   languageName: node
   linkType: hard
 
@@ -33925,6 +33996,13 @@ __metadata:
   version: 2.0.4
   resolution: "lilconfig@npm:2.0.4"
   checksum: 02ae530aa49218d782eb79e92c600ea5220828987f85aa3403fa512cadc7efe38c0ac7d0cd2edf600ad3fae1f6c1752f5b4bb78c0d9950435b044d53d507c9e1
+  languageName: node
+  linkType: hard
+
+"limiter@npm:^1.1.5":
+  version: 1.1.5
+  resolution: "limiter@npm:1.1.5"
+  checksum: 2d51d3a8bef131aada820b76530f8223380a0079aa0fffdfd3ec47ac2f65763225cb4c62a2f22347f4898c5eeb248edfec991c4a4f5b608dfca0aaa37ac48071
   languageName: node
   linkType: hard
 
@@ -34831,6 +34909,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lru-cache@npm:~4.0.0":
+  version: 4.0.2
+  resolution: "lru-cache@npm:4.0.2"
+  dependencies:
+    pseudomap: ^1.0.1
+    yallist: ^2.0.0
+  checksum: 1f615ef23f3316c0935533df2a14f66050502ffd0841726ea3dbaceac09a1bb80cd0c1f8799a881c4d13fe2cdebbd7919668a54eae4ec97caf66141e56b5c3bb
+  languageName: node
+  linkType: hard
+
+"lru-memoizer@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "lru-memoizer@npm:2.1.4"
+  dependencies:
+    lodash.clonedeep: ^4.5.0
+    lru-cache: ~4.0.0
+  checksum: 8dd076e39afeb2e079287758344ba87cde278f630447e823650320e41a9e3dd8bd91ed375fa7585af95c4ae0473ba18e2fe6f12cbde7f69fc109f2ddd60423b3
+  languageName: node
+  linkType: hard
+
 "lru-queue@npm:^0.1.0":
   version: 0.1.0
   resolution: "lru-queue@npm:0.1.0"
@@ -34973,6 +35071,7 @@ __metadata:
     "@types/deepmerge": ^2.2.0
     "@types/eventsource": ^1.1.8
     "@types/express": ^4.17.13
+    "@types/express-jwt": ^6.0.4
     "@types/jest": ^27.4.1
     "@types/node": ^14.0.0
     "@types/semver": ^7.3.9
@@ -34998,13 +35097,14 @@ __metadata:
     eslint-plugin-react: ^7.23.2
     eventsource: ^2.0.0
     express: 5.0.0-beta.1
+    express-jwt: ^6.1.1
     generate-lockfile: ^0.0.11
     graphql: ^16.3.0
     graphql-request: ^4.0.0
     graphql-tag: ^2.12.6
     graphqurl: ^1.0.1
     jest: ^27.5.1
-    jwt-decode: ^3.1.2
+    jwks-rsa: ^2.0.5
     nodemon: ^2.0.15
     octokit: ^1.7.1
     pg: ^8.7.1
@@ -41352,7 +41452,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pseudomap@npm:^1.0.2":
+"pseudomap@npm:^1.0.1, pseudomap@npm:^1.0.2":
   version: 1.0.2
   resolution: "pseudomap@npm:1.0.2"
   checksum: 856c0aae0ff2ad60881168334448e898ad7a0e45fe7386d114b150084254c01e200c957cf378378025df4e052c7890c5bd933939b0e0d2ecfcc1dc2f0b2991f5
@@ -50963,7 +51063,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yallist@npm:^2.1.2":
+"yallist@npm:^2.0.0, yallist@npm:^2.1.2":
   version: 2.1.2
   resolution: "yallist@npm:2.1.2"
   checksum: 9ba99409209f485b6fcb970330908a6d41fa1c933f75e08250316cce19383179a6b70a7e0721b89672ebb6199cc377bf3e432f55100da6a7d6e11902b0a642cb

@@ -19,7 +19,7 @@ import { GetProjectIdFromGitUrlQuery } from '../hasura-api/generated';
 import { uploadSbomToS3 } from '../sqs-handlers/generate-sbom';
 import { isError, Try, tryF } from '../utils/try';
 
-import { getGithubInstallationToken } from './installation-populate';
+import { getInstallationAccessToken } from './auth';
 
 export const webhooks = new Webhooks({
   secret: 'mysecret',
@@ -60,7 +60,7 @@ webhooks.on('pull_request', async (event) => {
     }
     const installationId = event.payload.installation.id;
 
-    const installationToken = await getGithubInstallationToken(installationId);
+    const installationToken = await getInstallationAccessToken(installationId);
 
     const parsedGitUrl = new URL(cloneUrl);
     parsedGitUrl.username = 'x-access-token';
