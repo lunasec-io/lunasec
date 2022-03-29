@@ -222,6 +222,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         GITHUB_APP_ID: props.gitHubAppId,
         S3_SBOM_BUCKET: storageStackStage.sbomBucket.bucketName,
         S3_MANIFEST_BUCKET: storageStackStage.manifestBucket.bucketName,
+        SITE_PUBLIC_URL: publicBaseUrl,
         PORT: '3002',
       },
       secrets: {
