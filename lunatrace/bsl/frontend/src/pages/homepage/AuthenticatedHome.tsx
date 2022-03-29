@@ -22,7 +22,7 @@ import api from '../../api';
 export const AuthenticatedHome: React.FunctionComponent = (_props) => {
   const { data } = api.useGetSidebarInfoQuery();
   const hasAnyProjects = !!data && data.projects.filter((p) => p.name !== 'Personal').length > 0;
-
+  const personalProjectId = !!data && data.projects.find((p) => p.name === 'Personal Project')?.id;
   return (
     <>
       <Helmet title="home" />
@@ -74,7 +74,8 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
                     <BsGithub className="mb-1 me-1" /> {hasAnyProjects ? 'Add more projects' : 'Connect to GitHub'}
                   </Button>
                   <Card.Subtitle className="darker">
-                    Prefer not to? You can still do manual scans in <NavLink to="/">your personal project</NavLink>.
+                    Prefer not to? You can still do manual scans in{' '}
+                    <NavLink to={`/project/${personalProjectId}`}>your personal project</NavLink>.
                   </Card.Subtitle>
                 </Col>
               </Row>

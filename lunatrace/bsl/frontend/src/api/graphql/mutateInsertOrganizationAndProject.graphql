@@ -1,7 +1,0 @@
-mutation CreateOrganizationAndProject($identity_id: uuid!, $organization_name: String!, $project_name: String!) {
-    insert_organizations_one(object: {name: $organization_name, organization_users: {data: {user_id: $identity_id}}, projects: {data: {name: $project_name}}}) {
-        projects {
-            id
-        }
-    }
-}
