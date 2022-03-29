@@ -11,6 +11,13 @@
  * limitations under the License.
  *
  */
+
+export interface SbomBucketInfo {
+  key: string;
+  bucketName: string;
+  region: string;
+}
+
 export interface Finding {
   package_name: string;
   version: string;
