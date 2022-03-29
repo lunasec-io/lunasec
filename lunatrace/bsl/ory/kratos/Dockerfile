@@ -7,3 +7,4 @@ ADD config.production.yaml /config/config.production.yaml
 
 ADD identity.schema.json /config/identity.schema.json
 ADD oidc.github.jsonnet /config/oidc.github.jsonnet
+ADD oidc.hook.jsonnet /config/oidc.hook.jsonnet
