@@ -2390,14 +2390,14 @@ export type CommitMessage = {
  *
  * Specify a branch using a global node ID:
  *
- *     { "id": "MDM6UmVmMTpyZWZzL2hlYWRzL21haW4=" }
+ * { "id": "MDM6UmVmMTpyZWZzL2hlYWRzL21haW4=" }
  *
  * Specify a branch using nameWithOwner and branch name:
  *
- *     {
- *       "nameWithOwner": "github/graphql-client",
- *       "branchName": "main"
- *     }
+ * {
+ * "nameWithOwner": "github/graphql-client",
+ * "branchName": "main"
+ * }
  */
 export type CommittableBranch = {
   /** The unqualified name of the branch to append the commit to. */
@@ -6497,77 +6497,77 @@ export type FileAddition = {
  *
  * 1. New file addition: create file `hello world\n` at path `docs/README.txt`:
  *
- *        {
- *          "additions" [
- *            {
- *              "path": "docs/README.txt",
- *              "contents": base64encode("hello world\n")
- *            }
- *          ]
- *        }
+ * {
+ * "additions" [
+ * {
+ * "path": "docs/README.txt",
+ * "contents": base64encode("hello world\n")
+ * }
+ * ]
+ * }
  *
  * 2. Existing file modification: change existing `docs/README.txt` to have new
- *    content `new content here\n`:
+ * content `new content here\n`:
  *
- *        {
- *          "additions" [
- *            {
- *              "path": "docs/README.txt",
- *              "contents": base64encode("new content here\n")
- *            }
- *          ]
- *        }
+ * {
+ * "additions" [
+ * {
+ * "path": "docs/README.txt",
+ * "contents": base64encode("new content here\n")
+ * }
+ * ]
+ * }
  *
  * 3. Existing file deletion: remove existing file `docs/README.txt`.
- *    Note that the path is required to exist -- specifying a
- *    path that does not exist on the given branch will abort the
- *    commit and return an error.
+ * Note that the path is required to exist -- specifying a
+ * path that does not exist on the given branch will abort the
+ * commit and return an error.
  *
- *        {
- *          "deletions" [
- *            {
- *              "path": "docs/README.txt"
- *            }
- *          ]
- *        }
+ * {
+ * "deletions" [
+ * {
+ * "path": "docs/README.txt"
+ * }
+ * ]
+ * }
  *
  *
  * 4. File rename with no changes: rename `docs/README.txt` with
- *    previous content `hello world\n` to the same content at
- *    `newdocs/README.txt`:
+ * previous content `hello world\n` to the same content at
+ * `newdocs/README.txt`:
  *
- *        {
- *          "deletions" [
- *            {
- *              "path": "docs/README.txt",
- *            }
- *          ],
- *          "additions" [
- *            {
- *              "path": "newdocs/README.txt",
- *              "contents": base64encode("hello world\n")
- *            }
- *          ]
- *        }
+ * {
+ * "deletions" [
+ * {
+ * "path": "docs/README.txt",
+ * }
+ * ],
+ * "additions" [
+ * {
+ * "path": "newdocs/README.txt",
+ * "contents": base64encode("hello world\n")
+ * }
+ * ]
+ * }
  *
  *
  * 5. File rename with changes: rename `docs/README.txt` with
- *    previous content `hello world\n` to a file at path
- *    `newdocs/README.txt` with content `new contents\n`:
+ * previous content `hello world\n` to a file at path
+ * `newdocs/README.txt` with content `new contents\n`:
  *
- *        {
- *          "deletions" [
- *            {
- *              "path": "docs/README.txt",
- *            }
- *          ],
- *          "additions" [
- *            {
- *              "path": "newdocs/README.txt",
- *              "contents": base64encode("new contents\n")
- *            }
- *          ]
- *        }
+ * {
+ * "deletions" [
+ * {
+ * "path": "docs/README.txt",
+ * }
+ * ],
+ * "additions" [
+ * {
+ * "path": "newdocs/README.txt",
+ * "contents": base64encode("new contents\n")
+ * }
+ * ]
+ * }
  */
 export type FileChanges = {
   /** File to add or change. */
