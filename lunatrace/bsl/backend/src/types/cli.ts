@@ -11,3 +11,5 @@
  * limitations under the License.
  *
  */
+
+export type LunaTraceAssetType = 'manifest' | 'repository';
