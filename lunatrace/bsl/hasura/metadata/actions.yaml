@@ -40,15 +40,6 @@ custom_types:
   - name: SbomUploadUrlOutput
   - name: PresignedUrlResponse
   - name: ScanManifestOutput
-    relationships:
-    - remote_table:
-        schema: public
-        name: builds
-      name: scan_build_id_relationship
-      source: lunatrace
-      type: object
-      field_mapping:
-        build_id: id
   - name: SampleOutput
   - name: UploadUrl
   scalars: []
