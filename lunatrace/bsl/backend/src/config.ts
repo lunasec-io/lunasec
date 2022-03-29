@@ -68,6 +68,16 @@ export function getBucketConfig(): SbomHandlerConfig {
   };
 }
 
+export function getSbomHandlerConfig(): SbomHandlerConfig {
+  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET', 'sbom-test-bucket');
+
+  const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET', 'test-manifest-bucket-one');
+  return {
+    sbomBucket,
+    manifestBucket,
+  };
+}
+
 export function getQueueHandlerConfig(): QueueHandlerConfig {
   const queueName = checkEnvVar('QUEUE_NAME');
   const handlerName = checkEnvVar('QUEUE_HANDLER');

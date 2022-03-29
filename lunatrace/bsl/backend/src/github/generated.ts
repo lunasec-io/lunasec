@@ -23997,13 +23997,22 @@ export type WorkflowRunPendingDeploymentRequestsArgs = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
-export type CommentOnPullRequestMutationVariables = Exact<{
-  pullRequestId?: InputMaybe<Scalars['ID']>;
+export type AddCommentMutationVariables = Exact<{
+  subjectId: Scalars['ID'];
   body: Scalars['String'];
 }>;
 
 
-export type CommentOnPullRequestMutation = { __typename?: 'Mutation', addPullRequestReviewComment?: { __typename?: 'AddPullRequestReviewCommentPayload', comment?: { __typename?: 'PullRequestReviewComment', id: string } | null } | null };
+export type AddCommentMutation = { __typename?: 'Mutation', addComment?: { __typename?: 'AddCommentPayload', clientMutationId?: string | null } | null };
+
+export type CreatePullRequestReviewMutationVariables = Exact<{
+  pullRequestId: Scalars['ID'];
+  comments?: InputMaybe<Array<InputMaybe<DraftPullRequestReviewComment>> | InputMaybe<DraftPullRequestReviewComment>>;
+  threads?: InputMaybe<Array<InputMaybe<DraftPullRequestReviewThread>> | InputMaybe<DraftPullRequestReviewThread>>;
+}>;
+
+
+export type CreatePullRequestReviewMutation = { __typename?: 'Mutation', addPullRequestReview?: { __typename?: 'AddPullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
 
 export type GetUserOrganizationsQueryVariables = Exact<{
   orgsAfter?: InputMaybe<Scalars['String']>;
@@ -24013,10 +24022,19 @@ export type GetUserOrganizationsQueryVariables = Exact<{
 export type GetUserOrganizationsQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, login: string, organizations: { __typename?: 'OrganizationConnection', pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, hasNextPage: boolean, endCursor?: string | null }, nodes?: Array<{ __typename?: 'Organization', name?: string | null, id: string } | null> | null } } };
 
 
-export const CommentOnPullRequestDocument = gql`
-    mutation CommentOnPullRequest($pullRequestId: ID, $body: String!) {
-  addPullRequestReviewComment(input: {body: $body, pullRequestId: $pullRequestId}) {
-    comment {
+export const AddCommentDocument = gql`
+    mutation AddComment($subjectId: ID!, $body: String!) {
+  addComment(input: {subjectId: $subjectId, body: $body}) {
+    clientMutationId
+  }
+}
+    `;
+export const CreatePullRequestReviewDocument = gql`
+    mutation CreatePullRequestReview($pullRequestId: ID!, $comments: [DraftPullRequestReviewComment], $threads: [DraftPullRequestReviewThread]) {
+  addPullRequestReview(
+    input: {pullRequestId: $pullRequestId, comments: $comments, threads: $threads}
+  ) {
+    pullRequestReview {
       id
     }
   }
@@ -24049,8 +24067,11 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    CommentOnPullRequest(variables: CommentOnPullRequestMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CommentOnPullRequestMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CommentOnPullRequestMutation>(CommentOnPullRequestDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CommentOnPullRequest', 'mutation');
+    AddComment(variables: AddCommentMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddCommentMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AddCommentMutation>(AddCommentDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AddComment', 'mutation');
+    },
+    CreatePullRequestReview(variables: CreatePullRequestReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreatePullRequestReviewMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreatePullRequestReviewMutation>(CreatePullRequestReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePullRequestReview', 'mutation');
     },
     GetUserOrganizations(variables?: GetUserOrganizationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserOrganizationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserOrganizationsQuery>(GetUserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserOrganizations', 'query');
