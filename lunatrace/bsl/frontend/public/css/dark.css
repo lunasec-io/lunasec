@@ -17618,6 +17618,10 @@ td.rdtYear:hover {
   font-weight: bold !important;
 }
 
+.sidebar-link {
+  text-transform: capitalize;
+}
+
 .clickable-card:hover {
   transform: scale(1.02);
   cursor: pointer;
