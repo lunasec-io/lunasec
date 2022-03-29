@@ -1,5 +1,7 @@
 query GetUserOrganizations($orgsAfter: String) {
     viewer {
+        id
+        login
         organizations (first: 100, after: $orgsAfter) {
             pageInfo {
                 startCursor

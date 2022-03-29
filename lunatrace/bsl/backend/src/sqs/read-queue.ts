@@ -21,8 +21,8 @@ import {
 } from '@aws-sdk/client-sqs';
 
 import { getAwsConfig, getQueueHandlerConfig } from '../config';
-import { handleGenerateSbom } from '../sqs-handlers/generateSbom';
-import { handleScanSbom } from '../sqs-handlers/scanSbom';
+import { handleGenerateManifestSbom } from '../sqs-handlers/generate-sbom';
+import { handleScanSbom } from '../sqs-handlers/scan-sbom';
 import { S3ObjectMetadata } from '../types/s3';
 import { S3SqsEvent } from '../types/sqs';
 
@@ -91,7 +91,7 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: (objec
 }
 
 const handlers: Record<string, HandlerCallback> = {
-  'process-manifest-queue': handleGenerateSbom,
+  'process-manifest-queue': handleGenerateManifestSbom,
   'process-sbom-queue': handleScanSbom,
 };
 
