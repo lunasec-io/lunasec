@@ -80,9 +80,10 @@ async function notifyScanResults(buildId: string, results: string) {
   const installationToken = await getInstallationAccessToken(installationId);
 
   const github = generateGithubGraphqlClient(installationToken);
-  await github.CommentOnPullRequest({
-    pullRequestId: pullRequestId.toString(),
-    body: results,
+
+  await github.AddComment({
+    subjectId: pullRequestId.toString(),
+    body: 'test comment',
   });
 }
 
