@@ -191,6 +191,18 @@ export const githubLogin = async (req: Request, res: Response): Promise<void> =>
     )}`
   );
 
+  const personalOrgExists = await tryF(async () => {
+    // todo: This is honestly pretty brittle, but it will work for now
+    const result = await hasura.GetCountOfPersonalOrg({ user_id: userId });
+    if (result.organizations_aggregate.aggregate?.count === undefined) {
+      throw new Error('Failed to get aggregate count');
+    }
+    return result.organizations_aggregate.aggregate.count > 0;
+  });
+  if (!personalOrgExists) {
+    await hasura.InsertPersonalProjectAndOrg({ user_id: userId });
+  }
+
   res.send({
     error: false,
     message: 'Github login callback completed successfully',
