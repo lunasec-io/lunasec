@@ -38,9 +38,7 @@ const getCurrentProject = (projects: Project[], params: Params): Project | null 
 
 // These small little components can figure out how to display their own names, since the IDs from the URL are too ugly
 const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
-  console.log('PROJECT BREADCRUMB RENDERED', crumbProps.match.params.project_id);
   // Doing queries here is actually completely performant thanks to the cache system, no new queries will fire
-
   const { data } = api.useGetSidebarInfoQuery();
   if (!data) {
     return null;
