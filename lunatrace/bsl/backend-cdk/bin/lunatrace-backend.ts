@@ -31,6 +31,7 @@ interface StackInputsType {
   databaseSecretArn: string;
   gitHubAppId: string;
   gitHubAppPrivateKey: string;
+  gitHubAppWebHookSecret: string;
   githubOauthAppLoginSecretArn: string;
   githubOauthAppLoginClientIdArn: string;
   kratosCookieSecretArn: string;
@@ -51,6 +52,7 @@ const requiredFields = [
   'databaseSecretArn',
   'gitHubAppId',
   'gitHubAppPrivateKey',
+  'gitHubAppWebHookSecret',
   'githubOauthAppLoginSecretArn',
   'githubOauthAppLoginClientIdArn',
   'kratosCookieSecretArn',
@@ -85,6 +87,7 @@ new LunatraceBackendStack(app, `${appName}-BackendStack`, {
   databaseSecretArn: stackInputs.databaseSecretArn,
   gitHubAppId: stackInputs.gitHubAppId,
   gitHubAppPrivateKey: stackInputs.gitHubAppPrivateKey,
+  gitHubAppWebHookSecret: stackInputs.gitHubAppWebHookSecret,
   githubOauthAppLoginClientIdArn: stackInputs.githubOauthAppLoginClientIdArn,
   githubOauthAppLoginSecretArn: stackInputs.githubOauthAppLoginSecretArn,
   kratosCookieSecretArn: stackInputs.kratosCookieSecretArn,

@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { Cluster, ContainerImage, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
+import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { EventType } from '@aws-cdk/aws-s3';
 import { SqsDestination } from '@aws-cdk/aws-s3-notifications';
@@ -25,6 +25,8 @@ import { EtlStorageStackState } from './etl-storage-stack';
 interface EtlStackProps extends cdk.StackProps {
   fargateCluster: Cluster;
   publicHasuraServiceUrl: string;
+  gitHubAppId: string;
+  gitHubAppPrivateKey: ISecret;
   hasuraDatabaseUrlSecret: ISecret;
   hasuraAdminSecret: ISecret;
   backendStaticSecret: ISecret;
@@ -50,6 +52,8 @@ export class EtlStack extends cdk.Stack {
     const {
       fargateCluster,
       publicHasuraServiceUrl,
+      gitHubAppId,
+      gitHubAppPrivateKey,
       hasuraDatabaseUrlSecret,
       hasuraAdminSecret,
       backendStaticSecret,
@@ -68,11 +72,13 @@ export class EtlStack extends cdk.Stack {
       {
         cluster: fargateCluster,
         image: QueueProcessorContainerImage,
+        memoryLimitMiB: 2048,
         queue: storageStack.processManifestSqsQueue, // will pass queue_name env var automatically
         assignPublicIp: true,
         enableLogging: true,
         environment: {
           QUEUE_HANDLER: 'process-manifest-queue',
+          GITHUB_APP_ID: gitHubAppId,
           S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
           S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
           HASURA_URL: publicHasuraServiceUrl,
@@ -81,10 +87,15 @@ export class EtlStack extends cdk.Stack {
           HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
           HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
           STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
+          GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
         },
         containerName: 'ProcessManifestQueueContainer',
         circuitBreaker: {
           rollback: true,
+        },
+        deploymentController: {
+          // This sets up Blue/Green deploys
+          type: DeploymentControllerType.CODE_DEPLOY,
         },
       }
     );
@@ -98,8 +109,10 @@ export class EtlStack extends cdk.Stack {
       queue: storageStack.processSbomSqsQueue, // will pass queue_name env var automatically
       enableLogging: true,
       assignPublicIp: true,
+      memoryLimitMiB: 2048,
       environment: {
         QUEUE_HANDLER: 'process-sbom-queue',
+        GITHUB_APP_ID: gitHubAppId,
         S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
         S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
         HASURA_URL: publicHasuraServiceUrl,
@@ -108,10 +121,15 @@ export class EtlStack extends cdk.Stack {
         HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
         HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
         STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
+        GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
       },
       containerName: 'ProcessSbomQueueService',
       circuitBreaker: {
         rollback: true,
+      },
+      deploymentController: {
+        // This sets up Blue/Green deploys
+        type: DeploymentControllerType.CODE_DEPLOY,
       },
     });
     storageStack.sbomBucket.grantReadWrite(processSbomQueueService.taskDefinition.taskRole);
