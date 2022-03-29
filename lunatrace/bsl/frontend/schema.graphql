@@ -189,6 +189,7 @@ type builds {
   """An object relationship"""
   project: projects
   project_id: uuid
+  pull_request_id: Int
   s3_url: String
 
   """An array relationship"""
@@ -283,6 +284,7 @@ input builds_arr_rel_insert_input {
 """aggregate avg on columns"""
 type builds_avg_fields {
   build_number: Float
+  pull_request_id: Float
 }
 
 """
@@ -290,6 +292,7 @@ order by avg() on columns of table "builds"
 """
 input builds_avg_order_by {
   build_number: order_by
+  pull_request_id: order_by
 }
 
 """
@@ -309,6 +312,7 @@ input builds_bool_exp {
   id: uuid_comparison_exp
   project: projects_bool_exp
   project_id: uuid_comparison_exp
+  pull_request_id: Int_comparison_exp
   s3_url: String_comparison_exp
   scans: scans_bool_exp
 }
@@ -332,6 +336,7 @@ input type for incrementing numeric columns in table "builds"
 """
 input builds_inc_input {
   build_number: Int
+  pull_request_id: Int
 }
 
 """
@@ -348,6 +353,7 @@ input builds_insert_input {
   id: uuid
   project: projects_obj_rel_insert_input
   project_id: uuid
+  pull_request_id: Int
   s3_url: String
   scans: scans_arr_rel_insert_input
 }
@@ -362,6 +368,7 @@ type builds_max_fields {
   git_remote: String
   id: uuid
   project_id: uuid
+  pull_request_id: Int
   s3_url: String
 }
 
@@ -377,6 +384,7 @@ input builds_max_order_by {
   git_remote: order_by
   id: order_by
   project_id: order_by
+  pull_request_id: order_by
   s3_url: order_by
 }
 
@@ -390,6 +398,7 @@ type builds_min_fields {
   git_remote: String
   id: uuid
   project_id: uuid
+  pull_request_id: Int
   s3_url: String
 }
 
@@ -405,6 +414,7 @@ input builds_min_order_by {
   git_remote: order_by
   id: order_by
   project_id: order_by
+  pull_request_id: order_by
   s3_url: order_by
 }
 
@@ -450,6 +460,7 @@ input builds_order_by {
   id: order_by
   project: projects_order_by
   project_id: order_by
+  pull_request_id: order_by
   s3_url: order_by
   scans_aggregate: scans_aggregate_order_by
 }
@@ -488,6 +499,9 @@ enum builds_select_column {
   project_id
 
   """column name"""
+  pull_request_id
+
+  """column name"""
   s3_url
 }
 
@@ -503,12 +517,14 @@ input builds_set_input {
   git_remote: String
   id: uuid
   project_id: uuid
+  pull_request_id: Int
   s3_url: String
 }
 
 """aggregate stddev on columns"""
 type builds_stddev_fields {
   build_number: Float
+  pull_request_id: Float
 }
 
 """
@@ -516,11 +532,13 @@ order by stddev() on columns of table "builds"
 """
 input builds_stddev_order_by {
   build_number: order_by
+  pull_request_id: order_by
 }
 
 """aggregate stddev_pop on columns"""
 type builds_stddev_pop_fields {
   build_number: Float
+  pull_request_id: Float
 }
 
 """
@@ -528,11 +546,13 @@ order by stddev_pop() on columns of table "builds"
 """
 input builds_stddev_pop_order_by {
   build_number: order_by
+  pull_request_id: order_by
 }
 
 """aggregate stddev_samp on columns"""
 type builds_stddev_samp_fields {
   build_number: Float
+  pull_request_id: Float
 }
 
 """
@@ -540,11 +560,13 @@ order by stddev_samp() on columns of table "builds"
 """
 input builds_stddev_samp_order_by {
   build_number: order_by
+  pull_request_id: order_by
 }
 
 """aggregate sum on columns"""
 type builds_sum_fields {
   build_number: Int
+  pull_request_id: Int
 }
 
 """
@@ -552,6 +574,7 @@ order by sum() on columns of table "builds"
 """
 input builds_sum_order_by {
   build_number: order_by
+  pull_request_id: order_by
 }
 
 """
@@ -583,12 +606,16 @@ enum builds_update_column {
   project_id
 
   """column name"""
+  pull_request_id
+
+  """column name"""
   s3_url
 }
 
 """aggregate var_pop on columns"""
 type builds_var_pop_fields {
   build_number: Float
+  pull_request_id: Float
 }
 
 """
@@ -596,11 +623,13 @@ order by var_pop() on columns of table "builds"
 """
 input builds_var_pop_order_by {
   build_number: order_by
+  pull_request_id: order_by
 }
 
 """aggregate var_samp on columns"""
 type builds_var_samp_fields {
   build_number: Float
+  pull_request_id: Float
 }
 
 """
@@ -608,11 +637,13 @@ order by var_samp() on columns of table "builds"
 """
 input builds_var_samp_order_by {
   build_number: order_by
+  pull_request_id: order_by
 }
 
 """aggregate variance on columns"""
 type builds_variance_fields {
   build_number: Float
+  pull_request_id: Float
 }
 
 """
@@ -620,6 +651,7 @@ order by variance() on columns of table "builds"
 """
 input builds_variance_order_by {
   build_number: order_by
+  pull_request_id: order_by
 }
 
 scalar date
@@ -4285,6 +4317,7 @@ type organizations {
   createdAt: timestamp!
   creator_id: uuid
   github_id: Int
+  github_owner_type: String
   id: uuid!
   installation_id: Int
   name: String!
@@ -4404,6 +4437,7 @@ input organizations_bool_exp {
   createdAt: timestamp_comparison_exp
   creator_id: uuid_comparison_exp
   github_id: Int_comparison_exp
+  github_owner_type: String_comparison_exp
   id: uuid_comparison_exp
   installation_id: Int_comparison_exp
   name: String_comparison_exp
@@ -4438,6 +4472,7 @@ input organizations_insert_input {
   createdAt: timestamp
   creator_id: uuid
   github_id: Int
+  github_owner_type: String
   id: uuid
   installation_id: Int
   name: String
@@ -4451,6 +4486,7 @@ type organizations_max_fields {
   createdAt: timestamp
   creator_id: uuid
   github_id: Int
+  github_owner_type: String
   id: uuid
   installation_id: Int
   name: String
@@ -4462,6 +4498,7 @@ type organizations_min_fields {
   createdAt: timestamp
   creator_id: uuid
   github_id: Int
+  github_owner_type: String
   id: uuid
   installation_id: Int
   name: String
@@ -4503,6 +4540,7 @@ input organizations_order_by {
   createdAt: order_by
   creator_id: order_by
   github_id: order_by
+  github_owner_type: order_by
   id: order_by
   installation_id: order_by
   name: order_by
@@ -4530,6 +4568,9 @@ enum organizations_select_column {
   github_id
 
   """column name"""
+  github_owner_type
+
+  """column name"""
   id
 
   """column name"""
@@ -4549,6 +4590,7 @@ input organizations_set_input {
   createdAt: timestamp
   creator_id: uuid
   github_id: Int
+  github_owner_type: String
   id: uuid
   installation_id: Int
   name: String
@@ -4591,6 +4633,9 @@ enum organizations_update_column {
 
   """column name"""
   github_id
+
+  """column name"""
+  github_owner_type
 
   """column name"""
   id
