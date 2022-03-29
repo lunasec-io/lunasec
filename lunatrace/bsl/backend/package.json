@@ -4,7 +4,7 @@
   "scripts": {
     "start": "concurrently 'yarn dev:graphql:watch' 'yarn run start:server'",
     "start:server": "nodemon src/server.ts",
-    "start:sqs-listener": "tsc && concurrently \"tsc -w\" \"nodemon build/sqs/read-queue.js\"",
+    "start:sqs-listener": "nodemon src/sqs/read-queue.ts",
     "prod:sqs-listener": "node build/sqs/read-queue.js",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
     "test:scan:upload": "yarn run ts-node --files ./src/tests/upload-scan.ts",
