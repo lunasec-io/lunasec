@@ -21,8 +21,7 @@ import api from '../../api';
 
 export const AuthenticatedHome: React.FunctionComponent = (_props) => {
   const { data } = api.useGetSidebarInfoQuery();
-  //todo: Change this to only github projects, do an aggregation query in hasura for this
-  const hasAnyProjects: boolean = !!data && data.projects.length > 0;
+  const hasAnyProjects = !!data && data.projects.filter((p) => p.name !== 'Personal').length > 0;
 
   return (
     <>
