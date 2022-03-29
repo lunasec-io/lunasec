@@ -189,7 +189,7 @@ type builds {
   """An object relationship"""
   project: projects
   project_id: uuid
-  pull_request_id: Int
+  pull_request_id: String
   s3_url: String
 
   """An array relationship"""
@@ -284,7 +284,6 @@ input builds_arr_rel_insert_input {
 """aggregate avg on columns"""
 type builds_avg_fields {
   build_number: Float
-  pull_request_id: Float
 }
 
 """
@@ -292,7 +291,6 @@ order by avg() on columns of table "builds"
 """
 input builds_avg_order_by {
   build_number: order_by
-  pull_request_id: order_by
 }
 
 """
@@ -312,7 +310,7 @@ input builds_bool_exp {
   id: uuid_comparison_exp
   project: projects_bool_exp
   project_id: uuid_comparison_exp
-  pull_request_id: Int_comparison_exp
+  pull_request_id: String_comparison_exp
   s3_url: String_comparison_exp
   scans: scans_bool_exp
 }
@@ -336,7 +334,6 @@ input type for incrementing numeric columns in table "builds"
 """
 input builds_inc_input {
   build_number: Int
-  pull_request_id: Int
 }
 
 """
@@ -353,7 +350,7 @@ input builds_insert_input {
   id: uuid
   project: projects_obj_rel_insert_input
   project_id: uuid
-  pull_request_id: Int
+  pull_request_id: String
   s3_url: String
   scans: scans_arr_rel_insert_input
 }
@@ -368,7 +365,7 @@ type builds_max_fields {
   git_remote: String
   id: uuid
   project_id: uuid
-  pull_request_id: Int
+  pull_request_id: String
   s3_url: String
 }
 
@@ -398,7 +395,7 @@ type builds_min_fields {
   git_remote: String
   id: uuid
   project_id: uuid
-  pull_request_id: Int
+  pull_request_id: String
   s3_url: String
 }
 
@@ -517,14 +514,13 @@ input builds_set_input {
   git_remote: String
   id: uuid
   project_id: uuid
-  pull_request_id: Int
+  pull_request_id: String
   s3_url: String
 }
 
 """aggregate stddev on columns"""
 type builds_stddev_fields {
   build_number: Float
-  pull_request_id: Float
 }
 
 """
@@ -532,13 +528,11 @@ order by stddev() on columns of table "builds"
 """
 input builds_stddev_order_by {
   build_number: order_by
-  pull_request_id: order_by
 }
 
 """aggregate stddev_pop on columns"""
 type builds_stddev_pop_fields {
   build_number: Float
-  pull_request_id: Float
 }
 
 """
@@ -546,13 +540,11 @@ order by stddev_pop() on columns of table "builds"
 """
 input builds_stddev_pop_order_by {
   build_number: order_by
-  pull_request_id: order_by
 }
 
 """aggregate stddev_samp on columns"""
 type builds_stddev_samp_fields {
   build_number: Float
-  pull_request_id: Float
 }
 
 """
@@ -560,13 +552,11 @@ order by stddev_samp() on columns of table "builds"
 """
 input builds_stddev_samp_order_by {
   build_number: order_by
-  pull_request_id: order_by
 }
 
 """aggregate sum on columns"""
 type builds_sum_fields {
   build_number: Int
-  pull_request_id: Int
 }
 
 """
@@ -574,7 +564,6 @@ order by sum() on columns of table "builds"
 """
 input builds_sum_order_by {
   build_number: order_by
-  pull_request_id: order_by
 }
 
 """
@@ -615,7 +604,6 @@ enum builds_update_column {
 """aggregate var_pop on columns"""
 type builds_var_pop_fields {
   build_number: Float
-  pull_request_id: Float
 }
 
 """
@@ -623,13 +611,11 @@ order by var_pop() on columns of table "builds"
 """
 input builds_var_pop_order_by {
   build_number: order_by
-  pull_request_id: order_by
 }
 
 """aggregate var_samp on columns"""
 type builds_var_samp_fields {
   build_number: Float
-  pull_request_id: Float
 }
 
 """
@@ -637,13 +623,11 @@ order by var_samp() on columns of table "builds"
 """
 input builds_var_samp_order_by {
   build_number: order_by
-  pull_request_id: order_by
 }
 
 """aggregate variance on columns"""
 type builds_variance_fields {
   build_number: Float
-  pull_request_id: Float
 }
 
 """
@@ -651,7 +635,6 @@ order by variance() on columns of table "builds"
 """
 input builds_variance_order_by {
   build_number: order_by
-  pull_request_id: order_by
 }
 
 scalar date
@@ -788,10 +771,10 @@ unique or primary key constraints on table "findings"
 """
 enum findings_constraint {
   """unique or primary key constraint"""
-  findings_pkey
+  findings_dedupe_slug_build_id_key
 
   """unique or primary key constraint"""
-  temp_dedupe_fix
+  findings_pkey
 }
 
 """
@@ -5372,8 +5355,8 @@ type projects {
   name: String!
 
   """An object relationship"""
-  organization: organizations
-  organization_id: uuid
+  organization: organizations!
+  organization_id: uuid!
 
   """An array relationship"""
   project_access_tokens(

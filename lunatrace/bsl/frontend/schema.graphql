@@ -788,10 +788,10 @@ unique or primary key constraints on table "findings"
 """
 enum findings_constraint {
   """unique or primary key constraint"""
-  findings_pkey
+  findings_dedupe_slug_build_id_key
 
   """unique or primary key constraint"""
-  temp_dedupe_fix
+  findings_pkey
 }
 
 """
@@ -5372,8 +5372,8 @@ type projects {
   name: String!
 
   """An object relationship"""
-  organization: organizations
-  organization_id: uuid
+  organization: organizations!
+  organization_id: uuid!
 
   """An array relationship"""
   project_access_tokens(
