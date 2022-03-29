@@ -1,7 +1,0 @@
-mutation CommentOnPullRequest($pullRequestId: ID, $body: String!) {
-  addPullRequestReviewComment(input: {body: $body, pullRequestId: $pullRequestId}) {
-    comment {
-      id
-    }
-  }
-}

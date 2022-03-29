@@ -3,4 +3,3 @@ yarn.lock
 build/
 *.pem
 !package-lock.json
-*private-key.pem
