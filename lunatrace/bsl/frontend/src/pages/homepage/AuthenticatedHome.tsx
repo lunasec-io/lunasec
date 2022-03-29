@@ -69,7 +69,7 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
                   <Button
                     variant={hasAnyProjects ? 'light' : 'primary'}
                     size="lg"
-                    href="https://github.com/apps/dev-lunatrace-by-lunasec/installations/new"
+                    href="https://github.com/apps/lunatrace-by-lunasec/installations/new"
                   >
                     <BsGithub className="mb-1 me-1" /> {hasAnyProjects ? 'Add more projects' : 'Connect to GitHub'}
                   </Button>
