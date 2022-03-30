@@ -66,13 +66,22 @@ Well, we're a team of Security Engineers with experience in this space. In addit
 [mitigation guide for Log4Shell](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide), we've also been
 validating bug reports professionally for years. We helped run the Bug Bounties at
 Uber and Snapchat which both had significantly more "invalid" reports to review than "real" ones. Because of that, we've
-gotten very good at verifying that an exploit is a problem _before_ sound the alarm.
+gotten very good at verifying that an exploit is a problem _before_ we ever sound the alarm.
 
-"It's an order of magnitude less work to tell lies than to refute them." - A former colleague
+-------
 
-As developers and security engineers we're committed to only publishing the facts around what we know about the
-situation, sharing our thoughts from analyzing the vulnerabilities, and giving you a way to
-[stay informed](#get-notified-automatically) about new developments as they are discovered.
+> **"It's an order of magnitude less work to create a lie than to refute one."**
+*- A former colleague*
+
+-------
+
+As developers and security engineers, we're committed to only publishing the facts and our thoughts from analyzing them.
+
+Until we determine more details, we won't be able to tell you anything with absolute confidence yet. How bad could this
+be? Pretty bad, or nothing at all!
+
+We won't know until we've invested more time though, so we encourage you to [get notified automatically](#get-notified-automatically)
+when we publish updates.
 
 ## Overview of Vulnerabilities
 
@@ -85,10 +94,10 @@ Trying to understand what information is "real" and what mitigations actually wo
 without a CVE. That's especially true when the
 [Spring developers themselves](https://twitter.com/hacksilon/status/1509117953064812547) are denying that there is a problem.
 
-We've done enough analysis on this to be _concerned_ about the possibility that this is *maybe a problem*. We won't say
-that it's _not an issue_ until we have a concrete understanding of the exploit scenarios. We believe that there _is_
-some form of RCE in Spring core (i.e. Spring4Shell), but we just don't know if it's easily "remotely executable" or not
-yet.
+We've done enough analysis on this to be _concerned_ about the possibility that this is **potentially a big problem**.
+We won't say that if it's _an issue worth worrying about_ until we have a concrete understanding of the exploit
+scenarios. We believe that there _is_ some form of RCE in Spring core (i.e. Spring4Shell), but we just don't know if
+it's easily "remotely executable" or not yet. That context is very important to remember!
 
 ### Deserialization alone is not a CVE
 
