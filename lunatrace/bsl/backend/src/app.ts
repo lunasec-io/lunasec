@@ -57,6 +57,14 @@ app.use(Express.json());
 app.use(
   createNodeMiddleware(webhooks, {
     path: '/github/webhook/events',
+    onUnhandledRequest: (request, response) => {
+      console.error('Unhandled request in GitHub WebHook handler', request);
+      response.status(400).json({
+        error: true,
+        message: 'Unhandled request',
+      });
+    },
+    log: console,
   })
 );
 

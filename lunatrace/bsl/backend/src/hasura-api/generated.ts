@@ -7462,7 +7462,7 @@ export type GetScanReportNotifyInfoForBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetScanReportNotifyInfoForBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, project?: { __typename?: 'projects', organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
+export type GetScanReportNotifyInfoForBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
 
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
@@ -7570,6 +7570,7 @@ export const GetScanReportNotifyInfoForBuildDocument = gql`
     query GetScanReportNotifyInfoForBuild($build_id: uuid!) {
   builds_by_pk(id: $build_id) {
     project {
+      id
       organization {
         installation_id
       }
