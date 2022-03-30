@@ -25,6 +25,8 @@ authors: [free, chris, forrest]
 
 ![Spring4Shell Logo](https://www.lunasec.io/docs/img/spring4shell-logo.png)
 
+_Logo courtesy of [Daniel Christensen](https://github.com/BobTheShoplifter/Spring4Shell-POC)._
+
 On March 29th, 2022, two RCE vulnerabilities were being discussed on the internet. Most of the people talking about them
 believe they're talking about "Spring4Shell", but in reality they're swapping notes about [CVE-2022-22963](https://tanzu.vmware.com/security/cve-2022-22963).
 
@@ -251,7 +253,8 @@ Sec-Fetch-Site: none
 Sec-Fetch-User: ?1
 ```
 
-A file will be written to: `/tmp/test.jsp` and it will contain the contents: `<%Runtime.getRuntime().exec(request.getParameter("cmd"))%>`. This file will be used for format the logs for the server and an arbituary command can be passed in using the query parameter `query`.
+A file will be written to: `/tmp/test.jsp` and it will contain the contents: `<%Runtime.getRuntime().exec(request.getParameter("cmd"))%>`.
+This file will be used for format the logs for the server and an arbitrary command can be passed in using the query parameter `query`.
 
 :::info Exploit Verification
 We have not successfully verified, for ourselves, that this exploit works. To the best of our knowledge, and based on the reports from trusted
@@ -420,6 +423,8 @@ We wanted to say "thank you" to the following authors for their assistance helpi
 translating content from Chinese to English and warning others.
 - Thank you to [Praetorian](https://www.praetorian.com/blog/spring-core-jdk9-rce/) for digging into this exploit,
 figuring it out, and working with the Spring developers to help get a patch released!
+- Thank you to [Daniel Christensen](https://github.com/BobTheShoplifter/Spring4Shell-POC) for providing a logo like the
+old OG Log4Shell one!
 
 ### Updates
 
