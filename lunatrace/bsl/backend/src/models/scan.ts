@@ -19,11 +19,12 @@ import { Convert, Match as GrypeMatch, GrypeScanReport } from '../types/grype-sc
 import { Finding, Report } from '../types/scan';
 
 export class Scan {
-  static async uploadScan(sbomStream: Readable, buildId: string): Promise<void> {
+  static async uploadScan(sbomStream: Readable, buildId: string): Promise<Report> {
     const rawGrypeReport = await this.runGrypeScan(sbomStream);
     const typedRawGrypeReport = Convert.toScanReport(rawGrypeReport);
     const report = this.parseScan(typedRawGrypeReport, buildId);
     await this.storeReport(report);
+    return report;
   }
 
   static async runGrypeScan(sbomStream: Readable): Promise<string> {

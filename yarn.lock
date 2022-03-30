@@ -15240,6 +15240,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/markdown-table@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@types/markdown-table@npm:2.0.0"
+  checksum: 954d86e7d5560d98da76a237c976d5db430cf002fb86bd35dd742acd8d698934cd20e8348a5b04f20d4d721e52d8d20cb83f44fc43ad8e00e9200ff6d3d2b998
+  languageName: node
+  linkType: hard
+
 "@types/mdast@npm:^3.0.0":
   version: 3.0.10
   resolution: "@types/mdast@npm:3.0.10"
@@ -35073,6 +35080,7 @@ __metadata:
     "@types/express": ^4.17.13
     "@types/express-jwt": ^6.0.4
     "@types/jest": ^27.4.1
+    "@types/markdown-table": 2.0.0
     "@types/node": ^14.0.0
     "@types/semver": ^7.3.9
     "@types/uuid": ^8.3.4
@@ -35105,6 +35113,7 @@ __metadata:
     graphqurl: ^1.0.1
     jest: ^27.5.1
     jwks-rsa: ^2.0.5
+    markdown-table: 2.0.0
     nodemon: ^2.0.15
     octokit: ^1.7.1
     pg: ^8.7.1
@@ -35338,6 +35347,15 @@ __metadata:
   version: 1.0.4
   resolution: "markdown-escapes@npm:1.0.4"
   checksum: 6833a93d72d3f70a500658872312c6fa8015c20cc835a85ae6901fa232683fbc6ed7118ebe920fea7c80039a560f339c026597d96eee0e9de602a36921804997
+  languageName: node
+  linkType: hard
+
+"markdown-table@npm:2.0.0":
+  version: 2.0.0
+  resolution: "markdown-table@npm:2.0.0"
+  dependencies:
+    repeat-string: ^1.0.0
+  checksum: 9bb634a9300016cbb41216c1eab44c74b6b7083ac07872e296f900a29449cf0e260ece03fa10c3e9784ab94c61664d1d147da0315f95e1336e2bdcc025615c90
   languageName: node
   linkType: hard
 
@@ -43448,7 +43466,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"repeat-string@npm:^1.5.4, repeat-string@npm:^1.6.1":
+"repeat-string@npm:^1.0.0, repeat-string@npm:^1.5.4, repeat-string@npm:^1.6.1":
   version: 1.6.1
   resolution: "repeat-string@npm:1.6.1"
   checksum: 1b809fc6db97decdc68f5b12c4d1a671c8e3f65ec4a40c238bc5200e44e85bcc52a54f78268ab9c29fcf5fe4f1343e805420056d1f30fa9a9ee4c2d93e3cc6c0
