@@ -23,45 +23,107 @@ authors: [free, chris, forrest]
   ~
 -->
 
-There are two vulnerabilities being discussed on the internet. It's confusing, so we wanted to take a moment of our time
-to help diffuse that confusion and provide some clear direction about the vulnerabilities in several popular Java libraries
-published by Spring.
+There are currently two RCE vulnerabilities being discussed on the internet. Most of the people talking about them
+believe they're talking about "Spring4Shell", but in reality they're swapping notes about [CVE-2022-22963](https://tanzu.vmware.com/security/cve-2022-22963).
+
+### TL;DR
+
+Two RCEs exist.
+
+We're unsure if the RCE in Spring Core is exploitable yet (dubbed "Spring4Shell"), while the [second RCE](#cve-2022-22963) in Spring
+Cloud Function (less widely used) is valid and has been given a proper CVE ([CVE-2022-22963](https://tanzu.vmware.com/security/cve-2022-22963)).
+
+## Background
+
+The situation is confusing because both vulnerabilities are in popular Java libraries published by Spring (Spring Core
+and Spring Cloud Function). Further, this situation is made worse by the lack of a CVE to differentiate the two bugs.
+Anybody searching for "Spring RCE" online is going to find the RCE results for the less popular Spring Cloud Function
+library.
+
+They won't be able to find information validating Spring4Shell because it's still an _unconfirmed_ vulnerability. There
+is no CVE to track it because nobody is certain if there is a problem. It's all speculation and screenshots on Twitter/GitHub.
+
+Even the name "Spring4Shell" was only picked because Spring Core is as ubiquitous of a library similar to how
+log4j was (which spawned the infamous [Log4Shell vulnerability](https://www.wired.com/story/log4j-flaw-hacking-internet/)).
+
+What is important to remember is that this vulnerability is *NOT* as bad a Log4Shell. Any attack scenario, once discovered,
+is going to be more complex and have more mitigating factors than Log4Shell did because of the nature of how deserialization
+exploits work in Java.
+
+With Log4Shell exploitation was trivial and an exploit could be written in seconds that worked on most apps.
+
+With Spring4Shell exploitation requires deep Java knowledge to get a functioning POC. It also requires certain features,
+such as caching, to be enabled in Spring before an app is vulnerable. We don't have all the details yet, but we know
+enough to feel confident that this isn't the "next Log4Shell" (despite what other blogs may be telling you).
+
+### About Us
+
+Why is our blog any different?
+
+Well, we're a team of Security Engineers with experience in this space. In addition to writing a
+[mitigation guide for Log4Shell](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide), we've also been
+validating bug reports professionally for years. We helped run the Bug Bounties at
+Uber and Snapchat which both had significantly more "invalid" reports to review than "real" ones. Because of that, we've
+gotten very good at verifying that an exploit is a problem _before_ sound the alarm.
+
+"It's an order of magnitude less work to tell lies than to refute them." - A former colleague
+
+As developers and security engineers we're committed to only publishing the facts around what we know about the
+situation, sharing our thoughts from analyzing the vulnerabilities, and giving you a way to
+[stay informed](#get-notified-automatically) about new developments as they are discovered.
 
 ## Overview of Vulnerabilities
 
 - [Spring4Shell](#spring4shell): An _unconfirmed RCE_ in *Spring Core* <=5.3.17. We're investigating this currently.
 - [CVE-2022-22963](#cve-2022-22963): A _confirmed RCE_ in *Spring Cloud Function* (<=3.1.6 and <=3.2.2).
 
-## Taming Chaos and Misinformation
+## Context to Tame the Chaos
 
 Trying to understand what information is "real" and what mitigations actually work is very difficult for vulnerabilities
 without a CVE. That's especially true when the
 [Spring developers themselves](https://twitter.com/hacksilon/status/1509117953064812547) are denying that there is a problem.
 
-We've done enough analysis on this to be _concerned_ about the possibility that this is a problem, so we're not going to
-say that it's _not an issue_ until we have a concrete understanding of the exploit scenarios. We believe that there _is_
-some form of RCE in Spring core, but we just don't know if it's easily "remotely executable" or not.
+We've done enough analysis on this to be _concerned_ about the possibility that this is *maybe a problem*. We won't say
+that it's _not an issue_ until we have a concrete understanding of the exploit scenarios. We believe that there _is_
+some form of RCE in Spring core (i.e. Spring4Shell), but we just don't know if it's easily "remotely executable" or not
+yet.
 
-Code Execution by itself isn't terribly concerning. It's only concerning when an unauthorized user is able to *Remotely*
-execute code. That's why we call then "Remote Code Execution" vulnerabilities and not just "Code Execution"! Log4Shell
-was bad _because_ it was trivially exploitable *Remotely*.
+### Deserialization alone is not a CVE
 
-Back in December we were the first team to write about the
-[Java RCE vulnerability in log4j](https://www.lunasec.io/docs/blog/log4j-zero-day). We initially named that vulnerability
-"Log4Shell" because, at the time, [CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228) hadn't been published
-nor had the Apache team published about any security notices.
+Why not declare this a problem immediately and add to the panic? Well, by itself, Code Execution isn't terribly
+concerning. JavaScript still has the `eval` function included in every Node.js server or browser, but it's not
+considered a security problem until an attacker has a way to feeding string input into `eval` with content they control.
 
-We're calling this possible RCE "Spring4Shell" to help users search for it separately from the other RCE mentioned in
-this post.
+In order to achieve that, for most applications, an attacker would have to be able to modify the application's source
+code directly in order to give themselves access to execute `eval`. And, at that point, they wouldn't need `eval` anymore
+because they can just put in their own code anyway!
+
+That's what why security experts call them "Remote Code Execution" (RCE) attacks. We're only ever concerned when an
+unauthorized user is able to *Remotely* execute code. That's what made Log4Shell
+such a bad RCE vulnerability because developers log user-controlled variables (like usernames) all the time!
 
 ### Are you feeling Deja-vu?
 
-Just as with Log4Shell back in December, misinformation spreads quickly and easily. It's much easier to photoshop a
-screenshot showing an exploit and "redact the details" than it is to investigate a security vulnerability in a large
-code base like Spring Core.
+There are a lot of similarities between Spring4Shell and Log4Shell. Back in December we were the first team to write
+about the (at the time speculated) [Java RCE vulnerability in log4j](https://www.lunasec.io/docs/blog/log4j-zero-day) floating around
+on Twitter.
 
-Fortunately, we're a team of Security Engineers and that's what we've been doing as pros for many years. We're happy to
-dig in, understand it, and publish our analysis of the vulnerability for others to review.
+We initially named that vulnerability "Log4Shell" because, at the time,
+[CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228) hadn't been published nor had the Apache team
+published about any security notices about the issue).
+
+And, just like then, misinformation was able to spread quickly and easily. It's much easier to photoshop a
+screenshot showing an exploit and "redact the details" than it is to investigate a security vulnerability in a large
+code base like Spring Core. It's also easy to tell people how to "fix" the vulnerability without any proof that the
+mitigations are effective. (Which is why a [2nd CVE was published in log4j](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046/).)
+
+Users on Twitter have been calling this possible RCE "Spring4Shell" to differentiate the RCE vulnerabilities. We're
+doubling down on that term, in lieu of a proper CVE, to help users search for it separately from the other RCE mentioned
+in this post.
+
+Fortunately, we're a team of Security Engineers skilled in reviewing, validating, and writing up summaries on Bug Bounty
+reports containing only basic information. We're happy to use that skill to dig in, understand, and publish our analysis
+of the vulnerability for others to review.
 
 ## Spring4Shell
 
