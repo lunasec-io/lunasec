@@ -107,7 +107,7 @@ Getting Spring to load `BinderControllerAdvice` may require manual steps to have
 more details about how to do that soon.
 :::
 
-```java
+```ts
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.WebDataBinder;
@@ -130,7 +130,7 @@ public class BinderControllerAdvice {
 
 Alternatively, you can inject the mitigations by adding a method to a controller:
 
-```java
+```ts
 import com.pinger.fun.model.EvalBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -186,7 +186,7 @@ enables a "Class Loader Manipulation" attack when `@RequestMapping` is used to p
 
 Consider the below code:
 
-```java
+```ts
 public class Spring4ShellRequest {
     public String name;
 
@@ -237,7 +237,7 @@ class.module.classLoader.resources.context.parent.pipeline.first.fileDateFormat=
 ```
 
 Issuing a final request will use the values that have been set to exploit the vulnerability
-```
+```yaml
 GET /stupidRumor_war_exploded/any/path?cmd=touch /tmp/test HTTP/1.1
 Host: 127.0.0.1:8080
 User-Agent: Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.7113.93 Safari/537.36
