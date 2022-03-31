@@ -2,7 +2,7 @@
 title: "Spring4Shell: Security Analysis of the latest Java RCE '0-day' vulnerabilities in Spring"
 description: "We've been taking a look at the new zero-day exploit, dubbed Spring4Shell, supposedly discovered in Spring Core to determine if it's a problem or not, as well as explained another RCE vulnerability found in Spring."
 slug: spring-rce-vulnerabilities
-date: 2022-03-30
+date: 2022-03-30T20:00
 image: https://www.lunasec.io/docs/img/spring4shell-logo.png
 keywords: [zero-day, rce, java, spring]
 tags: [zero-day, security, data-security]
@@ -25,14 +25,14 @@ authors: [free, chris, forrest]
 
 ![Spring4Shell Logo](https://www.lunasec.io/docs/img/spring4shell-logo.png)
 
-_Logo courtesy of [Daniel Christensen](https://github.com/BobTheShoplifter/Spring4Shell-POC)._
+_Originally posted March 30th, 2022. Logo from [Daniel Christensen](https://github.com/BobTheShoplifter/Spring4Shell-POC)._
 
 On March 29th, 2022, two RCE vulnerabilities were being discussed on the internet. Most of the people talking about them
 believe they're talking about "Spring4Shell", but in reality they're swapping notes about [CVE-2022-22963](https://tanzu.vmware.com/security/cve-2022-22963).
 
 ### TL;DR
 
-Two RCEs exist. Three vectors are being discussed (one is not known to be remotely exploitable).
+Two RCEs exist and three vectors are being discussed online (one of which is not known to be remotely exploitable).
 
 1. Confirmed: "Spring4Shell" in Spring Core that has been confirmed by several sources that leverages class injection (very severe),
 2. Confirmed: [CVE-2022-22963](https://tanzu.vmware.com/security/cve-2022-22963) in Spring Cloud Function (less severe),
@@ -87,8 +87,11 @@ investigating the exploitability of this potential vulnerability.~~
 _[Praetorian has confirmed that this is exploitable](https://www.praetorian.com/blog/spring-core-jdk9-rce/), but we still
 don't have all the details around how widespread or exploitable this is._
 
-There is not currently a CVE associated with this
-vulnerability, but it has been being referred to as "Spring4Shell" by users on Twitter.
+There is not currently a CVE associated with this vulnerability, and it is being referred to as "Spring4Shell" or
+"SpringShell" by users online.
+
+**Update**: The authors of Spring have yet to make an official statement about this but are suspected to be working on a
+patch to mitigate the vulnerability.
 
 ### Applying Mitigations
 
@@ -184,6 +187,9 @@ enables a "Class Loader Manipulation" attack when `@RequestMapping` is used to p
 
 ### Exploit Scenario Overview
 
+_We've reverse engineered this information by analyzing a few POCs like [this one](https://github.com/TheGejr/SpringShell)
+and by writing an app to help us test for "real" exploitation._
+
 Consider the below code:
 
 ```ts
@@ -258,14 +264,19 @@ This file will be used for format the logs for the server and an arbitrary comma
 
 :::info Exploit Verification
 We have not successfully verified, for ourselves, that this exploit works. To the best of our knowledge, and based on the reports from trusted
-sources, that this is the vector of exploitation for this vulnerability for Spring4Shell. Future updates to this section will contain
-code that has been verified, by us, to exploit this vulnerability.
+sources, that this is the vector of exploitation for this vulnerability for Spring4Shell.
+
+Some simple POCs are
+[available on GitHub](https://github.com/lunasec-io/spring-rce-vulnerable-app) to start testing with, but the POCs we've
+used are still not trivial to trigger the exploit with. We'll have an updated POC link tomorrow with a full reproduction
+environment.
 :::
 
 ### Test the Exploit yourself
 
 We've gone ahead and written an ["Example Vulnerable Application" on GitHub](https://github.com/lunasec-io/spring-rce-vulnerable-app)
-for this vulnerable deserialization RCE attack. That repo does not currently contain a working POC or any information
+for this vulnerable deserialization RCE attack. That repo does not currently contain a working POC (see
+[this repo](https://github.com/TheGejr/SpringShell) for a POC) or any information
 about _how to exploit this_, but it does provide a way to help reduce the uncertainty around this by testing payloads
 that could work.
 
