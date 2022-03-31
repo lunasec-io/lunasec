@@ -97,7 +97,6 @@ select_permissions:
     filter: {}
   role: service
 - permission:
-    allow_aggregations: true
     columns:
     - name
     - repo
