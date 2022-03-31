@@ -2,7 +2,7 @@
 title: "Spring4Shell: Security Analysis of the latest Java RCE '0-day' vulnerabilities in Spring"
 description: "We've been taking a look at the new zero-day exploit, dubbed Spring4Shell, supposedly discovered in Spring Core to determine if it's a problem or not, as well as explained another RCE vulnerability found in Spring."
 slug: spring-rce-vulnerabilities
-date: 2022-03-31T20:01
+date: 2022-03-31T23:57
 image: https://www.lunasec.io/docs/img/spring4shell-logo.png
 keywords: [zero-day, rce, java, spring]
 tags: [zero-day, security, data-security]
@@ -268,11 +268,21 @@ To test this exploit for yourself, you can check out [our fork of reznok's Sprin
 
 ### Test the Exploit yourself
 
-We've gone ahead and written an ["Example Vulnerable Application" on GitHub](https://github.com/lunasec-io/spring-rce-vulnerable-app)
+**Update**: You can now test the end-to-end exploitation of Spring4Shell with this
+["Vulnerable App and POC exploit" from GitHub](https://github.com/lunasec-io/Spring4Shell-POC).
+
+We've gone through and verified that this exploit is functional by building on the work of the many other security
+researchers digging into this. As we learn more, we'll be adding additional changes that repo as we continue our work on it.
+
+_From sketchy Twitter screenshots to a working POC in under 48 hours! It's been a wild ride, y'all. Thank you,
+everybody working on this, for your help to make that possible!_
+
+~~We've gone ahead and written
+an ["Example Vulnerable Application" on GitHub](https://github.com/lunasec-io/spring-rce-vulnerable-app)
 for this vulnerable deserialization RCE attack. That repo does not currently contain a working POC (see
 [this repo](https://github.com/TheGejr/SpringShell) for a POC) or any information
 about _how to exploit this_, but it does provide a way to help reduce the uncertainty around this by testing payloads
-that could work.
+that could work.~~
 
 :::info Contact Us
 If you have any insights or discoveries to share, please [email us](mailto:contact@lunasec.io) with them to help get
@@ -451,4 +461,5 @@ old OG Log4Shell one!
 2. 3/30/22 @ 3pm PDT: Updated the post with more details from Praetorian, and refactored the content to make it easier to read.
 3. 3/31/22 @ 12:08 PDT: Update exploitation details of the vulnerability now that we know how to exploit it.
 4. 3/31/22 @ 12:55pm PDT: Added information about the new CVE and available patch versions from the Spring devs.
-5. 3/31/22 @ 3:58pm PDT: Fixed a type with the Spring versions. They were the versions from Spring Boot, not Spring itself.
+5. 3/31/22 @ 3:58pm PDT: Fixed a typo with the Spring versions. They were the versions from Spring Boot, not Spring itself.
+6. 3/31/22 @4:57pm PDT: Added information about an end-to-end vulnerable app + POC.
