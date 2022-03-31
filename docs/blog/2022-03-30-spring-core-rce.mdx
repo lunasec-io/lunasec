@@ -95,10 +95,12 @@ patch to mitigate the vulnerability.
 
 ### Applying Mitigations
 
-If you're using Spring Core, this is currently the only known remediation for patching this attack. There is no patch
-available (as of 3-30-2022 @ 2:30pm).
+If you're using Spring Core, thre are currently two remediations for patching this attack. There is no official patch
+available (as of 3-31-2022 @ 6:30am UTC). 
 
-According to the [Praetorian post](https://www.praetorian.com/blog/spring-core-jdk9-rce/) confirming the presence of an
+There is an [unofficial patch](https://github.com/blindpirate/spring-rce-2022-03-hotfix) which uses bytecode manipulation to patch the affected application.
+
+Alternatively, according to the [Praetorian post](https://www.praetorian.com/blog/spring-core-jdk9-rce/) confirming the presence of an
 RCE in Spring Core, the currently recommended approach for is to patch `DataBinder` by adding a blacklist of vulnerable
 field patterns required for exploitation.
 
