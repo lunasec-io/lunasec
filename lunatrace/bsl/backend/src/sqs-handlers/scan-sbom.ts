@@ -19,14 +19,15 @@ import validate from 'validator';
 import { generateGithubGraphqlClient } from '../github';
 import { getInstallationAccessToken } from '../github/auth';
 import { hasura } from '../hasura-api';
-import { Scan } from '../models/scan';
+import { Scans_Insert_Input } from '../hasura-api/generated';
+import { parseAndUploadScan } from '../models/scan';
 import { S3ObjectMetadata } from '../types/s3';
 import { Finding, Report, SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
 import { isError, tryF } from '../utils/try';
 
-async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<Report> {
+async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<Scans_Insert_Input> {
   console.log(`[buildId: ${buildId}]`, `scanning sbom ${sbomBucketInfo}`);
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
@@ -48,17 +49,17 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
   console.log(`[buildId: ${buildId}]`, `updating manifest status to "scanning" if it existed`);
   await hasura.UpdateManifestStatusIfExists({ status: 'scanning', buildId: buildId });
 
-  const report = await Scan.uploadScan(unZippedSbomStream, buildId);
+  const scanReport = await parseAndUploadScan(unZippedSbomStream, buildId);
 
   console.log(`[buildId: ${buildId}]`, 'upload complete, notifying manifest if one exists');
   await hasura.UpdateManifestStatusIfExists({ status: 'scanned', buildId: buildId });
 
   console.log(`[buildId: ${buildId}]`, 'done with scan');
 
-  return report;
+  return scanReport;
 }
 
-async function notifyScanResults(buildId: string, scanReport: Report) {
+async function notifyScanResults(buildId: string, scanReport: Scans_Insert_Input) {
   const notifyInfo = await hasura.GetScanReportNotifyInfoForBuild({
     build_id: buildId,
   });
@@ -86,24 +87,39 @@ async function notifyScanResults(buildId: string, scanReport: Report) {
 
   const github = generateGithubGraphqlClient(installationToken);
 
-  function generatePullRequestCommentFromReport(projectId: string, report: Report) {
+  function generatePullRequestCommentFromReport(projectId: string, report: Scans_Insert_Input) {
     const messageParts = ['## LunaTrace Scan Report', ''];
 
-    const tableData = report.findings.map((finding) => {
+    if (!report.findings) {
+      return null;
+    }
+
+    const tableData: string[][] = report.findings.data.map((finding): string[] => {
       return [
         finding.package_name,
         finding.severity,
         `${finding.locations.length} location${finding.locations.length > 1 ? 's' : ''}`,
         `[View Report](https://lunatrace.lunasec.io/project/${projectId}/build/${report.build_id}`,
-      ];
+      ] as string[];
     });
 
     return messageParts.join('\n') + markdownTable([['Package Name', 'Severity', 'Locations', ''], ...tableData]);
   }
 
+  const body = generatePullRequestCommentFromReport(projectId, scanReport);
+
+  if (body === null) {
+    console.error(`generated scan report is null`, {
+      projectId,
+      installationId,
+      pullRequestId,
+    });
+    return;
+  }
+
   await github.AddComment({
     subjectId: pullRequestId.toString(),
-    body: generatePullRequestCommentFromReport(projectId, scanReport),
+    body,
   });
 }
 
@@ -121,7 +137,7 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
 
   const bucketInfo: SbomBucketInfo = { region, bucketName, key };
 
-  const scanResp = await tryF<Report>(async () => await scanSbom(buildId, bucketInfo));
+  const scanResp = await tryF<Scans_Insert_Input>(async () => await scanSbom(buildId, bucketInfo));
   if (isError(scanResp)) {
     console.error('SBOM generation error', { scanResp });
     await hasura.UpdateManifestStatusIfExists({

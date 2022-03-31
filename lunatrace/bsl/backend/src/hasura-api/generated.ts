@@ -1,3 +1,16 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1 
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -4505,8 +4518,8 @@ export type Projects = {
   manifests_aggregate: Manifests_Aggregate;
   name: Scalars['String'];
   /** An object relationship */
-  organization?: Maybe<Organizations>;
-  organization_id?: Maybe<Scalars['uuid']>;
+  organization: Organizations;
+  organization_id: Scalars['uuid'];
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** An aggregate relationship */
@@ -7462,7 +7475,7 @@ export type GetScanReportNotifyInfoForBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetScanReportNotifyInfoForBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
+export type GetScanReportNotifyInfoForBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, project?: { __typename?: 'projects', id: any, organization: { __typename?: 'organizations', installation_id?: number | null } } | null } | null };
 
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
@@ -7479,6 +7492,13 @@ export type InsertPersonalProjectAndOrgMutationVariables = Exact<{
 
 
 export type InsertPersonalProjectAndOrgMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', id: any } | null };
+
+export type InsertScanMutationVariables = Exact<{
+  scan: Scans_Insert_Input;
+}>;
+
+
+export type InsertScanMutation = { __typename?: 'mutation_root', insert_scans_one?: { __typename?: 'scans', id: any, build_id: any } | null };
 
 export type GetProjectIdFromGitUrlQueryVariables = Exact<{
   git_url?: InputMaybe<Scalars['String']>;
@@ -7512,7 +7532,7 @@ export type UpdateManifestMutationVariables = Exact<{
 }>;
 
 
-export type UpdateManifestMutation = { __typename?: 'mutation_root', update_manifests?: { __typename?: 'manifests_mutation_response', returning: Array<{ __typename?: 'manifests', filename: string, project_id: any, project: { __typename?: 'projects', organization_id?: any | null } }> } | null };
+export type UpdateManifestMutation = { __typename?: 'mutation_root', update_manifests?: { __typename?: 'manifests_mutation_response', returning: Array<{ __typename?: 'manifests', filename: string, project_id: any, project: { __typename?: 'projects', organization_id: any } }> } | null };
 
 export type UpdateOrganizationsForUserMutationVariables = Exact<{
   organizations_for_user: Array<Organization_User_Insert_Input> | Organization_User_Insert_Input;
@@ -7594,6 +7614,14 @@ export const InsertPersonalProjectAndOrgDocument = gql`
     object: {name: "Personal", projects: {data: {name: "Personal Project"}}, organization_users: {data: {user_id: $user_id}}}
   ) {
     id
+  }
+}
+    `;
+export const InsertScanDocument = gql`
+    mutation InsertScan($scan: scans_insert_input!) {
+  insert_scans_one(object: $scan) {
+    id
+    build_id
   }
 }
     `;
@@ -7680,6 +7708,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     InsertPersonalProjectAndOrg(variables: InsertPersonalProjectAndOrgMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertPersonalProjectAndOrgMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertPersonalProjectAndOrgMutation>(InsertPersonalProjectAndOrgDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertPersonalProjectAndOrg', 'mutation');
+    },
+    InsertScan(variables: InsertScanMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertScanMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InsertScanMutation>(InsertScanDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertScan', 'mutation');
     },
     GetProjectIdFromGitUrl(variables?: GetProjectIdFromGitUrlQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectIdFromGitUrlQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetProjectIdFromGitUrlQuery>(GetProjectIdFromGitUrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectIdFromGitUrl', 'query');
