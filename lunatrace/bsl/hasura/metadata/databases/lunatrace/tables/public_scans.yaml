@@ -31,6 +31,20 @@ insert_permissions:
   role: service
 select_permissions:
 - permission:
+    columns:
+    - db_date
+    - scan_number
+    - distro_name
+    - distro_version
+    - grype_version
+    - source_type
+    - target
+    - created_at
+    - build_id
+    - id
+    filter: {}
+  role: service
+- permission:
     allow_aggregations: true
     columns:
     - db_date
@@ -51,3 +65,19 @@ select_permissions:
               user_id:
                 _eq: X-Hasura-User-Id
   role: user
+update_permissions:
+- permission:
+    check: {}
+    columns:
+    - db_date
+    - scan_number
+    - distro_name
+    - distro_version
+    - grype_version
+    - source_type
+    - target
+    - created_at
+    - build_id
+    - id
+    filter: {}
+  role: service
