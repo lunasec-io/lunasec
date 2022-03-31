@@ -32,7 +32,7 @@ believe they're talking about "Spring4Shell" (_CVE Added: [CVE-2022-22965](https
 in reality they're swapping notes about [CVE-2022-22963](https://tanzu.vmware.com/security/cve-2022-22963).
 
 **Update**: Patches are now available for Spring4Shell in
-[Spring versions 2.6.6 and 2.5.12](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement) and an
+[Spring versions 5.3.18 and 5.2.20](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement) and an
 official CVE has been published as [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965).
 
 ### TL;DR
@@ -97,14 +97,14 @@ _A CVE has been added on March 31st, 2022 by the Spring developers as [CVE-2022-
 "SpringShell" by users online.
 
 **Update**: The authors of Spring have _published a patch for this with
-[versions 2.6.6 and 2.5.12](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement)_
+[versions 5.3.18 and 5.2.20](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement)_
 ~~yet to make an official statement about this but are suspected to be working on a patch to mitigate the vulnerability~~.
 
 ### Applying Mitigations
 
 If you're using Spring Core, this is currently the only known remediation for patching this attack. _A patch is now
 available as of March 31st, 2022 in the newest published
-[Spring versions 2.6.6 and 2.5.12](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement)_
+[Spring versions 5.3.18 and 5.2.20](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement)_
 ~~There is no patch available (as of 3-30-2022 @ 2:30pm)~~.
 
 According to the [Praetorian post](https://www.praetorian.com/blog/spring-core-jdk9-rce/) confirming the presence of an
@@ -303,7 +303,7 @@ uncertainty around Spring4Shell currently.)
 
 **Update**: _The following section is less true now that an official CVE has been associated with this vulnerability and
 patches are available. Please see
-[Spring versions 2.6.6 and 2.5.12](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement) for more
+[Spring versions 5.3.18 and 5.2.20](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement) for more
 information about patching._
 
 The situation is confusing because the vulnerabilities are in two popular Java libraries that are both published by Spring
@@ -356,7 +356,7 @@ Because of that, we're committed to only publishing the facts and our thoughts _
 
 **Update**: _The following section is less true now that an official CVE has been associated with this vulnerability and
 patches are available. Please see
-[Spring versions 2.6.6 and 2.5.12](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement) for more
+[Spring versions 5.3.18 and 5.2.20](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement) for more
 information about patching._
 
 Trying to understand what information is "real" and what mitigations actually work is very difficult for vulnerabilities
@@ -450,4 +450,5 @@ old OG Log4Shell one!
 1. 3/30/22 @ 10am PDT: First post.
 2. 3/30/22 @ 3pm PDT: Updated the post with more details from Praetorian, and refactored the content to make it easier to read.
 3. 3/31/22 @ 12:08 PDT: Update exploitation details of the vulnerability now that we know how to exploit it.
-4. 3/31/22 @ 12:55pm PST: Added information about the new CVE and available patch versions from the Spring devs.
+4. 3/31/22 @ 12:55pm PDT: Added information about the new CVE and available patch versions from the Spring devs.
+5. 3/31/22 @ 3:58pm PDT: Fixed a type with the Spring versions. They were the versions from Spring Boot, not Spring itself.
