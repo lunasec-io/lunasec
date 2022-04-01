@@ -1,0 +1,7 @@
+query GetCountOfPersonalOrg($user_id: uuid!) {
+    organizations_aggregate(where: { _and: {organization_users: {user_id: {_eq: $user_id}}, name: {_eq: "Personal"}}}) {
+        aggregate {
+            count
+        }
+    }
+}

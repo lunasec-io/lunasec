@@ -12,48 +12,75 @@
  *
  */
 import React from 'react';
-import { Card, Col, Container, Row } from 'react-bootstrap';
+import { Badge, Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
+import { BsGithub } from 'react-icons/bs';
+import { NavLink } from 'react-router-dom';
+
+import api from '../../api';
 
 export const AuthenticatedHome: React.FunctionComponent = (_props) => {
+  const { data } = api.useGetSidebarInfoQuery();
+  const hasAnyProjects = !!data && data.projects.filter((p) => p.name !== 'Personal').length > 0;
+  const personalProjectId = !!data && data.projects.find((p) => p.name === 'Personal Project')?.id;
   return (
     <>
       <Helmet title="home" />
       <Container>
-        <Row>
-          <h1>Get started using LunaTrace!</h1>
-          <p>
-            LunaTrace gives you the option of either installing a Github App to automatically scan your pull requests or
-            manually by using a CLI in your build pipeline.
-          </p>
+        <Row className="text-center mb-4">
+          <h1>Welcome to LunaTrace</h1>
         </Row>
         <Row>
-          <Col md={{ offset: 2, span: 4 }}>
-            <Card className="mx-auto" style={{ minHeight: '18rem', width: '18rem' }}>
-              <Card.Body>
-                <Card.Title>Github App</Card.Title>
-                <Card.Text>
-                  Install the LunaTrace Github App to your repositories and/or organizations. The Github App will
-                  automatically scan pull requests and leave comments when vulnerabilities have been discovered.
-                </Card.Text>
-                <Card.Link href="https://github.com/apps/dev-lunatrace-by-lunasec/installations/new">
-                  Install LunaTrace
-                </Card.Link>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={{ span: 4 }}>
-            <Card className="mx-auto" style={{ minHeight: '18rem', width: '18rem' }}>
-              <Card.Body>
-                <Card.Title>LunaTrace CLI</Card.Title>
-                <Card.Text>
-                  Manually create and scan SBOMs for your projects. The CLI can be used in any environment and will
-                  report its findings to your project&apos;s dashboard.
-                </Card.Text>
-                <Card.Link href="#">Setup</Card.Link>
-              </Card.Body>
-            </Card>
-          </Col>
+          <Card className="">
+            <Card.Body className="m-md-4">
+              <Card.Title>
+                {' '}
+                <Badge className="me-1" pill>
+                  1
+                </Badge>{' '}
+                Connect <span className="darker">to Github.</span>
+              </Card.Title>
+              <Card.Subtitle className="darker homepage-subtitle left-bar-border active">
+                Connect LunaTrace to at least one repo you would like to scan. You can always add more later.
+              </Card.Subtitle>
+              <Card.Title>
+                {' '}
+                <Badge className="me-1" bg={hasAnyProjects ? 'primary' : 'secondary'} pill>
+                  2
+                </Badge>{' '}
+                Configure <span className="darker">your project.</span>
+              </Card.Title>
+              <Card.Subtitle className={`darker homepage-subtitle left-bar-border ${hasAnyProjects ? 'active' : ''}`}>
+                Click your imported project in the sidebar.
+              </Card.Subtitle>
+              <Card.Title>
+                {' '}
+                <Badge className="me-1" bg={hasAnyProjects ? 'primary' : 'secondary'} pill>
+                  3
+                </Badge>{' '}
+                PR Scanning is Active!
+              </Card.Title>
+              <Card.Subtitle className={`darker homepage-subtitle ${hasAnyProjects ? 'active' : ''}`}>
+                Set up additional manual scans in your project if you would like to.
+              </Card.Subtitle>
+
+              <Row className="justify-content-center">
+                <Col md="6" className="d-grid gap-2">
+                  <Button
+                    variant={hasAnyProjects ? 'light' : 'primary'}
+                    size="lg"
+                    href="https://github.com/apps/dev-lunatrace-by-lunasec/installations/new"
+                  >
+                    <BsGithub className="mb-1 me-1" /> {hasAnyProjects ? 'Add more projects' : 'Connect to GitHub'}
+                  </Button>
+                  <Card.Subtitle className="darker">
+                    Prefer not to? You can still do manual scans in{' '}
+                    <NavLink to={`/project/${personalProjectId}`}>your personal project</NavLink>.
+                  </Card.Subtitle>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
         </Row>
       </Container>
     </>

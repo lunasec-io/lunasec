@@ -26,7 +26,6 @@ export async function getGithubAccessTokenFromKratos(
   const kratosApiClient = V0alpha2ApiFactory(kratosConfig);
 
   const kratosRes = await kratosApiClient.adminGetIdentity(userId, ['oidc']);
-
   const identity = kratosRes.data;
 
   if (!identity.credentials) {

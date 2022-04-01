@@ -62,7 +62,7 @@ export const routes: RouteObject[] = [
         ],
       },
       {
-        path: 'project/create', //maybe this should be under a project group...not sure
+        path: 'new-project/:organization_id', //maybe this should be under a project group...not sure
         element: (
           <RouteGuard>
             <ProjectCreate />

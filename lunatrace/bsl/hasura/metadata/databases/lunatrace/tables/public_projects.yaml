@@ -2,6 +2,15 @@ table:
   name: projects
   schema: public
 object_relationships:
+- name: github_repository
+  using:
+    manual_configuration:
+      column_mapping:
+        id: project_id
+      insertion_order: null
+      remote_table:
+        name: github_repositories
+        schema: public
 - name: organization
   using:
     foreign_key_constraint_on: organization_id
@@ -97,6 +106,7 @@ select_permissions:
     filter: {}
   role: service
 - permission:
+    allow_aggregations: true
     columns:
     - name
     - repo
