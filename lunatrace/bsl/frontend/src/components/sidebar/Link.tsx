@@ -34,10 +34,11 @@ const renderNavlinkBody = (props: SidebarLinkProps): React.ReactNode => {
   }
   return (
     <>
-      {props.link.icon && <props.link.icon className="feather align-middle" />}{' '}
+      {props.link.icon && !props.link.iconAfter && <props.link.icon className="feather align-middle" />}{' '}
       <span className="align-middle" depth={props.depth}>
         {props.link.title}
       </span>
+      {props.link.icon && props.link.iconAfter && <props.link.icon className="feather align-middle ms-1" />}{' '}
       {props.link.badge && (
         <Badge className="badge-sidebar-primary" bg="" size={18}>
           {props.link.badge}
@@ -46,6 +47,7 @@ const renderNavlinkBody = (props: SidebarLinkProps): React.ReactNode => {
     </>
   );
 };
+
 export const Link: React.FunctionComponent<SidebarLinkProps> = (props) => {
   return (
     <li className="sidebar-item">
@@ -53,7 +55,7 @@ export const Link: React.FunctionComponent<SidebarLinkProps> = (props) => {
         depth={props.depth}
         to={props.link.href}
         onClick={props.link.onClick}
-        className={({ isActive }) => ['sidebar-link', isActive ? 'active' : null].filter(Boolean).join(' ')}
+        className={({ isActive }) => ['sidebar-link', isActive ? 'active ' : null].filter(Boolean).join(' ')}
       >
         {renderNavlinkBody(props)}
       </NavLink>

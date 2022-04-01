@@ -16,8 +16,8 @@ import { Accordion, Button, Col, ListGroup, Row } from 'react-bootstrap';
 import { CopyBlock, dracula } from 'react-code-blocks';
 import { Plus } from 'react-feather';
 
-import { ConditionallyRender } from '../../../../components/utils/ConditionallyRender';
-import { ProjectInfo } from '../../types';
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
+import { ProjectInfo } from '../types';
 
 import { CreateTokenForm } from './TokenForm';
 import { TokenItem } from './TokenItem';
@@ -37,33 +37,30 @@ export const ProjectTokens: React.FC<ProjectTokensProps> = ({ project }) => {
         </Col>
         <Col md>
           <p>
-            Project Secrets can be used by the LunaTrace CLI to directly create builds of the project or one of its
+            Project Secrets can be used by the LunaTrace CLI to directly create snapshots of the project or one of its
             artifacts. This is typically done from a CI or release job.
           </p>
         </Col>
         <Col>
-          <Accordion flush={true}>
+          <Accordion flush={true} defaultActiveKey={project.project_access_tokens.length > 0 ? '' : '0'}>
             <Accordion.Item eventKey="0">
               <Accordion.Header className="secret-more-info-accordion-header">More info and examples</Accordion.Header>
               <Accordion.Body>
-                These tokens are designed to be embedded in a build job, and do not expire. Anyone with this secret can
-                create builds of your project to LunaTrace, so keep it secret and do not commit it. Project Secrets can
-                only be copied at the time of creation. If you lose the key, you must create a new one. Project secrets
-                are passed to the LunaTrace CLI as an environment variable.
+                In many cases you may wish to scan a specific artifact such as a zip, jarfile, container, or manifest
+                file that is not committed to Git. This is especially useful for languages which do not have complete
+                manifest files and need to be scanned after compilation, such as Java, and in cases where we want to
+                scan a Docker container. Project secrets are passed to the LunaTrace CLI as an environment variable.
                 <CopyBlock
-                  text={'LUNATRACE_PROJECT_SECRET=<YOUR SECRET> lunatrace inventory create <YOUR ARTIFACT>'}
+                  text={'LUNATRACE_PROJECT_SECRET=<YOUR SECRET> lunatrace snapshot <ARTIFACT TYPE> <YOUR ARTIFACT>'}
                   language="bash"
                   showLineNumbers={false}
                   startingLineNumber={false}
                   theme={dracula}
                   codeBlock
                 />
-                If the project is linked to a repo in GitHub, LunaTrace will attempt to clone the repo and automatically
-                perform a scan, which would make it unnecessary to create a token and call the CLI manually, as shown
-                above. However, in many cases you may wish to scan a specific artifact such as a zip, jarfile,
-                container, or manifest file that is not committed to Git. This is especially useful for languages which
-                do not have complete manifest files and need to be scanned after compilation, such as Java, and in cases
-                where we want to scan a Docker container.
+                These tokens are designed to be embedded in a build job, and do not expire. Anyone with this secret can
+                create snapshots of your project, so keep it secret and do not commit it. Project Secrets can only be
+                copied at the time of creation. If you lose the key, you must create a new one.
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
