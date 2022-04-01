@@ -26,6 +26,19 @@ select_permissions:
     - project_id
     filter: {}
   role: service
+- permission:
+    columns:
+    - git_url
+    - github_id
+    - id
+    - project_id
+    filter:
+      project:
+        organization:
+          organization_users:
+            user_id:
+              _eq: X-Hasura-User-Id
+  role: user
 update_permissions:
 - permission:
     check: {}

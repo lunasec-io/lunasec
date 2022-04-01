@@ -16,6 +16,7 @@ import React from 'react';
 import useAppSelector from '../../hooks/useAppSelector';
 import { selectIsAuthenticated } from '../../store/slices/authentication';
 
+import { AuthenticatedHome } from './AuthenticatedHome';
 import { UnauthenticatedHome } from './UnauthenticatedHome';
 
 export const HomePage: React.FunctionComponent = (_props) => {
@@ -23,7 +24,7 @@ export const HomePage: React.FunctionComponent = (_props) => {
 
   if (!isAuthenticated) {
     return <UnauthenticatedHome />;
-  } else {
-    return <>logged in homepage</>;
   }
+
+  return <AuthenticatedHome />;
 };

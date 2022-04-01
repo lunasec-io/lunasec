@@ -15,11 +15,11 @@ import React, { useState } from 'react';
 import { Button, Col, ListGroupItem, Row, Spinner } from 'react-bootstrap';
 import { XCircle } from 'react-feather';
 
-import api from '../../../../api';
-import { ConfirmationDailog } from '../../../../components/ConfirmationDialog';
-import { displayName } from '../../../../utils/display-name';
-import { prettyDate } from '../../../../utils/pretty-date';
-import { ProjectInfo } from '../../types';
+import api from '../../../api';
+import { ConfirmationDailog } from '../../../components/ConfirmationDialog';
+import { displayName } from '../../../utils/display-name';
+import { prettyDate } from '../../../utils/pretty-date';
+import { ProjectInfo } from '../types';
 
 export const TokenItem: React.FC<{ token: ProjectInfo['project_access_tokens'][number] }> = ({ token }) => {
   const [deleteTrigger, deleteResult] = api.useDeleteProjectAccessTokenMutation();
