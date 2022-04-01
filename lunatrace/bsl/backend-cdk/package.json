@@ -7,7 +7,9 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "dev:cdk:deploy": "DEVELOPMENT=true yarn run cdk deploy --all",
+    "prod:cdk:deploy": "yarn run cdk deploy --all"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.147.0",

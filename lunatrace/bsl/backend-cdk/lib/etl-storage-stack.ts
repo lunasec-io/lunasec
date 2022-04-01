@@ -11,7 +11,9 @@
  * limitations under the License.
  *
  */
+import { EventType } from '@aws-cdk/aws-s3';
 import { Bucket, HttpMethods } from '@aws-cdk/aws-s3';
+import { SqsDestination } from '@aws-cdk/aws-s3-notifications';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
@@ -65,6 +67,33 @@ export class EtlStorageStack extends cdk.Stack {
         queue: processSbomDeadLetterQueue,
         maxReceiveCount: 10,
       },
+    });
+
+    this.manifestBucket.addEventNotification(
+      EventType.OBJECT_CREATED,
+      new SqsDestination(this.processManifestSqsQueue)
+    );
+
+    this.sbomBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(this.processSbomSqsQueue));
+
+    new cdk.CfnOutput(this, this.sbomBucket.node.id + 'Name', {
+      value: this.sbomBucket.bucketName,
+      description: 'Name of the Sbom Bucket',
+    });
+
+    new cdk.CfnOutput(this, this.manifestBucket.node.id + 'Name', {
+      value: this.manifestBucket.bucketName,
+      description: 'Name of the Manifest Bucket',
+    });
+
+    new cdk.CfnOutput(this, this.processSbomSqsQueue.node.id + 'Name', {
+      value: this.processSbomSqsQueue.queueName,
+      description: 'Queue Name for the Process SBOM Queue',
+    });
+
+    new cdk.CfnOutput(this, this.processManifestSqsQueue.node.id + 'Name', {
+      value: this.processManifestSqsQueue.queueName,
+      description: 'Queue Name for the Process Manifest Queue',
     });
   }
 }

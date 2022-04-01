@@ -114,7 +114,7 @@ export async function setupQueue() {
   if (!QueueUrl) {
     throw new Error('failed to get QueueUrl for queuename ' + queueName);
   }
-  console.log('got queUrl: ', QueueUrl);
+  console.log('got queueUrl: ', QueueUrl);
   // read loop
   // eslint-disable-next-line no-constant-condition
   while (true) {
