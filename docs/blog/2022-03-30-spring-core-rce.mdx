@@ -228,7 +228,7 @@ Executing the request:
 curl 'http://localhost:8080/greeting?id=test'
 ```
 
-Will attempt to parse the query parameters `name=test` into the Plain Old Java Object (POJO) `request` which is of type `Greeting`.
+Will attempt to parse the query parameters `id=test` into the Plain Old Java Object (POJO) `request` which is of type `Greeting`.
 With this normal request, Spring's `RequestMapping` will use the setter for `id` to set the POJO's name field to `"test"`.
 
 The vulnerability exists due to other values that can be set.
