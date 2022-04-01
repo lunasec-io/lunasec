@@ -4518,8 +4518,8 @@ export type Projects = {
   manifests_aggregate: Manifests_Aggregate;
   name: Scalars['String'];
   /** An object relationship */
-  organization: Organizations;
-  organization_id: Scalars['uuid'];
+  organization?: Maybe<Organizations>;
+  organization_id?: Maybe<Scalars['uuid']>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** An aggregate relationship */
@@ -7475,7 +7475,7 @@ export type GetScanReportNotifyInfoForBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetScanReportNotifyInfoForBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, project?: { __typename?: 'projects', id: any, organization: { __typename?: 'organizations', installation_id?: number | null } } | null } | null };
+export type GetScanReportNotifyInfoForBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
 
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
@@ -7532,7 +7532,7 @@ export type UpdateManifestMutationVariables = Exact<{
 }>;
 
 
-export type UpdateManifestMutation = { __typename?: 'mutation_root', update_manifests?: { __typename?: 'manifests_mutation_response', returning: Array<{ __typename?: 'manifests', filename: string, project_id: any, project: { __typename?: 'projects', organization_id: any } }> } | null };
+export type UpdateManifestMutation = { __typename?: 'mutation_root', update_manifests?: { __typename?: 'manifests_mutation_response', returning: Array<{ __typename?: 'manifests', filename: string, project_id: any, project: { __typename?: 'projects', organization_id?: any | null } }> } | null };
 
 export type UpdateOrganizationsForUserMutationVariables = Exact<{
   organizations_for_user: Array<Organization_User_Insert_Input> | Organization_User_Insert_Input;
