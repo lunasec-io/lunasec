@@ -48,7 +48,7 @@
   --bs-black-rgb: 255, 255, 255;
   --bs-body-color-rgb: 169, 172, 179;
   --bs-body-bg-rgb: 32, 38, 52;
-  --bs-font-sans-serif: "Cantarell", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --bs-font-sans-serif: "Roboto", "Poppins", sans-serif;
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(41, 48, 66, 0.15), rgba(41, 48, 66, 0));
   --bs-body-font-family: var(--bs-font-sans-serif);
@@ -15042,10 +15042,10 @@ body[data-theme=light] a.sidebar-link svg {
 }
 
 .sidebar-dropdown .sidebar-dropdown .sidebar-link {
-  padding: 0.55rem 1.5rem 0.55rem 4.5rem;
+  padding: 0.3rem 1.5rem 0.55rem 2.8rem;
 }
 .sidebar-dropdown .sidebar-dropdown .sidebar-dropdown .sidebar-link {
-  padding: 0.55rem 1.5rem 0.55rem 5.75rem;
+  padding: 0.55rem 1.5rem 0.55rem 4.5rem;
 }
 
 .sidebar-link:focus {
@@ -15147,7 +15147,7 @@ body[data-theme=light] .sidebar-link.active:hover svg {
 }
 
 .sidebar-dropdown .sidebar-link {
-  padding: 0.55rem 1.5rem 0.55rem 3.7rem;
+  padding: 0.4rem 1.5rem 0.4rem 3rem;
   font-weight: 400;
   color: #adb5bd;
 }
@@ -17592,10 +17592,12 @@ td.rdtYear:hover {
 }
 
 .homepage-subtitle {
-  border-left: 2px solid var(--bs-secondary);
   margin-left: 11px;
   margin-bottom: 4px;
   padding: 10px 20px 20px 20px;
+}
+.homepage-subtitle.left-bar-border {
+  border-left: 2px solid var(--bs-secondary);
 }
 
 .homepage-subtitle.active {
@@ -17613,13 +17615,20 @@ td.rdtYear:hover {
 }
 
 .sidebar-link.active {
-  background-image: linear-gradient(to right, #3c77d87d, rgba(0, 0, 0, 0));
+  background-color: #3c77d87d;
   color: white !important;
   font-weight: bold !important;
 }
 
 .sidebar-link {
   text-transform: capitalize;
+}
+
+.sidebar-header {
+  font-family: montserrat;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 12px !important;
 }
 
 .clickable-card:hover {

@@ -23,8 +23,9 @@ import { SpinIfLoading } from '../../components/SpinIfLoading';
 import { ProjectHeader } from './Header';
 import { Builds } from './builds';
 import { ProjectDashboardMain } from './dashboard/Main';
+import { SecretsMain } from './secrets/Main';
 import { ProjectSettingsMain } from './settings/Main';
-import { ProjectInfo } from './types';
+import { ProjectInfo, TabName } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
   const { project_id } = useParams();
@@ -36,7 +37,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
 
   console.log('fetched data from hasura ', data);
 
-  const [activeTab, setActiveTab] = useState<'builds' | 'settings' | 'dashboard'>('dashboard');
+  const [activeTab, setActiveTab] = useState<TabName>('dashboard');
   const renderProjectNav = (p: ProjectInfo) => {
     return (
       <>
@@ -60,14 +61,19 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
               }}
               eventKey="builds"
             >
-              <Box size="1em" className="mb-2 me-1" /> Builds
+              <Box size="1em" className="mb-2 me-1" /> Snapshots
             </Nav.Link>
           </Nav.Item>
           <Nav.Item className="ms-auto">
-            <Nav.Link onClick={() => setActiveTab('settings')} eventKey="settings">
-              <Settings size="1em" className="mb-2 me-1" /> Settings and Secrets
+            <Nav.Link onClick={() => setActiveTab('secrets')} eventKey="secrets">
+              <Settings size="1em" className="mb-2 me-1" /> Secrets and Keys
             </Nav.Link>
           </Nav.Item>
+          {/*<Nav.Item className="ms-auto">*/}
+          {/*  <Nav.Link onClick={() => setActiveTab('settings')} eventKey="settings">*/}
+          {/*    <Settings size="1em" className="mb-2 me-1" /> Settings and Secrets*/}
+          {/*  </Nav.Link>*/}
+          {/*</Nav.Item>*/}
         </Nav>
         <br />
         {renderProjectSubPage(p)}
@@ -78,11 +84,13 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   const renderProjectSubPage = (p: ProjectInfo) => {
     switch (activeTab) {
       case 'dashboard':
-        return <ProjectDashboardMain project={p} />;
+        return <ProjectDashboardMain project={p} setActiveTab={setActiveTab} />;
       case 'builds':
         return <Builds />;
-      case 'settings':
-        return <ProjectSettingsMain project={p} />;
+      case 'secrets':
+        return <SecretsMain project={p} />;
+      //{/*case 'settings':*/}
+      //{/*  return <ProjectSettingsMain project={p} />;*/}
       default:
         return <ProjectMain />;
     }

@@ -16,16 +16,17 @@ import { Accordion } from 'react-bootstrap';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import { useParams } from 'react-router-dom';
 
-import { ProjectInfo } from '../types';
+import { ProjectInfo, SetActiveTab } from '../types';
 
 import { ManifestDrop } from './ManifestDrop';
 import { ScanTypesExplanation } from './ScanTypesExplanation';
 
 interface ProjectDashboardMainProps {
   project: ProjectInfo;
+  setActiveTab: SetActiveTab;
 }
 
-export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project }) => {
+export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project, setActiveTab }) => {
   const { project_id } = useParams();
   if (!project_id) {
     return null;
@@ -33,19 +34,24 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
 
   return (
     <>
-      <ManifestDrop project_id={project_id} />
-      Github URL Github Name short github description blurb most recent several builds, master first probably
-      <Accordion flush={true}>
+      {/*Github URL Github Name short github description blurb most recent several builds, master first probably*/}
+
+      <Accordion flush={true} defaultActiveKey={project.builds.length > 0 ? '' : '0'}>
         <Accordion.Item eventKey="0">
           <Accordion.Header className="text-center secret-more-info-accordion-header">
             {' '}
-            <AiOutlineInfoCircle className="me-2" size="1rem" /> How to collect Snapshots
+            <AiOutlineInfoCircle className="me-2" size="1rem" />{' '}
+            {project.builds.length > 0
+              ? 'Other ways to take snapshots'
+              : 'How to take your first snapshot and start seeing vulnerabilities'}
           </Accordion.Header>
           <Accordion.Body>
-            <ScanTypesExplanation />
+            <ScanTypesExplanation project={project} setActiveTab={setActiveTab} />
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
+      <hr />
+      <ManifestDrop project_id={project_id} />
     </>
   );
 };
