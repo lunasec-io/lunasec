@@ -99,7 +99,7 @@ async function notifyScanResults(buildId: string, scanReport: Scans_Insert_Input
         finding.package_name,
         finding.severity,
         `${finding.locations.length} location${finding.locations.length > 1 ? 's' : ''}`,
-        `[View Report](https://lunatrace.lunasec.io/project/${projectId}/build/${report.build_id}`,
+        `[View Report](https://lunatrace.lunasec.io/project/${projectId}/build/${report.build_id})`,
       ] as string[];
     });
 
