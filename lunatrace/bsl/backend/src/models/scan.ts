@@ -37,7 +37,7 @@ export async function parseAndUploadScan(sbomStream: Readable, buildId: string):
   return scan;
 }
 
-async function runGrypeScan(sbomStream: Readable): Promise<string> {
+export async function runGrypeScan(sbomStream: Readable): Promise<string> {
   return new Promise((resolve, reject) => {
     const stdoutStream = new Stream.Writable();
     // const stderrStream = new Stream.Writeable();
