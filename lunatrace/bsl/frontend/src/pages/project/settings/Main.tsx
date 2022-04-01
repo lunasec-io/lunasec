@@ -16,15 +16,9 @@ import { Container } from 'react-bootstrap';
 
 import { ProjectInfo } from '../types';
 
-import { ProjectTokens } from './tokens/Main';
-
 interface ProjectSettingsProps {
   project: ProjectInfo;
 }
 export const ProjectSettingsMain: React.FC<ProjectSettingsProps> = ({ project }) => {
-  return (
-    <Container>
-      <ProjectTokens project={project} />
-    </Container>
-  );
+  return <Container></Container>;
 };
