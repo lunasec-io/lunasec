@@ -11,7 +11,9 @@
  * limitations under the License.
  *
  */
-import { AlertOctagon, Briefcase, Folder, LogIn, Plus } from 'react-feather';
+import { AlertOctagon, LogIn, Plus } from 'react-feather';
+import { AiFillGithub } from 'react-icons/ai';
+import { BiUnlink } from 'react-icons/bi';
 import { RiParkingFill } from 'react-icons/ri';
 
 import { GetSidebarInfoQuery } from '../../api/generated';
@@ -24,12 +26,14 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
     : data.organizations.map((o) => {
         return {
           href: '/organization/:organization_id',
-          icon: o.name === 'Personal' ? RiParkingFill : Briefcase, // todo: replace this with an icon from github
+          icon: o.name === 'Personal' ? RiParkingFill : AiFillGithub, // todo: replace this with an icon from github
           title: o.name,
           children: [
             ...o.projects.map((p) => {
               return {
                 href: `project/${p.id}`,
+                icon: p.github_repository ? null : BiUnlink,
+                iconAfter: true,
                 title: p.name,
               };
             }),
