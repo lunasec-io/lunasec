@@ -41,15 +41,16 @@ insert_permissions:
     backend_only: false
     check: {}
     columns:
+    - agent_access_token
     - build_number
+    - created_at
     - git_branch
     - git_hash
     - git_remote
-    - s3_url
-    - created_at
-    - agent_access_token
     - id
     - project_id
+    - pull_request_id
+    - s3_url
   role: service
 select_permissions:
 - permission:
@@ -71,15 +72,16 @@ select_permissions:
   role: cli
 - permission:
     columns:
+    - agent_access_token
     - build_number
+    - created_at
     - git_branch
     - git_hash
     - git_remote
-    - s3_url
-    - created_at
-    - agent_access_token
     - id
     - project_id
+    - pull_request_id
+    - s3_url
     filter: {}
   role: service
 - permission:
