@@ -38,11 +38,11 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
 
       <Accordion flush={true} defaultActiveKey={project.builds.length > 0 ? '' : '0'}>
         <Accordion.Item eventKey="0">
-          <Accordion.Header className="text-center secret-more-info-accordion-header">
+          <Accordion.Header>
             {' '}
             <AiOutlineInfoCircle className="me-2" size="1rem" />{' '}
             {project.builds.length > 0
-              ? 'Other ways to take snapshots'
+              ? 'How to take more snapshots'
               : 'How to take your first snapshot and start seeing vulnerabilities'}
           </Accordion.Header>
           <Accordion.Body>
