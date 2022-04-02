@@ -77,7 +77,7 @@ const AuthErrorComponent: React.FC = () => {
           <h2>Authentication Error</h2>
         </Card.Header>
         <Card.Body>
-          <CodeBox code={JSON.stringify(error, null, 2)} />
+          <CodeBox className="error-codebox color-responds-theme" code={JSON.stringify(error, null, 2)} />
         </Card.Body>
       </Card>
       <NavLink to="/">
