@@ -12,15 +12,16 @@
  *
  */
 import React from 'react';
-import { Dropdown } from 'react-bootstrap';
+import { Button, Dropdown } from 'react-bootstrap';
 import { LogOut, User } from 'react-feather';
+import { AiFillGithub } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 
 import useAppDispatch from '../../hooks/useAppDispatch';
 import useAppSelector from '../../hooks/useAppSelector';
 import { logout, selectSession } from '../../store/slices/authentication';
 import { displayName } from '../../utils/display-name';
-// import avatar1 from '../../assets/img/avatars/avatar.jpg';
+import { waitForElm } from '../../utils/waitForElement';
 
 const NavbarUser: React.FunctionComponent = () => {
   const user = useAppSelector(selectSession);
@@ -28,8 +29,22 @@ const NavbarUser: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const doLogout = () => void dispatch(logout(navigate));
 
+  // This is an absolute hack to allow the login button to work from the navbar.
+  // We need to rework the login flow logic into a provider and deal with the stateful issues before we can do this the right way.
+  // For now it at least is fast enough the user shouldn't see the browser do anything weird.
+  const doLoginHack = async () => {
+    navigate('/');
+    const loginButton = await waitForElm('.github-signin-button');
+    (loginButton as HTMLDivElement).click();
+  };
+
   if (!user) {
-    return null;
+    return (
+      <span className="d-inline-block login-navbar-button btn lighter" onClick={() => doLoginHack()}>
+        <AiFillGithub size="35px" className="mb-1 me-1" />
+        Login
+      </span>
+    );
   }
 
   return (
