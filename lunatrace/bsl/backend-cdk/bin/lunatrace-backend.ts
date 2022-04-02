@@ -78,7 +78,7 @@ const env = {
 };
 
 function deployStack() {
-  if (process.env.DEVELOPMENT) {
+  if (process.env.DEVELOPMENT === 'true') {
     const publicBaseUrl = `http://localhost:4455`;
     return new EtlStorageStack(app, `${appName}-EtlStorage`, {
       env,

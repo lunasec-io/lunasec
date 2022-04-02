@@ -7457,6 +7457,15 @@ export type GetCountOfPersonalOrgQueryVariables = Exact<{
 
 export type GetCountOfPersonalOrgQuery = { __typename?: 'query_root', organizations_aggregate: { __typename?: 'organizations_aggregate', aggregate?: { __typename?: 'organizations_aggregate_fields', count: number } | null } };
 
+export type GetPackageAndVulnFromSlugsQueryVariables = Exact<{
+  vuln_slug?: InputMaybe<Scalars['String']>;
+  pkg_slug?: InputMaybe<Scalars['String']>;
+  version_slug?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type GetPackageAndVulnFromSlugsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', id: any }>, package_versions: Array<{ __typename?: 'package_versions', id: any }> };
+
 export type GetScanReportNotifyInfoForBuildQueryVariables = Exact<{
   build_id: Scalars['uuid'];
 }>;
@@ -7573,6 +7582,19 @@ export const GetCountOfPersonalOrgDocument = gql`
   }
 }
     `;
+export const GetPackageAndVulnFromSlugsDocument = gql`
+    query GetPackageAndVulnFromSlugs($vuln_slug: String, $pkg_slug: String, $version_slug: String) {
+  vulnerabilities(where: {slug: {_eq: $vuln_slug}}) {
+    id
+  }
+  vulnerability_packages(where: {slug: {_eq: $pkg_slug}}) {
+    id
+  }
+  package_versions(where: {slug: {_eq: $version_slug}}) {
+    id
+  }
+}
+    `;
 export const GetScanReportNotifyInfoForBuildDocument = gql`
     query GetScanReportNotifyInfoForBuild($build_id: uuid!) {
   builds_by_pk(id: $build_id) {
@@ -7686,6 +7708,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetCountOfPersonalOrg(variables: GetCountOfPersonalOrgQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCountOfPersonalOrgQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetCountOfPersonalOrgQuery>(GetCountOfPersonalOrgDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetCountOfPersonalOrg', 'query');
+    },
+    GetPackageAndVulnFromSlugs(variables?: GetPackageAndVulnFromSlugsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPackageAndVulnFromSlugsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetPackageAndVulnFromSlugsQuery>(GetPackageAndVulnFromSlugsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPackageAndVulnFromSlugs', 'query');
     },
     GetScanReportNotifyInfoForBuild(variables: GetScanReportNotifyInfoForBuildQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetScanReportNotifyInfoForBuildQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetScanReportNotifyInfoForBuildQuery>(GetScanReportNotifyInfoForBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetScanReportNotifyInfoForBuild', 'query');
