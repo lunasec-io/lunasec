@@ -19,38 +19,33 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/types"
 	"lunasec/lunatrace/pkg/util"
 	"os"
 	"strings"
 )
 
-func EnableGlobalFlags(globalBoolFlags map[string]bool) {
-	verbose := globalBoolFlags["verbose"]
-	debug := globalBoolFlags["debug"]
-	jsonFlag := globalBoolFlags["json"]
-	ignoreWarnings := globalBoolFlags["ignore-warnings"]
-	logToStderr := globalBoolFlags["log-to-stderr"]
-
+func EnableGlobalFlags(flags *types.LunaTraceGlobalFlags) {
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
-	if verbose || debug {
+	if flags.Verbose || flags.Debug {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	}
-	if ignoreWarnings {
+	if flags.IgnoreWarnings {
 		zerolog.SetGlobalLevel(zerolog.ErrorLevel)
 	}
 
-	if debug {
+	if flags.Debug {
 		// include file and line number when logging
 		log.Logger = log.With().Caller().Logger()
 	}
 
 	outStream := os.Stdout
-	if logToStderr {
+	if flags.LogToStderr {
 		outStream = os.Stderr
 	}
 
-	if !jsonFlag {
+	if !flags.Json {
 		// pretty print output to the console if we are not interested in parsable output
 		consoleOutput := zerolog.ConsoleWriter{Out: outStream}
 		consoleOutput.FormatFieldName = func(i interface{}) string {
