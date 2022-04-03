@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package inventory
+package snapshot
 
 import (
 	"bytes"
@@ -20,10 +20,10 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/rs/zerolog/log"
-	"lunasec/lunatrace/inventory/syftmodel"
 	"lunasec/lunatrace/pkg/graphql"
 	"lunasec/lunatrace/pkg/types"
 	"lunasec/lunatrace/pkg/util"
+	"lunasec/lunatrace/snapshot/syftmodel"
 	"net/http"
 	"net/url"
 )
@@ -160,7 +160,7 @@ func getOrgAndProjectFromAccessToken(
 	if err = util.GetGraphqlError(err, projectInfoResponse.GraphqlErrors); err != nil {
 		log.Error().
 			Err(err).
-			Msg("Unable to get project info using project secret. Make sure that your configured LUNASEC_PROJECT_SECRET is correct.")
+			Msg("Unable to get project info using project secret. Make sure that your configured LUNATRACE_PROJECT_SECRET is correct.")
 		return
 	}
 

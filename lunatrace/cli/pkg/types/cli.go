@@ -14,9 +14,13 @@
 //
 package types
 
-import "github.com/urfave/cli/v2"
+import (
+	"errors"
+	"github.com/rs/zerolog/log"
+	"github.com/urfave/cli/v2"
+)
 
-type InventoryOptions struct {
+type SnapshotOptions struct {
 	Excluded      []string `cli:"excluded"`
 	SkipOutput    bool     `cli:"skip-output"`
 	OutputFile    string   `cli:"output-file"`
@@ -27,8 +31,8 @@ type InventoryOptions struct {
 	GitRemote     string   `cli:"git-remote"`
 }
 
-func NewInventoryOptionsFromCli(c *cli.Context) InventoryOptions {
-	return InventoryOptions{
+func NewSnapshotOptions(c *cli.Context) SnapshotOptions {
+	return SnapshotOptions{
 		Excluded:      c.StringSlice("excluded"),
 		SkipOutput:    c.Bool("skip-output"),
 		OutputFile:    c.String("output-file"),
@@ -40,7 +44,53 @@ func NewInventoryOptionsFromCli(c *cli.Context) InventoryOptions {
 	}
 }
 
-type InventoryManifestOptions struct {
+type SnapshotFileOptions struct {
 	UseStdin bool
 	Filename string
+}
+
+func getSnapshotFilename(c *cli.Context) (filename string, err error) {
+	filenames := c.Args().Slice()
+	if len(filenames) == 0 {
+		err = errors.New("no filenames provided")
+		log.Error().
+			Msg("No filename provided. Please provide one filename as an argument to this command.")
+		return
+	}
+
+	if len(filenames) > 1 {
+		err = errors.New("too many filenames provided")
+		log.Error().
+			Msg("Please provide only one filename as an argument to this command.")
+		return
+	}
+
+	filename = filenames[0]
+	return
+}
+
+func NewSnapshotFileOptions(c *cli.Context) (options SnapshotFileOptions, err error) {
+	useStdin := c.Bool("stdin")
+
+	filename, err := getSnapshotFilename(c)
+	if err != nil {
+		return
+	}
+
+	options = SnapshotFileOptions{
+		UseStdin: useStdin,
+		Filename: filename,
+	}
+	return
+}
+
+type SnapshotContainerOptions struct {
+	Archive bool
+}
+
+func NewShapshotContainerOptions(c *cli.Context) (options SnapshotContainerOptions) {
+	options = SnapshotContainerOptions{
+		Archive: c.Bool("archive"),
+	}
+	return
 }
