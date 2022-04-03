@@ -18,24 +18,19 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"lunasec/lunatrace/inventory"
 	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/config"
 	"lunasec/lunatrace/pkg/constants"
+	"lunasec/lunatrace/pkg/types"
 	"lunasec/lunatrace/pkg/util"
+	"lunasec/lunatrace/snapshot"
 	"os"
 )
 
 func main() {
-	globalBoolFlags := map[string]bool{
-		"verbose":         false,
-		"json":            false,
-		"debug":           false,
-		"ignore-warnings": false,
-		"log-to-stderr":   false,
-	}
+	globalFlags := types.NewLunaTraceGlobalFlags()
 
-	command.EnableGlobalFlags(globalBoolFlags)
+	command.EnableGlobalFlags(globalFlags)
 
 	appConfig, err := config.LoadLunaTraceConfig()
 	if err != nil {
@@ -50,18 +45,40 @@ func main() {
 		util.RemoveCleanupDirs()
 	})
 
-	setGlobalBoolFlags := func(c *cli.Context) error {
-		for flag := range globalBoolFlags {
-			if c.IsSet(flag) {
-				globalBoolFlags[flag] = true
-			}
-		}
-		return nil
+	enabledLunaTraceAsset := []types.CliAssetCmdConfig{
+		{
+			Usage:        "Collect a snapshot for a repository.",
+			AssetType:    types.RepositoryAsset,
+			AssetHandler: snapshot.RepositoryCommand,
+		},
+		{
+			Usage:        "Collect a snapshot for a container.",
+			Flags:        constants.SnapshotContainerFlags,
+			AssetType:    types.ContainerAsset,
+			AssetHandler: snapshot.ContainerCommand,
+		},
+		{
+			Usage:        "Collect a snapshot for files in a directory.",
+			AssetType:    types.DirectoryAsset,
+			AssetHandler: snapshot.DirectoryCommand,
+		},
+		{
+			Usage:        "Collect a snapshot for a file.",
+			Flags:        constants.SnapshotFileFlags,
+			AssetType:    types.FileAsset,
+			AssetHandler: snapshot.FileCommand,
+		},
+	}
+
+	var assetSnapshotCmds []*cli.Command
+	for _, enabledCmd := range enabledLunaTraceAsset {
+		cmd := snapshot.CreateCommandForAssetType(appConfig, globalFlags, enabledCmd)
+		assetSnapshotCmds = append(assetSnapshotCmds, cmd)
 	}
 
 	app := &cli.App{
 		Name:  "lunatrace",
-		Usage: "Collect a Software Bill of Materials (SBOM) from a build artifact for a project.",
+		Usage: "Create and scan snapshots of assets.",
 		Authors: []*cli.Author{
 			{
 				Name:  "lunasec",
@@ -69,69 +86,24 @@ func main() {
 			},
 		},
 		Version:     constants.LunaTraceVersion,
-		Description: ``,
-		Before:      setGlobalBoolFlags,
-		Flags: []cli.Flag{
-			&cli.BoolFlag{
-				Name:  "verbose",
-				Usage: "Display verbose information when running commands.",
-			},
-			&cli.BoolFlag{
-				Name:  "json",
-				Usage: "Display findings in json format.",
-			},
-			&cli.BoolFlag{
-				Name:  "debug",
-				Usage: "Display helpful information while debugging the CLI.",
-			},
-			&cli.BoolFlag{
-				Name:  "log-to-stderr",
-				Usage: "Log all structured logs to stderr. This is useful if you are consuming some output via stdout and do not want to parse the logs.",
-			},
-		},
+		Description: `Snapshots are a point in time collection of observations made about an asset. An example of what is collected by a snapshot is a Software Bill of Materials (SBOM).`,
+		Before:      util.SetGlobalBoolFlags(globalFlags),
+		Flags:       constants.RootCliFlags,
 		Commands: []*cli.Command{
 			{
-				Name:    "import",
-				Aliases: []string{"i"},
-				Usage:   "Inventory dependencies as a Software Bill of Materials (SBOM) for project and upload the SBOM.",
-				Before:  setGlobalBoolFlags,
-				Flags:   constants.InventoryCliFlags,
-				Subcommands: []*cli.Command{
-					{
-						Name:   "repository",
-						Usage:  "Create an inventory of dependencies for a repository.",
-						Before: setGlobalBoolFlags,
-						Flags:  constants.InventoryRepositoryCliFlags,
-						Action: func(c *cli.Context) error {
-							return inventory.RepositoryCommand(c, globalBoolFlags, appConfig)
-						},
-					},
-					{
-						Name:   "manifest",
-						Usage:  "Create an inventory of dependencies as a SBOM for project and upload the SBOM.",
-						Before: setGlobalBoolFlags,
-						Flags:  constants.InventoryManifestCliFlags,
-						Action: func(c *cli.Context) error {
-							return inventory.ManifestCommand(c, globalBoolFlags, appConfig)
-						},
-					},
-				},
+				Name:        "snapshot",
+				Usage:       "Create a snapshot of an asset for a project.",
+				Flags:       constants.InventoryCliFlags,
+				Subcommands: assetSnapshotCmds,
 			},
 			{
-				Name:  "scan",
-				Usage: "Scan a created SBOM for known risks.",
-				Flags: []cli.Flag{
-					&cli.BoolFlag{
-						Name:  "stdin",
-						Usage: "Read SBOM from stdin.",
-					},
-					&cli.BoolFlag{
-						Name:  "stdout",
-						Usage: "Print findings to stdout.",
-					},
-				},
+				Name:   "scan",
+				Usage:  "Scan a created SBOM for known risks.",
+				Flags:  constants.ScanCliFlags,
+				Before: util.SetGlobalBoolFlags(globalFlags),
 				Action: func(c *cli.Context) error {
-					return inventory.ScanCommand(c, globalBoolFlags, appConfig)
+					command.EnableGlobalFlags(globalFlags)
+					return snapshot.ScanCommand(c, appConfig)
 				},
 			},
 		},

@@ -14,7 +14,39 @@
 //
 package constants
 
-import "github.com/urfave/cli/v2"
+import (
+	"github.com/urfave/cli/v2"
+)
+
+var RootCliFlags = []cli.Flag{
+	&cli.BoolFlag{
+		Name:  "verbose",
+		Usage: "Display verbose information when running commands.",
+	},
+	&cli.BoolFlag{
+		Name:  "json",
+		Usage: "Display findings in json format.",
+	},
+	&cli.BoolFlag{
+		Name:  "debug",
+		Usage: "Display helpful information while debugging the CLI.",
+	},
+	&cli.BoolFlag{
+		Name:  "log-to-stderr",
+		Usage: "Log all structured logs to stderr. This is useful if you are consuming some output via stdout and do not want to parse the logs.",
+	},
+}
+
+var ScanCliFlags = []cli.Flag{
+	&cli.BoolFlag{
+		Name:  "stdin",
+		Usage: "Read SBOM from stdin.",
+	},
+	&cli.BoolFlag{
+		Name:  "stdout",
+		Usage: "Print findings to stdout.",
+	},
+}
 
 var InventoryCliFlags = []cli.Flag{
 	&cli.StringSliceFlag{
@@ -51,11 +83,18 @@ var InventoryCliFlags = []cli.Flag{
 	},
 }
 
-var InventoryRepositoryCliFlags []cli.Flag
+var SnapshotRepositoryCliFlags []cli.Flag
 
-var InventoryManifestCliFlags = []cli.Flag{
+var SnapshotFileFlags = []cli.Flag{
 	&cli.BoolFlag{
 		Name:  "stdin",
 		Usage: "Read from stdin and use the provided manifest filename as the source.",
+	},
+}
+
+var SnapshotContainerFlags = []cli.Flag{
+	&cli.BoolFlag{
+		Name:  "archive",
+		Usage: "Load the container as an exported archive.",
 	},
 }
