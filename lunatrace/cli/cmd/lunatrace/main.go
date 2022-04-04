@@ -47,7 +47,7 @@ func main() {
 
 	enabledLunaTraceAsset := []types.CliAssetCmdConfig{
 		{
-			Usage:        "Collect a snapshot for a repository.",
+			Usage:        "Collect a snapshot for a remote repository.",
 			AssetType:    types.RepositoryAsset,
 			AssetHandler: snapshot.RepositoryCommand,
 		},
