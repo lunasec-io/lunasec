@@ -28,62 +28,6 @@ import (
 	"net/url"
 )
 
-//func formatPresignUploadUrl(orgId string, buildId string) (uploadSbomUrl string, err error) {
-//	values := url.Values{}
-//	values.Set("buildId", buildId)
-//	values.Set("orgId", orgId)
-//	baseUrl, err := url.Parse(constants.UploadSbomUrl)
-//	if err != nil {
-//		log.Error().
-//			Err(err).
-//			Msg("unable to parse upload sbom url")
-//		return
-//	}
-//
-//	baseUrl.RawQuery = values.Encode()
-//
-//	uploadSbomUrl = baseUrl.String()
-//	return
-//}
-//
-//func presignUploadUrl(orgId, buildId string) (url string, headers map[string]string, err error) {
-//	var presignUploadUrlResp GenerateUploadUrlResponse
-//
-//	uploadSbomUrl, err := formatPresignUploadUrl(orgId, buildId)
-//	if err != nil {
-//		return
-//	}
-//
-//	data, err := util.HttpRequest(http.MethodGet, uploadSbomUrl, map[string]string{}, nil)
-//	if err != nil {
-//		log.Error().
-//			Err(err).
-//			Str("data", string(data)).
-//			Msg("Unable to get SBOM upload URL.")
-//		return
-//	}
-//
-//	err = json.Unmarshal(data, &presignUploadUrlResp)
-//	if err != nil {
-//		log.Error().
-//			Err(err).
-//			Msg("Unable to parse upload sbom response.")
-//		return
-//	}
-//
-//	if presignUploadUrlResp.Error {
-//		err = errors.New(presignUploadUrlResp.Message)
-//		log.Error().
-//			Err(err).
-//			Str("requestUrl", uploadSbomUrl).
-//			Msg("Error when attempting to get upload url.")
-//		return
-//	}
-//	url = presignUploadUrlResp.UploadURL.Url
-//	headers = presignUploadUrlResp.UploadURL.Headers
-//	return
-//}
-
 func serializeAndCompressOutput(output SbomOutput) (buffer bytes.Buffer, err error) {
 	serializedOutput, err := json.Marshal(output)
 	if err != nil {
