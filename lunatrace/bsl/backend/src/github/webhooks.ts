@@ -15,14 +15,15 @@ import { Webhooks } from '@octokit/webhooks';
 
 import { generateSbomFromAsset } from '../cli/call-cli';
 import { hasura } from '../hasura-api';
-import { GetProjectIdFromGitUrlQuery } from '../hasura-api/generated';
+import { GetProjectIdFromGitUrlQuery, InsertBuildMutation } from '../hasura-api/generated';
 import { uploadSbomToS3 } from '../sqs-handlers/generate-sbom';
 import { isError, Try, tryF } from '../utils/try';
 
 import { getInstallationAccessToken } from './auth';
+import { GetUserOrganizationsQuery } from './generated';
 
 export const webhooks = new Webhooks({
-  secret: 'mysecret',
+  secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
 });
 
 webhooks.on('pull_request', async (event) => {
@@ -68,12 +69,36 @@ webhooks.on('pull_request', async (event) => {
 
     const gzippedSbom = generateSbomFromAsset('repository', parsedGitUrl.toString(), gitBranch);
 
-    // Create a new build
-    const { insert_builds_one } = await hasura.InsertBuild({ project_id: projectId, pull_request_id: pullRequestId });
-    if (!insert_builds_one || !insert_builds_one.id) {
+    const insertBuildResponse: Try<InsertBuildMutation> = await tryF(
+      async () => await hasura.InsertBuild({ project_id: projectId, pull_request_id: pullRequestId })
+    );
+
+    if (isError(insertBuildResponse)) {
+      console.error('Failed to insert a new build', {
+        error: insertBuildResponse,
+      });
       throw new Error('Failed to insert a new build');
     }
+
+    const { insert_builds_one } = insertBuildResponse;
+
+    console.log('Insert Build Response:', {
+      insert_builds_one,
+    });
+
+    if (!insert_builds_one || insert_builds_one.id === undefined) {
+      console.error('Missing id in insert build response', {
+        insert_builds_one,
+      });
+      throw new Error('Missing id in insert build response');
+    }
+
     const buildId = insert_builds_one.id as string;
+
+    console.log('Uploading result to S3:', {
+      installationId: installationId.toString(),
+      buildId,
+    });
 
     await uploadSbomToS3(installationId.toString(), buildId, gzippedSbom);
   }
