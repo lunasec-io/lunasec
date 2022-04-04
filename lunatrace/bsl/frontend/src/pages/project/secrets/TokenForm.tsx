@@ -17,9 +17,9 @@ import { CopyBlock, dracula } from 'react-code-blocks';
 import { Check } from 'react-feather';
 import { v4 as uuid } from 'uuid';
 
-import api from '../../../../api';
-import { ConfirmationDailog } from '../../../../components/ConfirmationDialog';
-import { ProjectInfo } from '../../types';
+import api from '../../../api';
+import { ConfirmationDailog } from '../../../components/ConfirmationDialog';
+import { ProjectInfo } from '../types';
 
 export const CreateTokenForm: React.FC<{ project: ProjectInfo; setFormOpen: (o: boolean) => void }> = ({
   setFormOpen,

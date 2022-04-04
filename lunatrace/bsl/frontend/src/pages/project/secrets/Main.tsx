@@ -11,11 +11,21 @@
  * limitations under the License.
  *
  */
-import { GetProjectQuery } from '../../api/generated';
+import React from 'react';
+import { Container } from 'react-bootstrap';
 
-export type ProjectInfo = GetProjectQuery['projects'][number];
+import { ProjectInfo } from '../types';
 
-export type BuildInfo = ProjectInfo['builds'][number];
+import { ProjectTokens } from './ProjectTokensMain';
 
-export type TabName = 'builds' | 'secrets' | 'dashboard';
-export type SetActiveTab = (tabName: TabName) => void;
+interface SecretsProps {
+  project: ProjectInfo;
+}
+
+export const SecretsMain: React.FC<SecretsProps> = ({ project }) => {
+  return (
+    <Container>
+      <ProjectTokens project={project} />
+    </Container>
+  );
+};
