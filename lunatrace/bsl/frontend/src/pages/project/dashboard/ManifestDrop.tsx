@@ -25,7 +25,10 @@ import useAppDispatch from '../../../hooks/useAppDispatch';
 import { add } from '../../../store/slices/alerts';
 const axiosInstance = axios.create();
 
-export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ project_id }) => {
+export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHomepage?: boolean }> = ({
+  forHomepage,
+  project_id,
+}) => {
   const dispatch = useAppDispatch();
   console.log('rendering dropzone for project id ', project_id);
   const navigate = useNavigate();
@@ -139,7 +142,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     onDropAccepted: onDropAccepted,
     onDropRejected: onDropRejected,
     maxFiles: 1,
-    maxSize: 52428800,
+    maxSize: 16106127360,
     disabled: uploadInProgress,
   });
 
@@ -149,7 +152,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     }
     return (
       <span>
-        <FilePlus />
+        <FilePlus className="me-1 mb-1" />
         Click here or drap-and-drop a manifest file or bundled project to manually submit a build.
         <br />
         (ex: package-lock.json, my-project.jar, my-project.zip)
@@ -170,11 +173,14 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string }> = ({ 
     );
   };
   return (
-    <Card variant="dark" className="clickable-card" {...getRootProps()}>
+    <Card
+      className={forHomepage ? 'clickable-card ms-md-6 me-md-6 homepage-manifest-drop' : 'clickable-card'}
+      {...getRootProps()}
+    >
       <Card.Body>
         <input {...getInputProps()} />
 
-        <Row className="justify-content-center text-center">
+        <Row className="justify-content-center text-center ">
           {uploadInProgress ? renderUploadStatus() : <Col xs="auto">{renderDropPrompt()}</Col>}
         </Row>
       </Card.Body>

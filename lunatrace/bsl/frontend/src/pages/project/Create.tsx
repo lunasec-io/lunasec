@@ -13,28 +13,30 @@
  */
 import React, { useState } from 'react';
 import { Button, Card, Col, FloatingLabel, Form, Row, Spinner } from 'react-bootstrap';
-import { Typeahead } from 'react-bootstrap-typeahead';
-import { Option } from 'react-bootstrap-typeahead/types/types';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
+import { useParams } from 'react-router-dom';
 
 import api from '../../api';
 import { GetSidebarInfoQuery } from '../../api/generated';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
-// eslint-disable-next-line import/order
+import useAppDispatch from '../../hooks/useAppDispatch';
 import useAppSelector from '../../hooks/useAppSelector';
+import { add } from '../../store/slices/alerts';
+import { selectUserId } from '../../store/slices/authentication';
 
-type Organization = GetSidebarInfoQuery['organizations'][number];
+import { ProjectHeader } from './Header';
 
 const ProjectCreateForm = ({ data }: { data: GetSidebarInfoQuery | undefined }) => {
+  // Params
+  const dispatch = useAppDispatch();
+  const { organization_id } = useParams();
+
   // Mutations
-  const [insertOrgAndProject, insertOrgAndProjectResult] = api.useCreateOrganizationAndProjectMutation();
   const [insertProject, insertProjectResult] = api.useInsertProjectMutation();
   // Other hooks
   const navigate = useNavigate();
   // State
-  const [selectedOrgOption, setSelectedOrgOption] = useState<Option[]>([]);
-  const [orgText, setOrgText] = useState<string>('');
   const [projectName, setProjectName] = useState('');
   const [validated, setValidated] = useState(false);
 
@@ -44,42 +46,29 @@ const ProjectCreateForm = ({ data }: { data: GetSidebarInfoQuery | undefined }) 
     return null;
   }
 
-  // computed properties
-  const { organizations } = data;
+  const mutationIsLoading = insertProjectResult.isLoading;
 
-  const shouldCreateNewOrg = !selectedOrgOption || (selectedOrgOption.length < 1 && orgText.length > 1);
-
-  const mutationIsLoading = insertOrgAndProjectResult.isLoading || insertProjectResult.isLoading;
+  const organization = data.organizations.find((o) => o.id === organization_id);
+  if (!organization_id || !organization) {
+    dispatch(add({ message: 'Cannot find organization matching org ID from url' }));
+    return null;
+  }
 
   // Methods
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
-    const selectedOrg = selectedOrgOption[0] as Organization;
     if (!form.checkValidity()) {
       return;
     }
     setValidated(true);
-    if (!shouldCreateNewOrg) {
-      console.log('selected org option is ', selectedOrg);
-      const insertPromise = await insertProject({
-        name: projectName,
-        organization_id: selectedOrg.id,
-      }).unwrap();
-      const projectId = insertPromise.insert_projects_one?.id;
-      if (projectId) {
-        navigate(`/project/${projectId}`);
-      }
-    } else {
-      const insertPromise = await insertOrgAndProject({
-        project_name: projectName,
-        identity_id: userId,
-        organization_name: orgText,
-      }).unwrap();
-      const projectId = insertPromise.insert_organizations_one?.projects[0].id;
-      if (projectId) {
-        navigate(`/project/${projectId}`);
-      }
+    const insertPromise = await insertProject({
+      name: projectName,
+      organization_id: organization.id,
+    }).unwrap();
+    const projectId = insertPromise.insert_projects_one?.id;
+    if (projectId) {
+      navigate(`/project/${projectId}`);
     }
   };
   return (
@@ -88,7 +77,7 @@ const ProjectCreateForm = ({ data }: { data: GetSidebarInfoQuery | undefined }) 
         <Card>
           <Card.Header>
             {' '}
-            <ProjectHeader projectName="New Project" />
+            <ProjectHeader projectName="New Project" organizationName={organization.name} />
           </Card.Header>
           <Card.Body>
             <Form validated={validated} onSubmit={(e) => void submitForm(e)}>
@@ -102,67 +91,16 @@ const ProjectCreateForm = ({ data }: { data: GetSidebarInfoQuery | undefined }) 
                   />
                 </FloatingLabel>
               </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Typeahead
-                  id="project-search-form"
-                  placeholder="Search Projects"
-                  aria-label="Search Projects"
-                  onChange={(selected) => {
-                    console.log('selected ', selected);
-                    setSelectedOrgOption(selected);
-                  }}
-                  multiple={false}
-                  labelKey="name"
-                  options={organizations}
-                  highlightOnlyResult={true}
-                  selected={selectedOrgOption}
-                  renderInput={({ inputRef, referenceElementRef, ...inputProps }) => (
-                    <FloatingLabel controlId="name" label="Select or create organization">
-                      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                      {/*
-                      @ts-ignore */}
-                      <Form.Control
-                        {...inputProps}
-                        ref={(node: HTMLInputElement | null) => {
-                          inputRef(node);
-                          referenceElementRef(node);
-                        }}
-                        type="text"
-                        required={true}
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        //@ts-ignore
-                        value={inputProps.value || orgText}
-                        onChange={(e) => {
-                          if ('onChange' in inputProps && inputProps.onChange) {
-                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                            //@ts-ignore
-                            inputProps.onChange(e);
-                          }
-                          setOrgText(e.target.value);
-                        }}
-                      />
-                    </FloatingLabel>
-                  )}
-                />
-                <Form.Text className="text-muted">Select a prexisting organization or create a new one.</Form.Text>
-              </Form.Group>
-              {shouldCreateNewOrg ? (
-                <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                  <Form.Check
-                    checked={true}
-                    disabled={true}
-                    type="checkbox"
-                    label={`Also create a new organization called "${orgText}"`}
-                  />
-                </Form.Group>
-              ) : null}
-              <Button variant="primary" type="submit">
-                {` Create new ${shouldCreateNewOrg ? 'organization and ' : ''} project`}{' '}
-                {mutationIsLoading ? (
-                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                ) : null}
-              </Button>
+              <Row className="justify-content-center">
+                <Col md={6} className="d-grid gap-2">
+                  <Button size="lg" variant="primary" type="submit">
+                    {` Create new project in ${organization.name}`}
+                    {mutationIsLoading ? (
+                      <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                    ) : null}
+                  </Button>
+                </Col>
+              </Row>
             </Form>
           </Card.Body>
         </Card>
@@ -171,11 +109,9 @@ const ProjectCreateForm = ({ data }: { data: GetSidebarInfoQuery | undefined }) 
   );
 };
 
-import { selectUserId } from '../../store/slices/authentication';
-
-import { ProjectHeader } from './Header';
 export const ProjectCreate: React.FC = () => {
   const { data, isLoading } = api.useGetSidebarInfoQuery();
+
   return (
     <>
       <Helmet title={'Create Project'} />

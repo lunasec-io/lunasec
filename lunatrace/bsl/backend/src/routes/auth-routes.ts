@@ -11,14 +11,15 @@
  * limitations under the License.
  *
  */
+
 import express, { Request, Response } from 'express';
 import { validate as validateUUID } from 'uuid';
 
 import { getHasuraConfig } from '../config';
 import { hasura } from '../hasura-api';
 
+// These routes are used by oathkeeper to validate incoming requests before they are allowed to reach the rest of the cluster
 const hasuraConfig = getHasuraConfig();
-
 export const lookupAccessTokenRouter = express.Router();
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
