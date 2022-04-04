@@ -11,6 +11,8 @@
  * limitations under the License.
  *
  */
+import { S3ObjectMetadata } from './s3';
+
 export interface S3SqsEvent {
   Records?: Record[];
 }
@@ -59,3 +61,14 @@ export interface S3Object {
   eTag: string;
   sequencer: string;
 }
+
+export interface QueueSuccessResult {
+  success: true;
+}
+
+export interface QueueErrorResult {
+  success: false;
+  error: Error;
+}
+
+export type HandlerCallback = (object: S3ObjectMetadata) => Promise<QueueSuccessResult | QueueErrorResult>;

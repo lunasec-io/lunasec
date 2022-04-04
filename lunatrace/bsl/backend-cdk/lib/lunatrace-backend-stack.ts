@@ -27,14 +27,15 @@ import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ApplicationProtocol, ListenerCondition, SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
 import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import { HostedZone } from '@aws-cdk/aws-route53';
-import { Bucket, HttpMethods } from '@aws-cdk/aws-s3';
+import { Bucket } from '@aws-cdk/aws-s3';
 import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
+import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 
 import { commonBuildProps } from './constants';
 import { EtlStack } from './etl-stack';
-import { EtlStorageStack } from './etl-storage-stack';
+import { EtlStorageStack, EtlStorageStackState } from './etl-storage-stack';
 
 interface LunaTraceStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
@@ -44,6 +45,9 @@ interface LunaTraceStackProps extends cdk.StackProps {
   certificateArn: string;
   backendStaticSecretArn: string;
   databaseSecretArn: string;
+  gitHubAppId: string;
+  gitHubAppPrivateKey: string;
+  gitHubAppWebHookSecret: string;
   githubOauthAppLoginSecretArn: string;
   githubOauthAppLoginClientIdArn: string;
   kratosCookieSecretArn: string;
@@ -104,8 +108,15 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
 
     const backendStaticSecret = Secret.fromSecretCompleteArn(this, 'BackendStaticSecret', props.backendStaticSecretArn);
+    const gitHubAppPrivateKey = Secret.fromSecretCompleteArn(this, 'GitHubAppPrivateKey', props.gitHubAppPrivateKey);
+    const gitHubAppWebHookSecret = Secret.fromSecretCompleteArn(
+      this,
+      'GitHubAppWebHookSecret',
+      props.gitHubAppWebHookSecret
+    );
 
-    const storageStack = new EtlStorageStack(this, 'EtlStorageStack', {
+    const storageStackStage = EtlStorageStack.createEtlStorageStack(this, {
+      env: props.env,
       publicBaseUrl,
     });
 
@@ -208,12 +219,17 @@ export class LunatraceBackendStack extends cdk.Stack {
         streamPrefix: 'lunatrace-backend',
       }),
       environment: {
-        S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
-        S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
+        GITHUB_APP_ID: props.gitHubAppId,
+        S3_SBOM_BUCKET: storageStackStage.sbomBucket.bucketName,
+        S3_MANIFEST_BUCKET: storageStackStage.manifestBucket.bucketName,
+        SITE_PUBLIC_URL: publicBaseUrl,
         PORT: '3002',
       },
       secrets: {
+        DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
         STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
+        GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
+        GITHUB_APP_WEBHOOK_SECRET: EcsSecret.fromSecretsManager(gitHubAppWebHookSecret),
       },
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:3002/health || exit 1'],
@@ -318,13 +334,16 @@ export class LunatraceBackendStack extends cdk.Stack {
       path: '/health',
     });
 
-    storageStack.sbomBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
+    storageStackStage.sbomBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
     oryConfigBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
-    storageStack.manifestBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
+    storageStackStage.manifestBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
 
-    new EtlStack(this, 'EtlStack', {
-      storageStack,
+    EtlStack.createEtlStack(this, {
+      env: props.env,
+      storageStack: storageStackStage,
       fargateCluster,
+      gitHubAppId: props.gitHubAppId,
+      gitHubAppPrivateKey,
       publicHasuraServiceUrl,
       hasuraDatabaseUrlSecret,
       hasuraAdminSecret,
