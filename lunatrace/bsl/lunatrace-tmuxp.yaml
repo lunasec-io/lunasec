@@ -17,7 +17,7 @@ windows:
 
   - shell_command:
     - cd frontend
-    - yarn run dev:start
+    - yarn run start
 
   - shell_command:
     - sudo docker-compose down && sudo docker-compose up
