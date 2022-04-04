@@ -48,7 +48,7 @@
   --bs-black-rgb: 0, 0, 0;
   --bs-body-color-rgb: 108, 117, 125;
   --bs-body-bg-rgb: 248, 249, 251;
-  --bs-font-sans-serif: "Cantarell", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --bs-font-sans-serif: "Roboto", "Poppins", sans-serif;
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   --bs-body-font-family: var(--bs-font-sans-serif);
@@ -13291,10 +13291,8 @@ textarea.form-control-lg {
 }
 
 .avatar {
-  margin-top: -15px;
-  margin-bottom: -15px;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
 }
 
 .badge {
@@ -14000,7 +13998,7 @@ a.badge-soft-dark:focus, a.badge-soft-dark.focus {
 
 .card {
   margin-bottom: 24px;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08), 0 0 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.08), 0 0 6px rgba(0, 0, 0, 0.05);
 }
 
 .card-header {
@@ -15044,10 +15042,10 @@ body[data-theme=light] a.sidebar-link svg {
 }
 
 .sidebar-dropdown .sidebar-dropdown .sidebar-link {
-  padding: 0.55rem 1.5rem 0.55rem 4.5rem;
+  padding: 0.3rem 1.5rem 0.55rem 2.8rem;
 }
 .sidebar-dropdown .sidebar-dropdown .sidebar-dropdown .sidebar-link {
-  padding: 0.55rem 1.5rem 0.55rem 5.75rem;
+  padding: 0.55rem 1.5rem 0.55rem 4.5rem;
 }
 
 .sidebar-link:focus {
@@ -15149,7 +15147,7 @@ body[data-theme=light] .sidebar-link.active:hover svg {
 }
 
 .sidebar-dropdown .sidebar-link {
-  padding: 0.55rem 1.5rem 0.55rem 3.7rem;
+  padding: 0.4rem 1.5rem 0.4rem 3rem;
   font-weight: 400;
   color: #adb5bd;
 }
@@ -17620,10 +17618,6 @@ td.rdtYear:hover {
   background-color: #3c77d87d;
   color: white !important;
   font-weight: bold !important;
-}
-
-.sidebar-link {
-  text-transform: capitalize;
 }
 
 .sidebar-header {
