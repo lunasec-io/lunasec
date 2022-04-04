@@ -13,6 +13,13 @@ array_relationships:
       table:
         name: findings
         schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - slug
+  role: service
 select_permissions:
 - permission:
     columns:
@@ -25,4 +32,23 @@ select_permissions:
     - version_format
     - id
     filter: {}
+  role: service
+- permission:
+    columns:
+    - cpes
+    - fixed_in_versions
+    - fix_state
+    - pkg_slug
+    - slug
+    - version_constraint
+    - version_format
+    - id
+    filter: {}
   role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - slug
+    filter: {}
+  role: service

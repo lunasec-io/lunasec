@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+import compareVersions from 'compare-versions';
 import React, { LegacyRef, MouseEventHandler, ReactPropTypes, useState } from 'react';
 import {
   Accordion,
@@ -31,7 +32,6 @@ import {
 } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import semverSort from 'semver-sort';
 
 import api from '../../../api';
 import { ConfirmationDailog } from '../../../components/ConfirmationDialog';
@@ -61,7 +61,7 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
 
   const fixVersions = [...pkg.fix_versions];
 
-  const recommendVersion = semverSort.desc(fixVersions)[0];
+  const recommendVersion = fixVersions.sort(compareVersions).reverse()[0];
 
   const bulkIgnoreVulns = async () => {
     const toIgnore = pkg.findings.map((f) => {
