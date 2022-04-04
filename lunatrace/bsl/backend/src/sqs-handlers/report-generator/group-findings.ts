@@ -59,12 +59,14 @@ export function groupByPackage(project_id: string, findings: Finding[]): Vulnera
 
     const purl = f.purl ? f.purl : 'Unknown';
 
+    const locations = f.locations && Array.isArray(f.locations) ? (f.locations as string[]) : [];
+
     const preExisting = pkgs[purl];
     if (!preExisting) {
       pkgs[purl] = {
         created_at: f.created_at && typeof f.created_at === 'string' ? f.created_at : '', // might be better to sort and show the first date
         purl: purl,
-        locations: f.locations && Array.isArray(f.locations) ? (f.locations as string[]) : [],
+        locations: locations,
         severity:
           f.severity &&
           typeof f.severity === 'string' &&
@@ -96,7 +98,7 @@ export function groupByPackage(project_id: string, findings: Finding[]): Vulnera
     }
 
     // add any new locations
-    (f.locations as string[]).forEach((l) => {
+    locations.forEach((l) => {
       if (!preExisting.locations.includes(l)) {
         preExisting.locations = [...preExisting.locations, l];
       }
