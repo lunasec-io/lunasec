@@ -17,8 +17,9 @@
     "strict": true /* Enable all strict type-checking options. */,
     "esModuleInterop": true,  /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
     "resolveJsonModule": true /* Include modules imported with .json extension. */,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
 
     /* Strict Type-Checking Options */
     "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
@@ -49,5 +50,5 @@
     "./src/**/*.ts",
     "src/__tests__",
     "./src/**/*",
-  ]
+  ],
 }
