@@ -15,6 +15,7 @@ import React from 'react';
 import { Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { BuildInfo } from '../types';
 
 import { BuildListItem } from './BuildListItem';
@@ -34,6 +35,12 @@ export const BuildList: React.FunctionComponent<BuildListProps> = ({ builds }) =
 
   return (
     <Container className="build-list">
+      <ConditionallyRender if={builds.length === 0}>
+        <p className="text-center">
+          No snapshots yet. <br />
+          Submit a snapshot using one of the techniques explained on the &quot;Dashboard&quot; tab.
+        </p>
+      </ConditionallyRender>
       {/*<br />*/}
       {/*<Row>*/}
       {/*  <h2>Builds</h2>*/}

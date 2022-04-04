@@ -26,6 +26,7 @@ export interface SidebarLink {
   href: string;
   title: string;
   icon?: Icon;
+  iconAfter?: boolean;
   badge?: string | React.ReactNode;
   customElement?: React.ReactNode;
   onClick?: () => void;
