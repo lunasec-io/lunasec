@@ -40,7 +40,7 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
                 </Badge>{' '}
                 Connect <span className="darker">to Github.</span>
               </Card.Title>
-              <Card.Subtitle className="darker homepage-subtitle active">
+              <Card.Subtitle className="darker homepage-subtitle left-bar-border active">
                 Connect LunaTrace to at least one repo you would like to scan. You can always add more later.
               </Card.Subtitle>
               <Card.Title>
@@ -50,7 +50,7 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
                 </Badge>{' '}
                 Configure <span className="darker">your project.</span>
               </Card.Title>
-              <Card.Subtitle className={`darker homepage-subtitle ${hasAnyProjects ? 'active' : ''}`}>
+              <Card.Subtitle className={`darker homepage-subtitle left-bar-border ${hasAnyProjects ? 'active' : ''}`}>
                 Click your imported project in the sidebar.
               </Card.Subtitle>
               <Card.Title>
@@ -58,12 +58,12 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
                 <Badge className="me-1" bg={hasAnyProjects ? 'primary' : 'secondary'} pill>
                   3
                 </Badge>{' '}
-                Scanning is Active!
+                PR Scanning is Active!
               </Card.Title>
+              <Card.Subtitle className={`darker homepage-subtitle ${hasAnyProjects ? 'active' : ''}`}>
+                Set up additional manual scans in your project if you would like to.
+              </Card.Subtitle>
 
-              {/*<Card.Body className="text-center">*/}
-              {/*  <Card.Title>*/}
-              {/*    <FaGithubSquare size="60px" className="mb-3" />*/}
               <Row className="justify-content-center">
                 <Col md="6" className="d-grid gap-2">
                   <Button

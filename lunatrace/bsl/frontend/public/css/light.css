@@ -17594,10 +17594,12 @@ td.rdtYear:hover {
 }
 
 .homepage-subtitle {
-  border-left: 2px solid var(--bs-secondary);
   margin-left: 11px;
   margin-bottom: 4px;
   padding: 10px 20px 20px 20px;
+}
+.homepage-subtitle.left-bar-border {
+  border-left: 2px solid var(--bs-secondary);
 }
 
 .homepage-subtitle.active {
@@ -17615,13 +17617,20 @@ td.rdtYear:hover {
 }
 
 .sidebar-link.active {
-  background-image: linear-gradient(to right, #3c77d87d, rgba(0, 0, 0, 0));
+  background-color: #3c77d87d;
   color: white !important;
   font-weight: bold !important;
 }
 
 .sidebar-link {
   text-transform: capitalize;
+}
+
+.sidebar-header {
+  font-family: montserrat;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 12px !important;
 }
 
 .clickable-card:hover {
