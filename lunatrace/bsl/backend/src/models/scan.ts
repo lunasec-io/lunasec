@@ -14,174 +14,153 @@
 import { spawn } from 'child_process';
 import Stream, { Readable } from 'stream';
 
-import { db, pgp } from '../database/db';
-import { Convert, Match as GrypeMatch, GrypeScanReport } from '../types/grype-scan-report';
-import { Finding, Report } from '../types/scan';
+import { hasura } from '../hasura-api';
+import {
+  Findings_Arr_Rel_Insert_Input,
+  Findings_Constraint,
+  Findings_Insert_Input,
+  Findings_Update_Column,
+  Package_Versions_Constraint,
+  Scans_Insert_Input,
+  Vulnerabilities_Constraint,
+  Vulnerability_Packages_Constraint,
+} from '../hasura-api/generated';
+import { Convert, GrypeScanReport, Match } from '../types/grype-scan-report';
 
-export class Scan {
-  static async uploadScan(sbomStream: Readable, buildId: string): Promise<void> {
-    const rawGrypeReport = await this.runGrypeScan(sbomStream);
-    const typedRawGrypeReport = Convert.toScanReport(rawGrypeReport);
-    const report = this.parseScan(typedRawGrypeReport, buildId);
-    await this.storeReport(report);
-  }
+export async function parseAndUploadScan(sbomStream: Readable, buildId: string): Promise<Scans_Insert_Input> {
+  const rawGrypeReport = await runGrypeScan(sbomStream);
+  const typedRawGrypeReport = Convert.toScanReport(rawGrypeReport);
+  const scan = await parseScan(typedRawGrypeReport, buildId);
+  await hasura.InsertScan({
+    scan,
+  });
+  return scan;
+}
 
-  static async runGrypeScan(sbomStream: Readable): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const stdoutStream = new Stream.Writable();
-      // const stderrStream = new Stream.Writeable();
-      const grypeCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
-      grypeCli.on('error', reject);
-      const outputBuffers: Buffer[] = [];
-      grypeCli.stdout.on('data', (chunk) => {
-        outputBuffers.push(Buffer.from(chunk));
-      });
-      grypeCli.stderr.on('data', (errorChunk) => {
-        console.error(errorChunk.toString());
-      });
-      grypeCli.on('close', (code) => {
-        if (code !== 0) {
-          return reject(`Grype exited with non-zero code: ${code}`);
-        }
-        resolve(Buffer.concat(outputBuffers).toString());
-      });
-      sbomStream.on('data', (chunk) => grypeCli.stdin.write(chunk));
-      sbomStream.on('end', () => grypeCli.stdin.end(() => console.log('Finished passing sbom contents to grype')));
-      sbomStream.on('error', reject);
+export async function runGrypeScan(sbomStream: Readable): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const stdoutStream = new Stream.Writable();
+    // const stderrStream = new Stream.Writeable();
+    const grypeCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
+    grypeCli.on('error', reject);
+    const outputBuffers: Buffer[] = [];
+    grypeCli.stdout.on('data', (chunk) => {
+      outputBuffers.push(Buffer.from(chunk));
     });
+    grypeCli.stderr.on('data', (errorChunk) => {
+      console.error(errorChunk.toString());
+    });
+    grypeCli.on('close', (code) => {
+      if (code !== 0) {
+        return reject(`Grype exited with non-zero code: ${code}`);
+      }
+      resolve(Buffer.concat(outputBuffers).toString());
+    });
+    sbomStream.on('data', (chunk) => grypeCli.stdin.write(chunk));
+    sbomStream.on('end', () => grypeCli.stdin.end(() => console.log('Finished passing sbom contents to grype')));
+    sbomStream.on('error', reject);
+  });
+}
+
+async function parseScan(scan: GrypeScanReport, buildId: string): Promise<Scans_Insert_Input> {
+  return {
+    findings: await parseMatches(buildId, scan.matches),
+    source_type: scan.source.type,
+    target: scan.source.target,
+    db_date: scan.descriptor.db.built,
+    grype_version: scan.descriptor.version,
+    distro_name: scan.distro.name,
+    distro_version: scan.distro.version,
+    build_id: buildId,
+  };
+}
+
+function escapeQuotes(s: string) {
+  return s.replace(/"/g, '\\"');
+}
+
+function formatPsqlStringArray(array: string[]) {
+  return `{${array.map((e) => `"${escapeQuotes(e)}"`).join(', ')}}`;
+}
+
+function parseVersionConstraint(versionConstraint: string) {
+  if (versionConstraint === 'none (unknown)') {
+    return null;
   }
+  return versionConstraint.replace(' (unknown)', '');
+}
 
-  static parseScan(scan: GrypeScanReport, buildId: string): Report {
-    return {
-      findings: this.parseMatches(scan.matches),
-      source_type: scan.source.type,
-      target: scan.source.target,
-      db_date: scan.descriptor.db.built,
-      grype_version: scan.descriptor.version,
-      distro_name: scan.distro.name,
-      distro_version: scan.distro.version,
-      build_id: buildId,
-    };
-  }
+async function parseMatches(buildId: string, matches: Match[]): Promise<Findings_Arr_Rel_Insert_Input> {
+  return {
+    on_conflict: {
+      constraint: Findings_Constraint.FindingsDedupeSlugBuildIdKey,
+      update_columns: [
+        Findings_Update_Column.Version,
+        Findings_Update_Column.VirtualPath,
+        Findings_Update_Column.Severity,
+      ],
+    },
+    data: await Promise.all(
+      matches.map(async (match): Promise<Findings_Insert_Input> => {
+        const { vulnerability, artifact } = match;
+        const details = match.matchDetails[0];
 
-  static parseMatches(matches: GrypeMatch[]): Finding[] {
-    return matches.map((match): Finding => {
-      const { vulnerability, artifact } = match;
-      const details = match.matchDetails[0];
-      // slugs
-      const vuln_slug = vulnerability.id + ':' + vulnerability.namespace;
-      const pkg_slug = vuln_slug + ':' + match.artifact.name;
-      const version_slug = pkg_slug + ':' + match.matchDetails[0].found.versionConstraint;
+        // slugs
+        const vuln_slug = vulnerability.id + ':' + vulnerability.namespace;
+        const pkg_slug = vuln_slug + ':' + match.artifact.name;
 
-      const locations = artifact.locations.map((l) => l.path);
-      return {
-        package_name: artifact.name,
-        version: artifact.version,
-        version_matcher: details.found.versionConstraint,
-        type: artifact.type,
-        locations: locations,
-        language: artifact.language,
-        purl: artifact.purl,
-        severity: vulnerability.severity,
-        virtual_path: artifact.metadata ? artifact.metadata.VirtualPath : null,
-        matcher: details.matcher,
-        dedupe_slug: pkg_slug + locations.sort().join(':'),
-        fix_state: vulnerability.fix?.state || null,
-        fix_versions: vulnerability.fix?.versions || null,
-        meta: {
+        const versionConstraint = parseVersionConstraint(match.matchDetails[0].found.versionConstraint);
+
+        const version_slug = pkg_slug + ':' + (versionConstraint ? versionConstraint : '');
+
+        const slugs = {
           vuln_slug,
           pkg_slug,
           version_slug,
-        },
-      };
-    });
-  }
+        };
 
-  static async storeReport(report: Report) {
-    const queryBeginning = pgp.as.format(
-      `
-          BEGIN;
-          WITH this_scan AS (
-            INSERT INTO public.scans(
-                source_type, 
-                target, 
-                db_date,
-                grype_version, 
-                distro_name, 
-                distro_version, 
-                build_id
-                )
-            VALUES(
-                 $<source_type>,
-                 $<target>,
-                 $<db_date>,
-                 $<grype_version>,
-                 $<distro_name>,
-                 $<distro_version>,
-                 $<build_id>
-            ) RETURNING id, build_id
-          )
-          INSERT INTO findings(
-            vulnerability_id,
-            vulnerability_package_id,
-            package_version_id,
-            scan_id,
-            build_id,
-            package_name,
-            version,
-            version_matcher,
-            type,
-            locations,
-            language,
-            purl,
-            virtual_path,
-            matcher,
-            dedupe_slug,
-            severity,
-            fix_state,
-            fix_versions
-          ) VALUES 
-        `,
-      report
-    );
+        console.debug('slugs to lookup', slugs);
 
-    const findingValueArray = report.findings.map(this.buildFindingInsertQuery);
-    const findingValues = findingValueArray.join(',');
-    const queryEnd = `    ON CONFLICT (dedupe_slug, build_id) DO UPDATE
-                            SET
-                                version = EXCLUDED.version,
-                                virtual_path = EXCLUDED.virtual_path,
-                                severity = EXCLUDED.severity
-                      ; COMMIT;`;
-    const query = queryBeginning + findingValues + queryEnd;
-    await db.none(query);
-  }
+        const ids = await hasura.GetPackageAndVulnFromSlugs({
+          vuln_slug,
+          pkg_slug,
+          version_slug,
+        });
 
-  private static buildFindingInsertQuery(finding: Finding) {
-    return pgp.as.format(
-      `
-            (
-            ( SELECT id FROM public.vulnerabilities WHERE slug = $<meta.vuln_slug> ),
-            ( SELECT id FROM public.vulnerability_packages WHERE slug = $<meta.pkg_slug>),
-            ( SELECT id FROM public.package_versions WHERE slug = $<meta.version_slug>),
-            ( SELECT id FROM this_scan ),
-            ( SELECT build_id FROM this_scan ),
-            $<package_name>,
-            $<version>,
-            $<version_matcher>,
-            $<type>,
-            $<locations>,
-            $<language>,
-            $<purl>,
-            $<virtual_path>,
-            $<matcher>,
-            $<dedupe_slug>,
-            $<severity>,
-            $<fix_state>,
-            $<fix_versions>
-          )
-        `,
-      finding
-    );
-  }
+        const vulnerability_id = ids.vulnerabilities.length === 1 ? ids.vulnerabilities[0].id : undefined;
+        const vulnerability_package_id =
+          ids.vulnerability_packages.length === 1 ? ids.vulnerability_packages[0].id : undefined;
+        const package_version_id = ids.package_versions.length === 1 ? ids.package_versions[0].id : undefined;
+
+        if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
+          console.error('unable to get all required ids', {
+            slugs,
+            ids,
+          });
+          return {};
+        }
+
+        const locations = artifact.locations.map((l) => l.path);
+        return {
+          package_name: artifact.name,
+          version: artifact.version,
+          version_matcher: details.found.versionConstraint,
+          type: artifact.type,
+          locations: formatPsqlStringArray(locations),
+          language: artifact.language,
+          purl: artifact.purl,
+          severity: vulnerability.severity,
+          virtual_path: artifact.metadata ? artifact.metadata.VirtualPath : null,
+          matcher: details.matcher,
+          dedupe_slug: pkg_slug + locations.sort().join(':'),
+          fix_state: vulnerability.fix?.state || null,
+          fix_versions: vulnerability.fix?.versions ? formatPsqlStringArray(vulnerability.fix?.versions) : null,
+          build_id: buildId,
+          vulnerability_id,
+          vulnerability_package_id,
+          package_version_id,
+        };
+      })
+    ),
+  };
 }

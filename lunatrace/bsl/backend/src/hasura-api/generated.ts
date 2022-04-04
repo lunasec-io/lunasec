@@ -682,9 +682,9 @@ export type Findings_Bool_Exp = {
 /** unique or primary key constraints on table "findings" */
 export enum Findings_Constraint {
   /** unique or primary key constraint */
-  FindingsPkey = 'findings_pkey',
+  FindingsDedupeSlugBuildIdKey = 'findings_dedupe_slug_build_id_key',
   /** unique or primary key constraint */
-  TempDedupeFix = 'temp_dedupe_fix'
+  FindingsPkey = 'findings_pkey'
 }
 
 /** input type for inserting data into table "findings" */
@@ -7470,12 +7470,21 @@ export type GetCountOfPersonalOrgQueryVariables = Exact<{
 
 export type GetCountOfPersonalOrgQuery = { __typename?: 'query_root', organizations_aggregate: { __typename?: 'organizations_aggregate', aggregate?: { __typename?: 'organizations_aggregate_fields', count: number } | null } };
 
+export type GetPackageAndVulnFromSlugsQueryVariables = Exact<{
+  vuln_slug?: InputMaybe<Scalars['String']>;
+  pkg_slug?: InputMaybe<Scalars['String']>;
+  version_slug?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type GetPackageAndVulnFromSlugsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', id: any }>, package_versions: Array<{ __typename?: 'package_versions', id: any }> };
+
 export type GetScanReportNotifyInfoForBuildQueryVariables = Exact<{
   build_id: Scalars['uuid'];
 }>;
 
 
-export type GetScanReportNotifyInfoForBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, project?: { __typename?: 'projects', organization: { __typename?: 'organizations', installation_id?: number | null } } | null } | null };
+export type GetScanReportNotifyInfoForBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, project?: { __typename?: 'projects', id: any, organization: { __typename?: 'organizations', installation_id?: number | null } } | null } | null };
 
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
@@ -7492,6 +7501,13 @@ export type InsertPersonalProjectAndOrgMutationVariables = Exact<{
 
 
 export type InsertPersonalProjectAndOrgMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', id: any } | null };
+
+export type InsertScanMutationVariables = Exact<{
+  scan: Scans_Insert_Input;
+}>;
+
+
+export type InsertScanMutation = { __typename?: 'mutation_root', insert_scans_one?: { __typename?: 'scans', id: any, build_id: any } | null };
 
 export type GetProjectIdFromGitUrlQueryVariables = Exact<{
   git_url?: InputMaybe<Scalars['String']>;
@@ -7579,10 +7595,24 @@ export const GetCountOfPersonalOrgDocument = gql`
   }
 }
     `;
+export const GetPackageAndVulnFromSlugsDocument = gql`
+    query GetPackageAndVulnFromSlugs($vuln_slug: String, $pkg_slug: String, $version_slug: String) {
+  vulnerabilities(where: {slug: {_eq: $vuln_slug}}) {
+    id
+  }
+  vulnerability_packages(where: {slug: {_eq: $pkg_slug}}) {
+    id
+  }
+  package_versions(where: {slug: {_eq: $version_slug}}) {
+    id
+  }
+}
+    `;
 export const GetScanReportNotifyInfoForBuildDocument = gql`
     query GetScanReportNotifyInfoForBuild($build_id: uuid!) {
   builds_by_pk(id: $build_id) {
     project {
+      id
       organization {
         installation_id
       }
@@ -7606,6 +7636,14 @@ export const InsertPersonalProjectAndOrgDocument = gql`
     object: {name: "Personal", projects: {data: {name: "Personal Project"}}, organization_users: {data: {user_id: $user_id}}}
   ) {
     id
+  }
+}
+    `;
+export const InsertScanDocument = gql`
+    mutation InsertScan($scan: scans_insert_input!) {
+  insert_scans_one(object: $scan) {
+    id
+    build_id
   }
 }
     `;
@@ -7684,6 +7722,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetCountOfPersonalOrg(variables: GetCountOfPersonalOrgQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCountOfPersonalOrgQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetCountOfPersonalOrgQuery>(GetCountOfPersonalOrgDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetCountOfPersonalOrg', 'query');
     },
+    GetPackageAndVulnFromSlugs(variables?: GetPackageAndVulnFromSlugsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPackageAndVulnFromSlugsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetPackageAndVulnFromSlugsQuery>(GetPackageAndVulnFromSlugsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPackageAndVulnFromSlugs', 'query');
+    },
     GetScanReportNotifyInfoForBuild(variables: GetScanReportNotifyInfoForBuildQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetScanReportNotifyInfoForBuildQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetScanReportNotifyInfoForBuildQuery>(GetScanReportNotifyInfoForBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetScanReportNotifyInfoForBuild', 'query');
     },
@@ -7692,6 +7733,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     InsertPersonalProjectAndOrg(variables: InsertPersonalProjectAndOrgMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertPersonalProjectAndOrgMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertPersonalProjectAndOrgMutation>(InsertPersonalProjectAndOrgDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertPersonalProjectAndOrg', 'mutation');
+    },
+    InsertScan(variables: InsertScanMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertScanMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InsertScanMutation>(InsertScanDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertScan', 'mutation');
     },
     GetProjectIdFromGitUrl(variables?: GetProjectIdFromGitUrlQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectIdFromGitUrlQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetProjectIdFromGitUrlQuery>(GetProjectIdFromGitUrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectIdFromGitUrl', 'query');
