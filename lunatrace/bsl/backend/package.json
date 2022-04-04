@@ -16,7 +16,6 @@
     "generate:hasura-calls": "graphql-codegen --config codegen.yml",
     "generate:github-calls": "graphql-codegen --config codegen.github.yml",
     "dev:graphql:watch": "yarn run generate:hasura-calls && watch 'yarn run generate:hasura-calls' ./src/hasura-api/graphql",
-    "graphqurl": "^1.0.1",
     "compile": "tsc -p tsconfig.json",
     "compile:watch": "tsc -p tsconfig.json -w"
   },

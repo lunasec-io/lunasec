@@ -33,7 +33,6 @@ const alertsSlice = createSlice({
   initialState,
   reducers: {
     add(state, action: PayloadAction<AlertItem>) {
-      console.log('ADD REDUCER CALLED');
       const { payload } = action;
       // Alerts are deduped on message text since react's rendering flow often causes errors to be logged multiple times
       state.alerts = Object.assign({}, state.alerts, { [payload.message]: payload });

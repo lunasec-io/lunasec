@@ -11,7 +11,10 @@
  * limitations under the License.
  *
  */
-import { AlertOctagon, Briefcase, Folder, LogIn, Plus } from 'react-feather';
+import { AlertOctagon, LogIn, Plus } from 'react-feather';
+import { AiFillGithub } from 'react-icons/ai';
+import { BiUnlink } from 'react-icons/bi';
+import { RiParkingFill } from 'react-icons/ri';
 
 import { GetSidebarInfoQuery } from '../../api/generated';
 
@@ -20,39 +23,62 @@ import { NavSection, SidebarItem } from './types';
 export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAuthenticated: boolean): NavSection[] {
   const projectsSection: SidebarItem[] = !data
     ? []
-    : [
-        {
-          href: '/project/:project_id',
-          icon: Folder,
-          title: 'Projects',
-          // badge: data.projects.length.toString(),
+    : data.organizations.map((o) => {
+        return {
+          href: '/organization/:organization_id',
+          icon: o.name === 'Personal' ? RiParkingFill : AiFillGithub, // todo: replace this with an icon from github
+          title: o.name,
           children: [
-            ...data.projects.map((p) => {
+            ...o.projects.map((p) => {
               return {
-                href: `/project/${p.id as string}`,
+                href: `project/${p.id}`,
+                icon: p.github_repository ? null : BiUnlink,
+                iconAfter: true,
                 title: p.name,
               };
             }),
             {
-              href: `/project/create`,
+              href: `/new-project/${o.id}`,
               title: 'New Project',
               icon: Plus,
             },
           ],
-        },
-        {
-          href: '/organization/:organization_id',
-          icon: Briefcase,
-          title: 'Organizations',
-          // badge: data.organizations.length.toString(),
-          children: data.organizations.map((o) => {
-            return {
-              href: `/organization/${o.id as string}`,
-              title: o.name,
-            };
-          }),
-        },
-      ];
+        };
+      });
+
+  // [
+  //   {
+  //     href: '/project/:project_id',
+  //     icon: Folder,
+  //     title: 'Projects',
+  //     // badge: data.projects.length.toString(),
+  //     children: [
+  //       ...data.projects.map((p) => {
+  //         return {
+  //           href: `/project/${p.id as string}`,
+  //           title: p.name,
+  //         };
+  //       }),
+  //       {
+  //         href: `/project/create`,
+  //         title: 'New Project',
+  //         icon: Plus,
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     href: '/organization/:organization_id',
+  //     icon: Briefcase,
+  //     title: 'Organizations',
+  //     // badge: data.organizations.length.toString(),
+  //     children: data.organizations.map((o) => {
+  //       return {
+  //         href: `/organization/${o.id as string}`,
+  //         title: o.name,
+  //       };
+  //     }),
+  //   },
+  // ];
 
   const databaseSection: SidebarItem[] = [
     {
@@ -83,7 +109,7 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
 
   const loggedInSections = [
     {
-      title: 'Projects & Organizations',
+      title: 'Organizations',
       items: projectsSection,
     },
     {

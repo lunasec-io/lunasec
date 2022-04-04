@@ -8,7 +8,7 @@ serve:
 
 selfservice:
   default_browser_return_url: https://lunatrace.lunasec.io/
-  whitelisted_return_urls:
+  allowed_return_urls:
     - https://lunatrace.lunasec.io
 
   flows:
