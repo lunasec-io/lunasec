@@ -8,7 +8,7 @@
       - POST
   authenticators:
     - handler: cookie_session
-    - handler: anonymous # If the above cookie ins't found or fails, "Subject" becomes "Anonymous" in the below claims
+    - handler: anonymous # If the above cookie insn't found or fails, "Subject" becomes "Anonymous" in the below claims
   authorizer:
     handler: allow
   mutators:
@@ -32,7 +32,7 @@
     url: "http://localhost:8080"
     strip_path: "/api/cli"
   match:
-    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/cli/v1/graphql"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/cli/v1/graphql"te
     methods:
       - POST
   authenticators:
