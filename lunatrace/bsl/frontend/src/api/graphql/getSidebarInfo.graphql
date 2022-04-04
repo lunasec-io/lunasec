@@ -3,6 +3,7 @@ query GetSidebarInfo {
         name
         id
         created_at
+
         builds {
             id
             build_number
@@ -17,6 +18,9 @@ query GetSidebarInfo {
             name
             id
             created_at
+            github_repository {
+                id
+            }
             builds {
                 id
                 build_number
