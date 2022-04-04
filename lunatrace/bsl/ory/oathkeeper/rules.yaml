@@ -32,7 +32,7 @@
     url: "http://localhost:8080"
     strip_path: "/api/cli"
   match:
-    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/cli/v1/graphql"te
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/cli/v1/graphql"
     methods:
       - POST
   authenticators:
