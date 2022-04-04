@@ -18,4 +18,11 @@ select_permissions:
     - vulnerability_slug
     - id
     filter: {}
+  role: service
+- permission:
+    columns:
+    - related_vulnerability_slug
+    - vulnerability_slug
+    - id
+    filter: {}
   role: user
