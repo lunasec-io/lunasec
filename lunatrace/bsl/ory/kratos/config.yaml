@@ -25,7 +25,6 @@ selfservice:
             mapper_url: file:///config/oidc.github.jsonnet
             scope:
               - email
-              - read:user
 
 
   flows:
