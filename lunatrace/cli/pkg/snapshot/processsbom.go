@@ -33,7 +33,7 @@ func processSbom(
 	sbomModel := ToFormatModel(*sbom)
 
 	printToStdout := c.Bool("stdout")
-	outputFile := c.String("output-file")
+	outputFile := c.String("output")
 	err = outputSbom(sbomModel, printToStdout, outputFile)
 
 	skipUpload := c.Bool("skip-upload")

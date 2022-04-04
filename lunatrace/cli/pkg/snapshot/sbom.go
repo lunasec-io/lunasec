@@ -30,7 +30,7 @@ import (
 	"path/filepath"
 )
 
-func getSyftSourceForFile(sourceName string, excludedDirs []string, useStdin bool) (src *source.Source, cleanup func(), err error) {
+func getSyftSourceForFile(sourceName string, excludeDirs []string, useStdin bool) (src *source.Source, cleanup func(), err error) {
 	if useStdin {
 		var (
 			tmpSourceFile *os.File
@@ -52,7 +52,7 @@ func getSyftSourceForFile(sourceName string, excludedDirs []string, useStdin boo
 		return
 	}
 
-	src, cleanup, err = source.New("file:"+sourceName, nil, excludedDirs)
+	src, cleanup, err = source.New("file:"+sourceName, nil, excludeDirs)
 	if err != nil {
 		err = fmt.Errorf("failed to construct source from user input %q: %w", sourceName, err)
 		return
@@ -60,12 +60,12 @@ func getSyftSourceForFile(sourceName string, excludedDirs []string, useStdin boo
 	return
 }
 
-func getSbomFromFile(sourceName string, excludedDirs []string, useStdin bool) (s *sbom.SBOM, err error) {
+func getSbomFromFile(sourceName string, excludeDirs []string, useStdin bool) (s *sbom.SBOM, err error) {
 	log.Info().
 		Str("source", sourceName).
 		Msg("Scanning source for dependencies.")
 
-	src, cleanup, err := getSyftSourceForFile(sourceName, excludedDirs, useStdin)
+	src, cleanup, err := getSyftSourceForFile(sourceName, excludeDirs, useStdin)
 	if cleanup != nil {
 		defer cleanup()
 	}
@@ -101,12 +101,12 @@ func NewSbom(src *source.Source) (s *sbom.SBOM, err error) {
 	return
 }
 
-func getSbomFromContainer(container string, excludedDirs []string) (s *sbom.SBOM, err error) {
+func getSbomFromContainer(container string, excludeDirs []string) (s *sbom.SBOM, err error) {
 	log.Info().
 		Str("container", container).
 		Msg("Scanning container for dependencies.")
 
-	src, cleanup, err := source.New("docker:"+container, nil, excludedDirs)
+	src, cleanup, err := source.New("docker:"+container, nil, excludeDirs)
 	if err != nil {
 		err = fmt.Errorf("failed to construct source from container %s: %w", container, err)
 		return
@@ -120,12 +120,12 @@ func getSbomFromContainer(container string, excludedDirs []string) (s *sbom.SBOM
 	return NewSbom(src)
 }
 
-func getSbomFromDirectory(repoDir string, excludedDirs []string) (s *sbom.SBOM, err error) {
+func getSbomFromDirectory(repoDir string, excludeDirs []string) (s *sbom.SBOM, err error) {
 	log.Info().
 		Str("repoDir", repoDir).
 		Msg("Scanning directory for dependencies.")
 
-	src, cleanup, err := source.New("dir:"+repoDir, nil, excludedDirs)
+	src, cleanup, err := source.New("dir:"+repoDir, nil, excludeDirs)
 	if err != nil {
 		err = fmt.Errorf("failed to construct source from repo %s: %w", repoDir, err)
 		return
