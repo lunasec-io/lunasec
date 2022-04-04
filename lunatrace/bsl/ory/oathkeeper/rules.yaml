@@ -8,18 +8,19 @@
       - POST
   authenticators:
     - handler: cookie_session
-    - handler: anonymous
+    - handler: anonymous # If the above cookie ins't found or fails, "Subject" becomes "Anonymous" in the below claims
   authorizer:
     handler: allow
   mutators:
     - handler: id_token
       config:
         issuer_url: http://oathkeeper:4455/
+        # x-hasura-access-token below is a hack to bypass a weird hasura requirement
         claims: |
           {
             "https://hasura.io/jwt/claims": {
-              "x-hasura-user-id": "{{ .Subject }}",
-              "x-hasura-access-token": "2883ad68-4940-461b-83f7-844b0604bb8c",
+              "x-hasura-user-id": "{{ .Subject }}",          
+              "x-hasura-access-token": "2883ad68-4940-461b-83f7-844b0604bb8c",  
               "x-hasura-allowed-roles": ["user"],
               "x-hasura-default-role": "user"
             }
