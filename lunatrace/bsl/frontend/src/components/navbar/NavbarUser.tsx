@@ -34,12 +34,7 @@ const NavbarUser: React.FunctionComponent = () => {
 
   return (
     <Dropdown className="nav-item" align="end">
-      <span className="d-inline-block d-sm-none">
-        <Dropdown.Toggle as="a" className="nav-link">
-          <User size={18} className="align-middle" />
-        </Dropdown.Toggle>
-      </span>
-      <span className="d-none d-sm-inline-block">
+      <span className="d-inline-block">
         <Dropdown.Toggle as="a" className="nav-link">
           {user.identity.traits?.picture ? (
             <img
@@ -51,7 +46,7 @@ const NavbarUser: React.FunctionComponent = () => {
             <User size={18} className="me-1" />
           )}
 
-          <span className="text-dark">{displayName(user.identity.traits)}</span>
+          <span className="text-dark d-none d-md-inline">{displayName(user.identity.traits)}</span>
         </Dropdown.Toggle>
       </span>
       <Dropdown.Menu>

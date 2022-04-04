@@ -41,9 +41,6 @@ const appApi = generatedApi.enhanceEndpoints({
     GetProject: {
       providesTags: ['ProjectDetails'],
     },
-    CreateOrganizationAndProject: {
-      invalidatesTags: ['Organizations', 'Projects'],
-    },
   },
 });
 

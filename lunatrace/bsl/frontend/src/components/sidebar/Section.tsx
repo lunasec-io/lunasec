@@ -30,7 +30,7 @@ export const Section: React.FunctionComponent<NavSectionProps> = (props) => {
 
   return (
     <React.Fragment {...rest}>
-      {title && <li className="sidebar-header">{title}</li>}
+      {title && <li className="sidebar-header fs-4">{title}</li>}
       {children}
     </React.Fragment>
   );

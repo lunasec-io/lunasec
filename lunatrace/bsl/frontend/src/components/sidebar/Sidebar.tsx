@@ -13,6 +13,7 @@
  */
 import React from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { NavLink } from 'react-router-dom';
 
 import { ReactComponent as Logo } from '../../assets/logo.svg';
 import useSidebar from '../../hooks/useSidebar';
@@ -31,10 +32,10 @@ const Sidebar: React.FunctionComponent<SidebarProps> = ({ sections, showFooter =
   return (
     <nav className={`sidebar ${!isOpen ? 'collapsed' : ''}`}>
       <div className="sidebar-content">
-        <PerfectScrollbar>
-          <a className="sidebar-brand" href="/">
+        <PerfectScrollbar options={{ suppressScrollX: true }}>
+          <NavLink className="sidebar-brand" to="/">
             <Logo /> <span className="align-middle me-3">LunaTrace</span>
-          </a>
+          </NavLink>
 
           <ul className="sidebar-nav">
             {sections &&

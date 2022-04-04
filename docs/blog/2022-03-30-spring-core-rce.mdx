@@ -25,87 +25,73 @@ authors: [free, chris, forrest]
 
 ![Spring4Shell Logo](https://www.lunasec.io/docs/img/spring4shell-logo.png)
 
-_Originally posted March 30th, 2022. Logo from [Daniel Christensen](https://github.com/BobTheShoplifter/Spring4Shell-POC)._
+<figcaption style={{fontSize:'small'}}>Logo by <a href="https://github.com/BobTheShoplifter/Spring4Shell-POC">Daniel Christensen</a></figcaption>
 
-On March 29th, 2022, two RCE vulnerabilities were being discussed on the internet. Most of the people talking about them
-believe they're talking about "Spring4Shell" (_CVE Added: [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965)_), but
-in reality they're swapping notes about [CVE-2022-22963](https://tanzu.vmware.com/security/cve-2022-22963).
+Originally posted March 30th, 2022.
 
-**Update**: Patches are now available for Spring4Shell in
+**Update, Patch Available**: Patches are now available for Spring4Shell in
 [Spring versions 5.3.18 and 5.2.20](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement) and an
 official CVE has been published as [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965).
 
-### TL;DR
+### What is it?
 
-Two RCEs exist and three vectors are being discussed online (one of which is not known to be remotely exploitable).
-
-1. Confirmed: [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965) "Spring4Shell" in Spring Core that has been confirmed by several sources that leverages class injection (very severe),
-2. Confirmed: [CVE-2022-22963](https://tanzu.vmware.com/security/cve-2022-22963) in Spring Cloud Function (less severe),
-3. Unconfirmed: A third weakness that was initially discussed as allowing RCE via Deserialization, but isn't exploitable (not severe currently).
+Two serious vulnerabilities leading to remote code execution (RCE) have been found in the popular Spring framework, one
+in _Spring Core_ and the other in _Spring Cloud Functions_.
 
 <!--truncate-->
 
 ## Who is impacted?
+Anyone using Spring on `Java 9` or newer, especially those using TomCat. Java 8 does not appear to be vulnerable.
 
-This question is hard to answer until we have more details about the exploit.
+So far, the only confirmed exploit depends on Spring being deployed with TomCat. However, other vectors may be discovered.
+We recommend all Spring users update, starting with those using TomCat.
 
-We've been actively posting small updates and details in
-[this Twitter thread](https://twitter.com/LunaSecIO/status/1509084844042510336). If you'd like to get automatically
-updated about new developments relating to Spring4Shell, you may
-[subscribe to our newsletter](#get-notified-automatically) at the bottom of this post.
+## The two vulnerabilities
 
-:::info
-If you'd like to contribute any specific information about this vulnerability, we encourage you to add it to this blog
-post directly by
-[adding it yourself on GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2022-03-30-spring-core-rce.mdx)!
-Once you do, please send us a Pull Request for us to review and land.
-:::
-
-## RCE in "Spring Core"
+#### 1. Spring4Shell - an RCE in _Spring Core_
+This vulnerability, dubbed "Spring4Shell", leverages class injection leading to a full RCE, and is very severe.
+The name "Spring4Shell" was picked because Spring Core is a ubiquitous library, similar to log4j which spawned the infamous [Log4Shell vulnerability](https://www.wired.com/story/log4j-flaw-hacking-internet/).
 
 We believe that users running JDK version 9 and newer are vulnerable to an RCE attack. All versions of Spring Core are
-impacted (no patch has been released yet).
+impacted.
 
-There are strategies to mitigate the attack (see below), and we believe that are also mitigating factors in terms of
-an individual app's ability to be exploited. However, because of the lack of details currently, we currently recommend
-that all users apply mitigations if they are running Spring Core.
+There are strategies to mitigate the attack, and we believe that not all Spring servers are
+necessarily vulnerable, depending on other factors [discussed below](#spring4shell). That said, we currently recommend
+that all users apply mitigations or update if they are using Spring Core.
 
-[More details on applying mitigations.](#applying-mitigations)
+A CVE has now been published for this vulnerability as [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965).
 
-## RCE in "Spring Cloud Function"
+Note: there is also an unconfirmed deserialization weakness in Spring Core that could potentially lead to an RCE for _Spring Core <=5.3.17_.
+
+
+[More details on this vulnerability below](#applying-mitigations)
+
+#### 2. RCE in "Spring Cloud Function"
+
+- [CVE-2022-22963](#cve-2022-22963): A _confirmed RCE_ in *Spring Cloud Function* (<=3.1.6 and <=3.2.2).
 
 If you're using the Spring Cloud Function library, you must upgrade to 3.1.7+ or 3.2.3+ to prevent an RCE attack.
 
-[More details on CVE-2022-22963](#cve-2022-22963)
-
-## Overview of Vulnerabilities
-
-- [Spring4Shell](#spring4shell): An _confirmed RCE_ in *Spring Core* <=5.3.17. CVE Added (3/31/2022): [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965).
-- [CVE-2022-22963](#cve-2022-22963): A _confirmed RCE_ in *Spring Cloud Function* (<=3.1.6 and <=3.2.2).
-- An unconfirmed deserialization weakness in Spring Core that could lead to an RCE. (Spring Core <=5.3.17)
+[More details on CVE-2022-22963 below](#cve-2022-22963---a-separate-vulnerability)
 
 ## Spring4Shell
 
 On March 29th, 2022, a set of Tweets (now deleted) were published from a Chinese Twitter account showing screenshots of a
-new POC 0-day exploit in the popular Java library *Spring Core*. ~~These reports are still unconfirmed, and we are actively
-investigating the exploitability of this potential vulnerability.~~
-_[Praetorian has confirmed that this is exploitable](https://www.praetorian.com/blog/spring-core-jdk9-rce/), but we still
-don't have all the details around how widespread or exploitable this is._
-
-_A CVE has been added on March 31st, 2022 by the Spring developers as [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965)_
-~~There is not currently a CVE associated with this vulnerability~~, and it is being referred to as "Spring4Shell" or
+new POC 0-day exploit in the popular Java library *Spring Core*. It is being referred to as "Spring4Shell" or
 "SpringShell" by users online.
+
+A CVE was added on March 31st, 2022 by the Spring developers as [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965).
+
 
 **Update**: The authors of Spring have _published a patch for this with
 [versions 5.3.18 and 5.2.20](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement)_
-~~yet to make an official statement about this but are suspected to be working on a patch to mitigate the vulnerability~~.
 
 ### Applying Mitigations
 
-If you're using Spring Core, this is currently the only known remediation for patching this attack. _A patch is now
+A patch is now
 available as of March 31st, 2022 in the newest published
-[Spring versions 5.3.18 and 5.2.20](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement)_
-~~There is no patch available (as of 3-30-2022 @ 2:30pm)~~.
+[Spring versions 5.3.18 and 5.2.20](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement). We recommend
+all users update. For those unable to update, the following mitigations are possible:
 
 According to the [Praetorian post](https://www.praetorian.com/blog/spring-core-jdk9-rce/) confirming the presence of an
 RCE in Spring Core, the currently recommended approach for is to patch `DataBinder` by adding a blacklist of vulnerable
@@ -228,7 +214,7 @@ Executing the request:
 curl 'http://localhost:8080/greeting?id=test'
 ```
 
-Will attempt to parse the query parameters `name=test` into the Plain Old Java Object (POJO) `request` which is of type `Greeting`.
+Will attempt to parse the query parameters `id=test` into the Plain Old Java Object (POJO) `request` which is of type `Greeting`.
 With this normal request, Spring's `RequestMapping` will use the setter for `id` to set the POJO's name field to `"test"`.
 
 The vulnerability exists due to other values that can be set.
@@ -262,41 +248,37 @@ A file will be written to: `webapps/ROOT/shell.jsp` and it will contain the payl
 This file will be used for format the logs for the server and an arbitrary command can be passed in using the query parameter `cmd`.
 
 It is important to note that this has only been tested to work on an [Apache Tomcat server](https://github.com/lunasec-io/Spring4Shell-POC/blob/master/Dockerfile#L1).
-Without being run on a Tomcat server, the above logging properties will not exist and another method of exploitation will be needed.
-
-To test this exploit for yourself, you can check out [our fork of reznok's Spring4Shell POC here](https://github.com/lunasec-io/Spring4Shell-POC/blob/master/exploit.py).
+Without being run on a Tomcat server, the above logging properties will not exist. Another, as of yet unknown method of exploitation would be needed.
 
 ### Test the Exploit yourself
 
-**Update**: You can now test the end-to-end exploitation of Spring4Shell with this
-["Vulnerable App and POC exploit" from GitHub](https://github.com/lunasec-io/Spring4Shell-POC).
+You can now test the end-to-end exploitation of Spring4Shell with
+[this vulnerable app and exploit](https://github.com/lunasec-io/Spring4Shell-POC) we have published. This is a fork of reznok's Spring4Shell POC.
+Code for the exploit can be found [in this file](https://github.com/lunasec-io/Spring4Shell-POC/blob/master/exploit.py).
+
 
 We've gone through and verified that this exploit is functional by building on the work of the many other security
-researchers digging into this. As we learn more, we'll be adding additional changes that repo as we continue our work on it.
+researchers digging into this. As we continue to work on it, we'll be adding additional changes to that repo.
 
 _From sketchy Twitter screenshots to a working POC in under 48 hours! It's been a wild ride, y'all. Thank you,
 everybody working on this, for your help to make that possible!_
 
-~~We've gone ahead and written
-an ["Example Vulnerable Application" on GitHub](https://github.com/lunasec-io/spring-rce-vulnerable-app)
-for this vulnerable deserialization RCE attack. That repo does not currently contain a working POC (see
-[this repo](https://github.com/TheGejr/SpringShell) for a POC) or any information
-about _how to exploit this_, but it does provide a way to help reduce the uncertainty around this by testing payloads
-that could work.~~
 
-:::info Contact Us
-If you have any insights or discoveries to share, please [email us](mailto:contact@lunasec.io) with them to help get
-verified information to developers. You can also mention us on [Twitter](https://twitter.com/LunaSecIO). We're happy to
-retweet anything you share with us if it's valuable.
-:::
 
-## CVE-2022-22963
 
-To add even further confusion to the "hype" around this, there _is_ a
-[confirmed CVE](https://spring.io/blog/2022/03/29/cve-report-published-for-spring-cloud-function) in Spring that was published on
-March 29th, 2022 _also_! That CVE is being tracked as
+---
+
+## [CVE-2022-22963](https://tanzu.vmware.com/security/cve-2022-22963) - A Separate Vulnerability
+
+A serious RCE vulnerability discovered in the *Spring Cloud Function* library. This is a separate vulnerability than Spring4Shell, discussed above.
+
+Because this vulnerability was discovered almost
+simultaneously alongside Spring4Shell, and was first to have a CVE published, there was much confusion between the two online.
+This is being tracked by
 [CVE-2022-22963](https://tanzu.vmware.com/security/cve-2022-22963), and it affects the *Spring Cloud Function* library
-_only_ which is a separate Java library from *Spring Core*. This vulnerability currently has a *CVSS score of 5.7* and
+_only_ which is a separate Java library from *Spring Core*.
+
+This vulnerability currently has a *CVSS score of 5.7* and
 has known POCs available on [Twitter](https://twitter.com/bytehx343/status/1509034539330732033) and
 [GitHub](https://github.com/dinosn/CVE-2022-22963) ([another](https://github.com/RanDengShiFu/CVE-2022-22963)).
 
@@ -305,31 +287,21 @@ has known POCs available on [Twitter](https://twitter.com/bytehx343/status/15090
 This vulnerability is real. If you're using the Spring Cloud Function library, you should upgrade to 3.1.7+ or 3.2.3+ to
 mitigate this RCE.
 
-There are likely mitigating factors that you can use to determine if you are vulnerable or not based
-on your usage, but we're not currently publishing details about that in this post. (We're trying to help reduce the
-uncertainty around Spring4Shell currently.)
+---
 
 ## The Current Situation
 
-**Update**: _The following section is less true now that an official CVE has been associated with this vulnerability and
-patches are available. Please see
-[Spring versions 5.3.18 and 5.2.20](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement) for more
-information about patching._
+Trying to understand what information is "real" and what mitigations actually work is very difficult
+before a CVE is published. That was especially true when the
+[Spring developers themselves](https://twitter.com/hacksilon/status/1509117953064812547) originally denied that there was a problem.
 
-The situation is confusing because the vulnerabilities are in two popular Java libraries that are both published by Spring
-(Spring Core and Spring Cloud Function).
-_Updated 3/31/2022: [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965) has been published._
-~~Further, this situation is made worse by the lack of a CVE to differentiate them.~~
-Anybody searching for "Spring RCE" online is going to find the RCE results for the less popular Spring Cloud Function
-library.
+Now that an official CVE and Spring patches have been published, there is a clear mitigation path for users.
 
-~~They won't be able to find information validating Spring4Shell because it's still a _vulnerability without a CVE_. There
-is no CVE to track it and multiple issues have been described as "Spring4Shell". It's all speculation and screenshots on Twitter/GitHub.~~
+This was a particularly confusing situation because two vulnerabilities were published in Spring spring packages
+(Spring Core and Spring Cloud Function) at almost the same time. Now that an official CVE for Spring4Shell has been published
+as [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965),
+it's much clearer to differentiate the two.
 
-_Updated 3/31/2022: An official CVE has been published as [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965)._
-
-Even the name "Spring4Shell" was only picked because Spring Core is as ubiquitous of a library similar to how
-log4j was (which spawned the infamous [Log4Shell vulnerability](https://www.wired.com/story/log4j-flaw-hacking-internet/)).
 
 What is important to remember is that this vulnerability is *NOT* as bad a Log4Shell. All attack scenario are more
 complex and have more mitigating factors than Log4Shell did because of the nature of
@@ -337,43 +309,15 @@ how ~~deserialization exploits~~ _Class Loader Manipulation_ attacks work in Jav
 
 With Log4Shell, exploitation was trivial and an exploit could be written in seconds that worked on most apps.
 
-With Spring4Shell, exploitation requires deep Java knowledge to get a functioning POC. ~~It also requires certain features,
-such as caching, to be enabled in Spring before an app is vulnerable.~~ _Class Loader Manipulation is more complicated to
-understand than Log4Shell initially required. We don't have all the details yet though._
+With Spring4Shell, exploitation requires deep Java knowledge to get a functioning POC. Class Loader Manipulation is more complicated to
+understand than the Log4Shell vulnerability.
 
-### About Us
+## Some Context
 
--------
 
-> **"It's an order of magnitude less work to create a lie than to refute one."**
-*- A former colleague*
 
--------
 
-Why listen to us?
-
-With chaos everywhere, it can be hard to know who to trust. So why this post versus any other?
-
-Well, we're all Security Engineers with experience dealing with chaos. In addition to writing a
-[mitigation guide for Log4Shell](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide), we've also been
-validating bug reports professionally for years. We helped run the Bug Bounties at
-Uber and Snapchat, both of which had significantly more "invalid" reports submitted than "real" ones. Because of that, we've
-gotten very good at verifying that an exploit is a problem _before_ we ever sound the alarm.
-
-Because of that, we're committed to only publishing the facts and our thoughts _after_ we've had time to understand them.
-
-## Context to Tame the Chaos
-
-**Update**: _The following section is less true now that an official CVE has been associated with this vulnerability and
-patches are available. Please see
-[Spring versions 5.3.18 and 5.2.20](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement) for more
-information about patching._
-
-Trying to understand what information is "real" and what mitigations actually work is very difficult for vulnerabilities
-without a CVE. That's especially true when the
-[Spring developers themselves](https://twitter.com/hacksilon/status/1509117953064812547) are denying that there is a problem.
-
-### Deserialization alone is not a CVE
+#### Deserialization alone is not a CVE
 
 Why not declare this a problem immediately and add to the panic?
 
@@ -390,10 +334,10 @@ That's what why security experts call them "Remote Code Execution" (RCE) attacks
 unauthorized user is able to *Remotely* execute code. That's what made Log4Shell
 such a bad RCE vulnerability because developers log user-controlled variables (like usernames) all the time!
 
-### Deja-vu
+#### Similarities to Log4Shell
 
-There are a lot of similarities between Spring4Shell and Log4Shell besides their names. Back in December we were the first team to write
-about the (at the time speculated) [Java RCE vulnerability in log4j](https://www.lunasec.io/docs/blog/log4j-zero-day) floating around
+There are a lot of similarities between Spring4Shell and Log4Shell beyond their names. Back in December we were the first team to write
+about the (at the time speculated) [Java RCE vulnerability in log4j](https://www.lunasec.io/docs/blog/log4j-zero-day) that we found floating around
 on Twitter.
 
 We initially named that vulnerability "Log4Shell" because, at the time, because
@@ -414,6 +358,13 @@ kudos at the bottom of this post to see who else helped us write this!
 
 ## Get notified automatically
 
+
+We've been actively posting small updates and details in
+[this Twitter thread](https://twitter.com/LunaSecIO/status/1509084844042510336). If you'd like to get automatically
+updated about new developments relating to Spring4Shell, you may
+[subscribe to our newsletter](#get-notified-automatically) at the bottom of this post.
+
+
 You can join our email updates newsletter at the bottom of this post to receive updates from us whenever we publish them.
 
 We promise not to spam you and to only email you a few times per month. We're just a team of Security Engineers building
@@ -425,6 +376,39 @@ vulnerabilities like this one are found in your code. The code is available on [
 and our hosted version is available to [try out](https://lunatrace.lunasec.io/) (it's still under active development, so
 expect bugs). It's also available as a [GitHub App](https://github.com/apps/lunatrace-by-lunasec/) that will scan your
 Pull Requests automatically for new vulnerabilities.
+
+:::info Contact Us
+If you'd like to contribute any specific information about this vulnerability, we encourage you to add it to this blog
+post directly by
+[adding it yourself on GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2022-03-30-spring-core-rce.mdx)!
+Once you do, please send us a Pull Request.
+
+You can also [email us](mailto:contact@lunasec.io) with any discoveries or corrections. Or, mention us on [Twitter](https://twitter.com/LunaSecIO).
+ We're happy to
+retweet anything valuable.
+:::
+
+
+### About Us
+
+-------
+
+> **"It's an order of magnitude less work to create a lie than to refute one."**
+*- A former colleague*
+
+-------
+
+Why listen to us?
+
+With chaos everywhere, it can be hard to know who to trust. So why this post versus any other?
+
+We're all Security Engineers with experience dealing with chaos. In addition to writing a
+[mitigation guide for Log4Shell](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide), we've also been
+validating bug reports professionally for years. We helped run the Bug Bounties at
+Uber and Snapchat, wading through many false reports. Because of that, we work hard to verify vulnerabilities
+_before_ we sound the alarm.
+
+We're committed to only publishing the facts and our thoughts _after_ we've had time to understand them.
 
 ### Help us build Open Source AppSec Tools
 
@@ -463,3 +447,4 @@ old OG Log4Shell one!
 4. 3/31/22 @ 12:55pm PDT: Added information about the new CVE and available patch versions from the Spring devs.
 5. 3/31/22 @ 3:58pm PDT: Fixed a typo with the Spring versions. They were the versions from Spring Boot, not Spring itself.
 6. 3/31/22 @4:57pm PDT: Added information about an end-to-end vulnerable app + POC.
+7. 4/1/22 @6:00pm PDT: Major article rework / reorganization. Many outdated statements that were previous struck-through have been deleted.

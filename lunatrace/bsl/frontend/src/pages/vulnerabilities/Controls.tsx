@@ -32,10 +32,10 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
   const { theme } = useTheme();
   return (
     <Row className="mb-2 mb-xl-3">
-      <Col sm="3" className="d-none d-sm-block">
+      <Col sm="3" className="d-none d-md-block">
         <h3>Vulnerabilities</h3>
       </Col>
-      <Col sm="5">
+      <Col sm="6" md="4">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -56,7 +56,7 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
         </form>
       </Col>
 
-      <Col sm="4" className="ms-auto text-end">
+      <Col sm="6" md="5" className="ms-auto d-flex  mt-3  mt-sm-0 align-content-center align-content-md-end">
         <Dropdown autoClose="outside" className="d-inline me-2">
           <Dropdown.Toggle
             variant={order !== 'none' && theme === 'dark' ? 'primary' : ''}

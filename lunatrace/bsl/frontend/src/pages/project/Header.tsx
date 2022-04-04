@@ -22,11 +22,11 @@ export const ProjectHeader: React.FunctionComponent<ProjectHeaderProps> = ({ pro
   return (
     <Row>
       <Col xs="12" style={{ textAlign: 'center' }}>
-        <h1>{projectName}</h1>
+        <h1 className="text-capitalize">{projectName}</h1>
       </Col>
       {organizationName ? (
         <Col xs="12" style={{ textAlign: 'center' }}>
-          <h5 className="darker">{organizationName}</h5>
+          <h5 className="darker text-capitalize">{organizationName}</h5>
         </Col>
       ) : null}
     </Row>
