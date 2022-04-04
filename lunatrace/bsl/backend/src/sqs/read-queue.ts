@@ -23,15 +23,12 @@ import {
 import { getAwsConfig, getQueueHandlerConfig } from '../config';
 import { handleGenerateManifestSbom } from '../sqs-handlers/generate-sbom';
 import { handleScanSbom } from '../sqs-handlers/scan-sbom';
-import { S3ObjectMetadata } from '../types/s3';
-import { S3SqsEvent } from '../types/sqs';
+import { HandlerCallback, S3SqsEvent } from '../types/sqs';
 
 const awsConfig = getAwsConfig();
 const queueHandlerConfig = getQueueHandlerConfig();
 
 const sqsClient: SQSClient = new SQSClient({ region: awsConfig.awsRegion });
-
-type HandlerCallback = (object: S3ObjectMetadata) => Promise<void>;
 
 async function deleteMessage(message: Message, queueUrl: string) {
   const deleteParams = {
@@ -46,7 +43,7 @@ async function deleteMessage(message: Message, queueUrl: string) {
   }
 }
 
-async function readDataFromQueue(queueUrl: string, processObjectCallback: (object: S3ObjectMetadata) => Promise<void>) {
+async function readDataFromQueue(queueUrl: string, processObjectCallback: HandlerCallback) {
   try {
     const params = {
       AttributeNames: ['SentTimestamp'],
@@ -73,20 +70,30 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: (objec
             return deleteMessage(message, queueUrl);
           }
           // todo: do we actually need this promise handling or should we only take the first record from any event...assuming one file per object created event makes a lot of sense
-          const handlerPromises: Promise<void>[] = parsedBody.Records.map((record) => {
+          const handlerPromises = parsedBody.Records.map((record) => {
             return processObjectCallback({
               bucketName: record.s3.bucket.name,
               key: record.s3.object.key,
               region: record.awsRegion,
             });
           });
-          await Promise.all(handlerPromises);
-          void deleteMessage(message, queueUrl);
+          const results = await Promise.all(handlerPromises);
+
+          const errors = results.filter((result) => result.success === false);
+
+          if (errors.length > 0) {
+            console.error('Errors found while processing SBOM:', { errors });
+            // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
+            return;
+          }
+
+          await deleteMessage(message, queueUrl);
         })
       );
     }
   } catch (err) {
     console.error('SQS processor top level error: ', err);
+    throw err;
   }
 }
 

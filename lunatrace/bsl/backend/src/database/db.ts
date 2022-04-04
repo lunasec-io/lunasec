@@ -17,14 +17,16 @@ import pgPromise from 'pg-promise';
 
 const dbConfig = config.get('db');
 
-const conf = { ...(dbConfig as Record<string, any>) };
+const conf = {
+  ...(dbConfig as Record<string, any>),
+};
 
 export const pgp = pgPromise({
   /* initialization options */
   capSQL: true, // capitalize all generated SQL
 });
 
-export const db = pgp(conf);
+export const db = pgp(process.env.DATABASE_CONNECTION_URL || conf);
 console.log('postgres DB initialized');
 
 // export function closeDb(_req: Request, _res: Response, next: () => {}) {
