@@ -32,9 +32,31 @@ selfservice:
 
     login:
       ui_url: https://lunatrace.lunasec.io
+      lifespan: 10m
+      after:
+        oidc:
+          hooks:
+            - hook: web_hook
+              config:
+                url: http://localhost:3002/github/login
+                method: POST
+                body: file:///config/oidc.hook.jsonnet
 
     registration:
-      ui_url: https://lunatrace.lunasec.io/account/register
+      ui_url: https://lunatrace.lunasec.io/
+      lifespan: 10m
+      after:
+        password:
+          hooks:
+            - hook: session
+        oidc:
+          hooks:
+            - hook: session
+            - hook: web_hook
+              config:
+                url: http://localhost:3002/github/login
+                method: POST
+                body: file:///config/oidc.hook.jsonnet
 
 log:
   level: debug

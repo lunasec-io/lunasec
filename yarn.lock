@@ -13690,21 +13690,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ory/kratos-client@npm:0.8.0-alpha.2, @ory/kratos-client@npm:>=0.8.0-alpha.2":
+"@ory/kratos-client@npm:0.9.0-alpha.3":
+  version: 0.9.0-alpha.3
+  resolution: "@ory/kratos-client@npm:0.9.0-alpha.3"
+  dependencies:
+    axios: ^0.21.4
+  checksum: fe3bb372ae82667c9c50a05816abfb976eb8aeadf2adbbfd7b938562c635592d9f2aa9ee3bdac5e3adad30bb52545742b196a8366f74e046b5f73ba9bf5568fc
+  languageName: node
+  linkType: hard
+
+"@ory/kratos-client@npm:>=0.8.0-alpha.2":
   version: 0.8.0-alpha.2
   resolution: "@ory/kratos-client@npm:0.8.0-alpha.2"
   dependencies:
     axios: ^0.21.1
   checksum: 95dd75e7746cf5ec32ce0e8adbfb167ee81a63858c6316e559e7532b33af3776a96e8ec13c779f22f575426406c63620499810d8391cbbf28a261e472c7de884
-  languageName: node
-  linkType: hard
-
-"@ory/kratos-client@npm:v0.8.2-alpha.1":
-  version: 0.8.2-alpha.1
-  resolution: "@ory/kratos-client@npm:0.8.2-alpha.1"
-  dependencies:
-    axios: ^0.21.1
-  checksum: d103ffdf08f76e565622abda8e748b5d17f9829c727e37a74e50b87b6d86431499b2e2f191ad2b6571202c1dea0455840585734c09b8ed923843aa7ca84f107a
   languageName: node
   linkType: hard
 
@@ -15237,6 +15237,13 @@ __metadata:
   version: 5.1.1
   resolution: "@types/lru-cache@npm:5.1.1"
   checksum: e1d6c0085f61b16ec5b3073ec76ad1be4844ea036561c3f145fc19f71f084b58a6eb600b14128aa95809d057d28f1d147c910186ae51219f58366ffd2ff2e118
+  languageName: node
+  linkType: hard
+
+"@types/markdown-table@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@types/markdown-table@npm:2.0.0"
+  checksum: 954d86e7d5560d98da76a237c976d5db430cf002fb86bd35dd742acd8d698934cd20e8348a5b04f20d4d721e52d8d20cb83f44fc43ad8e00e9200ff6d3d2b998
   languageName: node
   linkType: hard
 
@@ -21883,6 +21890,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"compare-versions@npm:4.1.3":
+  version: 4.1.3
+  resolution: "compare-versions@npm:4.1.3"
+  checksum: 54460756ab2d62f8a9d672db249b248fec7ca41c3e8ed242925e2f2257793ad3e83cecb2cdfd60b46a3aabc962a3a4cbf37a4b928c8f30517822d2bde937a3d1
+  languageName: node
+  linkType: hard
+
 "component-emitter@npm:^1.2.1":
   version: 1.3.0
   resolution: "component-emitter@npm:1.3.0"
@@ -27673,7 +27687,7 @@ __metadata:
     "@graphql-codegen/typescript-operations": ^2.2.2
     "@graphql-codegen/typescript-rtk-query": ^2.2.2
     "@ory/integrations": ~0.2.2
-    "@ory/kratos-client": 0.8.0-alpha.2
+    "@ory/kratos-client": 0.9.0-alpha.3
     "@ory/themes": ~0.0.101
     "@reduxjs/toolkit": ^1.7.1
     "@rtk-query/graphql-request-base-query": ^2.0.0
@@ -27695,6 +27709,7 @@ __metadata:
     axios: ^0.26.0
     bootstrap: 5.1.3
     bootstrap-switch-button-react: ^1.2.0
+    compare-versions: 4.1.3
     graphql-request: ^4.0.0
     graphqurl: ^1.0.1
     history: ^5.2.0
@@ -27722,7 +27737,6 @@ __metadata:
     redux-first-history: ^5.0.8
     sass: ^1.49.0
     sass-loader: ^12.4.0
-    semver-sort: ^1.0.0
     typescript: ~4.5.5
     use-react-router-breadcrumbs: ^3.0.2
     uuid: ^8.3.2
@@ -35063,7 +35077,7 @@ __metadata:
     "@octokit/plugin-rest-endpoint-methods": ^5.13.0
     "@octokit/webhooks": ^9.23.0
     "@octokit/webhooks-types": ^5.5.1
-    "@ory/kratos-client": v0.8.2-alpha.1
+    "@ory/kratos-client": 0.9.0-alpha.3
     "@types/aws-lambda": ^8.10.89
     "@types/axios": ^0.14.0
     "@types/config": ^0.0.41
@@ -35073,6 +35087,7 @@ __metadata:
     "@types/express": ^4.17.13
     "@types/express-jwt": ^6.0.4
     "@types/jest": ^27.4.1
+    "@types/markdown-table": 2.0.0
     "@types/node": ^14.0.0
     "@types/semver": ^7.3.9
     "@types/uuid": ^8.3.4
@@ -35105,6 +35120,7 @@ __metadata:
     graphqurl: ^1.0.1
     jest: ^27.5.1
     jwks-rsa: ^2.0.5
+    markdown-table: 2.0.0
     nodemon: ^2.0.15
     octokit: ^1.7.1
     pg: ^8.7.1
@@ -35338,6 +35354,15 @@ __metadata:
   version: 1.0.4
   resolution: "markdown-escapes@npm:1.0.4"
   checksum: 6833a93d72d3f70a500658872312c6fa8015c20cc835a85ae6901fa232683fbc6ed7118ebe920fea7c80039a560f339c026597d96eee0e9de602a36921804997
+  languageName: node
+  linkType: hard
+
+"markdown-table@npm:2.0.0":
+  version: 2.0.0
+  resolution: "markdown-table@npm:2.0.0"
+  dependencies:
+    repeat-string: ^1.0.0
+  checksum: 9bb634a9300016cbb41216c1eab44c74b6b7083ac07872e296f900a29449cf0e260ece03fa10c3e9784ab94c61664d1d147da0315f95e1336e2bdcc025615c90
   languageName: node
   linkType: hard
 
@@ -43448,7 +43473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"repeat-string@npm:^1.5.4, repeat-string@npm:^1.6.1":
+"repeat-string@npm:^1.0.0, repeat-string@npm:^1.5.4, repeat-string@npm:^1.6.1":
   version: 1.6.1
   resolution: "repeat-string@npm:1.6.1"
   checksum: 1b809fc6db97decdc68f5b12c4d1a671c8e3f65ec4a40c238bc5200e44e85bcc52a54f78268ab9c29fcf5fe4f1343e805420056d1f30fa9a9ee4c2d93e3cc6c0
@@ -44462,24 +44487,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver-regex@npm:^3.1.2":
-  version: 3.1.3
-  resolution: "semver-regex@npm:3.1.3"
-  checksum: a40c17716679f413994ba4723cf32cf94160a4a3db36e3f730f840cb36bbdbcfda2a34df051d1adb56ed2c67c2a00badfaa9e1e4b755ae6addc7d23ebf55c32b
-  languageName: node
-  linkType: hard
-
-"semver-sort@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "semver-sort@npm:1.0.0"
-  dependencies:
-    semver: ^5.0.3
-    semver-regex: ^3.1.2
-  checksum: 14cfaa947bc9f458cbf40ab22f79d641cf800c97c4b9c72851894133ef919f48ddbeca39ee504258e9729bb2dc9b64a5bba68e96d7e425c78dc66c4af6a2753c
-  languageName: node
-  linkType: hard
-
-"semver@npm:2 || 3 || 4 || 5, semver@npm:2.x || 3.x || 4 || 5, semver@npm:^5.0.3, semver@npm:^5.3.0, semver@npm:^5.4.1, semver@npm:^5.5, semver@npm:^5.5.0, semver@npm:^5.5.1, semver@npm:^5.6.0, semver@npm:^5.7.0, semver@npm:^5.7.1":
+"semver@npm:2 || 3 || 4 || 5, semver@npm:2.x || 3.x || 4 || 5, semver@npm:^5.3.0, semver@npm:^5.4.1, semver@npm:^5.5, semver@npm:^5.5.0, semver@npm:^5.5.1, semver@npm:^5.6.0, semver@npm:^5.7.0, semver@npm:^5.7.1":
   version: 5.7.1
   resolution: "semver@npm:5.7.1"
   bin:
