@@ -30,6 +30,9 @@ interface StackInputsType {
   certificateArn: string;
   backendStaticSecretArn: string;
   databaseSecretArn: string;
+  gitHubAppId: string;
+  gitHubAppPrivateKey: string;
+  gitHubAppWebHookSecret: string;
   githubOauthAppLoginSecretArn: string;
   githubOauthAppLoginClientIdArn: string;
   kratosCookieSecretArn: string;
@@ -48,6 +51,9 @@ const requiredFields = [
   'cdkDefaultAccount',
   'certificateArn',
   'databaseSecretArn',
+  'gitHubAppId',
+  'gitHubAppPrivateKey',
+  'gitHubAppWebHookSecret',
   'githubOauthAppLoginSecretArn',
   'githubOauthAppLoginClientIdArn',
   'kratosCookieSecretArn',
@@ -72,7 +78,7 @@ const env = {
 };
 
 function deployStack() {
-  if (process.env.DEVELOPMENT) {
+  if (process.env.DEVELOPMENT === 'true') {
     const publicBaseUrl = `http://localhost:4455`;
     return new EtlStorageStack(app, `${appName}-EtlStorage`, {
       env,
@@ -88,6 +94,9 @@ function deployStack() {
     certificateArn: stackInputs.certificateArn,
     backendStaticSecretArn: stackInputs.backendStaticSecretArn,
     databaseSecretArn: stackInputs.databaseSecretArn,
+    gitHubAppId: stackInputs.gitHubAppId,
+    gitHubAppPrivateKey: stackInputs.gitHubAppPrivateKey,
+    gitHubAppWebHookSecret: stackInputs.gitHubAppWebHookSecret,
     githubOauthAppLoginClientIdArn: stackInputs.githubOauthAppLoginClientIdArn,
     githubOauthAppLoginSecretArn: stackInputs.githubOauthAppLoginSecretArn,
     kratosCookieSecretArn: stackInputs.kratosCookieSecretArn,

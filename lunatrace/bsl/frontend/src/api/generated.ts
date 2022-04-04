@@ -1569,8 +1569,6 @@ export type Organizations = {
   organization_users: Array<Organization_User>;
   /** An array relationship */
   projects: Array<Projects>;
-  /** An aggregate relationship */
-  projects_aggregate: Projects_Aggregate;
   settings_id?: Maybe<Scalars['uuid']>;
 };
 
@@ -1587,16 +1585,6 @@ export type OrganizationsOrganization_UsersArgs = {
 
 /** columns and relationships of "organizations" */
 export type OrganizationsProjectsArgs = {
-  distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Projects_Order_By>>;
-  where?: InputMaybe<Projects_Bool_Exp>;
-};
-
-
-/** columns and relationships of "organizations" */
-export type OrganizationsProjects_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1901,8 +1889,8 @@ export type Projects = {
   manifests: Array<Manifests>;
   name: Scalars['String'];
   /** An object relationship */
-  organization?: Maybe<Organizations>;
-  organization_id?: Maybe<Scalars['uuid']>;
+  organization: Organizations;
+  organization_id: Scalars['uuid'];
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   repo?: Maybe<Scalars['String']>;
@@ -1971,28 +1959,6 @@ export type ProjectsReportsArgs = {
   where?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
 };
 
-/** aggregated selection of "projects" */
-export type Projects_Aggregate = {
-  __typename?: 'projects_aggregate';
-  aggregate?: Maybe<Projects_Aggregate_Fields>;
-  nodes: Array<Projects>;
-};
-
-/** aggregate fields of "projects" */
-export type Projects_Aggregate_Fields = {
-  __typename?: 'projects_aggregate_fields';
-  count: Scalars['Int'];
-  max?: Maybe<Projects_Max_Fields>;
-  min?: Maybe<Projects_Min_Fields>;
-};
-
-
-/** aggregate fields of "projects" */
-export type Projects_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Projects_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
 /** order by aggregate values of table "projects" */
 export type Projects_Aggregate_Order_By = {
   count?: InputMaybe<Order_By>;
@@ -2048,17 +2014,6 @@ export type Projects_Insert_Input = {
   reports?: InputMaybe<Project_Access_Tokens_Arr_Rel_Insert_Input>;
 };
 
-/** aggregate max on columns */
-export type Projects_Max_Fields = {
-  __typename?: 'projects_max_fields';
-  created_at?: Maybe<Scalars['timestamp']>;
-  id?: Maybe<Scalars['uuid']>;
-  name?: Maybe<Scalars['String']>;
-  organization_id?: Maybe<Scalars['uuid']>;
-  repo?: Maybe<Scalars['String']>;
-  settings_id?: Maybe<Scalars['uuid']>;
-};
-
 /** order by max() on columns of table "projects" */
 export type Projects_Max_Order_By = {
   created_at?: InputMaybe<Order_By>;
@@ -2067,17 +2022,6 @@ export type Projects_Max_Order_By = {
   organization_id?: InputMaybe<Order_By>;
   repo?: InputMaybe<Order_By>;
   settings_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Projects_Min_Fields = {
-  __typename?: 'projects_min_fields';
-  created_at?: Maybe<Scalars['timestamp']>;
-  id?: Maybe<Scalars['uuid']>;
-  name?: Maybe<Scalars['String']>;
-  organization_id?: Maybe<Scalars['uuid']>;
-  repo?: Maybe<Scalars['String']>;
-  settings_id?: Maybe<Scalars['uuid']>;
 };
 
 /** order by min() on columns of table "projects" */
@@ -2210,8 +2154,6 @@ export type Query_Root = {
   project_access_tokens_by_pk?: Maybe<Project_Access_Tokens>;
   /** An array relationship */
   projects: Array<Projects>;
-  /** An aggregate relationship */
-  projects_aggregate: Projects_Aggregate;
   /** fetch data from the table: "projects" using primary key columns */
   projects_by_pk?: Maybe<Projects>;
   /** An array relationship */
@@ -2380,15 +2322,6 @@ export type Query_RootProject_Access_Tokens_By_PkArgs = {
 
 
 export type Query_RootProjectsArgs = {
-  distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Projects_Order_By>>;
-  where?: InputMaybe<Projects_Bool_Exp>;
-};
-
-
-export type Query_RootProjects_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -2906,8 +2839,6 @@ export type Subscription_Root = {
   project_access_tokens_by_pk?: Maybe<Project_Access_Tokens>;
   /** An array relationship */
   projects: Array<Projects>;
-  /** An aggregate relationship */
-  projects_aggregate: Projects_Aggregate;
   /** fetch data from the table: "projects" using primary key columns */
   projects_by_pk?: Maybe<Projects>;
   /** An array relationship */
@@ -3076,15 +3007,6 @@ export type Subscription_RootProject_Access_Tokens_By_PkArgs = {
 
 
 export type Subscription_RootProjectsArgs = {
-  distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Projects_Order_By>>;
-  where?: InputMaybe<Projects_Bool_Exp>;
-};
-
-
-export type Subscription_RootProjects_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3548,7 +3470,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
+export type GetProjectQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', created_at: any, id: any, name: string, organization_id: any, repo?: string | null, settings_id?: any | null, organization: { __typename?: 'organizations', name: string }, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> }> };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
