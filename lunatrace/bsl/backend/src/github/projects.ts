@@ -140,7 +140,7 @@ async function collectUserGithubOrgs(userId: string, accessToken: string) {
         'If you are seeing this then you should delete the user from kratos and go through this flow again.'
       );
       throw new Error(
-        `Unable to get user's organizations. This is most likely due to the user having revoked the Github auth from their account and attempting to login again.`
+        `Unable to get user's organizations. This is most likely due to the user having revoked the Github auth from their account and attempting to login again: ${userOrgs.message}`
       );
     }
 

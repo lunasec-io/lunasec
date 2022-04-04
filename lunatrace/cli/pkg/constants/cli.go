@@ -50,7 +50,7 @@ var ScanCliFlags = []cli.Flag{
 
 var InventoryCliFlags = []cli.Flag{
 	&cli.StringSliceFlag{
-		Name:  "excluded",
+		Name:  "exclude",
 		Usage: "Excluded dirs from scanning.",
 	},
 	&cli.BoolFlag{
@@ -58,7 +58,7 @@ var InventoryCliFlags = []cli.Flag{
 		Usage: "Skip uploading generated SBOM.",
 	},
 	&cli.StringFlag{
-		Name:  "output-file",
+		Name:  "output",
 		Usage: "File to write generated SBOM to.",
 	},
 	&cli.StringFlag{

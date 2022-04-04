@@ -86,16 +86,16 @@ func writeLunaTraceAgentConfigFile(agentSecret, generateConfig string) (err erro
 	return
 }
 
-func createSbomForContainer(container string, excluded []string, isArchive bool) (*sbom.SBOM, error) {
+func createSbomForContainer(container string, exclude []string, isArchive bool) (*sbom.SBOM, error) {
 	if isArchive {
 		return getSbomFromFile(
 			container,
-			excluded,
+			exclude,
 			false,
 		)
 	}
 
-	return getSbomFromContainer(container, excluded)
+	return getSbomFromContainer(container, exclude)
 }
 
 func ContainerCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err error) {
@@ -289,6 +289,7 @@ func ScanCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err error) {
 
 	if readFromStdin {
 		sbomFile, err = util.GetFileFromStdin("sbom.json")
+
 		defer func() {
 			tmpDir := filepath.Dir(sbomFile.Name())
 			util.CleanupTmpFileDirectory(tmpDir)
@@ -297,6 +298,23 @@ func ScanCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err error) {
 		if err != nil {
 			return
 		}
+	} else {
+		sboms := c.Args().Slice()
+		if len(sboms) != 1 {
+			err = errors.New("please provide exactly one sbom to scan")
+			return
+		}
+		sbomFile, err = os.Open(sboms[0])
+		if err != nil {
+			log.Error().Err(err).Msg("unable to open sbom file")
+			return
+		}
+	}
+
+	err = sbomFile.Close()
+	if err != nil {
+		log.Error().Err(err).Msg("unable to close sbom file")
+		return
 	}
 
 	if sbomFile == nil {
@@ -319,7 +337,7 @@ func ScanCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err error) {
 
 		fmt.Println(string(serializedFindings))
 	}
-	log.Debug().
+	log.Info().
 		Int("findingsCount", len(findingsDocument.Matches)).
 		Msg("completed scanning for vulnerabilities")
 	return
