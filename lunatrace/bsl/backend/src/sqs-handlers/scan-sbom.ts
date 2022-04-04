@@ -19,13 +19,15 @@ import validate from 'validator';
 import { generateGithubGraphqlClient } from '../github';
 import { getInstallationAccessToken } from '../github/auth';
 import { hasura } from '../hasura-api';
-import { Scans_Insert_Input } from '../hasura-api/generated';
+import { Findings_Arr_Rel_Insert_Input, Findings_Insert_Input, Scans_Insert_Input } from '../hasura-api/generated';
 import { parseAndUploadScan } from '../models/scan';
 import { S3ObjectMetadata } from '../types/s3';
 import { Finding, Report, SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
 import { isError, tryF } from '../utils/try';
+
+import { groupByPackage } from './report-generator/group-findings';
 
 async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<Scans_Insert_Input> {
   console.log(`[buildId: ${buildId}]`, `scanning sbom ${sbomBucketInfo}`);
@@ -59,6 +61,40 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
   return scanReport;
 }
 
+function generatePullRequestCommentFromReport(projectId: string, report: Scans_Insert_Input) {
+  const messageParts = [
+    '## Build Snapshot Complete',
+    '',
+    `\n[View Full Report](https://lunatrace.lunasec.io/project/${projectId}/build/${report.build_id})`,
+  ];
+
+  if (!report.findings) {
+    return messageParts.join('\n');
+  }
+
+  const groupedFindings = groupByPackage(projectId, report.findings.data);
+
+  const filteredFindings = Object.values(groupedFindings).filter(
+    (finding) => finding.severity !== 'Unknown' && (finding.severity === 'Critical' || finding.severity === 'High')
+  );
+
+  const tableData: string[][] = filteredFindings.map((finding): string[] => {
+    return [
+      finding.package_name,
+      finding.package_versions ? finding.package_versions.join(', ') : 'Unknown Version',
+      finding.severity,
+      `${finding.locations.length} location${finding.locations.length > 1 ? 's' : ''}`,
+      `[Dismiss](https://lunatrace.lunasec.io/project/${projectId}/build/${report.build_id})`,
+    ] as string[];
+  });
+
+  messageParts.push('### Security Scan Findings');
+  messageParts.push(`Showing ${tableData.length} results.\n`);
+  messageParts.push(markdownTable([['Package Name', 'Versions', 'Severity', 'Locations', ''], ...tableData]));
+
+  return messageParts.join('\n');
+}
+
 async function notifyScanResults(buildId: string, scanReport: Scans_Insert_Input) {
   const notifyInfo = await hasura.GetScanReportNotifyInfoForBuild({
     build_id: buildId,
@@ -86,25 +122,6 @@ async function notifyScanResults(buildId: string, scanReport: Scans_Insert_Input
   const installationToken = await getInstallationAccessToken(installationId);
 
   const github = generateGithubGraphqlClient(installationToken);
-
-  function generatePullRequestCommentFromReport(projectId: string, report: Scans_Insert_Input) {
-    const messageParts = ['## LunaTrace Scan Report', ''];
-
-    if (!report.findings) {
-      return null;
-    }
-
-    const tableData: string[][] = report.findings.data.map((finding): string[] => {
-      return [
-        finding.package_name,
-        finding.severity,
-        `${finding.locations.length} location${finding.locations.length > 1 ? 's' : ''}`,
-        `[View Report](https://lunatrace.lunasec.io/project/${projectId}/build/${report.build_id})`,
-      ] as string[];
-    });
-
-    return messageParts.join('\n') + markdownTable([['Package Name', 'Severity', 'Locations', ''], ...tableData]);
-  }
 
   const body = generatePullRequestCommentFromReport(projectId, scanReport);
 
