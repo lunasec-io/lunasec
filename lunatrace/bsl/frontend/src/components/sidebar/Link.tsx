@@ -34,10 +34,11 @@ const renderNavlinkBody = (props: SidebarLinkProps): React.ReactNode => {
   }
   return (
     <>
-      {props.link.icon && <props.link.icon className="feather align-middle" />}{' '}
+      {props.link.icon && !props.link.iconAfter && <props.link.icon className="feather align-middle" />}{' '}
       <span className="align-middle" depth={props.depth}>
         {props.link.title}
       </span>
+      {props.link.icon && props.link.iconAfter && <props.link.icon className="feather align-middle ms-1" />}{' '}
       {props.link.badge && (
         <Badge className="badge-sidebar-primary" bg="" size={18}>
           {props.link.badge}

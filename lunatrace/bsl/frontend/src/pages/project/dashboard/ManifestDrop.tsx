@@ -142,7 +142,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHome
     onDropAccepted: onDropAccepted,
     onDropRejected: onDropRejected,
     maxFiles: 1,
-    maxSize: 52428800,
+    maxSize: 16106127360,
     disabled: uploadInProgress,
   });
 

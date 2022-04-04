@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Badge, Collapse } from 'react-bootstrap';
 import { matchPath, useLocation, useMatch } from 'react-router-dom';
 
@@ -25,10 +25,11 @@ interface SidebarSubSectionProps {
 }
 
 export const SubSection: React.FunctionComponent<SidebarSubSectionProps> = (props) => {
-  const section = props.section;
+  const subSection = props.section;
   // const routeMatch = !!useMatch(props.section.href);
   const { pathname } = useLocation();
-  // recursive function
+
+  // recursive function that walks the subtree, starting with this section
   function checkIfChildActive(item: SidebarItem) {
     if (item.href && matchPath(item.href, pathname)) {
       return true;
@@ -38,15 +39,21 @@ export const SubSection: React.FunctionComponent<SidebarSubSectionProps> = (prop
     }
     return false;
   }
-  const isActive = checkIfChildActive(section);
 
-  const [open, setOpen] = React.useState(isActive);
+  const [open, setOpen] = useState(false);
+
+  // Opens the sidebar section if the URL changes
+  useEffect(() => {
+    if (!open) {
+      setOpen(checkIfChildActive(subSection));
+    }
+  }, [pathname]);
 
   const handleToggle = () => {
     setOpen((isOpen) => !isOpen);
   };
 
-  const children = section.children.map((child: SidebarItem) => {
+  const children = subSection.children.map((child: SidebarItem) => {
     return <SidebarLinkOrSection key={child.href} item={child} depth={props.depth + 1} />;
   });
 
@@ -59,16 +66,16 @@ export const SubSection: React.FunctionComponent<SidebarSubSectionProps> = (prop
         // depth={props.depth}
         onClick={handleToggle}
       >
-        {section.icon && <section.icon className="feather align-middle" />}{' '}
+        {subSection.icon && <subSection.icon className="feather align-middle" />}{' '}
         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
         {/*
         @ts-ignore */}
         <span className="align-middle" depth={props.depth}>
-          {section.title}
+          {subSection.title}
         </span>
-        {section.badge && (
+        {subSection.badge && (
           <Badge className="badge-sidebar-primary" bg="" size={18}>
-            {section.badge}
+            {subSection.badge}
           </Badge>
         )}
         {open ? <div /> : <div />}
