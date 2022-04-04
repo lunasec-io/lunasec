@@ -18,7 +18,9 @@ import { getBucketConfig } from '../config';
 import { hasura } from '../hasura-api';
 import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
+import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
+import { isError } from '../utils/try';
 
 const bucketConfig = getBucketConfig();
 
@@ -75,7 +77,9 @@ async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
   await hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'sbom-generated', build_id: buildId });
 }
 
-export async function handleGenerateManifestSbom(message: S3ObjectMetadata) {
+export async function handleGenerateManifestSbom(
+  message: S3ObjectMetadata
+): Promise<QueueSuccessResult | QueueErrorResult> {
   const { key, bucketName, region } = message;
   const bucketInfo: SbomBucketInfo = {
     key,
@@ -84,9 +88,17 @@ export async function handleGenerateManifestSbom(message: S3ObjectMetadata) {
   };
   try {
     await attemptGenerateManifestSbom(bucketInfo);
+    return {
+      success: true,
+    };
   } catch (e) {
-    console.error(e);
+    console.error('Unable to generate SBOM from Manifest', e);
     // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
     await hasura.UpdateManifest({ key_eq: key, set_status: 'error', message: String(e) });
+
+    return {
+      success: false,
+      error: isError(e) ? e : new Error(String(e)),
+    };
   }
 }

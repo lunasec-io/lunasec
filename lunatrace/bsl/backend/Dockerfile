@@ -22,4 +22,4 @@ FROM lunatrace-backend-base as backend-express-server
 ENTRYPOINT ["yarn", "start:prod"]
 
 FROM lunatrace-backend-base as backend-queue-processor
-ENTRYPOINT ["yarn","start:sqs-listener"]
+ENTRYPOINT ["yarn","prod:sqs-listener"]
