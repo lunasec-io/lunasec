@@ -49,7 +49,7 @@ export async function createBuildWithGenerateSbom(
   // Get manifest from s3, streaming
   const [fileStream, _fileLength] = await aws.getFileFromS3(bucketInfo.key, bucketInfo.bucketName, bucketInfo.region);
   // spawn a copy of the CLI to make an sbom, stream in the manifest
-  const gzippedSbom = generateSbomFromAsset('manifest', assetName, 'master', {
+  const gzippedSbom = generateSbomFromAsset('file', assetName, 'master', {
     inputStream: fileStream,
   });
 

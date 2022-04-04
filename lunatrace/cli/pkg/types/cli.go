@@ -21,9 +21,9 @@ import (
 )
 
 type SnapshotOptions struct {
-	Excluded      []string `cli:"excluded"`
+	Excluded      []string `cli:"exclude"`
 	SkipOutput    bool     `cli:"skip-output"`
-	OutputFile    string   `cli:"output-file"`
+	OutputFile    string   `cli:"output"`
 	AgentOutput   string   `cli:"agent-output"`
 	PrintToStdout bool     `cli:"stdout"`
 	GitBranch     string   `cli:"git-branch"`
@@ -33,9 +33,9 @@ type SnapshotOptions struct {
 
 func NewSnapshotOptions(c *cli.Context) SnapshotOptions {
 	return SnapshotOptions{
-		Excluded:      c.StringSlice("excluded"),
+		Excluded:      c.StringSlice("exclude"),
 		SkipOutput:    c.Bool("skip-output"),
-		OutputFile:    c.String("output-file"),
+		OutputFile:    c.String("output"),
 		AgentOutput:   c.String("agent-output"),
 		PrintToStdout: c.Bool("stdout"),
 		GitBranch:     c.String("git-branch"),
