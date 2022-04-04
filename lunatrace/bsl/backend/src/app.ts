@@ -30,17 +30,19 @@ const source = new EventSource(webhookProxyUrl);
 
 dotenv.config();
 
-source.onmessage = (event) => {
-  const webhookEvent = JSON.parse(event.data);
-  webhooks
-    .verifyAndReceive({
-      id: webhookEvent['x-request-id'],
-      name: webhookEvent['x-github-event'],
-      signature: webhookEvent['x-hub-signature'],
-      payload: webhookEvent.body,
-    })
-    .catch(console.error);
-};
+if (process.env.NODE_ENV !== 'production') {
+  source.onmessage = (event) => {
+    const webhookEvent = JSON.parse(event.data);
+    webhooks
+      .verifyAndReceive({
+        id: webhookEvent['x-request-id'],
+        name: webhookEvent['x-github-event'],
+        signature: webhookEvent['x-hub-signature'],
+        payload: webhookEvent.body,
+      })
+      .catch(console.error);
+  };
+}
 
 const app = Express();
 app.use(cors());
@@ -57,6 +59,14 @@ app.use(Express.json());
 app.use(
   createNodeMiddleware(webhooks, {
     path: '/github/webhook/events',
+    onUnhandledRequest: (request, response) => {
+      console.error('Unhandled request in GitHub WebHook handler', request);
+      response.status(400).json({
+        error: true,
+        message: 'Unhandled request',
+      });
+    },
+    log: console,
   })
 );
 
