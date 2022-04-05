@@ -12,6 +12,7 @@
  *
  */
 import { spawn } from 'child_process';
+import { writeFileSync } from 'fs';
 import Stream, { Readable } from 'stream';
 
 import { hasura } from '../hasura-api';
@@ -35,6 +36,7 @@ export async function parseAndUploadScan(sbomStream: Readable, buildId: string):
 }
 
 export async function runGrypeScan(sbomStream: Readable): Promise<string> {
+  let asdf = '';
   return new Promise((resolve, reject) => {
     const grypeCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
     grypeCli.on('error', reject);
@@ -51,8 +53,14 @@ export async function runGrypeScan(sbomStream: Readable): Promise<string> {
       }
       resolve(Buffer.concat(outputBuffers).toString());
     });
-    sbomStream.on('data', (chunk) => grypeCli.stdin.write(chunk));
-    sbomStream.on('end', () => grypeCli.stdin.end(() => console.log('Finished passing sbom contents to grype')));
+    sbomStream.on('data', (chunk) => {
+      asdf += chunk;
+      grypeCli.stdin.write(chunk);
+    });
+    sbomStream.on('end', () => {
+      writeFileSync('/tmp/test', asdf);
+      grypeCli.stdin.end(() => console.log('Finished passing sbom contents to grype'));
+    });
     sbomStream.on('error', reject);
   });
 }

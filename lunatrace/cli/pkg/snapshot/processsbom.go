@@ -103,7 +103,7 @@ func uploadSbom(appConfig types.LunaTraceConfig, sbom syftmodel.Document, repoMe
 	}
 	log.Info().Msg("Uploading generated SBOM")
 
-	s3Url, err = uploadSbomToS3(appConfig, sbom, buildId, orgId, projectId)
+	s3Url, err = uploadSbomToS3(appConfig, sbom, buildId, orgId)
 	if err != nil {
 		log.Info().Msg("Upload failed, attempting to delete record")
 		deleteErr := deleteBuild(appConfig, buildId)
