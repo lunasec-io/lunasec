@@ -139,7 +139,11 @@ export class AwsUtils {
 
     return {
       url: formatUrl(signedUrl),
-      headers: { ...signedUrl.headers, 'Content-Encoding': 'gzip' },
+      headers: {
+        ...signedUrl.headers,
+        'Content-Encoding': 'gzip',
+        'Content-Type': 'application/x-gzip',
+      },
     };
   }
 
