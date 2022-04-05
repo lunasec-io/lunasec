@@ -12,4 +12,4 @@
  *
  */
 
-export type LunaTraceAssetType = 'manifest' | 'repository';
+export type LunaTraceAssetType = 'file' | 'repository';

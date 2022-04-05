@@ -17,17 +17,13 @@ import { Request, Response } from 'express';
 import { getServerConfig } from '../config';
 import { hasura } from '../hasura-api';
 import { CreateOrganizationsMutation } from '../hasura-api/generated';
-import { getGithubAccessTokenFromKratos } from '../kratos';
 import { ListReposAccessibleToInstallationResponseType } from '../types/github';
 import { errorResponse, logError } from '../utils/errors';
 import { tryParseInt } from '../utils/parse-int';
 import { isError, Try, tryF } from '../utils/try';
 
-import { GetUserOrganizationsQuery } from './generated';
 import { pullDataForInstallation } from './installation-populate';
 import { lunatraceOrgsFromGithubOrgs } from './organizations';
-
-import { generateGithubGraphqlClient } from './index';
 
 const serverConfig = getServerConfig();
 

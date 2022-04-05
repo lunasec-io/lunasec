@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+import { Readable } from 'stream';
 import zlib from 'zlib';
 
 import markdownTable from 'markdown-table';
@@ -19,7 +20,7 @@ import validate from 'validator';
 import { generateGithubGraphqlClient } from '../github';
 import { getInstallationAccessToken } from '../github/auth';
 import { hasura } from '../hasura-api';
-import { Scans_Insert_Input } from '../hasura-api/generated';
+import { Findings_Arr_Rel_Insert_Input, Findings_Insert_Input, Scans_Insert_Input } from '../hasura-api/generated';
 import { parseAndUploadScan } from '../models/scan';
 import { S3ObjectMetadata } from '../types/s3';
 import { Finding, Report, SbomBucketInfo } from '../types/scan';
@@ -27,24 +28,38 @@ import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
 import { isError, tryF } from '../utils/try';
 
+import { groupByPackage } from './report-generator/group-findings';
+
+function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gzip> {
+  return new Promise((resolve, reject) => {
+    console.debug('started streaming file from s3');
+
+    const chunkSize = streamLength < 1024 * 256 ? streamLength : 1024 * 256;
+
+    const gunzip = zlib.createGunzip({ chunkSize: chunkSize < 64 ? 64 : chunkSize });
+
+    console.debug('started unzipping file');
+    const unZippedSbomStream = stream.pipe(gunzip);
+    unZippedSbomStream.on('error', (e) => {
+      console.error('Error unzipping sbom ', e);
+      unZippedSbomStream.end(() => console.log('closed stream due to error'));
+      reject(e);
+    });
+
+    resolve(unZippedSbomStream);
+  });
+}
+
 async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<Scans_Insert_Input> {
-  console.log(`[buildId: ${buildId}]`, `scanning sbom ${sbomBucketInfo}`);
+  console.log(`[buildId: ${buildId}]`, `scanning sbom ${JSON.stringify(sbomBucketInfo)}`);
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
     sbomBucketInfo.key,
     sbomBucketInfo.bucketName,
     sbomBucketInfo.region
   );
-  console.debug('started streaming file from s3');
-  const gunzip = zlib.createGunzip({ chunkSize: sbomLength });
 
-  console.debug('started unzipping file');
-  const unZippedSbomStream = sbomStream.pipe(gunzip);
-  unZippedSbomStream.on('error', (e) => {
-    console.error('Error unzipping sbom ', e);
-    unZippedSbomStream.end(() => console.log('closed stream due to error'));
-    // throw e;
-  });
+  const unZippedSbomStream = await decompressGzip(sbomStream, sbomLength);
 
   console.log(`[buildId: ${buildId}]`, `updating manifest status to "scanning" if it existed`);
   await hasura.UpdateManifestStatusIfExists({ status: 'scanning', buildId: buildId });
@@ -57,6 +72,40 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
   console.log(`[buildId: ${buildId}]`, 'done with scan');
 
   return scanReport;
+}
+
+function generatePullRequestCommentFromReport(projectId: string, report: Scans_Insert_Input) {
+  const messageParts = [
+    '## Build Snapshot Complete',
+    '',
+    `\n[View Full Report](https://lunatrace.lunasec.io/project/${projectId}/build/${report.build_id})`,
+  ];
+
+  if (!report.findings) {
+    return messageParts.join('\n');
+  }
+
+  const groupedFindings = groupByPackage(projectId, report.findings.data);
+
+  const filteredFindings = Object.values(groupedFindings).filter(
+    (finding) => finding.severity !== 'Unknown' && (finding.severity === 'Critical' || finding.severity === 'High')
+  );
+
+  const tableData: string[][] = filteredFindings.map((finding): string[] => {
+    return [
+      finding.package_name,
+      finding.package_versions ? finding.package_versions.join(', ') : 'Unknown Version',
+      finding.severity,
+      `${finding.locations.length} location${finding.locations.length > 1 ? 's' : ''}`,
+      `[Dismiss](https://lunatrace.lunasec.io/project/${projectId}/build/${report.build_id})`,
+    ] as string[];
+  });
+
+  messageParts.push('### Security Scan Findings');
+  messageParts.push(`Showing ${tableData.length} results.\n`);
+  messageParts.push(markdownTable([['Package Name', 'Versions', 'Severity', 'Locations', ''], ...tableData]));
+
+  return messageParts.join('\n');
 }
 
 async function notifyScanResults(buildId: string, scanReport: Scans_Insert_Input) {
@@ -86,25 +135,6 @@ async function notifyScanResults(buildId: string, scanReport: Scans_Insert_Input
   const installationToken = await getInstallationAccessToken(installationId);
 
   const github = generateGithubGraphqlClient(installationToken);
-
-  function generatePullRequestCommentFromReport(projectId: string, report: Scans_Insert_Input) {
-    const messageParts = ['## LunaTrace Scan Report', ''];
-
-    if (!report.findings) {
-      return null;
-    }
-
-    const tableData: string[][] = report.findings.data.map((finding): string[] => {
-      return [
-        finding.package_name,
-        finding.severity,
-        `${finding.locations.length} location${finding.locations.length > 1 ? 's' : ''}`,
-        `[View Report](https://lunatrace.lunasec.io/project/${projectId}/build/${report.build_id})`,
-      ] as string[];
-    });
-
-    return messageParts.join('\n') + markdownTable([['Package Name', 'Severity', 'Locations', ''], ...tableData]);
-  }
 
   const body = generatePullRequestCommentFromReport(projectId, scanReport);
 

@@ -15,5 +15,5 @@ require (
 replace (
 	lunasec/lunadefend => ./go
 	lunasec/lunatrace => ./lunatrace/cli
-	lunasec/lunatrace/inventory => ./lunatrace/cli/pkg/inventory
+	lunasec/lunatrace/snapshot => ./lunatrace/cli/pkg/inventory
 )
