@@ -28,7 +28,7 @@ import (
 	"net/url"
 )
 
-func serializeAndCompressOutput(output SbomOutput) (buffer bytes.Buffer, err error) {
+func serializeAndCompressOutput(output syftmodel.Document) (buffer bytes.Buffer, err error) {
 	serializedOutput, err := json.Marshal(output)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to marshall dependencies output")
@@ -49,17 +49,11 @@ func serializeAndCompressOutput(output SbomOutput) (buffer bytes.Buffer, err err
 }
 
 func uploadCollectedSbomToUrl(
-	projectId string,
 	sbomModel syftmodel.Document,
 	uploadUrl string,
 	uploadHeaders map[string]string,
 ) (err error) {
-	output := SbomOutput{
-		ProjectId: projectId,
-		Sbom:      sbomModel,
-	}
-
-	serializedOutput, err := serializeAndCompressOutput(output)
+	serializedOutput, err := serializeAndCompressOutput(sbomModel)
 	if err != nil {
 		return
 	}
@@ -247,7 +241,6 @@ func uploadSbomToS3(
 	sbomModel syftmodel.Document,
 	buildId string,
 	orgId string,
-	projectId string,
 ) (s3Url string, err error) {
 
 	if err != nil {
@@ -259,7 +252,7 @@ func uploadSbomToS3(
 		return
 	}
 
-	err = uploadCollectedSbomToUrl(projectId, sbomModel, uploadUrl, uploadHeaders)
+	err = uploadCollectedSbomToUrl(sbomModel, uploadUrl, uploadHeaders)
 	if err != nil {
 		return
 	}
