@@ -292,7 +292,8 @@ func ScanCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err error) {
 
 		defer func() {
 			tmpDir := filepath.Dir(sbomFile.Name())
-			util.CleanupTmpFileDirectory(tmpDir)
+			log.Info().Str("dir", tmpDir)
+			//util.CleanupTmpFileDirectory(tmpDir)
 		}()
 
 		if err != nil {
