@@ -107,7 +107,17 @@ export function groupByPackage(project_id: string, findings: Finding[]): Vulnera
     // Add any fix versions/state
     if (f.fix_state === 'fixed') {
       preExisting.fix_state = f.fix_state && typeof f.fix_state === 'string' ? f.fix_state : null;
-      const newFixedVersions = f.fix_versions as string[] | undefined;
+
+      const parsePsqlStringArray = (psqlArray: string | undefined): string[] | null => {
+        if (!psqlArray) {
+          return null;
+        }
+
+        const psqlJsonArray = psqlArray.replace(/^{/, '[').replace(/}$/, ']');
+        return JSON.parse(psqlJsonArray) as string[];
+      };
+
+      const newFixedVersions = parsePsqlStringArray(f.fix_versions);
       if (newFixedVersions) {
         newFixedVersions.forEach((v) => {
           if (!preExisting.fix_versions.includes(v)) {

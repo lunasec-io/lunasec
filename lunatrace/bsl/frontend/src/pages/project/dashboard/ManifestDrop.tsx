@@ -83,7 +83,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHome
     console.log('upload success ', uploadResult.data);
     console.log('new file is at ', manifestUrl);
 
-    setUploadStatus(`File uploaded, waiting for package inventory to begin`);
+    setUploadStatus(`File uploaded, waiting for snapshot to begin`);
     // Tell lunatrace the file uploaded, which simultaneously records the file path in hasura and calls express to kick
     // off the build via an action
 
@@ -95,10 +95,10 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHome
     if (manifestQuery && manifestQuery.status === 'fulfilled' && manifestQuery.currentData.manifests_by_pk) {
       switch (manifestQuery.currentData.manifests_by_pk.status) {
         case 'sbom-processing':
-          setUploadStatus('Package inventory in progress');
+          setUploadStatus('Package snapshot in progress');
           break;
         case 'sbom-generated':
-          setUploadStatus('Package inventory complete, waiting for vulnerabilities scan to begin');
+          setUploadStatus('Package snapshot complete, waiting for vulnerabilities scan to begin');
           break;
         case 'scanning':
           setUploadStatus('Vulnerability scan started, you will be redirected when complete...');
