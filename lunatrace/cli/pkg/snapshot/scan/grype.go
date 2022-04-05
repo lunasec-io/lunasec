@@ -167,7 +167,7 @@ func GrypeSbomScanFromFile(filename string) (document models.Document, err error
 
 	document, err = models.NewDocument(packages, context, matches, ignoredMatches, metadataProvider, appConfig, dbStatus)
 	if err != nil {
-		log.Error().Err(err).Msg("unable to load sbom")
+		log.Error().Err(err).Msg("unable to create sbom model")
 		return
 	}
 	return

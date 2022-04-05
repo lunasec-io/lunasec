@@ -12,6 +12,7 @@
  *
  */
 import { spawn } from 'child_process';
+import { writeFileSync } from 'fs';
 import Stream, { Readable } from 'stream';
 
 import { hasura } from '../hasura-api';
@@ -20,10 +21,7 @@ import {
   Findings_Constraint,
   Findings_Insert_Input,
   Findings_Update_Column,
-  Package_Versions_Constraint,
   Scans_Insert_Input,
-  Vulnerabilities_Constraint,
-  Vulnerability_Packages_Constraint,
 } from '../hasura-api/generated';
 import { Convert, GrypeScanReport, Match } from '../types/grype-scan-report';
 
@@ -38,9 +36,8 @@ export async function parseAndUploadScan(sbomStream: Readable, buildId: string):
 }
 
 export async function runGrypeScan(sbomStream: Readable): Promise<string> {
+  let asdf = '';
   return new Promise((resolve, reject) => {
-    const stdoutStream = new Stream.Writable();
-    // const stderrStream = new Stream.Writeable();
     const grypeCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
     grypeCli.on('error', reject);
     const outputBuffers: Buffer[] = [];
@@ -56,8 +53,14 @@ export async function runGrypeScan(sbomStream: Readable): Promise<string> {
       }
       resolve(Buffer.concat(outputBuffers).toString());
     });
-    sbomStream.on('data', (chunk) => grypeCli.stdin.write(chunk));
-    sbomStream.on('end', () => grypeCli.stdin.end(() => console.log('Finished passing sbom contents to grype')));
+    sbomStream.on('data', (chunk) => {
+      asdf += chunk;
+      grypeCli.stdin.write(chunk);
+    });
+    sbomStream.on('end', () => {
+      writeFileSync('/tmp/test', asdf);
+      grypeCli.stdin.end(() => console.log('Finished passing sbom contents to grype'));
+    });
     sbomStream.on('error', reject);
   });
 }
@@ -100,67 +103,67 @@ async function parseMatches(buildId: string, matches: Match[]): Promise<Findings
         Findings_Update_Column.Severity,
       ],
     },
-    data: await Promise.all(
-      matches.map(async (match): Promise<Findings_Insert_Input> => {
-        const { vulnerability, artifact } = match;
-        const details = match.matchDetails[0];
+    data: (
+      await Promise.all(
+        matches.map(async (match): Promise<Findings_Insert_Input | null> => {
+          const { vulnerability, artifact } = match;
+          const details = match.matchDetails[0];
 
-        // slugs
-        const vuln_slug = vulnerability.id + ':' + vulnerability.namespace;
-        const pkg_slug = vuln_slug + ':' + match.artifact.name;
+          // slugs
+          const vuln_slug = vulnerability.id + ':' + vulnerability.namespace;
+          const pkg_slug = vuln_slug + ':' + match.artifact.name;
 
-        const versionConstraint = parseVersionConstraint(match.matchDetails[0].found.versionConstraint);
+          const versionConstraint = parseVersionConstraint(match.matchDetails[0].found.versionConstraint);
 
-        const version_slug = pkg_slug + ':' + (versionConstraint ? versionConstraint : '');
+          const version_slug = pkg_slug + ':' + (versionConstraint ? versionConstraint : '');
 
-        const slugs = {
-          vuln_slug,
-          pkg_slug,
-          version_slug,
-        };
+          const slugs = {
+            vuln_slug,
+            pkg_slug,
+            version_slug,
+          };
 
-        console.debug('slugs to lookup', slugs);
-
-        const ids = await hasura.GetPackageAndVulnFromSlugs({
-          vuln_slug,
-          pkg_slug,
-          version_slug,
-        });
-
-        const vulnerability_id = ids.vulnerabilities.length === 1 ? ids.vulnerabilities[0].id : undefined;
-        const vulnerability_package_id =
-          ids.vulnerability_packages.length === 1 ? ids.vulnerability_packages[0].id : undefined;
-        const package_version_id = ids.package_versions.length === 1 ? ids.package_versions[0].id : undefined;
-
-        if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
-          console.error('unable to get all required ids', {
-            slugs,
-            ids,
+          const ids = await hasura.GetPackageAndVulnFromSlugs({
+            vuln_slug,
+            pkg_slug,
+            version_slug,
           });
-          return {};
-        }
 
-        const locations = artifact.locations.map((l) => l.path);
-        return {
-          package_name: artifact.name,
-          version: artifact.version,
-          version_matcher: details.found.versionConstraint,
-          type: artifact.type,
-          locations: formatPsqlStringArray(locations),
-          language: artifact.language,
-          purl: artifact.purl,
-          severity: vulnerability.severity,
-          virtual_path: artifact.metadata ? artifact.metadata.VirtualPath : null,
-          matcher: details.matcher,
-          dedupe_slug: pkg_slug + locations.sort().join(':'),
-          fix_state: vulnerability.fix?.state || null,
-          fix_versions: vulnerability.fix?.versions ? formatPsqlStringArray(vulnerability.fix?.versions) : null,
-          build_id: buildId,
-          vulnerability_id,
-          vulnerability_package_id,
-          package_version_id,
-        };
-      })
-    ),
+          const vulnerability_id = ids.vulnerabilities.length === 1 ? ids.vulnerabilities[0].id : undefined;
+          const vulnerability_package_id =
+            ids.vulnerability_packages.length === 1 ? ids.vulnerability_packages[0].id : undefined;
+          const package_version_id = ids.package_versions.length === 1 ? ids.package_versions[0].id : undefined;
+
+          if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
+            console.error('unable to get all required ids', {
+              slugs,
+              ids,
+            });
+            return null;
+          }
+
+          const locations = artifact.locations.map((l) => l.path);
+          return {
+            package_name: artifact.name,
+            version: artifact.version,
+            version_matcher: details.found.versionConstraint,
+            type: artifact.type,
+            locations: formatPsqlStringArray(locations),
+            language: artifact.language,
+            purl: artifact.purl,
+            severity: vulnerability.severity,
+            virtual_path: artifact.metadata ? artifact.metadata.VirtualPath : null,
+            matcher: details.matcher,
+            dedupe_slug: pkg_slug + locations.sort().join(':'),
+            fix_state: vulnerability.fix?.state || null,
+            fix_versions: vulnerability.fix?.versions ? formatPsqlStringArray(vulnerability.fix?.versions) : null,
+            build_id: buildId,
+            vulnerability_id,
+            vulnerability_package_id,
+            package_version_id,
+          };
+        })
+      )
+    ).filter((e) => e !== null) as Findings_Insert_Input[],
   };
 }
