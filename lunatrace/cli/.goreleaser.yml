@@ -3,9 +3,9 @@ before:
     # You may remove this if you don't use go modules.
     - go mod tidy
 builds:
-  - binary: log4shell
-    id: log4shell
-    dir: ./cmd/log4shell
+  - binary: lunatrace
+    id: lunatrace
+    dir: ./cmd/lunatrace
     env:
       - CGO_ENABLED=0
     goos:
@@ -14,35 +14,16 @@ builds:
       - darwin
     goarch:
       - amd64
-      - arm64
-      - ppc64le
-
-  - binary: log4shell
-    id: log4shell-ppc64le
-    dir: ./cmd/log4shell
-    env:
-      - CGO_ENABLED=0
-    goos:
-      - linux
-    goarch:
-      - ppc64le
 archives:
-  - id: 64bit-only
+  - id: lunatrace
     format: binary
     builds:
-      - log4shell
+      - lunatrace
     replacements:
       darwin: Darwin
       linux: Linux
       windows: Windows
       amd64: x86_64
-
-  - id: ppc64l-only
-    format: binary
-    builds:
-      - log4shell-ppc64le
-    replacements:
-      linux: Linux
 
 checksum:
   name_template: 'checksums.txt'
