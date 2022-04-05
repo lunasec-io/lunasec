@@ -47,9 +47,9 @@ const appApi = generatedApi.enhanceEndpoints({
 export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) => (action) => {
   // RTK Query uses `createAsyncThunk` from redux-toolkit under the hood, so we're able to utilize these matchers!
   if (isRejectedWithValue(action)) {
-    console.log('action is ', action);
     const errorMessage = `Server communication error: ${action.error.message}`;
     console.warn('Rejected action from the API: ', errorMessage);
+    console.log('action is ', action);
     if (errorMessage) {
       api.dispatch(add({ message: errorMessage }));
     }
