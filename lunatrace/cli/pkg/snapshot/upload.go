@@ -64,9 +64,6 @@ func uploadCollectedSbomToUrl(
 		return
 	}
 
-	uploadHeaders["Content-Encoding"] = "gzip"
-	uploadHeaders["Content-Type"] = "application/x-gzip"
-
 	data, err := util.HttpRequest(http.MethodPut, uploadUrl, uploadHeaders, &serializedOutput)
 	if err != nil {
 		log.Error().

@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+import { Readable } from 'stream';
 import zlib from 'zlib';
 
 import markdownTable from 'markdown-table';
@@ -29,24 +30,36 @@ import { isError, tryF } from '../utils/try';
 
 import { groupByPackage } from './report-generator/group-findings';
 
+function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gzip> {
+  return new Promise((resolve, reject) => {
+    console.debug('started streaming file from s3');
+
+    const chunkSize = streamLength < 1024 * 256 ? streamLength : 1024 * 256;
+
+    const gunzip = zlib.createGunzip({ chunkSize: chunkSize < 64 ? 64 : chunkSize });
+
+    console.debug('started unzipping file');
+    const unZippedSbomStream = stream.pipe(gunzip);
+    unZippedSbomStream.on('error', (e) => {
+      console.error('Error unzipping sbom ', e);
+      unZippedSbomStream.end(() => console.log('closed stream due to error'));
+      reject(e);
+    });
+
+    resolve(unZippedSbomStream);
+  });
+}
+
 async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<Scans_Insert_Input> {
-  console.log(`[buildId: ${buildId}]`, `scanning sbom ${sbomBucketInfo}`);
+  console.log(`[buildId: ${buildId}]`, `scanning sbom ${JSON.stringify(sbomBucketInfo)}`);
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
     sbomBucketInfo.key,
     sbomBucketInfo.bucketName,
     sbomBucketInfo.region
   );
-  console.debug('started streaming file from s3');
-  const gunzip = zlib.createGunzip({ chunkSize: sbomLength });
 
-  console.debug('started unzipping file');
-  const unZippedSbomStream = sbomStream.pipe(gunzip);
-  unZippedSbomStream.on('error', (e) => {
-    console.error('Error unzipping sbom ', e);
-    unZippedSbomStream.end(() => console.log('closed stream due to error'));
-    // throw e;
-  });
+  const unZippedSbomStream = await decompressGzip(sbomStream, sbomLength);
 
   console.log(`[buildId: ${buildId}]`, `updating manifest status to "scanning" if it existed`);
   await hasura.UpdateManifestStatusIfExists({ status: 'scanning', buildId: buildId });
