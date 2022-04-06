@@ -5,14 +5,24 @@ RUN apt install -y wget
 
 RUN corepack enable
 
-COPY --from=lunasec/lunatrace-cli:v0.0.4 /lunatrace /usr/local/bin
+COPY --from=lunasec/lunatrace-cli:v0.0.5 /lunatrace /usr/local/bin
 
-COPY . /app
+WORKDIR /common
+
+COPY ./common/yarn.lock-workspace /common
+COPY ./common/package.json /common
+RUN mv yarn.lock-workspace yarn.lock
+RUN CI=true yarn install --pure-lockfile
+
 WORKDIR /app
 
+COPY ./backend/yarn.lock-workspace /app
+COPY ./backend/package.json /app
 RUN mv yarn.lock-workspace yarn.lock
-
 RUN CI=true yarn install --pure-lockfile
+
+COPY ./common /common
+COPY ./backend /app
 
 RUN yarn run compile
 
