@@ -33,7 +33,7 @@ to notify you of new CVEs _before_ you deploy to production. Try it out in one-c
 - **[Log4Shell CLI](./tools/log4shell)**: A small command line utility to scan for Log4Shell. Also supports patching JAR files against
   Log4Shell, scanning running processes on your system, and more. Follow our
   [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) for more context.
-    - **Status**: Production ready and downloaded 220k+ times by thousands of companies. Superseded by LunaTrace.
+    - **Status**: Production ready and used by thousands of companies. Superseded by LunaTrace.
 - **[Our Security Blog](https://www.lunasec.io/docs/blog/)**: Our ramblings to the internet. This is where we broke the news about the log4j vulnerability and gave it the name [Log4Shell](https://www.lunasec.io/docs/blog/tags/log-4-shell).  The blog lives in this repo under `/docs/blog` if you feel 
  like contributing!
 
