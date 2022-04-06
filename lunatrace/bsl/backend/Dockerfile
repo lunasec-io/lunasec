@@ -13,15 +13,17 @@ COPY ./common/yarn.lock-workspace /common
 COPY ./common/package.json /common
 RUN mv yarn.lock-workspace yarn.lock
 RUN CI=true yarn install --pure-lockfile
+COPY ./common /common
+RUN yarn run compile
+RUN yarn link
 
 WORKDIR /app
 
 COPY ./backend/yarn.lock-workspace /app
 COPY ./backend/package.json /app
 RUN mv yarn.lock-workspace yarn.lock
+RUN yarn link "@lunatrace/lunatrace-common"
 RUN CI=true yarn install --pure-lockfile
-
-COPY ./common /common
 COPY ./backend /app
 
 RUN yarn run compile

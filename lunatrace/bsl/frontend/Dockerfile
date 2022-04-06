@@ -6,15 +6,18 @@ COPY common/yarn.lock-workspace /usr/src/common
 COPY common/package.json /usr/src/common
 RUN mv yarn.lock-workspace yarn.lock
 RUN CI=true yarn install --pure-lockfile
+COPY ./common /usr/src/common
+RUN yarn run compile
+RUN yarn link
 
 WORKDIR /usr/src/app
 
 COPY frontend/yarn.lock-workspace /usr/src/app/
 COPY frontend/package.json /usr/src/app/
 RUN mv yarn.lock-workspace yarn.lock
+RUN yarn link "@lunatrace/lunatrace-common"
 RUN CI=true yarn install --pure-lockfile
 
-COPY ./common /usr/src/common
 COPY ./frontend /usr/src/app
 
 RUN yarn run build:docker
