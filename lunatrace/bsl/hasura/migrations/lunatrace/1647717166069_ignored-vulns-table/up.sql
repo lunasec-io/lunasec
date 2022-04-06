@@ -1,4 +1,4 @@
-CREATE TABLE ignored_vulnerabilities
+CREATE TABLE public.ignored_vulnerabilities
 (
     id               uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
     project_id       uuid    NOT NULL references public.projects ON DELETE CASCADE,
