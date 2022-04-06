@@ -16,7 +16,6 @@ package util
 
 import (
 	"archive/zip"
-	"bufio"
 	"bytes"
 	"fmt"
 	"github.com/rs/zerolog/log"
@@ -209,19 +208,11 @@ func RemoveCleanupDirs() {
 }
 
 func ReadFileFromStdin(srcFile *os.File) (err error) {
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		_, err = srcFile.WriteString(scanner.Text() + "\n")
-		if err != nil {
-			log.Error().
-				Err(err).
-				Str("sourceFile", srcFile.Name()).
-				Msg("unable to write to source file")
-			return
-		}
-	}
-	if err = scanner.Err(); err != nil {
-		log.Error().Err(err).Msg("unable to read sbom from stdin")
+	_, err = io.Copy(srcFile, os.Stdin)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to read sbom from stdin")
 		return
 	}
 	return

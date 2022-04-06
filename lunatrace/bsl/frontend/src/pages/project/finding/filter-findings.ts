@@ -84,5 +84,4 @@ export function groupByPackage(project_id: string, findings: Finding[]): Vulnera
     }
   });
   return Object.values(pkgs);
-  // console.log('sorted findings are ', sFindings)
 }

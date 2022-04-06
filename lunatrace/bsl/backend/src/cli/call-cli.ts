@@ -21,7 +21,7 @@ function importAssetArgs(assetType: LunaTraceAssetType, assetName: string, gitBr
   const baseCmdArgs = [
     '--debug',
     '--log-to-stderr',
-    'import',
+    'snapshot',
     '--skip-upload',
     '--stdout',
     '--git-branch',
@@ -29,7 +29,7 @@ function importAssetArgs(assetType: LunaTraceAssetType, assetName: string, gitBr
     assetType,
   ];
 
-  if (assetType === 'manifest') {
+  if (assetType === 'file') {
     return [...baseCmdArgs, '--stdin', assetName];
   }
   if (assetType === 'repository') {

@@ -12,20 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package constants
+package util
 
-//// TODO: Should we just switch to localhost:4455 in dev mode and hardcode it?  how do you check for dev mode in go?
-//func GetLunatraceBaseUrl() (baseUrl string) {
-//	urlOverride, urlOverrideSet := os.LookupEnv("LUNATRACE_BACKEND_DOMAIN")
-//	if urlOverrideSet {
-//		baseUrl = urlOverride
-//	} else {
-//		baseUrl = "https://lunatrace.lunasec.io"
-//	}
-//	return
-//}
-//
-//func GetS3PresignSbomUrl() (url string) {
-//	url = fmt.Sprintf("%s/api/upload-sbom", GetLunatraceBaseUrl())
-//	return
-//}
+import (
+	"github.com/urfave/cli/v2"
+	"lunasec/lunatrace/pkg/types"
+	"reflect"
+)
+
+func SetGlobalBoolFlags(globalFlags *types.LunaTraceGlobalFlags) cli.BeforeFunc {
+	return func(c *cli.Context) error {
+		for _, flag := range globalFlags.Fields() {
+			tagName, ok := reflect.TypeOf(globalFlags).Elem().FieldByName(flag)
+			if !ok {
+				continue
+			}
+			if c.IsSet(tagName.Tag.Get("json")) {
+				globalFlags.Set(flag, true)
+			}
+		}
+		return nil
+	}
+}
