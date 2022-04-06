@@ -95,7 +95,7 @@ function parseVersionConstraint(versionConstraint: string) {
 async function parseMatches(buildId: string, matches: Match[]): Promise<Findings_Arr_Rel_Insert_Input> {
   return {
     on_conflict: {
-      constraint: Findings_Constraint.TempDedupeFix,
+      constraint: Findings_Constraint.FindingsDedupeSlugBuildIdKey,
       update_columns: [
         Findings_Update_Column.Version,
         Findings_Update_Column.VirtualPath,
