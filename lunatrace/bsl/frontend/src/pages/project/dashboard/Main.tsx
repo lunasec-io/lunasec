@@ -12,11 +12,11 @@
  *
  */
 import React from 'react';
-import { Accordion } from 'react-bootstrap';
-import { AiOutlineInfoCircle } from 'react-icons/ai';
-import { useParams } from 'react-router-dom';
+import { Accordion, Card, Col, Row } from 'react-bootstrap';
+import { AiFillGithub, AiOutlineInfoCircle } from 'react-icons/ai';
+import { BiGitCommit, BiLinkExternal, BiUnlink } from 'react-icons/bi';
 
-import { ProjectInfo, SetActiveTab } from '../types';
+import { GithubTraits, ProjectInfo, SetActiveTab } from '../types';
 
 import { ManifestDrop } from './ManifestDrop';
 import { ScanTypesExplanation } from './ScanTypesExplanation';
@@ -27,16 +27,33 @@ interface ProjectDashboardMainProps {
 }
 
 export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project, setActiveTab }) => {
-  const { project_id } = useParams();
-  if (!project_id) {
-    return null;
-  }
-
+  const renderGithubInfo = () => {
+    if (!project.github_repository) {
+      return (
+        <p className="text-center">
+          <BiUnlink size="1rem" className="me-1 mb-1" />
+          Not linked to a GitHub Repository
+        </p>
+      );
+    }
+    return (
+      <a href={project.github_repository.traits.html_url || ''}>
+        <p className="text-center">
+          <AiFillGithub size="1rem" className="me-1 mb-1" />
+          Imported from GitHub
+        </p>
+      </a>
+    ); // const github_traits: GithubTraits = project.github_repository.traits;
+    // return (
+    //
+    // );
+  };
+  console.log('project info is ', project);
   return (
     <>
+      {renderGithubInfo()}
       {/*Github URL Github Name short github description blurb most recent several builds, master first probably*/}
-
-      <Accordion flush={true} defaultActiveKey={project.builds.length > 0 ? '' : '0'}>
+      <Accordion flush={false} defaultActiveKey={project.builds.length > 0 ? '' : '0'}>
         <Accordion.Item eventKey="0">
           <Accordion.Header>
             {' '}
@@ -51,7 +68,7 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
         </Accordion.Item>
       </Accordion>
       <hr />
-      <ManifestDrop project_id={project_id} />
+      <ManifestDrop project_id={project.id} />
     </>
   );
 };

@@ -32,17 +32,19 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
 
   // RUN SEARCH QUERY
   const { data, isLoading } = api.useGetProjectQuery({
-    project_id,
+    project_id: project_id as string,
   });
-
-  console.log('fetched data from hasura ', data);
 
   const [activeTab, setActiveTab] = useState<TabName>('dashboard');
   const renderProjectNav = (p: ProjectInfo) => {
     return (
       <>
         <Helmet title={p.name} />
-        <ProjectHeader projectName={p.name} organizationName={p.organization?.name} />
+        <ProjectHeader
+          projectName={p.name}
+          organizationName={p.organization?.name}
+          githubLink={p.github_repository?.traits?.html_url}
+        />
         <Nav className="container-fluid fs-lg" variant="tabs" activeKey={activeTab}>
           <Nav.Item>
             <Nav.Link
@@ -86,7 +88,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
       case 'dashboard':
         return <ProjectDashboardMain project={p} setActiveTab={setActiveTab} />;
       case 'builds':
-        return <Builds />;
+        return <Builds project={p} />;
       case 'secrets':
         return <SecretsMain project={p} />;
       //{/*case 'settings':*/}
@@ -99,7 +101,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   return (
     <SpinIfLoading isLoading={isLoading}>
       <Container className="project-page">
-        {data && data.projects[0] ? renderProjectNav(data.projects[0]) : null}
+        {data && data.projects_by_pk ? renderProjectNav(data.projects_by_pk) : null}
       </Container>
     </SpinIfLoading>
   );

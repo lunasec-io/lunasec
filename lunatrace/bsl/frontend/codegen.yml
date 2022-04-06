@@ -6,7 +6,20 @@ documents: "src/api/graphql/**/*.graphql"
 generates:
   ./src/api/generated.ts:
     plugins:
-      - "typescript"
+      - "typescript":
+          strictScalars: true
+          scalars:
+            _text: string
+            date: string
+            fix_state_enum: string
+            jsonb: Record<any, any> | any[]
+            numeric: number
+            organization_user_role: string
+            severity_enum: string
+            timestamp: string
+            timestamptz: string
+            uuid: string
+
       - "typescript-operations"
       - "typescript-rtk-query":
           importBaseApiFrom: './baseApi'

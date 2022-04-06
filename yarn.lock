@@ -13449,7 +13449,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/plugin-rest-endpoint-methods@npm:^5.12.0, @octokit/plugin-rest-endpoint-methods@npm:^5.13.0":
+"@octokit/plugin-rest-endpoint-methods@npm:^5.12.0, @octokit/plugin-rest-endpoint-methods@npm:^5.13.0, @octokit/plugin-rest-endpoint-methods@npm:~5.13.0":
   version: 5.13.0
   resolution: "@octokit/plugin-rest-endpoint-methods@npm:5.13.0"
   dependencies:
@@ -27686,6 +27686,7 @@ __metadata:
     "@graphql-codegen/typescript": 2.4.2
     "@graphql-codegen/typescript-operations": ^2.2.2
     "@graphql-codegen/typescript-rtk-query": ^2.2.2
+    "@octokit/plugin-rest-endpoint-methods": ~5.13.0
     "@ory/integrations": ~0.2.2
     "@ory/kratos-client": 0.9.0-alpha.3
     "@ory/themes": ~0.0.101
