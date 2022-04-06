@@ -105,7 +105,7 @@ export const BuildDetails: React.FunctionComponent = () => {
           <Col xs="12" sm="3">
             <div className="build-git-info">
               <h6>
-                <span className="darker">From: </span>
+                <span className="darker">Source: </span>
                 <SourceIcon source_type={build.source_type} className="mb-1" />{' '}
                 <span className="text-capitalize">{build.source_type}</span>{' '}
               </h6>

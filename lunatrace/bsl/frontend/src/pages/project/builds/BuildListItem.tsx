@@ -20,6 +20,8 @@ import { prettyDate } from '../../../utils/pretty-date';
 import { filterFindingsByIgnored, groupByPackage } from '../finding/filter-findings';
 import { BuildInfo, ProjectInfo } from '../types';
 
+import { SourceIcon } from './SourceIcon';
+
 interface BuildListItemProps {
   build: BuildInfo;
   project: ProjectInfo;
@@ -50,7 +52,9 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
                   {build.build_number}{' '}
                 </h3>
               </Card.Title>
-              <Card.Subtitle className="darker">Uploaded {uploadDate}</Card.Subtitle>
+              <Card.Subtitle className="darker">
+                <SourceIcon source_type={build.source_type} className="mb-1 me-1 lighter" /> Uploaded {uploadDate}
+              </Card.Subtitle>
             </Col>
             <Col sm={{ span: 6 }}>
               <div style={{ float: 'right', textAlign: 'right' }}>
