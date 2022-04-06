@@ -16,6 +16,7 @@ import { Badge, Button, Card, Col, NavLink, Row } from 'react-bootstrap';
 import { AiFillCode, AiFillDiff, AiFillGithub } from 'react-icons/ai';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
+import { GithubAppUrl } from '../../../constants';
 import { ProjectInfo, SetActiveTab } from '../types';
 
 export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; project: ProjectInfo }> = ({
@@ -70,7 +71,7 @@ export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; projec
           </Card.Title>
           <Card.Subtitle className="darker homepage-subtitle">
             This project is not linked to GitHub. To import a project from GitHub and begin automatic scanning,{' '}
-            <a href="https://github.com/apps/lunatrace-by-lunasec/installations/new">click here</a>.
+            <a href={GithubAppUrl}>click here</a>.
           </Card.Subtitle>
         </ConditionallyRender>
         {/*  </Card.Body>*/}

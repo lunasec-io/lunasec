@@ -33,3 +33,4 @@ DROP FUNCTION public.make_project_sequence_for_build();
 DROP FUNCTION public.fill_in_build_number();
 DROP FUNCTION public.make_scans_seq_for_build();
 DROP FUNCTION public.fill_in_scan_number();
+DROP EXTENSION pgcrypto;

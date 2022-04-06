@@ -23,6 +23,7 @@ import api from '../../api';
 import { GetSidebarInfoQuery } from '../../api/generated';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
 import { ConditionallyRender } from '../../components/utils/ConditionallyRender';
+import { GithubAppUrl } from '../../constants';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import useAppSelector from '../../hooks/useAppSelector';
 import { add } from '../../store/slices/alerts';
@@ -87,7 +88,7 @@ const ProjectCreateForm = ({ data }: { data: GetSidebarInfoQuery | undefined }) 
               <p className="text-sm ms-md-6 me-md-6">
                 <BiUnlink size="1.2rem" className="mb-1 me-1" />
                 This project will not be linked to a GitHub repository. To import a project from GitHub instead,{' '}
-                <a href="https://github.com/apps/lunatrace-by-lunasec/installations/new">click here</a>.{' '}
+                <a href={GithubAppUrl}>click here</a>.{' '}
               </p>
             </div>
             <Form validated={validated} onSubmit={(e) => void submitForm(e)}>
