@@ -61,7 +61,7 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
                 PR Scanning is Active!
               </Card.Title>
               <Card.Subtitle className={`darker homepage-subtitle ${hasAnyProjects ? 'active' : ''}`}>
-                Set up additional manual scans in your project if you would like to.
+                Set up manual scans in your project if desired.
               </Card.Subtitle>
 
               <Row className="justify-content-center">

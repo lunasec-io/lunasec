@@ -14,12 +14,15 @@
 import React, { useState } from 'react';
 import { Button, Card, Col, FloatingLabel, Form, Row, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
+import { BiUnlink } from 'react-icons/bi';
+import { GoOrganization } from 'react-icons/go';
 import { useNavigate } from 'react-router';
 import { useParams } from 'react-router-dom';
 
 import api from '../../api';
 import { GetSidebarInfoQuery } from '../../api/generated';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
+import { ConditionallyRender } from '../../components/utils/ConditionallyRender';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import useAppSelector from '../../hooks/useAppSelector';
 import { add } from '../../store/slices/alerts';
@@ -80,27 +83,46 @@ const ProjectCreateForm = ({ data }: { data: GetSidebarInfoQuery | undefined }) 
             <ProjectHeader projectName="New Project" organizationName={organization.name} />
           </Card.Header>
           <Card.Body>
+            <div className="text-center">
+              <p className="text-sm ms-md-6 me-md-6">
+                <BiUnlink size="1.2rem" className="mb-1 me-1" />
+                This project will not be linked to a GitHub repository. To import a project from GitHub instead,{' '}
+                <a href="https://github.com/apps/lunatrace-by-lunasec/installations/new">click here</a>.{' '}
+              </p>
+            </div>
             <Form validated={validated} onSubmit={(e) => void submitForm(e)}>
-              <Form.Group className="mb-3" controlId="formBasicEmail">
-                <FloatingLabel controlId="floatingInput" label="Project Name" className="mb-3">
-                  <Form.Control
-                    value={projectName}
-                    onChange={(e) => setProjectName(e.target.value)}
-                    required={true}
-                    placeholder="enter project name"
-                  />
-                </FloatingLabel>
-              </Form.Group>
               <Row className="justify-content-center">
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <FloatingLabel controlId="floatingInput" label="Project Name" className="mb-3">
+                      <Form.Control
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.target.value)}
+                        required={true}
+                        placeholder="enter project name"
+                      />
+                    </FloatingLabel>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row className="justify-content-center text-center">
                 <Col md={6} className="d-grid gap-2">
                   <Button size="lg" variant="primary" type="submit">
                     {` Create new project in ${organization.name}`}
-                    {mutationIsLoading ? (
+                    <ConditionallyRender if={mutationIsLoading}>
                       <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                    ) : null}
+                    </ConditionallyRender>
                   </Button>
                 </Col>
               </Row>
+              <div className="text-center">
+                {organization.name !== 'Personal' ? (
+                  <p className="text-sm mb-1 mt-2">
+                    <GoOrganization size="1rem" className="mb-1 me-1" />
+                    Will be shared with everyone who has GitHub access to {organization.name}.
+                  </p>
+                ) : null}
+              </div>
             </Form>
           </Card.Body>
         </Card>

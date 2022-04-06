@@ -53,7 +53,7 @@ export function lunatraceOrgsFromGithubOrgs(
 
     const repoOnConflict: Github_Repositories_On_Conflict = {
       constraint: Github_Repositories_Constraint.GithubRepositoriesGithubIdKey,
-      update_columns: [Github_Repositories_Update_Column.GitUrl, Github_Repositories_Update_Column.ApiResponse],
+      update_columns: [Github_Repositories_Update_Column.GitUrl, Github_Repositories_Update_Column.Traits],
     };
 
     const project: Projects_Insert_Input = {
@@ -63,7 +63,7 @@ export function lunatraceOrgsFromGithubOrgs(
           {
             github_id: repoId,
             git_url: gitUrl,
-            api_response: repo,
+            traits: repo,
           },
         ],
         on_conflict: repoOnConflict,
