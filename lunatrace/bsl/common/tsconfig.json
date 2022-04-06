@@ -17,10 +17,11 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
+    "composite": true,
 
-    "lib": ["es2017", "dom"],
-    "types": ["node", "@types/jest"]
+    "lib": ["es2017"],
+    "types": ["node"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "compileOnSave": true
