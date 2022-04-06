@@ -132,7 +132,10 @@ export class LunatraceBackendStack extends cdk.Stack {
       executionRole: execRole,
     });
 
-    const frontendContainerImage = ContainerImage.fromAsset('../frontend', commonBuildProps);
+    const frontendContainerImage = ContainerImage.fromAsset('../', {
+      ...commonBuildProps,
+      file: './frontend/Dockerfile',
+    });
 
     const frontend = taskDef.addContainer('FrontendContainer', {
       image: frontendContainerImage,
@@ -206,8 +209,9 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const backendContainerImage = ContainerImage.fromAsset('../backend', {
+    const backendContainerImage = ContainerImage.fromAsset('../', {
       ...commonBuildProps,
+      file: './backend/Dockerfile',
       target: 'backend-express-server',
     });
 

@@ -10,14 +10,17 @@ insert_permissions:
     backend_only: false
     check: {}
     columns:
-    - git_url
     - github_id
+    - github_node_id
+    - git_url
     - project_id
     - traits
   role: service
 select_permissions:
 - permission:
     columns:
+    - github_id
+    - github_node_id
     - git_url
     - github_id
     - project_id
@@ -28,6 +31,7 @@ select_permissions:
     columns:
     - git_url
     - github_id
+    - github_node_id
     - id
     - project_id
     - traits
@@ -42,8 +46,9 @@ update_permissions:
 - permission:
     check: null
     columns:
-    - git_url
     - github_id
+    - github_node_id
+    - git_url
     - project_id
     - traits
     filter: {}

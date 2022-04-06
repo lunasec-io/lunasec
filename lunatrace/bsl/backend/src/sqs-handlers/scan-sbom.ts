@@ -20,15 +20,15 @@ import validate from 'validator';
 import { generateGithubGraphqlClient } from '../github';
 import { getInstallationAccessToken } from '../github/auth';
 import { hasura } from '../hasura-api';
-import { Findings_Arr_Rel_Insert_Input, Findings_Insert_Input, Scans_Insert_Input } from '../hasura-api/generated';
+import { Scans_Insert_Input } from '../hasura-api/generated';
 import { parseAndUploadScan } from '../models/scan';
 import { S3ObjectMetadata } from '../types/s3';
-import { Finding, Report, SbomBucketInfo } from '../types/scan';
+import { SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
 import { isError, tryF } from '../utils/try';
 
-import { groupByPackage } from './report-generator/group-findings';
+import { groupByPackage, VulnerablePackage } from './report-generator/group-findings';
 
 function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gzip> {
   return new Promise((resolve, reject) => {
@@ -74,6 +74,14 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
   return scanReport;
 }
 
+function formatLocationText(finding: VulnerablePackage) {
+  if (finding.locations.length === 0) {
+    return 'Unknown';
+  }
+
+  return `${finding.locations.length} location${finding.locations.length > 1 ? 's' : ''}`;
+}
+
 function generatePullRequestCommentFromReport(projectId: string, report: Scans_Insert_Input) {
   const messageParts = [
     '## Build Snapshot Complete',
@@ -88,7 +96,8 @@ function generatePullRequestCommentFromReport(projectId: string, report: Scans_I
   const groupedFindings = groupByPackage(projectId, report.findings.data);
 
   const filteredFindings = Object.values(groupedFindings).filter(
-    (finding) => finding.severity !== 'Unknown' && (finding.severity === 'Critical' || finding.severity === 'High')
+    // TODO: Make the severity filter configurable.
+    (finding) => finding.severity !== 'Unknown' && finding.severity === 'Critical'
   );
 
   const tableData: string[][] = filteredFindings.map((finding): string[] => {
@@ -96,7 +105,7 @@ function generatePullRequestCommentFromReport(projectId: string, report: Scans_I
       finding.package_name,
       finding.package_versions ? finding.package_versions.join(', ') : 'Unknown Version',
       finding.severity,
-      `${finding.locations.length} location${finding.locations.length > 1 ? 's' : ''}`,
+      formatLocationText(finding),
       `[Dismiss](https://lunatrace.lunasec.io/project/${projectId}/build/${report.build_id})`,
     ] as string[];
   });
