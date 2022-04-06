@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
+import { AssetImage, Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
@@ -58,9 +58,9 @@ export class EtlStack extends cdk.Stack {
       storageStack,
     } = props;
 
-    // Process Manifest Service - Generates an SBOM from a package manifest
-    const QueueProcessorContainerImage = ContainerImage.fromAsset('../backend', {
+    const QueueProcessorContainerImage = ContainerImage.fromAsset('../', {
       ...commonBuildProps,
+      file: './backend/Dockerfile',
       target: 'backend-queue-processor',
     });
 

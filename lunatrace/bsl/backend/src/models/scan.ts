@@ -133,7 +133,7 @@ async function parseMatches(buildId: string, matches: Match[]): Promise<Findings
           const vulnerability_id = ids.vulnerabilities.length === 1 ? ids.vulnerabilities[0].id : undefined;
           const vulnerability_package_id =
             ids.vulnerability_packages.length === 1 ? ids.vulnerability_packages[0].id : undefined;
-          const package_version_id = ids.package_versions.length === 1 ? ids.package_versions[0].id : undefined;
+          const package_version_id = ids.package_versions.length >= 1 ? ids.package_versions[0].id : undefined;
 
           if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
             console.error(

@@ -1,0 +1,7 @@
+build/
+**/build/
+node_modules/
+**/node_modules/
+*.private-key.pem
+**/*.private-key.pem
+**/cdk.out/

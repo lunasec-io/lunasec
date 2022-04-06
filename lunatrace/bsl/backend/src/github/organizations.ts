@@ -35,25 +35,30 @@ function getExistingProjects(orgLookup: OrganizationInputLookup, orgName: string
 
 export function lunatraceOrgsFromGithubOrgs(
   installationId: number,
-  installationData: ListReposAccessibleToInstallationResponseType
+  repositories: ListReposAccessibleToInstallationResponseType
 ): OrganizationInputLookup {
-  const {
-    data: { repositories },
-  } = installationData;
-
   console.log(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
 
   return repositories.reduce((orgLookup, repo) => {
     const orgName = repo.owner.login;
+    // Deprecated. Use Node ID
     const organizationId = repo.owner.id;
+    const organizationNodeId = repo.owner.node_id;
     const repoName = repo.name;
+    // Deprecated. Use Node ID
     const repoId = repo.id;
+    const repoNodeId = repo.node_id;
     const gitUrl = repo.git_url;
     const gitOwnerType = repo.owner.type;
 
     const repoOnConflict: Github_Repositories_On_Conflict = {
       constraint: Github_Repositories_Constraint.GithubRepositoriesGithubIdKey,
-      update_columns: [Github_Repositories_Update_Column.GitUrl, Github_Repositories_Update_Column.Traits],
+      update_columns: [
+        Github_Repositories_Update_Column.GitUrl,
+        Github_Repositories_Update_Column.Traits,
+        Github_Repositories_Update_Column.GithubId,
+        Github_Repositories_Update_Column.GithubNodeId,
+      ],
     };
 
     const project: Projects_Insert_Input = {
@@ -62,6 +67,7 @@ export function lunatraceOrgsFromGithubOrgs(
         data: [
           {
             github_id: repoId,
+            github_node_id: repoNodeId,
             git_url: gitUrl,
             traits: repo,
           },
@@ -79,6 +85,7 @@ export function lunatraceOrgsFromGithubOrgs(
       name: orgName,
       installation_id: installationId,
       github_id: organizationId,
+      github_node_id: organizationNodeId,
       github_owner_type: gitOwnerType,
       projects: {
         data: [...getExistingProjects(orgLookup, orgName), project],

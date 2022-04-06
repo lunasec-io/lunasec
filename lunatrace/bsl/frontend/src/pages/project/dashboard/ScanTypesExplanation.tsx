@@ -46,7 +46,11 @@ export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; projec
           LunaTrace CLI
         </Card.Title>
         <Card.Subtitle className={`darker homepage-subtitle active`}>
-          Use the LunaTrace CLI LINK with a{' '}
+          Use the{' '}
+          <a href={process.env.REACT_APP_GITHUB_CLI_DOWNLOAD_LINK || ''} target="_blank" rel="noopener noreferrer">
+            LunaTrace CLI
+          </a>{' '}
+          with a{' '}
           <a onClick={() => setActiveTab('secrets')} className="btn-link">
             secret key
           </a>{' '}

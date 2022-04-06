@@ -25,7 +25,7 @@ import { githubApiRouter } from './routes/github-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
 
-const webhookProxyUrl = 'https://smee.io/KuCg2ASc4kBuNQte';
+const webhookProxyUrl = 'https://smee.io/THAYrCXtdcQp5u5';
 const source = new EventSource(webhookProxyUrl);
 
 dotenv.config();
