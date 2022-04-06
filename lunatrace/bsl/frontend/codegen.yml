@@ -11,8 +11,9 @@ generates:
           scalars:
             _text: string
             date: string
-            fix_state_enum: string
+            fix_state_enum: "'fixed'|'not-fixed'|'unknown'"
             jsonb: Record<any, any> | any[]
+            builds_source_type: "'cli'|'gui'|'pr'"
             numeric: number
             organization_user_role: string
             severity_enum: string

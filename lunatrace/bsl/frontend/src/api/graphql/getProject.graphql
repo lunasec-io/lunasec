@@ -29,6 +29,7 @@ query GetProject($project_id: uuid!) {
             created_at
             build_number
             project_id
+            source_type
             findings {
                 fix_state
                 fix_versions

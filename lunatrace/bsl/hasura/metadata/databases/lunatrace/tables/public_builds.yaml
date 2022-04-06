@@ -43,6 +43,8 @@ insert_permissions:
     - git_remote
     - project_id
     - s3_url
+    set:
+      source_type: cli
   role: cli
 - permission:
     backend_only: false
@@ -58,6 +60,7 @@ insert_permissions:
     - project_id
     - pull_request_id
     - s3_url
+    - source_type
   role: service
 select_permissions:
 - permission:
@@ -71,6 +74,7 @@ select_permissions:
     - id
     - project_id
     - s3_url
+    - source_type
     filter:
       project:
         project_access_tokens:
@@ -89,6 +93,7 @@ select_permissions:
     - project_id
     - pull_request_id
     - s3_url
+    - source_type
     filter: {}
   role: service
 - permission:
@@ -100,7 +105,9 @@ select_permissions:
     - git_remote
     - id
     - project_id
+    - pull_request_id
     - s3_url
+    - source_type
     filter:
       _or:
       - project:

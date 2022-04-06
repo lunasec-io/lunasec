@@ -13,7 +13,7 @@
  */
 import { GetBuildDetailsQuery } from '../../../api/generated';
 
-export type Finding = GetBuildDetailsQuery['builds'][number]['findings'][number];
+export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
 
 export const severityOrder = ['Unknown', 'Negligible', 'Low', 'Medium', 'High', 'Critical'];
 
