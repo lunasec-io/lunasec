@@ -16,7 +16,12 @@ import { Request, Response } from 'express';
 
 import { getServerConfig } from '../config';
 import { hasura } from '../hasura-api';
-import { CreateOrganizationsMutation } from '../hasura-api/generated';
+import {
+  CreateOrganizationsMutation,
+  Organizations_Constraint,
+  Organizations_On_Conflict,
+  Organizations_Update_Column,
+} from '../hasura-api/generated';
 import { ListReposAccessibleToInstallationResponseType } from '../types/github';
 import { errorResponse, logError } from '../utils/errors';
 import { tryParseInt } from '../utils/parse-int';
@@ -84,10 +89,23 @@ export const githubInstall = async (req: Request, res: Response) => {
     )}`
   );
 
+  const onOrgConflict: Organizations_On_Conflict = {
+    constraint: Organizations_Constraint.OrganizationsGithubIdKey,
+    update_columns: [
+      Organizations_Update_Column.GithubOwnerType,
+      Organizations_Update_Column.GithubId,
+      Organizations_Update_Column.GithubNodeId,
+      Organizations_Update_Column.InstallationId,
+      Organizations_Update_Column.CreatorId,
+      Organizations_Update_Column.Name,
+    ],
+  };
+
   const createOrgsRes: Try<CreateOrganizationsMutation> = await tryF(
     async () =>
       await hasura.CreateOrganizations({
         objects: orgObjectList,
+        on_conflict: onOrgConflict,
       })
   );
 

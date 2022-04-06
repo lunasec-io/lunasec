@@ -24,6 +24,7 @@ insert_permissions:
     - createdAt
     - creator_id
     - github_id
+    - github_node_id
     - github_owner_type
     - id
     - installation_id
@@ -43,6 +44,7 @@ select_permissions:
     columns:
     - name
     - github_id
+    - github_node_id
     - installation_id
     - createdAt
     - creator_id
@@ -65,12 +67,14 @@ update_permissions:
 - permission:
     check: {}
     columns:
-    - id
-    - name
     - createdAt
-    - settings_id
     - creator_id
-    - installation_id
     - github_id
+    - github_node_id
+    - github_owner_type
+    - id
+    - installation_id
+    - name
+    - settings_id
     filter: {}
   role: service
