@@ -14,6 +14,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   _text: any;
+  builds_source_type: any;
   date: any;
   fix_state_enum: any;
   jsonb: any;
@@ -153,6 +154,7 @@ export type Builds = {
   scans: Array<Scans>;
   /** An aggregate relationship */
   scans_aggregate: Scans_Aggregate;
+  source_type: Scalars['builds_source_type'];
 };
 
 
@@ -299,6 +301,7 @@ export type Builds_Bool_Exp = {
   pull_request_id?: InputMaybe<Int_Comparison_Exp>;
   s3_url?: InputMaybe<String_Comparison_Exp>;
   scans?: InputMaybe<Scans_Bool_Exp>;
+  source_type?: InputMaybe<Builds_Source_Type_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "builds" */
@@ -333,6 +336,7 @@ export type Builds_Insert_Input = {
   pull_request_id?: InputMaybe<Scalars['Int']>;
   s3_url?: InputMaybe<Scalars['String']>;
   scans?: InputMaybe<Scans_Arr_Rel_Insert_Input>;
+  source_type?: InputMaybe<Scalars['builds_source_type']>;
 };
 
 /** aggregate max on columns */
@@ -432,6 +436,7 @@ export type Builds_Order_By = {
   pull_request_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
   scans_aggregate?: InputMaybe<Scans_Aggregate_Order_By>;
+  source_type?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: builds */
@@ -460,7 +465,9 @@ export enum Builds_Select_Column {
   /** column name */
   PullRequestId = 'pull_request_id',
   /** column name */
-  S3Url = 's3_url'
+  S3Url = 's3_url',
+  /** column name */
+  SourceType = 'source_type'
 }
 
 /** input type for updating data in table "builds" */
@@ -475,6 +482,20 @@ export type Builds_Set_Input = {
   project_id?: InputMaybe<Scalars['uuid']>;
   pull_request_id?: InputMaybe<Scalars['Int']>;
   s3_url?: InputMaybe<Scalars['String']>;
+  source_type?: InputMaybe<Scalars['builds_source_type']>;
+};
+
+/** Boolean expression to compare columns of type "builds_source_type". All fields are combined with logical 'AND'. */
+export type Builds_Source_Type_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['builds_source_type']>;
+  _gt?: InputMaybe<Scalars['builds_source_type']>;
+  _gte?: InputMaybe<Scalars['builds_source_type']>;
+  _in?: InputMaybe<Array<Scalars['builds_source_type']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['builds_source_type']>;
+  _lte?: InputMaybe<Scalars['builds_source_type']>;
+  _neq?: InputMaybe<Scalars['builds_source_type']>;
+  _nin?: InputMaybe<Array<Scalars['builds_source_type']>>;
 };
 
 /** aggregate stddev on columns */
@@ -550,7 +571,9 @@ export enum Builds_Update_Column {
   /** column name */
   PullRequestId = 'pull_request_id',
   /** column name */
-  S3Url = 's3_url'
+  S3Url = 's3_url',
+  /** column name */
+  SourceType = 'source_type'
 }
 
 /** aggregate var_pop on columns */
@@ -7533,6 +7556,7 @@ export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
   s3_url?: InputMaybe<Scalars['String']>;
   pull_request_id?: InputMaybe<Scalars['Int']>;
+  source_type: Scalars['builds_source_type'];
 }>;
 
 
@@ -7665,9 +7689,9 @@ export const GetScanReportNotifyInfoForBuildDocument = gql`
 }
     `;
 export const InsertBuildDocument = gql`
-    mutation InsertBuild($project_id: uuid!, $s3_url: String, $pull_request_id: Int) {
+    mutation InsertBuild($project_id: uuid!, $s3_url: String, $pull_request_id: Int, $source_type: builds_source_type!) {
   insert_builds_one(
-    object: {project_id: $project_id, s3_url: $s3_url, pull_request_id: $pull_request_id}
+    object: {project_id: $project_id, s3_url: $s3_url, pull_request_id: $pull_request_id, source_type: $source_type}
   ) {
     id
   }

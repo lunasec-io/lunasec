@@ -42,7 +42,7 @@ export async function createBuildAndGenerateSbom(
   bucketInfo: SbomBucketInfo
 ): Promise<string> {
   // Create a new build
-  const { insert_builds_one } = await hasura.InsertBuild({ project_id: projectId });
+  const { insert_builds_one } = await hasura.InsertBuild({ project_id: projectId, source_type: 'gui' });
   console.log('hasura returned when inserting build ', insert_builds_one);
   if (!insert_builds_one || !insert_builds_one.id) {
     throw new Error('Failed to insert a new build');
@@ -78,7 +78,7 @@ async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
   // update the manifest status
   await hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'sbom-generated', build_id: buildId });
 }
-
+// This handler is currently only triggered when someone drags and drops a file on the frontend
 export async function handleGenerateManifestSbom(
   message: S3ObjectMetadata
 ): Promise<QueueSuccessResult | QueueErrorResult> {

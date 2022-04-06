@@ -70,7 +70,8 @@ webhooks.on('pull_request', async (event) => {
     const gzippedSbom = generateSbomFromAsset('repository', parsedGitUrl.toString(), gitBranch);
 
     const insertBuildResponse: Try<InsertBuildMutation> = await tryF(
-      async () => await hasura.InsertBuild({ project_id: projectId, pull_request_id: Number(pullRequestId) })
+      async () =>
+        await hasura.InsertBuild({ project_id: projectId, pull_request_id: Number(pullRequestId), source_type: 'pr' })
     );
 
     if (isError(insertBuildResponse)) {

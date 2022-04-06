@@ -15,7 +15,7 @@ import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
-import { gitUrlToHtmlUrl } from '../../../utils/git-url-to-html-url';
+import { branchLink, branchName, commitLink, gitUrlToLink } from '../../../utils/build-display-helpers';
 import { prettyDate } from '../../../utils/pretty-date';
 import { filterFindingsByIgnored, groupByPackage } from '../finding/filter-findings';
 import { BuildInfo, ProjectInfo } from '../types';
@@ -34,13 +34,9 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
   const vulnerablePackages = groupByPackage(build.project_id, filteredFindings);
   const criticalVulnerablePackages = vulnerablePackages.filter((p) => p.severity === 'Critical');
 
-  const githubUrl = gitUrlToHtmlUrl(build.git_remote);
-
-  const branchName = build.git_branch?.split('/').pop();
-  const branchUrl = `${githubUrl}/tree/${branchName}`;
-
-  // Todo: this might be broken, double check
-  const commitUrl = `${githubUrl}/commit/${build.git_hash}`;
+  const branch = branchName(build);
+  const branchUrl = branchLink(build);
+  const commitUrl = commitLink(build);
 
   return (
     <Card onClick={onClick} className="flex-fill w-100 build build-card clickable-card">
@@ -86,15 +82,20 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
                 <ConditionallyRender if={branchUrl}>
                   <h6>
                     <span className="darker">Branch: </span>{' '}
-                    <a target="_blank" rel="noopener noreferrer" href={branchUrl} onClick={(e) => e.stopPropagation()}>
-                      {branchName}
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={branchUrl || ''}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {branch}
                     </a>
                   </h6>
                 </ConditionallyRender>
                 <ConditionallyRender if={commitUrl}>
                   <h6>
                     <span className="darker">Commit: </span>{' '}
-                    <a target="_blank" rel="noopener noreferrer" href={commitUrl}>
+                    <a target="_blank" rel="noopener noreferrer" href={commitUrl || ''}>
                       {build.git_hash?.substring(0, 8)}...
                     </a>
                   </h6>

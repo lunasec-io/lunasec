@@ -19,12 +19,25 @@ import { NavLink, useParams } from 'react-router-dom';
 
 import api from '../../../api';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
+import useAppDispatch from '../../../hooks/useAppDispatch';
+import { add } from '../../../store/slices/alerts';
+import { branchLink, branchName, commitLink } from '../../../utils/build-display-helpers';
 import { prettyDate } from '../../../utils/pretty-date';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
 import { VulnerablePackageList } from '../finding/VulnerablePackageList';
 import { filterFindingsByIgnored } from '../finding/filter-findings';
+
+import { SourceIcon } from './SourceIcon';
+
 export const BuildDetails: React.FunctionComponent = () => {
+  const dispatch = useAppDispatch();
+
   const { build_id, project_id } = useParams();
+  if (!build_id || !project_id) {
+    dispatch(add({ message: 'Malformed URL, missing build_id or project_id parameter' }));
+    return null;
+  }
   const { data, isLoading } = api.useGetBuildDetailsQuery({ build_id, project_id });
 
   // await triggerInsertIgnored({ locations, note, project_id, vulnerability_id });
@@ -34,11 +47,11 @@ export const BuildDetails: React.FunctionComponent = () => {
       return null;
     }
 
-    if (data.builds.length === 0) {
+    if (!data.builds_by_pk) {
       console.error(`no builds are available: ${data}`);
       return <span>404: Couldn&apos;t find a build with this ID.</span>;
     }
-    const build = data.builds[0];
+    const build = data.builds_by_pk;
 
     if (build.scans.length === 0) {
       return (
@@ -54,6 +67,12 @@ export const BuildDetails: React.FunctionComponent = () => {
 
     const lastScannedDate = firstScan ? prettyDate(new Date(firstScan.created_at as string)) : 'Never';
     const uploadDate = prettyDate(new Date(build.created_at as string));
+
+    // const githubUrl = gitUrlToLink(build);
+
+    const branch = branchName(build);
+    const branchUrl = branchLink(build);
+    const commitUrl = commitLink(build);
 
     return (
       <>
@@ -86,11 +105,26 @@ export const BuildDetails: React.FunctionComponent = () => {
           <Col xs="12" sm="3">
             <div className="build-git-info">
               <h6>
-                <span className="darker">Branch: </span> {build.git_branch}
+                <span className="darker">From: </span>
+                <SourceIcon source_type={build.source_type} className="mb-1" />{' '}
+                <span className="text-capitalize">{build.source_type}</span>{' '}
               </h6>
-              <h6>
-                <span className="darker">Commit: </span> {build.git_hash?.substring(0, 8)}... ↪
-              </h6>
+              <ConditionallyRender if={branchUrl}>
+                <h6>
+                  <span className="darker">Branch: </span>{' '}
+                  <a target="_blank" rel="noopener noreferrer" href={branchUrl || ''}>
+                    {branch}
+                  </a>
+                </h6>
+              </ConditionallyRender>
+              <ConditionallyRender if={commitUrl}>
+                <h6>
+                  <span className="darker">Commit: </span>{' '}
+                  <a target="_blank" rel="noopener noreferrer" href={commitUrl || ''}>
+                    {build.git_hash?.substring(0, 8)}...
+                  </a>
+                </h6>
+              </ConditionallyRender>
               <h6>
                 <span className="darker">{capitalizeFirstLetter(firstScan.source_type)}:</span> {firstScan.target}
               </h6>
