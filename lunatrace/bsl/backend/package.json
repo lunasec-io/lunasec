@@ -34,7 +34,7 @@
     "@aws-sdk/types": "^3.46.0",
     "@aws-sdk/url-parser": "^3.46.0",
     "@aws-sdk/util-format-url": "^3.46.0",
-    "@lunatrace/lunatrace-common": "*",
+    "@lunatrace/lunatrace-common": "link:../common",
     "@octokit/auth-app": "^3.6.1",
     "@octokit/graphql": "^4.8.0",
     "@octokit/plugin-rest-endpoint-methods": "^5.13.0",
