@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package config
+package snapshot
 
-import "lunasec/lunatrace/pkg/types"
+import (
+	"github.com/google/uuid"
+	"lunasec/lunatrace/pkg/types"
+)
 
-func defaultLunaTraceGatewayConfig() types.LunaTraceGateway {
-	return types.LunaTraceGateway{
-		GraphqlServer: types.LunaTraceGraphqlServer{
-			Url: `${LUNATRACE_GRAPHQL_SERVER_URL:"https://lunatrace.lunasec.io/api/cli/v1/graphql"}`,
-		},
+func GetApplicationIdentity(applicationId string) types.ApplicationIdentity {
+	buildId := uuid.New()
+	return types.ApplicationIdentity{
+		BuildId:       buildId.String(),
+		ApplicationId: applicationId,
 	}
 }

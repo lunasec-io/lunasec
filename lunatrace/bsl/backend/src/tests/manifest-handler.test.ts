@@ -35,7 +35,7 @@ describe('manifest handler', () => {
   for (let n = 0; n < 3; n++) {
     it('should call lunatrace cli (this is a subset of the above test)', (done) => {
       const fileContents = fs.createReadStream(path.resolve(__dirname, '../fixtures/package-lock.json'));
-      const gzipData = generateSbomFromAsset('manifest', 'package-lock.json', 'master', {
+      const gzipData = generateSbomFromAsset('file', 'package-lock.json', 'master', {
         inputStream: fileContents,
       });
 

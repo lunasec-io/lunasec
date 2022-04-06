@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package inventory
+package snapshot
 
 import (
 	"crypto"
@@ -30,7 +30,7 @@ import (
 	"path/filepath"
 )
 
-func getSyftSource(sourceName string, excludedDirs []string, useStdin bool) (src *source.Source, cleanup func(), err error) {
+func getSyftSourceForFile(sourceName string, excludeDirs []string, useStdin bool) (src *source.Source, cleanup func(), err error) {
 	if useStdin {
 		var (
 			tmpSourceFile *os.File
@@ -52,7 +52,7 @@ func getSyftSource(sourceName string, excludedDirs []string, useStdin bool) (src
 		return
 	}
 
-	src, cleanup, err = source.New("file:"+sourceName, nil, excludedDirs)
+	src, cleanup, err = source.New("file:"+sourceName, nil, excludeDirs)
 	if err != nil {
 		err = fmt.Errorf("failed to construct source from user input %q: %w", sourceName, err)
 		return
@@ -60,12 +60,12 @@ func getSyftSource(sourceName string, excludedDirs []string, useStdin bool) (src
 	return
 }
 
-func getSbomFromStdinFile(sourceName string, excludedDirs []string, useStdin bool) (s *sbom.SBOM, err error) {
+func getSbomFromFile(sourceName string, excludeDirs []string, useStdin bool) (s *sbom.SBOM, err error) {
 	log.Info().
 		Str("source", sourceName).
 		Msg("Scanning source for dependencies.")
 
-	src, cleanup, err := getSyftSource(sourceName, excludedDirs, useStdin)
+	src, cleanup, err := getSyftSourceForFile(sourceName, excludeDirs, useStdin)
 	if cleanup != nil {
 		defer cleanup()
 	}
@@ -82,19 +82,50 @@ func getSbomFromStdinFile(sourceName string, excludedDirs []string, useStdin boo
 		},
 	}
 
-	err = collectRelationships(sourceName, s, src)
+	err = collectRelationships(s, src)
 	if err != nil {
 		return
 	}
 	return
 }
 
-func getSbomFromRepository(repoDir string, excludedDirs []string) (s *sbom.SBOM, err error) {
+func NewSbom(src *source.Source) (s *sbom.SBOM, err error) {
+	s = &sbom.SBOM{
+		Source: src.Metadata,
+		Descriptor: sbom.Descriptor{
+			Name:    constants.LunaTraceName,
+			Version: constants.LunaTraceVersion,
+		},
+	}
+	err = collectRelationships(s, src)
+	return
+}
+
+func getSbomFromContainer(container string, excludeDirs []string) (s *sbom.SBOM, err error) {
+	log.Info().
+		Str("container", container).
+		Msg("Scanning container for dependencies.")
+
+	src, cleanup, err := source.New("docker:"+container, nil, excludeDirs)
+	if err != nil {
+		err = fmt.Errorf("failed to construct source from container %s: %w", container, err)
+		return
+	}
+	defer cleanup()
+
+	log.Info().
+		Str("container", container).
+		Msg("Completed scanning source.")
+
+	return NewSbom(src)
+}
+
+func getSbomFromDirectory(repoDir string, excludeDirs []string) (s *sbom.SBOM, err error) {
 	log.Info().
 		Str("repoDir", repoDir).
-		Msg("Scanning repository directory for dependencies.")
+		Msg("Scanning directory for dependencies.")
 
-	src, cleanup, err := source.New("dir:"+repoDir, nil, excludedDirs)
+	src, cleanup, err := source.New("dir:"+repoDir, nil, excludeDirs)
 	if err != nil {
 		err = fmt.Errorf("failed to construct source from repo %s: %w", repoDir, err)
 		return
@@ -105,24 +136,11 @@ func getSbomFromRepository(repoDir string, excludedDirs []string) (s *sbom.SBOM,
 		Str("repoDir", repoDir).
 		Msg("Completed scanning source.")
 
-	s = &sbom.SBOM{
-		Source: src.Metadata,
-		Descriptor: sbom.Descriptor{
-			Name:    constants.LunaTraceName,
-			Version: constants.LunaTraceVersion,
-		},
-	}
-
-	err = collectRelationships(repoDir, s, src)
-	if err != nil {
-		return
-	}
-	return
+	return NewSbom(src)
 }
 
-func collectRelationships(searchDir string, s *sbom.SBOM, src *source.Source) (err error) {
+func collectRelationships(s *sbom.SBOM, src *source.Source) (err error) {
 	log.Info().
-		Str("searchDir", searchDir).
 		Msg("Collecting relationships between dependencies and files.")
 
 	tasks, err := getTasks()
@@ -130,46 +148,22 @@ func collectRelationships(searchDir string, s *sbom.SBOM, src *source.Source) (e
 		return
 	}
 
-	var relationships []<-chan artifact.Relationship
+	var relationships []artifact.Relationship
 	for _, task := range tasks {
-		c := make(chan artifact.Relationship)
-		relationships = append(relationships, c)
+		var taskRelations []artifact.Relationship
 
-		err = runTask(task, &s.Artifacts, src, c)
+		taskRelations, err = task(&s.Artifacts, src)
 		if err != nil {
 			return
 		}
+		relationships = append(relationships, taskRelations...)
+
 	}
-	s.Relationships = append(s.Relationships, mergeRelationships(relationships...)...)
+	s.Relationships = append(s.Relationships, relationships...)
 
 	log.Info().
-		Str("searchDir", searchDir).
 		Msg("Completed collecting relationships between dependencies and files.")
 	return
-}
-
-func runTask(t task, a *sbom.Artifacts, src *source.Source, c chan<- artifact.Relationship) (err error) {
-	defer close(c)
-
-	relationships, err := t(a, src)
-	if err != nil {
-		return
-	}
-
-	for _, relationship := range relationships {
-		c <- relationship
-	}
-	return
-}
-
-func mergeRelationships(cs ...<-chan artifact.Relationship) (relationships []artifact.Relationship) {
-	for _, c := range cs {
-		for n := range c {
-			relationships = append(relationships, n)
-		}
-	}
-
-	return relationships
 }
 
 type task func(*sbom.Artifacts, *source.Source) ([]artifact.Relationship, error)

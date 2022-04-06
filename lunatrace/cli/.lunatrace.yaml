@@ -3,6 +3,4 @@ lunatrace:
     stage: development
   gateway:
     graphql_server:
-      url: http://localhost:4455/v1/graphql
-    express_server:
-      url: http://localhost:4455/api
+      url: http://localhost:4455/api/cli/v1/graphql
