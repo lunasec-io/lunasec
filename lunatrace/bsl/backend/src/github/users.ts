@@ -17,12 +17,13 @@ import { Request, Response } from 'express';
 import { hasura } from '../hasura-api';
 import {
   AuthorizedUserOrganizationsQuery,
+  Organization_User_Constraint,
   Organization_User_Insert_Input,
+  Organization_User_Update_Column,
   UpdateOrganizationsForUserMutation,
 } from '../hasura-api/generated';
 import { getGithubAccessTokenFromKratos } from '../kratos';
 import { errorResponse, logError } from '../utils/errors';
-import { tryParseInt } from '../utils/parse-int';
 import { isError, Try, tryF } from '../utils/try';
 
 import { GetUserOrganizationsQuery } from './generated';
@@ -70,19 +71,7 @@ async function collectUserGithubOrgs(userId: string, accessToken: string) {
   return allUserOrgs;
 }
 
-function parseGithubEncodedId(encodedId: string, entityName: string) {
-  /*
-   * Example: MDEyOk9yZ2FuaXphdGlvbjgzMjQ0NTUw -> 012:Organization83244550
-   * We have to parse here because the value that comes from repo.owner.id when installing
-   * the github app is the number id;
-   */
-  const idDecoded = Buffer.from(encodedId, 'base64').toString();
-  const idParts = idDecoded.split(':');
-  const idNormalized = idParts[1].replace(entityName, '');
-  return tryParseInt(idNormalized, 10);
-}
-
-function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserOrganizationsQuery): number[] | null {
+function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserOrganizationsQuery): string[] | null {
   const orgNodes = userGithubOrgs.viewer.organizations.nodes;
 
   if (!orgNodes) {
@@ -94,32 +83,17 @@ function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserO
 
   console.debug(`[user: ${userId}] Github user's organizations count: ${orgNodes.length}`);
 
-  const userGithubId = parseGithubEncodedId(userGithubOrgs.viewer.id, 'User');
-
-  if (!userGithubId.success) {
-    console.error(`[user: ${userId}] Unable to parse github user id: ${userGithubOrgs.viewer.id}`);
-    return null;
-  }
-
-  const orgIds = orgNodes.reduce<number[]>((filtered, org) => {
+  const orgIds = orgNodes.reduce<string[]>((filtered, org) => {
     if (!org) {
       return filtered;
     }
-
-    const idNumber = parseGithubEncodedId(org.id, 'Organization');
-
-    if (!idNumber.success) {
-      console.error(`[user: ${userId}] Unable to parse github organization id: ${org.id}`);
-      return filtered;
-    }
-
-    return [...filtered, idNumber.value];
+    return [...filtered, org.id];
   }, []);
 
   return [
     ...orgIds,
     // the user github id is also considered an organization, include it in this list
-    userGithubId.value,
+    userGithubOrgs.viewer.id,
   ];
 }
 
@@ -186,6 +160,10 @@ export const githubLogin = async (req: Request, res: Response): Promise<void> =>
     async () =>
       await hasura.UpdateOrganizationsForUser({
         organizations_for_user: organizationUserInput,
+        on_conflict: {
+          constraint: Organization_User_Constraint.OrganizationUserUserIdOrganizationIdKey,
+          update_columns: [Organization_User_Update_Column.UserId],
+        },
       })
   );
 

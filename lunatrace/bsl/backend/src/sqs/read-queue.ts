@@ -56,7 +56,7 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
 
     const data: ReceiveMessageCommandOutput = await sqsClient.send(new ReceiveMessageCommand(params));
     if (data.Messages) {
-      await Promise.all(
+      const allJobs = Promise.all(
         data.Messages.map(async (message) => {
           if (!message.Body) {
             console.log('Received sqs message with no message body');
@@ -90,6 +90,19 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
           await deleteMessage(message, queueUrl);
         })
       );
+
+      const timeoutPromise = new Promise((resolve) => {
+        setTimeout(() => resolve('job_timeout'), 2 * 60 * 1000);
+      });
+
+      const result = await Promise.race([allJobs, timeoutPromise]);
+
+      if (result === 'job_timeout') {
+        console.error('Exceeded timeout for jobs:', data.Messages);
+      } else {
+        console.log('Jobs returned successfully:', data.Messages);
+      }
+      return;
     }
   } catch (err) {
     console.error('SQS processor top level error: ', err);

@@ -12,7 +12,7 @@
  *
  */
 
-import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods';
+// eslint-disable-next-line import/no-unresolved
+import { components } from '@octokit/openapi-types';
 
-export type ListReposAccessibleToInstallationResponseType =
-  RestEndpointMethodTypes['apps']['listReposAccessibleToInstallation']['response'];
+export type ListReposAccessibleToInstallationResponseType = components['schemas']['repository'][];
