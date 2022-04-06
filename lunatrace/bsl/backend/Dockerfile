@@ -5,7 +5,7 @@ RUN apt install -y wget
 
 RUN corepack enable
 
-COPY --from=lunasec/lunatrace-cli:v0.0.5 /lunatrace /usr/local/bin
+COPY --from=lunasec/lunatrace-cli:v0.0.6 /lunatrace /usr/local/bin
 
 WORKDIR /common
 
