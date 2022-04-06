@@ -12,17 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package inventory
+package snapshot
 
 import (
-	"github.com/google/uuid"
+	"github.com/anchore/syft/syft"
+	"github.com/urfave/cli/v2"
+	"lunasec/lunatrace/pkg/command"
 	"lunasec/lunatrace/pkg/types"
+	"lunasec/lunatrace/pkg/util"
 )
 
-func GetApplicationIdentity(applicationId string) types.ApplicationIdentity {
-	buildId := uuid.New()
-	return types.ApplicationIdentity{
-		BuildId:       buildId.String(),
-		ApplicationId: applicationId,
+func CreateCommandForAssetType(
+	appConfig types.LunaTraceConfig,
+	globalFlags *types.LunaTraceGlobalFlags,
+	cmdConfig types.CliAssetCmdConfig,
+) *cli.Command {
+	return &cli.Command{
+		Name:   string(cmdConfig.AssetType),
+		Usage:  cmdConfig.Usage,
+		Before: util.SetGlobalBoolFlags(globalFlags),
+		Flags:  cmdConfig.Flags,
+		Action: func(c *cli.Context) error {
+			syft.SetLogger(&types.ZerologLogger{})
+			command.EnableGlobalFlags(globalFlags)
+			return cmdConfig.AssetHandler(c, appConfig)
+		},
 	}
 }
