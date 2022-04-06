@@ -11,8 +11,11 @@
  * limitations under the License.
  *
  */
-
-// eslint-disable-next-line import/no-unresolved
-import { components } from '@octokit/openapi-types';
-
-export type ListReposAccessibleToInstallationResponseType = components['schemas']['repository'][];
+export function parsePsqlStringArray(psqlArray: string): string[] | null {
+  const psqlJsonArray = psqlArray.replace(/^{/, '[').replace(/}$/, ']');
+  try {
+    return JSON.parse(psqlJsonArray) as string[];
+  } catch (e) {
+    return null;
+  }
+}
