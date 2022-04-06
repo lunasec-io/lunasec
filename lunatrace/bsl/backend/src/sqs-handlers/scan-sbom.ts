@@ -36,7 +36,7 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
     sbomBucketInfo.region
   );
   console.debug('started streaming file from s3');
-  const gunzip = zlib.createGunzip({ chunkSize: sbomLength });
+  const gunzip = zlib.createGunzip(/*{ chunkSize: sbomLength }*/);
 
   console.debug('started unzipping file');
   const unZippedSbomStream = sbomStream.pipe(gunzip);
@@ -59,27 +59,35 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
   return scanReport;
 }
 
-async function notifyScanResults(buildId: string, scanReport: Scans_Insert_Input) {
-  const notifyInfo = await hasura.GetScanReportNotifyInfoForBuild({
+async function commentOnPrIfExists(buildId: string, scanReport: Scans_Insert_Input) {
+  const buildLookup = await hasura.GetScanReportNotifyInfoForBuild({
     build_id: buildId,
   });
 
-  if (!notifyInfo.builds_by_pk || !notifyInfo.builds_by_pk.project || !notifyInfo.builds_by_pk.project.organization) {
+  if (
+    !buildLookup.builds_by_pk ||
+    !buildLookup.builds_by_pk.project ||
+    !buildLookup.builds_by_pk.project.organization
+  ) {
     console.error(`unable to get required scan notify information for buildId: ${buildId}`);
     return;
   }
 
-  const projectId = notifyInfo.builds_by_pk.project.id;
-  const installationId = notifyInfo.builds_by_pk.project.organization.installation_id;
-  const pullRequestId = notifyInfo.builds_by_pk.pull_request_id;
+  const projectId = buildLookup.builds_by_pk.project.id;
+  const installationId = buildLookup.builds_by_pk.project.organization.installation_id;
+  const pullRequestId = buildLookup.builds_by_pk.pull_request_id;
 
   if (!installationId) {
-    console.error(`installation id is not defined for buildId: ${buildId}`);
+    console.log(
+      `installation id is not defined for the organization linked to build: ${buildId}, skipping github PR comment`
+    );
     return;
   }
 
   if (!pullRequestId) {
-    console.error(`pull request id is not defined for buildId: ${buildId}`);
+    console.log(
+      `pull request id is not defined for buildId: ${buildId}, skipping comment because this build did not come from a PR`
+    );
     return;
   }
 
@@ -139,7 +147,7 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
 
   const scanResp = await tryF<Scans_Insert_Input>(async () => await scanSbom(buildId, bucketInfo));
   if (isError(scanResp)) {
-    console.error('SBOM generation error', { scanResp });
+    console.error('Sbom Scanning Error:', { scanResp });
     await hasura.UpdateManifestStatusIfExists({
       status: 'error',
       message: String(scanResp.message),
@@ -151,7 +159,7 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
     };
   }
 
-  await notifyScanResults(buildId, scanResp);
+  await commentOnPrIfExists(buildId, scanResp);
 
   return {
     success: true,

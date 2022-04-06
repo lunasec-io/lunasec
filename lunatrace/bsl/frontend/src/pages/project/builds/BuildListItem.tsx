@@ -15,22 +15,32 @@ import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
+import { gitUrlToHtmlUrl } from '../../../utils/git-url-to-html-url';
 import { prettyDate } from '../../../utils/pretty-date';
 import { filterFindingsByIgnored, groupByPackage } from '../finding/filter-findings';
-import { BuildInfo } from '../types';
+import { BuildInfo, ProjectInfo } from '../types';
 
 interface BuildListItemProps {
   build: BuildInfo;
+  project: ProjectInfo;
   onClick: (_e: unknown) => void;
 }
 
-export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ build, onClick }) => {
+export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ build, project, onClick }) => {
   const uploadDate = prettyDate(new Date(build.created_at as string));
   const lastScannedDate = build.scans[0] ? prettyDate(new Date(build.scans[0].created_at as string)) : 'Never';
 
   const filteredFindings = filterFindingsByIgnored(build.findings);
   const vulnerablePackages = groupByPackage(build.project_id, filteredFindings);
   const criticalVulnerablePackages = vulnerablePackages.filter((p) => p.severity === 'Critical');
+
+  const githubUrl = gitUrlToHtmlUrl(build.git_remote);
+
+  const branchName = build.git_branch?.split('/').pop();
+  const branchUrl = `${githubUrl}/tree/${branchName}`;
+
+  // Todo: this might be broken, double check
+  const commitUrl = `${githubUrl}/commit/${build.git_hash}`;
 
   return (
     <Card onClick={onClick} className="flex-fill w-100 build build-card clickable-card">
@@ -73,14 +83,20 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
             </Col>
             <Col xs="12" sm="3">
               <div className="build-git-info">
-                <ConditionallyRender if={build.git_branch}>
+                <ConditionallyRender if={branchUrl}>
                   <h6>
-                    <span className="darker">Branch: </span> {build.git_branch}
+                    <span className="darker">Branch: </span>{' '}
+                    <a target="_blank" rel="noopener noreferrer" href={branchUrl} onClick={(e) => e.stopPropagation()}>
+                      {branchName}
+                    </a>
                   </h6>
                 </ConditionallyRender>
-                <ConditionallyRender if={build.git_hash}>
+                <ConditionallyRender if={commitUrl}>
                   <h6>
-                    <span className="darker">Commit: </span> {build.git_hash?.substring(0, 8)}... ↪
+                    <span className="darker">Commit: </span>{' '}
+                    <a target="_blank" rel="noopener noreferrer" href={commitUrl}>
+                      {build.git_hash?.substring(0, 8)}...
+                    </a>
                   </h6>
                 </ConditionallyRender>
               </div>

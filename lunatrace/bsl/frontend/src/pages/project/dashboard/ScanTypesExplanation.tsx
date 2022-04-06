@@ -15,6 +15,7 @@ import React from 'react';
 import { Badge, Button, Card, Col, NavLink, Row } from 'react-bootstrap';
 import { AiFillCode, AiFillDiff, AiFillGithub } from 'react-icons/ai';
 
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { ProjectInfo, SetActiveTab } from '../types';
 
 export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; project: ProjectInfo }> = ({
@@ -28,14 +29,16 @@ export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; projec
 
         {/*<Card className="">*/}
         {/*  <Card.Body className="">*/}
-        <Card.Title>
-          <AiFillGithub className="m-3" size="40px" />
-          GitHub PR Scan
-        </Card.Title>
-        <Card.Subtitle className="darker homepage-subtitle">
-          Projects imported from GitHub will automatically take a snapshot of pull-requests, and notify of any critical
-          vulnerabilities in a comment on the PR.
-        </Card.Subtitle>
+        <ConditionallyRender if={project.github_repository}>
+          <Card.Title>
+            <AiFillGithub className="m-3" size="40px" />
+            GitHub PR Scan
+          </Card.Title>
+          <Card.Subtitle className="darker homepage-subtitle">
+            Projects imported from GitHub will automatically take a snapshot of pull-requests, and notify of any
+            critical vulnerabilities in a comment on the PR.
+          </Card.Subtitle>
+        </ConditionallyRender>
         <Card.Title>
           {' '}
           <AiFillCode size="40px" className="m-3" />
@@ -60,6 +63,16 @@ export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; projec
           artifacts (like .jar files), manifest files (like package-lock.json), tarred docker images, or an archive of
           your entire repo.
         </Card.Subtitle>
+        <ConditionallyRender if={!project.github_repository}>
+          <Card.Title className="darker">
+            <AiFillGithub className="m-3" size="40px" />
+            GitHub PR Scan
+          </Card.Title>
+          <Card.Subtitle className="darker homepage-subtitle">
+            This project is not linked to GitHub. To import a project from GitHub and begin automatic scanning,{' '}
+            <a href="https://github.com/apps/lunatrace-by-lunasec/installations/new">click here</a>.
+          </Card.Subtitle>
+        </ConditionallyRender>
         {/*  </Card.Body>*/}
         {/*</Card>*/}
 
