@@ -1,3 +1,16 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1 
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -982,7 +995,8 @@ export type Github_Repositories = {
   __typename?: 'github_repositories';
   api_response: Scalars['jsonb'];
   git_url: Scalars['String'];
-  github_id: Scalars['Int'];
+  github_id?: Maybe<Scalars['Int']>;
+  github_node_id?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   /** An object relationship */
   project: Projects;
@@ -1077,6 +1091,7 @@ export type Github_Repositories_Bool_Exp = {
   api_response?: InputMaybe<Jsonb_Comparison_Exp>;
   git_url?: InputMaybe<String_Comparison_Exp>;
   github_id?: InputMaybe<Int_Comparison_Exp>;
+  github_node_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -1086,6 +1101,8 @@ export type Github_Repositories_Bool_Exp = {
 export enum Github_Repositories_Constraint {
   /** unique or primary key constraint */
   GithubRepositoriesGithubIdKey = 'github_repositories_github_id_key',
+  /** unique or primary key constraint */
+  GithubRepositoriesGithubNodeIdKey = 'github_repositories_github_node_id_key',
   /** unique or primary key constraint */
   GithubRepositoriesPkey = 'github_repositories_pkey'
 }
@@ -1115,6 +1132,7 @@ export type Github_Repositories_Insert_Input = {
   api_response?: InputMaybe<Scalars['jsonb']>;
   git_url?: InputMaybe<Scalars['String']>;
   github_id?: InputMaybe<Scalars['Int']>;
+  github_node_id?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: InputMaybe<Scalars['uuid']>;
@@ -1125,6 +1143,7 @@ export type Github_Repositories_Max_Fields = {
   __typename?: 'github_repositories_max_fields';
   git_url?: Maybe<Scalars['String']>;
   github_id?: Maybe<Scalars['Int']>;
+  github_node_id?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
 };
@@ -1133,6 +1152,7 @@ export type Github_Repositories_Max_Fields = {
 export type Github_Repositories_Max_Order_By = {
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
+  github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
 };
@@ -1142,6 +1162,7 @@ export type Github_Repositories_Min_Fields = {
   __typename?: 'github_repositories_min_fields';
   git_url?: Maybe<Scalars['String']>;
   github_id?: Maybe<Scalars['Int']>;
+  github_node_id?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
 };
@@ -1150,6 +1171,7 @@ export type Github_Repositories_Min_Fields = {
 export type Github_Repositories_Min_Order_By = {
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
+  github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
 };
@@ -1161,6 +1183,13 @@ export type Github_Repositories_Mutation_Response = {
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
   returning: Array<Github_Repositories>;
+};
+
+/** input type for inserting object relation for remote table "github_repositories" */
+export type Github_Repositories_Obj_Rel_Insert_Input = {
+  data: Github_Repositories_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Github_Repositories_On_Conflict>;
 };
 
 /** on_conflict condition type for table "github_repositories" */
@@ -1175,6 +1204,7 @@ export type Github_Repositories_Order_By = {
   api_response?: InputMaybe<Order_By>;
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
+  github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_id?: InputMaybe<Order_By>;
@@ -1199,6 +1229,8 @@ export enum Github_Repositories_Select_Column {
   /** column name */
   GithubId = 'github_id',
   /** column name */
+  GithubNodeId = 'github_node_id',
+  /** column name */
   Id = 'id',
   /** column name */
   ProjectId = 'project_id'
@@ -1209,6 +1241,7 @@ export type Github_Repositories_Set_Input = {
   api_response?: InputMaybe<Scalars['jsonb']>;
   git_url?: InputMaybe<Scalars['String']>;
   github_id?: InputMaybe<Scalars['Int']>;
+  github_node_id?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   project_id?: InputMaybe<Scalars['uuid']>;
 };
@@ -1265,6 +1298,8 @@ export enum Github_Repositories_Update_Column {
   GitUrl = 'git_url',
   /** column name */
   GithubId = 'github_id',
+  /** column name */
+  GithubNodeId = 'github_node_id',
   /** column name */
   Id = 'id',
   /** column name */
@@ -3710,6 +3745,7 @@ export type Organizations = {
   createdAt: Scalars['timestamp'];
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
+  github_node_id?: Maybe<Scalars['String']>;
   github_owner_type?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   installation_id?: Maybe<Scalars['Int']>;
@@ -3810,6 +3846,7 @@ export type Organizations_Bool_Exp = {
   createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
   creator_id?: InputMaybe<Uuid_Comparison_Exp>;
   github_id?: InputMaybe<Int_Comparison_Exp>;
+  github_node_id?: InputMaybe<String_Comparison_Exp>;
   github_owner_type?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   installation_id?: InputMaybe<Int_Comparison_Exp>;
@@ -3823,6 +3860,8 @@ export type Organizations_Bool_Exp = {
 export enum Organizations_Constraint {
   /** unique or primary key constraint */
   OrganizationsGithubIdKey = 'organizations_github_id_key',
+  /** unique or primary key constraint */
+  OrganizationsGithubNodeIdKey = 'organizations_github_node_id_key',
   /** unique or primary key constraint */
   OrganizationsPkey = 'organizations_pkey'
 }
@@ -3838,6 +3877,7 @@ export type Organizations_Insert_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
   creator_id?: InputMaybe<Scalars['uuid']>;
   github_id?: InputMaybe<Scalars['Int']>;
+  github_node_id?: InputMaybe<Scalars['String']>;
   github_owner_type?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   installation_id?: InputMaybe<Scalars['Int']>;
@@ -3853,6 +3893,7 @@ export type Organizations_Max_Fields = {
   createdAt?: Maybe<Scalars['timestamp']>;
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
+  github_node_id?: Maybe<Scalars['String']>;
   github_owner_type?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   installation_id?: Maybe<Scalars['Int']>;
@@ -3866,6 +3907,7 @@ export type Organizations_Min_Fields = {
   createdAt?: Maybe<Scalars['timestamp']>;
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
+  github_node_id?: Maybe<Scalars['String']>;
   github_owner_type?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   installation_id?: Maybe<Scalars['Int']>;
@@ -3901,6 +3943,7 @@ export type Organizations_Order_By = {
   createdAt?: InputMaybe<Order_By>;
   creator_id?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
+  github_node_id?: InputMaybe<Order_By>;
   github_owner_type?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   installation_id?: InputMaybe<Order_By>;
@@ -3924,6 +3967,8 @@ export enum Organizations_Select_Column {
   /** column name */
   GithubId = 'github_id',
   /** column name */
+  GithubNodeId = 'github_node_id',
+  /** column name */
   GithubOwnerType = 'github_owner_type',
   /** column name */
   Id = 'id',
@@ -3940,6 +3985,7 @@ export type Organizations_Set_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
   creator_id?: InputMaybe<Scalars['uuid']>;
   github_id?: InputMaybe<Scalars['Int']>;
+  github_node_id?: InputMaybe<Scalars['String']>;
   github_owner_type?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   installation_id?: InputMaybe<Scalars['Int']>;
@@ -3983,6 +4029,8 @@ export enum Organizations_Update_Column {
   CreatorId = 'creator_id',
   /** column name */
   GithubId = 'github_id',
+  /** column name */
+  GithubNodeId = 'github_node_id',
   /** column name */
   GithubOwnerType = 'github_owner_type',
   /** column name */
@@ -4494,6 +4542,8 @@ export type Projects = {
   github_repositories: Array<Github_Repositories>;
   /** An aggregate relationship */
   github_repositories_aggregate: Github_Repositories_Aggregate;
+  /** An object relationship */
+  github_repository?: Maybe<Github_Repositories>;
   id: Scalars['uuid'];
   /** An array relationship */
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
@@ -4683,6 +4733,7 @@ export type Projects_Bool_Exp = {
   builds?: InputMaybe<Builds_Bool_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   github_repositories?: InputMaybe<Github_Repositories_Bool_Exp>;
+  github_repository?: InputMaybe<Github_Repositories_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   ignored_vulnerabilities?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
   manifests?: InputMaybe<Manifests_Bool_Exp>;
@@ -4708,6 +4759,7 @@ export type Projects_Insert_Input = {
   builds?: InputMaybe<Builds_Arr_Rel_Insert_Input>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   github_repositories?: InputMaybe<Github_Repositories_Arr_Rel_Insert_Input>;
+  github_repository?: InputMaybe<Github_Repositories_Obj_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['uuid']>;
   ignored_vulnerabilities?: InputMaybe<Ignored_Vulnerabilities_Arr_Rel_Insert_Input>;
   manifests?: InputMaybe<Manifests_Arr_Rel_Insert_Input>;
@@ -4790,6 +4842,7 @@ export type Projects_Order_By = {
   builds_aggregate?: InputMaybe<Builds_Aggregate_Order_By>;
   created_at?: InputMaybe<Order_By>;
   github_repositories_aggregate?: InputMaybe<Github_Repositories_Aggregate_Order_By>;
+  github_repository?: InputMaybe<Github_Repositories_Order_By>;
   id?: InputMaybe<Order_By>;
   ignored_vulnerabilities_aggregate?: InputMaybe<Ignored_Vulnerabilities_Aggregate_Order_By>;
   manifests_aggregate?: InputMaybe<Manifests_Aggregate_Order_By>;
@@ -7430,14 +7483,15 @@ export enum Vulnerability_Packages_Update_Column {
 }
 
 export type AuthorizedUserOrganizationsQueryVariables = Exact<{
-  github_org_ids?: InputMaybe<Array<Scalars['Int']> | Scalars['Int']>;
+  github_org_ids?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
-export type AuthorizedUserOrganizationsQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, github_id?: number | null }> };
+export type AuthorizedUserOrganizationsQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, github_node_id?: string | null }> };
 
 export type CreateOrganizationsMutationVariables = Exact<{
   objects?: InputMaybe<Array<Organizations_Insert_Input> | Organizations_Insert_Input>;
+  on_conflict?: InputMaybe<Organizations_On_Conflict>;
 }>;
 
 
@@ -7532,6 +7586,7 @@ export type UpdateManifestMutation = { __typename?: 'mutation_root', update_mani
 
 export type UpdateOrganizationsForUserMutationVariables = Exact<{
   organizations_for_user: Array<Organization_User_Insert_Input> | Organization_User_Insert_Input;
+  on_conflict?: InputMaybe<Organization_User_On_Conflict>;
 }>;
 
 
@@ -7539,19 +7594,16 @@ export type UpdateOrganizationsForUserMutation = { __typename?: 'mutation_root',
 
 
 export const AuthorizedUserOrganizationsDocument = gql`
-    query AuthorizedUserOrganizations($github_org_ids: [Int!]) {
-  organizations(where: {github_id: {_in: $github_org_ids}}) {
+    query AuthorizedUserOrganizations($github_org_ids: [String!]) {
+  organizations(where: {github_node_id: {_in: $github_org_ids}}) {
     id
-    github_id
+    github_node_id
   }
 }
     `;
 export const CreateOrganizationsDocument = gql`
-    mutation CreateOrganizations($objects: [organizations_insert_input!] = {}) {
-  insert_organizations(
-    objects: $objects
-    on_conflict: {constraint: organizations_github_id_key, update_columns: installation_id}
-  ) {
+    mutation CreateOrganizations($objects: [organizations_insert_input!] = {}, $on_conflict: organizations_on_conflict) {
+  insert_organizations(objects: $objects, on_conflict: $on_conflict) {
     affected_rows
     returning {
       id
@@ -7677,10 +7729,10 @@ export const UpdateManifestDocument = gql`
 }
     `;
 export const UpdateOrganizationsForUserDocument = gql`
-    mutation UpdateOrganizationsForUser($organizations_for_user: [organization_user_insert_input!]!) {
+    mutation UpdateOrganizationsForUser($organizations_for_user: [organization_user_insert_input!]!, $on_conflict: organization_user_on_conflict) {
   insert_organization_user(
     objects: $organizations_for_user
-    on_conflict: {constraint: organization_user_user_id_organization_id_key, update_columns: user_id}
+    on_conflict: $on_conflict
   ) {
     affected_rows
     returning {

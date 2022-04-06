@@ -1,5 +1,5 @@
-mutation UpdateOrganizationsForUser($organizations_for_user: [organization_user_insert_input!]!) {
-  insert_organization_user(objects: $organizations_for_user, on_conflict: {constraint: organization_user_user_id_organization_id_key, update_columns: user_id}) {
+mutation UpdateOrganizationsForUser($organizations_for_user: [organization_user_insert_input!]!, $on_conflict: organization_user_on_conflict) {
+  insert_organization_user(objects: $organizations_for_user, on_conflict: $on_conflict) {
     affected_rows
     returning {
       id

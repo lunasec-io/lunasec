@@ -99,8 +99,9 @@
       "./js/internal-infrastructure/s3-redirect-generator",
       "./js/internal-infrastructure/metrics-server-backend",
       "./lunatrace/bsl/backend",
-      "./lunatrace/bsl/frontend",
-      "./lunatrace/bsl/backend-cdk"
+      "./lunatrace/bsl/backend-cdk",
+      "./lunatrace/bsl/common",
+      "./lunatrace/bsl/frontend"
     ]
   },
   "packageManager": "yarn@3.1.1"

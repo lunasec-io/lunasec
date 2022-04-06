@@ -1,0 +1,21 @@
+{
+  "name": "@lunatrace/lunatrace-common",
+  "main": "build/main/index.js",
+  "typings": "build/main/index.d.ts",
+  "license": "BSL-LunaTrace",
+  "type": "commonjs",
+  "version": "1.0.7",
+  "private": true,
+  "scripts": {
+    "start": "yarn run compile:watch",
+    "compile": "tsc -p tsconfig.json",
+    "compile:watch": "tsc -p tsconfig.json -w"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.0",
+    "generate-lockfile": "^0.0.11",
+    "ts-node": "^10.4.0",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "~4.5.5"
+  }
+}

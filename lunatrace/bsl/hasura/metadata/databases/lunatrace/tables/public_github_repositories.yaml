@@ -11,6 +11,7 @@ insert_permissions:
     check: {}
     columns:
     - github_id
+    - github_node_id
     - api_response
     - git_url
     - id
@@ -20,6 +21,7 @@ select_permissions:
 - permission:
     columns:
     - github_id
+    - github_node_id
     - api_response
     - git_url
     - id
@@ -30,6 +32,7 @@ select_permissions:
     columns:
     - git_url
     - github_id
+    - github_node_id
     - id
     - project_id
     filter:
@@ -44,6 +47,7 @@ update_permissions:
     check: {}
     columns:
     - github_id
+    - github_node_id
     - api_response
     - git_url
     - id
