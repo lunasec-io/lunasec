@@ -55,7 +55,7 @@ export function lunatraceOrgsFromGithubOrgs(
       constraint: Github_Repositories_Constraint.GithubRepositoriesGithubIdKey,
       update_columns: [
         Github_Repositories_Update_Column.GitUrl,
-        Github_Repositories_Update_Column.ApiResponse,
+        Github_Repositories_Update_Column.Traits,
         Github_Repositories_Update_Column.GithubId,
         Github_Repositories_Update_Column.GithubNodeId,
       ],
@@ -69,7 +69,7 @@ export function lunatraceOrgsFromGithubOrgs(
             github_id: repoId,
             github_node_id: repoNodeId,
             git_url: gitUrl,
-            api_response: repo,
+            traits: repo,
           },
         ],
         on_conflict: repoOnConflict,
