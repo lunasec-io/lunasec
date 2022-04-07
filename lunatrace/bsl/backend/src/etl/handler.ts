@@ -21,9 +21,11 @@ import {
 } from '@aws-sdk/client-sqs';
 
 import { getAwsConfig, getQueueHandlerConfig } from '../config';
-import { handleGenerateManifestSbom } from '../sqs-handlers/generate-sbom';
-import { handleScanSbom } from '../sqs-handlers/scan-sbom';
 import { HandlerCallback, S3SqsEvent } from '../types/sqs';
+import {log} from "../utils/log";
+
+import { handleGenerateManifestSbom } from './generate-sbom';
+import { handleScanSbom } from './scan-sbom';
 
 const awsConfig = getAwsConfig();
 const queueHandlerConfig = getQueueHandlerConfig();
@@ -37,9 +39,9 @@ async function deleteMessage(message: Message, queueUrl: string) {
   };
   try {
     const data = await sqsClient.send(new DeleteMessageCommand(deleteParams));
-    console.log('Message deleted', data);
+    log.info('Message deleted', data);
   } catch (err) {
-    console.log('Error deleting message', err);
+    log.info('Error deleting message', err);
   }
 }
 
@@ -59,14 +61,14 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
       const allJobs = Promise.all(
         data.Messages.map(async (message) => {
           if (!message.Body) {
-            console.log('Received sqs message with no message body');
+            log.info('Received sqs message with no message body');
             return;
           }
           const parsedBody = JSON.parse(message.Body) as S3SqsEvent;
-          console.log('parsed body as ', parsedBody);
+          log.info('parsed body as ', parsedBody);
 
           if (!parsedBody.Records) {
-            console.log('No records on sqs event, deleting message, exiting');
+            log.info('No records on sqs event, deleting message, exiting');
             return deleteMessage(message, queueUrl);
           }
           // todo: do we actually need this promise handling or should we only take the first record from any event...assuming one file per object created event makes a lot of sense
@@ -82,7 +84,7 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
           const errors = results.filter((result) => result.success === false);
 
           if (errors.length > 0) {
-            console.error('Errors found while processing SBOM:', { errors });
+            log.error('Errors found while processing SBOM:', { errors });
             // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
             return;
           }
@@ -98,14 +100,14 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
       const result = await Promise.race([allJobs, timeoutPromise]);
 
       if (result === 'job_timeout') {
-        console.error('Exceeded timeout for jobs:', data.Messages);
+        log.error('Exceeded timeout for jobs:', data.Messages);
       } else {
-        console.log('Jobs returned successfully:', data.Messages);
+        log.info('Jobs returned successfully:', data.Messages);
       }
       return;
     }
   } catch (err) {
-    console.error('SQS processor top level error: ', err);
+    log.error('SQS processor top level error: ', err);
     throw err;
   }
 }
@@ -134,11 +136,11 @@ export async function setupQueue() {
   if (!QueueUrl) {
     throw new Error('failed to get QueueUrl for queuename ' + queueName);
   }
-  console.log('got queueUrl: ', QueueUrl);
+  log.info('got queueUrl: ', QueueUrl);
   // read loop
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    console.log('Checking queue for messages: ', queueName);
+    log.info('Checking queue for messages: ', queueName);
     await readDataFromQueue(QueueUrl, determineHandler());
   }
 }

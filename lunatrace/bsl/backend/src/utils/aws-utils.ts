@@ -108,7 +108,7 @@ export class AwsUtils {
     //   params: { Key: key, Bucket: bucket, Body: body, ContentEncoding: 'gzip' },
     // });
     // parallelUpload.on('httpUploadProgress', (progress) => {
-    //   console.log('FILE UPLOAD PROGRESS IS,', progress);
+    //   log.info('FILE UPLOAD PROGRESS IS,', progress);
     // });
     // await parallelUpload.done();
     return `${this.generateAWSBaseUrl(bucket)}/${key}`;

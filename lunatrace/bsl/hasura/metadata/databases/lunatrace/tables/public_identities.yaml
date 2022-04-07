@@ -2,6 +2,13 @@ table:
   name: identities
   schema: public
 array_relationships:
+- name: identity_credentials
+  using:
+    foreign_key_constraint_on:
+      column: identity_id
+      table:
+        name: identity_credentials
+        schema: public
 - name: identity_verifiable_addresses
   using:
     foreign_key_constraint_on:

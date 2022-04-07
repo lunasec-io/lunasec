@@ -14,13 +14,13 @@
 import { Webhooks } from '@octokit/webhooks';
 
 import { generateSbomFromAsset } from '../cli/call-cli';
-import { hasura } from '../hasura-api';
-import { GetProjectIdFromGitUrlQuery, InsertBuildMutation } from '../hasura-api/generated';
-import { uploadSbomToS3 } from '../sqs-handlers/generate-sbom';
+import {uploadSbomToS3} from "../etl/generate-sbom";
+import {hasura} from "../hasura";
+import {GetProjectIdFromGitUrlQuery, InsertBuildMutation} from '../hasura/generated';
+import { log } from '../utils/log';
 import { isError, Try, tryF } from '../utils/try';
 
 import { getInstallationAccessToken } from './auth';
-import { GetUserOrganizationsQuery } from './generated';
 
 export const webhooks = new Webhooks({
   secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
@@ -33,7 +33,7 @@ webhooks.on('pull_request', async (event) => {
     const gitBranch = event.payload.pull_request.head.ref;
     const pullRequestId = event.payload.pull_request.node_id;
 
-    console.log(`generating SBOM for repository: ${cloneUrl} at branch name ${gitBranch}`);
+    log.info(`generating SBOM for repository: ${cloneUrl} at branch name ${gitBranch}`);
 
     const projectIdRes: Try<GetProjectIdFromGitUrlQuery> = await tryF(
       async () =>
@@ -43,20 +43,20 @@ webhooks.on('pull_request', async (event) => {
     );
 
     if (isError(projectIdRes)) {
-      console.error('unable to get project from git url in pull request webhook');
+      log.error('unable to get project from git url in pull request webhook');
       return;
     }
 
     if (projectIdRes.github_repositories.length === 0) {
-      console.error('no projects were found with provided git url in pull request webhook');
+      log.error('no projects were found with provided git url in pull request webhook');
       return;
     }
 
     const projectId = projectIdRes.github_repositories[0].project.id as string;
 
     if (!event.payload.installation) {
-      console.error(`no installation found in pull request webhook`);
-      console.log(event);
+      log.error(`no installation found in pull request webhook`);
+      log.info(event);
       return;
     }
     const installationId = event.payload.installation.id;
@@ -74,7 +74,7 @@ webhooks.on('pull_request', async (event) => {
     );
 
     if (isError(insertBuildResponse)) {
-      console.error('Failed to insert a new build', {
+      log.error('Failed to insert a new build', {
         error: insertBuildResponse,
       });
       throw new Error('Failed to insert a new build');
@@ -82,12 +82,12 @@ webhooks.on('pull_request', async (event) => {
 
     const { insert_builds_one } = insertBuildResponse;
 
-    console.log('Insert Build Response:', {
+    log.info('Insert Build Response:', {
       insert_builds_one,
     });
 
     if (!insert_builds_one || insert_builds_one.id === undefined) {
-      console.error('Missing id in insert build response', {
+      log.error('Missing id in insert build response', {
         insert_builds_one,
       });
       throw new Error('Missing id in insert build response');
@@ -95,7 +95,7 @@ webhooks.on('pull_request', async (event) => {
 
     const buildId = insert_builds_one.id as string;
 
-    console.log('Uploading result to S3:', {
+    log.info('Uploading result to S3:', {
       installationId: installationId.toString(),
       buildId,
     });

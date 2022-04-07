@@ -24014,6 +24014,14 @@ export type CreatePullRequestReviewMutationVariables = Exact<{
 
 export type CreatePullRequestReviewMutation = { __typename?: 'Mutation', addPullRequestReview?: { __typename?: 'AddPullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
 
+export type GetMembersForOrganizationQueryVariables = Exact<{
+  org: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type GetMembersForOrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', id: string, login: string, teams: { __typename?: 'TeamConnection', nodes?: Array<{ __typename?: 'Team', members: { __typename?: 'TeamMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } } } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } }, membersWithRole: { __typename?: 'OrganizationMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null, startCursor?: string | null } } } | null };
+
 export type GetUserOrganizationsQueryVariables = Exact<{
   orgsAfter?: InputMaybe<Scalars['String']>;
 }>;
@@ -24036,6 +24044,45 @@ export const CreatePullRequestReviewDocument = gql`
   ) {
     pullRequestReview {
       id
+    }
+  }
+}
+    `;
+export const GetMembersForOrganizationDocument = gql`
+    query GetMembersForOrganization($org: String!, $after: String) {
+  organization(login: $org) {
+    id
+    login
+    teams(first: 100, after: $after) {
+      nodes {
+        members(first: 100, after: $after) {
+          nodes {
+            name
+            id
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            startCursor
+          }
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        startCursor
+      }
+    }
+    membersWithRole(first: 100, after: $after) {
+      nodes {
+        name
+        id
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+        startCursor
+      }
     }
   }
 }
@@ -24072,6 +24119,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     CreatePullRequestReview(variables: CreatePullRequestReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreatePullRequestReviewMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreatePullRequestReviewMutation>(CreatePullRequestReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePullRequestReview', 'mutation');
+    },
+    GetMembersForOrganization(variables: GetMembersForOrganizationQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetMembersForOrganizationQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetMembersForOrganizationQuery>(GetMembersForOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetMembersForOrganization', 'query');
     },
     GetUserOrganizations(variables?: GetUserOrganizationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserOrganizationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserOrganizationsQuery>(GetUserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserOrganizations', 'query');
