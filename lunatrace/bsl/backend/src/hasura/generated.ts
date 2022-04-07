@@ -27,6 +27,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   _text: any;
+  builds_source_type: any;
   date: any;
   fix_state_enum: any;
   jsonb: any;
@@ -153,6 +154,10 @@ export type Builds = {
   git_hash?: Maybe<Scalars['String']>;
   git_remote?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
+  /** An array relationship */
+  manifests: Array<Manifests>;
+  /** An aggregate relationship */
+  manifests_aggregate: Manifests_Aggregate;
   /** An object relationship */
   project?: Maybe<Projects>;
   project_id?: Maybe<Scalars['uuid']>;
@@ -162,6 +167,7 @@ export type Builds = {
   scans: Array<Scans>;
   /** An aggregate relationship */
   scans_aggregate: Scans_Aggregate;
+  source_type: Scalars['builds_source_type'];
 };
 
 
@@ -182,6 +188,26 @@ export type BuildsFindings_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Findings_Order_By>>;
   where?: InputMaybe<Findings_Bool_Exp>;
+};
+
+
+/** columns and relationships of "builds" */
+export type BuildsManifestsArgs = {
+  distinct_on?: InputMaybe<Array<Manifests_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifests_Order_By>>;
+  where?: InputMaybe<Manifests_Bool_Exp>;
+};
+
+
+/** columns and relationships of "builds" */
+export type BuildsManifests_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Manifests_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifests_Order_By>>;
+  where?: InputMaybe<Manifests_Bool_Exp>;
 };
 
 
@@ -280,11 +306,13 @@ export type Builds_Bool_Exp = {
   git_hash?: InputMaybe<String_Comparison_Exp>;
   git_remote?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifests?: InputMaybe<Manifests_Bool_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
   pull_request_id?: InputMaybe<String_Comparison_Exp>;
   s3_url?: InputMaybe<String_Comparison_Exp>;
   scans?: InputMaybe<Scans_Bool_Exp>;
+  source_type?: InputMaybe<Builds_Source_Type_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "builds" */
@@ -312,11 +340,13 @@ export type Builds_Insert_Input = {
   git_hash?: InputMaybe<Scalars['String']>;
   git_remote?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
+  manifests?: InputMaybe<Manifests_Arr_Rel_Insert_Input>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: InputMaybe<Scalars['uuid']>;
   pull_request_id?: InputMaybe<Scalars['String']>;
   s3_url?: InputMaybe<Scalars['String']>;
   scans?: InputMaybe<Scans_Arr_Rel_Insert_Input>;
+  source_type?: InputMaybe<Scalars['builds_source_type']>;
 };
 
 /** aggregate max on columns */
@@ -410,11 +440,13 @@ export type Builds_Order_By = {
   git_hash?: InputMaybe<Order_By>;
   git_remote?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  manifests_aggregate?: InputMaybe<Manifests_Aggregate_Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_id?: InputMaybe<Order_By>;
   pull_request_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
   scans_aggregate?: InputMaybe<Scans_Aggregate_Order_By>;
+  source_type?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: builds */
@@ -443,7 +475,9 @@ export enum Builds_Select_Column {
   /** column name */
   PullRequestId = 'pull_request_id',
   /** column name */
-  S3Url = 's3_url'
+  S3Url = 's3_url',
+  /** column name */
+  SourceType = 'source_type'
 }
 
 /** input type for updating data in table "builds" */
@@ -458,6 +492,20 @@ export type Builds_Set_Input = {
   project_id?: InputMaybe<Scalars['uuid']>;
   pull_request_id?: InputMaybe<Scalars['String']>;
   s3_url?: InputMaybe<Scalars['String']>;
+  source_type?: InputMaybe<Scalars['builds_source_type']>;
+};
+
+/** Boolean expression to compare columns of type "builds_source_type". All fields are combined with logical 'AND'. */
+export type Builds_Source_Type_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['builds_source_type']>;
+  _gt?: InputMaybe<Scalars['builds_source_type']>;
+  _gte?: InputMaybe<Scalars['builds_source_type']>;
+  _in?: InputMaybe<Array<Scalars['builds_source_type']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['builds_source_type']>;
+  _lte?: InputMaybe<Scalars['builds_source_type']>;
+  _neq?: InputMaybe<Scalars['builds_source_type']>;
+  _nin?: InputMaybe<Array<Scalars['builds_source_type']>>;
 };
 
 /** aggregate stddev on columns */
@@ -525,7 +573,9 @@ export enum Builds_Update_Column {
   /** column name */
   PullRequestId = 'pull_request_id',
   /** column name */
-  S3Url = 's3_url'
+  S3Url = 's3_url',
+  /** column name */
+  SourceType = 'source_type'
 }
 
 /** aggregate var_pop on columns */
@@ -1001,6 +1051,7 @@ export type Github_Repositories = {
   /** An object relationship */
   project: Projects;
   project_id: Scalars['uuid'];
+  traits: Scalars['jsonb'];
 };
 
 
@@ -1012,6 +1063,18 @@ export type Github_Repositories = {
  *
  */
 export type Github_RepositoriesApi_ResponseArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+
+/**
+ * Metadata about a github repository and where to find it.
+ *
+ *
+ * columns and relationships of "github_repositories"
+ *
+ */
+export type Github_RepositoriesTraitsArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
 
@@ -1063,6 +1126,7 @@ export type Github_Repositories_Aggregate_Order_By = {
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Github_Repositories_Append_Input = {
   api_response?: InputMaybe<Scalars['jsonb']>;
+  traits?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** input type for inserting array relation for remote table "github_repositories" */
@@ -1095,6 +1159,7 @@ export type Github_Repositories_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  traits?: InputMaybe<Jsonb_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "github_repositories" */
@@ -1110,16 +1175,19 @@ export enum Github_Repositories_Constraint {
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 export type Github_Repositories_Delete_At_Path_Input = {
   api_response?: InputMaybe<Array<Scalars['String']>>;
+  traits?: InputMaybe<Array<Scalars['String']>>;
 };
 
 /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 export type Github_Repositories_Delete_Elem_Input = {
   api_response?: InputMaybe<Scalars['Int']>;
+  traits?: InputMaybe<Scalars['Int']>;
 };
 
 /** delete key/value pair or string element. key/value pairs are matched based on their key value */
 export type Github_Repositories_Delete_Key_Input = {
   api_response?: InputMaybe<Scalars['String']>;
+  traits?: InputMaybe<Scalars['String']>;
 };
 
 /** input type for incrementing numeric columns in table "github_repositories" */
@@ -1136,6 +1204,7 @@ export type Github_Repositories_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: InputMaybe<Scalars['uuid']>;
+  traits?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** aggregate max on columns */
@@ -1208,6 +1277,7 @@ export type Github_Repositories_Order_By = {
   id?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_id?: InputMaybe<Order_By>;
+  traits?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: github_repositories */
@@ -1218,6 +1288,7 @@ export type Github_Repositories_Pk_Columns_Input = {
 /** prepend existing jsonb value of filtered columns with new jsonb value */
 export type Github_Repositories_Prepend_Input = {
   api_response?: InputMaybe<Scalars['jsonb']>;
+  traits?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** select columns of table "github_repositories" */
@@ -1233,7 +1304,9 @@ export enum Github_Repositories_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  ProjectId = 'project_id'
+  ProjectId = 'project_id',
+  /** column name */
+  Traits = 'traits'
 }
 
 /** input type for updating data in table "github_repositories" */
@@ -1244,6 +1317,7 @@ export type Github_Repositories_Set_Input = {
   github_node_id?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   project_id?: InputMaybe<Scalars['uuid']>;
+  traits?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** aggregate stddev on columns */
@@ -1303,7 +1377,9 @@ export enum Github_Repositories_Update_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  ProjectId = 'project_id'
+  ProjectId = 'project_id',
+  /** column name */
+  Traits = 'traits'
 }
 
 /** aggregate var_pop on columns */
@@ -7531,6 +7607,7 @@ export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
   s3_url?: InputMaybe<Scalars['String']>;
   pull_request_id?: InputMaybe<Scalars['String']>;
+  source_type: Scalars['builds_source_type'];
 }>;
 
 
@@ -7661,9 +7738,9 @@ export const GetScanReportNotifyInfoForBuildDocument = gql`
 }
     `;
 export const InsertBuildDocument = gql`
-    mutation InsertBuild($project_id: uuid!, $s3_url: String, $pull_request_id: String) {
+    mutation InsertBuild($project_id: uuid!, $s3_url: String, $pull_request_id: String, $source_type: builds_source_type!) {
   insert_builds_one(
-    object: {project_id: $project_id, s3_url: $s3_url, pull_request_id: $pull_request_id}
+    object: {project_id: $project_id, s3_url: $s3_url, pull_request_id: $pull_request_id, source_type: $source_type}
   ) {
     id
   }
