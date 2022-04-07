@@ -1,0 +1,2 @@
+CREATE TABLE "public"."users" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "github_node_id" text NOT NULL, "kratos_id" uuid, PRIMARY KEY ("id") , FOREIGN KEY ("kratos_id") REFERENCES "public"."identities"("id") ON UPDATE cascade ON DELETE cascade);COMMENT ON TABLE "public"."users" IS E'LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.)';
+CREATE EXTENSION IF NOT EXISTS pgcrypto;

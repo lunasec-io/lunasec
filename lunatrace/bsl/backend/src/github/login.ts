@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1
+ * Licensed under the Business Source License v1.1 
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -11,77 +11,33 @@
  * limitations under the License.
  *
  */
-import deepmerge from 'deepmerge';
 import { Request, Response } from 'express';
 
-import { hasura } from '../hasura-api';
+import { hasura } from '../hasura';
 import {
   AuthorizedUserOrganizationsQuery,
   Organization_User_Constraint,
   Organization_User_Insert_Input,
   Organization_User_Update_Column,
   UpdateOrganizationsForUserMutation,
-} from '../hasura-api/generated';
+} from '../hasura/generated';
 import { getGithubAccessTokenFromKratos } from '../kratos';
 import { errorResponse, logError } from '../utils/errors';
+import {log} from "../utils/log";
 import { isError, Try, tryF } from '../utils/try';
 
+import { getOrgsForUser } from './actions/get-orgs-for-user';
 import { GetUserOrganizationsQuery } from './generated';
-
-import { generateGithubGraphqlClient } from './index';
-
-async function collectUserGithubOrgs(userId: string, accessToken: string) {
-  const github = generateGithubGraphqlClient(accessToken);
-
-  let orgsAfter: string | null | undefined = undefined;
-  let allUserOrgs: GetUserOrganizationsQuery | null = null;
-  let moreDataAvailable = true;
-
-  while (moreDataAvailable) {
-    console.log(`[user: ${userId}] Requesting Github user's organizations page`);
-
-    const userOrgs: Try<GetUserOrganizationsQuery> = await tryF(
-      async () =>
-        await github.GetUserOrganizations({
-          orgsAfter: orgsAfter,
-        })
-    );
-
-    if (isError(userOrgs)) {
-      // TODO (cthompson) is there a way that we can more gracefully handle this error? We might need to redirect the user back to the github auth page?
-      console.debug(
-        'If you are seeing this then you should delete the user from kratos and go through this flow again.'
-      );
-      throw new Error(
-        `Unable to get user's organizations. This is most likely due to the user having revoked the Github auth from their account and attempting to login again.`
-      );
-    }
-
-    allUserOrgs = deepmerge(allUserOrgs || {}, userOrgs);
-
-    if (!userOrgs.viewer) {
-      break;
-    }
-
-    const orgPageInfo = userOrgs.viewer.organizations.pageInfo;
-
-    orgsAfter = orgPageInfo.hasNextPage ? orgPageInfo.startCursor : null;
-    moreDataAvailable = !!orgsAfter;
-  }
-  return allUserOrgs;
-}
 
 function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserOrganizationsQuery): string[] | null {
   const orgNodes = userGithubOrgs.viewer.organizations.nodes;
 
   if (!orgNodes) {
-    console.error(
-      `orgNodes is null, api response from github is incomplete: ${userGithubOrgs.viewer.organizations.nodes}`
-    );
+    log.error(`orgNodes is null, api response from github is incomplete: ${userGithubOrgs.viewer.organizations.nodes}`);
     return null;
   }
 
-  console.debug(`[user: ${userId}] Github user's organizations count: ${orgNodes.length}`);
+  log.debug(`[user: ${userId}] Github user's organizations count: ${orgNodes.length}`);
 
   const orgIds = orgNodes.reduce<string[]>((filtered, org) => {
     if (!org) {
@@ -97,12 +53,12 @@ function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserO
   ];
 }
 
-export const githubLogin = async (req: Request, res: Response): Promise<void> => {
+export async function githubLogin(req: Request, res: Response): Promise<void> {
   // todo: fix this unsafe property access
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+   
   const userId: string = req.body.ctx.identity.id as string;
 
-  console.log(`[user: ${userId}] Github login webhook started`);
+  log.info(`[user: ${userId}] Github login webhook started`);
 
   const kratosResponse = await getGithubAccessTokenFromKratos(userId);
   if (kratosResponse.error) {
@@ -111,7 +67,7 @@ export const githubLogin = async (req: Request, res: Response): Promise<void> =>
   }
 
   const userGithubOrgs: Try<GetUserOrganizationsQuery | null> = await tryF(
-    async () => await collectUserGithubOrgs(userId, kratosResponse.token)
+    async () => await getOrgsForUser(userId, kratosResponse.token)
   );
 
   if (isError(userGithubOrgs) || userGithubOrgs === null) {
@@ -120,7 +76,7 @@ export const githubLogin = async (req: Request, res: Response): Promise<void> =>
     return;
   }
 
-  console.log(`[user: ${userId}] Collected Github user's organizations.`);
+  log.info(`[user: ${userId}] Collected Github user's organizations.`);
 
   const githubOrgIds = getGithubOrgIdsFromApiResponse(userId, userGithubOrgs);
   if (githubOrgIds === null) {
@@ -128,7 +84,7 @@ export const githubLogin = async (req: Request, res: Response): Promise<void> =>
     return;
   }
 
-  console.debug(`[user: ${userId}] Github user's organization ids: ${githubOrgIds}`);
+  log.debug(`[user: ${userId}] Github user's organization ids: ${githubOrgIds}`);
 
   // TODO (cthompson) handle error cases for when this fails
 
@@ -145,7 +101,7 @@ export const githubLogin = async (req: Request, res: Response): Promise<void> =>
     return;
   }
 
-  console.debug(
+  log.debug(
     `[user: ${userId}] Authorized LunaTrace organizations: ${JSON.stringify(authorizedUserOrgs.organizations)}`
   );
 
@@ -179,7 +135,7 @@ export const githubLogin = async (req: Request, res: Response): Promise<void> =>
     return;
   }
 
-  console.log(
+  log.info(
     `[user: ${userId}] Authenticated user to LunaTrace organizations: ${JSON.stringify(
       updatedOrganizations.insert_organization_user.returning
     )}`
@@ -201,4 +157,4 @@ export const githubLogin = async (req: Request, res: Response): Promise<void> =>
     error: false,
     message: 'Github login callback completed successfully',
   });
-};
+}

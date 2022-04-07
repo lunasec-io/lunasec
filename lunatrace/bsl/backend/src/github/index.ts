@@ -11,17 +11,3 @@
  * limitations under the License.
  *
  */
-import { GraphQLClient } from 'graphql-request';
-
-import { getSdk } from './generated';
-
-const githubEndpoint = 'https://api.github.com/graphql';
-
-export function generateGithubGraphqlClient(accessToken: string) {
-  const client = new GraphQLClient(githubEndpoint, {
-    headers: {
-      authorization: `token ${accessToken}`,
-    },
-  });
-  return getSdk(client);
-}
