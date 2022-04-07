@@ -18,9 +18,11 @@ import { parseAndUploadScan } from '../models/scan';
 import { scaffoldBuild } from './scaffold-project-and-build';
 
 async function uploadScan() {
-  void parseAndUploadScan(fs.createReadStream('~/tmp/syftoutput.json'), await scaffoldBuild()).then((res) => {
-    console.log('completed scan upload: ', res);
-  });
+  void parseAndUploadScan(fs.createReadStream('/home/forrest/tmp/syftoutput.json'), await scaffoldBuild()).then(
+    (res) => {
+      console.log('completed scan upload: ', res);
+    }
+  );
 }
 
 void uploadScan();

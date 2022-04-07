@@ -36,31 +36,30 @@ export async function parseAndUploadScan(sbomStream: Readable, buildId: string):
 }
 
 export async function runGrypeScan(sbomStream: Readable): Promise<string> {
-  let asdf = '';
   return new Promise((resolve, reject) => {
-    const grypeCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
-    grypeCli.on('error', reject);
+    // const stdoutStream = new Stream.Writable();
+    // const stderrStream = new Stream.Writeable();
+    const lunatraceCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
+    lunatraceCli.on('error', reject);
+
     const outputBuffers: Buffer[] = [];
-    grypeCli.stdout.on('data', (chunk) => {
+    lunatraceCli.stdout.on('data', (chunk) => {
       outputBuffers.push(Buffer.from(chunk));
     });
-    grypeCli.stderr.on('data', (errorChunk) => {
+    lunatraceCli.stderr.on('data', (errorChunk) => {
+      console.error('LunaTrace CLI StdErr Output:');
       console.error(errorChunk.toString());
     });
-    grypeCli.on('close', (code) => {
+    lunatraceCli.on('close', (code) => {
       if (code !== 0) {
         return reject(`Grype exited with non-zero code: ${code}`);
       }
       resolve(Buffer.concat(outputBuffers).toString());
     });
-    sbomStream.on('data', (chunk) => {
-      asdf += chunk;
-      grypeCli.stdin.write(chunk);
-    });
-    sbomStream.on('end', () => {
-      writeFileSync('/tmp/test', asdf);
-      grypeCli.stdin.end(() => console.log('Finished passing sbom contents to grype'));
-    });
+    sbomStream.on('data', (chunk) => lunatraceCli.stdin.write(chunk));
+    sbomStream.on('end', () =>
+      lunatraceCli.stdin.end(() => console.log('Finished passing sbom contents to lunatrace CLI'))
+    );
     sbomStream.on('error', reject);
   });
 }
@@ -123,6 +122,8 @@ async function parseMatches(buildId: string, matches: Match[]): Promise<Findings
             version_slug,
           };
 
+          // Todo: making a separate request to hasura for every finding has pretty low performance
+
           const ids = await hasura.GetPackageAndVulnFromSlugs({
             vuln_slug,
             pkg_slug,
@@ -135,10 +136,14 @@ async function parseMatches(buildId: string, matches: Match[]): Promise<Findings
           const package_version_id = ids.package_versions.length >= 1 ? ids.package_versions[0].id : undefined;
 
           if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
-            console.error('unable to get all required ids', {
-              slugs,
-              ids,
-            });
+            console.error(
+              'unable to get all required ids when inserting a finding, its likely the vulnerability database is out of sync',
+              {
+                slugs,
+                ids,
+                match,
+              }
+            );
             return null;
           }
 

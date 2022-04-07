@@ -35,14 +35,15 @@ export async function uploadSbomToS3(organizationId: string, buildId: string, gz
   }
 }
 
-export async function createBuildWithGenerateSbom(
+export async function createBuildAndGenerateSbom(
   orgId: string,
   projectId: string,
   assetName: string,
   bucketInfo: SbomBucketInfo
-) {
+): Promise<string> {
   // Create a new build
-  const { insert_builds_one } = await hasura.InsertBuild({ project_id: projectId });
+  const { insert_builds_one } = await hasura.InsertBuild({ project_id: projectId, source_type: 'gui' });
+  console.log('hasura returned when inserting build ', insert_builds_one);
   if (!insert_builds_one || !insert_builds_one.id) {
     throw new Error('Failed to insert a new build');
   }
@@ -56,6 +57,7 @@ export async function createBuildWithGenerateSbom(
   });
 
   await uploadSbomToS3(orgId, buildId, gzippedSbom);
+  return buildId;
 }
 
 async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
@@ -66,7 +68,7 @@ async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
     throw new Error('Failed to find manifest matching SBOM, exiting');
   }
 
-  const buildId = await createBuildWithGenerateSbom(
+  const buildId = await createBuildAndGenerateSbom(
     manifest.project.organization_id,
     manifest.project_id,
     manifest.filename,
@@ -76,7 +78,7 @@ async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
   // update the manifest status
   await hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'sbom-generated', build_id: buildId });
 }
-
+// This handler is currently only triggered when someone drags and drops a file on the frontend
 export async function handleGenerateManifestSbom(
   message: S3ObjectMetadata
 ): Promise<QueueSuccessResult | QueueErrorResult> {

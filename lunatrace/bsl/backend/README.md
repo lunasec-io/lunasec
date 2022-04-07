@@ -17,8 +17,8 @@ Express server for trace backend.  Presigns upload URLs, runs grype tests, and s
 ### Technology Choices
 * typescript
 * postgres via aurora
-* serverless (via serverless-express package?)
-* auth with ORY?
+* Fargate cluster for async tasks
+* auth with ORY
 * deployment with CDK
 
 ### Running Lambda

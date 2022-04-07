@@ -82,7 +82,7 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
           const errors = results.filter((result) => result.success === false);
 
           if (errors.length > 0) {
-            console.error('Errors found while processing SBOM:', { errors });
+            console.error('Errors found during SQS job:', { errors });
             // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
             return;
           }

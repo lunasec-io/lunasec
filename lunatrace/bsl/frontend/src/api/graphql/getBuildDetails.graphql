@@ -1,11 +1,12 @@
-query GetBuildDetails($build_id: uuid, $project_id: uuid) {
-    builds(where: {id: {_eq: $build_id}}) {
+query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
+    builds_by_pk(id: $build_id) {
         build_number
         created_at
         git_branch
         git_hash
         git_remote
         id
+        source_type
         project_id
         project {
             name
