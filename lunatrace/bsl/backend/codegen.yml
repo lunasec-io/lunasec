@@ -2,9 +2,9 @@ overwrite: true
 schema:
   - "http://localhost:8080/v1/graphql":
       headers: {"x-hasura-admin-secret": "myadminsecretkey"}
-documents: "src/hasura-api/graphql/**/*.graphql"
+documents: "src/hasura/graphql/**/*.graphql"
 generates:
-  ./src/hasura-api/generated.ts:
+  ./src/hasura/generated.ts:
     plugins:
       - "typescript"
       - "typescript-operations"

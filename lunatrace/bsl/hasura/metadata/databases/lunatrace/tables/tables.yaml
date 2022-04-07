@@ -2,6 +2,7 @@
 - "!include public_findings.yaml"
 - "!include public_github_repositories.yaml"
 - "!include public_identities.yaml"
+- "!include public_identity_credentials.yaml"
 - "!include public_identity_verifiable_addresses.yaml"
 - "!include public_ignored_vulnerabilities.yaml"
 - "!include public_instances.yaml"

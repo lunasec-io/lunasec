@@ -15,7 +15,7 @@
 import {
   AwsConfig,
   GithubAppConfig,
-  HasuraConfig,
+  HasuraConfig, JwksConfig,
   QueueHandlerConfig,
   SbomHandlerConfig,
   ServerConfig,
@@ -58,17 +58,7 @@ export function getServerConfig(): ServerConfig {
   };
 }
 
-export function getBucketConfig(): SbomHandlerConfig {
-  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET', 'sbom-test-bucket');
-
-  const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET', 'test-manifest-bucket-one');
-  return {
-    sbomBucket,
-    manifestBucket,
-  };
-}
-
-export function getSbomHandlerConfig(): SbomHandlerConfig {
+export function getEtlBucketConfig(): SbomHandlerConfig {
   const sbomBucket = checkEnvVar('S3_SBOM_BUCKET', 'sbom-test-bucket');
 
   const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET', 'test-manifest-bucket-one');
@@ -88,6 +78,9 @@ export function getQueueHandlerConfig(): QueueHandlerConfig {
 }
 
 export function getGithubAppConfig(): GithubAppConfig {
+  const githubEndpoint = checkEnvVar('GITHUB_ENDPOINT', 'https://api.github.com/graphql');
+  const githubWebhook = checkEnvVar('GITHUB_WEBHOOK', 'https://smee.io/KuCg2ASc4kBuNQte');
+
   const githubPrivateKeyRaw = checkEnvVar('GITHUB_APP_PRIVATE_KEY');
   const githubPrivateKey = Buffer.from(githubPrivateKeyRaw, 'base64').toString('utf-8');
 
@@ -97,5 +90,17 @@ export function getGithubAppConfig(): GithubAppConfig {
   return {
     githubAppId,
     githubPrivateKey,
+    githubEndpoint,
+    githubWebhook
   };
+}
+
+export function getJwksConfig(): JwksConfig {
+  const jwksUri = checkEnvVar('JWKS_URI', 'http://localhost:4456/.well-known/jwks.json');
+  const jwksIssuer = checkEnvVar('JWKS_ISSUER', 'http://oathkeeper:4455/');
+
+  return {
+    jwksUri,
+    jwksIssuer
+  }
 }

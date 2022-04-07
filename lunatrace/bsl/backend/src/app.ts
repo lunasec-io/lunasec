@@ -19,14 +19,18 @@ import Express from 'express';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 
+import {getGithubAppConfig, getJwksConfig} from "./config";
 import { webhooks } from './github/webhooks';
 import { lookupAccessTokenRouter } from './routes/auth-routes';
 import { githubApiRouter } from './routes/github-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
+import { log } from './utils/log';
 
-const webhookProxyUrl = 'https://smee.io/THAYrCXtdcQp5u5';
-const source = new EventSource(webhookProxyUrl);
+const jwksConfig = getJwksConfig();
+const githubConfig = getGithubAppConfig();
+
+const source = new EventSource(githubConfig.githubWebhook);
 
 dotenv.config();
 
@@ -40,7 +44,7 @@ if (process.env.NODE_ENV !== 'production') {
         signature: webhookEvent['x-hub-signature'],
         payload: webhookEvent.body,
       })
-      .catch(console.error);
+      .catch(log.error);
   };
 }
 
@@ -60,7 +64,7 @@ app.use(
   createNodeMiddleware(webhooks, {
     path: '/github/webhook/events',
     onUnhandledRequest: (request, response) => {
-      console.error('Unhandled request in GitHub WebHook handler', request);
+      log.error('Unhandled request in GitHub WebHook handler', request);
       response.status(400).json({
         error: true,
         message: 'Unhandled request',
@@ -72,14 +76,14 @@ app.use(
 
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
-    console.log('REQUEST RECEIVED ', req.path);
-    // console.log('WITH BODY: ', req.body);
+    log.info('REQUEST RECEIVED ', req.path);
+    // log.info('WITH BODY: ', req.body);
     next();
   });
 }
 
 app.get('/', (_req: Express.Request, res: Express.Response) => {
-  res.send('Hello World!');
+  res.send('LunaTrace Backend');
 });
 
 // Unauthenticated Routes (implement custom auth)
@@ -93,11 +97,11 @@ app.use(
       cache: true,
       rateLimit: true,
       jwksRequestsPerMinute: 5,
-      jwksUri: process.env.JWKS_URI || 'http://localhost:4456/.well-known/jwks.json',
+      jwksUri: jwksConfig.jwksUri,
     }),
 
     // audience: 'urn:my-resource-server',
-    issuer: process.env.JWKS_ISSUER || 'http://oathkeeper:4455/',
+    issuer: jwksConfig.jwksIssuer,
     algorithms: ['RS256'],
   })
 );
