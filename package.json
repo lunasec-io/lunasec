@@ -102,7 +102,7 @@
       "./lunatrace/bsl/backend-cdk",
       "./lunatrace/bsl/common",
       "./lunatrace/bsl/frontend",
-      "./lunatrace/lunatrace-dev"
+      "./lunatrace/dev-cli"
     ]
   },
   "packageManager": "yarn@3.1.1"

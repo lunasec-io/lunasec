@@ -18,7 +18,7 @@ import { isError, Try, tryF } from '../../utils/try';
 import { getGithubGraphqlClient } from '../auth';
 import { GetMembersForOrganizationQuery } from '../generated';
 
-export async function getOrganizationMembers(orgName: string, accessToken: string) {
+export async function getOrganizationMembers(orgName: string, accessToken: string): Promise<GetMembersForOrganizationQuery | null> {
   const github = getGithubGraphqlClient(accessToken);
 
   let pageAfter: string | null | undefined = undefined;
