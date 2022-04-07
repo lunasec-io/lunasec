@@ -15,6 +15,8 @@ import React from 'react';
 import { Badge, Button, Card, Col, NavLink, Row } from 'react-bootstrap';
 import { AiFillCode, AiFillDiff, AiFillGithub } from 'react-icons/ai';
 
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
+import { GithubAppUrl } from '../../../constants';
 import { ProjectInfo, SetActiveTab } from '../types';
 
 export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; project: ProjectInfo }> = ({
@@ -28,21 +30,27 @@ export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; projec
 
         {/*<Card className="">*/}
         {/*  <Card.Body className="">*/}
-        <Card.Title>
-          <AiFillGithub className="m-3" size="40px" />
-          GitHub PR Scan
-        </Card.Title>
-        <Card.Subtitle className="darker homepage-subtitle">
-          Projects imported from GitHub will automatically take a snapshot of pull-requests, and notify of any critical
-          vulnerabilities in a comment on the PR.
-        </Card.Subtitle>
+        <ConditionallyRender if={project.github_repository}>
+          <Card.Title>
+            <AiFillGithub className="m-3" size="40px" />
+            GitHub PR Scan
+          </Card.Title>
+          <Card.Subtitle className="darker homepage-subtitle">
+            Projects imported from GitHub will automatically take a snapshot of pull-requests, and notify of any
+            critical vulnerabilities in a comment on the PR.
+          </Card.Subtitle>
+        </ConditionallyRender>
         <Card.Title>
           {' '}
           <AiFillCode size="40px" className="m-3" />
           LunaTrace CLI
         </Card.Title>
         <Card.Subtitle className={`darker homepage-subtitle active`}>
-          Use the LunaTrace CLI LINK with a{' '}
+          Use the{' '}
+          <a href={process.env.REACT_APP_GITHUB_CLI_DOWNLOAD_LINK || ''} target="_blank" rel="noopener noreferrer">
+            LunaTrace CLI
+          </a>{' '}
+          with a{' '}
           <a onClick={() => setActiveTab('secrets')} className="btn-link">
             secret key
           </a>{' '}
@@ -60,6 +68,16 @@ export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; projec
           artifacts (like .jar files), manifest files (like package-lock.json), tarred docker images, or an archive of
           your entire repo.
         </Card.Subtitle>
+        <ConditionallyRender if={!project.github_repository}>
+          <Card.Title className="darker">
+            <AiFillGithub className="m-3" size="40px" />
+            GitHub PR Scan
+          </Card.Title>
+          <Card.Subtitle className="darker homepage-subtitle">
+            This project is not linked to GitHub. To import a project from GitHub and begin automatic scanning,{' '}
+            <a href={GithubAppUrl}>click here</a>.
+          </Card.Subtitle>
+        </ConditionallyRender>
         {/*  </Card.Body>*/}
         {/*</Card>*/}
 

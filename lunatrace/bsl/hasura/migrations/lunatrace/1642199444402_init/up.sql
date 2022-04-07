@@ -38,14 +38,14 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
--- CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
 -- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner:
 --
 
--- COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 -- ALTER FUNCTION public.set_current_timestamp_updated_at() OWNER TO postgres;

@@ -37,8 +37,11 @@ export const ProjectTokens: React.FC<ProjectTokensProps> = ({ project }) => {
         </Col>
         <Col md>
           <p>
-            Project Secrets can be used by the LunaTrace CLI to directly create snapshots of the project or one of its
-            artifacts. This is typically done from a CI or release job.
+            Project Secrets are used by the{' '}
+            <a href={process.env.REACT_APP_GITHUB_CLI_DOWNLOAD_LINK || ''} target="_blank" rel="noopener noreferrer">
+              LunaTrace CLI
+            </a>{' '}
+            to create snapshots of an artifact. This is typically done from a CI or release job.
           </p>
         </Col>
         <Col>
@@ -46,10 +49,21 @@ export const ProjectTokens: React.FC<ProjectTokensProps> = ({ project }) => {
             <Accordion.Item eventKey="0">
               <Accordion.Header className="secret-more-info-accordion-header">More info and examples</Accordion.Header>
               <Accordion.Body>
-                In many cases you may wish to scan a specific artifact such as a zip, jarfile, container, or manifest
-                file that is not committed to Git. This is especially useful for languages which do not have complete
-                manifest files and need to be scanned after compilation, such as Java, and in cases where we want to
-                scan a Docker container. Project secrets are passed to the LunaTrace CLI as an environment variable.
+                <p>
+                  If you wish to scan a specific artifact such as a zip, jarfile, container, or manifest file that is
+                  not committed to Git, you can do so with the{' '}
+                  <a
+                    href={process.env.REACT_APP_GITHUB_CLI_DOWNLOAD_LINK || ''}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    LunaTrace CLI
+                  </a>
+                  . This is especially useful for languages which do not have complete manifest files and need to be
+                  scanned after compilation, such as Java, and in cases where we want to scan a Docker container.
+                </p>
+                Project secrets are passed to the LunaTrace CLI as an environment variable. Typically they are embedded
+                in the build system&apos;s environment. They do not expire.
                 <CopyBlock
                   text={'LUNATRACE_PROJECT_SECRET=<YOUR SECRET> lunatrace snapshot <ARTIFACT TYPE> <YOUR ARTIFACT>'}
                   language="bash"
@@ -58,9 +72,9 @@ export const ProjectTokens: React.FC<ProjectTokensProps> = ({ project }) => {
                   theme={dracula}
                   codeBlock
                 />
-                These tokens are designed to be embedded in a build job, and do not expire. Anyone with this secret can
-                create snapshots of your project, so keep it secret and do not commit it. Project Secrets can only be
-                copied at the time of creation. If you lose the key, you must create a new one.
+                Anyone with this secret can create snapshots of your project, so keep it secret and do not commit it.
+                Project Secrets can only be copied at the time of creation. If you lose the key, you must create a new
+                one.
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>

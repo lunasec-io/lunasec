@@ -11,12 +11,6 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import { GetBuildDetailsQuery } from '../../../api/generated';
 
-import { ProjectInfo } from '../types';
-
-import { BuildList } from './BuildList';
-
-export const Builds: React.FunctionComponent<{ project: ProjectInfo }> = ({ project }) => {
-  return project ? <BuildList project={project} /> : null;
-};
+export type BuildDetailInfo = NonNullable<GetBuildDetailsQuery['builds_by_pk']>;

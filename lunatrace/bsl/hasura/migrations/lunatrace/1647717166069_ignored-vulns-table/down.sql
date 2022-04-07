@@ -1,1 +1,1 @@
-DROP TABLE ignored_vulnerabilities;
+DROP TABLE public.ignored_vulnerabilities;
