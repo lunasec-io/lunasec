@@ -1,5 +1,5 @@
-mutation InsertBuild($project_id: uuid!, $s3_url: String, $pull_request_id: String) {
-    insert_builds_one(object: {project_id: $project_id, s3_url: $s3_url, pull_request_id: $pull_request_id}) {
+mutation InsertBuild($project_id: uuid!, $s3_url: String, $pull_request_id: String, $source_type: builds_source_type!) {
+    insert_builds_one(object: {project_id: $project_id, s3_url: $s3_url, pull_request_id: $pull_request_id, source_type: $source_type}) {
         id
     }
 }

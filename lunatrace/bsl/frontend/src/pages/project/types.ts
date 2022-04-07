@@ -11,11 +11,17 @@
  * limitations under the License.
  *
  */
+import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods';
+
 import { GetProjectQuery } from '../../api/generated';
 
-export type ProjectInfo = GetProjectQuery['projects'][number];
+type MaybeProjectInfo = GetProjectQuery['projects_by_pk'];
+export type ProjectInfo = NonNullable<MaybeProjectInfo>;
 
 export type BuildInfo = ProjectInfo['builds'][number];
 
 export type TabName = 'builds' | 'secrets' | 'dashboard';
 export type SetActiveTab = (tabName: TabName) => void;
+
+export type GithubTraits =
+  RestEndpointMethodTypes['apps']['listReposAccessibleToInstallation']['response']['data']['repositories'][number];

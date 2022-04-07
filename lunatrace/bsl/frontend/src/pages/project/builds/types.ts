@@ -11,18 +11,6 @@
  * limitations under the License.
  *
  */
-import fs from 'fs';
+import { GetBuildDetailsQuery } from '../../../api/generated';
 
-import { parseAndUploadScan } from '../models/scan';
-
-import { scaffoldBuild } from './scaffold-project-and-build';
-
-async function uploadScan() {
-  void parseAndUploadScan(fs.createReadStream('/home/forrest/tmp/syftoutput.json'), await scaffoldBuild()).then(
-    (res) => {
-      console.log('completed scan upload: ', res);
-    }
-  );
-}
-
-void uploadScan();
+export type BuildDetailInfo = NonNullable<GetBuildDetailsQuery['builds_by_pk']>;
