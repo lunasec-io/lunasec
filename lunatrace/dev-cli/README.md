@@ -11,4 +11,16 @@
   ~ limitations under the License.
   ~
 -->
-# dev
+# Developer CLI
+
+This CLI tool is for development of the LunaTrace platform.
+
+## Usage
+
+```shell
+yarn start
+Generating tmuxp config: /home/breadchris/projects/lunasec-monorepo/lunatrace/bsl/generated-lunatrace-tmuxp.yaml...
+cd /home/breadchris/projects/lunasec-monorepo/lunatrace/bsl && tmuxp load /home/breadchris/projects/lunasec-monorepo/lunatrace/bsl/generated-lunatrace-tmuxp.yaml
+```
+
+Running the tmuxp command will bring up the local development infrastructure.
