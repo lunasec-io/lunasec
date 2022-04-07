@@ -1,5 +1,5 @@
 query GetProject($project_id: uuid!) {
-    projects(where: {id: {_eq: $project_id}}) {
+    projects_by_pk(id: $project_id){
         created_at
         id
         name
@@ -8,6 +8,11 @@ query GetProject($project_id: uuid!) {
         settings_id
         organization {
             name
+        }
+        github_repository {
+            git_url
+            github_id
+            traits
         }
         project_access_tokens {
             id
@@ -24,6 +29,7 @@ query GetProject($project_id: uuid!) {
             created_at
             build_number
             project_id
+            source_type
             findings {
                 fix_state
                 fix_versions

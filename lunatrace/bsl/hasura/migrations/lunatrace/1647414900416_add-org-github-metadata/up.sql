@@ -1,5 +1,5 @@
 CREATE TABLE "public"."github_repositories" (
-    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "id" uuid NOT NULL DEFAULT public.gen_random_uuid(),
     "github_id" INTEGER NOT NULL,
     "git_url" text NOT NULL,
     "api_response" jsonb NOT NULL,
