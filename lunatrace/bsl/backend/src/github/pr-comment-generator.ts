@@ -31,6 +31,7 @@ function formatLocationText(finding: VulnerablePackage<Finding>) {
 
 function generatePullRequestCommentFromReport(projectId: string, scan: InsertedScan) {
   const messageParts = [
+    process.env.NODE_ENV === 'production' ? null : 'DEV MODE WORKER',
     '## Build Snapshot Complete',
     '',
     `\n[View Full Report](https://lunatrace.lunasec.io/project/${projectId}/build/${scan.build_id})`,

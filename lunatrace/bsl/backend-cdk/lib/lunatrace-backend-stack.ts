@@ -228,6 +228,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         S3_MANIFEST_BUCKET: storageStackStage.manifestBucket.bucketName,
         SITE_PUBLIC_URL: publicBaseUrl,
         PORT: '3002',
+        NODE_ENV: 'production',
       },
       secrets: {
         DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),

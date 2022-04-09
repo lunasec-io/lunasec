@@ -80,6 +80,7 @@ export class EtlStack extends cdk.Stack {
           S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
           S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
           HASURA_URL: publicHasuraServiceUrl,
+          NODE_ENV: 'production',
         },
         secrets: {
           DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
@@ -115,6 +116,7 @@ export class EtlStack extends cdk.Stack {
         S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
         S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
         HASURA_URL: publicHasuraServiceUrl,
+        NODE_ENV: 'production',
       },
       secrets: {
         DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
