@@ -125,7 +125,7 @@ function determineHandler(): HandlerCallback {
   return handlers[handlerName];
 }
 
-export async function setupQueue() {
+export async function setupQueue(): Promise<void> {
   const queueName = queueHandlerConfig.queueName;
 
   const { QueueUrl } = await sqsClient.send(

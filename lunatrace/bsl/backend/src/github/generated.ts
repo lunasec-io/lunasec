@@ -24029,6 +24029,11 @@ export type GetUserOrganizationsQueryVariables = Exact<{
 
 export type GetUserOrganizationsQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, login: string, organizations: { __typename?: 'OrganizationConnection', pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, hasNextPage: boolean, endCursor?: string | null }, nodes?: Array<{ __typename?: 'Organization', name?: string | null, id: string } | null> | null } } };
 
+export type GetViewerIdQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetViewerIdQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string } };
+
 
 export const AddCommentDocument = gql`
     mutation AddComment($subjectId: ID!, $body: String!) {
@@ -24106,6 +24111,13 @@ export const GetUserOrganizationsDocument = gql`
   }
 }
     `;
+export const GetViewerIdDocument = gql`
+    query GetViewerId {
+  viewer {
+    id
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -24125,6 +24137,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetUserOrganizations(variables?: GetUserOrganizationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserOrganizationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserOrganizationsQuery>(GetUserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserOrganizations', 'query');
+    },
+    GetViewerId(variables?: GetViewerIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetViewerIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetViewerIdQuery>(GetViewerIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetViewerId', 'query');
     }
   };
 }

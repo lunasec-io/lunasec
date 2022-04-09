@@ -14,14 +14,20 @@
 import { Request, Response } from 'express';
 
 import { getServerConfig } from '../config';
-import { createLunatraceOrgsFromGithubOrgs } from '../hasura/actions/create-lunatrace-orgs-from-github-orgs';
+import {hasura} from "../hasura";
+import {
+  createLunatraceOrgsFromGithubOrgs,
+  hasuraOrgsFromGithubRepositories
+} from '../hasura/actions/create-lunatrace-orgs-from-github-orgs';
 import { RepositoriesForInstallationResponse } from '../types/github';
 import { errorResponse, logError } from '../utils/errors';
 import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse-int';
-import { isError, Try, tryF } from '../utils/try';
+import { catchError, threwError, Try } from '../utils/try';
 
-import { getReposForInstallation } from './actions/get-repos-for-installation';
+import { getGithubReposForInstallation } from './actions/get-github-repos-for-installation';
+import {getHasuraOrgMembers} from "./actions/get-org-members";
+import {getInstallationAccessToken} from "./auth";
 
 const serverConfig = getServerConfig();
 
@@ -45,6 +51,8 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
 
   log.info(`[installId: ${installationId}] Installing Github App to organization`);
 
+  const installationAuthToken = await getInstallationAccessToken(installationId);
+
   const error = req.query.error;
   const errorDescription = req.query.error_description;
   const errorUri = req.query.error_uri;
@@ -63,11 +71,11 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  const repositories: Try<RepositoriesForInstallationResponse> = await tryF(
-    async () => await getReposForInstallation(installationId)
+  const repositories: Try<RepositoriesForInstallationResponse> = await catchError(
+    async () => await getGithubReposForInstallation(installationAuthToken, installationId)
   );
 
-  if (isError(repositories)) {
+  if (threwError(repositories)) {
     logError(repositories);
     res.status(500).send(errorResponse('unable to collect Github information for install.'));
     return;
@@ -75,14 +83,60 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
 
   log.info(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
 
-  const orgIds = await createLunatraceOrgsFromGithubOrgs(installationId, repositories);
+  const organizations = hasuraOrgsFromGithubRepositories(installationId, repositories);
+  const orgObjectList = Object.values(organizations);
+
+  const orgIds = await createLunatraceOrgsFromGithubOrgs(installationId, orgObjectList);
 
   if (orgIds.error) {
     res.status(500).send(errorResponse(orgIds.msg));
     return;
   }
 
-  log.info(`[installId: ${installationId}] Created/updated LunaTrace organizations: ${orgIds.res}`);
+  log.info(`[installId: ${installationId}] Created/updated LunaTrace organizations`, {
+    orgs: orgIds.res
+  });
+
+  const githubOrgToHasuraOrg = orgIds.res.reduce((lookup, org) => {
+    if (!org.github_node_id || !org.id) {
+      log.error('unable to add org to lookup', {
+        org
+      });
+      return lookup;
+    }
+
+    return {
+      ...lookup,
+      [org.github_node_id]: org.id
+    }
+  }, {} as Record<string, string>);
+
+  const orgLoginList = Object.keys(organizations);
+
+  const createOrgUsersResp = await Promise.all(orgLoginList.map(async login => {
+    const org = organizations[login];
+    const orgMembers = await getHasuraOrgMembers(installationId, installationAuthToken, org, githubOrgToHasuraOrg);
+
+    if (orgMembers.error) {
+      log.error(orgMembers.msg);
+      return null;
+    }
+
+    const res = await catchError(async () => await hasura.UpsertOrganizationUsers({
+      organizationUsers: orgMembers.res
+    }));
+
+    if (threwError(res)) {
+      logError(res);
+      return null;
+    }
+    return res.insert_organization_user?.affected_rows;
+  }));
+
+  if (createOrgUsersResp.some(c => c === null)) {
+    res.status(500).send(errorResponse('creating organization users failed'));
+    return;
+  }
 
   res.status(302).redirect(serverConfig.sitePublicUrl);
 }

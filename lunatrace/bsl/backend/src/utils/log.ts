@@ -11,6 +11,17 @@
  * limitations under the License.
  *
  */
-import { Logger } from 'tslog';
+import { AsyncLocalStorage } from "async_hooks";
 
-export const log: Logger = new Logger({ name: 'lunatrace-backend' });
+import {Logger} from 'tslog';
+
+
+export const asyncLocalStorage: AsyncLocalStorage<{ requestId: string }> =
+  new AsyncLocalStorage();
+
+export const log: Logger = new Logger({
+  name: 'lunatrace-backend',
+  requestId: (): string => {
+    return asyncLocalStorage.getStore()?.requestId as string;
+  },
+});

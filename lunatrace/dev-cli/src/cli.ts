@@ -17,12 +17,18 @@
 import { exec } from "child_process";
 import { writeFile } from 'fs/promises';
 
+import dotenv from 'dotenv';
+dotenv.config({ path: './.env.dev' });
+
 import { dump } from 'js-yaml';
 
 import {bslDir, hasuraDir, kratosDir, tmuxpConfgFile} from "./constants";
 import {dbUrlEnv} from "./env";
 import {backend, dockerCompose, frontend, hasura, manifestEtl, oathkeeper, sbomEtl} from "./services";
 import {tmuxpConfig, tmuxWindow } from "./tmux";
+
+
+dotenv.config()
 
 const servicesWindow = tmuxWindow('services', [
   oathkeeper,

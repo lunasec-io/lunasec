@@ -19,10 +19,8 @@ import { getInstallationAccessToken } from '../auth';
 
 const PER_PAGE = 100;
 
-export async function getReposForInstallation(installationId: number): Promise<RepositoriesForInstallationResponse> {
-  const installationAuthenticationToken = await getInstallationAccessToken(installationId);
-
-  const octokit = new Octokit({ auth: installationAuthenticationToken });
+export async function getGithubReposForInstallation(authToken: string, installationId: number): Promise<RepositoriesForInstallationResponse> {
+  const octokit = new Octokit({ auth: authToken });
 
   const repos = [];
 

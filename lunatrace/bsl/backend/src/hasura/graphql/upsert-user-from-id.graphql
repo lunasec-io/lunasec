@@ -1,0 +1,5 @@
+mutation UpsertUserFromId($user: users_insert_input!) {
+  insert_users_one(object: $user, on_conflict: {constraint: users_github_node_id_key, update_columns: github_node_id}) {
+    id
+  }
+}

@@ -1,0 +1,5 @@
+mutation UpsertOrganizationUsers($organizationUsers: [organization_user_insert_input!]!) {
+  insert_organization_user(objects: $organizationUsers, on_conflict: {constraint: organization_user_user_id_organization_id_key}) {
+    affected_rows
+  }
+}

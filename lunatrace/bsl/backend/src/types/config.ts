@@ -14,6 +14,7 @@
 export interface ServerConfig {
   serverPort: number;
   sitePublicUrl: string;
+  isProduction: boolean;
 }
 
 export interface SbomHandlerConfig {

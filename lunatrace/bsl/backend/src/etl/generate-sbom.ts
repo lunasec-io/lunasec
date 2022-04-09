@@ -21,7 +21,7 @@ import { SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
 import {log} from "../utils/log";
-import { isError } from '../utils/try';
+import { threwError } from '../utils/try';
 
 const bucketConfig = getEtlBucketConfig();
 
@@ -101,7 +101,7 @@ export async function handleGenerateManifestSbom(
 
     return {
       success: false,
-      error: isError(e) ? e : new Error(String(e)),
+      error: threwError(e) ? e : new Error(String(e)),
     };
   }
 }
