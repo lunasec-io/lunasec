@@ -13,13 +13,14 @@
  */
 import deepmerge from 'deepmerge';
 
+import {logError} from "../../utils/errors";
 import { log } from '../../utils/log';
-import { isError, Try, tryF } from '../../utils/try';
+import { catchError, threwError, Try } from '../../utils/try';
 import { getGithubGraphqlClient } from '../auth';
 import { GetMembersForOrganizationQuery } from '../generated';
 
-export async function getOrganizationMembers(orgName: string, accessToken: string): Promise<GetMembersForOrganizationQuery | null> {
-  const github = getGithubGraphqlClient(accessToken);
+export async function getGithubOrganizationMembers(authToken: string, orgName: string): Promise<GetMembersForOrganizationQuery> {
+  const github = getGithubGraphqlClient(authToken);
 
   let pageAfter: string | null | undefined = undefined;
   let allOrgMembers: GetMembersForOrganizationQuery | null = null;
@@ -28,7 +29,7 @@ export async function getOrganizationMembers(orgName: string, accessToken: strin
   while (moreDataAvailable) {
     log.info(`[org: ${orgName}] Requesting Github organization's members page`);
 
-    const orgMembers: Try<GetMembersForOrganizationQuery> = await tryF(
+    const orgMembers: Try<GetMembersForOrganizationQuery> = await catchError(
       async () =>
         await github.GetMembersForOrganization({
           org: orgName,
@@ -36,11 +37,10 @@ export async function getOrganizationMembers(orgName: string, accessToken: strin
         })
     );
 
-    if (isError(orgMembers)) {
-      // TODO (cthompson) is there a way that we can more gracefully handle this error? We might need to redirect the user back to the github auth page?
-      log.debug('If you are seeing this then you should delete the user from kratos and go through this flow again.');
+    if (threwError(orgMembers)) {
+      logError(orgMembers);
       throw new Error(
-        `Unable to get user's organizations. This is most likely due to the user having revoked the Github auth from their account and attempting to login again.`
+        `Unable to get organization members. Most likely this is the Github rate limit getting hit.`
       );
     }
 
@@ -66,5 +66,10 @@ export async function getOrganizationMembers(orgName: string, accessToken: strin
     pageAfter = getNextAfter();
     moreDataAvailable = !!pageAfter;
   }
+
+  if (allOrgMembers === null)  {
+    throw new Error('organization members is null');
+  }
+
   return allOrgMembers;
 }

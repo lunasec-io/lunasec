@@ -13,45 +13,14 @@
  */
 import { Request, Response } from 'express';
 
-import { hasura } from '../hasura';
-import {
-  AuthorizedUserOrganizationsQuery,
-  Organization_User_Constraint,
-  Organization_User_Insert_Input,
-  Organization_User_Update_Column,
-  UpdateOrganizationsForUserMutation,
-} from '../hasura/generated';
-import { getGithubAccessTokenFromKratos } from '../kratos';
-import { errorResponse, logError } from '../utils/errors';
+import {hasura} from "../hasura";
+import {getGithubAccessTokenFromKratos} from "../kratos";
+import {errorResponse, logError} from "../utils/errors";
 import {log} from "../utils/log";
-import { isError, Try, tryF } from '../utils/try';
+import {catchError, threwError, Try} from "../utils/try";
 
-import { getOrgsForUser } from './actions/get-orgs-for-user';
-import { GetUserOrganizationsQuery } from './generated';
-
-function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserOrganizationsQuery): string[] | null {
-  const orgNodes = userGithubOrgs.viewer.organizations.nodes;
-
-  if (!orgNodes) {
-    log.error(`orgNodes is null, api response from github is incomplete: ${userGithubOrgs.viewer.organizations.nodes}`);
-    return null;
-  }
-
-  log.debug(`[user: ${userId}] Github user's organizations count: ${orgNodes.length}`);
-
-  const orgIds = orgNodes.reduce<string[]>((filtered, org) => {
-    if (!org) {
-      return filtered;
-    }
-    return [...filtered, org.id];
-  }, []);
-
-  return [
-    ...orgIds,
-    // the user github id is also considered an organization, include it in this list
-    userGithubOrgs.viewer.id,
-  ];
-}
+import {getGithubGraphqlClient} from "./auth";
+import {GetUserOrganizationsQuery} from "./generated";
 
 export async function githubLogin(req: Request, res: Response): Promise<void> {
   // todo: fix this unsafe property access
@@ -66,95 +35,34 @@ export async function githubLogin(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const userGithubOrgs: Try<GetUserOrganizationsQuery | null> = await tryF(
-    async () => await getOrgsForUser(userId, kratosResponse.token)
+  const github = getGithubGraphqlClient(kratosResponse.token);
+
+  const viewerId = await catchError(
+    async () => await github.GetViewerId()
   );
 
-  if (isError(userGithubOrgs) || userGithubOrgs === null) {
-    logError(userGithubOrgs === null ? new Error('userGithubOrgs is null') : userGithubOrgs);
-    res.status(500).send(errorResponse('cannot collect user Github orgs from api'));
+  if (threwError(viewerId) || viewerId === null) {
+    logError(viewerId === null ? new Error('viewerId is null') : viewerId);
+    res.status(500).send(errorResponse('cannot get github user id'));
     return;
   }
 
-  log.info(`[user: ${userId}] Collected Github user's organizations.`);
+  const githubUserId = viewerId.viewer.id;
 
-  const githubOrgIds = getGithubOrgIdsFromApiResponse(userId, userGithubOrgs);
-  if (githubOrgIds === null) {
-    res.status(500).send(errorResponse('unable to collect User Organization Ids from GitHub API.'));
-    return;
-  }
-
-  log.debug(`[user: ${userId}] Github user's organization ids: ${githubOrgIds}`);
-
-  // TODO (cthompson) handle error cases for when this fails
-
-  const authorizedUserOrgs: Try<AuthorizedUserOrganizationsQuery> = await tryF(
-    async () =>
-      await hasura.AuthorizedUserOrganizations({
-        github_org_ids: githubOrgIds,
-      })
-  );
-
-  if (isError(authorizedUserOrgs)) {
-    logError(authorizedUserOrgs);
-    res.status(500).send(errorResponse('unable to collect User Organization Ids from GitHub API.'));
-    return;
-  }
-
-  log.debug(
-    `[user: ${userId}] Authorized LunaTrace organizations: ${JSON.stringify(authorizedUserOrgs.organizations)}`
-  );
-
-  const organizationUserInput: Organization_User_Insert_Input[] = authorizedUserOrgs.organizations.map((org) => {
-    return {
-      user_id: userId,
-      organization_id: org.id,
-    };
-  });
-
-  const updatedOrganizations: Try<UpdateOrganizationsForUserMutation> = await tryF(
-    async () =>
-      await hasura.UpdateOrganizationsForUser({
-        organizations_for_user: organizationUserInput,
-        on_conflict: {
-          constraint: Organization_User_Constraint.OrganizationUserUserIdOrganizationIdKey,
-          update_columns: [Organization_User_Update_Column.UserId],
-        },
-      })
-  );
-
-  if (isError(updatedOrganizations)) {
-    logError(updatedOrganizations);
-    res.status(500).send(errorResponse('updated organizations.'));
-    return;
-  }
-
-  if (!updatedOrganizations.insert_organization_user) {
-    logError(new Error('updated organizations response is null'));
-    res.status(500).send(errorResponse('unable to updated LunaTrace organizations from Github organizations.'));
-    return;
-  }
-
-  log.info(
-    `[user: ${userId}] Authenticated user to LunaTrace organizations: ${JSON.stringify(
-      updatedOrganizations.insert_organization_user.returning
-    )}`
-  );
-
-  const personalOrgExists = await tryF(async () => {
-    // todo: This is honestly pretty brittle, but it will work for now
-    const result = await hasura.GetCountOfPersonalOrg({ user_id: userId });
-    if (result.organizations_aggregate.aggregate?.count === undefined) {
-      throw new Error('Failed to get aggregate count');
+  const resp = await catchError(async () => await hasura.UpsertUserFromId({
+    user: {
+      kratos_id: userId,
+      github_node_id: githubUserId
     }
-    return result.organizations_aggregate.aggregate.count > 0;
-  });
-  if (!personalOrgExists) {
-    await hasura.InsertPersonalProjectAndOrg({ user_id: userId });
+  }))
+
+  if (threwError(resp)) {
+    logError(resp);
+    res.status(500).send(errorResponse('cannot upsert hasura user'));
   }
 
-  res.send({
+  {res.send({
     error: false,
     message: 'Github login callback completed successfully',
-  });
+  });}
 }

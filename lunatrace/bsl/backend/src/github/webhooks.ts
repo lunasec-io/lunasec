@@ -18,7 +18,7 @@ import {uploadSbomToS3} from "../etl/generate-sbom";
 import {hasura} from "../hasura";
 import {GetProjectIdFromGitUrlQuery, InsertBuildMutation} from '../hasura/generated';
 import { log } from '../utils/log';
-import { isError, Try, tryF } from '../utils/try';
+import { catchError, threwError, Try } from '../utils/try';
 
 import { getInstallationAccessToken } from './auth';
 
@@ -35,14 +35,14 @@ webhooks.on('pull_request', async (event) => {
 
     log.info(`generating SBOM for repository: ${cloneUrl} at branch name ${gitBranch}`);
 
-    const projectIdRes: Try<GetProjectIdFromGitUrlQuery> = await tryF(
+    const projectIdRes: Try<GetProjectIdFromGitUrlQuery> = await catchError(
       async () =>
         await hasura.GetProjectIdFromGitUrl({
           git_url: gitUrl,
         })
     );
 
-    if (isError(projectIdRes)) {
+    if (threwError(projectIdRes)) {
       log.error('unable to get project from git url in pull request webhook');
       return;
     }
@@ -69,11 +69,11 @@ webhooks.on('pull_request', async (event) => {
 
     const gzippedSbom = generateSbomFromAsset('repository', parsedGitUrl.toString(), gitBranch);
 
-    const insertBuildResponse: Try<InsertBuildMutation> = await tryF(
+    const insertBuildResponse: Try<InsertBuildMutation> = await catchError(
       async () => await hasura.InsertBuild({ project_id: projectId, pull_request_id: pullRequestId, source_type: 'pr' })
     );
 
-    if (isError(insertBuildResponse)) {
+    if (threwError(insertBuildResponse)) {
       log.error('Failed to insert a new build', {
         error: insertBuildResponse,
       });

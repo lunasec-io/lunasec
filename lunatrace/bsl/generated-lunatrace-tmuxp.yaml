@@ -10,7 +10,7 @@ windows:
           - cd backend
           - >-
             GITHUB_APP_ID="179126" GITHUB_APP_PRIVATE_KEY="$(cat
-            ../github-app-dev.2022-03-09.private-key.pem | base64 -w0)" yarn run
+            github-app-dev.2022-03-09.private-key.pem | base64 -w0)" yarn run
             start:server
       - shell_command:
           - cd hasura
@@ -30,13 +30,13 @@ windows:
           - cd backend
           - >-
             GITHUB_APP_ID="179126" GITHUB_APP_PRIVATE_KEY="$(cat
-            ../github-app-dev.2022-03-09.private-key.pem | base64 -w0)"
+            github-app-dev.2022-03-09.private-key.pem | base64 -w0)"
             QUEUE_NAME="lunatrace-EtlStorage-ProcessManifestProcessingQueue7A1F1CB2-wVcNqaEtNUJP"
             QUEUE_HANDLER="process-manifest-queue" yarn run start:etl
       - shell_command:
           - cd backend
           - >-
             GITHUB_APP_ID="179126" GITHUB_APP_PRIVATE_KEY="$(cat
-            ../github-app-dev.2022-03-09.private-key.pem | base64 -w0)"
+            github-app-dev.2022-03-09.private-key.pem | base64 -w0)"
             QUEUE_NAME="lunatrace-EtlStorage-ProcessSbomProcessingQueueA3A9FE69-o0GF3tUpwNnn"
             QUEUE_HANDLER="process-sbom-queue" yarn run start:etl

@@ -14,3 +14,8 @@
 import { Organizations_Insert_Input } from '../hasura/generated';
 
 export type OrganizationInputLookup = Record<string, Organizations_Insert_Input>;
+
+export interface UpsertOrganizationResponse {
+  id: string | null;
+  github_node_id: string | null;
+}

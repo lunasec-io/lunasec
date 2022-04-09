@@ -11,30 +11,33 @@
  * limitations under the License.
  *
  */
+import { randomUUID } from 'crypto';
+
 import { createNodeMiddleware } from '@octokit/webhooks';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import EventSource from 'eventsource';
-import Express from 'express';
+import Express, {NextFunction, Request, Response } from 'express';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 
-import {getGithubAppConfig, getJwksConfig} from "./config";
+import {getGithubAppConfig, getJwksConfig, getServerConfig} from "./config";
 import { webhooks } from './github/webhooks';
 import { lookupAccessTokenRouter } from './routes/auth-routes';
 import { githubApiRouter } from './routes/github-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
-import { log } from './utils/log';
+import {asyncLocalStorage, log} from './utils/log';
 
 const jwksConfig = getJwksConfig();
 const githubConfig = getGithubAppConfig();
+const serverConfig = getServerConfig();
 
 const source = new EventSource(githubConfig.githubWebhook);
 
 dotenv.config();
 
-if (process.env.NODE_ENV !== 'production') {
+if (serverConfig.isProduction) {
   source.onmessage = (event) => {
     const webhookEvent = JSON.parse(event.data);
     webhooks
@@ -60,6 +63,11 @@ app.get('/health', (_req: Express.Request, res: Express.Response) => {
 
 app.use(Express.json());
 
+app.use((req, res, next) => {
+  const requestId: string = randomUUID();
+  asyncLocalStorage.run({ requestId }, next);
+});
+
 app.use(
   createNodeMiddleware(webhooks, {
     path: '/github/webhook/events',
@@ -74,12 +82,14 @@ app.use(
   })
 );
 
-if (process.env.NODE_ENV !== 'production') {
-  app.use((req, res, next) => {
-    log.info('REQUEST RECEIVED ', req.path);
-    // log.info('WITH BODY: ', req.body);
-    next();
-  });
+function debugRequest(req: Request, res: Response, next: NextFunction) {
+  log.info('request', req.method, req.path);
+  // log.info('body', req.body);
+  next();
+}
+
+if (serverConfig.isProduction) {
+  app.use(debugRequest);
 }
 
 app.get('/', (_req: Express.Request, res: Express.Response) => {

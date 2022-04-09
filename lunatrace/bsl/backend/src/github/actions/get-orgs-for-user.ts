@@ -13,8 +13,9 @@
  */
 import deepmerge from 'deepmerge';
 
+import {logError} from "../../utils/errors";
 import {log} from "../../utils/log";
-import { isError, Try, tryF } from '../../utils/try';
+import { catchError, threwError, Try } from '../../utils/try';
 import {getGithubGraphqlClient} from "../auth";
 import { GetUserOrganizationsQuery } from '../generated';
 
@@ -28,18 +29,17 @@ export async function getOrgsForUser(userId: string, accessToken: string) {
   while (moreDataAvailable) {
     log.info(`[user: ${userId}] Requesting Github user's organizations page`);
 
-    const userOrgs: Try<GetUserOrganizationsQuery> = await tryF(
+    const userOrgs: Try<GetUserOrganizationsQuery> = await catchError(
       async () =>
         await github.GetUserOrganizations({
           orgsAfter: orgsAfter,
         })
     );
 
-    if (isError(userOrgs)) {
-      // TODO (cthompson) is there a way that we can more gracefully handle this error? We might need to redirect the user back to the github auth page?
-      log.debug('If you are seeing this then you should delete the user from kratos and go through this flow again.');
+    if (threwError(userOrgs)) {
+      logError(userOrgs);
       throw new Error(
-        `Unable to get user's organizations. This is most likely due to the user having revoked the Github auth from their account and attempting to login again.`
+        `Unable to get user's organizations. Most likely this is the Github rate limit getting hit.`
       );
     }
 
