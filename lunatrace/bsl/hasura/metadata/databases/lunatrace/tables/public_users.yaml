@@ -1,3 +1,42 @@
 table:
   name: users
   schema: public
+object_relationships:
+- name: kratos_identity
+  using:
+    foreign_key_constraint_on: kratos_id
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - id
+    - github_node_id
+    - kratos_id
+  role: service
+select_permissions:
+- permission:
+    columns:
+    - github_node_id
+    - id
+    - kratos_id
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - github_node_id
+    - id
+    - kratos_id
+    filter:
+      kratos_id:
+        _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - github_node_id
+    - id
+    - kratos_id
+    filter: {}
+  role: service

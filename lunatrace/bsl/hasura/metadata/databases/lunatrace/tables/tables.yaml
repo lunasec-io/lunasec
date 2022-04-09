@@ -15,5 +15,6 @@
 - "!include public_related_vulnerabilities.yaml"
 - "!include public_scans.yaml"
 - "!include public_settings.yaml"
+- "!include public_users.yaml"
 - "!include public_vulnerabilities.yaml"
 - "!include public_vulnerability_packages.yaml"

@@ -52,9 +52,14 @@ export function getServerConfig(): ServerConfig {
   const serverPortString = checkEnvVar('PORT', '3002');
   const serverPort = parseInt(serverPortString, 10);
   const sitePublicUrl = checkEnvVar('SITE_PUBLIC_URL', 'http://localhost:4455/');
+
+  const nodeEnv = checkEnvVar('NODE_ENV', 'development');
+  const isProduction = nodeEnv === 'production';
+
   return {
     serverPort,
     sitePublicUrl,
+    isProduction
   };
 }
 

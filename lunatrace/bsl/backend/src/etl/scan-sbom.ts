@@ -26,7 +26,7 @@ import { SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
 import { log } from '../utils/log';
-import { isError, tryF } from '../utils/try';
+import { catchError, threwError } from '../utils/try';
 
 import { groupByPackage, VulnerablePackage } from './report-generator/group-findings';
 
@@ -167,9 +167,9 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
 
   const bucketInfo: SbomBucketInfo = { region, bucketName, key };
 
-  const scanResp = await tryF<Scans_Insert_Input>(async () => await scanSbom(buildId, bucketInfo));
+  const scanResp = await catchError<Scans_Insert_Input>(async () => await scanSbom(buildId, bucketInfo));
 
-  if (isError(scanResp)) {
+  if (threwError(scanResp)) {
     log.error('Sbom Scanning Error:', { scanResp });
     await hasura.UpdateManifestStatusIfExists({
       status: 'error',

@@ -12,13 +12,12 @@
  *
  */
 import { RepositoriesForInstallationResponse } from '../../types/github';
-import { OrganizationInputLookup } from '../../types/hasura';
+import {OrganizationInputLookup, UpsertOrganizationResponse} from '../../types/hasura';
 import { MaybeError } from '../../types/util';
 import { errorResponse, logError } from '../../utils/errors';
 import {log} from "../../utils/log";
-import { isError, Try, tryF } from '../../utils/try';
+import { catchError, threwError, Try } from '../../utils/try';
 import {
-  CreateOrganizationsMutation,
   Github_Repositories_Constraint,
   Github_Repositories_On_Conflict,
   Github_Repositories_Update_Column,
@@ -30,6 +29,7 @@ import {
   Projects_Insert_Input,
   Projects_On_Conflict,
   Projects_Update_Column,
+  UpsertOrganizationsMutation,
 } from '../generated';
 import { hasura } from '../index';
 
@@ -41,7 +41,7 @@ function getExistingProjects(orgLookup: OrganizationInputLookup, orgName: string
   return existingOrg.projects.data;
 }
 
-export function lunatraceOrgsFromGithubRepositories(
+export function hasuraOrgsFromGithubRepositories(
   installationId: number,
   repositories: RepositoriesForInstallationResponse
 ): OrganizationInputLookup {
@@ -108,11 +108,8 @@ export function lunatraceOrgsFromGithubRepositories(
 
 export async function createLunatraceOrgsFromGithubOrgs(
   installationId: number,
-  repositories: RepositoriesForInstallationResponse
-): Promise<MaybeError<string[]>> {
-  const organizations = lunatraceOrgsFromGithubRepositories(installationId, repositories);
-  const orgObjectList = Object.values(organizations);
-
+  orgObjectList: Organizations_Insert_Input[]
+): Promise<MaybeError<UpsertOrganizationResponse[]>> {
   log.info(
     `[installId: ${installationId}] Creating LunaTrace organizations and projects: ${orgObjectList.map(
       (org) => org.name
@@ -131,15 +128,15 @@ export async function createLunatraceOrgsFromGithubOrgs(
     ],
   };
 
-  const createOrgsRes: Try<CreateOrganizationsMutation> = await tryF(
+  const createOrgsRes: Try<UpsertOrganizationsMutation> = await catchError(
     async () =>
-      await hasura.CreateOrganizations({
+      await hasura.UpsertOrganizations({
         objects: orgObjectList,
         on_conflict: onOrgConflict,
       })
   );
 
-  if (isError(createOrgsRes)) {
+  if (threwError(createOrgsRes)) {
     logError(createOrgsRes);
     return {
       error: true,
@@ -147,8 +144,14 @@ export async function createLunatraceOrgsFromGithubOrgs(
     };
   }
 
-  const orgIds = createOrgsRes.insert_organizations
-    ? createOrgsRes.insert_organizations.returning.map((o) => o.id as string)
+  const orgIds: UpsertOrganizationResponse[] = createOrgsRes.insert_organizations
+    ? createOrgsRes.insert_organizations.returning.map((o) => {
+      return {
+        id: o.id as string,
+        github_node_id: o.github_node_id || null,
+        name: o.name 
+      }
+    })
     : [];
 
   return {
