@@ -13,26 +13,15 @@
  */
 import { Finding, severityOrder, VulnerablePackage } from './types';
 
-export function filterFindingsByIgnored(findings: Finding[]): Finding[] {
-  return findings.filter((f) => {
-    // Get the ignored_vulnerability that is linked to this finding, if any.  There are a maximum of one because of the unique constraint
-    const ignoreRule = f.vulnerability.ignored_vulnerabilities[0];
-    // if there are none just keep it
-    if (!ignoreRule) {
-      return true;
-    }
-    // check if any of the rules match all of the locations in our list
-    (f.locations as string[]).every((location) => {
-      return (ignoreRule.locations as string[]).includes(location);
-    });
-  });
+function sortBySeverity(a: Finding, b: Finding): number {
+  return severityOrder.indexOf(b.severity) - severityOrder.indexOf(a.severity);
 }
 
-export function groupByPackage(project_id: string, findings: Finding[]): VulnerablePackage[] {
+export function groupByPackage<F extends Finding>(project_id: string, findings: F[]): VulnerablePackage<F>[] {
   // a place to group vulnerabilities by package
-  const pkgs: Record<string, VulnerablePackage> = {};
+  const pkgs: Record<string, VulnerablePackage<F>> = {};
   // sort by severity
-  const sFindings = [...findings].sort((a, b) => severityOrder.indexOf(b.severity) - severityOrder.indexOf(a.severity));
+  const sFindings = [...findings].sort(sortBySeverity);
   sFindings.forEach((f) => {
     const preExisting = pkgs[f.purl];
     if (!preExisting) {
@@ -45,7 +34,7 @@ export function groupByPackage(project_id: string, findings: Finding[]): Vulnera
         language: f.language,
         type: f.type,
         package_name: f.package_name,
-        cvss_score: f.vulnerability.namespace === 'nvd' ? f.vulnerability.cvss_score : null,
+        cvss_score: f.vulnerability.namespace === 'nvd' ? f.vulnerability.cvss_score || null : null,
         fix_state: f.fix_state || null,
         fix_versions: f.fix_versions || [],
         findings: [f],
@@ -57,7 +46,7 @@ export function groupByPackage(project_id: string, findings: Finding[]): Vulnera
       pkgs[f.purl].findings.push(f);
     }
     // add any new locations
-    (f.locations as string[]).forEach((l) => {
+    f.locations.forEach((l) => {
       if (!preExisting.locations.includes(l)) {
         preExisting.locations = [...preExisting.locations, l];
       }
@@ -65,7 +54,7 @@ export function groupByPackage(project_id: string, findings: Finding[]): Vulnera
     // set the highest CVSS score to the package score
     try {
       if (f.vulnerability.namespace === 'nvd' && Number(f.vulnerability.cvss_score) > Number(preExisting.cvss_score)) {
-        preExisting.cvss_score = f.vulnerability.cvss_score;
+        preExisting.cvss_score = f.vulnerability.cvss_score || null;
       }
     } catch {
       console.error('failed converting cvss to number');
@@ -73,7 +62,7 @@ export function groupByPackage(project_id: string, findings: Finding[]): Vulnera
     // Add any fix versions/state
     if (f.fix_state === 'fixed') {
       preExisting.fix_state = f.fix_state;
-      const newFixedVersions = f.fix_versions as string[] | undefined;
+      const newFixedVersions = f.fix_versions;
       if (newFixedVersions) {
         newFixedVersions.forEach((v) => {
           if (!preExisting.fix_versions.includes(v)) {
@@ -82,6 +71,7 @@ export function groupByPackage(project_id: string, findings: Finding[]): Vulnera
         });
       }
     }
+    return null;
   });
   return Object.values(pkgs);
 }

@@ -11,6 +11,6 @@
  * limitations under the License.
  *
  */
-import { GetBuildDetailsQuery } from '../../../api/generated';
-
-export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
+export * from './filter-vulnerabilities';
+export * from './types';
+export * from './group-vulnerabilities-by-package';

@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.severityOrder = void 0;
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
@@ -11,4 +14,4 @@
  * limitations under the License.
  *
  */
-export {};
+exports.severityOrder = ['Unknown', 'Negligible', 'Low', 'Medium', 'High', 'Critical'];
