@@ -14,6 +14,9 @@
 import { getCallSite } from './callsite';
 import { BaseLogObj, LevelChoice, LoggerOptions, LogMethodArgs, LogObj, Transport } from './types';
 
+export * from './types';
+export * from './console-transport';
+
 const defaultLoggerFields: BaseLogObj = {
   loggerName: 'default',
 };
@@ -23,8 +26,8 @@ export class LunaLogger {
   baseLogObj: BaseLogObj;
   public transports: Array<Transport> = [];
 
-  constructor(options: LoggerOptions, additionalFields: Record<string, unknown>) {
-    this.options = options;
+  constructor(options?: LoggerOptions, additionalFields?: Record<string, unknown>) {
+    this.options = options || {};
     this.baseLogObj = { ...defaultLoggerFields, ...additionalFields };
   }
 
@@ -70,6 +73,7 @@ export class LunaLogger {
         Object.assign(logObject, callInfo);
       }
     }
+
     args.forEach((arg, index) => {
       // When the first arg is an object, merge it to the root log object, just like pino
       if (index === 0 && this.isObject(arg)) {
