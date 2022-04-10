@@ -11,30 +11,23 @@
  * limitations under the License.
  *
  */
-// Believe me, using this module without types is far less hacky than the alternative of doing this ourselves
-// this seems pretty temperamental, may need more messing with if we really care about it. For now it seems to mostly work
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import Stackman from 'stackman';
 
-const stackman = Stackman();
-export function getCallSite(): Promise<null | { funcName: string; fileLink: string }> {
-  const e = new Error();
-  return new Promise((resolve, reject) => {
-    stackman.callsites(e, { sourcemap: true }, (err: Error, callsites: NodeJS.CallSite[]) => {
-      if (err) {
-        return reject(err);
-      }
-      const caller = callsites[2]; // get up out of the logging library
-      const filename = caller.getFileName();
-      const line = caller.getLineNumber();
-      const column = caller.getColumnNumber();
-      const funcName = caller.getFunctionName();
-      if (!filename || !line || !column || !funcName) {
-        return resolve(null);
-      }
-      const fileLink = `file://${filename}:${line}:${column}`;
-      return resolve({ fileLink, funcName });
-    });
+import { get } from './stack-trace';
+
+import { LunaLogger } from './index';
+
+export function getCallSite(): { stack: string[] } {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const callsites = get(LunaLogger.prototype.dolog).slice(1); // get up out of the logging library with slice
+  const prettyStack = callsites.map((site) => {
+    const filename = site.getFileName();
+    const line = site.getLineNumber();
+    const column = site.getColumnNumber();
+    const fileLink = `file://${filename}:${line}:${column}`;
+
+    const funcName = site.getFunctionName() || 'anonymous function';
+    return `at ${funcName} in ${fileLink}`;
   });
+  // This is kind of weak because the first few lines will be the logger, would be better to rebuild the stack manually without those
+  return { stack: prettyStack };
 }

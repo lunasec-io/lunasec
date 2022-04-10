@@ -34,7 +34,11 @@ export class ConsoleTransport implements Transport {
     }
 
     const spacing = this.options.pretty ? 2 : 0;
-    const logString = JSON.stringify(logObj, undefined, spacing);
+    // some trickery to get the message on the bottom
+    const { message, ...logWithoutMessage } = logObj;
+    const logWithMessageOnBottom = { ...logWithoutMessage, message };
+
+    const logString = JSON.stringify(logWithMessageOnBottom, undefined, spacing);
     if (this.options.colors) {
       const colors = this.getColors(logObj.level);
       return console.log(colorize(logString, { colors }));

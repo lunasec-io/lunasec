@@ -12,7 +12,7 @@
  *
  */
 export interface LoggerOptions {
-  callsite?: boolean;
+  trace?: boolean;
 }
 
 export const logLevels = ['debug', 'info', 'warn', 'error'] as const;
