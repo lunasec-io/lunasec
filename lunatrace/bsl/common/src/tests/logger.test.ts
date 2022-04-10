@@ -13,14 +13,16 @@
  */
 
 import { ConsoleTransport, logLevels, LunaLogger } from '../logger';
-const log = new LunaLogger({ callsite: false }, {});
+const log = new LunaLogger({ trace: false }, {});
 log.addTransport(new ConsoleTransport({ minLevel: 'debug', colors: false, pretty: true }));
 
-const consoleSpy = jest.spyOn(console, 'log');
+const consoleMock = jest.spyOn(console, 'log');
 
 describe('LunaLogger', () => {
   // beforeEach(() => {});
   afterEach(() => {
+    // Nice to see the raw value, really shows you how colors screw up the output
+    console.log('Console was called with: ', consoleMock.mock.calls);
     jest.clearAllMocks();
   });
 
@@ -29,18 +31,18 @@ describe('LunaLogger', () => {
     ignoreLogger.addTransport(new ConsoleTransport({ minLevel: 'info', colors: false, pretty: false }));
     ignoreLogger.debug('this is ignored');
     ignoreLogger.info('this is not ignored');
-    expect(consoleSpy).toBeCalledTimes(1);
+    expect(consoleMock).toBeCalledTimes(1);
   });
 
   it('appends any object properties from the first argument', () => {
     log.log({ test: 'field' });
-    const output = consoleSpy.mock.calls[0][0];
+    const output = consoleMock.mock.calls[0][0];
     parseAndCheck(output, 'test', 'field');
   });
 
   it('stringifies anything else into message', () => {
     log.log(['test'], 'test message');
-    const output = consoleSpy.mock.calls[0][0];
+    const output = consoleMock.mock.calls[0][0];
     parseAndCheck(output, 'message', '["test"]test message');
   });
 
@@ -48,7 +50,8 @@ describe('LunaLogger', () => {
     logLevels.forEach((level) => {
       it(`${level} works`, () => {
         log[level]('testMessage');
-        const output = consoleSpy.mock.calls[0][0];
+
+        const output = consoleMock.mock.calls[0][0];
         parseAndCheck(output, 'level', level);
       });
     });
@@ -58,7 +61,7 @@ describe('LunaLogger', () => {
     it('appends any child additional fields', () => {
       const childLogger = log.child({ child: 'field' });
       childLogger.log('test');
-      const output = consoleSpy.mock.calls[0][0];
+      const output = consoleMock.mock.calls[0][0];
       parseAndCheck(output, 'child', 'field');
     });
   });
