@@ -24,7 +24,7 @@ is just normal application code, like in any other web app.  Only a small part i
 
 ### Folder Structure
 The Demo is separated into two applications, the front-end and back-end in 
-[the demo apps folder](https://github.com/lunasec-io/lunasec-monorepo/tree/master/js/demo-apps/packages).
+[the demo apps folder](https://github.com/lunasec-io/lunasec-monorepo/tree/master/lunadefend/js/demo-apps/packages).
 
 The apps are really multiple apps, one for each of the different modes. We wanted to reuse as much code as possible, 
 which lives in the `common` folders of each app. Only code that needs to be different for each demo is broken into 
