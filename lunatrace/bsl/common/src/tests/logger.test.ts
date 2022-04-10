@@ -11,14 +11,12 @@
  * limitations under the License.
  *
  */
-import { promisify } from 'util';
 
 import { ConsoleTransport, logLevels, LunaLogger } from '../logger';
 const log = new LunaLogger({ callsite: false }, {});
 log.addTransport(new ConsoleTransport({ minLevel: 'debug', colors: false, pretty: true }));
 
 const consoleSpy = jest.spyOn(console, 'log');
-const nextTick = promisify(process.nextTick);
 
 describe('LunaLogger', () => {
   // beforeEach(() => {});
