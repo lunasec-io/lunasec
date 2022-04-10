@@ -55,7 +55,7 @@ Other containers we run:
   this *much* easier than getting Cypress installed on our own container.
 * **AWS Localstack** - a simulated copy of AWS using the AWS Localstack container.  Seriously helpful for both local dev and CI.
   
-You can find these dockerfiles in our repo [here](https://github.com/lunasec-io/lunasec/tree/master/js/docker), mostly in `demo.dockerfile`.
+You can find these dockerfiles in our repo [here](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/docker), mostly in `demo.dockerfile`.
 
 ### Docker Compose
 The standard way to launch a cluster of containers is via Docker Compose.  For our project, we want to control which containers come
