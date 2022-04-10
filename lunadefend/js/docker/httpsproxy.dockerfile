@@ -4,7 +4,7 @@ RUN apt update && apt install -y curl
 
 RUN npm install -g local-ssl-proxy
 
-COPY ./js/docker/proxy /proxy
+COPY ./lunadefend/js/docker/proxy /proxy
 COPY ./tools/service-scripts/wait-for-it.sh /wait-for-it.sh
 
 RUN chmod +x /wait-for-it.sh

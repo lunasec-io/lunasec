@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/js/demo-apps/packages/demo-back-end/src/dedicated-tokenizer/passport-express/config/configure-passport.ts" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/lunadefend/js/demo-apps/packages/demo-back-end/src/dedicated-tokenizer/passport-express/config/configure-passport.ts" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1642199444402_init/down.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1642199444402_init/up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1647201650699_add-timestamps-to-project-access-tokens/up.sql" dialect="PostgreSQL" />

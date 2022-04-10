@@ -3,7 +3,7 @@
 **/*.cjs
 **/build
 **/generated
-js/demo-apps/packages/react-front-end/cypress/integration/secure_components_spec.ts
+lunadefend/js/demo-apps/packages/react-front-end/cypress/integration/secure_components_spec.ts
 lunatrace/bsl/backend/lib/api/
 .pnp.cjs
 *.mjs

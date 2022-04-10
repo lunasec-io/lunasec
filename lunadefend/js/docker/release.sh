@@ -11,29 +11,29 @@ docker_push() {
 }
 
 if [ "$1" == "build" ]; then
-  # docker build -f js/docker/dependency-precache.dockerfile . -t "lunasec/cached-npm-dependencies:${VERSION}"
+  # docker build -f lunadefend/js/docker/dependency-precache.dockerfile . -t "lunasec/cached-npm-dependencies:${VERSION}"
 
-  if ! docker_build js/docker/demo.dockerfile application-front-end "lunasec/application-front-end-demo" ; then
+  if ! docker_build lunadefend/js/docker/demo.dockerfile application-front-end "lunasec/application-front-end-demo" ; then
     echo "unable to build application front end"
     exit 1
   fi
 
-  if ! docker_build js/docker/demo.dockerfile application-back-end "lunasec/application-back-end-demo" ; then
+  if ! docker_build lunadefend/js/docker/demo.dockerfile application-back-end "lunasec/application-back-end-demo" ; then
     echo "unable to build application back end"
     exit 1
   fi
 
-  if ! docker_build js/docker/demo.dockerfile secure-frame-iframe "lunasec/secure-frame-iframe-demo" ; then
+  if ! docker_build lunadefend/js/docker/demo.dockerfile secure-frame-iframe "lunasec/secure-frame-iframe-demo" ; then
     echo "unable to build secure frame iframe"
     exit 1
   fi
 
-  if ! docker_build js/docker/demo.dockerfile lunasec-cli "lunasec/lunasec-cli-demo" ; then
+  if ! docker_build lunadefend/js/docker/demo.dockerfile lunasec-cli "lunasec/lunasec-cli-demo" ; then
     echo "unable to build lunasec cli"
     exit 1
   fi
 
-  if ! docker_build js/docker/httpsproxy.dockerfile localstack-proxy "lunasec/localstack-proxy-demo" ; then
+  if ! docker_build lunadefend/js/docker/httpsproxy.dockerfile localstack-proxy "lunasec/localstack-proxy-demo" ; then
     echo "unable to build localstack proxy"
     exit 1
   fi
