@@ -13,9 +13,7 @@
  */
 import { promisify } from 'util';
 
-import { ConsoleTransport } from '../logger/console-transport';
-import { LunaLogger } from '../logger/main';
-import { logLevels } from '../logger/types';
+import { ConsoleTransport, logLevels, LunaLogger } from '../logger';
 const log = new LunaLogger({ callsite: false }, {});
 log.addTransport(new ConsoleTransport({ minLevel: 'debug', colors: false, pretty: true }));
 
@@ -28,11 +26,20 @@ describe('LunaLogger', () => {
     jest.clearAllMocks();
   });
 
+  it('ignores lower level logs', () => {
+    const ignoreLogger = new LunaLogger();
+    ignoreLogger.addTransport(new ConsoleTransport({ minLevel: 'info', colors: false, pretty: false }));
+    ignoreLogger.debug('this is ignored');
+    ignoreLogger.info('this is not ignored');
+    expect(consoleSpy).toBeCalledTimes(1);
+  });
+
   it('appends any object properties from the first argument', () => {
     log.log({ test: 'field' });
     const output = consoleSpy.mock.calls[0][0];
     parseAndCheck(output, 'test', 'field');
   });
+
   it('stringifies anything else into message', () => {
     log.log(['test'], 'test message');
     const output = consoleSpy.mock.calls[0][0];
@@ -57,6 +64,7 @@ describe('LunaLogger', () => {
       parseAndCheck(output, 'child', 'field');
     });
   });
+
   // This is just extremely hard to test because of the async issue.. Feature is manually tested
   // it('finds the callsite', async () => {
   //   const logWithCallsite = new LunaLogger({ callsite: true }, {});
