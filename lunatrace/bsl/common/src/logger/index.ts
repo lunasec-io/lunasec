@@ -36,19 +36,19 @@ export class LunaLogger {
   }
 
   public debug(...args: LogMethodArgs) {
-    void this.dolog('debug', args);
+    this.dolog('debug', args);
   }
   public log(...args: LogMethodArgs) {
-    void this.dolog('info', args);
+    this.dolog('info', args);
   }
   public info(...args: LogMethodArgs) {
-    void this.dolog('info', args);
+    this.dolog('info', args);
   }
   public warn(...args: LogMethodArgs) {
-    void this.dolog('warn', args);
+    this.dolog('warn', args);
   }
   public error(...args: LogMethodArgs) {
-    void this.dolog('error', args);
+    this.dolog('error', args);
   }
 
   public child(additionalFields: Record<string, unknown>) {
@@ -57,7 +57,7 @@ export class LunaLogger {
     return childLogger;
   }
 
-  private async dolog(level: LevelChoice, args: LogMethodArgs) {
+  public dolog(level: LevelChoice, args: LogMethodArgs): void {
     const now = new Date();
     const logObject: LogObj = {
       level,
@@ -67,8 +67,8 @@ export class LunaLogger {
       ...this.baseLogObj,
     };
 
-    if (this.options.callsite) {
-      const callInfo = await getCallSite();
+    if (this.options.trace || level === 'error') {
+      const callInfo = getCallSite();
       if (callInfo) {
         Object.assign(logObject, callInfo);
       }

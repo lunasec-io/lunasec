@@ -12406,10 +12406,12 @@ __metadata:
   dependencies:
     "@types/jest": ~27.4.1
     "@types/node": ^14.0.0
+    "@types/stack-trace": ~0.0.29
     generate-lockfile: ^0.0.11
     jest: ^27.5.1
     json-colorizer: ^2.2.2
     source-map-support: ^0.5.21
+    stack-trace: ~1.0.0-pre1
     stackman: ^4.0.1
     ts-jest: ^27.1.3
     ts-node: ^10.4.0
@@ -15689,6 +15691,13 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 5f68d93a04e6d99fb0cd3275fc37392ed74ba2fe3cc3a147383a939ff6bc624a98fedecfee814b416358285f85c793ce61be0b1d5f924681232ad24c3a2c56f2
+  languageName: node
+  linkType: hard
+
+"@types/stack-trace@npm:~0.0.29":
+  version: 0.0.29
+  resolution: "@types/stack-trace@npm:0.0.29"
+  checksum: 2dcfdf8f10e250a76e43efe6d3e05a463b4e22ca290dbb423ec14fa21f57f94ef0cc8ba19ed3394c448218d9ddd9f7cd9adea131fb6572aa2d484b1cf7f043aa
   languageName: node
   linkType: hard
 
@@ -45791,6 +45800,13 @@ __metadata:
   version: 0.1.8
   resolution: "stable@npm:0.1.8"
   checksum: 2ff482bb100285d16dd75cd8f7c60ab652570e8952c0bfa91828a2b5f646a0ff533f14596ea4eabd48bb7f4aeea408dce8f8515812b975d958a4cc4fa6b9dfeb
+  languageName: node
+  linkType: hard
+
+"stack-trace@npm:~1.0.0-pre1":
+  version: 1.0.0-pre1
+  resolution: "stack-trace@npm:1.0.0-pre1"
+  checksum: a97aad6b49b4366dafa3dab866bda18c23cb02a1d45966b4277e21215ea90a9e3a24a42723bc82ecfa79327cb3b5efb0408349b347e8ce38e75b24a0dde36d37
   languageName: node
   linkType: hard
 

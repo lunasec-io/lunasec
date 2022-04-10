@@ -29,7 +29,7 @@ log.info('some log')
 {
     "level": "debug",
     "timeEpoch": 1649550906635,
-    "message": "testMessage",
+    "message": "some log",
     "timePretty": "Sat Apr 09 2022 17:35:06 GMT-0700 (Pacific Daylight Time)",
     "whatever":"extra fields",
     "loggerName": "default"
