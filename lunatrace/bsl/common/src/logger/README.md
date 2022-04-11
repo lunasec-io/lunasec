@@ -14,18 +14,18 @@
 ## LunaLogger
 
 This is a slim JSON logger, with an API similar to native console.  It supports pretty colors, pretty json output, and
-typescript callsites(probably).
+typescript-compatible stack traces.
 
 ```typescript
 import {LunaLogger} from '@lunatrace/lunatrace-common'
-const log = new LunaLogger({ callsite: true }, {whatever:'extra fields'});
-log.addTransport(new ConsoleTransport({ minLevel: 'debug', colors: false, pretty: true }));
+const log = new LunaLogger({ trace: true }, {whatever:'extra fields'});
+log.addTransport(new JsonTransport({ minLevel: 'debug', colors: false, pretty: true }));
 
 //basic usage
 log.info('some log')
 ```
+outputs
 ```json
-// outputs
 {
     "level": "debug",
     "timeEpoch": 1649550906635,
@@ -39,6 +39,7 @@ log.info('some log')
 //if the first argument is an object, any fields end up on the root logged object instead of in the message, just like pino
 log.log({ test: 'field' }); // alias for info
 ```
+outputs
 ```json
     {
       "level": "info",
