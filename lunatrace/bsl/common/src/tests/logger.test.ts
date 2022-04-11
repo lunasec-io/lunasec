@@ -12,9 +12,9 @@
  *
  */
 
-import { ConsoleTransport, logLevels, LunaLogger } from '../logger';
+import { JsonTransport, logLevels, LunaLogger } from '../logger';
 const log = new LunaLogger({ trace: false }, {});
-log.addTransport(new ConsoleTransport({ minLevel: 'debug', colors: false, pretty: true }));
+log.addTransport(new JsonTransport({ minLevel: 'debug', colors: false, pretty: true }));
 
 const consoleMock = jest.spyOn(console, 'log');
 
@@ -28,7 +28,7 @@ describe('LunaLogger', () => {
 
   it('ignores lower level logs', () => {
     const ignoreLogger = new LunaLogger();
-    ignoreLogger.addTransport(new ConsoleTransport({ minLevel: 'info', colors: false, pretty: false }));
+    ignoreLogger.addTransport(new JsonTransport({ minLevel: 'info', colors: false, pretty: false }));
     ignoreLogger.debug('this is ignored');
     ignoreLogger.info('this is not ignored');
     expect(consoleMock).toBeCalledTimes(1);
