@@ -23,7 +23,7 @@ export interface ConsoleTransportOptions {
 
 type ColorOptions = NonNullable<Parameters<typeof colorize>[1]>['colors'];
 
-export class ConsoleTransport implements Transport {
+export class JsonTransport implements Transport {
   constructor(public options: ConsoleTransportOptions) {}
 
   public send(logObj: LogObj) {

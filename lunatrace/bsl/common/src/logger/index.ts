@@ -15,7 +15,7 @@ import { getCallSite } from './callsite';
 import { BaseLogObj, LevelChoice, LoggerOptions, LogMethodArgs, LogObj, Transport } from './types';
 
 export * from './types';
-export * from './console-transport';
+export * from './json-transport';
 
 const defaultLoggerFields: BaseLogObj = {
   loggerName: 'default',
