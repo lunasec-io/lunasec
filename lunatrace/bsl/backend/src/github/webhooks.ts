@@ -19,8 +19,8 @@ import { GetProjectIdFromGitUrlQuery, InsertBuildMutation } from '../hasura-api/
 import { uploadSbomToS3 } from '../sqs-handlers/generate-sbom';
 import { isError, Try, tryF } from '../utils/try';
 
+import { GetUserOrganizationsQuery } from './api/generated';
 import { getInstallationAccessToken } from './auth';
-import { GetUserOrganizationsQuery } from './generated';
 
 export const webhooks = new Webhooks({
   secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',

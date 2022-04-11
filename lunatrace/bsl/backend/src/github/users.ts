@@ -26,9 +26,8 @@ import { getGithubAccessTokenFromKratos } from '../kratos';
 import { errorResponse, logError } from '../utils/errors';
 import { isError, Try, tryF } from '../utils/try';
 
-import { GetUserOrganizationsQuery } from './generated';
-
-import { generateGithubGraphqlClient } from './index';
+import { generateGithubGraphqlClient } from './api';
+import { GetUserOrganizationsQuery } from './api/generated';
 
 async function collectUserGithubOrgs(userId: string, accessToken: string) {
   const github = generateGithubGraphqlClient(accessToken);

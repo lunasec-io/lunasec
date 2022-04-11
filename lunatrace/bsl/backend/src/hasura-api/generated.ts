@@ -797,7 +797,6 @@ export type Fix_State_Enum_Comparison_Exp = {
  */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
-  api_response: Scalars['jsonb'];
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
@@ -805,18 +804,6 @@ export type Github_Repositories = {
   project: Projects;
   project_id: Scalars['uuid'];
   traits: Scalars['jsonb'];
-};
-
-
-/**
- * Metadata about a github repository and where to find it.
- *
- *
- * columns and relationships of "github_repositories"
- *
- */
-export type Github_RepositoriesApi_ResponseArgs = {
-  path?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -848,7 +835,6 @@ export type Github_Repositories_Aggregate_Order_By = {
 
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Github_Repositories_Append_Input = {
-  api_response?: InputMaybe<Scalars['jsonb']>;
   traits?: InputMaybe<Scalars['jsonb']>;
 };
 
@@ -869,7 +855,6 @@ export type Github_Repositories_Bool_Exp = {
   _and?: InputMaybe<Array<Github_Repositories_Bool_Exp>>;
   _not?: InputMaybe<Github_Repositories_Bool_Exp>;
   _or?: InputMaybe<Array<Github_Repositories_Bool_Exp>>;
-  api_response?: InputMaybe<Jsonb_Comparison_Exp>;
   git_url?: InputMaybe<String_Comparison_Exp>;
   github_id?: InputMaybe<Int_Comparison_Exp>;
   github_node_id?: InputMaybe<String_Comparison_Exp>;
@@ -890,19 +875,16 @@ export enum Github_Repositories_Constraint {
 
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 export type Github_Repositories_Delete_At_Path_Input = {
-  api_response?: InputMaybe<Array<Scalars['String']>>;
   traits?: InputMaybe<Array<Scalars['String']>>;
 };
 
 /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 export type Github_Repositories_Delete_Elem_Input = {
-  api_response?: InputMaybe<Scalars['Int']>;
   traits?: InputMaybe<Scalars['Int']>;
 };
 
 /** delete key/value pair or string element. key/value pairs are matched based on their key value */
 export type Github_Repositories_Delete_Key_Input = {
-  api_response?: InputMaybe<Scalars['String']>;
   traits?: InputMaybe<Scalars['String']>;
 };
 
@@ -913,7 +895,6 @@ export type Github_Repositories_Inc_Input = {
 
 /** input type for inserting data into table "github_repositories" */
 export type Github_Repositories_Insert_Input = {
-  api_response?: InputMaybe<Scalars['jsonb']>;
   git_url?: InputMaybe<Scalars['String']>;
   github_id?: InputMaybe<Scalars['Int']>;
   github_node_id?: InputMaybe<Scalars['String']>;
@@ -963,7 +944,6 @@ export type Github_Repositories_On_Conflict = {
 
 /** Ordering options when selecting data from "github_repositories". */
 export type Github_Repositories_Order_By = {
-  api_response?: InputMaybe<Order_By>;
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
@@ -974,14 +954,11 @@ export type Github_Repositories_Order_By = {
 
 /** prepend existing jsonb value of filtered columns with new jsonb value */
 export type Github_Repositories_Prepend_Input = {
-  api_response?: InputMaybe<Scalars['jsonb']>;
   traits?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** select columns of table "github_repositories" */
 export enum Github_Repositories_Select_Column {
-  /** column name */
-  ApiResponse = 'api_response',
   /** column name */
   GitUrl = 'git_url',
   /** column name */
@@ -996,7 +973,6 @@ export enum Github_Repositories_Select_Column {
 
 /** input type for updating data in table "github_repositories" */
 export type Github_Repositories_Set_Input = {
-  api_response?: InputMaybe<Scalars['jsonb']>;
   git_url?: InputMaybe<Scalars['String']>;
   github_id?: InputMaybe<Scalars['Int']>;
   github_node_id?: InputMaybe<Scalars['String']>;
@@ -1026,8 +1002,6 @@ export type Github_Repositories_Sum_Order_By = {
 
 /** update columns of table "github_repositories" */
 export enum Github_Repositories_Update_Column {
-  /** column name */
-  ApiResponse = 'api_response',
   /** column name */
   GitUrl = 'git_url',
   /** column name */

@@ -11,6 +11,8 @@
     <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1649108103633_rename-api-response-to-traits-and-add-build-type/up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1649194191741_add_github_node_id_columns/down.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1649286847179_drop-api-response/up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1649718292194_add-existing-pr-review-column/down.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1649718292194_add-existing-pr-review-column/up.sql" dialect="PostgreSQL" />
     <file url="PROJECT" dialect="SQLite" />
   </component>
 </project>
