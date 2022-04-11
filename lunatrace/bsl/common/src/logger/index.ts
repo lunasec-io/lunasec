@@ -88,12 +88,12 @@ export class LunaLogger {
     return;
   }
 
-  private anythingToString(arg: unknown) {
+  private anythingToString(arg: unknown): string {
     if (typeof arg === 'string') {
       return arg;
     }
     if (arg instanceof Error) {
-      return arg.toString();
+      return arg.stack || arg.toString();
     }
     return JSON.stringify(arg);
   }

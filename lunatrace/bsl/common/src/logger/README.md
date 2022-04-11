@@ -20,7 +20,6 @@ typescript-compatible stack traces.
 import {LunaLogger} from '@lunatrace/lunatrace-common'
 const log = new LunaLogger({ trace: true }, {whatever:'extra fields'});
 log.addTransport(new JsonTransport({ minLevel: 'debug', colors: false, pretty: true }));
-
 //basic usage
 log.info('some log')
 ```
