@@ -19,9 +19,9 @@
     "isolatedModules": true,
     "noEmit": false,
     "composite": true,
-
+    "sourceMap": true,
     "lib": ["es2017"],
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "compileOnSave": true
