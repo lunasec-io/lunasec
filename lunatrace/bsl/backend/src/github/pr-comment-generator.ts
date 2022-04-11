@@ -17,9 +17,8 @@ import markdownTable from 'markdown-table';
 import { hasura } from '../hasura-api';
 import { InsertedScan } from '../models/scan';
 
+import { generateGithubGraphqlClient } from './api';
 import { getInstallationAccessToken } from './auth';
-
-import { generateGithubGraphqlClient } from './index';
 
 function formatLocationText(finding: VulnerablePackage<Finding>) {
   if (finding.locations.length === 0) {
@@ -31,7 +30,7 @@ function formatLocationText(finding: VulnerablePackage<Finding>) {
 
 function generatePullRequestCommentFromReport(projectId: string, scan: InsertedScan) {
   const messageParts = [
-    process.env.NODE_ENV === 'production' ? null : 'DEV MODE WORKER',
+    process.env.NODE_ENV === 'production' ? null : 'LUNATRACE IN DEV MODE',
     '## Build Snapshot Complete',
     '',
     `\n[View Full Report](https://lunatrace.lunasec.io/project/${projectId}/build/${scan.build_id})`,
@@ -86,7 +85,7 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
 
   if (!installationId) {
     console.log(
-      `installation id is not defined for the organization linked to build: ${buildId}, skipping github PR comment`
+      `github installation id is not defined for the organization linked to build: ${buildId}, skipping github PR comment`
     );
     return;
   }

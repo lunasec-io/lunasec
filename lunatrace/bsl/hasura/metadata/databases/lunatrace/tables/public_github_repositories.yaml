@@ -10,7 +10,6 @@ insert_permissions:
     backend_only: false
     check: {}
     columns:
-    - api_response
     - git_url
     - github_id
     - github_node_id
@@ -20,7 +19,6 @@ insert_permissions:
 select_permissions:
 - permission:
     columns:
-    - api_response
     - git_url
     - github_id
     - github_id
@@ -31,7 +29,6 @@ select_permissions:
   role: service
 - permission:
     columns:
-    - api_response
     - git_url
     - github_id
     - github_node_id
@@ -49,7 +46,6 @@ update_permissions:
 - permission:
     check: null
     columns:
-    - api_response
     - git_url
     - github_id
     - github_node_id

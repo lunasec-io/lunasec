@@ -6,7 +6,7 @@
   "types": "build/server.d.ts",
   "scripts": {
     "start": "concurrently 'yarn dev:graphql:watch' 'yarn run start:server'",
-    "start:server": "nodemon --enable-source-maps ./src/server.ts",
+    "start:server": "nodemon ./src/server.ts --enable-source-maps",
     "start:sqs-listener": "nodemon ./src/sqs/read-queue.ts",
     "prod:sqs-listener": "node build/sqs/read-queue.js",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
