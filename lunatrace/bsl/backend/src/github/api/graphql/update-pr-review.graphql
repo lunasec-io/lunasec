@@ -1,0 +1,9 @@
+mutation updatePrReview($pull_request_review_id: ID!, $body: String!) {
+    updatePullRequestReview(
+        input: {pullRequestReviewId: $pull_request_review_id, body: $body}
+    ) {
+        pullRequestReview {
+            id
+        }
+    }
+}
