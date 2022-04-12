@@ -12,9 +12,11 @@
  *
  */
 
+import {log} from "./log";
+
 export function logError(error: Error): void {
-  console.error(error.message);
-  console.error(error.stack);
+  log.error(error.message);
+  log.error(error.stack);
 }
 
 export function errorResponse(msg: string) {
