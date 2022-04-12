@@ -112,8 +112,41 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     return;
   }
 
-  await github.addPrReview({
-    pull_request_id: pullRequestId.toString(),
+  // Check if a previous build already commented on the PR. Could probably query github for this but its hard and rate limits exist so we just check our own db
+  const previousReviewId = await findPreviousReviewId(pullRequestId);
+
+  // This is the first build on this pr so make a new comment
+  if (!previousReviewId) {
+    const githubReviewResponse = await github.AddPrReview({
+      pull_request_id: pullRequestId.toString(),
+      body,
+    });
+    const existing_github_review_id = githubReviewResponse.submitPullRequestReview?.pullRequestReview?.id;
+    if (!existing_github_review_id) {
+      return console.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
+    }
+    await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
+    return;
+  }
+
+  // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
+  const githubReviewResponse = await github.UpdatePrReview({
+    pull_request_review_id: previousReviewId,
     body,
   });
+  const existing_github_review_id = githubReviewResponse.updatePullRequestReview?.pullRequestReview?.id;
+  if (!existing_github_review_id) {
+    return console.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
+  }
+  // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
+  await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
+  return;
+}
+
+async function findPreviousReviewId(pullRequestId: string): Promise<string | null> {
+  const previousBuildRes = await hasura.GetPreviousBuildForPr({ pull_request_id: pullRequestId });
+  if (!previousBuildRes.builds) {
+    return null;
+  }
+  return previousBuildRes.builds[0].pull_request_id || null;
 }
