@@ -1855,7 +1855,7 @@ export type Project_Access_Tokens = {
   __typename?: 'project_access_tokens';
   created_at: Scalars['timestamp'];
   /** An object relationship */
-  created_by_user?: Maybe<Users>;
+  created_by_user?: Maybe<Identities>;
   created_by_user_id?: Maybe<Scalars['uuid']>;
   id: Scalars['uuid'];
   last_used?: Maybe<Scalars['timestamp']>;
@@ -1883,7 +1883,7 @@ export type Project_Access_Tokens_Bool_Exp = {
   _not?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
   _or?: InputMaybe<Array<Project_Access_Tokens_Bool_Exp>>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  created_by_user?: InputMaybe<Users_Bool_Exp>;
+  created_by_user?: InputMaybe<Identities_Bool_Exp>;
   created_by_user_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   last_used?: InputMaybe<Timestamp_Comparison_Exp>;
@@ -1932,7 +1932,7 @@ export type Project_Access_Tokens_Mutation_Response = {
 /** Ordering options when selecting data from "project_access_tokens". */
 export type Project_Access_Tokens_Order_By = {
   created_at?: InputMaybe<Order_By>;
-  created_by_user?: InputMaybe<Users_Order_By>;
+  created_by_user?: InputMaybe<Identities_Order_By>;
   created_by_user_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   last_used?: InputMaybe<Order_By>;
@@ -3254,7 +3254,7 @@ export type Timestamptz_Comparison_Exp = {
  */
 export type Users = {
   __typename?: 'users';
-  github_node_id: Scalars['String'];
+  github_node_id?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   kratos_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
@@ -3650,7 +3650,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'users', kratos_identity?: { __typename?: 'identities', traits: any } | null } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
+export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3842,9 +3842,7 @@ export const GetProjectDocument = `
       created_at
       last_used
       created_by_user {
-        kratos_identity {
-          traits
-        }
+        traits
       }
     }
     builds(order_by: {created_at: desc}) {

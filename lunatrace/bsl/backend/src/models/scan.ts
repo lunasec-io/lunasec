@@ -142,7 +142,7 @@ async function parseMatches(buildId: string, matches: Match[]): Promise<Findings
               {
                 slugs,
                 ids,
-                match,
+                vulnerability: match.vulnerability.id,
               }
             );
             return null;
