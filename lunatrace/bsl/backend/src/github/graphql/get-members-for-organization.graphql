@@ -1,0 +1,37 @@
+query GetMembersForOrganization($org: String!, $after: String) {
+  organization(login: $org) {
+    id
+    login
+    teams(first: 100, after: $after) {
+      nodes {
+        members(first: 100, after: $after) {
+          nodes {
+            name
+            id
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            startCursor
+          }
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        startCursor
+      }
+    }
+    membersWithRole(first: 100, after: $after) {
+      nodes {
+        name
+        id
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+        startCursor
+      }
+    }
+  }
+}

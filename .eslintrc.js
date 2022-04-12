@@ -15,12 +15,11 @@
  *
  */
 
-const productionError = process.env.HIDE_ERRORS_IN_DEV === 'true' ? 'warn': 'error';
-const productionWarn = process.env.HIDE_ERRORS_IN_DEV === 'true' ? 'off': 'warn';
-const warnInDev = process.env.HIDE_ERRORS_IN_DEV === 'true' ? 'warn' : 'error';
+const hideErrorsInDev = process.env.HIDE_ERRORS_IN_DEV || 'true'
 
+const productionError = hideErrorsInDev ? 'warn': 'error';
+const productionWarn = hideErrorsInDev ? 'off': 'warn';
 
-const slow = true;
 
 module.exports = {
   root: true,
@@ -67,7 +66,8 @@ module.exports = {
       'lunatrace/bsl/common/tsconfig.json',
       'lunatrace/bsl/frontend/tsconfig.json',
       'lunatrace/bsl/backend-cdk/tsconfig.json',
-      'lunatrace/bsl/backend/tsconfig.json'
+      'lunatrace/bsl/backend/tsconfig.json',
+      'lunatrace/dev-cli/tsconfig.json'
     ]
   },
   plugins: [
@@ -77,14 +77,17 @@ module.exports = {
     'unused-imports'
   ],
   rules: {
-    '@typescript-eslint/no-unsafe-argument': 1, // TODO: Re-enable this rule and fix all errors
-    '@typescript-eslint/no-misused-promises': slow ? 'warn':'off',
-    'import/namespace':slow ? 'error':'off',
-    '@typescript-eslint/no-unsafe-assignment': slow ? 'warn':'off',
+    '@typescript-eslint/no-unsafe-argument': productionWarn, // TODO: Re-enable this rule and fix all errors
+    '@typescript-eslint/no-misused-promises': productionWarn,
+    '@typescript-eslint/no-unsafe-assignment': productionWarn,
+    '@typescript-eslint/no-unsafe-call': productionWarn,
+    '@typescript-eslint/no-unsafe-return': productionWarn,
+    '@typescript-eslint/no-unsafe-member-access': productionWarn,
+    'import/namespace': productionError,
     'no-console': productionWarn,
     'no-debugger': productionError,
     eqeqeq: 'error',
-    quotes: [warnInDev, 'single', { allowTemplateLiterals: true, avoidEscape: true }],
+    quotes: [productionWarn, 'single', { allowTemplateLiterals: true, avoidEscape: true }],
     curly:'warn',
     'react/jsx-wrap-multilines': [
       productionError,
@@ -132,19 +135,11 @@ module.exports = {
     ],
     'eslint-comments/no-unlimited-disable': 'off',
     'eslint-comments/no-unused-disable': 'error',
-    '@typescript-eslint/no-misused-promises': [
-      'warn',
-      {
-        'checksVoidReturn': true
-      }
-    ],
     '@typescript-eslint/no-unused-vars':[
       productionWarn,
       { 'argsIgnorePattern': '^_' }
     ],
     // 'unused-imports/no-unused-imports': 'error', turn this on if you want to --fix all of these out of the codebase
-    '@typescript-eslint/no-unsafe-call': 'warn',
-    '@typescript-eslint/no-unsafe-member-access': 'warn',
     '@typescript-eslint/unbound-method': 'warn',
     '@typescript-eslint/restrict-template-expressions': 'off',
     'import/order': [

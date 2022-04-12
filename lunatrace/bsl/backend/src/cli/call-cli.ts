@@ -16,6 +16,7 @@ import { Readable } from 'stream';
 import zlib from 'zlib';
 
 import { LunaTraceAssetType } from '../types/cli';
+import { log } from '../utils/log';
 
 function importAssetArgs(assetType: LunaTraceAssetType, assetName: string, gitBranch: string) {
   const baseCmdArgs = [
@@ -47,14 +48,14 @@ export function generateSbomFromAsset(
   const cmdArgs = importAssetArgs(assetType, assetName, gitBranch);
 
   const lunatraceCli = spawn('lunatrace', cmdArgs);
-  console.log('lunatrace spawned at pid', lunatraceCli.pid);
+  log.info('lunatrace spawned at pid', lunatraceCli.pid);
 
   lunatraceCli.stderr.on('data', (data) => {
-    console.log(`stderr: ${data}`);
+    log.info(`stderr: ${data}`);
   });
 
   lunatraceCli.on('error', (error) => {
-    console.error(`error: ${error.message}`);
+    log.error(`error: ${error.message}`);
     // todo: might get gobbled?
     // throw error;
   });
@@ -65,24 +66,24 @@ export function generateSbomFromAsset(
     inputStream.on('data', (chunk) => lunatraceCli.stdin.write(chunk));
     inputStream.on('end', () => {
       lunatraceCli.stdin.end(() => {
-        console.log('closing stdin');
+        log.info('closing stdin');
       });
       inputStream.destroy();
     });
     inputStream.on('error', (e) => {
       // throw e;
-      console.error(e);
+      log.error(e);
     });
   }
 
   lunatraceCli.stdout.on('data', (chunk) => {
-    console.log('lunatrace cli emitted stdout: ', chunk.toString().length);
+    log.info('lunatrace cli emitted stdout: ', chunk.toString().length);
   });
 
   lunatraceCli.stdout.on('close', () => {
-    console.log('lunatrace outstream ended');
+    log.info('lunatrace outstream ended');
   });
-  lunatraceCli.on('close', () => console.log('LunaTrace process closed'));
+  lunatraceCli.on('close', () => log.info('LunaTrace process closed'));
   // gzip the sbom stream
   return lunatraceCli.stdout.pipe(zlib.createGzip());
 }
