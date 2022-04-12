@@ -1,4 +1,4 @@
-mutation addPrReview($pull_request_id: ID!, $body: String!) {
+mutation  AddPrReview($pull_request_id: ID!, $body: String!) {
     submitPullRequestReview(input: {event: COMMENT, body: $body, pullRequestId: $pull_request_id}) {
         pullRequestReview {
             id
