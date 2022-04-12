@@ -12413,9 +12413,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunatrace/lunatrace-common@link:../common::locator=frontend-redux%40workspace%3Alunatrace%2Fbsl%2Ffrontend":
+"@lunatrace/lunatrace-common@link:../common::locator=frontend-lunatrace%40workspace%3Alunatrace%2Fbsl%2Ffrontend":
   version: 0.0.0-use.local
-  resolution: "@lunatrace/lunatrace-common@link:../common::locator=frontend-redux%40workspace%3Alunatrace%2Fbsl%2Ffrontend"
+  resolution: "@lunatrace/lunatrace-common@link:../common::locator=frontend-lunatrace%40workspace%3Alunatrace%2Fbsl%2Ffrontend"
   languageName: node
   linkType: soft
 
@@ -27722,9 +27722,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"frontend-redux@workspace:lunatrace/bsl/frontend":
+"frontend-lunatrace@workspace:lunatrace/bsl/frontend":
   version: 0.0.0-use.local
-  resolution: "frontend-redux@workspace:lunatrace/bsl/frontend"
+  resolution: "frontend-lunatrace@workspace:lunatrace/bsl/frontend"
   dependencies:
     "@aws-sdk/client-s3": ^3.52.0
     "@graphql-codegen/cli": 2.3.1
@@ -27774,7 +27774,7 @@ __metadata:
     react-dropzone: ^12.0.4
     react-feather: ^2.0.9
     react-github-login-button: ^1.0.1
-    react-helmet-async: ^1.2.2
+    react-helmet-async: 1.2.2
     react-icons: ^4.3.1
     react-perfect-scrollbar: ^1.5.8
     react-redux: ^7.2.6
@@ -42185,9 +42185,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-helmet-async@npm:^1.2.2":
-  version: 1.2.3
-  resolution: "react-helmet-async@npm:1.2.3"
+"react-helmet-async@npm:1.2.2":
+  version: 1.2.2
+  resolution: "react-helmet-async@npm:1.2.2"
   dependencies:
     "@babel/runtime": ^7.12.5
     invariant: ^2.2.4
@@ -42197,7 +42197,7 @@ __metadata:
   peerDependencies:
     react: ^16.6.0 || ^17.0.0
     react-dom: ^16.6.0 || ^17.0.0
-  checksum: af7041314f6ebaefa64f3c06f75cf1ad62602b93228798615c2ca3365065688ee2b8c58bde98a9ae0d728aecfda5a757e9fc7695da3af2a504ff7e5291c716c9
+  checksum: 3251ab596143a48f9380a78a9e71f451ef729e25081bb4c1476561a1689eee23d650964e1518792bd44a8d24d95da1f9774b9b7ed80cae8eccc8119d7f5dd3f3
   languageName: node
   linkType: hard
 
