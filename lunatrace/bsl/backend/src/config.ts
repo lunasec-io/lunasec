@@ -12,6 +12,8 @@
  *
  */
 
+import dotenv from 'dotenv';
+
 import {
   AwsConfig,
   GithubAppConfig,
@@ -20,6 +22,7 @@ import {
   SbomHandlerConfig,
   ServerConfig,
 } from './types/config';
+import { log } from './utils/log';
 
 const nodeEnv = process.env.NODE_ENV;
 
@@ -31,6 +34,23 @@ const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
   }
   return envVar || (defaultValue as string);
 };
+
+export function getServerConfig(): ServerConfig {
+  const serverPortString = checkEnvVar('PORT', '3002');
+  const serverPort = parseInt(serverPortString, 10);
+  const sitePublicUrl = checkEnvVar('SITE_PUBLIC_URL', 'http://localhost:4455/');
+
+  const nodeEnv = checkEnvVar('NODE_ENV', 'development');
+  const isProduction = nodeEnv === 'production';
+
+  return {
+    serverPort,
+    sitePublicUrl,
+    isProduction
+  };
+}
+
+dotenv.config({ path: getServerConfig().isProduction ? '.env' : '.env.dev'});
 
 export function getAwsConfig(): AwsConfig {
   const awsRegion = checkEnvVar('AWS_DEFAULT_REGION', 'us-west-2');
@@ -48,25 +68,10 @@ export function getHasuraConfig(): HasuraConfig {
   };
 }
 
-export function getServerConfig(): ServerConfig {
-  const serverPortString = checkEnvVar('PORT', '3002');
-  const serverPort = parseInt(serverPortString, 10);
-  const sitePublicUrl = checkEnvVar('SITE_PUBLIC_URL', 'http://localhost:4455/');
-
-  const nodeEnv = checkEnvVar('NODE_ENV', 'development');
-  const isProduction = nodeEnv === 'production';
-
-  return {
-    serverPort,
-    sitePublicUrl,
-    isProduction
-  };
-}
-
 export function getEtlBucketConfig(): SbomHandlerConfig {
   const sbomBucket = checkEnvVar('S3_SBOM_BUCKET', 'sbom-test-bucket');
-
   const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET', 'test-manifest-bucket-one');
+
   return {
     sbomBucket,
     manifestBucket,
