@@ -11,8 +11,9 @@
  * limitations under the License.
  *
  */
-import { Findings_Insert_Input } from '../../hasura-api/generated';
+import { Findings_Insert_Input } from '../../hasura/generated';
 import { parsePsqlStringArray } from '../../utils/json-utils';
+import {log} from "../../utils/log";
 
 export type Finding = Findings_Insert_Input;
 
@@ -87,7 +88,7 @@ export function groupByPackage(project_id: string, findings: Finding[]): Vulnera
     const purl = f.purl;
 
     if (purl === undefined || purl === null || purl === '') {
-      console.error('[groupByPackage] Unable to find purl for package:', f);
+      log.error('[groupByPackage] Unable to find purl for package:', f);
       return;
     }
 
