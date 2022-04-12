@@ -21,9 +21,7 @@ query GetProject($project_id: uuid!) {
             created_at
             last_used
             created_by_user {
-              kratos_identity {
-                traits
-              }
+              traits
             }
         }
         builds(order_by: {created_at: desc}) {

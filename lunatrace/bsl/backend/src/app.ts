@@ -15,7 +15,6 @@ import { randomUUID } from 'crypto';
 
 import { createNodeMiddleware } from '@octokit/webhooks';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import Express, {NextFunction, Request, Response } from 'express';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
@@ -31,8 +30,6 @@ import {asyncLocalStorage, log} from './utils/log';
 const jwksConfig = getJwksConfig();
 const githubConfig = getGithubAppConfig();
 const serverConfig = getServerConfig();
-
-dotenv.config();
 
 const app = Express();
 app.use(cors());

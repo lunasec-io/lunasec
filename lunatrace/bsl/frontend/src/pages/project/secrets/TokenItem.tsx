@@ -35,7 +35,7 @@ export const TokenItem: React.FC<{ token: ProjectInfo['project_access_tokens'][n
           <span className="darker">Created: </span> <span>{prettyDate(new Date(token.created_at))}</span>
         </Col>
         <Col sm>
-          <span className="darker">Created by: </span> <span>{displayName(token.created_by_user?.kratos_identity?.traits)}</span>
+          <span className="darker">Created by: </span> <span>{displayName(token.created_by_user?.traits)}</span>
         </Col>
         <Col>
           {/* flexbox wouldn't work but float worked*/}
