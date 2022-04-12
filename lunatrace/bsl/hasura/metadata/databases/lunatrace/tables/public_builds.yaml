@@ -113,8 +113,9 @@ select_permissions:
       - project:
           organization:
             organization_users:
-              user_id:
-                _eq: X-Hasura-User-Id
+              user:
+                kratos_id:
+                  _eq: X-Hasura-User-Id
       - agent_access_token:
           _eq: X-Hasura-Access-Token
   role: user

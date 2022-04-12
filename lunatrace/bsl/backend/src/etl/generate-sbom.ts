@@ -14,15 +14,16 @@
 import zlib from 'zlib';
 
 import { generateSbomFromAsset } from '../cli/call-cli';
-import { getBucketConfig } from '../config';
-import { hasura } from '../hasura-api';
+import { getEtlBucketConfig } from '../config';
+import { hasura } from '../hasura';
 import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
-import { isError } from '../utils/try';
+import {log} from "../utils/log";
+import { threwError } from '../utils/try';
 
-const bucketConfig = getBucketConfig();
+const bucketConfig = getEtlBucketConfig();
 
 export async function uploadSbomToS3(organizationId: string, buildId: string, gzippedSbom: zlib.Gzip) {
   // upload the sbom to s3, streaming
@@ -94,13 +95,13 @@ export async function handleGenerateManifestSbom(
       success: true,
     };
   } catch (e) {
-    console.error('Unable to generate SBOM from Manifest', e);
+    log.error('Unable to generate SBOM from Manifest', e);
     // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
     await hasura.UpdateManifest({ key_eq: key, set_status: 'error', message: String(e) });
 
     return {
       success: false,
-      error: isError(e) ? e : new Error(String(e)),
+      error: threwError(e) ? e : new Error(String(e)),
     };
   }
 }

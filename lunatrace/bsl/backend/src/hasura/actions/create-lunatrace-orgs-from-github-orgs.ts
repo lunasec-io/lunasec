@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1
+ * Licensed under the Business Source License v1.1 
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -11,19 +11,27 @@
  * limitations under the License.
  *
  */
+import { RepositoriesForInstallationResponse } from '../../types/github';
+import {OrganizationInputLookup, UpsertOrganizationResponse} from '../../types/hasura';
+import { MaybeError } from '../../types/util';
+import { errorResponse, logError } from '../../utils/errors';
+import {log} from "../../utils/log";
+import { catchError, threwError, Try } from '../../utils/try';
 import {
   Github_Repositories_Constraint,
   Github_Repositories_On_Conflict,
   Github_Repositories_Update_Column,
+  Organizations_Constraint,
   Organizations_Insert_Input,
+  Organizations_On_Conflict,
+  Organizations_Update_Column,
   Projects_Constraint,
   Projects_Insert_Input,
   Projects_On_Conflict,
   Projects_Update_Column,
-} from '../hasura-api/generated';
-import { ListReposAccessibleToInstallationResponseType } from '../types/github';
-
-export type OrganizationInputLookup = Record<string, Organizations_Insert_Input>;
+  UpsertOrganizationsMutation,
+} from '../generated';
+import { hasura } from '../index';
 
 function getExistingProjects(orgLookup: OrganizationInputLookup, orgName: string) {
   const existingOrg = orgLookup[orgName];
@@ -33,12 +41,10 @@ function getExistingProjects(orgLookup: OrganizationInputLookup, orgName: string
   return existingOrg.projects.data;
 }
 
-export function lunatraceOrgsFromGithubOrgs(
+export function hasuraOrgsFromGithubRepositories(
   installationId: number,
-  repositories: ListReposAccessibleToInstallationResponseType
+  repositories: RepositoriesForInstallationResponse
 ): OrganizationInputLookup {
-  console.log(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
-
   return repositories.reduce((orgLookup, repo) => {
     const orgName = repo.owner.login;
     // Deprecated. Use Node ID
@@ -98,4 +104,58 @@ export function lunatraceOrgsFromGithubOrgs(
       [orgName]: orgData,
     };
   }, {} as OrganizationInputLookup);
+}
+
+export async function createLunatraceOrgsFromGithubOrgs(
+  installationId: number,
+  orgObjectList: Organizations_Insert_Input[]
+): Promise<MaybeError<UpsertOrganizationResponse[]>> {
+  log.info(
+    `[installId: ${installationId}] Creating LunaTrace organizations and projects: ${orgObjectList.map(
+      (org) => org.name
+    )}`
+  );
+
+  const onOrgConflict: Organizations_On_Conflict = {
+    constraint: Organizations_Constraint.OrganizationsGithubIdKey,
+    update_columns: [
+      Organizations_Update_Column.GithubOwnerType,
+      Organizations_Update_Column.GithubId,
+      Organizations_Update_Column.GithubNodeId,
+      Organizations_Update_Column.InstallationId,
+      Organizations_Update_Column.CreatorId,
+      Organizations_Update_Column.Name,
+    ],
+  };
+
+  const createOrgsRes: Try<UpsertOrganizationsMutation> = await catchError(
+    async () =>
+      await hasura.UpsertOrganizations({
+        objects: orgObjectList,
+        on_conflict: onOrgConflict,
+      })
+  );
+
+  if (threwError(createOrgsRes)) {
+    logError(createOrgsRes);
+    return {
+      error: true,
+      msg: 'unable to create LunaTrace organizations from collected Github Organizations.',
+    };
+  }
+
+  const orgIds: UpsertOrganizationResponse[] = createOrgsRes.insert_organizations
+    ? createOrgsRes.insert_organizations.returning.map((o) => {
+      return {
+        id: o.id as string,
+        github_node_id: o.github_node_id || null,
+        name: o.name 
+      }
+    })
+    : [];
+
+  return {
+    error: false,
+    res: orgIds,
+  };
 }

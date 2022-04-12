@@ -16,14 +16,14 @@ insert_permissions:
         organization:
           organization_users:
             user:
-              id:
+              kratos_id:
                 _eq: X-Hasura-User-Id
     columns:
     - access_token
     - name
     - project_uuid
     set:
-      created_by_user_id: x-hasura-User-Id
+      created_by_user_id: X-Hasura-User-Id
   role: user
 select_permissions:
 - permission:
@@ -55,7 +55,7 @@ select_permissions:
         organization:
           organization_users:
             user:
-              id:
+              kratos_id:
                 _eq: X-Hasura-User-Id
   role: user
 delete_permissions:
@@ -65,6 +65,6 @@ delete_permissions:
         organization:
           organization_users:
             user:
-              id:
+              kratos_id:
                 _eq: X-Hasura-User-Id
   role: user

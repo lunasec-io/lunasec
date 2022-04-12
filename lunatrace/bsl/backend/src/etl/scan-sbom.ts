@@ -17,32 +17,32 @@ import zlib from 'zlib';
 import markdownTable from 'markdown-table';
 import validate from 'validator';
 
-import { generateGithubGraphqlClient } from '../github';
-import { getInstallationAccessToken } from '../github/auth';
-import { hasura } from '../hasura-api';
-import { Scans_Insert_Input } from '../hasura-api/generated';
+import {commentOnPullRequest} from "../github/actions/comment-on-pull-request";
+import { hasura } from '../hasura';
+import { Scans_Insert_Input } from '../hasura/generated';
 import { parseAndUploadScan } from '../models/scan';
 import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
-import { isError, tryF } from '../utils/try';
+import { log } from '../utils/log';
+import { catchError, threwError } from '../utils/try';
 
 import { groupByPackage, VulnerablePackage } from './report-generator/group-findings';
 
 function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gzip> {
   return new Promise((resolve, reject) => {
-    console.debug('started streaming file from s3');
+    log.debug('started streaming file from s3');
 
     const chunkSize = streamLength < 1024 * 256 ? streamLength : 1024 * 256;
 
     const gunzip = zlib.createGunzip({ chunkSize: chunkSize < 64 ? 64 : chunkSize });
 
-    console.debug('started unzipping file');
+    log.debug('started unzipping file');
     const unZippedSbomStream = stream.pipe(gunzip);
     unZippedSbomStream.on('error', (e) => {
-      console.error('Error unzipping sbom ', e);
-      unZippedSbomStream.end(() => console.log('closed stream due to error'));
+      log.error('Error unzipping sbom ', e);
+      unZippedSbomStream.end(() => log.info('closed stream due to error'));
       reject(e);
     });
 
@@ -51,7 +51,7 @@ function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gz
 }
 
 async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<Scans_Insert_Input> {
-  console.log(`[buildId: ${buildId}]`, `scanning sbom ${JSON.stringify(sbomBucketInfo)}`);
+  log.info(`[buildId: ${buildId}]`, `scanning sbom ${JSON.stringify(sbomBucketInfo)}`);
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
     sbomBucketInfo.key,
@@ -61,15 +61,15 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
 
   const unZippedSbomStream = await decompressGzip(sbomStream, sbomLength);
 
-  console.log(`[buildId: ${buildId}]`, `updating manifest status to "scanning" if it existed`);
+  log.info(`[buildId: ${buildId}]`, `updating manifest status to "scanning" if it existed`);
   await hasura.UpdateManifestStatusIfExists({ status: 'scanning', buildId: buildId });
 
   const scanReport = await parseAndUploadScan(unZippedSbomStream, buildId);
 
-  console.log(`[buildId: ${buildId}]`, 'upload complete, notifying manifest if one exists');
+  log.info(`[buildId: ${buildId}]`, 'upload complete, notifying manifest if one exists');
   await hasura.UpdateManifestStatusIfExists({ status: 'scanned', buildId: buildId });
 
-  console.log(`[buildId: ${buildId}]`, 'done with scan');
+  log.info(`[buildId: ${buildId}]`, 'done with scan');
 
   return scanReport;
 }
@@ -127,7 +127,7 @@ async function commentOnPrIfExists(buildId: string, scanReport: Scans_Insert_Inp
     !buildLookup.builds_by_pk.project ||
     !buildLookup.builds_by_pk.project.organization
   ) {
-    console.error(`unable to get required scan notify information for buildId: ${buildId}`);
+    log.error(`unable to get required scan notify information for buildId: ${buildId}`);
     return;
   }
 
@@ -136,45 +136,28 @@ async function commentOnPrIfExists(buildId: string, scanReport: Scans_Insert_Inp
   const pullRequestId = buildLookup.builds_by_pk.pull_request_id;
 
   if (!installationId) {
-    console.log(
+    log.error(
       `installation id is not defined for the organization linked to build: ${buildId}, skipping github PR comment`
     );
     return;
   }
 
   if (!pullRequestId) {
-    console.log(
+    log.error(
       `pull request id is not defined for buildId: ${buildId}, skipping comment because this build did not come from a PR`
     );
     return;
   }
 
-  const installationToken = await getInstallationAccessToken(installationId);
-
-  const github = generateGithubGraphqlClient(installationToken);
-
   const body = generatePullRequestCommentFromReport(projectId, scanReport);
-
-  if (body === null) {
-    console.error(`generated scan report is null`, {
-      projectId,
-      installationId,
-      pullRequestId,
-    });
-    return;
-  }
-
-  await github.AddComment({
-    subjectId: pullRequestId.toString(),
-    body,
-  });
+  await commentOnPullRequest(installationId, pullRequestId, body);
 }
 
 export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSuccessResult | QueueErrorResult> {
   const { key, region, bucketName } = message;
   const buildId = key.split('/').pop();
   if (!buildId || !validate.isUUID(buildId)) {
-    console.error('invalid build uuid from s3 object at key ', key);
+    log.error('invalid build uuid from s3 object at key ', key);
     // not much we can do without a valid buildId
     return {
       success: false,
@@ -184,10 +167,10 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
 
   const bucketInfo: SbomBucketInfo = { region, bucketName, key };
 
-  const scanResp = await tryF<Scans_Insert_Input>(async () => await scanSbom(buildId, bucketInfo));
+  const scanResp = await catchError<Scans_Insert_Input>(async () => await scanSbom(buildId, bucketInfo));
 
-  if (isError(scanResp)) {
-    console.error('Sbom Scanning Error:', { scanResp });
+  if (threwError(scanResp)) {
+    log.error('Sbom Scanning Error:', { scanResp });
     await hasura.UpdateManifestStatusIfExists({
       status: 'error',
       message: String(scanResp.message),

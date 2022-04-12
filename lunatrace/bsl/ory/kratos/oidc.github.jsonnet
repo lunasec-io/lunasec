@@ -16,7 +16,8 @@ local claims = {
       [if "username" in claims then "username" else null]: claims.nickname,
       [if "website" in claims then "website" else null]: claims.website,
       [if "picture" in claims then "picture" else null]: claims.picture,
-      [if "profile" in claims then "profileUrl" else null]: claims.profile
+      [if "profile" in claims then "profileUrl" else null]: claims.profile,
+      [if "sub" in claims then "githubId" else null]: claims.sub
     },
   },
 }
