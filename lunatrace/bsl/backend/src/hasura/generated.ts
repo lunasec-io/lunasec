@@ -146,6 +146,7 @@ export type Builds = {
   agent_access_token: Scalars['uuid'];
   build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
+  existing_github_review_id?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
   /** An aggregate relationship */
@@ -301,6 +302,7 @@ export type Builds_Bool_Exp = {
   agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
   git_branch?: InputMaybe<String_Comparison_Exp>;
   git_hash?: InputMaybe<String_Comparison_Exp>;
@@ -335,6 +337,7 @@ export type Builds_Insert_Input = {
   agent_access_token?: InputMaybe<Scalars['uuid']>;
   build_number?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
+  existing_github_review_id?: InputMaybe<Scalars['String']>;
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
   git_branch?: InputMaybe<Scalars['String']>;
   git_hash?: InputMaybe<Scalars['String']>;
@@ -355,6 +358,7 @@ export type Builds_Max_Fields = {
   agent_access_token?: Maybe<Scalars['uuid']>;
   build_number?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
   git_remote?: Maybe<Scalars['String']>;
@@ -369,6 +373,7 @@ export type Builds_Max_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
   git_branch?: InputMaybe<Order_By>;
   git_hash?: InputMaybe<Order_By>;
   git_remote?: InputMaybe<Order_By>;
@@ -384,6 +389,7 @@ export type Builds_Min_Fields = {
   agent_access_token?: Maybe<Scalars['uuid']>;
   build_number?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
   git_remote?: Maybe<Scalars['String']>;
@@ -398,6 +404,7 @@ export type Builds_Min_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
   git_branch?: InputMaybe<Order_By>;
   git_hash?: InputMaybe<Order_By>;
   git_remote?: InputMaybe<Order_By>;
@@ -435,6 +442,7 @@ export type Builds_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
   findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
   git_branch?: InputMaybe<Order_By>;
   git_hash?: InputMaybe<Order_By>;
@@ -463,6 +471,8 @@ export enum Builds_Select_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
+  ExistingGithubReviewId = 'existing_github_review_id',
+  /** column name */
   GitBranch = 'git_branch',
   /** column name */
   GitHash = 'git_hash',
@@ -485,6 +495,7 @@ export type Builds_Set_Input = {
   agent_access_token?: InputMaybe<Scalars['uuid']>;
   build_number?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
+  existing_github_review_id?: InputMaybe<Scalars['String']>;
   git_branch?: InputMaybe<Scalars['String']>;
   git_hash?: InputMaybe<Scalars['String']>;
   git_remote?: InputMaybe<Scalars['String']>;
@@ -560,6 +571,8 @@ export enum Builds_Update_Column {
   BuildNumber = 'build_number',
   /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  ExistingGithubReviewId = 'existing_github_review_id',
   /** column name */
   GitBranch = 'git_branch',
   /** column name */
