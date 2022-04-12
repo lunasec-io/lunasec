@@ -17,6 +17,8 @@ import { generateSbomFromAsset } from '../cli/call-cli';
 import {uploadSbomToS3} from "../etl/generate-sbom";
 import {hasura} from "../hasura";
 import {GetProjectIdFromGitUrlQuery, InsertBuildMutation} from '../hasura/generated';
+import {logError} from "../utils/errors";
+import {normalizeGithubId} from "../utils/github";
 import { log } from '../utils/log';
 import { catchError, threwError, Try } from '../utils/try';
 
@@ -24,6 +26,89 @@ import { getInstallationAccessToken } from './auth';
 
 export const webhooks = new Webhooks({
   secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
+});
+
+webhooks.on('organization', async (event) => {
+  log.debug('organization webhook event', {
+    action: event.payload.action
+  });
+  if (event.payload.action === 'member_added') {
+    if (!event.payload.installation) {
+      log.error('organization member_added has undefined installation', event.payload);
+      return;
+    }
+
+    const installationId = event.payload.installation.id;
+    const githubNodeId = event.payload.membership.user.node_id;
+    const githubId = normalizeGithubId(githubNodeId);
+
+    log.info('organization member_added, associating user with organization identified by installation id', {
+      installationId,
+      githubNodeId
+    });
+
+      // create or get an existing user
+    const user = await catchError(async () => await hasura.UpsertUserFromId({
+      user: {
+        github_id: githubId,
+        github_node_id: githubNodeId,
+      }
+    }));
+
+    if (threwError(user)) {
+      logError(user);
+      return;
+    }
+
+    if (!user.insert_users_one) {
+      log.error('unable to upsert user with github node id', {
+        installationId,
+        githubNodeId
+      });
+      return;
+    }
+    const userId = user.insert_users_one.id;
+
+    // get the organization that is referred to by the installation id
+    const org = await catchError(async () => await hasura.GetOrganizationFromInstallationId({
+      installation_id: installationId
+    }))
+
+    if (threwError(org)) {
+      logError(org);
+      return;
+    }
+
+    if (org.organizations.length !== 1) {
+      log.error('organizations for installation id is not exactly one result', {
+        installationId,
+        githubNodeId
+      });
+      return;
+    }
+
+    const orgId = org.organizations[0].id;
+
+    // create the association between the two
+    const res = await catchError(async () => await hasura.UpsertOrganizationUsers({
+      organizationUsers: [{
+        user_id: userId,
+        organization_id: orgId
+      }]
+    }));
+
+    if (threwError(res)) {
+      logError(res);
+      return;
+    }
+
+    log.info('created user and associated it with organization identified by installation id', {
+      installationId,
+      githubNodeId,
+      orgId,
+      userId
+    })
+  }
 });
 
 webhooks.on('pull_request', async (event) => {

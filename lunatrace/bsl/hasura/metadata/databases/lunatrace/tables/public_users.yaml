@@ -10,13 +10,15 @@ insert_permissions:
     backend_only: false
     check: {}
     columns:
-    - id
+    - github_id
     - github_node_id
+    - id
     - kratos_id
   role: service
 select_permissions:
 - permission:
     columns:
+    - github_id
     - github_node_id
     - id
     - kratos_id
@@ -35,6 +37,7 @@ update_permissions:
 - permission:
     check: null
     columns:
+    - github_id
     - github_node_id
     - id
     - kratos_id

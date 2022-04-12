@@ -22,7 +22,7 @@ import {
 import { RepositoriesForInstallationResponse } from '../types/github';
 import { errorResponse, logError } from '../utils/errors';
 import { log } from '../utils/log';
-import { tryParseInt } from '../utils/parse-int';
+import { tryParseInt } from '../utils/parse';
 import { catchError, threwError, Try } from '../utils/try';
 
 import { getGithubReposForInstallation } from './actions/get-github-repos-for-installation';

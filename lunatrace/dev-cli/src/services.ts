@@ -15,7 +15,7 @@
  *
  */
 import {waitForItScript} from "./constants";
-import {backendEnv, manifestEtlEnv, sbomEtlEnv} from "./env";
+import {backendEnv, manifestEtlEnv, sbomEtlEnv, smeeWebhookUrl} from "./env";
 import {tmuxPane} from "./tmux";
 
 function waitForItCmd(host: string, port: number) {
@@ -58,3 +58,7 @@ export const sbomEtl = tmuxPane([
   'cd backend',
   `${sbomEtlEnv} yarn run start:etl`
 ]);
+
+export const smeeWebhook = tmuxPane([
+  `smee -u ${smeeWebhookUrl} -p 3002 -P /github/webhook/events`
+])
