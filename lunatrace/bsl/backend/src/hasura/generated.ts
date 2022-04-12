@@ -7353,7 +7353,8 @@ export type Timestamptz_Comparison_Exp = {
  */
 export type Users = {
   __typename?: 'users';
-  github_node_id: Scalars['String'];
+  github_id: Scalars['String'];
+  github_node_id?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   kratos_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
@@ -7387,6 +7388,7 @@ export type Users_Bool_Exp = {
   _and?: InputMaybe<Array<Users_Bool_Exp>>;
   _not?: InputMaybe<Users_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Bool_Exp>>;
+  github_id?: InputMaybe<String_Comparison_Exp>;
   github_node_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -7396,6 +7398,8 @@ export type Users_Bool_Exp = {
 /** unique or primary key constraints on table "users" */
 export enum Users_Constraint {
   /** unique or primary key constraint */
+  UsersGithubIdKey = 'users_github_id_key',
+  /** unique or primary key constraint */
   UsersGithubNodeIdKey = 'users_github_node_id_key',
   /** unique or primary key constraint */
   UsersPkey = 'users_pkey'
@@ -7403,6 +7407,7 @@ export enum Users_Constraint {
 
 /** input type for inserting data into table "users" */
 export type Users_Insert_Input = {
+  github_id?: InputMaybe<Scalars['String']>;
   github_node_id?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -7412,6 +7417,7 @@ export type Users_Insert_Input = {
 /** aggregate max on columns */
 export type Users_Max_Fields = {
   __typename?: 'users_max_fields';
+  github_id?: Maybe<Scalars['String']>;
   github_node_id?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   kratos_id?: Maybe<Scalars['uuid']>;
@@ -7420,6 +7426,7 @@ export type Users_Max_Fields = {
 /** aggregate min on columns */
 export type Users_Min_Fields = {
   __typename?: 'users_min_fields';
+  github_id?: Maybe<Scalars['String']>;
   github_node_id?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   kratos_id?: Maybe<Scalars['uuid']>;
@@ -7450,6 +7457,7 @@ export type Users_On_Conflict = {
 
 /** Ordering options when selecting data from "users". */
 export type Users_Order_By = {
+  github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
@@ -7464,6 +7472,8 @@ export type Users_Pk_Columns_Input = {
 /** select columns of table "users" */
 export enum Users_Select_Column {
   /** column name */
+  GithubId = 'github_id',
+  /** column name */
   GithubNodeId = 'github_node_id',
   /** column name */
   Id = 'id',
@@ -7473,6 +7483,7 @@ export enum Users_Select_Column {
 
 /** input type for updating data in table "users" */
 export type Users_Set_Input = {
+  github_id?: InputMaybe<Scalars['String']>;
   github_node_id?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -7480,6 +7491,8 @@ export type Users_Set_Input = {
 
 /** update columns of table "users" */
 export enum Users_Update_Column {
+  /** column name */
+  GithubId = 'github_id',
   /** column name */
   GithubNodeId = 'github_node_id',
   /** column name */
@@ -8282,6 +8295,13 @@ export type GetCountOfPersonalOrgQueryVariables = Exact<{
 
 export type GetCountOfPersonalOrgQuery = { __typename?: 'query_root', organizations_aggregate: { __typename?: 'organizations_aggregate', aggregate?: { __typename?: 'organizations_aggregate_fields', count: number } | null } };
 
+export type GetOrganizationFromInstallationIdQueryVariables = Exact<{
+  installation_id?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetOrganizationFromInstallationIdQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any }> };
+
 export type GetPackageAndVulnFromSlugsQueryVariables = Exact<{
   vuln_slug?: InputMaybe<Scalars['String']>;
   pkg_slug?: InputMaybe<Scalars['String']>;
@@ -8418,6 +8438,13 @@ export const GetCountOfPersonalOrgDocument = gql`
   }
 }
     `;
+export const GetOrganizationFromInstallationIdDocument = gql`
+    query GetOrganizationFromInstallationId($installation_id: Int) {
+  organizations(where: {installation_id: {_eq: $installation_id}}) {
+    id
+  }
+}
+    `;
 export const GetPackageAndVulnFromSlugsDocument = gql`
     query GetPackageAndVulnFromSlugs($vuln_slug: String, $pkg_slug: String, $version_slug: String) {
   vulnerabilities(where: {slug: {_eq: $vuln_slug}}) {
@@ -8551,7 +8578,7 @@ export const UpsertUserFromIdDocument = gql`
     mutation UpsertUserFromId($user: users_insert_input!) {
   insert_users_one(
     object: $user
-    on_conflict: {constraint: users_github_node_id_key, update_columns: github_node_id}
+    on_conflict: {constraint: users_github_id_key, update_columns: github_node_id}
   ) {
     id
   }
@@ -8573,6 +8600,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetCountOfPersonalOrg(variables: GetCountOfPersonalOrgQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCountOfPersonalOrgQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetCountOfPersonalOrgQuery>(GetCountOfPersonalOrgDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetCountOfPersonalOrg', 'query');
+    },
+    GetOrganizationFromInstallationId(variables?: GetOrganizationFromInstallationIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetOrganizationFromInstallationIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetOrganizationFromInstallationIdQuery>(GetOrganizationFromInstallationIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetOrganizationFromInstallationId', 'query');
     },
     GetPackageAndVulnFromSlugs(variables?: GetPackageAndVulnFromSlugsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPackageAndVulnFromSlugsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPackageAndVulnFromSlugsQuery>(GetPackageAndVulnFromSlugsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPackageAndVulnFromSlugs', 'query');

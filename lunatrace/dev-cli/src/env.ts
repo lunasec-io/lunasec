@@ -32,6 +32,8 @@ export const githubAppConfig = {
   GITHUB_APP_PRIVATE_KEY: `$(cat github-app-dev.2022-03-09.private-key.pem | base64 -w0)`
 }
 
+export const smeeWebhookUrl = 'https://smee.io/PFQhzcyUpi770GiD';
+
 export const backendEnv = envVars({
   ...githubAppConfig
 });

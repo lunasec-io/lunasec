@@ -24,7 +24,7 @@ import { dump } from 'js-yaml';
 
 import {bslDir, hasuraDir, kratosDir, tmuxpConfgFile} from "./constants";
 import {dbUrlEnv} from "./env";
-import {backend, dockerCompose, frontend, hasura, manifestEtl, oathkeeper, sbomEtl} from "./services";
+import {backend, dockerCompose, frontend, hasura, manifestEtl, oathkeeper, sbomEtl, smeeWebhook} from "./services";
 import {tmuxpConfig, tmuxWindow } from "./tmux";
 
 
@@ -32,10 +32,14 @@ dotenv.config()
 
 const servicesWindow = tmuxWindow('services', [
   oathkeeper,
-  backend,
   hasura,
   frontend,
-  dockerCompose
+  dockerCompose,
+]);
+
+const backendWindow = tmuxWindow('backend', [
+  smeeWebhook,
+  backend
 ]);
 
 const etlWindow = tmuxWindow('etl', [
@@ -45,6 +49,7 @@ const etlWindow = tmuxWindow('etl', [
 
 const config = tmuxpConfig('lunatrace', [
   servicesWindow,
+  backendWindow,
   etlWindow
 ]);
 

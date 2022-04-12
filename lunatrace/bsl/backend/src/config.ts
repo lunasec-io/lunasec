@@ -84,7 +84,7 @@ export function getQueueHandlerConfig(): QueueHandlerConfig {
 
 export function getGithubAppConfig(): GithubAppConfig {
   const githubEndpoint = checkEnvVar('GITHUB_ENDPOINT', 'https://api.github.com/graphql');
-  const githubWebhook = checkEnvVar('GITHUB_WEBHOOK', 'https://smee.io/KuCg2ASc4kBuNQte');
+  const githubWebhook = checkEnvVar('GITHUB_WEBHOOK', 'https://smee.io/PFQhzcyUpi770GiD');
 
   const githubPrivateKeyRaw = checkEnvVar('GITHUB_APP_PRIVATE_KEY');
   const githubPrivateKey = Buffer.from(githubPrivateKeyRaw, 'base64').toString('utf-8');
