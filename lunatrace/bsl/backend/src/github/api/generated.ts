@@ -24037,7 +24037,7 @@ export const AddCommentDocument = gql`
 }
     `;
 export const AddPrReviewDocument = gql`
-    mutation addPrReview($pull_request_id: ID!, $body: String!) {
+    mutation AddPrReview($pull_request_id: ID!, $body: String!) {
   submitPullRequestReview(
     input: {event: COMMENT, body: $body, pullRequestId: $pull_request_id}
   ) {
@@ -24067,7 +24067,7 @@ export const GetUserOrganizationsDocument = gql`
 }
     `;
 export const UpdatePrReviewDocument = gql`
-    mutation updatePrReview($pull_request_review_id: ID!, $body: String!) {
+    mutation UpdatePrReview($pull_request_review_id: ID!, $body: String!) {
   updatePullRequestReview(
     input: {pullRequestReviewId: $pull_request_review_id, body: $body}
   ) {
@@ -24088,14 +24088,14 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     AddComment(variables: AddCommentMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddCommentMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<AddCommentMutation>(AddCommentDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AddComment', 'mutation');
     },
-    addPrReview(variables: AddPrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddPrReviewMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AddPrReviewMutation>(AddPrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'addPrReview', 'mutation');
+    AddPrReview(variables: AddPrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddPrReviewMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AddPrReviewMutation>(AddPrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AddPrReview', 'mutation');
     },
     GetUserOrganizations(variables?: GetUserOrganizationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserOrganizationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserOrganizationsQuery>(GetUserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserOrganizations', 'query');
     },
-    updatePrReview(variables: UpdatePrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdatePrReviewMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpdatePrReviewMutation>(UpdatePrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updatePrReview', 'mutation');
+    UpdatePrReview(variables: UpdatePrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdatePrReviewMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdatePrReviewMutation>(UpdatePrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdatePrReview', 'mutation');
     }
   };
 }
