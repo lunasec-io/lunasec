@@ -19,21 +19,24 @@ import {
 } from "../../hasura/generated";
 import {MaybeError} from "../../types/util";
 import {logError} from "../../utils/errors";
+import { normalizeGithubId } from "../../utils/github";
 import {log} from "../../utils/log";
 import {notEmpty} from "../../utils/predicates";
 import {catchError, threwError} from "../../utils/try";
 
 import {getGithubOrganizationMembers} from "./get-members-for-organization";
 
-function newOrganizationUser(hasuraOrgId: string, githubUserId: string): Organization_User_Insert_Input {
+function newOrganizationUser(hasuraOrgId: string, githubNodeId: string): Organization_User_Insert_Input {
+  const githubId = normalizeGithubId(githubNodeId);
   return {
     organization_id: hasuraOrgId,
     user: {
       data: {
-        github_node_id: githubUserId,
+        github_node_id: githubNodeId,
+        github_id: githubId,
       },
       on_conflict: {
-        constraint: Users_Constraint.UsersGithubNodeIdKey,
+        constraint: Users_Constraint.UsersGithubIdKey,
         update_columns: [Users_Update_Column.GithubNodeId]
       }
     }

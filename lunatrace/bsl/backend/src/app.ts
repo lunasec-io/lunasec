@@ -16,7 +16,6 @@ import { randomUUID } from 'crypto';
 import { createNodeMiddleware } from '@octokit/webhooks';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import EventSource from 'eventsource';
 import Express, {NextFunction, Request, Response } from 'express';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
@@ -33,23 +32,7 @@ const jwksConfig = getJwksConfig();
 const githubConfig = getGithubAppConfig();
 const serverConfig = getServerConfig();
 
-const source = new EventSource(githubConfig.githubWebhook);
-
 dotenv.config();
-
-if (serverConfig.isProduction) {
-  source.onmessage = (event) => {
-    const webhookEvent = JSON.parse(event.data);
-    webhooks
-      .verifyAndReceive({
-        id: webhookEvent['x-request-id'],
-        name: webhookEvent['x-github-event'],
-        signature: webhookEvent['x-hub-signature'],
-        payload: webhookEvent.body,
-      })
-      .catch(log.error);
-  };
-}
 
 const app = Express();
 app.use(cors());
