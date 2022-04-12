@@ -1,3 +1,16 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1 
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -4580,6 +4593,13 @@ export type GetPackageAndVulnFromSlugsQueryVariables = Exact<{
 
 export type GetPackageAndVulnFromSlugsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', id: any }>, package_versions: Array<{ __typename?: 'package_versions', id: any }> };
 
+export type GetPreviousBuildForPrQueryVariables = Exact<{
+  pull_request_id: Scalars['String'];
+}>;
+
+
+export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', pull_request_id?: string | null }> };
+
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
   s3_url?: InputMaybe<Scalars['String']>;
@@ -4619,6 +4639,14 @@ export type SetBuildS3UrlMutationVariables = Exact<{
 
 
 export type SetBuildS3UrlMutation = { __typename?: 'mutation_root', update_builds_by_pk?: { __typename?: 'builds', id: any } | null };
+
+export type UpdateBuildExistingReviewIdMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  existing_github_review_id: Scalars['String'];
+}>;
+
+
+export type UpdateBuildExistingReviewIdMutation = { __typename?: 'mutation_root', update_builds_by_pk?: { __typename?: 'builds', id: any } | null };
 
 export type UpdateManifestStatusIfExistsMutationVariables = Exact<{
   buildId: Scalars['uuid'];
@@ -4716,6 +4744,16 @@ export const GetPackageAndVulnFromSlugsDocument = gql`
   }
 }
     `;
+export const GetPreviousBuildForPrDocument = gql`
+    query GetPreviousBuildForPr($pull_request_id: String!) {
+  builds(
+    where: {_and: {existing_github_review_id: {_is_null: false}, pull_request_id: {_eq: $pull_request_id}}}
+    order_by: {created_at: desc}
+  ) {
+    pull_request_id
+  }
+}
+    `;
 export const InsertBuildDocument = gql`
     mutation InsertBuild($project_id: uuid!, $s3_url: String, $pull_request_id: String, $source_type: builds_source_type!) {
   insert_builds_one(
@@ -4796,6 +4834,16 @@ export const SetBuildS3UrlDocument = gql`
   }
 }
     `;
+export const UpdateBuildExistingReviewIdDocument = gql`
+    mutation UpdateBuildExistingReviewId($id: uuid!, $existing_github_review_id: String!) {
+  update_builds_by_pk(
+    pk_columns: {id: $id}
+    _set: {existing_github_review_id: $existing_github_review_id}
+  ) {
+    id
+  }
+}
+    `;
 export const UpdateManifestStatusIfExistsDocument = gql`
     mutation UpdateManifestStatusIfExists($buildId: uuid!, $message: String, $status: String!) {
   update_manifests(
@@ -4861,6 +4909,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetPackageAndVulnFromSlugs(variables?: GetPackageAndVulnFromSlugsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPackageAndVulnFromSlugsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPackageAndVulnFromSlugsQuery>(GetPackageAndVulnFromSlugsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPackageAndVulnFromSlugs', 'query');
     },
+    GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
+    },
     InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');
     },
@@ -4875,6 +4926,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     SetBuildS3Url(variables: SetBuildS3UrlMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SetBuildS3UrlMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<SetBuildS3UrlMutation>(SetBuildS3UrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'SetBuildS3Url', 'mutation');
+    },
+    UpdateBuildExistingReviewId(variables: UpdateBuildExistingReviewIdMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateBuildExistingReviewIdMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateBuildExistingReviewIdMutation>(UpdateBuildExistingReviewIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateBuildExistingReviewId', 'mutation');
     },
     UpdateManifestStatusIfExists(variables: UpdateManifestStatusIfExistsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateManifestStatusIfExistsMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateManifestStatusIfExistsMutation>(UpdateManifestStatusIfExistsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateManifestStatusIfExists', 'mutation');
