@@ -1,9 +1,0 @@
-mutation CreatePullRequestReview($pullRequestId: ID!, $comments: [DraftPullRequestReviewComment], $threads: [DraftPullRequestReviewThread]) {
-  addPullRequestReview(
-    input: {pullRequestId: $pullRequestId, comments: $comments, threads: $threads}
-  ) {
-    pullRequestReview {
-      id
-    }
-  }
-}
