@@ -14,12 +14,12 @@
 import express from 'express';
 import { v4 as uuid } from 'uuid';
 
-import { getBucketConfig } from '../config';
+import { getEtlBucketConfig } from '../config';
 import { aws } from '../utils/aws-utils';
 
 export const manifestPresignerRouter = express.Router();
 
-const sbomHandlerConfig = getBucketConfig();
+const sbomHandlerConfig = getEtlBucketConfig();
 
 manifestPresignerRouter.post('/s3/presign-manifest-upload', async (req, res) => {
   const projectId = req.body.input.project_id as string | undefined;

@@ -15,15 +15,16 @@ import { spawn } from 'child_process';
 import { writeFileSync } from 'fs';
 import Stream, { Readable } from 'stream';
 
-import { hasura } from '../hasura-api';
+import { hasura } from '../hasura';
 import {
   Findings_Arr_Rel_Insert_Input,
   Findings_Constraint,
   Findings_Insert_Input,
   Findings_Update_Column,
   Scans_Insert_Input,
-} from '../hasura-api/generated';
+} from '../hasura/generated';
 import { Convert, GrypeScanReport, Match } from '../types/grype-scan-report';
+import {log} from "../utils/log";
 
 export async function parseAndUploadScan(sbomStream: Readable, buildId: string): Promise<Scans_Insert_Input> {
   const rawGrypeReport = await runGrypeScan(sbomStream);
@@ -47,8 +48,8 @@ export async function runGrypeScan(sbomStream: Readable): Promise<string> {
       outputBuffers.push(Buffer.from(chunk));
     });
     lunatraceCli.stderr.on('data', (errorChunk) => {
-      console.error('LunaTrace CLI StdErr Output:');
-      console.error(errorChunk.toString());
+      log.error('LunaTrace CLI StdErr Output:');
+      log.error(errorChunk.toString());
     });
     lunatraceCli.on('close', (code) => {
       if (code !== 0) {
@@ -58,7 +59,7 @@ export async function runGrypeScan(sbomStream: Readable): Promise<string> {
     });
     sbomStream.on('data', (chunk) => lunatraceCli.stdin.write(chunk));
     sbomStream.on('end', () =>
-      lunatraceCli.stdin.end(() => console.log('Finished passing sbom contents to lunatrace CLI'))
+      lunatraceCli.stdin.end(() => log.info('Finished passing sbom contents to lunatrace CLI'))
     );
     sbomStream.on('error', reject);
   });
@@ -136,12 +137,12 @@ async function parseMatches(buildId: string, matches: Match[]): Promise<Findings
           const package_version_id = ids.package_versions.length >= 1 ? ids.package_versions[0].id : undefined;
 
           if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
-            console.error(
+            log.error(
               'unable to get all required ids when inserting a finding, its likely the vulnerability database is out of sync',
               {
                 slugs,
                 ids,
-                match,
+                vulnerability: match.vulnerability.id,
               }
             );
             return null;

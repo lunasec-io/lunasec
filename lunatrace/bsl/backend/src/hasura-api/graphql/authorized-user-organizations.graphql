@@ -1,6 +1,0 @@
-query AuthorizedUserOrganizations($github_org_ids: [String!]) {
-  organizations(where: {github_node_id: {_in: $github_org_ids}}) {
-    id
-    github_node_id
-  }
-}
