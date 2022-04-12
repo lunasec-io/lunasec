@@ -12413,9 +12413,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunatrace/lunatrace-common@link:../common::locator=frontend-i%20%40workspace%3Alunatrace%2Fbsl%2Ffrontend":
+"@lunatrace/lunatrace-common@link:../common::locator=frontend-lunatrace%40workspace%3Alunatrace%2Fbsl%2Ffrontend":
   version: 0.0.0-use.local
-  resolution: "@lunatrace/lunatrace-common@link:../common::locator=frontend-i%20%40workspace%3Alunatrace%2Fbsl%2Ffrontend"
+  resolution: "@lunatrace/lunatrace-common@link:../common::locator=frontend-lunatrace%40workspace%3Alunatrace%2Fbsl%2Ffrontend"
   languageName: node
   linkType: soft
 
@@ -27722,9 +27722,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"frontend-i @workspace:lunatrace/bsl/frontend":
+"frontend-lunatrace@workspace:lunatrace/bsl/frontend":
   version: 0.0.0-use.local
-  resolution: "frontend-i @workspace:lunatrace/bsl/frontend"
+  resolution: "frontend-lunatrace@workspace:lunatrace/bsl/frontend"
   dependencies:
     "@aws-sdk/client-s3": ^3.52.0
     "@graphql-codegen/cli": 2.3.1
