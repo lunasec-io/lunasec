@@ -14,9 +14,10 @@
 
 import { app } from './app';
 import { getServerConfig } from './config';
+import {log} from "./utils/log";
 
 const serverConfig = getServerConfig();
 
 app.listen(serverConfig.serverPort, () => {
-  console.log('Server is running on port ', serverConfig.serverPort);
+  log.info('Server is running on port ', serverConfig.serverPort);
 });

@@ -79,30 +79,12 @@ export const Login = () => {
 
   return (
     <>
-      {/*<MarginCard>*/}
-      {/*  <CardTitle>{title}</CardTitle>*/}
       <Flow
         onSubmit={(values: SubmitSelfServiceLoginFlowBody) => {
           dispatch(login(navigate, values));
         }}
         flow={flow}
       />
-      {/*</MarginCard>*/}
-      {/*{aal || refresh ? (*/}
-      {/*  <ActionCard>*/}
-      {/*    <CenterLink onClick={() => dispatch(logout(navigate))}>Log out</CenterLink>*/}
-      {/*  </ActionCard>*/}
-      {/*) : (*/}
-      {/*  <>*/}
-      {/*    <ActionCard>*/}
-      {/*      <Link href="/account/register">Create account</Link>*/}
-      {/*    </ActionCard>*/}
-      {/*    <ActionCard>*/}
-      {/*      <Link href="/account/recovery">Recover your account</Link>*/}
-      {/*    </ActionCard>*/}
-      {/*  </>*/}
-      {/*  )}*/}
-      {/*</>*/}
     </>
   );
 };
