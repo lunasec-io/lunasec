@@ -24013,15 +24013,6 @@ export type AddPrReviewMutationVariables = Exact<{
 
 export type AddPrReviewMutation = { __typename?: 'Mutation', submitPullRequestReview?: { __typename?: 'SubmitPullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
 
-export type CreatePullRequestReviewMutationVariables = Exact<{
-  pullRequestId: Scalars['ID'];
-  comments?: InputMaybe<Array<InputMaybe<DraftPullRequestReviewComment>> | InputMaybe<DraftPullRequestReviewComment>>;
-  threads?: InputMaybe<Array<InputMaybe<DraftPullRequestReviewThread>> | InputMaybe<DraftPullRequestReviewThread>>;
-}>;
-
-
-export type CreatePullRequestReviewMutation = { __typename?: 'Mutation', addPullRequestReview?: { __typename?: 'AddPullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
-
 export type GetUserOrganizationsQueryVariables = Exact<{
   orgsAfter?: InputMaybe<Scalars['String']>;
 }>;
@@ -24049,17 +24040,6 @@ export const AddPrReviewDocument = gql`
     mutation addPrReview($pull_request_id: ID!, $body: String!) {
   submitPullRequestReview(
     input: {event: COMMENT, body: $body, pullRequestId: $pull_request_id}
-  ) {
-    pullRequestReview {
-      id
-    }
-  }
-}
-    `;
-export const CreatePullRequestReviewDocument = gql`
-    mutation CreatePullRequestReview($pullRequestId: ID!, $comments: [DraftPullRequestReviewComment], $threads: [DraftPullRequestReviewThread]) {
-  addPullRequestReview(
-    input: {pullRequestId: $pullRequestId, comments: $comments, threads: $threads}
   ) {
     pullRequestReview {
       id
@@ -24110,9 +24090,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     addPrReview(variables: AddPrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddPrReviewMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<AddPrReviewMutation>(AddPrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'addPrReview', 'mutation');
-    },
-    CreatePullRequestReview(variables: CreatePullRequestReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreatePullRequestReviewMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreatePullRequestReviewMutation>(CreatePullRequestReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePullRequestReview', 'mutation');
     },
     GetUserOrganizations(variables?: GetUserOrganizationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserOrganizationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserOrganizationsQuery>(GetUserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserOrganizations', 'query');

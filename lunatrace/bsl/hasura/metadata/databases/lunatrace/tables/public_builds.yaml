@@ -53,6 +53,7 @@ insert_permissions:
     - agent_access_token
     - build_number
     - created_at
+    - existing_github_review_id
     - git_branch
     - git_hash
     - git_remote
@@ -86,6 +87,7 @@ select_permissions:
     - agent_access_token
     - build_number
     - created_at
+    - existing_github_review_id
     - git_branch
     - git_hash
     - git_remote
@@ -100,6 +102,7 @@ select_permissions:
     columns:
     - build_number
     - created_at
+    - existing_github_review_id
     - git_branch
     - git_hash
     - git_remote
@@ -132,15 +135,16 @@ update_permissions:
 - permission:
     check: null
     columns:
+    - agent_access_token
     - build_number
+    - created_at
+    - existing_github_review_id
     - git_branch
     - git_hash
     - git_remote
-    - s3_url
-    - created_at
-    - agent_access_token
     - id
     - project_id
+    - s3_url
     filter: {}
   role: service
 - permission:

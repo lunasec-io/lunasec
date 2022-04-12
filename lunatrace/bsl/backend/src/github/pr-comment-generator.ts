@@ -66,7 +66,7 @@ function generatePullRequestCommentFromReport(projectId: string, scan: InsertedS
 }
 
 export async function commentOnPrIfExists(buildId: string, scanReport: InsertedScan) {
-  const buildLookup = await hasura.GetScanReportNotifyInfoForBuild({
+  const buildLookup = await hasura.GetBuild({
     build_id: buildId,
   });
 
@@ -112,8 +112,8 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     return;
   }
 
-  await github.AddComment({
-    subjectId: pullRequestId.toString(),
+  await github.addPrReview({
+    pull_request_id: pullRequestId.toString(),
     body,
   });
 }

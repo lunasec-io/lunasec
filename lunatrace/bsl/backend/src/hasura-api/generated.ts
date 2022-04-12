@@ -116,6 +116,7 @@ export type Builds = {
   agent_access_token: Scalars['uuid'];
   build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
+  existing_github_review_id?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
   git_branch?: Maybe<Scalars['String']>;
@@ -199,6 +200,7 @@ export type Builds_Bool_Exp = {
   agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
   git_branch?: InputMaybe<String_Comparison_Exp>;
   git_hash?: InputMaybe<String_Comparison_Exp>;
@@ -233,6 +235,7 @@ export type Builds_Insert_Input = {
   agent_access_token?: InputMaybe<Scalars['uuid']>;
   build_number?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
+  existing_github_review_id?: InputMaybe<Scalars['String']>;
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
   git_branch?: InputMaybe<Scalars['String']>;
   git_hash?: InputMaybe<Scalars['String']>;
@@ -252,6 +255,7 @@ export type Builds_Max_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
   git_branch?: InputMaybe<Order_By>;
   git_hash?: InputMaybe<Order_By>;
   git_remote?: InputMaybe<Order_By>;
@@ -266,6 +270,7 @@ export type Builds_Min_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
   git_branch?: InputMaybe<Order_By>;
   git_hash?: InputMaybe<Order_By>;
   git_remote?: InputMaybe<Order_By>;
@@ -303,6 +308,7 @@ export type Builds_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
   findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
   git_branch?: InputMaybe<Order_By>;
   git_hash?: InputMaybe<Order_By>;
@@ -331,6 +337,8 @@ export enum Builds_Select_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
+  ExistingGithubReviewId = 'existing_github_review_id',
+  /** column name */
   GitBranch = 'git_branch',
   /** column name */
   GitHash = 'git_hash',
@@ -353,6 +361,7 @@ export type Builds_Set_Input = {
   agent_access_token?: InputMaybe<Scalars['uuid']>;
   build_number?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
+  existing_github_review_id?: InputMaybe<Scalars['String']>;
   git_branch?: InputMaybe<Scalars['String']>;
   git_hash?: InputMaybe<Scalars['String']>;
   git_remote?: InputMaybe<Scalars['String']>;
@@ -402,6 +411,8 @@ export enum Builds_Update_Column {
   BuildNumber = 'build_number',
   /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  ExistingGithubReviewId = 'existing_github_review_id',
   /** column name */
   GitBranch = 'git_branch',
   /** column name */
@@ -4546,6 +4557,13 @@ export type GetAuthDataFromProjectTokenQueryVariables = Exact<{
 
 export type GetAuthDataFromProjectTokenQuery = { __typename?: 'query_root', project_access_tokens: Array<{ __typename?: 'project_access_tokens', project: { __typename?: 'projects', id: any, builds: Array<{ __typename?: 'builds', id: any }> } }> };
 
+export type GetBuildQueryVariables = Exact<{
+  build_id: Scalars['uuid'];
+}>;
+
+
+export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
+
 export type GetCountOfPersonalOrgQueryVariables = Exact<{
   user_id: Scalars['uuid'];
 }>;
@@ -4561,13 +4579,6 @@ export type GetPackageAndVulnFromSlugsQueryVariables = Exact<{
 
 
 export type GetPackageAndVulnFromSlugsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', id: any }>, package_versions: Array<{ __typename?: 'package_versions', id: any }> };
-
-export type GetScanReportNotifyInfoForBuildQueryVariables = Exact<{
-  build_id: Scalars['uuid'];
-}>;
-
-
-export type GetScanReportNotifyInfoForBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
 
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
@@ -4667,6 +4678,20 @@ export const GetAuthDataFromProjectTokenDocument = gql`
   }
 }
     `;
+export const GetBuildDocument = gql`
+    query GetBuild($build_id: uuid!) {
+  builds_by_pk(id: $build_id) {
+    project {
+      id
+      organization {
+        installation_id
+      }
+    }
+    pull_request_id
+    existing_github_review_id
+  }
+}
+    `;
 export const GetCountOfPersonalOrgDocument = gql`
     query GetCountOfPersonalOrg($user_id: uuid!) {
   organizations_aggregate(
@@ -4688,19 +4713,6 @@ export const GetPackageAndVulnFromSlugsDocument = gql`
   }
   package_versions(where: {slug: {_eq: $version_slug}}) {
     id
-  }
-}
-    `;
-export const GetScanReportNotifyInfoForBuildDocument = gql`
-    query GetScanReportNotifyInfoForBuild($build_id: uuid!) {
-  builds_by_pk(id: $build_id) {
-    project {
-      id
-      organization {
-        installation_id
-      }
-    }
-    pull_request_id
   }
 }
     `;
@@ -4840,14 +4852,14 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetAuthDataFromProjectToken(variables: GetAuthDataFromProjectTokenQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAuthDataFromProjectTokenQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetAuthDataFromProjectTokenQuery>(GetAuthDataFromProjectTokenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetAuthDataFromProjectToken', 'query');
     },
+    GetBuild(variables: GetBuildQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBuildQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetBuildQuery>(GetBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetBuild', 'query');
+    },
     GetCountOfPersonalOrg(variables: GetCountOfPersonalOrgQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCountOfPersonalOrgQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetCountOfPersonalOrgQuery>(GetCountOfPersonalOrgDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetCountOfPersonalOrg', 'query');
     },
     GetPackageAndVulnFromSlugs(variables?: GetPackageAndVulnFromSlugsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPackageAndVulnFromSlugsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPackageAndVulnFromSlugsQuery>(GetPackageAndVulnFromSlugsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPackageAndVulnFromSlugs', 'query');
-    },
-    GetScanReportNotifyInfoForBuild(variables: GetScanReportNotifyInfoForBuildQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetScanReportNotifyInfoForBuildQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetScanReportNotifyInfoForBuildQuery>(GetScanReportNotifyInfoForBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetScanReportNotifyInfoForBuild', 'query');
     },
     InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');
