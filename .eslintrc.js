@@ -63,7 +63,8 @@ module.exports = {
       'lunatrace/bsl/frontend/tsconfig.json',
       'lunatrace/bsl/backend-cdk/tsconfig.json',
       'lunatrace/bsl/backend/tsconfig.json',
-      'lunatrace/dev-cli/tsconfig.json'
+      'lunatrace/dev-cli/tsconfig.json',
+      'lunatrace/bsl/common'
     ]
   },
   plugins: [

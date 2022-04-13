@@ -19,7 +19,7 @@
 // Many TypeScript rules are disabled in order to make this functionality work.
 // Please be extra diligent to test your code if you change this file!
 
-/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 
 import { ExpressContext, SchemaDirectiveVisitor } from 'apollo-server-express';
 import {
