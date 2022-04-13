@@ -15,7 +15,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { generateSbomFromAsset } from '../cli/call-cli';
-import { handleGenerateManifestSbom } from '../sqs-handlers/generate-sbom';
+import { handleGenerateManifestSbom } from '../etl/generate-sbom';
 import { S3ObjectMetadata } from '../types/s3';
 
 const objectMetadata: S3ObjectMetadata = {
