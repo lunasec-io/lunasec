@@ -64,7 +64,7 @@ export default class Input extends Component<InputProps> {
     // TODO: inputRef is leaking into here somehow but not sure where it is being set so ts-ignore to remove it
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const { inputRef, ...scrubbedProps } = otherProps;
 
     return (

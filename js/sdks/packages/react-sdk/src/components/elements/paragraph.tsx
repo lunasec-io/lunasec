@@ -34,7 +34,7 @@ export default class Paragraph extends Component<ParagraphProps> {
     if (!renderData.frameStyleInfo) {
       return null;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const { parentStyle, width, height, ...frameStyle } = renderData.frameStyleInfo;
 
     const iframeStyle: CSSProperties = {
