@@ -1061,8 +1061,6 @@ export type Identities = {
   /** An array relationship */
   identity_verifiable_addresses: Array<Identity_Verifiable_Addresses>;
   nid?: Maybe<Scalars['uuid']>;
-  /** An array relationship */
-  organization_users: Array<Organization_User>;
   schema_id: Scalars['String'];
   state: Scalars['String'];
   state_changed_at?: Maybe<Scalars['timestamp']>;
@@ -1082,16 +1080,6 @@ export type IdentitiesIdentity_Verifiable_AddressesArgs = {
 
 
 /** columns and relationships of "identities" */
-export type IdentitiesOrganization_UsersArgs = {
-  distinct_on?: InputMaybe<Array<Organization_User_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Organization_User_Order_By>>;
-  where?: InputMaybe<Organization_User_Bool_Exp>;
-};
-
-
-/** columns and relationships of "identities" */
 export type IdentitiesTraitsArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
@@ -1105,7 +1093,6 @@ export type Identities_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   identity_verifiable_addresses?: InputMaybe<Identity_Verifiable_Addresses_Bool_Exp>;
   nid?: InputMaybe<Uuid_Comparison_Exp>;
-  organization_users?: InputMaybe<Organization_User_Bool_Exp>;
   schema_id?: InputMaybe<String_Comparison_Exp>;
   state?: InputMaybe<String_Comparison_Exp>;
   state_changed_at?: InputMaybe<Timestamp_Comparison_Exp>;
@@ -1119,7 +1106,6 @@ export type Identities_Order_By = {
   id?: InputMaybe<Order_By>;
   identity_verifiable_addresses_aggregate?: InputMaybe<Identity_Verifiable_Addresses_Aggregate_Order_By>;
   nid?: InputMaybe<Order_By>;
-  organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
   schema_id?: InputMaybe<Order_By>;
   state?: InputMaybe<Order_By>;
   state_changed_at?: InputMaybe<Order_By>;
@@ -1609,6 +1595,10 @@ export type Mutation_Root = {
   insert_scans?: Maybe<Scans_Mutation_Response>;
   /** insert a single row into the table: "scans" */
   insert_scans_one?: Maybe<Scans>;
+  /** insert data into the table: "users" */
+  insert_users?: Maybe<Users_Mutation_Response>;
+  /** insert a single row into the table: "users" */
+  insert_users_one?: Maybe<Users>;
   /** insert data into the table: "vulnerabilities" */
   insert_vulnerabilities?: Maybe<Vulnerabilities_Mutation_Response>;
   /** insert a single row into the table: "vulnerabilities" */
@@ -1651,6 +1641,10 @@ export type Mutation_Root = {
   update_scans?: Maybe<Scans_Mutation_Response>;
   /** update single row of the table: "scans" */
   update_scans_by_pk?: Maybe<Scans>;
+  /** update data of the table: "users" */
+  update_users?: Maybe<Users_Mutation_Response>;
+  /** update single row of the table: "users" */
+  update_users_by_pk?: Maybe<Users>;
   /** update data of the table: "vulnerabilities" */
   update_vulnerabilities?: Maybe<Vulnerabilities_Mutation_Response>;
   /** update single row of the table: "vulnerabilities" */
@@ -1809,6 +1803,20 @@ export type Mutation_RootInsert_ScansArgs = {
 export type Mutation_RootInsert_Scans_OneArgs = {
   object: Scans_Insert_Input;
   on_conflict?: InputMaybe<Scans_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_UsersArgs = {
+  objects: Array<Users_Insert_Input>;
+  on_conflict?: InputMaybe<Users_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Users_OneArgs = {
+  object: Users_Insert_Input;
+  on_conflict?: InputMaybe<Users_On_Conflict>;
 };
 
 
@@ -1972,6 +1980,20 @@ export type Mutation_RootUpdate_Scans_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_UsersArgs = {
+  _set?: InputMaybe<Users_Set_Input>;
+  where: Users_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_By_PkArgs = {
+  _set?: InputMaybe<Users_Set_Input>;
+  pk_columns: Users_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_VulnerabilitiesArgs = {
   _set?: InputMaybe<Vulnerabilities_Set_Input>;
   where: Vulnerabilities_Bool_Exp;
@@ -2044,7 +2066,7 @@ export type Organization_User = {
   role: Scalars['organization_user_role'];
   updated_at: Scalars['timestamptz'];
   /** An object relationship */
-  user: Identities;
+  user: Users;
   user_id: Scalars['uuid'];
 };
 
@@ -2073,7 +2095,7 @@ export type Organization_User_Bool_Exp = {
   organization_id?: InputMaybe<Uuid_Comparison_Exp>;
   role?: InputMaybe<Organization_User_Role_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  user?: InputMaybe<Identities_Bool_Exp>;
+  user?: InputMaybe<Users_Bool_Exp>;
   user_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
@@ -2093,6 +2115,7 @@ export type Organization_User_Insert_Input = {
   organization_id?: InputMaybe<Scalars['uuid']>;
   role?: InputMaybe<Scalars['organization_user_role']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
+  user?: InputMaybe<Users_Obj_Rel_Insert_Input>;
   user_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -2138,7 +2161,7 @@ export type Organization_User_Order_By = {
   organization_id?: InputMaybe<Order_By>;
   role?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  user?: InputMaybe<Identities_Order_By>;
+  user?: InputMaybe<Users_Order_By>;
   user_id?: InputMaybe<Order_By>;
 };
 
@@ -3039,6 +3062,10 @@ export type Query_Root = {
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** fetch data from the table: "users" */
+  users: Array<Users>;
+  /** fetch data from the table: "users" using primary key columns */
+  users_by_pk?: Maybe<Users>;
   /** fetch data from the table: "vulnerabilities" */
   vulnerabilities: Array<Vulnerabilities>;
   /** fetch aggregated fields from the table: "vulnerabilities" */
@@ -3254,6 +3281,20 @@ export type Query_RootScansArgs = {
 
 
 export type Query_RootScans_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootUsersArgs = {
+  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Order_By>>;
+  where?: InputMaybe<Users_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -3724,6 +3765,10 @@ export type Subscription_Root = {
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** fetch data from the table: "users" */
+  users: Array<Users>;
+  /** fetch data from the table: "users" using primary key columns */
+  users_by_pk?: Maybe<Users>;
   /** fetch data from the table: "vulnerabilities" */
   vulnerabilities: Array<Vulnerabilities>;
   /** fetch aggregated fields from the table: "vulnerabilities" */
@@ -3937,6 +3982,20 @@ export type Subscription_RootScans_By_PkArgs = {
 };
 
 
+export type Subscription_RootUsersArgs = {
+  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Order_By>>;
+  where?: InputMaybe<Users_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Subscription_RootVulnerabilitiesArgs = {
   distinct_on?: InputMaybe<Array<Vulnerabilities_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3998,6 +4057,122 @@ export type Timestamptz_Comparison_Exp = {
   _neq?: InputMaybe<Scalars['timestamptz']>;
   _nin?: InputMaybe<Array<Scalars['timestamptz']>>;
 };
+
+/**
+ * LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.)
+ *
+ *
+ * columns and relationships of "users"
+ *
+ */
+export type Users = {
+  __typename?: 'users';
+  github_id?: Maybe<Scalars['String']>;
+  github_node_id?: Maybe<Scalars['String']>;
+  id: Scalars['uuid'];
+  kratos_id?: Maybe<Scalars['uuid']>;
+  /** An object relationship */
+  kratos_identity?: Maybe<Identities>;
+};
+
+/** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
+export type Users_Bool_Exp = {
+  _and?: InputMaybe<Array<Users_Bool_Exp>>;
+  _not?: InputMaybe<Users_Bool_Exp>;
+  _or?: InputMaybe<Array<Users_Bool_Exp>>;
+  github_id?: InputMaybe<String_Comparison_Exp>;
+  github_node_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
+  kratos_identity?: InputMaybe<Identities_Bool_Exp>;
+};
+
+/** unique or primary key constraints on table "users" */
+export enum Users_Constraint {
+  /** unique or primary key constraint */
+  UsersGithubIdKey = 'users_github_id_key',
+  /** unique or primary key constraint */
+  UsersGithubNodeIdKey = 'users_github_node_id_key',
+  /** unique or primary key constraint */
+  UsersPkey = 'users_pkey'
+}
+
+/** input type for inserting data into table "users" */
+export type Users_Insert_Input = {
+  github_id?: InputMaybe<Scalars['String']>;
+  github_node_id?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  kratos_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** response of any mutation on the table "users" */
+export type Users_Mutation_Response = {
+  __typename?: 'users_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Users>;
+};
+
+/** input type for inserting object relation for remote table "users" */
+export type Users_Obj_Rel_Insert_Input = {
+  data: Users_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Users_On_Conflict>;
+};
+
+/** on_conflict condition type for table "users" */
+export type Users_On_Conflict = {
+  constraint: Users_Constraint;
+  update_columns?: Array<Users_Update_Column>;
+  where?: InputMaybe<Users_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "users". */
+export type Users_Order_By = {
+  github_id?: InputMaybe<Order_By>;
+  github_node_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  kratos_id?: InputMaybe<Order_By>;
+  kratos_identity?: InputMaybe<Identities_Order_By>;
+};
+
+/** primary key columns input for table: users */
+export type Users_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "users" */
+export enum Users_Select_Column {
+  /** column name */
+  GithubId = 'github_id',
+  /** column name */
+  GithubNodeId = 'github_node_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  KratosId = 'kratos_id'
+}
+
+/** input type for updating data in table "users" */
+export type Users_Set_Input = {
+  github_id?: InputMaybe<Scalars['String']>;
+  github_node_id?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  kratos_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** update columns of table "users" */
+export enum Users_Update_Column {
+  /** column name */
+  GithubId = 'github_id',
+  /** column name */
+  GithubNodeId = 'github_node_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  KratosId = 'kratos_id'
+}
 
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
 export type Uuid_Comparison_Exp = {
@@ -4548,27 +4723,19 @@ export enum Vulnerability_Packages_Update_Column {
   Slug = 'slug'
 }
 
-export type AuthorizedUserOrganizationsQueryVariables = Exact<{
-  github_org_ids?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
-}>;
-
-
-export type AuthorizedUserOrganizationsQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, github_node_id?: string | null }> };
-
-export type CreateOrganizationsMutationVariables = Exact<{
-  objects?: InputMaybe<Array<Organizations_Insert_Input> | Organizations_Insert_Input>;
-  on_conflict?: InputMaybe<Organizations_On_Conflict>;
-}>;
-
-
-export type CreateOrganizationsMutation = { __typename?: 'mutation_root', insert_organizations?: { __typename?: 'organizations_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'organizations', id: any }> } | null };
-
 export type GetAuthDataFromProjectTokenQueryVariables = Exact<{
   access_token: Scalars['uuid'];
 }>;
 
 
 export type GetAuthDataFromProjectTokenQuery = { __typename?: 'query_root', project_access_tokens: Array<{ __typename?: 'project_access_tokens', project: { __typename?: 'projects', id: any, builds: Array<{ __typename?: 'builds', id: any }> } }> };
+
+export type GetAuthorizedUserOrganizationsQueryVariables = Exact<{
+  github_org_ids?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+
+export type GetAuthorizedUserOrganizationsQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, github_node_id?: string | null }> };
 
 export type GetBuildQueryVariables = Exact<{
   build_id: Scalars['uuid'];
@@ -4583,6 +4750,13 @@ export type GetCountOfPersonalOrgQueryVariables = Exact<{
 
 
 export type GetCountOfPersonalOrgQuery = { __typename?: 'query_root', organizations_aggregate: { __typename?: 'organizations_aggregate', aggregate?: { __typename?: 'organizations_aggregate_fields', count: number } | null } };
+
+export type GetOrganizationFromInstallationIdQueryVariables = Exact<{
+  installation_id?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetOrganizationFromInstallationIdQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any }> };
 
 export type GetPackageAndVulnFromSlugsQueryVariables = Exact<{
   vuln_slug?: InputMaybe<Scalars['String']>;
@@ -4675,25 +4849,29 @@ export type UpdateOrganizationsForUserMutationVariables = Exact<{
 
 export type UpdateOrganizationsForUserMutation = { __typename?: 'mutation_root', insert_organization_user?: { __typename?: 'organization_user_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'organization_user', id: any }> } | null };
 
+export type UpsertOrganizationUsersMutationVariables = Exact<{
+  organizationUsers: Array<Organization_User_Insert_Input> | Organization_User_Insert_Input;
+}>;
 
-export const AuthorizedUserOrganizationsDocument = gql`
-    query AuthorizedUserOrganizations($github_org_ids: [String!]) {
-  organizations(where: {github_node_id: {_in: $github_org_ids}}) {
-    id
-    github_node_id
-  }
-}
-    `;
-export const CreateOrganizationsDocument = gql`
-    mutation CreateOrganizations($objects: [organizations_insert_input!] = {}, $on_conflict: organizations_on_conflict) {
-  insert_organizations(objects: $objects, on_conflict: $on_conflict) {
-    affected_rows
-    returning {
-      id
-    }
-  }
-}
-    `;
+
+export type UpsertOrganizationUsersMutation = { __typename?: 'mutation_root', insert_organization_user?: { __typename?: 'organization_user_mutation_response', affected_rows: number } | null };
+
+export type UpsertOrganizationsMutationVariables = Exact<{
+  objects?: InputMaybe<Array<Organizations_Insert_Input> | Organizations_Insert_Input>;
+  on_conflict?: InputMaybe<Organizations_On_Conflict>;
+}>;
+
+
+export type UpsertOrganizationsMutation = { __typename?: 'mutation_root', insert_organizations?: { __typename?: 'organizations_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'organizations', id: any, github_node_id?: string | null, name: string }> } | null };
+
+export type UpsertUserFromIdMutationVariables = Exact<{
+  user: Users_Insert_Input;
+}>;
+
+
+export type UpsertUserFromIdMutation = { __typename?: 'mutation_root', insert_users_one?: { __typename?: 'users', id: any } | null };
+
+
 export const GetAuthDataFromProjectTokenDocument = gql`
     query GetAuthDataFromProjectToken($access_token: uuid!) {
   project_access_tokens(where: {access_token: {_eq: $access_token}}) {
@@ -4703,6 +4881,14 @@ export const GetAuthDataFromProjectTokenDocument = gql`
         id
       }
     }
+  }
+}
+    `;
+export const GetAuthorizedUserOrganizationsDocument = gql`
+    query GetAuthorizedUserOrganizations($github_org_ids: [String!]) {
+  organizations(where: {github_node_id: {_in: $github_org_ids}}) {
+    id
+    github_node_id
   }
 }
     `;
@@ -4728,6 +4914,13 @@ export const GetCountOfPersonalOrgDocument = gql`
     aggregate {
       count
     }
+  }
+}
+    `;
+export const GetOrganizationFromInstallationIdDocument = gql`
+    query GetOrganizationFromInstallationId($installation_id: Int) {
+  organizations(where: {installation_id: {_eq: $installation_id}}) {
+    id
   }
 }
     `;
@@ -4883,6 +5076,38 @@ export const UpdateOrganizationsForUserDocument = gql`
   }
 }
     `;
+export const UpsertOrganizationUsersDocument = gql`
+    mutation UpsertOrganizationUsers($organizationUsers: [organization_user_insert_input!]!) {
+  insert_organization_user(
+    objects: $organizationUsers
+    on_conflict: {constraint: organization_user_user_id_organization_id_key}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const UpsertOrganizationsDocument = gql`
+    mutation UpsertOrganizations($objects: [organizations_insert_input!] = {}, $on_conflict: organizations_on_conflict) {
+  insert_organizations(objects: $objects, on_conflict: $on_conflict) {
+    affected_rows
+    returning {
+      id
+      github_node_id
+      name
+    }
+  }
+}
+    `;
+export const UpsertUserFromIdDocument = gql`
+    mutation UpsertUserFromId($user: users_insert_input!) {
+  insert_users_one(
+    object: $user
+    on_conflict: {constraint: users_github_id_key, update_columns: github_node_id}
+  ) {
+    id
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -4891,20 +5116,20 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    AuthorizedUserOrganizations(variables?: AuthorizedUserOrganizationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AuthorizedUserOrganizationsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AuthorizedUserOrganizationsQuery>(AuthorizedUserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AuthorizedUserOrganizations', 'query');
-    },
-    CreateOrganizations(variables?: CreateOrganizationsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateOrganizationsMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreateOrganizationsMutation>(CreateOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateOrganizations', 'mutation');
-    },
     GetAuthDataFromProjectToken(variables: GetAuthDataFromProjectTokenQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAuthDataFromProjectTokenQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetAuthDataFromProjectTokenQuery>(GetAuthDataFromProjectTokenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetAuthDataFromProjectToken', 'query');
+    },
+    GetAuthorizedUserOrganizations(variables?: GetAuthorizedUserOrganizationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAuthorizedUserOrganizationsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetAuthorizedUserOrganizationsQuery>(GetAuthorizedUserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetAuthorizedUserOrganizations', 'query');
     },
     GetBuild(variables: GetBuildQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBuildQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetBuildQuery>(GetBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetBuild', 'query');
     },
     GetCountOfPersonalOrg(variables: GetCountOfPersonalOrgQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCountOfPersonalOrgQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetCountOfPersonalOrgQuery>(GetCountOfPersonalOrgDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetCountOfPersonalOrg', 'query');
+    },
+    GetOrganizationFromInstallationId(variables?: GetOrganizationFromInstallationIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetOrganizationFromInstallationIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetOrganizationFromInstallationIdQuery>(GetOrganizationFromInstallationIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetOrganizationFromInstallationId', 'query');
     },
     GetPackageAndVulnFromSlugs(variables?: GetPackageAndVulnFromSlugsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPackageAndVulnFromSlugsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPackageAndVulnFromSlugsQuery>(GetPackageAndVulnFromSlugsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPackageAndVulnFromSlugs', 'query');
@@ -4938,6 +5163,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UpdateOrganizationsForUser(variables: UpdateOrganizationsForUserMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateOrganizationsForUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateOrganizationsForUserMutation>(UpdateOrganizationsForUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateOrganizationsForUser', 'mutation');
+    },
+    UpsertOrganizationUsers(variables: UpsertOrganizationUsersMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOrganizationUsersMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpsertOrganizationUsersMutation>(UpsertOrganizationUsersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertOrganizationUsers', 'mutation');
+    },
+    UpsertOrganizations(variables?: UpsertOrganizationsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOrganizationsMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpsertOrganizationsMutation>(UpsertOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertOrganizations', 'mutation');
+    },
+    UpsertUserFromId(variables: UpsertUserFromIdMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertUserFromIdMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpsertUserFromIdMutation>(UpsertUserFromIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertUserFromId', 'mutation');
     }
   };
 }

@@ -13,8 +13,11 @@
  */
 
 import { createAppAuth } from '@octokit/auth-app';
+import { GraphQLClient } from 'graphql-request';
 
 import { getGithubAppConfig } from '../config';
+
+import {getSdk, Sdk} from './api/generated';
 
 const githubAppConfig = getGithubAppConfig();
 
@@ -37,7 +40,7 @@ export function getGithubAppAuth(clientInfo?: { clientId: string; clientSecret: 
   });
 }
 
-export async function getInstallationAccessToken(installationId: number) {
+export async function getInstallationAccessToken(installationId: number): Promise<string> {
   const auth = getGithubAppAuth();
 
   // Retrieves the installation access token
@@ -47,4 +50,13 @@ export async function getInstallationAccessToken(installationId: number) {
   });
 
   return installationAuthentication.token;
+}
+
+export function getGithubGraphqlClient(accessToken: string): Sdk {
+  const client = new GraphQLClient(githubAppConfig.githubEndpoint, {
+    headers: {
+      authorization: `token ${accessToken}`,
+    },
+  });
+  return getSdk(client);
 }

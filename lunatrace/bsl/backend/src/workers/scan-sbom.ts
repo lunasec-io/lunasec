@@ -14,16 +14,19 @@
 import { Readable } from 'stream';
 import zlib from 'zlib';
 
+import markdownTable from 'markdown-table';
 import validate from 'validator';
 
-import { commentOnPrIfExists } from '../github/pr-comment-generator';
+import { commentOnPrIfExists } from '../github/actions/pr-comment-generator';
 import { hasura } from '../hasura-api';
 import { InsertedScan, parseAndUploadScan } from '../models/scan';
 import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
-import { isError, tryF } from '../utils/try';
+import { log } from '../utils/log';
+import { catchError, threwError } from '../utils/try';
+
 
 function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gzip> {
   return new Promise((resolve, reject) => {
@@ -46,7 +49,7 @@ function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gz
 }
 
 async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan> {
-  console.log(`[buildId: ${buildId}]`, `scanning sbom ${JSON.stringify(sbomBucketInfo)}`);
+  log.info(`[buildId: ${buildId}]`, `scanning sbom ${JSON.stringify(sbomBucketInfo)}`);
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
     sbomBucketInfo.key,
@@ -83,10 +86,10 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
 
   const bucketInfo: SbomBucketInfo = { region, bucketName, key };
 
-  const scanResp = await tryF(async () => await scanSbom(buildId, bucketInfo));
+  const scanResp = await catchError(async () => await scanSbom(buildId, bucketInfo));
 
-  if (isError(scanResp)) {
-    console.error('Sbom Scanning Error:', { scanResp });
+  if (threwError(scanResp)) {
+    log.error('Sbom Scanning Error:', { scanResp });
     await hasura.UpdateManifestStatusIfExists({
       status: 'error',
       message: String(scanResp.message),
