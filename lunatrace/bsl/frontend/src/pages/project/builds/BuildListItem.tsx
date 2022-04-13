@@ -48,7 +48,7 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
             <Col sm="6">
               <Card.Title>
                 <h3>
-                  <span className="darker">Build # </span>
+                  <span className="darker">Snapshot </span>
                   {build.build_number}{' '}
                 </h3>
               </Card.Title>
