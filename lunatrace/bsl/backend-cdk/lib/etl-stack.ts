@@ -11,6 +11,8 @@
  * limitations under the License.
  *
  */
+import * as path from "path";
+
 import { AssetImage, Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
@@ -19,6 +21,7 @@ import { Construct } from '@aws-cdk/core';
 
 import { commonBuildProps } from './constants';
 import { EtlStorageStackState } from './etl-storage-stack';
+import {getContainerTarballPath} from "./util";
 
 interface EtlStackProps extends cdk.StackProps {
   fargateCluster: Cluster;
@@ -58,11 +61,7 @@ export class EtlStack extends cdk.Stack {
       storageStack,
     } = props;
 
-    const QueueProcessorContainerImage = ContainerImage.fromAsset('../', {
-      ...commonBuildProps,
-      file: './backend/Dockerfile',
-      target: 'backend-queue-processor',
-    });
+    const QueueProcessorContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-backend-queue-processor.tar'));
 
     const processManifestQueueService = new ecsPatterns.QueueProcessingFargateService(
       context,

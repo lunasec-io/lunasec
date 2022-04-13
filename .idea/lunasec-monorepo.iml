@@ -62,6 +62,7 @@
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend-cdk/cdk.out" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend/build" />
       <excludeFolder url="file://$MODULE_DIR$/js/demo-apps/packages/react-front-end/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend-cdk/build" />
     </content>
     <content url="file://$MODULE_DIR$/lunatrace/bsl/backend/api/node_modules" />
     <orderEntry type="inheritedJdk" />
