@@ -24011,7 +24011,7 @@ export type AddPrReviewMutationVariables = Exact<{
 }>;
 
 
-export type AddPrReviewMutation = { __typename?: 'Mutation', submitPullRequestReview?: { __typename?: 'SubmitPullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
+export type AddPrReviewMutation = { __typename?: 'Mutation', addPullRequestReview?: { __typename?: 'AddPullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
 
 export type GetMembersForOrganizationQueryVariables = Exact<{
   org: Scalars['String'];
@@ -24033,6 +24033,13 @@ export type GetViewerIdQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetViewerIdQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string } };
 
+export type SubmitPrReviewMutationVariables = Exact<{
+  pull_request_id: Scalars['ID'];
+}>;
+
+
+export type SubmitPrReviewMutation = { __typename?: 'Mutation', submitPullRequestReview?: { __typename?: 'SubmitPullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
+
 export type UpdatePrReviewMutationVariables = Exact<{
   pull_request_review_id: Scalars['ID'];
   body: Scalars['String'];
@@ -24051,7 +24058,7 @@ export const AddCommentDocument = gql`
     `;
 export const AddPrReviewDocument = gql`
     mutation AddPrReview($pull_request_id: ID!, $body: String!) {
-  submitPullRequestReview(
+  addPullRequestReview(
     input: {event: COMMENT, body: $body, pullRequestId: $pull_request_id}
   ) {
     pullRequestReview {
@@ -24125,6 +24132,17 @@ export const GetViewerIdDocument = gql`
   }
 }
     `;
+export const SubmitPrReviewDocument = gql`
+    mutation SubmitPrReview($pull_request_id: ID!) {
+  submitPullRequestReview(
+    input: {event: COMMENT, pullRequestId: $pull_request_id}
+  ) {
+    pullRequestReview {
+      id
+    }
+  }
+}
+    `;
 export const UpdatePrReviewDocument = gql`
     mutation UpdatePrReview($pull_request_review_id: ID!, $body: String!) {
   updatePullRequestReview(
@@ -24158,6 +24176,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetViewerId(variables?: GetViewerIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetViewerIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetViewerIdQuery>(GetViewerIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetViewerId', 'query');
+    },
+    SubmitPrReview(variables: SubmitPrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SubmitPrReviewMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SubmitPrReviewMutation>(SubmitPrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'SubmitPrReview', 'mutation');
     },
     UpdatePrReview(variables: UpdatePrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdatePrReviewMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdatePrReviewMutation>(UpdatePrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdatePrReview', 'mutation');

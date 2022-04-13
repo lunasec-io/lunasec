@@ -101,7 +101,11 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
     };
   }
 
-  await commentOnPrIfExists(buildId, scanResp);
+  try {
+    await commentOnPrIfExists(buildId, scanResp);
+  } catch (e) {
+    console.error('commenting on github pr failed, continuing.. ', e)
+  }
 
   return {
     success: true,
