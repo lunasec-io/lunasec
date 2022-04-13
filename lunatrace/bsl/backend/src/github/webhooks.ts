@@ -113,7 +113,10 @@ webhooks.on('organization', async (event) => {
 });
 
 webhooks.on('pull_request', async (event) => {
-  if (event.payload.action === 'synchronize') {
+  const actionName = event.payload.action;
+  console.log('received pull request webhook for action: ', actionName)
+
+  if (actionName === 'synchronize' || actionName === 'opened' || actionName === 'reopened') {
     const cloneUrl = event.payload.repository.clone_url;
     const gitUrl = event.payload.repository.git_url;
     const gitBranch = event.payload.pull_request.head.ref;
