@@ -114,17 +114,21 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
   // Check if a previous build already commented on the PR. Could probably query github for this but its hard and rate limits exist so we just check our own db
   const previousReviewId = await findPreviousReviewId(pullRequestId);
 
+  console.log('Starting PR Comment Submission flow')
+  console.log('found previous review id of ', previousReviewId)
   // This is the first build on this pr so make a new comment
   if (!previousReviewId) {
     const githubReviewResponse = await github.AddPrReview({
       pull_request_id: pullRequestId.toString(),
       body,
     });
-    const existing_github_review_id = githubReviewResponse.submitPullRequestReview?.pullRequestReview?.id;
+    const existing_github_review_id = githubReviewResponse.addPullRequestReview?.pullRequestReview?.id;
     if (!existing_github_review_id) {
       return console.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
     }
-    console.log('successfully reviewed the PR')
+    console.log('review created')
+    // const submitResponse = await github.SubmitPrReview({ pull_request_id: pullRequestId.toString() })
+    // console.log('successfully reviewed the PR',submitResponse)
 
     await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
     return;
@@ -139,7 +143,7 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
   if (!existing_github_review_id) {
     return console.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
   }
-  console.log('successfully upadted the PR review')
+  console.log('successfully updated the PR review')
   // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
   await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
   return;
@@ -147,8 +151,8 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
 
 async function findPreviousReviewId(pullRequestId: string): Promise<string | null> {
   const previousBuildRes = await hasura.GetPreviousBuildForPr({ pull_request_id: pullRequestId });
-  if (!previousBuildRes.builds) {
+  if (!previousBuildRes.builds || !previousBuildRes.builds[0]) {
     return null;
   }
-  return previousBuildRes.builds[0].pull_request_id || null;
+  return previousBuildRes.builds[0].existing_github_review_id || null;
 }
