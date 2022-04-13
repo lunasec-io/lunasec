@@ -7,7 +7,7 @@
 
     "incremental": true,
     "target": "ES2020",
-    "module": "commonjs",
+    "module": "es2022",
     "allowJs": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,

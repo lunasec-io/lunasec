@@ -44,6 +44,7 @@
     "watch": "^1.0.2"
   },
   "devDependencies": {
+    "@craco/craco": "~6.4.3",
     "@graphql-codegen/cli": "2.3.1",
     "@graphql-codegen/introspection": "2.1.1",
     "@graphql-codegen/typescript": "2.4.2",
@@ -76,12 +77,12 @@
     "dev:graphql:watch": "yarn run generate && watch 'yarn run generate' ./src/api/graphql",
     "sass:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
     "build:css": "npm-run-all sass:build sass:autoprefixer",
-    "start:server": "DISABLE_ESLINT_PLUGIN=true PORT=3000 react-scripts start",
+    "start:server": "DISABLE_ESLINT_PLUGIN=true PORT=3000 craco start",
     "start": "yarn run dev:sass:watch & yarn run dev:graphql:watch & yarn run start:server",
-    "build": "yarn run generate && react-scripts build",
-    "build:docker": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "build": "yarn run generate && craco build",
+    "build:docker": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
     "generate": "graphql-codegen --config codegen.yml"
   },
   "browserslist": {
