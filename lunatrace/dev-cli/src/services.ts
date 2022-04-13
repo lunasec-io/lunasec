@@ -15,7 +15,7 @@
  *
  */
 import {waitForItScript} from "./constants";
-import {backendEnv, manifestEtlEnv, sbomEtlEnv, smeeWebhookUrl} from "./env";
+import {backendEnv, manifestWorkEnv, sbomWorkerEnv, smeeWebhookUrl} from "./env";
 import {tmuxPane} from "./tmux";
 
 function waitForItCmd(host: string, port: number) {
@@ -49,14 +49,14 @@ export const dockerCompose = tmuxPane([
   'sudo docker-compose down && sudo docker-compose up'
 ]);
 
-export const manifestEtl = tmuxPane([
+export const manifestWorker = tmuxPane([
   'cd backend',
-  `${manifestEtlEnv} yarn run start:etl`
+  `${manifestWorkEnv} yarn run start:worker`
 ]);
 
-export const sbomEtl = tmuxPane([
+export const sbomWorker = tmuxPane([
   'cd backend',
-  `${sbomEtlEnv} yarn run start:etl`
+  `${sbomWorkerEnv} yarn run start:worker`
 ]);
 
 export const smeeWebhook = tmuxPane([
