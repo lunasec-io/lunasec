@@ -12,6 +12,8 @@
  *
  */
 
+import * as path from "path";
+
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import { Port, SecurityGroup, Vpc } from '@aws-cdk/aws-ec2';
 import {
@@ -35,6 +37,7 @@ import * as cdk from '@aws-cdk/core';
 import { commonBuildProps } from './constants';
 import { EtlStack } from './etl-stack';
 import { EtlStorageStack, EtlStorageStackState } from './etl-storage-stack';
+import {getContainerTarballPath} from "./util";
 
 interface LunaTraceStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
@@ -131,10 +134,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       executionRole: execRole,
     });
 
-    const frontendContainerImage = ContainerImage.fromAsset('../', {
-      ...commonBuildProps,
-      file: './frontend/Dockerfile',
-    });
+    const frontendContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-frontend.tar'));
 
     const frontend = taskDef.addContainer('FrontendContainer', {
       image: frontendContainerImage,
@@ -208,11 +208,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const backendContainerImage = ContainerImage.fromAsset('../', {
-      ...commonBuildProps,
-      file: './backend/Dockerfile',
-      target: 'backend-express-server',
-    });
+    const backendContainerImage = ContainerImage.fromAsset(getContainerTarballPath('lunatrace-backend.tar'));
 
     const backend = taskDef.addContainer('BackendContainer', {
       image: backendContainerImage,
