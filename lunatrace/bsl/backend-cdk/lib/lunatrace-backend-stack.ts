@@ -30,7 +30,6 @@ import { HostedZone } from '@aws-cdk/aws-route53';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
-import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 
 import { commonBuildProps } from './constants';
