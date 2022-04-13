@@ -21,7 +21,7 @@ export function get(belowFn: (...args: any[]) => unknown) {
   const dummyObject = {};
 
   const v8Handler = Error.prepareStackTrace;
-  Error.prepareStackTrace = function (dummyObject, v8StackTrace) {
+  Error.prepareStackTrace = function replacementFunction(dummyObject, v8StackTrace) {
     return v8StackTrace;
   };
   Error.captureStackTrace(dummyObject, belowFn || get);
