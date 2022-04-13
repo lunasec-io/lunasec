@@ -12413,12 +12413,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunatrace/lunatrace-common@link:../common::locator=lunatrace-backend%40workspace%3Alunatrace%2Fbsl%2Fbackend":
-  version: 0.0.0-use.local
-  resolution: "@lunatrace/lunatrace-common@link:../common::locator=lunatrace-backend%40workspace%3Alunatrace%2Fbsl%2Fbackend"
-  languageName: node
-  linkType: soft
-
 "@lunatrace/lunatrace-common@workspace:lunatrace/bsl/common, @lunatrace/lunatrace-common@workspace:~":
   version: 0.0.0-use.local
   resolution: "@lunatrace/lunatrace-common@workspace:lunatrace/bsl/common"
@@ -35185,7 +35179,7 @@ __metadata:
     "@graphql-codegen/typescript": 2.4.2
     "@graphql-codegen/typescript-graphql-request": ^4.4.0
     "@graphql-codegen/typescript-operations": ^2.2.2
-    "@lunatrace/lunatrace-common": "link:../common"
+    "@lunatrace/lunatrace-common": "workspace:~"
     "@octokit/auth-app": ^3.6.1
     "@octokit/graphql": ^4.8.0
     "@octokit/openapi-types": ^11.2.0
