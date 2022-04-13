@@ -24013,12 +24013,25 @@ export type AddPrReviewMutationVariables = Exact<{
 
 export type AddPrReviewMutation = { __typename?: 'Mutation', submitPullRequestReview?: { __typename?: 'SubmitPullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
 
+export type GetMembersForOrganizationQueryVariables = Exact<{
+  org: Scalars['String'];
+  after?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type GetMembersForOrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', id: string, login: string, teams: { __typename?: 'TeamConnection', nodes?: Array<{ __typename?: 'Team', members: { __typename?: 'TeamMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } } } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } }, membersWithRole: { __typename?: 'OrganizationMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null, startCursor?: string | null } } } | null };
+
 export type GetUserOrganizationsQueryVariables = Exact<{
   orgsAfter?: InputMaybe<Scalars['String']>;
 }>;
 
 
 export type GetUserOrganizationsQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, login: string, organizations: { __typename?: 'OrganizationConnection', pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, hasNextPage: boolean, endCursor?: string | null }, nodes?: Array<{ __typename?: 'Organization', name?: string | null, id: string } | null> | null } } };
+
+export type GetViewerIdQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetViewerIdQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string } };
 
 export type UpdatePrReviewMutationVariables = Exact<{
   pull_request_review_id: Scalars['ID'];
@@ -24047,6 +24060,45 @@ export const AddPrReviewDocument = gql`
   }
 }
     `;
+export const GetMembersForOrganizationDocument = gql`
+    query GetMembersForOrganization($org: String!, $after: String) {
+  organization(login: $org) {
+    id
+    login
+    teams(first: 100, after: $after) {
+      nodes {
+        members(first: 100, after: $after) {
+          nodes {
+            name
+            id
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            startCursor
+          }
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        startCursor
+      }
+    }
+    membersWithRole(first: 100, after: $after) {
+      nodes {
+        name
+        id
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+        startCursor
+      }
+    }
+  }
+}
+    `;
 export const GetUserOrganizationsDocument = gql`
     query GetUserOrganizations($orgsAfter: String) {
   viewer {
@@ -24063,6 +24115,13 @@ export const GetUserOrganizationsDocument = gql`
         id
       }
     }
+  }
+}
+    `;
+export const GetViewerIdDocument = gql`
+    query GetViewerId {
+  viewer {
+    id
   }
 }
     `;
@@ -24091,8 +24150,14 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     AddPrReview(variables: AddPrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddPrReviewMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<AddPrReviewMutation>(AddPrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AddPrReview', 'mutation');
     },
+    GetMembersForOrganization(variables: GetMembersForOrganizationQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetMembersForOrganizationQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetMembersForOrganizationQuery>(GetMembersForOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetMembersForOrganization', 'query');
+    },
     GetUserOrganizations(variables?: GetUserOrganizationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserOrganizationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserOrganizationsQuery>(GetUserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserOrganizations', 'query');
+    },
+    GetViewerId(variables?: GetViewerIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetViewerIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetViewerIdQuery>(GetViewerIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetViewerId', 'query');
     },
     UpdatePrReview(variables: UpdatePrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdatePrReviewMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdatePrReviewMutation>(UpdatePrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdatePrReview', 'mutation');

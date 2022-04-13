@@ -65,7 +65,7 @@
     "test:e2e:docker": "cd js/demo-apps/packages/react-front-end && yarn run test:e2e:docker",
     "test:unit:tokenizer": "cd js/sdks/packages/tokenizer-sdk && yarn run test",
     "test:unit:auth": "cd js/sdks/packages/browser-common && yarn run test",
-    "test:unit:js": "yarn test:unit:auth && yarn test:unit:tokenizer",
+    "test:unit:js": "yarn test:unit:auth && ycd /home/breadchris/projects/lunasec-monorepo/lunatrace/bsl && tmuxp load /home/breadchris/projects/lunasec-monorepo/lunatrace/bsl/generated-lunatrace-tmuxp.yamlarn test:unit:tokenizer",
     "test:unit:go": "cd go && go test -cover ./...",
     "test:unit": "yarn test:unit:js && yarn test:unit:go",
     "test:all": "yarn test:unit && yarn run test:e2e:local",
@@ -78,7 +78,7 @@
     "compile:release:services": "cd go && yarn run compile:release",
     "compile:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh build",
     "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services && yarn run compile:release:demos",
-    "postinstall": "./tools/postinstall.sh",
+    "postinstall": "sh ./tools/postinstall.sh",
     "publish:release:sdks": "lerna publish --no-verify-access -y from-package",
     "publish:release:services": "cd go && yarn run publish:release",
     "publish:release:demos": "VERSION=$(yarn run --silent monorepo:version) js/docker/release.sh publish",
@@ -101,7 +101,8 @@
       "./lunatrace/bsl/backend",
       "./lunatrace/bsl/backend-cdk",
       "./lunatrace/bsl/common",
-      "./lunatrace/bsl/frontend"
+      "./lunatrace/bsl/frontend",
+      "./lunatrace/dev-cli"
     ]
   },
   "packageManager": "yarn@3.1.1"

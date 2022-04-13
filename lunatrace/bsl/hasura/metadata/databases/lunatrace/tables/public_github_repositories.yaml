@@ -39,8 +39,9 @@ select_permissions:
       project:
         organization:
           organization_users:
-            user_id:
-              _eq: X-Hasura-User-Id
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
   role: user
 update_permissions:
 - permission:

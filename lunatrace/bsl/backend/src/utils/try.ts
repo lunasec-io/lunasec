@@ -46,10 +46,10 @@ function tryify<T, E extends Error = Error>(p: PromiseLike<T>): PromiseLike<Try<
  *
  * it imitates the concept (though it's not a monad) of scala.util.Try — but try is a reserved keyword, so it's called tryF
  */
-export function tryF<T, E extends Error = Error>(asyncBlock: () => PromiseLike<T>): PromiseLike<Try<T, E>>;
-export function tryF<T, E extends Error = Error>(block: () => T): Try<T, E>;
-export function tryF<T, E extends Error = Error>(promise: PromiseLike<T>): PromiseLike<Try<T, E>>;
-export function tryF<T, E extends Error = Error>(
+export function catchError<T, E extends Error = Error>(asyncBlock: () => PromiseLike<T>): PromiseLike<Try<T, E>>;
+export function catchError<T, E extends Error = Error>(block: () => T): Try<T, E>;
+export function catchError<T, E extends Error = Error>(promise: PromiseLike<T>): PromiseLike<Try<T, E>>;
+export function catchError<T, E extends Error = Error>(
   input: PromiseLike<T> | (() => T | PromiseLike<T>)
 ): Try<T, E> | PromiseLike<Try<T, E>> {
   // if the input is a simple promise, a simple try-ify is enough
@@ -74,6 +74,6 @@ export function tryF<T, E extends Error = Error>(
   }
 }
 
-export function isError(e: unknown): e is Error {
+export function threwError(e: unknown): e is Error {
   return e instanceof Error;
 }
