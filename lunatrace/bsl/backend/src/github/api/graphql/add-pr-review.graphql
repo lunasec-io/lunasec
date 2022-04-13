@@ -1,5 +1,7 @@
 mutation AddPrReview($pull_request_id: ID!, $body: String!) {
-    submitPullRequestReview(input: {event: COMMENT, body: $body, pullRequestId: $pull_request_id}) {
+    addPullRequestReview(
+        input: {event: COMMENT, body: $body, pullRequestId: $pull_request_id}
+    ) {
         pullRequestReview {
             id
         }

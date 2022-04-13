@@ -4772,7 +4772,7 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 }>;
 
 
-export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', pull_request_id?: string | null }> };
+export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
 
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
@@ -4943,7 +4943,7 @@ export const GetPreviousBuildForPrDocument = gql`
     where: {_and: {existing_github_review_id: {_is_null: false}, pull_request_id: {_eq: $pull_request_id}}}
     order_by: {created_at: desc}
   ) {
-    pull_request_id
+    existing_github_review_id
   }
 }
     `;
