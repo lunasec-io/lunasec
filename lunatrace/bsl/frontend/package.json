@@ -1,5 +1,5 @@
 {
-  "name": "frontend-redux",
+  "name": "frontend-lunatrace",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -28,7 +28,7 @@
     "react-dropzone": "^12.0.4",
     "react-feather": "^2.0.9",
     "react-github-login-button": "^1.0.1",
-    "react-helmet-async": "^1.2.2",
+    "react-helmet-async": "1.2.2",
     "react-icons": "^4.3.1",
     "react-perfect-scrollbar": "^1.5.8",
     "react-redux": "^7.2.6",
@@ -76,8 +76,8 @@
     "dev:graphql:watch": "yarn run generate && watch 'yarn run generate' ./src/api/graphql",
     "sass:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
     "build:css": "npm-run-all sass:build sass:autoprefixer",
-    "start:devserver": "DISABLE_ESLINT_PLUGIN=true PORT=3000 react-scripts start",
-    "start": "yarn run dev:sass:watch & yarn run dev:graphql:watch & yarn run start:devserver",
+    "start:server": "DISABLE_ESLINT_PLUGIN=true PORT=3000 react-scripts start",
+    "start": "yarn run dev:sass:watch & yarn run dev:graphql:watch & yarn run start:server",
     "build": "yarn run generate && react-scripts build",
     "build:docker": "react-scripts build",
     "test": "react-scripts test",

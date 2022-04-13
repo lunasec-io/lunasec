@@ -14,11 +14,10 @@
 import { filterFindingsByIgnored, Finding, groupByPackage, VulnerablePackage } from '@lunatrace/lunatrace-common';
 import markdownTable from 'markdown-table';
 
-import { hasura } from '../hasura-api';
-import { InsertedScan } from '../models/scan';
-
-import { generateGithubGraphqlClient } from './api';
-import { getInstallationAccessToken } from './auth';
+import { hasura } from '../../hasura-api';
+import { InsertedScan } from '../../models/scan';
+import { generateGithubGraphqlClient } from '../api';
+import { getInstallationAccessToken } from '../auth';
 
 function formatLocationText(finding: VulnerablePackage<Finding>) {
   if (finding.locations.length === 0) {

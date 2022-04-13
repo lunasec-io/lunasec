@@ -34,8 +34,8 @@ import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 
 import { commonBuildProps } from './constants';
-import { EtlStack } from './etl-stack';
-import { EtlStorageStack, EtlStorageStackState } from './etl-storage-stack';
+import { WorkerStack } from './worker-stack';
+import { WorkerStorageStack, WorkerStorageStackState } from './worker-storage-stack';
 
 interface LunaTraceStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
@@ -115,7 +115,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       props.gitHubAppWebHookSecret
     );
 
-    const storageStackStage = EtlStorageStack.createEtlStorageStack(this, {
+    const storageStackStage = WorkerStorageStack.createWorkerStorageStack(this, {
       env: props.env,
       publicBaseUrl,
     });
@@ -343,7 +343,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     oryConfigBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
     storageStackStage.manifestBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
 
-    EtlStack.createEtlStack(this, {
+    WorkerStack.createEtlStack(this, {
       env: props.env,
       storageStack: storageStackStage,
       fargateCluster,

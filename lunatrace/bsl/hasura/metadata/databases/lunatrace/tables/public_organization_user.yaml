@@ -30,8 +30,9 @@ insert_permissions:
       - organization:
           organization_users:
             _and:
-            - user_id:
-                _eq: X-Hasura-User-Id
+            - user:
+                kratos_id:
+                  _eq: X-Hasura-User-Id
             - role:
                 _eq: admin
     columns:
@@ -61,8 +62,9 @@ select_permissions:
     filter:
       organization:
         organization_users:
-          user_id:
-            _eq: X-Hasura-User-Id
+          user:
+            kratos_id:
+              _eq: X-Hasura-User-Id
   role: user
 update_permissions:
 - permission:
@@ -84,8 +86,9 @@ update_permissions:
       organization:
         organization_users:
           _and:
-          - user_id:
-              _eq: X-Hasura-User-Id
+          - user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
           - role:
               _eq: admin
   role: user
