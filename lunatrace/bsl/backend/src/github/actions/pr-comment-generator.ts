@@ -124,6 +124,8 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     if (!existing_github_review_id) {
       return console.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
     }
+    console.log('successfully reviewed the PR')
+
     await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
     return;
   }
@@ -137,6 +139,7 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
   if (!existing_github_review_id) {
     return console.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
   }
+  console.log('successfully upadted the PR review')
   // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
   await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
   return;
