@@ -55,7 +55,7 @@ export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) =>
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+   
   return next(action);
 };
 export default appApi;
