@@ -31,7 +31,6 @@ export interface GithubAppConfig {
   githubEndpoint: string;
   githubAppId: number;
   githubPrivateKey: string;
-  githubWebhook: string;
 }
 
 export interface AwsConfig {
