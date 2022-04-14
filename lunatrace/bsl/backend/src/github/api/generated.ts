@@ -24005,14 +24005,13 @@ export type AddCommentMutationVariables = Exact<{
 
 export type AddCommentMutation = { __typename?: 'Mutation', addComment?: { __typename?: 'AddCommentPayload', clientMutationId?: string | null } | null };
 
-export type CreatePullRequestReviewMutationVariables = Exact<{
-  pullRequestId: Scalars['ID'];
-  comments?: InputMaybe<Array<InputMaybe<DraftPullRequestReviewComment>> | InputMaybe<DraftPullRequestReviewComment>>;
-  threads?: InputMaybe<Array<InputMaybe<DraftPullRequestReviewThread>> | InputMaybe<DraftPullRequestReviewThread>>;
+export type AddPrReviewMutationVariables = Exact<{
+  pull_request_id: Scalars['ID'];
+  body: Scalars['String'];
 }>;
 
 
-export type CreatePullRequestReviewMutation = { __typename?: 'Mutation', addPullRequestReview?: { __typename?: 'AddPullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
+export type AddPrReviewMutation = { __typename?: 'Mutation', addPullRequestReview?: { __typename?: 'AddPullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
 
 export type GetMembersForOrganizationQueryVariables = Exact<{
   org: Scalars['String'];
@@ -24034,6 +24033,21 @@ export type GetViewerIdQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetViewerIdQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string } };
 
+export type SubmitPrReviewMutationVariables = Exact<{
+  pull_request_id: Scalars['ID'];
+}>;
+
+
+export type SubmitPrReviewMutation = { __typename?: 'Mutation', submitPullRequestReview?: { __typename?: 'SubmitPullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
+
+export type UpdatePrReviewMutationVariables = Exact<{
+  pull_request_review_id: Scalars['ID'];
+  body: Scalars['String'];
+}>;
+
+
+export type UpdatePrReviewMutation = { __typename?: 'Mutation', updatePullRequestReview?: { __typename?: 'UpdatePullRequestReviewPayload', pullRequestReview?: { __typename?: 'PullRequestReview', id: string } | null } | null };
+
 
 export const AddCommentDocument = gql`
     mutation AddComment($subjectId: ID!, $body: String!) {
@@ -24042,10 +24056,10 @@ export const AddCommentDocument = gql`
   }
 }
     `;
-export const CreatePullRequestReviewDocument = gql`
-    mutation CreatePullRequestReview($pullRequestId: ID!, $comments: [DraftPullRequestReviewComment], $threads: [DraftPullRequestReviewThread]) {
+export const AddPrReviewDocument = gql`
+    mutation AddPrReview($pull_request_id: ID!, $body: String!) {
   addPullRequestReview(
-    input: {pullRequestId: $pullRequestId, comments: $comments, threads: $threads}
+    input: {event: COMMENT, body: $body, pullRequestId: $pull_request_id}
   ) {
     pullRequestReview {
       id
@@ -24118,6 +24132,28 @@ export const GetViewerIdDocument = gql`
   }
 }
     `;
+export const SubmitPrReviewDocument = gql`
+    mutation SubmitPrReview($pull_request_id: ID!) {
+  submitPullRequestReview(
+    input: {event: COMMENT, pullRequestId: $pull_request_id}
+  ) {
+    pullRequestReview {
+      id
+    }
+  }
+}
+    `;
+export const UpdatePrReviewDocument = gql`
+    mutation UpdatePrReview($pull_request_review_id: ID!, $body: String!) {
+  updatePullRequestReview(
+    input: {pullRequestReviewId: $pull_request_review_id, body: $body}
+  ) {
+    pullRequestReview {
+      id
+    }
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -24129,8 +24165,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     AddComment(variables: AddCommentMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddCommentMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<AddCommentMutation>(AddCommentDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AddComment', 'mutation');
     },
-    CreatePullRequestReview(variables: CreatePullRequestReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreatePullRequestReviewMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreatePullRequestReviewMutation>(CreatePullRequestReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePullRequestReview', 'mutation');
+    AddPrReview(variables: AddPrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddPrReviewMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AddPrReviewMutation>(AddPrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AddPrReview', 'mutation');
     },
     GetMembersForOrganization(variables: GetMembersForOrganizationQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetMembersForOrganizationQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetMembersForOrganizationQuery>(GetMembersForOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetMembersForOrganization', 'query');
@@ -24140,6 +24176,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetViewerId(variables?: GetViewerIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetViewerIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetViewerIdQuery>(GetViewerIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetViewerId', 'query');
+    },
+    SubmitPrReview(variables: SubmitPrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SubmitPrReviewMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SubmitPrReviewMutation>(SubmitPrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'SubmitPrReview', 'mutation');
+    },
+    UpdatePrReview(variables: UpdatePrReviewMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdatePrReviewMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdatePrReviewMutation>(UpdatePrReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdatePrReview', 'mutation');
     }
   };
 }

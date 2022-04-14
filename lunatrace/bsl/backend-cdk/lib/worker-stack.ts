@@ -18,9 +18,9 @@ import * as cdk from '@aws-cdk/core';
 import { Construct } from '@aws-cdk/core';
 
 import { commonBuildProps } from './constants';
-import { EtlStorageStackState } from './etl-storage-stack';
+import { WorkerStorageStackState } from './worker-storage-stack';
 
-interface EtlStackProps extends cdk.StackProps {
+interface WorkerStackProps extends cdk.StackProps {
   fargateCluster: Cluster;
   publicHasuraServiceUrl: string;
   gitHubAppId: string;
@@ -28,14 +28,14 @@ interface EtlStackProps extends cdk.StackProps {
   hasuraDatabaseUrlSecret: ISecret;
   hasuraAdminSecret: ISecret;
   backendStaticSecret: ISecret;
-  storageStack: EtlStorageStackState;
+  storageStack: WorkerStorageStackState;
 }
 
-export class EtlStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: EtlStackProps) {
+export class WorkerStack extends cdk.Stack {
+  constructor(scope: cdk.Construct, id: string, props: WorkerStackProps) {
     super(scope, id, props);
 
-    EtlStack.createEtlStack(this, props);
+    WorkerStack.createWorkerStack(this, props);
   }
 
   /**
@@ -46,7 +46,7 @@ export class EtlStack extends cdk.Stack {
    * @param context The `this` context of an AWS CDK Stack.
    * @param props Variables required for the stack to deploy properly.
    */
-  public static createEtlStack(context: Construct, props: EtlStackProps): void {
+  public static createWorkerStack(context: Construct, props: WorkerStackProps): void {
     const {
       fargateCluster,
       publicHasuraServiceUrl,
@@ -80,6 +80,7 @@ export class EtlStack extends cdk.Stack {
           S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
           S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
           HASURA_URL: publicHasuraServiceUrl,
+          NODE_ENV: 'production',
         },
         secrets: {
           DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
@@ -115,6 +116,7 @@ export class EtlStack extends cdk.Stack {
         S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
         S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
         HASURA_URL: publicHasuraServiceUrl,
+        NODE_ENV: 'production',
       },
       secrets: {
         DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),

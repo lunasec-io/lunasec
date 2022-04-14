@@ -18,8 +18,8 @@ import { readFileSync } from 'fs';
 
 import * as cdk from '@aws-cdk/core';
 
-import { EtlStorageStack } from '../lib/etl-storage-stack';
 import { LunatraceBackendStack } from '../lib/lunatrace-backend-stack';
+import { WorkerStorageStack } from '../lib/worker-storage-stack';
 
 interface StackInputsType {
   appName: string;
@@ -80,7 +80,7 @@ const env = {
 function deployStack() {
   if (process.env.DEVELOPMENT === 'true') {
     const publicBaseUrl = `http://localhost:4455`;
-    return new EtlStorageStack(app, `${appName}-EtlStorage`, {
+    return new WorkerStorageStack(app, `${appName}-EtlStorage`, {
       env,
       publicBaseUrl,
     });

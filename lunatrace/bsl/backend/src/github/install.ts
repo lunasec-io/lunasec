@@ -14,11 +14,11 @@
 import { Request, Response } from 'express';
 
 import { getServerConfig } from '../config';
-import {hasura} from "../hasura";
+import {hasura} from "../hasura-api";
 import {
   createLunatraceOrgsFromGithubOrgs,
   hasuraOrgsFromGithubRepositories
-} from '../hasura/actions/create-lunatrace-orgs-from-github-orgs';
+} from '../hasura-api/actions/create-lunatrace-orgs-from-github-orgs';
 import { RepositoriesForInstallationResponse } from '../types/github';
 import { errorResponse, logError } from '../utils/errors';
 import { log } from '../utils/log';

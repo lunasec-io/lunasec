@@ -1,4 +1,4 @@
-query GetScanReportNotifyInfoForBuild($build_id: uuid!) {
+query GetBuild($build_id: uuid!) {
   builds_by_pk(id: $build_id) {
     project {
       id
@@ -7,5 +7,6 @@ query GetScanReportNotifyInfoForBuild($build_id: uuid!) {
       }
     }
     pull_request_id
+    existing_github_review_id
   }
 }
