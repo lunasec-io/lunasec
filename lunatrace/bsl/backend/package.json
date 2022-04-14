@@ -7,8 +7,8 @@
   "scripts": {
     "start": "concurrently 'yarn dev:graphql:watch' 'yarn run start:server'",
     "start:server": "nodemon ./src/server.ts --enable-source-maps",
-    "start:worker": "nodemon src/workers/handler.ts",
-    "prod:worker": "node build/workers/handler.ts",
+    "start:worker": "nodemon src/workers/handler.ts --enable-source-maps",
+    "prod:worker": "node build/workers/handler.js --enable-source-maps",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
     "test:scan:upload": "yarn run ts-node --files ./src/tests/upload-scan.ts",
     "test:load": "yarn run ts-node --files ./src/tests/local-load-vulnerabilities-test.ts",

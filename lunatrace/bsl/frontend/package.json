@@ -18,7 +18,9 @@
     "history": "^5.2.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
+    "node-polyfill-webpack-plugin": "~1.1.4",
     "prettify-date": "^1.4.0",
+    "process": "~0.11.10",
     "react": "^17.0.2",
     "react-bootstrap": "^2.1.1",
     "react-bootstrap-typeahead": "^6.0.0-alpha.6",
@@ -44,6 +46,8 @@
     "watch": "^1.0.2"
   },
   "devDependencies": {
+    "webpack": "~5.72.0",
+
     "@craco/craco": "~6.4.3",
     "@graphql-codegen/cli": "2.3.1",
     "@graphql-codegen/introspection": "2.1.1",
