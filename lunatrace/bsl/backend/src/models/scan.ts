@@ -15,25 +15,32 @@ import { spawn } from 'child_process';
 import { writeFileSync } from 'fs';
 import Stream, { Readable } from 'stream';
 
-import { hasura } from '../hasura';
+import { hasura } from '../hasura-api';
 import {
   Findings_Arr_Rel_Insert_Input,
   Findings_Constraint,
   Findings_Insert_Input,
   Findings_Update_Column,
+  InsertScanMutation,
   Scans_Insert_Input,
-} from '../hasura/generated';
+} from '../hasura-api/generated';
 import { Convert, GrypeScanReport, Match } from '../types/grype-scan-report';
 import {log} from "../utils/log";
 
-export async function parseAndUploadScan(sbomStream: Readable, buildId: string): Promise<Scans_Insert_Input> {
+export type InsertedScan = NonNullable<InsertScanMutation['insert_scans_one']>;
+
+export async function parseAndUploadScan(sbomStream: Readable, buildId: string): Promise<InsertedScan> {
   const rawGrypeReport = await runGrypeScan(sbomStream);
   const typedRawGrypeReport = Convert.toScanReport(rawGrypeReport);
   const scan = await parseScan(typedRawGrypeReport, buildId);
-  await hasura.InsertScan({
+  const insertRes = await hasura.InsertScan({
     scan,
+    build_id: buildId,
   });
-  return scan;
+  if (!insertRes.insert_scans_one) {
+    throw new Error(`Failed to insert scan into hasura, resp: ${JSON.stringify(insertRes)}`);
+  }
+  return insertRes.insert_scans_one;
 }
 
 export async function runGrypeScan(sbomStream: Readable): Promise<string> {

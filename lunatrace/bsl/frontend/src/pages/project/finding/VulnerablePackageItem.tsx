@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+import { severityOrder, VulnerablePackage } from '@lunatrace/lunatrace-common';
 import compareVersions from 'compare-versions';
 import React, { LegacyRef, MouseEventHandler, ReactPropTypes, useState } from 'react';
 import {
@@ -38,17 +39,14 @@ import { ConfirmationDailog } from '../../../components/ConfirmationDialog';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
 
 import { VulnerabilityTableItem } from './VulnerabilityTableItem';
-import { severityOrder, VulnerablePackage } from './types';
+import { Finding } from './types';
 
 interface FindingListItemProps {
-  pkg: VulnerablePackage;
+  pkg: VulnerablePackage<Finding>;
   severityFilter: number;
 }
 
 export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps> = ({ pkg, severityFilter }) => {
-  // const navigate = useNavigate();
-  // const createdAt = prettyDate(new Date(pkg.created_at));
-
   const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [ignoreNote, setIgnoreNote] = useState('');

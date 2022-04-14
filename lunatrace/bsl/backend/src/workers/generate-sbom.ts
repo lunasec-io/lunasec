@@ -15,7 +15,7 @@ import zlib from 'zlib';
 
 import { generateSbomFromAsset } from '../cli/call-cli';
 import { getEtlBucketConfig } from '../config';
-import { hasura } from '../hasura';
+import { hasura } from '../hasura-api';
 import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';

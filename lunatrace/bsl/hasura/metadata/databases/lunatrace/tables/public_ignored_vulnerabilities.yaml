@@ -33,6 +33,16 @@ insert_permissions:
 select_permissions:
 - permission:
     columns:
+    - locations
+    - note
+    - creator_id
+    - id
+    - project_id
+    - vulnerability_id
+    filter: {}
+  role: service
+- permission:
+    columns:
     - id
     - project_id
     - vulnerability_id

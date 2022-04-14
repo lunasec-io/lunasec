@@ -1,6 +1,0 @@
-mutation InsertScan($scan: scans_insert_input!) {
-  insert_scans_one(object: $scan) {
-    id
-    build_id
-  }
-}

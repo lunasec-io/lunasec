@@ -11,34 +11,33 @@
  * limitations under the License.
  *
  */
-import { EventType } from '@aws-cdk/aws-s3';
-import { Bucket, HttpMethods } from '@aws-cdk/aws-s3';
+import { Bucket, EventType, HttpMethods } from '@aws-cdk/aws-s3';
 import { SqsDestination } from '@aws-cdk/aws-s3-notifications';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 import { Construct, Duration } from '@aws-cdk/core';
 
-interface EtlStorageStackProps extends cdk.StackProps {
+interface WorkerStorageStackProps extends cdk.StackProps {
   publicBaseUrl: string;
 }
 
-export interface EtlStorageStackState {
+export interface WorkerStorageStackState {
   sbomBucket: Bucket;
   manifestBucket: Bucket;
   processManifestSqsQueue: Queue;
   processSbomSqsQueue: Queue;
 }
 
-export class EtlStorageStack extends cdk.Stack implements EtlStorageStackState {
+export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackState {
   public sbomBucket: Bucket;
   public manifestBucket: Bucket;
   public processManifestSqsQueue: Queue;
   public processSbomSqsQueue: Queue;
 
-  constructor(scope: cdk.Construct, id: string, props: EtlStorageStackProps) {
+  constructor(scope: cdk.Construct, id: string, props: WorkerStorageStackProps) {
     super(scope, id, props);
 
-    const stackState = EtlStorageStack.createEtlStorageStack(this, props);
+    const stackState = WorkerStorageStack.createWorkerStorageStack(this, props);
 
     this.sbomBucket = stackState.sbomBucket;
     this.manifestBucket = stackState.manifestBucket;
@@ -54,7 +53,7 @@ export class EtlStorageStack extends cdk.Stack implements EtlStorageStackState {
    * @param context The `this` context of an AWS CDK Stack. This must provide variables for re-assignment so that the "stack" values can be exported.
    * @param props Variables required for the stack to deploy properly.
    */
-  public static createEtlStorageStack(context: Construct, props: EtlStorageStackProps): EtlStorageStackState {
+  public static createWorkerStorageStack(context: Construct, props: WorkerStorageStackProps): WorkerStorageStackState {
     const { publicBaseUrl } = props;
 
     const sbomBucket = new Bucket(context, 'SbomBucket');

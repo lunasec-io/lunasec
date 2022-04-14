@@ -7,7 +7,7 @@
 
     "incremental": true,
     "target": "ES2020",
-    "module": "commonjs",
+    "module": "es2022",
     "allowJs": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
@@ -19,9 +19,9 @@
     "isolatedModules": true,
     "noEmit": false,
     "composite": true,
-
+    "sourceMap": true,
     "lib": ["es2017"],
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "compileOnSave": true
