@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+import { filterFindingsByIgnored } from '@lunatrace/lunatrace-common';
 import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { ArrowLeft } from 'react-feather';
@@ -26,7 +27,6 @@ import { branchLink, branchName, commitLink } from '../../../utils/build-display
 import { prettyDate } from '../../../utils/pretty-date';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
 import { VulnerablePackageList } from '../finding/VulnerablePackageList';
-import { filterFindingsByIgnored } from '../finding/filter-findings';
 
 import { SourceIcon } from './SourceIcon';
 

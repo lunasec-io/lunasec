@@ -41,16 +41,18 @@ export const backendEnv = envVars({
 export function queueEnvConfig(handler: 'process-manifest-queue' | 'process-sbom-queue', name: string): Record<string, string> {
   return {
     QUEUE_NAME: name,
+    // todo: we should probably take these out of this tmuxp and move them into a dotenv in the backend code.
+    //  if we are going to use dotenv, it might as well work without regenerating this tmux file, and then we can commit the file safely
     QUEUE_HANDLER: handler
   }
 }
 
-export const manifestEtlEnv = envVars({
+export const manifestWorkEnv = envVars({
   ...githubAppConfig,
   ...queueEnvConfig('process-manifest-queue', processManifestQueue)
 });
 
-export const sbomEtlEnv = envVars({
+export const sbomWorkerEnv = envVars({
   ...githubAppConfig,
   ...queueEnvConfig('process-sbom-queue', processSbomQueue)
 });

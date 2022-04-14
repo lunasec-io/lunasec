@@ -1,0 +1,9 @@
+mutation SubmitPrReview($pull_request_id: ID!) {
+    submitPullRequestReview(
+        input: {event: COMMENT, pullRequestId: $pull_request_id}
+    ) {
+        pullRequestReview {
+            id
+        }
+    }
+}

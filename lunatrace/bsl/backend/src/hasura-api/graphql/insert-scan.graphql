@@ -1,0 +1,44 @@
+mutation InsertScan($scan: scans_insert_input!, $build_id: uuid!) {
+  insert_scans_one(object: $scan) {
+    id
+    build_id
+    findings {
+      fix_state
+      fix_versions
+      package_name
+      created_at
+      id
+      language
+      locations
+      matcher
+      package_version_id
+      purl
+      severity
+      type
+      version
+      updated_at
+      version_matcher
+      virtual_path
+      vulnerability_id
+      vulnerability_package_id
+      vulnerability {
+        id
+        slug
+        description
+        cvss_score
+        cvss_inferred
+        name
+        namespace
+        data_source
+        ignored_vulnerabilities(where: { project: {builds: {id: {_eq: $build_id}}}}) {
+          creator_id
+          id
+          locations
+          note
+          project_id
+          vulnerability_id
+        }
+      }
+    }
+  }
+}

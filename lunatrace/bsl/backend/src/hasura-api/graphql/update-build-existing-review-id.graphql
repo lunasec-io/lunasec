@@ -1,0 +1,5 @@
+mutation UpdateBuildExistingReviewId($id: uuid!, $existing_github_review_id: String!) {
+    update_builds_by_pk(pk_columns: {id: $id}, _set: {existing_github_review_id: $existing_github_review_id}) {
+        id
+    }
+}

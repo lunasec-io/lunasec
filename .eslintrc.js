@@ -28,10 +28,6 @@ module.exports = {
     node: true
   },
   extends: [
-    // "plugin:vue/vue3-essential',
-    // '@vue/typescript/recommended',
-    // '@vue/prettier',
-    // '@vue/prettier/@typescript-eslint',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
@@ -67,7 +63,8 @@ module.exports = {
       'lunatrace/bsl/frontend/tsconfig.json',
       'lunatrace/bsl/backend-cdk/tsconfig.json',
       'lunatrace/bsl/backend/tsconfig.json',
-      'lunatrace/dev-cli/tsconfig.json'
+      'lunatrace/dev-cli/tsconfig.json',
+      'lunatrace/bsl/common'
     ]
   },
   plugins: [

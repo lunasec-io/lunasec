@@ -56,7 +56,7 @@ export class SecureFrameAuthClient {
       };
     }
     // TODO: Add JSON schema validation
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+     
     return json;
   }
 

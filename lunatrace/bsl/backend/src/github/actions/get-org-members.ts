@@ -16,13 +16,14 @@ import {
   Organizations_Insert_Input,
   Users_Constraint,
   Users_Update_Column
-} from "../../hasura/generated";
+} from "../../hasura-api/generated";
 import {MaybeError} from "../../types/util";
 import {logError} from "../../utils/errors";
 import { normalizeGithubId } from "../../utils/github";
 import {log} from "../../utils/log";
 import {notEmpty} from "../../utils/predicates";
 import {catchError, threwError} from "../../utils/try";
+import {GetMembersForOrganizationQuery} from "../api/generated";
 
 import {getGithubOrganizationMembers} from "./get-members-for-organization";
 
@@ -115,7 +116,7 @@ export async function getHasuraOrgMembers(
     };
   }
 
-  const githubOrgMembers = await catchError(async () => await getGithubOrganizationMembers(authToken, orgName));
+  const githubOrgMembers = await catchError<Promise<GetMembersForOrganizationQuery>>(async () => await getGithubOrganizationMembers(authToken, orgName));
 
   if (threwError(githubOrgMembers)) {
     logError(githubOrgMembers);

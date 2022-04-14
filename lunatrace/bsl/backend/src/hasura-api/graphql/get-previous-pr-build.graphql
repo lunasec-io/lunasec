@@ -1,0 +1,5 @@
+query GetPreviousBuildForPr($pull_request_id: String!) {
+    builds(where: {_and: {existing_github_review_id: {_is_null: false}, pull_request_id: {_eq: $pull_request_id}}}, order_by: {created_at: desc}) {
+        existing_github_review_id
+    }
+}

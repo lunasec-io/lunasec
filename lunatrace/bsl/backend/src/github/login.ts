@@ -13,7 +13,7 @@
  */
 import { Request, Response } from 'express';
 
-import {hasura} from "../hasura";
+import {hasura} from "../hasura-api";
 import {getGithubAccessTokenFromKratos} from "../kratos";
 import {MaybeError} from "../types/util";
 import {errorResponse, logError} from "../utils/errors";

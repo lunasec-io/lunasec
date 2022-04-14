@@ -11,13 +11,13 @@
  * limitations under the License.
  *
  */
+import { filterFindingsByIgnored, groupByPackage } from '@lunatrace/lunatrace-common';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { branchLink, branchName, commitLink, gitUrlToLink } from '../../../utils/build-display-helpers';
 import { prettyDate } from '../../../utils/pretty-date';
-import { filterFindingsByIgnored, groupByPackage } from '../finding/filter-findings';
 import { BuildInfo, ProjectInfo } from '../types';
 
 import { SourceIcon } from './SourceIcon';
@@ -48,7 +48,7 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
             <Col sm="6">
               <Card.Title>
                 <h3>
-                  <span className="darker">Build # </span>
+                  <span className="darker">Snapshot </span>
                   {build.build_number}{' '}
                 </h3>
               </Card.Title>
