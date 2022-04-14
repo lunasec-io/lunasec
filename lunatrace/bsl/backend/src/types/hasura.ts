@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { Organizations_Insert_Input } from '../hasura/generated';
+import { Organizations_Insert_Input } from '../hasura-api/generated';
 
 export type OrganizationInputLookup = Record<string, Organizations_Insert_Input>;
 

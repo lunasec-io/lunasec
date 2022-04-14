@@ -1,4 +1,3 @@
-
 ALTER TABLE public.github_repositories ADD COLUMN "traits" jsonb NULL;
 UPDATE public.github_repositories SET traits = api_response WHERE traits IS NULL;
 ALTER TABLE public.github_repositories ALTER COLUMN traits SET NOT NULL;

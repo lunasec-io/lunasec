@@ -14,21 +14,3 @@
 import { GetBuildDetailsQuery } from '../../../api/generated';
 
 export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
-
-export const severityOrder = ['Unknown', 'Negligible', 'Low', 'Medium', 'High', 'Critical'];
-
-export interface VulnerablePackage {
-  created_at: string;
-  purl: string;
-  locations: string[];
-  severity: typeof severityOrder[number];
-  version: string;
-  language: string;
-  type: string;
-  package_name: string;
-  cvss_score: number | null;
-  fix_state: string | null;
-  fix_versions: string[];
-  findings: Finding[];
-  project_id: string;
-}
