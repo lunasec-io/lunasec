@@ -23,10 +23,12 @@ import {
   ServerConfig,
 } from './types/config';
 
-const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
+const checkEnvVar = (envVarKey: string, defaultValue?: string, mustExistInEnv = true) => {
   const envVar = process.env[envVarKey];
 
-  if (!envVar && (process.env.NODE_ENV === 'production' || defaultValue === undefined)) {
+  // If the environment variable is not set, and the value must come from the environment, AND we are in production and the default value is not defined.
+  // then throw an error
+  if (!envVar && mustExistInEnv && (process.env.NODE_ENV === 'production' || defaultValue === undefined)) {
     throw new Error(`Missing ${envVarKey} env var`);
   }
   return envVar || (defaultValue as string);
@@ -57,7 +59,7 @@ export function getAwsConfig(): AwsConfig {
 }
 
 export function getHasuraConfig(): HasuraConfig {
-  const hasuraEndpoint = checkEnvVar('HASURA_URL', 'http://localhost:4455/api/service/v1/graphql');
+  const hasuraEndpoint = checkEnvVar('HASURA_URL', 'http://localhost:4455/api/service/v1/graphql', false);
   const staticAccessToken = checkEnvVar('STATIC_SECRET_ACCESS_TOKEN', 'fc7efb9e-04e0-4883-b7b4-8f2e86d1e2e1');
   return {
     hasuraEndpoint,
@@ -85,8 +87,7 @@ export function getQueueHandlerConfig(): QueueHandlerConfig {
 }
 
 export function getGithubAppConfig(): GithubAppConfig {
-  const githubEndpoint = checkEnvVar('GITHUB_ENDPOINT', 'https://api.github.com/graphql');
-  const githubWebhook = checkEnvVar('GITHUB_WEBHOOK', 'https://smee.io/PFQhzcyUpi770GiD');
+  const githubEndpoint = checkEnvVar('GITHUB_ENDPOINT', 'https://api.github.com/graphql', false);
 
   const githubPrivateKeyRaw = checkEnvVar('GITHUB_APP_PRIVATE_KEY');
   const githubPrivateKey = Buffer.from(githubPrivateKeyRaw, 'base64').toString('utf-8');
@@ -97,8 +98,7 @@ export function getGithubAppConfig(): GithubAppConfig {
   return {
     githubAppId,
     githubPrivateKey,
-    githubEndpoint,
-    githubWebhook
+    githubEndpoint
   };
 }
 
