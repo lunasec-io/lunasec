@@ -11,11 +11,19 @@
  * limitations under the License.
  *
  */
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+const webpack = require('webpack')
 
 module.exports = {
   webpack: {
+    target: "web",
     alias: {},
     plugins: {
+      add: [
+        new webpack.ProvidePlugin({
+          process:'process/browser'
+        })
+      ]
       // add: [], /* An array of plugins */
       // add: [
       //   plugin1,
@@ -25,6 +33,11 @@ module.exports = {
       // remove: [],  /* An array of plugin constructor's names (i.e. "StyleLintPlugin", "ESLintWebpackPlugin" ) */
     },
     configure: { /* Any webpack configuration options: https://webpack.js.org/configuration */
+      resolve: {
+        fallback: {
+          process: require.resolve("process/browser")
+        }
+      },
       module: {
         rules: [
           {
