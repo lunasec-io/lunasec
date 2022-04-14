@@ -13,17 +13,17 @@
  */
 import { Response } from 'express';
 
-import {hasura} from "../../hasura";
+import {hasura} from "../../hasura-api";
 import {
   GetAuthorizedUserOrganizationsQuery, Organization_User_Constraint,
   Organization_User_Insert_Input, Organization_User_Update_Column,
   UpdateOrganizationsForUserMutation
-} from "../../hasura/generated";
+} from "../../hasura-api/generated";
 import {getGithubAccessTokenFromKratos} from "../../kratos";
 import {errorResponse, logError} from "../../utils/errors";
 import {log} from "../../utils/log";
 import {catchError, threwError, Try} from "../../utils/try";
-import {GetUserOrganizationsQuery} from "../generated";
+import {GetUserOrganizationsQuery} from "../api/generated";
 
 import {getOrgsForUser} from "./get-orgs-for-user";
 

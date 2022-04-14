@@ -1,10 +1,10 @@
 overwrite: true
 schema:
   - "http://localhost:8080/v1/graphql":
-      headers: {"x-hasura-admin-secret": "myadminsecretkey"}
-documents: "src/hasura/graphql/**/*.graphql"
+      headers: {"x-hasura-admin-secret": "myadminsecretkey", "x-hasura-role":"service"}
+documents: "src/hasura-api/graphql/**/*.graphql"
 generates:
-  ./src/hasura/generated.ts:
+  ./src/hasura-api/generated.ts:
     plugins:
       - "typescript"
       - "typescript-operations"

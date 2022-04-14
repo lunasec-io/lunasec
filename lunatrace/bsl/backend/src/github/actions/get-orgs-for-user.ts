@@ -16,8 +16,8 @@ import deepmerge from 'deepmerge';
 import {logError} from "../../utils/errors";
 import {log} from "../../utils/log";
 import { catchError, threwError, Try } from '../../utils/try';
+import { GetUserOrganizationsQuery } from '../api/generated';
 import {getGithubGraphqlClient} from "../auth";
-import { GetUserOrganizationsQuery } from '../generated';
 
 export async function getOrgsForUser(userId: string, accessToken: string) {
   const github = getGithubGraphqlClient(accessToken);
