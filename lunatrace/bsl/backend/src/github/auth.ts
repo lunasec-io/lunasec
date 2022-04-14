@@ -17,7 +17,7 @@ import { GraphQLClient } from 'graphql-request';
 
 import { getGithubAppConfig } from '../config';
 
-import {getSdk, Sdk} from './generated';
+import {getSdk, Sdk} from './api/generated';
 
 const githubAppConfig = getGithubAppConfig();
 

@@ -14,14 +14,15 @@
 import { Webhooks } from '@octokit/webhooks';
 
 import { generateSbomFromAsset } from '../cli/call-cli';
-import {uploadSbomToS3} from "../etl/generate-sbom";
-import {hasura} from "../hasura";
-import {GetProjectIdFromGitUrlQuery, InsertBuildMutation} from '../hasura/generated';
+import {hasura} from "../hasura-api";
+import {GetProjectIdFromGitUrlQuery, InsertBuildMutation} from '../hasura-api/generated';
 import {logError} from "../utils/errors";
 import {normalizeGithubId} from "../utils/github";
 import { log } from '../utils/log';
 import { catchError, threwError, Try } from '../utils/try';
+import {uploadSbomToS3} from "../workers/generate-sbom";
 
+import { GetUserOrganizationsQuery } from './api/generated';
 import { getInstallationAccessToken } from './auth';
 
 export const webhooks = new Webhooks({
@@ -112,7 +113,10 @@ webhooks.on('organization', async (event) => {
 });
 
 webhooks.on('pull_request', async (event) => {
-  if (event.payload.action === 'synchronize') {
+  const actionName = event.payload.action;
+  console.log('received pull request webhook for action: ', actionName)
+
+  if (actionName === 'synchronize' || actionName === 'opened' || actionName === 'reopened') {
     const cloneUrl = event.payload.repository.clone_url;
     const gitUrl = event.payload.repository.git_url;
     const gitBranch = event.payload.pull_request.head.ref;

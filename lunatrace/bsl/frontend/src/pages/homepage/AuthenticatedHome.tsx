@@ -22,7 +22,7 @@ import { GithubAppUrl } from '../../constants';
 
 export const AuthenticatedHome: React.FunctionComponent = (_props) => {
   const { data } = api.useGetSidebarInfoQuery();
-  const hasAnyProjects = !!data && data.projects.filter((p) => p.name !== 'Personal').length > 0;
+  const hasAnyOrgs = !!data && data.organizations.filter((p) => p.name !== 'Personal').length > 0;
   const personalProjectId = !!data && data.projects.find((p) => p.name === 'Personal Project')?.id;
   return (
     <>
@@ -46,29 +46,29 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
               </Card.Subtitle>
               <Card.Title>
                 {' '}
-                <Badge className="me-1" bg={hasAnyProjects ? 'primary' : 'secondary'} pill>
+                <Badge className="me-1" bg={hasAnyOrgs ? 'primary' : 'secondary'} pill>
                   2
                 </Badge>{' '}
                 Configure <span className="darker">your project.</span>
               </Card.Title>
-              <Card.Subtitle className={`darker homepage-subtitle left-bar-border ${hasAnyProjects ? 'active' : ''}`}>
+              <Card.Subtitle className={`darker homepage-subtitle left-bar-border ${hasAnyOrgs ? 'active' : ''}`}>
                 Click your imported project in the sidebar.
               </Card.Subtitle>
               <Card.Title>
                 {' '}
-                <Badge className="me-1" bg={hasAnyProjects ? 'primary' : 'secondary'} pill>
+                <Badge className="me-1" bg={hasAnyOrgs ? 'primary' : 'secondary'} pill>
                   3
                 </Badge>{' '}
                 PR Scanning is Active!
               </Card.Title>
-              <Card.Subtitle className={`darker homepage-subtitle ${hasAnyProjects ? 'active' : ''}`}>
+              <Card.Subtitle className={`darker homepage-subtitle ${hasAnyOrgs ? 'active' : ''}`}>
                 Set up manual scans in your project if desired.
               </Card.Subtitle>
 
               <Row className="justify-content-center">
                 <Col md="6" className="d-grid gap-2">
-                  <Button variant={hasAnyProjects ? 'light' : 'primary'} size="lg" href={GithubAppUrl}>
-                    <BsGithub className="mb-1 me-1" /> {hasAnyProjects ? 'Add more projects' : 'Connect to GitHub'}
+                  <Button variant={hasAnyOrgs ? 'light' : 'primary'} size="lg" href={GithubAppUrl}>
+                    <BsGithub className="mb-1 me-1" /> {hasAnyOrgs ? 'Add more projects' : 'Connect to GitHub'}
                   </Button>
                   <Card.Subtitle className="darker">
                     Prefer not to? You can still do manual scans in{' '}

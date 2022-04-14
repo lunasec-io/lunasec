@@ -35,9 +35,9 @@ import { Secret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
 
 import { commonBuildProps } from './constants';
-import { EtlStack } from './etl-stack';
-import { EtlStorageStack, EtlStorageStackState } from './etl-storage-stack';
 import {getContainerTarballPath} from "./util";
+import { WorkerStack } from './worker-stack';
+import { WorkerStorageStack } from './worker-storage-stack';
 
 interface LunaTraceStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
@@ -117,7 +117,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       props.gitHubAppWebHookSecret
     );
 
-    const storageStackStage = EtlStorageStack.createEtlStorageStack(this, {
+    const storageStackStage = WorkerStorageStack.createWorkerStorageStack(this, {
       env: props.env,
       publicBaseUrl,
     });
@@ -223,6 +223,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         S3_MANIFEST_BUCKET: storageStackStage.manifestBucket.bucketName,
         SITE_PUBLIC_URL: publicBaseUrl,
         PORT: '3002',
+        NODE_ENV: 'production',
       },
       secrets: {
         DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
@@ -337,7 +338,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     oryConfigBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
     storageStackStage.manifestBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
 
-    EtlStack.createEtlStack(this, {
+    WorkerStack.createWorkerStack(this, {
       env: props.env,
       storageStack: storageStackStage,
       fargateCluster,
