@@ -208,7 +208,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const backendContainerImage = ContainerImage.fromAsset(getContainerTarballPath('lunatrace-backend.tar'));
+    const backendContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-backend.tar'));
 
     const backend = taskDef.addContainer('BackendContainer', {
       image: backendContainerImage,
