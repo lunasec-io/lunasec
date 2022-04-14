@@ -3,7 +3,7 @@
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "license": "BSL-LunaTrace",
-  "type": "module",
+  "type": "commonjs",
   "version": "1.0.7",
   "private": true,
   "sideEffects": false,
