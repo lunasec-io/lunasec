@@ -46,6 +46,9 @@
     },
     "mst-gql@0.14.1": {
       "unplugged": true
+    },
+    "ts-node@10.7.0": {
+      "unplugged": true
     }
   },
   "homepage": "https://github.com/lunasec-io/lunasec#readme",
