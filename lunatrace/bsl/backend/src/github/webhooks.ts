@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { Webhooks } from '@octokit/webhooks';
+import {EmitterWebhookEvent, Webhooks} from '@octokit/webhooks';
 
 import { generateSbomFromAsset } from '../cli/call-cli';
 import {hasura} from "../hasura-api";
@@ -22,14 +22,14 @@ import { logger } from '../utils/logger';
 import { catchError, threwError, Try } from '../utils/try';
 import {uploadSbomToS3} from "../workers/generate-sbom";
 
-import { GetUserOrganizationsQuery } from './api/generated';
 import { getInstallationAccessToken } from './auth';
 
 export const webhooks = new Webhooks({
   secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
 });
 
-webhooks.on('organization', async (event) => {
+
+async function organizationHandler(event:EmitterWebhookEvent<'organization'>) {
   logger.debug('organization webhook event', {
     action: event.payload.action
   });
@@ -110,9 +110,11 @@ webhooks.on('organization', async (event) => {
       userId
     })
   }
-});
+}
 
-webhooks.on('pull_request', async (event) => {
+
+
+async function pullRequestHandler(event:EmitterWebhookEvent<'pull_request'>) {
   const actionName = event.payload.action;
   console.log('received pull request webhook for action: ', actionName)
 
@@ -191,4 +193,17 @@ webhooks.on('pull_request', async (event) => {
 
     await uploadSbomToS3(installationId.toString(), buildId, gzippedSbom);
   }
-});
+}
+
+// Wrap the hook in logging.. just pulls the type from octokit since this has the same signature
+const listenToHook:typeof webhooks.on = (hookName, callback) =>{
+  webhooks.on(hookName, async (event) => {
+    const actionName = 'action' in event.payload ? event.payload.action : 'none given'
+    await logger.provideFields({loggerName:'webhook-logger', hookName, actionName}, async () => {
+      await callback(event);
+    })
+  })
+}
+
+listenToHook('pull_request', pullRequestHandler)
+listenToHook('organization', organizationHandler)
