@@ -22,7 +22,7 @@ import {
   SbomHandlerConfig,
   ServerConfig,
 } from './types/config';
-import { defaultLogger } from './utils/logger';
+import { logger } from './utils/logger';
 
 const nodeEnv = process.env.NODE_ENV;
 

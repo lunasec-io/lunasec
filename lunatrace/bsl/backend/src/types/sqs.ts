@@ -73,4 +73,4 @@ export interface QueueErrorResult {
   error: Error;
 }
 
-export type HandlerCallback = (object: S3ObjectMetadata, logger: LunaLogger) => Promise<QueueSuccessResult | QueueErrorResult>;
+export type HandlerCallback = (object: S3ObjectMetadata) => Promise<QueueSuccessResult | QueueErrorResult>;

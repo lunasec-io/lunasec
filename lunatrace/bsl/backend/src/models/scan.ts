@@ -14,7 +14,6 @@
 import { spawn } from 'child_process';
 import { Readable } from 'stream';
 
-import {LunaLogger} from "@lunatrace/lunatrace-common/build/main";
 
 import { hasura } from '../hasura-api';
 import {
@@ -26,12 +25,12 @@ import {
   Scans_Insert_Input,
 } from '../hasura-api/generated';
 import { Convert, GrypeScanReport, Match } from '../types/grype-scan-report';
-import {defaultLogger} from "../utils/logger";
+import {logger} from "../utils/logger";
 
 export type InsertedScan = NonNullable<InsertScanMutation['insert_scans_one']>;
 
-export async function parseAndUploadScan(sbomStream: Readable, buildId: string, logger: LunaLogger): Promise<InsertedScan> {
-  const rawGrypeReport = await runGrypeScan(sbomStream, logger);
+export async function parseAndUploadScan(sbomStream: Readable, buildId: string): Promise<InsertedScan> {
+  const rawGrypeReport = await runGrypeScan(sbomStream);
   const typedRawGrypeReport = Convert.toScanReport(rawGrypeReport);
   const scan = await parseScan(typedRawGrypeReport, buildId);
   const insertRes = await hasura.InsertScan({
@@ -44,7 +43,7 @@ export async function parseAndUploadScan(sbomStream: Readable, buildId: string, 
   return insertRes.insert_scans_one;
 }
 
-export async function runGrypeScan(sbomStream: Readable, logger:LunaLogger): Promise<string> {
+export async function runGrypeScan(sbomStream: Readable): Promise<string> {
   return new Promise((resolve, reject) => {
 
     const lunatraceCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
@@ -144,7 +143,7 @@ async function parseMatches(buildId: string, matches: Match[]): Promise<Findings
           const package_version_id = ids.package_versions.length >= 1 ? ids.package_versions[0].id : undefined;
 
           if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
-            defaultLogger.error(
+            logger.error(
                 {
                   slugs,
                   ids,
