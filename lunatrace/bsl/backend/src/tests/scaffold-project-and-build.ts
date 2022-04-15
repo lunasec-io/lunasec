@@ -12,10 +12,10 @@
  *
  */
 import { db } from '../database/db';
-import {log} from "../utils/log";
+import {defaultLogger} from "../utils/logger";
 
 export async function scaffoldBuild() {
-  log.info('scaffolding project with a build and scan');
+  defaultLogger.info('scaffolding project with a build and scan');
   const existingProject = await db.oneOrNone(`
   SELECT id, name FROM public.projects WHERE name = 'Personal Project' LIMIT 1
 `);

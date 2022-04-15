@@ -14,14 +14,14 @@
 import fs from 'fs';
 
 import { parseAndUploadScan } from '../models/scan';
-import {log} from "../utils/log";
+import {defaultLogger} from "../utils/logger";
 
 import { scaffoldBuild } from './scaffold-project-and-build';
 
 async function uploadScan() {
   void parseAndUploadScan(fs.createReadStream('/home/forrest/tmp/syftoutput.json'), await scaffoldBuild()).then(
     (res) => {
-      log.info('completed scan upload: ', res);
+      defaultLogger.info('completed scan upload: ', res);
     }
   );
 }

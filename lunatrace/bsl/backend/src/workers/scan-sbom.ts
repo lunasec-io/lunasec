@@ -14,7 +14,7 @@
 import { Readable } from 'stream';
 import zlib from 'zlib';
 
-import markdownTable from 'markdown-table';
+import {LunaLogger} from "@lunatrace/lunatrace-common/build/main";
 import validate from 'validator';
 
 import { commentOnPrIfExists } from '../github/actions/pr-comment-generator';
@@ -22,9 +22,8 @@ import { hasura } from '../hasura-api';
 import { InsertedScan, parseAndUploadScan } from '../models/scan';
 import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
-import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
+import {QueueErrorResult, QueueSuccessResult} from '../types/sqs';
 import { aws } from '../utils/aws-utils';
-import { log } from '../utils/log';
 import { catchError, threwError } from '../utils/try';
 
 
@@ -48,8 +47,8 @@ function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gz
   });
 }
 
-async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan> {
-  log.info(`[buildId: ${buildId}]`, `scanning sbom ${JSON.stringify(sbomBucketInfo)}`);
+async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo, parentLogger: LunaLogger): Promise<InsertedScan> {
+  parentLogger.info(sbomBucketInfo,'scanning sbom ');
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
     sbomBucketInfo.key,
@@ -59,21 +58,23 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
 
   const unZippedSbomStream = await decompressGzip(sbomStream, sbomLength);
 
-  console.log(`[buildId: ${buildId}]`, `updating manifest status to "scanning" if it existed`);
+  const logger = parentLogger.child({buildId})
+  logger.log( `updating manifest status to "scanning" if it existed`);
   await hasura.UpdateManifestStatusIfExists({ status: 'scanning', buildId: buildId });
 
-  const scanReport = await parseAndUploadScan(unZippedSbomStream, buildId);
+  const scanReport = await parseAndUploadScan(unZippedSbomStream, buildId, logger);
 
-  console.log(`[buildId: ${buildId}]`, 'upload complete, notifying manifest if one exists');
+  logger.log( 'upload complete, notifying manifest if one exists');
   await hasura.UpdateManifestStatusIfExists({ status: 'scanned', buildId: buildId });
 
-  console.log(`[buildId: ${buildId}]`, 'done with scan');
+  logger.log( 'done with scan');
 
   return scanReport;
 }
 
-export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSuccessResult | QueueErrorResult> {
+export async function handleScanSbom(message: S3ObjectMetadata, parentLogger: LunaLogger): Promise<QueueSuccessResult | QueueErrorResult> {
   const { key, region, bucketName } = message;
+  const logger = parentLogger.child({...message});
   const buildId = key.split('/').pop();
   if (!buildId || !validate.isUUID(buildId)) {
     console.error('invalid build uuid from s3 object at key ', key);
@@ -86,10 +87,10 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
 
   const bucketInfo: SbomBucketInfo = { region, bucketName, key };
 
-  const scanResp = await catchError(async () => await scanSbom(buildId, bucketInfo));
+  const scanResp = await catchError(async () => await scanSbom(buildId, bucketInfo, logger));
 
   if (threwError(scanResp)) {
-    log.error('Sbom Scanning Error:', { scanResp });
+    logger.error('Sbom Scanning Error:', { scanResp });
     await hasura.UpdateManifestStatusIfExists({
       status: 'error',
       message: String(scanResp.message),
@@ -104,7 +105,7 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
   try {
     await commentOnPrIfExists(buildId, scanResp);
   } catch (e) {
-    console.error('commenting on github pr failed, continuing.. ', e)
+    logger.error('commenting on github pr failed, continuing.. ', e)
   }
 
   return {

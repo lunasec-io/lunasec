@@ -19,10 +19,11 @@ import {
   ReceiveMessageCommandOutput,
   SQSClient,
 } from '@aws-sdk/client-sqs';
+import {LunaLogger} from "@lunatrace/lunatrace-common/build/main";
 
 import { getAwsConfig, getQueueHandlerConfig } from '../config';
 import { HandlerCallback, S3SqsEvent } from '../types/sqs';
-import {log} from "../utils/log";
+import {defaultLogger} from "../utils/logger";
 
 import { handleGenerateManifestSbom } from './generate-sbom';
 import { handleScanSbom } from './scan-sbom';
@@ -39,13 +40,13 @@ async function deleteMessage(message: Message, queueUrl: string) {
   };
   try {
     const data = await sqsClient.send(new DeleteMessageCommand(deleteParams));
-    log.info('Message deleted', data);
+    defaultLogger.info('Message deleted', data);
   } catch (err) {
-    log.info('Error deleting message', err);
+    defaultLogger.info('Error deleting message', err);
   }
 }
 
-async function readDataFromQueue(queueUrl: string, processObjectCallback: HandlerCallback) {
+async function readDataFromQueue(queueUrl: string, processObjectCallback: HandlerCallback, queueLogger: LunaLogger) {
   try {
     const params = {
       AttributeNames: ['SentTimestamp'],
@@ -60,31 +61,33 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
     if (data.Messages) {
       const allJobs = Promise.all(
         data.Messages.map(async (message) => {
+          const messageLogger = queueLogger.child({sqsMetadata:data.$metadata, messageId: message.MessageId})
           if (!message.Body) {
-            log.info('Received sqs message with no message body');
+            messageLogger.info('Received sqs message with no message body');
             return;
           }
           const parsedBody = JSON.parse(message.Body) as S3SqsEvent;
-          log.info('parsed body as ', parsedBody);
+          messageLogger.debug('parsed body as ', parsedBody);
 
           if (!parsedBody.Records) {
-            log.info('No records on sqs event, deleting message, exiting');
+            messageLogger.info('No records on sqs event, deleting message, exiting');
             return deleteMessage(message, queueUrl);
           }
-          // todo: do we actually need this promise handling or should we only take the first record from any event...assuming one file per object created event makes a lot of sense
+          // todo: do we actually need this promise handling or should we only take the first record from any event? assuming one file per object created event makes sense
           const handlerPromises = parsedBody.Records.map((record) => {
+            // Executes the proper handler for whatever queue we are processing, passed in above as an argument
             return processObjectCallback({
               bucketName: record.s3.bucket.name,
               key: record.s3.object.key,
               region: record.awsRegion,
-            });
+            }, messageLogger);
           });
           const results = await Promise.all(handlerPromises);
 
           const errors = results.filter((result) => result.success === false);
 
           if (errors.length > 0) {
-            log.error('Errors found during SQS job:', { errors });
+            messageLogger.error('Errors found during SQS job:', { errors });
             // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
             return;
           }
@@ -100,14 +103,14 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
       const result = await Promise.race([allJobs, timeoutPromise]);
 
       if (result === 'job_timeout') {
-        log.error('Exceeded timeout for jobs:', data.Messages);
+        defaultLogger.error('Exceeded timeout for jobs:', data.Messages);
       } else {
-        log.info('Jobs returned successfully:', data.Messages);
+        defaultLogger.info('Jobs returned successfully:', data.Messages);
       }
       return;
     }
   } catch (err) {
-    log.error('SQS processor top level error: ', err);
+    defaultLogger.error('SQS processor top level error: ', err);
     throw err;
   }
 }
@@ -127,21 +130,21 @@ function determineHandler(): HandlerCallback {
 
 export async function setupQueue(): Promise<void> {
   const queueName = queueHandlerConfig.queueName;
-
+  const queueLogger = defaultLogger.child({queueName,  loggerName: "queue-logger"})
   const { QueueUrl } = await sqsClient.send(
     new GetQueueUrlCommand({
       QueueName: queueName,
     })
   );
   if (!QueueUrl) {
-    throw new Error('failed to get QueueUrl for queuename ' + queueName);
+    throw new Error('failed to get QueueUrl for queuename ');
   }
-  log.info('got queueUrl: ', QueueUrl);
+  queueLogger.info('got queueUrl: ', QueueUrl);
   // read loop
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    log.info('Checking queue for messages: ', queueName);
-    await readDataFromQueue(QueueUrl, determineHandler());
+    queueLogger.info('Checking queue for messages...');
+    await readDataFromQueue(QueueUrl, determineHandler(), queueLogger);
   }
 }
 
