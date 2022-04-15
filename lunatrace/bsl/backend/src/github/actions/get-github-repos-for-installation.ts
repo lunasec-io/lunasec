@@ -14,7 +14,7 @@
 import { Octokit } from 'octokit';
 
 import { RepositoriesForInstallationResponse } from '../../types/github';
-import {defaultLogger} from "../../utils/logger";
+import {logger} from "../../utils/logger";
 import { getInstallationAccessToken } from '../auth';
 
 const PER_PAGE = 100;
@@ -26,7 +26,7 @@ export async function getGithubReposForInstallation(authToken: string, installat
 
   // Cap at 10000 iterations just because infinite loops suck.
   for (let page = 1; page < 10000; page++) {
-    defaultLogger.info(`[installId: ${installationId}] Getting GitHub repos for installation, page #${page}`);
+    logger.info(`[installId: ${installationId}] Getting GitHub repos for installation, page #${page}`);
 
     // authenticates as app based on request URLs
     const response = await octokit.rest.apps.listReposAccessibleToInstallation({
@@ -34,21 +34,21 @@ export async function getGithubReposForInstallation(authToken: string, installat
       per_page: PER_PAGE,
     });
 
-    defaultLogger.info(
+    logger.info(
       `[installId: ${installationId}] GitHub repos for page #${page}: ${response.data.repositories.length}, total_count: ${response.data.total_count}`
     );
 
     repos.push(...response.data.repositories);
 
     if (repos.length >= response.data.total_count) {
-      defaultLogger.info(`[installId: ${installationId}] Successfully collected ${repos.length} repositories from GitHub`);
+      logger.info(`[installId: ${installationId}] Successfully collected ${repos.length} repositories from GitHub`);
       return repos;
     }
 
-    defaultLogger.info(`[installId: ${installationId}] Detected paginated GitHub repositories`);
+    logger.info(`[installId: ${installationId}] Detected paginated GitHub repositories`);
   }
 
-  defaultLogger.error(`[installId: ${installationId}] Hit max iterations for listing repos for installation`);
+  logger.error(`[installId: ${installationId}] Hit max iterations for listing repos for installation`);
 
   throw new Error('Hit max iterations for listing repos for installation: ' + installationId.toString(10));
 }

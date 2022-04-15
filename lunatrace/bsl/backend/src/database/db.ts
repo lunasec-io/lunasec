@@ -15,7 +15,7 @@ import config from 'config';
 // import * as pgPromise from 'pg-promise';
 import pgPromise from 'pg-promise';
 
-import { defaultLogger } from '../utils/logger';
+import { logger } from '../utils/logger';
 
 const dbConfig = config.get('db');
 
@@ -29,7 +29,7 @@ export const pgp = pgPromise({
 });
 
 export const db = pgp(process.env.DATABASE_CONNECTION_URL || conf);
-defaultLogger.info('postgres DB initialized');
+logger.info('postgres DB initialized');
 
 // export function closeDb(_req: Request, _res: Response, next: () => {}) {
 //   db.$pool.end();

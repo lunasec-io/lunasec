@@ -25,7 +25,7 @@ import { lookupAccessTokenRouter } from './routes/auth-routes';
 import { githubApiRouter } from './routes/github-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
-import {asyncLocalStorage, defaultLogger} from './utils/logger';
+import {logger} from './utils/logger';
 
 const jwksConfig = getJwksConfig();
 const serverConfig = getServerConfig();
@@ -44,17 +44,17 @@ app.use(Express.json());
 
 app.use((req, res, next) => {
   const requestId: string = randomUUID();
-  const logger = defaultLogger.child({loggerName: 'express-logger',requestId, route: req.route})
-    // This will now be accessible anywhere in this callstack by doing asyncLocalStorage.getStore() as we do in getLogger() in utils.
+  const loggerFields = {loggerName: 'express-logger',requestId, path: req.path}
+    // This will now be accessible anywhere in this callstack by doing asyncLocalStorage.getStore() which the logger does internally
     // This has a serious performance hit to promises so if it's bad we should remove it
-  asyncLocalStorage.run({ logger }, next);
+  void logger.provideFields(loggerFields , next);
 });
 
 app.use(
   createNodeMiddleware(webhooks, {
     path: '/github/webhook/events',
     onUnhandledRequest: (request, response) => {
-      defaultLogger.error('Unhandled request in GitHub WebHook handler', request);
+      logger.error('Unhandled request in GitHub WebHook handler', request);
       response.status(400).json({
         error: true,
         message: 'Unhandled request',
@@ -65,7 +65,7 @@ app.use(
 );
 
 function debugRequest(req: Request, res: Response, next: NextFunction) {
-  defaultLogger.info('request', req.method, req.path);
+  logger.info('request', req.method, req.path);
   next();
 }
 

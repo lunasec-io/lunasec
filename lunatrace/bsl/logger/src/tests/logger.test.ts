@@ -12,7 +12,7 @@
  *
  */
 
-import { JsonTransport, logLevels, LunaLogger } from '../logger';
+import { JsonTransport, logLevels, LunaLogger } from '../index';
 const log = new LunaLogger({ trace: false }, {});
 log.addTransport(new JsonTransport({ minLevel: 'debug', colors: false, pretty: true }));
 
@@ -28,14 +28,14 @@ describe('LunaLogger', () => {
 
   it('ignores lower level logs', () => {
     const ignoreLogger = new LunaLogger();
-    ignoreLogger.addTransport(new JsonTransport({ minLevel: 'info', colors: false, pretty: false }));
+    ignoreLogger.addTransport(new JsonTransport({minLevel: 'info', colors: false, pretty: false}));
     ignoreLogger.debug('this is ignored');
     ignoreLogger.info('this is not ignored');
     expect(consoleMock).toBeCalledTimes(1);
   });
 
   it('appends any object properties from the first argument', () => {
-    log.log({ test: 'field' });
+    log.log({test: 'field'});
     const output = consoleMock.mock.calls[0][0];
     parseAndCheck(output, 'test', 'field');
   });
@@ -59,12 +59,37 @@ describe('LunaLogger', () => {
 
   describe('child logger', () => {
     it('appends any child additional fields', () => {
-      const childLogger = log.child({ child: 'field' });
+      const childLogger = log.child({child: 'field'});
       childLogger.log('test');
       const output = consoleMock.mock.calls[0][0];
       parseAndCheck(output, 'child', 'field');
     });
   });
+
+  describe('logger provider', () => {
+    it('adds fields', async () => {
+      await log.provideFields({asyncStored: 'field'}, async () => {
+        log.info('should have stored field');
+        const output = consoleMock.mock.calls[0][0];
+        parseAndCheck(output, 'asyncStored', 'field');
+        return;
+      })
+    })
+
+  it('preserves fields on nesting', async () => {
+    await log.provideFields({asyncStored: 'field'}, async () => {
+      await log.provideFields({anotherAsyncStored: 'field'}, async () => {
+        log.info('should have stored field');
+        const output = consoleMock.mock.calls[0][0];
+        parseAndCheck(output, 'asyncStored', 'field');
+        parseAndCheck(output, 'anotherAsyncStored', 'field');
+        return;
+      })
+    })
+  })
+
+  })
+})
 
   // This is just extremely hard to test because of the async issue.. Feature is manually tested
   // it('finds the callsite', async () => {
@@ -76,7 +101,6 @@ describe('LunaLogger', () => {
   //   const output = consoleSpy.mock.calls[0][0];
   //   expect(JSON.stringify(output)).toHaveProperty('fileLink')
   // });
-});
 
 function parseAndCheck(jsonString: string, key: string, value: unknown) {
   const parsed = JSON.parse(jsonString); // This breaks if we use color, interestingly
