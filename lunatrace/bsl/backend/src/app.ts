@@ -19,16 +19,15 @@ import Express, {NextFunction, Request, Response } from 'express';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 
-import {getGithubAppConfig, getJwksConfig, getServerConfig} from "./config";
+import {getJwksConfig, getServerConfig} from "./config";
 import { webhooks } from './github/webhooks';
 import { lookupAccessTokenRouter } from './routes/auth-routes';
 import { githubApiRouter } from './routes/github-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
-import {asyncLocalStorage, log} from './utils/log';
+import {asyncLocalStorage, defaultLogger} from './utils/logger';
 
 const jwksConfig = getJwksConfig();
-const githubConfig = getGithubAppConfig();
 const serverConfig = getServerConfig();
 
 const app = Express();
@@ -45,14 +44,17 @@ app.use(Express.json());
 
 app.use((req, res, next) => {
   const requestId: string = randomUUID();
-  asyncLocalStorage.run({ requestId }, next);
+  const logger = defaultLogger.child({loggerName: 'express-logger',requestId, route: req.route})
+    // This will now be accessible anywhere in this callstack by doing asyncLocalStorage.getStore() as we do in getLogger() in utils.
+    // This has a serious performance hit to promises so if it's bad we should remove it
+  asyncLocalStorage.run({ logger }, next);
 });
 
 app.use(
   createNodeMiddleware(webhooks, {
     path: '/github/webhook/events',
     onUnhandledRequest: (request, response) => {
-      log.error('Unhandled request in GitHub WebHook handler', request);
+      defaultLogger.error('Unhandled request in GitHub WebHook handler', request);
       response.status(400).json({
         error: true,
         message: 'Unhandled request',
@@ -63,8 +65,7 @@ app.use(
 );
 
 function debugRequest(req: Request, res: Response, next: NextFunction) {
-  log.info('request', req.method, req.path);
-  // log.info('body', req.body);
+  defaultLogger.info('request', req.method, req.path);
   next();
 }
 
@@ -90,7 +91,6 @@ app.use(
       jwksUri: jwksConfig.jwksUri,
     }),
 
-    // audience: 'urn:my-resource-server',
     issuer: jwksConfig.jwksIssuer,
     algorithms: ['RS256'],
   })

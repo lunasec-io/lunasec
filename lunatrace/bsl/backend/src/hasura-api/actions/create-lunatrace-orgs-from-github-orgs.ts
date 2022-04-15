@@ -15,7 +15,7 @@ import { RepositoriesForInstallationResponse } from '../../types/github';
 import {OrganizationInputLookup, UpsertOrganizationResponse} from '../../types/hasura';
 import { MaybeError } from '../../types/util';
 import { errorResponse, logError } from '../../utils/errors';
-import {log} from "../../utils/log";
+import {defaultLogger} from "../../utils/logger";
 import { catchError, threwError, Try } from '../../utils/try';
 import {
   Github_Repositories_Constraint,
@@ -110,7 +110,7 @@ export async function createLunatraceOrgsFromGithubOrgs(
   installationId: number,
   orgObjectList: Organizations_Insert_Input[]
 ): Promise<MaybeError<UpsertOrganizationResponse[]>> {
-  log.info(
+  defaultLogger.info(
     `[installId: ${installationId}] Creating LunaTrace organizations and projects: ${orgObjectList.map(
       (org) => org.name
     )}`

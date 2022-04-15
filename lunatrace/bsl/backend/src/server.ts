@@ -14,10 +14,10 @@
 
 import { app } from './app';
 import { getServerConfig } from './config';
-import {log} from "./utils/log";
+import {defaultLogger} from "./utils/logger";
 
 const serverConfig = getServerConfig();
 
 app.listen(serverConfig.serverPort, () => {
-  log.info('Server is running on port ', serverConfig.serverPort);
+  defaultLogger.info('Server is running on port ', serverConfig.serverPort);
 });

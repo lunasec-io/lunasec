@@ -21,7 +21,7 @@ import {
 } from '../hasura-api/actions/create-lunatrace-orgs-from-github-orgs';
 import { RepositoriesForInstallationResponse } from '../types/github';
 import { errorResponse, logError } from '../utils/errors';
-import { log } from '../utils/log';
+import { defaultLogger } from '../utils/logger';
 import { tryParseInt } from '../utils/parse';
 import { catchError, threwError, Try } from '../utils/try';
 
@@ -49,7 +49,7 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
 
   const installationId = installationIdRet.value;
 
-  log.info(`[installId: ${installationId}] Installing Github App to organization`);
+  defaultLogger.info(`[installId: ${installationId}] Installing Github App to organization`);
 
   const installationAuthToken = await getInstallationAccessToken(installationId);
 
@@ -58,7 +58,7 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
   const errorUri = req.query.error_uri;
 
   if (error) {
-    log.info(`[installId: ${installationId}] Error installing Github App: ${errorDescription}`);
+    defaultLogger.info(`[installId: ${installationId}] Error installing Github App: ${errorDescription}`);
     res.status(401).send(
       errorResponse(
         JSON.stringify({
@@ -81,7 +81,7 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  log.info(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
+  defaultLogger.info(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
 
   const organizations = hasuraOrgsFromGithubRepositories(installationId, repositories);
   const orgObjectList = Object.values(organizations);
@@ -93,13 +93,13 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  log.info(`[installId: ${installationId}] Created/updated LunaTrace organizations`, {
+  defaultLogger.info(`[installId: ${installationId}] Created/updated LunaTrace organizations`, {
     orgs: orgIds.res
   });
 
   const githubOrgToHasuraOrg = orgIds.res.reduce((lookup, org) => {
     if (!org.github_node_id || !org.id) {
-      log.error('unable to add org to lookup', {
+      defaultLogger.error('unable to add org to lookup', {
         org
       });
       return lookup;
@@ -118,7 +118,7 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     const orgMembers = await getHasuraOrgMembers(installationId, installationAuthToken, org, githubOrgToHasuraOrg);
 
     if (orgMembers.error) {
-      log.error(orgMembers.msg);
+      defaultLogger.error(orgMembers.msg);
       return null;
     }
 

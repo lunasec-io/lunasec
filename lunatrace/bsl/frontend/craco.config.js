@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 const webpack = require('webpack')
 
 module.exports = {

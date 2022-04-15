@@ -18,7 +18,7 @@ import {getGithubAccessTokenFromKratos} from "../kratos";
 import {MaybeError} from "../types/util";
 import {errorResponse, logError} from "../utils/errors";
 import {normalizeGithubId} from "../utils/github";
-import {log} from "../utils/log";
+import {defaultLogger} from "../utils/logger";
 import {catchError, threwError, Try} from "../utils/try";
 
 import {getGithubGraphqlClient} from "./auth";
@@ -116,7 +116,7 @@ export async function githubLogin(req: Request, res: Response): Promise<void> {
 
   const githubId: string = req.body.ctx.identity.traits.githubId;
 
-  log.info(`[user: ${userId}, githubId: ${githubId}] Github login webhook started`);
+  defaultLogger.info(`[user: ${userId}, githubId: ${githubId}] Github login webhook started`);
 
   if (!githubId) {
     // if there is no github id, then call the github api to get the user's github id
