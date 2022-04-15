@@ -15,6 +15,21 @@ reset-dir() {
   change-dir "$saved_dir"
 }
 
+change-dir ../hasura
+if ! hasura migrate apply ; then
+	echo "unable to apply database migrations"
+	exit 1
+fi
+if ! hasura metadata apply ; then
+	echo "unable to apply metadata to hasura"
+	exit 1
+fi
+if ! hasura metadata reload ; then
+	echo "unable to reload metadata in hasura"
+	exit 1
+fi
+reset-dir
+
 # Make sure generated code is up to date before building Docker containers
 change-dir ../frontend
 if ! yarn run generate ; then
@@ -24,7 +39,7 @@ fi
 reset-dir
 
 change-dir ../backend
-if ! yarn run backend ; then
+if ! yarn run generate ; then
 	echo "unable to generate code for backend"
 	exit 1
 fi
