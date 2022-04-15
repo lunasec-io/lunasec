@@ -13,6 +13,8 @@
  */
 import zlib from 'zlib';
 
+import {LunaLogger} from "@lunatrace/lunatrace-common/build/main";
+
 import { generateSbomFromAsset } from '../cli/call-cli';
 import { getEtlBucketConfig } from '../config';
 import { hasura } from '../hasura-api';
@@ -20,7 +22,6 @@ import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
-import {log} from "../utils/log";
 import { threwError } from '../utils/try';
 
 const bucketConfig = getEtlBucketConfig();
@@ -40,11 +41,12 @@ export async function createBuildAndGenerateSbom(
   orgId: string,
   projectId: string,
   assetName: string,
-  bucketInfo: SbomBucketInfo
+  bucketInfo: SbomBucketInfo,
+  logger:LunaLogger
 ): Promise<string> {
   // Create a new build
   const { insert_builds_one } = await hasura.InsertBuild({ project_id: projectId, source_type: 'gui' });
-  console.log('hasura returned when inserting build ', insert_builds_one);
+  logger.log('hasura returned when inserting build ', insert_builds_one);
   if (!insert_builds_one || !insert_builds_one.id) {
     throw new Error('Failed to insert a new build');
   }
@@ -61,7 +63,7 @@ export async function createBuildAndGenerateSbom(
   return buildId;
 }
 
-async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
+async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo, logger:LunaLogger) {
   // let hasura know we are starting the process, so it ends up in the UI.  Also will throw if there is no manifest
   const hasuraRes = await hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'sbom-processing' });
   const manifest = hasuraRes.update_manifests?.returning[0];
@@ -73,7 +75,8 @@ async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
     manifest.project.organization_id,
     manifest.project_id,
     manifest.filename,
-    bucketInfo
+    bucketInfo,
+      logger
   );
 
   // update the manifest status
@@ -81,21 +84,24 @@ async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
 }
 // This handler is currently only triggered when someone drags and drops a file on the frontend
 export async function handleGenerateManifestSbom(
-  message: S3ObjectMetadata
+  message: S3ObjectMetadata,
+  parentLogger: LunaLogger
 ): Promise<QueueSuccessResult | QueueErrorResult> {
   const { key, bucketName, region } = message;
+  const logger = parentLogger.child({...message});
+
   const bucketInfo: SbomBucketInfo = {
     key,
     bucketName,
     region,
   };
   try {
-    await attemptGenerateManifestSbom(bucketInfo);
+    await attemptGenerateManifestSbom(bucketInfo, logger);
     return {
       success: true,
     };
   } catch (e) {
-    log.error('Unable to generate SBOM from Manifest', e);
+    logger.error('Unable to generate SBOM from Manifest', e);
     // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
     await hasura.UpdateManifest({ key_eq: key, set_status: 'error', message: String(e) });
 
