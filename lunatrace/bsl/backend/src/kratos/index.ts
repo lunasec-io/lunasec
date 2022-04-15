@@ -14,12 +14,12 @@
 import { Configuration, V0alpha2ApiFactory } from '@ory/kratos-client';
 
 import { KratosIdentityConfig } from '../types/kratos';
-import {defaultLogger} from "../utils/logger";
+import {logger} from "../utils/logger";
 
 export async function getGithubAccessTokenFromKratos(
   userId: string
 ): Promise<{ error: false; token: string } | { error: true; message: string }> {
-  defaultLogger.info('getGithubAccessTokenFromKratos called for user:', userId);
+  logger.info('getGithubAccessTokenFromKratos called for user:', userId);
   const kratosConfig = new Configuration({
     basePath: 'http://localhost:4434',
   });

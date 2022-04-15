@@ -14,7 +14,6 @@
 import { Readable } from 'stream';
 import zlib from 'zlib';
 
-import {LunaLogger} from "@lunatrace/lunatrace-common/build/main";
 import validate from 'validator';
 
 import { commentOnPrIfExists } from '../github/actions/pr-comment-generator';
@@ -24,6 +23,7 @@ import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
 import {QueueErrorResult, QueueSuccessResult} from '../types/sqs';
 import { aws } from '../utils/aws-utils';
+import {logger} from "../utils/logger";
 import { catchError, threwError } from '../utils/try';
 
 
@@ -47,8 +47,8 @@ function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gz
   });
 }
 
-async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo, parentLogger: LunaLogger): Promise<InsertedScan> {
-  parentLogger.info(sbomBucketInfo,'scanning sbom ');
+async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan> {
+  logger.info(sbomBucketInfo,'scanning sbom ');
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
     sbomBucketInfo.key,
@@ -58,11 +58,10 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo, parentL
 
   const unZippedSbomStream = await decompressGzip(sbomStream, sbomLength);
 
-  const logger = parentLogger.child({buildId})
   logger.log( `updating manifest status to "scanning" if it existed`);
   await hasura.UpdateManifestStatusIfExists({ status: 'scanning', buildId: buildId });
 
-  const scanReport = await parseAndUploadScan(unZippedSbomStream, buildId, logger);
+  const scanReport = await parseAndUploadScan(unZippedSbomStream, buildId);
 
   logger.log( 'upload complete, notifying manifest if one exists');
   await hasura.UpdateManifestStatusIfExists({ status: 'scanned', buildId: buildId });
@@ -72,43 +71,45 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo, parentL
   return scanReport;
 }
 
-export async function handleScanSbom(message: S3ObjectMetadata, parentLogger: LunaLogger): Promise<QueueSuccessResult | QueueErrorResult> {
+export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSuccessResult | QueueErrorResult> {
   const { key, region, bucketName } = message;
-  const logger = parentLogger.child({...message});
   const buildId = key.split('/').pop();
-  if (!buildId || !validate.isUUID(buildId)) {
-    console.error('invalid build uuid from s3 object at key ', key);
-    // not much we can do without a valid buildId
+  return await logger.provideFields({key, region, bucketName}, async () => {
+    if (!buildId || !validate.isUUID(buildId)) {
+      console.error('invalid build uuid from s3 object at key ', key);
+      // not much we can do without a valid buildId
+      return {
+        success: false,
+        error: new Error('invalid build uuid from s3 object at key ' + key),
+      };
+    }
+
+    const bucketInfo: SbomBucketInfo = { region, bucketName, key };
+
+    const scanResp = await catchError(async () => await scanSbom(buildId, bucketInfo));
+
+    if (threwError(scanResp)) {
+      logger.error('Sbom Scanning Error:', { scanResp });
+      await hasura.UpdateManifestStatusIfExists({
+        status: 'error',
+        message: String(scanResp.message),
+        buildId: buildId,
+      });
+      return {
+        success: false,
+        error: new Error(scanResp.message),
+      };
+    }
+
+    try {
+      await commentOnPrIfExists(buildId, scanResp);
+    } catch (e) {
+      logger.error('commenting on github pr failed, continuing.. ', e)
+    }
+
     return {
-      success: false,
-      error: new Error('invalid build uuid from s3 object at key ' + key),
+      success: true,
     };
-  }
+  });
 
-  const bucketInfo: SbomBucketInfo = { region, bucketName, key };
-
-  const scanResp = await catchError(async () => await scanSbom(buildId, bucketInfo, logger));
-
-  if (threwError(scanResp)) {
-    logger.error('Sbom Scanning Error:', { scanResp });
-    await hasura.UpdateManifestStatusIfExists({
-      status: 'error',
-      message: String(scanResp.message),
-      buildId: buildId,
-    });
-    return {
-      success: false,
-      error: new Error(scanResp.message),
-    };
-  }
-
-  try {
-    await commentOnPrIfExists(buildId, scanResp);
-  } catch (e) {
-    logger.error('commenting on github pr failed, continuing.. ', e)
-  }
-
-  return {
-    success: true,
-  };
 }

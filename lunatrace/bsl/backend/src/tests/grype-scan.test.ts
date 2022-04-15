@@ -15,13 +15,13 @@ import fs from 'fs';
 import path from 'path';
 
 import { runGrypeScan } from '../models/scan';
-import {defaultLogger} from "../utils/logger";
+import {logger} from "../utils/logger";
 
 jest.setTimeout(20000);
 describe('Grype scanner', () => {
   it('should run scan from local file', async () => {
     const res = await runGrypeScan(fs.createReadStream(path.join(__dirname, '/../fixtures/sbom.json')));
     expect(res).toBeTruthy();
-    defaultLogger.info('res from grype scan is ', res);
+    logger.info('res from grype scan is ', res);
   });
 });

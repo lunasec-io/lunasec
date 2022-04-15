@@ -13,23 +13,12 @@
  */
 import {AsyncLocalStorage} from 'async_hooks'
 
-import {JsonTransport, LunaLogger} from "@lunatrace/lunatrace-common";
+import {JsonTransport, LunaLogger} from "@lunatrace/logger";
 
 const isProd = process.env.NODE_ENV === 'production'
 
-export const defaultLogger = new LunaLogger({}, {loggerName: 'default-backend'})
+export const logger = new LunaLogger({}, {loggerName: 'default-backend'})
 
-defaultLogger.addTransport(new JsonTransport({
+logger.addTransport(new JsonTransport({
     colors: true, minLevel: isProd ? 'info' : 'debug', pretty: !isProd
 }))
-
-
-export const asyncLocalStorage = new AsyncLocalStorage();
-
-export function getLogger(): LunaLogger {
-    const {logger} = asyncLocalStorage.getStore() as {logger: LunaLogger|undefined};
-    if (logger) {
-        return logger;
-    }
-    return defaultLogger.child({loggerName: 'WARNING CONTEXT LOST: async-fallback-logger'})
-}
