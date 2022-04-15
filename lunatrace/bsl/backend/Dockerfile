@@ -7,8 +7,6 @@ COPY --from=lunasec/lunatrace-cli:v0.0.6 /lunatrace /usr/local/bin
 WORKDIR /usr/repo/lunatrace/bsl/backend
 RUN yarn run compile
 
-ENV PORT 80
-
 FROM lunatrace-backend-base as backend-express-server
 ENTRYPOINT ["yarn", "start:prod"]
 
