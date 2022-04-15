@@ -15,6 +15,22 @@ reset-dir() {
   change-dir "$saved_dir"
 }
 
+# Make sure generated code is up to date before building Docker containers
+change-dir ../frontend
+if ! yarn run generate ; then
+	echo "unable to generate code for frontend"
+	exit 1
+fi
+reset-dir
+
+change-dir ../backend
+if ! yarn run backend ; then
+	echo "unable to generate code for backend"
+	exit 1
+fi
+reset-dir
+
+# Build Docker containers
 change-dir ../../..
 if ! docker build . -f lunatrace/bsl/repo-bootstrap.dockerfile -t repo-bootstrap ; then
 	echo "unable to build repo-bootstrap"
