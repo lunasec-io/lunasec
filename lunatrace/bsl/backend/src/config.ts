@@ -23,12 +23,12 @@ import {
   ServerConfig,
 } from './types/config';
 
-const checkEnvVar = (envVarKey: string, defaultValue?: string, mustExistInEnv = true) => {
+const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
   const envVar = process.env[envVarKey];
 
   // If the environment variable is not set, and the value must come from the environment, AND we are in production and the default value is not defined.
   // then throw an error
-  if (!envVar && mustExistInEnv && (process.env.NODE_ENV === 'production' || defaultValue === undefined)) {
+  if (!envVar && defaultValue === undefined) {
     throw new Error(`Missing ${envVarKey} env var`);
   }
   return envVar || (defaultValue as string);
@@ -36,6 +36,8 @@ const checkEnvVar = (envVarKey: string, defaultValue?: string, mustExistInEnv = 
 
 const nodeEnv = checkEnvVar('NODE_ENV', 'development');
 const isProduction = nodeEnv === 'production';
+
+dotenv.config({ path: isProduction ? '.env' : '.env.dev'});
 
 export function getServerConfig(): ServerConfig {
   const serverPortString = checkEnvVar('PORT', '3002');
@@ -49,8 +51,6 @@ export function getServerConfig(): ServerConfig {
   };
 }
 
-dotenv.config({ path: isProduction ? '.env' : '.env.dev'});
-
 export function getAwsConfig(): AwsConfig {
   const awsRegion = checkEnvVar('AWS_DEFAULT_REGION', 'us-west-2');
   return {
@@ -59,7 +59,7 @@ export function getAwsConfig(): AwsConfig {
 }
 
 export function getHasuraConfig(): HasuraConfig {
-  const hasuraEndpoint = checkEnvVar('HASURA_URL', 'http://localhost:4455/api/service/v1/graphql', false);
+  const hasuraEndpoint = checkEnvVar('HASURA_URL', 'http://localhost:4455/api/service/v1/graphql');
   const staticAccessToken = checkEnvVar('STATIC_SECRET_ACCESS_TOKEN', 'fc7efb9e-04e0-4883-b7b4-8f2e86d1e2e1');
   return {
     hasuraEndpoint,
@@ -68,8 +68,8 @@ export function getHasuraConfig(): HasuraConfig {
 }
 
 export function getEtlBucketConfig(): SbomHandlerConfig {
-  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET', 'sbom-test-bucket');
-  const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET', 'test-manifest-bucket-one');
+  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET' );
+  const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET');
 
   return {
     sbomBucket,
@@ -87,7 +87,7 @@ export function getQueueHandlerConfig(): QueueHandlerConfig {
 }
 
 export function getGithubAppConfig(): GithubAppConfig {
-  const githubEndpoint = checkEnvVar('GITHUB_ENDPOINT', 'https://api.github.com/graphql', false);
+  const githubEndpoint = checkEnvVar('GITHUB_ENDPOINT', 'https://api.github.com/graphql');
 
   const githubPrivateKeyRaw = checkEnvVar('GITHUB_APP_PRIVATE_KEY');
   const githubPrivateKey = Buffer.from(githubPrivateKeyRaw, 'base64').toString('utf-8');
