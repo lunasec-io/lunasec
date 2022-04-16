@@ -22,26 +22,27 @@ import {
   SbomHandlerConfig,
   ServerConfig,
 } from './types/config';
-import { log } from './utils/log';
-
-const nodeEnv = process.env.NODE_ENV;
 
 const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
   const envVar = process.env[envVarKey];
 
-  if (!envVar && (nodeEnv === 'production' || defaultValue === undefined)) {
+  // If the environment variable is not set, and the value must come from the environment, AND we are in production and the default value is not defined.
+  // then throw an error
+  if (!envVar && defaultValue === undefined) {
     throw new Error(`Missing ${envVarKey} env var`);
   }
   return envVar || (defaultValue as string);
 };
 
+const nodeEnv = checkEnvVar('NODE_ENV', 'development');
+const isProduction = nodeEnv === 'production';
+
+dotenv.config({ path: isProduction ? '.env' : '.env.dev'});
+
 export function getServerConfig(): ServerConfig {
   const serverPortString = checkEnvVar('PORT', '3002');
   const serverPort = parseInt(serverPortString, 10);
   const sitePublicUrl = checkEnvVar('SITE_PUBLIC_URL', 'http://localhost:4455/');
-
-  const nodeEnv = checkEnvVar('NODE_ENV', 'development');
-  const isProduction = nodeEnv === 'production';
 
   return {
     serverPort,
@@ -49,8 +50,6 @@ export function getServerConfig(): ServerConfig {
     isProduction
   };
 }
-
-dotenv.config({ path: getServerConfig().isProduction ? '.env' : '.env.dev'});
 
 export function getAwsConfig(): AwsConfig {
   const awsRegion = checkEnvVar('AWS_DEFAULT_REGION', 'us-west-2');
@@ -69,8 +68,8 @@ export function getHasuraConfig(): HasuraConfig {
 }
 
 export function getEtlBucketConfig(): SbomHandlerConfig {
-  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET', 'sbom-test-bucket');
-  const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET', 'test-manifest-bucket-one');
+  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET' );
+  const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET');
 
   return {
     sbomBucket,
@@ -89,7 +88,6 @@ export function getQueueHandlerConfig(): QueueHandlerConfig {
 
 export function getGithubAppConfig(): GithubAppConfig {
   const githubEndpoint = checkEnvVar('GITHUB_ENDPOINT', 'https://api.github.com/graphql');
-  const githubWebhook = checkEnvVar('GITHUB_WEBHOOK', 'https://smee.io/PFQhzcyUpi770GiD');
 
   const githubPrivateKeyRaw = checkEnvVar('GITHUB_APP_PRIVATE_KEY');
   const githubPrivateKey = Buffer.from(githubPrivateKeyRaw, 'base64').toString('utf-8');
@@ -100,8 +98,7 @@ export function getGithubAppConfig(): GithubAppConfig {
   return {
     githubAppId,
     githubPrivateKey,
-    githubEndpoint,
-    githubWebhook
+    githubEndpoint
   };
 }
 
