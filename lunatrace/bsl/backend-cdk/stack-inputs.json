@@ -1,7 +1,7 @@
 {
   "cdkDefaultRegion": "us-west-2",
   "cdkDefaultAccount": "134071937287",
-  "appName": "lunatrace-free",
+  "appName": "lunatrace",
   "domainName": "lunatrace.lunasec.io",
   "domainZoneId": "Z0054573K1C8HQHBWE0L",
   "vpcId": "vpc-0c99b65a5fed1049e",
