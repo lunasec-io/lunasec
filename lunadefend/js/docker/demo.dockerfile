@@ -17,7 +17,7 @@ ENV NODE_OPTIONS="--max-old-space-size=8192"
 
 FROM lerna-bootstrap as application-back-end
 
-WORKDIR /repo/js/demo-apps/packages/demo-back-end
+WORKDIR /repo/lunadefend/js/demo-apps/packages/demo-back-end
 
 ENTRYPOINT ["sh", "/repo/go/scripts/wait-for-file.sh", "/outputs/aws_resources.json", "yarn", "start:prod"]
 
@@ -29,7 +29,7 @@ ARG REACT_APP_GRAPHQL_URL
 ARG REACT_APP_TOKENIZER_URL
 ARG REACT_APP_SIMPLE_TOKENIZER_URL
 
-WORKDIR /repo/js/demo-apps/packages/react-front-end
+WORKDIR /repo/lunadefend/js/demo-apps/packages/react-front-end
 
 RUN yarn run build
 

@@ -77,7 +77,7 @@ containers to run, so it may take a few minutes to finish starting up.
 
 For a deeper dive into the Demo App, please see
 this [page](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) for a walkthrough of everything. All the
-source code is available [here](https://github.com/lunasec-io/lunasec/tree/master/js/demo-apps/packages) for you to
+source code is available [here](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/demo-apps/packages) for you to
 view.
 
 If you run into any issues, please open up a GitHub issue or chat with us on
@@ -160,12 +160,12 @@ Our backend services and CLI tools are all written in Golang and live in `/go`.
 
 Our web components and NPM modules are all written in TypeScript and live in `/js/sdks/packages`.
 
-Our Demo Apps are also written in typescript and live in `/js/demo-apps/packages`.
+Our Demo Apps are also written in typescript and live in `/lunadefend/js/demo-apps/packages`.
 
 Docs live in `docs`, and the OpenAPI Spec for our internal REST API lives in `api-spec`.
 
 ### Demo Apps
-Path: `/js/demo-apps/packages`
+Path: `/lunadefend/js/demo-apps/packages`
 
 Demo apps that use our toolkit for testing and demonstration.  The react-app and node-app are the one's currently being developed.
 These are our only SDK supported frameworks currently.
