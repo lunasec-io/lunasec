@@ -14,6 +14,7 @@
 export interface ServerConfig {
   serverPort: number;
   sitePublicUrl: string;
+  isProduction: boolean;
 }
 
 export interface SbomHandlerConfig {
@@ -27,8 +28,10 @@ export interface QueueHandlerConfig {
 }
 
 export interface GithubAppConfig {
+  githubEndpoint: string;
   githubAppId: number;
   githubPrivateKey: string;
+  githubWebhook: string;
 }
 
 export interface AwsConfig {
@@ -38,4 +41,9 @@ export interface AwsConfig {
 export interface HasuraConfig {
   hasuraEndpoint: string;
   staticAccessToken: string;
+}
+
+export interface JwksConfig {
+  jwksUri: string;
+  jwksIssuer: string;
 }

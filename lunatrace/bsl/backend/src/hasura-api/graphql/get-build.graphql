@@ -1,0 +1,12 @@
+query GetBuild($build_id: uuid!) {
+  builds_by_pk(id: $build_id) {
+    project {
+      id
+      organization {
+        installation_id
+      }
+    }
+    pull_request_id
+    existing_github_review_id
+  }
+}

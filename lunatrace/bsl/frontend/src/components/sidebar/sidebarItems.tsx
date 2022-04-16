@@ -25,7 +25,7 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
     ? []
     : data.organizations.map((o) => {
         return {
-          href: '/organization/:organization_id',
+          href: `/organization/${o.id}`,
           icon: o.name === 'Personal' ? RiParkingFill : AiFillGithub, // todo: replace this with an icon from github
           title: o.name,
           children: [

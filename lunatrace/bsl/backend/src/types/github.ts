@@ -15,4 +15,4 @@
 // eslint-disable-next-line import/no-unresolved
 import { components } from '@octokit/openapi-types';
 
-export type ListReposAccessibleToInstallationResponseType = components['schemas']['repository'][];
+export type RepositoriesForInstallationResponse = components['schemas']['repository'][];

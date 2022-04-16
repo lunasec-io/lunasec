@@ -98,10 +98,12 @@ hashers:
     cost: 8
 
 identity:
-  default_schema_id: default
+  default_schema_id: user_v1
   schemas:
   - id: default
-    url: file:///config/identity.schema.json
+    url: file:///config/identity_v0.schema.json
+  - id: user_v1
+    url: file:///config/identity_v1.schema.json
 
 courier:
   smtp:

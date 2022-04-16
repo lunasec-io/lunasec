@@ -1,30 +1,23 @@
-FROM node:16-alpine
+FROM node:16-alpine AS REPO_BOOTSTRAP
 
-WORKDIR /usr/src/common
+COPY . /usr/repo
+WORKDIR /usr/repo
+RUN yarn set version 3.1.1
+# --immutable not working, something is trying to edit the lock file
+ENV CYPRESS_INSTALL_BINARY="0"
+ENV SKIP_LUNA_POSTINSTALL=true
 
-COPY common/yarn.lock-workspace /usr/src/common
-COPY common/package.json /usr/src/common
-RUN mv yarn.lock-workspace yarn.lock
-RUN CI=true yarn install --pure-lockfile
-COPY ./common /usr/src/common
-RUN yarn run compile
-RUN yarn link
+FROM REPO_BOOTSTRAP as FRONTEND_BUILD
 
-WORKDIR /usr/src/app
+RUN yarn install #--immutable broken for some reason!
 
-COPY frontend/yarn.lock-workspace /usr/src/app/
-COPY frontend/package.json /usr/src/app/
-RUN mv yarn.lock-workspace yarn.lock
-RUN yarn link "@lunatrace/lunatrace-common"
-RUN CI=true yarn install --pure-lockfile
-
-COPY ./frontend /usr/src/app
-
+WORKDIR /usr/repo/lunatrace/bsl/frontend
 RUN yarn run build:docker
+
 
 FROM flashspys/nginx-static
 RUN apk update && apk upgrade
-COPY --from=0 /usr/src/app/build /static
+COPY --from=FRONTEND_BUILD /usr/repo/lunatrace/bsl/frontend/build /static
 
 RUN rm -rf /etc/nginx/conf.d/default.conf
-COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
+COPY /lunatrace/bsl/frontend/nginx.conf /etc/nginx/conf.d/default.conf

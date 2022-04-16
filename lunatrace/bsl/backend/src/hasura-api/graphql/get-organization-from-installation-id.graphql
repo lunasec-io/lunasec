@@ -1,0 +1,5 @@
+query GetOrganizationFromInstallationId($installation_id: Int) {
+  organizations(where: {installation_id: {_eq: $installation_id}}) {
+    id
+  }
+}

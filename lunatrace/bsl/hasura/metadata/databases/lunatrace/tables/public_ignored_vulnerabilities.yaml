@@ -18,8 +18,9 @@ insert_permissions:
       project:
         organization:
           organization_users:
-            user_id:
-              _eq: X-Hasura-User-Id
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
     columns:
     - creator_id
     - locations
@@ -27,9 +28,19 @@ insert_permissions:
     - project_id
     - vulnerability_id
     set:
-      creator_id: x-hasura-User-Id
+      creator_id: x-Hasura-User-Id
   role: user
 select_permissions:
+- permission:
+    columns:
+    - locations
+    - note
+    - creator_id
+    - id
+    - project_id
+    - vulnerability_id
+    filter: {}
+  role: service
 - permission:
     columns:
     - id
@@ -42,8 +53,9 @@ select_permissions:
       project:
         organization:
           organization_users:
-            user_id:
-              _eq: X-Hasura-User-Id
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
   role: user
 update_permissions:
 - permission:
@@ -54,8 +66,9 @@ update_permissions:
       project:
         organization:
           organization_users:
-            user_id:
-              _eq: X-Hasura-User-Id
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
   role: user
 delete_permissions:
 - permission:
@@ -63,6 +76,7 @@ delete_permissions:
       project:
         organization:
           organization_users:
-            user_id:
-              _eq: X-Hasura-User-Id
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
   role: user
