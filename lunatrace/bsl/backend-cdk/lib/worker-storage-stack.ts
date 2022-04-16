@@ -11,8 +11,7 @@
  * limitations under the License.
  *
  */
-import { EventType } from '@aws-cdk/aws-s3';
-import { Bucket, HttpMethods } from '@aws-cdk/aws-s3';
+import { Bucket, EventType, HttpMethods } from '@aws-cdk/aws-s3';
 import { SqsDestination } from '@aws-cdk/aws-s3-notifications';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
