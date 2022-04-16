@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "start": "DISABLE_ESLINT_PLUGIN=true yarn run react-scripts start",
-    "build": "DISABLE_ESLINT_PLUGIN=true yarn run react-scripts build && ../../../../tools/analytics-inserter/analytics-inserter.js",
+    "build": "DISABLE_ESLINT_PLUGIN=true yarn run react-scripts build && ../../../../../tools/analytics-inserter/analytics-inserter.js",
     "serve-static": "yarn run serve -s build",
     "build-and-serve-static": "yarn run build && yarn run serve-static",
     "test": "DISABLE_ESLINT_PLUGIN=true yarn run react-scripts test",
