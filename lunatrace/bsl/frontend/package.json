@@ -1,10 +1,10 @@
 {
-  "name": "frontend-redux",
+  "name": "frontend-lunatrace",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@aws-sdk/client-s3": "^3.52.0",
-    "@lunatrace/lunatrace-common": "link:../common",
+    "@lunatrace/lunatrace-common": "workspace:~",
     "@ory/integrations": "~0.2.2",
     "@ory/kratos-client": "0.9.0-alpha.3",
     "@ory/themes": "~0.0.101",
@@ -19,6 +19,7 @@
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
     "prettify-date": "^1.4.0",
+    "process": "~0.11.10",
     "react": "^17.0.2",
     "react-bootstrap": "^2.1.1",
     "react-bootstrap-typeahead": "^6.0.0-alpha.6",
@@ -28,7 +29,7 @@
     "react-dropzone": "^12.0.4",
     "react-feather": "^2.0.9",
     "react-github-login-button": "^1.0.1",
-    "react-helmet-async": "^1.2.2",
+    "react-helmet-async": "1.2.2",
     "react-icons": "^4.3.1",
     "react-perfect-scrollbar": "^1.5.8",
     "react-redux": "^7.2.6",
@@ -44,11 +45,13 @@
     "watch": "^1.0.2"
   },
   "devDependencies": {
+    "@craco/craco": "~6.4.3",
     "@graphql-codegen/cli": "2.3.1",
     "@graphql-codegen/introspection": "2.1.1",
     "@graphql-codegen/typescript": "2.4.2",
     "@graphql-codegen/typescript-operations": "^2.2.2",
     "@graphql-codegen/typescript-rtk-query": "^2.2.2",
+    "@octokit/plugin-rest-endpoint-methods": "~5.13.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -66,7 +69,8 @@
     "apollo": "2.33.9",
     "graphqurl": "^1.0.1",
     "npm-run-all": "^4.1.5",
-    "sass": "^1.49.0"
+    "sass": "^1.49.0",
+    "webpack": "~5.72.0"
   },
   "scripts": {
     "sass:pull": "git submodule init && git submodule update",
@@ -75,12 +79,12 @@
     "dev:graphql:watch": "yarn run generate && watch 'yarn run generate' ./src/api/graphql",
     "sass:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
     "build:css": "npm-run-all sass:build sass:autoprefixer",
-    "start:devserver": "DISABLE_ESLINT_PLUGIN=true PORT=3000 react-scripts start",
-    "start": "yarn run dev:sass:watch & yarn run dev:graphql:watch & yarn run start:devserver",
-    "build": "yarn run generate && react-scripts build",
-    "build:docker": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start:server": "DISABLE_ESLINT_PLUGIN=true PORT=3000 craco start",
+    "start": "yarn run dev:sass:watch & yarn run dev:graphql:watch & yarn run start:server",
+    "build": "yarn run generate && craco build",
+    "build:docker": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
     "generate": "graphql-codegen --config codegen.yml"
   },
   "browserslist": {

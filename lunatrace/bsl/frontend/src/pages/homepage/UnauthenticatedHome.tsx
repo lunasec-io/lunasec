@@ -23,7 +23,7 @@ export const UnauthenticatedHome: React.FunctionComponent = (_props) => {
         <h1>LunaTrace</h1>
         <h4 className="darker">Vulnerability Tracking Control Center</h4>
         <br />
-        <Login></Login>
+        <Login />
       </div>
     </>
   );

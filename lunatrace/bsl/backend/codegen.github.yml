@@ -1,8 +1,8 @@
 overwrite: true
 schema: github.graphql
-documents: "src/github/graphql/**/*.graphql"
+documents: "src/github/api/graphql/**/*.graphql"
 generates:
-  ./src/github/generated.ts:
+  ./src/github/api/generated.ts:
     plugins:
       - "typescript"
       - "typescript-operations"

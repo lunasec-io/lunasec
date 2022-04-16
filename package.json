@@ -46,6 +46,9 @@
     },
     "mst-gql@0.14.1": {
       "unplugged": true
+    },
+    "ts-node@10.7.0": {
+      "unplugged": true
     }
   },
   "homepage": "https://github.com/lunasec-io/lunasec#readme",
@@ -78,7 +81,7 @@
     "compile:release:services": "cd go && yarn run compile:release",
     "compile:release:demos": "VERSION=$(yarn run --silent monorepo:version) lunadefend/js/docker/release.sh build",
     "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services && yarn run compile:release:demos",
-    "postinstall": "./tools/postinstall.sh",
+    "postinstall": "sh ./tools/postinstall.sh",
     "publish:release:sdks": "lerna publish --no-verify-access -y from-package",
     "publish:release:services": "cd go && yarn run publish:release",
     "publish:release:demos": "VERSION=$(yarn run --silent monorepo:version) lunadefend/js/docker/release.sh publish",
@@ -101,7 +104,8 @@
       "./lunatrace/bsl/backend",
       "./lunatrace/bsl/backend-cdk",
       "./lunatrace/bsl/common",
-      "./lunatrace/bsl/frontend"
+      "./lunatrace/bsl/frontend",
+      "./lunatrace/dev-cli"
     ]
   },
   "packageManager": "yarn@3.1.1"

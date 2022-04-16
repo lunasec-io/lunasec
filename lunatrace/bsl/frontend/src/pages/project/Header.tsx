@@ -13,16 +13,29 @@
  */
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
+import { BiLinkExternal } from 'react-icons/bi';
 
 export interface ProjectHeaderProps {
   projectName: string;
   organizationName?: string;
+  githubLink?: string;
 }
-export const ProjectHeader: React.FunctionComponent<ProjectHeaderProps> = ({ projectName, organizationName }) => {
+export const ProjectHeader: React.FunctionComponent<ProjectHeaderProps> = ({
+  projectName,
+  organizationName,
+  githubLink,
+}) => {
   return (
     <Row>
       <Col xs="12" style={{ textAlign: 'center' }}>
-        <h1 className="">{projectName}</h1>
+        <h1 className="">
+          {projectName}{' '}
+          {githubLink ? (
+            <a href={githubLink} target="_blank" rel="noopener noreferrer">
+              <BiLinkExternal size=".7em" className="mb-1 ms-1" />{' '}
+            </a>
+          ) : null}
+        </h1>
       </Col>
       {organizationName ? (
         <Col xs="12" style={{ textAlign: 'center' }}>

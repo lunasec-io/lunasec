@@ -14,10 +14,10 @@
 import express, { Request, Response } from 'express';
 import validate from 'validator';
 
-import { getBucketConfig } from '../config';
+import { getEtlBucketConfig } from '../config';
 import { aws } from '../utils/aws-utils';
 
-const sbomHandlerConfig = getBucketConfig();
+const sbomHandlerConfig = getEtlBucketConfig();
 
 interface ErrorResponse {
   error: true;

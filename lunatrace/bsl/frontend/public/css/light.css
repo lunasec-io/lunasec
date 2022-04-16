@@ -17643,7 +17643,8 @@ td.rdtYear:hover {
 
 .breadcrumb {
   font-size: 1rem;
-  padding-top: 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .darker {
