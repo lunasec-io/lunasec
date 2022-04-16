@@ -18,6 +18,7 @@
     "start:prod": "pm2-runtime start ./build/server.js --name demo-back-end",
     "generate:hasura-calls": "graphql-codegen --config codegen.yml",
     "generate:github-calls": "graphql-codegen --config codegen.github.yml",
+    "generate": "yarn run generate:github-calls && yarn run generate:hasura-calls",
     "dev:graphql:watch": "yarn run generate:hasura-calls && watch 'yarn run generate:hasura-calls' ./src/hasura-api/graphql",
     "compile": "tsc -p tsconfig.json",
     "compile:watch": "tsc -p tsconfig.json -w"
