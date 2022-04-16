@@ -13416,9 +13416,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunasec/demo-back-end@^1.0.7, @lunasec/demo-back-end@workspace:js/demo-apps/packages/demo-back-end":
+"@lunasec/demo-back-end@^1.0.7, @lunasec/demo-back-end@workspace:lunadefend/js/demo-apps/packages/demo-back-end":
   version: 0.0.0-use.local
-  resolution: "@lunasec/demo-back-end@workspace:js/demo-apps/packages/demo-back-end"
+  resolution: "@lunasec/demo-back-end@workspace:lunadefend/js/demo-apps/packages/demo-back-end"
   dependencies:
     "@lunasec/browser-common": ^1.0.7
     "@lunasec/node-sdk": ^1.0.7
@@ -13528,9 +13528,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunasec/react-front-end@workspace:js/demo-apps/packages/react-front-end":
+"@lunasec/react-front-end@workspace:lunadefend/js/demo-apps/packages/react-front-end":
   version: 0.0.0-use.local
-  resolution: "@lunasec/react-front-end@workspace:js/demo-apps/packages/react-front-end"
+  resolution: "@lunasec/react-front-end@workspace:lunadefend/js/demo-apps/packages/react-front-end"
   dependencies:
     "@apollo/client": ^3.3.20
     "@aws-sdk/credential-provider-ini": ^3.31.0
