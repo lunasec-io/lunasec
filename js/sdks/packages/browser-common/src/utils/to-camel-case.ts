@@ -58,11 +58,10 @@ export function preserveConsecutiveUppercase(input: string) {
 }
 
 export function postProcess(input: string, options: CamelCaseOptions) {
-  /* eslint-disable @typescript-eslint/no-unsafe-return */
+
   return input
     .replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(options.locale))
     .replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, (m) => m.toLocaleUpperCase(options.locale));
-  /* eslint-enable @typescript-eslint/no-unsafe-return */
 }
 
 export function toCamelCase(input: string, options?: CamelCaseOptions) {
@@ -75,7 +74,7 @@ export function toCamelCase(input: string, options?: CamelCaseOptions) {
 
   if (Array.isArray(input)) {
     input = input
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+
       .map((x) => x.trim())
       .filter((x) => x.length)
       .join('-');

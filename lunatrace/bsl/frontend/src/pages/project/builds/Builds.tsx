@@ -12,19 +12,11 @@
  *
  */
 import React from 'react';
-import { useParams } from 'react-router-dom';
 
-import api from '../../../api';
+import { ProjectInfo } from '../types';
 
 import { BuildList } from './BuildList';
 
-export const Builds: React.FunctionComponent = () => {
-  const { project_id } = useParams();
-
-  // RUN SEARCH QUERY
-  const { data } = api.useGetProjectQuery({
-    project_id,
-  });
-
-  return data ? <BuildList builds={data.projects[0].builds} /> : null;
+export const Builds: React.FunctionComponent<{ project: ProjectInfo }> = ({ project }) => {
+  return project ? <BuildList project={project} /> : null;
 };

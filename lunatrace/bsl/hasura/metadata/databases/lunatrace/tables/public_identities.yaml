@@ -2,19 +2,19 @@ table:
   name: identities
   schema: public
 array_relationships:
+- name: identity_credentials
+  using:
+    foreign_key_constraint_on:
+      column: identity_id
+      table:
+        name: identity_credentials
+        schema: public
 - name: identity_verifiable_addresses
   using:
     foreign_key_constraint_on:
       column: identity_id
       table:
         name: identity_verifiable_addresses
-        schema: public
-- name: organization_users
-  using:
-    foreign_key_constraint_on:
-      column: user_id
-      table:
-        name: organization_user
         schema: public
 select_permissions:
 - permission:
@@ -31,10 +31,15 @@ select_permissions:
   role: service
 - permission:
     columns:
+    - schema_id
+    - state
     - traits
+    - created_at
+    - state_changed_at
+    - updated_at
+    - id
+    - nid
     filter:
-      organization_users:
-        user:
-          id:
-            _eq: X-Hasura-User-Id
+      id:
+        _eq: X-Hasura-User-Id
   role: user

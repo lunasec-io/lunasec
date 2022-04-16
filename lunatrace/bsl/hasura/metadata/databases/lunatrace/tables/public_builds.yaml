@@ -13,6 +13,13 @@ array_relationships:
       table:
         name: findings
         schema: public
+- name: manifests
+  using:
+    foreign_key_constraint_on:
+      column: build_id
+      table:
+        name: manifests
+        schema: public
 - name: scans
   using:
     foreign_key_constraint_on:
@@ -36,6 +43,8 @@ insert_permissions:
     - git_remote
     - project_id
     - s3_url
+    set:
+      source_type: cli
   role: cli
 - permission:
     backend_only: false
@@ -44,6 +53,7 @@ insert_permissions:
     - agent_access_token
     - build_number
     - created_at
+    - existing_github_review_id
     - git_branch
     - git_hash
     - git_remote
@@ -51,6 +61,7 @@ insert_permissions:
     - project_id
     - pull_request_id
     - s3_url
+    - source_type
   role: service
 select_permissions:
 - permission:
@@ -64,6 +75,7 @@ select_permissions:
     - id
     - project_id
     - s3_url
+    - source_type
     filter:
       project:
         project_access_tokens:
@@ -75,6 +87,7 @@ select_permissions:
     - agent_access_token
     - build_number
     - created_at
+    - existing_github_review_id
     - git_branch
     - git_hash
     - git_remote
@@ -82,25 +95,30 @@ select_permissions:
     - project_id
     - pull_request_id
     - s3_url
+    - source_type
     filter: {}
   role: service
 - permission:
     columns:
     - build_number
     - created_at
+    - existing_github_review_id
     - git_branch
     - git_hash
     - git_remote
     - id
     - project_id
+    - pull_request_id
     - s3_url
+    - source_type
     filter:
       _or:
       - project:
           organization:
             organization_users:
-              user_id:
-                _eq: X-Hasura-User-Id
+              user:
+                kratos_id:
+                  _eq: X-Hasura-User-Id
       - agent_access_token:
           _eq: X-Hasura-Access-Token
   role: user
@@ -118,15 +136,16 @@ update_permissions:
 - permission:
     check: null
     columns:
+    - agent_access_token
     - build_number
+    - created_at
+    - existing_github_review_id
     - git_branch
     - git_hash
     - git_remote
-    - s3_url
-    - created_at
-    - agent_access_token
     - id
     - project_id
+    - s3_url
     filter: {}
   role: service
 - permission:

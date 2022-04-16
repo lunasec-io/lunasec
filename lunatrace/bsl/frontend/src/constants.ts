@@ -72,3 +72,5 @@ export const THEME_PALETTE_DARK = {
   'gray-900': '#eaeaec',
   black: '#fff',
 };
+
+export const GithubAppUrl: string = process.env.REACT_APP_GITHUB_APP_LINK || 'WARNING GITHUB APP URL UNDEFINED';

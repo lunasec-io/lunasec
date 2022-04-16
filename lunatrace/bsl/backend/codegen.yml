@@ -1,7 +1,7 @@
 overwrite: true
 schema:
   - "http://localhost:8080/v1/graphql":
-      headers: {"x-hasura-admin-secret": "myadminsecretkey"}
+      headers: {"x-hasura-admin-secret": "myadminsecretkey", "x-hasura-role":"service"}
 documents: "src/hasura-api/graphql/**/*.graphql"
 generates:
   ./src/hasura-api/generated.ts:

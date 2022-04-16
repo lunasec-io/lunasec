@@ -11,12 +11,12 @@
  * limitations under the License.
  *
  */
+import { groupByPackage, severityOrder } from '@lunatrace/lunatrace-common';
 import React, { useState } from 'react';
 import { Col, Container, Dropdown, Row } from 'react-bootstrap';
 
 import { VulnerablePackageItem } from './VulnerablePackageItem';
-import { groupByPackage } from './filter-findings';
-import { Finding, severityOrder, VulnerablePackage } from './types';
+import { Finding } from './types';
 
 interface FindingListProps {
   findings: Finding[];

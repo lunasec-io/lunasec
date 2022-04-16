@@ -10,22 +10,21 @@ insert_permissions:
     backend_only: false
     check: {}
     columns:
+    - git_url
     - github_id
     - github_node_id
-    - api_response
-    - git_url
-    - id
     - project_id
+    - traits
   role: service
 select_permissions:
 - permission:
     columns:
+    - git_url
+    - github_id
     - github_id
     - github_node_id
-    - api_response
-    - git_url
-    - id
     - project_id
+    - traits
     filter: {}
   role: service
 - permission:
@@ -35,22 +34,23 @@ select_permissions:
     - github_node_id
     - id
     - project_id
+    - traits
     filter:
       project:
         organization:
           organization_users:
-            user_id:
-              _eq: X-Hasura-User-Id
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
   role: user
 update_permissions:
 - permission:
-    check: {}
+    check: null
     columns:
+    - git_url
     - github_id
     - github_node_id
-    - api_response
-    - git_url
-    - id
     - project_id
+    - traits
     filter: {}
   role: service
