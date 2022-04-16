@@ -1,0 +1,4 @@
+packages/browser/public
+buildcache
+build
+*.sqlite3
