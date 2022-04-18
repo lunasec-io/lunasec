@@ -12,11 +12,11 @@
  *
  */
 
-import {log} from "./log";
+import {logger} from "./logger";
 
 export function logError(error: Error): void {
-  log.error(error.message);
-  log.error(error.stack);
+  logger.error(error.message);
+  logger.error(error.stack);
 }
 
 export function errorResponse(msg: string) {

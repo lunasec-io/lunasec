@@ -20,9 +20,10 @@ import {
   SQSClient,
 } from '@aws-sdk/client-sqs';
 
+
 import { getAwsConfig, getQueueHandlerConfig } from '../config';
 import { HandlerCallback, S3SqsEvent } from '../types/sqs';
-import {log} from "../utils/log";
+import {logger} from "../utils/logger";
 
 import { handleGenerateManifestSbom } from './generate-sbom';
 import { handleScanSbom } from './scan-sbom';
@@ -39,9 +40,9 @@ async function deleteMessage(message: Message, queueUrl: string) {
   };
   try {
     const data = await sqsClient.send(new DeleteMessageCommand(deleteParams));
-    log.info('Message deleted', data);
+    logger.info('Message deleted', data);
   } catch (err) {
-    log.info('Error deleting message', err);
+    logger.info('Error deleting message', err);
   }
 }
 
@@ -60,19 +61,21 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
     if (data.Messages) {
       const allJobs = Promise.all(
         data.Messages.map(async (message) => {
+        return await logger.provideFields({sqsMetadata:data.$metadata, messageId: message.MessageId}, async () => {
           if (!message.Body) {
-            log.info('Received sqs message with no message body');
+            logger.info('Received sqs message with no message body');
             return;
           }
           const parsedBody = JSON.parse(message.Body) as S3SqsEvent;
-          log.info('parsed body as ', parsedBody);
+          logger.debug('parsed body as ', parsedBody);
 
           if (!parsedBody.Records) {
-            log.info('No records on sqs event, deleting message, exiting');
+            logger.info('No records on sqs event, deleting message, exiting');
             return deleteMessage(message, queueUrl);
           }
-          // todo: do we actually need this promise handling or should we only take the first record from any event...assuming one file per object created event makes a lot of sense
+          // todo: do we actually need this promise handling or should we only take the first record from any event? assuming one file per object created event makes sense
           const handlerPromises = parsedBody.Records.map((record) => {
+            // Executes the proper handler for whatever queue we are processing, passed in above as an argument
             return processObjectCallback({
               bucketName: record.s3.bucket.name,
               key: record.s3.object.key,
@@ -84,12 +87,14 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
           const errors = results.filter((result) => result.success === false);
 
           if (errors.length > 0) {
-            log.error('Errors found during SQS job:', { errors });
+            logger.error('Errors found during SQS job:', { errors });
             // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
             return;
           }
 
           await deleteMessage(message, queueUrl);
+        })
+
         })
       );
 
@@ -100,14 +105,14 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
       const result = await Promise.race([allJobs, timeoutPromise]);
 
       if (result === 'job_timeout') {
-        log.error('Exceeded timeout for jobs:', data.Messages);
+        logger.error('Exceeded timeout for jobs:');
       } else {
-        log.info('Jobs returned successfully:', data.Messages);
+        logger.info('Jobs returned successfully:');
       }
       return;
     }
   } catch (err) {
-    log.error('SQS processor top level error: ', err);
+    logger.error('SQS processor top level error: ', err);
     throw err;
   }
 }
@@ -125,24 +130,26 @@ function determineHandler(): HandlerCallback {
   return handlers[handlerName];
 }
 
-export async function setupQueue(): Promise<void> {
+export async function setupQueue():Promise<void> {
   const queueName = queueHandlerConfig.queueName;
+  await logger.provideFields({queueName,  loggerName: "queue-logger"}, async () => {
+    const { QueueUrl } = await sqsClient.send(
+        new GetQueueUrlCommand({
+          QueueName: queueName,
+        })
+    );
+    if (!QueueUrl) {
+      throw new Error('failed to get QueueUrl for queuename ');
+    }
+    logger.info('got queueUrl: ', QueueUrl);
+    // read loop
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      logger.info('Checking queue for messages...');
+      await readDataFromQueue(QueueUrl, determineHandler());
+    }
+  })
 
-  const { QueueUrl } = await sqsClient.send(
-    new GetQueueUrlCommand({
-      QueueName: queueName,
-    })
-  );
-  if (!QueueUrl) {
-    throw new Error('failed to get QueueUrl for queuename ' + queueName);
-  }
-  log.info('got queueUrl: ', QueueUrl);
-  // read loop
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    log.info('Checking queue for messages: ', queueName);
-    await readDataFromQueue(QueueUrl, determineHandler());
-  }
 }
 
 void setupQueue();

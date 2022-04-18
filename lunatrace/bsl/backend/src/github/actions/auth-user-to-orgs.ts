@@ -21,7 +21,7 @@ import {
 } from "../../hasura-api/generated";
 import {getGithubAccessTokenFromKratos} from "../../kratos";
 import {errorResponse, logError} from "../../utils/errors";
-import {log} from "../../utils/log";
+import {logger} from "../../utils/logger";
 import {catchError, threwError, Try} from "../../utils/try";
 import {GetUserOrganizationsQuery} from "../api/generated";
 
@@ -31,11 +31,11 @@ function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserO
   const orgNodes = userGithubOrgs.viewer.organizations.nodes;
 
   if (!orgNodes) {
-    log.error(`orgNodes is null, api response from github is incomplete: ${userGithubOrgs.viewer.organizations.nodes}`);
+    logger.error(`orgNodes is null, api response from github is incomplete: ${userGithubOrgs.viewer.organizations.nodes}`);
     return null;
   }
 
-  log.debug(`[user: ${userId}] Github user's organizations count: ${orgNodes.length}`);
+  logger.debug(`[user: ${userId}] Github user's organizations count: ${orgNodes.length}`);
 
   const orgIds = orgNodes.reduce<string[]>((filtered, org) => {
     if (!org) {
@@ -68,7 +68,7 @@ export async function authUserToOrgs(res: Response, userId: string) {
     return;
   }
 
-  log.info(`[user: ${userId}] Collected Github user's organizations.`);
+  logger.info(`[user: ${userId}] Collected Github user's organizations.`);
 
   const githubOrgIds = getGithubOrgIdsFromApiResponse(userId, userGithubOrgs);
   if (githubOrgIds === null) {
@@ -76,7 +76,7 @@ export async function authUserToOrgs(res: Response, userId: string) {
     return;
   }
 
-  log.debug(`[user: ${userId}] Github user's organization ids: ${githubOrgIds}`);
+  logger.debug(`[user: ${userId}] Github user's organization ids: ${githubOrgIds}`);
 
   const authorizedUserOrgs: Try<GetAuthorizedUserOrganizationsQuery> = await catchError(
     async () =>
@@ -91,7 +91,7 @@ export async function authUserToOrgs(res: Response, userId: string) {
     return;
   }
 
-  log.debug(
+  logger.debug(
     `[user: ${userId}] Authorized LunaTrace organizations: ${JSON.stringify(authorizedUserOrgs.organizations)}`
   );
 
@@ -125,7 +125,7 @@ export async function authUserToOrgs(res: Response, userId: string) {
     return;
   }
 
-  log.info(
+  logger.info(
     `[user: ${userId}] Authenticated user to LunaTrace organizations: ${JSON.stringify(
       updatedOrganizations.insert_organization_user.returning
     )}`
