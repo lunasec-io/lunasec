@@ -96,7 +96,7 @@ export const Home: React.FunctionComponent = () => {
                 <li>
                   Review the{' '}
                   <a
-                    href="https://github.com/lunasec-io/lunasec/tree/master/js/demo-apps/packages"
+                    href="https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/demo-apps/packages"
                     target="_blank"
                     rel="prefetch"
                   >
