@@ -14,7 +14,7 @@
 import os from 'os';
 import path from 'path';
 
-import {log} from "../utils/log";
+import {logger} from "../utils/logger";
 import { VulnerabilityLoader } from '../utils/vulnerability-loader';
 
 const dbPath = path.join(os.homedir(), '.cache/grype/db/3/vulnerability.db');
@@ -22,5 +22,5 @@ const dbPath = path.join(os.homedir(), '.cache/grype/db/3/vulnerability.db');
 const vulnLoader = new VulnerabilityLoader(dbPath);
 
 void vulnLoader.loadVulnerabilities().then((res) => {
-  log.info(res);
+  logger.info(res);
 });
