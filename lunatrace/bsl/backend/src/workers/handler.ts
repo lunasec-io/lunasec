@@ -130,9 +130,9 @@ function determineHandler(): HandlerCallback {
   return handlers[handlerName];
 }
 
-export function setupQueue() {
+export async function setupQueue():Promise<void> {
   const queueName = queueHandlerConfig.queueName;
-  logger.provideFields({queueName,  loggerName: "queue-logger"}, async () => {
+  await logger.provideFields({queueName,  loggerName: "queue-logger"}, async () => {
     const { QueueUrl } = await sqsClient.send(
         new GetQueueUrlCommand({
           QueueName: queueName,

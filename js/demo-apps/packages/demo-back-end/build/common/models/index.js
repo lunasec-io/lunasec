@@ -1,0 +1,29 @@
+/*
+ * Copyright 2022 by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createModels = void 0;
+const documents_1 = require("./documents");
+const user_1 = require("./user");
+function createModels(db) {
+    return {
+        user: new user_1.UserMethods(db),
+        documents: new documents_1.DocumentMethods(db),
+    };
+}
+exports.createModels = createModels;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi9zcmMvY29tbW9uL21vZGVscy9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFrQkEsMkNBQThDO0FBQzlDLGlDQUFxQztBQVNyQyxTQUFnQixZQUFZLENBQUMsRUFBVTtJQUNyQyxPQUFPO1FBQ0wsSUFBSSxFQUFFLElBQUksa0JBQVcsQ0FBQyxFQUFFLENBQUM7UUFDekIsU0FBUyxFQUFFLElBQUksMkJBQWUsQ0FBQyxFQUFFLENBQUM7S0FDbkMsQ0FBQztBQUNKLENBQUM7QUFMRCxvQ0FLQyIsInNvdXJjZXNDb250ZW50IjpbIi8qXG4gKiBDb3B5cmlnaHQgMjAyMSBieSBMdW5hU2VjIChvd25lZCBieSBSZWZpbmVyeSBMYWJzLCBJbmMpXG4gKlxuICogTGljZW5zZWQgdW5kZXIgdGhlIEFwYWNoZSBMaWNlbnNlLCBWZXJzaW9uIDIuMCAodGhlIFwiTGljZW5zZVwiKTtcbiAqIHlvdSBtYXkgbm90IHVzZSB0aGlzIGZpbGUgZXhjZXB0IGluIGNvbXBsaWFuY2Ugd2l0aCB0aGUgTGljZW5zZS5cbiAqIFlvdSBtYXkgb2J0YWluIGEgY29weSBvZiB0aGUgTGljZW5zZSBhdFxuICpcbiAqIGh0dHA6Ly93d3cuYXBhY2hlLm9yZy9saWNlbnNlcy9MSUNFTlNFLTIuMFxuICpcbiAqIFVubGVzcyByZXF1aXJlZCBieSBhcHBsaWNhYmxlIGxhdyBvciBhZ3JlZWQgdG8gaW4gd3JpdGluZywgc29mdHdhcmVcbiAqIGRpc3RyaWJ1dGVkIHVuZGVyIHRoZSBMaWNlbnNlIGlzIGRpc3RyaWJ1dGVkIG9uIGFuIFwiQVMgSVNcIiBCQVNJUyxcbiAqIFdJVEhPVVQgV0FSUkFOVElFUyBPUiBDT05ESVRJT05TIE9GIEFOWSBLSU5ELCBlaXRoZXIgZXhwcmVzcyBvciBpbXBsaWVkLlxuICogU2VlIHRoZSBMaWNlbnNlIGZvciB0aGUgc3BlY2lmaWMgbGFuZ3VhZ2UgZ292ZXJuaW5nIHBlcm1pc3Npb25zIGFuZFxuICogbGltaXRhdGlvbnMgdW5kZXIgdGhlIExpY2Vuc2UuXG4gKlxuICovXG5pbXBvcnQgeyBEYlR5cGUgfSBmcm9tICcuLi9kYXRhYmFzZS9kYic7XG5cbmltcG9ydCB7IERvY3VtZW50TWV0aG9kcyB9IGZyb20gJy4vZG9jdW1lbnRzJztcbmltcG9ydCB7IFVzZXJNZXRob2RzIH0gZnJvbSAnLi91c2VyJztcblxuZXhwb3J0IHR5cGUgeyBVc2VyTW9kZWwsIFVzZXJXaXRoUGFzc3dvcmRIYXNoIH0gZnJvbSAnLi91c2VyJztcblxuZXhwb3J0IGludGVyZmFjZSBNb2RlbHMge1xuICB1c2VyOiBVc2VyTWV0aG9kcztcbiAgZG9jdW1lbnRzOiBEb2N1bWVudE1ldGhvZHM7XG59XG5cbmV4cG9ydCBmdW5jdGlvbiBjcmVhdGVNb2RlbHMoZGI6IERiVHlwZSk6IE1vZGVscyB7XG4gIHJldHVybiB7XG4gICAgdXNlcjogbmV3IFVzZXJNZXRob2RzKGRiKSxcbiAgICBkb2N1bWVudHM6IG5ldyBEb2N1bWVudE1ldGhvZHMoZGIpLFxuICB9O1xufVxuIl19

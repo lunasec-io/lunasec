@@ -29,17 +29,17 @@ import { catchError, threwError } from '../utils/try';
 
 function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gzip> {
   return new Promise((resolve, reject) => {
-    console.debug('started streaming file from s3');
+    logger.log('started streaming file from s3');
 
     const chunkSize = streamLength < 1024 * 256 ? streamLength : 1024 * 256;
 
     const gunzip = zlib.createGunzip({ chunkSize: chunkSize < 64 ? 64 : chunkSize });
 
-    console.debug('started unzipping file');
+    logger.log('started unzipping file');
     const unZippedSbomStream = stream.pipe(gunzip);
     unZippedSbomStream.on('error', (e) => {
-      console.error('Error unzipping sbom ', e);
-      unZippedSbomStream.end(() => console.log('closed stream due to error'));
+      logger.error('Error unzipping sbom ', e);
+      unZippedSbomStream.end(() => logger.log('closed stream due to error'));
       reject(e);
     });
 
@@ -76,7 +76,7 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
   const buildId = key.split('/').pop();
   return await logger.provideFields({key, region, bucketName}, async () => {
     if (!buildId || !validate.isUUID(buildId)) {
-      console.error('invalid build uuid from s3 object at key ', key);
+      logger.error('invalid build uuid from s3 object at key ', key);
       // not much we can do without a valid buildId
       return {
         success: false,
