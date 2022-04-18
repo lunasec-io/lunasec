@@ -101,7 +101,7 @@ export class LunaSecStackDockerCompose {
     const localBuildConfig = {
       build: {
         context: '.',
-        dockerfile: 'js/docker/httpsproxy.dockerfile',
+        dockerfile: 'lunadefend/js/docker/httpsproxy.dockerfile',
       },
     };
 
@@ -305,7 +305,7 @@ export class LunaSecStackDockerCompose {
 
     const debugVolumes = debug ? ['./:/repo'] : [];
 
-    const debugWorkingDir = debug ? { working_dir: '/repo/js/demo-apps/packages/react-front-end' } : {};
+    const debugWorkingDir = debug ? { working_dir: '/repo/lunadefend/js/demo-apps/packages/react-front-end' } : {};
 
     const localBuildConfig: DefinitionsService = {
       ...this.serviceCreationConfig.getDockerfileTarget(demoDockerFile, name),
@@ -313,7 +313,7 @@ export class LunaSecStackDockerCompose {
       ...debugWorkingDir,
       volumes: [
         '/tmp/.X11-unix:/tmp/.X11-unix',
-        '/videos:/repo/js/demo-apps/packages/react-front-end/cypress/videos',
+        '/videos:/repo/lunadefend/js/demo-apps/packages/react-front-end/cypress/videos',
         ...debugVolumes,
       ],
       depends_on: [

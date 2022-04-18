@@ -55,8 +55,8 @@ module.exports = {
     project: [
       'js/sdks/packages/vue-sdk/tsconfig.json',
       'js/sdks/tsconfig.json',
-      'js/demo-apps/packages/demo-back-end/tsconfig.json',
-      'js/demo-apps/packages/react-front-end/tsconfig.json',
+      'lunadefend/js/demo-apps/packages/demo-back-end/tsconfig.json',
+      'lunadefend/js/demo-apps/packages/react-front-end/tsconfig.json',
       'js/internal-infrastructure/metrics-server-backend/tsconfig.json',
       'js/internal-infrastructure/s3-redirect-generator/tsconfig.json',
       'lunatrace/bsl/common/tsconfig.json',
