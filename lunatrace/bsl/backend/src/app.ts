@@ -60,7 +60,7 @@ app.use(
         message: 'Unhandled request',
       });
     },
-    log: console,
+    log: logger,
   })
 );
 

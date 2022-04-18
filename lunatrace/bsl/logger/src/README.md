@@ -17,7 +17,7 @@ This is a slim JSON logger, with an API similar to native console.  It supports 
 typescript-compatible stack traces.
 
 ```typescript
-import {LunaLogger} from '@lunatrace/lunatrace-common'
+import {LunaLogger} from '@lunatrace/logger'
 const log = new LunaLogger({ trace: true }, {whatever:'extra fields'});
 log.addTransport(new JsonTransport({ minLevel: 'debug', colors: false, pretty: true }));
 //basic usage
