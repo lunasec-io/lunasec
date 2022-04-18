@@ -12,6 +12,8 @@ RUN yarn run compile:dev:sdks
 
 RUN cd lunatrace/bsl/common && yarn run compile
 
+RUN cd lunatrace/bsl/logger && yarn run compile
+
 # Increases the amount of memory that node can use, which is needed for our massive linting job.
 ENV NODE_OPTIONS="--max-old-space-size=8192"
 
