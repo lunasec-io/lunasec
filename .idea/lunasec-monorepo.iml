@@ -63,6 +63,7 @@
       <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/demo-apps/packages/react-front-end/build" />
       <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/demo-apps/packages/demo-back-end/build" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend-cdk/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/logger/build" />
     </content>
     <content url="file://$MODULE_DIR$/lunatrace/bsl/backend/api/node_modules" />
     <orderEntry type="inheritedJdk" />
