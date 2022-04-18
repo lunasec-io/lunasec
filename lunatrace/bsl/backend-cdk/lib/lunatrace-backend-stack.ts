@@ -12,6 +12,8 @@
  *
  */
 
+import * as path from "path";
+
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import { Port, SecurityGroup, Vpc } from '@aws-cdk/aws-ec2';
 import {
@@ -30,12 +32,12 @@ import { HostedZone } from '@aws-cdk/aws-route53';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
-import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 
 import { commonBuildProps } from './constants';
+import {getContainerTarballPath} from "./util";
 import { WorkerStack } from './worker-stack';
-import { WorkerStorageStack, WorkerStorageStackState } from './worker-storage-stack';
+import { WorkerStorageStack } from './worker-storage-stack';
 
 interface LunaTraceStackProps extends cdk.StackProps {
   // TODO: Make the output URL be a URL managed by us, not AWS
@@ -132,10 +134,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       executionRole: execRole,
     });
 
-    const frontendContainerImage = ContainerImage.fromAsset('../', {
-      ...commonBuildProps,
-      file: './frontend/Dockerfile',
-    });
+    const frontendContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-frontend.tar'));
 
     const frontend = taskDef.addContainer('FrontendContainer', {
       image: frontendContainerImage,
@@ -209,11 +208,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const backendContainerImage = ContainerImage.fromAsset('../', {
-      ...commonBuildProps,
-      file: './backend/Dockerfile',
-      target: 'backend-express-server',
-    });
+    const backendContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-backend.tar'));
 
     const backend = taskDef.addContainer('BackendContainer', {
       image: backendContainerImage,
@@ -343,7 +338,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     oryConfigBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
     storageStackStage.manifestBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
 
-    WorkerStack.createEtlStack(this, {
+    WorkerStack.createWorkerStack(this, {
       env: props.env,
       storageStack: storageStackStage,
       fargateCluster,
