@@ -11,39 +11,40 @@
  * limitations under the License.
  *
  */
-import {AsyncLocalStorage} from 'async_hooks'
+import {AsyncLocalStorage} from 'async_hooks';
 
-import { getCallSite } from './callsite';
-import { BaseLogObj, LevelChoice, LoggerOptions, LogMethodArgs, LogObj, Transport } from './types';
+import {getCallSite} from './callsite';
+import {BaseLogObj, LevelChoice, LoggerOptions, LogMethodArgs, LogObj, Transport} from './types';
+
 export * from './types';
 export * from './json-transport';
 
 const defaultLoggerFields: BaseLogObj = {
-  loggerName: 'default',
+  loggerName: 'default'
 };
 
 export class LunaLogger {
   options: LoggerOptions = {};
   baseLogObj: BaseLogObj;
-  storage: AsyncLocalStorage<{additionalFields: Record<string, unknown>}>;
+  storage: AsyncLocalStorage<{ additionalFields: Record<string, unknown> }>;
   public transports: Array<Transport> = [];
 
   constructor(options?: LoggerOptions, additionalFields?: Record<string, unknown>) {
     this.options = options || {};
     this.storage = new AsyncLocalStorage();
-    this.baseLogObj = { ...defaultLoggerFields, ...additionalFields };
+    this.baseLogObj = {...defaultLoggerFields, ...additionalFields};
   }
 
   // This node wizardry is like stack / thread storage.  Anywhere in this callstack, these fields will be used by the logger
   // It HAS to take a function for the wrapping to work. Wrapped it in a promise since that simplifies usage and keeps the user from having to generate their own new Promise()
-  public provideFields<T>(fields: Record<string, unknown>, callback: () => T): Promise<T>{
+  public provideFields<T>(fields: Record<string, unknown>, callback: () => T): Promise<T> {
     return new Promise((resolve, reject) => {
       // .run will overwrite the previous store (if any) from any higher level provideFields calls, so we merge them together here before overwriting
       const existing = this.storage.getStore();
-      const newFields: Record<string, unknown> = existing ? {...existing.additionalFields, ...fields} : {...fields}
+      const newFields: Record<string, unknown> = existing ? {...existing.additionalFields, ...fields} : {...fields};
       this.storage.run({additionalFields: newFields}, () => {
         // Note that if the callback returns a promise, this will be handled cleanly by resolve()..so we can pass async () =>  functions
-        resolve(callback())
+        resolve(callback());
       });
     });
   }
@@ -52,24 +53,28 @@ export class LunaLogger {
     this.transports.push(transport);
   }
 
-  public debug(...args: LogMethodArgs) {
+  public debug(...args: LogMethodArgs): void {
     this.dolog('debug', args);
   }
-  public log(...args: LogMethodArgs) {
+
+  public log(...args: LogMethodArgs): void {
     this.dolog('info', args);
   }
-  public info(...args: LogMethodArgs) {
+
+  public info(...args: LogMethodArgs): void {
     this.dolog('info', args);
   }
-  public warn(...args: LogMethodArgs) {
+
+  public warn(...args: LogMethodArgs): void {
     this.dolog('warn', args);
   }
-  public error(...args: LogMethodArgs) {
+
+  public error(...args: LogMethodArgs): void {
     this.dolog('error', args);
   }
 
-  public child(additionalFields: Record<string, unknown>) {
-    const childLogger = new LunaLogger(this.options, { ...this.baseLogObj, ...additionalFields });
+  public child(additionalFields: Record<string, unknown>): {additionalFields: Record<string, unknown>} | undefined {
+    const childLogger = new LunaLogger(this.options, {...this.baseLogObj, ...additionalFields});
     childLogger.transports = this.transports;
     childLogger.storage = this.storage; // Bit sketchy because child loggers will be able to write to the parents or other child loggers storage using provideFields()..ok for now though and limited to one thread
     return childLogger;
@@ -87,7 +92,7 @@ export class LunaLogger {
       message: '',
       timePretty: `${now.toDateString()} ${now.toTimeString()}`,
       ...this.baseLogObj,
-      ...fieldsFromThread,
+      ...fieldsFromThread
     };
 
     if (this.options.trace || level === 'error') {
@@ -127,7 +132,7 @@ export class LunaLogger {
     });
   }
 
-  private isObject(arg: unknown) {
+  private isObject(arg: unknown): boolean {
     // sigh..ok javascript, if you say so
     return typeof arg === 'object' && !Array.isArray(arg) && arg !== null;
   }

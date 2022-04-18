@@ -26,7 +26,7 @@ type ColorOptions = NonNullable<Parameters<typeof colorize>[1]>['colors'];
 export class JsonTransport implements Transport {
   constructor(public options: ConsoleTransportOptions) {}
 
-  public send(logObj: LogObj) {
+  public send(logObj: LogObj): void {
     const levelNumber = logLevels.indexOf(logObj.level);
     const minLevelNumber = logLevels.indexOf(this.options.minLevel);
     if (levelNumber < minLevelNumber) {
@@ -41,9 +41,11 @@ export class JsonTransport implements Transport {
     const logString = JSON.stringify(logWithMessageOnBottom, undefined, spacing);
     if (this.options.colors) {
       const colors = this.getColors(logObj.level);
-      return console.log(colorize(logString, { colors }));
+      console.log(colorize(logString, { colors }));
+      return;
     }
-    return console.log(logString);
+    console.log(logString);
+    return;
   }
 
   private getColors(level: LevelChoice): ColorOptions {
