@@ -11,6 +11,8 @@
  * limitations under the License.
  *
  */
+import {LunaLogger} from "@lunatrace/lunatrace-common/build/main";
+
 import { S3ObjectMetadata } from './s3';
 
 export interface S3SqsEvent {

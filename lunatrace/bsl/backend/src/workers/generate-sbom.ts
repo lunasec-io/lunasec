@@ -13,6 +13,8 @@
  */
 import zlib from 'zlib';
 
+import {LunaLogger} from "@lunatrace/logger";
+
 import { generateSbomFromAsset } from '../cli/call-cli';
 import { getEtlBucketConfig } from '../config';
 import { hasura } from '../hasura-api';
@@ -20,7 +22,7 @@ import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
-import {log} from "../utils/log";
+import {logger} from "../utils/logger";
 import { threwError } from '../utils/try';
 
 const bucketConfig = getEtlBucketConfig();
@@ -40,11 +42,11 @@ export async function createBuildAndGenerateSbom(
   orgId: string,
   projectId: string,
   assetName: string,
-  bucketInfo: SbomBucketInfo
+  bucketInfo: SbomBucketInfo,
 ): Promise<string> {
   // Create a new build
   const { insert_builds_one } = await hasura.InsertBuild({ project_id: projectId, source_type: 'gui' });
-  console.log('hasura returned when inserting build ', insert_builds_one);
+  logger.log('hasura returned when inserting build ', insert_builds_one);
   if (!insert_builds_one || !insert_builds_one.id) {
     throw new Error('Failed to insert a new build');
   }
@@ -84,24 +86,30 @@ export async function handleGenerateManifestSbom(
   message: S3ObjectMetadata
 ): Promise<QueueSuccessResult | QueueErrorResult> {
   const { key, bucketName, region } = message;
+
   const bucketInfo: SbomBucketInfo = {
     key,
     bucketName,
     region,
   };
-  try {
-    await attemptGenerateManifestSbom(bucketInfo);
-    return {
-      success: true,
-    };
-  } catch (e) {
-    log.error('Unable to generate SBOM from Manifest', e);
-    // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
-    await hasura.UpdateManifest({ key_eq: key, set_status: 'error', message: String(e) });
 
-    return {
-      success: false,
-      error: threwError(e) ? e : new Error(String(e)),
-    };
-  }
+  return await logger.provideFields({...bucketInfo}, async () => {
+    try {
+      await attemptGenerateManifestSbom(bucketInfo);
+      return {
+        success: true,
+      };
+    } catch (e) {
+      logger.error('Unable to generate SBOM from Manifest', e);
+      // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
+      await hasura.UpdateManifest({ key_eq: key, set_status: 'error', message: String(e) });
+
+      return {
+        success: false,
+        error: threwError(e) ? e : new Error(String(e)),
+      };
+    }
+  })
+
+
 }

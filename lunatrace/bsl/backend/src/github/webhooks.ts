@@ -11,31 +11,31 @@
  * limitations under the License.
  *
  */
-import { Webhooks } from '@octokit/webhooks';
+import {EmitterWebhookEvent, Webhooks} from '@octokit/webhooks';
 
 import { generateSbomFromAsset } from '../cli/call-cli';
 import {hasura} from "../hasura-api";
 import {GetProjectIdFromGitUrlQuery, InsertBuildMutation} from '../hasura-api/generated';
 import {logError} from "../utils/errors";
 import {normalizeGithubId} from "../utils/github";
-import { log } from '../utils/log';
+import { logger } from '../utils/logger';
 import { catchError, threwError, Try } from '../utils/try';
 import {uploadSbomToS3} from "../workers/generate-sbom";
 
-import { GetUserOrganizationsQuery } from './api/generated';
 import { getInstallationAccessToken } from './auth';
 
 export const webhooks = new Webhooks({
   secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
 });
 
-webhooks.on('organization', async (event) => {
-  log.debug('organization webhook event', {
+
+async function organizationHandler(event:EmitterWebhookEvent<'organization'>) {
+  logger.debug('organization webhook event', {
     action: event.payload.action
   });
   if (event.payload.action === 'member_added') {
     if (!event.payload.installation) {
-      log.error('organization member_added has undefined installation', event.payload);
+      logger.error('organization member_added has undefined installation', event.payload);
       return;
     }
 
@@ -43,7 +43,7 @@ webhooks.on('organization', async (event) => {
     const githubNodeId = event.payload.membership.user.node_id;
     const githubId = normalizeGithubId(githubNodeId);
 
-    log.info('organization member_added, associating user with organization identified by installation id', {
+    logger.info('organization member_added, associating user with organization identified by installation id', {
       installationId,
       githubNodeId
     });
@@ -62,7 +62,7 @@ webhooks.on('organization', async (event) => {
     }
 
     if (!user.insert_users_one) {
-      log.error('unable to upsert user with github node id', {
+      logger.error('unable to upsert user with github node id', {
         installationId,
         githubNodeId
       });
@@ -81,7 +81,7 @@ webhooks.on('organization', async (event) => {
     }
 
     if (org.organizations.length !== 1) {
-      log.error('organizations for installation id is not exactly one result', {
+      logger.error('organizations for installation id is not exactly one result', {
         installationId,
         githubNodeId
       });
@@ -103,16 +103,18 @@ webhooks.on('organization', async (event) => {
       return;
     }
 
-    log.info('created user and associated it with organization identified by installation id', {
+    logger.info('created user and associated it with organization identified by installation id', {
       installationId,
       githubNodeId,
       orgId,
       userId
     })
   }
-});
+}
 
-webhooks.on('pull_request', async (event) => {
+
+
+async function pullRequestHandler(event:EmitterWebhookEvent<'pull_request'>) {
   const actionName = event.payload.action;
   console.log('received pull request webhook for action: ', actionName)
 
@@ -122,7 +124,7 @@ webhooks.on('pull_request', async (event) => {
     const gitBranch = event.payload.pull_request.head.ref;
     const pullRequestId = event.payload.pull_request.node_id;
 
-    log.info(`generating SBOM for repository: ${cloneUrl} at branch name ${gitBranch}`);
+    logger.info(`generating SBOM for repository: ${cloneUrl} at branch name ${gitBranch}`);
 
     const projectIdRes: Try<GetProjectIdFromGitUrlQuery> = await catchError(
       async () =>
@@ -132,20 +134,20 @@ webhooks.on('pull_request', async (event) => {
     );
 
     if (threwError(projectIdRes)) {
-      log.error('unable to get project from git url in pull request webhook');
+      logger.error('unable to get project from git url in pull request webhook');
       return;
     }
 
     if (projectIdRes.github_repositories.length === 0) {
-      log.error('no projects were found with provided git url in pull request webhook');
+      logger.error('no projects were found with provided git url in pull request webhook');
       return;
     }
 
     const projectId = projectIdRes.github_repositories[0].project.id as string;
 
     if (!event.payload.installation) {
-      log.error(`no installation found in pull request webhook`);
-      log.info(event);
+      logger.error(`no installation found in pull request webhook`);
+      logger.info(event);
       return;
     }
     const installationId = event.payload.installation.id;
@@ -163,7 +165,7 @@ webhooks.on('pull_request', async (event) => {
     );
 
     if (threwError(insertBuildResponse)) {
-      log.error('Failed to insert a new build', {
+      logger.error('Failed to insert a new build', {
         error: insertBuildResponse,
       });
       throw new Error('Failed to insert a new build');
@@ -171,12 +173,12 @@ webhooks.on('pull_request', async (event) => {
 
     const { insert_builds_one } = insertBuildResponse;
 
-    log.info('Insert Build Response:', {
+    logger.info('Insert Build Response:', {
       insert_builds_one,
     });
 
     if (!insert_builds_one || insert_builds_one.id === undefined) {
-      log.error('Missing id in insert build response', {
+      logger.error('Missing id in insert build response', {
         insert_builds_one,
       });
       throw new Error('Missing id in insert build response');
@@ -184,11 +186,24 @@ webhooks.on('pull_request', async (event) => {
 
     const buildId = insert_builds_one.id as string;
 
-    log.info('Uploading result to S3:', {
+    logger.info('Uploading result to S3:', {
       installationId: installationId.toString(),
       buildId,
     });
 
     await uploadSbomToS3(installationId.toString(), buildId, gzippedSbom);
   }
-});
+}
+
+// Wrap the hook in logging.. just pulls the type from octokit since this has the same signature
+const listenToHook:typeof webhooks.on = (hookName, callback) =>{
+  webhooks.on(hookName, async (event) => {
+    const actionName = 'action' in event.payload ? event.payload.action : 'none given'
+    await logger.provideFields({loggerName:'webhook-logger', hookName, actionName}, async () => {
+      await callback(event);
+    })
+  })
+}
+
+listenToHook('pull_request', pullRequestHandler)
+listenToHook('organization', organizationHandler)

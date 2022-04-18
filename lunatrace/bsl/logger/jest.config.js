@@ -11,17 +11,9 @@
  * limitations under the License.
  *
  */
-import { AsyncLocalStorage } from "async_hooks";
-
-import {Logger} from 'tslog';
-
-
-export const asyncLocalStorage: AsyncLocalStorage<{ requestId: string }> =
-  new AsyncLocalStorage();
-
-export const log: Logger = new Logger({
-  name: 'lunatrace-backend',
-  requestId: (): string => {
-    return asyncLocalStorage.getStore()?.requestId as string;
-  },
-});
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  modulePathIgnorePatterns: ["build"]
+};

@@ -1,0 +1,1 @@
+{"version":3,"file":"auth-router.d.ts","sourceRoot":"","sources":["../../../../src/dedicated-tokenizer/passport-express/routes/auth-router.ts"],"names":[],"mappings":"AAkBA,OAAO,EAAE,MAAM,EAAE,MAAM,wBAAwB,CAAC;AAEhD,OAAO,EAAE,iBAAiB,EAAE,MAAM,8BAA8B,CAAC;AAEjE,wBAAgB,UAAU,CAAC,MAAM,EAAE,MAAM,EAAE,QAAQ,EAAE,UAAU,CAAC,OAAO,iBAAiB,CAAC,8CAyDxF"}
