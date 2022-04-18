@@ -73,7 +73,7 @@ export class LunaLogger {
     this.dolog('error', args);
   }
 
-  public child(additionalFields: Record<string, unknown>): {additionalFields: Record<string, unknown>} | undefined {
+  public child(additionalFields: Record<string, unknown>): LunaLogger {
     const childLogger = new LunaLogger(this.options, {...this.baseLogObj, ...additionalFields});
     childLogger.transports = this.transports;
     childLogger.storage = this.storage; // Bit sketchy because child loggers will be able to write to the parents or other child loggers storage using provideFields()..ok for now though and limited to one thread
