@@ -18,12 +18,12 @@ windows:
     # Demo React App Front End
     # Available REACT_APP_DEMO_NAMES are 'dedicated-passport-express', 'dedicated-passport-graphql', and 'simple'
     - shell_command:
-      - cd js/demo-apps/packages/react-front-end
+      - cd lunadefend/js/demo-apps/packages/react-front-end
       - REACT_APP_DEMO_NAME="dedicated-passport-graphql" yarn run start
 
     # Demo Application Backend, comes up on 3001, 3002, and 3003 in the various modes
     - shell_command:
-      - cd js/demo-apps/packages/demo-back-end
+      - cd lunadefend/js/demo-apps/packages/demo-back-end
       - sleep 1 # wait for outputs to get deleted from previous run...really need a better way than this
       - LUNASEC_LOCAL_DEV=true LUNASEC_SIGNING_KEY=$(cat ./fixtures/auth_provider_key | base64 -w0) yarn start:dev
 

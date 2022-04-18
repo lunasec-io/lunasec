@@ -1,0 +1,13 @@
+{
+    "chromeWebSecurity": false,
+    "IframeOptions": {
+        "log": true
+    },
+    "watchForFileChanges": true,
+    "env": {
+        "printHeaderData": "1",
+        "printRequestData": "1"
+    },
+    "projectId": "f8x143"
+
+}

@@ -55,13 +55,13 @@
       <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/secure-frame-iframe/public/js" />
       <excludeFolder url="file://$MODULE_DIR$/docs/build" />
       <excludeFolder url="file://$MODULE_DIR$/docs/.docusaurus" />
-      <excludeFolder url="file://$MODULE_DIR$/js/demo-apps/packages/demo-back-end/build" />
       <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/cli-wrapper/build" />
       <excludeFolder url="file://$MODULE_DIR$/js/internal-infrastructure/s3-redirect-generator/build" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend/api/node_modules" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend-cdk/cdk.out" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/demo-apps/packages/react-front-end/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/demo-apps/packages/react-front-end/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/demo-apps/packages/demo-back-end/build" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend-cdk/build" />
     </content>
     <content url="file://$MODULE_DIR$/lunatrace/bsl/backend/api/node_modules" />
