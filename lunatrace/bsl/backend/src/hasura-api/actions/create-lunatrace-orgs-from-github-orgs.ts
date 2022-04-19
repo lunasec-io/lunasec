@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { RepositoriesForInstallationResponse } from '../../types/github';
+import {GithubRepositoryInfo, RepositoriesForInstallationResponse} from '../../types/github';
 import {OrganizationInputLookup, UpsertOrganizationResponse} from '../../types/hasura';
 import { MaybeError } from '../../types/util';
 import { errorResponse, logError } from '../../utils/errors';
@@ -43,20 +43,9 @@ function getExistingProjects(orgLookup: OrganizationInputLookup, orgName: string
 
 export function hasuraOrgsFromGithubRepositories(
   installationId: number,
-  repositories: RepositoriesForInstallationResponse
+  repositories: GithubRepositoryInfo[]
 ): OrganizationInputLookup {
   return repositories.reduce((orgLookup, repo) => {
-    const orgName = repo.owner.login;
-    // Deprecated. Use Node ID
-    const organizationId = repo.owner.id;
-    const organizationNodeId = repo.owner.node_id;
-    const repoName = repo.name;
-    // Deprecated. Use Node ID
-    const repoId = repo.id;
-    const repoNodeId = repo.node_id;
-    const gitUrl = repo.git_url;
-    const gitOwnerType = repo.owner.type;
-
     const repoOnConflict: Github_Repositories_On_Conflict = {
       constraint: Github_Repositories_Constraint.GithubRepositoriesGithubIdKey,
       update_columns: [
@@ -68,13 +57,13 @@ export function hasuraOrgsFromGithubRepositories(
     };
 
     const project: Projects_Insert_Input = {
-      name: repoName,
+      name: repo.repoName,
       github_repositories: {
         data: [
           {
-            github_id: repoId,
-            github_node_id: repoNodeId,
-            git_url: gitUrl,
+            github_id: repo.repoId,
+            github_node_id: repo.repoNodeId,
+            git_url: repo.gitUrl,
             traits: repo,
           },
         ],
@@ -88,20 +77,20 @@ export function hasuraOrgsFromGithubRepositories(
     };
 
     const orgData: Organizations_Insert_Input = {
-      name: orgName,
+      name: repo.orgName,
       installation_id: installationId,
-      github_id: organizationId,
-      github_node_id: organizationNodeId,
-      github_owner_type: gitOwnerType,
+      github_id: repo.orgId,
+      github_node_id: repo.orgNodeId,
+      github_owner_type: repo.ownerType,
       projects: {
-        data: [...getExistingProjects(orgLookup, orgName), project],
+        data: [...getExistingProjects(orgLookup, repo.orgName), project],
         on_conflict: projectOnConflict,
       },
     };
 
     return {
       ...orgLookup,
-      [orgName]: orgData,
+      [repo.orgName]: orgData,
     };
   }, {} as OrganizationInputLookup);
 }

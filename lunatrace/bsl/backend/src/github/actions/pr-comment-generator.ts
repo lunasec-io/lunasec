@@ -16,6 +16,7 @@ import markdownTable from 'markdown-table';
 
 import { hasura } from '../../hasura-api';
 import { InsertedScan } from '../../models/scan';
+import {log} from "../../utils/log";
 import { generateGithubGraphqlClient } from '../api';
 import { getInstallationAccessToken } from '../auth';
 
@@ -98,7 +99,14 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
 
   const installationToken = await getInstallationAccessToken(installationId);
 
-  const github = generateGithubGraphqlClient(installationToken);
+  if (installationToken.error) {
+    log.error('unable to get installation token', {
+      error: installationToken.msg
+    });
+    return;
+  }
+
+  const github = generateGithubGraphqlClient(installationToken.res);
 
   const body = generatePullRequestCommentFromReport(projectId, scanReport);
 
