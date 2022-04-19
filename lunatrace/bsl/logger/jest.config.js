@@ -11,14 +11,9 @@
  * limitations under the License.
  *
  */
-import {AsyncLocalStorage} from 'async_hooks'
-
-import {JsonTransport, LunaLogger} from "@lunatrace/logger";
-
-const isProd = process.env.NODE_ENV === 'production'
-
-export const log = new LunaLogger({}, {loggerName: 'default-backend'})
-
-log.addTransport(new JsonTransport({
-    colors: true, minLevel: isProd ? 'info' : 'debug', pretty: !isProd
-}))
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  modulePathIgnorePatterns: ["build"]
+};

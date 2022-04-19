@@ -13,20 +13,12 @@
  */
 import { Webhooks } from '@octokit/webhooks';
 
-import { generateSbomFromAsset } from '../cli/call-cli';
-import {hasura} from "../hasura-api";
-import {GetProjectIdFromGitUrlQuery, InsertBuildMutation} from '../hasura-api/generated';
 import {GithubRepositoryInfo} from "../types/github";
-import {errorResponse, logError} from "../utils/errors";
-import {normalizeGithubId} from "../utils/github";
 import { log } from '../utils/log';
-import { catchError, threwError, Try } from '../utils/try';
-import {uploadSbomToS3} from "../workers/generate-sbom";
 
 import {createHasuraOrgsAndProjectsForInstall} from "./actions/create-hasura-orgs-and-projects-for-install";
 import {orgMemberAdded} from "./actions/org-member-added";
 import {reviewPullRequest} from "./actions/review-pull-request";
-import { GetUserOrganizationsQuery } from './api/generated';
 import { getInstallationAccessToken } from './auth';
 
 export const webhooks = new Webhooks({
@@ -93,7 +85,7 @@ webhooks.on('organization', async (event) => {
 
 webhooks.on('pull_request', async (event) => {
   const actionName = event.payload.action;
-  console.log('received pull request webhook for action: ', actionName)
+  log.info('received pull request webhook for action: ', actionName)
 
   if (actionName === 'synchronize' || actionName === 'opened' || actionName === 'reopened') {
     if (!event.payload.installation) {

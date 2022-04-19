@@ -19,16 +19,15 @@ import Express, {NextFunction, Request, Response } from 'express';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 
-import {getGithubAppConfig, getJwksConfig, getServerConfig} from "./config";
+import {getJwksConfig, getServerConfig} from "./config";
 import { webhooks } from './github/webhooks';
 import { lookupAccessTokenRouter } from './routes/auth-routes';
 import { githubApiRouter } from './routes/github-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
-import {asyncLocalStorage, log} from './utils/log';
+import {log} from './utils/log';
 
 const jwksConfig = getJwksConfig();
-const githubConfig = getGithubAppConfig();
 const serverConfig = getServerConfig();
 
 const app = Express();
@@ -45,7 +44,10 @@ app.use(Express.json());
 
 app.use((req, res, next) => {
   const requestId: string = randomUUID();
-  asyncLocalStorage.run({ requestId }, next);
+  const loggerFields = {loggerName: 'express-logger',requestId, path: req.path}
+    // This will now be accessible anywhere in this callstack by doing asyncLocalStorage.getStore() which the logger does internally
+    // This has a serious performance hit to promises so if it's bad we should remove it
+  void log.provideFields(loggerFields , next);
 });
 
 app.use(
@@ -58,13 +60,12 @@ app.use(
         message: 'Unhandled request',
       });
     },
-    log: console,
+    log: log,
   })
 );
 
 function debugRequest(req: Request, res: Response, next: NextFunction) {
   log.info('request', req.method, req.path);
-  // log.info('body', req.body);
   next();
 }
 
@@ -90,7 +91,6 @@ app.use(
       jwksUri: jwksConfig.jwksUri,
     }),
 
-    // audience: 'urn:my-resource-server',
     issuer: jwksConfig.jwksIssuer,
     algorithms: ['RS256'],
   })

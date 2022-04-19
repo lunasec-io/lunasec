@@ -10,7 +10,7 @@
     "@typescript-eslint/parser": "^5.6.0",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^9.1.0",
-    "eslint": "8.5.0",
+    "eslint": "8.13.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-comments": "^1.0.0",
@@ -41,13 +41,10 @@
     "apollo@2.33.9": {
       "unplugged": true
     },
-    "eslint@8.5.0": {
+    "eslint@8.13.0": {
       "unplugged": true
     },
     "mst-gql@0.14.1": {
-      "unplugged": true
-    },
-    "ts-node@10.7.0": {
       "unplugged": true
     }
   },
@@ -73,7 +70,7 @@
     "test:unit": "yarn test:unit:js && yarn test:unit:go",
     "test:all": "yarn test:unit && yarn run test:e2e:local",
     "lint:fix": "yarn run lint --fix",
-    "lint": "SLOW_LINT=true yarn run eslint --ext .js,.jsx,.ts,.tsx,.vue .",
+    "lint": "SLOW_LINT=true yarn run eslint --ext .js,.jsx,.ts,.tsx,.vue --quiet .",
     "version:release": "./tools/version-release.sh",
     "compile:dev:infrastructure": "cd js/internal-infrastructure/s3-redirect-generator && yarn run compile",
     "compile:dev:sdks": "cd js/sdks && yarn run compile:dev",
@@ -104,6 +101,7 @@
       "./lunatrace/bsl/backend",
       "./lunatrace/bsl/backend-cdk",
       "./lunatrace/bsl/common",
+      "./lunatrace/bsl/logger",
       "./lunatrace/bsl/frontend",
       "./lunatrace/dev-cli"
     ]
