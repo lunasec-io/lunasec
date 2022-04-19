@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { Webhooks } from '@octokit/webhooks';
+import {EmitterWebhookEvent, Webhooks } from '@octokit/webhooks';
 
 import {GithubRepositoryInfo} from "../types/github";
 import { log } from '../utils/log';
@@ -24,7 +24,8 @@ import { getInstallationAccessToken } from './auth';
 export const webhooks = new Webhooks({
   secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
 });
-webhooks.on('installation_repositories.added', async (event) => {
+
+async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_repositories.added'>) {
   const reposAdded = event.payload.repositories_added;
 
   const installationId = event.payload.installation.id;
@@ -64,9 +65,9 @@ webhooks.on('installation_repositories.added', async (event) => {
   log.info('created orgs and projects for new repos', {
     githubRepos
   })
-});
+}
 
-webhooks.on('organization', async (event) => {
+async function organizationHandler(event: EmitterWebhookEvent<'organization'>) {
   log.debug('organization webhook event', {
     action: event.payload.action
   });
@@ -81,9 +82,9 @@ webhooks.on('organization', async (event) => {
 
     await orgMemberAdded(installationId, githubNodeId);
   }
-});
+}
 
-webhooks.on('pull_request', async (event) => {
+async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
   const actionName = event.payload.action;
   log.info('received pull request webhook for action: ', actionName)
 
@@ -108,4 +109,18 @@ webhooks.on('pull_request', async (event) => {
       gitBranch
     })
   }
-});
+}
+
+// Wrap the hook in logging, pulls the type from octokit since this has the same signature
+const listenToHook: typeof webhooks.on = (hookName, callback) =>{
+  webhooks.on(hookName, async (event) => {
+    const actionName = 'action' in event.payload ? event.payload.action : 'none given'
+    await log.provideFields({loggerName:'webhook-logger', hookName, actionName}, async () => {
+      await callback(event);
+    })
+  })
+}
+
+listenToHook('installation_repositories.added', repositoryAddedHandler);
+listenToHook('pull_request', pullRequestHandler);
+listenToHook('organization', organizationHandler);
