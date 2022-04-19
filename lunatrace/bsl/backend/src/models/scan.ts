@@ -12,8 +12,8 @@
  *
  */
 import { spawn } from 'child_process';
-import { writeFileSync } from 'fs';
-import Stream, { Readable } from 'stream';
+import { Readable } from 'stream';
+
 
 import { hasura } from '../hasura-api';
 import {
@@ -45,8 +45,7 @@ export async function parseAndUploadScan(sbomStream: Readable, buildId: string):
 
 export async function runGrypeScan(sbomStream: Readable): Promise<string> {
   return new Promise((resolve, reject) => {
-    // const stdoutStream = new Stream.Writable();
-    // const stderrStream = new Stream.Writeable();
+
     const lunatraceCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
     lunatraceCli.on('error', reject);
 
@@ -145,12 +144,13 @@ async function parseMatches(buildId: string, matches: Match[]): Promise<Findings
 
           if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
             log.error(
+                {
+                  slugs,
+                  ids,
+                  vulnerability: match.vulnerability.id,
+                },
               'unable to get all required ids when inserting a finding, its likely the vulnerability database is out of sync',
-              {
-                slugs,
-                ids,
-                vulnerability: match.vulnerability.id,
-              }
+
             );
             return null;
           }

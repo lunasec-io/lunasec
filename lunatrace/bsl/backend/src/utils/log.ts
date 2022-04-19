@@ -11,17 +11,14 @@
  * limitations under the License.
  *
  */
-import { AsyncLocalStorage } from "async_hooks";
+import {AsyncLocalStorage} from 'async_hooks'
 
-import {Logger} from 'tslog';
+import {JsonTransport, LunaLogger} from "@lunatrace/logger";
 
+const isProd = process.env.NODE_ENV === 'production'
 
-export const asyncLocalStorage: AsyncLocalStorage<{ requestId: string }> =
-  new AsyncLocalStorage();
+export const log = new LunaLogger({}, {loggerName: 'default-backend'})
 
-export const log: Logger = new Logger({
-  name: 'lunatrace-backend',
-  requestId: (): string => {
-    return asyncLocalStorage.getStore()?.requestId as string;
-  },
-});
+log.addTransport(new JsonTransport({
+    colors: true, minLevel: isProd ? 'info' : 'debug', pretty: !isProd
+}))
