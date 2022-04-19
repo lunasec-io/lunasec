@@ -16,7 +16,7 @@ import markdownTable from 'markdown-table';
 
 import { hasura } from '../../hasura-api';
 import { InsertedScan } from '../../models/scan';
-import {logger} from '../../utils/logger'
+import {log} from '../../utils/log'
 import { generateGithubGraphqlClient } from '../api';
 import { getInstallationAccessToken } from '../auth';
 
@@ -75,7 +75,7 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     !buildLookup.builds_by_pk.project ||
     !buildLookup.builds_by_pk.project.organization
   ) {
-    logger.error(`unable to get required scan notify information for buildId: ${buildId}`);
+    log.error(`unable to get required scan notify information for buildId: ${buildId}`);
     return;
   }
 
@@ -84,14 +84,14 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
   const pullRequestId = buildLookup.builds_by_pk.pull_request_id;
 
   if (!installationId) {
-    logger.log(
+    log.error(
       `github installation id is not defined for the organization linked to build: ${buildId}, skipping github PR comment`
     );
     return;
   }
 
   if (!pullRequestId) {
-    logger.log(
+    log.error(
       `pull request id is not defined for buildId: ${buildId}, skipping comment because this build did not come from a PR`
     );
     return;
@@ -99,12 +99,19 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
 
   const installationToken = await getInstallationAccessToken(installationId);
 
-  const github = generateGithubGraphqlClient(installationToken);
+  if (installationToken.error) {
+    log.error('unable to get installation token', {
+      error: installationToken.msg
+    });
+    return;
+  }
+
+  const github = generateGithubGraphqlClient(installationToken.res);
 
   const body = generatePullRequestCommentFromReport(projectId, scanReport);
 
   if (body === null) {
-    logger.error(`generated scan report is null`, {
+    log.error(`generated scan report is null`, {
       projectId,
       installationId,
       pullRequestId,
@@ -115,8 +122,8 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
   // Check if a previous build already commented on the PR. Could probably query github for this but its hard and rate limits exist so we just check our own db
   const previousReviewId = await findPreviousReviewId(pullRequestId);
 
-  logger.log('Starting PR Comment Submission flow')
-  logger.log('found previous review id of ', previousReviewId)
+  log.info('Starting PR Comment Submission flow')
+  log.info('found previous review id of ', previousReviewId)
   // This is the first build on this pr so make a new comment
   if (!previousReviewId) {
     const githubReviewResponse = await github.AddPrReview({
@@ -125,9 +132,9 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     });
     const existing_github_review_id = githubReviewResponse.addPullRequestReview?.pullRequestReview?.id;
     if (!existing_github_review_id) {
-      return logger.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
+      return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
     }
-    logger.log('review created')
+    log.info('review created')
     // const submitResponse = await github.SubmitPrReview({ pull_request_id: pullRequestId.toString() })
     // logger.log('successfully reviewed the PR',submitResponse)
 
@@ -142,9 +149,9 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
   });
   const existing_github_review_id = githubReviewResponse.updatePullRequestReview?.pullRequestReview?.id;
   if (!existing_github_review_id) {
-    return logger.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
+    return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
   }
-  logger.log('successfully updated the PR review')
+  log.info('successfully updated the PR review')
   // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
   await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
   return;

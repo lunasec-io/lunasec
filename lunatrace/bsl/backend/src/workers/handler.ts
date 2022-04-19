@@ -23,7 +23,7 @@ import {
 
 import { getAwsConfig, getQueueHandlerConfig } from '../config';
 import { HandlerCallback, S3SqsEvent } from '../types/sqs';
-import {logger} from "../utils/logger";
+import {log} from "../utils/log";
 
 import { handleGenerateManifestSbom } from './generate-sbom';
 import { handleScanSbom } from './scan-sbom';
@@ -40,9 +40,9 @@ async function deleteMessage(message: Message, queueUrl: string) {
   };
   try {
     const data = await sqsClient.send(new DeleteMessageCommand(deleteParams));
-    logger.info('Message deleted', data);
+    log.info('Message deleted', data);
   } catch (err) {
-    logger.info('Error deleting message', err);
+    log.info('Error deleting message', err);
   }
 }
 
@@ -61,16 +61,16 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
     if (data.Messages) {
       const allJobs = Promise.all(
         data.Messages.map(async (message) => {
-        return await logger.provideFields({sqsMetadata:data.$metadata, messageId: message.MessageId}, async () => {
+        return await log.provideFields({sqsMetadata:data.$metadata, messageId: message.MessageId}, async () => {
           if (!message.Body) {
-            logger.info('Received sqs message with no message body');
+            log.info('Received sqs message with no message body');
             return;
           }
           const parsedBody = JSON.parse(message.Body) as S3SqsEvent;
-          logger.debug('parsed body as ', parsedBody);
+          log.debug('parsed body as ', parsedBody);
 
           if (!parsedBody.Records) {
-            logger.info('No records on sqs event, deleting message, exiting');
+            log.info('No records on sqs event, deleting message, exiting');
             return deleteMessage(message, queueUrl);
           }
           // todo: do we actually need this promise handling or should we only take the first record from any event? assuming one file per object created event makes sense
@@ -87,7 +87,7 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
           const errors = results.filter((result) => result.success === false);
 
           if (errors.length > 0) {
-            logger.error('Errors found during SQS job:', { errors });
+            log.error('Errors found during SQS job:', { errors });
             // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
             return;
           }
@@ -105,14 +105,14 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
       const result = await Promise.race([allJobs, timeoutPromise]);
 
       if (result === 'job_timeout') {
-        logger.error('Exceeded timeout for jobs:');
+        log.error('Exceeded timeout for jobs:');
       } else {
-        logger.info('Jobs returned successfully:');
+        log.info('Jobs returned successfully:');
       }
       return;
     }
   } catch (err) {
-    logger.error('SQS processor top level error: ', err);
+    log.error('SQS processor top level error: ', err);
     throw err;
   }
 }
@@ -132,7 +132,7 @@ function determineHandler(): HandlerCallback {
 
 export async function setupQueue():Promise<void> {
   const queueName = queueHandlerConfig.queueName;
-  await logger.provideFields({queueName,  loggerName: "queue-logger"}, async () => {
+  await log.provideFields({queueName,  loggerName: "queue-logger"}, async () => {
     const { QueueUrl } = await sqsClient.send(
         new GetQueueUrlCommand({
           QueueName: queueName,
@@ -141,11 +141,11 @@ export async function setupQueue():Promise<void> {
     if (!QueueUrl) {
       throw new Error('failed to get QueueUrl for queuename ');
     }
-    logger.info('got queueUrl: ', QueueUrl);
+    log.info('got queueUrl: ', QueueUrl);
     // read loop
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      logger.info('Checking queue for messages...');
+      log.info('Checking queue for messages...');
       await readDataFromQueue(QueueUrl, determineHandler());
     }
   })

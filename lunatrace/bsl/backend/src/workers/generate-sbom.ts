@@ -22,7 +22,7 @@ import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
-import {logger} from "../utils/logger";
+import {log} from "../utils/log";
 import { threwError } from '../utils/try';
 
 const bucketConfig = getEtlBucketConfig();
@@ -46,7 +46,7 @@ export async function createBuildAndGenerateSbom(
 ): Promise<string> {
   // Create a new build
   const { insert_builds_one } = await hasura.InsertBuild({ project_id: projectId, source_type: 'gui' });
-  logger.log('hasura returned when inserting build ', insert_builds_one);
+  log.info('hasura returned when inserting build ', insert_builds_one);
   if (!insert_builds_one || !insert_builds_one.id) {
     throw new Error('Failed to insert a new build');
   }
@@ -93,14 +93,14 @@ export async function handleGenerateManifestSbom(
     region,
   };
 
-  return await logger.provideFields({...bucketInfo}, async () => {
+  return await log.provideFields({...bucketInfo}, async () => {
     try {
       await attemptGenerateManifestSbom(bucketInfo);
       return {
         success: true,
       };
     } catch (e) {
-      logger.error('Unable to generate SBOM from Manifest', e);
+      log.error('Unable to generate SBOM from Manifest', e);
       // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
       await hasura.UpdateManifest({ key_eq: key, set_status: 'error', message: String(e) });
 

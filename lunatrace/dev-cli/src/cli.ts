@@ -24,7 +24,18 @@ import { dump } from 'js-yaml';
 
 import {bslDir, hasuraDir, kratosDir, tmuxpConfgFile} from "./constants";
 import {dbUrlEnv} from "./env";
-import {backend, dockerCompose, frontend, hasura, manifestWorker, oathkeeper, sbomWorker, smeeWebhook} from "./services";
+import {
+  backend,
+  dockerCompose,
+  frontend,
+  generateCommon,
+  generateLogger,
+  hasura,
+  manifestWorker,
+  oathkeeper,
+  sbomWorker,
+  smeeWebhook
+} from "./services";
 import {tmuxpConfig, tmuxWindow } from "./tmux";
 
 
@@ -47,10 +58,16 @@ const workerWindow = tmuxWindow('workers', [
   sbomWorker
 ]);
 
+const generatedCodeWindow = tmuxWindow('generated-code', [
+  generateCommon,
+  generateLogger
+]);
+
 const config = tmuxpConfig('lunatrace', [
   servicesWindow,
   backendWindow,
-  workerWindow
+  workerWindow,
+  generatedCodeWindow
 ]);
 
 function hasuraInit() {

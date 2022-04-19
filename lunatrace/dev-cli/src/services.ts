@@ -62,3 +62,13 @@ export const sbomWorker = tmuxPane([
 export const smeeWebhook = tmuxPane([
   `smee -u ${smeeWebhookUrl} -p 3002 -P /github/webhook/events`
 ])
+
+export const generateCommon = tmuxPane([
+  `cd common`,
+  `yarn start`
+])
+
+export const generateLogger = tmuxPane([
+  `cd logger`,
+  `yarn start`
+])
