@@ -20,3 +20,10 @@ ALTER TABLE public.organization_user ADD CONSTRAINT organization_user_user_id_fk
   FOREIGN KEY (user_id)
   REFERENCES public.users
   (id) ON UPDATE cascade ON DELETE cascade;
+
+UPDATE users SET github_id = (
+  SELECT kratos.github_id
+  FROM (
+    SELECT config->'providers'->0->>'subject' as github_id, identity_id FROM identity_credentials JOIN identities ON identities.id = identity_credentials.identity_id
+  ) as kratos WHERE users.kratos_id = kratos.identity_id AND kratos.github_id IS NOT NULL
+)

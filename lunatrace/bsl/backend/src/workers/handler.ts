@@ -20,6 +20,7 @@ import {
   SQSClient,
 } from '@aws-sdk/client-sqs';
 
+
 import { getAwsConfig, getQueueHandlerConfig } from '../config';
 import { HandlerCallback, S3SqsEvent } from '../types/sqs';
 import {log} from "../utils/log";
@@ -60,19 +61,21 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
     if (data.Messages) {
       const allJobs = Promise.all(
         data.Messages.map(async (message) => {
+        return await log.provideFields({sqsMetadata:data.$metadata, messageId: message.MessageId}, async () => {
           if (!message.Body) {
             log.info('Received sqs message with no message body');
             return;
           }
           const parsedBody = JSON.parse(message.Body) as S3SqsEvent;
-          log.info('parsed body as ', parsedBody);
+          log.debug('parsed body as ', parsedBody);
 
           if (!parsedBody.Records) {
             log.info('No records on sqs event, deleting message, exiting');
             return deleteMessage(message, queueUrl);
           }
-          // todo: do we actually need this promise handling or should we only take the first record from any event...assuming one file per object created event makes a lot of sense
+          // todo: do we actually need this promise handling or should we only take the first record from any event? assuming one file per object created event makes sense
           const handlerPromises = parsedBody.Records.map((record) => {
+            // Executes the proper handler for whatever queue we are processing, passed in above as an argument
             return processObjectCallback({
               bucketName: record.s3.bucket.name,
               key: record.s3.object.key,
@@ -91,6 +94,8 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
 
           await deleteMessage(message, queueUrl);
         })
+
+        })
       );
 
       const timeoutPromise = new Promise((resolve) => {
@@ -100,9 +105,9 @@ async function readDataFromQueue(queueUrl: string, processObjectCallback: Handle
       const result = await Promise.race([allJobs, timeoutPromise]);
 
       if (result === 'job_timeout') {
-        log.error('Exceeded timeout for jobs:', data.Messages);
+        log.error('Exceeded timeout for jobs:');
       } else {
-        log.info('Jobs returned successfully:', data.Messages);
+        log.info('Jobs returned successfully:');
       }
       return;
     }
@@ -125,24 +130,26 @@ function determineHandler(): HandlerCallback {
   return handlers[handlerName];
 }
 
-export async function setupQueue(): Promise<void> {
+export async function setupQueue():Promise<void> {
   const queueName = queueHandlerConfig.queueName;
+  await log.provideFields({queueName,  loggerName: "queue-logger"}, async () => {
+    const { QueueUrl } = await sqsClient.send(
+        new GetQueueUrlCommand({
+          QueueName: queueName,
+        })
+    );
+    if (!QueueUrl) {
+      throw new Error('failed to get QueueUrl for queuename ');
+    }
+    log.info('got queueUrl: ', QueueUrl);
+    // read loop
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      log.info('Checking queue for messages...');
+      await readDataFromQueue(QueueUrl, determineHandler());
+    }
+  })
 
-  const { QueueUrl } = await sqsClient.send(
-    new GetQueueUrlCommand({
-      QueueName: queueName,
-    })
-  );
-  if (!QueueUrl) {
-    throw new Error('failed to get QueueUrl for queuename ' + queueName);
-  }
-  log.info('got queueUrl: ', QueueUrl);
-  // read loop
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    log.info('Checking queue for messages: ', queueName);
-    await readDataFromQueue(QueueUrl, determineHandler());
-  }
 }
 
 void setupQueue();

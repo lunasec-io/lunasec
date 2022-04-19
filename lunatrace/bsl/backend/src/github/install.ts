@@ -87,6 +87,7 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     return;
   }
 
+  log.info(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
   const githubRepos: GithubRepositoryInfo[] = repositories
     .reduce((repos, repo) => {
       if (!repo.owner.name) {
