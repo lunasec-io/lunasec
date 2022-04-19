@@ -14,6 +14,20 @@
 
 import {log} from "./log";
 
+export function newError(msg: string): { error: true, msg: string } {
+  return {
+    error: true,
+    msg
+  }
+}
+
+export function newResult<T>(res: T): { error: false, res: T } {
+  return {
+    error: false,
+    res
+  }
+}
+
 export function logError(error: Error): void {
   log.error(error.message);
   log.error(error.stack);
