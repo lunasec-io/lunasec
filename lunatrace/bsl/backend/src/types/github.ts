@@ -16,3 +16,22 @@
 import { components } from '@octokit/openapi-types';
 
 export type RepositoriesForInstallationResponse = components['schemas']['repository'][];
+
+export interface GithubRepositoryInfo {
+  orgName: string
+  orgId: number
+  orgNodeId: string
+  repoName: string
+  repoId: number
+  repoNodeId: string
+  gitUrl: string
+  ownerType: string
+}
+
+export interface GithubPullRequest {
+  installationId: number
+  pullRequestId: string
+  cloneUrl: string
+  gitUrl: string
+  gitBranch: string
+}
