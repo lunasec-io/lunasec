@@ -19,12 +19,13 @@ import {
   createLunatraceOrgsFromGithubOrgs,
   hasuraOrgsFromGithubRepositories
 } from '../hasura-api/actions/create-lunatrace-orgs-from-github-orgs';
-import { RepositoriesForInstallationResponse } from '../types/github';
+import {GithubRepositoryInfo, RepositoriesForInstallationResponse} from '../types/github';
 import { errorResponse, logError } from '../utils/errors';
-import { logger } from '../utils/logger';
+import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse';
 import { catchError, threwError, Try } from '../utils/try';
 
+import {createHasuraOrgsAndProjectsForInstall} from "./actions/create-hasura-orgs-and-projects-for-install";
 import { getGithubReposForInstallation } from './actions/get-github-repos-for-installation';
 import {getHasuraOrgMembers} from "./actions/get-org-members";
 import {getInstallationAccessToken} from "./auth";
@@ -49,16 +50,21 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
 
   const installationId = installationIdRet.value;
 
-  logger.info(`[installId: ${installationId}] Installing Github App to organization`);
+  log.info(`[installId: ${installationId}] Installing Github App to organization`);
 
   const installationAuthToken = await getInstallationAccessToken(installationId);
+
+  if (installationAuthToken.error) {
+    res.status(500).send(errorResponse(installationAuthToken.msg));
+    return;
+  }
 
   const error = req.query.error;
   const errorDescription = req.query.error_description;
   const errorUri = req.query.error_uri;
 
   if (error) {
-    logger.info(`[installId: ${installationId}] Error installing Github App: ${errorDescription}`);
+    log.info(`[installId: ${installationId}] Error installing Github App: ${errorDescription}`);
     res.status(401).send(
       errorResponse(
         JSON.stringify({
@@ -72,7 +78,7 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
   }
 
   const repositories: Try<RepositoriesForInstallationResponse> = await catchError(
-    async () => await getGithubReposForInstallation(installationAuthToken, installationId)
+    async () => await getGithubReposForInstallation(installationAuthToken.res, installationId)
   );
 
   if (threwError(repositories)) {
@@ -81,61 +87,34 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  logger.info(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
+  log.info(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
+  const githubRepos: GithubRepositoryInfo[] = repositories
+    .reduce((repos, repo) => {
+      if (!repo.owner.name) {
+        return repos;
+      }
+      const repoInfo = {
+        orgName: repo.owner.name,
+        orgId: repo.owner.id,
+        orgNodeId: repo.owner.node_id,
+        repoName: repo.name,
+        repoId: repo.id,
+        repoNodeId: repo.node_id,
+        gitUrl: repo.git_url,
+        ownerType: repo.owner.type
+      }
+      return [
+        ...repos,
+        repoInfo
+      ]
+    }, [] as GithubRepositoryInfo[]);
 
-  const organizations = hasuraOrgsFromGithubRepositories(installationId, repositories);
-  const orgObjectList = Object.values(organizations);
+  log.info(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
 
-  const orgIds = await createLunatraceOrgsFromGithubOrgs(installationId, orgObjectList);
-
-  if (orgIds.error) {
-    res.status(500).send(errorResponse(orgIds.msg));
-    return;
-  }
-
-  logger.info(`[installId: ${installationId}] Created/updated LunaTrace organizations`, {
-    orgs: orgIds.res
-  });
-
-  const githubOrgToHasuraOrg = orgIds.res.reduce((lookup, org) => {
-    if (!org.github_node_id || !org.id) {
-      logger.error('unable to add org to lookup', {
-        org
-      });
-      return lookup;
-    }
-
-    return {
-      ...lookup,
-      [org.github_node_id]: org.id
-    }
-  }, {} as Record<string, string>);
-
-  const orgLoginList = Object.keys(organizations);
-
-  const createOrgUsersResp = await Promise.all(orgLoginList.map(async login => {
-    const org = organizations[login];
-    const orgMembers = await getHasuraOrgMembers(installationId, installationAuthToken, org, githubOrgToHasuraOrg);
-
-    if (orgMembers.error) {
-      logger.error(orgMembers.msg);
-      return null;
-    }
-
-    const res = await catchError(async () => await hasura.UpsertOrganizationUsers({
-      organizationUsers: orgMembers.res
-    }));
-
-    if (threwError(res)) {
-      logError(res);
-      return null;
-    }
-    return res.insert_organization_user?.affected_rows;
-  }));
-
-  if (createOrgUsersResp.some(c => c === null)) {
-    res.status(500).send(errorResponse('creating organization users failed'));
-    return;
+  const resp = await createHasuraOrgsAndProjectsForInstall(installationAuthToken.res, installationId, githubRepos)
+  if (resp.error) {
+    res.status(500).send(errorResponse(resp.msg));
+    return
   }
 
   res.status(302).redirect(serverConfig.sitePublicUrl);

@@ -20,7 +20,7 @@ import {
 import {MaybeError} from "../../types/util";
 import {logError} from "../../utils/errors";
 import { normalizeGithubId } from "../../utils/github";
-import {logger} from "../../utils/logger";
+import {log} from "../../utils/log";
 import {notEmpty} from "../../utils/predicates";
 import {catchError, threwError} from "../../utils/try";
 import {GetMembersForOrganizationQuery} from "../api/generated";
@@ -124,7 +124,7 @@ export async function getHasuraOrgMembers(
   }
 
   if (githubOrgMembers === null || !githubOrgMembers.organization) {
-    logger.error('organization members are null.', {
+    log.error('organization members are null.', {
       installationId
     });
     return {
@@ -160,7 +160,7 @@ export async function getHasuraOrgMembers(
     githubOrgMemberIds.push(...teamMemberIds);
   }
 
-  logger.info('collected organization member ids', {orgMemberIds: githubOrgMemberIds});
+  log.info('collected organization member ids', {orgMemberIds: githubOrgMemberIds});
 
   const orgUsers = githubOrgMemberIds.map(githubMemberId => newOrganizationUser(hasuraOrgId, githubMemberId));
   return {

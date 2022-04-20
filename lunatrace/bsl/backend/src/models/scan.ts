@@ -25,7 +25,7 @@ import {
   Scans_Insert_Input,
 } from '../hasura-api/generated';
 import { Convert, GrypeScanReport, Match } from '../types/grype-scan-report';
-import {logger} from "../utils/logger";
+import {log} from "../utils/log";
 
 export type InsertedScan = NonNullable<InsertScanMutation['insert_scans_one']>;
 
@@ -54,8 +54,8 @@ export async function runGrypeScan(sbomStream: Readable): Promise<string> {
       outputBuffers.push(Buffer.from(chunk));
     });
     lunatraceCli.stderr.on('data', (errorChunk) => {
-      logger.error('LunaTrace CLI StdErr Output:');
-      logger.error(errorChunk.toString());
+      log.error('LunaTrace CLI StdErr Output:');
+      log.error(errorChunk.toString());
     });
     lunatraceCli.on('close', (code) => {
       if (code !== 0) {
@@ -65,7 +65,7 @@ export async function runGrypeScan(sbomStream: Readable): Promise<string> {
     });
     sbomStream.on('data', (chunk) => lunatraceCli.stdin.write(chunk));
     sbomStream.on('end', () =>
-      lunatraceCli.stdin.end(() => logger.info('Finished passing sbom contents to lunatrace CLI'))
+      lunatraceCli.stdin.end(() => log.info('Finished passing sbom contents to lunatrace CLI'))
     );
     sbomStream.on('error', reject);
   });
@@ -143,7 +143,7 @@ async function parseMatches(buildId: string, matches: Match[]): Promise<Findings
           const package_version_id = ids.package_versions.length >= 1 ? ids.package_versions[0].id : undefined;
 
           if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
-            logger.error(
+            log.error(
                 {
                   slugs,
                   ids,

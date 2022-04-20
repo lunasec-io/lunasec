@@ -28,7 +28,7 @@ import {
   InsertWebhookToCacheMutation
 } from '../hasura-api/generated';
 import {logError} from '../utils/errors';
-import {logger} from '../utils/logger';
+import {log} from '../utils/log';
 import {catchError, threwError, Try} from '../utils/try';
 
 export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransformed> {
@@ -60,7 +60,7 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
     const verified = await this.verify(options.payload, options.signature);
 
     if (!verified) {
-      logger.error('Webhook signature verification failed');
+      log.error('Webhook signature verification failed');
       throw new Error('Webhook signature verification failed');
     }
 
@@ -87,7 +87,7 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
       throw new Error('Failed to confirm webhook added to cache');
     }
 
-    logger.info(`Inserted webhook to cache: ${result.delivery_id}`);
+    log.info(`Inserted webhook to cache: ${result.delivery_id}`);
 
     // Ignore the result, we don't care if it succeeded or not because we have ensured that it's been flushed to the DB already;
     void sqsClient.send(new SendMessageCommand({
