@@ -11,8 +11,6 @@
  * limitations under the License.
  *
  */
-import {LunaLogger} from "@lunatrace/lunatrace-common/build/main";
-
 import { S3ObjectMetadata } from './s3';
 
 export interface S3SqsEvent {
@@ -64,6 +62,10 @@ export interface S3Object {
   sequencer: string;
 }
 
+export interface WebhookMetadata {
+  delivery_id: string;
+}
+
 export interface QueueSuccessResult {
   success: true;
 }
@@ -73,4 +75,7 @@ export interface QueueErrorResult {
   error: Error;
 }
 
-export type HandlerCallback = (object: S3ObjectMetadata) => Promise<QueueSuccessResult | QueueErrorResult>;
+export type HandlerCallback<TBody> = (object: TBody) => Promise<QueueSuccessResult | QueueErrorResult>;
+
+export type S3HandlerCallback = HandlerCallback<S3ObjectMetadata>;
+export type WebhookHandlerCallback = HandlerCallback<WebhookMetadata>;
