@@ -17,7 +17,7 @@ import { SIDEBAR_BEHAVIOR, SIDEBAR_POSITION } from '../constants';
 import useSettingsState from '../hooks/useSettingsState';
 
 const initialState = {
-  isOpen: true,
+  isOpen: false,
   position: SIDEBAR_POSITION.LEFT,
   behavior: SIDEBAR_BEHAVIOR.STICKY,
   setIsOpen: (_a: boolean) => {
@@ -34,7 +34,7 @@ const initialState = {
 const SidebarContext = React.createContext(initialState);
 
 function SidebarProvider({ children }: { children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useSettingsState('sidebarPosition', SIDEBAR_POSITION.LEFT);
   const [behavior, setBehavior] = useSettingsState('sidebarBehavior', SIDEBAR_BEHAVIOR.STICKY);
 

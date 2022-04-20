@@ -39,11 +39,6 @@ function App() {
           <ThemeProvider>
             <SidebarProvider>
               <LayoutProvider>
-                {/*<ChartJsDefaults />*/}
-
-                {/*<AuthProvider>*/}
-                {/*</AuthProvider>*/}
-
                 {content}
               </LayoutProvider>
             </SidebarProvider>

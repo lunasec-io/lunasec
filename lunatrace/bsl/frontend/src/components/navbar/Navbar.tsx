@@ -12,8 +12,9 @@
  *
  */
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
+import {BsMoon, BsSun} from "react-icons/bs";
 
 import useAppSelector from '../../hooks/useAppSelector';
 import useSidebar from '../../hooks/useSidebar';
@@ -23,40 +24,49 @@ import { selectIsAuthenticated } from '../../store/slices/authentication';
 import { ProjectSearch } from './NavbarProjectSearch';
 import NavbarUser from './NavbarUser';
 
-const NavbarComponent = () => {
+interface NavbarComponentProps {
+  setupWizardOpen: boolean
+}
+
+const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupWizardOpen }) => {
   const { isOpen, setIsOpen } = useSidebar();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const { theme, setTheme } = useTheme();
 
+  const toggleTheme = () => {
+    if (theme === 'dark') {
+      setTheme('light');
+      return;
+    }
+    setTheme('dark');
+  }
+
+  useEffect(() => {
+    setIsOpen(!setupWizardOpen);
+  }, [setupWizardOpen]);
+
+  const drawerToggle = (
+    <span
+      className="sidebar-toggle d-flex"
+      onClick={() => {
+        setIsOpen(!isOpen);
+      }}
+    >
+      <i className="hamburger align-self-center" />
+    </span>
+  );
+
   return (
     <Navbar variant="light" expand="lg" className="navbar-bg">
       <Container fluid>
-        <span
-          className="sidebar-toggle d-flex"
-          onClick={() => {
-            setIsOpen(!isOpen);
-          }}
-        >
-          <i className="hamburger align-self-center" />
-        </span>
+        {!setupWizardOpen && drawerToggle}
 
-        {isAuthenticated ? <ProjectSearch /> : null}
+        {isAuthenticated && !setupWizardOpen ? <ProjectSearch /> : null}
 
         <Nav className="navbar-align flex-row">
-          <BootstrapSwitchButton
-            checked={theme === 'dark'}
-            onChange={(checked: boolean) => {
-              setTheme(checked ? 'dark' : 'light');
-            }}
-            onstyle="outline-secondary"
-            onlabel="Dark"
-            offstyle="outline-secondary"
-            offlabel="Light"
-            style="border"
-            size="sm"
-          />
-
-          {/*<NavbarLanguages />*/}
+          <span className="d-inline-block login-navbar-button btn lighter p-2" onClick={toggleTheme}>
+            { theme === 'dark' ? <BsMoon size="30px" /> : <BsSun size="30px" /> }
+          </span>
           <NavbarUser />
         </Nav>
       </Container>
