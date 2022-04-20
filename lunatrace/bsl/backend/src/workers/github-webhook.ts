@@ -15,18 +15,18 @@ import {webhooks} from '../github/webhooks';
 import { hasura } from '../hasura-api';
 import {GetWebhookCacheByDeliveryIdQuery} from '../hasura-api/generated';
 import {QueueErrorResult, QueueSuccessResult, WebhookMetadata} from '../types/sqs';
-import {logger} from "../utils/logger";
+import { log } from '../utils/log';
 import {catchError, threwError, Try} from '../utils/try';
 
 export async function handleGithubWebhook(
   message: WebhookMetadata
 ): Promise<QueueSuccessResult | QueueErrorResult> {
-  logger.info(`Received webhook:`, message);
+  log.info(`Received webhook:`, message);
   const { delivery_id } = message;
 
   const deliveryId = delivery_id;
 
-  return await logger.provideFields({deliveryId}, async () => {
+  return await log.provideFields({deliveryId}, async () => {
     try {
       const webhookData: Try<GetWebhookCacheByDeliveryIdQuery | null> = await catchError(
         async () => await hasura.GetWebhookCacheByDeliveryId({
@@ -35,7 +35,7 @@ export async function handleGithubWebhook(
       );
 
       if (threwError(webhookData)) {
-        logger.error(`Failed to get webhook data for deliveryId ${deliveryId}`);
+        log.error(`Failed to get webhook data for deliveryId ${deliveryId}`);
         return {
           success: false,
           error: new Error(`Failed to get webhook data for deliveryId ${deliveryId}`),
@@ -52,7 +52,7 @@ export async function handleGithubWebhook(
         success: true,
       };
     } catch (e) {
-      logger.error('Unable to process GitHub webhook: ' + deliveryId, e);
+      log.error('Unable to process GitHub webhook: ' + deliveryId, e);
 
       return {
         success: false,

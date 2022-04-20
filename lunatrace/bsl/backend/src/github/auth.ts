@@ -16,6 +16,9 @@ import { createAppAuth } from '@octokit/auth-app';
 import { GraphQLClient } from 'graphql-request';
 
 import { getGithubAppConfig } from '../config';
+import {MaybeError} from "../types/util";
+import {newError, newResult} from "../utils/errors";
+import {catchError, threwError} from "../utils/try";
 
 import {getSdk, Sdk} from './api/generated';
 
@@ -40,16 +43,20 @@ export function getGithubAppAuth(clientInfo?: { clientId: string; clientSecret: 
   });
 }
 
-export async function getInstallationAccessToken(installationId: number): Promise<string> {
+// TODO (cthompson) catch error thrown by auth
+export async function getInstallationAccessToken(installationId: number): Promise<MaybeError<string>> {
   const auth = getGithubAppAuth();
 
   // Retrieves the installation access token
-  const installationAuthentication = await auth({
+  const installationAuthentication = await catchError(async () => await auth({
     type: 'installation',
     installationId: installationId,
-  });
+  }));
 
-  return installationAuthentication.token;
+  if (threwError(installationAuthentication)) {
+    return newError(installationAuthentication.message);
+  }
+  return newResult(installationAuthentication.token);
 }
 
 export function getGithubGraphqlClient(accessToken: string): Sdk {
