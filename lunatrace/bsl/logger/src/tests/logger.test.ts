@@ -35,13 +35,13 @@ describe('LunaLogger', () => {
   });
 
   it('appends any object properties from the first argument', () => {
-    log.log({test: 'field'});
+    log.info({test: 'field'});
     const output = consoleMock.mock.calls[0][0];
     parseAndCheck(output, 'test', 'field');
   });
 
   it('stringifies anything else into message', () => {
-    log.log(['test'], 'test message');
+    log.info(['test'], 'test message');
     const output = consoleMock.mock.calls[0][0];
     parseAndCheck(output, 'message', '["test"]test message');
   });
@@ -68,7 +68,7 @@ describe('LunaLogger', () => {
 
   describe('logger provider', () => {
     it('adds fields', async () => {
-      await log.provideFields({asyncStored: 'field'}, async () => {
+      await log.provideFields({asyncStored: 'field'}, () => {
         log.info('should have stored field');
         const output = consoleMock.mock.calls[0][0];
         parseAndCheck(output, 'asyncStored', 'field');
@@ -78,7 +78,7 @@ describe('LunaLogger', () => {
 
   it('preserves fields on nesting', async () => {
     await log.provideFields({asyncStored: 'field'}, async () => {
-      await log.provideFields({anotherAsyncStored: 'field'}, async () => {
+      await log.provideFields({anotherAsyncStored: 'field'}, () => {
         log.info('should have stored field');
         const output = consoleMock.mock.calls[0][0];
         parseAndCheck(output, 'asyncStored', 'field');

@@ -14,7 +14,7 @@
 // This code has been copied and converted from https://github.com/felixge/node-stack-trace/blob/master/index.js
 // because there was something wrong with that module
 
-export function get(belowFn: (...args: any[]) => unknown) {
+export function get(belowFn: (...args: any[]) => unknown): NodeJS.CallSite[] {
   const oldLimit = Error.stackTraceLimit;
   Error.stackTraceLimit = Infinity;
 

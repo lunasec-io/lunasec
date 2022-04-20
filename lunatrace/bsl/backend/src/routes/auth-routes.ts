@@ -17,7 +17,7 @@ import { validate as validateUUID } from 'uuid';
 
 import { getHasuraConfig } from '../config';
 import { hasura } from '../hasura-api';
-import {logger} from "../utils/logger";
+import {log} from "../utils/log";
 
 // These routes are used by oathkeeper to validate incoming requests before they are allowed to reach the rest of the cluster
 const hasuraConfig = getHasuraConfig();
@@ -71,7 +71,7 @@ function generateErrorResponse(res: Response, errorMessage: string, statusCode =
 // Oathkeeper calls this when requests from the CLI come through the gateway.. We append this data here just for the action
 // but currently this fires for all calls..could clean that up with a new oathkeeper rule
 export async function cliAuthorizer(req: Request, res: Response): Promise<void> {
-  logger.info('CLI authorizer called for route ', req.originalUrl);
+  log.info('CLI authorizer called for route ', req.originalUrl);
   const parsedRequest = parseRequestHeaders(req);
 
   if (parsedRequest.error) {
@@ -98,7 +98,7 @@ export async function cliAuthorizer(req: Request, res: Response): Promise<void> 
 
 // Oathkeeper calls this when requests from a backend service come through the gateway, this is a string matcher behind a rest endpoint :p
 export function serviceAuthorizer(req: Request, res: Response): void {
-  logger.info('Service authorizer called for route ', req.originalUrl);
+  log.info('Service authorizer called for route ', req.originalUrl);
 
   const parsedRequest = parseRequestHeaders(req);
 
