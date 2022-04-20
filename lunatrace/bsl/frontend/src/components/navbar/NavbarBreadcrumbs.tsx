@@ -107,7 +107,15 @@ const NewProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCom
   return <span>New Project</span>;
 };
 
-export const NavbarBreadcrumbs: React.FunctionComponent = () => {
+interface NavbarBreadcrumbsProps {
+  setupWizardOpen: boolean
+}
+
+export const NavbarBreadcrumbs: React.FunctionComponent<NavbarBreadcrumbsProps> = ({ setupWizardOpen }) => {
+  if (setupWizardOpen) {
+    return null;
+  }
+
   // These custom breadcrumbs override the defaults from the library
   const customRoutes: BreadcrumbsRoute[] = [
     { path: '/project/:project_id', breadcrumb: ProjectBreadCrumb },
@@ -115,7 +123,6 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
     { path: '/vulnerabilities/:vulnerability_id', breadcrumb: VulnBreadCrumb },
     { path: '/organization/:project_id', breadcrumb: OrganizationBreadCrumb },
     { path: '/new-project', breadcrumb: null },
-
     { path: '/new-project/:organization_id', breadcrumb: NewProjectBreadCrumb },
   ];
   const breadCrumbs = useBreadCrumbs(customRoutes);
