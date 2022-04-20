@@ -24,7 +24,7 @@ import { dump } from 'js-yaml';
 
 import {bslDir, hasuraDir, kratosDir, tmuxpConfgFile} from "./constants";
 import {dbUrlEnv} from "./env";
-import {backend, dockerCompose, frontend, hasura, manifestWorker, oathkeeper, sbomWorker, smeeWebhook} from "./services";
+import {backend, dockerCompose, frontend, hasura, manifestWorker, oathkeeper, sbomWorker, smeeWebhook, webhookWorker} from "./services";
 import {tmuxpConfig, tmuxWindow } from "./tmux";
 
 
@@ -44,7 +44,8 @@ const backendWindow = tmuxWindow('backend', [
 
 const workerWindow = tmuxWindow('workers', [
   manifestWorker,
-  sbomWorker
+  sbomWorker,
+  webhookWorker
 ]);
 
 const config = tmuxpConfig('lunatrace', [

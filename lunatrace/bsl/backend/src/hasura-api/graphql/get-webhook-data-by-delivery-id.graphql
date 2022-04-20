@@ -1,0 +1,10 @@
+query GetWebhookCacheByDeliveryId($delivery_id: uuid!) {
+  webhook_cache(where: {delivery_id: {_eq: $delivery_id}}) {
+    data
+    delivery_id
+    signature_256
+    event_type
+    installation_id
+    created_at
+  }
+}
