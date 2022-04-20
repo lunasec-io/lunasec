@@ -13760,6 +13760,7 @@ __metadata:
     "@types/stack-trace": ~0.0.29
     generate-lockfile: ^0.0.11
     jest: ^27.5.1
+    json-colorizer: ^2.2.2
     ts-jest: ^27.1.3
     ts-node: ^10.4.0
     ts-node-dev: ^1.1.8
@@ -47111,7 +47112,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sql-template-strings@npm:^2.2.2":
+"sql-template-strings@npm:*, sql-template-strings@npm:^2.2.2":
   version: 2.2.2
   resolution: "sql-template-strings@npm:2.2.2"
   checksum: 8155143269134564e9f13203b51da965d7c24dab25278fbd028f2dd2e03aec48d77931f7100245d04b6e3a90c4cf131575c852adf6c91a405e30c8869e055c52

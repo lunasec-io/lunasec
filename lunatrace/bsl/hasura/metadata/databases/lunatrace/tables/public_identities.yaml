@@ -16,6 +16,13 @@ array_relationships:
       table:
         name: identity_verifiable_addresses
         schema: public
+- name: users
+  using:
+    foreign_key_constraint_on:
+      column: kratos_id
+      table:
+        name: users
+        schema: public
 select_permissions:
 - permission:
     columns:

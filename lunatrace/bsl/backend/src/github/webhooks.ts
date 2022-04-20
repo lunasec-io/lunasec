@@ -23,11 +23,18 @@ import { catchError, threwError, Try } from '../utils/try';
 import {uploadSbomToS3} from "../workers/generate-sbom";
 
 import { getInstallationAccessToken } from './auth';
+import {WebhookInterceptor} from './webhook-cache';
 
-export const webhooks = new Webhooks({
+const webhookQueue = process.env.PROCESS_WEBHOOK_QUEUE;
+
+if (!webhookQueue) {
+  logger.error('PROCESS_WEBHOOK_QUEUE is not set');
+  throw new Error('PROCESS_WEBHOOK_QUEUE is not set');
+}
+
+export const webhooks = new WebhookInterceptor(hasura, webhookQueue, {
   secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
 });
-
 
 async function organizationHandler(event:EmitterWebhookEvent<'organization'>) {
   logger.debug('organization webhook event', {
