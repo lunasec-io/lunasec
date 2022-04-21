@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+
 import { S3ObjectMetadata } from './s3';
 
 export interface S3SqsEvent {
