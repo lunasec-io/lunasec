@@ -86,10 +86,10 @@ app.use(lookupAccessTokenRouter);
 app.use(githubApiRouter);
 
 
-app.use((req,res,next) => {
-  log.log(req.headers, 'headers are ')
-  next()
-})
+// app.use((req,res,next) => {
+//   log.log(req.headers, 'headers are ')
+//   next()
+// })
 
 app.use(jwt({
   secret: jwksRsa.expressJwtSecret({
