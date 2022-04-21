@@ -18,7 +18,7 @@ sidebar_position: 5
   ~
 -->
 
-LunaSec uses analytics collected from the CLI command in order to improve its performance for 
+LunaDefend uses analytics collected from the CLI command in order to improve its performance for 
 all developers. The metrics that are collected by the CLI look like: 
 
 ```js
