@@ -77,7 +77,9 @@ const MainLayout: React.FunctionComponent = (props) => {
         <Sidebar sections={generateSidebarItems(data, isAuthenticated)} />
         <div className="main">
           <Navbar setupWizardOpen={setupWizardOpen} />
-          <NavbarBreadcrumbs setupWizardOpen={setupWizardOpen} />
+
+          { !setupWizardOpen && <NavbarBreadcrumbs /> }
+
           <AlertsHeader />
 
           <div className="content">

@@ -61,7 +61,7 @@ const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupW
       <Container fluid>
         {!setupWizardOpen && drawerToggle}
 
-        {isAuthenticated && !setupWizardOpen ? <ProjectSearch /> : null}
+        {!setupWizardOpen && isAuthenticated  ? <ProjectSearch /> : null}
 
         <Nav className="navbar-align flex-row">
           <span className="d-inline-block login-navbar-button btn lighter p-2" onClick={toggleTheme}>
