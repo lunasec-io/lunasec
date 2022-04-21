@@ -1,0 +1,58 @@
+
+scalar uuid
+scalar jsonb
+
+
+type Query {
+    """ get s3 presigned url for manifest upload, used by the CLI """
+    presignSbomUpload(
+        orgId: uuid!
+        buildId: uuid!
+    ): SbomUploadUrlOutput
+}
+
+type Mutation {
+    """ This performs the manifest sbom generation and creates the first build from the manifest """
+    scanManifest(
+        key: String!
+        bucket: String!
+    ): ScanManifestOutput
+    """ get s3 presigned url for manifest upload, used only by the frontend """
+    presignManifestUpload(
+        project_id: uuid!
+    ): PresignedUrlResponse
+}
+
+input SbomUploadUrlInput {
+    orgId: uuid!
+    projectId: uuid!
+}
+
+
+type SbomUploadUrlOutput {
+    error: Boolean!
+    uploadUrl: UploadUrl
+}
+
+type PresignedUrlResponse {
+    url: String!
+    headers: jsonb!
+    key: String!
+    bucket: String!
+}
+
+type ScanManifestOutput {
+    error: Boolean!
+    error_message: String
+    build_id: uuid!
+}
+type UploadUrl {
+    url: String!
+    headers: jsonb!
+}
+
+type ScanManifestOutput {
+    error: Boolean!
+    error_message: String
+    build_id: uuid!
+}
