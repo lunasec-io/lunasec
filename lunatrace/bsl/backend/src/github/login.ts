@@ -19,7 +19,7 @@ import {MaybeError} from "../types/util";
 import {errorResponse, logError} from "../utils/errors";
 import {normalizeGithubId} from "../utils/github";
 import {log} from "../utils/log";
-import {catchError, threwError, Try} from "../utils/try";
+import {catchError, threwError} from "../utils/try";
 
 import {getGithubGraphqlClient} from "./auth";
 

@@ -29,8 +29,7 @@ export function newResult<T>(res: T): { error: false, res: T } {
 }
 
 export function logError(error: Error): void {
-  log.error(error.message);
-  log.error(error.stack);
+  log.error(error);
 }
 
 export function errorResponse(msg: string) {
