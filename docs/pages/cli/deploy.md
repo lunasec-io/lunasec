@@ -17,13 +17,13 @@ sidebar_position: 3
   ~ limitations under the License.
   ~
 -->
-LunaSec can be deployed to AWS using the LunaSec CLI, available in the `@lunasec/cli` npm package.  More information on installing and using the CLI can be 
+LunaDefend can be deployed to AWS using the LunaDefend CLI, available in the `@lunasec/cli` npm package.  More information on installing and using the CLI can be 
 found in the [Getting Started Guide](/pages/getting-started/dedicated-tokenizer/introduction)
 
 The deploy command configures a deployment by reading the closest `lunasec.js` file to the current directory. The CLI tool will
 recursively search in parent directories for this file until it gets to the root of the file system.
 
-For a standard deployment of LunaSec, you will only need to specify:
+For a standard deployment of LunaDefend, you will only need to specify:
 ```js
 module.exports = {
     production: {
