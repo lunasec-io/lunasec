@@ -18,7 +18,7 @@ sidebar_position: 1
   ~
 -->
 
-The LunaSec CLI makes development, testing, and deployment easier.  It can bring up the services we need to use LunaSec locally.
+The LunaDefend CLI makes development, testing, and deployment easier.  It can bring up the services we need to use LunaDefend locally.
 
 The CLI is available as an NPM module. Add it to your `package.json` along with the aws cdk packages that it depends on:
 

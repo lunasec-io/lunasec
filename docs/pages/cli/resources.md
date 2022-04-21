@@ -1,6 +1,6 @@
 ---
 id: "resources"
-title: "LunaSec Stack Resources"
+title: "LunaDefend Stack Resources"
 sidebar_label: "Resources"
 sidebar_position: 4
 ---
@@ -18,7 +18,7 @@ sidebar_position: 4
   ~
 -->
 
-Print out the resources which have been deployed to the LunaSec stack. 
+Print out the resources which have been deployed to the LunaDefend stack. 
 
 ```shell
 $ lunasec resources
