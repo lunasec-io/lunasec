@@ -32,6 +32,7 @@ if (!webhookQueue) {
 
 export const webhooks = new WebhookInterceptor(hasura, webhookQueue, {
   secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
+  log:logger,
 });
 
 async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_repositories.added'>) {
