@@ -192,12 +192,12 @@ the Security Architecture section:
 
 ### Our Involvement with Security
 
-We're building an Open Source project called [LunaSec](https://github.com/lunasec-io/lunasec) to help developers address
-these problems. The goal of LunaSec is to create drop-in, Secure by Default components that provide strong security and
+We're building an Open Source project called [LunaDefend](https://github.com/lunasec-io/lunasec) to help developers address
+these problems. The goal of LunaDefend is to create drop-in, Secure by Default components that provide strong security and
 compliance guarantees, while not impacting a team's speed or efficiency when meeting deadlines. It's possible through
 the clever usage of Data Encryption through a process known as [Tokenization](https://www.lunasec.io/docs/pages/how-it-works/tokens/).
 
-Here's an example of the LunaSec React SDK in action:
+Here's an example of the LunaDefend React SDK in action:
 
 ```tsx jsx="true"
 // This React Component is vulnerable to XSS, and it leaks data to attackers.
@@ -212,12 +212,12 @@ export function renderInsecureComponent(props) {
 };
 ```
 
-Now if we take the same code, and modify it slightly to use a LunaSec component:
+Now if we take the same code, and modify it slightly to use a LunaDefend component:
 
 ```tsx jsx="true"
 import {SecureForm, SecureInput} from '@lunasec/react-sdk';
 
-// This is still vulnerable to XSS, but it doesn't leak data to attackers anymore because of LunaSec.
+// This is still vulnerable to XSS, but it doesn't leak data to attackers anymore because of LunaDefend.
 // The only data that's leaked is an encrypted version of the SSN that does not give an attacker anything valuable.
 export function renderInsecureComponent(props) {
   return (
@@ -230,7 +230,7 @@ export function renderInsecureComponent(props) {
 };
 ```
 
-Even if the same vulnerable code path or configuration exists, because of LunaSec's 
+Even if the same vulnerable code path or configuration exists, because of LunaDefend's 
 [Secure by Default design](https://lunasec.io/docs/pages/how-it-works/security/introduction/), the sensitive user data cannot be leaked without multiple 
 points of compromise. (The SSN is encrypted, and decryption happens in a hardened environment with limited surface area
 for an attacker to find bugs in.)
@@ -248,14 +248,14 @@ The next few years will see a lot of companies adopting this model, and we're ex
 ### Help Us Make Secure By Default a Reality!
 
 If you enjoyed this article, please take a moment to star our 
-[LunaSec GitHub repository](https://github.com/lunasec-io/lunasec), share this post with others, and consider adding 
-yourself the list of companies protecting their data with LunaSec.  It's Open Source and free to use!
+[GitHub repository](https://github.com/lunasec-io/lunasec), share this post with others, and consider adding 
+yourself the list of companies protecting their data with LunaDefend.  It's Open Source and free to use!
 
 To get started, you can check out our [Live Demo](https://app.lunasec.dev)
 and [Documentation](https://lunasec.io/docs/pages/overview/introduction/) to learn more about what we're building,
 how it works, and how to get started using it with your production software.
 
-For any questions about LunaSecs, this post, or about security in general, feel free to [contact us](https://www.lunasec.io/contact).
+For any questions about LunaDefends, this post, or about security in general, feel free to [contact us](https://www.lunasec.io/contact).
 We're always happy to hear your feedback and learn about the problems people are facing!
 
 ----------
