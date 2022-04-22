@@ -25,3 +25,5 @@ const headers = {
 
 const client = new GraphQLClient(hasuraConfig.hasuraEndpoint, { headers });
 export const hasura = getSdk(client);
+
+export type HasuraClient = ReturnType<typeof getSdk>;

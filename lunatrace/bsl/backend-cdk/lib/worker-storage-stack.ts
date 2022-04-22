@@ -26,6 +26,7 @@ export interface WorkerStorageStackState {
   manifestBucket: Bucket;
   processManifestSqsQueue: Queue;
   processSbomSqsQueue: Queue;
+  processWebhookSqsQueue: Queue;
 }
 
 export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackState {
@@ -33,6 +34,7 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
   public manifestBucket: Bucket;
   public processManifestSqsQueue: Queue;
   public processSbomSqsQueue: Queue;
+  public processWebhookSqsQueue: Queue;
 
   constructor(scope: cdk.Construct, id: string, props: WorkerStorageStackProps) {
     super(scope, id, props);
@@ -43,6 +45,7 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
     this.manifestBucket = stackState.manifestBucket;
     this.processManifestSqsQueue = stackState.processManifestSqsQueue;
     this.processSbomSqsQueue = stackState.processSbomSqsQueue;
+    this.processWebhookSqsQueue = stackState.processWebhookSqsQueue;
   }
 
   /**
@@ -96,6 +99,18 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
 
     sbomBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(processSbomSqsQueue));
 
+    const processWebhookDeadLetterQueue = new Queue(context, 'ProcessWebhookProcessingDeadLetterQueue', {
+      retentionPeriod: Duration.days(14),
+    });
+
+    const processWebhookSqsQueue = new Queue(context, 'ProcessWebhookProcessingQueue', {
+      visibilityTimeout: Duration.minutes(1),
+      deadLetterQueue: {
+        queue: processWebhookDeadLetterQueue,
+        maxReceiveCount: 10,
+      },
+    });
+
     new cdk.CfnOutput(context, sbomBucket.node.id + 'Name', {
       value: sbomBucket.bucketName,
       description: 'Name of the Sbom Bucket',
@@ -116,11 +131,17 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
       description: 'Queue Name for the Process Manifest Queue',
     });
 
+    new cdk.CfnOutput(context, processWebhookSqsQueue.node.id + 'Name', {
+      value: processWebhookSqsQueue.queueName,
+      description: 'Queue Name for the Process Webhook Queue',
+    });
+
     return {
       sbomBucket,
       manifestBucket,
       processManifestSqsQueue,
       processSbomSqsQueue,
+      processWebhookSqsQueue
     };
   }
 }

@@ -1,0 +1,9 @@
+query GetWebhookCacheJobs($limit: Int = 10, $offset: Int = 0) {
+  webhook_cache(where: {sqs_message_id: {_is_null: false}}, limit: $limit, offset: $offset) {
+    data
+    delivery_id
+    signature_256
+    event_type
+    created_at
+  }
+}

@@ -1,0 +1,68 @@
+DROP INDEX webhook_cache_event_type_idx;
+DROP INDEX webhook_cache_created_at_idx;
+DROP TABLE webhook_cache CASCADE;
+DROP TYPE github_webhook_event;
+
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE TYPE github_webhook_event AS ENUM (
+--  'branch_protection_rule',
+--  'check_run',
+--  'check_suite',
+--  'code_scanning_alert',
+--  'commit_comment',
+--  'create',
+--  'delete',
+--  'deployment',
+--  'deployment_status',
+--  'deploy_key',
+--  'discussion',
+--  'discussion_comment',
+--  'fork',
+--  'gollum',
+--  'issues',
+--  'issue_comment',
+--  'label',
+--  'member',
+--  'membership',
+--  'meta',
+--  'milestone',
+--  'organization',
+--  'org_block',
+--  'package',
+--  'page_build',
+--  'project',
+--  'project_card',
+--  'project_column',
+--  'public',
+--  'pull_request',
+--  'pull_request_review',
+--  'pull_request_review_comment',
+--  'pull_request_review_thread',
+--  'push',
+--  'registry_package',
+--  'release',
+--  'repository',
+--  'repository_import',
+--  'repository_vulnerability_alert',
+--  'secret_scanning_alert',
+--  'star',
+--  'status',
+--  'team',
+--  'team_add',
+--  'watch',
+--  'workflow_job',
+--  'workflow_run'
+-- );
+--
+-- CREATE TABLE webhook_cache(
+--   delivery_id UUID NOT NULL,
+--   event_type github_webhook_event NOT NULL,
+--   created_at timestamp NOT NULL DEFAULT NOW(),
+--   signature TEXT NOT NULL,
+--   signature256 TEXT NOT NULL,
+--   data JSONB NOT NULL
+-- );
+--
+-- CREATE INDEX webhook_cache_created_at_idx ON webhook_cache(created_at);
+-- CREATE INDEX webhook_cache_event_type_idx ON webhook_cache(event_type);
