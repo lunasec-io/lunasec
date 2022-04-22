@@ -12,7 +12,6 @@
  *
  */
 import { GraphQLYogaError } from '@graphql-yoga/node';
-import express from 'express';
 import { v4 as uuid } from 'uuid';
 
 import { getEtlBucketConfig } from '../../config';
@@ -38,6 +37,16 @@ async function checkProjectIsAuthorized(projectId: string, ctx: Context) {
   }
   return;
 }
+
+
+
+
+
+
+
+
+
+
 
 export const presignManifestUploadResolver: PresignManifestUploadResolver = async (parent, args, ctx, info) => {
   throwIfUnauthenticated(ctx);

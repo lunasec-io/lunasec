@@ -15,7 +15,6 @@ import { Octokit } from 'octokit';
 
 import { RepositoriesForInstallationResponse } from '../../types/github';
 import {log} from "../../utils/log";
-import { getInstallationAccessToken } from '../auth';
 
 const PER_PAGE = 100;
 

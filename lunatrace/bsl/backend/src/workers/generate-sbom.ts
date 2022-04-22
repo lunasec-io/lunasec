@@ -13,7 +13,6 @@
  */
 import zlib from 'zlib';
 
-import {LunaLogger} from "@lunatrace/logger";
 
 import { generateSbomFromAsset } from '../cli/call-cli';
 import { getEtlBucketConfig } from '../config';
