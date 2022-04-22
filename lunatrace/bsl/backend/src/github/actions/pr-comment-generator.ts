@@ -58,9 +58,12 @@ function generatePullRequestCommentFromReport(projectId: string, scan: InsertedS
     ] as string[];
   });
 
-  messageParts.push('### Security Scan Findings');
-  messageParts.push(`Showing ${tableData.length} results.\n`);
-  messageParts.push(markdownTable([['Package Name', 'Versions', 'Severity', 'Locations', ''], ...tableData]));
+  // Only show the table if there were any results to display.
+  if (tableData.length > 0) {
+    messageParts.push('### Security Scan Findings');
+    messageParts.push(`Showing ${tableData.length} results.\n`);
+    messageParts.push(markdownTable([['Package Name', 'Versions', 'Severity', 'Locations', ''], ...tableData]));
+  }
 
   return messageParts.join('\n');
 }

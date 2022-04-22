@@ -131,5 +131,38 @@ export class WorkerStack extends cdk.Stack {
       },
     });
     storageStack.sbomBucket.grantReadWrite(processSbomQueueService.taskDefinition.taskRole);
+
+    // Process GitHub Webhook Service - Listens for GitHub webhooks and processes them durably
+    const processWebhookQueueService = new ecsPatterns.QueueProcessingFargateService(context, 'ProcessWebhookQueueService', {
+      cluster: fargateCluster,
+      image: QueueProcessorContainerImage,
+      queue: storageStack.processWebhookSqsQueue, // will pass queue_name env var automatically
+      enableLogging: true,
+      assignPublicIp: true,
+      memoryLimitMiB: 2048,
+      environment: {
+        QUEUE_HANDLER: 'process-webhook-queue',
+        GITHUB_APP_ID: gitHubAppId,
+        S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
+        S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
+        HASURA_URL: publicHasuraServiceUrl,
+        NODE_ENV: 'production',
+      },
+      secrets: {
+        DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+        HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+        HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+        STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
+        GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
+      },
+      containerName: 'ProcessWebhookQueueService',
+      circuitBreaker: {
+        rollback: true,
+      },
+      deploymentController: {
+        // This sets up Blue/Green deploys
+        type: DeploymentControllerType.CODE_DEPLOY,
+      },
+    });
   }
 }

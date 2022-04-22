@@ -34,7 +34,8 @@ import {
   manifestWorker,
   oathkeeper,
   sbomWorker,
-  smeeWebhook
+  smeeWebhook,
+  webhookWorker
 } from "./services";
 import {tmuxpConfig, tmuxWindow } from "./tmux";
 
@@ -55,7 +56,8 @@ const backendWindow = tmuxWindow('backend', [
 
 const workerWindow = tmuxWindow('workers', [
   manifestWorker,
-  sbomWorker
+  sbomWorker,
+  webhookWorker
 ]);
 
 const generatedCodeWindow = tmuxWindow('generated-code', [
