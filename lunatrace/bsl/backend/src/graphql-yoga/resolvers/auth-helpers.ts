@@ -30,7 +30,6 @@ export function getUserId(ctx:Context):string {
         throw new GraphQLYogaError('Unauthorized')
     }
     const claims = ctx.req.user;
-    console.log('CLAIMS ARE ', claims)
     const userId = claims["https://hasura.io/jwt/claims"]["x-hasura-user-id"]
     if (!userId){
         throw new GraphQLYogaError('Failed to get User Id from JWT')
