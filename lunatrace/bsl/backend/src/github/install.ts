@@ -90,11 +90,8 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
   log.info(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
   const githubRepos: GithubRepositoryInfo[] = repositories
     .reduce((repos, repo) => {
-      if (!repo.owner.name) {
-        return repos;
-      }
       const repoInfo = {
-        orgName: repo.owner.name,
+        orgName: repo.owner.login,
         orgId: repo.owner.id,
         orgNodeId: repo.owner.node_id,
         repoName: repo.name,
@@ -109,7 +106,10 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
       ]
     }, [] as GithubRepositoryInfo[]);
 
-  log.info(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
+  log.info(`[installId: ${installationId}] Collected installation data: ${githubRepos.map((repo) => ({
+    orgName: repo.orgName,
+    repoName: repo.repoName
+  }))}`);
 
   const resp = await createHasuraOrgsAndProjectsForInstall(installationAuthToken.res, installationId, githubRepos)
   if (resp.error) {
