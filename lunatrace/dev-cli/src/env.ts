@@ -17,16 +17,17 @@
 
 const processManifestQueue = process.env.PROCESS_MANIFEST_QUEUE;
 const processSbomQueue = process.env.PROCESS_SBOM_QUEUE;
+const processWebhookQueue = process.env.PROCESS_WEBHOOK_QUEUE;
 
-if (!processManifestQueue || !processSbomQueue) {
-  throw new Error('make sure PROCESS_MANIFEST_QUEUE and PROCESS_SBOM_QUEUE are set in .env.dev');
+if (!processManifestQueue || !processSbomQueue || !processWebhookQueue) {
+  throw new Error('make sure PROCESS_MANIFEST_QUEUE, PROCESS_WEBHOOK_QUEUE, and PROCESS_SBOM_QUEUE are set in .env.dev');
 }
 
 export function envVars(vars: Record<string, string>): string {
   return Object.keys(vars).map(k => `${k}="${vars[k]}"`).join(' ')
 }
 
-// development configuration for the github app
+// development configuration for the GitHub app
 export const githubAppConfig = {
   GITHUB_APP_ID: '179126',
   GITHUB_APP_PRIVATE_KEY: `$(cat github-app-dev.2022-03-09.private-key.pem | base64 -w0)`
@@ -38,7 +39,10 @@ export const backendEnv = envVars({
   ...githubAppConfig
 });
 
-export function queueEnvConfig(handler: 'process-manifest-queue' | 'process-sbom-queue', name: string): Record<string, string> {
+export function queueEnvConfig(
+  handler: 'process-manifest-queue' | 'process-sbom-queue' | 'process-webhook-queue',
+  name: string
+): Record<string, string> {
   return {
     QUEUE_NAME: name,
     // todo: we should probably take these out of this tmuxp and move them into a dotenv in the backend code.
@@ -55,6 +59,11 @@ export const manifestWorkEnv = envVars({
 export const sbomWorkerEnv = envVars({
   ...githubAppConfig,
   ...queueEnvConfig('process-sbom-queue', processSbomQueue)
+});
+
+export const webhookWorkerEnv = envVars({
+  ...githubAppConfig,
+  ...queueEnvConfig('process-webhook-queue', processWebhookQueue)
 });
 
 export const dbUrlEnv = envVars({

@@ -18,3 +18,4 @@
 - "!include public_users.yaml"
 - "!include public_vulnerabilities.yaml"
 - "!include public_vulnerability_packages.yaml"
+- "!include public_webhook_cache.yaml"

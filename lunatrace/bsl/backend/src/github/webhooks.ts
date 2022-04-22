@@ -13,6 +13,7 @@
  */
 import {EmitterWebhookEvent, Webhooks } from '@octokit/webhooks';
 
+import {hasura} from '../hasura-api';
 import {GithubRepositoryInfo} from "../types/github";
 import { log } from '../utils/log';
 
@@ -20,8 +21,16 @@ import {createHasuraOrgsAndProjectsForInstall} from "./actions/create-hasura-org
 import {orgMemberAdded} from "./actions/org-member-added";
 import {reviewPullRequest} from "./actions/review-pull-request";
 import { getInstallationAccessToken } from './auth';
+import {WebhookInterceptor} from './webhook-cache';
 
-export const webhooks = new Webhooks({
+const webhookQueue = process.env.PROCESS_WEBHOOK_QUEUE;
+
+if (!webhookQueue) {
+  log.error('PROCESS_WEBHOOK_QUEUE is not set');
+  throw new Error('PROCESS_WEBHOOK_QUEUE is not set');
+}
+
+export const webhooks = new WebhookInterceptor(hasura, webhookQueue, {
   secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
 });
 

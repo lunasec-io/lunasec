@@ -1,0 +1,16 @@
+mutation InsertWebhookToCache(
+    $delivery_id: uuid!,
+    $event_type: github_webhook_event!,
+    $signature_256: String!,
+    $installation_id: Int, $data: jsonb!
+  ) {
+  insert_webhook_cache_one(object: {
+      delivery_id: $delivery_id,
+      event_type: $event_type,
+      signature_256: $signature_256,
+      installation_id: $installation_id,
+      data: $data
+    }) {
+    delivery_id
+  }
+}
