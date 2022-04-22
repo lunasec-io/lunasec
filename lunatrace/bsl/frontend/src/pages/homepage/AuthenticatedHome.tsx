@@ -30,6 +30,7 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
       <Container>
         <Row className="text-center mb-4">
           <h1>Welcome to LunaTrace</h1>
+          <p>You are almost on your way to finding vulnerabilities with LunaTrace! Follow the steps below to finish setting up your account.</p>
         </Row>
         <Row>
           <Card className="">
