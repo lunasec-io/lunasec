@@ -16,8 +16,6 @@ import {randomUUID} from 'crypto';
 import {createNodeMiddleware as githubWebhooksMiddleware} from '@octokit/webhooks';
 import cors from 'cors';
 import Express, {NextFunction, Request, Response} from 'express';
-import jwt from 'express-jwt';
-import jwksRsa from 'jwks-rsa';
 
 import {getJwksConfig,getServerConfig} from "./config";
 import {lookupAccessTokenRouter} from './express-routes/auth-routes';
@@ -26,8 +24,6 @@ import {webhooks} from './github/webhooks';
 import {registerYoga} from "./graphql-yoga";
 import {jwtMiddleware} from "./utils/jwt-middleware";
 import {log} from './utils/log';
-
-
 
 const jwksConfig = getJwksConfig();
 
@@ -81,7 +77,7 @@ app.get('/', (_req: Express.Request, res: Express.Response) => {
     res.send('LunaTrace Backend');
 });
 
-// Unauthenticated Routes (implement custom auth)
+// Unauthenticated Routes (they implement custom auth)
 app.use(lookupAccessTokenRouter);
 app.use(githubApiRouter);
 
@@ -99,9 +95,6 @@ app.use((req,res,next) => {
 // Add graphql routes to the server
 registerYoga(app);
 
-// The old rest routes that have been converted to graphql
-// app.use(manifestPresignerRouter);
-// app.use(sbomPresignerRouter);
 
 const errorLogger: Express.ErrorRequestHandler = (err,req,res,next) => {
   log.error(err, 'Error caught in global express error handler')
