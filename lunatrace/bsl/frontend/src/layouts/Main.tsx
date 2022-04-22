@@ -26,6 +26,7 @@ import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import useAppDispatch from '../hooks/useAppDispatch';
 import useAppSelector from '../hooks/useAppSelector';
 import { selectIsAuthenticated, setConfirmedUnauthenticated, setSession } from '../store/slices/authentication';
+import {userHasAnyOrganizations} from "../utils/organizations";
 import oryClient from '../utils/ory-client';
 
 const MainLayout: React.FunctionComponent = (props) => {
@@ -61,19 +62,24 @@ const MainLayout: React.FunctionComponent = (props) => {
 
   const [trigger, result, lastPromiseInfo] = api.useLazyGetSidebarInfoQuery();
   const { data } = result;
+
   useEffect(() => {
     if (isAuthenticated) {
       void trigger();
     }
   }, [isAuthenticated]);
 
+  const setupWizardOpen = !userHasAnyOrganizations(data);
+
   return (
     <React.Fragment>
       <Wrapper>
         <Sidebar sections={generateSidebarItems(data, isAuthenticated)} />
         <div className="main">
-          <Navbar />
-          <NavbarBreadcrumbs />
+          <Navbar setupWizardOpen={setupWizardOpen} />
+
+          { !setupWizardOpen && <NavbarBreadcrumbs /> }
+
           <AlertsHeader />
 
           <div className="content">

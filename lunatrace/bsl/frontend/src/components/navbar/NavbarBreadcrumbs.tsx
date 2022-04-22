@@ -115,7 +115,6 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
     { path: '/vulnerabilities/:vulnerability_id', breadcrumb: VulnBreadCrumb },
     { path: '/organization/:project_id', breadcrumb: OrganizationBreadCrumb },
     { path: '/new-project', breadcrumb: null },
-
     { path: '/new-project/:organization_id', breadcrumb: NewProjectBreadCrumb },
   ];
   const breadCrumbs = useBreadCrumbs(customRoutes);
