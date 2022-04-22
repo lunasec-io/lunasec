@@ -20,20 +20,19 @@ import {createServer} from '@graphql-yoga/node'
 import Express from "express";
 
 import {jwtMiddleware} from "../utils/jwt-middleware";
-import {logger} from '../utils/logger'
 
-// import {generateContext} from "./context";
 import {resolvers} from "./resolvers";
+import { log } from '../utils/log'
 
 const schema = loadSchemaSync(join(__dirname, 'schema.graphql'), {loaders: [new GraphQLFileLoader()]})
 
 const schemaWithResolvers = addResolversToSchema(schema, resolvers)
 
 const graphqlServer = createServer({
-    schema: schemaWithResolvers, graphiql: true//, context: generateContext
+    schema: schemaWithResolvers, graphiql: true
 })
 
 export function registerYoga(app: Express.Application): void {
-    app.use('/graphql', graphqlServer)
-    logger.log('Started Graphql Yoga Server')
+    app.use('/graphql', jwtMiddleware, graphqlServer)
+    log.log('Started Graphql Yoga Server')
 }

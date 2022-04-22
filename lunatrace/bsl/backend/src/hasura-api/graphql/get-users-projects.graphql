@@ -1,0 +1,5 @@
+query GetUsersProjects($user_id: uuid!) {
+    projects(where: {organization: {organization_users: {user: {kratos_id: {_eq: $user_id}}}}}) {
+        id
+    }
+}
