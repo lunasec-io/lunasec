@@ -29,3 +29,4 @@ export const resolvers: Resolvers = {
     jsonb: GraphQLJSON,
 // Mutation:{scanManifest,presignManifestUpload}
 }
+

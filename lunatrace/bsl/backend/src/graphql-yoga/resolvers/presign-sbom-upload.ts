@@ -22,7 +22,7 @@ import {logger} from "../../utils/logger";
 import {Context, JWTClaims} from "../context";
 import {QueryPresignSbomUploadArgs, QueryResolvers} from '../generated-resolver-types'
 
-import {throwIfUnauthorized} from "./throw-if-unauthorized-helper";
+import {throwIfUnauthenticated} from "./auth-helpers";
 
 
 type PresignSbomUploadResolver = NonNullable<QueryResolvers['presignSbomUpload']>
@@ -33,15 +33,18 @@ export const sbomPresignerRouter = Express.Router();
 
 
 function getAuthorizedBuilds( jwt: JWTClaims|undefined): string | false{
+    console.log('jwt is ',jwt)
     if (!jwt) {
        throw new GraphQLYogaError('Missing auth header in request')
     }
 
-    const claims = jwt['x-hasura-claims']
     // messy data coming from oathkeeper, stringifying this value wasn't working so its one big weird golang string, fix later
     const authorizedBuilds =
-        claims && claims['x-hasura-builds'] !== undefined && claims['x-hasura-builds'];
+        jwt && jwt['https://hasura.io/jwt/claims'] !== undefined && jwt['https://hasura.io/jwt/claims']['x-hasura-builds'];
 
+    if (typeof authorizedBuilds !== 'string') {
+        return false
+    }
     return authorizedBuilds;
 }
 
@@ -54,8 +57,10 @@ function generateErrorResponse(errorMessage: string) {
 // Presigns sbombs that are uploaded from the CLI.  Note that the backend can also generate sboms out of uploaded manifests,
 // but it uploads them directly and doesnt use this logic
 export const presignSbomUploadResolver: PresignSbomUploadResolver =  async (parent, args, ctx, info) => {
-    throwIfUnauthorized(ctx);
-    const authorizedBuilds = getAuthorizedBuilds(ctx.request.user);
+    console.log('SBOM UPLOAD RESOLVER CALLED')
+    throwIfUnauthenticated(ctx);
+    const authorizedBuilds = getAuthorizedBuilds(ctx.req.user);
+    console.log('AUTHORIZED BUILDS ARE ', authorizedBuilds)
     if (!authorizedBuilds){
         return generateErrorResponse( 'Missing x-hasura-builds in authorization jwt header');
     };
@@ -72,6 +77,7 @@ export const presignSbomUploadResolver: PresignSbomUploadResolver =  async (pare
             aws.generateSbomS3Key(args.orgId, args.buildId),
             'PUT'
         );
+        console.log('RESULT IS ', result)
 
         return { error: false, uploadUrl: result };
     } catch (e) {
