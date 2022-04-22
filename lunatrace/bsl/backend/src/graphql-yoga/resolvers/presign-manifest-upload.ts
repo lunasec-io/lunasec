@@ -16,22 +16,35 @@ import express from 'express';
 import { v4 as uuid } from 'uuid';
 
 import { getEtlBucketConfig } from '../../config';
+import {hasura} from "../../hasura-api";
 import { aws } from '../../utils/aws-utils';
 import {logger} from "../../utils/logger";
+import {Context} from "../context";
 import {MutationResolvers} from "../generated-resolver-types";
 
-import {throwIfUnauthorized} from "./throw-if-unauthorized-helper";
+import {getUserId, throwIfUnauthenticated} from "./auth-helpers";
 
 type PresignManifestUploadResolver = NonNullable<MutationResolvers['presignManifestUpload']>
 
 
 const sbomHandlerConfig = getEtlBucketConfig();
 
-export const presignManifestUploadResolver: PresignManifestUploadResolver =  async (parent, args, ctx, info) => {
-logger.info(ctx.request.user)
-    throwIfUnauthorized(ctx);
-    const projectId = args.project_id;
+async function checkProjectIsAuthorized(projectId:string, ctx:Context){
+    const userId = getUserId(ctx);
+    const usersAuthorizedProjects = await hasura.GetUsersProjects({user_id:userId})
+    const userIsAuthorized = usersAuthorizedProjects.projects.some((p) => {
+        return p.id === projectId
+    })
+    if (!userIsAuthorized){
+        throw new GraphQLYogaError('Not authorized for this project')
+    }
+    return
+}
 
+export const presignManifestUploadResolver: PresignManifestUploadResolver =  async (parent, args, ctx, info) => {
+    throwIfUnauthenticated(ctx);
+    const projectId = args.project_id;
+    await checkProjectIsAuthorized(projectId, ctx);
     const today = new Date();
     const uniqueId = uuid();
 

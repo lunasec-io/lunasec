@@ -87,22 +87,14 @@ app.use(githubApiRouter);
 
 
 // app.use((req,res,next) => {
-//   log.log(req.headers, 'headers are ')
+//   logger.log(req.headers, 'headers are ')
 //   next()
 // })
 
-app.use(jwt({
-  secret: jwksRsa.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: jwksConfig.jwksUri,
-  }),
-
-  issuer: jwksConfig.jwksIssuer,
-  algorithms: ['RS256'],
-  credentialsRequired:true
-}));
+app.use((req,res,next) => {
+    log.info('user obj is ', req.user);
+    next();
+})
 
 // Add graphql routes to the server
 registerYoga(app);

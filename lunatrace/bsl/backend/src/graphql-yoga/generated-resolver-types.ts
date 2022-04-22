@@ -34,19 +34,11 @@ export type Mutation = {
   __typename?: 'Mutation';
   /**  get s3 presigned url for manifest upload, used only by the frontend  */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
-  /**  This performs the manifest sbom generation and creates the first build from the manifest  */
-  scanManifest?: Maybe<ScanManifestOutput>;
 };
 
 
 export type MutationPresignManifestUploadArgs = {
   project_id: Scalars['uuid'];
-};
-
-
-export type MutationScanManifestArgs = {
-  bucket: Scalars['String'];
-  key: Scalars['String'];
 };
 
 export type PresignedUrlResponse = {
@@ -59,6 +51,7 @@ export type PresignedUrlResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /**  get s3 presigned url for manifest upload, used by the CLI  */
   presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
 };
@@ -78,13 +71,6 @@ export type SbomUploadUrlOutput = {
   __typename?: 'SbomUploadUrlOutput';
   error: Scalars['Boolean'];
   uploadUrl?: Maybe<UploadUrl>;
-};
-
-export type ScanManifestOutput = {
-  __typename?: 'ScanManifestOutput';
-  build_id: Scalars['uuid'];
-  error: Scalars['Boolean'];
-  error_message?: Maybe<Scalars['String']>;
 };
 
 export type UploadUrl = {
@@ -168,7 +154,6 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   SbomUploadUrlInput: SbomUploadUrlInput;
   SbomUploadUrlOutput: ResolverTypeWrapper<SbomUploadUrlOutput>;
-  ScanManifestOutput: ResolverTypeWrapper<ScanManifestOutput>;
   String: ResolverTypeWrapper<Scalars['String']>;
   UploadUrl: ResolverTypeWrapper<UploadUrl>;
   jsonb: ResolverTypeWrapper<Scalars['jsonb']>;
@@ -183,7 +168,6 @@ export type ResolversParentTypes = {
   Query: {};
   SbomUploadUrlInput: SbomUploadUrlInput;
   SbomUploadUrlOutput: SbomUploadUrlOutput;
-  ScanManifestOutput: ScanManifestOutput;
   String: Scalars['String'];
   UploadUrl: UploadUrl;
   jsonb: Scalars['jsonb'];
@@ -192,7 +176,6 @@ export type ResolversParentTypes = {
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   presignManifestUpload?: Resolver<Maybe<ResolversTypes['PresignedUrlResponse']>, ParentType, ContextType, RequireFields<MutationPresignManifestUploadArgs, 'project_id'>>;
-  scanManifest?: Resolver<Maybe<ResolversTypes['ScanManifestOutput']>, ParentType, ContextType, RequireFields<MutationScanManifestArgs, 'bucket' | 'key'>>;
 };
 
 export type PresignedUrlResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PresignedUrlResponse'] = ResolversParentTypes['PresignedUrlResponse']> = {
@@ -204,19 +187,13 @@ export type PresignedUrlResponseResolvers<ContextType = Context, ParentType exte
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  fakeQueryToHackHasuraBeingABuggyMess?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   presignSbomUpload?: Resolver<Maybe<ResolversTypes['SbomUploadUrlOutput']>, ParentType, ContextType, RequireFields<QueryPresignSbomUploadArgs, 'buildId' | 'orgId'>>;
 };
 
 export type SbomUploadUrlOutputResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SbomUploadUrlOutput'] = ResolversParentTypes['SbomUploadUrlOutput']> = {
   error?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   uploadUrl?: Resolver<Maybe<ResolversTypes['UploadUrl']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ScanManifestOutputResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ScanManifestOutput'] = ResolversParentTypes['ScanManifestOutput']> = {
-  build_id?: Resolver<ResolversTypes['uuid'], ParentType, ContextType>;
-  error?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  error_message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -239,7 +216,6 @@ export type Resolvers<ContextType = Context> = {
   PresignedUrlResponse?: PresignedUrlResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   SbomUploadUrlOutput?: SbomUploadUrlOutputResolvers<ContextType>;
-  ScanManifestOutput?: ScanManifestOutputResolvers<ContextType>;
   UploadUrl?: UploadUrlResolvers<ContextType>;
   jsonb?: GraphQLScalarType;
   uuid?: GraphQLScalarType;
