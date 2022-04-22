@@ -29,7 +29,7 @@ export const jwtMiddleware = jwt({
 
     issuer: jwksConfig.jwksIssuer,
     algorithms: ['RS256'],
-    credentialsRequired:false
+    credentialsRequired: false
 })
 
 

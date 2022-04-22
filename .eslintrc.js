@@ -137,7 +137,7 @@ module.exports = {
       productionWarn,
       { 'argsIgnorePattern': '^_' }
     ],
-    // 'unused-imports/no-unused-imports': 'error', turn this on if you want to --fix all of these out of the codebase
+    // 'unused-imports/no-unused-imports': 'error',// turn this on if you want to --fix all of these out of the codebase
     '@typescript-eslint/unbound-method': 'warn',
     '@typescript-eslint/restrict-template-expressions': 'off',
     'import/order': [

@@ -12,7 +12,6 @@
  *
  */
 
-import * as path from "path";
 
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import { Port, SecurityGroup, Vpc } from '@aws-cdk/aws-ec2';

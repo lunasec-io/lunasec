@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-import {AsyncLocalStorage} from 'async_hooks'
 
 import {JsonTransport, LunaLogger} from "@lunatrace/logger";
 
