@@ -79,8 +79,13 @@ const env = {
 
 function deployStack() {
   if (process.env.DEVELOPMENT === 'true') {
+    const devUser = process.env.DEV_USER;
+    if (!devUser) {
+      throw new Error('unable to deploy development stack, must specify DEV_USER');
+    }
+
     const publicBaseUrl = `http://localhost:4455`;
-    return new WorkerStorageStack(app, `${appName}-EtlStorage`, {
+    return new WorkerStorageStack(app, `${appName}-${devUser}-EtlStorage`, {
       env,
       publicBaseUrl,
     });
