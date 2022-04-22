@@ -33,7 +33,6 @@ export const sbomPresignerRouter = Express.Router();
 
 
 function getAuthorizedBuilds( jwt: JWTClaims|undefined): string | false{
-    console.log('jwt is ',jwt)
     if (!jwt) {
        throw new GraphQLYogaError('Missing auth header in request')
     }
@@ -57,10 +56,8 @@ function generateErrorResponse(errorMessage: string) {
 // Presigns sbombs that are uploaded from the CLI.  Note that the backend can also generate sboms out of uploaded manifests,
 // but it uploads them directly and doesnt use this logic
 export const presignSbomUploadResolver: PresignSbomUploadResolver =  async (parent, args, ctx, info) => {
-    console.log('SBOM UPLOAD RESOLVER CALLED')
     throwIfUnauthenticated(ctx);
     const authorizedBuilds = getAuthorizedBuilds(ctx.req.user);
-    console.log('AUTHORIZED BUILDS ARE ', authorizedBuilds)
     if (!authorizedBuilds){
         return generateErrorResponse( 'Missing x-hasura-builds in authorization jwt header');
     };
@@ -77,7 +74,6 @@ export const presignSbomUploadResolver: PresignSbomUploadResolver =  async (pare
             aws.generateSbomS3Key(args.orgId, args.buildId),
             'PUT'
         );
-        console.log('RESULT IS ', result)
 
         return { error: false, uploadUrl: result };
     } catch (e) {
