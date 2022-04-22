@@ -12,7 +12,7 @@
  *
  */
 import { SelfServiceError } from '@ory/kratos-client';
-import { CardTitle, CodeBox } from '@ory/themes';
+import { CodeBox } from '@ory/themes';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Button, Card } from 'react-bootstrap';

@@ -36768,8 +36768,6 @@ __metadata:
       unplugged: true
     apollo@2.33.9:
       unplugged: true
-    eslint@8.5.0:
-      unplugged: true
     mst-gql@0.14.1:
       unplugged: true
   languageName: unknown

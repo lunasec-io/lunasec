@@ -12,7 +12,7 @@
  *
  */
 import React from 'react';
-import { Badge, Button, Card, Col, NavLink, Row } from 'react-bootstrap';
+import { Card, Row } from 'react-bootstrap';
 import { AiFillCode, AiFillDiff, AiFillGithub } from 'react-icons/ai';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';

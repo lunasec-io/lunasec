@@ -14,11 +14,6 @@
 import { Request, Response } from 'express';
 
 import { getServerConfig } from '../config';
-import {hasura} from "../hasura-api";
-import {
-  createLunatraceOrgsFromGithubOrgs,
-  hasuraOrgsFromGithubRepositories
-} from '../hasura-api/actions/create-lunatrace-orgs-from-github-orgs';
 import {GithubRepositoryInfo, RepositoriesForInstallationResponse} from '../types/github';
 import { errorResponse, logError } from '../utils/errors';
 import { log } from '../utils/log';
@@ -27,7 +22,6 @@ import { catchError, threwError, Try } from '../utils/try';
 
 import {createHasuraOrgsAndProjectsForInstall} from "./actions/create-hasura-orgs-and-projects-for-install";
 import { getGithubReposForInstallation } from './actions/get-github-repos-for-installation';
-import {getHasuraOrgMembers} from "./actions/get-org-members";
 import {getInstallationAccessToken} from "./auth";
 
 const serverConfig = getServerConfig();

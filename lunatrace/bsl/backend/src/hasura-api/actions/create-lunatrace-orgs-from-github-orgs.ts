@@ -11,10 +11,10 @@
  * limitations under the License.
  *
  */
-import {GithubRepositoryInfo, RepositoriesForInstallationResponse} from '../../types/github';
+import {GithubRepositoryInfo} from '../../types/github';
 import {OrganizationInputLookup, UpsertOrganizationResponse} from '../../types/hasura';
 import { MaybeError } from '../../types/util';
-import { errorResponse, logError } from '../../utils/errors';
+import { logError } from '../../utils/errors';
 import {log} from "../../utils/log";
 import { catchError, threwError, Try } from '../../utils/try';
 import {

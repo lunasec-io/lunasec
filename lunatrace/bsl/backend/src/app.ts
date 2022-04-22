@@ -17,7 +17,8 @@ import {createNodeMiddleware as githubWebhooksMiddleware} from '@octokit/webhook
 import cors from 'cors';
 import Express, {NextFunction, Request, Response} from 'express';
 
-import {getJwksConfig,getServerConfig} from "./config";
+
+import { getServerConfig} from "./config";
 import {lookupAccessTokenRouter} from './express-routes/auth-routes';
 import {githubApiRouter} from './express-routes/github-routes';
 import {webhooks} from './github/webhooks';
