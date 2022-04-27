@@ -22,7 +22,7 @@ import {
 
 import { sqsClient } from '../aws/sqs-client';
 import { getQueueHandlerConfig } from '../config';
-import {createGithubWebhookInterceptor, WebhookInterceptor} from "../github/webhook-cache";
+import {createGithubWebhookInterceptor} from "../github/webhooks";
 import {QueueHandlerWorkerConfig} from "../types/config";
 import {
   GenerateSnapshotForRepositoryEvent,

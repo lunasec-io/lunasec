@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import {WebhookInterceptor} from "../github/webhook-cache";
+import {WebhookInterceptor} from "../github/webhooks/interceptor";
 import { hasura } from '../hasura-api';
 import {GetWebhookCacheByDeliveryIdQuery} from '../hasura-api/generated';
 import {QueueErrorResult, QueueSuccessResult, WebhookMetadata} from '../types/sqs';

@@ -26,6 +26,8 @@ export interface GithubRepositoryInfo {
   repoNodeId: string
   gitUrl: string
   ownerType: string
+  cloneUrl?: string
+  defaultBranch?: string
 }
 
 export interface GithubPullRequest {

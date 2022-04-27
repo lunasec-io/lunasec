@@ -1,5 +1,5 @@
 mutation UpdateWebhookJobStatus($webhook_delivery_id: uuid!, $sqs_message_id: String!) {
-    update_webhook_cache(where: { delivery_id: {_eq: $webhook_delivery_id}}, _set: {sqs_message_id: $sqs_message_id}) {
+    update_webhook_cache_by_pk(id: $webhook_delivery_id, _set: {sqs_message_id: $sqs_message_id}) {
         returning {
             delivery_id
         }

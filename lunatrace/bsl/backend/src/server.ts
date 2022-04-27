@@ -23,4 +23,9 @@ void (async () => {
   app.listen(serverConfig.serverPort, () => {
     log.info('Server is running on port ', serverConfig.serverPort);
   });
-})();
+})().catch(e => {
+  log.error('unable to start server', {
+    error: e
+  });
+  throw e;
+});
