@@ -33,6 +33,7 @@ import {
   hasura,
   manifestWorker,
   oathkeeper,
+  repositoryWorker,
   sbomWorker,
   smeeWebhook,
   webhookWorker
@@ -57,7 +58,8 @@ const backendWindow = tmuxWindow('backend', [
 const workerWindow = tmuxWindow('workers', [
   manifestWorker,
   sbomWorker,
-  webhookWorker
+  webhookWorker,
+  repositoryWorker
 ]);
 
 const generatedCodeWindow = tmuxWindow('generated-code', [

@@ -13,26 +13,33 @@
  */
 import {EmitterWebhookEvent, Webhooks } from '@octokit/webhooks';
 
-import {hasura} from '../hasura-api';
 import {GithubRepositoryInfo} from "../types/github";
 import { log } from '../utils/log';
+import {catchError, threwError} from "../utils/try";
 
 import {createHasuraOrgsAndProjectsForInstall} from "./actions/create-hasura-orgs-and-projects-for-install";
+import {generateSnapshotForRepository} from "./actions/generate-snapshot-for-repository";
+import {generateSnapshotsForGithubRepos} from "./actions/generate-snapshots-for-repositories";
 import {orgMemberAdded} from "./actions/org-member-added";
-import {reviewPullRequest} from "./actions/review-pull-request";
+import {generateGithubGraphqlClient} from "./api";
 import { getInstallationAccessToken } from './auth';
-import {WebhookInterceptor} from './webhook-cache';
+import {WebhookInterceptor} from "./webhook-cache";
 
-const webhookQueue = process.env.PROCESS_WEBHOOK_QUEUE;
+export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): void {
+  // Wrap the hook in logging, pulls the type from octokit since this has the same signature
+  const listenToHook: typeof interceptor.on = (hookName, callback) =>{
+    interceptor.on(hookName, async (event) => {
+      const actionName = 'action' in event.payload ? event.payload.action : 'none given'
+      await log.provideFields({loggerName:'webhook-logger', hookName, actionName}, async () => {
+        await callback(event);
+      })
+    })
+  }
 
-if (!webhookQueue) {
-  log.error('PROCESS_WEBHOOK_QUEUE is not set');
-  throw new Error('PROCESS_WEBHOOK_QUEUE is not set');
+  listenToHook('installation_repositories.added', repositoryAddedHandler);
+  listenToHook('pull_request', pullRequestHandler);
+  listenToHook('organization', organizationHandler);
 }
-
-export const webhooks = new WebhookInterceptor(hasura, webhookQueue, {
-  secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
-});
 
 async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_repositories.added'>) {
   const reposAdded = event.payload.repositories_added;
@@ -74,6 +81,8 @@ async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_r
   log.info('created orgs and projects for new repos', {
     githubRepos
   })
+
+  await generateSnapshotsForGithubRepos(installationId, githubRepos)
 }
 
 async function organizationHandler(event: EmitterWebhookEvent<'organization'>) {
@@ -106,30 +115,17 @@ async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
 
     const pullRequestId = event.payload.pull_request.node_id;
     const cloneUrl = event.payload.repository.clone_url;
-    const gitUrl = event.payload.repository.git_url;
+    const repoGithubId = event.payload.repository.id;
     const gitBranch = event.payload.pull_request.head.ref;
     const installationId = event.payload.installation.id;
 
-    await reviewPullRequest({
-      installationId,
-      pullRequestId,
+    await generateSnapshotForRepository({
       cloneUrl,
-      gitUrl,
-      gitBranch
+      gitBranch,
+      repoGithubId,
+      installationId,
+      sourceType: 'pr',
+      pullRequestId,
     })
   }
 }
-
-// Wrap the hook in logging, pulls the type from octokit since this has the same signature
-const listenToHook: typeof webhooks.on = (hookName, callback) =>{
-  webhooks.on(hookName, async (event) => {
-    const actionName = 'action' in event.payload ? event.payload.action : 'none given'
-    await log.provideFields({loggerName:'webhook-logger', hookName, actionName}, async () => {
-      await callback(event);
-    })
-  })
-}
-
-listenToHook('installation_repositories.added', repositoryAddedHandler);
-listenToHook('pull_request', pullRequestHandler);
-listenToHook('organization', organizationHandler);

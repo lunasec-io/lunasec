@@ -26,6 +26,7 @@ import { tryParseInt } from '../utils/parse';
 import { catchError, threwError, Try } from '../utils/try';
 
 import {createHasuraOrgsAndProjectsForInstall} from "./actions/create-hasura-orgs-and-projects-for-install";
+import {generateSnapshotsForGithubRepos} from "./actions/generate-snapshots-for-repositories";
 import { getGithubReposForInstallation } from './actions/get-github-repos-for-installation';
 import {getHasuraOrgMembers} from "./actions/get-org-members";
 import {getInstallationAccessToken} from "./auth";
@@ -87,7 +88,6 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  log.info(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
   const githubRepos: GithubRepositoryInfo[] = repositories
     .reduce((repos, repo) => {
       const repoInfo = {
@@ -106,16 +106,21 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
       ]
     }, [] as GithubRepositoryInfo[]);
 
-  log.info(`[installId: ${installationId}] Collected installation data: ${githubRepos.map((repo) => ({
-    orgName: repo.orgName,
-    repoName: repo.repoName
-  }))}`);
+  log.info(`Collected installation data`, {
+    installationId,
+    githubRepos: githubRepos.map((repo) => ({
+      orgName: repo.orgName,
+      repoName: repo.repoName
+    }))
+  });
 
   const resp = await createHasuraOrgsAndProjectsForInstall(installationAuthToken.res, installationId, githubRepos)
   if (resp.error) {
     res.status(500).send(errorResponse(resp.msg));
     return
   }
+
+  await generateSnapshotsForGithubRepos(installationId, githubRepos)
 
   res.status(302).redirect(serverConfig.sitePublicUrl);
 }
