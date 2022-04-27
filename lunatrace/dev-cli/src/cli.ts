@@ -17,7 +17,12 @@
 import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
 
+// eslint-disable-next-line import/order
 import dotenv from 'dotenv';
+
+dotenv.config({ path: './.env.dev' });
+dotenv.config();
+
 import { dump } from 'js-yaml';
 
 import { bslDir, hasuraDir, kratosDir, tmuxpConfgFile } from './constants';
@@ -36,8 +41,6 @@ import {
   webhookWorker,
 } from './services';
 import { tmuxpConfig, tmuxWindow } from './tmux';
-
-dotenv.config();
 
 const servicesWindow = tmuxWindow('services', [oathkeeper, hasura, frontend, dockerCompose]);
 

@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -11,14 +11,14 @@
  * limitations under the License.
  *
  */
-import {generateSbomFromAsset} from "../../cli/call-cli";
-import {hasura} from "../../hasura-api";
-import {GetProjectIdFromGitUrlQuery, InsertBuildMutation} from "../../hasura-api/generated";
-import { GithubPullRequest } from "../../types/github";
-import {log} from "../../utils/log";
-import {catchError, threwError, Try} from "../../utils/try";
-import {uploadSbomToS3} from "../../workers/generate-sbom";
-import {getInstallationAccessToken} from "../auth";
+import { generateSbomFromAsset } from '../../cli/call-cli';
+import { hasura } from '../../hasura-api';
+import { GetProjectIdFromGitUrlQuery, InsertBuildMutation } from '../../hasura-api/generated';
+import { GithubPullRequest } from '../../types/github';
+import { log } from '../../utils/log';
+import { catchError, threwError, Try } from '../../utils/try';
+import { uploadSbomToS3 } from '../../workers/generate-sbom';
+import { getInstallationAccessToken } from '../auth';
 
 export async function reviewPullRequest(pr: GithubPullRequest) {
   log.info(`generating SBOM for repository: ${pr.cloneUrl} at branch name ${pr.gitBranch}`);
@@ -46,8 +46,8 @@ export async function reviewPullRequest(pr: GithubPullRequest) {
 
   if (installationToken.error) {
     log.error('unable to get installation token', {
-      error: installationToken.msg
-    })
+      error: installationToken.msg,
+    });
     return;
   }
 
@@ -58,7 +58,8 @@ export async function reviewPullRequest(pr: GithubPullRequest) {
   const gzippedSbom = generateSbomFromAsset('repository', parsedGitUrl.toString(), pr.gitBranch);
 
   const insertBuildResponse: Try<InsertBuildMutation> = await catchError(
-    async () => await hasura.InsertBuild({ project_id: projectId, pull_request_id: pr.pullRequestId, source_type: 'pr' })
+    async () =>
+      await hasura.InsertBuild({ project_id: projectId, pull_request_id: pr.pullRequestId, source_type: 'pr' })
   );
 
   if (threwError(insertBuildResponse)) {

@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+const process = require('process');
 
 const hideErrorsInDev = process.env.HIDE_ERRORS_IN_DEV === 'true';
 

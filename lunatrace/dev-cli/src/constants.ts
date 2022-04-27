@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import * as path from "path";
+import * as path from 'path';
 
 export const currentDir = process.cwd();
 

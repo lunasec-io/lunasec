@@ -19,7 +19,6 @@ import {
   ReceiveMessageCommandOutput,
 } from '@aws-sdk/client-sqs';
 
-
 import {sqsClient} from '../aws/sqs-client';
 import { getQueueHandlerConfig } from '../config';
 import {
@@ -30,7 +29,7 @@ import {
   S3SqsEvent,
   WebhookHandlerCallback
 } from '../types/sqs';
-import {log} from '../utils/log';
+import { log } from '../utils/log';
 
 import {handleGenerateManifestSbom} from './generate-sbom';
 import {handleGithubWebhook} from './github-webhook';
@@ -66,9 +65,9 @@ async function readDataFromQueue<THandler extends allQueueHandlersTypes>(queueUr
     if (data.Messages) {
       const allJobs = Promise.all(
         data.Messages.map(async (message) => {
-        return await log.provideFields({sqsMetadata:data.$metadata, messageId: message.MessageId}, async () => {
+          return await log.provideFields({ sqsMetadata: data.$metadata, messageId: message.MessageId }, async () => {
             if (!message.Body) {
-            log.info('Received sqs message with no message body');
+              log.info('Received sqs message with no message body');
               return;
             }
 
@@ -196,8 +195,8 @@ function determineHandler<THandler extends allQueueHandlersTypes>(handlerName: T
 
 export async function setupQueue(): Promise<void> {
   const queueName = queueHandlerConfig.queueName;
-  await log.provideFields({queueName, loggerName: 'queue-logger'}, async () => {
-    const {QueueUrl} = await sqsClient.send(
+  await log.provideFields({ queueName, loggerName: 'queue-logger' }, async () => {
+    const { QueueUrl } = await sqsClient.send(
       new GetQueueUrlCommand({
         QueueName: queueName
       })
@@ -217,7 +216,6 @@ export async function setupQueue(): Promise<void> {
       await readDataFromQueue(QueueUrl, handlerType, handler);
     }
   });
-
 }
 
 void setupQueue();

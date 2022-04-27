@@ -14,7 +14,7 @@
 
 import { app } from './app';
 import { getServerConfig } from './config';
-import {log} from "./utils/log";
+import { log } from './utils/log';
 
 const serverConfig = getServerConfig();
 

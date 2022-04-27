@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -11,11 +11,11 @@
  * limitations under the License.
  *
  */
-import {GithubRepositoryInfo} from '../../types/github';
-import {OrganizationInputLookup, UpsertOrganizationResponse} from '../../types/hasura';
+import { GithubRepositoryInfo } from '../../types/github';
+import { OrganizationInputLookup, UpsertOrganizationResponse } from '../../types/hasura';
 import { MaybeError } from '../../types/util';
 import { logError } from '../../utils/errors';
-import {log} from "../../utils/log";
+import { log } from '../../utils/log';
 import { catchError, threwError, Try } from '../../utils/try';
 import {
   Github_Repositories_Constraint,
@@ -135,12 +135,12 @@ export async function createLunatraceOrgsFromGithubOrgs(
 
   const orgIds: UpsertOrganizationResponse[] = createOrgsRes.insert_organizations
     ? createOrgsRes.insert_organizations.returning.map((o) => {
-      return {
-        id: o.id as string,
-        github_node_id: o.github_node_id || null,
-        name: o.name 
-      }
-    })
+        return {
+          id: o.id as string,
+          github_node_id: o.github_node_id || null,
+          name: o.name,
+        };
+      })
     : [];
 
   return {
