@@ -12,12 +12,15 @@
  *
  */
 
-import { app } from './app';
+import {newApp} from "./app";
 import { getServerConfig } from './config';
 import {log} from "./utils/log";
 
 const serverConfig = getServerConfig();
 
-app.listen(serverConfig.serverPort, () => {
-  log.info('Server is running on port ', serverConfig.serverPort);
-});
+void (async () => {
+  const app = await newApp();
+  app.listen(serverConfig.serverPort, () => {
+    log.info('Server is running on port ', serverConfig.serverPort);
+  });
+})();
