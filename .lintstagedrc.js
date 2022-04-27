@@ -183,3 +183,5 @@ module.exports = (allStagedFiles) => {
 
   return outputCommands;
 }
+
+
