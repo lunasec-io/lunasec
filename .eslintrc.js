@@ -82,7 +82,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-call': productionWarn,
     '@typescript-eslint/no-unsafe-return': productionWarn,
     '@typescript-eslint/no-unsafe-member-access': productionWarn,
-    'import/namespace': productionError,
+    'import/namespace': 'off', // productionError,
     'no-console': productionWarn,
     'no-debugger': productionError,
     eqeqeq: 'error',
