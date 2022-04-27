@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -13,19 +13,21 @@
  */
 import { Response } from 'express';
 
-import {hasura} from "../../hasura-api";
+import { hasura } from '../../hasura-api';
 import {
-  GetAuthorizedUserOrganizationsQuery, Organization_User_Constraint,
-  Organization_User_Insert_Input, Organization_User_Update_Column,
-  UpdateOrganizationsForUserMutation
-} from "../../hasura-api/generated";
-import {getGithubAccessTokenFromKratos} from "../../kratos";
-import {errorResponse, logError} from "../../utils/errors";
-import {log} from "../../utils/log";
-import {catchError, threwError, Try} from "../../utils/try";
-import {GetUserOrganizationsQuery} from "../api/generated";
+  GetAuthorizedUserOrganizationsQuery,
+  Organization_User_Constraint,
+  Organization_User_Insert_Input,
+  Organization_User_Update_Column,
+  UpdateOrganizationsForUserMutation,
+} from '../../hasura-api/generated';
+import { getGithubAccessTokenFromKratos } from '../../kratos';
+import { errorResponse, logError } from '../../utils/errors';
+import { log } from '../../utils/log';
+import { catchError, threwError, Try } from '../../utils/try';
+import { GetUserOrganizationsQuery } from '../api/generated';
 
-import {getOrgsForUser} from "./get-orgs-for-user";
+import { getOrgsForUser } from './get-orgs-for-user';
 
 function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserOrganizationsQuery): string[] | null {
   const orgNodes = userGithubOrgs.viewer.organizations.nodes;

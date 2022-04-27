@@ -38,16 +38,6 @@ async function checkProjectIsAuthorized(projectId: string, ctx: Context) {
   return;
 }
 
-
-
-
-
-
-
-
-
-
-
 export const presignManifestUploadResolver: PresignManifestUploadResolver = async (parent, args, ctx, info) => {
   throwIfUnauthenticated(ctx);
   const projectId = args.project_id;

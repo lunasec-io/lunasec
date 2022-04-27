@@ -24,7 +24,6 @@ export async function uploadToS3WithSignedUrl(
   headers: http.OutgoingHttpHeaders,
   input: string | Buffer
 ) {
-   
   const { host, ...scrubbedHeaders } = headers;
   const axios = globalAxios.create({ withCredentials: false }); // create this every time so we can mock it for testing
   const res = await axios.put(signedUrl, input, {
@@ -41,7 +40,6 @@ export async function uploadToS3WithSignedUrl(
 }
 
 export async function downloadFromS3WithSignedUrl(signedUrl: string, headers: http.OutgoingHttpHeaders) {
-   
   const { host, ...scrubbedHeaders } = headers;
   const axios = globalAxios.create({ withCredentials: false });
   const res = await axios.get(signedUrl, {
@@ -52,6 +50,5 @@ export async function downloadFromS3WithSignedUrl(signedUrl: string, headers: ht
     throw new BadHttpResponseError(res.status, res.data);
   }
 
-   
   return res.data;
 }
