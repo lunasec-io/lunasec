@@ -6,10 +6,10 @@
   "typings": "build/main/index.d.ts",
   "scripts": {
     "clean": "rm -rf build",
-    "compile": "yarn dlx tsc -p tsconfig.json",
-    "build:main": "yarn dlx tsc -p tsconfig.json",
-    "test": "yarn dlx jest",
-    "test:tap": "yarn dlx jest --json 2>/dev/null | jest-json-to-tap"
+    "compile": "yarn run tsc -p tsconfig.json",
+    "build:main": "yarn run tsc -p tsconfig.json",
+    "test": "yarn run jest",
+    "test:tap": "yarn run jest --json 2>/dev/null | jest-json-to-tap"
   },
   "types": "build/main/index.d.ts",
   "author": "",
