@@ -14,21 +14,15 @@
 import { Request, Response } from 'express';
 
 import { getServerConfig } from '../config';
-import {hasura} from "../hasura-api";
-import {
-  createLunatraceOrgsFromGithubOrgs,
-  hasuraOrgsFromGithubRepositories
-} from '../hasura-api/actions/create-lunatrace-orgs-from-github-orgs';
 import {GithubRepositoryInfo, RepositoriesForInstallationResponse} from '../types/github';
-import { errorResponse, logError } from '../utils/errors';
+import {errorResponse, logError, newError} from '../utils/errors';
 import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse';
 import { catchError, threwError, Try } from '../utils/try';
 
 import {createHasuraOrgsAndProjectsForInstall} from "./actions/create-hasura-orgs-and-projects-for-install";
-import {generateSnapshotsForGithubRepos} from "./actions/generate-snapshots-for-repositories";
 import { getGithubReposForInstallation } from './actions/get-github-repos-for-installation';
-import {getHasuraOrgMembers} from "./actions/get-org-members";
+import {queueGithubReposForSnapshots} from "./actions/queue-repositories-for-snapshosts";
 import {getInstallationAccessToken} from "./auth";
 
 const serverConfig = getServerConfig();
@@ -116,11 +110,33 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
 
   const resp = await createHasuraOrgsAndProjectsForInstall(installationAuthToken.res, installationId, githubRepos)
   if (resp.error) {
+    log.error('unable to create orgs and projects for install', {
+      installationId,
+      error: resp.msg
+    });
     res.status(500).send(errorResponse(resp.msg));
     return
   }
 
-  await generateSnapshotsForGithubRepos(installationId, githubRepos)
+  log.info('queueing repositories for snapshots', {
+    installationId,
+    repoCount: githubRepos.length
+  })
+
+  const queueResp = await queueGithubReposForSnapshots(installationId, githubRepos);
+
+  if (queueResp.error) {
+    log.warn('unable to queue repositories, continuing with the installation', {
+      installationId,
+      error: queueResp.msg
+    });
+    return
+  }
+
+  log.info('completed queueing repositories for snapshots', {
+    installationId,
+    repoCount: githubRepos.length
+  })
 
   res.status(302).redirect(serverConfig.sitePublicUrl);
 }

@@ -22,26 +22,13 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '@octokit/webhooks/dist-types/types';
 
-import {sqsClient} from '../aws/sqs-client';
-import {getWebhookConfig} from "../config";
-import {hasura, HasuraClient} from '../hasura-api';
-import {
-  InsertWebhookToCacheMutation
-} from '../hasura-api/generated';
-import {logError} from '../utils/errors';
-import {log} from '../utils/log';
-import {getSqsUrlFromName} from "../utils/sqs";
-import {catchError, threwError, Try} from '../utils/try';
+import { sqsClient } from '../../aws/sqs-client';
+import { HasuraClient } from '../../hasura-api';
+import {InsertWebhookToCacheMutation} from "../../hasura-api/generated";
+import {logError} from "../../utils/errors";
+import {log} from "../../utils/log";
+import {catchError, threwError, Try} from "../../utils/try";
 
-export async function createGithubWebhookInterceptor(): Promise<WebhookInterceptor> {
-  const webhookConfig = getWebhookConfig();
-
-  const webhookQueueUrl = await getSqsUrlFromName(sqsClient, webhookConfig.queueName);
-
-  return new WebhookInterceptor(hasura, webhookQueueUrl, {
-    secret: webhookConfig.secret,
-  });
-}
 
 export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransformed> {
   webhookQueueUrl: string;
