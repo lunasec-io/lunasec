@@ -20,7 +20,9 @@ const processSbomQueue = process.env.PROCESS_SBOM_QUEUE;
 const processWebhookQueue = process.env.PROCESS_WEBHOOK_QUEUE;
 
 if (!processManifestQueue || !processSbomQueue || !processWebhookQueue) {
-  throw new Error('make sure PROCESS_MANIFEST_QUEUE, PROCESS_WEBHOOK_QUEUE, and PROCESS_SBOM_QUEUE are set in .env.dev');
+  throw new Error(
+    'make sure PROCESS_MANIFEST_QUEUE, PROCESS_WEBHOOK_QUEUE, and PROCESS_SBOM_QUEUE are set in .env.dev'
+  );
 }
 
 export function envVars(vars: Record<string, string>): string {
@@ -42,7 +44,7 @@ export const backendEnv = envVars({
 });
 
 export function queueEnvConfig(
-  handler: 'process-manifest-queue' | 'process-sbom-queue'| 'process-webhook-queue',
+  handler: 'process-manifest-queue' | 'process-sbom-queue' | 'process-webhook-queue',
   name: string
 ): Record<string, string> {
   return {
@@ -65,7 +67,7 @@ export const sbomWorkerEnv = envVars({
 
 export const webhookWorkerEnv = envVars({
   ...githubAppConfig,
-  ...queueEnvConfig('process-webhook-queue', processWebhookQueue)
+  ...queueEnvConfig('process-webhook-queue', processWebhookQueue),
 });
 
 export const dbUrlEnv = envVars({

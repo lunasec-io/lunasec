@@ -13,7 +13,7 @@
  */
 import { EmitterWebhookEvent, Webhooks } from '@octokit/webhooks';
 
-import {hasura} from '../hasura-api';
+import { hasura } from '../hasura-api';
 import { GithubRepositoryInfo } from '../types/github';
 import { log } from '../utils/log';
 
@@ -21,7 +21,7 @@ import { createHasuraOrgsAndProjectsForInstall } from './actions/create-hasura-o
 import { orgMemberAdded } from './actions/org-member-added';
 import { reviewPullRequest } from './actions/review-pull-request';
 import { getInstallationAccessToken } from './auth';
-import {WebhookInterceptor} from './webhook-cache';
+import { WebhookInterceptor } from './webhook-cache';
 
 const webhookQueue = process.env.PROCESS_WEBHOOK_QUEUE;
 
@@ -32,7 +32,7 @@ if (!webhookQueue) {
 
 export const webhooks = new WebhookInterceptor(hasura, webhookQueue, {
   secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
-  log:logger,
+  log: logger,
 });
 
 async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_repositories.added'>) {
