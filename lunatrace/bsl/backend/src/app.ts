@@ -13,14 +13,14 @@
  */
 import { randomUUID } from 'crypto';
 
-import {createNodeMiddleware as githubWebhooksMiddleware} from '@octokit/webhooks';
+import { createNodeMiddleware as githubWebhooksMiddleware } from '@octokit/webhooks';
 import cors from 'cors';
 import Express, { NextFunction, Request, Response } from 'express';
 
 import { getServerConfig } from './config';
-import {lookupAccessTokenRouter} from './express-routes/auth-routes';
-import {githubApiRouter} from './express-routes/github-routes';
-import {webhooks} from './github/webhooks';
+import { lookupAccessTokenRouter } from './express-routes/auth-routes';
+import { githubApiRouter } from './express-routes/github-routes';
+import { webhooks } from './github/webhooks';
 import { registerYoga } from './graphql-yoga';
 import { log } from './utils/log';
 
@@ -48,22 +48,22 @@ app.use((req, res, next) => {
 });
 
 app.use(
-    githubWebhooksMiddleware(webhooks, {
-        path: '/github/webhook/events',
-        onUnhandledRequest: (request, response) => {
+  githubWebhooksMiddleware(webhooks, {
+    path: '/github/webhook/events',
+    onUnhandledRequest: (request, response) => {
       log.error('Unhandled request in GitHub WebHook handler', request);
-            response.status(400).json({
-                error: true,
-                message: 'Unhandled request',
-            });
-        },
+      response.status(400).json({
+        error: true,
+        message: 'Unhandled request',
+      });
+    },
     log: log,
-    })
+  })
 );
 
 function debugRequest(req: Request, res: Response, next: NextFunction) {
   log.info('request', req.method, req.path);
-    next();
+  next();
 }
 
 if (serverConfig.isProduction) {
@@ -78,16 +78,15 @@ app.get('/', (_req: Express.Request, res: Express.Response) => {
 app.use(lookupAccessTokenRouter);
 app.use(githubApiRouter);
 
-
 // app.use((req,res,next) => {
 //   logger.log(req.headers, 'headers are ')
 //   next()
 // })
 
-app.use((req,res,next) => {
-    log.info('user obj is ', req.user);
-    next();
-})
+app.use((req, res, next) => {
+  log.info('user obj is ', req.user);
+  next();
+});
 
 // Add graphql routes to the server
 registerYoga(app);
