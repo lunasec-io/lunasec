@@ -47,8 +47,6 @@ app.use((req, res, next) => {
   void log.provideFields(loggerFields, next);
 });
 
-console.log('foo');
-
 app.use(
     githubWebhooksMiddleware(webhooks, {
         path: '/github/webhook/events',
