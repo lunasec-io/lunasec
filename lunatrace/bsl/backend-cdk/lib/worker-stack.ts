@@ -17,7 +17,7 @@ import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
 import { Construct } from '@aws-cdk/core';
 
-import {getContainerTarballPath} from "./util";
+import { getContainerTarballPath } from './util';
 import { WorkerStorageStackState } from './worker-storage-stack';
 
 interface WorkerStackProps extends cdk.StackProps {
@@ -58,7 +58,9 @@ export class WorkerStack extends cdk.Stack {
       storageStack,
     } = props;
 
-    const QueueProcessorContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-backend-queue-processor.tar'));
+    const QueueProcessorContainerImage = ContainerImage.fromTarball(
+      getContainerTarballPath('lunatrace-backend-queue-processor.tar')
+    );
 
     const processManifestQueueService = new ecsPatterns.QueueProcessingFargateService(
       context,

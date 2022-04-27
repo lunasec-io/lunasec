@@ -16,26 +16,11 @@ import Express from 'express';
 
 import { getEtlBucketConfig } from '../../config';
 import { aws } from '../../utils/aws-utils';
-import { Context, JWTClaims } from '../context';
-import { QueryPresignSbomUploadArgs, QueryResolvers } from '../generated-resolver-types';
+import { JWTClaims } from '../context';
+import { QueryResolvers } from '../generated-resolver-types';
+
 
 import { throwIfUnauthenticated } from './auth-helpers';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 type PresignSbomUploadResolver = NonNullable<QueryResolvers['presignSbomUpload']>;
 
@@ -89,7 +74,3 @@ export const presignSbomUploadResolver: PresignSbomUploadResolver = async (paren
     return generateErrorResponse('Unable to generate presigned url');
   }
 };
-
-
-
-

@@ -14,7 +14,7 @@
 import { Configuration, V0alpha2ApiFactory } from '@ory/kratos-client';
 
 import { KratosIdentityConfig } from '../types/kratos';
-import {log} from "../utils/log";
+import { log } from '../utils/log';
 
 export async function getGithubAccessTokenFromKratos(
   userId: string

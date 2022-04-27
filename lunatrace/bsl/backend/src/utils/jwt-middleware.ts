@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -15,27 +15,19 @@
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 
-import {getJwksConfig} from "../config";
+import { getJwksConfig } from '../config';
 
 const jwksConfig = getJwksConfig();
 
 export const jwtMiddleware = jwt({
-    secret: jwksRsa.expressJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        jwksUri: jwksConfig.jwksUri,
-    }),
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: jwksConfig.jwksUri,
+  }),
 
-    issuer: jwksConfig.jwksIssuer,
-    algorithms: ['RS256'],
-    credentialsRequired: false
-})
-
-
-
-
-
-
-
-
+  issuer: jwksConfig.jwksIssuer,
+  algorithms: ['RS256'],
+  credentialsRequired: false,
+});

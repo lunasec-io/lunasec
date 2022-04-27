@@ -11,15 +11,15 @@
  * limitations under the License.
  *
  */
-import {EmitterWebhookEvent, Webhooks } from '@octokit/webhooks';
+import { EmitterWebhookEvent, Webhooks } from '@octokit/webhooks';
 
 import {hasura} from '../hasura-api';
-import {GithubRepositoryInfo} from "../types/github";
+import { GithubRepositoryInfo } from '../types/github';
 import { log } from '../utils/log';
 
-import {createHasuraOrgsAndProjectsForInstall} from "./actions/create-hasura-orgs-and-projects-for-install";
-import {orgMemberAdded} from "./actions/org-member-added";
-import {reviewPullRequest} from "./actions/review-pull-request";
+import { createHasuraOrgsAndProjectsForInstall } from './actions/create-hasura-orgs-and-projects-for-install';
+import { orgMemberAdded } from './actions/org-member-added';
+import { reviewPullRequest } from './actions/review-pull-request';
 import { getInstallationAccessToken } from './auth';
 import {WebhookInterceptor} from './webhook-cache';
 
@@ -44,7 +44,7 @@ async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_r
   const orgId = event.payload.installation.account.id;
   const orgNodeId = event.payload.installation.account.node_id;
   const ownerType = event.payload.installation.account.type;
-  const githubRepos: GithubRepositoryInfo[] = reposAdded.map(repo => ({
+  const githubRepos: GithubRepositoryInfo[] = reposAdded.map((repo) => ({
     orgName,
     orgId,
     orgNodeId,
@@ -52,34 +52,34 @@ async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_r
     repoId: repo.id,
     repoNodeId: repo.node_id,
     gitUrl: `git://github.com/${repo.full_name}.git`,
-    ownerType
+    ownerType,
   }));
 
   const installationAuthToken = await getInstallationAccessToken(installationId);
 
   if (installationAuthToken.error) {
     log.error('unable to get installation token', {
-      error: installationAuthToken.msg
-    })
+      error: installationAuthToken.msg,
+    });
     return;
   }
 
-  const resp = await createHasuraOrgsAndProjectsForInstall(installationAuthToken.res, installationId, githubRepos)
+  const resp = await createHasuraOrgsAndProjectsForInstall(installationAuthToken.res, installationId, githubRepos);
   if (resp.error) {
     log.error('unable to create orgs and projects from github install', {
       error: resp.msg,
-      githubRepos
+      githubRepos,
     });
-    return
+    return;
   }
   log.info('created orgs and projects for new repos', {
-    githubRepos
-  })
+    githubRepos,
+  });
 }
 
 async function organizationHandler(event: EmitterWebhookEvent<'organization'>) {
   log.debug('organization webhook event', {
-    action: event.payload.action
+    action: event.payload.action,
   });
   if (event.payload.action === 'member_added') {
     if (!event.payload.installation) {
@@ -96,7 +96,7 @@ async function organizationHandler(event: EmitterWebhookEvent<'organization'>) {
 
 async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
   const actionName = event.payload.action;
-  log.info('received pull request webhook for action: ', actionName)
+  log.info('received pull request webhook for action: ', actionName);
 
   if (actionName === 'synchronize' || actionName === 'opened' || actionName === 'reopened') {
     if (!event.payload.installation) {
@@ -116,20 +116,20 @@ async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
       pullRequestId,
       cloneUrl,
       gitUrl,
-      gitBranch
-    })
+      gitBranch,
+    });
   }
 }
 
 // Wrap the hook in logging, pulls the type from octokit since this has the same signature
-const listenToHook: typeof webhooks.on = (hookName, callback) =>{
+const listenToHook: typeof webhooks.on = (hookName, callback) => {
   webhooks.on(hookName, async (event) => {
-    const actionName = 'action' in event.payload ? event.payload.action : 'none given'
-    await log.provideFields({loggerName:'webhook-logger', hookName, actionName}, async () => {
+    const actionName = 'action' in event.payload ? event.payload.action : 'none given';
+    await log.provideFields({ loggerName: 'webhook-logger', hookName, actionName }, async () => {
       await callback(event);
-    })
-  })
-}
+    });
+  });
+};
 
 listenToHook('installation_repositories.added', repositoryAddedHandler);
 listenToHook('pull_request', pullRequestHandler);

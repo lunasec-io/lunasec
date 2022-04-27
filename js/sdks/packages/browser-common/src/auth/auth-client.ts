@@ -56,7 +56,7 @@ export class SecureFrameAuthClient {
       };
     }
     // TODO: Add JSON schema validation
-     
+
     return json;
   }
 

@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -14,21 +14,20 @@
 import { Request, Response } from 'express';
 
 import { getServerConfig } from '../config';
-import {GithubRepositoryInfo, RepositoriesForInstallationResponse} from '../types/github';
+import { GithubRepositoryInfo, RepositoriesForInstallationResponse } from '../types/github';
 import { errorResponse, logError } from '../utils/errors';
 import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse';
 import { catchError, threwError, Try } from '../utils/try';
 
-import {createHasuraOrgsAndProjectsForInstall} from "./actions/create-hasura-orgs-and-projects-for-install";
+import { createHasuraOrgsAndProjectsForInstall } from './actions/create-hasura-orgs-and-projects-for-install';
 import { getGithubReposForInstallation } from './actions/get-github-repos-for-installation';
-import {getInstallationAccessToken} from "./auth";
+import { getInstallationAccessToken } from './auth';
 
 const serverConfig = getServerConfig();
 
 export async function githubInstall(req: Request, res: Response): Promise<void> {
   const installationIdQueryParam = req.query.installation_id;
-  const setupActionQueryParam = req.query.setup_action;
 
   if (!installationIdQueryParam || typeof installationIdQueryParam !== 'string') {
     res.status(401).send(errorResponse('installation_id not provided in query params'));
@@ -82,33 +81,30 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
   }
 
   log.info(`[installId: ${installationId}] Collected installation data: ${repositories.map((repo) => repo.name)}`);
-  const githubRepos: GithubRepositoryInfo[] = repositories
-    .reduce((repos, repo) => {
-      const repoInfo = {
+  const githubRepos: GithubRepositoryInfo[] = repositories.reduce((repos, repo) => {
+
+    const repoInfo = {
         orgName: repo.owner.login,
-        orgId: repo.owner.id,
-        orgNodeId: repo.owner.node_id,
-        repoName: repo.name,
-        repoId: repo.id,
-        repoNodeId: repo.node_id,
-        gitUrl: repo.git_url,
-        ownerType: repo.owner.type
-      }
-      return [
-        ...repos,
-        repoInfo
-      ]
-    }, [] as GithubRepositoryInfo[]);
+      orgId: repo.owner.id,
+      orgNodeId: repo.owner.node_id,
+      repoName: repo.name,
+      repoId: repo.id,
+      repoNodeId: repo.node_id,
+      gitUrl: repo.git_url,
+      ownerType: repo.owner.type,
+    };
+    return [...repos, repoInfo];
+  }, [] as GithubRepositoryInfo[]);
 
   log.info(`[installId: ${installationId}] Collected installation data: ${githubRepos.map((repo) => ({
     orgName: repo.orgName,
     repoName: repo.repoName
   }))}`);
 
-  const resp = await createHasuraOrgsAndProjectsForInstall(installationAuthToken.res, installationId, githubRepos)
+  const resp = await createHasuraOrgsAndProjectsForInstall(installationAuthToken.res, installationId, githubRepos);
   if (resp.error) {
     res.status(500).send(errorResponse(resp.msg));
-    return
+    return;
   }
 
   res.status(302).redirect(serverConfig.sitePublicUrl);

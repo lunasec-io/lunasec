@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -13,61 +13,62 @@
  */
 import { Request, Response } from 'express';
 
-import {hasura} from "../hasura-api";
-import {getGithubAccessTokenFromKratos} from "../kratos";
-import {MaybeError} from "../types/util";
-import {errorResponse, logError} from "../utils/errors";
-import {normalizeGithubId} from "../utils/github";
-import {log} from "../utils/log";
-import {catchError, threwError} from "../utils/try";
+import { hasura } from '../hasura-api';
+import { getGithubAccessTokenFromKratos } from '../kratos';
+import { MaybeError } from '../types/util';
+import { errorResponse, logError } from '../utils/errors';
+import { normalizeGithubId } from '../utils/github';
+import { log } from '../utils/log';
+import { catchError, threwError } from '../utils/try';
 
-import {getGithubGraphqlClient} from "./auth";
+import { getGithubGraphqlClient } from './auth';
 
 async function upsertAuthenticatedGithubUser(userId: string): Promise<MaybeError<null>> {
   const kratosResponse = await getGithubAccessTokenFromKratos(userId);
   if (kratosResponse.error) {
     return {
       error: true,
-      msg: kratosResponse.message
-    }
+      msg: kratosResponse.message,
+    };
   }
 
   const github = getGithubGraphqlClient(kratosResponse.token);
 
-  const viewerId = await catchError(
-    async () => await github.GetViewerId()
-  );
+  const viewerId = await catchError(async () => await github.GetViewerId());
 
   if (threwError(viewerId) || viewerId === null) {
     logError(viewerId === null ? new Error('viewerId is null') : viewerId);
     return {
       error: true,
-      msg: 'cannot get github user id'
+      msg: 'cannot get github user id',
     };
   }
 
   const githubUserId = viewerId.viewer.id;
   const normalizedGithubId = normalizeGithubId(githubUserId);
 
-  const resp = await catchError(async () => await hasura.UpsertUserFromId({
-    user: {
-      kratos_id: userId,
-      github_id: normalizedGithubId,
-      github_node_id: githubUserId
-    }
-  }))
+  const resp = await catchError(
+    async () =>
+      await hasura.UpsertUserFromId({
+        user: {
+          kratos_id: userId,
+          github_id: normalizedGithubId,
+          github_node_id: githubUserId,
+        },
+      })
+  );
 
   if (threwError(resp)) {
     logError(resp);
     return {
       error: true,
-      msg: 'cannot upsert hasura user'
-    }
+      msg: 'cannot upsert hasura user',
+    };
   }
   return {
     error: false,
-    res: null
-  }
+    res: null,
+  };
 }
 
 /*
@@ -122,16 +123,19 @@ export async function githubLogin(req: Request, res: Response): Promise<void> {
     // if there is no github id, then call the github api to get the user's github id
     await upsertAuthenticatedGithubUser(userId);
   } else {
-    const resp = await catchError(async () => await hasura.UpsertUserFromId({
-      user: {
-        kratos_id: userId,
-        github_id: githubId
-      }
-    }))
+    const resp = await catchError(
+      async () =>
+        await hasura.UpsertUserFromId({
+          user: {
+            kratos_id: userId,
+            github_id: githubId,
+          },
+        })
+    );
 
     if (threwError(resp)) {
       logError(resp);
-      res.status(500).send(errorResponse('unable to locate user account in database'))
+      res.status(500).send(errorResponse('unable to locate user account in database'));
     }
   }
 
