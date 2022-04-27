@@ -5007,6 +5007,13 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 
 export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
 
+export type GetProjectIdFromGitUrlQueryVariables = Exact<{
+  github_id?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetProjectIdFromGitUrlQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any } }> };
+
 export type GetWebhookCacheByDeliveryIdQueryVariables = Exact<{
   delivery_id: Scalars['uuid'];
 }>;
@@ -5057,13 +5064,6 @@ export type InsertWebhookToCacheMutationVariables = Exact<{
 
 
 export type InsertWebhookToCacheMutation = { __typename?: 'mutation_root', insert_webhook_cache_one?: { __typename?: 'webhook_cache', delivery_id: any } | null };
-
-export type GetProjectIdFromGitUrlQueryVariables = Exact<{
-  git_url?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type GetProjectIdFromGitUrlQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any } }> };
 
 export type SetBuildS3UrlMutationVariables = Exact<{
   id: Scalars['uuid'];
@@ -5214,6 +5214,15 @@ export const GetPreviousBuildForPrDocument = gql`
   }
 }
     `;
+export const GetProjectIdFromGitUrlDocument = gql`
+    query GetProjectIdFromGitUrl($github_id: Int) {
+  github_repositories(where: {github_id: {_eq: $github_id}}) {
+    project {
+      id
+    }
+  }
+}
+    `;
 export const GetWebhookCacheByDeliveryIdDocument = gql`
     query GetWebhookCacheByDeliveryId($delivery_id: uuid!) {
   webhook_cache(where: {delivery_id: {_eq: $delivery_id}}) {
@@ -5311,15 +5320,6 @@ export const InsertWebhookToCacheDocument = gql`
     object: {delivery_id: $delivery_id, event_type: $event_type, signature_256: $signature_256, installation_id: $installation_id, data: $data}
   ) {
     delivery_id
-  }
-}
-    `;
-export const GetProjectIdFromGitUrlDocument = gql`
-    query GetProjectIdFromGitUrl($git_url: String) {
-  github_repositories(where: {git_url: {_eq: $git_url}}) {
-    project {
-      id
-    }
   }
 }
     `;
@@ -5452,6 +5452,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
     },
+    GetProjectIdFromGitUrl(variables?: GetProjectIdFromGitUrlQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectIdFromGitUrlQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectIdFromGitUrlQuery>(GetProjectIdFromGitUrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectIdFromGitUrl', 'query');
+    },
     GetWebhookCacheByDeliveryId(variables: GetWebhookCacheByDeliveryIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetWebhookCacheByDeliveryIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetWebhookCacheByDeliveryIdQuery>(GetWebhookCacheByDeliveryIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetWebhookCacheByDeliveryId', 'query');
     },
@@ -5469,9 +5472,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     InsertWebhookToCache(variables: InsertWebhookToCacheMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertWebhookToCacheMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertWebhookToCacheMutation>(InsertWebhookToCacheDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertWebhookToCache', 'mutation');
-    },
-    GetProjectIdFromGitUrl(variables?: GetProjectIdFromGitUrlQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectIdFromGitUrlQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectIdFromGitUrlQuery>(GetProjectIdFromGitUrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectIdFromGitUrl', 'query');
     },
     SetBuildS3Url(variables: SetBuildS3UrlMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SetBuildS3UrlMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<SetBuildS3UrlMutation>(SetBuildS3UrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'SetBuildS3Url', 'mutation');

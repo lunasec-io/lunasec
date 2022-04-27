@@ -23,13 +23,25 @@ import {
 } from '@octokit/webhooks/dist-types/types';
 
 import {sqsClient} from '../aws/sqs-client';
+import {getWebhookConfig} from "../config";
 import {hasura, HasuraClient} from '../hasura-api';
 import {
   InsertWebhookToCacheMutation
 } from '../hasura-api/generated';
 import {logError} from '../utils/errors';
 import {log} from '../utils/log';
+import {getSqsUrlFromName} from "../utils/sqs";
 import {catchError, threwError, Try} from '../utils/try';
+
+export async function createGithubWebhookInterceptor(): Promise<WebhookInterceptor> {
+  const webhookConfig = getWebhookConfig();
+
+  const webhookQueueUrl = await getSqsUrlFromName(sqsClient, webhookConfig.queueName);
+
+  return new WebhookInterceptor(hasura, webhookQueueUrl, {
+    secret: webhookConfig.secret,
+  });
+}
 
 export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransformed> {
   webhookQueueUrl: string;
@@ -64,6 +76,14 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
       throw new Error('Webhook signature verification failed');
     }
 
+    const installationId = this.getInstallationId(options);
+    if (!installationId) {
+      log.error('Unable to get installation ID for received webhook', {
+        options: options,
+      });
+      throw new Error('Installation ID is undefined');
+    }
+
     const insertedWebhookResult: Try<InsertWebhookToCacheMutation> = await catchError(
       async () =>
         await this.hasura.InsertWebhookToCache({
@@ -71,7 +91,7 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
           event_type: options.name,
           signature_256: options.signature,
           delivery_id: options.id,
-          installation_id: this.getInstallationId(options)
+          installation_id: installationId
         })
     );
 
@@ -95,9 +115,9 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
         delivery_id: options.id,
       }),
       MessageAttributes: {
-        'delivery_id': {
-          DataType: 'String',
-          StringValue: options.id
+        'installation_id': {
+          DataType: 'Number',
+          StringValue: installationId.toString()
         }
       },
       QueueUrl: this.webhookQueueUrl

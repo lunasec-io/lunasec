@@ -82,7 +82,7 @@ async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
   await hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'sbom-generated', build_id: buildId });
 }
 // This handler is currently only triggered when someone drags and drops a file on the frontend
-export async function handleGenerateManifestSbom(
+export async function handleSnapshotManifest(
   message: S3ObjectMetadata
 ): Promise<QueueSuccessResult | QueueErrorResult> {
   const { key, bucketName, region } = message;
