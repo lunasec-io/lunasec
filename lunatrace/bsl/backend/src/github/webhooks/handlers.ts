@@ -13,17 +13,15 @@
  */
 import {EmitterWebhookEvent, Webhooks } from '@octokit/webhooks';
 
-import {GithubRepositoryInfo} from "../types/github";
-import { log } from '../utils/log';
-import {catchError, threwError} from "../utils/try";
+import { GithubRepositoryInfo } from '../../types/github';
+import { log } from '../../utils/log';
+import {queueRepositoryForSnapshot} from "../../workers/queue-repository-for-snapshot";
+import { createHasuraOrgsAndProjectsForInstall } from '../actions/create-hasura-orgs-and-projects-for-install';
+import {orgMemberAdded} from "../actions/org-member-added";
+import { queueGithubReposForSnapshots } from '../actions/queue-repositories-for-snapshosts';
+import { getInstallationAccessToken } from '../auth';
 
-import {createHasuraOrgsAndProjectsForInstall} from "./actions/create-hasura-orgs-and-projects-for-install";
-import {generateSnapshotForRepository} from "./actions/generate-snapshot-for-repository";
-import {generateSnapshotsForGithubRepos} from "./actions/generate-snapshots-for-repositories";
-import {orgMemberAdded} from "./actions/org-member-added";
-import {generateGithubGraphqlClient} from "./api";
-import { getInstallationAccessToken } from './auth';
-import {WebhookInterceptor} from "./webhook-cache";
+import {WebhookInterceptor} from "./interceptor";
 
 export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): void {
   // Wrap the hook in logging, pulls the type from octokit since this has the same signature
@@ -82,7 +80,16 @@ async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_r
     githubRepos
   })
 
-  await generateSnapshotsForGithubRepos(installationId, githubRepos)
+  const snapshotResp = await queueGithubReposForSnapshots(installationId, githubRepos)
+  if (snapshotResp.error) {
+    log.error('unable to queue github repos', {
+      githubRepos
+    });
+    return
+  }
+  log.info('queued github repos for snapshots', {
+    githubRepos
+  })
 }
 
 async function organizationHandler(event: EmitterWebhookEvent<'organization'>) {
@@ -119,7 +126,7 @@ async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
     const gitBranch = event.payload.pull_request.head.ref;
     const installationId = event.payload.installation.id;
 
-    await generateSnapshotForRepository({
+    await queueRepositoryForSnapshot({
       cloneUrl,
       gitBranch,
       repoGithubId,

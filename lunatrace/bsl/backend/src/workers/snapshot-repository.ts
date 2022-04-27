@@ -17,7 +17,13 @@ import {GenerateSnapshotForRepositoryRecord, QueueErrorResult, QueueSuccessResul
 export async function handleSnapshotRepository(
   record: GenerateSnapshotForRepositoryRecord
 ): Promise<QueueSuccessResult | QueueErrorResult> {
-  await generateSnapshotForRepository(record);
+  const error = await generateSnapshotForRepository(record);
+  if (error.error) {
+    return {
+      success: false,
+      error: new Error(error.msg)
+    }
+  }
   return {
     success: true,
   }
