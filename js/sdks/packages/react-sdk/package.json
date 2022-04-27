@@ -8,8 +8,8 @@
   "license": "Apache-2.0",
   "keywords": [],
   "scripts": {
-    "build:main": "yarn dlx tsc -p tsconfig.json",
-    "build:module": "yarn dlx tsc -p tsconfig.module.json",
+    "build:main": "yarn run tsc -p tsconfig.json",
+    "build:module": "yarn run tsc -p tsconfig.module.json",
     "clean": "rm -rf build"
   },
   "engines": {

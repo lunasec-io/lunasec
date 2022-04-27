@@ -7,7 +7,7 @@
   "module": "build/module/index.js",
   "scripts": {
     "clean": "rm -rf build",
-    "compile": "yarn dlx tsc -p ./tsconfig.json"
+    "compile": "yarn run tsc -p ./tsconfig.json"
   },
   "types": "build/main/index.d.ts",
   "author": "",
