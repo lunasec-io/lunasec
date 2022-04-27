@@ -15,7 +15,7 @@
  *
  */
 
-const hideErrorsInDev = process.env.HIDE_ERRORS_IN_DEV || 'true'
+const hideErrorsInDev = process.env.HIDE_ERRORS_IN_DEV === 'true';
 
 const productionError = hideErrorsInDev ? 'warn': 'error';
 const productionWarn = hideErrorsInDev ? 'off': 'warn';

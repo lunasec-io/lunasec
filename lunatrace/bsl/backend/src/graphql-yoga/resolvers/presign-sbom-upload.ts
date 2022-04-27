@@ -1,4 +1,3 @@
-
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
@@ -12,71 +11,66 @@
  * limitations under the License.
  *
  */
-import {GraphQLYogaError } from '@graphql-yoga/node'
+import { GraphQLYogaError } from '@graphql-yoga/node';
 import Express, { Request, Response } from 'express';
 import validate from 'validator';
 
 import { getEtlBucketConfig } from '../../config';
 import { aws } from '../../utils/aws-utils';
-import {logger} from "../../utils/logger";
-import {Context, JWTClaims} from "../context";
-import {QueryPresignSbomUploadArgs, QueryResolvers} from '../generated-resolver-types'
+import { Context, JWTClaims } from '../context';
+import { QueryPresignSbomUploadArgs, QueryResolvers } from '../generated-resolver-types';
 
-import {throwIfUnauthenticated} from "./auth-helpers";
+import { throwIfUnauthenticated } from './auth-helpers';
 
-
-type PresignSbomUploadResolver = NonNullable<QueryResolvers['presignSbomUpload']>
+type PresignSbomUploadResolver = NonNullable<QueryResolvers['presignSbomUpload']>;
 
 const sbomHandlerConfig = getEtlBucketConfig();
 
 export const sbomPresignerRouter = Express.Router();
 
+function getAuthorizedBuilds(jwt: JWTClaims | undefined): string | false {
+  if (!jwt) {
+    throw new GraphQLYogaError('Missing auth header in request');
+  }
 
-function getAuthorizedBuilds( jwt: JWTClaims|undefined): string | false{
-    if (!jwt) {
-       throw new GraphQLYogaError('Missing auth header in request')
-    }
+  // messy data coming from oathkeeper, stringifying this value wasn't working so its one big weird golang string, fix later
+  const authorizedBuilds =
+    jwt && jwt['https://hasura.io/jwt/claims'] !== undefined && jwt['https://hasura.io/jwt/claims']['x-hasura-builds'];
 
-    // messy data coming from oathkeeper, stringifying this value wasn't working so its one big weird golang string, fix later
-    const authorizedBuilds =
-        jwt && jwt['https://hasura.io/jwt/claims'] !== undefined && jwt['https://hasura.io/jwt/claims']['x-hasura-builds'];
-
-    if (typeof authorizedBuilds !== 'string') {
-        return false
-    }
-    return authorizedBuilds;
+  if (typeof authorizedBuilds !== 'string') {
+    return false;
+  }
+  return authorizedBuilds;
 }
 
-
-
 function generateErrorResponse(errorMessage: string) {
-    return{ error: true, message: errorMessage }
+  return { error: true, message: errorMessage };
 }
 
 // Presigns sbombs that are uploaded from the CLI.  Note that the backend can also generate sboms out of uploaded manifests,
 // but it uploads them directly and doesnt use this logic
-export const presignSbomUploadResolver: PresignSbomUploadResolver =  async (parent, args, ctx, info) => {
-    throwIfUnauthenticated(ctx);
-    const authorizedBuilds = getAuthorizedBuilds(ctx.req.user);
-    if (!authorizedBuilds){
-        return generateErrorResponse( 'Missing x-hasura-builds in authorization jwt header');
-    };
+export const presignSbomUploadResolver: PresignSbomUploadResolver = async (parent, args, ctx, info) => {
+  throwIfUnauthenticated(ctx);
+  const authorizedBuilds = getAuthorizedBuilds(ctx.req.user);
+  if (!authorizedBuilds) {
+    return generateErrorResponse('Missing x-hasura-builds in authorization jwt header');
+  }
 
-    if (!authorizedBuilds.includes(args.buildId)) {
-        return generateErrorResponse(
-            'Attempted to presign a build that wasnt in the list of builds belonging to the project'
-        );
-    }
+  if (!authorizedBuilds.includes(args.buildId)) {
+    return generateErrorResponse(
+      'Attempted to presign a build that wasnt in the list of builds belonging to the project'
+    );
+  }
 
-    try {
-        const result = await aws.generatePresignedS3Url(
-            sbomHandlerConfig.sbomBucket,
-            aws.generateSbomS3Key(args.orgId, args.buildId),
-            'PUT'
-        );
+  try {
+    const result = await aws.generatePresignedS3Url(
+      sbomHandlerConfig.sbomBucket,
+      aws.generateSbomS3Key(args.orgId, args.buildId),
+      'PUT'
+    );
 
-        return { error: false, uploadUrl: result };
-    } catch (e) {
-        return generateErrorResponse('Unable to generate presigned url');
-    }
+    return { error: false, uploadUrl: result };
+  } catch (e) {
+    return generateErrorResponse('Unable to generate presigned url');
+  }
 };
