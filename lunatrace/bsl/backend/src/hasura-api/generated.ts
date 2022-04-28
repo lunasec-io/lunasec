@@ -30,6 +30,7 @@ export type Scalars = {
   builds_source_type: any;
   date: any;
   fix_state_enum: any;
+  github_webhook_event: any;
   jsonb: any;
   numeric: any;
   organization_user_role: any;
@@ -65,6 +66,12 @@ export type Int_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Int']>>;
 };
 
+export type SbomUploadUrlOutput = {
+  __typename?: 'SbomUploadUrlOutput';
+  error: Scalars['Boolean'];
+  uploadUrl?: Maybe<UploadUrl>;
+};
+
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 export type String_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['String']>;
@@ -96,6 +103,12 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
+};
+
+export type UploadUrl = {
+  __typename?: 'UploadUrl';
+  headers: Scalars['String'];
+  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -1041,6 +1054,19 @@ export type Github_Repositories_Variance_Order_By = {
   github_id?: InputMaybe<Order_By>;
 };
 
+/** Boolean expression to compare columns of type "github_webhook_event". All fields are combined with logical 'AND'. */
+export type Github_Webhook_Event_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['github_webhook_event']>;
+  _gt?: InputMaybe<Scalars['github_webhook_event']>;
+  _gte?: InputMaybe<Scalars['github_webhook_event']>;
+  _in?: InputMaybe<Array<Scalars['github_webhook_event']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['github_webhook_event']>;
+  _lte?: InputMaybe<Scalars['github_webhook_event']>;
+  _neq?: InputMaybe<Scalars['github_webhook_event']>;
+  _nin?: InputMaybe<Array<Scalars['github_webhook_event']>>;
+};
+
 /** columns and relationships of "identities" */
 export type Identities = {
   __typename?: 'identities';
@@ -1561,6 +1587,10 @@ export type Mutation_Root = {
   delete_manifests?: Maybe<Manifests_Mutation_Response>;
   /** delete single row from the table: "manifests" */
   delete_manifests_by_pk?: Maybe<Manifests>;
+  /** delete data from the table: "topic_related_topics" */
+  delete_topic_related_topics?: Maybe<Topic_Related_Topics_Mutation_Response>;
+  /** delete single row from the table: "topic_related_topics" */
+  delete_topic_related_topics_by_pk?: Maybe<Topic_Related_Topics>;
   /** insert data into the table: "builds" */
   insert_builds?: Maybe<Builds_Mutation_Response>;
   /** insert a single row into the table: "builds" */
@@ -1597,6 +1627,16 @@ export type Mutation_Root = {
   insert_scans?: Maybe<Scans_Mutation_Response>;
   /** insert a single row into the table: "scans" */
   insert_scans_one?: Maybe<Scans>;
+  /** insert data into the table: "topic_related_topics" */
+  insert_topic_related_topics?: Maybe<Topic_Related_Topics_Mutation_Response>;
+  /** insert a single row into the table: "topic_related_topics" */
+  insert_topic_related_topics_one?: Maybe<Topic_Related_Topics>;
+  /** insert data into the table: "topic_vulnerabilities" */
+  insert_topic_vulnerabilities?: Maybe<Topic_Vulnerabilities_Mutation_Response>;
+  /** insert a single row into the table: "topic_vulnerabilities" */
+  insert_topic_vulnerabilities_one?: Maybe<Topic_Vulnerabilities>;
+  /** insert data into the table: "topics" */
+  insert_topics?: Maybe<Topics_Mutation_Response>;
   /** insert data into the table: "users" */
   insert_users?: Maybe<Users_Mutation_Response>;
   /** insert a single row into the table: "users" */
@@ -1609,6 +1649,10 @@ export type Mutation_Root = {
   insert_vulnerability_packages?: Maybe<Vulnerability_Packages_Mutation_Response>;
   /** insert a single row into the table: "vulnerability_packages" */
   insert_vulnerability_packages_one?: Maybe<Vulnerability_Packages>;
+  /** insert data into the table: "webhook_cache" */
+  insert_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
+  /** insert a single row into the table: "webhook_cache" */
+  insert_webhook_cache_one?: Maybe<Webhook_Cache>;
   /** update data of the table: "builds" */
   update_builds?: Maybe<Builds_Mutation_Response>;
   /** update single row of the table: "builds" */
@@ -1643,6 +1687,16 @@ export type Mutation_Root = {
   update_scans?: Maybe<Scans_Mutation_Response>;
   /** update single row of the table: "scans" */
   update_scans_by_pk?: Maybe<Scans>;
+  /** update data of the table: "topic_related_topics" */
+  update_topic_related_topics?: Maybe<Topic_Related_Topics_Mutation_Response>;
+  /** update single row of the table: "topic_related_topics" */
+  update_topic_related_topics_by_pk?: Maybe<Topic_Related_Topics>;
+  /** update data of the table: "topic_vulnerabilities" */
+  update_topic_vulnerabilities?: Maybe<Topic_Vulnerabilities_Mutation_Response>;
+  /** update single row of the table: "topic_vulnerabilities" */
+  update_topic_vulnerabilities_by_pk?: Maybe<Topic_Vulnerabilities>;
+  /** update data of the table: "topics" */
+  update_topics?: Maybe<Topics_Mutation_Response>;
   /** update data of the table: "users" */
   update_users?: Maybe<Users_Mutation_Response>;
   /** update single row of the table: "users" */
@@ -1655,6 +1709,10 @@ export type Mutation_Root = {
   update_vulnerability_packages?: Maybe<Vulnerability_Packages_Mutation_Response>;
   /** update single row of the table: "vulnerability_packages" */
   update_vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
+  /** update data of the table: "webhook_cache" */
+  update_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
+  /** update single row of the table: "webhook_cache" */
+  update_webhook_cache_by_pk?: Maybe<Webhook_Cache>;
 };
 
 
@@ -1678,6 +1736,18 @@ export type Mutation_RootDelete_ManifestsArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Manifests_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Topic_Related_TopicsArgs = {
+  where: Topic_Related_Topics_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Topic_Related_Topics_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -1809,6 +1879,41 @@ export type Mutation_RootInsert_Scans_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Topic_Related_TopicsArgs = {
+  objects: Array<Topic_Related_Topics_Insert_Input>;
+  on_conflict?: InputMaybe<Topic_Related_Topics_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Topic_Related_Topics_OneArgs = {
+  object: Topic_Related_Topics_Insert_Input;
+  on_conflict?: InputMaybe<Topic_Related_Topics_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Topic_VulnerabilitiesArgs = {
+  objects: Array<Topic_Vulnerabilities_Insert_Input>;
+  on_conflict?: InputMaybe<Topic_Vulnerabilities_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Topic_Vulnerabilities_OneArgs = {
+  object: Topic_Vulnerabilities_Insert_Input;
+  on_conflict?: InputMaybe<Topic_Vulnerabilities_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_TopicsArgs = {
+  objects: Array<Topics_Insert_Input>;
+  on_conflict?: InputMaybe<Topics_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_UsersArgs = {
   objects: Array<Users_Insert_Input>;
   on_conflict?: InputMaybe<Users_On_Conflict>;
@@ -1847,6 +1952,20 @@ export type Mutation_RootInsert_Vulnerability_PackagesArgs = {
 export type Mutation_RootInsert_Vulnerability_Packages_OneArgs = {
   object: Vulnerability_Packages_Insert_Input;
   on_conflict?: InputMaybe<Vulnerability_Packages_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Webhook_CacheArgs = {
+  objects: Array<Webhook_Cache_Insert_Input>;
+  on_conflict?: InputMaybe<Webhook_Cache_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Webhook_Cache_OneArgs = {
+  object: Webhook_Cache_Insert_Input;
+  on_conflict?: InputMaybe<Webhook_Cache_On_Conflict>;
 };
 
 
@@ -1982,6 +2101,47 @@ export type Mutation_RootUpdate_Scans_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Topic_Related_TopicsArgs = {
+  _set?: InputMaybe<Topic_Related_Topics_Set_Input>;
+  where: Topic_Related_Topics_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Topic_Related_Topics_By_PkArgs = {
+  _set?: InputMaybe<Topic_Related_Topics_Set_Input>;
+  pk_columns: Topic_Related_Topics_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Topic_VulnerabilitiesArgs = {
+  _set?: InputMaybe<Topic_Vulnerabilities_Set_Input>;
+  where: Topic_Vulnerabilities_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Topic_Vulnerabilities_By_PkArgs = {
+  _set?: InputMaybe<Topic_Vulnerabilities_Set_Input>;
+  pk_columns: Topic_Vulnerabilities_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_TopicsArgs = {
+  _append?: InputMaybe<Topics_Append_Input>;
+  _delete_at_path?: InputMaybe<Topics_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Topics_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Topics_Delete_Key_Input>;
+  _inc?: InputMaybe<Topics_Inc_Input>;
+  _prepend?: InputMaybe<Topics_Prepend_Input>;
+  _set?: InputMaybe<Topics_Set_Input>;
+  where: Topics_Bool_Exp;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_UsersArgs = {
   _set?: InputMaybe<Users_Set_Input>;
   where: Users_Bool_Exp;
@@ -2020,6 +2180,20 @@ export type Mutation_RootUpdate_Vulnerability_PackagesArgs = {
 export type Mutation_RootUpdate_Vulnerability_Packages_By_PkArgs = {
   _set?: InputMaybe<Vulnerability_Packages_Set_Input>;
   pk_columns: Vulnerability_Packages_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Webhook_CacheArgs = {
+  _set?: InputMaybe<Webhook_Cache_Set_Input>;
+  where: Webhook_Cache_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Webhook_Cache_By_PkArgs = {
+  _set?: InputMaybe<Webhook_Cache_Set_Input>;
+  pk_columns: Webhook_Cache_Pk_Columns_Input;
 };
 
 /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
@@ -3046,6 +3220,8 @@ export type Query_Root = {
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
+  /** get s3 presigned url for manifest upload, used by the CLI */
+  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -3062,6 +3238,14 @@ export type Query_Root = {
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** fetch data from the table: "topic_related_topics" */
+  topic_related_topics: Array<Topic_Related_Topics>;
+  /** fetch data from the table: "topic_related_topics" using primary key columns */
+  topic_related_topics_by_pk?: Maybe<Topic_Related_Topics>;
+  /** fetch data from the table: "topic_vulnerabilities" */
+  topic_vulnerabilities: Array<Topic_Vulnerabilities>;
+  /** fetch data from the table: "topic_vulnerabilities" using primary key columns */
+  topic_vulnerabilities_by_pk?: Maybe<Topic_Vulnerabilities>;
   /** An array relationship */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
@@ -3076,6 +3260,10 @@ export type Query_Root = {
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** fetch data from the table: "vulnerability_packages" using primary key columns */
   vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
+  /** fetch data from the table: "webhook_cache" */
+  webhook_cache: Array<Webhook_Cache>;
+  /** fetch data from the table: "webhook_cache" using primary key columns */
+  webhook_cache_by_pk?: Maybe<Webhook_Cache>;
 };
 
 
@@ -3223,6 +3411,12 @@ export type Query_RootPackage_Versions_By_PkArgs = {
 };
 
 
+export type Query_RootPresignSbomUploadArgs = {
+  buildId: Scalars['uuid'];
+  orgId: Scalars['uuid'];
+};
+
+
 export type Query_RootProject_Access_TokensArgs = {
   distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3279,6 +3473,34 @@ export type Query_RootScans_By_PkArgs = {
 };
 
 
+export type Query_RootTopic_Related_TopicsArgs = {
+  distinct_on?: InputMaybe<Array<Topic_Related_Topics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Topic_Related_Topics_Order_By>>;
+  where?: InputMaybe<Topic_Related_Topics_Bool_Exp>;
+};
+
+
+export type Query_RootTopic_Related_Topics_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootTopic_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Topic_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Topic_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Topic_Vulnerabilities_Bool_Exp>;
+};
+
+
+export type Query_RootTopic_Vulnerabilities_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Query_RootUsersArgs = {
   distinct_on?: InputMaybe<Array<Users_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3327,6 +3549,20 @@ export type Query_RootVulnerability_PackagesArgs = {
 
 export type Query_RootVulnerability_Packages_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootWebhook_CacheArgs = {
+  distinct_on?: InputMaybe<Array<Webhook_Cache_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Webhook_Cache_Order_By>>;
+  where?: InputMaybe<Webhook_Cache_Bool_Exp>;
+};
+
+
+export type Query_RootWebhook_Cache_By_PkArgs = {
+  delivery_id: Scalars['uuid'];
 };
 
 /**
@@ -3759,6 +3995,14 @@ export type Subscription_Root = {
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** fetch data from the table: "topic_related_topics" */
+  topic_related_topics: Array<Topic_Related_Topics>;
+  /** fetch data from the table: "topic_related_topics" using primary key columns */
+  topic_related_topics_by_pk?: Maybe<Topic_Related_Topics>;
+  /** fetch data from the table: "topic_vulnerabilities" */
+  topic_vulnerabilities: Array<Topic_Vulnerabilities>;
+  /** fetch data from the table: "topic_vulnerabilities" using primary key columns */
+  topic_vulnerabilities_by_pk?: Maybe<Topic_Vulnerabilities>;
   /** An array relationship */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
@@ -3773,6 +4017,10 @@ export type Subscription_Root = {
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** fetch data from the table: "vulnerability_packages" using primary key columns */
   vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
+  /** fetch data from the table: "webhook_cache" */
+  webhook_cache: Array<Webhook_Cache>;
+  /** fetch data from the table: "webhook_cache" using primary key columns */
+  webhook_cache_by_pk?: Maybe<Webhook_Cache>;
 };
 
 
@@ -3976,6 +4224,34 @@ export type Subscription_RootScans_By_PkArgs = {
 };
 
 
+export type Subscription_RootTopic_Related_TopicsArgs = {
+  distinct_on?: InputMaybe<Array<Topic_Related_Topics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Topic_Related_Topics_Order_By>>;
+  where?: InputMaybe<Topic_Related_Topics_Bool_Exp>;
+};
+
+
+export type Subscription_RootTopic_Related_Topics_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootTopic_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Topic_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Topic_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Topic_Vulnerabilities_Bool_Exp>;
+};
+
+
+export type Subscription_RootTopic_Vulnerabilities_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Subscription_RootUsersArgs = {
   distinct_on?: InputMaybe<Array<Users_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -4026,6 +4302,20 @@ export type Subscription_RootVulnerability_Packages_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
+
+export type Subscription_RootWebhook_CacheArgs = {
+  distinct_on?: InputMaybe<Array<Webhook_Cache_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Webhook_Cache_Order_By>>;
+  where?: InputMaybe<Webhook_Cache_Bool_Exp>;
+};
+
+
+export type Subscription_RootWebhook_Cache_By_PkArgs = {
+  delivery_id: Scalars['uuid'];
+};
+
 /** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
 export type Timestamp_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['timestamp']>;
@@ -4051,6 +4341,366 @@ export type Timestamptz_Comparison_Exp = {
   _neq?: InputMaybe<Scalars['timestamptz']>;
   _nin?: InputMaybe<Array<Scalars['timestamptz']>>;
 };
+
+/** columns and relationships of "topic_related_topics" */
+export type Topic_Related_Topics = {
+  __typename?: 'topic_related_topics';
+  created_at: Scalars['timestamptz'];
+  from_topic_id: Scalars['uuid'];
+  id: Scalars['uuid'];
+  to_topic_unique_id: Scalars['String'];
+  updated_at: Scalars['timestamptz'];
+};
+
+/** input type for inserting array relation for remote table "topic_related_topics" */
+export type Topic_Related_Topics_Arr_Rel_Insert_Input = {
+  data: Array<Topic_Related_Topics_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Topic_Related_Topics_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "topic_related_topics". All fields are combined with a logical 'AND'. */
+export type Topic_Related_Topics_Bool_Exp = {
+  _and?: InputMaybe<Array<Topic_Related_Topics_Bool_Exp>>;
+  _not?: InputMaybe<Topic_Related_Topics_Bool_Exp>;
+  _or?: InputMaybe<Array<Topic_Related_Topics_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  from_topic_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  to_topic_unique_id?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "topic_related_topics" */
+export enum Topic_Related_Topics_Constraint {
+  /** unique or primary key constraint */
+  TopicRelatedTopicsPkey = 'topic_related_topics_pkey',
+  /** unique or primary key constraint */
+  TopicRelatedTopicsUnique = 'topic_related_topics_unique'
+}
+
+/** input type for inserting data into table "topic_related_topics" */
+export type Topic_Related_Topics_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  from_topic_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  parent_topic?: InputMaybe<Topics_Obj_Rel_Insert_Input>;
+  to_topic_unique_id?: InputMaybe<Scalars['String']>;
+  topic?: InputMaybe<Topics_Obj_Rel_Insert_Input>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "topic_related_topics" */
+export type Topic_Related_Topics_Mutation_Response = {
+  __typename?: 'topic_related_topics_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Topic_Related_Topics>;
+};
+
+/** on_conflict condition type for table "topic_related_topics" */
+export type Topic_Related_Topics_On_Conflict = {
+  constraint: Topic_Related_Topics_Constraint;
+  update_columns?: Array<Topic_Related_Topics_Update_Column>;
+  where?: InputMaybe<Topic_Related_Topics_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "topic_related_topics". */
+export type Topic_Related_Topics_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  from_topic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  to_topic_unique_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: topic_related_topics */
+export type Topic_Related_Topics_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "topic_related_topics" */
+export enum Topic_Related_Topics_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  FromTopicId = 'from_topic_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ToTopicUniqueId = 'to_topic_unique_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "topic_related_topics" */
+export type Topic_Related_Topics_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  from_topic_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  to_topic_unique_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** update columns of table "topic_related_topics" */
+export enum Topic_Related_Topics_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  FromTopicId = 'from_topic_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ToTopicUniqueId = 'to_topic_unique_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** columns and relationships of "topic_vulnerabilities" */
+export type Topic_Vulnerabilities = {
+  __typename?: 'topic_vulnerabilities';
+  created_at: Scalars['timestamptz'];
+  id: Scalars['uuid'];
+  topic_id: Scalars['uuid'];
+  updated_at: Scalars['timestamptz'];
+  /** An object relationship */
+  vulnerability: Vulnerabilities;
+  vulnerability_id: Scalars['uuid'];
+};
+
+/** input type for inserting array relation for remote table "topic_vulnerabilities" */
+export type Topic_Vulnerabilities_Arr_Rel_Insert_Input = {
+  data: Array<Topic_Vulnerabilities_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Topic_Vulnerabilities_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "topic_vulnerabilities". All fields are combined with a logical 'AND'. */
+export type Topic_Vulnerabilities_Bool_Exp = {
+  _and?: InputMaybe<Array<Topic_Vulnerabilities_Bool_Exp>>;
+  _not?: InputMaybe<Topic_Vulnerabilities_Bool_Exp>;
+  _or?: InputMaybe<Array<Topic_Vulnerabilities_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  topic_id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  vulnerability?: InputMaybe<Vulnerabilities_Bool_Exp>;
+  vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "topic_vulnerabilities" */
+export enum Topic_Vulnerabilities_Constraint {
+  /** unique or primary key constraint */
+  TopicVulnerabilitiesPkey = 'topic_vulnerabilities_pkey',
+  /** unique or primary key constraint */
+  TopicVulnerabilitiesUnique = 'topic_vulnerabilities_unique'
+}
+
+/** input type for inserting data into table "topic_vulnerabilities" */
+export type Topic_Vulnerabilities_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  topic?: InputMaybe<Topics_Obj_Rel_Insert_Input>;
+  topic_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  vulnerability?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
+  vulnerability_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** response of any mutation on the table "topic_vulnerabilities" */
+export type Topic_Vulnerabilities_Mutation_Response = {
+  __typename?: 'topic_vulnerabilities_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Topic_Vulnerabilities>;
+};
+
+/** on_conflict condition type for table "topic_vulnerabilities" */
+export type Topic_Vulnerabilities_On_Conflict = {
+  constraint: Topic_Vulnerabilities_Constraint;
+  update_columns?: Array<Topic_Vulnerabilities_Update_Column>;
+  where?: InputMaybe<Topic_Vulnerabilities_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "topic_vulnerabilities". */
+export type Topic_Vulnerabilities_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  topic_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  vulnerability?: InputMaybe<Vulnerabilities_Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: topic_vulnerabilities */
+export type Topic_Vulnerabilities_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "topic_vulnerabilities" */
+export enum Topic_Vulnerabilities_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  TopicId = 'topic_id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  VulnerabilityId = 'vulnerability_id'
+}
+
+/** input type for updating data in table "topic_vulnerabilities" */
+export type Topic_Vulnerabilities_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  topic_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  vulnerability_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** update columns of table "topic_vulnerabilities" */
+export enum Topic_Vulnerabilities_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  TopicId = 'topic_id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  VulnerabilityId = 'vulnerability_id'
+}
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Topics_Append_Input = {
+  metadata?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "topics". All fields are combined with a logical 'AND'. */
+export type Topics_Bool_Exp = {
+  _and?: InputMaybe<Array<Topics_Bool_Exp>>;
+  _not?: InputMaybe<Topics_Bool_Exp>;
+  _or?: InputMaybe<Array<Topics_Bool_Exp>>;
+};
+
+/** unique or primary key constraints on table "topics" */
+export enum Topics_Constraint {
+  /** unique or primary key constraint */
+  TopicsDataSourceLinkKey = 'topics_data_source_link_key',
+  /** unique or primary key constraint */
+  TopicsPkey = 'topics_pkey',
+  /** unique or primary key constraint */
+  TopicsTopicUniqueIdKey = 'topics_topic_unique_id_key'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Topics_Delete_At_Path_Input = {
+  metadata?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Topics_Delete_Elem_Input = {
+  metadata?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Topics_Delete_Key_Input = {
+  metadata?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for incrementing numeric columns in table "topics" */
+export type Topics_Inc_Input = {
+  metadata_schema_version?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "topics" */
+export type Topics_Insert_Input = {
+  body?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  data_source_link?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  metadata?: InputMaybe<Scalars['jsonb']>;
+  metadata_schema_version?: InputMaybe<Scalars['Int']>;
+  related_topics?: InputMaybe<Topic_Related_Topics_Arr_Rel_Insert_Input>;
+  summary?: InputMaybe<Scalars['String']>;
+  tags?: InputMaybe<Scalars['_text']>;
+  title?: InputMaybe<Scalars['String']>;
+  topic_unique_id?: InputMaybe<Scalars['String']>;
+  topic_vulnerabilities?: InputMaybe<Topic_Vulnerabilities_Arr_Rel_Insert_Input>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "topics" */
+export type Topics_Mutation_Response = {
+  __typename?: 'topics_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+};
+
+/** input type for inserting object relation for remote table "topics" */
+export type Topics_Obj_Rel_Insert_Input = {
+  data: Topics_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Topics_On_Conflict>;
+};
+
+/** on_conflict condition type for table "topics" */
+export type Topics_On_Conflict = {
+  constraint: Topics_Constraint;
+  update_columns?: Array<Topics_Update_Column>;
+  where?: InputMaybe<Topics_Bool_Exp>;
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Topics_Prepend_Input = {
+  metadata?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** input type for updating data in table "topics" */
+export type Topics_Set_Input = {
+  body?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  data_source_link?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  metadata?: InputMaybe<Scalars['jsonb']>;
+  metadata_schema_version?: InputMaybe<Scalars['Int']>;
+  summary?: InputMaybe<Scalars['String']>;
+  tags?: InputMaybe<Scalars['_text']>;
+  title?: InputMaybe<Scalars['String']>;
+  topic_unique_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** update columns of table "topics" */
+export enum Topics_Update_Column {
+  /** column name */
+  Body = 'body',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  DataSourceLink = 'data_source_link',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Metadata = 'metadata',
+  /** column name */
+  MetadataSchemaVersion = 'metadata_schema_version',
+  /** column name */
+  Summary = 'summary',
+  /** column name */
+  Tags = 'tags',
+  /** column name */
+  Title = 'title',
+  /** column name */
+  TopicUniqueId = 'topic_unique_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
 
 /**
  * LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.)
@@ -4740,6 +5390,116 @@ export enum Vulnerability_Packages_Update_Column {
   Slug = 'slug'
 }
 
+/** columns and relationships of "webhook_cache" */
+export type Webhook_Cache = {
+  __typename?: 'webhook_cache';
+  created_at: Scalars['timestamp'];
+  data: Scalars['jsonb'];
+  delivery_id: Scalars['uuid'];
+  event_type: Scalars['github_webhook_event'];
+  installation_id?: Maybe<Scalars['Int']>;
+  signature_256: Scalars['String'];
+  sqs_message_id?: Maybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "webhook_cache" */
+export type Webhook_CacheDataArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** Boolean expression to filter rows from the table "webhook_cache". All fields are combined with a logical 'AND'. */
+export type Webhook_Cache_Bool_Exp = {
+  _and?: InputMaybe<Array<Webhook_Cache_Bool_Exp>>;
+  _not?: InputMaybe<Webhook_Cache_Bool_Exp>;
+  _or?: InputMaybe<Array<Webhook_Cache_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  data?: InputMaybe<Jsonb_Comparison_Exp>;
+  delivery_id?: InputMaybe<Uuid_Comparison_Exp>;
+  event_type?: InputMaybe<Github_Webhook_Event_Comparison_Exp>;
+  installation_id?: InputMaybe<Int_Comparison_Exp>;
+  signature_256?: InputMaybe<String_Comparison_Exp>;
+  sqs_message_id?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "webhook_cache" */
+export enum Webhook_Cache_Constraint {
+  /** unique or primary key constraint */
+  WebhookCachePkey = 'webhook_cache_pkey'
+}
+
+/** input type for inserting data into table "webhook_cache" */
+export type Webhook_Cache_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  data?: InputMaybe<Scalars['jsonb']>;
+  delivery_id?: InputMaybe<Scalars['uuid']>;
+  event_type?: InputMaybe<Scalars['github_webhook_event']>;
+  installation_id?: InputMaybe<Scalars['Int']>;
+  signature_256?: InputMaybe<Scalars['String']>;
+  sqs_message_id?: InputMaybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "webhook_cache" */
+export type Webhook_Cache_Mutation_Response = {
+  __typename?: 'webhook_cache_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Webhook_Cache>;
+};
+
+/** on_conflict condition type for table "webhook_cache" */
+export type Webhook_Cache_On_Conflict = {
+  constraint: Webhook_Cache_Constraint;
+  update_columns?: Array<Webhook_Cache_Update_Column>;
+  where?: InputMaybe<Webhook_Cache_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "webhook_cache". */
+export type Webhook_Cache_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  data?: InputMaybe<Order_By>;
+  delivery_id?: InputMaybe<Order_By>;
+  event_type?: InputMaybe<Order_By>;
+  installation_id?: InputMaybe<Order_By>;
+  signature_256?: InputMaybe<Order_By>;
+  sqs_message_id?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: webhook_cache */
+export type Webhook_Cache_Pk_Columns_Input = {
+  delivery_id: Scalars['uuid'];
+};
+
+/** select columns of table "webhook_cache" */
+export enum Webhook_Cache_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Data = 'data',
+  /** column name */
+  DeliveryId = 'delivery_id',
+  /** column name */
+  EventType = 'event_type',
+  /** column name */
+  InstallationId = 'installation_id',
+  /** column name */
+  Signature_256 = 'signature_256',
+  /** column name */
+  SqsMessageId = 'sqs_message_id'
+}
+
+/** input type for updating data in table "webhook_cache" */
+export type Webhook_Cache_Set_Input = {
+  sqs_message_id?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "webhook_cache" */
+export enum Webhook_Cache_Update_Column {
+  /** column name */
+  SqsMessageId = 'sqs_message_id'
+}
+
 export type GetAuthDataFromProjectTokenQueryVariables = Exact<{
   access_token: Scalars['uuid'];
 }>;
@@ -4798,6 +5558,28 @@ export type GetUsersProjectsQueryVariables = Exact<{
 
 export type GetUsersProjectsQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', id: any }> };
 
+export type GetVulnerabilitiesByCveQueryVariables = Exact<{
+  cves?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+
+export type GetVulnerabilitiesByCveQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any }> };
+
+export type GetWebhookCacheByDeliveryIdQueryVariables = Exact<{
+  delivery_id: Scalars['uuid'];
+}>;
+
+
+export type GetWebhookCacheByDeliveryIdQuery = { __typename?: 'query_root', webhook_cache: Array<{ __typename?: 'webhook_cache', data: any, delivery_id: any, signature_256: string, event_type: any, installation_id?: number | null, created_at: any }> };
+
+export type GetWebhookCacheJobsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetWebhookCacheJobsQuery = { __typename?: 'query_root', webhook_cache: Array<{ __typename?: 'webhook_cache', data: any, delivery_id: any, signature_256: string, event_type: any, created_at: any }> };
+
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
   s3_url?: InputMaybe<Scalars['String']>;
@@ -4822,6 +5604,17 @@ export type InsertScanMutationVariables = Exact<{
 
 
 export type InsertScanMutation = { __typename?: 'mutation_root', insert_scans_one?: { __typename?: 'scans', id: any, build_id: any, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
+
+export type InsertWebhookToCacheMutationVariables = Exact<{
+  delivery_id: Scalars['uuid'];
+  event_type: Scalars['github_webhook_event'];
+  signature_256: Scalars['String'];
+  installation_id?: InputMaybe<Scalars['Int']>;
+  data: Scalars['jsonb'];
+}>;
+
+
+export type InsertWebhookToCacheMutation = { __typename?: 'mutation_root', insert_webhook_cache_one?: { __typename?: 'webhook_cache', delivery_id: any } | null };
 
 export type GetProjectIdFromGitUrlQueryVariables = Exact<{
   git_url?: InputMaybe<Scalars['String']>;
@@ -4873,6 +5666,14 @@ export type UpdateOrganizationsForUserMutationVariables = Exact<{
 
 export type UpdateOrganizationsForUserMutation = { __typename?: 'mutation_root', insert_organization_user?: { __typename?: 'organization_user_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'organization_user', id: any }> } | null };
 
+export type UpdateWebhookJobStatusMutationVariables = Exact<{
+  webhook_delivery_id: Scalars['uuid'];
+  sqs_message_id: Scalars['String'];
+}>;
+
+
+export type UpdateWebhookJobStatusMutation = { __typename?: 'mutation_root', update_webhook_cache?: { __typename?: 'webhook_cache_mutation_response', returning: Array<{ __typename?: 'webhook_cache', delivery_id: any }> } | null };
+
 export type UpsertOrganizationUsersMutationVariables = Exact<{
   organizationUsers: Array<Organization_User_Insert_Input> | Organization_User_Insert_Input;
 }>;
@@ -4887,6 +5688,13 @@ export type UpsertOrganizationsMutationVariables = Exact<{
 
 
 export type UpsertOrganizationsMutation = { __typename?: 'mutation_root', insert_organizations?: { __typename?: 'organizations_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'organizations', id: any, github_node_id?: string | null, name: string }> } | null };
+
+export type UpsertTopicsMutationVariables = Exact<{
+  objects: Array<Topics_Insert_Input> | Topics_Insert_Input;
+}>;
+
+
+export type UpsertTopicsMutation = { __typename?: 'mutation_root', insert_topics?: { __typename?: 'topics_mutation_response', affected_rows: number } | null };
 
 export type UpsertUserFromIdMutationVariables = Exact<{
   user: Users_Insert_Input;
@@ -4980,6 +5788,40 @@ export const GetUsersProjectsDocument = gql`
   }
 }
     `;
+export const GetVulnerabilitiesByCveDocument = gql`
+    query GetVulnerabilitiesByCve($cves: [String!]) {
+  vulnerabilities(where: {name: {_in: $cves}}) {
+    id
+  }
+}
+    `;
+export const GetWebhookCacheByDeliveryIdDocument = gql`
+    query GetWebhookCacheByDeliveryId($delivery_id: uuid!) {
+  webhook_cache(where: {delivery_id: {_eq: $delivery_id}}) {
+    data
+    delivery_id
+    signature_256
+    event_type
+    installation_id
+    created_at
+  }
+}
+    `;
+export const GetWebhookCacheJobsDocument = gql`
+    query GetWebhookCacheJobs($limit: Int = 10, $offset: Int = 0) {
+  webhook_cache(
+    where: {sqs_message_id: {_is_null: false}}
+    limit: $limit
+    offset: $offset
+  ) {
+    data
+    delivery_id
+    signature_256
+    event_type
+    created_at
+  }
+}
+    `;
 export const InsertBuildDocument = gql`
     mutation InsertBuild($project_id: uuid!, $s3_url: String, $pull_request_id: String, $source_type: builds_source_type!) {
   insert_builds_one(
@@ -5041,6 +5883,15 @@ export const InsertScanDocument = gql`
         }
       }
     }
+  }
+}
+    `;
+export const InsertWebhookToCacheDocument = gql`
+    mutation InsertWebhookToCache($delivery_id: uuid!, $event_type: github_webhook_event!, $signature_256: String!, $installation_id: Int, $data: jsonb!) {
+  insert_webhook_cache_one(
+    object: {delivery_id: $delivery_id, event_type: $event_type, signature_256: $signature_256, installation_id: $installation_id, data: $data}
+  ) {
+    delivery_id
   }
 }
     `;
@@ -5109,6 +5960,18 @@ export const UpdateOrganizationsForUserDocument = gql`
   }
 }
     `;
+export const UpdateWebhookJobStatusDocument = gql`
+    mutation UpdateWebhookJobStatus($webhook_delivery_id: uuid!, $sqs_message_id: String!) {
+  update_webhook_cache(
+    where: {delivery_id: {_eq: $webhook_delivery_id}}
+    _set: {sqs_message_id: $sqs_message_id}
+  ) {
+    returning {
+      delivery_id
+    }
+  }
+}
+    `;
 export const UpsertOrganizationUsersDocument = gql`
     mutation UpsertOrganizationUsers($organizationUsers: [organization_user_insert_input!]!) {
   insert_organization_user(
@@ -5128,6 +5991,16 @@ export const UpsertOrganizationsDocument = gql`
       github_node_id
       name
     }
+  }
+}
+    `;
+export const UpsertTopicsDocument = gql`
+    mutation UpsertTopics($objects: [topics_insert_input!]!) {
+  insert_topics(
+    on_conflict: {constraint: topics_topic_unique_id_key, update_columns: [tags, body, data_source_link, metadata, metadata_schema_version, title, updated_at, summary]}
+    objects: $objects
+  ) {
+    affected_rows
   }
 }
     `;
@@ -5173,6 +6046,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetUsersProjects(variables: GetUsersProjectsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUsersProjectsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUsersProjectsQuery>(GetUsersProjectsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUsersProjects', 'query');
     },
+    GetVulnerabilitiesByCve(variables?: GetVulnerabilitiesByCveQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetVulnerabilitiesByCveQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetVulnerabilitiesByCveQuery>(GetVulnerabilitiesByCveDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetVulnerabilitiesByCve', 'query');
+    },
+    GetWebhookCacheByDeliveryId(variables: GetWebhookCacheByDeliveryIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetWebhookCacheByDeliveryIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetWebhookCacheByDeliveryIdQuery>(GetWebhookCacheByDeliveryIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetWebhookCacheByDeliveryId', 'query');
+    },
+    GetWebhookCacheJobs(variables?: GetWebhookCacheJobsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetWebhookCacheJobsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetWebhookCacheJobsQuery>(GetWebhookCacheJobsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetWebhookCacheJobs', 'query');
+    },
     InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');
     },
@@ -5181,6 +6063,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     InsertScan(variables: InsertScanMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertScanMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertScanMutation>(InsertScanDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertScan', 'mutation');
+    },
+    InsertWebhookToCache(variables: InsertWebhookToCacheMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertWebhookToCacheMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InsertWebhookToCacheMutation>(InsertWebhookToCacheDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertWebhookToCache', 'mutation');
     },
     GetProjectIdFromGitUrl(variables?: GetProjectIdFromGitUrlQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectIdFromGitUrlQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetProjectIdFromGitUrlQuery>(GetProjectIdFromGitUrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectIdFromGitUrl', 'query');
@@ -5200,11 +6085,17 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     UpdateOrganizationsForUser(variables: UpdateOrganizationsForUserMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateOrganizationsForUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateOrganizationsForUserMutation>(UpdateOrganizationsForUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateOrganizationsForUser', 'mutation');
     },
+    UpdateWebhookJobStatus(variables: UpdateWebhookJobStatusMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateWebhookJobStatusMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateWebhookJobStatusMutation>(UpdateWebhookJobStatusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateWebhookJobStatus', 'mutation');
+    },
     UpsertOrganizationUsers(variables: UpsertOrganizationUsersMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOrganizationUsersMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpsertOrganizationUsersMutation>(UpsertOrganizationUsersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertOrganizationUsers', 'mutation');
     },
     UpsertOrganizations(variables?: UpsertOrganizationsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOrganizationsMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpsertOrganizationsMutation>(UpsertOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertOrganizations', 'mutation');
+    },
+    UpsertTopics(variables: UpsertTopicsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertTopicsMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpsertTopicsMutation>(UpsertTopicsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertTopics', 'mutation');
     },
     UpsertUserFromId(variables: UpsertUserFromIdMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertUserFromIdMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpsertUserFromIdMutation>(UpsertUserFromIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertUserFromId', 'mutation');
