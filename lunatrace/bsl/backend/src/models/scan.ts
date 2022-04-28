@@ -31,8 +31,20 @@ export type InsertedScan = NonNullable<InsertScanMutation['insert_scans_one']>;
 
 export async function parseAndUploadScan(sbomStream: Readable, buildId: string): Promise<InsertedScan> {
   const rawGrypeReport = await runGrypeScan(sbomStream);
+  log.info('finished running lunatrace scan on sbom', {
+    buildId
+  });
+
   const typedRawGrypeReport = Convert.toScanReport(rawGrypeReport);
+  log.info('parsing scan results into report', {
+    buildId,
+    typedRawGrypeReport
+  });
   const scan = await parseScan(typedRawGrypeReport, buildId);
+
+  log.info('inserting scan results in hasura', {
+    buildId
+  });
   const insertRes = await hasura.InsertScan({
     scan,
     build_id: buildId,
@@ -59,7 +71,7 @@ export async function runGrypeScan(sbomStream: Readable): Promise<string> {
     });
     lunatraceCli.on('close', (code) => {
       if (code !== 0) {
-        return reject(`Grype exited with non-zero code: ${code}`);
+        return reject(`lunatrace exited with non-zero code: ${code}`);
       }
       resolve(Buffer.concat(outputBuffers).toString());
     });
@@ -67,7 +79,9 @@ export async function runGrypeScan(sbomStream: Readable): Promise<string> {
     sbomStream.on('end', () =>
       lunatraceCli.stdin.end(() => log.info('Finished passing sbom contents to lunatrace CLI'))
     );
-    sbomStream.on('error', reject);
+    sbomStream.on('error', (e) => {
+      return reject(`error with sbom stream: ${e}`);
+    });
   });
 }
 

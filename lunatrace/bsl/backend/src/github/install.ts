@@ -130,7 +130,6 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
       installationId,
       error: queueResp.msg
     });
-    return
   }
 
   log.info('completed queueing repositories for snapshots', {

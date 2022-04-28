@@ -11,6 +11,8 @@
  * limitations under the License.
  *
  */
+import zlib from "zlib";
+
 import {generateSbomFromAsset} from "../../cli/call-cli";
 import {hasura} from "../../hasura-api";
 import {GetProjectIdFromGitUrlQuery, InsertBuildMutation} from "../../hasura-api/generated";
@@ -69,6 +71,10 @@ export async function generateSnapshotForRepository(record: GenerateSnapshotForR
   parsedGitUrl.password = installationToken.res;
 
   const gzippedSbom = generateSbomFromAsset('repository', parsedGitUrl.toString(), record.gitBranch);
+
+  log.info('Creating a new build for repository', {
+    gitUrl: parsedGitUrl
+  });
 
   const insertBuildResponse: Try<InsertBuildMutation> = await catchError(
     async () => await hasura.InsertBuild({ project_id: projectId, pull_request_id: record.pullRequestId, source_type: record.sourceType })

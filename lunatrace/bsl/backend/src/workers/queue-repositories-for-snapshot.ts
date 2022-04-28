@@ -20,21 +20,17 @@ import {getSqsUrlFromName} from "../utils/sqs";
 
 const repoQueueConfig = getRepositoryQueueConfig();
 
-export async function queueRepositoryForSnapshot(record: GenerateSnapshotForRepositoryRecord): Promise<void> {
+export async function queueRepositoriesForSnapshot(installationId: number, records: GenerateSnapshotForRepositoryRecord[]): Promise<void> {
   // TODO (cthompson) move this outside of this function, this should only need to be run once
   const repositoryQueueUrl = await getSqsUrlFromName(sqsClient, repoQueueConfig.queueName);
 
   // messages sent to this queue will be processed by the process-repository queue handler in workers/snapshot-repository
   await sqsClient.send(new SendMessageCommand({
-    MessageBody: JSON.stringify(record),
+    MessageBody: JSON.stringify(records),
     MessageAttributes: {
       'installation_id': {
         DataType: 'Number',
-        StringValue: record.installationId.toString()
-      },
-      'repo_id': {
-        DataType: 'Number',
-        StringValue: record.repoGithubId.toString()
+        StringValue: installationId.toString()
       },
     },
     QueueUrl: repositoryQueueUrl

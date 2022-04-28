@@ -21,10 +21,6 @@ export interface QueueHandlerConfig {
   queueNameEnvVar: string
 }
 
-export interface GenerateSnapshotForRepositoryEvent {
-  Records?: GenerateSnapshotForRepositoryRecord[];
-}
-
 export type BuildSourceType = 'pr' | 'gui' | 'cli';
 
 export interface GenerateSnapshotForRepositoryRecord {
