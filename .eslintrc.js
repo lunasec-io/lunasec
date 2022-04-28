@@ -14,8 +14,9 @@
  * limitations under the License.
  *
  */
+const process = require('process');
 
-const hideErrorsInDev = process.env.HIDE_ERRORS_IN_DEV || 'true'
+const hideErrorsInDev = process.env.HIDE_ERRORS_IN_DEV === 'true';
 
 const productionError = hideErrorsInDev ? 'warn': 'error';
 const productionWarn = hideErrorsInDev ? 'off': 'warn';
@@ -81,7 +82,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-call': productionWarn,
     '@typescript-eslint/no-unsafe-return': productionWarn,
     '@typescript-eslint/no-unsafe-member-access': productionWarn,
-    'import/namespace': productionError,
+    'import/namespace': 'off', // productionError,
     'no-console': productionWarn,
     'no-debugger': productionError,
     eqeqeq: 'error',
@@ -137,7 +138,7 @@ module.exports = {
       productionWarn,
       { 'argsIgnorePattern': '^_' }
     ],
-    // 'unused-imports/no-unused-imports': 'error', turn this on if you want to --fix all of these out of the codebase
+    // 'unused-imports/no-unused-imports': 'error',// turn this on if you want to --fix all of these out of the codebase
     '@typescript-eslint/unbound-method': 'warn',
     '@typescript-eslint/restrict-template-expressions': 'off',
     'import/order': [

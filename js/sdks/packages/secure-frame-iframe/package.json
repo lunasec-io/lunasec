@@ -9,7 +9,7 @@
     "compile": "yarn run compile:dev",
     "compile:dev": "yarn run webpack-cli --config webpack.config.cjs",
     "compile:release": "rm -rf public; NODE_ENV=production yarn run compile",
-    "serve-assets": "yarn dlx http-server -a localhost -p 8000",
+    "serve-assets": "yarn run http-server -a localhost -p 8000",
     "watch": "WEBPACK_WATCH=true yarn run compile",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

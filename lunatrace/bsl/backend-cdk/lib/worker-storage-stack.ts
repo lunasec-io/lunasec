@@ -141,7 +141,7 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
       manifestBucket,
       processManifestSqsQueue,
       processSbomSqsQueue,
-      processWebhookSqsQueue
+      processWebhookSqsQueue,
     };
   }
 }

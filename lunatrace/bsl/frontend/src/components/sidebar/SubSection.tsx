@@ -13,7 +13,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Badge, Collapse } from 'react-bootstrap';
-import { matchPath, useLocation, useMatch } from 'react-router-dom';
+import { matchPath, useLocation } from 'react-router-dom';
 
 import { SidebarItem, SidebarSubSection } from '../sidebar/types';
 

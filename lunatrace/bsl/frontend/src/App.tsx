@@ -38,9 +38,7 @@ function App() {
         <LoadSession>
           <ThemeProvider>
             <SidebarProvider>
-              <LayoutProvider>
-                {content}
-              </LayoutProvider>
+              <LayoutProvider>{content}</LayoutProvider>
             </SidebarProvider>
           </ThemeProvider>
         </LoadSession>

@@ -17,7 +17,8 @@ import dotenv from 'dotenv';
 import {
   AwsConfig,
   GithubAppConfig,
-  HasuraConfig, JwksConfig,
+  HasuraConfig,
+  JwksConfig,
   QueueHandlerConfig,
   SbomHandlerConfig,
   ServerConfig,
@@ -37,7 +38,7 @@ const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
 const nodeEnv = checkEnvVar('NODE_ENV', 'development');
 const isProduction = nodeEnv === 'production';
 
-dotenv.config({ path: isProduction ? '.env' : '.env.dev'});
+dotenv.config({ path: isProduction ? '.env' : '.env.dev' });
 
 export function getServerConfig(): ServerConfig {
   const serverPortString = checkEnvVar('PORT', '3002');
@@ -47,7 +48,7 @@ export function getServerConfig(): ServerConfig {
   return {
     serverPort,
     sitePublicUrl,
-    isProduction
+    isProduction,
   };
 }
 
@@ -68,7 +69,7 @@ export function getHasuraConfig(): HasuraConfig {
 }
 
 export function getEtlBucketConfig(): SbomHandlerConfig {
-  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET' );
+  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET');
   const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET');
 
   return {
@@ -98,7 +99,7 @@ export function getGithubAppConfig(): GithubAppConfig {
   return {
     githubAppId,
     githubPrivateKey,
-    githubEndpoint
+    githubEndpoint,
   };
 }
 
@@ -108,6 +109,6 @@ export function getJwksConfig(): JwksConfig {
 
   return {
     jwksUri,
-    jwksIssuer
-  }
+    jwksIssuer,
+  };
 }

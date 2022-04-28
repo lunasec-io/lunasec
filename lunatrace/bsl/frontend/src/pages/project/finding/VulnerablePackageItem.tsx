@@ -13,23 +13,19 @@
  */
 import { severityOrder, VulnerablePackage } from '@lunatrace/lunatrace-common';
 import compareVersions from 'compare-versions';
-import React, { LegacyRef, MouseEventHandler, ReactPropTypes, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Accordion,
   Card,
   Col,
-  Collapse,
   Container,
   Dropdown,
-  Fade,
   FloatingLabel,
   Form,
   FormControl,
-  OverlayTrigger,
   Row,
   Spinner,
   Table,
-  Tooltip,
 } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
 import { BsThreeDotsVertical } from 'react-icons/bs';
