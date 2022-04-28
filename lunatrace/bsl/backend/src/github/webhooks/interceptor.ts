@@ -70,23 +70,32 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
       throw new Error('Webhook signature verification failed');
     }
 
+    // "security_advisory.*" event does not have an installation id
+    if (options.name.startsWith('security_advisory')) {
+      log.info('Received security_advisory webhook', {
+        options,
+      });
+
+      // TODO (cthompson) how do we want to handle security advisories? We will have our own ingestor for these.
+      return;
+    }
+
     const installationId = this.getInstallationId(options);
     if (!installationId) {
       log.error('Unable to get installation ID for received webhook', {
-        options: options,
+        options,
       });
       throw new Error('Installation ID is undefined');
     }
 
     const insertedWebhookResult: Try<InsertWebhookToCacheMutation> = await catchError(
-      async () =>
-        await this.hasura.InsertWebhookToCache({
-          data: options.payload,
-          event_type: options.name,
-          signature_256: options.signature,
-          delivery_id: options.id,
-          installation_id: installationId,
-        })
+      this.hasura.InsertWebhookToCache({
+        data: options.payload,
+        event_type: options.name,
+        signature_256: options.signature,
+        delivery_id: options.id,
+        installation_id: installationId,
+      })
     );
 
     if (threwError(insertedWebhookResult)) {

@@ -100,16 +100,16 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     return;
   }
 
-  const installationToken = await getInstallationAccessToken(installationId);
-
-  if (installationToken.error) {
-    log.error('unable to get installation token', {
-      error: installationToken.msg,
+  const githubClient = await generateGithubGraphqlClient(installationId);
+  if (githubClient.error) {
+    log.error(`unable to create github client`, {
+      projectId,
+      installationId,
+      pullRequestId,
     });
     return;
   }
-
-  const github = generateGithubGraphqlClient(installationToken.res);
+  const github = githubClient.res;
 
   const body = generatePullRequestCommentFromReport(projectId, scanReport);
 

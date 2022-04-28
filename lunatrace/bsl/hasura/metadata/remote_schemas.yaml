@@ -54,11 +54,6 @@
           uploadUrl: UploadUrl
         }
 
-        type ScanManifestOutput { build_id: UUID!
-          error: Boolean!
-          error_message: String
-        }
-
         type UploadUrl { headers: JSON!
           url: String!
         }
