@@ -16,7 +16,7 @@ import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
-import { branchLink, branchName, commitLink, gitUrlToLink } from '../../../utils/build-display-helpers';
+import { branchLink, branchName, commitLink } from '../../../utils/build-display-helpers';
 import { prettyDate } from '../../../utils/pretty-date';
 import { BuildInfo, ProjectInfo } from '../types';
 

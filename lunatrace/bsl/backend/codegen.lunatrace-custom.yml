@@ -1,0 +1,28 @@
+{
+  "overwrite": true,
+  "schema": "./src/graphql-yoga/schema.graphql",
+  "generates": {
+    "./src/graphql-yoga/generated-resolver-types.ts": {
+      "plugins": [
+        "typescript",
+        "typescript-resolvers"
+      ]
+    }
+  },
+  "config": {
+    "contextType": "./context#Context",
+    "scalars": {
+      "_text": "string",
+      "date": "string",
+      "fix_state_enum": "'fixed'|'not-fixed'|'unknown'",
+      "jsonb": "Record<any, any> | any[]",
+      "builds_source_type": "'cli'|'gui'|'pr'",
+      "numeric": "number",
+      "organization_user_role": "string",
+      "severity_enum": "string",
+      "timestamp": "string",
+      "timestamptz": "string",
+      "uuid": "string"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -15,17 +15,17 @@ import {
   Organization_User_Insert_Input,
   Organizations_Insert_Input,
   Users_Constraint,
-  Users_Update_Column
-} from "../../hasura-api/generated";
-import {MaybeError} from "../../types/util";
-import {logError} from "../../utils/errors";
-import { normalizeGithubId } from "../../utils/github";
-import {log} from "../../utils/log";
-import {notEmpty} from "../../utils/predicates";
-import {catchError, threwError} from "../../utils/try";
-import {GetMembersForOrganizationQuery} from "../api/generated";
+  Users_Update_Column,
+} from '../../hasura-api/generated';
+import { MaybeError } from '../../types/util';
+import { logError } from '../../utils/errors';
+import { normalizeGithubId } from '../../utils/github';
+import { log } from '../../utils/log';
+import { notEmpty } from '../../utils/predicates';
+import { catchError, threwError } from '../../utils/try';
+import { GetMembersForOrganizationQuery } from '../api/generated';
 
-import {getGithubOrganizationMembers} from "./get-members-for-organization";
+import { getGithubOrganizationMembers } from './get-members-for-organization';
 
 function newOrganizationUser(hasuraOrgId: string, githubNodeId: string): Organization_User_Insert_Input {
   const githubId = normalizeGithubId(githubNodeId);
@@ -38,46 +38,48 @@ function newOrganizationUser(hasuraOrgId: string, githubNodeId: string): Organiz
       },
       on_conflict: {
         constraint: Users_Constraint.UsersGithubIdKey,
-        update_columns: [Users_Update_Column.GithubNodeId]
-      }
-    }
-  }
+        update_columns: [Users_Update_Column.GithubNodeId],
+      },
+    },
+  };
 }
 
 function validateOrgParameters(
   githubOrgToHasuraOrg: Record<string, string>,
   org: Organizations_Insert_Input
-): MaybeError<{ orgName: string, hasuraOrgId: string}> {
+): MaybeError<{ orgName: string; hasuraOrgId: string }> {
   const githubOrgId = org.github_node_id;
   if (!githubOrgId) {
     return {
       error: true,
-      msg: 'Organization github node id is not defined.'
-    }
+      msg: 'Organization github node id is not defined.',
+    };
   }
 
   const orgName = org.name;
   if (!orgName) {
     return {
       error: true,
-      msg: 'Organization name is not defined.'
-    }
+      msg: 'Organization name is not defined.',
+    };
   }
 
   const hasuraOrgId = githubOrgToHasuraOrg[githubOrgId];
   if (!hasuraOrgId) {
     return {
       error: true,
-      msg: `Unable to find github organization ${githubOrgId} in hasura org lookup: ${Object.keys(githubOrgToHasuraOrg)}`
-    }
+      msg: `Unable to find github organization ${githubOrgId} in hasura org lookup: ${Object.keys(
+        githubOrgToHasuraOrg
+      )}`,
+    };
   }
   return {
     error: false,
     res: {
       orgName,
-      hasuraOrgId
-    }
-  }
+      hasuraOrgId,
+    },
+  };
 }
 
 export async function getHasuraOrgMembers(
@@ -93,7 +95,7 @@ export async function getHasuraOrgMembers(
   if (validatedParams.error) {
     return {
       error: true,
-      msg: validatedParams.msg
+      msg: validatedParams.msg,
     };
   }
 
@@ -105,18 +107,20 @@ export async function getHasuraOrgMembers(
     if (!githubUserId) {
       return {
         error: true,
-        msg: 'github node id is not set for user'
-      }
+        msg: 'github node id is not set for user',
+      };
     }
 
     const organizationUser = newOrganizationUser(hasuraOrgId, githubUserId);
     return {
       error: false,
-      res: [organizationUser]
+      res: [organizationUser],
     };
   }
 
-  const githubOrgMembers = await catchError<Promise<GetMembersForOrganizationQuery>>(async () => await getGithubOrganizationMembers(authToken, orgName));
+  const githubOrgMembers = await catchError<Promise<GetMembersForOrganizationQuery>>(
+    async () => await getGithubOrganizationMembers(authToken, orgName)
+  );
 
   if (threwError(githubOrgMembers)) {
     logError(githubOrgMembers);
@@ -125,12 +129,12 @@ export async function getHasuraOrgMembers(
 
   if (githubOrgMembers === null || !githubOrgMembers.organization) {
     log.error('organization members are null.', {
-      installationId
+      installationId,
     });
     return {
       error: true,
-      msg: 'getting organization members failed, orgMembers is not defined'
-    }
+      msg: 'getting organization members failed, orgMembers is not defined',
+    };
   }
 
   const members = githubOrgMembers.organization.membersWithRole.nodes;
@@ -139,7 +143,7 @@ export async function getHasuraOrgMembers(
   const githubOrgMemberIds: string[] = [];
 
   if (members) {
-    const memberIds = members.filter(notEmpty).map(m => m.id);
+    const memberIds = members.filter(notEmpty).map((m) => m.id);
     githubOrgMemberIds.push(...memberIds);
   }
 
@@ -152,19 +156,16 @@ export async function getHasuraOrgMembers(
 
       const filteredMembers = teamMembers.filter(notEmpty);
 
-      return [
-        ...ids,
-        ...filteredMembers.map(m => m.id)
-      ];
-    }, [] as string[])
+      return [...ids, ...filteredMembers.map((m) => m.id)];
+    }, [] as string[]);
     githubOrgMemberIds.push(...teamMemberIds);
   }
 
-  log.info('collected organization member ids', {orgMemberIds: githubOrgMemberIds});
+  log.info('collected organization member ids', { orgMemberIds: githubOrgMemberIds });
 
-  const orgUsers = githubOrgMemberIds.map(githubMemberId => newOrganizationUser(hasuraOrgId, githubMemberId));
+  const orgUsers = githubOrgMemberIds.map((githubMemberId) => newOrganizationUser(hasuraOrgId, githubMemberId));
   return {
     error: false,
-    res: orgUsers
+    res: orgUsers,
   };
 }

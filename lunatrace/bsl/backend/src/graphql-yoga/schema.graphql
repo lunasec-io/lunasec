@@ -1,0 +1,44 @@
+
+scalar uuid
+scalar jsonb
+
+
+type Query {
+    """ get s3 presigned url for manifest upload, used by the CLI """
+    presignSbomUpload(
+        orgId: uuid!
+        buildId: uuid!
+    ): SbomUploadUrlOutput
+    fakeQueryToHackHasuraBeingABuggyMess: String
+}
+
+type Mutation {
+    """ get s3 presigned url for manifest upload, used only by the frontend """
+    presignManifestUpload(
+        project_id: uuid!
+    ): PresignedUrlResponse
+}
+
+input SbomUploadUrlInput {
+    orgId: uuid!
+    projectId: uuid!
+}
+
+
+type SbomUploadUrlOutput {
+    error: Boolean!
+    uploadUrl: UploadUrl
+}
+
+type PresignedUrlResponse {
+    url: String!
+    headers: jsonb!
+    key: String!
+    bucket: String!
+}
+
+type UploadUrl {
+    url: String!
+    headers: jsonb!
+}
+

@@ -12,7 +12,7 @@
  *
  */
 import { db } from '../database/db';
-import {log} from "../utils/log";
+import { log } from '../utils/log';
 
 export async function scaffoldBuild() {
   log.info('scaffolding project with a build and scan');

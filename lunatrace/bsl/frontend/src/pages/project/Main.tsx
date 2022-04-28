@@ -24,7 +24,6 @@ import { ProjectHeader } from './Header';
 import { Builds } from './builds';
 import { ProjectDashboardMain } from './dashboard/Main';
 import { SecretsMain } from './secrets/Main';
-import { ProjectSettingsMain } from './settings/Main';
 import { ProjectInfo, TabName } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
