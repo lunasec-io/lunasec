@@ -15619,3 +15619,67 @@ Info 873  event:
     {"seq":0,"type":"event","event":"semanticDiag","body":{"file":"/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/graphql-yoga/generated-resolver-types.ts","diagnostics":[]}}
 Info 874  event:
     {"seq":0,"type":"event","event":"suggestionDiag","body":{"file":"/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/graphql-yoga/generated-resolver-types.ts","diagnostics":[]}}
+Info 875  FileWatcher:: Triggered with /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/github/api/generated.ts 1:: WatchInfo: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/github/api/generated.ts 500 undefined WatchType: Closed Script info
+Info 876  Scheduled: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json
+Info 877  Scheduled: *ensureProjectForOpenFiles*
+Info 878  Elapsed:: 0.13394299894571304ms FileWatcher:: Triggered with /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/github/api/generated.ts 1:: WatchInfo: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/github/api/generated.ts 500 undefined WatchType: Closed Script info
+Info 879  Running: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json
+Info 880  Starting updateGraphWorker: Project: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json
+Info 881  Finishing updateGraphWorker: Project: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json Version: 7 structureChanged: false structureIsReused:: Completely Elapsed: 300.47895600274205ms
+Info 882  Different program with same set of files
+Info 883  Running: *ensureProjectForOpenFiles*
+Info 884  Before ensureProjectForOpenFiles:
+Info 885  Project '/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json' (Configured)
+	Files (997)
+
+-----------------------------------------------
+Project '/dev/null/autoImportProviderProject1*' (AutoImportProvider)
+	Files (732)
+
+-----------------------------------------------
+Open files: 
+	FileName: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/app.ts ProjectRootPath: undefined
+		Projects: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json
+	FileName: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/graphql-yoga/generated-resolver-types.ts ProjectRootPath: undefined
+		Projects: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json
+Info 886  After ensureProjectForOpenFiles:
+Info 887  Project '/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json' (Configured)
+	Files (997)
+
+-----------------------------------------------
+Project '/dev/null/autoImportProviderProject1*' (AutoImportProvider)
+	Files (732)
+
+-----------------------------------------------
+Open files: 
+	FileName: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/app.ts ProjectRootPath: undefined
+		Projects: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json
+	FileName: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/graphql-yoga/generated-resolver-types.ts ProjectRootPath: undefined
+		Projects: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json
+Info 888  got projects updated in background, updating diagnostics for /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/app.ts,/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/graphql-yoga/generated-resolver-types.ts
+Info 889  event:
+    {"seq":0,"type":"event","event":"projectsUpdatedInBackground","body":{"openFiles":["/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/app.ts","/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/graphql-yoga/generated-resolver-types.ts"]}}
+Info 890  event:
+    {"seq":0,"type":"event","event":"syntaxDiag","body":{"file":"/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/app.ts","diagnostics":[]}}
+Info 891  event:
+    {"seq":0,"type":"event","event":"semanticDiag","body":{"file":"/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/app.ts","diagnostics":[]}}
+Info 892  event:
+    {"seq":0,"type":"event","event":"suggestionDiag","body":{"file":"/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/app.ts","diagnostics":[{"start":{"line":41,"offset":15},"end":{"line":41,"offset":18},"text":"'res' is declared but its value is never read.","code":6133,"category":"suggestion","reportsUnnecessary":true},{"start":{"line":64,"offset":37},"end":{"line":64,"offset":40},"text":"'res' is declared but its value is never read.","code":6133,"category":"suggestion","reportsUnnecessary":true},{"start":{"line":86,"offset":15},"end":{"line":86,"offset":18},"text":"'res' is declared but its value is never read.","code":6133,"category":"suggestion","reportsUnnecessary":true},{"start":{"line":94,"offset":56},"end":{"line":94,"offset":59},"text":"'req' is declared but its value is never read.","code":6133,"category":"suggestion","reportsUnnecessary":true},{"start":{"line":94,"offset":61},"end":{"line":94,"offset":64},"text":"'res' is declared but its value is never read.","code":6133,"category":"suggestion","reportsUnnecessary":true}]}}
+Info 893  event:
+    {"seq":0,"type":"event","event":"syntaxDiag","body":{"file":"/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/graphql-yoga/generated-resolver-types.ts","diagnostics":[]}}
+Info 894  event:
+    {"seq":0,"type":"event","event":"semanticDiag","body":{"file":"/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/graphql-yoga/generated-resolver-types.ts","diagnostics":[]}}
+Info 895  event:
+    {"seq":0,"type":"event","event":"suggestionDiag","body":{"file":"/home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/graphql-yoga/generated-resolver-types.ts","diagnostics":[]}}
+Info 896  FileWatcher:: Triggered with /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/github/api/generated.ts 1:: WatchInfo: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/github/api/generated.ts 500 undefined WatchType: Closed Script info
+Info 897  Scheduled: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json
+Info 898  Scheduled: *ensureProjectForOpenFiles*
+Info 899  Elapsed:: 0.12422099709510803ms FileWatcher:: Triggered with /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/github/api/generated.ts 1:: WatchInfo: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/github/api/generated.ts 500 undefined WatchType: Closed Script info
+Info 900  FileWatcher:: Triggered with /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/hasura-api/generated.ts 1:: WatchInfo: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/hasura-api/generated.ts 500 undefined WatchType: Closed Script info
+Info 901  Scheduled: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json, Cancelled earlier one
+Info 902  Scheduled: *ensureProjectForOpenFiles*, Cancelled earlier one
+Info 903  Elapsed:: 0.08161599934101105ms FileWatcher:: Triggered with /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/hasura-api/generated.ts 1:: WatchInfo: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/src/hasura-api/generated.ts 500 undefined WatchType: Closed Script info
+Info 904  Running: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json
+Info 905  Starting updateGraphWorker: Project: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json
+Info 906  Finishing updateGraphWorker: Project: /home/forrest/code/lunasec-monorepo/lunatrace/bsl/backend/tsconfig.json Version: 8 structureChanged: false structureIsReused:: Completely Elapsed: 397.2410039976239ms
+Info 907  Different program with same set of files
