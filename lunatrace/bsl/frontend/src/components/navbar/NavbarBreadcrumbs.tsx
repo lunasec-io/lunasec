@@ -119,12 +119,13 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
   ];
   const breadCrumbs = useBreadCrumbs(customRoutes);
 
+  // Not every path maps to an index page, so we just dont show those breadcrumbs
   // Really wanted to use micromatch for this but it doesnt work in the browser, so it's regexp :(
   const blackList = ['/project$', '/project/.*/build$', '/organization$'];
 
   return (
     <Breadcrumb className="breadcrumb-navigation">
-      {breadCrumbs.map((crumbMeta) => {
+      {breadCrumbs.map((crumbMeta, index) => {
         const isBanned = blackList.some((banned) => {
           return crumbMeta.match.pathname.match(new RegExp(banned));
         });
@@ -133,9 +134,13 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
           return;
         }
 
+        const isLastCrumb = index === breadCrumbs.length - 1;
+
         return (
           <LinkContainer key={crumbMeta.key} to={crumbMeta.match.pathname}>
-            <Breadcrumb.Item key={crumbMeta.key}>{crumbMeta.breadcrumb}</Breadcrumb.Item>
+            <Breadcrumb.Item key={crumbMeta.key} linkProps={isLastCrumb ? { className: 'text-reset ' } : {}}>
+              {crumbMeta.breadcrumb}
+            </Breadcrumb.Item>
           </LinkContainer>
         );
       })}
