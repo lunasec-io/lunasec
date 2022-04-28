@@ -1,7 +1,7 @@
-- name: lunatrace-custom
+- name: custom-backend-schema
   definition:
     url_from_env: REMOTE_SCHEMA_URL
-    timeout_seconds: 20
+    timeout_seconds: 60
     customization:
       type_names:
         mapping:
@@ -47,13 +47,5 @@
           url: String!
         }
 
-        type Query { presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
-        }
-
-        type SbomUploadUrlOutput { error: Boolean!
-          uploadUrl: UploadUrl
-        }
-
-        type UploadUrl { headers: JSON!
-          url: String!
+        type Query { fakeQueryToHackHasuraBeingABuggyMess: String
         }

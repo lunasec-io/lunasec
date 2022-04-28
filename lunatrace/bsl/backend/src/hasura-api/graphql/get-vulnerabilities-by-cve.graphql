@@ -1,0 +1,5 @@
+query GetVulnerabilitiesByCve($cves: [String!]) {
+    vulnerabilities(where: {name: {_in: $cves}}) {
+        id
+    }
+}

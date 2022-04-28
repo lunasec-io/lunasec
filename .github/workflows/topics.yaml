@@ -1,0 +1,54 @@
+# Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+name: topics
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    env:
+      HASURA_URL: https://lunatrace.lunasec.io/api/service/v1/graphql
+      STATIC_SECRET_ACCESS_TOKEN: ${{secrets.HASURA_SERVICE_SECRET}}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+
+      - name: Yarn Install
+        env:
+          IS_LUNASEC_CI: true
+          CI: true
+        run: |
+          yarn install --immutable --immutable-cache --inline-builds --ignore-scripts
+
+      - name: Upsert Topics
+        working-directory: lunatrace/bsl/backend
+        run: yarn run topics:update
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        if: always()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: Topics Deployed - ${{ job.status }}
+          SLACK_COLOR: ${{ job.status }
