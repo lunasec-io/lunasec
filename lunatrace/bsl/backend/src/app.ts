@@ -13,21 +13,17 @@
  */
 import { randomUUID } from 'crypto';
 
-import { createNodeMiddleware } from '@octokit/webhooks';
+import { createNodeMiddleware as githubWebhooksMiddleware } from '@octokit/webhooks';
 import cors from 'cors';
-import Express, {NextFunction, Request, Response } from 'express';
-import jwt from 'express-jwt';
-import jwksRsa from 'jwks-rsa';
+import Express, { NextFunction, Request, Response } from 'express';
 
-import {getJwksConfig, getServerConfig} from "./config";
+import { getServerConfig } from './config';
+import { lookupAccessTokenRouter } from './express-routes/auth-routes';
+import { githubApiRouter } from './express-routes/github-routes';
 import { webhooks } from './github/webhooks';
-import { lookupAccessTokenRouter } from './routes/auth-routes';
-import { githubApiRouter } from './routes/github-routes';
-import { manifestPresignerRouter } from './routes/manifest-presigner';
-import { sbomPresignerRouter } from './routes/sbom-presigner';
-import {log} from './utils/log';
+import { registerYoga } from './graphql-yoga';
+import { log } from './utils/log';
 
-const jwksConfig = getJwksConfig();
 const serverConfig = getServerConfig();
 
 const app = Express();
@@ -44,14 +40,15 @@ app.use(Express.json());
 
 app.use((req, res, next) => {
   const requestId: string = randomUUID();
-  const loggerFields = {loggerName: 'express-logger',requestId, path: req.path}
-    // This will now be accessible anywhere in this callstack by doing asyncLocalStorage.getStore() which the logger does internally
-    // This has a serious performance hit to promises so if it's bad we should remove it
-  void log.provideFields(loggerFields , next);
+  const loggerFields = { loggerName: 'express-logger', requestId, path: req.path };
+  log.log(loggerFields, 'Request Received');
+  // This will now be accessible anywhere in this callstack by doing asyncLocalStorage.getStore() which the logger does internally
+  // This has a serious performance hit to promises so if it's bad we should remove it
+  void log.provideFields(loggerFields, next);
 });
 
 app.use(
-  createNodeMiddleware(webhooks, {
+  githubWebhooksMiddleware(webhooks, {
     path: '/github/webhook/events',
     onUnhandledRequest: (request, response) => {
       log.error('Unhandled request in GitHub WebHook handler', request);
@@ -77,26 +74,27 @@ app.get('/', (_req: Express.Request, res: Express.Response) => {
   res.send('LunaTrace Backend');
 });
 
-// Unauthenticated Routes (implement custom auth)
+// Unauthenticated Routes (they implement custom auth)
 app.use(lookupAccessTokenRouter);
 app.use(githubApiRouter);
 
-// Routes Authenticated via JWT
-app.use(
-  jwt({
-    secret: jwksRsa.expressJwtSecret({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
-      jwksUri: jwksConfig.jwksUri,
-    }),
+// app.use((req,res,next) => {
+//   logger.log(req.headers, 'headers are ')
+//   next()
+// })
 
-    issuer: jwksConfig.jwksIssuer,
-    algorithms: ['RS256'],
-  })
-);
+app.use((req, res, next) => {
+  log.info('user obj is ', req.user);
+  next();
+});
 
-app.use(manifestPresignerRouter);
-app.use(sbomPresignerRouter);
+// Add graphql routes to the server
+registerYoga(app);
+
+const errorLogger: Express.ErrorRequestHandler = (err, req, res, next) => {
+  log.error(err, 'Error caught in global express error handler');
+  next(err);
+};
+app.use(errorLogger);
 
 export { app };

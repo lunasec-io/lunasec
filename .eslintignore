@@ -14,3 +14,4 @@ deploy-apigateway-to-firehose.ts
 **/generated.ts
 **/cdk.out/**
 **/generated-schema-1-validator.ts
+**/generated-resolver-types.ts

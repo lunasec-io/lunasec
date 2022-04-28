@@ -55,7 +55,6 @@ export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) =>
     }
   }
 
-   
   return next(action);
 };
 export default appApi;

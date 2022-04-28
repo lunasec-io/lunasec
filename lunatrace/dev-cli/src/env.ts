@@ -20,23 +20,27 @@ const processSbomQueue = process.env.PROCESS_SBOM_QUEUE;
 const processWebhookQueue = process.env.PROCESS_WEBHOOK_QUEUE;
 
 if (!processManifestQueue || !processSbomQueue || !processWebhookQueue) {
-  throw new Error('make sure PROCESS_MANIFEST_QUEUE, PROCESS_WEBHOOK_QUEUE, and PROCESS_SBOM_QUEUE are set in .env.dev');
+  throw new Error(
+    'make sure PROCESS_MANIFEST_QUEUE, PROCESS_WEBHOOK_QUEUE, and PROCESS_SBOM_QUEUE are set in .env.dev'
+  );
 }
 
 export function envVars(vars: Record<string, string>): string {
-  return Object.keys(vars).map(k => `${k}="${vars[k]}"`).join(' ')
+  return Object.keys(vars)
+    .map((k) => `${k}="${vars[k]}"`)
+    .join(' ');
 }
 
 // development configuration for the GitHub app
 export const githubAppConfig = {
   GITHUB_APP_ID: '179126',
-  GITHUB_APP_PRIVATE_KEY: `$(cat github-app-dev.2022-03-09.private-key.pem | base64 -w0)`
-}
+  GITHUB_APP_PRIVATE_KEY: `$(cat github-app-dev.2022-03-09.private-key.pem | base64 -w0)`,
+};
 
 export const smeeWebhookUrl = 'https://smee.io/PFQhzcyUpi770GiD';
 
 export const backendEnv = envVars({
-  ...githubAppConfig
+  ...githubAppConfig,
 });
 
 export function queueEnvConfig(
@@ -47,25 +51,25 @@ export function queueEnvConfig(
     QUEUE_NAME: name,
     // todo: we should probably take these out of this tmuxp and move them into a dotenv in the backend code.
     //  if we are going to use dotenv, it might as well work without regenerating this tmux file, and then we can commit the file safely
-    QUEUE_HANDLER: handler
-  }
+    QUEUE_HANDLER: handler,
+  };
 }
 
 export const manifestWorkEnv = envVars({
   ...githubAppConfig,
-  ...queueEnvConfig('process-manifest-queue', processManifestQueue)
+  ...queueEnvConfig('process-manifest-queue', processManifestQueue),
 });
 
 export const sbomWorkerEnv = envVars({
   ...githubAppConfig,
-  ...queueEnvConfig('process-sbom-queue', processSbomQueue)
+  ...queueEnvConfig('process-sbom-queue', processSbomQueue),
 });
 
 export const webhookWorkerEnv = envVars({
   ...githubAppConfig,
-  ...queueEnvConfig('process-webhook-queue', processWebhookQueue)
+  ...queueEnvConfig('process-webhook-queue', processWebhookQueue),
 });
 
 export const dbUrlEnv = envVars({
-  DSN: 'postgres://postgres:postgrespassword@localhost:5431/lunatrace'
-})
+  DSN: 'postgres://postgres:postgrespassword@localhost:5431/lunatrace',
+});
