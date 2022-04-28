@@ -224,9 +224,9 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
         body={(
           <>
             <p>
-              Bulk ignore every currently reported finding for this package. Future vulnerabilities or the same
-              vulnerabilities at new locations can still cause this package to appear again. This action is not yet
-              reversible but will be in a future version.
+              Bulk ignore all currently reported findings for this package. New vulnerabilities or the same
+              vulnerabilities at new locations will cause this package to appear again. This action is not yet
+              reversible, but will be in a future update.
             </p>
             <Form
               onSubmit={(e) => {
