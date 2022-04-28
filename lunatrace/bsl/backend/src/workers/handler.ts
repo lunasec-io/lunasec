@@ -13,7 +13,6 @@
  */
 import {
   DeleteMessageCommand,
-  GetQueueUrlCommand,
   Message,
   ReceiveMessageCommand,
   ReceiveMessageCommandOutput,
@@ -25,7 +24,6 @@ import { getQueueHandlerConfig } from '../config';
 import {createGithubWebhookInterceptor} from "../github/webhooks";
 import {QueueHandlerWorkerConfig} from "../types/config";
 import {
-  GenerateSnapshotForRepositoryEvent,
   GenerateSnapshotForRepositoryRecord,
   HandlerCallback,
   QueueErrorResult,
@@ -36,6 +34,7 @@ import {
 } from '../types/sqs';
 import {log} from '../utils/log';
 import {getSqsUrlFromName} from "../utils/sqs";
+import { isArray } from '../utils/types';
 
 import {handleSnapshotManifest} from "./generate-sbom";
 import {createGithubWebhookHandler} from "./github-webhook";
@@ -44,7 +43,7 @@ import {handleSnapshotRepository} from "./snapshot-repository";
 
 const queueHandlerConfig = getQueueHandlerConfig();
 
-type QueueHandlerFunc = HandlerCallback<S3SqsEvent> | HandlerCallback<GenerateSnapshotForRepositoryEvent> | WebhookHandlerCallback;
+type QueueHandlerFunc = HandlerCallback<S3SqsEvent> | HandlerCallback<GenerateSnapshotForRepositoryRecord[]> | WebhookHandlerCallback;
 type QueueHandlersType = Record<QueueHandlerType, QueueHandlerFunc>;
 
 async function deleteMessage(message: Message, queueUrl: string) {
@@ -153,18 +152,21 @@ function wrapProcessS3EventQueueJob(processMessageCallback: S3HandlerCallback): 
   };
 }
 
-function wrapProcessRepositoryJob(processMessageCallback: HandlerCallback<GenerateSnapshotForRepositoryRecord>): (parsedBody: GenerateSnapshotForRepositoryEvent) => Promise<QueueSuccessResult | QueueErrorResult> {
-  return async (parsedBody: GenerateSnapshotForRepositoryEvent) => {
-    if (!parsedBody.Records) {
+function wrapProcessRepositoryJob(
+  processMessageCallback: HandlerCallback<GenerateSnapshotForRepositoryRecord>
+): (
+  parsedBody: GenerateSnapshotForRepositoryRecord[]
+) => Promise<QueueSuccessResult | QueueErrorResult> {
+  return async (parsedBody: GenerateSnapshotForRepositoryRecord[]) => {
+    if (!isArray(parsedBody) || parsedBody.length === 0) {
       log.info('No records on sqs event, deleting message, exiting');
       return {
         success: false,
         error: new Error('No records on sqs event, deleting message, exiting')
       };
     }
-    // todo: do we actually need this promise handling or should we only take the first record from any event?
-    // assuming one file per object created event makes sense
-    const handlerPromises = parsedBody.Records.map((record) => {
+
+    const handlerPromises = parsedBody.map((record) => {
       // Executes the proper handler for whatever queue we are processing, passed in above as an argument
       return processMessageCallback(record);
     });

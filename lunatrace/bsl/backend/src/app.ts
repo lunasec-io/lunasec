@@ -19,16 +19,13 @@ import Express, {NextFunction, Request, Response } from 'express';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 
-import {sqsClient} from "./aws/sqs-client";
-import {getJwksConfig, getServerConfig, getWebhookConfig} from "./config";
-import {createGithubWebhookInterceptor, WebhookInterceptor} from "./github/webhook-cache";
-import {hasura} from "./hasura-api";
+import {getJwksConfig, getServerConfig} from "./config";
+import {createGithubWebhookInterceptor} from "./github/webhooks";
 import { lookupAccessTokenRouter } from './routes/auth-routes';
 import { githubApiRouter } from './routes/github-routes';
 import { manifestPresignerRouter } from './routes/manifest-presigner';
 import { sbomPresignerRouter } from './routes/sbom-presigner';
 import {log} from './utils/log';
-import {getSqsUrlFromName} from "./utils/sqs";
 
 const jwksConfig = getJwksConfig();
 const serverConfig = getServerConfig();

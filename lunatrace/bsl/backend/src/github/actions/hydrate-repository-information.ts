@@ -16,7 +16,11 @@ import {log} from "../../utils/log";
 import {catchError, threwError} from "../../utils/try";
 import {generateGithubGraphqlClient} from "../api";
 
-export async function hydrateRepositoryInformation(installationToken: string, repo: GithubRepositoryInfo): Promise<void> {
+export interface HydrateRepositoryInformationResponse {
+  filterRepo: boolean
+}
+
+export async function hydrateRepositoryInformation(installationToken: string, repo: GithubRepositoryInfo): Promise<HydrateRepositoryInformationResponse> {
   const github = generateGithubGraphqlClient(installationToken);
 
   const githubRepo = await catchError(async () => await github.GetRepository({
@@ -29,17 +33,24 @@ export async function hydrateRepositoryInformation(installationToken: string, re
       repo,
       msg: githubRepo.message
     });
-    return;
+    return {
+      filterRepo: true
+    };
   }
 
   if (!githubRepo.repository || !githubRepo.repository.defaultBranchRef) {
-    log.error('github repository information is not defined', {
+    log.warn('github repository information is not defined', {
       repo,
       githubRepo
     });
-    return;
+    return {
+      filterRepo: true
+    };
   }
 
   repo.cloneUrl = `${githubRepo.repository.url}.git`;
   repo.defaultBranch = githubRepo.repository.defaultBranchRef.name;
+  return {
+    filterRepo: false
+  }
 }

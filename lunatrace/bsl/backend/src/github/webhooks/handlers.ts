@@ -15,7 +15,7 @@ import {EmitterWebhookEvent, Webhooks } from '@octokit/webhooks';
 
 import { GithubRepositoryInfo } from '../../types/github';
 import { log } from '../../utils/log';
-import {queueRepositoryForSnapshot} from "../../workers/queue-repository-for-snapshot";
+import {queueRepositoriesForSnapshot} from "../../workers/queue-repositories-for-snapshot";
 import { createHasuraOrgsAndProjectsForInstall } from '../actions/create-hasura-orgs-and-projects-for-install';
 import {orgMemberAdded} from "../actions/org-member-added";
 import { queueGithubReposForSnapshots } from '../actions/queue-repositories-for-snapshosts';
@@ -126,13 +126,13 @@ async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
     const gitBranch = event.payload.pull_request.head.ref;
     const installationId = event.payload.installation.id;
 
-    await queueRepositoryForSnapshot({
+    await queueRepositoriesForSnapshot(installationId, [{
       cloneUrl,
       gitBranch,
       repoGithubId,
       installationId,
       sourceType: 'pr',
       pullRequestId,
-    })
+    }])
   }
 }

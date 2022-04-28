@@ -12,15 +12,13 @@
  *
  */
 import { GithubRepositoryInfo } from "../../types/github";
+import {GenerateSnapshotForRepositoryRecord} from "../../types/sqs";
 import {MaybeError} from "../../types/util";
 import {newError, newResult} from "../../utils/errors";
 import {log} from "../../utils/log";
-import {catchError, threwError} from "../../utils/try";
-import {queueRepositoryForSnapshot} from "../../workers/queue-repository-for-snapshot";
-import {generateGithubGraphqlClient} from "../api";
+import {queueRepositoriesForSnapshot} from "../../workers/queue-repositories-for-snapshot";
 import {getInstallationAccessToken} from "../auth";
 
-import {generateSnapshotForRepository} from "./generate-snapshot-for-repository";
 import {hydrateRepositoryInformation} from "./hydrate-repository-information";
 
 export async function queueGithubReposForSnapshots(installationId: number, githubRepos: GithubRepositoryInfo[]): Promise<MaybeError<undefined>> {
@@ -34,8 +32,15 @@ export async function queueGithubReposForSnapshots(installationId: number, githu
     return newError(msg);
   }
 
-  const results = await Promise.all(githubRepos.map(async (repo): Promise<MaybeError<undefined>> => {
-    await hydrateRepositoryInformation(installationToken.res, repo);
+  const results = await Promise.all(githubRepos.map(async (repo): Promise<MaybeError<GenerateSnapshotForRepositoryRecord | null>> => {
+    const resp = await hydrateRepositoryInformation(installationToken.res, repo);
+
+    if (resp.filterRepo) {
+      log.info('Filtering repository from being queued. Most likely this is due to no default branch being defined for the repository.', {
+        repo
+      });
+      return newResult(null);
+    }
 
     if (!repo.cloneUrl || !repo.defaultBranch) {
       const msg = 'unable to generate snapshot for repository, required fields are missing';
@@ -45,20 +50,29 @@ export async function queueGithubReposForSnapshots(installationId: number, githu
       return newError(msg);
     }
 
-    await queueRepositoryForSnapshot({
+    const record: GenerateSnapshotForRepositoryRecord = {
       cloneUrl: repo.cloneUrl,
       gitBranch: repo.defaultBranch,
       installationId: installationId,
       repoGithubId: repo.repoId,
       sourceType: 'gui'
-    })
-    return newResult(undefined);
+    };
+
+    return newResult(record);
   }));
 
   const errors = results.filter(res => res.error);
   if (errors.length > 0) {
     return newError(JSON.stringify(errors))
   }
+
+  const filteredRepos = results.flatMap(res => !res.error && res.res !== null ? res.res : []);
+
+  log.info('queueing repositories for snapshot', {
+    installationId,
+    repoCount: filteredRepos.length
+  });
+  await queueRepositoriesForSnapshot(installationId, filteredRepos);
 
   return newResult(undefined);
 }
