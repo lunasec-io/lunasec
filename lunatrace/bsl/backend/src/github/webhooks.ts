@@ -11,8 +11,9 @@
  * limitations under the License.
  *
  */
-import { EmitterWebhookEvent, Webhooks } from '@octokit/webhooks';
+import { EmitterWebhookEvent } from '@octokit/webhooks';
 
+import { checkEnvVar } from '../config';
 import { hasura } from '../hasura-api';
 import { GithubRepositoryInfo } from '../types/github';
 import { log } from '../utils/log';
@@ -23,16 +24,11 @@ import { reviewPullRequest } from './actions/review-pull-request';
 import { getInstallationAccessToken } from './auth';
 import { WebhookInterceptor } from './webhook-cache';
 
-const webhookQueue = process.env.PROCESS_WEBHOOK_QUEUE;
-
-if (!webhookQueue) {
-  log.error('PROCESS_WEBHOOK_QUEUE is not set');
-  throw new Error('PROCESS_WEBHOOK_QUEUE is not set');
-}
+const webhookQueue = checkEnvVar('PROCESS_WEBHOOK_QUEUE');
 
 export const webhooks = new WebhookInterceptor(hasura, webhookQueue, {
   secret: process.env.GITHUB_APP_WEBHOOK_SECRET || 'mysecret',
-  log: log,
+  log,
 });
 
 async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_repositories.added'>) {
