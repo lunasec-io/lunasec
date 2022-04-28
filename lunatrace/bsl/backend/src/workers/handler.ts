@@ -216,12 +216,19 @@ export async function setupQueue(): Promise<void> {
 
     const queueUrl = await getSqsUrlFromName(sqsClient, queueName);
 
+    if (queueUrl.error) {
+      log.error('unable to load queue url', {
+        queueName: queueName
+      });
+      process.exit(-1);
+    }
+
     log.info('got queueUrl: ', queueUrl);
     // read loop
     // eslint-disable-next-line no-constant-condition
     while (true) {
       log.info('Checking queue for messages...');
-      await readDataFromQueue(queueUrl, queueHandlerConfig, handler);
+      await readDataFromQueue(queueUrl.res, queueHandlerConfig, handler);
     }
   });
 
