@@ -19,8 +19,7 @@ import {
   ReceiveMessageCommandOutput,
 } from '@aws-sdk/client-sqs';
 
-
-import {sqsClient} from '../aws/sqs-client';
+import { sqsClient } from '../aws/sqs-client';
 import { getQueueHandlerConfig } from '../config';
 import {
   HandlerCallback,
@@ -28,20 +27,20 @@ import {
   QueueSuccessResult,
   S3HandlerCallback,
   S3SqsEvent,
-  WebhookHandlerCallback
+  WebhookHandlerCallback,
 } from '../types/sqs';
-import {log} from '../utils/log';
+import { log } from '../utils/log';
 
-import {handleGenerateManifestSbom} from './generate-sbom';
-import {handleGithubWebhook} from './github-webhook';
-import {handleScanSbom} from './scan-sbom';
+import { handleGenerateManifestSbom } from './generate-sbom';
+import { handleGithubWebhook } from './github-webhook';
+import { handleScanSbom } from './scan-sbom';
 
 const queueHandlerConfig = getQueueHandlerConfig();
 
 async function deleteMessage(message: Message, queueUrl: string) {
   const deleteParams = {
     QueueUrl: queueUrl,
-    ReceiptHandle: message.ReceiptHandle
+    ReceiptHandle: message.ReceiptHandle,
   };
   try {
     const data = await sqsClient.send(new DeleteMessageCommand(deleteParams));
@@ -51,7 +50,11 @@ async function deleteMessage(message: Message, queueUrl: string) {
   }
 }
 
-async function readDataFromQueue<THandler extends allQueueHandlersTypes>(queueUrl: string, queueName: allQueueHandlersTypes, processMessageCallback: typeof allQueueHandlers[THandler]) {
+async function readDataFromQueue<THandler extends allQueueHandlersTypes>(
+  queueUrl: string,
+  queueName: allQueueHandlersTypes,
+  processMessageCallback: typeof allQueueHandlers[THandler]
+) {
   try {
     const params = {
       AttributeNames: ['SentTimestamp'],
@@ -59,16 +62,16 @@ async function readDataFromQueue<THandler extends allQueueHandlersTypes>(queueUr
       MessageAttributeNames: ['All'],
       QueueUrl: queueUrl,
       VisibilityTimeout: QUEUE_VISIBILITY_OVERRIDE[queueName] || 60,
-      WaitTimeSeconds: 5
+      WaitTimeSeconds: 5,
     };
 
     const data: ReceiveMessageCommandOutput = await sqsClient.send(new ReceiveMessageCommand(params));
     if (data.Messages) {
       const allJobs = Promise.all(
         data.Messages.map(async (message) => {
-        return await log.provideFields({sqsMetadata:data.$metadata, messageId: message.MessageId}, async () => {
+          return await log.provideFields({ sqsMetadata: data.$metadata, messageId: message.MessageId }, async () => {
             if (!message.Body) {
-            log.info('Received sqs message with no message body');
+              log.info('Received sqs message with no message body');
               return;
             }
 
@@ -106,14 +109,15 @@ async function readDataFromQueue<THandler extends allQueueHandlersTypes>(queueUr
   }
 }
 
-function wrapProcessQueueJob(processMessageCallback: S3HandlerCallback): (parsedBody: S3SqsEvent) => Promise<QueueSuccessResult | QueueErrorResult> {
-
+function wrapProcessQueueJob(
+  processMessageCallback: S3HandlerCallback
+): (parsedBody: S3SqsEvent) => Promise<QueueSuccessResult | QueueErrorResult> {
   return async (parsedBody: S3SqsEvent) => {
     if (!parsedBody.Records) {
       log.info('No records on sqs event, deleting message, exiting');
       return {
         success: false,
-        error: new Error('No records on sqs event, deleting message, exiting')
+        error: new Error('No records on sqs event, deleting message, exiting'),
       };
     }
     // todo: do we actually need this promise handling or should we only take the first record from any event?
@@ -123,7 +127,7 @@ function wrapProcessQueueJob(processMessageCallback: S3HandlerCallback): (parsed
       return processMessageCallback({
         bucketName: record.s3.bucket.name,
         key: record.s3.object.key,
-        region: record.awsRegion
+        region: record.awsRegion,
       });
     });
     const results = await Promise.all(handlerPromises);
@@ -131,16 +135,16 @@ function wrapProcessQueueJob(processMessageCallback: S3HandlerCallback): (parsed
     const errors = results.filter((result) => !result.success);
 
     if (errors.length > 0) {
-      log.error('Errors found during SQS job:', {errors});
+      log.error('Errors found during SQS job:', { errors });
       // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
       return {
         success: false,
-        error: new Error('Errors found during SQS job')
+        error: new Error('Errors found during SQS job'),
       };
     }
 
     return {
-      success: true
+      success: true,
     };
   };
 }
@@ -159,16 +163,16 @@ type WebhookQueueMap = {
 
 const handlers: S3QueueMap = {
   'process-manifest-queue': wrapProcessQueueJob(handleGenerateManifestSbom),
-  'process-sbom-queue': wrapProcessQueueJob(handleScanSbom)
+  'process-sbom-queue': wrapProcessQueueJob(handleScanSbom),
 };
 
 const webhookHandlers: WebhookQueueMap = {
-  'process-webhook-queue': handleGithubWebhook
+  'process-webhook-queue': handleGithubWebhook,
 };
 
 const allQueueHandlers = {
   ...handlers,
-  ...webhookHandlers
+  ...webhookHandlers,
 };
 
 const DEFAULT_QUEUE_MAX_MESSAGES = 10;
@@ -176,18 +180,20 @@ const DEFAULT_QUEUE_MAX_MESSAGES = 10;
 const QUEUE_MAX_MESSAGES_OVERRIDE = {
   'process-webhook-queue': 1,
   'process-manifest-queue': DEFAULT_QUEUE_MAX_MESSAGES,
-  'process-sbom-queue': DEFAULT_QUEUE_MAX_MESSAGES
-}
+  'process-sbom-queue': DEFAULT_QUEUE_MAX_MESSAGES,
+};
 
 const DEFAULT_QUEUE_VISIBILITY = 60;
 
 const QUEUE_VISIBILITY_OVERRIDE = {
   'process-webhook-queue': DEFAULT_QUEUE_VISIBILITY * 5,
   'process-manifest-queue': DEFAULT_QUEUE_VISIBILITY,
-  'process-sbom-queue': DEFAULT_QUEUE_VISIBILITY
-}
+  'process-sbom-queue': DEFAULT_QUEUE_VISIBILITY,
+};
 
-function determineHandler<THandler extends allQueueHandlersTypes>(handlerName: THandler): typeof allQueueHandlers[THandler] {
+function determineHandler<THandler extends allQueueHandlersTypes>(
+  handlerName: THandler
+): typeof allQueueHandlers[THandler] {
   if (!(handlerName in allQueueHandlers)) {
     throw new Error('Unknown queue handler: ' + handlerName.toString());
   }
@@ -196,10 +202,10 @@ function determineHandler<THandler extends allQueueHandlersTypes>(handlerName: T
 
 export async function setupQueue(): Promise<void> {
   const queueName = queueHandlerConfig.queueName;
-  await log.provideFields({queueName, loggerName: 'queue-logger'}, async () => {
-    const {QueueUrl} = await sqsClient.send(
+  await log.provideFields({ queueName, loggerName: 'queue-logger' }, async () => {
+    const { QueueUrl } = await sqsClient.send(
       new GetQueueUrlCommand({
-        QueueName: queueName
+        QueueName: queueName,
       })
     );
     if (!QueueUrl) {
@@ -217,7 +223,6 @@ export async function setupQueue(): Promise<void> {
       await readDataFromQueue(QueueUrl, handlerType, handler);
     }
   });
-
 }
 
 void setupQueue();

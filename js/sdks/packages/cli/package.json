@@ -11,9 +11,9 @@
   ],
   "scripts": {
     "clean": "rm -rf build",
-    "compile": "yarn dlx tsc -p ./tsconfig.json",
+    "compile": "yarn run tsc -p ./tsconfig.json",
     "watch": "yarn run compile -- -w",
-    "types:generate": "yarn dlx json-schema-to-typescript"
+    "types:generate": "yarn run json-schema-to-typescript"
   },
   "bin": {
     "lunasec": "./build/cli.js"

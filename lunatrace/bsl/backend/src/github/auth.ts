@@ -16,11 +16,11 @@ import { createAppAuth } from '@octokit/auth-app';
 import { GraphQLClient } from 'graphql-request';
 
 import { getGithubAppConfig } from '../config';
-import {MaybeError} from "../types/util";
-import {newError, newResult} from "../utils/errors";
-import {catchError, threwError} from "../utils/try";
+import { MaybeError } from '../types/util';
+import { newError, newResult } from '../utils/errors';
+import { catchError, threwError } from '../utils/try';
 
-import {getSdk, Sdk} from './api/generated';
+import { getSdk, Sdk } from './api/generated';
 
 const githubAppConfig = getGithubAppConfig();
 
@@ -48,10 +48,13 @@ export async function getInstallationAccessToken(installationId: number): Promis
   const auth = getGithubAppAuth();
 
   // Retrieves the installation access token
-  const installationAuthentication = await catchError(async () => await auth({
-    type: 'installation',
-    installationId: installationId,
-  }));
+  const installationAuthentication = await catchError(
+    async () =>
+      await auth({
+        type: 'installation',
+        installationId: installationId,
+      })
+  );
 
   if (threwError(installationAuthentication)) {
     return newError(installationAuthentication.message);

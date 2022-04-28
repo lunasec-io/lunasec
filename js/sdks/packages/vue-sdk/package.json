@@ -3,10 +3,10 @@
   "version": "1.0.5",
   "private": true,
   "scripts": {
-    "serve": "yarn dlx vue-cli-service serve",
-    "build": "yarn dlx vue-cli-service build",
-    "test:unit": "yarn dlx vue-cli-service test:unit",
-    "test:e2e": "yarn dlx vue-cli-service test:e2e",
+    "serve": "yarn run vue-cli-service serve",
+    "build": "yarn run vue-cli-service build",
+    "test:unit": "yarn run vue-cli-service test:unit",
+    "test:e2e": "yarn run vue-cli-service test:e2e",
     "lint": "echo 'DONT USE THIS, USE THE GLOBAL ONE FROM THE REPO ROOT"
   },
   "dependencies": {
