@@ -13,14 +13,18 @@
  */
 import {GetQueueUrlCommand, SQSClient} from "@aws-sdk/client-sqs";
 
-export async function getSqsUrlFromName(sqsClient: SQSClient, queueName: string): Promise<string> {
+import {MaybeError} from "../types/util";
+
+import {newError, newResult} from "./errors";
+
+export async function getSqsUrlFromName(sqsClient: SQSClient, queueName: string): Promise<MaybeError<string>> {
   const {QueueUrl: queueUrl} = await sqsClient.send(
     new GetQueueUrlCommand({
       QueueName: queueName
     })
   );
   if (!queueUrl) {
-    throw new Error('failed to get QueueUrl for queuename ');
+    return newError(`unable to get queue url for queue: ${queueName}`)
   }
-  return queueUrl;
+  return newResult(queueUrl);
 }

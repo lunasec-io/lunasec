@@ -16,6 +16,7 @@ import { SendMessageCommand } from "@aws-sdk/client-sqs";
 import {sqsClient} from "../aws/sqs-client";
 import {getRepositoryQueueConfig} from "../config";
 import {GenerateSnapshotForRepositoryRecord} from "../types/sqs";
+import {log} from "../utils/log";
 import {getSqsUrlFromName} from "../utils/sqs";
 
 const repoQueueConfig = getRepositoryQueueConfig();
@@ -23,6 +24,13 @@ const repoQueueConfig = getRepositoryQueueConfig();
 export async function queueRepositoriesForSnapshot(installationId: number, records: GenerateSnapshotForRepositoryRecord[]): Promise<void> {
   // TODO (cthompson) move this outside of this function, this should only need to be run once
   const repositoryQueueUrl = await getSqsUrlFromName(sqsClient, repoQueueConfig.queueName);
+
+  if (repositoryQueueUrl.error) {
+    log.error('unable to load repository queue url', {
+      queueName: repositoryQueueUrl
+    });
+    return;
+  }
 
   // messages sent to this queue will be processed by the process-repository queue handler in workers/snapshot-repository
   await sqsClient.send(new SendMessageCommand({
@@ -33,6 +41,6 @@ export async function queueRepositoriesForSnapshot(installationId: number, recor
         StringValue: installationId.toString()
       },
     },
-    QueueUrl: repositoryQueueUrl
+    QueueUrl: repositoryQueueUrl.res
   }))
 }
