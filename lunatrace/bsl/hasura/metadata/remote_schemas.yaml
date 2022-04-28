@@ -6,7 +6,7 @@
       type_names:
         mapping:
           UUID: uuid
-          JSON: jsbon
+          JSON: jsonb
     forward_client_headers: true
   comment: ""
   permissions:
