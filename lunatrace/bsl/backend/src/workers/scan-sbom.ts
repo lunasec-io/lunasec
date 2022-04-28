@@ -47,7 +47,9 @@ function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gz
 }
 
 async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan> {
-  log.info(sbomBucketInfo, 'scanning sbom ');
+  log.info('scanning sbom', {
+    sbomBucketInfo,
+  });
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
     sbomBucketInfo.key,

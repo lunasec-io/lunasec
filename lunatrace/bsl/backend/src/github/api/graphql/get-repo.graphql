@@ -1,0 +1,8 @@
+query GetRepository($name: String!, $owner: String!) {
+  repository(name: $name, owner: $owner) {
+    defaultBranchRef {
+      name
+    }
+    url
+  }
+}

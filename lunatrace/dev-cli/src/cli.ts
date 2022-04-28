@@ -36,6 +36,7 @@ import {
   hasura,
   manifestWorker,
   oathkeeper,
+  repositoryWorker,
   sbomWorker,
   smeeWebhook,
   webhookWorker,
@@ -44,9 +45,9 @@ import { tmuxpConfig, tmuxWindow } from './tmux';
 
 const servicesWindow = tmuxWindow('services', [oathkeeper, hasura, frontend, dockerCompose]);
 
-const backendWindow = tmuxWindow('backend', [smeeWebhook, backend]);
+const workerWindow = tmuxWindow('workers', [manifestWorker, sbomWorker, webhookWorker, repositoryWorker]);
 
-const workerWindow = tmuxWindow('workers', [manifestWorker, sbomWorker, webhookWorker]);
+const backendWindow = tmuxWindow('backend', [manifestWorker, sbomWorker, webhookWorker]);
 
 const generatedCodeWindow = tmuxWindow('generated-code', [generateCommon, generateLogger]);
 

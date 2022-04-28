@@ -19,10 +19,13 @@ import {
   GithubAppConfig,
   HasuraConfig,
   JwksConfig,
-  QueueHandlerConfig,
+  QueueHandlerWorkerConfig,
+  RepositoryQueueConfig,
   SbomHandlerConfig,
   ServerConfig,
+  WebhookConfig,
 } from './types/config';
+import { QueueHandlerConfig, QueueHandlerType } from './types/sqs';
 
 export const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
   const envVar = process.env[envVarKey];
@@ -60,6 +63,22 @@ export function getAwsConfig(): AwsConfig {
   };
 }
 
+export function getWebhookConfig(): WebhookConfig {
+  const queueName = checkEnvVar('PROCESS_WEBHOOK_QUEUE');
+  const secret = checkEnvVar('GITHUB_APP_WEBHOOK_SECRET', 'mysecret');
+  return {
+    queueName,
+    secret,
+  };
+}
+
+export function getRepositoryQueueConfig(): RepositoryQueueConfig {
+  const queueName = checkEnvVar('PROCESS_REPOSITORY_QUEUE');
+  return {
+    queueName,
+  };
+}
+
 export function getHasuraConfig(): HasuraConfig {
   const hasuraEndpoint = checkEnvVar('HASURA_URL', 'http://localhost:4455/api/service/v1/graphql');
   const staticAccessToken = checkEnvVar('STATIC_SECRET_ACCESS_TOKEN', 'fc7efb9e-04e0-4883-b7b4-8f2e86d1e2e1');
@@ -79,12 +98,45 @@ export function getEtlBucketConfig(): SbomHandlerConfig {
   };
 }
 
-export function getQueueHandlerConfig(): QueueHandlerConfig {
-  const queueName = checkEnvVar('QUEUE_NAME');
+export function getQueueHandlerConfig(): QueueHandlerWorkerConfig {
   const handlerName = checkEnvVar('QUEUE_HANDLER');
+
+  const DEFAULT_QUEUE_MAX_MESSAGES = 10;
+  const DEFAULT_QUEUE_VISIBILITY = 60;
+
+  const handlerConfigLookup: Record<QueueHandlerType, QueueHandlerConfig> = {
+    'process-webhook': {
+      maxMessages: 1,
+      visibility: DEFAULT_QUEUE_VISIBILITY,
+      queueNameEnvVar: 'PROCESS_WEBHOOK_QUEUE',
+    },
+    'process-manifest': {
+      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
+      visibility: DEFAULT_QUEUE_VISIBILITY,
+      queueNameEnvVar: 'PROCESS_MANIFEST_QUEUE',
+    },
+    'process-sbom': {
+      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
+      visibility: DEFAULT_QUEUE_VISIBILITY,
+      queueNameEnvVar: 'PROCESS_SBOM_QUEUE',
+    },
+    'process-repository': {
+      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
+      visibility: DEFAULT_QUEUE_VISIBILITY * 10,
+      queueNameEnvVar: 'PROCESS_REPOSITORY_QUEUE',
+    },
+  };
+
+  // TODO (cthompson) check if handlerName is in QueueHandlerType
+
+  const handlerConfig = handlerConfigLookup[handlerName as QueueHandlerType];
+
+  const handlerQueueName = checkEnvVar(handlerConfig.queueNameEnvVar);
+
   return {
-    queueName,
     handlerName,
+    handlerConfig,
+    handlerQueueName,
   };
 }
 
