@@ -2,6 +2,11 @@
   definition:
     url_from_env: REMOTE_SCHEMA_URL
     timeout_seconds: 60
+    customization:
+      type_names:
+        mapping:
+          UUID: uuid
+          JSON: jsbon
     forward_client_headers: true
   comment: ""
   permissions:
