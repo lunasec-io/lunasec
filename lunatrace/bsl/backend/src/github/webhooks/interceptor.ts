@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -12,37 +12,42 @@
  *
  */
 
-import {SendMessageCommand} from '@aws-sdk/client-sqs';
-import {Webhooks} from '@octokit/webhooks';
+import { SendMessageCommand } from '@aws-sdk/client-sqs';
+import { Webhooks } from '@octokit/webhooks';
 import {
   EmitterWebhookEventWithSignature,
   EmitterWebhookEventWithStringPayloadAndSignature,
-  Options
-// Unsure about why ESLint complains about this by TypeScript is cool with it.
-// eslint-disable-next-line import/no-unresolved
+  Options,
+  // Unsure about why ESLint complains about this by TypeScript is cool with it.
+  // eslint-disable-next-line import/no-unresolved
 } from '@octokit/webhooks/dist-types/types';
 
 import { sqsClient } from '../../aws/sqs-client';
 import { HasuraClient } from '../../hasura-api';
-import {InsertWebhookToCacheMutation} from "../../hasura-api/generated";
-import {logError} from "../../utils/errors";
-import {log} from "../../utils/log";
-import {catchError, threwError, Try} from "../../utils/try";
-
+import { InsertWebhookToCacheMutation } from '../../hasura-api/generated';
+import { logError } from '../../utils/errors';
+import { log } from '../../utils/log';
+import { catchError, threwError, Try } from '../../utils/try';
 
 export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransformed> {
   webhookQueueUrl: string;
   hasura: HasuraClient;
 
-  constructor(hasura: HasuraClient, webhookQueueUrl: string, options: Options<TTransformed> & {
-    secret: string;
-  }) {
+  constructor(
+    hasura: HasuraClient,
+    webhookQueueUrl: string,
+    options: Options<TTransformed> & {
+      secret: string;
+    }
+  ) {
     super(options);
     this.webhookQueueUrl = webhookQueueUrl;
     this.hasura = hasura;
   }
 
-  getInstallationId(options: EmitterWebhookEventWithStringPayloadAndSignature | EmitterWebhookEventWithSignature): number | undefined {
+  getInstallationId(
+    options: EmitterWebhookEventWithStringPayloadAndSignature | EmitterWebhookEventWithSignature
+  ): number | undefined {
     if (typeof options.payload === 'string') {
       try {
         return JSON.parse(options.payload).installation.id;
@@ -55,7 +60,9 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
     return options.payload && (options.payload as any).installation && (options.payload as any).installation.id;
   }
 
-  public verifyAndReceive = async (options: EmitterWebhookEventWithStringPayloadAndSignature | EmitterWebhookEventWithSignature): Promise<void> => {
+  public verifyAndReceive = async (
+    options: EmitterWebhookEventWithStringPayloadAndSignature | EmitterWebhookEventWithSignature
+  ): Promise<void> => {
     const verified = await this.verify(options.payload, options.signature);
 
     if (!verified) {
@@ -78,7 +85,7 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
           event_type: options.name,
           signature_256: options.signature,
           delivery_id: options.id,
-          installation_id: installationId
+          installation_id: installationId,
         })
     );
 
@@ -97,17 +104,19 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
     log.info(`Inserted webhook to cache: ${result.delivery_id}`);
 
     // Ignore the result, we don't care if it succeeded or not because we have ensured that it's been flushed to the DB already;
-    void sqsClient.send(new SendMessageCommand({
-      MessageBody: JSON.stringify({
-        delivery_id: options.id,
-      }),
-      MessageAttributes: {
-        'installation_id': {
-          DataType: 'Number',
-          StringValue: installationId.toString()
-        }
-      },
-      QueueUrl: this.webhookQueueUrl
-    }))
-  }
+    void sqsClient.send(
+      new SendMessageCommand({
+        MessageBody: JSON.stringify({
+          delivery_id: options.id,
+        }),
+        MessageAttributes: {
+          delivery_id: {
+            DataType: 'String',
+            StringValue: options.id,
+          },
+        },
+        QueueUrl: this.webhookQueueUrl,
+      })
+    );
+  };
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -13,13 +13,16 @@
  */
 import deepmerge from 'deepmerge';
 
-import {logError} from "../../utils/errors";
+import { logError } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { catchError, threwError, Try } from '../../utils/try';
 import { GetMembersForOrganizationQuery } from '../api/generated';
 import { getGithubGraphqlClient } from '../auth';
 
-export async function getGithubOrganizationMembers(authToken: string, orgName: string): Promise<GetMembersForOrganizationQuery> {
+export async function getGithubOrganizationMembers(
+  authToken: string,
+  orgName: string
+): Promise<GetMembersForOrganizationQuery> {
   const github = getGithubGraphqlClient(authToken);
 
   let pageAfter: string | null | undefined = undefined;
@@ -39,9 +42,7 @@ export async function getGithubOrganizationMembers(authToken: string, orgName: s
 
     if (threwError(orgMembers)) {
       logError(orgMembers);
-      throw new Error(
-        `Unable to get organization members. Most likely this is the Github rate limit getting hit.`
-      );
+      throw new Error(`Unable to get organization members. Most likely this is the Github rate limit getting hit.`);
     }
 
     allOrgMembers = deepmerge(allOrgMembers || {}, orgMembers);
@@ -67,7 +68,7 @@ export async function getGithubOrganizationMembers(authToken: string, orgName: s
     moreDataAvailable = !!pageAfter;
   }
 
-  if (allOrgMembers === null)  {
+  if (allOrgMembers === null) {
     throw new Error('organization members is null');
   }
 

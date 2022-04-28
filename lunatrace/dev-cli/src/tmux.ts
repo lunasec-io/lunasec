@@ -16,32 +16,32 @@
  */
 
 export interface TmuxPane {
-  shell_command: string[]
+  shell_command: string[];
 }
 
 export interface TmuxWindow {
-  window_name: string,
-  layout: 'tiled',
-  panes: TmuxPane[]
+  window_name: string;
+  layout: 'tiled';
+  panes: TmuxPane[];
 }
 
 export function tmuxPane(cmd: string[]): TmuxPane {
   return {
-    shell_command: cmd
-  }
+    shell_command: cmd,
+  };
 }
 
 export function tmuxWindow(name: string, panes: TmuxPane[]): TmuxWindow {
   return {
     window_name: name,
     layout: 'tiled',
-    panes: panes
-  }
+    panes: panes,
+  };
 }
 
 export function tmuxpConfig(name: string, windows: TmuxWindow[]) {
   return {
     session_name: name,
-    windows
-  }
+    windows,
+  };
 }

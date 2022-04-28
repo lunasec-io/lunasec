@@ -30,7 +30,6 @@ export type Scalars = {
   builds_source_type: any;
   date: any;
   fix_state_enum: any;
-  github_webhook_event: any;
   jsonb: any;
   numeric: any;
   organization_user_role: any;
@@ -66,12 +65,6 @@ export type Int_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Int']>>;
 };
 
-export type SbomUploadUrlOutput = {
-  __typename?: 'SbomUploadUrlOutput';
-  error: Scalars['Boolean'];
-  uploadUrl?: Maybe<UploadUrl>;
-};
-
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 export type String_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['String']>;
@@ -103,12 +96,6 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
-};
-
-export type UploadUrl = {
-  __typename?: 'UploadUrl';
-  headers: Scalars['String'];
-  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -1054,19 +1041,6 @@ export type Github_Repositories_Variance_Order_By = {
   github_id?: InputMaybe<Order_By>;
 };
 
-/** Boolean expression to compare columns of type "github_webhook_event". All fields are combined with logical 'AND'. */
-export type Github_Webhook_Event_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['github_webhook_event']>;
-  _gt?: InputMaybe<Scalars['github_webhook_event']>;
-  _gte?: InputMaybe<Scalars['github_webhook_event']>;
-  _in?: InputMaybe<Array<Scalars['github_webhook_event']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']>;
-  _lt?: InputMaybe<Scalars['github_webhook_event']>;
-  _lte?: InputMaybe<Scalars['github_webhook_event']>;
-  _neq?: InputMaybe<Scalars['github_webhook_event']>;
-  _nin?: InputMaybe<Array<Scalars['github_webhook_event']>>;
-};
-
 /** columns and relationships of "identities" */
 export type Identities = {
   __typename?: 'identities';
@@ -1635,10 +1609,6 @@ export type Mutation_Root = {
   insert_vulnerability_packages?: Maybe<Vulnerability_Packages_Mutation_Response>;
   /** insert a single row into the table: "vulnerability_packages" */
   insert_vulnerability_packages_one?: Maybe<Vulnerability_Packages>;
-  /** insert data into the table: "webhook_cache" */
-  insert_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
-  /** insert a single row into the table: "webhook_cache" */
-  insert_webhook_cache_one?: Maybe<Webhook_Cache>;
   /** update data of the table: "builds" */
   update_builds?: Maybe<Builds_Mutation_Response>;
   /** update single row of the table: "builds" */
@@ -1685,10 +1655,6 @@ export type Mutation_Root = {
   update_vulnerability_packages?: Maybe<Vulnerability_Packages_Mutation_Response>;
   /** update single row of the table: "vulnerability_packages" */
   update_vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
-  /** update data of the table: "webhook_cache" */
-  update_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
-  /** update single row of the table: "webhook_cache" */
-  update_webhook_cache_by_pk?: Maybe<Webhook_Cache>;
 };
 
 
@@ -1885,20 +1851,6 @@ export type Mutation_RootInsert_Vulnerability_Packages_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_Webhook_CacheArgs = {
-  objects: Array<Webhook_Cache_Insert_Input>;
-  on_conflict?: InputMaybe<Webhook_Cache_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Webhook_Cache_OneArgs = {
-  object: Webhook_Cache_Insert_Input;
-  on_conflict?: InputMaybe<Webhook_Cache_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_BuildsArgs = {
   _inc?: InputMaybe<Builds_Inc_Input>;
   _set?: InputMaybe<Builds_Set_Input>;
@@ -2068,20 +2020,6 @@ export type Mutation_RootUpdate_Vulnerability_PackagesArgs = {
 export type Mutation_RootUpdate_Vulnerability_Packages_By_PkArgs = {
   _set?: InputMaybe<Vulnerability_Packages_Set_Input>;
   pk_columns: Vulnerability_Packages_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Webhook_CacheArgs = {
-  _set?: InputMaybe<Webhook_Cache_Set_Input>;
-  where: Webhook_Cache_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Webhook_Cache_By_PkArgs = {
-  _set?: InputMaybe<Webhook_Cache_Set_Input>;
-  pk_columns: Webhook_Cache_Pk_Columns_Input;
 };
 
 /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
@@ -3108,8 +3046,6 @@ export type Query_Root = {
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
-  /** get s3 presigned url for manifest upload, used by the CLI */
-  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -3140,10 +3076,6 @@ export type Query_Root = {
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** fetch data from the table: "vulnerability_packages" using primary key columns */
   vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
-  /** fetch data from the table: "webhook_cache" */
-  webhook_cache: Array<Webhook_Cache>;
-  /** fetch data from the table: "webhook_cache" using primary key columns */
-  webhook_cache_by_pk?: Maybe<Webhook_Cache>;
 };
 
 
@@ -3291,12 +3223,6 @@ export type Query_RootPackage_Versions_By_PkArgs = {
 };
 
 
-export type Query_RootPresignSbomUploadArgs = {
-  buildId: Scalars['uuid'];
-  orgId: Scalars['uuid'];
-};
-
-
 export type Query_RootProject_Access_TokensArgs = {
   distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3401,20 +3327,6 @@ export type Query_RootVulnerability_PackagesArgs = {
 
 export type Query_RootVulnerability_Packages_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootWebhook_CacheArgs = {
-  distinct_on?: InputMaybe<Array<Webhook_Cache_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Webhook_Cache_Order_By>>;
-  where?: InputMaybe<Webhook_Cache_Bool_Exp>;
-};
-
-
-export type Query_RootWebhook_Cache_By_PkArgs = {
-  delivery_id: Scalars['uuid'];
 };
 
 /**
@@ -3861,10 +3773,6 @@ export type Subscription_Root = {
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** fetch data from the table: "vulnerability_packages" using primary key columns */
   vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
-  /** fetch data from the table: "webhook_cache" */
-  webhook_cache: Array<Webhook_Cache>;
-  /** fetch data from the table: "webhook_cache" using primary key columns */
-  webhook_cache_by_pk?: Maybe<Webhook_Cache>;
 };
 
 
@@ -4116,20 +4024,6 @@ export type Subscription_RootVulnerability_PackagesArgs = {
 
 export type Subscription_RootVulnerability_Packages_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootWebhook_CacheArgs = {
-  distinct_on?: InputMaybe<Array<Webhook_Cache_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Webhook_Cache_Order_By>>;
-  where?: InputMaybe<Webhook_Cache_Bool_Exp>;
-};
-
-
-export type Subscription_RootWebhook_Cache_By_PkArgs = {
-  delivery_id: Scalars['uuid'];
 };
 
 /** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
@@ -4846,116 +4740,6 @@ export enum Vulnerability_Packages_Update_Column {
   Slug = 'slug'
 }
 
-/** columns and relationships of "webhook_cache" */
-export type Webhook_Cache = {
-  __typename?: 'webhook_cache';
-  created_at: Scalars['timestamp'];
-  data: Scalars['jsonb'];
-  delivery_id: Scalars['uuid'];
-  event_type: Scalars['github_webhook_event'];
-  installation_id?: Maybe<Scalars['Int']>;
-  signature_256: Scalars['String'];
-  sqs_message_id?: Maybe<Scalars['String']>;
-};
-
-
-/** columns and relationships of "webhook_cache" */
-export type Webhook_CacheDataArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-/** Boolean expression to filter rows from the table "webhook_cache". All fields are combined with a logical 'AND'. */
-export type Webhook_Cache_Bool_Exp = {
-  _and?: InputMaybe<Array<Webhook_Cache_Bool_Exp>>;
-  _not?: InputMaybe<Webhook_Cache_Bool_Exp>;
-  _or?: InputMaybe<Array<Webhook_Cache_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  data?: InputMaybe<Jsonb_Comparison_Exp>;
-  delivery_id?: InputMaybe<Uuid_Comparison_Exp>;
-  event_type?: InputMaybe<Github_Webhook_Event_Comparison_Exp>;
-  installation_id?: InputMaybe<Int_Comparison_Exp>;
-  signature_256?: InputMaybe<String_Comparison_Exp>;
-  sqs_message_id?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "webhook_cache" */
-export enum Webhook_Cache_Constraint {
-  /** unique or primary key constraint */
-  WebhookCachePkey = 'webhook_cache_pkey'
-}
-
-/** input type for inserting data into table "webhook_cache" */
-export type Webhook_Cache_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamp']>;
-  data?: InputMaybe<Scalars['jsonb']>;
-  delivery_id?: InputMaybe<Scalars['uuid']>;
-  event_type?: InputMaybe<Scalars['github_webhook_event']>;
-  installation_id?: InputMaybe<Scalars['Int']>;
-  signature_256?: InputMaybe<Scalars['String']>;
-  sqs_message_id?: InputMaybe<Scalars['String']>;
-};
-
-/** response of any mutation on the table "webhook_cache" */
-export type Webhook_Cache_Mutation_Response = {
-  __typename?: 'webhook_cache_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Webhook_Cache>;
-};
-
-/** on_conflict condition type for table "webhook_cache" */
-export type Webhook_Cache_On_Conflict = {
-  constraint: Webhook_Cache_Constraint;
-  update_columns?: Array<Webhook_Cache_Update_Column>;
-  where?: InputMaybe<Webhook_Cache_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "webhook_cache". */
-export type Webhook_Cache_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  data?: InputMaybe<Order_By>;
-  delivery_id?: InputMaybe<Order_By>;
-  event_type?: InputMaybe<Order_By>;
-  installation_id?: InputMaybe<Order_By>;
-  signature_256?: InputMaybe<Order_By>;
-  sqs_message_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: webhook_cache */
-export type Webhook_Cache_Pk_Columns_Input = {
-  delivery_id: Scalars['uuid'];
-};
-
-/** select columns of table "webhook_cache" */
-export enum Webhook_Cache_Select_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Data = 'data',
-  /** column name */
-  DeliveryId = 'delivery_id',
-  /** column name */
-  EventType = 'event_type',
-  /** column name */
-  InstallationId = 'installation_id',
-  /** column name */
-  Signature_256 = 'signature_256',
-  /** column name */
-  SqsMessageId = 'sqs_message_id'
-}
-
-/** input type for updating data in table "webhook_cache" */
-export type Webhook_Cache_Set_Input = {
-  sqs_message_id?: InputMaybe<Scalars['String']>;
-};
-
-/** update columns of table "webhook_cache" */
-export enum Webhook_Cache_Update_Column {
-  /** column name */
-  SqsMessageId = 'sqs_message_id'
-}
-
 export type GetAuthDataFromProjectTokenQueryVariables = Exact<{
   access_token: Scalars['uuid'];
 }>;
@@ -5007,27 +4791,12 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 
 export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
 
-export type GetProjectIdFromGitUrlQueryVariables = Exact<{
-  github_id?: InputMaybe<Scalars['Int']>;
+export type GetUsersProjectsQueryVariables = Exact<{
+  user_id: Scalars['uuid'];
 }>;
 
 
-export type GetProjectIdFromGitUrlQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any } }> };
-
-export type GetWebhookCacheByDeliveryIdQueryVariables = Exact<{
-  delivery_id: Scalars['uuid'];
-}>;
-
-
-export type GetWebhookCacheByDeliveryIdQuery = { __typename?: 'query_root', webhook_cache: Array<{ __typename?: 'webhook_cache', data: any, delivery_id: any, signature_256: string, event_type: any, installation_id?: number | null, created_at: any }> };
-
-export type GetWebhookCacheJobsQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-}>;
-
-
-export type GetWebhookCacheJobsQuery = { __typename?: 'query_root', webhook_cache: Array<{ __typename?: 'webhook_cache', data: any, delivery_id: any, signature_256: string, event_type: any, created_at: any }> };
+export type GetUsersProjectsQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', id: any }> };
 
 export type InsertBuildMutationVariables = Exact<{
   project_id: Scalars['uuid'];
@@ -5054,16 +4823,12 @@ export type InsertScanMutationVariables = Exact<{
 
 export type InsertScanMutation = { __typename?: 'mutation_root', insert_scans_one?: { __typename?: 'scans', id: any, build_id: any, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
 
-export type InsertWebhookToCacheMutationVariables = Exact<{
-  delivery_id: Scalars['uuid'];
-  event_type: Scalars['github_webhook_event'];
-  signature_256: Scalars['String'];
-  installation_id?: InputMaybe<Scalars['Int']>;
-  data: Scalars['jsonb'];
+export type GetProjectIdFromGitUrlQueryVariables = Exact<{
+  git_url?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type InsertWebhookToCacheMutation = { __typename?: 'mutation_root', insert_webhook_cache_one?: { __typename?: 'webhook_cache', delivery_id: any } | null };
+export type GetProjectIdFromGitUrlQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any } }> };
 
 export type SetBuildS3UrlMutationVariables = Exact<{
   id: Scalars['uuid'];
@@ -5107,14 +4872,6 @@ export type UpdateOrganizationsForUserMutationVariables = Exact<{
 
 
 export type UpdateOrganizationsForUserMutation = { __typename?: 'mutation_root', insert_organization_user?: { __typename?: 'organization_user_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'organization_user', id: any }> } | null };
-
-export type UpdateWebhookJobStatusMutationVariables = Exact<{
-  webhook_delivery_id: Scalars['uuid'];
-  sqs_message_id: Scalars['String'];
-}>;
-
-
-export type UpdateWebhookJobStatusMutation = { __typename?: 'mutation_root', update_webhook_cache?: { __typename?: 'webhook_cache_mutation_response', returning: Array<{ __typename?: 'webhook_cache', delivery_id: any }> } | null };
 
 export type UpsertOrganizationUsersMutationVariables = Exact<{
   organizationUsers: Array<Organization_User_Insert_Input> | Organization_User_Insert_Input;
@@ -5214,39 +4971,12 @@ export const GetPreviousBuildForPrDocument = gql`
   }
 }
     `;
-export const GetProjectIdFromGitUrlDocument = gql`
-    query GetProjectIdFromGitUrl($github_id: Int) {
-  github_repositories(where: {github_id: {_eq: $github_id}}) {
-    project {
-      id
-    }
-  }
-}
-    `;
-export const GetWebhookCacheByDeliveryIdDocument = gql`
-    query GetWebhookCacheByDeliveryId($delivery_id: uuid!) {
-  webhook_cache(where: {delivery_id: {_eq: $delivery_id}}) {
-    data
-    delivery_id
-    signature_256
-    event_type
-    installation_id
-    created_at
-  }
-}
-    `;
-export const GetWebhookCacheJobsDocument = gql`
-    query GetWebhookCacheJobs($limit: Int = 10, $offset: Int = 0) {
-  webhook_cache(
-    where: {sqs_message_id: {_is_null: false}}
-    limit: $limit
-    offset: $offset
+export const GetUsersProjectsDocument = gql`
+    query GetUsersProjects($user_id: uuid!) {
+  projects(
+    where: {organization: {organization_users: {user: {kratos_id: {_eq: $user_id}}}}}
   ) {
-    data
-    delivery_id
-    signature_256
-    event_type
-    created_at
+    id
   }
 }
     `;
@@ -5314,12 +5044,12 @@ export const InsertScanDocument = gql`
   }
 }
     `;
-export const InsertWebhookToCacheDocument = gql`
-    mutation InsertWebhookToCache($delivery_id: uuid!, $event_type: github_webhook_event!, $signature_256: String!, $installation_id: Int, $data: jsonb!) {
-  insert_webhook_cache_one(
-    object: {delivery_id: $delivery_id, event_type: $event_type, signature_256: $signature_256, installation_id: $installation_id, data: $data}
-  ) {
-    delivery_id
+export const GetProjectIdFromGitUrlDocument = gql`
+    query GetProjectIdFromGitUrl($git_url: String) {
+  github_repositories(where: {git_url: {_eq: $git_url}}) {
+    project {
+      id
+    }
   }
 }
     `;
@@ -5375,18 +5105,6 @@ export const UpdateOrganizationsForUserDocument = gql`
     affected_rows
     returning {
       id
-    }
-  }
-}
-    `;
-export const UpdateWebhookJobStatusDocument = gql`
-    mutation UpdateWebhookJobStatus($webhook_delivery_id: uuid!, $sqs_message_id: String!) {
-  update_webhook_cache(
-    where: {delivery_id: {_eq: $webhook_delivery_id}}
-    _set: {sqs_message_id: $sqs_message_id}
-  ) {
-    returning {
-      delivery_id
     }
   }
 }
@@ -5452,14 +5170,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
     },
-    GetProjectIdFromGitUrl(variables?: GetProjectIdFromGitUrlQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectIdFromGitUrlQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectIdFromGitUrlQuery>(GetProjectIdFromGitUrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectIdFromGitUrl', 'query');
-    },
-    GetWebhookCacheByDeliveryId(variables: GetWebhookCacheByDeliveryIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetWebhookCacheByDeliveryIdQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetWebhookCacheByDeliveryIdQuery>(GetWebhookCacheByDeliveryIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetWebhookCacheByDeliveryId', 'query');
-    },
-    GetWebhookCacheJobs(variables?: GetWebhookCacheJobsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetWebhookCacheJobsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetWebhookCacheJobsQuery>(GetWebhookCacheJobsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetWebhookCacheJobs', 'query');
+    GetUsersProjects(variables: GetUsersProjectsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUsersProjectsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUsersProjectsQuery>(GetUsersProjectsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUsersProjects', 'query');
     },
     InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');
@@ -5470,8 +5182,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     InsertScan(variables: InsertScanMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertScanMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertScanMutation>(InsertScanDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertScan', 'mutation');
     },
-    InsertWebhookToCache(variables: InsertWebhookToCacheMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertWebhookToCacheMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<InsertWebhookToCacheMutation>(InsertWebhookToCacheDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertWebhookToCache', 'mutation');
+    GetProjectIdFromGitUrl(variables?: GetProjectIdFromGitUrlQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectIdFromGitUrlQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectIdFromGitUrlQuery>(GetProjectIdFromGitUrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectIdFromGitUrl', 'query');
     },
     SetBuildS3Url(variables: SetBuildS3UrlMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SetBuildS3UrlMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<SetBuildS3UrlMutation>(SetBuildS3UrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'SetBuildS3Url', 'mutation');
@@ -5487,9 +5199,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UpdateOrganizationsForUser(variables: UpdateOrganizationsForUserMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateOrganizationsForUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateOrganizationsForUserMutation>(UpdateOrganizationsForUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateOrganizationsForUser', 'mutation');
-    },
-    UpdateWebhookJobStatus(variables: UpdateWebhookJobStatusMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateWebhookJobStatusMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpdateWebhookJobStatusMutation>(UpdateWebhookJobStatusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateWebhookJobStatus', 'mutation');
     },
     UpsertOrganizationUsers(variables: UpsertOrganizationUsersMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOrganizationUsersMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpsertOrganizationUsersMutation>(UpsertOrganizationUsersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertOrganizationUsers', 'mutation');

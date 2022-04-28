@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -11,25 +11,25 @@
  * limitations under the License.
  *
  */
-import zlib from "zlib";
+import { generateSbomFromAsset } from '../../cli/call-cli';
+import { hasura } from '../../hasura-api';
+import { GetProjectIdFromGitUrlQuery, InsertBuildMutation } from '../../hasura-api/generated';
+import { GenerateSnapshotForRepositoryRecord } from '../../types/sqs';
+import { MaybeError } from '../../types/util';
+import { log } from '../../utils/log';
+import { catchError, threwError, Try } from '../../utils/try';
+import { uploadSbomToS3 } from '../../workers/generate-sbom';
+import { getInstallationAccessToken } from '../auth';
 
-import {generateSbomFromAsset} from "../../cli/call-cli";
-import {hasura} from "../../hasura-api";
-import {GetProjectIdFromGitUrlQuery, InsertBuildMutation} from "../../hasura-api/generated";
-import {GenerateSnapshotForRepositoryRecord} from "../../types/sqs";
-import {MaybeError} from "../../types/util";
-import {log} from "../../utils/log";
-import {catchError, threwError, Try} from "../../utils/try";
-import {uploadSbomToS3} from "../../workers/generate-sbom";
-import {getInstallationAccessToken} from "../auth";
-
-export async function generateSnapshotForRepository(record: GenerateSnapshotForRepositoryRecord): Promise<MaybeError<undefined>> {
+export async function generateSnapshotForRepository(
+  record: GenerateSnapshotForRepositoryRecord
+): Promise<MaybeError<undefined>> {
   log.info(`generating SBOM for repository: ${record.cloneUrl} at branch name ${record.gitBranch}`);
 
   const projectIdRes: Try<GetProjectIdFromGitUrlQuery> = await catchError(
     async () =>
       await hasura.GetProjectIdFromGitUrl({
-        github_id: record.repoGithubId
+        github_id: record.repoGithubId,
       })
   );
 
@@ -38,7 +38,7 @@ export async function generateSnapshotForRepository(record: GenerateSnapshotForR
     log.error(msg);
     return {
       error: true,
-      msg
+      msg,
     };
   }
 
@@ -47,7 +47,7 @@ export async function generateSnapshotForRepository(record: GenerateSnapshotForR
     log.error(msg);
     return {
       error: true,
-      msg
+      msg,
     };
   }
 
@@ -58,11 +58,11 @@ export async function generateSnapshotForRepository(record: GenerateSnapshotForR
   if (installationToken.error) {
     const msg = 'unable to get installation token';
     log.error(msg, {
-      error: installationToken.msg
-    })
+      error: installationToken.msg,
+    });
     return {
       error: true,
-      msg
+      msg,
     };
   }
 
@@ -73,11 +73,16 @@ export async function generateSnapshotForRepository(record: GenerateSnapshotForR
   const gzippedSbom = generateSbomFromAsset('repository', parsedGitUrl.toString(), record.gitBranch);
 
   log.info('Creating a new build for repository', {
-    gitUrl: parsedGitUrl
+    gitUrl: parsedGitUrl,
   });
 
   const insertBuildResponse: Try<InsertBuildMutation> = await catchError(
-    async () => await hasura.InsertBuild({ project_id: projectId, pull_request_id: record.pullRequestId, source_type: record.sourceType })
+    async () =>
+      await hasura.InsertBuild({
+        project_id: projectId,
+        pull_request_id: record.pullRequestId,
+        source_type: record.sourceType,
+      })
   );
 
   if (threwError(insertBuildResponse)) {
@@ -111,6 +116,6 @@ export async function generateSnapshotForRepository(record: GenerateSnapshotForR
 
   return {
     error: false,
-    res: undefined
+    res: undefined,
   };
 }

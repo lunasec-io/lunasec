@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import {tryGithubIdBase64Decode} from "./parse";
+import { tryGithubIdBase64Decode } from './parse';
 
 export function normalizeGithubId(githubNodeId: string) {
   /*
@@ -22,7 +22,7 @@ export function normalizeGithubId(githubNodeId: string) {
 
   // BUT new github user ids are not base65 encoded, they look like: U_553597.
   if (githubId.startsWith('U_')) {
-    return githubId.replace('U_', '')
+    return githubId.replace('U_', '');
   }
 
   if (!githubId.match(/:/)) {
@@ -34,5 +34,5 @@ export function normalizeGithubId(githubNodeId: string) {
   if (parts.length !== 2) {
     throw new Error(`invalid github id: ${githubNodeId}`);
   }
-  return parts[1].replace('User', '')
+  return parts[1].replace('User', '');
 }
