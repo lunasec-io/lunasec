@@ -14,16 +14,19 @@
  * limitations under the License.
  *
  */
-import { exec } from "child_process";
+import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
 
+// eslint-disable-next-line import/order
 import dotenv from 'dotenv';
+
 dotenv.config({ path: './.env.dev' });
+dotenv.config();
 
 import { dump } from 'js-yaml';
 
-import {bslDir, hasuraDir, kratosDir, tmuxpConfgFile} from "./constants";
-import {dbUrlEnv} from "./env";
+import { bslDir, hasuraDir, kratosDir, tmuxpConfgFile } from './constants';
+import { dbUrlEnv } from './env';
 import {
   backend,
   dockerCompose,
@@ -35,68 +38,45 @@ import {
   oathkeeper,
   sbomWorker,
   smeeWebhook,
-  webhookWorker
-} from "./services";
-import {tmuxpConfig, tmuxWindow } from "./tmux";
+  webhookWorker,
+} from './services';
+import { tmuxpConfig, tmuxWindow } from './tmux';
 
+const servicesWindow = tmuxWindow('services', [oathkeeper, hasura, frontend, dockerCompose]);
 
-dotenv.config()
+const backendWindow = tmuxWindow('backend', [smeeWebhook, backend]);
 
-const servicesWindow = tmuxWindow('services', [
-  oathkeeper,
-  hasura,
-  frontend,
-  dockerCompose,
-]);
+const workerWindow = tmuxWindow('workers', [manifestWorker, sbomWorker, webhookWorker]);
 
-const backendWindow = tmuxWindow('backend', [
-  smeeWebhook,
-  backend
-]);
+const generatedCodeWindow = tmuxWindow('generated-code', [generateCommon, generateLogger]);
 
-const workerWindow = tmuxWindow('workers', [
-  manifestWorker,
-  sbomWorker,
-  webhookWorker
-]);
-
-const generatedCodeWindow = tmuxWindow('generated-code', [
-  generateCommon,
-  generateLogger
-]);
-
-const config = tmuxpConfig('lunatrace', [
-  servicesWindow,
-  backendWindow,
-  workerWindow,
-  generatedCodeWindow
-]);
+const config = tmuxpConfig('lunatrace', [servicesWindow, backendWindow, workerWindow, generatedCodeWindow]);
 
 function hasuraInit() {
-  console.log(`Running hasura migrations...`)
+  console.log(`Running hasura migrations...`);
   exec('hasura migrate apply', {
-    cwd: hasuraDir
+    cwd: hasuraDir,
   });
   exec('hasura metadata apply', {
-    cwd: hasuraDir
+    cwd: hasuraDir,
   });
   exec('hasura metadata reload', {
-    cwd: hasuraDir
+    cwd: hasuraDir,
   });
 }
 
 function kratosInit() {
-  console.log(`Running kratos migrations...`)
+  console.log(`Running kratos migrations...`);
   exec(`${dbUrlEnv} kratos -c config.yaml migrate sql -e --yes`, {
-    cwd: kratosDir
+    cwd: kratosDir,
   });
 }
 
 void (async () => {
-  console.log(`Generating tmuxp config: ${tmuxpConfgFile}...`)
+  console.log(`Generating tmuxp config: ${tmuxpConfgFile}...`);
   const serializedTmuxp = dump(config);
   await writeFile(tmuxpConfgFile, serializedTmuxp);
 
-  console.log(`Starting tmuxp...`)
+  console.log(`Starting tmuxp...`);
   console.log(`cd ${bslDir} && tmuxp load ${tmuxpConfgFile}`);
-})()
+})();

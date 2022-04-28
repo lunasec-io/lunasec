@@ -17,12 +17,11 @@ import { validate as validateUUID } from 'uuid';
 
 import { getHasuraConfig } from '../config';
 import { hasura } from '../hasura-api';
-import {log} from "../utils/log";
+import { log } from '../utils/log';
 
 // These routes are used by oathkeeper to validate incoming requests before they are allowed to reach the rest of the cluster
 const hasuraConfig = getHasuraConfig();
 export const lookupAccessTokenRouter = express.Router();
-
 
 lookupAccessTokenRouter.get('/internal/auth/lookup-project-access-token', cliAuthorizer);
 lookupAccessTokenRouter.get('/internal/auth/lookup-static-access-token', serviceAuthorizer);

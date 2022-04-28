@@ -6,8 +6,6 @@ mutation presignManifestUrl($project_id: uuid!) {
     headers
     key
     bucket
-    error
-    error_message
 }
 
 }
