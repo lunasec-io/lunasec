@@ -106,7 +106,7 @@ export function getQueueHandlerConfig(): QueueHandlerWorkerConfig {
   const handlerConfigLookup: Record<QueueHandlerType, QueueHandlerConfig> = {
     'process-webhook': {
       maxMessages: 1,
-      visibility: DEFAULT_QUEUE_VISIBILITY * 5,
+      visibility: DEFAULT_QUEUE_VISIBILITY,
       queueNameEnvVar: 'PROCESS_WEBHOOK_QUEUE',
     },
     'process-manifest': {
@@ -121,7 +121,7 @@ export function getQueueHandlerConfig(): QueueHandlerWorkerConfig {
     },
     'process-repository': {
       maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
-      visibility: DEFAULT_QUEUE_VISIBILITY,
+      visibility: DEFAULT_QUEUE_VISIBILITY * 10,
       queueNameEnvVar: 'PROCESS_REPOSITORY_QUEUE',
     },
   };
