@@ -1,13 +1,6 @@
 actions: []
 custom_types:
   enums: []
-  input_objects:
-  - name: SbomUploadUrlInput
-  - name: SampleInput
-  objects:
-  - name: SbomUploadUrlOutput
-  - name: PresignedUrlResponse
-  - name: ScanManifestOutput
-  - name: SampleOutput
-  - name: UploadUrl
+  input_objects: []
+  objects: []
   scalars: []
