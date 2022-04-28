@@ -21,11 +21,10 @@ import { hasura } from '../hasura-api';
 import { InsertedScan, parseAndUploadScan } from '../models/scan';
 import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
-import {QueueErrorResult, QueueSuccessResult} from '../types/sqs';
+import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
-import {log} from "../utils/log";
+import { log } from '../utils/log';
 import { catchError, threwError } from '../utils/try';
-
 
 function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gzip> {
   return new Promise((resolve, reject) => {
@@ -48,7 +47,7 @@ function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gz
 }
 
 async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan> {
-  log.info(sbomBucketInfo,'scanning sbom ');
+  log.info(sbomBucketInfo, 'scanning sbom ');
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
     sbomBucketInfo.key,
@@ -58,15 +57,15 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
 
   const unZippedSbomStream = await decompressGzip(sbomStream, sbomLength);
 
-  log.info( `updating manifest status to "scanning" if it existed`);
+  log.info(`updating manifest status to "scanning" if it existed`);
   await hasura.UpdateManifestStatusIfExists({ status: 'scanning', buildId: buildId });
 
   const scanReport = await parseAndUploadScan(unZippedSbomStream, buildId);
 
-  log.info( 'upload complete, notifying manifest if one exists');
+  log.info('upload complete, notifying manifest if one exists');
   await hasura.UpdateManifestStatusIfExists({ status: 'scanned', buildId: buildId });
 
-  log.info( 'done with scan');
+  log.info('done with scan');
 
   return scanReport;
 }
@@ -74,7 +73,7 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
 export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSuccessResult | QueueErrorResult> {
   const { key, region, bucketName } = message;
   const buildId = key.split('/').pop();
-  return await log.provideFields({key, region, bucketName}, async () => {
+  return await log.provideFields({ key, region, bucketName }, async () => {
     if (!buildId || !validate.isUUID(buildId)) {
       log.error('invalid build uuid from s3 object at key ', key);
       // not much we can do without a valid buildId
@@ -104,12 +103,11 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
     try {
       await commentOnPrIfExists(buildId, scanResp);
     } catch (e) {
-      log.error('commenting on github pr failed, continuing.. ', e)
+      log.error('commenting on github pr failed, continuing.. ', e);
     }
 
     return {
       success: true,
     };
   });
-
 }

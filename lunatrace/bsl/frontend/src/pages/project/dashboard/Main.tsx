@@ -12,11 +12,11 @@
  *
  */
 import React from 'react';
-import { Accordion, Card, Col, Row } from 'react-bootstrap';
+import { Accordion } from 'react-bootstrap';
 import { AiFillGithub, AiOutlineInfoCircle } from 'react-icons/ai';
-import { BiGitCommit, BiLinkExternal, BiUnlink } from 'react-icons/bi';
+import { BiUnlink } from 'react-icons/bi';
 
-import { GithubTraits, ProjectInfo, SetActiveTab } from '../types';
+import { ProjectInfo, SetActiveTab } from '../types';
 
 import { ManifestDrop } from './ManifestDrop';
 import { ScanTypesExplanation } from './ScanTypesExplanation';

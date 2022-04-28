@@ -11,27 +11,26 @@
  * limitations under the License.
  *
  */
-import {webhooks} from '../github/webhooks';
+import { webhooks } from '../github/webhooks';
 import { hasura } from '../hasura-api';
-import {GetWebhookCacheByDeliveryIdQuery} from '../hasura-api/generated';
-import {QueueErrorResult, QueueSuccessResult, WebhookMetadata} from '../types/sqs';
+import { GetWebhookCacheByDeliveryIdQuery } from '../hasura-api/generated';
+import { QueueErrorResult, QueueSuccessResult, WebhookMetadata } from '../types/sqs';
 import { log } from '../utils/log';
-import {catchError, threwError, Try} from '../utils/try';
+import { catchError, threwError, Try } from '../utils/try';
 
-export async function handleGithubWebhook(
-  message: WebhookMetadata
-): Promise<QueueSuccessResult | QueueErrorResult> {
+export async function handleGithubWebhook(message: WebhookMetadata): Promise<QueueSuccessResult | QueueErrorResult> {
   log.info(`Received webhook:`, message);
   const { delivery_id } = message;
 
   const deliveryId = delivery_id;
 
-  return await log.provideFields({deliveryId}, async () => {
+  return await log.provideFields({ deliveryId }, async () => {
     try {
       const webhookData: Try<GetWebhookCacheByDeliveryIdQuery | null> = await catchError(
-        async () => await hasura.GetWebhookCacheByDeliveryId({
-          delivery_id: deliveryId,
-        })
+        async () =>
+          await hasura.GetWebhookCacheByDeliveryId({
+            delivery_id: deliveryId,
+          })
       );
 
       if (threwError(webhookData)) {
