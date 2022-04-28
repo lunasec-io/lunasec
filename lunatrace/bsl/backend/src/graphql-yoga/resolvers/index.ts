@@ -23,9 +23,7 @@ export const resolvers: Resolvers = {
   },
   Mutation: {
     presignManifestUpload: presignManifestUploadResolver,
-    // scanManifest
   },
   uuid: GraphQLUUID,
   jsonb: GraphQLJSON,
-  // Mutation:{scanManifest,presignManifestUpload}
 };

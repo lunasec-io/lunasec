@@ -7,7 +7,6 @@ custom_types:
   objects:
   - name: SbomUploadUrlOutput
   - name: PresignedUrlResponse
-  - name: ScanManifestOutput
   - name: SampleOutput
   - name: UploadUrl
   scalars: []

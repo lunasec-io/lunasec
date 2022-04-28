@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { EmitterWebhookEvent, Webhooks } from '@octokit/webhooks';
+import { EmitterWebhookEvent } from '@octokit/webhooks';
 
 import { GithubRepositoryInfo } from '../../types/github';
 import { log } from '../../utils/log';

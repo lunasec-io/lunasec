@@ -22,12 +22,6 @@ type PresignedUrlResponse {
   error_message: String
 }
 
-type ScanManifestOutput {
-  error: Boolean!
-  error_message: String
-  build_id: String!
-}
-
 type SampleOutput {
   accessToken: String!
 }
