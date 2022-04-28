@@ -24,10 +24,11 @@ import {
   ServerConfig,
 } from './types/config';
 
-const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
+export const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
   const envVar = process.env[envVarKey];
 
-  // If the environment variable is not set, and the value must come from the environment, AND we are in production and the default value is not defined.
+  // If the environment variable is not set, and the value must come from the environment,
+  // AND we are in production and the default value is not defined.
   // then throw an error
   if (!envVar && defaultValue === undefined) {
     throw new Error(`Missing ${envVarKey} env var`);
