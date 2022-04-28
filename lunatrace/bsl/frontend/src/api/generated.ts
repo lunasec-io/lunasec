@@ -66,11 +66,22 @@ export type Int_Comparison_Exp = {
 export type PresignedUrlResponse = {
   __typename?: 'PresignedUrlResponse';
   bucket: Scalars['String'];
-  error: Scalars['Boolean'];
-  error_message?: Maybe<Scalars['String']>;
-  headers: Scalars['String'];
+  headers: Scalars['jsonb'];
   key: Scalars['String'];
   url: Scalars['String'];
+};
+
+export type SbomUploadUrlOutput = {
+  __typename?: 'SbomUploadUrlOutput';
+  error: Scalars['Boolean'];
+  uploadUrl?: Maybe<UploadUrl>;
+};
+
+export type ScanManifestOutput = {
+  __typename?: 'ScanManifestOutput';
+  build_id: Scalars['uuid'];
+  error: Scalars['Boolean'];
+  error_message?: Maybe<Scalars['String']>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -104,6 +115,12 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
+};
+
+export type UploadUrl = {
+  __typename?: 'UploadUrl';
+  headers: Scalars['jsonb'];
+  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -1247,8 +1264,8 @@ export type Mutation_Root = {
   insert_projects?: Maybe<Projects_Mutation_Response>;
   /** insert a single row into the table: "projects" */
   insert_projects_one?: Maybe<Projects>;
-  /** get s3 presigned url for manifest upload, used only by the frontend */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
+  scanManifest?: Maybe<ScanManifestOutput>;
   /** update data of the table: "builds" */
   update_builds?: Maybe<Builds_Mutation_Response>;
   /** update single row of the table: "builds" */
@@ -1397,6 +1414,13 @@ export type Mutation_RootInsert_Projects_OneArgs = {
 /** mutation root */
 export type Mutation_RootPresignManifestUploadArgs = {
   project_id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootScanManifestArgs = {
+  bucket: Scalars['String'];
+  key: Scalars['String'];
 };
 
 
@@ -2242,6 +2266,7 @@ export type Query_Root = {
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
+  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -2407,6 +2432,12 @@ export type Query_RootPackage_VersionsArgs = {
 
 export type Query_RootPackage_Versions_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootPresignSbomUploadArgs = {
+  buildId: Scalars['uuid'];
+  orgId: Scalars['uuid'];
 };
 
 
@@ -3725,7 +3756,7 @@ export type PresignManifestUrlMutationVariables = Exact<{
 }>;
 
 
-export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string, key: string, bucket: string, error: boolean, error_message?: string | null } | null };
+export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: any, key: string, bucket: string } | null };
 
 
 export const DeleteProjectAccessTokenDocument = `
@@ -4090,8 +4121,6 @@ export const PresignManifestUrlDocument = `
     headers
     key
     bucket
-    error
-    error_message
   }
 }
     `;

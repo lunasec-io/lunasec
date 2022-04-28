@@ -12,9 +12,9 @@
  *
  */
 
-import {newApp} from "./app";
+import { newApp } from './app';
 import { getServerConfig } from './config';
-import {log} from "./utils/log";
+import { log } from './utils/log';
 
 const serverConfig = getServerConfig();
 
@@ -23,9 +23,9 @@ void (async () => {
   app.listen(serverConfig.serverPort, () => {
     log.info('Server is running on port ', serverConfig.serverPort);
   });
-})().catch(e => {
+})().catch((e) => {
   log.error('unable to start server', {
-    error: e
+    error: e,
   });
   throw e;
 });

@@ -15,7 +15,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { runGrypeScan } from '../models/scan';
-import {log} from "../utils/log";
+import { log } from '../utils/log';
 
 jest.setTimeout(20000);
 describe('Grype scanner', () => {

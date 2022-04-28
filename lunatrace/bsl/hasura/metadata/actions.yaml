@@ -1,36 +1,4 @@
-actions:
-- name: presignManifestUpload
-  definition:
-    kind: synchronous
-    handler: '{{ACTION_BASE_URL}}/s3/presign-manifest-upload'
-    forward_client_headers: true
-    request_transform:
-      method: POST
-      query_params: {}
-      template_engine: Kriti
-  permissions:
-  - role: cli
-  - role: user
-  comment: get s3 presigned url for manifest upload, used only by the frontend
-- name: presignSbomUpload
-  definition:
-    kind: ""
-    handler: '{{ACTION_BASE_URL}}/s3/presign-sbom-upload'
-    forward_client_headers: true
-    request_transform:
-      method: POST
-      query_params: {}
-      template_engine: Kriti
-  permissions:
-  - role: cli
-  - role: service
-  comment: get s3 presigned url for manifest upload, used by the CLI
-- name: scanManifest
-  definition:
-    kind: synchronous
-    handler: http://localhost:8000/manifest/scan
-  comment: This performs the manifest sbom generation and creates the first build
-    from the manifest
+actions: []
 custom_types:
   enums: []
   input_objects:
