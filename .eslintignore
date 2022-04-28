@@ -13,3 +13,5 @@ deploy-apigateway-to-firehose.ts
 **/ContactForm.jsx
 **/generated.ts
 **/cdk.out/**
+
+**/generated-resolver-types.ts
