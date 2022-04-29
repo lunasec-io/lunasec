@@ -58,16 +58,55 @@ export class WorkerStack extends cdk.Stack {
       storageStack,
     } = props;
 
-    const QueueProcessorContainerImage = ContainerImage.fromTarball(
+    const queueProcessorContainerImage = ContainerImage.fromTarball(
       getContainerTarballPath('lunatrace-backend-queue-processor.tar')
     );
+
+    const processRepositoryQueueService = new ecsPatterns.QueueProcessingFargateService(
+      context,
+      'ProcessRepositoryQueueService',
+      {
+        cluster: fargateCluster,
+        image: queueProcessorContainerImage,
+        memoryLimitMiB: 2048,
+        queue: storageStack.processRepositorySqsQueue, // will pass queue_name env var automatically
+        assignPublicIp: true,
+        enableLogging: true,
+        environment: {
+          QUEUE_HANDLER: 'process-repository-queue',
+          GITHUB_APP_ID: gitHubAppId,
+          S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
+          HASURA_URL: publicHasuraServiceUrl,
+          NODE_ENV: 'production',
+        },
+        secrets: {
+          DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+          HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+          HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+          STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
+          GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
+        },
+        containerName: 'ProcessRepositoryQueueContainer',
+        circuitBreaker: {
+          rollback: true,
+        },
+        deploymentController: {
+          // This sets up Blue/Green deploys
+          type: DeploymentControllerType.CODE_DEPLOY,
+        },
+        healthCheck: {
+          command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5002/health || exit 1'],
+        },
+      }
+    );
+    storageStack.sbomBucket.grantReadWrite(processRepositoryQueueService.taskDefinition.taskRole);
 
     const processManifestQueueService = new ecsPatterns.QueueProcessingFargateService(
       context,
       'ProcessManifestQueueService',
       {
         cluster: fargateCluster,
-        image: QueueProcessorContainerImage,
+        image: queueProcessorContainerImage,
         memoryLimitMiB: 2048,
         queue: storageStack.processManifestSqsQueue, // will pass queue_name env var automatically
         assignPublicIp: true,
@@ -95,6 +134,9 @@ export class WorkerStack extends cdk.Stack {
           // This sets up Blue/Green deploys
           type: DeploymentControllerType.CODE_DEPLOY,
         },
+        healthCheck: {
+          command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5001/health || exit 1'],
+        },
       }
     );
     storageStack.manifestBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
@@ -103,7 +145,7 @@ export class WorkerStack extends cdk.Stack {
     // Process SBOM Service - Generates findings from a provided SBOM
     const processSbomQueueService = new ecsPatterns.QueueProcessingFargateService(context, 'ProcessSbomQueueService', {
       cluster: fargateCluster,
-      image: QueueProcessorContainerImage,
+      image: queueProcessorContainerImage,
       queue: storageStack.processSbomSqsQueue, // will pass queue_name env var automatically
       enableLogging: true,
       assignPublicIp: true,
@@ -131,6 +173,9 @@ export class WorkerStack extends cdk.Stack {
         // This sets up Blue/Green deploys
         type: DeploymentControllerType.CODE_DEPLOY,
       },
+      healthCheck: {
+        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5003/health || exit 1'],
+      },
     });
     storageStack.sbomBucket.grantReadWrite(processSbomQueueService.taskDefinition.taskRole);
 
@@ -140,7 +185,7 @@ export class WorkerStack extends cdk.Stack {
       'ProcessWebhookQueueService',
       {
         cluster: fargateCluster,
-        image: QueueProcessorContainerImage,
+        image: queueProcessorContainerImage,
         queue: storageStack.processWebhookSqsQueue, // will pass queue_name env var automatically
         enableLogging: true,
         assignPublicIp: true,
@@ -167,6 +212,9 @@ export class WorkerStack extends cdk.Stack {
         deploymentController: {
           // This sets up Blue/Green deploys
           type: DeploymentControllerType.CODE_DEPLOY,
+        },
+        healthCheck: {
+          command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5004/health || exit 1'],
         },
       }
     );
