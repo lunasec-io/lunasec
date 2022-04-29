@@ -195,6 +195,7 @@ export class WorkerStack extends cdk.Stack {
           GITHUB_APP_ID: gitHubAppId,
           S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
           S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
+          PROCESS_REPOSITORY_QUEUE: storageStack.processRepositorySqsQueue.queueName,
           HASURA_URL: publicHasuraServiceUrl,
           NODE_ENV: 'production',
         },

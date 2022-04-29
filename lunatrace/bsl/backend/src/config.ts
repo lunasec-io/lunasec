@@ -108,22 +108,18 @@ export function getQueueHandlerConfig(): QueueHandlerWorkerConfig {
     'process-webhook': {
       maxMessages: 1,
       visibility: DEFAULT_QUEUE_VISIBILITY,
-      queueNameEnvVar: 'PROCESS_WEBHOOK_QUEUE',
     },
     'process-manifest': {
       maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
       visibility: DEFAULT_QUEUE_VISIBILITY,
-      queueNameEnvVar: 'PROCESS_MANIFEST_QUEUE',
     },
     'process-sbom': {
       maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
       visibility: DEFAULT_QUEUE_VISIBILITY,
-      queueNameEnvVar: 'PROCESS_SBOM_QUEUE',
     },
     'process-repository': {
       maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
       visibility: DEFAULT_QUEUE_VISIBILITY * 10,
-      queueNameEnvVar: 'PROCESS_REPOSITORY_QUEUE',
     },
   };
 
@@ -131,7 +127,7 @@ export function getQueueHandlerConfig(): QueueHandlerWorkerConfig {
 
   const handlerConfig = handlerConfigLookup[handlerName as QueueHandlerType];
 
-  const handlerQueueName = checkEnvVar(handlerConfig.queueNameEnvVar);
+  const handlerQueueName = checkEnvVar('QUEUE_NAME');
 
   return {
     handlerName,
