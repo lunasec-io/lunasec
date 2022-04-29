@@ -1,3 +1,4 @@
+
 LOG4SHELL_BINARY_NAME=log4shell
 LUNATRACE_BINARY_NAME=lunatrace
 LUNATRACE_AGENT_BINARY_NAME=lunatrace-agent
@@ -18,7 +19,7 @@ log4shell: bindir
 	CGO_ENABLED=0 GOOS=linux go build -o bin/${LOG4SHELL_BINARY_NAME} ./cmd/log4shell
 
 lunatrace: bindir
-	CGO_ENABLED=0 GOOS=linux go build -o ./bin/${LUNATRACE_BINARY_NAME} ./cmd/lunatrace
+	CGO_ENABLED=0 GOOS=darwin go build -o ./bin/${LUNATRACE_BINARY_NAME} ./cmd/lunatrace
 
 lunatrace-docker:
 	sudo docker build -f build/package/lunatrace.dockerfile . -t lunasec/lunatrace-cli:${version}
