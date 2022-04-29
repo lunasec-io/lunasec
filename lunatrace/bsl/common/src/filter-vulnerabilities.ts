@@ -21,6 +21,10 @@ export interface FindingToIgnore {
 }
 
 export function filterFindingsByIgnored<F extends FindingToIgnore>(findings: F[]): F[] {
+  if (!findings) {
+    return findings;
+  }
+
   return findings.filter((f) => {
     // Get the ignored_vulnerability that is linked to this finding, if any.  There are a maximum of one because of the unique constraint
     const ignoreRule = f.vulnerability.ignored_vulnerabilities[0];

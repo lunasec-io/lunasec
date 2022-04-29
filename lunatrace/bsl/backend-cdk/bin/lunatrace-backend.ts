@@ -73,8 +73,8 @@ const app = new cdk.App();
 
 const appName = stackInputs.appName;
 const env = {
-  account: stackInputs.cdkDefaultAccount,
-  region: stackInputs.cdkDefaultRegion,
+//  account: stackInputs.cdkDefaultAccount,
+  //region: stackInputs.cdkDefaultRegion,
 };
 
 function deployStack() {
