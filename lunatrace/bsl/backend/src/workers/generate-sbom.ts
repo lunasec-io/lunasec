@@ -13,8 +13,6 @@
  */
 import zlib from 'zlib';
 
-import {LunaLogger} from "@lunatrace/logger";
-
 import { generateSbomFromAsset } from '../cli/call-cli';
 import { getEtlBucketConfig } from '../config';
 import { hasura } from '../hasura-api';
@@ -22,7 +20,7 @@ import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
 import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
 import { aws } from '../utils/aws-utils';
-import {log} from "../utils/log";
+import { log } from '../utils/log';
 import { threwError } from '../utils/try';
 
 const bucketConfig = getEtlBucketConfig();
@@ -42,7 +40,7 @@ export async function createBuildAndGenerateSbom(
   orgId: string,
   projectId: string,
   assetName: string,
-  bucketInfo: SbomBucketInfo,
+  bucketInfo: SbomBucketInfo
 ): Promise<string> {
   // Create a new build
   const { insert_builds_one } = await hasura.InsertBuild({ project_id: projectId, source_type: 'gui' });
@@ -82,7 +80,7 @@ async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
   await hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'sbom-generated', build_id: buildId });
 }
 // This handler is currently only triggered when someone drags and drops a file on the frontend
-export async function handleGenerateManifestSbom(
+export async function handleSnapshotManifest(
   message: S3ObjectMetadata
 ): Promise<QueueSuccessResult | QueueErrorResult> {
   const { key, bucketName, region } = message;
@@ -93,7 +91,7 @@ export async function handleGenerateManifestSbom(
     region,
   };
 
-  return await log.provideFields({...bucketInfo}, async () => {
+  return await log.provideFields({ ...bucketInfo }, async () => {
     try {
       await attemptGenerateManifestSbom(bucketInfo);
       return {
@@ -109,7 +107,5 @@ export async function handleGenerateManifestSbom(
         error: threwError(e) ? e : new Error(String(e)),
       };
     }
-  })
-
-
+  });
 }

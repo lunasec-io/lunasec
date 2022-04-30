@@ -39,7 +39,7 @@ export function tryParseInt(value: string, radix = 10): ParsedInt | ParsedIntErr
 
 export function tryGithubIdBase64Decode(data: string): string {
   try {
-    const decoded = Buffer.from(data, 'base64').toString()
+    const decoded = Buffer.from(data, 'base64').toString();
     if (decoded.match(/[0-9]+:(User|Repo)[0-9]+/)) {
       return decoded;
     }

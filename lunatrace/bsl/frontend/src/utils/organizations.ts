@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -11,8 +11,8 @@
  * limitations under the License.
  *
  */
-import { GetSidebarInfoQuery } from "../api/generated";
+import { GetSidebarInfoQuery } from '../api/generated';
 
 export function userHasAnyOrganizations(data: GetSidebarInfoQuery | undefined): boolean {
-  return !!data && data.organizations.filter((p) => p.name !== 'Personal').length > 0
+  return !!data && data.organizations.filter((p) => p.name !== 'Personal').length > 0;
 }

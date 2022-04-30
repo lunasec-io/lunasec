@@ -11,53 +11,56 @@
  * limitations under the License.
  *
  */
-import {webhooks} from '../github/webhooks';
+import { WebhookInterceptor } from '../github/webhooks/interceptor';
 import { hasura } from '../hasura-api';
-import {GetWebhookCacheByDeliveryIdQuery} from '../hasura-api/generated';
-import {QueueErrorResult, QueueSuccessResult, WebhookMetadata} from '../types/sqs';
+import { GetWebhookCacheByDeliveryIdQuery } from '../hasura-api/generated';
+import { QueueErrorResult, QueueSuccessResult, WebhookMetadata } from '../types/sqs';
 import { log } from '../utils/log';
-import {catchError, threwError, Try} from '../utils/try';
+import { catchError, threwError, Try } from '../utils/try';
 
-export async function handleGithubWebhook(
-  message: WebhookMetadata
-): Promise<QueueSuccessResult | QueueErrorResult> {
-  log.info(`Received webhook:`, message);
-  const { delivery_id } = message;
+type WebhookHandlerFunc = (message: WebhookMetadata) => Promise<QueueSuccessResult | QueueErrorResult>;
 
-  const deliveryId = delivery_id;
+export function createGithubWebhookHandler(webhooks: WebhookInterceptor): WebhookHandlerFunc {
+  return async (message: WebhookMetadata): Promise<QueueSuccessResult | QueueErrorResult> => {
+    log.info(`Received webhook:`, message);
+    const { delivery_id } = message;
 
-  return await log.provideFields({deliveryId}, async () => {
-    try {
-      const webhookData: Try<GetWebhookCacheByDeliveryIdQuery | null> = await catchError(
-        async () => await hasura.GetWebhookCacheByDeliveryId({
-          delivery_id: deliveryId,
-        })
-      );
+    const deliveryId = delivery_id;
 
-      if (threwError(webhookData)) {
-        log.error(`Failed to get webhook data for deliveryId ${deliveryId}`);
+    return await log.provideFields({ deliveryId }, async () => {
+      try {
+        const webhookData: Try<GetWebhookCacheByDeliveryIdQuery | null> = await catchError(
+          async () =>
+            await hasura.GetWebhookCacheByDeliveryId({
+              delivery_id: deliveryId,
+            })
+        );
+
+        if (threwError(webhookData)) {
+          log.error(`Failed to get webhook data for deliveryId ${deliveryId}`);
+          return {
+            success: false,
+            error: new Error(`Failed to get webhook data for deliveryId ${deliveryId}`),
+          };
+        }
+
+        await webhooks.receive({
+          id: deliveryId,
+          name: webhookData.webhook_cache[0].event_type,
+          payload: webhookData.webhook_cache[0].data,
+        });
+
+        return {
+          success: true,
+        };
+      } catch (e) {
+        log.error('Unable to process GitHub webhook: ' + deliveryId, e);
+
         return {
           success: false,
-          error: new Error(`Failed to get webhook data for deliveryId ${deliveryId}`),
+          error: threwError(e) ? e : new Error(String(e)),
         };
       }
-
-      await webhooks.receive({
-        id: deliveryId,
-        name: webhookData.webhook_cache[0].event_type,
-        payload: webhookData.webhook_cache[0].data,
-      });
-
-      return {
-        success: true,
-      };
-    } catch (e) {
-      log.error('Unable to process GitHub webhook: ' + deliveryId, e);
-
-      return {
-        success: false,
-        error: threwError(e) ? e : new Error(String(e)),
-      };
-    }
-  });
+    });
+  };
 }

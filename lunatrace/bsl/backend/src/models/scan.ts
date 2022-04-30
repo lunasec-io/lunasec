@@ -14,7 +14,6 @@
 import { spawn } from 'child_process';
 import { Readable } from 'stream';
 
-
 import { hasura } from '../hasura-api';
 import {
   Findings_Arr_Rel_Insert_Input,
@@ -25,14 +24,26 @@ import {
   Scans_Insert_Input,
 } from '../hasura-api/generated';
 import { Convert, GrypeScanReport, Match } from '../types/grype-scan-report';
-import {log} from "../utils/log";
+import { log } from '../utils/log';
 
 export type InsertedScan = NonNullable<InsertScanMutation['insert_scans_one']>;
 
 export async function parseAndUploadScan(sbomStream: Readable, buildId: string): Promise<InsertedScan> {
   const rawGrypeReport = await runGrypeScan(sbomStream);
+  log.info('finished running lunatrace scan on sbom', {
+    buildId,
+  });
+
   const typedRawGrypeReport = Convert.toScanReport(rawGrypeReport);
+  log.info('parsing scan results into report', {
+    buildId,
+    typedRawGrypeReport,
+  });
   const scan = await parseScan(typedRawGrypeReport, buildId);
+
+  log.info('inserting scan results in hasura', {
+    buildId,
+  });
   const insertRes = await hasura.InsertScan({
     scan,
     build_id: buildId,
@@ -45,7 +56,6 @@ export async function parseAndUploadScan(sbomStream: Readable, buildId: string):
 
 export async function runGrypeScan(sbomStream: Readable): Promise<string> {
   return new Promise((resolve, reject) => {
-
     const lunatraceCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
     lunatraceCli.on('error', reject);
 
@@ -59,7 +69,7 @@ export async function runGrypeScan(sbomStream: Readable): Promise<string> {
     });
     lunatraceCli.on('close', (code) => {
       if (code !== 0) {
-        return reject(`Grype exited with non-zero code: ${code}`);
+        return reject(`lunatrace exited with non-zero code: ${code}`);
       }
       resolve(Buffer.concat(outputBuffers).toString());
     });
@@ -67,7 +77,9 @@ export async function runGrypeScan(sbomStream: Readable): Promise<string> {
     sbomStream.on('end', () =>
       lunatraceCli.stdin.end(() => log.info('Finished passing sbom contents to lunatrace CLI'))
     );
-    sbomStream.on('error', reject);
+    sbomStream.on('error', (e) => {
+      return reject(`error with sbom stream: ${e}`);
+    });
   });
 }
 
@@ -144,13 +156,12 @@ async function parseMatches(buildId: string, matches: Match[]): Promise<Findings
 
           if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
             log.error(
-                {
-                  slugs,
-                  ids,
-                  vulnerability: match.vulnerability.id,
-                },
-              'unable to get all required ids when inserting a finding, its likely the vulnerability database is out of sync',
-
+              {
+                slugs,
+                ids,
+                vulnerability: match.vulnerability.id,
+              },
+              'unable to get all required ids when inserting a finding, its likely the vulnerability database is out of sync'
             );
             return null;
           }

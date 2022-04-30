@@ -16,7 +16,7 @@ import path from 'path';
 
 import { generateSbomFromAsset } from '../cli/call-cli';
 import { S3ObjectMetadata } from '../types/s3';
-import { handleGenerateManifestSbom } from '../workers/generate-sbom';
+import { handleSnapshotManifest } from '../workers/generate-sbom';
 
 const objectMetadata: S3ObjectMetadata = {
   key: '64ce049e-7dac-49a9-b9cb-0e3a53c23e37/2022/2/5/13/9c20ac11-556d-4c2a-886e-00dc12b81ab4',
@@ -29,7 +29,7 @@ jest.setTimeout(15000);
 describe('manifest handler', () => {
   for (let n = 0; n < 3; n++) {
     it('should do full manifest processing flow', async () => {
-      await handleGenerateManifestSbom(objectMetadata);
+      await handleSnapshotManifest(objectMetadata);
     });
   }
   for (let n = 0; n < 3; n++) {

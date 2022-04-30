@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -13,11 +13,11 @@
  */
 import deepmerge from 'deepmerge';
 
-import {logError} from "../../utils/errors";
-import {log} from "../../utils/log";
+import { logError } from '../../utils/errors';
+import { log } from '../../utils/log';
 import { catchError, threwError, Try } from '../../utils/try';
 import { GetUserOrganizationsQuery } from '../api/generated';
-import {getGithubGraphqlClient} from "../auth";
+import { getGithubGraphqlClient } from '../auth';
 
 export async function getOrgsForUser(userId: string, accessToken: string) {
   const github = getGithubGraphqlClient(accessToken);
@@ -38,9 +38,7 @@ export async function getOrgsForUser(userId: string, accessToken: string) {
 
     if (threwError(userOrgs)) {
       logError(userOrgs);
-      throw new Error(
-        `Unable to get user's organizations. Most likely this is the Github rate limit getting hit.`
-      );
+      throw new Error(`Unable to get user's organizations. Most likely this is the Github rate limit getting hit.`);
     }
 
     allUserOrgs = deepmerge(allUserOrgs || {}, userOrgs);
