@@ -19,6 +19,7 @@ export type QueueHandlerType = 'process-webhook' | 'process-manifest' | 'process
 export interface QueueHandlerConfig {
   maxMessages: number;
   visibility: number;
+  envVar: string;
 }
 
 export type BuildSourceType = 'pr' | 'gui' | 'cli';
