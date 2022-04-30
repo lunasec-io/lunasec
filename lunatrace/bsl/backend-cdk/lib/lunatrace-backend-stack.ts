@@ -219,6 +219,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         GITHUB_APP_ID: props.gitHubAppId,
         S3_SBOM_BUCKET: storageStackStage.sbomBucket.bucketName,
         S3_MANIFEST_BUCKET: storageStackStage.manifestBucket.bucketName,
+        PROCESS_WEBHOOK_QUEUE: storageStackStage.processWebhookSqsQueue.queueName,
         SITE_PUBLIC_URL: publicBaseUrl,
         PORT: '3002',
         NODE_ENV: 'production',
@@ -253,6 +254,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         HASURA_GRAPHQL_LOG_LEVEL: 'debug',
         HASURA_GRAPHQL_JWT_SECRET: JSON.stringify(hasuraJwtSecretValue),
         ACTION_BASE_URL: `http://localhost:${backend.containerPort}`,
+        REMOTE_SCHEMA_URL: `http://localhost:${backend.containerPort}/graphql/v1`,
       },
       secrets: {
         HASURA_GRAPHQL_METADATA_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),

@@ -9,7 +9,7 @@
     "test": "jest",
     "cdk": "cdk",
     "dev:cdk:deploy": "DEVELOPMENT=true cdk deploy --all",
-    "prod:cdk:deploy": "rm cdk.out/*.tar && cdk deploy --all"
+    "prod:cdk:deploy": "echo 'deploying...' && rm cdk.out/*.tar || true && cdk deploy --all"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.152.0",

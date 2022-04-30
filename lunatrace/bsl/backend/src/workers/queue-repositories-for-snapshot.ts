@@ -18,6 +18,7 @@ import { getRepositoryQueueConfig } from '../config';
 import { GenerateSnapshotForRepositoryRecord } from '../types/sqs';
 import { log } from '../utils/log';
 import { getSqsUrlFromName } from '../utils/sqs';
+import { catchError, threwError } from '../utils/try';
 
 export async function queueRepositoriesForSnapshot(
   installationId: number,
@@ -26,9 +27,9 @@ export async function queueRepositoriesForSnapshot(
   const repoQueueConfig = getRepositoryQueueConfig();
 
   // TODO (cthompson) move this outside of this function, this should only need to be run once
-  const repositoryQueueUrl = await getSqsUrlFromName(sqsClient, repoQueueConfig.queueName);
+  const repositoryQueueUrl = await catchError(getSqsUrlFromName(sqsClient, repoQueueConfig.queueName));
 
-  if (repositoryQueueUrl.error) {
+  if (threwError(repositoryQueueUrl) || repositoryQueueUrl.error) {
     log.error('unable to load repository queue url', {
       queueName: repositoryQueueUrl,
     });

@@ -30,6 +30,7 @@ import {
 } from '../types/sqs';
 import { log } from '../utils/log';
 import { getSqsUrlFromName } from '../utils/sqs';
+import { catchError, threwError } from '../utils/try';
 import { isArray } from '../utils/types';
 
 import { handleSnapshotManifest } from './generate-sbom';
@@ -252,14 +253,18 @@ function startHealthCheckService(port: number) {
 
 export async function setupQueue(): Promise<void> {
   const queueName = queueHandlerConfig.handlerQueueName;
+  log.info('setting up queue', {
+    queueName: queueHandlerConfig.handlerQueueName,
+  });
+
   const queueHandlers = await loadQueueHandlers();
 
   await log.provideFields({ queueName, loggerName: 'queue-logger' }, async () => {
     const handlerConfig = determineHandler(queueHandlers, queueHandlerConfig.handlerName as QueueHandlerType);
 
-    const queueUrl = await getSqsUrlFromName(sqsClient, queueName);
+    const queueUrl = await catchError(getSqsUrlFromName(sqsClient, queueName));
 
-    if (queueUrl.error) {
+    if (threwError(queueUrl) || queueUrl.error) {
       log.error('unable to load queue url', {
         queueName: queueName,
       });
@@ -269,7 +274,10 @@ export async function setupQueue(): Promise<void> {
     // start health check service
     startHealthCheckService(handlerConfig.port);
 
-    log.info('got queueUrl: ', queueUrl);
+    log.info('Loaded queueUrl for queue', {
+      queueName: queueName,
+      queueUrl: queueUrl.res,
+    });
     // read loop
     // eslint-disable-next-line no-constant-condition
     while (true) {
