@@ -16,7 +16,7 @@ import { Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
-import { BuildInfo, ProjectInfo } from '../types';
+import { ProjectInfo } from '../types';
 
 import { BuildListItem } from './BuildListItem';
 interface BuildListProps {

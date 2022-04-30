@@ -22,6 +22,8 @@
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 /* eslint-disable */
+import {log} from "../utils/log";
+
 export interface GrypeScanReport {
   matches: Match[];
   source: Source;
@@ -228,9 +230,16 @@ export interface Source {
 // and asserts the results of JSON.parse at runtime
 export class Convert {
   public static toScanReport(json: string): GrypeScanReport {
-      // disable all type reflection/checking for now as it is too fragile
-    //return cast(JSON.parse(json), r('ScanReport'));
+    // disable all type reflection/checking for now as it is too fragile
+    try {
       return JSON.parse(json) as GrypeScanReport;
+    } catch (e) {
+      log.error('unable to parse scan report json', {
+        error: e,
+        json
+      });
+      throw e;
+    }
   }
 
   public static scanReportToJson(value: GrypeScanReport): string {

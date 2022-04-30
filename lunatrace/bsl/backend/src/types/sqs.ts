@@ -11,7 +11,27 @@
  * limitations under the License.
  *
  */
+
 import { S3ObjectMetadata } from './s3';
+
+export type QueueHandlerType = 'process-webhook' | 'process-manifest' | 'process-sbom' | 'process-repository';
+
+export interface QueueHandlerConfig {
+  maxMessages: number;
+  visibility: number;
+  queueNameEnvVar: string;
+}
+
+export type BuildSourceType = 'pr' | 'gui' | 'cli';
+
+export interface GenerateSnapshotForRepositoryRecord {
+  cloneUrl: string;
+  gitBranch: string;
+  repoGithubId: number;
+  installationId: number;
+  sourceType: BuildSourceType;
+  pullRequestId?: string;
+}
 
 export interface S3SqsEvent {
   Records?: Record[];

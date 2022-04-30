@@ -24021,6 +24021,14 @@ export type GetMembersForOrganizationQueryVariables = Exact<{
 
 export type GetMembersForOrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', id: string, login: string, teams: { __typename?: 'TeamConnection', nodes?: Array<{ __typename?: 'Team', members: { __typename?: 'TeamMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } } } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } }, membersWithRole: { __typename?: 'OrganizationMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null, startCursor?: string | null } } } | null };
 
+export type GetRepositoryQueryVariables = Exact<{
+  name: Scalars['String'];
+  owner: Scalars['String'];
+}>;
+
+
+export type GetRepositoryQuery = { __typename?: 'Query', repository?: { __typename?: 'Repository', url: any, defaultBranchRef?: { __typename?: 'Ref', name: string } | null } | null };
+
 export type GetUserOrganizationsQueryVariables = Exact<{
   orgsAfter?: InputMaybe<Scalars['String']>;
 }>;
@@ -24106,6 +24114,16 @@ export const GetMembersForOrganizationDocument = gql`
   }
 }
     `;
+export const GetRepositoryDocument = gql`
+    query GetRepository($name: String!, $owner: String!) {
+  repository(name: $name, owner: $owner) {
+    defaultBranchRef {
+      name
+    }
+    url
+  }
+}
+    `;
 export const GetUserOrganizationsDocument = gql`
     query GetUserOrganizations($orgsAfter: String) {
   viewer {
@@ -24170,6 +24188,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetMembersForOrganization(variables: GetMembersForOrganizationQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetMembersForOrganizationQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetMembersForOrganizationQuery>(GetMembersForOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetMembersForOrganization', 'query');
+    },
+    GetRepository(variables: GetRepositoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetRepositoryQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetRepositoryQuery>(GetRepositoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetRepository', 'query');
     },
     GetUserOrganizations(variables?: GetUserOrganizationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserOrganizationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserOrganizationsQuery>(GetUserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserOrganizations', 'query');

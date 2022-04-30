@@ -11,6 +11,8 @@
  * limitations under the License.
  *
  */
+import {QueueHandlerConfig, QueueHandlerType} from "./sqs";
+
 export interface ServerConfig {
   serverPort: number;
   sitePublicUrl: string;
@@ -22,9 +24,10 @@ export interface SbomHandlerConfig {
   manifestBucket: string;
 }
 
-export interface QueueHandlerConfig {
-  queueName: string;
+export interface QueueHandlerWorkerConfig {
   handlerName: string;
+  handlerQueueName: string;
+  handlerConfig: QueueHandlerConfig;
 }
 
 export interface GithubAppConfig {
@@ -35,6 +38,15 @@ export interface GithubAppConfig {
 
 export interface AwsConfig {
   awsRegion: string;
+}
+
+export interface WebhookConfig {
+  queueName: string;
+  secret: string;
+}
+
+export interface RepositoryQueueConfig {
+  queueName: string;
 }
 
 export interface HasuraConfig {

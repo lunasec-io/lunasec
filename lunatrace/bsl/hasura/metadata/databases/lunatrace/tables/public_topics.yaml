@@ -1,0 +1,68 @@
+table:
+  name: topics
+  schema: public
+array_relationships:
+- name: related_topics
+  using:
+    foreign_key_constraint_on:
+      column: from_topic_id
+      table:
+        name: topic_related_topics
+        schema: public
+- name: topic_vulnerabilities
+  using:
+    foreign_key_constraint_on:
+      column: topic_id
+      table:
+        name: topic_vulnerabilities
+        schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - tags
+    - metadata_schema_version
+    - metadata
+    - body
+    - data_source_link
+    - summary
+    - title
+    - topic_unique_id
+    - created_at
+    - updated_at
+    - id
+  role: service
+select_permissions:
+- permission:
+    columns:
+    - body
+    - created_at
+    - data_source_link
+    - id
+    - metadata
+    - metadata_schema_version
+    - summary
+    - tags
+    - title
+    - topic_unique_id
+    - updated_at
+    filter: {}
+  role: user
+update_permissions:
+- permission:
+    check: {}
+    columns:
+    - body
+    - created_at
+    - data_source_link
+    - id
+    - metadata
+    - metadata_schema_version
+    - summary
+    - tags
+    - title
+    - topic_unique_id
+    - updated_at
+    filter: {}
+  role: service

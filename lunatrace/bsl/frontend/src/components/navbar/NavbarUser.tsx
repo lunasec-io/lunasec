@@ -12,7 +12,7 @@
  *
  */
 import React from 'react';
-import { Button, Dropdown } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 import { LogOut, User } from 'react-feather';
 import { AiFillGithub } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';

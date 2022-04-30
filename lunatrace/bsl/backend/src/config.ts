@@ -17,16 +17,21 @@ import dotenv from 'dotenv';
 import {
   AwsConfig,
   GithubAppConfig,
-  HasuraConfig, JwksConfig,
-  QueueHandlerConfig,
+  HasuraConfig,
+  JwksConfig,
+  QueueHandlerWorkerConfig,
+  RepositoryQueueConfig,
   SbomHandlerConfig,
   ServerConfig,
+  WebhookConfig,
 } from './types/config';
+import { QueueHandlerConfig, QueueHandlerType } from './types/sqs';
 
-const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
+export const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
   const envVar = process.env[envVarKey];
 
-  // If the environment variable is not set, and the value must come from the environment, AND we are in production and the default value is not defined.
+  // If the environment variable is not set, and the value must come from the environment,
+  // AND we are in production and the default value is not defined.
   // then throw an error
   if (!envVar && defaultValue === undefined) {
     throw new Error(`Missing ${envVarKey} env var`);
@@ -37,7 +42,7 @@ const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
 const nodeEnv = checkEnvVar('NODE_ENV', 'development');
 const isProduction = nodeEnv === 'production';
 
-dotenv.config({ path: isProduction ? '.env' : '.env.dev'});
+dotenv.config({ path: isProduction ? '.env' : '.env.dev' });
 
 export function getServerConfig(): ServerConfig {
   const serverPortString = checkEnvVar('PORT', '3002');
@@ -47,7 +52,7 @@ export function getServerConfig(): ServerConfig {
   return {
     serverPort,
     sitePublicUrl,
-    isProduction
+    isProduction,
   };
 }
 
@@ -55,6 +60,22 @@ export function getAwsConfig(): AwsConfig {
   const awsRegion = checkEnvVar('AWS_DEFAULT_REGION', 'us-west-2');
   return {
     awsRegion,
+  };
+}
+
+export function getWebhookConfig(): WebhookConfig {
+  const queueName = checkEnvVar('PROCESS_WEBHOOK_QUEUE');
+  const secret = checkEnvVar('GITHUB_APP_WEBHOOK_SECRET', 'mysecret');
+  return {
+    queueName,
+    secret,
+  };
+}
+
+export function getRepositoryQueueConfig(): RepositoryQueueConfig {
+  const queueName = checkEnvVar('PROCESS_REPOSITORY_QUEUE');
+  return {
+    queueName,
   };
 }
 
@@ -68,7 +89,7 @@ export function getHasuraConfig(): HasuraConfig {
 }
 
 export function getEtlBucketConfig(): SbomHandlerConfig {
-  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET' );
+  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET');
   const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET');
 
   return {
@@ -77,12 +98,45 @@ export function getEtlBucketConfig(): SbomHandlerConfig {
   };
 }
 
-export function getQueueHandlerConfig(): QueueHandlerConfig {
-  const queueName = checkEnvVar('QUEUE_NAME');
+export function getQueueHandlerConfig(): QueueHandlerWorkerConfig {
   const handlerName = checkEnvVar('QUEUE_HANDLER');
+
+  const DEFAULT_QUEUE_MAX_MESSAGES = 10;
+  const DEFAULT_QUEUE_VISIBILITY = 60;
+
+  const handlerConfigLookup: Record<QueueHandlerType, QueueHandlerConfig> = {
+    'process-webhook': {
+      maxMessages: 1,
+      visibility: DEFAULT_QUEUE_VISIBILITY,
+      queueNameEnvVar: 'PROCESS_WEBHOOK_QUEUE',
+    },
+    'process-manifest': {
+      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
+      visibility: DEFAULT_QUEUE_VISIBILITY,
+      queueNameEnvVar: 'PROCESS_MANIFEST_QUEUE',
+    },
+    'process-sbom': {
+      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
+      visibility: DEFAULT_QUEUE_VISIBILITY,
+      queueNameEnvVar: 'PROCESS_SBOM_QUEUE',
+    },
+    'process-repository': {
+      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
+      visibility: DEFAULT_QUEUE_VISIBILITY * 10,
+      queueNameEnvVar: 'PROCESS_REPOSITORY_QUEUE',
+    },
+  };
+
+  // TODO (cthompson) check if handlerName is in QueueHandlerType
+
+  const handlerConfig = handlerConfigLookup[handlerName as QueueHandlerType];
+
+  const handlerQueueName = checkEnvVar(handlerConfig.queueNameEnvVar);
+
   return {
-    queueName,
     handlerName,
+    handlerConfig,
+    handlerQueueName,
   };
 }
 
@@ -98,7 +152,7 @@ export function getGithubAppConfig(): GithubAppConfig {
   return {
     githubAppId,
     githubPrivateKey,
-    githubEndpoint
+    githubEndpoint,
   };
 }
 
@@ -108,6 +162,6 @@ export function getJwksConfig(): JwksConfig {
 
   return {
     jwksUri,
-    jwksIssuer
-  }
+    jwksIssuer,
+  };
 }
