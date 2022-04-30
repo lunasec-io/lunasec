@@ -15,7 +15,7 @@ import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret 
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
-import { Construct } from '@aws-cdk/core';
+import { Construct, Duration } from '@aws-cdk/core';
 
 import { getContainerTarballPath } from './util';
 import { WorkerStorageStackState } from './worker-storage-stack';
@@ -62,6 +62,24 @@ export class WorkerStack extends cdk.Stack {
       getContainerTarballPath('lunatrace-backend-queue-processor.tar')
     );
 
+    const processQueueCommonEnvVars: Record<string, string> = {
+      NODE_ENV: 'production',
+      PROCESS_WEBHOOK_QUEUE: storageStack.processWebhookSqsQueue.queueName,
+      PROCESS_REPOSITORY_QUEUE: storageStack.processRepositorySqsQueue.queueName,
+      S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
+      S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
+      GITHUB_APP_ID: gitHubAppId,
+      HASURA_URL: publicHasuraServiceUrl,
+    };
+
+    const processQueueCommonSecrets: Record<string, EcsSecret> = {
+      DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+      STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
+      GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
+    };
+
     const processRepositoryQueueService = new ecsPatterns.QueueProcessingFargateService(
       context,
       'ProcessRepositoryQueueService',
@@ -73,33 +91,25 @@ export class WorkerStack extends cdk.Stack {
         assignPublicIp: true,
         enableLogging: true,
         environment: {
-          QUEUE_HANDLER: 'process-repository-queue',
-          GITHUB_APP_ID: gitHubAppId,
-          S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
-          HASURA_URL: publicHasuraServiceUrl,
-          NODE_ENV: 'production',
+          QUEUE_HANDLER: 'process-repository',
+          ...processQueueCommonEnvVars,
         },
-        secrets: {
-          DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-          HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-          HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-          STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
-          GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
-        },
+        secrets: processQueueCommonSecrets,
         containerName: 'ProcessRepositoryQueueContainer',
         circuitBreaker: {
           rollback: true,
         },
-        deploymentController: {
-          // This sets up Blue/Green deploys
-          type: DeploymentControllerType.CODE_DEPLOY,
-        },
         healthCheck: {
           command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5002/health || exit 1'],
+          interval: Duration.seconds(5),
+          retries: 6,
+          startPeriod: Duration.seconds(30),
+          timeout: Duration.seconds(5),
         },
       }
     );
     storageStack.sbomBucket.grantReadWrite(processRepositoryQueueService.taskDefinition.taskRole);
+    storageStack.processWebhookSqsQueue.grantSendMessages(processRepositoryQueueService.taskDefinition.taskRole);
 
     const processManifestQueueService = new ecsPatterns.QueueProcessingFargateService(
       context,
@@ -112,35 +122,26 @@ export class WorkerStack extends cdk.Stack {
         assignPublicIp: true,
         enableLogging: true,
         environment: {
-          QUEUE_HANDLER: 'process-manifest-queue',
-          GITHUB_APP_ID: gitHubAppId,
-          S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
-          S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
-          HASURA_URL: publicHasuraServiceUrl,
-          NODE_ENV: 'production',
+          QUEUE_HANDLER: 'process-manifest',
+          ...processQueueCommonEnvVars,
         },
-        secrets: {
-          DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-          HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-          HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-          STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
-          GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
-        },
+        secrets: processQueueCommonSecrets,
         containerName: 'ProcessManifestQueueContainer',
         circuitBreaker: {
           rollback: true,
         },
-        deploymentController: {
-          // This sets up Blue/Green deploys
-          type: DeploymentControllerType.CODE_DEPLOY,
-        },
         healthCheck: {
           command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5001/health || exit 1'],
+          interval: Duration.seconds(5),
+          retries: 6,
+          startPeriod: Duration.seconds(30),
+          timeout: Duration.seconds(5),
         },
       }
     );
     storageStack.manifestBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
     storageStack.sbomBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
+    storageStack.processWebhookSqsQueue.grantSendMessages(processManifestQueueService.taskDefinition.taskRole);
 
     // Process SBOM Service - Generates findings from a provided SBOM
     const processSbomQueueService = new ecsPatterns.QueueProcessingFargateService(context, 'ProcessSbomQueueService', {
@@ -151,33 +152,24 @@ export class WorkerStack extends cdk.Stack {
       assignPublicIp: true,
       memoryLimitMiB: 2048,
       environment: {
-        QUEUE_HANDLER: 'process-sbom-queue',
-        GITHUB_APP_ID: gitHubAppId,
-        S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
-        S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
-        HASURA_URL: publicHasuraServiceUrl,
-        NODE_ENV: 'production',
+        QUEUE_HANDLER: 'process-sbom',
+        ...processQueueCommonEnvVars,
       },
-      secrets: {
-        DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-        HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-        HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-        STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
-        GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
-      },
+      secrets: processQueueCommonSecrets,
       containerName: 'ProcessSbomQueueService',
       circuitBreaker: {
         rollback: true,
       },
-      deploymentController: {
-        // This sets up Blue/Green deploys
-        type: DeploymentControllerType.CODE_DEPLOY,
-      },
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5003/health || exit 1'],
+        interval: Duration.seconds(5),
+        retries: 6,
+        startPeriod: Duration.seconds(30),
+        timeout: Duration.seconds(5),
       },
     });
     storageStack.sbomBucket.grantReadWrite(processSbomQueueService.taskDefinition.taskRole);
+    storageStack.processWebhookSqsQueue.grantSendMessages(processSbomQueueService.taskDefinition.taskRole);
 
     // Process GitHub Webhook Service - Listens for GitHub webhooks and processes them durably
     const processWebhookQueueService = new ecsPatterns.QueueProcessingFargateService(
@@ -191,31 +183,20 @@ export class WorkerStack extends cdk.Stack {
         assignPublicIp: true,
         memoryLimitMiB: 2048,
         environment: {
-          QUEUE_HANDLER: 'process-webhook-queue',
-          GITHUB_APP_ID: gitHubAppId,
-          S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
-          S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
-          PROCESS_REPOSITORY_QUEUE: storageStack.processRepositorySqsQueue.queueName,
-          HASURA_URL: publicHasuraServiceUrl,
-          NODE_ENV: 'production',
+          QUEUE_HANDLER: 'process-webhook',
+          ...processQueueCommonEnvVars,
         },
-        secrets: {
-          DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-          HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-          HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-          STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
-          GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
-        },
+        secrets: processQueueCommonSecrets,
         containerName: 'ProcessWebhookQueueService',
         circuitBreaker: {
           rollback: true,
         },
-        deploymentController: {
-          // This sets up Blue/Green deploys
-          type: DeploymentControllerType.CODE_DEPLOY,
-        },
         healthCheck: {
           command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5004/health || exit 1'],
+          interval: Duration.seconds(5),
+          retries: 6,
+          startPeriod: Duration.seconds(30),
+          timeout: Duration.seconds(5),
         },
       }
     );
