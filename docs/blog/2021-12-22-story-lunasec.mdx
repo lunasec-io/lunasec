@@ -63,7 +63,7 @@ there are just too many ways to easily get the protected data.
 
 Some tools are better than others, but they all seem to have compromises and some attacks which they simply don't protect against.
 **None** of them seem to protect data once it reaches the browser.
-We wanted a way to *truly* protect data against *every* [common type of attack](/pages/how-it-works/security/vulns-and-mitigations),
+We wanted a way to *truly* protect data against *every* [common type of attack](/pages/lunadefend/how-it-works/security/vulns-and-mitigations),
 from browser attacks such as Cross Site Scripting (XSS), to full Remote Code Execution (RCE) like Log4Shell.
 
 ### Tools that are ACTUALLY secure
@@ -72,7 +72,7 @@ We're talking about tools like Stripe and PayPal that collect your credit card n
 
 They are, in essence, a very small and dedicated web app that
 works alongside your main app. In the browser, your app launches an iFrame containing the payment processor's app. Users see a nice box with a trustworthy logo
-and get to type their credit card information into a safe place. iFrames (in [cross-domain mode](/pages/how-it-works/secure-components)) are
+and get to type their credit card information into a safe place. iFrames (in [cross-domain mode](/pages/lunadefend/how-it-works/secure-components)) are
 completely secure when done right because the browser treats them as a totally separate process. This is the strictest security
 tool the browser has. It's like the iFrame is running in a separate tab next to your site, only *appearing* to be a part of it.
 
@@ -96,14 +96,14 @@ all while looking like a native part of the web page.
 Dealing with all the DOM information to make the elements look and behave like normal ones took months, but we did it.
 The end result is something that looks and behaves just like a native element, even working well with popular
 component frameworks like Material UI. You can see for yourself in our [Live Demo app](https://app.lunasec.dev/). We've written
-more extensively about [how Secure Components work](/pages/how-it-works/secure-components) in our docs.
+more extensively about [how Secure Components work](/pages/lunadefend/how-it-works/secure-components) in our docs.
 
 ```jsx title="A Secure Component in React, replaces a normal <input>"
 <SecureInput name="ssn" token={props.value} onChange={props.onChange} errorHandler={props.handleError} />
 ```
 Just like how payment processors give you a "payment ID" instead of a credit card number, the **components return a token** that you
 can store legally and safely in your database, in the same place you used to put sensitive data. The secure data is handled
-by a small and [secure backend](/pages/how-it-works/tokens) that's blindingly fast, very cheap, and scales without limit.
+by a small and [secure backend](/pages/lunadefend/how-it-works/tokens) that's blindingly fast, very cheap, and scales without limit.
 
 ### Secure Functions
 I personally think this is one of the coolest parts of LunaDefend.
@@ -133,7 +133,7 @@ your entire server.
 
 ### Deployment
 We haven't built a pay-as-you-go SASS for LunaDefend (at least not yet), because the tool is Open Source and most of our users have wanted to have their own deployments.
-Instead of leaving users on their own in terms of deployment, we wrote [a CLI](/pages/deployment/deploy-with-aws) that uses AWS CDK to deploy
+Instead of leaving users on their own in terms of deployment, we wrote [a CLI](/pages/lunadefend/deployment/deploy-with-aws) that uses AWS CDK to deploy
 everything needed to AWS with a single line:
 ```shell
 lunasec deploy
@@ -149,6 +149,6 @@ a stubbed-out dev mode that doesn't need any servers running at all.
 
 ### Conclusion
 There *are* ways to protect data against attacks like Log4Shell, and we are working to make them accessible
-and affordable (actually, free), for normal companies and developers. We've also worked hard to make [our docs](/pages/overview/introduction)
+and affordable (actually, free), for normal companies and developers. We've also worked hard to make [our docs](/pages/lunadefend/overview/introduction)
 a great resource, so please take a look or use the search bar if
 this article has left you curious.  Thanks for reading!

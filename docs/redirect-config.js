@@ -41,48 +41,96 @@ const redirectConfig = {
       to: '/pages/getting-started/dedicated-tokenizer/backend-setup/',
     },
     {
+      from: '/pages/lunadefend/getting-started/dedicated-tokenizer/backend/',
+      to: '/pages/lunadefend/getting-started/dedicated-tokenizer/backend-setup/',
+    },
+    {
       from: '/pages/overview/features/',
       to: '/pages/how-it-works/features/',
+    },
+    {
+      from: '/pages/lunadefend/overview/features/',
+      to: '/pages/lunadefend/how-it-works/features/',
     },
     {
       from: '/pages/overview/security/encryption/',
       to: '/pages/how-it-works/security/encryption/',
     },
     {
+      from: '/pages/lunadefend/overview/security/encryption/',
+      to: '/pages/lunadefend/how-it-works/security/encryption/',
+    },
+    {
       from: '/pages/overview/security/hackerone-top-10-vuln-types/',
       to: '/pages/how-it-works/security/hackerone-top-10-vuln-types/',
+    },
+    {
+      from: '/pages/lunadefend/overview/security/hackerone-top-10-vuln-types/',
+      to: '/pages/lunadefend/how-it-works/security/hackerone-top-10-vuln-types/',
     },
     {
       from: '/pages/overview/security/intro/',
       to: '/pages/how-it-works/security/introduction/',
     },
     {
+      from: '/pages/lunadefend/overview/security/intro/',
+      to: '/pages/lunadefend/how-it-works/security/introduction/',
+    },
+    {
       from: '/pages/overview/security/levels/',
       to: '/pages/how-it-works/security/levels/',
+    },
+    {
+      from: '/pages/lunadefend/overview/security/levels/',
+      to: '/pages/lunadefend/how-it-works/security/levels/',
     },
     {
       from: '/pages/overview/security/mitre-cwe-top-25-weaknesses/',
       to: '/pages/how-it-works/security/mitre-cwe-top-25-weaknesses/',
     },
     {
+      from: '/pages/lunadefend/overview/security/mitre-cwe-top-25-weaknesses/',
+      to: '/pages/lunadefend/how-it-works/security/mitre-cwe-top-25-weaknesses/',
+    },
+    {
       from: '/pages/overview/security/owasp-top-10/',
       to: '/pages/how-it-works/security/owasp-top-10/',
+    },
+    {
+      from: '/pages/lunadefend/overview/security/owasp-top-10/',
+      to: '/pages/lunadefend/how-it-works/security/owasp-top-10/',
     },
     {
       from: '/pages/overview/security/vulns-and-mitigations/',
       to: '/pages/how-it-works/security/vulns-and-mitigations/',
     },
     {
+      from: '/pages/lunadefend/overview/security/vulns-and-mitigations/',
+      to: '/pages/lunadefend/how-it-works/security/vulns-and-mitigations/',
+    },
+    {
       from: '/pages/getting-started/dedicated-tokenizer/frontend-config/',
       to: '/pages/getting-started/dedicated-tokenizer/frontend-setup/',
+    },
+    {
+      from: '/pages/lunadefend/getting-started/dedicated-tokenizer/frontend-config/',
+      to: '/pages/lunadefend/getting-started/dedicated-tokenizer/frontend-setup/',
     },
     {
       from: '/pages/overview/token-lifecycle/',
       to: '/pages/how-it-works/tokens/',
     },
     {
+      from: '/pages/lunadefend/overview/token-lifecycle/',
+      to: '/pages/lunadefend/how-it-works/tokens/',
+    },
+    {
       from: '/pages/overview/authentication/',
       to: '/pages/how-it-works/sessions/',
+    },
+    {
+      from: '/pages/lunadefend/overview/authentication/',
+      to: '/pages/lunadefend/how-it-works/sessions/',
     },
   ]
 };

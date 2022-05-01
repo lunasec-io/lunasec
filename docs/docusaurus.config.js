@@ -79,7 +79,7 @@ module.exports = {
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
         docsRoot: 'pages',
-        out: 'react-sdk',
+        out: 'lunadefend/react-sdk',
         sidebar: {
           categoryLabel: "React SDK"
         },
@@ -97,7 +97,7 @@ module.exports = {
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
         docsRoot: 'pages',
-        out: 'node-sdk',
+        out: 'lunadefend/node-sdk',
         sidebar: {
           categoryLabel: "Node SDK"
         },
@@ -115,7 +115,7 @@ module.exports = {
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
         docsRoot: 'pages',
-        out: 'tokenizer-sdk',
+        out: 'lunadefend/tokenizer-sdk',
         sidebar: {
           categoryLabel: "Tokenizer SDK"
         },
@@ -134,7 +134,7 @@ module.exports = {
         watch: process.env.TYPEDOC_WATCH,
         // Without this, our URL becomes `lunasec.io/docs/docs`. I prefer `lunasec.io/docs/pages`.
         docsRoot: 'pages',
-        out: 'cli-config',
+        out: 'lunadefend/cli-config',
         sidebar: {
           categoryLabel: "CLI Configuration"
         },
@@ -174,9 +174,15 @@ module.exports = {
       items: [
         {
           type: 'doc',
-          docId: 'overview/introduction',
+          docId: 'lunadefend/overview/introduction',
           position: 'left',
-          label: 'Docs'
+          label: 'LunaDefend'
+        },
+                {
+          type: 'doc',
+          docId: 'lunatrace/overview/introduction',
+          position: 'left',
+          label: 'LunaTrace'
         },
         {
           to: '/docs/blog',
