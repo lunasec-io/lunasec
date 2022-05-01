@@ -195,7 +195,7 @@ the Security Architecture section:
 We're building an Open Source project called [LunaDefend](https://github.com/lunasec-io/lunasec) to help developers address
 these problems. The goal of LunaDefend is to create drop-in, Secure by Default components that provide strong security and
 compliance guarantees, while not impacting a team's speed or efficiency when meeting deadlines. It's possible through
-the clever usage of Data Encryption through a process known as [Tokenization](https://www.lunasec.io/docs](/pages/lunadefend/-it-works/tokens/).
+the clever usage of Data Encryption through a process known as [Tokenization](https://www.lunasec.io/docs/pages/lunadefend/-it-works/tokens/).
 
 Here's an example of the LunaDefend React SDK in action:
 
@@ -231,7 +231,7 @@ export function renderInsecureComponent(props) {
 ```
 
 Even if the same vulnerable code path or configuration exists, because of LunaDefend's 
-[Secure by Default design](https://lunasec.io/docs](/pages/lunadefend/-it-works/security/introduction/), the sensitive user data cannot be leaked without multiple 
+[Secure by Default design](https://lunasec.io/docs/pages/lunadefend/-it-works/security/introduction/), the sensitive user data cannot be leaked without multiple 
 points of compromise. (The SSN is encrypted, and decryption happens in a hardened environment with limited surface area
 for an attacker to find bugs in.)
 
