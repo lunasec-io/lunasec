@@ -51,7 +51,7 @@ export const SimpleApp = () => {
               <Typography>
                 You can read more about the tradeoffs{' '}
                 <a
-                  href="https://www.lunasec.io/docs/pages/getting-started/choose-your-setup/"
+                  href="https://www.lunasec.io/docs/pages/lunadefend/getting-started/choose-your-setup/"
                   target="_blank"
                   rel="prefetch"
                 >

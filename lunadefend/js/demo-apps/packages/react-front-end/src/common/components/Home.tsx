@@ -44,7 +44,7 @@ export const Home: React.FunctionComponent = () => {
             It looks and functions like any other web app, but many of the fields have been secured with LunaSec. Under
             the hood, LunaSec is keeping the data secure. To set up LunaSec in your own application, see the{' '}
             <a
-              href="https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/introduction/"
+              href="https://www.lunasec.io/docs/pages/lunadefend/getting-started/dedicated-tokenizer/introduction/"
               target="_blank"
               rel="prefetch"
             >
@@ -125,7 +125,7 @@ export const Home: React.FunctionComponent = () => {
             <ul>
               <li>
                 <b>
-                  <a href="https://www.lunasec.io/docs/pages/overview/introduction/" target="_blank" rel="prefetch">
+                  <a href="https://www.lunasec.io/docs/pages/lunadefend/overview/introduction/" target="_blank" rel="prefetch">
                     Main Documentation
                   </a>
                   :
@@ -136,7 +136,7 @@ export const Home: React.FunctionComponent = () => {
               <li>
                 <b>
                   <a
-                    href="https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/introduction/"
+                    href="https://www.lunasec.io/docs/pages/lunadefend/getting-started/dedicated-tokenizer/introduction/"
                     target="_blank"
                     rel="prefetch"
                   >
@@ -150,7 +150,7 @@ export const Home: React.FunctionComponent = () => {
               <li>
                 <b>
                   <a
-                    href="https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/"
+                    href="https://www.lunasec.io/docs/pages/lunadefend/overview/demo-app/walkthrough/"
                     target="_blank"
                     rel="prefetch"
                   >
