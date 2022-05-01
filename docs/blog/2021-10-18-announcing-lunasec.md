@@ -78,7 +78,7 @@ integrate directly into your code. They're designed in a way that enables you to
 from your code. That means you're free to develop software without security reviews while also still guaranteeing that 
 sensitive data remains safe.
 
-We made a few different levels for how far you may want to integrate LunaDefend.  The deeper you go, [the more protection from attacks you get](https://www.lunasec.io/docs](/pages/lunadefend/overview/security/levels/). 
+We made a few different levels for how far you may want to integrate LunaDefend.  The deeper you go, [the more protection from attacks you get](https://www.lunasec.io/docs/pages/lunadefend/overview/security/levels/). 
 When you need more protection, you can integrate more protection.
 
 ## Why is LunaDefend's approach unique?
