@@ -91,7 +91,7 @@ export const SecureUploadDemo: React.FunctionComponent<{
             To see how to set up your own Secure Uploader,{' '}
             <a
               href={
-                'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-files/#uploading-a-file'
+                'https://www.lunasec.io/docs/pages/lunadefend/getting-started/dedicated-tokenizer/handling-files/#uploading-a-file'
               }
             >
               see here
