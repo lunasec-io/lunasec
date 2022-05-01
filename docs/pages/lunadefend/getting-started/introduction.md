@@ -21,7 +21,7 @@ sidebar_position: 1
 :::tip Try out the live demo
 The easiest way to see LunaDefend in action is to check out our [Live Demo app](https://app.lunasec.dev).
 Just create a new user, input some data,
-and try out LunaDefend.  To understand what is happening under the hood and what makes this special, read our [demo app documentation](https://www.lunasec.io/lunadefend/overview/demo-app/overview/).
+and try out LunaDefend.  To understand what is happening under the hood and what makes this special, read our [demo app documentation](https://www.lunasec.io/docs/pages/lunadefend/overview/demo-app/overview/).
 :::
 
 ### Local Demo
