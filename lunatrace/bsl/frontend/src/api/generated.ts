@@ -24,6 +24,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  JSON: Record<any, any> | any[];
+  UUID: string;
   _text: string;
   builds_source_type: 'cli'|'gui'|'pr';
   date: string;
@@ -66,9 +68,15 @@ export type Int_Comparison_Exp = {
 export type PresignedUrlResponse = {
   __typename?: 'PresignedUrlResponse';
   bucket: Scalars['String'];
-  headers: Scalars['jsonb'];
+  headers: Scalars['JSON'];
   key: Scalars['String'];
   url: Scalars['String'];
+};
+
+export type SbomUploadUrlOutput = {
+  __typename?: 'SbomUploadUrlOutput';
+  error: Scalars['Boolean'];
+  uploadUrl?: Maybe<UploadUrl>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -102,6 +110,12 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
+};
+
+export type UploadUrl = {
+  __typename?: 'UploadUrl';
+  headers: Scalars['JSON'];
+  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -1407,7 +1421,7 @@ export type Mutation_RootInsert_Projects_OneArgs = {
 
 /** mutation root */
 export type Mutation_RootPresignManifestUploadArgs = {
-  project_id: Scalars['uuid'];
+  project_id: Scalars['UUID'];
 };
 
 
@@ -2254,6 +2268,7 @@ export type Query_Root = {
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
+  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -2431,6 +2446,12 @@ export type Query_RootPackage_VersionsArgs = {
 
 export type Query_RootPackage_Versions_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootPresignSbomUploadArgs = {
+  buildId: Scalars['UUID'];
+  orgId: Scalars['UUID'];
 };
 
 
@@ -4127,7 +4148,7 @@ export type InsertProjectMutationVariables = Exact<{
 export type InsertProjectMutation = { __typename?: 'mutation_root', insert_projects_one?: { __typename?: 'projects', id: any } | null };
 
 export type PresignManifestUrlMutationVariables = Exact<{
-  project_id: Scalars['uuid'];
+  project_id: Scalars['UUID'];
 }>;
 
 
@@ -4490,7 +4511,7 @@ export const InsertProjectDocument = `
 }
     `;
 export const PresignManifestUrlDocument = `
-    mutation presignManifestUrl($project_id: uuid!) {
+    mutation presignManifestUrl($project_id: UUID!) {
   presignManifestUpload(project_id: $project_id) {
     url
     headers

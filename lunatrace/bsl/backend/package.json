@@ -22,7 +22,7 @@
     "generate:github-calls": "graphql-codegen --config codegen.github.yml",
     "generate": "yarn run generate:github-calls && yarn run generate:hasura-calls && yarn run generate:custom-calls",
     "dev:graphql:watch": "yarn run generate:hasura-calls && watch 'yarn run generate:hasura-calls' ./src/hasura-api/graphql",
-    "compile": "tsc -p tsconfig.json",
+    "compile": "tsc -p tsconfig.json && cp src/graphql-yoga/schema.graphql build/graphql-yoga/schema.graphql",
     "compile:watch": "tsc -p tsconfig.json -w"
   },
   "dependencies": {
