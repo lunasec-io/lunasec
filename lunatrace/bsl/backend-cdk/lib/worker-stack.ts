@@ -113,6 +113,7 @@ export class WorkerStack extends cdk.Stack {
     );
     storageStack.sbomBucket.grantReadWrite(processRepositoryQueueService.taskDefinition.taskRole);
     storageStack.processWebhookSqsQueue.grantSendMessages(processRepositoryQueueService.taskDefinition.taskRole);
+    storageStack.processRepositorySqsQueue.grantSendMessages(props.fargateService.service.taskDefinition.taskRole);
 
     const processManifestQueueService = new ecsPatterns.QueueProcessingFargateService(
       context,
@@ -205,5 +206,6 @@ export class WorkerStack extends cdk.Stack {
     );
     storageStack.processWebhookSqsQueue.grantConsumeMessages(processWebhookQueueService.taskDefinition.taskRole);
     storageStack.processWebhookSqsQueue.grantSendMessages(props.fargateService.service.taskDefinition.taskRole);
+    storageStack.processRepositorySqsQueue.grantSendMessages(processWebhookQueueService.taskDefinition.taskRole);
   }
 }
