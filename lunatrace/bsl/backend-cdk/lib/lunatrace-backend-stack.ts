@@ -234,6 +234,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:3002/health || exit 1'],
       },
     });
+    storageStackStage.processRepositorySqsQueue.grantSendMessages(backend.taskDefinition.taskRole);
 
     const hasuraJwtSecretValue = {
       type: 'RS256',
