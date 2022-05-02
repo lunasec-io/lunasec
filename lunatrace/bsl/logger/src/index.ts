@@ -12,6 +12,7 @@
  *
  */
 import { AsyncLocalStorage } from 'async_hooks';
+import * as util from 'util';
 
 import { getCallSite } from './callsite';
 import { BaseLogObj, LevelChoice, LoggerOptions, LogMethodArgs, LogObj, Transport } from './types';
@@ -123,7 +124,7 @@ export class LunaLogger {
     if (arg instanceof Error) {
       return arg.stack || arg.toString();
     }
-    return JSON.stringify(arg);
+    return util.inspect(arg);
   }
 
   private transport(logObj: LogObj) {
