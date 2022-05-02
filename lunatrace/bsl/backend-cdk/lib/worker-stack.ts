@@ -64,6 +64,7 @@ export class WorkerStack extends cdk.Stack {
       getContainerTarballPath('lunatrace-backend-queue-processor.tar')
     );
 
+    // common environment variables used by queue processors
     const processQueueCommonEnvVars: Record<string, string> = {
       NODE_ENV: 'production',
       PROCESS_WEBHOOK_QUEUE: storageStack.processWebhookSqsQueue.queueName,
