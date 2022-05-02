@@ -1,0 +1,39 @@
+- name: backend
+  definition:
+    url: http://host.docker.internal:3002/graphql
+    timeout_seconds: 60
+  comment: ""
+  permissions:
+  - role: user
+    definition:
+      schema: |-
+        schema  { query: Query mutation: Mutation }
+
+        scalar JSON
+
+        scalar UUID
+
+        type Mutation { presignManifestUpload(project_id: UUID!): PresignedUrlResponse
+        }
+
+        type PresignedUrlResponse { bucket: String!
+          headers: JSON!
+          key: String!
+          url: String!
+        }
+
+        type Query { fakeQueryToHackHasuraBeingABuggyMess: String
+          presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
+        }
+
+        type SbomUploadUrlOutput { error: Boolean!
+          uploadUrl: UploadUrl
+        }
+
+        type UploadUrl { headers: JSON!
+          url: String!
+        }
+
+        input SbomUploadUrlInput {orgId: UUID!
+          projectId: UUID!
+        }

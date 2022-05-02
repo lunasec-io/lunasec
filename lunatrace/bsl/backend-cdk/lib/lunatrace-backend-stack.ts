@@ -342,6 +342,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       env: props.env,
       storageStack: storageStackStage,
       fargateCluster,
+      fargateService: loadBalancedFargateService,
       gitHubAppId: props.gitHubAppId,
       gitHubAppPrivateKey,
       publicHasuraServiceUrl,
