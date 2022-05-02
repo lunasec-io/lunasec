@@ -13,6 +13,7 @@
  */
 import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
+import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
 import { Construct, Duration } from '@aws-cdk/core';
@@ -22,6 +23,7 @@ import { WorkerStorageStackState } from './worker-storage-stack';
 
 interface WorkerStackProps extends cdk.StackProps {
   fargateCluster: Cluster;
+  fargateService: ApplicationLoadBalancedFargateService;
   publicHasuraServiceUrl: string;
   gitHubAppId: string;
   gitHubAppPrivateKey: ISecret;
@@ -200,5 +202,7 @@ export class WorkerStack extends cdk.Stack {
         },
       }
     );
+    storageStack.processWebhookSqsQueue.grantConsumeMessages(processWebhookQueueService.taskDefinition.taskRole);
+    storageStack.processWebhookSqsQueue.grantSendMessages(props.fargateService.service.taskDefinition.taskRole);
   }
 }
