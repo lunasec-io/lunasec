@@ -47,7 +47,7 @@ const servicesWindow = tmuxWindow('services', [oathkeeper, hasura, frontend, doc
 
 const workerWindow = tmuxWindow('workers', [manifestWorker, sbomWorker, webhookWorker, repositoryWorker]);
 
-const backendWindow = tmuxWindow('backend', [manifestWorker, sbomWorker, webhookWorker]);
+const backendWindow = tmuxWindow('backend', [smeeWebhook, backend]);
 
 const generatedCodeWindow = tmuxWindow('generated-code', [generateCommon, generateLogger]);
 

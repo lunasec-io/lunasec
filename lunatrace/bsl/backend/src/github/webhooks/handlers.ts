@@ -27,9 +27,6 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
   // Wrap the hook in logging, pulls the type from octokit since this has the same signature
   const listenToHook: typeof interceptor.on = (hookName, callback) => {
     interceptor.on(hookName, async (event) => {
-      log.info('asdf', {
-        hookName,
-      });
       const actionName = 'action' in event.payload ? event.payload.action : 'none given';
       await log.provideFields({ loggerName: 'webhook-logger', hookName, actionName }, async () => {
         await callback(event);

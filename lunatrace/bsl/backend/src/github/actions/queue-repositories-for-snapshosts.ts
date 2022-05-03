@@ -17,7 +17,6 @@ import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { queueRepositoriesForSnapshot } from '../../workers/queue-repositories-for-snapshot';
-import { getInstallationAccessToken } from '../auth';
 
 import { hydrateRepositoryInformation } from './hydrate-repository-information';
 

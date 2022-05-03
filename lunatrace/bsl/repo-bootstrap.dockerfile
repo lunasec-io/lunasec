@@ -13,3 +13,6 @@ RUN CI=true yarn install
 
 # build common code
 RUN cd lunatrace/bsl/common && yarn run compile
+
+# build logger
+RUN cd lunatrace/bsl/logger && yarn run compile

@@ -12,9 +12,10 @@
  *
  */
 import { DeleteMessageCommand, Message, ReceiveMessageCommand, ReceiveMessageCommandOutput } from '@aws-sdk/client-sqs';
+import Express from 'express';
 
 import { sqsClient } from '../aws/sqs-client';
-import { getQueueHandlerConfig } from '../config';
+import { getQueueHandlerConfig, getServerConfig } from '../config';
 import { createGithubWebhookInterceptor } from '../github/webhooks';
 import { QueueHandlerWorkerConfig } from '../types/config';
 import {
@@ -29,6 +30,7 @@ import {
 } from '../types/sqs';
 import { log } from '../utils/log';
 import { getSqsUrlFromName } from '../utils/sqs';
+import { catchError, threwError } from '../utils/try';
 import { isArray } from '../utils/types';
 
 import { handleSnapshotManifest } from './generate-sbom';
@@ -42,7 +44,13 @@ type QueueHandlerFunc =
   | HandlerCallback<S3SqsEvent>
   | HandlerCallback<GenerateSnapshotForRepositoryRecord[]>
   | WebhookHandlerCallback;
-type QueueHandlersType = Record<QueueHandlerType, QueueHandlerFunc>;
+
+interface QueueHandlerConfig {
+  port: number;
+  handlerFunc: QueueHandlerFunc;
+}
+
+type QueueHandlersType = Record<QueueHandlerType, QueueHandlerConfig>;
 
 async function deleteMessage(message: Message, queueUrl: string) {
   const deleteParams = {
@@ -195,45 +203,86 @@ async function loadQueueHandlers(): Promise<QueueHandlersType> {
   const webhooks = await createGithubWebhookInterceptor();
 
   return {
-    'process-manifest': wrapProcessS3EventQueueJob(handleSnapshotManifest),
-    'process-repository': wrapProcessRepositoryJob(handleSnapshotRepository),
-    'process-sbom': wrapProcessS3EventQueueJob(handleScanSbom),
-    'process-webhook': createGithubWebhookHandler(webhooks),
+    'process-manifest': {
+      port: 5001,
+      handlerFunc: wrapProcessS3EventQueueJob(handleSnapshotManifest),
+    },
+    'process-repository': {
+      port: 5002,
+      handlerFunc: wrapProcessRepositoryJob(handleSnapshotRepository),
+    },
+    'process-sbom': {
+      port: 5003,
+      handlerFunc: wrapProcessS3EventQueueJob(handleScanSbom),
+    },
+    'process-webhook': {
+      port: 5004,
+      handlerFunc: createGithubWebhookHandler(webhooks),
+    },
   };
 }
 
 function determineHandler<THandler extends QueueHandlerType>(
   queueHandlers: QueueHandlersType,
   handlerName: THandler
-): QueueHandlerFunc {
+): QueueHandlerConfig {
   if (!(handlerName in queueHandlers)) {
     throw new Error('Unknown queue handler: ' + handlerName.toString());
   }
   return queueHandlers[handlerName];
 }
 
+function startHealthCheckService(port: number) {
+  void (async () => {
+    const app = Express();
+    app.get('/health', (_req: Express.Request, res: Express.Response) => {
+      res.send({
+        status: 'ok',
+      });
+    });
+
+    await new Promise((resolve, reject) => {
+      app.listen(port).on('listening', resolve).on('error', reject);
+    });
+
+    log.info('Queue health check service started', {
+      port,
+    });
+  })();
+}
+
 export async function setupQueue(): Promise<void> {
   const queueName = queueHandlerConfig.handlerQueueName;
+  log.info('setting up queue', {
+    queueName: queueHandlerConfig.handlerQueueName,
+  });
+
   const queueHandlers = await loadQueueHandlers();
 
   await log.provideFields({ queueName, loggerName: 'queue-logger' }, async () => {
-    const handler = determineHandler(queueHandlers, queueHandlerConfig.handlerName as QueueHandlerType);
+    const handlerConfig = determineHandler(queueHandlers, queueHandlerConfig.handlerName as QueueHandlerType);
 
-    const queueUrl = await getSqsUrlFromName(sqsClient, queueName);
+    const queueUrl = await catchError(getSqsUrlFromName(sqsClient, queueName));
 
-    if (queueUrl.error) {
+    if (threwError(queueUrl) || queueUrl.error) {
       log.error('unable to load queue url', {
         queueName: queueName,
       });
       process.exit(-1);
     }
 
-    log.info('got queueUrl: ', queueUrl);
+    // start health check service
+    startHealthCheckService(handlerConfig.port);
+
+    log.info('Loaded queueUrl for queue', {
+      queueName: queueName,
+      queueUrl: queueUrl.res,
+    });
     // read loop
     // eslint-disable-next-line no-constant-condition
     while (true) {
       log.info('Checking queue for messages...');
-      await readDataFromQueue(queueUrl.res, queueHandlerConfig, handler);
+      await readDataFromQueue(queueUrl.res, queueHandlerConfig, handlerConfig.handlerFunc);
     }
   });
 }
