@@ -118,12 +118,12 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     repoCount: githubRepos.length,
   });
 
-  const queueResp = await queueGithubReposForSnapshots(installationId, githubRepos);
+  const queueResp = await catchError(queueGithubReposForSnapshots(installationId, githubRepos));
 
-  if (queueResp.error) {
+  if (threwError(queueResp) || queueResp.error) {
     log.warn('unable to queue repositories, continuing with the installation', {
       installationId,
-      error: queueResp.msg,
+      error: threwError(queueResp) ? queueResp.message : queueResp.msg,
     });
   }
 

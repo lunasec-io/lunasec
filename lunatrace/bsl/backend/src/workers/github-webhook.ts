@@ -22,7 +22,9 @@ type WebhookHandlerFunc = (message: WebhookMetadata) => Promise<QueueSuccessResu
 
 export function createGithubWebhookHandler(webhooks: WebhookInterceptor): WebhookHandlerFunc {
   return async (message: WebhookMetadata): Promise<QueueSuccessResult | QueueErrorResult> => {
-    log.info(`Received webhook:`, message);
+    log.info(`Received webhook`, {
+      delivery_id: message.delivery_id,
+    });
     const { delivery_id } = message;
 
     const deliveryId = delivery_id;

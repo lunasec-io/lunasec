@@ -15,8 +15,10 @@ reset-dir() {
   change-dir "$saved_dir"
 }
 
+echo "NOTE: The backend must be running for migrations to be applied successfully"
+
 change-dir ../hasura
-if ! hasura migrate apply ; then
+if ! hasura migrate --database-name lunatrace apply ; then
 	echo "unable to apply database migrations"
 	exit 1
 fi
