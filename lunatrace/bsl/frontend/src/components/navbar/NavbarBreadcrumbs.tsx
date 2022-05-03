@@ -13,11 +13,11 @@
  */
 import React from 'react';
 import { Breadcrumb } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
-import { Params } from 'react-router-dom';
+import { NavLink, Params } from 'react-router-dom';
 import useBreadCrumbs, {
   BreadcrumbComponentProps,
   BreadcrumbComponentType,
+  BreadcrumbData,
   BreadcrumbsRoute,
 } from 'use-react-router-breadcrumbs';
 
@@ -36,7 +36,9 @@ const getCurrentProject = (projects: Project[], params: Params): Project | null 
   return filteredProjects[0];
 };
 
-// These small little components can figure out how to display their own names, since the IDs from the URL are too ugly
+// These little breadcrumb components can figure out how to display their own names, since the IDs from the URL are too ugly
+
+// TODO: it seems like it's possible to define these breadcrumbs in the route definitions, instead of in this file.  That would be cleaner
 const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
   // Doing queries here is actually completely performant thanks to the cache system, no new queries will fire
   const { data } = api.useGetSidebarInfoQuery();
@@ -107,6 +109,19 @@ const NewProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCom
   return <span>New Project</span>;
 };
 
+const NewTopicBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
+  const id = crumbProps.match.params.topic_id;
+  if (!id) {
+    return null;
+  }
+  const { data } = api.useGetTopicDetailsQuery({ id });
+  if (!data || !data.topics_by_pk) {
+    return null;
+  }
+
+  return <span>{data.topics_by_pk.title}</span>;
+};
+
 export const NavbarBreadcrumbs: React.FunctionComponent = () => {
   // These custom breadcrumbs override the defaults from the library
   const customRoutes: BreadcrumbsRoute[] = [
@@ -116,34 +131,39 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
     { path: '/organization/:project_id', breadcrumb: OrganizationBreadCrumb },
     { path: '/new-project', breadcrumb: null },
     { path: '/new-project/:organization_id', breadcrumb: NewProjectBreadCrumb },
+    { path: '/topic/:topic_id', breadcrumb: NewTopicBreadCrumb },
   ];
-  const breadCrumbs = useBreadCrumbs(customRoutes);
+  const breadCrumbs = useBreadCrumbs(customRoutes, {});
 
-  // Not every path maps to an index page, so we just dont show those breadcrumbs
-  // Really wanted to use micromatch for this but it doesnt work in the browser, so it's regexp :(
-  const blackList = ['/project$', '/project/.*/build$', '/organization$'];
+  // Not every path maps to an index page, so those aren't link breadcrumbs
+  const notLinksRegex = ['/project$', '/project/.*/build$', '/organization$', '/topic$'];
 
   return (
     <Breadcrumb className="breadcrumb-navigation">
       {breadCrumbs.map((crumbMeta, index) => {
-        const isBanned = blackList.some((banned) => {
+        const isNotLink = notLinksRegex.some((banned) => {
           return crumbMeta.match.pathname.match(new RegExp(banned));
         });
 
-        if (isBanned) {
-          return;
-        }
-
         const isLastCrumb = index === breadCrumbs.length - 1;
 
-        return (
-          <LinkContainer key={crumbMeta.key} to={crumbMeta.match.pathname}>
-            <Breadcrumb.Item key={crumbMeta.key} linkProps={isLastCrumb ? { className: 'text-reset ' } : {}}>
-              {crumbMeta.breadcrumb}
-            </Breadcrumb.Item>
-          </LinkContainer>
-        );
+        if (isNotLink || isLastCrumb) {
+          return <TextCrumb key={crumbMeta.key} crumbMeta={crumbMeta} />;
+        }
+        return <LinkCrumb key={crumbMeta.key} crumbMeta={crumbMeta} />;
       })}
     </Breadcrumb>
   );
+};
+
+const LinkCrumb: React.FC<{ crumbMeta: BreadcrumbData }> = ({ crumbMeta }) => {
+  return (
+    <Breadcrumb.Item linkAs={NavLink} linkProps={{ to: crumbMeta.match.pathname }}>
+      {crumbMeta.breadcrumb}
+    </Breadcrumb.Item>
+  );
+};
+
+const TextCrumb: React.FC<{ crumbMeta: BreadcrumbData }> = ({ crumbMeta }) => {
+  return <li className="breadcrumb-item">{crumbMeta.breadcrumb}</li>;
 };

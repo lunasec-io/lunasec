@@ -65,8 +65,12 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                 namespace
                 topic_vulnerabilities {
                     topic {
+                        id
                         body
                         metadata
+                        title
+                        severity
+                        summary
                         created_at
                         metadata_schema_version
                         related_topics {

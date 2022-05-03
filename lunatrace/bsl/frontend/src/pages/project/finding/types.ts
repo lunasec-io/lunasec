@@ -14,3 +14,5 @@
 import { GetBuildDetailsQuery } from '../../../api/generated';
 
 export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
+
+export type Topic = Finding['vulnerability']['topic_vulnerabilities'][number]['topic'];

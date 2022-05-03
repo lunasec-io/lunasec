@@ -32,8 +32,10 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import api from '../../../api';
 import { ConfirmationDailog } from '../../../components/ConfirmationDialog';
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
 
+import { TopicBlurb } from './TopicBlurb';
 import { VulnerabilityTableItem } from './VulnerabilityTableItem';
 import { Finding } from './types';
 
@@ -47,6 +49,7 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [ignoreNote, setIgnoreNote] = useState('');
 
+  console.log('vuln package is ', pkg);
   const filteredFindings = pkg.findings.filter((f) => {
     return severityOrder.indexOf(f.severity) >= severityFilter || !shouldFilterFindings;
   });
@@ -136,6 +139,14 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
           </Container>
         </Card.Header>
         <Card.Body>
+          <ConditionallyRender if={pkg.topics.length > 0}>
+            <Container fluid className={'text-center'}>
+              {pkg.topics.map((topic) => {
+                return <TopicBlurb key={topic.id} topic={topic}></TopicBlurb>;
+              })}
+            </Container>
+          </ConditionallyRender>
+
           <Container fluid>
             {pkg.fix_state === 'fixed' ? (
               <Row>

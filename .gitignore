@@ -3,6 +3,8 @@ node_modules
 *.tsbuildinfo
 **/secrets.yaml
 *.log
+.log*
+
 /docs/pages/node-sdk
 /docs/pages/tokenizer-sdk
 **/package-lock.json
@@ -29,3 +31,4 @@ docs/.yarn/.cache/webpack
 
 deployment-secrets/
 .gitattributes
+

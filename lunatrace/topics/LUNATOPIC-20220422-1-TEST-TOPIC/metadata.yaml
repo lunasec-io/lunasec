@@ -1,9 +1,12 @@
 
 {
   "schemaVersion": 1,
-  "cves": ["CVE-2021-44228","CVE-2021-45046"],
+  "cves": ["CVE-2021-44228","CVE-2021-45046", "GHSA-xvch-5gv4-984h"],
   "name": "Log4Shell",
-  "summary": "RCE in popular log4j package",
+  "severity":"Critical",
+  "summary": "On Thursday, December 9th, a 0-day exploit in the
+popular Java logging library log4j (version 2) was discovered that results in Remote Code Execution (RCE), by
+logging a certain string.",
   "language": "java",
   "advisories":[
     {
@@ -32,7 +35,9 @@
     "purl": "pkg:maven/log4j/log4j",
     "language": "java",
     "name": "log4j",
-    "versionConstraint": "= 2.0 || >= 2.0.1, < 2.3.1 || >= 2.4.0, < 2.12.2 || >= 2.13.0, < 2.15.0"
+    "versionConstraint": "= 2.0 || >= 2.0.1, < 2.3.1 || >= 2.4.0, < 2.12.2 || >= 2.13.0, < 2.15.0",
+    "fixed": true,
+    "fixVersion": ">= 2.16.0"
   }],
 #  See backend/src/fixtures for an example of how conditions look
   "conditions": [],

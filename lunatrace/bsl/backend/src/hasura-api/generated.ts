@@ -3242,7 +3242,7 @@ export type Query_Root = {
   topic_related_topics: Array<Topic_Related_Topics>;
   /** fetch data from the table: "topic_related_topics" using primary key columns */
   topic_related_topics_by_pk?: Maybe<Topic_Related_Topics>;
-  /** fetch data from the table: "topic_vulnerabilities" */
+  /** An array relationship */
   topic_vulnerabilities: Array<Topic_Vulnerabilities>;
   /** fetch data from the table: "topic_vulnerabilities" using primary key columns */
   topic_vulnerabilities_by_pk?: Maybe<Topic_Vulnerabilities>;
@@ -3999,7 +3999,7 @@ export type Subscription_Root = {
   topic_related_topics: Array<Topic_Related_Topics>;
   /** fetch data from the table: "topic_related_topics" using primary key columns */
   topic_related_topics_by_pk?: Maybe<Topic_Related_Topics>;
-  /** fetch data from the table: "topic_vulnerabilities" */
+  /** An array relationship */
   topic_vulnerabilities: Array<Topic_Vulnerabilities>;
   /** fetch data from the table: "topic_vulnerabilities" using primary key columns */
   topic_vulnerabilities_by_pk?: Maybe<Topic_Vulnerabilities>;
@@ -4469,6 +4469,13 @@ export type Topic_Vulnerabilities = {
   vulnerability_id: Scalars['uuid'];
 };
 
+/** order by aggregate values of table "topic_vulnerabilities" */
+export type Topic_Vulnerabilities_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Topic_Vulnerabilities_Max_Order_By>;
+  min?: InputMaybe<Topic_Vulnerabilities_Min_Order_By>;
+};
+
 /** input type for inserting array relation for remote table "topic_vulnerabilities" */
 export type Topic_Vulnerabilities_Arr_Rel_Insert_Input = {
   data: Array<Topic_Vulnerabilities_Insert_Input>;
@@ -4506,6 +4513,24 @@ export type Topic_Vulnerabilities_Insert_Input = {
   updated_at?: InputMaybe<Scalars['timestamptz']>;
   vulnerability?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "topic_vulnerabilities" */
+export type Topic_Vulnerabilities_Max_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  topic_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "topic_vulnerabilities" */
+export type Topic_Vulnerabilities_Min_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  topic_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "topic_vulnerabilities" */
@@ -4627,6 +4652,7 @@ export type Topics_Insert_Input = {
   metadata?: InputMaybe<Scalars['jsonb']>;
   metadata_schema_version?: InputMaybe<Scalars['Int']>;
   related_topics?: InputMaybe<Topic_Related_Topics_Arr_Rel_Insert_Input>;
+  severity?: InputMaybe<Scalars['severity_enum']>;
   summary?: InputMaybe<Scalars['String']>;
   tags?: InputMaybe<Scalars['_text']>;
   title?: InputMaybe<Scalars['String']>;
@@ -4669,6 +4695,7 @@ export type Topics_Set_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   metadata?: InputMaybe<Scalars['jsonb']>;
   metadata_schema_version?: InputMaybe<Scalars['Int']>;
+  severity?: InputMaybe<Scalars['severity_enum']>;
   summary?: InputMaybe<Scalars['String']>;
   tags?: InputMaybe<Scalars['_text']>;
   title?: InputMaybe<Scalars['String']>;
@@ -4690,6 +4717,8 @@ export enum Topics_Update_Column {
   Metadata = 'metadata',
   /** column name */
   MetadataSchemaVersion = 'metadata_schema_version',
+  /** column name */
+  Severity = 'severity',
   /** column name */
   Summary = 'summary',
   /** column name */
@@ -4880,6 +4909,8 @@ export type Vulnerabilities = {
   severity: Scalars['severity_enum'];
   slug: Scalars['String'];
   topic_id?: Maybe<Scalars['uuid']>;
+  /** An array relationship */
+  topic_vulnerabilities: Array<Topic_Vulnerabilities>;
   urls?: Maybe<Scalars['_text']>;
   /** An array relationship */
   vulnerability_packages: Array<Vulnerability_Packages>;
@@ -4923,6 +4954,16 @@ export type VulnerabilitiesReverse_Related_VulnerabilitiesArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Related_Vulnerabilities_Order_By>>;
   where?: InputMaybe<Related_Vulnerabilities_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerabilities" */
+export type VulnerabilitiesTopic_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Topic_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Topic_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Topic_Vulnerabilities_Bool_Exp>;
 };
 
 
@@ -4997,6 +5038,7 @@ export type Vulnerabilities_Bool_Exp = {
   severity?: InputMaybe<Severity_Enum_Comparison_Exp>;
   slug?: InputMaybe<String_Comparison_Exp>;
   topic_id?: InputMaybe<Uuid_Comparison_Exp>;
+  topic_vulnerabilities?: InputMaybe<Topic_Vulnerabilities_Bool_Exp>;
   urls?: InputMaybe<_Text_Comparison_Exp>;
   vulnerability_packages?: InputMaybe<Vulnerability_Packages_Bool_Exp>;
 };
@@ -5013,6 +5055,7 @@ export enum Vulnerabilities_Constraint {
 export type Vulnerabilities_Insert_Input = {
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
   slug?: InputMaybe<Scalars['String']>;
+  topic_vulnerabilities?: InputMaybe<Topic_Vulnerabilities_Arr_Rel_Insert_Input>;
   vulnerability_packages?: InputMaybe<Vulnerability_Packages_Arr_Rel_Insert_Input>;
 };
 
@@ -5096,6 +5139,7 @@ export type Vulnerabilities_Order_By = {
   severity?: InputMaybe<Order_By>;
   slug?: InputMaybe<Order_By>;
   topic_id?: InputMaybe<Order_By>;
+  topic_vulnerabilities_aggregate?: InputMaybe<Topic_Vulnerabilities_Aggregate_Order_By>;
   urls?: InputMaybe<Order_By>;
   vulnerability_packages_aggregate?: InputMaybe<Vulnerability_Packages_Aggregate_Order_By>;
 };
@@ -5997,7 +6041,7 @@ export const UpsertOrganizationsDocument = gql`
 export const UpsertTopicsDocument = gql`
     mutation UpsertTopics($objects: [topics_insert_input!]!) {
   insert_topics(
-    on_conflict: {constraint: topics_topic_unique_id_key, update_columns: [tags, body, data_source_link, metadata, metadata_schema_version, title, updated_at, summary]}
+    on_conflict: {constraint: topics_topic_unique_id_key, update_columns: [tags, body, data_source_link, metadata, metadata_schema_version, title, updated_at, summary, severity]}
     objects: $objects
   ) {
     affected_rows
