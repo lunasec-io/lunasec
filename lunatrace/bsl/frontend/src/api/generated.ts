@@ -3541,6 +3541,7 @@ export type Topics = {
   metadata_schema_version: Scalars['Int'];
   /** An array relationship */
   related_topics: Array<Topic_Related_Topics>;
+  severity?: Maybe<Scalars['severity_enum']>;
   summary: Scalars['String'];
   tags: Scalars['_text'];
   title: Scalars['String'];
@@ -3588,6 +3589,7 @@ export type Topics_Bool_Exp = {
   metadata?: InputMaybe<Jsonb_Comparison_Exp>;
   metadata_schema_version?: InputMaybe<Int_Comparison_Exp>;
   related_topics?: InputMaybe<Topic_Related_Topics_Bool_Exp>;
+  severity?: InputMaybe<Severity_Enum_Comparison_Exp>;
   summary?: InputMaybe<String_Comparison_Exp>;
   tags?: InputMaybe<_Text_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
@@ -3605,6 +3607,7 @@ export type Topics_Order_By = {
   metadata?: InputMaybe<Order_By>;
   metadata_schema_version?: InputMaybe<Order_By>;
   related_topics_aggregate?: InputMaybe<Topic_Related_Topics_Aggregate_Order_By>;
+  severity?: InputMaybe<Order_By>;
   summary?: InputMaybe<Order_By>;
   tags?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
@@ -3627,6 +3630,8 @@ export enum Topics_Select_Column {
   Metadata = 'metadata',
   /** column name */
   MetadataSchemaVersion = 'metadata_schema_version',
+  /** column name */
+  Severity = 'severity',
   /** column name */
   Summary = 'summary',
   /** column name */
@@ -4065,7 +4070,7 @@ export type GetBuildDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, source_type: any, project_id?: any | null, s3_url?: string | null, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, topic_vulnerabilities: Array<{ __typename?: 'topic_vulnerabilities', topic: { __typename?: 'topics', body: string, metadata: any, created_at: any, metadata_schema_version: number, related_topics: Array<{ __typename?: 'topic_related_topics', topic: { __typename?: 'topics', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
+export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, source_type: any, project_id?: any | null, s3_url?: string | null, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, topic_vulnerabilities: Array<{ __typename?: 'topic_vulnerabilities', topic: { __typename?: 'topics', id: any, body: string, metadata: any, title: string, severity?: any | null, summary: string, created_at: any, metadata_schema_version: number, related_topics: Array<{ __typename?: 'topic_related_topics', topic: { __typename?: 'topics', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
 
 export type GetManifestQueryVariables = Exact<{
   id?: InputMaybe<Scalars['uuid']>;
@@ -4079,7 +4084,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
+export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, topic_vulnerabilities: Array<{ __typename?: 'topic_vulnerabilities', topic: { __typename?: 'topics', id: any, body: string, metadata: any, title: string, summary: string, created_at: any, metadata_schema_version: number, related_topics: Array<{ __typename?: 'topic_related_topics', topic: { __typename?: 'topics', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4090,6 +4095,13 @@ export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }> };
+
+export type GetTopicDetailsQueryVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type GetTopicDetailsQuery = { __typename?: 'query_root', topics_by_pk?: { __typename?: 'topics', id: any, body: string, metadata: any, severity?: any | null, title: string, summary: string, created_at: any, metadata_schema_version: number, topic_vulnerabilities: Array<{ __typename?: 'topic_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', id: any, name: string, namespace: string } }>, related_topics: Array<{ __typename?: 'topic_related_topics', topic: { __typename?: 'topics', title: string, summary: string, id: any } }> } | null };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -4225,8 +4237,12 @@ export const GetBuildDetailsDocument = `
         namespace
         topic_vulnerabilities {
           topic {
+            id
             body
             metadata
+            title
+            severity
+            summary
             created_at
             metadata_schema_version
             related_topics {
@@ -4323,6 +4339,24 @@ export const GetProjectDocument = `
           name
           namespace
           data_source
+          topic_vulnerabilities {
+            topic {
+              id
+              body
+              metadata
+              title
+              summary
+              created_at
+              metadata_schema_version
+              related_topics {
+                topic {
+                  title
+                  summary
+                  id
+                }
+              }
+            }
+          }
           ignored_vulnerabilities(where: {project_id: {_eq: $project_id}}) {
             creator_id
             id
@@ -4396,6 +4430,34 @@ export const GetSidebarInfoDocument = `
       builds {
         id
         build_number
+      }
+    }
+  }
+}
+    `;
+export const GetTopicDetailsDocument = `
+    query GetTopicDetails($id: uuid!) {
+  topics_by_pk(id: $id) {
+    id
+    body
+    metadata
+    severity
+    title
+    summary
+    created_at
+    metadata_schema_version
+    topic_vulnerabilities {
+      vulnerability {
+        id
+        name
+        namespace
+      }
+    }
+    related_topics {
+      topic {
+        title
+        summary
+        id
       }
     }
   }
@@ -4550,6 +4612,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetSidebarInfo: build.query<GetSidebarInfoQuery, GetSidebarInfoQueryVariables | void>({
       query: (variables) => ({ document: GetSidebarInfoDocument, variables })
+    }),
+    GetTopicDetails: build.query<GetTopicDetailsQuery, GetTopicDetailsQueryVariables>({
+      query: (variables) => ({ document: GetTopicDetailsDocument, variables })
     }),
     SearchVulnerabilities: build.query<SearchVulnerabilitiesQuery, SearchVulnerabilitiesQueryVariables>({
       query: (variables) => ({ document: SearchVulnerabilitiesDocument, variables })

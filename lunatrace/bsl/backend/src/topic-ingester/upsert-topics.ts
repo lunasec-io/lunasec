@@ -68,6 +68,7 @@ function convertTopicsToHasuraFormat(topic: Topic): Topics_Insert_Input {
     title: topic.metadata.name,
     metadata: topic.metadata,
     metadata_schema_version: topic.metadata.schemaVersion,
+    severity: topic.metadata.severity,
     summary: topic.metadata.summary,
     tags: toPostgresArray(topic.metadata.tags),
     data_source_link: topic.topic_unique_id, // stubbed for now, make it a link

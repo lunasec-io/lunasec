@@ -20,6 +20,7 @@ import { BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } fro
 import { AuthError } from './pages/auth/Error';
 import { HomePage } from './pages/homepage/Home';
 import { ProjectCreate } from './pages/project/Create';
+import { TopicMain } from './pages/topic/Main';
 import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
 
 export const routes: RouteObject[] = [
@@ -89,6 +90,14 @@ export const routes: RouteObject[] = [
             ),
           },
         ],
+      },
+      {
+        path: 'topic/:topic_id',
+        element: (
+          <RouteGuard>
+            <TopicMain />
+          </RouteGuard>
+        ),
       },
       { path: 'auth', children: [{ path: 'error', element: <AuthError /> }] },
       {

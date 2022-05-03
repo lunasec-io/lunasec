@@ -20,44 +20,9 @@
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
-export interface TopicMetadata1 {
-    schemaVersion: number;
-    cves:          string[];
-    name:          string;
-    summary:       string;
-    language:      string;
-    advisories:    Advisory[];
-    cwe:           Cwe;
-    tags:          string[];
-    packages:      Condition[];
-    conditions:    Condition[];
-    tools:         Tool[];
-    relatedTopics: string[];
-}
+import {TopicMetadata1} from "@lunatrace/lunatrace-common";
 
-export interface Advisory {
-    type: string;
-    name: string;
-    url:  string;
-}
-
-export interface Condition {
-    type:              string;
-    purl?:             string;
-    versionConstraint: string;
-    name?:             string;
-    language?:         string;
-}
-
-export interface Cwe {
-    number: number;
-    name:   string;
-}
-
-export interface Tool {
-    name: string;
-    link: string;
-}
+export {TopicMetadata1} from '@lunatrace/lunatrace-common';
 
 // Converts JSON strings to/from your types
 // and asserts the results of JSON.parse at runtime
@@ -101,7 +66,7 @@ function jsToJSONProps(typ: any): any {
 
 function transform(val: any, typ: any, getProps: any, key: any = ''): any {
     function transformPrimitive(typ: string, val: any): any {
-        if (typeof typ === typeof val) {return val;}
+        if (typeof typ === typeof val) return val;
         return invalidValue(typ, val, key);
     }
 
@@ -118,13 +83,13 @@ function transform(val: any, typ: any, getProps: any, key: any = ''): any {
     }
 
     function transformEnum(cases: string[], val: any): any {
-        if (cases.indexOf(val) !== -1) {return val;}
+        if (cases.indexOf(val) !== -1) return val;
         return invalidValue(cases, val);
     }
 
     function transformArray(typ: any, val: any): any {
         // val must be an array with no invalid elements
-        if (!Array.isArray(val)) {return invalidValue("array", val);}
+        if (!Array.isArray(val)) return invalidValue("array", val);
         return val.map(el => transform(el, typ, getProps));
     }
 
@@ -157,16 +122,16 @@ function transform(val: any, typ: any, getProps: any, key: any = ''): any {
         return result;
     }
 
-    if (typ === "any") {return val;}
+    if (typ === "any") return val;
     if (typ === null) {
-        if (val === null) {return val;}
+        if (val === null) return val;
         return invalidValue(typ, val);
     }
-    if (typ === false) {return invalidValue(typ, val);}
+    if (typ === false) return invalidValue(typ, val);
     while (typeof typ === "object" && typ.ref !== undefined) {
         typ = typeMap[typ.ref];
     }
-    if (Array.isArray(typ)) {return transformEnum(typ, val);}
+    if (Array.isArray(typ)) return transformEnum(typ, val);
     if (typeof typ === "object") {
         return typ.hasOwnProperty("unionMembers") ? transformUnion(typ.unionMembers, val)
             : typ.hasOwnProperty("arrayItems")    ? transformArray(typ.arrayItems, val)
@@ -174,7 +139,7 @@ function transform(val: any, typ: any, getProps: any, key: any = ''): any {
                     : invalidValue(typ, val);
     }
     // Numbers can be parsed by Date but shouldn't be.
-    if (typ === Date && typeof val !== "number") {return transformDate(val);}
+    if (typ === Date && typeof val !== "number") return transformDate(val);
     return transformPrimitive(typ, val);
 }
 
@@ -213,10 +178,11 @@ const typeMap: any = {
         { json: "name", js: "name", typ: "" },
         { json: "summary", js: "summary", typ: "" },
         { json: "language", js: "language", typ: "" },
+        { json: "severity", js: "severity", typ: "" },
         { json: "advisories", js: "advisories", typ: a(r("Advisory")) },
         { json: "cwe", js: "cwe", typ: r("Cwe") },
         { json: "tags", js: "tags", typ: a("") },
-        { json: "packages", js: "packages", typ: a(r("Condition")) },
+        { json: "packages", js: "packages", typ: a(r("Package")) },
         { json: "conditions", js: "conditions", typ: a(r("Condition")) },
         { json: "tools", js: "tools", typ: a(r("Tool")) },
         { json: "relatedTopics", js: "relatedTopics", typ: a("") },
@@ -231,11 +197,19 @@ const typeMap: any = {
         { json: "purl", js: "purl", typ: u(undefined, "") },
         { json: "versionConstraint", js: "versionConstraint", typ: "" },
         { json: "name", js: "name", typ: u(undefined, "") },
-        { json: "language", js: "language", typ: u(undefined, "") },
     ], false),
     "Cwe": o([
         { json: "number", js: "number", typ: 0 },
         { json: "name", js: "name", typ: "" },
+    ], false),
+    "Package": o([
+        { json: "type", js: "type", typ: "" },
+        { json: "purl", js: "purl", typ: "" },
+        { json: "language", js: "language", typ: "" },
+        { json: "name", js: "name", typ: "" },
+        { json: "versionConstraint", js: "versionConstraint", typ: "" },
+        { json: "fixed", js: "fixed", typ: true },
+        { json: "fixVersion", js: "fixVersion", typ: "" },
     ], false),
     "Tool": o([
         { json: "name", js: "name", typ: "" },

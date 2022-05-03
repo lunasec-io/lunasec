@@ -16,6 +16,7 @@ import { readTopicsFromFolder } from '../topic-ingester/read-topics-from-folder'
 describe('topic injester', () => {
   it('parses topics from disk', () => {
     const topics = readTopicsFromFolder('./src/fixtures/topics');
+    console.log('read topics, ', topics);
     const topic = topics[0];
     expect(topic).toHaveProperty('body');
     expect(topic).toHaveProperty('metadata');
