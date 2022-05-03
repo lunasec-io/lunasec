@@ -11,8 +11,19 @@
  * limitations under the License.
  *
  */
-import { GetBuildDetailsQuery } from '../../../api/generated';
 
-export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
-export type Topic = Finding['vulnerability']['topic_vulnerabilities'][number]['topic'];
+import { Topic } from './types';
+
+export const TopicBlurb: React.FC<{ topic: Topic }> = ({ topic }) => {
+  return (
+    <>
+      <h2 className={'d-md-inline-block'}>{topic.title}</h2>
+      <p className={'ms-md-1'}>
+        {topic.summary} <NavLink to={`/topic/${topic.id}`}>Read more...</NavLink>
+      </p>
+    </>
+  );
+};

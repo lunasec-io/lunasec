@@ -19,10 +19,11 @@ module.exports = {
     alias: {},
     plugins: {
       add: [
-        new webpack.ProvidePlugin({
-          process:'process/browser'
-        })
-      ]
+        // new webpack.ProvidePlugin({
+        //   process:'process/browser',
+        //   Buffer: ['buffer', 'Buffer']
+        // }),
+]
       // add: [], /* An array of plugins */
       // add: [
       //   plugin1,
@@ -34,7 +35,15 @@ module.exports = {
     configure: { /* Any webpack configuration options: https://webpack.js.org/configuration */
       resolve: {
         fallback: {
-          process: require.resolve("process/browser")
+          // process: require.resolve("process/browser"),
+          // path: require.resolve("path-browserify"),
+          // "crypto": require.resolve("crypto-browserify"),
+          // "stream": require.resolve("stream-browserify"),
+          // "assert": require.resolve("assert"),
+          // "http": require.resolve("stream-http"),
+          // "https": require.resolve("https-browserify"),
+          // "os": require.resolve("os-browserify"),
+          // "url": require.resolve("url")
         }
       },
       module: {

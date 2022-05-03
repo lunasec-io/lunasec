@@ -11,8 +11,12 @@
  * limitations under the License.
  *
  */
-import { GetBuildDetailsQuery } from '../../../api/generated';
+import { TopicMetadata } from '@lunatrace/lunatrace-common';
 
-export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
+import { GetTopicDetailsQuery } from '../../api/generated';
 
-export type Topic = Finding['vulnerability']['topic_vulnerabilities'][number]['topic'];
+type GeneratedTopicDetails = NonNullable<GetTopicDetailsQuery['topics_by_pk']>;
+
+export interface TopicDetails extends GeneratedTopicDetails {
+  metadata: TopicMetadata;
+}

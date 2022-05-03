@@ -14,11 +14,12 @@
 import fs from 'fs';
 import path from 'path';
 
+import { TopicMetadata1 } from '@lunatrace/lunatrace-common';
 import yaml from 'js-yaml';
 
 import { log } from '../utils/log';
 
-import { Convert as Convert1, TopicMetadata1 } from './schemas/generated-schema-1-validator';
+import { Convert as Convert1 } from './schemas/generated-schema-1-validator';
 import { Topic } from './types';
 
 interface TopicMetadataWithSchema {
