@@ -17757,6 +17757,14 @@ code.code-highlight {
   font-size: small !important;
 }
 
+@media (min-width: 768px) {
+  .markdown-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 60%;
+  }
+}
 .breadcrumb-item + .breadcrumb-item::before {
   content: var(--bs-breadcrumb-divider, ">") !important;
 }
