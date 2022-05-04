@@ -26,6 +26,12 @@ mutators:
   noop:
     enabled: true
 
+  hydrator:
+    enabled: true
+    config:
+      api:
+        url: http://localhost:3002/internal/auth/impersonate-as-admin
+
   id_token:
     enabled: true
     config:
@@ -62,7 +68,7 @@ authenticators:
   bearer_token:
     enabled: true
     config:
-      check_session_url: http://localhost:8000/api/internal/auth/lookup-project-access-token
+      check_session_url: http://localhost:3002/internal/auth/lookup-static-access-token
       force_method: GET
       preserve_path: true
       preserve_query: true
