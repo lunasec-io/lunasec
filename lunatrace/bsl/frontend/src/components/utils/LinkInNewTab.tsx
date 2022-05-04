@@ -11,12 +11,12 @@
  * limitations under the License.
  *
  */
-import { TopicMetadata } from '@lunatrace/lunatrace-common';
+import React from 'react';
 
-import { GetTopicDetailsQuery } from '../../api/generated';
-
-type GeneratedTopicDetails = NonNullable<GetTopicDetailsQuery['topics_by_pk']>;
-
-export interface TopicDetailsData extends GeneratedTopicDetails {
-  metadata: TopicMetadata;
-}
+export const LinkInNewTab: React.FC<{ href: string }> = ({ children, href }) => {
+  return (
+    <a rel="noopener noreferrer" target="_blank" href={href}>
+      {children}
+    </a>
+  );
+};

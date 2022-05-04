@@ -20,7 +20,8 @@ import { BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } fro
 import { AuthError } from './pages/auth/Error';
 import { HomePage } from './pages/homepage/Home';
 import { ProjectCreate } from './pages/project/Create';
-import { TopicMain } from './pages/topic/Main';
+import { TopicList } from './pages/topic/List';
+import { TopicMain } from './pages/topic/Topic';
 import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
 
 export const routes: RouteObject[] = [
@@ -92,13 +93,19 @@ export const routes: RouteObject[] = [
         ],
       },
       {
-        path: 'topic/:topic_id',
-        element: (
-          <RouteGuard>
-            <TopicMain />
-          </RouteGuard>
-        ),
+        path: 'topics',
+        children: [
+          {
+            path: '',
+            element: <TopicList />,
+          },
+          {
+            path: ':topic_id',
+            element: <TopicMain />,
+          },
+        ],
       },
+
       { path: 'auth', children: [{ path: 'error', element: <AuthError /> }] },
       {
         element: <p>404</p>, //doesnt work
