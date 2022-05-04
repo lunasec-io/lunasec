@@ -11,31 +11,46 @@
  * limitations under the License.
  *
  */
-import {
-  DeleteMessageCommand,
-  GetQueueUrlCommand,
-  Message,
-  ReceiveMessageCommand,
-  ReceiveMessageCommandOutput,
-} from '@aws-sdk/client-sqs';
+import { DeleteMessageCommand, Message, ReceiveMessageCommand, ReceiveMessageCommandOutput } from '@aws-sdk/client-sqs';
+import Express from 'express';
 
 import { sqsClient } from '../aws/sqs-client';
-import { getQueueHandlerConfig } from '../config';
+import { getQueueHandlerConfig, getServerConfig, getWorkerConfig } from '../config';
+import { createGithubWebhookInterceptor } from '../github/webhooks';
+import { QueueHandlerWorkerConfig } from '../types/config';
 import {
+  GenerateSnapshotForRepositoryRecord,
   HandlerCallback,
   QueueErrorResult,
+  QueueHandlerType,
   QueueSuccessResult,
   S3HandlerCallback,
   S3SqsEvent,
   WebhookHandlerCallback,
 } from '../types/sqs';
 import { log } from '../utils/log';
+import { getSqsUrlFromName } from '../utils/sqs';
+import { catchError, threwError } from '../utils/try';
+import { isArray } from '../utils/types';
 
-import { handleGenerateManifestSbom } from './generate-sbom';
-import { handleGithubWebhook } from './github-webhook';
+import { handleSnapshotManifest } from './generate-sbom';
+import { createGithubWebhookHandler } from './github-webhook';
 import { handleScanSbom } from './scan-sbom';
+import { handleSnapshotRepository } from './snapshot-repository';
+import { runJob } from './upsert-vulnerabilities';
 
-const queueHandlerConfig = getQueueHandlerConfig();
+const workerConfig = getWorkerConfig();
+
+type QueueHandlerFunc =
+  | HandlerCallback<S3SqsEvent>
+  | HandlerCallback<GenerateSnapshotForRepositoryRecord[]>
+  | WebhookHandlerCallback;
+
+interface QueueHandlerConfig {
+  handlerFunc: QueueHandlerFunc;
+}
+
+type QueueHandlersType = Record<QueueHandlerType, QueueHandlerConfig>;
 
 async function deleteMessage(message: Message, queueUrl: string) {
   const deleteParams = {
@@ -50,18 +65,18 @@ async function deleteMessage(message: Message, queueUrl: string) {
   }
 }
 
-async function readDataFromQueue<THandler extends allQueueHandlersTypes>(
+async function readDataFromQueue<THandler extends QueueHandlerFunc>(
   queueUrl: string,
-  queueName: allQueueHandlersTypes,
-  processMessageCallback: typeof allQueueHandlers[THandler]
+  config: QueueHandlerWorkerConfig,
+  processMessageCallback: THandler
 ) {
   try {
     const params = {
       AttributeNames: ['SentTimestamp'],
-      MaxNumberOfMessages: QUEUE_MAX_MESSAGES_OVERRIDE[queueName] || 10,
+      MaxNumberOfMessages: config.handlerConfig.maxMessages || 10,
       MessageAttributeNames: ['All'],
       QueueUrl: queueUrl,
-      VisibilityTimeout: QUEUE_VISIBILITY_OVERRIDE[queueName] || 60,
+      VisibilityTimeout: config.handlerConfig.visibility || 60,
       WaitTimeSeconds: 5,
     };
 
@@ -75,7 +90,7 @@ async function readDataFromQueue<THandler extends allQueueHandlersTypes>(
               return;
             }
 
-            const parsedBody = JSON.parse(message.Body) as Parameters<typeof allQueueHandlers[THandler]>[0];
+            const parsedBody = JSON.parse(message.Body) as Parameters<THandler>[0];
             log.debug('parsed body as ', parsedBody);
 
             const result = await processMessageCallback(parsedBody as never);
@@ -109,7 +124,7 @@ async function readDataFromQueue<THandler extends allQueueHandlersTypes>(
   }
 }
 
-function wrapProcessQueueJob(
+function wrapProcessS3EventQueueJob(
   processMessageCallback: S3HandlerCallback
 ): (parsedBody: S3SqsEvent) => Promise<QueueSuccessResult | QueueErrorResult> {
   return async (parsedBody: S3SqsEvent) => {
@@ -149,80 +164,109 @@ function wrapProcessQueueJob(
   };
 }
 
-type s3QueueHandlers = 'process-manifest-queue' | 'process-sbom-queue';
-type webhookQueueHandlers = 'process-webhook-queue';
-type allQueueHandlersTypes = s3QueueHandlers | webhookQueueHandlers;
+function wrapProcessRepositoryJob(
+  processMessageCallback: HandlerCallback<GenerateSnapshotForRepositoryRecord>
+): (parsedBody: GenerateSnapshotForRepositoryRecord[]) => Promise<QueueSuccessResult | QueueErrorResult> {
+  return async (parsedBody: GenerateSnapshotForRepositoryRecord[]) => {
+    if (!isArray(parsedBody) || parsedBody.length === 0) {
+      log.info('No records on sqs event, deleting message, exiting');
+      return {
+        success: false,
+        error: new Error('No records on sqs event, deleting message, exiting'),
+      };
+    }
 
-type S3QueueMap = {
-  [key in s3QueueHandlers]: HandlerCallback<S3SqsEvent>;
-};
+    const handlerPromises = parsedBody.map((record) => {
+      // Executes the proper handler for whatever queue we are processing, passed in above as an argument
+      return processMessageCallback(record);
+    });
+    const results = await Promise.all(handlerPromises);
 
-type WebhookQueueMap = {
-  [key in webhookQueueHandlers]: WebhookHandlerCallback;
-};
+    const errors = results.filter((result) => !result.success);
 
-const handlers: S3QueueMap = {
-  'process-manifest-queue': wrapProcessQueueJob(handleGenerateManifestSbom),
-  'process-sbom-queue': wrapProcessQueueJob(handleScanSbom),
-};
+    if (errors.length > 0) {
+      log.error('Errors found during SQS job:', { errors });
+      // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
+      return {
+        success: false,
+        error: new Error('Errors found during SQS job'),
+      };
+    }
 
-const webhookHandlers: WebhookQueueMap = {
-  'process-webhook-queue': handleGithubWebhook,
-};
+    return {
+      success: true,
+    };
+  };
+}
 
-const allQueueHandlers = {
-  ...handlers,
-  ...webhookHandlers,
-};
+async function loadQueueHandlers(): Promise<QueueHandlersType> {
+  const webhooks = await createGithubWebhookInterceptor();
 
-const DEFAULT_QUEUE_MAX_MESSAGES = 10;
+  return {
+    'process-manifest': {
+      handlerFunc: wrapProcessS3EventQueueJob(handleSnapshotManifest),
+    },
+    'process-repository': {
+      handlerFunc: wrapProcessRepositoryJob(handleSnapshotRepository),
+    },
+    'process-sbom': {
+      handlerFunc: wrapProcessS3EventQueueJob(handleScanSbom),
+    },
+    'process-webhook': {
+      handlerFunc: createGithubWebhookHandler(webhooks),
+    },
+  };
+}
 
-const QUEUE_MAX_MESSAGES_OVERRIDE = {
-  'process-webhook-queue': 1,
-  'process-manifest-queue': DEFAULT_QUEUE_MAX_MESSAGES,
-  'process-sbom-queue': DEFAULT_QUEUE_MAX_MESSAGES,
-};
-
-const DEFAULT_QUEUE_VISIBILITY = 60;
-
-const QUEUE_VISIBILITY_OVERRIDE = {
-  'process-webhook-queue': DEFAULT_QUEUE_VISIBILITY * 5,
-  'process-manifest-queue': DEFAULT_QUEUE_VISIBILITY,
-  'process-sbom-queue': DEFAULT_QUEUE_VISIBILITY,
-};
-
-function determineHandler<THandler extends allQueueHandlersTypes>(
+function determineHandler<THandler extends QueueHandlerType>(
+  queueHandlers: QueueHandlersType,
   handlerName: THandler
-): typeof allQueueHandlers[THandler] {
-  if (!(handlerName in allQueueHandlers)) {
+): QueueHandlerConfig {
+  if (!(handlerName in queueHandlers)) {
     throw new Error('Unknown queue handler: ' + handlerName.toString());
   }
-  return allQueueHandlers[handlerName];
+  return queueHandlers[handlerName];
 }
 
 export async function setupQueue(): Promise<void> {
-  const queueName = queueHandlerConfig.queueName;
+  const queueHandlerConfig = getQueueHandlerConfig();
+
+  const queueName = queueHandlerConfig.handlerQueueName;
+  log.info('setting up queue', {
+    queueName: queueHandlerConfig.handlerQueueName,
+  });
+
+  const queueHandlers = await loadQueueHandlers();
+
   await log.provideFields({ queueName, loggerName: 'queue-logger' }, async () => {
-    const { QueueUrl } = await sqsClient.send(
-      new GetQueueUrlCommand({
-        QueueName: queueName,
-      })
-    );
-    if (!QueueUrl) {
-      throw new Error('failed to get QueueUrl for queuename ');
+    const handlerConfig = determineHandler(queueHandlers, queueHandlerConfig.handlerName as QueueHandlerType);
+
+    const queueUrl = await catchError(getSqsUrlFromName(sqsClient, queueName));
+
+    if (threwError(queueUrl) || queueUrl.error) {
+      log.error('unable to load queue url', {
+        queueName: queueName,
+      });
+      process.exit(-1);
     }
-    log.info('got queueUrl: ', QueueUrl);
+
+    log.info('Loaded queueUrl for queue', {
+      queueName: queueName,
+      queueUrl: queueUrl.res,
+    });
     // read loop
     // eslint-disable-next-line no-constant-condition
     while (true) {
       log.info('Checking queue for messages...');
-
-      const handlerType = queueHandlerConfig.handlerName as allQueueHandlersTypes;
-      const handler = determineHandler(handlerType);
-
-      await readDataFromQueue(QueueUrl, handlerType, handler);
+      await readDataFromQueue(queueUrl.res, queueHandlerConfig, handlerConfig.handlerFunc);
     }
   });
 }
 
-void setupQueue();
+if (workerConfig.workerType === 'queue-handler') {
+  void setupQueue();
+} else if (workerConfig.workerType === 'job-runner') {
+  void runJob();
+} else {
+  throw new Error(`unknown worker type: ${workerConfig.workerType}`);
+}

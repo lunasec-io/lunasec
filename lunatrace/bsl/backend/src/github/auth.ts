@@ -22,11 +22,11 @@ import { catchError, threwError } from '../utils/try';
 
 import { getSdk, Sdk } from './api/generated';
 
-const githubAppConfig = getGithubAppConfig();
-
 // TODO: The return type for Octokit is weird and not obviously exported, at least according to me IDE.
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function getGithubAppAuth(clientInfo?: { clientId: string; clientSecret: string }) {
+  const githubAppConfig = getGithubAppConfig();
+
   return createAppAuth({
     appId: githubAppConfig.githubAppId,
     privateKey: githubAppConfig.githubPrivateKey,
@@ -63,6 +63,8 @@ export async function getInstallationAccessToken(installationId: number): Promis
 }
 
 export function getGithubGraphqlClient(accessToken: string): Sdk {
+  const githubAppConfig = getGithubAppConfig();
+
   const client = new GraphQLClient(githubAppConfig.githubEndpoint, {
     headers: {
       authorization: `token ${accessToken}`,

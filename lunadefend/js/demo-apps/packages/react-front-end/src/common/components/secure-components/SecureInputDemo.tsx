@@ -140,7 +140,7 @@ export const SecureInputDemo: React.FunctionComponent<{
           </p>
           <p>
             To see how to set up your own Secure Input,{' '}
-            <a href={'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-text/'}>
+            <a href={'https://www.lunasec.io/docs/pages/lunadefend/getting-started/dedicated-tokenizer/handling-text/'}>
               see here
             </a>
             .
