@@ -24,8 +24,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  JSON: Record<any, any> | any[];
-  UUID: string;
   _text: string;
   builds_source_type: 'cli'|'gui'|'pr';
   date: string;
@@ -68,15 +66,9 @@ export type Int_Comparison_Exp = {
 export type PresignedUrlResponse = {
   __typename?: 'PresignedUrlResponse';
   bucket: Scalars['String'];
-  headers: Scalars['JSON'];
+  headers: Scalars['jsonb'];
   key: Scalars['String'];
   url: Scalars['String'];
-};
-
-export type SbomUploadUrlOutput = {
-  __typename?: 'SbomUploadUrlOutput';
-  error: Scalars['Boolean'];
-  uploadUrl?: Maybe<UploadUrl>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -110,12 +102,6 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
-};
-
-export type UploadUrl = {
-  __typename?: 'UploadUrl';
-  headers: Scalars['JSON'];
-  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -1421,7 +1407,7 @@ export type Mutation_RootInsert_Projects_OneArgs = {
 
 /** mutation root */
 export type Mutation_RootPresignManifestUploadArgs = {
-  project_id: Scalars['UUID'];
+  project_id: Scalars['uuid'];
 };
 
 
@@ -2268,7 +2254,6 @@ export type Query_Root = {
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
-  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -2446,12 +2431,6 @@ export type Query_RootPackage_VersionsArgs = {
 
 export type Query_RootPackage_Versions_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootPresignSbomUploadArgs = {
-  buildId: Scalars['UUID'];
-  orgId: Scalars['UUID'];
 };
 
 
@@ -3667,6 +3646,7 @@ export enum Topics_Select_Column {
  */
 export type Users = {
   __typename?: 'users';
+  github_id?: Maybe<Scalars['String']>;
   github_node_id?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   kratos_id?: Maybe<Scalars['uuid']>;
@@ -3686,6 +3666,7 @@ export type Users_Bool_Exp = {
   _and?: InputMaybe<Array<Users_Bool_Exp>>;
   _not?: InputMaybe<Users_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Bool_Exp>>;
+  github_id?: InputMaybe<String_Comparison_Exp>;
   github_node_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -3694,6 +3675,7 @@ export type Users_Bool_Exp = {
 
 /** order by max() on columns of table "users" */
 export type Users_Max_Order_By = {
+  github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
@@ -3701,6 +3683,7 @@ export type Users_Max_Order_By = {
 
 /** order by min() on columns of table "users" */
 export type Users_Min_Order_By = {
+  github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
@@ -3708,6 +3691,7 @@ export type Users_Min_Order_By = {
 
 /** Ordering options when selecting data from "users". */
 export type Users_Order_By = {
+  github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
@@ -3716,6 +3700,8 @@ export type Users_Order_By = {
 
 /** select columns of table "users" */
 export enum Users_Select_Column {
+  /** column name */
+  GithubId = 'github_id',
   /** column name */
   GithubNodeId = 'github_node_id',
   /** column name */
@@ -4148,7 +4134,7 @@ export type InsertProjectMutationVariables = Exact<{
 export type InsertProjectMutation = { __typename?: 'mutation_root', insert_projects_one?: { __typename?: 'projects', id: any } | null };
 
 export type PresignManifestUrlMutationVariables = Exact<{
-  project_id: Scalars['UUID'];
+  project_id: Scalars['uuid'];
 }>;
 
 
@@ -4511,7 +4497,7 @@ export const InsertProjectDocument = `
 }
     `;
 export const PresignManifestUrlDocument = `
-    mutation presignManifestUrl($project_id: UUID!) {
+    mutation presignManifestUrl($project_id: uuid!) {
   presignManifestUpload(project_id: $project_id) {
     url
     headers
