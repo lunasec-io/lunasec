@@ -15,7 +15,7 @@ import { DeleteMessageCommand, Message, ReceiveMessageCommand, ReceiveMessageCom
 import Express from 'express';
 
 import { sqsClient } from '../aws/sqs-client';
-import { getQueueHandlerConfig, getServerConfig } from '../config';
+import { getQueueHandlerConfig, getServerConfig, getWorkerConfig } from '../config';
 import { createGithubWebhookInterceptor } from '../github/webhooks';
 import { QueueHandlerWorkerConfig } from '../types/config';
 import {
@@ -37,8 +37,9 @@ import { handleSnapshotManifest } from './generate-sbom';
 import { createGithubWebhookHandler } from './github-webhook';
 import { handleScanSbom } from './scan-sbom';
 import { handleSnapshotRepository } from './snapshot-repository';
+import { runJob } from './upsert-vulnerabilities';
 
-const queueHandlerConfig = getQueueHandlerConfig();
+const workerConfig = getWorkerConfig();
 
 type QueueHandlerFunc =
   | HandlerCallback<S3SqsEvent>
@@ -46,7 +47,6 @@ type QueueHandlerFunc =
   | WebhookHandlerCallback;
 
 interface QueueHandlerConfig {
-  port: number;
   handlerFunc: QueueHandlerFunc;
 }
 
@@ -204,19 +204,15 @@ async function loadQueueHandlers(): Promise<QueueHandlersType> {
 
   return {
     'process-manifest': {
-      port: 5001,
       handlerFunc: wrapProcessS3EventQueueJob(handleSnapshotManifest),
     },
     'process-repository': {
-      port: 5002,
       handlerFunc: wrapProcessRepositoryJob(handleSnapshotRepository),
     },
     'process-sbom': {
-      port: 5003,
       handlerFunc: wrapProcessS3EventQueueJob(handleScanSbom),
     },
     'process-webhook': {
-      port: 5004,
       handlerFunc: createGithubWebhookHandler(webhooks),
     },
   };
@@ -232,26 +228,9 @@ function determineHandler<THandler extends QueueHandlerType>(
   return queueHandlers[handlerName];
 }
 
-function startHealthCheckService(port: number) {
-  void (async () => {
-    const app = Express();
-    app.get('/health', (_req: Express.Request, res: Express.Response) => {
-      res.send({
-        status: 'ok',
-      });
-    });
-
-    await new Promise((resolve, reject) => {
-      app.listen(port).on('listening', resolve).on('error', reject);
-    });
-
-    log.info('Queue health check service started', {
-      port,
-    });
-  })();
-}
-
 export async function setupQueue(): Promise<void> {
+  const queueHandlerConfig = getQueueHandlerConfig();
+
   const queueName = queueHandlerConfig.handlerQueueName;
   log.info('setting up queue', {
     queueName: queueHandlerConfig.handlerQueueName,
@@ -271,9 +250,6 @@ export async function setupQueue(): Promise<void> {
       process.exit(-1);
     }
 
-    // start health check service
-    startHealthCheckService(handlerConfig.port);
-
     log.info('Loaded queueUrl for queue', {
       queueName: queueName,
       queueUrl: queueUrl.res,
@@ -287,4 +263,10 @@ export async function setupQueue(): Promise<void> {
   });
 }
 
-void setupQueue();
+if (workerConfig.workerType === 'queue-handler') {
+  void setupQueue();
+} else if (workerConfig.workerType === 'job-runner') {
+  void runJob();
+} else {
+  throw new Error(`unknown worker type: ${workerConfig.workerType}`);
+}
