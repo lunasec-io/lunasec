@@ -89,7 +89,7 @@
     "monorepo:version": "yarn node -p 'require(\"./lerna.json\").version'"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "^16.0.0"
   },
   "version": "1.0.0",
   "workspaces": {
@@ -113,6 +113,7 @@
   },
   "packageManager": "yarn@3.1.1",
   "dependencies": {
-    "jest-environment-jsdom": "~28.0.2"
+    "jest-environment-jsdom": "~28.0.2",
+    "node-gyp": "~9.0.0"
   }
 }
