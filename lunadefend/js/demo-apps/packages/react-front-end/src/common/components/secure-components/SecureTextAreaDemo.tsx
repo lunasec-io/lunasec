@@ -63,7 +63,7 @@ export const SecureTextAreaDemo: React.FunctionComponent = () => {
           <p>
             To see how to set up your own Secure Text Area,{' '}
             <a
-              href={'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-text/#secure-forms'}
+              href={'https://www.lunasec.io/docs/pages/lunadefend/getting-started/dedicated-tokenizer/handling-text/#secure-forms'}
             >
               see here
             </a>
