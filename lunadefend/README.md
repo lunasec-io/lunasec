@@ -39,25 +39,25 @@ later. LunaDefend builds on that concept to offer many security and compliance f
 ### Features
 
 - **Secure By Default**: Prevents data leaks by making your software resistant
-  to [many security issues](https://www.lunasec.io/docs/pages/overview/security/vulns-and-mitigations/) like SQL
+  to [many security issues](https://www.lunasec.io/docs/pages/lunadefend/overview/security/vulns-and-mitigations/) like SQL
   Injection, XSS, and even RCE.
 - **Best-In-Class Compliance Software**: Decrease your compliance overhead by 90%+ with centralized *access control
   logic*, *audit logs*, and *automatic compliance validation*.
-- **Simple Onboarding**: [Get started in minutes](https://www.lunasec.io/docs/pages/overview/example-usage/) by adding *
+- **Simple Onboarding**: [Get started in minutes](https://www.lunasec.io/docs/pages/lunadefend/overview/example-usage/) by adding *
   only a few lines of code* anywhere that sensitive data enters or exits your system.
 - **Built By Security Experts**: Designed to bring leading security practices to your applications *without requiring
   advanced security knowledge*.
 - **Self-Hosted And Open**: You retain control over your data by hosting LunaSec yourself. It's open source software
   licensed under a permissive Apache2.0 license.
 - **Zero Trust Architecture**: All records
-  are [encrypted with a unique key](https://www.lunasec.io/docs/pages/overview/security/encryption/) that even LunaSec
+  are [encrypted with a unique key](https://www.lunasec.io/docs/pages/lunadefend/overview/security/encryption/) that even LunaSec
   can't access. Decryption only happens when you need it to.
 - **Scales Automatically**: Supports even the largest loads by leveraging cloud-scale database services like AWS S3 and
   DynamoDB.
 - **Enterprise Grade**: We offer warranties, managed deployments, and custom support via
   our [Premium Support packages](#custom-support-from-the-lunasec-team).
 
-You can read more [here](https://www.lunasec.io/docs/pages/overview/features/) about what features LunaSec provides.
+You can read more [here](https://www.lunasec.io/docs/pages/lunadefend/overview/features/) about what features LunaSec provides.
 
 ## Live Demo
 
@@ -76,7 +76,7 @@ That will pull all the Docker containers and start the LunaDefend demo app on yo
 containers to run, so it may take a few minutes to finish starting up.
 
 For a deeper dive into the Demo App, please see
-this [page](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) for a walkthrough of everything. All the
+this [page](https://www.lunasec.io/docs/pages/lunadefend/overview/demo-app/walkthrough/) for a walkthrough of everything. All the
 source code is available [here](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/demo-apps/packages) for you to
 view.
 
@@ -95,7 +95,7 @@ to [get in contact](https://www.lunasec.io/contact).
 
 ## System Architecture
 LunaSec works across the components of your web stack to provide end-to-end data security.
-We've documented the components of the stack [here](https://www.lunasec.io/docs/pages/overview/features/) and in the diagram below.
+We've documented the components of the stack [here](https://www.lunasec.io/docs/pages/lunadefend/overview/features/) and in the diagram below.
 
 ![LunaSec Architecture Diagram](docs/static/img/security-model-overview.svg)
 
@@ -136,13 +136,13 @@ secure. You just have to provide the data and keep track of the keys to access i
 
 We've designed LunaDefend to mitigate many common security vulnerabilities that developers face. Each component of the
 LunaDefend stack is designed to provide protection against specific attack scenarios. Please read more about the security
-of LunaDefend [here](https://www.lunasec.io/docs/pages/overview/security/levels/).
+of LunaDefend [here](https://www.lunasec.io/docs/pages/lunadefend/overview/security/levels/).
 
 ## Deploying LunaDefend 
 LunaDefend is _self hosted_. In order to use LunaDefend in your production environment, you will need to host a copy yourself. We built a
 deployment CLI tool to make this easy. Currently, LunaSec only deploys to AWS. LunaSec will work with an app that is hosted on other platforms, you just need to have an AWS account for LunaSec to deploy to.
 
-To get started deploying LunaDefend, please see our docs [here](https://www.lunasec.io/docs/pages/deployment/deploy-with-aws/).
+To get started deploying LunaDefend, please see our docs [here](https://www.lunasec.io/docs/pages/lunadefend/deployment/deploy-with-aws/).
 
 ## Where LunaDefend lives in the Repo
 
