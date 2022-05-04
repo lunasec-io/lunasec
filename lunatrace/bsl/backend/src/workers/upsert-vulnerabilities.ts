@@ -13,6 +13,6 @@
  */
 import { Vulnerability } from '../models/vulnerability';
 
-export async function runJob(): Promise<void> {
+export async function runUpdateVulnerabilities(): Promise<void> {
   await Vulnerability.updateVulnDb();
 }
