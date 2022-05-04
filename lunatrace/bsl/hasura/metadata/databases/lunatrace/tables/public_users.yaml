@@ -22,13 +22,16 @@ select_permissions:
     - github_node_id
     - id
     - kratos_id
+    - roles
     filter: {}
   role: service
 - permission:
     columns:
+    - github_id
     - github_node_id
     - id
     - kratos_id
+    - roles
     filter:
       kratos_id:
         _eq: X-Hasura-User-Id
