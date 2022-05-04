@@ -11,6 +11,8 @@
  * limitations under the License.
  *
  */
+import { inspect } from 'util';
+
 import { Request, Response } from 'express';
 
 import { hasura } from '../hasura-api';

@@ -26,33 +26,31 @@
             }
           }
 
-- id: "ory:lunatrace:hasura:graphql:cli"
+- id: "ory:lunatrace:hasura:graphql:admin"
   upstream:
     preserve_host: true
     url: "http://localhost:8080"
-    strip_path: "/api/cli"
   match:
-    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/cli/v1/graphql"
+    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/v1/graphql"
     methods:
       - POST
   authenticators:
-    - handler: bearer_token
-      config:
-        check_session_url: http://localhost:3002/internal/auth/lookup-project-access-token
+    - handler: cookie_session
+    - handler: anonymous # If the above cookie ins't found or fails, "Subject" becomes "Anonymous" in the below claims
   authorizer:
     handler: allow
   mutators:
     - handler: id_token
       config:
         issuer_url: http://oathkeeper:4455/
+        # x-hasura-access-token below is a hack to bypass a weird hasura requirement
         claims: |
           {
             "https://hasura.io/jwt/claims": {
-              "x-hasura-access-token": "{{ .Extra.access_token }}",
-              "x-hasura-project-uuid": "{{ .Extra.project_uuid }}",
-              "x-hasura-builds": "{{ .Extra.builds }}",
-              "x-hasura-allowed-roles": ["cli"],
-              "x-hasura-default-role": "cli"
+              "x-hasura-user-id": "{{ .Subject }}",          
+              "x-hasura-access-token": "2883ad68-4940-461b-83f7-844b0604bb8c",  
+              "x-hasura-allowed-roles": ["user"],
+              "x-hasura-default-role": "user"
             }
           }
 

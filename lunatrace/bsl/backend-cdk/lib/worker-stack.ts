@@ -11,9 +11,18 @@
  * limitations under the License.
  *
  */
-import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
+import { SubnetType } from '@aws-cdk/aws-ec2';
+import {
+  Cluster,
+  ContainerImage,
+  DeploymentControllerType,
+  Secret as EcsSecret,
+  FargatePlatformVersion,
+  LogDriver,
+} from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
-import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
+import { ApplicationLoadBalancedFargateService, ScheduledFargateTask } from '@aws-cdk/aws-ecs-patterns';
+import { Schedule } from '@aws-cdk/aws-events';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
 import { Construct, Duration } from '@aws-cdk/core';
@@ -60,13 +69,14 @@ export class WorkerStack extends cdk.Stack {
       storageStack,
     } = props;
 
-    const queueProcessorContainerImage = ContainerImage.fromTarball(
+    const workerContainerImage = ContainerImage.fromTarball(
       getContainerTarballPath('lunatrace-backend-queue-processor.tar')
     );
 
     // common environment variables used by queue processors
     const processQueueCommonEnvVars: Record<string, string> = {
       NODE_ENV: 'production',
+      WORKER_TYPE: 'queue-handler',
       PROCESS_WEBHOOK_QUEUE: storageStack.processWebhookSqsQueue.queueName,
       PROCESS_REPOSITORY_QUEUE: storageStack.processRepositorySqsQueue.queueName,
       S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
@@ -88,7 +98,7 @@ export class WorkerStack extends cdk.Stack {
       'ProcessRepositoryQueueService',
       {
         cluster: fargateCluster,
-        image: queueProcessorContainerImage,
+        image: workerContainerImage,
         memoryLimitMiB: 2048,
         queue: storageStack.processRepositorySqsQueue, // will pass queue_name env var automatically
         assignPublicIp: true,
@@ -102,13 +112,6 @@ export class WorkerStack extends cdk.Stack {
         circuitBreaker: {
           rollback: true,
         },
-        healthCheck: {
-          command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5002/health || exit 1'],
-          interval: Duration.seconds(5),
-          retries: 6,
-          startPeriod: Duration.seconds(30),
-          timeout: Duration.seconds(5),
-        },
       }
     );
     storageStack.sbomBucket.grantReadWrite(processRepositoryQueueService.taskDefinition.taskRole);
@@ -120,7 +123,7 @@ export class WorkerStack extends cdk.Stack {
       'ProcessManifestQueueService',
       {
         cluster: fargateCluster,
-        image: queueProcessorContainerImage,
+        image: workerContainerImage,
         memoryLimitMiB: 2048,
         queue: storageStack.processManifestSqsQueue, // will pass queue_name env var automatically
         assignPublicIp: true,
@@ -134,13 +137,6 @@ export class WorkerStack extends cdk.Stack {
         circuitBreaker: {
           rollback: true,
         },
-        healthCheck: {
-          command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5001/health || exit 1'],
-          interval: Duration.seconds(5),
-          retries: 6,
-          startPeriod: Duration.seconds(30),
-          timeout: Duration.seconds(5),
-        },
       }
     );
     storageStack.manifestBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
@@ -150,7 +146,7 @@ export class WorkerStack extends cdk.Stack {
     // Process SBOM Service - Generates findings from a provided SBOM
     const processSbomQueueService = new ecsPatterns.QueueProcessingFargateService(context, 'ProcessSbomQueueService', {
       cluster: fargateCluster,
-      image: queueProcessorContainerImage,
+      image: workerContainerImage,
       queue: storageStack.processSbomSqsQueue, // will pass queue_name env var automatically
       enableLogging: true,
       assignPublicIp: true,
@@ -164,13 +160,6 @@ export class WorkerStack extends cdk.Stack {
       circuitBreaker: {
         rollback: true,
       },
-      healthCheck: {
-        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5003/health || exit 1'],
-        interval: Duration.seconds(5),
-        retries: 6,
-        startPeriod: Duration.seconds(30),
-        timeout: Duration.seconds(5),
-      },
     });
     storageStack.sbomBucket.grantReadWrite(processSbomQueueService.taskDefinition.taskRole);
     storageStack.processWebhookSqsQueue.grantSendMessages(processSbomQueueService.taskDefinition.taskRole);
@@ -181,7 +170,7 @@ export class WorkerStack extends cdk.Stack {
       'ProcessWebhookQueueService',
       {
         cluster: fargateCluster,
-        image: queueProcessorContainerImage,
+        image: workerContainerImage,
         queue: storageStack.processWebhookSqsQueue, // will pass queue_name env var automatically
         enableLogging: true,
         assignPublicIp: true,
@@ -195,17 +184,39 @@ export class WorkerStack extends cdk.Stack {
         circuitBreaker: {
           rollback: true,
         },
-        healthCheck: {
-          command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:5004/health || exit 1'],
-          interval: Duration.seconds(5),
-          retries: 6,
-          startPeriod: Duration.seconds(30),
-          timeout: Duration.seconds(5),
-        },
       }
     );
     storageStack.processWebhookSqsQueue.grantConsumeMessages(processWebhookQueueService.taskDefinition.taskRole);
     storageStack.processWebhookSqsQueue.grantSendMessages(props.fargateService.service.taskDefinition.taskRole);
     storageStack.processRepositorySqsQueue.grantSendMessages(processWebhookQueueService.taskDefinition.taskRole);
+
+    const updateVulnerabilitiesJob = new ScheduledFargateTask(context, 'UpdateVulnerabilitesJob', {
+      cluster: props.fargateCluster,
+      platformVersion: FargatePlatformVersion.LATEST,
+      desiredTaskCount: 1,
+      schedule: Schedule.cron({
+        minute: '0',
+        hour: '0',
+        day: '*',
+        month: '*',
+        year: '*',
+      }),
+      subnetSelection: { subnetType: SubnetType.PUBLIC },
+      scheduledFargateTaskImageOptions: {
+        image: workerContainerImage,
+        logDriver: LogDriver.awsLogs({
+          streamPrefix: 'lunatrace-update-vulnerabilities',
+        }),
+        environment: {
+          ...processQueueCommonEnvVars,
+          WORKER_TYPE: 'job-runner',
+          GRYPE_DATABASE_BUCKET: storageStack.grypeDatabaseBucket.bucketName,
+        },
+        secrets: {
+          DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+        },
+      },
+    });
+    storageStack.grypeDatabaseBucket.grantWrite(updateVulnerabilitiesJob.taskDefinition.taskRole);
   }
 }

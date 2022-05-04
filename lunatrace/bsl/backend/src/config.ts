@@ -18,12 +18,15 @@ import {
   AwsConfig,
   GithubAppConfig,
   HasuraConfig,
+  JobRunnerConfig,
   JwksConfig,
   QueueHandlerWorkerConfig,
   RepositoryQueueConfig,
   SbomHandlerConfig,
   ServerConfig,
   WebhookConfig,
+  WorkerConfig,
+  WorkerType,
 } from './types/config';
 import { QueueHandlerConfig, QueueHandlerType } from './types/sqs';
 
@@ -95,6 +98,22 @@ export function getEtlBucketConfig(): SbomHandlerConfig {
   return {
     sbomBucket,
     manifestBucket,
+  };
+}
+
+export function getJobRunnerConfig(): JobRunnerConfig {
+  const grypeDatabaseBucket = checkEnvVar('GRYPE_DATABASE_BUCKET');
+
+  return {
+    grypeDatabaseBucket,
+  };
+}
+
+export function getWorkerConfig(): WorkerConfig {
+  const workerType = checkEnvVar('WORKER_TYPE');
+
+  return {
+    workerType: workerType as WorkerType,
   };
 }
 

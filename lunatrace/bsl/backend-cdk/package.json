@@ -21,6 +21,7 @@
     "@aws-cdk/aws-ecs": "1.152.0",
     "@aws-cdk/aws-ecs-patterns": "1.152.0",
     "@aws-cdk/aws-elasticloadbalancingv2": "1.152.0",
+    "@aws-cdk/aws-events": "1.152.0",
     "@aws-cdk/aws-iam": "1.152.0",
     "@aws-cdk/aws-lambda": "1.152.0",
     "@aws-cdk/aws-lambda-nodejs": "1.152.0",
