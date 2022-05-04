@@ -37,6 +37,7 @@ export function queueEnvConfig(
 ): Record<string, string> {
   return {
     QUEUE_HANDLER: handler,
+    WORKER_TYPE: 'queue-handler',
   };
 }
 

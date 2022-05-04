@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import {QueueHandlerConfig, QueueHandlerType} from "./sqs";
+import { QueueHandlerConfig, QueueHandlerType } from './sqs';
 
 export interface ServerConfig {
   serverPort: number;
@@ -22,6 +22,16 @@ export interface ServerConfig {
 export interface SbomHandlerConfig {
   sbomBucket: string;
   manifestBucket: string;
+}
+
+export interface JobRunnerConfig {
+  grypeDatabaseBucket: string;
+}
+
+export type WorkerType = 'queue-handler' | 'job-runner';
+
+export interface WorkerConfig {
+  workerType: WorkerType;
 }
 
 export interface QueueHandlerWorkerConfig {
