@@ -18,7 +18,7 @@ sidebar_position: 1
   ~
 -->
 
-The LunaDefend CLI makes development, testing, and deployment easier.  It can bring up the services we need to use LunaDefend locally.
+The LunaDefend CLI makes development, testing, and deployment easier.  It can bring up the services we need to use LunaDefend locally. 
 
 The CLI is available as an NPM module. Add it to your `package.json` along with the aws cdk packages that it depends on:
 
@@ -36,3 +36,7 @@ You can also install the CLI package globally with `yarn global add @lunasec/cli
 
 ### Prerequisites
 Your system must have `docker-compose`, `docker`, and `node >= 14` installed.
+
+:::note
+ For legacy purposes the cli tool is named and references **lunasec**. For added context, this was the original naming convention prior to the stack being formalized under LunaDefend.
+:::
