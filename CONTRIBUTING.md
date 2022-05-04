@@ -61,6 +61,11 @@ while developing. The GoLang code can be linted with `golangci-lint run`.
 
     * Run the [test suite](#testing) and make sure everything passes.
 
+    * **Sign Your Commits**: To ensure the authenticity and integrity of code contributions, **we require that all
+      commits are signed**. Signing commits proves that your commits were truly created by you, as the holder of a
+      private key. Configuring git to sign your commits is a straightforward process. To get set up, see
+      [GitHub's documentation on signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits).
+
     * When committing, be sure to write good commit messages according to [these
       seven rules](https://chris.beams.io/posts/git-commit/#seven-rules). 
       Stylistically, we use commit message titles in the imperative tense, e.g., 
