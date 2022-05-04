@@ -12,6 +12,10 @@
   authorizer:
     handler: allow
   mutators:
+    - handler: hydrator
+      config:
+        api:
+          url: http://localhost:3002/internal/auth/impersonate-as-admin
     - handler: id_token
       config:
         issuer_url: http://oathkeeper:4455/
@@ -19,7 +23,7 @@
         claims: |
           {
             "https://hasura.io/jwt/claims": {
-              "x-hasura-user-id": "{{ .Subject }}",          
+              "x-hasura-user-id": "{{ .Extra.impersonateId }}",          
               "x-hasura-access-token": "2883ad68-4940-461b-83f7-844b0604bb8c",  
               "x-hasura-allowed-roles": ["user"],
               "x-hasura-default-role": "user"
@@ -67,8 +71,6 @@
       - POST
   authenticators:
     - handler: bearer_token
-      config:
-        check_session_url: http://localhost:3002/internal/auth/lookup-static-access-token
   authorizer:
     handler: allow
   mutators:
