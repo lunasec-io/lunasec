@@ -9,7 +9,7 @@
     "test": "jest",
     "cdk": "cdk",
     "dev:cdk:deploy": "DEVELOPMENT=true cdk deploy --all",
-    "prod:cdk:deploy": "rm cdk.out/*.tar && cdk deploy --all"
+    "prod:cdk:deploy": "echo 'deploying...' && rm cdk.out/*.tar || true && cdk deploy --all"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.152.0",
@@ -21,6 +21,7 @@
     "@aws-cdk/aws-ecs": "1.152.0",
     "@aws-cdk/aws-ecs-patterns": "1.152.0",
     "@aws-cdk/aws-elasticloadbalancingv2": "1.152.0",
+    "@aws-cdk/aws-events": "1.152.0",
     "@aws-cdk/aws-iam": "1.152.0",
     "@aws-cdk/aws-lambda": "1.152.0",
     "@aws-cdk/aws-lambda-nodejs": "1.152.0",

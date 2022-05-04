@@ -37346,6 +37346,7 @@ __metadata:
     js-yaml: ^4.1.0
     lerna: ^4.0.0
     lint-staged: ^12.1.2
+    node-gyp: ~9.0.0
     prettier: ^2.5.0
     rimraf: ^3.0.2
     tslint-config-prettier: ^1.18.0
@@ -37376,6 +37377,7 @@ __metadata:
     "@aws-cdk/aws-ecs": 1.152.0
     "@aws-cdk/aws-ecs-patterns": 1.152.0
     "@aws-cdk/aws-elasticloadbalancingv2": 1.152.0
+    "@aws-cdk/aws-events": 1.152.0
     "@aws-cdk/aws-iam": 1.152.0
     "@aws-cdk/aws-lambda": 1.152.0
     "@aws-cdk/aws-lambda-nodejs": 1.152.0
@@ -39701,7 +39703,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:latest":
+"node-gyp@npm:latest, node-gyp@npm:~9.0.0":
   version: 9.0.0
   resolution: "node-gyp@npm:9.0.0"
   dependencies:

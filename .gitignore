@@ -4,9 +4,6 @@ node_modules
 **/secrets.yaml
 *.log
 .log*
-
-/docs/pages/node-sdk
-/docs/pages/tokenizer-sdk
 **/package-lock.json
 **/yarn.lock-workspace
 

@@ -15,14 +15,22 @@
  *
  */
 import { waitForItScript } from './constants';
-import { backendEnv, manifestWorkEnv, sbomWorkerEnv, smeeWebhookUrl, webhookWorkerEnv } from './env';
+import {
+  backendEnv,
+  manifestWorkEnv,
+  repositoryWorkerEnv,
+  sbomWorkerEnv,
+  smeeWebhookUrl,
+  webhookWorkerEnv,
+} from './env';
 import { tmuxPane } from './tmux';
 
 function waitForItCmd(host: string, port: number) {
-  return `${waitForItScript} -h ${host} -p ${port}`;
+  return `${waitForItScript} -h ${host} -p ${port} -t 30`;
 }
 
 const waitForGraphqlServer = waitForItCmd('localhost', 8080);
+const waitForBackendServer = waitForItCmd('localhost', 3002);
 
 export const oathkeeper = tmuxPane(['cd ory/oathkeeper', 'oathkeeper --config config.yaml serve']);
 
@@ -32,13 +40,19 @@ export const hasura = tmuxPane(['cd hasura', `${waitForGraphqlServer} && sleep 3
 
 export const frontend = tmuxPane(['cd frontend', 'yarn run start:server']);
 
-export const dockerCompose = tmuxPane(['sudo docker-compose down && sudo docker-compose up']);
+export const dockerCompose = tmuxPane([
+  'sudo docker-compose down',
+  `${waitForBackendServer} && sleep 1`,
+  'sudo docker-compose up',
+]);
 
 export const manifestWorker = tmuxPane(['cd backend', `${manifestWorkEnv} yarn run start:worker`]);
 
 export const sbomWorker = tmuxPane(['cd backend', `${sbomWorkerEnv} yarn run start:worker`]);
 
 export const webhookWorker = tmuxPane(['cd backend', `${webhookWorkerEnv} yarn run start:worker`]);
+
+export const repositoryWorker = tmuxPane(['cd backend', `${repositoryWorkerEnv} yarn run start:worker`]);
 
 export const smeeWebhook = tmuxPane([`smee -u ${smeeWebhookUrl} -p 3002 -P /github/webhook/events`]);
 

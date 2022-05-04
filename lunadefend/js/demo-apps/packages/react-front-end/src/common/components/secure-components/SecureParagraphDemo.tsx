@@ -67,7 +67,7 @@ export const SecureParagraphDemo: React.FunctionComponent = () => {
             To see how to set up your own Secure Paragraph,{' '}
             <a
               href={
-                'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-text/#displaying-secure-data'
+                'https://www.lunasec.io/docs/pages/lunadefend/getting-started/dedicated-tokenizer/handling-text/#displaying-secure-data'
               }
             >
               see here
