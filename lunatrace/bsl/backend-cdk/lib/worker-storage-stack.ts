@@ -24,6 +24,7 @@ interface WorkerStorageStackProps extends cdk.StackProps {
 export interface WorkerStorageStackState {
   sbomBucket: Bucket;
   manifestBucket: Bucket;
+  grypeDatabaseBucket: Bucket;
   processManifestSqsQueue: Queue;
   processSbomSqsQueue: Queue;
   processWebhookSqsQueue: Queue;
@@ -33,6 +34,7 @@ export interface WorkerStorageStackState {
 export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackState {
   public sbomBucket: Bucket;
   public manifestBucket: Bucket;
+  public grypeDatabaseBucket: Bucket;
   public processManifestSqsQueue: Queue;
   public processSbomSqsQueue: Queue;
   public processWebhookSqsQueue: Queue;
@@ -45,6 +47,7 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
 
     this.sbomBucket = stackState.sbomBucket;
     this.manifestBucket = stackState.manifestBucket;
+    this.grypeDatabaseBucket = stackState.grypeDatabaseBucket;
     this.processManifestSqsQueue = stackState.processManifestSqsQueue;
     this.processSbomSqsQueue = stackState.processSbomSqsQueue;
     this.processWebhookSqsQueue = stackState.processWebhookSqsQueue;
@@ -61,6 +64,8 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
    */
   public static createWorkerStorageStack(context: Construct, props: WorkerStorageStackProps): WorkerStorageStackState {
     const { publicBaseUrl } = props;
+
+    const grypeDatabaseBucket = new Bucket(context, 'GrypeDatabaseBucket');
 
     const sbomBucket = new Bucket(context, 'SbomBucket');
 
@@ -136,6 +141,11 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
       description: 'Name of the Manifest Bucket',
     });
 
+    new cdk.CfnOutput(context, grypeDatabaseBucket.node.id + 'Name', {
+      value: grypeDatabaseBucket.bucketName,
+      description: 'Name of the Grype Database Bucket',
+    });
+
     new cdk.CfnOutput(context, processSbomSqsQueue.node.id + 'Name', {
       value: processSbomSqsQueue.queueName,
       description: 'Queue Name for the Process SBOM Queue',
@@ -159,10 +169,11 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
     return {
       sbomBucket,
       manifestBucket,
+      grypeDatabaseBucket,
       processManifestSqsQueue,
       processSbomSqsQueue,
       processWebhookSqsQueue,
-      processRepositorySqsQueue
+      processRepositorySqsQueue,
     };
   }
 }
