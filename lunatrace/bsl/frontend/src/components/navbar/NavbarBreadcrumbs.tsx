@@ -131,12 +131,12 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
     { path: '/organization/:project_id', breadcrumb: OrganizationBreadCrumb },
     { path: '/new-project', breadcrumb: null },
     { path: '/new-project/:organization_id', breadcrumb: NewProjectBreadCrumb },
-    { path: '/topic/:topic_id', breadcrumb: NewTopicBreadCrumb },
+    { path: '/topics/:topic_id', breadcrumb: NewTopicBreadCrumb },
   ];
   const breadCrumbs = useBreadCrumbs(customRoutes, {});
 
   // Not every path maps to an index page, so those aren't link breadcrumbs
-  const notLinksRegex = ['/project$', '/project/.*/build$', '/organization$', '/topic$'];
+  const notLinksRegex = ['/project$', '/project/.*/build$', '/organization$'];
 
   return (
     <Breadcrumb className="breadcrumb-navigation">
@@ -150,6 +150,7 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
         if (isNotLink || isLastCrumb) {
           return <TextCrumb key={crumbMeta.key} crumbMeta={crumbMeta} />;
         }
+
         return <LinkCrumb key={crumbMeta.key} crumbMeta={crumbMeta} />;
       })}
     </Breadcrumb>
