@@ -81,11 +81,6 @@ export async function newApp() {
   app.use(lookupAccessTokenRouter);
   app.use(githubApiRouter);
 
-  app.use((req, res, next) => {
-    log.info('user obj is ', req.user);
-    next();
-  });
-
   // Add graphql routes to the server
   registerYoga(app);
 

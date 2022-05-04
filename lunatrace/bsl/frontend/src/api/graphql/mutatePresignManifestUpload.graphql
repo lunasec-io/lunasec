@@ -1,4 +1,4 @@
-mutation presignManifestUrl($project_id: UUID!) {
+mutation presignManifestUrl($project_id: uuid!) {
     presignManifestUpload(
         project_id: $project_id
     ) {
