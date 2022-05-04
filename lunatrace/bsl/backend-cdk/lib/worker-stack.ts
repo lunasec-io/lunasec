@@ -203,6 +203,8 @@ export class WorkerStack extends cdk.Stack {
       }),
       subnetSelection: { subnetType: SubnetType.PUBLIC },
       scheduledFargateTaskImageOptions: {
+        memoryLimitMiB: 8 * 1024,
+        cpu: 4 * 1024,
         image: workerContainerImage,
         logDriver: LogDriver.awsLogs({
           streamPrefix: 'lunatrace-update-vulnerabilities',
