@@ -1,4 +1,2 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- CREATE TYPE public.user_role AS ENUM ('organization_user', 'lunatrace_admin');
--- ALTER TABLE public.users ADD COLUMN role text[] NOT NULL DEFAULT '{organization_user}';
+ALTER TABLE public.users DROP COLUMN roles;
+DROP TYPE public.user_role;
