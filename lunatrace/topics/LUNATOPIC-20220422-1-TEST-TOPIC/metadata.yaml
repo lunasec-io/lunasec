@@ -1,7 +1,7 @@
 
 {
   "schemaVersion": 1,
-  "cves": ["CVE-2021-44228","CVE-2021-45046", "GHSA-xvch-5gv4-984h"],
+  "cves": ["CVE-2021-44228","CVE-2021-45046"],
   "name": "Log4Shell",
   "severity":"Critical",
   "summary": "On Thursday, December 9th, a 0-day exploit in the

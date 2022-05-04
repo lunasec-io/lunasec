@@ -17777,7 +17777,7 @@ code.code-highlight {
 
 .sidebar-link.active {
   background-color: #3c77d87d;
-  color: white !important;
+  color: #000 !important;
   font-weight: bold !important;
 }
 
