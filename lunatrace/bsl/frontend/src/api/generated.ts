@@ -4064,6 +4064,11 @@ export type DeleteProjectAccessTokenMutationVariables = Exact<{
 
 export type DeleteProjectAccessTokenMutation = { __typename?: 'mutation_root', delete_project_access_tokens_by_pk?: { __typename?: 'project_access_tokens', id: any } | null };
 
+export type GetAllTopicsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllTopicsQuery = { __typename?: 'query_root', topics: Array<{ __typename?: 'topics', created_at: any, id: any, metadata: any, metadata_schema_version: number, severity?: any | null, summary: string, tags: any, title: string, topic_unique_id: string, updated_at: any }> };
+
 export type GetBuildDetailsQueryVariables = Exact<{
   build_id: Scalars['uuid'];
   project_id: Scalars['uuid'];
@@ -4166,6 +4171,22 @@ export const DeleteProjectAccessTokenDocument = `
     mutation DeleteProjectAccessToken($id: uuid!) {
   delete_project_access_tokens_by_pk(id: $id) {
     id
+  }
+}
+    `;
+export const GetAllTopicsDocument = `
+    query GetAllTopics {
+  topics(order_by: {created_at: desc}) {
+    created_at
+    id
+    metadata
+    metadata_schema_version
+    severity
+    summary
+    tags
+    title
+    topic_unique_id
+    updated_at
   }
 }
     `;
@@ -4597,6 +4618,9 @@ const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     DeleteProjectAccessToken: build.mutation<DeleteProjectAccessTokenMutation, DeleteProjectAccessTokenMutationVariables>({
       query: (variables) => ({ document: DeleteProjectAccessTokenDocument, variables })
+    }),
+    GetAllTopics: build.query<GetAllTopicsQuery, GetAllTopicsQueryVariables | void>({
+      query: (variables) => ({ document: GetAllTopicsDocument, variables })
     }),
     GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables>({
       query: (variables) => ({ document: GetBuildDetailsDocument, variables })

@@ -14,6 +14,7 @@
 import { AlertOctagon, LogIn, Plus } from 'react-feather';
 import { AiFillGithub } from 'react-icons/ai';
 import { BiUnlink } from 'react-icons/bi';
+import { BsChatSquareText } from 'react-icons/bs';
 import { RiParkingFill } from 'react-icons/ri';
 
 import { GetSidebarInfoQuery } from '../../api/generated';
@@ -86,6 +87,12 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
   // ];
 
   const databaseSection: SidebarItem[] = [
+    {
+      href: '/topics',
+      icon: BsChatSquareText,
+      title: 'Writeups',
+    },
+
     {
       href: '/vulnerabilities',
       icon: AlertOctagon,
