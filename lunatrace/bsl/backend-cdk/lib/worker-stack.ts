@@ -190,35 +190,35 @@ export class WorkerStack extends cdk.Stack {
     storageStack.processWebhookSqsQueue.grantSendMessages(props.fargateService.service.taskDefinition.taskRole);
     storageStack.processRepositorySqsQueue.grantSendMessages(processWebhookQueueService.taskDefinition.taskRole);
 
-    const updateVulnerabilitiesJob = new ScheduledFargateTask(context, 'UpdateVulnerabilitesJob', {
-      cluster: props.fargateCluster,
-      platformVersion: FargatePlatformVersion.LATEST,
-      desiredTaskCount: 1,
-      schedule: Schedule.cron({
-        minute: '0',
-        hour: '0',
-        day: '*',
-        month: '*',
-        year: '*',
-      }),
-      subnetSelection: { subnetType: SubnetType.PUBLIC },
-      scheduledFargateTaskImageOptions: {
-        memoryLimitMiB: 8 * 1024,
-        cpu: 4 * 1024,
-        image: workerContainerImage,
-        logDriver: LogDriver.awsLogs({
-          streamPrefix: 'lunatrace-update-vulnerabilities',
-        }),
-        environment: {
-          ...processQueueCommonEnvVars,
-          WORKER_TYPE: 'job-runner',
-          GRYPE_DATABASE_BUCKET: storageStack.grypeDatabaseBucket.bucketName,
-        },
-        secrets: {
-          DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-        },
-      },
-    });
-    storageStack.grypeDatabaseBucket.grantWrite(updateVulnerabilitiesJob.taskDefinition.taskRole);
+    // const updateVulnerabilitiesJob = new ScheduledFargateTask(context, 'UpdateVulnerabilitesJob', {
+    //   cluster: props.fargateCluster,
+    //   platformVersion: FargatePlatformVersion.LATEST,
+    //   desiredTaskCount: 1,
+    //   schedule: Schedule.cron({
+    //     minute: '0',
+    //     hour: '0',
+    //     day: '*',
+    //     month: '*',
+    //     year: '*',
+    //   }),
+    //   subnetSelection: { subnetType: SubnetType.PUBLIC },
+    //   scheduledFargateTaskImageOptions: {
+    //     memoryLimitMiB: 8 * 1024,
+    //     cpu: 4 * 1024,
+    //     image: workerContainerImage,
+    //     logDriver: LogDriver.awsLogs({
+    //       streamPrefix: 'lunatrace-update-vulnerabilities',
+    //     }),
+    //     environment: {
+    //       ...processQueueCommonEnvVars,
+    //       WORKER_TYPE: 'job-runner',
+    //       GRYPE_DATABASE_BUCKET: storageStack.grypeDatabaseBucket.bucketName,
+    //     },
+    //     secrets: {
+    //       DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+    //     },
+    //   },
+    // });
+    // storageStack.grypeDatabaseBucket.grantWrite(updateVulnerabilitiesJob.taskDefinition.taskRole);
   }
 }
