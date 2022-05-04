@@ -145,6 +145,15 @@ Those should work and pull up the whole DB. Once that's done you should be able 
 by running `hasura console` or going to `http://localhost:9695/`. This will show you the GraphQL server and an admin
 dashboard for the database.
 
+#### Frontend
+
+To set up the frontend, pull the theme submodule and compile the CSS:
+```sh
+cd bsl/frontend
+yarn run sass:pull
+yarn run sass:build
+```
+
 ### Re-run everything
 
 Either kill everything in tmuxp or just restart the front-end and back-end containers after Hasura comes up.
