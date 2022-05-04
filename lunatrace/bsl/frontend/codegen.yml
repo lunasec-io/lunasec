@@ -13,6 +13,8 @@ generates:
             date: string
             fix_state_enum: "'fixed'|'not-fixed'|'unknown'"
             jsonb: Record<any, any> | any[]
+            json: Record<any, any> | any[]
+            JSON: Record<any, any> | any[]
             builds_source_type: "'cli'|'gui'|'pr'"
             numeric: number
             organization_user_role: string
@@ -20,6 +22,7 @@ generates:
             timestamp: string
             timestamptz: string
             uuid: string
+            UUID: string
 
       - "typescript-operations"
       - "typescript-rtk-query":

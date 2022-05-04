@@ -28,7 +28,7 @@ offering enterprise and open-source support for LunaDefend.
 
 AWS, NodeJS, and React is the fully supported stack at the moment, and now we are hard at work adding support for more environments.
 
-Please take a moment to learn about LunaDefend by reading the rest of this post and trying the [example app](https://www.lunasec.io/docs/pages/overview/demo-app/overview/) (it's really easy).
+Please take a moment to learn about LunaDefend by reading the rest of this post and trying the [example app](https://www.lunasec.io/docs/pages/lunadefend/overview/demo-app/overview/) (it's really easy).
 
 Read on....
 <!--truncate-->
@@ -78,7 +78,7 @@ integrate directly into your code. They're designed in a way that enables you to
 from your code. That means you're free to develop software without security reviews while also still guaranteeing that 
 sensitive data remains safe.
 
-We made a few different levels for how far you may want to integrate LunaDefend.  The deeper you go, [the more protection from attacks you get](https://www.lunasec.io/docs/pages/overview/security/levels/). 
+We made a few different levels for how far you may want to integrate LunaDefend.  The deeper you go, [the more protection from attacks you get](https://www.lunasec.io/docs/pages/lunadefend/overview/security/levels/). 
 When you need more protection, you can integrate more protection.
 
 ## Why is LunaDefend's approach unique?
@@ -98,13 +98,13 @@ In that spirit, here are a few reasons we think LunaDefend is unique:
 ### We know how painful most security tools are to use.
 They take weeks to learn. They don't scale. They break and you can't debug them.
 
-That's why we've designed LunaDefend to be [easy to use](https://www.lunasec.io/docs/pages/overview/demo-app/walkthrough/) 
+That's why we've designed LunaDefend to be [easy to use](https://www.lunasec.io/docs/pages/lunadefend/overview/demo-app/walkthrough/) 
 by Software Developers that aren't experts in security.
 
 ### We've seen how painful many security tools are to use or migrate to.
 It's easier when you tackle a problem one step at a time. 
 
-That's why LunaDefend is [modular](https://www.lunasec.io/docs/pages/overview/security/levels/), so that its adoption can be gradual.
+That's why LunaDefend is [modular](https://www.lunasec.io/docs/pages/lunadefend/overview/security/levels/), so that its adoption can be gradual.
 
 ### We've seen every company re-invent the wheel time after time.
 That's why LunaDefend was made [Open Source](https://github.com/lunasec-io/lunasec/blob/master/LICENSE) under a 
@@ -114,7 +114,7 @@ We hope to build a community of like-minded individuals to make security tooling
 
 
 ### We've seen how technical debt bogs down developers and prevents them from fixing bugs (even when they would like to).
-That's why LunaDefend doesn't require re-writing your software from scratch -- you just simply [drop in a line of code](https://www.lunasec.io/docs/pages/overview/example-usage/#lunasecreact-sdk)
+That's why LunaDefend doesn't require re-writing your software from scratch -- you just simply [drop in a line of code](https://www.lunasec.io/docs/pages/lunadefend/overview/example-usage/#lunasecreact-sdk)
 to get onboard an app.  For example, you can import any NPM module [without fear](https://www.bleepingcomputer.com/news/security/52-percent-of-all-javascript-npm-packages-could-have-been-hacked-via-weak-credentials/)
 once you've fully onboarded with LunaDefend.
 
@@ -124,7 +124,7 @@ Purely Open Source projects are difficult to get support for because they exist 
 We're able to provide paid support and enterprise features because LunaDefend is a business backed by 
 [YCombinator](https://www.ycombinator.com/companies/lunasec) and other top Silicon Valley Venture Capital firms.
 
-(Read through our [docs](https://www.lunasec.io/docs/pages/overview/introduction/) for more context about what LunaDefend
+(Read through our [docs](https://www.lunasec.io/docs/pages/lunadefend/overview/introduction/) for more context about what LunaDefend
 does differently.)
 
 ## How to support LunaDefend
@@ -132,8 +132,8 @@ If you like what we're doing, and you would like to show your support, we have a
 
 - Throw us a Star on [Github](https://github.com/lunasec-io/lunasec).
 - Post about us on social media and spread the word by telling your friends.
-- Try out our [example app](https://www.lunasec.io/docs/pages/overview/demo-app/overview/) and [tutorials](https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/introduction/).
-- Deploy LunaDefend in your infrastructure ([guide](https://www.lunasec.io/docs/pages/deployment/deploy-with-aws/)).
+- Try out our [example app](https://www.lunasec.io/docs/pages/lunadefend/overview/demo-app/overview/) and [tutorials](https://www.lunasec.io/docs/pages/lunadefend/getting-started/dedicated-tokenizer/introduction/).
+- Deploy LunaDefend in your infrastructure ([guide](https://www.lunasec.io/docs/pages/lunadefend/deployment/deploy-with-aws/)).
 - [Contact us](https://www.lunasec.io/contact) about our paid services (premium support, custom onboarding, and enterprise features).
 
 Thank you for being a part of Open Source security software with LunaDefend!

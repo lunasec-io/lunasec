@@ -86,7 +86,7 @@ export const SecureDownloadDemo: React.FunctionComponent<{
             To see how to set up your own Secure Download,{' '}
             <a
               href={
-                'https://www.lunasec.io/docs/pages/getting-started/dedicated-tokenizer/handling-files/#downloading-a-file'
+                'https://www.lunasec.io/docs/pages/lunadefend/getting-started/dedicated-tokenizer/handling-files/#downloading-a-file'
               }
             >
               see here

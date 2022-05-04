@@ -1,1 +1,68 @@
-[]
+- name: lunatrace-custom
+  definition:
+    url_from_env: REMOTE_SCHEMA_URL
+    timeout_seconds: 20
+    customization:
+      type_names:
+        mapping:
+          UUID: uuid
+          JSON: jsonb
+    forward_client_headers: true
+  comment: ""
+  permissions:
+  - role: cli
+    definition:
+      schema: |-
+        schema  { query: Query }
+
+        scalar JSON
+
+        scalar UUID
+
+        type Query { presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
+        }
+
+        type SbomUploadUrlOutput { error: Boolean!
+          uploadUrl: UploadUrl
+        }
+
+        type UploadUrl { headers: JSON!
+          url: String!
+        }
+  - role: user
+    definition:
+      schema: |-
+        schema  { query: Query mutation: Mutation }
+
+        scalar JSON
+
+        scalar UUID
+
+        type Mutation { presignManifestUpload(project_id: UUID!): PresignedUrlResponse
+        }
+
+        type PresignedUrlResponse { bucket: String!
+          headers: JSON!
+          key: String!
+          url: String!
+        }
+
+        type Query { presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
+        }
+
+        type SbomUploadUrlOutput { error: Boolean!
+          uploadUrl: UploadUrl
+        }
+
+        type ScanManifestOutput { build_id: UUID!
+          error: Boolean!
+          error_message: String
+        }
+
+        type UploadUrl { headers: JSON!
+          url: String!
+        }
+
+        input SbomUploadUrlInput {orgId: UUID!
+          projectId: UUID!
+        }

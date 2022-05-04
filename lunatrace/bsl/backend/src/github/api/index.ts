@@ -13,15 +13,31 @@
  */
 import { GraphQLClient } from 'graphql-request';
 
-import { getSdk } from './generated';
+import { MaybeError } from '../../types/util';
+import { newError, newResult } from '../../utils/errors';
+import { log } from '../../utils/log';
+import { getInstallationAccessToken } from '../auth';
+
+import { getSdk, Sdk } from './generated';
 
 const githubEndpoint = 'https://api.github.com/graphql';
 
-export function generateGithubGraphqlClient(accessToken: string) {
+export async function generateGithubGraphqlClient(installationId: number): Promise<MaybeError<Sdk>> {
+  const installationToken = await getInstallationAccessToken(installationId);
+
+  if (installationToken.error) {
+    const msg = 'unable to get installation token';
+    log.error(msg, {
+      error: installationToken.msg,
+    });
+    return newError(msg);
+  }
+  const accessToken = installationToken.res;
+
   const client = new GraphQLClient(githubEndpoint, {
     headers: {
       authorization: `token ${accessToken}`,
     },
   });
-  return getSdk(client);
+  return newResult(getSdk(client));
 }

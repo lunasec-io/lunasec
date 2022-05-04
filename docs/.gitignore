@@ -7,8 +7,11 @@
 # Generated files
 .docusaurus
 .cache-loader
-pages/node-sdk
-pages/react-sdk
+
+pages/lunadefend/cli-config
+pages/lunadefend/node-sdk
+pages/lunadefend/react-sdk
+pages/lunadefend/tokenizer-sdk/
 
 # Misc
 .DS_Store
@@ -22,8 +25,3 @@ yarn-debug.log*
 yarn-error.log*
 
 /static/tokenizer-api-spec-static
-
-pages/node-sdk/
-pages/react-sdk/
-pages/tokenizer-sdk/
-pages/cli-config
