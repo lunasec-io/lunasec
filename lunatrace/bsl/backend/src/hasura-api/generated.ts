@@ -66,12 +66,6 @@ export type Int_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Int']>>;
 };
 
-export type SbomUploadUrlOutput = {
-  __typename?: 'SbomUploadUrlOutput';
-  error: Scalars['Boolean'];
-  uploadUrl?: Maybe<UploadUrl>;
-};
-
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 export type String_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['String']>;
@@ -103,12 +97,6 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
-};
-
-export type UploadUrl = {
-  __typename?: 'UploadUrl';
-  headers: Scalars['String'];
-  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -3220,8 +3208,6 @@ export type Query_Root = {
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
-  /** get s3 presigned url for manifest upload, used by the CLI */
-  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -3408,12 +3394,6 @@ export type Query_RootPackage_VersionsArgs = {
 
 export type Query_RootPackage_Versions_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootPresignSbomUploadArgs = {
-  buildId: Scalars['uuid'];
-  orgId: Scalars['uuid'];
 };
 
 
@@ -5595,6 +5575,13 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 
 export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
 
+export type GetProjectIdFromGitUrlQueryVariables = Exact<{
+  github_id?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetProjectIdFromGitUrlQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any } }> };
+
 export type GetUsersProjectsQueryVariables = Exact<{
   user_id: Scalars['uuid'];
 }>;
@@ -5660,13 +5647,6 @@ export type InsertWebhookToCacheMutationVariables = Exact<{
 
 export type InsertWebhookToCacheMutation = { __typename?: 'mutation_root', insert_webhook_cache_one?: { __typename?: 'webhook_cache', delivery_id: any } | null };
 
-export type GetProjectIdFromGitUrlQueryVariables = Exact<{
-  git_url?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type GetProjectIdFromGitUrlQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any } }> };
-
 export type SetBuildS3UrlMutationVariables = Exact<{
   id: Scalars['uuid'];
   s3_url: Scalars['String'];
@@ -5709,14 +5689,6 @@ export type UpdateOrganizationsForUserMutationVariables = Exact<{
 
 
 export type UpdateOrganizationsForUserMutation = { __typename?: 'mutation_root', insert_organization_user?: { __typename?: 'organization_user_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'organization_user', id: any }> } | null };
-
-export type UpdateWebhookJobStatusMutationVariables = Exact<{
-  webhook_delivery_id: Scalars['uuid'];
-  sqs_message_id: Scalars['String'];
-}>;
-
-
-export type UpdateWebhookJobStatusMutation = { __typename?: 'mutation_root', update_webhook_cache?: { __typename?: 'webhook_cache_mutation_response', returning: Array<{ __typename?: 'webhook_cache', delivery_id: any }> } | null };
 
 export type UpsertOrganizationUsersMutationVariables = Exact<{
   organizationUsers: Array<Organization_User_Insert_Input> | Organization_User_Insert_Input;
@@ -5820,6 +5792,15 @@ export const GetPreviousBuildForPrDocument = gql`
     order_by: {created_at: desc}
   ) {
     existing_github_review_id
+  }
+}
+    `;
+export const GetProjectIdFromGitUrlDocument = gql`
+    query GetProjectIdFromGitUrl($github_id: Int) {
+  github_repositories(where: {github_id: {_eq: $github_id}}) {
+    project {
+      id
+    }
   }
 }
     `;
@@ -5939,15 +5920,6 @@ export const InsertWebhookToCacheDocument = gql`
   }
 }
     `;
-export const GetProjectIdFromGitUrlDocument = gql`
-    query GetProjectIdFromGitUrl($git_url: String) {
-  github_repositories(where: {git_url: {_eq: $git_url}}) {
-    project {
-      id
-    }
-  }
-}
-    `;
 export const SetBuildS3UrlDocument = gql`
     mutation SetBuildS3Url($id: uuid!, $s3_url: String!) {
   update_builds_by_pk(pk_columns: {id: $id}, _set: {s3_url: $s3_url}) {
@@ -6000,18 +5972,6 @@ export const UpdateOrganizationsForUserDocument = gql`
     affected_rows
     returning {
       id
-    }
-  }
-}
-    `;
-export const UpdateWebhookJobStatusDocument = gql`
-    mutation UpdateWebhookJobStatus($webhook_delivery_id: uuid!, $sqs_message_id: String!) {
-  update_webhook_cache(
-    where: {delivery_id: {_eq: $webhook_delivery_id}}
-    _set: {sqs_message_id: $sqs_message_id}
-  ) {
-    returning {
-      delivery_id
     }
   }
 }
@@ -6087,6 +6047,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
     },
+    GetProjectIdFromGitUrl(variables?: GetProjectIdFromGitUrlQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectIdFromGitUrlQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectIdFromGitUrlQuery>(GetProjectIdFromGitUrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectIdFromGitUrl', 'query');
+    },
     GetUsersProjects(variables: GetUsersProjectsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUsersProjectsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUsersProjectsQuery>(GetUsersProjectsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUsersProjects', 'query');
     },
@@ -6111,9 +6074,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     InsertWebhookToCache(variables: InsertWebhookToCacheMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertWebhookToCacheMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertWebhookToCacheMutation>(InsertWebhookToCacheDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertWebhookToCache', 'mutation');
     },
-    GetProjectIdFromGitUrl(variables?: GetProjectIdFromGitUrlQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectIdFromGitUrlQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectIdFromGitUrlQuery>(GetProjectIdFromGitUrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectIdFromGitUrl', 'query');
-    },
     SetBuildS3Url(variables: SetBuildS3UrlMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SetBuildS3UrlMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<SetBuildS3UrlMutation>(SetBuildS3UrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'SetBuildS3Url', 'mutation');
     },
@@ -6128,9 +6088,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UpdateOrganizationsForUser(variables: UpdateOrganizationsForUserMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateOrganizationsForUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateOrganizationsForUserMutation>(UpdateOrganizationsForUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateOrganizationsForUser', 'mutation');
-    },
-    UpdateWebhookJobStatus(variables: UpdateWebhookJobStatusMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateWebhookJobStatusMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpdateWebhookJobStatusMutation>(UpdateWebhookJobStatusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateWebhookJobStatus', 'mutation');
     },
     UpsertOrganizationUsers(variables: UpsertOrganizationUsersMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOrganizationUsersMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpsertOrganizationUsersMutation>(UpsertOrganizationUsersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertOrganizationUsers', 'mutation');

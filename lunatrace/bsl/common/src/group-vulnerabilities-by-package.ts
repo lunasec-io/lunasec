@@ -42,7 +42,7 @@ function createNewVulnPackage<F extends Finding>(project_id: string, finding: F)
     version: finding.version,
     language: finding.language,
     type: finding.type,
-    topics: finding.vulnerability.topic_vulnerabilities.map((tv) => tv.topic),
+    topics: finding.vulnerability.topic_vulnerabilities?.map((tv) => tv.topic) || [],
     package_name: finding.package_name,
     cvss_score: finding.vulnerability.namespace === 'nvd' ? finding.vulnerability.cvss_score || null : null,
     fix_state: finding.fix_state || null,
@@ -89,10 +89,12 @@ function mergeExistingFindingIntoPackage<F extends Finding>(vulnPackage: Vulnera
     }
   }
   // merge topics
-  finding.vulnerability.topic_vulnerabilities.forEach(({ topic }) => {
-    const alreadyAdded = vulnPackage.topics.some((preExistingTopic) => preExistingTopic.id === topic.id);
-    if (!alreadyAdded) {
-      vulnPackage.topics.push(topic);
-    }
-  });
+  if (finding.vulnerability.topic_vulnerabilities) {
+    finding.vulnerability.topic_vulnerabilities.forEach(({ topic }) => {
+      const alreadyAdded = vulnPackage.topics.some((preExistingTopic) => preExistingTopic.id === topic.id);
+      if (!alreadyAdded) {
+        vulnPackage.topics.push(topic);
+      }
+    });
+  }
 }
