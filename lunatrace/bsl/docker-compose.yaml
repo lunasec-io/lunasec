@@ -58,6 +58,7 @@ services:
     - db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: lunatrace
   graphql-engine:
     image: hasura/graphql-engine:v2.2.2
     ports:
