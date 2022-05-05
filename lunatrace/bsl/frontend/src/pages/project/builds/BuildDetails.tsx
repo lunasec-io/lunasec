@@ -85,7 +85,7 @@ export const BuildDetails: React.FunctionComponent = () => {
             </NavLink>
           </Col>
           <Col xs="6" style={{ textAlign: 'center' }}>
-            <h1>Build # {build.build_number}</h1>
+            <h1>Build #{build.build_number}</h1>
             <span>{build.project?.name}</span>
             <h5>{uploadDate}</h5>
           </Col>
@@ -100,6 +100,9 @@ export const BuildDetails: React.FunctionComponent = () => {
                 Scanned {build.scans_aggregate.aggregate?.count} time
                 {build.scans_aggregate.aggregate?.count !== 1 ? 's' : ''}
               </span>
+            </h6>
+            <h6 style={{ textAlign: 'right' }}>
+              <span className="darker">Download SBOM</span>
             </h6>
           </Col>
           <Col xs="12" sm="3">
