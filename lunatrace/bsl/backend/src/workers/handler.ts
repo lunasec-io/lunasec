@@ -238,7 +238,7 @@ export async function setupQueue(): Promise<void> {
 
   const queueHandlers = await loadQueueHandlers();
 
-  await log.provideFields({ queueName, loggerName: 'queue-logger' }, async () => {
+  await log.provideFields({ queueName, trace: 'queue-logger' }, async () => {
     const handlerConfig = determineHandler(queueHandlers, queueHandlerConfig.handlerName as QueueHandlerType);
 
     const queueUrl = await catchError(getSqsUrlFromName(sqsClient, queueName));

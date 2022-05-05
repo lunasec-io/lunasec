@@ -108,7 +108,7 @@ function buildRelatedTopics(relatedNames: Topic['metadata']['relatedTopics']): T
   };
 }
 
-// Hasura array support is super, super awful, so you have to format arrays as postgres literals
+// Hasura array support is not great, you have to format arrays as postgres literals
 function toPostgresArray(arr: string[]): string {
   const joined = arr.join(' ,');
   return `{ ${joined} }`;

@@ -1,0 +1,6 @@
+query GetUserRoles($kratos_id: uuid) {
+  users(where: {kratos_id: {_eq: $kratos_id}}) {
+    roles
+    id
+  }
+}

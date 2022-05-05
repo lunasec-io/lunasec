@@ -13,6 +13,8 @@
     <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1649286847179_drop-api-response/up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1649718292194_add-existing-pr-review-column/down.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1649718292194_add-existing-pr-review-column/up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1651694009852_add-user-role-column/down.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1651694009852_add-user-role-column/up.sql" dialect="PostgreSQL" />
     <file url="PROJECT" dialect="SQLite" />
   </component>
 </project>
