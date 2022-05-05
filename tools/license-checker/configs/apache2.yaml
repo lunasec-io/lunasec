@@ -9,6 +9,7 @@ header:
     - 'lunatrace/cli/**/*.go'
     - 'lunatrace/tools/**/*.go'
     - 'api-spec/**/*.yaml'
+  #  these ignores do nothing, go edit the .lintstagedrc file to ignore something
   paths-ignore:
     - '.git'
     - '.idea'

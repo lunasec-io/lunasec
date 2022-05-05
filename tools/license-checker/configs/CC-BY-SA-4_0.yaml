@@ -19,6 +19,7 @@ header:
     - '**/*.md'
     - 'docs/*.{js,jsx,ts,tsx}'
     - 'docs/**/*.{js,jsx,ts,tsx}'
+  #  these ignores do nothing, go edit the .lintstagedrc file to ignore something
   paths-ignore:
     - 'docs/typedoc-sidebar.js'
     - 'docs/build/**'
