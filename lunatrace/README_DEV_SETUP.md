@@ -41,9 +41,9 @@ This exercise is left to you to sort out. Generally you'll need to put your cred
 
 ## Repo setup
 
-You'll have to clone the repo first and ` cd` to it first.
+You'll have to clone the repo first and `cd` to it first.
 
-### Setup NPM Dependencies
+### Setup Node Dependencies
 
 Just run `yarn` from anywhere in the repo and it'll go sort out building deps. Otherwise, deps are committed to Git as
 a part of the "Yarn PNP" flow. (You will not see a `node_modules` folder, only a `.yarn` one)
@@ -58,44 +58,37 @@ npm install -g smee-client
 
 From `$REPO_ROOT/lunatrace/bsl/backend-cdk` folder, you'll need to run the following:
 ```sh
-DEVELOPMENT=true DEV_USER=<YOURNAMEHERE> yarn run cdk deploy
+DEV_USER=YOUR_USERNAME yarn run dev:cdk:deploy
 ```
 
 That will run a real AWS deployment of the "dev" resources required. Once it finished, you should see something like:
 
 ```sh
-  ✅  lunatrace-forrest-EtlStorage
+ ✅  lunatrace-EtlStorage
 
-✨  Deployment time: 187.97s
+✨  Deployment time: 180.43s
 
-Outputs:
-lunatrace-forrest-EtlStorage.GrypeDatabaseBucketName = lunatrace-forrest-etlsto-grypedatabasebucketddd6c-xaxd9qi54ohd
-lunatrace-forrest-EtlStorage.ManifestBucketName = lunatrace-forrest-etlstora-manifestbucket46c412a5-1uj6ttbhojbec
-lunatrace-forrest-EtlStorage.ProcessManifestProcessingQueueName = lunatrace-forrest-EtlStorage-ProcessManifestProcessingQueue7A1F1CB2-vktaIR4IhObz
-lunatrace-forrest-EtlStorage.ProcessRepositoryProcessingQueueName = lunatrace-forrest-EtlStorage-ProcessRepositoryProcessingQueueD69CAA-ZzIT7dqqT7We
-lunatrace-forrest-EtlStorage.ProcessSbomProcessingQueueName = lunatrace-forrest-EtlStorage-ProcessSbomProcessingQueueA3A9FE69-FUUYe8R7yq9j
-lunatrace-forrest-EtlStorage.ProcessWebhookProcessingQueueName = lunatrace-forrest-EtlStorage-ProcessWebhookProcessingQueue475F8047-UID5vISORfui
-lunatrace-forrest-EtlStorage.SbomBucketName = lunatrace-forrest-etlstorage-sbombucket8550fee8-1t3tw56o6azsh
-
+lunatrace-alex-EtlStorage.ManifestBucketName = lunatrace-alex-etlstorage-manifestbucket46c412a5-1b0kc5cys81er
+lunatrace-alex-EtlStorage.ProcessManifestProcessingQueueName = lunatrace-alex-EtlStorage-ProcessManifestProcessingQueue7A1F1CB2-BWVszydikZnB
+lunatrace-alex-EtlStorage.ProcessRepositoryProcessingQueueName = lunatrace-alex-EtlStorage-ProcessRepositoryProcessingQueueD69CAAE0-ma9VglOAlgiF
+lunatrace-alex-EtlStorage.ProcessSbomProcessingQueueName = lunatrace-alex-EtlStorage-ProcessSbomProcessingQueueA3A9FE69-6CG55qoQkM7q
+lunatrace-alex-EtlStorage.ProcessWebhookProcessingQueueName = lunatrace-alex-EtlStorage-ProcessWebhookProcessingQueue475F8047-ZzRXj42PsJAZ
+lunatrace-alex-EtlStorage.SbomBucketName = lunatrace-alex-etlstorage-sbombucket8550fee8-1drqtwb7yf2dg
 Stack ARN:
-arn:aws:cloudformation:us-west-2:134071937287:stack/lunatrace-forrest-EtlStorage/d8f85c50-cca8-11ec-8714-024c26edafc1
+arn:aws:cloudformation:us-west-2:1234567890:stack/lunatrace-EtlStorage/asdf5ee5-cd11-22ec-82c9-5264031fasdf
 
-
+✨  Total time: 184.84s
 ```
 
 You'll need to format those values into an env file at `$REPO/lunatrace/backend/.env.dev`.  From the above output, mine looks like:
 
 ```env
-S3_SBOM_BUCKET="lunatrace-forrest-etlstorage-sbombucket8550fee8-1t3tw56o6azsh"
-S3_MANIFEST_BUCKET="lunatrace-forrest-etlstora-manifestbucket46c412a5-1uj6ttbhojbec"
-
-PROCESS_WEBHOOK_QUEUE="lunatrace-forrest-EtlStorage-ProcessWebhookProcessingQueue475F8047-UID5vISORfui"
-PROCESS_SBOM_QUEUE="lunatrace-forrest-EtlStorage-ProcessSbomProcessingQueueA3A9FE69-FUUYe8R7yq9j"
-PROCESS_MANIFEST_QUEUE="lunatrace-forrest-EtlStorage-ProcessManifestProcessingQueue7A1F1CB2-vktaIR4IhObz"
-PROCESS_REPOSITORY_QUEUE="lunatrace-forrest-EtlStorage-ProcessRepositoryProcessingQueueD69CAA-ZzIT7dqqT7We"
-
-NODE_ENV=development
-
+S3_SBOM_BUCKET=lunatrace-alex-etlstorage-sbombucket8550fee8-1drqtwb7yf2dg
+S3_MANIFEST_BUCKET=lunatrace-alex-etlstorage-manifestbucket46c412a5-1b0kc5cys81er
+PROCESS_WEBHOOK_QUEUE=lunatrace-alex-EtlStorage-ProcessWebhookProcessingQueue475F8047-ZzRXj42PsJAZ
+PROCESS_REPOSITORY_QUEUE=lunatrace-alex-EtlStorage-ProcessRepositoryProcessingQueueD69CAAE0-ma9VglOAlgiF
+PROCESS_MANIFEST_QUEUE=lunatrace-alex-EtlStorage-ProcessManifestProcessingQueue7A1F1CB2-BWVszydikZnB
+PROCESS_SBOM_QUEUE=lunatrace-alex-EtlStorage-ProcessSbomProcessingQueueA3A9FE69-6CG55qoQkM7q
 ```
 
 ### Running `tmuxp`
@@ -109,7 +102,7 @@ Starting tmuxp...
 cd /home/<USER>/<PATH_TO_REPO>/lunatrace/bsl && tmuxp load /home/<USER>/<PATH_TO_REPO>/lunatrace/bsl/generated-lunatrace-tmuxp.yaml
 ```
 
-Now that you have that file, you can run that bottom line and it'll set everything up for you to run. :)
+Now that you have that file, you can follow that bottom line and it'll set everything up for you to run. :)
 
 _NOTE: If you're on a Mac, you might have to swap all `sudo docker` calls with `docker` because of differences in how the OS deals with Docker._
 
@@ -120,9 +113,9 @@ it up, so if you accidentally have problems after you can run `sudo docker-compo
 
 ### Setting up the Database
 
-Everything will likely break a bunch at this point because the database hasn't properly been configured yet.
+Everything will likely break a bunch at this point because the database hasn't properly beet configured yet.
 
-We use the open source microservices Hasura and Kratos, and both talk to the database. They will both need their migrations run.
+We use Hasura and Kratos, so there will be a few incantations required to make this work.
 
 #### Kratos (do this first):
 
@@ -130,7 +123,8 @@ We use the open source microservices Hasura and Kratos, and both talk to the dat
 sudo docker exec -it $(sudo docker ps | grep kratos | awk '{print $1}') /usr/bin/kratos migrate sql /config/config.yaml migrate sql -e --yes
 ```
 
-This runs the kratos migrations from inside a docker container.
+That's a bit of a magical command but... it's basically just finding the Kratos Docker container ID and then running the
+Kratos CLI commands inside of it to setup the DB.
 
 _NOTE: It may be possible to use the Kratos CLI from your machine directly instead if Docker is janky. But this approach
 will ensure that your Kratos version is always in sync with the Docker version._
@@ -145,13 +139,22 @@ hasura metadata apply
 hasura metadata reload
 ```
 
-Those should migrate the database. Once that's done you should be able to pull up the Hasura console either
+Those should work and pull up the whole DB. Once that's done you should be able to pull up the Hasura console either
 by running `hasura console` or going to `http://localhost:9695/`. This will show you the GraphQL server and an admin
 dashboard for the database.
 
+#### Frontend
+
+To set up the frontend, pull the theme submodule and compile the CSS:
+```sh
+cd bsl/frontend
+yarn run sass:pull
+yarn run sass:build
+```
+
 ### Re-run everything
 
-At this point you should restart the cluster and see if it comes up properly.
+Either kill everything in tmuxp or just restart the front-end and back-end containers after Hasura comes up.
 
 This is important because otherwise the GraphQL code gen stuff will probably not have run, and then everything might break.
 

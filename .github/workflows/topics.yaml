@@ -51,4 +51,4 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_TITLE: Topics Deployed - ${{ job.status }}
-          SLACK_COLOR: ${{ job.status }
+          SLACK_COLOR: ${{ job.status }}
