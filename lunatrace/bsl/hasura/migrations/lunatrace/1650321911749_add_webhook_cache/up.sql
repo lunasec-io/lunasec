@@ -1,4 +1,4 @@
-CREATE TYPE github_webhook_event AS ENUM (
+CREATE TYPE public.github_webhook_event AS ENUM (
  'branch_protection_rule',
  'check_run',
  'check_suite',
@@ -49,9 +49,9 @@ CREATE TYPE github_webhook_event AS ENUM (
  'unknown'
 );
 
-CREATE TABLE webhook_cache(
+CREATE TABLE public.webhook_cache(
   delivery_id UUID PRIMARY KEY NOT NULL,
-  event_type github_webhook_event NOT NULL,
+  event_type public.github_webhook_event NOT NULL,
   created_at timestamp NOT NULL DEFAULT NOW(),
   signature_256 TEXT NOT NULL,
   installation_id INTEGER,
@@ -59,6 +59,6 @@ CREATE TABLE webhook_cache(
   sqs_message_id TEXT
 );
 
-CREATE INDEX webhook_cache_created_at_idx ON webhook_cache(created_at);
-CREATE INDEX webhook_cache_event_type_idx ON webhook_cache(event_type);
-CREATE INDEX webhook_cache_sqs_message_id_idx ON webhook_cache(sqs_message_id);
+CREATE INDEX webhook_cache_created_at_idx ON public.webhook_cache(created_at);
+CREATE INDEX webhook_cache_event_type_idx ON public.webhook_cache(event_type);
+CREATE INDEX webhook_cache_sqs_message_id_idx ON public.webhook_cache(sqs_message_id);
