@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+// TODO: This is a clone of the remark-admonitions plugin that I got part way finished converted to TS and fixing for unified v10 before I have up. Left here in case we want to keep trying
 // handles different types of whitespace
 //
 // import html from 'rehype-parse';
