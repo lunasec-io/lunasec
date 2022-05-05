@@ -29764,6 +29764,7 @@ __metadata:
     remark-directive: ~2.0.1
     remark-gfm: ~3.0.1
     remark-parse: ~10.0.1
+    remark-remove-comments: ~0.2.0
     sass: ^1.49.0
     sass-loader: ^12.4.0
     stream-browserify: ~3.0.0
@@ -31575,6 +31576,13 @@ __metadata:
   version: 1.0.0
   resolution: "hsla-regex@npm:1.0.0"
   checksum: 9aa6eb9ff6c102d2395435aa5d1d91eae20043c4b1497c543d8db501c05f3edacd9a07fb34a987059d7902dba415af4cb4e610f751859ae8e7525df4ffcd085f
+  languageName: node
+  linkType: hard
+
+"html-comment-regex@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "html-comment-regex@npm:1.1.2"
+  checksum: 64c1e13c93f91554a06327176663037e630f5a47de8aae6a6a60cbca25e6d7b63ee16dd35707e33ba09288b900c6947050c6945c34a0a84d27f5415cef525599
   languageName: node
   linkType: hard
 
@@ -46477,6 +46485,16 @@ __metadata:
     mdast-util-to-hast: ^12.1.0
     unified: ^10.0.0
   checksum: b9ac8acff3383b204dfdc2599d0bdf86e6ca7e837033209584af2e6aaa6a9013e519a379afa3201299798cab7298c8f4b388de118c312c67234c133318aec084
+  languageName: node
+  linkType: hard
+
+"remark-remove-comments@npm:~0.2.0":
+  version: 0.2.0
+  resolution: "remark-remove-comments@npm:0.2.0"
+  dependencies:
+    html-comment-regex: ^1.1.2
+    unist-util-visit: ^2.0.3
+  checksum: 9c70e62d22f04fb69ea512c6bce19712410f10c253c08be75a998012d73234579bef07f24e11053dbb3d7ebfe50143221a5cb6be813dc33414e15ad70be715e9
   languageName: node
   linkType: hard
 
