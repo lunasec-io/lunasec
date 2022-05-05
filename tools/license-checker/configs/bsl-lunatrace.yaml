@@ -15,6 +15,7 @@ header:
       limitations under the License.
   paths:
     - 'lunatrace/bsl/**/*.{js,jsx,ts,tsx}'
+#  these ignores do nothing, go edit the .lintstagedrc file to ignore something
   paths-ignore:
     - '.git'
     - '.idea'

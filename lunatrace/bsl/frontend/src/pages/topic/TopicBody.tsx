@@ -15,17 +15,24 @@ import React from 'react';
 import { Card, Image } from 'react-bootstrap';
 import ReactMarkdown from 'react-markdown';
 import rehypePrism from 'rehype-prism-plus';
-// import remarkDirective from 'remark-directive';
+// eslint-disable-next-line import/order
 import remarkGfm from 'remark-gfm';
+
+// import remarkDirective from 'remark-directive';
+
 // import remarkParse from 'remark-parse';
 // import { admonitionPlugin } from '../../utils/reverse-engineered-admonitions';
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import remarkRemoveComments from 'remark-remove-comments';
 
 export const TopicBody: React.FC<{ markdown: string }> = ({ markdown }) => {
   return (
     <div className={'topic-body'}>
       <ReactMarkdown
         rehypePlugins={[rehypePrism]}
-        remarkPlugins={[remarkGfm]} //, remarkDirective, admonitionPlugin]}
+        remarkPlugins={[remarkGfm, remarkRemoveComments]} //, remarkDirective, admonitionPlugin]}
         components={{
           img({ node, inline, className, children, ...props }) {
             return (

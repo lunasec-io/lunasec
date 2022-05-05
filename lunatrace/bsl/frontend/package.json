@@ -49,6 +49,7 @@
     "remark-directive": "~2.0.1",
     "remark-gfm": "~3.0.1",
     "remark-parse": "~10.0.1",
+    "remark-remove-comments": "~0.2.0",
     "sass-loader": "^12.4.0",
     "typescript": "~4.5.5",
     "unified": "~10.1.2",
