@@ -13,6 +13,28 @@
  */
 import React from 'react';
 
-export const Account = () => {
-  return <></>;
+import { api } from '../../api/generated';
+
+export const AdminPage = () => {
+  const { data, error, isLoading } = api.endpoints.GetLunaTraceUsers.useQuery();
+
+  if (isLoading) {
+    return <p>Loading data...</p>;
+  }
+
+  if (error) {
+    return <p>Error loading data: {error}</p>;
+  }
+
+  if (!data) {
+    return <p>No data available</p>;
+  }
+
+  return (
+    <ul>
+      {data.users.map((u) => {
+        return <li key={u.id}>u.id</li>;
+      })}
+    </ul>
+  );
 };

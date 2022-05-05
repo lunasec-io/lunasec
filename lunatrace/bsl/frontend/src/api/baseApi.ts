@@ -17,16 +17,12 @@ import { GraphQLClient } from 'graphql-request';
 
 // import { ManifestDocument, ManifestSubscription, ManifestSubscriptionVariables } from './generated';
 
-const impersonateUserId = localStorage.getItem('impersonate-user-id');
-
 // This is the base API that is consumed by the graphql codegen
-export const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_URL || 'http://localhost:4455/v1/graphql', {
-  headers: {
-    ...(impersonateUserId ? { 'X-LunaTrace-Impersonate-User-Id': impersonateUserId } : {}),
-  },
-});
+export const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_URL || 'http://localhost:4455/v1/graphql');
+
 // highlight-start
 export const api = createApi({
   baseQuery: graphqlRequestBaseQuery({ client }),
   endpoints: () => ({}),
 });
+// client.setHeader('X-LunaTrace-Impersonate-User-Id', '');

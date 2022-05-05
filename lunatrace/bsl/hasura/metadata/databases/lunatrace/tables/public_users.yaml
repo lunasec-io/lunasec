@@ -33,8 +33,19 @@ select_permissions:
     - kratos_id
     - roles
     filter:
-      kratos_id:
-        _eq: X-Hasura-User-Id
+      _or:
+      - kratos_id:
+          _eq: X-Hasura-User-Id
+      - _exists:
+          _table:
+            name: users
+            schema: public
+          _where:
+            _and:
+            - kratos_id:
+                _eq: X-Hasura-User-Id
+            - roles:
+                _eq: lunatrace_admin
   role: user
 update_permissions:
 - permission:

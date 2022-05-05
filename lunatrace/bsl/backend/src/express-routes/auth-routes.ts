@@ -20,8 +20,11 @@ import { validate as validateUUID } from 'uuid';
 import { getHasuraConfig } from '../config';
 import { hasura } from '../hasura-api';
 import { newResult } from '../utils/errors';
+import { parsePsqlStringArray } from '../utils/json-utils';
 import { jwtMiddleware } from '../utils/jwt-middleware';
 import { log } from '../utils/log';
+import { catchError, threwError } from '../utils/try';
+import { isArray } from '../utils/types';
 
 // These routes are used by oathkeeper to validate incoming requests before they are allowed to reach the rest of the cluster
 const hasuraConfig = getHasuraConfig();
@@ -78,7 +81,6 @@ function generateErrorResponse(res: Response, errorMessage: string, statusCode =
 // Oathkeeper calls this when requests from the CLI come through the gateway.. We append this data here just for the action
 // but currently this fires for all calls..could clean that up with a new oathkeeper rule
 export async function cliAuthorizer(req: Request, res: Response): Promise<void> {
-  log.info('CLI authorizer called for route ', req.originalUrl);
   const parsedRequest = parseRequestTokenHeader('X-LunaTrace-Access-Token', req);
 
   if (parsedRequest.error) {
@@ -105,8 +107,6 @@ export async function cliAuthorizer(req: Request, res: Response): Promise<void> 
 
 // Oathkeeper calls this when requests from a backend service come through the gateway, this is a string matcher behind a rest endpoint :p
 export function serviceAuthorizer(req: Request, res: Response): void {
-  log.info('Service authorizer called for route ', req.originalUrl);
-
   const parsedRequest = parseRequestTokenHeader('X-LunaTrace-Access-Token', req);
 
   if (parsedRequest.error) {
@@ -124,33 +124,84 @@ export function serviceAuthorizer(req: Request, res: Response): void {
   return;
 }
 
-export function impersonateAsAdmin(req: Request, res: Response): void {
-  const authenticatedUser = req.body.subject;
+type UserRole = 'organization_user' | 'lunatrace_admin';
 
-  const impersonateUserIdHeader = req.body.match_context.header['X-Lunatrace-Impersonate-User-Id'][0];
-  const parsedRequest = validateUUIDValue(impersonateUserIdHeader);
+export async function impersonateAsAdmin(req: Request, res: Response): Promise<void> {
+  const impersonateHeader = 'X-Lunatrace-Impersonate-User-Id';
 
-  if (parsedRequest.error) {
-    log.info(parsedRequest.message);
-    res.send(newResult(undefined));
+  const impersonateUserIdHeader = req.body.match_context.header[impersonateHeader];
+  // if no impersonate header is present then return quickly and quietly
+  if (!impersonateUserIdHeader) {
+    res.send(req.body);
     return;
   }
 
-  const userId = parsedRequest.token;
-
-  // TODO: Make this read from Secrets Manager instead.
-  if (!parsedRequest.token) {
-    log.info('token is not valid', {
-      parsedRequest,
+  if (!isArray(impersonateUserIdHeader) || impersonateUserIdHeader.length !== 1) {
+    log.info('provided header is not an array', {
+      impersonateHeader,
     });
-    res.send(newResult(undefined));
+    res.send(req.body);
     return;
   }
+
+  const impersonateUserId = impersonateUserIdHeader[0];
+
+  const kratosUserId = req.body.subject;
+  const logger = log.child('impersonate-as-admin', {
+    kratos_id: kratosUserId,
+  });
+
+  const parsedRequest = validateUUIDValue(impersonateUserIdHeader);
+  if (parsedRequest.error) {
+    logger.info(parsedRequest.message);
+    res.send(req.body);
+    return;
+  }
+
+  const userToImpersonate = parsedRequest.token;
+
+  const userRoles = await catchError(
+    hasura.GetUserRoles({
+      kratos_id: kratosUserId,
+    })
+  );
+
+  if (threwError(userRoles)) {
+    logger.error('unable to get roles for user');
+    res.send(req.body);
+    return;
+  }
+
+  if (userRoles.users.length !== 1) {
+    logger.error('did not find exactly one user for uuid', {
+      users: userRoles.users,
+    });
+    res.send(req.body);
+    return;
+  }
+
+  const user = userRoles.users[0];
+  const roles = user.roles as UserRole[];
+
+  // verify that the user performing this request is a lunatrace_admin
+  if (!roles.some((r) => r === 'lunatrace_admin')) {
+    logger.info('user is not admin', {
+      roles,
+    });
+    res.send(req.body);
+    return;
+  }
+
+  logger.info('impersonating user', {
+    userToImpersonate,
+  });
+
+  console.log(JSON.stringify(req.body, null, 2));
 
   res.send({
     ...req.body,
     extra: {
-      impersonateId: userId,
+      userToImpersonate,
     },
   });
   return;
