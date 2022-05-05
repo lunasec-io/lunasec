@@ -14,7 +14,7 @@
     "test:scan:upload": "yarn run ts-node --files ./src/tests/upload-scan.ts",
     "test:load": "yarn run ts-node --files ./src/tests/local-load-vulnerabilities-test.ts",
     "test:jest": "jest",
-    "topics:update": "yarn run ts-node --files ./src/topic-ingester/cmd.ts ../../topics",
+    "topics:update": "yarn run ts-node --files ./src/topic-ingester/cmd.ts ../../../topics",
     "test:deleted": "yarn run ts-node --files ./src/tests/deleted-vulns-scan.ts",
     "start:prod": "pm2-runtime start ./build/server.js --name demo-back-end",
     "generate:hasura-calls": "graphql-codegen --config codegen.hasura.yml",

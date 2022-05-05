@@ -25,7 +25,7 @@ export interface Finding {
     namespace: string;
     slug: string;
     cvss_score?: number;
-    topic_vulnerabilities: Array<{
+    topic_vulnerabilities?: Array<{
       topic: Topic;
     }>;
   };
