@@ -31,6 +31,7 @@ header:
     - 'tools/license-checker/skywalking-*/**'
     - '**/node_modules/**'
     - 'pull_request_template.md'
+    - 'topics/*.md'
   comment: on-failure
 
   license-location-threshold: 3000
