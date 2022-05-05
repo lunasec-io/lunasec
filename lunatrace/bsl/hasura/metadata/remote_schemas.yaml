@@ -47,22 +47,5 @@
           url: String!
         }
 
-        type Query { presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
-        }
-
-        type SbomUploadUrlOutput { error: Boolean!
-          uploadUrl: UploadUrl
-        }
-
-        type ScanManifestOutput { build_id: UUID!
-          error: Boolean!
-          error_message: String
-        }
-
-        type UploadUrl { headers: JSON!
-          url: String!
-        }
-
-        input SbomUploadUrlInput {orgId: UUID!
-          projectId: UUID!
+        type Query { fakeQueryToHackHasuraBeingABuggyMess: String
         }
