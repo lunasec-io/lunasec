@@ -9,6 +9,9 @@ type Query {
         orgId: uuid!
         buildId: uuid!
     ): SbomUploadUrlOutput
+    signS3Download(
+        s3URL: String!
+    ): String
     fakeQueryToHackHasuraBeingABuggyMess: String
 }
 
