@@ -66,9 +66,7 @@ export type Int_Comparison_Exp = {
 export type PresignedUrlResponse = {
   __typename?: 'PresignedUrlResponse';
   bucket: Scalars['String'];
-  error: Scalars['Boolean'];
-  error_message?: Maybe<Scalars['String']>;
-  headers: Scalars['String'];
+  headers: Scalars['jsonb'];
   key: Scalars['String'];
   url: Scalars['String'];
 };
@@ -1261,7 +1259,6 @@ export type Mutation_Root = {
   insert_projects?: Maybe<Projects_Mutation_Response>;
   /** insert a single row into the table: "projects" */
   insert_projects_one?: Maybe<Projects>;
-  /** get s3 presigned url for manifest upload, used only by the frontend */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "builds" */
   update_builds?: Maybe<Builds_Mutation_Response>;
@@ -2222,6 +2219,7 @@ export type Query_Root = {
   builds: Array<Builds>;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
+  fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
   /** An aggregate relationship */
@@ -4164,7 +4162,7 @@ export type PresignManifestUrlMutationVariables = Exact<{
 }>;
 
 
-export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: string, key: string, bucket: string } | null };
+export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: any, key: string, bucket: string } | null };
 
 
 export const DeleteProjectAccessTokenDocument = `
