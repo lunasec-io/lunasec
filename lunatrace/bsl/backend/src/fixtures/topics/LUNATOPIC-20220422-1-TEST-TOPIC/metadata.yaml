@@ -4,6 +4,7 @@
   "cves": ["CVE-2021-44228","CVE-2021-45046"],
   "name": "Log4Shell",
   "summary": "RCE in popular log4j package",
+  # JUST PULL LANGUAGES OUT OF PACKAGES
   "language": "java",
   "severity":"Critical",
   "advisories":[
@@ -23,6 +24,7 @@
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-44228"
     }
   ],
+  #MAKE THIS AN ARRAY
   "cwe": {
     "number": 20,
     "name": "Improper Input Validation"
