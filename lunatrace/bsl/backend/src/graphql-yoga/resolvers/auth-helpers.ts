@@ -13,25 +13,13 @@
  */
 import { GraphQLYogaError } from '@graphql-yoga/node';
 
-import { getHasuraConfig } from '../../config';
 import { log } from '../../utils/log';
 import { Context } from '../context';
-
-const hasuraConfig = getHasuraConfig();
 
 // todo: make this an auth guard with annotations in the schema
 export function throwIfUnauthenticated(ctx: Context): void {
   if (!ctx.req.user) {
     log.warn('No parsed JWT claims on route that required authorization, throwing a graphql error');
-    throw new GraphQLYogaError('Unauthorized');
-  }
-}
-
-export function throwIfNotService(ctx: Context): void {
-  const userToken = ctx.req.headers.get('X-LunaTrace-Access-Token');
-
-  // TODO: Make this read from Secrets Manager instead.
-  if (!userToken || userToken !== hasuraConfig.staticAccessToken) {
     throw new GraphQLYogaError('Unauthorized');
   }
 }

@@ -19,7 +19,7 @@ import { aws } from '../../utils/aws-utils';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
 
-import { getUserId, throwIfNotService, throwIfUnauthenticated } from './auth-helpers';
+import { throwIfUnauthenticated } from './auth-helpers';
 import { checkProjectIsAuthorized } from './presign-manifest-upload';
 import { getAuthorizedBuilds } from './presign-sbom-upload';
 
