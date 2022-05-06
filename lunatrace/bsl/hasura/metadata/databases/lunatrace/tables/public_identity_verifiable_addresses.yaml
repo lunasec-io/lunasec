@@ -1,22 +1,22 @@
 table:
-  name: identity_verifiable_addresses
   schema: public
+  name: identity_verifiable_addresses
 object_relationships:
-- name: identity
-  using:
-    foreign_key_constraint_on: identity_id
+  - name: identity
+    using:
+      foreign_key_constraint_on: identity_id
 select_permissions:
-- permission:
-    columns:
-    - verified
-    - status
-    - value
-    - via
-    - created_at
-    - updated_at
-    - verified_at
-    - id
-    - identity_id
-    - nid
-    filter: {}
-  role: service
+  - role: service
+    permission:
+      columns:
+        - verified
+        - status
+        - value
+        - via
+        - created_at
+        - updated_at
+        - verified_at
+        - id
+        - identity_id
+        - nid
+      filter: {}
