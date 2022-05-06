@@ -16,25 +16,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: "Install yq"
+      - name: "Install Dyff"
         run: |-
-          mkdir -p $GITHUB_WORKSPACE/bin
-          export VERSION=v4.2.0
-          export BINARY=yq_linux_amd64
-          wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY}.tar.gz -O - |\
-          tar xz && mv ${BINARY} $GITHUB_WORKSPACE/bin/
-          export PATH="$GITHUB_WORKSPACE/bin/:$PATH"
+          # install dyff
+          curl --silent --location https://git.io/JYfAY | bash
           
-          git config --local diff.yq.command 'yq_compare() { diff <(yq -I 2 -P "sort_keys(..)" "$2") <(yq -I 2 -P "sort_keys(..)" "$5") || true; }; yq_compare'
-          echo '*.yml diff=yq' >> .gitattributes
-          echo '*.yaml diff=yq' >> .gitattributes
+          git config --local diff.dyff.command 'dyff_between() { dyff --color off between -i --omit-header "$2" "$5"; }; dyff_between'
+          echo '*.yml diff=dyff' >> .gitattributes
+          echo '*.yaml diff=dyff' >> .gitattributes
 
       - name: "git fetch"
         run: git fetch origin ${{github.event.pull_request.base.ref}}
 
       - name: "Diff"
         run: |-
-          git diff -c --ext-diff origin/${{github.event.pull_request.base.ref}} lunatrace/bsl/hasura/ >> diff.txt
+          git diff --ext-diff origin/${{github.event.pull_request.base.ref}} lunatrace/bsl/hasura/ >> diff.txt
           sed -i '/./,$!d' diff.txt
           
           cat << EOF >> comment-body.txt
@@ -44,7 +40,7 @@ jobs:
           <details>
             <summary>Click to expand!</summary>
           
-          \`\`\`diff
+          \`\`\`
           $(cat diff.txt)
           \`\`\`
           </details>
