@@ -13,23 +13,12 @@
   - role: user
     definition:
       schema: |-
-        schema  { query: Query mutation: Mutation }
-
-        scalar JSON
+        schema  { query: Query }
 
         scalar UUID
 
-        type Mutation { presignManifestUpload(project_id: UUID!): PresignedUrlResponse
-        }
-
-        type PresignedUrlResponse { bucket: String!
-          headers: JSON!
-          key: String!
-          url: String!
-        }
-
-        type Query { fakeQueryToHackHasuraBeingABuggyMess: String
-          signS3Download(s3URL: String!): String
+        type Query { SBOMURL(buildId: UUID!): String
+          fakeQueryToHackHasuraBeingABuggyMess: String
         }
   - role: cli
     definition:

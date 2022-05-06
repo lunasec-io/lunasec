@@ -30,11 +30,11 @@ array_relationships:
 remote_relationships:
 - definition:
     hasura_fields:
-    - s3_url
+    - id
     remote_field:
-      signS3Download:
+      SBOMURL:
         arguments:
-          s3URL: $s3_url
+          buildId: $id
     remote_schema: custom-backend-schema
   name: s3_url_signed
 insert_permissions:

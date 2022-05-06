@@ -14,19 +14,25 @@
 import { formatUrl } from '@aws-sdk/util-format-url';
 import { GraphQLYogaError } from '@graphql-yoga/node';
 
+import { hasura } from '../../hasura-api';
 import { aws } from '../../utils/aws-utils';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
 
-import { throwIfNotService } from './auth-helpers';
+import { getUserId, throwIfNotService, throwIfUnauthenticated } from './auth-helpers';
+import { checkProjectIsAuthorized } from './presign-manifest-upload';
+import { getAuthorizedBuilds } from './presign-sbom-upload';
 
-type SignS3DownloadResolver = NonNullable<QueryResolvers['signS3Download']>;
+type SBOMURLResolverT = NonNullable<QueryResolvers['SBOMURL']>;
 
-export const signS3DownloadResolver: SignS3DownloadResolver = async (parent, args, ctx, info) => {
-  throwIfNotService(ctx);
+export const SBOMURLResolver: SBOMURLResolverT = async (parent, args, ctx, info) => {
+  throwIfUnauthenticated(ctx);
+  const build = await hasura.GetBuild({ build_id: args.buildId });
+  await checkProjectIsAuthorized(build.builds_by_pk?.project?.id, ctx);
+
   let downloadURL = '';
   try {
-    const result = await aws.signArbitraryS3URL(args.s3URL, 'GET');
+    const result = await aws.signArbitraryS3URL(build.builds_by_pk?.s3_url || '', 'GET');
     downloadURL = formatUrl(result);
   } catch (e) {
     log.warn('Failed to sign S3 url', args, e);

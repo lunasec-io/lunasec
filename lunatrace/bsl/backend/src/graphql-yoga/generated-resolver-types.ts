@@ -38,21 +38,21 @@ export type PresignedUrlResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  SBOMURL?: Maybe<Scalars['String']>;
   fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /**  get s3 presigned url for manifest upload, used by the CLI  */
   presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
-  signS3Download?: Maybe<Scalars['String']>;
+};
+
+
+export type QuerySbomurlArgs = {
+  buildId: Scalars['uuid'];
 };
 
 
 export type QueryPresignSbomUploadArgs = {
   buildId: Scalars['uuid'];
   orgId: Scalars['uuid'];
-};
-
-
-export type QuerySignS3DownloadArgs = {
-  s3URL: Scalars['String'];
 };
 
 export type SbomUploadUrlInput = {
@@ -180,9 +180,9 @@ export type PresignedUrlResponseResolvers<ContextType = Context, ParentType exte
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  SBOMURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QuerySbomurlArgs, 'buildId'>>;
   fakeQueryToHackHasuraBeingABuggyMess?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   presignSbomUpload?: Resolver<Maybe<ResolversTypes['SbomUploadUrlOutput']>, ParentType, ContextType, RequireFields<QueryPresignSbomUploadArgs, 'buildId' | 'orgId'>>;
-  signS3Download?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QuerySignS3DownloadArgs, 's3URL'>>;
 };
 
 export type SbomUploadUrlOutputResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SbomUploadUrlOutput'] = ResolversParentTypes['SbomUploadUrlOutput']> = {
