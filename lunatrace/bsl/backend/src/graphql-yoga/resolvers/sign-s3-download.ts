@@ -18,10 +18,12 @@ import { aws } from '../../utils/aws-utils';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
 
+import { throwIfNotService } from './auth-helpers';
+
 type SignS3DownloadResolver = NonNullable<QueryResolvers['signS3Download']>;
 
 export const signS3DownloadResolver: SignS3DownloadResolver = async (parent, args, ctx, info) => {
-  //todo: ensure this request only comes from hasura.
+  throwIfNotService(ctx);
   let downloadURL = '';
   try {
     const result = await aws.signArbitraryS3URL(args.s3URL, 'GET');
