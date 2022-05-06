@@ -2263,7 +2263,7 @@ export type Query_Root = {
   topic_related_topics: Array<Topic_Related_Topics>;
   /** fetch data from the table: "topic_related_topics" using primary key columns */
   topic_related_topics_by_pk?: Maybe<Topic_Related_Topics>;
-  /** fetch data from the table: "topic_vulnerabilities" */
+  /** An array relationship */
   topic_vulnerabilities: Array<Topic_Vulnerabilities>;
   /** fetch data from the table: "topic_vulnerabilities" using primary key columns */
   topic_vulnerabilities_by_pk?: Maybe<Topic_Vulnerabilities>;
@@ -3027,7 +3027,7 @@ export type Subscription_Root = {
   topic_related_topics: Array<Topic_Related_Topics>;
   /** fetch data from the table: "topic_related_topics" using primary key columns */
   topic_related_topics_by_pk?: Maybe<Topic_Related_Topics>;
-  /** fetch data from the table: "topic_vulnerabilities" */
+  /** An array relationship */
   topic_vulnerabilities: Array<Topic_Vulnerabilities>;
   /** fetch data from the table: "topic_vulnerabilities" using primary key columns */
   topic_vulnerabilities_by_pk?: Maybe<Topic_Vulnerabilities>;
@@ -3526,11 +3526,12 @@ export type Topics = {
   metadata_schema_version: Scalars['Int'];
   /** An array relationship */
   related_topics: Array<Topic_Related_Topics>;
+  severity?: Maybe<Scalars['severity_enum']>;
   summary: Scalars['String'];
   tags: Scalars['_text'];
   title: Scalars['String'];
   topic_unique_id: Scalars['String'];
-  /** fetch data from the table: "topic_vulnerabilities" */
+  /** An array relationship */
   topic_vulnerabilities: Array<Topic_Vulnerabilities>;
   updated_at: Scalars['timestamptz'];
 };
@@ -3573,6 +3574,7 @@ export type Topics_Bool_Exp = {
   metadata?: InputMaybe<Jsonb_Comparison_Exp>;
   metadata_schema_version?: InputMaybe<Int_Comparison_Exp>;
   related_topics?: InputMaybe<Topic_Related_Topics_Bool_Exp>;
+  severity?: InputMaybe<Severity_Enum_Comparison_Exp>;
   summary?: InputMaybe<String_Comparison_Exp>;
   tags?: InputMaybe<_Text_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
@@ -3590,6 +3592,7 @@ export type Topics_Order_By = {
   metadata?: InputMaybe<Order_By>;
   metadata_schema_version?: InputMaybe<Order_By>;
   related_topics_aggregate?: InputMaybe<Topic_Related_Topics_Aggregate_Order_By>;
+  severity?: InputMaybe<Order_By>;
   summary?: InputMaybe<Order_By>;
   tags?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
@@ -3613,6 +3616,8 @@ export enum Topics_Select_Column {
   /** column name */
   MetadataSchemaVersion = 'metadata_schema_version',
   /** column name */
+  Severity = 'severity',
+  /** column name */
   Summary = 'summary',
   /** column name */
   Tags = 'tags',
@@ -3633,7 +3638,6 @@ export enum Topics_Select_Column {
  */
 export type Users = {
   __typename?: 'users';
-  github_id?: Maybe<Scalars['String']>;
   github_node_id?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   kratos_id?: Maybe<Scalars['uuid']>;
@@ -3653,7 +3657,6 @@ export type Users_Bool_Exp = {
   _and?: InputMaybe<Array<Users_Bool_Exp>>;
   _not?: InputMaybe<Users_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Bool_Exp>>;
-  github_id?: InputMaybe<String_Comparison_Exp>;
   github_node_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -3662,7 +3665,6 @@ export type Users_Bool_Exp = {
 
 /** order by max() on columns of table "users" */
 export type Users_Max_Order_By = {
-  github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
@@ -3670,7 +3672,6 @@ export type Users_Max_Order_By = {
 
 /** order by min() on columns of table "users" */
 export type Users_Min_Order_By = {
-  github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
@@ -3678,7 +3679,6 @@ export type Users_Min_Order_By = {
 
 /** Ordering options when selecting data from "users". */
 export type Users_Order_By = {
-  github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
@@ -3687,8 +3687,6 @@ export type Users_Order_By = {
 
 /** select columns of table "users" */
 export enum Users_Select_Column {
-  /** column name */
-  GithubId = 'github_id',
   /** column name */
   GithubNodeId = 'github_node_id',
   /** column name */
@@ -3738,6 +3736,8 @@ export type Vulnerabilities = {
   severity: Scalars['severity_enum'];
   slug: Scalars['String'];
   topic_id?: Maybe<Scalars['uuid']>;
+  /** An array relationship */
+  topic_vulnerabilities: Array<Topic_Vulnerabilities>;
   urls?: Maybe<Scalars['_text']>;
   /** An array relationship */
   vulnerability_packages: Array<Vulnerability_Packages>;
@@ -3795,6 +3795,16 @@ export type VulnerabilitiesReverse_Related_VulnerabilitiesArgs = {
 
 
 /** columns and relationships of "vulnerabilities" */
+export type VulnerabilitiesTopic_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Topic_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Topic_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Topic_Vulnerabilities_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerabilities" */
 export type VulnerabilitiesVulnerability_PackagesArgs = {
   distinct_on?: InputMaybe<Array<Vulnerability_Packages_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3827,6 +3837,7 @@ export type Vulnerabilities_Bool_Exp = {
   severity?: InputMaybe<Severity_Enum_Comparison_Exp>;
   slug?: InputMaybe<String_Comparison_Exp>;
   topic_id?: InputMaybe<Uuid_Comparison_Exp>;
+  topic_vulnerabilities?: InputMaybe<Topic_Vulnerabilities_Bool_Exp>;
   urls?: InputMaybe<_Text_Comparison_Exp>;
   vulnerability_packages?: InputMaybe<Vulnerability_Packages_Bool_Exp>;
 };
@@ -3852,6 +3863,7 @@ export type Vulnerabilities_Order_By = {
   severity?: InputMaybe<Order_By>;
   slug?: InputMaybe<Order_By>;
   topic_id?: InputMaybe<Order_By>;
+  topic_vulnerabilities_aggregate?: InputMaybe<Topic_Vulnerabilities_Aggregate_Order_By>;
   urls?: InputMaybe<Order_By>;
   vulnerability_packages_aggregate?: InputMaybe<Vulnerability_Packages_Aggregate_Order_By>;
 };
@@ -4069,6 +4081,13 @@ export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }> };
 
+export type GetUserFromIdentityQueryVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type GetUserFromIdentityQuery = { __typename?: 'query_root', identities_by_pk?: { __typename?: 'identities', users: Array<{ __typename?: 'users', id: any }> } | null };
+
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
   namespace?: InputMaybe<String_Comparison_Exp>;
@@ -4085,6 +4104,13 @@ export type GetVulnerabilityDetailsQueryVariables = Exact<{
 
 
 export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
+
+export type InsertPersonalProjectAndOrgMutationVariables = Exact<{
+  user_id: Scalars['uuid'];
+}>;
+
+
+export type InsertPersonalProjectAndOrgMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', id: any } | null };
 
 export type InsertProjectAccessTokenMutationVariables = Exact<{
   access_token: Scalars['uuid'];
@@ -4364,6 +4390,15 @@ export const GetSidebarInfoDocument = `
   }
 }
     `;
+export const GetUserFromIdentityDocument = `
+    query GetUserFromIdentity($id: uuid!) {
+  identities_by_pk(id: $id) {
+    users {
+      id
+    }
+  }
+}
+    `;
 export const SearchVulnerabilitiesDocument = `
     query SearchVulnerabilities($search: String!, $namespace: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerabilities_order_by!] = {}, $limit: Int!) {
   vulnerabilities(
@@ -4448,6 +4483,15 @@ export const GetVulnerabilityDetailsDocument = `
   }
 }
     `;
+export const InsertPersonalProjectAndOrgDocument = `
+    mutation InsertPersonalProjectAndOrg($user_id: uuid!) {
+  insert_organizations_one(
+    object: {name: "Personal", projects: {data: {name: "Personal Project"}}, organization_users: {data: {user_id: $user_id}}}
+  ) {
+    id
+  }
+}
+    `;
 export const InsertProjectAccessTokenDocument = `
     mutation InsertProjectAccessToken($access_token: uuid!, $name: String!, $project_uuid: uuid!) {
   insert_project_access_tokens_one(
@@ -4514,11 +4558,17 @@ const injectedRtkApi = api.injectEndpoints({
     GetSidebarInfo: build.query<GetSidebarInfoQuery, GetSidebarInfoQueryVariables | void>({
       query: (variables) => ({ document: GetSidebarInfoDocument, variables })
     }),
+    GetUserFromIdentity: build.query<GetUserFromIdentityQuery, GetUserFromIdentityQueryVariables>({
+      query: (variables) => ({ document: GetUserFromIdentityDocument, variables })
+    }),
     SearchVulnerabilities: build.query<SearchVulnerabilitiesQuery, SearchVulnerabilitiesQueryVariables>({
       query: (variables) => ({ document: SearchVulnerabilitiesDocument, variables })
     }),
     GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
+    }),
+    InsertPersonalProjectAndOrg: build.mutation<InsertPersonalProjectAndOrgMutation, InsertPersonalProjectAndOrgMutationVariables>({
+      query: (variables) => ({ document: InsertPersonalProjectAndOrgDocument, variables })
     }),
     InsertProjectAccessToken: build.mutation<InsertProjectAccessTokenMutation, InsertProjectAccessTokenMutationVariables>({
       query: (variables) => ({ document: InsertProjectAccessTokenDocument, variables })
