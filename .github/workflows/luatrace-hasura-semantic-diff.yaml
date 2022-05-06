@@ -1,0 +1,71 @@
+name: LunaTrace Hasura Semantic Diff
+
+# This workflow posts hasura changes as a comment.
+on:
+  pull_request:
+    branches: ['**', '**']
+    paths:
+      - 'lunatrace/bsl/hasura/**.yaml'
+      - 'lunatrace/bsl/hasura/**.yml'
+
+jobs:
+  diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Install Dyff"
+        run: |-
+          # install dyff
+          curl --silent --location https://git.io/JYfAY | bash
+          
+          git config --local diff.dyff.command 'dyff_between() { dyff --color off between -i --omit-header "$2" "$5"; }; dyff_between'
+          echo '*.yml diff=dyff' >> .gitattributes
+          echo '*.yaml diff=dyff' >> .gitattributes
+
+      - name: "git fetch"
+        run: git fetch origin ${{github.event.pull_request.base.ref}}
+
+      - name: "Diff"
+        run: |-
+          git diff --ext-diff origin/${{github.event.pull_request.base.ref}} lunatrace/bsl/hasura/ >> diff.txt
+          sed -i '/./,$!d' diff.txt
+          
+          cat << EOF >> comment-body.txt
+          ## Hasura Semantic Diff
+          Hasura config files have changed. This comment shows which fields have changed ignoring formatting.
+          
+          <details>
+            <summary>Click to expand!</summary>
+          
+          \`\`\`
+          $(cat diff.txt)
+          \`\`\`
+          </details>
+          EOF
+
+      - id: get-comment-body
+        run: |
+          body="$(cat comment-body.txt)"
+          body="${body//'%'/'%25'}"
+          body="${body//$'\n'/'%0A'}"
+          body="${body//$'\r'/'%0D'}" 
+          echo "::set-output name=body::$body"
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: "Hasura Semantic Diff"
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.get-comment-body.outputs.body }}
+          edit-mode: replace
