@@ -21,8 +21,12 @@ The 0-day was [tweeted](https://web.archive.org/web/20211211082351/https://twitt
 
 This post provides resources to help you understand the vulnerability and how to mitigate it.
 
+<!--truncate-->
 
 _This blog post is also available at https://log4shell.com/_
+
+
+
 
 
 ## Who is impacted?
