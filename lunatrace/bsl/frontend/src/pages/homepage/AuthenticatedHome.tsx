@@ -11,19 +11,40 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Badge, Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { BsGithub } from 'react-icons/bs';
 import { NavLink } from 'react-router-dom';
 
 import api from '../../api';
+import { ConditionallyRender } from '../../components/utils/ConditionallyRender';
 import { GithubAppUrl } from '../../constants';
+import useAppSelector from '../../hooks/useAppSelector';
+import { selectKratosId } from '../../store/slices/authentication';
 
 export const AuthenticatedHome: React.FunctionComponent = (_props) => {
   const { data } = api.useGetSidebarInfoQuery();
   const hasAnyOrgs = !!data && data.organizations.filter((p) => p.name !== 'Personal').length > 0;
   const personalProjectId = !!data && data.projects.find((p) => p.name === 'Personal Project')?.id;
+  const kratosId = useAppSelector(selectKratosId);
+
+  // Concert the kratos id into the user id so we can make requests including the ID
+  // Annoying to have to do this but its tricky to cache this state in the store without blocking the whole app
+  const [trigger, result, lastPromiseInfo] = api.useLazyGetUserFromIdentityQuery();
+
+  useEffect(() => {
+    if (kratosId) {
+      console.log('kratos id is ', kratosId);
+      trigger({ id: kratosId });
+    }
+  }, [kratosId]);
+
+  console.log('RESULT IS ', result);
+
+  const [createPersonalProjectMutation, createPersonalProjectMutationResult] =
+    api.useInsertPersonalProjectAndOrgMutation();
+
   return (
     <>
       <Helmet title="home" />
@@ -74,10 +95,18 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
                   <Button variant={hasAnyOrgs ? 'light' : 'primary'} size="lg" href={GithubAppUrl}>
                     <BsGithub className="mb-1 me-1" /> {hasAnyOrgs ? 'Add more projects' : 'Connect to GitHub'}
                   </Button>
-                  <Card.Subtitle className="darker">
-                    Prefer not to? You can still do manual scans in{' '}
-                    <NavLink to={`/project/${personalProjectId}`}>your personal project</NavLink>.
-                  </Card.Subtitle>
+                  <ConditionallyRender if={true}>
+                    <Card.Subtitle className="darker">
+                      Prefer not to? If you would like to do manual scans without GitHub,{' '}
+                      <span
+                        // onClick={() => userId && createPersonalProjectMutation({ user_id: userId })}
+                        className="link-primary cursor-pointer"
+                      >
+                        click here to create an unlinked project
+                      </span>
+                      .
+                    </Card.Subtitle>
+                  </ConditionallyRender>
                 </Col>
               </Row>
             </Card.Body>
