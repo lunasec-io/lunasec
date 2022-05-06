@@ -16,21 +16,27 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: chrisdickinson/setup-yq@latest
+
       - name: "Install Dyff"
         run: |-
           # install dyff
           curl --silent --location https://git.io/JYfAY | bash
           
           git config --local diff.dyff.command 'dyff_between() { dyff --color off between -i --omit-header "$2" "$5"; }; dyff_between'
-          echo '*.yml diff=dyff' >> .gitattributes
-          echo '*.yaml diff=dyff' >> .gitattributes
+          #echo '*.yml diff=dyff' >> .gitattributes
+          #echo '*.yaml diff=dyff' >> .gitattributes
+          
+          git config --local diff.yq.command 'yq_compare() { yq -P compare "$2" "$5" || true; }; yq_compare'
+          echo '*.yml diff=yq' >> .gitattributes
+          echo '*.yaml diff=yq' >> .gitattributes
 
       - name: "git fetch"
         run: git fetch origin ${{github.event.pull_request.base.ref}}
 
       - name: "Diff"
         run: |-
-          git diff --ext-diff origin/${{github.event.pull_request.base.ref}} lunatrace/bsl/hasura/ >> diff.txt
+          git diff -c --ext-diff origin/${{github.event.pull_request.base.ref}} lunatrace/bsl/hasura/ >> diff.txt
           sed -i '/./,$!d' diff.txt
           
           cat << EOF >> comment-body.txt
@@ -40,7 +46,7 @@ jobs:
           <details>
             <summary>Click to expand!</summary>
           
-          \`\`\`
+          \`\`\`diff
           $(cat diff.txt)
           \`\`\`
           </details>
