@@ -13,3 +13,12 @@ forrest:
   title: Developer at LunaSec
   url: https://github.com/factoidforrest
   image_url: https://github.com/factoidforrest.png
+gabe:
+  name: Gabe Martino
+  title: Developer at Lunasec
+  url: https://github.com/g00b
+  image_url: https://github.com/g00b.png
+alex:
+  name: Alex Vanderpot
+  title: Developer at Lunasec
+  url: https://github.com/ajvpot
