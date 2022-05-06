@@ -27,7 +27,6 @@ export type Scalars = {
   Int: number;
   Float: number;
   _text: any;
-  _user_role: any;
   builds_source_type: any;
   date: any;
   fix_state_enum: any;
@@ -38,6 +37,7 @@ export type Scalars = {
   severity_enum: any;
   timestamp: any;
   timestamptz: any;
+  user_role: 'organization_user'|'lunatrace_admin';
   uuid: any;
 };
 
@@ -111,19 +111,6 @@ export type _Text_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['_text']>;
   _neq?: InputMaybe<Scalars['_text']>;
   _nin?: InputMaybe<Array<Scalars['_text']>>;
-};
-
-/** Boolean expression to compare columns of type "_user_role". All fields are combined with logical 'AND'. */
-export type _User_Role_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['_user_role']>;
-  _gt?: InputMaybe<Scalars['_user_role']>;
-  _gte?: InputMaybe<Scalars['_user_role']>;
-  _in?: InputMaybe<Array<Scalars['_user_role']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']>;
-  _lt?: InputMaybe<Scalars['_user_role']>;
-  _lte?: InputMaybe<Scalars['_user_role']>;
-  _neq?: InputMaybe<Scalars['_user_role']>;
-  _nin?: InputMaybe<Array<Scalars['_user_role']>>;
 };
 
 /** columns and relationships of "builds" */
@@ -4696,6 +4683,19 @@ export enum Topics_Update_Column {
   UpdatedAt = 'updated_at'
 }
 
+/** Boolean expression to compare columns of type "user_role". All fields are combined with logical 'AND'. */
+export type User_Role_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['user_role']>;
+  _gt?: InputMaybe<Scalars['user_role']>;
+  _gte?: InputMaybe<Scalars['user_role']>;
+  _in?: InputMaybe<Array<Scalars['user_role']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['user_role']>;
+  _lte?: InputMaybe<Scalars['user_role']>;
+  _neq?: InputMaybe<Scalars['user_role']>;
+  _nin?: InputMaybe<Array<Scalars['user_role']>>;
+};
+
 /**
  * LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.)
  *
@@ -4711,7 +4711,7 @@ export type Users = {
   kratos_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   kratos_identity?: Maybe<Identities>;
-  roles: Scalars['_user_role'];
+  role: Scalars['user_role'];
 };
 
 /** order by aggregate values of table "users" */
@@ -4731,7 +4731,7 @@ export type Users_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_identity?: InputMaybe<Identities_Bool_Exp>;
-  roles?: InputMaybe<_User_Role_Comparison_Exp>;
+  role?: InputMaybe<User_Role_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "users" */
@@ -4798,7 +4798,7 @@ export type Users_Order_By = {
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
   kratos_identity?: InputMaybe<Identities_Order_By>;
-  roles?: InputMaybe<Order_By>;
+  role?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: users */
@@ -4817,7 +4817,7 @@ export enum Users_Select_Column {
   /** column name */
   KratosId = 'kratos_id',
   /** column name */
-  Roles = 'roles'
+  Role = 'role'
 }
 
 /** input type for updating data in table "users" */
@@ -5557,12 +5557,12 @@ export type GetProjectIdFromGitUrlQueryVariables = Exact<{
 
 export type GetProjectIdFromGitUrlQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any } }> };
 
-export type GetUserRolesQueryVariables = Exact<{
+export type GetUserRoleQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
 }>;
 
 
-export type GetUserRolesQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', roles: any, id: any }> };
+export type GetUserRoleQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', role: any, id: any }> };
 
 export type GetUsersProjectsQueryVariables = Exact<{
   user_id: Scalars['uuid'];
@@ -5786,10 +5786,10 @@ export const GetProjectIdFromGitUrlDocument = gql`
   }
 }
     `;
-export const GetUserRolesDocument = gql`
-    query GetUserRoles($kratos_id: uuid) {
+export const GetUserRoleDocument = gql`
+    query GetUserRole($kratos_id: uuid) {
   users(where: {kratos_id: {_eq: $kratos_id}}) {
-    roles
+    role
     id
   }
 }
@@ -6040,8 +6040,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetProjectIdFromGitUrl(variables?: GetProjectIdFromGitUrlQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectIdFromGitUrlQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetProjectIdFromGitUrlQuery>(GetProjectIdFromGitUrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectIdFromGitUrl', 'query');
     },
-    GetUserRoles(variables?: GetUserRolesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRolesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetUserRolesQuery>(GetUserRolesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserRoles', 'query');
+    GetUserRole(variables?: GetUserRoleQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRoleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUserRoleQuery>(GetUserRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserRole', 'query');
     },
     GetUsersProjects(variables: GetUsersProjectsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUsersProjectsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUsersProjectsQuery>(GetUsersProjectsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUsersProjects', 'query');

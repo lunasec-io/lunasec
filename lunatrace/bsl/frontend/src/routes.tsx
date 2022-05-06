@@ -16,7 +16,7 @@ import { RouteObject } from 'react-router';
 
 import { RouteGuard } from './components/auth/RouteGuard';
 import MainLayout from './layouts/Main';
-import { BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
+import { AdminDashboard, BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
 import { AuthError } from './pages/auth/Error';
 import { HomePage } from './pages/homepage/Home';
 import { ProjectCreate } from './pages/project/Create';
@@ -89,6 +89,14 @@ export const routes: RouteObject[] = [
             ),
           },
         ],
+      },
+      {
+        path: 'admin',
+        element: (
+          <RouteGuard>
+            <AdminDashboard />
+          </RouteGuard>
+        ),
       },
       { path: 'auth', children: [{ path: 'error', element: <AuthError /> }] },
       {

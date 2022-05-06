@@ -19,7 +19,9 @@ import { validate as validateUUID } from 'uuid';
 
 import { getHasuraConfig } from '../config';
 import { hasura } from '../hasura-api';
-import { newResult } from '../utils/errors';
+import { Scalars } from '../hasura-api/generated';
+import { MaybeError } from '../types/util';
+import { errorResponse, newResult } from '../utils/errors';
 import { parsePsqlStringArray } from '../utils/json-utils';
 import { jwtMiddleware } from '../utils/jwt-middleware';
 import { log } from '../utils/log';
@@ -34,16 +36,11 @@ lookupAccessTokenRouter.get('/internal/auth/lookup-project-access-token', cliAut
 lookupAccessTokenRouter.get('/internal/auth/lookup-static-access-token', serviceAuthorizer);
 lookupAccessTokenRouter.post('/internal/auth/impersonate-as-admin', jwtMiddleware, impersonateAsAdmin);
 
-interface ErrorResponse {
-  error: true;
-  message: string;
-}
-
-function validateUUIDValue(value: any): ErrorResponse | { error: false; token: string } {
+function validateUUIDValue(value: any): MaybeError<string> {
   if (typeof value !== 'string') {
     return {
       error: true,
-      message: `Invalid Access Token specified in ${value} header`,
+      msg: `Invalid Access Token specified in ${value} header`,
     };
   }
 
@@ -52,22 +49,22 @@ function validateUUIDValue(value: any): ErrorResponse | { error: false; token: s
   if (!validateUUID(token)) {
     return {
       error: true,
-      message: `Invalid Access Token specified in ${value} header`,
+      msg: `Invalid Access Token specified in ${value} header`,
     };
   }
 
   return {
     error: false,
-    token: token,
+    res: token,
   };
 }
 
-function parseRequestTokenHeader(headerName: string, req: Request): ErrorResponse | { error: false; token: string } {
+function parseRequestTokenHeader(headerName: string, req: Request): MaybeError<string> {
   const tokenHeader = req.header(headerName);
   if (!tokenHeader) {
     return {
       error: true,
-      message: `Missing Access Token in ${headerName} header`,
+      msg: `Missing Access Token in ${headerName} header`,
     };
   }
   return validateUUIDValue(tokenHeader);
@@ -75,7 +72,7 @@ function parseRequestTokenHeader(headerName: string, req: Request): ErrorRespons
 
 function generateErrorResponse(res: Response, errorMessage: string, statusCode = 500) {
   res.status(statusCode);
-  res.send(JSON.stringify({ error: true, message: errorMessage }));
+  res.send(errorResponse(errorMessage));
 }
 
 // Oathkeeper calls this when requests from the CLI come through the gateway.. We append this data here just for the action
@@ -84,10 +81,10 @@ export async function cliAuthorizer(req: Request, res: Response): Promise<void> 
   const parsedRequest = parseRequestTokenHeader('X-LunaTrace-Access-Token', req);
 
   if (parsedRequest.error) {
-    return generateErrorResponse(res, parsedRequest.message);
+    return generateErrorResponse(res, parsedRequest.msg);
   }
 
-  const hasuraRes = await hasura.GetAuthDataFromProjectToken({ access_token: parsedRequest.token });
+  const hasuraRes = await hasura.GetAuthDataFromProjectToken({ access_token: parsedRequest.res });
   if (!hasuraRes.project_access_tokens?.[0]) {
     return generateErrorResponse(res, 'Invalid Access Token specified in X-LunaTrace-Access-Token header', 401);
   }
@@ -99,7 +96,7 @@ export async function cliAuthorizer(req: Request, res: Response): Promise<void> 
     extra: {
       project_uuid: projectData.project.id,
       builds: builds,
-      access_token: parsedRequest.token,
+      access_token: parsedRequest.res,
     },
   });
   return;
@@ -110,11 +107,11 @@ export function serviceAuthorizer(req: Request, res: Response): void {
   const parsedRequest = parseRequestTokenHeader('X-LunaTrace-Access-Token', req);
 
   if (parsedRequest.error) {
-    return generateErrorResponse(res, parsedRequest.message);
+    return generateErrorResponse(res, parsedRequest.msg);
   }
 
   // TODO: Make this read from Secrets Manager instead.
-  if (!parsedRequest.token || parsedRequest.token !== hasuraConfig.staticAccessToken) {
+  if (!parsedRequest.res || parsedRequest.res !== hasuraConfig.staticAccessToken) {
     return generateErrorResponse(res, 'Invalid Access Token specified in X-LunaTrace-Access-Token header', 401);
   }
 
@@ -123,8 +120,6 @@ export function serviceAuthorizer(req: Request, res: Response): void {
   });
   return;
 }
-
-type UserRole = 'organization_user' | 'lunatrace_admin';
 
 export async function impersonateAsAdmin(req: Request, res: Response): Promise<void> {
   const impersonateHeader = 'X-Lunatrace-Impersonate-User-Id';
@@ -151,42 +146,44 @@ export async function impersonateAsAdmin(req: Request, res: Response): Promise<v
     kratos_id: kratosUserId,
   });
 
-  const parsedRequest = validateUUIDValue(impersonateUserIdHeader);
+  const parsedRequest = validateUUIDValue(impersonateUserId);
   if (parsedRequest.error) {
-    logger.info(parsedRequest.message);
-    res.send(req.body);
-    return;
-  }
-
-  const userToImpersonate = parsedRequest.token;
-
-  const userRoles = await catchError(
-    hasura.GetUserRoles({
-      kratos_id: kratosUserId,
-    })
-  );
-
-  if (threwError(userRoles)) {
-    logger.error('unable to get roles for user');
-    res.send(req.body);
-    return;
-  }
-
-  if (userRoles.users.length !== 1) {
-    logger.error('did not find exactly one user for uuid', {
-      users: userRoles.users,
+    logger.info('unable to validate header', {
+      impersonateHeader,
     });
     res.send(req.body);
     return;
   }
 
-  const user = userRoles.users[0];
-  const roles = user.roles as UserRole[];
+  const userToImpersonate = parsedRequest.res;
+
+  const userRole = await catchError(
+    hasura.GetUserRole({
+      kratos_id: kratosUserId,
+    })
+  );
+
+  if (threwError(userRole)) {
+    logger.error('unable to get role for user');
+    res.send(req.body);
+    return;
+  }
+
+  if (userRole.users.length !== 1) {
+    logger.error('did not find exactly one user for uuid', {
+      users: userRole.users,
+    });
+    res.send(req.body);
+    return;
+  }
+
+  const user = userRole.users[0];
+  const role = user.role;
 
   // verify that the user performing this request is a lunatrace_admin
-  if (!roles.some((r) => r === 'lunatrace_admin')) {
+  if (role !== 'lunatrace_admin') {
     logger.info('user is not admin', {
-      roles,
+      role,
     });
     res.send(req.body);
     return;

@@ -1,4 +1,4 @@
-query GetSidebarInfo {
+query GetSidebarInfo($users_filter: users_bool_exp = {}) {
     projects(order_by: {name: asc}) {
         name
         id
@@ -26,5 +26,10 @@ query GetSidebarInfo {
                 build_number
             }
         }
+    }
+
+    users(where: $users_filter) {
+        role
+        id
     }
 }

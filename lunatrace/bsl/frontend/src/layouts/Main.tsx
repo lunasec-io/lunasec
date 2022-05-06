@@ -25,13 +25,19 @@ import Sidebar from '../components/sidebar/Sidebar';
 import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import useAppDispatch from '../hooks/useAppDispatch';
 import useAppSelector from '../hooks/useAppSelector';
-import { selectIsAuthenticated, setConfirmedUnauthenticated, setSession } from '../store/slices/authentication';
+import {
+  selectIsAuthenticated,
+  selectUserId,
+  setConfirmedUnauthenticated,
+  setSession,
+} from '../store/slices/authentication';
 import { userHasAnyOrganizations } from '../utils/organizations';
 import oryClient from '../utils/ory-client';
 
 const MainLayout: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const userId = useAppSelector(selectUserId);
   // TODO move this somewhere more else
   useEffect(() => {
     oryClient
@@ -65,7 +71,7 @@ const MainLayout: React.FunctionComponent = (props) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      void trigger();
+      void trigger({ users_filter: { kratos_id: { _eq: userId } } });
     }
   }, [isAuthenticated]);
 

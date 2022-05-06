@@ -22,7 +22,7 @@ select_permissions:
     - github_node_id
     - id
     - kratos_id
-    - roles
+    - role
     filter: {}
   role: service
 - permission:
@@ -31,7 +31,7 @@ select_permissions:
     - github_node_id
     - id
     - kratos_id
-    - roles
+    - role
     filter:
       _or:
       - kratos_id:
@@ -44,7 +44,7 @@ select_permissions:
             _and:
             - kratos_id:
                 _eq: X-Hasura-User-Id
-            - roles:
+            - role:
                 _eq: lunatrace_admin
   role: user
 update_permissions:

@@ -15,14 +15,20 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
 import { GraphQLClient } from 'graphql-request';
 
+import { impersonateUserHeader } from '../constants/headers';
+
 // import { ManifestDocument, ManifestSubscription, ManifestSubscriptionVariables } from './generated';
 
+const impersonateId = localStorage.getItem(impersonateUserHeader);
+const headers: Record<string, string> = impersonateId ? { [impersonateUserHeader]: impersonateId } : {};
+
 // This is the base API that is consumed by the graphql codegen
-export const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_URL || 'http://localhost:4455/v1/graphql');
+export const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_URL || 'http://localhost:4455/v1/graphql', {
+  headers,
+});
 
 // highlight-start
 export const api = createApi({
   baseQuery: graphqlRequestBaseQuery({ client }),
   endpoints: () => ({}),
 });
-// client.setHeader('X-LunaTrace-Impersonate-User-Id', '');
