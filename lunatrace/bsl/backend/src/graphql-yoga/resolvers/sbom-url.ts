@@ -21,7 +21,6 @@ import { QueryResolvers } from '../generated-resolver-types';
 
 import { throwIfUnauthenticated } from './auth-helpers';
 import { checkProjectIsAuthorized } from './presign-manifest-upload';
-import { getAuthorizedBuilds } from './presign-sbom-upload';
 
 type SBOMURLResolverT = NonNullable<QueryResolvers['SBOMURL']>;
 
