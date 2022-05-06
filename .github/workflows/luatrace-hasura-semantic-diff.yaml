@@ -27,7 +27,7 @@ jobs:
           #echo '*.yml diff=dyff' >> .gitattributes
           #echo '*.yaml diff=dyff' >> .gitattributes
           
-          git config --local diff.yq.command 'yq_compare() { yq -P compare "$2" "$5"; }; yq_compare'
+          git config --local diff.yq.command 'yq_compare() { yq -P compare "$2" "$5" || true; }; yq_compare'
           echo '*.yml diff=yq' >> .gitattributes
           echo '*.yaml diff=yq' >> .gitattributes
 
@@ -46,7 +46,7 @@ jobs:
           <details>
             <summary>Click to expand!</summary>
           
-          \`\`\`
+          \`\`\`diff
           $(cat diff.txt)
           \`\`\`
           </details>
