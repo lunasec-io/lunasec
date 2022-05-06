@@ -56,9 +56,9 @@ npm install -g smee-client
 
 ### Setup AWS Dependencies
 
-From `$REPO_ROOT/lunatrace/bsl/backend-cdk` folder, you'll need to run the following:
+From `$REPO_ROOT/lunatrace/bsl/backend-cdk` folder, you'll need to run the following. Replace YOUR_USERNAME with your user.
 ```sh
-DEVELOPMENT=true yarn run cdk deploy
+DEV_USER=YOUR_USERNAME yarn run dev:cdk:deploy
 ```
 
 That will run a real AWS deployment of the "dev" resources required. Once it finished, you should see something like:
@@ -68,14 +68,14 @@ That will run a real AWS deployment of the "dev" resources required. Once it fin
 
 ✨  Deployment time: 180.43s
 
-Outputs:
-lunatrace-EtlStorage.ManifestBucketName = lunatrace-etlstorage-manifestbucket56c4asdf-5sxtasdfk1cv
-lunatrace-EtlStorage.ProcessManifestProcessingQueueName = lunatrace-EtlStorage-ProcessManifestProcessingQueue5A5F1DB3-ZP13rw2kLjIf
-lunatrace-EtlStorage.ProcessSbomProcessingQueueName = lunatrace-EtlStorage-ProcessSbomProcessingQueueA1A1FE19-EGIEef9a3zq8
-lunatrace-EtlStorage.SbomBucketName = lunatrace-etlstorage-sbombucket9670fef1-6yj5oftmc61vq
-
+lunatrace-alex-EtlStorage.ManifestBucketName = lunatrace-alex-etlstorage-manifestbucket46c412a5-1b0kc5cys81er
+lunatrace-alex-EtlStorage.ProcessManifestProcessingQueueName = lunatrace-alex-EtlStorage-ProcessManifestProcessingQueue7A1F1CB2-BWVszydikZnB
+lunatrace-alex-EtlStorage.ProcessRepositoryProcessingQueueName = lunatrace-alex-EtlStorage-ProcessRepositoryProcessingQueueD69CAAE0-ma9VglOAlgiF
+lunatrace-alex-EtlStorage.ProcessSbomProcessingQueueName = lunatrace-alex-EtlStorage-ProcessSbomProcessingQueueA3A9FE69-6CG55qoQkM7q
+lunatrace-alex-EtlStorage.ProcessWebhookProcessingQueueName = lunatrace-alex-EtlStorage-ProcessWebhookProcessingQueue475F8047-ZzRXj42PsJAZ
+lunatrace-alex-EtlStorage.SbomBucketName = lunatrace-alex-etlstorage-sbombucket8550fee8-1drqtwb7yf2dg
 Stack ARN:
-arn:aws:cloudformation:us-west-2:1234567890:stack/lunatrace-EtlStorage/asdf5ee5-cd11-22ec-82c9-5264031fasdf
+arn:aws:cloudformation:us-west-2:134071937287:stack/lunatrace-alex-EtlStorage/4655a320-cb37-11ec-a2b1-02772921f86f
 
 ✨  Total time: 184.84s
 ```
@@ -83,10 +83,12 @@ arn:aws:cloudformation:us-west-2:1234567890:stack/lunatrace-EtlStorage/asdf5ee5-
 You'll need to format those values into an env file at `$REPO/lunatrace/dev-cli/.env.dev` that looks like:
 
 ```env
-S3_MANIFEST_BUCKET="lunatrace-etlstorage-manifestbucket56c4asdf-5sxtasdfk1cv"
-PROCESS_MANIFEST_QUEUE="lunatrace-EtlStorage-ProcessManifestProcessingQueue5A5F1DB3-ZP13rw2kLjIf"
-PROCESS_SBOM_QUEUE="lunatrace-EtlStorage-ProcessSbomProcessingQueueA1A1FE19-EGIEef9a3zq8"
-S3_SBOM_BUCKET="lunatrace-etlstorage-sbombucket9670fef1-6yj5oftmc61vq"
+S3_SBOM_BUCKET=lunatrace-alex-etlstorage-sbombucket8550fee8-1drqtwb7yf2dg
+S3_MANIFEST_BUCKET=lunatrace-alex-etlstorage-manifestbucket46c412a5-1b0kc5cys81er
+PROCESS_WEBHOOK_QUEUE=lunatrace-alex-EtlStorage-ProcessWebhookProcessingQueue475F8047-ZzRXj42PsJAZ
+PROCESS_REPOSITORY_QUEUE=lunatrace-alex-EtlStorage-ProcessRepositoryProcessingQueueD69CAAE0-ma9VglOAlgiF
+PROCESS_MANIFEST_QUEUE=lunatrace-alex-EtlStorage-ProcessManifestProcessingQueue7A1F1CB2-BWVszydikZnB
+PROCESS_SBOM_QUEUE=lunatrace-alex-EtlStorage-ProcessSbomProcessingQueueA3A9FE69-6CG55qoQkM7q
 ```
 
 ### Running `tmuxp`
@@ -118,7 +120,8 @@ We use Hasura and Kratos, so there will be a few incantations required to make t
 #### Kratos (do this first):
 
 ```sh
-sudo docker exec -it $(sudo docker ps | grep kratos | awk '{print $1}') /usr/bin/kratos migrate sql /config/config.yaml migrate sql -e --yes
+cd bsl
+sudo docker-compose exec kratos /usr/bin/kratos migrate sql /config/config.yaml migrate sql -e --yes
 ```
 
 That's a bit of a magical command but... it's basically just finding the Kratos Docker container ID and then running the
@@ -129,17 +132,27 @@ will ensure that your Kratos version is always in sync with the Docker version._
 
 #### Hasura (second):
 
-From the `bsl/hasura` folder run...
+Run...
 
 ```sh
-hasura migrate apply
+cd bsl/hasura
 hasura metadata apply
 hasura metadata reload
+hasura migrate apply
 ```
 
 Those should work and pull up the whole DB. Once that's done you should be able to pull up the Hasura console either
 by running `hasura console` or going to `http://localhost:9695/`. This will show you the GraphQL server and an admin
 dashboard for the database.
+
+#### Frontend
+
+To set up the frontend, pull the theme submodule and compile the CSS:
+```sh
+cd bsl/frontend
+yarn run sass:pull
+yarn run sass:build
+```
 
 ### Re-run everything
 
