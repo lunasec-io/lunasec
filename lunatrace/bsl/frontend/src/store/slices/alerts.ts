@@ -28,7 +28,7 @@ interface AlertsState {
 
 const initialState = { alerts: {} } as AlertsState;
 
-const alertsSlice = createSlice({
+export const alertsSlice = createSlice({
   name: 'alerts',
   initialState,
   reducers: {

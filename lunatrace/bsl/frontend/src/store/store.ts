@@ -16,14 +16,14 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 
 import appApi, { rtkQueryErrorLogger } from '../api';
 
-import { alertsReducer } from './slices/alerts';
+import { alertsSlice } from './slices/alerts';
 import { authSlice } from './slices/authentication';
 
 export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
     [appApi.reducerPath]: appApi.reducer,
-    alerts: alertsReducer,
+    alerts: alertsSlice.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     const middleware = getDefaultMiddleware();

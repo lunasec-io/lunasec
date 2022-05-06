@@ -53,6 +53,7 @@ function getGithubOrgIdsFromApiResponse(userId: string, userGithubOrgs: GetUserO
   ];
 }
 
+// TODO: THIS IS DEPRECATED AND NOT IN USE ANYWHERE, just left here for reference or in case we need it to manually fix something from a failed webhook
 export async function authUserToOrgs(res: Response, userId: string) {
   const kratosResponse = await getGithubAccessTokenFromKratos(userId);
   if (kratosResponse.error) {

@@ -69,7 +69,8 @@ const MainLayout: React.FunctionComponent = (props) => {
     }
   }, [isAuthenticated]);
 
-  const setupWizardOpen = !userHasAnyOrganizations(data);
+  // TODO: Move this to its own provider so that it makes sense, this shouldn't live in layout
+  const setupWizardOpen = !userHasAnyOrganizations(data) && isAuthenticated;
 
   return (
     <React.Fragment>

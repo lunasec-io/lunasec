@@ -18,10 +18,11 @@ import {
   SubmitSelfServiceLoginFlowBody,
   SubmitSelfServiceRegistrationFlowBody,
 } from '@ory/kratos-client';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { NavigateFunction } from 'react-router-dom';
 
+import api from '../../api';
 import { createLogoutHandler } from '../../hooks/createLogoutHandler';
 import { handleFlowError } from '../../utils/handleGetFlowError';
 import oryClient from '../../utils/ory-client';
@@ -30,7 +31,6 @@ import { AppThunk, RootState } from '../store';
 export interface AuthState {
   confirmedUnauthenticated: boolean;
   session: null | Session;
-
   loginFlow: SelfServiceLoginFlow | undefined;
   registerFlow: SelfServiceRegistrationFlow | undefined;
 }
@@ -38,7 +38,6 @@ export interface AuthState {
 const initialState: AuthState = {
   confirmedUnauthenticated: false,
   session: null,
-
   loginFlow: undefined,
   registerFlow: undefined,
 };
@@ -82,7 +81,7 @@ export const selectIsAuthenticated = (state: RootState) => state.auth.session !=
 export const selectSession = (state: RootState) => state.auth.session;
 export const selectLoginFlow = (state: RootState) => state.auth.loginFlow;
 export const selectRegisterFlow = (state: RootState) => state.auth.registerFlow;
-export const selectUserId = (state: RootState) => state.auth.session?.identity.id;
+export const selectKratosId = (state: RootState) => state.auth.session?.identity.id;
 export const selectConfirmedUnauthenticated = (state: RootState) => state.auth.confirmedUnauthenticated;
 
 export const login =
