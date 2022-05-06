@@ -16,18 +16,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: chrisdickinson/setup-yq@latest
-
-      - name: "Install Dyff"
+      - name: "Install yq"
         run: |-
-          # install dyff
-          curl --silent --location https://git.io/JYfAY | bash
+          mkdir -p $GITHUB_WORKSPACE/bin
+          export VERSION=v4.2.0
+          export BINARY=yq_linux_amd64
+          wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY}.tar.gz -O - |\
+          tar xz && mv ${BINARY} $GITHUB_WORKSPACE/bin/
+          export PATH="$GITHUB_WORKSPACE/bin/:$PATH"
           
-          git config --local diff.dyff.command 'dyff_between() { dyff --color off between -i --omit-header "$2" "$5"; }; dyff_between'
-          #echo '*.yml diff=dyff' >> .gitattributes
-          #echo '*.yaml diff=dyff' >> .gitattributes
-          
-          git config --local diff.yq.command 'yq_compare() { yq -P compare "$2" "$5" || true; }; yq_compare'
+          git config --local diff.yq.command 'yq_compare() { diff <(yq -P "sort_keys(..)" "$2") <(yq -P "sort_keys(..)" "$5") || true; }; yq_compare'
           echo '*.yml diff=yq' >> .gitattributes
           echo '*.yaml diff=yq' >> .gitattributes
 
