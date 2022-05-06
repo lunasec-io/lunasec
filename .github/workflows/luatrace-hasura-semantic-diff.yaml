@@ -31,7 +31,9 @@ jobs:
       - name: "Diff"
         run: |-          
           echo "## Hasura Semantic Diff" >> comment-body.txt
+          echo '```' >> comment-body.txt
           git diff --ext-diff origin/${{github.event.pull_request.base.ref}} lunatrace/bsl/hasura/ >> comment-body.txt 
+          echo '```' >> comment-body.txt
 
       - id: get-comment-body
         run: |
