@@ -76,7 +76,7 @@ export const BuildDetails: React.FunctionComponent = () => {
 
     return (
       <>
-        <Helmet title={`#${build.build_number} Build`} />
+        <Helmet title={`Build #${build.build_number}`} />
         <Row>
           <Col xs="3">
             <NavLink to="..">

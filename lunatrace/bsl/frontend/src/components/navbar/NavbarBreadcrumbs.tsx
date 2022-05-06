@@ -77,7 +77,7 @@ const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponen
   }
 
   const buildNumber = currentProject.builds.filter((b) => b.id === crumbProps.match.params.build_id)[0]?.build_number;
-  return <span>Build # {buildNumber}</span>;
+  return <span>Build #{buildNumber}</span>;
 };
 
 const VulnBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
