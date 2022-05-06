@@ -10,32 +10,36 @@
     forward_client_headers: true
   comment: ""
   permissions:
-  - role: cli
-    definition:
-      schema: |-
-        schema  { query: Query }
-        scalar JSON
-        scalar UUID
-        type Query { presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
-        }
-        type SbomUploadUrlOutput { error: Boolean!
-          uploadUrl: UploadUrl
-        }
-        type UploadUrl { headers: JSON!
-          url: String!
-        }
-  - role: user
-    definition:
-      schema: |-
-        schema  { query: Query mutation: Mutation }
-        scalar JSON
-        scalar UUID
-        type Mutation { presignManifestUpload(project_id: UUID!): PresignedUrlResponse
-        }
-        type PresignedUrlResponse { bucket: String!
-          headers: JSON!
-          key: String!
-          url: String!
-        }
-        type Query { fakeQueryToHackHasuraBeingABuggyMess: String
-        }
+    - role: cli
+      definition:
+        schema: |
+          scalar JSON
+          type Query {
+          	presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
+          }
+          type SbomUploadUrlOutput {
+          	error: Boolean!
+          	uploadUrl: UploadUrl
+          }
+          scalar UUID
+          type UploadUrl {
+          	headers: JSON!
+          	url: String!
+          }
+    - role: user
+      definition:
+        schema: |
+          scalar JSON
+          type Mutation {
+          	presignManifestUpload(project_id: UUID!): PresignedUrlResponse
+          }
+          type PresignedUrlResponse {
+          	bucket: String!
+          	headers: JSON!
+          	key: String!
+          	url: String!
+          }
+          type Query {
+          	fakeQueryToHackHasuraBeingABuggyMess: String
+          }
+          scalar UUID
