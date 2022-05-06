@@ -11,11 +11,11 @@
  * limitations under the License.
  *
  */
-import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import React, { useEffect } from 'react';
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import { Button, Container, Nav, Navbar } from 'react-bootstrap';
 import { BsMoon, BsSun } from 'react-icons/bs';
 
+import { impersonateUserHeader } from '../../constants/headers';
 import useAppSelector from '../../hooks/useAppSelector';
 import useSidebar from '../../hooks/useSidebar';
 import useTheme from '../../hooks/useTheme';
@@ -31,6 +31,7 @@ interface NavbarComponentProps {
 const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupWizardOpen }) => {
   const { isOpen, setIsOpen } = useSidebar();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const impersonateUserId = localStorage.getItem(impersonateUserHeader);
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
@@ -56,6 +57,11 @@ const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupW
     </span>
   );
 
+  const stopImpersonating = () => {
+    localStorage.setItem(impersonateUserHeader, '');
+    window.location.reload();
+  };
+
   return (
     <Navbar variant="light" expand="lg" className="navbar-bg">
       <Container fluid>
@@ -68,6 +74,7 @@ const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupW
             {theme === 'dark' ? <BsMoon size="30px" /> : <BsSun size="30px" />}
           </span>
           <NavbarUser />
+          {impersonateUserId && <Button onClick={stopImpersonating}>Stop Impersonating</Button>}
         </Nav>
       </Container>
     </Navbar>

@@ -25,7 +25,6 @@ export type Scalars = {
   Int: number;
   Float: number;
   _text: string;
-  _user_role: 'organization_user'|'lunatrace_admin';
   builds_source_type: 'cli'|'gui'|'pr';
   date: string;
   fix_state_enum: 'fixed'|'not-fixed'|'unknown';
@@ -35,6 +34,7 @@ export type Scalars = {
   severity_enum: string;
   timestamp: string;
   timestamptz: string;
+  user_role: 'organization_user'|'lunatrace_admin';
   uuid: string;
 };
 
@@ -116,19 +116,6 @@ export type _Text_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['_text']>;
   _neq?: InputMaybe<Scalars['_text']>;
   _nin?: InputMaybe<Array<Scalars['_text']>>;
-};
-
-/** Boolean expression to compare columns of type "_user_role". All fields are combined with logical 'AND'. */
-export type _User_Role_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['_user_role']>;
-  _gt?: InputMaybe<Scalars['_user_role']>;
-  _gte?: InputMaybe<Scalars['_user_role']>;
-  _in?: InputMaybe<Array<Scalars['_user_role']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']>;
-  _lt?: InputMaybe<Scalars['_user_role']>;
-  _lte?: InputMaybe<Scalars['_user_role']>;
-  _neq?: InputMaybe<Scalars['_user_role']>;
-  _nin?: InputMaybe<Array<Scalars['_user_role']>>;
 };
 
 /** columns and relationships of "builds" */
@@ -3651,6 +3638,19 @@ export enum Topics_Select_Column {
   UpdatedAt = 'updated_at'
 }
 
+/** Boolean expression to compare columns of type "user_role". All fields are combined with logical 'AND'. */
+export type User_Role_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['user_role']>;
+  _gt?: InputMaybe<Scalars['user_role']>;
+  _gte?: InputMaybe<Scalars['user_role']>;
+  _in?: InputMaybe<Array<Scalars['user_role']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['user_role']>;
+  _lte?: InputMaybe<Scalars['user_role']>;
+  _neq?: InputMaybe<Scalars['user_role']>;
+  _nin?: InputMaybe<Array<Scalars['user_role']>>;
+};
+
 /**
  * LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.)
  *
@@ -3666,7 +3666,7 @@ export type Users = {
   kratos_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   kratos_identity?: Maybe<Identities>;
-  roles: Scalars['_user_role'];
+  role: Scalars['user_role'];
 };
 
 /** order by aggregate values of table "users" */
@@ -3686,7 +3686,7 @@ export type Users_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_identity?: InputMaybe<Identities_Bool_Exp>;
-  roles?: InputMaybe<_User_Role_Comparison_Exp>;
+  role?: InputMaybe<User_Role_Comparison_Exp>;
 };
 
 /** order by max() on columns of table "users" */
@@ -3712,7 +3712,7 @@ export type Users_Order_By = {
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
   kratos_identity?: InputMaybe<Identities_Order_By>;
-  roles?: InputMaybe<Order_By>;
+  role?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "users" */
@@ -3726,7 +3726,7 @@ export enum Users_Select_Column {
   /** column name */
   KratosId = 'kratos_id',
   /** column name */
-  Roles = 'roles'
+  Role = 'role'
 }
 
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
@@ -4101,10 +4101,12 @@ export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; 
 
 export type SampleVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, name: string, namespace: string, record_source?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, created_at: any, description?: string | null, slug: string, data_source: string, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null, id: any, slug: string }> }> };
 
-export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetSidebarInfoQueryVariables = Exact<{
+  users_filter?: InputMaybe<Users_Bool_Exp>;
+}>;
 
 
-export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }> };
+export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }>, users: Array<{ __typename?: 'users', role: any, id: any }> };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -4382,7 +4384,7 @@ export const SampleVulnerabilitiesDocument = `
 }
     `;
 export const GetSidebarInfoDocument = `
-    query GetSidebarInfo {
+    query GetSidebarInfo($users_filter: users_bool_exp = {}) {
   projects(order_by: {name: asc}) {
     name
     id
@@ -4408,6 +4410,10 @@ export const GetSidebarInfoDocument = `
         build_number
       }
     }
+  }
+  users(where: $users_filter) {
+    role
+    id
   }
 }
     `;

@@ -22,7 +22,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { NavigateFunction } from 'react-router-dom';
 
+import { api } from '../../api/generated';
 import { createLogoutHandler } from '../../hooks/createLogoutHandler';
+import { ImpersonateUser } from '../../types/user';
 import { handleFlowError } from '../../utils/handleGetFlowError';
 import oryClient from '../../utils/ory-client';
 import { AppThunk, RootState } from '../store';

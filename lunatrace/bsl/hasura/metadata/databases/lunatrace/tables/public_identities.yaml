@@ -47,6 +47,17 @@ select_permissions:
     - id
     - nid
     filter:
-      id:
-        _eq: X-Hasura-User-Id
+      _or:
+      - id:
+          _eq: X-Hasura-User-Id
+      - _exists:
+          _table:
+            name: users
+            schema: public
+          _where:
+            _and:
+            - kratos_id:
+                _eq: X-Hasura-User-Id
+            - role:
+                _eq: lunatrace_admin
   role: user

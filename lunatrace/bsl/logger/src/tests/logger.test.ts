@@ -59,7 +59,7 @@ describe('LunaLogger', () => {
 
   describe('child logger', () => {
     it('appends any child additional fields', () => {
-      const childLogger = log.child({ child: 'field' });
+      const childLogger = log.child('child', { child: 'field' });
       childLogger.log('test');
       const output = consoleMock.mock.calls[0][0];
       parseAndCheck(output, 'child', 'field');
