@@ -19,25 +19,9 @@ analysis at build time with runtime tracking and the capability to automatically
 ## Development
 Hasura manages the GraphQl API and postgres database, found in the `./hasura` folder.
 
-### Using the Database
-To use PSQL console or for connecting other services to the db, use the connection string found in the docker-compose.yaml file,
-under the key `PG_DATABASE_URL`
+See `README_DEV_SETUP.md` for info on bringing up Hasura and Ory.
 
-#### Migrating the Database
-The database must be migrated before the app can run.  First, make sure the database is running by doing `sudo docker-compose up`.
-Install kratos CLI according to the docs: https://www.ory.sh/docs/kratos/install
-Migrate Kratos:
-```bash 
-cd bsl/ory/kratos
-export DSN='postgres://postgres:postgrespassword@localhost:5431/lunatrace'
-kratos -c config.yaml migrate sql -e --yes    
-```
-Now migrate hasura which depends on the tables created by kratos. Make sure kratos is running as part of the docker-compose
-```bash
-cd bsl/hasura
-hasura metadata apply
-hasura migrate apply
-```
+
 Do **not** use the Hasura "console" GUI for managing the database, either creating tables or modifying them.  Hasura produces
 low quality up migrations and broken down migrations that are not maintainable.  For pre-production, modify the existing init migration files.
 For production migration, use `hasura migrate create <name>` to scaffold manual migrations.
