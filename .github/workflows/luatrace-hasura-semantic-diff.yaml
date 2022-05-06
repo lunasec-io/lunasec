@@ -25,7 +25,7 @@ jobs:
           tar xz && mv ${BINARY} $GITHUB_WORKSPACE/bin/
           export PATH="$GITHUB_WORKSPACE/bin/:$PATH"
           
-          git config --local diff.yq.command 'yq_compare() { diff <(yq -P "sort_keys(..)" "$2") <(yq -P "sort_keys(..)" "$5") || true; }; yq_compare'
+          git config --local diff.yq.command 'yq_compare() { diff <(yq -I 2 -P "sort_keys(..)" "$2") <(yq -I 2 -P "sort_keys(..)" "$5") || true; }; yq_compare'
           echo '*.yml diff=yq' >> .gitattributes
           echo '*.yaml diff=yq' >> .gitattributes
 
