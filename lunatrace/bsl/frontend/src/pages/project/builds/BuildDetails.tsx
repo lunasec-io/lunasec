@@ -101,9 +101,13 @@ export const BuildDetails: React.FunctionComponent = () => {
                 {build.scans_aggregate.aggregate?.count !== 1 ? 's' : ''}
               </span>
             </h6>
-            <h6 style={{ textAlign: 'right' }}>
-              <span className="darker">Download SBOM {build.s3_url_signed}</span>
-            </h6>
+            {build.s3_url_signed ? (
+              <h6 style={{ textAlign: 'right' }}>
+                <span className="darker">
+                  <a href={build.s3_url_signed}>Download SBOM</a>
+                </span>
+              </h6>
+            ) : null}
           </Col>
           <Col xs="12" sm="3">
             <div className="build-git-info">
