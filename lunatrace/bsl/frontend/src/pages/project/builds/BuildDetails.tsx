@@ -102,7 +102,7 @@ export const BuildDetails: React.FunctionComponent = () => {
               </span>
             </h6>
             <h6 style={{ textAlign: 'right' }}>
-              <span className="darker">Download SBOM</span>
+              <span className="darker">Download SBOM {build.s3_url_signed}</span>
             </h6>
           </Col>
           <Col xs="12" sm="3">

@@ -10,25 +10,6 @@
     forward_client_headers: true
   comment: ""
   permissions:
-  - role: cli
-    definition:
-      schema: |-
-        schema  { query: Query }
-
-        scalar JSON
-
-        scalar UUID
-
-        type Query { presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
-        }
-
-        type SbomUploadUrlOutput { error: Boolean!
-          uploadUrl: UploadUrl
-        }
-
-        type UploadUrl { headers: JSON!
-          url: String!
-        }
   - role: user
     definition:
       schema: |-
@@ -48,4 +29,24 @@
         }
 
         type Query { fakeQueryToHackHasuraBeingABuggyMess: String
+          signS3Download(s3URL: String!): String
+        }
+  - role: cli
+    definition:
+      schema: |-
+        schema  { query: Query }
+
+        scalar JSON
+
+        scalar UUID
+
+        type Query { presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
+        }
+
+        type SbomUploadUrlOutput { error: Boolean!
+          uploadUrl: UploadUrl
+        }
+
+        type UploadUrl { headers: JSON!
+          url: String!
         }
