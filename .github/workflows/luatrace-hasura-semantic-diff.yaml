@@ -32,7 +32,7 @@ jobs:
         run: |-
           git diff --ext-diff origin/${{github.event.pull_request.base.ref}} lunatrace/bsl/hasura/ >> diff.txt
           
-          cat << EOF >> comment-body.txt
+          cat << "EOF" >> comment-body.txt
           ## Hasura Semantic Diff
           Hasura config files have changed. This comment shows which fields have changed ignoring formatting.
           
