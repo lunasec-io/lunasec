@@ -19,14 +19,7 @@ jobs:
       - uses: chrisdickinson/setup-yq@latest
 
       - name: "Install Dyff"
-        run: |-
-          # install dyff
-          curl --silent --location https://git.io/JYfAY | bash
-          
-          git config --local diff.dyff.command 'dyff_between() { dyff --color off between -i --omit-header "$2" "$5"; }; dyff_between'
-          #echo '*.yml diff=dyff' >> .gitattributes
-          #echo '*.yaml diff=dyff' >> .gitattributes
-          
+        run: |-   
           git config --local diff.yq.command 'yq_compare() { yq -P compare "$2" "$5" || true; }; yq_compare'
           echo '*.yml diff=yq' >> .gitattributes
           echo '*.yaml diff=yq' >> .gitattributes
