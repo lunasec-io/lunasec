@@ -16,6 +16,8 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: chrisdickinson/setup-yq@latest
+
       - name: "Install Dyff"
         run: |-
           # install dyff
