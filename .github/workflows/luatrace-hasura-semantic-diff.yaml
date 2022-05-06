@@ -18,12 +18,8 @@ jobs:
 
       - name: "Install Dyff"
         run: |-
-          mkdir -p $GITHUB_WORKSPACE/bin
-          export VERSION=v4.2.0
-          export BINARY=yq_linux_amd64
-          wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY}.tar.gz -O - |\
-          tar xz && mv ${BINARY} $GITHUB_WORKSPACE/bin/
-          export PATH="$GITHUB_WORKSPACE/bin/:$PATH"
+          # install dyff
+          curl --silent --location https://git.io/JYfAY | bash
           
           git config --local diff.dyff.command 'dyff_between() { dyff --color off between -i --omit-header "$2" "$5"; }; dyff_between'
           echo '*.yml diff=dyff' >> .gitattributes
