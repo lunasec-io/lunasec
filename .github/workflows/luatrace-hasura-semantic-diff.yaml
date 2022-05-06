@@ -30,7 +30,7 @@ jobs:
 
       - name: "Diff"
         run: |-
-          git diff -c --ext-diff origin/${{github.event.pull_request.base.ref}} lunatrace/bsl/hasura/ >> diff.txt
+          git diff --ext-diff origin/${{github.event.pull_request.base.ref}} lunatrace/bsl/hasura/ >> diff.txt
           sed -i '/./,$!d' diff.txt
           sed -i 's/^ //' diff.txt
           
