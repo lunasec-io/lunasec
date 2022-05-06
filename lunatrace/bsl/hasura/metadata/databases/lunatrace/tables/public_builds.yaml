@@ -27,6 +27,16 @@ array_relationships:
       table:
         name: scans
         schema: public
+remote_relationships:
+- definition:
+    hasura_fields:
+    - s3_url
+    remote_field:
+      signS3Download:
+        arguments:
+          s3URL: $s3_url
+    remote_schema: custom-backend-schema
+  name: s3_url_signed
 insert_permissions:
 - permission:
     backend_only: false
