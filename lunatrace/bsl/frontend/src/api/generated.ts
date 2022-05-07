@@ -2203,6 +2203,7 @@ export enum Projects_Update_Column {
 
 export type Query_Root = {
   __typename?: 'query_root';
+  SBOMURL?: Maybe<Scalars['String']>;
   /** An array relationship */
   builds: Array<Builds>;
   /** fetch data from the table: "builds" using primary key columns */
@@ -2260,7 +2261,6 @@ export type Query_Root = {
   scans_aggregate: Scans_Aggregate;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
-  signS3Download?: Maybe<Scalars['String']>;
   /** fetch data from the table: "topic_related_topics" */
   topic_related_topics: Array<Topic_Related_Topics>;
   /** fetch data from the table: "topic_related_topics" using primary key columns */
@@ -2285,6 +2285,11 @@ export type Query_Root = {
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** fetch data from the table: "vulnerability_packages" using primary key columns */
   vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
+};
+
+
+export type Query_RootSbomurlArgs = {
+  buildId: Scalars['uuid'];
 };
 
 
@@ -2485,11 +2490,6 @@ export type Query_RootScans_AggregateArgs = {
 
 export type Query_RootScans_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootSignS3DownloadArgs = {
-  s3URL: Scalars['String'];
 };
 
 
