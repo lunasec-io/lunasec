@@ -13,6 +13,7 @@
  */
 import React from 'react';
 import { RouteObject } from 'react-router';
+import { Navigate } from 'react-router-dom';
 
 import { RouteGuard } from './components/auth/RouteGuard';
 import MainLayout from './layouts/Main';
@@ -91,6 +92,12 @@ export const routes: RouteObject[] = [
         ],
       },
       { path: 'auth', children: [{ path: 'error', element: <AuthError /> }] },
+      // Login is handled by auth service, but we can still get here if the user hits back. Send those users back to
+      // the homepage.
+      {
+        path: 'login',
+        element: <Navigate to={'/'} />,
+      },
       {
         element: <p>404</p>, //doesnt work
       },
