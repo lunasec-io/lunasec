@@ -11,7 +11,12 @@
     - handler: anonymous # If the above cookie ins't found or fails, "Subject" becomes "Anonymous" in the below claims
   authorizer:
     handler: allow
+
   mutators:
+    - handler: hydrator
+      config:
+        api:
+          url: http://localhost:3002/internal/auth/hydrate-real-user-id
     - handler: id_token
       config:
         issuer_url: http://oathkeeper:4455/
@@ -19,13 +24,13 @@
         claims: |
           {
             "https://hasura.io/jwt/claims": {
-              "x-hasura-user-id": "{{ .Subject }}",          
+              "x-hasura-user-id": "{{ .Subject }}",
+              "x-hasura-real-user-id": "{{ .Extra.real_user_id }}",
               "x-hasura-access-token": "2883ad68-4940-461b-83f7-844b0604bb8c",  
               "x-hasura-allowed-roles": ["user"],
               "x-hasura-default-role": "user"
             }
           }
-
 - id: "ory:lunatrace:hasura:graphql:cli"
   upstream:
     preserve_host: true

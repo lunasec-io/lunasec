@@ -1,6 +1,6 @@
 query GetUserFromIdentity($id: uuid!) {
     identities_by_pk(id: $id) {
-        users {
+        user {
             id
         }
     }

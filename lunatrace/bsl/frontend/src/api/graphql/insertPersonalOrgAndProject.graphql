@@ -1,5 +1,5 @@
-mutation InsertPersonalProjectAndOrg($user_id: uuid!) {
-    insert_organizations_one(object: {name: "Personal", projects: {data: {name: "Personal Project"}}, organization_users: {data: {user_id: $user_id}}}) {
+mutation InsertPersonalProjectAndOrg {
+    insert_organizations_one(object: {name: "Personal", projects: {data: {name: "Personal Project"}}, organization_users: {data: {}}}) {
         id
     }
 }
