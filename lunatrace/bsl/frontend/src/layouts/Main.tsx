@@ -37,7 +37,6 @@ import oryClient from '../utils/ory-client';
 const MainLayout: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const userId = useAppSelector(selectUserId);
   // TODO move this somewhere more else
   useEffect(() => {
     oryClient
@@ -71,7 +70,7 @@ const MainLayout: React.FunctionComponent = (props) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      void trigger({ users_filter: { kratos_id: { _eq: userId } } });
+      void trigger();
     }
   }, [isAuthenticated]);
 

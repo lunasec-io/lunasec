@@ -16,11 +16,12 @@ import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
 import { GraphQLClient } from 'graphql-request';
 
 import { impersonateUserHeader } from '../constants/headers';
+import { getImpersonatedUser } from '../utils/users';
 
 // import { ManifestDocument, ManifestSubscription, ManifestSubscriptionVariables } from './generated';
 
-const impersonateId = localStorage.getItem(impersonateUserHeader);
-const headers: Record<string, string> = impersonateId ? { [impersonateUserHeader]: impersonateId } : {};
+const impersonatedUser = getImpersonatedUser();
+const headers: Record<string, string> = impersonatedUser ? { [impersonateUserHeader]: impersonatedUser.id } : {};
 
 // This is the base API that is consumed by the graphql codegen
 export const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_URL || 'http://localhost:4455/v1/graphql', {

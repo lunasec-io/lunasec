@@ -38,6 +38,11 @@ export type Scalars = {
   uuid: string;
 };
 
+export type AuthenticatedRepoCloneUrlOutput = {
+  __typename?: 'AuthenticatedRepoCloneUrlOutput';
+  url?: Maybe<Scalars['String']>;
+};
+
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 export type Boolean_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Boolean']>;
@@ -72,6 +77,12 @@ export type PresignedUrlResponse = {
   url: Scalars['String'];
 };
 
+export type SbomUploadUrlOutput = {
+  __typename?: 'SbomUploadUrlOutput';
+  error: Scalars['Boolean'];
+  uploadUrl?: Maybe<UploadUrl>;
+};
+
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 export type String_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['String']>;
@@ -103,6 +114,12 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
+};
+
+export type UploadUrl = {
+  __typename?: 'UploadUrl';
+  headers: Scalars['jsonb'];
+  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -673,6 +690,7 @@ export type Fix_State_Enum_Comparison_Exp = {
  */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
+  authenticated_clone_url?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
@@ -2216,11 +2234,11 @@ export enum Projects_Update_Column {
 
 export type Query_Root = {
   __typename?: 'query_root';
+  authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   /** An array relationship */
   builds: Array<Builds>;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
-  fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
   /** An aggregate relationship */
@@ -2255,6 +2273,7 @@ export type Query_Root = {
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
+  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -2297,6 +2316,11 @@ export type Query_Root = {
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** fetch data from the table: "vulnerability_packages" using primary key columns */
   vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
+};
+
+
+export type Query_RootAuthenticatedRepoCloneUrlArgs = {
+  repoGithubId: Scalars['Int'];
 };
 
 
@@ -2432,6 +2456,12 @@ export type Query_RootPackage_VersionsArgs = {
 
 export type Query_RootPackage_Versions_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootPresignSbomUploadArgs = {
+  buildId: Scalars['uuid'];
+  orgId: Scalars['uuid'];
 };
 
 
@@ -4080,7 +4110,7 @@ export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: {
 export type GetLunaTraceUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLunaTraceUsersQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', id: any, kratos_identity?: { __typename?: 'identities', traits: any } | null }> };
+export type GetLunaTraceUsersQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', id: any, kratos_id?: any | null, kratos_identity?: { __typename?: 'identities', traits: any } | null }> };
 
 export type GetManifestQueryVariables = Exact<{
   id?: InputMaybe<Scalars['uuid']>;
@@ -4094,7 +4124,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
+export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4106,7 +4136,7 @@ export type GetSidebarInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }>, users: Array<{ __typename?: 'users', role: any, id: any }> };
+export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }>, users: Array<{ __typename?: 'users', role: any, id: any, kratos_id?: any | null }> };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -4258,6 +4288,7 @@ export const GetLunaTraceUsersDocument = `
     query GetLunaTraceUsers {
   users {
     id
+    kratos_id
     kratos_identity {
       traits
     }
@@ -4290,6 +4321,9 @@ export const GetProjectDocument = `
       git_url
       github_id
       traits
+      authenticated_clone_url {
+        url
+      }
     }
     project_access_tokens {
       id
@@ -4414,6 +4448,7 @@ export const GetSidebarInfoDocument = `
   users(where: $users_filter) {
     role
     id
+    kratos_id
   }
 }
     `;

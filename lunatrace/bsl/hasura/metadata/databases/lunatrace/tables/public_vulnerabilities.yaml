@@ -1,95 +1,95 @@
 table:
-  name: vulnerabilities
   schema: public
+  name: vulnerabilities
 array_relationships:
-- name: findings
-  using:
-    foreign_key_constraint_on:
-      column: vulnerability_id
-      table:
-        name: findings
-        schema: public
-- name: ignored_vulnerabilities
-  using:
-    foreign_key_constraint_on:
-      column: vulnerability_id
-      table:
-        name: ignored_vulnerabilities
-        schema: public
-- name: related_vulnerabilities
-  using:
-    foreign_key_constraint_on:
-      column: vulnerability_slug
-      table:
-        name: related_vulnerabilities
-        schema: public
-- name: reverse_related_vulnerabilities
-  using:
-    foreign_key_constraint_on:
-      column: related_vulnerability_slug
-      table:
-        name: related_vulnerabilities
-        schema: public
-- name: vulnerability_packages
-  using:
-    foreign_key_constraint_on:
-      column: vuln_slug
-      table:
-        name: vulnerability_packages
-        schema: public
+  - name: findings
+    using:
+      foreign_key_constraint_on:
+        column: vulnerability_id
+        table:
+          schema: public
+          name: findings
+  - name: ignored_vulnerabilities
+    using:
+      foreign_key_constraint_on:
+        column: vulnerability_id
+        table:
+          schema: public
+          name: ignored_vulnerabilities
+  - name: related_vulnerabilities
+    using:
+      foreign_key_constraint_on:
+        column: vulnerability_slug
+        table:
+          schema: public
+          name: related_vulnerabilities
+  - name: reverse_related_vulnerabilities
+    using:
+      foreign_key_constraint_on:
+        column: related_vulnerability_slug
+        table:
+          schema: public
+          name: related_vulnerabilities
+  - name: vulnerability_packages
+    using:
+      foreign_key_constraint_on:
+        column: vuln_slug
+        table:
+          schema: public
+          name: vulnerability_packages
 insert_permissions:
-- permission:
-    backend_only: false
-    check: {}
-    columns:
-    - slug
-  role: service
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - slug
+      backend_only: false
 select_permissions:
-- permission:
-    allow_aggregations: true
-    columns:
-    - urls
-    - cvss_inferred
-    - cvss_exploitability_score
-    - cvss_impact_score
-    - cvss_score
-    - cvss_version
-    - data_source
-    - description
-    - name
-    - namespace
-    - record_source
-    - slug
-    - created_at
-    - severity
-    - id
-    - topic_id
-    filter: {}
-  role: service
-- permission:
-    columns:
-    - id
-    - name
-    - created_at
-    - namespace
-    - data_source
-    - record_source
-    - severity
-    - cvss_version
-    - cvss_score
-    - cvss_exploitability_score
-    - cvss_impact_score
-    - cvss_inferred
-    - description
-    - slug
-    - topic_id
-    - urls
-    filter: {}
-  role: user
+  - role: service
+    permission:
+      columns:
+        - urls
+        - cvss_inferred
+        - cvss_exploitability_score
+        - cvss_impact_score
+        - cvss_score
+        - cvss_version
+        - data_source
+        - description
+        - name
+        - namespace
+        - record_source
+        - slug
+        - created_at
+        - severity
+        - id
+        - topic_id
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+        - id
+        - name
+        - created_at
+        - namespace
+        - data_source
+        - record_source
+        - severity
+        - cvss_version
+        - cvss_score
+        - cvss_exploitability_score
+        - cvss_impact_score
+        - cvss_inferred
+        - description
+        - slug
+        - topic_id
+        - urls
+      filter: {}
 update_permissions:
-- permission:
-    check: null
-    columns:
-    - slug
-    filter: {}
-  role: service
+  - role: service
+    permission:
+      columns:
+        - slug
+      filter: {}
+      check: null

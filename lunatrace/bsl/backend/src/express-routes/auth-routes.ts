@@ -193,8 +193,6 @@ export async function impersonateAsAdmin(req: Request, res: Response): Promise<v
     userToImpersonate,
   });
 
-  console.log(JSON.stringify(req.body, null, 2));
-
   res.send({
     ...req.body,
     extra: {

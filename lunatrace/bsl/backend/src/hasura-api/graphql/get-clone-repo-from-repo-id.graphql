@@ -1,0 +1,11 @@
+query GetCloneRepoInfoFromRepoId($where: github_repositories_bool_exp) {
+  github_repositories(where: $where) {
+    git_url
+    project {
+      id
+      organization {
+        installation_id
+      }
+    }
+  }
+}

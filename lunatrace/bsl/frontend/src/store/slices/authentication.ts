@@ -18,15 +18,15 @@ import {
   SubmitSelfServiceLoginFlowBody,
   SubmitSelfServiceRegistrationFlowBody,
 } from '@ory/kratos-client';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { NavigateFunction } from 'react-router-dom';
 
 import { api } from '../../api/generated';
 import { createLogoutHandler } from '../../hooks/createLogoutHandler';
-import { ImpersonateUser } from '../../types/user';
 import { handleFlowError } from '../../utils/handleGetFlowError';
 import oryClient from '../../utils/ory-client';
+import { getImpersonatedUser, sidebarDataIsForAdmin } from '../../utils/users';
 import { AppThunk, RootState } from '../store';
 
 export interface AuthState {
@@ -86,6 +86,20 @@ export const selectLoginFlow = (state: RootState) => state.auth.loginFlow;
 export const selectRegisterFlow = (state: RootState) => state.auth.registerFlow;
 export const selectUserId = (state: RootState) => state.auth.session?.identity.id;
 export const selectConfirmedUnauthenticated = (state: RootState) => state.auth.confirmedUnauthenticated;
+
+const sidebarInfoResult = api.endpoints.GetSidebarInfo.select();
+export const userIsAdmin = (state: RootState) => {
+  if (getImpersonatedUser() !== null) {
+    return true;
+  }
+
+  const userId = selectUserId(state);
+  if (!userId) {
+    return false;
+  }
+  const sidebarData = sidebarInfoResult(state).data;
+  return sidebarDataIsForAdmin(userId, sidebarData);
+};
 
 export const login =
   (navigate: NavigateFunction, values: SubmitSelfServiceLoginFlowBody): AppThunk =>

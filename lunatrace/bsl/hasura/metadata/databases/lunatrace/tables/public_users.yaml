@@ -1,59 +1,59 @@
 table:
-  name: users
   schema: public
+  name: users
 object_relationships:
-- name: kratos_identity
-  using:
-    foreign_key_constraint_on: kratos_id
+  - name: kratos_identity
+    using:
+      foreign_key_constraint_on: kratos_id
 insert_permissions:
-- permission:
-    backend_only: false
-    check: {}
-    columns:
-    - github_id
-    - github_node_id
-    - id
-    - kratos_id
-  role: service
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - github_id
+        - github_node_id
+        - id
+        - kratos_id
+      backend_only: false
 select_permissions:
-- permission:
-    columns:
-    - github_id
-    - github_node_id
-    - id
-    - kratos_id
-    - role
-    filter: {}
-  role: service
-- permission:
-    columns:
-    - github_id
-    - github_node_id
-    - id
-    - kratos_id
-    - role
-    filter:
-      _or:
-      - kratos_id:
-          _eq: X-Hasura-User-Id
-      - _exists:
-          _table:
-            name: users
-            schema: public
-          _where:
-            _and:
-            - kratos_id:
-                _eq: X-Hasura-User-Id
-            - role:
-                _eq: lunatrace_admin
-  role: user
+  - role: service
+    permission:
+      columns:
+        - github_id
+        - github_node_id
+        - id
+        - kratos_id
+        - role
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - github_id
+        - github_node_id
+        - id
+        - kratos_id
+        - role
+      filter:
+        _or:
+          - kratos_id:
+              _eq: X-Hasura-User-Id
+          - _exists:
+              _where:
+                _and:
+                  - kratos_id:
+                      _eq: X-Hasura-User-Id
+                  - role:
+                      _eq: lunatrace_admin
+              _table:
+                schema: public
+                name: users
 update_permissions:
-- permission:
-    check: null
-    columns:
-    - github_id
-    - github_node_id
-    - id
-    - kratos_id
-    filter: {}
-  role: service
+  - role: service
+    permission:
+      columns:
+        - github_id
+        - github_node_id
+        - id
+        - kratos_id
+      filter: {}
+      check: null

@@ -19,6 +19,7 @@ import { api } from '../../api/generated';
 import { impersonateUserHeader } from '../../constants/headers';
 import { ImpersonateUser } from '../../types/user';
 import { inputChangeHandler } from '../../utils/input-helpers';
+import { setImpersonatedUser } from '../../utils/users';
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -39,8 +40,15 @@ export const AdminDashboard = () => {
   }
 
   const impersonateUser = (user: ImpersonateUser) => () => {
-    localStorage.setItem(impersonateUserHeader, user.id);
+    setImpersonatedUser(user);
     window.location.href = '/';
+  };
+
+  const filterUser = (data: { name: string; email: string }) => {
+    const { name, email } = data;
+    const normalizedName = name ? name.toLowerCase() : '';
+    const normalizedEmail = email ? email.toLowerCase() : '';
+    return normalizedName.includes(username) || normalizedEmail.includes(username);
   };
 
   return (
@@ -54,13 +62,14 @@ export const AdminDashboard = () => {
       </Row>
       <Row>
         {data.users
-          .filter((u) => u.kratos_identity && u.kratos_identity.traits.name.toLowerCase().includes(username))
+          .filter((u) => u.kratos_identity && filterUser(u.kratos_identity.traits))
           .map((u) => {
             if (!u.kratos_identity) {
               return null;
             }
 
             const id = u.id;
+            const kratosId = u.kratos_id;
             const name = u.kratos_identity.traits.name;
             const email = u.kratos_identity.traits.email;
 
@@ -79,13 +88,13 @@ export const AdminDashboard = () => {
             ));
 
             return (
-              <Col key={id}>
+              <Col key={id} md={6}>
                 <Card>
                   <Card.Body>
                     <Card.Title>{name}</Card.Title>
                     <Form>{userInfoForm}</Form>
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                      <Button onClick={impersonateUser({ id, name })}>Impersonate User</Button>
+                      <Button onClick={impersonateUser({ id: kratosId, name })}>Impersonate User</Button>
                     </div>
                   </Card.Body>
                 </Card>
