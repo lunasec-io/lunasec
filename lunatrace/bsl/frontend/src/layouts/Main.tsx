@@ -26,7 +26,6 @@ import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import useAppDispatch from '../hooks/useAppDispatch';
 import useAppSelector from '../hooks/useAppSelector';
 import { selectIsAuthenticated, setConfirmedUnauthenticated, setSession } from '../store/slices/authentication';
-import { userHasAnyOrganizations } from '../utils/organizations';
 import oryClient from '../utils/ory-client';
 
 const MainLayout: React.FunctionComponent = (props) => {
