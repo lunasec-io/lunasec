@@ -1,3 +1,16 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1 
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { api } from './baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -806,24 +819,14 @@ export type Identities = {
   state_changed_at?: Maybe<Scalars['timestamp']>;
   traits: Scalars['jsonb'];
   updated_at: Scalars['timestamp'];
-  /** An array relationship */
-  users: Array<Users>;
+  /** An object relationship */
+  user?: Maybe<Users>;
 };
 
 
 /** columns and relationships of "identities" */
 export type IdentitiesTraitsArgs = {
   path?: InputMaybe<Scalars['String']>;
-};
-
-
-/** columns and relationships of "identities" */
-export type IdentitiesUsersArgs = {
-  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Order_By>>;
-  where?: InputMaybe<Users_Bool_Exp>;
 };
 
 /** Boolean expression to filter rows from the table "identities". All fields are combined with a logical 'AND'. */
@@ -839,7 +842,7 @@ export type Identities_Bool_Exp = {
   state_changed_at?: InputMaybe<Timestamp_Comparison_Exp>;
   traits?: InputMaybe<Jsonb_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  users?: InputMaybe<Users_Bool_Exp>;
+  user?: InputMaybe<Users_Bool_Exp>;
 };
 
 /** Ordering options when selecting data from "identities". */
@@ -852,7 +855,7 @@ export type Identities_Order_By = {
   state_changed_at?: InputMaybe<Order_By>;
   traits?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  users_aggregate?: InputMaybe<Users_Aggregate_Order_By>;
+  user?: InputMaybe<Users_Order_By>;
 };
 
 /** select columns of table "identities" */
@@ -1555,7 +1558,6 @@ export type Organization_User_Insert_Input = {
   organization?: InputMaybe<Organizations_Obj_Rel_Insert_Input>;
   organization_id?: InputMaybe<Scalars['uuid']>;
   role?: InputMaybe<Scalars['organization_user_role']>;
-  user_id?: InputMaybe<Scalars['uuid']>;
 };
 
 /** order by max() on columns of table "organization_user" */
@@ -2271,7 +2273,7 @@ export type Query_Root = {
   topics: Array<Topics>;
   /** fetch data from the table: "topics" using primary key columns */
   topics_by_pk?: Maybe<Topics>;
-  /** An array relationship */
+  /** fetch data from the table: "users" */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
@@ -3035,7 +3037,7 @@ export type Subscription_Root = {
   topics: Array<Topics>;
   /** fetch data from the table: "topics" using primary key columns */
   topics_by_pk?: Maybe<Topics>;
-  /** An array relationship */
+  /** fetch data from the table: "users" */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
@@ -3645,13 +3647,6 @@ export type Users = {
   kratos_identity?: Maybe<Identities>;
 };
 
-/** order by aggregate values of table "users" */
-export type Users_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Max_Order_By>;
-  min?: InputMaybe<Users_Min_Order_By>;
-};
-
 /** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
 export type Users_Bool_Exp = {
   _and?: InputMaybe<Array<Users_Bool_Exp>>;
@@ -3661,20 +3656,6 @@ export type Users_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_identity?: InputMaybe<Identities_Bool_Exp>;
-};
-
-/** order by max() on columns of table "users" */
-export type Users_Max_Order_By = {
-  github_node_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  kratos_id?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "users" */
-export type Users_Min_Order_By = {
-  github_node_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  kratos_id?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "users". */
@@ -4081,13 +4062,6 @@ export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }> };
 
-export type GetUserFromIdentityQueryVariables = Exact<{
-  id: Scalars['uuid'];
-}>;
-
-
-export type GetUserFromIdentityQuery = { __typename?: 'query_root', identities_by_pk?: { __typename?: 'identities', users: Array<{ __typename?: 'users', id: any }> } | null };
-
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
   namespace?: InputMaybe<String_Comparison_Exp>;
@@ -4105,9 +4079,7 @@ export type GetVulnerabilityDetailsQueryVariables = Exact<{
 
 export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
 
-export type InsertPersonalProjectAndOrgMutationVariables = Exact<{
-  user_id: Scalars['uuid'];
-}>;
+export type InsertPersonalProjectAndOrgMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type InsertPersonalProjectAndOrgMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', id: any } | null };
@@ -4390,15 +4362,6 @@ export const GetSidebarInfoDocument = `
   }
 }
     `;
-export const GetUserFromIdentityDocument = `
-    query GetUserFromIdentity($id: uuid!) {
-  identities_by_pk(id: $id) {
-    users {
-      id
-    }
-  }
-}
-    `;
 export const SearchVulnerabilitiesDocument = `
     query SearchVulnerabilities($search: String!, $namespace: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerabilities_order_by!] = {}, $limit: Int!) {
   vulnerabilities(
@@ -4484,9 +4447,9 @@ export const GetVulnerabilityDetailsDocument = `
 }
     `;
 export const InsertPersonalProjectAndOrgDocument = `
-    mutation InsertPersonalProjectAndOrg($user_id: uuid!) {
+    mutation InsertPersonalProjectAndOrg {
   insert_organizations_one(
-    object: {name: "Personal", projects: {data: {name: "Personal Project"}}, organization_users: {data: {user_id: $user_id}}}
+    object: {name: "Personal", projects: {data: {name: "Personal Project"}}, organization_users: {data: {}}}
   ) {
     id
   }
@@ -4558,16 +4521,13 @@ const injectedRtkApi = api.injectEndpoints({
     GetSidebarInfo: build.query<GetSidebarInfoQuery, GetSidebarInfoQueryVariables | void>({
       query: (variables) => ({ document: GetSidebarInfoDocument, variables })
     }),
-    GetUserFromIdentity: build.query<GetUserFromIdentityQuery, GetUserFromIdentityQueryVariables>({
-      query: (variables) => ({ document: GetUserFromIdentityDocument, variables })
-    }),
     SearchVulnerabilities: build.query<SearchVulnerabilitiesQuery, SearchVulnerabilitiesQueryVariables>({
       query: (variables) => ({ document: SearchVulnerabilitiesDocument, variables })
     }),
     GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
     }),
-    InsertPersonalProjectAndOrg: build.mutation<InsertPersonalProjectAndOrgMutation, InsertPersonalProjectAndOrgMutationVariables>({
+    InsertPersonalProjectAndOrg: build.mutation<InsertPersonalProjectAndOrgMutation, InsertPersonalProjectAndOrgMutationVariables | void>({
       query: (variables) => ({ document: InsertPersonalProjectAndOrgDocument, variables })
     }),
     InsertProjectAccessToken: build.mutation<InsertProjectAccessTokenMutation, InsertProjectAccessTokenMutationVariables>({
