@@ -11,19 +11,16 @@
  * limitations under the License.
  *
  */
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Badge, Button, Card, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { BsGithub } from 'react-icons/bs';
-import { NavLink } from 'react-router-dom';
 
 import api from '../../api';
 import { ConditionallyRender } from '../../components/utils/ConditionallyRender';
 import { GithubAppUrl } from '../../constants';
 import { WizardOpenContext } from '../../contexts/WizardContext';
-import useAppSelector from '../../hooks/useAppSelector';
 import useSidebar from '../../hooks/useSidebar';
-import { selectKratosId } from '../../store/slices/authentication';
 
 export const AuthenticatedHome: React.FunctionComponent = (_props) => {
   const wizardOpen = useContext(WizardOpenContext);

@@ -18,11 +18,10 @@ import {
   SubmitSelfServiceLoginFlowBody,
   SubmitSelfServiceRegistrationFlowBody,
 } from '@ory/kratos-client';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { NavigateFunction } from 'react-router-dom';
 
-import api from '../../api';
 import { createLogoutHandler } from '../../hooks/createLogoutHandler';
 import { handleFlowError } from '../../utils/handleGetFlowError';
 import oryClient from '../../utils/ory-client';

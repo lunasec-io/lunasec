@@ -11,8 +11,7 @@
  * limitations under the License.
  *
  */
-import BootstrapSwitchButton from 'bootstrap-switch-button-react';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { BsMoon, BsSun } from 'react-icons/bs';
 
