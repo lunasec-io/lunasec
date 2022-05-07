@@ -32,7 +32,7 @@ import oryClient from '../utils/ory-client';
 const MainLayout: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  // TODO move this somewhere more else
+  // TODO move this into its own context
   useEffect(() => {
     oryClient
       .toSession()
@@ -69,17 +69,14 @@ const MainLayout: React.FunctionComponent = (props) => {
     }
   }, [isAuthenticated]);
 
-  // TODO: Move this to its own provider so that it makes sense, this shouldn't live in layout
-  const setupWizardOpen = !userHasAnyOrganizations(data) && isAuthenticated;
-
   return (
     <React.Fragment>
       <Wrapper>
         <Sidebar sections={generateSidebarItems(data, isAuthenticated)} />
         <div className="main">
-          <Navbar setupWizardOpen={setupWizardOpen} />
+          <Navbar />
 
-          {!setupWizardOpen && <NavbarBreadcrumbs />}
+          {<NavbarBreadcrumbs />}
 
           <AlertsHeader />
 

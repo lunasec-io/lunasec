@@ -12,7 +12,7 @@
  *
  */
 
-import express, { Request, Response } from 'express';
+import express, { Handler, Request, Response } from 'express';
 import { validate as validateUUID } from 'uuid';
 
 import { getHasuraConfig } from '../config';
@@ -115,3 +115,31 @@ export function serviceAuthorizer(req: Request, res: Response): void {
   });
   return;
 }
+
+lookupAccessTokenRouter.post('/internal/auth/hydrate-real-user-id', async (req, res) => {
+  const failAndContinue = () => {
+    res.send({
+      ...req.body,
+    });
+    return;
+  };
+
+  const kratosUserId = req.body.subject;
+
+  console.log('kratos id is ', kratosUserId);
+  if (!kratosUserId || kratosUserId === 'guest') {
+    return failAndContinue();
+  }
+
+  const hasuraRes = await hasura.GetUserFromIdentity({ id: kratosUserId });
+
+  const real_user_id = hasuraRes.identities_by_pk?.user?.id;
+
+  res.status(200).send({
+    ...req.body,
+    extra: {
+      real_user_id,
+    },
+  });
+  return;
+});

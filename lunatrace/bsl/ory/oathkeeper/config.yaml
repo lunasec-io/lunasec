@@ -26,6 +26,12 @@ mutators:
   noop:
     enabled: true
 
+  hydrator:
+    enabled: true
+    config:
+      api:
+        url: http://localhost:3002/internal/auth/*
+
   id_token:
     enabled: true
     config:
