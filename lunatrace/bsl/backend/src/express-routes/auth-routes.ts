@@ -12,7 +12,7 @@
  *
  */
 
-import express, { Handler, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { validate as validateUUID } from 'uuid';
 
 import { getHasuraConfig } from '../config';

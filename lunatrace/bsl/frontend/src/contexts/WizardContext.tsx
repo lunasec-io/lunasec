@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import api from '../api';
 import useAppSelector from '../hooks/useAppSelector';
