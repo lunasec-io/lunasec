@@ -125,8 +125,6 @@ lookupAccessTokenRouter.post('/internal/auth/hydrate-real-user-id', async (req, 
   };
 
   const kratosUserId = req.body.subject;
-
-  console.log('kratos id is ', kratosUserId);
   if (!kratosUserId || kratosUserId === 'guest') {
     return failAndContinue();
   }

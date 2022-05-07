@@ -3,8 +3,8 @@
 # Forrest
 lunatrace/bsl/frontend @factoidforrest
 lunatrace/bsl/backend/graphql-yoga @factoidforrest
-lunatrace/bsl/common @forrest
-lunatrace/bsl/logger @forrest
+lunatrace/bsl/common @factoidforrest
+lunatrace/bsl/logger @factoidforrest
 
 # Chris
 lunatrace/bsl/backend-cdk

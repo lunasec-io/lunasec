@@ -38,8 +38,7 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
     //   setIsOpen(true);
     // }
   }
-  console.log('sidebar open is ', isOpen);
-  const hasNoProjects = !wizardOpen;
+  const hasProjects = !wizardOpen;
   return (
     <>
       <Helmet title="home" />
@@ -72,31 +71,31 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
               </Card.Subtitle>
               <Card.Title>
                 {' '}
-                <Badge className="me-1" bg={hasNoProjects ? 'primary' : 'secondary'} pill>
+                <Badge className="me-1" bg={hasProjects ? 'primary' : 'secondary'} pill>
                   2
                 </Badge>{' '}
                 Configure <span className="darker">your project.</span>
               </Card.Title>
-              <Card.Subtitle className={`darker homepage-subtitle left-bar-border ${hasNoProjects ? 'active' : ''}`}>
+              <Card.Subtitle className={`darker homepage-subtitle left-bar-border ${hasProjects ? 'active' : ''}`}>
                 Click your imported project in the sidebar.
               </Card.Subtitle>
               <Card.Title>
                 {' '}
-                <Badge className="me-1" bg={hasNoProjects ? 'primary' : 'secondary'} pill>
+                <Badge className="me-1" bg={hasProjects ? 'primary' : 'secondary'} pill>
                   3
                 </Badge>{' '}
                 PR Scanning is Active!
               </Card.Title>
-              <Card.Subtitle className={`darker homepage-subtitle ${hasNoProjects ? 'active' : ''}`}>
+              <Card.Subtitle className={`darker homepage-subtitle ${hasProjects ? 'active' : ''}`}>
                 Set up manual scans in your project if desired.
               </Card.Subtitle>
 
               <Row className="justify-content-center">
                 <Col md="6" className="d-grid gap-2">
-                  <Button variant={hasNoProjects ? 'light' : 'primary'} size="lg" href={GithubAppUrl}>
-                    <BsGithub className="mb-1 me-1" /> {hasNoProjects ? 'Add more projects' : 'Connect to GitHub'}
+                  <Button variant={hasProjects ? 'light' : 'primary'} size="lg" href={GithubAppUrl}>
+                    <BsGithub className="mb-1 me-1" /> {hasProjects ? 'Add more projects' : 'Connect to GitHub'}
                   </Button>
-                  <ConditionallyRender if={!hasNoProjects}>
+                  <ConditionallyRender if={!hasProjects}>
                     {createPersonalProjectMutationResult.isLoading ? (
                       <Spinner animation="border" variant="primary" />
                     ) : (
