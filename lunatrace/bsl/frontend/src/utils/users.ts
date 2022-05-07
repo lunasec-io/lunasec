@@ -11,13 +11,41 @@
  * limitations under the License.
  *
  */
-import { GetSidebarInfoQuery, Scalars } from '../api/generated';
+import { GetSidebarInfoQuery } from '../api/generated';
+import { impersonateUserKey } from '../constants/localstorage';
+import { ImpersonateUser } from '../types/user';
 
-export function userIsAdmin(data: GetSidebarInfoQuery | undefined): boolean {
-  if (!data || data.users.length !== 1) {
+export function getImpersonatedUser(): ImpersonateUser | null {
+  const user = localStorage.getItem(impersonateUserKey);
+  if (user) {
+    return JSON.parse(user) as ImpersonateUser;
+  }
+  return null;
+}
+
+export function setImpersonatedUser(user: ImpersonateUser | null): void {
+  if (user === null) {
+    localStorage.removeItem(impersonateUserKey);
+    return;
+  }
+  localStorage.setItem(impersonateUserKey, JSON.stringify(user));
+}
+
+export function sidebarDataIsForAdmin(userId: string, data: GetSidebarInfoQuery | undefined): boolean {
+  if (!data || data.users.length === 0) {
     return false;
   }
-  const user = data.users[0];
+
+  const users = data.users.filter((u) => u.kratos_id === userId);
+  if (users.length === 0) {
+    return false;
+  }
+
+  if (users.length !== 1) {
+    throw new Error(`users from sidebar query is not exactly one: ${users}`);
+  }
+
+  const user = users[0];
   const userRole = user.role;
 
   return userRole === 'lunatrace_admin';

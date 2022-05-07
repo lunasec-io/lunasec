@@ -17,12 +17,15 @@ import { BiUnlink } from 'react-icons/bi';
 import { RiParkingFill } from 'react-icons/ri';
 
 import { GetSidebarInfoQuery, Scalars } from '../../api/generated';
+import useAppSelector from '../../hooks/useAppSelector';
+import { userIsAdmin } from '../../store/slices/authentication';
 import { userHasAnyOrganizations } from '../../utils/organizations';
-import { userIsAdmin } from '../../utils/users';
 
 import { NavSection, SidebarItem } from './types';
 
 export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAuthenticated: boolean): NavSection[] {
+  const isAdmin = useAppSelector(userIsAdmin);
+
   if (!userHasAnyOrganizations(data)) {
     return [];
   }
@@ -137,7 +140,7 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
       title: 'Information & Databases',
       items: databaseSection,
     },
-    ...(userIsAdmin(data) ? adminNav : []),
+    ...(isAdmin ? adminNav : []),
   ];
 
   return isAuthenticated ? loggedInSections : loggedOutSections;

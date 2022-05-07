@@ -14,14 +14,16 @@
 import { WebhookInterceptor } from '../github/webhooks/interceptor';
 import { hasura } from '../hasura-api';
 import { GetWebhookCacheByDeliveryIdQuery } from '../hasura-api/generated';
-import { QueueErrorResult, QueueSuccessResult, WebhookMetadata } from '../types/sqs';
+import { WebhookMetadata } from '../types/sqs';
+import { MaybeError } from '../types/util';
+import { newError, newResult } from '../utils/errors';
 import { log } from '../utils/log';
 import { catchError, threwError, Try } from '../utils/try';
 
-type WebhookHandlerFunc = (message: WebhookMetadata) => Promise<QueueSuccessResult | QueueErrorResult>;
+type WebhookHandlerFunc = (message: WebhookMetadata) => Promise<MaybeError<undefined>>;
 
 export function createGithubWebhookHandler(webhooks: WebhookInterceptor): WebhookHandlerFunc {
-  return async (message: WebhookMetadata): Promise<QueueSuccessResult | QueueErrorResult> => {
+  return async (message: WebhookMetadata): Promise<MaybeError<undefined>> => {
     log.info(`Received webhook`, {
       delivery_id: message.delivery_id,
     });
@@ -40,10 +42,7 @@ export function createGithubWebhookHandler(webhooks: WebhookInterceptor): Webhoo
 
         if (threwError(webhookData)) {
           log.error(`Failed to get webhook data for deliveryId ${deliveryId}`);
-          return {
-            success: false,
-            error: new Error(`Failed to get webhook data for deliveryId ${deliveryId}`),
-          };
+          return newError(`Failed to get webhook data for deliveryId ${deliveryId}`);
         }
 
         await webhooks.receive({
@@ -52,16 +51,11 @@ export function createGithubWebhookHandler(webhooks: WebhookInterceptor): Webhoo
           payload: webhookData.webhook_cache[0].data,
         });
 
-        return {
-          success: true,
-        };
+        return newResult(undefined);
       } catch (e) {
         log.error('Unable to process GitHub webhook: ' + deliveryId, e);
 
-        return {
-          success: false,
-          error: threwError(e) ? e : new Error(String(e)),
-        };
+        return newError(threwError(e) ? e.message : String(e));
       }
     });
   };

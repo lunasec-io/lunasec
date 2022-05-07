@@ -1,56 +1,66 @@
 table:
-  name: github_repositories
   schema: public
+  name: github_repositories
 object_relationships:
-- name: project
-  using:
-    foreign_key_constraint_on: project_id
+  - name: project
+    using:
+      foreign_key_constraint_on: project_id
+remote_relationships:
+  - definition:
+      remote_field:
+        authenticatedRepoCloneUrl:
+          arguments:
+            repoGithubId: $github_id
+      hasura_fields:
+        - github_id
+      remote_schema: custom-backend-schema
+    name: authenticated_clone_url
 insert_permissions:
-- permission:
-    backend_only: false
-    check: {}
-    columns:
-    - git_url
-    - github_id
-    - github_node_id
-    - project_id
-    - traits
-  role: service
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - git_url
+        - github_id
+        - github_node_id
+        - project_id
+        - traits
+      backend_only: false
 select_permissions:
-- permission:
-    columns:
-    - git_url
-    - github_id
-    - github_id
-    - github_node_id
-    - project_id
-    - traits
-    filter: {}
-  role: service
-- permission:
-    columns:
-    - git_url
-    - github_id
-    - github_node_id
-    - id
-    - project_id
-    - traits
-    filter:
-      project:
-        organization:
-          organization_users:
-            user:
-              kratos_id:
-                _eq: X-Hasura-User-Id
-  role: user
+  - role: service
+    permission:
+      columns:
+        - git_url
+        - github_id
+        - github_id
+        - github_node_id
+        - project_id
+        - traits
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - git_url
+        - github_id
+        - github_node_id
+        - id
+        - project_id
+        - traits
+      filter:
+        project:
+          organization:
+            organization_users:
+              user:
+                kratos_id:
+                  _eq: X-Hasura-User-Id
 update_permissions:
-- permission:
-    check: null
-    columns:
-    - git_url
-    - github_id
-    - github_node_id
-    - project_id
-    - traits
-    filter: {}
-  role: service
+  - role: service
+    permission:
+      columns:
+        - git_url
+        - github_id
+        - github_node_id
+        - project_id
+        - traits
+      filter: {}
+      check: null

@@ -12,22 +12,22 @@
  *
  */
 import { DeleteMessageCommand, Message, ReceiveMessageCommand, ReceiveMessageCommandOutput } from '@aws-sdk/client-sqs';
-import Express from 'express';
 
 import { sqsClient } from '../aws/sqs-client';
 import { getQueueHandlerConfig, getServerConfig, getWorkerConfig } from '../config';
+import { generateSnapshotForRepository } from '../github/actions/generate-snapshot-for-repository';
 import { createGithubWebhookInterceptor } from '../github/webhooks';
 import { QueueHandlerWorkerConfig } from '../types/config';
 import {
   GenerateSnapshotForRepositoryRecord,
   HandlerCallback,
-  QueueErrorResult,
   QueueHandlerType,
-  QueueSuccessResult,
   S3HandlerCallback,
   S3SqsEvent,
   WebhookHandlerCallback,
 } from '../types/sqs';
+import { MaybeError } from '../types/util';
+import { newError, newResult } from '../utils/errors';
 import { log } from '../utils/log';
 import { getSqsUrlFromName } from '../utils/sqs';
 import { catchError, threwError } from '../utils/try';
@@ -36,7 +36,6 @@ import { isArray } from '../utils/types';
 import { handleSnapshotManifest } from './generate-sbom';
 import { createGithubWebhookHandler } from './github-webhook';
 import { handleScanSbom } from './scan-sbom';
-import { handleSnapshotRepository } from './snapshot-repository';
 import { runJob } from './upsert-vulnerabilities';
 
 const workerConfig = getWorkerConfig();
@@ -95,8 +94,10 @@ async function readDataFromQueue<THandler extends QueueHandlerFunc>(
 
             const result = await processMessageCallback(parsedBody as never);
 
-            if (!result.success) {
-              log.info('Error processing message', result.error);
+            if (result.error) {
+              log.info('Error processing message', {
+                result,
+              });
               return;
             }
 
@@ -126,14 +127,11 @@ async function readDataFromQueue<THandler extends QueueHandlerFunc>(
 
 function wrapProcessS3EventQueueJob(
   processMessageCallback: S3HandlerCallback
-): (parsedBody: S3SqsEvent) => Promise<QueueSuccessResult | QueueErrorResult> {
+): (parsedBody: S3SqsEvent) => Promise<MaybeError<undefined>> {
   return async (parsedBody: S3SqsEvent) => {
     if (!parsedBody.Records) {
       log.info('No records on sqs event, deleting message, exiting');
-      return {
-        success: false,
-        error: new Error('No records on sqs event, deleting message, exiting'),
-      };
+      return newError('No records on sqs event, deleting message, exiting');
     }
     // todo: do we actually need this promise handling or should we only take the first record from any event?
     // assuming one file per object created event makes sense
@@ -147,33 +145,25 @@ function wrapProcessS3EventQueueJob(
     });
     const results = await Promise.all(handlerPromises);
 
-    const errors = results.filter((result) => !result.success);
+    const errors = results.filter((result) => result.error);
 
     if (errors.length > 0) {
       log.error('Errors found during SQS job:', { errors });
       // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
-      return {
-        success: false,
-        error: new Error('Errors found during SQS job'),
-      };
+      return newError('Errors found during SQS job');
     }
 
-    return {
-      success: true,
-    };
+    return newResult(undefined);
   };
 }
 
 function wrapProcessRepositoryJob(
   processMessageCallback: HandlerCallback<GenerateSnapshotForRepositoryRecord>
-): (parsedBody: GenerateSnapshotForRepositoryRecord[]) => Promise<QueueSuccessResult | QueueErrorResult> {
+): (parsedBody: GenerateSnapshotForRepositoryRecord[]) => Promise<MaybeError<undefined>> {
   return async (parsedBody: GenerateSnapshotForRepositoryRecord[]) => {
     if (!isArray(parsedBody) || parsedBody.length === 0) {
       log.info('No records on sqs event, deleting message, exiting');
-      return {
-        success: false,
-        error: new Error('No records on sqs event, deleting message, exiting'),
-      };
+      return newError('No records on sqs event, deleting message, exiting');
     }
 
     const handlerPromises = parsedBody.map((record) => {
@@ -182,20 +172,15 @@ function wrapProcessRepositoryJob(
     });
     const results = await Promise.all(handlerPromises);
 
-    const errors = results.filter((result) => !result.success);
+    const errors = results.filter((result) => result.error);
 
     if (errors.length > 0) {
       log.error('Errors found during SQS job:', { errors });
       // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
-      return {
-        success: false,
-        error: new Error('Errors found during SQS job'),
-      };
+      return newError('Errors found during SQS job');
     }
 
-    return {
-      success: true,
-    };
+    return newResult(undefined);
   };
 }
 
@@ -207,7 +192,7 @@ async function loadQueueHandlers(): Promise<QueueHandlersType> {
       handlerFunc: wrapProcessS3EventQueueJob(handleSnapshotManifest),
     },
     'process-repository': {
-      handlerFunc: wrapProcessRepositoryJob(handleSnapshotRepository),
+      handlerFunc: wrapProcessRepositoryJob(generateSnapshotForRepository),
     },
     'process-sbom': {
       handlerFunc: wrapProcessS3EventQueueJob(handleScanSbom),

@@ -14,6 +14,7 @@
 import { isRejectedWithValue, Middleware, MiddlewareAPI } from '@reduxjs/toolkit';
 
 import { add } from '../store/slices/alerts';
+import { selectLoginFlow } from '../store/slices/authentication';
 
 import { api as generatedApi } from './generated';
 // This extends the generated API so we can add any custom logic needed, as per https://www.graphql-code-generator.com/plugins/typescript-rtk-query

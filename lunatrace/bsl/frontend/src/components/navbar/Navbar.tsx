@@ -20,6 +20,7 @@ import useAppSelector from '../../hooks/useAppSelector';
 import useSidebar from '../../hooks/useSidebar';
 import useTheme from '../../hooks/useTheme';
 import { selectIsAuthenticated } from '../../store/slices/authentication';
+import { getImpersonatedUser, setImpersonatedUser } from '../../utils/users';
 
 import { ProjectSearch } from './NavbarProjectSearch';
 import NavbarUser from './NavbarUser';
@@ -31,7 +32,7 @@ interface NavbarComponentProps {
 const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupWizardOpen }) => {
   const { isOpen, setIsOpen } = useSidebar();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const impersonateUserId = localStorage.getItem(impersonateUserHeader);
+  const impersonatedUser = getImpersonatedUser();
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
@@ -58,7 +59,7 @@ const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupW
   );
 
   const stopImpersonating = () => {
-    localStorage.setItem(impersonateUserHeader, '');
+    setImpersonatedUser(null);
     window.location.reload();
   };
 
@@ -74,7 +75,7 @@ const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupW
             {theme === 'dark' ? <BsMoon size="30px" /> : <BsSun size="30px" />}
           </span>
           <NavbarUser />
-          {impersonateUserId && <Button onClick={stopImpersonating}>Stop Impersonating</Button>}
+          {impersonatedUser && <Button onClick={stopImpersonating}>Stop Impersonating {impersonatedUser.name}</Button>}
         </Nav>
       </Container>
     </Navbar>
