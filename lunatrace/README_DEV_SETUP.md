@@ -113,35 +113,11 @@ it up, so if you accidentally have problems after you can run `sudo docker-compo
 
 ### Setting up the Database
 
-Everything will likely break a bunch at this point because the database hasn't properly beet configured yet.
+We use Hasura to manage the database. Migrations for Oathkeeper and Hasura will be applied automatically in dev.
 
-We use Hasura and Kratos, so there will be a few incantations required to make this work.
+#### Hasura:
 
-#### Kratos (do this first):
-
-```sh
-cd bsl
-sudo docker-compose exec kratos /usr/bin/kratos migrate sql /config/config.yaml migrate sql -e --yes
-```
-
-That's a bit of a magical command but... it's basically just finding the Kratos Docker container ID and then running the
-Kratos CLI commands inside of it to setup the DB.
-
-_NOTE: It may be possible to use the Kratos CLI from your machine directly instead if Docker is janky. But this approach
-will ensure that your Kratos version is always in sync with the Docker version._
-
-#### Hasura (second):
-
-Run...
-
-```sh
-cd bsl/hasura
-hasura metadata apply
-hasura metadata reload
-hasura migrate apply
-```
-
-Those should work and pull up the whole DB. Once that's done you should be able to pull up the Hasura console either
+You should be able to pull up the Hasura console either
 by running `hasura console` or going to `http://localhost:9695/`. This will show you the GraphQL server and an admin
 dashboard for the database.
 
