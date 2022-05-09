@@ -5521,7 +5521,7 @@ export type GetBuildQueryVariables = Exact<{
 export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
 
 export type GetCloneRepoInfoFromRepoIdQueryVariables = Exact<{
-  where?: InputMaybe<Github_Repositories_Bool_Exp>;
+  repo_github_id: Scalars['Int'];
 }>;
 
 
@@ -5737,8 +5737,8 @@ export const GetBuildDocument = gql`
 }
     `;
 export const GetCloneRepoInfoFromRepoIdDocument = gql`
-    query GetCloneRepoInfoFromRepoId($where: github_repositories_bool_exp) {
-  github_repositories(where: $where) {
+    query GetCloneRepoInfoFromRepoId($repo_github_id: Int!) {
+  github_repositories(where: {github_id: {_eq: $repo_github_id}}) {
     git_url
     project {
       id
@@ -6029,7 +6029,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetBuild(variables: GetBuildQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBuildQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetBuildQuery>(GetBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetBuild', 'query');
     },
-    GetCloneRepoInfoFromRepoId(variables?: GetCloneRepoInfoFromRepoIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCloneRepoInfoFromRepoIdQuery> {
+    GetCloneRepoInfoFromRepoId(variables: GetCloneRepoInfoFromRepoIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCloneRepoInfoFromRepoIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetCloneRepoInfoFromRepoIdQuery>(GetCloneRepoInfoFromRepoIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetCloneRepoInfoFromRepoId', 'query');
     },
     GetCountOfPersonalOrg(variables: GetCountOfPersonalOrgQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCountOfPersonalOrgQuery> {

@@ -19,9 +19,10 @@ import { validate as validateUUID } from 'uuid';
 
 import { getHasuraConfig } from '../config';
 import { hasura } from '../hasura-api';
+import { userIsAdmin } from '../hasura-api/actions/user-is-admin';
 import { Scalars } from '../hasura-api/generated';
 import { MaybeError } from '../types/util';
-import { errorResponse, newResult } from '../utils/errors';
+import { errorResponse, newError, newResult } from '../utils/errors';
 import { parsePsqlStringArray } from '../utils/json-utils';
 import { jwtMiddleware } from '../utils/jwt-middleware';
 import { log } from '../utils/log';
@@ -157,33 +158,11 @@ export async function impersonateAsAdmin(req: Request, res: Response): Promise<v
 
   const userToImpersonate = parsedRequest.res;
 
-  const userRole = await catchError(
-    hasura.GetUserRole({
-      kratos_id: kratosUserId,
-    })
-  );
-
-  if (threwError(userRole)) {
-    logger.error('unable to get role for user');
-    res.send(req.body);
-    return;
-  }
-
-  if (userRole.users.length !== 1) {
-    logger.error('did not find exactly one user for uuid', {
-      users: userRole.users,
-    });
-    res.send(req.body);
-    return;
-  }
-
-  const user = userRole.users[0];
-  const role = user.role;
-
-  // verify that the user performing this request is a lunatrace_admin
-  if (role !== 'lunatrace_admin') {
+  const isAdmin = await userIsAdmin(kratosUserId);
+  if (!isAdmin) {
     logger.info('user is not admin', {
-      role,
+      kratosUserId,
+      userToImpersonate,
     });
     res.send(req.body);
     return;

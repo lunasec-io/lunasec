@@ -12,6 +12,7 @@
  *
  */
 import { getRepoCloneUrlWithAuth } from '../../github/actions/get-repo-clone-url-with-auth';
+import { userIsAdmin } from '../../hasura-api/actions/user-is-admin';
 import { log } from '../../utils/log';
 import { MutationResolvers, QueryResolvers } from '../generated-resolver-types';
 
@@ -27,7 +28,13 @@ export const authenticatedRepoCloneUrlResolver: AuthenticatedRepoCloneUrlResolve
     repoGithubId: args.repoGithubId,
   });
 
-  const cloneUrl = await getRepoCloneUrlWithAuth(args.repoGithubId, kratosUserId);
+  // TODO (cthompson) do we want to allow other users to be able to get the clone url?
+  const isAdmin = await userIsAdmin(kratosUserId);
+  if (!isAdmin) {
+    return { error: false, url: undefined };
+  }
+
+  const cloneUrl = await getRepoCloneUrlWithAuth(args.repoGithubId);
   if (cloneUrl.error) {
     return { error: false, url: undefined };
   }

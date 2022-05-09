@@ -24,42 +24,13 @@ export interface GetRepoCloneUrlWithAuthReturn {
   projectId: string;
 }
 
-function getRepoCloneUrlQuery(repoGithubId: number, userId?: string): GetCloneRepoInfoFromRepoIdQueryVariables {
-  const baseCondition: Github_Repositories_Bool_Exp = {
-    github_id: {
-      _eq: repoGithubId,
-    },
-  };
-  if (userId) {
-    return {
-      where: {
-        _and: [
-          baseCondition,
-          // TODO (cthompson) do we want to only having the repo url being sent back if the user is an admin?
-          // {
-          //   project: {
-          //     organization: {
-          //       organization_users: {
-          //         user: { _and: [{ kratos_id: { _eq: userId } }, { role: { _eq: 'lunatrace_admin' } }] },
-          //       },
-          //     },
-          //   },
-          // },
-        ],
-      },
-    };
-  }
-  return {
-    where: baseCondition,
-  };
-}
-
 export async function getRepoCloneUrlWithAuth(
-  repoGithubId: number,
-  kratosUserId?: string
+  repoGithubId: number
 ): Promise<MaybeError<GetRepoCloneUrlWithAuthReturn>> {
   const cloneRepoInfo = await catchError(
-    hasura.GetCloneRepoInfoFromRepoId(getRepoCloneUrlQuery(repoGithubId, kratosUserId))
+    hasura.GetCloneRepoInfoFromRepoId({
+      repo_github_id: repoGithubId,
+    })
   );
 
   if (threwError(cloneRepoInfo)) {
