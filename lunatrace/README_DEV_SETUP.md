@@ -113,7 +113,7 @@ it up, so if you accidentally have problems after you can run `sudo docker-compo
 
 ### Setting up the Database
 
-We use Hasura to manage the database. Migrations for Oathkeeper and Hasura will be applied automatically in dev.
+We use Hasura to manage the database. Migrations for Kratos and Hasura will be applied automatically in dev.
 
 #### Hasura:
 
