@@ -1655,6 +1655,8 @@ export enum Organization_User_Update_Column {
 export type Organizations = {
   __typename?: 'organizations';
   createdAt: Scalars['timestamp'];
+  /** An object relationship */
+  creator?: Maybe<Users>;
   id: Scalars['uuid'];
   name: Scalars['String'];
   /** An array relationship */
@@ -1690,6 +1692,7 @@ export type Organizations_Bool_Exp = {
   _not?: InputMaybe<Organizations_Bool_Exp>;
   _or?: InputMaybe<Array<Organizations_Bool_Exp>>;
   createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
+  creator?: InputMaybe<Users_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   organization_users?: InputMaybe<Organization_User_Bool_Exp>;
@@ -1721,6 +1724,7 @@ export type Organizations_Obj_Rel_Insert_Input = {
 /** Ordering options when selecting data from "organizations". */
 export type Organizations_Order_By = {
   createdAt?: InputMaybe<Order_By>;
+  creator?: InputMaybe<Users_Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
@@ -4082,7 +4086,7 @@ export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerab
 export type InsertPersonalProjectAndOrgMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type InsertPersonalProjectAndOrgMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', id: any } | null };
+export type InsertPersonalProjectAndOrgMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', id: any, projects: Array<{ __typename?: 'projects', id: any }> } | null };
 
 export type InsertProjectAccessTokenMutationVariables = Exact<{
   access_token: Scalars['uuid'];
@@ -4452,6 +4456,9 @@ export const InsertPersonalProjectAndOrgDocument = `
     object: {name: "Personal", projects: {data: {name: "Personal Project"}}, organization_users: {data: {}}}
   ) {
     id
+    projects {
+      id
+    }
   }
 }
     `;
