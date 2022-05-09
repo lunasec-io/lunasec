@@ -29,14 +29,10 @@ export const SBOMURLResolver: SBOMURLResolverT = async (parent, args, ctx, info)
   const build = await hasura.GetBuild({ build_id: args.buildId });
   await checkProjectIsAuthorized(build.builds_by_pk?.project?.id, ctx);
 
-  let downloadURL = '';
   try {
-    const result = await aws.signArbitraryS3URL(build.builds_by_pk?.s3_url || '', 'GET');
-    downloadURL = formatUrl(result);
+    return formatUrl(await aws.signArbitraryS3URL(build.builds_by_pk?.s3_url || '', 'GET'));
   } catch (e) {
     log.warn('Failed to sign S3 url', args, e);
     throw new GraphQLYogaError('Failed to sign URL');
   }
-
-  return downloadURL;
 };
