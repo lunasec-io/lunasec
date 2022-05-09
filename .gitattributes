@@ -1,0 +1,12 @@
+docs/** linguist-documentation
+.yarn/** linguist-vendored
+
+# Inventory of Generated Files
+lunatrace/bsl/schema.graphql linguist-generated
+js/sdks/packages/tokenizer-sdk/src/generated/** linguist-generated
+lunatrace/bsl/backend/src/github/api/generated.ts linguist-generated
+lunatrace/bsl/backend/src/graphql-yoga/generated-resolver-types.ts linguist-generated
+lunatrace/bsl/backend/src/hasura-api/generated.ts linguist-generated
+lunatrace/bsl/backend/src/topic-ingester/schemas/generated-schema-1-validator.ts linguist-generated
+lunatrace/bsl/frontend/src/api/generated.ts linguist-generated
+lunatrace/bsl/generated-lunatrace-tmuxp.yaml linguist-generated
