@@ -11,10 +11,11 @@
  * limitations under the License.
  *
  */
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Badge, Button, Card, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { BsGithub } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 
 import api from '../../api';
 import { ConditionallyRender } from '../../components/utils/ConditionallyRender';
@@ -25,16 +26,20 @@ import useSidebar from '../../hooks/useSidebar';
 export const AuthenticatedHome: React.FunctionComponent = (_props) => {
   const wizardOpen = useContext(WizardOpenContext);
   const { isOpen, setIsOpen } = useSidebar();
-
+  const navigate = useNavigate();
   const [createPersonalProjectMutation, createPersonalProjectMutationResult] =
     api.useInsertPersonalProjectAndOrgMutation();
 
-  if (createPersonalProjectMutationResult.isSuccess) {
-    // Make sure the sidebar opens if someone has just created a personal project. Helpful on mobile and in situations where they may have closed it.
-    // if (!isOpen) {
-    //   setIsOpen(true);
-    // }
-  }
+  // Send the user straight to their new project if they click the "personal project" button
+  useEffect(() => {
+    if (createPersonalProjectMutationResult.isSuccess) {
+      const personalProjectId = createPersonalProjectMutationResult.data.insert_organizations_one?.projects[0].id;
+      if (personalProjectId) {
+        navigate(`/project/${personalProjectId}`);
+      }
+    }
+  }, [createPersonalProjectMutationResult.isSuccess]);
+
   const hasProjects = !wizardOpen;
   return (
     <>
