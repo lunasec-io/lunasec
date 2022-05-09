@@ -1,0 +1,7 @@
+docs/** linguist-documentation
+.yarn/** linguist-vendored
+lunatrace/bsl/schema.graphql linguist-generated
+lunatrace/bsl/schema.graphql linguist-generated
+**/generated.ts linguist-generated
+**/generated-schema-1-validator.ts linguist-generated
+**/generated-resolver-types.ts linguist-generated
