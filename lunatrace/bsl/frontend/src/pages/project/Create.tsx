@@ -25,9 +25,7 @@ import { SpinIfLoading } from '../../components/SpinIfLoading';
 import { ConditionallyRender } from '../../components/utils/ConditionallyRender';
 import { GithubAppUrl } from '../../constants';
 import useAppDispatch from '../../hooks/useAppDispatch';
-import useAppSelector from '../../hooks/useAppSelector';
 import { add } from '../../store/slices/alerts';
-import { selectUserId } from '../../store/slices/authentication';
 
 import { ProjectHeader } from './Header';
 
@@ -44,9 +42,7 @@ const ProjectCreateForm = ({ data }: { data: GetSidebarInfoQuery | undefined }) 
   const [projectName, setProjectName] = useState('');
   const [validated, setValidated] = useState(false);
 
-  const userId = useAppSelector(selectUserId);
-
-  if (!data || !userId) {
+  if (!data) {
     return null;
   }
 

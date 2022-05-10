@@ -26,13 +26,12 @@ import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import useAppDispatch from '../hooks/useAppDispatch';
 import useAppSelector from '../hooks/useAppSelector';
 import { selectIsAuthenticated, setConfirmedUnauthenticated, setSession } from '../store/slices/authentication';
-import { userHasAnyOrganizations } from '../utils/organizations';
 import oryClient from '../utils/ory-client';
 
 const MainLayout: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  // TODO move this somewhere more else
+  // TODO move this into its own context
   useEffect(() => {
     oryClient
       .toSession()
@@ -69,16 +68,14 @@ const MainLayout: React.FunctionComponent = (props) => {
     }
   }, [isAuthenticated]);
 
-  const setupWizardOpen = !userHasAnyOrganizations(data);
-
   return (
     <React.Fragment>
       <Wrapper>
         <Sidebar sections={generateSidebarItems(data, isAuthenticated)} />
         <div className="main">
-          <Navbar setupWizardOpen={setupWizardOpen} />
+          <Navbar />
 
-          {!setupWizardOpen && <NavbarBreadcrumbs />}
+          {<NavbarBreadcrumbs />}
 
           <AlertsHeader />
 
