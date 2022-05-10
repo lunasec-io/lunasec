@@ -15,7 +15,7 @@ import React, { useEffect, useState } from 'react';
 
 import { api, GetCurrentUserInfoQuery } from '../api/generated';
 import useAppSelector from '../hooks/useAppSelector';
-import { selectUserId } from '../store/slices/authentication';
+import { selectKratosId } from '../store/slices/authentication';
 import { ImpersonateUser } from '../types/user';
 
 interface UserProviderState {
@@ -46,7 +46,7 @@ function userIsAdmin(data: GetCurrentUserInfoQuery | undefined): boolean {
 }
 
 function UserProvider({ children }: { children: React.ReactNode }) {
-  const userId = useAppSelector(selectUserId);
+  const userId = useAppSelector(selectKratosId);
 
   const [trigger, result] = api.useLazyGetCurrentUserInfoQuery();
 

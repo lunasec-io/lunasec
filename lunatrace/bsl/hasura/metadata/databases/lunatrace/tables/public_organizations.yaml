@@ -1,6 +1,10 @@
 table:
   schema: public
   name: organizations
+object_relationships:
+  - name: creator
+    using:
+      foreign_key_constraint_on: creator_id
 array_relationships:
   - name: organization_users
     using:
@@ -35,7 +39,7 @@ insert_permissions:
     permission:
       check: {}
       set:
-        creator_id: x-hasura-User-Id
+        creator_id: x-hasura-Real-User-Id
       columns:
         - name
       backend_only: false

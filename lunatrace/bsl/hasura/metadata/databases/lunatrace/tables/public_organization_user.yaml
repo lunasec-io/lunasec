@@ -26,7 +26,7 @@ insert_permissions:
         _or:
           - organization:
               creator_id:
-                _eq: X-Hasura-User-Id
+                _eq: X-Hasura-Real-User-Id
           - organization:
               organization_users:
                 _and:
@@ -39,7 +39,6 @@ insert_permissions:
         - organization_id
         - role
         - user_id
-      backend_only: false
 select_permissions:
   - role: service
     permission:

@@ -838,24 +838,14 @@ export type Identities = {
   state_changed_at?: Maybe<Scalars['timestamp']>;
   traits: Scalars['jsonb'];
   updated_at: Scalars['timestamp'];
-  /** An array relationship */
-  users: Array<Users>;
+  /** An object relationship */
+  user?: Maybe<Users>;
 };
 
 
 /** columns and relationships of "identities" */
 export type IdentitiesTraitsArgs = {
   path?: InputMaybe<Scalars['String']>;
-};
-
-
-/** columns and relationships of "identities" */
-export type IdentitiesUsersArgs = {
-  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Order_By>>;
-  where?: InputMaybe<Users_Bool_Exp>;
 };
 
 /** Boolean expression to filter rows from the table "identities". All fields are combined with a logical 'AND'. */
@@ -871,7 +861,7 @@ export type Identities_Bool_Exp = {
   state_changed_at?: InputMaybe<Timestamp_Comparison_Exp>;
   traits?: InputMaybe<Jsonb_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  users?: InputMaybe<Users_Bool_Exp>;
+  user?: InputMaybe<Users_Bool_Exp>;
 };
 
 /** Ordering options when selecting data from "identities". */
@@ -884,7 +874,7 @@ export type Identities_Order_By = {
   state_changed_at?: InputMaybe<Order_By>;
   traits?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  users_aggregate?: InputMaybe<Users_Aggregate_Order_By>;
+  user?: InputMaybe<Users_Order_By>;
 };
 
 /** select columns of table "identities" */
@@ -1685,6 +1675,8 @@ export enum Organization_User_Update_Column {
 export type Organizations = {
   __typename?: 'organizations';
   createdAt: Scalars['timestamp'];
+  /** An object relationship */
+  creator?: Maybe<Users>;
   id: Scalars['uuid'];
   name: Scalars['String'];
   /** An array relationship */
@@ -1720,6 +1712,7 @@ export type Organizations_Bool_Exp = {
   _not?: InputMaybe<Organizations_Bool_Exp>;
   _or?: InputMaybe<Array<Organizations_Bool_Exp>>;
   createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
+  creator?: InputMaybe<Users_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   organization_users?: InputMaybe<Organization_User_Bool_Exp>;
@@ -1751,6 +1744,7 @@ export type Organizations_Obj_Rel_Insert_Input = {
 /** Ordering options when selecting data from "organizations". */
 export type Organizations_Order_By = {
   createdAt?: InputMaybe<Order_By>;
+  creator?: InputMaybe<Users_Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
@@ -2296,7 +2290,7 @@ export type Query_Root = {
   topic_related_topics: Array<Topic_Related_Topics>;
   /** fetch data from the table: "topic_related_topics" using primary key columns */
   topic_related_topics_by_pk?: Maybe<Topic_Related_Topics>;
-  /** fetch data from the table: "topic_vulnerabilities" */
+  /** An array relationship */
   topic_vulnerabilities: Array<Topic_Vulnerabilities>;
   /** fetch data from the table: "topic_vulnerabilities" using primary key columns */
   topic_vulnerabilities_by_pk?: Maybe<Topic_Vulnerabilities>;
@@ -2304,7 +2298,7 @@ export type Query_Root = {
   topics: Array<Topics>;
   /** fetch data from the table: "topics" using primary key columns */
   topics_by_pk?: Maybe<Topics>;
-  /** An array relationship */
+  /** fetch data from the table: "users" */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
@@ -3071,7 +3065,7 @@ export type Subscription_Root = {
   topic_related_topics: Array<Topic_Related_Topics>;
   /** fetch data from the table: "topic_related_topics" using primary key columns */
   topic_related_topics_by_pk?: Maybe<Topic_Related_Topics>;
-  /** fetch data from the table: "topic_vulnerabilities" */
+  /** An array relationship */
   topic_vulnerabilities: Array<Topic_Vulnerabilities>;
   /** fetch data from the table: "topic_vulnerabilities" using primary key columns */
   topic_vulnerabilities_by_pk?: Maybe<Topic_Vulnerabilities>;
@@ -3079,7 +3073,7 @@ export type Subscription_Root = {
   topics: Array<Topics>;
   /** fetch data from the table: "topics" using primary key columns */
   topics_by_pk?: Maybe<Topics>;
-  /** An array relationship */
+  /** fetch data from the table: "users" */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
@@ -3574,7 +3568,7 @@ export type Topics = {
   tags: Scalars['_text'];
   title: Scalars['String'];
   topic_unique_id: Scalars['String'];
-  /** fetch data from the table: "topic_vulnerabilities" */
+  /** An array relationship */
   topic_vulnerabilities: Array<Topic_Vulnerabilities>;
   updated_at: Scalars['timestamptz'];
 };
@@ -3690,7 +3684,6 @@ export type User_Role_Comparison_Exp = {
  */
 export type Users = {
   __typename?: 'users';
-  github_id?: Maybe<Scalars['String']>;
   github_node_id?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   kratos_id?: Maybe<Scalars['uuid']>;
@@ -3699,19 +3692,11 @@ export type Users = {
   role: Scalars['user_role'];
 };
 
-/** order by aggregate values of table "users" */
-export type Users_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Max_Order_By>;
-  min?: InputMaybe<Users_Min_Order_By>;
-};
-
 /** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
 export type Users_Bool_Exp = {
   _and?: InputMaybe<Array<Users_Bool_Exp>>;
   _not?: InputMaybe<Users_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Bool_Exp>>;
-  github_id?: InputMaybe<String_Comparison_Exp>;
   github_node_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -3719,25 +3704,8 @@ export type Users_Bool_Exp = {
   role?: InputMaybe<User_Role_Comparison_Exp>;
 };
 
-/** order by max() on columns of table "users" */
-export type Users_Max_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-  github_node_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  kratos_id?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "users" */
-export type Users_Min_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-  github_node_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  kratos_id?: InputMaybe<Order_By>;
-};
-
 /** Ordering options when selecting data from "users". */
 export type Users_Order_By = {
-  github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
@@ -3747,8 +3715,6 @@ export type Users_Order_By = {
 
 /** select columns of table "users" */
 export enum Users_Select_Column {
-  /** column name */
-  GithubId = 'github_id',
   /** column name */
   GithubNodeId = 'github_node_id',
   /** column name */
@@ -3800,6 +3766,8 @@ export type Vulnerabilities = {
   severity: Scalars['severity_enum'];
   slug: Scalars['String'];
   topic_id?: Maybe<Scalars['uuid']>;
+  /** An array relationship */
+  topic_vulnerabilities: Array<Topic_Vulnerabilities>;
   urls?: Maybe<Scalars['_text']>;
   /** An array relationship */
   vulnerability_packages: Array<Vulnerability_Packages>;
@@ -3857,6 +3825,16 @@ export type VulnerabilitiesReverse_Related_VulnerabilitiesArgs = {
 
 
 /** columns and relationships of "vulnerabilities" */
+export type VulnerabilitiesTopic_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Topic_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Topic_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Topic_Vulnerabilities_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerabilities" */
 export type VulnerabilitiesVulnerability_PackagesArgs = {
   distinct_on?: InputMaybe<Array<Vulnerability_Packages_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3889,6 +3867,7 @@ export type Vulnerabilities_Bool_Exp = {
   severity?: InputMaybe<Severity_Enum_Comparison_Exp>;
   slug?: InputMaybe<String_Comparison_Exp>;
   topic_id?: InputMaybe<Uuid_Comparison_Exp>;
+  topic_vulnerabilities?: InputMaybe<Topic_Vulnerabilities_Bool_Exp>;
   urls?: InputMaybe<_Text_Comparison_Exp>;
   vulnerability_packages?: InputMaybe<Vulnerability_Packages_Bool_Exp>;
 };
@@ -3914,6 +3893,7 @@ export type Vulnerabilities_Order_By = {
   severity?: InputMaybe<Order_By>;
   slug?: InputMaybe<Order_By>;
   topic_id?: InputMaybe<Order_By>;
+  topic_vulnerabilities_aggregate?: InputMaybe<Topic_Vulnerabilities_Aggregate_Order_By>;
   urls?: InputMaybe<Order_By>;
   vulnerability_packages_aggregate?: InputMaybe<Vulnerability_Packages_Aggregate_Order_By>;
 };
@@ -4161,6 +4141,11 @@ export type GetVulnerabilityDetailsQueryVariables = Exact<{
 
 
 export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
+
+export type InsertPersonalProjectAndOrgMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InsertPersonalProjectAndOrgMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', id: any, projects: Array<{ __typename?: 'projects', id: any }> } | null };
 
 export type InsertProjectAccessTokenMutationVariables = Exact<{
   access_token: Scalars['uuid'];
@@ -4545,6 +4530,18 @@ export const GetVulnerabilityDetailsDocument = `
   }
 }
     `;
+export const InsertPersonalProjectAndOrgDocument = `
+    mutation InsertPersonalProjectAndOrg {
+  insert_organizations_one(
+    object: {name: "Personal", projects: {data: {name: "Personal Project"}}, organization_users: {data: {}}}
+  ) {
+    id
+    projects {
+      id
+    }
+  }
+}
+    `;
 export const InsertProjectAccessTokenDocument = `
     mutation InsertProjectAccessToken($access_token: uuid!, $name: String!, $project_uuid: uuid!) {
   insert_project_access_tokens_one(
@@ -4622,6 +4619,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
+    }),
+    InsertPersonalProjectAndOrg: build.mutation<InsertPersonalProjectAndOrgMutation, InsertPersonalProjectAndOrgMutationVariables | void>({
+      query: (variables) => ({ document: InsertPersonalProjectAndOrgDocument, variables })
     }),
     InsertProjectAccessToken: build.mutation<InsertProjectAccessTokenMutation, InsertProjectAccessTokenMutationVariables>({
       query: (variables) => ({ document: InsertProjectAccessTokenDocument, variables })

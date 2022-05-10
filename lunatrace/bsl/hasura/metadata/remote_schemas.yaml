@@ -1,7 +1,7 @@
-- name: custom-backend-schema
+- name: lunatrace-custom
   definition:
     url_from_env: REMOTE_SCHEMA_URL
-    timeout_seconds: 60
+    timeout_seconds: 20
     customization:
       type_names:
         mapping:

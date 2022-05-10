@@ -13,7 +13,7 @@ remote_relationships:
             repoGithubId: $github_id
       hasura_fields:
         - github_id
-      remote_schema: custom-backend-schema
+      remote_schema: lunatrace-custom
     name: authenticated_clone_url
 insert_permissions:
   - role: service

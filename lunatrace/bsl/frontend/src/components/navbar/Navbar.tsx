@@ -11,10 +11,11 @@
  * limitations under the License.
  *
  */
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Button, Container, Nav, Navbar } from 'react-bootstrap';
 import { BsMoon, BsSun } from 'react-icons/bs';
 
+import { WizardOpenContext } from '../../contexts/WizardContext';
 import useAppSelector from '../../hooks/useAppSelector';
 import useSidebar from '../../hooks/useSidebar';
 import useTheme from '../../hooks/useTheme';
@@ -24,15 +25,13 @@ import { getImpersonatedUser, setImpersonatedUser } from '../../utils/users';
 import { ProjectSearch } from './NavbarProjectSearch';
 import NavbarUser from './NavbarUser';
 
-interface NavbarComponentProps {
-  setupWizardOpen: boolean;
-}
-
-const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupWizardOpen }) => {
+const NavbarComponent: React.FunctionComponent = () => {
   const { isOpen, setIsOpen } = useSidebar();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const impersonatedUser = getImpersonatedUser();
   const { theme, setTheme } = useTheme();
+
+  const setupWizardOpen = useContext(WizardOpenContext);
 
   const toggleTheme = () => {
     if (theme === 'dark') {
@@ -41,10 +40,6 @@ const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupW
     }
     setTheme('dark');
   };
-
-  useEffect(() => {
-    setIsOpen(!setupWizardOpen);
-  }, [setupWizardOpen]);
 
   const drawerToggle = (
     <span

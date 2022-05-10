@@ -122,19 +122,45 @@ export function serviceAuthorizer(req: Request, res: Response): void {
   return;
 }
 
-export async function impersonateAsAdmin(req: Request, res: Response): Promise<void> {
+lookupAccessTokenRouter.post('/internal/auth/hydrate-user-id', async (req, res) => {
   const impersonateHeader = 'X-Lunatrace-Impersonate-User-Id';
 
   const impersonateUserIdHeader = req.body.match_context.header[impersonateHeader];
   // if no impersonate header is present then return quickly and quietly
-  if (!impersonateUserIdHeader) {
-    res.send(req.body);
+  if (impersonateUserIdHeader) {
+    await impersonateAsAdmin(impersonateUserIdHeader, req, res);
     return;
   }
 
+  const failAndContinue = () => {
+    res.send({
+      ...req.body,
+    });
+    return;
+  };
+
+  const kratosUserId = req.body.subject;
+  if (!kratosUserId || kratosUserId === 'guest') {
+    return failAndContinue();
+  }
+
+  const hasuraRes = await hasura.GetUserFromIdentity({ id: kratosUserId });
+
+  const real_user_id = hasuraRes.identities_by_pk?.user?.id;
+
+  res.status(200).send({
+    ...req.body,
+    extra: {
+      real_user_id,
+    },
+  });
+  return;
+});
+
+export async function impersonateAsAdmin(impersonateUserIdHeader: any, req: Request, res: Response): Promise<void> {
   if (!isArray(impersonateUserIdHeader) || impersonateUserIdHeader.length !== 1) {
     log.info('provided header is not an array', {
-      impersonateHeader,
+      impersonateUserIdHeader,
     });
     res.send(req.body);
     return;
@@ -150,7 +176,7 @@ export async function impersonateAsAdmin(req: Request, res: Response): Promise<v
   const parsedRequest = validateUUIDValue(impersonateUserId);
   if (parsedRequest.error) {
     logger.info('unable to validate header', {
-      impersonateHeader,
+      impersonateUserId,
     });
     res.send(req.body);
     return;

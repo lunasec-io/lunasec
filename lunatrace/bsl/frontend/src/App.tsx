@@ -22,6 +22,7 @@ import { LayoutProvider } from './contexts/LayoutContext';
 import { SidebarProvider } from './contexts/SidebarContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { UserProvider } from './contexts/UserContext';
+import { WizardOpenProvider } from './contexts/WizardContext';
 import { routes } from './routes';
 import { store } from './store/store';
 import { startAtlas } from './utils/start-atlas-session-recording';
@@ -40,7 +41,9 @@ function App() {
           <ThemeProvider>
             <UserProvider>
               <SidebarProvider>
-                <LayoutProvider>{content}</LayoutProvider>
+                <LayoutProvider>
+                  <WizardOpenProvider>{content}</WizardOpenProvider>
+                </LayoutProvider>
               </SidebarProvider>
             </UserProvider>
           </ThemeProvider>

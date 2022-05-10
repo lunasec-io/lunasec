@@ -18,8 +18,6 @@ import {
   Topic_Related_Topics_Constraint,
   Topic_Vulnerabilities_Constraint,
   Topics_Insert_Input,
-  Topics_Obj_Rel_Insert_Input,
-  UpsertTopicsMutationVariables,
 } from '../hasura-api/generated';
 import { log } from '../utils/log';
 

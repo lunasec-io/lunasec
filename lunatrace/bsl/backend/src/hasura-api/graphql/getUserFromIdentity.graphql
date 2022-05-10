@@ -1,0 +1,7 @@
+query GetUserFromIdentity($id: uuid!) {
+    identities_by_pk(id: $id) {
+        user {
+            id
+        }
+    }
+}
