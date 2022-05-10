@@ -1,0 +1,25 @@
+name: LunaTrace
+
+# This workflow posts hasura changes as a comment.
+on:
+  pull_request:
+    branches: ['**']
+    paths:
+      - 'lunatrace/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Build
+        run: |-
+          (cd lunatrace/bsl/logger && yarn run compile)
+          (cd lunatrace/bsl/common && yarn run compile)
+          (cd lunatrace/bsl/backend && yarn run compile)
+          (cd lunatrace/bsl/frontend && yarn run build:docker)
+      - run: |-
+          (cd lunatrace/bsl && docker-compose up -d)
+          tools/service-scripts/wait-for-it.sh -h localhost -p 8080 -t 30
