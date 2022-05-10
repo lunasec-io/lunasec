@@ -9,6 +9,9 @@ type Query {
         orgId: uuid!
         buildId: uuid!
     ): SbomUploadUrlOutput
+    authenticatedRepoCloneUrl(
+        repoGithubId: Int!
+    ): AuthenticatedRepoCloneUrlOutput
     fakeQueryToHackHasuraBeingABuggyMess: String
 }
 
@@ -42,3 +45,6 @@ type UploadUrl {
     headers: jsonb!
 }
 
+type AuthenticatedRepoCloneUrlOutput {
+    url: String
+}

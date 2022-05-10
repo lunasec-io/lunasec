@@ -1,71 +1,68 @@
 table:
-  name: topics
   schema: public
+  name: topics
 array_relationships:
-- name: related_topics
-  using:
-    foreign_key_constraint_on:
-      column: from_topic_id
-      table:
-        name: topic_related_topics
-        schema: public
-- name: topic_vulnerabilities
-  using:
-    foreign_key_constraint_on:
-      column: topic_id
-      table:
-        name: topic_vulnerabilities
-        schema: public
+  - name: related_topics
+    using:
+      foreign_key_constraint_on:
+        column: from_topic_id
+        table:
+          schema: public
+          name: topic_related_topics
+  - name: topic_vulnerabilities
+    using:
+      foreign_key_constraint_on:
+        column: topic_id
+        table:
+          schema: public
+          name: topic_vulnerabilities
 insert_permissions:
-- permission:
-    backend_only: false
-    check: {}
-    columns:
-    - body
-    - created_at
-    - data_source_link
-    - id
-    - metadata
-    - metadata_schema_version
-    - severity
-    - summary
-    - tags
-    - title
-    - topic_unique_id
-    - updated_at
-  role: service
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - body
+        - created_at
+        - data_source_link
+        - id
+        - metadata
+        - metadata_schema_version
+        - summary
+        - tags
+        - title
+        - topic_unique_id
+        - updated_at
+      backend_only: false
 select_permissions:
-- permission:
-    columns:
-    - body
-    - created_at
-    - data_source_link
-    - id
-    - metadata
-    - metadata_schema_version
-    - severity
-    - summary
-    - tags
-    - title
-    - topic_unique_id
-    - updated_at
-    filter: {}
-  role: user
+  - role: user
+    permission:
+      columns:
+        - body
+        - created_at
+        - data_source_link
+        - id
+        - metadata
+        - metadata_schema_version
+        - summary
+        - tags
+        - title
+        - topic_unique_id
+        - updated_at
+      filter: {}
 update_permissions:
-- permission:
-    check: {}
-    columns:
-    - body
-    - created_at
-    - data_source_link
-    - id
-    - metadata
-    - metadata_schema_version
-    - severity
-    - summary
-    - tags
-    - title
-    - topic_unique_id
-    - updated_at
-    filter: {}
-  role: service
+  - role: service
+    permission:
+      columns:
+        - body
+        - created_at
+        - data_source_link
+        - id
+        - metadata
+        - metadata_schema_version
+        - summary
+        - tags
+        - title
+        - topic_unique_id
+        - updated_at
+      filter: {}
+      check: {}

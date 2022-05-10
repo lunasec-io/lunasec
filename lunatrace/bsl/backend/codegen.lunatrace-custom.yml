@@ -19,6 +19,7 @@
       "builds_source_type": "'cli'|'gui'|'pr'",
       "numeric": "number",
       "organization_user_role": "string",
+      "user_role": "'organization_user'|'lunatrace_admin'",
       "severity_enum": "string",
       "timestamp": "string",
       "timestamptz": "string",

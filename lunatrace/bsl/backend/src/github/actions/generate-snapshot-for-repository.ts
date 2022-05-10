@@ -13,109 +13,89 @@
  */
 import { generateSbomFromAsset } from '../../cli/call-cli';
 import { hasura } from '../../hasura-api';
-import { GetProjectIdFromGitUrlQuery, InsertBuildMutation } from '../../hasura-api/generated';
+import { InsertBuildMutation } from '../../hasura-api/generated';
 import { GenerateSnapshotForRepositoryRecord } from '../../types/sqs';
 import { MaybeError } from '../../types/util';
+import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { catchError, threwError, Try } from '../../utils/try';
 import { uploadSbomToS3 } from '../../workers/generate-sbom';
-import { getInstallationAccessToken } from '../auth';
+
+import { getRepoCloneUrlWithAuth } from './get-repo-clone-url-with-auth';
 
 export async function generateSnapshotForRepository(
   record: GenerateSnapshotForRepositoryRecord
 ): Promise<MaybeError<undefined>> {
-  log.info(`generating SBOM for repository: ${record.cloneUrl} at branch name ${record.gitBranch}`);
+  const logger = log.child('repo-snapshot', {
+    record,
+  });
 
-  const projectIdRes: Try<GetProjectIdFromGitUrlQuery> = await catchError(
-    async () =>
-      await hasura.GetProjectIdFromGitUrl({
-        github_id: record.repoGithubId,
-      })
-  );
+  logger.info('creating authed git clone url');
 
-  if (threwError(projectIdRes)) {
-    const msg = 'unable to get project from git url in pull request webhook';
-    log.error(msg);
-    return {
-      error: true,
-      msg,
-    };
-  }
+  const cloneUrlWithAuth = await getRepoCloneUrlWithAuth(record.repoGithubId);
 
-  if (projectIdRes.github_repositories.length === 0) {
-    const msg = 'no projects were found with provided git url in pull request webhook';
-    log.error(msg);
-    return {
-      error: true,
-      msg,
-    };
-  }
-
-  const projectId = projectIdRes.github_repositories[0].project.id as string;
-
-  const installationToken = await getInstallationAccessToken(record.installationId);
-
-  if (installationToken.error) {
-    const msg = 'unable to get installation token';
-    log.error(msg, {
-      error: installationToken.msg,
+  if (cloneUrlWithAuth.error) {
+    logger.error('could not create authed git clone url', {
+      error: cloneUrlWithAuth.msg,
     });
-    return {
-      error: true,
-      msg,
-    };
+    return newError('could not create authed git clone url');
   }
+  const repoClone = cloneUrlWithAuth.res;
 
-  const parsedGitUrl = new URL(record.cloneUrl);
-  parsedGitUrl.username = 'x-access-token';
-  parsedGitUrl.password = installationToken.res;
+  logger.info('generating SBOM for repository');
 
-  const gzippedSbom = generateSbomFromAsset('repository', parsedGitUrl.toString(), record.gitBranch);
+  const gzippedSbom = generateSbomFromAsset('repository', repoClone.cloneUrl, record.gitBranch);
 
-  log.info('Creating a new build for repository', {
-    gitUrl: parsedGitUrl,
+  logger.info('Creating a new build for repository', {
+    gitUrl: repoClone.projectId,
   });
 
   const insertBuildResponse: Try<InsertBuildMutation> = await catchError(
     async () =>
       await hasura.InsertBuild({
-        project_id: projectId,
+        project_id: repoClone.projectId,
         pull_request_id: record.pullRequestId,
         source_type: record.sourceType,
       })
   );
 
   if (threwError(insertBuildResponse)) {
-    log.error('Failed to insert a new build', {
+    const msg = 'failed to insert a new build';
+    logger.error(msg, {
       error: insertBuildResponse,
     });
-    throw new Error('Failed to insert a new build');
+    return newError(msg);
   }
 
   const { insert_builds_one } = insertBuildResponse;
 
-  log.info('Insert Build Response:', {
+  logger.info('Insert Build Response:', {
     insert_builds_one,
   });
 
   if (!insert_builds_one || insert_builds_one.id === undefined) {
-    log.error('Missing id in insert build response', {
+    const msg = 'missing id in insert build response';
+    logger.error(msg, {
       insert_builds_one,
     });
-    throw new Error('Missing id in insert build response');
+    return newError(msg);
   }
 
   const buildId = insert_builds_one.id as string;
 
-  log.info('Uploading result to S3:', {
+  logger.info('Uploading result to S3:', {
     installationId: record.installationId.toString(),
     buildId,
   });
 
-  await uploadSbomToS3(record.installationId.toString(), buildId, gzippedSbom);
+  const res = await catchError(uploadSbomToS3(record.installationId.toString(), buildId, gzippedSbom));
+  if (threwError(res)) {
+    logger.error('unable to upload sbom to s3', {
+      buildId,
+      message: res.message,
+    });
+    return newError(res.message);
+  }
 
-  return {
-    error: false,
-    res: undefined,
-  };
+  return newResult(undefined);
 }

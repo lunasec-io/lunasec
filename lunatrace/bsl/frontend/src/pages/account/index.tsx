@@ -11,5 +11,5 @@
  * limitations under the License.
  *
  */
-export * from './account';
+export * from './admin';
 export * from './registration';
