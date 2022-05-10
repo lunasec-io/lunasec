@@ -18,6 +18,7 @@ jobs:
           fetch-depth: 1
       - name: Build
         run: |-
+          set -x
           (cd lunatrace/bsl/logger && yarn run compile)
           (cd lunatrace/bsl/common && yarn run compile)
           (cd lunatrace/bsl/backend && yarn run compile)
