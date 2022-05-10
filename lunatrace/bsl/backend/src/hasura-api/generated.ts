@@ -4684,6 +4684,24 @@ export type Users = {
   kratos_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   kratos_identity?: Maybe<Identities>;
+  /** An array relationship */
+  organization_users: Array<Organization_User>;
+};
+
+
+/**
+ * LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.)
+ *
+ *
+ * columns and relationships of "users"
+ *
+ */
+export type UsersOrganization_UsersArgs = {
+  distinct_on?: InputMaybe<Array<Organization_User_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Organization_User_Order_By>>;
+  where?: InputMaybe<Organization_User_Bool_Exp>;
 };
 
 /** order by aggregate values of table "users" */
@@ -4703,6 +4721,7 @@ export type Users_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_identity?: InputMaybe<Identities_Bool_Exp>;
+  organization_users?: InputMaybe<Organization_User_Bool_Exp>;
 };
 
 /** unique or primary key constraints on table "users" */
@@ -4721,6 +4740,7 @@ export type Users_Insert_Input = {
   github_node_id?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   kratos_id?: InputMaybe<Scalars['uuid']>;
+  organization_users?: InputMaybe<Organization_User_Arr_Rel_Insert_Input>;
 };
 
 /** order by max() on columns of table "users" */
@@ -4769,6 +4789,7 @@ export type Users_Order_By = {
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
   kratos_identity?: InputMaybe<Identities_Order_By>;
+  organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
 };
 
 /** primary key columns input for table: users */
