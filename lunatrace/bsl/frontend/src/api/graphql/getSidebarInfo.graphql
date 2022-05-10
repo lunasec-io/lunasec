@@ -27,10 +27,4 @@ query GetSidebarInfo($users_filter: users_bool_exp = {}) {
             }
         }
     }
-
-    users(where: $users_filter) {
-        role
-        id
-        kratos_id
-    }
 }

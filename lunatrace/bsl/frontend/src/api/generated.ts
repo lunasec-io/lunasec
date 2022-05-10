@@ -4107,6 +4107,13 @@ export type GetBuildDetailsQueryVariables = Exact<{
 
 export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, source_type: any, project_id?: any | null, s3_url?: string | null, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
 
+export type GetCurrentUserInfoQueryVariables = Exact<{
+  kratos_id: Scalars['uuid'];
+}>;
+
+
+export type GetCurrentUserInfoQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', role: any }> };
+
 export type GetLunaTraceUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4136,7 +4143,7 @@ export type GetSidebarInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }>, users: Array<{ __typename?: 'users', role: any, id: any, kratos_id?: any | null }> };
+export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }> };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -4281,6 +4288,13 @@ export const GetBuildDetailsDocument = `
         }
       }
     }
+  }
+}
+    `;
+export const GetCurrentUserInfoDocument = `
+    query GetCurrentUserInfo($kratos_id: uuid!) {
+  users(where: {kratos_id: {_eq: $kratos_id}}) {
+    role
   }
 }
     `;
@@ -4445,11 +4459,6 @@ export const GetSidebarInfoDocument = `
       }
     }
   }
-  users(where: $users_filter) {
-    role
-    id
-    kratos_id
-  }
 }
     `;
 export const SearchVulnerabilitiesDocument = `
@@ -4589,6 +4598,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables>({
       query: (variables) => ({ document: GetBuildDetailsDocument, variables })
+    }),
+    GetCurrentUserInfo: build.query<GetCurrentUserInfoQuery, GetCurrentUserInfoQueryVariables>({
+      query: (variables) => ({ document: GetCurrentUserInfoDocument, variables })
     }),
     GetLunaTraceUsers: build.query<GetLunaTraceUsersQuery, GetLunaTraceUsersQueryVariables | void>({
       query: (variables) => ({ document: GetLunaTraceUsersDocument, variables })

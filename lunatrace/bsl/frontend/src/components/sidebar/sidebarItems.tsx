@@ -11,20 +11,20 @@
  * limitations under the License.
  *
  */
+import { useContext } from 'react';
 import { AlertOctagon, LogIn, Plus, User } from 'react-feather';
 import { AiFillGithub } from 'react-icons/ai';
 import { BiUnlink } from 'react-icons/bi';
 import { RiParkingFill } from 'react-icons/ri';
 
 import { GetSidebarInfoQuery, Scalars } from '../../api/generated';
-import useAppSelector from '../../hooks/useAppSelector';
-import { userIsAdmin } from '../../store/slices/authentication';
+import { UserContext } from '../../contexts/UserContext';
 import { userHasAnyOrganizations } from '../../utils/organizations';
 
 import { NavSection, SidebarItem } from './types';
 
 export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAuthenticated: boolean): NavSection[] {
-  const isAdmin = useAppSelector(userIsAdmin);
+  const { isAdmin } = useContext(UserContext);
 
   if (!userHasAnyOrganizations(data)) {
     return [];
