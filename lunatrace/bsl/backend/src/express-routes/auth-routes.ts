@@ -123,15 +123,6 @@ export function serviceAuthorizer(req: Request, res: Response): void {
 }
 
 lookupAccessTokenRouter.post('/internal/auth/hydrate-user-id', async (req, res) => {
-  const impersonateHeader = 'X-Lunatrace-Impersonate-User-Id';
-
-  const impersonateUserIdHeader = req.body.match_context.header[impersonateHeader];
-  // if no impersonate header is present then return quickly and quietly
-  if (impersonateUserIdHeader) {
-    await impersonateAsAdmin(impersonateUserIdHeader, req, res);
-    return;
-  }
-
   const failAndContinue = () => {
     res.send({
       ...req.body,
@@ -144,42 +135,51 @@ lookupAccessTokenRouter.post('/internal/auth/hydrate-user-id', async (req, res) 
     return failAndContinue();
   }
 
+  const userId = await impersonateAsAdmin(kratosUserId, req, res);
+  const impersonateOverride = userId !== kratosUserId ? { impersonate_user_id: userId } : {};
+
   const hasuraRes = await hasura.GetUserFromIdentity({ id: kratosUserId });
 
-  const real_user_id = hasuraRes.identities_by_pk?.user?.id;
+  const realUserId = hasuraRes.identities_by_pk?.user?.id;
 
   res.status(200).send({
     ...req.body,
     extra: {
-      real_user_id,
+      ...impersonateOverride,
+      real_user_id: realUserId,
     },
   });
   return;
 });
 
-export async function impersonateAsAdmin(impersonateUserIdHeader: any, req: Request, res: Response): Promise<void> {
+export async function impersonateAsAdmin(kratosUserId: string, req: Request, res: Response): Promise<string> {
+  const logger = log.child('impersonate-as-admin', {
+    kratos_id: kratosUserId,
+  });
+
+  const impersonateHeader = 'X-Lunatrace-Impersonate-User-Id';
+  const impersonateUserIdHeader = req.body.match_context.header[impersonateHeader];
+
+  // if no impersonate header is present then return quickly and quietly
+  if (!impersonateUserIdHeader) {
+    return kratosUserId;
+  }
+
   if (!isArray(impersonateUserIdHeader) || impersonateUserIdHeader.length !== 1) {
     log.info('provided header is not an array', {
       impersonateUserIdHeader,
     });
-    res.send(req.body);
-    return;
+    return kratosUserId;
   }
 
   const impersonateUserId = impersonateUserIdHeader[0];
-
-  const kratosUserId = req.body.subject;
-  const logger = log.child('impersonate-as-admin', {
-    kratos_id: kratosUserId,
-  });
 
   const parsedRequest = validateUUIDValue(impersonateUserId);
   if (parsedRequest.error) {
     logger.info('unable to validate header', {
       impersonateUserId,
     });
-    res.send(req.body);
-    return;
+    return kratosUserId;
   }
 
   const userToImpersonate = parsedRequest.res;
@@ -191,18 +191,12 @@ export async function impersonateAsAdmin(impersonateUserIdHeader: any, req: Requ
       userToImpersonate,
     });
     res.send(req.body);
-    return;
+    return kratosUserId;
   }
 
   logger.info('impersonating user', {
     userToImpersonate,
   });
 
-  res.send({
-    ...req.body,
-    extra: {
-      userToImpersonate,
-    },
-  });
-  return;
+  return userToImpersonate;
 }
