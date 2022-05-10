@@ -19,7 +19,6 @@ import GithubButton from 'react-github-login-button';
 import { NodeInputProps } from './helpers';
 
 export function NodeInputSubmit<T>({ node, attributes, setValue, disabled, dispatchSubmit }: NodeInputProps) {
-  console.log('auth button value is ', attributes.value);
   if (attributes.value === 'github-oauth' || attributes.value === 'github-app') {
     return (
       <>

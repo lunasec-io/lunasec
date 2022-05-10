@@ -125,7 +125,11 @@ export const Home: React.FunctionComponent = () => {
             <ul>
               <li>
                 <b>
-                  <a href="https://www.lunasec.io/docs/pages/lunadefend/overview/introduction/" target="_blank" rel="prefetch">
+                  <a
+                    href="https://www.lunasec.io/docs/pages/lunadefend/overview/introduction/"
+                    target="_blank"
+                    rel="prefetch"
+                  >
                     Main Documentation
                   </a>
                   :
