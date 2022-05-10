@@ -9,7 +9,7 @@ type Query {
         orgId: uuid!
         buildId: uuid!
     ): SbomUploadUrlOutput
-    SBOMURL(
+    sbomUrl(
         buildId: uuid!
     ): String
     fakeQueryToHackHasuraBeingABuggyMess: String
