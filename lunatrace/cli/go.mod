@@ -1,4 +1,4 @@
-module lunasec/lunatrace
+module github.com/lunasec-io/lunasec/lunatrace/cli
 
 go 1.17
 

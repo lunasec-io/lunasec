@@ -17,8 +17,8 @@ package snapshot
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
-	"lunasec/lunatrace/pkg/constants"
-	model "lunasec/lunatrace/snapshot/syftmodel"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	model "github.com/lunasec-io/lunasec/lunatrace/cli/pkg/inventory/syftmodel"
 	"sort"
 	"strconv"
 

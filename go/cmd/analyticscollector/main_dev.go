@@ -16,7 +16,7 @@
 
 package main
 
-import "lunasec/lunadefend/pkg/analyticscollector"
+import "github.com/lunasec-io/lunasec/go/pkg/analyticscollector"
 
 func main() {
 	analyticscollector.Handler()

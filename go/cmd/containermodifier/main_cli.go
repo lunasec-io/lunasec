@@ -20,7 +20,7 @@ import (
 	"log"
 	"os"
 
-	"lunasec/lunadefend/controller"
+	"github.com/lunasec-io/lunasec/go/controller"
 	"github.com/urfave/cli/v2"
 )
 

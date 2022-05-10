@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"html/template"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"net/http"
 )
 
