@@ -21,17 +21,17 @@ insert_permissions:
     permission:
       check: {}
       columns:
-        - tags
-        - metadata_schema_version
-        - metadata
         - body
+        - created_at
         - data_source_link
+        - id
+        - metadata
+        - metadata_schema_version
         - summary
+        - tags
         - title
         - topic_unique_id
-        - created_at
         - updated_at
-        - id
       backend_only: false
 select_permissions:
   - role: user

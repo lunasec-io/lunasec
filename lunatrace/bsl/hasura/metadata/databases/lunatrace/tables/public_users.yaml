@@ -28,7 +28,6 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - github_id
         - github_node_id
         - id
         - kratos_id

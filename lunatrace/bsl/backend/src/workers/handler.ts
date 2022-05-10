@@ -14,7 +14,7 @@
 import { DeleteMessageCommand, Message, ReceiveMessageCommand, ReceiveMessageCommandOutput } from '@aws-sdk/client-sqs';
 
 import { sqsClient } from '../aws/sqs-client';
-import { getQueueHandlerConfig, getServerConfig, getWorkerConfig } from '../config';
+import { getQueueHandlerConfig, getWorkerConfig } from '../config';
 import { generateSnapshotForRepository } from '../github/actions/generate-snapshot-for-repository';
 import { createGithubWebhookInterceptor } from '../github/webhooks';
 import { QueueHandlerWorkerConfig } from '../types/config';

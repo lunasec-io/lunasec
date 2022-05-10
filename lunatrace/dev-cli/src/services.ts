@@ -41,9 +41,7 @@ export const hasura = tmuxPane(['cd hasura', `${waitForGraphqlServer} && sleep 3
 export const frontend = tmuxPane(['cd frontend', 'yarn run start:server']);
 
 export const dockerCompose = tmuxPane([
-  'sudo docker-compose down',
-  `${waitForBackendServer} && sleep 1`,
-  'sudo docker-compose up',
+  `sudo docker-compose down && ${waitForBackendServer} && sleep 1 && sudo docker-compose up`,
 ]);
 
 export const manifestWorker = tmuxPane(['cd backend', `${manifestWorkEnv} yarn run start:worker`]);

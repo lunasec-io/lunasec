@@ -24,9 +24,8 @@ import { newError, newResult } from '../utils/errors';
 import { log } from '../utils/log';
 import { catchError, threwError } from '../utils/try';
 
-const bucketConfig = getEtlBucketConfig();
-
 export async function uploadSbomToS3(organizationId: string, buildId: string, gzippedSbom: zlib.Gzip) {
+  const bucketConfig = getEtlBucketConfig();
   // upload the sbom to s3, streaming
   const newSbomS3Key = aws.generateSbomS3Key(organizationId, buildId);
   const s3Url = await aws.uploadGzipFileToS3(newSbomS3Key, bucketConfig.sbomBucket, gzippedSbom);

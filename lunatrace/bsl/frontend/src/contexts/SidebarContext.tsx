@@ -34,7 +34,7 @@ const initialState = {
 const SidebarContext = React.createContext(initialState);
 
 function SidebarProvider({ children }: { children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(window.innerWidth > 992);
   const [position, setPosition] = useSettingsState('sidebarPosition', SIDEBAR_POSITION.LEFT);
   const [behavior, setBehavior] = useSettingsState('sidebarBehavior', SIDEBAR_BEHAVIOR.STICKY);
 
