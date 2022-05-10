@@ -46,7 +46,7 @@ export async function newApp() {
 
   app.use((req, res, next) => {
     const requestId: string = randomUUID();
-    const loggerFields = { loggerName: 'express-logger', requestId, path: req.path };
+    const loggerFields = { loggerName: 'express-logger', requestId, path: req.path, method: req.method };
     log.log(loggerFields, 'Request Received');
     // This will now be accessible anywhere in this callstack by doing asyncLocalStorage.getStore() which the logger does internally
     // This has a serious performance hit to promises so if it's bad we should remove it

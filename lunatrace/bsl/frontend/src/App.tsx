@@ -21,6 +21,7 @@ import { LoadSession } from './components/auth/LoadSession';
 import { LayoutProvider } from './contexts/LayoutContext';
 import { SidebarProvider } from './contexts/SidebarContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { WizardOpenProvider } from './contexts/WizardContext';
 import { routes } from './routes';
 import { store } from './store/store';
 import { startAtlas } from './utils/start-atlas-session-recording';
@@ -38,7 +39,9 @@ function App() {
         <LoadSession>
           <ThemeProvider>
             <SidebarProvider>
-              <LayoutProvider>{content}</LayoutProvider>
+              <LayoutProvider>
+                <WizardOpenProvider>{content}</WizardOpenProvider>
+              </LayoutProvider>
             </SidebarProvider>
           </ThemeProvider>
         </LoadSession>

@@ -38,6 +38,9 @@ const appApi = generatedApi.enhanceEndpoints({
     GetBuildDetails: {
       providesTags: ['Builds'],
     },
+    InsertPersonalProjectAndOrg: {
+      invalidatesTags: ['Projects'],
+    },
     GetProject: {
       providesTags: ['ProjectDetails'],
     },

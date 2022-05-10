@@ -12,10 +12,9 @@
  *
  */
 import { DeleteMessageCommand, Message, ReceiveMessageCommand, ReceiveMessageCommandOutput } from '@aws-sdk/client-sqs';
-import Express from 'express';
 
 import { sqsClient } from '../aws/sqs-client';
-import { getQueueHandlerConfig, getServerConfig, getWorkerConfig } from '../config';
+import { getQueueHandlerConfig, getWorkerConfig } from '../config';
 import { createGithubWebhookInterceptor } from '../github/webhooks';
 import { QueueHandlerWorkerConfig } from '../types/config';
 import {
