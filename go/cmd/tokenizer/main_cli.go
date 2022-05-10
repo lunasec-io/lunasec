@@ -20,7 +20,7 @@ import (
 	"log"
 	"os"
 
-	"lunasec/lunadefend/pkg/tokenizer"
+	"github.com/lunasec-io/lunasec/go/pkg/tokenizer"
 	"github.com/urfave/cli/v2"
 )
 
