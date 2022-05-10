@@ -30,6 +30,13 @@ array_relationships:
       table:
         name: related_vulnerabilities
         schema: public
+- name: topic_vulnerabilities
+  using:
+    foreign_key_constraint_on:
+      column: vulnerability_id
+      table:
+        name: topic_vulnerabilities
+        schema: public
 - name: vulnerability_packages
   using:
     foreign_key_constraint_on:
