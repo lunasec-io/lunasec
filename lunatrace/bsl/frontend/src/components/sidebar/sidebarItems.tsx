@@ -17,15 +17,10 @@ import { BiUnlink } from 'react-icons/bi';
 import { RiParkingFill } from 'react-icons/ri';
 
 import { GetSidebarInfoQuery } from '../../api/generated';
-import { userHasAnyOrganizations } from '../../utils/organizations';
 
 import { NavSection, SidebarItem } from './types';
 
 export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAuthenticated: boolean): NavSection[] {
-  if (!userHasAnyOrganizations(data)) {
-    return [];
-  }
-
   const projectsSection: SidebarItem[] = !data
     ? []
     : data.organizations.map((o) => {

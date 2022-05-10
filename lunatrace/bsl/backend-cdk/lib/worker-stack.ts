@@ -11,21 +11,12 @@
  * limitations under the License.
  *
  */
-import { SubnetType } from '@aws-cdk/aws-ec2';
-import {
-  Cluster,
-  ContainerImage,
-  DeploymentControllerType,
-  Secret as EcsSecret,
-  FargatePlatformVersion,
-  LogDriver,
-} from '@aws-cdk/aws-ecs';
+import { Cluster, ContainerImage, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
-import { ApplicationLoadBalancedFargateService, ScheduledFargateTask } from '@aws-cdk/aws-ecs-patterns';
-import { Schedule } from '@aws-cdk/aws-events';
+import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
-import { Construct, Duration } from '@aws-cdk/core';
+import { Construct } from '@aws-cdk/core';
 
 import { getContainerTarballPath } from './util';
 import { WorkerStorageStackState } from './worker-storage-stack';
