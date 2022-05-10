@@ -28,8 +28,8 @@
           url: String!
         }
 
-        type Query { sbomUrl(buildId: UUID!): String
-          fakeQueryToHackHasuraBeingABuggyMess: String
+        type Query { fakeQueryToHackHasuraBeingABuggyMess: String
+          sbomUrl(buildId: UUID!): String
         }
   - role: cli
     definition:
