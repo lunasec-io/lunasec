@@ -1,7 +1,7 @@
-- name: custom-backend-schema
+- name: lunatrace-custom
   definition:
     url_from_env: REMOTE_SCHEMA_URL
-    timeout_seconds: 60
+    timeout_seconds: 20
     customization:
       type_names:
         mapping:
@@ -14,13 +14,18 @@
     definition:
       schema: |-
         schema  { query: Query }
+
         scalar JSON
+
         scalar UUID
+
         type Query { presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
         }
+
         type SbomUploadUrlOutput { error: Boolean!
           uploadUrl: UploadUrl
         }
+
         type UploadUrl { headers: JSON!
           url: String!
         }
@@ -28,14 +33,19 @@
     definition:
       schema: |-
         schema  { query: Query mutation: Mutation }
+
         scalar JSON
+
         scalar UUID
+
         type Mutation { presignManifestUpload(project_id: UUID!): PresignedUrlResponse
         }
+
         type PresignedUrlResponse { bucket: String!
           headers: JSON!
           key: String!
           url: String!
         }
+
         type Query { fakeQueryToHackHasuraBeingABuggyMess: String
         }
