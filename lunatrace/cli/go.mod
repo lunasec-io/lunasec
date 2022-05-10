@@ -2,12 +2,6 @@ module github.com/lunasec-io/lunasec/lunatrace/cli
 
 go 1.17
 
-replace (
-	lunasec/lunadefend => ./../../go
-	lunasec/lunatrace => ./
-	lunasec/lunatrace/snapshot => ./pkg/snapshot
-)
-
 require (
 	github.com/blang/semver/v4 v4.0.0
 	github.com/breadchris/ldapserver v1.1.0
