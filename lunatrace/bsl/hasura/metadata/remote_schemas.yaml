@@ -10,6 +10,22 @@
     forward_client_headers: true
   comment: ""
   permissions:
+    - role: cli
+      definition:
+        schema: |
+          scalar JSON
+          type Query {
+          	presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
+          }
+          type SbomUploadUrlOutput {
+          	error: Boolean!
+          	uploadUrl: UploadUrl
+          }
+          scalar UUID
+          type UploadUrl {
+          	headers: JSON!
+          	url: String!
+          }
     - role: user
       definition:
         schema: |
@@ -28,22 +44,6 @@
           }
           type Query {
           	authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
-          	presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
-          }
-          type SbomUploadUrlOutput {
-          	error: Boolean!
-          	uploadUrl: UploadUrl
-          }
-          scalar UUID
-          type UploadUrl {
-          	headers: JSON!
-          	url: String!
-          }
-    - role: cli
-      definition:
-        schema: |
-          scalar JSON
-          type Query {
           	presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
           }
           type SbomUploadUrlOutput {
