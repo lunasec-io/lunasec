@@ -21,6 +21,7 @@ import { LoadSession } from './components/auth/LoadSession';
 import { LayoutProvider } from './contexts/LayoutContext';
 import { SidebarProvider } from './contexts/SidebarContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { UserProvider } from './contexts/UserContext';
 import { WizardOpenProvider } from './contexts/WizardContext';
 import { routes } from './routes';
 import { store } from './store/store';
@@ -38,11 +39,13 @@ function App() {
       <StoreProvider store={store}>
         <LoadSession>
           <ThemeProvider>
-            <SidebarProvider>
-              <LayoutProvider>
-                <WizardOpenProvider>{content}</WizardOpenProvider>
-              </LayoutProvider>
-            </SidebarProvider>
+            <UserProvider>
+              <SidebarProvider>
+                <LayoutProvider>
+                  <WizardOpenProvider>{content}</WizardOpenProvider>
+                </LayoutProvider>
+              </SidebarProvider>
+            </UserProvider>
           </ThemeProvider>
         </LoadSession>
       </StoreProvider>

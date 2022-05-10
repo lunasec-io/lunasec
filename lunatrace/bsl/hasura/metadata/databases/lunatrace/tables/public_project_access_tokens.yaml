@@ -1,70 +1,70 @@
 table:
-  name: project_access_tokens
   schema: public
+  name: project_access_tokens
 object_relationships:
-- name: created_by_user
-  using:
-    foreign_key_constraint_on: created_by_user_id
-- name: project
-  using:
-    foreign_key_constraint_on: project_uuid
+  - name: created_by_user
+    using:
+      foreign_key_constraint_on: created_by_user_id
+  - name: project
+    using:
+      foreign_key_constraint_on: project_uuid
 insert_permissions:
-- permission:
-    backend_only: false
-    check:
-      project:
-        organization:
-          organization_users:
-            user:
-              kratos_id:
-                _eq: X-Hasura-User-Id
-    columns:
-    - access_token
-    - name
-    - project_uuid
-    set:
-      created_by_user_id: X-Hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      check:
+        project:
+          organization:
+            organization_users:
+              user:
+                kratos_id:
+                  _eq: X-Hasura-User-Id
+      set:
+        created_by_user_id: X-Hasura-User-Id
+      columns:
+        - access_token
+        - name
+        - project_uuid
+      backend_only: false
 select_permissions:
-- permission:
-    columns:
-    - access_token
-    - id
-    - project_uuid
-    filter:
-      access_token:
-        _eq: X-Hasura-Access-Token
-  role: cli
-- permission:
-    columns:
-    - access_token
-    - id
-    - project_uuid
-    filter: {}
-  role: service
-- permission:
-    columns:
-    - created_at
-    - created_by_user_id
-    - id
-    - last_used
-    - name
-    - project_uuid
-    filter:
-      project:
-        organization:
-          organization_users:
-            user:
-              kratos_id:
-                _eq: X-Hasura-User-Id
-  role: user
+  - role: cli
+    permission:
+      columns:
+        - access_token
+        - id
+        - project_uuid
+      filter:
+        access_token:
+          _eq: X-Hasura-Access-Token
+  - role: service
+    permission:
+      columns:
+        - access_token
+        - id
+        - project_uuid
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - created_at
+        - created_by_user_id
+        - id
+        - last_used
+        - name
+        - project_uuid
+      filter:
+        project:
+          organization:
+            organization_users:
+              user:
+                kratos_id:
+                  _eq: X-Hasura-User-Id
 delete_permissions:
-- permission:
-    filter:
-      project:
-        organization:
-          organization_users:
-            user:
-              kratos_id:
-                _eq: X-Hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      filter:
+        project:
+          organization:
+            organization_users:
+              user:
+                kratos_id:
+                  _eq: X-Hasura-User-Id

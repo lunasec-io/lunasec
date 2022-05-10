@@ -1,96 +1,93 @@
 table:
-  name: organization_user
   schema: public
+  name: organization_user
 object_relationships:
-- name: organization
-  using:
-    foreign_key_constraint_on: organization_id
-- name: user
-  using:
-    foreign_key_constraint_on: user_id
+  - name: organization
+    using:
+      foreign_key_constraint_on: organization_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
 insert_permissions:
-- permission:
-    backend_only: false
-    check: {}
-    columns:
-    - created_at
-    - updated_at
-    - role
-    - id
-    - organization_id
-    - user_id
-  role: service
-- permission:
-    backend_only: false
-    check:
-      _or:
-      - organization:
-          creator_id:
-            _eq: X-Hasura-Real-User-Id
-      - organization:
-          organization_users:
-            _and:
-            - user:
-                kratos_id:
-                  _eq: X-Hasura-User-Id
-            - role:
-                _eq: admin
-    columns:
-    - organization_id
-    - role
-    - user_id
-    set:
-      user_id: x-hasura-Real-User-Id
-  role: user
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - created_at
+        - updated_at
+        - role
+        - id
+        - organization_id
+        - user_id
+      backend_only: false
+  - role: user
+    permission:
+      check:
+        _or:
+          - organization:
+              creator_id:
+                _eq: X-Hasura-Real-User-Id
+          - organization:
+              organization_users:
+                _and:
+                  - user:
+                      kratos_id:
+                        _eq: X-Hasura-User-Id
+                  - role:
+                      _eq: admin
+      columns:
+        - organization_id
+        - role
+        - user_id
 select_permissions:
-- permission:
-    columns:
-    - created_at
-    - updated_at
-    - role
-    - id
-    - organization_id
-    - user_id
-    filter: {}
-  role: service
-- permission:
-    columns:
-    - created_at
-    - id
-    - organization_id
-    - role
-    - updated_at
-    - user_id
-    filter:
-      organization:
-        organization_users:
-          user:
-            kratos_id:
-              _eq: X-Hasura-User-Id
-  role: user
-update_permissions:
-- permission:
-    check: {}
-    columns:
-    - created_at
-    - updated_at
-    - role
-    - id
-    - organization_id
-    - user_id
-    filter: {}
-  role: service
-- permission:
-    check: null
-    columns:
-    - role
-    filter:
-      organization:
-        organization_users:
-          _and:
-          - user:
+  - role: service
+    permission:
+      columns:
+        - created_at
+        - updated_at
+        - role
+        - id
+        - organization_id
+        - user_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - created_at
+        - id
+        - organization_id
+        - role
+        - updated_at
+        - user_id
+      filter:
+        organization:
+          organization_users:
+            user:
               kratos_id:
                 _eq: X-Hasura-User-Id
-          - role:
-              _eq: admin
-  role: user
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - created_at
+        - updated_at
+        - role
+        - id
+        - organization_id
+        - user_id
+      filter: {}
+      check: {}
+  - role: user
+    permission:
+      columns:
+        - role
+      filter:
+        organization:
+          organization_users:
+            _and:
+              - user:
+                  kratos_id:
+                    _eq: X-Hasura-User-Id
+              - role:
+                  _eq: admin
+      check: null

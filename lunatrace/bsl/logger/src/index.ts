@@ -15,25 +15,66 @@ import { AsyncLocalStorage } from 'async_hooks';
 import * as util from 'util';
 
 import { getCallSite } from './callsite';
-import { BaseLogObj, LevelChoice, LoggerOptions, LogMethodArgs, LogObj, Transport } from './types';
+import { LevelChoice, LoggerContext, LoggerOptions, LogMethodArgs, LogObj, Transport } from './types';
 
 export * from './types';
 export * from './json-transport';
 
-const defaultLoggerFields: BaseLogObj = {
-  loggerName: 'default',
+const defaultLoggerName = 'default';
+
+const defaultLoggerOptions: LoggerOptions = {
+  loggerName: defaultLoggerName,
 };
 
+const defaultLoggerContext: LoggerContext = {};
+
+function mergeObjectIntoRecord(record: Record<string, string>, obj: object): Record<string, string> {
+  const copiedRecord = {
+    ...record,
+  };
+  Object.entries(obj).forEach(([k, v]) => {
+    copiedRecord[k] = anythingToString(v);
+  });
+  return copiedRecord;
+}
+
+function anythingToString(arg: unknown): string {
+  if (typeof arg === 'string') {
+    return arg;
+  }
+  if (arg instanceof Error) {
+    return arg.stack || arg.toString();
+  }
+  return util.inspect(arg);
+}
+
 export class LunaLogger {
-  options: LoggerOptions = {};
-  baseLogObj: BaseLogObj;
-  storage: AsyncLocalStorage<{ additionalFields: Record<string, unknown> }>;
+  options: LoggerOptions = defaultLoggerOptions;
+  context: Record<string, string>;
+  storage: AsyncLocalStorage<{ context: LoggerContext }>;
   public transports: Array<Transport> = [];
 
   constructor(options?: LoggerOptions, additionalFields?: Record<string, unknown>) {
-    this.options = options || {};
+    this.options = options || defaultLoggerOptions;
     this.storage = new AsyncLocalStorage();
-    this.baseLogObj = { ...defaultLoggerFields, ...additionalFields };
+    this.context = {
+      // if additional fields are provided, then merge them into the default logger fields
+      ...(additionalFields ? mergeObjectIntoRecord(defaultLoggerContext, additionalFields) : {}),
+    };
+  }
+
+  public child(name: string, additionalFields?: Record<string, unknown>): LunaLogger {
+    const newContext = mergeObjectIntoRecord(this.context, additionalFields || {});
+    const childLogger = new LunaLogger(
+      {
+        ...this.options,
+        loggerName: name,
+      },
+      newContext
+    );
+    childLogger.transports = this.transports;
+    childLogger.storage = this.storage; // Bit sketchy because child loggers will be able to write to the parents or other child loggers storage using provideFields()..ok for now though and limited to one thread
+    return childLogger;
   }
 
   // This node wizardry is like stack / thread storage.  Anywhere in this callstack, these fields will be used by the logger
@@ -42,8 +83,9 @@ export class LunaLogger {
     return new Promise((resolve, reject) => {
       // .run will overwrite the previous store (if any) from any higher level provideFields calls, so we merge them together here before overwriting
       const existing = this.storage.getStore();
-      const newFields: Record<string, unknown> = existing ? { ...existing.additionalFields, ...fields } : { ...fields };
-      this.storage.run({ additionalFields: newFields }, () => {
+      const context = existing ? existing.context : {};
+      const newFields: LoggerContext = mergeObjectIntoRecord(context, fields);
+      this.storage.run({ context: newFields }, () => {
         // Note that if the callback returns a promise, this will be handled cleanly by resolve()..so we can pass async () =>  functions
         resolve(callback());
       });
@@ -74,26 +116,22 @@ export class LunaLogger {
     this.dolog('error', args);
   }
 
-  public child(additionalFields: Record<string, unknown>): LunaLogger {
-    const childLogger = new LunaLogger(this.options, { ...this.baseLogObj, ...additionalFields });
-    childLogger.transports = this.transports;
-    childLogger.storage = this.storage; // Bit sketchy because child loggers will be able to write to the parents or other child loggers storage using provideFields()..ok for now though and limited to one thread
-    return childLogger;
-  }
-
   public dolog(level: LevelChoice, args: LogMethodArgs): void {
     const now = new Date();
 
     const threadStorage = this.storage.getStore();
-    const fieldsFromThread = threadStorage ? threadStorage.additionalFields : {};
+    const contextFromStorage = threadStorage ? threadStorage.context : {};
 
     const logObject: LogObj = {
       level,
       timeEpoch: now.getTime(),
+      name: this.options.loggerName || defaultLoggerName,
       message: '',
+      context: {
+        ...contextFromStorage,
+        ...this.context,
+      },
       timePretty: `${now.toDateString()} ${now.toTimeString()}`,
-      ...this.baseLogObj,
-      ...fieldsFromThread,
     };
 
     if (this.options.trace || level === 'error') {
@@ -103,28 +141,20 @@ export class LunaLogger {
       }
     }
 
-    args.forEach((arg, index) => {
-      // When the first arg is an object, merge it to the root log object, just like pino
-      if (index === 0 && this.isObject(arg)) {
-        Object.assign(logObject, arg);
+    args.forEach((arg) => {
+      // If the argument is an object, then add its keys to the context object
+      if (this.isObject(arg)) {
+        const argAsObject = arg as object;
+        logObject.context = mergeObjectIntoRecord(this.context, argAsObject);
         return;
       }
-      // Otherwise just glob everything onto the message, so we can still do logs like "value is: {some:'thing'}", just like console.log
-      const argAsString = this.anythingToString(arg);
+
+      const argAsString = anythingToString(arg);
+      // Otherwise, just glob everything onto the message
       logObject.message = logObject.message.concat(argAsString);
     });
     this.transport(logObject);
     return;
-  }
-
-  private anythingToString(arg: unknown): string {
-    if (typeof arg === 'string') {
-      return arg;
-    }
-    if (arg instanceof Error) {
-      return arg.stack || arg.toString();
-    }
-    return util.inspect(arg);
   }
 
   private transport(logObj: LogObj) {
@@ -136,5 +166,9 @@ export class LunaLogger {
   private isObject(arg: unknown): boolean {
     // sigh..ok javascript, if you say so
     return typeof arg === 'object' && !Array.isArray(arg) && arg !== null;
+  }
+
+  private isString(arg: unknown): boolean {
+    return typeof arg === 'string' || arg instanceof String;
   }
 }

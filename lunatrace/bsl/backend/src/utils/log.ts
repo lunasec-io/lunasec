@@ -16,7 +16,7 @@ import { JsonTransport, LunaLogger } from '@lunatrace/logger';
 
 const isProd = process.env.NODE_ENV === 'production';
 
-export const log = new LunaLogger({}, { loggerName: 'default-backend' });
+export const log = new LunaLogger({ loggerName: 'default-backend' });
 
 log.addTransport(
   new JsonTransport({

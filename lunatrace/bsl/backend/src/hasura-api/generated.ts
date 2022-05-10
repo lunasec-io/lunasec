@@ -37,6 +37,7 @@ export type Scalars = {
   severity_enum: any;
   timestamp: any;
   timestamptz: any;
+  user_role: 'organization_user'|'lunatrace_admin';
   uuid: any;
 };
 
@@ -2383,6 +2384,8 @@ export enum Organization_User_Update_Column {
 export type Organizations = {
   __typename?: 'organizations';
   createdAt: Scalars['timestamp'];
+  /** An object relationship */
+  creator?: Maybe<Users>;
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
@@ -2459,6 +2462,7 @@ export type Organizations_Bool_Exp = {
   _not?: InputMaybe<Organizations_Bool_Exp>;
   _or?: InputMaybe<Array<Organizations_Bool_Exp>>;
   createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
+  creator?: InputMaybe<Users_Bool_Exp>;
   creator_id?: InputMaybe<Uuid_Comparison_Exp>;
   github_id?: InputMaybe<Int_Comparison_Exp>;
   github_node_id?: InputMaybe<String_Comparison_Exp>;
@@ -2489,6 +2493,7 @@ export type Organizations_Inc_Input = {
 /** input type for inserting data into table "organizations" */
 export type Organizations_Insert_Input = {
   createdAt?: InputMaybe<Scalars['timestamp']>;
+  creator?: InputMaybe<Users_Obj_Rel_Insert_Input>;
   creator_id?: InputMaybe<Scalars['uuid']>;
   github_id?: InputMaybe<Scalars['Int']>;
   github_node_id?: InputMaybe<Scalars['String']>;
@@ -2553,6 +2558,7 @@ export type Organizations_On_Conflict = {
 /** Ordering options when selecting data from "organizations". */
 export type Organizations_Order_By = {
   createdAt?: InputMaybe<Order_By>;
+  creator?: InputMaybe<Users_Order_By>;
   creator_id?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
@@ -4622,7 +4628,6 @@ export type Topics_Insert_Input = {
   metadata?: InputMaybe<Scalars['jsonb']>;
   metadata_schema_version?: InputMaybe<Scalars['Int']>;
   related_topics?: InputMaybe<Topic_Related_Topics_Arr_Rel_Insert_Input>;
-  severity?: InputMaybe<Scalars['severity_enum']>;
   summary?: InputMaybe<Scalars['String']>;
   tags?: InputMaybe<Scalars['_text']>;
   title?: InputMaybe<Scalars['String']>;
@@ -4665,7 +4670,6 @@ export type Topics_Set_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   metadata?: InputMaybe<Scalars['jsonb']>;
   metadata_schema_version?: InputMaybe<Scalars['Int']>;
-  severity?: InputMaybe<Scalars['severity_enum']>;
   summary?: InputMaybe<Scalars['String']>;
   tags?: InputMaybe<Scalars['_text']>;
   title?: InputMaybe<Scalars['String']>;
@@ -4688,8 +4692,6 @@ export enum Topics_Update_Column {
   /** column name */
   MetadataSchemaVersion = 'metadata_schema_version',
   /** column name */
-  Severity = 'severity',
-  /** column name */
   Summary = 'summary',
   /** column name */
   Tags = 'tags',
@@ -4700,6 +4702,19 @@ export enum Topics_Update_Column {
   /** column name */
   UpdatedAt = 'updated_at'
 }
+
+/** Boolean expression to compare columns of type "user_role". All fields are combined with logical 'AND'. */
+export type User_Role_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['user_role']>;
+  _gt?: InputMaybe<Scalars['user_role']>;
+  _gte?: InputMaybe<Scalars['user_role']>;
+  _in?: InputMaybe<Array<Scalars['user_role']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['user_role']>;
+  _lte?: InputMaybe<Scalars['user_role']>;
+  _neq?: InputMaybe<Scalars['user_role']>;
+  _nin?: InputMaybe<Array<Scalars['user_role']>>;
+};
 
 /**
  * LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.)
@@ -4716,6 +4731,7 @@ export type Users = {
   kratos_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   kratos_identity?: Maybe<Identities>;
+  role: Scalars['user_role'];
 };
 
 /** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
@@ -4728,6 +4744,7 @@ export type Users_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_identity?: InputMaybe<Identities_Bool_Exp>;
+  role?: InputMaybe<User_Role_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "users" */
@@ -4736,6 +4753,8 @@ export enum Users_Constraint {
   UsersGithubIdKey = 'users_github_id_key',
   /** unique or primary key constraint */
   UsersGithubNodeIdKey = 'users_github_node_id_key',
+  /** unique or primary key constraint */
+  UsersKratosIdUnique = 'users_kratos_id_unique',
   /** unique or primary key constraint */
   UsersPkey = 'users_pkey'
 }
@@ -4778,6 +4797,7 @@ export type Users_Order_By = {
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
   kratos_identity?: InputMaybe<Identities_Order_By>;
+  role?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: users */
@@ -4794,7 +4814,9 @@ export enum Users_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  KratosId = 'kratos_id'
+  KratosId = 'kratos_id',
+  /** column name */
+  Role = 'role'
 }
 
 /** input type for updating data in table "users" */
@@ -5512,6 +5534,13 @@ export type GetBuildQueryVariables = Exact<{
 
 export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
 
+export type GetCloneRepoInfoFromRepoIdQueryVariables = Exact<{
+  repo_github_id: Scalars['Int'];
+}>;
+
+
+export type GetCloneRepoInfoFromRepoIdQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', git_url: string, project: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } }> };
+
 export type GetCountOfPersonalOrgQueryVariables = Exact<{
   user_id: Scalars['uuid'];
 }>;
@@ -5542,12 +5571,12 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 
 export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
 
-export type GetProjectIdFromGitUrlQueryVariables = Exact<{
-  github_id?: InputMaybe<Scalars['Int']>;
+export type GetUserRoleQueryVariables = Exact<{
+  kratos_id?: InputMaybe<Scalars['uuid']>;
 }>;
 
 
-export type GetProjectIdFromGitUrlQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any } }> };
+export type GetUserRoleQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', role: any, id: any }> };
 
 export type GetUsersProjectsQueryVariables = Exact<{
   user_id: Scalars['uuid'];
@@ -5728,6 +5757,19 @@ export const GetBuildDocument = gql`
   }
 }
     `;
+export const GetCloneRepoInfoFromRepoIdDocument = gql`
+    query GetCloneRepoInfoFromRepoId($repo_github_id: Int!) {
+  github_repositories(where: {github_id: {_eq: $repo_github_id}}) {
+    git_url
+    project {
+      id
+      organization {
+        installation_id
+      }
+    }
+  }
+}
+    `;
 export const GetCountOfPersonalOrgDocument = gql`
     query GetCountOfPersonalOrg($user_id: uuid!) {
   organizations_aggregate(
@@ -5769,12 +5811,11 @@ export const GetPreviousBuildForPrDocument = gql`
   }
 }
     `;
-export const GetProjectIdFromGitUrlDocument = gql`
-    query GetProjectIdFromGitUrl($github_id: Int) {
-  github_repositories(where: {github_id: {_eq: $github_id}}) {
-    project {
-      id
-    }
+export const GetUserRoleDocument = gql`
+    query GetUserRole($kratos_id: uuid) {
+  users(where: {kratos_id: {_eq: $kratos_id}}) {
+    role
+    id
   }
 }
     `;
@@ -6018,6 +6059,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetBuild(variables: GetBuildQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBuildQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetBuildQuery>(GetBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetBuild', 'query');
     },
+    GetCloneRepoInfoFromRepoId(variables: GetCloneRepoInfoFromRepoIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCloneRepoInfoFromRepoIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetCloneRepoInfoFromRepoIdQuery>(GetCloneRepoInfoFromRepoIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetCloneRepoInfoFromRepoId', 'query');
+    },
     GetCountOfPersonalOrg(variables: GetCountOfPersonalOrgQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCountOfPersonalOrgQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetCountOfPersonalOrgQuery>(GetCountOfPersonalOrgDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetCountOfPersonalOrg', 'query');
     },
@@ -6030,8 +6074,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
     },
-    GetProjectIdFromGitUrl(variables?: GetProjectIdFromGitUrlQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectIdFromGitUrlQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectIdFromGitUrlQuery>(GetProjectIdFromGitUrlDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectIdFromGitUrl', 'query');
+    GetUserRole(variables?: GetUserRoleQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRoleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUserRoleQuery>(GetUserRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserRole', 'query');
     },
     GetUsersProjects(variables: GetUsersProjectsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUsersProjectsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUsersProjectsQuery>(GetUsersProjectsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUsersProjects', 'query');

@@ -11,8 +11,7 @@
  * limitations under the License.
  *
  */
-import React from 'react';
-
-export const Account = () => {
-  return <></>;
-};
+export interface ImpersonateUser {
+  id: string;
+  name: string;
+}

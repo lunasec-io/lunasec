@@ -11,20 +11,3 @@
  * limitations under the License.
  *
  */
-import { generateSnapshotForRepository } from '../github/actions/generate-snapshot-for-repository';
-import { GenerateSnapshotForRepositoryRecord, QueueErrorResult, QueueSuccessResult } from '../types/sqs';
-
-export async function handleSnapshotRepository(
-  record: GenerateSnapshotForRepositoryRecord
-): Promise<QueueSuccessResult | QueueErrorResult> {
-  const error = await generateSnapshotForRepository(record);
-  if (error.error) {
-    return {
-      success: false,
-      error: new Error(error.msg),
-    };
-  }
-  return {
-    success: true,
-  };
-}
