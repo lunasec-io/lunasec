@@ -17,11 +17,11 @@ import { Resolvers } from '../generated-resolver-types';
 
 import { presignManifestUploadResolver } from './presign-manifest-upload';
 import { presignSbomUploadResolver } from './presign-sbom-upload';
-import { SBOMURLResolver } from './sbom-url';
+import { sbomUrlResolver } from './sbom-url';
 export const resolvers: Resolvers = {
   Query: {
     presignSbomUpload: presignSbomUploadResolver,
-    sbomUrl: SBOMURLResolver,
+    sbomUrl: sbomUrlResolver,
   },
   Mutation: {
     presignManifestUpload: presignManifestUploadResolver,

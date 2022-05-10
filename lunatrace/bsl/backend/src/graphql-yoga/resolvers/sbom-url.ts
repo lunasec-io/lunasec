@@ -22,9 +22,9 @@ import { QueryResolvers } from '../generated-resolver-types';
 import { throwIfUnauthenticated } from './auth-helpers';
 import { checkProjectIsAuthorized } from './presign-manifest-upload';
 
-type SBOMURLResolverT = NonNullable<QueryResolvers['sbomUrl']>;
+type sbomUrlResolverT = NonNullable<QueryResolvers['sbomUrl']>;
 
-export const SBOMURLResolver: SBOMURLResolverT = async (parent, args, ctx, info) => {
+export const sbomUrlResolver: sbomUrlResolverT = async (parent, args, ctx, info) => {
   throwIfUnauthenticated(ctx);
   const build = await hasura.GetBuild({ build_id: args.buildId });
   await checkProjectIsAuthorized(build.builds_by_pk?.project?.id, ctx);
