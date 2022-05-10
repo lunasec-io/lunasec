@@ -11,16 +11,25 @@
  * limitations under the License.
  *
  */
-import { AlertOctagon, LogIn, Plus } from 'react-feather';
+import { useContext } from 'react';
+import { AlertOctagon, LogIn, Plus, User } from 'react-feather';
 import { AiFillGithub } from 'react-icons/ai';
 import { BiUnlink } from 'react-icons/bi';
 import { RiParkingFill } from 'react-icons/ri';
 
-import { GetSidebarInfoQuery } from '../../api/generated';
+import { GetSidebarInfoQuery, Scalars } from '../../api/generated';
+import { UserContext } from '../../contexts/UserContext';
+import { userHasAnyOrganizations } from '../../utils/organizations';
 
 import { NavSection, SidebarItem } from './types';
 
 export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAuthenticated: boolean): NavSection[] {
+  const { isAdmin } = useContext(UserContext);
+
+  if (!userHasAnyOrganizations(data)) {
+    return [];
+  }
+
   const projectsSection: SidebarItem[] = !data
     ? []
     : data.organizations.map((o) => {
@@ -96,6 +105,21 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
     },
   ];
 
+  const adminSection: SidebarItem[] = [
+    {
+      href: '/admin',
+      icon: User,
+      title: 'Dashboard',
+    },
+  ];
+
+  const adminNav: NavSection[] = [
+    {
+      title: 'Admin',
+      items: adminSection,
+    },
+  ];
+
   const loggedOutSections = [
     {
       title: 'Account',
@@ -116,6 +140,7 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
       title: 'Information & Databases',
       items: databaseSection,
     },
+    ...(isAdmin ? adminNav : []),
   ];
 
   return isAuthenticated ? loggedInSections : loggedOutSections;

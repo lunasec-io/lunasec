@@ -16,17 +16,18 @@
     - handler: hydrator
       config:
         api:
-          url: http://localhost:3002/internal/auth/hydrate-real-user-id
+          url: http://localhost:3002/internal/auth/hydrate-user-id
     - handler: id_token
       config:
         issuer_url: http://oathkeeper:4455/
         # x-hasura-access-token below is a hack to bypass a weird hasura requirement
-        # x-hasura-user-id is the kratos user id from the table "identities"
-        # x-hasura-real-user-id is the ID from "users" table that we created.  This is resolved from the hydrator above
+        # x-hasura-user-id is the kratos user id from the table "identities", this can be impersonated
+        # x-hasura-real-user-id is the ID from "users" table that we created.  This is resolved from the hydrator above.
+        #   Impersonated users will have their real user id also overridden.
         claims: |
           {
             "https://hasura.io/jwt/claims": {
-              "x-hasura-user-id": "{{ .Subject }}",
+              "x-hasura-user-id": "{{ or .Extra.impersonate_user_id .Subject }}",
               "x-hasura-real-user-id": "{{ .Extra.real_user_id }}", 
               "x-hasura-access-token": "2883ad68-4940-461b-83f7-844b0604bb8c",  
               "x-hasura-allowed-roles": ["user"],
@@ -74,8 +75,6 @@
       - POST
   authenticators:
     - handler: bearer_token
-      config:
-        check_session_url: http://localhost:3002/internal/auth/lookup-static-access-token
   authorizer:
     handler: allow
   mutators:
