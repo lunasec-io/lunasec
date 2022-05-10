@@ -11,11 +11,12 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { NavLink } from 'react-router-dom';
 
 import { ReactComponent as Logo } from '../../assets/logo.svg';
+import { WizardOpenContext } from '../../contexts/WizardContext';
 import useSidebar from '../../hooks/useSidebar';
 
 import { Section } from './Section';
@@ -29,8 +30,12 @@ interface SidebarProps {
 const Sidebar: React.FunctionComponent<SidebarProps> = ({ sections, showFooter = false }) => {
   const { isOpen } = useSidebar();
 
+  const setupWizardOpen = useContext(WizardOpenContext);
+  if (setupWizardOpen) {
+    return null;
+  }
   return (
-    <nav className={`sidebar ${!isOpen ? 'collapsed' : ''}`}>
+    <nav className={`sidebar ${isOpen ? '' : 'collapsed'}`}>
       <div className="sidebar-content">
         <PerfectScrollbar options={{ suppressScrollX: true }}>
           <NavLink className="sidebar-brand" to="/">

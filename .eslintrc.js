@@ -136,7 +136,7 @@ module.exports = {
     'eslint-comments/no-unused-disable': 'error',
     '@typescript-eslint/no-unused-vars':[
       productionWarn,
-      { 'argsIgnorePattern': '^_' }
+      { 'argsIgnorePattern': '^_' },
     ],
     // 'unused-imports/no-unused-imports': 'error',// turn this on if you want to --fix all of these out of the codebase
     '@typescript-eslint/unbound-method': 'warn',

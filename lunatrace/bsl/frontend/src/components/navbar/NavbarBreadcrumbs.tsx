@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Breadcrumb } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Params } from 'react-router-dom';
@@ -23,6 +23,7 @@ import useBreadCrumbs, {
 
 import api from '../../api/';
 import { GetSidebarInfoQuery } from '../../api/generated';
+import { WizardOpenContext } from '../../contexts/WizardContext';
 
 type Project = GetSidebarInfoQuery['projects'][number];
 
@@ -108,6 +109,10 @@ const NewProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCom
 };
 
 export const NavbarBreadcrumbs: React.FunctionComponent = () => {
+  const wizardIsOpen = useContext(WizardOpenContext);
+  if (wizardIsOpen) {
+    return null;
+  }
   // These custom breadcrumbs override the defaults from the library
   const customRoutes: BreadcrumbsRoute[] = [
     { path: '/project/:project_id', breadcrumb: ProjectBreadCrumb },

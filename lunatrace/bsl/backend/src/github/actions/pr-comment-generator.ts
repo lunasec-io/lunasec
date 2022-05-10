@@ -18,7 +18,6 @@ import { hasura } from '../../hasura-api';
 import { InsertedScan } from '../../models/scan';
 import { log } from '../../utils/log';
 import { generateGithubGraphqlClient } from '../api';
-import { getInstallationAccessToken } from '../auth';
 
 function formatLocationText(finding: VulnerablePackage<Finding>) {
   if (finding.locations.length === 0) {
