@@ -11,14 +11,13 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Accordion } from 'react-bootstrap';
 import { CopyBlock, dracula } from 'react-code-blocks';
 import { AiFillGithub, AiOutlineInfoCircle } from 'react-icons/ai';
 import { BiUnlink } from 'react-icons/bi';
 
-import useAppSelector from '../../../hooks/useAppSelector';
-import { userIsAdmin } from '../../../store/slices/authentication';
+import { UserContext } from '../../../contexts/UserContext';
 import { ProjectInfo, SetActiveTab } from '../types';
 
 import { ManifestDrop } from './ManifestDrop';
@@ -30,7 +29,7 @@ interface ProjectDashboardMainProps {
 }
 
 export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project, setActiveTab }) => {
-  const isAdmin = useAppSelector(userIsAdmin);
+  const { isAdmin } = useContext(UserContext);
 
   const renderGithubInfo = () => {
     if (!project.github_repository) {

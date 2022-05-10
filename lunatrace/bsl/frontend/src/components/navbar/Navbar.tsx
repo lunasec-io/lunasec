@@ -15,7 +15,6 @@ import React, { useEffect } from 'react';
 import { Button, Container, Nav, Navbar } from 'react-bootstrap';
 import { BsMoon, BsSun } from 'react-icons/bs';
 
-import { impersonateUserHeader } from '../../constants/headers';
 import useAppSelector from '../../hooks/useAppSelector';
 import useSidebar from '../../hooks/useSidebar';
 import useTheme from '../../hooks/useTheme';
