@@ -1,6 +1,6 @@
 ---
 title: "Arch Linux Installation Guide For Developers"
-description: We sharing our process of installing Arch Linux for developers the way we do it in house
+description: Sharing our process of installing Arch Linux for developers the way we do it in house
 slug: arch-linux-installation-guide
 date: 2022-05-04
 image: https://www.lunasec.io/docs/img/clippy_arch.png
@@ -26,116 +26,116 @@ authors: [gabe]
 
 ## BTW we use Arch
 
-Here at LunaSec we've been busy hacking away at some exciting products, we've also onboarded a couple new team members WOOHOO 🥳! Through the onboarding process we realized there was a great opportunity to
+Here at LunaSec not only have we been busy hacking, but we've also onboarded a couple new team members WOOHOO 🥳! Through the onboarding process, we realized there is an opportunity to
 release our developer environment setup as a guide for the community.
 
-We hope this guide helps encourage anyone
-looking to start their journey into the world of Arch Linux and provides confidence to any teams considering Arch as a potential development environment.
+We're sharing this guide to both show how we are using Arch Linux as Security Engineers at LunaSec and to give confidence to developers considering making the switch to Arch.
 
-
-## Why Arch is the best operating system for developers?
-Here's a few of the reasons why decided to use Arch as our development environment
+## Why is Arch the best operating system for developers?
+Here are a few of the reasons why we decided to use Arch as our development environment:
 - We have direct visibility and control down to the kernel
 - We know what's on our system and only use what we deem necessary
 - We can configure our environments to meet security standards quickly and seamlessly
 - We have access to the latest packages for development
 
-We found arch to be that sweet spot between, security, accessibility and culture. For us using secure, open source software
-that is constantly updated is our baseline. We found that Arch was the best choice for meeting each of these requirements.
+We found Arch to be that sweet spot between security, accessibility, and productivity. As an Open Source startup, using Open Source software is
+fundamental to our values and culture as security professionals.
 
-## Preparing for the install
+Lastly before we begin, here's a friendly shout out to Michael Picht for his [guide](https://nerdstuff.org/posts/2020/2020-004_arch_linux_luks_btrfs_systemd-boot/) over at nerdstuff.org.
+We referenced it while compiling our own guide and found it very helpful in our work, thanks again Michael 👏.
 
-If you're ready to make the jump, go ahead and grab the version of [Arch](https://archlinux.org/download/) you would like to install. Create a bootable USB of the Arch Image you downloaded.
-(You can try using [etcher](https://www.balena.io/etcher/) for linux or [rufus](https://rufus.ie/en/) for windows to make your USB boot image )
+## Preparing For the Install
+
+Grab the version of [Arch](https://archlinux.org/download/) you would like to install. Create a bootable USB of the Arch Image you downloaded.
+( [Etcher](https://www.balena.io/etcher/) is available for Linux or [Rufus](https://rufus.ie/en/) for Windows to make your USB boot image. For further guidance please refer to
+the [Arch Wiki](https://wiki.archlinux.org/title/USB_flash_installation_medium).)
 :::note
-If your computer has safe boot you're going to want to go into your bios and disable it so we can load the USB
+Verify secure boot is disabled in the BIOS before continuing to the next steps.
 :::
 ## What We're Installing
 - A UEFI boot partition using [systemd-boot](https://wiki.archlinux.org/title/Systemd-boot)
 - An Arch Linux partition with [BTRFS](https://wiki.archlinux.org/title/Btrfs). Encrypted with [LUKS](https://gitlab.com/cryptsetup/cryptsetup) luks2
 
 
-## Beginning The Install
-Plug in your Arch usb image from the previous step and boot into it from your bios. From here we'll be using the Arch terminal.
+## Beginning the Install
+Plug in your Arch USB image from the previous step and boot into it from your BIOS. From here, you'll be using the terminal.
 
-We recommend to do the install via ssh to make life easier copying over commands.
-To do this we'll connect to the internet using the [iwctl](https://man.archlinux.org/man/community/iwd/iwctl.1.en) tool to connect to our wifi.
+We recommend installing via SSH to streamline copying over commands.
 
-Open up the iwctl tool
+To do this you'll connect to the Internet using the [iwctl](https://man.archlinux.org/man/community/iwd/iwctl.1.en) tool to connect to your WIFI.
+
+Open up the iwctl tool:
 
     iwctl
 
-Search for your wireless adapter
+Search for your wireless adapter:
 
     device list
 
-Scan your local networks with your wireless adapter (wlan0)
+Scan your local networks with your wireless adapter (wlan0):
 
     station wlan0 get-networks
 
-Connect to your network
+Connect to your network:
 
     station wlan0 connect YOUR_NETWORK
 
 :::note
-If your network is seperated with a space use quotes for "YOUR NETWORK"
+If your network is seperated with a space, use quotes for "YOUR NETWORK"
 :::
 
-Once connected exit iwctl
+Once connected, exit iwctl:
 
     exit
 
-Verify your connection works
+Verify your connection works:
 
     ping google.com
 
 ## Enabling SSH
 
-Now that our machine is connected to the internet let's enable the SSH protocol and connect to it from our outside computer. This will make copying commands from the guide that much easier.
+Now that your machine is connected to the internet, enable the SSH protocol and connect to it from your outside computer.
 
-Start SSH
+Start SSH:
 
     systemctl start sshd.service
 
-Set a password for root so we can ssh
+Set a password for root:
 
     passwd
 
-Find the machine's IP Address
+Find the machine's IP Address:
 
     ip addr show
 
-Now go to your other computer and connect via SSH (You'll be prompted for the root password you just set)
+From your other computer, connect via SSH (You'll be prompted for the root password you just set)
 
     ssh "root@<IP-OF-THE-FIRST-PC>
 
-## We're connected via ssh and ready to do the following
+## Installation Overview
+Now that you're connected via SSH, you're ready to do the following:
 - Create a Systemd boot partition
 - Create a Linux Filesystem partition for Arch
-- Encrypt our Filesystem Partition with LUKS
-- Create BTRFS Sub Volumes on our Linux Filesystem partition
-- Install Arch with recommended PKG's
+- Encrypt your Filesystem Partition with LUKS
+- Create BTRFS Sub Volumes on your Linux Filesystem partition
+- Install Arch with recommended Packages
 
 
 ## Create the Boot and Filesystem partitions
 
-First let's identify the drive we are looking to install Arch on
+Identify the drive on which to install Arch:
 
     lsblk
 
-This will bring up the drive in, our case since we're using a Thinkpad X1's and the drive shows:
-
-    nvme0n1
-
 :::note
-For this guide we'll be using the **nvme0n1** naming convention, use it as a reference but be sure to replace it with your drive's name.
+For this guide we'll be referencing our drive with the **nvme0n1** naming convention, remember to replace it with your drive's name when referencing it.
 :::
 
-The following commands will create the two partitions we want for our boot and filesystem.
+The following commands will create two partitions, one for boot and for the filesystem:
 
     gdisk /dev/nvme0n1
 
-This will begin the gdisk program / prompt. Let's begin creating the
+This will begin the gdisk program / prompt. Begin by creating the
 EFI partition (choose size 550M and hex code EF00):
 
     Command (? for help): o
@@ -157,7 +157,7 @@ Let's create the File system partition.
 
     Command (? for help): w
 
-Now let's verify that our two partitions exist.
+Now let's verify that our two partitions exist:
 
     lsblk
 
@@ -165,17 +165,17 @@ You should be able to see the two partitions available as **/dev/nvme0n1p1** and
 
 ## Encryption
 
-Now that we have our two partitions, we are going to encrypt the container for our root file system.
-Below is the command to encrypt that partition using LUKS.
+With your partitions set, create the encrypted container for your root file system.
+Below is the command to encrypt the partition using LUKS:
 
     cryptsetup --cipher aes-exts-plain64 --hash sha256 --use-random --verify-passphrase luksFormat --type luks2 /dev/nvme0n1p2
 
-Now we'll open the encrypted partition with:
+Open the encrypted partition with:
 
     cryptsetup open /dev/nvme0n1p2 luks
 
 :::note
-("luks" is just a placeholder, you can use a name of your choice, but remember to continue with your naming convention if changed):
+("luks" is just a placeholder, you can use the name of your choice, but remember to continue the guide with your naming convention)
 :::
 
 ## File System Creation
@@ -183,7 +183,7 @@ Format the EFI partition with FAT32 and give it the label EFI:
 
     mkfs.vfat -F32 -n EFI /dev/nvme0n1p1
 
-Format the root partition with BTRFS and give it the label ROOT.
+Format the root partition with BTRFS and give it the label ROOT:
 
     mkfs.btrfs -L ROOT /dev/mapper/luks
 
@@ -193,7 +193,7 @@ If you didn’t open the LUKS container under the name “luks” you must adjus
 
 ## Create and Mount Sub Volumes
 
-Create sub volumes for root, home, the package cache, snapshots and the entire BTRFS file system:
+Create sub volumes for root, home, the package cache, snapshots, and the entire BTRFS file system:
 
     mount /dev/mapper/luks /mnt
     btrfs sub create /mnt/@
@@ -203,9 +203,6 @@ Create sub volumes for root, home, the package cache, snapshots and the entire B
     btrfs sub create /mnt/@snapshots
     umount /mnt
 
-:::note
-If you don’t want to use a swap file, it is not required to create and mount the sub volume @swap.
-:::
 
 Mount the sub volumes:
 
@@ -216,12 +213,12 @@ Mount the sub volumes:
     mount -o noatime,nodiratime,compress=zstd,space_cache=v2,ssd,subvol=@snapshots /dev/mapper/luks /mnt/.snapshots
     mount -o noatime,nodiratime,compress=zstd,space_cache=v2,ssd,subvolid=5 /dev/mapper/luks /mnt/btrfs
 
-Mount the EFI partition
+Mount the EFI partition:
 
     mount /dev/nvme0n1p1 /mnt/boot
 
 :::note
-Optional - The following is for those wanting to use a swapfile
+Optional - The following is for those wanting to use a swapfile.
 :::
 
 Create swap file (taken from Btrfs - Swap file and Swap file):
@@ -237,12 +234,12 @@ Create swap file (taken from Btrfs - Swap file and Swap file):
     cd -
 
 ## Base System and /etc/fstab
-We will be installing Arch Linux with the packages we need to get started.
-For our machine we will be using [intel-ucode](https://wiki.archlinux.org/title/microcode) as the X1 has an intel CPU.setup
+With your subvolumes created and mounted, you are now ready to install Arch Linux.
+For our machine we will be using [intel-ucode](https://wiki.archlinux.org/title/microcode) as the X1 has an intel CPU setup
 
 :::note
-If your machine has an amd cpu, please replace **intel-ucode** with [amd-ucode](https://archlinux.org/packages/?name=amd-ucode).
-If you're looking for another text editor or any other package you want to install with Arch here is the place to do so, just add it to the command below.
+If your machine has an AMD CPU, replace **intel-ucode** with [amd-ucode](https://archlinux.org/packages/?name=amd-ucode).
+Feel free to add any other packages you want to install at this time in the command below.
 :::
 
     pacstrap /mnt linux linux-firmware base btrfs-progs intel-ucode nano networkmanager git
@@ -252,8 +249,8 @@ Generate /etc/fstab:
     genfstab -U /mnt >> /mnt/etc/fstab
 
 ## System Configuration
-Here's where we'll be managing system configurations, in our case we're doing this as an American user,
-for those of you reading outside the US, feel free to set language and keyboard bindings here to a format that works for your machine.
+This is where you'll be managing system configurations. In our case we're configuring this as an American user, but
+for those of you reading outside the US, set the language and keyboard bindings to your locale.
 
 CHROOT into the new system:
 
@@ -267,7 +264,7 @@ Set locale:
 
     echo LANG=en_US.UTF-8 > /etc/locale.conf
 
-Uncomment the following rows of /etc/locale.gen:
+Uncomment the following rows in /etc/locale.gen:
 
     en_US.UTF-8.UTF-8
 
@@ -282,17 +279,18 @@ Define hosts in /etc/hosts:
     ::1		localhost.localdomain	localhost
 
 Set the root user's password:
-(Set a solid password as you will be signing into the machine as root for post install configuration)
+
+(We recommend setting a secure password for your newly created root user.)
 
     passwd
 
 ## Initramfs
-Configure the creation of initramfs by editing /etc/mkinitcpio.conf. Edit the line HOOKS=... to:
+Configure the creation of initramfs by editing /etc/mkinitcpio.conf. Edit the line `HOOKS=...` to:
 
     HOOKS=(base keyboard udev autodetect modconf block keymap encrypt btrfs filesystems resume)
 
 :::note
-resume in the above hooks is for those of you setting up a swap partition. If you don't intend to use swap, you can simply remove it.
+`resume` in the above hooks is for those of you setting up a swap partition. If you don't intend to use swap, you can simply remove it.
 :::
 
 Recreate initramfs:
@@ -314,30 +312,35 @@ Create file /boot/loader/entries/arch.conf and fill it with:
     options cryptdevice=UUID=<UUID-OF-ROOT-PARTITION>:luks:allow-discards root=/dev/mapper/luks rootflags=subvol=@ rd.luks.options=discard rw
 
 :::note
-Optional - If you are using a swap add the following to the options flag. You wall also need to follow this guide to calculate your [offset](https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate#Hibernation_into_swap_file_on_Btrfs)
+Optional - If you are using a swap, add the following to the options flag.
+You will also need to follow this guide to calculate your [offset](https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate#Hibernation_into_swap_file_on_Btrfs)
 :::
+
     resume=/dev/mapper/luks resume_offset=<YOUR-OFFSET>
 
-Now we need to provide the UUID of our root partition
+Provide the UUID of your root partition:
 
     blkid -s UUID -o value /dev/sda2
 
-Replace the placeholder for UUID-OF-ROOT in /boot/loader/entries/arch.conf
+Replace `UUID-OF-ROOT` in /boot/loader/entries/arch.conf
 
-Edit file /boot/loader/loader.conf and fill it with:
+Edit /boot/loader/loader.conf and fill it with:
 
     default  arch.conf
     timeout  4
     console-mode max
     editor   no
 
-Lastly, we'll exit chroot, unmount our partition and reboot.
+Lastly, exit chroot, unmount your partition, and reboot:
 
     exit
     umount -R /mnt
     reboot
 
-## Congratulations, you now have Arch running on your laptop!
+## Installation Complete
+
+Congratulations, you now have Arch running on your laptop!
+
 You now have an encrypted partition of Arch Linux running on your laptop with a root user and networking.
 
 ## What's left to do?
