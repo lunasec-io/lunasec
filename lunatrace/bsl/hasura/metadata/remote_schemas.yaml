@@ -28,7 +28,7 @@
           url: String!
         }
 
-        type Query { SBOMURL(buildId: UUID!): String
+        type Query { sbomUrl(buildId: UUID!): String
           fakeQueryToHackHasuraBeingABuggyMess: String
         }
   - role: cli

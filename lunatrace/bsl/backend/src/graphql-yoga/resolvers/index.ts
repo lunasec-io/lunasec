@@ -21,7 +21,7 @@ import { SBOMURLResolver } from './sbom-url';
 export const resolvers: Resolvers = {
   Query: {
     presignSbomUpload: presignSbomUploadResolver,
-    SBOMURL: SBOMURLResolver,
+    sbomUrl: SBOMURLResolver,
   },
   Mutation: {
     presignManifestUpload: presignManifestUploadResolver,

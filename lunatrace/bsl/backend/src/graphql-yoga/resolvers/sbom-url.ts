@@ -22,7 +22,7 @@ import { QueryResolvers } from '../generated-resolver-types';
 import { throwIfUnauthenticated } from './auth-helpers';
 import { checkProjectIsAuthorized } from './presign-manifest-upload';
 
-type SBOMURLResolverT = NonNullable<QueryResolvers['SBOMURL']>;
+type SBOMURLResolverT = NonNullable<QueryResolvers['sbomUrl']>;
 
 export const SBOMURLResolver: SBOMURLResolverT = async (parent, args, ctx, info) => {
   throwIfUnauthenticated(ctx);
