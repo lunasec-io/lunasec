@@ -2,10 +2,6 @@ module lunasec/lunatrace/snapshot
 
 go 1.17
 
-replace lunasec/lunatrace => ./../../../cli
-
-replace lunasec/lunatrace/snapshot => ./
-
 require (
 	github.com/adrg/xdg v0.2.1
 	github.com/anchore/grype v0.33.1
