@@ -3,8 +3,10 @@ name: LunaTrace
 # This workflow posts hasura changes as a comment.
 on:
   pull_request:
-    branches: ['**']
+    branches:
+      - '**'
     paths:
+      - '.github/**'
       - 'lunatrace/**'
 
 jobs:
