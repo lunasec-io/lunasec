@@ -72,7 +72,7 @@ services:
       POSTGRES_PASSWORD: postgrespassword
       POSTGRES_DB: lunatrace
   graphql-engine:
-    image: hasura/graphql-engine:v2.2.2.cli-migrations-v3
+    image: hasura/graphql-engine:v2.5.2
     ports:
     - "8080:8080"
     depends_on:
