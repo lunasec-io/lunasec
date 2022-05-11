@@ -21,10 +21,10 @@ import (
 
 	apigateway "github.com/apex/gateway"
 	"github.com/rs/cors"
-	"lunasec/lunadefend/constants"
-	"lunasec/lunadefend/gateway"
-	"lunasec/lunadefend/service"
-	"lunasec/lunadefend/util"
+	"github.com/lunasec-io/lunasec/go/constants"
+	"github.com/lunasec-io/lunasec/go/gateway"
+	"github.com/lunasec-io/lunasec/go/service"
+	"github.com/lunasec-io/lunasec/go/util"
 )
 
 func newServer(configPath string, authType constants.AuthType) http.Handler {

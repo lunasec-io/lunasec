@@ -16,7 +16,7 @@ package util
 
 import (
 	"github.com/urfave/cli/v2"
-	"lunasec/lunatrace/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"reflect"
 )
 

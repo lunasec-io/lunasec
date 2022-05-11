@@ -16,18 +16,18 @@ package controller
 
 import (
 	"encoding/json"
-	"lunasec/lunadefend/constants"
-	"lunasec/lunadefend/util/auth"
+	"github.com/lunasec-io/lunasec/go/constants"
+	"github.com/lunasec-io/lunasec/go/util/auth"
 	"io/ioutil"
 	"log"
 	"net/http"
 
 	"go.uber.org/config"
 
-	"lunasec/lunadefend/service"
-	"lunasec/lunadefend/types"
-	"lunasec/lunadefend/types/event"
-	"lunasec/lunadefend/util"
+	"github.com/lunasec-io/lunasec/go/service"
+	"github.com/lunasec-io/lunasec/go/types"
+	"github.com/lunasec-io/lunasec/go/types/event"
+	"github.com/lunasec-io/lunasec/go/util"
 	"github.com/pkg/errors"
 )
 
