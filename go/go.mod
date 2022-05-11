@@ -1,4 +1,4 @@
-module lunasec/lunadefend
+module github.com/lunasec-io/lunasec/go
 
 go 1.15
 
