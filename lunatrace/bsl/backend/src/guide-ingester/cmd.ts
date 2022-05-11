@@ -11,14 +11,6 @@
  * limitations under the License.
  *
  */
-import { Topic_Vulnerabilities_Insert_Input } from '../hasura-api/generated';
+import { upsertGuides } from './upsert-guides';
 
-import { TopicMetadata1 } from './schemas/generated-schema-1-validator';
-
-export interface Topic {
-  metadata: TopicMetadata1;
-  body: string;
-  topic_unique_id: string;
-}
-
-export type TopicVulnerability = NonNullable<Topic_Vulnerabilities_Insert_Input>;
+void upsertGuides();

@@ -11,6 +11,12 @@
  * limitations under the License.
  *
  */
-import { upsertTopics } from './upsert-topics';
+import { GuideMetadata } from '@lunatrace/lunatrace-common';
 
-void upsertTopics();
+import { GetGuideDetailsQuery } from '../../api/generated';
+
+type GeneratedGuideDetails = NonNullable<GetGuideDetailsQuery['guides_by_pk']>;
+
+export interface GuideDetailsData extends GeneratedGuideDetails {
+  metadata: GuideMetadata;
+}

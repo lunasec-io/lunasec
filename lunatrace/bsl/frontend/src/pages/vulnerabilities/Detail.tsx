@@ -31,7 +31,6 @@ export const VulnerabilityDetail: React.FunctionComponent = () => {
     }
     const vuln = data.vulnerabilities[0];
 
-    console.log('rendering vuln ', vuln);
     return (
       <>
         <Helmet title={vuln.name} />
