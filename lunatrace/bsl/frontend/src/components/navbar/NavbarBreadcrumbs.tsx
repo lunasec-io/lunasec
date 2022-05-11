@@ -109,17 +109,17 @@ const NewProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCom
   return <span>New Project</span>;
 };
 
-const NewTopicBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
-  const id = crumbProps.match.params.topic_id;
+const NewGuideBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
+  const id = crumbProps.match.params.guide_id;
   if (!id) {
     return null;
   }
-  const { data } = api.useGetTopicDetailsQuery({ id });
-  if (!data || !data.topics_by_pk) {
+  const { data } = api.useGetGuideDetailsQuery({ id });
+  if (!data || !data.guides_by_pk) {
     return null;
   }
 
-  return <span>{data.topics_by_pk.title}</span>;
+  return <span>{data.guides_by_pk.title}</span>;
 };
 
 export const NavbarBreadcrumbs: React.FunctionComponent = () => {
@@ -131,7 +131,7 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
     { path: '/organization/:project_id', breadcrumb: OrganizationBreadCrumb },
     { path: '/new-project', breadcrumb: null },
     { path: '/new-project/:organization_id', breadcrumb: NewProjectBreadCrumb },
-    { path: '/topics/:topic_id', breadcrumb: NewTopicBreadCrumb },
+    { path: '/guides/:guide_id', breadcrumb: NewGuideBreadCrumb },
   ];
   const breadCrumbs = useBreadCrumbs(customRoutes, {});
 

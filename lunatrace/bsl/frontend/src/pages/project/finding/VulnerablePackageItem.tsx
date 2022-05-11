@@ -35,7 +35,7 @@ import { ConfirmationDailog } from '../../../components/ConfirmationDialog';
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
 
-import { TopicBlurb } from './TopicBlurb';
+import { GuideBlurb } from './GuideBlurb';
 import { VulnerabilityTableItem } from './VulnerabilityTableItem';
 import { Finding } from './types';
 
@@ -139,10 +139,10 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
           </Container>
         </Card.Header>
         <Card.Body>
-          <ConditionallyRender if={pkg.topics.length > 0}>
+          <ConditionallyRender if={pkg.guides.length > 0}>
             <Container fluid className={'text-center'}>
-              {pkg.topics.map((topic) => {
-                return <TopicBlurb key={topic.id} topic={topic}></TopicBlurb>;
+              {pkg.guides.map((guide) => {
+                return <GuideBlurb key={guide.id} guide={guide}></GuideBlurb>;
               })}
             </Container>
           </ConditionallyRender>

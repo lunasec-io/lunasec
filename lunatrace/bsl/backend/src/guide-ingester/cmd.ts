@@ -11,8 +11,6 @@
  * limitations under the License.
  *
  */
-import { GetBuildDetailsQuery } from '../../../api/generated';
+import { upsertGuides } from './upsert-guides';
 
-export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
-
-export type Guide = Finding['vulnerability']['guide_vulnerabilities'][number]['guide'];
+void upsertGuides();

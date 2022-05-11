@@ -18,10 +18,10 @@ import { RouteGuard } from './components/auth/RouteGuard';
 import MainLayout from './layouts/Main';
 import { BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
 import { AuthError } from './pages/auth/Error';
+import { GuideMain } from './pages/guide/Guide';
+import { GuideList } from './pages/guide/List';
 import { HomePage } from './pages/homepage/Home';
 import { ProjectCreate } from './pages/project/Create';
-import { TopicList } from './pages/topic/List';
-import { TopicMain } from './pages/topic/Topic';
 import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
 
 export const routes: RouteObject[] = [
@@ -93,15 +93,15 @@ export const routes: RouteObject[] = [
         ],
       },
       {
-        path: 'topics',
+        path: 'guides',
         children: [
           {
             path: '',
-            element: <TopicList />,
+            element: <GuideList />,
           },
           {
-            path: ':topic_id',
-            element: <TopicMain />,
+            path: ':guide_id',
+            element: <GuideMain />,
           },
         ],
       },

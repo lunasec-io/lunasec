@@ -1,0 +1,26 @@
+query GetGuideDetails( $id: uuid!) {
+    guides_by_pk(id: $id){
+        id
+        body
+        metadata
+        severity
+        title
+        summary
+        created_at
+        metadata_schema_version
+        guide_vulnerabilities {
+            vulnerability {
+                id
+                name
+                namespace
+            }
+        }
+        related_guides {
+            guide {
+                title
+                summary
+                id
+            }
+        }
+    }
+}
