@@ -18,7 +18,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
-	"lunasec/lunadefend/gateway/configs"
+	"github.com/lunasec-io/lunasec/go/gateway/configs"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 )

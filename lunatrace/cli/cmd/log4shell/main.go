@@ -18,12 +18,12 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"lunasec/lunatrace/pkg/analyze"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/livepatch"
-	"lunasec/lunatrace/pkg/patch"
-	"lunasec/lunatrace/pkg/scan"
-	"lunasec/lunatrace/pkg/util"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/analyze"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/livepatch"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/patch"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/scan"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 	"os"
 )
 
