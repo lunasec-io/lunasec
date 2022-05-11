@@ -1,28 +1,28 @@
 table:
-  schema: public
   name: related_vulnerabilities
+  schema: public
 object_relationships:
-  - name: parent
-    using:
-      foreign_key_constraint_on: vulnerability_slug
-  - name: vulnerability
-    using:
-      foreign_key_constraint_on: related_vulnerability_slug
-  - name: vulnerabilityByVulnerabilitySlug
-    using:
-      foreign_key_constraint_on: vulnerability_slug
+- name: parent
+  using:
+    foreign_key_constraint_on: vulnerability_slug
+- name: vulnerability
+  using:
+    foreign_key_constraint_on: related_vulnerability_slug
+- name: vulnerabilityByVulnerabilitySlug
+  using:
+    foreign_key_constraint_on: vulnerability_slug
 select_permissions:
-  - role: service
-    permission:
-      columns:
-        - related_vulnerability_slug
-        - vulnerability_slug
-        - id
-      filter: {}
-  - role: user
-    permission:
-      columns:
-        - related_vulnerability_slug
-        - vulnerability_slug
-        - id
-      filter: {}
+- permission:
+    columns:
+    - related_vulnerability_slug
+    - vulnerability_slug
+    - id
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - related_vulnerability_slug
+    - vulnerability_slug
+    - id
+    filter: {}
+  role: user

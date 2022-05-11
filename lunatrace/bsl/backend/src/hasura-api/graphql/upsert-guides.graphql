@@ -1,0 +1,10 @@
+mutation UpsertGuides($objects: [guides_insert_input!]!) {
+  insert_guides(
+    on_conflict: {
+      constraint: guides_guide_unique_id_key,
+      update_columns: [tags, body, data_source_link, metadata, metadata_schema_version, title, updated_at, summary, severity]},
+      objects: $objects)
+  {
+    affected_rows
+  }
+}
