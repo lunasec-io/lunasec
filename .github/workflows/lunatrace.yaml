@@ -37,14 +37,11 @@ jobs:
           tools/service-scripts/wait-for-it.sh -h localhost -p 8080 -t 120
           
           (cd lunatrace/bsl/hasura && (
-            # hack
-            yq -i e '.endpoint |= "http://localhost:8080"' lunatrace/bsl/hasura/config.yaml
-          
             HASURA="npx --yes hasura-cli --skip-update-check"
             $HASURA md ic list
             $HASURA md ic status
-          
-          
+            
+            curl -vvv localhost:8080
           ) || true)
           
           (cd lunatrace/bsl && docker-compose logs)
