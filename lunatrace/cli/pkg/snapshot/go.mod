@@ -1,6 +1,11 @@
-module lunasec/lunatrace/snapshot
+module github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot
 
 go 1.17
+
+replace (
+	github.com/lunasec-io/lunasec/lunatrace/cli => ./../../../cli
+	github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot => ./
+)
 
 require (
 	github.com/adrg/xdg v0.2.1
