@@ -33,7 +33,6 @@ jobs:
           (cd lunatrace/bsl/backend && yarn run compile)
           (cd lunatrace/bsl/frontend && yarn run build:docker)
       - run: |-
-          tools/service-scripts/wait-for-it.sh -h localhost -p 8080 -t 5
           (cd lunatrace/bsl && docker-compose up -d)
           tools/service-scripts/wait-for-it.sh -h localhost -p 8080 -t 120
           
