@@ -19,7 +19,6 @@ require (
 	github.com/rs/zerolog v1.26.1
 	github.com/urfave/cli/v2 v2.3.0
 	go.uber.org/config v1.4.0
-	lunasec/lunatrace/snapshot v0.0.0-00010101000000-000000000000
 )
 
 require (
