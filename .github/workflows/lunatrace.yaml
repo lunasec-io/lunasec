@@ -40,6 +40,9 @@ jobs:
           yq -i e '.endpoint |= "http://localhost:8080"' lunatrace/bsl/hasura/config.yaml
           
           (cd lunatrace/bsl/hasura && (
-            npx hasura md ic list
-            npx hasura md ic status
+            HASURA="npx --yes hasura-cli --skip-update-check"
+            $HASURA md ic list
+            $HASURA md ic status
           ) || true)
+          
+          docker-compose logs
