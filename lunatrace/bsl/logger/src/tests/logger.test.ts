@@ -37,13 +37,14 @@ describe('LunaLogger', () => {
   it('appends any object properties from the first argument', () => {
     log.info({ test: 'field' });
     const output = consoleMock.mock.calls[0][0];
-    parseAndCheck(output, 'test', 'field');
+    parseAndCheckContext(output, 'test', 'field');
   });
 
   it('stringifies anything else into message', () => {
     log.info(['test'], 'test message');
     const output = consoleMock.mock.calls[0][0];
-    parseAndCheck(output, 'message', '["test"]test message');
+    console.error(output);
+    parseAndCheck(output, 'message', "[ 'test' ]test message");
   });
 
   describe('helper method', () => {
@@ -59,10 +60,10 @@ describe('LunaLogger', () => {
 
   describe('child logger', () => {
     it('appends any child additional fields', () => {
-      const childLogger = log.child({ child: 'field' });
+      const childLogger = log.child('child', { child: 'field' });
       childLogger.log('test');
       const output = consoleMock.mock.calls[0][0];
-      parseAndCheck(output, 'child', 'field');
+      parseAndCheckContext(output, 'child', 'field');
     });
   });
 
@@ -71,7 +72,7 @@ describe('LunaLogger', () => {
       await log.provideFields({ asyncStored: 'field' }, () => {
         log.info('should have stored field');
         const output = consoleMock.mock.calls[0][0];
-        parseAndCheck(output, 'asyncStored', 'field');
+        parseAndCheckContext(output, 'asyncStored', 'field');
         return;
       });
     });
@@ -81,8 +82,8 @@ describe('LunaLogger', () => {
         await log.provideFields({ anotherAsyncStored: 'field' }, () => {
           log.info('should have stored field');
           const output = consoleMock.mock.calls[0][0];
-          parseAndCheck(output, 'asyncStored', 'field');
-          parseAndCheck(output, 'anotherAsyncStored', 'field');
+          parseAndCheckContext(output, 'asyncStored', 'field');
+          parseAndCheckContext(output, 'anotherAsyncStored', 'field');
           return;
         });
       });
@@ -104,4 +105,9 @@ describe('LunaLogger', () => {
 function parseAndCheck(jsonString: string, key: string, value: unknown) {
   const parsed = JSON.parse(jsonString); // This breaks if we use color, interestingly
   expect(parsed[key]).toEqual(value);
+}
+
+function parseAndCheckContext(jsonString: string, key: string, value: unknown) {
+  const parsed = JSON.parse(jsonString); // This breaks if we use color, interestingly
+  expect(parsed['context'][key]).toEqual(value);
 }

@@ -15,10 +15,19 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
 import { GraphQLClient } from 'graphql-request';
 
+import { impersonateUserHeader } from '../constants/headers';
+import { getImpersonatedUser } from '../utils/users';
+
 // import { ManifestDocument, ManifestSubscription, ManifestSubscriptionVariables } from './generated';
 
+const impersonatedUser = getImpersonatedUser();
+const headers: Record<string, string> = impersonatedUser ? { [impersonateUserHeader]: impersonatedUser.id } : {};
+
 // This is the base API that is consumed by the graphql codegen
-export const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_URL || 'http://localhost:4455/v1/graphql');
+export const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_URL || 'http://localhost:4455/v1/graphql', {
+  headers,
+});
+
 // highlight-start
 export const api = createApi({
   baseQuery: graphqlRequestBaseQuery({ client }),

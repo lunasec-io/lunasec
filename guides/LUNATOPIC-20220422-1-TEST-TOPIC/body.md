@@ -251,43 +251,11 @@ automatically and quickly patches your live server's dependencies whenever a new
 For updates on Log4Shell, please follow us on [Twitter](https://twitter.com/LunaSecIO) or subscribe to our newsletter
 below.
 
-import ContactForm from '../src/components/ContactForm.jsx'
-
-<ContactForm/>
-
 ### Links
 
 - **[Hacker News](https://news.ycombinator.com/item?id=29504755)**
 - **[Reddit](https://old.reddit.com/r/programming/comments/rcxehp/rce_0day_exploit_found_in_log4j_a_popular_java/)**
 - **[Twitter](https://twitter.com/freeqaz/status/1469121757361569793?s=20)**
-
-### Edits
-
-1. Updated the "Who is impacted?" section to include mitigating factors based on JDK version, while also suggesting other exploitation
-   methods as still prevalent.
-2. ~~Named the vulnerability "LogJam"~~ Added CVE, and added link to release tags.
-3. Updated mitigation steps with newer information.
-4. Removed the name "LogJam" because it's already been [used](https://en.wikipedia.org/wiki/Logjam_(computer_security)). Using "Log4Shell" instead.
-5. Update that 2.15.0 is released.
-6. Added the MS Paint logo[4], and updated example code to be slightly more clear (it's not string concatenation).
-7. Reported on iPhones being affected by the vulnerability, and included local reproduction code and steps.
-8. Updated social info.
-9. Updated example code to use Log4j2 syntax.
-10. Updated title because of some confusion.
-11. Better DNS testing site and explanation
-12. Added link to the [Log4Shell Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).
-13. Add warnings about limited vuln in 2.15 / noMsgFormatLookups
-14. Added link to 2nd CVE.
-15. Updated contact information.
-16. Updated original Twitter link from @P0rZ9 as the original tweet was deleted. Changed from `https://twitter.com/P0rZ9/status/1468949890571337731` to `https://web.archive.org/web/20211209230040/https://twitter.com/P0rZ9/status/1468949890571337731`.
-17. Added links to other blog posts.
-18. Updated post to include latest version 2.17.0 release.
-19. Updated archived Twitter link as the original has no images anymore. Changed from `20211209230040` to `20211211082351`.
-
-### Editing this post
-
-If you have any updates or edits you'd like to make, you can edit this post as Markdown on
-[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-09-log4j-zero-day.mdx). And please throw us a Star ⭐!
 
 ### References
 

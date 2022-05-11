@@ -1,0 +1,9 @@
+query GetLunaTraceUsers {
+  users {
+    id
+    kratos_id
+    kratos_identity {
+      traits
+    }
+  }
+}

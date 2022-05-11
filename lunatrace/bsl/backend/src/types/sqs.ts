@@ -13,6 +13,7 @@
  */
 
 import { S3ObjectMetadata } from './s3';
+import { MaybeError } from './util';
 
 export type QueueHandlerType = 'process-webhook' | 'process-manifest' | 'process-sbom' | 'process-repository';
 
@@ -86,16 +87,7 @@ export interface WebhookMetadata {
   delivery_id: string;
 }
 
-export interface QueueSuccessResult {
-  success: true;
-}
-
-export interface QueueErrorResult {
-  success: false;
-  error: Error;
-}
-
-export type HandlerCallback<TBody> = (object: TBody) => Promise<QueueSuccessResult | QueueErrorResult>;
+export type HandlerCallback<TBody> = (object: TBody) => Promise<MaybeError<undefined>>;
 
 export type S3HandlerCallback = HandlerCallback<S3ObjectMetadata>;
 export type WebhookHandlerCallback = HandlerCallback<WebhookMetadata>;

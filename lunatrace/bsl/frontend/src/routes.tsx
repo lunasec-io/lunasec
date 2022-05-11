@@ -13,10 +13,11 @@
  */
 import React from 'react';
 import { RouteObject } from 'react-router';
+import { Navigate } from 'react-router-dom';
 
 import { RouteGuard } from './components/auth/RouteGuard';
 import MainLayout from './layouts/Main';
-import { BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
+import { AdminDashboard, BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
 import { AuthError } from './pages/auth/Error';
 import { GuideMain } from './pages/guide/Guide';
 import { GuideList } from './pages/guide/List';
@@ -106,7 +107,21 @@ export const routes: RouteObject[] = [
         ],
       },
 
+      {
+        path: 'admin',
+        element: (
+          <RouteGuard>
+            <AdminDashboard />
+          </RouteGuard>
+        ),
+      },
       { path: 'auth', children: [{ path: 'error', element: <AuthError /> }] },
+      // Login is handled by auth service, but we can still get here if the user hits back. Send those users back to
+      // the homepage.
+      {
+        path: 'login',
+        element: <Navigate to={'/'} />,
+      },
       {
         element: <p>404</p>, //doesnt work
       },
