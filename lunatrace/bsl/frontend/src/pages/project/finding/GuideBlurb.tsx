@@ -11,8 +11,19 @@
  * limitations under the License.
  *
  */
-import { GetBuildDetailsQuery } from '../../../api/generated';
 
-export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
-export type Guide = Finding['vulnerability']['guide_vulnerabilities'][number]['guide'];
+import { Guide } from './types';
+
+export const GuideBlurb: React.FC<{ guide: Guide }> = ({ guide }) => {
+  return (
+    <>
+      <h2 className={'d-md-inline-block'}>{guide.title}</h2>
+      <p className={'ms-md-1'}>
+        {guide.summary} <NavLink to={`/guides/${guide.id}`}>Read more...</NavLink>
+      </p>
+    </>
+  );
+};

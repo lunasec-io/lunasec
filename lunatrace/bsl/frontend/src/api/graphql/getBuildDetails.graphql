@@ -63,8 +63,8 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                 cvss_inferred
                 name
                 namespace
-                topic_vulnerabilities {
-                    topic {
+                guide_vulnerabilities {
+                    guide {
                         id
                         body
                         metadata
@@ -73,8 +73,8 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                         summary
                         created_at
                         metadata_schema_version
-                        related_topics {
-                            topic {
+                        related_guides {
+                            guide {
                                 title
                                 summary
                                 id

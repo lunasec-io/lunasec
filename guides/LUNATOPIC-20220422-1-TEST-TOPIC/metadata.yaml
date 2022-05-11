@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "cves": ["CVE-2021-44228","CVE-2021-45046"],
+  "name": "Log4Shell",
+  "severity":"Critical",
+  "summary": "On Thursday, December 9th, a 0-day exploit in the
+popular Java logging library log4j (version 2) was discovered that results in Remote Code Execution (RCE), by
+logging a certain string.",
+  "advisories":[
+    {
+      "type": "github",
+      "name": "GitHub Log4Shell Advisory",
+      "url": "https://github.com/advisories/GHSA-jfh8-c2jp-5v3q"
+    },
+    {
+      "type": "blog",
+      "name": "LunaSec Log4Shell blog post",
+      "url": "https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide"
+    },
+    {
+      "type": "nvd",
+      "name": "Official NVD CVE",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-44228"
+    }
+  ],
+  "cwe":[ {
+    "number": 20,
+    "name": "Improper Input Validation"
+  }],
+  "tags": ["logging","invalid input sanitization"],
+  "packages": [{
+    "type": "maven",
+    "purl": "pkg:maven/log4j/log4j",
+    "language": "java",
+    "name": "log4j",
+    "versionConstraint": "= 2.0 || >= 2.0.1, < 2.3.1 || >= 2.4.0, < 2.12.2 || >= 2.13.0, < 2.15.0",
+    "fixed": true,
+    "fixVersion": ">= 2.16.0"
+  }],
+#  See backend/src/fixtures for an example of how conditions look
+  "conditions": [],
+  "tools": [{
+    "name": "LunaSec log4shell CLI",
+    "link": "https://github.com/lunasec-io/lunasec/releases/tag/v1.6.1-log4shell"
+  }],
+  "relatedGuides": []
+}

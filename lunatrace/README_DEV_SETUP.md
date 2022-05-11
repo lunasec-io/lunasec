@@ -56,9 +56,10 @@ npm install -g smee-client
 
 ### Setup AWS Dependencies
 
-From `$REPO_ROOT/lunatrace/bsl/backend-cdk` folder, you'll need to run the following:
+From `$REPO_ROOT/lunatrace/bsl/backend-cdk` folder, you'll need to run the following.  Replace <YOUR_NAME> with your name, just to 
+keep the resources straight in AWS.  
 ```sh
-DEV_USER=YOUR_USERNAME yarn run dev:cdk:deploy
+DEV_USER=<YOUR_NAME> yarn run dev:cdk:deploy
 ```
 
 That will run a real AWS deployment of the "dev" resources required. Once it finished, you should see something like:
@@ -113,14 +114,15 @@ it up, so if you accidentally have problems after you can run `sudo docker-compo
 
 ### Setting up the Database
 
-Everything will likely break a bunch at this point because the database hasn't properly beet configured yet.
+Everything will likely break a bunch at this point because the database hasn't properly been configured yet.
 
 We use Hasura and Kratos, so there will be a few incantations required to make this work.
 
 #### Kratos (do this first):
 
 ```sh
-sudo docker exec -it $(sudo docker ps | grep kratos | awk '{print $1}') /usr/bin/kratos migrate sql /config/config.yaml migrate sql -e --yes
+cd bsl
+sudo docker-compose exec kratos /usr/bin/kratos migrate sql /config/config.yaml migrate sql -e --yes
 ```
 
 That's a bit of a magical command but... it's basically just finding the Kratos Docker container ID and then running the
@@ -131,9 +133,10 @@ will ensure that your Kratos version is always in sync with the Docker version._
 
 #### Hasura (second):
 
-From the `bsl/hasura` folder run...
+Now migrate hasura with:
 
 ```sh
+cd bsl/hasura
 hasura migrate apply
 hasura metadata apply
 hasura metadata reload

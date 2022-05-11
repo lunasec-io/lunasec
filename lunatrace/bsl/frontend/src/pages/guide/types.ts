@@ -11,8 +11,12 @@
  * limitations under the License.
  *
  */
-import { GetBuildDetailsQuery } from '../../../api/generated';
+import { GuideMetadata } from '@lunatrace/lunatrace-common';
 
-export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
+import { GetGuideDetailsQuery } from '../../api/generated';
 
-export type Guide = Finding['vulnerability']['guide_vulnerabilities'][number]['guide'];
+type GeneratedGuideDetails = NonNullable<GetGuideDetailsQuery['guides_by_pk']>;
+
+export interface GuideDetailsData extends GeneratedGuideDetails {
+  metadata: GuideMetadata;
+}
