@@ -6,7 +6,7 @@ require (
 	github.com/Joker/jade v1.1.3
 	github.com/adrg/xdg v0.4.0
 	github.com/anchore/grype v0.33.1
-	github.com/anchore/stereoscope v0.0.0-20220406160859-c03a18a6b270
+	github.com/anchore/stereoscope v0.0.0-20220217141419-c6f02aed9ed2
 	github.com/anchore/syft v0.39.3
 	github.com/apex/gateway v1.1.2
 	github.com/aws/aws-lambda-go v1.31.1
