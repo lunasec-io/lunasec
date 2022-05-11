@@ -21,12 +21,11 @@ insert_permissions:
     - user_id
   role: service
 - permission:
-    backend_only: false
     check:
       _or:
       - organization:
           creator_id:
-            _eq: X-Hasura-User-Id
+            _eq: X-Hasura-Real-User-Id
       - organization:
           organization_users:
             _and:

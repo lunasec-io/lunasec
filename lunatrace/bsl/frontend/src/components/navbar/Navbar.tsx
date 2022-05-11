@@ -11,27 +11,27 @@
  * limitations under the License.
  *
  */
-import BootstrapSwitchButton from 'bootstrap-switch-button-react';
-import React, { useEffect } from 'react';
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import React, { useContext } from 'react';
+import { Button, Container, Nav, Navbar } from 'react-bootstrap';
 import { BsMoon, BsSun } from 'react-icons/bs';
 
+import { WizardOpenContext } from '../../contexts/WizardContext';
 import useAppSelector from '../../hooks/useAppSelector';
 import useSidebar from '../../hooks/useSidebar';
 import useTheme from '../../hooks/useTheme';
 import { selectIsAuthenticated } from '../../store/slices/authentication';
+import { getImpersonatedUser, setImpersonatedUser } from '../../utils/users';
 
 import { ProjectSearch } from './NavbarProjectSearch';
 import NavbarUser from './NavbarUser';
 
-interface NavbarComponentProps {
-  setupWizardOpen: boolean;
-}
-
-const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupWizardOpen }) => {
+const NavbarComponent: React.FunctionComponent = () => {
   const { isOpen, setIsOpen } = useSidebar();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const impersonatedUser = getImpersonatedUser();
   const { theme, setTheme } = useTheme();
+
+  const setupWizardOpen = useContext(WizardOpenContext);
 
   const toggleTheme = () => {
     if (theme === 'dark') {
@@ -40,10 +40,6 @@ const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupW
     }
     setTheme('dark');
   };
-
-  useEffect(() => {
-    setIsOpen(!setupWizardOpen);
-  }, [setupWizardOpen]);
 
   const drawerToggle = (
     <span
@@ -55,6 +51,11 @@ const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupW
       <i className="hamburger align-self-center" />
     </span>
   );
+
+  const stopImpersonating = () => {
+    setImpersonatedUser(null);
+    window.location.reload();
+  };
 
   return (
     <Navbar variant="light" expand="lg" className="navbar-bg">
@@ -68,6 +69,7 @@ const NavbarComponent: React.FunctionComponent<NavbarComponentProps> = ({ setupW
             {theme === 'dark' ? <BsMoon size="30px" /> : <BsSun size="30px" />}
           </span>
           <NavbarUser />
+          {impersonatedUser && <Button onClick={stopImpersonating}>Stop Impersonating {impersonatedUser.name}</Button>}
         </Nav>
       </Container>
     </Navbar>

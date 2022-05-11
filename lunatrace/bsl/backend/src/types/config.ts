@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { QueueHandlerConfig, QueueHandlerType } from './sqs';
+import { QueueHandlerConfig } from './sqs';
 
 export interface ServerConfig {
   serverPort: number;

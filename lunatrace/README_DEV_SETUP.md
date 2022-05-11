@@ -56,10 +56,9 @@ npm install -g smee-client
 
 ### Setup AWS Dependencies
 
-From `$REPO_ROOT/lunatrace/bsl/backend-cdk` folder, you'll need to run the following.  Replace <YOUR_NAME> with your name, just to 
-keep the resources straight in AWS.  
+From `$REPO_ROOT/lunatrace/bsl/backend-cdk` folder, you'll need to run the following. Replace YOUR_USERNAME with your user.
 ```sh
-DEV_USER=<YOUR_NAME> yarn run dev:cdk:deploy
+DEV_USER=YOUR_USERNAME yarn run dev:cdk:deploy
 ```
 
 That will run a real AWS deployment of the "dev" resources required. Once it finished, you should see something like:
@@ -76,12 +75,12 @@ lunatrace-alex-EtlStorage.ProcessSbomProcessingQueueName = lunatrace-alex-EtlSto
 lunatrace-alex-EtlStorage.ProcessWebhookProcessingQueueName = lunatrace-alex-EtlStorage-ProcessWebhookProcessingQueue475F8047-ZzRXj42PsJAZ
 lunatrace-alex-EtlStorage.SbomBucketName = lunatrace-alex-etlstorage-sbombucket8550fee8-1drqtwb7yf2dg
 Stack ARN:
-arn:aws:cloudformation:us-west-2:1234567890:stack/lunatrace-EtlStorage/asdf5ee5-cd11-22ec-82c9-5264031fasdf
+arn:aws:cloudformation:us-west-2:134071937287:stack/lunatrace-alex-EtlStorage/4655a320-cb37-11ec-a2b1-02772921f86f
 
 ✨  Total time: 184.84s
 ```
 
-You'll need to format those values into an env file at `$REPO/lunatrace/backend/.env.dev`.  From the above output, mine looks like:
+You'll need to format those values into an env file at `$REPO/lunatrace/dev-cli/.env.dev` that looks like:
 
 ```env
 S3_SBOM_BUCKET=lunatrace-alex-etlstorage-sbombucket8550fee8-1drqtwb7yf2dg
@@ -114,35 +113,11 @@ it up, so if you accidentally have problems after you can run `sudo docker-compo
 
 ### Setting up the Database
 
-Everything will likely break a bunch at this point because the database hasn't properly been configured yet.
+We use Hasura to manage the database. Migrations for Kratos and Hasura will be applied automatically in dev.
 
-We use Hasura and Kratos, so there will be a few incantations required to make this work.
+#### Hasura:
 
-#### Kratos (do this first):
-
-```sh
-cd bsl
-sudo docker-compose exec kratos /usr/bin/kratos migrate sql /config/config.yaml migrate sql -e --yes
-```
-
-That's a bit of a magical command but... it's basically just finding the Kratos Docker container ID and then running the
-Kratos CLI commands inside of it to setup the DB.
-
-_NOTE: It may be possible to use the Kratos CLI from your machine directly instead if Docker is janky. But this approach
-will ensure that your Kratos version is always in sync with the Docker version._
-
-#### Hasura (second):
-
-Now migrate hasura with:
-
-```sh
-cd bsl/hasura
-hasura migrate apply
-hasura metadata apply
-hasura metadata reload
-```
-
-Those should work and pull up the whole DB. Once that's done you should be able to pull up the Hasura console either
+You should be able to pull up the Hasura console either
 by running `hasura console` or going to `http://localhost:9695/`. This will show you the GraphQL server and an admin
 dashboard for the database.
 

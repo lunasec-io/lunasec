@@ -12,12 +12,22 @@
  *
  */
 
+import { inspect } from 'util';
+
 import express, { Request, Response } from 'express';
 import { validate as validateUUID } from 'uuid';
 
 import { getHasuraConfig } from '../config';
 import { hasura } from '../hasura-api';
+import { userIsAdmin } from '../hasura-api/actions/user-is-admin';
+import { Scalars } from '../hasura-api/generated';
+import { MaybeError } from '../types/util';
+import { errorResponse, newError, newResult } from '../utils/errors';
+import { parsePsqlStringArray } from '../utils/json-utils';
+import { jwtMiddleware } from '../utils/jwt-middleware';
 import { log } from '../utils/log';
+import { catchError, threwError } from '../utils/try';
+import { isArray } from '../utils/types';
 
 // These routes are used by oathkeeper to validate incoming requests before they are allowed to reach the rest of the cluster
 const hasuraConfig = getHasuraConfig();
@@ -25,59 +35,57 @@ export const lookupAccessTokenRouter = express.Router();
 
 lookupAccessTokenRouter.get('/internal/auth/lookup-project-access-token', cliAuthorizer);
 lookupAccessTokenRouter.get('/internal/auth/lookup-static-access-token', serviceAuthorizer);
+lookupAccessTokenRouter.post('/internal/auth/impersonate-as-admin', jwtMiddleware, impersonateAsAdmin);
 
-interface ErrorResponse {
-  error: true;
-  message: string;
-}
-
-function parseRequestHeaders(req: Request): ErrorResponse | { error: false; accessToken: string } {
-  const accessTokenHeader = req.header('X-LunaTrace-Access-Token');
-  if (!accessTokenHeader) {
+function validateUUIDValue(value: any): MaybeError<string> {
+  if (typeof value !== 'string') {
     return {
       error: true,
-      message: 'Missing Access Token in X-LunaTrace-Access-Token header',
+      msg: `Invalid Access Token specified in ${value} header`,
     };
   }
 
-  if (typeof accessTokenHeader !== 'string') {
+  const token = value;
+
+  if (!validateUUID(token)) {
     return {
       error: true,
-      message: 'Invalid Access Token specified in X-LunaTrace-Access-Token header',
-    };
-  }
-
-  const accessToken = accessTokenHeader;
-
-  if (!validateUUID(accessToken)) {
-    return {
-      error: true,
-      message: 'Invalid Access Token specified in X-LunaTrace-Access-Token header',
+      msg: `Invalid Access Token specified in ${value} header`,
     };
   }
 
   return {
     error: false,
-    accessToken: accessToken,
+    res: token,
   };
+}
+
+function parseRequestTokenHeader(headerName: string, req: Request): MaybeError<string> {
+  const tokenHeader = req.header(headerName);
+  if (!tokenHeader) {
+    return {
+      error: true,
+      msg: `Missing Access Token in ${headerName} header`,
+    };
+  }
+  return validateUUIDValue(tokenHeader);
 }
 
 function generateErrorResponse(res: Response, errorMessage: string, statusCode = 500) {
   res.status(statusCode);
-  res.send(JSON.stringify({ error: true, message: errorMessage }));
+  res.send(errorResponse(errorMessage));
 }
 
 // Oathkeeper calls this when requests from the CLI come through the gateway.. We append this data here just for the action
 // but currently this fires for all calls..could clean that up with a new oathkeeper rule
 export async function cliAuthorizer(req: Request, res: Response): Promise<void> {
-  log.info('CLI authorizer called for route ', req.originalUrl);
-  const parsedRequest = parseRequestHeaders(req);
+  const parsedRequest = parseRequestTokenHeader('X-LunaTrace-Access-Token', req);
 
   if (parsedRequest.error) {
-    return generateErrorResponse(res, parsedRequest.message);
+    return generateErrorResponse(res, parsedRequest.msg);
   }
 
-  const hasuraRes = await hasura.GetAuthDataFromProjectToken({ access_token: parsedRequest.accessToken });
+  const hasuraRes = await hasura.GetAuthDataFromProjectToken({ access_token: parsedRequest.res });
   if (!hasuraRes.project_access_tokens?.[0]) {
     return generateErrorResponse(res, 'Invalid Access Token specified in X-LunaTrace-Access-Token header', 401);
   }
@@ -89,7 +97,7 @@ export async function cliAuthorizer(req: Request, res: Response): Promise<void> 
     extra: {
       project_uuid: projectData.project.id,
       builds: builds,
-      access_token: parsedRequest.accessToken,
+      access_token: parsedRequest.res,
     },
   });
   return;
@@ -97,16 +105,14 @@ export async function cliAuthorizer(req: Request, res: Response): Promise<void> 
 
 // Oathkeeper calls this when requests from a backend service come through the gateway, this is a string matcher behind a rest endpoint :p
 export function serviceAuthorizer(req: Request, res: Response): void {
-  log.info('Service authorizer called for route ', req.originalUrl);
-
-  const parsedRequest = parseRequestHeaders(req);
+  const parsedRequest = parseRequestTokenHeader('X-LunaTrace-Access-Token', req);
 
   if (parsedRequest.error) {
-    return generateErrorResponse(res, parsedRequest.message);
+    return generateErrorResponse(res, parsedRequest.msg);
   }
 
   // TODO: Make this read from Secrets Manager instead.
-  if (!parsedRequest.accessToken || parsedRequest.accessToken !== hasuraConfig.staticAccessToken) {
+  if (!parsedRequest.res || parsedRequest.res !== hasuraConfig.staticAccessToken) {
     return generateErrorResponse(res, 'Invalid Access Token specified in X-LunaTrace-Access-Token header', 401);
   }
 
@@ -114,4 +120,83 @@ export function serviceAuthorizer(req: Request, res: Response): void {
     error: false,
   });
   return;
+}
+
+lookupAccessTokenRouter.post('/internal/auth/hydrate-user-id', async (req, res) => {
+  const failAndContinue = () => {
+    res.send({
+      ...req.body,
+    });
+    return;
+  };
+
+  const kratosUserId = req.body.subject;
+  if (!kratosUserId || kratosUserId === 'guest') {
+    return failAndContinue();
+  }
+
+  const userId = await impersonateAsAdmin(kratosUserId, req, res);
+  const impersonateOverride = userId !== kratosUserId ? { impersonate_user_id: userId } : {};
+
+  const hasuraRes = await hasura.GetUserFromIdentity({ id: kratosUserId });
+
+  const realUserId = hasuraRes.identities_by_pk?.user?.id;
+
+  res.status(200).send({
+    ...req.body,
+    extra: {
+      ...impersonateOverride,
+      real_user_id: realUserId,
+    },
+  });
+  return;
+});
+
+export async function impersonateAsAdmin(kratosUserId: string, req: Request, res: Response): Promise<string> {
+  const logger = log.child('impersonate-as-admin', {
+    kratos_id: kratosUserId,
+  });
+
+  const impersonateHeader = 'X-Lunatrace-Impersonate-User-Id';
+  const impersonateUserIdHeader = req.body.match_context.header[impersonateHeader];
+
+  // if no impersonate header is present then return quickly and quietly
+  if (!impersonateUserIdHeader) {
+    return kratosUserId;
+  }
+
+  if (!isArray(impersonateUserIdHeader) || impersonateUserIdHeader.length !== 1) {
+    log.info('provided header is not an array', {
+      impersonateUserIdHeader,
+    });
+    return kratosUserId;
+  }
+
+  const impersonateUserId = impersonateUserIdHeader[0];
+
+  const parsedRequest = validateUUIDValue(impersonateUserId);
+  if (parsedRequest.error) {
+    logger.info('unable to validate header', {
+      impersonateUserId,
+    });
+    return kratosUserId;
+  }
+
+  const userToImpersonate = parsedRequest.res;
+
+  const isAdmin = await userIsAdmin(kratosUserId);
+  if (!isAdmin) {
+    logger.info('user is not admin', {
+      kratosUserId,
+      userToImpersonate,
+    });
+    res.send(req.body);
+    return kratosUserId;
+  }
+
+  logger.info('impersonating user', {
+    userToImpersonate,
+  });
+
+  return userToImpersonate;
 }

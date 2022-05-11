@@ -21,8 +21,9 @@ import { hasura } from '../hasura-api';
 import { InsertedScan, parseAndUploadScan } from '../models/scan';
 import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
-import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
+import { MaybeError } from '../types/util';
 import { aws } from '../utils/aws-utils';
+import { newError, newResult } from '../utils/errors';
 import { log } from '../utils/log';
 import { catchError, threwError } from '../utils/try';
 
@@ -72,23 +73,21 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
   return scanReport;
 }
 
-export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSuccessResult | QueueErrorResult> {
+export async function handleScanSbom(message: S3ObjectMetadata): Promise<MaybeError<undefined>> {
   const { key, region, bucketName } = message;
   const buildId = key.split('/').pop();
   return await log.provideFields({ key, region, bucketName }, async () => {
     if (!buildId || !validate.isUUID(buildId)) {
-      log.error('invalid build uuid from s3 object at key ', key);
+      log.error('invalid build uuid from s3 object at key ', {
+        key,
+      });
       // not much we can do without a valid buildId
-      return {
-        success: false,
-        error: new Error('invalid build uuid from s3 object at key ' + key),
-      };
+      return newError('invalid build uuid from s3 object at key ' + key);
     }
 
     const bucketInfo: SbomBucketInfo = { region, bucketName, key };
 
-    const scanResp = await catchError(async () => await scanSbom(buildId, bucketInfo));
-
+    const scanResp = await catchError(scanSbom(buildId, bucketInfo));
     if (threwError(scanResp)) {
       log.error('Sbom Scanning Error:', { scanResp });
       await hasura.UpdateManifestStatusIfExists({
@@ -96,20 +95,17 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<QueueSu
         message: String(scanResp.message),
         buildId: buildId,
       });
-      return {
-        success: false,
-        error: new Error(scanResp.message),
-      };
+      return newError(scanResp.message);
     }
 
     try {
       await commentOnPrIfExists(buildId, scanResp);
     } catch (e) {
-      log.error('commenting on github pr failed, continuing.. ', e);
+      log.error('commenting on github pr failed, continuing.. ', {
+        error: e,
+      });
     }
 
-    return {
-      success: true,
-    };
+    return newResult(undefined);
   });
 }

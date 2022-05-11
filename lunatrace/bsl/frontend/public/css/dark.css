@@ -15386,14 +15386,6 @@ body[data-theme=light] .badge-sidebar-secondary {
 body:not([data-sidebar-position=right]) .sidebar.collapsed {
   margin-left: -260px;
 }
-@media (min-width: 1px) and (max-width: 991.98px) {
-  body:not([data-sidebar-position=right]) .sidebar {
-    margin-left: -260px;
-  }
-  body:not([data-sidebar-position=right]) .sidebar.collapsed {
-    margin-left: 0;
-  }
-}
 body:not([data-sidebar-position=right]) .sidebar-toggle {
   margin-right: 1rem;
 }
@@ -17745,7 +17737,7 @@ pre[class*=language-] {
   border-color: var(--bs-primary);
 }
 
-.topic-body {
+.guide-body {
   color: #fff !important;
 }
 

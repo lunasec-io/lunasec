@@ -28,7 +28,7 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
   const listenToHook: typeof interceptor.on = (hookName, callback) => {
     interceptor.on(hookName, async (event) => {
       const actionName = 'action' in event.payload ? event.payload.action : 'none given';
-      await log.provideFields({ loggerName: 'webhook-logger', hookName, actionName }, async () => {
+      await log.provideFields({ trace: 'webhook-logger', hookName, actionName }, async () => {
         await callback(event);
       });
     });
