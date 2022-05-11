@@ -1,155 +1,155 @@
 table:
-  schema: public
   name: projects
+  schema: public
 object_relationships:
-  - name: github_repository
-    using:
-      manual_configuration:
-        remote_table:
-          schema: public
-          name: github_repositories
-        insertion_order: null
-        column_mapping:
-          id: project_id
-  - name: organization
-    using:
-      foreign_key_constraint_on: organization_id
+- name: github_repository
+  using:
+    manual_configuration:
+      column_mapping:
+        id: project_id
+      insertion_order: null
+      remote_table:
+        name: github_repositories
+        schema: public
+- name: organization
+  using:
+    foreign_key_constraint_on: organization_id
 array_relationships:
-  - name: builds
-    using:
-      foreign_key_constraint_on:
-        column: project_id
-        table:
-          schema: public
-          name: builds
-  - name: github_repositories
-    using:
-      foreign_key_constraint_on:
-        column: project_id
-        table:
-          schema: public
-          name: github_repositories
-  - name: ignored_vulnerabilities
-    using:
-      foreign_key_constraint_on:
-        column: project_id
-        table:
-          schema: public
-          name: ignored_vulnerabilities
-  - name: manifests
-    using:
-      foreign_key_constraint_on:
-        column: project_id
-        table:
-          schema: public
-          name: manifests
-  - name: project_access_tokens
-    using:
-      foreign_key_constraint_on:
-        column: project_uuid
-        table:
-          schema: public
-          name: project_access_tokens
-  - name: reports
-    using:
-      foreign_key_constraint_on:
-        column: project_uuid
-        table:
-          schema: public
-          name: project_access_tokens
+- name: builds
+  using:
+    foreign_key_constraint_on:
+      column: project_id
+      table:
+        name: builds
+        schema: public
+- name: github_repositories
+  using:
+    foreign_key_constraint_on:
+      column: project_id
+      table:
+        name: github_repositories
+        schema: public
+- name: ignored_vulnerabilities
+  using:
+    foreign_key_constraint_on:
+      column: project_id
+      table:
+        name: ignored_vulnerabilities
+        schema: public
+- name: manifests
+  using:
+    foreign_key_constraint_on:
+      column: project_id
+      table:
+        name: manifests
+        schema: public
+- name: project_access_tokens
+  using:
+    foreign_key_constraint_on:
+      column: project_uuid
+      table:
+        name: project_access_tokens
+        schema: public
+- name: reports
+  using:
+    foreign_key_constraint_on:
+      column: project_uuid
+      table:
+        name: project_access_tokens
+        schema: public
 insert_permissions:
-  - role: service
-    permission:
-      check: {}
-      columns:
-        - name
-        - repo
-        - created_at
-        - id
-        - organization_id
-        - settings_id
-      backend_only: false
-  - role: user
-    permission:
-      check:
-        organization:
-          organization_users:
-            user:
-              kratos_id:
-                _eq: X-Hasura-User-Id
-      columns:
-        - name
-        - organization_id
-        - repo
-      backend_only: false
-select_permissions:
-  - role: cli
-    permission:
-      columns:
-        - name
-        - repo
-        - created_at
-        - id
-        - organization_id
-        - settings_id
-      filter:
-        project_access_tokens:
-          access_token:
-            _eq: X-Hasura-Access-Token
-  - role: service
-    permission:
-      columns:
-        - name
-        - repo
-        - created_at
-        - id
-        - organization_id
-        - settings_id
-      filter: {}
-  - role: user
-    permission:
-      columns:
-        - name
-        - repo
-        - created_at
-        - id
-        - organization_id
-        - settings_id
-      filter:
-        organization:
-          organization_users:
-            user:
-              kratos_id:
-                _eq: X-Hasura-User-Id
-update_permissions:
-  - role: service
-    permission:
-      columns:
-        - name
-        - repo
-        - created_at
-        - id
-        - organization_id
-        - settings_id
-      filter: {}
-      check: {}
-  - role: user
-    permission:
-      columns:
-        - name
-        - repo
-      filter:
-        organization:
-          organization_users:
-            user_id:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - name
+    - repo
+    - created_at
+    - id
+    - organization_id
+    - settings_id
+  role: service
+- permission:
+    backend_only: false
+    check:
+      organization:
+        organization_users:
+          user:
+            kratos_id:
               _eq: X-Hasura-User-Id
-      check: null
+    columns:
+    - name
+    - organization_id
+    - repo
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - name
+    - repo
+    - created_at
+    - id
+    - organization_id
+    - settings_id
+    filter:
+      project_access_tokens:
+        access_token:
+          _eq: X-Hasura-Access-Token
+  role: cli
+- permission:
+    columns:
+    - name
+    - repo
+    - created_at
+    - id
+    - organization_id
+    - settings_id
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - name
+    - repo
+    - created_at
+    - id
+    - organization_id
+    - settings_id
+    filter:
+      organization:
+        organization_users:
+          user:
+            kratos_id:
+              _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check: {}
+    columns:
+    - name
+    - repo
+    - created_at
+    - id
+    - organization_id
+    - settings_id
+    filter: {}
+  role: service
+- permission:
+    check: null
+    columns:
+    - name
+    - repo
+    filter:
+      organization:
+        organization_users:
+          user_id:
+            _eq: X-Hasura-User-Id
+  role: user
 delete_permissions:
-  - role: user
-    permission:
-      filter:
-        organization:
-          organization_users:
-            user:
-              kratos_id:
-                _eq: X-Hasura-User-Id
+- permission:
+    filter:
+      organization:
+        organization_users:
+          user:
+            kratos_id:
+              _eq: X-Hasura-User-Id
+  role: user

@@ -36,7 +36,7 @@ import { isArray } from '../utils/types';
 import { handleSnapshotManifest } from './generate-sbom';
 import { createGithubWebhookHandler } from './github-webhook';
 import { handleScanSbom } from './scan-sbom';
-import { runJob } from './upsert-vulnerabilities';
+import { runUpdateVulnerabilities } from './upsert-vulnerabilities';
 
 const workerConfig = getWorkerConfig();
 
@@ -251,7 +251,8 @@ export async function setupQueue(): Promise<void> {
 if (workerConfig.workerType === 'queue-handler') {
   void setupQueue();
 } else if (workerConfig.workerType === 'job-runner') {
-  void runJob();
+  // TODO: Make it much more clear that 'job-runner' means 'update-vulnerabilities'
+  void runUpdateVulnerabilities();
 } else {
   throw new Error(`unknown worker type: ${workerConfig.workerType}`);
 }

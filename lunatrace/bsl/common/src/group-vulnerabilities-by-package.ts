@@ -25,53 +25,76 @@ export function groupByPackage<F extends Finding>(project_id: string, findings: 
   sFindings.forEach((f) => {
     const preExisting = pkgs[f.purl];
     if (!preExisting) {
-      return (pkgs[f.purl] = {
-        created_at: f.created_at, // might be better to sort and show the first date
-        purl: f.purl,
-        locations: f.locations,
-        severity: f.severity,
-        version: f.version,
-        language: f.language,
-        type: f.type,
-        package_name: f.package_name,
-        cvss_score: f.vulnerability.namespace === 'nvd' ? f.vulnerability.cvss_score || null : null,
-        fix_state: f.fix_state || null,
-        fix_versions: f.fix_versions || [],
-        findings: [f],
-        project_id,
-      });
+      return (pkgs[f.purl] = createNewVulnPackage(project_id, f));
     }
-    // just add the new vuln to the existing pkg, unless its a dupe from another location
-    if (preExisting.findings.filter((pf) => pf.vulnerability.slug === f.vulnerability.slug).length === 0) {
-      pkgs[f.purl].findings.push(f);
-    }
-    // add any new locations
-    f.locations.forEach((l) => {
-      if (!preExisting.locations.includes(l)) {
-        preExisting.locations = [...preExisting.locations, l];
-      }
-    });
-    // set the highest CVSS score to the package score
-    try {
-      if (f.vulnerability.namespace === 'nvd' && Number(f.vulnerability.cvss_score) > Number(preExisting.cvss_score)) {
-        preExisting.cvss_score = f.vulnerability.cvss_score || null;
-      }
-    } catch {
-      console.error('failed converting cvss to number');
-    }
-    // Add any fix versions/state
-    if (f.fix_state === 'fixed') {
-      preExisting.fix_state = f.fix_state;
-      const newFixedVersions = f.fix_versions;
-      if (newFixedVersions) {
-        newFixedVersions.forEach((v) => {
-          if (!preExisting.fix_versions.includes(v)) {
-            preExisting.fix_versions = [...preExisting.fix_versions, v];
-          }
-        });
-      }
-    }
-    return null;
+    // There is a preExisting one so merge them
+    mergeExistingFindingIntoPackage(preExisting, f);
   });
   return Object.values(pkgs);
+}
+
+function createNewVulnPackage<F extends Finding>(project_id: string, finding: F): VulnerablePackage<F> {
+  return {
+    created_at: finding.created_at, // might be better to sort and show the first date
+    purl: finding.purl,
+    locations: finding.locations,
+    severity: finding.severity,
+    version: finding.version,
+    language: finding.language,
+    type: finding.type,
+    guides: finding.vulnerability.guide_vulnerabilities?.map((tv) => tv.guide) || [],
+    package_name: finding.package_name,
+    cvss_score: finding.vulnerability.namespace === 'nvd' ? finding.vulnerability.cvss_score || null : null,
+    fix_state: finding.fix_state || null,
+    fix_versions: finding.fix_versions || [],
+    findings: [finding],
+    project_id,
+  };
+}
+
+function mergeExistingFindingIntoPackage<F extends Finding>(vulnPackage: VulnerablePackage<F>, finding: F): void {
+  // add the finding to the finding list if its not a dupe
+  const existingSlugs = vulnPackage.findings.map((f) => f.vulnerability.slug);
+  const newSlug = finding.vulnerability.slug;
+  if (!existingSlugs.includes(newSlug)) {
+    vulnPackage.findings.push(finding);
+  }
+  // add any new locations
+  finding.locations.forEach((l) => {
+    if (!vulnPackage.locations.includes(l)) {
+      vulnPackage.locations = [...vulnPackage.locations, l];
+    }
+  });
+  // set the highest CVSS score to the package score
+  try {
+    if (
+      finding.vulnerability.namespace === 'nvd' &&
+      Number(finding.vulnerability.cvss_score) > Number(vulnPackage.cvss_score)
+    ) {
+      vulnPackage.cvss_score = finding.vulnerability.cvss_score || null;
+    }
+  } catch {
+    console.error('failed converting cvss to number');
+  }
+  // Add any fix versions/state
+  if (finding.fix_state === 'fixed') {
+    vulnPackage.fix_state = finding.fix_state;
+    const newFixedVersions = finding.fix_versions;
+    if (newFixedVersions) {
+      newFixedVersions.forEach((v) => {
+        if (!vulnPackage.fix_versions.includes(v)) {
+          vulnPackage.fix_versions = [...vulnPackage.fix_versions, v];
+        }
+      });
+    }
+  }
+  // merge guides
+  if (finding.vulnerability.guide_vulnerabilities) {
+    finding.vulnerability.guide_vulnerabilities.forEach(({ guide }) => {
+      const alreadyAdded = vulnPackage.guides.some((preExistingGuide) => preExistingGuide.id === guide.id);
+      if (!alreadyAdded) {
+        vulnPackage.guides.push(guide);
+      }
+    });
+  }
 }

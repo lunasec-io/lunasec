@@ -11,14 +11,12 @@
  * limitations under the License.
  *
  */
+import React from 'react';
 
-import { readTopicsFromFolder } from '../topic-ingester/read-topics-from-folder';
-describe('topic injester', () => {
-  it('parses topics from disk', () => {
-    const topics = readTopicsFromFolder('./src/fixtures/topics');
-    const topic = topics[0];
-    expect(topic).toHaveProperty('body');
-    expect(topic).toHaveProperty('metadata');
-    expect(topic.topic_unique_id).toBe('LUNATOPIC-20220422-1-TEST-TOPIC');
-  });
-});
+export const LinkInNewTab: React.FC<{ href: string }> = ({ children, href }) => {
+  return (
+    <a rel="noopener noreferrer" target="_blank" href={href}>
+      {children}
+    </a>
+  );
+};

