@@ -1,6 +1,16 @@
 table:
   name: identities
   schema: public
+object_relationships:
+- name: user
+  using:
+    manual_configuration:
+      column_mapping:
+        id: kratos_id
+      insertion_order: null
+      remote_table:
+        name: users
+        schema: public
 array_relationships:
 - name: identity_credentials
   using:
@@ -15,13 +25,6 @@ array_relationships:
       column: identity_id
       table:
         name: identity_verifiable_addresses
-        schema: public
-- name: users
-  using:
-    foreign_key_constraint_on:
-      column: kratos_id
-      table:
-        name: users
         schema: public
 select_permissions:
 - permission:
@@ -47,6 +50,17 @@ select_permissions:
     - id
     - nid
     filter:
-      id:
-        _eq: X-Hasura-User-Id
+      _or:
+      - id:
+          _eq: X-Hasura-User-Id
+      - _exists:
+          _table:
+            name: users
+            schema: public
+          _where:
+            _and:
+            - kratos_id:
+                _eq: X-Hasura-User-Id
+            - role:
+                _eq: lunatrace_admin
   role: user

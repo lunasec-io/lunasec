@@ -34,7 +34,13 @@ export type Scalars = {
   severity_enum: string;
   timestamp: string;
   timestamptz: string;
+  user_role: 'organization_user'|'lunatrace_admin';
   uuid: string;
+};
+
+export type AuthenticatedRepoCloneUrlOutput = {
+  __typename?: 'AuthenticatedRepoCloneUrlOutput';
+  url?: Maybe<Scalars['String']>;
 };
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
@@ -672,6 +678,7 @@ export type Fix_State_Enum_Comparison_Exp = {
  */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
+  authenticated_clone_url?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
@@ -1089,24 +1096,14 @@ export type Identities = {
   state_changed_at?: Maybe<Scalars['timestamp']>;
   traits: Scalars['jsonb'];
   updated_at: Scalars['timestamp'];
-  /** An array relationship */
-  users: Array<Users>;
+  /** An object relationship */
+  user?: Maybe<Users>;
 };
 
 
 /** columns and relationships of "identities" */
 export type IdentitiesTraitsArgs = {
   path?: InputMaybe<Scalars['String']>;
-};
-
-
-/** columns and relationships of "identities" */
-export type IdentitiesUsersArgs = {
-  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Order_By>>;
-  where?: InputMaybe<Users_Bool_Exp>;
 };
 
 /** Boolean expression to filter rows from the table "identities". All fields are combined with a logical 'AND'. */
@@ -1122,7 +1119,7 @@ export type Identities_Bool_Exp = {
   state_changed_at?: InputMaybe<Timestamp_Comparison_Exp>;
   traits?: InputMaybe<Jsonb_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  users?: InputMaybe<Users_Bool_Exp>;
+  user?: InputMaybe<Users_Bool_Exp>;
 };
 
 /** Ordering options when selecting data from "identities". */
@@ -1135,7 +1132,7 @@ export type Identities_Order_By = {
   state_changed_at?: InputMaybe<Order_By>;
   traits?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  users_aggregate?: InputMaybe<Users_Aggregate_Order_By>;
+  user?: InputMaybe<Users_Order_By>;
 };
 
 /** select columns of table "identities" */
@@ -1936,6 +1933,8 @@ export enum Organization_User_Update_Column {
 export type Organizations = {
   __typename?: 'organizations';
   createdAt: Scalars['timestamp'];
+  /** An object relationship */
+  creator?: Maybe<Users>;
   id: Scalars['uuid'];
   name: Scalars['String'];
   /** An array relationship */
@@ -1971,6 +1970,7 @@ export type Organizations_Bool_Exp = {
   _not?: InputMaybe<Organizations_Bool_Exp>;
   _or?: InputMaybe<Array<Organizations_Bool_Exp>>;
   createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
+  creator?: InputMaybe<Users_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   organization_users?: InputMaybe<Organization_User_Bool_Exp>;
@@ -2002,6 +2002,7 @@ export type Organizations_Obj_Rel_Insert_Input = {
 /** Ordering options when selecting data from "organizations". */
 export type Organizations_Order_By = {
   createdAt?: InputMaybe<Order_By>;
+  creator?: InputMaybe<Users_Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
@@ -2485,11 +2486,11 @@ export enum Projects_Update_Column {
 
 export type Query_Root = {
   __typename?: 'query_root';
+  authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   /** An array relationship */
   builds: Array<Builds>;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
-  fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
   /** An aggregate relationship */
@@ -2554,7 +2555,7 @@ export type Query_Root = {
   scans_aggregate: Scans_Aggregate;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
-  /** An array relationship */
+  /** fetch data from the table: "users" */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
@@ -2566,6 +2567,11 @@ export type Query_Root = {
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** fetch data from the table: "vulnerability_packages" using primary key columns */
   vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
+};
+
+
+export type Query_RootAuthenticatedRepoCloneUrlArgs = {
+  repoGithubId: Scalars['Int'];
 };
 
 
@@ -3318,7 +3324,7 @@ export type Subscription_Root = {
   scans_aggregate: Scans_Aggregate;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
-  /** An array relationship */
+  /** fetch data from the table: "users" */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
@@ -3642,6 +3648,19 @@ export type Timestamptz_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['timestamptz']>>;
 };
 
+/** Boolean expression to compare columns of type "user_role". All fields are combined with logical 'AND'. */
+export type User_Role_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['user_role']>;
+  _gt?: InputMaybe<Scalars['user_role']>;
+  _gte?: InputMaybe<Scalars['user_role']>;
+  _in?: InputMaybe<Array<Scalars['user_role']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['user_role']>;
+  _lte?: InputMaybe<Scalars['user_role']>;
+  _neq?: InputMaybe<Scalars['user_role']>;
+  _nin?: InputMaybe<Array<Scalars['user_role']>>;
+};
+
 /**
  * LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.)
  *
@@ -3651,19 +3670,12 @@ export type Timestamptz_Comparison_Exp = {
  */
 export type Users = {
   __typename?: 'users';
-  github_id?: Maybe<Scalars['String']>;
   github_node_id?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   kratos_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   kratos_identity?: Maybe<Identities>;
-};
-
-/** order by aggregate values of table "users" */
-export type Users_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Max_Order_By>;
-  min?: InputMaybe<Users_Min_Order_By>;
+  role: Scalars['user_role'];
 };
 
 /** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
@@ -3671,48 +3683,32 @@ export type Users_Bool_Exp = {
   _and?: InputMaybe<Array<Users_Bool_Exp>>;
   _not?: InputMaybe<Users_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Bool_Exp>>;
-  github_id?: InputMaybe<String_Comparison_Exp>;
   github_node_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_identity?: InputMaybe<Identities_Bool_Exp>;
-};
-
-/** order by max() on columns of table "users" */
-export type Users_Max_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-  github_node_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  kratos_id?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "users" */
-export type Users_Min_Order_By = {
-  github_id?: InputMaybe<Order_By>;
-  github_node_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  kratos_id?: InputMaybe<Order_By>;
+  role?: InputMaybe<User_Role_Comparison_Exp>;
 };
 
 /** Ordering options when selecting data from "users". */
 export type Users_Order_By = {
-  github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kratos_id?: InputMaybe<Order_By>;
   kratos_identity?: InputMaybe<Identities_Order_By>;
+  role?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "users" */
 export enum Users_Select_Column {
   /** column name */
-  GithubId = 'github_id',
-  /** column name */
   GithubNodeId = 'github_node_id',
   /** column name */
   Id = 'id',
   /** column name */
-  KratosId = 'kratos_id'
+  KratosId = 'kratos_id',
+  /** column name */
+  Role = 'role'
 }
 
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
@@ -4082,12 +4078,24 @@ export type GetBuildDetailsQueryVariables = Exact<{
 
 export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, source_type: any, project_id?: any | null, s3_url?: string | null, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
 
+export type GetCurrentUserInfoQueryVariables = Exact<{
+  kratos_id: Scalars['uuid'];
+}>;
+
+
+export type GetCurrentUserInfoQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', role: any }> };
+
 export type GetGuideDetailsQueryVariables = Exact<{
   id: Scalars['uuid'];
 }>;
 
 
 export type GetGuideDetailsQuery = { __typename?: 'query_root', guides_by_pk?: { __typename?: 'guides', id: any, body: string, metadata: any, severity: any, title: string, summary: string, created_at: any, metadata_schema_version: number, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', id: any, name: string, namespace: string } }>, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } | null };
+
+export type GetLunaTraceUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLunaTraceUsersQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', id: any, kratos_id?: any | null, kratos_identity?: { __typename?: 'identities', traits: any } | null }> };
 
 export type GetManifestQueryVariables = Exact<{
   id?: InputMaybe<Scalars['uuid']>;
@@ -4101,14 +4109,16 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, summary: string, created_at: any, severity: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
+export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, summary: string, created_at: any, severity: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type SampleVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, name: string, namespace: string, record_source?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, created_at: any, description?: string | null, slug: string, data_source: string, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null, id: any, slug: string }> }> };
 
-export type GetSidebarInfoQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetSidebarInfoQueryVariables = Exact<{
+  users_filter?: InputMaybe<Users_Bool_Exp>;
+}>;
 
 
 export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }> };
@@ -4129,6 +4139,11 @@ export type GetVulnerabilityDetailsQueryVariables = Exact<{
 
 
 export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
+
+export type InsertPersonalProjectAndOrgMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InsertPersonalProjectAndOrgMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', id: any, projects: Array<{ __typename?: 'projects', id: any }> } | null };
 
 export type InsertProjectAccessTokenMutationVariables = Exact<{
   access_token: Scalars['uuid'];
@@ -4294,6 +4309,13 @@ export const GetBuildDetailsDocument = `
   }
 }
     `;
+export const GetCurrentUserInfoDocument = `
+    query GetCurrentUserInfo($kratos_id: uuid!) {
+  users(where: {kratos_id: {_eq: $kratos_id}}) {
+    role
+  }
+}
+    `;
 export const GetGuideDetailsDocument = `
     query GetGuideDetails($id: uuid!) {
   guides_by_pk(id: $id) {
@@ -4318,6 +4340,17 @@ export const GetGuideDetailsDocument = `
         summary
         id
       }
+    }
+  }
+}
+    `;
+export const GetLunaTraceUsersDocument = `
+    query GetLunaTraceUsers {
+  users {
+    id
+    kratos_id
+    kratos_identity {
+      traits
     }
   }
 }
@@ -4348,6 +4381,9 @@ export const GetProjectDocument = `
       git_url
       github_id
       traits
+      authenticated_clone_url {
+        url
+      }
     }
     project_access_tokens {
       id
@@ -4461,7 +4497,7 @@ export const SampleVulnerabilitiesDocument = `
 }
     `;
 export const GetSidebarInfoDocument = `
-    query GetSidebarInfo {
+    query GetSidebarInfo($users_filter: users_bool_exp = {}) {
   projects(order_by: {name: asc}) {
     name
     id
@@ -4574,6 +4610,18 @@ export const GetVulnerabilityDetailsDocument = `
   }
 }
     `;
+export const InsertPersonalProjectAndOrgDocument = `
+    mutation InsertPersonalProjectAndOrg {
+  insert_organizations_one(
+    object: {name: "Personal", projects: {data: {name: "Personal Project"}}, organization_users: {data: {}}}
+  ) {
+    id
+    projects {
+      id
+    }
+  }
+}
+    `;
 export const InsertProjectAccessTokenDocument = `
     mutation InsertProjectAccessToken($access_token: uuid!, $name: String!, $project_uuid: uuid!) {
   insert_project_access_tokens_one(
@@ -4631,8 +4679,14 @@ const injectedRtkApi = api.injectEndpoints({
     GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables>({
       query: (variables) => ({ document: GetBuildDetailsDocument, variables })
     }),
+    GetCurrentUserInfo: build.query<GetCurrentUserInfoQuery, GetCurrentUserInfoQueryVariables>({
+      query: (variables) => ({ document: GetCurrentUserInfoDocument, variables })
+    }),
     GetGuideDetails: build.query<GetGuideDetailsQuery, GetGuideDetailsQueryVariables>({
       query: (variables) => ({ document: GetGuideDetailsDocument, variables })
+    }),
+    GetLunaTraceUsers: build.query<GetLunaTraceUsersQuery, GetLunaTraceUsersQueryVariables | void>({
+      query: (variables) => ({ document: GetLunaTraceUsersDocument, variables })
     }),
     GetManifest: build.query<GetManifestQuery, GetManifestQueryVariables | void>({
       query: (variables) => ({ document: GetManifestDocument, variables })
@@ -4651,6 +4705,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables | void>({
       query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
+    }),
+    InsertPersonalProjectAndOrg: build.mutation<InsertPersonalProjectAndOrgMutation, InsertPersonalProjectAndOrgMutationVariables | void>({
+      query: (variables) => ({ document: InsertPersonalProjectAndOrgDocument, variables })
     }),
     InsertProjectAccessToken: build.mutation<InsertProjectAccessTokenMutation, InsertProjectAccessTokenMutationVariables>({
       query: (variables) => ({ document: InsertProjectAccessTokenDocument, variables })

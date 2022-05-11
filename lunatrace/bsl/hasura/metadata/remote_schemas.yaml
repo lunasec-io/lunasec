@@ -1,4 +1,4 @@
-- name: lunatrace-backend-schema
+- name: lunatrace-custom
   definition:
     url_from_env: REMOTE_SCHEMA_URL
     timeout_seconds: 20
@@ -10,11 +10,40 @@
     forward_client_headers: true
   comment: ""
   permissions:
+  - role: user
+    definition:
+      schema: |-
+        schema  { query: Query mutation: Mutation }
+
+        scalar JSON
+
+        scalar UUID
+
+        type AuthenticatedRepoCloneUrlOutput { url: String
+        }
+
+        type Mutation { presignManifestUpload(project_id: UUID!): PresignedUrlResponse
+        }
+
+        type PresignedUrlResponse { bucket: String!
+          headers: JSON!
+          key: String!
+          url: String!
+        }
+
+        type Query { authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
+        }
+
+        type SbomUploadUrlOutput { error: Boolean!
+          uploadUrl: UploadUrl
+        }
+
+        type UploadUrl { headers: JSON!
+          url: String!
+        }
   - role: cli
     definition:
       schema: |-
-        schema  { query: Query }
-
         scalar JSON
 
         scalar UUID
@@ -28,24 +57,4 @@
 
         type UploadUrl { headers: JSON!
           url: String!
-        }
-  - role: user
-    definition:
-      schema: |-
-        schema  { query: Query mutation: Mutation }
-
-        scalar JSON
-
-        scalar UUID
-
-        type Mutation { presignManifestUpload(project_id: UUID!): PresignedUrlResponse
-        }
-
-        type PresignedUrlResponse { bucket: String!
-          headers: JSON!
-          key: String!
-          url: String!
-        }
-
-        type Query { fakeQueryToHackHasuraBeingABuggyMess: String
         }
