@@ -25,8 +25,8 @@ export interface Finding {
     namespace: string;
     slug: string;
     cvss_score?: number;
-    topic_vulnerabilities?: Array<{
-      topic: Topic;
+    guide_vulnerabilities?: Array<{
+      guide: Guide;
     }>;
   };
   package_name: string;
@@ -41,7 +41,7 @@ export interface VulnerablePackage<F extends Finding> {
   locations: string[];
   severity: typeof severityOrder[number];
   version: string;
-  topics: Topic[];
+  guides: Guide[];
   language: string;
   type: string;
   package_name: string;
@@ -52,37 +52,38 @@ export interface VulnerablePackage<F extends Finding> {
   project_id: string;
 }
 
-export interface Topic {
+export interface Guide {
   id: string;
   body: string;
   metadata: any;
   title: string;
   summary: string;
+  severity: string;
   created_at: any;
   metadata_schema_version: number;
-  related_topics: Array<{
-    topic: { title: string; summary: string; id: any };
+  related_guides: Array<{
+    guide: { title: string; summary: string; id: any };
   }>;
 }
 
-// TOPICS --------------------------------------
+// GUIDES METADATA SCHEMA  --------------------------------------
 
 // Convenience type for when we have more schema versions and we can | them together
-export type TopicMetadata = TopicMetadata1;
-export interface TopicMetadata1 {
-  schemaVersion: number;
+export type GuideMetadata = GuideMetadata1;
+
+export interface GuideMetadata1 {
+  schemaVersion: 1;
   cves: string[];
   name: string;
   summary: string;
-  language: string;
   severity: string;
   advisories: Advisory[];
-  cwe: Cwe;
+  cwe: Cwe[];
   tags: string[];
   packages: Package[];
   conditions: Condition[];
   tools: Tool[];
-  relatedTopics: string[];
+  relatedGuides: string[];
 }
 
 export interface Advisory {

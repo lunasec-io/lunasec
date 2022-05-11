@@ -11,8 +11,14 @@
  * limitations under the License.
  *
  */
-import { GetBuildDetailsQuery } from '../../../api/generated';
+import { GuideMetadata1 } from '@lunatrace/lunatrace-common';
 
-export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
+import { Guide_Vulnerabilities_Insert_Input } from '../hasura-api/generated';
 
-export type Guide = Finding['vulnerability']['guide_vulnerabilities'][number]['guide'];
+export interface Guide {
+  metadata: GuideMetadata1;
+  body: string;
+  guide_unique_id: string;
+}
+
+export type GuideVulnerability = NonNullable<Guide_Vulnerabilities_Insert_Input>;

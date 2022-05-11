@@ -1,4 +1,4 @@
-- name: lunatrace-custom
+- name: lunatrace-backend-schema
   definition:
     url_from_env: REMOTE_SCHEMA_URL
     timeout_seconds: 20

@@ -58,17 +58,18 @@ query GetProject($project_id: uuid!) {
                     name
                     namespace
                     data_source
-                    topic_vulnerabilities {
-                        topic {
+                    guide_vulnerabilities {
+                        guide {
                             id
                             body
                             metadata
                             title
                             summary
                             created_at
+                            severity
                             metadata_schema_version
-                            related_topics {
-                                topic {
+                            related_guides {
+                                guide {
                                     title
                                     summary
                                     id

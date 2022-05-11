@@ -19,11 +19,14 @@ module.exports = {
     alias: {},
     plugins: {
       add: [
+        // These shims/polyfills are commented out because they aren't in use currently, but may be needed again if we bring in another module written for node.  Thanks to webpack 5 :(
+
         // new webpack.ProvidePlugin({
         //   process:'process/browser',
         //   Buffer: ['buffer', 'Buffer']
         // }),
 ]
+      // This is the example code for Craco:
       // add: [], /* An array of plugins */
       // add: [
       //   plugin1,

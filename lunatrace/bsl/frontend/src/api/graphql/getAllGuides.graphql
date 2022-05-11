@@ -1,0 +1,14 @@
+query GetAllGuides {
+    guides(order_by: {created_at: desc}) {
+        created_at
+        id
+        metadata
+        metadata_schema_version
+        severity
+        summary
+        tags
+        title
+        guide_unique_id
+        updated_at
+    }
+}
