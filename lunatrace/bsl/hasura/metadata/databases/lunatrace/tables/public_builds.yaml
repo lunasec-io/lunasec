@@ -27,6 +27,16 @@ array_relationships:
       table:
         name: scans
         schema: public
+remote_relationships:
+- definition:
+    hasura_fields:
+    - id
+    remote_field:
+      sbomUrl:
+        arguments:
+          buildId: $id
+    remote_schema: lunatrace-custom
+  name: s3_url_signed
 insert_permissions:
 - permission:
     backend_only: false

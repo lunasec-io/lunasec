@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { Context } from './context';
 export type Maybe<T> = T | null;
@@ -60,6 +47,7 @@ export type Query = {
   fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /**  get s3 presigned url for manifest upload, used by the CLI  */
   presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
+  sbomUrl?: Maybe<Scalars['String']>;
 };
 
 
@@ -71,6 +59,11 @@ export type QueryAuthenticatedRepoCloneUrlArgs = {
 export type QueryPresignSbomUploadArgs = {
   buildId: Scalars['uuid'];
   orgId: Scalars['uuid'];
+};
+
+
+export type QuerySbomUrlArgs = {
+  buildId: Scalars['uuid'];
 };
 
 export type SbomUploadUrlInput = {
@@ -210,6 +203,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   authenticatedRepoCloneUrl?: Resolver<Maybe<ResolversTypes['AuthenticatedRepoCloneUrlOutput']>, ParentType, ContextType, RequireFields<QueryAuthenticatedRepoCloneUrlArgs, 'repoGithubId'>>;
   fakeQueryToHackHasuraBeingABuggyMess?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   presignSbomUpload?: Resolver<Maybe<ResolversTypes['SbomUploadUrlOutput']>, ParentType, ContextType, RequireFields<QueryPresignSbomUploadArgs, 'buildId' | 'orgId'>>;
+  sbomUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QuerySbomUrlArgs, 'buildId'>>;
 };
 
 export type SbomUploadUrlOutputResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SbomUploadUrlOutput'] = ResolversParentTypes['SbomUploadUrlOutput']> = {

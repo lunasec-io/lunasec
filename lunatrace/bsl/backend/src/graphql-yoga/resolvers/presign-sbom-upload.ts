@@ -27,7 +27,7 @@ const sbomHandlerConfig = getEtlBucketConfig();
 
 export const sbomPresignerRouter = Express.Router();
 
-function getAuthorizedBuilds(jwt: JWTClaims | undefined): string | false {
+export function getAuthorizedBuilds(jwt: JWTClaims | undefined): string | false {
   if (!jwt) {
     throw new GraphQLYogaError('Missing auth header in request');
   }
