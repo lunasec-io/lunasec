@@ -40,6 +40,8 @@ export const BuildDetails: React.FunctionComponent = () => {
   }
   const { data, isLoading } = api.useGetBuildDetailsQuery({ build_id, project_id });
 
+  const [getSbomUrl, sbomUrlResult, lastPromiseInfo] = api.useLazyGetSbomUrlQuery();
+
   // await triggerInsertIgnored({ locations, note, project_id, vulnerability_id });
 
   const renderBuildDetails = () => {
@@ -101,13 +103,21 @@ export const BuildDetails: React.FunctionComponent = () => {
                 {build.scans_aggregate.aggregate?.count !== 1 ? 's' : ''}
               </span>
             </h6>
-            {build.s3_url_signed ? (
-              <h6 style={{ textAlign: 'right' }}>
-                <span className="darker">
-                  <a href={build.s3_url_signed}>Download SBOM</a>
-                </span>
-              </h6>
-            ) : null}
+            <h6 style={{ textAlign: 'right' }}>
+              <span className="darker">
+                <a
+                  href={'#'}
+                  onClick={async (e) => {
+                    const url = (await getSbomUrl({ build_id }))?.data?.builds_by_pk?.s3_url_signed;
+                    if (url) {
+                      window.location.href = url;
+                    }
+                  }}
+                >
+                  Download SBOM
+                </a>
+              </span>
+            </h6>
           </Col>
           <Col xs="12" sm="3">
             <div className="build-git-info">
