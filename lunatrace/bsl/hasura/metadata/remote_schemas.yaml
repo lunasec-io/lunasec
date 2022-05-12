@@ -32,6 +32,8 @@
         }
 
         type Query { authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
+          fakeQueryToHackHasuraBeingABuggyMess: String
+          sbomUrl(buildId: UUID!): String
         }
 
         type SbomUploadUrlOutput { error: Boolean!

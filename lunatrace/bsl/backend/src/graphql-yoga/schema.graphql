@@ -9,6 +9,9 @@ type Query {
         orgId: uuid!
         buildId: uuid!
     ): SbomUploadUrlOutput
+    sbomUrl(
+        buildId: uuid!
+    ): String
     authenticatedRepoCloneUrl(
         repoGithubId: Int!
     ): AuthenticatedRepoCloneUrlOutput
