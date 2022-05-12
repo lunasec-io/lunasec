@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
 	"github.com/rs/zerolog/log"
-	"lunasec/lunatrace/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"os"
 	"path/filepath"
 	"strings"

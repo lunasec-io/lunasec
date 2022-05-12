@@ -17,9 +17,9 @@ package snapshot
 import (
 	"github.com/anchore/syft/syft"
 	"github.com/urfave/cli/v2"
-	"lunasec/lunatrace/pkg/command"
-	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/pkg/util"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
 func CreateCommandForAssetType(
