@@ -46,12 +46,12 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
         <Row>
           {' '}
           <ConditionallyRender if={!wizardOpen}>
-            <Col lg={8}>
+            <Col lg={7}>
               <RecentProjectsCard />
               <RecentGuidesCard />
             </Col>
           </ConditionallyRender>
-          <Col lg={wizardOpen ? '12' : '4'}>
+          <Col lg={wizardOpen ? '12' : '5'}>
             <SetupWizard compact={!wizardOpen} />
           </Col>
         </Row>

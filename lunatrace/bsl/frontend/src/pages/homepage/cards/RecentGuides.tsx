@@ -12,7 +12,8 @@
  *
  */
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Modal } from 'react-bootstrap';
+import { BsChatSquareText } from 'react-icons/bs';
 import { NavLink } from 'react-router-dom';
 
 import api from '../../../api';
@@ -36,10 +37,12 @@ export const RecentGuidesCard: React.FC = () => {
   };
   return (
     <Card>
-      <Card.Header>
-        <h4>Latest LunaTrace Guides</h4>
-      </Card.Header>
-      <Card.Body>{renderGuidesList()}</Card.Body>
+      <Modal.Header>
+        <h4 className="mb-n2">
+          <BsChatSquareText size="1.6rem" className="me-2 mb-1" /> Latest LunaTrace Guides
+        </h4>
+      </Modal.Header>
+      <Modal.Body>{renderGuidesList()}</Modal.Body>
     </Card>
   );
 };
