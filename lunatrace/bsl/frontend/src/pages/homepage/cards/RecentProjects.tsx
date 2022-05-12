@@ -12,7 +12,8 @@
  *
  */
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Modal } from 'react-bootstrap';
+import { AiFillFolderOpen } from 'react-icons/ai';
 import { NavLink } from 'react-router-dom';
 
 import api from '../../../api';
@@ -27,10 +28,12 @@ export const RecentProjectsCard: React.FC = () => {
 
   return (
     <Card>
-      <Card.Header>
-        <h4>Your Recent Projects</h4>
-      </Card.Header>
-      <Card.Body>
+      <Modal.Header>
+        <h4 className="mb-n2">
+          <AiFillFolderOpen size="2rem" className="me-1 mb-1" /> Your Recent Projects
+        </h4>
+      </Modal.Header>
+      <Modal.Body>
         {recentProjects.slice(0, 4).map((recentProject) => {
           return (
             <h4 key={recentProject.id}>
@@ -38,7 +41,7 @@ export const RecentProjectsCard: React.FC = () => {
             </h4>
           );
         })}
-      </Card.Body>
+      </Modal.Body>
     </Card>
   );
 };
