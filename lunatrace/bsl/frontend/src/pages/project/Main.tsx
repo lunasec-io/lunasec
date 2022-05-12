@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Nav } from 'react-bootstrap';
 import { Box, Home, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
@@ -19,6 +19,7 @@ import { useParams } from 'react-router-dom';
 
 import api from '../../api';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
+import { useRecentProjects } from '../../hooks/useRecentProjects';
 
 import { ProjectHeader } from './Header';
 import { Builds } from './builds';
@@ -28,12 +29,18 @@ import { ProjectInfo, TabName } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
   const { project_id } = useParams();
-
   // RUN SEARCH QUERY
   const { data, isLoading } = api.useGetProjectQuery({
     project_id: project_id as string,
   });
 
+  const [_, setRecentProject] = useRecentProjects();
+
+  useEffect(() => {
+    if (data && data.projects_by_pk) {
+      setRecentProject(data.projects_by_pk);
+    }
+  }, [data]);
   const [activeTab, setActiveTab] = useState<TabName>('dashboard');
   const renderProjectNav = (p: ProjectInfo) => {
     return (
