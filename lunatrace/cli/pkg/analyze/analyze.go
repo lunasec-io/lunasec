@@ -17,10 +17,10 @@ package analyze
 import (
 	"github.com/rs/zerolog/log"
 	"io"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/scan"
-	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/pkg/util"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/scan"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 	"path"
 	"strings"
 )

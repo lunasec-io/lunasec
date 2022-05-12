@@ -1,94 +1,94 @@
 table:
-  schema: public
   name: manifests
+  schema: public
 object_relationships:
-  - name: build
-    using:
-      foreign_key_constraint_on: build_id
-  - name: project
-    using:
-      foreign_key_constraint_on: project_id
+- name: build
+  using:
+    foreign_key_constraint_on: build_id
+- name: project
+  using:
+    foreign_key_constraint_on: project_id
 insert_permissions:
-  - role: service
-    permission:
-      check: {}
-      columns:
-        - filename
-        - message
-        - s3_key
-        - s3_url
-        - status
-        - created_at
-        - build_id
-        - id
-        - project_id
-      backend_only: false
-  - role: user
-    permission:
-      check:
-        project:
-          organization:
-            organization_users:
-              user:
-                kratos_id:
-                  _eq: X-Hasura-User-Id
-      columns:
-        - created_at
-        - filename
-        - id
-        - project_id
-        - s3_key
-        - s3_url
-      backend_only: false
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - filename
+    - message
+    - s3_key
+    - s3_url
+    - status
+    - created_at
+    - build_id
+    - id
+    - project_id
+  role: service
+- permission:
+    backend_only: false
+    check:
+      project:
+        organization:
+          organization_users:
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
+    columns:
+    - created_at
+    - filename
+    - id
+    - project_id
+    - s3_key
+    - s3_url
+  role: user
 select_permissions:
-  - role: service
-    permission:
-      columns:
-        - filename
-        - message
-        - s3_key
-        - s3_url
-        - status
-        - created_at
-        - build_id
-        - id
-        - project_id
-      filter: {}
-  - role: user
-    permission:
-      columns:
-        - filename
-        - message
-        - s3_key
-        - s3_url
-        - status
-        - created_at
-        - build_id
-        - id
-        - project_id
-      filter:
-        project:
-          organization:
-            organization_users:
-              user:
-                kratos_id:
-                  _eq: X-Hasura-User-Id
+- permission:
+    columns:
+    - filename
+    - message
+    - s3_key
+    - s3_url
+    - status
+    - created_at
+    - build_id
+    - id
+    - project_id
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - filename
+    - message
+    - s3_key
+    - s3_url
+    - status
+    - created_at
+    - build_id
+    - id
+    - project_id
+    filter:
+      project:
+        organization:
+          organization_users:
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
+  role: user
 update_permissions:
-  - role: service
-    permission:
-      columns:
-        - filename
-        - message
-        - s3_key
-        - s3_url
-        - status
-        - created_at
-        - build_id
-        - id
-        - project_id
-      filter: {}
-      check: null
+- permission:
+    check: null
+    columns:
+    - filename
+    - message
+    - s3_key
+    - s3_url
+    - status
+    - created_at
+    - build_id
+    - id
+    - project_id
+    filter: {}
+  role: service
 delete_permissions:
-  - role: service
-    permission:
-      filter: {}
+- permission:
+    filter: {}
+  role: service

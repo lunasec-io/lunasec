@@ -1,132 +1,132 @@
 table:
-  schema: public
   name: findings
+  schema: public
 object_relationships:
-  - name: build
-    using:
-      foreign_key_constraint_on: build_id
-  - name: package_version
-    using:
-      foreign_key_constraint_on: package_version_id
-  - name: scan
-    using:
-      foreign_key_constraint_on: scan_id
-  - name: vulnerability
-    using:
-      foreign_key_constraint_on: vulnerability_id
-  - name: vulnerability_package
-    using:
-      foreign_key_constraint_on: vulnerability_package_id
+- name: build
+  using:
+    foreign_key_constraint_on: build_id
+- name: package_version
+  using:
+    foreign_key_constraint_on: package_version_id
+- name: scan
+  using:
+    foreign_key_constraint_on: scan_id
+- name: vulnerability
+  using:
+    foreign_key_constraint_on: vulnerability_id
+- name: vulnerability_package
+  using:
+    foreign_key_constraint_on: vulnerability_package_id
 insert_permissions:
-  - role: service
-    permission:
-      check: {}
-      columns:
-        - fix_versions
-        - locations
-        - dedupe_slug
-        - language
-        - matcher
-        - package_name
-        - purl
-        - type
-        - version
-        - version_matcher
-        - virtual_path
-        - created_at
-        - updated_at
-        - fix_state
-        - severity
-        - build_id
-        - id
-        - package_version_id
-        - scan_id
-        - vulnerability_id
-        - vulnerability_package_id
-      backend_only: false
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - fix_versions
+    - locations
+    - dedupe_slug
+    - language
+    - matcher
+    - package_name
+    - purl
+    - type
+    - version
+    - version_matcher
+    - virtual_path
+    - created_at
+    - updated_at
+    - fix_state
+    - severity
+    - build_id
+    - id
+    - package_version_id
+    - scan_id
+    - vulnerability_id
+    - vulnerability_package_id
+  role: service
 select_permissions:
-  - role: service
-    permission:
-      columns:
-        - fix_versions
-        - locations
-        - dedupe_slug
-        - language
-        - matcher
-        - package_name
-        - purl
-        - type
-        - version
-        - version_matcher
-        - virtual_path
-        - created_at
-        - updated_at
-        - fix_state
-        - severity
-        - build_id
-        - id
-        - package_version_id
-        - scan_id
-        - vulnerability_id
-        - vulnerability_package_id
-      filter: {}
-  - role: user
-    permission:
-      columns:
-        - fix_versions
-        - locations
-        - dedupe_slug
-        - language
-        - matcher
-        - package_name
-        - purl
-        - type
-        - version
-        - version_matcher
-        - virtual_path
-        - created_at
-        - updated_at
-        - fix_state
-        - severity
-        - build_id
-        - id
-        - package_version_id
-        - scan_id
-        - vulnerability_id
-        - vulnerability_package_id
-      filter:
-        build:
-          project:
-            organization:
-              organization_users:
-                user:
-                  kratos_id:
-                    _eq: X-Hasura-User-Id
-      allow_aggregations: true
+- permission:
+    columns:
+    - fix_versions
+    - locations
+    - dedupe_slug
+    - language
+    - matcher
+    - package_name
+    - purl
+    - type
+    - version
+    - version_matcher
+    - virtual_path
+    - created_at
+    - updated_at
+    - fix_state
+    - severity
+    - build_id
+    - id
+    - package_version_id
+    - scan_id
+    - vulnerability_id
+    - vulnerability_package_id
+    filter: {}
+  role: service
+- permission:
+    allow_aggregations: true
+    columns:
+    - fix_versions
+    - locations
+    - dedupe_slug
+    - language
+    - matcher
+    - package_name
+    - purl
+    - type
+    - version
+    - version_matcher
+    - virtual_path
+    - created_at
+    - updated_at
+    - fix_state
+    - severity
+    - build_id
+    - id
+    - package_version_id
+    - scan_id
+    - vulnerability_id
+    - vulnerability_package_id
+    filter:
+      build:
+        project:
+          organization:
+            organization_users:
+              user:
+                kratos_id:
+                  _eq: X-Hasura-User-Id
+  role: user
 update_permissions:
-  - role: service
-    permission:
-      columns:
-        - fix_versions
-        - locations
-        - dedupe_slug
-        - language
-        - matcher
-        - package_name
-        - purl
-        - type
-        - version
-        - version_matcher
-        - virtual_path
-        - created_at
-        - updated_at
-        - fix_state
-        - severity
-        - build_id
-        - id
-        - package_version_id
-        - scan_id
-        - vulnerability_id
-        - vulnerability_package_id
-      filter: {}
-      check: null
+- permission:
+    check: null
+    columns:
+    - fix_versions
+    - locations
+    - dedupe_slug
+    - language
+    - matcher
+    - package_name
+    - purl
+    - type
+    - version
+    - version_matcher
+    - virtual_path
+    - created_at
+    - updated_at
+    - fix_state
+    - severity
+    - build_id
+    - id
+    - package_version_id
+    - scan_id
+    - vulnerability_id
+    - vulnerability_package_id
+    filter: {}
+  role: service

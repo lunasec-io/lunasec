@@ -17,7 +17,7 @@ package service
 import (
 	"crypto/rsa"
 	"crypto/x509"
-	"lunasec/lunadefend/types"
+	"github.com/lunasec-io/lunasec/go/types"
 	"gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"
 

@@ -15,7 +15,7 @@
 package snapshot
 
 import (
-	"lunasec/lunatrace/snapshot/syftmodel"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot/syftmodel"
 )
 
 type SbomOutput struct {

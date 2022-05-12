@@ -1,7 +1,7 @@
 table:
-  schema: public
   name: instances
+  schema: public
 object_relationships:
-  - name: build
-    using:
-      foreign_key_constraint_on: agent_access_token
+- name: build
+  using:
+    foreign_key_constraint_on: agent_access_token

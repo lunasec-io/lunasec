@@ -16,7 +16,7 @@ package snapshot
 
 import (
 	"github.com/google/uuid"
-	"lunasec/lunatrace/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
 func GetApplicationIdentity(applicationId string) types.ApplicationIdentity {

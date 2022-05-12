@@ -19,8 +19,8 @@ import (
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/snapshot/syftmodel"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot/syftmodel"
 )
 
 func processSbom(
