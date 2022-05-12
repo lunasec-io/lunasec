@@ -41,18 +41,16 @@ jobs:
           timeout 30 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "404" ]]; do sleep 1; done' || false
           
           (cd lunatrace/bsl/hasura && (
-            #function hasura() {
-            #  docker-compose exec -T -w /hasura graphql-engine bash -c "HASURA_GRAPHQL_ENDPOINT=\"http://localhost:8080\" hasura-cli $*"
-            #}
             function hasura() {
               npx --yes hasura-cli --skip-update-check $@
             }
             set -x
-            hasura md ic list
-            echo $?
-            hasura md ic status
-            echo $?
+            hasura md ic list >> /tmp/hasura_ic
+            hasura md ic status || (cat /tmp/hasura_ic > /tmp/comment)
           ) || true)
           
       - run: docker-compose logs
         working-directory: lunatrace/bsl
+
+      - run: cat /tmp/comment || true
+
