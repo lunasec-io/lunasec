@@ -6,8 +6,7 @@ serve:
 
 access_rules:
   repositories:
-    - file://rules.frontend.yaml
-    - file://rules.yaml
+    - file://generated/rules.yaml
 
 errors:
   fallback:
@@ -30,14 +29,13 @@ mutators:
     enabled: true
     config:
       api:
-        # This is to be replaced where the hydrator mutator is used
-        url: http://localhost:3002/internal/auth/REPLACE_ME
+        url: $OATHKEEPER_BACKEND_URL/internal/auth/hydrate-user-id
 
   id_token:
     enabled: true
     config:
       issuer_url: http://oathkeeper:4455/
-      jwks_url: file://jwks.json
+      jwks_url: file://jwks.dev.json
       claims: |
         {
           "session": {{ .Extra | toJson }}
@@ -59,7 +57,7 @@ authenticators:
   cookie_session:
     enabled: true
     config:
-      check_session_url: http://localhost:4433/sessions/whoami
+      check_session_url: $OATHKEEPER_KRATOS_URL/sessions/whoami
       preserve_path: true
       extra_from: "@this"
       subject_from: "identity.id"
@@ -69,7 +67,7 @@ authenticators:
   bearer_token:
     enabled: true
     config:
-      check_session_url: http://localhost:3002/internal/auth/lookup-static-access-token
+      check_session_url: $OATHKEEPER_BACKEND_URL/internal/auth/lookup-static-access-token
       force_method: GET
       preserve_path: true
       preserve_query: true
