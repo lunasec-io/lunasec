@@ -35,7 +35,16 @@ jobs:
 
       - name: Start backend
         run: |-
-          (cd lunatrace/bsl/backend && yarn run start:prod &)
+          cd lunatrace/bsl/backend
+          
+          export S3_SBOM_BUCKET=fake
+          export S3_MANIFEST_BUCKET=fake
+          export PROCESS_WEBHOOK_QUEUE=fake
+          export PROCESS_REPOSITORY_QUEUE=fake
+          export PROCESS_MANIFEST_QUEUE=fake
+          export PROCESS_SBOM_QUEUE=fake
+          
+          yarn run start:prod &
           timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:3002)" != "200" ]]; do sleep 1; done' || false
 
       - run: docker-compose up -d
