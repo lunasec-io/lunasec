@@ -17,20 +17,21 @@ reset-dir() {
 
 echo "NOTE: The backend must be running for migrations to be applied successfully"
 
-change-dir ../hasura
-if ! hasura migrate --database-name lunatrace apply ; then
-	echo "unable to apply database migrations"
-	exit 1
-fi
-if ! hasura metadata apply ; then
-	echo "unable to apply metadata to hasura"
-	exit 1
-fi
-if ! hasura metadata reload ; then
-	echo "unable to reload metadata in hasura"
-	exit 1
-fi
-reset-dir
+# Not working, use docker-compose up to apply metadata
+#change-dir ../hasura
+#if ! hasura migrate --database-name lunatrace apply ; then
+#	echo "unable to apply database migrations"
+#	exit 1
+#fi
+#if ! hasura metadata apply ; then
+#	echo "unable to apply metadata to hasura"
+#	exit 1
+#fi
+#if ! hasura metadata reload ; then
+#	echo "unable to reload metadata in hasura"
+#	exit 1
+#fi
+#reset-dir
 
 # Make sure generated code is up to date before building Docker containers
 change-dir ../frontend
