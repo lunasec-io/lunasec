@@ -2,8 +2,8 @@ FROM golang AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 
-ADD . /code
-WORKDIR /code
+ADD . /repo
+WORKDIR /repo/go
 RUN make containermodifier tag=lambda
 
 FROM scratch

@@ -16,9 +16,9 @@ package agent
 
 import (
 	"github.com/rs/zerolog/log"
-	"lunasec/lunatrace/pkg/graphql"
-	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/pkg/util"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/graphql"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
 func PerformAgentHeartbeat(appConfig types.LunaTraceAgentConfig) (err error) {

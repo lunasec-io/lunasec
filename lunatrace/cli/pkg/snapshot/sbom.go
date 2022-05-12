@@ -24,8 +24,8 @@ import (
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/anchore/syft/syft/source"
 	"github.com/rs/zerolog/log"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/util"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 	"os"
 	"path/filepath"
 )

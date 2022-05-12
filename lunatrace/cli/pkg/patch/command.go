@@ -17,7 +17,7 @@ package patch
 import (
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"lunasec/lunatrace/pkg/command"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
 )
 
 func JavaArchivePatchCommand(

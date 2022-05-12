@@ -18,8 +18,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/rs/zerolog/log"
-	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/pkg/util"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 	"net/http"
 )
 
