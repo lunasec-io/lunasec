@@ -74,7 +74,7 @@ jobs:
 
       - name: Create or update comment
         uses: peter-evans/create-or-update-comment@v2
-        if: ${{ steps.check-comment.outputs.found == 'true' && steps.fc.outputs.comment-id }}
+        if: ${{ steps.check-comment.outputs.found == 'true' || steps.fc.outputs.comment-id }}
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
