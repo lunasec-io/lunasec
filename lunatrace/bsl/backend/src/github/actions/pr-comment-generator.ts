@@ -18,7 +18,6 @@ import { hasura } from '../../hasura-api';
 import { InsertedScan } from '../../models/scan';
 import { log } from '../../utils/log';
 import { generateGithubGraphqlClient } from '../api';
-import { getInstallationAccessToken } from '../auth';
 
 function formatLocationText(finding: VulnerablePackage<Finding>) {
   if (finding.locations.length === 0) {
@@ -94,7 +93,7 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
   }
 
   if (!pullRequestId) {
-    log.error(
+    log.warn(
       `pull request id is not defined for buildId: ${buildId}, skipping comment because this build did not come from a PR`
     );
     return;

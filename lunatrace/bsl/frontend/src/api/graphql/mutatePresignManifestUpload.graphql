@@ -2,10 +2,9 @@ mutation presignManifestUrl($project_id: uuid!) {
     presignManifestUpload(
         project_id: $project_id
     ) {
-    url
-    headers
-    key
-    bucket
-}
-
+        url
+        headers
+        key
+        bucket
+    }
 }

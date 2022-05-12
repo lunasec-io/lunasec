@@ -18,8 +18,8 @@ import (
 	"bytes"
 	"github.com/rs/zerolog/log"
 	"io"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"os"
 )
 

@@ -3,6 +3,7 @@ node_modules
 *.tsbuildinfo
 **/secrets.yaml
 *.log
+.log*
 **/package-lock.json
 **/yarn.lock-workspace
 
@@ -11,6 +12,7 @@ node_modules
 docker-compose.*.yaml
 .env.docker
 outputs/
+.log*
 
 .yarn/*
 !.yarn/cache
@@ -27,3 +29,4 @@ docs/.yarn/.cache/webpack
 
 deployment-secrets/
 .gitattributes
+

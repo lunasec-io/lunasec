@@ -18,7 +18,7 @@ import (
 	"net/url"
 	"strings"
 	"go.uber.org/config"
-	"lunasec/lunadefend/types"
+	"github.com/lunasec-io/lunasec/go/types"
 )
 
 type authCallbackConfig struct {

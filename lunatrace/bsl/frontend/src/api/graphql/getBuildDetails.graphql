@@ -63,6 +63,25 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                 cvss_inferred
                 name
                 namespace
+                guide_vulnerabilities {
+                    guide {
+                        id
+                        body
+                        metadata
+                        title
+                        severity
+                        summary
+                        created_at
+                        metadata_schema_version
+                        related_guides {
+                            guide {
+                                title
+                                summary
+                                id
+                            }
+                        }
+                    }
+                }
                 data_source
                 ignored_vulnerabilities(where: {project_id: {_eq: $project_id}}) {
                     creator_id

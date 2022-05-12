@@ -165,7 +165,7 @@ module.exports = (allStagedFiles) => {
     creativeCommons,
     allStagedFiles,
       (file) => {
-        return file.match(markdownRegex) && !file.match(/pull_request_template.md/)
+        return file.match(markdownRegex) && !file.match(/pull_request_template.md|topics\//)
       }
   );
 
