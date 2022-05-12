@@ -32,8 +32,11 @@ jobs:
           (cd lunatrace/bsl/common && yarn run compile)
           (cd lunatrace/bsl/backend && yarn run compile)
           (cd lunatrace/bsl/frontend && yarn run build:docker)
+
+      - run: docker-compose up -d
+        working-directory: lunatrace/bsl
+
       - run: |-
-          (cd lunatrace/bsl && docker-compose up -d)
           tools/service-scripts/wait-for-it.sh -h localhost -p 8080 -t 120
           
           (cd lunatrace/bsl/hasura && (
@@ -44,4 +47,5 @@ jobs:
             curl -vvv localhost:8080
           ) || true)
           
-          (cd lunatrace/bsl && docker-compose logs)
+      - run: docker-compose logs
+        working-directory: lunatrace/bsl
