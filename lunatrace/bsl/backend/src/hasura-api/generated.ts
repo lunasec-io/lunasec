@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -802,13 +789,7 @@ export type Fix_State_Enum_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['fix_state_enum']>>;
 };
 
-/**
- * Metadata about a github repository and where to find it.
- *
- *
- * columns and relationships of "github_repositories"
- *
- */
+/** Metadata about a github repository and where to find it. */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
   git_url: Scalars['String'];
@@ -821,13 +802,7 @@ export type Github_Repositories = {
 };
 
 
-/**
- * Metadata about a github repository and where to find it.
- *
- *
- * columns and relationships of "github_repositories"
- *
- */
+/** Metadata about a github repository and where to find it. */
 export type Github_RepositoriesTraitsArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
@@ -1729,8 +1704,13 @@ export enum Ignored_Vulnerabilities_Select_Column {
   VulnerabilityId = 'vulnerability_id'
 }
 
+export type Jsonb_Cast_Exp = {
+  String?: InputMaybe<String_Comparison_Exp>;
+};
+
 /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
 export type Jsonb_Comparison_Exp = {
+  _cast?: InputMaybe<Jsonb_Cast_Exp>;
   /** is the column contained in the given json value */
   _contained_in?: InputMaybe<Scalars['jsonb']>;
   /** does the column contain the given json value at the top level */
@@ -2593,13 +2573,7 @@ export enum Order_By {
   DescNullsLast = 'desc_nulls_last'
 }
 
-/**
- * join table
- *
- *
- * columns and relationships of "organization_user"
- *
- */
+/** join table */
 export type Organization_User = {
   __typename?: 'organization_user';
   created_at: Scalars['timestamptz'];
@@ -3304,7 +3278,7 @@ export type Projects = {
   /** An array relationship */
   builds: Array<Builds>;
   created_at: Scalars['timestamp'];
-  /** fetch data from the table: "github_repositories" */
+  /** An array relationship */
   github_repositories: Array<Github_Repositories>;
   /** An object relationship */
   github_repository?: Maybe<Github_Repositories>;
@@ -3561,7 +3535,7 @@ export type Query_Root = {
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
-  /** fetch data from the table: "github_repositories" */
+  /** An array relationship */
   github_repositories: Array<Github_Repositories>;
   /** fetch data from the table: "guide_related_guides" */
   guide_related_guides: Array<Guide_Related_Guides>;
@@ -3930,13 +3904,7 @@ export type Query_RootWebhook_Cache_By_PkArgs = {
   delivery_id: Scalars['uuid'];
 };
 
-/**
- * join table for adding holding additional vulns on a finding
- *
- *
- * columns and relationships of "related_vulnerabilities"
- *
- */
+/** join table for adding holding additional vulns on a finding */
 export type Related_Vulnerabilities = {
   __typename?: 'related_vulnerabilities';
   id: Scalars['uuid'];
@@ -4004,13 +3972,7 @@ export enum Related_Vulnerabilities_Select_Column {
   VulnerabilitySlug = 'vulnerability_slug'
 }
 
-/**
- * An individual time a scan was run on a build
- *
- *
- * columns and relationships of "scans"
- *
- */
+/** An individual time a scan was run on a build */
 export type Scans = {
   __typename?: 'scans';
   /** An object relationship */
@@ -4030,13 +3992,7 @@ export type Scans = {
 };
 
 
-/**
- * An individual time a scan was run on a build
- *
- *
- * columns and relationships of "scans"
- *
- */
+/** An individual time a scan was run on a build */
 export type ScansFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -4312,7 +4268,7 @@ export type Subscription_Root = {
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
-  /** fetch data from the table: "github_repositories" */
+  /** An array relationship */
   github_repositories: Array<Github_Repositories>;
   /** fetch data from the table: "guide_related_guides" */
   guide_related_guides: Array<Guide_Related_Guides>;
@@ -4720,13 +4676,7 @@ export type User_Role_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['user_role']>>;
 };
 
-/**
- * LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.)
- *
- *
- * columns and relationships of "users"
- *
- */
+/** LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.) */
 export type Users = {
   __typename?: 'users';
   github_id?: Maybe<Scalars['String']>;
@@ -5225,13 +5175,7 @@ export type Vulnerabilities_Variance_Fields = {
   cvss_score?: Maybe<Scalars['Float']>;
 };
 
-/**
- * All of the package vulnerabilities belonging to a given vulnerability
- *
- *
- * columns and relationships of "vulnerability_packages"
- *
- */
+/** All of the package vulnerabilities belonging to a given vulnerability */
 export type Vulnerability_Packages = {
   __typename?: 'vulnerability_packages';
   advisories: Scalars['String'];
@@ -5248,13 +5192,7 @@ export type Vulnerability_Packages = {
 };
 
 
-/**
- * All of the package vulnerabilities belonging to a given vulnerability
- *
- *
- * columns and relationships of "vulnerability_packages"
- *
- */
+/** All of the package vulnerabilities belonging to a given vulnerability */
 export type Vulnerability_PackagesFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -5264,13 +5202,7 @@ export type Vulnerability_PackagesFindingsArgs = {
 };
 
 
-/**
- * All of the package vulnerabilities belonging to a given vulnerability
- *
- *
- * columns and relationships of "vulnerability_packages"
- *
- */
+/** All of the package vulnerabilities belonging to a given vulnerability */
 export type Vulnerability_PackagesPackage_VersionsArgs = {
   distinct_on?: InputMaybe<Array<Package_Versions_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -5536,7 +5468,7 @@ export type GetBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
+export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, s3_url?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
 
 export type GetCloneRepoInfoFromRepoIdQueryVariables = Exact<{
   repo_github_id: Scalars['Int'];
@@ -5758,6 +5690,7 @@ export const GetBuildDocument = gql`
     }
     pull_request_id
     existing_github_review_id
+    s3_url
   }
 }
     `;

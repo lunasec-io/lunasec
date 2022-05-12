@@ -8,5 +8,6 @@ query GetBuild($build_id: uuid!) {
     }
     pull_request_id
     existing_github_review_id
+    s3_url
   }
 }

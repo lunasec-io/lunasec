@@ -39,7 +39,7 @@ later. LunaDefend builds on that concept to offer many security and compliance f
 ### Features
 
 - **Secure By Default**: Prevents data leaks by making your software resistant
-  to [many security issues](https://www.lunasec.io/docs/pages/lunadefend/overview/security/vulns-and-mitigations/) like SQL
+  to [many security issues](https://www.lunasec.io/docs/pages/lunadefend/how-it-works/security/vulns-and-mitigations/) like SQL
   Injection, XSS, and even RCE.
 - **Best-In-Class Compliance Software**: Decrease your compliance overhead by 90%+ with centralized *access control
   logic*, *audit logs*, and *automatic compliance validation*.
@@ -50,14 +50,14 @@ later. LunaDefend builds on that concept to offer many security and compliance f
 - **Self-Hosted And Open**: You retain control over your data by hosting LunaSec yourself. It's open source software
   licensed under a permissive Apache2.0 license.
 - **Zero Trust Architecture**: All records
-  are [encrypted with a unique key](https://www.lunasec.io/docs/pages/lunadefend/overview/security/encryption/) that even LunaSec
+  are [encrypted with a unique key](https://www.lunasec.io/docs/pages/lunadefend/how-it-works/security/encryption/) that even LunaSec
   can't access. Decryption only happens when you need it to.
 - **Scales Automatically**: Supports even the largest loads by leveraging cloud-scale database services like AWS S3 and
   DynamoDB.
 - **Enterprise Grade**: We offer warranties, managed deployments, and custom support via
   our [Premium Support packages](#custom-support-from-the-lunasec-team).
 
-You can read more [here](https://www.lunasec.io/docs/pages/lunadefend/overview/features/) about what features LunaSec provides.
+You can read more [here](https://www.lunasec.io/docs/pages/lunadefend/how-it-works/features/) about what features LunaSec provides.
 
 ## Live Demo
 
@@ -85,7 +85,7 @@ our [GitHub Discussions page](https://github.com/lunasec-io/lunasec/discussions)
 
 ## [Documentation](https://www.lunasec.io/docs/)
 
-For more information about LunaSec including tutorials, examples, and technical information, please review
+For more information about LunaDefend including tutorials, examples, and technical information, please review
 our [documentation](https://www.lunasec.io/docs/). For technical questions or help, please reach out via
 our [GitHub Discussions board](https://github.com/lunasec-io/lunasec/discussions)
 or open a new GitHub issue if you have a bug or feature to request.
@@ -95,9 +95,9 @@ to [get in contact](https://www.lunasec.io/contact).
 
 ## System Architecture
 LunaSec works across the components of your web stack to provide end-to-end data security.
-We've documented the components of the stack [here](https://www.lunasec.io/docs/pages/lunadefend/overview/features/) and in the diagram below.
+We've documented the components of the stack [here](https://www.lunasec.io/docs/pages/lunadefend/how-it-works/features/) and in the diagram below.
 
-![LunaSec Architecture Diagram](docs/static/img/security-model-overview.svg)
+![LunaSec Architecture Diagram](../docs/static/img/security-model-overview.svg)
 
 ## Who is LunaDefend for?
 LunaDefend is designed to be used by anyone that needs to collect and store sensitive text or files in a production web
@@ -136,7 +136,7 @@ secure. You just have to provide the data and keep track of the keys to access i
 
 We've designed LunaDefend to mitigate many common security vulnerabilities that developers face. Each component of the
 LunaDefend stack is designed to provide protection against specific attack scenarios. Please read more about the security
-of LunaDefend [here](https://www.lunasec.io/docs/pages/lunadefend/overview/security/levels/).
+of LunaDefend [here](https://www.lunasec.io/docs/pages/lunadefend/how-it-works/security/levels/).
 
 ## Deploying LunaDefend 
 LunaDefend is _self hosted_. In order to use LunaDefend in your production environment, you will need to host a copy yourself. We built a
@@ -146,12 +146,13 @@ To get started deploying LunaDefend, please see our docs [here](https://www.luna
 
 ## Where LunaDefend lives in the Repo
 
+
 This repo is a little slice-and-dice until we finish moving LunaDefend into a dedicated folder.
-Currently, the root folder contains all public LunaDefend code: the LunaDefend SDKs, backend services, demo 
+Currently, the root folder contains all public LunaDefend code: the LunaDefend SDKs, backend services, demo
 applications, documentation, and supporting scripts.
 
-Eventually everything will move to `/lunadefend` and a PR is open to track that effort 
-[here](https://github.com/lunasec-io/lunasec/pull/470).
+
+Eventually everything will move to `/lunadefend`.
 
 # MonoRepo Folder Structure
 We have split LunaDefend's code first by language, and then by purpose.

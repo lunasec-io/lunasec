@@ -32,8 +32,6 @@ function waitForItCmd(host: string, port: number) {
 const waitForGraphqlServer = waitForItCmd('localhost', 8080);
 const waitForBackendServer = waitForItCmd('localhost', 3002);
 
-export const oathkeeper = tmuxPane(['cd ory/oathkeeper', 'oathkeeper --config config.yaml serve']);
-
 export const backend = tmuxPane(['cd backend', `${backendEnv} yarn run start:server`]);
 
 export const hasura = tmuxPane(['cd hasura', `${waitForGraphqlServer} && sleep 3`, 'hasura console']);
