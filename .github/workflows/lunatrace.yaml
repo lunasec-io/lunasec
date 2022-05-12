@@ -41,8 +41,10 @@ jobs:
           url: 'http://localhost:8080/'
           responseCode: '200,500,404'
 
-      - run: |-
-
+      - name: Integration Test
+        run: |-
+          sleep 2
+          
           (cd lunatrace/bsl/hasura && (
             #function hasura() {
             #  docker-compose exec -T -w /hasura graphql-engine bash -c "HASURA_GRAPHQL_ENDPOINT=\"http://localhost:8080\" hasura-cli $*"
