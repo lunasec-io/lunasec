@@ -263,7 +263,7 @@ export class LunaSecStackDockerCompose {
     const localBuildConfig = {
       build: {
         context: '.',
-        dockerfile: 'docker/tokenizerbackend.dockerfile',
+        dockerfile: 'go/docker/tokenizerbackend.dockerfile',
         args: {
           tag: 'dev',
           version: version,
