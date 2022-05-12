@@ -40,6 +40,8 @@ export const BuildDetails: React.FunctionComponent = () => {
   }
   const { data, isLoading } = api.useGetBuildDetailsQuery({ build_id, project_id });
 
+  const [getSbomUrl, sbomUrlResult, lastPromiseInfo] = api.useLazyGetSbomUrlQuery();
+
   // await triggerInsertIgnored({ locations, note, project_id, vulnerability_id });
 
   const renderBuildDetails = () => {
@@ -85,7 +87,7 @@ export const BuildDetails: React.FunctionComponent = () => {
             </NavLink>
           </Col>
           <Col xs="6" style={{ textAlign: 'center' }}>
-            <h1>Snapshot # {build.build_number}</h1>
+            <h1>Snapshot #{build.build_number}</h1>
             <span>{build.project?.name}</span>
             <h5>{uploadDate}</h5>
           </Col>
@@ -99,6 +101,21 @@ export const BuildDetails: React.FunctionComponent = () => {
               <span className="darker">
                 Scanned {build.scans_aggregate.aggregate?.count} time
                 {build.scans_aggregate.aggregate?.count !== 1 ? 's' : ''}
+              </span>
+            </h6>
+            <h6 style={{ textAlign: 'right' }}>
+              <span className="darker">
+                <a
+                  href={'#'}
+                  onClick={async (e) => {
+                    const url = (await getSbomUrl({ build_id }))?.data?.builds_by_pk?.s3_url_signed;
+                    if (url) {
+                      window.location.href = url;
+                    }
+                  }}
+                >
+                  Download SBOM
+                </a>
               </span>
             </h6>
           </Col>
