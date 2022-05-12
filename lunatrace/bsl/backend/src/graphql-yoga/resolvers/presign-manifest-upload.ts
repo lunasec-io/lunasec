@@ -26,7 +26,7 @@ type PresignManifestUploadResolver = NonNullable<MutationResolvers['presignManif
 
 const sbomHandlerConfig = getEtlBucketConfig();
 
-async function checkProjectIsAuthorized(projectId: string, ctx: Context) {
+export async function checkProjectIsAuthorized(projectId: string, ctx: Context): Promise<void> {
   const userId = getUserId(ctx);
   const usersAuthorizedProjects = await hasura.GetUsersProjects({ user_id: userId });
   const userIsAuthorized = usersAuthorizedProjects.projects.some((p) => {
