@@ -669,13 +669,7 @@ export type Fix_State_Enum_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['fix_state_enum']>>;
 };
 
-/**
- * Metadata about a github repository and where to find it.
- *
- *
- * columns and relationships of "github_repositories"
- *
- */
+/** Metadata about a github repository and where to find it. */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
   authenticated_clone_url?: Maybe<AuthenticatedRepoCloneUrlOutput>;
@@ -690,13 +684,7 @@ export type Github_Repositories = {
 };
 
 
-/**
- * Metadata about a github repository and where to find it.
- *
- *
- * columns and relationships of "github_repositories"
- *
- */
+/** Metadata about a github repository and where to find it. */
 export type Github_RepositoriesTraitsArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
@@ -1329,8 +1317,13 @@ export enum Ignored_Vulnerabilities_Update_Column {
   Locations = 'locations'
 }
 
+export type Jsonb_Cast_Exp = {
+  String?: InputMaybe<String_Comparison_Exp>;
+};
+
 /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
 export type Jsonb_Comparison_Exp = {
+  _cast?: InputMaybe<Jsonb_Cast_Exp>;
   /** is the column contained in the given json value */
   _contained_in?: InputMaybe<Scalars['jsonb']>;
   /** does the column contain the given json value at the top level */
@@ -1772,13 +1765,7 @@ export enum Order_By {
   DescNullsLast = 'desc_nulls_last'
 }
 
-/**
- * join table
- *
- *
- * columns and relationships of "organization_user"
- *
- */
+/** join table */
 export type Organization_User = {
   __typename?: 'organization_user';
   created_at: Scalars['timestamptz'];
@@ -2252,7 +2239,7 @@ export type Projects = {
   /** An array relationship */
   builds: Array<Builds>;
   created_at: Scalars['timestamp'];
-  /** fetch data from the table: "github_repositories" */
+  /** An array relationship */
   github_repositories: Array<Github_Repositories>;
   /** An object relationship */
   github_repository?: Maybe<Github_Repositories>;
@@ -2497,7 +2484,7 @@ export type Query_Root = {
   findings_aggregate: Findings_Aggregate;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
-  /** fetch data from the table: "github_repositories" */
+  /** An array relationship */
   github_repositories: Array<Github_Repositories>;
   /** fetch data from the table: "github_repositories" using primary key columns */
   github_repositories_by_pk?: Maybe<Github_Repositories>;
@@ -2858,13 +2845,7 @@ export type Query_RootVulnerability_Packages_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
-/**
- * join table for adding holding additional vulns on a finding
- *
- *
- * columns and relationships of "related_vulnerabilities"
- *
- */
+/** join table for adding holding additional vulns on a finding */
 export type Related_Vulnerabilities = {
   __typename?: 'related_vulnerabilities';
   id: Scalars['uuid'];
@@ -2932,13 +2913,7 @@ export enum Related_Vulnerabilities_Select_Column {
   VulnerabilitySlug = 'vulnerability_slug'
 }
 
-/**
- * An individual time a scan was run on a build
- *
- *
- * columns and relationships of "scans"
- *
- */
+/** An individual time a scan was run on a build */
 export type Scans = {
   __typename?: 'scans';
   /** An object relationship */
@@ -2960,13 +2935,7 @@ export type Scans = {
 };
 
 
-/**
- * An individual time a scan was run on a build
- *
- *
- * columns and relationships of "scans"
- *
- */
+/** An individual time a scan was run on a build */
 export type ScansFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -2976,13 +2945,7 @@ export type ScansFindingsArgs = {
 };
 
 
-/**
- * An individual time a scan was run on a build
- *
- *
- * columns and relationships of "scans"
- *
- */
+/** An individual time a scan was run on a build */
 export type ScansFindings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3266,7 +3229,7 @@ export type Subscription_Root = {
   findings_aggregate: Findings_Aggregate;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
-  /** fetch data from the table: "github_repositories" */
+  /** An array relationship */
   github_repositories: Array<Github_Repositories>;
   /** fetch data from the table: "github_repositories" using primary key columns */
   github_repositories_by_pk?: Maybe<Github_Repositories>;
@@ -3661,13 +3624,7 @@ export type User_Role_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['user_role']>>;
 };
 
-/**
- * LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.)
- *
- *
- * columns and relationships of "users"
- *
- */
+/** LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.) */
 export type Users = {
   __typename?: 'users';
   github_node_id?: Maybe<Scalars['String']>;
@@ -3920,13 +3877,7 @@ export enum Vulnerabilities_Select_Column {
   Urls = 'urls'
 }
 
-/**
- * All of the package vulnerabilities belonging to a given vulnerability
- *
- *
- * columns and relationships of "vulnerability_packages"
- *
- */
+/** All of the package vulnerabilities belonging to a given vulnerability */
 export type Vulnerability_Packages = {
   __typename?: 'vulnerability_packages';
   advisories: Scalars['String'];
@@ -3945,13 +3896,7 @@ export type Vulnerability_Packages = {
 };
 
 
-/**
- * All of the package vulnerabilities belonging to a given vulnerability
- *
- *
- * columns and relationships of "vulnerability_packages"
- *
- */
+/** All of the package vulnerabilities belonging to a given vulnerability */
 export type Vulnerability_PackagesFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3961,13 +3906,7 @@ export type Vulnerability_PackagesFindingsArgs = {
 };
 
 
-/**
- * All of the package vulnerabilities belonging to a given vulnerability
- *
- *
- * columns and relationships of "vulnerability_packages"
- *
- */
+/** All of the package vulnerabilities belonging to a given vulnerability */
 export type Vulnerability_PackagesFindings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3977,13 +3916,7 @@ export type Vulnerability_PackagesFindings_AggregateArgs = {
 };
 
 
-/**
- * All of the package vulnerabilities belonging to a given vulnerability
- *
- *
- * columns and relationships of "vulnerability_packages"
- *
- */
+/** All of the package vulnerabilities belonging to a given vulnerability */
 export type Vulnerability_PackagesPackage_VersionsArgs = {
   distinct_on?: InputMaybe<Array<Package_Versions_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -4109,7 +4042,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, summary: string, created_at: any, severity: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
+export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerabilities', ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4402,59 +4335,13 @@ export const GetProjectDocument = `
       project_id
       source_type
       findings {
-        fix_state
-        fix_versions
-        package_name
-        created_at
-        id
         language
-        locations
-        matcher
-        package_version_id
         purl
         severity
-        type
-        version
-        updated_at
-        version_matcher
-        virtual_path
-        vulnerability_id
-        vulnerability_package_id
+        locations
         vulnerability {
-          id
-          slug
-          description
-          cvss_score
-          cvss_inferred
-          name
-          namespace
-          data_source
-          guide_vulnerabilities {
-            guide {
-              id
-              body
-              metadata
-              title
-              summary
-              created_at
-              severity
-              metadata_schema_version
-              related_guides {
-                guide {
-                  title
-                  summary
-                  id
-                }
-              }
-            }
-          }
           ignored_vulnerabilities(where: {project_id: {_eq: $project_id}}) {
-            creator_id
-            id
             locations
-            note
-            project_id
-            vulnerability_id
           }
         }
       }

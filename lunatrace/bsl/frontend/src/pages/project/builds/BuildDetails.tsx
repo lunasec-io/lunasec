@@ -76,16 +76,16 @@ export const BuildDetails: React.FunctionComponent = () => {
 
     return (
       <>
-        <Helmet title={`#${build.build_number} Build`} />
+        <Helmet title={`#${build.build_number} Snapshot`} />
         <Row>
           <Col xs="3">
             <NavLink to="..">
               <ArrowLeft />
-              All Builds
+              All Snapshots
             </NavLink>
           </Col>
           <Col xs="6" style={{ textAlign: 'center' }}>
-            <h1>Build # {build.build_number}</h1>
+            <h1>Snapshot # {build.build_number}</h1>
             <span>{build.project?.name}</span>
             <h5>{uploadDate}</h5>
           </Col>
