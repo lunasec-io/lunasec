@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: vulnerabilities
+  schema: public
 array_relationships:
 - name: findings
   using:
@@ -45,58 +45,58 @@ array_relationships:
         name: vulnerability_packages
         schema: public
 insert_permissions:
-  - role: service
-    permission:
-      check: {}
-      columns:
-        - slug
-      backend_only: false
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - slug
+  role: service
 select_permissions:
-  - role: service
-    permission:
-      columns:
-        - urls
-        - cvss_inferred
-        - cvss_exploitability_score
-        - cvss_impact_score
-        - cvss_score
-        - cvss_version
-        - data_source
-        - description
-        - name
-        - namespace
-        - record_source
-        - slug
-        - created_at
-        - severity
-        - id
-        - topic_id
-      filter: {}
-      allow_aggregations: true
-  - role: user
-    permission:
-      columns:
-        - id
-        - name
-        - created_at
-        - namespace
-        - data_source
-        - record_source
-        - severity
-        - cvss_version
-        - cvss_score
-        - cvss_exploitability_score
-        - cvss_impact_score
-        - cvss_inferred
-        - description
-        - slug
-        - topic_id
-        - urls
-      filter: {}
+- permission:
+    allow_aggregations: true
+    columns:
+    - urls
+    - cvss_inferred
+    - cvss_exploitability_score
+    - cvss_impact_score
+    - cvss_score
+    - cvss_version
+    - data_source
+    - description
+    - name
+    - namespace
+    - record_source
+    - slug
+    - created_at
+    - severity
+    - id
+    - topic_id
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - id
+    - name
+    - created_at
+    - namespace
+    - data_source
+    - record_source
+    - severity
+    - cvss_version
+    - cvss_score
+    - cvss_exploitability_score
+    - cvss_impact_score
+    - cvss_inferred
+    - description
+    - slug
+    - topic_id
+    - urls
+    filter: {}
+  role: user
 update_permissions:
-  - role: service
-    permission:
-      columns:
-        - slug
-      filter: {}
-      check: null
+- permission:
+    check: null
+    columns:
+    - slug
+    filter: {}
+  role: service

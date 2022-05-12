@@ -1,7 +1,6 @@
 table:
   name: guides
   schema: public
-  name: topics
 array_relationships:
 - name: guide_vulnerabilities
   using:

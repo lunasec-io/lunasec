@@ -1,4 +1,5 @@
 table:
+  name: identities
   schema: public
 object_relationships:
 - name: user

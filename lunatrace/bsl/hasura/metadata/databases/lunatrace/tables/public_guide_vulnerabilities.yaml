@@ -1,7 +1,6 @@
 table:
   name: guide_vulnerabilities
   schema: public
-  name: topic_vulnerabilities
 object_relationships:
 - name: guide
   using:
