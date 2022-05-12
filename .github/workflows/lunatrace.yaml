@@ -39,9 +39,7 @@ jobs:
       - uses: cygnetdigital/wait_for_response@v2.0.0
         with:
           url: 'http://localhost:8080/'
-          responseCode: '200,500'
-          timeout: 2000
-          interval: 500
+          responseCode: '200,500,404'
 
       - run: |-
 
