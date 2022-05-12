@@ -17,8 +17,10 @@ import { Navigate } from 'react-router-dom';
 
 import { RouteGuard } from './components/auth/RouteGuard';
 import MainLayout from './layouts/Main';
-import { BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
+import { AdminDashboard, BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
 import { AuthError } from './pages/auth/Error';
+import { GuideMain } from './pages/guide/Guide';
+import { GuideList } from './pages/guide/List';
 import { HomePage } from './pages/homepage/Home';
 import { ProjectCreate } from './pages/project/Create';
 import { VulnerabilityDetail } from './pages/vulnerabilities/Detail';
@@ -90,6 +92,28 @@ export const routes: RouteObject[] = [
             ),
           },
         ],
+      },
+      {
+        path: 'guides',
+        children: [
+          {
+            path: '',
+            element: <GuideList />,
+          },
+          {
+            path: ':guide_id',
+            element: <GuideMain />,
+          },
+        ],
+      },
+
+      {
+        path: 'admin',
+        element: (
+          <RouteGuard>
+            <AdminDashboard />
+          </RouteGuard>
+        ),
       },
       { path: 'auth', children: [{ path: 'error', element: <AuthError /> }] },
       // Login is handled by auth service, but we can still get here if the user hits back. Send those users back to

@@ -1,6 +1,6 @@
 FROM golang AS builder
 ADD . /code
-WORKDIR /code
+WORKDIR /code/go
 RUN make runtime tag=release
 
 FROM scratch

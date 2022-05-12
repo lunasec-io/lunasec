@@ -15,12 +15,15 @@ import { GraphQLJSON, GraphQLUUID } from 'graphql-scalars';
 
 import { Resolvers } from '../generated-resolver-types';
 
+import { authenticatedRepoCloneUrlResolver } from './authenticated-repo-clone-url';
 import { presignManifestUploadResolver } from './presign-manifest-upload';
 import { presignSbomUploadResolver } from './presign-sbom-upload';
 import { sbomUrlResolver } from './sbom-url';
+
 export const resolvers: Resolvers = {
   Query: {
     presignSbomUpload: presignSbomUploadResolver,
+    authenticatedRepoCloneUrl: authenticatedRepoCloneUrlResolver,
     sbomUrl: sbomUrlResolver,
   },
   Mutation: {

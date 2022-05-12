@@ -17,10 +17,10 @@ package main
 import (
 	"github.com/cenkalti/backoff/v4"
 	"github.com/rs/zerolog/log"
-	"lunasec/lunatrace/pkg/agent"
-	"lunasec/lunatrace/pkg/command"
-	"lunasec/lunatrace/pkg/config"
-	"lunasec/lunatrace/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/agent"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/config"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 	"time"
 )
 

@@ -17,7 +17,7 @@ package metrics
 import (
   "github.com/aws/aws-sdk-go/aws"
   "github.com/aws/aws-sdk-go/aws/client"
-  "lunasec/lunadefend/constants"
+  "github.com/lunasec-io/lunasec/go/constants"
   "go.uber.org/config"
   "go.uber.org/zap"
   "gopkg.in/yaml.v3"

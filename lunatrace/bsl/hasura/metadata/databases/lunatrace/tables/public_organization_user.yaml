@@ -21,7 +21,6 @@ insert_permissions:
     - user_id
   role: service
 - permission:
-    backend_only: false
     check:
       _or:
       - organization:
@@ -39,8 +38,6 @@ insert_permissions:
     - organization_id
     - role
     - user_id
-    set:
-      user_id: x-hasura-Real-User-Id
   role: user
 select_permissions:
 - permission:

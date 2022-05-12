@@ -15,9 +15,9 @@
 package tokenizerbackend
 
 import (
-	"lunasec/lunadefend/controller"
-	"lunasec/lunadefend/gateway"
-	"lunasec/lunadefend/service"
+	"github.com/lunasec-io/lunasec/go/controller"
+	"github.com/lunasec-io/lunasec/go/gateway"
+	"github.com/lunasec-io/lunasec/go/service"
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"net/http"

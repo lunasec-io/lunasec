@@ -12,7 +12,7 @@
  *
  */
 import React, { useContext } from 'react';
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import { Button, Container, Nav, Navbar } from 'react-bootstrap';
 import { BsMoon, BsSun } from 'react-icons/bs';
 
 import { WizardOpenContext } from '../../contexts/WizardContext';
@@ -20,6 +20,7 @@ import useAppSelector from '../../hooks/useAppSelector';
 import useSidebar from '../../hooks/useSidebar';
 import useTheme from '../../hooks/useTheme';
 import { selectIsAuthenticated } from '../../store/slices/authentication';
+import { getImpersonatedUser, setImpersonatedUser } from '../../utils/users';
 
 import { ProjectSearch } from './NavbarProjectSearch';
 import NavbarUser from './NavbarUser';
@@ -27,6 +28,7 @@ import NavbarUser from './NavbarUser';
 const NavbarComponent: React.FunctionComponent = () => {
   const { isOpen, setIsOpen } = useSidebar();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const impersonatedUser = getImpersonatedUser();
   const { theme, setTheme } = useTheme();
 
   const setupWizardOpen = useContext(WizardOpenContext);
@@ -50,6 +52,11 @@ const NavbarComponent: React.FunctionComponent = () => {
     </span>
   );
 
+  const stopImpersonating = () => {
+    setImpersonatedUser(null);
+    window.location.reload();
+  };
+
   return (
     <Navbar variant="light" expand="lg" className="navbar-bg">
       <Container fluid>
@@ -62,6 +69,7 @@ const NavbarComponent: React.FunctionComponent = () => {
             {theme === 'dark' ? <BsMoon size="30px" /> : <BsSun size="30px" />}
           </span>
           <NavbarUser />
+          {impersonatedUser && <Button onClick={stopImpersonating}>Stop Impersonating {impersonatedUser.name}</Button>}
         </Nav>
       </Container>
     </Navbar>

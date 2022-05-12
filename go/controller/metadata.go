@@ -16,16 +16,16 @@ package controller
 
 import (
 	"encoding/json"
-	"lunasec/lunadefend/util/auth"
+	"github.com/lunasec-io/lunasec/go/util/auth"
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"log"
 	"net/http"
 
-	"lunasec/lunadefend/service"
-	"lunasec/lunadefend/types"
-	"lunasec/lunadefend/types/event"
-	"lunasec/lunadefend/util"
+	"github.com/lunasec-io/lunasec/go/service"
+	"github.com/lunasec-io/lunasec/go/types"
+	"github.com/lunasec-io/lunasec/go/types/event"
+	"github.com/lunasec-io/lunasec/go/util"
 )
 
 type metaController struct {

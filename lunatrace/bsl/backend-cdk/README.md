@@ -33,3 +33,27 @@ CDK_DOCKER="$(pwd)/sudo-docker-shim.sh" STACK_DOMAIN_NAME="lunatrace.lunasec.io"
 
 If you use `sudo docker` then you'll need that shim script. If you have rootless Docker or some other config, you can
 just omit it though.
+
+
+## Hacky Deployment Steps
+
+With backend running on your box do
+
+`cd backend-cdk`
+
+`./build-containers`
+
+`yarn run prod:cdk:deploy`
+
+watch the deployment in aws console
+
+once finished manually apply the metadata from your machine to the production hasura instance. For me connecting to the prod instance looks like:
+
+```bash
+HASURA_GRAPHQL_ENDPOINT=https://lunatrace.lunasec.io/api/hasura HASURA_GRAPHQL_ADMIN_SECRET="$(aws secretsmanager get-secret-value --secret-id lunatrace-HasuraAdminSecret | jq -r .SecretString)" hasura migrate apply
+```
+followed by `hasura metadata apply` and `metadata reload`, also against the prod instance
+
+### See production logs
+
+`saw`

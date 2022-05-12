@@ -15,8 +15,8 @@
 package graphql
 
 import (
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
 func NewIdentifyRequest(instanceId, agentAccessToken string) types.GraphqlRequest {

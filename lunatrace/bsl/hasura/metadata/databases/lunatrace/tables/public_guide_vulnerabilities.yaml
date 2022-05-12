@@ -1,0 +1,51 @@
+table:
+  name: guide_vulnerabilities
+  schema: public
+object_relationships:
+- name: guide
+  using:
+    foreign_key_constraint_on: guide_id
+- name: vulnerability
+  using:
+    foreign_key_constraint_on: vulnerability_id
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - created_at
+    - updated_at
+    - id
+    - guide_id
+    - vulnerability_id
+  role: service
+select_permissions:
+- permission:
+    columns:
+    - created_at
+    - updated_at
+    - id
+    - guide_id
+    - vulnerability_id
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - created_at
+    - updated_at
+    - id
+    - guide_id
+    - vulnerability_id
+    filter: {}
+  role: user
+update_permissions:
+- permission:
+    check: {}
+    columns:
+    - created_at
+    - updated_at
+    - id
+    - guide_id
+    - vulnerability_id
+    filter: {}
+  role: service
