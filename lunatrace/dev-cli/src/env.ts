@@ -20,13 +20,24 @@ export function envVars(vars: Record<string, string>): string {
     .join(' ');
 }
 
+const smeeWebhookUrlEnv = process.env.SMEE_WEBHOOK_URL;
+const githubAppIdEnv = process.env.GITHUB_APP_ID;
+
+if (!smeeWebhookUrlEnv) {
+  throw new Error('Must define SMEE_WEBHOOK_URL');
+}
+
+if (!githubAppIdEnv) {
+  throw new Error('Must define GITHUB_APP_ID');
+}
+
+export const smeeWebhookUrl = smeeWebhookUrlEnv;
+
 // development configuration for the GitHub app
 export const githubAppConfig = {
-  GITHUB_APP_ID: '179126',
+  GITHUB_APP_ID: githubAppIdEnv,
   GITHUB_APP_PRIVATE_KEY: `$(cat github-app-dev.2022-03-09.private-key.pem | base64 -w0)`,
 };
-
-export const smeeWebhookUrl = 'https://smee.io/PFQhzcyUpi770GiD';
 
 export const backendEnv = envVars({
   ...githubAppConfig,

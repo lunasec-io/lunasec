@@ -1,48 +1,46 @@
 version: '3.6'
 services:
-#  frontend:
-#    build: ./frontend
-#    ports:
-#      - "8000:80"
-#    healthcheck:
-#      timeout: 10s
-#      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost || exit 1']
-#  oathkeeper:
-#    build: ./ory/oathkeeper
-#    ports:
-#      - "4455:4455"
-#      - "4456:4456"
-#    command: '--config /config.yaml serve'
-#    environment:
-#      ACCESS_RULES_REPOSITORIES: file:///config/rules.yaml,file:///config/rules.frontend.yaml
-#      MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///config/jwks.json
-#    volumes:
-#      - "./ory/oathkeeper:/config"
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
-#  backend:
-#    build: ./backend
-#    environment:
-#      AWS_DEFAULT_REGION: us-west-2
-#    ports:
-#      - "3002:80"
-#    healthcheck:
-#      timeout: 10s
-#      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost/health || exit 1']
+  oathkeeper:
+    build: ./ory/oathkeeper
+    image: lunatrace-oathkeeper
+    ports:
+      - "4455:4455" # public
+      - "4456:4456" # admin
+    command: '--config /generated/config.yaml serve'
+    environment:
+      ACCESS_RULES_REPOSITORIES: file:///generated/rules.yaml
+      MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///config/jwks.dev.json
+    volumes:
+      - "./ory/oathkeeper:/config"
+    healthcheck:
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4455/health/ready || exit 1']
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  kratos-migrate:
+    image: lunatrace-kratos:lunatrace-dev
+    depends_on:
+      - postgres
+    environment:
+      DSN: postgres://postgres:postgrespassword@postgres:5432/lunatrace
+    volumes:
+      - ./ory/kratos:/config
+    command: -c /config/config.yaml migrate sql -e --yes
+    restart: on-failure
 
   kratos:
     build: ./ory/kratos
-    image: lunatrace-kratos:lunatrace-dev
+    image: lunatrace-kratos
     depends_on:
-      - "postgres"
+      - postgres
     ports:
       - '4433:4433' # public
       - '4434:4434' # admin
     restart: unless-stopped
     environment:
-      - DSN=postgres://postgres:postgrespassword@postgres:5432/lunatrace
-      - LOG_LEVEL=trace
-      - KRATOS_ADMIN_URL=http://localhost:4434
+      DSN: postgres://postgres:postgrespassword@postgres:5432/lunatrace
+      LOG_LEVEL: trace
+      KRATOS_ADMIN_URL: http://localhost:4434
     command: serve -c /config/config.yaml -c /config/config.dev.yaml --dev --watch-courier
     volumes:
       - ./ory/kratos:/config
@@ -50,16 +48,6 @@ services:
       test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4434/health/ready || exit 1']
     extra_hosts:
     - "host.docker.internal:host-gateway"
-  kratos-migrate:
-    image: lunatrace-kratos:lunatrace-dev
-    depends_on:
-      - "postgres"
-    environment:
-      - DSN=postgres://postgres:postgrespassword@postgres:5432/lunatrace
-    volumes:
-      - ./ory/kratos:/config
-    command: -c /config/config.yaml migrate sql -e --yes
-    restart: on-failure
 
   postgres:
     image: postgres:12
@@ -71,12 +59,14 @@ services:
     environment:
       POSTGRES_PASSWORD: postgrespassword
       POSTGRES_DB: lunatrace
+
   graphql-engine:
     image: hasura/graphql-engine:v2.5.2.cli-migrations-v3
     ports:
     - "8080:8080"
     depends_on:
-    - "postgres"
+      - postgres
+      - oathkeeper
     restart: always
     volumes:
       - ./hasura:/hasura
@@ -102,6 +92,7 @@ services:
       HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura/migrations
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
   mailslurper:
     image: oryd/mailslurper:latest-smtps
     ports:
