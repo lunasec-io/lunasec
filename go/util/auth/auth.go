@@ -15,9 +15,9 @@
 package auth
 
 import (
-	"lunasec/lunadefend/controller/request"
-	"lunasec/lunadefend/service"
-	"lunasec/lunadefend/types"
+	"github.com/lunasec-io/lunasec/go/controller/request"
+	"github.com/lunasec-io/lunasec/go/service"
+	"github.com/lunasec-io/lunasec/go/types"
 	"net/http"
 )
 

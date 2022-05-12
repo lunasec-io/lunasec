@@ -16,24 +16,36 @@ insert_permissions:
         - kratos_id
       backend_only: false
 select_permissions:
-  - role: service
-    permission:
-      columns:
-        - github_id
-        - github_node_id
-        - id
-        - kratos_id
-      filter: {}
-  - role: user
-    permission:
-      columns:
-        - github_id
-        - github_node_id
-        - id
-        - kratos_id
-      filter:
-        kratos_id:
+- permission:
+    columns:
+    - github_id
+    - github_node_id
+    - id
+    - kratos_id
+    - role
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - github_node_id
+    - id
+    - kratos_id
+    - role
+    filter:
+      _or:
+      - kratos_id:
           _eq: X-Hasura-User-Id
+      - _exists:
+          _table:
+            name: users
+            schema: public
+          _where:
+            _and:
+            - kratos_id:
+                _eq: X-Hasura-User-Id
+            - role:
+                _eq: lunatrace_admin
+  role: user
 update_permissions:
   - role: service
     permission:

@@ -18,8 +18,8 @@ import (
 	"go.uber.org/config"
 	"go.uber.org/zap"
 	"log"
-	"lunasec/lunadefend/gateway"
-	"lunasec/lunadefend/util"
+	"github.com/lunasec-io/lunasec/go/gateway"
+	"github.com/lunasec-io/lunasec/go/util"
 )
 
 func tokenizerBackendDependencies() (*zap.Logger, config.Provider, gateway.Gateways) {

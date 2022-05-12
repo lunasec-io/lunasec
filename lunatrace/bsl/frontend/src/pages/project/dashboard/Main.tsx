@@ -11,11 +11,13 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Accordion } from 'react-bootstrap';
+import { CopyBlock, dracula } from 'react-code-blocks';
 import { AiFillGithub, AiOutlineInfoCircle } from 'react-icons/ai';
 import { BiUnlink } from 'react-icons/bi';
 
+import { UserContext } from '../../../contexts/UserContext';
 import { ProjectInfo, SetActiveTab } from '../types';
 
 import { ManifestDrop } from './ManifestDrop';
@@ -27,6 +29,8 @@ interface ProjectDashboardMainProps {
 }
 
 export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project, setActiveTab }) => {
+  const { isAdmin } = useContext(UserContext);
+
   const renderGithubInfo = () => {
     if (!project.github_repository) {
       return (
@@ -36,8 +40,20 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
         </p>
       );
     }
+    const githubRepo = project.github_repository;
+
+    const getProjectUrl = () => {
+      const projectUrlStr = githubRepo.traits.gitUrl;
+      if (!projectUrlStr) {
+        return '#';
+      }
+      const projectUrl = new URL(projectUrlStr);
+      projectUrl.protocol = 'https:';
+      return projectUrl.toString();
+    };
+
     return (
-      <a href={project.github_repository.traits.html_url || ''}>
+      <a href={getProjectUrl()}>
         <p className="text-center">
           <AiFillGithub size="1rem" className="me-1 mb-1" />
           Imported from GitHub
@@ -48,9 +64,28 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
     //
     // );
   };
-  console.log('project info is ', project);
+  const cloneProject = () => {
+    const cloneUrl = project.github_repository?.authenticated_clone_url?.url;
+    if (!cloneUrl) {
+      return null;
+    }
+    const formattedCloneUrl = cloneUrl.replace('git://', 'https://');
+    return (
+      <>
+        <CopyBlock
+          text={`mkdir -p ~/lunatrace_client_repos && cd ~/lunatrace_client_repos && git clone ${formattedCloneUrl}`}
+          language="bash"
+          showLineNumbers={false}
+          startingLineNumber={false}
+          theme={dracula}
+          codeBlock
+        />
+      </>
+    );
+  };
   return (
     <>
+      {isAdmin && cloneProject()}
       {renderGithubInfo()}
       {/*Github URL Github Name short github description blurb most recent several builds, master first probably*/}
       <Accordion flush={false} defaultActiveKey={project.builds.length > 0 ? '' : '0'}>

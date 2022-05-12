@@ -1,0 +1,21 @@
+
+.guide-body {
+  color: $black !important;
+}
+
+code {
+  font-size: 100% !important;
+}
+
+code.code-highlight {
+  font-size: small !important;
+}
+
+@include media-breakpoint-up(md) {
+  .markdown-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 60%;
+  }
+}

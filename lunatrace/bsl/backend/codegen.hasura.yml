@@ -6,6 +6,8 @@ documents: "src/hasura-api/graphql/**/*.graphql"
 generates:
   ./src/hasura-api/generated.ts:
     plugins:
-      - "typescript"
+      - "typescript":
+          scalars:
+            user_role: "'organization_user'|'lunatrace_admin'"
       - "typescript-operations"
       - "typescript-graphql-request"

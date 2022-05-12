@@ -30,10 +30,11 @@ services:
 #      timeout: 10s
 #      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost/health || exit 1']
 
-  # kratos -c ory/kratos/config.yaml migrate sql -e --yes
   kratos:
     build: ./ory/kratos
     image: lunatrace-kratos:lunatrace-dev
+    depends_on:
+      - "postgres"
     ports:
       - '4433:4433' # public
       - '4434:4434' # admin
@@ -49,6 +50,17 @@ services:
       test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4434/health/ready || exit 1']
     extra_hosts:
     - "host.docker.internal:host-gateway"
+  kratos-migrate:
+    image: lunatrace-kratos:lunatrace-dev
+    depends_on:
+      - "postgres"
+    environment:
+      - DSN=postgres://postgres:postgrespassword@postgres:5432/lunatrace
+    volumes:
+      - ./ory/kratos:/config
+    command: -c /config/config.yaml migrate sql -e --yes
+    restart: on-failure
+
   postgres:
     image: postgres:12
     restart: always
@@ -60,12 +72,14 @@ services:
       POSTGRES_PASSWORD: postgrespassword
       POSTGRES_DB: lunatrace
   graphql-engine:
-    image: hasura/graphql-engine:v2.2.2
+    image: hasura/graphql-engine:v2.5.2.cli-migrations-v3
     ports:
     - "8080:8080"
     depends_on:
     - "postgres"
     restart: always
+    volumes:
+      - ./hasura:/hasura
     environment:
       ## postgres database to store Hasura metadata
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/lunatrace
@@ -84,6 +98,8 @@ services:
       ACTION_BASE_URL: http://host.docker.internal:3002
       # TODO: ADD THIS TO THE CDK
       REMOTE_SCHEMA_URL: http://host.docker.internal:3002/graphql/v1
+      HASURA_GRAPHQL_METADATA_DIR: /hasura/metadata
+      HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura/migrations
     extra_hosts:
       - "host.docker.internal:host-gateway"
   mailslurper:

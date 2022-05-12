@@ -1,52 +1,65 @@
 table:
   schema: public
-  name: identities
+object_relationships:
+- name: user
+  using:
+    manual_configuration:
+      column_mapping:
+        id: kratos_id
+      insertion_order: null
+      remote_table:
+        name: users
+        schema: public
 array_relationships:
-  - name: identity_credentials
-    using:
-      foreign_key_constraint_on:
-        column: identity_id
-        table:
-          schema: public
-          name: identity_credentials
-  - name: identity_verifiable_addresses
-    using:
-      foreign_key_constraint_on:
-        column: identity_id
-        table:
-          schema: public
-          name: identity_verifiable_addresses
-  - name: users
-    using:
-      foreign_key_constraint_on:
-        column: kratos_id
-        table:
-          schema: public
-          name: users
+- name: identity_credentials
+  using:
+    foreign_key_constraint_on:
+      column: identity_id
+      table:
+        name: identity_credentials
+        schema: public
+- name: identity_verifiable_addresses
+  using:
+    foreign_key_constraint_on:
+      column: identity_id
+      table:
+        name: identity_verifiable_addresses
+        schema: public
 select_permissions:
-  - role: service
-    permission:
-      columns:
-        - schema_id
-        - state
-        - traits
-        - created_at
-        - state_changed_at
-        - updated_at
-        - id
-        - nid
-      filter: {}
-  - role: user
-    permission:
-      columns:
-        - schema_id
-        - state
-        - traits
-        - created_at
-        - state_changed_at
-        - updated_at
-        - id
-        - nid
-      filter:
-        id:
+- permission:
+    columns:
+    - schema_id
+    - state
+    - traits
+    - created_at
+    - state_changed_at
+    - updated_at
+    - id
+    - nid
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - schema_id
+    - state
+    - traits
+    - created_at
+    - state_changed_at
+    - updated_at
+    - id
+    - nid
+    filter:
+      _or:
+      - id:
           _eq: X-Hasura-User-Id
+      - _exists:
+          _table:
+            name: users
+            schema: public
+          _where:
+            _and:
+            - kratos_id:
+                _eq: X-Hasura-User-Id
+            - role:
+                _eq: lunatrace_admin
+  role: user

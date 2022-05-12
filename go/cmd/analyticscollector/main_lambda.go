@@ -18,7 +18,7 @@ package main
 
 import (
 	"github.com/aws/aws-lambda-go/lambda"
-	"lunasec/lunadefend/pkg/analyticscollector"
+	"github.com/lunasec-io/lunasec/go/pkg/analyticscollector"
 )
 
 func main() {

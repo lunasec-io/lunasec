@@ -13,10 +13,10 @@ FROM base as builder
 ARG tag
 ARG version
 
-RUN --mount=target=. \
+RUN --mount=target=repo \
     --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    OUTPUT_DIR=/out make tokenizerbackend tag=$tag version=$version
+    cd repo/go && OUTPUT_DIR=/out make tokenizerbackend tag=$tag version=$version
 
 FROM alpine
 
@@ -25,22 +25,22 @@ RUN apk add curl
 
 ARG tag
 
-COPY config/tokenizerbackend/config.yaml /config/tokenizerbackend/config.yaml
-COPY views/tokenizerbackend/ /views/tokenizerbackend/
+COPY go/config/tokenizerbackend/config.yaml /config/tokenizerbackend/config.yaml
+COPY go/views/tokenizerbackend/ /views/tokenizerbackend/
 
 # base config only for demo app, otherwise remove it
-COPY config/tokenizerbackend/dev.yaml /config/tokenizerbackend/dev.yaml
+COPY go/config/tokenizerbackend/dev.yaml /config/tokenizerbackend/dev.yaml
 RUN if [ "$tag" != "dev" ] ; then rm /config/tokenizerbackend/dev.yaml ; fi
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /out/tokenizerbackend_$tag /tokenizerbackend
 COPY --from=builder /tmp /tmp
 
-COPY fixtures/tokenizerbackend/cert.pem /usr/local/share/ca-certificates/proxy.crt
+COPY go/fixtures/tokenizerbackend/cert.pem /usr/local/share/ca-certificates/proxy.crt
 RUN cat /usr/local/share/ca-certificates/proxy.crt >> /etc/ssl/certs/ca-certificates.crt
 
 # Sets up the script to wait for the resource config to be available.
-COPY scripts/wait-for-file.sh /tmp/wait-for-file.sh
+COPY go/scripts/wait-for-file.sh /tmp/wait-for-file.sh
 RUN chmod +x /tmp/wait-for-file.sh
 
 WORKDIR /

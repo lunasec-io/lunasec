@@ -22,12 +22,12 @@ import (
 
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/tarball"
-	"lunasec/lunadefend/gateway"
-	"lunasec/lunadefend/pkg/containermodifier"
-	"lunasec/lunadefend/service"
-	"lunasec/lunadefend/types"
-	"lunasec/lunadefend/types/event"
-	"lunasec/lunadefend/util"
+	"github.com/lunasec-io/lunasec/go/gateway"
+	"github.com/lunasec-io/lunasec/go/pkg/containermodifier"
+	"github.com/lunasec-io/lunasec/go/service"
+	"github.com/lunasec-io/lunasec/go/types"
+	"github.com/lunasec-io/lunasec/go/types/event"
+	"github.com/lunasec-io/lunasec/go/util"
 )
 
 type ContainerModifierController interface {

@@ -15,7 +15,7 @@ import { Request, Response } from 'express';
 
 import { getServerConfig } from '../config';
 import { GithubRepositoryInfo, RepositoriesForInstallationResponse } from '../types/github';
-import { errorResponse, logError, newError } from '../utils/errors';
+import { errorResponse, logError } from '../utils/errors';
 import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse';
 import { catchError, threwError, Try } from '../utils/try';

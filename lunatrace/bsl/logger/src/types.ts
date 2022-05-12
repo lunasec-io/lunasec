@@ -13,22 +13,22 @@
  */
 
 export interface LoggerOptions {
+  loggerName?: string;
   trace?: boolean;
 }
+
+export type LoggerContext = Record<string, string>;
 
 export const logLevels = ['debug', 'info', 'warn', 'error'] as const;
 export type LevelChoice = typeof logLevels[number];
 
-export interface BaseLogObj {
-  loggerName: string;
-  [prop: string]: unknown;
-}
-
-export interface LogObj extends BaseLogObj {
+export interface LogObj {
   level: LevelChoice;
   timeEpoch: number;
   timePretty: string;
+  name: string;
   message: string;
+  context: Record<string, string>;
 }
 
 export interface Transport {

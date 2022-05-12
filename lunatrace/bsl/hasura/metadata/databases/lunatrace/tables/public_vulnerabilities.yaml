@@ -2,41 +2,48 @@ table:
   schema: public
   name: vulnerabilities
 array_relationships:
-  - name: findings
-    using:
-      foreign_key_constraint_on:
-        column: vulnerability_id
-        table:
-          schema: public
-          name: findings
-  - name: ignored_vulnerabilities
-    using:
-      foreign_key_constraint_on:
-        column: vulnerability_id
-        table:
-          schema: public
-          name: ignored_vulnerabilities
-  - name: related_vulnerabilities
-    using:
-      foreign_key_constraint_on:
-        column: vulnerability_slug
-        table:
-          schema: public
-          name: related_vulnerabilities
-  - name: reverse_related_vulnerabilities
-    using:
-      foreign_key_constraint_on:
-        column: related_vulnerability_slug
-        table:
-          schema: public
-          name: related_vulnerabilities
-  - name: vulnerability_packages
-    using:
-      foreign_key_constraint_on:
-        column: vuln_slug
-        table:
-          schema: public
-          name: vulnerability_packages
+- name: findings
+  using:
+    foreign_key_constraint_on:
+      column: vulnerability_id
+      table:
+        name: findings
+        schema: public
+- name: guide_vulnerabilities
+  using:
+    foreign_key_constraint_on:
+      column: vulnerability_id
+      table:
+        name: guide_vulnerabilities
+        schema: public
+- name: ignored_vulnerabilities
+  using:
+    foreign_key_constraint_on:
+      column: vulnerability_id
+      table:
+        name: ignored_vulnerabilities
+        schema: public
+- name: related_vulnerabilities
+  using:
+    foreign_key_constraint_on:
+      column: vulnerability_slug
+      table:
+        name: related_vulnerabilities
+        schema: public
+- name: reverse_related_vulnerabilities
+  using:
+    foreign_key_constraint_on:
+      column: related_vulnerability_slug
+      table:
+        name: related_vulnerabilities
+        schema: public
+- name: vulnerability_packages
+  using:
+    foreign_key_constraint_on:
+      column: vuln_slug
+      table:
+        name: vulnerability_packages
+        schema: public
 insert_permissions:
   - role: service
     permission:

@@ -32,8 +32,10 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import api from '../../../api';
 import { ConfirmationDailog } from '../../../components/ConfirmationDialog';
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
 
+import { GuideBlurb } from './GuideBlurb';
 import { VulnerabilityTableItem } from './VulnerabilityTableItem';
 import { Finding } from './types';
 
@@ -47,6 +49,7 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [ignoreNote, setIgnoreNote] = useState('');
 
+  console.log('vuln package is ', pkg);
   const filteredFindings = pkg.findings.filter((f) => {
     return severityOrder.indexOf(f.severity) >= severityFilter || !shouldFilterFindings;
   });
@@ -136,6 +139,14 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
           </Container>
         </Card.Header>
         <Card.Body>
+          <ConditionallyRender if={pkg.guides.length > 0}>
+            <Container fluid className={'text-center'}>
+              {pkg.guides.map((guide) => {
+                return <GuideBlurb key={guide.id} guide={guide}></GuideBlurb>;
+              })}
+            </Container>
+          </ConditionallyRender>
+
           <Container fluid>
             {pkg.fix_state === 'fixed' ? (
               <Row>
@@ -224,9 +235,9 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
         body={(
           <>
             <p>
-              Bulk ignore every currently reported finding for this package. Future vulnerabilities or the same
-              vulnerabilities at new locations can still cause this package to appear again. This action is not yet
-              reversible but will be in a future version.
+              Bulk ignore all currently reported findings for this package. New vulnerabilities or the same
+              vulnerabilities at new locations will cause this package to appear again. This action is not yet
+              reversible, but will be in a future update.
             </p>
             <Form
               onSubmit={(e) => {
