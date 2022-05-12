@@ -80,9 +80,12 @@ const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponen
   }
 
   const buildNumber = currentProject.builds.filter((b) => b.id === crumbProps.match.params.build_id)[0]?.build_number;
-  return <span>Build # {buildNumber}</span>;
+  return <span>Snapshot # {buildNumber}</span>;
 };
 
+const BuildMainPathBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
+  return <span>Snapshot</span>;
+};
 const VulnBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
   const vulnerability_id = crumbProps.match.params.vulnerability_id;
   const { data } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id });
@@ -132,6 +135,8 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
   const customRoutes: BreadcrumbsRoute[] = [
     { path: '/project/:project_id', breadcrumb: ProjectBreadCrumb },
     { path: '/project/:project_id/build/:build_id', breadcrumb: BuildBreadCrumb },
+    { path: '/project/:project_id/build/', breadcrumb: BuildMainPathBreadCrumb },
+
     { path: '/vulnerabilities/:vulnerability_id', breadcrumb: VulnBreadCrumb },
     { path: '/organization/:project_id', breadcrumb: OrganizationBreadCrumb },
     { path: '/new-project', breadcrumb: null },
