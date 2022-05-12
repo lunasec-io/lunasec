@@ -128,7 +128,7 @@
   upstream:
     preserve_host: true
     strip_path: "/api/hasura"
-    url: $OATHKEEPER_BACKEND_URL
+    url: $OATHKEEPER_HASURA_URL
   match:
     url: "$OATHKEEPER_MATCH_URL/api/hasura/<.*>"
     methods:

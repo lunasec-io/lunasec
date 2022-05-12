@@ -158,6 +158,11 @@ export class LunatraceBackendStack extends cdk.Stack {
       command: ['--config', '/generated/config.yaml', 'serve'],
       environment: {
         MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: oryConfigBucket.s3UrlForObject('oathkeeper/jwks.json'),
+        OATHKEEPER_HASURA_URL: 'http://localhost:8080',
+        OATHKEEPER_FRONTEND_URL: 'http://localhost:3000',
+        OATHKEEPER_BACKEND_URL: 'http://localhost:3002',
+        OATHKEEPER_KRATOS_URL: 'http://localhost:4433',
+        OATHKEEPER_MATCH_URL: '<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>',
       },
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4456/health/ready || exit 1'],

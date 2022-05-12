@@ -16,17 +16,15 @@
 `./build-config.sh` will take the templates defined in `./templates/` and substitute their
 defined environment variables. The resulting files will be written to `./generated/`.
 
-This allows us to use different environments defined in `.env.*` files. 
+## Production 
+To add additional environment variables for oathkeeper in production, add them to `lunasec/lunatrace/bsl/backend-cdk/lib/lunatrace-backend-stack.ts`.
 
 ## Docker
-To build oathkeeper in docker, you will need to `docker-compose build oathkeeper`.
+When using docker-compose, oathkeeper will be intelligent enough to regenerate the config files on startup if the `/config` directory is mounted into the container.
 
 ## Local
-For active oathkeeper development, it is annoying to have to build the docker container every time.
-Instead, in this directory you can run:
-
 ```bash
 # prod is used because it uses `localhost` to refer to resources which is needed if you are running outside of oathkeeper.
-OATHKEEPER_ENV=prod ./build-config.sh
+env $(xargs < .env) ./build-config.sh
 oathkeeper --config generated/config.yaml serve
 ```

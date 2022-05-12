@@ -6,11 +6,12 @@ services:
     ports:
       - "4455:4455" # public
       - "4456:4456" # admin
-    command: 'serve'
+    command: '--config /generated/config.yaml serve'
     environment:
-      OATHKEEPER_ENV: dev
       ACCESS_RULES_REPOSITORIES: file:///generated/rules.yaml
-      MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///jwks.dev.json
+      MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///config/jwks.dev.json
+    volumes:
+      - "./ory/oathkeeper:/config"
     healthcheck:
       test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4455/health/ready || exit 1']
     extra_hosts:
