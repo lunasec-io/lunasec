@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { filterFindingsByIgnored, groupByPackage } from '@lunatrace/lunatrace-common';
+import { countCriticalVulnerabilities, filterFindingsByIgnored, groupByPackage } from '@lunatrace/lunatrace-common';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
@@ -33,8 +33,7 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
   const lastScannedDate = build.scans[0] ? prettyDate(new Date(build.scans[0].created_at as string)) : 'Never';
 
   const filteredFindings = filterFindingsByIgnored(build.findings);
-  const vulnerablePackages = groupByPackage(build.project_id, filteredFindings);
-  const criticalVulnerablePackages = vulnerablePackages.filter((p) => p.severity === 'Critical');
+  const vulnerablePackageCount = countCriticalVulnerabilities(filteredFindings);
 
   const branch = branchName(build);
   const branchUrl = branchLink(build);
@@ -59,7 +58,7 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
             <Col sm={{ span: 6 }}>
               <div style={{ float: 'right', textAlign: 'right' }}>
                 <Card.Title>
-                  <h3 style={{ display: 'inline' }}>{criticalVulnerablePackages.length}</h3>
+                  <h3 style={{ display: 'inline' }}>{vulnerablePackageCount}</h3>
                   <span className="text-right darker"> critical packages</span>
                 </Card.Title>
               </div>
@@ -103,6 +102,9 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
                       {build.git_hash?.substring(0, 8)}...
                     </a>
                   </h6>
+                </ConditionallyRender>
+                <ConditionallyRender if={!commitUrl && !branchUrl}>
+                  <h6 className="darker">Uploaded manually</h6>
                 </ConditionallyRender>
               </div>
             </Col>

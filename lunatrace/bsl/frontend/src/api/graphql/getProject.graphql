@@ -34,59 +34,13 @@ query GetProject($project_id: uuid!) {
             project_id
             source_type
             findings {
-                fix_state
-                fix_versions
-                package_name
-                created_at
-                id
                 language
-                locations
-                matcher
-                package_version_id
                 purl
                 severity
-                type
-                version
-                updated_at
-                version_matcher
-                virtual_path
-                vulnerability_id
-                vulnerability_package_id
+                locations
                 vulnerability {
-                    id
-                    slug
-                    description
-                    cvss_score
-                    cvss_inferred
-                    name
-                    namespace
-                    data_source
-                    guide_vulnerabilities {
-                        guide {
-                            id
-                            body
-                            metadata
-                            title
-                            summary
-                            created_at
-                            severity
-                            metadata_schema_version
-                            related_guides {
-                                guide {
-                                    title
-                                    summary
-                                    id
-                                }
-                            }
-                        }
-                    }
                     ignored_vulnerabilities(where: {project_id: {_eq: $project_id}}) {
-                        creator_id
-                        id
                         locations
-                        note
-                        project_id
-                        vulnerability_id
                     }
                 }
             }
