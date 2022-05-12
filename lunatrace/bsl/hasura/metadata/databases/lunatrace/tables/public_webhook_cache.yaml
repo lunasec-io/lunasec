@@ -1,35 +1,35 @@
 table:
-  schema: public
   name: webhook_cache
+  schema: public
 insert_permissions:
-  - role: service
-    permission:
-      check: {}
-      columns:
-        - delivery_id
-        - event_type
-        - created_at
-        - signature_256
-        - installation_id
-        - data
-        - sqs_message_id
-      backend_only: false
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - delivery_id
+    - event_type
+    - created_at
+    - signature_256
+    - installation_id
+    - data
+    - sqs_message_id
+  role: service
 select_permissions:
-  - role: service
-    permission:
-      columns:
-        - created_at
-        - data
-        - delivery_id
-        - event_type
-        - installation_id
-        - signature_256
-        - sqs_message_id
-      filter: {}
+- permission:
+    columns:
+    - created_at
+    - data
+    - delivery_id
+    - event_type
+    - installation_id
+    - signature_256
+    - sqs_message_id
+    filter: {}
+  role: service
 update_permissions:
-  - role: service
-    permission:
-      columns:
-        - sqs_message_id
-      filter: {}
-      check: {}
+- permission:
+    check: {}
+    columns:
+    - sqs_message_id
+    filter: {}
+  role: service

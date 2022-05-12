@@ -1,7 +1,6 @@
 table:
   name: guide_related_guides
   schema: public
-  name: topic_related_topics
 object_relationships:
 - name: guide
   using:
@@ -51,6 +50,6 @@ update_permissions:
     filter: {}
   role: service
 delete_permissions:
-  - role: service
-    permission:
-      filter: {}
+- permission:
+    filter: {}
+  role: service
