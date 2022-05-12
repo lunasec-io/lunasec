@@ -21,7 +21,7 @@ import (
 	"testing"
 	"time"
 
-	"lunasec/lunadefend/types"
+	"github.com/lunasec-io/lunasec/go/types"
 	"github.com/prashantv/gostub"
 	"github.com/stretchr/testify/assert"
 )

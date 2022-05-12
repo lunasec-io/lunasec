@@ -14,7 +14,7 @@
 //
 package config
 
-import "lunasec/lunatrace/pkg/types"
+import "github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 
 func defaultLunaTraceGatewayConfig() types.LunaTraceGateway {
 	return types.LunaTraceGateway{

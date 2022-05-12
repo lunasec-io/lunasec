@@ -22,9 +22,9 @@ import (
 	"github.com/urfave/cli/v2"
 	"io"
 	"io/ioutil"
-	"lunasec/lunatrace/pkg/scan"
-	"lunasec/lunatrace/pkg/types"
-	"lunasec/lunatrace/pkg/util"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/scan"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 	"os"
 	"strings"
 )
