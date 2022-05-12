@@ -1,82 +1,82 @@
 table:
-  schema: public
   name: ignored_vulnerabilities
+  schema: public
 object_relationships:
-  - name: creator
-    using:
-      foreign_key_constraint_on: creator_id
-  - name: project
-    using:
-      foreign_key_constraint_on: project_id
-  - name: vulnerability
-    using:
-      foreign_key_constraint_on: vulnerability_id
+- name: creator
+  using:
+    foreign_key_constraint_on: creator_id
+- name: project
+  using:
+    foreign_key_constraint_on: project_id
+- name: vulnerability
+  using:
+    foreign_key_constraint_on: vulnerability_id
 insert_permissions:
-  - role: user
-    permission:
-      check:
-        project:
-          organization:
-            organization_users:
-              user:
-                kratos_id:
-                  _eq: X-Hasura-User-Id
-      set:
-        creator_id: x-Hasura-User-Id
-      columns:
-        - creator_id
-        - locations
-        - note
-        - project_id
-        - vulnerability_id
-      backend_only: false
+- permission:
+    backend_only: false
+    check:
+      project:
+        organization:
+          organization_users:
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
+    columns:
+    - creator_id
+    - locations
+    - note
+    - project_id
+    - vulnerability_id
+    set:
+      creator_id: x-Hasura-User-Id
+  role: user
 select_permissions:
-  - role: service
-    permission:
-      columns:
-        - locations
-        - note
-        - creator_id
-        - id
-        - project_id
-        - vulnerability_id
-      filter: {}
-  - role: user
-    permission:
-      columns:
-        - id
-        - project_id
-        - vulnerability_id
-        - creator_id
-        - locations
-        - note
-      filter:
-        project:
-          organization:
-            organization_users:
-              user:
-                kratos_id:
-                  _eq: X-Hasura-User-Id
+- permission:
+    columns:
+    - locations
+    - note
+    - creator_id
+    - id
+    - project_id
+    - vulnerability_id
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - id
+    - project_id
+    - vulnerability_id
+    - creator_id
+    - locations
+    - note
+    filter:
+      project:
+        organization:
+          organization_users:
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
+  role: user
 update_permissions:
-  - role: user
-    permission:
-      columns:
-        - locations
-      filter:
-        project:
-          organization:
-            organization_users:
-              user:
-                kratos_id:
-                  _eq: X-Hasura-User-Id
-      check: null
+- permission:
+    check: null
+    columns:
+    - locations
+    filter:
+      project:
+        organization:
+          organization_users:
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
+  role: user
 delete_permissions:
-  - role: user
-    permission:
-      filter:
-        project:
-          organization:
-            organization_users:
-              user:
-                kratos_id:
-                  _eq: X-Hasura-User-Id
+- permission:
+    filter:
+      project:
+        organization:
+          organization_users:
+            user:
+              kratos_id:
+                _eq: X-Hasura-User-Id
+  role: user

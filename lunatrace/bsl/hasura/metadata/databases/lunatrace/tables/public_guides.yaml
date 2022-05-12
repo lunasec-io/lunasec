@@ -1,0 +1,71 @@
+table:
+  name: guides
+  schema: public
+array_relationships:
+- name: guide_vulnerabilities
+  using:
+    foreign_key_constraint_on:
+      column: guide_id
+      table:
+        name: guide_vulnerabilities
+        schema: public
+- name: related_guides
+  using:
+    foreign_key_constraint_on:
+      column: from_guide_id
+      table:
+        name: guide_related_guides
+        schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - body
+    - created_at
+    - data_source_link
+    - id
+    - metadata
+    - metadata_schema_version
+    - severity
+    - summary
+    - tags
+    - title
+    - guide_unique_id
+    - updated_at
+  role: service
+select_permissions:
+- permission:
+    columns:
+    - body
+    - created_at
+    - data_source_link
+    - id
+    - metadata
+    - metadata_schema_version
+    - severity
+    - summary
+    - tags
+    - title
+    - guide_unique_id
+    - updated_at
+    filter: {}
+  role: user
+update_permissions:
+- permission:
+    check: {}
+    columns:
+    - body
+    - created_at
+    - data_source_link
+    - id
+    - metadata
+    - metadata_schema_version
+    - severity
+    - summary
+    - tags
+    - title
+    - guide_unique_id
+    - updated_at
+    filter: {}
+  role: service

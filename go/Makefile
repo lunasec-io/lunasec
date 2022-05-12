@@ -14,13 +14,13 @@ all:
 	done
 
 docker-release-tokenizerbackend:
-	DOCKER_BUILDKIT=1 docker build --build-arg tag=lambda --build-arg version=${version} -t lunasec/tokenizer-backend:${version} -f docker/tokenizerbackend.dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg tag=lambda --build-arg version=${version} -t lunasec/tokenizer-backend:${version} -f docker/tokenizerbackend.dockerfile ../
 
 docker-demo-tokenizerbackend:
-	DOCKER_BUILDKIT=1 docker build --build-arg tag=dev --build-arg version=${version} -t lunasec/tokenizer-backend-demo:${version} -f docker/tokenizerbackend.dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg tag=dev --build-arg version=${version} -t lunasec/tokenizer-backend-demo:${version} -f docker/tokenizerbackend.dockerfile ../
 
 docker-release-analyticscollector:
-	DOCKER_BUILDKIT=1 docker build --build-arg tag=lambda --build-arg version=${version} -t lunasec/analytics-collector:${version} -f docker/analyticscollector.dockerfile .
+	DOCKER_BUILDKIT=1 docker build --build-arg tag=lambda --build-arg version=${version} -t lunasec/analytics-collector:${version} -f docker/analyticscollector.dockerfile ../
 
 docker-release: docker-release-tokenizerbackend docker-demo-tokenizerbackend docker-release-analyticscollector
 	echo "created docker releases for version ${version}"

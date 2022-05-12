@@ -25,10 +25,10 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	tokenizer "lunasec/lunadefend/pkg/tokenizer"
-	"lunasec/lunadefend/service/invoker"
-	"lunasec/lunadefend/types/event"
-	"lunasec/lunadefend/util"
+	tokenizer "github.com/lunasec-io/lunasec/go/pkg/tokenizer"
+	"github.com/lunasec-io/lunasec/go/service/invoker"
+	"github.com/lunasec-io/lunasec/go/types/event"
+	"github.com/lunasec-io/lunasec/go/util"
 	"go.uber.org/zap"
 )
 
