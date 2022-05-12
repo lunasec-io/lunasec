@@ -14,42 +14,26 @@
 import { DeleteMessageCommand, Message, ReceiveMessageCommand, ReceiveMessageCommandOutput } from '@aws-sdk/client-sqs';
 
 import { sqsClient } from '../aws/sqs-client';
-import { getQueueHandlerConfig, getWorkerConfig } from '../config';
+import { getEtlBucketConfig, getQueueHandlerConfig, getWorkerConfig } from '../config';
 import { generateSnapshotForRepository } from '../github/actions/generate-snapshot-for-repository';
 import { createGithubWebhookInterceptor } from '../github/webhooks';
 import { QueueHandlerWorkerConfig } from '../types/config';
 import {
-  GenerateSnapshotForRepositoryRecord,
-  HandlerCallback,
+  LunaTraceProcessWebhookSqsEvent,
+  LunaTraceRepositorySnapshotSqsEvent,
+  LunaTraceSqsEvent,
   QueueHandlerType,
-  S3HandlerCallback,
   S3SqsEvent,
-  WebhookHandlerCallback,
+  SnapshotForRepositorySqsRecord,
 } from '../types/sqs';
-import { MaybeError } from '../types/util';
-import { newError, newResult } from '../utils/errors';
 import { log } from '../utils/log';
 import { getSqsUrlFromName } from '../utils/sqs';
 import { catchError, threwError } from '../utils/try';
-import { isArray } from '../utils/types';
 
-import { handleSnapshotManifest } from './generate-sbom';
-import { createGithubWebhookHandler } from './github-webhook';
-import { handleScanSbom } from './scan-sbom';
+import { handleLunaTraceSqsEvent, handleS3SqsEvent, QueueHandlerFuncType, QueueHandlersType } from './handle-sqs-event';
 import { runUpdateVulnerabilities } from './upsert-vulnerabilities';
 
 const workerConfig = getWorkerConfig();
-
-type QueueHandlerFunc =
-  | HandlerCallback<S3SqsEvent>
-  | HandlerCallback<GenerateSnapshotForRepositoryRecord[]>
-  | WebhookHandlerCallback;
-
-interface QueueHandlerConfig {
-  handlerFunc: QueueHandlerFunc;
-}
-
-type QueueHandlersType = Record<QueueHandlerType, QueueHandlerConfig>;
 
 async function deleteMessage(message: Message, queueUrl: string) {
   const deleteParams = {
@@ -64,7 +48,7 @@ async function deleteMessage(message: Message, queueUrl: string) {
   }
 }
 
-async function readDataFromQueue<THandler extends QueueHandlerFunc>(
+async function readDataFromQueue<THandler extends QueueHandlerFuncType>(
   queueUrl: string,
   config: QueueHandlerWorkerConfig,
   processMessageCallback: THandler
@@ -125,88 +109,17 @@ async function readDataFromQueue<THandler extends QueueHandlerFunc>(
   }
 }
 
-function wrapProcessS3EventQueueJob(
-  processMessageCallback: S3HandlerCallback
-): (parsedBody: S3SqsEvent) => Promise<MaybeError<undefined>> {
-  return async (parsedBody: S3SqsEvent) => {
-    if (!parsedBody.Records) {
-      log.info('No records on sqs event, deleting message, exiting');
-      return newError('No records on sqs event, deleting message, exiting');
-    }
-    // todo: do we actually need this promise handling or should we only take the first record from any event?
-    // assuming one file per object created event makes sense
-    const handlerPromises = parsedBody.Records.map((record) => {
-      // Executes the proper handler for whatever queue we are processing, passed in above as an argument
-      return processMessageCallback({
-        bucketName: record.s3.bucket.name,
-        key: record.s3.object.key,
-        region: record.awsRegion,
-      });
-    });
-    const results = await Promise.all(handlerPromises);
-
-    const errors = results.filter((result) => result.error);
-
-    if (errors.length > 0) {
-      log.error('Errors found during SQS job:', { errors });
-      // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
-      return newError('Errors found during SQS job');
-    }
-
-    return newResult(undefined);
-  };
-}
-
-function wrapProcessRepositoryJob(
-  processMessageCallback: HandlerCallback<GenerateSnapshotForRepositoryRecord>
-): (parsedBody: GenerateSnapshotForRepositoryRecord[]) => Promise<MaybeError<undefined>> {
-  return async (parsedBody: GenerateSnapshotForRepositoryRecord[]) => {
-    if (!isArray(parsedBody) || parsedBody.length === 0) {
-      log.info('No records on sqs event, deleting message, exiting');
-      return newError('No records on sqs event, deleting message, exiting');
-    }
-
-    const handlerPromises = parsedBody.map((record) => {
-      // Executes the proper handler for whatever queue we are processing, passed in above as an argument
-      return processMessageCallback(record);
-    });
-    const results = await Promise.all(handlerPromises);
-
-    const errors = results.filter((result) => result.error);
-
-    if (errors.length > 0) {
-      log.error('Errors found during SQS job:', { errors });
-      // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
-      return newError('Errors found during SQS job');
-    }
-
-    return newResult(undefined);
-  };
-}
-
-async function loadQueueHandlers(): Promise<QueueHandlersType> {
-  const webhooks = await createGithubWebhookInterceptor();
-
+function loadQueueHandlers(): QueueHandlersType {
   return {
-    'process-manifest': {
-      handlerFunc: wrapProcessS3EventQueueJob(handleSnapshotManifest),
-    },
-    'process-repository': {
-      handlerFunc: wrapProcessRepositoryJob(generateSnapshotForRepository),
-    },
-    'process-sbom': {
-      handlerFunc: wrapProcessS3EventQueueJob(handleScanSbom),
-    },
-    'process-webhook': {
-      handlerFunc: createGithubWebhookHandler(webhooks),
-    },
+    's3-queue-handler': handleS3SqsEvent,
+    'lunatrace-queue-handler': handleLunaTraceSqsEvent,
   };
 }
 
 function determineHandler<THandler extends QueueHandlerType>(
   queueHandlers: QueueHandlersType,
   handlerName: THandler
-): QueueHandlerConfig {
+): QueueHandlerFuncType {
   if (!(handlerName in queueHandlers)) {
     throw new Error('Unknown queue handler: ' + handlerName.toString());
   }
@@ -221,10 +134,10 @@ export async function setupQueue(): Promise<void> {
     queueName: queueHandlerConfig.handlerQueueName,
   });
 
-  const queueHandlers = await loadQueueHandlers();
+  const queueHandlers = loadQueueHandlers();
 
   await log.provideFields({ queueName, trace: 'queue-logger' }, async () => {
-    const handlerConfig = determineHandler(queueHandlers, queueHandlerConfig.handlerName as QueueHandlerType);
+    const handlerFunc = determineHandler(queueHandlers, queueHandlerConfig.handlerName as QueueHandlerType);
 
     const queueUrl = await catchError(getSqsUrlFromName(sqsClient, queueName));
 
@@ -243,7 +156,7 @@ export async function setupQueue(): Promise<void> {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       log.info('Checking queue for messages...');
-      await readDataFromQueue(queueUrl.res, queueHandlerConfig, handlerConfig.handlerFunc);
+      await readDataFromQueue(queueUrl.res, queueHandlerConfig, handlerFunc);
     }
   });
 }

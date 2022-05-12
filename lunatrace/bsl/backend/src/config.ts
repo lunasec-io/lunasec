@@ -124,22 +124,33 @@ export function getQueueHandlerConfig(): QueueHandlerWorkerConfig {
   const DEFAULT_QUEUE_VISIBILITY = 60;
 
   const handlerConfigLookup: Record<QueueHandlerType, QueueHandlerConfig> = {
-    'process-webhook': {
-      maxMessages: 1,
-      visibility: DEFAULT_QUEUE_VISIBILITY,
-      envVar: 'PROCESS_WEBHOOK_QUEUE',
-    },
-    'process-manifest': {
+    // 'process-webhook': {
+    //   maxMessages: 1,
+    //   visibility: DEFAULT_QUEUE_VISIBILITY,
+    //   envVar: 'PROCESS_WEBHOOK_QUEUE',
+    // },
+    // 'process-manifest': {
+    //   maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
+    //   visibility: DEFAULT_QUEUE_VISIBILITY,
+    //   envVar: 'PROCESS_MANIFEST_QUEUE',
+    // },
+    // 'process-sbom': {
+    //   maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
+    //   visibility: DEFAULT_QUEUE_VISIBILITY,
+    //   envVar: 'PROCESS_SBOM_QUEUE',
+    // },
+    // 'process-repository': {
+    //   maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
+    //   visibility: DEFAULT_QUEUE_VISIBILITY * 10,
+    //   envVar: 'PROCESS_REPOSITORY_QUEUE',
+    // },
+    // TODO (cthompson) fill these in
+    's3-queue-handler': {
       maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
-      visibility: DEFAULT_QUEUE_VISIBILITY,
-      envVar: 'PROCESS_MANIFEST_QUEUE',
+      visibility: DEFAULT_QUEUE_VISIBILITY * 10,
+      envVar: 'PROCESS_REPOSITORY_QUEUE',
     },
-    'process-sbom': {
-      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
-      visibility: DEFAULT_QUEUE_VISIBILITY,
-      envVar: 'PROCESS_SBOM_QUEUE',
-    },
-    'process-repository': {
+    'lunatrace-queue-handler': {
       maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
       visibility: DEFAULT_QUEUE_VISIBILITY * 10,
       envVar: 'PROCESS_REPOSITORY_QUEUE',
