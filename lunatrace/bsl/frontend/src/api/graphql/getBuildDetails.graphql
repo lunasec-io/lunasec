@@ -19,7 +19,6 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                 vulnerability_id
             }
         }
-        s3_url_signed
         scans(order_by: {created_at: asc}) {
             created_at
             db_date
