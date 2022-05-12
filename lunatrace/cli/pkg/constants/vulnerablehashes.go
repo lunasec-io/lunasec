@@ -16,7 +16,7 @@ package constants
 
 import (
 	"github.com/blang/semver/v4"
-	"lunasec/lunatrace/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
 const (

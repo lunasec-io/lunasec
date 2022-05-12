@@ -17,7 +17,7 @@ package util
 
 import (
 	"fmt"
-	"lunasec/lunatrace/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 )
 
 // colorize returns the string s wrapped in ANSI code c, unless disabled is true.

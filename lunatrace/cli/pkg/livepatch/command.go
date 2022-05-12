@@ -19,10 +19,10 @@ import (
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"lunasec/lunatrace/pkg/command"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/patch"
-	"lunasec/lunatrace/pkg/util"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/patch"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
 func LivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool, hotpatchFiles embed.FS) error {
