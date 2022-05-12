@@ -17,8 +17,8 @@ package config
 import (
 	"github.com/rs/zerolog/log"
 	"go.uber.org/config"
-	"lunasec/lunatrace/pkg/constants"
-	"lunasec/lunatrace/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"os"
 )
 

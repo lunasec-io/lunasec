@@ -14,7 +14,7 @@
 //
 package constants
 
-import "lunasec/lunadefend/types"
+import "github.com/lunasec-io/lunasec/go/types"
 
 type Runtime string
 
