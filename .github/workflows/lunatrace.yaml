@@ -41,7 +41,7 @@ jobs:
           
           (cd lunatrace/bsl/hasura && (
             function hasura() {
-              docker-compose exec -T -w /hasura graphql-engine bash -c "HASURA_GRAPHQL_ENDPOINT=\"http://localhost:8080\" hasura-cli $@"
+              docker-compose exec -T -w /hasura graphql-engine bash -c "HASURA_GRAPHQL_ENDPOINT=\"http://localhost:8080\" hasura-cli $*"
             }
             hasura md ic list
             hasura md ic status
