@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
-	"lunasec/lunatrace/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"strings"
 )
 

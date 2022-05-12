@@ -16,7 +16,7 @@ package util
 
 import (
 	"errors"
-	"lunasec/lunatrace/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"strings"
 )
 

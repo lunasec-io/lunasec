@@ -1,7 +1,7 @@
-- name: custom-backend-schema
+- name: lunatrace-custom
   definition:
     url_from_env: REMOTE_SCHEMA_URL
-    timeout_seconds: 60
+    timeout_seconds: 20
     customization:
       type_names:
         mapping:
@@ -19,6 +19,9 @@
 
         scalar UUID
 
+        type AuthenticatedRepoCloneUrlOutput { url: String
+        }
+
         type Mutation { presignManifestUpload(project_id: UUID!): PresignedUrlResponse
         }
 
@@ -28,14 +31,19 @@
           url: String!
         }
 
-        type Query { fakeQueryToHackHasuraBeingABuggyMess: String
-          sbomUrl(buildId: UUID!): String
+        type Query { authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
+        }
+
+        type SbomUploadUrlOutput { error: Boolean!
+          uploadUrl: UploadUrl
+        }
+
+        type UploadUrl { headers: JSON!
+          url: String!
         }
   - role: cli
     definition:
       schema: |-
-        schema  { query: Query }
-
         scalar JSON
 
         scalar UUID

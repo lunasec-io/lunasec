@@ -18,10 +18,11 @@ import { getEtlBucketConfig } from '../config';
 import { hasura } from '../hasura-api';
 import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
-import { QueueErrorResult, QueueSuccessResult } from '../types/sqs';
+import { MaybeError } from '../types/util';
 import { aws } from '../utils/aws-utils';
+import { newError, newResult } from '../utils/errors';
 import { log } from '../utils/log';
-import { threwError } from '../utils/try';
+import { catchError, threwError } from '../utils/try';
 
 export async function uploadSbomToS3(organizationId: string, buildId: string, gzippedSbom: zlib.Gzip) {
   const bucketConfig = getEtlBucketConfig();
@@ -79,9 +80,7 @@ async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
   await hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'sbom-generated', build_id: buildId });
 }
 // This handler is currently only triggered when someone drags and drops a file on the frontend
-export async function handleSnapshotManifest(
-  message: S3ObjectMetadata
-): Promise<QueueSuccessResult | QueueErrorResult> {
+export async function handleSnapshotManifest(message: S3ObjectMetadata): Promise<MaybeError<undefined>> {
   const { key, bucketName, region } = message;
 
   const bucketInfo: SbomBucketInfo = {
@@ -93,18 +92,19 @@ export async function handleSnapshotManifest(
   return await log.provideFields({ ...bucketInfo }, async () => {
     try {
       await attemptGenerateManifestSbom(bucketInfo);
-      return {
-        success: true,
-      };
+      return newResult(undefined);
     } catch (e) {
       log.error('Unable to generate SBOM from Manifest', e);
       // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
-      await hasura.UpdateManifest({ key_eq: key, set_status: 'error', message: String(e) });
+      const res = await catchError(hasura.UpdateManifest({ key_eq: key, set_status: 'error', message: String(e) }));
+      if (threwError(res)) {
+        log.error('unable to update manifest to reflect that an error occured', {
+          key,
+          error: e,
+        });
+      }
 
-      return {
-        success: false,
-        error: threwError(e) ? e : new Error(String(e)),
-      };
+      return newError(threwError(e) ? e.message : String(e));
     }
   });
 }

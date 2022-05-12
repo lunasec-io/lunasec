@@ -15,7 +15,7 @@
 package util
 
 import (
-	"lunasec/lunadefend/constants"
+	"github.com/lunasec-io/lunasec/go/constants"
 	"os"
 )
 

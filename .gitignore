@@ -3,6 +3,7 @@ node_modules
 *.tsbuildinfo
 **/secrets.yaml
 *.log
+.log*
 **/package-lock.json
 **/yarn.lock-workspace
 
@@ -28,3 +29,4 @@ docs/.yarn/.cache/webpack
 
 deployment-secrets/
 .gitattributes
+

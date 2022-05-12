@@ -13,10 +13,10 @@ FROM base as builder
 ARG tag
 ARG version
 
-RUN --mount=target=. \
+RUN --mount=target=repo \
     --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    OUTPUT_DIR=/out make analyticscollector tag=$tag version=$version
+    cd repo/go && OUTPUT_DIR=/out make analyticscollector tag=$tag version=$version
 
 FROM alpine
 
@@ -24,7 +24,7 @@ RUN apk add curl
 
 ARG tag
 
-COPY config/analyticscollector/config.yaml /config/analyticscollector/config.yaml
+COPY go/config/analyticscollector/config.yaml /config/analyticscollector/config.yaml
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /out/analyticscollector_$tag /analyticscollector
