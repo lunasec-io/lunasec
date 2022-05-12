@@ -12,7 +12,7 @@
  *
  */
 import { GithubRepositoryInfo } from '../../types/github';
-import { GenerateSnapshotForRepositoryRecord } from '../../types/sqs';
+import { SnapshotForRepositorySqsRecord } from '../../types/sqs';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
@@ -25,7 +25,7 @@ export async function queueGithubReposForSnapshots(
   githubRepos: GithubRepositoryInfo[]
 ): Promise<MaybeError<undefined>> {
   const results = await Promise.all(
-    githubRepos.map(async (repo): Promise<MaybeError<GenerateSnapshotForRepositoryRecord | null>> => {
+    githubRepos.map(async (repo): Promise<MaybeError<SnapshotForRepositorySqsRecord | null>> => {
       const resp = await hydrateRepositoryInformation(installationId, repo);
 
       if (resp.filterRepo) {
@@ -46,7 +46,7 @@ export async function queueGithubReposForSnapshots(
         return newError(msg);
       }
 
-      const record: GenerateSnapshotForRepositoryRecord = {
+      const record: SnapshotForRepositorySqsRecord = {
         cloneUrl: repo.cloneUrl,
         gitBranch: repo.defaultBranch,
         installationId: installationId,

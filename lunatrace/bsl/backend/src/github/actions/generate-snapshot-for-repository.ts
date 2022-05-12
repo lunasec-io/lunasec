@@ -14,7 +14,7 @@
 import { generateSbomFromAsset } from '../../cli/call-cli';
 import { hasura } from '../../hasura-api';
 import { InsertBuildMutation } from '../../hasura-api/generated';
-import { GenerateSnapshotForRepositoryRecord } from '../../types/sqs';
+import { SnapshotForRepositorySqsRecord } from '../../types/sqs';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
@@ -24,7 +24,7 @@ import { uploadSbomToS3 } from '../../workers/generate-sbom';
 import { getRepoCloneUrlWithAuth } from './get-repo-clone-url-with-auth';
 
 export async function generateSnapshotForRepository(
-  record: GenerateSnapshotForRepositoryRecord
+  record: SnapshotForRepositorySqsRecord
 ): Promise<MaybeError<undefined>> {
   const logger = log.child('repo-snapshot', {
     record,

@@ -15,7 +15,7 @@
 import { S3ObjectMetadata } from './s3';
 import { MaybeError } from './util';
 
-export type QueueHandlerType = 'process-webhook' | 'process-manifest' | 'process-sbom' | 'process-repository';
+export type QueueHandlerType = 's3-queue-handler' | 'lunatrace-queue-handler';
 
 export interface QueueHandlerConfig {
   maxMessages: number;
@@ -25,7 +25,25 @@ export interface QueueHandlerConfig {
 
 export type BuildSourceType = 'pr' | 'gui' | 'cli';
 
-export interface GenerateSnapshotForRepositoryRecord {
+export type LunaTraceSqsEventType = 'repository-snapshot' | 'process-webhook';
+
+export type LunaTraceSqsEvent = LunaTraceRepositorySnapshotSqsEvent | LunaTraceProcessWebhookSqsEvent;
+
+export interface LunaTraceRepositorySnapshotSqsEvent {
+  type: 'repository-snapshot';
+  records: SnapshotForRepositorySqsRecord[];
+}
+
+export interface LunaTraceProcessWebhookSqsEvent {
+  type: 'process-webhook';
+  records: WebhookSqsRecord[];
+}
+
+export interface WebhookSqsRecord {
+  delivery_id: string;
+}
+
+export interface SnapshotForRepositorySqsRecord {
   cloneUrl: string;
   gitBranch: string;
   repoGithubId: number;
@@ -82,12 +100,3 @@ export interface S3Object {
   eTag: string;
   sequencer: string;
 }
-
-export interface WebhookMetadata {
-  delivery_id: string;
-}
-
-export type HandlerCallback<TBody> = (object: TBody) => Promise<MaybeError<undefined>>;
-
-export type S3HandlerCallback = HandlerCallback<S3ObjectMetadata>;
-export type WebhookHandlerCallback = HandlerCallback<WebhookMetadata>;

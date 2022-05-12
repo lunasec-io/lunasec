@@ -15,14 +15,14 @@ import { SendMessageCommand } from '@aws-sdk/client-sqs';
 
 import { sqsClient } from '../aws/sqs-client';
 import { getRepositoryQueueConfig } from '../config';
-import { GenerateSnapshotForRepositoryRecord } from '../types/sqs';
+import { LunaTraceRepositorySnapshotSqsEvent, LunaTraceSqsEvent, SnapshotForRepositorySqsRecord } from '../types/sqs';
 import { log } from '../utils/log';
 import { getSqsUrlFromName } from '../utils/sqs';
 import { catchError, threwError } from '../utils/try';
 
 export async function queueRepositoriesForSnapshot(
   installationId: number,
-  records: GenerateSnapshotForRepositoryRecord[]
+  records: SnapshotForRepositorySqsRecord[]
 ): Promise<void> {
   const repoQueueConfig = getRepositoryQueueConfig();
 
@@ -36,10 +36,15 @@ export async function queueRepositoriesForSnapshot(
     return;
   }
 
+  const sqsEvent: LunaTraceRepositorySnapshotSqsEvent = {
+    type: 'repository-snapshot',
+    records,
+  };
+
   // messages sent to this queue will be processed by the process-repository queue handler in workers/snapshot-repository
   await sqsClient.send(
     new SendMessageCommand({
-      MessageBody: JSON.stringify(records),
+      MessageBody: JSON.stringify(sqsEvent),
       MessageAttributes: {
         installation_id: {
           DataType: 'Number',

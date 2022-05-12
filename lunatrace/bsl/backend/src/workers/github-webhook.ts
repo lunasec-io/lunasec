@@ -14,16 +14,16 @@
 import { WebhookInterceptor } from '../github/webhooks/interceptor';
 import { hasura } from '../hasura-api';
 import { GetWebhookCacheByDeliveryIdQuery } from '../hasura-api/generated';
-import { WebhookMetadata } from '../types/sqs';
+import { WebhookSqsRecord } from '../types/sqs';
 import { MaybeError } from '../types/util';
 import { newError, newResult } from '../utils/errors';
 import { log } from '../utils/log';
 import { catchError, threwError, Try } from '../utils/try';
 
-type WebhookHandlerFunc = (message: WebhookMetadata) => Promise<MaybeError<undefined>>;
+type WebhookHandlerFunc = (message: WebhookSqsRecord) => Promise<MaybeError<undefined>>;
 
 export function createGithubWebhookHandler(webhooks: WebhookInterceptor): WebhookHandlerFunc {
-  return async (message: WebhookMetadata): Promise<MaybeError<undefined>> => {
+  return async (message: WebhookSqsRecord): Promise<MaybeError<undefined>> => {
     log.info(`Received webhook`, {
       delivery_id: message.delivery_id,
     });
