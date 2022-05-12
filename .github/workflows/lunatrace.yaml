@@ -40,9 +40,11 @@ jobs:
           tools/service-scripts/wait-for-it.sh -h localhost -p 8080 -t 120
           
           (cd lunatrace/bsl/hasura && (
-            HASURA="npx --yes hasura-cli --skip-update-check"
-            $HASURA md ic list
-            $HASURA md ic status
+            function hasura() {
+              docker-compose exec -w /hasura graphql-engine bash -c 'HASURA_GRAPHQL_ENDPOINT=\"http://localhost:8080\" hasura-cli $@'
+            }
+            hasura md ic list
+            hasura md ic status
             
             curl -vvv localhost:8080
           ) || true)
