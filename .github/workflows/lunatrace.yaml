@@ -36,9 +36,15 @@ jobs:
       - run: docker-compose up -d
         working-directory: lunatrace/bsl
 
+      - uses: cygnetdigital/wait_for_response@v2.0.0
+        with:
+          url: 'http://localhost:8080/'
+          responseCode: '200,500'
+          timeout: 2000
+          interval: 500
+
       - run: |-
-          tools/service-scripts/wait-for-it.sh -h localhost -p 8085 -t 120
-          
+
           (cd lunatrace/bsl/hasura && (
             function hasura() {
               docker-compose exec -T -w /hasura graphql-engine bash -c "HASURA_GRAPHQL_ENDPOINT=\"http://localhost:8080\" hasura-cli $*"
