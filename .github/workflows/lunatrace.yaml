@@ -37,7 +37,7 @@ jobs:
         working-directory: lunatrace/bsl
 
       - run: |-
-          tools/service-scripts/wait-for-it.sh -h localhost -p 8080 -t 120
+          tools/service-scripts/wait-for-it.sh -h localhost -p 8085 -t 120
           
           (cd lunatrace/bsl/hasura && (
             function hasura() {
