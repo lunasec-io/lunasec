@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-name: topics
+name: guides
 
 on:
   push:
@@ -41,14 +41,14 @@ jobs:
         run: |
           yarn install --immutable --immutable-cache --inline-builds
 
-      - name: Upsert Topics
+      - name: Upsert Guides
         working-directory: lunatrace/bsl/backend
-        run: yarn run topics:update
+        run: yarn run guides:update
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         if: always()
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_TITLE: Topics Deployed - ${{ job.status }}
+          SLACK_TITLE: Guides Deployed - ${{ job.status }}
           SLACK_COLOR: ${{ job.status }}
