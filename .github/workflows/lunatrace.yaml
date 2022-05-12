@@ -28,10 +28,15 @@ jobs:
       - name: Build
         run: |-
           set -x
-          #(cd lunatrace/bsl/logger && yarn run compile)
-          #(cd lunatrace/bsl/common && yarn run compile)
-          #(cd lunatrace/bsl/backend && yarn run compile)
+          (cd lunatrace/bsl/logger && yarn run compile)
+          (cd lunatrace/bsl/common && yarn run compile)
+          (cd lunatrace/bsl/backend && yarn run compile)
           #(cd lunatrace/bsl/frontend && yarn run build:docker)
+
+      - name: Start backend
+        run: |-
+          (cd lunatrace/bsl/backend && yarn run start:prod &)
+          timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:3002)" != "200" ]]; do sleep 1; done' || false
 
       - run: docker-compose up -d
         working-directory: lunatrace/bsl
