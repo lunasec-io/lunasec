@@ -28,10 +28,10 @@ jobs:
       - name: Build
         run: |-
           set -x
-          (cd lunatrace/bsl/logger && yarn run compile)
-          (cd lunatrace/bsl/common && yarn run compile)
-          (cd lunatrace/bsl/backend && yarn run compile)
-          (cd lunatrace/bsl/frontend && yarn run build:docker)
+          #(cd lunatrace/bsl/logger && yarn run compile)
+          #(cd lunatrace/bsl/common && yarn run compile)
+          #(cd lunatrace/bsl/backend && yarn run compile)
+          #(cd lunatrace/bsl/frontend && yarn run build:docker)
 
       - run: docker-compose up -d
         working-directory: lunatrace/bsl
