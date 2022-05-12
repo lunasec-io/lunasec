@@ -36,14 +36,9 @@ jobs:
       - run: docker-compose up -d
         working-directory: lunatrace/bsl
 
-      - uses: cygnetdigital/wait_for_response@v2.0.0
-        with:
-          url: 'http://localhost:8080/'
-          responseCode: '200,500,404'
-
       - name: Integration Test
         run: |-
-          sleep 2
+          timeout 30 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "404" ]]; do sleep 1; done' || false
           
           (cd lunatrace/bsl/hasura && (
             #function hasura() {
