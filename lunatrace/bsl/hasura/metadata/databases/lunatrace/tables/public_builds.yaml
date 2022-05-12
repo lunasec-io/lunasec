@@ -35,7 +35,7 @@ remote_relationships:
       sbomUrl:
         arguments:
           buildId: $id
-    remote_schema: custom-backend-schema
+    remote_schema: lunatrace-custom
   name: s3_url_signed
 insert_permissions:
 - permission:
