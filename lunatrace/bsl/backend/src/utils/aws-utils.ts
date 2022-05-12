@@ -18,7 +18,7 @@ import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { Hash } from '@aws-sdk/hash-node';
 import { HttpRequest } from '@aws-sdk/protocol-http';
 import { S3RequestPresigner, S3RequestPresignerOptions } from '@aws-sdk/s3-request-presigner';
-import { HeaderBag } from '@aws-sdk/types';
+import { HeaderBag, HttpRequest as IHttpRequest } from '@aws-sdk/types';
 import { parseUrl } from '@aws-sdk/url-parser';
 import { formatUrl } from '@aws-sdk/util-format-url';
 
@@ -119,23 +119,9 @@ export class AwsUtils {
     id: string,
     method: 'PUT' | 'GET'
   ): Promise<{ url: string; headers: HeaderBag }> {
-    const credentials = this.config.awsCredentials;
-
-    const signer = new S3RequestPresigner({
-      region: this.config.awsRegion,
-      credentials: credentials,
-      sha256: Hash.bind(null, 'sha256'), // In Node.js
-    });
     const baseUrl = this.generateAWSBaseUrl(bucket);
 
-    const url = parseUrl(`${baseUrl}/${id}`);
-
-    const signedUrl = await signer.presign(
-      new HttpRequest({
-        ...url,
-        method: method,
-      })
-    );
+    const signedUrl = await this.signArbitraryS3URL(`${baseUrl}/${id}`, method);
 
     return {
       url: formatUrl(signedUrl),
@@ -145,6 +131,21 @@ export class AwsUtils {
         'Content-Type': 'application/x-gzip',
       },
     };
+  }
+
+  public async signArbitraryS3URL(url: string, method: 'PUT' | 'GET'): Promise<IHttpRequest> {
+    const credentials = this.config.awsCredentials;
+    const signer = new S3RequestPresigner({
+      region: this.config.awsRegion,
+      credentials: credentials,
+      sha256: Hash.bind(null, 'sha256'), // In Node.js
+    });
+    return await signer.presign(
+      new HttpRequest({
+        ...parseUrl(url),
+        method: method,
+      })
+    );
   }
 
   public generateSbomS3Key(orgId: string, buildId: string): string {
