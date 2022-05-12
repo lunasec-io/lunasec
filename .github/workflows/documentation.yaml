@@ -18,8 +18,14 @@ on:
   push:
     branches:
     - master
+    paths:
+      - docs/**
+      - .github/**
   pull_request:
     branches: [ master, '**' ]
+    paths:
+      - docs/**
+      - .github/**
 
 jobs:
   checks:
