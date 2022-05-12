@@ -1,9 +1,9 @@
 - id: "ory:lunatrace:hasura:graphql"
   upstream:
     preserve_host: true
-    url: "http://localhost:8080"
+    url: $OATHKEEPER_HASURA_URL
   match:
-    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/v1/graphql"
+    url: "$OATHKEEPER_MATCH_URL/v1/graphql"
     methods:
       - POST
   authenticators:
@@ -16,7 +16,7 @@
     - handler: hydrator
       config:
         api:
-          url: http://localhost:3002/internal/auth/hydrate-user-id
+          url: $OATHKEEPER_BACKEND_URL/internal/auth/hydrate-user-id
     - handler: id_token
       config:
         issuer_url: http://oathkeeper:4455/
@@ -37,16 +37,16 @@
 - id: "ory:lunatrace:hasura:graphql:cli"
   upstream:
     preserve_host: true
-    url: "http://localhost:8080"
+    url: $OATHKEEPER_HASURA_URL
     strip_path: "/api/cli"
   match:
-    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/cli/v1/graphql"
+    url: "$OATHKEEPER_MATCH_URL/api/cli/v1/graphql"
     methods:
       - POST
   authenticators:
     - handler: bearer_token
       config:
-        check_session_url: http://localhost:3002/internal/auth/lookup-project-access-token
+        check_session_url: $OATHKEEPER_BACKEND_URL/internal/auth/lookup-project-access-token
   authorizer:
     handler: allow
   mutators:
@@ -67,10 +67,10 @@
 - id: "ory:lunatrace:hasura:graphql:service"
   upstream:
     preserve_host: true
-    url: "http://localhost:8080"
+    url: $OATHKEEPER_HASURA_URL
     strip_path: "/api/service"
   match:
-    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/service/v1/graphql"
+    url: "$OATHKEEPER_MATCH_URL/api/service/v1/graphql"
     methods:
       - POST
   authenticators:
@@ -94,10 +94,10 @@
 - id: "ory:lunatrace:backend:github"
   upstream:
     preserve_host: true
-    url: "http://localhost:3002"
+    url: $OATHKEEPER_BACKEND_URL
     strip_path: "/api"
   match:
-    url: "<https|http>://<.*.ngrok.io|localhost:4455|lunatrace.lunasec.io>/api/github/<.*>"
+    url: "$OATHKEEPER_MATCH_URL/api/github/<.*>"
     methods:
       - GET
       - POST
@@ -111,7 +111,7 @@
 - id: "ory:lunatrace:health"
   upstream:
     preserve_host: true
-    url: "http://localhost:3002"
+    url: $OATHKEEPER_BACKEND_URL
     strip_path: "/api"
   match:
     url: "<http|https>://<.*>/api/health"
@@ -128,9 +128,9 @@
   upstream:
     preserve_host: true
     strip_path: "/api/hasura"
-    url: "http://localhost:8080"
+    url: $OATHKEEPER_BACKEND_URL
   match:
-    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/hasura/<.*>"
+    url: "$OATHKEEPER_MATCH_URL/api/hasura/<.*>"
     methods:
       - GET
       - POST
@@ -147,10 +147,10 @@
 - id: "ory:lunatrace:kratos"
   upstream:
     preserve_host: true
-    url: "http://localhost:4433"
+    url: $OATHKEEPER_KRATOS_URL
     strip_path: "/api/kratos"
   match:
-    url: "<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>/api/kratos/<.*>"
+    url: "$OATHKEEPER_MATCH_URL/api/kratos/<.*>"
     methods:
       - GET
       - POST
@@ -163,3 +163,20 @@
     handler: allow
   mutators:
     - handler: noop
+
+# This route is only for development. In production, this rule should never be used. The load balancer will have handled this route before oathkeeper is called.
+- id: "ory:lunatrace:frontend:routes"
+  upstream:
+    preserve_host: true
+    url: $OATHKEEPER_FRONTEND_URL
+  match:
+    url: "$OATHKEEPER_MATCH_URL/<(?!api).*>"
+    methods:
+      - GET
+  authenticators:
+    - handler: anonymous
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: noop
+
