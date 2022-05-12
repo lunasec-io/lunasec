@@ -1,54 +1,54 @@
 table:
-  name: package_versions
   schema: public
+  name: package_versions
 object_relationships:
-- name: vulnerability_package
-  using:
-    foreign_key_constraint_on: pkg_slug
+  - name: vulnerability_package
+    using:
+      foreign_key_constraint_on: pkg_slug
 array_relationships:
-- name: findings
-  using:
-    foreign_key_constraint_on:
-      column: package_version_id
-      table:
-        name: findings
-        schema: public
+  - name: findings
+    using:
+      foreign_key_constraint_on:
+        column: package_version_id
+        table:
+          schema: public
+          name: findings
 insert_permissions:
-- permission:
-    backend_only: false
-    check: {}
-    columns:
-    - slug
-  role: service
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - slug
+      backend_only: false
 select_permissions:
-- permission:
-    columns:
-    - cpes
-    - fixed_in_versions
-    - fix_state
-    - pkg_slug
-    - slug
-    - version_constraint
-    - version_format
-    - id
-    filter: {}
-  role: service
-- permission:
-    columns:
-    - cpes
-    - fixed_in_versions
-    - fix_state
-    - pkg_slug
-    - slug
-    - version_constraint
-    - version_format
-    - id
-    filter: {}
-  role: user
+  - role: service
+    permission:
+      columns:
+        - cpes
+        - fixed_in_versions
+        - fix_state
+        - pkg_slug
+        - slug
+        - version_constraint
+        - version_format
+        - id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - cpes
+        - fixed_in_versions
+        - fix_state
+        - pkg_slug
+        - slug
+        - version_constraint
+        - version_format
+        - id
+      filter: {}
 update_permissions:
-- permission:
-    check: null
-    columns:
-    - slug
-    filter: {}
-  role: service
+  - role: service
+    permission:
+      columns:
+        - slug
+      filter: {}
+      check: null
