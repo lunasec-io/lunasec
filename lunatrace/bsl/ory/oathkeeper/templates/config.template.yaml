@@ -29,7 +29,7 @@ mutators:
     enabled: true
     config:
       api:
-        url: http://$OATHKEEPER_BACKEND_URL/internal/auth/hydrate-user-id
+        url: $OATHKEEPER_BACKEND_URL/internal/auth/hydrate-user-id
 
   id_token:
     enabled: true
