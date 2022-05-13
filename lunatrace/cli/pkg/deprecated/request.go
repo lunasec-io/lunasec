@@ -21,8 +21,8 @@ import (
 
 	"github.com/rs/zerolog/log"
 
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
 func PerformGraphqlRequest(
@@ -41,7 +41,7 @@ func PerformGraphqlRequest(
 		return
 	}
 
-	data, err := util.HttpRequest(http.MethodPost, graphqlUrl, headers, bytes.NewBuffer(body))
+	data, err := httputil.HttpRequest(http.MethodPost, graphqlUrl, headers, bytes.NewBuffer(body))
 	if err != nil {
 		log.Error().
 			Err(err).

@@ -25,9 +25,9 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/deprecated"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot/syftmodel"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
 func serializeAndCompressOutput(output syftmodel.Document) (buffer bytes.Buffer, err error) {
@@ -60,7 +60,7 @@ func uploadCollectedSbomToUrl(
 		return
 	}
 
-	data, err := util.HttpRequest(http.MethodPut, uploadUrl, uploadHeaders, &serializedOutput)
+	data, err := httputil.HttpRequest(http.MethodPut, uploadUrl, uploadHeaders, &serializedOutput)
 	if err != nil {
 		log.Error().
 			Err(err).
