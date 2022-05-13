@@ -5,12 +5,11 @@ USER root
 
 RUN apk add gettext
 
-# Default environment variables for local development
-ENV OATHKEEPER_HASURA_URL "http://graphql-engine:8080"
-ENV OATHKEEPER_FRONTEND_URL "http://host.docker.internal:3000"
-ENV OATHKEEPER_BACKEND_URL "http://host.docker.internal:3002"
-ENV OATHKEEPER_KRATOS_URL "http://kratos:4433"
-ENV OATHKEEPER_MATCH_URL "<https|http|ws>://localhost:4455"
+ARG OATHKEEPER_FRONTEND_URL
+ARG OATHKEEPER_BACKEND_URL
+ARG OATHKEEPER_HASURA_URL
+ARG OATHKEEPER_KRATOS_URL
+ARG OATHKEEPER_MATCH_URL
 
 ADD templates /templates
 ADD build-config.sh /
