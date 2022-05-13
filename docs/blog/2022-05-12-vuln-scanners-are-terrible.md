@@ -1,3 +1,13 @@
+---
+title: "Vulnerability Scanners are Terrible"
+description: The issue with vulnerability scanning and what we think we can do about it
+slug: the-issue-with-vuln-scanners
+date: 2022-05-12
+keywords: [vulnerability-scanning, snyk, grype, tidelift]
+tags: [vulnerability-scanning, snyk, grype, tidelift]
+authors: [forrest]
+---
+
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
   ~
@@ -11,15 +21,6 @@
   ~ limitations under the License.
   ~
 -->
----
-title: "Vulnerability Scanners are Terrible"
-description: The issue with vulnerability scanning and what we think we can do about it
-slug: the-issue-with-vuln-scanners
-date: 2022-05-12
-keywords: [vulnerability-scanning, snyk, grype, tidelift]
-tags: [vulnerability-scanning, snyk, grype, tidelift]
-authors: [forrest]
----
 
 And why we think we can do better.
 ## False Positives Everywhere
