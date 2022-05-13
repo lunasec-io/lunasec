@@ -1,15 +1,40 @@
-schema: ../../schema.graphql
+schema: ../schema.graphql
 
 operations:
+  - gql/*.graphql
   - "**.go"
 
-generated: gql/gql.go
+generated: gql/gen.go
 package: gql
+
+use_struct_references: true
 
 bindings:
   DateTime:
+    type: time.Time
+  timestamp:
+    type: time.Time
+  timestamptz:
+    type: time.Time
+  date:
     type: time.Time
   UUID:
     type: string
   uuid:
     type: string
+  _text:
+    type: string
+  user_role:
+    type: string
+  fix_state_enum:
+    type: string
+  builds_source_type:
+    type: string
+  organization_user_role:
+    type: string
+  severity_enum:
+    type: string
+  jsonb:
+    type: json.RawMessage
+  numeric:
+    type: json.Number
