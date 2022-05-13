@@ -16,17 +16,28 @@ package gql
 
 import (
 	"net/http"
-	"os"
 
 	"github.com/Khan/genqlient/graphql"
 )
 
+type HeadersTransport struct {
+	RT      http.RoundTripper
+	Headers map[string]string
+}
+
+func (t *HeadersTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if t.RT == nil {
+		t.RT = http.DefaultTransport
+	}
+	for header, value := range t.Headers {
+		req.Header.Add(header, value)
+	}
+	return t.RT.RoundTrip(req)
+}
+
 // TODOClient is bad. Remove it. it is todo.
 // todo auth headers?
 var TODOClient = func() graphql.Client {
-	url := os.Getenv("LUNATRACE_GRAPHQL_SERVER_URL")
-	if url == "" {
-		url = "https://lunatrace.lunasec.io/api/cli/v1/graphql"
-	}
-	return graphql.NewClient(url, &http.Client{})
-}
+	// make sure the config is loaded first or use dependency injection.
+	return nil
+}()

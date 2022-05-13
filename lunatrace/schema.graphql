@@ -1,0 +1,6770 @@
+schema {
+  query: query_root
+  mutation: mutation_root
+  subscription: subscription_root
+}
+
+"""whether this query should be cached (Hasura Cloud only)"""
+directive @cached(
+  """refresh the cache entry"""
+  refresh: Boolean! = false
+
+  """measured in seconds"""
+  ttl: Int! = 60
+) on QUERY
+
+type AuthenticatedRepoCloneUrlOutput {
+  url: String
+}
+
+"""
+Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
+"""
+input Boolean_comparison_exp {
+  _eq: Boolean
+  _gt: Boolean
+  _gte: Boolean
+  _in: [Boolean!]
+  _is_null: Boolean
+  _lt: Boolean
+  _lte: Boolean
+  _neq: Boolean
+  _nin: [Boolean!]
+}
+
+"""
+Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
+"""
+input Int_comparison_exp {
+  _eq: Int
+  _gt: Int
+  _gte: Int
+  _in: [Int!]
+  _is_null: Boolean
+  _lt: Int
+  _lte: Int
+  _neq: Int
+  _nin: [Int!]
+}
+
+type PresignedUrlResponse {
+  bucket: String!
+  headers: jsonb!
+  key: String!
+  url: String!
+}
+
+type SbomUploadUrlOutput {
+  error: Boolean!
+  uploadUrl: UploadUrl
+}
+
+"""
+Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
+"""
+input String_comparison_exp {
+  _eq: String
+  _gt: String
+  _gte: String
+
+  """does the column match the given case-insensitive pattern"""
+  _ilike: String
+  _in: [String!]
+
+  """
+  does the column match the given POSIX regular expression, case insensitive
+  """
+  _iregex: String
+  _is_null: Boolean
+
+  """does the column match the given pattern"""
+  _like: String
+  _lt: String
+  _lte: String
+  _neq: String
+
+  """does the column NOT match the given case-insensitive pattern"""
+  _nilike: String
+  _nin: [String!]
+
+  """
+  does the column NOT match the given POSIX regular expression, case insensitive
+  """
+  _niregex: String
+
+  """does the column NOT match the given pattern"""
+  _nlike: String
+
+  """
+  does the column NOT match the given POSIX regular expression, case sensitive
+  """
+  _nregex: String
+
+  """does the column NOT match the given SQL regular expression"""
+  _nsimilar: String
+
+  """
+  does the column match the given POSIX regular expression, case sensitive
+  """
+  _regex: String
+
+  """does the column match the given SQL regular expression"""
+  _similar: String
+}
+
+type UploadUrl {
+  headers: jsonb!
+  url: String!
+}
+
+scalar _text
+
+"""
+Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'.
+"""
+input _text_comparison_exp {
+  _eq: _text
+  _gt: _text
+  _gte: _text
+  _in: [_text!]
+  _is_null: Boolean
+  _lt: _text
+  _lte: _text
+  _neq: _text
+  _nin: [_text!]
+}
+
+"""
+columns and relationships of "builds"
+"""
+type builds {
+  agent_access_token: uuid!
+  build_number: Int
+  created_at: timestamp!
+  existing_github_review_id: String
+
+  """An array relationship"""
+  findings(
+    """distinct select on columns"""
+    distinct_on: [findings_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [findings_order_by!]
+
+    """filter the rows returned"""
+    where: findings_bool_exp
+  ): [findings!]!
+  git_branch: String
+  git_hash: String
+  git_remote: String
+  id: uuid!
+
+  """An array relationship"""
+  manifests(
+    """distinct select on columns"""
+    distinct_on: [manifests_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [manifests_order_by!]
+
+    """filter the rows returned"""
+    where: manifests_bool_exp
+  ): [manifests!]!
+
+  """An object relationship"""
+  project: projects
+  project_id: uuid
+  pull_request_id: String
+  s3_url: String
+  s3_url_signed: String
+
+  """An array relationship"""
+  scans(
+    """distinct select on columns"""
+    distinct_on: [scans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scans_order_by!]
+
+    """filter the rows returned"""
+    where: scans_bool_exp
+  ): [scans!]!
+  source_type: builds_source_type!
+}
+
+"""
+order by aggregate values of table "builds"
+"""
+input builds_aggregate_order_by {
+  avg: builds_avg_order_by
+  count: order_by
+  max: builds_max_order_by
+  min: builds_min_order_by
+  stddev: builds_stddev_order_by
+  stddev_pop: builds_stddev_pop_order_by
+  stddev_samp: builds_stddev_samp_order_by
+  sum: builds_sum_order_by
+  var_pop: builds_var_pop_order_by
+  var_samp: builds_var_samp_order_by
+  variance: builds_variance_order_by
+}
+
+"""
+input type for inserting array relation for remote table "builds"
+"""
+input builds_arr_rel_insert_input {
+  data: [builds_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: builds_on_conflict
+}
+
+"""
+order by avg() on columns of table "builds"
+"""
+input builds_avg_order_by {
+  build_number: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "builds". All fields are combined with a logical 'AND'.
+"""
+input builds_bool_exp {
+  _and: [builds_bool_exp!]
+  _not: builds_bool_exp
+  _or: [builds_bool_exp!]
+  agent_access_token: uuid_comparison_exp
+  build_number: Int_comparison_exp
+  created_at: timestamp_comparison_exp
+  existing_github_review_id: String_comparison_exp
+  findings: findings_bool_exp
+  git_branch: String_comparison_exp
+  git_hash: String_comparison_exp
+  git_remote: String_comparison_exp
+  id: uuid_comparison_exp
+  manifests: manifests_bool_exp
+  project: projects_bool_exp
+  project_id: uuid_comparison_exp
+  pull_request_id: String_comparison_exp
+  s3_url: String_comparison_exp
+  scans: scans_bool_exp
+  source_type: builds_source_type_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "builds"
+"""
+enum builds_constraint {
+  """unique or primary key constraint"""
+  builds_agent_access_token_key
+
+  """unique or primary key constraint"""
+  builds_build_number_project_id_key
+
+  """unique or primary key constraint"""
+  builds_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "builds"
+"""
+input builds_inc_input {
+  build_number: Int
+}
+
+"""
+input type for inserting data into table "builds"
+"""
+input builds_insert_input {
+  agent_access_token: uuid
+  build_number: Int
+  created_at: timestamp
+  existing_github_review_id: String
+  findings: findings_arr_rel_insert_input
+  git_branch: String
+  git_hash: String
+  git_remote: String
+  id: uuid
+  manifests: manifests_arr_rel_insert_input
+  project: projects_obj_rel_insert_input
+  project_id: uuid
+  pull_request_id: String
+  s3_url: String
+  scans: scans_arr_rel_insert_input
+  source_type: builds_source_type
+}
+
+"""
+order by max() on columns of table "builds"
+"""
+input builds_max_order_by {
+  agent_access_token: order_by
+  build_number: order_by
+  created_at: order_by
+  existing_github_review_id: order_by
+  git_branch: order_by
+  git_hash: order_by
+  git_remote: order_by
+  id: order_by
+  project_id: order_by
+  pull_request_id: order_by
+  s3_url: order_by
+}
+
+"""
+order by min() on columns of table "builds"
+"""
+input builds_min_order_by {
+  agent_access_token: order_by
+  build_number: order_by
+  created_at: order_by
+  existing_github_review_id: order_by
+  git_branch: order_by
+  git_hash: order_by
+  git_remote: order_by
+  id: order_by
+  project_id: order_by
+  pull_request_id: order_by
+  s3_url: order_by
+}
+
+"""
+response of any mutation on the table "builds"
+"""
+type builds_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [builds!]!
+}
+
+"""
+input type for inserting object relation for remote table "builds"
+"""
+input builds_obj_rel_insert_input {
+  data: builds_insert_input!
+
+  """upsert condition"""
+  on_conflict: builds_on_conflict
+}
+
+"""
+on_conflict condition type for table "builds"
+"""
+input builds_on_conflict {
+  constraint: builds_constraint!
+  update_columns: [builds_update_column!]! = []
+  where: builds_bool_exp
+}
+
+"""Ordering options when selecting data from "builds"."""
+input builds_order_by {
+  agent_access_token: order_by
+  build_number: order_by
+  created_at: order_by
+  existing_github_review_id: order_by
+  findings_aggregate: findings_aggregate_order_by
+  git_branch: order_by
+  git_hash: order_by
+  git_remote: order_by
+  id: order_by
+  manifests_aggregate: manifests_aggregate_order_by
+  project: projects_order_by
+  project_id: order_by
+  pull_request_id: order_by
+  s3_url: order_by
+  scans_aggregate: scans_aggregate_order_by
+  source_type: order_by
+}
+
+"""primary key columns input for table: builds"""
+input builds_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "builds"
+"""
+enum builds_select_column {
+  """column name"""
+  agent_access_token
+
+  """column name"""
+  build_number
+
+  """column name"""
+  created_at
+
+  """column name"""
+  existing_github_review_id
+
+  """column name"""
+  git_branch
+
+  """column name"""
+  git_hash
+
+  """column name"""
+  git_remote
+
+  """column name"""
+  id
+
+  """column name"""
+  project_id
+
+  """column name"""
+  pull_request_id
+
+  """column name"""
+  s3_url
+
+  """column name"""
+  source_type
+}
+
+"""
+input type for updating data in table "builds"
+"""
+input builds_set_input {
+  agent_access_token: uuid
+  build_number: Int
+  created_at: timestamp
+  existing_github_review_id: String
+  git_branch: String
+  git_hash: String
+  git_remote: String
+  id: uuid
+  project_id: uuid
+  s3_url: String
+}
+
+scalar builds_source_type
+
+"""
+Boolean expression to compare columns of type "builds_source_type". All fields are combined with logical 'AND'.
+"""
+input builds_source_type_comparison_exp {
+  _eq: builds_source_type
+  _gt: builds_source_type
+  _gte: builds_source_type
+  _in: [builds_source_type!]
+  _is_null: Boolean
+  _lt: builds_source_type
+  _lte: builds_source_type
+  _neq: builds_source_type
+  _nin: [builds_source_type!]
+}
+
+"""
+order by stddev() on columns of table "builds"
+"""
+input builds_stddev_order_by {
+  build_number: order_by
+}
+
+"""
+order by stddev_pop() on columns of table "builds"
+"""
+input builds_stddev_pop_order_by {
+  build_number: order_by
+}
+
+"""
+order by stddev_samp() on columns of table "builds"
+"""
+input builds_stddev_samp_order_by {
+  build_number: order_by
+}
+
+"""
+order by sum() on columns of table "builds"
+"""
+input builds_sum_order_by {
+  build_number: order_by
+}
+
+"""
+update columns of table "builds"
+"""
+enum builds_update_column {
+  """column name"""
+  agent_access_token
+
+  """column name"""
+  build_number
+
+  """column name"""
+  created_at
+
+  """column name"""
+  existing_github_review_id
+
+  """column name"""
+  git_branch
+
+  """column name"""
+  git_hash
+
+  """column name"""
+  git_remote
+
+  """column name"""
+  id
+
+  """column name"""
+  project_id
+
+  """column name"""
+  s3_url
+}
+
+"""
+order by var_pop() on columns of table "builds"
+"""
+input builds_var_pop_order_by {
+  build_number: order_by
+}
+
+"""
+order by var_samp() on columns of table "builds"
+"""
+input builds_var_samp_order_by {
+  build_number: order_by
+}
+
+"""
+order by variance() on columns of table "builds"
+"""
+input builds_variance_order_by {
+  build_number: order_by
+}
+
+scalar date
+
+"""
+Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'.
+"""
+input date_comparison_exp {
+  _eq: date
+  _gt: date
+  _gte: date
+  _in: [date!]
+  _is_null: Boolean
+  _lt: date
+  _lte: date
+  _neq: date
+  _nin: [date!]
+}
+
+"""
+columns and relationships of "findings"
+"""
+type findings {
+  """An object relationship"""
+  build: builds!
+  build_id: uuid!
+  created_at: timestamp!
+  dedupe_slug: String!
+  fix_state: fix_state_enum!
+  fix_versions: _text
+  id: uuid!
+  language: String!
+  locations: _text!
+  matcher: String!
+  package_name: String!
+
+  """An object relationship"""
+  package_version: package_versions
+  package_version_id: uuid
+  purl: String!
+
+  """An object relationship"""
+  scan: scans!
+  scan_id: uuid!
+  severity: severity_enum!
+  type: String!
+  updated_at: timestamptz!
+  version: String!
+  version_matcher: String!
+  virtual_path: String
+
+  """An object relationship"""
+  vulnerability: vulnerabilities!
+  vulnerability_id: uuid!
+
+  """An object relationship"""
+  vulnerability_package: vulnerability_packages
+  vulnerability_package_id: uuid
+}
+
+"""
+order by aggregate values of table "findings"
+"""
+input findings_aggregate_order_by {
+  count: order_by
+  max: findings_max_order_by
+  min: findings_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "findings"
+"""
+input findings_arr_rel_insert_input {
+  data: [findings_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: findings_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "findings". All fields are combined with a logical 'AND'.
+"""
+input findings_bool_exp {
+  _and: [findings_bool_exp!]
+  _not: findings_bool_exp
+  _or: [findings_bool_exp!]
+  build: builds_bool_exp
+  build_id: uuid_comparison_exp
+  created_at: timestamp_comparison_exp
+  dedupe_slug: String_comparison_exp
+  fix_state: fix_state_enum_comparison_exp
+  fix_versions: _text_comparison_exp
+  id: uuid_comparison_exp
+  language: String_comparison_exp
+  locations: _text_comparison_exp
+  matcher: String_comparison_exp
+  package_name: String_comparison_exp
+  package_version: package_versions_bool_exp
+  package_version_id: uuid_comparison_exp
+  purl: String_comparison_exp
+  scan: scans_bool_exp
+  scan_id: uuid_comparison_exp
+  severity: severity_enum_comparison_exp
+  type: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  version: String_comparison_exp
+  version_matcher: String_comparison_exp
+  virtual_path: String_comparison_exp
+  vulnerability: vulnerabilities_bool_exp
+  vulnerability_id: uuid_comparison_exp
+  vulnerability_package: vulnerability_packages_bool_exp
+  vulnerability_package_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "findings"
+"""
+enum findings_constraint {
+  """unique or primary key constraint"""
+  findings_dedupe_slug_build_id_key
+
+  """unique or primary key constraint"""
+  findings_pkey
+}
+
+"""
+input type for inserting data into table "findings"
+"""
+input findings_insert_input {
+  build: builds_obj_rel_insert_input
+  build_id: uuid
+  created_at: timestamp
+  dedupe_slug: String
+  fix_state: fix_state_enum
+  fix_versions: _text
+  id: uuid
+  language: String
+  locations: _text
+  matcher: String
+  package_name: String
+  package_version: package_versions_obj_rel_insert_input
+  package_version_id: uuid
+  purl: String
+  scan: scans_obj_rel_insert_input
+  scan_id: uuid
+  severity: severity_enum
+  type: String
+  updated_at: timestamptz
+  version: String
+  version_matcher: String
+  virtual_path: String
+  vulnerability: vulnerabilities_obj_rel_insert_input
+  vulnerability_id: uuid
+  vulnerability_package: vulnerability_packages_obj_rel_insert_input
+  vulnerability_package_id: uuid
+}
+
+"""
+order by max() on columns of table "findings"
+"""
+input findings_max_order_by {
+  build_id: order_by
+  created_at: order_by
+  dedupe_slug: order_by
+  id: order_by
+  language: order_by
+  matcher: order_by
+  package_name: order_by
+  package_version_id: order_by
+  purl: order_by
+  scan_id: order_by
+  type: order_by
+  updated_at: order_by
+  version: order_by
+  version_matcher: order_by
+  virtual_path: order_by
+  vulnerability_id: order_by
+  vulnerability_package_id: order_by
+}
+
+"""
+order by min() on columns of table "findings"
+"""
+input findings_min_order_by {
+  build_id: order_by
+  created_at: order_by
+  dedupe_slug: order_by
+  id: order_by
+  language: order_by
+  matcher: order_by
+  package_name: order_by
+  package_version_id: order_by
+  purl: order_by
+  scan_id: order_by
+  type: order_by
+  updated_at: order_by
+  version: order_by
+  version_matcher: order_by
+  virtual_path: order_by
+  vulnerability_id: order_by
+  vulnerability_package_id: order_by
+}
+
+"""
+response of any mutation on the table "findings"
+"""
+type findings_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [findings!]!
+}
+
+"""
+on_conflict condition type for table "findings"
+"""
+input findings_on_conflict {
+  constraint: findings_constraint!
+  update_columns: [findings_update_column!]! = []
+  where: findings_bool_exp
+}
+
+"""Ordering options when selecting data from "findings"."""
+input findings_order_by {
+  build: builds_order_by
+  build_id: order_by
+  created_at: order_by
+  dedupe_slug: order_by
+  fix_state: order_by
+  fix_versions: order_by
+  id: order_by
+  language: order_by
+  locations: order_by
+  matcher: order_by
+  package_name: order_by
+  package_version: package_versions_order_by
+  package_version_id: order_by
+  purl: order_by
+  scan: scans_order_by
+  scan_id: order_by
+  severity: order_by
+  type: order_by
+  updated_at: order_by
+  version: order_by
+  version_matcher: order_by
+  virtual_path: order_by
+  vulnerability: vulnerabilities_order_by
+  vulnerability_id: order_by
+  vulnerability_package: vulnerability_packages_order_by
+  vulnerability_package_id: order_by
+}
+
+"""primary key columns input for table: findings"""
+input findings_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "findings"
+"""
+enum findings_select_column {
+  """column name"""
+  build_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  dedupe_slug
+
+  """column name"""
+  fix_state
+
+  """column name"""
+  fix_versions
+
+  """column name"""
+  id
+
+  """column name"""
+  language
+
+  """column name"""
+  locations
+
+  """column name"""
+  matcher
+
+  """column name"""
+  package_name
+
+  """column name"""
+  package_version_id
+
+  """column name"""
+  purl
+
+  """column name"""
+  scan_id
+
+  """column name"""
+  severity
+
+  """column name"""
+  type
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  version
+
+  """column name"""
+  version_matcher
+
+  """column name"""
+  virtual_path
+
+  """column name"""
+  vulnerability_id
+
+  """column name"""
+  vulnerability_package_id
+}
+
+"""
+input type for updating data in table "findings"
+"""
+input findings_set_input {
+  build_id: uuid
+  created_at: timestamp
+  dedupe_slug: String
+  fix_state: fix_state_enum
+  fix_versions: _text
+  id: uuid
+  language: String
+  locations: _text
+  matcher: String
+  package_name: String
+  package_version_id: uuid
+  purl: String
+  scan_id: uuid
+  severity: severity_enum
+  type: String
+  updated_at: timestamptz
+  version: String
+  version_matcher: String
+  virtual_path: String
+  vulnerability_id: uuid
+  vulnerability_package_id: uuid
+}
+
+"""
+update columns of table "findings"
+"""
+enum findings_update_column {
+  """column name"""
+  build_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  dedupe_slug
+
+  """column name"""
+  fix_state
+
+  """column name"""
+  fix_versions
+
+  """column name"""
+  id
+
+  """column name"""
+  language
+
+  """column name"""
+  locations
+
+  """column name"""
+  matcher
+
+  """column name"""
+  package_name
+
+  """column name"""
+  package_version_id
+
+  """column name"""
+  purl
+
+  """column name"""
+  scan_id
+
+  """column name"""
+  severity
+
+  """column name"""
+  type
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  version
+
+  """column name"""
+  version_matcher
+
+  """column name"""
+  virtual_path
+
+  """column name"""
+  vulnerability_id
+
+  """column name"""
+  vulnerability_package_id
+}
+
+scalar fix_state_enum
+
+"""
+Boolean expression to compare columns of type "fix_state_enum". All fields are combined with logical 'AND'.
+"""
+input fix_state_enum_comparison_exp {
+  _eq: fix_state_enum
+  _gt: fix_state_enum
+  _gte: fix_state_enum
+  _in: [fix_state_enum!]
+  _is_null: Boolean
+  _lt: fix_state_enum
+  _lte: fix_state_enum
+  _neq: fix_state_enum
+  _nin: [fix_state_enum!]
+}
+
+"""Metadata about a github repository and where to find it."""
+type github_repositories {
+  authenticated_clone_url: AuthenticatedRepoCloneUrlOutput
+  git_url: String!
+  github_id: Int
+  github_node_id: String
+
+  """An object relationship"""
+  project: projects!
+  project_id: uuid!
+  traits(
+    """JSON select path"""
+    path: String
+  ): jsonb!
+}
+
+"""
+order by aggregate values of table "github_repositories"
+"""
+input github_repositories_aggregate_order_by {
+  avg: github_repositories_avg_order_by
+  count: order_by
+  max: github_repositories_max_order_by
+  min: github_repositories_min_order_by
+  stddev: github_repositories_stddev_order_by
+  stddev_pop: github_repositories_stddev_pop_order_by
+  stddev_samp: github_repositories_stddev_samp_order_by
+  sum: github_repositories_sum_order_by
+  var_pop: github_repositories_var_pop_order_by
+  var_samp: github_repositories_var_samp_order_by
+  variance: github_repositories_variance_order_by
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input github_repositories_append_input {
+  traits: jsonb
+}
+
+"""
+input type for inserting array relation for remote table "github_repositories"
+"""
+input github_repositories_arr_rel_insert_input {
+  data: [github_repositories_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: github_repositories_on_conflict
+}
+
+"""
+order by avg() on columns of table "github_repositories"
+"""
+input github_repositories_avg_order_by {
+  github_id: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "github_repositories". All fields are combined with a logical 'AND'.
+"""
+input github_repositories_bool_exp {
+  _and: [github_repositories_bool_exp!]
+  _not: github_repositories_bool_exp
+  _or: [github_repositories_bool_exp!]
+  git_url: String_comparison_exp
+  github_id: Int_comparison_exp
+  github_node_id: String_comparison_exp
+  project: projects_bool_exp
+  project_id: uuid_comparison_exp
+  traits: jsonb_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "github_repositories"
+"""
+enum github_repositories_constraint {
+  """unique or primary key constraint"""
+  github_repositories_github_id_key
+
+  """unique or primary key constraint"""
+  github_repositories_github_node_id_key
+
+  """unique or primary key constraint"""
+  github_repositories_pkey
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input github_repositories_delete_at_path_input {
+  traits: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input github_repositories_delete_elem_input {
+  traits: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input github_repositories_delete_key_input {
+  traits: String
+}
+
+"""
+input type for incrementing numeric columns in table "github_repositories"
+"""
+input github_repositories_inc_input {
+  github_id: Int
+}
+
+"""
+input type for inserting data into table "github_repositories"
+"""
+input github_repositories_insert_input {
+  git_url: String
+  github_id: Int
+  github_node_id: String
+  project: projects_obj_rel_insert_input
+  project_id: uuid
+  traits: jsonb
+}
+
+"""
+order by max() on columns of table "github_repositories"
+"""
+input github_repositories_max_order_by {
+  git_url: order_by
+  github_id: order_by
+  github_node_id: order_by
+  project_id: order_by
+}
+
+"""
+order by min() on columns of table "github_repositories"
+"""
+input github_repositories_min_order_by {
+  git_url: order_by
+  github_id: order_by
+  github_node_id: order_by
+  project_id: order_by
+}
+
+"""
+response of any mutation on the table "github_repositories"
+"""
+type github_repositories_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [github_repositories!]!
+}
+
+"""
+input type for inserting object relation for remote table "github_repositories"
+"""
+input github_repositories_obj_rel_insert_input {
+  data: github_repositories_insert_input!
+
+  """upsert condition"""
+  on_conflict: github_repositories_on_conflict
+}
+
+"""
+on_conflict condition type for table "github_repositories"
+"""
+input github_repositories_on_conflict {
+  constraint: github_repositories_constraint!
+  update_columns: [github_repositories_update_column!]! = []
+  where: github_repositories_bool_exp
+}
+
+"""Ordering options when selecting data from "github_repositories"."""
+input github_repositories_order_by {
+  git_url: order_by
+  github_id: order_by
+  github_node_id: order_by
+  project: projects_order_by
+  project_id: order_by
+  traits: order_by
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input github_repositories_prepend_input {
+  traits: jsonb
+}
+
+"""
+select columns of table "github_repositories"
+"""
+enum github_repositories_select_column {
+  """column name"""
+  git_url
+
+  """column name"""
+  github_id
+
+  """column name"""
+  github_node_id
+
+  """column name"""
+  project_id
+
+  """column name"""
+  traits
+}
+
+"""
+input type for updating data in table "github_repositories"
+"""
+input github_repositories_set_input {
+  git_url: String
+  github_id: Int
+  github_node_id: String
+  project_id: uuid
+  traits: jsonb
+}
+
+"""
+order by stddev() on columns of table "github_repositories"
+"""
+input github_repositories_stddev_order_by {
+  github_id: order_by
+}
+
+"""
+order by stddev_pop() on columns of table "github_repositories"
+"""
+input github_repositories_stddev_pop_order_by {
+  github_id: order_by
+}
+
+"""
+order by stddev_samp() on columns of table "github_repositories"
+"""
+input github_repositories_stddev_samp_order_by {
+  github_id: order_by
+}
+
+"""
+order by sum() on columns of table "github_repositories"
+"""
+input github_repositories_sum_order_by {
+  github_id: order_by
+}
+
+"""
+update columns of table "github_repositories"
+"""
+enum github_repositories_update_column {
+  """column name"""
+  git_url
+
+  """column name"""
+  github_id
+
+  """column name"""
+  github_node_id
+
+  """column name"""
+  project_id
+
+  """column name"""
+  traits
+}
+
+"""
+order by var_pop() on columns of table "github_repositories"
+"""
+input github_repositories_var_pop_order_by {
+  github_id: order_by
+}
+
+"""
+order by var_samp() on columns of table "github_repositories"
+"""
+input github_repositories_var_samp_order_by {
+  github_id: order_by
+}
+
+"""
+order by variance() on columns of table "github_repositories"
+"""
+input github_repositories_variance_order_by {
+  github_id: order_by
+}
+
+scalar github_webhook_event
+
+"""
+Boolean expression to compare columns of type "github_webhook_event". All fields are combined with logical 'AND'.
+"""
+input github_webhook_event_comparison_exp {
+  _eq: github_webhook_event
+  _gt: github_webhook_event
+  _gte: github_webhook_event
+  _in: [github_webhook_event!]
+  _is_null: Boolean
+  _lt: github_webhook_event
+  _lte: github_webhook_event
+  _neq: github_webhook_event
+  _nin: [github_webhook_event!]
+}
+
+"""
+columns and relationships of "guide_related_guides"
+"""
+type guide_related_guides {
+  created_at: timestamptz!
+  from_guide_id: uuid!
+  id: uuid!
+  to_guide_unique_id: String!
+  updated_at: timestamptz!
+}
+
+"""
+input type for inserting array relation for remote table "guide_related_guides"
+"""
+input guide_related_guides_arr_rel_insert_input {
+  data: [guide_related_guides_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: guide_related_guides_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "guide_related_guides". All fields are combined with a logical 'AND'.
+"""
+input guide_related_guides_bool_exp {
+  _and: [guide_related_guides_bool_exp!]
+  _not: guide_related_guides_bool_exp
+  _or: [guide_related_guides_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  from_guide_id: uuid_comparison_exp
+  id: uuid_comparison_exp
+  to_guide_unique_id: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "guide_related_guides"
+"""
+enum guide_related_guides_constraint {
+  """unique or primary key constraint"""
+  guide_related_guides_pkey
+
+  """unique or primary key constraint"""
+  guide_related_guides_unique
+}
+
+"""
+input type for inserting data into table "guide_related_guides"
+"""
+input guide_related_guides_insert_input {
+  created_at: timestamptz
+  from_guide_id: uuid
+  guide: guides_obj_rel_insert_input
+  id: uuid
+  parent_guide: guides_obj_rel_insert_input
+  to_guide_unique_id: String
+  updated_at: timestamptz
+}
+
+"""
+response of any mutation on the table "guide_related_guides"
+"""
+type guide_related_guides_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [guide_related_guides!]!
+}
+
+"""
+on_conflict condition type for table "guide_related_guides"
+"""
+input guide_related_guides_on_conflict {
+  constraint: guide_related_guides_constraint!
+  update_columns: [guide_related_guides_update_column!]! = []
+  where: guide_related_guides_bool_exp
+}
+
+"""Ordering options when selecting data from "guide_related_guides"."""
+input guide_related_guides_order_by {
+  created_at: order_by
+  from_guide_id: order_by
+  id: order_by
+  to_guide_unique_id: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: guide_related_guides"""
+input guide_related_guides_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "guide_related_guides"
+"""
+enum guide_related_guides_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  from_guide_id
+
+  """column name"""
+  id
+
+  """column name"""
+  to_guide_unique_id
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "guide_related_guides"
+"""
+input guide_related_guides_set_input {
+  created_at: timestamptz
+  from_guide_id: uuid
+  id: uuid
+  to_guide_unique_id: String
+  updated_at: timestamptz
+}
+
+"""
+update columns of table "guide_related_guides"
+"""
+enum guide_related_guides_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  from_guide_id
+
+  """column name"""
+  id
+
+  """column name"""
+  to_guide_unique_id
+
+  """column name"""
+  updated_at
+}
+
+"""
+columns and relationships of "guide_vulnerabilities"
+"""
+type guide_vulnerabilities {
+  created_at: timestamptz!
+  guide_id: uuid!
+  id: uuid!
+  updated_at: timestamptz!
+
+  """An object relationship"""
+  vulnerability: vulnerabilities!
+  vulnerability_id: uuid!
+}
+
+"""
+order by aggregate values of table "guide_vulnerabilities"
+"""
+input guide_vulnerabilities_aggregate_order_by {
+  count: order_by
+  max: guide_vulnerabilities_max_order_by
+  min: guide_vulnerabilities_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "guide_vulnerabilities"
+"""
+input guide_vulnerabilities_arr_rel_insert_input {
+  data: [guide_vulnerabilities_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: guide_vulnerabilities_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "guide_vulnerabilities". All fields are combined with a logical 'AND'.
+"""
+input guide_vulnerabilities_bool_exp {
+  _and: [guide_vulnerabilities_bool_exp!]
+  _not: guide_vulnerabilities_bool_exp
+  _or: [guide_vulnerabilities_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  guide_id: uuid_comparison_exp
+  id: uuid_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  vulnerability: vulnerabilities_bool_exp
+  vulnerability_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "guide_vulnerabilities"
+"""
+enum guide_vulnerabilities_constraint {
+  """unique or primary key constraint"""
+  guide_vulnerabilities_pkey
+
+  """unique or primary key constraint"""
+  guide_vulnerabilities_unique
+}
+
+"""
+input type for inserting data into table "guide_vulnerabilities"
+"""
+input guide_vulnerabilities_insert_input {
+  created_at: timestamptz
+  guide: guides_obj_rel_insert_input
+  guide_id: uuid
+  id: uuid
+  updated_at: timestamptz
+  vulnerability: vulnerabilities_obj_rel_insert_input
+  vulnerability_id: uuid
+}
+
+"""
+order by max() on columns of table "guide_vulnerabilities"
+"""
+input guide_vulnerabilities_max_order_by {
+  created_at: order_by
+  guide_id: order_by
+  id: order_by
+  updated_at: order_by
+  vulnerability_id: order_by
+}
+
+"""
+order by min() on columns of table "guide_vulnerabilities"
+"""
+input guide_vulnerabilities_min_order_by {
+  created_at: order_by
+  guide_id: order_by
+  id: order_by
+  updated_at: order_by
+  vulnerability_id: order_by
+}
+
+"""
+response of any mutation on the table "guide_vulnerabilities"
+"""
+type guide_vulnerabilities_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [guide_vulnerabilities!]!
+}
+
+"""
+on_conflict condition type for table "guide_vulnerabilities"
+"""
+input guide_vulnerabilities_on_conflict {
+  constraint: guide_vulnerabilities_constraint!
+  update_columns: [guide_vulnerabilities_update_column!]! = []
+  where: guide_vulnerabilities_bool_exp
+}
+
+"""Ordering options when selecting data from "guide_vulnerabilities"."""
+input guide_vulnerabilities_order_by {
+  created_at: order_by
+  guide_id: order_by
+  id: order_by
+  updated_at: order_by
+  vulnerability: vulnerabilities_order_by
+  vulnerability_id: order_by
+}
+
+"""primary key columns input for table: guide_vulnerabilities"""
+input guide_vulnerabilities_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "guide_vulnerabilities"
+"""
+enum guide_vulnerabilities_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  guide_id
+
+  """column name"""
+  id
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
+input type for updating data in table "guide_vulnerabilities"
+"""
+input guide_vulnerabilities_set_input {
+  created_at: timestamptz
+  guide_id: uuid
+  id: uuid
+  updated_at: timestamptz
+  vulnerability_id: uuid
+}
+
+"""
+update columns of table "guide_vulnerabilities"
+"""
+enum guide_vulnerabilities_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  guide_id
+
+  """column name"""
+  id
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  vulnerability_id
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input guides_append_input {
+  metadata: jsonb
+}
+
+"""
+Boolean expression to filter rows from the table "guides". All fields are combined with a logical 'AND'.
+"""
+input guides_bool_exp {
+  _and: [guides_bool_exp!]
+  _not: guides_bool_exp
+  _or: [guides_bool_exp!]
+}
+
+"""
+unique or primary key constraints on table "guides"
+"""
+enum guides_constraint {
+  """unique or primary key constraint"""
+  guides_data_source_link_key
+
+  """unique or primary key constraint"""
+  guides_guide_unique_id_key
+
+  """unique or primary key constraint"""
+  guides_pkey
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input guides_delete_at_path_input {
+  metadata: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input guides_delete_elem_input {
+  metadata: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input guides_delete_key_input {
+  metadata: String
+}
+
+"""
+input type for incrementing numeric columns in table "guides"
+"""
+input guides_inc_input {
+  metadata_schema_version: Int
+}
+
+"""
+input type for inserting data into table "guides"
+"""
+input guides_insert_input {
+  body: String
+  created_at: timestamptz
+  data_source_link: String
+  guide_unique_id: String
+  guide_vulnerabilities: guide_vulnerabilities_arr_rel_insert_input
+  id: uuid
+  metadata: jsonb
+  metadata_schema_version: Int
+  related_guides: guide_related_guides_arr_rel_insert_input
+  severity: severity_enum
+  summary: String
+  tags: _text
+  title: String
+  updated_at: timestamptz
+}
+
+"""
+response of any mutation on the table "guides"
+"""
+type guides_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+}
+
+"""
+input type for inserting object relation for remote table "guides"
+"""
+input guides_obj_rel_insert_input {
+  data: guides_insert_input!
+
+  """upsert condition"""
+  on_conflict: guides_on_conflict
+}
+
+"""
+on_conflict condition type for table "guides"
+"""
+input guides_on_conflict {
+  constraint: guides_constraint!
+  update_columns: [guides_update_column!]! = []
+  where: guides_bool_exp
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input guides_prepend_input {
+  metadata: jsonb
+}
+
+"""
+input type for updating data in table "guides"
+"""
+input guides_set_input {
+  body: String
+  created_at: timestamptz
+  data_source_link: String
+  guide_unique_id: String
+  id: uuid
+  metadata: jsonb
+  metadata_schema_version: Int
+  severity: severity_enum
+  summary: String
+  tags: _text
+  title: String
+  updated_at: timestamptz
+}
+
+"""
+update columns of table "guides"
+"""
+enum guides_update_column {
+  """column name"""
+  body
+
+  """column name"""
+  created_at
+
+  """column name"""
+  data_source_link
+
+  """column name"""
+  guide_unique_id
+
+  """column name"""
+  id
+
+  """column name"""
+  metadata
+
+  """column name"""
+  metadata_schema_version
+
+  """column name"""
+  severity
+
+  """column name"""
+  summary
+
+  """column name"""
+  tags
+
+  """column name"""
+  title
+
+  """column name"""
+  updated_at
+}
+
+"""
+columns and relationships of "identities"
+"""
+type identities {
+  created_at: timestamp!
+  id: uuid!
+
+  """An array relationship"""
+  identity_verifiable_addresses(
+    """distinct select on columns"""
+    distinct_on: [identity_verifiable_addresses_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_verifiable_addresses_order_by!]
+
+    """filter the rows returned"""
+    where: identity_verifiable_addresses_bool_exp
+  ): [identity_verifiable_addresses!]!
+  nid: uuid
+  schema_id: String!
+  state: String!
+  state_changed_at: timestamp
+  traits(
+    """JSON select path"""
+    path: String
+  ): jsonb!
+  updated_at: timestamp!
+
+  """An object relationship"""
+  user: users
+}
+
+"""
+Boolean expression to filter rows from the table "identities". All fields are combined with a logical 'AND'.
+"""
+input identities_bool_exp {
+  _and: [identities_bool_exp!]
+  _not: identities_bool_exp
+  _or: [identities_bool_exp!]
+  created_at: timestamp_comparison_exp
+  id: uuid_comparison_exp
+  identity_verifiable_addresses: identity_verifiable_addresses_bool_exp
+  nid: uuid_comparison_exp
+  schema_id: String_comparison_exp
+  state: String_comparison_exp
+  state_changed_at: timestamp_comparison_exp
+  traits: jsonb_comparison_exp
+  updated_at: timestamp_comparison_exp
+  user: users_bool_exp
+}
+
+"""Ordering options when selecting data from "identities"."""
+input identities_order_by {
+  created_at: order_by
+  id: order_by
+  identity_verifiable_addresses_aggregate: identity_verifiable_addresses_aggregate_order_by
+  nid: order_by
+  schema_id: order_by
+  state: order_by
+  state_changed_at: order_by
+  traits: order_by
+  updated_at: order_by
+  user: users_order_by
+}
+
+"""
+select columns of table "identities"
+"""
+enum identities_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  nid
+
+  """column name"""
+  schema_id
+
+  """column name"""
+  state
+
+  """column name"""
+  state_changed_at
+
+  """column name"""
+  traits
+
+  """column name"""
+  updated_at
+}
+
+"""
+columns and relationships of "identity_verifiable_addresses"
+"""
+type identity_verifiable_addresses {
+  created_at: timestamp!
+  id: uuid!
+
+  """An object relationship"""
+  identity: identities!
+  identity_id: uuid!
+  nid: uuid
+  status: String!
+  updated_at: timestamp!
+  value: String!
+  verified: Boolean!
+  verified_at: timestamp
+  via: String!
+}
+
+"""
+order by aggregate values of table "identity_verifiable_addresses"
+"""
+input identity_verifiable_addresses_aggregate_order_by {
+  count: order_by
+  max: identity_verifiable_addresses_max_order_by
+  min: identity_verifiable_addresses_min_order_by
+}
+
+"""
+Boolean expression to filter rows from the table "identity_verifiable_addresses". All fields are combined with a logical 'AND'.
+"""
+input identity_verifiable_addresses_bool_exp {
+  _and: [identity_verifiable_addresses_bool_exp!]
+  _not: identity_verifiable_addresses_bool_exp
+  _or: [identity_verifiable_addresses_bool_exp!]
+  created_at: timestamp_comparison_exp
+  id: uuid_comparison_exp
+  identity: identities_bool_exp
+  identity_id: uuid_comparison_exp
+  nid: uuid_comparison_exp
+  status: String_comparison_exp
+  updated_at: timestamp_comparison_exp
+  value: String_comparison_exp
+  verified: Boolean_comparison_exp
+  verified_at: timestamp_comparison_exp
+  via: String_comparison_exp
+}
+
+"""
+order by max() on columns of table "identity_verifiable_addresses"
+"""
+input identity_verifiable_addresses_max_order_by {
+  created_at: order_by
+  id: order_by
+  identity_id: order_by
+  nid: order_by
+  status: order_by
+  updated_at: order_by
+  value: order_by
+  verified_at: order_by
+  via: order_by
+}
+
+"""
+order by min() on columns of table "identity_verifiable_addresses"
+"""
+input identity_verifiable_addresses_min_order_by {
+  created_at: order_by
+  id: order_by
+  identity_id: order_by
+  nid: order_by
+  status: order_by
+  updated_at: order_by
+  value: order_by
+  verified_at: order_by
+  via: order_by
+}
+
+"""
+Ordering options when selecting data from "identity_verifiable_addresses".
+"""
+input identity_verifiable_addresses_order_by {
+  created_at: order_by
+  id: order_by
+  identity: identities_order_by
+  identity_id: order_by
+  nid: order_by
+  status: order_by
+  updated_at: order_by
+  value: order_by
+  verified: order_by
+  verified_at: order_by
+  via: order_by
+}
+
+"""
+select columns of table "identity_verifiable_addresses"
+"""
+enum identity_verifiable_addresses_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  identity_id
+
+  """column name"""
+  nid
+
+  """column name"""
+  status
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  value
+
+  """column name"""
+  verified
+
+  """column name"""
+  verified_at
+
+  """column name"""
+  via
+}
+
+"""
+columns and relationships of "ignored_vulnerabilities"
+"""
+type ignored_vulnerabilities {
+  """An object relationship"""
+  creator: identities
+  creator_id: uuid
+  id: uuid!
+  locations(
+    """JSON select path"""
+    path: String
+  ): jsonb!
+  note: String!
+
+  """An object relationship"""
+  project: projects!
+  project_id: uuid!
+
+  """An object relationship"""
+  vulnerability: vulnerabilities!
+  vulnerability_id: uuid!
+}
+
+"""
+order by aggregate values of table "ignored_vulnerabilities"
+"""
+input ignored_vulnerabilities_aggregate_order_by {
+  count: order_by
+  max: ignored_vulnerabilities_max_order_by
+  min: ignored_vulnerabilities_min_order_by
+}
+
+"""
+Boolean expression to filter rows from the table "ignored_vulnerabilities". All fields are combined with a logical 'AND'.
+"""
+input ignored_vulnerabilities_bool_exp {
+  _and: [ignored_vulnerabilities_bool_exp!]
+  _not: ignored_vulnerabilities_bool_exp
+  _or: [ignored_vulnerabilities_bool_exp!]
+  creator: identities_bool_exp
+  creator_id: uuid_comparison_exp
+  id: uuid_comparison_exp
+  locations: jsonb_comparison_exp
+  note: String_comparison_exp
+  project: projects_bool_exp
+  project_id: uuid_comparison_exp
+  vulnerability: vulnerabilities_bool_exp
+  vulnerability_id: uuid_comparison_exp
+}
+
+"""
+order by max() on columns of table "ignored_vulnerabilities"
+"""
+input ignored_vulnerabilities_max_order_by {
+  creator_id: order_by
+  id: order_by
+  note: order_by
+  project_id: order_by
+  vulnerability_id: order_by
+}
+
+"""
+order by min() on columns of table "ignored_vulnerabilities"
+"""
+input ignored_vulnerabilities_min_order_by {
+  creator_id: order_by
+  id: order_by
+  note: order_by
+  project_id: order_by
+  vulnerability_id: order_by
+}
+
+"""Ordering options when selecting data from "ignored_vulnerabilities"."""
+input ignored_vulnerabilities_order_by {
+  creator: identities_order_by
+  creator_id: order_by
+  id: order_by
+  locations: order_by
+  note: order_by
+  project: projects_order_by
+  project_id: order_by
+  vulnerability: vulnerabilities_order_by
+  vulnerability_id: order_by
+}
+
+"""
+select columns of table "ignored_vulnerabilities"
+"""
+enum ignored_vulnerabilities_select_column {
+  """column name"""
+  creator_id
+
+  """column name"""
+  id
+
+  """column name"""
+  locations
+
+  """column name"""
+  note
+
+  """column name"""
+  project_id
+
+  """column name"""
+  vulnerability_id
+}
+
+scalar jsonb
+
+input jsonb_cast_exp {
+  String: String_comparison_exp
+}
+
+"""
+Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'.
+"""
+input jsonb_comparison_exp {
+  _cast: jsonb_cast_exp
+
+  """is the column contained in the given json value"""
+  _contained_in: jsonb
+
+  """does the column contain the given json value at the top level"""
+  _contains: jsonb
+  _eq: jsonb
+  _gt: jsonb
+  _gte: jsonb
+
+  """does the string exist as a top-level key in the column"""
+  _has_key: String
+
+  """do all of these strings exist as top-level keys in the column"""
+  _has_keys_all: [String!]
+
+  """do any of these strings exist as top-level keys in the column"""
+  _has_keys_any: [String!]
+  _in: [jsonb!]
+  _is_null: Boolean
+  _lt: jsonb
+  _lte: jsonb
+  _neq: jsonb
+  _nin: [jsonb!]
+}
+
+"""
+columns and relationships of "manifests"
+"""
+type manifests {
+  """An object relationship"""
+  build: builds
+  build_id: uuid
+  created_at: timestamp!
+  filename: String!
+  id: uuid!
+  message: String
+
+  """An object relationship"""
+  project: projects!
+  project_id: uuid!
+  s3_key: String!
+  s3_url: String!
+  status: String
+}
+
+"""
+order by aggregate values of table "manifests"
+"""
+input manifests_aggregate_order_by {
+  count: order_by
+  max: manifests_max_order_by
+  min: manifests_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "manifests"
+"""
+input manifests_arr_rel_insert_input {
+  data: [manifests_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: manifests_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "manifests". All fields are combined with a logical 'AND'.
+"""
+input manifests_bool_exp {
+  _and: [manifests_bool_exp!]
+  _not: manifests_bool_exp
+  _or: [manifests_bool_exp!]
+  build: builds_bool_exp
+  build_id: uuid_comparison_exp
+  created_at: timestamp_comparison_exp
+  filename: String_comparison_exp
+  id: uuid_comparison_exp
+  message: String_comparison_exp
+  project: projects_bool_exp
+  project_id: uuid_comparison_exp
+  s3_key: String_comparison_exp
+  s3_url: String_comparison_exp
+  status: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "manifests"
+"""
+enum manifests_constraint {
+  """unique or primary key constraint"""
+  manifests_pkey
+
+  """unique or primary key constraint"""
+  manifests_s3_url_key
+}
+
+"""
+input type for inserting data into table "manifests"
+"""
+input manifests_insert_input {
+  build: builds_obj_rel_insert_input
+  build_id: uuid
+  created_at: timestamp
+  filename: String
+  id: uuid
+  message: String
+  project: projects_obj_rel_insert_input
+  project_id: uuid
+  s3_key: String
+  s3_url: String
+  status: String
+}
+
+"""
+order by max() on columns of table "manifests"
+"""
+input manifests_max_order_by {
+  build_id: order_by
+  created_at: order_by
+  filename: order_by
+  id: order_by
+  message: order_by
+  project_id: order_by
+  s3_key: order_by
+  s3_url: order_by
+  status: order_by
+}
+
+"""
+order by min() on columns of table "manifests"
+"""
+input manifests_min_order_by {
+  build_id: order_by
+  created_at: order_by
+  filename: order_by
+  id: order_by
+  message: order_by
+  project_id: order_by
+  s3_key: order_by
+  s3_url: order_by
+  status: order_by
+}
+
+"""
+response of any mutation on the table "manifests"
+"""
+type manifests_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [manifests!]!
+}
+
+"""
+on_conflict condition type for table "manifests"
+"""
+input manifests_on_conflict {
+  constraint: manifests_constraint!
+  update_columns: [manifests_update_column!]! = []
+  where: manifests_bool_exp
+}
+
+"""Ordering options when selecting data from "manifests"."""
+input manifests_order_by {
+  build: builds_order_by
+  build_id: order_by
+  created_at: order_by
+  filename: order_by
+  id: order_by
+  message: order_by
+  project: projects_order_by
+  project_id: order_by
+  s3_key: order_by
+  s3_url: order_by
+  status: order_by
+}
+
+"""primary key columns input for table: manifests"""
+input manifests_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "manifests"
+"""
+enum manifests_select_column {
+  """column name"""
+  build_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  filename
+
+  """column name"""
+  id
+
+  """column name"""
+  message
+
+  """column name"""
+  project_id
+
+  """column name"""
+  s3_key
+
+  """column name"""
+  s3_url
+
+  """column name"""
+  status
+}
+
+"""
+input type for updating data in table "manifests"
+"""
+input manifests_set_input {
+  build_id: uuid
+  created_at: timestamp
+  filename: String
+  id: uuid
+  message: String
+  project_id: uuid
+  s3_key: String
+  s3_url: String
+  status: String
+}
+
+"""
+update columns of table "manifests"
+"""
+enum manifests_update_column {
+  """column name"""
+  build_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  filename
+
+  """column name"""
+  id
+
+  """column name"""
+  message
+
+  """column name"""
+  project_id
+
+  """column name"""
+  s3_key
+
+  """column name"""
+  s3_url
+
+  """column name"""
+  status
+}
+
+"""mutation root"""
+type mutation_root {
+  """
+  delete data from the table: "builds"
+  """
+  delete_builds(
+    """filter the rows which have to be deleted"""
+    where: builds_bool_exp!
+  ): builds_mutation_response
+
+  """
+  delete single row from the table: "builds"
+  """
+  delete_builds_by_pk(id: uuid!): builds
+
+  """
+  delete data from the table: "guide_related_guides"
+  """
+  delete_guide_related_guides(
+    """filter the rows which have to be deleted"""
+    where: guide_related_guides_bool_exp!
+  ): guide_related_guides_mutation_response
+
+  """
+  delete single row from the table: "guide_related_guides"
+  """
+  delete_guide_related_guides_by_pk(id: uuid!): guide_related_guides
+
+  """
+  delete data from the table: "manifests"
+  """
+  delete_manifests(
+    """filter the rows which have to be deleted"""
+    where: manifests_bool_exp!
+  ): manifests_mutation_response
+
+  """
+  delete single row from the table: "manifests"
+  """
+  delete_manifests_by_pk(id: uuid!): manifests
+
+  """
+  insert data into the table: "builds"
+  """
+  insert_builds(
+    """the rows to be inserted"""
+    objects: [builds_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: builds_on_conflict
+  ): builds_mutation_response
+
+  """
+  insert a single row into the table: "builds"
+  """
+  insert_builds_one(
+    """the row to be inserted"""
+    object: builds_insert_input!
+
+    """upsert condition"""
+    on_conflict: builds_on_conflict
+  ): builds
+
+  """
+  insert data into the table: "findings"
+  """
+  insert_findings(
+    """the rows to be inserted"""
+    objects: [findings_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: findings_on_conflict
+  ): findings_mutation_response
+
+  """
+  insert a single row into the table: "findings"
+  """
+  insert_findings_one(
+    """the row to be inserted"""
+    object: findings_insert_input!
+
+    """upsert condition"""
+    on_conflict: findings_on_conflict
+  ): findings
+
+  """
+  insert data into the table: "github_repositories"
+  """
+  insert_github_repositories(
+    """the rows to be inserted"""
+    objects: [github_repositories_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: github_repositories_on_conflict
+  ): github_repositories_mutation_response
+
+  """
+  insert a single row into the table: "github_repositories"
+  """
+  insert_github_repositories_one(
+    """the row to be inserted"""
+    object: github_repositories_insert_input!
+
+    """upsert condition"""
+    on_conflict: github_repositories_on_conflict
+  ): github_repositories
+
+  """
+  insert data into the table: "guide_related_guides"
+  """
+  insert_guide_related_guides(
+    """the rows to be inserted"""
+    objects: [guide_related_guides_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: guide_related_guides_on_conflict
+  ): guide_related_guides_mutation_response
+
+  """
+  insert a single row into the table: "guide_related_guides"
+  """
+  insert_guide_related_guides_one(
+    """the row to be inserted"""
+    object: guide_related_guides_insert_input!
+
+    """upsert condition"""
+    on_conflict: guide_related_guides_on_conflict
+  ): guide_related_guides
+
+  """
+  insert data into the table: "guide_vulnerabilities"
+  """
+  insert_guide_vulnerabilities(
+    """the rows to be inserted"""
+    objects: [guide_vulnerabilities_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: guide_vulnerabilities_on_conflict
+  ): guide_vulnerabilities_mutation_response
+
+  """
+  insert a single row into the table: "guide_vulnerabilities"
+  """
+  insert_guide_vulnerabilities_one(
+    """the row to be inserted"""
+    object: guide_vulnerabilities_insert_input!
+
+    """upsert condition"""
+    on_conflict: guide_vulnerabilities_on_conflict
+  ): guide_vulnerabilities
+
+  """
+  insert data into the table: "guides"
+  """
+  insert_guides(
+    """the rows to be inserted"""
+    objects: [guides_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: guides_on_conflict
+  ): guides_mutation_response
+
+  """
+  insert data into the table: "manifests"
+  """
+  insert_manifests(
+    """the rows to be inserted"""
+    objects: [manifests_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: manifests_on_conflict
+  ): manifests_mutation_response
+
+  """
+  insert a single row into the table: "manifests"
+  """
+  insert_manifests_one(
+    """the row to be inserted"""
+    object: manifests_insert_input!
+
+    """upsert condition"""
+    on_conflict: manifests_on_conflict
+  ): manifests
+
+  """
+  insert data into the table: "organization_user"
+  """
+  insert_organization_user(
+    """the rows to be inserted"""
+    objects: [organization_user_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: organization_user_on_conflict
+  ): organization_user_mutation_response
+
+  """
+  insert a single row into the table: "organization_user"
+  """
+  insert_organization_user_one(
+    """the row to be inserted"""
+    object: organization_user_insert_input!
+
+    """upsert condition"""
+    on_conflict: organization_user_on_conflict
+  ): organization_user
+
+  """
+  insert data into the table: "organizations"
+  """
+  insert_organizations(
+    """the rows to be inserted"""
+    objects: [organizations_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: organizations_on_conflict
+  ): organizations_mutation_response
+
+  """
+  insert a single row into the table: "organizations"
+  """
+  insert_organizations_one(
+    """the row to be inserted"""
+    object: organizations_insert_input!
+
+    """upsert condition"""
+    on_conflict: organizations_on_conflict
+  ): organizations
+
+  """
+  insert data into the table: "package_versions"
+  """
+  insert_package_versions(
+    """the rows to be inserted"""
+    objects: [package_versions_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: package_versions_on_conflict
+  ): package_versions_mutation_response
+
+  """
+  insert a single row into the table: "package_versions"
+  """
+  insert_package_versions_one(
+    """the row to be inserted"""
+    object: package_versions_insert_input!
+
+    """upsert condition"""
+    on_conflict: package_versions_on_conflict
+  ): package_versions
+
+  """
+  insert data into the table: "projects"
+  """
+  insert_projects(
+    """the rows to be inserted"""
+    objects: [projects_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: projects_on_conflict
+  ): projects_mutation_response
+
+  """
+  insert a single row into the table: "projects"
+  """
+  insert_projects_one(
+    """the row to be inserted"""
+    object: projects_insert_input!
+
+    """upsert condition"""
+    on_conflict: projects_on_conflict
+  ): projects
+
+  """
+  insert data into the table: "scans"
+  """
+  insert_scans(
+    """the rows to be inserted"""
+    objects: [scans_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: scans_on_conflict
+  ): scans_mutation_response
+
+  """
+  insert a single row into the table: "scans"
+  """
+  insert_scans_one(
+    """the row to be inserted"""
+    object: scans_insert_input!
+
+    """upsert condition"""
+    on_conflict: scans_on_conflict
+  ): scans
+
+  """
+  insert data into the table: "users"
+  """
+  insert_users(
+    """the rows to be inserted"""
+    objects: [users_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: users_on_conflict
+  ): users_mutation_response
+
+  """
+  insert a single row into the table: "users"
+  """
+  insert_users_one(
+    """the row to be inserted"""
+    object: users_insert_input!
+
+    """upsert condition"""
+    on_conflict: users_on_conflict
+  ): users
+
+  """
+  insert data into the table: "vulnerabilities"
+  """
+  insert_vulnerabilities(
+    """the rows to be inserted"""
+    objects: [vulnerabilities_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vulnerabilities_on_conflict
+  ): vulnerabilities_mutation_response
+
+  """
+  insert a single row into the table: "vulnerabilities"
+  """
+  insert_vulnerabilities_one(
+    """the row to be inserted"""
+    object: vulnerabilities_insert_input!
+
+    """upsert condition"""
+    on_conflict: vulnerabilities_on_conflict
+  ): vulnerabilities
+
+  """
+  insert data into the table: "vulnerability_packages"
+  """
+  insert_vulnerability_packages(
+    """the rows to be inserted"""
+    objects: [vulnerability_packages_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vulnerability_packages_on_conflict
+  ): vulnerability_packages_mutation_response
+
+  """
+  insert a single row into the table: "vulnerability_packages"
+  """
+  insert_vulnerability_packages_one(
+    """the row to be inserted"""
+    object: vulnerability_packages_insert_input!
+
+    """upsert condition"""
+    on_conflict: vulnerability_packages_on_conflict
+  ): vulnerability_packages
+
+  """
+  insert data into the table: "webhook_cache"
+  """
+  insert_webhook_cache(
+    """the rows to be inserted"""
+    objects: [webhook_cache_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: webhook_cache_on_conflict
+  ): webhook_cache_mutation_response
+
+  """
+  insert a single row into the table: "webhook_cache"
+  """
+  insert_webhook_cache_one(
+    """the row to be inserted"""
+    object: webhook_cache_insert_input!
+
+    """upsert condition"""
+    on_conflict: webhook_cache_on_conflict
+  ): webhook_cache
+  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
+
+  """
+  update data of the table: "builds"
+  """
+  update_builds(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: builds_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: builds_set_input
+
+    """filter the rows which have to be updated"""
+    where: builds_bool_exp!
+  ): builds_mutation_response
+
+  """
+  update single row of the table: "builds"
+  """
+  update_builds_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: builds_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: builds_set_input
+    pk_columns: builds_pk_columns_input!
+  ): builds
+
+  """
+  update data of the table: "findings"
+  """
+  update_findings(
+    """sets the columns of the filtered rows to the given values"""
+    _set: findings_set_input
+
+    """filter the rows which have to be updated"""
+    where: findings_bool_exp!
+  ): findings_mutation_response
+
+  """
+  update single row of the table: "findings"
+  """
+  update_findings_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: findings_set_input
+    pk_columns: findings_pk_columns_input!
+  ): findings
+
+  """
+  update data of the table: "github_repositories"
+  """
+  update_github_repositories(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: github_repositories_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: github_repositories_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: github_repositories_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: github_repositories_delete_key_input
+
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: github_repositories_inc_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: github_repositories_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: github_repositories_set_input
+
+    """filter the rows which have to be updated"""
+    where: github_repositories_bool_exp!
+  ): github_repositories_mutation_response
+
+  """
+  update data of the table: "guide_related_guides"
+  """
+  update_guide_related_guides(
+    """sets the columns of the filtered rows to the given values"""
+    _set: guide_related_guides_set_input
+
+    """filter the rows which have to be updated"""
+    where: guide_related_guides_bool_exp!
+  ): guide_related_guides_mutation_response
+
+  """
+  update single row of the table: "guide_related_guides"
+  """
+  update_guide_related_guides_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: guide_related_guides_set_input
+    pk_columns: guide_related_guides_pk_columns_input!
+  ): guide_related_guides
+
+  """
+  update data of the table: "guide_vulnerabilities"
+  """
+  update_guide_vulnerabilities(
+    """sets the columns of the filtered rows to the given values"""
+    _set: guide_vulnerabilities_set_input
+
+    """filter the rows which have to be updated"""
+    where: guide_vulnerabilities_bool_exp!
+  ): guide_vulnerabilities_mutation_response
+
+  """
+  update single row of the table: "guide_vulnerabilities"
+  """
+  update_guide_vulnerabilities_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: guide_vulnerabilities_set_input
+    pk_columns: guide_vulnerabilities_pk_columns_input!
+  ): guide_vulnerabilities
+
+  """
+  update data of the table: "guides"
+  """
+  update_guides(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: guides_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: guides_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: guides_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: guides_delete_key_input
+
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: guides_inc_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: guides_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: guides_set_input
+
+    """filter the rows which have to be updated"""
+    where: guides_bool_exp!
+  ): guides_mutation_response
+
+  """
+  update data of the table: "manifests"
+  """
+  update_manifests(
+    """sets the columns of the filtered rows to the given values"""
+    _set: manifests_set_input
+
+    """filter the rows which have to be updated"""
+    where: manifests_bool_exp!
+  ): manifests_mutation_response
+
+  """
+  update single row of the table: "manifests"
+  """
+  update_manifests_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: manifests_set_input
+    pk_columns: manifests_pk_columns_input!
+  ): manifests
+
+  """
+  update data of the table: "organization_user"
+  """
+  update_organization_user(
+    """sets the columns of the filtered rows to the given values"""
+    _set: organization_user_set_input
+
+    """filter the rows which have to be updated"""
+    where: organization_user_bool_exp!
+  ): organization_user_mutation_response
+
+  """
+  update single row of the table: "organization_user"
+  """
+  update_organization_user_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: organization_user_set_input
+    pk_columns: organization_user_pk_columns_input!
+  ): organization_user
+
+  """
+  update data of the table: "organizations"
+  """
+  update_organizations(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: organizations_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: organizations_set_input
+
+    """filter the rows which have to be updated"""
+    where: organizations_bool_exp!
+  ): organizations_mutation_response
+
+  """
+  update single row of the table: "organizations"
+  """
+  update_organizations_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: organizations_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: organizations_set_input
+    pk_columns: organizations_pk_columns_input!
+  ): organizations
+
+  """
+  update data of the table: "package_versions"
+  """
+  update_package_versions(
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_versions_set_input
+
+    """filter the rows which have to be updated"""
+    where: package_versions_bool_exp!
+  ): package_versions_mutation_response
+
+  """
+  update single row of the table: "package_versions"
+  """
+  update_package_versions_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_versions_set_input
+    pk_columns: package_versions_pk_columns_input!
+  ): package_versions
+
+  """
+  update data of the table: "projects"
+  """
+  update_projects(
+    """sets the columns of the filtered rows to the given values"""
+    _set: projects_set_input
+
+    """filter the rows which have to be updated"""
+    where: projects_bool_exp!
+  ): projects_mutation_response
+
+  """
+  update single row of the table: "projects"
+  """
+  update_projects_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: projects_set_input
+    pk_columns: projects_pk_columns_input!
+  ): projects
+
+  """
+  update data of the table: "scans"
+  """
+  update_scans(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: scans_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: scans_set_input
+
+    """filter the rows which have to be updated"""
+    where: scans_bool_exp!
+  ): scans_mutation_response
+
+  """
+  update single row of the table: "scans"
+  """
+  update_scans_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: scans_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: scans_set_input
+    pk_columns: scans_pk_columns_input!
+  ): scans
+
+  """
+  update data of the table: "users"
+  """
+  update_users(
+    """sets the columns of the filtered rows to the given values"""
+    _set: users_set_input
+
+    """filter the rows which have to be updated"""
+    where: users_bool_exp!
+  ): users_mutation_response
+
+  """
+  update single row of the table: "users"
+  """
+  update_users_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: users_set_input
+    pk_columns: users_pk_columns_input!
+  ): users
+
+  """
+  update data of the table: "vulnerabilities"
+  """
+  update_vulnerabilities(
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerabilities_set_input
+
+    """filter the rows which have to be updated"""
+    where: vulnerabilities_bool_exp!
+  ): vulnerabilities_mutation_response
+
+  """
+  update single row of the table: "vulnerabilities"
+  """
+  update_vulnerabilities_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerabilities_set_input
+    pk_columns: vulnerabilities_pk_columns_input!
+  ): vulnerabilities
+
+  """
+  update data of the table: "vulnerability_packages"
+  """
+  update_vulnerability_packages(
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_packages_set_input
+
+    """filter the rows which have to be updated"""
+    where: vulnerability_packages_bool_exp!
+  ): vulnerability_packages_mutation_response
+
+  """
+  update single row of the table: "vulnerability_packages"
+  """
+  update_vulnerability_packages_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_packages_set_input
+    pk_columns: vulnerability_packages_pk_columns_input!
+  ): vulnerability_packages
+
+  """
+  update data of the table: "webhook_cache"
+  """
+  update_webhook_cache(
+    """sets the columns of the filtered rows to the given values"""
+    _set: webhook_cache_set_input
+
+    """filter the rows which have to be updated"""
+    where: webhook_cache_bool_exp!
+  ): webhook_cache_mutation_response
+
+  """
+  update single row of the table: "webhook_cache"
+  """
+  update_webhook_cache_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: webhook_cache_set_input
+    pk_columns: webhook_cache_pk_columns_input!
+  ): webhook_cache
+}
+
+scalar numeric
+
+"""
+Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'.
+"""
+input numeric_comparison_exp {
+  _eq: numeric
+  _gt: numeric
+  _gte: numeric
+  _in: [numeric!]
+  _is_null: Boolean
+  _lt: numeric
+  _lte: numeric
+  _neq: numeric
+  _nin: [numeric!]
+}
+
+"""column ordering options"""
+enum order_by {
+  """in ascending order, nulls last"""
+  asc
+
+  """in ascending order, nulls first"""
+  asc_nulls_first
+
+  """in ascending order, nulls last"""
+  asc_nulls_last
+
+  """in descending order, nulls first"""
+  desc
+
+  """in descending order, nulls first"""
+  desc_nulls_first
+
+  """in descending order, nulls last"""
+  desc_nulls_last
+}
+
+"""join table"""
+type organization_user {
+  created_at: timestamptz!
+  id: uuid!
+
+  """An object relationship"""
+  organization: organizations!
+  organization_id: uuid!
+  role: organization_user_role!
+  updated_at: timestamptz!
+
+  """An object relationship"""
+  user: users!
+  user_id: uuid!
+}
+
+"""
+order by aggregate values of table "organization_user"
+"""
+input organization_user_aggregate_order_by {
+  count: order_by
+  max: organization_user_max_order_by
+  min: organization_user_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "organization_user"
+"""
+input organization_user_arr_rel_insert_input {
+  data: [organization_user_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: organization_user_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "organization_user". All fields are combined with a logical 'AND'.
+"""
+input organization_user_bool_exp {
+  _and: [organization_user_bool_exp!]
+  _not: organization_user_bool_exp
+  _or: [organization_user_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  organization: organizations_bool_exp
+  organization_id: uuid_comparison_exp
+  role: organization_user_role_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  user: users_bool_exp
+  user_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "organization_user"
+"""
+enum organization_user_constraint {
+  """unique or primary key constraint"""
+  organization_user_pkey
+
+  """unique or primary key constraint"""
+  organization_user_user_id_organization_id_key
+}
+
+"""
+input type for inserting data into table "organization_user"
+"""
+input organization_user_insert_input {
+  created_at: timestamptz
+  id: uuid
+  organization: organizations_obj_rel_insert_input
+  organization_id: uuid
+  role: organization_user_role
+  updated_at: timestamptz
+  user: users_obj_rel_insert_input
+  user_id: uuid
+}
+
+"""
+order by max() on columns of table "organization_user"
+"""
+input organization_user_max_order_by {
+  created_at: order_by
+  id: order_by
+  organization_id: order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""
+order by min() on columns of table "organization_user"
+"""
+input organization_user_min_order_by {
+  created_at: order_by
+  id: order_by
+  organization_id: order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "organization_user"
+"""
+type organization_user_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [organization_user!]!
+}
+
+"""
+on_conflict condition type for table "organization_user"
+"""
+input organization_user_on_conflict {
+  constraint: organization_user_constraint!
+  update_columns: [organization_user_update_column!]! = []
+  where: organization_user_bool_exp
+}
+
+"""Ordering options when selecting data from "organization_user"."""
+input organization_user_order_by {
+  created_at: order_by
+  id: order_by
+  organization: organizations_order_by
+  organization_id: order_by
+  role: order_by
+  updated_at: order_by
+  user: users_order_by
+  user_id: order_by
+}
+
+"""primary key columns input for table: organization_user"""
+input organization_user_pk_columns_input {
+  id: uuid!
+}
+
+scalar organization_user_role
+
+"""
+Boolean expression to compare columns of type "organization_user_role". All fields are combined with logical 'AND'.
+"""
+input organization_user_role_comparison_exp {
+  _eq: organization_user_role
+  _gt: organization_user_role
+  _gte: organization_user_role
+  _in: [organization_user_role!]
+  _is_null: Boolean
+  _lt: organization_user_role
+  _lte: organization_user_role
+  _neq: organization_user_role
+  _nin: [organization_user_role!]
+}
+
+"""
+select columns of table "organization_user"
+"""
+enum organization_user_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  organization_id
+
+  """column name"""
+  role
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "organization_user"
+"""
+input organization_user_set_input {
+  created_at: timestamptz
+  id: uuid
+  organization_id: uuid
+  role: organization_user_role
+  updated_at: timestamptz
+  user_id: uuid
+}
+
+"""
+update columns of table "organization_user"
+"""
+enum organization_user_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  organization_id
+
+  """column name"""
+  role
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  user_id
+}
+
+"""
+columns and relationships of "organizations"
+"""
+type organizations {
+  createdAt: timestamp!
+
+  """An object relationship"""
+  creator: users
+  creator_id: uuid
+  github_id: Int
+  github_node_id: String
+  id: uuid!
+  installation_id: Int
+  name: String!
+
+  """An array relationship"""
+  organization_users(
+    """distinct select on columns"""
+    distinct_on: [organization_user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [organization_user_order_by!]
+
+    """filter the rows returned"""
+    where: organization_user_bool_exp
+  ): [organization_user!]!
+
+  """An array relationship"""
+  projects(
+    """distinct select on columns"""
+    distinct_on: [projects_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [projects_order_by!]
+
+    """filter the rows returned"""
+    where: projects_bool_exp
+  ): [projects!]!
+  settings_id: uuid
+}
+
+"""
+aggregated selection of "organizations"
+"""
+type organizations_aggregate {
+  aggregate: organizations_aggregate_fields
+  nodes: [organizations!]!
+}
+
+"""
+aggregate fields of "organizations"
+"""
+type organizations_aggregate_fields {
+  avg: organizations_avg_fields
+  count(columns: [organizations_select_column!], distinct: Boolean): Int!
+  max: organizations_max_fields
+  min: organizations_min_fields
+  stddev: organizations_stddev_fields
+  stddev_pop: organizations_stddev_pop_fields
+  stddev_samp: organizations_stddev_samp_fields
+  sum: organizations_sum_fields
+  var_pop: organizations_var_pop_fields
+  var_samp: organizations_var_samp_fields
+  variance: organizations_variance_fields
+}
+
+"""aggregate avg on columns"""
+type organizations_avg_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""
+Boolean expression to filter rows from the table "organizations". All fields are combined with a logical 'AND'.
+"""
+input organizations_bool_exp {
+  _and: [organizations_bool_exp!]
+  _not: organizations_bool_exp
+  _or: [organizations_bool_exp!]
+  createdAt: timestamp_comparison_exp
+  creator: users_bool_exp
+  creator_id: uuid_comparison_exp
+  github_id: Int_comparison_exp
+  github_node_id: String_comparison_exp
+  id: uuid_comparison_exp
+  installation_id: Int_comparison_exp
+  name: String_comparison_exp
+  organization_users: organization_user_bool_exp
+  projects: projects_bool_exp
+  settings_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "organizations"
+"""
+enum organizations_constraint {
+  """unique or primary key constraint"""
+  organizations_github_id_key
+
+  """unique or primary key constraint"""
+  organizations_github_node_id_key
+
+  """unique or primary key constraint"""
+  organizations_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "organizations"
+"""
+input organizations_inc_input {
+  github_id: Int
+  installation_id: Int
+}
+
+"""
+input type for inserting data into table "organizations"
+"""
+input organizations_insert_input {
+  createdAt: timestamp
+  creator: users_obj_rel_insert_input
+  creator_id: uuid
+  github_id: Int
+  github_node_id: String
+  github_owner_type: String
+  id: uuid
+  installation_id: Int
+  name: String
+  organization_users: organization_user_arr_rel_insert_input
+  projects: projects_arr_rel_insert_input
+  settings_id: uuid
+}
+
+"""aggregate max on columns"""
+type organizations_max_fields {
+  createdAt: timestamp
+  creator_id: uuid
+  github_id: Int
+  github_node_id: String
+  id: uuid
+  installation_id: Int
+  name: String
+  settings_id: uuid
+}
+
+"""aggregate min on columns"""
+type organizations_min_fields {
+  createdAt: timestamp
+  creator_id: uuid
+  github_id: Int
+  github_node_id: String
+  id: uuid
+  installation_id: Int
+  name: String
+  settings_id: uuid
+}
+
+"""
+response of any mutation on the table "organizations"
+"""
+type organizations_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [organizations!]!
+}
+
+"""
+input type for inserting object relation for remote table "organizations"
+"""
+input organizations_obj_rel_insert_input {
+  data: organizations_insert_input!
+
+  """upsert condition"""
+  on_conflict: organizations_on_conflict
+}
+
+"""
+on_conflict condition type for table "organizations"
+"""
+input organizations_on_conflict {
+  constraint: organizations_constraint!
+  update_columns: [organizations_update_column!]! = []
+  where: organizations_bool_exp
+}
+
+"""Ordering options when selecting data from "organizations"."""
+input organizations_order_by {
+  createdAt: order_by
+  creator: users_order_by
+  creator_id: order_by
+  github_id: order_by
+  github_node_id: order_by
+  id: order_by
+  installation_id: order_by
+  name: order_by
+  organization_users_aggregate: organization_user_aggregate_order_by
+  projects_aggregate: projects_aggregate_order_by
+  settings_id: order_by
+}
+
+"""primary key columns input for table: organizations"""
+input organizations_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "organizations"
+"""
+enum organizations_select_column {
+  """column name"""
+  createdAt
+
+  """column name"""
+  creator_id
+
+  """column name"""
+  github_id
+
+  """column name"""
+  github_node_id
+
+  """column name"""
+  id
+
+  """column name"""
+  installation_id
+
+  """column name"""
+  name
+
+  """column name"""
+  settings_id
+}
+
+"""
+input type for updating data in table "organizations"
+"""
+input organizations_set_input {
+  createdAt: timestamp
+  creator_id: uuid
+  github_id: Int
+  github_node_id: String
+  github_owner_type: String
+  id: uuid
+  installation_id: Int
+  name: String
+  settings_id: uuid
+}
+
+"""aggregate stddev on columns"""
+type organizations_stddev_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""aggregate stddev_pop on columns"""
+type organizations_stddev_pop_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""aggregate stddev_samp on columns"""
+type organizations_stddev_samp_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""aggregate sum on columns"""
+type organizations_sum_fields {
+  github_id: Int
+  installation_id: Int
+}
+
+"""
+update columns of table "organizations"
+"""
+enum organizations_update_column {
+  """column name"""
+  createdAt
+
+  """column name"""
+  creator_id
+
+  """column name"""
+  github_id
+
+  """column name"""
+  github_node_id
+
+  """column name"""
+  github_owner_type
+
+  """column name"""
+  id
+
+  """column name"""
+  installation_id
+
+  """column name"""
+  name
+
+  """column name"""
+  settings_id
+}
+
+"""aggregate var_pop on columns"""
+type organizations_var_pop_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""aggregate var_samp on columns"""
+type organizations_var_samp_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""aggregate variance on columns"""
+type organizations_variance_fields {
+  github_id: Float
+  installation_id: Float
+}
+
+"""
+columns and relationships of "package_versions"
+"""
+type package_versions {
+  cpes: _text!
+
+  """An array relationship"""
+  findings(
+    """distinct select on columns"""
+    distinct_on: [findings_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [findings_order_by!]
+
+    """filter the rows returned"""
+    where: findings_bool_exp
+  ): [findings!]!
+  fix_state: String!
+  fixed_in_versions: _text!
+  id: uuid!
+  pkg_slug: String!
+  slug: String!
+  version_constraint: String!
+  version_format: String!
+
+  """An object relationship"""
+  vulnerability_package: vulnerability_packages!
+}
+
+"""
+order by aggregate values of table "package_versions"
+"""
+input package_versions_aggregate_order_by {
+  count: order_by
+  max: package_versions_max_order_by
+  min: package_versions_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "package_versions"
+"""
+input package_versions_arr_rel_insert_input {
+  data: [package_versions_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: package_versions_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "package_versions". All fields are combined with a logical 'AND'.
+"""
+input package_versions_bool_exp {
+  _and: [package_versions_bool_exp!]
+  _not: package_versions_bool_exp
+  _or: [package_versions_bool_exp!]
+  cpes: _text_comparison_exp
+  findings: findings_bool_exp
+  fix_state: String_comparison_exp
+  fixed_in_versions: _text_comparison_exp
+  id: uuid_comparison_exp
+  pkg_slug: String_comparison_exp
+  slug: String_comparison_exp
+  version_constraint: String_comparison_exp
+  version_format: String_comparison_exp
+  vulnerability_package: vulnerability_packages_bool_exp
+}
+
+"""
+unique or primary key constraints on table "package_versions"
+"""
+enum package_versions_constraint {
+  """unique or primary key constraint"""
+  package_versions_pkey
+
+  """unique or primary key constraint"""
+  package_versions_slug_key
+}
+
+"""
+input type for inserting data into table "package_versions"
+"""
+input package_versions_insert_input {
+  findings: findings_arr_rel_insert_input
+  slug: String
+  vulnerability_package: vulnerability_packages_obj_rel_insert_input
+}
+
+"""
+order by max() on columns of table "package_versions"
+"""
+input package_versions_max_order_by {
+  fix_state: order_by
+  id: order_by
+  pkg_slug: order_by
+  slug: order_by
+  version_constraint: order_by
+  version_format: order_by
+}
+
+"""
+order by min() on columns of table "package_versions"
+"""
+input package_versions_min_order_by {
+  fix_state: order_by
+  id: order_by
+  pkg_slug: order_by
+  slug: order_by
+  version_constraint: order_by
+  version_format: order_by
+}
+
+"""
+response of any mutation on the table "package_versions"
+"""
+type package_versions_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [package_versions!]!
+}
+
+"""
+input type for inserting object relation for remote table "package_versions"
+"""
+input package_versions_obj_rel_insert_input {
+  data: package_versions_insert_input!
+
+  """upsert condition"""
+  on_conflict: package_versions_on_conflict
+}
+
+"""
+on_conflict condition type for table "package_versions"
+"""
+input package_versions_on_conflict {
+  constraint: package_versions_constraint!
+  update_columns: [package_versions_update_column!]! = []
+  where: package_versions_bool_exp
+}
+
+"""Ordering options when selecting data from "package_versions"."""
+input package_versions_order_by {
+  cpes: order_by
+  findings_aggregate: findings_aggregate_order_by
+  fix_state: order_by
+  fixed_in_versions: order_by
+  id: order_by
+  pkg_slug: order_by
+  slug: order_by
+  version_constraint: order_by
+  version_format: order_by
+  vulnerability_package: vulnerability_packages_order_by
+}
+
+"""primary key columns input for table: package_versions"""
+input package_versions_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "package_versions"
+"""
+enum package_versions_select_column {
+  """column name"""
+  cpes
+
+  """column name"""
+  fix_state
+
+  """column name"""
+  fixed_in_versions
+
+  """column name"""
+  id
+
+  """column name"""
+  pkg_slug
+
+  """column name"""
+  slug
+
+  """column name"""
+  version_constraint
+
+  """column name"""
+  version_format
+}
+
+"""
+input type for updating data in table "package_versions"
+"""
+input package_versions_set_input {
+  slug: String
+}
+
+"""
+update columns of table "package_versions"
+"""
+enum package_versions_update_column {
+  """column name"""
+  slug
+}
+
+"""
+columns and relationships of "project_access_tokens"
+"""
+type project_access_tokens {
+  access_token: uuid!
+
+  """An object relationship"""
+  created_by_user: identities
+  id: uuid!
+
+  """An object relationship"""
+  project: projects!
+  project_uuid: uuid!
+}
+
+"""
+order by aggregate values of table "project_access_tokens"
+"""
+input project_access_tokens_aggregate_order_by {
+  count: order_by
+  max: project_access_tokens_max_order_by
+  min: project_access_tokens_min_order_by
+}
+
+"""
+Boolean expression to filter rows from the table "project_access_tokens". All fields are combined with a logical 'AND'.
+"""
+input project_access_tokens_bool_exp {
+  _and: [project_access_tokens_bool_exp!]
+  _not: project_access_tokens_bool_exp
+  _or: [project_access_tokens_bool_exp!]
+  access_token: uuid_comparison_exp
+  created_by_user: identities_bool_exp
+  id: uuid_comparison_exp
+  project: projects_bool_exp
+  project_uuid: uuid_comparison_exp
+}
+
+"""
+order by max() on columns of table "project_access_tokens"
+"""
+input project_access_tokens_max_order_by {
+  access_token: order_by
+  id: order_by
+  project_uuid: order_by
+}
+
+"""
+order by min() on columns of table "project_access_tokens"
+"""
+input project_access_tokens_min_order_by {
+  access_token: order_by
+  id: order_by
+  project_uuid: order_by
+}
+
+"""Ordering options when selecting data from "project_access_tokens"."""
+input project_access_tokens_order_by {
+  access_token: order_by
+  created_by_user: identities_order_by
+  id: order_by
+  project: projects_order_by
+  project_uuid: order_by
+}
+
+"""
+select columns of table "project_access_tokens"
+"""
+enum project_access_tokens_select_column {
+  """column name"""
+  access_token
+
+  """column name"""
+  id
+
+  """column name"""
+  project_uuid
+}
+
+"""
+columns and relationships of "projects"
+"""
+type projects {
+  """An array relationship"""
+  builds(
+    """distinct select on columns"""
+    distinct_on: [builds_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [builds_order_by!]
+
+    """filter the rows returned"""
+    where: builds_bool_exp
+  ): [builds!]!
+  created_at: timestamp!
+
+  """An array relationship"""
+  github_repositories(
+    """distinct select on columns"""
+    distinct_on: [github_repositories_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [github_repositories_order_by!]
+
+    """filter the rows returned"""
+    where: github_repositories_bool_exp
+  ): [github_repositories!]!
+
+  """An object relationship"""
+  github_repository: github_repositories
+  id: uuid!
+
+  """An array relationship"""
+  ignored_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): [ignored_vulnerabilities!]!
+
+  """An array relationship"""
+  manifests(
+    """distinct select on columns"""
+    distinct_on: [manifests_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [manifests_order_by!]
+
+    """filter the rows returned"""
+    where: manifests_bool_exp
+  ): [manifests!]!
+  name: String!
+
+  """An object relationship"""
+  organization: organizations
+  organization_id: uuid
+
+  """An array relationship"""
+  project_access_tokens(
+    """distinct select on columns"""
+    distinct_on: [project_access_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [project_access_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: project_access_tokens_bool_exp
+  ): [project_access_tokens!]!
+  repo: String
+
+  """An array relationship"""
+  reports(
+    """distinct select on columns"""
+    distinct_on: [project_access_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [project_access_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: project_access_tokens_bool_exp
+  ): [project_access_tokens!]!
+  settings_id: uuid
+}
+
+"""
+order by aggregate values of table "projects"
+"""
+input projects_aggregate_order_by {
+  count: order_by
+  max: projects_max_order_by
+  min: projects_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "projects"
+"""
+input projects_arr_rel_insert_input {
+  data: [projects_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: projects_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "projects". All fields are combined with a logical 'AND'.
+"""
+input projects_bool_exp {
+  _and: [projects_bool_exp!]
+  _not: projects_bool_exp
+  _or: [projects_bool_exp!]
+  builds: builds_bool_exp
+  created_at: timestamp_comparison_exp
+  github_repositories: github_repositories_bool_exp
+  github_repository: github_repositories_bool_exp
+  id: uuid_comparison_exp
+  ignored_vulnerabilities: ignored_vulnerabilities_bool_exp
+  manifests: manifests_bool_exp
+  name: String_comparison_exp
+  organization: organizations_bool_exp
+  organization_id: uuid_comparison_exp
+  project_access_tokens: project_access_tokens_bool_exp
+  repo: String_comparison_exp
+  reports: project_access_tokens_bool_exp
+  settings_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "projects"
+"""
+enum projects_constraint {
+  """unique or primary key constraint"""
+  projects_name_organization_id_key
+
+  """unique or primary key constraint"""
+  projects_pkey
+}
+
+"""
+input type for inserting data into table "projects"
+"""
+input projects_insert_input {
+  builds: builds_arr_rel_insert_input
+  created_at: timestamp
+  github_repositories: github_repositories_arr_rel_insert_input
+  github_repository: github_repositories_obj_rel_insert_input
+  id: uuid
+  manifests: manifests_arr_rel_insert_input
+  name: String
+  organization: organizations_obj_rel_insert_input
+  organization_id: uuid
+  repo: String
+  settings_id: uuid
+}
+
+"""
+order by max() on columns of table "projects"
+"""
+input projects_max_order_by {
+  created_at: order_by
+  id: order_by
+  name: order_by
+  organization_id: order_by
+  repo: order_by
+  settings_id: order_by
+}
+
+"""
+order by min() on columns of table "projects"
+"""
+input projects_min_order_by {
+  created_at: order_by
+  id: order_by
+  name: order_by
+  organization_id: order_by
+  repo: order_by
+  settings_id: order_by
+}
+
+"""
+response of any mutation on the table "projects"
+"""
+type projects_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [projects!]!
+}
+
+"""
+input type for inserting object relation for remote table "projects"
+"""
+input projects_obj_rel_insert_input {
+  data: projects_insert_input!
+
+  """upsert condition"""
+  on_conflict: projects_on_conflict
+}
+
+"""
+on_conflict condition type for table "projects"
+"""
+input projects_on_conflict {
+  constraint: projects_constraint!
+  update_columns: [projects_update_column!]! = []
+  where: projects_bool_exp
+}
+
+"""Ordering options when selecting data from "projects"."""
+input projects_order_by {
+  builds_aggregate: builds_aggregate_order_by
+  created_at: order_by
+  github_repositories_aggregate: github_repositories_aggregate_order_by
+  github_repository: github_repositories_order_by
+  id: order_by
+  ignored_vulnerabilities_aggregate: ignored_vulnerabilities_aggregate_order_by
+  manifests_aggregate: manifests_aggregate_order_by
+  name: order_by
+  organization: organizations_order_by
+  organization_id: order_by
+  project_access_tokens_aggregate: project_access_tokens_aggregate_order_by
+  repo: order_by
+  reports_aggregate: project_access_tokens_aggregate_order_by
+  settings_id: order_by
+}
+
+"""primary key columns input for table: projects"""
+input projects_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "projects"
+"""
+enum projects_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  organization_id
+
+  """column name"""
+  repo
+
+  """column name"""
+  settings_id
+}
+
+"""
+input type for updating data in table "projects"
+"""
+input projects_set_input {
+  created_at: timestamp
+  id: uuid
+  name: String
+  organization_id: uuid
+  repo: String
+  settings_id: uuid
+}
+
+"""
+update columns of table "projects"
+"""
+enum projects_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  organization_id
+
+  """column name"""
+  repo
+
+  """column name"""
+  settings_id
+}
+
+type query_root {
+  authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
+
+  """An array relationship"""
+  builds(
+    """distinct select on columns"""
+    distinct_on: [builds_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [builds_order_by!]
+
+    """filter the rows returned"""
+    where: builds_bool_exp
+  ): [builds!]!
+
+  """fetch data from the table: "builds" using primary key columns"""
+  builds_by_pk(id: uuid!): builds
+  fakeQueryToHackHasuraBeingABuggyMess: String
+
+  """An array relationship"""
+  findings(
+    """distinct select on columns"""
+    distinct_on: [findings_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [findings_order_by!]
+
+    """filter the rows returned"""
+    where: findings_bool_exp
+  ): [findings!]!
+
+  """fetch data from the table: "findings" using primary key columns"""
+  findings_by_pk(id: uuid!): findings
+
+  """An array relationship"""
+  github_repositories(
+    """distinct select on columns"""
+    distinct_on: [github_repositories_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [github_repositories_order_by!]
+
+    """filter the rows returned"""
+    where: github_repositories_bool_exp
+  ): [github_repositories!]!
+
+  """
+  fetch data from the table: "guide_related_guides"
+  """
+  guide_related_guides(
+    """distinct select on columns"""
+    distinct_on: [guide_related_guides_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [guide_related_guides_order_by!]
+
+    """filter the rows returned"""
+    where: guide_related_guides_bool_exp
+  ): [guide_related_guides!]!
+
+  """
+  fetch data from the table: "guide_related_guides" using primary key columns
+  """
+  guide_related_guides_by_pk(id: uuid!): guide_related_guides
+
+  """An array relationship"""
+  guide_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [guide_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [guide_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: guide_vulnerabilities_bool_exp
+  ): [guide_vulnerabilities!]!
+
+  """
+  fetch data from the table: "guide_vulnerabilities" using primary key columns
+  """
+  guide_vulnerabilities_by_pk(id: uuid!): guide_vulnerabilities
+
+  """
+  fetch data from the table: "identities"
+  """
+  identities(
+    """distinct select on columns"""
+    distinct_on: [identities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identities_order_by!]
+
+    """filter the rows returned"""
+    where: identities_bool_exp
+  ): [identities!]!
+
+  """fetch data from the table: "identities" using primary key columns"""
+  identities_by_pk(id: uuid!): identities
+
+  """An array relationship"""
+  identity_verifiable_addresses(
+    """distinct select on columns"""
+    distinct_on: [identity_verifiable_addresses_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_verifiable_addresses_order_by!]
+
+    """filter the rows returned"""
+    where: identity_verifiable_addresses_bool_exp
+  ): [identity_verifiable_addresses!]!
+
+  """
+  fetch data from the table: "identity_verifiable_addresses" using primary key columns
+  """
+  identity_verifiable_addresses_by_pk(id: uuid!): identity_verifiable_addresses
+
+  """An array relationship"""
+  ignored_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): [ignored_vulnerabilities!]!
+
+  """
+  fetch data from the table: "ignored_vulnerabilities" using primary key columns
+  """
+  ignored_vulnerabilities_by_pk(id: uuid!): ignored_vulnerabilities
+
+  """An array relationship"""
+  manifests(
+    """distinct select on columns"""
+    distinct_on: [manifests_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [manifests_order_by!]
+
+    """filter the rows returned"""
+    where: manifests_bool_exp
+  ): [manifests!]!
+
+  """fetch data from the table: "manifests" using primary key columns"""
+  manifests_by_pk(id: uuid!): manifests
+
+  """
+  fetch data from the table: "organization_user"
+  """
+  organization_user(
+    """distinct select on columns"""
+    distinct_on: [organization_user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [organization_user_order_by!]
+
+    """filter the rows returned"""
+    where: organization_user_bool_exp
+  ): [organization_user!]!
+
+  """
+  fetch data from the table: "organization_user" using primary key columns
+  """
+  organization_user_by_pk(id: uuid!): organization_user
+
+  """
+  fetch data from the table: "organizations"
+  """
+  organizations(
+    """distinct select on columns"""
+    distinct_on: [organizations_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [organizations_order_by!]
+
+    """filter the rows returned"""
+    where: organizations_bool_exp
+  ): [organizations!]!
+
+  """
+  fetch aggregated fields from the table: "organizations"
+  """
+  organizations_aggregate(
+    """distinct select on columns"""
+    distinct_on: [organizations_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [organizations_order_by!]
+
+    """filter the rows returned"""
+    where: organizations_bool_exp
+  ): organizations_aggregate!
+
+  """fetch data from the table: "organizations" using primary key columns"""
+  organizations_by_pk(id: uuid!): organizations
+
+  """An array relationship"""
+  package_versions(
+    """distinct select on columns"""
+    distinct_on: [package_versions_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_versions_order_by!]
+
+    """filter the rows returned"""
+    where: package_versions_bool_exp
+  ): [package_versions!]!
+
+  """
+  fetch data from the table: "package_versions" using primary key columns
+  """
+  package_versions_by_pk(id: uuid!): package_versions
+  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
+
+  """An array relationship"""
+  project_access_tokens(
+    """distinct select on columns"""
+    distinct_on: [project_access_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [project_access_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: project_access_tokens_bool_exp
+  ): [project_access_tokens!]!
+
+  """
+  fetch data from the table: "project_access_tokens" using primary key columns
+  """
+  project_access_tokens_by_pk(id: uuid!): project_access_tokens
+
+  """An array relationship"""
+  projects(
+    """distinct select on columns"""
+    distinct_on: [projects_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [projects_order_by!]
+
+    """filter the rows returned"""
+    where: projects_bool_exp
+  ): [projects!]!
+
+  """fetch data from the table: "projects" using primary key columns"""
+  projects_by_pk(id: uuid!): projects
+
+  """An array relationship"""
+  related_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [related_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [related_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: related_vulnerabilities_bool_exp
+  ): [related_vulnerabilities!]!
+
+  """
+  fetch data from the table: "related_vulnerabilities" using primary key columns
+  """
+  related_vulnerabilities_by_pk(id: uuid!): related_vulnerabilities
+  sbomUrl(buildId: uuid!): String
+
+  """An array relationship"""
+  scans(
+    """distinct select on columns"""
+    distinct_on: [scans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scans_order_by!]
+
+    """filter the rows returned"""
+    where: scans_bool_exp
+  ): [scans!]!
+
+  """fetch data from the table: "scans" using primary key columns"""
+  scans_by_pk(id: uuid!): scans
+
+  """
+  fetch data from the table: "users"
+  """
+  users(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): [users!]!
+
+  """fetch data from the table: "users" using primary key columns"""
+  users_by_pk(id: uuid!): users
+
+  """
+  fetch data from the table: "vulnerabilities"
+  """
+  vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerabilities_bool_exp
+  ): [vulnerabilities!]!
+
+  """
+  fetch aggregated fields from the table: "vulnerabilities"
+  """
+  vulnerabilities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerabilities_bool_exp
+  ): vulnerabilities_aggregate!
+
+  """fetch data from the table: "vulnerabilities" using primary key columns"""
+  vulnerabilities_by_pk(id: uuid!): vulnerabilities
+
+  """An array relationship"""
+  vulnerability_packages(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_packages_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_packages_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_packages_bool_exp
+  ): [vulnerability_packages!]!
+
+  """
+  fetch data from the table: "vulnerability_packages" using primary key columns
+  """
+  vulnerability_packages_by_pk(id: uuid!): vulnerability_packages
+
+  """
+  fetch data from the table: "webhook_cache"
+  """
+  webhook_cache(
+    """distinct select on columns"""
+    distinct_on: [webhook_cache_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [webhook_cache_order_by!]
+
+    """filter the rows returned"""
+    where: webhook_cache_bool_exp
+  ): [webhook_cache!]!
+
+  """fetch data from the table: "webhook_cache" using primary key columns"""
+  webhook_cache_by_pk(delivery_id: uuid!): webhook_cache
+}
+
+"""join table for adding holding additional vulns on a finding"""
+type related_vulnerabilities {
+  id: uuid!
+
+  """An object relationship"""
+  parent: vulnerabilities!
+  related_vulnerability_slug: String!
+
+  """An object relationship"""
+  vulnerability: vulnerabilities!
+
+  """An object relationship"""
+  vulnerabilityByVulnerabilitySlug: vulnerabilities!
+  vulnerability_slug: String!
+}
+
+"""
+order by aggregate values of table "related_vulnerabilities"
+"""
+input related_vulnerabilities_aggregate_order_by {
+  count: order_by
+  max: related_vulnerabilities_max_order_by
+  min: related_vulnerabilities_min_order_by
+}
+
+"""
+Boolean expression to filter rows from the table "related_vulnerabilities". All fields are combined with a logical 'AND'.
+"""
+input related_vulnerabilities_bool_exp {
+  _and: [related_vulnerabilities_bool_exp!]
+  _not: related_vulnerabilities_bool_exp
+  _or: [related_vulnerabilities_bool_exp!]
+  id: uuid_comparison_exp
+  parent: vulnerabilities_bool_exp
+  related_vulnerability_slug: String_comparison_exp
+  vulnerability: vulnerabilities_bool_exp
+  vulnerabilityByVulnerabilitySlug: vulnerabilities_bool_exp
+  vulnerability_slug: String_comparison_exp
+}
+
+"""
+order by max() on columns of table "related_vulnerabilities"
+"""
+input related_vulnerabilities_max_order_by {
+  id: order_by
+  related_vulnerability_slug: order_by
+  vulnerability_slug: order_by
+}
+
+"""
+order by min() on columns of table "related_vulnerabilities"
+"""
+input related_vulnerabilities_min_order_by {
+  id: order_by
+  related_vulnerability_slug: order_by
+  vulnerability_slug: order_by
+}
+
+"""Ordering options when selecting data from "related_vulnerabilities"."""
+input related_vulnerabilities_order_by {
+  id: order_by
+  parent: vulnerabilities_order_by
+  related_vulnerability_slug: order_by
+  vulnerability: vulnerabilities_order_by
+  vulnerabilityByVulnerabilitySlug: vulnerabilities_order_by
+  vulnerability_slug: order_by
+}
+
+"""
+select columns of table "related_vulnerabilities"
+"""
+enum related_vulnerabilities_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  related_vulnerability_slug
+
+  """column name"""
+  vulnerability_slug
+}
+
+"""An individual time a scan was run on a build"""
+type scans {
+  """An object relationship"""
+  build: builds!
+  build_id: uuid!
+  created_at: timestamp!
+  db_date: date!
+  distro_name: String!
+  distro_version: String!
+
+  """An array relationship"""
+  findings(
+    """distinct select on columns"""
+    distinct_on: [findings_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [findings_order_by!]
+
+    """filter the rows returned"""
+    where: findings_bool_exp
+  ): [findings!]!
+  grype_version: String!
+  id: uuid!
+  scan_number: Int
+  source_type: String!
+  target: String!
+}
+
+"""
+order by aggregate values of table "scans"
+"""
+input scans_aggregate_order_by {
+  avg: scans_avg_order_by
+  count: order_by
+  max: scans_max_order_by
+  min: scans_min_order_by
+  stddev: scans_stddev_order_by
+  stddev_pop: scans_stddev_pop_order_by
+  stddev_samp: scans_stddev_samp_order_by
+  sum: scans_sum_order_by
+  var_pop: scans_var_pop_order_by
+  var_samp: scans_var_samp_order_by
+  variance: scans_variance_order_by
+}
+
+"""
+input type for inserting array relation for remote table "scans"
+"""
+input scans_arr_rel_insert_input {
+  data: [scans_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: scans_on_conflict
+}
+
+"""
+order by avg() on columns of table "scans"
+"""
+input scans_avg_order_by {
+  scan_number: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "scans". All fields are combined with a logical 'AND'.
+"""
+input scans_bool_exp {
+  _and: [scans_bool_exp!]
+  _not: scans_bool_exp
+  _or: [scans_bool_exp!]
+  build: builds_bool_exp
+  build_id: uuid_comparison_exp
+  created_at: timestamp_comparison_exp
+  db_date: date_comparison_exp
+  distro_name: String_comparison_exp
+  distro_version: String_comparison_exp
+  findings: findings_bool_exp
+  grype_version: String_comparison_exp
+  id: uuid_comparison_exp
+  scan_number: Int_comparison_exp
+  source_type: String_comparison_exp
+  target: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "scans"
+"""
+enum scans_constraint {
+  """unique or primary key constraint"""
+  scans_pkey
+
+  """unique or primary key constraint"""
+  scans_scan_number_build_id_key
+}
+
+"""
+input type for incrementing numeric columns in table "scans"
+"""
+input scans_inc_input {
+  scan_number: Int
+}
+
+"""
+input type for inserting data into table "scans"
+"""
+input scans_insert_input {
+  build: builds_obj_rel_insert_input
+  build_id: uuid
+  created_at: timestamp
+  db_date: date
+  distro_name: String
+  distro_version: String
+  findings: findings_arr_rel_insert_input
+  grype_version: String
+  id: uuid
+  scan_number: Int
+  source_type: String
+  target: String
+}
+
+"""
+order by max() on columns of table "scans"
+"""
+input scans_max_order_by {
+  build_id: order_by
+  created_at: order_by
+  db_date: order_by
+  distro_name: order_by
+  distro_version: order_by
+  grype_version: order_by
+  id: order_by
+  scan_number: order_by
+  source_type: order_by
+  target: order_by
+}
+
+"""
+order by min() on columns of table "scans"
+"""
+input scans_min_order_by {
+  build_id: order_by
+  created_at: order_by
+  db_date: order_by
+  distro_name: order_by
+  distro_version: order_by
+  grype_version: order_by
+  id: order_by
+  scan_number: order_by
+  source_type: order_by
+  target: order_by
+}
+
+"""
+response of any mutation on the table "scans"
+"""
+type scans_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [scans!]!
+}
+
+"""
+input type for inserting object relation for remote table "scans"
+"""
+input scans_obj_rel_insert_input {
+  data: scans_insert_input!
+
+  """upsert condition"""
+  on_conflict: scans_on_conflict
+}
+
+"""
+on_conflict condition type for table "scans"
+"""
+input scans_on_conflict {
+  constraint: scans_constraint!
+  update_columns: [scans_update_column!]! = []
+  where: scans_bool_exp
+}
+
+"""Ordering options when selecting data from "scans"."""
+input scans_order_by {
+  build: builds_order_by
+  build_id: order_by
+  created_at: order_by
+  db_date: order_by
+  distro_name: order_by
+  distro_version: order_by
+  findings_aggregate: findings_aggregate_order_by
+  grype_version: order_by
+  id: order_by
+  scan_number: order_by
+  source_type: order_by
+  target: order_by
+}
+
+"""primary key columns input for table: scans"""
+input scans_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "scans"
+"""
+enum scans_select_column {
+  """column name"""
+  build_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  db_date
+
+  """column name"""
+  distro_name
+
+  """column name"""
+  distro_version
+
+  """column name"""
+  grype_version
+
+  """column name"""
+  id
+
+  """column name"""
+  scan_number
+
+  """column name"""
+  source_type
+
+  """column name"""
+  target
+}
+
+"""
+input type for updating data in table "scans"
+"""
+input scans_set_input {
+  build_id: uuid
+  created_at: timestamp
+  db_date: date
+  distro_name: String
+  distro_version: String
+  grype_version: String
+  id: uuid
+  scan_number: Int
+  source_type: String
+  target: String
+}
+
+"""
+order by stddev() on columns of table "scans"
+"""
+input scans_stddev_order_by {
+  scan_number: order_by
+}
+
+"""
+order by stddev_pop() on columns of table "scans"
+"""
+input scans_stddev_pop_order_by {
+  scan_number: order_by
+}
+
+"""
+order by stddev_samp() on columns of table "scans"
+"""
+input scans_stddev_samp_order_by {
+  scan_number: order_by
+}
+
+"""
+order by sum() on columns of table "scans"
+"""
+input scans_sum_order_by {
+  scan_number: order_by
+}
+
+"""
+update columns of table "scans"
+"""
+enum scans_update_column {
+  """column name"""
+  build_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  db_date
+
+  """column name"""
+  distro_name
+
+  """column name"""
+  distro_version
+
+  """column name"""
+  grype_version
+
+  """column name"""
+  id
+
+  """column name"""
+  scan_number
+
+  """column name"""
+  source_type
+
+  """column name"""
+  target
+}
+
+"""
+order by var_pop() on columns of table "scans"
+"""
+input scans_var_pop_order_by {
+  scan_number: order_by
+}
+
+"""
+order by var_samp() on columns of table "scans"
+"""
+input scans_var_samp_order_by {
+  scan_number: order_by
+}
+
+"""
+order by variance() on columns of table "scans"
+"""
+input scans_variance_order_by {
+  scan_number: order_by
+}
+
+scalar severity_enum
+
+"""
+Boolean expression to compare columns of type "severity_enum". All fields are combined with logical 'AND'.
+"""
+input severity_enum_comparison_exp {
+  _eq: severity_enum
+  _gt: severity_enum
+  _gte: severity_enum
+  _in: [severity_enum!]
+  _is_null: Boolean
+  _lt: severity_enum
+  _lte: severity_enum
+  _neq: severity_enum
+  _nin: [severity_enum!]
+}
+
+type subscription_root {
+  """An array relationship"""
+  builds(
+    """distinct select on columns"""
+    distinct_on: [builds_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [builds_order_by!]
+
+    """filter the rows returned"""
+    where: builds_bool_exp
+  ): [builds!]!
+
+  """fetch data from the table: "builds" using primary key columns"""
+  builds_by_pk(id: uuid!): builds
+
+  """An array relationship"""
+  findings(
+    """distinct select on columns"""
+    distinct_on: [findings_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [findings_order_by!]
+
+    """filter the rows returned"""
+    where: findings_bool_exp
+  ): [findings!]!
+
+  """fetch data from the table: "findings" using primary key columns"""
+  findings_by_pk(id: uuid!): findings
+
+  """An array relationship"""
+  github_repositories(
+    """distinct select on columns"""
+    distinct_on: [github_repositories_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [github_repositories_order_by!]
+
+    """filter the rows returned"""
+    where: github_repositories_bool_exp
+  ): [github_repositories!]!
+
+  """
+  fetch data from the table: "guide_related_guides"
+  """
+  guide_related_guides(
+    """distinct select on columns"""
+    distinct_on: [guide_related_guides_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [guide_related_guides_order_by!]
+
+    """filter the rows returned"""
+    where: guide_related_guides_bool_exp
+  ): [guide_related_guides!]!
+
+  """
+  fetch data from the table: "guide_related_guides" using primary key columns
+  """
+  guide_related_guides_by_pk(id: uuid!): guide_related_guides
+
+  """An array relationship"""
+  guide_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [guide_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [guide_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: guide_vulnerabilities_bool_exp
+  ): [guide_vulnerabilities!]!
+
+  """
+  fetch data from the table: "guide_vulnerabilities" using primary key columns
+  """
+  guide_vulnerabilities_by_pk(id: uuid!): guide_vulnerabilities
+
+  """
+  fetch data from the table: "identities"
+  """
+  identities(
+    """distinct select on columns"""
+    distinct_on: [identities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identities_order_by!]
+
+    """filter the rows returned"""
+    where: identities_bool_exp
+  ): [identities!]!
+
+  """fetch data from the table: "identities" using primary key columns"""
+  identities_by_pk(id: uuid!): identities
+
+  """An array relationship"""
+  identity_verifiable_addresses(
+    """distinct select on columns"""
+    distinct_on: [identity_verifiable_addresses_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [identity_verifiable_addresses_order_by!]
+
+    """filter the rows returned"""
+    where: identity_verifiable_addresses_bool_exp
+  ): [identity_verifiable_addresses!]!
+
+  """
+  fetch data from the table: "identity_verifiable_addresses" using primary key columns
+  """
+  identity_verifiable_addresses_by_pk(id: uuid!): identity_verifiable_addresses
+
+  """An array relationship"""
+  ignored_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): [ignored_vulnerabilities!]!
+
+  """
+  fetch data from the table: "ignored_vulnerabilities" using primary key columns
+  """
+  ignored_vulnerabilities_by_pk(id: uuid!): ignored_vulnerabilities
+
+  """An array relationship"""
+  manifests(
+    """distinct select on columns"""
+    distinct_on: [manifests_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [manifests_order_by!]
+
+    """filter the rows returned"""
+    where: manifests_bool_exp
+  ): [manifests!]!
+
+  """fetch data from the table: "manifests" using primary key columns"""
+  manifests_by_pk(id: uuid!): manifests
+
+  """
+  fetch data from the table: "organization_user"
+  """
+  organization_user(
+    """distinct select on columns"""
+    distinct_on: [organization_user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [organization_user_order_by!]
+
+    """filter the rows returned"""
+    where: organization_user_bool_exp
+  ): [organization_user!]!
+
+  """
+  fetch data from the table: "organization_user" using primary key columns
+  """
+  organization_user_by_pk(id: uuid!): organization_user
+
+  """
+  fetch data from the table: "organizations"
+  """
+  organizations(
+    """distinct select on columns"""
+    distinct_on: [organizations_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [organizations_order_by!]
+
+    """filter the rows returned"""
+    where: organizations_bool_exp
+  ): [organizations!]!
+
+  """
+  fetch aggregated fields from the table: "organizations"
+  """
+  organizations_aggregate(
+    """distinct select on columns"""
+    distinct_on: [organizations_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [organizations_order_by!]
+
+    """filter the rows returned"""
+    where: organizations_bool_exp
+  ): organizations_aggregate!
+
+  """fetch data from the table: "organizations" using primary key columns"""
+  organizations_by_pk(id: uuid!): organizations
+
+  """An array relationship"""
+  package_versions(
+    """distinct select on columns"""
+    distinct_on: [package_versions_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_versions_order_by!]
+
+    """filter the rows returned"""
+    where: package_versions_bool_exp
+  ): [package_versions!]!
+
+  """
+  fetch data from the table: "package_versions" using primary key columns
+  """
+  package_versions_by_pk(id: uuid!): package_versions
+
+  """An array relationship"""
+  project_access_tokens(
+    """distinct select on columns"""
+    distinct_on: [project_access_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [project_access_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: project_access_tokens_bool_exp
+  ): [project_access_tokens!]!
+
+  """
+  fetch data from the table: "project_access_tokens" using primary key columns
+  """
+  project_access_tokens_by_pk(id: uuid!): project_access_tokens
+
+  """An array relationship"""
+  projects(
+    """distinct select on columns"""
+    distinct_on: [projects_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [projects_order_by!]
+
+    """filter the rows returned"""
+    where: projects_bool_exp
+  ): [projects!]!
+
+  """fetch data from the table: "projects" using primary key columns"""
+  projects_by_pk(id: uuid!): projects
+
+  """An array relationship"""
+  related_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [related_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [related_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: related_vulnerabilities_bool_exp
+  ): [related_vulnerabilities!]!
+
+  """
+  fetch data from the table: "related_vulnerabilities" using primary key columns
+  """
+  related_vulnerabilities_by_pk(id: uuid!): related_vulnerabilities
+
+  """An array relationship"""
+  scans(
+    """distinct select on columns"""
+    distinct_on: [scans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scans_order_by!]
+
+    """filter the rows returned"""
+    where: scans_bool_exp
+  ): [scans!]!
+
+  """fetch data from the table: "scans" using primary key columns"""
+  scans_by_pk(id: uuid!): scans
+
+  """
+  fetch data from the table: "users"
+  """
+  users(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): [users!]!
+
+  """fetch data from the table: "users" using primary key columns"""
+  users_by_pk(id: uuid!): users
+
+  """
+  fetch data from the table: "vulnerabilities"
+  """
+  vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerabilities_bool_exp
+  ): [vulnerabilities!]!
+
+  """
+  fetch aggregated fields from the table: "vulnerabilities"
+  """
+  vulnerabilities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerabilities_bool_exp
+  ): vulnerabilities_aggregate!
+
+  """fetch data from the table: "vulnerabilities" using primary key columns"""
+  vulnerabilities_by_pk(id: uuid!): vulnerabilities
+
+  """An array relationship"""
+  vulnerability_packages(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_packages_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_packages_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_packages_bool_exp
+  ): [vulnerability_packages!]!
+
+  """
+  fetch data from the table: "vulnerability_packages" using primary key columns
+  """
+  vulnerability_packages_by_pk(id: uuid!): vulnerability_packages
+
+  """
+  fetch data from the table: "webhook_cache"
+  """
+  webhook_cache(
+    """distinct select on columns"""
+    distinct_on: [webhook_cache_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [webhook_cache_order_by!]
+
+    """filter the rows returned"""
+    where: webhook_cache_bool_exp
+  ): [webhook_cache!]!
+
+  """fetch data from the table: "webhook_cache" using primary key columns"""
+  webhook_cache_by_pk(delivery_id: uuid!): webhook_cache
+}
+
+scalar timestamp
+
+"""
+Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'.
+"""
+input timestamp_comparison_exp {
+  _eq: timestamp
+  _gt: timestamp
+  _gte: timestamp
+  _in: [timestamp!]
+  _is_null: Boolean
+  _lt: timestamp
+  _lte: timestamp
+  _neq: timestamp
+  _nin: [timestamp!]
+}
+
+scalar timestamptz
+
+"""
+Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
+"""
+input timestamptz_comparison_exp {
+  _eq: timestamptz
+  _gt: timestamptz
+  _gte: timestamptz
+  _in: [timestamptz!]
+  _is_null: Boolean
+  _lt: timestamptz
+  _lte: timestamptz
+  _neq: timestamptz
+  _nin: [timestamptz!]
+}
+
+scalar user_role
+
+"""
+Boolean expression to compare columns of type "user_role". All fields are combined with logical 'AND'.
+"""
+input user_role_comparison_exp {
+  _eq: user_role
+  _gt: user_role
+  _gte: user_role
+  _in: [user_role!]
+  _is_null: Boolean
+  _lt: user_role
+  _lte: user_role
+  _neq: user_role
+  _nin: [user_role!]
+}
+
+"""
+LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.)
+"""
+type users {
+  github_id: String
+  github_node_id: String
+  id: uuid!
+  kratos_id: uuid
+
+  """An object relationship"""
+  kratos_identity: identities
+  role: user_role!
+}
+
+"""
+Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'.
+"""
+input users_bool_exp {
+  _and: [users_bool_exp!]
+  _not: users_bool_exp
+  _or: [users_bool_exp!]
+  github_id: String_comparison_exp
+  github_node_id: String_comparison_exp
+  id: uuid_comparison_exp
+  kratos_id: uuid_comparison_exp
+  kratos_identity: identities_bool_exp
+  role: user_role_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "users"
+"""
+enum users_constraint {
+  """unique or primary key constraint"""
+  users_github_id_key
+
+  """unique or primary key constraint"""
+  users_github_node_id_key
+
+  """unique or primary key constraint"""
+  users_kratos_id_unique
+
+  """unique or primary key constraint"""
+  users_pkey
+}
+
+"""
+input type for inserting data into table "users"
+"""
+input users_insert_input {
+  github_id: String
+  github_node_id: String
+  id: uuid
+  kratos_id: uuid
+}
+
+"""
+response of any mutation on the table "users"
+"""
+type users_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [users!]!
+}
+
+"""
+input type for inserting object relation for remote table "users"
+"""
+input users_obj_rel_insert_input {
+  data: users_insert_input!
+
+  """upsert condition"""
+  on_conflict: users_on_conflict
+}
+
+"""
+on_conflict condition type for table "users"
+"""
+input users_on_conflict {
+  constraint: users_constraint!
+  update_columns: [users_update_column!]! = []
+  where: users_bool_exp
+}
+
+"""Ordering options when selecting data from "users"."""
+input users_order_by {
+  github_id: order_by
+  github_node_id: order_by
+  id: order_by
+  kratos_id: order_by
+  kratos_identity: identities_order_by
+  role: order_by
+}
+
+"""primary key columns input for table: users"""
+input users_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "users"
+"""
+enum users_select_column {
+  """column name"""
+  github_id
+
+  """column name"""
+  github_node_id
+
+  """column name"""
+  id
+
+  """column name"""
+  kratos_id
+
+  """column name"""
+  role
+}
+
+"""
+input type for updating data in table "users"
+"""
+input users_set_input {
+  github_id: String
+  github_node_id: String
+  id: uuid
+  kratos_id: uuid
+}
+
+"""
+update columns of table "users"
+"""
+enum users_update_column {
+  """column name"""
+  github_id
+
+  """column name"""
+  github_node_id
+
+  """column name"""
+  id
+
+  """column name"""
+  kratos_id
+}
+
+scalar uuid
+
+"""
+Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
+"""
+input uuid_comparison_exp {
+  _eq: uuid
+  _gt: uuid
+  _gte: uuid
+  _in: [uuid!]
+  _is_null: Boolean
+  _lt: uuid
+  _lte: uuid
+  _neq: uuid
+  _nin: [uuid!]
+}
+
+"""
+columns and relationships of "vulnerabilities"
+"""
+type vulnerabilities {
+  created_at: timestamp!
+  cvss_exploitability_score: numeric
+  cvss_impact_score: numeric
+  cvss_inferred: Boolean
+  cvss_score: numeric
+  cvss_version: String
+  data_source: String!
+  description: String
+
+  """An array relationship"""
+  findings(
+    """distinct select on columns"""
+    distinct_on: [findings_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [findings_order_by!]
+
+    """filter the rows returned"""
+    where: findings_bool_exp
+  ): [findings!]!
+
+  """An array relationship"""
+  guide_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [guide_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [guide_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: guide_vulnerabilities_bool_exp
+  ): [guide_vulnerabilities!]!
+  id: uuid!
+
+  """An array relationship"""
+  ignored_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): [ignored_vulnerabilities!]!
+  name: String!
+  namespace: String!
+  record_source: String
+
+  """An array relationship"""
+  related_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [related_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [related_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: related_vulnerabilities_bool_exp
+  ): [related_vulnerabilities!]!
+
+  """An array relationship"""
+  reverse_related_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [related_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [related_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: related_vulnerabilities_bool_exp
+  ): [related_vulnerabilities!]!
+  severity: severity_enum!
+  slug: String!
+  topic_id: uuid
+  urls: _text
+
+  """An array relationship"""
+  vulnerability_packages(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_packages_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_packages_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_packages_bool_exp
+  ): [vulnerability_packages!]!
+}
+
+"""
+aggregated selection of "vulnerabilities"
+"""
+type vulnerabilities_aggregate {
+  aggregate: vulnerabilities_aggregate_fields
+  nodes: [vulnerabilities!]!
+}
+
+"""
+aggregate fields of "vulnerabilities"
+"""
+type vulnerabilities_aggregate_fields {
+  avg: vulnerabilities_avg_fields
+  count(columns: [vulnerabilities_select_column!], distinct: Boolean): Int!
+  max: vulnerabilities_max_fields
+  min: vulnerabilities_min_fields
+  stddev: vulnerabilities_stddev_fields
+  stddev_pop: vulnerabilities_stddev_pop_fields
+  stddev_samp: vulnerabilities_stddev_samp_fields
+  sum: vulnerabilities_sum_fields
+  var_pop: vulnerabilities_var_pop_fields
+  var_samp: vulnerabilities_var_samp_fields
+  variance: vulnerabilities_variance_fields
+}
+
+"""aggregate avg on columns"""
+type vulnerabilities_avg_fields {
+  cvss_exploitability_score: Float
+  cvss_impact_score: Float
+  cvss_score: Float
+}
+
+"""
+Boolean expression to filter rows from the table "vulnerabilities". All fields are combined with a logical 'AND'.
+"""
+input vulnerabilities_bool_exp {
+  _and: [vulnerabilities_bool_exp!]
+  _not: vulnerabilities_bool_exp
+  _or: [vulnerabilities_bool_exp!]
+  created_at: timestamp_comparison_exp
+  cvss_exploitability_score: numeric_comparison_exp
+  cvss_impact_score: numeric_comparison_exp
+  cvss_inferred: Boolean_comparison_exp
+  cvss_score: numeric_comparison_exp
+  cvss_version: String_comparison_exp
+  data_source: String_comparison_exp
+  description: String_comparison_exp
+  findings: findings_bool_exp
+  guide_vulnerabilities: guide_vulnerabilities_bool_exp
+  id: uuid_comparison_exp
+  ignored_vulnerabilities: ignored_vulnerabilities_bool_exp
+  name: String_comparison_exp
+  namespace: String_comparison_exp
+  record_source: String_comparison_exp
+  related_vulnerabilities: related_vulnerabilities_bool_exp
+  reverse_related_vulnerabilities: related_vulnerabilities_bool_exp
+  severity: severity_enum_comparison_exp
+  slug: String_comparison_exp
+  topic_id: uuid_comparison_exp
+  urls: _text_comparison_exp
+  vulnerability_packages: vulnerability_packages_bool_exp
+}
+
+"""
+unique or primary key constraints on table "vulnerabilities"
+"""
+enum vulnerabilities_constraint {
+  """unique or primary key constraint"""
+  vulnerabilities_pkey
+
+  """unique or primary key constraint"""
+  vulnerabilities_slug_key
+}
+
+"""
+input type for inserting data into table "vulnerabilities"
+"""
+input vulnerabilities_insert_input {
+  findings: findings_arr_rel_insert_input
+  guide_vulnerabilities: guide_vulnerabilities_arr_rel_insert_input
+  slug: String
+  vulnerability_packages: vulnerability_packages_arr_rel_insert_input
+}
+
+"""aggregate max on columns"""
+type vulnerabilities_max_fields {
+  created_at: timestamp
+  cvss_exploitability_score: numeric
+  cvss_impact_score: numeric
+  cvss_score: numeric
+  cvss_version: String
+  data_source: String
+  description: String
+  id: uuid
+  name: String
+  namespace: String
+  record_source: String
+  slug: String
+  topic_id: uuid
+}
+
+"""aggregate min on columns"""
+type vulnerabilities_min_fields {
+  created_at: timestamp
+  cvss_exploitability_score: numeric
+  cvss_impact_score: numeric
+  cvss_score: numeric
+  cvss_version: String
+  data_source: String
+  description: String
+  id: uuid
+  name: String
+  namespace: String
+  record_source: String
+  slug: String
+  topic_id: uuid
+}
+
+"""
+response of any mutation on the table "vulnerabilities"
+"""
+type vulnerabilities_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vulnerabilities!]!
+}
+
+"""
+input type for inserting object relation for remote table "vulnerabilities"
+"""
+input vulnerabilities_obj_rel_insert_input {
+  data: vulnerabilities_insert_input!
+
+  """upsert condition"""
+  on_conflict: vulnerabilities_on_conflict
+}
+
+"""
+on_conflict condition type for table "vulnerabilities"
+"""
+input vulnerabilities_on_conflict {
+  constraint: vulnerabilities_constraint!
+  update_columns: [vulnerabilities_update_column!]! = []
+  where: vulnerabilities_bool_exp
+}
+
+"""Ordering options when selecting data from "vulnerabilities"."""
+input vulnerabilities_order_by {
+  created_at: order_by
+  cvss_exploitability_score: order_by
+  cvss_impact_score: order_by
+  cvss_inferred: order_by
+  cvss_score: order_by
+  cvss_version: order_by
+  data_source: order_by
+  description: order_by
+  findings_aggregate: findings_aggregate_order_by
+  guide_vulnerabilities_aggregate: guide_vulnerabilities_aggregate_order_by
+  id: order_by
+  ignored_vulnerabilities_aggregate: ignored_vulnerabilities_aggregate_order_by
+  name: order_by
+  namespace: order_by
+  record_source: order_by
+  related_vulnerabilities_aggregate: related_vulnerabilities_aggregate_order_by
+  reverse_related_vulnerabilities_aggregate: related_vulnerabilities_aggregate_order_by
+  severity: order_by
+  slug: order_by
+  topic_id: order_by
+  urls: order_by
+  vulnerability_packages_aggregate: vulnerability_packages_aggregate_order_by
+}
+
+"""primary key columns input for table: vulnerabilities"""
+input vulnerabilities_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "vulnerabilities"
+"""
+enum vulnerabilities_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  cvss_exploitability_score
+
+  """column name"""
+  cvss_impact_score
+
+  """column name"""
+  cvss_inferred
+
+  """column name"""
+  cvss_score
+
+  """column name"""
+  cvss_version
+
+  """column name"""
+  data_source
+
+  """column name"""
+  description
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  namespace
+
+  """column name"""
+  record_source
+
+  """column name"""
+  severity
+
+  """column name"""
+  slug
+
+  """column name"""
+  topic_id
+
+  """column name"""
+  urls
+}
+
+"""
+input type for updating data in table "vulnerabilities"
+"""
+input vulnerabilities_set_input {
+  slug: String
+}
+
+"""aggregate stddev on columns"""
+type vulnerabilities_stddev_fields {
+  cvss_exploitability_score: Float
+  cvss_impact_score: Float
+  cvss_score: Float
+}
+
+"""aggregate stddev_pop on columns"""
+type vulnerabilities_stddev_pop_fields {
+  cvss_exploitability_score: Float
+  cvss_impact_score: Float
+  cvss_score: Float
+}
+
+"""aggregate stddev_samp on columns"""
+type vulnerabilities_stddev_samp_fields {
+  cvss_exploitability_score: Float
+  cvss_impact_score: Float
+  cvss_score: Float
+}
+
+"""aggregate sum on columns"""
+type vulnerabilities_sum_fields {
+  cvss_exploitability_score: numeric
+  cvss_impact_score: numeric
+  cvss_score: numeric
+}
+
+"""
+update columns of table "vulnerabilities"
+"""
+enum vulnerabilities_update_column {
+  """column name"""
+  slug
+}
+
+"""aggregate var_pop on columns"""
+type vulnerabilities_var_pop_fields {
+  cvss_exploitability_score: Float
+  cvss_impact_score: Float
+  cvss_score: Float
+}
+
+"""aggregate var_samp on columns"""
+type vulnerabilities_var_samp_fields {
+  cvss_exploitability_score: Float
+  cvss_impact_score: Float
+  cvss_score: Float
+}
+
+"""aggregate variance on columns"""
+type vulnerabilities_variance_fields {
+  cvss_exploitability_score: Float
+  cvss_impact_score: Float
+  cvss_score: Float
+}
+
+"""All of the package vulnerabilities belonging to a given vulnerability"""
+type vulnerability_packages {
+  advisories: String!
+
+  """An array relationship"""
+  findings(
+    """distinct select on columns"""
+    distinct_on: [findings_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [findings_order_by!]
+
+    """filter the rows returned"""
+    where: findings_bool_exp
+  ): [findings!]!
+  id: uuid!
+  name: String
+
+  """An array relationship"""
+  package_versions(
+    """distinct select on columns"""
+    distinct_on: [package_versions_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_versions_order_by!]
+
+    """filter the rows returned"""
+    where: package_versions_bool_exp
+  ): [package_versions!]!
+  slug: String!
+  vuln_slug: String!
+
+  """An object relationship"""
+  vulnerability: vulnerabilities!
+}
+
+"""
+order by aggregate values of table "vulnerability_packages"
+"""
+input vulnerability_packages_aggregate_order_by {
+  count: order_by
+  max: vulnerability_packages_max_order_by
+  min: vulnerability_packages_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "vulnerability_packages"
+"""
+input vulnerability_packages_arr_rel_insert_input {
+  data: [vulnerability_packages_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: vulnerability_packages_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "vulnerability_packages". All fields are combined with a logical 'AND'.
+"""
+input vulnerability_packages_bool_exp {
+  _and: [vulnerability_packages_bool_exp!]
+  _not: vulnerability_packages_bool_exp
+  _or: [vulnerability_packages_bool_exp!]
+  advisories: String_comparison_exp
+  findings: findings_bool_exp
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+  package_versions: package_versions_bool_exp
+  slug: String_comparison_exp
+  vuln_slug: String_comparison_exp
+  vulnerability: vulnerabilities_bool_exp
+}
+
+"""
+unique or primary key constraints on table "vulnerability_packages"
+"""
+enum vulnerability_packages_constraint {
+  """unique or primary key constraint"""
+  vulnerability_packages_pkey
+
+  """unique or primary key constraint"""
+  vulnerability_packages_slug_key
+}
+
+"""
+input type for inserting data into table "vulnerability_packages"
+"""
+input vulnerability_packages_insert_input {
+  findings: findings_arr_rel_insert_input
+  package_versions: package_versions_arr_rel_insert_input
+  slug: String
+  vulnerability: vulnerabilities_obj_rel_insert_input
+}
+
+"""
+order by max() on columns of table "vulnerability_packages"
+"""
+input vulnerability_packages_max_order_by {
+  advisories: order_by
+  id: order_by
+  name: order_by
+  slug: order_by
+  vuln_slug: order_by
+}
+
+"""
+order by min() on columns of table "vulnerability_packages"
+"""
+input vulnerability_packages_min_order_by {
+  advisories: order_by
+  id: order_by
+  name: order_by
+  slug: order_by
+  vuln_slug: order_by
+}
+
+"""
+response of any mutation on the table "vulnerability_packages"
+"""
+type vulnerability_packages_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vulnerability_packages!]!
+}
+
+"""
+input type for inserting object relation for remote table "vulnerability_packages"
+"""
+input vulnerability_packages_obj_rel_insert_input {
+  data: vulnerability_packages_insert_input!
+
+  """upsert condition"""
+  on_conflict: vulnerability_packages_on_conflict
+}
+
+"""
+on_conflict condition type for table "vulnerability_packages"
+"""
+input vulnerability_packages_on_conflict {
+  constraint: vulnerability_packages_constraint!
+  update_columns: [vulnerability_packages_update_column!]! = []
+  where: vulnerability_packages_bool_exp
+}
+
+"""Ordering options when selecting data from "vulnerability_packages"."""
+input vulnerability_packages_order_by {
+  advisories: order_by
+  findings_aggregate: findings_aggregate_order_by
+  id: order_by
+  name: order_by
+  package_versions_aggregate: package_versions_aggregate_order_by
+  slug: order_by
+  vuln_slug: order_by
+  vulnerability: vulnerabilities_order_by
+}
+
+"""primary key columns input for table: vulnerability_packages"""
+input vulnerability_packages_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "vulnerability_packages"
+"""
+enum vulnerability_packages_select_column {
+  """column name"""
+  advisories
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  slug
+
+  """column name"""
+  vuln_slug
+}
+
+"""
+input type for updating data in table "vulnerability_packages"
+"""
+input vulnerability_packages_set_input {
+  slug: String
+}
+
+"""
+update columns of table "vulnerability_packages"
+"""
+enum vulnerability_packages_update_column {
+  """column name"""
+  slug
+}
+
+"""
+columns and relationships of "webhook_cache"
+"""
+type webhook_cache {
+  created_at: timestamp!
+  data(
+    """JSON select path"""
+    path: String
+  ): jsonb!
+  delivery_id: uuid!
+  event_type: github_webhook_event!
+  installation_id: Int
+  signature_256: String!
+  sqs_message_id: String
+}
+
+"""
+Boolean expression to filter rows from the table "webhook_cache". All fields are combined with a logical 'AND'.
+"""
+input webhook_cache_bool_exp {
+  _and: [webhook_cache_bool_exp!]
+  _not: webhook_cache_bool_exp
+  _or: [webhook_cache_bool_exp!]
+  created_at: timestamp_comparison_exp
+  data: jsonb_comparison_exp
+  delivery_id: uuid_comparison_exp
+  event_type: github_webhook_event_comparison_exp
+  installation_id: Int_comparison_exp
+  signature_256: String_comparison_exp
+  sqs_message_id: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "webhook_cache"
+"""
+enum webhook_cache_constraint {
+  """unique or primary key constraint"""
+  webhook_cache_pkey
+}
+
+"""
+input type for inserting data into table "webhook_cache"
+"""
+input webhook_cache_insert_input {
+  created_at: timestamp
+  data: jsonb
+  delivery_id: uuid
+  event_type: github_webhook_event
+  installation_id: Int
+  signature_256: String
+  sqs_message_id: String
+}
+
+"""
+response of any mutation on the table "webhook_cache"
+"""
+type webhook_cache_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [webhook_cache!]!
+}
+
+"""
+on_conflict condition type for table "webhook_cache"
+"""
+input webhook_cache_on_conflict {
+  constraint: webhook_cache_constraint!
+  update_columns: [webhook_cache_update_column!]! = []
+  where: webhook_cache_bool_exp
+}
+
+"""Ordering options when selecting data from "webhook_cache"."""
+input webhook_cache_order_by {
+  created_at: order_by
+  data: order_by
+  delivery_id: order_by
+  event_type: order_by
+  installation_id: order_by
+  signature_256: order_by
+  sqs_message_id: order_by
+}
+
+"""primary key columns input for table: webhook_cache"""
+input webhook_cache_pk_columns_input {
+  delivery_id: uuid!
+}
+
+"""
+select columns of table "webhook_cache"
+"""
+enum webhook_cache_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  data
+
+  """column name"""
+  delivery_id
+
+  """column name"""
+  event_type
+
+  """column name"""
+  installation_id
+
+  """column name"""
+  signature_256
+
+  """column name"""
+  sqs_message_id
+}
+
+"""
+input type for updating data in table "webhook_cache"
+"""
+input webhook_cache_set_input {
+  sqs_message_id: String
+}
+
+"""
+update columns of table "webhook_cache"
+"""
+enum webhook_cache_update_column {
+  """column name"""
+  sqs_message_id
+}

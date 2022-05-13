@@ -15,11 +15,16 @@
 package config
 
 import (
+	"net/http"
+	"os"
+
+	"github.com/Khan/genqlient/graphql"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/config"
+
+	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-	"os"
 )
 
 func defaultLunaSecConfig() types.LunaTraceConfigFile {
@@ -66,5 +71,13 @@ func LoadLunaTraceConfig() (appConfig types.LunaTraceConfig, err error) {
 			Msg("unable populate application config")
 		return
 	}
+
+	// todo remove me
+	gql.TODOClient = graphql.NewClient(appConfig.GraphqlServer.Url, &http.Client{
+		Transport: &gql.HeadersTransport{Headers: map[string]string{
+			"X-LunaTrace-Access-Token": appConfig.ProjectAccessToken,
+		}},
+	})
+
 	return
 }
