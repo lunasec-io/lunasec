@@ -18,7 +18,7 @@ package gql
 
 import (
 	"context"
-	"json"
+	"encoding/json"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"

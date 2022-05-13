@@ -35,6 +35,6 @@ bindings:
   severity_enum:
     type: string
   jsonb:
-    type: json.RawMessage
+    type: encoding/json.RawMessage
   numeric:
-    type: json.Number
+    type: encoding/json.Number
