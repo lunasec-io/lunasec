@@ -12,20 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package graphql
+package deprecated
 
-import (
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-)
+type IdentifyResponse struct {
+	GraphqlErrors
+	Data struct {
+		Method struct {
+			LastHeartbeat string `json:"last_heartbeat"`
+		} `json:"insert_instances_one"`
+	} `json:"data"`
+}
 
-func NewIdentifyRequest(instanceId, agentAccessToken string) types.GraphqlRequest {
-	return types.GraphqlRequest{
-		Query: constants.UpsertInstanceQuery,
-		Variables: map[string]string{
-			"instance_id":        instanceId,
-			"agent_access_token": agentAccessToken,
-		},
-		OperationName: "UpsertInstance",
-	}
+func (s *IdentifyResponse) GetLastHeartbeat() string {
+	return s.Data.Method.LastHeartbeat
 }

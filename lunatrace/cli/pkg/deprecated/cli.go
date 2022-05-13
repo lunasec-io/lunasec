@@ -12,63 +12,58 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package graphql
+package deprecated
 
-import (
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-)
+func NewInsertNewBuildRequest(variables map[string]string) GraphqlRequest {
 
-func NewInsertNewBuildRequest(variables map[string]string) types.GraphqlRequest {
-
-	return types.GraphqlRequest{
-		Query:         constants.InsertNewBuildQuery,
+	return GraphqlRequest{
+		Query:         InsertNewBuildQuery,
 		Variables:     variables,
 		OperationName: "InsertNewBuildQuery",
 	}
 }
 
-func UpdateBuildS3UrlRequest(buildId string, s3Url string) types.GraphqlRequest {
+func UpdateBuildS3UrlRequest(buildId string, s3Url string) GraphqlRequest {
 	variables := map[string]string{
 		"id":     buildId,
 		"s3_url": s3Url,
 	}
 
-	return types.GraphqlRequest{
-		Query:         constants.SetBuildS3UrlQuery,
+	return GraphqlRequest{
+		Query:         SetBuildS3UrlQuery,
 		Variables:     variables,
 		OperationName: "SetBuildS3Url",
 	}
 }
 
-func DeleteBuildRequest(buildId string) types.GraphqlRequest {
+func DeleteBuildRequest(buildId string) GraphqlRequest {
 	variables := map[string]string{
 		"id": buildId,
 	}
 
-	return types.GraphqlRequest{
-		Query:         constants.DeleteBuildQuery,
+	return GraphqlRequest{
+		Query:         DeleteBuildQuery,
 		Variables:     variables,
 		OperationName: "DeleteBuild",
 	}
 }
 
-func PresignSbomUploadRequest(orgId string, buildId string) types.GraphqlRequest {
+func PresignSbomUploadRequest(orgId string, buildId string) GraphqlRequest {
 	variables := map[string]string{
 		"orgId":   orgId,
 		"buildId": buildId,
 	}
 
-	return types.GraphqlRequest{
-		Query:         constants.PresignSbomQuery,
+	return GraphqlRequest{
+		Query:         PresignSbomQuery,
 		Variables:     variables,
 		OperationName: "PresignSbom",
 	}
 }
 
-func NewGetProjectInfoRequest() types.GraphqlRequest {
-	return types.GraphqlRequest{
-		Query:         constants.GetProjectInfoQuery,
+func NewGetProjectInfoRequest() GraphqlRequest {
+	return GraphqlRequest{
+		Query:         GetProjectInfoQuery,
 		Variables:     map[string]string{},
 		OperationName: "GetProjectInfoQuery",
 	}

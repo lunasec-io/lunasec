@@ -16,12 +16,14 @@ package util
 
 import (
 	"fmt"
-	"github.com/go-git/go-git/v5"
-	"github.com/rs/zerolog/log"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/go-git/go-git/v5"
+	"github.com/rs/zerolog/log"
+
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/deprecated"
 )
 
 func RepoNameToDirname(repoName string) string {
@@ -100,7 +102,7 @@ func getRepoRemote(repo *git.Repository) (name string, err error) {
 	return
 }
 
-func CollectRepoMetadata(dir string) (metadata types.RepoMetadata) {
+func CollectRepoMetadata(dir string) (metadata deprecated.RepoMetadata) {
 	repo, err := getRepo(dir)
 	if err != nil {
 		return
@@ -108,7 +110,7 @@ func CollectRepoMetadata(dir string) (metadata types.RepoMetadata) {
 	return CollectRepoMetadataFromObj(repo)
 }
 
-func CollectRepoMetadataFromObj(repo *git.Repository) (metadata types.RepoMetadata) {
+func CollectRepoMetadataFromObj(repo *git.Repository) (metadata deprecated.RepoMetadata) {
 	remote, err := getRepoRemote(repo)
 	if err == nil {
 		metadata.RemoteUrl = remote
