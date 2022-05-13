@@ -12,18 +12,20 @@
  *
  */
 import React, { useState } from 'react';
-import { Container, Nav } from 'react-bootstrap';
-import { Box, Home, Settings } from 'react-feather';
+import { ButtonGroup, Col, Container, Nav, Navbar, Row } from 'react-bootstrap';
+import { Box, Home, Lock, Menu, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
 import api from '../../api';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
+import useBreakpoint from '../../hooks/useBreakpoint';
 
 import { ProjectHeader } from './Header';
 import { Builds } from './builds';
 import { ProjectDashboardMain } from './dashboard/Main';
 import { SecretsMain } from './secrets/Main';
+import { ProjectSettingsMain } from './settings/Main';
 import { ProjectInfo, TabName } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
@@ -33,6 +35,8 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   const { data, isLoading } = api.useGetProjectQuery({
     project_id: project_id as string,
   });
+
+  const isLarge = useBreakpoint('lg');
 
   const [activeTab, setActiveTab] = useState<TabName>('dashboard');
   const renderProjectNav = (p: ProjectInfo) => {
@@ -44,38 +48,52 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
           organizationName={p.organization?.name}
           githubLink={p.github_repository?.traits?.html_url}
         />
-        <Nav className="container-fluid fs-lg" variant="tabs" activeKey={activeTab}>
-          <Nav.Item>
-            <Nav.Link
-              onClick={() => {
-                setActiveTab('dashboard');
-              }}
-              eventKey="dashboard"
-            >
-              <Home size="1em" className="mb-2 me-1" /> Dashboard
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              onClick={() => {
-                setActiveTab('builds');
-              }}
-              eventKey="builds"
-            >
-              <Box size="1em" className="mb-2 me-1" /> Snapshots
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item className="ms-auto">
-            <Nav.Link onClick={() => setActiveTab('secrets')} eventKey="secrets">
-              <Settings size="1em" className="mb-2 me-1" /> Secrets and Keys
-            </Nav.Link>
-          </Nav.Item>
-          {/*<Nav.Item className="ms-auto">*/}
-          {/*  <Nav.Link onClick={() => setActiveTab('settings')} eventKey="settings">*/}
-          {/*    <Settings size="1em" className="mb-2 me-1" /> Settings and Secrets*/}
-          {/*  </Nav.Link>*/}
-          {/*</Nav.Item>*/}
-        </Nav>
+        <Navbar expand="lg" className="p-0 project-nav" collapseOnSelect={true}>
+          <Navbar.Toggle className="m-2" aria-controls="project-tabs-nav">
+            <Menu className="me-1 mb-1" />
+            Menu
+          </Navbar.Toggle>
+          <Navbar.Collapse id="project-tabs-nav p-2">
+            <Nav className="container-fluid fs-lg " variant={isLarge ? 'tabs' : 'pills'} activeKey={activeTab}>
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => {
+                    setActiveTab('dashboard');
+                  }}
+                  eventKey="dashboard"
+                >
+                  <Home size="1em" className="mb-2 me-1" /> Dashboard
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => {
+                    setActiveTab('builds');
+                  }}
+                  eventKey="builds"
+                >
+                  <Box size="1em" className="mb-2 me-1" /> Snapshots
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item className="ms-lg-auto">
+                <Nav.Link onClick={() => setActiveTab('secrets')} eventKey="secrets">
+                  <Lock size="1em" className="mb-2 me-1" /> Secrets and Keys
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link onClick={() => setActiveTab('settings')} eventKey="settings">
+                  <Settings size="1em" className="mb-2 me-1" /> Settings
+                </Nav.Link>
+              </Nav.Item>
+              {/*<Nav.Item className="ms-auto">*/}
+              {/*  <Nav.Link onClick={() => setActiveTab('settings')} eventKey="settings">*/}
+              {/*    <Settings size="1em" className="mb-2 me-1" /> Settings and Secrets*/}
+              {/*  </Nav.Link>*/}
+              {/*</Nav.Item>*/}
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+
         <br />
         {renderProjectSubPage(p)}
       </>
@@ -90,8 +108,8 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
         return <Builds project={p} />;
       case 'secrets':
         return <SecretsMain project={p} />;
-      //{/*case 'settings':*/}
-      //{/*  return <ProjectSettingsMain project={p} />;*/}
+      case 'settings':
+        return <ProjectSettingsMain project={p} />;
       default:
         return <ProjectMain />;
     }
