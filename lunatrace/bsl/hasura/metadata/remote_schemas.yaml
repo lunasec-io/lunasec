@@ -22,8 +22,9 @@
         type AuthenticatedRepoCloneUrlOutput { url: String
         }
 
-        type Mutation { presignManifestUpload(project_id: UUID!): PresignedUrlResponse
-        }
+          type Mutation {
+          	presignManifestUpload(project_id: UUID!): PresignedUrlResponse
+          }
 
         type PresignedUrlResponse { bucket: String!
           headers: JSON!
