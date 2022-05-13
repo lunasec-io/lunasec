@@ -10,3 +10,4 @@ lunatrace/bsl/backend/src/hasura-api/generated.ts linguist-generated merge=ours
 lunatrace/bsl/backend/src/topic-ingester/schemas/generated-schema-1-validator.ts linguist-generated merge=ours
 lunatrace/bsl/frontend/src/api/generated.ts linguist-generated merge=ours
 lunatrace/bsl/generated-lunatrace-tmuxp.yaml linguist-generated merge=ours
+lunatrace/cli/gql/gql.go linguist-generated merge=ours

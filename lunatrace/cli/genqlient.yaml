@@ -3,8 +3,8 @@ schema: ../../schema.graphql
 operations:
   - "**.go"
 
-generated: gen/graphql.go
-package: gen
+generated: gql/gql.go
+package: gql
 
 bindings:
   DateTime:
