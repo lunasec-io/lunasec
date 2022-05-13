@@ -47,7 +47,7 @@ Typically, the CPEs (packages) that are vulnerable are written right into the CV
 So, the scanners check if you have that package or not, and they notify you if you do.  Full stop. The rest is up to you
 to figure out if you're vulnerable, and as mentioned above, you usually aren't, for any number of reasons that we get into below.
 
-We wrote these reasons down, again and again, and in the end realized that the vast majority of these false positives fell into one of a few buckets.
+We wrote these reasons down, again and again, and in the end realized that the vast majority of these false positives fell into one of a few categories.
 Many of them could be eliminated by relatively simple code.
 
 For the most part, we aren't talking about advanced heuristics and static-analysis.
@@ -120,7 +120,7 @@ At the moment, we've written a CLI that can scan and upload data about built con
 we would like to host a container repository (think DockerHub) where people can push their containers to be scanned. 
 
 ## What we have done so far
-We have a [dependency scanning tool](https://lunatrace.lunasec.io/) currently in beta that you can try out.  It has GitHub integration, 
+We have a dependency scanning tool called [LunaTrace](https://lunatrace.lunasec.io/) currently in beta that you can try out.  It has GitHub integration, 
 CLI support to integrate with your CI job, and you can even drag and drop a file, folder, or zipped container right into the web page and get instant results. 
 
 The groundwork is there to start doing the false-positive elimination strategies we've discussed. For whatever reason, existing solutions 
