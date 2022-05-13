@@ -62,6 +62,7 @@
     "@craco/craco": "~6.4.3",
     "@graphql-codegen/cli": "2.3.1",
     "@graphql-codegen/introspection": "2.1.1",
+    "@graphql-codegen/schema-ast": "~2.4.1",
     "@graphql-codegen/typescript": "2.4.2",
     "@graphql-codegen/typescript-operations": "^2.2.2",
     "@graphql-codegen/typescript-rtk-query": "^2.2.2",

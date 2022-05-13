@@ -1,0 +1,15 @@
+schema: ../../schema.graphql
+
+operations:
+  - "**.go"
+
+generated: gen/graphql.go
+package: gen
+
+bindings:
+  DateTime:
+    type: time.Time
+  UUID:
+    type: string
+  uuid:
+    type: string
