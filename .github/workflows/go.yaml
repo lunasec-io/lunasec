@@ -9,7 +9,7 @@ on:
       - go.sum
 
 jobs:
-  test:
+  build:
     strategy:
       matrix:
         go:
@@ -31,5 +31,3 @@ jobs:
             ${{ runner.os }}-golang-${{ matrix.go }}-
       - name: go build
         run: go build ./...
-      - name: go test
-        run: go test ./... || echo "::warning::Go test failed."
