@@ -77,14 +77,17 @@ export async function getRepoCloneUrlWithAuth(
     return newError(msg);
   }
 
-  const cloneUrl = gitRepo.git_url;
+  const gitUrl = gitRepo.git_url;
 
-  const parsedGitUrl = new URL(cloneUrl);
+  const parsedGitUrl = new URL(gitUrl);
   parsedGitUrl.username = 'x-access-token';
   parsedGitUrl.password = installationToken.res;
 
+  // make sure that the url scheme we are using is one that is secure.
+  const cloneUrl = parsedGitUrl.toString().replace('git://', 'https://');
+
   return newResult({
-    cloneUrl: parsedGitUrl.toString(),
+    cloneUrl,
     projectId,
   });
 }

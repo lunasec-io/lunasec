@@ -16,9 +16,9 @@ package snapshot
 
 import (
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 	model "github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot/syftmodel"
+	"github.com/rs/zerolog/log"
 	"sort"
 	"strconv"
 
@@ -189,8 +189,8 @@ func toPackageModel(p pkg.Package) model.Package {
 		licenses = p.Licenses
 	}
 
-	var coordinates = make([]source.Coordinates, len(p.Locations))
-	for i, l := range p.Locations {
+	var coordinates = make([]source.Coordinates, len(p.Locations.ToSlice()))
+	for i, l := range p.Locations.ToSlice() {
 		coordinates[i] = l.Coordinates
 	}
 
