@@ -10636,7 +10636,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-codegen/schema-ast@npm:^2.4.1":
+"@graphql-codegen/schema-ast@npm:^2.4.1, @graphql-codegen/schema-ast@npm:~2.4.1":
   version: 2.4.1
   resolution: "@graphql-codegen/schema-ast@npm:2.4.1"
   dependencies:
@@ -29694,6 +29694,7 @@ __metadata:
     "@craco/craco": ~6.4.3
     "@graphql-codegen/cli": 2.3.1
     "@graphql-codegen/introspection": 2.1.1
+    "@graphql-codegen/schema-ast": ~2.4.1
     "@graphql-codegen/typescript": 2.4.2
     "@graphql-codegen/typescript-operations": ^2.2.2
     "@graphql-codegen/typescript-rtk-query": ^2.2.2
@@ -37433,6 +37434,7 @@ __metadata:
     "@aws-sdk/util-format-url": ^3.46.0
     "@graphql-codegen/cli": 2.3.1
     "@graphql-codegen/introspection": 2.1.1
+    "@graphql-codegen/schema-ast": ~2.4.1
     "@graphql-codegen/typescript": 2.4.2
     "@graphql-codegen/typescript-graphql-request": ^4.4.0
     "@graphql-codegen/typescript-operations": ^2.2.2
