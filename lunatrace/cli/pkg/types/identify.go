@@ -14,8 +14,12 @@
 //
 package types
 
+import (
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/deprecated"
+)
+
 type IdentifyResponse struct {
-	GraphqlErrors
+	deprecated.GraphqlErrors
 	Data struct {
 		Method struct {
 			LastHeartbeat string `json:"last_heartbeat"`

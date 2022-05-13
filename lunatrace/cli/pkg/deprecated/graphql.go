@@ -12,29 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package util
+package deprecated
 
-import (
-	"errors"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-	"strings"
-)
-
-func formatGraphqlErrors(graphqlErrors types.GraphqlErrors) error {
-	var errs []string
-	for _, respErr := range graphqlErrors.Errors {
-		errs = append(errs, respErr.Message)
-	}
-	return errors.New(strings.Join(errs, ", "))
+type GraphqlRequest struct {
+	Query         string            `json:"query"`
+	Variables     map[string]string `json:"variables"`
+	OperationName string            `json:"operationName"`
 }
 
-func GetGraphqlError(err error, graphqlErrors types.GraphqlErrors) error {
-	if err != nil {
-		return err
-	}
-	if len(graphqlErrors.Errors) != 0 {
-		err = formatGraphqlErrors(graphqlErrors)
-		return err
-	}
-	return nil
+type GraphqlError struct {
+	Extensions struct {
+		Path string `json:"path"`
+		Code string `json:"code"`
+	} `json:"extensions"`
+	Message string `json:"message"`
+}
+
+type GraphqlErrors struct {
+	Errors []GraphqlError `json:"errors"`
 }

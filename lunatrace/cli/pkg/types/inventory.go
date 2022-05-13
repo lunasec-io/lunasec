@@ -14,6 +14,10 @@
 //
 package types
 
+import (
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/deprecated"
+)
+
 type RepoMetadata struct {
 	RemoteUrl  string
 	BranchName string
@@ -33,7 +37,7 @@ func (s *RepoMetadata) Merge(remoteUrl, branchName, commitHash string) {
 }
 
 type GetProjectInfoResponse struct {
-	GraphqlErrors
+	deprecated.GraphqlErrors
 	Data struct {
 		Method []struct {
 			Project struct {
@@ -57,7 +61,7 @@ func (s *GetProjectInfoResponse) GetOrganizationId() string {
 }
 
 type NewBuildResponse struct {
-	GraphqlErrors
+	deprecated.GraphqlErrors
 	Data struct {
 		Method struct {
 			Id               string `json:"id"`
@@ -67,7 +71,7 @@ type NewBuildResponse struct {
 }
 
 type SetBuildS3UrlResponse struct {
-	GraphqlErrors
+	deprecated.GraphqlErrors
 	Data struct {
 		Method struct {
 			Id string `json:"id"`
@@ -76,7 +80,7 @@ type SetBuildS3UrlResponse struct {
 }
 
 type DeleteBuildResponse struct {
-	GraphqlErrors
+	deprecated.GraphqlErrors
 	Data struct {
 		Method struct {
 			Id string `json:"id"`
@@ -85,7 +89,7 @@ type DeleteBuildResponse struct {
 }
 
 type PresignSbomResponse struct {
-	GraphqlErrors
+	deprecated.GraphqlErrors
 	Data struct {
 		Method struct {
 			UploadUrl struct {

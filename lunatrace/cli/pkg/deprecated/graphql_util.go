@@ -12,20 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package graphql
+package deprecated
 
 import (
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"errors"
+	"strings"
 )
 
-func NewIdentifyRequest(instanceId, agentAccessToken string) types.GraphqlRequest {
-	return types.GraphqlRequest{
-		Query: constants.UpsertInstanceQuery,
-		Variables: map[string]string{
-			"instance_id":        instanceId,
-			"agent_access_token": agentAccessToken,
-		},
-		OperationName: "UpsertInstance",
+func formatGraphqlErrors(graphqlErrors GraphqlErrors) error {
+	var errs []string
+	for _, respErr := range graphqlErrors.Errors {
+		errs = append(errs, respErr.Message)
 	}
+	return errors.New(strings.Join(errs, ", "))
+}
+
+func GetGraphqlError(err error, graphqlErrors GraphqlErrors) error {
+	if err != nil {
+		return err
+	}
+	if len(graphqlErrors.Errors) != 0 {
+		err = formatGraphqlErrors(graphqlErrors)
+		return err
+	}
+	return nil
 }

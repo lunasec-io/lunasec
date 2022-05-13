@@ -19,13 +19,15 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"errors"
-	"github.com/rs/zerolog/log"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/graphql"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot/syftmodel"
 	"net/http"
 	"net/url"
+
+	"github.com/rs/zerolog/log"
+
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/deprecated"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot/syftmodel"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
 func serializeAndCompressOutput(output syftmodel.Document) (buffer bytes.Buffer, err error) {
@@ -89,13 +91,13 @@ func getOrgAndProjectFromAccessToken(
 
 	headers := getLunaTraceProjectAccessTokenHeaders(projectAccessToken)
 
-	err = graphql.PerformGraphqlRequest(
+	err = deprecated.PerformGraphqlRequest(
 		graphqlServer,
 		headers,
-		graphql.NewGetProjectInfoRequest(),
+		deprecated.NewGetProjectInfoRequest(),
 		&projectInfoResponse,
 	)
-	if err = util.GetGraphqlError(err, projectInfoResponse.GraphqlErrors); err != nil {
+	if err = deprecated.GetGraphqlError(err, projectInfoResponse.GraphqlErrors); err != nil {
 		log.Error().
 			Err(err).
 			Msg("Unable to get project info using project secret. Make sure that your configured LUNATRACE_PROJECT_SECRET is correct.")
@@ -130,17 +132,17 @@ func insertNewBuild(
 		"git_remote": repoMeta.RemoteUrl,
 	}
 
-	request := graphql.NewInsertNewBuildRequest(variables)
+	request := deprecated.NewInsertNewBuildRequest(variables)
 
 	headers := getLunaTraceProjectAccessTokenHeaders(appConfig.ProjectAccessToken)
 
-	err = graphql.PerformGraphqlRequest(
+	err = deprecated.PerformGraphqlRequest(
 		appConfig.GraphqlServer,
 		headers,
 		request,
 		&newBuildResponse,
 	)
-	if err = util.GetGraphqlError(err, newBuildResponse.GraphqlErrors); err != nil {
+	if err = deprecated.GetGraphqlError(err, newBuildResponse.GraphqlErrors); err != nil {
 		log.Error().
 			Err(err).
 			Interface("request", request).
@@ -158,17 +160,17 @@ func deleteBuild(
 ) (err error) {
 	var deleteBuildResponse types.DeleteBuildResponse
 
-	request := graphql.DeleteBuildRequest(buildId)
+	request := deprecated.DeleteBuildRequest(buildId)
 
 	headers := getLunaTraceProjectAccessTokenHeaders(appConfig.ProjectAccessToken)
 
-	err = graphql.PerformGraphqlRequest(
+	err = deprecated.PerformGraphqlRequest(
 		appConfig.GraphqlServer,
 		headers,
 		request,
 		&deleteBuildResponse,
 	)
-	if err = util.GetGraphqlError(err, deleteBuildResponse.GraphqlErrors); err != nil {
+	if err = deprecated.GetGraphqlError(err, deleteBuildResponse.GraphqlErrors); err != nil {
 		log.Error().
 			Err(err).
 			Interface("request", request).
@@ -186,17 +188,17 @@ func presignSbomUpload(
 ) (url string, headers map[string]string, err error) {
 	var presignSbomResponse types.PresignSbomResponse
 
-	request := graphql.PresignSbomUploadRequest(orgId, buildId)
+	request := deprecated.PresignSbomUploadRequest(orgId, buildId)
 
 	uploadHeaders := getLunaTraceProjectAccessTokenHeaders(appConfig.ProjectAccessToken)
 
-	err = graphql.PerformGraphqlRequest(
+	err = deprecated.PerformGraphqlRequest(
 		appConfig.GraphqlServer,
 		uploadHeaders,
 		request,
 		&presignSbomResponse,
 	)
-	if err = util.GetGraphqlError(err, presignSbomResponse.GraphqlErrors); err != nil {
+	if err = deprecated.GetGraphqlError(err, presignSbomResponse.GraphqlErrors); err != nil {
 		log.Error().
 			Err(err).
 			Interface("request", request).
@@ -215,17 +217,17 @@ func setBuildS3Url(
 ) (err error) {
 	var setBuildS3UrlResponse types.SetBuildS3UrlResponse
 
-	request := graphql.UpdateBuildS3UrlRequest(buildId, s3Url)
+	request := deprecated.UpdateBuildS3UrlRequest(buildId, s3Url)
 
 	headers := getLunaTraceProjectAccessTokenHeaders(appConfig.ProjectAccessToken)
 
-	err = graphql.PerformGraphqlRequest(
+	err = deprecated.PerformGraphqlRequest(
 		appConfig.GraphqlServer,
 		headers,
 		request,
 		&setBuildS3UrlResponse,
 	)
-	if err = util.GetGraphqlError(err, setBuildS3UrlResponse.GraphqlErrors); err != nil {
+	if err = deprecated.GetGraphqlError(err, setBuildS3UrlResponse.GraphqlErrors); err != nil {
 		log.Error().
 			Err(err).
 			Interface("request", request).

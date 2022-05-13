@@ -12,21 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package graphql
+package deprecated
 
 import (
 	"bytes"
 	"encoding/json"
+	"net/http"
+
 	"github.com/rs/zerolog/log"
+
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
-	"net/http"
 )
 
 func PerformGraphqlRequest(
 	graphqlServer types.LunaTraceGraphqlServer,
 	headers map[string]string,
-	request types.GraphqlRequest,
+	request GraphqlRequest,
 	response interface{},
 ) (err error) {
 	graphqlUrl := graphqlServer.Url
