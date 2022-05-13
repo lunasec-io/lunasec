@@ -46,7 +46,7 @@ type QueueHandlerFunc =
   | WebhookHandlerCallback;
 
 interface QueueHandlerConfig {
-  handlerFunc: QueueHandlerFunc;
+  handlerFunc: () => Promise<QueueHandlerFunc>;
 }
 
 type QueueHandlersType = Record<QueueHandlerType, QueueHandlerConfig>;
@@ -184,21 +184,35 @@ function wrapProcessRepositoryJob(
   };
 }
 
-async function loadQueueHandlers(): Promise<QueueHandlersType> {
-  const webhooks = await createGithubWebhookInterceptor();
-
+function loadQueueHandlers(): QueueHandlersType {
   return {
     'process-manifest': {
-      handlerFunc: wrapProcessS3EventQueueJob(handleSnapshotManifest),
+      // eslint-disable-next-line @typescript-eslint/require-await
+      handlerFunc: async () => {
+        return wrapProcessS3EventQueueJob(handleSnapshotManifest);
+      },
     },
     'process-repository': {
-      handlerFunc: wrapProcessRepositoryJob(generateSnapshotForRepository),
+      // eslint-disable-next-line @typescript-eslint/require-await
+      handlerFunc: async () => {
+        return wrapProcessRepositoryJob(generateSnapshotForRepository);
+      },
     },
     'process-sbom': {
-      handlerFunc: wrapProcessS3EventQueueJob(handleScanSbom),
+      // eslint-disable-next-line @typescript-eslint/require-await
+      handlerFunc: async () => {
+        return wrapProcessS3EventQueueJob(handleScanSbom);
+      },
     },
     'process-webhook': {
-      handlerFunc: createGithubWebhookHandler(webhooks),
+      handlerFunc: async () => {
+        const webhooks = await createGithubWebhookInterceptor();
+        if (webhooks === null) {
+          throw new Error('webhook cannot be null when being used for queue handler');
+        }
+
+        return createGithubWebhookHandler(webhooks);
+      },
     },
   };
 }
@@ -221,10 +235,11 @@ export async function setupQueue(): Promise<void> {
     queueName: queueHandlerConfig.handlerQueueName,
   });
 
-  const queueHandlers = await loadQueueHandlers();
+  const queueHandlers = loadQueueHandlers();
 
   await log.provideFields({ queueName, trace: 'queue-logger' }, async () => {
     const handlerConfig = determineHandler(queueHandlers, queueHandlerConfig.handlerName as QueueHandlerType);
+    const queueHandlerFunc = await handlerConfig.handlerFunc();
 
     const queueUrl = await catchError(getSqsUrlFromName(sqsClient, queueName));
 
@@ -243,7 +258,7 @@ export async function setupQueue(): Promise<void> {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       log.info('Checking queue for messages...');
-      await readDataFromQueue(queueUrl.res, queueHandlerConfig, handlerConfig.handlerFunc);
+      await readDataFromQueue(queueUrl.res, queueHandlerConfig, queueHandlerFunc);
     }
   });
 }

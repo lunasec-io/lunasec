@@ -23,12 +23,27 @@ import (
 	"github.com/anchore/syft/syft/pkg/cataloger"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/anchore/syft/syft/source"
-	"github.com/rs/zerolog/log"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
+	"github.com/rs/zerolog/log"
 	"os"
 	"path/filepath"
 )
+
+func newSource(userInput string, excludeDirs []string) (src *source.Source, cleanup func(), err error) {
+	sourceInput, err := source.ParseInput(userInput, "", true)
+	if err != nil {
+		err = fmt.Errorf("failed to parse source from user input %q: %w", sourceInput, err)
+		return
+	}
+
+	src, cleanup, err = source.New(*sourceInput, nil, excludeDirs)
+	if err != nil {
+		err = fmt.Errorf("failed to construct source from user input %q: %w", sourceInput, err)
+		return
+	}
+	return
+}
 
 func getSyftSourceForFile(sourceName string, excludeDirs []string, useStdin bool) (src *source.Source, cleanup func(), err error) {
 	if useStdin {
@@ -52,12 +67,8 @@ func getSyftSourceForFile(sourceName string, excludeDirs []string, useStdin bool
 		return
 	}
 
-	src, cleanup, err = source.New("file:"+sourceName, nil, excludeDirs)
-	if err != nil {
-		err = fmt.Errorf("failed to construct source from user input %q: %w", sourceName, err)
-		return
-	}
-	return
+	userInput := "file:" + sourceName
+	return newSource(userInput, excludeDirs)
 }
 
 func getSbomFromFile(sourceName string, excludeDirs []string, useStdin bool) (s *sbom.SBOM, err error) {
@@ -106,7 +117,7 @@ func getSbomFromContainer(container string, excludeDirs []string) (s *sbom.SBOM,
 		Str("container", container).
 		Msg("Scanning container for dependencies.")
 
-	src, cleanup, err := source.New("docker:"+container, nil, excludeDirs)
+	src, cleanup, err := newSource("docker:"+container, excludeDirs)
 	if err != nil {
 		err = fmt.Errorf("failed to construct source from container %s: %w", container, err)
 		return
@@ -125,7 +136,7 @@ func getSbomFromDirectory(repoDir string, excludeDirs []string) (s *sbom.SBOM, e
 		Str("repoDir", repoDir).
 		Msg("Scanning directory for dependencies.")
 
-	src, cleanup, err := source.New("dir:"+repoDir, nil, excludeDirs)
+	src, cleanup, err := newSource("dir:"+repoDir, excludeDirs)
 	if err != nil {
 		err = fmt.Errorf("failed to construct source from repo %s: %w", repoDir, err)
 		return
