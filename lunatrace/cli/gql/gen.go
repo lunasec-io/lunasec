@@ -22,6 +22,7 @@ import (
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
+	"github.com/google/uuid"
 )
 
 // Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
@@ -173,7 +174,7 @@ const (
 
 // input type for inserting data into table "builds"
 type Builds_insert_input struct {
-	Agent_access_token        string                          `json:"agent_access_token"`
+	Agent_access_token        uuid.UUID                       `json:"agent_access_token"`
 	Build_number              int                             `json:"build_number"`
 	Created_at                time.Time                       `json:"created_at"`
 	Existing_github_review_id string                          `json:"existing_github_review_id"`
@@ -181,10 +182,10 @@ type Builds_insert_input struct {
 	Git_branch                string                          `json:"git_branch"`
 	Git_hash                  string                          `json:"git_hash"`
 	Git_remote                string                          `json:"git_remote"`
-	Id                        string                          `json:"id"`
+	Id                        uuid.UUID                       `json:"id"`
 	Manifests                 *Manifests_arr_rel_insert_input `json:"manifests,omitempty"`
 	Project                   *Projects_obj_rel_insert_input  `json:"project,omitempty"`
-	Project_id                string                          `json:"project_id"`
+	Project_id                uuid.UUID                       `json:"project_id"`
 	Pull_request_id           string                          `json:"pull_request_id"`
 	S3_url                    string                          `json:"s3_url"`
 	Scans                     *Scans_arr_rel_insert_input     `json:"scans,omitempty"`
@@ -192,7 +193,7 @@ type Builds_insert_input struct {
 }
 
 // GetAgent_access_token returns Builds_insert_input.Agent_access_token, and is useful for accessing the field via an interface.
-func (v *Builds_insert_input) GetAgent_access_token() string { return v.Agent_access_token }
+func (v *Builds_insert_input) GetAgent_access_token() uuid.UUID { return v.Agent_access_token }
 
 // GetBuild_number returns Builds_insert_input.Build_number, and is useful for accessing the field via an interface.
 func (v *Builds_insert_input) GetBuild_number() int { return v.Build_number }
@@ -218,7 +219,7 @@ func (v *Builds_insert_input) GetGit_hash() string { return v.Git_hash }
 func (v *Builds_insert_input) GetGit_remote() string { return v.Git_remote }
 
 // GetId returns Builds_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Builds_insert_input) GetId() string { return v.Id }
+func (v *Builds_insert_input) GetId() uuid.UUID { return v.Id }
 
 // GetManifests returns Builds_insert_input.Manifests, and is useful for accessing the field via an interface.
 func (v *Builds_insert_input) GetManifests() *Manifests_arr_rel_insert_input { return v.Manifests }
@@ -227,7 +228,7 @@ func (v *Builds_insert_input) GetManifests() *Manifests_arr_rel_insert_input { r
 func (v *Builds_insert_input) GetProject() *Projects_obj_rel_insert_input { return v.Project }
 
 // GetProject_id returns Builds_insert_input.Project_id, and is useful for accessing the field via an interface.
-func (v *Builds_insert_input) GetProject_id() string { return v.Project_id }
+func (v *Builds_insert_input) GetProject_id() uuid.UUID { return v.Project_id }
 
 // GetPull_request_id returns Builds_insert_input.Pull_request_id, and is useful for accessing the field via an interface.
 func (v *Builds_insert_input) GetPull_request_id() string { return v.Pull_request_id }
@@ -381,11 +382,11 @@ func (v *Date_comparison_exp) GetNin() []time.Time { return v.Nin }
 //
 // columns and relationships of "builds"
 type DeleteBuildDelete_builds_by_pkBuilds struct {
-	Id string `json:"id"`
+	Id uuid.UUID `json:"id"`
 }
 
 // GetId returns DeleteBuildDelete_builds_by_pkBuilds.Id, and is useful for accessing the field via an interface.
-func (v *DeleteBuildDelete_builds_by_pkBuilds) GetId() string { return v.Id }
+func (v *DeleteBuildDelete_builds_by_pkBuilds) GetId() uuid.UUID { return v.Id }
 
 // DeleteBuildResponse is returned by DeleteBuild on success.
 type DeleteBuildResponse struct {
@@ -548,21 +549,21 @@ const (
 // input type for inserting data into table "findings"
 type Findings_insert_input struct {
 	Build                    *Builds_obj_rel_insert_input                 `json:"build,omitempty"`
-	Build_id                 string                                       `json:"build_id"`
+	Build_id                 uuid.UUID                                    `json:"build_id"`
 	Created_at               time.Time                                    `json:"created_at"`
 	Dedupe_slug              string                                       `json:"dedupe_slug"`
 	Fix_state                string                                       `json:"fix_state"`
 	Fix_versions             string                                       `json:"fix_versions"`
-	Id                       string                                       `json:"id"`
+	Id                       uuid.UUID                                    `json:"id"`
 	Language                 string                                       `json:"language"`
 	Locations                string                                       `json:"locations"`
 	Matcher                  string                                       `json:"matcher"`
 	Package_name             string                                       `json:"package_name"`
 	Package_version          *Package_versions_obj_rel_insert_input       `json:"package_version,omitempty"`
-	Package_version_id       string                                       `json:"package_version_id"`
+	Package_version_id       uuid.UUID                                    `json:"package_version_id"`
 	Purl                     string                                       `json:"purl"`
 	Scan                     *Scans_obj_rel_insert_input                  `json:"scan,omitempty"`
-	Scan_id                  string                                       `json:"scan_id"`
+	Scan_id                  uuid.UUID                                    `json:"scan_id"`
 	Severity                 string                                       `json:"severity"`
 	Type                     string                                       `json:"type"`
 	Updated_at               time.Time                                    `json:"updated_at"`
@@ -570,16 +571,16 @@ type Findings_insert_input struct {
 	Version_matcher          string                                       `json:"version_matcher"`
 	Virtual_path             string                                       `json:"virtual_path"`
 	Vulnerability            *Vulnerabilities_obj_rel_insert_input        `json:"vulnerability,omitempty"`
-	Vulnerability_id         string                                       `json:"vulnerability_id"`
+	Vulnerability_id         uuid.UUID                                    `json:"vulnerability_id"`
 	Vulnerability_package    *Vulnerability_packages_obj_rel_insert_input `json:"vulnerability_package,omitempty"`
-	Vulnerability_package_id string                                       `json:"vulnerability_package_id"`
+	Vulnerability_package_id uuid.UUID                                    `json:"vulnerability_package_id"`
 }
 
 // GetBuild returns Findings_insert_input.Build, and is useful for accessing the field via an interface.
 func (v *Findings_insert_input) GetBuild() *Builds_obj_rel_insert_input { return v.Build }
 
 // GetBuild_id returns Findings_insert_input.Build_id, and is useful for accessing the field via an interface.
-func (v *Findings_insert_input) GetBuild_id() string { return v.Build_id }
+func (v *Findings_insert_input) GetBuild_id() uuid.UUID { return v.Build_id }
 
 // GetCreated_at returns Findings_insert_input.Created_at, and is useful for accessing the field via an interface.
 func (v *Findings_insert_input) GetCreated_at() time.Time { return v.Created_at }
@@ -594,7 +595,7 @@ func (v *Findings_insert_input) GetFix_state() string { return v.Fix_state }
 func (v *Findings_insert_input) GetFix_versions() string { return v.Fix_versions }
 
 // GetId returns Findings_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Findings_insert_input) GetId() string { return v.Id }
+func (v *Findings_insert_input) GetId() uuid.UUID { return v.Id }
 
 // GetLanguage returns Findings_insert_input.Language, and is useful for accessing the field via an interface.
 func (v *Findings_insert_input) GetLanguage() string { return v.Language }
@@ -614,7 +615,7 @@ func (v *Findings_insert_input) GetPackage_version() *Package_versions_obj_rel_i
 }
 
 // GetPackage_version_id returns Findings_insert_input.Package_version_id, and is useful for accessing the field via an interface.
-func (v *Findings_insert_input) GetPackage_version_id() string { return v.Package_version_id }
+func (v *Findings_insert_input) GetPackage_version_id() uuid.UUID { return v.Package_version_id }
 
 // GetPurl returns Findings_insert_input.Purl, and is useful for accessing the field via an interface.
 func (v *Findings_insert_input) GetPurl() string { return v.Purl }
@@ -623,7 +624,7 @@ func (v *Findings_insert_input) GetPurl() string { return v.Purl }
 func (v *Findings_insert_input) GetScan() *Scans_obj_rel_insert_input { return v.Scan }
 
 // GetScan_id returns Findings_insert_input.Scan_id, and is useful for accessing the field via an interface.
-func (v *Findings_insert_input) GetScan_id() string { return v.Scan_id }
+func (v *Findings_insert_input) GetScan_id() uuid.UUID { return v.Scan_id }
 
 // GetSeverity returns Findings_insert_input.Severity, and is useful for accessing the field via an interface.
 func (v *Findings_insert_input) GetSeverity() string { return v.Severity }
@@ -649,7 +650,7 @@ func (v *Findings_insert_input) GetVulnerability() *Vulnerabilities_obj_rel_inse
 }
 
 // GetVulnerability_id returns Findings_insert_input.Vulnerability_id, and is useful for accessing the field via an interface.
-func (v *Findings_insert_input) GetVulnerability_id() string { return v.Vulnerability_id }
+func (v *Findings_insert_input) GetVulnerability_id() uuid.UUID { return v.Vulnerability_id }
 
 // GetVulnerability_package returns Findings_insert_input.Vulnerability_package, and is useful for accessing the field via an interface.
 func (v *Findings_insert_input) GetVulnerability_package() *Vulnerability_packages_obj_rel_insert_input {
@@ -657,7 +658,7 @@ func (v *Findings_insert_input) GetVulnerability_package() *Vulnerability_packag
 }
 
 // GetVulnerability_package_id returns Findings_insert_input.Vulnerability_package_id, and is useful for accessing the field via an interface.
-func (v *Findings_insert_input) GetVulnerability_package_id() string {
+func (v *Findings_insert_input) GetVulnerability_package_id() uuid.UUID {
 	return v.Vulnerability_package_id
 }
 
@@ -784,17 +785,17 @@ func (v *GetProjectInfoQueryProject_access_tokens) GetProject() *GetProjectInfoQ
 //
 // columns and relationships of "projects"
 type GetProjectInfoQueryProject_access_tokensProjectProjects struct {
-	Organization_id string `json:"organization_id"`
-	Id              string `json:"id"`
+	Organization_id uuid.UUID `json:"organization_id"`
+	Id              uuid.UUID `json:"id"`
 }
 
 // GetOrganization_id returns GetProjectInfoQueryProject_access_tokensProjectProjects.Organization_id, and is useful for accessing the field via an interface.
-func (v *GetProjectInfoQueryProject_access_tokensProjectProjects) GetOrganization_id() string {
+func (v *GetProjectInfoQueryProject_access_tokensProjectProjects) GetOrganization_id() uuid.UUID {
 	return v.Organization_id
 }
 
 // GetId returns GetProjectInfoQueryProject_access_tokensProjectProjects.Id, and is useful for accessing the field via an interface.
-func (v *GetProjectInfoQueryProject_access_tokensProjectProjects) GetId() string { return v.Id }
+func (v *GetProjectInfoQueryProject_access_tokensProjectProjects) GetId() uuid.UUID { return v.Id }
 
 // GetProjectInfoQueryResponse is returned by GetProjectInfoQuery on success.
 type GetProjectInfoQueryResponse struct {
@@ -884,7 +885,7 @@ type Github_repositories_insert_input struct {
 	Github_id      int                            `json:"github_id"`
 	Github_node_id string                         `json:"github_node_id"`
 	Project        *Projects_obj_rel_insert_input `json:"project,omitempty"`
-	Project_id     string                         `json:"project_id"`
+	Project_id     uuid.UUID                      `json:"project_id"`
 	Traits         json.RawMessage                `json:"traits"`
 }
 
@@ -903,7 +904,7 @@ func (v *Github_repositories_insert_input) GetProject() *Projects_obj_rel_insert
 }
 
 // GetProject_id returns Github_repositories_insert_input.Project_id, and is useful for accessing the field via an interface.
-func (v *Github_repositories_insert_input) GetProject_id() string { return v.Project_id }
+func (v *Github_repositories_insert_input) GetProject_id() uuid.UUID { return v.Project_id }
 
 // GetTraits returns Github_repositories_insert_input.Traits, and is useful for accessing the field via an interface.
 func (v *Github_repositories_insert_input) GetTraits() json.RawMessage { return v.Traits }
@@ -1035,9 +1036,9 @@ const (
 // input type for inserting data into table "guide_related_guides"
 type Guide_related_guides_insert_input struct {
 	Created_at         time.Time                    `json:"created_at"`
-	From_guide_id      string                       `json:"from_guide_id"`
+	From_guide_id      uuid.UUID                    `json:"from_guide_id"`
 	Guide              *Guides_obj_rel_insert_input `json:"guide,omitempty"`
-	Id                 string                       `json:"id"`
+	Id                 uuid.UUID                    `json:"id"`
 	Parent_guide       *Guides_obj_rel_insert_input `json:"parent_guide,omitempty"`
 	To_guide_unique_id string                       `json:"to_guide_unique_id"`
 	Updated_at         time.Time                    `json:"updated_at"`
@@ -1047,13 +1048,13 @@ type Guide_related_guides_insert_input struct {
 func (v *Guide_related_guides_insert_input) GetCreated_at() time.Time { return v.Created_at }
 
 // GetFrom_guide_id returns Guide_related_guides_insert_input.From_guide_id, and is useful for accessing the field via an interface.
-func (v *Guide_related_guides_insert_input) GetFrom_guide_id() string { return v.From_guide_id }
+func (v *Guide_related_guides_insert_input) GetFrom_guide_id() uuid.UUID { return v.From_guide_id }
 
 // GetGuide returns Guide_related_guides_insert_input.Guide, and is useful for accessing the field via an interface.
 func (v *Guide_related_guides_insert_input) GetGuide() *Guides_obj_rel_insert_input { return v.Guide }
 
 // GetId returns Guide_related_guides_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Guide_related_guides_insert_input) GetId() string { return v.Id }
+func (v *Guide_related_guides_insert_input) GetId() uuid.UUID { return v.Id }
 
 // GetParent_guide returns Guide_related_guides_insert_input.Parent_guide, and is useful for accessing the field via an interface.
 func (v *Guide_related_guides_insert_input) GetParent_guide() *Guides_obj_rel_insert_input {
@@ -1183,11 +1184,11 @@ const (
 type Guide_vulnerabilities_insert_input struct {
 	Created_at       time.Time                             `json:"created_at"`
 	Guide            *Guides_obj_rel_insert_input          `json:"guide,omitempty"`
-	Guide_id         string                                `json:"guide_id"`
-	Id               string                                `json:"id"`
+	Guide_id         uuid.UUID                             `json:"guide_id"`
+	Id               uuid.UUID                             `json:"id"`
 	Updated_at       time.Time                             `json:"updated_at"`
 	Vulnerability    *Vulnerabilities_obj_rel_insert_input `json:"vulnerability,omitempty"`
-	Vulnerability_id string                                `json:"vulnerability_id"`
+	Vulnerability_id uuid.UUID                             `json:"vulnerability_id"`
 }
 
 // GetCreated_at returns Guide_vulnerabilities_insert_input.Created_at, and is useful for accessing the field via an interface.
@@ -1197,10 +1198,10 @@ func (v *Guide_vulnerabilities_insert_input) GetCreated_at() time.Time { return 
 func (v *Guide_vulnerabilities_insert_input) GetGuide() *Guides_obj_rel_insert_input { return v.Guide }
 
 // GetGuide_id returns Guide_vulnerabilities_insert_input.Guide_id, and is useful for accessing the field via an interface.
-func (v *Guide_vulnerabilities_insert_input) GetGuide_id() string { return v.Guide_id }
+func (v *Guide_vulnerabilities_insert_input) GetGuide_id() uuid.UUID { return v.Guide_id }
 
 // GetId returns Guide_vulnerabilities_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Guide_vulnerabilities_insert_input) GetId() string { return v.Id }
+func (v *Guide_vulnerabilities_insert_input) GetId() uuid.UUID { return v.Id }
 
 // GetUpdated_at returns Guide_vulnerabilities_insert_input.Updated_at, and is useful for accessing the field via an interface.
 func (v *Guide_vulnerabilities_insert_input) GetUpdated_at() time.Time { return v.Updated_at }
@@ -1211,7 +1212,9 @@ func (v *Guide_vulnerabilities_insert_input) GetVulnerability() *Vulnerabilities
 }
 
 // GetVulnerability_id returns Guide_vulnerabilities_insert_input.Vulnerability_id, and is useful for accessing the field via an interface.
-func (v *Guide_vulnerabilities_insert_input) GetVulnerability_id() string { return v.Vulnerability_id }
+func (v *Guide_vulnerabilities_insert_input) GetVulnerability_id() uuid.UUID {
+	return v.Vulnerability_id
+}
 
 // on_conflict condition type for table "guide_vulnerabilities"
 type Guide_vulnerabilities_on_conflict struct {
@@ -1286,7 +1289,7 @@ type Guides_insert_input struct {
 	Data_source_link        string                                      `json:"data_source_link"`
 	Guide_unique_id         string                                      `json:"guide_unique_id"`
 	Guide_vulnerabilities   *Guide_vulnerabilities_arr_rel_insert_input `json:"guide_vulnerabilities,omitempty"`
-	Id                      string                                      `json:"id"`
+	Id                      uuid.UUID                                   `json:"id"`
 	Metadata                json.RawMessage                             `json:"metadata"`
 	Metadata_schema_version int                                         `json:"metadata_schema_version"`
 	Related_guides          *Guide_related_guides_arr_rel_insert_input  `json:"related_guides,omitempty"`
@@ -1315,7 +1318,7 @@ func (v *Guides_insert_input) GetGuide_vulnerabilities() *Guide_vulnerabilities_
 }
 
 // GetId returns Guides_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Guides_insert_input) GetId() string { return v.Id }
+func (v *Guides_insert_input) GetId() uuid.UUID { return v.Id }
 
 // GetMetadata returns Guides_insert_input.Metadata, and is useful for accessing the field via an interface.
 func (v *Guides_insert_input) GetMetadata() json.RawMessage { return v.Metadata }
@@ -1601,15 +1604,15 @@ func (v *Ignored_vulnerabilities_bool_exp) GetVulnerability_id() *Uuid_compariso
 //
 // columns and relationships of "builds"
 type InsertNewBuildQueryInsert_builds_oneBuilds struct {
-	Id                 string `json:"id"`
-	Agent_access_token string `json:"agent_access_token"`
+	Id                 uuid.UUID `json:"id"`
+	Agent_access_token uuid.UUID `json:"agent_access_token"`
 }
 
 // GetId returns InsertNewBuildQueryInsert_builds_oneBuilds.Id, and is useful for accessing the field via an interface.
-func (v *InsertNewBuildQueryInsert_builds_oneBuilds) GetId() string { return v.Id }
+func (v *InsertNewBuildQueryInsert_builds_oneBuilds) GetId() uuid.UUID { return v.Id }
 
 // GetAgent_access_token returns InsertNewBuildQueryInsert_builds_oneBuilds.Agent_access_token, and is useful for accessing the field via an interface.
-func (v *InsertNewBuildQueryInsert_builds_oneBuilds) GetAgent_access_token() string {
+func (v *InsertNewBuildQueryInsert_builds_oneBuilds) GetAgent_access_token() uuid.UUID {
 	return v.Agent_access_token
 }
 
@@ -1828,13 +1831,13 @@ const (
 // input type for inserting data into table "manifests"
 type Manifests_insert_input struct {
 	Build      *Builds_obj_rel_insert_input   `json:"build,omitempty"`
-	Build_id   string                         `json:"build_id"`
+	Build_id   uuid.UUID                      `json:"build_id"`
 	Created_at time.Time                      `json:"created_at"`
 	Filename   string                         `json:"filename"`
-	Id         string                         `json:"id"`
+	Id         uuid.UUID                      `json:"id"`
 	Message    string                         `json:"message"`
 	Project    *Projects_obj_rel_insert_input `json:"project,omitempty"`
-	Project_id string                         `json:"project_id"`
+	Project_id uuid.UUID                      `json:"project_id"`
 	S3_key     string                         `json:"s3_key"`
 	S3_url     string                         `json:"s3_url"`
 	Status     string                         `json:"status"`
@@ -1844,7 +1847,7 @@ type Manifests_insert_input struct {
 func (v *Manifests_insert_input) GetBuild() *Builds_obj_rel_insert_input { return v.Build }
 
 // GetBuild_id returns Manifests_insert_input.Build_id, and is useful for accessing the field via an interface.
-func (v *Manifests_insert_input) GetBuild_id() string { return v.Build_id }
+func (v *Manifests_insert_input) GetBuild_id() uuid.UUID { return v.Build_id }
 
 // GetCreated_at returns Manifests_insert_input.Created_at, and is useful for accessing the field via an interface.
 func (v *Manifests_insert_input) GetCreated_at() time.Time { return v.Created_at }
@@ -1853,7 +1856,7 @@ func (v *Manifests_insert_input) GetCreated_at() time.Time { return v.Created_at
 func (v *Manifests_insert_input) GetFilename() string { return v.Filename }
 
 // GetId returns Manifests_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Manifests_insert_input) GetId() string { return v.Id }
+func (v *Manifests_insert_input) GetId() uuid.UUID { return v.Id }
 
 // GetMessage returns Manifests_insert_input.Message, and is useful for accessing the field via an interface.
 func (v *Manifests_insert_input) GetMessage() string { return v.Message }
@@ -1862,7 +1865,7 @@ func (v *Manifests_insert_input) GetMessage() string { return v.Message }
 func (v *Manifests_insert_input) GetProject() *Projects_obj_rel_insert_input { return v.Project }
 
 // GetProject_id returns Manifests_insert_input.Project_id, and is useful for accessing the field via an interface.
-func (v *Manifests_insert_input) GetProject_id() string { return v.Project_id }
+func (v *Manifests_insert_input) GetProject_id() uuid.UUID { return v.Project_id }
 
 // GetS3_key returns Manifests_insert_input.S3_key, and is useful for accessing the field via an interface.
 func (v *Manifests_insert_input) GetS3_key() string { return v.S3_key }
@@ -1920,11 +1923,11 @@ const (
 //
 // columns and relationships of "builds"
 type MyMutationInsert_builds_oneBuilds struct {
-	Id string `json:"id"`
+	Id uuid.UUID `json:"id"`
 }
 
 // GetId returns MyMutationInsert_builds_oneBuilds.Id, and is useful for accessing the field via an interface.
-func (v *MyMutationInsert_builds_oneBuilds) GetId() string { return v.Id }
+func (v *MyMutationInsert_builds_oneBuilds) GetId() uuid.UUID { return v.Id }
 
 // MyMutationResponse is returned by MyMutation on success.
 type MyMutationResponse struct {
@@ -2057,20 +2060,20 @@ const (
 // input type for inserting data into table "organization_user"
 type Organization_user_insert_input struct {
 	Created_at      time.Time                           `json:"created_at"`
-	Id              string                              `json:"id"`
+	Id              uuid.UUID                           `json:"id"`
 	Organization    *Organizations_obj_rel_insert_input `json:"organization,omitempty"`
-	Organization_id string                              `json:"organization_id"`
+	Organization_id uuid.UUID                           `json:"organization_id"`
 	Role            string                              `json:"role"`
 	Updated_at      time.Time                           `json:"updated_at"`
 	User            *Users_obj_rel_insert_input         `json:"user,omitempty"`
-	User_id         string                              `json:"user_id"`
+	User_id         uuid.UUID                           `json:"user_id"`
 }
 
 // GetCreated_at returns Organization_user_insert_input.Created_at, and is useful for accessing the field via an interface.
 func (v *Organization_user_insert_input) GetCreated_at() time.Time { return v.Created_at }
 
 // GetId returns Organization_user_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Organization_user_insert_input) GetId() string { return v.Id }
+func (v *Organization_user_insert_input) GetId() uuid.UUID { return v.Id }
 
 // GetOrganization returns Organization_user_insert_input.Organization, and is useful for accessing the field via an interface.
 func (v *Organization_user_insert_input) GetOrganization() *Organizations_obj_rel_insert_input {
@@ -2078,7 +2081,7 @@ func (v *Organization_user_insert_input) GetOrganization() *Organizations_obj_re
 }
 
 // GetOrganization_id returns Organization_user_insert_input.Organization_id, and is useful for accessing the field via an interface.
-func (v *Organization_user_insert_input) GetOrganization_id() string { return v.Organization_id }
+func (v *Organization_user_insert_input) GetOrganization_id() uuid.UUID { return v.Organization_id }
 
 // GetRole returns Organization_user_insert_input.Role, and is useful for accessing the field via an interface.
 func (v *Organization_user_insert_input) GetRole() string { return v.Role }
@@ -2090,7 +2093,7 @@ func (v *Organization_user_insert_input) GetUpdated_at() time.Time { return v.Up
 func (v *Organization_user_insert_input) GetUser() *Users_obj_rel_insert_input { return v.User }
 
 // GetUser_id returns Organization_user_insert_input.User_id, and is useful for accessing the field via an interface.
-func (v *Organization_user_insert_input) GetUser_id() string { return v.User_id }
+func (v *Organization_user_insert_input) GetUser_id() uuid.UUID { return v.User_id }
 
 // on_conflict condition type for table "organization_user"
 type Organization_user_on_conflict struct {
@@ -2248,16 +2251,16 @@ const (
 type Organizations_insert_input struct {
 	CreatedAt          time.Time                               `json:"createdAt"`
 	Creator            *Users_obj_rel_insert_input             `json:"creator,omitempty"`
-	Creator_id         string                                  `json:"creator_id"`
+	Creator_id         uuid.UUID                               `json:"creator_id"`
 	Github_id          int                                     `json:"github_id"`
 	Github_node_id     string                                  `json:"github_node_id"`
 	Github_owner_type  string                                  `json:"github_owner_type"`
-	Id                 string                                  `json:"id"`
+	Id                 uuid.UUID                               `json:"id"`
 	Installation_id    int                                     `json:"installation_id"`
 	Name               string                                  `json:"name"`
 	Organization_users *Organization_user_arr_rel_insert_input `json:"organization_users,omitempty"`
 	Projects           *Projects_arr_rel_insert_input          `json:"projects,omitempty"`
-	Settings_id        string                                  `json:"settings_id"`
+	Settings_id        uuid.UUID                               `json:"settings_id"`
 }
 
 // GetCreatedAt returns Organizations_insert_input.CreatedAt, and is useful for accessing the field via an interface.
@@ -2267,7 +2270,7 @@ func (v *Organizations_insert_input) GetCreatedAt() time.Time { return v.Created
 func (v *Organizations_insert_input) GetCreator() *Users_obj_rel_insert_input { return v.Creator }
 
 // GetCreator_id returns Organizations_insert_input.Creator_id, and is useful for accessing the field via an interface.
-func (v *Organizations_insert_input) GetCreator_id() string { return v.Creator_id }
+func (v *Organizations_insert_input) GetCreator_id() uuid.UUID { return v.Creator_id }
 
 // GetGithub_id returns Organizations_insert_input.Github_id, and is useful for accessing the field via an interface.
 func (v *Organizations_insert_input) GetGithub_id() int { return v.Github_id }
@@ -2279,7 +2282,7 @@ func (v *Organizations_insert_input) GetGithub_node_id() string { return v.Githu
 func (v *Organizations_insert_input) GetGithub_owner_type() string { return v.Github_owner_type }
 
 // GetId returns Organizations_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Organizations_insert_input) GetId() string { return v.Id }
+func (v *Organizations_insert_input) GetId() uuid.UUID { return v.Id }
 
 // GetInstallation_id returns Organizations_insert_input.Installation_id, and is useful for accessing the field via an interface.
 func (v *Organizations_insert_input) GetInstallation_id() int { return v.Installation_id }
@@ -2296,7 +2299,7 @@ func (v *Organizations_insert_input) GetOrganization_users() *Organization_user_
 func (v *Organizations_insert_input) GetProjects() *Projects_arr_rel_insert_input { return v.Projects }
 
 // GetSettings_id returns Organizations_insert_input.Settings_id, and is useful for accessing the field via an interface.
-func (v *Organizations_insert_input) GetSettings_id() string { return v.Settings_id }
+func (v *Organizations_insert_input) GetSettings_id() uuid.UUID { return v.Settings_id }
 
 // input type for inserting object relation for remote table "organizations"
 type Organizations_obj_rel_insert_input struct {
@@ -2700,13 +2703,13 @@ type Projects_insert_input struct {
 	Created_at          time.Time                                 `json:"created_at"`
 	Github_repositories *Github_repositories_arr_rel_insert_input `json:"github_repositories,omitempty"`
 	Github_repository   *Github_repositories_obj_rel_insert_input `json:"github_repository,omitempty"`
-	Id                  string                                    `json:"id"`
+	Id                  uuid.UUID                                 `json:"id"`
 	Manifests           *Manifests_arr_rel_insert_input           `json:"manifests,omitempty"`
 	Name                string                                    `json:"name"`
 	Organization        *Organizations_obj_rel_insert_input       `json:"organization,omitempty"`
-	Organization_id     string                                    `json:"organization_id"`
+	Organization_id     uuid.UUID                                 `json:"organization_id"`
 	Repo                string                                    `json:"repo"`
-	Settings_id         string                                    `json:"settings_id"`
+	Settings_id         uuid.UUID                                 `json:"settings_id"`
 }
 
 // GetBuilds returns Projects_insert_input.Builds, and is useful for accessing the field via an interface.
@@ -2726,7 +2729,7 @@ func (v *Projects_insert_input) GetGithub_repository() *Github_repositories_obj_
 }
 
 // GetId returns Projects_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Projects_insert_input) GetId() string { return v.Id }
+func (v *Projects_insert_input) GetId() uuid.UUID { return v.Id }
 
 // GetManifests returns Projects_insert_input.Manifests, and is useful for accessing the field via an interface.
 func (v *Projects_insert_input) GetManifests() *Manifests_arr_rel_insert_input { return v.Manifests }
@@ -2740,13 +2743,13 @@ func (v *Projects_insert_input) GetOrganization() *Organizations_obj_rel_insert_
 }
 
 // GetOrganization_id returns Projects_insert_input.Organization_id, and is useful for accessing the field via an interface.
-func (v *Projects_insert_input) GetOrganization_id() string { return v.Organization_id }
+func (v *Projects_insert_input) GetOrganization_id() uuid.UUID { return v.Organization_id }
 
 // GetRepo returns Projects_insert_input.Repo, and is useful for accessing the field via an interface.
 func (v *Projects_insert_input) GetRepo() string { return v.Repo }
 
 // GetSettings_id returns Projects_insert_input.Settings_id, and is useful for accessing the field via an interface.
-func (v *Projects_insert_input) GetSettings_id() string { return v.Settings_id }
+func (v *Projects_insert_input) GetSettings_id() uuid.UUID { return v.Settings_id }
 
 // input type for inserting object relation for remote table "projects"
 type Projects_obj_rel_insert_input struct {
@@ -2933,14 +2936,14 @@ const (
 // input type for inserting data into table "scans"
 type Scans_insert_input struct {
 	Build          *Builds_obj_rel_insert_input   `json:"build,omitempty"`
-	Build_id       string                         `json:"build_id"`
+	Build_id       uuid.UUID                      `json:"build_id"`
 	Created_at     time.Time                      `json:"created_at"`
 	Db_date        time.Time                      `json:"db_date"`
 	Distro_name    string                         `json:"distro_name"`
 	Distro_version string                         `json:"distro_version"`
 	Findings       *Findings_arr_rel_insert_input `json:"findings,omitempty"`
 	Grype_version  string                         `json:"grype_version"`
-	Id             string                         `json:"id"`
+	Id             uuid.UUID                      `json:"id"`
 	Scan_number    int                            `json:"scan_number"`
 	Source_type    string                         `json:"source_type"`
 	Target         string                         `json:"target"`
@@ -2950,7 +2953,7 @@ type Scans_insert_input struct {
 func (v *Scans_insert_input) GetBuild() *Builds_obj_rel_insert_input { return v.Build }
 
 // GetBuild_id returns Scans_insert_input.Build_id, and is useful for accessing the field via an interface.
-func (v *Scans_insert_input) GetBuild_id() string { return v.Build_id }
+func (v *Scans_insert_input) GetBuild_id() uuid.UUID { return v.Build_id }
 
 // GetCreated_at returns Scans_insert_input.Created_at, and is useful for accessing the field via an interface.
 func (v *Scans_insert_input) GetCreated_at() time.Time { return v.Created_at }
@@ -2971,7 +2974,7 @@ func (v *Scans_insert_input) GetFindings() *Findings_arr_rel_insert_input { retu
 func (v *Scans_insert_input) GetGrype_version() string { return v.Grype_version }
 
 // GetId returns Scans_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Scans_insert_input) GetId() string { return v.Id }
+func (v *Scans_insert_input) GetId() uuid.UUID { return v.Id }
 
 // GetScan_number returns Scans_insert_input.Scan_number, and is useful for accessing the field via an interface.
 func (v *Scans_insert_input) GetScan_number() int { return v.Scan_number }
@@ -3053,11 +3056,11 @@ func (v *SetBuildS3UrlResponse) GetUpdate_builds_by_pk() *SetBuildS3UrlUpdate_bu
 //
 // columns and relationships of "builds"
 type SetBuildS3UrlUpdate_builds_by_pkBuilds struct {
-	Id string `json:"id"`
+	Id uuid.UUID `json:"id"`
 }
 
 // GetId returns SetBuildS3UrlUpdate_builds_by_pkBuilds.Id, and is useful for accessing the field via an interface.
-func (v *SetBuildS3UrlUpdate_builds_by_pkBuilds) GetId() string { return v.Id }
+func (v *SetBuildS3UrlUpdate_builds_by_pkBuilds) GetId() uuid.UUID { return v.Id }
 
 // Boolean expression to compare columns of type "severity_enum". All fields are combined with logical 'AND'.
 type Severity_enum_comparison_exp struct {
@@ -3405,10 +3408,10 @@ const (
 
 // input type for inserting data into table "users"
 type Users_insert_input struct {
-	Github_id      string `json:"github_id"`
-	Github_node_id string `json:"github_node_id"`
-	Id             string `json:"id"`
-	Kratos_id      string `json:"kratos_id"`
+	Github_id      string    `json:"github_id"`
+	Github_node_id string    `json:"github_node_id"`
+	Id             uuid.UUID `json:"id"`
+	Kratos_id      uuid.UUID `json:"kratos_id"`
 }
 
 // GetGithub_id returns Users_insert_input.Github_id, and is useful for accessing the field via an interface.
@@ -3418,10 +3421,10 @@ func (v *Users_insert_input) GetGithub_id() string { return v.Github_id }
 func (v *Users_insert_input) GetGithub_node_id() string { return v.Github_node_id }
 
 // GetId returns Users_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Users_insert_input) GetId() string { return v.Id }
+func (v *Users_insert_input) GetId() uuid.UUID { return v.Id }
 
 // GetKratos_id returns Users_insert_input.Kratos_id, and is useful for accessing the field via an interface.
-func (v *Users_insert_input) GetKratos_id() string { return v.Kratos_id }
+func (v *Users_insert_input) GetKratos_id() uuid.UUID { return v.Kratos_id }
 
 // input type for inserting object relation for remote table "users"
 type Users_obj_rel_insert_input struct {
@@ -3468,43 +3471,43 @@ const (
 
 // Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
 type Uuid_comparison_exp struct {
-	Eq      string   `json:"_eq"`
-	Gt      string   `json:"_gt"`
-	Gte     string   `json:"_gte"`
-	In      []string `json:"_in"`
-	Is_null bool     `json:"_is_null"`
-	Lt      string   `json:"_lt"`
-	Lte     string   `json:"_lte"`
-	Neq     string   `json:"_neq"`
-	Nin     []string `json:"_nin"`
+	Eq      uuid.UUID   `json:"_eq"`
+	Gt      uuid.UUID   `json:"_gt"`
+	Gte     uuid.UUID   `json:"_gte"`
+	In      []uuid.UUID `json:"_in"`
+	Is_null bool        `json:"_is_null"`
+	Lt      uuid.UUID   `json:"_lt"`
+	Lte     uuid.UUID   `json:"_lte"`
+	Neq     uuid.UUID   `json:"_neq"`
+	Nin     []uuid.UUID `json:"_nin"`
 }
 
 // GetEq returns Uuid_comparison_exp.Eq, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetEq() string { return v.Eq }
+func (v *Uuid_comparison_exp) GetEq() uuid.UUID { return v.Eq }
 
 // GetGt returns Uuid_comparison_exp.Gt, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetGt() string { return v.Gt }
+func (v *Uuid_comparison_exp) GetGt() uuid.UUID { return v.Gt }
 
 // GetGte returns Uuid_comparison_exp.Gte, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetGte() string { return v.Gte }
+func (v *Uuid_comparison_exp) GetGte() uuid.UUID { return v.Gte }
 
 // GetIn returns Uuid_comparison_exp.In, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetIn() []string { return v.In }
+func (v *Uuid_comparison_exp) GetIn() []uuid.UUID { return v.In }
 
 // GetIs_null returns Uuid_comparison_exp.Is_null, and is useful for accessing the field via an interface.
 func (v *Uuid_comparison_exp) GetIs_null() bool { return v.Is_null }
 
 // GetLt returns Uuid_comparison_exp.Lt, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetLt() string { return v.Lt }
+func (v *Uuid_comparison_exp) GetLt() uuid.UUID { return v.Lt }
 
 // GetLte returns Uuid_comparison_exp.Lte, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetLte() string { return v.Lte }
+func (v *Uuid_comparison_exp) GetLte() uuid.UUID { return v.Lte }
 
 // GetNeq returns Uuid_comparison_exp.Neq, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetNeq() string { return v.Neq }
+func (v *Uuid_comparison_exp) GetNeq() uuid.UUID { return v.Neq }
 
 // GetNin returns Uuid_comparison_exp.Nin, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetNin() []string { return v.Nin }
+func (v *Uuid_comparison_exp) GetNin() []uuid.UUID { return v.Nin }
 
 // Boolean expression to filter rows from the table "vulnerabilities". All fields are combined with a logical 'AND'.
 type Vulnerabilities_bool_exp struct {
@@ -3855,23 +3858,23 @@ const (
 
 // __DeleteBuildInput is used internally by genqlient
 type __DeleteBuildInput struct {
-	Id string `json:"id"`
+	Id uuid.UUID `json:"id"`
 }
 
 // GetId returns __DeleteBuildInput.Id, and is useful for accessing the field via an interface.
-func (v *__DeleteBuildInput) GetId() string { return v.Id }
+func (v *__DeleteBuildInput) GetId() uuid.UUID { return v.Id }
 
 // __InsertNewBuildQueryInput is used internally by genqlient
 type __InsertNewBuildQueryInput struct {
-	Project_id string `json:"project_id"`
-	S3_url     string `json:"s3_url"`
-	Git_remote string `json:"git_remote"`
-	Git_branch string `json:"git_branch"`
-	Git_hash   string `json:"git_hash"`
+	Project_id uuid.UUID `json:"project_id"`
+	S3_url     string    `json:"s3_url"`
+	Git_remote string    `json:"git_remote"`
+	Git_branch string    `json:"git_branch"`
+	Git_hash   string    `json:"git_hash"`
 }
 
 // GetProject_id returns __InsertNewBuildQueryInput.Project_id, and is useful for accessing the field via an interface.
-func (v *__InsertNewBuildQueryInput) GetProject_id() string { return v.Project_id }
+func (v *__InsertNewBuildQueryInput) GetProject_id() uuid.UUID { return v.Project_id }
 
 // GetS3_url returns __InsertNewBuildQueryInput.S3_url, and is useful for accessing the field via an interface.
 func (v *__InsertNewBuildQueryInput) GetS3_url() string { return v.S3_url }
@@ -3895,24 +3898,24 @@ func (v *__MyMutationInput) GetObject() *Builds_insert_input { return v.Object }
 
 // __PresignSbomInput is used internally by genqlient
 type __PresignSbomInput struct {
-	OrgId   string `json:"orgId"`
-	BuildId string `json:"buildId"`
+	OrgId   uuid.UUID `json:"orgId"`
+	BuildId uuid.UUID `json:"buildId"`
 }
 
 // GetOrgId returns __PresignSbomInput.OrgId, and is useful for accessing the field via an interface.
-func (v *__PresignSbomInput) GetOrgId() string { return v.OrgId }
+func (v *__PresignSbomInput) GetOrgId() uuid.UUID { return v.OrgId }
 
 // GetBuildId returns __PresignSbomInput.BuildId, and is useful for accessing the field via an interface.
-func (v *__PresignSbomInput) GetBuildId() string { return v.BuildId }
+func (v *__PresignSbomInput) GetBuildId() uuid.UUID { return v.BuildId }
 
 // __SetBuildS3UrlInput is used internally by genqlient
 type __SetBuildS3UrlInput struct {
-	Id     string `json:"id"`
-	S3_url string `json:"s3_url"`
+	Id     uuid.UUID `json:"id"`
+	S3_url string    `json:"s3_url"`
 }
 
 // GetId returns __SetBuildS3UrlInput.Id, and is useful for accessing the field via an interface.
-func (v *__SetBuildS3UrlInput) GetId() string { return v.Id }
+func (v *__SetBuildS3UrlInput) GetId() uuid.UUID { return v.Id }
 
 // GetS3_url returns __SetBuildS3UrlInput.S3_url, and is useful for accessing the field via an interface.
 func (v *__SetBuildS3UrlInput) GetS3_url() string { return v.S3_url }
@@ -3920,7 +3923,7 @@ func (v *__SetBuildS3UrlInput) GetS3_url() string { return v.S3_url }
 func DeleteBuild(
 	ctx context.Context,
 	client graphql.Client,
-	id string,
+	id uuid.UUID,
 ) (*DeleteBuildResponse, error) {
 	__input := __DeleteBuildInput{
 		Id: id,
@@ -3973,7 +3976,7 @@ query GetProjectInfoQuery {
 func InsertNewBuildQuery(
 	ctx context.Context,
 	client graphql.Client,
-	project_id string,
+	project_id uuid.UUID,
 	s3_url string,
 	git_remote string,
 	git_branch string,
@@ -4036,8 +4039,8 @@ mutation MyMutation ($object: builds_insert_input!) {
 func PresignSbom(
 	ctx context.Context,
 	client graphql.Client,
-	orgId string,
-	buildId string,
+	orgId uuid.UUID,
+	buildId uuid.UUID,
 ) (*PresignSbomResponse, error) {
 	__input := __PresignSbomInput{
 		OrgId:   orgId,
@@ -4069,7 +4072,7 @@ query PresignSbom ($orgId: uuid!, $buildId: uuid!) {
 func SetBuildS3Url(
 	ctx context.Context,
 	client graphql.Client,
-	id string,
+	id uuid.UUID,
 	s3_url string,
 ) (*SetBuildS3UrlResponse, error) {
 	__input := __SetBuildS3UrlInput{

@@ -19,9 +19,9 @@ bindings:
   date:
     type: time.Time
   UUID:
-    type: string
+    type: github.com/google/uuid.UUID
   uuid:
-    type: string
+    type: github.com/google/uuid.UUID
   _text:
     type: string
   user_role:
