@@ -19,6 +19,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"net/url"
+	"os"
+	"path"
+	"path/filepath"
+
 	"github.com/anchore/grype/grype/presenter/models"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/go-git/go-git/v5"
@@ -26,16 +33,12 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
-	"io"
-	"io/ioutil"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
+
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/deprecated"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot/scan"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot/syftmodel"
-	"net/url"
-	"os"
-	"path"
-	"path/filepath"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
 func serializeSbom(sbom syftmodel.Document) (serializedOutput []byte, err error) {
@@ -121,7 +124,7 @@ func ContainerCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err erro
 		return
 	}
 
-	repoMeta := types.RepoMetadata{}
+	repoMeta := deprecated.RepoMetadata{}
 	repoMeta.Merge(
 		snapshotOptions.GitRemote,
 		snapshotOptions.GitBranch,

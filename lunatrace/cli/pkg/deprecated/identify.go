@@ -12,14 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
-
-import (
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/deprecated"
-)
+package deprecated
 
 type IdentifyResponse struct {
-	deprecated.GraphqlErrors
+	GraphqlErrors
 	Data struct {
 		Method struct {
 			LastHeartbeat string `json:"last_heartbeat"`

@@ -22,7 +22,7 @@ import (
 )
 
 func PerformAgentHeartbeat(appConfig types.LunaTraceAgentConfig) (err error) {
-	var identifyResponse types.IdentifyResponse
+	var identifyResponse deprecated.IdentifyResponse
 
 	headers := map[string]string{
 		"X-LunaTrace-Access-Token": appConfig.AgentAccessToken,

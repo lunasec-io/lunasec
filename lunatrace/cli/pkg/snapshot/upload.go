@@ -84,7 +84,7 @@ func getOrgAndProjectFromAccessToken(
 	graphqlServer types.LunaTraceGraphqlServer,
 	projectAccessToken string,
 ) (orgId, projectId string, err error) {
-	var projectInfoResponse types.GetProjectInfoResponse
+	var projectInfoResponse deprecated.GetProjectInfoResponse
 
 	log.Debug().
 		Msg("Looking up project from access token")
@@ -121,9 +121,9 @@ func getOrgAndProjectFromAccessToken(
 func insertNewBuild(
 	appConfig types.LunaTraceConfig,
 	projectId string,
-	repoMeta types.RepoMetadata,
+	repoMeta deprecated.RepoMetadata,
 ) (agentSecret string, buildId string, err error) {
-	var newBuildResponse types.NewBuildResponse
+	var newBuildResponse deprecated.NewBuildResponse
 
 	variables := map[string]string{
 		"project_id": projectId,
@@ -158,7 +158,7 @@ func deleteBuild(
 	appConfig types.LunaTraceConfig,
 	buildId string,
 ) (err error) {
-	var deleteBuildResponse types.DeleteBuildResponse
+	var deleteBuildResponse deprecated.DeleteBuildResponse
 
 	request := deprecated.DeleteBuildRequest(buildId)
 
@@ -186,7 +186,7 @@ func presignSbomUpload(
 	orgId string,
 	buildId string,
 ) (url string, headers map[string]string, err error) {
-	var presignSbomResponse types.PresignSbomResponse
+	var presignSbomResponse deprecated.PresignSbomResponse
 
 	request := deprecated.PresignSbomUploadRequest(orgId, buildId)
 
@@ -215,7 +215,7 @@ func setBuildS3Url(
 	buildId string,
 	s3Url string,
 ) (err error) {
-	var setBuildS3UrlResponse types.SetBuildS3UrlResponse
+	var setBuildS3UrlResponse deprecated.SetBuildS3UrlResponse
 
 	request := deprecated.UpdateBuildS3UrlRequest(buildId, s3Url)
 
