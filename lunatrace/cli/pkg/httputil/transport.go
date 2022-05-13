@@ -12,15 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package gql
+package httputil
 
 import (
-	"github.com/Khan/genqlient/graphql"
+	"net/http"
 )
 
-// TODOClient is bad. Remove it. it is todo.
-// todo auth headers?
-var TODOClient = func() graphql.Client {
-	// make sure the config is loaded first or use dependency injection.
-	return nil
-}()
+type HeadersTransport struct {
+	RT      http.RoundTripper
+	Headers map[string]string
+}
+
+func (t *HeadersTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if t.RT == nil {
+		t.RT = http.DefaultTransport
+	}
+	for header, value := range t.Headers {
+		req.Header.Add(header, value)
+	}
+	return t.RT.RoundTrip(req)
+}
