@@ -25,10 +25,11 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/patch"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
-func LivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool, hotpatchFiles embed.FS) error {
+func LivePatchCommand(c *cli.Context, globalBoolFlags *types.LunaTraceGlobalFlags, hotpatchFiles embed.FS) error {
 	command.EnableGlobalFlags(globalBoolFlags)
 
 	payloadUrl := c.String("payload-url")

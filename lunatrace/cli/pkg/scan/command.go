@@ -15,13 +15,15 @@
 package scan
 
 import (
+	"runtime"
+
 	"github.com/prometheus/procfs"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/findings"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-	"runtime"
 )
 
 func scanSystemProcesses(scanner Log4jVulnerableDependencyScanner) (scannerFindings []types.Finding, err error) {
@@ -114,7 +116,7 @@ func scanDirectoriesForVulnerableLibraries(
 	return
 }
 
-func ScanCommand(c *cli.Context, globalBoolFlags map[string]bool, log4jLibraryHashes []byte) (err error) {
+func ScanCommand(c *cli.Context, globalBoolFlags *types.LunaTraceGlobalFlags, log4jLibraryHashes []byte) (err error) {
 	command.EnableGlobalFlags(globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
