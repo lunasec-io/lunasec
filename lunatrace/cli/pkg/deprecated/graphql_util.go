@@ -12,17 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
+package deprecated
 
-type IdentifyResponse struct {
-	GraphqlErrors
-	Data struct {
-		Method struct {
-			LastHeartbeat string `json:"last_heartbeat"`
-		} `json:"insert_instances_one"`
-	} `json:"data"`
+import (
+	"errors"
+	"strings"
+)
+
+func formatGraphqlErrors(graphqlErrors GraphqlErrors) error {
+	var errs []string
+	for _, respErr := range graphqlErrors.Errors {
+		errs = append(errs, respErr.Message)
+	}
+	return errors.New(strings.Join(errs, ", "))
 }
 
-func (s *IdentifyResponse) GetLastHeartbeat() string {
-	return s.Data.Method.LastHeartbeat
+func GetGraphqlError(err error, graphqlErrors GraphqlErrors) error {
+	if err != nil {
+		return err
+	}
+	if len(graphqlErrors.Errors) != 0 {
+		err = formatGraphqlErrors(graphqlErrors)
+		return err
+	}
+	return nil
 }

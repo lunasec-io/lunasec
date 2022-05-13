@@ -16,11 +16,14 @@ package snapshot
 
 import (
 	"fmt"
+
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/deprecated"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot/syftmodel"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
 func processSbom(
@@ -28,7 +31,7 @@ func processSbom(
 	appConfig types.LunaTraceConfig,
 	options types.SnapshotOptions,
 	sbom *sbom.SBOM,
-	repoMeta types.RepoMetadata,
+	repoMeta deprecated.RepoMetadata,
 ) (err error) {
 	sbomModel := ToFormatModel(*sbom)
 
@@ -82,7 +85,7 @@ func outputSbom(sbom syftmodel.Document, printToStdout bool, outputFile string) 
 	return
 }
 
-func uploadSbom(appConfig types.LunaTraceConfig, sbom syftmodel.Document, repoMeta types.RepoMetadata) (agentSecret string, err error) {
+func uploadSbom(appConfig types.LunaTraceConfig, sbom syftmodel.Document, repoMeta deprecated.RepoMetadata) (agentSecret string, err error) {
 	var (
 		orgId, projectId, buildId, s3Url string
 	)
