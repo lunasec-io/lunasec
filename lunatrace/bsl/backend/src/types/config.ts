@@ -51,6 +51,7 @@ export interface AwsConfig {
 }
 
 export interface WebhookConfig {
+  disableWebhookQueue: boolean;
   queueName: string;
   secret: string;
 }
