@@ -13,8 +13,7 @@ jobs:
     strategy:
       matrix:
         go:
-          - '1.13'
-          - '1.17'
+          - '1.18'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,8 +26,8 @@ jobs:
           path: |
             ~/.cache/go-build
             ~/go/pkg/mod
-          key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-golang-${{ matrix.go }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
-            ${{ runner.os }}-golang-
+            ${{ runner.os }}-golang-${{ matrix.go }}-
       - run: go build ./...
       - run: go test ./...
