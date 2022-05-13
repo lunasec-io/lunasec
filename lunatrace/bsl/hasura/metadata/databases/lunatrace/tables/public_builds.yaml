@@ -1,184 +1,184 @@
 table:
-  schema: public
   name: builds
+  schema: public
 object_relationships:
-  - name: project
-    using:
-      foreign_key_constraint_on: project_id
+- name: project
+  using:
+    foreign_key_constraint_on: project_id
 array_relationships:
-  - name: findings
-    using:
-      foreign_key_constraint_on:
-        column: build_id
-        table:
-          schema: public
-          name: findings
-  - name: manifests
-    using:
-      foreign_key_constraint_on:
-        column: build_id
-        table:
-          schema: public
-          name: manifests
-  - name: scans
-    using:
-      foreign_key_constraint_on:
-        column: build_id
-        table:
-          schema: public
-          name: scans
+- name: findings
+  using:
+    foreign_key_constraint_on:
+      column: build_id
+      table:
+        name: findings
+        schema: public
+- name: manifests
+  using:
+    foreign_key_constraint_on:
+      column: build_id
+      table:
+        name: manifests
+        schema: public
+- name: scans
+  using:
+    foreign_key_constraint_on:
+      column: build_id
+      table:
+        name: scans
+        schema: public
 remote_relationships:
-  - definition:
-      remote_field:
-        sbomUrl:
-          arguments:
-            buildId: $id
-      hasura_fields:
-        - id
-      remote_schema: lunatrace-custom
-    name: s3_url_signed
+- definition:
+    hasura_fields:
+    - id
+    remote_field:
+      sbomUrl:
+        arguments:
+          buildId: $id
+    remote_schema: lunatrace-custom
+  name: s3_url_signed
 insert_permissions:
-  - role: cli
-    permission:
-      check:
-        project:
-          project_access_tokens:
-            access_token:
-              _eq: X-Hasura-Access-Token
-      set:
-        source_type: cli
-      columns:
-        - agent_access_token
-        - build_number
-        - git_branch
-        - git_hash
-        - git_remote
-        - project_id
-        - s3_url
-      backend_only: false
-  - role: service
-    permission:
-      check: {}
-      columns:
-        - agent_access_token
-        - build_number
-        - created_at
-        - existing_github_review_id
-        - git_branch
-        - git_hash
-        - git_remote
-        - id
-        - project_id
-        - pull_request_id
-        - s3_url
-        - source_type
-      backend_only: false
+- permission:
+    backend_only: false
+    check:
+      project:
+        project_access_tokens:
+          access_token:
+            _eq: X-Hasura-Access-Token
+    columns:
+    - agent_access_token
+    - build_number
+    - git_branch
+    - git_hash
+    - git_remote
+    - project_id
+    - s3_url
+    set:
+      source_type: cli
+  role: cli
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - agent_access_token
+    - build_number
+    - created_at
+    - existing_github_review_id
+    - git_branch
+    - git_hash
+    - git_remote
+    - id
+    - project_id
+    - pull_request_id
+    - s3_url
+    - source_type
+  role: service
 select_permissions:
-  - role: cli
-    permission:
-      columns:
-        - agent_access_token
-        - build_number
-        - created_at
-        - git_branch
-        - git_hash
-        - git_remote
-        - id
-        - project_id
-        - s3_url
-        - source_type
-      filter:
-        project:
-          project_access_tokens:
-            access_token:
-              _eq: X-Hasura-Access-Token
-  - role: service
-    permission:
-      columns:
-        - agent_access_token
-        - build_number
-        - created_at
-        - existing_github_review_id
-        - git_branch
-        - git_hash
-        - git_remote
-        - id
-        - project_id
-        - pull_request_id
-        - s3_url
-        - source_type
-      filter: {}
-  - role: user
-    permission:
-      columns:
-        - build_number
-        - created_at
-        - existing_github_review_id
-        - git_branch
-        - git_hash
-        - git_remote
-        - id
-        - project_id
-        - pull_request_id
-        - s3_url
-        - source_type
-      filter:
-        _or:
-          - project:
-              organization:
-                organization_users:
-                  user:
-                    kratos_id:
-                      _eq: X-Hasura-User-Id
-          - agent_access_token:
-              _eq: X-Hasura-Access-Token
+- permission:
+    columns:
+    - agent_access_token
+    - build_number
+    - created_at
+    - git_branch
+    - git_hash
+    - git_remote
+    - id
+    - project_id
+    - s3_url
+    - source_type
+    filter:
+      project:
+        project_access_tokens:
+          access_token:
+            _eq: X-Hasura-Access-Token
+  role: cli
+- permission:
+    columns:
+    - agent_access_token
+    - build_number
+    - created_at
+    - existing_github_review_id
+    - git_branch
+    - git_hash
+    - git_remote
+    - id
+    - project_id
+    - pull_request_id
+    - s3_url
+    - source_type
+    filter: {}
+  role: service
+- permission:
+    columns:
+    - build_number
+    - created_at
+    - existing_github_review_id
+    - git_branch
+    - git_hash
+    - git_remote
+    - id
+    - project_id
+    - pull_request_id
+    - s3_url
+    - source_type
+    filter:
+      _or:
+      - project:
+          organization:
+            organization_users:
+              user:
+                kratos_id:
+                  _eq: X-Hasura-User-Id
+      - agent_access_token:
+          _eq: X-Hasura-Access-Token
+  role: user
 update_permissions:
-  - role: cli
-    permission:
-      columns:
-        - s3_url
-      filter:
-        project:
-          project_access_tokens:
-            access_token:
-              _eq: X-Hasura-Access-Token
-      check: null
-  - role: service
-    permission:
-      columns:
-        - agent_access_token
-        - build_number
-        - created_at
-        - existing_github_review_id
-        - git_branch
-        - git_hash
-        - git_remote
-        - id
-        - project_id
-        - s3_url
-      filter: {}
-      check: null
-  - role: user
-    permission:
-      columns:
-        - s3_url
-      filter:
-        agent_access_token:
-          _eq: X-Hasura-Access-Token
-      check: null
+- permission:
+    check: null
+    columns:
+    - s3_url
+    filter:
+      project:
+        project_access_tokens:
+          access_token:
+            _eq: X-Hasura-Access-Token
+  role: cli
+- permission:
+    check: null
+    columns:
+    - agent_access_token
+    - build_number
+    - created_at
+    - existing_github_review_id
+    - git_branch
+    - git_hash
+    - git_remote
+    - id
+    - project_id
+    - s3_url
+    filter: {}
+  role: service
+- permission:
+    check: null
+    columns:
+    - s3_url
+    filter:
+      agent_access_token:
+        _eq: X-Hasura-Access-Token
+  role: user
 delete_permissions:
-  - role: cli
-    permission:
-      filter:
-        project:
-          project_access_tokens:
-            access_token:
-              _eq: X-Hasura-Access-Token
-  - role: service
-    permission:
-      filter: {}
-  - role: user
-    permission:
-      filter:
-        agent_access_token:
-          _eq: X-Hasura-Access-Token
+- permission:
+    filter:
+      project:
+        project_access_tokens:
+          access_token:
+            _eq: X-Hasura-Access-Token
+  role: cli
+- permission:
+    filter: {}
+  role: service
+- permission:
+    filter:
+      agent_access_token:
+        _eq: X-Hasura-Access-Token
+  role: user
