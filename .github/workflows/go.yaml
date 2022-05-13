@@ -1,0 +1,25 @@
+name: Go
+
+# This workflow posts hasura changes as a comment.
+on:
+  pull_request:
+    paths:
+      - '**.go'
+      - go.mod
+      - go.sum
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        go:
+          - '1.13'
+          - '1.17'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go }}
+      - run: go build ./...
+      - run: go test ./...
