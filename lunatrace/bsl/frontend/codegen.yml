@@ -29,6 +29,3 @@ generates:
       - "typescript-rtk-query":
           importBaseApiFrom: './baseApi'
           exportHooks: false
-  ../../../schema.graphql:
-    plugins:
-      - schema-ast

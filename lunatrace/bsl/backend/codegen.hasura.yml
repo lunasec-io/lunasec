@@ -11,6 +11,6 @@ generates:
             user_role: "'organization_user'|'lunatrace_admin'"
       - "typescript-operations"
       - "typescript-graphql-request"
-  ../../../schema.graphql:
+  ../../schema.graphql:
     plugins:
       - schema-ast
