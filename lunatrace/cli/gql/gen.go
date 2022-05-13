@@ -1942,43 +1942,43 @@ func (v *MyMutationResponse) GetInsert_builds_one() *MyMutationInsert_builds_one
 
 // Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'.
 type Numeric_comparison_exp struct {
-	Eq      json.Number   `json:"_eq"`
-	Gt      json.Number   `json:"_gt"`
-	Gte     json.Number   `json:"_gte"`
-	In      []json.Number `json:"_in"`
-	Is_null bool          `json:"_is_null"`
-	Lt      json.Number   `json:"_lt"`
-	Lte     json.Number   `json:"_lte"`
-	Neq     json.Number   `json:"_neq"`
-	Nin     []json.Number `json:"_nin"`
+	Eq      float64   `json:"_eq"`
+	Gt      float64   `json:"_gt"`
+	Gte     float64   `json:"_gte"`
+	In      []float64 `json:"_in"`
+	Is_null bool      `json:"_is_null"`
+	Lt      float64   `json:"_lt"`
+	Lte     float64   `json:"_lte"`
+	Neq     float64   `json:"_neq"`
+	Nin     []float64 `json:"_nin"`
 }
 
 // GetEq returns Numeric_comparison_exp.Eq, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetEq() json.Number { return v.Eq }
+func (v *Numeric_comparison_exp) GetEq() float64 { return v.Eq }
 
 // GetGt returns Numeric_comparison_exp.Gt, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetGt() json.Number { return v.Gt }
+func (v *Numeric_comparison_exp) GetGt() float64 { return v.Gt }
 
 // GetGte returns Numeric_comparison_exp.Gte, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetGte() json.Number { return v.Gte }
+func (v *Numeric_comparison_exp) GetGte() float64 { return v.Gte }
 
 // GetIn returns Numeric_comparison_exp.In, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetIn() []json.Number { return v.In }
+func (v *Numeric_comparison_exp) GetIn() []float64 { return v.In }
 
 // GetIs_null returns Numeric_comparison_exp.Is_null, and is useful for accessing the field via an interface.
 func (v *Numeric_comparison_exp) GetIs_null() bool { return v.Is_null }
 
 // GetLt returns Numeric_comparison_exp.Lt, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetLt() json.Number { return v.Lt }
+func (v *Numeric_comparison_exp) GetLt() float64 { return v.Lt }
 
 // GetLte returns Numeric_comparison_exp.Lte, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetLte() json.Number { return v.Lte }
+func (v *Numeric_comparison_exp) GetLte() float64 { return v.Lte }
 
 // GetNeq returns Numeric_comparison_exp.Neq, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetNeq() json.Number { return v.Neq }
+func (v *Numeric_comparison_exp) GetNeq() float64 { return v.Neq }
 
 // GetNin returns Numeric_comparison_exp.Nin, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetNin() []json.Number { return v.Nin }
+func (v *Numeric_comparison_exp) GetNin() []float64 { return v.Nin }
 
 // input type for inserting array relation for remote table "organization_user"
 type Organization_user_arr_rel_insert_input struct {

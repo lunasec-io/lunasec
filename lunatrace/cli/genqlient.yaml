@@ -37,4 +37,4 @@ bindings:
   jsonb:
     type: encoding/json.RawMessage
   numeric:
-    type: encoding/json.Number
+    type: float64
