@@ -2,7 +2,7 @@ docs/** linguist-documentation
 .yarn/** linguist-vendored
 
 # Inventory of Generated Files. Some may be ignored.
-lunatrace/bsl/schema.graphql linguist-generated merge=ours
+schema.graphql linguist-generated merge=ours
 js/sdks/packages/tokenizer-sdk/src/generated/** linguist-generated merge=ours
 lunatrace/bsl/backend/src/github/api/generated.ts linguist-generated merge=ours
 lunatrace/bsl/backend/src/graphql-yoga/generated-resolver-types.ts linguist-generated merge=ours

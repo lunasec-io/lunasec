@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="file://$PROJECT_DIR$" libraries="{Dependencies from lunasec-monorepo/js/internal-infrastructure/metrics-server-backend/package.json}" />
+    <file url="file://$PROJECT_DIR$/js/internal-infrastructure/metrics-server-backend" libraries="{Dependencies from lunasec/js/internal-infrastructure/metrics-server-backend/package.json}" />
   </component>
 </project>
