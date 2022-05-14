@@ -1,7 +1,14 @@
 version: '3.6'
 services:
   oathkeeper:
-    build: ./ory/oathkeeper
+    build:
+      context: ./ory/oathkeeper
+      args:
+        OATHKEEPER_HASURA_URL: "http://graphql-engine:8080"
+        OATHKEEPER_FRONTEND_URL: "http://host.docker.internal:3000"
+        OATHKEEPER_BACKEND_URL: "http://host.docker.internal:3002"
+        OATHKEEPER_KRATOS_URL: "http://kratos:4433"
+        OATHKEEPER_MATCH_URL: "<https|http|ws>://localhost:4455"
     image: lunatrace-oathkeeper
     ports:
       - "4455:4455" # public

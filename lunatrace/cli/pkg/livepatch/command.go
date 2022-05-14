@@ -17,15 +17,19 @@ package livepatch
 import (
 	"embed"
 	"fmt"
+
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/patch"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
-func LivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool, hotpatchFiles embed.FS) error {
+func LivePatchCommand(c *cli.Context, globalBoolFlags *types.LunaTraceGlobalFlags, hotpatchFiles embed.FS) error {
 	command.EnableGlobalFlags(globalBoolFlags)
 
 	payloadUrl := c.String("payload-url")
@@ -48,7 +52,7 @@ func LivePatchCommand(c *cli.Context, globalBoolFlags map[string]bool, hotpatchF
 		ldapPort = constants.DefaultLDAPServerPort
 	}
 
-	payloadServerHost, payloadServerPort, err := util.ParseHostAndPortFromUrlString(payloadUrl)
+	payloadServerHost, payloadServerPort, err := httputil.ParseHostAndPortFromUrlString(payloadUrl)
 	if err != nil {
 		log.Error().
 			Err(err).

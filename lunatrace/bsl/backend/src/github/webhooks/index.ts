@@ -21,8 +21,13 @@ import { catchError, threwError } from '../../utils/try';
 import { registerWebhooksToInterceptor } from './handlers';
 import { WebhookInterceptor } from './interceptor';
 
-export async function createGithubWebhookInterceptor(): Promise<WebhookInterceptor> {
+export async function createGithubWebhookInterceptor(): Promise<WebhookInterceptor | null> {
   const webhookConfig = getWebhookConfig();
+
+  if (webhookConfig.disableWebhookQueue) {
+    log.info('disabling the github webhook queue');
+    return null;
+  }
 
   const webhookQueueUrl = await catchError(getSqsUrlFromName(sqsClient, webhookConfig.queueName));
 
