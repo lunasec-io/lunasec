@@ -1,7 +1,8 @@
 ---
-title: "Vulnerability Scanners are ..."
-description: The issue with vulnerability scanning and what we think we can do about it
+title: "False Positives in Vulnerability Scanning: Why We Think We Can Do Better"
+description: The current issues with vulnerability scanning and what we think we can do about it
 slug: the-issue-with-vuln-scanners
+image: https://www.lunasec.io/docs/img/false-positives.png
 date: 2022-05-12
 keywords: [vulnerability-scanning, snyk, grype, tidelift]
 tags: [vulnerability-scanning, snyk, grype, tidelift]
@@ -22,7 +23,10 @@ authors: [forrest]
   ~
 -->
 
-And why we think we can do better.
+![False Positive Vulnerabilities](https://www.lunasec.io/docs/img/false-positives.png)
+
+
+
 ## False Positives Everywhere
 As a web developer, I've learned to ignore vulnerability scan results and that's a **big** problem.
 
@@ -41,12 +45,11 @@ we've been taking on this type of work for a few select companies, and taking no
 
 When diving in deeper to this problem we realized something a little mind-blowing.
 
-## Existing scanners don't have the data they need
+## Existing scanners lack data and context
 
 Vulnerabilities are usually tied to a library or a package, at least the ones that end up in an official database and show up in your scan report.
 Typically, the CPEs (packages) that are vulnerable are written right into the CVE (the official vulnerability notice).
 
-*INSERT IMAGE OF CPE IN CVE*
 
 In the current ecosystem vulnerability scanners check if your setup contains a flagged package and if so it will send some form of a notification. Full stop, that's it.
 The rest is up to you to figure out. You know your setup contains a flagged package but are you actually vulnerable? Often times having a package present 
@@ -62,7 +65,7 @@ For the most part, we aren't talking about advanced heuristics and static-analys
 We're talking about simple, yes or no checks. If the CVEs contained more structured information and if the scanners knew what to
 look for, they *could* do it. They'd be saving thousands of developers countless hours of drudgery.
 
-## Common scenarios
+## Common false positive scenarios
 
 Here are some common reasons why a vulnerable package might not matter:
 
