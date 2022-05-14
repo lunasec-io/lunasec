@@ -17914,6 +17914,58 @@ code.code-highlight {
   fill: #f1c40f;
 }
 
+.form-check-input {
+  clear: left;
+}
+
+.form-switch.form-switch-sm {
+  margin-bottom: 0.5rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-sm .form-check-input {
+  height: 1rem;
+  width: calc(1rem + 0.75rem);
+  border-radius: 2rem;
+  margin-right: 0.5rem;
+  margin-top: 0.1rem;
+}
+
+.form-switch.form-switch-md {
+  margin-bottom: 0.75rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-md .form-check-input {
+  height: 1.25rem;
+  width: calc(1.5rem + 0.75rem);
+  border-radius: 2.5rem;
+  margin-right: 0.75rem;
+  margin-top: 0.15rem;
+}
+
+.form-switch.form-switch-lg {
+  margin-bottom: 1rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-lg .form-check-input {
+  height: 1.5rem;
+  width: calc(2rem + 0.75rem);
+  border-radius: 3rem;
+  margin-right: 1rem;
+  margin-top: 0.2rem;
+}
+
+.form-switch.form-switch-xl {
+  margin-bottom: 1.5rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-xl .form-check-input {
+  height: 2rem;
+  width: calc(3rem + 0.75rem);
+  border-radius: 4rem;
+  margin-right: 1.5rem;
+  margin-top: 0.3rem;
+}
+
 .darker {
   color: #6c757d;
 }

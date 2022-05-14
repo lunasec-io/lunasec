@@ -18,6 +18,20 @@ LOOP
 END LOOP;
 END; $$;
 
+DO $$
+    declare
+        organization record;
+    BEGIN
+        FOR organization IN SELECT * FROM public.organizations WHERE settings_id IS NULL
+            LOOP
+                WITH setting AS (INSERT INTO public.settings DEFAULT VALUES RETURNING id)
+                UPDATE public.organizations
+                SET settings_id=setting.id
+                FROM setting
+                WHERE public.organizations.id = organization.id;
+            END LOOP;
+    END; $$;
+
 
 -- make sure any new projects or orgs have a settings table associated
 CREATE OR REPLACE FUNCTION always_create_settings()
