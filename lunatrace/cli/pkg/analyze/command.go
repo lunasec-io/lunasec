@@ -16,12 +16,14 @@ package analyze
 
 import (
 	"github.com/urfave/cli/v2"
+
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/findings"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/scan"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
-func AnalyzeCommand(c *cli.Context, globalBoolFlags map[string]bool) error {
+func AnalyzeCommand(c *cli.Context, globalBoolFlags *types.LunaTraceGlobalFlags) error {
 	command.EnableGlobalFlags(globalBoolFlags)
 
 	searchDirs := c.Args().Slice()
