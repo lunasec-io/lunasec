@@ -28,32 +28,17 @@ import { ApplicationProtocol, ListenerCondition, SslPolicy } from '@aws-cdk/aws-
 import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import { HostedZone } from '@aws-cdk/aws-route53';
 import { Bucket } from '@aws-cdk/aws-s3';
-import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
+
+import { StackInputsType } from '../bin/lunatrace-backend';
 
 import { commonBuildProps } from './constants';
 import { getContainerTarballPath } from './util';
 import { WorkerStack } from './worker-stack';
 import { WorkerStorageStack } from './worker-storage-stack';
 
-interface LunaTraceStackProps extends cdk.StackProps {
-  // TODO: Make the output URL be a URL managed by us, not AWS
-  domainName: string;
-  domainZoneId: string;
-  appName: string;
-  certificateArn: string;
-  backendStaticSecretArn: string;
-  databaseSecretArn: string;
-  gitHubAppId: string;
-  gitHubAppPrivateKey: string;
-  gitHubAppWebHookSecret: string;
-  githubOauthAppLoginSecretArn: string;
-  githubOauthAppLoginClientIdArn: string;
-  kratosCookieSecretArn: string;
-  kratosCipherSecretArn: string;
-  vpcId: string;
-}
+interface LunaTraceStackProps extends cdk.StackProps, StackInputsType {}
 
 export class LunatraceBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
@@ -78,14 +63,24 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
     dbSecurityGroup.addIngressRule(vpcDbSecurityGroup, Port.tcp(5432), 'LunaTrace VPC database connection');
 
-    const oryConfigBucket = new Bucket(this, 'OryConfig');
+    const oryConfigBucket = Bucket.fromBucketArn(this, 'OryConfig', props.oathkeeperConfigBucketArn);
+    const oathkeeperJwksFile = 'lunatrace-oathkeeper.2022-05-13.jwks.json';
 
-    new BucketDeployment(this, 'DeployWebsite', {
-      sources: [Source.asset('../ory/')],
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      destinationBucket: oryConfigBucket,
-    });
+    // TODO (cthompson) This is highly annoying. Since we cannot mount files in an ECS container, we need to somehow get
+    // the jwks config into oathkeeper. To hack our way into making this happen, we are writing the jwks.json file into
+    // an s3 bucket and then referencing that as an s3 url from inside the oathkeeper config.
+
+    // generated with:
+    // oathkeeper credentials generate --alg RS256 > jwks.json
+    // aws secretsmanager create-secret --name lunatrace-OathkeeperJwks --description "Jwks key details for LunaTrace Oathkeeper" --secret-string '$(cat jwks.json)'
+    // const oathkeeperJwksSecret = Secret.fromSecretNameV2(this, 'OathkeeperJwks', 'lunatrace-OathkeeperJwks');
+
+    // new BucketDeployment(this, 'DeployWebsite', {
+    //   sources: [Source.asset('../ory/oathkeeper')],
+    //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //   // @ts-ignore
+    //   destinationBucket: oryConfigBucket,
+    // });
 
     const domainZone = HostedZone.fromHostedZoneAttributes(this, 'HostedZone', {
       hostedZoneId: props.domainZoneId,
@@ -146,7 +141,16 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const oathkeeperContainerImage = ContainerImage.fromAsset('../ory/oathkeeper', commonBuildProps);
+    const oathkeeperContainerImage = ContainerImage.fromAsset('../ory/oathkeeper', {
+      ...commonBuildProps,
+      buildArgs: {
+        OATHKEEPER_FRONTEND_URL: 'http://localhost:3000',
+        OATHKEEPER_BACKEND_URL: 'http://localhost:3002',
+        OATHKEEPER_HASURA_URL: 'http://localhost:8080',
+        OATHKEEPER_KRATOS_URL: 'http://localhost:4433',
+        OATHKEEPER_MATCH_URL: '<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>',
+      },
+    });
 
     const oathkeeper = taskDef.addContainer('OathkeeperContainer', {
       containerName: 'OathkeeperContainer',
@@ -157,12 +161,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       }),
       command: ['--config', '/generated/config.yaml', 'serve'],
       environment: {
-        MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: oryConfigBucket.s3UrlForObject('oathkeeper/jwks.json'),
-        OATHKEEPER_HASURA_URL: 'http://localhost:8080',
-        OATHKEEPER_FRONTEND_URL: 'http://localhost:3000',
-        OATHKEEPER_BACKEND_URL: 'http://localhost:3002',
-        OATHKEEPER_KRATOS_URL: 'http://localhost:4433',
-        OATHKEEPER_MATCH_URL: '<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>',
+        MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: oryConfigBucket.s3UrlForObject(oathkeeperJwksFile),
       },
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4456/health/ready || exit 1'],

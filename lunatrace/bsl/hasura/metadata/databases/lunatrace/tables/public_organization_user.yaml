@@ -35,6 +35,8 @@ insert_permissions:
                         _eq: X-Hasura-User-Id
                   - role:
                       _eq: admin
+      set:
+        user_id: x-hasura-Real-User-Id
       columns:
         - organization_id
         - role

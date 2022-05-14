@@ -15,16 +15,19 @@
 package main
 
 import (
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/analyze"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/livepatch"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/patch"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/scan"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
-	"os"
 )
 
 func main() {
@@ -36,17 +39,17 @@ func main() {
 		util.RemoveCleanupDirs()
 	})
 
-	globalBoolFlags := map[string]bool{
-		"verbose":         false,
-		"json":            false,
-		"debug":           false,
-		"ignore-warnings": false,
+	globalBoolFlags := &types.LunaTraceGlobalFlags{
+		Verbose:        false,
+		Json:           false,
+		Debug:          false,
+		IgnoreWarnings: false,
 	}
 
 	setGlobalBoolFlags := func(c *cli.Context) error {
-		for flag := range globalBoolFlags {
+		for _, flag := range globalBoolFlags.Fields() {
 			if c.IsSet(flag) {
-				globalBoolFlags[flag] = true
+				globalBoolFlags.Set(flag, true)
 			}
 		}
 		return nil
