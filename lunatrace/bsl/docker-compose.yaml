@@ -88,8 +88,8 @@ services:
       ACTION_BASE_URL: http://host.docker.internal:3002
       # TODO: ADD THIS TO THE CDK
       REMOTE_SCHEMA_URL: http://host.docker.internal:3002/graphql/v1
-#      HASURA_GRAPHQL_METADATA_DIR: /hasura/metadata
-#      HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura/migrations
+      HASURA_GRAPHQL_METADATA_DIR: /hasura/metadata
+      HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura/migrations
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
