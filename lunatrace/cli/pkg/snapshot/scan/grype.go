@@ -20,6 +20,7 @@ import (
 	"github.com/anchore/grype/grype"
 	"github.com/anchore/grype/grype/db"
 	"github.com/anchore/grype/grype/match"
+	"github.com/anchore/grype/grype/matcher"
 	"github.com/anchore/grype/grype/pkg"
 	"github.com/anchore/grype/grype/presenter/models"
 	"github.com/anchore/grype/grype/vulnerability"
@@ -162,7 +163,8 @@ func GrypeSbomScanFromFile(filename string) (document models.Document, err error
 	log.Debug().Msg("finished gathering packages")
 
 	log.Debug().Msg("finding vulnerabilities")
-	matches = grype.FindVulnerabilitiesForPackage(provider, context.Distro, packages...)
+	matchers := matcher.NewDefaultMatchers(matcher.Config{})
+	matches = grype.FindVulnerabilitiesForPackage(provider, context.Distro, matchers, packages)
 	log.Debug().Msg("done looking for vulnerabilities")
 
 	document, err = models.NewDocument(packages, context, matches, ignoredMatches, metadataProvider, appConfig, dbStatus)
