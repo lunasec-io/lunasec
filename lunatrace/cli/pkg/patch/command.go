@@ -17,12 +17,14 @@ package patch
 import (
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
 func JavaArchivePatchCommand(
 	c *cli.Context,
-	globalBoolFlags map[string]bool,
+	globalBoolFlags *types.LunaTraceGlobalFlags,
 	log4jLibraryHashes []byte,
 ) error {
 	command.EnableGlobalFlags(globalBoolFlags)

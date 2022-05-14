@@ -12,29 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package util
+package gql
 
 import (
-	"errors"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-	"strings"
+	"github.com/Khan/genqlient/graphql"
 )
 
-func formatGraphqlErrors(graphqlErrors types.GraphqlErrors) error {
-	var errs []string
-	for _, respErr := range graphqlErrors.Errors {
-		errs = append(errs, respErr.Message)
-	}
-	return errors.New(strings.Join(errs, ", "))
-}
-
-func GetGraphqlError(err error, graphqlErrors types.GraphqlErrors) error {
-	if err != nil {
-		return err
-	}
-	if len(graphqlErrors.Errors) != 0 {
-		err = formatGraphqlErrors(graphqlErrors)
-		return err
-	}
+// TODOClient is bad. Remove it. it is todo.
+// todo auth headers?
+var TODOClient = func() graphql.Client {
+	// make sure the config is loaded first or use dependency injection.
 	return nil
-}
+}()

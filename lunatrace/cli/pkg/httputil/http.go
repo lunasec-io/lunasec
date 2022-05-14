@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package util
+package httputil
 
 import (
 	"bytes"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"github.com/rs/zerolog/log"
 )
 
 func ParseHostAndPortFromUrlString(urlStr string) (host string, port int64, err error) {
