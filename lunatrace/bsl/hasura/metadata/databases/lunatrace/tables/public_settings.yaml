@@ -1,3 +1,64 @@
 table:
-  name: settings
   schema: public
+  name: settings
+object_relationships:
+  - name: organization
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: organizations
+        insertion_order: null
+        column_mapping:
+          id: settings_id
+  - name: project
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: projects
+        insertion_order: null
+        column_mapping:
+          id: settings_id
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - pr_feedback_enabled
+        - created_at
+        - id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - id
+        - created_at
+        - pr_feedback_enabled
+      filter:
+        _or:
+          - project:
+              organization:
+                organization_users:
+                  user_id:
+                    _eq: X-Hasura-Real-User-Id
+          - organization:
+              organization_users:
+                user_id:
+                  _eq: X-Hasura-Real-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - pr_feedback_enabled
+      filter:
+        _or:
+          - project:
+              organization:
+                organization_users:
+                  user_id:
+                    _eq: X-Hasura-Real-User-Id
+          - organization:
+              organization_users:
+                user_id:
+                  _eq: X-Hasura-Real-User-Id
+      check: null
