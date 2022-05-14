@@ -98,3 +98,18 @@ function mergeExistingFindingIntoPackage<F extends Finding>(vulnPackage: Vulnera
     });
   }
 }
+
+interface FindingForCounting {
+  severity: string;
+  purl: string;
+}
+
+export function countCriticalVulnerabilities(findings: FindingForCounting[]): number {
+  const criticalPackagePurls = new Set<string>();
+  findings.forEach((finding) => {
+    if (finding.severity === 'Critical' && finding.purl) {
+      criticalPackagePurls.add(finding.purl);
+    }
+  });
+  return criticalPackagePurls.size;
+}

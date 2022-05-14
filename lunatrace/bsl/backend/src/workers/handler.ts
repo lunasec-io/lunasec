@@ -109,10 +109,95 @@ async function readDataFromQueue<THandler extends QueueHandlerFuncType>(
   }
 }
 
+function wrapProcessS3EventQueueJob(
+  processMessageCallback: S3HandlerCallback
+): (parsedBody: S3SqsEvent) => Promise<MaybeError<undefined>> {
+  return async (parsedBody: S3SqsEvent) => {
+    if (!parsedBody.Records) {
+      log.info('No records on sqs event, deleting message, exiting');
+      return newError('No records on sqs event, deleting message, exiting');
+    }
+    // todo: do we actually need this promise handling or should we only take the first record from any event?
+    // assuming one file per object created event makes sense
+    const handlerPromises = parsedBody.Records.map((record) => {
+      // Executes the proper handler for whatever queue we are processing, passed in above as an argument
+      return processMessageCallback({
+        bucketName: record.s3.bucket.name,
+        key: record.s3.object.key,
+        region: record.awsRegion,
+      });
+    });
+    const results = await Promise.all(handlerPromises);
+
+    const errors = results.filter((result) => result.error);
+
+    if (errors.length > 0) {
+      log.error('Errors found during SQS job:', { errors });
+      // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
+      return newError('Errors found during SQS job');
+    }
+
+    return newResult(undefined);
+  };
+}
+
+function wrapProcessRepositoryJob(
+  processMessageCallback: HandlerCallback<GenerateSnapshotForRepositoryRecord>
+): (parsedBody: GenerateSnapshotForRepositoryRecord[]) => Promise<MaybeError<undefined>> {
+  return async (parsedBody: GenerateSnapshotForRepositoryRecord[]) => {
+    if (!isArray(parsedBody) || parsedBody.length === 0) {
+      log.info('No records on sqs event, deleting message, exiting');
+      return newError('No records on sqs event, deleting message, exiting');
+    }
+
+    const handlerPromises = parsedBody.map((record) => {
+      // Executes the proper handler for whatever queue we are processing, passed in above as an argument
+      return processMessageCallback(record);
+    });
+    const results = await Promise.all(handlerPromises);
+
+    const errors = results.filter((result) => result.error);
+
+    if (errors.length > 0) {
+      log.error('Errors found during SQS job:', { errors });
+      // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
+      return newError('Errors found during SQS job');
+    }
+
+    return newResult(undefined);
+  };
+}
+
 function loadQueueHandlers(): QueueHandlersType {
   return {
-    's3-queue-handler': handleS3SqsEvent,
-    'lunatrace-queue-handler': handleLunaTraceSqsEvent,
+    'process-manifest': {
+      // eslint-disable-next-line @typescript-eslint/require-await
+      handlerFunc: async () => {
+        return wrapProcessS3EventQueueJob(handleSnapshotManifest);
+      },
+    },
+    'process-repository': {
+      // eslint-disable-next-line @typescript-eslint/require-await
+      handlerFunc: async () => {
+        return wrapProcessRepositoryJob(generateSnapshotForRepository);
+      },
+    },
+    'process-sbom': {
+      // eslint-disable-next-line @typescript-eslint/require-await
+      handlerFunc: async () => {
+        return wrapProcessS3EventQueueJob(handleScanSbom);
+      },
+    },
+    'process-webhook': {
+      handlerFunc: async () => {
+        const webhooks = await createGithubWebhookInterceptor();
+        if (webhooks === null) {
+          throw new Error('webhook cannot be null when being used for queue handler');
+        }
+
+        return createGithubWebhookHandler(webhooks);
+      },
+    },
   };
 }
 
@@ -138,6 +223,7 @@ export async function setupQueue(): Promise<void> {
 
   await log.provideFields({ queueName, trace: 'queue-logger' }, async () => {
     const handlerFunc = determineHandler(queueHandlers, queueHandlerConfig.handlerName as QueueHandlerType);
+    const queueHandlerFunc = await handlerConfig.handlerFunc();
 
     const queueUrl = await catchError(getSqsUrlFromName(sqsClient, queueName));
 
@@ -156,7 +242,7 @@ export async function setupQueue(): Promise<void> {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       log.info('Checking queue for messages...');
-      await readDataFromQueue(queueUrl.res, queueHandlerConfig, handlerFunc);
+      await readDataFromQueue(queueUrl.res, queueHandlerConfig, queueHandlerFunc);
     }
   });
 }

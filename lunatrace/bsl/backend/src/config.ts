@@ -29,6 +29,7 @@ import {
   WorkerType,
 } from './types/config';
 import { QueueHandlerConfig, QueueHandlerType } from './types/sqs';
+import { validateBooleanString } from './utils/parse';
 
 export const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
   const envVar = process.env[envVarKey];
@@ -67,9 +68,17 @@ export function getAwsConfig(): AwsConfig {
 }
 
 export function getWebhookConfig(): WebhookConfig {
+  const shouldDisableWebhookQueue = checkEnvVar('DISABLE_WEBHOOK_QUEUE', 'false');
+
+  const disableWebhookQueue = validateBooleanString(shouldDisableWebhookQueue);
+  if (disableWebhookQueue.error) {
+    throw new Error(disableWebhookQueue.msg);
+  }
+
   const queueName = checkEnvVar('PROCESS_WEBHOOK_QUEUE');
   const secret = checkEnvVar('GITHUB_APP_WEBHOOK_SECRET', 'mysecret');
   return {
+    disableWebhookQueue: disableWebhookQueue.res,
     queueName,
     secret,
   };

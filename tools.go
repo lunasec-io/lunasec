@@ -12,20 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package graphql
+//go:build tools
+// +build tools
+
+package tools
 
 import (
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	_ "github.com/Khan/genqlient"
 )
-
-func NewIdentifyRequest(instanceId, agentAccessToken string) types.GraphqlRequest {
-	return types.GraphqlRequest{
-		Query: constants.UpsertInstanceQuery,
-		Variables: map[string]string{
-			"instance_id":        instanceId,
-			"agent_access_token": agentAccessToken,
-		},
-		OperationName: "UpsertInstance",
-	}
-}

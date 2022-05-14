@@ -28,6 +28,9 @@ export interface Finding {
     guide_vulnerabilities?: Array<{
       guide: Guide;
     }>;
+    ignored_vulnerabilities?: Array<{
+      locations: string[];
+    }>;
   };
   package_name: string;
   fix_state: string | null;
