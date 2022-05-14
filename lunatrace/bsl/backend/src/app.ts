@@ -55,19 +55,21 @@ export async function newApp() {
 
   const webhooks = await createGithubWebhookInterceptor();
 
-  app.use(
-    githubWebhooksMiddleware(webhooks, {
-      path: '/github/webhook/events',
-      onUnhandledRequest: (request, response) => {
-        log.error('Unhandled request in GitHub WebHook handler', request);
-        response.status(400).json({
-          error: true,
-          message: 'Unhandled request',
-        });
-      },
-      log: log,
-    })
-  );
+  if (webhooks !== null) {
+    app.use(
+      githubWebhooksMiddleware(webhooks, {
+        path: '/github/webhook/events',
+        onUnhandledRequest: (request, response) => {
+          log.error('Unhandled request in GitHub WebHook handler', request);
+          response.status(400).json({
+            error: true,
+            message: 'Unhandled request',
+          });
+        },
+        log: log,
+      })
+    );
+  }
 
   if (serverConfig.isProduction) {
     app.use(debugRequest);

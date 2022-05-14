@@ -12,22 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
+package deprecated
 
-type GraphqlRequest struct {
-	Query         string            `json:"query"`
-	Variables     map[string]string `json:"variables"`
-	OperationName string            `json:"operationName"`
-}
-
-type GraphqlError struct {
-	Extensions struct {
-		Path string `json:"path"`
-		Code string `json:"code"`
-	} `json:"extensions"`
-	Message string `json:"message"`
-}
-
-type GraphqlErrors struct {
-	Errors []GraphqlError `json:"errors"`
+func NewIdentifyRequest(instanceId, agentAccessToken string) GraphqlRequest {
+	return GraphqlRequest{
+		Query: UpsertInstanceQuery,
+		Variables: map[string]string{
+			"instance_id":        instanceId,
+			"agent_access_token": agentAccessToken,
+		},
+		OperationName: "UpsertInstance",
+	}
 }

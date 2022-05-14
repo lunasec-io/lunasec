@@ -29,7 +29,7 @@ import { log } from '../utils/log';
 export type InsertedScan = NonNullable<InsertScanMutation['insert_scans_one']>;
 
 export async function parseAndUploadScan(sbomStream: Readable, buildId: string): Promise<InsertedScan> {
-  const rawGrypeReport = await runGrypeScan(sbomStream);
+  const rawGrypeReport = await runLunaTraceScan(sbomStream);
   log.info('finished running lunatrace scan on sbom', {
     buildId,
   });
@@ -54,7 +54,7 @@ export async function parseAndUploadScan(sbomStream: Readable, buildId: string):
   return insertRes.insert_scans_one;
 }
 
-export async function runGrypeScan(sbomStream: Readable): Promise<string> {
+export async function runLunaTraceScan(sbomStream: Readable): Promise<string> {
   return new Promise((resolve, reject) => {
     const lunatraceCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
     lunatraceCli.on('error', reject);

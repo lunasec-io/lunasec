@@ -16,6 +16,10 @@
 `./build-config.sh` will take the templates defined in `./templates/` and substitute their
 defined environment variables. The resulting files will be written to `./generated/`.
 
+If you add a new environment variable to a file in `templates/` it must be added to the `.env` file in this directory
+(used for running locally, outside of docker), the `lunatrace/bsl/docker-compose.yaml` under the `oathkeeper` service (most common local dev flow),
+and `lunatrace/bsl/backend-cdk/lib/lunatrace-backend-stack.ts` under the `oathkeeper` image (production).
+
 ## Production 
 To add additional environment variables for oathkeeper in production, add them to `lunasec/lunatrace/bsl/backend-cdk/lib/lunatrace-backend-stack.ts`.
 
