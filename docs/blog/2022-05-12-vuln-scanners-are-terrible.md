@@ -1,5 +1,5 @@
 ---
-title: "Vulnerability Scanners are Terrible"
+title: "Vulnerability Scanners are ..."
 description: The issue with vulnerability scanning and what we think we can do about it
 slug: the-issue-with-vuln-scanners
 date: 2022-05-12
@@ -24,12 +24,13 @@ authors: [forrest]
 
 And why we think we can do better.
 ## False Positives Everywhere
-As a web developer, I've learned to ignore vulnerability scan results and that's a **big** problem. Because it only takes one.
+As a web developer, I've learned to ignore vulnerability scan results and that's a **big** problem.
 
-Most of the results just aren't
-*relevant*. When I take the time to go through them, sometimes it's easy to figure out what's safe to ignore.
-Other times, it ends up being a massive amount of research and head-scratching to figure out how relevant the result is. After all, vulnerabilities are
-usually complex, accidental, messy things. Rarely, do I end up with a relevant vulnerability that requires mediation.
+Most of the results aren't *relevant*. Sometimes I find it easy to figure out what's safe to ignore from the findings. Other times
+I find myself scouring documentation, source code, and blog posts only to discover the "RCE" npm audit told me I had
+requires someone to guess a random number from 1 to 1,000,000. Most impactful vulnerabilities require indepth knowledge 
+of both your code and the library it exists in. I care about the vulnerabilities that can be trivially exploited by anyone
+who might be looking at my site and poking it with their security stick.
 
 <!--truncate-->
 
@@ -40,7 +41,7 @@ we've been taking on this type of work for a few select companies, and taking no
 
 When diving in deeper to this problem we realized something a little mind-blowing.
 
-## Existing scanners are completely half-*ssed
+## Existing scanners don't have the data they need
 
 Vulnerabilities are usually tied to a library or a package, at least the ones that end up in an official database and show up in your scan report.
 Typically, the CPEs (packages) that are vulnerable are written right into the CVE (the official vulnerability notice).
