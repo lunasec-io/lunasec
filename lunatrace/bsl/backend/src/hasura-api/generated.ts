@@ -1,3 +1,16 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1 
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -2759,6 +2772,8 @@ export type Organizations = {
   organization_users: Array<Organization_User>;
   /** An array relationship */
   projects: Array<Projects>;
+  /** An object relationship */
+  settings?: Maybe<Settings>;
   settings_id?: Maybe<Scalars['uuid']>;
 };
 
@@ -2834,6 +2849,7 @@ export type Organizations_Bool_Exp = {
   name?: InputMaybe<String_Comparison_Exp>;
   organization_users?: InputMaybe<Organization_User_Bool_Exp>;
   projects?: InputMaybe<Projects_Bool_Exp>;
+  settings?: InputMaybe<Settings_Bool_Exp>;
   settings_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
@@ -2930,6 +2946,7 @@ export type Organizations_Order_By = {
   name?: InputMaybe<Order_By>;
   organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
   projects_aggregate?: InputMaybe<Projects_Aggregate_Order_By>;
+  settings?: InputMaybe<Settings_Order_By>;
   settings_id?: InputMaybe<Order_By>;
 };
 
@@ -3296,6 +3313,8 @@ export type Projects = {
   repo?: Maybe<Scalars['String']>;
   /** An array relationship */
   reports: Array<Project_Access_Tokens>;
+  /** An object relationship */
+  settings?: Maybe<Settings>;
   settings_id?: Maybe<Scalars['uuid']>;
 };
 
@@ -3391,6 +3410,7 @@ export type Projects_Bool_Exp = {
   project_access_tokens?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
   repo?: InputMaybe<String_Comparison_Exp>;
   reports?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
+  settings?: InputMaybe<Settings_Bool_Exp>;
   settings_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
@@ -3475,6 +3495,7 @@ export type Projects_Order_By = {
   project_access_tokens_aggregate?: InputMaybe<Project_Access_Tokens_Aggregate_Order_By>;
   repo?: InputMaybe<Order_By>;
   reports_aggregate?: InputMaybe<Project_Access_Tokens_Aggregate_Order_By>;
+  settings?: InputMaybe<Settings_Order_By>;
   settings_id?: InputMaybe<Order_By>;
 };
 
@@ -3591,6 +3612,10 @@ export type Query_Root = {
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** fetch data from the table: "settings" */
+  settings: Array<Settings>;
+  /** fetch data from the table: "settings" using primary key columns */
+  settings_by_pk?: Maybe<Settings>;
   /** fetch data from the table: "users" */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
@@ -3836,6 +3861,20 @@ export type Query_RootScansArgs = {
 
 
 export type Query_RootScans_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootSettingsArgs = {
+  distinct_on?: InputMaybe<Array<Settings_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Settings_Order_By>>;
+  where?: InputMaybe<Settings_Bool_Exp>;
+};
+
+
+export type Query_RootSettings_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -4245,6 +4284,49 @@ export type Scans_Variance_Order_By = {
   scan_number?: InputMaybe<Order_By>;
 };
 
+/** columns and relationships of "settings" */
+export type Settings = {
+  __typename?: 'settings';
+  created_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  /** An object relationship */
+  organization?: Maybe<Organizations>;
+  pr_feedback_enabled: Scalars['Boolean'];
+  /** An object relationship */
+  project?: Maybe<Projects>;
+};
+
+/** Boolean expression to filter rows from the table "settings". All fields are combined with a logical 'AND'. */
+export type Settings_Bool_Exp = {
+  _and?: InputMaybe<Array<Settings_Bool_Exp>>;
+  _not?: InputMaybe<Settings_Bool_Exp>;
+  _or?: InputMaybe<Array<Settings_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  organization?: InputMaybe<Organizations_Bool_Exp>;
+  pr_feedback_enabled?: InputMaybe<Boolean_Comparison_Exp>;
+  project?: InputMaybe<Projects_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "settings". */
+export type Settings_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  organization?: InputMaybe<Organizations_Order_By>;
+  pr_feedback_enabled?: InputMaybe<Order_By>;
+  project?: InputMaybe<Projects_Order_By>;
+};
+
+/** select columns of table "settings" */
+export enum Settings_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  PrFeedbackEnabled = 'pr_feedback_enabled'
+}
+
 /** Boolean expression to compare columns of type "severity_enum". All fields are combined with logical 'AND'. */
 export type Severity_Enum_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['severity_enum']>;
@@ -4324,6 +4406,10 @@ export type Subscription_Root = {
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** fetch data from the table: "settings" */
+  settings: Array<Settings>;
+  /** fetch data from the table: "settings" using primary key columns */
+  settings_by_pk?: Maybe<Settings>;
   /** fetch data from the table: "users" */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
@@ -4569,6 +4655,20 @@ export type Subscription_RootScansArgs = {
 
 
 export type Subscription_RootScans_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSettingsArgs = {
+  distinct_on?: InputMaybe<Array<Settings_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Settings_Order_By>>;
+  where?: InputMaybe<Settings_Bool_Exp>;
+};
+
+
+export type Subscription_RootSettings_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -5468,7 +5568,7 @@ export type GetBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, s3_url?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } | null } | null };
+export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, s3_url?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null, settings?: { __typename?: 'settings', pr_feedback_enabled: boolean } | null } | null } | null };
 
 export type GetCloneRepoInfoFromRepoIdQueryVariables = Exact<{
   repo_github_id: Scalars['Int'];
@@ -5686,6 +5786,9 @@ export const GetBuildDocument = gql`
       id
       organization {
         installation_id
+      }
+      settings {
+        pr_feedback_enabled
       }
     }
     pull_request_id
