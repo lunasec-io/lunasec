@@ -16,25 +16,25 @@ package agent
 
 import (
 	"github.com/rs/zerolog/log"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/graphql"
+
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/deprecated"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
 func PerformAgentHeartbeat(appConfig types.LunaTraceAgentConfig) (err error) {
-	var identifyResponse types.IdentifyResponse
+	var identifyResponse deprecated.IdentifyResponse
 
 	headers := map[string]string{
 		"X-LunaTrace-Access-Token": appConfig.AgentAccessToken,
 	}
 
-	err = graphql.PerformGraphqlRequest(
+	err = deprecated.PerformGraphqlRequest(
 		appConfig.GraphqlServer,
 		headers,
-		graphql.NewIdentifyRequest(appConfig.InstanceId, appConfig.AgentAccessToken),
+		deprecated.NewIdentifyRequest(appConfig.InstanceId, appConfig.AgentAccessToken),
 		&identifyResponse,
 	)
-	if err = util.GetGraphqlError(err, identifyResponse.GraphqlErrors); err != nil {
+	if err = deprecated.GetGraphqlError(err, identifyResponse.GraphqlErrors); err != nil {
 		log.Error().
 			Err(err).
 			Msg("unable to identify instance as online")

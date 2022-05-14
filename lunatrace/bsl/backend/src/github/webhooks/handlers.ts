@@ -55,7 +55,7 @@ async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_r
     repoName: repo.name,
     repoId: repo.id,
     repoNodeId: repo.node_id,
-    gitUrl: `git://github.com/${repo.full_name}.git`,
+    gitUrl: `https://github.com/${repo.full_name}.git`,
     ownerType,
   }));
 
