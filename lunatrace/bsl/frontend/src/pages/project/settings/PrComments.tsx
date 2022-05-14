@@ -29,6 +29,7 @@ export const SettingsPrComments: React.FC<SettingsPRCommentsProps> = ({ project 
   const [updateSettings, { isLoading }] = api.useUpdateSettingsMutation();
 
   // Allows us to show the change before it syncs to the server. A bit easier than dealing with manually editing the store cache
+  // to show optimistic updates
   const [checked, setChecked] = useState<boolean>(project.settings?.pr_feedback_enabled || false);
 
   // We have specified that updateSettings will bust the ProjectDetails cache, so we expect project to be refetched and
