@@ -32,10 +32,7 @@ As a web developer, I've learned to ignore vulnerability scan results and that's
 Most of the results aren't *relevant*. Sometimes I find it easy to figure out what's safe to ignore from the findings.
 Other times
 I find myself scouring documentation, source code, and blog posts only to discover the "RCE" npm audit told me I had
-requires someone to guess a random number from 1 to 1,000,000. Most impactful vulnerabilities require indepth knowledge
-of both your code and the library it exists in. I care about the vulnerabilities that can be trivially exploited by
-anyone
-who might be looking at my site and poking it with their security stick.
+doesn't matter.
 
 <!--truncate-->
 
