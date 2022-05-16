@@ -1,6 +1,5 @@
 docs/** linguist-documentation
 .yarn/** linguist-vendored
-
 # Inventory of Generated Files. Some may be ignored.
 js/sdks/packages/tokenizer-sdk/src/generated/** linguist-generated merge=ours
 lunatrace/schema.graphql linguist-generated merge=ours
@@ -11,3 +10,7 @@ lunatrace/bsl/backend/src/topic-ingester/schemas/generated-schema-1-validator.ts
 lunatrace/bsl/frontend/src/api/generated.ts linguist-generated merge=ours
 lunatrace/bsl/generated-lunatrace-tmuxp.yaml linguist-generated merge=ours
 lunatrace/cli/gql/gql.go linguist-generated merge=ours
+.yarn/cache/* filter=lfs diff=lfs merge=lfs -text
+.pnp.loader.mjs filter=lfs diff=lfs merge=lfs -text
+.pnp.cjs filter=lfs diff=lfs merge=lfs -text
+.yarn/releases/* filter=lfs diff=lfs merge=lfs -text
