@@ -1,3 +1,26 @@
 table:
   schema: package
   name: license
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - id
+        - name
+      backend_only: false
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - id
+        - name
+      filter: {}
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - id
+        - name
+      filter: {}
+      check: {}
