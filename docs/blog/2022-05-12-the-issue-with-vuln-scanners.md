@@ -91,7 +91,8 @@ machine-readable.
 
 Often, especially with languages like Java, a vulnerability will only matter for some versions of the language. We have
 seen plenty of vulnerabilities that are only relevant
-to [apps running on Java 9 or higher](https://www.lunasec.io/docs/blog/spring-rce-vulnerabilities). With somewhere around two-thirds of
+to [apps running on Java 9 or higher](https://www.lunasec.io/docs/blog/spring-rce-vulnerabilities). With somewhere
+around two-thirds of
 projects [still using Java 8](https://www.jetbrains.com/lp/devecosystem-2021/java/),
 we can stop notifying of those vulnerabilities two-thirds of the time!
 
@@ -117,20 +118,19 @@ We need to come up with a machine-readable way to capture the above information,
 The National Vulnerability Database (NVD) was established 17 years ago, and at the time it was
 groundbreaking. But, it wasn't built for use with automated scanners.
 Now we need a more structured standard to catch up with the much larger quantity of Open Source packages.
+We also need much more of a focus on machine-readable data.
 
 At LunaSec, we more-or-less owned the early discourse around Log4Shell and some other high-profile vulnerabilities
-through our blog posts, and in doing so
-we saw just how eager
+through our blog posts, and in doing so we saw just how eager
 people were to submit details and provide information. A structured format would have made those blog posts much easier
-for us to maintain.
-When a major vulnerability hits the abundance of blog posts, POCs exploits and vulnerable repositories, discussions on
+for us to maintain. When a major vulnerability hits, the abundance of blog posts, POCs exploits and vulnerable repositories, discussions on
 Twitter, are all proof that the effort and interest
 is there.
 
-For now, we're thinking of simple Yaml in a GitHub repository to capture the highest-severity
+For now, we're thinking of simple Yaml files in a GitHub repository to capture the highest-severity
 vulnerabilities. [Here's](https://github.com/lunasec-io/lunasec/blob/master/guides/LUNATOPIC-20220422-1-TEST-TOPIC/metadata.yaml)
-our take at codifying Log4Shell as structured information. We call them "guides" because they capture more information about 
-a vulnerability than a simple report.
+our take at codifying Log4Shell as structured information. We call them "guides" because they capture more information
+about a vulnerability than a simple report.
 
 ### Building a graph of ALL dependencies
 
