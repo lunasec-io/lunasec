@@ -1,0 +1,34 @@
+table:
+  schema: package
+  name: license
+array_relationships:
+  - name: release_licenses
+    using:
+      foreign_key_constraint_on:
+        column: license_id
+        table:
+          schema: package
+          name: release_license
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - id
+        - name
+      backend_only: false
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - id
+        - name
+      filter: {}
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - id
+        - name
+      filter: {}
+      check: {}
