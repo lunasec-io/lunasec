@@ -12,11 +12,30 @@
  *
  */
 import React from 'react';
+import { Spinner } from 'react-bootstrap';
+import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { ProjectInfo } from '../types';
 
 import { BuildList } from './BuildList';
 
-export const Builds: React.FunctionComponent<{ project: ProjectInfo }> = ({ project }) => {
-  return project ? <BuildList project={project} /> : null;
+interface BuildsProps {
+  project: ProjectInfo;
+  loadMoreBuildsCallback: () => void;
+  isFetching: boolean;
+}
+
+export const Builds: React.FunctionComponent<BuildsProps> = ({ project, loadMoreBuildsCallback, isFetching }) => {
+  // lazy loading. Reloads all the old vulns when expanding the batch size but..it works fine
+  useBottomScrollListener(loadMoreBuildsCallback, { offset: 200 });
+
+  return project ? (
+    <>
+      <BuildList project={project} />
+      <ConditionallyRender if={isFetching}>
+        <Spinner animation="border" className="" />
+      </ConditionallyRender>
+    </>
+  ) : null;
 };
