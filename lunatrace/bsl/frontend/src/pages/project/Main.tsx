@@ -13,6 +13,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { ButtonGroup, Col, Container, Nav, Navbar, Row } from 'react-bootstrap';
+import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 import { Box, Home, Lock, Menu, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
@@ -31,20 +32,37 @@ import { ProjectInfo, TabName } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
   const { project_id } = useParams();
+
+  const [buildLimit, setBuildLimit] = useState(10);
   // RUN SEARCH QUERY
-  const { data, isLoading } = api.useGetProjectQuery({
+  const { data, isLoading, refetch, isFetching } = api.useGetProjectQuery({
     project_id: project_id as string,
+    build_limit: buildLimit,
   });
+
+  // pass this down to the build view so we can lazy load more builds..not true pagination but probably good enough
+  // will get slower as the user gets lower since it will be reloading more and more builds
+  const loadMoreBuildsCallback = () => {
+    if (data && data.projects_by_pk) {
+      const buildCount = data.projects_by_pk.builds.length;
+      if (buildCount !== data.projects_by_pk.builds_aggregate.aggregate?.count) {
+        setBuildLimit(buildLimit + 50);
+        refetch();
+      }
+    }
+  };
 
   const isLarge = useBreakpoint('lg');
 
   const [_, setRecentProject] = useRecentProjects();
 
+  // This will rerun whenever the data reloads, like on pagination and cache busts but..thats ok. Its deduped in the setRecentProject hook
   useEffect(() => {
     if (data && data.projects_by_pk) {
       setRecentProject(data.projects_by_pk);
     }
   }, [data]);
+
   const [activeTab, setActiveTab] = useState<TabName>('dashboard');
   const renderProjectNav = (p: ProjectInfo) => {
     return (
@@ -112,7 +130,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
       case 'dashboard':
         return <ProjectDashboardMain project={p} setActiveTab={setActiveTab} />;
       case 'builds':
-        return <Builds project={p} />;
+        return <Builds project={p} loadMoreBuildsCallback={loadMoreBuildsCallback} isFetching={isFetching} />;
       case 'secrets':
         return <SecretsMain project={p} />;
       case 'settings':
