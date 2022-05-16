@@ -6,6 +6,21 @@ configuration:
   custom_name: package
   column_config: {}
   custom_column_names: {}
+array_relationships:
+  - name: package_maintainers
+    using:
+      foreign_key_constraint_on:
+        column: package_id
+        table:
+          schema: package
+          name: package_maintainer
+  - name: releases
+    using:
+      foreign_key_constraint_on:
+        column: package_id
+        table:
+          schema: package
+          name: release
 insert_permissions:
   - role: service
     permission:

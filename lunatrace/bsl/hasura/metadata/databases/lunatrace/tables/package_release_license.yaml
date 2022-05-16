@@ -1,6 +1,10 @@
 table:
   schema: package
   name: release_license
+object_relationships:
+  - name: license
+    using:
+      foreign_key_constraint_on: license_id
 insert_permissions:
   - role: service
     permission:

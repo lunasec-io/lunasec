@@ -1,6 +1,21 @@
 table:
   schema: package
   name: maintainer
+array_relationships:
+  - name: package_maintainers
+    using:
+      foreign_key_constraint_on:
+        column: maintainer_id
+        table:
+          schema: package
+          name: package_maintainer
+  - name: published_releases
+    using:
+      foreign_key_constraint_on:
+        column: publishing_maintainer_id
+        table:
+          schema: package
+          name: release
 insert_permissions:
   - role: service
     permission:

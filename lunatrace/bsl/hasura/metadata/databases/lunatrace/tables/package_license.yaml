@@ -1,6 +1,14 @@
 table:
   schema: package
   name: license
+array_relationships:
+  - name: release_licenses
+    using:
+      foreign_key_constraint_on:
+        column: license_id
+        table:
+          schema: package
+          name: release_license
 insert_permissions:
   - role: service
     permission:
