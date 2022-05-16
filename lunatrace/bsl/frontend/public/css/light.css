@@ -17914,6 +17914,58 @@ code.code-highlight {
   fill: #f1c40f;
 }
 
+.form-check-input {
+  clear: left;
+}
+
+.form-switch.form-switch-sm {
+  margin-bottom: 0.5rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-sm .form-check-input {
+  height: 1rem;
+  width: calc(1rem + 0.75rem);
+  border-radius: 2rem;
+  margin-right: 0.5rem;
+  margin-top: 0.1rem;
+}
+
+.form-switch.form-switch-md {
+  margin-bottom: 0.75rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-md .form-check-input {
+  height: 1.25rem;
+  width: calc(1.5rem + 0.75rem);
+  border-radius: 2.5rem;
+  margin-right: 0.75rem;
+  margin-top: 0.15rem;
+}
+
+.form-switch.form-switch-lg {
+  margin-bottom: 1rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-lg .form-check-input {
+  height: 1.5rem;
+  width: calc(2rem + 0.75rem);
+  border-radius: 3rem;
+  margin-right: 1rem;
+  margin-top: 0.2rem;
+}
+
+.form-switch.form-switch-xl {
+  margin-bottom: 1.5rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-xl .form-check-input {
+  height: 2rem;
+  width: calc(3rem + 0.75rem);
+  border-radius: 4rem;
+  margin-right: 1.5rem;
+  margin-top: 0.3rem;
+}
+
 .darker {
   color: #6c757d;
 }
@@ -17936,10 +17988,6 @@ code.code-highlight {
 #atlas-chat .bubble::after {
   margin-top: 0.75em;
   content: url('data:image/svg+xml,<svg stroke="currentColor" fill="white" stroke-width="0" viewBox="0 0 16 16" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path d="M14 0a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z"></path></svg>') !important;
-}
-
-.color-responds-theme {
-  color: #495057 !important;
 }
 
 /*# sourceMappingURL=light.css.map */

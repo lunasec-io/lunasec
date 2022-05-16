@@ -1537,6 +1537,10 @@ export type Mutation_Root = {
   update_projects?: Maybe<Projects_Mutation_Response>;
   /** update single row of the table: "projects" */
   update_projects_by_pk?: Maybe<Projects>;
+  /** update data of the table: "settings" */
+  update_settings?: Maybe<Settings_Mutation_Response>;
+  /** update single row of the table: "settings" */
+  update_settings_by_pk?: Maybe<Settings>;
 };
 
 
@@ -1737,6 +1741,20 @@ export type Mutation_RootUpdate_Projects_By_PkArgs = {
   pk_columns: Projects_Pk_Columns_Input;
 };
 
+
+/** mutation root */
+export type Mutation_RootUpdate_SettingsArgs = {
+  _set?: InputMaybe<Settings_Set_Input>;
+  where: Settings_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Settings_By_PkArgs = {
+  _set?: InputMaybe<Settings_Set_Input>;
+  pk_columns: Settings_Pk_Columns_Input;
+};
+
 /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
 export type Numeric_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['numeric']>;
@@ -1929,6 +1947,8 @@ export type Organizations = {
   organization_users: Array<Organization_User>;
   /** An array relationship */
   projects: Array<Projects>;
+  /** An object relationship */
+  settings?: Maybe<Settings>;
   settings_id?: Maybe<Scalars['uuid']>;
 };
 
@@ -1963,6 +1983,7 @@ export type Organizations_Bool_Exp = {
   name?: InputMaybe<String_Comparison_Exp>;
   organization_users?: InputMaybe<Organization_User_Bool_Exp>;
   projects?: InputMaybe<Projects_Bool_Exp>;
+  settings?: InputMaybe<Settings_Bool_Exp>;
   settings_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
@@ -1995,6 +2016,7 @@ export type Organizations_Order_By = {
   name?: InputMaybe<Order_By>;
   organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
   projects_aggregate?: InputMaybe<Projects_Aggregate_Order_By>;
+  settings?: InputMaybe<Settings_Order_By>;
   settings_id?: InputMaybe<Order_By>;
 };
 
@@ -2258,6 +2280,8 @@ export type Projects = {
   repo?: Maybe<Scalars['String']>;
   /** An array relationship */
   reports: Array<Project_Access_Tokens>;
+  /** An object relationship */
+  settings?: Maybe<Settings>;
   settings_id?: Maybe<Scalars['uuid']>;
 };
 
@@ -2353,6 +2377,7 @@ export type Projects_Bool_Exp = {
   project_access_tokens?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
   repo?: InputMaybe<String_Comparison_Exp>;
   reports?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
+  settings?: InputMaybe<Settings_Bool_Exp>;
   settings_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
@@ -2434,6 +2459,7 @@ export type Projects_Order_By = {
   project_access_tokens_aggregate?: InputMaybe<Project_Access_Tokens_Aggregate_Order_By>;
   repo?: InputMaybe<Order_By>;
   reports_aggregate?: InputMaybe<Project_Access_Tokens_Aggregate_Order_By>;
+  settings?: InputMaybe<Settings_Order_By>;
   settings_id?: InputMaybe<Order_By>;
 };
 
@@ -2545,6 +2571,10 @@ export type Query_Root = {
   scans_aggregate: Scans_Aggregate;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** fetch data from the table: "settings" */
+  settings: Array<Settings>;
+  /** fetch data from the table: "settings" using primary key columns */
+  settings_by_pk?: Maybe<Settings>;
   /** fetch data from the table: "users" */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
@@ -2808,6 +2838,20 @@ export type Query_RootScans_AggregateArgs = {
 
 
 export type Query_RootScans_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootSettingsArgs = {
+  distinct_on?: InputMaybe<Array<Settings_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Settings_Order_By>>;
+  where?: InputMaybe<Settings_Bool_Exp>;
+};
+
+
+export type Query_RootSettings_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -3212,6 +3256,68 @@ export type Scans_Variance_Order_By = {
   scan_number?: InputMaybe<Order_By>;
 };
 
+/** columns and relationships of "settings" */
+export type Settings = {
+  __typename?: 'settings';
+  created_at: Scalars['timestamp'];
+  id: Scalars['uuid'];
+  /** An object relationship */
+  organization?: Maybe<Organizations>;
+  pr_feedback_enabled: Scalars['Boolean'];
+  /** An object relationship */
+  project?: Maybe<Projects>;
+};
+
+/** Boolean expression to filter rows from the table "settings". All fields are combined with a logical 'AND'. */
+export type Settings_Bool_Exp = {
+  _and?: InputMaybe<Array<Settings_Bool_Exp>>;
+  _not?: InputMaybe<Settings_Bool_Exp>;
+  _or?: InputMaybe<Array<Settings_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  organization?: InputMaybe<Organizations_Bool_Exp>;
+  pr_feedback_enabled?: InputMaybe<Boolean_Comparison_Exp>;
+  project?: InputMaybe<Projects_Bool_Exp>;
+};
+
+/** response of any mutation on the table "settings" */
+export type Settings_Mutation_Response = {
+  __typename?: 'settings_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Settings>;
+};
+
+/** Ordering options when selecting data from "settings". */
+export type Settings_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  organization?: InputMaybe<Organizations_Order_By>;
+  pr_feedback_enabled?: InputMaybe<Order_By>;
+  project?: InputMaybe<Projects_Order_By>;
+};
+
+/** primary key columns input for table: settings */
+export type Settings_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "settings" */
+export enum Settings_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  PrFeedbackEnabled = 'pr_feedback_enabled'
+}
+
+/** input type for updating data in table "settings" */
+export type Settings_Set_Input = {
+  pr_feedback_enabled?: InputMaybe<Scalars['Boolean']>;
+};
+
 /** Boolean expression to compare columns of type "severity_enum". All fields are combined with logical 'AND'. */
 export type Severity_Enum_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['severity_enum']>;
@@ -3295,6 +3401,10 @@ export type Subscription_Root = {
   scans_aggregate: Scans_Aggregate;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** fetch data from the table: "settings" */
+  settings: Array<Settings>;
+  /** fetch data from the table: "settings" using primary key columns */
+  settings_by_pk?: Maybe<Settings>;
   /** fetch data from the table: "users" */
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
@@ -3548,6 +3658,20 @@ export type Subscription_RootScans_AggregateArgs = {
 
 
 export type Subscription_RootScans_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSettingsArgs = {
+  distinct_on?: InputMaybe<Array<Settings_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Settings_Order_By>>;
+  where?: InputMaybe<Settings_Bool_Exp>;
+};
+
+
+export type Subscription_RootSettings_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -4050,7 +4174,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerabilities', ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
+export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, settings?: { __typename?: 'settings', id: any, pr_feedback_enabled: boolean } | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerabilities', ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4133,6 +4257,14 @@ export type PresignManifestUrlMutationVariables = Exact<{
 
 
 export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: any, key: string, bucket: string } | null };
+
+export type UpdateSettingsMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  settings: Settings_Set_Input;
+}>;
+
+
+export type UpdateSettingsMutation = { __typename?: 'mutation_root', update_settings_by_pk?: { __typename?: 'settings', id: any } | null };
 
 
 export const DeleteProjectAccessTokenDocument = `
@@ -4321,6 +4453,10 @@ export const GetProjectDocument = `
     organization_id
     repo
     settings_id
+    settings {
+      id
+      pr_feedback_enabled
+    }
     organization {
       name
     }
@@ -4575,6 +4711,13 @@ export const PresignManifestUrlDocument = `
   }
 }
     `;
+export const UpdateSettingsDocument = `
+    mutation UpdateSettings($id: uuid!, $settings: settings_set_input!) {
+  update_settings_by_pk(pk_columns: {id: $id}, _set: $settings) {
+    id
+  }
+}
+    `;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -4634,6 +4777,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     presignManifestUrl: build.mutation<PresignManifestUrlMutation, PresignManifestUrlMutationVariables>({
       query: (variables) => ({ document: PresignManifestUrlDocument, variables })
+    }),
+    UpdateSettings: build.mutation<UpdateSettingsMutation, UpdateSettingsMutationVariables>({
+      query: (variables) => ({ document: UpdateSettingsDocument, variables })
     }),
   }),
 });
