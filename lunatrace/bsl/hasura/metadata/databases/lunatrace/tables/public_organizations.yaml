@@ -5,6 +5,9 @@ object_relationships:
   - name: creator
     using:
       foreign_key_constraint_on: creator_id
+  - name: settings
+    using:
+      foreign_key_constraint_on: settings_id
 array_relationships:
   - name: organization_users
     using:
