@@ -5,6 +5,9 @@ query GetBuild($build_id: uuid!) {
       organization {
         installation_id
       }
+      settings {
+        pr_feedback_enabled
+      }
     }
     pull_request_id
     existing_github_review_id
