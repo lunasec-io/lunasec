@@ -45,27 +45,24 @@ At LunaSec,
 we've been taking on this type of work for a few select companies, and taking notes. When diving in deeper to this
 problem we realized something a little mind-blowing.
 
-## Existing scanners aren't doing all they could, not even close
+## Scanners could do a lot better
 
 Vulnerabilities are usually tied to a library or a package, at least the ones that end up in an official database and
 show up in your scan report.
-Typically, the CPEs (packages) that are vulnerable are written right into the CVE (the official vulnerability notice).
+Typically, the [CPEs (packages)](https://nvd.nist.gov/products/cpe) that are vulnerable are written right into the
+[CVE (the official report)](https://www.cve.org/).
 
-In the current ecosystem vulnerability scanners check if you have a vulnerable package, and if they find it, they notify
+Most scanners consume this database. If they find you have a vulnerable package, they notify
 you. Full stop.
 
-We wrote down the reasons these results could be ignored, and in the end realized that the vast majority of these false
+We've reviewed thousands of these notifications. We wrote down the reasons results could be ignored, and in the end
+realized that the vast majority of these false
 positives fell into one of a few categories.
 Many of them could be eliminated by relatively simple code.
 
-For the most part, we aren't talking about advanced heuristics and static-analysis.
-We're talking about simple, yes or no checks. If the CVEs contained more structured information and if the scanners knew
-what to
-look for, they *could* do it. They'd be saving thousands of developers countless hours of drudgery.
-
 ## Common false positive scenarios
 
-Here are some common reasons why a vulnerable package might not matter:
+Here are some common reasons why a reported "vulnerable package" might not be exploitable:
 
 ### Transitive dependency eliminates vulnerabilities
 
@@ -82,8 +79,8 @@ you identify it as moot due to its relationship in the dependency tree. Wow, a R
 found in a sub-dependency of my testing
 library? I don't care! Why are you showing me this?!
 
-Take [this vulnerability](https://nvd.nist.gov/vuln/detail/CVE-2021-24033)
-in one of React's utilities from just a few days ago:
+Take [this vulnerability](https://nvd.nist.gov/vuln/detail/CVE-2021-24033) in one of React's utilities from just a few
+days ago:
 
 ![screenshot of vulnerability description showing that most users arent vulnerable because of react-scripts usage](/img/react-vuln.png)
 
@@ -93,14 +90,14 @@ machine-readable.
 ### Language version or operating system not vulnerable
 
 Often, especially with languages like Java, a vulnerability will only matter for some versions of the language. We have
-seen plenty
-of vulnerabilities that are only relevant to apps running on Java 9 or higher. With something like two-thirds of
-everyone still using Java 8,
-we can stop blasting out those vulnerabilities two-thirds of the time!
+seen plenty of vulnerabilities that are only relevant
+to [apps running on Java 9 or higher](https://www.lunasec.io/docs/blog/spring-rce-vulnerabilities). With somewhere
+around two-thirds of
+projects [still using Java 8](https://www.jetbrains.com/lp/devecosystem-2021/java/),
+we can stop notifying of those vulnerabilities two-thirds of the time!
 
-The same goes for operating systems. We have seen vulnerabilities only exploitable on OSX, while next-to-nobody is using
-OSX
-for production hosting.
+The same goes for operating systems. If a [Javascript package has a command injection vulnerability that only affects
+Windows systems](https://nvd.nist.gov/vuln/detail/CVE-2021-42740), you should only get a notification on Windows.
 
 ### Vulnerable function not called
 
@@ -110,32 +107,32 @@ isn't being used. This one is a little harder to search for, but thanks to tools
 it's easier than you'd think to validate that you
 aren't using these vulnerable functions in your code.
 
-## Tracking these common scenarios
+The description of a CVE will [sometimes](https://github.com/advisories/GHSA-2gwj-7jmv-h26r) sometimes
+contain potentially problematic functions that you can watch out for. With SemGrep, those usages
+could be codified and scanned for.
+
+### Tracking these common scenarios
 
 We need to come up with a machine-readable way to capture the above information, before we can scan for it.
-We want to make a schema that is complete enough to capture the scenarios outlined above. Think of this like a bigger,
-more relevant,
-CVE.
 
-It's only useful if you have the data, of course. But, we've seen that there *is* a community out there to help populate
-this information.
-We more-or-less owned the early discourse around Log4Shell and some other high-profile vulnerabilities, and in doing so
-we saw just how eager
-people were to submit details and provide information. A structured format in a central repository would have made
-things much easier.
-
-The fact is that the National Vulnerability Database (NVD) was established 17 years ago, and at the time it was
-groundbreaking. But, it
-wasn't built for use with automated scanners.
+The National Vulnerability Database (NVD) was established 17 years ago, and at the time it was
+groundbreaking. But, it wasn't built for use with automated scanners.
 Now we need a more structured standard to catch up with the much larger quantity of Open Source packages.
 We also need much more of a focus on machine-readable data.
 
-For now, we're thinking of simple Yaml in a GitHub repository to capture the highest-severity
-vulnerabilities. [Here's](https://github.com/lunasec-io/lunasec/blob/master/guides/LUNATOPIC-20220422-1-TEST-TOPIC/metadata.yaml)
-our early take
-at codifying Log4Shell.
+At LunaSec, we more-or-less owned the early discourse around Log4Shell and some other high-profile vulnerabilities
+through our blog posts, and in doing so we saw just how eager
+people were to submit details and provide information. A structured format would have made those blog posts much easier
+for us to maintain. When a major vulnerability hits, the abundance of blog posts, POCs exploits and vulnerable repositories, discussions on
+Twitter, are all proof that the effort and interest
+is there.
 
-## Building a graph of ALL dependencies
+For now, we're thinking of simple Yaml files in a GitHub repository to capture the highest-severity
+vulnerabilities. [Here's](https://github.com/lunasec-io/lunasec/blob/master/guides/LUNATOPIC-20220422-1-TEST-TOPIC/metadata.yaml)
+our take at codifying Log4Shell as structured information. We call them "guides" because they capture more information
+about a vulnerability than a simple report.
+
+### Building a graph of ALL dependencies
 
 That's right, all of them. We think.
 
@@ -145,10 +142,11 @@ to add the context needed to eliminate false positives.
 We could, for instance, flag all denial-of-service type vulnerabilities that occur in sub-dependencies of popular
 testing frameworks, such as Jest.
 
-It also will open up other supply-chain security approaches, such as hosting a repository mirror (like artifactory),
+It also will open up other supply-chain security approaches, such as hosting a repository mirror (
+like [Artifactory](https://jfrog.com/artifactory/)),
 detecting / preempting dependency hijacking, and license scanning. The sky is the limit.
 
-## Building a more contextually-aware scanner
+### Building a more contextually-aware scanner
 
 All of these scenarios have one thing in common, and it's that they require more context. Being able to scan someone's
 full source-code is already a step up
@@ -156,23 +154,23 @@ from just scanning a package inventory like a manifest or [SBOM](https://www.nti
 though, is scanning an entire system, and that means scanning docker containers.
 
 When you scan a container you get the full system context including what language version is installed, what system
-packages are present, what the linux distribution is, and so on.
+packages are present, what the Linux distribution is, and so on. Collecting container information and using this
+to supplement code scanning will help remove false positives.
+
 At the moment, we've written a CLI that can scan and upload data about built containers (or any file or folder) from a
 CI job, but eventually
 we would like to host a container repository (think DockerHub) where people can push their containers to be scanned.
 
 ## What we have done so far
 
-Our dependency scanning tool called [LunaTrace](https://lunatrace.lunasec.io/) is currently in beta **and you can try
+Our dependency scanning tool, [LunaTrace](https://lunatrace.lunasec.io/), is currently in beta **and you can try
 out**. It has GitHub integration,
 CLI support to integrate with your CI job, and you can even drag and drop a file, folder, or zipped container right into
 the web app to see instant results.
 
-The groundwork is there to start building these false-positive elimination strategies. For whatever reason, existing
-solutions
-have left this job on the table. As security professionals we see plenty of work to be done.
+The groundwork is there to start building these false-positive elimination strategies.
 Our plan is to start with the lowest hanging fruit and work our way up to a quiet tool that only asks for a human when
-one is truly needed.
+one is truly needed. We see plenty of work to be done.
 
 Perhaps we are being overly optimistic, and we can maybe only eliminate half or two thirds of the false positives. Even
 so, that seems like a tool we'd prefer to use.
