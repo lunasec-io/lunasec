@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 )
 
 var packageOnConflict = &gql.Package_on_conflict{
@@ -68,7 +69,6 @@ var packageReleaseDependencyOnConflict = &gql.Package_release_dependency_on_conf
 		gql.Package_release_dependency_update_columnDependencyReleaseId,
 		gql.Package_release_dependency_update_columnPackageName,
 		gql.Package_release_dependency_update_columnPackageVersionQuery,
-		gql.Package_release_dependency_update_columnReleaseId,
 	},
 }
 
@@ -81,15 +81,16 @@ func TestUpsert(t *testing.T) {
 	res, err := gql.UpsertPackage(context.Background(), gql.TODOClient, &gql.Package_insert_input{
 		Custom_registry: "",
 		Description:     "",
-		Name:            "",
+		Name:            packageName,
 		Package_maintainers: &gql.Package_package_maintainer_arr_rel_insert_input{
 			Data: []*gql.Package_package_maintainer_insert_input{
+				// slice of join table
 				{
 					Maintainer: &gql.Package_maintainer_obj_rel_insert_input{
 						Data: &gql.Package_maintainer_insert_input{
 							Email:           "",
 							Name:            "",
-							Package_manager: gql.NPM,
+							Package_manager: types.NPM,
 						},
 						On_conflict: maintainerOnConflict,
 					},
@@ -97,27 +98,28 @@ func TestUpsert(t *testing.T) {
 			},
 			On_conflict: packageMaintainerOnConflict,
 		},
-		Package_manager: gql.NPM,
+		Package_manager: types.NPM,
 		Releases: &gql.Package_release_arr_rel_insert_input{
 			Data: []*gql.Package_release_insert_input{
+				// slice of release
 				{
 					Publishing_maintainer: &gql.Package_maintainer_obj_rel_insert_input{
 						Data: &gql.Package_maintainer_insert_input{
 							Email:           "",
 							Name:            "",
-							Package_manager: gql.NPM,
+							Package_manager: types.NPM,
 						},
 						On_conflict: maintainerOnConflict,
 					},
 					Release_dependencies: &gql.Package_release_dependency_arr_rel_insert_input{
 						Data: []*gql.Package_release_dependency_insert_input{
-							// array
+							// slice of deps
 							{
 								// create a stub entry for packages which are not yet analyzed.
 								Dependency_package: &gql.Package_obj_rel_insert_input{
 									Data: &gql.Package_insert_input{
 										Name:            dependencyName,
-										Package_manager: gql.NPM,
+										Package_manager: types.NPM,
 									},
 									On_conflict: packageOnConflict,
 								},
