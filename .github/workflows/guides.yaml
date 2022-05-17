@@ -17,8 +17,7 @@ name: guides
 on:
   push:
     branches:
-      - disabled_f6bd57ac5a7c
-#      - master
+      - master
 
 jobs:
   checks:
@@ -39,8 +38,13 @@ jobs:
         env:
           IS_LUNASEC_CI: true
           CI: true
-        run: |
-          yarn install --immutable --immutable-cache --inline-builds
+        run: yarn install --immutable --immutable-cache --inline-builds
+
+      - name: Build Common
+        run: cd lunatrace/bsl/common && yarn run compile
+
+      - name: Build Logger
+        run: cd lunatrace/bsl/logger && yarn run compile
 
       - name: Upsert Guides
         working-directory: lunatrace/bsl/backend
