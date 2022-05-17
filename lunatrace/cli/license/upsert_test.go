@@ -74,6 +74,10 @@ var packageReleaseDependencyOnConflict = &gql.Package_release_dependency_on_conf
 
 func TestUpsert(t *testing.T) {
 	// upsert package metadata
+
+	const packageName = "test_package"
+	const dependencyName = "test_dependency"
+
 	res, err := gql.UpsertPackage(context.Background(), gql.TODOClient, &gql.Package_insert_input{
 		Custom_registry: "",
 		Description:     "",
@@ -109,10 +113,16 @@ func TestUpsert(t *testing.T) {
 						Data: []*gql.Package_release_dependency_insert_input{
 							// array
 							{
-								// todo: upsert the package with just the name???
-								Dependency_package:    nil,
+								// create a stub entry for packages which are not yet analyzed.
+								Dependency_package: &gql.Package_obj_rel_insert_input{
+									Data: &gql.Package_insert_input{
+										Name:            dependencyName,
+										Package_manager: gql.NPM,
+									},
+									On_conflict: packageOnConflict,
+								},
 								Dependency_release:    nil,
-								Package_name:          "",
+								Package_name:          dependencyName,
 								Package_version_query: "",
 							},
 						},
