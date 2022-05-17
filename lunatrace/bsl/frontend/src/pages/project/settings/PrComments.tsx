@@ -46,7 +46,7 @@ export const SettingsPrComments: React.FC<SettingsPRCommentsProps> = ({ project 
           <h3>Pull Request Feedback</h3>
         </Col>
         <Col md>
-          <p>Whether LunaTrace will automatically submit feedback your PRs.</p>
+          <p>Disable LunaTrace from submitting feedback to your PRs.</p>
         </Col>
       </Row>
       <Row>
@@ -54,7 +54,7 @@ export const SettingsPrComments: React.FC<SettingsPRCommentsProps> = ({ project 
           <Form.Switch
             className="form-switch-md"
             id="pr-reviews-switch"
-            label={checked ? 'PR Reviews Disabled' : 'PR Reviews Enabled'}
+            label={checked ? 'PR Reviews are Disabled' : 'PR Reviews are Enabled'}
             checked={checked}
             disabled={isLoading}
             onChange={(e) => {
