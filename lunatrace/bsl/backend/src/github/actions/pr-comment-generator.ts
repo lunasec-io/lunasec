@@ -75,14 +75,14 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
   if (
     !buildLookup.builds_by_pk ||
     !buildLookup.builds_by_pk.project ||
-    !buildLookup.builds_by_pk.project.organization ||
-    !buildLookup.builds_by_pk.project.settings
+    !buildLookup.builds_by_pk.project.organization
   ) {
     log.error(`unable to get required scan notify information for buildId: ${buildId}`);
     return;
   }
 
-  if (buildLookup.builds_by_pk.project.settings.pr_feedback_disabled) {
+  const settings = buildLookup.builds_by_pk.project.settings;
+  if (settings && settings.pr_feedback_disabled) {
     log.info('Skipping PR Feedback due to project settings');
     return;
   }
