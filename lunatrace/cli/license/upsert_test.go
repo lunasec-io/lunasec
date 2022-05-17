@@ -109,19 +109,16 @@ func TestUpsert(t *testing.T) {
 						Data: []*gql.Package_release_dependency_insert_input{
 							// array
 							{
+								// todo: upsert the package with just the name???
 								Dependency_package:    nil,
-								Dependency_package_id: uuid.UUID{},
 								Dependency_release:    nil,
-								Dependency_release_id: uuid.UUID{},
-								Id:                    uuid.UUID{},
 								Package_name:          "",
 								Package_version_query: "",
-								Release:               nil,
-								Release_id:            uuid.UUID{},
 							},
 						},
 						On_conflict: packageReleaseDependencyOnConflict,
 					},
+
 					Release_time: time.Time{},
 
 					Blob_hash:         "",
