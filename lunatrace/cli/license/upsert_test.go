@@ -19,8 +19,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/config"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	lunatypes "github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
 var packageOnConflict = &gql.Package_on_conflict{
@@ -75,10 +82,21 @@ var packageReleaseDependencyOnConflict = &gql.Package_release_dependency_on_conf
 func TestUpsert(t *testing.T) {
 	// upsert package metadata
 
+	globalFlags := lunatypes.NewLunaTraceGlobalFlags()
+
+	command.EnableGlobalFlags(globalFlags)
+
+	appConfig, err := config.LoadLunaTraceConfig()
+	assert.NoError(t, err)
+
+	if appConfig.Stage == constants.DevelopmentEnv {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	}
+
 	const packageName = "test_package"
 	const dependencyName = "test_dependency"
 
-	res, err := gql.UpsertPackage(context.Background(), gql.TODOClient, &gql.Package_insert_input{
+	res, err := gql.UpsertPackage(context.Background(), gql.LocalClient, &gql.Package_insert_input{
 		Custom_registry: "",
 		Description:     "",
 		Name:            packageName,
@@ -146,5 +164,9 @@ func TestUpsert(t *testing.T) {
 			On_conflict: releaseOnConflict,
 		},
 	}, packageOnConflict)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+	t.Log(res)
 
 }
