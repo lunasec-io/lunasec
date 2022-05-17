@@ -31,7 +31,7 @@
     "prettier": "^2.5.0",
     "rimraf": "^3.0.2",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "~4.5.5",
+    "typescript": "~4.5.2",
     "uuid": "^8.3.2"
   },
   "dependenciesMeta": {
@@ -57,6 +57,7 @@
     "url": "git+https://github.com/lunasec-io/lunasec.git"
   },
   "scripts": {
+    "compile:bsl": "cd lunatrace/bsl && yarn run tsc -b tsconfig.build.json",
     "lunasec": "node js/sdks/packages/cli/build/cli.js",
     "license:check": "./tools/license-checker/run-license-check.sh check",
     "license:fix": "./tools/license-checker/run-license-check.sh fix",
@@ -111,7 +112,7 @@
       "./lunatrace/dev-cli"
     ]
   },
-  "packageManager": "yarn@3.1.1",
+  "packageManager": "yarn@3.2.1",
   "dependencies": {
     "jest-environment-jsdom": "~28.0.2",
     "node-gyp": "~9.0.0"
