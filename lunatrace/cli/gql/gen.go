@@ -23,6 +23,7 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/google/uuid"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 )
 
 // Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
@@ -1743,6 +1744,46 @@ func (v *Jsonb_comparison_exp) GetNeq() json.RawMessage { return v.Neq }
 // GetNin returns Jsonb_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Jsonb_comparison_exp) GetNin() []json.RawMessage { return v.Nin }
 
+// Boolean expression to compare columns of type "license_source". All fields are combined with logical 'AND'.
+type License_source_comparison_exp struct {
+	Eq      gql.LicenseSource   `json:"_eq"`
+	Gt      gql.LicenseSource   `json:"_gt"`
+	Gte     gql.LicenseSource   `json:"_gte"`
+	In      []gql.LicenseSource `json:"_in"`
+	Is_null bool                `json:"_is_null"`
+	Lt      gql.LicenseSource   `json:"_lt"`
+	Lte     gql.LicenseSource   `json:"_lte"`
+	Neq     gql.LicenseSource   `json:"_neq"`
+	Nin     []gql.LicenseSource `json:"_nin"`
+}
+
+// GetEq returns License_source_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *License_source_comparison_exp) GetEq() gql.LicenseSource { return v.Eq }
+
+// GetGt returns License_source_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *License_source_comparison_exp) GetGt() gql.LicenseSource { return v.Gt }
+
+// GetGte returns License_source_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *License_source_comparison_exp) GetGte() gql.LicenseSource { return v.Gte }
+
+// GetIn returns License_source_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *License_source_comparison_exp) GetIn() []gql.LicenseSource { return v.In }
+
+// GetIs_null returns License_source_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *License_source_comparison_exp) GetIs_null() bool { return v.Is_null }
+
+// GetLt returns License_source_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *License_source_comparison_exp) GetLt() gql.LicenseSource { return v.Lt }
+
+// GetLte returns License_source_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *License_source_comparison_exp) GetLte() gql.LicenseSource { return v.Lte }
+
+// GetNeq returns License_source_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *License_source_comparison_exp) GetNeq() gql.LicenseSource { return v.Neq }
+
+// GetNin returns License_source_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *License_source_comparison_exp) GetNin() []gql.LicenseSource { return v.Nin }
+
 // input type for inserting array relation for remote table "manifests"
 type Manifests_arr_rel_insert_input struct {
 	Data []*Manifests_insert_input `json:"data,omitempty"`
@@ -2188,6 +2229,7 @@ type Organizations_bool_exp struct {
 	Name               *String_comparison_exp      `json:"name,omitempty"`
 	Organization_users *Organization_user_bool_exp `json:"organization_users,omitempty"`
 	Projects           *Projects_bool_exp          `json:"projects,omitempty"`
+	Settings           *Settings_bool_exp          `json:"settings,omitempty"`
 	Settings_id        *Uuid_comparison_exp        `json:"settings_id,omitempty"`
 }
 
@@ -2231,6 +2273,9 @@ func (v *Organizations_bool_exp) GetOrganization_users() *Organization_user_bool
 
 // GetProjects returns Organizations_bool_exp.Projects, and is useful for accessing the field via an interface.
 func (v *Organizations_bool_exp) GetProjects() *Projects_bool_exp { return v.Projects }
+
+// GetSettings returns Organizations_bool_exp.Settings, and is useful for accessing the field via an interface.
+func (v *Organizations_bool_exp) GetSettings() *Settings_bool_exp { return v.Settings }
 
 // GetSettings_id returns Organizations_bool_exp.Settings_id, and is useful for accessing the field via an interface.
 func (v *Organizations_bool_exp) GetSettings_id() *Uuid_comparison_exp { return v.Settings_id }
@@ -2356,6 +2401,1150 @@ const (
 	Organizations_update_columnName Organizations_update_column = "name"
 	// column name
 	Organizations_update_columnSettingsId Organizations_update_column = "settings_id"
+)
+
+// Boolean expression to filter rows from the table "package.package". All fields are combined with a logical 'AND'.
+type Package_bool_exp struct {
+	And                 []*Package_bool_exp                  `json:"_and,omitempty"`
+	Not                 *Package_bool_exp                    `json:"_not,omitempty"`
+	Or                  []*Package_bool_exp                  `json:"_or,omitempty"`
+	Custom_registry     *String_comparison_exp               `json:"custom_registry,omitempty"`
+	Description         *String_comparison_exp               `json:"description,omitempty"`
+	Id                  *Uuid_comparison_exp                 `json:"id,omitempty"`
+	Name                *String_comparison_exp               `json:"name,omitempty"`
+	Package_maintainers *Package_package_maintainer_bool_exp `json:"package_maintainers,omitempty"`
+	Package_manager     *Package_manager_comparison_exp      `json:"package_manager,omitempty"`
+	Releases            *Package_release_bool_exp            `json:"releases,omitempty"`
+}
+
+// GetAnd returns Package_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetAnd() []*Package_bool_exp { return v.And }
+
+// GetNot returns Package_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetNot() *Package_bool_exp { return v.Not }
+
+// GetOr returns Package_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetOr() []*Package_bool_exp { return v.Or }
+
+// GetCustom_registry returns Package_bool_exp.Custom_registry, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetCustom_registry() *String_comparison_exp { return v.Custom_registry }
+
+// GetDescription returns Package_bool_exp.Description, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetDescription() *String_comparison_exp { return v.Description }
+
+// GetId returns Package_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetName returns Package_bool_exp.Name, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetName() *String_comparison_exp { return v.Name }
+
+// GetPackage_maintainers returns Package_bool_exp.Package_maintainers, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetPackage_maintainers() *Package_package_maintainer_bool_exp {
+	return v.Package_maintainers
+}
+
+// GetPackage_manager returns Package_bool_exp.Package_manager, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetPackage_manager() *Package_manager_comparison_exp {
+	return v.Package_manager
+}
+
+// GetReleases returns Package_bool_exp.Releases, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetReleases() *Package_release_bool_exp { return v.Releases }
+
+// unique or primary key constraints on table "package.package"
+type Package_constraint string
+
+const (
+	// unique or primary key constraint
+	Package_constraintPackagePackageManagerCustomRegistryNameIdx Package_constraint = "package_package_manager_custom_registry_name_idx"
+	// unique or primary key constraint
+	Package_constraintPackagePkey Package_constraint = "package_pkey"
+)
+
+// input type for inserting data into table "package.package"
+type Package_insert_input struct {
+	Custom_registry     string                                           `json:"custom_registry"`
+	Description         string                                           `json:"description"`
+	Id                  uuid.UUID                                        `json:"id"`
+	Name                string                                           `json:"name"`
+	Package_maintainers *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
+	Package_manager     gql.PackageManager                               `json:"package_manager"`
+	Releases            *Package_release_arr_rel_insert_input            `json:"releases,omitempty"`
+}
+
+// GetCustom_registry returns Package_insert_input.Custom_registry, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetCustom_registry() string { return v.Custom_registry }
+
+// GetDescription returns Package_insert_input.Description, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetDescription() string { return v.Description }
+
+// GetId returns Package_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetId() uuid.UUID { return v.Id }
+
+// GetName returns Package_insert_input.Name, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetName() string { return v.Name }
+
+// GetPackage_maintainers returns Package_insert_input.Package_maintainers, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetPackage_maintainers() *Package_package_maintainer_arr_rel_insert_input {
+	return v.Package_maintainers
+}
+
+// GetPackage_manager returns Package_insert_input.Package_manager, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetPackage_manager() gql.PackageManager { return v.Package_manager }
+
+// GetReleases returns Package_insert_input.Releases, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetReleases() *Package_release_arr_rel_insert_input { return v.Releases }
+
+// Boolean expression to filter rows from the table "package.license". All fields are combined with a logical 'AND'.
+type Package_license_bool_exp struct {
+	And              []*Package_license_bool_exp       `json:"_and,omitempty"`
+	Not              *Package_license_bool_exp         `json:"_not,omitempty"`
+	Or               []*Package_license_bool_exp       `json:"_or,omitempty"`
+	Id               *Uuid_comparison_exp              `json:"id,omitempty"`
+	Name             *String_comparison_exp            `json:"name,omitempty"`
+	Release_licenses *Package_release_license_bool_exp `json:"release_licenses,omitempty"`
+}
+
+// GetAnd returns Package_license_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Package_license_bool_exp) GetAnd() []*Package_license_bool_exp { return v.And }
+
+// GetNot returns Package_license_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Package_license_bool_exp) GetNot() *Package_license_bool_exp { return v.Not }
+
+// GetOr returns Package_license_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Package_license_bool_exp) GetOr() []*Package_license_bool_exp { return v.Or }
+
+// GetId returns Package_license_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Package_license_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetName returns Package_license_bool_exp.Name, and is useful for accessing the field via an interface.
+func (v *Package_license_bool_exp) GetName() *String_comparison_exp { return v.Name }
+
+// GetRelease_licenses returns Package_license_bool_exp.Release_licenses, and is useful for accessing the field via an interface.
+func (v *Package_license_bool_exp) GetRelease_licenses() *Package_release_license_bool_exp {
+	return v.Release_licenses
+}
+
+// unique or primary key constraints on table "package.license"
+type Package_license_constraint string
+
+const (
+	// unique or primary key constraint
+	Package_license_constraintLicenseNameIdx Package_license_constraint = "license_name_idx"
+	// unique or primary key constraint
+	Package_license_constraintLicensePkey Package_license_constraint = "license_pkey"
+)
+
+// input type for inserting data into table "package.license"
+type Package_license_insert_input struct {
+	Id               uuid.UUID                                     `json:"id"`
+	Name             string                                        `json:"name"`
+	Release_licenses *Package_release_license_arr_rel_insert_input `json:"release_licenses,omitempty"`
+}
+
+// GetId returns Package_license_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Package_license_insert_input) GetId() uuid.UUID { return v.Id }
+
+// GetName returns Package_license_insert_input.Name, and is useful for accessing the field via an interface.
+func (v *Package_license_insert_input) GetName() string { return v.Name }
+
+// GetRelease_licenses returns Package_license_insert_input.Release_licenses, and is useful for accessing the field via an interface.
+func (v *Package_license_insert_input) GetRelease_licenses() *Package_release_license_arr_rel_insert_input {
+	return v.Release_licenses
+}
+
+// input type for inserting object relation for remote table "package.license"
+type Package_license_obj_rel_insert_input struct {
+	Data *Package_license_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Package_license_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Package_license_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Package_license_obj_rel_insert_input) GetData() *Package_license_insert_input { return v.Data }
+
+// GetOn_conflict returns Package_license_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Package_license_obj_rel_insert_input) GetOn_conflict() *Package_license_on_conflict {
+	return v.On_conflict
+}
+
+// on_conflict condition type for table "package.license"
+type Package_license_on_conflict struct {
+	Constraint     Package_license_constraint      `json:"constraint"`
+	Update_columns []Package_license_update_column `json:"update_columns"`
+	Where          *Package_license_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Package_license_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Package_license_on_conflict) GetConstraint() Package_license_constraint { return v.Constraint }
+
+// GetUpdate_columns returns Package_license_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Package_license_on_conflict) GetUpdate_columns() []Package_license_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Package_license_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Package_license_on_conflict) GetWhere() *Package_license_bool_exp { return v.Where }
+
+// update columns of table "package.license"
+type Package_license_update_column string
+
+const (
+	// column name
+	Package_license_update_columnId Package_license_update_column = "id"
+	// column name
+	Package_license_update_columnName Package_license_update_column = "name"
+)
+
+// Boolean expression to filter rows from the table "package.maintainer". All fields are combined with a logical 'AND'.
+type Package_maintainer_bool_exp struct {
+	And                 []*Package_maintainer_bool_exp       `json:"_and,omitempty"`
+	Not                 *Package_maintainer_bool_exp         `json:"_not,omitempty"`
+	Or                  []*Package_maintainer_bool_exp       `json:"_or,omitempty"`
+	Email               *String_comparison_exp               `json:"email,omitempty"`
+	Id                  *Uuid_comparison_exp                 `json:"id,omitempty"`
+	Name                *String_comparison_exp               `json:"name,omitempty"`
+	Package_maintainers *Package_package_maintainer_bool_exp `json:"package_maintainers,omitempty"`
+	Package_manager     *Package_manager_comparison_exp      `json:"package_manager,omitempty"`
+	Published_releases  *Package_release_bool_exp            `json:"published_releases,omitempty"`
+}
+
+// GetAnd returns Package_maintainer_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_bool_exp) GetAnd() []*Package_maintainer_bool_exp { return v.And }
+
+// GetNot returns Package_maintainer_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_bool_exp) GetNot() *Package_maintainer_bool_exp { return v.Not }
+
+// GetOr returns Package_maintainer_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_bool_exp) GetOr() []*Package_maintainer_bool_exp { return v.Or }
+
+// GetEmail returns Package_maintainer_bool_exp.Email, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_bool_exp) GetEmail() *String_comparison_exp { return v.Email }
+
+// GetId returns Package_maintainer_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetName returns Package_maintainer_bool_exp.Name, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_bool_exp) GetName() *String_comparison_exp { return v.Name }
+
+// GetPackage_maintainers returns Package_maintainer_bool_exp.Package_maintainers, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_bool_exp) GetPackage_maintainers() *Package_package_maintainer_bool_exp {
+	return v.Package_maintainers
+}
+
+// GetPackage_manager returns Package_maintainer_bool_exp.Package_manager, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_bool_exp) GetPackage_manager() *Package_manager_comparison_exp {
+	return v.Package_manager
+}
+
+// GetPublished_releases returns Package_maintainer_bool_exp.Published_releases, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_bool_exp) GetPublished_releases() *Package_release_bool_exp {
+	return v.Published_releases
+}
+
+// unique or primary key constraints on table "package.maintainer"
+type Package_maintainer_constraint string
+
+const (
+	// unique or primary key constraint
+	Package_maintainer_constraintMaintainerPackageManagerEmailIdx Package_maintainer_constraint = "maintainer_package_manager_email_idx"
+	// unique or primary key constraint
+	Package_maintainer_constraintMaintainerPkey Package_maintainer_constraint = "maintainer_pkey"
+)
+
+// input type for inserting data into table "package.maintainer"
+type Package_maintainer_insert_input struct {
+	Email               string                                           `json:"email"`
+	Id                  uuid.UUID                                        `json:"id"`
+	Name                string                                           `json:"name"`
+	Package_maintainers *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
+	Package_manager     gql.PackageManager                               `json:"package_manager"`
+	Published_releases  *Package_release_arr_rel_insert_input            `json:"published_releases,omitempty"`
+}
+
+// GetEmail returns Package_maintainer_insert_input.Email, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_insert_input) GetEmail() string { return v.Email }
+
+// GetId returns Package_maintainer_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_insert_input) GetId() uuid.UUID { return v.Id }
+
+// GetName returns Package_maintainer_insert_input.Name, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_insert_input) GetName() string { return v.Name }
+
+// GetPackage_maintainers returns Package_maintainer_insert_input.Package_maintainers, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_insert_input) GetPackage_maintainers() *Package_package_maintainer_arr_rel_insert_input {
+	return v.Package_maintainers
+}
+
+// GetPackage_manager returns Package_maintainer_insert_input.Package_manager, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_insert_input) GetPackage_manager() gql.PackageManager {
+	return v.Package_manager
+}
+
+// GetPublished_releases returns Package_maintainer_insert_input.Published_releases, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_insert_input) GetPublished_releases() *Package_release_arr_rel_insert_input {
+	return v.Published_releases
+}
+
+// input type for inserting object relation for remote table "package.maintainer"
+type Package_maintainer_obj_rel_insert_input struct {
+	Data *Package_maintainer_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Package_maintainer_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Package_maintainer_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_obj_rel_insert_input) GetData() *Package_maintainer_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Package_maintainer_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_obj_rel_insert_input) GetOn_conflict() *Package_maintainer_on_conflict {
+	return v.On_conflict
+}
+
+// on_conflict condition type for table "package.maintainer"
+type Package_maintainer_on_conflict struct {
+	Constraint     Package_maintainer_constraint      `json:"constraint"`
+	Update_columns []Package_maintainer_update_column `json:"update_columns"`
+	Where          *Package_maintainer_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Package_maintainer_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_on_conflict) GetConstraint() Package_maintainer_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Package_maintainer_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_on_conflict) GetUpdate_columns() []Package_maintainer_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Package_maintainer_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Package_maintainer_on_conflict) GetWhere() *Package_maintainer_bool_exp { return v.Where }
+
+// update columns of table "package.maintainer"
+type Package_maintainer_update_column string
+
+const (
+	// column name
+	Package_maintainer_update_columnEmail Package_maintainer_update_column = "email"
+	// column name
+	Package_maintainer_update_columnId Package_maintainer_update_column = "id"
+	// column name
+	Package_maintainer_update_columnName Package_maintainer_update_column = "name"
+	// column name
+	Package_maintainer_update_columnPackageManager Package_maintainer_update_column = "package_manager"
+)
+
+// Boolean expression to compare columns of type "package_manager". All fields are combined with logical 'AND'.
+type Package_manager_comparison_exp struct {
+	Eq      gql.PackageManager   `json:"_eq"`
+	Gt      gql.PackageManager   `json:"_gt"`
+	Gte     gql.PackageManager   `json:"_gte"`
+	In      []gql.PackageManager `json:"_in"`
+	Is_null bool                 `json:"_is_null"`
+	Lt      gql.PackageManager   `json:"_lt"`
+	Lte     gql.PackageManager   `json:"_lte"`
+	Neq     gql.PackageManager   `json:"_neq"`
+	Nin     []gql.PackageManager `json:"_nin"`
+}
+
+// GetEq returns Package_manager_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Package_manager_comparison_exp) GetEq() gql.PackageManager { return v.Eq }
+
+// GetGt returns Package_manager_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *Package_manager_comparison_exp) GetGt() gql.PackageManager { return v.Gt }
+
+// GetGte returns Package_manager_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *Package_manager_comparison_exp) GetGte() gql.PackageManager { return v.Gte }
+
+// GetIn returns Package_manager_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Package_manager_comparison_exp) GetIn() []gql.PackageManager { return v.In }
+
+// GetIs_null returns Package_manager_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Package_manager_comparison_exp) GetIs_null() bool { return v.Is_null }
+
+// GetLt returns Package_manager_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *Package_manager_comparison_exp) GetLt() gql.PackageManager { return v.Lt }
+
+// GetLte returns Package_manager_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *Package_manager_comparison_exp) GetLte() gql.PackageManager { return v.Lte }
+
+// GetNeq returns Package_manager_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Package_manager_comparison_exp) GetNeq() gql.PackageManager { return v.Neq }
+
+// GetNin returns Package_manager_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Package_manager_comparison_exp) GetNin() []gql.PackageManager { return v.Nin }
+
+// input type for inserting object relation for remote table "package.package"
+type Package_obj_rel_insert_input struct {
+	Data *Package_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Package_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Package_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Package_obj_rel_insert_input) GetData() *Package_insert_input { return v.Data }
+
+// GetOn_conflict returns Package_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Package_obj_rel_insert_input) GetOn_conflict() *Package_on_conflict { return v.On_conflict }
+
+// on_conflict condition type for table "package.package"
+type Package_on_conflict struct {
+	Constraint     Package_constraint      `json:"constraint"`
+	Update_columns []Package_update_column `json:"update_columns"`
+	Where          *Package_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Package_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Package_on_conflict) GetConstraint() Package_constraint { return v.Constraint }
+
+// GetUpdate_columns returns Package_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Package_on_conflict) GetUpdate_columns() []Package_update_column { return v.Update_columns }
+
+// GetWhere returns Package_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Package_on_conflict) GetWhere() *Package_bool_exp { return v.Where }
+
+// input type for inserting array relation for remote table "package.package_maintainer"
+type Package_package_maintainer_arr_rel_insert_input struct {
+	Data []*Package_package_maintainer_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Package_package_maintainer_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Package_package_maintainer_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_arr_rel_insert_input) GetData() []*Package_package_maintainer_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Package_package_maintainer_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_arr_rel_insert_input) GetOn_conflict() *Package_package_maintainer_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "package.package_maintainer". All fields are combined with a logical 'AND'.
+type Package_package_maintainer_bool_exp struct {
+	And           []*Package_package_maintainer_bool_exp `json:"_and,omitempty"`
+	Not           *Package_package_maintainer_bool_exp   `json:"_not,omitempty"`
+	Or            []*Package_package_maintainer_bool_exp `json:"_or,omitempty"`
+	Maintainer    *Package_maintainer_bool_exp           `json:"maintainer,omitempty"`
+	Maintainer_id *Uuid_comparison_exp                   `json:"maintainer_id,omitempty"`
+	Package       *Package_bool_exp                      `json:"package,omitempty"`
+	Package_id    *Uuid_comparison_exp                   `json:"package_id,omitempty"`
+}
+
+// GetAnd returns Package_package_maintainer_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_bool_exp) GetAnd() []*Package_package_maintainer_bool_exp {
+	return v.And
+}
+
+// GetNot returns Package_package_maintainer_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_bool_exp) GetNot() *Package_package_maintainer_bool_exp {
+	return v.Not
+}
+
+// GetOr returns Package_package_maintainer_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_bool_exp) GetOr() []*Package_package_maintainer_bool_exp {
+	return v.Or
+}
+
+// GetMaintainer returns Package_package_maintainer_bool_exp.Maintainer, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_bool_exp) GetMaintainer() *Package_maintainer_bool_exp {
+	return v.Maintainer
+}
+
+// GetMaintainer_id returns Package_package_maintainer_bool_exp.Maintainer_id, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_bool_exp) GetMaintainer_id() *Uuid_comparison_exp {
+	return v.Maintainer_id
+}
+
+// GetPackage returns Package_package_maintainer_bool_exp.Package, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_bool_exp) GetPackage() *Package_bool_exp { return v.Package }
+
+// GetPackage_id returns Package_package_maintainer_bool_exp.Package_id, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_bool_exp) GetPackage_id() *Uuid_comparison_exp {
+	return v.Package_id
+}
+
+// unique or primary key constraints on table "package.package_maintainer"
+type Package_package_maintainer_constraint string
+
+const (
+	// unique or primary key constraint
+	Package_package_maintainer_constraintPackageMaintainerPackageIdMaintainerIdIdx Package_package_maintainer_constraint = "package_maintainer_package_id_maintainer_id_idx"
+)
+
+// input type for inserting data into table "package.package_maintainer"
+type Package_package_maintainer_insert_input struct {
+	Maintainer    *Package_maintainer_obj_rel_insert_input `json:"maintainer,omitempty"`
+	Maintainer_id uuid.UUID                                `json:"maintainer_id"`
+	Package       *Package_obj_rel_insert_input            `json:"package,omitempty"`
+	Package_id    uuid.UUID                                `json:"package_id"`
+}
+
+// GetMaintainer returns Package_package_maintainer_insert_input.Maintainer, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_insert_input) GetMaintainer() *Package_maintainer_obj_rel_insert_input {
+	return v.Maintainer
+}
+
+// GetMaintainer_id returns Package_package_maintainer_insert_input.Maintainer_id, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_insert_input) GetMaintainer_id() uuid.UUID {
+	return v.Maintainer_id
+}
+
+// GetPackage returns Package_package_maintainer_insert_input.Package, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_insert_input) GetPackage() *Package_obj_rel_insert_input {
+	return v.Package
+}
+
+// GetPackage_id returns Package_package_maintainer_insert_input.Package_id, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_insert_input) GetPackage_id() uuid.UUID { return v.Package_id }
+
+// on_conflict condition type for table "package.package_maintainer"
+type Package_package_maintainer_on_conflict struct {
+	Constraint     Package_package_maintainer_constraint      `json:"constraint"`
+	Update_columns []Package_package_maintainer_update_column `json:"update_columns"`
+	Where          *Package_package_maintainer_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Package_package_maintainer_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_on_conflict) GetConstraint() Package_package_maintainer_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Package_package_maintainer_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_on_conflict) GetUpdate_columns() []Package_package_maintainer_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Package_package_maintainer_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Package_package_maintainer_on_conflict) GetWhere() *Package_package_maintainer_bool_exp {
+	return v.Where
+}
+
+// update columns of table "package.package_maintainer"
+type Package_package_maintainer_update_column string
+
+const (
+	// column name
+	Package_package_maintainer_update_columnMaintainerId Package_package_maintainer_update_column = "maintainer_id"
+	// column name
+	Package_package_maintainer_update_columnPackageId Package_package_maintainer_update_column = "package_id"
+)
+
+// input type for inserting array relation for remote table "package.release"
+type Package_release_arr_rel_insert_input struct {
+	Data []*Package_release_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Package_release_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Package_release_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Package_release_arr_rel_insert_input) GetData() []*Package_release_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Package_release_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Package_release_arr_rel_insert_input) GetOn_conflict() *Package_release_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "package.release". All fields are combined with a logical 'AND'.
+type Package_release_bool_exp struct {
+	And                      []*Package_release_bool_exp          `json:"_and,omitempty"`
+	Not                      *Package_release_bool_exp            `json:"_not,omitempty"`
+	Or                       []*Package_release_bool_exp          `json:"_or,omitempty"`
+	Blob_hash                *String_comparison_exp               `json:"blob_hash,omitempty"`
+	Id                       *Uuid_comparison_exp                 `json:"id,omitempty"`
+	Mirrored_blob_url        *String_comparison_exp               `json:"mirrored_blob_url,omitempty"`
+	Observed_time            *Timestamptz_comparison_exp          `json:"observed_time,omitempty"`
+	Package                  *Package_bool_exp                    `json:"package,omitempty"`
+	Package_id               *Uuid_comparison_exp                 `json:"package_id,omitempty"`
+	Publishing_maintainer    *Package_maintainer_bool_exp         `json:"publishing_maintainer,omitempty"`
+	Publishing_maintainer_id *Uuid_comparison_exp                 `json:"publishing_maintainer_id,omitempty"`
+	Release_dependencies     *Package_release_dependency_bool_exp `json:"release_dependencies,omitempty"`
+	Release_dependents       *Package_release_dependency_bool_exp `json:"release_dependents,omitempty"`
+	Release_licenses         *Package_release_license_bool_exp    `json:"release_licenses,omitempty"`
+	Release_time             *Timestamptz_comparison_exp          `json:"release_time,omitempty"`
+	Upstream_blob_url        *String_comparison_exp               `json:"upstream_blob_url,omitempty"`
+	Upstream_data            *Jsonb_comparison_exp                `json:"upstream_data,omitempty"`
+	Version                  *String_comparison_exp               `json:"version,omitempty"`
+}
+
+// GetAnd returns Package_release_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetAnd() []*Package_release_bool_exp { return v.And }
+
+// GetNot returns Package_release_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetNot() *Package_release_bool_exp { return v.Not }
+
+// GetOr returns Package_release_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetOr() []*Package_release_bool_exp { return v.Or }
+
+// GetBlob_hash returns Package_release_bool_exp.Blob_hash, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetBlob_hash() *String_comparison_exp { return v.Blob_hash }
+
+// GetId returns Package_release_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetMirrored_blob_url returns Package_release_bool_exp.Mirrored_blob_url, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetMirrored_blob_url() *String_comparison_exp {
+	return v.Mirrored_blob_url
+}
+
+// GetObserved_time returns Package_release_bool_exp.Observed_time, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetObserved_time() *Timestamptz_comparison_exp {
+	return v.Observed_time
+}
+
+// GetPackage returns Package_release_bool_exp.Package, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetPackage() *Package_bool_exp { return v.Package }
+
+// GetPackage_id returns Package_release_bool_exp.Package_id, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetPackage_id() *Uuid_comparison_exp { return v.Package_id }
+
+// GetPublishing_maintainer returns Package_release_bool_exp.Publishing_maintainer, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetPublishing_maintainer() *Package_maintainer_bool_exp {
+	return v.Publishing_maintainer
+}
+
+// GetPublishing_maintainer_id returns Package_release_bool_exp.Publishing_maintainer_id, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetPublishing_maintainer_id() *Uuid_comparison_exp {
+	return v.Publishing_maintainer_id
+}
+
+// GetRelease_dependencies returns Package_release_bool_exp.Release_dependencies, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetRelease_dependencies() *Package_release_dependency_bool_exp {
+	return v.Release_dependencies
+}
+
+// GetRelease_dependents returns Package_release_bool_exp.Release_dependents, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetRelease_dependents() *Package_release_dependency_bool_exp {
+	return v.Release_dependents
+}
+
+// GetRelease_licenses returns Package_release_bool_exp.Release_licenses, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetRelease_licenses() *Package_release_license_bool_exp {
+	return v.Release_licenses
+}
+
+// GetRelease_time returns Package_release_bool_exp.Release_time, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetRelease_time() *Timestamptz_comparison_exp {
+	return v.Release_time
+}
+
+// GetUpstream_blob_url returns Package_release_bool_exp.Upstream_blob_url, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetUpstream_blob_url() *String_comparison_exp {
+	return v.Upstream_blob_url
+}
+
+// GetUpstream_data returns Package_release_bool_exp.Upstream_data, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetUpstream_data() *Jsonb_comparison_exp { return v.Upstream_data }
+
+// GetVersion returns Package_release_bool_exp.Version, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetVersion() *String_comparison_exp { return v.Version }
+
+// unique or primary key constraints on table "package.release"
+type Package_release_constraint string
+
+const (
+	// unique or primary key constraint
+	Package_release_constraintReleasePackageIdVersionIdx Package_release_constraint = "release_package_id_version_idx"
+	// unique or primary key constraint
+	Package_release_constraintReleasePkey Package_release_constraint = "release_pkey"
+)
+
+// input type for inserting array relation for remote table "package.release_dependency"
+type Package_release_dependency_arr_rel_insert_input struct {
+	Data []*Package_release_dependency_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Package_release_dependency_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Package_release_dependency_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_arr_rel_insert_input) GetData() []*Package_release_dependency_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Package_release_dependency_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_arr_rel_insert_input) GetOn_conflict() *Package_release_dependency_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "package.release_dependency". All fields are combined with a logical 'AND'.
+type Package_release_dependency_bool_exp struct {
+	And                   []*Package_release_dependency_bool_exp `json:"_and,omitempty"`
+	Not                   *Package_release_dependency_bool_exp   `json:"_not,omitempty"`
+	Or                    []*Package_release_dependency_bool_exp `json:"_or,omitempty"`
+	Dependency_package    *Package_bool_exp                      `json:"dependency_package,omitempty"`
+	Dependency_package_id *Uuid_comparison_exp                   `json:"dependency_package_id,omitempty"`
+	Dependency_release    *Package_release_bool_exp              `json:"dependency_release,omitempty"`
+	Dependency_release_id *Uuid_comparison_exp                   `json:"dependency_release_id,omitempty"`
+	Id                    *Uuid_comparison_exp                   `json:"id,omitempty"`
+	Package_name          *String_comparison_exp                 `json:"package_name,omitempty"`
+	Package_version_query *String_comparison_exp                 `json:"package_version_query,omitempty"`
+	Release               *Package_release_bool_exp              `json:"release,omitempty"`
+	Release_id            *Uuid_comparison_exp                   `json:"release_id,omitempty"`
+}
+
+// GetAnd returns Package_release_dependency_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetAnd() []*Package_release_dependency_bool_exp {
+	return v.And
+}
+
+// GetNot returns Package_release_dependency_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetNot() *Package_release_dependency_bool_exp {
+	return v.Not
+}
+
+// GetOr returns Package_release_dependency_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetOr() []*Package_release_dependency_bool_exp {
+	return v.Or
+}
+
+// GetDependency_package returns Package_release_dependency_bool_exp.Dependency_package, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetDependency_package() *Package_bool_exp {
+	return v.Dependency_package
+}
+
+// GetDependency_package_id returns Package_release_dependency_bool_exp.Dependency_package_id, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetDependency_package_id() *Uuid_comparison_exp {
+	return v.Dependency_package_id
+}
+
+// GetDependency_release returns Package_release_dependency_bool_exp.Dependency_release, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetDependency_release() *Package_release_bool_exp {
+	return v.Dependency_release
+}
+
+// GetDependency_release_id returns Package_release_dependency_bool_exp.Dependency_release_id, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetDependency_release_id() *Uuid_comparison_exp {
+	return v.Dependency_release_id
+}
+
+// GetId returns Package_release_dependency_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetPackage_name returns Package_release_dependency_bool_exp.Package_name, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetPackage_name() *String_comparison_exp {
+	return v.Package_name
+}
+
+// GetPackage_version_query returns Package_release_dependency_bool_exp.Package_version_query, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetPackage_version_query() *String_comparison_exp {
+	return v.Package_version_query
+}
+
+// GetRelease returns Package_release_dependency_bool_exp.Release, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetRelease() *Package_release_bool_exp {
+	return v.Release
+}
+
+// GetRelease_id returns Package_release_dependency_bool_exp.Release_id, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_bool_exp) GetRelease_id() *Uuid_comparison_exp {
+	return v.Release_id
+}
+
+// unique or primary key constraints on table "package.release_dependency"
+type Package_release_dependency_constraint string
+
+const (
+	// unique or primary key constraint
+	Package_release_dependency_constraintReleaseDependencyPkey Package_release_dependency_constraint = "release_dependency_pkey"
+	// unique or primary key constraint
+	Package_release_dependency_constraintReleaseDependencyReleaseIdPackageNamePackageVersionIdx Package_release_dependency_constraint = "release_dependency_release_id_package_name_package_version__idx"
+)
+
+// input type for inserting data into table "package.release_dependency"
+type Package_release_dependency_insert_input struct {
+	Dependency_package    *Package_obj_rel_insert_input         `json:"dependency_package,omitempty"`
+	Dependency_package_id uuid.UUID                             `json:"dependency_package_id"`
+	Dependency_release    *Package_release_obj_rel_insert_input `json:"dependency_release,omitempty"`
+	Dependency_release_id uuid.UUID                             `json:"dependency_release_id"`
+	Id                    uuid.UUID                             `json:"id"`
+	Package_name          string                                `json:"package_name"`
+	Package_version_query string                                `json:"package_version_query"`
+	Release               *Package_release_obj_rel_insert_input `json:"release,omitempty"`
+	Release_id            uuid.UUID                             `json:"release_id"`
+}
+
+// GetDependency_package returns Package_release_dependency_insert_input.Dependency_package, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_insert_input) GetDependency_package() *Package_obj_rel_insert_input {
+	return v.Dependency_package
+}
+
+// GetDependency_package_id returns Package_release_dependency_insert_input.Dependency_package_id, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_insert_input) GetDependency_package_id() uuid.UUID {
+	return v.Dependency_package_id
+}
+
+// GetDependency_release returns Package_release_dependency_insert_input.Dependency_release, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_insert_input) GetDependency_release() *Package_release_obj_rel_insert_input {
+	return v.Dependency_release
+}
+
+// GetDependency_release_id returns Package_release_dependency_insert_input.Dependency_release_id, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_insert_input) GetDependency_release_id() uuid.UUID {
+	return v.Dependency_release_id
+}
+
+// GetId returns Package_release_dependency_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_insert_input) GetId() uuid.UUID { return v.Id }
+
+// GetPackage_name returns Package_release_dependency_insert_input.Package_name, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_insert_input) GetPackage_name() string { return v.Package_name }
+
+// GetPackage_version_query returns Package_release_dependency_insert_input.Package_version_query, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_insert_input) GetPackage_version_query() string {
+	return v.Package_version_query
+}
+
+// GetRelease returns Package_release_dependency_insert_input.Release, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_insert_input) GetRelease() *Package_release_obj_rel_insert_input {
+	return v.Release
+}
+
+// GetRelease_id returns Package_release_dependency_insert_input.Release_id, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_insert_input) GetRelease_id() uuid.UUID { return v.Release_id }
+
+// on_conflict condition type for table "package.release_dependency"
+type Package_release_dependency_on_conflict struct {
+	Constraint     Package_release_dependency_constraint      `json:"constraint"`
+	Update_columns []Package_release_dependency_update_column `json:"update_columns"`
+	Where          *Package_release_dependency_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Package_release_dependency_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_on_conflict) GetConstraint() Package_release_dependency_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Package_release_dependency_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_on_conflict) GetUpdate_columns() []Package_release_dependency_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Package_release_dependency_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Package_release_dependency_on_conflict) GetWhere() *Package_release_dependency_bool_exp {
+	return v.Where
+}
+
+// update columns of table "package.release_dependency"
+type Package_release_dependency_update_column string
+
+const (
+	// column name
+	Package_release_dependency_update_columnDependencyPackageId Package_release_dependency_update_column = "dependency_package_id"
+	// column name
+	Package_release_dependency_update_columnDependencyReleaseId Package_release_dependency_update_column = "dependency_release_id"
+	// column name
+	Package_release_dependency_update_columnId Package_release_dependency_update_column = "id"
+	// column name
+	Package_release_dependency_update_columnPackageName Package_release_dependency_update_column = "package_name"
+	// column name
+	Package_release_dependency_update_columnPackageVersionQuery Package_release_dependency_update_column = "package_version_query"
+	// column name
+	Package_release_dependency_update_columnReleaseId Package_release_dependency_update_column = "release_id"
+)
+
+// input type for inserting data into table "package.release"
+type Package_release_insert_input struct {
+	Blob_hash                string                                           `json:"blob_hash"`
+	Id                       uuid.UUID                                        `json:"id"`
+	Mirrored_blob_url        string                                           `json:"mirrored_blob_url"`
+	Observed_time            time.Time                                        `json:"observed_time"`
+	Package                  *Package_obj_rel_insert_input                    `json:"package,omitempty"`
+	Package_id               uuid.UUID                                        `json:"package_id"`
+	Publishing_maintainer    *Package_maintainer_obj_rel_insert_input         `json:"publishing_maintainer,omitempty"`
+	Publishing_maintainer_id uuid.UUID                                        `json:"publishing_maintainer_id"`
+	Release_dependencies     *Package_release_dependency_arr_rel_insert_input `json:"release_dependencies,omitempty"`
+	Release_dependents       *Package_release_dependency_arr_rel_insert_input `json:"release_dependents,omitempty"`
+	Release_licenses         *Package_release_license_arr_rel_insert_input    `json:"release_licenses,omitempty"`
+	Release_time             time.Time                                        `json:"release_time"`
+	Upstream_blob_url        string                                           `json:"upstream_blob_url"`
+	Upstream_data            json.RawMessage                                  `json:"upstream_data"`
+	Version                  string                                           `json:"version"`
+}
+
+// GetBlob_hash returns Package_release_insert_input.Blob_hash, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetBlob_hash() string { return v.Blob_hash }
+
+// GetId returns Package_release_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetId() uuid.UUID { return v.Id }
+
+// GetMirrored_blob_url returns Package_release_insert_input.Mirrored_blob_url, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetMirrored_blob_url() string { return v.Mirrored_blob_url }
+
+// GetObserved_time returns Package_release_insert_input.Observed_time, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetObserved_time() time.Time { return v.Observed_time }
+
+// GetPackage returns Package_release_insert_input.Package, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetPackage() *Package_obj_rel_insert_input { return v.Package }
+
+// GetPackage_id returns Package_release_insert_input.Package_id, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetPackage_id() uuid.UUID { return v.Package_id }
+
+// GetPublishing_maintainer returns Package_release_insert_input.Publishing_maintainer, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetPublishing_maintainer() *Package_maintainer_obj_rel_insert_input {
+	return v.Publishing_maintainer
+}
+
+// GetPublishing_maintainer_id returns Package_release_insert_input.Publishing_maintainer_id, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetPublishing_maintainer_id() uuid.UUID {
+	return v.Publishing_maintainer_id
+}
+
+// GetRelease_dependencies returns Package_release_insert_input.Release_dependencies, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetRelease_dependencies() *Package_release_dependency_arr_rel_insert_input {
+	return v.Release_dependencies
+}
+
+// GetRelease_dependents returns Package_release_insert_input.Release_dependents, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetRelease_dependents() *Package_release_dependency_arr_rel_insert_input {
+	return v.Release_dependents
+}
+
+// GetRelease_licenses returns Package_release_insert_input.Release_licenses, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetRelease_licenses() *Package_release_license_arr_rel_insert_input {
+	return v.Release_licenses
+}
+
+// GetRelease_time returns Package_release_insert_input.Release_time, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetRelease_time() time.Time { return v.Release_time }
+
+// GetUpstream_blob_url returns Package_release_insert_input.Upstream_blob_url, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetUpstream_blob_url() string { return v.Upstream_blob_url }
+
+// GetUpstream_data returns Package_release_insert_input.Upstream_data, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetUpstream_data() json.RawMessage { return v.Upstream_data }
+
+// GetVersion returns Package_release_insert_input.Version, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetVersion() string { return v.Version }
+
+// input type for inserting array relation for remote table "package.release_license"
+type Package_release_license_arr_rel_insert_input struct {
+	Data []*Package_release_license_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Package_release_license_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Package_release_license_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Package_release_license_arr_rel_insert_input) GetData() []*Package_release_license_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Package_release_license_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Package_release_license_arr_rel_insert_input) GetOn_conflict() *Package_release_license_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "package.release_license". All fields are combined with a logical 'AND'.
+type Package_release_license_bool_exp struct {
+	And           []*Package_release_license_bool_exp `json:"_and,omitempty"`
+	Not           *Package_release_license_bool_exp   `json:"_not,omitempty"`
+	Or            []*Package_release_license_bool_exp `json:"_or,omitempty"`
+	Id            *Uuid_comparison_exp                `json:"id,omitempty"`
+	License       *Package_license_bool_exp           `json:"license,omitempty"`
+	License_id    *Uuid_comparison_exp                `json:"license_id,omitempty"`
+	Release_id    *Uuid_comparison_exp                `json:"release_id,omitempty"`
+	Scan_metadata *Jsonb_comparison_exp               `json:"scan_metadata,omitempty"`
+	Scan_time     *Timestamptz_comparison_exp         `json:"scan_time,omitempty"`
+	Source        *License_source_comparison_exp      `json:"source,omitempty"`
+}
+
+// GetAnd returns Package_release_license_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Package_release_license_bool_exp) GetAnd() []*Package_release_license_bool_exp { return v.And }
+
+// GetNot returns Package_release_license_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Package_release_license_bool_exp) GetNot() *Package_release_license_bool_exp { return v.Not }
+
+// GetOr returns Package_release_license_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Package_release_license_bool_exp) GetOr() []*Package_release_license_bool_exp { return v.Or }
+
+// GetId returns Package_release_license_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Package_release_license_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetLicense returns Package_release_license_bool_exp.License, and is useful for accessing the field via an interface.
+func (v *Package_release_license_bool_exp) GetLicense() *Package_license_bool_exp { return v.License }
+
+// GetLicense_id returns Package_release_license_bool_exp.License_id, and is useful for accessing the field via an interface.
+func (v *Package_release_license_bool_exp) GetLicense_id() *Uuid_comparison_exp { return v.License_id }
+
+// GetRelease_id returns Package_release_license_bool_exp.Release_id, and is useful for accessing the field via an interface.
+func (v *Package_release_license_bool_exp) GetRelease_id() *Uuid_comparison_exp { return v.Release_id }
+
+// GetScan_metadata returns Package_release_license_bool_exp.Scan_metadata, and is useful for accessing the field via an interface.
+func (v *Package_release_license_bool_exp) GetScan_metadata() *Jsonb_comparison_exp {
+	return v.Scan_metadata
+}
+
+// GetScan_time returns Package_release_license_bool_exp.Scan_time, and is useful for accessing the field via an interface.
+func (v *Package_release_license_bool_exp) GetScan_time() *Timestamptz_comparison_exp {
+	return v.Scan_time
+}
+
+// GetSource returns Package_release_license_bool_exp.Source, and is useful for accessing the field via an interface.
+func (v *Package_release_license_bool_exp) GetSource() *License_source_comparison_exp {
+	return v.Source
+}
+
+// unique or primary key constraints on table "package.release_license"
+type Package_release_license_constraint string
+
+const (
+	// unique or primary key constraint
+	Package_release_license_constraintReleaseLicensePkey Package_release_license_constraint = "release_license_pkey"
+)
+
+// input type for inserting data into table "package.release_license"
+type Package_release_license_insert_input struct {
+	Id            uuid.UUID                             `json:"id"`
+	License       *Package_license_obj_rel_insert_input `json:"license,omitempty"`
+	License_id    uuid.UUID                             `json:"license_id"`
+	Release_id    uuid.UUID                             `json:"release_id"`
+	Scan_metadata json.RawMessage                       `json:"scan_metadata"`
+	Scan_time     time.Time                             `json:"scan_time"`
+	Source        gql.LicenseSource                     `json:"source"`
+}
+
+// GetId returns Package_release_license_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Package_release_license_insert_input) GetId() uuid.UUID { return v.Id }
+
+// GetLicense returns Package_release_license_insert_input.License, and is useful for accessing the field via an interface.
+func (v *Package_release_license_insert_input) GetLicense() *Package_license_obj_rel_insert_input {
+	return v.License
+}
+
+// GetLicense_id returns Package_release_license_insert_input.License_id, and is useful for accessing the field via an interface.
+func (v *Package_release_license_insert_input) GetLicense_id() uuid.UUID { return v.License_id }
+
+// GetRelease_id returns Package_release_license_insert_input.Release_id, and is useful for accessing the field via an interface.
+func (v *Package_release_license_insert_input) GetRelease_id() uuid.UUID { return v.Release_id }
+
+// GetScan_metadata returns Package_release_license_insert_input.Scan_metadata, and is useful for accessing the field via an interface.
+func (v *Package_release_license_insert_input) GetScan_metadata() json.RawMessage {
+	return v.Scan_metadata
+}
+
+// GetScan_time returns Package_release_license_insert_input.Scan_time, and is useful for accessing the field via an interface.
+func (v *Package_release_license_insert_input) GetScan_time() time.Time { return v.Scan_time }
+
+// GetSource returns Package_release_license_insert_input.Source, and is useful for accessing the field via an interface.
+func (v *Package_release_license_insert_input) GetSource() gql.LicenseSource { return v.Source }
+
+// on_conflict condition type for table "package.release_license"
+type Package_release_license_on_conflict struct {
+	Constraint     Package_release_license_constraint      `json:"constraint"`
+	Update_columns []Package_release_license_update_column `json:"update_columns"`
+	Where          *Package_release_license_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Package_release_license_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Package_release_license_on_conflict) GetConstraint() Package_release_license_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Package_release_license_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Package_release_license_on_conflict) GetUpdate_columns() []Package_release_license_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Package_release_license_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Package_release_license_on_conflict) GetWhere() *Package_release_license_bool_exp {
+	return v.Where
+}
+
+// update columns of table "package.release_license"
+type Package_release_license_update_column string
+
+const (
+	// column name
+	Package_release_license_update_columnId Package_release_license_update_column = "id"
+	// column name
+	Package_release_license_update_columnLicenseId Package_release_license_update_column = "license_id"
+	// column name
+	Package_release_license_update_columnReleaseId Package_release_license_update_column = "release_id"
+	// column name
+	Package_release_license_update_columnScanMetadata Package_release_license_update_column = "scan_metadata"
+	// column name
+	Package_release_license_update_columnScanTime Package_release_license_update_column = "scan_time"
+	// column name
+	Package_release_license_update_columnSource Package_release_license_update_column = "source"
+)
+
+// input type for inserting object relation for remote table "package.release"
+type Package_release_obj_rel_insert_input struct {
+	Data *Package_release_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Package_release_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Package_release_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Package_release_obj_rel_insert_input) GetData() *Package_release_insert_input { return v.Data }
+
+// GetOn_conflict returns Package_release_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Package_release_obj_rel_insert_input) GetOn_conflict() *Package_release_on_conflict {
+	return v.On_conflict
+}
+
+// on_conflict condition type for table "package.release"
+type Package_release_on_conflict struct {
+	Constraint     Package_release_constraint      `json:"constraint"`
+	Update_columns []Package_release_update_column `json:"update_columns"`
+	Where          *Package_release_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Package_release_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Package_release_on_conflict) GetConstraint() Package_release_constraint { return v.Constraint }
+
+// GetUpdate_columns returns Package_release_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Package_release_on_conflict) GetUpdate_columns() []Package_release_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Package_release_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Package_release_on_conflict) GetWhere() *Package_release_bool_exp { return v.Where }
+
+// update columns of table "package.release"
+type Package_release_update_column string
+
+const (
+	// column name
+	Package_release_update_columnBlobHash Package_release_update_column = "blob_hash"
+	// column name
+	Package_release_update_columnId Package_release_update_column = "id"
+	// column name
+	Package_release_update_columnMirroredBlobUrl Package_release_update_column = "mirrored_blob_url"
+	// column name
+	Package_release_update_columnObservedTime Package_release_update_column = "observed_time"
+	// column name
+	Package_release_update_columnPackageId Package_release_update_column = "package_id"
+	// column name
+	Package_release_update_columnPublishingMaintainerId Package_release_update_column = "publishing_maintainer_id"
+	// column name
+	Package_release_update_columnReleaseTime Package_release_update_column = "release_time"
+	// column name
+	Package_release_update_columnUpstreamBlobUrl Package_release_update_column = "upstream_blob_url"
+	// column name
+	Package_release_update_columnUpstreamData Package_release_update_column = "upstream_data"
+	// column name
+	Package_release_update_columnVersion Package_release_update_column = "version"
+)
+
+// update columns of table "package.package"
+type Package_update_column string
+
+const (
+	// column name
+	Package_update_columnCustomRegistry Package_update_column = "custom_registry"
+	// column name
+	Package_update_columnDescription Package_update_column = "description"
+	// column name
+	Package_update_columnId Package_update_column = "id"
+	// column name
+	Package_update_columnName Package_update_column = "name"
+	// column name
+	Package_update_columnPackageManager Package_update_column = "package_manager"
 )
 
 // input type for inserting array relation for remote table "package_versions"
@@ -2625,6 +3814,7 @@ type Projects_bool_exp struct {
 	Project_access_tokens   *Project_access_tokens_bool_exp   `json:"project_access_tokens,omitempty"`
 	Repo                    *String_comparison_exp            `json:"repo,omitempty"`
 	Reports                 *Project_access_tokens_bool_exp   `json:"reports,omitempty"`
+	Settings                *Settings_bool_exp                `json:"settings,omitempty"`
 	Settings_id             *Uuid_comparison_exp              `json:"settings_id,omitempty"`
 }
 
@@ -2683,6 +3873,9 @@ func (v *Projects_bool_exp) GetRepo() *String_comparison_exp { return v.Repo }
 
 // GetReports returns Projects_bool_exp.Reports, and is useful for accessing the field via an interface.
 func (v *Projects_bool_exp) GetReports() *Project_access_tokens_bool_exp { return v.Reports }
+
+// GetSettings returns Projects_bool_exp.Settings, and is useful for accessing the field via an interface.
+func (v *Projects_bool_exp) GetSettings() *Settings_bool_exp { return v.Settings }
 
 // GetSettings_id returns Projects_bool_exp.Settings_id, and is useful for accessing the field via an interface.
 func (v *Projects_bool_exp) GetSettings_id() *Uuid_comparison_exp { return v.Settings_id }
@@ -3062,6 +4255,44 @@ type SetBuildS3UrlUpdate_builds_by_pkBuilds struct {
 // GetId returns SetBuildS3UrlUpdate_builds_by_pkBuilds.Id, and is useful for accessing the field via an interface.
 func (v *SetBuildS3UrlUpdate_builds_by_pkBuilds) GetId() uuid.UUID { return v.Id }
 
+// Boolean expression to filter rows from the table "settings". All fields are combined with a logical 'AND'.
+type Settings_bool_exp struct {
+	And                 []*Settings_bool_exp      `json:"_and,omitempty"`
+	Not                 *Settings_bool_exp        `json:"_not,omitempty"`
+	Or                  []*Settings_bool_exp      `json:"_or,omitempty"`
+	Created_at          *Timestamp_comparison_exp `json:"created_at,omitempty"`
+	Id                  *Uuid_comparison_exp      `json:"id,omitempty"`
+	Organization        *Organizations_bool_exp   `json:"organization,omitempty"`
+	Pr_feedback_enabled *Boolean_comparison_exp   `json:"pr_feedback_enabled,omitempty"`
+	Project             *Projects_bool_exp        `json:"project,omitempty"`
+}
+
+// GetAnd returns Settings_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetAnd() []*Settings_bool_exp { return v.And }
+
+// GetNot returns Settings_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetNot() *Settings_bool_exp { return v.Not }
+
+// GetOr returns Settings_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetOr() []*Settings_bool_exp { return v.Or }
+
+// GetCreated_at returns Settings_bool_exp.Created_at, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetCreated_at() *Timestamp_comparison_exp { return v.Created_at }
+
+// GetId returns Settings_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetOrganization returns Settings_bool_exp.Organization, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetOrganization() *Organizations_bool_exp { return v.Organization }
+
+// GetPr_feedback_enabled returns Settings_bool_exp.Pr_feedback_enabled, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetPr_feedback_enabled() *Boolean_comparison_exp {
+	return v.Pr_feedback_enabled
+}
+
+// GetProject returns Settings_bool_exp.Project, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetProject() *Projects_bool_exp { return v.Project }
+
 // Boolean expression to compare columns of type "severity_enum". All fields are combined with logical 'AND'.
 type Severity_enum_comparison_exp struct {
 	Eq      string   `json:"_eq"`
@@ -3311,6 +4542,108 @@ func (v *Timestamptz_comparison_exp) GetNeq() time.Time { return v.Neq }
 
 // GetNin returns Timestamptz_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Timestamptz_comparison_exp) GetNin() []time.Time { return v.Nin }
+
+// UpsertPackageInsert_package_onePackage includes the requested fields of the GraphQL type package.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "package.package"
+type UpsertPackageInsert_package_onePackage struct {
+	Id uuid.UUID `json:"id"`
+	// An array relationship
+	Releases []*UpsertPackageInsert_package_onePackageReleasesPackage_release `json:"releases"`
+}
+
+// GetId returns UpsertPackageInsert_package_onePackage.Id, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackage) GetId() uuid.UUID { return v.Id }
+
+// GetReleases returns UpsertPackageInsert_package_onePackage.Releases, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackage) GetReleases() []*UpsertPackageInsert_package_onePackageReleasesPackage_release {
+	return v.Releases
+}
+
+// UpsertPackageInsert_package_onePackageReleasesPackage_release includes the requested fields of the GraphQL type package_release.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "package.release"
+type UpsertPackageInsert_package_onePackageReleasesPackage_release struct {
+	Id uuid.UUID `json:"id"`
+	// An array relationship
+	Release_dependencies []*UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency `json:"release_dependencies"`
+	// An array relationship
+	Release_licenses []*UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license `json:"release_licenses"`
+}
+
+// GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_release.Id, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_release) GetId() uuid.UUID {
+	return v.Id
+}
+
+// GetRelease_dependencies returns UpsertPackageInsert_package_onePackageReleasesPackage_release.Release_dependencies, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_release) GetRelease_dependencies() []*UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency {
+	return v.Release_dependencies
+}
+
+// GetRelease_licenses returns UpsertPackageInsert_package_onePackageReleasesPackage_release.Release_licenses, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_release) GetRelease_licenses() []*UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license {
+	return v.Release_licenses
+}
+
+// UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency includes the requested fields of the GraphQL type package_release_dependency.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "package.release_dependency"
+type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency struct {
+	Id uuid.UUID `json:"id"`
+}
+
+// GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency.Id, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency) GetId() uuid.UUID {
+	return v.Id
+}
+
+// UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license includes the requested fields of the GraphQL type package_release_license.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "package.release_license"
+type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license struct {
+	Id uuid.UUID `json:"id"`
+	// An object relationship
+	License *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license `json:"license"`
+}
+
+// GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license.Id, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license) GetId() uuid.UUID {
+	return v.Id
+}
+
+// GetLicense returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license.License, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license) GetLicense() *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license {
+	return v.License
+}
+
+// UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license includes the requested fields of the GraphQL type package_license.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "package.license"
+type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license struct {
+	Id uuid.UUID `json:"id"`
+}
+
+// GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license.Id, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license) GetId() uuid.UUID {
+	return v.Id
+}
+
+// UpsertPackageResponse is returned by UpsertPackage on success.
+type UpsertPackageResponse struct {
+	// insert a single row into the table: "package.package"
+	Insert_package_one *UpsertPackageInsert_package_onePackage `json:"insert_package_one"`
+}
+
+// GetInsert_package_one returns UpsertPackageResponse.Insert_package_one, and is useful for accessing the field via an interface.
+func (v *UpsertPackageResponse) GetInsert_package_one() *UpsertPackageInsert_package_onePackage {
+	return v.Insert_package_one
+}
 
 // Boolean expression to compare columns of type "user_role". All fields are combined with logical 'AND'.
 type User_role_comparison_exp struct {
@@ -3920,6 +5253,14 @@ func (v *__SetBuildS3UrlInput) GetId() uuid.UUID { return v.Id }
 // GetS3_url returns __SetBuildS3UrlInput.S3_url, and is useful for accessing the field via an interface.
 func (v *__SetBuildS3UrlInput) GetS3_url() string { return v.S3_url }
 
+// __UpsertPackageInput is used internally by genqlient
+type __UpsertPackageInput struct {
+	Object *Package_insert_input `json:"object,omitempty"`
+}
+
+// GetObject returns __UpsertPackageInput.Object, and is useful for accessing the field via an interface.
+func (v *__UpsertPackageInput) GetObject() *Package_insert_input { return v.Object }
+
 func DeleteBuild(
 	ctx context.Context,
 	client graphql.Client,
@@ -4089,6 +5430,45 @@ func SetBuildS3Url(
 mutation SetBuildS3Url ($id: uuid!, $s3_url: String!) {
 	update_builds_by_pk(pk_columns: {id:$id}, _set: {s3_url:$s3_url}) {
 		id
+	}
+}
+`,
+		&retval,
+		&__input,
+	)
+	return &retval, err
+}
+
+func UpsertPackage(
+	ctx context.Context,
+	client graphql.Client,
+	object *Package_insert_input,
+) (*UpsertPackageResponse, error) {
+	__input := __UpsertPackageInput{
+		Object: object,
+	}
+	var err error
+
+	var retval UpsertPackageResponse
+	err = client.MakeRequest(
+		ctx,
+		"UpsertPackage",
+		`
+mutation UpsertPackage ($object: package_insert_input!) {
+	insert_package_one(object: $object) {
+		id
+		releases {
+			id
+			release_dependencies {
+				id
+			}
+			release_licenses {
+				id
+				license {
+					id
+				}
+			}
+		}
 	}
 }
 `,

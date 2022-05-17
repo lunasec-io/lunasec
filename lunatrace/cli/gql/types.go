@@ -12,12 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-//go:build tools
-// +build tools
+package gql
 
-package tools
+type PackageManager int
 
-import (
-	_ "github.com/Khan/genqlient"
-	_ "github.com/dmarkham/enumer"
+const (
+	NPM PackageManager = iota
+)
+
+type LicenseSource int
+
+const (
+	Manual LicenseSource = iota
+	ScanRepo
+	ScanBinary
+	ApiNpm
 )
