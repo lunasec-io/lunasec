@@ -10,6 +10,36 @@
     forward_client_headers: true
   comment: ""
   permissions:
+    - role: user
+      definition:
+        schema: |
+          type AuthenticatedRepoCloneUrlOutput {
+          	url: String
+          }
+          scalar JSON
+          type Mutation {
+          	presignManifestUpload(project_id: UUID!): PresignedUrlResponse
+          }
+          type PresignedUrlResponse {
+          	bucket: String!
+          	headers: JSON!
+          	key: String!
+          	url: String!
+          }
+          type Query {
+          	authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
+          	fakeQueryToHackHasuraBeingABuggyMess: String
+          	sbomUrl(buildId: UUID!): String
+          }
+          type SbomUploadUrlOutput {
+          	error: Boolean!
+          	uploadUrl: UploadUrl
+          }
+          scalar UUID
+          type UploadUrl {
+          	headers: JSON!
+          	url: String!
+          }
     - role: service
       definition:
         schema: |
@@ -35,36 +65,6 @@
           input SbomUploadUrlInput {
           	orgId: UUID!
           	projectId: UUID!
-          }
-          type SbomUploadUrlOutput {
-          	error: Boolean!
-          	uploadUrl: UploadUrl
-          }
-          scalar UUID
-          type UploadUrl {
-          	headers: JSON!
-          	url: String!
-          }
-    - role: user
-      definition:
-        schema: |
-          type AuthenticatedRepoCloneUrlOutput {
-          	url: String
-          }
-          scalar JSON
-          type Mutation {
-          	presignManifestUpload(project_id: UUID!): PresignedUrlResponse
-          }
-          type PresignedUrlResponse {
-          	bucket: String!
-          	headers: JSON!
-          	key: String!
-          	url: String!
-          }
-          type Query {
-          	authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
-          	fakeQueryToHackHasuraBeingABuggyMess: String
-          	sbomUrl(buildId: UUID!): String
           }
           type SbomUploadUrlOutput {
           	error: Boolean!

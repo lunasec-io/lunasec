@@ -1,0 +1,79 @@
+table:
+  schema: package
+  name: release
+object_relationships:
+  - name: package
+    using:
+      foreign_key_constraint_on: package_id
+  - name: publishing_maintainer
+    using:
+      foreign_key_constraint_on: publishing_maintainer_id
+array_relationships:
+  - name: release_dependencies
+    using:
+      foreign_key_constraint_on:
+        column: dependency_release_id
+        table:
+          schema: package
+          name: release_dependency
+  - name: release_dependents
+    using:
+      foreign_key_constraint_on:
+        column: release_id
+        table:
+          schema: package
+          name: release_dependency
+  - name: release_licenses
+    using:
+      foreign_key_constraint_on:
+        column: release_id
+        table:
+          schema: package
+          name: release_license
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - upstream_data
+        - blob_hash
+        - mirrored_blob_url
+        - upstream_blob_url
+        - version
+        - observed_time
+        - release_time
+        - id
+        - package_id
+        - publishing_maintainer_id
+      backend_only: false
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - upstream_data
+        - blob_hash
+        - mirrored_blob_url
+        - upstream_blob_url
+        - version
+        - observed_time
+        - release_time
+        - id
+        - package_id
+        - publishing_maintainer_id
+      filter: {}
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - upstream_data
+        - blob_hash
+        - mirrored_blob_url
+        - upstream_blob_url
+        - version
+        - observed_time
+        - release_time
+        - id
+        - package_id
+        - publishing_maintainer_id
+      filter: {}
+      check: {}

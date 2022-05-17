@@ -20,7 +20,7 @@ export type ProjectInfo = NonNullable<MaybeProjectInfo>;
 
 export type BuildInfo = ProjectInfo['builds'][number];
 
-export type TabName = 'builds' | 'secrets' | 'dashboard';
+export type TabName = 'builds' | 'secrets' | 'dashboard' | 'settings';
 export type SetActiveTab = (tabName: TabName) => void;
 
 export type GithubTraits =

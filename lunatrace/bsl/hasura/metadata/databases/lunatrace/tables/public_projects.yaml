@@ -14,6 +14,9 @@ object_relationships:
   - name: organization
     using:
       foreign_key_constraint_on: organization_id
+  - name: settings
+    using:
+      foreign_key_constraint_on: settings_id
 array_relationships:
   - name: builds
     using:
