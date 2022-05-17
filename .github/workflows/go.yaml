@@ -17,6 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
       - uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
