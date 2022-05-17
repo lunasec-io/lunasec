@@ -15,7 +15,11 @@
 package gql
 
 import (
+	"net/http"
+
 	"github.com/Khan/genqlient/graphql"
+
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 )
 
 // TODOClient is bad. Remove it. it is todo.
@@ -24,3 +28,9 @@ var TODOClient = func() graphql.Client {
 	// make sure the config is loaded first or use dependency injection.
 	return nil
 }()
+
+var LocalClient = graphql.NewClient("http://localhost:8080/v1/graphql", &http.Client{
+	Transport: &httputil.HeadersTransport{Headers: map[string]string{
+		"x-hasura-admin-secret": "myadminsecretkey", "x-hasura-role": "service",
+	}},
+})
