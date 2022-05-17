@@ -123,6 +123,7 @@ func TestUpsert(t *testing.T) {
 									},
 									On_conflict: packageOnConflict,
 								},
+								// todo we dont have resolved versions maybe so idk
 								Dependency_release:    nil,
 								Package_name:          dependencyName,
 								Package_version_query: "",
