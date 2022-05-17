@@ -16,6 +16,7 @@ package license
 
 import (
 	"context"
+	"testing"
 	"time"
 
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
@@ -35,10 +36,8 @@ var releaseOnConflict = &gql.Package_release_on_conflict{
 	Constraint: gql.Package_release_constraintReleasePackageIdVersionIdx,
 	Update_columns: []gql.Package_release_update_column{
 		gql.Package_release_update_columnBlobHash,
-		gql.Package_release_update_columnId,
 		gql.Package_release_update_columnMirroredBlobUrl,
 		gql.Package_release_update_columnObservedTime,
-		gql.Package_release_update_columnPackageId,
 		gql.Package_release_update_columnPublishingMaintainerId,
 		gql.Package_release_update_columnReleaseTime,
 		gql.Package_release_update_columnUpstreamBlobUrl,
@@ -61,9 +60,21 @@ var packageMaintainerOnConflict = &gql.Package_package_maintainer_on_conflict{
 	Update_columns: []gql.Package_package_maintainer_update_column{},
 }
 
-func _() {
+var packageReleaseDependencyOnConflict = &gql.Package_release_dependency_on_conflict{
+	Constraint: gql.Package_release_dependency_constraintReleaseDependencyReleaseIdPackageNamePackageVersionIdx,
+	Update_columns: []gql.Package_release_dependency_update_column{
+		//todo is this right?
+		gql.Package_release_dependency_update_columnDependencyPackageId,
+		gql.Package_release_dependency_update_columnDependencyReleaseId,
+		gql.Package_release_dependency_update_columnPackageName,
+		gql.Package_release_dependency_update_columnPackageVersionQuery,
+		gql.Package_release_dependency_update_columnReleaseId,
+	},
+}
+
+func TestUpsert(t *testing.T) {
 	// upsert package metadata
-	var res, err = gql.UpsertPackage(context.Background(), gql.TODOClient, &gql.Package_insert_input{
+	res, err := gql.UpsertPackage(context.Background(), gql.TODOClient, &gql.Package_insert_input{
 		Custom_registry: "",
 		Description:     "",
 		Name:            "",
@@ -86,21 +97,44 @@ func _() {
 		Releases: &gql.Package_release_arr_rel_insert_input{
 			Data: []*gql.Package_release_insert_input{
 				{
-					Blob_hash:             "",
-					Mirrored_blob_url:     "",
-					Package:               nil,
-					Publishing_maintainer: nil,
-					Release_dependencies:  nil,
-					Release_time:          time.Time{},
-					Upstream_blob_url:     "",
-					Upstream_data:         nil,
-					Version:               "",
+					Publishing_maintainer: &gql.Package_maintainer_obj_rel_insert_input{
+						Data: &gql.Package_maintainer_insert_input{
+							Email:           "",
+							Name:            "",
+							Package_manager: gql.NPM,
+						},
+						On_conflict: maintainerOnConflict,
+					},
+					Release_dependencies: &gql.Package_release_dependency_arr_rel_insert_input{
+						Data: []*gql.Package_release_dependency_insert_input{
+							// array
+							{
+								Dependency_package:    nil,
+								Dependency_package_id: uuid.UUID{},
+								Dependency_release:    nil,
+								Dependency_release_id: uuid.UUID{},
+								Id:                    uuid.UUID{},
+								Package_name:          "",
+								Package_version_query: "",
+								Release:               nil,
+								Release_id:            uuid.UUID{},
+							},
+						},
+						On_conflict: packageReleaseDependencyOnConflict,
+					},
+					Release_time: time.Time{},
+
+					Blob_hash:         "",
+					Mirrored_blob_url: "",
+					Upstream_blob_url: "",
+
+					Upstream_data: nil,
+
+					Version: "",
 				},
 			},
 			On_conflict: releaseOnConflict,
 		},
 	}, packageOnConflict)
-
-	// kick off license scans
 
 }
