@@ -6,7 +6,7 @@ query GetBuild($build_id: uuid!) {
         installation_id
       }
       settings {
-        pr_feedback_enabled
+        pr_feedback_disabled
       }
     }
     pull_request_id

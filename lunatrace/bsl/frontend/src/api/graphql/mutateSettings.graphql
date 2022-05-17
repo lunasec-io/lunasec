@@ -1,5 +1,0 @@
-mutation UpdateSettings($id: uuid!, $settings: settings_set_input!) {
-    update_settings_by_pk(pk_columns: {id: $id}, _set: $settings) {
-        id
-    }
-}

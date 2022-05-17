@@ -5,10 +5,9 @@ query GetProject($project_id: uuid!) {
         name
         organization_id
         repo
-        settings_id
         settings {
             id
-            pr_feedback_enabled
+            pr_feedback_disabled
         }
         organization {
             name

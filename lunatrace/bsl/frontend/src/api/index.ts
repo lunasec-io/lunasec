@@ -45,7 +45,7 @@ const appApi = generatedApi.enhanceEndpoints({
     GetProject: {
       providesTags: ['ProjectDetails'],
     },
-    UpdateSettings: {
+    UpsertProjectSettings: {
       invalidatesTags: ['ProjectDetails'],
     },
   },

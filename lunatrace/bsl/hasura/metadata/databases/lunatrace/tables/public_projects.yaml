@@ -16,7 +16,13 @@ object_relationships:
       foreign_key_constraint_on: organization_id
   - name: settings
     using:
-      foreign_key_constraint_on: settings_id
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: settings
+        insertion_order: null
+        column_mapping:
+          id: project_id
 array_relationships:
   - name: builds
     using:
@@ -65,12 +71,11 @@ insert_permissions:
     permission:
       check: {}
       columns:
-        - name
-        - repo
         - created_at
         - id
+        - name
         - organization_id
-        - settings_id
+        - repo
       backend_only: false
   - role: user
     permission:
@@ -81,6 +86,7 @@ insert_permissions:
               kratos_id:
                 _eq: X-Hasura-User-Id
       columns:
+        - id
         - name
         - organization_id
         - repo
@@ -89,12 +95,11 @@ select_permissions:
   - role: cli
     permission:
       columns:
-        - name
-        - repo
         - created_at
         - id
+        - name
         - organization_id
-        - settings_id
+        - repo
       filter:
         project_access_tokens:
           access_token:
@@ -102,22 +107,20 @@ select_permissions:
   - role: service
     permission:
       columns:
-        - name
-        - repo
         - created_at
         - id
+        - name
         - organization_id
-        - settings_id
+        - repo
       filter: {}
   - role: user
     permission:
       columns:
-        - name
-        - repo
         - created_at
         - id
+        - name
         - organization_id
-        - settings_id
+        - repo
       filter:
         organization:
           organization_users:
@@ -128,17 +131,17 @@ update_permissions:
   - role: service
     permission:
       columns:
-        - name
-        - repo
         - created_at
         - id
+        - name
         - organization_id
-        - settings_id
+        - repo
       filter: {}
       check: {}
   - role: user
     permission:
       columns:
+        - id
         - name
         - repo
       filter:

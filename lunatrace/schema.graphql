@@ -47,13 +47,6 @@ input Int_comparison_exp {
   _nin: [Int!]
 }
 
-type PresignedUrlResponse {
-  bucket: String!
-  headers: jsonb!
-  key: String!
-  url: String!
-}
-
 type SbomUploadUrlOutput {
   error: Boolean!
   uploadUrl: UploadUrl
@@ -2167,6 +2160,23 @@ input jsonb_comparison_exp {
   _nin: [jsonb!]
 }
 
+scalar license_source
+
+"""
+Boolean expression to compare columns of type "license_source". All fields are combined with logical 'AND'.
+"""
+input license_source_comparison_exp {
+  _eq: license_source
+  _gt: license_source
+  _gte: license_source
+  _in: [license_source!]
+  _is_null: Boolean
+  _lt: license_source
+  _lte: license_source
+  _neq: license_source
+  _nin: [license_source!]
+}
+
 """
 columns and relationships of "manifests"
 """
@@ -2632,6 +2642,160 @@ type mutation_root {
   ): organizations
 
   """
+  insert data into the table: "package.package"
+  """
+  insert_package(
+    """the rows to be inserted"""
+    objects: [package_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: package_on_conflict
+  ): package_mutation_response
+
+  """
+  insert data into the table: "package.license"
+  """
+  insert_package_license(
+    """the rows to be inserted"""
+    objects: [package_license_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: package_license_on_conflict
+  ): package_license_mutation_response
+
+  """
+  insert a single row into the table: "package.license"
+  """
+  insert_package_license_one(
+    """the row to be inserted"""
+    object: package_license_insert_input!
+
+    """upsert condition"""
+    on_conflict: package_license_on_conflict
+  ): package_license
+
+  """
+  insert data into the table: "package.maintainer"
+  """
+  insert_package_maintainer(
+    """the rows to be inserted"""
+    objects: [package_maintainer_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: package_maintainer_on_conflict
+  ): package_maintainer_mutation_response
+
+  """
+  insert a single row into the table: "package.maintainer"
+  """
+  insert_package_maintainer_one(
+    """the row to be inserted"""
+    object: package_maintainer_insert_input!
+
+    """upsert condition"""
+    on_conflict: package_maintainer_on_conflict
+  ): package_maintainer
+
+  """
+  insert a single row into the table: "package.package"
+  """
+  insert_package_one(
+    """the row to be inserted"""
+    object: package_insert_input!
+
+    """upsert condition"""
+    on_conflict: package_on_conflict
+  ): package
+
+  """
+  insert data into the table: "package.package_maintainer"
+  """
+  insert_package_package_maintainer(
+    """the rows to be inserted"""
+    objects: [package_package_maintainer_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: package_package_maintainer_on_conflict
+  ): package_package_maintainer_mutation_response
+
+  """
+  insert a single row into the table: "package.package_maintainer"
+  """
+  insert_package_package_maintainer_one(
+    """the row to be inserted"""
+    object: package_package_maintainer_insert_input!
+
+    """upsert condition"""
+    on_conflict: package_package_maintainer_on_conflict
+  ): package_package_maintainer
+
+  """
+  insert data into the table: "package.release"
+  """
+  insert_package_release(
+    """the rows to be inserted"""
+    objects: [package_release_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: package_release_on_conflict
+  ): package_release_mutation_response
+
+  """
+  insert data into the table: "package.release_dependency"
+  """
+  insert_package_release_dependency(
+    """the rows to be inserted"""
+    objects: [package_release_dependency_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: package_release_dependency_on_conflict
+  ): package_release_dependency_mutation_response
+
+  """
+  insert a single row into the table: "package.release_dependency"
+  """
+  insert_package_release_dependency_one(
+    """the row to be inserted"""
+    object: package_release_dependency_insert_input!
+
+    """upsert condition"""
+    on_conflict: package_release_dependency_on_conflict
+  ): package_release_dependency
+
+  """
+  insert data into the table: "package.release_license"
+  """
+  insert_package_release_license(
+    """the rows to be inserted"""
+    objects: [package_release_license_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: package_release_license_on_conflict
+  ): package_release_license_mutation_response
+
+  """
+  insert a single row into the table: "package.release_license"
+  """
+  insert_package_release_license_one(
+    """the row to be inserted"""
+    object: package_release_license_insert_input!
+
+    """upsert condition"""
+    on_conflict: package_release_license_on_conflict
+  ): package_release_license
+
+  """
+  insert a single row into the table: "package.release"
+  """
+  insert_package_release_one(
+    """the row to be inserted"""
+    object: package_release_insert_input!
+
+    """upsert condition"""
+    on_conflict: package_release_on_conflict
+  ): package_release
+
+  """
   insert data into the table: "package_versions"
   """
   insert_package_versions(
@@ -2784,7 +2948,6 @@ type mutation_root {
     """upsert condition"""
     on_conflict: webhook_cache_on_conflict
   ): webhook_cache
-  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
 
   """
   update data of the table: "builds"
@@ -3007,6 +3170,221 @@ type mutation_root {
     _set: organizations_set_input
     pk_columns: organizations_pk_columns_input!
   ): organizations
+
+  """
+  update data of the table: "package.package"
+  """
+  update_package(
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_set_input
+
+    """filter the rows which have to be updated"""
+    where: package_bool_exp!
+  ): package_mutation_response
+
+  """
+  update single row of the table: "package.package"
+  """
+  update_package_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_set_input
+    pk_columns: package_pk_columns_input!
+  ): package
+
+  """
+  update data of the table: "package.license"
+  """
+  update_package_license(
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_license_set_input
+
+    """filter the rows which have to be updated"""
+    where: package_license_bool_exp!
+  ): package_license_mutation_response
+
+  """
+  update single row of the table: "package.license"
+  """
+  update_package_license_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_license_set_input
+    pk_columns: package_license_pk_columns_input!
+  ): package_license
+
+  """
+  update data of the table: "package.maintainer"
+  """
+  update_package_maintainer(
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_maintainer_set_input
+
+    """filter the rows which have to be updated"""
+    where: package_maintainer_bool_exp!
+  ): package_maintainer_mutation_response
+
+  """
+  update single row of the table: "package.maintainer"
+  """
+  update_package_maintainer_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_maintainer_set_input
+    pk_columns: package_maintainer_pk_columns_input!
+  ): package_maintainer
+
+  """
+  update data of the table: "package.package_maintainer"
+  """
+  update_package_package_maintainer(
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_package_maintainer_set_input
+
+    """filter the rows which have to be updated"""
+    where: package_package_maintainer_bool_exp!
+  ): package_package_maintainer_mutation_response
+
+  """
+  update data of the table: "package.release"
+  """
+  update_package_release(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: package_release_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: package_release_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: package_release_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: package_release_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: package_release_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_release_set_input
+
+    """filter the rows which have to be updated"""
+    where: package_release_bool_exp!
+  ): package_release_mutation_response
+
+  """
+  update single row of the table: "package.release"
+  """
+  update_package_release_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: package_release_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: package_release_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: package_release_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: package_release_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: package_release_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_release_set_input
+    pk_columns: package_release_pk_columns_input!
+  ): package_release
+
+  """
+  update data of the table: "package.release_dependency"
+  """
+  update_package_release_dependency(
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_release_dependency_set_input
+
+    """filter the rows which have to be updated"""
+    where: package_release_dependency_bool_exp!
+  ): package_release_dependency_mutation_response
+
+  """
+  update single row of the table: "package.release_dependency"
+  """
+  update_package_release_dependency_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_release_dependency_set_input
+    pk_columns: package_release_dependency_pk_columns_input!
+  ): package_release_dependency
+
+  """
+  update data of the table: "package.release_license"
+  """
+  update_package_release_license(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: package_release_license_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: package_release_license_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: package_release_license_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: package_release_license_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: package_release_license_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_release_license_set_input
+
+    """filter the rows which have to be updated"""
+    where: package_release_license_bool_exp!
+  ): package_release_license_mutation_response
+
+  """
+  update single row of the table: "package.release_license"
+  """
+  update_package_release_license_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: package_release_license_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: package_release_license_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: package_release_license_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: package_release_license_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: package_release_license_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: package_release_license_set_input
+    pk_columns: package_release_license_pk_columns_input!
+  ): package_release_license
 
   """
   update data of the table: "package_versions"
@@ -3454,6 +3832,9 @@ type organizations {
     """filter the rows returned"""
     where: projects_bool_exp
   ): [projects!]!
+
+  """An object relationship"""
+  settings: settings
   settings_id: uuid
 }
 
@@ -3505,6 +3886,7 @@ input organizations_bool_exp {
   name: String_comparison_exp
   organization_users: organization_user_bool_exp
   projects: projects_bool_exp
+  settings: settings_bool_exp
   settings_id: uuid_comparison_exp
 }
 
@@ -3614,6 +3996,7 @@ input organizations_order_by {
   name: order_by
   organization_users_aggregate: organization_user_aggregate_order_by
   projects_aggregate: projects_aggregate_order_by
+  settings: settings_order_by
   settings_id: order_by
 }
 
@@ -3738,6 +4121,1428 @@ type organizations_var_samp_fields {
 type organizations_variance_fields {
   github_id: Float
   installation_id: Float
+}
+
+"""
+columns and relationships of "package.package"
+"""
+type package {
+  custom_registry: String
+  description: String
+  id: uuid!
+  name: String!
+
+  """An array relationship"""
+  package_maintainers(
+    """distinct select on columns"""
+    distinct_on: [package_package_maintainer_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_package_maintainer_order_by!]
+
+    """filter the rows returned"""
+    where: package_package_maintainer_bool_exp
+  ): [package_package_maintainer!]!
+  package_manager: package_manager!
+
+  """An array relationship"""
+  releases(
+    """distinct select on columns"""
+    distinct_on: [package_release_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_bool_exp
+  ): [package_release!]!
+}
+
+"""
+Boolean expression to filter rows from the table "package.package". All fields are combined with a logical 'AND'.
+"""
+input package_bool_exp {
+  _and: [package_bool_exp!]
+  _not: package_bool_exp
+  _or: [package_bool_exp!]
+  custom_registry: String_comparison_exp
+  description: String_comparison_exp
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+  package_maintainers: package_package_maintainer_bool_exp
+  package_manager: package_manager_comparison_exp
+  releases: package_release_bool_exp
+}
+
+"""
+unique or primary key constraints on table "package.package"
+"""
+enum package_constraint {
+  """unique or primary key constraint"""
+  package_package_manager_custom_registry_name_idx
+
+  """unique or primary key constraint"""
+  package_pkey
+}
+
+"""
+input type for inserting data into table "package.package"
+"""
+input package_insert_input {
+  custom_registry: String
+  description: String
+  id: uuid
+  name: String
+  package_maintainers: package_package_maintainer_arr_rel_insert_input
+  package_manager: package_manager
+  releases: package_release_arr_rel_insert_input
+}
+
+"""
+columns and relationships of "package.license"
+"""
+type package_license {
+  id: uuid!
+  name: String!
+
+  """An array relationship"""
+  release_licenses(
+    """distinct select on columns"""
+    distinct_on: [package_release_license_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_license_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_license_bool_exp
+  ): [package_release_license!]!
+}
+
+"""
+Boolean expression to filter rows from the table "package.license". All fields are combined with a logical 'AND'.
+"""
+input package_license_bool_exp {
+  _and: [package_license_bool_exp!]
+  _not: package_license_bool_exp
+  _or: [package_license_bool_exp!]
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+  release_licenses: package_release_license_bool_exp
+}
+
+"""
+unique or primary key constraints on table "package.license"
+"""
+enum package_license_constraint {
+  """unique or primary key constraint"""
+  license_name_idx
+
+  """unique or primary key constraint"""
+  license_pkey
+}
+
+"""
+input type for inserting data into table "package.license"
+"""
+input package_license_insert_input {
+  id: uuid
+  name: String
+  release_licenses: package_release_license_arr_rel_insert_input
+}
+
+"""
+response of any mutation on the table "package.license"
+"""
+type package_license_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [package_license!]!
+}
+
+"""
+input type for inserting object relation for remote table "package.license"
+"""
+input package_license_obj_rel_insert_input {
+  data: package_license_insert_input!
+
+  """upsert condition"""
+  on_conflict: package_license_on_conflict
+}
+
+"""
+on_conflict condition type for table "package.license"
+"""
+input package_license_on_conflict {
+  constraint: package_license_constraint!
+  update_columns: [package_license_update_column!]! = []
+  where: package_license_bool_exp
+}
+
+"""Ordering options when selecting data from "package.license"."""
+input package_license_order_by {
+  id: order_by
+  name: order_by
+  release_licenses_aggregate: package_release_license_aggregate_order_by
+}
+
+"""primary key columns input for table: package_license"""
+input package_license_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "package.license"
+"""
+enum package_license_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  name
+}
+
+"""
+input type for updating data in table "package.license"
+"""
+input package_license_set_input {
+  id: uuid
+  name: String
+}
+
+"""
+update columns of table "package.license"
+"""
+enum package_license_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  name
+}
+
+"""
+columns and relationships of "package.maintainer"
+"""
+type package_maintainer {
+  email: String!
+  id: uuid!
+  name: String
+
+  """An array relationship"""
+  package_maintainers(
+    """distinct select on columns"""
+    distinct_on: [package_package_maintainer_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_package_maintainer_order_by!]
+
+    """filter the rows returned"""
+    where: package_package_maintainer_bool_exp
+  ): [package_package_maintainer!]!
+  package_manager: package_manager
+
+  """An array relationship"""
+  published_releases(
+    """distinct select on columns"""
+    distinct_on: [package_release_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_bool_exp
+  ): [package_release!]!
+}
+
+"""
+Boolean expression to filter rows from the table "package.maintainer". All fields are combined with a logical 'AND'.
+"""
+input package_maintainer_bool_exp {
+  _and: [package_maintainer_bool_exp!]
+  _not: package_maintainer_bool_exp
+  _or: [package_maintainer_bool_exp!]
+  email: String_comparison_exp
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+  package_maintainers: package_package_maintainer_bool_exp
+  package_manager: package_manager_comparison_exp
+  published_releases: package_release_bool_exp
+}
+
+"""
+unique or primary key constraints on table "package.maintainer"
+"""
+enum package_maintainer_constraint {
+  """unique or primary key constraint"""
+  maintainer_package_manager_email_idx
+
+  """unique or primary key constraint"""
+  maintainer_pkey
+}
+
+"""
+input type for inserting data into table "package.maintainer"
+"""
+input package_maintainer_insert_input {
+  email: String
+  id: uuid
+  name: String
+  package_maintainers: package_package_maintainer_arr_rel_insert_input
+  package_manager: package_manager
+  published_releases: package_release_arr_rel_insert_input
+}
+
+"""
+response of any mutation on the table "package.maintainer"
+"""
+type package_maintainer_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [package_maintainer!]!
+}
+
+"""
+input type for inserting object relation for remote table "package.maintainer"
+"""
+input package_maintainer_obj_rel_insert_input {
+  data: package_maintainer_insert_input!
+
+  """upsert condition"""
+  on_conflict: package_maintainer_on_conflict
+}
+
+"""
+on_conflict condition type for table "package.maintainer"
+"""
+input package_maintainer_on_conflict {
+  constraint: package_maintainer_constraint!
+  update_columns: [package_maintainer_update_column!]! = []
+  where: package_maintainer_bool_exp
+}
+
+"""Ordering options when selecting data from "package.maintainer"."""
+input package_maintainer_order_by {
+  email: order_by
+  id: order_by
+  name: order_by
+  package_maintainers_aggregate: package_package_maintainer_aggregate_order_by
+  package_manager: order_by
+  published_releases_aggregate: package_release_aggregate_order_by
+}
+
+"""primary key columns input for table: package_maintainer"""
+input package_maintainer_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "package.maintainer"
+"""
+enum package_maintainer_select_column {
+  """column name"""
+  email
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  package_manager
+}
+
+"""
+input type for updating data in table "package.maintainer"
+"""
+input package_maintainer_set_input {
+  email: String
+  id: uuid
+  name: String
+  package_manager: package_manager
+}
+
+"""
+update columns of table "package.maintainer"
+"""
+enum package_maintainer_update_column {
+  """column name"""
+  email
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  package_manager
+}
+
+scalar package_manager
+
+"""
+Boolean expression to compare columns of type "package_manager". All fields are combined with logical 'AND'.
+"""
+input package_manager_comparison_exp {
+  _eq: package_manager
+  _gt: package_manager
+  _gte: package_manager
+  _in: [package_manager!]
+  _is_null: Boolean
+  _lt: package_manager
+  _lte: package_manager
+  _neq: package_manager
+  _nin: [package_manager!]
+}
+
+"""
+response of any mutation on the table "package.package"
+"""
+type package_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [package!]!
+}
+
+"""
+input type for inserting object relation for remote table "package.package"
+"""
+input package_obj_rel_insert_input {
+  data: package_insert_input!
+
+  """upsert condition"""
+  on_conflict: package_on_conflict
+}
+
+"""
+on_conflict condition type for table "package.package"
+"""
+input package_on_conflict {
+  constraint: package_constraint!
+  update_columns: [package_update_column!]! = []
+  where: package_bool_exp
+}
+
+"""Ordering options when selecting data from "package.package"."""
+input package_order_by {
+  custom_registry: order_by
+  description: order_by
+  id: order_by
+  name: order_by
+  package_maintainers_aggregate: package_package_maintainer_aggregate_order_by
+  package_manager: order_by
+  releases_aggregate: package_release_aggregate_order_by
+}
+
+"""
+columns and relationships of "package.package_maintainer"
+"""
+type package_package_maintainer {
+  """An object relationship"""
+  maintainer: package_maintainer
+  maintainer_id: uuid
+
+  """An object relationship"""
+  package: package
+  package_id: uuid
+}
+
+"""
+order by aggregate values of table "package.package_maintainer"
+"""
+input package_package_maintainer_aggregate_order_by {
+  count: order_by
+  max: package_package_maintainer_max_order_by
+  min: package_package_maintainer_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "package.package_maintainer"
+"""
+input package_package_maintainer_arr_rel_insert_input {
+  data: [package_package_maintainer_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: package_package_maintainer_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "package.package_maintainer". All fields are combined with a logical 'AND'.
+"""
+input package_package_maintainer_bool_exp {
+  _and: [package_package_maintainer_bool_exp!]
+  _not: package_package_maintainer_bool_exp
+  _or: [package_package_maintainer_bool_exp!]
+  maintainer: package_maintainer_bool_exp
+  maintainer_id: uuid_comparison_exp
+  package: package_bool_exp
+  package_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "package.package_maintainer"
+"""
+enum package_package_maintainer_constraint {
+  """unique or primary key constraint"""
+  package_maintainer_package_id_maintainer_id_idx
+}
+
+"""
+input type for inserting data into table "package.package_maintainer"
+"""
+input package_package_maintainer_insert_input {
+  maintainer: package_maintainer_obj_rel_insert_input
+  maintainer_id: uuid
+  package: package_obj_rel_insert_input
+  package_id: uuid
+}
+
+"""
+order by max() on columns of table "package.package_maintainer"
+"""
+input package_package_maintainer_max_order_by {
+  maintainer_id: order_by
+  package_id: order_by
+}
+
+"""
+order by min() on columns of table "package.package_maintainer"
+"""
+input package_package_maintainer_min_order_by {
+  maintainer_id: order_by
+  package_id: order_by
+}
+
+"""
+response of any mutation on the table "package.package_maintainer"
+"""
+type package_package_maintainer_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [package_package_maintainer!]!
+}
+
+"""
+on_conflict condition type for table "package.package_maintainer"
+"""
+input package_package_maintainer_on_conflict {
+  constraint: package_package_maintainer_constraint!
+  update_columns: [package_package_maintainer_update_column!]! = []
+  where: package_package_maintainer_bool_exp
+}
+
+"""
+Ordering options when selecting data from "package.package_maintainer".
+"""
+input package_package_maintainer_order_by {
+  maintainer: package_maintainer_order_by
+  maintainer_id: order_by
+  package: package_order_by
+  package_id: order_by
+}
+
+"""
+select columns of table "package.package_maintainer"
+"""
+enum package_package_maintainer_select_column {
+  """column name"""
+  maintainer_id
+
+  """column name"""
+  package_id
+}
+
+"""
+input type for updating data in table "package.package_maintainer"
+"""
+input package_package_maintainer_set_input {
+  maintainer_id: uuid
+  package_id: uuid
+}
+
+"""
+update columns of table "package.package_maintainer"
+"""
+enum package_package_maintainer_update_column {
+  """column name"""
+  maintainer_id
+
+  """column name"""
+  package_id
+}
+
+"""primary key columns input for table: package"""
+input package_pk_columns_input {
+  id: uuid!
+}
+
+"""
+columns and relationships of "package.release"
+"""
+type package_release {
+  blob_hash: String
+  id: uuid!
+  mirrored_blob_url: String
+  observed_time: timestamptz!
+
+  """An object relationship"""
+  package: package
+  package_id: uuid
+
+  """An object relationship"""
+  publishing_maintainer: package_maintainer
+  publishing_maintainer_id: uuid
+
+  """An array relationship"""
+  release_dependencies(
+    """distinct select on columns"""
+    distinct_on: [package_release_dependency_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_dependency_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_dependency_bool_exp
+  ): [package_release_dependency!]!
+
+  """An array relationship"""
+  release_dependents(
+    """distinct select on columns"""
+    distinct_on: [package_release_dependency_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_dependency_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_dependency_bool_exp
+  ): [package_release_dependency!]!
+
+  """An array relationship"""
+  release_licenses(
+    """distinct select on columns"""
+    distinct_on: [package_release_license_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_license_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_license_bool_exp
+  ): [package_release_license!]!
+  release_time: timestamptz
+  upstream_blob_url: String
+  upstream_data(
+    """JSON select path"""
+    path: String
+  ): jsonb
+  version: String!
+}
+
+"""
+order by aggregate values of table "package.release"
+"""
+input package_release_aggregate_order_by {
+  count: order_by
+  max: package_release_max_order_by
+  min: package_release_min_order_by
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input package_release_append_input {
+  upstream_data: jsonb
+}
+
+"""
+input type for inserting array relation for remote table "package.release"
+"""
+input package_release_arr_rel_insert_input {
+  data: [package_release_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: package_release_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "package.release". All fields are combined with a logical 'AND'.
+"""
+input package_release_bool_exp {
+  _and: [package_release_bool_exp!]
+  _not: package_release_bool_exp
+  _or: [package_release_bool_exp!]
+  blob_hash: String_comparison_exp
+  id: uuid_comparison_exp
+  mirrored_blob_url: String_comparison_exp
+  observed_time: timestamptz_comparison_exp
+  package: package_bool_exp
+  package_id: uuid_comparison_exp
+  publishing_maintainer: package_maintainer_bool_exp
+  publishing_maintainer_id: uuid_comparison_exp
+  release_dependencies: package_release_dependency_bool_exp
+  release_dependents: package_release_dependency_bool_exp
+  release_licenses: package_release_license_bool_exp
+  release_time: timestamptz_comparison_exp
+  upstream_blob_url: String_comparison_exp
+  upstream_data: jsonb_comparison_exp
+  version: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "package.release"
+"""
+enum package_release_constraint {
+  """unique or primary key constraint"""
+  release_package_id_version_idx
+
+  """unique or primary key constraint"""
+  release_pkey
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input package_release_delete_at_path_input {
+  upstream_data: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input package_release_delete_elem_input {
+  upstream_data: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input package_release_delete_key_input {
+  upstream_data: String
+}
+
+"""
+columns and relationships of "package.release_dependency"
+"""
+type package_release_dependency {
+  """An object relationship"""
+  dependency_package: package
+  dependency_package_id: uuid
+
+  """An object relationship"""
+  dependency_release: package_release
+  dependency_release_id: uuid
+  id: uuid!
+  package_name: String!
+  package_version_query: String!
+
+  """An object relationship"""
+  release: package_release!
+  release_id: uuid!
+}
+
+"""
+order by aggregate values of table "package.release_dependency"
+"""
+input package_release_dependency_aggregate_order_by {
+  count: order_by
+  max: package_release_dependency_max_order_by
+  min: package_release_dependency_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "package.release_dependency"
+"""
+input package_release_dependency_arr_rel_insert_input {
+  data: [package_release_dependency_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: package_release_dependency_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "package.release_dependency". All fields are combined with a logical 'AND'.
+"""
+input package_release_dependency_bool_exp {
+  _and: [package_release_dependency_bool_exp!]
+  _not: package_release_dependency_bool_exp
+  _or: [package_release_dependency_bool_exp!]
+  dependency_package: package_bool_exp
+  dependency_package_id: uuid_comparison_exp
+  dependency_release: package_release_bool_exp
+  dependency_release_id: uuid_comparison_exp
+  id: uuid_comparison_exp
+  package_name: String_comparison_exp
+  package_version_query: String_comparison_exp
+  release: package_release_bool_exp
+  release_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "package.release_dependency"
+"""
+enum package_release_dependency_constraint {
+  """unique or primary key constraint"""
+  release_dependency_pkey
+
+  """unique or primary key constraint"""
+  release_dependency_release_id_package_name_package_version__idx
+}
+
+"""
+input type for inserting data into table "package.release_dependency"
+"""
+input package_release_dependency_insert_input {
+  dependency_package: package_obj_rel_insert_input
+  dependency_package_id: uuid
+  dependency_release: package_release_obj_rel_insert_input
+  dependency_release_id: uuid
+  id: uuid
+  package_name: String
+  package_version_query: String
+  release: package_release_obj_rel_insert_input
+  release_id: uuid
+}
+
+"""
+order by max() on columns of table "package.release_dependency"
+"""
+input package_release_dependency_max_order_by {
+  dependency_package_id: order_by
+  dependency_release_id: order_by
+  id: order_by
+  package_name: order_by
+  package_version_query: order_by
+  release_id: order_by
+}
+
+"""
+order by min() on columns of table "package.release_dependency"
+"""
+input package_release_dependency_min_order_by {
+  dependency_package_id: order_by
+  dependency_release_id: order_by
+  id: order_by
+  package_name: order_by
+  package_version_query: order_by
+  release_id: order_by
+}
+
+"""
+response of any mutation on the table "package.release_dependency"
+"""
+type package_release_dependency_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [package_release_dependency!]!
+}
+
+"""
+on_conflict condition type for table "package.release_dependency"
+"""
+input package_release_dependency_on_conflict {
+  constraint: package_release_dependency_constraint!
+  update_columns: [package_release_dependency_update_column!]! = []
+  where: package_release_dependency_bool_exp
+}
+
+"""
+Ordering options when selecting data from "package.release_dependency".
+"""
+input package_release_dependency_order_by {
+  dependency_package: package_order_by
+  dependency_package_id: order_by
+  dependency_release: package_release_order_by
+  dependency_release_id: order_by
+  id: order_by
+  package_name: order_by
+  package_version_query: order_by
+  release: package_release_order_by
+  release_id: order_by
+}
+
+"""primary key columns input for table: package_release_dependency"""
+input package_release_dependency_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "package.release_dependency"
+"""
+enum package_release_dependency_select_column {
+  """column name"""
+  dependency_package_id
+
+  """column name"""
+  dependency_release_id
+
+  """column name"""
+  id
+
+  """column name"""
+  package_name
+
+  """column name"""
+  package_version_query
+
+  """column name"""
+  release_id
+}
+
+"""
+input type for updating data in table "package.release_dependency"
+"""
+input package_release_dependency_set_input {
+  dependency_package_id: uuid
+  dependency_release_id: uuid
+  id: uuid
+  package_name: String
+  package_version_query: String
+  release_id: uuid
+}
+
+"""
+update columns of table "package.release_dependency"
+"""
+enum package_release_dependency_update_column {
+  """column name"""
+  dependency_package_id
+
+  """column name"""
+  dependency_release_id
+
+  """column name"""
+  id
+
+  """column name"""
+  package_name
+
+  """column name"""
+  package_version_query
+
+  """column name"""
+  release_id
+}
+
+"""
+input type for inserting data into table "package.release"
+"""
+input package_release_insert_input {
+  blob_hash: String
+  id: uuid
+  mirrored_blob_url: String
+  observed_time: timestamptz
+  package: package_obj_rel_insert_input
+  package_id: uuid
+  publishing_maintainer: package_maintainer_obj_rel_insert_input
+  publishing_maintainer_id: uuid
+  release_dependencies: package_release_dependency_arr_rel_insert_input
+  release_dependents: package_release_dependency_arr_rel_insert_input
+  release_licenses: package_release_license_arr_rel_insert_input
+  release_time: timestamptz
+  upstream_blob_url: String
+  upstream_data: jsonb
+  version: String
+}
+
+"""
+columns and relationships of "package.release_license"
+"""
+type package_release_license {
+  id: uuid!
+
+  """An object relationship"""
+  license: package_license!
+  license_id: uuid!
+  release_id: uuid!
+  scan_metadata(
+    """JSON select path"""
+    path: String
+  ): jsonb
+  scan_time: timestamptz!
+  source: license_source!
+}
+
+"""
+order by aggregate values of table "package.release_license"
+"""
+input package_release_license_aggregate_order_by {
+  count: order_by
+  max: package_release_license_max_order_by
+  min: package_release_license_min_order_by
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input package_release_license_append_input {
+  scan_metadata: jsonb
+}
+
+"""
+input type for inserting array relation for remote table "package.release_license"
+"""
+input package_release_license_arr_rel_insert_input {
+  data: [package_release_license_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: package_release_license_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "package.release_license". All fields are combined with a logical 'AND'.
+"""
+input package_release_license_bool_exp {
+  _and: [package_release_license_bool_exp!]
+  _not: package_release_license_bool_exp
+  _or: [package_release_license_bool_exp!]
+  id: uuid_comparison_exp
+  license: package_license_bool_exp
+  license_id: uuid_comparison_exp
+  release_id: uuid_comparison_exp
+  scan_metadata: jsonb_comparison_exp
+  scan_time: timestamptz_comparison_exp
+  source: license_source_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "package.release_license"
+"""
+enum package_release_license_constraint {
+  """unique or primary key constraint"""
+  release_license_pkey
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input package_release_license_delete_at_path_input {
+  scan_metadata: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input package_release_license_delete_elem_input {
+  scan_metadata: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input package_release_license_delete_key_input {
+  scan_metadata: String
+}
+
+"""
+input type for inserting data into table "package.release_license"
+"""
+input package_release_license_insert_input {
+  id: uuid
+  license: package_license_obj_rel_insert_input
+  license_id: uuid
+  release_id: uuid
+  scan_metadata: jsonb
+  scan_time: timestamptz
+  source: license_source
+}
+
+"""
+order by max() on columns of table "package.release_license"
+"""
+input package_release_license_max_order_by {
+  id: order_by
+  license_id: order_by
+  release_id: order_by
+  scan_time: order_by
+}
+
+"""
+order by min() on columns of table "package.release_license"
+"""
+input package_release_license_min_order_by {
+  id: order_by
+  license_id: order_by
+  release_id: order_by
+  scan_time: order_by
+}
+
+"""
+response of any mutation on the table "package.release_license"
+"""
+type package_release_license_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [package_release_license!]!
+}
+
+"""
+on_conflict condition type for table "package.release_license"
+"""
+input package_release_license_on_conflict {
+  constraint: package_release_license_constraint!
+  update_columns: [package_release_license_update_column!]! = []
+  where: package_release_license_bool_exp
+}
+
+"""Ordering options when selecting data from "package.release_license"."""
+input package_release_license_order_by {
+  id: order_by
+  license: package_license_order_by
+  license_id: order_by
+  release_id: order_by
+  scan_metadata: order_by
+  scan_time: order_by
+  source: order_by
+}
+
+"""primary key columns input for table: package_release_license"""
+input package_release_license_pk_columns_input {
+  id: uuid!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input package_release_license_prepend_input {
+  scan_metadata: jsonb
+}
+
+"""
+select columns of table "package.release_license"
+"""
+enum package_release_license_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  license_id
+
+  """column name"""
+  release_id
+
+  """column name"""
+  scan_metadata
+
+  """column name"""
+  scan_time
+
+  """column name"""
+  source
+}
+
+"""
+input type for updating data in table "package.release_license"
+"""
+input package_release_license_set_input {
+  id: uuid
+  license_id: uuid
+  release_id: uuid
+  scan_metadata: jsonb
+  scan_time: timestamptz
+  source: license_source
+}
+
+"""
+update columns of table "package.release_license"
+"""
+enum package_release_license_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  license_id
+
+  """column name"""
+  release_id
+
+  """column name"""
+  scan_metadata
+
+  """column name"""
+  scan_time
+
+  """column name"""
+  source
+}
+
+"""
+order by max() on columns of table "package.release"
+"""
+input package_release_max_order_by {
+  blob_hash: order_by
+  id: order_by
+  mirrored_blob_url: order_by
+  observed_time: order_by
+  package_id: order_by
+  publishing_maintainer_id: order_by
+  release_time: order_by
+  upstream_blob_url: order_by
+  version: order_by
+}
+
+"""
+order by min() on columns of table "package.release"
+"""
+input package_release_min_order_by {
+  blob_hash: order_by
+  id: order_by
+  mirrored_blob_url: order_by
+  observed_time: order_by
+  package_id: order_by
+  publishing_maintainer_id: order_by
+  release_time: order_by
+  upstream_blob_url: order_by
+  version: order_by
+}
+
+"""
+response of any mutation on the table "package.release"
+"""
+type package_release_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [package_release!]!
+}
+
+"""
+input type for inserting object relation for remote table "package.release"
+"""
+input package_release_obj_rel_insert_input {
+  data: package_release_insert_input!
+
+  """upsert condition"""
+  on_conflict: package_release_on_conflict
+}
+
+"""
+on_conflict condition type for table "package.release"
+"""
+input package_release_on_conflict {
+  constraint: package_release_constraint!
+  update_columns: [package_release_update_column!]! = []
+  where: package_release_bool_exp
+}
+
+"""Ordering options when selecting data from "package.release"."""
+input package_release_order_by {
+  blob_hash: order_by
+  id: order_by
+  mirrored_blob_url: order_by
+  observed_time: order_by
+  package: package_order_by
+  package_id: order_by
+  publishing_maintainer: package_maintainer_order_by
+  publishing_maintainer_id: order_by
+  release_dependencies_aggregate: package_release_dependency_aggregate_order_by
+  release_dependents_aggregate: package_release_dependency_aggregate_order_by
+  release_licenses_aggregate: package_release_license_aggregate_order_by
+  release_time: order_by
+  upstream_blob_url: order_by
+  upstream_data: order_by
+  version: order_by
+}
+
+"""primary key columns input for table: package_release"""
+input package_release_pk_columns_input {
+  id: uuid!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input package_release_prepend_input {
+  upstream_data: jsonb
+}
+
+"""
+select columns of table "package.release"
+"""
+enum package_release_select_column {
+  """column name"""
+  blob_hash
+
+  """column name"""
+  id
+
+  """column name"""
+  mirrored_blob_url
+
+  """column name"""
+  observed_time
+
+  """column name"""
+  package_id
+
+  """column name"""
+  publishing_maintainer_id
+
+  """column name"""
+  release_time
+
+  """column name"""
+  upstream_blob_url
+
+  """column name"""
+  upstream_data
+
+  """column name"""
+  version
+}
+
+"""
+input type for updating data in table "package.release"
+"""
+input package_release_set_input {
+  blob_hash: String
+  id: uuid
+  mirrored_blob_url: String
+  observed_time: timestamptz
+  package_id: uuid
+  publishing_maintainer_id: uuid
+  release_time: timestamptz
+  upstream_blob_url: String
+  upstream_data: jsonb
+  version: String
+}
+
+"""
+update columns of table "package.release"
+"""
+enum package_release_update_column {
+  """column name"""
+  blob_hash
+
+  """column name"""
+  id
+
+  """column name"""
+  mirrored_blob_url
+
+  """column name"""
+  observed_time
+
+  """column name"""
+  package_id
+
+  """column name"""
+  publishing_maintainer_id
+
+  """column name"""
+  release_time
+
+  """column name"""
+  upstream_blob_url
+
+  """column name"""
+  upstream_data
+
+  """column name"""
+  version
+}
+
+"""
+select columns of table "package.package"
+"""
+enum package_select_column {
+  """column name"""
+  custom_registry
+
+  """column name"""
+  description
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  package_manager
+}
+
+"""
+input type for updating data in table "package.package"
+"""
+input package_set_input {
+  custom_registry: String
+  description: String
+  id: uuid
+  name: String
+  package_manager: package_manager
+}
+
+"""
+update columns of table "package.package"
+"""
+enum package_update_column {
+  """column name"""
+  custom_registry
+
+  """column name"""
+  description
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  package_manager
 }
 
 """
@@ -4151,6 +5956,9 @@ type projects {
     """filter the rows returned"""
     where: project_access_tokens_bool_exp
   ): [project_access_tokens!]!
+
+  """An object relationship"""
+  settings: settings
   settings_id: uuid
 }
 
@@ -4193,6 +6001,7 @@ input projects_bool_exp {
   project_access_tokens: project_access_tokens_bool_exp
   repo: String_comparison_exp
   reports: project_access_tokens_bool_exp
+  settings: settings_bool_exp
   settings_id: uuid_comparison_exp
 }
 
@@ -4293,6 +6102,7 @@ input projects_order_by {
   project_access_tokens_aggregate: project_access_tokens_aggregate_order_by
   repo: order_by
   reports_aggregate: project_access_tokens_aggregate_order_by
+  settings: settings_order_by
   settings_id: order_by
 }
 
@@ -4629,6 +6439,170 @@ type query_root {
   """fetch data from the table: "organizations" using primary key columns"""
   organizations_by_pk(id: uuid!): organizations
 
+  """
+  fetch data from the table: "package.package"
+  """
+  package(
+    """distinct select on columns"""
+    distinct_on: [package_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_order_by!]
+
+    """filter the rows returned"""
+    where: package_bool_exp
+  ): [package!]!
+
+  """fetch data from the table: "package.package" using primary key columns"""
+  package_by_pk(id: uuid!): package
+
+  """
+  fetch data from the table: "package.license"
+  """
+  package_license(
+    """distinct select on columns"""
+    distinct_on: [package_license_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_license_order_by!]
+
+    """filter the rows returned"""
+    where: package_license_bool_exp
+  ): [package_license!]!
+
+  """fetch data from the table: "package.license" using primary key columns"""
+  package_license_by_pk(id: uuid!): package_license
+
+  """
+  fetch data from the table: "package.maintainer"
+  """
+  package_maintainer(
+    """distinct select on columns"""
+    distinct_on: [package_maintainer_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_maintainer_order_by!]
+
+    """filter the rows returned"""
+    where: package_maintainer_bool_exp
+  ): [package_maintainer!]!
+
+  """
+  fetch data from the table: "package.maintainer" using primary key columns
+  """
+  package_maintainer_by_pk(id: uuid!): package_maintainer
+
+  """
+  fetch data from the table: "package.package_maintainer"
+  """
+  package_package_maintainer(
+    """distinct select on columns"""
+    distinct_on: [package_package_maintainer_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_package_maintainer_order_by!]
+
+    """filter the rows returned"""
+    where: package_package_maintainer_bool_exp
+  ): [package_package_maintainer!]!
+
+  """
+  fetch data from the table: "package.release"
+  """
+  package_release(
+    """distinct select on columns"""
+    distinct_on: [package_release_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_bool_exp
+  ): [package_release!]!
+
+  """fetch data from the table: "package.release" using primary key columns"""
+  package_release_by_pk(id: uuid!): package_release
+
+  """
+  fetch data from the table: "package.release_dependency"
+  """
+  package_release_dependency(
+    """distinct select on columns"""
+    distinct_on: [package_release_dependency_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_dependency_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_dependency_bool_exp
+  ): [package_release_dependency!]!
+
+  """
+  fetch data from the table: "package.release_dependency" using primary key columns
+  """
+  package_release_dependency_by_pk(id: uuid!): package_release_dependency
+
+  """
+  fetch data from the table: "package.release_license"
+  """
+  package_release_license(
+    """distinct select on columns"""
+    distinct_on: [package_release_license_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_license_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_license_bool_exp
+  ): [package_release_license!]!
+
+  """
+  fetch data from the table: "package.release_license" using primary key columns
+  """
+  package_release_license_by_pk(id: uuid!): package_release_license
+
   """An array relationship"""
   package_versions(
     """distinct select on columns"""
@@ -4741,6 +6715,29 @@ type query_root {
 
   """fetch data from the table: "scans" using primary key columns"""
   scans_by_pk(id: uuid!): scans
+
+  """
+  fetch data from the table: "settings"
+  """
+  settings(
+    """distinct select on columns"""
+    distinct_on: [settings_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [settings_order_by!]
+
+    """filter the rows returned"""
+    where: settings_bool_exp
+  ): [settings!]!
+
+  """fetch data from the table: "settings" using primary key columns"""
+  settings_by_pk(id: uuid!): settings
 
   """
   fetch data from the table: "users"
@@ -5280,6 +7277,58 @@ input scans_variance_order_by {
   scan_number: order_by
 }
 
+"""
+columns and relationships of "settings"
+"""
+type settings {
+  created_at: timestamp!
+  id: uuid!
+
+  """An object relationship"""
+  organization: organizations
+  pr_feedback_disabled: Boolean
+
+  """An object relationship"""
+  project: projects
+}
+
+"""
+Boolean expression to filter rows from the table "settings". All fields are combined with a logical 'AND'.
+"""
+input settings_bool_exp {
+  _and: [settings_bool_exp!]
+  _not: settings_bool_exp
+  _or: [settings_bool_exp!]
+  created_at: timestamp_comparison_exp
+  id: uuid_comparison_exp
+  organization: organizations_bool_exp
+  pr_feedback_disabled: Boolean_comparison_exp
+  project: projects_bool_exp
+}
+
+"""Ordering options when selecting data from "settings"."""
+input settings_order_by {
+  created_at: order_by
+  id: order_by
+  organization: organizations_order_by
+  pr_feedback_disabled: order_by
+  project: projects_order_by
+}
+
+"""
+select columns of table "settings"
+"""
+enum settings_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  pr_feedback_disabled
+}
+
 scalar severity_enum
 
 """
@@ -5564,6 +7613,170 @@ type subscription_root {
   """fetch data from the table: "organizations" using primary key columns"""
   organizations_by_pk(id: uuid!): organizations
 
+  """
+  fetch data from the table: "package.package"
+  """
+  package(
+    """distinct select on columns"""
+    distinct_on: [package_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_order_by!]
+
+    """filter the rows returned"""
+    where: package_bool_exp
+  ): [package!]!
+
+  """fetch data from the table: "package.package" using primary key columns"""
+  package_by_pk(id: uuid!): package
+
+  """
+  fetch data from the table: "package.license"
+  """
+  package_license(
+    """distinct select on columns"""
+    distinct_on: [package_license_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_license_order_by!]
+
+    """filter the rows returned"""
+    where: package_license_bool_exp
+  ): [package_license!]!
+
+  """fetch data from the table: "package.license" using primary key columns"""
+  package_license_by_pk(id: uuid!): package_license
+
+  """
+  fetch data from the table: "package.maintainer"
+  """
+  package_maintainer(
+    """distinct select on columns"""
+    distinct_on: [package_maintainer_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_maintainer_order_by!]
+
+    """filter the rows returned"""
+    where: package_maintainer_bool_exp
+  ): [package_maintainer!]!
+
+  """
+  fetch data from the table: "package.maintainer" using primary key columns
+  """
+  package_maintainer_by_pk(id: uuid!): package_maintainer
+
+  """
+  fetch data from the table: "package.package_maintainer"
+  """
+  package_package_maintainer(
+    """distinct select on columns"""
+    distinct_on: [package_package_maintainer_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_package_maintainer_order_by!]
+
+    """filter the rows returned"""
+    where: package_package_maintainer_bool_exp
+  ): [package_package_maintainer!]!
+
+  """
+  fetch data from the table: "package.release"
+  """
+  package_release(
+    """distinct select on columns"""
+    distinct_on: [package_release_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_bool_exp
+  ): [package_release!]!
+
+  """fetch data from the table: "package.release" using primary key columns"""
+  package_release_by_pk(id: uuid!): package_release
+
+  """
+  fetch data from the table: "package.release_dependency"
+  """
+  package_release_dependency(
+    """distinct select on columns"""
+    distinct_on: [package_release_dependency_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_dependency_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_dependency_bool_exp
+  ): [package_release_dependency!]!
+
+  """
+  fetch data from the table: "package.release_dependency" using primary key columns
+  """
+  package_release_dependency_by_pk(id: uuid!): package_release_dependency
+
+  """
+  fetch data from the table: "package.release_license"
+  """
+  package_release_license(
+    """distinct select on columns"""
+    distinct_on: [package_release_license_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_release_license_order_by!]
+
+    """filter the rows returned"""
+    where: package_release_license_bool_exp
+  ): [package_release_license!]!
+
+  """
+  fetch data from the table: "package.release_license" using primary key columns
+  """
+  package_release_license_by_pk(id: uuid!): package_release_license
+
   """An array relationship"""
   package_versions(
     """distinct select on columns"""
@@ -5674,6 +7887,29 @@ type subscription_root {
 
   """fetch data from the table: "scans" using primary key columns"""
   scans_by_pk(id: uuid!): scans
+
+  """
+  fetch data from the table: "settings"
+  """
+  settings(
+    """distinct select on columns"""
+    distinct_on: [settings_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [settings_order_by!]
+
+    """filter the rows returned"""
+    where: settings_bool_exp
+  ): [settings!]!
+
+  """fetch data from the table: "settings" using primary key columns"""
+  settings_by_pk(id: uuid!): settings
 
   """
   fetch data from the table: "users"

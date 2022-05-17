@@ -5,9 +5,6 @@ object_relationships:
   - name: creator
     using:
       foreign_key_constraint_on: creator_id
-  - name: settings
-    using:
-      foreign_key_constraint_on: settings_id
 array_relationships:
   - name: organization_users
     using:
@@ -36,7 +33,6 @@ insert_permissions:
         - id
         - installation_id
         - name
-        - settings_id
       backend_only: false
   - role: user
     permission:
@@ -50,23 +46,21 @@ select_permissions:
   - role: service
     permission:
       columns:
-        - name
-        - github_id
-        - github_node_id
-        - installation_id
         - createdAt
         - creator_id
+        - github_id
+        - github_node_id
         - id
-        - settings_id
+        - installation_id
+        - name
       filter: {}
       allow_aggregations: true
   - role: user
     permission:
       columns:
+        - createdAt
         - id
         - name
-        - createdAt
-        - settings_id
       filter:
         organization_users:
           user:
@@ -84,6 +78,5 @@ update_permissions:
         - id
         - installation_id
         - name
-        - settings_id
       filter: {}
       check: {}

@@ -1,0 +1,5 @@
+mutation UpsertProjectSettings($settings: [settings_insert_input!]!, $update_columns: [settings_update_column!]!) {
+  insert_settings(objects: $settings, on_conflict: {constraint: settings_project_id_key, update_columns: $update_columns}) {
+    affected_rows
+  }
+}

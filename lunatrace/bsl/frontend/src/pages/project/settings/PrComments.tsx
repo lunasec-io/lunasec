@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 
 import api from '../../../api';
+import { Settings_Update_Column } from '../../../api/generated';
 import { ProjectInfo } from '../types';
 
 interface SettingsPRCommentsProps {
@@ -26,23 +27,23 @@ export const SettingsPrComments: React.FC<SettingsPRCommentsProps> = ({ project 
     return null;
   }
 
-  const [updateSettings, { isLoading }] = api.useUpdateSettingsMutation();
+  const [updateSettings, { isLoading }] = api.useUpsertProjectSettingsMutation();
 
   // Allows us to show the change before it syncs to the server. A bit easier than dealing with manually editing the store cache
   // to show optimistic updates
-  const [checked, setChecked] = useState<boolean>(project.settings?.pr_feedback_enabled || false);
+  const [checked, setChecked] = useState<boolean>(project.settings?.pr_feedback_disabled || false);
 
   // We have specified that updateSettings will bust the ProjectDetails cache, so we expect project to be refetched and
   // then we sync the state from its settings
   useEffect(() => {
-    setChecked(project.settings?.pr_feedback_enabled || false);
+    setChecked(project.settings?.pr_feedback_disabled || false);
   }, [project]);
 
   return (
     <>
       <Row>
         <Col md="4">
-          <h2>Pull Request Feedback</h2>
+          <h3>Pull Request Feedback</h3>
         </Col>
         <Col md>
           <p>Whether LunaTrace will automatically submit feedback your PRs.</p>
@@ -53,12 +54,18 @@ export const SettingsPrComments: React.FC<SettingsPRCommentsProps> = ({ project 
           <Form.Switch
             className="form-switch-md"
             id="pr-reviews-switch"
-            label={checked ? 'PR Reviews Enabled' : 'PR Reviews Disabled'}
+            label={checked ? 'PR Reviews Disabled' : 'PR Reviews Enabled'}
             checked={checked}
             disabled={isLoading}
             onChange={(e) => {
               setChecked(!checked);
-              void updateSettings({ id: project.settings_id, settings: { pr_feedback_enabled: e.target.checked } });
+              void updateSettings({
+                settings: {
+                  project_id: project.id,
+                  pr_feedback_disabled: e.target.checked,
+                },
+                update_columns: [Settings_Update_Column.PrFeedbackDisabled],
+              });
             }}
           />
         </Form>
