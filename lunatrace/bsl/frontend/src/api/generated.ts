@@ -1520,6 +1520,10 @@ export type Mutation_Root = {
   insert_projects?: Maybe<Projects_Mutation_Response>;
   /** insert a single row into the table: "projects" */
   insert_projects_one?: Maybe<Projects>;
+  /** insert data into the table: "settings" */
+  insert_settings?: Maybe<Settings_Mutation_Response>;
+  /** insert a single row into the table: "settings" */
+  insert_settings_one?: Maybe<Settings>;
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "builds" */
   update_builds?: Maybe<Builds_Mutation_Response>;
@@ -1667,6 +1671,20 @@ export type Mutation_RootInsert_ProjectsArgs = {
 export type Mutation_RootInsert_Projects_OneArgs = {
   object: Projects_Insert_Input;
   on_conflict?: InputMaybe<Projects_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_SettingsArgs = {
+  objects: Array<Settings_Insert_Input>;
+  on_conflict?: InputMaybe<Settings_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Settings_OneArgs = {
+  object: Settings_Insert_Input;
+  on_conflict?: InputMaybe<Settings_On_Conflict>;
 };
 
 
@@ -1841,7 +1859,6 @@ export type Organization_User_Insert_Input = {
   organization?: InputMaybe<Organizations_Obj_Rel_Insert_Input>;
   organization_id?: InputMaybe<Scalars['uuid']>;
   role?: InputMaybe<Scalars['organization_user_role']>;
-  user_id?: InputMaybe<Scalars['uuid']>;
 };
 
 /** order by max() on columns of table "organization_user" */
@@ -1947,9 +1964,6 @@ export type Organizations = {
   organization_users: Array<Organization_User>;
   /** An array relationship */
   projects: Array<Projects>;
-  /** An object relationship */
-  settings?: Maybe<Settings>;
-  settings_id?: Maybe<Scalars['uuid']>;
 };
 
 
@@ -1983,8 +1997,6 @@ export type Organizations_Bool_Exp = {
   name?: InputMaybe<String_Comparison_Exp>;
   organization_users?: InputMaybe<Organization_User_Bool_Exp>;
   projects?: InputMaybe<Projects_Bool_Exp>;
-  settings?: InputMaybe<Settings_Bool_Exp>;
-  settings_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** input type for inserting data into table "organizations" */
@@ -2016,8 +2028,6 @@ export type Organizations_Order_By = {
   name?: InputMaybe<Order_By>;
   organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
   projects_aggregate?: InputMaybe<Projects_Aggregate_Order_By>;
-  settings?: InputMaybe<Settings_Order_By>;
-  settings_id?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "organizations" */
@@ -2027,9 +2037,7 @@ export enum Organizations_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  Name = 'name',
-  /** column name */
-  SettingsId = 'settings_id'
+  Name = 'name'
 }
 
 /** columns and relationships of "package_versions" */
@@ -2282,7 +2290,6 @@ export type Projects = {
   reports: Array<Project_Access_Tokens>;
   /** An object relationship */
   settings?: Maybe<Settings>;
-  settings_id?: Maybe<Scalars['uuid']>;
 };
 
 
@@ -2378,7 +2385,6 @@ export type Projects_Bool_Exp = {
   repo?: InputMaybe<String_Comparison_Exp>;
   reports?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
   settings?: InputMaybe<Settings_Bool_Exp>;
-  settings_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "projects" */
@@ -2391,6 +2397,7 @@ export enum Projects_Constraint {
 
 /** input type for inserting data into table "projects" */
 export type Projects_Insert_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
   ignored_vulnerabilities?: InputMaybe<Ignored_Vulnerabilities_Arr_Rel_Insert_Input>;
   manifests?: InputMaybe<Manifests_Arr_Rel_Insert_Input>;
   name?: InputMaybe<Scalars['String']>;
@@ -2399,6 +2406,7 @@ export type Projects_Insert_Input = {
   project_access_tokens?: InputMaybe<Project_Access_Tokens_Arr_Rel_Insert_Input>;
   repo?: InputMaybe<Scalars['String']>;
   reports?: InputMaybe<Project_Access_Tokens_Arr_Rel_Insert_Input>;
+  settings?: InputMaybe<Settings_Obj_Rel_Insert_Input>;
 };
 
 /** order by max() on columns of table "projects" */
@@ -2408,7 +2416,6 @@ export type Projects_Max_Order_By = {
   name?: InputMaybe<Order_By>;
   organization_id?: InputMaybe<Order_By>;
   repo?: InputMaybe<Order_By>;
-  settings_id?: InputMaybe<Order_By>;
 };
 
 /** order by min() on columns of table "projects" */
@@ -2418,7 +2425,6 @@ export type Projects_Min_Order_By = {
   name?: InputMaybe<Order_By>;
   organization_id?: InputMaybe<Order_By>;
   repo?: InputMaybe<Order_By>;
-  settings_id?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "projects" */
@@ -2460,7 +2466,6 @@ export type Projects_Order_By = {
   repo?: InputMaybe<Order_By>;
   reports_aggregate?: InputMaybe<Project_Access_Tokens_Aggregate_Order_By>;
   settings?: InputMaybe<Settings_Order_By>;
-  settings_id?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: projects */
@@ -2479,19 +2484,20 @@ export enum Projects_Select_Column {
   /** column name */
   OrganizationId = 'organization_id',
   /** column name */
-  Repo = 'repo',
-  /** column name */
-  SettingsId = 'settings_id'
+  Repo = 'repo'
 }
 
 /** input type for updating data in table "projects" */
 export type Projects_Set_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
   name?: InputMaybe<Scalars['String']>;
   repo?: InputMaybe<Scalars['String']>;
 };
 
 /** update columns of table "projects" */
 export enum Projects_Update_Column {
+  /** column name */
+  Id = 'id',
   /** column name */
   Name = 'name',
   /** column name */
@@ -3261,11 +3267,8 @@ export type Settings = {
   __typename?: 'settings';
   created_at: Scalars['timestamp'];
   id: Scalars['uuid'];
-  /** An object relationship */
-  organization?: Maybe<Organizations>;
-  pr_feedback_enabled: Scalars['Boolean'];
-  /** An object relationship */
-  project?: Maybe<Projects>;
+  pr_feedback_disabled?: Maybe<Scalars['Boolean']>;
+  project_id?: Maybe<Scalars['uuid']>;
 };
 
 /** Boolean expression to filter rows from the table "settings". All fields are combined with a logical 'AND'. */
@@ -3275,9 +3278,24 @@ export type Settings_Bool_Exp = {
   _or?: InputMaybe<Array<Settings_Bool_Exp>>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  organization?: InputMaybe<Organizations_Bool_Exp>;
-  pr_feedback_enabled?: InputMaybe<Boolean_Comparison_Exp>;
-  project?: InputMaybe<Projects_Bool_Exp>;
+  pr_feedback_disabled?: InputMaybe<Boolean_Comparison_Exp>;
+  project_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "settings" */
+export enum Settings_Constraint {
+  /** unique or primary key constraint */
+  SettingsPkey = 'settings_pkey',
+  /** unique or primary key constraint */
+  SettingsProjectIdKey = 'settings_project_id_key'
+}
+
+/** input type for inserting data into table "settings" */
+export type Settings_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  pr_feedback_disabled?: InputMaybe<Scalars['Boolean']>;
+  project_id?: InputMaybe<Scalars['uuid']>;
 };
 
 /** response of any mutation on the table "settings" */
@@ -3289,13 +3307,26 @@ export type Settings_Mutation_Response = {
   returning: Array<Settings>;
 };
 
+/** input type for inserting object relation for remote table "settings" */
+export type Settings_Obj_Rel_Insert_Input = {
+  data: Settings_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Settings_On_Conflict>;
+};
+
+/** on_conflict condition type for table "settings" */
+export type Settings_On_Conflict = {
+  constraint: Settings_Constraint;
+  update_columns?: Array<Settings_Update_Column>;
+  where?: InputMaybe<Settings_Bool_Exp>;
+};
+
 /** Ordering options when selecting data from "settings". */
 export type Settings_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  organization?: InputMaybe<Organizations_Order_By>;
-  pr_feedback_enabled?: InputMaybe<Order_By>;
-  project?: InputMaybe<Projects_Order_By>;
+  pr_feedback_disabled?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: settings */
@@ -3310,13 +3341,30 @@ export enum Settings_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  PrFeedbackEnabled = 'pr_feedback_enabled'
+  PrFeedbackDisabled = 'pr_feedback_disabled',
+  /** column name */
+  ProjectId = 'project_id'
 }
 
 /** input type for updating data in table "settings" */
 export type Settings_Set_Input = {
-  pr_feedback_enabled?: InputMaybe<Scalars['Boolean']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  pr_feedback_disabled?: InputMaybe<Scalars['Boolean']>;
+  project_id?: InputMaybe<Scalars['uuid']>;
 };
+
+/** update columns of table "settings" */
+export enum Settings_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  PrFeedbackDisabled = 'pr_feedback_disabled',
+  /** column name */
+  ProjectId = 'project_id'
+}
 
 /** Boolean expression to compare columns of type "severity_enum". All fields are combined with logical 'AND'. */
 export type Severity_Enum_Comparison_Exp = {
@@ -4174,7 +4222,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, settings?: { __typename?: 'settings', id: any, pr_feedback_enabled: boolean } | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerabilities', ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
+export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings?: { __typename?: 'settings', id: any, pr_feedback_disabled?: boolean | null } | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerabilities', ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4258,13 +4306,13 @@ export type PresignManifestUrlMutationVariables = Exact<{
 
 export type PresignManifestUrlMutation = { __typename?: 'mutation_root', presignManifestUpload?: { __typename?: 'PresignedUrlResponse', url: string, headers: any, key: string, bucket: string } | null };
 
-export type UpdateSettingsMutationVariables = Exact<{
-  id: Scalars['uuid'];
-  settings: Settings_Set_Input;
+export type UpsertProjectSettingsMutationVariables = Exact<{
+  settings: Array<Settings_Insert_Input> | Settings_Insert_Input;
+  update_columns?: InputMaybe<Array<Settings_Update_Column> | Settings_Update_Column>;
 }>;
 
 
-export type UpdateSettingsMutation = { __typename?: 'mutation_root', update_settings_by_pk?: { __typename?: 'settings', id: any } | null };
+export type UpsertProjectSettingsMutation = { __typename?: 'mutation_root', insert_settings?: { __typename?: 'settings_mutation_response', affected_rows: number } | null };
 
 
 export const DeleteProjectAccessTokenDocument = `
@@ -4452,10 +4500,9 @@ export const GetProjectDocument = `
     name
     organization_id
     repo
-    settings_id
     settings {
       id
-      pr_feedback_enabled
+      pr_feedback_disabled
     }
     organization {
       name
@@ -4711,10 +4758,13 @@ export const PresignManifestUrlDocument = `
   }
 }
     `;
-export const UpdateSettingsDocument = `
-    mutation UpdateSettings($id: uuid!, $settings: settings_set_input!) {
-  update_settings_by_pk(pk_columns: {id: $id}, _set: $settings) {
-    id
+export const UpsertProjectSettingsDocument = `
+    mutation UpsertProjectSettings($settings: [settings_insert_input!]!, $update_columns: [settings_update_column!]) {
+  insert_settings(
+    objects: $settings
+    on_conflict: {constraint: settings_project_id_key, update_columns: $update_columns}
+  ) {
+    affected_rows
   }
 }
     `;
@@ -4778,8 +4828,8 @@ const injectedRtkApi = api.injectEndpoints({
     presignManifestUrl: build.mutation<PresignManifestUrlMutation, PresignManifestUrlMutationVariables>({
       query: (variables) => ({ document: PresignManifestUrlDocument, variables })
     }),
-    UpdateSettings: build.mutation<UpdateSettingsMutation, UpdateSettingsMutationVariables>({
-      query: (variables) => ({ document: UpdateSettingsDocument, variables })
+    UpsertProjectSettings: build.mutation<UpsertProjectSettingsMutation, UpsertProjectSettingsMutationVariables>({
+      query: (variables) => ({ document: UpsertProjectSettingsDocument, variables })
     }),
   }),
 });
