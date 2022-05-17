@@ -17,8 +17,7 @@ name: guides
 on:
   push:
     branches:
-      - disabled_f6bd57ac5a7c
-#      - master
+      - master
 
 jobs:
   checks:
