@@ -1,0 +1,11 @@
+//this is currently broken due to some strange PNP/Typescript incompatibility, I believe
+
+{
+  "files": [],
+  "references": [
+    { "path": "backend" },
+    { "path": "frontend"},
+    { "path": "common" },
+    { "path": "logger" }
+  ]
+}
