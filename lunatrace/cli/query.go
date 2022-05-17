@@ -18,36 +18,89 @@ import (
 	"context"
 	"time"
 
-	"github.com/google/uuid"
-
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 )
 
-var _ = `# @genqlient
-mutation MyMutation($object: builds_insert_input!) {
-  insert_builds_one(object: $object) {
-    id
-  }
+var packageOnConflict = &gql.Package_on_conflict{
+	Constraint: gql.Package_constraintPackagePackageManagerCustomRegistryNameIdx,
+	Update_columns: []gql.Package_update_column{
+		gql.Package_update_columnCustomRegistry,
+		gql.Package_update_columnDescription,
+		gql.Package_update_columnName,
+		gql.Package_update_columnPackageManager,
+	},
 }
-`
+
+var releaseOnConflict = &gql.Package_release_on_conflict{
+	Constraint: gql.Package_release_constraintReleasePackageIdVersionIdx,
+	Update_columns: []gql.Package_release_update_column{
+		gql.Package_release_update_columnBlobHash,
+		gql.Package_release_update_columnId,
+		gql.Package_release_update_columnMirroredBlobUrl,
+		gql.Package_release_update_columnObservedTime,
+		gql.Package_release_update_columnPackageId,
+		gql.Package_release_update_columnPublishingMaintainerId,
+		gql.Package_release_update_columnReleaseTime,
+		gql.Package_release_update_columnUpstreamBlobUrl,
+		gql.Package_release_update_columnUpstreamData,
+		gql.Package_release_update_columnVersion,
+	},
+}
+
+var maintainerOnConflict = &gql.Package_maintainer_on_conflict{
+	Constraint: gql.Package_maintainer_constraintMaintainerPackageManagerEmailIdx,
+	Update_columns: []gql.Package_maintainer_update_column{
+		gql.Package_maintainer_update_columnName,
+		gql.Package_maintainer_update_columnEmail,
+	},
+}
+
+var packageMaintainerOnConflict = &gql.Package_package_maintainer_on_conflict{
+	Constraint: gql.Package_package_maintainer_constraintPackageMaintainerPackageIdMaintainerIdIdx,
+	// don't upsert the join table
+	Update_columns: []gql.Package_package_maintainer_update_column{},
+}
 
 func _() {
-	gql.MyMutation(context.Background(), gql.TODOClient, &gql.Builds_insert_input{
-		Agent_access_token:        uuid.New(),
-		Build_number:              0,
-		Created_at:                time.Time{},
-		Existing_github_review_id: "",
-		Findings:                  nil,
-		Git_branch:                "",
-		Git_hash:                  "",
-		Git_remote:                "",
-		Id:                        uuid.New(),
-		Manifests:                 nil,
-		Project:                   nil,
-		Project_id:                uuid.New(),
-		Pull_request_id:           "",
-		S3_url:                    "",
-		Scans:                     nil,
-		Source_type:               "",
-	})
+	// upsert package metadata
+	var res, err = gql.UpsertPackage(context.Background(), gql.TODOClient, &gql.Package_insert_input{
+		Custom_registry: "",
+		Description:     "",
+		Name:            "",
+		Package_maintainers: &gql.Package_package_maintainer_arr_rel_insert_input{
+			Data: []*gql.Package_package_maintainer_insert_input{
+				{
+					Maintainer: &gql.Package_maintainer_obj_rel_insert_input{
+						Data: &gql.Package_maintainer_insert_input{
+							Email:           "",
+							Name:            "",
+							Package_manager: gql.NPM,
+						},
+						On_conflict: maintainerOnConflict,
+					},
+				},
+			},
+			On_conflict: packageMaintainerOnConflict,
+		},
+		Package_manager: gql.NPM,
+		Releases: &gql.Package_release_arr_rel_insert_input{
+			Data: []*gql.Package_release_insert_input{
+				{
+					Blob_hash:             "",
+					Mirrored_blob_url:     "",
+					Package:               nil,
+					Publishing_maintainer: nil,
+					Release_dependencies:  nil,
+					Release_time:          time.Time{},
+					Upstream_blob_url:     "",
+					Upstream_data:         nil,
+					Version:               "",
+				},
+			},
+			On_conflict: releaseOnConflict,
+		},
+	}, packageOnConflict)
+
+	// kick off license scans
+
 }

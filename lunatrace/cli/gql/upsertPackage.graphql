@@ -1,5 +1,5 @@
-mutation UpsertPackage($object: package_insert_input!) {
-    insert_package_one(object: $object) {
+mutation UpsertPackage($object: package_insert_input!, $on_conflict: package_on_conflict!) {
+    insert_package_one(object: $object, on_conflict: $on_conflict) {
         id
         releases {
             id
