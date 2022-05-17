@@ -12,19 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package gql
+package cli
 
-type PackageManager int
-
-const (
-	NPM PackageManager = iota
-)
-
-type LicenseSource int
-
-const (
-	Manual LicenseSource = iota
-	ScanRepo
-	ScanBinary
-	ApiNpm
-)
+//go:generate go run github.com/Khan/genqlient genqlient.yaml
