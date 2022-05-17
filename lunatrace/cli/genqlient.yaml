@@ -38,3 +38,7 @@ bindings:
     type: encoding/json.RawMessage
   numeric:
     type: float64
+  package_manager:
+    type: github.com/lunasec-io/lunasec/lunatrace/cli/gql.PackageManager
+  license_source:
+    type: github.com/lunasec-io/lunasec/lunatrace/cli/gql.LicenseSource

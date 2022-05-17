@@ -16,6 +16,7 @@ require (
 	github.com/blang/semver/v4 v4.0.0
 	github.com/breadchris/ldapserver v1.1.0
 	github.com/cenkalti/backoff/v4 v4.1.3
+	github.com/dmarkham/enumer v1.5.5
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/google/go-containerregistry v0.8.1-0.20220209165246-a44adc326839
 	github.com/google/uuid v1.3.0
@@ -193,6 +194,7 @@ require (
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.3-0.20220114050600-8b9d41f48198 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
+	github.com/pascaldekloe/name v1.0.0 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.8 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
