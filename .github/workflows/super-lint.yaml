@@ -41,6 +41,7 @@ jobs:
       - uses: snow-actions/sparse-checkout@v1.1.0
         with:
           patterns: |
+            --cone
             !/.yarn/
 
       ################################
