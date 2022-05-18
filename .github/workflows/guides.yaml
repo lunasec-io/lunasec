@@ -23,9 +23,6 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     environment: master # This is what gives the job access to the secret env vars
-    env:
-      HASURA_URL: https://lunatrace.lunasec.io/api/service/v1/graphql
-      STATIC_SECRET_ACCESS_TOKEN: ${{secrets.HASURA_SERVICE_SECRET}}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -47,18 +44,12 @@ jobs:
       - name: Build Logger
         run: cd lunatrace/bsl/logger && yarn run compile
 
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        with:
-          ## limits ssh access and adds the ssh public keys of the listed GitHub users
-          limit-access-to-users: factoidforrest
-
-
       - name: Upsert Guides
         env:
-          STATIC_SECRET_ACCESS_TOKEN: ${{secrets.HASURA_SERVICE_SECRET}}
+          HASURA_URL: https://lunatrace.lunasec.io/api/service/v1/graphql
+          STATIC_SECRET_ACCESS_TOKEN: ${{secrets.LUNATRACE_BACKEND_STATIC_SECRET}}
         working-directory: lunatrace/bsl/backend
-        run: if [ -z ${STATIC_SECRET_ACCESS_TOKEN+x} ]; then echo "var is unset"; else echo "var is set"; fi;   yarn run guides:update
+        run: yarn run guides:update
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
