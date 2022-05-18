@@ -22,6 +22,7 @@ on:
 jobs:
   checks:
     runs-on: ubuntu-latest
+    environment: master # This is what gives the job access to the secret env vars
     env:
       HASURA_URL: https://lunatrace.lunasec.io/api/service/v1/graphql
       STATIC_SECRET_ACCESS_TOKEN: ${{secrets.HASURA_SERVICE_SECRET}}
