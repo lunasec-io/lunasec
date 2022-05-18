@@ -35,4 +35,5 @@ jobs:
           #VALIDATE_GO: true
           VALIDATE_SQLFLUFF: true
           DEFAULT_BRANCH: master
+          FILTER_REGEX_EXCLUDE: '\.yarn/.*'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
