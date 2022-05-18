@@ -41,9 +41,7 @@ jobs:
       - uses: snow-actions/sparse-checkout@v1.1.0
         with:
           patterns: |
-            .github
-            go
-            lunatrace
+            !.yarn
 
       ################################
       # Run Linter against code base #
