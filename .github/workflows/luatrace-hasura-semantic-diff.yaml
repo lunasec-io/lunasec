@@ -12,9 +12,11 @@ jobs:
   diff:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: snow-actions/sparse-checkout@v1.1.0
         with:
-          fetch-depth: 0
+          patterns: |
+            .github
+            lunatrace/bsl/hasura
 
       - name: "Install Dyff"
         run: |-
