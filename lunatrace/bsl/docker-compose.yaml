@@ -87,7 +87,7 @@ services:
       ## enable debugging mode. It is recommended to disable this in production
       HASURA_GRAPHQL_DEV_MODE: "true"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-      HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: true
+      HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: "false"
       ## uncomment next line to set an admin secret
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
       HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256", "jwk_url": "http://host.docker.internal:4456/.well-known/jwks.json", "issuer": "http://oathkeeper:4455/"}'
