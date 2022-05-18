@@ -41,8 +41,13 @@ jobs:
       - uses: snow-actions/sparse-checkout@v1.1.0
         with:
           patterns: |
-            --no-cone
-            !/.yarn/
+            .github
+            go
+            lunatrace
+            guides
+            tools
+            go.mod
+            go.sum
 
       ################################
       # Run Linter against code base #
@@ -51,7 +56,10 @@ jobs:
         uses: github/super-linter/slim@v4
         env:
           VALIDATE_ALL_CODEBASE: true
-          VALIDATE_GITHUB_ACTIONS: true
+          #VALIDATE_GITHUB_ACTIONS: true
+          #VALIDATE_BASH: true
+          #VALIDATE_MARKDOWN: true
+          VALIDATE_YAML: true
           VALIDATE_GO: true
           VALIDATE_SQLFLUFF: true
           DEFAULT_BRANCH: master
