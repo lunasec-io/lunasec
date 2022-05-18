@@ -8,7 +8,7 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
         settings_id
         settings {
             id
-            pr_feedback_enabled
+            pr_feedback_disabled
         }
         organization {
             name
