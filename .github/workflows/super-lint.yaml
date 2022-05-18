@@ -4,7 +4,7 @@
 ## Super Linter GitHub Actions ##
 #################################
 #################################
-name: Lint Code Base
+name: Super Linter
 
 #
 # Documentation:
@@ -38,11 +38,12 @@ jobs:
       ##########################
       # Checkout the code base #
       ##########################
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - uses: snow-actions/sparse-checkout@v1.1.0
         with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
-          fetch-depth: 0
+          patterns: |
+            .github
+            go
+            lunatrace
 
       ################################
       # Run Linter against code base #
