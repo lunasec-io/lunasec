@@ -1,29 +1,9 @@
----
-#################################
-#################################
-## Super Linter GitHub Actions ##
-#################################
-#################################
 name: Super Linter
 
-#
-# Documentation:
-# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
-#
-
-#############################
-# Start the job on all push #
-#############################
 on:
-  push:
-    branches-ignore: [master, main]
-    # Remove the line above to run when pushing to master
   pull_request:
     branches: [master, main]
 
-###############
-# Set the Job #
-###############
 jobs:
   build:
     # Name the Job
@@ -31,13 +11,7 @@ jobs:
     # Set the agent to run on
     runs-on: ubuntu-latest
 
-    ##################
-    # Load all steps #
-    ##################
     steps:
-      ##########################
-      # Checkout the code base #
-      ##########################
       - uses: snow-actions/sparse-checkout@v1.1.0
         with:
           patterns: |
@@ -49,9 +23,6 @@ jobs:
             go.mod
             go.sum
 
-      ################################
-      # Run Linter against code base #
-      ################################
       - name: Lint Code Base
         uses: github/super-linter/slim@v4
         env:
@@ -60,7 +31,7 @@ jobs:
           #VALIDATE_BASH: true
           #VALIDATE_MARKDOWN: true
           VALIDATE_YAML: true
-          VALIDATE_GO: true
+          #VALIDATE_GO: true
           VALIDATE_SQLFLUFF: true
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
