@@ -30,7 +30,7 @@ jobs:
           #VALIDATE_GITHUB_ACTIONS: true
           #VALIDATE_BASH: true
           #VALIDATE_MARKDOWN: true
-          VALIDATE_YAML: true
+          #VALIDATE_YAML: true
           #VALIDATE_GO: true
           VALIDATE_SQLFLUFF: true
           DEFAULT_BRANCH: master
