@@ -16,12 +16,13 @@ jobs:
         with:
           patterns: |
             .github
-            go
-            lunatrace
-            guides
-            tools
-            go.mod
-            go.sum
+            lunatrace/bsl/hasura
+#            go
+#            lunatrace
+#            guides
+#            tools
+#            go.mod
+#            go.sum
 
       - name: Lint Code Base
         uses: github/super-linter/slim@v4
