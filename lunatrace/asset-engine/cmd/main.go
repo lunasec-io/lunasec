@@ -38,10 +38,10 @@ func loadAndArchivePackages() {
 	scanType := os.Args[1]
 	packagesSource := os.Args[2]
 
-	// onlyPullMetadata := false
-	// if len(os.Args) == 4 {
-	// 	onlyPullMetadata = true
-	// }
+	onlyPullMetadata := false
+	if len(os.Args) == 4 {
+	 	onlyPullMetadata = true
+	}
 
 	var packages []string
 	if scanType == "package-manifest" {
@@ -64,8 +64,8 @@ func loadAndArchivePackages() {
 		return
 	}
 
-	//npm.ArchiveNpmPackages(packages, onlyPullMetadata)
-	npm.CreatePackageGraph(packages)
+	npm.ArchiveNpmPackages(packages, onlyPullMetadata)
+	//npm.CreatePackageGraph(packages)
 }
 
 func main() {
