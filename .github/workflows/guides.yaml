@@ -46,6 +46,9 @@ jobs:
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
+        env:
+          HASURA_URL: https://lunatrace.lunasec.io/api/service/v1/graphql
+          STATIC_SECRET_ACCESS_TOKEN: ${{secrets.LUNATRACE_BACKEND_STATIC_SECRET}}
         with:
           limit-access-to-actor: true
           timeout-minutes: 15
