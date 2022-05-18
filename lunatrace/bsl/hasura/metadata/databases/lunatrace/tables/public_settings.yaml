@@ -24,7 +24,7 @@ select_permissions:
   - role: service
     permission:
       columns:
-        - pr_feedback_enabled
+        - pr_feedback_disabled
         - created_at
         - id
       filter: {}
@@ -33,7 +33,7 @@ select_permissions:
       columns:
         - id
         - created_at
-        - pr_feedback_enabled
+        - pr_feedback_disabled
       filter:
         _or:
           - project:
@@ -49,7 +49,7 @@ update_permissions:
   - role: user
     permission:
       columns:
-        - pr_feedback_enabled
+        - pr_feedback_disabled
       filter:
         _or:
           - project:
