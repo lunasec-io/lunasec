@@ -15,14 +15,14 @@ import { SendMessageCommand } from '@aws-sdk/client-sqs';
 
 import { sqsClient } from '../aws/sqs-client';
 import { getRepositoryQueueConfig } from '../config';
-import { LunaTraceRepositorySnapshotSqsEvent, LunaTraceSqsEvent, SnapshotForRepositorySqsRecord } from '../types/sqs';
+import { LunaTraceRepositorySnapshotSqsMessage, LunaTraceSqsMessage, SnapshotForRepositoryRequest } from '../types/sqs';
 import { log } from '../utils/log';
 import { getSqsUrlFromName } from '../utils/sqs';
 import { catchError, threwError } from '../utils/try';
 
 export async function queueRepositoriesForSnapshot(
   installationId: number,
-  records: SnapshotForRepositorySqsRecord[]
+  records: SnapshotForRepositoryRequest[]
 ): Promise<void> {
   const repoQueueConfig = getRepositoryQueueConfig();
 
@@ -36,7 +36,7 @@ export async function queueRepositoriesForSnapshot(
     return;
   }
 
-  const sqsEvent: LunaTraceRepositorySnapshotSqsEvent = {
+  const sqsEvent: LunaTraceRepositorySnapshotSqsMessage = {
     type: 'repository-snapshot',
     records,
   };

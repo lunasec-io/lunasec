@@ -16,16 +16,16 @@ import zlib from 'zlib';
 
 import validate from 'validator';
 
-import { commentOnPrIfExists } from '../github/actions/pr-comment-generator';
-import { hasura } from '../hasura-api';
-import { InsertedScan, parseAndUploadScan } from '../models/scan';
-import { S3ObjectMetadata } from '../types/s3';
-import { SbomBucketInfo } from '../types/scan';
-import { MaybeError } from '../types/util';
-import { aws } from '../utils/aws-utils';
-import { newError, newResult } from '../utils/errors';
-import { log } from '../utils/log';
-import { catchError, threwError } from '../utils/try';
+import { commentOnPrIfExists } from '../../github/actions/pr-comment-generator';
+import { hasura } from '../../hasura-api';
+import { InsertedScan, parseAndUploadScan } from '../../models/scan';
+import { S3ObjectMetadata } from '../../types/s3';
+import { SbomBucketInfo } from '../../types/scan';
+import { MaybeError } from '../../types/util';
+import { aws } from '../../utils/aws-utils';
+import { newError, newResult } from '../../utils/errors';
+import { log } from '../../utils/log';
+import { catchError, threwError } from '../../utils/try';
 
 function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gzip> {
   return new Promise((resolve, reject) => {
@@ -47,8 +47,8 @@ function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gz
   });
 }
 
-async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan> {
-  log.info('scanning sbom', {
+async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan> {
+  log.info('scanning snapshot', {
     sbomBucketInfo,
   });
 
@@ -73,8 +73,8 @@ async function scanSbom(buildId: string, sbomBucketInfo: SbomBucketInfo): Promis
   return scanReport;
 }
 
-export async function handleScanSbom(message: S3ObjectMetadata): Promise<MaybeError<undefined>> {
-  const { key, region, bucketName } = message;
+export async function scanSnapshotActivity(msg: S3ObjectMetadata): Promise<MaybeError<undefined>> {
+  const { key, region, bucketName } = msg;
   const buildId = key.split('/').pop();
   return await log.provideFields({ key, region, bucketName }, async () => {
     if (!buildId || !validate.isUUID(buildId)) {
@@ -87,7 +87,7 @@ export async function handleScanSbom(message: S3ObjectMetadata): Promise<MaybeEr
 
     const bucketInfo: SbomBucketInfo = { region, bucketName, key };
 
-    const scanResp = await catchError(scanSbom(buildId, bucketInfo));
+    const scanResp = await catchError(scanSnapshot(buildId, bucketInfo));
     if (threwError(scanResp)) {
       log.error('Sbom Scanning Error:', { scanResp });
       await hasura.UpdateManifestStatusIfExists({

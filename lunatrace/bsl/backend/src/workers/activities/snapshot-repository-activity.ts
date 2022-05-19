@@ -11,28 +11,25 @@
  * limitations under the License.
  *
  */
-import { generateSbomFromAsset } from '../../cli/call-cli';
+import { getRepoCloneUrlWithAuth } from '../../github/actions/get-repo-clone-url-with-auth';
 import { hasura } from '../../hasura-api';
 import { InsertBuildMutation } from '../../hasura-api/generated';
-import { SnapshotForRepositorySqsRecord } from '../../types/sqs';
+import { generateSbomFromAsset } from '../../snapshot/call-cli';
+import { uploadSbomToS3 } from '../../snapshot/generate-snapshot';
+import { SnapshotForRepositoryRequest } from '../../types/sqs';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { catchError, threwError, Try } from '../../utils/try';
-import { uploadSbomToS3 } from '../../workers/generate-sbom';
 
-import { getRepoCloneUrlWithAuth } from './get-repo-clone-url-with-auth';
-
-export async function generateSnapshotForRepository(
-  record: SnapshotForRepositorySqsRecord
-): Promise<MaybeError<undefined>> {
+export async function snapshotRepositoryActivity(req: SnapshotForRepositoryRequest): Promise<MaybeError<undefined>> {
   const logger = log.child('repo-snapshot', {
-    record,
+    record: req,
   });
 
   logger.info('creating authed git clone url');
 
-  const cloneUrlWithAuth = await getRepoCloneUrlWithAuth(record.repoGithubId);
+  const cloneUrlWithAuth = await getRepoCloneUrlWithAuth(req.repoGithubId);
 
   if (cloneUrlWithAuth.error) {
     logger.error('could not create authed git clone url', {
@@ -44,7 +41,7 @@ export async function generateSnapshotForRepository(
 
   logger.info('generating SBOM for repository');
 
-  const gzippedSbom = generateSbomFromAsset('repository', repoClone.cloneUrl, record.gitBranch);
+  const gzippedSbom = generateSbomFromAsset('repository', repoClone.cloneUrl, req.gitBranch);
 
   logger.info('Creating a new build for repository', {
     gitUrl: repoClone.projectId,
@@ -54,8 +51,8 @@ export async function generateSnapshotForRepository(
     async () =>
       await hasura.InsertBuild({
         project_id: repoClone.projectId,
-        pull_request_id: record.pullRequestId,
-        source_type: record.sourceType,
+        pull_request_id: req.pullRequestId,
+        source_type: req.sourceType,
       })
   );
 
@@ -84,11 +81,11 @@ export async function generateSnapshotForRepository(
   const buildId = insert_builds_one.id as string;
 
   logger.info('Uploading result to S3:', {
-    installationId: record.installationId.toString(),
+    installationId: req.installationId.toString(),
     buildId,
   });
 
-  const res = await catchError(uploadSbomToS3(record.installationId.toString(), buildId, gzippedSbom));
+  const res = await catchError(uploadSbomToS3(req.installationId.toString(), buildId, gzippedSbom));
   if (threwError(res)) {
     logger.error('unable to upload sbom to s3', {
       buildId,
