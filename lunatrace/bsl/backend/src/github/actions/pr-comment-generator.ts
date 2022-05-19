@@ -82,7 +82,7 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     return;
   }
 
-  if (!buildLookup.builds_by_pk.project.settings.pr_feedback_enabled) {
+  if (buildLookup.builds_by_pk.project.settings.pr_feedback_disabled) {
     log.info('Skipping PR Feedback due to project settings');
     return;
   }
