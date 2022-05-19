@@ -1,0 +1,51 @@
+{
+	"artifacts": [
+		{
+			"id": "88599e94a7918ce",
+			"name": "react",
+			"version": "18.0.0",
+			"type": "npm",
+			"foundBy": "javascript-package-cataloger",
+			"locations": [
+				{
+					"path": "/home/breadchris/projects/library-research/asset-engine/test/package/package.json"
+				}
+			],
+			"licenses": [
+				"MIT"
+			],
+			"language": "javascript",
+			"cpes": [
+				"cpe:2.3:a:react:react:18.0.0:*:*:*:*:*:*:*",
+				"cpe:2.3:a:*:react:18.0.0:*:*:*:*:*:*:*"
+			],
+			"purl": "pkg:npm/react@18.0.0",
+			"metadataType": "NpmPackageJsonMetadata",
+			"metadata": {
+				"name": "react",
+				"version": "18.0.0",
+				"author": "",
+				"licenses": [
+					"MIT"
+				],
+				"homepage": "https://reactjs.org/",
+				"description": "",
+				"url": "https://github.com/facebook/react.git"
+			}
+		}
+	],
+	"artifactRelationships": [],
+	"source": {
+		"type": "file",
+		"target": "package.json"
+	},
+	"distro": {},
+	"descriptor": {
+		"name": "lunatrace",
+		"version": "1.0.0"
+	},
+	"schema": {
+		"version": "2.0.2",
+		"url": "https://raw.githubusercontent.com/anchore/syft/main/schema/json/schema-2.0.2.json"
+	}
+}
