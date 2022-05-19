@@ -28,21 +28,25 @@ export const SettingsPrComments: React.FC<SettingsPRCommentsProps> = ({ project 
 
   const [updateSettings, { isLoading }] = api.useUpdateSettingsMutation();
 
+  // Unset flags in settings are NULL, and the "default value" is false if it has been set
+  // This way if the value is falsy we know it is in the default position
+  const pr_feedback_enabled = project.settings.pr_feedback_disabled !== true;
+
   // Allows us to show the change before it syncs to the server. A bit easier than dealing with manually editing the store cache
   // to show optimistic updates
-  const [checked, setChecked] = useState<boolean>(project.settings?.pr_feedback_enabled || false);
+  const [checked, setChecked] = useState<boolean>(pr_feedback_enabled || false);
 
   // We have specified that updateSettings will bust the ProjectDetails cache, so we expect project to be refetched and
   // then we sync the state from its settings
   useEffect(() => {
-    setChecked(project.settings?.pr_feedback_enabled || false);
+    setChecked(pr_feedback_enabled);
   }, [project]);
 
   return (
     <>
       <Row>
         <Col md="4">
-          <h2>Pull Request Feedback</h2>
+          <h3>Pull Request Feedback</h3>
         </Col>
         <Col md>
           <p>Whether LunaTrace will automatically submit feedback your PRs.</p>
@@ -58,7 +62,7 @@ export const SettingsPrComments: React.FC<SettingsPRCommentsProps> = ({ project 
             disabled={isLoading}
             onChange={(e) => {
               setChecked(!checked);
-              void updateSettings({ id: project.settings_id, settings: { pr_feedback_enabled: e.target.checked } });
+              void updateSettings({ id: project.settings_id, settings: { pr_feedback_disabled: !e.target.checked } });
             }}
           />
         </Form>

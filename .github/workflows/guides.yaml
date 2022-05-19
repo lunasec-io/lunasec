@@ -17,8 +17,7 @@ name: guides
 on:
   push:
     branches:
-      - disabled_f6bd57ac5a7c
-#      - master
+      - master
 
 jobs:
   checks:
@@ -39,12 +38,19 @@ jobs:
         env:
           IS_LUNASEC_CI: true
           CI: true
-        run: |
-          yarn install --immutable --immutable-cache --inline-builds
+        run: yarn install --immutable --immutable-cache --inline-builds
+
+      - name: Build Common
+        run: cd lunatrace/bsl/common && yarn run compile
+
+      - name: Build Logger
+        run: cd lunatrace/bsl/logger && yarn run compile
 
       - name: Upsert Guides
+        env:
+          STATIC_SECRET_ACCESS_TOKEN: ${{secrets.HASURA_SERVICE_SECRET}}
         working-directory: lunatrace/bsl/backend
-        run: yarn run guides:update
+        run: if [ -z ${STATIC_SECRET_ACCESS_TOKEN+x} ]; then echo "var is unset"; else echo "var is set"; fi;   yarn run guides:update
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
