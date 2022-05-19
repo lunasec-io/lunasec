@@ -25,7 +25,7 @@ import {
 import { sqsClient } from '../../aws/sqs-client';
 import { HasuraClient } from '../../hasura-api';
 import { InsertWebhookToCacheMutation } from '../../hasura-api/generated';
-import { LunaTraceSqsEvent, WebhookSqsRecord } from '../../types/sqs';
+import { LunaTraceSqsMessage, ProcessGithubWebhookRequest } from '../../types/sqs';
 import { logError } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { catchError, threwError, Try } from '../../utils/try';
@@ -113,11 +113,11 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
 
     log.info(`Inserted webhook to cache: ${result.delivery_id}`);
 
-    const webhookSqsRecord: WebhookSqsRecord = {
+    const webhookSqsRecord: ProcessGithubWebhookRequest = {
       delivery_id: options.id,
     };
 
-    const sqsEvent: LunaTraceSqsEvent = {
+    const sqsEvent: LunaTraceSqsMessage = {
       type: 'process-webhook',
       records: [webhookSqsRecord],
     };

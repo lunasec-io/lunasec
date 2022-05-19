@@ -20,10 +20,10 @@ import {
   HasuraConfig,
   JobRunnerConfig,
   JwksConfig,
-  QueueHandlerWorkerConfig,
   RepositoryQueueConfig,
   SbomHandlerConfig,
   ServerConfig,
+  SqsQueueConfig,
   WebhookConfig,
   WorkerConfig,
   WorkerType,
@@ -126,34 +126,13 @@ export function getWorkerConfig(): WorkerConfig {
   };
 }
 
-export function getQueueHandlerConfig(): QueueHandlerWorkerConfig {
+export function getQueueHandlerConfig(): SqsQueueConfig {
   const handlerName = checkEnvVar('QUEUE_HANDLER');
 
   const DEFAULT_QUEUE_MAX_MESSAGES = 10;
   const DEFAULT_QUEUE_VISIBILITY = 60;
 
   const handlerConfigLookup: Record<QueueHandlerType, QueueHandlerConfig> = {
-    // 'process-webhook': {
-    //   maxMessages: 1,
-    //   visibility: DEFAULT_QUEUE_VISIBILITY,
-    //   envVar: 'PROCESS_WEBHOOK_QUEUE',
-    // },
-    // 'process-manifest': {
-    //   maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
-    //   visibility: DEFAULT_QUEUE_VISIBILITY,
-    //   envVar: 'PROCESS_MANIFEST_QUEUE',
-    // },
-    // 'process-sbom': {
-    //   maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
-    //   visibility: DEFAULT_QUEUE_VISIBILITY,
-    //   envVar: 'PROCESS_SBOM_QUEUE',
-    // },
-    // 'process-repository': {
-    //   maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
-    //   visibility: DEFAULT_QUEUE_VISIBILITY * 10,
-    //   envVar: 'PROCESS_REPOSITORY_QUEUE',
-    // },
-    // TODO (cthompson) fill these in
     's3-queue-handler': {
       maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
       visibility: DEFAULT_QUEUE_VISIBILITY * 10,
@@ -180,7 +159,7 @@ export function getQueueHandlerConfig(): QueueHandlerWorkerConfig {
   return {
     handlerName,
     handlerConfig,
-    handlerQueueName,
+    queueName: handlerQueueName,
   };
 }
 
