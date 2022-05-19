@@ -51,7 +51,12 @@ HASURA_GRAPHQL_ENDPOINT=https://lunatrace.lunasec.io/api/hasura HASURA_GRAPHQL_A
 
 `yarn run prod:cdk:deploy`
 
-watch the deployment in aws console
+watch the deployment in aws console -
+https://us-west-2.console.aws.amazon.com/ecs/v2/clusters/lunatrace-BackendStack-LunaTraceFargateClusterCF463AE0-eko30PlhvQ8T/services/lunatrace-BackendStack-Service9571FDD8-pRICa2elicKg/configuration?region=us-west-2
+
+Watch the logs in the task, check health statuses of each container and make sure theyre healthy.
+
+If anything goes wrong, go to the service and hit edit and roll the revision back to the previous number.
 
 
 
