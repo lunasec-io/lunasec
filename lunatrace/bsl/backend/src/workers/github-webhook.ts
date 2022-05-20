@@ -44,7 +44,7 @@ export function createGithubWebhookHandler(webhooks: WebhookInterceptor): Webhoo
           log.error(`Failed to get webhook data for deliveryId ${deliveryId}`);
           return newError(`Failed to get webhook data for deliveryId ${deliveryId}`);
         }
-
+        // todo: This should be in the logger callback above or its not going to have that logging data
         await webhooks.receive({
           id: deliveryId,
           name: webhookData.webhook_cache[0].event_type,

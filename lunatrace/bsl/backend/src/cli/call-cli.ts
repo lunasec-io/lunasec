@@ -18,7 +18,12 @@ import zlib from 'zlib';
 import { LunaTraceAssetType } from '../types/cli';
 import { log } from '../utils/log';
 
-function importAssetArgs(assetType: LunaTraceAssetType, assetName: string, gitBranch: string) {
+function importAssetArgs(
+  assetType: LunaTraceAssetType,
+  assetName: string,
+  gitBranch: string,
+  gitCommit: string | undefined
+) {
   const baseCmdArgs = [
     '--debug',
     '--log-to-stderr',
@@ -27,8 +32,13 @@ function importAssetArgs(assetType: LunaTraceAssetType, assetName: string, gitBr
     '--stdout',
     '--git-branch',
     gitBranch,
-    assetType,
   ];
+
+  if (gitCommit) {
+    baseCmdArgs.push('--git-commit', gitCommit);
+  }
+
+  baseCmdArgs.push(assetType);
 
   if (assetType === 'file') {
     return [...baseCmdArgs, '--stdin', assetName];
@@ -43,9 +53,10 @@ export function generateSbomFromAsset(
   assetType: LunaTraceAssetType,
   assetName: string,
   gitBranch: string,
+  gitCommit: string | undefined,
   options?: { inputStream?: Readable }
 ) {
-  const cmdArgs = importAssetArgs(assetType, assetName, gitBranch);
+  const cmdArgs = importAssetArgs(assetType, assetName, gitBranch, gitCommit);
 
   const lunatraceCli = spawn('lunatrace', cmdArgs);
   log.info('lunatrace spawned at pid', lunatraceCli.pid);
