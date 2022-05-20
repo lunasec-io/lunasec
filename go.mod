@@ -19,6 +19,7 @@ require (
 	github.com/dmarkham/enumer v1.5.5
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/google/go-containerregistry v0.8.1-0.20220209165246-a44adc326839
+	github.com/google/licensecheck v0.3.1
 	github.com/google/uuid v1.3.0
 	github.com/jpillora/backoff v1.0.0
 	github.com/likexian/whois-parser v1.22.0

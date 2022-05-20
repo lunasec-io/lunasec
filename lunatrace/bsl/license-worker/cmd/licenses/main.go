@@ -12,10 +12,10 @@
 package main
 
 import (
-	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/clifx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/lunatracefx"
 )
 
@@ -23,14 +23,8 @@ func main() {
 	appOpts := fx.Options(
 		lunatracefx.Module,
 		fx.Provide(
-			fx.Annotate(
-				func() *cli.Command {
-					return &cli.Command{
-						Name: "test",
-					}
-				},
-				fx.ResultTags(`group:"cli_root_commands"`),
-			),
+			licensecheck.NewScanner,
+			NewRootAction,
 
 		),
 	)

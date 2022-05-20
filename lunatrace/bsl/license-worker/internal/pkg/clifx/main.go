@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -20,6 +20,9 @@ import (
 	"go.uber.org/fx"
 )
 
+type RootAction = cli.ActionFunc
+type RootCommand = cli.Command
+
 var cliApp *cli.App
 
 func Main(opts fx.Option) {
@@ -29,6 +32,7 @@ func Main(opts fx.Option) {
 			NewApp,
 		),
 		fx.Populate(&cliApp),
+		// todo withlogger to dev null, we usually don't want fx logs.
 	))
 	// In a typical application, we could just use app.Run() here. Since this
 	// is a CLI tool, we'll use the more-explicit Start and Stop.
