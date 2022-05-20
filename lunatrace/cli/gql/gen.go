@@ -18,7 +18,7 @@ package gql
 
 import (
 	"context"
-	"json"
+	"encoding/json"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -1942,43 +1942,43 @@ func (v *MyMutationResponse) GetInsert_builds_one() *MyMutationInsert_builds_one
 
 // Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'.
 type Numeric_comparison_exp struct {
-	Eq      json.Number   `json:"_eq"`
-	Gt      json.Number   `json:"_gt"`
-	Gte     json.Number   `json:"_gte"`
-	In      []json.Number `json:"_in"`
-	Is_null bool          `json:"_is_null"`
-	Lt      json.Number   `json:"_lt"`
-	Lte     json.Number   `json:"_lte"`
-	Neq     json.Number   `json:"_neq"`
-	Nin     []json.Number `json:"_nin"`
+	Eq      float64   `json:"_eq"`
+	Gt      float64   `json:"_gt"`
+	Gte     float64   `json:"_gte"`
+	In      []float64 `json:"_in"`
+	Is_null bool      `json:"_is_null"`
+	Lt      float64   `json:"_lt"`
+	Lte     float64   `json:"_lte"`
+	Neq     float64   `json:"_neq"`
+	Nin     []float64 `json:"_nin"`
 }
 
 // GetEq returns Numeric_comparison_exp.Eq, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetEq() json.Number { return v.Eq }
+func (v *Numeric_comparison_exp) GetEq() float64 { return v.Eq }
 
 // GetGt returns Numeric_comparison_exp.Gt, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetGt() json.Number { return v.Gt }
+func (v *Numeric_comparison_exp) GetGt() float64 { return v.Gt }
 
 // GetGte returns Numeric_comparison_exp.Gte, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetGte() json.Number { return v.Gte }
+func (v *Numeric_comparison_exp) GetGte() float64 { return v.Gte }
 
 // GetIn returns Numeric_comparison_exp.In, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetIn() []json.Number { return v.In }
+func (v *Numeric_comparison_exp) GetIn() []float64 { return v.In }
 
 // GetIs_null returns Numeric_comparison_exp.Is_null, and is useful for accessing the field via an interface.
 func (v *Numeric_comparison_exp) GetIs_null() bool { return v.Is_null }
 
 // GetLt returns Numeric_comparison_exp.Lt, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetLt() json.Number { return v.Lt }
+func (v *Numeric_comparison_exp) GetLt() float64 { return v.Lt }
 
 // GetLte returns Numeric_comparison_exp.Lte, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetLte() json.Number { return v.Lte }
+func (v *Numeric_comparison_exp) GetLte() float64 { return v.Lte }
 
 // GetNeq returns Numeric_comparison_exp.Neq, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetNeq() json.Number { return v.Neq }
+func (v *Numeric_comparison_exp) GetNeq() float64 { return v.Neq }
 
 // GetNin returns Numeric_comparison_exp.Nin, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetNin() []json.Number { return v.Nin }
+func (v *Numeric_comparison_exp) GetNin() []float64 { return v.Nin }
 
 // input type for inserting array relation for remote table "organization_user"
 type Organization_user_arr_rel_insert_input struct {
@@ -2188,6 +2188,7 @@ type Organizations_bool_exp struct {
 	Name               *String_comparison_exp      `json:"name,omitempty"`
 	Organization_users *Organization_user_bool_exp `json:"organization_users,omitempty"`
 	Projects           *Projects_bool_exp          `json:"projects,omitempty"`
+	Settings           *Settings_bool_exp          `json:"settings,omitempty"`
 	Settings_id        *Uuid_comparison_exp        `json:"settings_id,omitempty"`
 }
 
@@ -2231,6 +2232,9 @@ func (v *Organizations_bool_exp) GetOrganization_users() *Organization_user_bool
 
 // GetProjects returns Organizations_bool_exp.Projects, and is useful for accessing the field via an interface.
 func (v *Organizations_bool_exp) GetProjects() *Projects_bool_exp { return v.Projects }
+
+// GetSettings returns Organizations_bool_exp.Settings, and is useful for accessing the field via an interface.
+func (v *Organizations_bool_exp) GetSettings() *Settings_bool_exp { return v.Settings }
 
 // GetSettings_id returns Organizations_bool_exp.Settings_id, and is useful for accessing the field via an interface.
 func (v *Organizations_bool_exp) GetSettings_id() *Uuid_comparison_exp { return v.Settings_id }
@@ -2625,6 +2629,7 @@ type Projects_bool_exp struct {
 	Project_access_tokens   *Project_access_tokens_bool_exp   `json:"project_access_tokens,omitempty"`
 	Repo                    *String_comparison_exp            `json:"repo,omitempty"`
 	Reports                 *Project_access_tokens_bool_exp   `json:"reports,omitempty"`
+	Settings                *Settings_bool_exp                `json:"settings,omitempty"`
 	Settings_id             *Uuid_comparison_exp              `json:"settings_id,omitempty"`
 }
 
@@ -2683,6 +2688,9 @@ func (v *Projects_bool_exp) GetRepo() *String_comparison_exp { return v.Repo }
 
 // GetReports returns Projects_bool_exp.Reports, and is useful for accessing the field via an interface.
 func (v *Projects_bool_exp) GetReports() *Project_access_tokens_bool_exp { return v.Reports }
+
+// GetSettings returns Projects_bool_exp.Settings, and is useful for accessing the field via an interface.
+func (v *Projects_bool_exp) GetSettings() *Settings_bool_exp { return v.Settings }
 
 // GetSettings_id returns Projects_bool_exp.Settings_id, and is useful for accessing the field via an interface.
 func (v *Projects_bool_exp) GetSettings_id() *Uuid_comparison_exp { return v.Settings_id }
@@ -3061,6 +3069,44 @@ type SetBuildS3UrlUpdate_builds_by_pkBuilds struct {
 
 // GetId returns SetBuildS3UrlUpdate_builds_by_pkBuilds.Id, and is useful for accessing the field via an interface.
 func (v *SetBuildS3UrlUpdate_builds_by_pkBuilds) GetId() uuid.UUID { return v.Id }
+
+// Boolean expression to filter rows from the table "settings". All fields are combined with a logical 'AND'.
+type Settings_bool_exp struct {
+	And                  []*Settings_bool_exp      `json:"_and,omitempty"`
+	Not                  *Settings_bool_exp        `json:"_not,omitempty"`
+	Or                   []*Settings_bool_exp      `json:"_or,omitempty"`
+	Created_at           *Timestamp_comparison_exp `json:"created_at,omitempty"`
+	Id                   *Uuid_comparison_exp      `json:"id,omitempty"`
+	Organization         *Organizations_bool_exp   `json:"organization,omitempty"`
+	Pr_feedback_disabled *Boolean_comparison_exp   `json:"pr_feedback_disabled,omitempty"`
+	Project              *Projects_bool_exp        `json:"project,omitempty"`
+}
+
+// GetAnd returns Settings_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetAnd() []*Settings_bool_exp { return v.And }
+
+// GetNot returns Settings_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetNot() *Settings_bool_exp { return v.Not }
+
+// GetOr returns Settings_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetOr() []*Settings_bool_exp { return v.Or }
+
+// GetCreated_at returns Settings_bool_exp.Created_at, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetCreated_at() *Timestamp_comparison_exp { return v.Created_at }
+
+// GetId returns Settings_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetOrganization returns Settings_bool_exp.Organization, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetOrganization() *Organizations_bool_exp { return v.Organization }
+
+// GetPr_feedback_disabled returns Settings_bool_exp.Pr_feedback_disabled, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetPr_feedback_disabled() *Boolean_comparison_exp {
+	return v.Pr_feedback_disabled
+}
+
+// GetProject returns Settings_bool_exp.Project, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetProject() *Projects_bool_exp { return v.Project }
 
 // Boolean expression to compare columns of type "severity_enum". All fields are combined with logical 'AND'.
 type Severity_enum_comparison_exp struct {
