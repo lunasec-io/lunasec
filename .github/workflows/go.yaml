@@ -1,0 +1,33 @@
+name: Go
+
+# This workflow posts hasura changes as a comment.
+on:
+  pull_request:
+    paths:
+      - '**.go'
+      - go.mod
+      - go.sum
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        go:
+          - '1.18'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go }}
+      - name: Setup Golang caches
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-golang-${{ matrix.go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-${{ matrix.go }}-
+      - name: go build
+        run: go build ./...

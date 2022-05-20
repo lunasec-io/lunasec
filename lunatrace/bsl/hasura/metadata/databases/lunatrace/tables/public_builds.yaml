@@ -132,6 +132,7 @@ select_permissions:
                       _eq: X-Hasura-User-Id
           - agent_access_token:
               _eq: X-Hasura-Access-Token
+      allow_aggregations: true
 update_permissions:
   - role: cli
     permission:

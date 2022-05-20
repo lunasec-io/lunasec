@@ -24,6 +24,7 @@ import (
 
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
@@ -74,7 +75,7 @@ func LoadLunaTraceConfig() (appConfig types.LunaTraceConfig, err error) {
 
 	// todo remove me
 	gql.TODOClient = graphql.NewClient(appConfig.GraphqlServer.Url, &http.Client{
-		Transport: &gql.HeadersTransport{Headers: map[string]string{
+		Transport: &httputil.HeadersTransport{Headers: map[string]string{
 			"X-LunaTrace-Access-Token": appConfig.ProjectAccessToken,
 		}},
 	})

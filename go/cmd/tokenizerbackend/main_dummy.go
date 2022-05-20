@@ -1,3 +1,5 @@
+//go:build !(dev || lambda)
+
 // Copyright 2022 by LunaSec (owned by Refinery Labs, Inc)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package util
 
-import (
-	"errors"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-	"strings"
-)
+package main
 
-func formatGraphqlErrors(graphqlErrors types.GraphqlErrors) error {
-	var errs []string
-	for _, respErr := range graphqlErrors.Errors {
-		errs = append(errs, respErr.Message)
-	}
-	return errors.New(strings.Join(errs, ", "))
-}
+func main() {
 
-func GetGraphqlError(err error, graphqlErrors types.GraphqlErrors) error {
-	if err != nil {
-		return err
-	}
-	if len(graphqlErrors.Errors) != 0 {
-		err = formatGraphqlErrors(graphqlErrors)
-		return err
-	}
-	return nil
 }

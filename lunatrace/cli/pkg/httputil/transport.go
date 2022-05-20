@@ -12,20 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package graphql
+package httputil
 
 import (
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"net/http"
 )
 
-func NewIdentifyRequest(instanceId, agentAccessToken string) types.GraphqlRequest {
-	return types.GraphqlRequest{
-		Query: constants.UpsertInstanceQuery,
-		Variables: map[string]string{
-			"instance_id":        instanceId,
-			"agent_access_token": agentAccessToken,
-		},
-		OperationName: "UpsertInstance",
+type HeadersTransport struct {
+	RT      http.RoundTripper
+	Headers map[string]string
+}
+
+func (t *HeadersTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if t.RT == nil {
+		t.RT = http.DefaultTransport
 	}
+	for header, value := range t.Headers {
+		req.Header.Add(header, value)
+	}
+	return t.RT.RoundTrip(req)
 }

@@ -43,15 +43,24 @@ With backend running on your box do
 
 `./build-containers`
 
-`yarn run prod:cdk:deploy`
-
-watch the deployment in aws console
-
-once finished manually apply the metadata from your machine to the production hasura instance. For me connecting to the prod instance looks like:
+manually apply the metadata from your machine to the production hasura instance. For me connecting to the prod instance looks like:
 
 ```bash
 HASURA_GRAPHQL_ENDPOINT=https://lunatrace.lunasec.io/api/hasura HASURA_GRAPHQL_ADMIN_SECRET="$(aws secretsmanager get-secret-value --secret-id lunatrace-HasuraAdminSecret | jq -r .SecretString)" hasura migrate apply
 ```
+
+`yarn run prod:cdk:deploy`
+
+watch the deployment in aws console -
+https://us-west-2.console.aws.amazon.com/ecs/v2/clusters/lunatrace-BackendStack-LunaTraceFargateClusterCF463AE0-eko30PlhvQ8T/services/lunatrace-BackendStack-Service9571FDD8-pRICa2elicKg/configuration?region=us-west-2
+
+Watch the logs in the task, check health statuses of each container and make sure theyre healthy.
+
+If anything goes wrong, go to the service and hit edit and roll the revision back to the previous number.
+
+
+
+
 followed by `hasura metadata apply` and `metadata reload`, also against the prod instance
 
 ### See production logs

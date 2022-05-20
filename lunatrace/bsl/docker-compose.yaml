@@ -1,7 +1,14 @@
 version: '3.6'
 services:
   oathkeeper:
-    build: ./ory/oathkeeper
+    build:
+      context: ./ory/oathkeeper
+      args:
+        OATHKEEPER_HASURA_URL: "http://graphql-engine:8080"
+        OATHKEEPER_FRONTEND_URL: "http://host.docker.internal:3000"
+        OATHKEEPER_BACKEND_URL: "http://host.docker.internal:3002"
+        OATHKEEPER_KRATOS_URL: "http://kratos:4433"
+        OATHKEEPER_MATCH_URL: "<https|http|ws>://localhost:4455"
     image: lunatrace-oathkeeper
     ports:
       - "4455:4455" # public
@@ -10,6 +17,11 @@ services:
     environment:
       ACCESS_RULES_REPOSITORIES: file:///generated/rules.yaml
       MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///config/jwks.dev.json
+      OATHKEEPER_HASURA_URL: "http://graphql-engine:8080"
+      OATHKEEPER_FRONTEND_URL: "http://host.docker.internal:3000"
+      OATHKEEPER_BACKEND_URL: "http://host.docker.internal:3002"
+      OATHKEEPER_KRATOS_URL: "http://kratos:4433"
+      OATHKEEPER_MATCH_URL: "<https|http|ws>://localhost:4455"
     volumes:
       - "./ory/oathkeeper:/config"
     healthcheck:
@@ -80,7 +92,7 @@ services:
       ## enable debugging mode. It is recommended to disable this in production
       HASURA_GRAPHQL_DEV_MODE: "true"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-      HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: true
+      HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: "false"
       ## uncomment next line to set an admin secret
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
       HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256", "jwk_url": "http://host.docker.internal:4456/.well-known/jwks.json", "issuer": "http://oathkeeper:4455/"}'
@@ -88,6 +100,7 @@ services:
       ACTION_BASE_URL: http://host.docker.internal:3002
       # TODO: ADD THIS TO THE CDK
       REMOTE_SCHEMA_URL: http://host.docker.internal:3002/graphql/v1
+      # COMMENT OUT THESE DIRs IF HASURA WONT START DUE TO MIGRATION OR METADATA ISSUES
       HASURA_GRAPHQL_METADATA_DIR: /hasura/metadata
       HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura/migrations
     extra_hosts:
