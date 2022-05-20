@@ -31,7 +31,7 @@ As a web developer, I've learned to ignore vulnerability scan results and that's
 
 Most of the results aren't *relevant*. Sometimes I find it easy to figure out what's safe to ignore from the findings.
 Other times
-I find myself scouring documentation, source code, and blog posts only to discover the "RCE" npm audit told me I had
+I find myself scouring documentation, source code, and blog posts only to discover the "RCE" `npm audit` told me I had
 doesn't matter.
 
 <!--truncate-->
@@ -44,6 +44,16 @@ that there was no better way. The infrastructure just didn't exist to eliminate 
 At LunaSec,
 we've been taking on this type of work for a few select companies, and taking notes. When diving in deeper to this
 problem we realized something a little mind-blowing.
+
+:::info
+Wish you could automate this painful problem and make it go away?
+Please [send us an email](mailto:deps@lunasec.io) and we'll manually comb through your dependency tree 
+and help you patch what we find.
+
+We're "[doing things that don't scale](http://paulgraham.com/ds.html)" in order to make our tool, 
+[LunaTrace](https://github.com/lunasec-io/lunasec/tree/master/lunatrace), better via us 
+[dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) it internally.
+:::
 
 ## Scanners could do a lot better
 
@@ -163,9 +173,10 @@ we would like to host a container repository (think DockerHub) where people can 
 
 ## What we have done so far
 
-Our dependency scanning tool, [LunaTrace](https://lunatrace.lunasec.io/), is currently in beta **and you can try
-out**. It has GitHub integration,
-CLI support to integrate with your CI job, and you can even drag and drop a file, folder, or zipped container right into
+Our dependency scanning tool, [LunaTrace](https://lunatrace.lunasec.io/), is live **and you can try
+out today for free**. It has a [GitHub Integration](https://github.com/marketplace/lunatrace-by-lunasec),
+[CLI support](https://github.com/lunasec-io/lunasec/releases) to add it to your CI job, or you can even drag and drop a 
+file, folder, or zipped container right into
 the web app to see instant results.
 
 The groundwork is there to start building these false-positive elimination strategies.
@@ -174,3 +185,12 @@ one is truly needed. We see plenty of work to be done.
 
 Perhaps we are being overly optimistic, and we can maybe only eliminate half or two thirds of the false positives. Even
 so, that seems like a tool we'd prefer to use.
+
+### Limited Offer: We'll manually review your dependencies
+
+We're "[doing things that don't scale](http://paulgraham.com/ds.html)" in order to level up LunaTrace faster. You can
+help us [dogfood](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) LunaTrace internally by letting us scan your
+code and help you fix the vulnerabilities we find.
+
+Please [send us an email](mailto:deps@lunasec.io) if you're interested. We need your feedback to help us prioritize what
+features to build next and doing unscalable work is the fastest way for us to get there.
