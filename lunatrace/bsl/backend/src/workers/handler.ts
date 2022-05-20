@@ -15,13 +15,12 @@ import { DeleteMessageCommand, Message, ReceiveMessageCommand, ReceiveMessageCom
 
 import { sqsClient } from '../aws/sqs-client';
 import { getQueueHandlerConfig, getWorkerConfig } from '../config';
-import { generateSnapshotForRepository } from '../github/actions/generate-snapshot-for-repository';
 import { createGithubWebhookInterceptor } from '../github/webhooks';
 import { QueueHandlerWorkerConfig } from '../types/config';
 import {
-  GenerateSnapshotForRepositoryRecord,
   HandlerCallback,
   QueueHandlerType,
+  QueueRepositorySnapshotMessage,
   S3HandlerCallback,
   S3SqsEvent,
   WebhookHandlerCallback,
@@ -36,13 +35,14 @@ import { isArray } from '../utils/types';
 import { handleSnapshotManifest } from './generate-sbom';
 import { createGithubWebhookHandler } from './github-webhook';
 import { handleScanSbom } from './scan-sbom';
+import { snapshotRepository } from './snapshot-repository';
 import { runUpdateVulnerabilities } from './upsert-vulnerabilities';
 
 const workerConfig = getWorkerConfig();
 
 type QueueHandlerFunc =
   | HandlerCallback<S3SqsEvent>
-  | HandlerCallback<GenerateSnapshotForRepositoryRecord[]>
+  | HandlerCallback<QueueRepositorySnapshotMessage[]>
   | WebhookHandlerCallback;
 
 interface QueueHandlerConfig {
@@ -158,9 +158,9 @@ function wrapProcessS3EventQueueJob(
 }
 
 function wrapProcessRepositoryJob(
-  processMessageCallback: HandlerCallback<GenerateSnapshotForRepositoryRecord>
-): (parsedBody: GenerateSnapshotForRepositoryRecord[]) => Promise<MaybeError<undefined>> {
-  return async (parsedBody: GenerateSnapshotForRepositoryRecord[]) => {
+  processMessageCallback: HandlerCallback<QueueRepositorySnapshotMessage>
+): (parsedBody: QueueRepositorySnapshotMessage[]) => Promise<MaybeError<undefined>> {
+  return async (parsedBody: QueueRepositorySnapshotMessage[]) => {
     if (!isArray(parsedBody) || parsedBody.length === 0) {
       log.info('No records on sqs event, deleting message, exiting');
       return newError('No records on sqs event, deleting message, exiting');
@@ -195,7 +195,7 @@ function loadQueueHandlers(): QueueHandlersType {
     'process-repository': {
       // eslint-disable-next-line @typescript-eslint/require-await
       handlerFunc: async () => {
-        return wrapProcessRepositoryJob(generateSnapshotForRepository);
+        return wrapProcessRepositoryJob(snapshotRepository);
       },
     },
     'process-sbom': {
