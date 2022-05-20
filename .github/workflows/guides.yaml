@@ -17,19 +17,16 @@ name: guides
 on:
   push:
     branches:
-      - disabled_f6bd57ac5a7c
-#      - master
+      - master
 
 jobs:
   checks:
     runs-on: ubuntu-latest
-    env:
-      HASURA_URL: https://lunatrace.lunasec.io/api/service/v1/graphql
-      STATIC_SECRET_ACCESS_TOKEN: ${{secrets.HASURA_SERVICE_SECRET}}
+    environment: master # This is what gives the job access to the secret env vars
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - uses: actions/setup-node@v1
         with:
@@ -39,10 +36,27 @@ jobs:
         env:
           IS_LUNASEC_CI: true
           CI: true
-        run: |
-          yarn install --immutable --immutable-cache --inline-builds
+        run: yarn install --immutable --immutable-cache --inline-builds
+
+      - name: Build Common
+        run: cd lunatrace/bsl/common && yarn run compile
+
+      - name: Build Logger
+        run: cd lunatrace/bsl/logger && yarn run compile
+
+#      - name: Setup tmate session
+#        uses: mxschmitt/action-tmate@v3
+#        env:
+#          HASURA_URL: https://lunatrace.lunasec.io/api/service/v1/graphql
+#          STATIC_SECRET_ACCESS_TOKEN: ${{secrets.LUNATRACE_BACKEND_STATIC_SECRET}}
+#        with:
+#          limit-access-to-actor: true
+#          timeout-minutes: 15
 
       - name: Upsert Guides
+        env:
+          HASURA_URL: https://lunatrace.lunasec.io/api/service/v1/graphql
+          STATIC_SECRET_ACCESS_TOKEN: ${{secrets.LUNATRACE_BACKEND_STATIC_SECRET}}
         working-directory: lunatrace/bsl/backend
         run: yarn run guides:update
 
