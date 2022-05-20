@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -12,25 +12,28 @@
 package main
 
 import (
-	"github.com/rs/zerolog"
+	"github.com/urfave/cli/v2"
+	"go.uber.org/fx"
 
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/config"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/clifx"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/lunatracefx"
 )
 
 func main() {
-	globalFlags := types.NewLunaTraceGlobalFlags()
+	appOpts := fx.Options(
+		lunatracefx.Module,
+		fx.Provide(
+			fx.Annotate(
+				func() *cli.Command {
+					return &cli.Command{
+						Name: "test",
+					}
+				},
+				fx.ResultTags(`group:"cli_root_commands"`),
+			),
 
-	command.EnableGlobalFlags(globalFlags)
+		),
+	)
 
-	appConfig, err := config.LoadLunaTraceConfig()
-	if err != nil {
-		return
-	}
-
-	if appConfig.Stage == constants.DevelopmentEnv {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	}
+	clifx.Main(appOpts)
 }
