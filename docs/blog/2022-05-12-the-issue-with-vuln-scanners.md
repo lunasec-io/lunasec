@@ -42,8 +42,7 @@ assumed
 that there was no better way. The infrastructure just didn't exist to eliminate that tedious job.
 
 At LunaSec,
-we've been taking on this type of work for a few select companies, and taking notes. When diving in deeper to this
-problem we realized something a little mind-blowing.
+we've been taking on this type of work for a few select companies, and taking notes. We realized something a little mind-blowing.
 
 :::info
 By the way, if you'd like to hire us for a dependency review, 
@@ -91,7 +90,7 @@ days ago:
 ![screenshot of vulnerability description showing that most users arent vulnerable because of react-scripts usage](/img/react-vuln.png)
 
 The critical information most people need is right there in the CVE description for you to read, but that's not
-machine-readable.
+machine-readable and so it isn't going to help a scanner.
 
 ### Language version or operating system not vulnerable
 
@@ -142,7 +141,7 @@ about a vulnerability than a simple report.
 
 That's right, all of them. We think.
 
-We're in the process of cloning *every* NPM and Maven package.
+We're in the process of cloning *every* NPM and Maven package, and that's just to start.
 With this we will be able to graph out the relationships between dependencies. Within those relationships we can begin
 to add the context needed to eliminate false positives.
 We could, for instance, flag all denial-of-service type vulnerabilities that occur in sub-dependencies of popular
