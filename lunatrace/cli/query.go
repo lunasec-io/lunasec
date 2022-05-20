@@ -18,6 +18,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 )
 
@@ -31,7 +33,7 @@ mutation MyMutation($object: builds_insert_input!) {
 
 func _() {
 	gql.MyMutation(context.Background(), gql.TODOClient, &gql.Builds_insert_input{
-		Agent_access_token:        1,
+		Agent_access_token:        uuid.New(),
 		Build_number:              0,
 		Created_at:                time.Time{},
 		Existing_github_review_id: "",
@@ -39,10 +41,10 @@ func _() {
 		Git_branch:                "",
 		Git_hash:                  "",
 		Git_remote:                "",
-		Id:                        "",
+		Id:                        uuid.New(),
 		Manifests:                 nil,
 		Project:                   nil,
-		Project_id:                "",
+		Project_id:                uuid.New(),
 		Pull_request_id:           "",
 		S3_url:                    "",
 		Scans:                     nil,

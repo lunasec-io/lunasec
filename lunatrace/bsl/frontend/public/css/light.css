@@ -4450,7 +4450,7 @@ textarea.form-control-lg {
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
-  border: 0 solid transparent;
+  border: 1px solid #e2e8ee;
   border-radius: 0.25rem;
 }
 .card > hr {
@@ -4505,7 +4505,7 @@ textarea.form-control-lg {
   padding: 1rem 1.25rem;
   margin-bottom: 0;
   background-color: #fff;
-  border-bottom: 0 solid transparent;
+  border-bottom: 1px solid #e2e8ee;
 }
 .card-header:first-child {
   border-radius: 0.25rem 0.25rem 0 0;
@@ -4514,7 +4514,7 @@ textarea.form-control-lg {
 .card-footer {
   padding: 1rem 1.25rem;
   background-color: #fff;
-  border-top: 0 solid transparent;
+  border-top: 1px solid #e2e8ee;
 }
 .card-footer:last-child {
   border-radius: 0 0 0.25rem 0.25rem;
@@ -13180,7 +13180,7 @@ textarea.form-control-lg {
   border-bottom: 0;
 }
 .accordion .card-body {
-  border-top: 1px solid transparent;
+  border-top: 1px solid #e2e8ee;
 }
 .accordion .card-title a {
   color: #6c757d;
@@ -14790,7 +14790,7 @@ body[data-theme=dark] .settings-toggle-option:first-child {
 
 .settings-panel {
   background: #fff;
-  border-left: 0 solid transparent;
+  border-left: 1px solid #e2e8ee;
   display: block;
   height: 100%;
   position: fixed;
@@ -15385,14 +15385,6 @@ body[data-theme=light] .badge-sidebar-secondary {
 
 body:not([data-sidebar-position=right]) .sidebar.collapsed {
   margin-left: -260px;
-}
-@media (min-width: 1px) and (max-width: 991.98px) {
-  body:not([data-sidebar-position=right]) .sidebar {
-    margin-left: -260px;
-  }
-  body:not([data-sidebar-position=right]) .sidebar.collapsed {
-    margin-left: 0;
-  }
 }
 body:not([data-sidebar-position=right]) .sidebar-toggle {
   margin-right: 1rem;
@@ -16181,7 +16173,7 @@ a {
   background: #fff;
   background-color: #fff;
   background-clip: border-box;
-  border: 0 solid transparent;
+  border: 1px solid #e2e8ee;
   box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.05);
   border-radius: 0.25rem !important;
   margin-bottom: 2rem;
@@ -17922,6 +17914,58 @@ code.code-highlight {
   fill: #f1c40f;
 }
 
+.form-check-input {
+  clear: left;
+}
+
+.form-switch.form-switch-sm {
+  margin-bottom: 0.5rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-sm .form-check-input {
+  height: 1rem;
+  width: calc(1rem + 0.75rem);
+  border-radius: 2rem;
+  margin-right: 0.5rem;
+  margin-top: 0.1rem;
+}
+
+.form-switch.form-switch-md {
+  margin-bottom: 0.75rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-md .form-check-input {
+  height: 1.25rem;
+  width: calc(1.5rem + 0.75rem);
+  border-radius: 2.5rem;
+  margin-right: 0.75rem;
+  margin-top: 0.15rem;
+}
+
+.form-switch.form-switch-lg {
+  margin-bottom: 1rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-lg .form-check-input {
+  height: 1.5rem;
+  width: calc(2rem + 0.75rem);
+  border-radius: 3rem;
+  margin-right: 1rem;
+  margin-top: 0.2rem;
+}
+
+.form-switch.form-switch-xl {
+  margin-bottom: 1.5rem;
+  /* JUST FOR STYLING PURPOSE */
+}
+.form-switch.form-switch-xl .form-check-input {
+  height: 2rem;
+  width: calc(3rem + 0.75rem);
+  border-radius: 4rem;
+  margin-right: 1.5rem;
+  margin-top: 0.3rem;
+}
+
 .darker {
   color: #6c757d;
 }
@@ -17944,10 +17988,6 @@ code.code-highlight {
 #atlas-chat .bubble::after {
   margin-top: 0.75em;
   content: url('data:image/svg+xml,<svg stroke="currentColor" fill="white" stroke-width="0" viewBox="0 0 16 16" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path d="M14 0a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z"></path></svg>') !important;
-}
-
-.color-responds-theme {
-  color: #495057 !important;
 }
 
 /*# sourceMappingURL=light.css.map */

@@ -21,12 +21,13 @@ import * as cdk from '@aws-cdk/core';
 import { LunatraceBackendStack } from '../lib/lunatrace-backend-stack';
 import { WorkerStorageStack } from '../lib/worker-storage-stack';
 
-interface StackInputsType {
+export interface StackInputsType {
   appName: string;
   domainName: string;
   domainZoneId: string;
   cdkDefaultRegion: string;
   cdkDefaultAccount: string;
+  oathkeeperConfigBucketArn: string;
   certificateArn: string;
   backendStaticSecretArn: string;
   databaseSecretArn: string;
@@ -49,6 +50,7 @@ const requiredFields = [
   'domainZoneId',
   'cdkDefaultRegion',
   'cdkDefaultAccount',
+  'oathkeeperConfigBucketArn',
   'certificateArn',
   'databaseSecretArn',
   'gitHubAppId',
@@ -92,20 +94,7 @@ function deployStack() {
   }
   return new LunatraceBackendStack(app, `${appName}-BackendStack`, {
     env: env,
-    appName: appName,
-    domainName: stackInputs.domainName,
-    domainZoneId: stackInputs.domainZoneId,
-    vpcId: stackInputs.vpcId,
-    certificateArn: stackInputs.certificateArn,
-    backendStaticSecretArn: stackInputs.backendStaticSecretArn,
-    databaseSecretArn: stackInputs.databaseSecretArn,
-    gitHubAppId: stackInputs.gitHubAppId,
-    gitHubAppPrivateKey: stackInputs.gitHubAppPrivateKey,
-    gitHubAppWebHookSecret: stackInputs.gitHubAppWebHookSecret,
-    githubOauthAppLoginClientIdArn: stackInputs.githubOauthAppLoginClientIdArn,
-    githubOauthAppLoginSecretArn: stackInputs.githubOauthAppLoginSecretArn,
-    kratosCookieSecretArn: stackInputs.kratosCookieSecretArn,
-    kratosCipherSecretArn: stackInputs.kratosCipherSecretArn,
+    ...stackInputs,
   });
 }
 

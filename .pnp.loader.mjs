@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import { URL, fileURLToPath, pathToFileURL } from 'url';
 import fs from 'fs';
 import path from 'path';
@@ -38,7 +54,7 @@ npath.toPortablePath = toPortablePath;
 npath.contains = (from, to) => contains(npath, from, to);
 ppath.contains = (from, to) => contains(ppath, from, to);
 const WINDOWS_PATH_REGEXP = /^([a-zA-Z]:.*)$/;
-const UNC_WINDOWS_PATH_REGEXP = /^\\\\(\.\\)?(.*)$/;
+const UNC_WINDOWS_PATH_REGEXP = /^\/\/(\.\/)?(.*)$/;
 const PORTABLE_PATH_REGEXP = /^\/([a-zA-Z]:.*)$/;
 const UNC_PORTABLE_PATH_REGEXP = /^\/unc\/(\.dot\/)?(.*)$/;
 function fromPortablePath(p) {
@@ -56,12 +72,13 @@ function fromPortablePath(p) {
 function toPortablePath(p) {
   if (process.platform !== `win32`)
     return p;
+  p = p.replace(/\\/g, `/`);
   let windowsPathMatch, uncWindowsPathMatch;
   if (windowsPathMatch = p.match(WINDOWS_PATH_REGEXP))
     p = `/${windowsPathMatch[1]}`;
   else if (uncWindowsPathMatch = p.match(UNC_WINDOWS_PATH_REGEXP))
     p = `/unc/${uncWindowsPathMatch[1] ? `.dot/` : ``}${uncWindowsPathMatch[2]}`;
-  return p.replace(/\\/g, `/`);
+  return p;
 }
 
 const builtinModules = new Set(Module.builtinModules || Object.keys(process.binding(`natives`)));
@@ -100,15 +117,19 @@ async function tryReadFile(path2) {
     throw error;
   }
 }
-function tryParseURL(str) {
+function tryParseURL(str, base) {
   try {
-    return new URL(str);
+    return new URL(str, base);
   } catch {
     return null;
   }
 }
+let entrypointPath = null;
+function setEntrypointPath(file) {
+  entrypointPath = file;
+}
 function getFileFormat(filepath) {
-  var _a;
+  var _a, _b;
   const ext = path.extname(filepath);
   switch (ext) {
     case `.mjs`: {
@@ -125,12 +146,21 @@ function getFileFormat(filepath) {
     }
     case `.js`: {
       const pkg = readPackageScope(filepath);
-      if (pkg) {
-        return (_a = pkg.data.type) != null ? _a : `commonjs`;
-      }
+      if (!pkg)
+        return `commonjs`;
+      return (_a = pkg.data.type) != null ? _a : `commonjs`;
+    }
+    default: {
+      if (entrypointPath !== filepath)
+        return null;
+      const pkg = readPackageScope(filepath);
+      if (!pkg)
+        return `commonjs`;
+      if (pkg.data.type === `module`)
+        return null;
+      return (_b = pkg.data.type) != null ? _b : `commonjs`;
     }
   }
-  return null;
 }
 
 async function getFormat$1(resolved, context, defaultGetFormat) {
@@ -170,17 +200,18 @@ async function load$1(urlString, context, defaultLoad) {
 }
 
 const pathRegExp = /^(?![a-zA-Z]:[\\/]|\\\\|\.{0,2}(?:\/|$))((?:node:)?(?:@[^/]+\/)?[^/]+)\/*(.*|)$/;
+const isRelativeRegexp = /^\.{0,2}\//;
 async function resolve$1(originalSpecifier, context, defaultResolver) {
   var _a;
   const {findPnpApi} = moduleExports;
   if (!findPnpApi || isBuiltinModule(originalSpecifier))
     return defaultResolver(originalSpecifier, context, defaultResolver);
   let specifier = originalSpecifier;
-  const url = tryParseURL(specifier);
+  const url = tryParseURL(specifier, isRelativeRegexp.test(specifier) ? context.parentURL : void 0);
   if (url) {
     if (url.protocol !== `file:`)
       return defaultResolver(originalSpecifier, context, defaultResolver);
-    specifier = fileURLToPath(specifier);
+    specifier = fileURLToPath(url);
   }
   const {parentURL, conditions = []} = context;
   const issuer = parentURL ? fileURLToPath(parentURL) : process.cwd();
@@ -208,8 +239,15 @@ async function resolve$1(originalSpecifier, context, defaultResolver) {
   });
   if (!result)
     throw new Error(`Resolving '${specifier}' from '${issuer}' failed`);
+  const resultURL = pathToFileURL(result);
+  if (url) {
+    resultURL.search = url.search;
+    resultURL.hash = url.hash;
+  }
+  if (!parentURL)
+    setEntrypointPath(fileURLToPath(resultURL));
   return {
-    url: pathToFileURL(result).href
+    url: resultURL.href
   };
 }
 

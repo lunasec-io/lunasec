@@ -17,20 +17,21 @@ package main
 import (
 	"github.com/cenkalti/backoff/v4"
 	"github.com/rs/zerolog/log"
+
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/agent"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/config"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+
 	"time"
 )
 
 func main() {
-	globalBoolFlags := map[string]bool{
-		"json":  true,
-		"debug": false,
-	}
-
-	command.EnableGlobalFlags(globalBoolFlags)
+	command.EnableGlobalFlags(&types.LunaTraceGlobalFlags{
+		Json:  true,
+		Debug: false,
+	})
 
 	appConfig, err := config.LoadLunaTraceAgentConfig()
 	if err != nil {
@@ -38,10 +39,11 @@ func main() {
 	}
 
 	if appConfig.LunaTraceApp.Stage == constants.DevelopmentEnv {
-		globalBoolFlags["debug"] = true
+		command.EnableGlobalFlags(&types.LunaTraceGlobalFlags{
+			Json:  true,
+			Debug: true,
+		})
 	}
-
-	command.EnableGlobalFlags(globalBoolFlags)
 
 	heartbeat := func() error {
 		return agent.PerformAgentHeartbeat(appConfig)
