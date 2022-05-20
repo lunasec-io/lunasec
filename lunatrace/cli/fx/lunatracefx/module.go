@@ -39,11 +39,12 @@ func NewGraphQLClient(appConfig types.LunaTraceConfig) graphql.Client {
 }
 
 // Module contains fx modules that are common across all applications.
-var Module = fx.Provide(
-	types.NewLunaTraceGlobalFlags,
-	config.LoadLunaTraceConfig,
-	NewGraphQLClient,
-
+var Module = fx.Options(
+	fx.Provide(
+		types.NewLunaTraceGlobalFlags,
+		config.LoadLunaTraceConfig,
+		NewGraphQLClient,
+	),
 	// todo remove all global stuff
 	fx.Invoke(command.EnableGlobalFlags),
 	fx.Invoke(func(lc fx.Lifecycle) {
