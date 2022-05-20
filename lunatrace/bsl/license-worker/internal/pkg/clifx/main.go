@@ -16,6 +16,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/ipfans/fxlogger"
+	"github.com/rs/zerolog"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 )
@@ -32,7 +34,8 @@ func Main(opts fx.Option) {
 			NewApp,
 		),
 		fx.Populate(&cliApp),
-		// todo withlogger to dev null, we usually don't want fx logs.
+		// todo figure out logger situation
+		fx.WithLogger(fxlogger.WithZerolog(zerolog.Nop())),
 	))
 	// In a typical application, we could just use app.Run() here. Since this
 	// is a CLI tool, we'll use the more-explicit Start and Stop.
