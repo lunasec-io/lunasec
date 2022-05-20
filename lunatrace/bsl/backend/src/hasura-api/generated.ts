@@ -3070,8 +3070,8 @@ export type Organizations = {
   /** An array relationship */
   projects: Array<Projects>;
   /** An object relationship */
-  settings?: Maybe<Settings>;
-  settings_id?: Maybe<Scalars['uuid']>;
+  settings: Settings;
+  settings_id: Scalars['uuid'];
 };
 
 
@@ -4737,8 +4737,8 @@ export type Projects = {
   /** An array relationship */
   reports: Array<Project_Access_Tokens>;
   /** An object relationship */
-  settings?: Maybe<Settings>;
-  settings_id?: Maybe<Scalars['uuid']>;
+  settings: Settings;
+  settings_id: Scalars['uuid'];
 };
 
 
@@ -5853,7 +5853,7 @@ export type Settings = {
   id: Scalars['uuid'];
   /** An object relationship */
   organization?: Maybe<Organizations>;
-  pr_feedback_enabled: Scalars['Boolean'];
+  pr_feedback_disabled?: Maybe<Scalars['Boolean']>;
   /** An object relationship */
   project?: Maybe<Projects>;
 };
@@ -5866,7 +5866,7 @@ export type Settings_Bool_Exp = {
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   organization?: InputMaybe<Organizations_Bool_Exp>;
-  pr_feedback_enabled?: InputMaybe<Boolean_Comparison_Exp>;
+  pr_feedback_disabled?: InputMaybe<Boolean_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
 };
 
@@ -5875,7 +5875,7 @@ export type Settings_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   organization?: InputMaybe<Organizations_Order_By>;
-  pr_feedback_enabled?: InputMaybe<Order_By>;
+  pr_feedback_disabled?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
 };
 
@@ -5886,7 +5886,7 @@ export enum Settings_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  PrFeedbackEnabled = 'pr_feedback_enabled'
+  PrFeedbackDisabled = 'pr_feedback_disabled'
 }
 
 /** Boolean expression to compare columns of type "severity_enum". All fields are combined with logical 'AND'. */
@@ -7249,7 +7249,7 @@ export type GetBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, s3_url?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null, settings?: { __typename?: 'settings', pr_feedback_enabled: boolean } | null } | null } | null };
+export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, s3_url?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null, settings: { __typename?: 'settings', pr_feedback_disabled?: boolean | null } } | null } | null };
 
 export type GetCloneRepoInfoFromRepoIdQueryVariables = Exact<{
   repo_github_id: Scalars['Int'];
@@ -7469,7 +7469,7 @@ export const GetBuildDocument = gql`
         installation_id
       }
       settings {
-        pr_feedback_enabled
+        pr_feedback_disabled
       }
     }
     pull_request_id

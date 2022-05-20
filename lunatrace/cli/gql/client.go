@@ -22,6 +22,21 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 )
 
+type HeadersTransport struct {
+	RT      http.RoundTripper
+	Headers map[string]string
+}
+
+func (t *HeadersTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if t.RT == nil {
+		t.RT = http.DefaultTransport
+	}
+	for header, value := range t.Headers {
+		req.Header.Add(header, value)
+	}
+	return t.RT.RoundTrip(req)
+}
+
 // TODOClient is bad. Remove it. it is todo.
 // todo auth headers?
 var TODOClient = func() graphql.Client {

@@ -202,6 +202,36 @@ export type BuildsScans_AggregateArgs = {
   where?: InputMaybe<Scans_Bool_Exp>;
 };
 
+/** aggregated selection of "builds" */
+export type Builds_Aggregate = {
+  __typename?: 'builds_aggregate';
+  aggregate?: Maybe<Builds_Aggregate_Fields>;
+  nodes: Array<Builds>;
+};
+
+/** aggregate fields of "builds" */
+export type Builds_Aggregate_Fields = {
+  __typename?: 'builds_aggregate_fields';
+  avg?: Maybe<Builds_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Builds_Max_Fields>;
+  min?: Maybe<Builds_Min_Fields>;
+  stddev?: Maybe<Builds_Stddev_Fields>;
+  stddev_pop?: Maybe<Builds_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Builds_Stddev_Samp_Fields>;
+  sum?: Maybe<Builds_Sum_Fields>;
+  var_pop?: Maybe<Builds_Var_Pop_Fields>;
+  var_samp?: Maybe<Builds_Var_Samp_Fields>;
+  variance?: Maybe<Builds_Variance_Fields>;
+};
+
+
+/** aggregate fields of "builds" */
+export type Builds_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Builds_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
 /** order by aggregate values of table "builds" */
 export type Builds_Aggregate_Order_By = {
   avg?: InputMaybe<Builds_Avg_Order_By>;
@@ -215,6 +245,12 @@ export type Builds_Aggregate_Order_By = {
   var_pop?: InputMaybe<Builds_Var_Pop_Order_By>;
   var_samp?: InputMaybe<Builds_Var_Samp_Order_By>;
   variance?: InputMaybe<Builds_Variance_Order_By>;
+};
+
+/** aggregate avg on columns */
+export type Builds_Avg_Fields = {
+  __typename?: 'builds_avg_fields';
+  build_number?: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "builds" */
@@ -244,6 +280,21 @@ export type Builds_Bool_Exp = {
   source_type?: InputMaybe<Builds_Source_Type_Comparison_Exp>;
 };
 
+/** aggregate max on columns */
+export type Builds_Max_Fields = {
+  __typename?: 'builds_max_fields';
+  build_number?: Maybe<Scalars['Int']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
+  s3_url?: Maybe<Scalars['String']>;
+};
+
 /** order by max() on columns of table "builds" */
 export type Builds_Max_Order_By = {
   build_number?: InputMaybe<Order_By>;
@@ -256,6 +307,21 @@ export type Builds_Max_Order_By = {
   project_id?: InputMaybe<Order_By>;
   pull_request_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Builds_Min_Fields = {
+  __typename?: 'builds_min_fields';
+  build_number?: Maybe<Scalars['Int']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
+  s3_url?: Maybe<Scalars['String']>;
 };
 
 /** order by min() on columns of table "builds" */
@@ -349,9 +415,21 @@ export type Builds_Source_Type_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['builds_source_type']>>;
 };
 
+/** aggregate stddev on columns */
+export type Builds_Stddev_Fields = {
+  __typename?: 'builds_stddev_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
 /** order by stddev() on columns of table "builds" */
 export type Builds_Stddev_Order_By = {
   build_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Builds_Stddev_Pop_Fields = {
+  __typename?: 'builds_stddev_pop_fields';
+  build_number?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "builds" */
@@ -359,9 +437,21 @@ export type Builds_Stddev_Pop_Order_By = {
   build_number?: InputMaybe<Order_By>;
 };
 
+/** aggregate stddev_samp on columns */
+export type Builds_Stddev_Samp_Fields = {
+  __typename?: 'builds_stddev_samp_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
 /** order by stddev_samp() on columns of table "builds" */
 export type Builds_Stddev_Samp_Order_By = {
   build_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Builds_Sum_Fields = {
+  __typename?: 'builds_sum_fields';
+  build_number?: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "builds" */
@@ -369,14 +459,32 @@ export type Builds_Sum_Order_By = {
   build_number?: InputMaybe<Order_By>;
 };
 
+/** aggregate var_pop on columns */
+export type Builds_Var_Pop_Fields = {
+  __typename?: 'builds_var_pop_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
 /** order by var_pop() on columns of table "builds" */
 export type Builds_Var_Pop_Order_By = {
   build_number?: InputMaybe<Order_By>;
 };
 
+/** aggregate var_samp on columns */
+export type Builds_Var_Samp_Fields = {
+  __typename?: 'builds_var_samp_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
 /** order by var_samp() on columns of table "builds" */
 export type Builds_Var_Samp_Order_By = {
   build_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Builds_Variance_Fields = {
+  __typename?: 'builds_variance_fields';
+  build_number?: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "builds" */
@@ -1841,7 +1949,6 @@ export type Organization_User_Insert_Input = {
   organization?: InputMaybe<Organizations_Obj_Rel_Insert_Input>;
   organization_id?: InputMaybe<Scalars['uuid']>;
   role?: InputMaybe<Scalars['organization_user_role']>;
-  user_id?: InputMaybe<Scalars['uuid']>;
 };
 
 /** order by max() on columns of table "organization_user" */
@@ -2261,6 +2368,8 @@ export type Projects = {
   __typename?: 'projects';
   /** An array relationship */
   builds: Array<Builds>;
+  /** An aggregate relationship */
+  builds_aggregate: Builds_Aggregate;
   created_at: Scalars['timestamp'];
   /** An array relationship */
   github_repositories: Array<Github_Repositories>;
@@ -2288,6 +2397,16 @@ export type Projects = {
 
 /** columns and relationships of "projects" */
 export type ProjectsBuildsArgs = {
+  distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Builds_Order_By>>;
+  where?: InputMaybe<Builds_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsBuilds_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -2503,6 +2622,8 @@ export type Query_Root = {
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   /** An array relationship */
   builds: Array<Builds>;
+  /** An aggregate relationship */
+  builds_aggregate: Builds_Aggregate;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
   fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
@@ -2596,6 +2717,15 @@ export type Query_RootAuthenticatedRepoCloneUrlArgs = {
 
 
 export type Query_RootBuildsArgs = {
+  distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Builds_Order_By>>;
+  where?: InputMaybe<Builds_Bool_Exp>;
+};
+
+
+export type Query_RootBuilds_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3335,6 +3465,8 @@ export type Subscription_Root = {
   __typename?: 'subscription_root';
   /** An array relationship */
   builds: Array<Builds>;
+  /** An aggregate relationship */
+  builds_aggregate: Builds_Aggregate;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
   /** An array relationship */
@@ -3421,6 +3553,15 @@ export type Subscription_Root = {
 
 
 export type Subscription_RootBuildsArgs = {
+  distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Builds_Order_By>>;
+  where?: InputMaybe<Builds_Bool_Exp>;
+};
+
+
+export type Subscription_RootBuilds_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -4171,10 +4312,11 @@ export type GetManifestQuery = { __typename?: 'query_root', manifests_by_pk?: { 
 
 export type GetProjectQueryVariables = Exact<{
   project_id: Scalars['uuid'];
+  build_limit?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, settings?: { __typename?: 'settings', id: any, pr_feedback_enabled: boolean } | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerabilities', ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> } | null };
+export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, settings?: { __typename?: 'settings', id: any, pr_feedback_enabled: boolean } | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerabilities', ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }>, builds_aggregate: { __typename?: 'builds_aggregate', aggregate?: { __typename?: 'builds_aggregate_fields', count: number } | null } } | null };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4445,7 +4587,7 @@ export const GetManifestDocument = `
 }
     `;
 export const GetProjectDocument = `
-    query GetProject($project_id: uuid!) {
+    query GetProject($project_id: uuid!, $build_limit: Int = 10) {
   projects_by_pk(id: $project_id) {
     created_at
     id
@@ -4478,7 +4620,7 @@ export const GetProjectDocument = `
         traits
       }
     }
-    builds(order_by: {created_at: desc}) {
+    builds(order_by: {created_at: desc}, limit: $build_limit) {
       id
       created_at
       build_number
@@ -4507,6 +4649,11 @@ export const GetProjectDocument = `
       git_branch
       git_hash
       git_remote
+    }
+    builds_aggregate {
+      aggregate {
+        count
+      }
     }
   }
 }

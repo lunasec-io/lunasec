@@ -30,6 +30,7 @@ require (
 	github.com/stretchr/testify v1.7.1
 	github.com/urfave/cli/v2 v2.6.0
 	go.uber.org/config v1.4.0
+	go.uber.org/fx v1.17.1
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.0.0-20220511200225-c6db032c6c88
 	gopkg.in/square/go-jose.v2 v2.6.0
@@ -238,6 +239,7 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.opentelemetry.io/otel/trace v1.3.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
+	go.uber.org/dig v1.14.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect

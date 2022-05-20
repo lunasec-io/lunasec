@@ -1,5 +1,3 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 CREATE SCHEMA "package";
 
 CREATE TYPE "package"."package_manager" AS ENUM (
@@ -14,7 +12,7 @@ CREATE TYPE "package"."license_source" AS ENUM (
 );
 
 CREATE TABLE "package"."maintainer" (
-  "id" UUID PRIMARY KEY DEFAULT (uuid_generate_v4()),
+  "id" UUID PRIMARY KEY DEFAULT public.gen_random_uuid(),
   "package_manager" package.package_manager,
   "email" text NOT NULL,
   "name" text
@@ -26,7 +24,7 @@ CREATE TABLE "package"."package_maintainer" (
 );
 
 CREATE TABLE "package"."package" (
-  "id" UUID PRIMARY KEY DEFAULT (uuid_generate_v4()),
+  "id" UUID PRIMARY KEY DEFAULT public.gen_random_uuid(),
   "package_manager" package.package_manager NOT NULL,
   "custom_registry" text,
   "name" text NOT NULL,
@@ -34,7 +32,7 @@ CREATE TABLE "package"."package" (
 );
 
 CREATE TABLE "package"."release" (
-  "id" UUID PRIMARY KEY DEFAULT (uuid_generate_v4()),
+  "id" UUID PRIMARY KEY DEFAULT public.gen_random_uuid(),
   "package_id" UUID,
   "publishing_maintainer_id" UUID,
   "version" text NOT NULL,
@@ -47,7 +45,7 @@ CREATE TABLE "package"."release" (
 );
 
 CREATE TABLE "package"."release_dependency" (
-  "id" UUID PRIMARY KEY DEFAULT (uuid_generate_v4()),
+  "id" UUID PRIMARY KEY DEFAULT public.gen_random_uuid(),
   "release_id" UUID NOT NULL,
   "dependency_package_id" UUID,
   "dependency_release_id" UUID,
@@ -56,7 +54,7 @@ CREATE TABLE "package"."release_dependency" (
 );
 
 CREATE TABLE "package"."release_license" (
-  "id" UUID PRIMARY KEY DEFAULT (uuid_generate_v4()),
+  "id" UUID PRIMARY KEY DEFAULT public.gen_random_uuid(),
   "source" package.license_source NOT NULL,
   "release_id" UUID NOT NULL,
   "scan_time" timestamptz NOT NULL DEFAULT (now()),
@@ -65,7 +63,7 @@ CREATE TABLE "package"."release_license" (
 );
 
 CREATE TABLE "package"."license" (
-  "id" UUID PRIMARY KEY DEFAULT (uuid_generate_v4()),
+  "id" UUID PRIMARY KEY DEFAULT public.gen_random_uuid(),
   "name" text NOT NULL
 );
 

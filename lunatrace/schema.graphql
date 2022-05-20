@@ -6,11 +6,11 @@ schema {
 
 """whether this query should be cached (Hasura Cloud only)"""
 directive @cached(
-  """measured in seconds"""
-  ttl: Int! = 60
-
   """refresh the cache entry"""
   refresh: Boolean! = false
+
+  """measured in seconds"""
+  ttl: Int! = 60
 ) on QUERY
 
 type AuthenticatedRepoCloneUrlOutput {
@@ -3834,8 +3834,8 @@ type organizations {
   ): [projects!]!
 
   """An object relationship"""
-  settings: settings
-  settings_id: uuid
+  settings: settings!
+  settings_id: uuid!
 }
 
 """
@@ -5958,8 +5958,8 @@ type projects {
   ): [project_access_tokens!]!
 
   """An object relationship"""
-  settings: settings
-  settings_id: uuid
+  settings: settings!
+  settings_id: uuid!
 }
 
 """
@@ -7286,7 +7286,7 @@ type settings {
 
   """An object relationship"""
   organization: organizations
-  pr_feedback_enabled: Boolean!
+  pr_feedback_disabled: Boolean
 
   """An object relationship"""
   project: projects
@@ -7302,7 +7302,7 @@ input settings_bool_exp {
   created_at: timestamp_comparison_exp
   id: uuid_comparison_exp
   organization: organizations_bool_exp
-  pr_feedback_enabled: Boolean_comparison_exp
+  pr_feedback_disabled: Boolean_comparison_exp
   project: projects_bool_exp
 }
 
@@ -7311,7 +7311,7 @@ input settings_order_by {
   created_at: order_by
   id: order_by
   organization: organizations_order_by
-  pr_feedback_enabled: order_by
+  pr_feedback_disabled: order_by
   project: projects_order_by
 }
 
@@ -7326,7 +7326,7 @@ enum settings_select_column {
   id
 
   """column name"""
-  pr_feedback_enabled
+  pr_feedback_disabled
 }
 
 scalar severity_enum
@@ -9004,4 +9004,3 @@ enum webhook_cache_update_column {
   """column name"""
   sqs_message_id
 }
-
