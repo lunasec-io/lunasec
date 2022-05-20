@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -61,7 +61,8 @@ type AppDeps struct {
 	// List of commands to execute
 	Commands []*cli.Command `group:"cli_root_commands"`
 	// List of flags to parse
-	Flags []cli.Flag `group:"cli_root_flags"`
+	Flags  []cli.Flag `group:"cli_root_flags"`
+	Action RootAction `optional:"true"`
 }
 
 func NewApp(in AppIn) *cli.App {
@@ -77,28 +78,13 @@ func NewApp(in AppIn) *cli.App {
 		a.Description = in.AppConfig.Description
 		a.Before = in.AppConfig.Before
 		a.After = in.AppConfig.After
-		a.Action = in.AppConfig.Action
 		a.CommandNotFound = in.AppConfig.CommandNotFound
 		a.OnUsageError = in.AppConfig.OnUsageError
 	}
 
+	a.Action = in.AppDeps.Action
 	a.Commands = in.AppDeps.Commands
 	a.Flags = in.AppDeps.Flags
 
 	return a
-}
-
-var Module = fx.Options(fx.Provide(NewApp))
-
-func RootCommand(c *cli.Command) interface{} {
-	return fx.Annotated{
-		Group:  RootCommandGroup,
-		Target: c,
-	}
-}
-func RootFlag(c *cli.Flag) interface{} {
-	return fx.Annotated{
-		Group:  RootCommandGroup,
-		Target: c,
-	}
 }
