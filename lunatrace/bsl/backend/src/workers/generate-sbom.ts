@@ -36,6 +36,7 @@ export async function uploadSbomToS3(organizationId: string, buildId: string, gz
   }
 }
 
+// This is only called from the GUI drag and drop
 export async function createBuildAndGenerateSbom(
   orgId: string,
   projectId: string,
@@ -43,7 +44,7 @@ export async function createBuildAndGenerateSbom(
   bucketInfo: SbomBucketInfo
 ): Promise<string> {
   // Create a new build
-  const { insert_builds_one } = await hasura.InsertBuild({ project_id: projectId, source_type: 'gui' });
+  const { insert_builds_one } = await hasura.InsertBuild({ build: { project_id: projectId, source_type: 'gui' } });
   log.info('hasura returned when inserting build ', insert_builds_one);
   if (!insert_builds_one || !insert_builds_one.id) {
     throw new Error('Failed to insert a new build');
@@ -53,7 +54,7 @@ export async function createBuildAndGenerateSbom(
   // Get manifest from s3, streaming
   const [fileStream, _fileLength] = await aws.getFileFromS3(bucketInfo.key, bucketInfo.bucketName, bucketInfo.region);
   // spawn a copy of the CLI to make an sbom, stream in the manifest
-  const gzippedSbom = generateSbomFromAsset('file', assetName, 'master', {
+  const gzippedSbom = generateSbomFromAsset('file', assetName, 'master', undefined, {
     inputStream: fileStream,
   });
 

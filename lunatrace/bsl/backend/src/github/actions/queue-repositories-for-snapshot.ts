@@ -13,31 +13,28 @@
  */
 import { SendMessageCommand } from '@aws-sdk/client-sqs';
 
-import { sqsClient } from '../aws/sqs-client';
-import { getRepositoryQueueConfig } from '../config';
-import { GenerateSnapshotForRepositoryRecord } from '../types/sqs';
-import { log } from '../utils/log';
-import { getSqsUrlFromName } from '../utils/sqs';
-import { catchError, threwError } from '../utils/try';
+import { sqsClient } from '../../aws/sqs-client';
+import { getRepositoryQueueConfig } from '../../config';
+import { QueueRepositorySnapshotMessage } from '../../types/sqs';
+import { newError, newResult } from '../../utils/errors';
+import { log } from '../../utils/log';
+import { getSqsUrlFromName } from '../../utils/sqs';
+import { catchError, threwError } from '../../utils/try';
 
-export async function queueRepositoriesForSnapshot(
-  installationId: number,
-  records: GenerateSnapshotForRepositoryRecord[]
-): Promise<void> {
+export async function queueRepositoriesForSnapshot(installationId: number, records: QueueRepositorySnapshotMessage[]) {
   const repoQueueConfig = getRepositoryQueueConfig();
-
-  // TODO (cthompson) move this outside of this function, this should only need to be run once
+  // will return cached result so this is performant
   const repositoryQueueUrl = await catchError(getSqsUrlFromName(sqsClient, repoQueueConfig.queueName));
 
   if (threwError(repositoryQueueUrl) || repositoryQueueUrl.error) {
     log.error('unable to load repository queue url', {
       queueName: repositoryQueueUrl,
     });
-    return;
+    return newError('unable to get queue url');
   }
 
-  // messages sent to this queue will be processed by the process-repository queue handler in workers/snapshot-repository
-  await sqsClient.send(
+  // messages sent to this queue will be processed by the process-repository queue handler in workers/snapshot-repository.
+  const result = await sqsClient.send(
     new SendMessageCommand({
       MessageBody: JSON.stringify(records),
       MessageAttributes: {
@@ -49,4 +46,9 @@ export async function queueRepositoriesForSnapshot(
       QueueUrl: repositoryQueueUrl.res,
     })
   );
+  if (!result || !result.$metadata.httpStatusCode || result.$metadata.httpStatusCode >= 300) {
+    return newError('sending message to queue failed, responded: ' + JSON.stringify(result));
+  }
+  log.info(records, 'queued repositories for snapshot');
+  return newResult(result);
 }
