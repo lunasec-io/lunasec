@@ -46,13 +46,9 @@ we've been taking on this type of work for a few select companies, and taking no
 problem we realized something a little mind-blowing.
 
 :::info
-Wish you could automate this painful problem and make it go away?
-Please [send us an email](mailto:deps@lunasec.io) and we'll manually comb through your dependency tree 
-and help you patch what we find.
-
-We're "[doing things that don't scale](http://paulgraham.com/ds.html)" in order to make our tool, 
-[LunaTrace](https://github.com/lunasec-io/lunasec/tree/master/lunatrace), better via us 
-[dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) it internally.
+By the way, if you'd like to hire us for a dependency review, 
+please [send us an email](mailto:deps@lunasec.io) and we'll manually comb through your dependency tree 
+and help you patch what we find. We're using this experience to improve our own scanners. More on that below.
 :::
 
 ## Scanners could do a lot better
@@ -187,10 +183,9 @@ Perhaps we are being overly optimistic, and we can maybe only eliminate half or 
 so, that seems like a tool we'd prefer to use.
 
 ### Limited Offer: We'll manually review your dependencies
+ 
+We need your feedback to help prioritize what
+features to build next and doing some manual work is the fastest way for us to get it. For a limited number of companies,
+we are offering to manually review dependencies, eliminate the false positives, and send a report on what needs to be addressed and why.
 
-We're "[doing things that don't scale](http://paulgraham.com/ds.html)" in order to level up LunaTrace faster. You can
-help us [dogfood](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) LunaTrace internally by letting us scan your
-code and help you fix the vulnerabilities we find.
-
-Please [send us an email](mailto:deps@lunasec.io) if you're interested. We need your feedback to help us prioritize what
-features to build next and doing unscalable work is the fastest way for us to get there.
+Having some _very_ experienced security engineers take a look is great peace of mind. Please send an email to [deps@lunatrace.io](mailto:deps@lunasec.io) if you're interested.
