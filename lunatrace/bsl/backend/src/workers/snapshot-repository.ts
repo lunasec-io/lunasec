@@ -57,7 +57,7 @@ export async function snapshotRepository(record: QueueRepositorySnapshotMessage)
           source_type: record.sourceType,
           git_hash: record.gitCommit,
           git_branch: record.gitBranch,
-          git_remote: repoClone.cloneUrl,
+          git_remote: record.cloneUrl,
         },
       })
   );
