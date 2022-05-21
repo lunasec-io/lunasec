@@ -160,7 +160,7 @@ module.exports = {
     announcementBar: {
       id: 'star_us',
       content:
-        'Show your support for Open Source Security tools by starring us on <a href="https://github.com/lunasec-io/lunasec" target="_blank" rel="noopener">GitHub</a>.',
+        'Claim your own <a href="https://github.com/marketplace/lunatrace-by-lunasec" target="_blank" rel="noopener">Dependency Security Scan</a> now.',
       backgroundColor: '#fafbfc',
       textColor: '#091E42',
       isCloseable: true,
