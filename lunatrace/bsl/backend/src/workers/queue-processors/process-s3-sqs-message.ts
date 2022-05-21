@@ -14,18 +14,18 @@
 import { getEtlBucketConfig } from '../../config';
 import { S3ObjectMetadata } from '../../types/s3';
 import { S3SqsMessage } from '../../types/sqs';
-import { MaybeError } from '../../types/util';
+import { MaybeError, MaybeErrorVoid } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { scanSnapshotActivity } from '../activities/scan-snapshot-activity';
 import { snapshotManifestActivity } from '../activities/snapshot-manifest-activity';
 
-export async function processS3SqsMessage(msg: S3SqsMessage): Promise<MaybeError<undefined>> {
+export async function processS3SqsMessage(msg: S3SqsMessage): Promise<MaybeErrorVoid[]> {
   const bucketConfig = getEtlBucketConfig();
 
   if (!msg.Records) {
     log.info('No records on sqs event, deleting message, exiting');
-    return newError('No records on sqs event, deleting message, exiting');
+    return [];
   }
 
   // todo: do we actually need this promise handling or should we only take the first record from any event?
@@ -45,15 +45,5 @@ export async function processS3SqsMessage(msg: S3SqsMessage): Promise<MaybeError
       return newError(`unknown event from s3 bucket: ${s3Record.bucketName}`);
     }
   });
-  const results = await Promise.all(handlerPromises);
-
-  const errors = results.filter((result) => result.error);
-
-  if (errors.length > 0) {
-    log.error('Errors found during SQS job:', { errors });
-    // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
-    return newError('Errors found during SQS job');
-  }
-
-  return newResult(undefined);
+  return await Promise.all(handlerPromises);
 }
