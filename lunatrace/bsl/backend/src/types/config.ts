@@ -40,7 +40,6 @@ export interface SqsQueueConfig {
 export interface QueueHandlerConfig {
   maxMessages: number;
   visibility: number;
-  envVar: string;
 }
 
 export interface GithubAppConfig {

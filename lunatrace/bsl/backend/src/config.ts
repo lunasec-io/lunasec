@@ -20,6 +20,7 @@ import {
   HasuraConfig,
   JobRunnerConfig,
   JwksConfig,
+  QueueHandlerConfig,
   RepositoryQueueConfig,
   SbomHandlerConfig,
   ServerConfig,
@@ -28,8 +29,7 @@ import {
   WorkerConfig,
   WorkerType,
 } from './types/config';
-import { QueueHandlerConfig, QueueHandlerType } from './types/sqs';
-import { validateBooleanString } from './utils/parse';
+import { tryParseInt, validateBooleanString } from './utils/parse';
 
 export const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
   const envVar = process.env[envVarKey];
@@ -127,39 +127,33 @@ export function getWorkerConfig(): WorkerConfig {
 }
 
 export function getQueueHandlerConfig(): SqsQueueConfig {
-  const handlerName = checkEnvVar('QUEUE_HANDLER');
+  const DEFAULT_QUEUE_MAX_MESSAGES = '10';
+  const DEFAULT_QUEUE_VISIBILITY = '60';
 
-  const DEFAULT_QUEUE_MAX_MESSAGES = 10;
-  const DEFAULT_QUEUE_VISIBILITY = 60;
+  const queueMaxMessagesEnv = checkEnvVar('QUEUE_MAX_MESSAGES', DEFAULT_QUEUE_MAX_MESSAGES);
+  const queueVisibilityEnv = checkEnvVar('QUEUE_VISIBILITY', DEFAULT_QUEUE_VISIBILITY);
 
-  const handlerConfigLookup: Record<QueueHandlerType, QueueHandlerConfig> = {
-    's3-queue-handler': {
-      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
-      visibility: DEFAULT_QUEUE_VISIBILITY * 10,
-      envVar: 'PROCESS_REPOSITORY_QUEUE',
-    },
-    'lunatrace-queue-handler': {
-      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
-      visibility: DEFAULT_QUEUE_VISIBILITY * 10,
-      envVar: 'PROCESS_REPOSITORY_QUEUE',
-    },
+  const maxMessages = tryParseInt(queueMaxMessagesEnv, 10);
+  const visibility = tryParseInt(queueVisibilityEnv, 10);
+
+  if (!maxMessages.success) {
+    throw new Error(`Queue max messages is not a valid integer: ${queueMaxMessagesEnv}`);
+  }
+
+  if (!visibility.success) {
+    throw new Error(`Queue visibility is not a valid integer: ${queueVisibilityEnv}`);
+  }
+
+  const handlerConfig: QueueHandlerConfig = {
+    maxMessages: maxMessages.value,
+    visibility: visibility.value,
   };
 
-  // TODO (cthompson) check if handlerName is in QueueHandlerType
-
-  const handlerConfig = handlerConfigLookup[handlerName as QueueHandlerType];
-
-  const handlerQueueName = (() => {
-    if (isProduction) {
-      return checkEnvVar('QUEUE_NAME');
-    }
-    return checkEnvVar(handlerConfig.envVar);
-  })();
+  const queueName = checkEnvVar('QUEUE_NAME');
 
   return {
-    handlerName,
     handlerConfig,
-    queueName: handlerQueueName,
+    queueName,
   };
 }
 

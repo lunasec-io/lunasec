@@ -202,7 +202,6 @@ export class WorkerStack extends cdk.Stack {
     //     }),
     //     environment: {
     //       ...processQueueCommonEnvVars,
-    //       WORKER_TYPE: 'job-runner',
     //       GRYPE_DATABASE_BUCKET: storageStack.grypeDatabaseBucket.bucketName,
     //     },
     //     secrets: {
