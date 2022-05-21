@@ -31,7 +31,7 @@ As a web developer, I've learned to ignore vulnerability scan results and that's
 
 Most of the results aren't *relevant*. Sometimes I find it easy to figure out what's safe to ignore from the findings.
 Other times
-I find myself scouring documentation, source code, and blog posts only to discover the "RCE" npm audit told me I had
+I find myself scouring documentation, source code, and blog posts only to discover the "RCE" `npm audit` told me I had
 doesn't matter.
 
 <!--truncate-->
@@ -42,8 +42,13 @@ assumed
 that there was no better way. The infrastructure just didn't exist to eliminate that tedious job.
 
 At LunaSec,
-we've been taking on this type of work for a few select companies, and taking notes. When diving in deeper to this
-problem we realized something a little mind-blowing.
+we've been taking on this type of work for a few select companies, and taking notes. We realized something a little mind-blowing.
+
+:::info
+By the way, if you'd like to hire us for a dependency review, 
+please [send us an email](mailto:deps@lunasec.io) and we'll manually comb through your dependency tree 
+and help you patch what we find. We're using this experience to improve our own scanners. More on that below.
+:::
 
 ## Scanners could do a lot better
 
@@ -85,7 +90,7 @@ days ago:
 ![screenshot of vulnerability description showing that most users arent vulnerable because of react-scripts usage](/img/react-vuln.png)
 
 The critical information most people need is right there in the CVE description for you to read, but that's not
-machine-readable.
+machine-readable and so it isn't going to help a scanner.
 
 ### Language version or operating system not vulnerable
 
@@ -136,7 +141,7 @@ about a vulnerability than a simple report.
 
 That's right, all of them. We think.
 
-We're in the process of cloning *every* NPM and Maven package.
+We're in the process of cloning *every* NPM and Maven package, and that's just to start.
 With this we will be able to graph out the relationships between dependencies. Within those relationships we can begin
 to add the context needed to eliminate false positives.
 We could, for instance, flag all denial-of-service type vulnerabilities that occur in sub-dependencies of popular
@@ -163,9 +168,10 @@ we would like to host a container repository (think DockerHub) where people can 
 
 ## What we have done so far
 
-Our dependency scanning tool, [LunaTrace](https://lunatrace.lunasec.io/), is currently in beta **and you can try
-out**. It has GitHub integration,
-CLI support to integrate with your CI job, and you can even drag and drop a file, folder, or zipped container right into
+Our dependency scanning tool, [LunaTrace](https://lunatrace.lunasec.io/), is live **and you can try
+out today for free**. It has a [GitHub Integration](https://github.com/marketplace/lunatrace-by-lunasec),
+[CLI support](https://github.com/lunasec-io/lunasec/releases) to add it to your CI job, or you can even drag and drop a 
+file, folder, or zipped container right into
 the web app to see instant results.
 
 The groundwork is there to start building these false-positive elimination strategies.
@@ -174,3 +180,11 @@ one is truly needed. We see plenty of work to be done.
 
 Perhaps we are being overly optimistic, and we can maybe only eliminate half or two thirds of the false positives. Even
 so, that seems like a tool we'd prefer to use.
+
+### Limited Offer: We'll manually review your dependencies
+ 
+We need your feedback to help prioritize what
+features to build next and doing some manual work is the fastest way for us to get it. For a limited number of companies,
+we are offering to manually review dependencies, eliminate the false positives, and send a report on what needs to be addressed and why.
+
+Having some _very_ experienced security engineers take a look is great peace of mind. Please send an email to [deps@lunatrace.io](mailto:deps@lunasec.io) if you're interested.
