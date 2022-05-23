@@ -15,10 +15,10 @@ import { EmitterWebhookEvent } from '@octokit/webhooks';
 
 import { GithubRepositoryInfo } from '../../types/github';
 import { log } from '../../utils/log';
-import { queueRepositoriesForSnapshot } from '../../workers/queue-repositories-for-snapshot';
 import { createHasuraOrgsAndProjectsForInstall } from '../actions/create-hasura-orgs-and-projects-for-install';
 import { orgMemberAdded } from '../actions/org-member-added';
-import { queueGithubReposForSnapshots } from '../actions/queue-repositories-for-snapshosts';
+import { queueDefaultBranchesForSnapshot } from '../actions/queue-default-branches-for-snapshot';
+import { queueRepositoriesForSnapshot } from '../actions/queue-repositories-for-snapshot';
 import { getInstallationAccessToken } from '../auth';
 
 import { WebhookInterceptor } from './interceptor';
@@ -80,7 +80,7 @@ async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_r
     githubRepos,
   });
 
-  const snapshotResp = await queueGithubReposForSnapshots(installationId, githubRepos);
+  const snapshotResp = await queueDefaultBranchesForSnapshot(installationId, githubRepos);
   if (snapshotResp.error) {
     log.error('unable to queue github repos', {
       githubRepos,
@@ -119,12 +119,12 @@ async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
       log.info(event);
       return;
     }
-
     const pullRequestId = event.payload.pull_request.node_id;
     const cloneUrl = event.payload.repository.clone_url;
     const repoGithubId = event.payload.repository.id;
     const gitBranch = event.payload.pull_request.head.ref;
     const installationId = event.payload.installation.id;
+    const commitHash = event.payload.pull_request.head.sha;
 
     await queueRepositoriesForSnapshot(installationId, [
       {
@@ -134,6 +134,7 @@ async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
         installationId,
         sourceType: 'pr',
         pullRequestId,
+        gitCommit: commitHash,
       },
     ]);
   }
