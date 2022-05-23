@@ -23,7 +23,8 @@ import { catchError, threwError } from '../../utils/try';
 
 export async function queueRepositoriesForSnapshot(installationId: number, records: QueueRepositorySnapshotMessage[]) {
   const repoQueueConfig = getRepositoryQueueConfig();
-  // will return cached result so this is performant
+  // TODO (cthompson) move this outside of this function, this should only need to be called once
+  // note (forrest): I made this returned cached values so at least it is performant now
   const repositoryQueueUrl = await catchError(getSqsUrlFromName(sqsClient, repoQueueConfig.queueName));
 
   if (threwError(repositoryQueueUrl) || repositoryQueueUrl.error) {
