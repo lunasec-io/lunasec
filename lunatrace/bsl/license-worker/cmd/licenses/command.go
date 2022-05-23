@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -25,7 +25,7 @@ import (
 type Params struct {
 	fx.In
 
-	Scanner scanner.Scanner
+	Scanner []scanner.Scanner `group:"license_scanners"`
 }
 
 type Result struct {
@@ -40,11 +40,13 @@ func NewRootAction(p Params) Result {
 			if err != nil {
 				return err
 			}
-			licenses, err := p.Scanner.Scan(b)
-			if err != nil {
-				return err
+			for _, scan := range p.Scanner {
+				licenses, err := scan.Scan(b)
+				if err != nil {
+					return err
+				}
+				fmt.Println(licenses)
 			}
-			fmt.Println(licenses)
 			return nil
 		},
 	}

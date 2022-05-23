@@ -11,7 +11,17 @@
 //
 package scanner
 
+import (
+	"go.uber.org/fx"
+)
+
 type Scanner interface {
 	// Scan scans the byte slice F for licenses and returns them as a list of strings.
 	Scan(f []byte) ([]string, error)
+}
+
+type NewScannerResult struct {
+	fx.Out
+
+	Scanner Scanner `group:"license_scanners"`
 }

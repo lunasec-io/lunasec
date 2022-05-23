@@ -16,8 +16,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/ipfans/fxlogger"
-	"github.com/rs/zerolog"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 )
@@ -29,18 +27,20 @@ var cliApp *cli.App
 
 func Main(opts fx.Option) {
 	rootCtx, cancel := context.WithCancel(context.Background())
+
 	app := fx.New(opts, fx.Options(
 		fx.Provide(
 			NewApp,
 		),
 		fx.Populate(&cliApp),
 		// todo figure out logger situation
-		fx.WithLogger(fxlogger.WithZerolog(zerolog.Nop())),
+		fx.NopLogger,
 	))
 	// In a typical application, we could just use app.Run() here. Since this
 	// is a CLI tool, we'll use the more-explicit Start and Stop.
 	startCtx, cancel := context.WithTimeout(rootCtx, 15*time.Second)
 	defer cancel()
+
 	if err := app.Start(startCtx); err != nil {
 		panic(err)
 	}
