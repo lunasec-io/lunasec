@@ -39,11 +39,6 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
   const branchUrl = branchLink(build);
   const commitUrl = commitLink(build);
 
-  if (build.build_number === 10) {
-    console.log('build is ', build);
-    console.log(branch, branchUrl, commitUrl);
-  }
-
   return (
     <Card onClick={onClick} className="flex-fill w-100 build build-card clickable-card">
       <Card.Header>
