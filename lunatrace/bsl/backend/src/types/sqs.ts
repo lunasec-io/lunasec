@@ -25,9 +25,10 @@ export interface QueueHandlerConfig {
 
 export type BuildSourceType = 'pr' | 'gui' | 'cli';
 
-export interface GenerateSnapshotForRepositoryRecord {
+export interface QueueRepositorySnapshotMessage {
   cloneUrl: string;
   gitBranch: string;
+  gitCommit?: string;
   repoGithubId: number;
   installationId: number;
   sourceType: BuildSourceType;

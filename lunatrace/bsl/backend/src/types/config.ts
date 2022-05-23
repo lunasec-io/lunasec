@@ -24,7 +24,7 @@ export interface SbomHandlerConfig {
   manifestBucket: string;
 }
 
-export interface JobRunnerConfig {
+export interface VulnerabilityUpdateConfig {
   grypeDatabaseBucket: string;
 }
 
