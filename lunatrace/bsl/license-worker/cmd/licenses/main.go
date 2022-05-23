@@ -16,6 +16,7 @@ import (
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/clifx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/scanner/licensecheck"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/scanner/packagejson"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/lunatracefx"
 )
 
@@ -24,8 +25,8 @@ func main() {
 		lunatracefx.Module,
 		fx.Provide(
 			licensecheck.NewScanner,
+			packagejson.NewScanner,
 			NewRootAction,
-
 		),
 	)
 
