@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/urfave/cli/v2"
 	"io"
 	"io/ioutil"
 	"net/url"
@@ -31,7 +32,6 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/rs/zerolog/log"
-	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
 
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/deprecated"
@@ -135,16 +135,17 @@ func ContainerCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err erro
 	return
 }
 
-func getGitCloneOptions(gitUrl, gitBranch string, progress io.Writer) *git.CloneOptions {
+func getGitCloneOptions(gitUrl string, snapshotOptions types.SnapshotOptions, progress io.Writer) *git.CloneOptions {
 	cloneOptions := git.CloneOptions{
 		URL:      gitUrl,
 		Progress: progress,
-		Depth:    1,
 	}
-
-	if gitBranch != "" {
-		cloneOptions.ReferenceName = plumbing.NewBranchReferenceName(gitBranch)
+	// If a branch is specified but no specific commit for checkout is specified, we can go ahead and checkout that branch and only the latest commit
+	// if a commit is specified, we are going to go into a detached HEAD on some unknown branch in a later step, so clone everything for now
+	if snapshotOptions.GitBranch != "" && snapshotOptions.GitCommit == "" {
+		cloneOptions.ReferenceName = plumbing.NewBranchReferenceName(snapshotOptions.GitBranch)
 		cloneOptions.SingleBranch = true
+		cloneOptions.Depth = 1
 	}
 	return &cloneOptions
 }
@@ -183,7 +184,7 @@ func RepositoryCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err err
 
 	progressBuffer := bytes.NewBufferString("")
 
-	cloneOptions := getGitCloneOptions(parsedRepo.String(), snapshotOptions.GitBranch, progressBuffer)
+	cloneOptions := getGitCloneOptions(parsedRepo.String(), snapshotOptions, progressBuffer)
 
 	repo, err := git.PlainClone(repoTmpDir, false, cloneOptions)
 	if err != nil {
@@ -195,9 +196,36 @@ func RepositoryCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err err
 		return
 	}
 
+	if snapshotOptions.GitCommit != "" {
+		worktree, innerErr := repo.Worktree()
+		if innerErr != nil {
+			log.Error().
+				Err(innerErr).
+				Str("repo", repos[0]).
+				Msg("unable to access git work tree for checkout")
+			return innerErr
+		}
+		innerErr = worktree.Checkout(&git.CheckoutOptions{
+			Hash: plumbing.NewHash(snapshotOptions.GitCommit),
+		})
+		// TODO: This error never seems to throw if a bad commit is passed, and we end up just scanning the latest commit on master.  Not great
+		if innerErr != nil {
+			log.Error().
+				Err(innerErr).
+				Str("repo", repos[0]).
+				Msg("unable to checkout commit from cloned git repo")
+			return innerErr
+		}
+
+		log.Info().
+			Str("repo", repos[0]).
+			Str("commit", snapshotOptions.GitCommit).
+			Msg("Checked out a specific commit")
+	}
+
 	repoMeta := util.CollectRepoMetadataFromObj(repo)
 
-	log.Debug().
+	log.Info().
 		Str("remote", repoMeta.RemoteUrl).
 		Str("branch", repoMeta.BranchName).
 		Str("commit", repoMeta.CommitHash).
