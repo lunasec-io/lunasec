@@ -12,8 +12,7 @@
  *
  */
 import React, { useEffect, useState } from 'react';
-import { ButtonGroup, Col, Container, Nav, Navbar, Row } from 'react-bootstrap';
-import { useBottomScrollListener } from 'react-bottom-scroll-listener';
+import { Container, Nav, Navbar } from 'react-bootstrap';
 import { Box, Home, Lock, Menu, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';

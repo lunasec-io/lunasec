@@ -14,13 +14,10 @@
 import { Request, Response } from 'express';
 
 import { getServerConfig } from '../config';
-import { GithubRepositoryInfo, RepositoriesForInstallationResponse } from '../types/github';
-import { errorResponse, logError } from '../utils/errors';
+import { errorResponse } from '../utils/errors';
 import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse';
-import { catchError, threwError, Try } from '../utils/try';
 
-import { queueNewReposForSnapshot } from './actions/queue-new-repos-for-snapshot';
 import { upsertInstalledProjects } from './actions/upsert-installed-projects';
 import { getInstallationAccessToken } from './auth';
 
@@ -81,20 +78,6 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
   }
 
   log.info('queueing repositories for snapshots', {
-    installationId,
-  });
-
-  // TODO: This will re-snapshot projects that have already been installed.  We should dedupe by checking hasura if the project has any builds and if it does, skip
-  const snapshotRes = await catchError(queueNewReposForSnapshot(installationId, upsertRes.res));
-
-  if (threwError(snapshotRes) || snapshotRes.error) {
-    log.warn('unable to queue some or all repositories, continuing with the installation', {
-      installationId,
-      error: threwError(snapshotRes) ? snapshotRes.message : snapshotRes.msg,
-    });
-  }
-
-  log.info('completed queueing repositories for snapshots', {
     installationId,
   });
 
