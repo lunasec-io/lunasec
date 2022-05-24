@@ -15,7 +15,8 @@
 // eslint-disable-next-line import/no-unresolved
 import { components } from '@octokit/openapi-types';
 
-export type RepositoriesForInstallationResponse = components['schemas']['repository'][];
+export type RepositoryResponse = components['schemas']['repository'];
+export type RepositoriesForInstallationResponse = RepositoryResponse[];
 
 export interface GithubRepositoryInfo {
   orgName: string;
@@ -26,8 +27,9 @@ export interface GithubRepositoryInfo {
   repoNodeId: string;
   gitUrl: string;
   ownerType: string;
-  cloneUrl?: string;
-  defaultBranch?: string;
+  cloneUrl: string;
+  defaultBranch: string;
+  fullTraits: RepositoriesForInstallationResponse[number];
 }
 
 export interface GithubPullRequest {

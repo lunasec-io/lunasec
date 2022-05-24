@@ -20,7 +20,9 @@ export interface HydrateRepositoryInformationResponse {
   filterRepo: boolean;
 }
 
-export async function hydrateRepositoryInformation(
+// THIS FUNCTION IS DEPRECATED AND NOT CURRENTLY IN USE ANYWHERE, BUT MIGHT BE USEFUL IN FUTURE
+// TODO: WARNING this function edits the repo object argument in place as a side effect.  Change this anti-pattern
+export async function loadRepositoryDetails(
   installationId: number,
   repo: GithubRepositoryInfo
 ): Promise<HydrateRepositoryInformationResponse> {

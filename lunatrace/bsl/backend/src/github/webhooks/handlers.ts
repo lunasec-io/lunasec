@@ -12,13 +12,14 @@
  *
  */
 import { EmitterWebhookEvent } from '@octokit/webhooks';
+import { Octokit } from 'octokit';
 
-import { GithubRepositoryInfo } from '../../types/github';
+import { GithubRepositoryInfo, RepositoryResponse } from '../../types/github';
 import { log } from '../../utils/log';
-import { createHasuraOrgsAndProjectsForInstall } from '../actions/create-hasura-orgs-and-projects-for-install';
 import { orgMemberAdded } from '../actions/org-member-added';
-import { queueDefaultBranchesForSnapshot } from '../actions/queue-default-branches-for-snapshot';
-import { queueRepositoriesForSnapshot } from '../actions/queue-repositories-for-snapshot';
+import { queueNewReposForSnapshot } from '../actions/queue-new-repos-for-snapshot';
+import { queueRepositoryForSnapshot } from '../actions/queue-repository-for-snapshot';
+import { upsertInstalledProjects } from '../actions/upsert-installed-projects';
 import { getInstallationAccessToken } from '../auth';
 
 import { WebhookInterceptor } from './interceptor';
@@ -34,33 +35,16 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
     });
   };
 
-  listenToHook('installation_repositories.added', repositoryAddedHandler);
+  listenToHook('installation_repositories.added', repositoriesAddedHandler);
   listenToHook('pull_request', pullRequestHandler);
   listenToHook('organization', organizationHandler);
 }
 
-async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_repositories.added'>) {
-  const reposAdded = event.payload.repositories_added;
-
+async function repositoriesAddedHandler(event: EmitterWebhookEvent<'installation_repositories.added'>) {
+  log.info({ event }, 'Processing repositories added event');
   const installationId = event.payload.installation.id;
-
-  const orgName = event.payload.installation.account.login;
-  const orgId = event.payload.installation.account.id;
-  const orgNodeId = event.payload.installation.account.node_id;
-  const ownerType = event.payload.installation.account.type;
-  const githubRepos: GithubRepositoryInfo[] = reposAdded.map((repo) => ({
-    orgName,
-    orgId,
-    orgNodeId,
-    repoName: repo.name,
-    repoId: repo.id,
-    repoNodeId: repo.node_id,
-    gitUrl: `https://github.com/${repo.full_name}.git`,
-    ownerType,
-  }));
-
   const installationAuthToken = await getInstallationAccessToken(installationId);
-
+  console.log('full event is ', JSON.stringify(event));
   if (installationAuthToken.error) {
     log.error('unable to get installation token', {
       error: installationAuthToken.msg,
@@ -68,27 +52,54 @@ async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_r
     return;
   }
 
-  const resp = await createHasuraOrgsAndProjectsForInstall(installationAuthToken.res, installationId, githubRepos);
-  if (resp.error) {
+  // const reposFromEvent = event.payload.repositories_added;
+  //
+  // // The event doesnt have all the data we need so we have to go fetch more from github
+  // const octokit = new Octokit({ auth: installationAuthToken.res });
+  // const githubRepos: GithubRepositoryInfo[] = await Promise.all(
+  //   reposFromEvent.map(async (repoEvent) => {
+  //     const repoRes = await octokit.request('GET /repository/{id}', {
+  //       id: repoEvent.id,
+  //     });
+  //     if (repoRes.status !== 200) {
+  //       log.error({ repoRes, repoEvent }, 'Failed to fetch repo from github during repo added webhook handler');
+  //       throw new Error('Failed to fetch repo from github');
+  //     }
+  //     const repoData = repoRes.data as RepositoryResponse;
+  //     return {
+  //       orgName: repoData.owner.login,
+  //       orgId: repoData.owner.id,
+  //       orgNodeId: repoData.owner.node_id,
+  //       repoName: repoData.name,
+  //       repoId: repoData.id,
+  //       repoNodeId: repoData.node_id,
+  //       gitUrl: repoData.git_url,
+  //       ownerType: repoData.owner.type,
+  //       defaultBranch: repoData.default_branch,
+  //       cloneUrl: repoData.clone_url,
+  //       fullTraits: repoData,
+  //     };
+  //   })
+  // );
+
+  const upsertedRepos = await upsertInstalledProjects(installationAuthToken.res, installationId);
+  if (upsertedRepos.error) {
     log.error('unable to create orgs and projects from github install', {
-      error: resp.msg,
-      githubRepos,
+      error: upsertedRepos.msg,
     });
     return;
   }
-  log.info('created orgs and projects for new repos', {
-    githubRepos,
-  });
+  log.info('created orgs and projects for new repos');
 
-  const snapshotResp = await queueDefaultBranchesForSnapshot(installationId, githubRepos);
+  const snapshotResp = await queueNewReposForSnapshot(installationId, upsertedRepos.res);
   if (snapshotResp.error) {
     log.error('unable to queue github repos', {
-      githubRepos,
+      upsertedRepos,
     });
     return;
   }
   log.info('queued github repos for snapshots', {
-    githubRepos,
+    upsertedRepos,
   });
 }
 
@@ -119,23 +130,15 @@ async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
       log.info(event);
       return;
     }
-    const pullRequestId = event.payload.pull_request.node_id;
-    const cloneUrl = event.payload.repository.clone_url;
-    const repoGithubId = event.payload.repository.id;
-    const gitBranch = event.payload.pull_request.head.ref;
-    const installationId = event.payload.installation.id;
-    const commitHash = event.payload.pull_request.head.sha;
 
-    await queueRepositoriesForSnapshot(installationId, [
-      {
-        cloneUrl,
-        gitBranch,
-        repoGithubId,
-        installationId,
-        sourceType: 'pr',
-        pullRequestId,
-        gitCommit: commitHash,
-      },
-    ]);
+    await queueRepositoryForSnapshot(event.payload.installation.id, {
+      cloneUrl: event.payload.repository.clone_url,
+      gitBranch: event.payload.pull_request.head.ref, // TODO make this the human readable branch name, not the ref
+      repoGithubId: event.payload.repository.id,
+      installationId: event.payload.installation.id,
+      sourceType: 'pr',
+      pullRequestId: event.payload.pull_request.node_id,
+      gitCommit: event.payload.pull_request.head.sha,
+    });
   }
 }
