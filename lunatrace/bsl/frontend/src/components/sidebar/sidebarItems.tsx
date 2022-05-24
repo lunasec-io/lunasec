@@ -18,7 +18,7 @@ import { BiUnlink } from 'react-icons/bi';
 import { BsChatSquareText } from 'react-icons/bs';
 import { RiParkingFill } from 'react-icons/ri';
 
-import { GetSidebarInfoQuery, Scalars } from '../../api/generated';
+import { GetSidebarInfoQuery } from '../../api/generated';
 import { UserContext } from '../../contexts/UserContext';
 import { userHasAnyOrganizations } from '../../utils/organizations';
 

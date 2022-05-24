@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-import { EmitterWebhookEvent } from '@octokit/webhooks';
 
 import { WebhookInterceptor } from '../github/webhooks/interceptor';
 import { hasura } from '../hasura-api';

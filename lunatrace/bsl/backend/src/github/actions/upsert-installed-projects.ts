@@ -16,14 +16,15 @@ import {
   generateOrgsAndProjectsMutation,
   insertOrgsAndProjects,
 } from '../../hasura-api/actions/insert-orgs-and-projects';
-import { GithubRepositoryInfo, RepositoriesForInstallationResponse } from '../../types/github';
+import { GithubRepositoryInfo } from '../../types/github';
 import { MaybeError } from '../../types/util';
-import { errorResponse, logError, newError, newResult } from '../../utils/errors';
+import { logError, newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
-import { catchError, threwError, Try } from '../../utils/try';
+import { catchError, threwError } from '../../utils/try';
 
 import { getGithubReposForInstallation } from './get-github-repos-for-installation';
 import { getHasuraOrgMembers } from './get-org-members';
+import { queueNewReposForSnapshot } from './queue-new-repos-for-snapshot';
 
 // Performs the full upsertion of any projects and orgs that the github app is linked to, and returns some metadata about the repos for any subsequent processing
 export async function upsertInstalledProjects(
@@ -97,5 +98,17 @@ export async function upsertInstalledProjects(
   if (createOrgUsersResp.some((c) => c === null)) {
     return newError('creating organization users failed');
   }
+
+  // Now snapshot any new repos.  This will not snapshot repos with old builds, so only new repos will be snapshotted
+  const snapshotResp = await queueNewReposForSnapshot(installationId, githubRepos);
+  if (snapshotResp.error) {
+    log.error('unable to queue github repos', {
+      snapshotResp,
+    });
+  }
+  log.info('queued github repos for snapshots', {
+    githubRepos,
+  });
+
   return newResult(githubRepos);
 }
