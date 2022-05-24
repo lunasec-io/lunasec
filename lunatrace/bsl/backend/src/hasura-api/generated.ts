@@ -30,7 +30,6 @@ export type Scalars = {
   builds_source_type: any;
   date: any;
   fix_state_enum: any;
-  github_webhook_event: any;
   jsonb: any;
   numeric: any;
   organization_user_role: any;
@@ -194,6 +193,36 @@ export type BuildsScansArgs = {
   where?: InputMaybe<Scans_Bool_Exp>;
 };
 
+/** aggregated selection of "builds" */
+export type Builds_Aggregate = {
+  __typename?: 'builds_aggregate';
+  aggregate?: Maybe<Builds_Aggregate_Fields>;
+  nodes: Array<Builds>;
+};
+
+/** aggregate fields of "builds" */
+export type Builds_Aggregate_Fields = {
+  __typename?: 'builds_aggregate_fields';
+  avg?: Maybe<Builds_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Builds_Max_Fields>;
+  min?: Maybe<Builds_Min_Fields>;
+  stddev?: Maybe<Builds_Stddev_Fields>;
+  stddev_pop?: Maybe<Builds_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Builds_Stddev_Samp_Fields>;
+  sum?: Maybe<Builds_Sum_Fields>;
+  var_pop?: Maybe<Builds_Var_Pop_Fields>;
+  var_samp?: Maybe<Builds_Var_Samp_Fields>;
+  variance?: Maybe<Builds_Variance_Fields>;
+};
+
+
+/** aggregate fields of "builds" */
+export type Builds_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Builds_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
 /** order by aggregate values of table "builds" */
 export type Builds_Aggregate_Order_By = {
   avg?: InputMaybe<Builds_Avg_Order_By>;
@@ -214,6 +243,12 @@ export type Builds_Arr_Rel_Insert_Input = {
   data: Array<Builds_Insert_Input>;
   /** upsert condition */
   on_conflict?: InputMaybe<Builds_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Builds_Avg_Fields = {
+  __typename?: 'builds_avg_fields';
+  build_number?: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "builds" */
@@ -279,6 +314,22 @@ export type Builds_Insert_Input = {
   source_type?: InputMaybe<Scalars['builds_source_type']>;
 };
 
+/** aggregate max on columns */
+export type Builds_Max_Fields = {
+  __typename?: 'builds_max_fields';
+  agent_access_token?: Maybe<Scalars['uuid']>;
+  build_number?: Maybe<Scalars['Int']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
+  s3_url?: Maybe<Scalars['String']>;
+};
+
 /** order by max() on columns of table "builds" */
 export type Builds_Max_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
@@ -292,6 +343,22 @@ export type Builds_Max_Order_By = {
   project_id?: InputMaybe<Order_By>;
   pull_request_id?: InputMaybe<Order_By>;
   s3_url?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Builds_Min_Fields = {
+  __typename?: 'builds_min_fields';
+  agent_access_token?: Maybe<Scalars['uuid']>;
+  build_number?: Maybe<Scalars['Int']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
+  s3_url?: Maybe<Scalars['String']>;
 };
 
 /** order by min() on columns of table "builds" */
@@ -412,9 +479,21 @@ export type Builds_Source_Type_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['builds_source_type']>>;
 };
 
+/** aggregate stddev on columns */
+export type Builds_Stddev_Fields = {
+  __typename?: 'builds_stddev_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
 /** order by stddev() on columns of table "builds" */
 export type Builds_Stddev_Order_By = {
   build_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Builds_Stddev_Pop_Fields = {
+  __typename?: 'builds_stddev_pop_fields';
+  build_number?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "builds" */
@@ -422,9 +501,21 @@ export type Builds_Stddev_Pop_Order_By = {
   build_number?: InputMaybe<Order_By>;
 };
 
+/** aggregate stddev_samp on columns */
+export type Builds_Stddev_Samp_Fields = {
+  __typename?: 'builds_stddev_samp_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
 /** order by stddev_samp() on columns of table "builds" */
 export type Builds_Stddev_Samp_Order_By = {
   build_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Builds_Sum_Fields = {
+  __typename?: 'builds_sum_fields';
+  build_number?: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "builds" */
@@ -456,14 +547,32 @@ export enum Builds_Update_Column {
   S3Url = 's3_url'
 }
 
+/** aggregate var_pop on columns */
+export type Builds_Var_Pop_Fields = {
+  __typename?: 'builds_var_pop_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
 /** order by var_pop() on columns of table "builds" */
 export type Builds_Var_Pop_Order_By = {
   build_number?: InputMaybe<Order_By>;
 };
 
+/** aggregate var_samp on columns */
+export type Builds_Var_Samp_Fields = {
+  __typename?: 'builds_var_samp_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
 /** order by var_samp() on columns of table "builds" */
 export type Builds_Var_Samp_Order_By = {
   build_number?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Builds_Variance_Fields = {
+  __typename?: 'builds_variance_fields';
+  build_number?: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "builds" */
@@ -924,6 +1033,7 @@ export type Github_Repositories_Inc_Input = {
 
 /** input type for inserting data into table "github_repositories" */
 export type Github_Repositories_Insert_Input = {
+  default_branch?: InputMaybe<Scalars['String']>;
   git_url?: InputMaybe<Scalars['String']>;
   github_id?: InputMaybe<Scalars['Int']>;
   github_node_id?: InputMaybe<Scalars['String']>;
@@ -1002,6 +1112,7 @@ export enum Github_Repositories_Select_Column {
 
 /** input type for updating data in table "github_repositories" */
 export type Github_Repositories_Set_Input = {
+  default_branch?: InputMaybe<Scalars['String']>;
   git_url?: InputMaybe<Scalars['String']>;
   github_id?: InputMaybe<Scalars['Int']>;
   github_node_id?: InputMaybe<Scalars['String']>;
@@ -1032,6 +1143,8 @@ export type Github_Repositories_Sum_Order_By = {
 /** update columns of table "github_repositories" */
 export enum Github_Repositories_Update_Column {
   /** column name */
+  DefaultBranch = 'default_branch',
+  /** column name */
   GitUrl = 'git_url',
   /** column name */
   GithubId = 'github_id',
@@ -1056,19 +1169,6 @@ export type Github_Repositories_Var_Samp_Order_By = {
 /** order by variance() on columns of table "github_repositories" */
 export type Github_Repositories_Variance_Order_By = {
   github_id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to compare columns of type "github_webhook_event". All fields are combined with logical 'AND'. */
-export type Github_Webhook_Event_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['github_webhook_event']>;
-  _gt?: InputMaybe<Scalars['github_webhook_event']>;
-  _gte?: InputMaybe<Scalars['github_webhook_event']>;
-  _in?: InputMaybe<Array<Scalars['github_webhook_event']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']>;
-  _lt?: InputMaybe<Scalars['github_webhook_event']>;
-  _lte?: InputMaybe<Scalars['github_webhook_event']>;
-  _neq?: InputMaybe<Scalars['github_webhook_event']>;
-  _nin?: InputMaybe<Array<Scalars['github_webhook_event']>>;
 };
 
 /** columns and relationships of "guide_related_guides" */
@@ -3329,6 +3429,8 @@ export type Projects = {
   __typename?: 'projects';
   /** An array relationship */
   builds: Array<Builds>;
+  /** An aggregate relationship */
+  builds_aggregate: Builds_Aggregate;
   created_at: Scalars['timestamp'];
   /** An array relationship */
   github_repositories: Array<Github_Repositories>;
@@ -3356,6 +3458,16 @@ export type Projects = {
 
 /** columns and relationships of "projects" */
 export type ProjectsBuildsArgs = {
+  distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Builds_Order_By>>;
+  where?: InputMaybe<Builds_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsBuilds_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3586,6 +3698,8 @@ export type Query_Root = {
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   /** An array relationship */
   builds: Array<Builds>;
+  /** An aggregate relationship */
+  builds_aggregate: Builds_Aggregate;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
   fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
@@ -3683,6 +3797,15 @@ export type Query_RootAuthenticatedRepoCloneUrlArgs = {
 
 
 export type Query_RootBuildsArgs = {
+  distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Builds_Order_By>>;
+  where?: InputMaybe<Builds_Bool_Exp>;
+};
+
+
+export type Query_RootBuilds_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -4400,6 +4523,8 @@ export type Subscription_Root = {
   __typename?: 'subscription_root';
   /** An array relationship */
   builds: Array<Builds>;
+  /** An aggregate relationship */
+  builds_aggregate: Builds_Aggregate;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
   /** An array relationship */
@@ -4488,6 +4613,15 @@ export type Subscription_Root = {
 
 
 export type Subscription_RootBuildsArgs = {
+  distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Builds_Order_By>>;
+  where?: InputMaybe<Builds_Bool_Exp>;
+};
+
+
+export type Subscription_RootBuilds_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Builds_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -5501,7 +5635,7 @@ export type Webhook_Cache = {
   created_at: Scalars['timestamp'];
   data: Scalars['jsonb'];
   delivery_id: Scalars['uuid'];
-  event_type: Scalars['github_webhook_event'];
+  event_type: Scalars['String'];
   installation_id?: Maybe<Scalars['Int']>;
   signature_256: Scalars['String'];
   sqs_message_id?: Maybe<Scalars['String']>;
@@ -5521,7 +5655,7 @@ export type Webhook_Cache_Bool_Exp = {
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   data?: InputMaybe<Jsonb_Comparison_Exp>;
   delivery_id?: InputMaybe<Uuid_Comparison_Exp>;
-  event_type?: InputMaybe<Github_Webhook_Event_Comparison_Exp>;
+  event_type?: InputMaybe<String_Comparison_Exp>;
   installation_id?: InputMaybe<Int_Comparison_Exp>;
   signature_256?: InputMaybe<String_Comparison_Exp>;
   sqs_message_id?: InputMaybe<String_Comparison_Exp>;
@@ -5538,7 +5672,7 @@ export type Webhook_Cache_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamp']>;
   data?: InputMaybe<Scalars['jsonb']>;
   delivery_id?: InputMaybe<Scalars['uuid']>;
-  event_type?: InputMaybe<Scalars['github_webhook_event']>;
+  event_type?: InputMaybe<Scalars['String']>;
   installation_id?: InputMaybe<Scalars['Int']>;
   signature_256?: InputMaybe<Scalars['String']>;
   sqs_message_id?: InputMaybe<Scalars['String']>;
@@ -5619,6 +5753,13 @@ export type GetAuthorizedUserOrganizationsQueryVariables = Exact<{
 
 export type GetAuthorizedUserOrganizationsQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, github_node_id?: string | null }> };
 
+export type GetBuildsCountFromGithubIdQueryVariables = Exact<{
+  github_id: Scalars['Int'];
+}>;
+
+
+export type GetBuildsCountFromGithubIdQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', builds_aggregate: { __typename?: 'builds_aggregate', aggregate?: { __typename?: 'builds_aggregate_fields', count: number } | null } } }> };
+
 export type GetBuildQueryVariables = Exact<{
   build_id: Scalars['uuid'];
 }>;
@@ -5689,7 +5830,7 @@ export type GetWebhookCacheByDeliveryIdQueryVariables = Exact<{
 }>;
 
 
-export type GetWebhookCacheByDeliveryIdQuery = { __typename?: 'query_root', webhook_cache: Array<{ __typename?: 'webhook_cache', data: any, delivery_id: any, signature_256: string, event_type: any, installation_id?: number | null, created_at: any }> };
+export type GetWebhookCacheByDeliveryIdQuery = { __typename?: 'query_root', webhook_cache: Array<{ __typename?: 'webhook_cache', data: any, delivery_id: any, signature_256: string, event_type: string, installation_id?: number | null, created_at: any }> };
 
 export type GetWebhookCacheJobsQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']>;
@@ -5697,7 +5838,7 @@ export type GetWebhookCacheJobsQueryVariables = Exact<{
 }>;
 
 
-export type GetWebhookCacheJobsQuery = { __typename?: 'query_root', webhook_cache: Array<{ __typename?: 'webhook_cache', data: any, delivery_id: any, signature_256: string, event_type: any, created_at: any }> };
+export type GetWebhookCacheJobsQuery = { __typename?: 'query_root', webhook_cache: Array<{ __typename?: 'webhook_cache', data: any, delivery_id: any, signature_256: string, event_type: string, created_at: any }> };
 
 export type GetUserFromIdentityQueryVariables = Exact<{
   id: Scalars['uuid'];
@@ -5730,7 +5871,7 @@ export type InsertScanMutation = { __typename?: 'mutation_root', insert_scans_on
 
 export type InsertWebhookToCacheMutationVariables = Exact<{
   delivery_id: Scalars['uuid'];
-  event_type: Scalars['github_webhook_event'];
+  event_type: Scalars['String'];
   signature_256: Scalars['String'];
   installation_id?: InputMaybe<Scalars['Int']>;
   data: Scalars['jsonb'];
@@ -5829,6 +5970,19 @@ export const GetAuthorizedUserOrganizationsDocument = gql`
   organizations(where: {github_node_id: {_in: $github_org_ids}}) {
     id
     github_node_id
+  }
+}
+    `;
+export const GetBuildsCountFromGithubIdDocument = gql`
+    query GetBuildsCountFromGithubId($github_id: Int!) {
+  github_repositories(where: {github_id: {_eq: $github_id}}) {
+    project {
+      builds_aggregate {
+        aggregate {
+          count
+        }
+      }
+    }
   }
 }
     `;
@@ -6027,7 +6181,7 @@ export const InsertScanDocument = gql`
 }
     `;
 export const InsertWebhookToCacheDocument = gql`
-    mutation InsertWebhookToCache($delivery_id: uuid!, $event_type: github_webhook_event!, $signature_256: String!, $installation_id: Int, $data: jsonb!) {
+    mutation InsertWebhookToCache($delivery_id: uuid!, $event_type: String!, $signature_256: String!, $installation_id: Int, $data: jsonb!) {
   insert_webhook_cache_one(
     object: {delivery_id: $delivery_id, event_type: $event_type, signature_256: $signature_256, installation_id: $installation_id, data: $data}
   ) {
@@ -6146,6 +6300,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetAuthorizedUserOrganizations(variables?: GetAuthorizedUserOrganizationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAuthorizedUserOrganizationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetAuthorizedUserOrganizationsQuery>(GetAuthorizedUserOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetAuthorizedUserOrganizations', 'query');
+    },
+    GetBuildsCountFromGithubId(variables: GetBuildsCountFromGithubIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBuildsCountFromGithubIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetBuildsCountFromGithubIdQuery>(GetBuildsCountFromGithubIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetBuildsCountFromGithubId', 'query');
     },
     GetBuild(variables: GetBuildQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBuildQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetBuildQuery>(GetBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetBuild', 'query');

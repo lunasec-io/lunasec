@@ -13,26 +13,37 @@
  */
 import { hasura } from '../../hasura-api';
 import {
-  createLunatraceOrgsFromGithubOrgs,
-  hasuraOrgsFromGithubRepositories,
-} from '../../hasura-api/actions/create-lunatrace-orgs-from-github-orgs';
-import { GithubRepositoryInfo } from '../../types/github';
+  generateOrgsAndProjectsMutation,
+  insertOrgsAndProjects,
+} from '../../hasura-api/actions/insert-orgs-and-projects';
+import { GithubRepositoryInfo, RepositoriesForInstallationResponse } from '../../types/github';
 import { MaybeError } from '../../types/util';
-import { logError, newError, newResult } from '../../utils/errors';
+import { errorResponse, logError, newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
-import { catchError, threwError } from '../../utils/try';
+import { catchError, threwError, Try } from '../../utils/try';
 
+import { getGithubReposForInstallation } from './get-github-repos-for-installation';
 import { getHasuraOrgMembers } from './get-org-members';
 
-export async function createHasuraOrgsAndProjectsForInstall(
+// Performs the full upsertion of any projects and orgs that the github app is linked to, and returns some metadata about the repos for any subsequent processing
+export async function upsertInstalledProjects(
   installationAuthToken: string,
-  installationId: number,
-  repositories: GithubRepositoryInfo[]
-): Promise<MaybeError<null>> {
-  const organizations = hasuraOrgsFromGithubRepositories(installationId, repositories);
+  installationId: number
+): Promise<MaybeError<GithubRepositoryInfo[]>> {
+  const githubRepos = await getGithubReposForInstallation(installationAuthToken, installationId);
+
+  log.info(`Collected installation data`, {
+    installationId,
+    githubRepos: githubRepos.map((repo) => ({
+      orgName: repo.orgName,
+      repoName: repo.repoName,
+    })),
+  });
+
+  const organizations = generateOrgsAndProjectsMutation(installationId, githubRepos);
   const orgObjectList = Object.values(organizations);
 
-  const orgIds = await createLunatraceOrgsFromGithubOrgs(installationId, orgObjectList);
+  const orgIds = await insertOrgsAndProjects(installationId, orgObjectList);
 
   if (orgIds.error) {
     return newError(orgIds.msg);
@@ -86,5 +97,5 @@ export async function createHasuraOrgsAndProjectsForInstall(
   if (createOrgUsersResp.some((c) => c === null)) {
     return newError('creating organization users failed');
   }
-  return newResult(null);
+  return newResult(githubRepos);
 }
