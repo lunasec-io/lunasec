@@ -11,6 +11,8 @@
  * limitations under the License.
  *
  */
+import { inspect } from 'util';
+
 import { Cluster, ContainerImage, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
@@ -60,6 +62,15 @@ export class WorkerStack extends cdk.Stack {
       storageStack,
     } = props;
 
+    if (
+      !storageStack.processRepositorySqsQueue ||
+      !storageStack.processWebhookSqsQueue ||
+      !storageStack.processManifestSqsQueue ||
+      !storageStack.processSbomSqsQueue
+    ) {
+      throw new Error(`expected non-null storage stack queues: ${inspect(storageStack)}`);
+    }
+
     const workerContainerImage = ContainerImage.fromTarball(
       getContainerTarballPath('lunatrace-backend-queue-processor.tar')
     );
@@ -95,7 +106,6 @@ export class WorkerStack extends cdk.Stack {
         assignPublicIp: true,
         enableLogging: true,
         environment: {
-          QUEUE_HANDLER: 'process-repository',
           ...processQueueCommonEnvVars,
         },
         secrets: processQueueCommonSecrets,
@@ -120,7 +130,6 @@ export class WorkerStack extends cdk.Stack {
         assignPublicIp: true,
         enableLogging: true,
         environment: {
-          QUEUE_HANDLER: 'process-manifest',
           ...processQueueCommonEnvVars,
         },
         secrets: processQueueCommonSecrets,
@@ -143,7 +152,6 @@ export class WorkerStack extends cdk.Stack {
       assignPublicIp: true,
       memoryLimitMiB: 2048,
       environment: {
-        QUEUE_HANDLER: 'process-sbom',
         ...processQueueCommonEnvVars,
       },
       secrets: processQueueCommonSecrets,
@@ -167,7 +175,6 @@ export class WorkerStack extends cdk.Stack {
         assignPublicIp: true,
         memoryLimitMiB: 2048,
         environment: {
-          QUEUE_HANDLER: 'process-webhook',
           ...processQueueCommonEnvVars,
         },
         secrets: processQueueCommonSecrets,

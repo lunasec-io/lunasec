@@ -15,14 +15,7 @@
  *
  */
 import { waitForItScript } from './constants';
-import {
-  backendEnv,
-  manifestWorkEnv,
-  repositoryWorkerEnv,
-  sbomWorkerEnv,
-  smeeWebhookUrl,
-  webhookWorkerEnv,
-} from './env';
+import { backendEnv, queueWorkerEnv, smeeWebhookUrl } from './env';
 import { tmuxPane } from './tmux';
 
 function waitForItCmd(host: string, port: number) {
@@ -42,13 +35,7 @@ export const dockerCompose = tmuxPane([
   `sudo docker-compose down && ${waitForBackendServer} && sleep 1 && sudo docker-compose up`,
 ]);
 
-export const manifestWorker = tmuxPane(['cd backend', `${manifestWorkEnv} yarn run start:worker`]);
-
-export const sbomWorker = tmuxPane(['cd backend', `${sbomWorkerEnv} yarn run start:worker`]);
-
-export const webhookWorker = tmuxPane(['cd backend', `${webhookWorkerEnv} yarn run start:worker`]);
-
-export const repositoryWorker = tmuxPane(['cd backend', `${repositoryWorkerEnv} yarn run start:worker`]);
+export const queueWorker = tmuxPane(['cd backend', `${queueWorkerEnv} yarn run start:worker`]);
 
 export const smeeWebhook = tmuxPane([`smee -u ${smeeWebhookUrl} -p 3002 -P /github/webhook/events`]);
 

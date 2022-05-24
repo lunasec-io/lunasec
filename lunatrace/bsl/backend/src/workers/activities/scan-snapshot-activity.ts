@@ -18,7 +18,7 @@ import validate from 'validator';
 
 import { commentOnPrIfExists } from '../../github/actions/pr-comment-generator';
 import { hasura } from '../../hasura-api';
-import { InsertedScan, parseAndUploadScan } from '../../models/scan';
+import { InsertedScan, performSnapshotScanAndCollectReport } from '../../models/scan';
 import { S3ObjectMetadata } from '../../types/s3';
 import { SbomBucketInfo } from '../../types/scan';
 import { MaybeError } from '../../types/util';
@@ -63,7 +63,7 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
   log.info(`updating manifest status to "scanning" if it existed`);
   await hasura.UpdateManifestStatusIfExists({ status: 'scanning', buildId: buildId });
 
-  const scanReport = await parseAndUploadScan(unZippedSbomStream, buildId);
+  const scanReport = await performSnapshotScanAndCollectReport(unZippedSbomStream, buildId);
 
   log.info('upload complete, notifying manifest if one exists');
   await hasura.UpdateManifestStatusIfExists({ status: 'scanned', buildId: buildId });

@@ -77,6 +77,12 @@ export type PresignedUrlResponse = {
   url: Scalars['String'];
 };
 
+export type SbomUploadUrlOutput = {
+  __typename?: 'SbomUploadUrlOutput';
+  error: Scalars['Boolean'];
+  uploadUrl?: Maybe<UploadUrl>;
+};
+
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 export type String_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['String']>;
@@ -108,6 +114,12 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
+};
+
+export type UploadUrl = {
+  __typename?: 'UploadUrl';
+  headers: Scalars['jsonb'];
+  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -1628,6 +1640,7 @@ export type Mutation_Root = {
   insert_projects?: Maybe<Projects_Mutation_Response>;
   /** insert a single row into the table: "projects" */
   insert_projects_one?: Maybe<Projects>;
+  /**  get s3 presigned url for manifest upload, used only by the frontend  */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "builds" */
   update_builds?: Maybe<Builds_Mutation_Response>;
@@ -2055,8 +2068,8 @@ export type Organizations = {
   /** An array relationship */
   projects: Array<Projects>;
   /** An object relationship */
-  settings?: Maybe<Settings>;
-  settings_id?: Maybe<Scalars['uuid']>;
+  settings: Settings;
+  settings_id: Scalars['uuid'];
 };
 
 
@@ -2390,8 +2403,8 @@ export type Projects = {
   /** An array relationship */
   reports: Array<Project_Access_Tokens>;
   /** An object relationship */
-  settings?: Maybe<Settings>;
-  settings_id?: Maybe<Scalars['uuid']>;
+  settings: Settings;
+  settings_id: Scalars['uuid'];
 };
 
 
@@ -2673,6 +2686,8 @@ export type Query_Root = {
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
+  /**  get s3 presigned url for manifest upload, used by the CLI  */
+  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -2899,6 +2914,12 @@ export type Query_RootPackage_VersionsArgs = {
 
 export type Query_RootPackage_Versions_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootPresignSbomUploadArgs = {
+  buildId: Scalars['uuid'];
+  orgId: Scalars['uuid'];
 };
 
 
@@ -3393,7 +3414,7 @@ export type Settings = {
   id: Scalars['uuid'];
   /** An object relationship */
   organization?: Maybe<Organizations>;
-  pr_feedback_enabled: Scalars['Boolean'];
+  pr_feedback_disabled?: Maybe<Scalars['Boolean']>;
   /** An object relationship */
   project?: Maybe<Projects>;
 };
@@ -3406,7 +3427,7 @@ export type Settings_Bool_Exp = {
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   organization?: InputMaybe<Organizations_Bool_Exp>;
-  pr_feedback_enabled?: InputMaybe<Boolean_Comparison_Exp>;
+  pr_feedback_disabled?: InputMaybe<Boolean_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
 };
 
@@ -3424,7 +3445,7 @@ export type Settings_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   organization?: InputMaybe<Organizations_Order_By>;
-  pr_feedback_enabled?: InputMaybe<Order_By>;
+  pr_feedback_disabled?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
 };
 
@@ -3440,12 +3461,12 @@ export enum Settings_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  PrFeedbackEnabled = 'pr_feedback_enabled'
+  PrFeedbackDisabled = 'pr_feedback_disabled'
 }
 
 /** input type for updating data in table "settings" */
 export type Settings_Set_Input = {
-  pr_feedback_enabled?: InputMaybe<Scalars['Boolean']>;
+  pr_feedback_disabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 /** Boolean expression to compare columns of type "severity_enum". All fields are combined with logical 'AND'. */
@@ -4316,7 +4337,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id?: any | null, settings?: { __typename?: 'settings', id: any, pr_feedback_enabled: boolean } | null, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerabilities', ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }>, builds_aggregate: { __typename?: 'builds_aggregate', aggregate?: { __typename?: 'builds_aggregate_fields', count: number } | null } } | null };
+export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id: any, settings: { __typename?: 'settings', id: any, pr_feedback_disabled?: boolean | null }, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerabilities', ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }>, builds_aggregate: { __typename?: 'builds_aggregate', aggregate?: { __typename?: 'builds_aggregate_fields', count: number } | null } } | null };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4597,7 +4618,7 @@ export const GetProjectDocument = `
     settings_id
     settings {
       id
-      pr_feedback_enabled
+      pr_feedback_disabled
     }
     organization {
       name

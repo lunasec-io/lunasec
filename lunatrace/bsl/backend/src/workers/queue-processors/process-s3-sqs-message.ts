@@ -11,18 +11,19 @@
  * limitations under the License.
  *
  */
-import { getEtlBucketConfig } from '../../config';
+import { WorkerBucketConfig } from '../../types/config';
 import { S3ObjectMetadata } from '../../types/s3';
 import { S3SqsMessage } from '../../types/sqs';
-import { MaybeError, MaybeErrorVoid } from '../../types/util';
-import { newError, newResult } from '../../utils/errors';
+import { MaybeErrorVoid } from '../../types/util';
+import { newError } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { scanSnapshotActivity } from '../activities/scan-snapshot-activity';
 import { snapshotManifestActivity } from '../activities/snapshot-manifest-activity';
 
-export async function processS3SqsMessage(msg: S3SqsMessage): Promise<MaybeErrorVoid[]> {
-  const bucketConfig = getEtlBucketConfig();
-
+export async function processS3SqsMessage(
+  bucketConfig: WorkerBucketConfig,
+  msg: S3SqsMessage
+): Promise<MaybeErrorVoid[]> {
   if (!msg.Records) {
     log.info('No records on sqs event, deleting message, exiting');
     return [];

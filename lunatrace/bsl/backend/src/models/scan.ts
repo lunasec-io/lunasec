@@ -28,7 +28,10 @@ import { log } from '../utils/log';
 
 export type InsertedScan = NonNullable<InsertScanMutation['insert_scans_one']>;
 
-export async function parseAndUploadScan(sbomStream: Readable, buildId: string): Promise<InsertedScan> {
+export async function performSnapshotScanAndCollectReport(
+  sbomStream: Readable,
+  buildId: string
+): Promise<InsertedScan> {
   const rawGrypeReport = await runLunaTraceScan(sbomStream);
   log.info('finished running lunatrace scan on sbom', {
     buildId,
