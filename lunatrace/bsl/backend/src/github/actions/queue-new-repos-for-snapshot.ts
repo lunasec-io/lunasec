@@ -11,41 +11,37 @@
  * limitations under the License.
  *
  */
-import { SendMessageCommandOutput } from '@aws-sdk/client-sqs';
 
+import { hasura } from '../../hasura-api';
 import { GithubRepositoryInfo } from '../../types/github';
 import { QueueRepositorySnapshotMessage } from '../../types/sqs';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 
-import { hydrateRepositoryInformation } from './hydrate-repository-information';
-import { queueRepositoriesForSnapshot } from './queue-repositories-for-snapshot';
+import { queueRepositoryForSnapshot } from './queue-repository-for-snapshot';
 
-export async function queueDefaultBranchesForSnapshot(
+export async function queueNewReposForSnapshot(
   installationId: number,
-  githubRepos: GithubRepositoryInfo[]
+  githubRepos: Array<GithubRepositoryInfo>
 ): Promise<MaybeError<undefined>> {
   const results = await Promise.all(
     githubRepos.map(async (repo) => {
-      const resp = await hydrateRepositoryInformation(installationId, repo);
-
-      if (resp.filterRepo) {
-        log.info(
-          'Filtering repository from being queued. Most likely this is due to no default branch being defined for the repository.',
-          {
-            repo,
-          }
-        );
-        return newResult(null);
-      }
-
       if (!repo.cloneUrl || !repo.defaultBranch) {
         const msg = 'unable to generate snapshot for repository, required fields are missing';
         log.error(msg, {
           repo,
         });
         return newError(msg);
+      }
+
+      // Check if there are any builds already and if there are skip.  This is just to populate the first build on install for a good UX
+      // Existing repos might come in when we upsert repos so just skip those
+      const buildCountResult = await hasura.GetBuildsCountFromGithubId({ github_id: repo.repoId });
+      const buildCount = buildCountResult.github_repositories[0].project.builds_aggregate.aggregate?.count;
+      if (buildCount === undefined || buildCount > 0) {
+        log.info('skipping snapshot due to previous build', { repo });
+        return;
       }
 
       const record: QueueRepositorySnapshotMessage = {
@@ -55,19 +51,19 @@ export async function queueDefaultBranchesForSnapshot(
         repoGithubId: repo.repoId,
         sourceType: 'pr',
       };
-      return await queueRepositoriesForSnapshot(installationId, [record]);
+      return queueRepositoryForSnapshot(installationId, record);
     })
   );
+
+  const errors = results.filter((res) => res && res.error);
+  if (errors.length > 0) {
+    return newError(JSON.stringify(errors));
+  }
 
   log.info('queued repositories repositories for snapshot with results: ', {
     installationId,
     results,
   });
-
-  const errors = results.filter((res) => res.error);
-  if (errors.length > 0) {
-    return newError(JSON.stringify(errors));
-  }
 
   return newResult(undefined);
 }

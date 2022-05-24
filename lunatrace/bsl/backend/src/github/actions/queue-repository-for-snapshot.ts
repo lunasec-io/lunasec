@@ -21,7 +21,7 @@ import { log } from '../../utils/log';
 import { getSqsUrlFromName } from '../../utils/sqs';
 import { catchError, threwError } from '../../utils/try';
 
-export async function queueRepositoriesForSnapshot(installationId: number, records: QueueRepositorySnapshotMessage[]) {
+export async function queueRepositoryForSnapshot(installationId: number, repo: QueueRepositorySnapshotMessage) {
   const repoQueueConfig = getRepositoryQueueConfig();
   // TODO (cthompson) move this outside of this function, this should only need to be called once
   // note (forrest): I made this returned cached values so at least it is performant now
@@ -37,7 +37,7 @@ export async function queueRepositoriesForSnapshot(installationId: number, recor
   // messages sent to this queue will be processed by the process-repository queue handler in workers/snapshot-repository.
   const result = await sqsClient.send(
     new SendMessageCommand({
-      MessageBody: JSON.stringify(records),
+      MessageBody: JSON.stringify([repo]),
       MessageAttributes: {
         installation_id: {
           DataType: 'Number',
@@ -50,6 +50,6 @@ export async function queueRepositoriesForSnapshot(installationId: number, recor
   if (!result || !result.$metadata.httpStatusCode || result.$metadata.httpStatusCode >= 300) {
     return newError('sending message to queue failed, responded: ' + JSON.stringify(result));
   }
-  log.info(records, 'queued repositories for snapshot');
+  log.info(repo, 'queued repo for snapshot');
   return newResult(result);
 }

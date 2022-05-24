@@ -13,12 +13,12 @@
  */
 import { Octokit } from 'octokit';
 
-import { RepositoriesForInstallationResponse } from '../../types/github';
+import { GithubRepositoryInfo, RepositoriesForInstallationResponse } from '../../types/github';
 import { log } from '../../utils/log';
 
 const PER_PAGE = 100;
 
-export async function getGithubReposForInstallation(
+async function fetchReposFromGithub(
   authToken: string,
   installationId: number
 ): Promise<RepositoriesForInstallationResponse> {
@@ -53,4 +53,26 @@ export async function getGithubReposForInstallation(
   log.error(`[installId: ${installationId}] Hit max iterations for listing repos for installation`);
 
   throw new Error('Hit max iterations for listing repos for installation: ' + installationId.toString(10));
+}
+
+export async function getGithubReposForInstallation(
+  authToken: string,
+  installationId: number
+): Promise<GithubRepositoryInfo[]> {
+  const repositories = await fetchReposFromGithub(authToken, installationId);
+  return repositories.map((repo) => {
+    return {
+      orgName: repo.owner.login,
+      orgId: repo.owner.id,
+      orgNodeId: repo.owner.node_id,
+      repoName: repo.name,
+      repoId: repo.id,
+      repoNodeId: repo.node_id,
+      gitUrl: repo.git_url,
+      ownerType: repo.owner.type,
+      defaultBranch: repo.default_branch,
+      cloneUrl: repo.clone_url,
+      fullTraits: repo,
+    };
+  });
 }

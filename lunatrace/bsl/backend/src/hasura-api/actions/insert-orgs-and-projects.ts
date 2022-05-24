@@ -41,7 +41,7 @@ function getExistingProjects(orgLookup: OrganizationInputLookup, orgName: string
   return existingOrg.projects.data;
 }
 
-export function hasuraOrgsFromGithubRepositories(
+export function generateOrgsAndProjectsMutation(
   installationId: number,
   repositories: GithubRepositoryInfo[]
 ): OrganizationInputLookup {
@@ -53,6 +53,7 @@ export function hasuraOrgsFromGithubRepositories(
         Github_Repositories_Update_Column.Traits,
         Github_Repositories_Update_Column.GithubId,
         Github_Repositories_Update_Column.GithubNodeId,
+        Github_Repositories_Update_Column.DefaultBranch,
       ],
     };
 
@@ -63,6 +64,8 @@ export function hasuraOrgsFromGithubRepositories(
           {
             github_id: repo.repoId,
             github_node_id: repo.repoNodeId,
+
+            // TODO ADD DEFAULT BRANCH HERE
             git_url: repo.gitUrl,
             traits: repo,
           },
@@ -83,11 +86,12 @@ export function hasuraOrgsFromGithubRepositories(
       github_node_id: repo.orgNodeId,
       github_owner_type: repo.ownerType,
       projects: {
+        // TODO: I dont think we have to merge the existing projects like this
         data: [...getExistingProjects(orgLookup, repo.orgName), project],
         on_conflict: projectOnConflict,
       },
     };
-
+    // TODO: Fix this reduce anti-pattern
     return {
       ...orgLookup,
       [repo.orgName]: orgData,
@@ -95,7 +99,7 @@ export function hasuraOrgsFromGithubRepositories(
   }, {} as OrganizationInputLookup);
 }
 
-export async function createLunatraceOrgsFromGithubOrgs(
+export async function insertOrgsAndProjects(
   installationId: number,
   orgObjectList: Organizations_Insert_Input[]
 ): Promise<MaybeError<UpsertOrganizationResponse[]>> {

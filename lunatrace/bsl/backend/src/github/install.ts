@@ -20,9 +20,8 @@ import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse';
 import { catchError, threwError, Try } from '../utils/try';
 
-import { createHasuraOrgsAndProjectsForInstall } from './actions/create-hasura-orgs-and-projects-for-install';
-import { getGithubReposForInstallation } from './actions/get-github-repos-for-installation';
-import { queueDefaultBranchesForSnapshot } from './actions/queue-default-branches-for-snapshot';
+import { queueNewReposForSnapshot } from './actions/queue-new-repos-for-snapshot';
+import { upsertInstalledProjects } from './actions/upsert-installed-projects';
 import { getInstallationAccessToken } from './auth';
 
 const serverConfig = getServerConfig();
@@ -71,65 +70,32 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  const repositories: Try<RepositoriesForInstallationResponse> = await catchError(
-    async () => await getGithubReposForInstallation(installationAuthToken.res, installationId)
-  );
-
-  if (threwError(repositories)) {
-    logError(repositories);
-    res.status(500).send(errorResponse('unable to collect Github information for install.'));
-    return;
-  }
-
-  const githubRepos: GithubRepositoryInfo[] = repositories.reduce((repos, repo) => {
-    const repoInfo = {
-      orgName: repo.owner.login,
-      orgId: repo.owner.id,
-      orgNodeId: repo.owner.node_id,
-      repoName: repo.name,
-      repoId: repo.id,
-      repoNodeId: repo.node_id,
-      gitUrl: repo.git_url,
-      ownerType: repo.owner.type,
-    };
-    return [...repos, repoInfo];
-  }, [] as GithubRepositoryInfo[]);
-
-  log.info(`Collected installation data`, {
-    installationId,
-    githubRepos: githubRepos.map((repo) => ({
-      orgName: repo.orgName,
-      repoName: repo.repoName,
-    })),
-  });
-
-  const resp = await createHasuraOrgsAndProjectsForInstall(installationAuthToken.res, installationId, githubRepos);
-  if (resp.error) {
+  const upsertRes = await upsertInstalledProjects(installationAuthToken.res, installationId);
+  if (upsertRes.error) {
     log.error('unable to create orgs and projects for install', {
       installationId,
-      error: resp.msg,
+      error: upsertRes.msg,
     });
-    res.status(500).send(errorResponse(resp.msg));
+    res.status(500).send(errorResponse(upsertRes.msg));
     return;
   }
 
   log.info('queueing repositories for snapshots', {
     installationId,
-    repoCount: githubRepos.length,
   });
 
-  const queueResp = await catchError(queueDefaultBranchesForSnapshot(installationId, githubRepos));
+  // TODO: This will re-snapshot projects that have already been installed.  We should dedupe by checking hasura if the project has any builds and if it does, skip
+  const snapshotRes = await catchError(queueNewReposForSnapshot(installationId, upsertRes.res));
 
-  if (threwError(queueResp) || queueResp.error) {
+  if (threwError(snapshotRes) || snapshotRes.error) {
     log.warn('unable to queue some or all repositories, continuing with the installation', {
       installationId,
-      error: threwError(queueResp) ? queueResp.message : queueResp.msg,
+      error: threwError(snapshotRes) ? snapshotRes.message : snapshotRes.msg,
     });
   }
 
   log.info('completed queueing repositories for snapshots', {
     installationId,
-    repoCount: githubRepos.length,
   });
 
   res.status(302).redirect(serverConfig.sitePublicUrl);
