@@ -87,9 +87,12 @@ function deployStack() {
     }
 
     const publicBaseUrl = `http://localhost:4455`;
+    const development = true;
+
     return new WorkerStorageStack(app, `${appName}-${devUser}-EtlStorage`, {
       env,
       publicBaseUrl,
+      development,
     });
   }
   return new LunatraceBackendStack(app, `${appName}-BackendStack`, {

@@ -19,26 +19,30 @@ import { Construct, Duration } from '@aws-cdk/core';
 
 interface WorkerStorageStackProps extends cdk.StackProps {
   publicBaseUrl: string;
+  development?: boolean;
 }
 
-export interface WorkerStorageStackState {
+interface WorkerQueues {
+  processManifestSqsQueue: Queue | null;
+  processSbomSqsQueue: Queue | null;
+  processWebhookSqsQueue: Queue | null;
+  processRepositorySqsQueue: Queue | null;
+}
+
+export interface WorkerStorageStackState extends WorkerQueues {
   sbomBucket: Bucket;
   manifestBucket: Bucket;
   grypeDatabaseBucket: Bucket;
-  processManifestSqsQueue: Queue;
-  processSbomSqsQueue: Queue;
-  processWebhookSqsQueue: Queue;
-  processRepositorySqsQueue: Queue;
 }
 
 export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackState {
   public sbomBucket: Bucket;
   public manifestBucket: Bucket;
   public grypeDatabaseBucket: Bucket;
-  public processManifestSqsQueue: Queue;
-  public processSbomSqsQueue: Queue;
-  public processWebhookSqsQueue: Queue;
-  public processRepositorySqsQueue: Queue;
+  public processManifestSqsQueue: Queue | null;
+  public processSbomSqsQueue: Queue | null;
+  public processWebhookSqsQueue: Queue | null;
+  public processRepositorySqsQueue: Queue | null;
 
   constructor(scope: cdk.Construct, id: string, props: WorkerStorageStackProps) {
     super(scope, id, props);
@@ -54,31 +58,7 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
     this.processRepositorySqsQueue = stackState.processWebhookSqsQueue;
   }
 
-  /**
-   * This static because multi-stack CloudFormation is very complicated and full of pitfalls.
-   * See these articles for some info:
-   * https://stackoverflow.com/questions/62989129/resolution-error-cannot-use-resource-x-in-a-cross-environment-fashion-the-re
-   * https://awsmaniac.com/sharing-resources-in-aws-cdk/
-   * @param context The `this` context of an AWS CDK Stack. This must provide variables for re-assignment so that the "stack" values can be exported.
-   * @param props Variables required for the stack to deploy properly.
-   */
-  public static createWorkerStorageStack(context: Construct, props: WorkerStorageStackProps): WorkerStorageStackState {
-    const { publicBaseUrl } = props;
-
-    const grypeDatabaseBucket = new Bucket(context, 'GrypeDatabaseBucket');
-
-    const sbomBucket = new Bucket(context, 'SbomBucket');
-
-    const manifestBucket = new Bucket(context, 'ManifestBucket', {
-      cors: [
-        {
-          allowedMethods: [HttpMethods.GET, HttpMethods.PUT],
-          allowedOrigins: [publicBaseUrl],
-          allowedHeaders: ['*'],
-        },
-      ],
-    });
-
+  private static createProductionQueues(context: Construct, manifestBucket: Bucket, sbomBucket: Bucket): WorkerQueues {
     const processManifestDeadLetterQueue = new Queue(context, 'ProcessManifestProcessingDeadLetterQueue', {
       retentionPeriod: Duration.days(14),
     });
@@ -115,10 +95,6 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
       },
     });
 
-    manifestBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(processManifestSqsQueue));
-
-    sbomBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(processSbomSqsQueue));
-
     const processWebhookDeadLetterQueue = new Queue(context, 'ProcessWebhookProcessingDeadLetterQueue', {
       retentionPeriod: Duration.days(14),
     });
@@ -131,20 +107,8 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
       },
     });
 
-    new cdk.CfnOutput(context, sbomBucket.node.id + 'Name', {
-      value: sbomBucket.bucketName,
-      description: 'Name of the Sbom Bucket',
-    });
-
-    new cdk.CfnOutput(context, manifestBucket.node.id + 'Name', {
-      value: manifestBucket.bucketName,
-      description: 'Name of the Manifest Bucket',
-    });
-
-    new cdk.CfnOutput(context, grypeDatabaseBucket.node.id + 'Name', {
-      value: grypeDatabaseBucket.bucketName,
-      description: 'Name of the Grype Database Bucket',
-    });
+    manifestBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(processManifestSqsQueue));
+    sbomBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(processSbomSqsQueue));
 
     new cdk.CfnOutput(context, processSbomSqsQueue.node.id + 'Name', {
       value: processSbomSqsQueue.queueName,
@@ -167,13 +131,93 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
     });
 
     return {
-      sbomBucket,
-      manifestBucket,
-      grypeDatabaseBucket,
       processManifestSqsQueue,
       processSbomSqsQueue,
       processWebhookSqsQueue,
       processRepositorySqsQueue,
+    };
+  }
+
+  private static createDevelopmentQueues(context: Construct, manifestBucket: Bucket, sbomBucket: Bucket) {
+    const lunatraceDevelopmentSqsDeadLetterQueue = new Queue(context, 'ProcessWebhookProcessingDeadLetterQueue', {
+      retentionPeriod: Duration.days(14),
+    });
+
+    const lunatraceDevelopmentSqsQueue = new Queue(context, 'LunaTraceDevelopmentQueue', {
+      visibilityTimeout: Duration.minutes(1),
+      deadLetterQueue: {
+        queue: lunatraceDevelopmentSqsDeadLetterQueue,
+        maxReceiveCount: 10,
+      },
+    });
+
+    new cdk.CfnOutput(context, lunatraceDevelopmentSqsQueue.node.id + 'Name', {
+      value: lunatraceDevelopmentSqsQueue.queueName,
+      description: 'Queue Name for the development lunatrace queue',
+    });
+
+    manifestBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(lunatraceDevelopmentSqsQueue));
+    sbomBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(lunatraceDevelopmentSqsQueue));
+  }
+
+  /**
+   * This static because multi-stack CloudFormation is very complicated and full of pitfalls.
+   * See these articles for some info:
+   * https://stackoverflow.com/questions/62989129/resolution-error-cannot-use-resource-x-in-a-cross-environment-fashion-the-re
+   * https://awsmaniac.com/sharing-resources-in-aws-cdk/
+   * @param context The `this` context of an AWS CDK Stack. This must provide variables for re-assignment so that the "stack" values can be exported.
+   * @param props Variables required for the stack to deploy properly.
+   */
+  public static createWorkerStorageStack(context: Construct, props: WorkerStorageStackProps): WorkerStorageStackState {
+    const { publicBaseUrl } = props;
+
+    const grypeDatabaseBucket = new Bucket(context, 'GrypeDatabaseBucket');
+
+    const sbomBucket = new Bucket(context, 'SbomBucket');
+
+    const manifestBucket = new Bucket(context, 'ManifestBucket', {
+      cors: [
+        {
+          allowedMethods: [HttpMethods.GET, HttpMethods.PUT],
+          allowedOrigins: [publicBaseUrl],
+          allowedHeaders: ['*'],
+        },
+      ],
+    });
+
+    let workerQueues: WorkerQueues = {
+      processManifestSqsQueue: null,
+      processRepositorySqsQueue: null,
+      processSbomSqsQueue: null,
+      processWebhookSqsQueue: null,
+    };
+
+    if (props.development) {
+      this.createDevelopmentQueues(context, manifestBucket, sbomBucket);
+    } else {
+      workerQueues = this.createProductionQueues(context, manifestBucket, sbomBucket);
+    }
+
+    new cdk.CfnOutput(context, sbomBucket.node.id + 'Name', {
+      value: sbomBucket.bucketName,
+      description: 'Name of the Sbom Bucket',
+    });
+
+    new cdk.CfnOutput(context, manifestBucket.node.id + 'Name', {
+      value: manifestBucket.bucketName,
+      description: 'Name of the Manifest Bucket',
+    });
+
+    new cdk.CfnOutput(context, grypeDatabaseBucket.node.id + 'Name', {
+      value: grypeDatabaseBucket.bucketName,
+      description: 'Name of the Grype Database Bucket',
+    });
+
+    return {
+      sbomBucket,
+      manifestBucket,
+      grypeDatabaseBucket,
+      ...workerQueues,
     };
   }
 }

@@ -12,6 +12,8 @@
  *
  */
 
+import { inspect } from 'util';
+
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
 import { Port, SecurityGroup, Vpc } from '@aws-cdk/aws-ec2';
 import {
@@ -114,6 +116,15 @@ export class LunatraceBackendStack extends cdk.Stack {
       env: props.env,
       publicBaseUrl,
     });
+
+    if (
+      !storageStackStage.processRepositorySqsQueue ||
+      !storageStackStage.processWebhookSqsQueue ||
+      !storageStackStage.processManifestSqsQueue ||
+      !storageStackStage.processSbomSqsQueue
+    ) {
+      throw new Error(`expected non-null storage stack queues: ${inspect(storageStackStage)}`);
+    }
 
     const execRole = new Role(this, 'TaskExecutionRole', {
       assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com'),

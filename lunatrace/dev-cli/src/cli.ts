@@ -25,8 +25,7 @@ dotenv.config();
 
 import { dump } from 'js-yaml';
 
-import { bslDir, hasuraDir, kratosDir, tmuxpConfgFile } from './constants';
-import { dbUrlEnv } from './env';
+import { bslDir, tmuxpConfgFile } from './constants';
 import {
   backend,
   dockerCompose,
@@ -34,43 +33,20 @@ import {
   generateCommon,
   generateLogger,
   hasura,
-  manifestWorker,
-  repositoryWorker,
-  sbomWorker,
+  queueWorker,
   smeeWebhook,
-  webhookWorker,
 } from './services';
 import { tmuxpConfig, tmuxWindow } from './tmux';
 
 const servicesWindow = tmuxWindow('services', [hasura, frontend, dockerCompose]);
 
-const workerWindow = tmuxWindow('workers', [manifestWorker, sbomWorker, webhookWorker, repositoryWorker]);
+const workerWindow = tmuxWindow('workers', [queueWorker]);
 
 const backendWindow = tmuxWindow('backend', [smeeWebhook, backend]);
 
 const generatedCodeWindow = tmuxWindow('generated-code', [generateCommon, generateLogger]);
 
 const config = tmuxpConfig('lunatrace', [servicesWindow, backendWindow, workerWindow, generatedCodeWindow]);
-
-function hasuraInit() {
-  console.log(`Running hasura migrations...`);
-  exec('hasura migrate apply', {
-    cwd: hasuraDir,
-  });
-  exec('hasura metadata apply', {
-    cwd: hasuraDir,
-  });
-  exec('hasura metadata reload', {
-    cwd: hasuraDir,
-  });
-}
-
-function kratosInit() {
-  console.log(`Running kratos migrations...`);
-  exec(`${dbUrlEnv} kratos -c config.yaml migrate sql -e --yes`, {
-    cwd: kratosDir,
-  });
-}
 
 void (async () => {
   console.log(`Generating tmuxp config: ${tmuxpConfgFile}...`);

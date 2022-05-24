@@ -14,7 +14,7 @@
 import { GraphQLYogaError } from '@graphql-yoga/node';
 import { v4 as uuid } from 'uuid';
 
-import { getEtlBucketConfig } from '../../config';
+import { getWorkerBucketConfig } from '../../config';
 import { hasura } from '../../hasura-api';
 import { aws } from '../../utils/aws-utils';
 import { Context } from '../context';
@@ -24,7 +24,7 @@ import { getUserId, throwIfUnauthenticated } from './auth-helpers';
 
 type PresignManifestUploadResolver = NonNullable<MutationResolvers['presignManifestUpload']>;
 
-const sbomHandlerConfig = getEtlBucketConfig();
+const sbomHandlerConfig = getWorkerBucketConfig();
 
 export async function checkProjectIsAuthorized(projectId: string, ctx: Context): Promise<void> {
   const userId = getUserId(ctx);

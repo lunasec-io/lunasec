@@ -36,6 +36,10 @@ export async function queueRepositoriesForSnapshot(
     return;
   }
 
+  log.info('queueing repositories for snapshot', {
+    records,
+  });
+
   const sqsEvent: LunaTraceRepositorySnapshotSqsMessage = {
     type: 'repository-snapshot',
     records,

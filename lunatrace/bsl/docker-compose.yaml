@@ -95,7 +95,7 @@ services:
       HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: "false"
       ## uncomment next line to set an admin secret
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-      HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256", "jwk_url": "http://host.docker.internal:4456/.well-known/jwks.json", "issuer": "http://oathkeeper:4455/"}'
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256", "jwk_url": "http://oathkeeper:4456/.well-known/jwks.json", "issuer": "http://oathkeeper:4455/"}'
       HASURA_GRAPHQL_LOG_LEVEL: debug
       ACTION_BASE_URL: http://host.docker.internal:3002
       # TODO: ADD THIS TO THE CDK

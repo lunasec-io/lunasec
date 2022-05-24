@@ -22,10 +22,10 @@ import {
   JwksConfig,
   QueueHandlerConfig,
   RepositoryQueueConfig,
-  SbomHandlerConfig,
   ServerConfig,
   SqsQueueConfig,
   WebhookConfig,
+  WorkerBucketConfig,
   WorkerConfig,
   WorkerType,
 } from './types/config';
@@ -100,7 +100,7 @@ export function getHasuraConfig(): HasuraConfig {
   };
 }
 
-export function getEtlBucketConfig(): SbomHandlerConfig {
+export function getWorkerBucketConfig(): WorkerBucketConfig {
   const sbomBucket = checkEnvVar('S3_SBOM_BUCKET');
   const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET');
 

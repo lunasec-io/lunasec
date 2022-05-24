@@ -17,7 +17,7 @@ export interface ServerConfig {
   isProduction: boolean;
 }
 
-export interface SbomHandlerConfig {
+export interface WorkerBucketConfig {
   sbomBucket: string;
   manifestBucket: string;
 }

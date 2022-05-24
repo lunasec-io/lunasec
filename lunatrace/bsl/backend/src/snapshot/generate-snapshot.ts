@@ -13,7 +13,7 @@
  */
 import zlib from 'zlib';
 
-import { getEtlBucketConfig } from '../config';
+import { getWorkerBucketConfig } from '../config';
 import { hasura } from '../hasura-api';
 import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
@@ -26,7 +26,7 @@ import { catchError, threwError } from '../utils/try';
 import { generateSbomFromAsset } from './call-cli';
 
 export async function uploadSbomToS3(organizationId: string, buildId: string, gzippedSbom: zlib.Gzip) {
-  const bucketConfig = getEtlBucketConfig();
+  const bucketConfig = getWorkerBucketConfig();
   // upload the sbom to s3, streaming
   const newSbomS3Key = aws.generateSbomS3Key(organizationId, buildId);
   const s3Url = await aws.uploadGzipFileToS3(newSbomS3Key, bucketConfig.sbomBucket, gzippedSbom);

@@ -43,33 +43,9 @@ export const backendEnv = envVars({
   ...githubAppConfig,
 });
 
-export function queueEnvConfig(
-  handler: 'process-manifest' | 'process-sbom' | 'process-webhook' | 'process-repository'
-): Record<string, string> {
-  return {
-    QUEUE_HANDLER: handler,
-    WORKER_TYPE: 'queue-handler',
-  };
-}
-
-export const manifestWorkEnv = envVars({
+export const queueWorkerEnv = envVars({
   ...githubAppConfig,
-  ...queueEnvConfig('process-manifest'),
-});
-
-export const sbomWorkerEnv = envVars({
-  ...githubAppConfig,
-  ...queueEnvConfig('process-sbom'),
-});
-
-export const webhookWorkerEnv = envVars({
-  ...githubAppConfig,
-  ...queueEnvConfig('process-webhook'),
-});
-
-export const repositoryWorkerEnv = envVars({
-  ...githubAppConfig,
-  ...queueEnvConfig('process-repository'),
+  WORKER_TYPE: 'queue-handler',
 });
 
 export const dbUrlEnv = envVars({
