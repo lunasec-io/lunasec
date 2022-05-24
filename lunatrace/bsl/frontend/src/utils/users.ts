@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-import { GetCurrentUserInfoQuery, GetSidebarInfoQuery } from '../api/generated';
 import { impersonateUserKey } from '../constants/localstorage';
 import { ImpersonateUser } from '../types/user';
 

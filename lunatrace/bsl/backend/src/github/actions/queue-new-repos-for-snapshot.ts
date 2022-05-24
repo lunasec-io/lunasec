@@ -38,7 +38,7 @@ export async function queueNewReposForSnapshot(
       // Check if there are any builds already and if there are skip.  This is just to populate the first build on install for a good UX
       // Existing repos might come in when we upsert repos so just skip those
       const buildCountResult = await hasura.GetBuildsCountFromGithubId({ github_id: repo.repoId });
-      const buildCount = buildCountResult.github_repositories[0].project.builds_aggregate.aggregate?.count;
+      const buildCount = buildCountResult.github_repositories[0]?.project.builds_aggregate.aggregate?.count;
       if (buildCount === undefined || buildCount > 0) {
         log.info('skipping snapshot due to previous build', { repo });
         return;
@@ -55,15 +55,15 @@ export async function queueNewReposForSnapshot(
     })
   );
 
-  const errors = results.filter((res) => res && res.error);
-  if (errors.length > 0) {
-    return newError(JSON.stringify(errors));
-  }
-
   log.info('queued repositories repositories for snapshot with results: ', {
     installationId,
     results,
   });
+
+  const errors = results.filter((res) => res && res.error);
+  if (errors.length > 0) {
+    return newError(JSON.stringify(errors));
+  }
 
   return newResult(undefined);
 }

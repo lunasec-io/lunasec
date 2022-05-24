@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-import { h } from 'hastscript';
 import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 

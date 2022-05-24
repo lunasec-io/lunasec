@@ -18,8 +18,6 @@ import {
   Guide_Related_Guides_Constraint,
   Guide_Vulnerabilities_Constraint,
   Guides_Insert_Input,
-  Guides_Obj_Rel_Insert_Input,
-  UpsertGuidesMutationVariables,
 } from '../hasura-api/generated';
 import { log } from '../utils/log';
 
