@@ -22,9 +22,12 @@ authors: [chris, free, gabe]
   ~
 -->
 
-## PyPi package, `ctx`, compromised
+# Popular packages, `ctx` and `Phpass`, compromised
 
-After 7 years, the pypi package `ctx` received a version update. A malicious version of ctx was published under `0.2.2` as and update to the previous `0.1.2`. In this post we'll be reviewing the malicious code that was introduced.
+After 7 years, the Python package `ctx` on PyPi received a version update.
+A malicious version of `ctx` was published under `0.2.2` as an update to the previous `0.1.2`.
+
+In this post we'll be reviewing the malicious code that was introduced to both `ctx` and `Phpass`.
 
 <!--truncate-->
 
