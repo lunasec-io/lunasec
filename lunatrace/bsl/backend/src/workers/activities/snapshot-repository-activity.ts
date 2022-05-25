@@ -41,7 +41,7 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
 
   logger.info('generating SBOM for repository');
 
-  const gzippedSbom = generateSbomFromAsset('repository', repoClone.cloneUrl, req.gitBranch);
+  const gzippedSbom = generateSbomFromAsset('repository', repoClone.cloneUrl, req.gitBranch, req.gitCommit);
 
   logger.info('Creating a new build for repository', {
     gitUrl: repoClone.projectId,
@@ -50,9 +50,11 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   const insertBuildResponse: Try<InsertBuildMutation> = await catchError(
     async () =>
       await hasura.InsertBuild({
-        project_id: repoClone.projectId,
-        pull_request_id: req.pullRequestId,
-        source_type: req.sourceType,
+        build: {
+          project_id: repoClone.projectId,
+          pull_request_id: req.pullRequestId,
+          source_type: req.sourceType,
+        },
       })
   );
 

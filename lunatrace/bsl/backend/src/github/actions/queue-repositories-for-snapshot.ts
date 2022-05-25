@@ -16,7 +16,7 @@ import { SendMessageCommand, SendMessageCommandOutput } from '@aws-sdk/client-sq
 import { sqsClient } from '../../aws/sqs-client';
 import { getRepositoryQueueConfig } from '../../config';
 import { LunaTraceRepositorySnapshotSqsMessage, SnapshotForRepositoryRequest } from '../../types/sqs';
-import { MaybeError } from '../../types/util';
+import { MaybeError, MaybeErrorVoid } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { getSqsUrlFromName } from '../../utils/sqs';
@@ -25,7 +25,7 @@ import { catchError, threwError } from '../../utils/try';
 export async function queueRepositoriesForSnapshot(
   installationId: number,
   records: SnapshotForRepositoryRequest[]
-): Promise<MaybeError<SendMessageCommandOutput>> {
+): Promise<MaybeErrorVoid> {
   const repoQueueConfig = getRepositoryQueueConfig();
   // TODO (cthompson) move this outside of this function, this should only need to be called once
   // note (forrest): I made this returned cached values so at least it is performant now
@@ -64,5 +64,5 @@ export async function queueRepositoriesForSnapshot(
     return newError('sending message to queue failed, responded: ' + JSON.stringify(result));
   }
   log.info(records, 'queued repositories for snapshot');
-  return newResult(result);
+  return newResult(undefined);
 }

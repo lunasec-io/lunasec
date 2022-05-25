@@ -13,7 +13,7 @@
  */
 import { inspect } from 'util';
 
-import { Cluster, ContainerImage, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
+import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
@@ -113,6 +113,10 @@ export class WorkerStack extends cdk.Stack {
         circuitBreaker: {
           rollback: true,
         },
+        minScalingCapacity: 2,
+        deploymentController: {
+          type: DeploymentControllerType.ECS,
+        },
       }
     );
     storageStack.sbomBucket.grantReadWrite(processRepositoryQueueService.taskDefinition.taskRole);
@@ -137,6 +141,10 @@ export class WorkerStack extends cdk.Stack {
         circuitBreaker: {
           rollback: true,
         },
+        minScalingCapacity: 2,
+        deploymentController: {
+          type: DeploymentControllerType.ECS,
+        },
       }
     );
     storageStack.manifestBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
@@ -158,6 +166,10 @@ export class WorkerStack extends cdk.Stack {
       containerName: 'ProcessSbomQueueService',
       circuitBreaker: {
         rollback: true,
+      },
+      minScalingCapacity: 2,
+      deploymentController: {
+        type: DeploymentControllerType.ECS,
       },
     });
     storageStack.sbomBucket.grantReadWrite(processSbomQueueService.taskDefinition.taskRole);
@@ -181,6 +193,10 @@ export class WorkerStack extends cdk.Stack {
         containerName: 'ProcessWebhookQueueService',
         circuitBreaker: {
           rollback: true,
+        },
+        minScalingCapacity: 2,
+        deploymentController: {
+          type: DeploymentControllerType.ECS,
         },
       }
     );

@@ -69,11 +69,8 @@ That will run a real AWS deployment of the "dev" resources required. Once it fin
 ✨  Deployment time: 180.43s
 
 lunatrace-alex-EtlStorage.ManifestBucketName = lunatrace-alex-etlstorage-manifestbucket46c412a5-1b0kc5cys81er
-lunatrace-alex-EtlStorage.ProcessManifestProcessingQueueName = lunatrace-alex-EtlStorage-ProcessManifestProcessingQueue7A1F1CB2-BWVszydikZnB
-lunatrace-alex-EtlStorage.ProcessRepositoryProcessingQueueName = lunatrace-alex-EtlStorage-ProcessRepositoryProcessingQueueD69CAAE0-ma9VglOAlgiF
-lunatrace-alex-EtlStorage.ProcessSbomProcessingQueueName = lunatrace-alex-EtlStorage-ProcessSbomProcessingQueueA3A9FE69-6CG55qoQkM7q
-lunatrace-alex-EtlStorage.ProcessWebhookProcessingQueueName = lunatrace-alex-EtlStorage-ProcessWebhookProcessingQueue475F8047-ZzRXj42PsJAZ
 lunatrace-alex-EtlStorage.SbomBucketName = lunatrace-alex-etlstorage-sbombucket8550fee8-1drqtwb7yf2dg
+lunatrace-alex-EtlStorage.LunaTraceDevelopmentQueue = lunatrace-breadchris-EtlStorage-LunaTraceDevelopmentQueue04E796C2-l8A6ZC0YUAb0
 Stack ARN:
 arn:aws:cloudformation:us-west-2:134071937287:stack/lunatrace-alex-EtlStorage/4655a320-cb37-11ec-a2b1-02772921f86f
 
@@ -83,12 +80,9 @@ arn:aws:cloudformation:us-west-2:134071937287:stack/lunatrace-alex-EtlStorage/46
 You'll need to format those values into an env file at `$REPO/lunatrace/dev-cli/.env.dev` that looks like:
 
 ```env
-S3_SBOM_BUCKET=lunatrace-alex-etlstorage-sbombucket8550fee8-1drqtwb7yf2dg
-S3_MANIFEST_BUCKET=lunatrace-alex-etlstorage-manifestbucket46c412a5-1b0kc5cys81er
-PROCESS_WEBHOOK_QUEUE=lunatrace-alex-EtlStorage-ProcessWebhookProcessingQueue475F8047-ZzRXj42PsJAZ
-PROCESS_REPOSITORY_QUEUE=lunatrace-alex-EtlStorage-ProcessRepositoryProcessingQueueD69CAAE0-ma9VglOAlgiF
-PROCESS_MANIFEST_QUEUE=lunatrace-alex-EtlStorage-ProcessManifestProcessingQueue7A1F1CB2-BWVszydikZnB
-PROCESS_SBOM_QUEUE=lunatrace-alex-EtlStorage-ProcessSbomProcessingQueueA3A9FE69-6CG55qoQkM7q
+S3_SBOM_BUCKET=xxx
+S3_MANIFEST_BUCKET=xxx
+QUEUE_NAME=xxx
 ```
 
 ### Running `tmuxp`

@@ -31,6 +31,8 @@ import {
 } from './types/config';
 import { tryParseInt, validateBooleanString } from './utils/parse';
 
+const notSet = 'not-set';
+
 export const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
   const envVar = process.env[envVarKey];
 
@@ -75,7 +77,14 @@ export function getWebhookConfig(): WebhookConfig {
     throw new Error(disableWebhookQueue.msg);
   }
 
-  const queueName = checkEnvVar('PROCESS_WEBHOOK_QUEUE');
+  const developmentQueueName = checkEnvVar('QUEUE_NAME', notSet);
+
+  const queueName = checkEnvVar('PROCESS_WEBHOOK_QUEUE', developmentQueueName);
+
+  if (queueName === notSet) {
+    throw new Error('PROCESS_WEBHOOK_QUEUE is not set and QUEUE_NAME for development is not set');
+  }
+
   const secret = checkEnvVar('GITHUB_APP_WEBHOOK_SECRET', 'mysecret');
   return {
     disableWebhookQueue: disableWebhookQueue.res,
@@ -85,7 +94,13 @@ export function getWebhookConfig(): WebhookConfig {
 }
 
 export function getRepositoryQueueConfig(): RepositoryQueueConfig {
-  const queueName = checkEnvVar('PROCESS_REPOSITORY_QUEUE');
+  const developmentQueueName = checkEnvVar('QUEUE_NAME', notSet);
+
+  const queueName = checkEnvVar('PROCESS_REPOSITORY_QUEUE', developmentQueueName);
+
+  if (queueName === notSet) {
+    throw new Error('PROCESS_REPOSITORY_QUEUE is not set and QUEUE_NAME for development is not set');
+  }
   return {
     queueName,
   };

@@ -177,11 +177,11 @@ class QueueWorker {
 
       if (result === 'job_timeout') {
         log.error('Exceeded timeout for jobs', {
-          allJobs,
+          result,
         });
       } else {
         log.info('Jobs returned successfully', {
-          allJobs,
+          result,
         });
       }
       return;

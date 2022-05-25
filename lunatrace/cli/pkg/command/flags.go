@@ -45,7 +45,9 @@ func EnableGlobalFlags(flags *types.LunaTraceGlobalFlags) {
     outStream = os.Stderr
   }
 
-  if !flags.Json {
+  if flags.Json {
+    log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
+  } else {
     // pretty print output to the console if we are not interested in parsable output
     consoleOutput := zerolog.ConsoleWriter{Out: outStream}
     consoleOutput.FormatFieldName = func(i interface{}) string {

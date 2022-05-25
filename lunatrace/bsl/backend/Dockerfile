@@ -2,7 +2,7 @@ FROM repo-bootstrap as lunatrace-backend-base
 
 RUN apt-get update && apt-get install -y wget curl
 
-COPY --from=lunasec/lunatrace-cli:v0.0.6 /lunatrace /usr/local/bin
+COPY --from=lunasec/lunatrace-cli:v0.0.7 /lunatrace /usr/local/bin
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
 
 WORKDIR /usr/repo/lunatrace/bsl/backend

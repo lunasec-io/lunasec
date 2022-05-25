@@ -320,9 +320,9 @@ export class LunatraceBackendStack extends cdk.Stack {
       circuitBreaker: {
         rollback: true,
       },
+      desiredCount: 2,
       deploymentController: {
-        // This sets up Blue/Green deploys
-        type: DeploymentControllerType.CODE_DEPLOY,
+        type: DeploymentControllerType.ECS,
       },
     });
 
