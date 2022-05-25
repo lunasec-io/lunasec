@@ -13,12 +13,10 @@
  */
 import { EmitterWebhookEvent } from '@octokit/webhooks';
 
-import { GithubRepositoryInfo } from '../../types/github';
 import { log } from '../../utils/log';
-import { createHasuraOrgsAndProjectsForInstall } from '../actions/create-hasura-orgs-and-projects-for-install';
 import { orgMemberAdded } from '../actions/org-member-added';
-import { queueDefaultBranchesForSnapshot } from '../actions/queue-default-branches-for-snapshot';
-import { queueRepositoriesForSnapshot } from '../actions/queue-repositories-for-snapshot';
+import { queueRepositoryForSnapshot } from '../actions/queue-repository-for-snapshot';
+import { upsertInstalledProjects } from '../actions/upsert-installed-projects';
 import { getInstallationAccessToken } from '../auth';
 
 import { WebhookInterceptor } from './interceptor';
@@ -34,62 +32,35 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
     });
   };
 
-  listenToHook('installation_repositories.added', repositoryAddedHandler);
+  listenToHook('installation_repositories.added', repopulateRepositoriesHandler);
+  listenToHook('installation.created', repopulateRepositoriesHandler);
   listenToHook('pull_request', pullRequestHandler);
   listenToHook('organization', organizationHandler);
 }
 
-async function repositoryAddedHandler(event: EmitterWebhookEvent<'installation_repositories.added'>) {
-  const reposAdded = event.payload.repositories_added;
-
+// This simply calls github and upserts all repos.  We can call it in different situations where we thing the repos may have
+// Not the most performant solution but it works and is simple
+async function repopulateRepositoriesHandler(
+  event: EmitterWebhookEvent<'installation_repositories.added' | 'installation.created'>
+) {
+  log.info({ event }, 'Processing repositories added event');
   const installationId = event.payload.installation.id;
-
-  const orgName = event.payload.installation.account.login;
-  const orgId = event.payload.installation.account.id;
-  const orgNodeId = event.payload.installation.account.node_id;
-  const ownerType = event.payload.installation.account.type;
-  const githubRepos: GithubRepositoryInfo[] = reposAdded.map((repo) => ({
-    orgName,
-    orgId,
-    orgNodeId,
-    repoName: repo.name,
-    repoId: repo.id,
-    repoNodeId: repo.node_id,
-    gitUrl: `https://github.com/${repo.full_name}.git`,
-    ownerType,
-  }));
-
   const installationAuthToken = await getInstallationAccessToken(installationId);
-
   if (installationAuthToken.error) {
     log.error('unable to get installation token', {
       error: installationAuthToken.msg,
     });
     return;
   }
-
-  const resp = await createHasuraOrgsAndProjectsForInstall(installationAuthToken.res, installationId, githubRepos);
-  if (resp.error) {
+  // Here we just refetch everything
+  const upsertedRepos = await upsertInstalledProjects(installationAuthToken.res, installationId);
+  if (upsertedRepos.error) {
     log.error('unable to create orgs and projects from github install', {
-      error: resp.msg,
-      githubRepos,
+      error: upsertedRepos.msg,
     });
     return;
   }
-  log.info('created orgs and projects for new repos', {
-    githubRepos,
-  });
-
-  const snapshotResp = await queueDefaultBranchesForSnapshot(installationId, githubRepos);
-  if (snapshotResp.error) {
-    log.error('unable to queue github repos', {
-      githubRepos,
-    });
-    return;
-  }
-  log.info('queued github repos for snapshots', {
-    githubRepos,
-  });
+  log.info('created orgs and projects for new repos', { upsertedRepos });
 }
 
 async function organizationHandler(event: EmitterWebhookEvent<'organization'>) {
@@ -119,23 +90,15 @@ async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
       log.info(event);
       return;
     }
-    const pullRequestId = event.payload.pull_request.node_id;
-    const cloneUrl = event.payload.repository.clone_url;
-    const repoGithubId = event.payload.repository.id;
-    const gitBranch = event.payload.pull_request.head.ref;
-    const installationId = event.payload.installation.id;
-    const commitHash = event.payload.pull_request.head.sha;
 
-    await queueRepositoriesForSnapshot(installationId, [
-      {
-        cloneUrl,
-        gitBranch,
-        repoGithubId,
-        installationId,
-        sourceType: 'pr',
-        pullRequestId,
-        gitCommit: commitHash,
-      },
-    ]);
+    await queueRepositoryForSnapshot(event.payload.installation.id, {
+      cloneUrl: event.payload.repository.clone_url,
+      gitBranch: event.payload.pull_request.head.ref, // TODO make this the human readable branch name, not the ref
+      repoGithubId: event.payload.repository.id,
+      installationId: event.payload.installation.id,
+      sourceType: 'pr',
+      pullRequestId: event.payload.pull_request.node_id,
+      gitCommit: event.payload.pull_request.head.sha,
+    });
   }
 }

@@ -12,11 +12,10 @@
  *
  */
 import React, { useState } from 'react';
-import { Button, Card, Col, Container, Form, ListGroup, ListGroupItem, Row } from 'react-bootstrap';
+import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 import { api } from '../../api/generated';
-import { impersonateUserHeader } from '../../constants/headers';
 import { ImpersonateUser } from '../../types/user';
 import { inputChangeHandler } from '../../utils/input-helpers';
 import { setImpersonatedUser } from '../../utils/users';
