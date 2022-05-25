@@ -14,7 +14,7 @@
 import { getRepoCloneUrlWithAuth } from '../../github/actions/get-repo-clone-url-with-auth';
 import { userIsAdmin } from '../../hasura-api/actions/user-is-admin';
 import { log } from '../../utils/log';
-import { MutationResolvers, QueryResolvers } from '../generated-resolver-types';
+import { QueryResolvers } from '../generated-resolver-types';
 
 import { getUserId } from './auth-helpers';
 

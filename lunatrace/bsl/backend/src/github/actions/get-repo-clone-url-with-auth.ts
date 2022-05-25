@@ -12,7 +12,6 @@
  *
  */
 import { hasura } from '../../hasura-api';
-import { GetCloneRepoInfoFromRepoIdQueryVariables, Github_Repositories_Bool_Exp } from '../../hasura-api/generated';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';

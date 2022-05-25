@@ -12,21 +12,16 @@
  *
  */
 
-import { inspect } from 'util';
-
 import express, { Request, Response } from 'express';
 import { validate as validateUUID } from 'uuid';
 
 import { getHasuraConfig } from '../config';
 import { hasura } from '../hasura-api';
 import { userIsAdmin } from '../hasura-api/actions/user-is-admin';
-import { Scalars } from '../hasura-api/generated';
 import { MaybeError } from '../types/util';
-import { errorResponse, newError, newResult } from '../utils/errors';
-import { parsePsqlStringArray } from '../utils/json-utils';
+import { errorResponse } from '../utils/errors';
 import { jwtMiddleware } from '../utils/jwt-middleware';
 import { log } from '../utils/log';
-import { catchError, threwError } from '../utils/try';
 import { isArray } from '../utils/types';
 
 // These routes are used by oathkeeper to validate incoming requests before they are allowed to reach the rest of the cluster

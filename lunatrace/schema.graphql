@@ -211,6 +211,31 @@ type builds {
 }
 
 """
+aggregated selection of "builds"
+"""
+type builds_aggregate {
+  aggregate: builds_aggregate_fields
+  nodes: [builds!]!
+}
+
+"""
+aggregate fields of "builds"
+"""
+type builds_aggregate_fields {
+  avg: builds_avg_fields
+  count(columns: [builds_select_column!], distinct: Boolean): Int!
+  max: builds_max_fields
+  min: builds_min_fields
+  stddev: builds_stddev_fields
+  stddev_pop: builds_stddev_pop_fields
+  stddev_samp: builds_stddev_samp_fields
+  sum: builds_sum_fields
+  var_pop: builds_var_pop_fields
+  var_samp: builds_var_samp_fields
+  variance: builds_variance_fields
+}
+
+"""
 order by aggregate values of table "builds"
 """
 input builds_aggregate_order_by {
@@ -235,6 +260,11 @@ input builds_arr_rel_insert_input {
 
   """upsert condition"""
   on_conflict: builds_on_conflict
+}
+
+"""aggregate avg on columns"""
+type builds_avg_fields {
+  build_number: Float
 }
 
 """
@@ -312,6 +342,21 @@ input builds_insert_input {
   source_type: builds_source_type
 }
 
+"""aggregate max on columns"""
+type builds_max_fields {
+  agent_access_token: uuid
+  build_number: Int
+  created_at: timestamp
+  existing_github_review_id: String
+  git_branch: String
+  git_hash: String
+  git_remote: String
+  id: uuid
+  project_id: uuid
+  pull_request_id: String
+  s3_url: String
+}
+
 """
 order by max() on columns of table "builds"
 """
@@ -327,6 +372,21 @@ input builds_max_order_by {
   project_id: order_by
   pull_request_id: order_by
   s3_url: order_by
+}
+
+"""aggregate min on columns"""
+type builds_min_fields {
+  agent_access_token: uuid
+  build_number: Int
+  created_at: timestamp
+  existing_github_review_id: String
+  git_branch: String
+  git_hash: String
+  git_remote: String
+  id: uuid
+  project_id: uuid
+  pull_request_id: String
+  s3_url: String
 }
 
 """
@@ -475,11 +535,21 @@ input builds_source_type_comparison_exp {
   _nin: [builds_source_type!]
 }
 
+"""aggregate stddev on columns"""
+type builds_stddev_fields {
+  build_number: Float
+}
+
 """
 order by stddev() on columns of table "builds"
 """
 input builds_stddev_order_by {
   build_number: order_by
+}
+
+"""aggregate stddev_pop on columns"""
+type builds_stddev_pop_fields {
+  build_number: Float
 }
 
 """
@@ -489,11 +559,21 @@ input builds_stddev_pop_order_by {
   build_number: order_by
 }
 
+"""aggregate stddev_samp on columns"""
+type builds_stddev_samp_fields {
+  build_number: Float
+}
+
 """
 order by stddev_samp() on columns of table "builds"
 """
 input builds_stddev_samp_order_by {
   build_number: order_by
+}
+
+"""aggregate sum on columns"""
+type builds_sum_fields {
+  build_number: Int
 }
 
 """
@@ -538,6 +618,11 @@ enum builds_update_column {
   s3_url
 }
 
+"""aggregate var_pop on columns"""
+type builds_var_pop_fields {
+  build_number: Float
+}
+
 """
 order by var_pop() on columns of table "builds"
 """
@@ -545,11 +630,21 @@ input builds_var_pop_order_by {
   build_number: order_by
 }
 
+"""aggregate var_samp on columns"""
+type builds_var_samp_fields {
+  build_number: Float
+}
+
 """
 order by var_samp() on columns of table "builds"
 """
 input builds_var_samp_order_by {
   build_number: order_by
+}
+
+"""aggregate variance on columns"""
+type builds_variance_fields {
+  build_number: Float
 }
 
 """
@@ -1111,6 +1206,7 @@ input github_repositories_inc_input {
 input type for inserting data into table "github_repositories"
 """
 input github_repositories_insert_input {
+  default_branch: String
   git_url: String
   github_id: Int
   github_node_id: String
@@ -1208,6 +1304,7 @@ enum github_repositories_select_column {
 input type for updating data in table "github_repositories"
 """
 input github_repositories_set_input {
+  default_branch: String
   git_url: String
   github_id: Int
   github_node_id: String
@@ -1248,6 +1345,9 @@ update columns of table "github_repositories"
 """
 enum github_repositories_update_column {
   """column name"""
+  default_branch
+
+  """column name"""
   git_url
 
   """column name"""
@@ -1282,23 +1382,6 @@ order by variance() on columns of table "github_repositories"
 """
 input github_repositories_variance_order_by {
   github_id: order_by
-}
-
-scalar github_webhook_event
-
-"""
-Boolean expression to compare columns of type "github_webhook_event". All fields are combined with logical 'AND'.
-"""
-input github_webhook_event_comparison_exp {
-  _eq: github_webhook_event
-  _gt: github_webhook_event
-  _gte: github_webhook_event
-  _in: [github_webhook_event!]
-  _is_null: Boolean
-  _lt: github_webhook_event
-  _lte: github_webhook_event
-  _neq: github_webhook_event
-  _nin: [github_webhook_event!]
 }
 
 """
@@ -4057,6 +4140,24 @@ type projects {
     """filter the rows returned"""
     where: builds_bool_exp
   ): [builds!]!
+
+  """An aggregate relationship"""
+  builds_aggregate(
+    """distinct select on columns"""
+    distinct_on: [builds_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [builds_order_by!]
+
+    """filter the rows returned"""
+    where: builds_bool_exp
+  ): builds_aggregate!
   created_at: timestamp!
 
   """An array relationship"""
@@ -4391,6 +4492,24 @@ type query_root {
     """filter the rows returned"""
     where: builds_bool_exp
   ): [builds!]!
+
+  """An aggregate relationship"""
+  builds_aggregate(
+    """distinct select on columns"""
+    distinct_on: [builds_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [builds_order_by!]
+
+    """filter the rows returned"""
+    where: builds_bool_exp
+  ): builds_aggregate!
 
   """fetch data from the table: "builds" using primary key columns"""
   builds_by_pk(id: uuid!): builds
@@ -5404,6 +5523,24 @@ type subscription_root {
     """filter the rows returned"""
     where: builds_bool_exp
   ): [builds!]!
+
+  """An aggregate relationship"""
+  builds_aggregate(
+    """distinct select on columns"""
+    distinct_on: [builds_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [builds_order_by!]
+
+    """filter the rows returned"""
+    where: builds_bool_exp
+  ): builds_aggregate!
 
   """fetch data from the table: "builds" using primary key columns"""
   builds_by_pk(id: uuid!): builds
@@ -6761,7 +6898,7 @@ type webhook_cache {
     path: String
   ): jsonb!
   delivery_id: uuid!
-  event_type: github_webhook_event!
+  event_type: String!
   installation_id: Int
   signature_256: String!
   sqs_message_id: String
@@ -6777,7 +6914,7 @@ input webhook_cache_bool_exp {
   created_at: timestamp_comparison_exp
   data: jsonb_comparison_exp
   delivery_id: uuid_comparison_exp
-  event_type: github_webhook_event_comparison_exp
+  event_type: String_comparison_exp
   installation_id: Int_comparison_exp
   signature_256: String_comparison_exp
   sqs_message_id: String_comparison_exp
@@ -6798,7 +6935,7 @@ input webhook_cache_insert_input {
   created_at: timestamp
   data: jsonb
   delivery_id: uuid
-  event_type: github_webhook_event
+  event_type: String
   installation_id: Int
   signature_256: String
   sqs_message_id: String

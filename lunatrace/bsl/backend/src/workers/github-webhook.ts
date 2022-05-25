@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+
 import { WebhookInterceptor } from '../github/webhooks/interceptor';
 import { hasura } from '../hasura-api';
 import { GetWebhookCacheByDeliveryIdQuery } from '../hasura-api/generated';
@@ -44,16 +45,17 @@ export function createGithubWebhookHandler(webhooks: WebhookInterceptor): Webhoo
           log.error(`Failed to get webhook data for deliveryId ${deliveryId}`);
           return newError(`Failed to get webhook data for deliveryId ${deliveryId}`);
         }
-        // todo: This should be in the logger callback above or its not going to have that logging data
         await webhooks.receive({
           id: deliveryId,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           name: webhookData.webhook_cache[0].event_type,
           payload: webhookData.webhook_cache[0].data,
         });
 
         return newResult(undefined);
       } catch (e) {
-        log.error('Unable to process GitHub webhook: ' + deliveryId, e);
+        log.error({ error: e, deliveryId }, 'Unable to process GitHub webhook');
 
         return newError(threwError(e) ? e.message : String(e));
       }
