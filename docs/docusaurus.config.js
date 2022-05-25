@@ -160,7 +160,7 @@ module.exports = {
     announcementBar: {
       id: 'star_us',
       content:
-        'Claim your own <a href="https://github.com/marketplace/lunatrace-by-lunasec" target="_blank" rel="noopener">Dependency Security Scan</a> now.',
+        '<a href="https://join.slack.com/t/lunasec-devs/shared_invite/zt-18nfz8ncw-HDU7kXaxssalPcB2eY8xQQ" target="_blank" rel="noopener" style="font-size: 15px; text-decoration: none">Claim your seat on Slack to chat with our security team.</a>',
       backgroundColor: '#fafbfc',
       textColor: '#091E42',
       isCloseable: true,
