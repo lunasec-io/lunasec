@@ -15,7 +15,7 @@ import { SendMessageCommandOutput } from '@aws-sdk/client-sqs';
 
 import { GithubRepositoryInfo } from '../../types/github';
 import { SnapshotForRepositoryRequest } from '../../types/sqs';
-import { MaybeError } from '../../types/util';
+import { MaybeError, MaybeErrorVoid } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 
@@ -27,7 +27,7 @@ export async function queueDefaultBranchesForSnapshot(
   githubRepos: GithubRepositoryInfo[]
 ): Promise<MaybeError<undefined>> {
   const results = await Promise.all(
-    githubRepos.map(async (repo): Promise<MaybeError<SnapshotForRepositoryRequest | null>> => {
+    githubRepos.map(async (repo): Promise<MaybeErrorVoid> => {
       const resp = await hydrateRepositoryInformation(installationId, repo);
 
       if (resp.filterRepo) {
@@ -37,7 +37,7 @@ export async function queueDefaultBranchesForSnapshot(
             repo,
           }
         );
-        return newResult(null);
+        return newResult(undefined);
       }
 
       if (!repo.cloneUrl || !repo.defaultBranch) {
@@ -68,6 +68,5 @@ export async function queueDefaultBranchesForSnapshot(
   if (errors.length > 0) {
     return newError(JSON.stringify(errors));
   }
-
   return newResult(undefined);
 }
