@@ -55,7 +55,14 @@ def __init__(self):
 
 The library `Phpass` also received identical malicous code around the same time.
 
-https://twitter.com/s0md3v/status/1529010306466615296
+<a href="https://twitter.com/s0md3v/status/1529005758540808192" target="_blank" rel="noopener">
+  <img src="https://www.lunasec.io/docs/img/ctx-Twitter-Screenshot.png" alt="Screenshot of ctx Twitter tweet" />
+</a>
+
+
+<a href="https://twitter.com/s0md3v/status/1529010306466615296" target="_blank" rel="noopener">
+  <img src="https://www.lunasec.io/docs/img/Phpass-Twitter-Screenshot.png" alt="Screenshot of Phpass Twitter tweet" />
+</a>
 
 ## External References
 
