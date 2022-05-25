@@ -42,9 +42,9 @@ export async function upsertInstalledProjects(
   });
 
   const organizations = generateOrgsAndProjectsMutation(installationId, githubRepos);
-  const orgObjectList = Object.values(organizations);
+  const orgMutationInputs = Object.values(organizations);
 
-  const orgIds = await insertOrgsAndProjects(installationId, orgObjectList);
+  const orgIds = await insertOrgsAndProjects(installationId, orgMutationInputs);
 
   if (orgIds.error) {
     return newError(orgIds.msg);
@@ -61,7 +61,7 @@ export async function upsertInstalledProjects(
       });
       return lookup;
     }
-
+    // builds the association between github org ids and hasura org ids
     return {
       ...lookup,
       [org.github_node_id]: org.id,

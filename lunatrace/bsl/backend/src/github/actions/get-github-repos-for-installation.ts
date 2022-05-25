@@ -72,7 +72,7 @@ export async function getGithubReposForInstallation(
       ownerType: repo.owner.type,
       defaultBranch: repo.default_branch,
       cloneUrl: repo.clone_url,
-      fullTraits: repo,
+      fullTraits: repo, // TODO: potentially TMI
     };
   });
 }

@@ -90,7 +90,6 @@ export function generateOrgsAndProjectsMutation(
         on_conflict: projectOnConflict,
       },
     };
-    // TODO: Fix this reduce anti-pattern
     return {
       ...orgLookup,
       [repo.orgName]: orgData,
