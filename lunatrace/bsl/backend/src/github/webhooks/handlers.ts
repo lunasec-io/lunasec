@@ -32,12 +32,17 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
     });
   };
 
-  listenToHook('installation_repositories.added', repositoriesAddedHandler);
+  listenToHook('installation_repositories.added', repopulateRepositoriesHandler);
+  listenToHook('installation.created', repopulateRepositoriesHandler);
   listenToHook('pull_request', pullRequestHandler);
   listenToHook('organization', organizationHandler);
 }
 
-async function repositoriesAddedHandler(event: EmitterWebhookEvent<'installation_repositories.added'>) {
+// This simply calls github and upserts all repos.  We can call it in different situations where we thing the repos may have
+// Not the most performant solution but it works and is simple
+async function repopulateRepositoriesHandler(
+  event: EmitterWebhookEvent<'installation_repositories.added' | 'installation.created'>
+) {
   log.info({ event }, 'Processing repositories added event');
   const installationId = event.payload.installation.id;
   const installationAuthToken = await getInstallationAccessToken(installationId);
