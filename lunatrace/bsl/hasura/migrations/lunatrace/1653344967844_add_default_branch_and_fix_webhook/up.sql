@@ -1,5 +1,5 @@
 
-ALTER TABLE public.github_repositories ADD COLUMN default_branch text NOT NULL DEFAULT 'master';
+ALTER TABLE public.github_repositories ADD COLUMN default_branch text;
 
 CREATE INDEX IF NOT EXISTS build_branch_index ON public.builds (git_branch);
 
