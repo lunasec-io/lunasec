@@ -107,6 +107,8 @@ export class WorkerStack extends cdk.Stack {
         enableLogging: true,
         environment: {
           ...processQueueCommonEnvVars,
+          // 10 seconds
+          QUEUE_VISIBILITY: (60 * 10).toString(),
         },
         secrets: processQueueCommonSecrets,
         containerName: 'ProcessRepositoryQueueContainer',

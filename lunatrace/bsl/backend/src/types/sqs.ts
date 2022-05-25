@@ -18,6 +18,9 @@ export type BuildSourceType = 'pr' | 'gui' | 'cli';
 
 export type QueueMessageProcessorType = 's3-queue-handler' | 'lunatrace-queue-handler';
 
+// The term 'activity' comes from Temporal and this represents a "single, well defined action". https://docs.temporal.io/concepts/what-is-an-activity/
+// Every time we are processing data that comes from a queue, we want to decouple the "action" that is being performed on the collected data
+// as much as possible.
 export type ActivityFunc<T> = (event: T) => Promise<MaybeError<undefined>>;
 
 export type ActivityHandlerType =
