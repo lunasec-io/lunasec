@@ -22,6 +22,8 @@ interface WorkerStorageStackProps extends cdk.StackProps {
   development?: boolean;
 }
 
+// Since we want to maintain different queue handler services for different message types,
+// we have these all broken out for production. In development, these queues will all be null.
 interface WorkerQueues {
   processManifestSqsQueue: Queue | null;
   processSbomSqsQueue: Queue | null;
