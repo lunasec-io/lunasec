@@ -22,7 +22,7 @@ authors: [chris, free, gabe]
   ~
 -->
 
-# Popular packages, `ctx` and `Phpass`, compromised
+## Popular packages, `ctx` and `Phpass`, compromised
 
 In this post we'll be reviewing the malicious code that was introduced to both `ctx` and `phpass`.
 
