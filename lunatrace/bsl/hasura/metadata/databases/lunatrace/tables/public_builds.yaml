@@ -108,6 +108,7 @@ select_permissions:
         - s3_url
         - source_type
       filter: {}
+      allow_aggregations: true
   - role: user
     permission:
       columns:

@@ -20,6 +20,7 @@ insert_permissions:
     permission:
       check: {}
       columns:
+        - default_branch
         - git_url
         - github_id
         - github_node_id
@@ -57,6 +58,7 @@ update_permissions:
   - role: service
     permission:
       columns:
+        - default_branch
         - git_url
         - github_id
         - github_node_id
