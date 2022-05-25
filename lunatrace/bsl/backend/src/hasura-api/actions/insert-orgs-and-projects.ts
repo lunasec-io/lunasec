@@ -86,7 +86,6 @@ export function generateOrgsAndProjectsMutation(
       github_node_id: repo.orgNodeId,
       github_owner_type: repo.ownerType,
       projects: {
-        // TODO: I dont think we have to merge the existing projects like this
         data: [...getExistingProjects(orgLookup, repo.orgName), project],
         on_conflict: projectOnConflict,
       },
@@ -104,7 +103,7 @@ export async function insertOrgsAndProjects(
   orgObjectList: Organizations_Insert_Input[]
 ): Promise<MaybeError<UpsertOrganizationResponse[]>> {
   log.info(
-    `[installId: ${installationId}] Creating LunaTrace organizations and projects: ${orgObjectList.map(
+    `[installId: ${installationId}] Creating LunaTrace projects and orgs. Orgs are: ${orgObjectList.map(
       (org) => org.name
     )}`
   );
