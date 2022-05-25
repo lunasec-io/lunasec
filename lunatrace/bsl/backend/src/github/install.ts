@@ -18,11 +18,12 @@ import { errorResponse } from '../utils/errors';
 import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse';
 
-import { upsertInstalledProjects } from './actions/upsert-installed-projects';
 import { getInstallationAccessToken } from './auth';
 
 const serverConfig = getServerConfig();
 
+// All of this code just checks that we are properly authed, it's just a sanity check.
+// We handle all the installation tasks such as populating repos in the github webhook queue handler for `installation.created`
 export async function githubInstall(req: Request, res: Response): Promise<void> {
   const installationIdQueryParam = req.query.installation_id;
 
@@ -66,20 +67,6 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     );
     return;
   }
-
-  const upsertRes = await upsertInstalledProjects(installationAuthToken.res, installationId);
-  if (upsertRes.error) {
-    log.error('unable to create orgs and projects for install', {
-      installationId,
-      error: upsertRes.msg,
-    });
-    res.status(500).send(errorResponse(upsertRes.msg));
-    return;
-  }
-
-  log.info('queueing repositories for snapshots', {
-    installationId,
-  });
 
   res.status(302).redirect(serverConfig.sitePublicUrl);
 }
