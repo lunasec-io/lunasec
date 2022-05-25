@@ -47,6 +47,7 @@ export interface ProcessGithubWebhookRequest {
 export interface SnapshotForRepositoryRequest {
   cloneUrl: string;
   gitBranch: string;
+  gitCommit?: string;
   repoGithubId: number;
   installationId: number;
   sourceType: BuildSourceType;

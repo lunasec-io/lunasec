@@ -22,7 +22,7 @@ import { catchError, threwError, Try } from '../utils/try';
 
 import { createHasuraOrgsAndProjectsForInstall } from './actions/create-hasura-orgs-and-projects-for-install';
 import { getGithubReposForInstallation } from './actions/get-github-repos-for-installation';
-import { queueGithubReposForSnapshots } from './actions/queue-repositories-for-snapshosts';
+import { queueDefaultBranchesForSnapshot } from './actions/queue-default-branches-for-snapshot';
 import { getInstallationAccessToken } from './auth';
 
 const serverConfig = getServerConfig();
@@ -118,10 +118,10 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     repoCount: githubRepos.length,
   });
 
-  const queueResp = await catchError(queueGithubReposForSnapshots(installationId, githubRepos));
+  const queueResp = await catchError(queueDefaultBranchesForSnapshot(installationId, githubRepos));
 
   if (threwError(queueResp) || queueResp.error) {
-    log.warn('unable to queue repositories, continuing with the installation', {
+    log.warn('unable to queue some or all repositories, continuing with the installation', {
       installationId,
       error: threwError(queueResp) ? queueResp.message : queueResp.msg,
     });
