@@ -1,10 +1,10 @@
 ---
 title: "How two Python and PHP dependencies, ctx and Phpass, became malware that stole secrets and credentials"
 description: A security expert's analysis of the malicious code added to ctx and Phpass, Python and PHP dependencies, that turned them into malware by sending environment variables and credentials to a third party attacker.
-slug: python-ctx-package-malware
+slug: ctx-and-phpass-package-malware
 date: 2022-05-24
-keywords: [dependencies]
-tags: []
+keywords: [dependencies, ctx, phpass]
+tags: [malware, dependencies]
 authors: [chris, free, gabe]
 ---
 
