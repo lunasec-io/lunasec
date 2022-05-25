@@ -18,12 +18,12 @@ import {
   AwsConfig,
   GithubAppConfig,
   HasuraConfig,
-  JobRunnerConfig,
   JwksConfig,
   QueueHandlerConfig,
   RepositoryQueueConfig,
   ServerConfig,
   SqsQueueConfig,
+  VulnerabilityUpdateConfig,
   WebhookConfig,
   WorkerBucketConfig,
   WorkerConfig,
@@ -110,7 +110,7 @@ export function getWorkerBucketConfig(): WorkerBucketConfig {
   };
 }
 
-export function getJobRunnerConfig(): JobRunnerConfig {
+export function getVulnerabilityUpdateConfig(): VulnerabilityUpdateConfig {
   const grypeDatabaseBucket = checkEnvVar('GRYPE_DATABASE_BUCKET');
 
   return {

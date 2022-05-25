@@ -11,29 +11,31 @@
  * limitations under the License.
  *
  */
-import { SendMessageCommand } from '@aws-sdk/client-sqs';
+import { SendMessageCommand, SendMessageCommandOutput } from '@aws-sdk/client-sqs';
 
-import { sqsClient } from '../aws/sqs-client';
-import { getRepositoryQueueConfig } from '../config';
-import { LunaTraceRepositorySnapshotSqsMessage, LunaTraceSqsMessage, SnapshotForRepositoryRequest } from '../types/sqs';
-import { log } from '../utils/log';
-import { getSqsUrlFromName } from '../utils/sqs';
-import { catchError, threwError } from '../utils/try';
+import { sqsClient } from '../../aws/sqs-client';
+import { getRepositoryQueueConfig } from '../../config';
+import { LunaTraceRepositorySnapshotSqsMessage, SnapshotForRepositoryRequest } from '../../types/sqs';
+import { MaybeError } from '../../types/util';
+import { newError, newResult } from '../../utils/errors';
+import { log } from '../../utils/log';
+import { getSqsUrlFromName } from '../../utils/sqs';
+import { catchError, threwError } from '../../utils/try';
 
 export async function queueRepositoriesForSnapshot(
   installationId: number,
   records: SnapshotForRepositoryRequest[]
-): Promise<void> {
+): Promise<MaybeError<SendMessageCommandOutput>> {
   const repoQueueConfig = getRepositoryQueueConfig();
-
-  // TODO (cthompson) move this outside of this function, this should only need to be run once
+  // TODO (cthompson) move this outside of this function, this should only need to be called once
+  // note (forrest): I made this returned cached values so at least it is performant now
   const repositoryQueueUrl = await catchError(getSqsUrlFromName(sqsClient, repoQueueConfig.queueName));
 
   if (threwError(repositoryQueueUrl) || repositoryQueueUrl.error) {
     log.error('unable to load repository queue url', {
       queueName: repositoryQueueUrl,
     });
-    return;
+    return newError('unable to get queue url');
   }
 
   log.info('queueing repositories for snapshot', {
@@ -45,8 +47,8 @@ export async function queueRepositoriesForSnapshot(
     records,
   };
 
-  // messages sent to this queue will be processed by the process-repository queue handler in workers/snapshot-repository
-  await sqsClient.send(
+  // messages sent to this queue will be processed by the process-repository queue handler in workers/snapshot-repository.
+  const result = await sqsClient.send(
     new SendMessageCommand({
       MessageBody: JSON.stringify(sqsEvent),
       MessageAttributes: {
@@ -58,4 +60,9 @@ export async function queueRepositoriesForSnapshot(
       QueueUrl: repositoryQueueUrl.res,
     })
   );
+  if (!result || !result.$metadata.httpStatusCode || result.$metadata.httpStatusCode >= 300) {
+    return newError('sending message to queue failed, responded: ' + JSON.stringify(result));
+  }
+  log.info(records, 'queued repositories for snapshot');
+  return newResult(result);
 }

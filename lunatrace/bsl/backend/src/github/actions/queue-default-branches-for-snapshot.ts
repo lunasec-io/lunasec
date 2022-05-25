@@ -11,16 +11,18 @@
  * limitations under the License.
  *
  */
+import { SendMessageCommandOutput } from '@aws-sdk/client-sqs';
+
 import { GithubRepositoryInfo } from '../../types/github';
 import { SnapshotForRepositoryRequest } from '../../types/sqs';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
-import { queueRepositoriesForSnapshot } from '../../workers/queue-repositories-for-snapshot';
 
 import { hydrateRepositoryInformation } from './hydrate-repository-information';
+import { queueRepositoriesForSnapshot } from './queue-repositories-for-snapshot';
 
-export async function queueGithubReposForSnapshots(
+export async function queueDefaultBranchesForSnapshot(
   installationId: number,
   githubRepos: GithubRepositoryInfo[]
 ): Promise<MaybeError<undefined>> {
@@ -53,23 +55,19 @@ export async function queueGithubReposForSnapshots(
         repoGithubId: repo.repoId,
         sourceType: 'pr',
       };
-
-      return newResult(record);
+      return await queueRepositoriesForSnapshot(installationId, [record]);
     })
   );
+
+  log.info('queued repositories repositories for snapshot with results: ', {
+    installationId,
+    results,
+  });
 
   const errors = results.filter((res) => res.error);
   if (errors.length > 0) {
     return newError(JSON.stringify(errors));
   }
-
-  const filteredRepos = results.flatMap((res) => (!res.error && res.res !== null ? res.res : []));
-
-  log.info('queueing repositories for snapshot', {
-    installationId,
-    repoCount: filteredRepos.length,
-  });
-  await queueRepositoriesForSnapshot(installationId, filteredRepos);
 
   return newResult(undefined);
 }

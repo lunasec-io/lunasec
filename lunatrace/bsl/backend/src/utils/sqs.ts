@@ -17,7 +17,13 @@ import { MaybeError } from '../types/util';
 
 import { newError, newResult } from './errors';
 
+// If the queueName ever changes we are in trouble but it shouldn't
+const cache: { [queueName: string]: string } = {};
+
 export async function getSqsUrlFromName(sqsClient: SQSClient, queueName: string): Promise<MaybeError<string>> {
+  if (cache[queueName]) {
+    return newResult(cache[queueName]);
+  }
   const { QueueUrl: queueUrl } = await sqsClient.send(
     new GetQueueUrlCommand({
       QueueName: queueName,
@@ -26,5 +32,6 @@ export async function getSqsUrlFromName(sqsClient: SQSClient, queueName: string)
   if (!queueUrl) {
     return newError(`unable to get queue url for queue: ${queueName}`);
   }
+  cache[queueName] = queueUrl;
   return newResult(queueUrl);
 }
