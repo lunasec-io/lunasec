@@ -13,26 +13,38 @@
  */
 import { hasura } from '../../hasura-api';
 import {
-  createLunatraceOrgsFromGithubOrgs,
-  hasuraOrgsFromGithubRepositories,
-} from '../../hasura-api/actions/create-lunatrace-orgs-from-github-orgs';
+  generateOrgsAndProjectsMutation,
+  insertOrgsAndProjects,
+} from '../../hasura-api/actions/insert-orgs-and-projects';
 import { GithubRepositoryInfo } from '../../types/github';
 import { MaybeError } from '../../types/util';
 import { logError, newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { catchError, threwError } from '../../utils/try';
 
+import { getGithubReposForInstallation } from './get-github-repos-for-installation';
 import { getHasuraOrgMembers } from './get-org-members';
+import { queueNewReposForSnapshot } from './queue-new-repos-for-snapshot';
 
-export async function createHasuraOrgsAndProjectsForInstall(
+// Performs the full upsertion of any projects and orgs that the github app is linked to, and returns some metadata about the repos for any subsequent processing
+export async function upsertInstalledProjects(
   installationAuthToken: string,
-  installationId: number,
-  repositories: GithubRepositoryInfo[]
-): Promise<MaybeError<null>> {
-  const organizations = hasuraOrgsFromGithubRepositories(installationId, repositories);
-  const orgObjectList = Object.values(organizations);
+  installationId: number
+): Promise<MaybeError<GithubRepositoryInfo[]>> {
+  const githubRepos = await getGithubReposForInstallation(installationAuthToken, installationId);
 
-  const orgIds = await createLunatraceOrgsFromGithubOrgs(installationId, orgObjectList);
+  log.info(`Collected installation data`, {
+    installationId,
+    githubRepos: githubRepos.map((repo) => ({
+      orgName: repo.orgName,
+      repoName: repo.repoName,
+    })),
+  });
+
+  const organizations = generateOrgsAndProjectsMutation(installationId, githubRepos);
+  const orgMutationInputs = Object.values(organizations);
+
+  const orgIds = await insertOrgsAndProjects(installationId, orgMutationInputs);
 
   if (orgIds.error) {
     return newError(orgIds.msg);
@@ -49,7 +61,7 @@ export async function createHasuraOrgsAndProjectsForInstall(
       });
       return lookup;
     }
-
+    // builds the association between github org ids and hasura org ids
     return {
       ...lookup,
       [org.github_node_id]: org.id,
@@ -86,5 +98,17 @@ export async function createHasuraOrgsAndProjectsForInstall(
   if (createOrgUsersResp.some((c) => c === null)) {
     return newError('creating organization users failed');
   }
-  return newResult(null);
+
+  // Now snapshot any new repos.  This will not snapshot repos with old builds, so only new repos will be snapshotted
+  const snapshotResp = await queueNewReposForSnapshot(installationId, githubRepos);
+  if (snapshotResp.error) {
+    log.error('unable to queue github repos', {
+      snapshotResp,
+    });
+  }
+  log.info('queued github repos for snapshots', {
+    githubRepos,
+  });
+
+  return newResult(githubRepos);
 }

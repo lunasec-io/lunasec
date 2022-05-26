@@ -11,21 +11,17 @@
  * limitations under the License.
  *
  */
-import { SendMessageCommand, SendMessageCommandOutput } from '@aws-sdk/client-sqs';
+import { SendMessageCommand } from '@aws-sdk/client-sqs';
 
 import { sqsClient } from '../../aws/sqs-client';
 import { getRepositoryQueueConfig } from '../../config';
 import { LunaTraceRepositorySnapshotSqsMessage, SnapshotForRepositoryRequest } from '../../types/sqs';
-import { MaybeError, MaybeErrorVoid } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { getSqsUrlFromName } from '../../utils/sqs';
 import { catchError, threwError } from '../../utils/try';
 
-export async function queueRepositoriesForSnapshot(
-  installationId: number,
-  records: SnapshotForRepositoryRequest[]
-): Promise<MaybeErrorVoid> {
+export async function queueRepositoryForSnapshot(installationId: number, repo: SnapshotForRepositoryRequest) {
   const repoQueueConfig = getRepositoryQueueConfig();
   // TODO (cthompson) move this outside of this function, this should only need to be called once
   // note (forrest): I made this returned cached values so at least it is performant now
@@ -38,13 +34,13 @@ export async function queueRepositoriesForSnapshot(
     return newError('unable to get queue url');
   }
 
-  log.info('queueing repositories for snapshot', {
-    records,
+  log.info('queueing repository for snapshot', {
+    repo,
   });
 
   const sqsEvent: LunaTraceRepositorySnapshotSqsMessage = {
     type: 'repository-snapshot',
-    records,
+    records: [repo],
   };
 
   // messages sent to this queue will be processed by the process-repository queue handler in workers/snapshot-repository.
@@ -63,6 +59,6 @@ export async function queueRepositoriesForSnapshot(
   if (!result || !result.$metadata.httpStatusCode || result.$metadata.httpStatusCode >= 300) {
     return newError('sending message to queue failed, responded: ' + JSON.stringify(result));
   }
-  log.info(records, 'queued repositories for snapshot');
+  log.info(repo, 'queued repo for snapshot');
   return newResult(undefined);
 }
