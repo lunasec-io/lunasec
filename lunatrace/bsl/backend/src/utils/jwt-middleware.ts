@@ -17,8 +17,6 @@ import jwksRsa from 'jwks-rsa';
 
 import { getJwksConfig } from '../config';
 
-import { log } from './log';
-
 const jwksConfig = getJwksConfig();
 
 export const jwtMiddleware = jwt({

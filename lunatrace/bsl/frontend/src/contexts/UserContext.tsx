@@ -11,12 +11,11 @@
  * limitations under the License.
  *
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { api, GetCurrentUserInfoQuery } from '../api/generated';
 import useAppSelector from '../hooks/useAppSelector';
 import { selectKratosId } from '../store/slices/authentication';
-import { ImpersonateUser } from '../types/user';
 
 interface UserProviderState {
   isAdmin: boolean;

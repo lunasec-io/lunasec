@@ -44,8 +44,7 @@ module.exports = {
   baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  // WARNING: Put this back or else production will be busted!
-  // trailingSlash: true,
+  trailingSlash: true,
   favicon: 'https://uploads-ssl.webflow.com/60e63e8b40f27c7913def7a1/6112d961cd68c3de06afe04d_WebFlow%20Logo%20-%2032px.png',
   organizationName: 'lunasec-io', // Usually your GitHub org/user name.
   projectName: 'lunasec-io.github.io', // Usually your repo name.
@@ -160,7 +159,7 @@ module.exports = {
     announcementBar: {
       id: 'star_us',
       content:
-        'Claim your own <a href="https://github.com/marketplace/lunatrace-by-lunasec" target="_blank" rel="noopener">Dependency Security Scan</a> now.',
+        '<a href="https://join.slack.com/t/lunasec-devs/shared_invite/zt-18nfz8ncw-HDU7kXaxssalPcB2eY8xQQ" target="_blank" rel="noopener" style="font-size: 15px; text-decoration: none">Claim your seat on Slack to chat with our security team.</a>',
       backgroundColor: '#fafbfc',
       textColor: '#091E42',
       isCloseable: true,
