@@ -19,17 +19,19 @@ import {
   GithubAppConfig,
   HasuraConfig,
   JwksConfig,
-  QueueHandlerWorkerConfig,
+  QueueHandlerConfig,
   RepositoryQueueConfig,
-  SbomHandlerConfig,
   ServerConfig,
+  SqsQueueConfig,
   VulnerabilityUpdateConfig,
   WebhookConfig,
+  WorkerBucketConfig,
   WorkerConfig,
   WorkerType,
 } from './types/config';
-import { QueueHandlerConfig, QueueHandlerType } from './types/sqs';
-import { validateBooleanString } from './utils/parse';
+import { tryParseInt, validateBooleanString } from './utils/parse';
+
+const notSet = 'not-set';
 
 export const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
   const envVar = process.env[envVarKey];
@@ -75,7 +77,17 @@ export function getWebhookConfig(): WebhookConfig {
     throw new Error(disableWebhookQueue.msg);
   }
 
-  const queueName = checkEnvVar('PROCESS_WEBHOOK_QUEUE');
+  const developmentQueueName = checkEnvVar('QUEUE_NAME', notSet);
+
+  // In production, this queue will be specifically set since it references a different queue.
+  // In development, since there is only one queue, this will be set with QUEUE_NAME.
+  // If neither are set, throw an error
+  const queueName = checkEnvVar('PROCESS_WEBHOOK_QUEUE', developmentQueueName);
+
+  if (queueName === notSet) {
+    throw new Error('PROCESS_WEBHOOK_QUEUE is not set and QUEUE_NAME for development is not set');
+  }
+
   const secret = checkEnvVar('GITHUB_APP_WEBHOOK_SECRET', 'mysecret');
   return {
     disableWebhookQueue: disableWebhookQueue.res,
@@ -85,7 +97,16 @@ export function getWebhookConfig(): WebhookConfig {
 }
 
 export function getRepositoryQueueConfig(): RepositoryQueueConfig {
-  const queueName = checkEnvVar('PROCESS_REPOSITORY_QUEUE');
+  const developmentQueueName = checkEnvVar('QUEUE_NAME', notSet);
+
+  // In production, this queue will be specifically set since it references a different queue.
+  // In development, since there is only one queue, this will be set with QUEUE_NAME.
+  // If neither are set, throw an error
+  const queueName = checkEnvVar('PROCESS_REPOSITORY_QUEUE', developmentQueueName);
+
+  if (queueName === notSet) {
+    throw new Error('PROCESS_REPOSITORY_QUEUE is not set and QUEUE_NAME for development is not set');
+  }
   return {
     queueName,
   };
@@ -100,7 +121,7 @@ export function getHasuraConfig(): HasuraConfig {
   };
 }
 
-export function getEtlBucketConfig(): SbomHandlerConfig {
+export function getWorkerBucketConfig(): WorkerBucketConfig {
   const sbomBucket = checkEnvVar('S3_SBOM_BUCKET');
   const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET');
 
@@ -126,50 +147,34 @@ export function getWorkerConfig(): WorkerConfig {
   };
 }
 
-export function getQueueHandlerConfig(): QueueHandlerWorkerConfig {
-  const handlerName = checkEnvVar('QUEUE_HANDLER');
+export function getQueueHandlerConfig(): SqsQueueConfig {
+  const DEFAULT_QUEUE_MAX_MESSAGES = '10';
+  const DEFAULT_QUEUE_VISIBILITY = '60';
 
-  const DEFAULT_QUEUE_MAX_MESSAGES = 10;
-  const DEFAULT_QUEUE_VISIBILITY = 60;
+  const queueMaxMessagesEnv = checkEnvVar('QUEUE_MAX_MESSAGES', DEFAULT_QUEUE_MAX_MESSAGES);
+  const queueVisibilityEnv = checkEnvVar('QUEUE_VISIBILITY', DEFAULT_QUEUE_VISIBILITY);
 
-  const handlerConfigLookup: Record<QueueHandlerType, QueueHandlerConfig> = {
-    'process-webhook': {
-      maxMessages: 1,
-      visibility: DEFAULT_QUEUE_VISIBILITY,
-      envVar: 'PROCESS_WEBHOOK_QUEUE',
-    },
-    'process-manifest': {
-      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
-      visibility: DEFAULT_QUEUE_VISIBILITY,
-      envVar: 'PROCESS_MANIFEST_QUEUE',
-    },
-    'process-sbom': {
-      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
-      visibility: DEFAULT_QUEUE_VISIBILITY,
-      envVar: 'PROCESS_SBOM_QUEUE',
-    },
-    'process-repository': {
-      maxMessages: DEFAULT_QUEUE_MAX_MESSAGES,
-      visibility: DEFAULT_QUEUE_VISIBILITY * 10,
-      envVar: 'PROCESS_REPOSITORY_QUEUE',
-    },
+  const maxMessages = tryParseInt(queueMaxMessagesEnv, 10);
+  const visibility = tryParseInt(queueVisibilityEnv, 10);
+
+  if (!maxMessages.success) {
+    throw new Error(`Queue max messages is not a valid integer: ${queueMaxMessagesEnv}`);
+  }
+
+  if (!visibility.success) {
+    throw new Error(`Queue visibility is not a valid integer: ${queueVisibilityEnv}`);
+  }
+
+  const handlerConfig: QueueHandlerConfig = {
+    maxMessages: maxMessages.value,
+    visibility: visibility.value,
   };
 
-  // TODO (cthompson) check if handlerName is in QueueHandlerType
-
-  const handlerConfig = handlerConfigLookup[handlerName as QueueHandlerType];
-
-  const handlerQueueName = (() => {
-    if (isProduction) {
-      return checkEnvVar('QUEUE_NAME');
-    }
-    return checkEnvVar(handlerConfig.envVar);
-  })();
+  const queueName = checkEnvVar('QUEUE_NAME');
 
   return {
-    handlerName,
     handlerConfig,
-    handlerQueueName,
+    queueName,
   };
 }
 

@@ -12,3 +12,5 @@
  *
  */
 export type MaybeError<T> = { error: false; res: T } | { error: true; msg: string };
+
+export type MaybeErrorVoid = MaybeError<undefined>;

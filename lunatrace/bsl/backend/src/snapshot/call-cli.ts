@@ -27,6 +27,7 @@ function importAssetArgs(
   const baseCmdArgs = [
     '--debug',
     '--log-to-stderr',
+    '--json',
     'snapshot',
     '--skip-upload',
     '--stdout',

@@ -14,7 +14,7 @@
 import { GraphQLYogaError } from '@graphql-yoga/node';
 import Express from 'express';
 
-import { getEtlBucketConfig } from '../../config';
+import { getWorkerBucketConfig } from '../../config';
 import { aws } from '../../utils/aws-utils';
 import { JWTClaims } from '../context';
 import { QueryResolvers } from '../generated-resolver-types';
@@ -23,7 +23,7 @@ import { throwIfUnauthenticated } from './auth-helpers';
 
 type PresignSbomUploadResolver = NonNullable<QueryResolvers['presignSbomUpload']>;
 
-const sbomHandlerConfig = getEtlBucketConfig();
+const sbomHandlerConfig = getWorkerBucketConfig();
 
 export const sbomPresignerRouter = Express.Router();
 
