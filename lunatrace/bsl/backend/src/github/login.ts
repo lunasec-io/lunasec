@@ -50,11 +50,19 @@ async function upsertAuthenticatedGithubUser(userId: string): Promise<MaybeError
   // This is the numeric ID, ie `1234567`
   const githubUserDatabaseId = viewerId.viewer.databaseId;
 
+  if (!githubUserDatabaseId) {
+    return {
+      error: true,
+      msg: 'viewer.databaseId from github is not defined.',
+    };
+  }
+
   const resp = await catchError(
     hasura.UpsertUserFromId({
       user: {
         kratos_id: userId,
-        github_id: githubUserDatabaseId,
+        // if githubUserDatabaseId does not exist in the response from github, fallback to attempting to parse the github id
+        github_id: githubUserDatabaseId.toString(),
         github_node_id: githubUserId,
       },
     })

@@ -33,7 +33,7 @@ function newOrganizationUser(hasuraOrgId: string, githubUserData: GitHubUserData
     user: {
       data: {
         github_node_id: githubUserData.nodeId,
-        github_id: githubUserData.databaseId,
+        github_id: githubUserData.databaseId.toString(),
       },
       on_conflict: {
         constraint: Users_Constraint.UsersGithubIdKey,
@@ -121,7 +121,7 @@ export async function getHasuraOrgMembers(
 
     const organizationUser = newOrganizationUser(hasuraOrgId, {
       nodeId: githubUserNodeId,
-      databaseId: githubUserDatabaseId.toString(10),
+      databaseId: githubUserDatabaseId,
     });
     return {
       error: false,
@@ -154,10 +154,21 @@ export async function getHasuraOrgMembers(
   const githubOrgMemberIds: GitHubUserData[] = [];
 
   if (members) {
-    const memberIds = members.filter(notEmpty).map((m) => ({
-      id: m.id,
-      databaseId: m.databaseId,
-    }));
+    const memberIds = members
+      .filter(notEmpty)
+      .map((m) => {
+        if (!m.databaseId) {
+          log.error('organization member does not have databaseId', {
+            m,
+          });
+          return null;
+        }
+        return {
+          nodeId: m.id,
+          databaseId: m.databaseId,
+        };
+      })
+      .filter(notEmpty);
     githubOrgMemberIds.push(...memberIds);
   }
 
@@ -172,10 +183,20 @@ export async function getHasuraOrgMembers(
 
       return [
         ...ids,
-        ...filteredMembers.map((m) => ({
-          id: m.id,
-          databaseId: m.databaseId,
-        })),
+        ...filteredMembers
+          .map((m) => {
+            if (!m.databaseId) {
+              log.error('team member does not have databaseId', {
+                m,
+              });
+              return null;
+            }
+            return {
+              nodeId: m.id,
+              databaseId: m.databaseId,
+            };
+          })
+          .filter(notEmpty),
       ];
     }, [] as GitHubUserData[]);
     githubOrgMemberIds.push(...teamMemberIds);

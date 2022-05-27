@@ -79,7 +79,7 @@ async function organizationHandler(event: EmitterWebhookEvent<'organization'>) {
 
     await orgMemberAdded(installationId, {
       nodeId: githubNodeId,
-      databaseId: githubDatabaseId.toString(),
+      databaseId: githubDatabaseId,
     });
   }
 }
