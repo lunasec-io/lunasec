@@ -17,6 +17,7 @@ import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret 
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
+import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 import { Construct } from '@aws-cdk/core';
 
@@ -33,6 +34,13 @@ interface WorkerStackProps extends cdk.StackProps {
   hasuraAdminSecret: ISecret;
   backendStaticSecret: ISecret;
   storageStack: WorkerStorageStackState;
+}
+
+interface QueueService {
+  name: string;
+  queue: Queue;
+  // number of seconds that a queue message is "visible" or accessible to a queue
+  visibility?: number;
 }
 
 export class WorkerStack extends cdk.Stack {
@@ -64,15 +72,14 @@ export class WorkerStack extends cdk.Stack {
 
     const webhookQueue = storageStack.processWebhookSqsQueue;
     const repositoryQueue = storageStack.processRepositorySqsQueue;
+    const manifestQueue = storageStack.processManifestSqsQueue;
+    const sbomQueue = storageStack.processSbomSqsQueue;
 
-    if (
-      !repositoryQueue ||
-      !webhookQueue ||
-      !storageStack.processManifestSqsQueue ||
-      !storageStack.processSbomSqsQueue
-    ) {
+    if (!repositoryQueue || !webhookQueue || !manifestQueue || !sbomQueue) {
       throw new Error(`expected non-null storage stack queues: ${inspect(storageStack)}`);
     }
+
+    repositoryQueue.grantSendMessages(props.fargateService.service.taskDefinition.taskRole);
 
     const workerContainerImage = ContainerImage.fromTarball(
       getContainerTarballPath('lunatrace-backend-queue-processor.tar')
@@ -98,10 +105,10 @@ export class WorkerStack extends cdk.Stack {
       GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
     };
 
-    const queueServices = [
+    const queueServices: QueueService[] = [
       {
         name: 'ProcessRepositoryQueue',
-        queue: storageStack.processRepositorySqsQueue,
+        queue: repositoryQueue,
       },
     ];
 
@@ -113,13 +120,13 @@ export class WorkerStack extends cdk.Stack {
           cluster: fargateCluster,
           image: workerContainerImage,
           memoryLimitMiB: 2048,
-          queue: storageStack.processRepositorySqsQueue, // will pass queue_name env var automatically
+          queue: queueService.queue, // will pass queue_name env var automatically
           assignPublicIp: true,
           enableLogging: true,
           environment: {
             ...processQueueCommonEnvVars,
             // 10 seconds
-            QUEUE_VISIBILITY: (600).toString(),
+            ...(queueService.visibility ? { QUEUE_VISIBILITY: queueService.visibility.toString() } : {}),
           },
           secrets: processQueueCommonSecrets,
           containerName: 'ProcessRepositoryQueueContainer',
@@ -133,91 +140,12 @@ export class WorkerStack extends cdk.Stack {
         }
       );
       storageStack.sbomBucket.grantReadWrite(queueFargateService.taskDefinition.taskRole);
+      storageStack.manifestBucket.grantReadWrite(queueFargateService.taskDefinition.taskRole);
       webhookQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
-      repositoryQueue.grantSendMessages(props.fargateService.service.taskDefinition.taskRole);
+      webhookQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
     });
 
-    const processManifestQueueService = new ecsPatterns.QueueProcessingFargateService(
-      context,
-      'ProcessManifestQueueService',
-      {
-        cluster: fargateCluster,
-        image: workerContainerImage,
-        memoryLimitMiB: 2048,
-        queue: storageStack.processManifestSqsQueue, // will pass queue_name env var automatically
-        assignPublicIp: true,
-        enableLogging: true,
-        environment: {
-          ...processQueueCommonEnvVars,
-        },
-        secrets: processQueueCommonSecrets,
-        containerName: 'ProcessManifestQueueContainer',
-        circuitBreaker: {
-          rollback: true,
-        },
-        minScalingCapacity: 2,
-        deploymentController: {
-          type: DeploymentControllerType.ECS,
-        },
-      }
-    );
-    storageStack.manifestBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
-    storageStack.sbomBucket.grantReadWrite(processManifestQueueService.taskDefinition.taskRole);
-    storageStack.processWebhookSqsQueue.grantSendMessages(processManifestQueueService.taskDefinition.taskRole);
-
-    // Process SBOM Service - Generates findings from a provided SBOM
-    const processSbomQueueService = new ecsPatterns.QueueProcessingFargateService(context, 'ProcessSbomQueueService', {
-      cluster: fargateCluster,
-      image: workerContainerImage,
-      queue: storageStack.processSbomSqsQueue, // will pass queue_name env var automatically
-      enableLogging: true,
-      assignPublicIp: true,
-      memoryLimitMiB: 2048,
-      environment: {
-        ...processQueueCommonEnvVars,
-      },
-      secrets: processQueueCommonSecrets,
-      containerName: 'ProcessSbomQueueService',
-      circuitBreaker: {
-        rollback: true,
-      },
-      minScalingCapacity: 2,
-      deploymentController: {
-        type: DeploymentControllerType.ECS,
-      },
-    });
-    storageStack.sbomBucket.grantReadWrite(processSbomQueueService.taskDefinition.taskRole);
-    storageStack.processWebhookSqsQueue.grantSendMessages(processSbomQueueService.taskDefinition.taskRole);
-
-    // Process GitHub Webhook Service - Listens for GitHub webhooks and processes them durably
-    const processWebhookQueueService = new ecsPatterns.QueueProcessingFargateService(
-      context,
-      'ProcessWebhookQueueService',
-      {
-        cluster: fargateCluster,
-        image: workerContainerImage,
-        queue: storageStack.processWebhookSqsQueue, // will pass queue_name env var automatically
-        enableLogging: true,
-        assignPublicIp: true,
-        memoryLimitMiB: 2048,
-        environment: {
-          ...processQueueCommonEnvVars,
-        },
-        secrets: processQueueCommonSecrets,
-        containerName: 'ProcessWebhookQueueService',
-        circuitBreaker: {
-          rollback: true,
-        },
-        minScalingCapacity: 2,
-        deploymentController: {
-          type: DeploymentControllerType.ECS,
-        },
-      }
-    );
-    storageStack.processWebhookSqsQueue.grantConsumeMessages(processWebhookQueueService.taskDefinition.taskRole);
-    storageStack.processWebhookSqsQueue.grantSendMessages(props.fargateService.service.taskDefinition.taskRole);
-    storageStack.processRepositorySqsQueue.grantSendMessages(processWebhookQueueService.taskDefinition.taskRole);
-
+    // Update vulnerabilities job
     // const updateVulnerabilitiesJob = new ScheduledFargateTask(context, 'UpdateVulnerabilitesJob', {
     //   cluster: props.fargateCluster,
     //   platformVersion: FargatePlatformVersion.LATEST,

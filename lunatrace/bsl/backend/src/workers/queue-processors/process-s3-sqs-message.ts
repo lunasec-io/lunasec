@@ -32,6 +32,10 @@ export async function processS3SqsMessage(
   // todo: do we actually need this promise handling or should we only take the first record from any event?
   // assuming one file per object created event makes sense
   const handlerPromises = msg.Records.map((record) => {
+    // TODO (cthompson) currently record will have "eventSource":"aws:s3" set on it always since all aws events are currently
+    // coming from s3. If another aws data source is being used, we will have to check the event source first instead of just
+    // assuming all the messages come from s3.
+
     const s3Record: S3ObjectMetadata = {
       bucketName: record.s3.bucket.name,
       key: record.s3.object.key,
