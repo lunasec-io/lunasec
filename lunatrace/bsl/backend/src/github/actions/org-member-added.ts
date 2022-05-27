@@ -27,7 +27,7 @@ export async function orgMemberAdded(installationId: number, githubUserData: Git
   const user = await catchError(
     hasura.UpsertUserFromId({
       user: {
-        github_id: githubUserData.databaseId,
+        github_id: githubUserData.databaseId.toString(),
         github_node_id: githubUserData.nodeId,
       },
     })

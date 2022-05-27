@@ -13,10 +13,6 @@ directive @cached(
   ttl: Int! = 60
 ) on QUERY
 
-type AuthenticatedRepoCloneUrlOutput {
-  url: String
-}
-
 """
 Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 """
@@ -45,18 +41,6 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
-}
-
-type PresignedUrlResponse {
-  bucket: String!
-  headers: jsonb!
-  key: String!
-  url: String!
-}
-
-type SbomUploadUrlOutput {
-  error: Boolean!
-  uploadUrl: UploadUrl
 }
 
 """
@@ -110,11 +94,6 @@ input String_comparison_exp {
 
   """does the column match the given SQL regular expression"""
   _similar: String
-}
-
-type UploadUrl {
-  headers: jsonb!
-  url: String!
 }
 
 scalar _text
@@ -188,7 +167,6 @@ type builds {
   project_id: uuid
   pull_request_id: String
   s3_url: String
-  s3_url_signed: String
 
   """An array relationship"""
   scans(
@@ -1092,7 +1070,6 @@ input fix_state_enum_comparison_exp {
 
 """Metadata about a github repository and where to find it."""
 type github_repositories {
-  authenticated_clone_url: AuthenticatedRepoCloneUrlOutput
   git_url: String!
   github_id: Int
   github_node_id: String
@@ -2868,9 +2845,6 @@ type mutation_root {
     on_conflict: webhook_cache_on_conflict
   ): webhook_cache
 
-  """ get s3 presigned url for manifest upload, used only by the frontend """
-  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
-
   """
   update data of the table: "builds"
   """
@@ -4473,8 +4447,6 @@ enum projects_update_column {
 }
 
 type query_root {
-  authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
-
   """An array relationship"""
   builds(
     """distinct select on columns"""
@@ -4513,7 +4485,6 @@ type query_root {
 
   """fetch data from the table: "builds" using primary key columns"""
   builds_by_pk(id: uuid!): builds
-  fakeQueryToHackHasuraBeingABuggyMess: String
 
   """An array relationship"""
   findings(
@@ -4783,9 +4754,6 @@ type query_root {
   """
   package_versions_by_pk(id: uuid!): package_versions
 
-  """ get s3 presigned url for manifest upload, used by the CLI """
-  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
-
   """An array relationship"""
   project_access_tokens(
     """distinct select on columns"""
@@ -4852,7 +4820,6 @@ type query_root {
   fetch data from the table: "related_vulnerabilities" using primary key columns
   """
   related_vulnerabilities_by_pk(id: uuid!): related_vulnerabilities
-  sbomUrl(buildId: uuid!): String
 
   """An array relationship"""
   scans(
