@@ -18,7 +18,6 @@ import { hasura } from '../hasura-api';
 import { getGithubAccessTokenFromKratos } from '../kratos';
 import { MaybeError } from '../types/util';
 import { errorResponse, logError } from '../utils/errors';
-import { normalizeGithubId } from '../utils/github';
 import { log } from '../utils/log';
 import { catchError, threwError } from '../utils/try';
 
@@ -35,7 +34,7 @@ async function upsertAuthenticatedGithubUser(userId: string): Promise<MaybeError
 
   const github = getGithubGraphqlClient(kratosResponse.token);
 
-  const viewerId = await catchError(async () => await github.GetViewerId());
+  const viewerId = await catchError(github.GetViewerId());
 
   if (threwError(viewerId) || viewerId === null) {
     logError(viewerId === null ? new Error('viewerId is null') : viewerId);
@@ -45,18 +44,28 @@ async function upsertAuthenticatedGithubUser(userId: string): Promise<MaybeError
     };
   }
 
+  // This is the "new" value which could be either a base64 encoded value OR something like `U_aBcDe14f7s`
   const githubUserId = viewerId.viewer.id;
-  const normalizedGithubId = normalizeGithubId(githubUserId);
+
+  // This is the numeric ID, ie `1234567`
+  const githubUserDatabaseId = viewerId.viewer.databaseId;
+
+  if (!githubUserDatabaseId) {
+    return {
+      error: true,
+      msg: 'viewer.databaseId from github is not defined.',
+    };
+  }
 
   const resp = await catchError(
-    async () =>
-      await hasura.UpsertUserFromId({
-        user: {
-          kratos_id: userId,
-          github_id: normalizedGithubId,
-          github_node_id: githubUserId,
-        },
-      })
+    hasura.UpsertUserFromId({
+      user: {
+        kratos_id: userId,
+        // if githubUserDatabaseId does not exist in the response from github, fallback to attempting to parse the github id
+        github_id: githubUserDatabaseId.toString(),
+        github_node_id: githubUserId,
+      },
+    })
   );
 
   if (threwError(resp)) {
@@ -112,32 +121,38 @@ Example contents of req.body.ctx.identity:
 }
  */
 
+async function handleUpdatingGitHubUser(userId: string, githubId: string | undefined) {
+  // This value is only undefined for users that initially logged in with the v0 identity schema.
+  // For 99.9% of users they will never hit the flow, but for the first few users they will.
+  // This code can be removed after we migrate those users in the database to use the v1 identity schema,
+  // But that's work and this code lets us avoid it. Yay, tech debt!
+  if (!githubId) {
+    // if there is no github id, then call the github api to get the user's github id
+    await upsertAuthenticatedGithubUser(userId);
+    return;
+  }
+
+  await hasura.UpsertUserFromId({
+    user: {
+      kratos_id: userId,
+      github_id: githubId,
+    },
+  });
+}
+
 export async function githubLogin(req: Request, res: Response): Promise<void> {
   // todo: fix this unsafe property access
   const userId: string = req.body.ctx.identity.id as string;
 
-  const githubId: string = req.body.ctx.identity.traits.githubId;
+  const githubId = req.body.ctx.identity.traits.githubId as string | undefined;
 
   log.info(`[user: ${userId}, githubId: ${githubId}] Github login webhook started`);
 
-  if (!githubId) {
-    // if there is no github id, then call the github api to get the user's github id
-    await upsertAuthenticatedGithubUser(userId);
-  } else {
-    const resp = await catchError(
-      async () =>
-        await hasura.UpsertUserFromId({
-          user: {
-            kratos_id: userId,
-            github_id: githubId,
-          },
-        })
-    );
-
-    if (threwError(resp)) {
-      logError(resp);
-      res.status(500).send(errorResponse('unable to locate user account in database'));
-    }
+  try {
+    await handleUpdatingGitHubUser(userId, githubId);
+  } catch (e) {
+    log.error(e);
+    res.status(500).send(errorResponse('unable to locate user account in database'));
   }
 
   res.send({
