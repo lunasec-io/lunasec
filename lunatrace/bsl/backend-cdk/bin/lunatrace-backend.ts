@@ -86,13 +86,10 @@ function deployStack() {
       throw new Error('unable to deploy development stack, must specify DEV_USER');
     }
 
-    const publicBaseUrl = `http://localhost:4455`;
-    const development = true;
-
     return new WorkerStorageStack(app, `${appName}-${devUser}-EtlStorage`, {
       env,
-      publicBaseUrl,
-      development,
+      publicBaseUrl: 'http://localhost:4455',
+      development: true,
     });
   }
   return new LunatraceBackendStack(app, `${appName}-BackendStack`, {
