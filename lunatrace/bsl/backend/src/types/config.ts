@@ -11,15 +11,13 @@
  * limitations under the License.
  *
  */
-import { QueueHandlerConfig } from './sqs';
-
 export interface ServerConfig {
   serverPort: number;
   sitePublicUrl: string;
   isProduction: boolean;
 }
 
-export interface SbomHandlerConfig {
+export interface WorkerBucketConfig {
   sbomBucket: string;
   manifestBucket: string;
 }
@@ -34,10 +32,14 @@ export interface WorkerConfig {
   workerType: WorkerType;
 }
 
-export interface QueueHandlerWorkerConfig {
-  handlerName: string;
-  handlerQueueName: string;
+export interface SqsQueueConfig {
+  queueName: string;
   handlerConfig: QueueHandlerConfig;
+}
+
+export interface QueueHandlerConfig {
+  maxMessages: number;
+  visibility: number;
 }
 
 export interface GithubAppConfig {

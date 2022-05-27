@@ -12,23 +12,23 @@
  *
  */
 
-import { WebhookInterceptor } from '../github/webhooks/interceptor';
-import { hasura } from '../hasura-api';
-import { GetWebhookCacheByDeliveryIdQuery } from '../hasura-api/generated';
-import { WebhookMetadata } from '../types/sqs';
-import { MaybeError } from '../types/util';
-import { newError, newResult } from '../utils/errors';
-import { log } from '../utils/log';
-import { catchError, threwError, Try } from '../utils/try';
+import { WebhookInterceptor } from '../../github/webhooks/interceptor';
+import { hasura } from '../../hasura-api';
+import { GetWebhookCacheByDeliveryIdQuery } from '../../hasura-api/generated';
+import { ProcessGithubWebhookRequest } from '../../types/sqs';
+import { MaybeError } from '../../types/util';
+import { newError, newResult } from '../../utils/errors';
+import { log } from '../../utils/log';
+import { catchError, threwError, Try } from '../../utils/try';
 
-type WebhookHandlerFunc = (message: WebhookMetadata) => Promise<MaybeError<undefined>>;
+type WebhookHandlerFunc = (message: ProcessGithubWebhookRequest) => Promise<MaybeError<undefined>>;
 
-export function createGithubWebhookHandler(webhooks: WebhookInterceptor): WebhookHandlerFunc {
-  return async (message: WebhookMetadata): Promise<MaybeError<undefined>> => {
+export function processGithubWebhookActivity(webhooks: WebhookInterceptor): WebhookHandlerFunc {
+  return async (req: ProcessGithubWebhookRequest): Promise<MaybeError<undefined>> => {
     log.info(`Received webhook`, {
-      delivery_id: message.delivery_id,
+      delivery_id: req.delivery_id,
     });
-    const { delivery_id } = message;
+    const { delivery_id } = req;
 
     const deliveryId = delivery_id;
 

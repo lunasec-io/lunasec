@@ -12,20 +12,42 @@
  *
  */
 
-import { S3ObjectMetadata } from './s3';
 import { MaybeError } from './util';
-
-export type QueueHandlerType = 'process-webhook' | 'process-manifest' | 'process-sbom' | 'process-repository';
-
-export interface QueueHandlerConfig {
-  maxMessages: number;
-  visibility: number;
-  envVar: string;
-}
 
 export type BuildSourceType = 'pr' | 'gui' | 'cli';
 
-export interface QueueRepositorySnapshotMessage {
+export type QueueMessageProcessorType = 's3-queue-handler' | 'lunatrace-queue-handler';
+
+// The term 'activity' comes from Temporal and this represents a "single, well defined action". https://docs.temporal.io/concepts/what-is-an-activity/
+// Every time we are processing data that comes from a queue, we want to decouple the "action" that is being performed on the collected data
+// as much as possible.
+export type ActivityFunc<T> = (event: T) => Promise<MaybeError<undefined>>;
+
+export type ActivityHandlerType =
+  | ActivityFunc<SnapshotForRepositoryRequest>
+  | ActivityFunc<ProcessGithubWebhookRequest>;
+
+export type MessageTypeToActivityLookup = Record<LunaTraceMessageTypes, ActivityHandlerType>;
+
+export type LunaTraceMessageTypes = 'repository-snapshot' | 'process-webhook';
+
+export type LunaTraceSqsMessage = LunaTraceRepositorySnapshotSqsMessage | LunaTraceProcessWebhookSqsMessage;
+
+export interface LunaTraceRepositorySnapshotSqsMessage {
+  type: 'repository-snapshot';
+  records: SnapshotForRepositoryRequest[];
+}
+
+export interface LunaTraceProcessWebhookSqsMessage {
+  type: 'process-webhook';
+  records: ProcessGithubWebhookRequest[];
+}
+
+export interface ProcessGithubWebhookRequest {
+  delivery_id: string;
+}
+
+export interface SnapshotForRepositoryRequest {
   cloneUrl: string;
   gitBranch: string;
   gitCommit?: string;
@@ -35,11 +57,11 @@ export interface QueueRepositorySnapshotMessage {
   pullRequestId?: string;
 }
 
-export interface S3SqsEvent {
-  Records?: Record[];
+export interface S3SqsMessage {
+  Records?: S3SqsRecord[];
 }
 
-export interface Record {
+export interface S3SqsRecord {
   eventVersion: string;
   eventSource: string;
   awsRegion: string;
@@ -83,12 +105,3 @@ export interface S3Object {
   eTag: string;
   sequencer: string;
 }
-
-export interface WebhookMetadata {
-  delivery_id: string;
-}
-
-export type HandlerCallback<TBody> = (object: TBody) => Promise<MaybeError<undefined>>;
-
-export type S3HandlerCallback = HandlerCallback<S3ObjectMetadata>;
-export type WebhookHandlerCallback = HandlerCallback<WebhookMetadata>;
