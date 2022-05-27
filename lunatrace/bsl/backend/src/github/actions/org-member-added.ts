@@ -12,28 +12,25 @@
  *
  */
 import { hasura } from '../../hasura-api';
+import { GitHubUserData } from '../../types/github';
 import { logError } from '../../utils/errors';
-import { normalizeGithubId } from '../../utils/github';
 import { log } from '../../utils/log';
 import { catchError, threwError } from '../../utils/try';
 
-export async function orgMemberAdded(installationId: number, githubNodeId: string) {
-  const githubId = normalizeGithubId(githubNodeId);
-
+export async function orgMemberAdded(installationId: number, githubUserData: GitHubUserData): Promise<void> {
   log.info('organization member_added, associating user with organization identified by installation id', {
     installationId,
-    githubNodeId,
+    githubUserData,
   });
 
   // create or get an existing user
   const user = await catchError(
-    async () =>
-      await hasura.UpsertUserFromId({
-        user: {
-          github_id: githubId,
-          github_node_id: githubNodeId,
-        },
-      })
+    hasura.UpsertUserFromId({
+      user: {
+        github_id: githubUserData.databaseId.toString(),
+        github_node_id: githubUserData.nodeId,
+      },
+    })
   );
 
   if (threwError(user)) {
@@ -44,7 +41,7 @@ export async function orgMemberAdded(installationId: number, githubNodeId: strin
   if (!user.insert_users_one) {
     log.error('unable to upsert user with github node id', {
       installationId,
-      githubNodeId,
+      githubUserData,
     });
     return;
   }
@@ -66,7 +63,7 @@ export async function orgMemberAdded(installationId: number, githubNodeId: strin
   if (org.organizations.length !== 1) {
     log.error('organizations for installation id is not exactly one result', {
       installationId,
-      githubNodeId,
+      githubUserData,
     });
     return;
   }
@@ -93,7 +90,7 @@ export async function orgMemberAdded(installationId: number, githubNodeId: strin
 
   log.info('created user and associated it with organization identified by installation id', {
     installationId,
-    githubNodeId,
+    githubUserData,
     orgId,
     userId,
   });

@@ -41,7 +41,9 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
 
   const installationId = installationIdRet.value;
 
-  log.info(`[installId: ${installationId}] Installing Github App to organization`);
+  log.info('verifying Github App was installed correctly', {
+    installationId,
+  });
 
   const installationAuthToken = await getInstallationAccessToken(installationId);
 
@@ -55,7 +57,10 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
   const errorUri = req.query.error_uri;
 
   if (error) {
-    log.info(`[installId: ${installationId}] Error installing Github App: ${errorDescription}`);
+    log.error('Error installing Github App', {
+      installationId,
+      error: errorDescription,
+    });
     res.status(401).send(
       errorResponse(
         JSON.stringify({
@@ -67,6 +72,10 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     );
     return;
   }
+
+  log.info('Github App was installed correctly', {
+    installationId,
+  });
 
   res.status(302).redirect(serverConfig.sitePublicUrl);
 }

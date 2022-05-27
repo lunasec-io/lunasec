@@ -75,8 +75,12 @@ async function organizationHandler(event: EmitterWebhookEvent<'organization'>) {
 
     const installationId = event.payload.installation.id;
     const githubNodeId = event.payload.membership.user.node_id;
+    const githubDatabaseId = event.payload.membership.user.id;
 
-    await orgMemberAdded(installationId, githubNodeId);
+    await orgMemberAdded(installationId, {
+      nodeId: githubNodeId,
+      databaseId: githubDatabaseId,
+    });
   }
 }
 
