@@ -107,7 +107,9 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
     const result = insertedWebhookResult.insert_webhook_cache_one;
 
     if (!result) {
-      console.error('Failed to confirm webhook added to cache');
+      log.error('Failed to confirm webhook added to cache', {
+        options,
+      });
       throw new Error('Failed to confirm webhook added to cache');
     }
 
@@ -135,5 +137,7 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
         QueueUrl: this.webhookQueueUrl,
       })
     );
+
+    log.info(`Inserted webhook to cache: ${result.delivery_id}`);
   };
 }
