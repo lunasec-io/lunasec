@@ -31045,7 +31045,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphqurl@npm:^1.0.1":
+"graphqurl@npm:^1.0.1, graphqurl@npm:~1.0.1":
   version: 1.0.1
   resolution: "graphqurl@npm:1.0.1"
   dependencies:
@@ -37418,6 +37418,7 @@ __metadata:
     eslint-plugin-react: ^7.27.1
     eslint-plugin-unused-imports: ^2.0.0
     eslint-plugin-vue: ^8.2.0
+    graphqurl: ~1.0.1
     husky: ^7.0.4
     jest-environment-jsdom: ~28.0.2
     js-yaml: ^4.1.0
