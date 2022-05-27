@@ -16,6 +16,5 @@
     { "path": "packages/tokenizer-sdk/tsconfig.module.json" },
     { "path": "packages/react-sdk/tsconfig.module.json" },
     { "path": "packages/isomorphic-common/tsconfig.module.json" },
-
   ]
 }

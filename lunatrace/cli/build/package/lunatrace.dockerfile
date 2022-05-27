@@ -1,14 +1,14 @@
-FROM golang:1.17-alpine AS go-build
+FROM golang:1.18-alpine AS go-build
 
 RUN apk add make
 
-WORKDIR /build
-COPY . /build
+COPY . /build/
+WORKDIR /build/lunatrace/cli/
 
 RUN make lunatrace
 
 FROM scratch
 
-COPY --from=go-build /build/bin/lunatrace /
+COPY --from=go-build /build/lunatrace/cli/bin/lunatrace /
 
 ENTRYPOINT ["/lunatrace"]

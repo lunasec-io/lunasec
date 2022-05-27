@@ -25,6 +25,7 @@ import {
 import { sqsClient } from '../../aws/sqs-client';
 import { HasuraClient } from '../../hasura-api';
 import { InsertWebhookToCacheMutation } from '../../hasura-api/generated';
+import { LunaTraceSqsMessage, ProcessGithubWebhookRequest } from '../../types/sqs';
 import { logError } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { catchError, threwError, Try } from '../../utils/try';
@@ -112,12 +113,21 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
       throw new Error('Failed to confirm webhook added to cache');
     }
 
+    log.info(`Inserted webhook to cache: ${result.delivery_id}`);
+
+    const webhookSqsRecord: ProcessGithubWebhookRequest = {
+      delivery_id: options.id,
+    };
+
+    const sqsEvent: LunaTraceSqsMessage = {
+      type: 'process-webhook',
+      records: [webhookSqsRecord],
+    };
+
     // Ignore the result, we don't care if it succeeded or not because we have ensured that it's been flushed to the DB already;
     void sqsClient.send(
       new SendMessageCommand({
-        MessageBody: JSON.stringify({
-          delivery_id: options.id,
-        }),
+        MessageBody: JSON.stringify(sqsEvent),
         MessageAttributes: {
           delivery_id: {
             DataType: 'String',

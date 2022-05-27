@@ -14,7 +14,7 @@
 
 import { hasura } from '../../hasura-api';
 import { GithubRepositoryInfo } from '../../types/github';
-import { QueueRepositorySnapshotMessage } from '../../types/sqs';
+import { SnapshotForRepositoryRequest } from '../../types/sqs';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
@@ -44,7 +44,7 @@ export async function queueNewReposForSnapshot(
         return;
       }
 
-      const record: QueueRepositorySnapshotMessage = {
+      const record: SnapshotForRepositoryRequest = {
         cloneUrl: repo.cloneUrl,
         gitBranch: repo.defaultBranch,
         installationId: installationId,
@@ -64,6 +64,5 @@ export async function queueNewReposForSnapshot(
   if (errors.length > 0) {
     return newError(JSON.stringify(errors));
   }
-
   return newResult(undefined);
 }

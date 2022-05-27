@@ -28,7 +28,10 @@ import { log } from '../utils/log';
 
 export type InsertedScan = NonNullable<InsertScanMutation['insert_scans_one']>;
 
-export async function parseAndUploadScan(sbomStream: Readable, buildId: string): Promise<InsertedScan> {
+export async function performSnapshotScanAndCollectReport(
+  sbomStream: Readable,
+  buildId: string
+): Promise<InsertedScan> {
   const rawGrypeReport = await runLunaTraceScan(sbomStream);
   log.info('finished running lunatrace scan on sbom', {
     buildId,
@@ -56,7 +59,7 @@ export async function parseAndUploadScan(sbomStream: Readable, buildId: string):
 
 export async function runLunaTraceScan(sbomStream: Readable): Promise<string> {
   return new Promise((resolve, reject) => {
-    const lunatraceCli = spawn(`lunatrace`, ['--log-to-stderr', 'scan', '--stdin', '--stdout']);
+    const lunatraceCli = spawn(`lunatrace`, ['--log-to-stderr', '--json', 'scan', '--stdin', '--stdout']);
     lunatraceCli.on('error', reject);
 
     const outputBuffers: Buffer[] = [];
@@ -64,8 +67,9 @@ export async function runLunaTraceScan(sbomStream: Readable): Promise<string> {
       outputBuffers.push(Buffer.from(chunk));
     });
     lunatraceCli.stderr.on('data', (errorChunk) => {
-      log.error('LunaTrace CLI StdErr Output:');
-      log.error(errorChunk.toString());
+      log.info('lunatrace cli stderr', {
+        log: errorChunk.toString(),
+      });
     });
     lunatraceCli.on('close', (code) => {
       if (code !== 0) {
