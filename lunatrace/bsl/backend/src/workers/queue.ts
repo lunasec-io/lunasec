@@ -86,8 +86,8 @@ class QueueWorker {
     }
   }
 
-  // processMessageAndReturnResults determines how to process a message from a queue
-  async processMessageAndReturnResults(parsedMessage: any): Promise<MaybeErrorVoid[]> {
+  // processMessageBasedOnDataSource determines how to process a message from a queue
+  async processMessageBasedOnDataSource(parsedMessage: any): Promise<MaybeErrorVoid[]> {
     if ('type' in parsedMessage) {
       // if the key 'type' is present in the message, then this message is one that we have sent from one of our services
       if (this.activityLookup === null) {
@@ -118,7 +118,7 @@ class QueueWorker {
       });
 
       // Attempt to determine what message processor to use for the provided message
-      const results = await this.processMessageAndReturnResults(parsedMessage);
+      const results = await this.processMessageBasedOnDataSource(parsedMessage);
 
       const errors = results.filter((result) => result.error);
 
