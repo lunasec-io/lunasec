@@ -24,6 +24,7 @@
     "eslint-plugin-react": "^7.27.1",
     "eslint-plugin-unused-imports": "^2.0.0",
     "eslint-plugin-vue": "^8.2.0",
+    "graphqurl": "~1.0.1",
     "husky": "^7.0.4",
     "js-yaml": "^4.1.0",
     "lerna": "^4.0.0",

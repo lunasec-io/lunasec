@@ -12,7 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package cli
+package types
 
-///go:generate yarn run gq http://localhost:8080/v1/graphql -H "X-Hasura-Admin-Secret: myadminsecretkey" -H "X-Hasura-Role: service" --introspect > ../schema.graphql
-//go:generate go run github.com/Khan/genqlient genqlient.yaml
+type PackageManager int
+
+const (
+	NPM PackageManager = iota
+)
+
+type LicenseSource int
+
+const (
+	Manual LicenseSource = iota
+	ScanRepo
+	ScanBinary
+	ApiNpm
+)
