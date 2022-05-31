@@ -29,6 +29,7 @@ const cssRegex = /\.(css|scss|sass|less)$/i;
 const buildOutputRegex = /\/build\//i;
 const golangRegex = /\.go$/i;
 const markdownRegex = /\.mdx?$/i;
+const generatedFilesRegex = /(gql\.go$|generated|schema\.graphql$|_enumer\.go$)/;
 
 const bslLicenseRegex = /.*\/bsl\/.*/i
 
@@ -125,7 +126,7 @@ function isFileCode(file) {
   return (
     file.match(javascriptRegex) || file.match(golangRegex) || (file.match(cssRegex) && file.match(buildOutputRegex))
   ) && (
-    !file.match(/(gql\.go$|generated|schema\.graphql$)/)
+    !file.match(generatedFilesRegex)
   );
 }
 
