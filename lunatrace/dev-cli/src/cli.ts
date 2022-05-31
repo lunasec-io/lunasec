@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  */
-import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
 
 // eslint-disable-next-line import/order
