@@ -61,42 +61,15 @@ jobs:
             }
             set -x
             hasura md ic list >> /tmp/hasura_ic
-            hasura md ic status || (cat /tmp/hasura_ic > /tmp/comment)
+            hasura md ic status || (cat /tmp/hasura_ic >> $GITHUB_STEP_SUMMARY)
           ) || true)
           
       - run: docker-compose logs
         working-directory: lunatrace/bsl
-
-      - name: Check comment
-        run: cat /tmp/comment | grep -qE '.' && echo '::set-output name=found::true'
-        id: check-comment
-
-      - id: get-comment-body
-        run: |
-          body="$(cat /tmp/comment)"
-          body="${body//'%'/'%25'}"
-          body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}" 
-          echo "::set-output name=body::$body"
-
-      - name: Find Comment
-        uses: peter-evans/find-comment@v2
-        id: fc
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: "Hasura Inconsistencies Detected"
-
-      - name: Create or update comment
-        uses: peter-evans/create-or-update-comment@v2
-        if: ${{ steps.check-comment.outputs.found == 'true' || steps.fc.outputs.comment-id }}
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |-
-            # Hasura Inconsistencies Detected
-            Please check that the metadata can be applied with the migrations against a clean database.
-            ```
-            ${{ steps.get-comment-body.outputs.body }}
-            ```
-          edit-mode: replace
+      - run: |-
+          (
+            git status
+            (cd lunatrace/bsl/backend && yarn generate)
+            (cd lunatrace/bsl/backend && yarn generate)
+            git status
+          ) || true
