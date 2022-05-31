@@ -43,6 +43,7 @@ jobs:
           export PROCESS_REPOSITORY_QUEUE=fake
           export PROCESS_MANIFEST_QUEUE=fake
           export PROCESS_SBOM_QUEUE=fake
+          export DISABLE_WEBHOOK_QUEUE=true
           
           yarn run start:prod &
           timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:3002)" != "200" ]]; do sleep 1; done' || false
