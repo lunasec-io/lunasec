@@ -14,15 +14,7 @@ mutation SetBuildS3Url($id: uuid!, $s3_url: String!) {
         id
     }
 }
-query PresignSbom($orgId: uuid!, $buildId: uuid!) {
-    presignSbomUpload(orgId: $orgId, buildId: $buildId) {
-        uploadUrl {
-            url
-            headers
-        }
-        error
-    }
-}
+
 query GetProjectInfoQuery {
     project_access_tokens {
         project {
