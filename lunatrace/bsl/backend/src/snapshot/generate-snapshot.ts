@@ -15,13 +15,9 @@ import zlib from 'zlib';
 
 import { getWorkerBucketConfig } from '../config';
 import { hasura } from '../hasura-api';
-import { S3ObjectMetadata } from '../types/s3';
 import { SbomBucketInfo } from '../types/scan';
-import { MaybeError } from '../types/util';
 import { aws } from '../utils/aws-utils';
-import { newError, newResult } from '../utils/errors';
 import { log } from '../utils/log';
-import { catchError, threwError } from '../utils/try';
 
 import { generateSbomFromAsset } from './call-cli';
 
