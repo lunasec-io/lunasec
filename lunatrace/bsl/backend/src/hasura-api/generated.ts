@@ -40,6 +40,11 @@ export type Scalars = {
   uuid: any;
 };
 
+export type AuthenticatedRepoCloneUrlOutput = {
+  __typename?: 'AuthenticatedRepoCloneUrlOutput';
+  url?: Maybe<Scalars['String']>;
+};
+
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 export type Boolean_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Boolean']>;
@@ -64,6 +69,20 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']>;
   _neq?: InputMaybe<Scalars['Int']>;
   _nin?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+export type PresignedUrlResponse = {
+  __typename?: 'PresignedUrlResponse';
+  bucket: Scalars['String'];
+  headers: Scalars['jsonb'];
+  key: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type SbomUploadUrlOutput = {
+  __typename?: 'SbomUploadUrlOutput';
+  error: Scalars['Boolean'];
+  uploadUrl?: Maybe<UploadUrl>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -99,6 +118,12 @@ export type String_Comparison_Exp = {
   _similar?: InputMaybe<Scalars['String']>;
 };
 
+export type UploadUrl = {
+  __typename?: 'UploadUrl';
+  headers: Scalars['jsonb'];
+  url: Scalars['String'];
+};
+
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
 export type _Text_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['_text']>;
@@ -132,6 +157,7 @@ export type Builds = {
   project_id?: Maybe<Scalars['uuid']>;
   pull_request_id?: Maybe<Scalars['String']>;
   s3_url?: Maybe<Scalars['String']>;
+  s3_url_signed?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   source_type: Scalars['builds_source_type'];
@@ -914,6 +940,7 @@ export type Fix_State_Enum_Comparison_Exp = {
 /** Metadata about a github repository and where to find it. */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
+  authenticated_clone_url?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
@@ -2114,6 +2141,8 @@ export type Mutation_Root = {
   insert_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
   /** insert a single row into the table: "webhook_cache" */
   insert_webhook_cache_one?: Maybe<Webhook_Cache>;
+  /**  get s3 presigned url for manifest upload, used only by the frontend  */
+  presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "builds" */
   update_builds?: Maybe<Builds_Mutation_Response>;
   /** update single row of the table: "builds" */
@@ -2427,6 +2456,12 @@ export type Mutation_RootInsert_Webhook_CacheArgs = {
 export type Mutation_RootInsert_Webhook_Cache_OneArgs = {
   object: Webhook_Cache_Insert_Input;
   on_conflict?: InputMaybe<Webhook_Cache_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootPresignManifestUploadArgs = {
+  project_id: Scalars['uuid'];
 };
 
 
@@ -3660,12 +3695,14 @@ export enum Projects_Update_Column {
 
 export type Query_Root = {
   __typename?: 'query_root';
+  authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   /** An array relationship */
   builds: Array<Builds>;
   /** An aggregate relationship */
   builds_aggregate: Builds_Aggregate;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
+  fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
@@ -3710,6 +3747,8 @@ export type Query_Root = {
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
   package_versions_by_pk?: Maybe<Package_Versions>;
+  /**  get s3 presigned url for manifest upload, used by the CLI  */
+  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -3722,6 +3761,7 @@ export type Query_Root = {
   related_vulnerabilities: Array<Related_Vulnerabilities>;
   /** fetch data from the table: "related_vulnerabilities" using primary key columns */
   related_vulnerabilities_by_pk?: Maybe<Related_Vulnerabilities>;
+  sbomUrl?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
@@ -3748,6 +3788,11 @@ export type Query_Root = {
   webhook_cache: Array<Webhook_Cache>;
   /** fetch data from the table: "webhook_cache" using primary key columns */
   webhook_cache_by_pk?: Maybe<Webhook_Cache>;
+};
+
+
+export type Query_RootAuthenticatedRepoCloneUrlArgs = {
+  repoGithubId: Scalars['Int'];
 };
 
 
@@ -3932,6 +3977,12 @@ export type Query_RootPackage_Versions_By_PkArgs = {
 };
 
 
+export type Query_RootPresignSbomUploadArgs = {
+  buildId: Scalars['uuid'];
+  orgId: Scalars['uuid'];
+};
+
+
 export type Query_RootProject_Access_TokensArgs = {
   distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3971,6 +4022,11 @@ export type Query_RootRelated_VulnerabilitiesArgs = {
 
 export type Query_RootRelated_Vulnerabilities_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootSbomUrlArgs = {
+  buildId: Scalars['uuid'];
 };
 
 
@@ -5748,6 +5804,13 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 
 export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
 
+export type GetProjectsForInstallationIdQueryVariables = Exact<{
+  installation_id?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetProjectsForInstallationIdQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', projects: Array<{ __typename?: 'projects', github_repository?: { __typename?: 'github_repositories', github_id?: number | null } | null }> }> };
+
 export type GetUserRoleQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
 }>;
@@ -5999,6 +6062,17 @@ export const GetPreviousBuildForPrDocument = gql`
     order_by: {created_at: desc}
   ) {
     existing_github_review_id
+  }
+}
+    `;
+export const GetProjectsForInstallationIdDocument = gql`
+    query GetProjectsForInstallationId($installation_id: Int) {
+  organizations(where: {installation_id: {_eq: $installation_id}}) {
+    projects {
+      github_repository {
+        github_id
+      }
+    }
   }
 }
     `;
@@ -6265,6 +6339,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
+    },
+    GetProjectsForInstallationId(variables?: GetProjectsForInstallationIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectsForInstallationIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectsForInstallationIdQuery>(GetProjectsForInstallationIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectsForInstallationId', 'query');
     },
     GetUserRole(variables?: GetUserRoleQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRoleQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserRoleQuery>(GetUserRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserRole', 'query');

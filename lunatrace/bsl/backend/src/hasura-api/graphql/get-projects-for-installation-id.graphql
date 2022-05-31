@@ -1,0 +1,9 @@
+query GetProjectsForInstallationId($installation_id: Int) {
+  organizations(where: {installation_id: {_eq: $installation_id}}) {
+    projects {
+      github_repository {
+        github_id
+      }
+    }
+  }
+}
