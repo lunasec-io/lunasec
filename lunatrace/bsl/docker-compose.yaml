@@ -77,7 +77,6 @@ services:
     image: hasura/graphql-engine:v2.5.2.cli-migrations-v3
     ports:
     - "8080:8080"
-    - "8085:8080"
     depends_on:
       - postgres
       - oathkeeper
