@@ -26,6 +26,17 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
+// prefer the branch name from the cli arg if available
+func getBranchName(fromCliArg string, fromGit string) string {
+	if fromCliArg != "" {
+		return fromCliArg
+	}
+	if fromGit == "HEAD" {
+		return ""
+	}
+	return fromGit
+}
+
 func processSbom(
 	c *cli.Context,
 	appConfig types.LunaTraceConfig,
@@ -46,7 +57,9 @@ func processSbom(
 		return
 	}
 
-	agentSecret, err := uploadSbom(appConfig, sbomModel, repoMeta)
+	branchName := getBranchName(options.GitBranch, repoMeta.BranchName)
+
+	agentSecret, err := uploadSbom(appConfig, sbomModel, repoMeta, branchName)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -85,7 +98,7 @@ func outputSbom(sbom syftmodel.Document, printToStdout bool, outputFile string) 
 	return
 }
 
-func uploadSbom(appConfig types.LunaTraceConfig, sbom syftmodel.Document, repoMeta deprecated.RepoMetadata) (agentSecret string, err error) {
+func uploadSbom(appConfig types.LunaTraceConfig, sbom syftmodel.Document, repoMeta deprecated.RepoMetadata, branchName string) (agentSecret string, err error) {
 	var (
 		orgId, projectId, buildId, s3Url string
 	)
@@ -100,7 +113,7 @@ func uploadSbom(appConfig types.LunaTraceConfig, sbom syftmodel.Document, repoMe
 	}
 
 	log.Info().Msg("Creating build in LunaTrace database")
-	agentSecret, buildId, err = insertNewBuild(appConfig, projectId, repoMeta)
+	agentSecret, buildId, err = insertNewBuild(appConfig, projectId, repoMeta, branchName)
 	if err != nil {
 		return
 	}

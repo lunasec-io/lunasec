@@ -122,12 +122,13 @@ func insertNewBuild(
 	appConfig types.LunaTraceConfig,
 	projectId string,
 	repoMeta deprecated.RepoMetadata,
+	branchName string,
 ) (agentSecret string, buildId string, err error) {
 	var newBuildResponse deprecated.NewBuildResponse
 
 	variables := map[string]string{
 		"project_id": projectId,
-		"git_branch": repoMeta.BranchName,
+		"git_branch": branchName,
 		"git_hash":   repoMeta.CommitHash,
 		"git_remote": repoMeta.RemoteUrl,
 	}

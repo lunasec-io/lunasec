@@ -77,6 +77,7 @@ export function getWebhookConfig(): WebhookConfig {
     throw new Error(disableWebhookQueue.msg);
   }
 
+  // QUEUE_NAME means DEVELOPMENT_QUEUE_NAME
   const developmentQueueName = checkEnvVar('QUEUE_NAME', notSet);
 
   // In production, this queue will be specifically set since it references a different queue.
@@ -85,7 +86,9 @@ export function getWebhookConfig(): WebhookConfig {
   const queueName = checkEnvVar('PROCESS_WEBHOOK_QUEUE', developmentQueueName);
 
   if (queueName === notSet) {
-    throw new Error('PROCESS_WEBHOOK_QUEUE is not set and QUEUE_NAME for development is not set');
+    throw new Error(
+      'Unknown queue name.  Must set either QUEUE_NAME in development or PROCESS_WEBHOOK_QUEUE in production'
+    );
   }
 
   const secret = checkEnvVar('GITHUB_APP_WEBHOOK_SECRET', 'mysecret');

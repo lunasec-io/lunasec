@@ -8,7 +8,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "dev:cdk:deploy": "DEVELOPMENT=true cdk deploy --all",
+    "dev:cdk:deploy": "DEVELOPMENT=true DEV_USER=$USER cdk deploy --all",
     "prod:cdk:deploy": "echo 'deploying...' && rm cdk.out/*.tar || true && cdk deploy --all"
   },
   "devDependencies": {
