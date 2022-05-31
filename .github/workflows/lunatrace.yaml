@@ -72,4 +72,5 @@ jobs:
             (cd lunatrace/bsl/backend && yarn generate)
             (cd lunatrace/bsl/backend && yarn generate)
             git status
+            git diff
           ) || true
