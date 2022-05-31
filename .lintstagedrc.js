@@ -122,7 +122,11 @@ function generateLicenseToolCommand(configInfo) {
 }
 
 function isFileCode(file) {
-  return file.match(javascriptRegex) || file.match(golangRegex) || (file.match(cssRegex) && file.match(buildOutputRegex));
+  return (
+    file.match(javascriptRegex) || file.match(golangRegex) || (file.match(cssRegex) && file.match(buildOutputRegex))
+  ) && (
+    !file.match(/(gql\.go$|generated|schema\.graphql$)/)
+  );
 }
 
 /**
