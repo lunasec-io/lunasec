@@ -59,33 +59,35 @@ jobs:
         run: |-
           timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "404" ]]; do sleep 1; done' || false
           
-          (cd lunatrace/bsl/hasura && (
-            function hasura() {
-              npx --yes hasura-cli --skip-update-check $@
-            }
-            set -x
-            hasura md ic list >> /tmp/hasura_ic
-            hasura md ic status || (
-              echo "Hasura metadata inconsistency" >> $GITHUB_STEP_SUMMARY
-              echo '```' >> $GITHUB_STEP_SUMMARY
-              cat /tmp/hasura_ic >> $GITHUB_STEP_SUMMARY
-              echo '```' >> $GITHUB_STEP_SUMMARY
-            )
-          ) || true)
+          cd lunatrace/bsl/hasura
+          
+          function hasura() {
+            npx --yes hasura-cli --skip-update-check $@
+          }
+          set -x
+          hasura md ic list >> /tmp/hasura_ic
+          if ! hasura md ic status; then
+            echo "Hasura metadata inconsistency" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat /tmp/hasura_ic >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
           
       - run: docker-compose logs
         working-directory: lunatrace/bsl
+
       - run: |-
           git status
           (cd lunatrace/bsl/backend && yarn generate)
           (cd lunatrace/bsl/frontend && yarn generate)
           go generate ./... || true
           git status
-          git diff --quiet || (
+          if [[ -n $(git status --porcelain) ]]; then
             echo "# Generated files don't match" >> $GITHUB_STEP_SUMMARY
             echo "run yarn generate" >> $GITHUB_STEP_SUMMARY
             echo '```diff' >> $GITHUB_STEP_SUMMARY
             git diff -p >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
             exit 1 
-          )
+          fi
